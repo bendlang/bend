@@ -119,7 +119,7 @@ def main():
 ##### Running the file
 You can run it using Rust interpreter (Sequential)
 ```sh
-bend run sequential_sum.bend -s
+bend run-rs sequential_sum.bend -s
 ```
 
 Or you can run it using C interpreter (Sequential)
@@ -168,7 +168,7 @@ In this example, the (3 + 4) sum does not depend on the (1 + 2), meaning that it
 ##### Running the file
 You can run it using Rust interpreter (Sequential)
 ```sh
-bend run parallel_sum.bend -s
+bend run-rs parallel_sum.bend -s
 ```
 
 Or you can run it using C interpreter (Parallel)
@@ -189,7 +189,7 @@ The code snippet below implements a [bitonic sorter](https://en.wikipedia.org/wi
 
 #### Bitonic Sorter Benchmark
 
-- `bend run`: CPU, Apple M3 Max: 12.15 seconds
+- `bend run-rs`: CPU, Apple M3 Max: 12.15 seconds
 - `bend run-c`: CPU, Apple M3 Max: 0.96 seconds
 - `bend run-cu`: GPU, NVIDIA RTX 4090: 0.21 seconds
 
