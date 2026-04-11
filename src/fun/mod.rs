@@ -599,13 +599,13 @@ impl Term {
       Term::Lam { bod, .. } | Term::With { bod, .. } | Term::Open { bod, .. } => {
         ChildrenIter::One([bod.as_ref()])
       }
+      Term::Def { def: _, nxt } => ChildrenIter::One([nxt.as_ref()]),
       Term::Var { .. }
       | Term::Link { .. }
       | Term::Num { .. }
       | Term::Nat { .. }
       | Term::Str { .. }
       | Term::Ref { .. }
-      | Term::Def { .. }
       | Term::Era
       | Term::Err => ChildrenIter::Zero([]),
     }
@@ -635,13 +635,13 @@ impl Term {
       Term::Lam { bod, .. } | Term::With { bod, .. } | Term::Open { bod, .. } => {
         ChildrenIter::One([bod.as_mut()])
       }
+      Term::Def { def: _, nxt } => ChildrenIter::One([nxt.as_mut()]),
       Term::Var { .. }
       | Term::Link { .. }
       | Term::Num { .. }
       | Term::Nat { .. }
       | Term::Str { .. }
       | Term::Ref { .. }
-      | Term::Def { .. }
       | Term::Era
       | Term::Err => ChildrenIter::Zero([]),
     }
