@@ -141,6 +141,139 @@ Example:
   # Result: Result/Ok/tag ([1, 3], [5, 6])
 ```
 
+#### List/map
+
+```python
+#{
+  Applies a function to each element of a list, returning a new list.
+#}
+def List/map(xs: List(T), f: T -> U) -> List(U):
+```
+Example:
+```python
+List/map([1, 2, 3], λx: x + 1)
+# [2, 3, 4]
+```
+
+#### List/fold
+
+```python
+#{
+  Folds a list from the left, combining each element with an accumulator.
+#}
+def List/fold(xs: List(T), init: A, f: A -> T -> A) -> A:
+```
+Example:
+```python
+List/fold([1, 2, 3], 0, λacc, x: acc + x)
+# 6
+```
+
+#### List/sum
+
+```python
+#{
+  Sums a list of unsigned numbers.
+#}
+def List/sum(xs: List(u24)) -> u24:
+```
+
+#### List/all
+
+```python
+#{
+  Returns 1 if all elements satisfy the predicate, 0 otherwise. Short-circuits.
+#}
+def List/all(xs: List(T), pred: T -> u24) -> u24:
+```
+
+#### List/any
+
+```python
+#{
+  Returns 1 if any element satisfies the predicate, 0 otherwise. Short-circuits.
+#}
+def List/any(xs: List(T), pred: T -> u24) -> u24:
+```
+
+#### List/find
+
+```python
+#{
+  Returns the first element satisfying the predicate as `Maybe/Some`, or `Maybe/None`.
+#}
+def List/find(xs: List(T), pred: T -> u24) -> Maybe(T):
+```
+
+#### List/contains
+
+```python
+#{
+  Returns 1 if the value occurs in the list, 0 otherwise.
+#}
+def List/contains(xs: List(u24), val: u24) -> u24:
+```
+
+#### List/take
+
+```python
+#{
+  Returns the first `n` elements of a list (or the whole list if shorter).
+#}
+def List/take(xs: List(T), n: u24) -> List(T):
+```
+Example:
+```python
+List/take([1, 2, 3, 4], 2)
+# [1, 2]
+```
+
+#### List/drop
+
+```python
+#{
+  Removes the first `n` elements of a list (empty if `n` exceeds length).
+#}
+def List/drop(xs: List(T), n: u24) -> List(T):
+```
+
+#### List/at
+
+```python
+#{
+  Returns the element at index `i` as `Maybe/Some`, or `Maybe/None` if out of bounds.
+#}
+def List/at(xs: List(T), i: u24) -> Maybe(T):
+```
+
+#### List/zip
+
+```python
+#{
+  Pairs elements of two lists, truncating to the shorter length.
+#}
+def List/zip(xs: List(A), ys: List(B)) -> List((A, B)):
+```
+Example:
+```python
+List/zip([1, 2, 3], [4, 5])
+# [(1, 4), (2, 5)]
+```
+
+#### List/range
+
+```python
+#{
+  Returns the list of numbers in the half-open interval [start, end).
+#}
+def List/range(start: u24, end: u24) -> List(u24):
+```
+Example:
+```python
+List/range(0, 5)
+# [0, 1, 2, 3, 4]
+```
+
 ## Result
 
 ```python

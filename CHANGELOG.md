@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project does not currently adhere to a particular versioning scheme.
 
+## [Unreleased]
+
+### Added
+
+- Add core `List` combinators to the standard library: `map`, `fold`, `sum`, `all`, `any`, `find`, `contains`, `take`, `drop`, `at`, `zip`, and `range`.
+
 ## [0.2.38] - 2025-02-23
 
 ### Added
