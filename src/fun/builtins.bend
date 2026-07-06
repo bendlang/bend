@@ -65,6 +65,129 @@ List/filter (List/Cons x xs) pred =
     (List/filter xs pred)
   }
 
+#{ Applies a function to each element of a list, returning a new list. #}
+def List/map(xs: List(T), f: T -> U) -> List(U):
+  fold xs:
+    case List/Nil:
+      return List/Nil
+    case List/Cons:
+      return List/Cons(f(xs.head), xs.tail)
+
+#{ Folds a list from the left, combining each element with an accumulator. #}
+def List/fold(xs: List(T), init: A, f: A -> T -> A) -> A:
+  fold xs with acc=init:
+    case List/Nil:
+      return acc
+    case List/Cons:
+      return xs.tail(f(acc, xs.head))
+
+#{ Sums a list of unsigned numbers. #}
+def List/sum(xs: List(u24)) -> u24:
+  fold xs:
+    case List/Nil:
+      return 0
+    case List/Cons:
+      return xs.head + xs.tail
+
+#{ Returns 1 if all elements satisfy the predicate, 0 otherwise. Short-circuits. #}
+def List/all(xs: List(T), pred: T -> u24) -> u24:
+  match xs:
+    case List/Nil:
+      return 1
+    case List/Cons:
+      if pred(xs.head):
+        return List/all(xs.tail, pred)
+      else:
+        return 0
+
+#{ Returns 1 if any element satisfies the predicate, 0 otherwise. Short-circuits. #}
+def List/any(xs: List(T), pred: T -> u24) -> u24:
+  match xs:
+    case List/Nil:
+      return 0
+    case List/Cons:
+      if pred(xs.head):
+        return 1
+      else:
+        return List/any(xs.tail, pred)
+
+#{ Returns the first element satisfying the predicate as `Maybe/Some`, else `Maybe/None`. #}
+def List/find(xs: List(T), pred: T -> u24) -> Maybe(T):
+  match xs:
+    case List/Nil:
+      return Maybe/None
+    case List/Cons:
+      if pred(xs.head):
+        return Maybe/Some(xs.head)
+      else:
+        return List/find(xs.tail, pred)
+
+#{ Returns 1 if `val` occurs in the list, 0 otherwise. #}
+def List/contains(xs: List(u24), val: u24) -> u24:
+  match xs:
+    case List/Nil:
+      return 0
+    case List/Cons:
+      if xs.head == val:
+        return 1
+      else:
+        return List/contains(xs.tail, val)
+
+#{ Returns the first `n` elements of a list (or the whole list if shorter). #}
+def List/take(xs: List(T), n: u24) -> List(T):
+  match xs:
+    case List/Nil:
+      return List/Nil
+    case List/Cons:
+      switch n:
+        case 0:
+          return List/Nil
+        case _:
+          return List/Cons(xs.head, List/take(xs.tail, n-1))
+
+#{ Removes the first `n` elements of a list (empty if `n` exceeds length). #}
+def List/drop(xs: List(T), n: u24) -> List(T):
+  match xs:
+    case List/Nil:
+      return List/Nil
+    case List/Cons:
+      switch n:
+        case 0:
+          return List/Cons(xs.head, xs.tail)
+        case _:
+          return List/drop(xs.tail, n-1)
+
+#{ Returns the element at index `i` as `Maybe/Some`, or `Maybe/None` if out of bounds. #}
+def List/at(xs: List(T), i: u24) -> Maybe(T):
+  match xs:
+    case List/Nil:
+      return Maybe/None
+    case List/Cons:
+      switch i:
+        case 0:
+          return Maybe/Some(xs.head)
+        case _:
+          return List/at(xs.tail, i-1)
+
+#{ Pairs elements of two lists, truncating to the shorter length. #}
+def List/zip(xs: List(A), ys: List(B)) -> List((A, B)):
+  match xs:
+    case List/Nil:
+      return List/Nil
+    case List/Cons:
+      match ys:
+        case List/Nil:
+          return List/Nil
+        case List/Cons:
+          return List/Cons((xs.head, ys.head), List/zip(xs.tail, ys.tail))
+
+#{ Returns the list of numbers in the half-open interval [start, end). #}
+def List/range(start: u24, end: u24) -> List(u24):
+  if start < end:
+    return List/Cons(start, List/range(start + 1, end))
+  else:
+    return List/Nil
+
 #{ Checks if two strings are equal. #}
 String/equals (s1: String) (s2: String) : u24
 String/equals (String/Nil) (String/Nil) = 1
