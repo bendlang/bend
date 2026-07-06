@@ -1,0 +1,9 @@
+---
+source: tests/golden_tests.rs
+input_file: tests/golden_tests/run_file/list_combinators.bend
+---
+NumScott:
+[30, 15, 15, 0, 1, 1, 0, 3, 12, 4, 2, 15, 30]
+
+Scott:
+[30, 15, 15, 0, 1, 1, 0, 3, 12, 4, 2, 15, 30]
