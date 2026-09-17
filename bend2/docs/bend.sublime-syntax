@@ -1,0 +1,50 @@
+%YAML 1.2
+---
+# Bend, for the papers' code blocks: typst reads this through
+# #set raw(syntaxes: ...) and highlights ```bend fences with it.
+name: Bend
+file_extensions: [bend]
+scope: source.bend
+
+contexts:
+  main:
+    - match: '#.*$'
+      scope: comment.line.number-sign.bend
+    - match: '"'
+      scope: punctuation.definition.string.begin.bend
+      push: string
+    - match: "'(\\\\.|[^'])'"
+      scope: string.quoted.single.bend
+    - match: '\b(def|law)\s+([A-Za-z_][A-Za-z0-9_.]*)'
+      captures:
+        1: keyword.control.bend
+        2: entity.name.function.bend
+    - match: '\b(type)\s+([A-Za-z_][A-Za-z0-9_]*)'
+      captures:
+        1: keyword.control.bend
+        2: entity.name.type.bend
+    - match: '\b(def|law|type|is|match|case|do|return|for|exs|where|import|as)\b'
+      scope: keyword.control.bend
+    - match: '@unsafe\b'
+      scope: keyword.control.bend
+    - match: '\b(Type|Data|Kind|Quant)\b'
+      scope: storage.type.bend
+    - match: '&[012]\b'
+      scope: constant.numeric.bend
+    - match: '\b\d+n\b'
+      scope: constant.numeric.bend
+    - match: '\b\d+(\.\d+([eE][+-]?\d+)?)?\b'
+      scope: constant.numeric.bend
+    - match: '\b[A-Z][A-Za-z0-9_]*\b'
+      scope: support.type.bend
+    - match: '\?[A-Za-z_][A-Za-z0-9_]*'
+      scope: variable.other.hole.bend
+    - match: '==|!=|<=|>=|->|=>|<-|<&>|\+\+|<>|[-+*/%<>=&|!@%\\]'
+      scope: keyword.operator.bend
+  string:
+    - meta_scope: string.quoted.double.bend
+    - match: '\\.'
+      scope: constant.character.escape.bend
+    - match: '"'
+      scope: punctuation.definition.string.end.bend
+      pop: true

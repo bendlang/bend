@@ -1,0 +1,9 @@
+{
+  "name": "bend-intro",
+  "private": true,
+  "description": "The Bend intro film: render.js is the film, index.html plays it, video.js writes media/intro.mp4 and media/intro.gif, shots.js prints stills.",
+  "type": "commonjs",
+  "dependencies": {
+    "canvas": "^3.2.3"
+  }
+}

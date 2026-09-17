@@ -1,0 +1,4 @@
+.tmp/
+.claude/
+node_modules/
+*.tgz

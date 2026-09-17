@@ -1,0 +1,31 @@
+# usage pin: the checker counts unevaluated source syntax. Ty(z)
+# forces the shared argument while checking the annotation; the wnf
+# machine must not write cells into the source, or consume(t)'s
+# occurrence of t vanishes and the double consume passes (the audit's
+# d5 witness: accepted or rejected by evaluation order).
+type One is Data:
+  One{}
+type Res is Type:
+  Res{f: One -> One}
+type Box is Type:
+  Box{a: One, t: Res}
+
+law consume: Res -> One
+def consume(t): One{}
+
+law Ty: Box -> Type
+def Ty(x):
+  match x:
+    case Box{One{}, t}: Box
+
+law duplicate: Res -> Box
+def duplicate(t): (z => {z : Ty(z)})(Box{consume(t), t})
+
+#|Error:
+#|- expected : t
+#|- observed : t (consumed more than once)
+#|Location: duplicate
+#|21 | law duplicate: Res -> Box
+#|22>| def duplicate(t): (z => {z : Ty(z)})(Box{consume(t), t})
+#|23 |
+#|exit 1
