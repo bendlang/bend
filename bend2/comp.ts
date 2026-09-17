@@ -5054,7 +5054,14 @@ static void cube_run(Corpus H, bool gpu) {
 static Corpus corpus_setup(bool gpu, long threads, u64 bytes) {
   io_gpu     = gpu;
   KEEP_WORDS = gpu ? CHUNK : CAP_WORDS;
+#ifdef __ANDROID__
+  // Android arm64 may have only 39 address bits (512 GiB), so 8 TiB
+  // cannot fit even with MAP_NORESERVE. Reserve 2^37 bytes (128 GiB),
+  // leaving room for worker stacks, libraries and address randomization.
+  u64 dflt   = gpu ? gpu_span() : 1ull << 37;
+#else
   u64 dflt   = gpu ? gpu_span() : 1ull << 43;
+#endif
   u64 size   = (gpu && bytes != 0 ? bytes : dflt) & ~16383ull;
   u64 span = size / 8;
   u64 cap  = span > HEAP_OFF ? (span - HEAP_OFF) / (PAGE_LEN + 10) : 0;
