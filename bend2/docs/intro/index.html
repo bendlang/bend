@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Bend</title>
+<style>
+  body { margin:0; background:#e9e4db; display:flex; flex-direction:column;
+         align-items:center; font-family:Menlo,ui-monospace,monospace; color:#69665f; }
+  canvas { margin-top:12px; border-radius:10px; box-shadow:0 2px 14px rgba(0,0,0,.12); }
+  #bar { width:1280px; display:flex; gap:10px; align-items:center; font-size:12px; padding:8px 0; }
+  #seek { flex:1; }
+  #scenes { width:1280px; display:flex; gap:6px; flex-wrap:wrap; font-size:12px; }
+  #scenes button { background:#f2eee7; color:#69665f; border:1px solid #d9d4ca;
+                   border-radius:5px; padding:4px 9px; cursor:pointer; font:inherit; }
+  #scenes button.on { color:#8b83b5; border-color:#8b83b5; }
+</style>
+</head>
+<body>
+<canvas id="cv" width="1280" height="720"></canvas>
+<div id="bar">
+  <span id="tlab">0.0s</span>
+  <input id="seek" type="range" min="0" max="1" step="0.02" value="0">
+  <span>space = play/pause · ←/→ = ±1s · click a scene to jump</span>
+</div>
+<div id="scenes"></div>
+<script src="render.js"></script>
+<script>
+const cv = document.getElementById("cv");
+const ctx = cv.getContext("2d");
+{ const dpr = window.devicePixelRatio || 1;
+  cv.width = 1280*dpr; cv.height = 720*dpr; cv.style.width = "1280px";
+  cv.style.height = "720px"; ctx.scale(dpr, dpr); }
+setCtx(ctx);
+
+let t0 = performance.now()/1000, paused = false, tPause = 0;
+const seek = document.getElementById("seek"), tlab = document.getElementById("tlab");
+seek.max = DUR;
+function now() { return paused ? tPause : ((performance.now()/1000 - t0) % DUR); }
+function setT(t) { t = Math.max(0, Math.min(DUR - 0.01, t)); tPause = t; t0 = performance.now()/1000 - t; }
+const btns = SCENES.map(([name], i) => {
+  const b = document.createElement("button");
+  b.textContent = i + ". " + (name.length > 17 ? name.slice(0, 17) + "\u2026" : name);
+  b.title = T0[i].toFixed(1) + "s";
+  b.onclick = () => setT(T0[i] + 0.01);
+  document.getElementById("scenes").appendChild(b);
+  return b;
+});
+function frame() {
+  const t = now();
+  draw(t);
+  seek.value = t; tlab.textContent = t.toFixed(1) + "s / " + DUR + "s";
+  let cur = 0; while (cur < T0.length - 1 && t >= T0[cur + 1]) cur++;
+  btns.forEach((b, i) => b.className = i === cur ? "on" : "");
+  requestAnimationFrame(frame);
+}
+seek.addEventListener("input", () => setT(parseFloat(seek.value)));
+cv.addEventListener("click", () => { paused ? setT(tPause) : (tPause = now()); paused = !paused; });
+window.addEventListener("keydown", e => {
+  if (e.code === "Space") { e.preventDefault(); cv.click(); }
+  if (e.code === "ArrowRight") { e.preventDefault(); setT(now() + 1); }
+  if (e.code === "ArrowLeft")  { e.preventDefault(); setT(now() - 1); }
+});
+const hash = location.hash.match(/t=([\d.]+)/);
+if (hash) { paused = true; tPause = parseFloat(hash[1]); }
+frame();
+</script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+name: Bug
+description: Something in Bend did not work.
+labels: [bug]
+body:
+  - type: input
+    id: command
+    attributes:
+      label: What you did
+      description: The command you ran.
+      placeholder: bend main.bend -o main
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: What happened
+      description: Paste the output.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: file
+    attributes:
+      label: The file
+      description: The .bend file, if it is small.
+      render: python
+  - type: input
+    id: version
+    attributes:
+      label: bend --version
+      placeholder: bend 2.0.0
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: uname -sm
+      placeholder: Darwin arm64
+    validations:
+      required: true
+  - type: input
+    id: clang
+    attributes:
+      label: clang --version (the first line)
+      placeholder: Apple clang version 17.0.0 (clang-1700.6.3.2)

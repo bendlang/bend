@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Winning Is Impossible</title>
+<style>
+  :root {
+    --bg:    #0b0e14;
+    --panel: #11151f;
+    --line:  #1e2533;
+    --text:  #c9d4e3;
+    --dim:   #5d6b80;
+    --gold:  #ffd25e;
+    --cyan:  #59e3ff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 24px 12px;
+    gap: 14px;
+  }
+  h1 {
+    font-size: 28px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-shadow: 0 0 18px rgba(255, 210, 94, 0.35);
+  }
+  .tag { color: var(--dim); font-size: 13px; text-align: center; max-width: 560px; }
+  .tag b { color: var(--cyan); font-weight: normal; }
+  canvas {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+    max-width: 100%;
+    image-rendering: pixelated;
+  }
+  .hud {
+    display: flex;
+    gap: 24px;
+    font-size: 13px;
+    color: var(--dim);
+  }
+  .hud b { color: var(--text); font-weight: normal; }
+  #status { color: var(--cyan); }
+  .keys { color: var(--dim); font-size: 12px; }
+  .pad { display: none; gap: 8px; }
+  .pad button {
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font: inherit;
+    font-size: 18px;
+    width: 52px;
+    height: 44px;
+  }
+  .pad button:active { background: var(--line); }
+  @media (hover: none) { .pad { display: flex; } }
+  #toast {
+    position: fixed;
+    top: 18px;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 16px;
+    color: var(--gold);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  a { color: var(--dim); }
+  .foot { font-size: 11px; color: var(--dim); text-align: center; }
+</style>
+</head>
+<body>
+  <h1>WINNING IS IMPOSSIBLE</h1>
+  <div class="tag">
+    Step on the flag <b>&#9873;</b> to win. The map wraps around.
+    The room has only two walls. There is a catch: this game ships with a
+    <b>formal proof</b> that winning is impossible. Try anyway.
+  </div>
+  <canvas id="game"></canvas>
+  <div class="hud">
+    <span>moves <b id="moves">0</b></span>
+    <span id="status">STILL NOT WON</span>
+  </div>
+  <div class="keys">arrows / WASD to move</div>
+  <div class="pad">
+    <button data-act="Left">&#8592;</button>
+    <button data-act="Up">&#8593;</button>
+    <button data-act="Down">&#8595;</button>
+    <button data-act="Right">&#8594;</button>
+  </div>
+  <div id="toast"></div>
+  <div class="foot">
+    the rules run as compiled <a href="https://github.com/bendlang/bend">Bend</a> &middot;
+    the law is <a href="https://github.com/bendlang/bend/blob/main/demos/app_win_is_bug_2d/LAWS.bend">LAWS.bend</a> &middot;
+    <a href="https://github.com/bendlang/bend/tree/main/demos/app_win_is_bug_2d">source</a>
+  </div>
+<script type="module" src="./main.js"></script>
+</body>
+</html>

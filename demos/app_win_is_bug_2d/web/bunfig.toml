@@ -1,0 +1,4 @@
+preload = ["../../../bend2/main.ts"]
+
+[serve.static]
+plugins = ["../../../bend2/main.ts"]

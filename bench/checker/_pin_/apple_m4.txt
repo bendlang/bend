@@ -1,0 +1,8 @@
+# 2026-09-09 26de367b bun gates/perf.ts --pin
+| bench         | CHECKER  |
+|---------------|----------|
+| compute_1600  |   0.541s |
+| defs_12800    |   0.302s |
+| generics_3200 |   0.353s |
+| proofs_3200   |   0.811s |
+| trees_400     |   0.579s |

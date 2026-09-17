@@ -1,0 +1,6 @@
+# Bend is not in GitHub Linguist yet: render .bend with the Python
+# grammar (Bend is Python-shaped: def/match/case/#), keep it out of
+# the language stats bar.
+*.bend linguist-language=Python linguist-detectable=false
+bench/checker/** linguist-vendored
+*.lean linguist-detectable=false

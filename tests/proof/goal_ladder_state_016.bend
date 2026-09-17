@@ -1,0 +1,71 @@
+# goal ladder, len_app nil-arm state 0: RHS add(Z{}, len(ys)) reduces.
+# ported from bend3: the ladder rides the ported bend development, so
+# the pinned page is bend's own goal at the same proof state
+import Base
+
+type N is Data:
+  Z{}
+  S{p: N}
+
+type Lst is Data:
+  LNil{}
+  LCon{h: U32, t: Lst}
+
+law add:
+  for a: N
+  for b: N
+  N
+
+def add(a, b):
+  match a:
+    case Z{}:
+      b
+    case S{p}:
+      S{add(p, b)}
+
+law len:
+  for xs: Lst
+  N
+
+def len(xs):
+  match xs:
+    case LNil{}:
+      Z{}
+    case LCon{h, t}:
+      S{len(t)}
+
+law app:
+  for xs: Lst
+  for ys: Lst
+  Lst
+
+def app(xs, ys):
+  match xs:
+    case LNil{}:
+      ys
+    case LCon{h, t}:
+      LCon{h, app(t, ys)}
+
+law len_app:
+  for xs: Lst
+  for ys: Lst
+  {len(app(xs, ys)) == add(len(xs), len(ys)) : N}
+
+def len_app(xs, ys):
+  match xs:
+    case LNil{}:
+      Type
+    case LCon{h, t}:
+      %len_app(t, ys) : {S{len(app(t, ys))} == S{_} : N}
+      {==}
+
+#|Error:
+#|- expected : {len(ys) == len(ys) : N}
+#|- observed : Type
+#|Context:
+#|- ys : Lst
+#|Location: len_app
+#|56 |     case LNil{}:
+#|57>|       Type
+#|58 |     case LCon{h, t}:
+#|exit 1
