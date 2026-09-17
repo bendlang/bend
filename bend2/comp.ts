@@ -700,7 +700,7 @@ function term_open(t: Of<"Lam"> | HLet): { ps: Probe[]; b: HTerm } {
 // A let opened ahead: its body `b` over `ps` is never rebuilt.
 function let_open(ps: Probe[], vs: HTerm[], b: HTerm): HLet {
   const l = Bend.Let(ps.map((p) => p.k), ps.map(() => 0), vs,
-    () => die("a pre-opened let"));
+    () => die("a pre-opened let")) as HLet;
   OPENS.set(l, { ps, b });
   return l;
 }
@@ -754,7 +754,7 @@ function term_eta(book: Bend.Book, t: HTerm, T: HTerm, n: number): HTerm {
     return t;
   }
   const all = ty_all(book, T) ?? die("an eta past its type");
-  return Bend.Ann(Bend.Lam("x", 0, (y) =>
+  return Bend.Ann(Bend.Lam("x", 0, (y: HTerm) =>
     term_eta(book, Bend.App(t, y), all.B(y), n - 1)), T);
 }
 
@@ -1224,11 +1224,17 @@ function show_main(book: Bend.Book): Show | null {
     if (got !== undefined) {
       return got;
     }
+    if (t.$ === "Eql") {
+      const id = show.cells.push(5) - 1;
+      ids.set(key, id);
+      return id;
+    }
     const adt = ty_adt(book, t);
     const tld = adt === null ? undefined : book.tlds[adt.k];
-    const kind = t.$ === "Eql" ? 5 : tld?.$ !== "ADT" || adt!.k === "IO.OP"
-      ? refuse()
-      : { U32: 0, F32: 1, Nat: 2, Char: 3, String: 4, Array: 6 }[adt!.k]
+    if (adt === null || adt.k === "IO.OP" || tld?.$ !== "ADT") {
+      return refuse();
+    }
+    const kind = { U32: 0, F32: 1, Nat: 2, Char: 3, String: 4, Array: 6 }[adt.k]
       ?? 7;
     const id = show.cells.push(kind) - 1;
     ids.set(key, id);
@@ -1236,8 +1242,8 @@ function show_main(book: Bend.Book): Show | null {
     if (kind === 3) {
       show.cells.push(Number(box));
     } else if (kind === 6) {
-      const el = lay_of(book, adt!.x[0]);
-      refs.push([show.cells.push(0, lay_arr(el).lgs) - 2, adt!.x[0], el]);
+      const el = lay_of(book, adt.x[0]);
+      refs.push([show.cells.push(0, lay_arr(el).lgs) - 2, adt.x[0], el]);
     } else if (kind === 7) {
       show.cells.push(Number(box), tld.c.length);
       for (const [j, c] of tld.c.entries()) {
