@@ -158,7 +158,7 @@ const BOX: Lay = { ks: ["box"], arms: null };
 
 const W64: Lay = { ks: ["w64"], arms: null };
 
-const WORDS: Record<string, Lay> = { U32: W32, F32: W32, Nat: W64 };
+const WORDS: Record<string, Lay> = { U32: W32, F32: W32, F64: W64, Nat: W64 };
 
 const ERRS = ("|*|*|out of memory: run again with a bigger span, as in"
   + " --gpu 8GB|a function the device does not hold|a Nat past the"
@@ -250,6 +250,54 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     C:    "f32_read(e, $0)",
     call: true,
     JS:   "f32_read($0)",
+  },
+  ...tpl_ops("f64_", "add:+ sub:- mul:* div:/",
+    "f64_rewrap(f64_unbox($0) $o f64_unbox($1))", "($0 $o $1)"),
+  f64_neg: {
+    C:  "f64_rewrap(-f64_unbox($0))",
+    JS: "(-$0)",
+  },
+  ...tpl_ops("f64_", CMPS, "((u64)(f64_unbox($0) $o f64_unbox($1)))",
+    "($0 $o $1)"),
+  ...tpl_ops("f64_", "sqrt exp log log2 log10 sin cos tan asin acos atan"
+    + " sinh cosh tanh floor ceil trunc abs:fabs:abs",
+    "f64_rewrap((double)$o(f64_unbox($0)))", "Math.$o($0)"),
+  ...tpl_ops("f64_", "pow atan2",
+    "f64_rewrap((double)$o(f64_unbox($0), f64_unbox($1)))",
+    "Math.$o($0, $1)"),
+  f64_mod: {
+    C:  "f64_rewrap(fmod(f64_unbox($0), f64_unbox($1)))",
+    JS: "($0 % $1)",
+  },
+  f64_to_u32: {
+    C:  "f64_to_u32($0)",
+    JS: "($0 >= 1 && $0 < 4294967296 ? Math.floor($0) : 0)",
+  },
+  f64_bits: {
+    C:  "$0",
+    JS: "f64_bits($0)",
+  },
+  f64_show: {
+    C:    "f64_show(e, $0)",
+    call: true,
+    JS:   "f64_show($0)",
+  },
+  f64_read: {
+    C:    "f64_read(e, $0)",
+    call: true,
+    JS:   "f64_read($0)",
+  },
+  u32_to_f64: {
+    C:  "f64_rewrap((double)(u32)($0))",
+    JS: "($0)",
+  },
+  f32_to_f64: {
+    C:  "f64_rewrap((double)f32_unbox($0))",
+    JS: "($0)",
+  },
+  f64_to_f32: {
+    C:  "f32_rewrap((f32)f64_unbox($0))",
+    JS: "Math.fround($0)",
   },
   nat_add: {
     C:  "nat_chk(e, $0 + $1)",
@@ -348,6 +396,14 @@ const OPTIMIZED: Record<Bend.Name, Native> = Object.setPrototypeOf({
       F32: ["u32_to_word(f32_bits($0))"],
     },
   },
+  F64: {
+    intr: {
+      F64: "f64_from_bits(word_to_u64($0))",
+    },
+    elim: {
+      F64: ["u64_to_word(f64_bits($0))"],
+    },
+  },
   Char: {
     intr: {
       Chr: ([c]: string[]) => {
@@ -429,6 +485,25 @@ INLINE U32 f32_to_u32(U32 a) {
   return v >= 0.0f && v < 4294967296.0f ? (u32)v : 0;
 }
 
+#ifndef __METAL_VERSION__
+
+INLINE f64 f64_unbox(u64 x) {
+  union { u64 u; f64 f; } p = { x };
+  return p.f;
+}
+
+INLINE u64 f64_rewrap(f64 x) {
+  union { f64 f; u64 u; } p = { x };
+  return p.u;
+}
+
+INLINE U32 f64_to_u32(U32 a) {
+  f64 v = f64_unbox(a);
+  return v >= 0.0 && v < 4294967296.0 ? (u32)v : 0;
+}
+
+#endif
+
 INLINE Nat nat_chk(Env e, Nat n) {
   if (n > NAT_IMM) {
     err_post(e.mem, ERR_NATS);
@@ -446,10 +521,15 @@ INLINE Nat nat_mul(Env e, Nat a, Nat b) {
 #define f32_show(e, x) (err_post(e.mem, ERR_FIDS), 0)
 #define f32_read(e, s) (err_post(e.mem, ERR_FIDS), 0)
 
+#define f64_show(e, x) (err_post(e.mem, ERR_FIDS), 0)
+#define f64_read(e, s) (err_post(e.mem, ERR_FIDS), 0)
+
 #else
 
 static Term f32_show(Env e, Term x);
 static Term f32_read(Env e, Term s);
+static Term f64_show(Env e, Term x);
+static Term f64_read(Env e, Term s);
 
 #endif
 `.slice(1),
@@ -495,6 +575,52 @@ static Term f32_read(Env e, Term s) {
   char* end;
   f32 v = strtof(text, &end);
   Term out = n > 0 && *end == 0 ? io_box(e, CID_SOME, f32_rewrap(v), 0)
+    : term_pak(CID_NONE, 0);
+  free(text);
+  return out;
+}
+
+static int f64_text(char* buf, f64 v) {
+  int n = 0;
+  int p = 0;
+  if (v != v) {
+    return sprintf(buf, "nan");
+  }
+  for (; p < 17; p += 1) {
+    n = snprintf(buf, 40, "%.*e", p, (double)v);
+    if (strtod(buf, NULL) == v) {
+      break;
+    }
+  }
+  char* ep = strchr(buf, 'e');
+  if (ep == NULL) {
+    return n;
+  }
+  int ex = atoi(ep + 1);
+  if (ex >= 21 || ex <= -7) {
+    n = (int)(ep - buf) + sprintf(ep, "e%c%d", ex < 0 ? '-' : '+', abs(ex));
+  } else if (ex <= p) {
+    n = snprintf(buf, 40, "%.*f", p - ex, (double)v);
+  } else {
+    int s = *buf == '-';
+    memmove(buf + s + 1, buf + s + 2, p);
+    memset(buf + s + 1 + p, '0', ex - p);
+    n = s + 1 + ex;
+  }
+  return n;
+}
+
+static Term f64_show(Env e, Term x) {
+  char buf[48];
+  return io_str(e, buf, f64_text(buf, f64_unbox(x)));
+}
+
+static Term f64_read(Env e, Term s) {
+  u64 n = 0;
+  char* text = io_cstr(e, s, &n);
+  char* end;
+  f64 v = strtod(text, &end);
+  Term out = n > 0 && *end == 0 ? io_box(e, CID_SOME, f64_rewrap(v), 0)
     : term_pak(CID_NONE, 0);
   free(text);
   return out;
@@ -562,6 +688,56 @@ function f32_read(s) {
   const re = /^\s*[+-]?((\d+\.?\d*|\.\d+)(e[+-]?\d+)?|inf(inity)?|nan)$/i;
   const v = Number(s.replace(/inf\w*/i, "Infinity"));
   return re.test(s) ? {$: "Some", value: Math.fround(v)} : {$: "None"};
+}
+
+function word_to_u64(w) {
+  let x = 0n;
+  for (let i = 0; w.$ === "WCon"; i++) {
+    if (w.head) { x |= 1n << BigInt(i); }
+    w = w.tail;
+  }
+  return x;
+}
+
+function u64_to_word(x) {
+  let w = {$: "WNil"};
+  for (let i = 63; i >= 0; i--) {
+    w = {$: "WCon", head: ((x >> BigInt(i)) & 1n) === 1n, tail: w};
+  }
+  return w;
+}
+
+function f64_bits(x) {
+  const d = new DataView(new ArrayBuffer(8));
+  d.setFloat64(0, x);
+  return d.getBigUint64(0);
+}
+
+function f64_from_bits(u) {
+  const d = new DataView(new ArrayBuffer(8));
+  d.setBigUint64(0, u);
+  return d.getFloat64(0);
+}
+
+function f64_show(x) {
+  if (x !== x) {
+    return "nan";
+  }
+  if (!Number.isFinite(x) || Object.is(x, -0)) {
+    return x < 0 ? "-inf"
+      : x === 0 ? "-0" : "inf";
+  }
+  let s = "x";
+  for (let p = 1; p <= 17 && Number(s) !== x; p += 1) {
+    s = String(Number(x.toExponential(p - 1)));
+  }
+  return s;
+}
+
+function f64_read(s) {
+  const re = /^\s*[+-]?((\d+\.?\d*|\.\d+)(e[+-]?\d+)?|inf(inity)?|nan)$/i;
+  const v = Number(s.replace(/inf\w*/i, "Infinity"));
+  return re.test(s) ? {$: "Some", value: v} : {$: "None"};
 }
 
 function char_new(code) {
@@ -3310,17 +3486,21 @@ typedef ulong u64;
 typedef uint  u32;
 typedef uchar u8;
 typedef float f32;
+// Metal Shading Language has no fp64: F64 is a host and CUDA type, and the
+// helpers below are guarded so an F32 program compiles for Metal unchanged
 #elif defined(__CUDACC_RTC__)
 typedef unsigned long long u64;
 typedef long long          int64_t;
 typedef unsigned int       u32;
 typedef unsigned char      u8;
 typedef float              f32;
+typedef double             f64;
 #else
 typedef uint64_t u64;
 typedef uint32_t u32;
 typedef uint8_t  u8;
 typedef float    f32;
+typedef double   f64;
 #endif
 
 typedef u64 Loc;

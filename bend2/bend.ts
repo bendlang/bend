@@ -69,6 +69,7 @@
 // Nat    | NUMBER "n" ("+" T)?        | Succ{..Zero{}}, Succ{..T}
 // U32    | NUMBER                     | U32{WCon{b, ..WNil{}}}
 // F32    | NUMBER "." NUMBER [EXP]    | F32{WCon{b, ..WNil{}}}
+// F64    | NUMBER ["." NUMBER] [EXP] "d" | F64{WCon{b, ..WNil{}}}
 // Chr    | "'" CHAR "'"               | Chr{U32}
 // Str    | "\"" [CHAR] "\""           | SCon{Chr, ..SNil{}}
 // Index  | x "[" i "]" ("<-" v)?      | Array.get(U32, x, i), ..set(..)
@@ -1182,6 +1183,22 @@ export function f32_from_bits(n: U32): number {
   return F32_VIEW.getFloat32(0);
 }
 
+const F64_VIEW = new DataView(new ArrayBuffer(8));
+
+export function f64_to_bits(v: number): { hi: U32; lo: U32 } {
+  F64_VIEW.setFloat64(0, v);
+  return { hi: F64_VIEW.getUint32(0), lo: F64_VIEW.getUint32(4) };
+}
+
+export function word_to_term64(hi: U32, lo: U32, s?: Span): LTerm {
+  let out: LTerm = Ctr("WNil", [], s);
+  for (let i = 63; i >= 0; i--) {
+    const bit = i >= 32 ? (hi >>> (i - 32)) & 1 : (lo >>> i) & 1;
+    out = Ctr("WCon", [Ctr(bit ? "True" : "False", [], s), out], s);
+  }
+  return out;
+}
+
 // The shortest decimal that reads back to the same f32, as a literal (a
 // point before an e); nan, inf and -inf have none and print as such.
 function f32_show(x: number): string {
@@ -2205,7 +2222,7 @@ export function parse_term_tup(p: Parse, beg: Loc, n0: number): LTerm {
   return out;
 }
 
-const NUMBER = /(\d+)(n|\.\d+([eE][+-]?\d+)?)?/y;
+const NUMBER = /(\d+)(n|d|\.\d+([eE][+-]?\d+)?d?|[eE][+-]?\d+d)?/y;
 
 export function parse_term_num(p: Parse): LTerm {
   const beg = p.pos;
@@ -2214,11 +2231,19 @@ export function parse_term_num(p: Parse): LTerm {
   const s = m[1];
   p.pos += m[0].length;
   if (m[2] !== undefined && m[2] !== "n") {
+    const spn = parse_span(p, beg);
+    if (m[2] === "d" || m[2].endsWith("d")) {
+      const v = Number(m[0].slice(0, -1));
+      if (!isFinite(v)) {
+        parse_fail(p, "a float literal with a finite f64 value (got " + m[0] + ")");
+      }
+      const b = f64_to_bits(v);
+      return Ctr("F64", [word_to_term64(b.hi, b.lo, spn)], spn);
+    }
     const v = Math.fround(Number(m[0]));
     if (!isFinite(v)) {
       parse_fail(p, "a float literal with a finite f32 value (got " + m[0] + ")");
     }
-    const spn = parse_span(p, beg);
     return Ctr("F32", [word_to_term(f32_to_bits(v), spn)], spn);
   }
   if (m[2] === undefined) {

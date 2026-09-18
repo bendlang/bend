@@ -57,6 +57,9 @@ type U32 is Data:
 type F32 is Data:
   F32{data: Word(32n)}
 
+type F64 is Data:
+  F64{data: Word(64n)}
+
 type Char is Data:
   Chr{code: U32}
 
@@ -1450,6 +1453,10 @@ law U32.to_f32:
   for a: U32
   F32
 
+law U32.to_f64:
+  for a: U32
+  F64
+
 law F32.to_u32:
   for a: F32
   U32
@@ -1636,6 +1643,204 @@ def F32.from_nat(n: Nat) -> F32:
 
 def F32.to_nat(a: F32) -> Nat:
   U32.to_nat(F32.to_u32(a))
+
+# F64
+# ---
+
+law F32.to_f64:
+  for a: F32
+  F64
+
+law F64.to_f32:
+  for a: F64
+  F32
+
+law F64.to_u32:
+  for a: F64
+  U32
+
+law F64.add:
+  for a: F64
+  for b: F64
+  F64
+
+law F64.sub:
+  for a: F64
+  for b: F64
+  F64
+
+law F64.mul:
+  for a: F64
+  for b: F64
+  F64
+
+law F64.div:
+  for a: F64
+  for b: F64
+  F64
+
+law F64.mod:
+  for a: F64
+  for b: F64
+  F64
+
+law F64.pow:
+  for a: F64
+  for b: F64
+  F64
+
+law F64.atan2:
+  for a: F64
+  for b: F64
+  F64
+
+law F64.neg:
+  for a: F64
+  F64
+
+law F64.abs:
+  for a: F64
+  F64
+
+law F64.sqrt:
+  for a: F64
+  F64
+
+law F64.exp:
+  for a: F64
+  F64
+
+law F64.log:
+  for a: F64
+  F64
+
+law F64.log2:
+  for a: F64
+  F64
+
+law F64.log10:
+  for a: F64
+  F64
+
+law F64.sin:
+  for a: F64
+  F64
+
+law F64.cos:
+  for a: F64
+  F64
+
+law F64.tan:
+  for a: F64
+  F64
+
+law F64.asin:
+  for a: F64
+  F64
+
+law F64.acos:
+  for a: F64
+  F64
+
+law F64.atan:
+  for a: F64
+  F64
+
+law F64.sinh:
+  for a: F64
+  F64
+
+law F64.cosh:
+  for a: F64
+  F64
+
+law F64.tanh:
+  for a: F64
+  F64
+
+law F64.floor:
+  for a: F64
+  F64
+
+law F64.ceil:
+  for a: F64
+  F64
+
+law F64.trunc:
+  for a: F64
+  F64
+
+law F64.is_eq:
+  for a: F64
+  for b: F64
+  Bool
+
+law F64.is_ne:
+  for a: F64
+  for b: F64
+  Bool
+
+law F64.is_lt:
+  for a: F64
+  for b: F64
+  Bool
+
+law F64.is_le:
+  for a: F64
+  for b: F64
+  Bool
+
+law F64.is_gt:
+  for a: F64
+  for b: F64
+  Bool
+
+law F64.is_ge:
+  for a: F64
+  for b: F64
+  Bool
+
+law F64.show:
+  for +a: F64
+  String
+
+law F64.bits:
+  for a: F64
+  Nat
+
+law F64.read:
+  for s: String
+  Maybe<&2, F64>
+
+def F64.min(+a: F64, +b: F64) -> F64:
+  Bool.pick(F64, F64.is_lt(a, b), a, b)
+
+def F64.max(+a: F64, +b: F64) -> F64:
+  Bool.pick(F64, F64.is_lt(a, b), b, a)
+
+def F64.clamp(x: F64, lo: F64, hi: F64) -> F64:
+  F64.min(F64.max(x, lo), hi)
+
+def F64.lerp(+a: F64, b: F64, t: F64) -> F64:
+  F64.add(a, F64.mul(F64.sub(b, a), t))
+
+def F64.square(+a: F64) -> F64:
+  F64.mul(a, a)
+
+def F64.hypot(+x: F64, +y: F64) -> F64:
+  F64.sqrt(F64.add(F64.mul(x, x), F64.mul(y, y)))
+
+def F64.round(a: F64) -> F64:
+  F64.floor(F64.add(a, 0.5d))
+
+def F64.pi() -> F64:
+  3.141592653589793d
+
+def F64.from_nat(n: Nat) -> F64:
+  U32.to_f64(U32.from_nat(n))
+
+def F64.to_nat(a: F64) -> Nat:
+  U32.to_nat(F64.to_u32(a))
 
 # Char
 # ----
