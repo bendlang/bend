@@ -113,6 +113,42 @@ With `LAWS.bend`, *"make no mistakes"* becomes enforceable.
 curl -fsSL https://bend-lang.com/install.sh | sh
 ```
 
+Or, with Nix:
+
+```bash
+nix run github:bendlang/bend
+```
+
+The default package compiles GPU-marked programs for CPU execution. NixOS and
+Home Manager users can enable Bend, including optional NVIDIA GPU support,
+through the provided module:
+
+```nix
+{ inputs, pkgs, ... }:
+{
+  imports = [ inputs.bend.nixosModules.default ];
+
+  programs.bend = {
+    enable = true;
+
+    # Defaults to pkgs.config.cudaSupport. CUDA is supported only on Linux and
+    # requires unfree packages.
+    cuda = {
+      enable = true;
+      packages = pkgs.cudaPackages_12;
+    };
+  };
+}
+```
+
+CUDA packages use NVIDIA's unfree license, so the supplied `pkgs` must permit
+unfree packages. Generated executables use the host NVIDIA driver at runtime.
+Home Manager configurations can import `inputs.bend.homeModules.default` and
+use the same `programs.bend` options.
+
+For direct package construction, `lib.mkBend` returns the evaluated options and
+package, while `lib.mkBendPackage` returns the package directly.
+
 ### 2. Tell your agent to use Bend:
 
 Add this to your `AGENTS.md`:
