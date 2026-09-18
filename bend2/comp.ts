@@ -4750,7 +4750,8 @@ static const char* gpu_path(void) {
 #ifdef __APPLE__
   _NSGetExecutablePath(path, &n);
 #else
-  path[readlink("/proc/self/exe", path, n)] = 0;
+  ssize_t got = readlink("/proc/self/exe", path, n);
+  path[got < 0 ? 0 : got] = 0;
 #endif
   return strcat(path, ".gpu");
 }
