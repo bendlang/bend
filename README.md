@@ -113,7 +113,8 @@ With `LAWS.bend`, *"make no mistakes"* becomes enforceable.
 curl -fsSL https://bend-lang.com/install.sh | sh
 ```
 
-Or, with Nix:
+<details>
+<summary>Or with Nix</summary>
 
 ```bash
 nix run github:bendlang/bend
@@ -148,6 +149,8 @@ use the same `programs.bend` options.
 
 For direct package construction, `lib.mkBend` returns the evaluated options and
 package, while `lib.mkBendPackage` returns the package directly.
+
+</details>
 
 ### 2. Tell your agent to use Bend:
 
