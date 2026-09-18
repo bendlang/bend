@@ -370,6 +370,27 @@ arrive on; `IO.join` waits for it. Underneath are `IO.spawn`, `Chan.new`,
 `Chan.send`, `Chan.recv` and `Chan.close`. The program ends when every
 computation is done, or reports a deadlock when the remaining ones all wait.
 
+For binary files, `File.read_bytes(file, max)` reads from the current position
+and `File.read_at(file, offset, max)` reads at an absolute byte offset without
+moving that position. Both return `File & Result<..., List<&2, U32>>`, with
+one value in 0..255 per byte, without UTF-8 decoding. `read_at` performs one
+read (retrying interruptions), requests at most `min(max, 2147483647)` bytes,
+and may return fewer; at or past EOF it returns an empty list. A zero maximum
+returns an empty list without a system call. Its offset is
+a `Nat`, so offsets above 4 GiB are supported. A non-seekable file fails with
+the operating system's error.
+
+`File.size(file)` returns `File & Result<..., Nat>` with the size in bytes
+reported by the operating system, without moving the position. A size outside
+`Nat`'s range, 0..2^48-1, fails with `EOVERFLOW`.
+`File.write_bytes(file, data)` writes a `List<&2, U32>` at the current position,
+preserving the bytes exactly, and returns `File & Result<..., Unit>`. It
+validates the whole list before writing: a value above 255 fails with `EINVAL`
+without writing a prefix. An empty list succeeds without writing. Short writes
+and interruptions are retried; another OS error can leave a written prefix.
+All three operations return the file handle on both success and failure.
+Use `File.read` and `File.write` for UTF-8 text instead.
+
 Every effect in Base is a def whose body is `import "./x.js"` plus a `.c` twin,
 implemented by a host function named after the def, lowercased, dots to
 underscores. You can add your own effects the same way. Only the event loop runs

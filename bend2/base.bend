@@ -261,10 +261,27 @@ def File.read_bytes(file: File, max: U32) ->
   import "./effs/file_read_bytes.c"
   import "./effs/file_read_bytes.js"
 
+# Raw bytes at an absolute offset, without moving the file position.
+def File.read_at(file: File, offset: Nat, max: U32) ->
+  IO(File & Result<&1, &1, U32 & String, List<&2, U32>>):
+  import "./effs/file_read_at.c"
+  import "./effs/file_read_at.js"
+
+def File.size(file: File) ->
+  IO(File & Result<&1, &1, U32 & String, Nat>):
+  import "./effs/file_size.c"
+  import "./effs/file_size.js"
+
 def File.write(file: File, data: String) ->
   IO(File & Result<&1, &1, U32 & String, Unit>):
   import "./effs/file_write.c"
   import "./effs/file_write.js"
+
+# Reject values outside 0..255 before writing any bytes.
+def File.write_bytes(file: File, data: List<&2, U32>) ->
+  IO(File & Result<&1, &1, U32 & String, Unit>):
+  import "./effs/file_write_bytes.c"
+  import "./effs/file_write_bytes.js"
 
 def File.close(file: File) -> IO(Unit):
   import "./effs/file_close.c"

@@ -34,7 +34,7 @@ allow(".gitignore", 100);
 allow("AGENTS.md", 2000);
 allow("README.md", 3000);
 allow("LICENSE", 4000);
-allow("bend2/base.bend", 24000);
+allow("bend2/base.bend", 24200);
 allow("bend2/bend.lean", 400000);
 allow("bend2/bend.ts", 41000);
 allow("bend2/comp.ts", 61000);
