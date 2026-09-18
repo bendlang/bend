@@ -13,6 +13,8 @@
 import * as child from "node:child_process";
 import * as path from "node:path";
 
+import * as lib from "./_lib";
+
 const CAP = 30_000;
 
 const kids = ["repo", "test", "perf", "ping"].map((gate) => [gate, child.spawn(
@@ -22,15 +24,27 @@ const kids = ["repo", "test", "perf", "ping"].map((gate) => [gate, child.spawn(
 // A gate that passes speaks in one line (its verdict); a gate that fails
 // speaks in full, so a crash (a node pool run dry, an uncaught error) shows
 // its message and not Bun's version banner, which is the last line it prints.
-const runs = kids.map(([gate, kid]) => new Promise<boolean>((done) => {
+// A gate that could not run leaves with lib.SKIP: it is reported as such and
+// never counted as a pass, so a partial run cannot read as a green one.
+const runs = kids.map(([gate, kid]) => new Promise<number>((done) => {
   let out = "";
   let err = "";
   kid.stdout.on("data", (d: Buffer) => { out += d.toString(); });
   kid.stderr.on("data", (d: Buffer) => { err += d.toString(); });
   kid.on("close", (code) => {
     const last = out.trim().split("\n").pop() ?? "";
-    console.log(gate.padEnd(5) + " " + (code === 0 ? last : (last + "\n" + err).trim()));
-    done(code === 0);
+    // A skip is a claim, and a claim needs evidence. The exit code alone is not
+    // proof: any crash that happens to leave 2 would look like one, and
+    // BEND_ALLOW_SKIP would then absorb it. So a skip must leave 2 AND say
+    // "SKIP:" as its last word AND have written nothing to stderr -- verdict_skip
+    // does exactly that and nothing else. A gate that skipped but also
+    // complained fails closed, which is the safe direction. Anything stronger
+    // wants a verdict channel of its own rather than the output stream.
+    const state = code === 0 ? 0
+      : code === lib.SKIP && err.trim() === "" && last.startsWith("SKIP:")
+        ? lib.SKIP : 1;
+    console.log(gate.padEnd(5) + " " + (state === 0 ? last : (last + "\n" + err).trim()));
+    done(state);
   });
 }));
 
@@ -44,4 +58,14 @@ const bomb = setTimeout(() => {
 
 const oks = await Promise.all(runs);
 clearTimeout(bomb);
-process.exit(oks.every((ok) => ok) ? 0 : 1);
+const skipped = kids.filter((_, i) => oks[i] === lib.SKIP).map(([g]) => g);
+if (skipped.length > 0) {
+  // An affirmative value only: BEND_ALLOW_SKIP=0, =false or = (empty) must mean
+  // off, so a caller cannot opt in by accident while meaning to opt out.
+  const allow = /^(1|true|yes)$/i.test(process.env.BEND_ALLOW_SKIP ?? "");
+  console.log((allow ? "SKIPPED: " : "FAIL: ") + skipped.join(", ")
+    + " did not run" + (allow ? " (BEND_ALLOW_SKIP is set)"
+      : "; set BEND_ALLOW_SKIP=1 to accept a partial run"));
+  process.exit(allow && oks.every((s) => s !== 1) ? 0 : 1);
+}
+process.exit(oks.every((ok) => ok === 0) ? 0 : 1);

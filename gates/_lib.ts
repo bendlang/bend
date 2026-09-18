@@ -200,7 +200,17 @@ export async function node_pool(nodes: number[], jobs: Job[]): Promise<void> {
 // Verdict
 // =======
 
+// A gate that could not run says so and leaves with SKIP, a status of its own:
+// "nothing failed" and "nothing was checked" must not print the same line. A
+// gate that ran lends its own exit code, 0 for a pass and 1 for a fail.
+export const SKIP = 2;
+
 export function verdict(pass: number, total: number): never {
   console.log("PASS: " + String(pass) + " / " + String(total));
   process.exit(pass === total ? 0 : 1);
+}
+
+export function verdict_skip(reason: string): never {
+  console.log("SKIP: " + reason);
+  process.exit(SKIP);
 }

@@ -44,8 +44,7 @@ import * as lib from "./_lib";
 // =========
 
 if (!fs.existsSync(path.join(lib.SITE, "front", "install.sh"))) {
-  console.log("SKIP the site repo is not at " + lib.SITE + " (set SITE_REPO)");
-  lib.verdict(0, 0);
+  lib.verdict_skip("the site repo is not at " + lib.SITE + " (set SITE_REPO)");
 }
 
 const PORT   = 20000 + Math.floor(Math.random() * 40000);
