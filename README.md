@@ -107,6 +107,39 @@ With `LAWS.bend`, *"make no mistakes"* becomes enforceable.
 
 # Get Started
 
+### Browser playground
+
+With [Bun](https://bun.sh) installed, run from a source checkout:
+
+```sh
+bun bend2/main.ts
+# or choose a port:
+bun bend2/main.ts playground --port 3000
+```
+
+Open the printed localhost URL and write Bend on the left. Four actions run
+entirely in your browser:
+
+- **Run interpreted** evaluates a pure `main` with Bend’s kernel interpreter.
+  IO programs need the JavaScript runtime; this action explains that in Results.
+- **Compile to JS and run** generates JavaScript and executes it in a fresh
+  browser worker (also Cmd/Ctrl+Enter).
+- **Compile to JS** generates JavaScript source without executing it.
+- **Compile to C** generates C source without executing it or generating JS.
+
+The **Results** tab shows execution output and errors; **Compiled source** shows
+the generated code. The server only serves assets. You can cancel any action
+and copy or download either tab. Your last program is saved in your browser.
+Each action stops after 30 seconds; execution output is limited to 1 MiB.
+
+The playground includes `import Base` and Base’s effect sources. Other local
+files and hub imports are not available. Browser execution supports pure
+results, standard output/error, timers, fibers, and channels. Effects requiring
+native files, sockets, or system calls report a runtime error. C source can be
+downloaded and built with a C compiler; it is not executed in the browser.
+Existing CLI commands such as `bun bend2/main.ts file.bend -o file.js` continue
+to work.
+
 ### 1. Install:
 
 ```bash

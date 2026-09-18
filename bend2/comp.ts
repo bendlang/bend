@@ -6163,7 +6163,8 @@ function io_park_on(fd, out, k, more) {
   globalThis.BEND_IO.waits.push({ fd: fd, out: out, k: k, more: more });
 }
 
-function io_run(m) {
+// Yield parked IO to the host: native code polls, browsers await timers.
+function* io_steps(m) {
   const io = { runs: [], live: 0, waits: [] };
   globalThis.BEND_IO = io;
   try {
@@ -6177,7 +6178,7 @@ function io_run(m) {
           io_errs("bend: deadlock: every computation waits on a channel");
           return 1;
         }
-        io_wait(io);
+        yield io;
         continue;
       }
       const s = io.runs.shift();
@@ -6219,6 +6220,14 @@ function io_run(m) {
     }
     io_errs("bend: ${ERRS[2]}");
     return 1;
+  }
+}
+
+function io_run(m) {
+  const steps = io_steps(m);
+  for (let step = steps.next();; step = steps.next()) {
+    if (step.done) return step.value;
+    io_wait(step.value);
   }
 }
 

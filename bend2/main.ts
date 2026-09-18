@@ -34,6 +34,8 @@ const VERSION = "2.0.5";
 const HELP = `Bend ${VERSION}: check, run, build and publish Bend programs.
 
 usage:
+  bend                       open the local browser playground
+  bend playground [--port N] serve the playground (default: 3000)
   bend <file.bend>            check the file, then run main
   bend <file.bend> -o <out>   build a binary; <out>.c emits C, <out>.js JS
   bend <file.bend> --checkup  check and run each import alone
@@ -83,6 +85,15 @@ const PLUGIN: BunPlugin = {
 
 async function cli(): Promise<void> {
   const args = process.argv.slice(2);
+  if (args.length === 0 || args[0] === "playground") {
+    if (args.length > 1 && (args.length !== 3 || args[1] !== "--port"
+      || !/^\d+$/.test(args[2]) || Number(args[2]) > 65535)) {
+      cli_fail("usage: bend playground [--port 0..65535]");
+    }
+    const { serve } = await import("./play/server.ts");
+    await serve(args.length === 3 ? Number(args[2]) : 3000);
+    return;
+  }
   if (args[0] === "--version" && args.length === 1) {
     return cli_say(1, "bend " + VERSION + "\n");
   }

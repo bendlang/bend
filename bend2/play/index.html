@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f5f0">
+  <title>Bend Playground</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23185747'/%3E%3Cpath d='M10 7v18h7a6 6 0 0 0 0-12h-7m0 6h7' fill='none' stroke='%23fff' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/client.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Bend playground home"><span class="brand-mark">b</span>bend<span class="brand-divider">/</span><span class="brand-page">playground</span></a>
+    <nav><a href="https://bend-lang.com" target="_blank" rel="noreferrer">About Bend <span aria-hidden="true">↗</span></a><a href="https://github.com/bendlang/bend" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a></nav>
+  </header>
+  <main>
+    <section class="intro">
+      <div><p class="eyebrow"><span class="live-dot"></span> A LITTLE SPACE TO EXPERIMENT</p><h1>Think it. Type it. <span>Compile it.</span></h1><p class="description">Explore Bend, one program at a time. The compiler runs right in your browser.</p></div>
+      <div class="intro-note"><span class="note-symbol" aria-hidden="true">⌘</span><span>Small language.<br>Parallel possibilities.</span></div>
+    </section>
+    <section class="workspace" aria-label="Bend compiler playground">
+      <div class="toolbar">
+        <div class="example-control"><label for="example">Start with</label><select id="example"><option value="hello">Hello, Bend</option><option value="numbers">Working with numbers</option><option value="lists">A list of possibilities</option><option value="error">Find the type error</option></select></div>
+        <div class="compile-controls" role="group" aria-label="Program actions"><button id="interpret" class="secondary" disabled>Run interpreted</button><button id="compile-run" class="primary" disabled>Compile to JS and run</button><button id="compile-js" class="secondary" disabled>Compile to JS</button><button id="compile-c" class="secondary" disabled>Compile to C</button><button id="cancel" class="quiet" hidden>Cancel</button></div>
+      </div>
+      <div class="editors">
+        <section class="pane source-pane" aria-labelledby="source-title">
+          <div class="pane-header"><h2 id="source-title"><span class="file-icon" aria-hidden="true">≡</span>main.bend</h2><span class="pane-label">SOURCE</span><button id="reset" class="text-button" title="Restore the selected example">Reset</button></div>
+          <div class="editor-body"><pre id="line-numbers" class="line-numbers" aria-hidden="true">1</pre><textarea id="source" aria-label="Bend source code" autocomplete="off" autocapitalize="off" spellcheck="false" wrap="off"></textarea></div>
+          <div class="pane-footer"><span><span class="tiny-dot"></span>Bend</span><span id="cursor">Ln 1, Col 1</span></div>
+        </section>
+        <section class="pane output-pane" aria-label="Program output">
+          <div class="pane-header output-header"><div class="output-tabs" role="tablist" aria-label="Program output"><button id="tab-results" role="tab" aria-selected="true" aria-controls="panel-results">Results</button><button id="tab-compiled" role="tab" aria-selected="false" aria-controls="panel-compiled" tabindex="-1">Compiled source</button></div><div class="output-actions"><button id="copy" class="text-button" disabled>Copy</button><button id="download" class="text-button" disabled>Download <span aria-hidden="true">↓</span></button></div></div>
+          <div class="output-body"><div id="panel-results" role="tabpanel" aria-labelledby="tab-results"><textarea id="results" aria-label="Execution results and compiler errors" readonly spellcheck="false" wrap="off" placeholder="Click Compile to JS and run to see your program’s output. Compiler errors appear here too."></textarea></div><div id="panel-compiled" role="tabpanel" aria-labelledby="tab-compiled" hidden><textarea id="output" aria-label="Compiled source" readonly spellcheck="false" wrap="off" placeholder="Generated source will appear here after compilation."></textarea></div></div>
+          <div class="pane-footer"><span id="output-state">Waiting for your program</span><span id="output-size">—</span></div>
+        </section>
+      </div>
+      <div class="statusbar"><div id="status" role="status" aria-live="polite"><span class="status-dot"></span><span id="status-text">Loading the compiler…</span></div><span class="shortcut-hint"><kbd id="shortcut">⌘ Enter</kbd> to compile to JS and run</span></div>
+    </section>
+    <footer class="page-footer"><span><span aria-hidden="true">◉</span> Compiled locally. Your code stays in your browser.</span><span>Made for a parallel world.</span></footer>
+  </main>
+</body>
+</html>
