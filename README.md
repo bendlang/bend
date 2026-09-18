@@ -113,6 +113,36 @@ With `LAWS.bend`, *"make no mistakes"* becomes enforceable.
 curl -fsSL https://bend-lang.com/install.sh | sh
 ```
 
+<details>
+<summary>(Alternative) Install with Nix</summary>
+
+Use whichever fits your setup:
+
+**Flake-based configuration** — add Bend as an input, then include its package in your system or home packages:
+
+```nix
+inputs.bend.url = "github:bendlang/bend";
+
+# In a NixOS module; use `home.packages` for Home Manager.
+environment.systemPackages = [
+  inputs.bend.packages.${pkgs.system}.default
+];
+```
+
+**Non-flake installation** — install Bend into your user profile:
+
+```bash
+nix profile install github:bendlang/bend
+```
+
+**One-off use** — run Bend without installing it:
+
+```bash
+nix run github:bendlang/bend
+```
+
+</details>
+
 ### 2. Tell your agent to use Bend:
 
 Add this to your `AGENTS.md`:
