@@ -21,9 +21,11 @@
         in
         rec {
           default = bend;
+          bend = pkgs.callPackage ./nix/package.nix { src = self; };
+        }
+        // pkgs.lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux rec {
           default-cuda = bend-cuda;
 
-          bend = pkgs.callPackage ./nix/package.nix { src = self; };
           bend-cuda = pkgs.callPackage ./nix/package.nix {
             src = self;
             cudaSupport = true;
