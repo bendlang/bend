@@ -4,8 +4,12 @@
 static void file_write_call(IoWork* w) {
   int fd = (int)w->hand;
   ssize_t n = 0;
-  for (uint64_t at = 0; n >= 0 && at < w->size; at += (uint64_t)n) {
+  for (uint64_t at = 0; n > 0 && at < w->size; at += (uint64_t)n) {
     n = write(fd, w->data + at, w->size - at);
+  }
+  if (n == 0 && w->size > 0) {
+    errno = EIO;
+    n = -1;
   }
   io_sys_end(w, n);
 }
