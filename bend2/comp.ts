@@ -2716,7 +2716,7 @@ function compile_reqs(fl: File): void {
     const own = ns === "" ? []
       : Object.keys(fl.book.ctrs).filter((c) => c.startsWith(ns));
     const macs = own.map((c) =>
-      [cid_mac(name_own(c, fl.book.ctrs[c], " +")), cid_mac(c)]);
+      [cid_mac(c.slice(ns.length)), cid_mac(c)]);
     for (const [m, g] of macs) {
       fl.reqs += `#pragma push_macro("${m}")\n#define ${m} ${g}\n`;
     }
@@ -2984,7 +2984,7 @@ function js_expr(fl: File, tm: HTerm,
       }
       const keys = js_ctr(fl, x.k);
       return exprs.reduce((e, z, j) => e + ", [\"" + keys[j] + "\"]: " + z,
-        "{$: \"" + name_own(x.k, fl.book.ctrs[x.k], " +") + "\"") + "}";
+        "{$: \"" + name_own(x.k, fl.book.tlds[adt.k], " +") + "\"") + "}";
     }
     case "Let": return js_expr(fl, js_open(fl, x), ty);
     case "Lam": case "Mat": case "Efq": {
@@ -3065,7 +3065,7 @@ function js_func(fl: File, tm: HTerm, ty0: HTerm | null,
       return bodies[0]();
     }
     return emit_chain(fl, (i) => native === undefined
-      ? s + ".$ === \"" + name_own(arms[i][0], fl.book.ctrs[arms[i][0]], " +")
+      ? s + ".$ === \"" + name_own(arms[i][0], fl.book.tlds[adt.k], " +")
         + "\""
       : tpl(native.cond?.[arms[i][0]] ?? die(arms[i][0] + NATIVE_DIE), [s]),
     bodies);
