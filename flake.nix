@@ -21,7 +21,13 @@
         in
         rec {
           default = bend;
+          default-cuda = bend-cuda;
+
           bend = pkgs.callPackage ./nix/package.nix { src = self; };
+          bend-cuda = pkgs.callPackage ./nix/package.nix {
+            src = self;
+            cudaSupport = true;
+          };
         }
       );
 
