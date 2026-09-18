@@ -1,10 +1,10 @@
-# Rand is a pure linear token: seeded once, next/range thread it and are
-# fully deterministic on every executor
-# ported from bend3: bend-base Rand (xorshift32, zero seed remapped to
-# 2654435769) is inlined; the full-word mods keep this off the
-# interpreter (unary Nat division there is astronomic); strict -- the
-# mix chain rides annotated +U32 rebinds, the continuation defs fold
-# into sequential destructures
+# CSPRNG integration by Victor Duarte Melo (Fr0ggy)
+# September 18, 2026
+# The original Rnd API is preserved exactly for full source and behavior compatibility.
+# rnew, rnext and rrange remain the original deterministic xorshift32 implementation.
+# The secure API gets fresh U32 values from the operating system CSPRNG through IO.random_u32.
+# Linux uses getrandom, macOS uses arc4random_buf and JavaScript uses node crypto.
+# rrange.secure uses rejection sampling so every value in the requested range is unbiased.
 import Base
 
 type Rnd is Data:
@@ -57,6 +57,114 @@ law rrange:
 
 def rrange(r, n):
   rrange.go(n, rnext(r))
+
+# SecureRnd carries no external resource. Each secure draw asks the runtime CSPRNG directly.
+type SecureRnd is Type:
+  SecureRnd{}
+
+law rnew.secure:
+  IO(SecureRnd)
+
+def rnew.secure():
+  IO.pure(SecureRnd, SecureRnd{})
+
+law rclose.secure:
+  for r: SecureRnd
+  IO(Unit)
+
+def rclose.secure(r):
+  match r:
+    case SecureRnd{}:
+      IO.pure(Unit, Unit{})
+
+law rnext.secure:
+  for r: SecureRnd
+  IO(SecureRnd & U32)
+
+def rnext.secure(r):
+  match r:
+    case SecureRnd{}:
+      do IO<SecureRnd & U32>:
+        x : U32 <- IO.try(U32, IO.random_u32())
+        return (SecureRnd{}, x)
+
+type SecureDraw is Type:
+  SecureDraw{rnd: SecureRnd, x: U32, ok: Bool}
+
+law secure.draw.got:
+  for +threshold: U32
+  for rx: SecureRnd & U32
+  IO(SecureDraw)
+
+def secure.draw.got(threshold, rx):
+  (r, +x) = rx
+  IO.pure(SecureDraw, SecureDraw{r, x, U32.is_ge(x, threshold)})
+
+law secure.draw:
+  for r: SecureRnd
+  for +threshold: U32
+  IO(SecureDraw)
+
+def secure.draw(r, threshold):
+  IO.bind(SecureRnd & U32, SecureDraw,
+    rnext.secure(r), secure.draw.got(threshold))
+
+law rrange.secure.loop:
+  for fuel: Nat
+  for +n: U32
+  for +threshold: U32
+  for d: SecureDraw
+  IO(SecureRnd & U32)
+
+def rrange.secure.loop(fuel, n, threshold, d):
+  match fuel:
+    case 0n:
+      match d:
+        case SecureDraw{rnd, x, ok}:
+          match ok:
+            case True{}:
+              IO.pure(SecureRnd & U32, (rnd, U32.mod(x, n)))
+            case False{}:
+              do IO<SecureRnd & U32>:
+                u : Unit <- rclose.secure(rnd)
+                IO.die(SecureRnd & U32, 1, "rand: secure range rejection limit reached")
+    case 1n+p:
+      match d:
+        case SecureDraw{rnd, x, ok}:
+          match ok:
+            case True{}:
+              IO.pure(SecureRnd & U32, (rnd, U32.mod(x, n)))
+            case False{}:
+              IO.bind(SecureDraw, SecureRnd & U32,
+                secure.draw(rnd, threshold),
+                next => rrange.secure.loop(p, n, threshold, next))
+
+law rrange.secure.if:
+  for r: SecureRnd
+  for +n: U32
+  for z: Bool
+  IO(SecureRnd & U32)
+
+def rrange.secure.if(r, n, z):
+  match z:
+    case True{}:
+      do IO<SecureRnd & U32>:
+        u : Unit <- rclose.secure(r)
+        IO.die(SecureRnd & U32, 1, "rand: secure range bound must be greater than zero")
+    case False{}:
+      +threshold = U32.mod(U32.sub(0, n), n)
+      do IO<SecureRnd & U32>:
+        d : SecureDraw <- secure.draw(r, threshold)
+        rrange.secure.loop(127n, n, threshold, d)
+
+# Returns a uniform value in the interval from zero inclusive to n exclusive.
+law rrange.secure:
+  for r: SecureRnd
+  for +n: U32
+  IO(SecureRnd & U32)
+
+def rrange.secure(r, n):
+  rrange.secure.if(r, n, U32.is_zero(n))
 
 law go.c:
   for a  : U32
