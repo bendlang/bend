@@ -6,11 +6,12 @@
 function udp_recv_from(socket, max, k) {
   const sys = io_sys();
   const fd = socket;
-  const b = new Uint8Array(Math.max(Number(max), 1));
+  const cap = Math.min(Math.max(Number(max), 1), 2147483647);
+  const b = new Uint8Array(cap);
   const peer = new Uint8Array(16);
   const len = new Uint32Array([16]);
   const go = () => {
-    const got = sys.recvfrom(fd, sys.ptr(b), Number(max), 0, sys.ptr(peer),
+    const got = sys.recvfrom(fd, sys.ptr(b), cap, 0, sys.ptr(peer),
       sys.ptr(len));
     const n = Number(got);
     if (n < 0) {
