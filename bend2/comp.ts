@@ -3,6 +3,7 @@
 // bugs ARE expected. It will take some time for the compiler to be stable.
 
 import * as fs from "node:fs";
+import * as mod from "node:module";
 
 import * as Bend from "./bend.ts";
 
@@ -1271,7 +1272,12 @@ function show_main(book: Bend.Book): Show | null {
 export function io_run(book: Bend.Book): number {
   const src = js_lib(book, ["main"], null) + "\n" + RUNTIME_MAIN
     + "\nreturn io_run(" + js_sat("main") + ");";
-  return new Function("require", src)(import.meta.require) as number;
+  // Bun puts the JS lane's require on import.meta; node has no such property, and
+  // an undefined require fails the first effect with "require is not a function"
+  // in the lane `bend file.bend` runs. createRequire stands in for node.
+  const own = (import.meta as { require?: (id: string) => unknown }).require;
+  return new Function("require", src)(own
+    ?? (mod.createRequire(import.meta.url) as (id: string) => unknown)) as number;
 }
 
 // Anf
