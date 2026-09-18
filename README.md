@@ -148,7 +148,7 @@ Home Manager configurations can import `inputs.bend.homeModules.default` and
 use the same `programs.bend` options.
 
 For direct package construction, `lib.mkBend` returns the evaluated options and
-package, while `lib.mkBendPackage` returns the package directly.
+package.
 
 </details>
 

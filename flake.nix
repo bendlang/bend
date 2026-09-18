@@ -58,13 +58,11 @@
 
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt);
 
-      lib = rec {
+      lib = {
         mkBend = import ./nix/lib.nix {
           inherit self;
           inherit (nixpkgs) lib;
         };
-
-        mkBendPackage = args: (mkBend args).package;
       };
 
       nixosModules = rec {
