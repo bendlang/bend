@@ -141,9 +141,12 @@ prefills input; when it runs out the running program asks you for a line
 always wait for you. Window programs run too: `Window.open` shows a Display
 tab with a canvas (click it for keyboard and mouse), frames render from the
 program's quadtree images at up to 60 fps, and closing comes from the app
-itself. The Preview/Fast/Full switch rescales any display instantly
-(restarting the demo from the same build; `?res=fast` deep-links it).
-Heavy scenes stay heavy — native binaries are the fast path. Append
+itself. The Display bar sets canvas size two ways: Preview/Fast/Full
+presets plus free W/H inputs are the source of truth (empty follows the
+program, initialized from `win-open`); any apply restarts the running
+demo from the same build. Raytracer additionally offers Sim detail
+(scene depth, needs recompile). `?demo=`/`?w=`/`?h=`/`?sim=`/`?debug=`
+deep-link everything. Append
 `?debug=true` to the URL for a pipeline log (key captures, worker messages,
 frame and input-request traffic) in a Debug bar — or flip the Debug toggle
 in the status bar. Link a demo directly with `?demo=app_ray_tracer_3d`
