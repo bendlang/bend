@@ -202,7 +202,7 @@ def add_zero(x):
 - Paper: [BendRT: A Parallel Runtime for CPUs and GPUs](paper/BendRT.pdf).
 - Formalization: [bend.lean](bend2/bend.lean), Bend's core in Lean.
 - Benches: [bench/](bench), every bench used to make the charts above.
-- Formatter: [bend-fmt-lsp](tools/bend-fmt-lsp), a formatting-only Bend 2 language server.
+- Language server: [bend2-lsp](tools/bend2-lsp), with formatting, diagnostics and hover for Bend 2.
 
 # Community
 

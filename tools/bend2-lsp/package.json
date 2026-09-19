@@ -1,17 +1,17 @@
 {
-  "name": "bend2-fmt-lsp",
+  "name": "bend2-lsp",
   "version": "0.1.0",
-  "description": "Formatting-only language server for Bend 2",
+  "description": "Language server for Bend 2",
   "type": "module",
   "bin": {
-    "bend2-fmt-lsp": "dist/server.js"
+    "bend2-lsp": "dist/server.js"
   },
   "files": [
     "dist",
     "README.md"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "node build.mjs && tsc -p tsconfig.json --emitDeclarationOnly",
     "prepack": "npm run build",
     "test": "npm run build && node --test dist/test/*.test.js"
   },
@@ -24,6 +24,7 @@
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
+    "esbuild": "^0.25.9",
     "typescript": "^5.9.0"
   },
   "license": "Apache-2.0"
