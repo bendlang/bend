@@ -3,8 +3,8 @@
 
 // A balanced tree of the depth asked, its leaves 1.. left to right, every
 // odd one Empty, laid as the program lays one: an Empty or a Leaf packed
-// in its word, a Node a plain node (not sealed: the program's consuming
-// match takes it as its own).
+// in its word, a Node a node whose fields io_node seals as the program
+// would.
 static Term tree_make_at(Env e, u32 depth, u32* next) {
   if (depth == 0) {
     *next += 1;
@@ -12,7 +12,7 @@ static Term tree_make_at(Env e, u32 depth, u32* next) {
   }
   Term l = tree_make_at(e, depth - 1, next);
   Term r = tree_make_at(e, depth - 1, next);
-  return io_node(e, CID_NODE, l, r, 0);
+  return io_node(e, CID_NODE, l, r);
 }
 
 Term tree_make_run(Env e, Term* f, IoWork* w) {
@@ -26,7 +26,7 @@ Term tree_make_run(Env e, Term* f, IoWork* w) {
 Term chain_make_run(Env e, Term* f, IoWork* w) {
   Term c = term_pak(CID_END, 0);
   for (u32 i = 0; i < (u32)f[0]; i += 1) {
-    c = io_node(e, CID_CELL, i, c, 0);
+    c = io_node(e, CID_CELL, i, c);
   }
   return c;
 }

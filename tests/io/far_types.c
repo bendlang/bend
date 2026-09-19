@@ -10,7 +10,7 @@ static Term far_make_at(Env e, u32 depth, u32* next) {
   }
   Term l = far_make_at(e, depth - 1, next);
   Term r = far_make_at(e, depth - 1, next);
-  return io_node(e, CID_DEEP, l, r, 0);
+  return io_node(e, CID_DEEP, l, r);
 }
 
 Term far_make_run(Env e, Term* f, IoWork* w) {

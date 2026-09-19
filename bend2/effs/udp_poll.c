@@ -18,7 +18,7 @@ Term udp_poll_run(Env e, Term* f, IoWork* w) {
   } else {
     inet_ntop(AF_INET, &at.sin_addr, host, 16);
     r = io_done(e, io_box(e, CID_SOME, io_tup(e, io_str(e, host, strlen(host)),
-      io_tup(e, ntohs(at.sin_port), io_str(e, data, (u64)n))), IO_HOTS & 32));
+      io_tup(e, ntohs(at.sin_port), io_str(e, data, (u64)n)))));
   }
   free(data);
   return io_tup(e, f[0], r);
