@@ -62,3 +62,18 @@ test("categorizes compiler failures with source offsets", async () => {
     await analyzer.close();
   }
 });
+
+test("recovers after the analysis worker exits", { timeout: 5_000 }, async () => {
+  const analyzer = new Analyzer();
+  const worker = (analyzer as unknown as { worker: { terminate(): Promise<number> } }).worker;
+  await worker.terminate();
+  const file = path.join(os.tmpdir(), `bend2-lsp-recovery-${process.pid}.bend`);
+  const uri = pathToFileURL(file).href;
+  const text = "import Base\n\ndef main() -> U32:\n  0";
+  try {
+    const result = await analyzer.analyze({ type: "analyze", uri, path: file, version: 1, text, overlays: [{ uri, path: file, version: 1, text }] });
+    assert.deepEqual(result.diagnostics, []);
+  } finally {
+    await analyzer.close();
+  }
+});

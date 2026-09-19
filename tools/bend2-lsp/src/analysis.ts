@@ -31,6 +31,7 @@ export class Analyzer {
   }
 
   private request(input: Omit<AnalysisRequest, "id">): Promise<AnalysisResult> {
+    if (this.worker.threadId === -1) this.spawn();
     const id = this.nextId++;
     return new Promise((resolve, reject) => {
       this.pending.set(id, { resolve, reject });
