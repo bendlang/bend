@@ -89,9 +89,10 @@ function deliverLine(): void {
 let winNext = 1;
 const winSizes = new Map<number, { w: number; h: number }>();
 const winEvents: Array<{ kind: number; a: number; b: number; c: number; d: number }> = [];
-// Display scale from the page (1 = native). Fractional scales rasterize
-// fewer pixels; input coordinates scale back to native program space.
-let dispScale = 1;
+// Display size from the page (0 = follow the program's window size).
+// The canvas backing store is arbitrary on the web: any W/H goes.
+let dispW = 0;
+let dispH = 0;
 let workerDebug = false;
 function dbg(msg: string): void {
   if (workerDebug) self.postMessage({ type: "dbg", from: "runner", msg });
@@ -179,9 +180,10 @@ self.onmessage = async ({ data }: MessageEvent) => {
       dbg(`win-event kind=${data.ev.kind} queued (depth ${winEvents.length})`);
       return;
     }
-    if (typeof data.display?.scale === "number" && isFinite(data.display.scale)) {
-      dispScale = Math.min(4, Math.max(0.05, data.display.scale));
-      dbg(`display scale ${dispScale}`);
+    if (data.display) {
+      dispW = data.display.w > 0 ? Math.min(4096, data.display.w | 0) : 0;
+      dispH = data.display.h > 0 ? Math.min(4096, data.display.h | 0) : 0;
+      dbg(`display ${dispW || "native"}x${dispH || "native"}`);
       return;
     }
     return;
@@ -259,16 +261,16 @@ self.onmessage = async ({ data }: MessageEvent) => {
       const id = Number(handle);
       const size = winSizes.get(id) ?? { w: 0, h: 0 };
       if (size.w > 0 && size.h > 0) {
-        const tw = Math.max(1, Math.floor(size.w * dispScale));
-        const th = Math.max(1, Math.floor(size.h * dispScale));
+        const tw = dispW > 0 ? dispW : size.w;
+        const th = dispH > 0 ? dispH : size.h;
         const pix = winPixels(image, size.w, size.h, tw, th);
         self.postMessage({ type: "win-frame", id, w: tw, h: th, pix: pix.buffer }, [pix.buffer]);
       }
       let evs: any = { $: "Nil" };
       const drained = winEvents.length;
       // Input arrives in display pixels; scale back to native program space.
-      const sx = (v: number) => Math.min(size.w - 1, Math.max(0, Math.floor(v / dispScale)));
-      const sy = (v: number) => Math.min(size.h - 1, Math.max(0, Math.floor(v / dispScale)));
+      const sx = (v: number) => Math.min(size.w - 1, Math.max(0, Math.floor(v * size.w / (dispW > 0 ? dispW : size.w))));
+      const sy = (v: number) => Math.min(size.h - 1, Math.max(0, Math.floor(v * size.h / (dispH > 0 ? dispH : size.h))));
       for (let i = winEvents.length - 1; i >= 0; i--) {
         const e = winEvents[i];
         const head = e.kind === 0 ? { $: "Key", code: e.a, down: !!e.b }

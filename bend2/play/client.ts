@@ -483,8 +483,12 @@ function syncURL(): void {
   else params.delete("debug");
   if (example.value in demos) params.set("demo", example.value.slice("demo:".length));
   else params.delete("demo");
-  if (resMode !== "full") params.set("res", resMode);
-  else params.delete("res");
+  const dw = dispNum("dispw");
+  const dh = dispNum("disph");
+  if (dw > 0) params.set("w", String(dw));
+  else params.delete("w");
+  if (dh > 0) params.set("h", String(dh));
+  else params.delete("h");
   history.replaceState(null, "", location.pathname + (params.toString() ? "?" + params : ""));
 }
 function dlog(msg: string): void {
@@ -545,46 +549,59 @@ for (const name of tabs) {
   });
 }
 function persist(): void {
-  try { localStorage.setItem(storageKey, JSON.stringify({ source: source.value, example: example.value, stdin: stdinBox.value, mode: stdinMode(), res: resMode })); } catch {}
+  try { localStorage.setItem(storageKey, JSON.stringify({ source: source.value, example: example.value, stdin: stdinBox.value, mode: stdinMode(), dispw: get<HTMLInputElement>("dispw").value, disph: get<HTMLInputElement>("disph").value })); } catch {}
 }
 function stdinMode(): string {
   return document.querySelector<HTMLInputElement>('input[name="stdin-mode"]:checked')?.value ?? "prefill";
 }
-type ResMode = "preview" | "fast" | "full";
-const RES_SCALE: Record<ResMode, number> = { preview: 0.25, fast: 0.5, full: 1 };
-let resMode: ResMode = "full";
+// Display size: the W/H inputs are the source of truth (empty = follow
+// the program). Presets only fill them in. Changing either restarts the
+// running demo from the same build.
 let nativeSize = { w: 0, h: 0 };
 let lastJS = "";
 let lastCompileTime = 0;
+function dispNum(id: string): number {
+  const v = parseInt(get<HTMLInputElement>(id).value, 10);
+  return v > 0 ? Math.min(4096, v) : 0;
+}
+function dispEff(): { w: number; h: number } {
+  return {
+    w: dispNum("dispw") || nativeSize.w,
+    h: dispNum("disph") || nativeSize.h,
+  };
+}
 function resCaption(): void {
   const el = get("dispinfo");
-  if (nativeSize.w > 0) {
-    const eff = (n: number) => Math.max(1, Math.floor(n * RES_SCALE[resMode]));
-    el.textContent = resMode === "full"
-      ? `Native ${nativeSize.w}×${nativeSize.h}`
-      : `Native ${nativeSize.w}×${nativeSize.h} → ${eff(nativeSize.w)}×${eff(nativeSize.h)}`;
-  } else {
-    el.textContent = "No display";
-  }
+  const { w, h } = dispEff();
+  el.textContent = w > 0 ? `${w}×${h} · native ${nativeSize.w}×${nativeSize.h}` : "No display";
   for (const b of document.querySelectorAll<HTMLButtonElement>("#displaybar [data-res]")) {
-    b.classList.toggle("on", (b.dataset.res as ResMode) === resMode);
+    b.classList.toggle("on", b.dataset.res === dispPreset());
   }
 }
-function sendScale(): void {
-  if (!busy || !runner) return;
-  runner.postMessage({ display: { scale: RES_SCALE[resMode] } });
+function dispPreset(): string {
+  const { w, h } = dispEff();
+  if (w === nativeSize.w && h === nativeSize.h) return "full";
+  if (w * 2 === nativeSize.w && h * 2 === nativeSize.h) return "fast";
+  if (w * 4 === nativeSize.w && h * 4 === nativeSize.h) return "preview";
+  return "";
 }
-function setRes(mode: ResMode): void {
-  resMode = mode;
+function sendDisplay(): void {
+  if (!busy || !runner) return;
+  const { w, h } = dispEff();
+  runner.postMessage({ display: { w, h } });
+}
+function applyDisplay(restart: boolean): void {
   resCaption();
   persist();
   syncURL();
-  if (busy && runner && lastJS && !stale()) {
-    // Instant full restart at the new resolution, same build.
+  if (restart && busy && runner && lastJS && !stale()) {
+    // Full demo restart at the new size, same build, no recompile.
     clearTimeout(timer);
     runner.terminate();
     runner = undefined;
     execute(lastJS, lastCompileTime);
+  } else {
+    sendDisplay();
   }
 }
 function position(): void {
@@ -648,6 +665,13 @@ function execute(javascript: string, compileTime: number): void {
       clearTimeout(timer);
       cancel.textContent = "Stop";
       nativeSize = { w: data.w, h: data.h };
+      // Initialize the inputs with the default resolution on first open.
+      if (!get<HTMLInputElement>("dispw").value) {
+        get<HTMLInputElement>("dispw").value = String(data.w);
+      }
+      if (!get<HTMLInputElement>("disph").value) {
+        get<HTMLInputElement>("disph").value = String(data.h);
+      }
       resCaption();
       const screen = get<HTMLCanvasElement>("screen");
       screen.width = data.w;
@@ -680,7 +704,7 @@ function execute(javascript: string, compileTime: number): void {
   runner.postMessage({ javascript, stdin: stdinMode() === "ask" ? "" : stdinBox.value, debug: DEBUG });
   lastJS = javascript;
   lastCompileTime = compileTime;
-  sendScale();
+  sendDisplay();
   timer = setTimeout(() => stop("Execution stopped after 30 seconds."), 30_000);
 }
 function restart(message?: string, runWhenReady?: Action): void {
@@ -783,15 +807,19 @@ try {
     stdinBox.placeholder = "Ask-me mode: the box is ignored, the worker waits and asks you per line.";
   }
   const params = new URLSearchParams(location.search);
-  const resParam = params.get("res");
-  const savedRes = (() => {
+  const num = (v: string | null): string => v && /^\d+$/.test(v) && Number(v) > 0 ? String(Math.min(4096, Number(v))) : "";
+  const pw = num(params.get("w"));
+  const ph = num(params.get("h"));
+  if (pw || ph) {
+    get<HTMLInputElement>("dispw").value = pw;
+    get<HTMLInputElement>("disph").value = ph;
+  } else {
     try {
-      const s = JSON.parse(localStorage.getItem(storageKey) ?? "null");
-      return s && (s.res === "preview" || s.res === "fast" || s.res === "full") ? s.res : null;
-    } catch { return null; }
-  })();
-  if (resParam === "preview" || resParam === "fast" || resParam === "full") resMode = resParam;
-  else if (savedRes) resMode = savedRes;
+      const saved2 = JSON.parse(localStorage.getItem(storageKey) ?? "null");
+      if (saved2 && typeof saved2.dispw === "string") get<HTMLInputElement>("dispw").value = saved2.dispw;
+      if (saved2 && typeof saved2.disph === "string") get<HTMLInputElement>("disph").value = saved2.disph;
+    } catch {}
+  }
   resCaption();
 } catch {}
 editor.selection.moveCursorTo(0, 0);
@@ -875,7 +903,23 @@ function winPoint(e: MouseEvent): [number, number] {
 }
 for (const action of actions) get(action).addEventListener("click", () => run(action));
 for (const b of document.querySelectorAll<HTMLButtonElement>("#displaybar [data-res]")) {
-  b.addEventListener("click", () => setRes(b.dataset.res as ResMode));
+  b.addEventListener("click", () => {
+    const frac = b.dataset.res === "preview" ? 0.25 : b.dataset.res === "fast" ? 0.5 : 1;
+    if (nativeSize.w > 0) {
+      get<HTMLInputElement>("dispw").value = String(Math.max(1, Math.floor(nativeSize.w * frac)));
+      get<HTMLInputElement>("disph").value = String(Math.max(1, Math.floor(nativeSize.h * frac)));
+    }
+    applyDisplay(true);
+  });
+}
+for (const id of ["dispw", "disph"]) {
+  get<HTMLInputElement>(id).addEventListener("input", () => { resCaption(); persist(); syncURL(); });
+  get<HTMLInputElement>(id).addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      applyDisplay(true);
+    }
+  });
 }
 get("send").addEventListener("click", sendInput);
 get("eof").addEventListener("click", sendEOF);
