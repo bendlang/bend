@@ -2010,6 +2010,12 @@ function emit_frame(fl: File, words: string[], next: string): void {
 // A self-jump reads its parameters back: the device's loop carries them
 // typed, not as words (raytrace GPU 1.72x otherwise).
 function emit_jump(fl: File, args: string[], k: Bend.Name): void {
+  if (fl.seg.def !== k) {
+    const fid = seg_fid(k);
+    block(fl, `if (!seq && !fid_nofk(${fl.seg.fid}) && fid_nofk(${fid})) {`,
+      () => file_push(fl, `return term_tsk(${fid}, ${
+        emit_task(fl, fid, 0, args)});`));
+  }
   args.forEach((a, i) => file_push(fl, `r${i} = ${a};`));
   if (fl.seg.def !== k) {
     return file_push(fl, `WL_JMP(${seg_ref(fl, seg_fid(k))});`);
@@ -2771,7 +2777,8 @@ function compile_tables(fl: File, entries: Seg[]): string[] {
   table("FID_ARITY_T", entries.map((s) => s.params.length));
   // A segment may fork when it, or one it reaches, does; a closure apply
   // reaches every closure.
-  const forky = new Set(fl.segs.filter((s) => s.fork).map((s) => s.fid));
+  const forky = new Set(fl.segs.filter((s) => s.fork || fl.bangs.has(s.def))
+    .map((s) => s.fid));
   for (let n = -1; n !== forky.size;) {
     n = forky.size;
     for (const s of [...fl.segs, { fid: "FID_CLO_APPLY", refs: fl.clos }]) {
@@ -4288,7 +4295,7 @@ static const WlFn wl_tab[] = { WL_TABLE };
 #undef WL_X
 #endif
 
-static Reply work_loop(Env e, Stk sp, Term t, bool seq) {
+static Reply work_loop(Env e, Stk sp, Term t, u32 seq) {
   WL_BANK
   u32 rn = 0;
   r0 = t;
@@ -4318,6 +4325,7 @@ static Reply work_loop(Env e, Stk sp, Term t, bool seq) {
     Loc a   = term_loc(t);
     u32 war = fid_arity(f);
     WL_FRAME(t)
+    seq |= fid_nofk(f) << 1;
     if (fid_seqk(f)) {
       u32 rw = fid_resw(f);
       WL_LOAD(a + war - rw, rw)
@@ -4365,11 +4373,13 @@ static Reply work_loop(Env e, Stk sp, Term t, bool seq) {
     sp -= 2 * LANE_STEP;
     Term cont = STK(0);
     u32  idx  = (u32)STK(1);
+    seq &= 1;
     if (cont != TERM_HOLE && fid_seqk((u32)term_aux(cont))) {
       Fid wf = (u32)term_aux(cont);
       Loc wa = term_loc(cont);
       u32 wn = fid_arity(wf);
       WL_FRAME(cont)
+      seq |= fid_nofk(wf) << 1;
       WL_ARGS(wa, wn - n + 1)
       heap_free(e, cls_fit(wn + 2), wa);
       WL_TAKE(rv)
@@ -4674,8 +4684,10 @@ static void* pool_work(void* arg) {
       if (pool_grow) {
         row_grow(e, stk, r * CUBE_T, 1, CUBE_T);
       } else {
+        u32 step  = CUBE_T / LINE;
+        Ring base = (r / step) * CUBE_T + r % step;
         for (u32 i = 0; i < LINE; i += 1) {
-          Ring rg   = r * LINE + i;
+          Ring rg   = base + i * step;
           u32  put0 = a32_load(ring_put(e.mem, rg));
           while (*ring_get(e.mem, rg) != put0 && !err_seen(e.mem)) {
             monk_step(e, stk, rg, put0, true, rg, 0, NULL);
@@ -5123,8 +5135,7 @@ OUTLINE Term corpus_eval(Corpus H, Term t) {
   Env  e = { H, ALC[0] };
   Term rv[WL_RESW];
   for (;;) {
-    Reply r = work_loop(e, io_stk, t, !BANGS
-      && (pool_size == 1 || fid_nofk((u32)term_aux(t))));
+    Reply r = work_loop(e, io_stk, t, !BANGS && pool_size == 1);
     if (r == 0) {
       if (root_done(H)) {
         break;
