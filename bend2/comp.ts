@@ -1379,10 +1379,130 @@ function anf(cb: Carb, t: HTerm, ty: HTerm | null = null): HTerm {
 // Carb
 // ====
 
+// Resolve a statically constructed function before lowering its application.
+// This is deliberately bounded and call-by-value: a projection must not erase
+// evaluation of another field. Foreign calls, unsafe defs, forks and dynamic
+// values stop evaluation; failure leaves the original expression intact.
+function static_fun(book: Book, t: HTerm): HTerm | null {
+  let head = Bend.term_strip(t);
+  let argc = 0;
+  while (head.$ === "App") {
+    argc++;
+    head = Bend.term_strip(head.f);
+  }
+  const def = head.$ === "Ref" ? book.tlds[head.k] : undefined;
+  if (head.$ !== "Lam" && (def?.$ !== "Def" || argc < def.n)) return null;
+  let fuel = 2048;
+  const values = new Map<Bend.Name, HTerm>();
+  const fail = {};
+  const run = (tm: HTerm): HTerm => {
+    if (--fuel < 0) throw fail;
+    const x = Bend.term_force(tm);
+    switch (x.$) {
+      case "Ann": return Bend.Ann(run(x.x), x.T, x.s);
+      case "Ref": {
+        const d = book.tlds[x.k];
+        if (x.b || d?.$ !== "Def" || d.u || d.i || !d.e
+          || (d.b && OPERATIONS[eff_name(x.k)] !== undefined)) {
+          if (d?.$ === "ADT") return x;
+          throw fail;
+        }
+        const body = d.e;
+        return memo(values, x.k, () => run(Bend.term_higher(body)));
+      }
+      case "App": {
+        const f = Bend.term_strip(run(x.f));
+        const a = run(x.x);
+        if (f.$ === "Lam") return run(f.f(a));
+        if (f.$ === "Mat") {
+          const c = Bend.term_strip(a);
+          if (c.$ !== "Ctr") throw fail;
+          let arm: HTerm = f;
+          while (Bend.term_strip(arm).$ === "Mat") {
+            const m = Bend.term_strip(arm) as Of<"Mat">;
+            if (m.k === c.k) {
+              return run(c.x.reduce((h, v) => Bend.App(h, v), m.h));
+            }
+            arm = m.m;
+          }
+          throw fail;
+        }
+        throw fail;
+      }
+      case "Ctr": return Bend.Ctr(x.k, x.x.map(run), x.s);
+      case "Let": {
+        if (x.v.length !== 1) throw fail;
+        return run(x.f(x.v.map(run)));
+      }
+      case "Rwt": return run(x.f);
+      case "Lam": case "Mat": case "Efq": case "Typ": case "All":
+      case "ADT": case "Qua": case "Qnt": case "Eql": case "Rfl":
+        return x;
+      default: throw fail;
+    }
+  };
+  try {
+    const out = run(t);
+    return Bend.term_strip(out).$ === "Lam" ? out : null;
+  } catch (e) {
+    if (e !== fail) throw e;
+    return null;
+  }
+}
+
+// Keep annotations and bind a dynamic argument once when eliminating a
+// static callback. Re-run on its body so nested callback records disappear.
+function specialize(book: Book, tm: HTerm, budget = { left: 256 }): HTerm {
+  const x = Bend.term_force(tm);
+  switch (x.$) {
+    case "Ann": return Bend.Ann(specialize(book, x.x, budget), x.T, x.s);
+    case "Lam": return Bend.Lam(x.k, x.i,
+      (a: HTerm) => specialize(book, x.f(a), budget), x.s, x.q);
+    case "Mat": return Bend.Mat(x.k, specialize(book, x.h, budget),
+      specialize(book, x.m, budget), x.s);
+    case "Let": return Bend.Let(x.k, x.i, x.v.map((v) => specialize(book, v, budget)),
+      (as: HTerm[]) => specialize(book, x.f(as), budget), x.s, x.q);
+    case "Ctr": return term_const(x) ? x
+      : Bend.Ctr(x.k, x.x.map((v) => specialize(book, v, budget)), x.s);
+    case "Rwt": return specialize(book, x.f, budget);
+    case "App": {
+      const f = specialize(book, x.f, budget);
+      const a = specialize(book, x.x, budget);
+      const held = Bend.term_strip(f);
+      if (held.$ === "Let") {
+        const T = ty_ann(f);
+        return Bend.Let(held.k, held.i, held.v, (as: HTerm[]) => {
+          const b = held.f(as);
+          return specialize(book, Bend.App(T === null ? b : Bend.Ann(b, T), a), budget);
+        }, held.s, held.q);
+      }
+      // A bare named function stays a call. Only computed function heads
+      // need specialization; this does not inline every ordinary call.
+      if (Bend.term_strip(f).$ !== "App"
+        && Bend.term_strip(f).$ !== "Lam") return Bend.App(f, a, x.s);
+      const v = budget.left > 0 ? static_fun(book, f) : null;
+      const lam = v === null ? null : Bend.term_strip(v);
+      if (lam?.$ !== "Lam") return Bend.App(f, a, x.s);
+      const ty = ty_all(book, ty_ann(f));
+      if (ty === null) return Bend.App(f, a, x.s);
+      budget.left--;
+      if (!quant_live(ty.q) || term_const(a)
+        || Bend.term_strip(a).$ === "Var") {
+        return specialize(book, lam.f(a), budget);
+      }
+      return Bend.Let([lam.k], [0], [Bend.Ann(a, ty.A)],
+        (as: HTerm[]) => specialize(book, lam.f(as[0]), budget), x.s, [ty.q]);
+    }
+    default: return x;
+  }
+}
+
 function def_body(cb: Carb, k: Bend.Name): TLD | undefined {
   const tld = cb.book.tlds[k];
   if (tld?.$ === "Def" && tld.e !== undefined && tld.h === undefined) {
-    const h = Bend.term_higher(tld.e);
+    // Materialize the bounded rewrite once; emission may open a body repeatedly.
+    const h = Bend.term_higher(Bend.term_lower(
+      specialize(cb.book, Bend.term_higher(tld.e))));
     const n = tld.n + Math.min(def_raise(cb.book, h, tld.n),
       tele_unbind(cb.book, tld.T).doms.length - tld.n);
     cb.book.tlds[k] = { ...tld, n, h };
