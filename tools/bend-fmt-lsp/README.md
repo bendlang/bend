@@ -22,6 +22,14 @@ server returns no edits.
 
 ## Editor setup
 
+VS Code, through `tools/bend-vscode`, which carries the grammar and
+starts this server:
+
+```sh
+cd ../bend-vscode && npm install && npm run build
+ln -s "$PWD" ~/.vscode/extensions/bend
+```
+
 Neovim with `nvim-lspconfig`:
 
 ```lua

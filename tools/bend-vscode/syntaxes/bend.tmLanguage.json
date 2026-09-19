@@ -1,0 +1,97 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Bend",
+  "scopeName": "source.bend",
+  "fileTypes": ["bend"],
+  "patterns": [
+    { "include": "#comment" },
+    { "include": "#string" },
+    { "include": "#char" },
+    { "include": "#definition" },
+    { "include": "#datatype" },
+    { "include": "#keyword" },
+    { "include": "#unsafe" },
+    { "include": "#kind" },
+    { "include": "#quantity" },
+    { "include": "#number" },
+    { "include": "#name" },
+    { "include": "#hole" },
+    { "include": "#operator" }
+  ],
+  "repository": {
+    "comment": {
+      "match": "#.*$",
+      "name": "comment.line.number-sign.bend"
+    },
+    "string": {
+      "begin": "\"",
+      "end": "\"",
+      "name": "string.quoted.double.bend",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.string.begin.bend" }
+      },
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.string.end.bend" }
+      },
+      "patterns": [
+        { "match": "\\\\.", "name": "constant.character.escape.bend" }
+      ]
+    },
+    "char": {
+      "match": "'(\\\\.|[^'])'",
+      "name": "string.quoted.single.bend"
+    },
+    "definition": {
+      "match": "\\b(def|law)\\s+([A-Za-z_][A-Za-z0-9_.]*)",
+      "captures": {
+        "1": { "name": "keyword.control.bend" },
+        "2": { "name": "entity.name.function.bend" }
+      }
+    },
+    "datatype": {
+      "match": "\\b(type)\\s+([A-Za-z_][A-Za-z0-9_]*)",
+      "captures": {
+        "1": { "name": "keyword.control.bend" },
+        "2": { "name": "entity.name.type.bend" }
+      }
+    },
+    "keyword": {
+      "match": "\\b(def|law|type|is|match|case|do|return|for|exs|where|import|as)\\b",
+      "name": "keyword.control.bend"
+    },
+    "unsafe": {
+      "match": "@unsafe\\b",
+      "name": "keyword.control.bend"
+    },
+    "kind": {
+      "match": "\\b(Type|Data|Kind|Quant)\\b",
+      "name": "storage.type.bend"
+    },
+    "quantity": {
+      "match": "&[012]\\b",
+      "name": "constant.numeric.bend"
+    },
+    "number": {
+      "patterns": [
+        { "match": "\\b0x[0-9a-fA-F]+\\b", "name": "constant.numeric.bend" },
+        { "match": "\\b\\d+n\\b", "name": "constant.numeric.bend" },
+        {
+          "match": "\\b\\d+(\\.\\d+([eE][+-]?\\d+)?)?\\b",
+          "name": "constant.numeric.bend"
+        }
+      ]
+    },
+    "name": {
+      "match": "\\b[A-Z][A-Za-z0-9_]*\\b",
+      "name": "support.type.bend"
+    },
+    "hole": {
+      "match": "\\?[A-Za-z_][A-Za-z0-9_]*",
+      "name": "variable.other.hole.bend"
+    },
+    "operator": {
+      "match": "==|!=|<=|>=|->|=>|<-|<&>|\\+\\+|<>|\\.[|^&]\\.|[-+*/%<>=&|!@~\\\\]",
+      "name": "keyword.operator.bend"
+    }
+  }
+}

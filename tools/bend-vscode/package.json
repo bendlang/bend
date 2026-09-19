@@ -1,0 +1,64 @@
+{
+  "name": "bend",
+  "displayName": "Bend",
+  "description": "Syntax highlighting and formatting for Bend 2",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "publisher": "bendlang",
+  "categories": [
+    "Programming Languages",
+    "Formatters"
+  ],
+  "engines": {
+    "vscode": "^1.82.0",
+    "node": ">=22"
+  },
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onLanguage:bend"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "bend",
+        "aliases": [
+          "Bend",
+          "bend"
+        ],
+        "extensions": [
+          ".bend"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "bend",
+        "scopeName": "source.bend",
+        "path": "./syntaxes/bend.tmLanguage.json"
+      }
+    ],
+    "configuration": {
+      "title": "Bend",
+      "properties": {
+        "bend.formatter.path": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Path to `bend2-fmt-lsp`, or to its `server.js`. Empty: the sibling `tools/bend-fmt-lsp` checkout is used, then `bend2-fmt-lsp` on the PATH. With none of them, the extension highlights and does not format."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "vscode:prepublish": "npm run build"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/vscode": "^1.82.0",
+    "typescript": "^5.9.0"
+  }
+}
