@@ -441,7 +441,7 @@ const exampleStdin: Record<string, string> = {
 // Demo dir -> label plus extra files the demo's main imports. Sources ship
 // as static files; the picker fetches them into the editor and the aux map,
 // and run() posts the whole set to the worker's memory filesystem.
-const demos: Record<string, { label: string; aux: Record<string, string> }> = {
+const demos: Record<string, { label: string; aux: Record<string, string>; res?: Array<{ label: string; edits: string[][] }> }> = {
   "demo:pure_par_sum": { label: "Parallel sum", aux: {} },
   "demo:pure_par_sort": { label: "Parallel sort", aux: {} },
   "demo:pure_hvm5_mini": { label: "HVM mini", aux: {} },
@@ -452,7 +452,12 @@ const demos: Record<string, { label: string; aux: Record<string, string> }> = {
   "demo:app_triangle_2d": { label: "Triangle", aux: {} },
   "demo:app_pong_game_2d": { label: "Pong", aux: {} },
   "demo:app_win_is_bug_2d": { label: "WinIsBug", aux: {} },
-  "demo:app_ray_tracer_3d": { label: "Ray tracer", aux: {} },
+  "demo:app_ray_tracer_3d": { label: "Ray tracer", aux: {},
+    res: [
+      { label: "1024 · full", edits: [] },
+      { label: "512 · fast", edits: [["Fly\\.scene!\\(\\d+n,", "Fly.scene!(9n,"], ["\"Fly\", \\d+, \\d+,", "\"Fly\", 512, 384,"]] },
+      { label: "256 · preview", edits: [["Fly\\.scene!\\(\\d+n,", "Fly.scene!(8n,"], ["\"Fly\", \\d+, \\d+,", "\"Fly\", 256, 192,"]] },
+    ] },
   "demo:app_slash_boss_3d": { label: "Slash boss", aux: { "bend3d.bend": "demos/app_slash_boss_3d/bend3d.bend" } },
   "demo:io_http_fetch": { label: "HTTP fetch · needs native", aux: {} },
   "demo:io_http_server": { label: "HTTP server · needs native", aux: {} },
@@ -543,7 +548,7 @@ for (const name of tabs) {
   });
 }
 function persist(): void {
-  try { localStorage.setItem(storageKey, JSON.stringify({ source: source.value, example: example.value, stdin: stdinBox.value, mode: stdinMode() })); } catch {}
+  try { localStorage.setItem(storageKey, JSON.stringify({ source: source.value, example: example.value, stdin: stdinBox.value, mode: stdinMode(), res: get<HTMLSelectElement>("res").value })); } catch {}
 }
 function stdinMode(): string {
   return document.querySelector<HTMLInputElement>('input[name="stdin-mode"]:checked')?.value ?? "prefill";
@@ -857,6 +862,25 @@ for (const kind of ["mousedown", "mouseup"] as const) {
     winSend({ kind: 1, a: x, b: y, c: button, d: kind === "mousedown" ? 1 : 0 });
   });
 }
+function renderRes(): void {
+  const wrap = get("res-wrap");
+  const select = get<HTMLSelectElement>("res");
+  const presets = example.value in demos ? demos[example.value].res : undefined;
+  select.replaceChildren(...(presets ?? []).map((p, i) => {
+    const opt = document.createElement("option");
+    opt.value = String(i);
+    opt.textContent = p.label;
+    return opt;
+  }));
+  wrap.hidden = !presets;
+  if (presets) {
+    try {
+      const saved = JSON.parse(localStorage.getItem(storageKey) ?? "null");
+      if (saved && typeof saved.res === "string"
+        && Number(saved.res) < presets.length) select.value = saved.res;
+    } catch {}
+  }
+}
 async function reset(): Promise<void> {
   if (busy) restart();
   if (example.value in demos) {
@@ -867,11 +891,19 @@ async function reset(): Promise<void> {
       return res.text();
     };
     try {
+      renderRes();
       status("Loading the demo…", "busy");
       source.value = await load("demos/" + dir + "/main.bend");
       const aux: Record<string, string> = {};
       for (const [name, route] of Object.entries(demos[example.value].aux)) {
         aux[name] = await load(route);
+      }
+      const preset = demos[example.value].res?.[Number(get<HTMLSelectElement>("res").value)];
+      if (preset && preset.edits.length > 0) {
+        for (const [pattern, replacement] of preset.edits) {
+          source.value = source.value.replace(new RegExp(pattern), replacement);
+        }
+        source.value = `# browser res: ${preset.label} (adapted from the repo demo)\n` + source.value;
       }
       auxFiles = aux;
       renderAux();
@@ -885,6 +917,7 @@ async function reset(): Promise<void> {
     source.value = examples[example.value];
     auxFiles = {};
     renderAux();
+    get("res-wrap").hidden = true;
     if (example.value in exampleStdin) stdinBox.value = exampleStdin[example.value];
   }
   editor.session.setScrollTop(0);
@@ -893,6 +926,7 @@ async function reset(): Promise<void> {
   syncURL();
 }
 example.addEventListener("change", reset);
+get<HTMLSelectElement>("res").addEventListener("change", () => { persist(); reset(); });
 get("reset").addEventListener("click", reset);
 copy.addEventListener("click", async () => {
   try {
