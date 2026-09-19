@@ -1725,10 +1725,24 @@ export function parse_bind(p: Parse, t: LTerm): PVar {
   return { $: "PVar", k: t.k, i: parse_open(p, t.k), q: t.i < 0 ? Many() : Lone(), s: t.s };
 }
 
+export function parse_patt_ctr(book: Book, k: Name, n: number, s?: Span): void {
+  const ctr = book_ctr(book, k);
+  if (ctr === null) {
+    throw Err(book, ctx_nil(), "a declared constructor (unknown: " + k + ")", undefined, s);
+  }
+  if (ctr.n !== n) {
+    throw Err(book, ctx_nil(), "a " + k + " pattern with " + String(ctr.n) + (ctr.n === 1 ? " field" : " fields"), undefined, s);
+  }
+}
+
 export function parse_patt(p: Parse, t: LTerm): Patt {
   const book = p.book;
   const lit  = t.$ === "App" ? nat_from_term(t) : null;
   if (lit !== null) {
+    parse_patt_ctr(book, "Zero", 0, t.s);
+    if (lit > 0) {
+      parse_patt_ctr(book, "Succ", 1, t.s);
+    }
     let q: Patt = { $: "PCtr", k: "Zero", x: [], s: t.s };
     for (let i = 0; i < lit; i++) {
       q = { $: "PCtr", k: "Succ", x: [q], s: t.s };
@@ -1743,13 +1757,7 @@ export function parse_patt(p: Parse, t: LTerm): Patt {
       return parse_bind(p, t);
     }
     case "Ctr": {
-      const ctr = book_ctr(book, t.k);
-      if (ctr === null) {
-        throw Err(book, ctx_nil(), "a declared constructor (unknown: " + t.k + ")", undefined, t.s);
-      }
-      if (ctr.n !== t.x.length) {
-        throw Err(book, ctx_nil(), "a " + t.k + " pattern with " + String(ctr.n) + (ctr.n === 1 ? " field" : " fields"), undefined, t.s);
-      }
+      parse_patt_ctr(book, t.k, t.x.length, t.s);
       return { $: "PCtr", k: t.k, x: t.x.map((x) => parse_patt(p, x)), s: t.s };
     }
     default: {
