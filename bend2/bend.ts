@@ -706,6 +706,34 @@ export function term_strip<X>(tm: TermOf<X>): TermOf<X> {
 }
 
 export function term_higher(tm: LTerm, env: Env = null): HTerm {
+  // Deep Ctr spines (e.g. unary Succ numerals hundreds deep) blow the call
+  // stack; process them with an explicit machine instead of .map recursion.
+  if (tm.$ === "Ctr") {
+    type Fr = { k: string, s: Span, kids: LTerm[], env: Env, acc: HTerm[], i: number };
+    const c0 = tm as Extract<LTerm, { $: "Ctr" }>;
+    const stack: Fr[] = [{ k: c0.k, s: tm.s, kids: c0.x as LTerm[], env, acc: [], i: 0 }];
+    let done: HTerm | null = null;
+    outer: while (stack.length > 0) {
+      const fr = stack[stack.length - 1];
+      while (fr.i < fr.kids.length) {
+        const ch = fr.kids[fr.i];
+        if (ch.$ === "Ctr") {
+          const c = ch as Extract<LTerm, { $: "Ctr" }>;
+          stack.push({ k: c.k, s: ch.s, kids: c.x as LTerm[], env: fr.env, acc: [], i: 0 });
+          continue outer;
+        }
+        fr.acc.push(term_higher(ch, fr.env));
+        fr.i++;
+      }
+      const built = Ctr(fr.k, fr.acc, fr.s);
+      stack.pop();
+      if (stack.length === 0) { done = built; break; }
+      const parent = stack[stack.length - 1];
+      parent.acc.push(built);
+      parent.i++;
+    }
+    return done!;
+  }
   switch (tm.$) {
     case "Var": {
       if (tm.i < 0) {
@@ -799,6 +827,33 @@ export function term_higher(tm: LTerm, env: Env = null): HTerm {
 
 export function term_lower(term: HTerm, d: number = 0): LTerm {
   const tm = term_force(term);
+  // Deep Ctr spines blow the call stack; same explicit machine as higher.
+  if (tm.$ === "Ctr") {
+    type Fr = { k: string, s: Span, kids: HTerm[], d: number, acc: LTerm[], i: number };
+    const c0 = tm as Extract<HTerm, { $: "Ctr" }>;
+    const stack: Fr[] = [{ k: c0.k, s: tm.s, kids: c0.x as HTerm[], d, acc: [], i: 0 }];
+    let done: LTerm | null = null;
+    outer: while (stack.length > 0) {
+      const fr = stack[stack.length - 1];
+      while (fr.i < fr.kids.length) {
+        const ch = fr.kids[fr.i];
+        if ((ch as HTerm).$ === "Ctr") {
+          const c = ch as Extract<HTerm, { $: "Ctr" }>;
+          stack.push({ k: c.k, s: (ch as HTerm).s, kids: c.x as HTerm[], d: fr.d, acc: [], i: 0 });
+          continue outer;
+        }
+        fr.acc.push(term_lower(ch, fr.d));
+        fr.i++;
+      }
+      const built = Ctr(fr.k, fr.acc, fr.s);
+      stack.pop();
+      if (stack.length === 0) { done = built; break; }
+      const parent = stack[stack.length - 1];
+      parent.acc.push(built);
+      parent.i++;
+    }
+    return done!;
+  }
   switch (tm.$) {
     case "Var": {
       return Var(tm.k, tm.i, tm.s);
@@ -2794,6 +2849,46 @@ export function patt_mark(x: PVar, rows: Rows): Quant {
 }
 
 export function patt_term(q: Patt, s?: Span): LTerm {
+  if (q.$ === "PCtr" && q.x.length > 1 && (q.x[1] as Patt).$ === "PCtr") {
+    const chain: Array<Extract<Patt, { $: "PCtr" }>> = [];
+    let cur: Patt = q;
+    while (cur.$ === "PCtr" && cur.x.length > 1 && (cur.x[1] as Patt).$ === "PCtr") {
+      const c = cur as Extract<Patt, { $: "PCtr" }>;
+      chain.push(c);
+      cur = c.x[1] as Patt;
+    }
+    let res: LTerm = patt_term(cur, s);
+    for (let i = chain.length - 1; i >= 0; i--) {
+      const c = chain[i];
+      const tail = res;
+      const head = patt_term(c.x[0] as Patt, s);
+      res = Ctr(c.k, [head, tail], s ?? c.s);
+    }
+    return res;
+  }
+  // Also handle PCtr with many x where one x is a deep chain (e.g., Fly with 9 x, one being Con list)
+  if (q.$ === "PCtr" && q.x.some((x: Patt) => x.$ === "PCtr" && (x as any).x?.length > 1 && (x as any).x[1]?.$ === "PCtr")) {
+    const xs: LTerm[] = [];
+    for (const x of q.x) xs.push(patt_term(x as Patt, s));
+    return Ctr(q.k, xs, s ?? q.s);
+  }
+  if (q.$ === "PCtr" && q.x.length > 0 && (q.x[0] as Patt).$ === "PCtr") {
+    const chain: Array<Extract<Patt, { $: "PCtr" }>> = [];
+    let cur: Patt = q;
+    while (cur.$ === "PCtr" && cur.x.length > 0 && (cur.x[0] as Patt).$ === "PCtr") {
+      const c = cur as Extract<Patt, { $: "PCtr" }>;
+      chain.push(c);
+      cur = c.x[0] as Patt;
+    }
+    let res: LTerm = patt_term(cur, s);
+    for (let i = chain.length - 1; i >= 0; i--) {
+      const c = chain[i];
+      const xs: LTerm[] = [res];
+      for (let j = 1; j < c.x.length; j++) xs.push(patt_term(c.x[j] as Patt, s));
+      res = Ctr(c.k, xs, s ?? c.s);
+    }
+    return res;
+  }
   switch (q.$) {
     case "PVar": {
       return Var(q.k, q.i, s ?? q.s);

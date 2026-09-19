@@ -183,6 +183,10 @@ def IO.print_err(text: String) -> IO(Unit):
   import "./effs/print_err.c"
   import "./effs/print_err.js"
 
+def IO.read_line() -> IO(Maybe<&1, String>):
+  import "./effs/read_line.c"
+  import "./effs/read_line.js"
+
 def IO.get_env(name: String) -> IO(Result<&1, &1, U32 & String, String>):
   import "./effs/get_env.c"
   import "./effs/get_env.js"

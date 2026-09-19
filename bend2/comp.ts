@@ -791,15 +791,22 @@ function term_kids(cf: Carb, tm: HTerm): HTerm[] {
 // tail position (under annotations, binders, arms and let bodies).
 function term_any(cf: Carb, t: HTerm, p: (s: HTerm, tail: boolean) => boolean,
   tail = true, seen: Set<HTerm> = new Set()): boolean {
-  const s = Bend.term_force(t);
-  if (seen.has(s)) {
-    return false;
+  const stack: Array<[HTerm, boolean]> = [[t, tail]];
+  while (stack.length > 0) {
+    const [cur, curTail] = stack.pop()!;
+    const s = Bend.term_force(cur);
+    if (seen.has(s)) continue;
+    seen.add(s);
+    if (p(s, curTail)) return true;
+    const kids = term_kids(cf, s);
+    for (let i = kids.length - 1; i >= 0; i--) {
+      const x = kids[i];
+      const childTail = curTail
+        && (s.$ === "Let" ? i === kids.length - 1 : "Ann Lam Mat Rwt".includes(s.$));
+      stack.push([x, childTail]);
+    }
   }
-  seen.add(s);
-  const kids = term_kids(cf, s);
-  return p(s, tail) || kids.some((x, i) => term_any(cf, x, p, tail
-    && (s.$ === "Let" ? i === kids.length - 1 : "Ann Lam Mat Rwt".includes(s.$)),
-  seen));
+  return false;
 }
 
 function term_const(t: HTerm): boolean {
@@ -1421,14 +1428,14 @@ function carb_book(src: Bend.Book, roots: Bend.Name[]): Carb {
     const own: Src = { refs: new Set(), deps: new Set(), flat: done_live(tld) };
     SRCS.set(d, own);
     for (const x of tld?.$ === "ADT" ? tld.c : tld ? [tld] : []) {
-      queue.push(...type_adts(cb, x.T));
+      for (const adt of type_adts(cb, x.T)) queue.push(adt);
     }
     if (!done_live(tld)) {
       continue;
     }
     term_any(cb, tld.h as HTerm, (s, tail) => {
       if (s.$ === "Ann") {
-        queue.push(...type_adts(cb, s.T));
+        for (const adt of type_adts(cb, s.T)) queue.push(adt);
       }
       if (s.$ === "Ref") {
         if (s.b) {
@@ -1449,21 +1456,32 @@ function carb_book(src: Bend.Book, roots: Bend.Name[]): Carb {
       }
       return false;
     });
-    queue.push(...own.refs);
+    for (const dep of own.refs) queue.push(dep);
   }
   return cb;
 }
 
 // The datatypes a type mentions
 function type_adts(cb: Carb, T: HTerm): Bend.Name[] {
-  const t = ty_wnf(cb.book, T);
-  switch (t?.$) {
-    case "All": return [...type_adts(cb, t.A), ...type_adts(cb, t.B(DUMMY))];
-    case "Lam": return type_adts(cb, t.f(DUMMY));
-    case "ADT": return WORDS[t.k] !== undefined || t.k === "Array" ? []
-      : [t.k, ...t.x.flatMap((x) => type_adts(cb, x))];
-    default: return [];
+  const out: Bend.Name[] = [];
+  const stack: HTerm[] = [T];
+  const seen = new Set<HTerm>();
+  while (stack.length > 0) {
+    const cur = stack.pop()!;
+    if (seen.has(cur)) continue;
+    seen.add(cur);
+    const t = ty_wnf(cb.book, cur);
+    if (t?.$ === "All") {
+      stack.push(t.B(DUMMY), t.A);
+    } else if (t?.$ === "Lam") {
+      stack.push(t.f(DUMMY));
+    } else if (t?.$ === "ADT") {
+      if (WORDS[t.k] !== undefined || t.k === "Array") continue;
+      out.push(t.k);
+      for (let i = t.x.length - 1; i >= 0; i--) stack.push(t.x[i]);
+    }
   }
+  return out;
 }
 
 // Flat
@@ -2953,6 +2971,60 @@ function js_ctr(fl: File, k: Bend.Name): Bend.Name[] {
   return ctr_tail(fl.book, ctr).filter(live_dom).map(([, n]) => n);
 }
 
+// A constructor tree emitted iteratively: deep Ctr nesting in elaborated
+// terms blows the call stack through .map recursion, so descend with an
+// explicit machine. Identical output to the recursive walk.
+function js_ctr_tree(fl: File, root: Of<"Ctr">, ty0: HTerm | null): string {
+  type Fr = { node: Of<"Ctr">; ty: HTerm | null; adt: HAdt;
+    kids: HTerm[] | null; acc: string[]; i: number };
+  const stack: Fr[] = [{ node: root, ty: ty0, adt: null as unknown as HAdt,
+    kids: null, acc: [], i: 0 }];
+  let done: string | null = null;
+  outer: while (stack.length > 0) {
+    const fr = stack[stack.length - 1];
+    if (fr.kids === null) {
+      const [adt, u] = ctr_adt(fl, fr.node, fr.ty);
+      if (u !== null) {
+        const v = adt.k === "F32" ? Bend.f32_from_bits(u) : u;
+        const s = Object.is(v, -0) ? "-0" : String(v);
+        stack.pop();
+        if (stack.length === 0) { done = s; break; }
+        const parent = stack[stack.length - 1];
+        parent.acc.push(s);
+        parent.i++;
+        continue;
+      }
+      fr.adt = adt;
+      fr.kids = ctr_flds(fl.book, fr.node.k, fr.node.x);
+    }
+    while (fr.i < (fr.kids as HTerm[]).length) {
+      const ch = (fr.kids as HTerm[])[fr.i];
+      if (ch.$ === "Ctr") {
+        stack.push({ node: ch as Of<"Ctr">, ty: null, adt: null as unknown as HAdt,
+          kids: null, acc: [], i: 0 });
+        continue outer;
+      }
+      fr.acc.push(js_expr(fl, ch, null));
+      fr.i++;
+    }
+    const native = OPTIMIZED[fr.adt.k];
+    let s: string;
+    if (native !== undefined) {
+      s = tpl(native.intr[fr.node.k] ?? die(fr.node.k + NATIVE_DIE), fr.acc);
+    } else {
+      const keys = js_ctr(fl, fr.node.k);
+      s = fr.acc.reduce((e, z, j) => e + ", [\"" + keys[j] + "\"]: " + z,
+        "{$: \"" + name_own(fr.node.k, fl.book.tlds[fr.adt.k], " +") + "\"") + "}";
+    }
+    stack.pop();
+    if (stack.length === 0) { done = s; break; }
+    const parent = stack[stack.length - 1];
+    parent.acc.push(s);
+    parent.i++;
+  }
+  return done!;
+}
+
 function js_expr(fl: File, tm: HTerm,
   ty0: HTerm | null): string {
   const [x, ty] = ty_peel(tm, ty0);
@@ -2981,20 +3053,7 @@ function js_expr(fl: File, tm: HTerm,
       return js_call(fl, m.t.k, m.args, false);
     }
     case "Ctr": {
-      const [adt, u] = ctr_adt(fl, x, ty);
-      if (u !== null) {
-        const v = adt.k === "F32" ? Bend.f32_from_bits(u) : u;
-        return Object.is(v, -0) ? "-0" : String(v);
-      }
-      const exprs = ctr_flds(fl.book, x.k, x.x)
-        .map((f) => js_expr(fl, f, null));
-      const native = OPTIMIZED[adt.k];
-      if (native !== undefined) {
-        return tpl(native.intr[x.k] ?? die(x.k + NATIVE_DIE), exprs);
-      }
-      const keys = js_ctr(fl, x.k);
-      return exprs.reduce((e, z, j) => e + ", [\"" + keys[j] + "\"]: " + z,
-        "{$: \"" + name_own(x.k, fl.book.tlds[adt.k], " +") + "\"") + "}";
+      return js_ctr_tree(fl, x, ty);
     }
     case "Let": return js_expr(fl, js_open(fl, x), ty);
     case "Lam": case "Mat": case "Efq": {
@@ -6223,7 +6282,8 @@ function io_park_on(fd, out, k, more) {
   globalThis.BEND_IO.waits.push({ fd: fd, out: out, k: k, more: more });
 }
 
-function io_run(m) {
+// Yield parked IO to the host: native code polls, browsers await timers.
+function* io_steps(m) {
   const io = { runs: [], live: 0, waits: [] };
   globalThis.BEND_IO = io;
   try {
@@ -6237,7 +6297,7 @@ function io_run(m) {
           io_errs("bend: deadlock: every computation waits on a channel");
           return 1;
         }
-        io_wait(io);
+        yield io;
         continue;
       }
       const s = io.runs.shift();
@@ -6279,6 +6339,14 @@ function io_run(m) {
     }
     io_errs("bend: ${ERRS[2]}");
     return 1;
+  }
+}
+
+function io_run(m) {
+  const steps = io_steps(m);
+  for (let step = steps.next();; step = steps.next()) {
+    if (step.done) return step.value;
+    io_wait(step.value);
   }
 }
 

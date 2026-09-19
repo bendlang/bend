@@ -107,6 +107,65 @@ With `LAWS.bend`, *"make no mistakes"* becomes enforceable.
 
 # Get Started
 
+### Browser playground
+
+With [Bun](https://bun.sh) installed, run from a source checkout:
+
+```sh
+bun bend2/main.ts
+# or choose a port:
+bun bend2/main.ts playground --port 3000
+```
+
+Open the printed localhost URL and write Bend on the left. Four actions run
+entirely in your browser:
+
+- **Run interpreted** evaluates a pure `main` with Bend’s kernel interpreter.
+  IO programs need the JavaScript runtime; this action explains that in Results.
+- **Compile to JS and run** generates JavaScript and executes it in a fresh
+  browser worker (also Cmd/Ctrl+Enter).
+- **Compile to JS** generates JavaScript source without executing it.
+- **Compile to C** generates C source without executing it or generating JS.
+
+The **Results** tab shows execution output and errors; **Compiled source** shows
+the generated code. The server only serves assets. You can cancel any action
+and copy or download either tab. Your last program is saved in your browser.
+Each action stops after 30 seconds; execution output is limited to 1 MiB.
+
+The playground includes `import Base` and Base’s effect sources. Other local
+files and hub imports are not available. Browser execution supports pure
+results, standard output/error, timers, fibers, channels, and standard input:
+`IO.read_line()` reads one line per call, `None{}` past the end. The Stdin box
+prefills input; when it runs out the running program asks you for a line
+(Send) and EOF ends input. Pick Ask me next to the box to ignore it and
+always wait for you. Window programs run too: `Window.open` shows a Display
+tab with a canvas (click it for keyboard and mouse), frames render from the
+program's quadtree images, and closing comes from the app itself. Append
+`?debug=true` to the URL for a pipeline log (key captures, worker messages,
+frame and input-request traffic) in a Debug bar — or flip the Debug toggle
+in the status bar. Link a demo directly with `?demo=app_ray_tracer_3d`
+(the address bar stays in sync as you switch). Effects
+requiring native files, sockets, or system calls report a runtime error. C source can be downloaded and built with a C
+compiler; it is not executed in the browser.
+
+Static hosting needs no backend after one build:
+
+```sh
+bun bend2/play/export.ts ./play-dist
+```
+
+Serve the five files with any static host; they work at a domain root or
+under a subpath.
+
+The Start-with menu also lists the repo demos: `demos/<name>/main.bend` is
+fetched as a static file, so multi-file demos (like the slash boss with its
+`bend3d.bend` helper) load all their parts. Demos marked "needs native" use
+socket effects: they compile to JS/C in the browser but only run
+as native binaries. The `app_*` graphical demos run in the Display tab.
+
+Existing CLI commands such as `bun bend2/main.ts file.bend -o file.js` continue
+to work.
+
 ### 1. Install:
 
 ```bash

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f5f0">
+  <title>Bend Playground</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23185747'/%3E%3Cpath d='M10 7v18h7a6 6 0 0 0 0-12h-7m0 6h7' fill='none' stroke='%23fff' stroke-width='3'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/style.css">
+  <script src="./vendor/ace.js"></script>
+  <script src="./vendor/theme-chrome.js"></script>
+  <script src="./vendor/mode-bend.js"></script>
+  <script type="module" src="/client.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Bend playground home"><span class="brand-mark">b</span>bend<span class="brand-divider">/</span><span class="brand-page">playground</span></a>
+    <nav><a href="https://bend-lang.com" target="_blank" rel="noreferrer">About Bend <span aria-hidden="true">↗</span></a><a href="https://github.com/bendlang/bend" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a></nav>
+  </header>
+  <main>
+    <section class="intro">
+      <div><p class="eyebrow"><span class="live-dot"></span> A LITTLE SPACE TO EXPERIMENT</p><h1>Think it. Type it. <span>Compile it.</span></h1><p class="description">Explore Bend, one program at a time. The compiler runs right in your browser.</p></div>
+      <div class="intro-note"><span class="note-symbol" aria-hidden="true">⌘</span><span>Small language.<br>Parallel possibilities.</span></div>
+    </section>
+    <section class="workspace" aria-label="Bend compiler playground">
+      <div class="toolbar">
+        <div class="example-control"><label for="example">Start with</label><select id="example"><option value="hello">Hello, Bend</option><option value="numbers">Working with numbers</option><option value="lists">A list of possibilities</option><option value="calc">Reading standard input</option><option value="error">Find the type error</option><option value="lits">01 Literals</option><option value="affine">02 Affine use</option><option value="quant">03 Quantities</option><option value="closure">04 Closures</option><option value="shape">05 Data and match</option><option value="natrec">06 Nat recursion</option><option value="dowork">07 Do-block IO</option><option value="maybe">08 Maybe monad</option><option value="pcall">09 Parallel calls</option><option value="gpu">10 GPU mark</option><option value="forkjoin">11 Fork and join</option><option value="chan">12 Channels</option><option value="pred">13 Predicate types</option><option value="law">14 Laws and induction</option><option value="witness">15 Witnesses</option><option value="rewrite">16 Rewriting</option><option value="form">17 Logic in data</option><option value="modal">18 Sealed fragment</option><option value="split">19 Split state</option><option value="dual">20 Dual numbers</option><optgroup label="Demos"><option value="demo:pure_par_sum">Parallel sum</option><option value="demo:pure_par_sort">Parallel sort</option><option value="demo:pure_hvm5_mini">HVM mini</option><option value="demo:proof_insertion_sort">Insertion sort</option><option value="demo:proof_numerics">Numerics</option><option value="demo:proof_typed_eval">Typed eval</option><option value="demo:io_hello_world">Hello IO</option><option value="demo:app_triangle_2d">Triangle</option><option value="demo:app_pong_game_2d">Pong</option><option value="demo:app_win_is_bug_2d">WinIsBug</option><option value="demo:app_ray_tracer_3d">Ray tracer</option><option value="demo:app_slash_boss_3d">Slash boss</option><option value="demo:io_http_fetch">HTTP fetch · needs native</option><option value="demo:io_http_server">HTTP server · needs native</option><option value="demo:io_tcp_echos">TCP echo · needs native</option></optgroup></select></div>
+        <div class="compile-controls" role="group" aria-label="Program actions"><button id="interpret" class="secondary" disabled>Run interpreted</button><button id="compile-run" class="primary" disabled>Compile to JS and run</button><button id="compile-js" class="secondary" disabled>Compile to JS</button><button id="compile-c" class="secondary" disabled>Compile to C</button><button id="cancel" class="quiet" hidden>Cancel</button></div>
+      </div>
+      <div class="editors">
+        <section class="pane source-pane" aria-labelledby="source-title">
+          <div class="pane-header"><h2 id="source-title"><span class="file-icon" aria-hidden="true">≡</span>main.bend</h2><span class="pane-label">SOURCE</span><button id="reset" class="text-button" title="Restore the selected example">Reset</button></div>
+          <div class="editor-body"><div id="source" role="textbox" aria-label="Bend source code"></div></div>
+          <div class="pane-footer"><span><span class="tiny-dot"></span>Bend</span><span id="cursor">Ln 1, Col 1</span></div>
+        </section>
+        <section class="pane output-pane" aria-label="Program output">
+          <div class="pane-header output-header"><div class="output-tabs" role="tablist" aria-label="Program output"><button id="tab-results" role="tab" aria-selected="true" aria-controls="panel-results">Results</button><button id="tab-compiled" role="tab" aria-selected="false" aria-controls="panel-compiled" tabindex="-1">Compiled source</button><button id="tab-display" role="tab" aria-selected="false" aria-controls="panel-display" tabindex="-1">Display</button></div><div class="output-actions"><button id="copy" class="text-button" disabled>Copy</button><button id="download" class="text-button" disabled>Download <span aria-hidden="true">↓</span></button></div></div>
+          <div class="output-body"><div id="panel-results" role="tabpanel" aria-labelledby="tab-results"><textarea id="results" aria-label="Execution results and compiler errors" readonly spellcheck="false" wrap="off" placeholder="Click Compile to JS and run to see your program’s output. Compiler errors appear here too."></textarea></div><div id="panel-compiled" role="tabpanel" aria-labelledby="tab-compiled" hidden><textarea id="output" aria-label="Compiled source" readonly spellcheck="false" wrap="off" placeholder="Generated source will appear here after compilation."></textarea></div><div id="panel-display" role="tabpanel" aria-labelledby="tab-display" hidden><div class="screen-well"><canvas id="screen" tabindex="0" aria-label="Program display: click for keyboard and mouse"></canvas></div></div></div>
+          <div class="pane-footer"><span id="output-state">Waiting for your program</span><span id="output-size">—</span></div>
+        </section>
+      </div>
+      <div class="stdinbar"><label for="stdin">Stdin</label><textarea id="stdin" aria-label="Standard input for IO.read_line" spellcheck="false" wrap="off" placeholder="Prefilled lines for IO.read_line, one per line. When they run out the program asks you below."></textarea><div class="stdin-mode" role="radiogroup" aria-label="Standard input mode"><label><input type="radio" name="stdin-mode" value="prefill" checked> Prefill</label><label><input type="radio" name="stdin-mode" value="ask" title="Ignore the box: the worker waits and asks you per line."> Ask me</label></div></div>
+      <div class="auxbar" id="auxbar" hidden></div>
+      <div class="inputbar" id="inputbar" hidden><label for="inputline">Input</label><input id="inputline" aria-label="Type a line for the running program" autocomplete="off" spellcheck="false" placeholder="Program is waiting for input…"><button id="send" class="secondary">Send</button><button id="eof" class="quiet">EOF</button></div>
+      <div class="statusbar"><div id="status" role="status" aria-live="polite"><span class="status-dot"></span><span id="status-text">Loading the compiler…</span></div><span class="shortcut-hint"><kbd id="shortcut">⌘ Enter</kbd> to compile to JS and run</span><label class="debug-toggle" title="Show the pipeline debug log"><input type="checkbox" id="debugtoggle"> Debug</label></div>
+      <div class="debugbar" id="debugbar" hidden><label>Debug</label><pre id="debuglog" aria-label="Pipeline debug log"></pre></div>
+    </section>
+    <footer class="page-footer"><span><span aria-hidden="true">◉</span> Compiled locally. Your code stays in your browser.</span><span>Made for a parallel world.</span></footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,59 @@
+import * as Bend from "../bend.ts";
+import * as Comp from "../comp.ts";
+import { writeFileSync } from "./platform.ts";
+
+self.onmessage = async (event: MessageEvent) => {
+  const { id, files, action } = event.data as { id: number; files: Record<string, string>; action: string };
+  const debug = (event.data as { debug?: boolean }).debug === true;
+  const dbg = (msg: string) => {
+    if (debug) self.postMessage({ type: "dbg", from: "compiler", msg });
+  };
+  const start = performance.now();
+  try {
+    if (typeof files !== "object" || files === null || !(["interpret", "compile-run", "compile-js", "compile-c"].includes(action))) {
+      throw new Error("Invalid playground action.");
+    }
+    const names = Object.keys(files);
+    if (!names.includes("/main.bend") || names.length > 16) {
+      throw new Error("Invalid playground files.");
+    }
+    for (const [name, source] of Object.entries(files)) {
+      if (typeof source !== "string" || source.length > 1024 * 1024) {
+        throw new Error("Invalid playground file: " + name);
+      }
+      writeFileSync(name, source);
+    }
+    dbg(`loaded ${Object.keys(files).join(", ")} for ${action}`);
+    const book = Bend.book_nil();
+    await Bend.book_load(book, "/main.bend", "", new Map());
+    Bend.book_valid(book);
+    const holes = book.hols + book.open;
+    if (holes) throw new Error(`${holes} unfinished TODO${holes === 1 ? "" : "s"}. Complete the program before compiling.`);
+    const main = book.tlds.main;
+    if (!main || main.$ !== "Def") throw new Error("Define a main function to compile this program.");
+    let output: string;
+    if (action === "interpret") {
+      if (Comp.io_type(book) !== null) {
+        throw new Error("The kernel interpreter evaluates pure main results. IO programs use the JavaScript runtime; choose Compile to JS and run.");
+      }
+      if (main.v === null) throw new Error("The interpreter needs a defined main body.");
+      const value = Bend.term_snf(book, main.v);
+      output = Bend.term_show(Bend.term_lower(value)) + "\n";
+      if (output.length > 1024 * 1024) output = output.slice(0, 1024 * 1024) + "\n[Output truncated at 1 MiB.]\n";
+    } else {
+      output = action === "compile-c" ? Comp.compile_book(book) : Comp.js_book(book);
+    }
+    self.postMessage({ type: "result", id, ok: true, output,
+      elapsed: performance.now() - start, bytes: new TextEncoder().encode(output).length });
+    dbg(`done ok in ${(performance.now() - start).toFixed(0)} ms`);
+  } catch (e) {
+    if (debug && e instanceof RangeError && (e as Error).stack) {
+      dbg(`RangeError stack: ${(e as Error).stack!.split("\n").slice(0, 20).join(" | ")}`);
+    }
+    const error = e as Bend.Err;
+    const output = error?.$ === "Err" ? Bend.err_show(error)
+      : e instanceof RangeError ? "This program hit the browser's call-stack limit — common for large demos like Parallel Sort. Try 'Compile to JS and run' (not 'Run interpreted') or split a long definition into smaller helpers. It builds fine natively: bend file.bend -o out."
+      : e instanceof Error ? e.message : String(e);
+  }
+};
+self.postMessage({ type: "ready" });

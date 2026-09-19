@@ -42,6 +42,8 @@ allow("bend2/bend.lean", 400000);
 allow("bend2/bend.ts", 41000);
 allow("bend2/comp.ts", 62000);
 allow("bend2/main.ts", 10000);
+allow(/^bend2\/play\/[a-z]+\.(ts|html|css)$/, 10000);
+allow(/^bend2\/play\/vendor\/[a-z0-9_.-]+\.js$/, 600000, true);
 allow(/^bend2\/effs\/[a-z0-9_]+\.(c|js)$/, 4000);
 allow(/^bend2\/pack\/(\.gitignore|package\.json|tsconfig\.json|bun\.lock)$/, 1000);
 allow(/^bend2\/docs\/(BendRT|BendTT)\/(main\.typ|refs\.bib)$/, 60000);
