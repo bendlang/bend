@@ -135,7 +135,7 @@ def Fly.count(within: Bool, now: Nat, s: Fly) -> Fly:
 
 def Fly.clock(+now: Nat, +s: Fly) -> Fly:
   Fly{x, y, z, yaw, pitch, held, t0, frames, fps} = s
-  Fly.count(Nat.is_lt(Nat.sub(now, t0), 1000n), now,
+  Fly.count(Nat.is_lt(Nat.sub(now, t0), Nat.mul(10n, 100n)), now,
     Fly{x, y, z, yaw, pitch, held, t0, (frames + 1 : U32), fps})
 
 def Fly.tick(events: List<Event>, s: Fly) -> IO(Maybe<Fly>):
