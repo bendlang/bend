@@ -1,4 +1,6 @@
 import assert from "node:assert/strict";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import test from "node:test";
 import { formatBend } from "../formatter.js";
 
@@ -71,4 +73,22 @@ test("keeps parallel execution call suffixes glued", () => {
 test("leaves unterminated literals unchanged", () => {
   const source = "def main() -> String:\n  \"unfinished";
   assert.equal(formatBend(source), source);
+});
+
+test("is idempotent across the Bend test corpus", () => {
+  const root = path.resolve("../../tests");
+  const files: string[] = [];
+  const visit = (directory: string): void => {
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const at = path.join(directory, entry.name);
+      if (entry.isDirectory()) visit(at);
+      else if (entry.name.endsWith(".bend")) files.push(at);
+    }
+  };
+  visit(root);
+  assert.ok(files.length > 20);
+  for (const file of files) {
+    const once = formatBend(fs.readFileSync(file, "utf8"));
+    assert.equal(formatBend(once), once, file);
+  }
 });
