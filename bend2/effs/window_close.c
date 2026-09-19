@@ -37,6 +37,15 @@ static void window_close(intptr_t at) {
   free(win);
 }
 
+#elif defined(__EMSCRIPTEN__)
+
+static void window_close(intptr_t at) {
+  BendWin* win = (BendWin*)at;
+  free(win->pix);
+  free(win->evs);
+  free(win);
+}
+
 #else
 
 static void window_close(intptr_t at) {

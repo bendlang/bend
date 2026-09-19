@@ -232,6 +232,121 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
   return 0;
 }
 
+#elif defined(__EMSCRIPTEN__)
+
+// The browser window: the page's <canvas id="bend"> (made if absent),
+// drawn on the main thread, since the program runs on a worker, and the
+// events it pumped since the last frame, five words each (kind, a, b,
+// c, d) as on the Mac; BendWin and window_rgba are the runtime's.
+
+// The page's side, on the main thread: the canvas and its listeners,
+// with the Mac's key codes (a key's character in lower case, the
+// function keys' private-use characters, a modifier's 65536 + its key
+// code) and its buttons (0 left, 1 right, 2 middle).
+EM_JS(int, window_js_open, (const char* title, u32 w, u32 h), {
+  if (typeof document !== "object") {
+    return 0;
+  }
+  var c = document.getElementById("bend");
+  if (c === null) {
+    c = document.body.appendChild(document.createElement("canvas"));
+    c.id = "bend";
+  }
+  c.width    = w;
+  c.height   = h;
+  c.tabIndex = 0;
+  document.title = UTF8ToString(title);
+  var evs = Module.bendEvs;
+  if (!evs) {
+    evs = Module.bendEvs = [];
+    var keys = { Escape: 27, Enter: 13, Tab: 9, Backspace: 127,
+      ArrowUp: 63232, ArrowDown: 63233, ArrowLeft: 63234, ArrowRight: 63235,
+      Insert: 63271, Delete: 63272, Home: 63273, End: 63275, PageUp: 63276,
+      PageDown: 63277, MetaRight: 65590, MetaLeft: 65591, ShiftLeft: 65592,
+      CapsLock: 65593, AltLeft: 65594, ControlLeft: 65595, ShiftRight: 65596,
+      AltRight: 65597, ControlRight: 65598 };
+    var key = function(ev, down) {
+      var k = ev.key;
+      var f = /^F([0-9]+)$/.exec(k);
+      var code = keys[ev.code] || keys[k] || (f ? 63235 + Number(f[1])
+        : k.length === 1 ? k.toLowerCase().codePointAt(0) : 65536 + ev.keyCode);
+      evs.push(0, code, down, 0, 0);
+      if (!ev.metaKey && !ev.ctrlKey && !f) {
+        ev.preventDefault();
+      }
+    };
+    var at = function(ev) {
+      var r = c.getBoundingClientRect();
+      var x = Math.floor((ev.clientX - r.left) * c.width / r.width);
+      var y = Math.floor((ev.clientY - r.top) * c.height / r.height);
+      return [Math.max(0, Math.min(x, c.width - 1)),
+        Math.max(0, Math.min(y, c.height - 1))];
+    };
+    var mouse = function(ev, down) {
+      var p = at(ev);
+      evs.push(1, p[0], p[1], ev.button === 2 ? 1 : ev.button === 1 ? 2 : 0,
+        down);
+      c.focus();
+    };
+    window.addEventListener("keydown", function(ev) { key(ev, 1); });
+    window.addEventListener("keyup", function(ev) { key(ev, 0); });
+    c.addEventListener("mousedown", function(ev) { mouse(ev, 1); });
+    c.addEventListener("mouseup", function(ev) { mouse(ev, 0); });
+    c.addEventListener("mousemove", function(ev) {
+      var p = at(ev);
+      evs.push(2, p[0], p[1], 0, 0);
+    });
+    c.addEventListener("contextmenu", function(ev) { ev.preventDefault(); });
+    Module.bendClose = function() { evs.push(3, 0, 0, 0, 0); };
+  }
+  evs.length = 0;
+  c.focus();
+  return 1;
+});
+
+// A frame, on the display's next tick (as the Mac's display sync): the
+// pixels onto the canvas, the events pumped since the last frame into
+// evs (at most cap of them), and their count plus one into got, which
+// the worker waits on; bendFrames counts the frames for the page.
+EM_JS(void, window_js_show, (u32* pix, u32 w, u32 h, u32* evs, u32 cap,
+  u32* got), {
+  requestAnimationFrame(function() {
+    var img = Module.bendImg;
+    if (!img || img.width !== w || img.height !== h) {
+      img = Module.bendImg = new ImageData(w, h);
+      Module.bendCtx = document.getElementById("bend").getContext("2d");
+    }
+    img.data.set(HEAPU8.subarray(pix, pix + w * h * 4));
+    Module.bendCtx.putImageData(img, 0, 0);
+    Module.bendFrames = (Module.bendFrames | 0) + 1;
+    var q = Module.bendEvs;
+    var n = Math.min(q.length / 5, cap);
+    HEAPU32.set(q.splice(0, n * 5), evs >> 2);
+    Atomics.store(HEAP32, got >> 2, n + 1);
+    Atomics.notify(HEAP32, got >> 2);
+  });
+});
+
+static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
+  const char** why) {
+  if (w < 1 || h < 1 || w > 16384 || h > 16384) {
+    return EINVAL;
+  }
+  if (!MAIN_THREAD_EM_ASM_INT({ return window_js_open($0, $1, $2); },
+    title, w, h)) {
+    *why = "Window.open: no document (the page runs the program off a worker with no DOM)";
+    return ENOTSUP;
+  }
+  BendWin* win = io_mem(calloc(1, sizeof *win));
+  win->w   = w;
+  win->h   = h;
+  win->pix = io_mem(calloc((u64)w * h, 4));
+  win->cap = 1024;
+  win->evs = io_mem(calloc(win->cap * 5, 4));
+  *out = (intptr_t)win;
+  return 0;
+}
+
 #else
 
 static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,

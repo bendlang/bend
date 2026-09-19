@@ -164,7 +164,8 @@ machine without a GPU runs `!` on the CPU (still in parallel). What the lanes
 share also sets the speed: a `+` value read by every lane costs an atomic per
 read. Read `bend guide shaders` before you write a parallel app.
 
-The JavaScript target ignores all that and just runs sequentially.
+The JavaScript target ignores all that and just runs sequentially; a web
+page built with `-o file.html` runs it on every core, as a binary does.
 
 ### Arrays
 
@@ -496,6 +497,7 @@ bend file.bend            # check; run main (IO compiled; a value normalized)
 bend file.bend -o file    # compile to a native binary (clang 14+; 19+ with `!`)
 bend file.bend -o file.c  # emit the C source instead
 bend file.bend -o file.js # emit the JS source instead
+bend file.bend -o file.html # build a web page (WebAssembly on every core; emcc)
 bend page.html -o dist    # bundle a web page that imports .bend files
 ./file --threads 8        # run a native binary on 8 CPU threads
 ./file --gpu off          # run ! calls on the CPU (the GPU is on by default)
@@ -507,7 +509,12 @@ by the checker (slow for big work) and printed; a file with no `main` just
 checks. A binary that uses `!` builds its GPU program too, as `file.gpu`, which
 must stay beside it: on macOS it needs Metal, on Linux CUDA 12 at
 `/usr/local/cuda`. On Linux a program with a Window needs `libx11-dev`, one
-with Audio `libasound2-dev`. `bend guide` prints this text, `bend base` prints
+with Audio `libasound2-dev`. A page (`-o file.html`, with its .js and .wasm
+beside it) is the same runtime as WebAssembly, a worker per core, and a
+Window draws on its canvas; it needs Emscripten 3.1.35+ and a server that
+sends the `Cross-Origin-Opener-Policy: same-origin` and
+`Cross-Origin-Embedder-Policy: require-corp` headers, since threads need
+cross-origin isolation. A `!` runs on the cores there. `bend guide` prints this text, `bend base` prints
 the Base library (`bend base Map` prints one name and everything under it), and
 `bend --help` lists the other commands.
 

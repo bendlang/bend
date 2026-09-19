@@ -2808,8 +2808,8 @@ function compile_tables(fl: File, entries: Seg[]): string[] {
     `(V)[${j}] = ${r};`).join(" ")}`, "",
   `#define WL_TAKE(V) ${rs.slice(0, resw).map((r, j) =>
     `${r} = (V)[${j}];`).join(" ")}`, "",
-  `#define WL_SIG Env e, Stk sp, u32 seq, u32 rn, ${ws.map((w) =>
-    "Term " + w).join(", ")}`, "", `#define WL_ALL e, sp, seq, rn, ${ws
+  `#define WL_SIG WL_ENV_SIG, Stk sp, u32 seq, u32 rn, ${ws.map((w) =>
+    "Term " + w).join(", ")}`, "", `#define WL_ALL WL_ENV_ALL, sp, seq, rn, ${ws
     .join(", ")}`, "",
   `#define WL_TABLE ${entries.map((s) => `WL_X(${s.fid})`).join(" ")}`
     + " WL_X(FID_EXIT)");
@@ -3186,6 +3186,10 @@ using namespace metal;
 #include <sys/mman.h>
 #include <time.h>
 #include <poll.h>
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#include <emscripten/threading.h>
+#endif
 #ifdef __APPLE__
 #include <mach-o/dyld.h>
 #endif
@@ -3280,7 +3284,17 @@ using namespace metal;
 #define UNLOCK(l)  __atomic_store_n(&(l), 0, __ATOMIC_RELEASE)
 #define WL_FN      static PRESERVE(preserve_none) __attribute__((noinline)) Reply
 #define WL_CASE(F) WL_FN WL_##F(WL_SIG)
-#define WL_OPEN    { WL_BANK u32 rn;
+#define WL_OPEN    { WL_ENV_OPEN WL_BANK u32 rn;
+// wasm passes a struct through the frame a tail call pops: two words
+#ifdef __EMSCRIPTEN__
+#define WL_ENV_SIG  Corpus e_mem, DEV u64* e_alc
+#define WL_ENV_ALL  e.mem, e.alc
+#define WL_ENV_OPEN Env e = { e_mem, e_alc };
+#else
+#define WL_ENV_SIG  Env e
+#define WL_ENV_ALL  e
+#define WL_ENV_OPEN
+#endif
 #define WL_JMP(F)  __attribute__((musttail)) return WL_##F(WL_ALL)
 #define WL_DYN(F)  __attribute__((musttail)) return wl_tab[F](WL_ALL)
 #endif
@@ -3418,6 +3432,16 @@ typedef u32* Cur;
 #define NCLS      8
 #define NCLS_ALL  32
 #define IO_HELP   64
+// wasm32 commits what it maps
+#ifdef __EMSCRIPTEN__
+#define STACK_LEN  (1ull << 24)
+#define CORPUS_LEN (1ull << 30)
+#define CORPUS_MIN (1ull << 28)
+#else
+#define STACK_LEN  (1ull << 31)
+#define CORPUS_LEN (1ull << 43)
+#define CORPUS_MIN (1ull << 33)
+#endif
 
 #define ALC_WORDS NCLS_ALL
 #define TG_HOLD   2304
@@ -4566,7 +4590,7 @@ extern "C" __global__ void bend_dev(Corpus H, u32 pass) {
 // pixels itself. An Image is a quadtree over 2^k x 2^k: a Qua at level
 // i splits its square in four (tl, tr, bl, br), a Qua under the pixels
 // follows tl, a Pix is 0xRRGGBB.
-#if defined(__linux__) || defined(__CUDACC_RTC__)
+#if defined(__linux__) || defined(__CUDACC_RTC__) || defined(__EMSCRIPTEN__)
 
 INLINE u32 window_pix(Corpus H, Term t, u32 k, u32 x, u32 y) {
   for (u32 i = k; term_tag(t) == TAG_CTR;) {
@@ -4580,6 +4604,33 @@ INLINE u32 window_pix(Corpus H, Term t, u32 k, u32 x, u32 y) {
   }
   return (u32)term_loc(t) & 0xFFFFFF;
 }
+
+#ifdef __EMSCRIPTEN__
+// A page's window: canvas size, RGBA pixels, the frame's events (at
+// most cap) and their count plus one
+typedef struct {
+  u32  w;
+  u32  h;
+  u32* pix;
+  u32  cap;
+  u32* evs;
+  u32  got;
+} BendWin;
+
+static void window_rgba(Corpus H, Term root, BendWin* win) {
+  u32 k = 0;
+  while ((1u << k) < win->w || (1u << k) < win->h) {
+    k += 1;
+  }
+  for (u32 y = 0; y < win->h; y += 1) {
+    for (u32 x = 0; x < win->w; x += 1) {
+      u32 c = window_pix(H, root, k, x, y);
+      win->pix[y * win->w + x] = 0xFF000000 | (c >> 16) | (c & 0xFF00)
+        | ((c << 16) & 0xFF0000);
+    }
+  }
+}
+#endif
 
 #ifdef __CUDACC_RTC__
 extern "C" __global__ void window_dev(Corpus H, Term root, u32 w, u32 h,
@@ -4642,7 +4693,7 @@ static void* pool_mmap(u64 bytes) {
 }
 
 static Term* pool_stack(void) {
-  u64   len = 1ull << 31;
+  u64   len = STACK_LEN;
   char* p   = pool_mmap(len + 16384 + SIGSTKSZ);
   if (mprotect(p + len, 16384, PROT_NONE) != 0) {
     err_fail("stack guard failed");
@@ -5079,13 +5130,13 @@ static void cube_run(Corpus H, bool gpu) {
 static Corpus corpus_setup(bool gpu, long threads, u64 bytes) {
   io_gpu     = gpu;
   KEEP_WORDS = gpu ? CHUNK : CAP_WORDS;
-  u64 dflt   = gpu ? gpu_span() : 1ull << 43;
+  u64 dflt   = gpu ? gpu_span() : CORPUS_LEN;
   u64 size   = (gpu && bytes != 0 ? bytes : dflt) & ~16383ull;
   // The cores reserve the whole Loc space (8 TiB, MAP_NORESERVE). A kernel
   // with fewer address bits (39-bit arm64, Sv39) or a ulimit -v gets the
   // largest power of two that fits, down to 8 GiB.
   CORPUS = gpu ? gpu_map(size) : pool_try(size);
-  while (CORPUS == MAP_FAILED && size > 1ull << 33) {
+  while (CORPUS == MAP_FAILED && size > CORPUS_MIN) {
     CORPUS = pool_try(size /= 2);
   }
   if (CORPUS == MAP_FAILED) {
