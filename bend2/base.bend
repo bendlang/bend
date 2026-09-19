@@ -317,6 +317,11 @@ def TCP.recv(sock: Socket, max: U32) ->
   import "./effs/tcp_recv.c"
   import "./effs/tcp_recv.js"
 
+def TCP.poll(sock: Socket, max: U32, ms: U32) ->
+  IO(Socket & Result<&1, &1, U32 & String, Maybe<&1, String>>):
+  import "./effs/tcp_poll.c"
+  import "./effs/tcp_poll.js"
+
 def UDP.bind(port: U32) -> IO(Result<&1, &1, U32 & String, Socket>):
   import "./effs/udp_bind.c"
   import "./effs/udp_bind.js"
