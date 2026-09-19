@@ -70,6 +70,9 @@ allow(/^media\/slash_boss_3d\/[a-z_]+\.wav$/, 400000, true);
 allow(/^gates\/(_lib|_run|perf|ping|repo|test)\.ts$/, 6000);
 allow(/^tests\/[a-z]+\/[a-z0-9_]+\.bend$/, 16000);
 allow(/^tests\/[a-z]+\/[a-z0-9_]+\.(c|js)$/, 8000);
+allow(/^tools\/bend-fmt-lsp\/(\.gitignore|README\.md|package\.json|package-lock\.json|tsconfig\.json)$/, 4000);
+allow(/^tools\/bend-fmt-lsp\/src\/(formatter|server)\.ts$/, 8000);
+allow(/^tools\/bend-fmt-lsp\/src\/test\/[a-z_]+\.test\.ts$/, 4000);
 
 // Gate
 // ====

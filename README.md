@@ -202,6 +202,7 @@ def add_zero(x):
 - Paper: [BendRT: A Parallel Runtime for CPUs and GPUs](paper/BendRT.pdf).
 - Formalization: [bend.lean](bend2/bend.lean), Bend's core in Lean.
 - Benches: [bench/](bench), every bench used to make the charts above.
+- Formatter: [bend-fmt-lsp](tools/bend-fmt-lsp), a formatting-only Bend 2 language server.
 
 # Community
 
@@ -242,8 +243,9 @@ def add_zero(x):
 - A binary needs clang 14+; ! needs 19+, Metal or CUDA 12.
 - No Windows (WSL works); on Linux, Window and Audio need X11 and ALSA headers.
 - The hub has no names, versions, accounts or search yet. Packages are hashes.
-- Error messages are terse; no debugger, profiler, formatter, REPL or LSP.
-- No editor support, no test framework and no documentation beyond the guide.
+- Error messages are terse; no debugger, profiler or REPL.
+- Editor support is limited to formatting; there is no completion, hover or diagnostics LSP.
+- No test framework and no documentation beyond the guide.
 - And more that escape me. Be patient, report bugs and request features!
 
 Most of these limitations are being addressed and will improve over time!
