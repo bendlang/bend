@@ -1773,6 +1773,35 @@ def Utf8.Dec.eof(dec: Utf8.Dec) -> Bool:
   Dec{pend, need} = dec
   U32.is_eq(need, 4)
 
+# File.fold_text folds step over a file's File.read_text chunks (max bytes
+# each, fuel chunks at most) and closes it; a read error dies as IO.try.
+def File.fold_text.end(-S: Type, eof: Bool, file: File, dec: Utf8.Dec, st: S,
+  again: File -> Utf8.Dec -> S -> IO(S)) -> IO(S):
+  match eof:
+    case True{}:
+      IO.bind(Unit, S, File.close(file), u => IO.pure(S, st))
+    case False{}:
+      again(file, dec, st)
+
+def File.fold_text.go(-S: Type, step: S -> String -> S, st: S,
+  again: File -> Utf8.Dec -> S -> IO(S), got: Utf8.Dec.Out(File)) -> IO(S):
+  (file, r) = got
+  match r:
+    case Fail{(code, msg)}:
+      IO.die(S, code, msg)
+    case Done{(+dec, text)}:
+      File.fold_text.end(S, Utf8.Dec.eof(dec), file, dec, step(st, text), again)
+
+def File.fold_text(~S: Type, ~step: S -> String -> S, fuel: Nat, file: File,
+  dec: Utf8.Dec, +max: U32, st: S) -> IO(S):
+  match fuel:
+    case 0n:
+      IO.die(S, 1, "File.fold_text: out of fuel")
+    case 1n+left:
+      IO.bind(Utf8.Dec.Out(File), S, File.read_text(file, dec, max),
+        File.fold_text.go(S, step, st,
+          f => d => s => File.fold_text(~S, ~step, left, f, d, max, s)))
+
 def String.append(a: String, b: String) -> String:
   match a:
     case SNil{}:
