@@ -441,7 +441,7 @@ const exampleStdin: Record<string, string> = {
 // Demo dir -> label plus extra files the demo's main imports. Sources ship
 // as static files; the picker fetches them into the editor and the aux map,
 // and run() posts the whole set to the worker's memory filesystem.
-const demos: Record<string, { label: string; aux: Record<string, string>; sim?: (w: number, h: number) => string[][] }> = {
+const demos: Record<string, { label: string; aux: Record<string, string>; sim?: { extract: string | null; makeEdits: (w: number, h: number) => string[][] } }> = {
   "demo:pure_par_sum": { label: "Parallel sum", aux: {} },
   "demo:pure_par_sort": { label: "Parallel sort", aux: {} },
   "demo:pure_hvm5_mini": { label: "HVM mini", aux: {} },
@@ -453,14 +453,20 @@ const demos: Record<string, { label: string; aux: Record<string, string>; sim?: 
   "demo:app_pong_game_2d": { label: "Pong", aux: {} },
   "demo:app_win_is_bug_2d": { label: "WinIsBug", aux: {} },
   "demo:app_ray_tracer_3d": { label: "Ray tracer", aux: {},
-    sim: (w: number, h: number) => {
-      let depth = 0;
-      let cover = 1;
-      while (cover < Math.max(w, h) && depth < 12) { cover *= 2; depth++; }
-      return [
-        ["Fly\\.scene!\\(\\d+n,", `Fly.scene!(${depth}n,`],
-        ["\"Fly\", \\d+, \\d+,", `"Fly", ${w}, ${h},`],
-      ];
+    sim: {
+      extract: "\"Fly\", (\\d+), (\\d+),",
+      makeEdits: (w: number, h: number) => {
+        let depth = 0;
+        let cover = 1;
+        while (cover < Math.max(w, h) && depth < 12) { cover *= 2; depth++; }
+        const hud = Math.max(w, h) < 512 ? "0" : null;
+        const edits = [
+          ["Fly\\.scene!\\(\\d+n,", `Fly.scene!(${depth}n,`],
+          ["\"Fly\", \\d+, \\d+,", `"Fly", ${w}, ${h},`],
+        ];
+        if (hud !== null) edits.push(["\\(\\(x < 96\\) && \\(y < 40\\) : U32\\)", "False{}"]);
+        return edits;
+      },
     } },
   "demo:app_slash_boss_3d": { label: "Slash boss", aux: { "bend3d.bend": "demos/app_slash_boss_3d/bend3d.bend" } },
   "demo:io_http_fetch": { label: "HTTP fetch · needs native", aux: {} },
@@ -1019,13 +1025,28 @@ async function reset(): Promise<void> {
         aux[name] = await load(route);
       }
       renderSim();
-      const fn = demos[example.value].sim;
-      const { w: sw, h: sh } = simWH();
-      if (fn && sw > 0 && sh > 0) {
-        for (const [pattern, replacement] of fn(sw, sh)) {
-          source.value = source.value.replace(new RegExp(pattern), replacement);
+      const cfg = demos[example.value].sim;
+      if (cfg) {
+        // Initialize the inputs from the source so the UI is the truth.
+        if (cfg.extract) {
+          const found = source.value.match(new RegExp(cfg.extract));
+          if (found && !get<HTMLInputElement>("simw").value) {
+            get<HTMLInputElement>("simw").value = found[1];
+          }
+          if (found && !get<HTMLInputElement>("simh").value) {
+            get<HTMLInputElement>("simh").value = found[2];
+          }
         }
-        source.value = `# sim ${sw}x${sh} (adapted from the repo demo)\n` + source.value;
+        const { w: sw, h: sh } = simWH();
+        if (sw > 0 && sh > 0) {
+          const before = source.value;
+          for (const [pattern, replacement] of cfg.makeEdits(sw, sh)) {
+            source.value = source.value.replace(new RegExp(pattern), replacement);
+          }
+          if (source.value !== before) {
+            source.value = `# sim ${sw}x${sh} (adapted from the repo demo)\n` + source.value;
+          }
+        }
       }
       auxFiles = aux;
       renderAux();
@@ -1057,6 +1078,16 @@ for (const id of ["simw", "simh"]) {
       await reset();
       run();
     }
+  });
+}
+for (const b of document.querySelectorAll<HTMLButtonElement>("#sim-wrap [data-sim]")) {
+  b.addEventListener("click", async () => {
+    const v = b.dataset.sim!;
+    get<HTMLInputElement>("simw").value = v;
+    get<HTMLInputElement>("simh").value = v;
+    persist(); syncURL();
+    await reset();
+    run();
   });
 }
 get("reset").addEventListener("click", reset);
