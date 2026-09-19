@@ -782,15 +782,22 @@ function term_kids(cf: Carb, tm: HTerm): HTerm[] {
 // tail position (under annotations, binders, arms and let bodies).
 function term_any(cf: Carb, t: HTerm, p: (s: HTerm, tail: boolean) => boolean,
   tail = true, seen: Set<HTerm> = new Set()): boolean {
-  const s = Bend.term_force(t);
-  if (seen.has(s)) {
-    return false;
+  const stack: Array<[HTerm, boolean]> = [[t, tail]];
+  while (stack.length > 0) {
+    const [cur, curTail] = stack.pop()!;
+    const s = Bend.term_force(cur);
+    if (seen.has(s)) continue;
+    seen.add(s);
+    if (p(s, curTail)) return true;
+    const kids = term_kids(cf, s);
+    for (let i = kids.length - 1; i >= 0; i--) {
+      const x = kids[i];
+      const childTail = curTail
+        && (s.$ === "Let" ? i === kids.length - 1 : "Ann Lam Mat Rwt".includes(s.$));
+      stack.push([x, childTail]);
+    }
   }
-  seen.add(s);
-  const kids = term_kids(cf, s);
-  return p(s, tail) || kids.some((x, i) => term_any(cf, x, p, tail
-    && (s.$ === "Let" ? i === kids.length - 1 : "Ann Lam Mat Rwt".includes(s.$)),
-  seen));
+  return false;
 }
 
 function term_const(t: HTerm): boolean {
@@ -1411,14 +1418,14 @@ function carb_book(src: Bend.Book, roots: Bend.Name[]): Carb {
     const own: Src = { refs: new Set(), deps: new Set(), flat: done_live(tld) };
     SRCS.set(d, own);
     for (const x of tld?.$ === "ADT" ? tld.c : tld ? [tld] : []) {
-      queue.push(...type_adts(cb, x.T));
+      for (const adt of type_adts(cb, x.T)) queue.push(adt);
     }
     if (!done_live(tld)) {
       continue;
     }
     term_any(cb, tld.h as HTerm, (s, tail) => {
       if (s.$ === "Ann") {
-        queue.push(...type_adts(cb, s.T));
+        for (const adt of type_adts(cb, s.T)) queue.push(adt);
       }
       if (s.$ === "Ref") {
         if (s.b) {
@@ -1439,21 +1446,32 @@ function carb_book(src: Bend.Book, roots: Bend.Name[]): Carb {
       }
       return false;
     });
-    queue.push(...own.refs);
+    for (const dep of own.refs) queue.push(dep);
   }
   return cb;
 }
 
 // The datatypes a type mentions
 function type_adts(cb: Carb, T: HTerm): Bend.Name[] {
-  const t = ty_wnf(cb.book, T);
-  switch (t?.$) {
-    case "All": return [...type_adts(cb, t.A), ...type_adts(cb, t.B(DUMMY))];
-    case "Lam": return type_adts(cb, t.f(DUMMY));
-    case "ADT": return WORDS[t.k] !== undefined || t.k === "Array" ? []
-      : [t.k, ...t.x.flatMap((x) => type_adts(cb, x))];
-    default: return [];
+  const out: Bend.Name[] = [];
+  const stack: HTerm[] = [T];
+  const seen = new Set<HTerm>();
+  while (stack.length > 0) {
+    const cur = stack.pop()!;
+    if (seen.has(cur)) continue;
+    seen.add(cur);
+    const t = ty_wnf(cb.book, cur);
+    if (t?.$ === "All") {
+      stack.push(t.B(DUMMY), t.A);
+    } else if (t?.$ === "Lam") {
+      stack.push(t.f(DUMMY));
+    } else if (t?.$ === "ADT") {
+      if (WORDS[t.k] !== undefined || t.k === "Array") continue;
+      out.push(t.k);
+      for (let i = t.x.length - 1; i >= 0; i--) stack.push(t.x[i]);
+    }
   }
+  return out;
 }
 
 // Flat

@@ -47,11 +47,13 @@ self.onmessage = async (event: MessageEvent) => {
       elapsed: performance.now() - start, bytes: new TextEncoder().encode(output).length });
     dbg(`done ok in ${(performance.now() - start).toFixed(0)} ms`);
   } catch (e) {
+    if (debug && e instanceof RangeError && (e as Error).stack) {
+      dbg(`RangeError stack: ${(e as Error).stack!.split("\n").slice(0, 20).join(" | ")}`);
+    }
     const error = e as Bend.Err;
     const output = error?.$ === "Err" ? Bend.err_show(error)
       : e instanceof RangeError ? "This program hit the browser's call-stack limit — common for large demos like Parallel Sort. Try 'Compile to JS and run' (not 'Run interpreted') or split a long definition into smaller helpers. It builds fine natively: bend file.bend -o out."
       : e instanceof Error ? e.message : String(e);
-    self.postMessage({ type: "result", id, ok: false, output, elapsed: performance.now() - start });
   }
 };
 self.postMessage({ type: "ready" });
