@@ -467,7 +467,15 @@ function renderAux(): void {
   }));
 }
 const storageKey = "bend.playground.v1";
-const DEBUG = new URLSearchParams(location.search).get("debug") === "true";
+let DEBUG = new URLSearchParams(location.search).get("debug") === "true";
+function syncURL(): void {
+  const params = new URLSearchParams(location.search);
+  if (DEBUG) params.set("debug", "true");
+  else params.delete("debug");
+  if (example.value in demos) params.set("demo", example.value.slice("demo:".length));
+  else params.delete("demo");
+  history.replaceState(null, "", location.pathname + (params.toString() ? "?" + params : ""));
+}
 function dlog(msg: string): void {
   if (!DEBUG) return;
   const log = get("debuglog");
@@ -712,6 +720,8 @@ try {
   const saved = JSON.parse(localStorage.getItem(storageKey) ?? "null");
   if (saved && typeof saved.source === "string") source.value = saved.source;
   if (saved?.example in examples || saved?.example in demos) example.value = saved.example;
+  const demoParam = new URLSearchParams(location.search).get("demo");
+  if (demoParam && "demo:" + demoParam in demos) example.value = "demo:" + demoParam;
   if (saved && typeof saved.stdin === "string") stdinBox.value = saved.stdin;
   const mode = saved && (saved.mode === "ask" || saved.mode === "prefill") ? saved.mode : null;
   if (mode) {
@@ -886,6 +896,7 @@ async function reset(): Promise<void> {
   source.scrollTop = source.scrollLeft = 0;
   source.setSelectionRange(0, 0);
   edit();
+  syncURL();
 }
 example.addEventListener("change", reset);
 get("reset").addEventListener("click", reset);
@@ -909,9 +920,16 @@ download.addEventListener("click", () => {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 });
 edit();
+get("debugtoggle").checked = DEBUG;
 if (DEBUG) {
   get("debugbar").hidden = false;
   dlog("[page] debug on (?debug=true)");
 }
+get<HTMLInputElement>("debugtoggle").addEventListener("change", () => {
+  DEBUG = get<HTMLInputElement>("debugtoggle").checked;
+  get("debugbar").hidden = !DEBUG;
+  if (DEBUG) dlog("[page] debug on (toggle)");
+  syncURL();
+});
 if (example.value in demos) reset();
 restart();

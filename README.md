@@ -142,7 +142,9 @@ always wait for you. Window programs run too: `Window.open` shows a Display
 tab with a canvas (click it for keyboard and mouse), frames render from the
 program's quadtree images, and closing comes from the app itself. Append
 `?debug=true` to the URL for a pipeline log (key captures, worker messages,
-frame and input-request traffic) in a Debug bar. Effects
+frame and input-request traffic) in a Debug bar — or flip the Debug toggle
+in the status bar. Link a demo directly with `?demo=app_ray_tracer_3d`
+(the address bar stays in sync as you switch). Effects
 requiring native files, sockets, or system calls report a runtime error. C source can be downloaded and built with a C
 compiler; it is not executed in the browser.
 
