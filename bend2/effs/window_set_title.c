@@ -36,6 +36,13 @@ static void window_set_title(intptr_t at, const char* text, u64 n) {
   XFlush(win->dpy);
 }
 
+#elif defined(__EMSCRIPTEN__)
+
+static void window_set_title(intptr_t at, const char* text, u64 n) {
+  MAIN_THREAD_EM_ASM({ document.title = UTF8ToString($0, $1); }, text,
+    (u32)n);
+}
+
 #else
 
 static void window_set_title(intptr_t at, const char* text, u64 n) {

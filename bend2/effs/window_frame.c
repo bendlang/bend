@@ -3,7 +3,7 @@
 
 // An event is five words: kind (0 key, 1 mouse, 2 move, 3 close) and
 // its fields; a frame answers the events pumped since the last one.
-#if defined(__OBJC__) || defined(__linux__)
+#if defined(__OBJC__) || defined(__linux__) || defined(__EMSCRIPTEN__)
 
 static Term window_node(Env e, const u32* ev) {
   static const u32 cids[3] = { CID_KEY, CID_MOUSE, CID_MOVE };
@@ -348,6 +348,22 @@ static Term window_frame(Env e, intptr_t at, Term image) {
   Term list = window_list(e, win->evs, win->n);
   win->n = 0;
   return list;
+}
+
+#elif defined(__EMSCRIPTEN__)
+
+// The page shows the pixels on its next tick and hands back the events.
+static Term window_frame(Env e, intptr_t at, Term image) {
+  BendWin* win = (BendWin*)at;
+  io_sync();
+  window_rgba(e.mem, image, win);
+  a32_store(&win->got, 0);
+  MAIN_THREAD_ASYNC_EM_ASM({ window_js_show($0, $1, $2, $3, $4, $5); },
+    win->pix, win->w, win->h, win->evs, win->cap, &win->got);
+  while (a32_load_acq(&win->got) == 0) {
+    emscripten_futex_wait(&win->got, 0, 1000);
+  }
+  return window_list(e, win->evs, win->got - 1);
 }
 
 #else

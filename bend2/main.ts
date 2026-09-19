@@ -36,7 +36,8 @@ const HELP = `Bend ${VERSION}: check, run, build and publish Bend programs.
 usage:
   bend <file.bend> [args]     check the file, then run main with args
                               (IO.args; a "--" ends bend's own options)
-  bend <file.bend> -o <out>   build a binary; <out>.c emits C, <out>.js JS
+  bend <file.bend> -o <out>   build a binary; <out>.c emits C, <out>.js JS,
+                              <out>.html a web page (WebAssembly; emcc)
   bend <file.bend> --checkup  check and run each import alone
   bend <file.bend> --publish  publish the file and its imports to the hub
   bend <page.html> -o <dir>   bundle a page that imports .bend files
@@ -46,6 +47,43 @@ usage:
   bend --version              print the version
 
 Read the guide (\`bend guide\`) before writing Bend code.
+`;
+
+// PAGE is the web page a build writes beside its .js and .wasm: the canvas a
+// Window draws on and a line per print. Its threads need cross-origin
+// isolation, so it must be served with the two headers named below.
+const PAGE = `<!doctype html>
+<meta charset="utf-8">
+<title>NAME</title>
+<style>
+  body { margin: 0; padding: 16px; background: #111; color: #ccc; display: flex;
+    flex-direction: column; align-items: center; gap: 12px;
+    font: 14px/1.4 ui-monospace, monospace; }
+  canvas { max-width: 100%; image-rendering: pixelated; outline: none; }
+  pre { margin: 0; white-space: pre-wrap; max-width: 100%; }
+</style>
+<canvas id="bend"></canvas>
+<pre id="bend-out"></pre>
+<script>
+  // ?threads=N runs on N cores. The page needs the headers
+  // Cross-Origin-Opener-Policy: same-origin and
+  // Cross-Origin-Embedder-Policy: require-corp for its threads.
+  var threads = new URLSearchParams(location.search).get("threads");
+  var bendSay = function(text) {
+    document.getElementById("bend-out").textContent += text + "\\n";
+  };
+  var Module = {
+    arguments: threads === null ? [] : ["--threads", threads],
+    print: bendSay,
+    printErr: bendSay,
+    onExit: function(code) { bendSay("exit " + code); },
+  };
+  if (!crossOriginIsolated) {
+    bendSay("no threads: the page needs the Cross-Origin-Opener-Policy: "
+      + "same-origin and Cross-Origin-Embedder-Policy: require-corp headers");
+  }
+</script>
+<script src="NAME.js"></script>
 `;
 
 const BASE = Bend.BASE_BEND;
@@ -292,7 +330,11 @@ function cli_emit(book: Bend.Book, out: string): void {
     const c   = path.join(dir, path.basename(out) + ".c");
     fs.writeFileSync(c, Comp.compile_book(book));
     try {
-      cli_build(out, c);
+      if (out.endsWith(".html")) {
+        cli_build_web(out, c);
+      } else {
+        cli_build(out, c);
+      }
     } finally {
       fs.rmSync(dir, { recursive: true, force: true });
     }
@@ -362,6 +404,25 @@ function cli_build(bin: string, file: string): void {
       throw "Error: " + path.basename(cmd) + " failed to build " + bin;
     }
   }
+}
+
+// cli_build_web builds the C file at `file` into the page `page`, its .js
+// and .wasm beside it: emcc (Emscripten 3.1.35+, for tail calls) compiles the
+// runtime to WebAssembly, a worker a core (a `!` runs on them), and the page
+// (PAGE) holds the canvas a Window draws on. The memory is 2 GiB, fixed, as
+// wasm32 commits what it maps.
+function cli_build_web(page: string, file: string): void {
+  const base = page.slice(0, -".html".length);
+  const emcc = process.env.EMCC || "emcc";
+  const args = ["-std=gnu11", "-O3", "-pthread", "-mtail-call", file, "-lm",
+    "-sPROXY_TO_PTHREAD", "-sPTHREAD_POOL_SIZE=navigator.hardwareConcurrency+4",
+    "-sINITIAL_MEMORY=2147483648", "-sENVIRONMENT=web,worker",
+    "-sEXIT_RUNTIME=1", "-o", path.resolve(base + ".js")];
+  if (child.spawnSync(emcc, args, { stdio: "inherit" }).status !== 0) {
+    throw "Error: " + emcc + " failed to build " + page
+      + " (a page needs Emscripten 3.1.35+ on PATH, or at $EMCC)";
+  }
+  fs.writeFileSync(page, PAGE.replaceAll("NAME", path.basename(base)));
 }
 
 // cli_base prints the base library; with --types, its type declarations
