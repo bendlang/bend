@@ -101,9 +101,10 @@ static void window_pipe(id<MTLDevice> dev) {
 
 static void window_pump(void) {
   @autoreleasepool {
+    NSDate* due = [NSDate dateWithTimeIntervalSinceNow:0.002];
     for (;;) {
       NSEvent* ev = [NSApp nextEventMatchingMask:NSEventMaskAny
-        untilDate:NSDate.distantPast inMode:NSDefaultRunLoopMode dequeue:YES];
+        untilDate:due inMode:NSDefaultRunLoopMode dequeue:YES];
       if (ev == nil) {
         break;
       }
