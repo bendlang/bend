@@ -158,6 +158,8 @@ const BOX: Lay = { ks: ["box"], arms: null };
 
 const W64: Lay = { ks: ["w64"], arms: null };
 
+const MAX_INLINE_FIELDS = 16;
+
 const WORDS: Record<string, Lay> = { U32: W32, F32: W32, Nat: W64 };
 
 const ERRS = ("|*|*|out of memory: run again with a bigger span, as in"
@@ -613,6 +615,8 @@ const NODES: Map<Bend.Name, Lay> = new Map();
 
 const CYCLES: Map<Bend.Name, boolean> = new Map();
 
+const LAYS: Map<string, Lay> = new Map();
+
 const CONSTS: Map<HTerm, boolean> = new Map();
 
 // Name
@@ -940,10 +944,21 @@ function lay_of(book: Bend.Book, A: HTerm | null): Lay {
   if (t === null) {
     return BOX;
   }
+  const key = Bend.term_show(Bend.term_lower(t), -1, [], true);
+  const got = LAYS.get(key);
+  if (got !== undefined) {
+    return got;
+  }
   const tld = book.tlds[t.k];
-  return WORDS[t.k] ?? (t.k === "Array" || t.k === "IO.OP" || tld?.$ !== "ADT"
+  const out = WORDS[t.k] ?? (t.k === "Array" || t.k === "IO.OP" || tld?.$ !== "ADT"
     || lay_cyclic(book, t.k) ? BOX : lay_pack(tld.c.map((c): Arm =>
     ({ k: c.k, fs: lay_fields(book, ctr_doms(book, c, t.x)) }))));
+  if (out.ks.length > MAX_INLINE_FIELDS) {
+    LAYS.set(key, BOX);
+    return BOX;
+  }
+  LAYS.set(key, out);
+  return out;
 }
 
 function lay_fields(book: Bend.Book, As: (HTerm | null)[]): Field[] {
@@ -2827,6 +2842,7 @@ function compile_segs(fl: File): string {
 }
 
 export function compile_book(book: Bend.Book): string {
+  LAYS.clear();
   const show = show_main(book);
   const cb = carb_book(book, ["main", ...RUNTIME_ADTS]);
   const facts = () => JSON.stringify([[...cb.own], [...cb.hot],
