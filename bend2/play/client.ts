@@ -4,6 +4,7 @@ const get = <T extends HTMLElement>(id: string) => document.getElementById(id) a
 const source = get<HTMLTextAreaElement>("source");
 const output = get<HTMLTextAreaElement>("output");
 const results = get<HTMLTextAreaElement>("results");
+const stdinBox = get<HTMLTextAreaElement>("stdin");
 const example = get<HTMLSelectElement>("example");
 type Action = "interpret" | "compile-run" | "compile-js" | "compile-c";
 const actions: Action[] = ["interpret", "compile-run", "compile-js", "compile-c"];
@@ -43,6 +44,66 @@ def main() -> U32:
 def main() -> U32:
   "not a number"
 `,
+  calc: `import Base
+
+# A calculator: each IO.read_line takes one line from Stdin.
+# Try 40 and 2, then Compile to JS and run.
+def calc.usage() -> IO(U32):
+  do IO<U32>:
+    u : Unit <- IO.print("usage: enter two numbers, one per line")
+    return 0
+
+def calc.bad() -> IO(U32):
+  do IO<U32>:
+    u : Unit <- IO.print("not a number")
+    return 0
+
+def calc.done(n: U32, m: Maybe<&2, U32>) -> IO(U32):
+  match m:
+    case None{}:
+      calc.bad()
+    case Some{k}:
+      do IO<U32>:
+        u : Unit <- IO.print(U32.show(U32.add(n, k)))
+        return 0
+
+def calc.with_n(n: U32, y: String) -> IO(U32):
+  calc.done(n, U32.read(y))
+
+def calc.with_m(m: Maybe<&2, U32>, y: String) -> IO(U32):
+  match m:
+    case None{}:
+      calc.bad()
+    case Some{n}:
+      calc.with_n(n, y)
+
+def calc.with_xy(x: String, y: String) -> IO(U32):
+  calc.with_m(U32.read(x), y)
+
+def calc.with_x(x: String, b: Maybe<&1, String>) -> IO(U32):
+  match b:
+    case None{}:
+      calc.usage()
+    case Some{y}:
+      calc.with_xy(x, y)
+
+def calc.go(a: Maybe<&1, String>, b: Maybe<&1, String>) -> IO(U32):
+  match a:
+    case None{}:
+      calc.usage()
+    case Some{x}:
+      calc.with_x(x, b)
+
+def main() -> IO(U32):
+  do IO<U32>:
+    a : Maybe<&1, String> <- IO.read_line()
+    b : Maybe<&1, String> <- IO.read_line()
+    n : U32 <- calc.go(a, b)
+    return n
+`,
+};
+const exampleStdin: Record<string, string> = {
+  calc: "40\n2\n",
 };
 const storageKey = "bend.playground.v1";
 let worker: Worker;
@@ -92,7 +153,10 @@ for (const name of ["results", "compiled"] as const) {
   });
 }
 function persist(): void {
-  try { localStorage.setItem(storageKey, JSON.stringify({ source: source.value, example: example.value })); } catch {}
+  try { localStorage.setItem(storageKey, JSON.stringify({ source: source.value, example: example.value, stdin: stdinBox.value, mode: stdinMode() })); } catch {}
+}
+function stdinMode(): string {
+  return document.querySelector<HTMLInputElement>('input[name="stdin-mode"]:checked')?.value ?? "prefill";
 }
 function position(): void {
   const before = source.value.slice(0, source.selectionStart);
@@ -113,6 +177,7 @@ function finish(message: string, failed = false): void {
   clearTimeout(timer);
   runner?.terminate();
   runner = undefined;
+  get("inputbar").hidden = true;
   busy = false;
   results.className = failed ? "error" : "";
   get("output-state").textContent = stale() ? "Source changed · run or compile to update" : message;
@@ -140,6 +205,15 @@ function execute(javascript: string, compileTime: number): void {
       results.value += data.text;
       results.scrollTop = results.scrollHeight;
       controls();
+    } else if (data.type === "input-request") {
+      const bar = get("inputbar");
+      const line = get<HTMLInputElement>("inputline");
+      if (bar.hidden) {
+        bar.hidden = false;
+        get("output-state").textContent = "Waiting for input…";
+        status("Waiting for input…", "busy");
+      }
+      line.focus();
     } else if (data.type === "done") {
       if (!results.value) results.value = "Program finished without output.\n";
       finish(`Exit ${data.code} · ran in ${elapsed(data.elapsed)} · compiled in ${elapsed(compileTime)}`, data.code !== 0);
@@ -150,13 +224,14 @@ function execute(javascript: string, compileTime: number): void {
     results.value += (event.message || "The execution worker stopped.") + "\n";
     finish("Execution failed", true);
   };
-  runner.postMessage({ javascript });
+  runner.postMessage({ javascript, stdin: stdinMode() === "ask" ? "" : stdinBox.value });
   timer = setTimeout(() => stop("Execution stopped after 30 seconds."), 30_000);
 }
 function restart(message?: string, runWhenReady?: Action): void {
   worker?.terminate();
   runner?.terminate();
   runner = undefined;
+  get("inputbar").hidden = true;
   clearTimeout(timer);
   generation += 1;
   request += 1;
@@ -233,12 +308,30 @@ try {
   const saved = JSON.parse(localStorage.getItem(storageKey) ?? "null");
   if (saved && typeof saved.source === "string") source.value = saved.source;
   if (saved?.example in examples) example.value = saved.example;
+  if (saved && typeof saved.stdin === "string") stdinBox.value = saved.stdin;
+  const mode = saved && (saved.mode === "ask" || saved.mode === "prefill") ? saved.mode : null;
+  if (mode) {
+    const radio = document.querySelector<HTMLInputElement>(`input[name="stdin-mode"][value="${mode}"]`);
+    if (radio) radio.checked = true;
+  }
+  if (stdinMode() === "ask") {
+    stdinBox.placeholder = "Ask-me mode: the box is ignored, the worker waits and asks you per line.";
+  }
 } catch {}
 source.setSelectionRange(0, 0);
 const mac = /Mac|iPhone|iPad/.test(navigator.platform);
 get("shortcut").textContent = mac ? "⌘ Enter" : "Ctrl Enter";
 get("compile-run").title = (mac ? "⌘ Enter" : "Ctrl Enter") + " to compile to JavaScript and run";
 source.addEventListener("input", edit);
+stdinBox.addEventListener("input", persist);
+for (const radio of document.querySelectorAll<HTMLInputElement>('input[name="stdin-mode"]')) {
+  radio.addEventListener("change", () => {
+    stdinBox.placeholder = stdinMode() === "ask"
+      ? "Ask-me mode: the box is ignored, the worker waits and asks you per line."
+      : "Prefilled lines for IO.read_line, one per line. When they run out the program asks you below.";
+    persist();
+  });
+}
 source.addEventListener("scroll", () => { numbers.scrollTop = source.scrollTop; });
 for (const event of ["click", "keyup", "select"]) source.addEventListener(event, position);
 source.addEventListener("keydown", (event) => {
@@ -260,11 +353,33 @@ document.addEventListener("keydown", (event) => {
     run();
   }
 });
+function sendInput(): void {
+  if (!busy || !runner) return;
+  runner.postMessage({ text: get<HTMLInputElement>("inputline").value });
+  get<HTMLInputElement>("inputline").value = "";
+  get("output-state").textContent = "Running JavaScript…";
+  status("Running JavaScript…", "busy");
+  get<HTMLInputElement>("inputline").focus();
+}
+function sendEOF(): void {
+  if (!busy || !runner) return;
+  runner.postMessage({ eof: true });
+  get("inputbar").hidden = true;
+}
 for (const action of actions) get(action).addEventListener("click", () => run(action));
+get("send").addEventListener("click", sendInput);
+get("eof").addEventListener("click", sendEOF);
+get<HTMLInputElement>("inputline").addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    sendInput();
+  }
+});
 cancel.addEventListener("click", () => stop(phase === "Running…" ? "Execution cancelled." : phase === "Interpreting…" ? "Interpretation cancelled." : "Compilation cancelled."));
 function reset(): void {
   if (busy) restart();
   source.value = examples[example.value];
+  if (example.value in exampleStdin) stdinBox.value = exampleStdin[example.value];
   source.scrollTop = source.scrollLeft = 0;
   source.setSelectionRange(0, 0);
   edit();

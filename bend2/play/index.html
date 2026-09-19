@@ -21,7 +21,7 @@
     </section>
     <section class="workspace" aria-label="Bend compiler playground">
       <div class="toolbar">
-        <div class="example-control"><label for="example">Start with</label><select id="example"><option value="hello">Hello, Bend</option><option value="numbers">Working with numbers</option><option value="lists">A list of possibilities</option><option value="error">Find the type error</option></select></div>
+        <div class="example-control"><label for="example">Start with</label><select id="example"><option value="hello">Hello, Bend</option><option value="numbers">Working with numbers</option><option value="lists">A list of possibilities</option><option value="calc">Reading standard input</option><option value="error">Find the type error</option></select></div>
         <div class="compile-controls" role="group" aria-label="Program actions"><button id="interpret" class="secondary" disabled>Run interpreted</button><button id="compile-run" class="primary" disabled>Compile to JS and run</button><button id="compile-js" class="secondary" disabled>Compile to JS</button><button id="compile-c" class="secondary" disabled>Compile to C</button><button id="cancel" class="quiet" hidden>Cancel</button></div>
       </div>
       <div class="editors">
@@ -36,6 +36,8 @@
           <div class="pane-footer"><span id="output-state">Waiting for your program</span><span id="output-size">—</span></div>
         </section>
       </div>
+      <div class="stdinbar"><label for="stdin">Stdin</label><textarea id="stdin" aria-label="Standard input for IO.read_line" spellcheck="false" wrap="off" placeholder="Prefilled lines for IO.read_line, one per line. When they run out the program asks you below."></textarea><div class="stdin-mode" role="radiogroup" aria-label="Standard input mode"><label><input type="radio" name="stdin-mode" value="prefill" checked> Prefill</label><label><input type="radio" name="stdin-mode" value="ask" title="Ignore the box: the worker waits and asks you per line."> Ask me</label></div></div>
+      <div class="inputbar" id="inputbar" hidden><label for="inputline">Input</label><input id="inputline" aria-label="Type a line for the running program" autocomplete="off" spellcheck="false" placeholder="Program is waiting for input…"><button id="send" class="secondary">Send</button><button id="eof" class="quiet">EOF</button></div>
       <div class="statusbar"><div id="status" role="status" aria-live="polite"><span class="status-dot"></span><span id="status-text">Loading the compiler…</span></div><span class="shortcut-hint"><kbd id="shortcut">⌘ Enter</kbd> to compile to JS and run</span></div>
     </section>
     <footer class="page-footer"><span><span aria-hidden="true">◉</span> Compiled locally. Your code stays in your browser.</span><span>Made for a parallel world.</span></footer>

@@ -134,9 +134,23 @@ Each action stops after 30 seconds; execution output is limited to 1 MiB.
 
 The playground includes `import Base` and Base’s effect sources. Other local
 files and hub imports are not available. Browser execution supports pure
-results, standard output/error, timers, fibers, and channels. Effects requiring
-native files, sockets, or system calls report a runtime error. C source can be
-downloaded and built with a C compiler; it is not executed in the browser.
+results, standard output/error, timers, fibers, channels, and standard input:
+`IO.read_line()` reads one line per call, `None{}` past the end. The Stdin box
+prefills input; when it runs out the running program asks you for a line
+(Send) and EOF ends input. Pick Ask me next to the box to ignore it and
+always wait for you. Effects requiring native files, sockets, or system
+calls report a runtime error. C source can be downloaded and built with a C
+compiler; it is not executed in the browser.
+
+Static hosting needs no backend after one build:
+
+```sh
+bun bend2/play/export.ts ./play-dist
+```
+
+Serve the five files with any static host; they work at a domain root or
+under a subpath.
+
 Existing CLI commands such as `bun bend2/main.ts file.bend -o file.js` continue
 to work.
 
