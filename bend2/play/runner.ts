@@ -93,37 +93,42 @@ let workerDebug = false;
 function dbg(msg: string): void {
   if (workerDebug) self.postMessage({ type: "dbg", from: "runner", msg });
 }
-// A quadtree pixel walk mirroring the native fill: children go
-// [tl, tr, bl, br], colors are 0x00RRGGBB, shallow trees stop early.
+// A quadtree fill mirroring the native pixel walk: children go
+// [tl, tr, bl, br], colors are 0x00RRGGBB. One visit per node plus a
+// tight rect fill beats a per-pixel walk; output is identical.
 function winPixels(image: unknown, w: number, h: number): Uint8ClampedArray {
   let k = 0;
   while ((1 << k) < w || (1 << k) < h) k++;
   const out = new Uint8ClampedArray(w * h * 4);
-  const quad = (t: any): any[] | null =>
-    typeof t === "object" && t !== null && t.$ === "Qua" ? [t.tl, t.tr, t.bl, t.br] : null;
-  const color = (t: any): number => {
-    if (typeof t === "number") return t >>> 0;
-    if (typeof t === "object" && t !== null && t.$ === "Pix") return (t.color as number) >>> 0;
-    return 0;
-  };
-  for (let y = 0; y < h; y++) {
-    for (let x = 0; x < w; x++) {
-      let t: any = image;
-      let i = k;
-      for (;;) {
-        const q = quad(t);
-        if (q === null || i <= 0) break;
-        i--;
-        t = q[((y >> i) & 1) * 2 + ((x >> i) & 1)];
-      }
-      const c = color(t);
-      const o = (y * w + x) * 4;
-      out[o] = (c >> 16) & 255;
-      out[o + 1] = (c >> 8) & 255;
-      out[o + 2] = c & 255;
-      out[o + 3] = 255;
+  const size = 1 << k;
+  const fill = (t: any, x0: number, y0: number, s: number): void => {
+    if (typeof t === "object" && t !== null && t.$ === "Qua" && s > 1) {
+      const h2 = s >> 1;
+      fill(t.tl, x0, y0, h2);
+      fill(t.tr, x0 + h2, y0, h2);
+      fill(t.bl, x0, y0 + h2, h2);
+      fill(t.br, x0 + h2, y0 + h2, h2);
+      return;
     }
-  }
+    let c: number;
+    if (typeof t === "number") c = t >>> 0;
+    else if (typeof t === "object" && t !== null && t.$ === "Pix") c = (t.color as number) >>> 0;
+    else if (typeof t === "object" && t !== null && t.$ === "Qua") {
+      let u: any = t;
+      while (typeof u === "object" && u !== null && u.$ === "Qua") u = u.tl;
+      c = typeof u === "number" ? u >>> 0 : 0;
+    } else c = 0;
+    const r = (c >> 16) & 255, g = (c >> 8) & 255, b = c & 255;
+    const x1 = Math.min(x0 + s, w), y1 = Math.min(y0 + s, h);
+    for (let y = Math.max(y0, 0); y < y1; y++) {
+      let o = (y * w + Math.max(x0, 0)) * 4;
+      for (let x = Math.max(x0, 0); x < x1; x++) {
+        out[o] = r; out[o + 1] = g; out[o + 2] = b; out[o + 3] = 255;
+        o += 4;
+      }
+    }
+  };
+  fill(image, 0, 0, size);
   return out;
 }
 

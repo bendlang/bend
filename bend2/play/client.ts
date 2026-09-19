@@ -619,7 +619,7 @@ function execute(javascript: string, compileTime: number): void {
     } else if (data.type === "win-frame") {
       const screen = get<HTMLCanvasElement>("screen");
       if (screen.width === data.w && screen.height === data.h) {
-        const ctx = screen.getContext("2d")!;
+        const ctx = screen.getContext("2d", { desynchronized: true })!;
         ctx.putImageData(new ImageData(new Uint8ClampedArray(data.pix), data.w, data.h), 0, 0);
       }
     } else if (data.type === "win-title") {

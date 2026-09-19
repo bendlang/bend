@@ -140,7 +140,9 @@ prefills input; when it runs out the running program asks you for a line
 (Send) and EOF ends input. Pick Ask me next to the box to ignore it and
 always wait for you. Window programs run too: `Window.open` shows a Display
 tab with a canvas (click it for keyboard and mouse), frames render from the
-program's quadtree images, and closing comes from the app itself. Append
+program's quadtree images at up to 60 fps, and closing comes from the app
+itself. Heavy scenes render progressively — native binaries stay the fast
+path. Append
 `?debug=true` to the URL for a pipeline log (key captures, worker messages,
 frame and input-request traffic) in a Debug bar — or flip the Debug toggle
 in the status bar. Link a demo directly with `?demo=app_ray_tracer_3d`
