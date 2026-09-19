@@ -37,6 +37,7 @@ usage:
   bend <file.bend> [args]     check the file, then run main with args
                               (IO.args; a "--" ends bend's own options)
   bend <file.bend> -o <out>   build a binary; <out>.c emits C, <out>.js JS
+  bend <file.bend> --check    check the file and its imports; run nothing
   bend <file.bend> --checkup  check and run each import alone
   bend <file.bend> --publish  publish the file and its imports to the hub
   bend <page.html> -o <dir>   bundle a page that imports .bend files
@@ -174,12 +175,15 @@ async function cli_file(args: string[]): Promise<void> {
   const outs: string[] = [];
   const argv: string[] = [];
   let file: string | undefined;
+  let check = false;
   let checkup = false;
   let publish = false;
   for (let i = 0; i < args.length; i += 1) {
     const a = args[i];
     if (a === "--help" || a === "-h") {
       return cli_say(1, HELP);
+    } else if (a === "--check") {
+      check = true;
     } else if (a === "--checkup") {
       checkup = true;
     } else if (a === "--publish") {
@@ -202,15 +206,18 @@ async function cli_file(args: string[]): Promise<void> {
     process.exit(1);
   }
   if (file.endsWith(".html")) {
-    if (outs.length !== 1 || checkup || publish) {
+    if (outs.length !== 1 || check || checkup || publish) {
       cli_fail("a page bundles with -o <dir>");
     }
     return cli_bundle(file, outs[0]);
   }
-  if (publish && (outs.length !== 0 || checkup)) {
+  if (publish && (outs.length !== 0 || check || checkup)) {
     cli_fail("--publish takes no other option");
   }
-  if (argv.length !== 0 && (outs.length !== 0 || checkup || publish)) {
+  if (check && (outs.length !== 0 || checkup)) {
+    cli_fail("--check takes no other option");
+  }
+  if (argv.length !== 0 && (outs.length !== 0 || check || checkup || publish)) {
     cli_fail("arguments go to a run: bend <file.bend> [args]");
   }
   if (checkup && outs.length !== 0) {
@@ -223,6 +230,9 @@ async function cli_file(args: string[]): Promise<void> {
     }
     if (checkup) {
       return await cli_checkup(file);
+    }
+    if (check) {
+      return cli_report(await book_read(file), 1);
     }
     const seen = new Map<string, string | null>();
     const book = await book_read(file, undefined, seen);

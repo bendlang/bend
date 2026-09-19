@@ -493,6 +493,7 @@ Bend is a single command:
 
 ```bash
 bend file.bend            # check; run main (IO compiled; a value normalized)
+bend file.bend --check    # check the file and its imports; run nothing
 bend file.bend -o file    # compile to a native binary (clang 14+; 19+ with `!`)
 bend file.bend -o file.c  # emit the C source instead
 bend file.bend -o file.js # emit the JS source instead
@@ -509,7 +510,9 @@ must stay beside it: on macOS it needs Metal, on Linux CUDA 12 at
 `/usr/local/cuda`. On Linux a program with a Window needs `libx11-dev`, one
 with Audio `libasound2-dev`. `bend guide` prints this text, `bend base` prints
 the Base library (`bend base Map` prints one name and everything under it), and
-`bend --help` lists the other commands.
+`bend --help` lists the other commands. `--check` checks a file and its
+imports and runs nothing, so a `main` that serves a socket (and never
+returns) checks without running.
 
 ## Syntax Reference
 
