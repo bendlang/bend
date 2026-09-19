@@ -704,7 +704,7 @@ function run(action: Action = "compile-run"): void {
   const files: Record<string, string> = { "/main.bend": activeSource };
   for (const [name, content] of Object.entries(auxFiles)) files["/" + name] = content;
   worker.postMessage({ id: request, files, action, debug: DEBUG });
-  timer = setTimeout(() => stop(action === "interpret" ? "Interpretation stopped after 30 seconds." : "Compilation stopped after 30 seconds. Try a smaller program."), 30_000);
+  timer = setTimeout(() => stop(action === "interpret" ? "Interpretation stopped after 30 seconds." : "Compilation is taking a while — large demos like Ray tracer can need ~45 s in the browser. Try again or split the file."), 60_000);
 }
 
 source.value = examples.hello;
