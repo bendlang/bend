@@ -101,6 +101,330 @@ def main() -> IO(U32):
     n : U32 <- calc.go(a, b)
     return n
 `,
+  lits: `import Base
+
+# Literals carry their type; operators need spaces and an annotation context.
+def main() -> U32:
+  (6 * 7 : U32)
+`,
+  affine: `import Base
+
+# Affine by default (use at most once); +x is reusable (Data only).
+def square(+x: U32) -> U32:
+  (x * x : U32)
+
+def main() -> U32:
+  square(12)
+`,
+  quant: `import Base
+
+# -A is erased (checker only); n affine; +x reusable.
+def replicate(-A: Data, n: Nat, +x: A) -> List<&2, A>:
+  match n:
+    case 0n:
+      Nil{}
+    case 1n+p:
+      x <> replicate(A, p, x)
+
+def main() -> Nat:
+  List.length(&2, U32, replicate(U32, 3n, 7))
+`,
+  closure: `import Base
+
+# Closures are values but affine: callable at most once.
+def adder(k: U32) -> U32 -> U32:
+  x => (x + k : U32)
+
+def main() -> U32:
+  add2 = adder(2)
+  add5 = adder(5)
+  add5(add2(1))
+`,
+  shape: `import Base
+
+# A custom datatype (is Data: copiable) with trailing-brace matching.
+type Shape is Data:
+  Circle{r: U32}
+  Square{s: U32}
+
+def area(x: Shape) -> U32:
+  match x:
+    case Circle{+r}:
+      (3 * r * r : U32)
+    case Square{+s}:
+      (s * s : U32)
+
+def main() -> U32:
+  area(Square{5})
+`,
+  natrec: `import Base
+
+# Recursion must shrink a matched part, and every variable stays
+# single-use: n is spent by the match, so only p may continue.
+def double(n: Nat) -> Nat:
+  match n:
+    case 0n:
+      0n
+    case 1n+p:
+      Nat.add(1n, Nat.add(1n, double(p)))
+
+def main() -> Nat:
+  double(21n)
+`,
+  dowork: `import Base
+
+# Effects sequence in do blocks; every bind is annotated.
+def main() -> IO(Unit):
+  do IO<Unit>:
+    u : Unit <- IO.print("first")
+    v : Unit <- IO.print("second")
+    return Unit{}
+`,
+  maybe: `import Base
+
+# do works for any monad with bind/pure; None short-circuits.
+def add_strs(a: String, b: String) -> Maybe<&2, U32>:
+  do Maybe<&2, U32>:
+    x : U32 <- U32.read(a)
+    y : U32 <- U32.read(b)
+    return (x + y : U32)
+
+def main() -> Maybe<&2, U32>:
+  add_strs("40", "2")
+`,
+  pcall: `import Base
+
+# Parallel calls: a b = f(x) g(y) runs both, joins, and binds.
+def dbl(+x: U32) -> U32:
+  (x + x : U32)
+
+def main() -> U32:
+  x y = dbl(20) dbl(22)
+  (x + y : U32)
+`,
+  gpu: `import Base
+
+# A ! suffix sends the call (and its inner parallel calls) to the GPU.
+# Without a GPU it still runs in parallel on the CPU; JS runs it plainly.
+def dbl(+x: U32) -> U32:
+  (x + x : U32)
+
+def main() -> U32:
+  dbl!(21)
+`,
+  forkjoin: `import Base
+
+# IO.fork runs a computation concurrently; IO.join waits for its value.
+def slow(x: U32) -> IO(U32):
+  do IO<U32>:
+    u : Unit <- IO.sleep(20)
+    return x
+
+def main() -> IO(Unit):
+  do IO<Unit>:
+    a : Chan(U32) <- IO.fork(U32, slow(20))
+    b : Chan(U32) <- IO.fork(U32, slow(22))
+    x : U32 <- IO.join(U32, a)
+    y : U32 <- IO.join(U32, b)
+    u : Unit <- IO.print(U32.show((x + y : U32)))
+    return Unit{}
+`,
+  chan: `import Base
+
+# Fibers talk over channels; +ch shares the handle across steps.
+def consume(m: Maybe<&1, U32>) -> IO(U32):
+  match m:
+    case None{}:
+      do IO<U32>:
+        u : Unit <- IO.print("empty")
+        return 0
+    case Some{v}:
+      do IO<U32>:
+        u : Unit <- IO.print(U32.show((v + 2 : U32)))
+        return 0
+
+def main.go(c: Chan(U32)) -> IO(U32):
+  +ch = c
+  do IO<U32>:
+    Bool <- Chan.send(U32, ch, 40)
+    m : Maybe<&1, U32> <- Chan.recv(U32, ch)
+    n : U32 <- consume(m)
+    return n
+
+def main() -> IO(U32):
+  IO.bind(Chan(U32), U32, Chan.new(U32, 8), main.go)
+`,
+  pred: `import Base
+
+# A predicate as a type: a def returning Type, computed by matching.
+def IsZero(n: Nat) -> Type:
+  match n:
+    case 0n:
+      Unit
+    case 1n+p:
+      Empty
+
+def main() -> IsZero(0n):
+  Unit{}
+`,
+  law: `import Base
+
+# A law states a fact; the paired def proves it. Matching refines the
+# goal, the recursive call is the induction hypothesis, % rewrites.
+law add_zero:
+  for x: Nat
+  {Nat.add(x, 0n) == x : Nat}
+
+def add_zero(x):
+  match x:
+    case 0n:
+      {==}
+    case 1n+p:
+      %add_zero(p) : {1n+Nat.add(p, 0n) == 1n+_ : Nat}
+      {==}
+
+def main() -> {Nat.add(2n, 0n) == 2n : Nat}:
+  add_zero(2n)
+`,
+  witness: `import Base
+
+# exs asks for a witness, returned beside its evidence as nested pairs.
+law pick:
+  exs y: Nat
+  exs e: {y == 2n : Nat}
+  {Nat.add(y, 1n) == 3n : Nat}
+
+def pick():
+  (2n, {==}, {==})
+
+law main:
+  Sigma<&1, &1, Nat, y => Sigma<&1, &1, {y == 2n : Nat}, e => {Nat.add(y, 1n) == 3n : Nat}>>
+
+def main(): pick()
+`,
+  rewrite: `import Base
+
+# %x@e is the explicit-motive rewrite: x binds the equation, _ its end.
+law cong_succ:
+  for a: Nat
+  for b: Nat
+  for e: {a == b : Nat}
+  {Nat.add(a, 1n) == Nat.add(b, 1n) : Nat}
+
+def cong_succ(a, b, e):
+  %e : {Nat.add(a, 1n) == Nat.add(_, 1n) : Nat}
+  {==}
+
+def main() -> {Nat.add(2n, 1n) == Nat.add(2n, 1n) : Nat}:
+  cong_succ(2n, 2n, {==})
+`,
+  form: `import Base
+
+# First-order syntax, internalized: formulas are Data, Eval is Tarski's
+# valuation, and the reflection law holds by computation ({==}).
+type Form is Data:
+  FTrue{}
+  FFalse{}
+  FAnd{l: Form, r: Form}
+  FOr{l: Form, r: Form}
+  FNot{f: Form}
+
+def Eval(f: Form) -> Bool:
+  match f:
+    case FTrue{}:
+      True{}
+    case FFalse{}:
+      False{}
+    case FAnd{l, r}:
+      Bool.and(Eval(l), Eval(r))
+    case FOr{l, r}:
+      Bool.or(Eval(l), Eval(r))
+    case FNot{x}:
+      Bool.not(Eval(x))
+
+law eval_and:
+  for l: Form
+  for r: Form
+  {Eval(FAnd{l, r}) == Bool.and(Eval(l), Eval(r)) : Bool}
+
+def eval_and(l, r):
+  {==}
+
+def main() -> U32:
+  Bool.to_u32(Eval(FAnd{FTrue{}, FOr{FFalse{}, FNot{FFalse{}}}}))
+`,
+  modal: `import Base
+
+# A modal-boundary analogue: Boxed seals a fragment behind a pure API.
+# Only IO.bind can sequence effects, so values inside Boxed never touch
+# them; unbox(box(x)) == x holds by computation.
+type Boxed<a, -A: Kind(a)> is Kind(a):
+  Box{v: A}
+
+def box(a, -A: Kind(a), x: A) -> Boxed<a, A>:
+  Box{x}
+
+def unbox(a, -A: Kind(a), b: Boxed<a, A>) -> A:
+  match b:
+    case Box{v}:
+      v
+
+law box_roundtrip:
+  for +x: U32
+  {unbox(&2, U32, box(&2, U32, x)) == x : U32}
+
+def box_roundtrip(x):
+  {==}
+
+def main() -> U32:
+  unbox(&2, U32, box(&2, U32, 42))
+`,
+  split: `import Base
+
+# Affine state split across a fork-join: each half is owned by one call.
+def sum(xs: List<U32>) -> U32:
+  match xs:
+    case Nil{}:
+      0
+    case Con{h, t}:
+      (h + sum(t) : U32)
+
+def halves(l: List<U32>, r: List<U32>) -> U32 & U32:
+  a b = sum(l) sum(r)
+  (a, b)
+
+def main() -> U32 & U32:
+  halves([1, 2], [3, 4])
+`,
+  dual: `import Base
+
+# The tangent-bundle functor on scalars, as dual numbers: D{re, du} keeps
+# a value beside its derivative, and each op applies the chain rule, so
+# evaluating a polynomial yields its value and slope together. F32 ops are
+# host primitives, so main runs on a backend lane (here, the JS one).
+type Dual is Data:
+  D{re: F32, du: F32}
+
+def Dual.add(+a: Dual, +b: Dual) -> Dual:
+  match a b:
+    case D{x, dx} D{y, dy}:
+      D{F32.add(x, y), F32.add(dx, dy)}
+
+def Dual.mul(+a: Dual, +b: Dual) -> Dual:
+  match a b:
+    case D{x, dx} D{y, dy}:
+      D{F32.mul(x, y), F32.add(F32.mul(x, dy), F32.mul(dx, y))}
+
+def show_dual(d: Dual) -> IO(Unit):
+  match d:
+    case D{v, s}:
+      IO.print(U32.show(F32.to_u32(v)) ++ " " ++ U32.show(F32.to_u32(s)))
+
+def main() -> IO(Unit):
+  # f(t) = t^2 + 3t at t = 2: value 10, slope 7.
+  +x = {D{2.0, 1.0} : Dual}
+  show_dual(Dual.add(Dual.mul(x, x), Dual.mul({D{3.0, 0.0} : Dual}, x)))
+`,
 };
 const exampleStdin: Record<string, string> = {
   calc: "40\n2\n",
