@@ -2961,6 +2961,60 @@ function js_ctr(fl: File, k: Bend.Name): Bend.Name[] {
   return ctr_tail(fl.book, ctr).filter(live_dom).map(([, n]) => n);
 }
 
+// A constructor tree emitted iteratively: deep Ctr nesting in elaborated
+// terms blows the call stack through .map recursion, so descend with an
+// explicit machine. Identical output to the recursive walk.
+function js_ctr_tree(fl: File, root: Of<"Ctr">, ty0: HTerm | null): string {
+  type Fr = { node: Of<"Ctr">; ty: HTerm | null; adt: HAdt;
+    kids: HTerm[] | null; acc: string[]; i: number };
+  const stack: Fr[] = [{ node: root, ty: ty0, adt: null as unknown as HAdt,
+    kids: null, acc: [], i: 0 }];
+  let done: string | null = null;
+  outer: while (stack.length > 0) {
+    const fr = stack[stack.length - 1];
+    if (fr.kids === null) {
+      const [adt, u] = ctr_adt(fl, fr.node, fr.ty);
+      if (u !== null) {
+        const v = adt.k === "F32" ? Bend.f32_from_bits(u) : u;
+        const s = Object.is(v, -0) ? "-0" : String(v);
+        stack.pop();
+        if (stack.length === 0) { done = s; break; }
+        const parent = stack[stack.length - 1];
+        parent.acc.push(s);
+        parent.i++;
+        continue;
+      }
+      fr.adt = adt;
+      fr.kids = ctr_flds(fl.book, fr.node.k, fr.node.x);
+    }
+    while (fr.i < (fr.kids as HTerm[]).length) {
+      const ch = (fr.kids as HTerm[])[fr.i];
+      if (ch.$ === "Ctr") {
+        stack.push({ node: ch as Of<"Ctr">, ty: null, adt: null as unknown as HAdt,
+          kids: null, acc: [], i: 0 });
+        continue outer;
+      }
+      fr.acc.push(js_expr(fl, ch, null));
+      fr.i++;
+    }
+    const native = OPTIMIZED[fr.adt.k];
+    let s: string;
+    if (native !== undefined) {
+      s = tpl(native.intr[fr.node.k] ?? die(fr.node.k + NATIVE_DIE), fr.acc);
+    } else {
+      const keys = js_ctr(fl, fr.node.k);
+      s = fr.acc.reduce((e, z, j) => e + ", [\"" + keys[j] + "\"]: " + z,
+        "{$: \"" + name_own(fr.node.k, fl.book.ctrs[fr.node.k], " +") + "\"") + "}";
+    }
+    stack.pop();
+    if (stack.length === 0) { done = s; break; }
+    const parent = stack[stack.length - 1];
+    parent.acc.push(s);
+    parent.i++;
+  }
+  return done!;
+}
+
 function js_expr(fl: File, tm: HTerm,
   ty0: HTerm | null): string {
   const [x, ty] = ty_peel(tm, ty0);
@@ -2989,20 +3043,7 @@ function js_expr(fl: File, tm: HTerm,
       return js_call(fl, m.t.k, m.args, false);
     }
     case "Ctr": {
-      const [adt, u] = ctr_adt(fl, x, ty);
-      if (u !== null) {
-        const v = adt.k === "F32" ? Bend.f32_from_bits(u) : u;
-        return Object.is(v, -0) ? "-0" : String(v);
-      }
-      const exprs = ctr_flds(fl.book, x.k, x.x)
-        .map((f) => js_expr(fl, f, null));
-      const native = OPTIMIZED[adt.k];
-      if (native !== undefined) {
-        return tpl(native.intr[x.k] ?? die(x.k + NATIVE_DIE), exprs);
-      }
-      const keys = js_ctr(fl, x.k);
-      return exprs.reduce((e, z, j) => e + ", [\"" + keys[j] + "\"]: " + z,
-        "{$: \"" + name_own(x.k, fl.book.ctrs[x.k], " +") + "\"") + "}";
+      return js_ctr_tree(fl, x, ty);
     }
     case "Let": return js_expr(fl, js_open(fl, x), ty);
     case "Lam": case "Mat": case "Efq": {
