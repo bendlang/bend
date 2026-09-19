@@ -50,6 +50,10 @@ const html = fs.readFileSync(path.join(here, "index.html"), "utf8")
   .replace('href="/"', 'href="./"');
 fs.writeFileSync(path.join(out, "index.html"), html);
 fs.copyFileSync(path.join(here, "style.css"), path.join(out, "style.css"));
+fs.mkdirSync(path.join(out, "vendor"), { recursive: true });
+for (const name of ["ace.js", "theme-chrome.js", "mode-bend.js"]) {
+  fs.copyFileSync(path.join(here, "vendor", name), path.join(out, "vendor", name));
+}
 // Demo sources ship as plain static files for the picker's fetch.
 const copyDemos = (dir: string): void => {
   for (const name of fs.readdirSync(dir, { withFileTypes: true })) {

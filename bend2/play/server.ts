@@ -49,6 +49,9 @@ export async function serve(port = 3000): Promise<void> {
     }
   };
   walk(path.join(root, "..", "demos"));
+  for (const name of ["ace.js", "theme-chrome.js", "mode-bend.js"]) {
+    assets.set("/vendor/" + name, { body: Bun.file(path.join(here, "vendor", name)), type: "text/javascript; charset=utf-8" });
+  }
   for (const output of build.outputs) {
     assets.set("/" + path.basename(output.path), { body: output, type: "text/javascript; charset=utf-8" });
   }

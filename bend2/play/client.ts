@@ -1,7 +1,17 @@
 export {};
 
 const get = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
-const source = get<HTMLTextAreaElement>("source");
+declare const ace: any;
+const editor = ace.edit("source");
+editor.setTheme("ace/theme/chrome");
+editor.session.setMode("ace/mode/bend");
+editor.setOptions({ tabSize: 2, useSoftTabs: true, useWorker: false, showPrintMargin: false, fontSize: 12, behavioursEnabled: true, scrollPastEnd: 0.2 });
+editor.commands.addCommand({ name: "bend-run", bindKey: { win: "Ctrl-Enter", mac: "Command-Enter" }, exec: () => run() });
+const source = {
+  get value(): string { return editor.getValue(); },
+  set value(v: string) { editor.setValue(v); },
+  setAttribute(name: string, val: string): void { editor.container.setAttribute(name, val); },
+};
 const output = get<HTMLTextAreaElement>("output");
 const results = get<HTMLTextAreaElement>("results");
 const stdinBox = get<HTMLTextAreaElement>("stdin");
@@ -11,7 +21,6 @@ const actions: Action[] = ["interpret", "compile-run", "compile-js", "compile-c"
 const cancel = get<HTMLButtonElement>("cancel");
 const copy = get<HTMLButtonElement>("copy");
 const download = get<HTMLButtonElement>("download");
-const numbers = get<HTMLPreElement>("line-numbers");
 const examples: Record<string, string> = {
   hello: `import Base
 
@@ -512,6 +521,7 @@ function controls(): void {
 const tabs = ["results", "compiled", "display"] as const;
 function selectTab(next: typeof tab, focus = false): void {
   tab = next;
+  if (next === "display") editor.blur();
   for (const name of tabs) {
     const button = get("tab-" + name);
     button.setAttribute("aria-selected", String(tab === name));
@@ -539,15 +549,12 @@ function stdinMode(): string {
   return document.querySelector<HTMLInputElement>('input[name="stdin-mode"]:checked')?.value ?? "prefill";
 }
 function position(): void {
-  const before = source.value.slice(0, source.selectionStart);
-  get("cursor").textContent = `Ln ${before.split("\n").length}, Col ${before.length - before.lastIndexOf("\n")}`;
+  const cursor = editor.getCursorPosition();
+  get("cursor").textContent = `Ln ${cursor.row + 1}, Col ${cursor.column + 1}`;
 }
 function stale(): boolean { return source.value !== compiledSource; }
 function elapsed(ms: number): string { return ms < 1000 ? Math.round(ms) + " ms" : (ms / 1000).toFixed(2) + " s"; }
 function edit(): void {
-  const count = source.value.split("\n").length;
-  numbers.textContent = Array.from({ length: count }, (_, i) => String(i + 1)).join("\n");
-  numbers.scrollTop = source.scrollTop;
   position();
   persist();
   if (!busy && ready) status("Ready");
@@ -732,11 +739,12 @@ try {
     stdinBox.placeholder = "Ask-me mode: the box is ignored, the worker waits and asks you per line.";
   }
 } catch {}
-source.setSelectionRange(0, 0);
+editor.selection.moveCursorTo(0, 0);
 const mac = /Mac|iPhone|iPad/.test(navigator.platform);
 get("shortcut").textContent = mac ? "⌘ Enter" : "Ctrl Enter";
 get("compile-run").title = (mac ? "⌘ Enter" : "Ctrl Enter") + " to compile to JavaScript and run";
-source.addEventListener("input", edit);
+editor.session.on("change", edit);
+editor.selection.on("changeCursor", position);
 stdinBox.addEventListener("input", persist);
 for (const radio of document.querySelectorAll<HTMLInputElement>('input[name="stdin-mode"]')) {
   radio.addEventListener("change", () => {
@@ -746,21 +754,6 @@ for (const radio of document.querySelectorAll<HTMLInputElement>('input[name="std
     persist();
   });
 }
-source.addEventListener("scroll", () => { numbers.scrollTop = source.scrollTop; });
-for (const event of ["click", "keyup", "select"]) source.addEventListener(event, position);
-source.addEventListener("keydown", (event) => {
-  if (event.key === "Tab" && !event.shiftKey) {
-    event.preventDefault();
-    source.setRangeText("  ", source.selectionStart, source.selectionEnd, "end");
-    edit();
-  } else if (event.key === "Enter" && !event.ctrlKey && !event.metaKey) {
-    event.preventDefault();
-    const line = source.value.slice(0, source.selectionStart).split("\n").pop()!;
-    const indent = line.match(/^ */)![0] + (line.trimEnd().endsWith(":") ? "  " : "");
-    source.setRangeText("\n" + indent, source.selectionStart, source.selectionEnd, "end");
-    edit();
-  }
-});
 document.addEventListener("keydown", (event) => {
   if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
     event.preventDefault();
@@ -841,7 +834,8 @@ for (const kind of ["keydown", "keyup"] as const) {
   document.addEventListener(kind, (event) => {
     if (!busy || !runner || tab !== "display") return;
     const t = document.activeElement;
-    if (t instanceof HTMLInputElement || t instanceof HTMLTextAreaElement) return;
+    if (t instanceof HTMLInputElement) return;
+    if (t instanceof HTMLTextAreaElement && !t.classList.contains("ace_text-input")) return;
     const e = event as KeyboardEvent;
     if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Tab", " "].includes(e.key)) {
       e.preventDefault();
@@ -893,8 +887,8 @@ async function reset(): Promise<void> {
     renderAux();
     if (example.value in exampleStdin) stdinBox.value = exampleStdin[example.value];
   }
-  source.scrollTop = source.scrollLeft = 0;
-  source.setSelectionRange(0, 0);
+  editor.session.setScrollTop(0);
+  editor.selection.moveCursorTo(0, 0);
   edit();
   syncURL();
 }
