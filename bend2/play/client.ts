@@ -441,7 +441,7 @@ const exampleStdin: Record<string, string> = {
 // Demo dir -> label plus extra files the demo's main imports. Sources ship
 // as static files; the picker fetches them into the editor and the aux map,
 // and run() posts the whole set to the worker's memory filesystem.
-const demos: Record<string, { label: string; aux: Record<string, string>; res?: Array<{ label: string; edits: string[][] }> }> = {
+const demos: Record<string, { label: string; aux: Record<string, string> }> = {
   "demo:pure_par_sum": { label: "Parallel sum", aux: {} },
   "demo:pure_par_sort": { label: "Parallel sort", aux: {} },
   "demo:pure_hvm5_mini": { label: "HVM mini", aux: {} },
@@ -452,12 +452,7 @@ const demos: Record<string, { label: string; aux: Record<string, string>; res?: 
   "demo:app_triangle_2d": { label: "Triangle", aux: {} },
   "demo:app_pong_game_2d": { label: "Pong", aux: {} },
   "demo:app_win_is_bug_2d": { label: "WinIsBug", aux: {} },
-  "demo:app_ray_tracer_3d": { label: "Ray tracer", aux: {},
-    res: [
-      { label: "1024 · full", edits: [] },
-      { label: "512 · fast", edits: [["Fly\\.scene!\\(\\d+n,", "Fly.scene!(9n,"], ["\"Fly\", \\d+, \\d+,", "\"Fly\", 512, 384,"]] },
-      { label: "256 · preview", edits: [["Fly\\.scene!\\(\\d+n,", "Fly.scene!(8n,"], ["\"Fly\", \\d+, \\d+,", "\"Fly\", 256, 192,"]] },
-    ] },
+  "demo:app_ray_tracer_3d": { label: "Ray tracer", aux: {} },
   "demo:app_slash_boss_3d": { label: "Slash boss", aux: { "bend3d.bend": "demos/app_slash_boss_3d/bend3d.bend" } },
   "demo:io_http_fetch": { label: "HTTP fetch · needs native", aux: {} },
   "demo:io_http_server": { label: "HTTP server · needs native", aux: {} },
@@ -488,11 +483,8 @@ function syncURL(): void {
   else params.delete("debug");
   if (example.value in demos) params.set("demo", example.value.slice("demo:".length));
   else params.delete("demo");
-  const { w, h } = dispSize();
-  if (w > 0) params.set("w", String(w));
-  else params.delete("w");
-  if (h > 0) params.set("h", String(h));
-  else params.delete("h");
+  if (resMode !== "full") params.set("res", resMode);
+  else params.delete("res");
   history.replaceState(null, "", location.pathname + (params.toString() ? "?" + params : ""));
 }
 function dlog(msg: string): void {
@@ -553,22 +545,47 @@ for (const name of tabs) {
   });
 }
 function persist(): void {
-  try { localStorage.setItem(storageKey, JSON.stringify({ source: source.value, example: example.value, stdin: stdinBox.value, mode: stdinMode(), res: get<HTMLSelectElement>("res").value, dispw: get<HTMLInputElement>("dispw").value, disph: get<HTMLInputElement>("disph").value })); } catch {}
+  try { localStorage.setItem(storageKey, JSON.stringify({ source: source.value, example: example.value, stdin: stdinBox.value, mode: stdinMode(), res: resMode })); } catch {}
 }
 function stdinMode(): string {
   return document.querySelector<HTMLInputElement>('input[name="stdin-mode"]:checked')?.value ?? "prefill";
 }
-function dispSize(): { w: number; h: number } {
-  const num = (id: string): number => {
-    const v = parseInt(get<HTMLInputElement>(id).value, 10);
-    return v > 0 ? Math.min(4096, v) : 0;
-  };
-  return { w: num("dispw"), h: num("disph") };
+type ResMode = "preview" | "fast" | "full";
+const RES_SCALE: Record<ResMode, number> = { preview: 0.25, fast: 0.5, full: 1 };
+let resMode: ResMode = "full";
+let nativeSize = { w: 0, h: 0 };
+let lastJS = "";
+let lastCompileTime = 0;
+function resCaption(): void {
+  const el = get("dispinfo");
+  if (nativeSize.w > 0) {
+    const eff = (n: number) => Math.max(1, Math.floor(n * RES_SCALE[resMode]));
+    el.textContent = resMode === "full"
+      ? `Native ${nativeSize.w}×${nativeSize.h}`
+      : `Native ${nativeSize.w}×${nativeSize.h} → ${eff(nativeSize.w)}×${eff(nativeSize.h)}`;
+  } else {
+    el.textContent = "No display";
+  }
+  for (const b of document.querySelectorAll<HTMLButtonElement>("#displaybar [data-res]")) {
+    b.classList.toggle("on", (b.dataset.res as ResMode) === resMode);
+  }
 }
-function sendDisplay(): void {
+function sendScale(): void {
   if (!busy || !runner) return;
-  const { w, h } = dispSize();
-  runner.postMessage({ display: { w, h } });
+  runner.postMessage({ display: { scale: RES_SCALE[resMode] } });
+}
+function setRes(mode: ResMode): void {
+  resMode = mode;
+  resCaption();
+  persist();
+  syncURL();
+  if (busy && runner && lastJS && !stale()) {
+    // Instant full restart at the new resolution, same build.
+    clearTimeout(timer);
+    runner.terminate();
+    runner = undefined;
+    execute(lastJS, lastCompileTime);
+  }
 }
 function position(): void {
   const cursor = editor.getCursorPosition();
@@ -630,6 +647,8 @@ function execute(javascript: string, compileTime: number): void {
     } else if (data.type === "win-open") {
       clearTimeout(timer);
       cancel.textContent = "Stop";
+      nativeSize = { w: data.w, h: data.h };
+      resCaption();
       const screen = get<HTMLCanvasElement>("screen");
       screen.width = data.w;
       screen.height = data.h;
@@ -659,7 +678,9 @@ function execute(javascript: string, compileTime: number): void {
     finish("Execution failed", true);
   };
   runner.postMessage({ javascript, stdin: stdinMode() === "ask" ? "" : stdinBox.value, debug: DEBUG });
-  sendDisplay();
+  lastJS = javascript;
+  lastCompileTime = compileTime;
+  sendScale();
   timer = setTimeout(() => stop("Execution stopped after 30 seconds."), 30_000);
 }
 function restart(message?: string, runWhenReady?: Action): void {
@@ -762,19 +783,16 @@ try {
     stdinBox.placeholder = "Ask-me mode: the box is ignored, the worker waits and asks you per line.";
   }
   const params = new URLSearchParams(location.search);
-  const num = (v: string | null): string => v && /^\d+$/.test(v) && Number(v) > 0 ? String(Math.min(4096, Number(v))) : "";
-  const pw = num(params.get("w"));
-  const ph = num(params.get("h"));
-  if (pw || ph) {
-    get<HTMLInputElement>("dispw").value = pw;
-    get<HTMLInputElement>("disph").value = ph;
-  } else {
+  const resParam = params.get("res");
+  const savedRes = (() => {
     try {
-      const saved2 = JSON.parse(localStorage.getItem(storageKey) ?? "null");
-      if (saved2 && typeof saved2.dispw === "string") get<HTMLInputElement>("dispw").value = saved2.dispw;
-      if (saved2 && typeof saved2.disph === "string") get<HTMLInputElement>("disph").value = saved2.disph;
-    } catch {}
-  }
+      const s = JSON.parse(localStorage.getItem(storageKey) ?? "null");
+      return s && (s.res === "preview" || s.res === "fast" || s.res === "full") ? s.res : null;
+    } catch { return null; }
+  })();
+  if (resParam === "preview" || resParam === "fast" || resParam === "full") resMode = resParam;
+  else if (savedRes) resMode = savedRes;
+  resCaption();
 } catch {}
 editor.selection.moveCursorTo(0, 0);
 const mac = /Mac|iPhone|iPad/.test(navigator.platform);
@@ -856,22 +874,11 @@ function winPoint(e: MouseEvent): [number, number] {
     clip((e.clientY - rect.top) * screen.height / rect.height, screen.height)];
 }
 for (const action of actions) get(action).addEventListener("click", () => run(action));
+for (const b of document.querySelectorAll<HTMLButtonElement>("#displaybar [data-res]")) {
+  b.addEventListener("click", () => setRes(b.dataset.res as ResMode));
+}
 get("send").addEventListener("click", sendInput);
 get("eof").addEventListener("click", sendEOF);
-get("dispapply").addEventListener("click", () => { persist(); syncURL(); sendDisplay(); });
-get("dispnative").addEventListener("click", () => {
-  get<HTMLInputElement>("dispw").value = "";
-  get<HTMLInputElement>("disph").value = "";
-  persist(); syncURL(); sendDisplay();
-});
-for (const id of ["dispw", "disph"]) {
-  get<HTMLInputElement>(id).addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      persist(); syncURL(); sendDisplay();
-    }
-  });
-}
 get<HTMLInputElement>("inputline").addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     event.preventDefault();
@@ -908,25 +915,6 @@ for (const kind of ["mousedown", "mouseup"] as const) {
     winSend({ kind: 1, a: x, b: y, c: button, d: kind === "mousedown" ? 1 : 0 });
   });
 }
-function renderRes(): void {
-  const wrap = get("res-wrap");
-  const select = get<HTMLSelectElement>("res");
-  const presets = example.value in demos ? demos[example.value].res : undefined;
-  select.replaceChildren(...(presets ?? []).map((p, i) => {
-    const opt = document.createElement("option");
-    opt.value = String(i);
-    opt.textContent = p.label;
-    return opt;
-  }));
-  wrap.hidden = !presets;
-  if (presets) {
-    try {
-      const saved = JSON.parse(localStorage.getItem(storageKey) ?? "null");
-      if (saved && typeof saved.res === "string"
-        && Number(saved.res) < presets.length) select.value = saved.res;
-    } catch {}
-  }
-}
 async function reset(): Promise<void> {
   if (busy) restart();
   if (example.value in demos) {
@@ -937,19 +925,11 @@ async function reset(): Promise<void> {
       return res.text();
     };
     try {
-      renderRes();
       status("Loading the demo…", "busy");
       source.value = await load("demos/" + dir + "/main.bend");
       const aux: Record<string, string> = {};
       for (const [name, route] of Object.entries(demos[example.value].aux)) {
         aux[name] = await load(route);
-      }
-      const preset = demos[example.value].res?.[Number(get<HTMLSelectElement>("res").value)];
-      if (preset && preset.edits.length > 0) {
-        for (const [pattern, replacement] of preset.edits) {
-          source.value = source.value.replace(new RegExp(pattern), replacement);
-        }
-        source.value = `# browser res: ${preset.label} (adapted from the repo demo)\n` + source.value;
       }
       auxFiles = aux;
       renderAux();
@@ -963,7 +943,6 @@ async function reset(): Promise<void> {
     source.value = examples[example.value];
     auxFiles = {};
     renderAux();
-    get("res-wrap").hidden = true;
     if (example.value in exampleStdin) stdinBox.value = exampleStdin[example.value];
   }
   editor.session.setScrollTop(0);
@@ -972,7 +951,6 @@ async function reset(): Promise<void> {
   syncURL();
 }
 example.addEventListener("change", reset);
-get<HTMLSelectElement>("res").addEventListener("change", () => { persist(); reset(); });
 get("reset").addEventListener("click", reset);
 copy.addEventListener("click", async () => {
   try {
