@@ -550,6 +550,7 @@ function finish(message: string, failed = false): void {
   runner?.terminate();
   runner = undefined;
   get("inputbar").hidden = true;
+  cancel.textContent = "Cancel";
   busy = false;
   results.className = failed ? "error" : "";
   get("output-state").textContent = stale() ? "Source changed · run or compile to update" : message;
@@ -590,12 +591,15 @@ function execute(javascript: string, compileTime: number): void {
     } else if (data.type === "dbg") {
       dlog(`[${data.from ?? "worker"}] ${data.msg}`);
     } else if (data.type === "win-open") {
+      clearTimeout(timer);
+      cancel.textContent = "Stop";
       const screen = get<HTMLCanvasElement>("screen");
       screen.width = data.w;
       screen.height = data.h;
       screen.title = data.title;
       selectTab("display");
-      get("output-state").textContent = `Display ${data.w}×${data.h} · click it for keyboard and mouse`;
+      get("output-state").textContent = `Display ${data.w}×${data.h} · playing — press Stop to quit`;
+      status("Running — press Stop to quit", "busy");
       screen.focus();
     } else if (data.type === "win-frame") {
       const screen = get<HTMLCanvasElement>("screen");

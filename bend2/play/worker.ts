@@ -49,7 +49,7 @@ self.onmessage = async (event: MessageEvent) => {
   } catch (e) {
     const error = e as Bend.Err;
     const output = error?.$ === "Err" ? Bend.err_show(error)
-      : e instanceof RangeError ? "This program exceeds the browser evaluator's nesting limit. Try splitting long definitions into smaller functions."
+      : e instanceof RangeError ? "This program hit the browser's call-stack limit — common for large demos like Parallel Sort. Try 'Compile to JS and run' (not 'Run interpreted') or split a long definition into smaller helpers. It builds fine natively: bend file.bend -o out."
       : e instanceof Error ? e.message : String(e);
     self.postMessage({ type: "result", id, ok: false, output, elapsed: performance.now() - start });
   }
