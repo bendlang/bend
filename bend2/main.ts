@@ -50,7 +50,7 @@ Read the guide (\`bend guide\`) before writing Bend code.
 `;
 
 // PAGE is the web page a build writes beside its .js and .wasm: the canvas a
-// Window draws on and a line per print. Its threads need cross-origin
+// Window draws on, its frames per second, and a line per print. Its threads need cross-origin
 // isolation, so it must be served with the two headers named below.
 const PAGE = `<!doctype html>
 <meta charset="utf-8">
@@ -63,6 +63,7 @@ const PAGE = `<!doctype html>
   pre { margin: 0; white-space: pre-wrap; max-width: 100%; }
 </style>
 <canvas id="bend"></canvas>
+<pre id="bend-fps"></pre>
 <pre id="bend-out"></pre>
 <script>
   // ?threads=N runs on N cores. The page needs the headers
@@ -82,6 +83,15 @@ const PAGE = `<!doctype html>
     bendSay("no threads: the page needs the Cross-Origin-Opener-Policy: "
       + "same-origin and Cross-Origin-Embedder-Policy: require-corp headers");
   }
+  var frames = 0;
+  setInterval(function() {
+    var n = Module.bendFrames | 0;
+    if (n !== frames) {
+      document.getElementById("bend-fps").textContent = (n - frames)
+        + " fps, " + (threads || navigator.hardwareConcurrency) + " threads";
+    }
+    frames = n;
+  }, 1000);
 </script>
 <script src="NAME.js"></script>
 `;

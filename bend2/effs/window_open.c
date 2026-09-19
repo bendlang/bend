@@ -307,7 +307,7 @@ EM_JS(int, window_js_open, (const char* title, u32 w, u32 h), {
 // A frame, on the display's next tick (as the Mac's display sync): the
 // pixels onto the canvas, the events pumped since the last frame into
 // evs (at most cap of them), and their count plus one into got, which
-// the worker waits on.
+// the worker waits on; bendFrames counts the frames for the page.
 EM_JS(void, window_js_show, (u32* pix, u32 w, u32 h, u32* evs, u32 cap,
   u32* got), {
   requestAnimationFrame(function() {
@@ -318,6 +318,7 @@ EM_JS(void, window_js_show, (u32* pix, u32 w, u32 h, u32* evs, u32 cap,
     }
     img.data.set(HEAPU8.subarray(pix, pix + w * h * 4));
     Module.bendCtx.putImageData(img, 0, 0);
+    Module.bendFrames = (Module.bendFrames | 0) + 1;
     var q = Module.bendEvs;
     var n = Math.min(q.length / 5, cap);
     HEAPU32.set(q.splice(0, n * 5), evs >> 2);
