@@ -488,6 +488,11 @@ function syncURL(): void {
   else params.delete("debug");
   if (example.value in demos) params.set("demo", example.value.slice("demo:".length));
   else params.delete("demo");
+  const { w, h } = dispSize();
+  if (w > 0) params.set("w", String(w));
+  else params.delete("w");
+  if (h > 0) params.set("h", String(h));
+  else params.delete("h");
   history.replaceState(null, "", location.pathname + (params.toString() ? "?" + params : ""));
 }
 function dlog(msg: string): void {
@@ -548,10 +553,22 @@ for (const name of tabs) {
   });
 }
 function persist(): void {
-  try { localStorage.setItem(storageKey, JSON.stringify({ source: source.value, example: example.value, stdin: stdinBox.value, mode: stdinMode(), res: get<HTMLSelectElement>("res").value })); } catch {}
+  try { localStorage.setItem(storageKey, JSON.stringify({ source: source.value, example: example.value, stdin: stdinBox.value, mode: stdinMode(), res: get<HTMLSelectElement>("res").value, dispw: get<HTMLInputElement>("dispw").value, disph: get<HTMLInputElement>("disph").value })); } catch {}
 }
 function stdinMode(): string {
   return document.querySelector<HTMLInputElement>('input[name="stdin-mode"]:checked')?.value ?? "prefill";
+}
+function dispSize(): { w: number; h: number } {
+  const num = (id: string): number => {
+    const v = parseInt(get<HTMLInputElement>(id).value, 10);
+    return v > 0 ? Math.min(4096, v) : 0;
+  };
+  return { w: num("dispw"), h: num("disph") };
+}
+function sendDisplay(): void {
+  if (!busy || !runner) return;
+  const { w, h } = dispSize();
+  runner.postMessage({ display: { w, h } });
 }
 function position(): void {
   const cursor = editor.getCursorPosition();
@@ -642,6 +659,7 @@ function execute(javascript: string, compileTime: number): void {
     finish("Execution failed", true);
   };
   runner.postMessage({ javascript, stdin: stdinMode() === "ask" ? "" : stdinBox.value, debug: DEBUG });
+  sendDisplay();
   timer = setTimeout(() => stop("Execution stopped after 30 seconds."), 30_000);
 }
 function restart(message?: string, runWhenReady?: Action): void {
@@ -743,6 +761,20 @@ try {
   if (stdinMode() === "ask") {
     stdinBox.placeholder = "Ask-me mode: the box is ignored, the worker waits and asks you per line.";
   }
+  const params = new URLSearchParams(location.search);
+  const num = (v: string | null): string => v && /^\d+$/.test(v) && Number(v) > 0 ? String(Math.min(4096, Number(v))) : "";
+  const pw = num(params.get("w"));
+  const ph = num(params.get("h"));
+  if (pw || ph) {
+    get<HTMLInputElement>("dispw").value = pw;
+    get<HTMLInputElement>("disph").value = ph;
+  } else {
+    try {
+      const saved2 = JSON.parse(localStorage.getItem(storageKey) ?? "null");
+      if (saved2 && typeof saved2.dispw === "string") get<HTMLInputElement>("dispw").value = saved2.dispw;
+      if (saved2 && typeof saved2.disph === "string") get<HTMLInputElement>("disph").value = saved2.disph;
+    } catch {}
+  }
 } catch {}
 editor.selection.moveCursorTo(0, 0);
 const mac = /Mac|iPhone|iPad/.test(navigator.platform);
@@ -826,6 +858,20 @@ function winPoint(e: MouseEvent): [number, number] {
 for (const action of actions) get(action).addEventListener("click", () => run(action));
 get("send").addEventListener("click", sendInput);
 get("eof").addEventListener("click", sendEOF);
+get("dispapply").addEventListener("click", () => { persist(); syncURL(); sendDisplay(); });
+get("dispnative").addEventListener("click", () => {
+  get<HTMLInputElement>("dispw").value = "";
+  get<HTMLInputElement>("disph").value = "";
+  persist(); syncURL(); sendDisplay();
+});
+for (const id of ["dispw", "disph"]) {
+  get<HTMLInputElement>(id).addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      persist(); syncURL(); sendDisplay();
+    }
+  });
+}
 get<HTMLInputElement>("inputline").addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     event.preventDefault();
