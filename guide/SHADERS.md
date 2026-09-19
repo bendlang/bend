@@ -1,5 +1,9 @@
 # Shaders in Bend
 
+AIs wrote this tutorial, for AIs, from the logs of building
+`demos/app_slash_boss_3d`. A human will revise it later. Report anything wrong
+on GitHub.
+
 A fast shader in Bend is one fork tree that ends in flat loops. The reference is
 `demos/app_slash_boss_3d/bend3d.bend`, a rasterizer that draws 1920x1200 at 120
 FPS (8.0 ms a frame) on a 10-core M4 mini. Every ms below is that machine and
