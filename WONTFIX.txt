@@ -1,0 +1,92 @@
+WONTFIX: what Bend will not fix, and why. Each entry is a design choice, a
+limit of our team size, or an open problem with no solution we trust yet.
+Read this file before you open an issue.
+
+DESIGN (intentional choices)
+
+@unsafe programs check and exit 0 (#776, #805)
+  The checker prints "All terms check, with N unsafe annotations." and exits
+  0. `@unsafe` is a choice the author made in the source; read the note, not
+  the exit code.
+
+`bend file.bend` runs a pure main lazily; compiled lanes are strict (#775)
+  The checker skips an unused argument; a binary evaluates it. Same value,
+  different cost.
+
+The checker skips the unused argument of an applied lambda (#820)
+  In `(y => x)(e)`, `e` is dead: a comment, invisible to the theory, with no
+  runtime effect. The checker does not visit it, for performance reasons.
+
+`~` template arguments are compile-time (#784)
+  A `~` argument must be closed. A def parameter is a runtime value, so it
+  cannot fill one. Pass the function as a plain argument instead.
+
+Allocation failure fail-stops the runtime (#792)
+  Out of memory is fatal everywhere, not a `Fail`. A program bounds the `max`
+  it passes to a receive effect; the runtime does not clamp it.
+
+The C compiler is clang only (#773)
+  The C output uses `#embed` and clang pragmas. gcc is not a target.
+
+The termination check reads arguments left to right (#770)
+  An argument before the decreasing one must pass through unchanged. Put the
+  decreasing argument first.
+
+No common-subexpression elimination (#812)
+  Two calls of `f(p)` run twice. Bind the value once.
+
+The hub client trusts the manifest path grammar on POSIX only (#788)
+  The path guard is POSIX. Windows is not a supported host (see CAPACITY).
+
+A base-file helper may call a law filled below it (#793)
+  `base.bend` carries this carve-out and the Lean formalization states it.
+  User files do not get it.
+
+A handle type is a law of Base (#825)
+  `File`, `Socket`, `Window` and the other handle types are laws that only
+  Base may leave unfilled. A user law of kind `Type` counts as open, so a
+  custom effect reuses a Base handle type. Opening this to user files touches
+  consistency; we will address the gap later.
+
+CAPACITY (a small team keeps the language at a size it can maintain)
+
+Windows is not supported (#788)
+  Use WSL.
+
+No Vulkan or other extra GPU lanes (#811)
+  Metal and CUDA only.
+
+gcc is not supported (#773)
+  See DESIGN.
+
+OPEN (no solution we trust yet; patches would cost us control of the codebase)
+
+F32 NaN payload bits are not preserved on the JS lane (#797)
+  An F32 is a JS number there. A bit-exact representation measured 7-8x
+  slower on F32 code (nbody 3.5 s -> 23.7 s), so the C lane is the
+  reference and JS keeps the number.
+
+RUNTIME (the theory allows it, the runtime does not run it yet; we remove
+these over time; do not open an issue)
+
+An unbalanced `Array` tree fail-stops at runtime (#808)
+  `ALeaf`/`ANode` are public, so the checker admits a tree whose halves
+  differ; every backend stores an array as one flat block and traps on such
+  a node. A depth index would fix it in the type, but Bend does no inference,
+  so `xs[i]` would have to become `xs[i^d]`; we chose not to. Like the Nat
+  cap and the block-class cap below, this is a runtime limit, not a design.
+
+A Nat past 2^48-1, or an array past block class 31, fail-stops (#779)
+  Immediates hold 48 bits; blocks have 32 classes. The theory has no such
+  bound.
+
+SOON (we will add it; do not open an issue)
+
+Continuation passing for non-tail calls on the JS lane (#798, #802)
+  Deep recursion (String.length over 100k chars, List.length over 200k
+  elements) overflows the host stack. Until then String.length is an
+  intrinsic; other folds may overflow.
+
+A native library target for pure defs (#813)
+  Today the C output is one program with a `main`. Exporting chosen defs with
+  a header and a lifecycle is planned, not scheduled.

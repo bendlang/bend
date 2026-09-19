@@ -1,7 +1,5 @@
 # the growing self-call, doubling: the argument's key doubles per level,
-# so the key wall (2048 chars) leaves the call plain at level 8 and the
-# checker refuses the name there (an argument that grows only as a Nat
-# literal prints short and escapes the wall: a host crash, no program accepted)
+# so the key wall (32768 chars) refuses the call at the level it crosses
 import Base
 
 def inc(n: Nat) -> Nat:
@@ -18,13 +16,10 @@ def main() -> Nat:
   grow(~inc, 2n)
 
 #|Error:
-#|- expected : a defined name
+#|- expected : a ~ argument that stops growing (32768 key chars at most)
 #|- observed : grow
-#|Context:
-#|- f : @_:Nat -> Nat
-#|- p : Nat
-#|Location: grow~8
-#|14 |     case 1n+p:
-#|15>|       grow(~(y => f(f(y))), p)
-#|16 |
+#|Location:
+#|12 |     case 1n+p:
+#|13>|       grow(~(y => f(f(y))), p)
+#|14 | 
 #|exit 1

@@ -330,8 +330,9 @@ an array of machine words, one owned term per word otherwise. A read
 is an indexed load, a write an indexed store, and a read of a boxed
 cell shares it. Affinity makes the store sound: `Array<T>` is `Type`,
 never `Data`, so an array has one owner, nobody can observe the
-mutation, and a copy is explicit. A match on the tree takes both
-halves in place, and joining two adjacent halves back is free.
+mutation, and a copy is explicit. A match on the tree copies each
+half into its own block, and a node copies both back: a walk to the
+leaves copies $O(n log n)$ words. Get, set and swap open no half.
 
 = The Machine <sec:machine>
 

@@ -191,6 +191,10 @@ def IO.get_env(name: String) -> IO(Result<&1, &1, U32 & String, String>):
   import "./effs/get_env.c"
   import "./effs/get_env.js"
 
+def IO.args() -> IO(List<String>):
+  import "./effs/args.c"
+  import "./effs/args.js"
+
 def IO.die(-A: Type, code: U32, msg: String) -> IO(A):
   R => k => Halt{code, msg}
 
@@ -203,6 +207,10 @@ def IO.pass(-A: Type, r: Result<&1, &1, U32 & String, A>) -> IO(A):
 
 def IO.try(-A: Type, act: IO(Result<&1, &1, U32 & String, A>)) -> IO(A):
   IO.bind(Result<&1, &1, U32 & String, A>, A, act, IO.pass(A))
+
+def IO.random_u32() -> IO(Result<&1, &1, U32 & String, U32>):
+  import "./effs/random_u32.c"
+  import "./effs/random_u32.js"
 
 def IO.spawn(-A: Type, act: IO(A)) -> IO(Unit):
   import "./effs/spawn.c"
@@ -265,10 +273,25 @@ def File.read_bytes(file: File, max: U32) ->
   import "./effs/file_read_bytes.c"
   import "./effs/file_read_bytes.js"
 
+def File.read_at(file: File, offset: U32, max: U32) ->
+  IO(File & Result<&1, &1, U32 & String, List<&2, U32>>):
+  import "./effs/file_read_at.c"
+  import "./effs/file_read_at.js"
+
+def File.size(file: File) ->
+  IO(File & Result<&1, &1, U32 & String, U32>):
+  import "./effs/file_size.c"
+  import "./effs/file_size.js"
+
 def File.write(file: File, data: String) ->
   IO(File & Result<&1, &1, U32 & String, Unit>):
   import "./effs/file_write.c"
   import "./effs/file_write.js"
+
+def File.write_bytes(file: File, data: List<&2, U32>) ->
+  IO(File & Result<&1, &1, U32 & String, Unit>):
+  import "./effs/file_write_bytes.c"
+  import "./effs/file_write_bytes.js"
 
 def File.close(file: File) -> IO(Unit):
   import "./effs/file_close.c"
@@ -1686,10 +1709,10 @@ def Char.is_space(c: Char) -> Bool:
       Bool.or(U32.is_eq(x, 32), Bool.and(U32.is_ge(x, 9), U32.is_le(x, 13)))
 
 def Char.to_upper(+c: Char) -> Char:
-  Bool.pick(Char, Char.is_lower(c), Chr{U32.sub(Char.to_u32(c), 32)}, c)
+  Chr{U32.sub(Char.to_u32(c), U32.mul(Bool.to_u32(Char.is_lower(c)), 32))}
 
 def Char.to_lower(+c: Char) -> Char:
-  Bool.pick(Char, Char.is_upper(c), Chr{U32.add(Char.to_u32(c), 32)}, c)
+  Chr{U32.add(Char.to_u32(c), U32.mul(Bool.to_u32(Char.is_upper(c)), 32))}
 
 # String
 # ------

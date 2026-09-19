@@ -1,0 +1,19 @@
+name: Feature
+description: Something Bend should do.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What Bend should do
+      description: The feature, with an example of the code you would write.
+      render: python
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why
+      description: What it lets you do that Bend does not today.
+    validations:
+      required: true

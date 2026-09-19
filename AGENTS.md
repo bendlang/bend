@@ -27,8 +27,8 @@ lines its run must print, and the gates run on the mini cluster.
     gates/perf.ts       the benches on 48 minis against the pins (--pin writes
                         the medians of three runs)
     gates/repo.ts       the allow list of files and their ttok caps
-    gates/ping.ts       the installer, the launcher, a release and the ping,
-                        on a localhost hub
+    gates/ping.ts       the installer, the compiled bend, its daily version
+                        check and a release, on a localhost hub
     gates/_run.ts       the four gates with --gate
     demos/              one dir per demo
     guide/              GUIDE.md
@@ -37,6 +37,7 @@ lines its run must print, and the gates run on the mini cluster.
     .github/            ISSUE_TEMPLATE/bug.yml, the bug report form, and
                         config.yml, which points questions at Discord
     ../bend-lang.com    the site repo (bendlang/bend-lang.com), a sibling
-                        checkout: the sites, install.sh, the launcher, the hub,
-                        release.ts and the droplet ops; gates/ping.ts and
-                        gen_charts.ts read it there (or at $SITE_REPO)
+                        checkout: the sites, install.sh, the hub, release.ts
+                        (the executables per platform) and the droplet ops;
+                        gates/ping.ts and gen_charts.ts read it there (or at
+                        $SITE_REPO)

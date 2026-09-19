@@ -76,7 +76,7 @@ function test_probes(t: Test, got: Got): string[] {
   if (!t.main || t.want.startsWith("Error:")) {
     return ["check"];
   }
-  const shown = !/^Error: main's type .* cannot be printed/.test(got.left ?? "");
+  const shown = !/^Error: main's type .* cannot be printed/m.test(got.left ?? "");
   return ["check", "interp", ...shown ? t.lanes : []];
 }
 

@@ -13,7 +13,7 @@ def main() -> Nat:
   g(3n)
 
 #|Error:
-#|- expected : a defined name
+#|- expected : a template applied to closed ~ arguments (a def parameter is not comptime)
 #|- observed : app
 #|Context:
 #|- x : Nat

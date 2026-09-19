@@ -20,7 +20,7 @@ def main(a):
       R1{}
 
 #|Error:
-#|- message  : match scrutinees in binder order (this variable is unbound, consumed, or out of order: reorder the match)
+#|- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)
 #|Location:
 #|15 | def main(a):
 #|16>|   match a, a:

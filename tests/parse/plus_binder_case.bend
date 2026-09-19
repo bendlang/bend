@@ -1,5 +1,5 @@
-# a + on a pattern binder re-binds it reusable: case Circle{+r}: body
-# is case Circle{r}: +r = r; body, and a variable row does the same
+# a + on a pattern binder marks it reusable: case Circle{+r}: body
+# closes r as a + binder, and a variable row does the same
 import Base
 
 type Shape is Data:

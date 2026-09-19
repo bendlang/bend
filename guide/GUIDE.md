@@ -61,7 +61,8 @@ than once, if the variable is Data-kinded.
 Bend does almost no inference, meaning it requires more annotations than similar
 languages. This is what allows Bend's checker to be significantly faster than
 other provers, and its error messages more precise, at the expense of programs
-and proofs being more verbose.
+and proofs being more verbose. When the checker can't decide the type of an
+expression, just annotate it, as in `{3 : U32}`.
 
 ### Closures
 
@@ -81,8 +82,7 @@ def main() -> U32:
 
 A closure is affine: it can be called at most once, even when everything it
 captures is `Data`. Only top-level definitions can be called freely. Partial
-applications like `U32.add(2)` are closures too. A let must be inferable:
-annotate a literal, as in `x = {3 : U32}`.
+applications like `U32.add(2)` are closures too.
 
 ### Recursion and Termination
 
@@ -102,16 +102,13 @@ def main() -> U32:
   sum([1, 2, 3, 4], 0)
 ```
 
-Here, `t` has one fewer element than `xs`, so `sum` eventually reaches the
-empty list. Bend verifies termination by requiring recursive calls to use
-smaller parts of their inputs, obtained through pattern matching. The check
-reads the arguments of a recursive call from left to right: each must be passed
-unchanged until one is a smaller part of its parameter, and the ones after it
-are free. So, put the parameter that shrinks first. A `U32` has no `1+p`
-pattern, so loop counters are `Nat`s: `case 1n+p:` hands you a smaller `p` to
-recurse on, and a `Nat` is still a machine word at runtime (a program aborts
-past 2^48-1).
-There is no `if`: a branch is a `match` on `True{}` and `False{}`.
+Here, `t` has one fewer element than `xs`, so `sum` eventually reaches the empty
+list. Bend verifies termination by requiring recursive calls to use smaller
+parts of their inputs, obtained through pattern matching. The check reads the
+arguments of a recursive call from left to right: each must be passed unchanged
+until one is a smaller part of its parameter, and the ones after it are free.
+So, put the parameter that shrinks first. Also, is no `if` syntax yet. Use
+`match` on `True{}` and `False{}` instead.
 
 Termination is mandatory and mutual recursion is not allowed. Both restrictions
 keep Bend's proofs sound, as a function that never returns could otherwise prove
@@ -163,7 +160,9 @@ the GPU. The heap is fully unified, so, if your chip
 has unified memory (as in Apple M-series processors), moving data from the CPU
 to the GPU is a zero-cost operation. The GPU shines on uniform numeric work like
 mandelbrot or nbody; divergent work like n-queens stays faster on the CPU. A
-machine without a GPU runs `!` on the CPU (still in parallel).
+machine without a GPU runs `!` on the CPU (still in parallel). What the lanes
+share also sets the speed: a `+` value read by every lane costs an atomic per
+read. Read `bend guide shaders` before you write a parallel app.
 
 The JavaScript target ignores all that and just runs sequentially.
 
@@ -318,6 +317,7 @@ the AI does not touch it. `PROOF.bend` imports `LAWS.bend` and proves each law
 with a def of the same name (`law sorted` is proven by `def Laws.sorted`): the
 AI writes it, along with the code. `bend PROOF.bend` is the gate: it fails while
 any law is open or false, and prints "All terms check." once every law holds.
+bend refuses a `PROOF.bend` that sits beside a `LAWS.bend` without importing it.
 
 Bend has no tactics: a proposition is a type, and a proof is a def of that type.
 `{a == b : T}` is an equality; `{==}` proves it when both sides compute to the
@@ -358,9 +358,10 @@ def main() -> IO(Unit):
 
 Every bind is annotated, and `x : T = v` binds a pure value in the middle of a
 block. A fallible effect answers `Result<&1, &1, U32 & String, A>`: `IO.try`
-unwraps it or exits with the error, and `IO.die` exits with your own. A handle
-(`File`, `Socket`, `Window`) is an affine, opaque value, so every effect on one
-hands it back beside its result, and no program can forge or reuse one.
+unwraps it or exits with the error, and `IO.die` exits with your own. `IO.args`
+answers the command line, less the runtime's own options (a `--` ends them). A
+handle (`File`, `Socket`, `Window`) is an affine, opaque value, so every effect
+on one hands it back beside its result, and no program can forge or reuse one.
 
 A Bend program is a set of computations interleaved by one event loop, as in
 Node.js: each runs its pure code (in parallel, on every core) up to its next
@@ -376,7 +377,9 @@ underscores. You can add your own effects the same way. Only the event loop runs
 them, so proofs, termination and the GPU never touch host code. In the other
 direction, a JS file may `import Game from "./game.bend"` (with `bend2/main.ts`
 preloaded) and call every non-IO def, with constructors as `{$: "Name", field:
-value}` and `Nat` as `BigInt`.
+value}` and `Nat` as `BigInt`. A value crosses without a copy: an `Array`
+argument is the caller's own array, updated in place, so copy it first if you
+keep it.
 
 ### Monads
 
@@ -489,13 +492,14 @@ a file with everything it imports and prints that line.
 Bend is a single command:
 
 ```bash
-bend file.bend            # check the file, then run main on the JS backend
+bend file.bend            # check; run main (IO compiled; a value normalized)
 bend file.bend -o file    # compile to a native binary (clang 14+; 19+ with `!`)
 bend file.bend -o file.c  # emit the C source instead
 bend file.bend -o file.js # emit the JS source instead
 bend page.html -o dist    # bundle a web page that imports .bend files
 ./file --threads 8        # run a native binary on 8 CPU threads
-./file --gpu 4GB          # enables the GPU, with max 4GB memory
+./file --gpu off          # run ! calls on the CPU (the GPU is on by default)
+./file --gpu 4GB          # cap the GPU's heap at 4GB
 ```
 
 A `main` that returns `IO` runs compiled; one that returns a value is normalized
@@ -573,6 +577,7 @@ bit operations, `<< >>` the shifts (by a `Nat`), and `< <= > >=` the `T.is_lt`
 family; without a `: T` they belong to `Nat`. `&& ||` work on `Bool` and `++` on
 `String` anywhere. Operators need spaces on both sides.
 Equality of values is a call, `T.is_eq(a, b)`; `==` is only the type.
+A `Nat` literal past `256n` is `U32.to_nat(n)` underneath, up to `4294967295n`.
 
 ## Under the Hood
 
@@ -603,3 +608,14 @@ recursion must terminate. `bend2/bend.lean` mechanizes this, though it lags
 - `demos/`: complete programs, including the game and its proof from the video.
 - `bend2/base.bend`: the Base library, also printed by `bend base`.
 - `paper/BendTT.pdf` and `paper/BendRT.pdf`: the type theory and the runtime.
+
+## Extra
+
+`bend guide shaders` prints "Shaders in Bend", a tutorial written by AIs for
+AIs on how to write efficient shaders in Bend. It distills what building
+`demos/app_slash_boss_3d` (120 FPS in pure Bend) taught. Read it before you
+write a graphical or parallel app in Bend.
+
+`bend guide effects` prints "Effects in Bend", an AI-written note (to be
+revised by a human) on the C and JS side of custom effects. Read it before
+you write one.

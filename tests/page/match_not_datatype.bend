@@ -22,7 +22,7 @@ def main(): f(x => x)
 #|- expected : a datatype
 #|- observed : @_:U32 -> U32
 #|Location: f
-#|11 | def f(h):
-#|12>|   match h:
-#|13 |     case Z{}:
+#|12 |   match h:
+#|13>|     case Z{}:
+#|14 |       0
 #|exit 1

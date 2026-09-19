@@ -29,29 +29,37 @@ import * as Comp from "./comp.ts";
 // Constants
 // =========
 
-const VERSION = "2.0.5";
+const VERSION = "2.0.16";
 
 const HELP = `Bend ${VERSION}: check, run, build and publish Bend programs.
 
 usage:
   bend                       open the local browser playground
   bend playground [--port N] serve the playground (default: 3000)
-  bend <file.bend>            check the file, then run main
+  bend <file.bend> [args]     check the file, then run main with args
+                              (IO.args; a "--" ends bend's own options)
   bend <file.bend> -o <out>   build a binary; <out>.c emits C, <out>.js JS
   bend <file.bend> --checkup  check and run each import alone
   bend <file.bend> --publish  publish the file and its imports to the hub
   bend <page.html> -o <dir>   bundle a page that imports .bend files
   bend base [--types|<name>]  print Base, its types, or a name and its subnames
   bend guide                  print the Bend guide
+  bend update                 install the latest bend (curl | sh, shown first)
   bend --version              print the version
 
 Read the guide (\`bend guide\`) before writing Bend code.
 `;
 
+const BASE = Bend.BASE_BEND;
 
-const BASE = fs.realpathSync(path.join(import.meta.dirname, "base.bend"));
+const GUIDE = path.join(Bend.BEND_DIR, "..", "guide");
 
-const GUIDE = path.join(import.meta.dirname, "..", "guide", "GUIDE.md");
+const ORIGIN = process.env.BEND_ORIGIN ?? "https://bend-lang.com";
+
+// the daily version check's cache: when it last asked, and the answer
+const CHECK = path.join(os.homedir(), ".bend", "check.json");
+
+const DAY = 86400000;
 
 // A package's proof of work is a nonce whose sha256(hash + " " + nonce)
 // opens (its top 53 bits) with a number under 2^53 / work, where work is
@@ -83,6 +91,8 @@ const PLUGIN: BunPlugin = {
 // CLI
 // ===
 
+// cli runs the command, then (not after --version or update) the daily
+// version check, so the check never delays the command's own work.
 async function cli(): Promise<void> {
   const args = process.argv.slice(2);
   if (args.length === 0 || args[0] === "playground") {
@@ -97,21 +107,90 @@ async function cli(): Promise<void> {
   if (args[0] === "--version" && args.length === 1) {
     return cli_say(1, "bend " + VERSION + "\n");
   }
-  if (args[0] === "guide" && args.length === 1) {
-    return cli_say(1, fs.readFileSync(GUIDE, "utf8"));
+  if (args[0] === "update" && args.length === 1) {
+    return cli_update();
   }
-  if (args[0] === "base" && args.length <= 2) {
-    return cli_base(args[1]);
+  if (args[0] === "guide" && args.length <= 2) {
+    cli_guide(args[1] ?? "guide");
+  } else if (args[0] === "base" && args.length <= 2) {
+    cli_base(args[1]);
+  } else {
+    await cli_file(args);
   }
+  await check();
+}
+
+// cli_guide prints guide/<NAME>.md: the guide, or a named extra.
+function cli_guide(name: string): void {
+  const file = path.join(GUIDE, name.toUpperCase() + ".md");
+  if (!fs.existsSync(file)) {
+    cli_fail("no guide named " + name);
+  }
+  cli_say(1, fs.readFileSync(file, "utf8"));
+}
+
+// cli_update runs the installer again: the one way bend changes. The
+// command prints first, so the user can run it alone.
+function cli_update(): void {
+  const cmd = "curl -fsSL " + ORIGIN + "/install.sh | sh";
+  cli_say(2, cmd + "\n");
+  process.exitCode = child.spawnSync("sh", ["-c", cmd],
+    { stdio: "inherit" }).status ?? 1;
+}
+
+// check is the whole telemetry: once a day, a GET of /check?v=&os=&arch=
+// (nothing else: no id, no command, no timing) whose answer {ver, notice}
+// is cached in CHECK; a cached ver newer than this one prints one line on
+// stderr, and the notice. The cache is stamped before the request, so a
+// day has one request whatever happens to it; BEND_NO_TELEMETRY=1 skips
+// everything; the check never fails the command.
+async function check(): Promise<void> {
+  if (process.env.BEND_NO_TELEMETRY) {
+    return;
+  }
+  let last = { t: 0, ver: VERSION, notice: "" };
+  try {
+    last = { ...last, ...JSON.parse(fs.readFileSync(CHECK, "utf8")) };
+  } catch {}
+  try {
+    if (Date.now() - last.t > DAY) {
+      last.t = Date.now();
+      fs.mkdirSync(path.dirname(CHECK), { recursive: true });
+      fs.writeFileSync(CHECK, JSON.stringify(last) + "\n");
+      const res = await fetch(ORIGIN + "/check?v=" + VERSION + "&os="
+        + process.platform + "&arch=" + process.arch, { headers: { "User-Agent":
+        "bend/" + VERSION }, signal: AbortSignal.timeout(3000) });
+      const got = await res.json() as { ver?: unknown; notice?: unknown };
+      last.ver = typeof got.ver === "string" ? got.ver : VERSION;
+      last.notice = typeof got.notice === "string" ? got.notice : "";
+      fs.writeFileSync(CHECK, JSON.stringify(last) + "\n");
+    }
+  } catch {}
+  if (ver_newer(last.ver)) {
+    cli_say(2, "bend " + last.ver + " is available: run bend update\n"
+      + (last.notice === "" ? "" : last.notice.replace(/[\x00-\x1f\x7f]/g, "")
+      .slice(0, 200) + "\n"));
+  }
+}
+
+function ver_newer(ver: string): boolean {
+  const a = ver.split(".").map(Number);
+  const b = VERSION.split(".").map(Number);
+  return a.length === 3 && a.every(Number.isInteger)
+    && (a[0] - b[0] || a[1] - b[1] || a[2] - b[2]) > 0;
+}
+
+// cli_file checks, runs, builds, publishes or bundles a file
+async function cli_file(args: string[]): Promise<void> {
   const outs: string[] = [];
+  const argv: string[] = [];
   let file: string | undefined;
   let checkup = false;
   let publish = false;
   for (let i = 0; i < args.length; i += 1) {
     const a = args[i];
     if (a === "--help" || a === "-h") {
-      cli_say(1, HELP);
-      process.exit(0);
+      return cli_say(1, HELP);
     } else if (a === "--checkup") {
       checkup = true;
     } else if (a === "--publish") {
@@ -119,9 +198,12 @@ async function cli(): Promise<void> {
     } else if (a === "-o") {
       i += 1;
       outs.push(args[i] ?? cli_fail("-o needs an output file"));
-    } else if (a.startsWith("-") || file !== undefined) {
-      cli_fail(a.startsWith("-") ? "unknown option " + a
-        : "too many arguments");
+    } else if (a === "--") {
+      argv.push(...args.splice(i + 1));
+    } else if (a.startsWith("-")) {
+      cli_fail("unknown option " + a);
+    } else if (file !== undefined) {
+      argv.push(a);
     } else {
       file = a;
     }
@@ -139,6 +221,9 @@ async function cli(): Promise<void> {
   if (publish && (outs.length !== 0 || checkup)) {
     cli_fail("--publish takes no other option");
   }
+  if (argv.length !== 0 && (outs.length !== 0 || checkup || publish)) {
+    cli_fail("arguments go to a run: bend <file.bend> [args]");
+  }
   if (checkup && outs.length !== 0) {
     cli_fail("--checkup takes no -o: a binary holds one main, so build each"
       + " import alone");
@@ -152,8 +237,12 @@ async function cli(): Promise<void> {
     }
     const seen = new Map<string, string | null>();
     const book = await book_read(file, undefined, seen);
+    if (outs.length !== 0 || book_main(book) !== null) {
+      cli_report(book, 2);
+    }
     if (outs.length === 0) {
-      process.exit(book_run(book));
+      process.exitCode = book_run(book, argv);
+      return;
     }
     const ins = new Set([...seen.keys(), ...Object.values(book.tlds).flatMap((t) =>
       t.$ === "Def" && t.i !== undefined ? t.i.map(path_real) : [])]);
@@ -166,7 +255,7 @@ async function cli(): Promise<void> {
     }
   } catch (e) {
     cli_say(2, book_err(e) + "\n");
-    process.exit(1);
+    process.exitCode = 1;
   }
 }
 
@@ -186,7 +275,7 @@ async function cli_checkup(file: string): Promise<void> {
     let code = 1;
     try {
       const own = /^import Base$/m.test(fs.readFileSync(at, "utf8"));
-      code = book_run(await book_read(at, own ? base : undefined));
+      code = book_run(await book_read(at, own ? base : undefined), []);
     } catch (e) {
       cli_say(2, book_err(e) + "\n");
     }
@@ -336,7 +425,13 @@ async function cli_bundle(page: string, dir: string): Promise<void> {
 async function cli_publish(file: string): Promise<void> {
   const seen = new Map<string, string | null>();
   const book = await book_read(file, undefined, seen);
+  cli_report(book, 2);
   const files = pkg_files(file, book, seen);
+  const entry = Object.keys(files)[0];
+  const name  = path.basename(entry, ".bend");
+  if (name === "") {
+    cli_fail("a published file needs a name before .bend");
+  }
   const paths = Object.keys(files).sort();
   const bytes = paths.reduce((n, p) => n + Buffer.byteLength(files[p]), 0);
   const hash  = "0x" + sha256(paths.map((p) => sha256(files[p]) + " " + p
@@ -350,8 +445,6 @@ async function cli_publish(file: string): Promise<void> {
   if (!res.ok || got !== hash) {
     throw "Error: " + Bend.BEND_HUB + " answered: " + got;
   }
-  const entry = Object.keys(files)[0];
-  const name  = path.basename(entry, ".bend");
   cli_say(1, hash + "\nimport " + hash + "/" + entry + " as "
     + name[0].toUpperCase() + name.slice(1) + "\n");
 }
@@ -405,12 +498,17 @@ async function pow_mine(hash: string, bytes: number): Promise<number> {
 // Report
 // ======
 
-function cli_report(book: Bend.Book): void {
-  const uns  = Object.values(book.tlds).filter((t) =>
-    t.$ === "Def" && t.u === true).length;
-  cli_say(1, uns > 0 ? `${uns} term${uns === 1 ? "" : "s"}`
-    + " annotated as unsafe.\nThe code is well-typed, but may contain logical"
-    + " paradoxes.\n" : "All terms check.\n");
+// cli_report prints the unsafe count: the verdict of a check on stdout, a
+// note before a run, an emit or a publish on stderr (silent at zero).
+function cli_report(book: Bend.Book, fd: number): void {
+  const uns  = Object.entries(book.tlds).filter(([k, t]) =>
+    t.$ === "Def" && (t.u === true || k.includes("~"))).length;
+  if (uns > 0) {
+    cli_say(fd, `All terms check, with ${uns} unsafe annotation`
+      + `${uns === 1 ? "" : "s"}.\n`);
+  } else if (fd === 1) {
+    cli_say(1, "All terms check.\n");
+  }
 }
 
 function cli_say(fd: number, text: string): void {
@@ -439,6 +537,11 @@ async function book_read(file: string, base?: Bend.Book,
     seen.set(BASE, "");
   }
   await Bend.book_load(book, file, "", seen);
+  const laws = path.join(path.dirname(file), "LAWS.bend");
+  if (path.basename(file) === "PROOF.bend" && fs.existsSync(laws)
+    && !seen.has(fs.realpathSync(laws))) {
+    cli_fail("PROOF.bend must import ./LAWS.bend");
+  }
   Bend.book_valid(book, base?.order.length ?? 0);
   const hols = book.hols + book.open;
   if (hols > 0) {
@@ -462,15 +565,20 @@ function book_seed(base: Bend.Book): Bend.Book {
   return book;
 }
 
-function book_run(book: Bend.Book): number {
+function book_main(book: Bend.Book): Bend.Def | null {
   const main = book.tlds["main"];
-  if (main === undefined || main.$ !== "Def"
-    || (main.v === null && main.i === undefined)) {
-    cli_report(book);
+  return main === undefined || main.$ !== "Def"
+    || (main.v === null && main.i === undefined) ? null : main;
+}
+
+function book_run(book: Bend.Book, argv: string[]): number {
+  const main = book_main(book);
+  if (main === null) {
+    cli_report(book, 1);
     return 0;
   }
   if (Comp.io_type(book) !== null) {
-    return Comp.io_run(book);
+    return Comp.io_run(book, argv);
   }
   const snf = Bend.term_snf(book, main.v as Bend.HTerm);
   cli_say(1, Bend.term_show(Bend.term_lower(snf)) + "\n");
@@ -515,7 +623,13 @@ export async function load(u: string, context: unknown,
 export default PLUGIN;
 
 if (import.meta.main) {
+  if (typeof Bun === "undefined") {
+    cli_say(2, "bend runs on Bun: curl -fsSL https://bend-lang.com/install.sh"
+      + " | sh\n");
+    process.exit(1);
+  }
   await cli();
+  process.exit();
 } else if (typeof Bun !== "undefined") {
   Bun.plugin(PLUGIN);
 } else if (thr.isMainThread) {

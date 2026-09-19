@@ -180,11 +180,12 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     JS: "(Math.imul($0, $1) >>> 0)",
   },
   u32_div: {
-    C:  "((u32)($1) == 0 ? 0 : U32_BIN($0, /, $1))",
+    C:  "((u32)($1) == 0 ? 0 : (u64)U32_QUO((u32)($0), (u32)($1)))",
     JS: "($1 === 0 ? 0 : ($0 / $1) >>> 0)",
   },
   u32_mod: {
-    C:  "((u32)($1) == 0 ? $0 : U32_BIN($0, %, $1))",
+    C:  "((u32)($1) == 0 ? $0 : U32_BIN($0, -,"
+      + " U32_QUO((u32)($0), (u32)($1)) * $1))",
     JS: "($1 === 0 ? $0 : $0 % $1)",
   },
   ...tpl_ops("u32_", "inc:+ shl:<< shr:>>:>>>", "U32_BIN($0, $o, 1)",
@@ -284,6 +285,9 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   string_append: {
     JS: "($0 + $1)",
   },
+  string_length: {
+    JS: "BigInt([...$0].length)",
+  },
   array_new: {
     call: true,
     JS:   "array_new($0, $1)",
@@ -365,7 +369,7 @@ const OPTIMIZED: Record<Bend.Name, Native> = Object.setPrototypeOf({
   Array: {
     intr: {
       ALeaf: "[$0]",
-      ANode: "$0.concat($1)",
+      ANode: "array_node($0, $1)",
     },
     elim: {
       ALeaf: ["$0[0]"],
@@ -413,6 +417,11 @@ ${SHIMS}
 #endif
 
 #define U32_BIN(a, o, b) ((u64)((u32)(a) o (u32)(b)))
+
+// Metal folds a constant dividend within 128 of 2^32 through an f32: divide
+// its half, then fix the odd bit.
+#define U32_QUO(a, b) \
+  ((a) / 2 / (b) * 2 + ((a) - (a) / 2 / (b) * 2 * (b) >= (b)))
 
 INLINE f32 f32_unbox(u64 x) {
   union { u32 u; f32 f; } p = { (u32)x };
@@ -494,8 +503,8 @@ static Term f32_read(Env e, Term s) {
   char* text = io_cstr(e, s, &n);
   char* end;
   f32 v = strtof(text, &end);
-  Term out = n > 0 && *end == 0 ? io_box(e, CID_SOME, f32_rewrap(v), 0)
-    : term_pak(CID_NONE, 0);
+  Term out = n > 0 && (u64)(end - text) == n && strpbrk(text, "xX(") == NULL
+    ? io_box(e, CID_SOME, f32_rewrap(v), 0) : term_pak(CID_NONE, 0);
   free(text);
   return out;
 }
@@ -1226,7 +1235,7 @@ function show_main(book: Bend.Book): Show | null {
   const node = (T: HTerm, lay: Lay): number => {
     const t = ty_wnf(book, T) as HTerm;
     const box = lay_box(lay);
-    const key = String(box) + Bend.term_show(Bend.term_lower(t));
+    const key = String(box) + Bend.term_key(Bend.term_lower(t));
     const got = ids.get(key);
     if (got !== undefined) {
       return got;
@@ -1275,9 +1284,10 @@ function show_main(book: Bend.Book): Show | null {
   return show;
 }
 
-export function io_run(book: Bend.Book): number {
+export function io_run(book: Bend.Book, args: string[] = []): number {
   const src = js_lib(book, ["main"], null) + "\n" + RUNTIME_MAIN
-    + "\nreturn io_run(" + js_sat("main") + ");";
+    + "\ncli_args = " + JSON.stringify(args) + ";\nreturn io_run("
+    + js_sat("main") + ");";
   return new Function("require", src)(import.meta.require) as number;
 }
 
@@ -2734,7 +2744,7 @@ function compile_reqs(fl: File): void {
     const own = ns === "" ? []
       : Object.keys(fl.book.ctrs).filter((c) => c.startsWith(ns));
     const macs = own.map((c) =>
-      [cid_mac(name_own(c, fl.book.ctrs[c], " +")), cid_mac(c)]);
+      [cid_mac(c.slice(ns.length)), cid_mac(c)]);
     for (const [m, g] of macs) {
       fl.reqs += `#pragma push_macro("${m}")\n#define ${m} ${g}\n`;
     }
@@ -2777,12 +2787,12 @@ function compile_tables(fl: File, entries: Seg[]): string[] {
     defs.push(`CONSTV u8 ${nm}[] = { ${vals.join(", ")} };`);
   };
   table("FID_ARITY_T", entries.map((s) => s.params.length));
-  // A segment may fork when it, or one it reaches, does.
-  const forky = new Set(["FID_CLO_APPLY",
-    ...fl.segs.filter((s) => s.fork).map((s) => s.fid)]);
+  // A segment may fork when it, or one it reaches, does; a closure apply
+  // reaches every closure.
+  const forky = new Set(fl.segs.filter((s) => s.fork).map((s) => s.fid));
   for (let n = -1; n !== forky.size;) {
     n = forky.size;
-    for (const s of fl.segs) {
+    for (const s of [...fl.segs, { fid: "FID_CLO_APPLY", refs: fl.clos }]) {
       if (!forky.has(s.fid) && [...s.refs].some((r) => forky.has(r))) {
         forky.add(s.fid);
       }
@@ -2889,7 +2899,7 @@ export function compile_book(book: Bend.Book): string {
       JSON.stringify(n)).join(", ")} };`, "#endif"];
   const defs = compile_tables(fl, entries);
   defs.push(`#define MAIN_FID ${seg_fid("main")}`, `#define MAIN_PURE ${
-    Number(show !== null)}`, ...desc);
+    Number(show !== null)}`);
   const fills: [string, string[]][] = [
     ["Tables", [defs.join("\n"), ...[...fl.tabs].map(([r, i]) =>
       `CONSTV u64 TAB_${i}[] = { ${r} };`)]],
@@ -2898,13 +2908,13 @@ export function compile_book(book: Bend.Book): string {
     ["Segments", [compile_segs(fl)]],
     ["Requests", [fl.reqs]],
   ];
-  const out = fills.reduce((src, [mark, parts]) => src.replace(
-    new RegExp("^// " + mark + "\\n// " + "=".repeat(mark.length) + "$", "m"),
-    (m) => [m, ...parts].join("\n\n")), TEMPLATE);
-  if (/\bundefined\b/.test(out)) {
+  if (fills.some(([, parts]) => /\bundefined\b/.test(parts.join("\n")))) {
     die("an unbound name in the emitted C");
   }
-  return out;
+  fills[0][1].push(...desc);
+  return fills.reduce((src, [mark, parts]) => src.replace(
+    new RegExp("^// " + mark + "\\n// " + "=".repeat(mark.length) + "$", "m"),
+    (m) => [m, ...parts].join("\n\n")), TEMPLATE);
 }
 
 // Js
@@ -3004,7 +3014,7 @@ function js_ctr_tree(fl: File, root: Of<"Ctr">, ty0: HTerm | null): string {
     } else {
       const keys = js_ctr(fl, fr.node.k);
       s = fr.acc.reduce((e, z, j) => e + ", [\"" + keys[j] + "\"]: " + z,
-        "{$: \"" + name_own(fr.node.k, fl.book.ctrs[fr.node.k], " +") + "\"") + "}";
+        "{$: \"" + name_own(fr.node.k, fl.book.tlds[fr.adt.k], " +") + "\"") + "}";
     }
     stack.pop();
     if (stack.length === 0) { done = s; break; }
@@ -3054,13 +3064,10 @@ function js_expr(fl: File, tm: HTerm,
       const arg = name_local(fl, "x");
       const seg = fl.seg;
       fl.seg = seg_new("", BOX, []);
-      fl.tab += 1;
       js_func(fl, x, ty, [arg]);
-      fl.tab -= 1;
       const lines = fl.seg.lines;
       fl.seg = seg;
-      return `run_clo((${arg}) => {\n${lines.join("\n")}\n${
-        "  ".repeat(fl.tab)}})`;
+      return `run_clo((${arg}) => {\n${lines.join("\n")}\n})`;
     }
     case "Hol": die("cannot compile a hole");
     default: return "null";
@@ -3124,7 +3131,7 @@ function js_func(fl: File, tm: HTerm, ty0: HTerm | null,
       return bodies[0]();
     }
     return emit_chain(fl, (i) => native === undefined
-      ? s + ".$ === \"" + name_own(arms[i][0], fl.book.ctrs[arms[i][0]], " +")
+      ? s + ".$ === \"" + name_own(arms[i][0], fl.book.tlds[adt.k], " +")
         + "\""
       : tpl(native.cond?.[arms[i][0]] ?? die(arms[i][0] + NATIVE_DIE), [s]),
     bodies);
@@ -3167,24 +3174,30 @@ export function js_lib(book: Bend.Book, roots: Bend.Name[],
   const cb = carb_book(book, roots.slice());
   const fl = file_new(cb, "const");
   fl.tab = 0;
+  const ms = done_defs(cb).map(([k]) => js_sat(k));
   for (const [k, def] of done_defs(cb)) {
     memo_gc();
     js_def(fl, k, def);
   }
-  const seen = new Set<string>();
-  const srcs: string[] = [];
-  const rows: string[] = [];
+  const grps = new Map<string, string[]>();
   for (const [k, tld] of done_defs(cb, def_foreign)) {
-    srcs.push(eff_src(tld.i!.find((x) => x.endsWith(".js"))
-      ?? die("a foreign def without a .js import: " + k), seen));
+    const path = fs.realpathSync(tld.i!.find((x) => x.endsWith(".js"))
+      ?? die("a foreign def without a .js import: " + k));
     js_def(fl, k, tld);
     const n = eff_name(k);
+    ms.push(n);
+    const rows = grps.get(path) ?? [];
+    grps.set(path, rows);
     for (const m of [n, n + "_need"]) {
       rows.push(`  ${m}: typeof ${m} === "function" ? ${m} : undefined,`);
     }
   }
-  const effs = rows.length === 0 ? "" : "const $0eff = (() => {\n"
-    + srcs.join("\n") + "\nreturn {\n" + rows.join("\n") + "\n};\n})();\n\n";
+  const dup = ms.find((m, i) => ms.indexOf(m) < i);
+  if (dup !== undefined) die("two names mangle to " + dup);
+  const effs = grps.size === 0 ? "" : "const $0eff = {\n" + [...grps]
+    .map(([p, rows]) => "...(() => {\n" + fs.readFileSync(p, "utf8")
+      + "\nreturn {\n" + rows.join("\n") + "\n};\n})(),").join("\n")
+    + "\n};\n\n";
   const tabs = [...fl.tabs].map(([r, i]) => `const TAB_${i} = [${r}];`);
   const lib = outs === null ? "" : "export default {\n" + outs.map((k) =>
     `  "${k}": run_lib(${js_sat(k)}, ${sig_def(cb, k).lays.length}),`)
@@ -3536,12 +3549,13 @@ static bool io_gpu;
 static Stk  io_stk;
 
 static const char* CLI_HELP =
-  "usage: %s [options]\n"
+  "usage: %s [options] [arguments]\n"
   "  --threads N       worker threads, 1 to 128 (default: the CPU count)\n"
   "  --gpu on|off|4GB  run ! calls on the GPU, over this much of its memory\n"
   "                    (default: on if present, over 2GB on Metal)\n"
   "  --gpu-build       write the GPU program and exit\n"
-  "  --help            show this text\n";
+  "  --help            show this text\n"
+  "  --                the rest are the program's arguments (IO.args)\n";
 
 #endif
 
@@ -4463,12 +4477,13 @@ INLINE u32 monk_step(Env e, Stk stk, Ring rg, u32 put0, bool seq, u32 base,
       if (err_spun(H, &spin)) {
         return 2;
       }
-      if (stride != 0) {
+      if (stride != 0 && fid_nofk((u32)term_aux(r))) {
         ring_push(H, ring_pick(base, stride, cur), r);
         return 2;
       }
-      t   = r;
-      seq = false;
+      t      = r;
+      seq    = false;
+      stride = 0;
       continue;
     }
     task_deal(H, r, base, stride, cur);
@@ -5282,6 +5297,10 @@ static int io_sys_addr(const char* host, u32 port, struct sockaddr_in* at) {
     ? -1 : 0;
 }
 
+// The program's arguments (IO.args).
+static int    io_argc = 0;
+static char** io_argv = NULL;
+
 static void io_eff(u32 cid, Effect run, u32 need) {
   IoEff row = { run, need };
   io_eff_rows[cid] = row;
@@ -5413,26 +5432,49 @@ static Term io_node(Env e, u64 cid, Term a, Term b, int hot) {
   return term_ctr(cid, l);
 }
 
+// io_str decodes UTF-8 as WHATWG does: the lead byte sets the count of
+// continuation bytes and the range of the second; a byte that breaks the
+// sequence (or the end) yields one U+FFFD and is read again as a lead.
 static Term io_str(Env e, const char* p, u64 n) {
-  Term s = term_pak(CID_SNIL, 0);
-  while (n > 0) {
-    u64 k = 0;
-    while (k < 3 && k + 1 < n && ((uint8_t)p[n - 1 - k] & 0xC0) == 0x80) {
-      k += 1;
-    }
-    u64 b   = (uint8_t)p[n - 1 - k];
-    u64 len = b < 0xC0 ? 0 : b < 0xE0 ? 2 : b < 0xF0 ? 3 : 4;
-    u64 c   = (uint8_t)p[n - 1];
-    if (len == k + 1) {
-      c = b & (0x7F >> len);
-      for (u64 i = 1; i < len; i += 1) {
-        c = (c << 6) | ((uint8_t)p[n - len + i] & 0x3F);
+  Term s    = term_pak(CID_SNIL, 0);
+  Loc  hole = 0;
+  u64  c = 0, need = 0, lo = 0x80, hi = 0xBF;
+  for (u64 i = 0; i < n || need > 0; i += 1) {
+    u64 b = i < n ? (uint8_t)p[i] : 0x100;
+    if (need > 0 && (b < lo || b > hi)) {
+      need = 0;
+      c    = 0xFFFD;
+      i   -= 1;
+    } else if (need > 0) {
+      lo = 0x80;
+      hi = 0xBF;
+      c  = (c << 6) | (b & 0x3F);
+      if (--need > 0) {
+        continue;
       }
+    } else if (b < 0x80) {
+      c = b;
+    } else if (b < 0xC2 || b > 0xF4) {
+      c = 0xFFFD;
     } else {
-      len = 1;
+      need = b < 0xE0 ? 1 : b < 0xF0 ? 2 : 3;
+      lo   = b == 0xE0 ? 0xA0 : b == 0xF0 ? 0x90 : 0x80;
+      hi   = b == 0xED ? 0x9F : b == 0xF4 ? 0x8F : 0xBF;
+      c    = b & (0x3F >> need);
+      continue;
     }
-    n -= len;
-    s = io_node(e, CID_SCON, c, s, IO_HOTS & 1);
+    Loc  l = heap_alloc(e, 1);
+    Term t = term_ctr(CID_SCON, l);
+    e.mem[l] = c;
+    if (hole == 0) {
+      s = t;
+    } else {
+      e.mem[hole] = io_seal(e, t, IO_HOTS & 1);
+    }
+    hole = l + 1;
+  }
+  if (hole != 0) {
+    e.mem[hole] = io_seal(e, term_pak(CID_SNIL, 0), IO_HOTS & 1);
   }
   return s;
 }
@@ -5915,11 +5957,15 @@ int main(int argc, char** argv) {
   long thr = 0;
   int  gpu = -1;
   u64  mem = 0;
+  io_argv = argv + 1;
   for (int i = 1; i < argc; i += 1) {
     const char* a = argv[i];
     const char* v = i + 1 < argc ? argv[i + 1] : NULL;
-    i += 1;
-    if (strcmp(a, "--help") == 0) {
+    if (strcmp(a, "--") == 0) {
+      while (i + 1 < argc) {
+        io_argv[io_argc++] = argv[++i];
+      }
+    } else if (strcmp(a, "--help") == 0) {
       printf(CLI_HELP, argv[0]);
       return 0;
     } else if (strcmp(a, "--gpu-build") == 0) {
@@ -5933,6 +5979,7 @@ int main(int argc, char** argv) {
       if (thr < 1 || end == NULL || *end != '\0') {
         cli_fail("expected a thread count of 1 or more after --threads", NULL);
       }
+      i += 1;
     } else if (strcmp(a, "--gpu") == 0) {
       char*  end = NULL;
       double n   = v != NULL ? strtod(v, &end) : 0;
@@ -5946,8 +5993,9 @@ int main(int argc, char** argv) {
       } else {
         cli_fail("expected on, off or a size like 4GB after --gpu", NULL);
       }
+      i += 1;
     } else {
-      cli_fail("unknown option ", a);
+      io_argv[io_argc++] = argv[i];
     }
   }
   bool dev = gpu != 0 && BANGS != 0 && gpu_probe();
@@ -5976,6 +6024,14 @@ function array_new(d, v) {
     throw "bend: ${ERRS[8]}";
   }
   return Array(2 ** Number(d)).fill(v);
+}
+
+// An unbalanced tree fails, as in C.
+function array_node(a, b) {
+  if (a.length !== b.length) {
+    throw "bend: ${ERRS[2]}";
+  }
+  return a.concat(b);
 }
 
 function array_swap(a, i, v) {
@@ -6020,20 +6076,22 @@ const RUNTIME_MAIN: string = String.raw`
 // Cli
 // ===
 
-function cli_fail(msg) {
-  io_errs("bend: " + msg);
-  process.exit(1);
-}
+// A JS program runs one thread and no GPU: --threads and --gpu do nothing.
+let cli_args = [];
 
-// A JS program runs one thread and no GPU: it takes no argument.
 function cli(argv) {
-  if (argv[0] === "--help") {
-    io_out(1, io_bytes("usage: " + process.argv[1] + "\n"));
-    process.exit(0);
-  }
-  if (argv.length > 0) {
-    cli_fail("unknown option " + argv[0] + " (a JS program runs one thread"
-      + " and no GPU)");
+  for (let i = 0; i < argv.length; i += 1) {
+    if (argv[i] === "--") {
+      cli_args.push(...argv.slice(i + 1));
+      break;
+    } else if (argv[i] === "--help") {
+      io_out(1, io_bytes("usage: " + process.argv[1] + "\n"));
+      process.exit(0);
+    } else if (argv[i] === "--threads" || argv[i] === "--gpu") {
+      i += 1;
+    } else {
+      cli_args.push(argv[i]);
+    }
   }
 }
 
@@ -6137,7 +6195,8 @@ function io_sys() {
     const vari = mac && process.arch === "arm64";
     const lib = ffi.dlopen(mac ? "libSystem.dylib" : "libc.so.6",
       Object.fromEntries(("socket:iii>i bind:ipu>i listen:ii>i connect:ipu>i"
-        + " accept:ipp>i send:ipUi>I recv:ipUi>I read:ipU>I sendto:ipUipu>I"
+        + " accept:ipp>i send:ipUi>I recv:ipUi>I read:ipU>I pread:ipUI>I"
+        + " sendto:ipUipu>I"
         + " recvfrom:ipUipp>I close:i>i poll:pui>i setsockopt:iiipu>i"
         + (vari ? " fcntl:iiiiiiiii>i" : " fcntl:iii>i") + " getsockopt:iiipp>i"
         + " strerror:i>c " + err + ":>p").split(" ").map((s) => {
@@ -6171,7 +6230,8 @@ function io_bytes(text) {
 }
 
 function io_text(b, n) {
-  return new TextDecoder().decode(b.subarray(0, n));
+  const dec = new TextDecoder("utf-8", { ignoreBOM: true });
+  return dec.decode(b.subarray(0, n));
 }
 
 function io_addr(host, port) {
