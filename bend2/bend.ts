@@ -1406,7 +1406,7 @@ export function term_show(term: LTerm, top: number = -1, bnd: Name[] = [], key: 
       }
       case "Ctr": {
         const u32 = u32_from_term(tm);
-        const f32 = u32_from_term(tm, "F32");
+        const f32 = key ? null : u32_from_term(tm, "F32");
         const chr = term_show_sugar_chr(tm, "'");
         const arr = key ? null : term_show_sugar_arr(tm);
         const sug = u32 !== null ? String(u32) : f32 !== null ? f32_show(f32_from_bits(f32))
