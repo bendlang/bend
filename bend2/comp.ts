@@ -2808,8 +2808,8 @@ function compile_tables(fl: File, entries: Seg[]): string[] {
     `(V)[${j}] = ${r};`).join(" ")}`, "",
   `#define WL_TAKE(V) ${rs.slice(0, resw).map((r, j) =>
     `${r} = (V)[${j}];`).join(" ")}`, "",
-  `#define WL_SIG Env e, Stk sp, u32 seq, u32 rn, ${ws.map((w) =>
-    "Term " + w).join(", ")}`, "", `#define WL_ALL e, sp, seq, rn, ${ws
+  `#define WL_SIG WL_ENV_SIG, Stk sp, u32 seq, u32 rn, ${ws.map((w) =>
+    "Term " + w).join(", ")}`, "", `#define WL_ALL WL_ENV_ALL, sp, seq, rn, ${ws
     .join(", ")}`, "",
   `#define WL_TABLE ${entries.map((s) => `WL_X(${s.fid})`).join(" ")}`
     + " WL_X(FID_EXIT)");
@@ -3284,7 +3284,17 @@ using namespace metal;
 #define UNLOCK(l)  __atomic_store_n(&(l), 0, __ATOMIC_RELEASE)
 #define WL_FN      static PRESERVE(preserve_none) __attribute__((noinline)) Reply
 #define WL_CASE(F) WL_FN WL_##F(WL_SIG)
-#define WL_OPEN    { WL_BANK u32 rn;
+#define WL_OPEN    { WL_ENV_OPEN WL_BANK u32 rn;
+// wasm passes a struct through the frame a tail call pops: two words
+#ifdef __EMSCRIPTEN__
+#define WL_ENV_SIG  Corpus e_mem, DEV u64* e_alc
+#define WL_ENV_ALL  e.mem, e.alc
+#define WL_ENV_OPEN Env e = { e_mem, e_alc };
+#else
+#define WL_ENV_SIG  Env e
+#define WL_ENV_ALL  e
+#define WL_ENV_OPEN
+#endif
 #define WL_JMP(F)  __attribute__((musttail)) return WL_##F(WL_ALL)
 #define WL_DYN(F)  __attribute__((musttail)) return wl_tab[F](WL_ALL)
 #endif
@@ -3422,8 +3432,7 @@ typedef u32* Cur;
 #define NCLS      8
 #define NCLS_ALL  32
 #define IO_HELP   64
-// wasm32 commits what it maps, in 4 GiB: a 1 GiB corpus, halved down to
-// 256 MiB, and a 16 MiB stack a thread
+// wasm32 commits what it maps
 #ifdef __EMSCRIPTEN__
 #define STACK_LEN  (1ull << 24)
 #define CORPUS_LEN (1ull << 30)
@@ -4597,9 +4606,8 @@ INLINE u32 window_pix(Corpus H, Term t, u32 k, u32 x, u32 y) {
 }
 
 #ifdef __EMSCRIPTEN__
-// A page's window: its canvas's size and pixels (RGBA), the events
-// pumped since the last frame (five words each, at most cap) and their
-// count plus one, got, which the page sets
+// A page's window: canvas size, RGBA pixels, the frame's events (at
+// most cap) and their count plus one
 typedef struct {
   u32  w;
   u32  h;
