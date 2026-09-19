@@ -429,13 +429,58 @@ def main() -> IO(Unit):
 const exampleStdin: Record<string, string> = {
   calc: "40\n2\n",
 };
+// Demo dir -> label plus extra files the demo's main imports. Sources ship
+// as static files; the picker fetches them into the editor and the aux map,
+// and run() posts the whole set to the worker's memory filesystem.
+const demos: Record<string, { label: string; aux: Record<string, string> }> = {
+  "demo:pure_par_sum": { label: "Parallel sum", aux: {} },
+  "demo:pure_par_sort": { label: "Parallel sort", aux: {} },
+  "demo:pure_hvm5_mini": { label: "HVM mini", aux: {} },
+  "demo:proof_insertion_sort": { label: "Insertion sort", aux: {} },
+  "demo:proof_numerics": { label: "Numerics", aux: {} },
+  "demo:proof_typed_eval": { label: "Typed eval", aux: {} },
+  "demo:io_hello_world": { label: "Hello IO", aux: {} },
+  "demo:app_triangle_2d": { label: "Triangle", aux: {} },
+  "demo:app_pong_game_2d": { label: "Pong", aux: {} },
+  "demo:app_win_is_bug_2d": { label: "WinIsBug", aux: {} },
+  "demo:app_ray_tracer_3d": { label: "Ray tracer", aux: {} },
+  "demo:app_slash_boss_3d": { label: "Slash boss", aux: { "bend3d.bend": "demos/app_slash_boss_3d/bend3d.bend" } },
+  "demo:io_http_fetch": { label: "HTTP fetch · needs native", aux: {} },
+  "demo:io_http_server": { label: "HTTP server · needs native", aux: {} },
+  "demo:io_tcp_echos": { label: "TCP echo · needs native", aux: {} },
+};
+let auxFiles: Record<string, string> = {};
+function renderAux(): void {
+  const bar = get("auxbar");
+  bar.hidden = Object.keys(auxFiles).length === 0;
+  bar.replaceChildren(...Object.keys(auxFiles).map(name => {
+    const chip = document.createElement("span");
+    chip.className = "aux-chip";
+    chip.textContent = name + " ";
+    const drop = document.createElement("button");
+    drop.className = "text-button";
+    drop.textContent = "×";
+    drop.title = "Drop " + name;
+    drop.addEventListener("click", () => { delete auxFiles[name]; renderAux(); });
+    chip.appendChild(drop);
+    return chip;
+  }));
+}
 const storageKey = "bend.playground.v1";
+const DEBUG = new URLSearchParams(location.search).get("debug") === "true";
+function dlog(msg: string): void {
+  if (!DEBUG) return;
+  const log = get("debuglog");
+  log.textContent += (log.textContent ? "\n" : "") + msg;
+  const lines = log.textContent.split("\n");
+  if (lines.length > 200) log.textContent = lines.slice(-200).join("\n");
+}
 let worker: Worker;
 let runner: Worker | undefined;
 let ready = false;
 let busy = false;
 let phase = "Compiling…";
-let tab: "results" | "compiled" = "results";
+let tab: "results" | "compiled" | "display" = "results";
 let generation = 0;
 let request = 0;
 let timer: ReturnType<typeof setTimeout>;
@@ -449,16 +494,17 @@ function status(text: string, state = ""): void {
   get("status-text").textContent = text;
   get("status").className = state;
 }
-function visibleOutput(): HTMLTextAreaElement { return tab === "results" ? results : output; }
+function visibleOutput(): HTMLTextAreaElement { return tab === "compiled" ? output : results; }
 function controls(): void {
   for (const action of actions) get<HTMLButtonElement>(action).disabled = !ready || busy;
   cancel.hidden = !busy;
   source.setAttribute("aria-busy", String(busy));
-  copy.disabled = download.disabled = !visibleOutput().value;
+  copy.disabled = download.disabled = tab === "display" || !visibleOutput().value;
 }
+const tabs = ["results", "compiled", "display"] as const;
 function selectTab(next: typeof tab, focus = false): void {
   tab = next;
-  for (const name of ["results", "compiled"] as const) {
+  for (const name of tabs) {
     const button = get("tab-" + name);
     button.setAttribute("aria-selected", String(tab === name));
     button.tabIndex = tab === name ? 0 : -1;
@@ -467,12 +513,14 @@ function selectTab(next: typeof tab, focus = false): void {
   if (focus) get("tab-" + tab).focus();
   controls();
 }
-for (const name of ["results", "compiled"] as const) {
+for (const name of tabs) {
   get("tab-" + name).addEventListener("click", () => selectTab(name));
   get("tab-" + name).addEventListener("keydown", event => {
     if (["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) {
       event.preventDefault();
-      selectTab(event.key === "Home" ? "results" : event.key === "End" ? "compiled" : tab === "results" ? "compiled" : "results", true);
+      const at = tabs.indexOf(tab);
+      selectTab(event.key === "Home" ? "results" : event.key === "End" ? "display"
+        : tabs[(at + (event.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length], true);
     }
   });
 }
@@ -537,7 +585,28 @@ function execute(javascript: string, compileTime: number): void {
         get("output-state").textContent = "Waiting for input…";
         status("Waiting for input…", "busy");
       }
+      dlog("[runner] input-request");
       line.focus();
+    } else if (data.type === "dbg") {
+      dlog(`[${data.from ?? "worker"}] ${data.msg}`);
+    } else if (data.type === "win-open") {
+      const screen = get<HTMLCanvasElement>("screen");
+      screen.width = data.w;
+      screen.height = data.h;
+      screen.title = data.title;
+      selectTab("display");
+      get("output-state").textContent = `Display ${data.w}×${data.h} · click it for keyboard and mouse`;
+      screen.focus();
+    } else if (data.type === "win-frame") {
+      const screen = get<HTMLCanvasElement>("screen");
+      if (screen.width === data.w && screen.height === data.h) {
+        const ctx = screen.getContext("2d")!;
+        ctx.putImageData(new ImageData(new Uint8ClampedArray(data.pix), data.w, data.h), 0, 0);
+      }
+    } else if (data.type === "win-title") {
+      get<HTMLCanvasElement>("screen").title = data.title;
+    } else if (data.type === "win-close") {
+      get("output-state").textContent = "Display closed";
     } else if (data.type === "done") {
       if (!results.value) results.value = "Program finished without output.\n";
       finish(`Exit ${data.code} · ran in ${elapsed(data.elapsed)} · compiled in ${elapsed(compileTime)}`, data.code !== 0);
@@ -548,7 +617,7 @@ function execute(javascript: string, compileTime: number): void {
     results.value += (event.message || "The execution worker stopped.") + "\n";
     finish("Execution failed", true);
   };
-  runner.postMessage({ javascript, stdin: stdinMode() === "ask" ? "" : stdinBox.value });
+  runner.postMessage({ javascript, stdin: stdinMode() === "ask" ? "" : stdinBox.value, debug: DEBUG });
   timer = setTimeout(() => stop("Execution stopped after 30 seconds."), 30_000);
 }
 function restart(message?: string, runWhenReady?: Action): void {
@@ -570,7 +639,12 @@ function restart(message?: string, runWhenReady?: Action): void {
       ready = true;
       controls();
       status(message ?? "Ready");
+      dlog("[compiler] ready");
       if (runWhenReady) run(runWhenReady);
+      return;
+    }
+    if (data.type === "dbg") {
+      dlog(`[${data.from ?? "worker"}] ${data.msg}`);
       return;
     }
     if (data.type !== "result" || data.id !== request || !busy) return;
@@ -623,7 +697,9 @@ function run(action: Action = "compile-run"): void {
   get("output-state").textContent = phase;
   selectTab("results");
   status(phase, "busy");
-  worker.postMessage({ id: request, source: activeSource, action });
+  const files: Record<string, string> = { "/main.bend": activeSource };
+  for (const [name, content] of Object.entries(auxFiles)) files["/" + name] = content;
+  worker.postMessage({ id: request, files, action, debug: DEBUG });
   timer = setTimeout(() => stop(action === "interpret" ? "Interpretation stopped after 30 seconds." : "Compilation stopped after 30 seconds. Try a smaller program."), 30_000);
 }
 
@@ -631,7 +707,7 @@ source.value = examples.hello;
 try {
   const saved = JSON.parse(localStorage.getItem(storageKey) ?? "null");
   if (saved && typeof saved.source === "string") source.value = saved.source;
-  if (saved?.example in examples) example.value = saved.example;
+  if (saved?.example in examples || saved?.example in demos) example.value = saved.example;
   if (saved && typeof saved.stdin === "string") stdinBox.value = saved.stdin;
   const mode = saved && (saved.mode === "ask" || saved.mode === "prefill") ? saved.mode : null;
   if (mode) {
@@ -690,6 +766,51 @@ function sendEOF(): void {
   runner.postMessage({ eof: true });
   get("inputbar").hidden = true;
 }
+// DOM codes to the native key table: characters lowercased, arrows and
+// function keys on 63232+, modifiers on 65590+, the rest on 65536+.
+function winKey(e: KeyboardEvent): number {
+  switch (e.code) {
+    case "Escape": return 27;
+    case "Enter": return 13;
+    case "Tab": return 9;
+    case "Backspace": return 127;
+    case "ArrowUp": return 63232;
+    case "ArrowDown": return 63233;
+    case "ArrowLeft": return 63234;
+    case "ArrowRight": return 63235;
+    case "Insert": return 63271;
+    case "Delete": return 63272;
+    case "Home": return 63273;
+    case "End": return 63275;
+    case "PageUp": return 63276;
+    case "PageDown": return 63277;
+    case "ShiftLeft": return 65592;
+    case "ShiftRight": return 65596;
+    case "ControlLeft": return 65595;
+    case "ControlRight": return 65597;
+    case "AltLeft": return 65594;
+    case "AltRight": return 65598;
+    case "MetaLeft": return 65591;
+    case "MetaRight": return 65590;
+    case "CapsLock": return 65593;
+  }
+  if (e.key.startsWith("F") && /^F([1-9]|1[0-2])$/.test(e.key)) {
+    return 63236 + Number(e.key.slice(1)) - 1;
+  }
+  if (e.key.length === 1 && e.key >= " ") return e.key.toLowerCase().codePointAt(0)!;
+  return 65536 + e.keyCode;
+}
+function winSend(ev: object): void {
+  if (!busy || !runner) return;
+  runner.postMessage({ win: "event", ev });
+}
+function winPoint(e: MouseEvent): [number, number] {
+  const screen = get<HTMLCanvasElement>("screen");
+  const rect = screen.getBoundingClientRect();
+  const clip = (v: number, most: number) => Math.min(Math.max(0, Math.floor(v)), most - 1);
+  return [clip((e.clientX - rect.left) * screen.width / rect.width, screen.width),
+    clip((e.clientY - rect.top) * screen.height / rect.height, screen.height)];
+}
 for (const action of actions) get(action).addEventListener("click", () => run(action));
 get("send").addEventListener("click", sendInput);
 get("eof").addEventListener("click", sendEOF);
@@ -700,10 +821,64 @@ get<HTMLInputElement>("inputline").addEventListener("keydown", (event) => {
   }
 });
 cancel.addEventListener("click", () => stop(phase === "Running…" ? "Execution cancelled." : phase === "Interpreting…" ? "Interpretation cancelled." : "Compilation cancelled."));
-function reset(): void {
+for (const kind of ["keydown", "keyup"] as const) {
+  // Document level so play never depends on canvas focus; text entry
+  // in any input or textarea still types instead of playing.
+  document.addEventListener(kind, (event) => {
+    if (!busy || !runner || tab !== "display") return;
+    const t = document.activeElement;
+    if (t instanceof HTMLInputElement || t instanceof HTMLTextAreaElement) return;
+    const e = event as KeyboardEvent;
+    if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Tab", " "].includes(e.key)) {
+      e.preventDefault();
+    }
+    const code = winKey(e);
+    dlog(`[page] key ${e.code} -> ${code} (${e.type})`);
+    winSend({ kind: 0, a: code, b: e.type === "keydown" ? 1 : 0, c: 0, d: 0 });
+  });
+}
+get("screen").addEventListener("mousemove", (event) => {
+  const [x, y] = winPoint(event as MouseEvent);
+  winSend({ kind: 2, a: x, b: y, c: 0, d: 0 });
+});
+for (const kind of ["mousedown", "mouseup"] as const) {
+  get("screen").addEventListener(kind, (event) => {
+    const e = event as MouseEvent;
+    const [x, y] = winPoint(e);
+    const button = e.button === 0 ? 0 : e.button === 1 ? 2 : 1;
+    winSend({ kind: 1, a: x, b: y, c: button, d: kind === "mousedown" ? 1 : 0 });
+  });
+}
+async function reset(): Promise<void> {
   if (busy) restart();
-  source.value = examples[example.value];
-  if (example.value in exampleStdin) stdinBox.value = exampleStdin[example.value];
+  if (example.value in demos) {
+    const dir = example.value.slice("demo:".length);
+    const load = async (route: string): Promise<string> => {
+      const res = await fetch(route);
+      if (!res.ok) throw new Error(route);
+      return res.text();
+    };
+    try {
+      status("Loading the demo…", "busy");
+      source.value = await load("demos/" + dir + "/main.bend");
+      const aux: Record<string, string> = {};
+      for (const [name, route] of Object.entries(demos[example.value].aux)) {
+        aux[name] = await load(route);
+      }
+      auxFiles = aux;
+      renderAux();
+      status(ready ? "Ready" : "Loading the compiler…");
+    } catch {
+      results.value = "Could not load the demo. Serve the playground with its demos/ dir.";
+      finish("Demo load failed", true);
+      return;
+    }
+  } else {
+    source.value = examples[example.value];
+    auxFiles = {};
+    renderAux();
+    if (example.value in exampleStdin) stdinBox.value = exampleStdin[example.value];
+  }
   source.scrollTop = source.scrollLeft = 0;
   source.setSelectionRange(0, 0);
   edit();
@@ -730,4 +905,9 @@ download.addEventListener("click", () => {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 });
 edit();
+if (DEBUG) {
+  get("debugbar").hidden = false;
+  dlog("[page] debug on (?debug=true)");
+}
+if (example.value in demos) reset();
 restart();

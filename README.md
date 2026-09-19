@@ -138,8 +138,12 @@ results, standard output/error, timers, fibers, channels, and standard input:
 `IO.read_line()` reads one line per call, `None{}` past the end. The Stdin box
 prefills input; when it runs out the running program asks you for a line
 (Send) and EOF ends input. Pick Ask me next to the box to ignore it and
-always wait for you. Effects requiring native files, sockets, or system
-calls report a runtime error. C source can be downloaded and built with a C
+always wait for you. Window programs run too: `Window.open` shows a Display
+tab with a canvas (click it for keyboard and mouse), frames render from the
+program's quadtree images, and closing comes from the app itself. Append
+`?debug=true` to the URL for a pipeline log (key captures, worker messages,
+frame and input-request traffic) in a Debug bar. Effects
+requiring native files, sockets, or system calls report a runtime error. C source can be downloaded and built with a C
 compiler; it is not executed in the browser.
 
 Static hosting needs no backend after one build:
@@ -150,6 +154,12 @@ bun bend2/play/export.ts ./play-dist
 
 Serve the five files with any static host; they work at a domain root or
 under a subpath.
+
+The Start-with menu also lists the repo demos: `demos/<name>/main.bend` is
+fetched as a static file, so multi-file demos (like the slash boss with its
+`bend3d.bend` helper) load all their parts. Demos marked "needs native" use
+socket effects: they compile to JS/C in the browser but only run
+as native binaries. The `app_*` graphical demos run in the Display tab.
 
 Existing CLI commands such as `bun bend2/main.ts file.bend -o file.js` continue
 to work.

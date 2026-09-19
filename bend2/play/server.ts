@@ -12,8 +12,7 @@ export async function serve(port = 3000): Promise<void> {
     if (/\.(c|js)$/.test(name)) {
       files["/effs/" + name] = fs.readFileSync(path.join(root, "effs", name), "utf8");
     }
-  }
-  const build = await Bun.build({
+  }  const build = await Bun.build({
     entrypoints: [path.join(here, "client.ts"), path.join(here, "worker.ts"), path.join(here, "runner.ts")],
     target: "browser",
     format: "esm",
@@ -37,6 +36,19 @@ export async function serve(port = 3000): Promise<void> {
     ["/", { body: Bun.file(path.join(here, "index.html")), type: "text/html; charset=utf-8" }],
     ["/style.css", { body: Bun.file(path.join(here, "style.css")), type: "text/css; charset=utf-8" }],
   ]);
+  // Demo sources ship as plain static files; the page fetches them on
+  // demand into the editor instead of baking them into the worker.
+  const walk = (dir: string): void => {
+    for (const name of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, name.name);
+      if (name.isDirectory()) walk(full);
+      else if (name.name.endsWith(".bend")) {
+        const route = "/demos/" + path.relative(path.join(root, "..", "demos"), full).split(path.sep).join("/");
+        assets.set(route, { body: Bun.file(full), type: "text/plain; charset=utf-8" });
+      }
+    }
+  };
+  walk(path.join(root, "..", "demos"));
   for (const output of build.outputs) {
     assets.set("/" + path.basename(output.path), { body: output, type: "text/javascript; charset=utf-8" });
   }
@@ -55,7 +67,7 @@ export async function serve(port = 3000): Promise<void> {
         "Content-Type": asset.type,
         "Cache-Control": "no-cache",
         "X-Content-Type-Options": "nosniff",
-        "Content-Security-Policy": "default-src 'none'; script-src 'self'" + evaluation + "; style-src 'self'; worker-src 'self'; img-src 'self' data:; connect-src 'none'; base-uri 'none'; frame-ancestors 'none'",
+        "Content-Security-Policy": "default-src 'none'; script-src 'self'" + evaluation + "; style-src 'self'; worker-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'none'; frame-ancestors 'none'",
       } });
     },
   });

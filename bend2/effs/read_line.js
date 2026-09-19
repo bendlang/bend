@@ -13,6 +13,7 @@ function io_read_line(k) {
       return hit === null ? { $: "None" } : { $: "Some", value: hit };
     }
     self.postMessage({ type: "input-request" });
+    if (typeof browser.dbg === "function") browser.dbg("read_line parked: requesting a line");
     io_park_on(-1, false, k, () => io_read_line(k));
     return undefined;
   }

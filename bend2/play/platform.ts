@@ -63,8 +63,11 @@ export function readFileSync(p: string, _encoding: string): string {
 }
 
 export function writeFileSync(p: string, source: string): void {
-  if (p !== "/main.bend") throw new Error("Only main.bend can be edited in the playground.");
-  files.set(p, source);
+  const n = normalize(p);
+  if (n !== "/main.bend" && !/^\/[A-Za-z0-9_]+\.bend$/.test(n)) {
+    throw new Error("Only main.bend and root-level .bend helpers can be edited in the playground.");
+  }
+  files.set(n, source);
 }
 
 export function mkdirSync(): never {

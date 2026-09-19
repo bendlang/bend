@@ -3,13 +3,27 @@ import * as Comp from "../comp.ts";
 import { writeFileSync } from "./platform.ts";
 
 self.onmessage = async (event: MessageEvent) => {
-  const { id, source, action } = event.data;
+  const { id, files, action } = event.data as { id: number; files: Record<string, string>; action: string };
+  const debug = (event.data as { debug?: boolean }).debug === true;
+  const dbg = (msg: string) => {
+    if (debug) self.postMessage({ type: "dbg", from: "compiler", msg });
+  };
   const start = performance.now();
   try {
-    if (typeof source !== "string" || !(["interpret", "compile-run", "compile-js", "compile-c"].includes(action))) {
+    if (typeof files !== "object" || files === null || !(["interpret", "compile-run", "compile-js", "compile-c"].includes(action))) {
       throw new Error("Invalid playground action.");
     }
-    writeFileSync("/main.bend", source);
+    const names = Object.keys(files);
+    if (!names.includes("/main.bend") || names.length > 16) {
+      throw new Error("Invalid playground files.");
+    }
+    for (const [name, source] of Object.entries(files)) {
+      if (typeof source !== "string" || source.length > 1024 * 1024) {
+        throw new Error("Invalid playground file: " + name);
+      }
+      writeFileSync(name, source);
+    }
+    dbg(`loaded ${Object.keys(files).join(", ")} for ${action}`);
     const book = Bend.book_nil();
     await Bend.book_load(book, "/main.bend", "", new Map());
     Bend.book_valid(book);
@@ -31,6 +45,7 @@ self.onmessage = async (event: MessageEvent) => {
     }
     self.postMessage({ type: "result", id, ok: true, output,
       elapsed: performance.now() - start, bytes: new TextEncoder().encode(output).length });
+    dbg(`done ok in ${(performance.now() - start).toFixed(0)} ms`);
   } catch (e) {
     const error = e as Bend.Err;
     const output = error?.$ === "Err" ? Bend.err_show(error)
