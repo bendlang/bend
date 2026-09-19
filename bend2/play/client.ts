@@ -590,8 +590,6 @@ function stdinMode(): string {
 // the program). Presets only fill them in. Changing either restarts the
 // running demo from the same build.
 let nativeSize = { w: 0, h: 0 };
-let lastJS = "";
-let lastCompileTime = 0;
 function dispNum(id: string): number {
   const v = parseInt(get<HTMLInputElement>(id).value, 10);
   return v > 0 ? Math.min(4096, v) : 0;
@@ -622,24 +620,11 @@ function sendDisplay(): void {
   const { w, h } = dispEff();
   runner.postMessage({ display: { w, h } });
 }
-function applyDisplay(restart: boolean): void {
+function applyDisplay(): void {
   resCaption();
   persist();
   syncURL();
-  const { w, h } = dispEff();
-  const label = w > 0 ? `${w}×${h}` : "native";
-  if (restart && busy && runner && lastJS && !stale()) {
-    // Full demo restart at the new size, same build, no recompile.
-    clearTimeout(timer);
-    runner.terminate();
-    runner = undefined;
-    get("output-state").textContent = `Display ${label} · restarting demo`;
-    status(`Display ${label} · restarting demo`, "busy");
-    execute(lastJS, lastCompileTime);
-  } else {
-    sendDisplay();
-    get("output-state").textContent = `Display ${label} · applied live`;
-  }
+  sendDisplay();
 }
 function position(): void {
   const cursor = editor.getCursorPosition();
@@ -720,10 +705,12 @@ function execute(javascript: string, compileTime: number): void {
       screen.focus();
     } else if (data.type === "win-frame") {
       const screen = get<HTMLCanvasElement>("screen");
-      if (screen.width === data.w && screen.height === data.h) {
-        const ctx = screen.getContext("2d", { desynchronized: true })!;
-        ctx.putImageData(new ImageData(new Uint8ClampedArray(data.pix), data.w, data.h), 0, 0);
+      if (screen.width !== data.w || screen.height !== data.h) {
+        screen.width = data.w;
+        screen.height = data.h;
       }
+      const ctx = screen.getContext("2d", { desynchronized: true })!;
+      ctx.putImageData(new ImageData(new Uint8ClampedArray(data.pix), data.w, data.h), 0, 0);
     } else if (data.type === "win-title") {
       get<HTMLCanvasElement>("screen").title = data.title;
     } else if (data.type === "win-close") {
@@ -739,8 +726,6 @@ function execute(javascript: string, compileTime: number): void {
     finish("Execution failed", true);
   };
   runner.postMessage({ javascript, stdin: stdinMode() === "ask" ? "" : stdinBox.value, debug: DEBUG });
-  lastJS = javascript;
-  lastCompileTime = compileTime;
   sendDisplay();
   timer = setTimeout(() => stop("Execution stopped after 30 seconds."), 30_000);
 }
@@ -958,15 +943,15 @@ for (const b of document.querySelectorAll<HTMLButtonElement>("#displaybar [data-
       get<HTMLInputElement>("dispw").value = String(Math.max(1, Math.floor(nativeSize.w * frac)));
       get<HTMLInputElement>("disph").value = String(Math.max(1, Math.floor(nativeSize.h * frac)));
     }
-    applyDisplay(true);
+    applyDisplay();
   });
 }
 for (const id of ["dispw", "disph"]) {
-  get<HTMLInputElement>(id).addEventListener("input", () => { resCaption(); persist(); syncURL(); });
+  get<HTMLInputElement>(id).addEventListener("input", () => { applyDisplay(); });
   get<HTMLInputElement>(id).addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
-      applyDisplay(true);
+      applyDisplay();
     }
   });
 }
