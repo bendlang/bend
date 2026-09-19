@@ -163,7 +163,7 @@ const WORDS: Record<string, Lay> = { U32: W32, F32: W32, Nat: W64 };
 const ERRS = ("|*|*|out of memory: run again with a bigger span, as in"
   + " --gpu 8GB|a function the device does not hold|a Nat past the"
   + " largest immediate 2^48-1|*|memory fault (machine stack overflow?)|an"
-  + " array past the deepest block class 31").split("|")
+  + " array past the deepest block class 31|a string past the maximum length 2^31").split("|")
   .map((e) => e === "*" ? "runtime fail-stop" : e);
 
 // Operations
@@ -282,10 +282,60 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     JS:   "nat_divmod($0, $1)",
   },
   ...tpl_ops("bool_", "or:|:|| xor:^:!==", "(($0) $o ($1))", "($0 $o $1)"),
-  string_append: {
-    JS: "($0 + $1)",
+  // String adapters consume inputs, except cmp which returns both original
+  // owned handles. Array expression results are flattened; string expressions
+  // returning aggregates use the generic boxed-result adapter.
+  ...tpl_ops("string_", "hash from_list splitlines",
+    "str_$o_take(e, $0)", "str_$o($0)"),
+  string_is_empty: { C: "(str_length_take(e, $0) == 0)", JS: '($0 === "")' },
+  ...tpl_ops("string_", "get:false:str_get get_end:true:str_get_end",
+    "str_get_take(e, $0, $1, $o)", "$o($0, $1)"),
+  string_take: { C: "str_slice_take(e, $0, 0, $1)", JS: "$0.slice(0, str_offset($0, $1))" },
+  string_drop: { C: "str_slice_take(e, $0, $1, STR_LIMIT)", JS: "$0.slice(str_offset($0, $1))" },
+  ...tpl_ops("string_", "slice replace",
+    "str_$o_take(e, $0, $1, $2)", "str_$o($0, $1, $2)"),
+  ...tpl_ops("string_", "take_end:true drop_end:false",
+    "str_end_take(e, $0, $1, $o)", "str_end($0, $1, $o)"),
+  string_cut: {
+    C: ["str_slice_take(e, term_keep(e, $0), 0, $1)", "str_slice_take(e, $0, $1, STR_LIMIT)"],
+    JS: '{$: "Tuple", fst: $0.slice(0, str_offset($0, $1)), snd: $0.slice(str_offset($0, $1))}',
   },
+  string_copy: { C: "str_copy_take(e, $0)", JS: '($0.split("").join(""))' },
+  string_append: { C: "str_append_take(e, $0, $1)", JS: "($0 + $1)" },
+  string_reverse: { C: "str_transform_take(e, $0, 0)", JS: '[...$0].reverse().join("")' },
+  string_cmp: { C: ["$0", "$1", "str_order_peek(e, $0, $1)"], JS: "str_cmp($0, $1)" },
+  ...tpl_ops("string_", "order join repeat partition",
+    "str_$o_take(e, $0, $1)", "str_$o($0, $1)"),
+  string_eq: { C: "(str_order_take(e, $0, $1) == 1)", JS: "($0 === $1)" },
+  ...tpl_ops("string_", "is_lt:< is_le:<= is_gt:> is_ge:>=",
+    "(str_order_take(e, $0, $1) $o 1)",
+    '(({LT: 0, EQ: 1, GT: 2})[str_order($0, $1).$] $o 1)'),
+  ...tpl_ops("string_", "starts_with:false:startsWith ends_with:true:endsWith",
+    "str_edge_take(e, $0, $1, $o)", "$0.$o($1)"),
+  string_split: { C: "str_split_take(e, $0, $1, false)", JS: "str_split($0, $1)" },
+  string_lines: { C: "str_split_take(e, $0, 10, false)", JS: 'str_list($0.split("\\n"))' },
+  string_trim_start: { C: "str_trim_take(e, $0, 1)", JS: '$0.replace(/^[ \\t-\\r]+/, "")' },
+  string_trim_end: { C: "str_trim_take(e, $0, 2)", JS: '$0.replace(/[ \\t-\\r]+$/, "")' },
+  string_trim: { C: "str_trim_take(e, $0, 3)", JS: '$0.replace(/^[ \\t-\\r]+|[ \\t-\\r]+$/g, "")' },
+  string_to_upper: { C: "str_transform_take(e, $0, 1)", JS: '$0.replace(/[a-z]/g, c => String.fromCharCode(c.charCodeAt(0) - 32))' },
+  string_to_lower: { C: "str_transform_take(e, $0, 2)", JS: '$0.replace(/[A-Z]/g, c => String.fromCharCode(c.charCodeAt(0) + 32))' },
+  string_to_list: { C: "str_to_list_take(e, $0)", JS: "str_list([...$0])" },
+  string_concat: { C: "str_join_take(e, $0, term_pak(CID_SNIL, 0))", JS: 'str_join($0, "")' },
+  string_words: { C: "str_split_take(e, $0, 0, true)", JS: 'str_list($0.split(/[ \\t-\\r]+/).filter(s => s !== ""))' },
+  ...tpl_ops("string_", "find:false find_last:true",
+    "str_find_take(e, $0, $1, $o)", "str_find($0, $1, $o)"),
+  string_contains: { C: "(str_search_take(e, $0, $1, 0) != STR_ABSENT)", JS: "$0.includes($1)" },
+  string_count: { C: "str_search_take(e, $0, $1, 2)", JS: "str_count($0, $1)" },
+  string_split_on: { C: "str_split_on_take(e, $0, $1)", JS: 'str_list($1 === "" ? [$0] : $0.split($1))' },
+  string_capitalize: { C: "str_transform_take(e, $0, 3)", JS: "str_capitalize($0)" },
+  string_zfill: { C: "str_pad_take(e, $0, $1, 48, 2)", JS: 'str_pad($0, $1, "0", 2)' },
+  ...tpl_ops("string_", "pad_start:0 pad_end:1",
+    "str_pad_take(e, $0, $1, $2, $o)", "str_pad($0, $1, $2, $o)"),
+  // Map.bit borrows the key and returns it: the tree order and the 33-bit key
+  // protocol of the reference definition, O(1) on C, an endpoint scan on JS.
+  map_bit: { C: ["$0", "str_bit_peek(e, $0, $1)"], JS: "map_bit($0, $1)" },
   string_length: {
+    C:  "str_length_take(e, $0)",
     JS: "BigInt([...$0].length)",
   },
   array_new: {
@@ -385,7 +435,7 @@ const OPTIMIZED: Record<Bend.Name, Native> = Object.setPrototypeOf({
       SNil: "\"\"",
       SCon: ([h, t]: string[]) => STRLIT.test(h) && STRLIT.test(t)
         ? JSON.stringify(JSON.parse(h) + JSON.parse(t))
-        : "(" + h + " + " + t + ")",
+        : "str_prepend(" + h + ", " + t + ")",
     },
     elim: {
       SCon: ["($0.codePointAt(0) > 0xFFFF ? $0.slice(0, 2) : $0[0])",
@@ -571,6 +621,126 @@ function f32_read(s) {
   const re = /^\s*[+-]?((\d+\.?\d*|\.\d+)(e[+-]?\d+)?|inf(inity)?|nan)$/i;
   const v = Number(s.replace(/inf\w*/i, "Infinity"));
   return re.test(s) ? {$: "Some", value: Math.fround(v)} : {$: "None"};
+}
+
+function str_prepend(c, s) {
+  return c + s;
+}
+function str_length(s) { let n = 0n; for (const c of s) { n++; } return n; }
+function str_offset(s, n) {
+  let i = 0;
+  while (n > 0n && i < s.length) { i += s.codePointAt(i) > 0xffff ? 2 : 1; n--; }
+  return i;
+}
+function str_slice(s, lo, hi) {
+  if (hi <= lo) { return ""; }
+  const a = str_offset(s, lo);
+  return s.slice(a, a + str_offset(s.slice(a), hi - lo));
+}
+function str_get(s, n) {
+  const i = str_offset(s, n);
+  return i === s.length ? {$: "None"} : {$: "Some", value: String.fromCodePoint(s.codePointAt(i))};
+}
+function str_end(s, n, take) {
+  const len = str_length(s), at = len > n ? len - n : 0n;
+  return take ? s.slice(str_offset(s, at)) : s.slice(0, str_offset(s, at));
+}
+function str_get_end(s, n) {
+  const len = str_length(s);
+  return n === 0n || n > len ? {$: "None"} : str_get(s, len - n);
+}
+function map_bit(s, pos) {
+  const i = str_offset(s, pos / 33n), off = Number(pos % 33n);
+  const b = i < s.length
+    && (off === 0 || ((s.codePointAt(i) >>> (32 - off)) & 1) === 1);
+  return {$: "Tuple", fst: s, snd: b};
+}
+function str_order(a, b) {
+  let i = 0, j = 0;
+  while (i < a.length && j < b.length) {
+    const x = a.codePointAt(i), y = b.codePointAt(j);
+    if (x !== y) { return {$: x < y ? "LT" : "GT"}; }
+    i += x > 0xffff ? 2 : 1; j += y > 0xffff ? 2 : 1;
+  }
+  return {$: i < a.length ? "GT" : j < b.length ? "LT" : "EQ"};
+}
+function str_cmp(a, b) { return {$: "Tuple", fst: {$: "Tuple", fst: a, snd: b}, snd: str_order(a, b)}; }
+function str_list(xs) {
+  let out = {$: "Nil"};
+  for (let i = xs.length - 1; i >= 0; i--) { out = {$: "Con", head: xs[i], tail: out}; }
+  return out;
+}
+function str_from_list(xs) {
+  const out = [];
+  for (; xs.$ === "Con"; xs = xs.tail) { out.push(str_prepend(xs.head, "")); }
+  return out.join("");
+}
+function str_join(xs, sep) {
+  const out = [];
+  for (; xs.$ === "Con"; xs = xs.tail) { out.push(xs.head); }
+  return out.join(sep);
+}
+function str_repeat(s, n) {
+  const len = str_length(s);
+  if (len === 0n) { return ""; }
+  if (n > 2147483648n / len) { throw "bend: a string past the maximum length 2^31"; }
+  return s.repeat(Number(n));
+}
+function str_split(s, c) {
+  // A raw separator cannot equal any scalar string element.
+  return str_list(typeof c === "string" ? s.split(c) : [s]);
+}
+
+// Strings contain scalars only, so a nonempty scalar needle cannot match
+// inside a surrogate pair. Native UTF-16 search is exact; convert only the
+// final position to code points. No repeated positional get/offset scans.
+function str_find(s, p, last) {
+  const i = last ? s.lastIndexOf(p) : s.indexOf(p);
+  return i < 0 ? {$: "None"} : {$: "Some", value: str_length(s.slice(0, i))};
+}
+function str_count(s, p) {
+  if (p === "") { return str_length(s) + 1n; }
+  let n = 0n, at = 0;
+  for (;;) {
+    const i = s.indexOf(p, at);
+    if (i < 0) { return n; }
+    n++; at = i + p.length;
+  }
+}
+function str_replace(s, old, value) {
+  // A string separator and array join treat $&, $1, etc. literally.
+  if (old !== "") { return s.split(old).join(value); }
+  return s === "" ? value : value + [...s].join(value) + value;
+}
+function str_partition(s, sep) {
+  const i = sep === "" ? -1 : s.indexOf(sep);
+  return {$: "Tuple", fst: i < 0 ? s : s.slice(0, i),
+    snd: {$: "Tuple", fst: i < 0 ? "" : sep, snd: i < 0 ? "" : s.slice(i + sep.length)}};
+}
+function str_splitlines(s) {
+  const lines = s.split(/\r\n|[\n\r\v\f\x1c-\x1e\x85\u2028\u2029]/);
+  if (lines[lines.length - 1] === "") { lines.pop(); }
+  return str_list(lines);
+}
+function str_capitalize(s) {
+  return s.replace(/[a-zA-Z]/g, (c, i) => i === 0 ? c.toUpperCase() : c.toLowerCase());
+}
+function str_pad(s, width, c, mode) {
+  const n = str_length(s);
+  if (width <= n) { return s; }
+  if (width > 2147483648n) { throw "bend: a string past the maximum length 2^31"; }
+  const pad = str_prepend(c, "").repeat(Number(width - n));
+  if (mode === 1) { return s + pad; }
+  if (mode === 2 && (s[0] === "+" || s[0] === "-")) { return s[0] + pad + s.slice(1); }
+  return pad + s;
+}
+function str_hash(s) {
+  let h = 2166136261;
+  for (const c of s) {
+    const x = c.codePointAt(0);
+    for (let shift = 0; shift < 32; shift += 8) { h = Math.imul(h ^ ((x >>> shift) & 255), 16777619) >>> 0; }
+  }
+  return h;
 }
 
 function char_new(code) {
@@ -1055,6 +1225,9 @@ function ctr_flds(book: Bend.Book, k: Bend.Name,
 
 function ctr_build(fl: File, k: Bend.Name, exprs: string[],
   stat = false): string {
+  if (k === "SCon") {
+    return `str_prepend_take(e, ${exprs[0]}, ${exprs[1]})`;
+  }
   const cid = cid_mac(k);
   const node = lay_node(fl.book, k);
   if (exprs.length === 0 || (node.ks.length === 1 && node.ks[0] === "w32")) {
@@ -1629,6 +1802,16 @@ function node_fields(fl: File, t: string, node: Lay,
   tail = false): Val[] {
   const n = node.ks.length;
   const fs = node.arms![0].fs;
+  if (node.arms![0].k === "SCon") {
+    // A tail is new owned metadata; consuming this root participates in
+    // the fixed-point borrow analysis, including polymorphic containers.
+    val_own(fl, val_new([t], BOX));
+    const out = name_local(fl, "str");
+    file_push(fl, `Term ${out}[2];`);
+    file_push(fl, `str_uncons(e, ${t}, ${out});`);
+    const ws = emit_hold(fl, [`${out}[0]`, `${out}[1]`], "f", node.ks);
+    return fs.map((f) => val_field(val_new(ws, node), f));
+  }
   if (n === 0 || (n === 1 && node.ks[0] === "w32")) {
     return fs.map((f) => val_new(f.lay.ks.map(() => `term_loc(${t})`), f.lay));
   }
@@ -2165,6 +2348,12 @@ function emit_intr(fl: File, it: Intr, x: HTerm,
   const k = (m.t as Of<"Ref">).k;
   const args = emit_each(fl, m.args);
   const op = eff_name(k);
+  // Native aggregate builders publish sealed fields. Teach field extraction and
+  // the transitive borrow analysis about those counts on every pass.
+  if (["string_split", "string_lines", "string_words", "string_to_list",
+    "string_split_on", "string_splitlines", "string_partition"].includes(op)) {
+    facts_hot(fl, ty ?? tele_unbind(fl.book, (fl.book.tlds[k] as Def).T).ret, true);
+  }
   // An intrinsic that installs count cells (blk_new, blk_keep: clone's C
   // too) heats its element type.
   if ("array_get array_new array_clone".includes(op)
@@ -2213,10 +2402,53 @@ function emit_clo(fl: File, x: HTerm, ty: HTerm | null): Val {
   return val_new([clo], BOX);
 }
 
+// A closed SCon chain, including manually written chains. No references
+// are evaluated here; open tails stay on the ordinary prepend path.
+function str_constant(t: HTerm): number[] | null {
+  const cells: number[] = [];
+  for (let s = Bend.term_strip(t); s.$ === "Ctr";) {
+    if (s.k === "SNil") { return cells; }
+    if (s.k !== "SCon") { return null; }
+    const h = Bend.term_strip(s.x[0]);
+    const n = h.$ === "Ctr" && h.k === "Chr"
+      ? Bend.u32_from_term(h.x[0], "U32") : null;
+    if (n === null) { return null; }
+    cells.push(n);
+    s = Bend.term_strip(s.x[1]);
+  }
+  return null;
+}
+
+function str_static(fl: File, cells: number[]): string {
+  if (!cells.length) { return "term_pak(CID_SNIL, 0)"; }
+  const key = "string:" + cells.join(",");
+  const at = memo(fl.lits, key, () => {
+    // The narrowest cells the content allows (nar of the C runtime's String).
+    const nar = cells.some((c) => c > 65535) ? 0 : cells.some((c) => c > 255) ? 1 : 2;
+    const per = 2 << nar, bits = BigInt(64 / per);
+    const cls = cls_fit(Math.ceil(cells.length / 2 ** nar));
+    const data = fl.img.length;
+    for (let i = 0; i < Math.max(2, 2 ** cls) << nar; i += per) {
+      let w = 0n;
+      for (let j = per - 1; j >= 0; j--) { w = w << bits | BigInt(cells[i + j] ?? 0); }
+      fl.img.push(w + "ull");
+    }
+    const desc = fl.img.length;
+    fl.img.push(`term_buf(${cls | nar << 5}, STAT_OFF + ${data})`, `${cells.length}ull`);
+    return desc;
+  });
+  fl.stat.add("SCon");
+  return `term_make(TAG_STR, CID_SCON, STAT_OFF + ${at})`;
+}
+
 function emit_ctr(fl: File, x: Of<"Ctr">, ty: HTerm | null): Val {
   const [adt, u] = ctr_adt(fl, x, ty);
   if (u !== null) {
     return val_new([`${u}ull`], W32, true);
+  }
+  if (adt.k === "String") {
+    const cells = str_constant(x);
+    if (cells !== null) { return val_new([str_static(fl, cells)], BOX, true); }
   }
   const vs = emit_each(fl, ctr_flds(fl.book, x.k, x.x));
   const lay = lay_of(fl.book, adt);
@@ -2238,7 +2470,7 @@ function emit_ctr(fl: File, x: Of<"Ctr">, ty: HTerm | null): Val {
       : `blk_node(e, ${val_own(fl, vs[0])[0]}, ${val_own(fl, vs[1])[0]})`],
     BOX);
   }
-  const stat = vs.every((v) => v.stat);
+  const stat = adt.k !== "String" && vs.every((v) => v.stat);
   if (lay_box(lay)) {
     return val_new([node_build(fl, x.k, vs)], BOX, stat);
   }
@@ -2658,6 +2890,8 @@ function emit_match(fl: File, x: Of<"Mat"> | Of<"Efq">,
             "h").map((w) => val_new([w], BOX)))];
       }
       if (lay_box(lay)) {
+        // TAG_STR carries the logical SCon constructor id; extraction
+        // below routes through str_uncons instead of reading cons fields.
         return [`term_aux(${sw}) == ${cid_mac(k)}`, h,
           () => node_fields(fl, sw, lay_node(fl.book, k), true)];
       }
@@ -2749,7 +2983,7 @@ const TABLES = ["CID_ARITY_T", "FID_ARITY_T", "FID_FLAG_T", "FID_RESW_T"];
 
 // The datatypes whose constructors the runtime or the elaborator lays itself.
 const RUNTIME_ADTS = ["Sigma", "String", "Word.Con", "IO.OP", "Result",
-  "Maybe", "Bool", "Unit"];
+  "Maybe", "Bool", "Unit", "List", "Char"];
 
 function compile_tables(fl: File, entries: Seg[]): string[] {
   const defs: string[] = [];
@@ -2985,6 +3219,12 @@ function js_expr(fl: File, tm: HTerm,
       if (u !== null) {
         const v = adt.k === "F32" ? Bend.f32_from_bits(u) : u;
         return Object.is(v, -0) ? "-0" : String(v);
+      }
+      if (adt.k === "String") {
+        const cells = str_constant(x);
+        if (cells !== null && cells.every((c) => c < 0xd800 || c > 0xdfff && c <= 0x10ffff)) {
+          return JSON.stringify(cells.map((c) => String.fromCodePoint(c)).join(""));
+        }
       }
       const exprs = ctr_flds(fl.book, x.k, x.x)
         .map((f) => js_expr(fl, f, null));
@@ -3349,6 +3589,7 @@ typedef u64 Term;
 #define TAG_BUF 4ull
 #define TAG_TSK 5ull
 #define TAG_ARR 6ull
+#define TAG_STR 7ull
 
 #define TERM_HOLE (~0ull)
 
@@ -3366,6 +3607,7 @@ typedef u32 Err;
 #define ERR_RFCS 6
 #define ERR_DEEP 7
 #define ERR_ARRS 8
+#define ERR_STRS 9
 
 typedef u32 Ring;
 
@@ -3817,12 +4059,14 @@ OUTLINE Term rfc_wrap(Env e, Term t, u32 cnt) {
     return t;
   }
   Loc r = heap_alloc(e, 0);
+  if (err_seen(e.mem)) { return t; }
   e.mem[r] = ((u64)term_loc(t) << 24) | cnt;
   return (t & ~LOC_MASK) | RFC_BIT | r;
 }
 
 INLINE Term rfc_seal(Env e, Term t) {
-  if (term_tag(t) != TAG_CTR || term_rfc(t)) {
+  if ((term_tag(t) != TAG_CTR && term_tag(t) != TAG_STR)
+    || term_rfc(t) || term_triv(t)) {
     return t;
   }
   return rfc_wrap(e, t, 1);
@@ -3903,7 +4147,10 @@ FAR void term_drop(Env e, Term t) {
         Loc loc = term_loc(t);
         u32 n   = 0;
         Cls cls;
-        if (tag == TAG_ARR) {
+        if (tag == TAG_STR) {
+          n = 1;
+          cls = 1;
+        } else if (tag == TAG_ARR) {
           cls = 64 | blk_cls(t);
         } else {
           u32 ar;
@@ -4154,6 +4401,674 @@ INLINE Term blk_new(Env e, bool arr, Nat d, u32 lgs, u32 n, THR Term* v) {
     blk_write(H, arr, l, (u32)i, i % (1u << lgs) < n ? v[i % (1u << lgs)] : 0);
   }
   return term_blk(arr, c, l);
+}
+
+// String: each descriptor owns one already-counted packed payload, its cells
+// 4, 2 or 1 bytes wide: the payload Term's aux holds nar = 0, 1, 2 above the
+// class, the narrowest width its content allowed when it was built. A view
+// never changes nar; a write of a wider cell reallocates in str_reserve.
+// Peek borrows. Take consumes metadata and moves/retains the payload BEFORE
+// releasing a shared descriptor. Only taken parts may enter str_writable.
+#define STR_LIMIT (1ull << 31)
+#define str_nar(p) ((p).data ? (u32)(term_aux((p).data) >> 5) & 3 : 2)
+#define str_cap(d) (1ull << (blk_cls(d) + ((term_aux(d) >> 5) & 3)))
+typedef struct { Term data; u32 off; u32 len; } StrParts;
+
+INLINE u32 str_fit(u32 c) { return c < 256 ? 2 : c < 65536 ? 1 : 0; }
+
+INLINE StrParts str_peek(Env e, Term s) {
+  StrParts p = {0, 0, 0};
+  if (term_tag(s) == TAG_STR) {
+    Loc l = term_peek(e, s);
+    p.data = e.mem[l];
+    p.off = (u32)(e.mem[l + 1] >> 32);
+    p.len = (u32)e.mem[l + 1];
+  }
+  return p;
+}
+
+INLINE StrParts str_take(Env e, Term s) {
+  StrParts p = str_peek(e, s);
+  if (p.len) {
+    Term data[1];
+    Loc l = ctr_take(e, s, 1, data);
+    p.data = data[0];
+    spare_free(e, 1, l);
+  }
+  return p;
+}
+
+INLINE Term str_view_owned(Env e, StrParts p) {
+  if (!p.len || err_seen(e.mem)) {
+    term_sink(e, p.data);
+    return term_pak(CID_SNIL, 0);
+  }
+  u64 cap = str_cap(p.data);
+  if (cap > STR_LIMIT || p.len > cap || p.off > cap - p.len) {
+    err_post(e.mem, ERR_STRS);
+    term_sink(e, p.data);
+    return term_pak(CID_SNIL, 0);
+  }
+  Loc l = heap_alloc(e, 1);
+  if (err_seen(e.mem)) { term_sink(e, p.data); return term_pak(CID_SNIL, 0); }
+  e.mem[l] = p.data;
+  e.mem[l + 1] = ((u64)p.off << 32) | p.len;
+  return rfc_seal(e, term_make(TAG_STR, CID_SCON, l));
+}
+
+INLINE StrParts str_alloc(Env e, u64 n, u32 nar) {
+  StrParts p = {0, 0, 0};
+  if (!n || err_seen(e.mem)) { return p; }
+  if (n > STR_LIMIT) { err_post(e.mem, ERR_STRS); return p; }
+  Cls c = cls_fit((u32)((n + (1u << nar) - 1) >> nar));
+  Loc l = heap_alloc(e, buf_wcls(c));
+  if (err_seen(e.mem)) { return p; }
+  // Install the count cell before this payload can escape into metadata.
+  p.data = rfc_wrap(e, term_buf(c | nar << 5, l), 1);
+  p.len = (u32)n;
+  return p;
+}
+
+INLINE u32 str_cell(Corpus H, Loc l, u32 nar, u32 i) {
+  DEV u8* b = (DEV u8*)(H + l);
+  return nar == 2 ? b[i] : nar == 1 ? b[2 * i] | (u32)b[2 * i + 1] << 8
+    : *blk_ptr(H, l, i);
+}
+
+INLINE void str_cell_put(Corpus H, Loc l, u32 nar, u32 i, u32 c) {
+  DEV u8* b = (DEV u8*)(H + l);
+  if (nar == 2) { b[i] = (u8)c; }
+  else if (nar == 1) { b[2 * i] = (u8)c; b[2 * i + 1] = (u8)(c >> 8); }
+  else { *blk_ptr(H, l, i) = c; }
+}
+
+INLINE u32 str_at_peek(Env e, StrParts p, u32 i) {
+  return str_cell(e.mem, term_peek(e, p.data), str_nar(p), p.off + i);
+}
+
+INLINE void str_put(Env e, StrParts p, u32 i, u32 c) {
+  str_cell_put(e.mem, term_peek(e, p.data), str_nar(p), p.off + i, c);
+}
+
+// Three-part write test: owned private metadata (str_take), dynamic origin,
+// and a count of one, observed with the runtime's acquire discipline.
+INLINE bool str_writable(Env e, StrParts p) {
+  return p.data && term_rfc(p.data) && term_peek(e, p.data) >= HEAP_OFF
+    && (rfc_view(e, term_loc(p.data)) & RFC_CNT) == 1;
+}
+
+INLINE void str_copy_cells(Env e, StrParts dst, u32 at, StrParts src) {
+  if (err_seen(e.mem)) { return; }
+  u32 poll = 0;
+  Loc from = term_peek(e, src.data), to = term_peek(e, dst.data);
+  u32 sn = str_nar(src), dn = str_nar(dst);
+  for (u32 i = 0; i < src.len; i++) {
+    if (err_spun(e.mem, &poll)) { return; }
+    str_cell_put(e.mem, to, dn, dst.off + at + i,
+      str_cell(e.mem, from, sn, src.off + i));
+  }
+}
+
+// Consumes owned parts, copying only their visible range when necessary:
+// no room, not writable, or cells narrower than nar, what the write needs.
+INLINE StrParts str_reserve(Env e, StrParts p, u64 need, bool front, u32 nar) {
+  u64 n = (u64)p.len + need;
+  if (n > STR_LIMIT) {
+    err_post(e.mem, ERR_STRS);
+    term_sink(e, p.data);
+    StrParts z = {0, 0, 0}; return z;
+  }
+  u64 cap = p.data ? str_cap(p.data) : 0;
+  if (str_nar(p) < nar) { nar = str_nar(p); }
+  if (str_writable(e, p) && str_nar(p) == nar && (front ? p.off >= need
+      : cap - p.off - p.len >= need)) { return p; }
+  u64 target = (u64)p.len * (need ? 2 : 1);
+  if (target < n) { target = n; }
+  if (target > STR_LIMIT) { target = STR_LIMIT; }
+  StrParts q = str_alloc(e, target, nar);
+  if (!err_seen(e.mem) && q.data) {
+    q.len = p.len;
+    q.off = front ? (u32)(str_cap(q.data) - p.len) : 0;
+    str_copy_cells(e, q, 0, p);
+  }
+  term_sink(e, p.data);
+  return q;
+}
+
+INLINE Term str_prepend_take(Env e, u32 c, Term s) {
+  StrParts p = str_take(e, s);
+  // Putting back the cell an uncons just stepped past is a view, not a
+  // write: nothing is stored, so a shared or static payload qualifies.
+  if (p.data && p.off > 0) {
+    StrParts b = {p.data, p.off - 1, p.len + 1};
+    if (str_at_peek(e, b, 0) == c) { return str_view_owned(e, b); }
+  }
+  p = str_reserve(e, p, 1, true, str_fit(c));
+  if (err_seen(e.mem)) { return str_view_owned(e, p); }
+  p.off--; p.len++;
+  str_put(e, p, 0, c);
+  return str_view_owned(e, p);
+}
+
+INLINE Term str_slice_take(Env e, Term s, u64 lo, u64 hi) {
+  StrParts p = str_take(e, s);
+  if (lo > p.len) { lo = p.len; }
+  if (hi > p.len) { hi = p.len; }
+  if (hi < lo) { hi = lo; }
+  p.off += (u32)lo;
+  p.len = (u32)(hi - lo);
+  return str_view_owned(e, p);
+}
+
+INLINE void str_uncons(Env e, Term s, THR Term* out) {
+  // A heap descriptor with a count of one advances in place: the walk
+  // over a token then frees and allocates no descriptor/count pair.
+  if (!term_triv(s) && term_rfc(s)) {
+    u64 cell = rfc_view(e, term_loc(s));
+    Loc l = cell >> 24;
+    if ((cell & RFC_CNT) == 1 && (u32)e.mem[l + 1] > 1) {
+      StrParts p = {e.mem[l], (u32)(e.mem[l + 1] >> 32), (u32)e.mem[l + 1]};
+      out[0] = str_at_peek(e, p, 0);
+      e.mem[l + 1] = ((u64)(p.off + 1) << 32) | (p.len - 1);
+      out[1] = s;
+      return;
+    }
+  }
+  StrParts p = str_take(e, s);
+  if (err_seen(e.mem)) { out[0] = 0; out[1] = term_pak(CID_SNIL, 0); return; }
+  out[0] = str_at_peek(e, p, 0);
+  p.off++; p.len--;
+  out[1] = str_view_owned(e, p);
+}
+
+INLINE Nat str_length_take(Env e, Term s) {
+  Nat n = str_peek(e, s).len;
+  term_sink(e, s);
+  return n;
+}
+
+INLINE Term str_append_take(Env e, Term a, Term b) {
+  StrParts q = str_peek(e, b);
+  if (!q.len) { term_sink(e, b); return a; }
+  if (!str_peek(e, a).len) { term_sink(e, a); return b; }
+  StrParts p = str_reserve(e, str_take(e, a), q.len, false, str_nar(q));
+  if (!err_seen(e.mem)) {
+    str_copy_cells(e, p, p.len, q);
+    p.len += q.len;
+  }
+  term_sink(e, b);
+  return str_view_owned(e, p);
+}
+
+INLINE Term str_copy_take(Env e, Term s) {
+  StrParts p = str_peek(e, s);
+  u32 nar = 2, poll = 0;
+  for (u32 i = 0; i < p.len && nar > str_nar(p); i++) {
+    if (err_spun(e.mem, &poll)) { break; }
+    u32 fit = str_fit(str_at_peek(e, p, i));
+    if (fit < nar) { nar = fit; }
+  }
+  StrParts q = str_alloc(e, p.len, nar);
+  if (!err_seen(e.mem)) { str_copy_cells(e, q, 0, p); }
+  term_sink(e, s);
+  return str_view_owned(e, q);
+}
+
+// A fresh node of n <= 3 words, its boxed fields already sealed.
+INLINE Term str_node(Env e, u32 cid, u32 n, u64 a, u64 b, u64 c) {
+  Loc l = heap_alloc(e, cls_fit(n));
+  if (err_seen(e.mem)) { return term_pak(CID_NONE, 0); }
+  e.mem[l] = a;
+  if (n > 1) { e.mem[l + 1] = b; }
+  if (n > 2) { e.mem[l + 2] = c; }
+  return term_ctr(cid, l);
+}
+
+INLINE Term str_get_take(Env e, Term s, Nat n, bool end) {
+  StrParts p = str_peek(e, s);
+  bool ok = end ? n > 0 && n <= p.len : n < p.len;
+  Term c = ok ? term_pak(CID_CHR, str_at_peek(e, p,
+    end ? p.len - (u32)n : (u32)n)) : 0;
+  term_sink(e, s);
+  return ok ? str_node(e, CID_SOME, 1, c, 0, 0) : term_pak(CID_NONE, 0);
+}
+
+// Map.bit's 33-bit key protocol: position 33*i says whether cell i exists;
+// positions 33*i+1..33*i+32 are its U32 bits, high first. Borrows the key;
+// the row hands the original owned key back beside the Bool.
+INLINE bool str_bit_peek(Env e, Term s, Nat pos) {
+  StrParts p = str_peek(e, s);
+  u64 ci = pos / 33, off = pos % 33;
+  if (ci >= p.len) { return false; }
+  return off == 0 || ((str_at_peek(e, p, (u32)ci) >> (32 - off)) & 1) != 0;
+}
+
+INLINE Term str_end_take(Env e, Term s, Nat n, bool take) {
+  u64 len = str_peek(e, s).len;
+  u64 at = n > len ? 0 : len - n;
+  return str_slice_take(e, s, take ? at : 0, take ? len : at);
+}
+
+// Borrow both; Cmp is flattened as LT=0, EQ=1, GT=2.
+INLINE u32 str_order_peek(Env e, Term a, Term b) {
+  StrParts p = str_peek(e, a), q = str_peek(e, b);
+  u32 poll = 0, n = p.len < q.len ? p.len : q.len;
+  Loc pl = term_peek(e, p.data), ql = term_peek(e, q.data);
+  for (u32 i = 0; i < n; i++) {
+    if (err_spun(e.mem, &poll)) { return 1; }
+    u32 x = str_cell(e.mem, pl, str_nar(p), p.off + i);
+    u32 y = str_cell(e.mem, ql, str_nar(q), q.off + i);
+    if (x != y) { return x < y ? 0 : 2; }
+  }
+  return p.len == q.len ? 1 : p.len < q.len ? 0 : 2;
+}
+
+INLINE u32 str_order_take(Env e, Term a, Term b) {
+  u32 c = str_order_peek(e, a, b);
+  term_sink(e, a); term_sink(e, b);
+  return c;
+}
+
+INLINE bool str_edge_take(Env e, Term s, Term sub, bool end) {
+  StrParts p = str_peek(e, s), q = str_peek(e, sub);
+  bool ok = q.len <= p.len;
+  u32 off = ok && end ? p.len - q.len : 0, poll = 0;
+  Loc pl = term_peek(e, p.data), ql = term_peek(e, q.data);
+  for (u32 i = 0; ok && i < q.len; i++) {
+    if (err_spun(e.mem, &poll)) { ok = false; break; }
+    ok = str_cell(e.mem, pl, str_nar(p), p.off + off + i)
+      == str_cell(e.mem, ql, str_nar(q), q.off + i);
+  }
+  term_sink(e, s); term_sink(e, sub);
+  return ok;
+}
+
+INLINE bool str_space(u32 c) { return c == 32 || (c >= 9 && c <= 13); }
+
+INLINE Term str_trim_take(Env e, Term s, u32 ends) {
+  StrParts p = str_peek(e, s);
+  u32 lo = 0, hi = p.len, poll = 0;
+  Loc l = term_peek(e, p.data);
+  while ((ends & 1) && lo < hi && str_space(str_cell(e.mem, l, str_nar(p), p.off + lo))) {
+    if (err_spun(e.mem, &poll)) { break; } lo++;
+  }
+  while ((ends & 2) && hi > lo && str_space(str_cell(e.mem, l, str_nar(p), p.off + hi - 1))) {
+    if (err_spun(e.mem, &poll)) { break; } hi--;
+  }
+  return str_slice_take(e, s, lo, hi);
+}
+
+// mode: reverse=0, ASCII upper=1, ASCII lower=2, capitalize=3. Private visible copy
+// on shared/static input; bounds changes alone never require a payload copy.
+INLINE Term str_transform_take(Env e, Term s, u32 mode) {
+  StrParts p = str_take(e, s);
+  if (!p.len) { return str_view_owned(e, p); }
+  p = str_reserve(e, p, 0, false, 2);
+  if (err_seen(e.mem)) { return str_view_owned(e, p); }
+  u32 poll = 0;
+  for (u32 i = 0; i < (mode ? p.len : p.len / 2); i++) {
+    if (err_spun(e.mem, &poll)) { break; }
+    u32 c = str_at_peek(e, p, i);
+    if (!mode) {
+      str_put(e, p, i, str_at_peek(e, p, p.len - 1 - i));
+      str_put(e, p, p.len - 1 - i, c);
+    } else {
+      bool upper = mode == 1 || (mode == 3 && i == 0);
+      if (upper && c >= 97 && c <= 122) { c -= 32; }
+      else if (!upper && c >= 65 && c <= 90) { c += 32; }
+      str_put(e, p, i, c);
+    }
+  }
+  return str_view_owned(e, p);
+}
+
+// Generic List fields are boxed. Seal before publishing to a container.
+INLINE Term str_cons(Env e, Term h, Term t) {
+  Loc l = heap_alloc(e, 1);
+  if (err_seen(e.mem)) { term_sink(e, h); term_sink(e, t); return term_pak(CID_NIL, 0); }
+  e.mem[l] = rfc_seal(e, h);
+  e.mem[l + 1] = rfc_seal(e, t);
+  return term_ctr(CID_CON, l);
+}
+
+INLINE Term str_to_list_take(Env e, Term s) {
+  StrParts p = str_peek(e, s);
+  Term out = term_pak(CID_NIL, 0);
+  u32 poll = 0;
+  for (u32 i = p.len; i > 0; i--) {
+    if (err_spun(e.mem, &poll)) { break; }
+    out = str_cons(e, term_pak(CID_CHR, str_at_peek(e, p, i - 1)), out);
+  }
+  term_sink(e, s);
+  return out;
+}
+
+INLINE Term str_from_list_take(Env e, Term xs) {
+  StrParts p = {0, 0, 0};
+  u32 poll = 0;
+  while (term_aux(xs) == CID_CON) {
+    if (err_spun(e.mem, &poll)) { break; }
+    Term f[2]; spare_free(e, 1, ctr_take(e, xs, 2, f));
+    xs = f[1];
+    p = str_reserve(e, p, 1, false, str_fit((u32)term_loc(f[0])));
+    if (err_seen(e.mem)) { break; }
+    str_put(e, p, p.len, (u32)term_loc(f[0])); p.len++;
+  }
+  term_sink(e, xs);
+  return str_view_owned(e, p);
+}
+
+// Split emits views in reverse scan order directly into a forward list.
+// words=true skips empty runs; split preserves every empty field.
+INLINE Term str_split_take(Env e, Term s, u32 sep, bool words) {
+  StrParts p = str_peek(e, s);
+  Term out = term_pak(CID_NIL, 0);
+  u32 hi = p.len, poll = 0;
+  Loc l = term_peek(e, p.data);
+  for (u64 j = (u64)p.len + 1; j > 0; j--) {
+    if (err_spun(e.mem, &poll)) { break; }
+    u32 i = (u32)(j - 1);
+    bool cut = i == 0;
+    if (!cut) {
+      u32 c = str_cell(e.mem, l, str_nar(p), p.off + i - 1);
+      cut = words ? str_space(c) : c == sep;
+    }
+    if (cut) {
+      if (!words || hi > i) {
+        StrParts q = {term_keep(e, p.data), p.off + i, hi - i};
+        out = str_cons(e, str_view_owned(e, q), out);
+      }
+      hi = i ? i - 1 : 0;
+    }
+  }
+  term_sink(e, s);
+  return out;
+}
+
+// Bulk construction uses a single destination, including repeat's wide
+// pre-multiply check. These also keep deep specimen construction bounded.
+INLINE Term str_repeat_take(Env e, Term s, Nat n) {
+  StrParts p = str_peek(e, s);
+  if (p.len && n > STR_LIMIT / p.len) {
+    err_post(e.mem, ERR_STRS); term_sink(e, s); return term_pak(CID_SNIL, 0);
+  }
+  StrParts q = str_alloc(e, (u64)p.len * n, str_nar(p));
+  if (err_seen(e.mem)) { term_sink(e, s); return str_view_owned(e, q); }
+  u32 poll = 0;
+  for (u64 i = 0; p.len && i < n; i++) {
+    if (err_spun(e.mem, &poll)) { break; }
+    str_copy_cells(e, q, (u32)(i * p.len), p);
+  }
+  term_sink(e, s);
+  return str_view_owned(e, q);
+}
+
+INLINE Term str_join_take(Env e, Term xs, Term sep) {
+  StrParts p = {0, 0, 0}, sp = str_peek(e, sep);
+  bool first = true;
+  u32 poll = 0;
+  while (term_aux(xs) == CID_CON) {
+    if (err_spun(e.mem, &poll)) { break; }
+    Term f[2]; spare_free(e, 1, ctr_take(e, xs, 2, f)); xs = f[1];
+    StrParts q = str_peek(e, f[0]);
+    u64 add = (u64)q.len + (first ? 0 : sp.len);
+    p = str_reserve(e, p, add, false, str_nar(q) < str_nar(sp) || first ? str_nar(q) : str_nar(sp));
+    if (!err_seen(e.mem)) {
+      if (!first) { str_copy_cells(e, p, p.len, sp); p.len += sp.len; }
+      str_copy_cells(e, p, p.len, q); p.len += q.len;
+    }
+    term_sink(e, f[0]); first = false;
+  }
+  term_sink(e, xs); term_sink(e, sep);
+  return str_view_owned(e, p);
+}
+
+// A search cursor borrows text/needle and owns exactly one packed prefix
+// table. All consumers close it, including early results and device errors.
+// Empty needles are handled by each public contract; one-cell needles and
+// needles longer than the text do not allocate a table.
+#define STR_ABSENT (~0ull)
+typedef struct {
+  StrParts text, needle;
+  Loc table;
+  Cls cls;
+  u32 pos, matched, poll;
+} StrSearch;
+
+INLINE void str_scratch_free(Env e, Cls cls, Loc l) {
+  if (err_seen(e.mem)) {
+    // heap_free intentionally stops on a sticky error. This private scratch
+    // block has no children: recycle it locally without clearing the error
+    // or publishing to the shared bank after a device failure.
+    e.mem[l] = ALC_AT(e, cls);
+    ALC_AT(e, cls) = l;
+    ALC_LEN(e, cls) += 1ull << cls;
+  } else {
+    heap_free(e, cls, l);
+  }
+}
+
+INLINE void str_search_close(Env e, THR StrSearch* k) {
+  if (k->table) { str_scratch_free(e, k->cls, k->table); k->table = 0; }
+}
+
+INLINE StrSearch str_search_open(Env e, StrParts text, StrParts needle) {
+  StrSearch k = {text, needle, 0, 0, 0, 0, 0};
+  if (needle.len <= 1 || needle.len > text.len || err_seen(e.mem)) { return k; }
+  k.cls = buf_wcls(cls_fit(needle.len));
+  Loc table = heap_alloc(e, k.cls);
+  if (err_seen(e.mem)) { return k; }
+  k.table = table;
+  blk_write(e.mem, false, table, 0, 0);
+  for (u32 i = 1, j = 0; i < needle.len; i++) {
+    if (err_spun(e.mem, &k.poll)) { break; }
+    u32 c = str_at_peek(e, needle, i);
+    while (j && c != str_at_peek(e, needle, j)) {
+      if (err_spun(e.mem, &k.poll)) { break; }
+      j = (u32)blk_read(e.mem, false, table, j - 1);
+    }
+    if (err_seen(e.mem)) { break; }
+    if (c == str_at_peek(e, needle, j)) { j++; }
+    blk_write(e.mem, false, table, i, j);
+  }
+  return k;
+}
+
+INLINE bool str_search_next(Env e, THR StrSearch* k, bool overlap, THR u32* at) {
+  if (!k->needle.len || k->needle.len > k->text.len || err_seen(e.mem)) { return false; }
+  while (k->pos < k->text.len) {
+    if (err_spun(e.mem, &k->poll)) { return false; }
+    u32 c = str_at_peek(e, k->text, k->pos++);
+    while (k->matched && c != str_at_peek(e, k->needle, k->matched)) {
+      if (err_spun(e.mem, &k->poll)) { return false; }
+      k->matched = (u32)blk_read(e.mem, false, k->table, k->matched - 1);
+    }
+    if (c == str_at_peek(e, k->needle, k->matched)) { k->matched++; }
+    if (k->matched == k->needle.len) {
+      *at = k->pos - k->needle.len;
+      k->matched = overlap && k->needle.len > 1
+        ? (u32)blk_read(e.mem, false, k->table, k->matched - 1) : 0;
+      return true;
+    }
+  }
+  return false;
+}
+
+// Consume both inputs. mode: first=0, last overlapping start=1, count=2.
+INLINE u64 str_search_take(Env e, Term s, Term needle, u32 mode) {
+  StrParts p = str_peek(e, s), q = str_peek(e, needle);
+  u64 out = mode == 2 ? 0 : STR_ABSENT;
+  if (!q.len) { out = mode == 0 ? 0 : (u64)p.len + (mode == 2); }
+  else {
+    StrSearch k = str_search_open(e, p, q);
+    u32 at;
+    while (str_search_next(e, &k, mode == 1, &at)) {
+      out = mode == 2 ? out + 1 : at;
+      if (mode == 0) { break; }
+    }
+    str_search_close(e, &k);
+  }
+  term_sink(e, s); term_sink(e, needle);
+  return out;
+}
+
+INLINE Term str_find_take(Env e, Term s, Term needle, bool last) {
+  u64 at = str_search_take(e, s, needle, last ? 1 : 0);
+  if (at == STR_ABSENT || err_seen(e.mem)) { return term_pak(CID_NONE, 0); }
+  // Nat is a raw word even in a generic Some payload.
+  return str_node(e, CID_SOME, 1, at, 0, 0);
+}
+
+// Borrow a range, return an owned zero-copy window (empty never pins).
+INLINE Term str_window(Env e, StrParts p, u32 lo, u32 hi) {
+  StrParts q = {lo < hi ? term_keep(e, p.data) : 0, p.off + lo, hi - lo};
+  return str_view_owned(e, q);
+}
+
+// Consumes the destination parts, borrows the source; one growing output.
+INLINE void str_push_range(Env e, THR StrParts* out, StrParts p, u32 lo, u32 hi) {
+  if (lo == hi || err_seen(e.mem)) { return; }
+  p.off += lo; p.len = hi - lo;
+  *out = str_reserve(e, *out, p.len, false, str_nar(p));
+  if (!err_seen(e.mem)) { str_copy_cells(e, *out, out->len, p); out->len += p.len; }
+}
+
+INLINE Term str_replace_take(Env e, Term s, Term old, Term value) {
+  StrParts p = str_peek(e, s), q = str_peek(e, old), r = str_peek(e, value);
+  StrParts out = {0, 0, 0};
+  StrSearch k = str_search_open(e, p, q);
+  u32 at = 0, lo = 0, poll = 0;
+  // A counting pass sizes the output once: no doubling, no recopying.
+  u64 hits = q.len ? 0 : (u64)p.len + 1;
+  while (q.len && str_search_next(e, &k, false, &at)) { hits++; }
+  k.pos = k.matched = 0;
+  out = str_reserve(e, out, p.len + hits * r.len - (q.len ? hits * q.len : 0), false,
+    hits && str_nar(r) < str_nar(p) ? str_nar(r) : str_nar(p));
+  if (!q.len) {
+    for (u64 i = 0; i <= p.len; i++) {
+      if (err_spun(e.mem, &poll)) { break; }
+      str_push_range(e, &out, r, 0, r.len);
+      if (i < p.len) { str_push_range(e, &out, p, (u32)i, (u32)i + 1); }
+    }
+  } else {
+    while (str_search_next(e, &k, false, &at)) {
+      str_push_range(e, &out, p, lo, at);
+      str_push_range(e, &out, r, 0, r.len);
+      lo = at + q.len;
+    }
+    str_push_range(e, &out, p, lo, p.len);
+  }
+  str_search_close(e, &k);
+  term_sink(e, s); term_sink(e, old); term_sink(e, value);
+  return str_view_owned(e, out);
+}
+
+// Owns a private forward list during construction; seal every link before
+// publication. Consumes field, mutates only fresh unaliased list metadata.
+INLINE void str_list_push(Env e, THR Term* out, THR Loc* tail, Term field) {
+  if (err_seen(e.mem)) { term_sink(e, field); return; }
+  Term node = rfc_seal(e, str_cons(e, field, term_pak(CID_NIL, 0)));
+  if (err_seen(e.mem)) { term_sink(e, node); return; }
+  if (*tail) { e.mem[*tail] = node; } else { *out = node; }
+  *tail = term_peek(e, node) + 1;
+}
+
+INLINE Term str_split_on_take(Env e, Term s, Term sep) {
+  StrParts p = str_peek(e, s), q = str_peek(e, sep);
+  Term out = term_pak(CID_NIL, 0);
+  Loc tail = 0;
+  StrSearch k = str_search_open(e, p, q);
+  u32 at, lo = 0;
+  while (str_search_next(e, &k, false, &at)) {
+    str_list_push(e, &out, &tail, str_window(e, p, lo, at));
+    lo = at + q.len;
+  }
+  if (!err_seen(e.mem)) { str_list_push(e, &out, &tail, str_window(e, p, lo, p.len)); }
+  str_search_close(e, &k);
+  term_sink(e, s); term_sink(e, sep);
+  return out;
+}
+
+// Own both fields; nested tuple payloads obey the same sealing protocol.
+INLINE Term str_pair(Env e, Term a, Term b) {
+  if (err_seen(e.mem)) { term_sink(e, a); term_sink(e, b); return 0; }
+  Loc l = heap_alloc(e, 1);
+  if (err_seen(e.mem)) { term_sink(e, a); term_sink(e, b); return 0; }
+  e.mem[l] = rfc_seal(e, a); e.mem[l + 1] = rfc_seal(e, b);
+  return term_ctr(CID_TUPLE, l);
+}
+
+INLINE Term str_partition_take(Env e, Term s, Term sep) {
+  StrParts p = str_peek(e, s), q = str_peek(e, sep);
+  StrSearch k = str_search_open(e, p, q);
+  u32 at;
+  bool found = str_search_next(e, &k, false, &at);
+  str_search_close(e, &k);
+  Term a = s, b = term_pak(CID_SNIL, 0), c = b;
+  if (found) {
+    a = str_window(e, p, 0, at); b = sep;
+    c = str_window(e, p, at + q.len, p.len);
+    term_sink(e, s);
+  } else { term_sink(e, sep); }
+  return str_pair(e, a, str_pair(e, b, c));
+}
+
+INLINE bool str_line_break(u32 c) {
+  return (c >= 10 && c <= 13) || (c >= 28 && c <= 30)
+    || c == 133 || c == 8232 || c == 8233;
+}
+
+INLINE Term str_splitlines_take(Env e, Term s) {
+  StrParts p = str_peek(e, s);
+  Term out = term_pak(CID_NIL, 0);
+  Loc tail = 0;
+  u32 lo = 0, poll = 0;
+  for (u32 i = 0; i < p.len; i++) {
+    if (err_spun(e.mem, &poll)) { break; }
+    u32 c = str_at_peek(e, p, i);
+    if (str_line_break(c)) {
+      str_list_push(e, &out, &tail, str_window(e, p, lo, i));
+      if (c == 13 && i + 1 < p.len && str_at_peek(e, p, i + 1) == 10) { i++; }
+      lo = i + 1;
+    }
+  }
+  if (lo < p.len && !err_seen(e.mem)) { str_list_push(e, &out, &tail, str_window(e, p, lo, p.len)); }
+  term_sink(e, s);
+  return out;
+}
+
+// Consume s; raw U32 fill values are ordinary cells. mode: start=0, end=1,
+// sign-aware zero fill=2. Widen/check before narrowing or subtracting.
+INLINE Term str_pad_take(Env e, Term s, Nat width, u32 c, u32 mode) {
+  u32 len = str_peek(e, s).len;
+  if (width <= len) { return s; }
+  if (width > STR_LIMIT) { err_post(e.mem, ERR_STRS); term_sink(e, s); return term_pak(CID_SNIL, 0); }
+  u32 n = (u32)(width - len);
+  StrParts p = str_reserve(e, str_take(e, s), n, mode != 1, str_fit(c));
+  if (err_seen(e.mem)) { return str_view_owned(e, p); }
+  u32 sign = 0, first = len ? str_at_peek(e, p, 0) : 0;
+  if (mode == 2 && (first == '+' || first == '-')) { sign = 1; }
+  if (mode != 1) { p.off -= n; }
+  p.len = (u32)width;
+  u32 start = mode == 1 ? len : sign, poll = 0;
+  if (sign) { str_put(e, p, 0, first); }
+  for (u32 i = 0; i < n; i++) {
+    if (err_spun(e.mem, &poll)) { break; }
+    str_put(e, p, start + i, c);
+  }
+  return str_view_owned(e, p);
+}
+
+INLINE u32 str_hash_take(Env e, Term s) {
+  StrParts p = str_peek(e, s);
+  u32 h = 2166136261u, poll = 0;
+  for (u32 i = 0; i < p.len; i++) {
+    if (err_spun(e.mem, &poll)) { break; }
+    u32 c = str_at_peek(e, p, i);
+    for (u32 shift = 0; shift < 32; shift += 8) { h = (h ^ ((c >> shift) & 255)) * 16777619u; }
+  }
+  term_sink(e, s);
+  return h;
 }
 
 // Ring
@@ -5335,19 +6250,13 @@ static u64 io_utf8(char* buf, u64 c) {
 }
 
 OUTLINE char* io_cstr(Env e, Term s, u64* len) {
-  u64   cap = 64;
-  u64   n   = 0;
-  char* buf = io_mem(malloc(cap));
-  while (term_aux(s) == CID_SCON) {
-    Term fb[2];
-    spare_free(e, cls_fit(2), ctr_take(e, s, 2, fb));
-    if (n + 5 > cap) {
-      cap *= 2;
-      buf = io_mem(realloc(buf, cap));
-    }
-    n += io_utf8(buf + n, fb[0]);
-    s = fb[1];
+  StrParts p = str_peek(e, s);
+  u64 n = 0;
+  char* buf = io_mem(malloc((u64)p.len * 4 + 1));
+  for (u32 i = 0; i < p.len; i++) {
+    n += io_utf8(buf + n, str_at_peek(e, p, i));
   }
+  term_sink(e, s);
   buf[n] = 0;
   *len = n;
   return buf;
@@ -5376,10 +6285,15 @@ static Term io_node(Env e, u64 cid, Term a, Term b, int hot) {
 // io_str decodes UTF-8 as WHATWG does: the lead byte sets the count of
 // continuation bytes and the range of the second; a byte that breaks the
 // sequence (or the end) yields one U+FFFD and is read again as a lead.
+// It fills 1-byte cells until a wider scalar arrives; then the cells decoded
+// so far move to that width (at most twice).
 static Term io_str(Env e, const char* p, u64 n) {
-  Term s    = term_pak(CID_SNIL, 0);
-  Loc  hole = 0;
-  u64  c = 0, need = 0, lo = 0x80, hi = 0xBF;
+  StrParts out = str_alloc(e, n, 2);
+  if (err_seen(e.mem)) {
+    return str_view_owned(e, out);
+  }
+  u32 len = 0;
+  u64 c = 0, need = 0, lo = 0x80, hi = 0xBF;
   for (u64 i = 0; i < n || need > 0; i += 1) {
     u64 b = i < n ? (uint8_t)p[i] : 0x100;
     if (need > 0 && (b < lo || b > hi)) {
@@ -5404,20 +6318,22 @@ static Term io_str(Env e, const char* p, u64 n) {
       c    = b & (0x3F >> need);
       continue;
     }
-    Loc  l = heap_alloc(e, 1);
-    Term t = term_ctr(CID_SCON, l);
-    e.mem[l] = c;
-    if (hole == 0) {
-      s = t;
-    } else {
-      e.mem[hole] = io_seal(e, t, IO_HOTS & 1);
+    if (str_fit((u32)c) < str_nar(out)) {
+      StrParts q = str_alloc(e, len + 1 + (n - i), str_fit((u32)c));
+      out.len = len;
+      if (q.data) {
+        str_copy_cells(e, q, 0, out);
+      }
+      term_sink(e, out.data);
+      out = q;
+      if (err_seen(e.mem)) {
+        break;
+      }
     }
-    hole = l + 1;
+    str_put(e, out, len++, (u32)c);
   }
-  if (hole != 0) {
-    e.mem[hole] = io_seal(e, term_pak(CID_SNIL, 0), IO_HOTS & 1);
-  }
-  return s;
+  out.len = len;
+  return str_view_owned(e, out);
 }
 
 #define io_tup(e, a, b) io_node(e, CID_TUPLE, a, b, IO_HOTS & 2)
@@ -5627,10 +6543,9 @@ static void show_val(Env e, u32 d, const Term* w, char chain) {
       break;
     case 4:
       putchar('"');
-      for (Term s = w[0]; term_aux(s) == CID_SCON;) {
-        Loc l = term_peek(e, s);
-        show_chr(e.mem[l], '"');
-        s = e.mem[l + 1];
+      {
+        StrParts p = str_peek(e, w[0]);
+        for (u32 i = 0; i < p.len; i++) { show_chr(str_at_peek(e, p, i), '"'); }
       }
       putchar('"');
       break;
@@ -6044,6 +6959,7 @@ function show_chr(c, q) {
   const k = { 10: "n", 9: "t", 13: "r", 0: "0", 92: "\\" }[c]
     ?? (c === q.codePointAt(0) ? q : null);
   return k !== null ? "\\" + k : c < 32 || c === 127
+    || c > 0x10ffff || (c >= 0xd800 && c <= 0xdfff)
     ? "\\u{" + c.toString(16) + "}" : String.fromCodePoint(c);
 }
 

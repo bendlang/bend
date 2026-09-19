@@ -279,6 +279,41 @@ def File.size(file: File) ->
   import "./effs/file_size.c"
   import "./effs/file_size.js"
 
+# A UTF-8 decoder's state between chunks: the bytes of a scalar cut by
+# the end of a chunk (pend, low byte first; need of them, 3 at most).
+# File.read_text is File.read through it, so the chunks of a file append
+# to its whole decode; need answers 4 at the end of the file.
+type Utf8.Dec is Data:
+  Dec{pend: U32, need: U32}
+
+def Utf8.Dec.new() -> Utf8.Dec:
+  Dec{0, 0}
+
+def Utf8.Dec.Raw(H: Type) -> Type:
+  H & Result<&1, &1, U32 & String, U32 & U32 & String>
+
+def Utf8.Dec.Out(H: Type) -> Type:
+  H & Result<&1, &1, U32 & String, Utf8.Dec & String>
+
+def File.read_text.go(file: File, pend: U32, need: U32, max: U32) ->
+  IO(Utf8.Dec.Raw(File)):
+  import "./effs/file_read_text_go.c"
+  import "./effs/file_read_text_go.js"
+
+def File.read_text.pack(-H: Type, got: Utf8.Dec.Raw(H)) -> IO(Utf8.Dec.Out(H)):
+  (file, r) = got
+  match r:
+    case Fail{e}:
+      IO.pure(Utf8.Dec.Out(H), (file, Fail{e}))
+    case Done{(pend, (need, text))}:
+      IO.pure(Utf8.Dec.Out(H), (file, Done{(Dec{pend, need}, text)}))
+
+def File.read_text(file: File, dec: Utf8.Dec, max: U32) ->
+  IO(File & Result<&1, &1, U32 & String, Utf8.Dec & String>):
+  Dec{pend, need} = dec
+  IO.bind(Utf8.Dec.Raw(File), Utf8.Dec.Out(File),
+    File.read_text.go(file, pend, need, max), File.read_text.pack(File))
+
 def File.write(file: File, data: String) ->
   IO(File & Result<&1, &1, U32 & String, Unit>):
   import "./effs/file_write.c"
@@ -316,6 +351,19 @@ def TCP.recv(sock: Socket, max: U32) ->
   IO(Socket & Result<&1, &1, U32 & String, String>):
   import "./effs/tcp_recv.c"
   import "./effs/tcp_recv.js"
+
+# TCP.recv through a Utf8.Dec, as File.read_text: a scalar cut by the end
+# of a recv is carried; need answers 4 when the peer has closed.
+def TCP.recv_text.go(sock: Socket, pend: U32, need: U32, max: U32) ->
+  IO(Utf8.Dec.Raw(Socket)):
+  import "./effs/tcp_recv_text_go.c"
+  import "./effs/tcp_recv_text_go.js"
+
+def TCP.recv_text(sock: Socket, dec: Utf8.Dec, max: U32) ->
+  IO(Socket & Result<&1, &1, U32 & String, Utf8.Dec & String>):
+  Dec{pend, need} = dec
+  IO.bind(Utf8.Dec.Raw(Socket), Utf8.Dec.Out(Socket),
+    TCP.recv_text.go(sock, pend, need, max), File.read_text.pack(Socket))
 
 def UDP.bind(port: U32) -> IO(Result<&1, &1, U32 & String, Socket>):
   import "./effs/udp_bind.c"
@@ -1704,6 +1752,14 @@ def Char.is_space(c: Char) -> Bool:
     case Chr{+x}:
       Bool.or(U32.is_eq(x, 32), Bool.and(U32.is_ge(x, 9), U32.is_le(x, 13)))
 
+def Char.is_line_break(c: Char) -> Bool:
+  match c:
+    case Chr{+x}:
+      Bool.or(Bool.and(U32.is_ge(x, 10), U32.is_le(x, 13)),
+        Bool.or(Bool.and(U32.is_ge(x, 28), U32.is_le(x, 30)),
+        Bool.or(U32.is_eq(x, 133),
+        Bool.or(U32.is_eq(x, 8232), U32.is_eq(x, 8233)))))
+
 def Char.to_upper(+c: Char) -> Char:
   Chr{U32.sub(Char.to_u32(c), U32.mul(Bool.to_u32(Char.is_lower(c)), 32))}
 
@@ -1713,6 +1769,10 @@ def Char.to_lower(+c: Char) -> Char:
 # String
 # ------
 
+def Utf8.Dec.eof(dec: Utf8.Dec) -> Bool:
+  Dec{pend, need} = dec
+  U32.is_eq(need, 4)
+
 def String.append(a: String, b: String) -> String:
   match a:
     case SNil{}:
@@ -1720,51 +1780,53 @@ def String.append(a: String, b: String) -> String:
     case SCon{h, t}:
       SCon{h, String.append(t, b)}
 
-def String.cmp.rec(h1b: Char, h2b: Char, rr: (String & String) & Cmp) ->
-  (String & String) & Cmp:
-  ((t1b, t2b), r) = rr
-  ((SCon{h1b, t1b}, SCon{h2b, t2b}), r)
+law String.order:
+  for a: String
+  for b: String
+  Cmp
+
+def String.order.step(a: String, b: String, c: Cmp) -> Cmp:
+  match c:
+    case LT{}:
+      LT{}
+    case EQ{}:
+      String.order(a, b)
+    case GT{}:
+      GT{}
+
+def String.order(a, b):
+  match a b:
+    case SNil{} SNil{}:
+      EQ{}
+    case SNil{} SCon{h, t}:
+      LT{}
+    case SCon{h, t} SNil{}:
+      GT{}
+    case SCon{Chr{x}, xt} SCon{Chr{y}, yt}:
+      String.order.step(xt, yt, U32.cmp(x, y))
 
 law String.cmp:
   for a: String
   for b: String
   (String & String) & Cmp
 
-def String.cmp.fin(t1: String, t2: String, hc: (Char & Char) & Cmp) ->
-  (String & String) & Cmp:
-  ((h1b, h2b), c) = hc
-  match c:
-    case LT{}:
-      ((SCon{h1b, t1}, SCon{h2b, t2}), LT{})
-    case EQ{}:
-      String.cmp.rec(h1b, h2b, String.cmp(t1, t2))
-    case GT{}:
-      ((SCon{h1b, t1}, SCon{h2b, t2}), GT{})
-
 def String.cmp(a, b):
-  match a b:
-    case SNil{} SNil{}:
-      ((SNil{}, SNil{}), EQ{})
-    case SNil{} SCon{h, t}:
-      ((SNil{}, SCon{h, t}), LT{})
-    case SCon{h, t} SNil{}:
-      ((SCon{h, t}, SNil{}), GT{})
-    case SCon{h1, t1} SCon{h2, t2}:
-      String.cmp.fin(t1, t2, Char.cmp(h1, h2))
-
-def String.eq.fin(r: (String & String) & Cmp) -> Bool:
-  ((a2, b2), c) = r
-  Cmp.is_eq(c)
+  +x = a
+  +y = b
+  ((x, y), String.order(x, y))
 
 def String.eq(a: String, b: String) -> Bool:
-  String.eq.fin(String.cmp(a, b))
+  Cmp.is_eq(String.order(a, b))
 
-def String.length(s: String) -> Nat:
+def String.length.go(s: String, n: Nat) -> Nat:
   match s:
     case SNil{}:
-      0n
+      n
     case SCon{h, t}:
-      1n+String.length(t)
+      String.length.go(t, 1n+n)
+
+def String.length(s: String) -> Nat:
+  String.length.go(s, 0n)
 
 def String.is_empty(s: String) -> Bool:
   match s:
@@ -1782,13 +1844,6 @@ def String.reverse.go(s: String, acc: String) -> String:
 
 def String.reverse(s: String) -> String:
   String.reverse.go(s, SNil{})
-
-def String.order.fin(r: (String & String) & Cmp) -> Cmp:
-  (ab, c) = r
-  c
-
-def String.order(a: String, b: String) -> Cmp:
-  String.order.fin(String.cmp(a, b))
 
 def String.is_lt(a: String, b: String) -> Bool:
   Cmp.is_lt(String.order(a, b))
@@ -1824,9 +1879,6 @@ def String.starts_with(s, p):
       True{}
     case SCon{x, xt} SCon{y, yt}:
       String.starts_with.if(xt, yt, Char.is_eq(x, y))
-
-def String.ends_with(s: String, p: String) -> Bool:
-  String.starts_with(String.reverse(s), String.reverse(p))
 
 law String.contains:
   for +s: String
@@ -1864,6 +1916,9 @@ def String.drop(s: String, n: Nat) -> String:
       SCon{h, t}
     case SCon{h, t} 1n+p:
       String.drop(t, p)
+
+def String.ends_with(+s: String, +p: String) -> Bool:
+  String.eq(String.drop(s, Nat.sub(String.length(s), String.length(p))), p)
 
 def String.get(s: String, n: Nat) -> Maybe<&2, Char>:
   match s n:
@@ -1916,30 +1971,58 @@ def String.split.push(c: Char, ps: List<&2, String>) -> List<&2, String>:
     case h <> t:
       SCon{c, h} <> t
 
-def String.split.fin(c: Char, r: List<&2, String>, cut: Bool) ->
-  List<&2, String>:
+# Accumulators keep the reference split stack bounded on large input.
+# The current field and completed fields are reversed independently.
+law String.split.acc:
+  for s: String
+  for +sep: Char
+  for +space: Bool
+  for word: String
+  for words: List<&2, String>
+  List<&2, String>
+
+def String.split.test(c: Char, sep: Char, space: Bool) -> Bool:
+  match space:
+    case False{}:
+      Char.is_eq(c, sep)
+    case True{}:
+      Char.is_space(c)
+
+def String.split.step(t: String, sep: Char, space: Bool, h: Char,
+  word: String, words: List<&2, String>, cut: Bool) -> List<&2, String>:
   match cut:
     case False{}:
-      String.split.push(c, r)
+      String.split.acc(t, sep, space, SCon{h, word}, words)
     case True{}:
-      SNil{} <> r
+      String.split.acc(t, sep, space, "", String.reverse(word) <> words)
 
-def String.split(s: String, +sep: Char) -> List<&2, String>:
+def String.split.acc(s, sep, space, word, words):
   match s:
     case SNil{}:
-      [SNil{}]
+      List.reverse(&2, String, String.reverse(word) <> words)
     case SCon{+h, t}:
-      String.split.fin(h, String.split(t, sep), Char.is_eq(h, sep))
+      String.split.step(t, sep, space, h, word, words,
+        String.split.test(h, sep, space))
+
+def String.split(s: String, +sep: Char) -> List<&2, String>:
+  String.split.acc(s, sep, False{}, "", [])
 
 def String.lines(s: String) -> List<&2, String>:
   String.split(s, '\n')
 
-def String.repeat(+s: String, n: Nat) -> String:
+def String.repeat.go(n: Nat, +s: String) -> String:
   match n:
     case 0n:
       SNil{}
     case 1n+p:
-      String.append(s, String.repeat(s, p))
+      String.append(s, String.repeat.go(p, s))
+
+def String.repeat(+s: String, n: Nat) -> String:
+  match s:
+    case SNil{}:
+      SNil{}
+    case SCon{h, t}:
+      String.repeat.go(n, SCon{h, t})
 
 def String.to_upper(s: String) -> String:
   match s:
@@ -1978,6 +2061,294 @@ def String.trim_end(s: String) -> String:
 
 def String.trim(s: String) -> String:
   String.trim_end(String.trim_start(s))
+
+def String.take_end(+s: String, k: Nat) -> String:
+  String.drop(s, Nat.sub(String.length(s), k))
+
+def String.drop_end(+s: String, k: Nat) -> String:
+  String.take(s, Nat.sub(String.length(s), k))
+
+def String.get_end.if(s: String, i: Nat, ok: Bool) -> Maybe<&2, Char>:
+  match ok:
+    case False{}:
+      None{}
+    case True{}:
+      String.get(s, i)
+
+# s[-k]: k = 0 or k > length is None
+def String.get_end(+s: String, +k: Nat) -> Maybe<&2, Char>:
+  +n = String.length(s)
+  String.get_end.if(s, Nat.sub(n, k), Bool.and(Nat.is_ge(k, 1n), Nat.is_le(k, n)))
+
+def String.slice(s: String, +i: Nat, j: Nat) -> String:
+  String.take(String.drop(s, i), Nat.sub(j, i))
+
+def String.cut(+s: String, +n: Nat) -> String & String:
+  (String.take(s, n), String.drop(s, n))
+
+def String.clone(+s: String) -> String & String:
+  (s, s)
+
+def String.copy(s: String) -> String:
+  match s:
+    case SNil{}:
+      SNil{}
+    case SCon{h, t}:
+      SCon{h, String.copy(t)}
+
+law String.find.go:
+  for +s: String
+  for +p: String
+  for i: Nat
+  Maybe<&2, Nat>
+
+def String.find.if(t: String, p: String, i: Nat, here: Bool) -> Maybe<&2, Nat>:
+  match here:
+    case False{}:
+      String.find.go(t, p, 1n+i)
+    case True{}:
+      Some{i}
+
+def String.find.go(s, p, i):
+  match s:
+    case SNil{}:
+      Bool.pick(Maybe<&2, Nat>, String.is_empty(p), Some{i}, None{})
+    case SCon{h, t}:
+      String.find.if(t, p, i, String.starts_with(SCon{h, t}, p))
+
+# first match start; the empty needle matches at 0
+def String.find(s: String, p: String) -> Maybe<&2, Nat>:
+  String.find.go(s, p, 0n)
+
+law String.find_last.go:
+  for +s: String
+  for +p: String
+  for i: Nat
+  for best: Maybe<&2, Nat>
+  Maybe<&2, Nat>
+
+def String.find_last.if(
+  t: String, p: String, +i: Nat, best: Maybe<&2, Nat>, here: Bool
+) -> Maybe<&2, Nat>:
+  match here:
+    case False{}:
+      String.find_last.go(t, p, 1n+i, best)
+    case True{}:
+      String.find_last.go(t, p, 1n+i, Some{i})
+
+def String.find_last.go(s, p, i, best):
+  match s:
+    case SNil{}:
+      Bool.pick(Maybe<&2, Nat>, String.is_empty(p), Some{i}, best)
+    case SCon{h, t}:
+      String.find_last.if(t, p, i, best, String.starts_with(SCon{h, t}, p))
+
+# last match start (overlapping starts count); the empty needle matches at length
+def String.find_last(s: String, p: String) -> Maybe<&2, Nat>:
+  String.find_last.go(s, p, 0n, None{})
+
+law String.count.go:
+  for +s: String
+  for +p: String
+  for +n: Nat
+  Nat
+
+def String.count.if(t: String, +p: String, n: Nat, here: Bool) -> Nat:
+  match here:
+    case False{}:
+      String.count.go(t, p, n)
+    case True{}:
+      String.count.go(String.drop(t, Nat.sub(String.length(p), 1n)), p, 1n+n)
+
+def String.count.go(s, p, n):
+  match s:
+    case SNil{}:
+      Bool.pick(Nat, String.is_empty(p), 1n+n, n)
+    case SCon{h, t}:
+      String.count.if(t, p, n, String.starts_with(SCon{h, t}, p))
+
+# nonoverlapping matches; the empty needle counts length+1
+def String.count(s: String, p: String) -> Nat:
+  String.count.go(s, p, 0n)
+
+law String.replace:
+  for +s: String
+  for +old: String
+  for +new: String
+  String
+
+def String.replace.if(
+  +h: Char, +t: String, +old: String, +new: String, here: Bool
+) -> String:
+  match here:
+    case False{}:
+      SCon{h, String.replace(t, old, new)}
+    case True{}:
+      +m = String.length(old)
+      String.append(new, String.append(String.take(SCon{h, t}, Nat.sub(1n, m)),
+        String.replace(String.drop(SCon{h, t}, Nat.max(m, 1n)), old, new)))
+
+# nonoverlapping, left to right; empty old inserts new at every boundary
+def String.replace(s, old, new):
+  match s:
+    case SNil{}:
+      Bool.pick(String, String.is_empty(old), new, SNil{})
+    case SCon{h, t}:
+      String.replace.if(h, t, old, new, String.starts_with(SCon{h, t}, old))
+
+law String.split_on.go:
+  for +s: String
+  for +sep: String
+  List<&2, String>
+
+def String.split_on.if(h: Char, t: String, +sep: String, here: Bool) ->
+  List<&2, String>:
+  match here:
+    case False{}:
+      String.split.push(h, String.split_on.go(t, sep))
+    case True{}:
+      SNil{} <> String.split_on.go(
+        String.drop(t, Nat.sub(String.length(sep), 1n)), sep)
+
+def String.split_on.go(s, sep):
+  match s:
+    case SNil{}:
+      [SNil{}]
+    case SCon{h, t}:
+      String.split_on.if(h, t, sep, String.starts_with(SCon{h, t}, sep))
+
+def String.split_on.start(s: String, sep: String, empty: Bool) ->
+  List<&2, String>:
+  match empty:
+    case False{}:
+      String.split_on.go(s, sep)
+    case True{}:
+      [s]
+
+# substring separator, empties kept; unlike Python the empty separator is
+# total: it never matches, so the result is [s]
+def String.split_on(s: String, +sep: String) -> List<&2, String>:
+  String.split_on.start(s, sep, String.is_empty(sep))
+
+def String.words.cut(s: String) -> List<&2, String>:
+  String.split.acc(s, ' ', True{}, "", [])
+
+def String.words.keep(ws: List<&2, String>) -> List<&2, String>:
+  match ws:
+    case Nil{}:
+      Nil{}
+    case +h <> t:
+      List.filter.put(String, h, String.words.keep(t),
+        Bool.not(String.is_empty(h)))
+
+# runs between ASCII whitespace (U+0020, U+0009..U+000D); no empties
+def String.words(s: String) -> List<&2, String>:
+  String.words.keep(String.words.cut(s))
+
+def String.partition.at(+s: String, +sep: String, i: Maybe<&2, Nat>) ->
+  String & (String & String):
+  match i:
+    case None{}:
+      (s, (SNil{}, SNil{}))
+    case Some{+k}:
+      (String.take(s, k), (sep, String.drop(s, Nat.add(k, String.length(sep)))))
+
+def String.partition.find(s: String, sep: String, empty: Bool) ->
+  Maybe<&2, Nat>:
+  match empty:
+    case False{}:
+      String.find(s, sep)
+    case True{}:
+      None{}
+
+# (before, sep, after) at the first match; absent, or the empty separator
+# (which Python rejects), gives (s, "", "")
+def String.partition(+s: String, +sep: String) -> String & (String & String):
+  String.partition.at(s, sep, String.partition.find(s, sep, String.is_empty(sep)))
+
+law String.splitlines:
+  for s: String
+  List<&2, String>
+
+def String.splitlines.lf(t: String) -> String:
+  match t:
+    case SNil{}:
+      SNil{}
+    case SCon{+h, +t2}:
+      Bool.pick(String, Char.is_eq(h, '\n'), t2, SCon{h, t2})
+
+def String.splitlines.cr(t: String, cr: Bool) -> String:
+  match cr:
+    case False{}:
+      t
+    case True{}:
+      String.splitlines.lf(t)
+
+def String.splitlines.if(h: Char, t: String, brk: Bool) -> List<&2, String>:
+  match brk:
+    case False{}:
+      String.split.push(h, String.splitlines(t))
+    case True{}:
+      SNil{} <> String.splitlines(String.splitlines.cr(t, Char.is_eq(h, '\r')))
+
+# Python's boundaries (LF CR CRLF VT FF FS GS RS NEL LS PS); no trailing empty
+def String.splitlines(s):
+  match s:
+    case SNil{}:
+      Nil{}
+    case SCon{+h, t}:
+      String.splitlines.if(h, t, Char.is_line_break(h))
+
+def String.capitalize(s: String) -> String:
+  match s:
+    case SNil{}:
+      SNil{}
+    case SCon{h, t}:
+      SCon{Char.to_upper(h), String.to_lower(t)}
+
+# width counts code points, not columns
+def String.pad_start(+s: String, w: Nat, c: Char) -> String:
+  String.append(
+    String.from_list(List.replicate(Char, Nat.sub(w, String.length(s)), c)), s)
+
+def String.pad_end(+s: String, w: Nat, c: Char) -> String:
+  String.append(
+    s, String.from_list(List.replicate(Char, Nat.sub(w, String.length(s)), c)))
+
+def String.zfill.if(h: Char, t: String, w: Nat, sign: Bool) -> String:
+  match sign:
+    case False{}:
+      String.pad_start(SCon{h, t}, w, '0')
+    case True{}:
+      SCon{h, String.pad_start(t, Nat.sub(w, 1n), '0')}
+
+# zeros after a leading '+' or '-'
+def String.zfill(s: String, w: Nat) -> String:
+  match s:
+    case SNil{}:
+      String.pad_start(SNil{}, w, '0')
+    case SCon{+h, t}:
+      String.zfill.if(h, t, w, Bool.or(Char.is_eq(h, '+'), Char.is_eq(h, '-')))
+
+def String.hash.byte(h: U32, b: U32) -> U32:
+  U32.mul(U32.xor(h, b), 16777619)
+
+def String.hash.cell(h: U32, +x: U32) -> U32:
+  String.hash.byte(String.hash.byte(String.hash.byte(String.hash.byte(h,
+    U32.and(x, 255)), U32.and(U32.shrn(x, 8n), 255)),
+    U32.and(U32.shrn(x, 16n), 255)), U32.shrn(x, 24n))
+
+def String.hash.go(s: String, h: U32) -> U32:
+  match s:
+    case SNil{}:
+      h
+    case SCon{Chr{x}, t}:
+      String.hash.go(t, String.hash.cell(h, x))
+
+# FNV-1a (32-bit) over four little-endian bytes per code point; a stable
+# Bend spec, not Python's hash
+def String.hash(s: String) -> U32:
+  String.hash.go(s, 2166136261)
 
 # Text
 # ----
