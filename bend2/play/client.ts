@@ -441,7 +441,7 @@ const exampleStdin: Record<string, string> = {
 // Demo dir -> label plus extra files the demo's main imports. Sources ship
 // as static files; the picker fetches them into the editor and the aux map,
 // and run() posts the whole set to the worker's memory filesystem.
-const demos: Record<string, { label: string; aux: Record<string, string>; sim?: Array<{ label: string; edits: string[][] }> }> = {
+const demos: Record<string, { label: string; aux: Record<string, string>; sim?: (w: number, h: number) => string[][] }> = {
   "demo:pure_par_sum": { label: "Parallel sum", aux: {} },
   "demo:pure_par_sort": { label: "Parallel sort", aux: {} },
   "demo:pure_hvm5_mini": { label: "HVM mini", aux: {} },
@@ -453,11 +453,15 @@ const demos: Record<string, { label: string; aux: Record<string, string>; sim?: 
   "demo:app_pong_game_2d": { label: "Pong", aux: {} },
   "demo:app_win_is_bug_2d": { label: "WinIsBug", aux: {} },
   "demo:app_ray_tracer_3d": { label: "Ray tracer", aux: {},
-    sim: [
-      { label: "Sim: full", edits: [] },
-      { label: "Sim: fast", edits: [["Fly\\.scene!\\(\\d+n,", "Fly.scene!(9n,"]] },
-      { label: "Sim: preview", edits: [["Fly\\.scene!\\(\\d+n,", "Fly.scene!(8n,"]] },
-    ] },
+    sim: (w: number, h: number) => {
+      let depth = 0;
+      let cover = 1;
+      while (cover < Math.max(w, h) && depth < 12) { cover *= 2; depth++; }
+      return [
+        ["Fly\\.scene!\\(\\d+n,", `Fly.scene!(${depth}n,`],
+        ["\"Fly\", \\d+, \\d+,", `"Fly", ${w}, ${h},`],
+      ];
+    } },
   "demo:app_slash_boss_3d": { label: "Slash boss", aux: { "bend3d.bend": "demos/app_slash_boss_3d/bend3d.bend" } },
   "demo:io_http_fetch": { label: "HTTP fetch · needs native", aux: {} },
   "demo:io_http_server": { label: "HTTP server · needs native", aux: {} },
@@ -465,27 +469,14 @@ const demos: Record<string, { label: string; aux: Record<string, string>; sim?: 
 };
 let auxFiles: Record<string, string> = {};
 function renderSim(): void {
-  const wrap = get("sim-wrap");
-  const select = get<HTMLSelectElement>("sim");
-  const presets = example.value in demos ? demos[example.value].sim : undefined;
-  select.replaceChildren(...(presets ?? []).map((p, i) => {
-    const opt = document.createElement("option");
-    opt.value = String(i);
-    opt.textContent = p.label;
-    return opt;
-  }));
-  wrap.hidden = !presets;
-  if (presets) {
-    const urlSim = new URLSearchParams(location.search).get("sim");
-    if (urlSim && Number(urlSim) < presets.length) select.value = urlSim;
-    else {
-      try {
-        const saved = JSON.parse(localStorage.getItem(storageKey) ?? "null");
-        if (saved && typeof saved.sim === "string"
-          && Number(saved.sim) < presets.length) select.value = saved.sim;
-      } catch {}
-    }
-  }
+  get("sim-wrap").hidden = !(example.value in demos && demos[example.value].sim);
+}
+function simWH(): { w: number; h: number } {
+  const num = (id: string): number => {
+    const v = parseInt(get<HTMLInputElement>(id).value, 10);
+    return v > 0 ? Math.min(2048, v) : 0;
+  };
+  return { w: num("simw"), h: num("simh") };
 }
 function renderAux(): void {  const bar = get("auxbar");
   bar.hidden = Object.keys(auxFiles).length === 0;
@@ -511,8 +502,13 @@ function syncURL(): void {
   if (example.value in demos) params.set("demo", example.value.slice("demo:".length));
   else params.delete("demo");
   if (example.value in demos && demos[example.value].sim) {
-    params.set("sim", get<HTMLSelectElement>("sim").value || "0");
-  } else params.delete("sim");
+    const sw = simWH().w;
+    const sh = simWH().h;
+    if (sw > 0) params.set("sw", String(sw));
+    else params.delete("sw");
+    if (sh > 0) params.set("sh", String(sh));
+    else params.delete("sh");
+  } else { params.delete("sw"); params.delete("sh"); }
   const dw = dispNum("dispw");
   const dh = dispNum("disph");
   if (dw > 0) params.set("w", String(dw));
@@ -579,7 +575,7 @@ for (const name of tabs) {
   });
 }
 function persist(): void {
-  try { localStorage.setItem(storageKey, JSON.stringify({ source: source.value, example: example.value, stdin: stdinBox.value, mode: stdinMode(), dispw: get<HTMLInputElement>("dispw").value, disph: get<HTMLInputElement>("disph").value, sim: get<HTMLSelectElement>("sim").value })); } catch {}
+  try { localStorage.setItem(storageKey, JSON.stringify({ source: source.value, example: example.value, stdin: stdinBox.value, mode: stdinMode(), dispw: get<HTMLInputElement>("dispw").value, disph: get<HTMLInputElement>("disph").value, simw: get<HTMLInputElement>("simw").value, simh: get<HTMLInputElement>("simh").value })); } catch {}
 }
 function stdinMode(): string {
   return document.querySelector<HTMLInputElement>('input[name="stdin-mode"]:checked')?.value ?? "prefill";
@@ -855,6 +851,18 @@ try {
       if (saved2 && typeof saved2.disph === "string") get<HTMLInputElement>("disph").value = saved2.disph;
     } catch {}
   }
+  const sw = num(params.get("sw"));
+  const sh = num(params.get("sh"));
+  if (sw || sh) {
+    get<HTMLInputElement>("simw").value = sw;
+    get<HTMLInputElement>("simh").value = sh;
+  } else {
+    try {
+      const saved3 = JSON.parse(localStorage.getItem(storageKey) ?? "null");
+      if (saved3 && typeof saved3.simw === "string") get<HTMLInputElement>("simw").value = saved3.simw;
+      if (saved3 && typeof saved3.simh === "string") get<HTMLInputElement>("simh").value = saved3.simh;
+    } catch {}
+  }
   resCaption();
 } catch {}
 editor.selection.moveCursorTo(0, 0);
@@ -1011,12 +1019,13 @@ async function reset(): Promise<void> {
         aux[name] = await load(route);
       }
       renderSim();
-      const sim = demos[example.value].sim?.[Number(get<HTMLSelectElement>("sim").value)];
-      if (sim && sim.edits.length > 0) {
-        for (const [pattern, replacement] of sim.edits) {
+      const fn = demos[example.value].sim;
+      const { w: sw, h: sh } = simWH();
+      if (fn && sw > 0 && sh > 0) {
+        for (const [pattern, replacement] of fn(sw, sh)) {
           source.value = source.value.replace(new RegExp(pattern), replacement);
         }
-        source.value = `# sim detail: ${sim.label} (adapted from the repo demo)\n` + source.value;
+        source.value = `# sim ${sw}x${sh} (adapted from the repo demo)\n` + source.value;
       }
       auxFiles = aux;
       renderAux();
@@ -1039,11 +1048,17 @@ async function reset(): Promise<void> {
   syncURL();
 }
 example.addEventListener("change", reset);
-get<HTMLSelectElement>("sim").addEventListener("change", async () => {
-  persist(); syncURL();
-  await reset();
-  run();
-});
+for (const id of ["simw", "simh"]) {
+  get<HTMLInputElement>(id).addEventListener("input", () => { persist(); syncURL(); });
+  get<HTMLInputElement>(id).addEventListener("keydown", async (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      persist(); syncURL();
+      await reset();
+      run();
+    }
+  });
+}
 get("reset").addEventListener("click", reset);
 copy.addEventListener("click", async () => {
   try {
