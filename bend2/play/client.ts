@@ -620,6 +620,23 @@ function sendDisplay(): void {
   const { w, h } = dispEff();
   runner.postMessage({ display: { w, h } });
 }
+let frameTimes: number[] = [];
+let fpsShownAt = 0;
+function fpsTick(): void {
+  const now = performance.now();
+  frameTimes.push(now);
+  if (frameTimes.length > 30) frameTimes.shift();
+  if (frameTimes.length >= 2 && now - fpsShownAt > 250) {
+    fpsShownAt = now;
+    const fps = 1000 * (frameTimes.length - 1) / (frameTimes[frameTimes.length - 1] - frameTimes[0]);
+    get("fps").textContent = `${fps < 10 ? fps.toFixed(1) : Math.round(fps)} fps`;
+  }
+}
+function fpsReset(): void {
+  frameTimes = [];
+  fpsShownAt = 0;
+  get("fps").textContent = "— fps";
+}
 function applyDisplay(): void {
   resCaption();
   persist();
@@ -643,6 +660,7 @@ function finish(message: string, failed = false): void {
   runner?.terminate();
   runner = undefined;
   get("inputbar").hidden = true;
+  fpsReset();
   cancel.textContent = "Cancel";
   busy = false;
   results.className = failed ? "error" : "";
@@ -687,6 +705,7 @@ function execute(javascript: string, compileTime: number): void {
       clearTimeout(timer);
       cancel.textContent = "Stop";
       nativeSize = { w: data.w, h: data.h };
+      fpsReset();
       // Initialize the inputs with the default resolution on first open.
       if (!get<HTMLInputElement>("dispw").value) {
         get<HTMLInputElement>("dispw").value = String(data.w);
@@ -704,6 +723,7 @@ function execute(javascript: string, compileTime: number): void {
       status("Running — press Stop to quit", "busy");
       screen.focus();
     } else if (data.type === "win-frame") {
+      fpsTick();
       const screen = get<HTMLCanvasElement>("screen");
       if (screen.width !== data.w || screen.height !== data.h) {
         screen.width = data.w;
