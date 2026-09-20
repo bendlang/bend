@@ -211,6 +211,7 @@ def add_zero(x):
 - Twitter/X: https://x.com/bendlang
 - Reddit: https://www.reddit.com/r/bendlang/
 - Issues: https://github.com/bendlang/bend/issues
+- Libraries: [bend_stdlib](https://github.com/nbardy/bend_stdlib), a proof-carrying community standard library
 
 # Limitations
 
