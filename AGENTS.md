@@ -36,6 +36,8 @@ lines its run must print, and the gates run on the mini cluster.
     media/              the film and the charts
     .github/            ISSUE_TEMPLATE/bug.yml, the bug report form, and
                         config.yml, which points questions at Discord
+    REPORTING.md        the work before you fill a form: classify it as Bend's
+                        bug, read WONTFIX.txt, search the tracker, and minimize
     ../bend-lang.com    the site repo (bendlang/bend-lang.com), a sibling
                         checkout: the sites, install.sh, the hub, release.ts
                         (the executables per platform) and the droplet ops;

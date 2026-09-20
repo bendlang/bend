@@ -35,6 +35,7 @@ allow("AGENTS.md", 2000);
 allow("CHANGELOG.md", 6000);
 allow("README.md", 3000);
 allow("WONTFIX.txt", 1500);
+allow("REPORTING.md", 900);
 allow("LICENSE", 4000);
 allow("flake.nix", 1500);
 allow("bend2/base.bend", 32000);
