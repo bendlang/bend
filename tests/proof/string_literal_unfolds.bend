@@ -2,6 +2,7 @@
 # at a time where a chain is read: a comparison sees "ab" as
 # SCon{'a', "b"}, "" as SNil{}, a match reads a literal pattern and a
 # literal scrutinee, and the evaluator steps through a literal's length.
+# a character is any u32, so a literal may spell a surrogate pair.
 import Base
 
 law ab_is_chain:
@@ -32,6 +33,12 @@ law eq_lits:
   {String.eq("héllo", "héllo") == True{} : Bool}
 
 def eq_lits():
+  {==}
+
+law surrogates_two:
+  {String.length("\u{d83d}\u{de00}") == 2n : Nat}
+
+def surrogates_two():
   {==}
 
 def classify(s: String) -> Nat:
