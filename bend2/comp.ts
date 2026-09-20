@@ -2815,11 +2815,104 @@ function emit_chain(fl: File, cond: (i: number) => string,
 // =======
 
 function compile_def(fl: File, k: Bend.Name, tld: Def): void {
+  if (map_fast(fl, k, tld)) {
+    return;
+  }
   Object.assign(fl, { fresh: new Map(), brwl: new Map(), rest: [] });
   memo_gc();
   const vals = emit_open(fl, k);
   fl.segs.push(fl.seg);
   emit_body(fl, tld.h as HTerm, tld.T, [], vals, null);
+}
+
+// Array.map~k, the minted map instance: the tree body splits and rebuilds a
+// block at every level, so a map over n elements copies O(n log n) words. When
+// the callback inlined into the ALeaf arm is flat, walk the block by index
+// instead: allocate the destination once, move each source cell out, emit the
+// leaf body, and write the result straight into its slot. Nothing reads or
+// drops a destination cell, so no seed value and no Data element is needed.
+// A callback that needs a continuation or its own fork keeps the tree body.
+function map_fast(fl: File, k: Bend.Name, tld: Def): boolean {
+  if (!/^Array\.map~/.test(k)) {
+    return false;
+  }
+  const { doms, ret } = tele_unbind(fl.book, tld.T);
+  const adtIn = ty_adt(fl.book, doms[0][2]);
+  const adtOut = ty_adt(fl.book, ret);
+  if (doms.length !== 1 || adtIn?.k !== "Array" || adtOut?.k !== "Array") {
+    return false;
+  }
+  const Tin = adtIn.x[0];
+  const layT = lay_of(fl.book, Tin);
+  const layU = lay_of(fl.book, adtOut.x[0]);
+  const { arr: arrT, lgs: lgsT } = lay_arr(layT);
+  const { arr: arrU, lgs: lgsU } = lay_arr(layU);
+  const leaf = mat_arms(tld.h as HTerm).arms.find(([n]) => n === "ALeaf")?.[1];
+  const leaf_t = leaf === undefined ? null : Bend.term_strip(leaf);
+  if (leaf_t === null || leaf_t.$ !== "Lam") {
+    return false;
+  }
+  const xo = term_open(leaf_t);
+  const ctr = Bend.term_strip(xo.b);
+  if (ctr.$ !== "Ctr" || ctr.k !== "ALeaf" || ctr.x.length !== 1) {
+    return false;
+  }
+  const field = ctr.x[0];
+  if (!map_leaf_flat(fl, field)) {
+    return false;
+  }
+  Object.assign(fl, { fresh: new Map(), brwl: new Map(), rest: [] });
+  memo_gc();
+  const vals = emit_open(fl, k);
+  fl.segs.push(fl.seg);
+  const a = vals[0].ws[0];
+  const d = name_local(fl, "d");
+  const oc = name_local(fl, "oc");
+  const out = name_local(fl, "o");
+  const n = name_local(fl, "n");
+  const i = name_local(fl, "i");
+  file_push(fl, `u32 ${d} = (u32)blk_cls(${a}) - ${lgsT};`);
+  file_push(fl, `if (${d} + ${lgsU} > 31) { err_post(e.mem, ERR_ARRS); ${
+    d} = 0; }`);
+  file_push(fl, `Cls ${oc} = (Cls)(${d} + ${lgsU});`);
+  file_push(fl, `Loc ${out} = heap_alloc(e, ${oc});`);
+  file_push(fl, `if (err_seen(e.mem)) { r0 = term_buf(0, ${out}); ${
+    "WL_RETN(1); }"}`);
+  file_push(fl, `for (u64 ${i} = 0, ${n} = 1ull << ${d}; ${i} < ${n}; ${
+    i} += 1) {`);
+  const at = emit_hold(fl, [`(u64)${i} << ${lgsT}`], "at")[0];
+  const x = arr_cells(fl, a, at, layT, true);
+  bind_uses(fl, xo.ps[0], x, [field], Tin, false);
+  const y = val_own(fl, val_to(fl, emit_expr(fl, field, null, layU), layU));
+  const au = emit_hold(fl, [`(u64)${i} << ${lgsU}`], "au")[0];
+  for (let j = y.length; j < (1 << lgsU); j += 1) {
+    file_push(fl, `blk_write(e.mem, ${Number(arrU)}, ${out}, ${au} + ${j}, 0);`);
+  }
+  y.forEach((w, j) => file_push(fl, `blk_write(e.mem, ${Number(arrU)}, ${
+    out}, ${au} + ${j}, ${w});`));
+  file_push(fl, "}");
+  file_push(fl, `blk_free(e, ${a});`);
+  file_push(fl, `r0 = term_blk(${Number(arrU)}, ${oc}, ${out});`);
+  file_push(fl, "WL_RETN(1);");
+  return true;
+}
+
+// A leaf body is flat when every call in it inlines: an intrinsic lowers to a
+// C expression, a flat def to a C call. Anything else is a task, which the
+// straight-line loop cannot emit.
+function map_leaf_flat(fl: File, t: HTerm): boolean {
+  let ok = true;
+  term_any(fl, t, (y) => {
+    if (ok && y.$ === "App") {
+      const ck = call_kind(fl, y);
+      if (ck !== null && intr_of(fl, ck.k) === undefined && !flat_call(fl, y)
+        && fl.book.tlds[ck.k]?.$ !== "ADT") {
+        ok = false;
+      }
+    }
+    return !ok;
+  });
+  return ok;
 }
 
 function compile_reqs(fl: File): void {
