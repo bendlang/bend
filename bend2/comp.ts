@@ -157,7 +157,7 @@ const MAP_LEAF_DEAR = 3;
 
 // The raw block operations the lowered Array.map is written over.
 const MAP_OPS = ["src", "depth", "dst", "split", "leaf", "cnt", "mid", "take",
-  "drop", "put", "close"].map((k) => "Array.map." + k);
+  "drop", "put", "join", "close"].map((k) => "Array.map." + k);
 
 const MAP_JS: Gen = () => die("an Array.map operation outside the C lane");
 
@@ -371,6 +371,10 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   array_map_put: {
     call: true,
     JS:   MAP_JS,
+  },
+  array_map_join: {
+    C:  "((void)$0, $1)",
+    JS: MAP_JS,
   },
   array_map_close: {
     C:  "(blk_free(e, $0), (void)$2, $1)",
@@ -2988,9 +2992,10 @@ function map_lower(cb: Carb, k: Bend.Name,
     Bend.Mat("Zero", Bend.Ann(ix, nat),
       Bend.Mat("Succ", arm("p", (p) => step(sa, da, ix, p)), Bend.Efq())))));
   // w(sa, da, ix, lf, dp): 2^dp leaves of lf elements from ix, forked on
-  // halves down to the leaf; the index after them. top is the same walk
-  // over the whole range, closed: the source freed shallow around the
-  // finished destination, in the leaf or at the join.
+  // halves down to the leaf; the index after them, which a join takes
+  // from its high half once both are done. top is the same walk over the
+  // whole range, closed: the source freed shallow around the finished
+  // destination, in the leaf or at the join.
   const fork = (sa: HTerm, da: HTerm, ix: HTerm, lf: HTerm, dp: HTerm,
     j: (a: HTerm, b: HTerm) => HTerm): HTerm => Bend.Let(["a", "b"], [0, 0],
     [Bend.Ann(call(w, sa, da, ix, lf, dp), nat),
@@ -3003,9 +3008,10 @@ function map_lower(cb: Carb, k: Bend.Name,
       const run = call(sq, sa, da, ix, call("Array.map.cnt", lf));
       return Bend.Mat("Zero", top ? bind("u", nat, run, (u) =>
         close(sa, da, u)) : Bend.Ann(run, nat),
-      Bend.Mat("Succ", arm("dp", (dp) => fork(sa, da, ix, lf, dp, (a, b) =>
-        top ? close(sa, da, call("Nat.add", a, b)) : call("Nat.add", a, b)),
-      top ? ret : nat), Bend.Efq()));
+      Bend.Mat("Succ", arm("dp", (dp) => fork(sa, da, ix, lf, dp, (a, b) => {
+        const hi = call("Array.map.join", a, b);
+        return top ? close(sa, da, hi) : hi;
+      }), top ? ret : nat), Bend.Efq()));
     }))));
   const wH = walk(false);
   const tpH = walk(true);
@@ -3095,8 +3101,9 @@ function map_shape(cb: Carb, k: Bend.Name, tld: Def): MapShape | null {
 // (split, leaf),
 // a leaf's count, zero once the run has failed (cnt), the start of the
 // high half (mid), an element moved out or dropped (take, drop), a result
-// written into its slot (put), and the source freed shallow around the
-// finished destination (close).
+// written into its slot (put), the high half's end once both halves are
+// done (join), and the source freed shallow around the finished
+// destination (close).
 function map_defs(cb: Carb): void {
   if (cb.book.tlds["Array.map.take"] !== undefined) {
     return;
@@ -3123,6 +3130,7 @@ function map_defs(cb: Carb): void {
   gen("put", 4, (T) => Bend.All(Bend.Lone(), "o", 0, nat, () =>
     Bend.All(Bend.Lone(), "i", 0, nat, () =>
       Bend.All(Bend.Lone(), "v", 0, T, () => nat))));
+  one("join", 2, map_words(["a", "b"], nat));
   gen("close", 4, (T) => map_words(["s", "o", "u"], arr(T)));
 }
 
