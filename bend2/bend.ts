@@ -2194,7 +2194,7 @@ export function parse_term_ns(p: Parse, tm: LTerm, T: LTerm): void {
   if (f.$ !== "Ref") {
     return;
   }
-  if (f.k[0] === ".") {
+  if (f.k[0] === "." && f.k[1] !== ".") {
     const h = term_unapply(T)[0];
     if (h.$ !== "Var" && h.$ !== "Ref" && h.$ !== "ADT") {
       throw Err(p.book, ctx_nil(), "a type name after : (the operators' namespace)", undefined, h.s);
