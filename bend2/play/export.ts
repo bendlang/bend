@@ -47,7 +47,9 @@ if (!build.success) {
 const html = fs.readFileSync(path.join(here, "index.html"), "utf8")
   .replace('href="/style.css"', 'href="./style.css"')
   .replace('src="/client.js"', 'src="./client.js"')
-  .replace('href="/"', 'href="./"');
+  .replace('href="/"', 'href="./"')
+  .replace('<span id="buildstamp" title="Playground build stamp">dev</span>',
+    `<span id="buildstamp" title="Playground build stamp">${new Date().toISOString().slice(0, 16).replace("T", " ")}Z</span>`);
 fs.writeFileSync(path.join(out, "index.html"), html);
 fs.copyFileSync(path.join(here, "style.css"), path.join(out, "style.css"));
 fs.mkdirSync(path.join(out, "vendor"), { recursive: true });

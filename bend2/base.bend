@@ -366,6 +366,10 @@ def Window.close(window: Window) -> IO(Unit):
   import "./effs/window_close.c"
   import "./effs/window_close.js"
 
+def Window.size(window: Window) -> IO(Window & U32 & U32):
+  import "./effs/window_size.c"
+  import "./effs/window_size.js"
+
 def Audio.open(rate: U32) -> IO(Result<&1, &1, U32 & String, Audio>):
   import "./effs/audio_open.c"
   import "./effs/audio_open.js"
@@ -1378,6 +1382,32 @@ def U32.is_gt(a: U32, b: U32) -> Bool:
 
 def U32.is_ge(a: U32, b: U32) -> Bool:
   Cmp.is_ge(U32.cmp(a, b))
+
+def U32.cover.nx(n: Nat, done: Bool) -> Nat:
+  match done:
+    case True{}:
+      n
+    case False{}:
+      Nat.add(n, 1n)
+
+def U32.cover.cx(c: U32, done: Bool) -> U32:
+  match done:
+    case True{}:
+      c
+    case False{}:
+      (c * 2 : U32)
+
+def U32.cover.go(fuel: Nat, n: Nat, +c: U32, +m: U32) -> Nat:
+  match fuel:
+    case 0n:
+      n
+    case 1n+f:
+      +done = U32.is_ge(c, m)
+      U32.cover.go(f, U32.cover.nx(n, done), U32.cover.cx(c, done), m)
+
+def U32.cover(m: U32) -> Nat:
+  U32.cover.go(32n, 0n, 1, m)
+
 
 def U32.is_zero(a: U32) -> Bool:
   U32.is_eq(a, 0)

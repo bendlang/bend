@@ -10,14 +10,14 @@ import Base
 
 type Fly is Data:
   Fly{x: F32, y: F32, z: F32, yaw: F32, pitch: F32, held: List<&2, Bool>,
-    t0: Nat, frames: U32, fps: U32}
+    t0: Nat, frames: U32, fps: U32, w: U32, h: U32}
 
 type Fly.Cam is Data:
   Cam{ex: F32, ey: F32, ez: F32, fx: F32, fy: F32, fz: F32, rx: F32, rz: F32,
-    ux: F32, uy: F32, uz: F32, fps: U32}
+    ux: F32, uy: F32, uz: F32, fps: U32, fw: F32, cx: F32, cy: F32}
 
-def Fly.init() -> Fly:
-  Fly{0.0, 1.5, (0.0 - 6.0 : F32), 0.0, 0.0, [], 0n, 0, 0}
+def Fly.init(w: U32, h: U32) -> Fly:
+  Fly{0.0, 1.5, (0.0 - 6.0 : F32), 0.0, 0.0, [], 0n, 0, 0, w, h}
 
 def Fly.pick(c: Bool, a: F32, b: F32) -> F32:
   match c:
@@ -93,9 +93,9 @@ def Fly.event(e: Event, s: Fly) -> Maybe<Fly>:
     case Key{27, True{}}:
       None{}
     case Key{code, down}:
-      Fly{x, y, z, yaw, pitch, held, t0, frames, fps} = s
+      Fly{x, y, z, yaw, pitch, held, t0, frames, fps, w, h} = s
       Some{Fly{x, y, z, yaw, pitch, Fly.set(held, Fly.slot(code), down), t0,
-        frames, fps}}
+        frames, fps, w, h}}
     case Close{}:
       None{}
     case _:
@@ -112,7 +112,7 @@ def Fly.events(events: List<Event>, s: Fly) -> Maybe<Fly>:
 # ------
 
 def Fly.step(+s: Fly) -> Fly:
-  Fly{x, y, z, yaw, pitch, held, t0, frames, fps} = s
+  Fly{x, y, z, yaw, pitch, held, t0, frames, fps, w, h} = s
   +fwd = (Fly.held(held, 0n) - Fly.held(held, 2n) : F32)
   +side = (Fly.held(held, 3n) - Fly.held(held, 1n) : F32)
   +rise = (Fly.held(held, 4n) - Fly.held(held, 5n) : F32)
@@ -123,20 +123,20 @@ def Fly.step(+s: Fly) -> Fly:
     Fly.max(0.3, (y + 0.08 * rise : F32)),
     (z + 0.08 * (fwd * F32.cos(yaw2) - side * F32.sin(yaw2)) : F32), yaw2,
     Fly.min(1.4, Fly.max((0.0 - 1.4 : F32), (pitch + 0.02 * tilt : F32))), held,
-    t0, frames, fps}
+    t0, frames, fps, w, h}
 
 def Fly.count(within: Bool, now: Nat, s: Fly) -> Fly:
   match within:
     case True{}:
       s
     case False{}:
-      Fly{x, y, z, yaw, pitch, held, t0, frames, fps} = s
-      Fly{x, y, z, yaw, pitch, held, now, 0, frames}
+      Fly{x, y, z, yaw, pitch, held, t0, frames, fps, w, h} = s
+      Fly{x, y, z, yaw, pitch, held, now, 0, frames, w, h}
 
 def Fly.clock(+now: Nat, +s: Fly) -> Fly:
-  Fly{x, y, z, yaw, pitch, held, t0, frames, fps} = s
+  Fly{x, y, z, yaw, pitch, held, t0, frames, fps, w, h} = s
   Fly.count(Nat.is_lt(Nat.sub(now, t0), Nat.mul(10n, 100n)), now,
-    Fly{x, y, z, yaw, pitch, held, t0, (frames + 1 : U32), fps})
+    Fly{x, y, z, yaw, pitch, held, t0, (frames + 1 : U32), fps, w, h})
 
 def Fly.tick(events: List<Event>, s: Fly) -> IO(Maybe<Fly>):
   do IO<Maybe<Fly>>:
@@ -228,9 +228,9 @@ def Fly.ray(+ox: F32, +oy: F32, +oz: F32, +dx: F32, +dy: F32, +dz: F32) -> U32:
   Fly.hit((t > 60.0 : F32), ox, oy, oz, dx, dy, dz, t)
 
 def Fly.cast(+x: U32, +y: U32, +cam: Fly.Cam) -> U32:
-  Cam{ex, ey, ez, fx, fy, fz, rx, rz, ux, uy, uz, fps} = cam
-  +sx = ((U32.to_f32(x) - 511.5) / 640.0 : F32)
-  +sy = ((383.5 - U32.to_f32(y)) / 640.0 : F32)
+  Cam{ex, ey, ez, fx, fy, fz, rx, rz, ux, uy, uz, fps, fw, cx, cy} = cam
+  +sx = ((U32.to_f32(x) - cx) / fw : F32)
+  +sy = ((cy - U32.to_f32(y)) / fw : F32)
   +vx = (fx + sx * rx + sy * ux : F32)
   +vy = (fy + sy * uy : F32)
   +vz = (fz + sx * rz + sy * uz : F32)
@@ -291,35 +291,58 @@ def Fly.hud(+x: U32, +y: U32, +fps: U32) -> U32:
 def Fly.over(hud: Bool, +x: U32, +y: U32, +cam: Fly.Cam) -> U32:
   match hud:
     case True{}:
-      Cam{ex, ey, ez, fx, fy, fz, rx, rz, ux, uy, uz, fps} = cam
+      Cam{ex, ey, ez, fx, fy, fz, rx, rz, ux, uy, uz, fps, fw, cx, cy} = cam
       Fly.hud(x, y, fps)
     case False{}:
       Fly.cast(x, y, cam)
 
-def Fly.scene(+d: Nat, +x: U32, +y: U32, +cam: Fly.Cam) -> Image:
+def Fly.scene(+d: Nat, +x: U32, +y: U32, +cam: Fly.Cam, +hud_on: Bool) -> Image:
   match d:
     case 0n:
-      Pix{Fly.over(((x < 96) && (y < 40) : U32), x, y, cam)}
+      Pix{Fly.over((hud_on && (x < 96) && (y < 40) : U32), x, y, cam)}
     case 1n+e:
       +h = U32.shln(1, e)
       +x1 = U32.add(x, h)
       +y1 = U32.add(y, h)
-      tl tr bl br = Fly.scene(e, x, y, cam) Fly.scene(e, x1, y, cam)
-        Fly.scene(e, x, y1, cam) Fly.scene(e, x1, y1, cam)
+      tl tr bl br = Fly.scene(e, x, y, cam, hud_on) Fly.scene(e, x1, y, cam, hud_on)
+        Fly.scene(e, x, y1, cam, hud_on) Fly.scene(e, x1, y1, cam, hud_on)
       Qua{tl, tr, bl, br}
 
 def Fly.camera(+s: Fly) -> Fly.Cam:
-  Fly{x, y, z, yaw, pitch, held, t0, frames, fps} = s
+  Fly{x, y, z, yaw, pitch, held, t0, frames, fps, w, h} = s
   +sy = F32.sin(yaw)
   +cy = F32.cos(yaw)
   +sp = F32.sin(pitch)
   +cp = F32.cos(pitch)
+  +fw = (U32.to_f32(w) * 0.625 : F32)
+  +ccx = ((U32.to_f32(w) - 1.0 : F32) / 2.0 : F32)
+  +ccy = ((U32.to_f32(h) - 1.0 : F32) / 2.0 : F32)
   Cam{x, y, z, (sy * cp : F32), sp, (cy * cp : F32), cy, (0.0 - sy : F32),
-    (0.0 - sp * sy : F32), cp, (0.0 - sp * cy : F32), fps}
+    (0.0 - sp * sy : F32), cp, (0.0 - sp * cy : F32), fps, fw, ccx, ccy}
 
 def Fly.view(s: Fly) -> Fly & Image:
-  +s2 = s
-  (s2, Fly.scene!(10n, 0, 0, Fly.camera(s2)))
+  Fly{x, y, z, yaw, pitch, held, t0, frames, fps, +w, +h} = s
+  +depth = U32.cover(Bool.pick(U32, U32.is_ge(w, h), w, h))
+  +hud_on = U32.is_ge(w, 512)
+  +s2 = {Fly{x, y, z, yaw, pitch, held, t0, frames, fps, w, h} : Fly}
+  (s2, Fly.scene!(depth, 0, 0, Fly.camera(s2), hud_on))
+
+def Fly.sized2(w: U32, h: U32, sized: Window & U32 & U32) -> IO(Unit):
+  (pw, wh) = sized
+  (w2, h2) = wh
+  do IO<Unit>:
+    u : Unit <- Window.close(pw)
+    App.run(~Fly, ~App{Fly.view, Fly.tick}, "Fly", w, h, Fly.init(w2, h2))
+
+def Fly.sized(sized: Window & U32 & U32) -> IO(Unit):
+  (pw, wh) = sized
+  (w, h) = wh
+  do IO<Unit>:
+    s2 : Window & U32 & U32 <- Window.size(pw)
+    Fly.sized2(w, h, s2)
 
 def main() -> IO(Unit):
-  App.run(~Fly, ~App{Fly.view, Fly.tick}, "Fly", 1024, 768, Fly.init())
+  do IO<Unit>:
+    probe : Window <- IO.try(Window, Window.open("Fly", 1024, 768))
+    s : Window & U32 & U32 <- Window.size(probe)
+    Fly.sized(s)

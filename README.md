@@ -141,13 +141,12 @@ prefills input; when it runs out the running program asks you for a line
 always wait for you. Window programs run too: `Window.open` shows a Display
 tab with a canvas (click it for keyboard and mouse), frames render from the
 program's quadtree images at up to 60 fps, and closing comes from the app
-itself. The Display bar sets canvas size two ways: Preview/Fast/Full
-presets plus free W/H inputs are the source of truth (empty follows the
-program, initialized from `win-open`); any apply restarts the running
-demo from the same build. Demos with simulation knobs (raytracer) get
-free Sim W/H inputs the same way — small sims skip the giant HUD text
-automatically. `?demo=`/`?w=`/`?h=`/`?sw=`/`?sh=`/`?debug=`
-deep-link everything. Append
+itself. The Display bar sets the window size — presets or free W/H
+inputs, initialized from `win-open`, `?w=`/`?h=` deep-linkable. The
+request wins over the program's numbers, so Bend code sees it too via
+the new `Window.size` effect; demos derive gameplay and scene detail
+from it. Changing size restarts the running demo from the same build.
+`?demo=`/`?w=`/`?h=`/`?debug=` deep-link everything. Append
 `?debug=true` to the URL for a pipeline log (key captures, worker messages,
 frame and input-request traffic) in a Debug bar — or flip the Debug toggle
 in the status bar. Link a demo directly with `?demo=app_ray_tracer_3d`

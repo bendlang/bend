@@ -89,10 +89,10 @@ function deliverLine(): void {
 let winNext = 1;
 const winSizes = new Map<number, { w: number; h: number }>();
 const winEvents: Array<{ kind: number; a: number; b: number; c: number; d: number }> = [];
-// Display size from the page (0 = follow the program's window size).
-// The canvas backing store is arbitrary on the web: any W/H goes.
-let dispW = 0;
-let dispH = 0;
+// Requested window size from the page (0 = the program's own numbers).
+// Interception: the request wins, so program, canvas and size queries agree.
+let reqW = 0;
+let reqH = 0;
 let workerDebug = false;
 function dbg(msg: string): void {
   if (workerDebug) self.postMessage({ type: "dbg", from: "runner", msg });
@@ -100,67 +100,39 @@ function dbg(msg: string): void {
 // A quadtree fill mirroring the native pixel walk: children go
 // [tl, tr, bl, br], colors are 0x00RRGGBB. One visit per node plus a
 // tight rect fill beats a per-pixel walk; output is identical.
-// A different target size samples the same tree (nearest neighbor),
-// so any display size works; same-size takes the fast fill path.
-function winPixels(image: unknown, nw: number, nh: number, tw: number, th: number): Uint8ClampedArray {
-  if (tw === nw && th === nh) {
-    let k = 0;
-    while ((1 << k) < nw || (1 << k) < nh) k++;
-    const out = new Uint8ClampedArray(nw * nh * 4);
-    const size = 1 << k;
-    const fill = (t: any, x0: number, y0: number, s: number): void => {
-      if (typeof t === "object" && t !== null && t.$ === "Qua" && s > 1) {
-        const h2 = s >> 1;
-        fill(t.tl, x0, y0, h2);
-        fill(t.tr, x0 + h2, y0, h2);
-        fill(t.bl, x0, y0 + h2, h2);
-        fill(t.br, x0 + h2, y0 + h2, h2);
-        return;
-      }
-      let c: number;
-      if (typeof t === "number") c = t >>> 0;
-      else if (typeof t === "object" && t !== null && t.$ === "Pix") c = (t.color as number) >>> 0;
-      else if (typeof t === "object" && t !== null && t.$ === "Qua") {
-        let u: any = t;
-        while (typeof u === "object" && u !== null && u.$ === "Qua") u = u.tl;
-        c = typeof u === "number" ? u >>> 0 : 0;
-      } else c = 0;
-      const r = (c >> 16) & 255, g = (c >> 8) & 255, b = c & 255;
-      const x1 = Math.min(x0 + s, nw), y1 = Math.min(y0 + s, nh);
-      for (let y = Math.max(y0, 0); y < y1; y++) {
-        let o = (y * nw + Math.max(x0, 0)) * 4;
-        for (let x = Math.max(x0, 0); x < x1; x++) {
-          out[o] = r; out[o + 1] = g; out[o + 2] = b; out[o + 3] = 255;
-          o += 4;
-        }
-      }
-    };
-    fill(image, 0, 0, size);
-    return out;
-  }
+function winPixels(image: unknown, w: number, h: number): Uint8ClampedArray {
   let k = 0;
-  while ((1 << k) < nw || (1 << k) < nh) k++;
-  const out = new Uint8ClampedArray(tw * th * 4);
-  for (let y = 0; y < th; y++) {
-    const ny = Math.min(nh - 1, (y * nh / th) | 0);
-    for (let x = 0; x < tw; x++) {
-      const nx = Math.min(nw - 1, (x * nw / tw) | 0);
-      let t: any = image;
-      let i = k;
-      while (i > 0 && typeof t === "object" && t !== null && t.$ === "Qua") {
-        i--;
-        const j = ((ny >> i) & 1) * 2 + ((nx >> i) & 1);
-        t = j === 0 ? t.tl : j === 1 ? t.tr : j === 2 ? t.bl : t.br;
-      }
-      const c = typeof t === "number" ? t >>> 0
-        : typeof t === "object" && t !== null && t.$ === "Pix" ? (t.color as number) >>> 0 : 0;
-      const o = (y * tw + x) * 4;
-      out[o] = (c >> 16) & 255;
-      out[o + 1] = (c >> 8) & 255;
-      out[o + 2] = c & 255;
-      out[o + 3] = 255;
+  while ((1 << k) < w || (1 << k) < h) k++;
+  const out = new Uint8ClampedArray(w * h * 4);
+  const size = 1 << k;
+  const fill = (t: any, x0: number, y0: number, s: number): void => {
+    if (typeof t === "object" && t !== null && t.$ === "Qua" && s > 1) {
+      const h2 = s >> 1;
+      fill(t.tl, x0, y0, h2);
+      fill(t.tr, x0 + h2, y0, h2);
+      fill(t.bl, x0, y0 + h2, h2);
+      fill(t.br, x0 + h2, y0 + h2, h2);
+      return;
     }
-  }
+    let c: number;
+    if (typeof t === "number") c = t >>> 0;
+    else if (typeof t === "object" && t !== null && t.$ === "Pix") c = (t.color as number) >>> 0;
+    else if (typeof t === "object" && t !== null && t.$ === "Qua") {
+      let u: any = t;
+      while (typeof u === "object" && u !== null && u.$ === "Qua") u = u.tl;
+      c = typeof u === "number" ? u >>> 0 : 0;
+    } else c = 0;
+    const r = (c >> 16) & 255, g = (c >> 8) & 255, b = c & 255;
+    const x1 = Math.min(x0 + s, w), y1 = Math.min(y0 + s, h);
+    for (let y = Math.max(y0, 0); y < y1; y++) {
+      let o = (y * w + Math.max(x0, 0)) * 4;
+      for (let x = Math.max(x0, 0); x < x1; x++) {
+        out[o] = r; out[o + 1] = g; out[o + 2] = b; out[o + 3] = 255;
+        o += 4;
+      }
+    }
+  };
+  fill(image, 0, 0, size);
   return out;
 }
 
@@ -181,9 +153,9 @@ self.onmessage = async ({ data }: MessageEvent) => {
       return;
     }
     if (data.display) {
-      dispW = data.display.w > 0 ? Math.min(4096, data.display.w | 0) : 0;
-      dispH = data.display.h > 0 ? Math.min(4096, data.display.h | 0) : 0;
-      dbg(`display ${dispW || "native"}x${dispH || "native"}`);
+      reqW = data.display.w > 0 ? Math.min(4096, data.display.w | 0) : 0;
+      reqH = data.display.h > 0 ? Math.min(4096, data.display.h | 0) : 0;
+      dbg(`window size request ${reqW || "program"}x${reqH || "program"}`);
       return;
     }
     return;
@@ -251,37 +223,41 @@ self.onmessage = async ({ data }: MessageEvent) => {
       if (!(w >= 1 && h >= 1 && w <= 16384 && h <= 16384)) {
         return { $: "Fail", error: { $: "Tuple", fst: 22, snd: "Window.open: bad size" } };
       }
+      // The page's requested size wins over the program's numbers.
+      const ow = reqW > 0 ? reqW : w;
+      const oh = reqH > 0 ? reqH : h;
       const id = winNext++;
-      winSizes.set(id, { w, h });
-      dbg(`win-open ${w}x${h} "${String(title)}" -> id ${id}`);
-      self.postMessage({ type: "win-open", id, title: String(title), w, h });
+      winSizes.set(id, { w: ow, h: oh });
+      dbg(`win-open ${w}x${h} -> ${ow}x${oh} "${String(title)}" id ${id}`);
+      self.postMessage({ type: "win-open", id, title: String(title), w: ow, h: oh });
       return { $: "Done", value: id };
     },
     winFrame(handle: unknown, image: unknown) {
       const id = Number(handle);
       const size = winSizes.get(id) ?? { w: 0, h: 0 };
       if (size.w > 0 && size.h > 0) {
-        const tw = dispW > 0 ? dispW : size.w;
-        const th = dispH > 0 ? dispH : size.h;
-        const pix = winPixels(image, size.w, size.h, tw, th);
-        self.postMessage({ type: "win-frame", id, w: tw, h: th, pix: pix.buffer }, [pix.buffer]);
+        const pix = winPixels(image, size.w, size.h);
+        self.postMessage({ type: "win-frame", id, w: size.w, h: size.h, pix: pix.buffer }, [pix.buffer]);
       }
       let evs: any = { $: "Nil" };
       const drained = winEvents.length;
-      // Input arrives in display pixels; scale back to native program space.
-      const sx = (v: number) => Math.min(size.w - 1, Math.max(0, Math.floor(v * size.w / (dispW > 0 ? dispW : size.w))));
-      const sy = (v: number) => Math.min(size.h - 1, Math.max(0, Math.floor(v * size.h / (dispH > 0 ? dispH : size.h))));
       for (let i = winEvents.length - 1; i >= 0; i--) {
         const e = winEvents[i];
         const head = e.kind === 0 ? { $: "Key", code: e.a, down: !!e.b }
-          : e.kind === 1 ? { $: "Mouse", x: sx(e.a), y: sy(e.b), button: e.c, down: !!e.d }
-          : e.kind === 2 ? { $: "Move", x: sx(e.a), y: sy(e.b) }
+          : e.kind === 1 ? { $: "Mouse", x: e.a, y: e.b, button: e.c, down: !!e.d }
+          : e.kind === 2 ? { $: "Move", x: e.a, y: e.b }
           : { $: "Close" };
         evs = { $: "Con", head, tail: evs };
       }
       winEvents.length = 0;
       dbg(`win-frame id ${id}: drained ${drained} event(s)`);
       return { $: "Tuple", fst: handle, snd: { $: "Tuple", fst: image, snd: evs } };
+    },
+    winSize(handle: unknown) {
+      const id = Number(handle);
+      const size = winSizes.get(id) ?? { w: 0, h: 0 };
+      return { $: "Tuple", fst: handle,
+        snd: { $: "Tuple", fst: size.w, snd: size.h } };
     },
     winTitle(handle: unknown, title: unknown) {
       self.postMessage({ type: "win-title", id: Number(handle), title: String(title) });

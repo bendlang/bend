@@ -12,11 +12,15 @@ type Pong.Keys is Data:
   Keys{w: Bool, s: Bool, up: Bool, down: Bool}
 
 type Pong is Data:
-  Pong{ly: U32, ry: U32, keys: Pong.Keys, bx: U32, by: U32, dx: Bool, dy: Bool}
+  Pong{w: U32, h: U32, ly: U32, ry: U32, keys: Pong.Keys, bx: U32, by: U32,
+    dx: Bool, dy: Bool}
 
-def Pong.init() -> Pong:
-  Pong{208, 208, Keys{False{}, False{}, False{}, False{}}, 252, 252, True{},
-    True{}}
+def Pong.init(+sw: U32, +sh: U32) -> Pong:
+  +mid = U32.div(U32.sub(sh, 96), 2)
+  +cx = U32.div(U32.sub(sw, 8), 2)
+  +cy = U32.div(U32.sub(sh, 8), 2)
+  Pong{sw, sh, mid, mid, Keys{False{}, False{}, False{}, False{}}, cx, cy,
+    True{}, True{}}
 
 def Pong.pick(c: Bool, a: U32, b: U32) -> U32:
   match c:
@@ -47,8 +51,8 @@ def Pong.event(e: Event, g: Pong) -> Maybe<Pong>:
     case Key{27, True{}}:
       None{}
     case Key{code, down}:
-      Pong{ly, ry, keys, bx, by, dx, dy} = g
-      Some{Pong{ly, ry, Pong.press(code, down, keys), bx, by, dx, dy}}
+      Pong{sw, sh, ly, ry, keys, bx, by, dx, dy} = g
+      Some{Pong{sw, sh, ly, ry, Pong.press(code, down, keys), bx, by, dx, dy}}
     case Close{}:
       None{}
     case _:
@@ -64,12 +68,12 @@ def Pong.events(events: List<Event>, g: Pong) -> Maybe<Pong>:
 # Motion
 # ------
 
-def Pong.paddle(+y: U32, up: Bool, down: Bool) -> U32:
+def Pong.paddle(+y: U32, up: Bool, down: Bool, +h: U32) -> U32:
   match up down:
     case True{} False{}:
       Pong.pick((y < 6 : U32), 0, (y - 6 : U32))
     case False{} True{}:
-      Pong.pick((y > 410 : U32), 416, (y + 6 : U32))
+      Pong.pick((y > U32.sub(h, 96) : U32), U32.sub(h, 96), (y + 6 : U32))
     case _ _:
       y
 
@@ -79,24 +83,26 @@ def Pong.overlap(+by: U32, +py: U32) -> Bool:
 def Pong.reset(out: Bool, g: Pong) -> Pong:
   match out:
     case True{}:
-      Pong{ly, ry, keys, bx, by, dx, dy} = g
-      Pong{ly, ry, keys, 252, 252, True{}, True{}}
+      Pong{+sw, +sh, ly, ry, keys, bx, by, dx, dy} = g
+      +cx = U32.div(U32.sub(sw, 8), 2)
+      +cy = U32.div(U32.sub(sh, 8), 2)
+      Pong{sw, sh, ly, ry, keys, cx, cy, True{}, True{}}
     case False{}:
       g
 
 def Pong.step(+g: Pong) -> Pong:
-  Pong{ly, ry, keys, bx, by, dx, dy} = g
+  Pong{+sw, +sh, ly, ry, keys, bx, by, dx, dy} = g
   Keys{w, s, up, down} = keys
-  +ly2 = Pong.paddle(ly, w, s)
-  +ry2 = Pong.paddle(ry, up, down)
+  +ly2 = Pong.paddle(ly, w, s, sh)
+  +ry2 = Pong.paddle(ry, up, down, sh)
   +by2 = Pong.pick(dy, (by + 3 : U32), (by - 3 : U32))
-  +wall = (by2 > 504 : U32)
+  +wall = (by2 > U32.sub(sh, 8) : U32)
   +bx2 = Pong.pick(dx, (bx + 3 : U32), (bx - 3 : U32))
   +hit = (Bool.not(dx) && (bx2 <= 16) && Pong.overlap(by2, ly2)
-    || dx && (bx2 + 8 >= 496) && Pong.overlap(by2, ry2) : U32)
+    || dx && (bx2 + 8 >= U32.sub(sw, 16)) && Pong.overlap(by2, ry2) : U32)
   +bx3 = Pong.pick(hit, bx, bx2)
-  Pong.reset((bx3 > 504 : U32),
-    Pong{ly2, ry2, keys, bx3, Pong.pick(wall, by, by2), Bool.xor(hit, dx),
+  Pong.reset((bx3 > U32.sub(sw, 8) : U32),
+    Pong{sw, sh, ly2, ry2, keys, bx3, Pong.pick(wall, by, by2), Bool.xor(hit, dx),
       Bool.xor(wall, dy)})
 
 def Pong.tick(events: List<Event>, g: Pong) -> IO(Maybe<Pong>):
@@ -117,19 +123,21 @@ def Pong.outside(
   ((x0 + s <= rx) || (rx + rw <= x0) || (y0 + s <= ry) || (ry + rh <= y0) : U32)
 
 def Pong.color(+x: U32, +y: U32, +g: Pong) -> U32:
-  Pong{ly, ry, keys, bx, by, dx, dy} = g
+  Pong{sw, sh, ly, ry, keys, bx, by, dx, dy} = g
+  +rx = U32.sub(sw, 16)
   Pong.pick(Pong.inside(x, y, 1, bx, by, 8, 8), 16763904,
     Pong.pick(Pong.inside(x, y, 1, 8, ly, 8, 96)
-      || Pong.inside(x, y, 1, 496, ry, 8, 96), 16777215, 0))
+      || Pong.inside(x, y, 1, rx, ry, 8, 96), 16777215, 0))
 
 def Pong.flat(d: Nat, +x0: U32, +y0: U32, +g: Pong) -> Bool:
-  Pong{ly, ry, keys, bx, by, dx, dy} = g
+  Pong{sw, sh, ly, ry, keys, bx, by, dx, dy} = g
   +s = U32.shln(1, d)
+  +rx = U32.sub(sw, 16)
   Pong.inside(x0, y0, s, bx, by, 8, 8) || Pong.outside(x0, y0, s, bx, by, 8, 8)
     && (Pong.inside(x0, y0, s, 8, ly, 8, 96)
-      || Pong.inside(x0, y0, s, 496, ry, 8, 96)
+      || Pong.inside(x0, y0, s, rx, ry, 8, 96)
       || Pong.outside(x0, y0, s, 8, ly, 8, 96)
-        && Pong.outside(x0, y0, s, 496, ry, 8, 96))
+        && Pong.outside(x0, y0, s, rx, ry, 8, 96))
 
 def Pong.draw(+d: Nat, flat: Bool, +x0: U32, +y0: U32, +g: Pong) -> Image:
   match d:
@@ -150,8 +158,27 @@ def Pong.draw(+d: Nat, flat: Bool, +x0: U32, +y0: U32, +g: Pong) -> Image:
           Qua{tl, tr, bl, br}
 
 def Pong.view(g: Pong) -> Pong & Image:
-  +g2 = g
-  (g2, Pong.draw(9n, Pong.flat(9n, 0, 0, g2), 0, 0, g2))
+  Pong{+sw, +sh, ly, ry, keys, bx, by, dx, dy} = g
+  +depth = U32.cover(Bool.pick(U32, U32.is_ge(sw, sh), sw, sh))
+  +g2 = {Pong{sw, sh, ly, ry, keys, bx, by, dx, dy} : Pong}
+  (g2, Pong.draw(depth, Pong.flat(depth, 0, 0, g2), 0, 0, g2))
+
+def Pong.bootstrapped2(w: U32, h: U32, sized: Window & U32 & U32) -> IO(Unit):
+  (pw, wh) = sized
+  (w2, h2) = wh
+  do IO<Unit>:
+    u : Unit <- Window.close(pw)
+    App.run(~Pong, ~App{Pong.view, Pong.tick}, "Pong", w, h, Pong.init(w2, h2))
+
+def Pong.bootstrapped(sized: Window & U32 & U32) -> IO(Unit):
+  (w1, wh1) = sized
+  (w, h) = wh1
+  do IO<Unit>:
+    s2 : Window & U32 & U32 <- Window.size(w1)
+    Pong.bootstrapped2(w, h, s2)
 
 def main() -> IO(Unit):
-  App.run(~Pong, ~App{Pong.view, Pong.tick}, "Pong", 512, 512, Pong.init())
+  do IO<Unit>:
+    probe : Window <- IO.try(Window, Window.open("Pong", 512, 512))
+    s : Window & U32 & U32 <- Window.size(probe)
+    Pong.bootstrapped(s)
