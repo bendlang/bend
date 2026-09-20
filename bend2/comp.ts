@@ -57,7 +57,8 @@ type TLD  = Bend.ADT | Def;
 
 type Book = Omit<Bend.Book, "tlds"> & { tlds: Record<Bend.Name, TLD> };
 
-type Src = { refs: Set<Bend.Name>; deps: Set<Bend.Name>; flat: boolean };
+type Src = { refs: Set<Bend.Name>; deps: Set<Bend.Name>; flat: boolean;
+  loop: boolean };
 
 type Carb = {
   book: Book;
@@ -147,6 +148,18 @@ const NATIVE_DIE = " does not match the native format of its type";
 
 // The term nodes one segment may gain by folding calls at compile time.
 const FOLD_FUEL = 8192;
+
+// The elements one leaf of a lowered Array.map walks in sequence, as a
+// power of two: 2^12 under a cheap callback (straight-line C: intrinsics,
+// constructors and defs that neither loop nor fork), 2^3 under any other.
+const MAP_LEAF_CHEAP = 12;
+const MAP_LEAF_DEAR = 3;
+
+// The raw block operations the lowered Array.map is written over.
+const MAP_OPS = ["src", "depth", "dst", "split", "leaf", "cnt", "mid", "take",
+  "drop", "put", "close"].map((k) => "Array.map." + k);
+
+const MAP_JS: Gen = () => die("an Array.map operation outside the C lane");
 
 // A native with this many lines or more is a call on both lanes: the
 // device inlines every native into every caller (hvm5 under a bang: 32 s
@@ -318,6 +331,50 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     C:    ["blk_copy(e, $0)", "$0"],
     call: true,
     JS:   "{$: \"Tuple\", fst: $0, snd: $0.slice()}",
+  },
+  array_map_src: {
+    C:  "$0",
+    JS: MAP_JS,
+  },
+  array_map_depth: {
+    call: true,
+    JS:   MAP_JS,
+  },
+  array_map_dst: {
+    call: true,
+    JS:   MAP_JS,
+  },
+  array_map_split: {
+    C:  "($0 > $1 ? $0 - $1 : 0)",
+    JS: MAP_JS,
+  },
+  array_map_leaf: {
+    C:  "(1ull << ($0 > $1 ? $1 : $0))",
+    JS: MAP_JS,
+  },
+  array_map_cnt: {
+    C:  "(err_seen(e.mem) ? 0 : $0)",
+    JS: MAP_JS,
+  },
+  array_map_mid: {
+    C:  "($0 + ($2 << $1))",
+    JS: MAP_JS,
+  },
+  array_map_take: {
+    call: true,
+    JS:   MAP_JS,
+  },
+  array_map_drop: {
+    call: true,
+    JS:   MAP_JS,
+  },
+  array_map_put: {
+    call: true,
+    JS:   MAP_JS,
+  },
+  array_map_close: {
+    C:  "(blk_free(e, $0), (void)$2, $1)",
+    JS: MAP_JS,
   },
 }, null);
 
@@ -610,6 +667,8 @@ const LOCAL: Map<Bend.Name, string> = new Map();
 const FOLDS: Map<HTerm, HTerm | null> = new Map();
 
 const FLATS: Map<Bend.Name, boolean> = new Map();
+
+const CHEAPS: Map<Bend.Name, boolean> = new Map();
 
 const SIGS: Map<Bend.Name, Sig> = new Map();
 
@@ -1421,9 +1480,10 @@ function def_body(cb: Carb, k: Bend.Name): TLD | undefined {
 // each one's source summary (SRCS): what it refers to, what it calls (a
 // reference used as a value is no call; Clo.apply is never flat), and
 // whether it is flat: no fork, no bang call, self-calls in tail position.
-function carb_book(src: Bend.Book, roots: Bend.Name[]): Carb {
+function carb_book(src: Bend.Book, roots: Bend.Name[],
+  lower = false): Carb {
   book_owned(src);
-  [TELES, SRCS, NODES, LAYS, CYCLES, FLATS, SIGS, BRWS].forEach((m) =>
+  [TELES, SRCS, NODES, LAYS, CYCLES, FLATS, CHEAPS, SIGS, BRWS].forEach((m) =>
     m.clear());
   LOCAL.clear();
   for (const [k, tld] of Object.entries(src.tlds)) {
@@ -1440,45 +1500,71 @@ function carb_book(src: Bend.Book, roots: Bend.Name[]): Carb {
     own: new Set(),
     lend: new Set(),
   };
-  for (const queue = roots.slice(); queue.length > 0;) {
-    const d = queue.shift() as Bend.Name;
-    if (SRCS.has(d)) {
+  const walk = (queue: Bend.Name[]): void => {
+    while (queue.length > 0) {
+      const d = queue.shift() as Bend.Name;
+      if (SRCS.has(d)) {
+        continue;
+      }
+      memo_gc();
+      const tld = def_body(cb, d);
+      const own: Src = { refs: new Set(), deps: new Set(), flat: done_live(tld),
+        loop: false };
+      SRCS.set(d, own);
+      for (const x of tld?.$ === "ADT" ? tld.c : tld ? [tld] : []) {
+        queue.push(...type_adts(cb, x.T));
+      }
+      if (!done_live(tld)) {
+        continue;
+      }
+      term_any(cb, tld.h as HTerm, (s, tail) => {
+        if (s.$ === "Ann") {
+          queue.push(...type_adts(cb, s.T));
+        }
+        if (s.$ === "Ref") {
+          if (s.b) {
+            cb.bangs.add(s.k);
+          }
+          if (intr_of(cb, s.k) === undefined) {
+            own.refs.add(s.k);
+            cb.sites.set(s.k, (cb.sites.get(s.k) ?? 0) + 1);
+          }
+        }
+        const ck = call_kind(cb, s);
+        if (ck !== null && ck.k !== d) {
+          own.deps.add(ck.k);
+        }
+        if (ck !== null && ck.k === d) {
+          own.loop = true;
+        }
+        if ((s.$ === "Let" && s.k.length >= 2)
+          || (ck !== null && (ck.bang === true || (ck.k === d && !tail)))) {
+          own.flat = false;
+        }
+        return false;
+      });
+      queue.push(...own.refs);
+    }
+  };
+  walk(roots.slice());
+  // The C lane's Array.map instances are lowered once every def they
+  // reach is summarized (the leaf size reads the callback's defs), the
+  // old body's sites given back, and the new body and its workers
+  // summarized in turn.
+  for (const k of lower ? [...SRCS.keys()] : []) {
+    const old = cb.book.tlds[k];
+    const tld = map_lower(cb, k, old);
+    if (tld === old || old?.$ !== "Def") {
       continue;
     }
-    memo_gc();
-    const tld = def_body(cb, d);
-    const own: Src = { refs: new Set(), deps: new Set(), flat: done_live(tld) };
-    SRCS.set(d, own);
-    for (const x of tld?.$ === "ADT" ? tld.c : tld ? [tld] : []) {
-      queue.push(...type_adts(cb, x.T));
-    }
-    if (!done_live(tld)) {
-      continue;
-    }
-    term_any(cb, tld.h as HTerm, (s, tail) => {
-      if (s.$ === "Ann") {
-        queue.push(...type_adts(cb, s.T));
-      }
-      if (s.$ === "Ref") {
-        if (s.b) {
-          cb.bangs.add(s.k);
-        }
-        if (intr_of(cb, s.k) === undefined) {
-          own.refs.add(s.k);
-          cb.sites.set(s.k, (cb.sites.get(s.k) ?? 0) + 1);
-        }
-      }
-      const ck = call_kind(cb, s);
-      if (ck !== null && ck.k !== d) {
-        own.deps.add(ck.k);
-      }
-      if ((s.$ === "Let" && s.k.length >= 2)
-        || (ck !== null && (ck.bang === true || (ck.k === d && !tail)))) {
-        own.flat = false;
+    term_any(cb, old.h as HTerm, (s) => {
+      if (s.$ === "Ref" && intr_of(cb, s.k) === undefined) {
+        cb.sites.set(s.k, (cb.sites.get(s.k) ?? 1) - 1);
       }
       return false;
     });
-    queue.push(...own.refs);
+    SRCS.delete(k);
+    walk([k]);
   }
   return cb;
 }
@@ -1509,6 +1595,17 @@ function flat_of(k: Bend.Name): boolean {
     const own = SRCS.get(k);
     FLATS.set(k, false);
     return own !== undefined && own.flat && [...own.deps].every(flat_of);
+  });
+}
+
+// A def is cheap when it is flat, never calls itself, and every def it
+// calls is: its body is straight-line C, a bounded step per call.
+function cheap_of(k: Bend.Name): boolean {
+  return memo(CHEAPS, k, () => {
+    const own = SRCS.get(k);
+    CHEAPS.set(k, false);
+    return own !== undefined && flat_of(k) && !own.loop
+      && [...own.deps].every(cheap_of);
   });
 }
 
@@ -2228,7 +2325,9 @@ function emit_intr(fl: File, it: Intr, x: HTerm,
   }
   if (it.call === true && it.C === undefined) {
     ty_adt(fl.book, m.all[0]) ?? die("an open Array element type");
-    return arr_op(fl, op, lay_of(fl.book, m.all[0]), args);
+    const el = lay_of(fl.book, m.all[0]);
+    return op.startsWith("array_map_") ? map_op(fl, op, el, args)
+      : arr_op(fl, op, el, args);
   }
   const ws = args.map((v) => (val_own(fl, v), val_word(v)));
   if (Array.isArray(it.C)) {
@@ -2815,9 +2914,6 @@ function emit_chain(fl: File, cond: (i: number) => string,
 // =======
 
 function compile_def(fl: File, k: Bend.Name, tld: Def): void {
-  if (map_fast(fl, k, tld)) {
-    return;
-  }
   Object.assign(fl, { fresh: new Map(), brwl: new Map(), rest: [] });
   memo_gc();
   const vals = emit_open(fl, k);
@@ -2825,100 +2921,257 @@ function compile_def(fl: File, k: Bend.Name, tld: Def): void {
   emit_body(fl, tld.h as HTerm, tld.T, [], vals, null);
 }
 
-// Array.map~k, the minted map instance: the tree body splits and rebuilds a
-// block at every level, so a map over n elements copies O(n log n) words. When
-// the callback inlined into the ALeaf arm is flat, walk the block by index
-// instead: allocate the destination once, move each source cell out, emit the
-// leaf body, and write the result straight into its slot. Nothing reads or
-// drops a destination cell, so no seed value and no Data element is needed.
-// A callback that needs a continuation or its own fork keeps the tree body.
-function map_fast(fl: File, k: Bend.Name, tld: Def): boolean {
-  if (!/^Array\.map~/.test(k)) {
-    return false;
+// Map
+// ===
+// Array.map~k, the minted map instance, is written over the tree the
+// language presents: a match on ANode splits the block (blk_half copies
+// each half) and ANode{l, r} joins it (blk_node copies both), so a map over
+// n elements copies O(n log n) words. The C lane lowers the instance to a
+// range walk over one source and one destination instead. The entry takes
+// the array as a raw word, allocates the destination once and walks the
+// whole range; the walk forks on halves down to a leaf (MAP_LEAF_CHEAP,
+// MAP_LEAF_DEAR), and the leaf moves each element out, applies the
+// callback and writes its result straight into its slot. The workers are
+// defs the emitter compiles like any other, so their fork is the fork it
+// always emits (tasks, or frames when the lane winds back) and a callback
+// that needs a continuation, or forks itself, gets the one a let of its
+// call gets. A range is words nobody owns: the entry frees the source
+// shallow once every element has moved. The definition, its signature, the
+// interpreter and the JS lane are unchanged.
+
+type MapShape = { Tin: HTerm; Tout: HTerm; ret: HTerm; leaf: Of<"Lam"> };
+
+function map_lower(cb: Carb, k: Bend.Name,
+  tld: TLD | undefined): TLD | undefined {
+  if (tld?.$ !== "Def" || !/^Array\.map~\d+$/.test(k)) {
+    return tld;
   }
-  const { doms, ret } = tele_unbind(fl.book, tld.T);
-  const adtIn = ty_adt(fl.book, doms[0][2]);
-  const adtOut = ty_adt(fl.book, ret);
-  if (doms.length !== 1 || adtIn?.k !== "Array" || adtOut?.k !== "Array") {
-    return false;
+  const shape = map_shape(cb, k, tld);
+  if (shape === null) {
+    return tld;
   }
-  const Tin = adtIn.x[0];
-  const layT = lay_of(fl.book, Tin);
-  const layU = lay_of(fl.book, adtOut.x[0]);
-  const { arr: arrT, lgs: lgsT } = lay_arr(layT);
-  const { arr: arrU, lgs: lgsU } = lay_arr(layU);
-  const leaf = mat_arms(tld.h as HTerm).arms.find(([n]) => n === "ALeaf")?.[1];
-  const leaf_t = leaf === undefined ? null : Bend.term_strip(leaf);
-  if (leaf_t === null || leaf_t.$ !== "Lam") {
-    return false;
-  }
-  const xo = term_open(leaf_t);
-  const ctr = Bend.term_strip(xo.b);
-  if (ctr.$ !== "Ctr" || ctr.k !== "ALeaf" || ctr.x.length !== 1) {
-    return false;
-  }
-  const field = ctr.x[0];
-  if (!map_leaf_flat(fl, field)) {
-    return false;
-  }
-  Object.assign(fl, { fresh: new Map(), brwl: new Map(), rest: [] });
-  memo_gc();
-  const vals = emit_open(fl, k);
-  fl.segs.push(fl.seg);
-  const a = vals[0].ws[0];
-  const d = name_local(fl, "d");
-  const oc = name_local(fl, "oc");
-  const out = name_local(fl, "o");
-  const n = name_local(fl, "n");
-  const i = name_local(fl, "i");
-  file_push(fl, `u32 ${d} = (u32)blk_cls(${a}) - ${lgsT};`);
-  file_push(fl, `if (${d} + ${lgsU} > 31) { err_post(e.mem, ERR_ARRS); ${
-    d} = 0; }`);
-  file_push(fl, `Cls ${oc} = (Cls)(${d} + ${lgsU});`);
-  file_push(fl, `Loc ${out} = heap_alloc(e, ${
-    Number(arrU) ? oc : `buf_wcls(${oc})`});`);
-  file_push(fl, `if (err_seen(e.mem)) { r0 = term_buf(0, ${out}); ${
-    "WL_RETN(1); }"}`);
-  file_push(fl, `for (u64 ${i} = 0, ${n} = 1ull << ${d}; ${i} < ${n}; ${
-    i} += 1) {`);
-  const at = emit_hold(fl, [`(u64)${i} << ${lgsT}`], "at")[0];
-  const x = arr_cells(fl, a, at, layT, true);
-  bind_uses(fl, xo.ps[0], x, [field], Tin, false);
-  const y = val_own(fl, val_to(fl, emit_expr(fl, field, null, layU), layU));
-  const au = emit_hold(fl, [`(u64)${i} << ${lgsU}`], "au")[0];
-  for (let j = y.length; j < (1 << lgsU); j += 1) {
-    file_push(fl, `blk_write(e.mem, ${Number(arrU)}, ${out}, ${au} + ${j}, 0);`);
-  }
-  y.forEach((w, j) => file_push(fl, `blk_write(e.mem, ${Number(arrU)}, ${
-    out}, ${au} + ${j}, ${w});`));
-  // The callback may have borrowed the source element instead of taking it,
-  // so the map still owns it here. The binding analysis knows which bindings
-  // the leaf left: sink exactly those, as a normal body ends.
-  bind_dead(fl, []);
-  spare_flush(fl);
-  file_push(fl, "}");
-  file_push(fl, `blk_free(e, ${a});`);
-  file_push(fl, `r0 = term_blk(${Number(arrU)}, ${oc}, ${out});`);
-  file_push(fl, "WL_RETN(1);");
-  return true;
+  map_defs(cb);
+  const { Tin, Tout, ret, leaf } = shape;
+  const nat = Bend.Ref("Nat");
+  const lam = (n: string, f: (x: HTerm) => HTerm): HTerm => Bend.Lam(n, 0, f);
+  const call = (n: string, ...xs: HTerm[]): HTerm =>
+    xs.reduce((f, x) => Bend.App(f, x), Bend.Ref(n) as HTerm);
+  const bind = (n: string, T: HTerm, v: HTerm,
+    b: (x: HTerm) => HTerm): HTerm =>
+    Bend.Let([n], [0], [Bend.Ann(v, T)], (xs: HTerm[]) => b(xs[0]));
+  const arm = (n: string, f: (x: HTerm) => HTerm, T: HTerm = nat): HTerm =>
+    Bend.Ann(lam(n, (x) => Bend.Ann(f(x), T)), map_words([n], T));
+  const fb = (x: HTerm): HTerm =>
+    (Bend.term_strip(Bend.term_apply(leaf, x)) as Of<"Ctr">).x[0];
+  const xo = term_open(leaf);
+  const field = fb(xo.ps[0]);
+  const used = rest_use(cb, [field], xo.ps[0]) > 0;
+  const dear = term_any(cb, field, (s) => {
+    const ck = call_kind(cb, s);
+    return ck !== null && !cheap_of(ck.k);
+  });
+  const gl = Array(dear ? MAP_LEAF_DEAR : MAP_LEAF_CHEAP).fill(0)
+    .reduce((t: HTerm) => Bend.Ctr("Succ", [t]), Bend.Ctr("Zero", []));
+  const w = k + ".w";
+  const sq = k + ".seq";
+  const tp = k + ".top";
+  // seq(sa, da, ix, n): n elements from ix, each moved out (or dropped when
+  // the callback ignores it), mapped and written; the index after them.
+  const step = (sa: HTerm, da: HTerm, ix: HTerm, p: HTerm): HTerm => used
+    ? bind("x", Tin, call("Array.map.take", Tin, sa, ix), (x) =>
+      bind("y", Tout, fb(x), (y) => call(sq, sa, da,
+        call("Array.map.put", Tout, da, ix, y), p)))
+    : bind("y", Tout, fb(DUMMY), (y) => call(sq, sa, da,
+      call("Array.map.put", Tout, da, call("Array.map.drop", Tin, sa, ix), y),
+      p));
+  const sqH = lam("sa", (sa) => lam("da", (da) => lam("ix", (ix) =>
+    Bend.Mat("Zero", Bend.Ann(ix, nat),
+      Bend.Mat("Succ", arm("p", (p) => step(sa, da, ix, p)), Bend.Efq())))));
+  // w(sa, da, ix, lf, dp): 2^dp leaves of lf elements from ix, forked on
+  // halves down to the leaf; the index after them. top is the same walk
+  // over the whole range, closed: the source freed shallow around the
+  // finished destination, in the leaf or at the join.
+  const fork = (sa: HTerm, da: HTerm, ix: HTerm, lf: HTerm, dp: HTerm,
+    j: (a: HTerm, b: HTerm) => HTerm): HTerm => Bend.Let(["a", "b"], [0, 0],
+    [Bend.Ann(call(w, sa, da, ix, lf, dp), nat),
+      Bend.Ann(call(w, sa, da, call("Array.map.mid", ix, dp, lf), lf, dp),
+        nat)], (xs: HTerm[]) => j(xs[0], xs[1]));
+  const close = (sa: HTerm, da: HTerm, u: HTerm): HTerm =>
+    Bend.Ann(call("Array.map.close", Tout, sa, da, u), ret);
+  const walk = (top: boolean): HTerm => lam("sa", (sa) => lam("da", (da) =>
+    lam("ix", (ix) => lam("lf", (lf) => {
+      const run = call(sq, sa, da, ix, call("Array.map.cnt", lf));
+      return Bend.Mat("Zero", top ? bind("u", nat, run, (u) =>
+        close(sa, da, u)) : Bend.Ann(run, nat),
+      Bend.Mat("Succ", arm("dp", (dp) => fork(sa, da, ix, lf, dp, (a, b) =>
+        top ? close(sa, da, call("Nat.add", a, b)) : call("Nat.add", a, b)),
+      top ? ret : nat), Bend.Efq()));
+    }))));
+  const wH = walk(false);
+  const tpH = walk(true);
+  const h = lam("a", (a) =>
+    bind("sa", nat, call("Array.map.src", Tin, a), (sa) =>
+      bind("dp", nat, call("Array.map.depth", Tin, sa), (dp) =>
+        bind("da", nat, call("Array.map.dst", Tout, dp), (da) =>
+          Bend.Ann(call(tp, sa, da, Bend.Ctr("Zero", []),
+            call("Array.map.leaf", dp, gl), call("Array.map.split", dp, gl)),
+          ret)))));
+  const ws = ["sa", "da", "ix", "lf", "dp"];
+  cb.book.tlds[sq] = { $: "Def", n: 4, x: 0, T: map_words(["sa", "da", "ix",
+    "n"], nat), v: sqH, h: sqH };
+  cb.book.tlds[w] = { $: "Def", n: 5, x: 0, T: map_words(ws, nat), v: wH,
+    h: wH };
+  cb.book.tlds[tp] = { $: "Def", n: 5, x: 0, T: map_words(ws, ret), v: tpH,
+    h: tpH };
+  const out: Def = { ...tld, h };
+  cb.book.tlds[k] = out;
+  return out;
 }
 
-// A leaf body is flat when every call in it inlines: an intrinsic lowers to a
-// C expression, a flat def to a C call. Anything else is a task, which the
-// straight-line loop cannot emit.
-function map_leaf_flat(fl: File, t: HTerm): boolean {
-  let ok = true;
-  term_any(fl, t, (y) => {
-    if (ok && y.$ === "App") {
-      const ck = call_kind(fl, y);
-      if (ck !== null && intr_of(fl, ck.k) === undefined && !flat_call(fl, y)
-        && fl.book.tlds[ck.k]?.$ !== "ADT") {
-        ok = false;
-      }
-    }
-    return !ok;
+// A telescope of Nat words ending in `ret`.
+function map_words(ks: string[], ret: HTerm): HTerm {
+  return ks.reduceRight((B: HTerm, k) =>
+    Bend.All(Bend.Lone(), k, 0, Bend.Ref("Nat"), () => B), ret);
+}
+
+// The instance qualifies when it maps one Array of a datatype to another
+// and its body is the tree recursion itself: an ALeaf arm that rebuilds a
+// leaf from one value, and an ANode arm that forks the instance on both
+// halves and joins them in order.
+function map_shape(cb: Carb, k: Bend.Name, tld: Def): MapShape | null {
+  const { doms, ret } = tele_unbind(cb.book, tld.T);
+  const adtIn = ty_adt(cb.book, doms[0]?.[2] ?? null);
+  const adtOut = ty_adt(cb.book, ret);
+  if (doms.length !== 1 || tld.n !== 1 || adtIn?.k !== "Array"
+    || adtOut?.k !== "Array" || ty_adt(cb.book, adtIn.x[0]) === null
+    || ty_adt(cb.book, adtOut.x[0]) === null) {
+    return null;
+  }
+  const { arms, end } = mat_arms(tld.h as HTerm);
+  const leaf = Bend.term_strip(arms.find(([n]) => n === "ALeaf")?.[1]
+    ?? Bend.Efq());
+  const node = Bend.term_strip(arms.find(([n]) => n === "ANode")?.[1]
+    ?? Bend.Efq());
+  if (arms.length !== 2 || Bend.term_strip(end).$ !== "Efq"
+    || leaf.$ !== "Lam" || node.$ !== "Lam") {
+    return null;
+  }
+  const cell = Bend.term_strip(term_open(leaf).b);
+  if (cell.$ !== "Ctr" || cell.k !== "ALeaf" || cell.x.length !== 1) {
+    return null;
+  }
+  const xs = term_open(node);
+  const ysl = Bend.term_strip(xs.b);
+  if (ysl.$ !== "Lam") {
+    return null;
+  }
+  const ys = term_open(ysl);
+  const fork = Bend.term_strip(ys.b);
+  if (fork.$ !== "Let" || fork.k.length !== 2) {
+    return null;
+  }
+  const halves = [xs.ps[0], ys.ps[0]];
+  const lr = term_open(fork);
+  const join = Bend.term_strip(lr.b);
+  const same = (t: HTerm, p: Probe): boolean => {
+    const v = Bend.term_strip(t);
+    return v.$ === "Var" && probe_of(v) === p;
+  };
+  const rec = fork.v.every((v, j) => {
+    const m = term_spine(cb, v);
+    return m.call?.k === k && m.args.length === 1 && same(m.args[0], halves[j]);
   });
-  return ok;
+  if (!rec || join.$ !== "Ctr" || join.k !== "ANode" || join.x.length !== 2
+    || !join.x.every((x, j) => same(x, lr.ps[j]))) {
+    return null;
+  }
+  return { Tin: adtIn.x[0], Tout: adtOut.x[0], ret, leaf };
+}
+
+// The raw block operations, bodiless defs the emitter lowers by name (see
+// OPERATIONS, and map_op for those that read an element layout): a block
+// term as a word (src), its element depth (depth), a fresh destination of
+// that depth (dst), the depth above a leaf of 2^g and that leaf's size
+// (split, leaf),
+// a leaf's count, zero once the run has failed (cnt), the start of the
+// high half (mid), an element moved out or dropped (take, drop), a result
+// written into its slot (put), and the source freed shallow around the
+// finished destination (close).
+function map_defs(cb: Carb): void {
+  if (cb.book.tlds["Array.map.take"] !== undefined) {
+    return;
+  }
+  const nat = Bend.Ref("Nat");
+  const kind = Bend.Typ(Bend.Qua(Bend.Lone()));
+  const arr = (T: HTerm): HTerm => Bend.ADT("Array", [T]);
+  const gen = (k: string, n: number, T: (X: HTerm) => HTerm): void => {
+    cb.book.tlds["Array.map." + k] = { $: "Def", n, x: 0, v: null, b: true,
+      T: Bend.All(Bend.None(), "T", 0, kind, T) };
+  };
+  const one = (k: string, n: number, T: HTerm): void => {
+    cb.book.tlds["Array.map." + k] = { $: "Def", n, x: 0, v: null, b: true, T };
+  };
+  gen("src", 2, (T) => Bend.All(Bend.Lone(), "a", 0, arr(T), () => nat));
+  gen("depth", 2, () => map_words(["s"], nat));
+  gen("dst", 2, () => map_words(["d"], nat));
+  one("split", 2, map_words(["d", "g"], nat));
+  one("leaf", 2, map_words(["d", "g"], nat));
+  one("cnt", 1, map_words(["n"], nat));
+  one("mid", 3, map_words(["lo", "h", "leaf"], nat));
+  gen("take", 3, (T) => map_words(["s", "i"], T));
+  gen("drop", 3, () => map_words(["s", "i"], nat));
+  gen("put", 4, (T) => Bend.All(Bend.Lone(), "o", 0, nat, () =>
+    Bend.All(Bend.Lone(), "i", 0, nat, () =>
+      Bend.All(Bend.Lone(), "v", 0, T, () => nat))));
+  gen("close", 4, (T) => map_words(["s", "o", "u"], arr(T)));
+}
+
+// The layout-reading operations over an element layout `el`; the block is
+// a term word, the index an element index.
+function map_op(fl: File, op: string, el: Lay, args: Val[]): Val {
+  const { arr, lgs } = lay_arr(el);
+  const word = (i: number): string => emit_alias(fl, val_word(args[i]), "m");
+  switch (op) {
+    case "array_map_depth": {
+      return val_new([`((u64)blk_cls(${word(0)}) - ${lgs})`], W64);
+    }
+    case "array_map_dst": {
+      const d = emit_hold(fl, [val_word(args[0])], "d")[0];
+      block(fl, `if (${d} + ${lgs} > 31) {`, () => {
+        file_push(fl, "err_post(e.mem, ERR_ARRS);");
+        file_push(fl, `${d} = 0;`);
+      });
+      const oc = emit_hold(fl, [`${d} + ${lgs}`], "oc")[0];
+      const cls = arr ? oc : `buf_wcls(${oc})`;
+      const l = emit_hold(fl, [`heap_alloc(e, ${cls})`], "l")[0];
+      return val_new([`(err_seen(e.mem) ? term_buf(0, ${l}) : term_blk(${
+        Number(arr)}, ${oc}, ${l}))`], W64);
+    }
+    case "array_map_take":
+    case "array_map_drop": {
+      const s = word(0);
+      const i = word(1);
+      const at = emit_hold(fl, [`${i} << ${lgs}`], "at")[0];
+      const got = arr_cells(fl, s, at, el, true);
+      if (op === "array_map_take") {
+        return got;
+      }
+      val_sink(fl, got);
+      return val_new([i], W64);
+    }
+    case "array_map_put": {
+      const o = word(0);
+      const i = word(1);
+      const at = emit_hold(fl, [`${i} << ${lgs}`], "at")[0];
+      const ws = val_own(fl, val_to(fl, args[2], el));
+      for (let j = 0; j < (1 << lgs); j += 1) {
+        file_push(fl, `blk_write(e.mem, ${Number(arr)}, term_loc(${o}), ${
+          at} + ${j}, ${ws[j] ?? 0});`);
+      }
+      return val_new([`(${i} + 1)`], W64);
+    }
+    default: return die("an Array.map operation the C lane lacks: " + op);
+  }
 }
 
 function compile_reqs(fl: File): void {
@@ -2959,7 +3212,7 @@ const RUNTIME_ADTS = ["Sigma", "String", "Word.Con", "IO.OP", "Result",
 // file may declare; OWNED adds the types a file without `import Base` may
 // declare as its own, which check and run, and which the emitters, whose
 // native shape would not fit, refuse.
-export const SYNTH = [CLO_APPLY];
+export const SYNTH = [CLO_APPLY, ...MAP_OPS];
 const OWNED = [...SYNTH, "IO", ...RUNTIME_ADTS, ...Object.keys(OPTIMIZED)];
 
 export function book_owned(src: Bend.Book, ks = OWNED): void {
@@ -3046,7 +3299,7 @@ function compile_segs(fl: File): string {
 
 export function compile_book(book: Bend.Book): string {
   const show = show_main(book);
-  const cb = carb_book(book, ["main", ...RUNTIME_ADTS]);
+  const cb = carb_book(book, ["main", ...RUNTIME_ADTS], true);
   const facts = () => JSON.stringify([[...cb.own], [...cb.hot],
     [...cb.stat]]);
   const pass = (defs: [Bend.Name, Def][]): File => {

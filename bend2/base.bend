@@ -2329,7 +2329,6 @@ def Array.map(~T: Type, ~U: Type, ~f: T -> U, a: Array<T>) -> Array<U>:
       l r = Array.map(~T, ~U, ~f, xs) Array.map(~T, ~U, ~f, ys)
       ANode{l, r}
 
-
 # Map
 # ---
 

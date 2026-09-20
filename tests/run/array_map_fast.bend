@@ -1,8 +1,8 @@
-# Array.map now lowers the minted map instance to one indexed pass: the
-# destination is allocated once, each source cell moves out once and each
-# destination slot is written raw. These rows cover a differing layout, a
-# multi-word record with padding, boxed elements, and nested arrays on both
-# sides, all through unchanged Array.map calls.
+# Array.map lowers in the C lane to a walk over index ranges of one source
+# and one destination: the destination is allocated once, each source cell
+# moves out once and each result is written raw into its slot. These rows
+# cover a differing layout, a multi-word record with padding, boxed elements,
+# and nested arrays on both sides, all through unchanged Array.map calls.
 import Base
 
 type Trip is Data:
