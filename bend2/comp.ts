@@ -2875,7 +2875,8 @@ function map_fast(fl: File, k: Bend.Name, tld: Def): boolean {
   file_push(fl, `if (${d} + ${lgsU} > 31) { err_post(e.mem, ERR_ARRS); ${
     d} = 0; }`);
   file_push(fl, `Cls ${oc} = (Cls)(${d} + ${lgsU});`);
-  file_push(fl, `Loc ${out} = heap_alloc(e, ${oc});`);
+  file_push(fl, `Loc ${out} = heap_alloc(e, ${
+    Number(arrU) ? oc : `buf_wcls(${oc})`});`);
   file_push(fl, `if (err_seen(e.mem)) { r0 = term_buf(0, ${out}); ${
     "WL_RETN(1); }"}`);
   file_push(fl, `for (u64 ${i} = 0, ${n} = 1ull << ${d}; ${i} < ${n}; ${
@@ -2890,6 +2891,11 @@ function map_fast(fl: File, k: Bend.Name, tld: Def): boolean {
   }
   y.forEach((w, j) => file_push(fl, `blk_write(e.mem, ${Number(arrU)}, ${
     out}, ${au} + ${j}, ${w});`));
+  // The callback may have borrowed the source element instead of taking it,
+  // so the map still owns it here. The binding analysis knows which bindings
+  // the leaf left: sink exactly those, as a normal body ends.
+  bind_dead(fl, []);
+  spare_flush(fl);
   file_push(fl, "}");
   file_push(fl, `blk_free(e, ${a});`);
   file_push(fl, `r0 = term_blk(${Number(arrU)}, ${oc}, ${out});`);
