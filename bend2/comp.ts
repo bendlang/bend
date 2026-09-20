@@ -631,6 +631,8 @@ const CYCLES: Map<Bend.Name, boolean> = new Map();
 
 const CONSTS: Map<HTerm, boolean> = new Map();
 
+const LITS: Map<HTerm, HTerm> = new Map();
+
 // Name
 // ====
 
@@ -696,7 +698,7 @@ function memo<K, V>(m: Map<K, V>, k: K, f: () => V): V {
 }
 
 function memo_gc(): void {
-  [OPENS, USES, FOLDS, SPINES, CONSTS].forEach((m) => m.clear());
+  [OPENS, USES, FOLDS, SPINES, CONSTS, LITS].forEach((m) => m.clear());
 }
 
 // Probe
@@ -828,8 +830,13 @@ function term_nodes(cf: Carb, t: HTerm): number {
   return n;
 }
 
+// A string literal is its constructor chain to the compiler.
+function term_lit(t: HTerm): HTerm {
+  return t.$ === "Lit" ? memo(LITS, t, () => Bend.term_higher(Bend.lit_full(t))) : t;
+}
+
 function term_const(t: HTerm): boolean {
-  const s = Bend.term_strip(t);
+  const s = term_lit(Bend.term_strip(t));
   return s.$ === "Ctr" && memo(CONSTS, s, () => s.x.every(term_const));
 }
 
@@ -929,7 +936,7 @@ function ty_peel(tm: HTerm,
     ty = x.$ === "Ann" ? x.T : ty;
     x = Bend.term_force(x.$ === "Ann" ? x.x : x.f);
   }
-  return [x, ty];
+  return [term_lit(x), ty];
 }
 
 function ty_adt(book: Bend.Book, A: HTerm | null): HAdt | null {
@@ -1424,7 +1431,7 @@ function anf(cb: Carb, t: HTerm, ty: HTerm | null = null): HTerm {
 function def_body(cb: Carb, k: Bend.Name): TLD | undefined {
   const tld = cb.book.tlds[k];
   if (tld?.$ === "Def" && tld.e !== undefined && tld.h === undefined) {
-    const h = Bend.term_higher(Bend.lit_expand(tld.e));
+    const h = Bend.term_higher(tld.e);
     const n = tld.n + Math.min(def_raise(cb.book, h, tld.n),
       tele_unbind(cb.book, tld.T).doms.length - tld.n);
     cb.book.tlds[k] = { ...tld, n, h };
@@ -2389,7 +2396,7 @@ function emit_unfold(fl: File, s: HTerm): HTerm | null {
         xs = xs.slice(1);
         continue;
       }
-      const c = w.$ === "Mat" ? Bend.term_strip(xs[0]) : null;
+      const c = w.$ === "Mat" ? term_lit(Bend.term_strip(xs[0])) : null;
       if (c === null || c.$ !== "Ctr" || !term_const(c)) {
         return null;
       }

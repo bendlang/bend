@@ -1199,26 +1199,9 @@ export function lit_step(t: Extract<LTerm, { $: "Lit" }>): LTerm {
     : Ctr("SCon", [Ctr("Chr", [u32_to_term(c, t.s)], t.s), Lit(t.v.slice(c > 0xffff ? 2 : 1), t.s)], t.s);
 }
 
-// every literal in a first-order term as its chain: the compiler's view
-export function lit_expand(tm: LTerm): LTerm {
-  const go = lit_expand;
-  switch (tm.$) {
-    case "Lit": return lit_chain([...tm.v].map((c) => c.codePointAt(0) as U32), tm.s);
-    case "Var": case "Ref": case "Qnt": case "Qua": case "Efq": case "Rfl": case "Hol": return tm;
-    case "Sub": return Sub(tm.i, tm.v.$ === "PVar" || tm.v.$ === "PCtr" ? tm.v : go(tm.v), go(tm.f), tm.s);
-    case "Let": return Let(tm.k, tm.i, tm.v.map(go), go(tm.f), tm.s, tm.q);
-    case "Typ": return Typ(go(tm.g), tm.s);
-    case "Min": return Min(go(tm.a), go(tm.b), tm.s);
-    case "All": return All(tm.q, tm.k, tm.i, go(tm.A), go(tm.B), tm.s);
-    case "Lam": return Lam(tm.k, tm.i, go(tm.f), tm.s, tm.q);
-    case "App": return App(go(tm.f), go(tm.x), tm.s);
-    case "ADT": return ADT(tm.k, tm.x.map(go), tm.s, tm.r);
-    case "Ctr": return Ctr(tm.k, tm.x.map(go), tm.s);
-    case "Mat": return Mat(tm.k, go(tm.h), go(tm.m), tm.s);
-    case "Eql": return Eql(go(tm.a), go(tm.b), go(tm.T), tm.s);
-    case "Rwt": return Rwt(go(tm.e), go(tm.p), go(tm.f), tm.s);
-    case "Ann": return Ann(go(tm.x), go(tm.T), tm.s);
-  }
+// the whole chain: a pattern's and the compiler's view
+export function lit_full(t: Extract<LTerm, { $: "Lit" }>): LTerm {
+  return lit_chain([...t.v].map((c) => c.codePointAt(0) as U32), t.s);
 }
 
 // A nat literal up to NAT_LITERAL_MAX expands into a Succ chain, which the
@@ -1833,7 +1816,7 @@ export function parse_patt(p: Parse, t: LTerm): Patt {
       return { $: "PCtr", k: t.k, x: t.x.map((x) => parse_patt(p, x)), s: t.s };
     }
     case "Lit": {
-      return parse_patt(p, lit_expand(t));
+      return parse_patt(p, lit_full(t));
     }
     default: {
       throw Err(book, ctx_nil(), "a pattern (a binder or a constructor)", term_show(term_lower(term_higher(t), 0)), t.s);
