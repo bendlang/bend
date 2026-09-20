@@ -1424,7 +1424,7 @@ function anf(cb: Carb, t: HTerm, ty: HTerm | null = null): HTerm {
 function def_body(cb: Carb, k: Bend.Name): TLD | undefined {
   const tld = cb.book.tlds[k];
   if (tld?.$ === "Def" && tld.e !== undefined && tld.h === undefined) {
-    const h = Bend.term_higher(tld.e);
+    const h = Bend.term_higher(Bend.lit_expand(tld.e));
     const n = tld.n + Math.min(def_raise(cb.book, h, tld.n),
       tele_unbind(cb.book, tld.T).doms.length - tld.n);
     cb.book.tlds[k] = { ...tld, n, h };

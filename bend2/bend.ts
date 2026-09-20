@@ -70,7 +70,7 @@
 // U32    | NUMBER                     | U32{WCon{b, ..WNil{}}}
 // F32    | NUMBER "." NUMBER [EXP]    | F32{WCon{b, ..WNil{}}}
 // Chr    | "'" CHAR "'"               | Chr{U32}
-// Str    | "\"" [CHAR] "\""           | SCon{Chr, ..SNil{}}
+// Str    | "\"" [CHAR] "\""           | Lit, read as SCon{Chr, ..SNil{}}
 // Index  | x "[" i "]" ("<-" v)?      | Array.get(U32, x, i), ..set(..)
 // Fill   | D "<" [A ","?] ">"         | D<&1.., A..>
 // Plus   | "+" D ("<" [A ","?] ">")?  | D<&2.., A..>
@@ -90,7 +90,9 @@
 // "->" return type. a def after its law takes bare names, no "->".
 // a bare Bind name is -Name: Quant. Fill and Plus omit a datatype's
 // leading Quant parameters as a block; Plus alone fills a quant-only D.
-// a literal expands to one node per unit, unbounded by design; a full
+// a literal expands to one node per unit, unbounded by design, but a
+// string stays one Lit node and unfolds a character at a time where a
+// chain is read (a match, a comparison, a descent, a pattern); a full
 // word, a Nat, a Char, a String, a list, a tuple and an array (its
 // slots) print back as literals; "*" takes a power of two. Arrow is
 // right-associative; the domain of a written @ or & binder stops at the
@@ -286,6 +288,7 @@ export type TermOf<B> = (
   | { $: "App"; f: TermOf<B>; x: TermOf<B> }                                       // f(x)
   | { $: "ADT"; k: Name; x: TermOf<B>[]; r: Name[] }                               // A<x0,x1,...>
   | { $: "Ctr"; k: Name; x: TermOf<B>[] }                                          // A{x0,x1,...}
+  | { $: "Lit"; v: string }                                                        // "text"
   | { $: "Mat"; k: Name; h: TermOf<B>; m: TermOf<B> }                              // \{A: h; m}
   | { $: "Efq" }                                                                   // \{}
   | { $: "Eql"; a: TermOf<B>; b: TermOf<B>; T: TermOf<B> }                         // {a == b : T}
@@ -405,6 +408,10 @@ export function ADT<X>(k: Name, x: TermOf<X>[], s?: Span, r: Name[] = []): TermO
 
 export function Ctr<X>(k: Name, x: TermOf<X>[], s?: Span): TermOf<X> {
   return { $: "Ctr", k, x, s };
+}
+
+export function Lit<X>(v: string, s?: Span): TermOf<X> {
+  return { $: "Lit", v, s };
 }
 
 export function Mat<X>(k: Name, h: TermOf<X>, m: TermOf<X>, s?: Span): TermOf<X> {
@@ -785,6 +792,9 @@ export function term_higher(tm: LTerm, env: Env = null): HTerm {
     case "Ctr": {
       return Ctr(tm.k, tm.x.map((x) => term_higher(x, env)), tm.s);
     }
+    case "Lit": {
+      return tm;
+    }
     case "Mat": {
       return Mat(tm.k, term_higher(tm.h, env), term_higher(tm.m, env), tm.s);
     }
@@ -853,6 +863,9 @@ export function term_lower(term: HTerm, d: number = 0): LTerm {
     case "Ctr": {
       return Ctr(tm.k, tm.x.map((x) => term_lower(x, d)), tm.s);
     }
+    case "Lit": {
+      return tm;
+    }
     case "Mat": {
       return Mat(tm.k, term_lower(tm.h, d), term_lower(tm.m, d), tm.s);
     }
@@ -881,8 +894,9 @@ export function term_descend(q: Quant, arg: HTerm, col: HTerm): Cmp {
   if (q.$ === "None") {
     return "EQ";
   }
-  const a = term_strip(arg);
+  const s = term_strip(arg);
   const p = term_strip(col);
+  const a = s.$ === "Lit" && p.$ === "Ctr" ? term_higher(lit_step(s)) : s;
   switch (p.$) {
     case "Var": {
       if (a.$ === "Var" && a.i === p.i) {
@@ -1160,6 +1174,53 @@ export function u32_to_term(n: U32, s?: Span): LTerm {
   return Ctr("U32", [word_to_term(n, s)], s);
 }
 
+// Lit
+// ===
+// a string literal is one node holding its text: it means the SCon chain
+// of its characters and unfolds a character at a time where a chain is
+// read, so the checker pays nothing per character and no literal outgrows
+// its stack. a JS string holds Unicode scalar values only, so a literal
+// that spells a surrogate or a code point past U+10FFFF is its chain.
+
+export function lit_of(cs: U32[], s?: Span): LTerm {
+  return cs.every((c) => c <= 0x10ffff && (c < 0xd800 || c > 0xdfff))
+    ? Lit(cs.map((c) => String.fromCodePoint(c)).join(""), s) : lit_chain(cs, s);
+}
+
+export function lit_chain(cs: U32[], s?: Span): LTerm {
+  return cs.reduceRight<LTerm>((out, c) =>
+    Ctr("SCon", [Ctr("Chr", [u32_to_term(c, s)], s), out], s), Ctr("SNil", [], s));
+}
+
+// one step: "" is SNil{}, "ct.." is SCon{Chr{c}, "t.."}
+export function lit_step(t: Extract<LTerm, { $: "Lit" }>): LTerm {
+  const c = t.v.codePointAt(0);
+  return c === undefined ? Ctr("SNil", [], t.s)
+    : Ctr("SCon", [Ctr("Chr", [u32_to_term(c, t.s)], t.s), Lit(t.v.slice(c > 0xffff ? 2 : 1), t.s)], t.s);
+}
+
+// every literal in a first-order term as its chain: the compiler's view
+export function lit_expand(tm: LTerm): LTerm {
+  const go = lit_expand;
+  switch (tm.$) {
+    case "Lit": return lit_chain([...tm.v].map((c) => c.codePointAt(0) as U32), tm.s);
+    case "Var": case "Ref": case "Qnt": case "Qua": case "Efq": case "Rfl": case "Hol": return tm;
+    case "Sub": return Sub(tm.i, tm.v.$ === "PVar" || tm.v.$ === "PCtr" ? tm.v : go(tm.v), go(tm.f), tm.s);
+    case "Let": return Let(tm.k, tm.i, tm.v.map(go), go(tm.f), tm.s, tm.q);
+    case "Typ": return Typ(go(tm.g), tm.s);
+    case "Min": return Min(go(tm.a), go(tm.b), tm.s);
+    case "All": return All(tm.q, tm.k, tm.i, go(tm.A), go(tm.B), tm.s);
+    case "Lam": return Lam(tm.k, tm.i, go(tm.f), tm.s, tm.q);
+    case "App": return App(go(tm.f), go(tm.x), tm.s);
+    case "ADT": return ADT(tm.k, tm.x.map(go), tm.s, tm.r);
+    case "Ctr": return Ctr(tm.k, tm.x.map(go), tm.s);
+    case "Mat": return Mat(tm.k, go(tm.h), go(tm.m), tm.s);
+    case "Eql": return Eql(go(tm.a), go(tm.b), go(tm.T), tm.s);
+    case "Rwt": return Rwt(go(tm.e), go(tm.p), go(tm.f), tm.s);
+    case "Ann": return Ann(go(tm.x), go(tm.T), tm.s);
+  }
+}
+
 // A nat literal up to NAT_LITERAL_MAX expands into a Succ chain, which the
 // checker unfolds in patterns and proofs; a larger one, up to the u32 bound,
 // parses as U32.to_nat(n), so no chain outgrows the checker's stack.
@@ -1321,12 +1382,7 @@ export function term_show(term: LTerm, top: number = -1, bnd: Name[] = []): stri
     }
     return l.concat(r);
   }
-  function term_show_sugar_chr(tm: LTerm, quote: string): string | null {
-    const n = tm.$ === "Ctr" && tm.k === "Chr" && tm.x.length === 1
-      ? u32_from_term(tm.x[0]) : null;
-    if (n === null) {
-      return null;
-    }
+  function chr_show(n: U32, quote: string): string {
     const k = Object.keys(ESCAPES).find((k) => ESCAPES[k] === n && ((k !== "'" && k !== '"') || k === quote));
     if (k !== undefined) {
       return "\\" + k;
@@ -1336,13 +1392,23 @@ export function term_show(term: LTerm, top: number = -1, bnd: Name[] = []): stri
     }
     return String.fromCodePoint(n);
   }
+  function lit_text(v: string): string {
+    return [...v].map((c) => chr_show(c.codePointAt(0) as U32, "\"")).join("");
+  }
+  function term_show_sugar_chr(tm: LTerm, quote: string): string | null {
+    const n = tm.$ === "Ctr" && tm.k === "Chr" && tm.x.length === 1
+      ? u32_from_term(tm.x[0]) : null;
+    return n === null ? null : chr_show(n, quote);
+  }
   function term_show_sugar_str(tm: LTerm): string | null {
     const [cs, t] = term_show_chain(tm, "SCon", 2);
     const ss = cs.map((c) => term_show_sugar_chr(c, "\""));
-    if (t.$ !== "Ctr" || t.k !== "SNil" || t.x.length !== 0 || ss.includes(null)) {
+    const tl = t.$ === "Lit" ? lit_text(t.v)
+             : t.$ === "Ctr" && t.k === "SNil" && t.x.length === 0 ? "" : null;
+    if (tl === null || ss.includes(null)) {
       return null;
     }
-    return "\"" + ss.join("") + "\"";
+    return "\"" + ss.join("") + tl + "\"";
   }
   function go(tm: LTerm, prc: number): string {
     switch (tm.$) {
@@ -1434,6 +1500,9 @@ export function term_show(term: LTerm, top: number = -1, bnd: Name[] = []): stri
         }
         const as = tm.x.map((x) => go(x, 0));
         return tm.k + "{" + as.join(", ") + "}";
+      }
+      case "Lit": {
+        return "\"" + lit_text(tm.v) + "\"";
       }
       case "Mat": {
         const arms: string[] = [];
@@ -1763,6 +1832,9 @@ export function parse_patt(p: Parse, t: LTerm): Patt {
       }
       return { $: "PCtr", k: t.k, x: t.x.map((x) => parse_patt(p, x)), s: t.s };
     }
+    case "Lit": {
+      return parse_patt(p, lit_expand(t));
+    }
     default: {
       throw Err(book, ctx_nil(), "a pattern (a binder or a constructor)", term_show(term_lower(term_higher(t), 0)), t.s);
     }
@@ -1996,10 +2068,7 @@ export function parse_term_base(p: Parse, beg: Loc): LTerm {
         }
         cs.push(parse_char(p));
       }
-      const spn = parse_span(p, beg);
-      return cs.reduceRight<LTerm>((out, c) =>
-        Ctr("SCon", [Ctr("Chr", [u32_to_term(c, spn)], spn), out], spn),
-        Ctr("SNil", [], spn));
+      return lit_of(cs, parse_span(p, beg));
     }
     case "?": {
       parse_bump(p);
@@ -2720,7 +2789,8 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
           + " name is a def or a consumed binder: give the value its own def)",
           undefined, e.s);
       }
-      case "Ctr": {
+      case "Ctr":
+      case "Lit": {
         throw Err(book_nil(), ctx_nil(), "an undestructed scrutinee (this value is already a constructor: bind its fields directly; if an outer match destructed it, fold the pattern into the outer case)", undefined, m.s);
       }
       default: {
@@ -3012,6 +3082,9 @@ export function term_wnf(book: Book, term: HTerm): HTerm {
             continue back;
           }
           case "MAT": {
+            if (tm.$ === "Lit") {
+              tm = term_higher(lit_step(tm));
+            }
             if (tm.$ === "Ctr") {
               const ctr = tm;
               let t: HTerm = fr.t;
@@ -3106,6 +3179,9 @@ export function term_snf(book: Book, term: HTerm): HTerm {
     case "Ctr": {
       return Ctr(tm.k, tm.x.map((x) => term_snf(book, x)), tm.s);
     }
+    case "Lit": {
+      return tm;
+    }
     case "Mat": {
       return Mat(tm.k, term_snf(book, tm.h), term_snf(book, tm.m), tm.s);
     }
@@ -3145,8 +3221,8 @@ export function term_compare(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTe
   if (lhs === rhs) {
     return true;
   }
-  const a = term_wnf(book, lhs);
-  const b = term_wnf(book, rhs);
+  let a = term_wnf(book, lhs);
+  let b = term_wnf(book, rhs);
   if (a === b) {
     return true;
   }
@@ -3154,6 +3230,12 @@ export function term_compare(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTe
     const k = a.$ === "Lam" ? a.k : (b as Extract<HTerm, { $: "Lam" }>).k;
     const x: HTerm = Var(k, dep);
     return term_compare(mode, book, term_apply(a, x), term_apply(b, x), dep + 1);
+  }
+  if (a.$ === "Lit" && b.$ === "Ctr") {
+    a = term_higher(lit_step(a));
+  }
+  if (b.$ === "Lit" && a.$ === "Ctr") {
+    b = term_higher(lit_step(b));
   }
   switch (a.$) {
     case "Var": {
@@ -3221,6 +3303,9 @@ export function term_compare(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTe
     case "Ctr": {
       return b.$ === "Ctr" && a.k === b.k && a.x.length === b.x.length
           && a.x.every((x, j) => term_compare("EQ", book, x, b.x[j], dep));
+    }
+    case "Lit": {
+      return b.$ === "Lit" && a.v === b.v;
     }
     case "Mat": {
       return b.$ === "Mat" && a.k === b.k
@@ -3558,6 +3643,19 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       const tel = tele_fill(book, ctr.T, t_wnf.x, ctx, lhs.def, tm.s);
       const { xs, us } = tele_check(book, lhs, tel, tm.x, qt, ctx, d, tm.s);
       return Check(Ctr(tm.k, xs, tm.s), ty, us);
+    }
+    // T == String, with the literal's head (SNil for "", else SCon)
+    // where any other T checks the literal's first step, which reports
+    //       as the constructor it is
+    // ----------------------------------------------------------- check-lit
+    // Γ ⊢ "text" : T ~ {}
+    case "Lit": {
+      const t_wnf = term_wnf(book, ty);
+      if (t_wnf.$ === "ADT" && t_wnf.k === "String"
+        && ctrs_find(book_adt(book, t_wnf, ctx, lhs.def).c, tm.v === "" ? "SNil" : "SCon") !== null) {
+        return Check(tm, ty, uses_nil());
+      }
+      return term_check(book, lhs, term_higher(lit_step(tm)), qt, ty, ctx, d);
     }
     // T == @q s:D<p..> -> P
     // D.c[k] = @r1 x1:F1 -> .. -> D<p..>
