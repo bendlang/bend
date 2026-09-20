@@ -150,10 +150,14 @@ const NATIVE_DIE = " does not match the native format of its type";
 const FOLD_FUEL = 8192;
 
 // The elements one leaf of a lowered Array.map walks in sequence, as a
-// power of two: 2^12 under a cheap callback (straight-line C: intrinsics,
-// constructors and defs that neither loop nor fork), 2^3 under any other.
+// power of two: up to 2^12 under a cheap callback (straight-line C:
+// intrinsics, constructors and defs that neither loop nor fork), where a
+// fork costs more than the elements it would split; up to 2^3 under any
+// other, and only once the walk still has 2^6 leaves to fork over, so a
+// small array of expensive callbacks splits down to its elements.
 const MAP_LEAF_CHEAP = 12;
 const MAP_LEAF_DEAR = 3;
+const MAP_SPLIT_DEAR = 6;
 
 // The raw block operations the lowered Array.map is written over.
 const MAP_OPS = ["src", "depth", "dst", "split", "leaf", "cnt", "mid", "take",
@@ -345,11 +349,11 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     JS:   MAP_JS,
   },
   array_map_split: {
-    C:  "($0 > $1 ? $0 - $1 : 0)",
+    C:  "($0 - ($0 > $2 + $1 ? $1 : $0 > $2 ? $0 - $2 : 0))",
     JS: MAP_JS,
   },
   array_map_leaf: {
-    C:  "(1ull << ($0 > $1 ? $1 : $0))",
+    C:  "(1ull << ($0 > $2 + $1 ? $1 : $0 > $2 ? $0 - $2 : 0))",
     JS: MAP_JS,
   },
   array_map_cnt: {
@@ -2974,8 +2978,10 @@ function map_lower(cb: Carb, k: Bend.Name,
     const ck = call_kind(cb, s);
     return ck !== null && !cheap_of(ck.k);
   });
-  const gl = Array(dear ? MAP_LEAF_DEAR : MAP_LEAF_CHEAP).fill(0)
+  const lit = (n: number): HTerm => Array(n).fill(0)
     .reduce((t: HTerm) => Bend.Ctr("Succ", [t]), Bend.Ctr("Zero", []));
+  const gl = lit(dear ? MAP_LEAF_DEAR : MAP_LEAF_CHEAP);
+  const sl = lit(dear ? MAP_SPLIT_DEAR : 0);
   const w = k + ".w";
   const sq = k + ".seq";
   const tp = k + ".top";
@@ -3019,9 +3025,8 @@ function map_lower(cb: Carb, k: Bend.Name,
     bind("sa", nat, call("Array.map.src", Tin, a), (sa) =>
       bind("dp", nat, call("Array.map.depth", Tin, sa), (dp) =>
         bind("da", nat, call("Array.map.dst", Tout, dp), (da) =>
-          Bend.Ann(call(tp, sa, da, Bend.Ctr("Zero", []),
-            call("Array.map.leaf", dp, gl), call("Array.map.split", dp, gl)),
-          ret)))));
+          Bend.Ann(call(tp, sa, da, lit(0), call("Array.map.leaf", dp, gl, sl),
+            call("Array.map.split", dp, gl, sl)), ret)))));
   const ws = ["sa", "da", "ix", "lf", "dp"];
   cb.book.tlds[sq] = { $: "Def", n: 4, x: 0, T: map_words(["sa", "da", "ix",
     "n"], nat), v: sqH, h: sqH };
@@ -3097,8 +3102,8 @@ function map_shape(cb: Carb, k: Bend.Name, tld: Def): MapShape | null {
 // The raw block operations, bodiless defs the emitter lowers by name (see
 // OPERATIONS, and map_op for those that read an element layout): a block
 // term as a word (src), its element depth (depth), a fresh destination of
-// that depth (dst), the depth above a leaf of 2^g and that leaf's size
-// (split, leaf),
+// that depth (dst), the depth above a leaf and that leaf's size, the leaf
+// at most 2^g and no wider than leaves a split of 2^s (split, leaf),
 // a leaf's count, zero once the run has failed (cnt), the start of the
 // high half (mid), an element moved out or dropped (take, drop), a result
 // written into its slot (put), the high half's end once both halves are
@@ -3121,8 +3126,8 @@ function map_defs(cb: Carb): void {
   gen("src", 2, (T) => Bend.All(Bend.Lone(), "a", 0, arr(T), () => nat));
   gen("depth", 2, () => map_words(["s"], nat));
   gen("dst", 2, () => map_words(["d"], nat));
-  one("split", 2, map_words(["d", "g"], nat));
-  one("leaf", 2, map_words(["d", "g"], nat));
+  one("split", 3, map_words(["d", "g", "s"], nat));
+  one("leaf", 3, map_words(["d", "g", "s"], nat));
   one("cnt", 1, map_words(["n"], nat));
   one("mid", 3, map_words(["lo", "h", "leaf"], nat));
   gen("take", 3, (T) => map_words(["s", "i"], T));
