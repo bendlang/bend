@@ -786,7 +786,7 @@ function term_eta(book: Bend.Book, t: HTerm, T: HTerm, n: number): HTerm {
 }
 
 function term_kids(cf: Carb, tm: HTerm): HTerm[] {
-  const t = Bend.term_force(tm);
+  const t = term_lit(Bend.term_force(tm));
   switch (t.$) {
     case "Ann": return [t.x];
     case "Lam": return [term_open(t).b];
@@ -809,7 +809,7 @@ function term_kids(cf: Carb, tm: HTerm): HTerm[] {
 // tail position (under annotations, binders, arms and let bodies).
 function term_any(cf: Carb, t: HTerm, p: (s: HTerm, tail: boolean) => boolean,
   tail = true, seen: Set<HTerm> = new Set()): boolean {
-  const s = Bend.term_force(t);
+  const s = term_lit(Bend.term_force(t));
   if (seen.has(s)) {
     return false;
   }
@@ -830,9 +830,10 @@ function term_nodes(cf: Carb, t: HTerm): number {
   return n;
 }
 
-// A string literal is its constructor chain to the compiler.
+// A literal is its chain to the compiler; a nat past NAT_LITERAL_MAX is U32.to_nat(n).
 function term_lit(t: HTerm): HTerm {
-  return t.$ === "Lit" ? memo(LITS, t, () => Bend.term_higher(Bend.lit_full(t))) : t;
+  return t.$ === "Lit" ? memo(LITS, t, () => Bend.term_higher(typeof t.v === "number" && t.v > Bend.NAT_LITERAL_MAX
+    ? Bend.App(Bend.Ref("U32.to_nat"), Bend.u32_to_term(t.v)) : Bend.lit_full(t))) : t;
 }
 
 function term_const(t: HTerm): boolean {
