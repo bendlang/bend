@@ -5604,6 +5604,46 @@ static void gpu_pass(u32 f) {
   gpu_copy(0, ALC_OFF, false);
 }
 
+// Window.frame's fill on the device: the image's chunks go up if the host
+// dirtied them (they stay dirty, the next turn sends them again), and
+// only the pixels come down.
+static void gpu_show(Term image, u32 w, u32 h, u32 k, u32* pix) {
+  static hipFunction_t pso;
+  static void*         buf;
+  static u64           cap;
+  u64 len = (u64)w * h * 4;
+  struct { Corpus mem; Term root; u32 w; u32 h; u32 k; u32* out; } args;
+  _Static_assert(sizeof args == 40, "window args");
+  if (pso == NULL && hipModuleGetFunction(&pso, gpu_lib, "window_dev")
+    != hipSuccess) {
+    err_fail("cannot load the window kernel");
+  }
+  if (len > cap) {
+    if (hipFree(buf) != hipSuccess || hipMalloc(&buf, len) != hipSuccess) {
+      err_fail("the frame's device buffer failed");
+    }
+    cap = len;
+  }
+  gpu_part = 2;
+  gpu_heap(HEAP_OFF
+    + (((u64)a32_load(a32_at(CORPUS, H_BUMP)) + 1) << PAGE_BITS), true);
+  gpu_part = 0;
+  args.mem  = gpu_vram;
+  args.root = image;
+  args.w    = w;
+  args.h    = h;
+  args.k    = k;
+  args.out  = (u32*)buf;
+  size_t n     = sizeof args;
+  void*  cfg[] = { HIP_LAUNCH_PARAM_BUFFER_POINTER, &args,
+    HIP_LAUNCH_PARAM_BUFFER_SIZE, &n, HIP_LAUNCH_PARAM_END };
+  if (hipModuleLaunchKernel(pso, (w + 31) / 32, (h + 7) / 8, 1, 32, 8, 1, 0,
+    NULL, NULL, cfg) != hipSuccess
+    || hipMemcpy(pix, buf, len, hipMemcpyDeviceToHost) != hipSuccess) {
+    err_fail("the frame's device fill failed");
+  }
+}
+
 #else
 
 #define gpu_probe() false
