@@ -203,6 +203,7 @@ def add_zero(x):
 - Formalization: [bend.lean](bend2/bend.lean), Bend's core in Lean.
 - Benches: [bench/](bench), every bench used to make the charts above.
 - Formatter: [bend-fmt-lsp](tools/bend-fmt-lsp), a formatting-only Bend 2 language server.
+- Community language server: [bend2-lsp](https://github.com/don2e4/bend2-lsp), with formatting, diagnostics, and hover.
 
 # Community
 
@@ -244,7 +245,7 @@ def add_zero(x):
 - No Windows (WSL works); on Linux, Window and Audio need X11 and ALSA headers.
 - The hub has no names, versions, accounts or search yet. Packages are hashes.
 - Error messages are terse; no debugger, profiler or REPL.
-- Editor support is limited to formatting; there is no completion, hover or diagnostics LSP.
+- The bundled editor support is limited to formatting; the community [bend2-lsp](https://github.com/don2e4/bend2-lsp) provides diagnostics and hover, but no completion.
 - No test framework and no documentation beyond the guide.
 - And more that escape me. Be patient, report bugs and request features!
 
