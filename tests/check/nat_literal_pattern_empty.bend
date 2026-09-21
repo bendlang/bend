@@ -1,7 +1,7 @@
 # the unchecked literal pattern let a closed term inhabit Empty: the
-# longhand U32.to_nat(0) matched a Zero that carries a field as a bare
-# Zero, the arm's goal became @w:U -> Empty, and the self-call f(q)
-# passed without descending. the literal is refused like Zero{} is
+# literal 0n matched a Zero that carries a field as a bare Zero, the
+# arm's goal became @w:U -> Empty, and the self-call f(q) passed without
+# descending. the literal is refused like Zero{} is
 type U is Data:
   Un{}
 type N is Data:
@@ -13,7 +13,7 @@ type Empty is Data:
 
 def f(b: N) -> Empty:
   match b:
-    case U32.to_nat(0):
+    case 0n:
       {\{K: q => w => f(q)} : D -> U -> Empty}(K{Zero{Un{}}})
     case Succ{p}:
       f(p)
@@ -25,6 +25,6 @@ def boom() -> Empty:
 #|- message  : a Zero pattern with 1 field
 #|Location:
 #|15 |   match b:
-#|16>|     case U32.to_nat(0):
+#|16>|     case 0n:
 #|17 |       {\{K: q => w => f(q)} : D -> U -> Empty}(K{Zero{Un{}}})
 #|exit 1
