@@ -5327,6 +5327,35 @@ static char* gpu_alias;
 static u64   gpu_lo, gpu_hi;  // the tracked bytes of the corpus, whole chunks
 static u32   gpu_fault_lock;
 
+// BEND_GPU_STATS=1: at exit, what the turns cost, by region and way
+static bool gpu_stat;
+static u32  gpu_part;  // 0 header, 1 rings, 2 heap, 3 banks
+static u64  gpu_turns, gpu_faults, gpu_dev_ns;
+static u64  gpu_calls[4][2], gpu_bytes[4][2], gpu_ns[4][2];
+static u64  io_tick(void);
+
+static void gpu_tally(u32 k, bool up, u64 bytes, u64 t0) {
+  gpu_calls[k][up] += 1;
+  gpu_bytes[k][up] += bytes;
+  gpu_ns[k][up]    += io_tick() - t0;
+}
+
+static void gpu_stats(void) {
+  static const char* part[4] = { "header", "rings ", "heap  ", "banks " };
+  fprintf(stderr, "bend: hip %llu turns, passes %llu us, %llu chunk faults\n",
+    (unsigned long long)gpu_turns, (unsigned long long)(gpu_dev_ns / 1000),
+    (unsigned long long)gpu_faults);
+  for (u32 k = 0; k < 4; k += 1) {
+    fprintf(stderr, "bend: hip   %s", part[k]);
+    for (u32 up = 2; up-- > 0;) {
+      fprintf(stderr, " %s %llu calls %llu KB %llu us%s", up ? "up" : "down",
+        (unsigned long long)gpu_calls[k][up],
+        (unsigned long long)(gpu_bytes[k][up] >> 10),
+        (unsigned long long)(gpu_ns[k][up] / 1000), up ? "," : "\n");
+    }
+  }
+}
+
 // a fresh mapping is zero; the twin is zeroed as corpus_setup does CUDA's
 static Corpus gpu_map(u64 bytes) {
   void* v  = NULL;
@@ -5417,13 +5446,24 @@ static void gpu_load(u64 bytes) {
   if (hipModuleGetFunction(&gpu_pso, gpu_lib, "bend_dev") != hipSuccess) {
     err_fail("cannot load the GPU program");
   }
+  gpu_stat = getenv("BEND_GPU_STATS") != NULL;
+  if (gpu_stat) {
+    atexit(gpu_stats);
+  }
 }
 
 static void gpu_copy(u64 lo, u64 hi, bool up) {
-  if (hi > lo && hipMemcpy(up ? (void*)(gpu_vram + lo) : (void*)(CORPUS + lo),
+  if (hi <= lo) {
+    return;
+  }
+  u64 t0 = gpu_stat ? io_tick() : 0;
+  if (hipMemcpy(up ? (void*)(gpu_vram + lo) : (void*)(CORPUS + lo),
     up ? (void*)(CORPUS + lo) : (void*)(gpu_vram + lo), (hi - lo) * 8,
     up ? hipMemcpyHostToDevice : hipMemcpyDeviceToHost) != hipSuccess) {
     err_fail("corpus copy failed");
+  }
+  if (gpu_stat) {
+    gpu_tally(gpu_part, up, (hi - lo) * 8, t0);
   }
 }
 
@@ -5502,10 +5542,15 @@ static bool gpu_fault(void* addr) {
   bool ok = true;
   LOCK(gpu_fault_lock);
   if (gpu_stale[c]) {
+    u64 t0 = gpu_stat ? io_tick() : 0;
     ok = hipMemcpy(gpu_alias + at, (char*)gpu_vram + at, GPU_CHUNK,
       hipMemcpyDeviceToHost) == hipSuccess
       && mprotect((char*)CORPUS + at, GPU_CHUNK, PROT_READ | PROT_WRITE) == 0;
     gpu_stale[c] = !ok;
+    if (gpu_stat) {
+      gpu_faults += 1;
+      gpu_tally(2, false, GPU_CHUNK, t0);
+    }
   }
   UNLOCK(gpu_fault_lock);
   return ok;
@@ -5514,16 +5559,22 @@ static bool gpu_fault(void* addr) {
 // what a turn can touch, but the lanes' stacks; down, the header leads
 static void gpu_sync(bool up) {
   Corpus H = CORPUS;
+  gpu_turns += up;
+  gpu_part = 0;
   gpu_copy(0, ALC_OFF, up);
+  gpu_part = 1;
   gpu_rings(up);
+  gpu_part = 2;
   gpu_heap(HEAP_OFF + (((u64)a32_load(a32_at(H, H_BUMP)) + 1) << PAGE_BITS),
     up);
+  gpu_part = 3;
   for (Cls c = 0; c < NCLS_ALL; c += 1) {
     Bank* b = bank_at(H, c);
     u32   n = b->wr > b->rd ? b->wr : b->rd;
     n = b->top > n ? b->top : n;
     gpu_copy(b->off, b->off + n + 1, up);
   }
+  gpu_part = 0;
 }
 
 #define gpu_enter() gpu_sync(true)
@@ -5542,10 +5593,12 @@ static void gpu_kernel(u32 pass, u32 groups) {
 
 static void gpu_pass(u32 f) {
   gpu_copy(0, ALC_OFF, true);
+  u64 t0 = gpu_stat ? io_tick() : 0;
   gpu_run(f);
   if (hipDeviceSynchronize() != hipSuccess) {
     err_fail("device fault");
   }
+  gpu_dev_ns += gpu_stat ? io_tick() - t0 : 0;
   gpu_copy(0, ALC_OFF, false);
 }
 
