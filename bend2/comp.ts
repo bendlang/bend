@@ -3291,8 +3291,8 @@ function js_def(fl: File, k: Bend.Name, def: Def): void {
         js_func(fl, def.h ?? die("unelaborated def " + k), def.T, params);
       } else {
         const n = eff_name(k);
-        file_push(fl, `return { $: "$FFI", run: $0eff.${n}, need: $0eff.${n
-          }_need, args: [${params.join(", ")}], kont: ${kont[0]} };`);
+        file_push(fl, `return { $: "$FFI", run: $0eff.${n}.run, need: $0eff.${n
+          }.need, args: [${params.join(", ")}], kont: ${kont[0]} };`);
       }
     });
   file_push(fl, "");
@@ -3317,9 +3317,8 @@ export function js_lib(book: Bend.Book, roots: Bend.Name[],
     ms.push(n);
     const rows = grps.get(path) ?? [];
     grps.set(path, rows);
-    for (const m of [n, n + "_need"]) {
-      rows.push(`  ${m}: typeof ${m} === "function" ? ${m} : undefined,`);
-    }
+    rows.push(`  ["${n}"]: { run: typeof ${n} === "function" ? ${n} : undefined,`
+      + ` need: typeof ${n}_need === "function" ? ${n}_need : undefined },`);
   }
   const dup = ms.find((m, i) => ms.indexOf(m) < i);
   if (dup !== undefined) die("two names mangle to " + dup);
