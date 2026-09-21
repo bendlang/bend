@@ -78,6 +78,7 @@ def main() -> List<&2, List<&2, Bool>>:
   [l("|a", "aba", 0n), l("a*", "baac", 1n), l("a*?", "aa", 0n), l("(a)|b", "cab", 0n),
    l("\\b", "ab cd", 2n), l("\\Bb", "ab b", 0n), l("^a|b$", "ab\n", 1n), l("x", "abc", 0n),
    l("", "", 0n), l("(?:a|ab)(c|bcd)?", "xabcdab", 0n), l("(a(b)?)+", "abab", 1n),
-   l("[^\\s]+", "é😀 x", 0n), l("😀*", "a😀😀b", 1n), l("a$", "a\n", 0n)]
+   l("[^\\s]+", "é😀 x", 0n), l("😀*", "a😀😀b", 1n), l("a$", "a\n", 0n),
+   l("abcd|a", "abab", 0n)]
 
-#|[[True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}]]
+#|[[True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}], [True{}, True{}, True{}]]
