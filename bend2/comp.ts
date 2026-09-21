@@ -631,7 +631,7 @@ const CYCLES: Map<Bend.Name, boolean> = new Map();
 
 const CONSTS: Map<HTerm, boolean> = new Map();
 
-const LITS: Map<HTerm, HTerm> = new Map();
+const LITS = new Map<HTerm, HTerm>();
 
 // Name
 // ====
@@ -681,6 +681,7 @@ function tpl(t: Gen, xs: string[]): string {
 
 function tpl_nat(u: string, f: string): Gen {
   return ([p]) => /^\d/.test(p) ? (BigInt(parseInt(p)) + 1n) + u
+    : /^nat_chk\(.* \+ \d+n?\)$/.test(p) ? p.replace(/(\d+)(n?)\)$/, (_, k, n) => `${+k + 1}${n})`)
     : tpl(f, [p]);
 }
 
@@ -830,7 +831,6 @@ function term_nodes(cf: Carb, t: HTerm): number {
   return n;
 }
 
-// A literal is its chain to the compiler; a nat past NAT_LITERAL_MAX is U32.to_nat(n).
 function term_lit(t: HTerm): HTerm {
   return t.$ === "Lit" ? memo(LITS, t, () => Bend.term_higher(typeof t.v === "number" && t.v > Bend.NAT_LITERAL_MAX
     ? Bend.App(Bend.Ref("U32.to_nat"), Bend.u32_to_term(t.v)) : Bend.lit_full(t))) : t;
