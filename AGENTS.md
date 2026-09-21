@@ -9,7 +9,7 @@ prelude; main.ts is the CLI. Every test is a Bend file that ends in the `#|`
 lines its run must print, and the gates run on the mini cluster.
 
     bend2/bend.ts       the language: parser, theory, checker
-    bend2/comp.ts       the compiler and the runtimes (C, Metal, CUDA, JS)
+    bend2/comp.ts       the compiler and the runtimes (C, Metal, CUDA, HIP, JS)
     bend2/main.ts       the CLI; imported, the .bend loader for bun and node
     bend2/safe.ts       --verdict and -o <out>.bendtt: the elaborator from a
                         checked book to BendTT text
@@ -31,7 +31,7 @@ lines its run must print, and the gates run on the mini cluster.
     gates/perf.ts       the benches on 48 minis against the pins (--pin writes
                         the medians of three runs)
     gates/repo.ts       the allow list of files and the permanent ttok caps
-                        (bend.ts 48k, comp.ts 66k, main.ts 16k, bendtt.lean
+                        (bend.ts 48k, comp.ts 70k, main.ts 16k, bendtt.lean
                         64k, README 4k, GUIDE 8k); only Taelin changes them
     gates/ping.ts       the installer, the compiled bend, its daily version
                         check and a release, on a localhost hub
