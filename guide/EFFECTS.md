@@ -43,7 +43,7 @@ the effect.
 
 The effect returns a Term: a `U32` is `(Term)n`, `Unit` is
 `term_pak(CID_UNIT, 0)`, a `String` is `io_str(e, p, n)`, a two-field
-constructor is `io_node(e, CID_K, a, b, 0)`. A `Result` is `io_done(e, v)`
+constructor is `io_node(e, CID_K, a, b)`. A `Result` is `io_done(e, v)`
 or `io_fail(e, code, text)` (`text` NULL prints `strerror(code)`).
 `io_sys_end(w, n)` stores `errno` in `w->code` when a call fails.
 
@@ -56,9 +56,10 @@ on failure.
 Blocking work leaves the loop in two ways. `io_work(w, call, pack)` runs
 `call(w)` on a helper thread, then `pack(e, w)` on the loop; `pack`'s value
 is the answer. `call` has no `Env`: it may only touch `w`.
-`io_wait_on(w, fd, POLLIN, more)` parks until `fd` is ready (`POLLIN` or
+`io_wait_on(w, fd, POLLIN, 0, more)` parks until `fd` is ready (`POLLIN` or
 `POLLOUT`), then runs `more(e, w)` on the loop; `more` may call
 `io_wait_on` again. Both return `IO_PARK`, which the effect returns.
+Replace `0` with an absolute `io_tick()` deadline to also wake on time.
 
 `w` is the effect's scratch space: `hand`, `made`, `word`, `size`, `data`,
 `text`, `code`. The runtime owns `w` and `f`. The effect owns `w->data`:
