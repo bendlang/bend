@@ -3,9 +3,8 @@
 
 // The ring: 4096 float32 stereo frames. The effects fill it on the
 // evaluator's thread; the device's callback drains it and pads the
-// rest of its buffer with silence. The same block sits in
-// audio_write.c and audio_close.c under this guard, so that any one
-// of the three effects compiles alone.
+// rest of its buffer with silence. All audio effects share this source;
+// each entry is present only when its effect is reachable.
 #ifndef IO_RING
 #define IO_RING 4096u
 
@@ -164,6 +163,24 @@ static void io_ring_free(IoRing* p) {
 #endif
 #endif
 
+#ifdef CID_AUDIO_OPEN
+Term audio_open_run(Env e, Term* f, IoWork* w) {
+  u32     rate = (u32)f[0];
+  IoRing* p    = io_mem(calloc(1, sizeof *p));
+  u32     code = rate < 8000 || rate > 192000 ? EINVAL : io_ring_start(p, rate);
+  if (code != 0) {
+    io_ring_free(p);
+    return io_fail(e, code, code == EINVAL ? NULL : "Audio.open: no audio output");
+  }
+  return io_done(e, io_hand((intptr_t)p));
+}
+
+static void __attribute__((constructor)) audio_open_use(void) {
+  io_eff(CID_AUDIO_OPEN, audio_open_run, 0);
+}
+#endif
+
+#ifdef CID_AUDIO_WRITE
 // The samples (interleaved L R ...) into the ring; the frames queued
 // after the write. Past the ring's room, the samples are dropped and
 // the queue answered as it is.
@@ -189,3 +206,15 @@ Term audio_write_run(Env e, Term* f, IoWork* w) {
 static void __attribute__((constructor)) audio_write_use(void) {
   io_eff(CID_AUDIO_WRITE, audio_write_run, 0);
 }
+#endif
+
+#ifdef CID_AUDIO_CLOSE
+Term audio_close_run(Env e, Term* f, IoWork* w) {
+  io_ring_free((IoRing*)(uintptr_t)io_hand_v(f[0]));
+  return term_pak(CID_UNIT, 0);
+}
+
+static void __attribute__((constructor)) audio_close_use(void) {
+  io_eff(CID_AUDIO_CLOSE, audio_close_run, 0);
+}
+#endif

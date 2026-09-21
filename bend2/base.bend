@@ -368,15 +368,15 @@ def Window.close(window: Window) -> IO(Unit):
   import "./effs/window_close.js"
 
 def Audio.open(rate: U32) -> IO(Result<&1, &1, U32 & String, Audio>):
-  import "./effs/audio_open.c"
+  import "./effs/audio.c"
   import "./effs/audio_open.js"
 
 def Audio.write(audio: Audio, samples: List<&2, F32>) -> IO(Audio & U32):
-  import "./effs/audio_write.c"
+  import "./effs/audio.c"
   import "./effs/audio_write.js"
 
 def Audio.close(audio: Audio) -> IO(Unit):
-  import "./effs/audio_close.c"
+  import "./effs/audio.c"
   import "./effs/audio_close.js"
 
 # Equal
