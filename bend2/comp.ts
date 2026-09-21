@@ -208,6 +208,12 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     C:  "U32_BIN($0, ==, 0)",
     JS: "($0 === 0)",
   },
+  u32_min: {
+    JS: "($0 < $1 ? $0 : $1)",
+  },
+  u32_max: {
+    JS: "($0 < $1 ? $1 : $0)",
+  },
   u32_cmp: {
     C:  "(U32_BIN($0, >, $1) + U32_BIN($0, >=, $1))",
     JS: "cmp_new($0, $1)",
@@ -241,6 +247,12 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   f32_mod: {
     C:  "f32_rewrap((f32)fmod(f32_unbox($0), f32_unbox($1)))",
     JS: "Math.fround($0 % $1)",
+  },
+  f32_min: {
+    JS: "($0 < $1 ? $0 : $1)",
+  },
+  f32_max: {
+    JS: "($0 < $1 ? $1 : $0)",
   },
   f32_to_u32: {
     C:  "f32_to_u32($0)",
@@ -284,12 +296,27 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     C:  "($0 < $1)",
     JS: "($0 < $1)",
   },
+  nat_min: {
+    JS: "($0 < $1 ? $0 : $1)",
+  },
+  nat_max: {
+    JS: "($0 < $1 ? $1 : $0)",
+  },
   nat_divmod: {
     C:    ["($1 == 0 ? 0 : $0 / $1)", "($1 == 0 ? $0 : $0 % $1)"],
     call: true,
     JS:   "nat_divmod($0, $1)",
   },
   ...tpl_ops("bool_", "or:|:|| xor:^:!==", "(($0) $o ($1))", "($0 $o $1)"),
+  bool_and: {
+    JS: "($0 && $1)",
+  },
+  bool_not: {
+    JS: "(!$0)",
+  },
+  bool_pick: {
+    JS: "($0 ? $1 : $2)",
+  },
   string_append: {
     JS: "($0 + $1)",
   },
