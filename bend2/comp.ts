@@ -1235,7 +1235,9 @@ function eff_src(path: string, seen: Set<string>): string {
     return "";
   }
   seen.add(path);
-  return fs.readFileSync(path, "utf8");
+  const dir = path.slice(0, path.lastIndexOf("/"));
+  return fs.readFileSync(path, "utf8").replace(/^\/\/ @src ([a-z0-9_]+\.c)$/gm,
+    (_: string, name: string) => eff_src(dir + "/" + name, seen));
 }
 
 // Io
