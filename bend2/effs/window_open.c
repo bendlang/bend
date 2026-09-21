@@ -1,6 +1,8 @@
 // Window
 // ======
 
+// @src window_host.c
+
 #ifdef __OBJC__
 
 #import <AppKit/AppKit.h>
@@ -177,27 +179,6 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
 }
 
 #elif defined(__linux__)
-
-// The X11 window: its own connection (so its queue holds only its
-// events), the frame's image and the events pumped since the last
-// frame, five words each (kind, a, b, c, d) as on the Mac. The same
-// block sits in window_frame.c and window_close.c under this guard.
-#ifndef BendWin
-#define BendWin BendWin
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/keysym.h>
-
-typedef struct {
-  Display* dpy;
-  Window   win;
-  Atom     del;
-  XImage*  img;
-  u32      n;
-  u32      cap;
-  u32*     evs;
-} BendWin;
-#endif
 
 static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
   const char** why) {

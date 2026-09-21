@@ -1,6 +1,8 @@
 // Window
 // ======
 
+// @src window_host.c
+
 // An event is five words: kind (0 key, 1 mouse, 2 move, 3 close) and
 // its fields; a frame answers the events pumped since the last one.
 #if defined(__OBJC__) || defined(__linux__)
@@ -182,23 +184,6 @@ static Term window_frame(Env e, intptr_t at, Term image) {
 }
 
 #elif defined(__linux__)
-
-#ifndef BendWin
-#define BendWin BendWin
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/keysym.h>
-
-typedef struct {
-  Display* dpy;
-  Window   win;
-  Atom     del;
-  XImage*  img;
-  u32      n;
-  u32      cap;
-  u32*     evs;
-} BendWin;
-#endif
 
 // The Mac's key codes: a key's character in lower case, the function
 // keys' private-use characters (the arrows at 63232), a modifier's
