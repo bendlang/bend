@@ -183,53 +183,24 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   ...tpl_ops("u32_", "add:+ sub:- and:& or:| xor:^",
     "U32_BIN($0, $o, $1)", "(($0 $o $1) >>> 0)"),
   ...tpl_ops("u32_", CMPS, "U32_BIN($0, $o, $1)", "($0 $o $1)"),
-  u32_mul: {
-    C:  "U32_BIN($0, *, $1)",
-    JS: "(Math.imul($0, $1) >>> 0)",
-  },
-  u32_div: {
-    C:  "((u32)($1) == 0 ? 0 : (u64)U32_QUO((u32)($0), (u32)($1)))",
-    JS: "($1 === 0 ? 0 : ($0 / $1) >>> 0)",
-  },
-  u32_mod: {
-    C:  "((u32)($1) == 0 ? $0 : U32_BIN($0, -,"
-      + " U32_QUO((u32)($0), (u32)($1)) * $1))",
-    JS: "($1 === 0 ? $0 : $0 % $1)",
-  },
+  u32_mul: both("U32_BIN($0, *, $1)", "(Math.imul($0, $1) >>> 0)"),
+  u32_div: both("((u32)($1) == 0 ? 0 : (u64)U32_QUO((u32)($0), (u32)($1)))",
+    "($1 === 0 ? 0 : ($0 / $1) >>> 0)"),
+  u32_mod: both("((u32)($1) == 0 ? $0 : U32_BIN($0, -,"
+    + " U32_QUO((u32)($0), (u32)($1)) * $1))", "($1 === 0 ? $0 : $0 % $1)"),
   ...tpl_ops("u32_", "inc:+ shl:<< shr:>>:>>>", "U32_BIN($0, $o, 1)",
     "(($0 $o 1) >>> 0)"),
   ...tpl_ops("u32_", "shln:<< shrn:>>:>>>", "($1 >= 32 ? 0 : U32_BIN($0, $o, $1))",
     "($1 >= 32n ? 0 : ($0 $o Number($1)) >>> 0)"),
-  u32_not: {
-    C:  "((u64)~(u32)($0))",
-    JS: "(~$0 >>> 0)",
-  },
-  u32_is_zero: {
-    C:  "U32_BIN($0, ==, 0)",
-    JS: "($0 === 0)",
-  },
-  u32_cmp: {
-    C:  "(U32_BIN($0, >, $1) + U32_BIN($0, >=, $1))",
-    JS: "cmp_new($0, $1)",
-  },
-  u32_to_f32: {
-    C:  "f32_rewrap((f32)(u32)($0))",
-    JS: "Math.fround($0)",
-  },
-  u32_to_nat: {
-    C:  "$0",
-    JS: "BigInt($0)",
-  },
-  u32_from_nat: {
-    C:  "((u64)(u32)($0))",
-    JS: "Number($0 & 0xFFFFFFFFn)",
-  },
+  u32_not: both("((u64)~(u32)($0))", "(~$0 >>> 0)"),
+  u32_is_zero: both("U32_BIN($0, ==, 0)", "($0 === 0)"),
+  u32_cmp: both("(U32_BIN($0, >, $1) + U32_BIN($0, >=, $1))", "cmp_new($0, $1)"),
+  u32_to_f32: both("f32_rewrap((f32)(u32)($0))", "Math.fround($0)"),
+  u32_to_nat: both("$0", "BigInt($0)"),
+  u32_from_nat: both("((u64)(u32)($0))", "Number($0 & 0xFFFFFFFFn)"),
   ...tpl_ops("f32_", "add:+ sub:- mul:* div:/",
     "f32_rewrap(f32_unbox($0) $o f32_unbox($1))", "Math.fround($0 $o $1)"),
-  f32_neg: {
-    C:  "f32_rewrap(-f32_unbox($0))",
-    JS: "(-$0)",
-  },
+  f32_neg: both("f32_rewrap(-f32_unbox($0))", "(-$0)"),
   ...tpl_ops("f32_", CMPS, "((u64)(f32_unbox($0) $o f32_unbox($1)))",
     "($0 $o $1)"),
   ...tpl_ops("f32_", "sqrt exp log log2 log10 sin cos tan asin acos atan"
@@ -238,99 +209,39 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   ...tpl_ops("f32_", "pow atan2",
     "f32_rewrap((f32)$o(f32_unbox($0), f32_unbox($1)))",
     "Math.fround(Math.$o($0, $1))"),
-  f32_mod: {
-    C:  "f32_rewrap((f32)fmod(f32_unbox($0), f32_unbox($1)))",
-    JS: "Math.fround($0 % $1)",
-  },
-  f32_to_u32: {
-    C:  "f32_to_u32($0)",
-    JS: "($0 >= 1 && $0 < 4294967296 ? Math.floor($0) : 0)",
-  },
-  f32_bits: {
-    C:  "$0",
-    JS: "f32_bits($0)",
-  },
-  f32_show: {
-    C:    "f32_show(e, $0)",
-    call: true,
-    JS:   "f32_show($0)",
-  },
-  f32_read: {
-    C:    "f32_read(e, $0)",
-    call: true,
-    JS:   "f32_read($0)",
-  },
-  nat_add: {
-    C:  "nat_chk(e, $0 + $1)",
-    JS: "nat_chk($0 + $1)",
-  },
-  nat_sub: {
-    C:  "($0 < $1 ? 0 : $0 - $1)",
-    JS: "($0 < $1 ? 0n : $0 - $1)",
-  },
-  nat_mul: {
-    C:  "nat_mul(e, $0, $1)",
-    JS: "nat_chk($0 * $1)",
-  },
-  nat_double: {
-    C:  "nat_chk(e, $0 + $0)",
-    JS: "nat_chk($0 << 1n)",
-  },
-  nat_cmp: {
-    C:  "(($0 > $1) + ($0 >= $1))",
-    JS: "cmp_new($0, $1)",
-  },
-  nat_is_lt: {
-    C:  "($0 < $1)",
-    JS: "($0 < $1)",
-  },
-  nat_divmod: {
-    C:    ["($1 == 0 ? 0 : $0 / $1)", "($1 == 0 ? $0 : $0 % $1)"],
-    call: true,
-    JS:   "nat_divmod($0, $1)",
-  },
+  f32_mod: both("f32_rewrap((f32)fmod(f32_unbox($0), f32_unbox($1)))",
+    "Math.fround($0 % $1)"),
+  f32_to_u32: both("f32_to_u32($0)",
+    "($0 >= 1 && $0 < 4294967296 ? Math.floor($0) : 0)"),
+  f32_bits: both("$0", "f32_bits($0)"),
+  f32_show: both("f32_show(e, $0)", "f32_show($0)", true),
+  f32_read: both("f32_read(e, $0)", "f32_read($0)", true),
+  nat_add: both("nat_chk(e, $0 + $1)", "nat_chk($0 + $1)"),
+  nat_sub: both("($0 < $1 ? 0 : $0 - $1)", "($0 < $1 ? 0n : $0 - $1)"),
+  nat_mul: both("nat_mul(e, $0, $1)", "nat_chk($0 * $1)"),
+  nat_double: both("nat_chk(e, $0 + $0)", "nat_chk($0 << 1n)"),
+  nat_cmp: both("(($0 > $1) + ($0 >= $1))", "cmp_new($0, $1)"),
+  nat_is_lt: both("($0 < $1)", "($0 < $1)"),
+  nat_divmod: both(["($1 == 0 ? 0 : $0 / $1)", "($1 == 0 ? $0 : $0 % $1)"],
+    "nat_divmod($0, $1)", true),
   ...tpl_ops("bool_", "or:|:|| xor:^:!==", "(($0) $o ($1))", "($0 $o $1)"),
-  string_append: {
-    JS: "($0 + $1)",
-  },
-  string_length: {
-    JS: "BigInt([...$0].length)",
-  },
-  array_new: {
-    call: true,
-    JS:   "array_new($0, $1)",
-  },
-  array_set: {
-    call: true,
-    JS:   "($0[$1 % $0.length] = $2, $0)",
-  },
-  array_get: {
-    call: true,
-    JS:   "{$: \"Tuple\", fst: $0, snd: $0[$1 % $0.length]}",
-  },
-  array_swap: {
-    call: true,
-    JS:   "array_rmw($0, $1, () => $2)",
-  },
-  array_size: {
-    call: true,
-    JS:   "{$: \"Tuple\", fst: $0, snd: $0.length}",
-  },
-  array_clone: {
-    C:    ["$0", "blk_copy(e, $0)"],
-    call: true,
-    JS:   "{$: \"Tuple\", fst: $0, snd: $0.slice()}",
-  },
+  string_append: js_op("($0 + $1)"),
+  string_length: js_op("BigInt([...$0].length)"),
+  array_new: js_op("array_new($0, $1)", true),
+  array_set: js_op("($0[$1 % $0.length] = $2, $0)", true),
+  array_get: js_op("{$: \"Tuple\", fst: $0, snd: $0[$1 % $0.length]}", true),
+  array_swap: js_op("array_rmw($0, $1, () => $2)", true),
+  array_size: js_op("{$: \"Tuple\", fst: $0, snd: $0.length}", true),
+  array_clone: both(["$0", "blk_copy(e, $0)"],
+    "{$: \"Tuple\", fst: $0, snd: $0.slice()}", true),
   ...Object.fromEntries(Object.entries({
     add: "(o + $2) >>> 0", min: "Math.min(o, $2)", max: "Math.max(o, $2)",
     and: "(o & $2) >>> 0", or: "(o | $2) >>> 0", xor: "(o ^ $2) >>> 0",
     exch: "$2", cmpx: "o === $2 ? $3 : o", fadd: "Math.fround(o + $2)",
-  }).map(([k, js]) => ["array_atomic_" + k.replace("cmpx", "cas"), {
-    C:    ["$0", "a32_" + k + "(blk_ptr(e.mem, blk_loc(e.mem, $0),"
+  }).map(([k, js]) => ["array_atomic_" + k.replace("cmpx", "cas"),
+    both(["$0", "a32_" + k + "(blk_ptr(e.mem, blk_loc(e.mem, $0),"
       + " blk_at($0, $1, 0)), (u32)$2" + (k === "cmpx" ? ", (u32)$3)" : ")")],
-    call: true,
-    JS:   "array_rmw($0, $1, (o) => " + js + ")",
-  }])),
+    "array_rmw($0, $1, (o) => " + js + ")", true)])),
 }, null);
 
 // Optimized
@@ -338,75 +249,34 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
 
 // The JS lane's native types: their constructors, field readers and tests.
 const OPTIMIZED: Record<Bend.Name, Native> = Object.setPrototypeOf({
-  Nat: {
-    intr: {
-      Zero: "0n",
-      Succ: tpl_nat("n", "nat_chk($0 + 1n)"),
-    },
-  },
-  Bool: {
-    intr: {
-      False: "false",
-      True:  "true",
-    },
-    cond: {
-      False: "!$0",
-      True:  "$0",
-    },
-  },
-  U32: {
-    intr: {
-      U32: "word_to_u32($0)",
-    },
-  },
-  F32: {
-    intr: {
-      F32: "f32_from_bits(word_to_u32($0))",
-    },
-  },
+  Nat: { intr: { Zero: "0n", Succ: tpl_nat("n", "nat_chk($0 + 1n)") } },
+  Bool: { intr: { False: "false", True: "true" },
+    cond: { False: "!$0", True: "$0" } },
+  U32: { intr: { U32: "word_to_u32($0)" } },
+  F32: { intr: { F32: "f32_from_bits(word_to_u32($0))" } },
   Char: {
-    intr: {
-      Chr: ([c]: string[]) => {
-        const n = Number(c);
-        return /^\d+$/.test(c)
-          && (n < 0xd800 || n >= 0xe000 && n <= 0x10ffff)
-          ? JSON.stringify(String.fromCodePoint(n))
-          : "char_new(" + c + ")";
-      },
-    },
-    elim: {
-      Chr: ["$0.codePointAt(0)"],
-    },
+    intr: { Chr: ([c]: string[]) => {
+      const n = Number(c);
+      return /^\d+$/.test(c)
+        && (n < 0xd800 || n >= 0xe000 && n <= 0x10ffff)
+        ? JSON.stringify(String.fromCodePoint(n))
+        : "char_new(" + c + ")";
+    } },
+    elim: { Chr: ["$0.codePointAt(0)"] },
   },
   Array: {
-    intr: {
-      ALeaf: "[$0]",
-      ANode: "array_node($0, $1)",
-    },
-    elim: {
-      ALeaf: ["$0[0]"],
-      ANode: ["$0.slice(0, $0.length >> 1)", "$0.slice($0.length >> 1)"],
-    },
-    cond: {
-      ALeaf: "$0.length === 1",
-      ANode: "$0.length !== 1",
-    },
+    intr: { ALeaf: "[$0]", ANode: "array_node($0, $1)" },
+    elim: { ALeaf: ["$0[0]"],
+      ANode: ["$0.slice(0, $0.length >> 1)", "$0.slice($0.length >> 1)"] },
+    cond: { ALeaf: "$0.length === 1", ANode: "$0.length !== 1" },
   },
   String: {
-    intr: {
-      SNil: "\"\"",
-      SCon: ([h, t]: string[]) => STRLIT.test(h) && STRLIT.test(t)
-        ? JSON.stringify(JSON.parse(h) + JSON.parse(t))
-        : "(" + h + " + " + t + ")",
-    },
-    elim: {
-      SCon: ["($0.codePointAt(0) > 0xFFFF ? $0.slice(0, 2) : $0[0])",
-        "($0.codePointAt(0) > 0xFFFF ? $0.slice(2) : $0.slice(1))"],
-    },
-    cond: {
-      SNil: "$0 === \"\"",
-      SCon: "$0 !== \"\"",
-    },
+    intr: { SNil: "\"\"", SCon: ([h, t]: string[]) => STRLIT.test(h)
+      && STRLIT.test(t) ? JSON.stringify(JSON.parse(h) + JSON.parse(t))
+      : "(" + h + " + " + t + ")" },
+    elim: { SCon: ["($0.codePointAt(0) > 0xFFFF ? $0.slice(0, 2) : $0[0])",
+      "($0.codePointAt(0) > 0xFFFF ? $0.slice(2) : $0.slice(1))"] },
+    cond: { SNil: "$0 === \"\"", SCon: "$0 !== \"\"" },
   },
 }, null);
 
@@ -669,9 +539,17 @@ function tpl_ops(pre: string, names: string, C: string, JS: string):
   const out: Record<string, Intr> = {};
   for (const p of names.split(" ")) {
     const [k, o = k, jo = o] = p.split(":");
-    out[pre + k] = { C: C.replaceAll("$o", o), JS: JS.replaceAll("$o", jo) };
+    out[pre + k] = both(C.replaceAll("$o", o), JS.replaceAll("$o", jo));
   }
   return out;
+}
+
+function both(C: Gen | string[], JS: Gen, call = false): Intr {
+  return call ? { C, JS, call: true } : { C, JS };
+}
+
+function js_op(JS: Gen, call = false): Intr {
+  return call ? { JS, call: true } : { JS };
 }
 
 function tpl(t: Gen, xs: string[]): string {
@@ -3702,13 +3580,9 @@ static const char* CLI_HELP =
 // ===
 
 #define fid_arity(x) ((u32)FID_ARITY_T[x])
-
 #define fid_bangs(x) ((bool)(FID_FLAG_T[x] & 1))
-
 #define fid_nofk(x) ((bool)(FID_FLAG_T[x] & 2))
-
 #define fid_seqk(x) (fid_resw(x) != 0)
-
 #define fid_resw(x) ((u32)FID_RESW_T[x])
 
 // Cid
