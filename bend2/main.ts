@@ -644,7 +644,8 @@ function book_err(e: unknown): string {
 
 async function load_js(path: string): Promise<string> {
   try {
-    const [book] = await book_read(path);
+    const [book, n0] = await book_read(path);
+    cli_report(book, n0, 2);
     const outs = [...new Set(book.order)].filter((k) => {
       const tld = book.tlds[k];
       return tld.$ === "Def" && tld.v !== null && tld.b !== true
