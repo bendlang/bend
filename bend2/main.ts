@@ -471,7 +471,8 @@ function cc_find(gpu: boolean): string {
 // builds with the GPU lane and writes its GPU program too (on Linux only with
 // CUDA at the first of $CUDA_HOME, $CUDA_PATH, /usr/local/cuda and /opt/cuda
 // (Arch's) that holds nvrtc.h, its libraries in lib64 or, as nix lays them,
-// lib; else the ! runs on the cores, and the build says so). On macOS a
+// lib; without CUDA, with ROCm at $ROCM_PATH, else at /opt/rocm, for the HIP
+// lane; else the ! runs on the cores, and the build says so). On macOS a
 // program with a framework (#import: a window, audio) builds as Objective-C;
 // on Linux it links the X11 (plus libdl, for dlopen before glibc 2.34) and
 // ALSA libraries it includes.
@@ -482,11 +483,14 @@ function cli_build(bin: string, file: string): void {
   const cuda  = [process.env.CUDA_HOME, process.env.CUDA_PATH,
     "/usr/local/cuda", "/opt/cuda"]
     .find(d => d && fs.existsSync(d + "/include/nvrtc.h")) ?? "";
+  const rocm  = process.env.ROCM_PATH || "/opt/rocm";
+  const hip   = !mac && cuda === "" && fs.existsSync(rocm + "/include/hip/hiprtc.h");
   const uses  = !/^#define BANGS\s+0$/m.test(c);
-  const bangs = uses && (mac || cuda !== "");
+  const bangs = uses && (mac || cuda !== "" || hip);
   if (uses && !bangs) {
     cli_say(2, "bend: no CUDA toolkit (include/nvrtc.h under $CUDA_HOME,"
-      + " $CUDA_PATH, /usr/local/cuda or /opt/cuda), so ! runs on the CPU\n");
+      + " $CUDA_PATH, /usr/local/cuda or /opt/cuda) nor ROCm (include/hip/hiprtc.h"
+      + " under $ROCM_PATH or /opt/rocm), so ! runs on the CPU\n");
   }
   const cc    = cc_find(bangs);
   const objc  = mac && (bangs || /^#import /m.test(c))
@@ -496,6 +500,9 @@ function cli_build(bin: string, file: string): void {
   const cpu = [...objc, "-std=c11", "-O3", file, "-lpthread", "-lm",
     ...libs, "-o", path.resolve(bin)];
   const gpu = mac ? ["-DBEND_METAL=1", ...cpu]
+    : hip ? ["-DBEND_HIP=1", "-D__HIP_PLATFORM_AMD__", "-I" + rocm + "/include",
+      "-L" + rocm + "/lib", "-Wl,-rpath," + rocm + "/lib", ...cpu,
+      "-lamdhip64", "-lhiprtc"]
     : ["-DBEND_CUDA=1", "-I" + cuda + "/include", "-L" + cuda + "/lib64",
       "-L" + cuda + "/lib", ...cpu, "-lcuda", "-lnvrtc"];
   const steps: [string, string[]][] = bangs
