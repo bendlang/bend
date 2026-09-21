@@ -3358,10 +3358,15 @@ const TEMPLATE = String.raw`
 
 #pragma clang fp contract(off)
 
+// the device dialect: a second RTC lane adds its macro here
+#if defined(__CUDACC_RTC__)
+#define BEND_RTC 1
+#endif
+
 #ifdef __METAL_VERSION__
 #include <metal_stdlib>
 using namespace metal;
-#elif !defined(__CUDACC_RTC__)
+#elif !defined(BEND_RTC)
 #ifndef __APPLE__
 #define _GNU_SOURCE
 #endif
@@ -3433,7 +3438,7 @@ using namespace metal;
 #define g32_ini(p)    a32_store(p, 0)
 #define g32_add(p, v) a32_add(p, v)
 #define g32_get(p)    a32_load(p)
-#ifdef __CUDACC_RTC__
+#ifdef BEND_RTC
 // plain data stays L1-cacheable: cross-lane handoffs go through a32 + FENCE
 #define DEV
 #define GA32    __shared__ u32
@@ -3516,7 +3521,7 @@ typedef ulong u64;
 typedef uint  u32;
 typedef uchar u8;
 typedef float f32;
-#elif defined(__CUDACC_RTC__)
+#elif defined(BEND_RTC)
 typedef unsigned long long u64;
 typedef long long          int64_t;
 typedef unsigned int       u32;
@@ -3739,7 +3744,7 @@ ${a32_ops((k) => `atomic_fetch_${k}_explicit(A32(p), v, RLX)`)}
 #define a32_swp(p, e, v) \
   atomic_compare_exchange_weak_explicit(A32(p), e, v, RLX, RLX)
 
-#elif defined(__CUDACC_RTC__)
+#elif defined(BEND_RTC)
 
 #define a32_load(p)     (*(volatile u32*)(p))
 #define a32_store(p, v) (*(volatile u32*)(p) = (v))
@@ -4792,7 +4797,7 @@ extern "C" __global__ void bend_dev(Corpus H, u32 pass) {
 // pixels itself. An Image is a quadtree over 2^k x 2^k: a Qua at level
 // i splits its square in four (tl, tr, bl, br), a Qua under the pixels
 // follows tl, a Pix is 0xRRGGBB.
-#if defined(__linux__) || defined(__CUDACC_RTC__)
+#if defined(__linux__) || defined(BEND_RTC)
 
 INLINE u32 window_pix(Corpus H, Term t, u32 k, u32 x, u32 y) {
   for (u32 i = k; term_tag(t) == TAG_CTR;) {
@@ -4807,7 +4812,7 @@ INLINE u32 window_pix(Corpus H, Term t, u32 k, u32 x, u32 y) {
   return (u32)term_loc(t) & 0xFFFFFF;
 }
 
-#ifdef __CUDACC_RTC__
+#ifdef BEND_RTC
 extern "C" __global__ void window_dev(Corpus H, Term root, u32 w, u32 h,
   u32 k, u32* out) {
   u32 x = blockIdx.x * blockDim.x + threadIdx.x;
@@ -5023,6 +5028,18 @@ static void gpu_run(u32 f) {
 
 #endif
 
+#if BEND_CUDA
+
+static u64 gpu_hash(void) {
+  u64 key = 14695981039346656037ull ^ CUBE_LOG;
+  for (const char* p = BEND_SRC; *p != 0; p += 1) {
+    key = (key ^ (u8)*p) * 1099511628211ull;
+  }
+  return key;
+}
+
+#endif
+
 #if BEND_METAL
 
 static bool gpu_probe(void) {
@@ -5162,14 +5179,6 @@ static Corpus gpu_map(u64 bytes) {
   cuMemAdvise(p, bytes, CU_MEM_ADVISE_SET_PREFERRED_LOCATION, gpu_dev);
 #endif
   return (Corpus)(uintptr_t)p;
-}
-
-static u64 gpu_hash(void) {
-  u64 key = 14695981039346656037ull ^ CUBE_LOG;
-  for (const char* p = BEND_SRC; *p != 0; p += 1) {
-    key = (key ^ (u8)*p) * 1099511628211ull;
-  }
-  return key;
 }
 
 static bool gpu_make(const char* path) {
