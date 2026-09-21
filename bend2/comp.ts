@@ -646,10 +646,10 @@ function name_clean(k: string): string {
 }
 
 function name_local(fl: File, k: Bend.Name): string {
-  const base = name_clean(k);
+  const base = name_clean(k).replace(/^bend_/, "");
   const n = fl.fresh.get(base) ?? 0;
   fl.fresh.set(base, n + 1);
-  return base + "_" + n;
+  return "bend_" + base + "_" + n;
 }
 
 // Die
