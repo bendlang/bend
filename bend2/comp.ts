@@ -603,6 +603,8 @@ const FOLDS: Map<HTerm, HTerm | null> = new Map();
 
 const FLATS: Map<Name, boolean> = new Map();
 
+const PLAINS: Map<Name, boolean> = new Map();
+
 const SIGS: Map<Name, Sig> = new Map();
 
 const BRWS: Map<Name, boolean[]> = new Map();
@@ -1442,7 +1444,7 @@ function def_body(cb: Carb, k: Name): TLD | undefined {
 // refs, calls and flatness (no fork, no bang call, only tail self-calls).
 function carb_book(src: Bend.Book, roots: Name[]): Carb {
   book_owned(src);
-  [TELES, SRCS, NODES, LAYS, CYCLES, FLATS, SIGS, BRWS].forEach((m) =>
+  [TELES, SRCS, NODES, LAYS, CYCLES, FLATS, PLAINS, SIGS, BRWS].forEach((m) =>
     m.clear());
   LOCAL.clear();
   PROBES.length = 1;
@@ -1529,6 +1531,21 @@ function flat_of(k: Name): boolean {
     const own = SRCS.get(k);
     FLATS.set(k, false);
     return own !== undefined && own.flat && [...own.deps].every(flat_of);
+  });
+}
+
+// A def is plain when its JS returns no $JMP: a self call or a closure
+// applied in tail position rides the trampoline, so its callers must
+// run_loop; every other return comes back plain through the machine
+// stack, whose depth the def DAG bounds (defs never call forward).
+function plain_of(c: Carb, k: Bend.Name): boolean {
+  return memo(PLAINS, k, () => {
+    const tld = def_body(c, k);
+    return tld?.$ === "Def" && tld.h !== undefined && tld.i === undefined
+      && !term_any(c, tld.h as HTerm, (s, tail) => {
+        const ck = tail ? call_kind(c, s) : null;
+        return ck !== null && (ck.k === k || ck.k === CLO_APPLY);
+      });
   });
 }
 
@@ -3126,13 +3143,10 @@ function js_call(fl: File, k: Name, args: HTerm[],
     return tpl(intr, xs);
   }
   const call = js_sat(k) + "(" + exprs.join(", ") + ")";
-  if (v !== "") {
-    return "(" + v + ") => " + call;
-  }
-  if (def_foreign(tld)) {
-    return call;
-  }
-  return tail ? "run_jump(" + js_sat(k) + ", [" + exprs.join(", ") + "])"
+  return v !== "" ? "(" + v + ") => " + call
+    : def_foreign(tld) ? call
+    : k !== fl.def && plain_of(fl, k) ? call
+    : tail && k === fl.def ? "run_jump(" + js_sat(k) + ", [" + exprs.join(", ") + "])"
     : "run_loop(" + call + ")";
 }
 
@@ -3283,6 +3297,7 @@ function js_match(fl: File, x: HTerm, ty: HTerm | null,
 }
 
 function js_def(fl: File, k: Name, def: Def): void {
+  fl.def = k;
   fl.fresh = new Map();
   fl.fuel = FOLD_FUEL;
   if (intr_of(fl, k, true) !== undefined) {
