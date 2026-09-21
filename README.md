@@ -252,3 +252,21 @@ Most of these limitations are being addressed and will improve over time!
 ```
 
 **BEND IS YOUNG. EXPECT BUGS AND [REPORT THEM](https://github.com/bendlang/bend/issues).**
+
+# Credits
+
+Bend is created by [Victor Taelin](https://github.com/VictorTaelin) and built
+by the team:
+
+- [Lorenzo W Battistela](https://github.com/Lorenzobattistela)
+- [Paulo J Cavalcanti](https://github.com/pjcavalcanti)
+- [Nico Abril](https://github.com/nicolas-abril)
+- [Vanessa Ostroski](https://github.com/Ostrowskii)
+- [Vitor Chiarelli Neves](https://github.com/Sipher)
+- [Alex Van de Sande](https://x.com/avsa)
+
+If you were part of this and your name is missing, please get in touch so we
+can add it here.
+
+Thanks to [Ayush Somani](https://ayushsomani.me/) for reserving the
+`bend-lang` name for us.
