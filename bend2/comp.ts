@@ -988,8 +988,8 @@ function lay_of(book: Bend.Book, A: HTerm | null): Lay {
       || lay_cyclic(book, t.k)) {
       return BOX;
     }
-    const lay = lay_pack(tld.c.map((c): Arm =>
-      ({ k: c.k, fs: lay_fields(book, ctr_doms(book, c, t.x)) })));
+    const lay = lay_pack(tld.c.map((c) =>
+      [c.k, ctr_doms(book, c, t.x).map((A) => lay_of(book, A))]));
     return lay.ks.length > WIDE ? BOX : lay;
   });
 }
@@ -1003,32 +1003,23 @@ function lay_el(book: Bend.Book, A: HTerm | null): Lay {
     ? tele_unbind(book, tld.c[0].T).ret : A);
 }
 
-function lay_fields(book: Bend.Book, As: (HTerm | null)[]): Field[] {
-  const fs: Field[] = [];
-  let at = 0;
-  for (const A of As) {
-    const lay = lay_of(book, A);
-    fs.push({ at, lay });
-    at += lay.ks.length;
-  }
-  return fs;
-}
-
-function lay_pack(arms: Arm[]): Lay {
+// Fields start after the tag; the packer owns their final offsets.
+function lay_pack(arms: [Bend.Name, Lay[]][]): Lay {
   const tag = arms.length > 1 ? 1 : 0;
   const ks: Kind[] = tag === 1 ? ["w32"] : [];
-  for (const arm of arms) {
-    for (const f of arm.fs) {
-      f.at += tag;
-      f.lay.ks.forEach((k, j) => {
-        const at = f.at + j;
+  return { ks, arms: arms.map(([k, lays]) => {
+    let at = tag;
+    const fs = lays.map((lay) => {
+      const f = { at, lay };
+      for (const k of lay.ks) {
         const old = ks[at] ?? "w32";
-        ks[at] = old === "box" || k === "box" ? "box"
+        ks[at++] = old === "box" || k === "box" ? "box"
           : old === "w64" || k === "w64" ? "w64" : "w32";
-      });
-    }
-  }
-  return { ks, arms };
+      }
+      return f;
+    });
+    return { k, fs };
+  }) };
 }
 
 function lay_cyclic(book: Bend.Book, k: Bend.Name): boolean {
@@ -1050,7 +1041,7 @@ function lay_node(book: Bend.Book, k: Bend.Name): Lay {
   return memo(NODES, k, () => {
     const ctr = book.ctrs[k];
     const As = ctr ? ctr_doms(book, ctr) : [];
-    return lay_pack([{ k, fs: lay_fields(book, As) }]);
+    return lay_pack([[k, As.map((A) => lay_of(book, A))]]);
   });
 }
 
@@ -1939,8 +1930,7 @@ function val_unbox(fl: File, v: Val, lay: Lay): Val {
 // ===
 
 function arr_lay(el: Lay): Lay {
-  return lay_pack([{ k: "Tuple",
-    fs: [{ at: 0, lay: BOX }, { at: 1, lay: el }] }]);
+  return lay_pack([["Tuple", [BOX, el]]]);
 }
 
 function arr_cells(fl: File, l: string, at: string, el: Lay,
