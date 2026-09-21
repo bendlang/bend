@@ -5321,7 +5321,7 @@ static bool gpu_probe(void) {
 // heap_free and heap_alloc rewrite freed slots under it. A fault fills a
 // chunk through gpu_alias, a second mapping, while the chunk still traps,
 // so no other host thread sees it half filled.
-#define GPU_CHUNK (1ull << 21)
+#define GPU_CHUNK (1ull << 18)
 static u8*   gpu_stale;       // a flag a tracked chunk; 0 is dirty
 static char* gpu_alias;
 static u64   gpu_lo, gpu_hi;  // the tracked bytes of the corpus, whole chunks
