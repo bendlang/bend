@@ -94,11 +94,11 @@ type File = Carb & {
 
 type Gen = string | ((xs: string[]) => string);
 
-type Native = {
-  intr: Record<Bend.Name, Gen>;
-  elim?: Record<Bend.Name, string[]>;
-  cond?: Record<Bend.Name, string>;
-};
+type Native = Record<Bend.Name, {
+  intr: Gen;
+  elim?: string[];
+  cond?: string;
+}>;
 
 type Of<K> = Extract<HTerm, { $: K }>;
 
@@ -336,79 +336,54 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
 // Optimized
 // ---------
 
-// The JS lane's native types: their constructors, field readers and tests.
+// Each native constructor owns its builder, field readers and optional test.
 const OPTIMIZED: Record<Bend.Name, Native> = Object.setPrototypeOf({
   Nat: {
-    intr: {
-      Zero: "0n",
-      Succ: tpl_nat("n", "nat_chk($0 + 1n)"),
-    },
+    Zero: { intr: "0n" },
+    Succ: { intr: tpl_nat("n", "nat_chk($0 + 1n)") },
   },
   Bool: {
-    intr: {
-      False: "false",
-      True:  "true",
-    },
-    cond: {
-      False: "!$0",
-      True:  "$0",
-    },
+    False: { intr: "false", cond: "!$0" },
+    True: { intr: "true", cond: "$0" },
   },
   U32: {
-    intr: {
-      U32: "word_to_u32($0)",
-    },
+    U32: { intr: "word_to_u32($0)" },
   },
   F32: {
-    intr: {
-      F32: "f32_from_bits(word_to_u32($0))",
-    },
+    F32: { intr: "f32_from_bits(word_to_u32($0))" },
   },
   Char: {
-    intr: {
-      Chr: ([c]: string[]) => {
+    Chr: {
+      intr: ([c]: string[]) => {
         const n = Number(c);
         return /^\d+$/.test(c)
           && (n < 0xd800 || n >= 0xe000 && n <= 0x10ffff)
           ? JSON.stringify(String.fromCodePoint(n))
           : "char_new(" + c + ")";
       },
-    },
-    elim: {
-      Chr: ["$0.codePointAt(0)"],
+      elim: ["$0.codePointAt(0)"],
     },
   },
   Array: {
-    intr: {
-      ALeaf: "[$0]",
-      ANode: "array_node($0, $1)",
-    },
-    elim: {
-      ALeaf: ["$0[0]"],
-      ANode: ["$0.slice(0, $0.length >> 1)", "$0.slice($0.length >> 1)"],
-    },
-    cond: {
-      ALeaf: "$0.length === 1",
-      ANode: "$0.length !== 1",
+    ALeaf: { intr: "[$0]", elim: ["$0[0]"], cond: "$0.length === 1" },
+    ANode: {
+      intr: "array_node($0, $1)",
+      elim: ["$0.slice(0, $0.length >> 1)", "$0.slice($0.length >> 1)"],
+      cond: "$0.length !== 1",
     },
   },
   String: {
-    intr: {
-      SNil: "\"\"",
-      SCon: ([h, t]: string[]) => STRLIT.test(h) && STRLIT.test(t)
+    SNil: { intr: "\"\"", cond: "$0 === \"\"" },
+    SCon: {
+      intr: ([h, t]: string[]) => STRLIT.test(h) && STRLIT.test(t)
         ? JSON.stringify(JSON.parse(h) + JSON.parse(t))
         : "(" + h + " + " + t + ")",
-    },
-    elim: {
-      SCon: ["($0.codePointAt(0) > 0xFFFF ? $0.slice(0, 2) : $0[0])",
+      elim: ["($0.codePointAt(0) > 0xFFFF ? $0.slice(0, 2) : $0[0])",
         "($0.codePointAt(0) > 0xFFFF ? $0.slice(2) : $0.slice(1))"],
-    },
-    cond: {
-      SNil: "$0 === \"\"",
-      SCon: "$0 !== \"\"",
+      cond: "$0 !== \"\"",
     },
   },
-}, null);
+} satisfies Record<Bend.Name, Native>, null);
 
 // Native
 // ------
@@ -3169,7 +3144,7 @@ function js_expr(fl: File, tm: HTerm,
         .map((f) => js_expr(fl, f, null));
       const native = OPTIMIZED[adt.k];
       if (native !== undefined) {
-        return tpl(native.intr[x.k] ?? die(x.k + NATIVE_DIE), exprs);
+        return tpl(native[x.k]?.intr ?? die(x.k + NATIVE_DIE), exprs);
       }
       const keys = js_ctr(fl, x.k);
       return exprs.reduce((e, z, j) => e + ", [\"" + keys[j] + "\"]: " + z,
@@ -3248,7 +3223,7 @@ function js_func(fl: File, tm: HTerm, ty0: HTerm | null,
     const native = OPTIMIZED[adt.k];
     const bodies = arms.map(([k, h]) => () => {
       const keys = js_ctr(fl, k);
-      const el = native?.elim?.[k];
+      const el = native?.[k]?.elim;
       if (native !== undefined && (el ?? []).length !== keys.length) {
         die(k + NATIVE_DIE);
       }
@@ -3262,7 +3237,7 @@ function js_func(fl: File, tm: HTerm, ty0: HTerm | null,
     return emit_chain(fl, (i) => native === undefined
       ? s + ".$ === \"" + name_own(arms[i][0], fl.book.tlds[adt.k], " +")
         + "\""
-      : tpl(native.cond?.[arms[i][0]] ?? die(arms[i][0] + NATIVE_DIE), [s]),
+      : tpl(native[arms[i][0]]?.cond ?? die(arms[i][0] + NATIVE_DIE), [s]),
     bodies);
   }
   if (x.$ === "Let") {
