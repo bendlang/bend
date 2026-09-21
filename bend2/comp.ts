@@ -2651,6 +2651,15 @@ function lits_cond(w: string, j: number, n: number): string {
   return j === 32 ? `${w} == ${n}` : `(${w} & ${2 ** j - 1}) == ${n}`;
 }
 
+function mat_tab(fl: File, x: Of<"Mat">, adt: HAdt, ret: HTerm): {
+  ls: Chain | null; ws: Leaf[] | null; tb: Chain | null; id: number | null;
+} {
+  const ls = adt.k === "Nat" ? emit_nats(x) : null;
+  const ws = WORDS[adt.k] === W32 ? emit_lits(x) : null;
+  const tb = ls ?? (adt.k === "U32" ? lits_rows(fl, ws!, ret) : null);
+  return { ls, ws, tb, id: tb === null ? null : emit_tab(fl, tb, ret) };
+}
+
 function emit_match(fl: File, x: Of<"Mat"> | Of<"Efq">,
   ty: HTerm | null, ers: HTerm[], args: Val[], dst: Dst): void {
   if (x.$ === "Efq") {
@@ -2663,10 +2672,7 @@ function emit_match(fl: File, x: Of<"Mat"> | Of<"Efq">,
   const lay = word ? lay_node(fl.book, adt.k) : lay_of(fl.book, all.A);
   const u = val_hold(fl, val_to(fl, args[0], word ? W32 : lay), "s");
   const ret = all.B(DUMMY);
-  const ls = adt.k === "Nat" ? emit_nats(x) : null;
-  const ws = word ? emit_lits(x) : null;
-  const tb = ls ?? (adt.k === "U32" ? lits_rows(fl, ws!, ret) : null);
-  const id = tb === null ? null : emit_tab(fl, tb, ret);
+  const { ls, ws, tb, id } = mat_tab(fl, x, adt, ret);
   if (id !== null) {
     bind_dead(fl, []);
     return emit_put(fl, dst, val_new(
@@ -3101,10 +3107,7 @@ function js_func(fl: File, tm: HTerm, ty0: HTerm | null,
       });
     }
     const ret = all.B(DUMMY);
-    const ls = adt.k === "Nat" ? emit_nats(x) : null;
-    const ws = WORDS[adt.k] === W32 ? emit_lits(x) : null;
-    const tb = ls ?? (adt.k === "U32" ? lits_rows(fl, ws!, ret) : null);
-    const id = tb === null ? null : emit_tab(fl, tb, ret);
+    const { ls, ws, tb, id } = mat_tab(fl, x, adt, ret);
     if (id !== null) {
       return file_push(fl, `return TAB_${id}[Math.min(Number(${s}), ${
         tb!.length - 1})];`);
