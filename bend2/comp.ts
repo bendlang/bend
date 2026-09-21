@@ -1214,10 +1214,9 @@ function show_main(book: Bend.Book): Show | null {
 }
 
 export function io_run(book: Bend.Book, args: string[] = []): number {
-  const src = js_lib(book, ["main"], null) + "\n" + RUNTIME_MAIN
-    + "\ncli_args = " + JSON.stringify(args) + ";\nreturn io_run("
-    + js_sat("main") + ");";
-  return new Function("require", src)(import.meta.require) as number;
+  return new Function("require", js_prog(book) + "\ncli_args = "
+    + JSON.stringify(args) + ";\nreturn io_run(" + js_sat("main") + ");")(
+    import.meta.require) as number;
 }
 
 // Anf
@@ -3216,12 +3215,15 @@ export function js_lib(book: Bend.Book, roots: Bend.Name[],
     + [...fl.seg.lines, ...tabs].join("\n") + lib;
 }
 
+function js_prog(book: Bend.Book): string {
+  return js_lib(book, ["main"], null) + "\n" + RUNTIME_MAIN;
+}
+
 export function js_book(book: Bend.Book): string {
   const show = show_main(book);
-  return js_lib(book, ["main"], null) + "\n" + RUNTIME_MAIN
-    + "\ncli(process.argv.slice(2));\nio_exit(" + js_sat("main") + ", "
-    + JSON.stringify(show && [show.cells.map((c) => typeof c === "string"
-      ? 0 : c), show.names]) + ");";
+  return js_prog(book) + "\ncli(process.argv.slice(2));\nio_exit("
+    + js_sat("main") + ", " + JSON.stringify(show && [show.cells.map((c) =>
+      typeof c === "string" ? 0 : c), show.names]) + ");";
 }
 
 // RuntimeC
