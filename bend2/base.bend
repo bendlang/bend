@@ -1570,6 +1570,148 @@ law F32.atan2:
   for b: F32
   F32
 
+law F32.fma:
+  for a: F32
+  for b: F32
+  for c: F32
+  F32
+
+law F32.cbrt:
+  for a: F32
+  F32
+
+law F32.hypot_native:
+  for a: F32
+  for b: F32
+  F32
+
+law F32.exp2:
+  for a: F32
+  F32
+
+law F32.expm1:
+  for a: F32
+  F32
+
+law F32.exp2m1:
+  for a: F32
+  F32
+
+law F32.exp10m1:
+  for a: F32
+  F32
+
+law F32.log1p:
+  for a: F32
+  F32
+
+law F32.log2p1:
+  for a: F32
+  F32
+
+law F32.log10p1:
+  for a: F32
+  F32
+
+law F32.asinh:
+  for a: F32
+  F32
+
+law F32.acosh:
+  for a: F32
+  F32
+
+law F32.atanh:
+  for a: F32
+  F32
+
+law F32.scalbn_pos:
+  for a: F32
+  for n: U32
+  F32
+
+law F32.scalbn_neg:
+  for a: F32
+  for n: U32
+  F32
+
+law F32.logb:
+  for a: F32
+  F32
+
+law F32.roundeven:
+  for a: F32
+  F32
+
+law F32.remainder:
+  for a: F32
+  for b: F32
+  F32
+
+law F32.remquo_code:
+  for a: F32
+  for b: F32
+  U32
+
+law F32.erf:
+  for a: F32
+  F32
+
+law F32.erfc:
+  for a: F32
+  F32
+
+law F32.tgamma:
+  for a: F32
+  F32
+
+law F32.lgamma:
+  for a: F32
+  F32
+
+law F32.sinpi:
+  for a: F32
+  F32
+
+law F32.cospi:
+  for a: F32
+  F32
+
+law F32.tanpi:
+  for a: F32
+  F32
+
+law F32.asinpi:
+  for a: F32
+  F32
+
+law F32.acospi:
+  for a: F32
+  F32
+
+law F32.atanpi:
+  for a: F32
+  F32
+
+law F32.atan2pi:
+  for y: F32
+  for x: F32
+  F32
+
+law F32.rsqrt:
+  for a: F32
+  F32
+
+law F32.pown_pos:
+  for a: F32
+  for n: U32
+  F32
+
+law F32.pown_neg:
+  for a: F32
+  for n: U32
+  F32
+
 law F32.neg:
   for a: F32
   F32
@@ -1703,8 +1845,8 @@ def F32.lerp(+a: F32, b: F32, t: F32) -> F32:
 def F32.square(+a: F32) -> F32:
   F32.mul(a, a)
 
-def F32.hypot(+x: F32, +y: F32) -> F32:
-  F32.sqrt(F32.add(F32.mul(x, x), F32.mul(y, y)))
+def F32.hypot(x: F32, y: F32) -> F32:
+  F32.hypot_native(x, y)
 
 def F32.round(a: F32) -> F32:
   F32.floor(F32.add(a, 0.5))

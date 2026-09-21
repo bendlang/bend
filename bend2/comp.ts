@@ -5,6 +5,7 @@
 import * as fs from "node:fs";
 
 import * as Bend from "./bend.ts";
+import * as MathRT from "./math.ts";
 
 // Comp
 // ====
@@ -224,42 +225,7 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     C:  "((u64)(u32)($0))",
     JS: "Number($0 & 0xFFFFFFFFn)",
   },
-  ...tpl_ops("f32_", "add:+ sub:- mul:* div:/",
-    "f32_rewrap(f32_unbox($0) $o f32_unbox($1))", "Math.fround($0 $o $1)"),
-  f32_neg: {
-    C:  "f32_rewrap(-f32_unbox($0))",
-    JS: "(-$0)",
-  },
-  ...tpl_ops("f32_", CMPS, "((u64)(f32_unbox($0) $o f32_unbox($1)))",
-    "($0 $o $1)"),
-  ...tpl_ops("f32_", "sqrt exp log log2 log10 sin cos tan asin acos atan"
-    + " sinh cosh tanh floor ceil trunc abs:fabs:abs",
-    "f32_rewrap((f32)$o(f32_unbox($0)))", "Math.fround(Math.$o($0))"),
-  ...tpl_ops("f32_", "pow atan2",
-    "f32_rewrap((f32)$o(f32_unbox($0), f32_unbox($1)))",
-    "Math.fround(Math.$o($0, $1))"),
-  f32_mod: {
-    C:  "f32_rewrap((f32)fmod(f32_unbox($0), f32_unbox($1)))",
-    JS: "Math.fround($0 % $1)",
-  },
-  f32_to_u32: {
-    C:  "f32_to_u32($0)",
-    JS: "($0 >= 1 && $0 < 4294967296 ? Math.floor($0) : 0)",
-  },
-  f32_bits: {
-    C:  "$0",
-    JS: "f32_bits($0)",
-  },
-  f32_show: {
-    C:    "f32_show(e, $0)",
-    call: true,
-    JS:   "f32_show($0)",
-  },
-  f32_read: {
-    C:    "f32_read(e, $0)",
-    call: true,
-    JS:   "f32_read($0)",
-  },
+  ...MathRT.OPERATIONS,
   nat_add: {
     C:  "nat_chk(e, $0 + $1)",
     JS: "nat_chk($0 + $1)",
@@ -413,11 +379,7 @@ const OPTIMIZED: Record<Bend.Name, Native> = Object.setPrototypeOf({
 // Native
 // ------
 
-// sin, cos and tan are fast:: (cheap, the same pixels); the rest precise::
-const SHIMS = "sqrt exp log log2 log10 sin cos tan pow fmod".split(" ")
-  .map((n) => "#define " + n.padEnd(5) + (["sin", "cos", "tan"].includes(n)
-    ? " fast::" : " precise::") + n).join("\n")
-  + "\n#define atan2 atan2_c99";
+const SHIMS = MathRT.SHIMS;
 
 const NATIVE = {
   C: String.raw`
@@ -437,20 +399,9 @@ ${SHIMS}
 #define U32_QUO(a, b) \
   ((a) / 2 / (b) * 2 + ((a) - (a) / 2 / (b) * 2 * (b) >= (b)))
 
-INLINE f32 f32_unbox(u64 x) {
-  union { u32 u; f32 f; } p = { (u32)x };
-  return p.f;
-}
-
-INLINE u64 f32_rewrap(f32 x) {
-  union { f32 f; u32 u; } p = { x };
-  return p.u;
-}
-
-INLINE U32 f32_to_u32(U32 a) {
-  f32 v = f32_unbox(a);
-  return v >= 0.0f && v < 4294967296.0f ? (u32)v : 0;
-}
+${MathRT.C_PRE}
+${MathRT.C}
+${MathRT.C_POST}
 
 INLINE Nat nat_chk(Env e, Nat n) {
   if (n > NAT_IMM) {
@@ -464,64 +415,10 @@ INLINE Nat nat_mul(Env e, Nat a, Nat b) {
   return nat_chk(e, b != 0 && a > NAT_IMM / b ? NAT_IMM + 1 : a * b);
 }
 
-#if DEVICE
-
-#define f32_show(e, x) (err_post(e.mem, ERR_FIDS), 0)
-#define f32_read(e, s) (err_post(e.mem, ERR_FIDS), 0)
-
-#else
-
-static Term f32_show(Env e, Term x);
-static Term f32_read(Env e, Term s);
-
-#endif
+${MathRT.C_F32_IO_DECL}
 `.slice(1),
   IO: String.raw`
-static int f32_text(char* buf, f32 v) {
-  int n = 0;
-  int p = 0;
-  if (v != v) {
-    return sprintf(buf, "nan");
-  }
-  for (; p < 9; p += 1) {
-    n = snprintf(buf, 40, "%.*e", p, (double)v);
-    if (strtof(buf, NULL) == v) {
-      break;
-    }
-  }
-  char* ep = strchr(buf, 'e');
-  if (ep == NULL) {
-    return n;
-  }
-  int ex = atoi(ep + 1);
-  if (ex >= 21 || ex <= -7) {
-    n = (int)(ep - buf) + sprintf(ep, "e%c%d", ex < 0 ? '-' : '+', abs(ex));
-  } else if (ex <= p) {
-    n = snprintf(buf, 40, "%.*f", p - ex, (double)v);
-  } else {
-    int s = *buf == '-';
-    memmove(buf + s + 1, buf + s + 2, p);
-    memset(buf + s + 1 + p, '0', ex - p);
-    n = s + 1 + ex;
-  }
-  return n;
-}
-
-static Term f32_show(Env e, Term x) {
-  char buf[40];
-  return io_str(e, buf, f32_text(buf, f32_unbox(x)));
-}
-
-static Term f32_read(Env e, Term s) {
-  u64 n = 0;
-  char* text = io_cstr(e, s, &n);
-  char* end;
-  f32 v = strtof(text, &end);
-  Term out = n > 0 && (u64)(end - text) == n && strpbrk(text, "xX(") == NULL
-    ? io_box(e, CID_SOME, f32_rewrap(v)) : term_pak(CID_NONE, 0);
-  free(text);
-  return out;
-}
+${MathRT.C_IO}
 `.slice(1),
   JS: String.raw`
 function word_to_u32(w) {
@@ -558,34 +455,11 @@ function nat_chk(n) {
   return n;
 }
 
-function f32_show(x) {
-  if (x !== x) {
-    return "nan";
-  }
-  if (!Number.isFinite(x) || Object.is(x, -0)) {
-    return x < 0 ? "-inf"
-      : x === 0 ? "-0" : "inf";
-  }
-  let s = "x";
-  for (let p = 1; p <= 9 && Math.fround(Number(s)) !== x; p += 1) {
-    s = String(Number(x.toExponential(p - 1)));
-  }
-  return s;
-}
+${MathRT.JS_PRE}
 
-function f32_bits(x) {
-  return new Uint32Array(new Float32Array([x]).buffer)[0];
-}
+${MathRT.JS}
 
-function f32_from_bits(u) {
-  return new Float32Array(new Uint32Array([u]).buffer)[0];
-}
-
-function f32_read(s) {
-  const re = /^\s*[+-]?((\d+\.?\d*|\.\d+)(e[+-]?\d+)?|inf(inity)?|nan)$/i;
-  const v = Number(s.replace(/inf\w*/i, "Infinity"));
-  return re.test(s) ? {$: "Some", value: Math.fround(v)} : {$: "None"};
-}
+${MathRT.JS_POST}
 
 function char_new(code) {
   if (code > 0x10FFFF || (code >= 0xD800 && code <= 0xDFFF)) {
