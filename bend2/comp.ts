@@ -1430,10 +1430,10 @@ function def_body(cb: Carb, k: Bend.Name): TLD | undefined {
 // whether it is flat: no fork, no bang call, self-calls in tail position.
 function carb_book(src: Bend.Book, roots: Bend.Name[]): Carb {
   book_owned(src);
-  PROBES.length = 1;
   [TELES, SRCS, NODES, LAYS, CYCLES, FLATS, SIGS, BRWS].forEach((m) =>
     m.clear());
   LOCAL.clear();
+  PROBES.length = 1;
   for (const [k, tld] of Object.entries(src.tlds)) {
     if (def_foreign(tld)) {
       LOCAL.set(k, name_own(k, tld, "(def|law) "));
