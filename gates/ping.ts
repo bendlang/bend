@@ -33,7 +33,7 @@ import * as lib from "./_lib";
 // Constants
 // =========
 
-if (!fs.existsSync(path.join(lib.SITE, "deploy", "release.ts"))) {
+if (!fs.existsSync(path.join(lib.SITE, "release", "release.ts"))) {
   console.log("SKIP the site repo is not at " + lib.SITE + " (set SITE_REPO)");
   process.exit(0);
 }
@@ -141,13 +141,13 @@ const caddy = Bun.serve({
 // Main
 // ====
 
-const hub = child.spawn(process.execPath, [path.join(lib.SITE, "deploy",
+const hub = child.spawn(process.execPath, [path.join(lib.SITE, "apps", "hub",
   "hub.ts")], { stdio: "ignore", env: { ...process.env, HUB_PORT:
   String(PORT + 1), HUB_STORE: path.join(TMP, "store"), CHECK_LOG: LOG,
   DL_DIR: DL } });
 try {
   await hub_wait();
-  const rel = await lib.exec(process.execPath, [path.join(lib.SITE, "deploy",
+  const rel = await lib.exec(process.execPath, [path.join(lib.SITE, "release",
     "release.ts"), "--dry", TARGET], undefined, 25_000, { DL_DIR: DL,
     BEND_REPO: lib.ROOT });
   const ver = (JSON.parse(fs.readFileSync(path.join(DL, "latest.json"),
@@ -241,7 +241,7 @@ try {
   const guide = await bend(["guide"]);
   const base  = await bend(["base", "Map"]);
   fs.writeFileSync(path.join(TMP, "sum.bend"),
-    "import Base\ndef main() -> Nat:\n  2n + 3n\n");
+    "import Base\ndef main() -> Nat:\n  (2n + 3n : Nat)\n");
   const sum5 = await bend([path.join(TMP, "sum.bend")]);
   check("guide, base and a program run through the executable",
     guide.out.startsWith("# Bend") && base.out.startsWith("type Map")
