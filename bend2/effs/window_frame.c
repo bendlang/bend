@@ -282,6 +282,12 @@ static u64         window_len;
 // there (the tree's pages never leave it), else window_pix a pixel at
 // a time.
 static void window_fill(Env e, u32* pix, u32 w, u32 h, Term image, u32 k) {
+#if BEND_HIP
+  if (io_gpu) {
+    gpu_show(image, w, h, k, pix);
+    return;
+  }
+#endif
 #if BEND_CUDA
   if (io_gpu) {
     Corpus H    = e.mem;
