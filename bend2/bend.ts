@@ -1028,7 +1028,7 @@ async function hub_get(book: Book, sub: string, hash: string, spn?: Span): Promi
   return src;
 }
 
-// name_hash asks the hub once what a name@version names: a version never
+// name_hash asks the hub once what a name@version names
 // moves, so the answer is kept
 async function name_hash(book: Book, nv: string, spn?: Span): Promise<string> {
   if (!NAMED.test(nv)) {
