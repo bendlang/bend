@@ -241,8 +241,6 @@ async function cli_file(args: string[]): Promise<void> {
       process.exitCode = book_run(book, n0, argv);
       return;
     }
-    // ins is every file this run reads. A // @src helper is read while
-    // emitting, the same as the .c that names it, so -o must not replace it.
     const foreign = Object.values(book.tlds).flatMap((t) =>
       t.$ === "Def" && t.i !== undefined ? t.i : []);
     const ins = new Set([...seen.keys(), ...foreign.map(path_real),
@@ -295,32 +293,22 @@ function path_real(p: string): string {
   return fs.existsSync(p) ? fs.realpathSync(p) : path.resolve(p);
 }
 
-// src_deps is every sibling .c a foreign .c pulls with `// @src name.c`,
-// real paths, a helper named by a helper included. eff_src inlines that
-// same line when it emits; the CLI otherwise only sees the import itself.
+// Real paths of // @src siblings, a helper's helper included.
 function src_deps(files: string[]): string[] {
   const out: string[] = [];
-  const seen = new Set<string>();
-  const walk = (at: string, keep: boolean): void => {
-    const real = fs.realpathSync(at);
-    if (seen.has(real)) {
-      return;
-    }
-    seen.add(real);
-    if (keep) {
-      out.push(real);
-    }
+  const seen = new Set(files.flatMap((f) =>
+    f.endsWith(".c") && fs.existsSync(f) ? [fs.realpathSync(f)] : []));
+  for (const q = [...seen]; q.length > 0;) {
+    const real = q.pop() as string;
     const dir = real.slice(0, real.lastIndexOf("/"));
-    for (const line of fs.readFileSync(real, "utf8").split("\n")) {
-      const m = /^\/\/ @src ([a-z0-9_]+\.c)$/.exec(line);
-      if (m !== null) {
-        walk(dir + "/" + m[1], true);
+    for (const m of fs.readFileSync(real, "utf8")
+      .matchAll(/^\/\/ @src ([a-z0-9_]+\.c)$/gm)) {
+      const dep = fs.realpathSync(dir + "/" + m[1]);
+      if (!seen.has(dep)) {
+        seen.add(dep);
+        out.push(dep);
+        q.push(dep);
       }
-    }
-  };
-  for (const file of files) {
-    if (file.endsWith(".c") && fs.existsSync(file)) {
-      walk(file, false);
     }
   }
   return out;
@@ -484,10 +472,10 @@ async function cli_publish(file: string): Promise<void> {
 
 // pkg_files is the package the loader read for this file, the entry first:
 // every .bend file at its namespace (the entry at its name), every foreign
-// .c or .js file at its path from the entry's directory, and every .c a
-// foreign .c pulls with // @src; base and the store's packages stay out.
-// A path that climbs above the entry's directory takes the entry's ancestor
-// directories along, as many as the deepest climb.
+// .c or .js file at its path from the entry's directory, and each // @src
+// sibling; base and the store's packages stay out. A path that climbs above
+// the entry's directory takes the entry's ancestor directories along, as
+// many as the deepest climb.
 function pkg_files(file: string, book: Bend.Book,
   seen: Map<string, string | null>): Record<string, string> {
   const dir  = file.slice(0, file.lastIndexOf("/") + 1);
@@ -501,7 +489,7 @@ function pkg_files(file: string, book: Bend.Book,
   ...owned.map((f): [string, string] =>
     [f.startsWith(dir) ? f.slice(dir.length) : f, f]),
   ...src_deps(owned).map((real): [string, string] =>
-    [path.relative(root, real).split(path.sep).join("/"), real])];
+    [path.posix.relative(root, real), real])];
   const ups = raws.map(([p]) => path.posix.normalize(p).split("/")
     .filter((s) => s === "..").length);
   const anc = fs.realpathSync(path.dirname(file)).split("/")
