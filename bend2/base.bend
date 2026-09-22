@@ -290,7 +290,7 @@ def File.write_bytes(file: File, data: List<&2, U32>) ->
   import "./effs/file_write.js"
 
 def File.close(file: File) -> IO(Unit):
-  import "./effs/file_close.c"
+  import "./effs/fd_close.c"
   import "./effs/file_close.js"
 
 def TCP.listen(port: U32) -> IO(Result<&1, &1, U32 & String, Listener>):
@@ -342,12 +342,12 @@ def UDP.poll(sock: Socket, max: U32) ->
   import "./effs/udp_poll.js"
 
 def Socket.close(socket: Socket) -> IO(Unit):
-  import "./effs/socket_close.c"
+  import "./effs/fd_close.c"
   import "./effs/socket_close.js"
 
 def Listener.close(listener: Listener) -> IO(Unit):
-  import "./effs/listener_close.c"
-  import "./effs/listener_close.js"
+  import "./effs/fd_close.c"
+  import "./effs/socket_close.js"
 
 def Window.open(title: String, width: U32, height: U32) ->
   IO(Result<&1, &1, U32 & String, Window>):
