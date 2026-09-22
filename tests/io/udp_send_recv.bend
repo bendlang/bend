@@ -1,7 +1,7 @@
 # io (io_udp_send_recv): bend3's recv_from stamped each datagram with
 # its sender, and send_to consumed exactly that stamp -- replying is
 # echoing the address back. bend pins the same protocol whole: two
-# sockets, an empty ping from the first, a reply from the second to the
+# sockets, a ping from the first, a reply from the second to the
 # stamp it received, the pong printed off the first. Every op
 # threads its handle back OUTSIDE the Result (no path can lose it),
 # tuples destructure in helpers, binds retry upward on Fail: the
@@ -73,12 +73,13 @@ def reply_go(s1, m):
 law main_go2:
   for s1 : Socket
   for b  : Socket & U32
+  for data : String
   IO(U32)
 
-def main_go2(s1, b):
+def main_go2(s1, b, data):
   (s2, p2) = b
   do IO<U32>:
-    sm  : Socket & Result<&1, &1, (U32 & String), Unit> <- UDP.send_to(s1, "127.0.0.1", p2, "")
+    sm  : Socket & Result<&1, &1, (U32 & String), Unit> <- UDP.send_to(s1, "127.0.0.1", p2, data)
     s1b : Socket <- send_go(sm)
     m   : Socket & Result<&1, &1, (U32 & String), String & U32 & String> <- UDP.recv_from(s2, 64)
     reply_go(s1b, m)
@@ -86,11 +87,12 @@ def main_go2(s1, b):
 law main_go:
   for a: Socket & U32
   for b: Socket & U32
+  for data: String
   IO(U32)
 
-def main_go(a, b):
+def main_go(a, b, data):
   (s1, p1) = a
-  main_go2(s1, b)
+  main_go2(s1, b, data)
 
 law udp_retry:
   for port : U32
@@ -127,6 +129,10 @@ def main():
   do IO<U32>:
     a : Socket & U32 <- udp_bind_any(32n, 19053)
     b : Socket & U32 <- udp_bind_any(32n, 19073)
-    main_go(a, b)
+    r : U32 <- main_go(a, b, "bend-udp")
+    c : Socket & U32 <- udp_bind_any(32n, 19053)
+    d : Socket & U32 <- udp_bind_any(32n, 19073)
+    main_go(c, d, "")
 
+#|bend-udp-pong
 #|-pong
