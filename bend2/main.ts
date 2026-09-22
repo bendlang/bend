@@ -39,7 +39,7 @@ usage:
   bend <file.bend> --check-only check the file and its imports; run nothing
   bend <file.bend> --publish    publish the file and its imports to the hub
   bend <file.bend> --publish <name>@<version>
-                                publish, then name it (a Bender login)
+                                publish, then name it (needs login)
   bend link <name>@<version> 0x<hash>
                                 name a package already on the hub
   bend login                    log in to Bender for --publish <name>@…
@@ -447,8 +447,6 @@ async function cli_bundle(page: string, dir: string): Promise<void> {
 
 // cli_publish checks the file, then posts what the loader read (no TODO
 // left) to the hub with its proof of work, and prints the import line.
-// With <name>@<version>, the hub's check comes before the proof of work,
-// and the name is registered if free and linked after the publish.
 async function cli_publish(file: string, named?: string): Promise<void> {
   const seen = new Map<string, string | null>();
   const [book, n0] = await book_read(file, undefined, seen);
@@ -504,8 +502,8 @@ function named_parts(named: string): [string, string] {
     + " 12 to 64 characters, at four numbers like 1.0.0.0") : [m[1], m[2]];
 }
 
-// hub_check reads the key (a login when there is none), then asks the hub
-// whose the name is and whether the version goes up
+// hub_check reads the key (a login when there is none), then asks the
+// hub's /publish-check whose the name is and whether the version goes up
 async function hub_check(named: string): Promise<{ named: string; key: string; free: boolean }> {
   const [name, version] = named_parts(named);
   let key = "";
@@ -537,7 +535,7 @@ async function hub_name(auth: { named: string; key: string; free: boolean }, has
 async function hub_ask(route: string, key: string, body?: unknown): Promise<Record<string, unknown>> {
   const res = await fetch(Bend.BEND_HUB + route, { method: body === undefined ? "GET" : "POST",
     headers: { authorization: "Bearer " + key, "content-type": "application/json" },
-    body: body === undefined ? undefined : JSON.stringify(body) }).catch(() => null);
+    body: JSON.stringify(body) }).catch(() => null);
   if (res === null) {
     throw "Error: " + Bend.BEND_HUB + " could not be reached";
   }
