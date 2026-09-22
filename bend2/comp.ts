@@ -678,6 +678,22 @@ function memo_gc(): void {
   [OPENS, USES, FOLDS, SPINES, CONSTS, LITS].forEach((m) => m.clear());
 }
 
+// Graph
+// =====
+
+function close_over<K>(seen: Set<K>, next: (k: K) => Iterable<K>): Set<K> {
+  const queue = [...seen];
+  for (let i = 0; i < queue.length; i += 1) {
+    for (const k of next(queue[i])) {
+      if (!seen.has(k)) {
+        seen.add(k);
+        queue.push(k);
+      }
+    }
+  }
+  return seen;
+}
+
 // Probe
 // =====
 
@@ -1767,13 +1783,16 @@ function facts_ctr(fl: File, c: Bend.Ctr, xs: HTerm[]): void {
 // A lend is asked by a holder or passed on from a lent root (k~i<j~q); a
 // parameter nobody asks to lend is owned.
 function facts_lend(cb: Carb): void {
-  for (let n = -1; n !== cb.lend.size;) {
-    n = cb.lend.size;
-    cb.lend.forEach((l) => {
-      const [a, r] = l.split("<");
-      r !== undefined && cb.lend.has(r) && cb.lend.add(a);
-    });
+  const asked = new Map<string, string[]>();
+  for (const l of cb.lend) {
+    const [a, r] = l.split("<");
+    if (r !== undefined) {
+      const xs = asked.get(r) ?? [];
+      xs.push(a);
+      asked.set(r, xs);
+    }
   }
+  close_over(cb.lend, (r) => asked.get(r) ?? []);
   BRWS.forEach((bs, k) => bs.forEach((b, i) =>
     b && !cb.lend.has(k + "~" + i) && cb.own.add(k + "~" + i)));
 }
@@ -2921,14 +2940,15 @@ function compile_tables(fl: File, entries: Seg[]): string[] {
   // A segment may fork (or bang) when it, or one it reaches, does; a
   // closure apply reaches every closure.
   const forky = new Set(fl.segs.filter((s) => s.fork).map((s) => s.fid));
-  for (let n = -1; n !== forky.size;) {
-    n = forky.size;
-    for (const s of [...fl.segs, { fid: "FID_CLO_APPLY", refs: fl.clos }]) {
-      if (!forky.has(s.fid) && [...s.refs].some((r) => forky.has(r))) {
-        forky.add(s.fid);
-      }
+  const callers = new Map<string, string[]>();
+  for (const s of [...fl.segs, { fid: "FID_CLO_APPLY", refs: fl.clos }]) {
+    for (const ref of s.refs) {
+      const xs = callers.get(ref) ?? [];
+      xs.push(s.fid);
+      callers.set(ref, xs);
     }
   }
+  close_over(forky, (fid) => callers.get(fid) ?? []);
   table("FID_FLAG_T", entries.map((s) => Number(fl.bangs.has(s.def))
     | Number(!forky.has(s.fid)) << 1));
   table("FID_RESW_T", entries.map((s) =>
@@ -3001,13 +3021,15 @@ export function compile_book(book: Bend.Book): string {
     was = facts();
     fl = pass(done_defs(cb).reverse());
   } while (was !== facts());
-  const reach = (from: string[], set = new Set<string>()): Set<string> => {
-    const grab = (fid: string) => set.has(fid) || (set.add(fid)
-      && (fl.segs.find((s) => s.fid === fid)?.refs
-        ?? fl.spins.find((s) => s[0] === fid)?.[2])?.forEach(grab));
-    from.forEach(grab);
-    return set;
-  };
+  const refs = new Map<string, Set<string>>();
+  for (const [fid, , used] of fl.spins) {
+    refs.set(fid, used);
+  }
+  for (const s of fl.segs) {
+    refs.set(s.fid, s.refs);
+  }
+  const reach = (from: string[]): Set<string> =>
+    close_over(new Set(from), (fid) => refs.get(fid) ?? []);
   const live = reach([seg_fid("main")]);
   // The device holds what the bangs reach and, when a bang's parameter
   // may hold a closure (a jump through its fid), every closure.
