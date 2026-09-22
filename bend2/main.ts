@@ -58,11 +58,8 @@ const GUIDE = path.join(Bend.BEND_DIR, "..", "guide");
 
 const ORIGIN = process.env.BEND_ORIGIN ?? "https://bend-lang.com";
 
-// the Bender key --publish <name>@<version> and link send to the hub,
-// as `bend login` wrote it: {key, login}, mode 0600
+// the Bender key `bend login` wrote: {key, login}, mode 0600
 const BENDER = path.join(os.homedir(), ".bend", "bender.json");
-
-const NAMED = /^([a-z][a-z0-9-]{11,63})@((?:0|[1-9][0-9]*)(?:\.(?:0|[1-9][0-9]*)){3})$/;
 
 // the daily version check's cache: when it last asked, and the answer
 const CHECK = path.join(os.homedir(), ".bend", "check.json");
@@ -109,7 +106,11 @@ async function cli(): Promise<void> {
   if (args[0] === "update" && args.length === 1) {
     return cli_update();
   }
-  if ((args[0] === "login" && args.length === 1) || (args[0] === "link" && args.length === 3)) {
+  if (args[0] === "login" || args[0] === "link") {
+    if (args.length !== (args[0] === "link" ? 3 : 1)) {
+      cli_fail(args[0] === "link" ? "link takes <name>@<version> and 0x<hash>"
+        : args[0] + " takes no argument");
+    }
     try {
       await (args[0] === "login" ? cli_login() : cli_link(args[1], args[2]));
     } catch (e) {
@@ -207,13 +208,10 @@ async function cli_file(args: string[]): Promise<void> {
       checkup = true;
     } else if (a === "--publish") {
       publish = true;
-      if (args[i + 1] !== undefined && args[i + 1].includes("@") && !args[i + 1].startsWith("-")) {
+      if (args[i + 1]?.includes("@")) {
         i += 1;
         named = args[i];
-        if (!NAMED.test(named)) {
-          cli_fail("--publish names a package as <name>@<version>: a-z, 0-9 and -,"
-            + " 12 to 64 characters, at four numbers like 1.0.0.0");
-        }
+        named_parts(named);
       }
     } else if (a === "-o") {
       i += 1;
@@ -449,12 +447,8 @@ async function cli_bundle(page: string, dir: string): Promise<void> {
 
 // cli_publish checks the file, then posts what the loader read (no TODO
 // left) to the hub with its proof of work, and prints the import line.
-// With <name>@<version>, it first asks the hub whether the name is this
-// account's (or free) and the version greater than every one linked,
-// then publishes, registers the name if it was free, links, and prints
-// the import line by name too. Nothing is resolved for the user: a
-// taken name or a version that does not go up stops before anything
-// is published.
+// With <name>@<version>, the hub's check comes before the proof of work,
+// and the name is registered if free and linked after the publish.
 async function cli_publish(file: string, named?: string): Promise<void> {
   const seen = new Map<string, string | null>();
   const [book, n0] = await book_read(file, undefined, seen);
@@ -469,112 +463,108 @@ async function cli_publish(file: string, named?: string): Promise<void> {
   const bytes = paths.reduce((n, p) => n + Buffer.byteLength(files[p]), 0);
   const hash  = "0x" + sha256(paths.map((p) => sha256(files[p]) + " " + p
     + "\n").join("")).slice(0, 32);
-  const key   = named === undefined ? null : await key_get();
-  const check = named === undefined ? null : await hub_check(named, key!);
+  const auth  = named === undefined ? null : await hub_check(named);
   cli_say(2, "publishing " + String(paths.length) + " files, "
     + String(bytes) + " bytes, as " + hash + " (mining its proof of work)\n");
   const nonce = await pow_mine(hash, bytes);
   const res = await fetch(Bend.BEND_HUB, { method: "POST",
-    headers: key === null ? {} : { authorization: "Bearer " + key },
+    headers: auth === null ? {} : { authorization: "Bearer " + auth.key },
     body: JSON.stringify({ files, nonce }) });
+  if (res.status === 401) {
+    key_dead();
+  }
   const got = (await res.text()).trim();
   if (!res.ok || got !== hash) {
     throw "Error: " + Bend.BEND_HUB + " answered: " + got;
   }
-  const as = name[0].toUpperCase() + name.slice(1);
-  if (named === undefined || check === null) {
-    cli_say(1, hash + "\nimport " + hash + "/" + entry + " as " + as + "\n");
-    return;
+  cli_say(1, hash + "\n");
+  if (auth !== null) {
+    await hub_name(auth, hash).catch((e: unknown) => {
+      throw String(e) + "\n" + hash + " is published but not named: bend link " + auth.named + " " + hash;
+    });
+    cli_say(1, "published " + auth.named + "\n");
   }
-  await hub_name(named, hash, key!, check.free);
-  cli_say(1, hash + "\npublished " + named + "\nimport " + named + "/" + entry
-    + " as " + as + "\n");
+  cli_say(1, "import " + (auth === null ? hash : auth.named) + "/" + entry + " as "
+    + name[0].toUpperCase() + name.slice(1) + "\n");
 }
 
-// cli_link names a package already on the hub: the checks of a publish
-// by name, the registration if the name is free, and the link.
+// cli_link names a package already on the hub
 async function cli_link(named: string, hash: string): Promise<void> {
-  if (!NAMED.test(named)) {
-    cli_fail("link names a package as <name>@<version>: a-z, 0-9 and -,"
-      + " 12 to 64 characters, at four numbers like 1.0.0.0");
-  }
   if (!/^0x[0-9a-f]{32}$/.test(hash)) {
     cli_fail("link takes the package's hash: 0x and 32 hex digits");
   }
-  const key   = await key_get();
-  const check = await hub_check(named, key);
-  await hub_name(named, hash, key, check.free);
+  await hub_name(await hub_check(named), hash);
   cli_say(1, "linked " + named + " to " + hash + "\n");
 }
 
-// hub_check asks the hub whose the name is and whether the version goes
-// up (GET /publish-check), and fails with the hub's reason when either
-// answer stops a publish
-async function hub_check(named: string, key: string): Promise<{ free: boolean }> {
-  const m = NAMED.exec(named)!;
-  const res = await fetch(Bend.BEND_HUB + "/publish-check?name=" + m[1] + "&version=" + m[2],
-    { headers: { authorization: "Bearer " + key } }).catch(() => null);
-  if (res === null || res.status === 401) {
-    fs.rmSync(BENDER, { force: true });
-    throw "Error: " + Bend.BEND_HUB + " does not know this login: run bend login";
+// named_parts splits a <name>@<version>, or fails
+function named_parts(named: string): [string, string] {
+  const m = Bend.NAMED.exec(named);
+  return m === null ? cli_fail("a package is named <name>@<version>: a-z, 0-9 and -,"
+    + " 12 to 64 characters, at four numbers like 1.0.0.0") : [m[1], m[2]];
+}
+
+// hub_check reads the key (a login when there is none), then asks the hub
+// whose the name is and whether the version goes up
+async function hub_check(named: string): Promise<{ named: string; key: string; free: boolean }> {
+  const [name, version] = named_parts(named);
+  let key = "";
+  try {
+    key = String((JSON.parse(fs.readFileSync(BENDER, "utf8")) as { key?: string }).key ?? "");
+  } catch {}
+  if (key === "") {
+    key = await cli_login();
   }
-  const got = await res.json().catch(() => null) as
-    { name?: string; version_ok?: boolean; reason?: string | null } | null;
-  if (!res.ok || got === null) {
-    throw "Error: " + Bend.BEND_HUB + " answered " + String(res.status);
-  }
-  if (got.name === "taken") {
-    throw "Error: " + m[1] + " belongs to another account: choose another name";
-  }
-  if (got.name !== "yours" && got.name !== "free") {
+  const got = await hub_ask("/publish-check?name=" + name + "&version=" + version, key);
+  if ((got.name !== "yours" && got.name !== "free") || got.version_ok !== true) {
     throw "Error: " + String(got.reason);
   }
-  if (got.version_ok !== true) {
-    throw "Error: " + String(got.reason) + " (nothing is resolved for you)";
-  }
-  return { free: got.name === "free" };
+  return { named, key, free: got.name === "free" };
 }
 
-// hub_name registers a free name and links name@version to a hash, two
-// events on the hub, each answered ok or with a reason
-async function hub_name(named: string, hash: string, key: string, free: boolean): Promise<void> {
-  const m = NAMED.exec(named)!;
-  if (free) {
-    await hub_post("/register", { name: m[1] }, key);
-    cli_say(2, "registered " + m[1] + "\n");
+// hub_name registers a free name and links name@version to a hash
+async function hub_name(auth: { named: string; key: string; free: boolean }, hash: string): Promise<void> {
+  const [name, version] = named_parts(auth.named);
+  if (auth.free) {
+    await hub_ask("/register", auth.key, { name });
+    cli_say(2, "registered " + name + "\n");
   }
-  await hub_post("/link", { name: m[1], version: m[2], hash }, key);
+  await hub_ask("/link", auth.key, { name, version, hash });
 }
 
-async function hub_post(route: string, body: unknown, key: string): Promise<void> {
-  const res = await fetch(Bend.BEND_HUB + route, { method: "POST",
+// hub_ask sends the key with a GET, or a POST of body, and answers the
+// hub's JSON; unreachable, a refused key or a refused request ends the run
+async function hub_ask(route: string, key: string, body?: unknown): Promise<Record<string, unknown>> {
+  const res = await fetch(Bend.BEND_HUB + route, { method: body === undefined ? "GET" : "POST",
     headers: { authorization: "Bearer " + key, "content-type": "application/json" },
-    body: JSON.stringify(body) });
-  const got = await res.json().catch(() => null) as { ok?: boolean; reason?: string } | null;
-  if (got === null || got.ok !== true) {
-    throw "Error: " + Bend.BEND_HUB + route + " answered: " + (got?.reason ?? String(res.status));
+    body: body === undefined ? undefined : JSON.stringify(body) }).catch(() => null);
+  if (res === null) {
+    throw "Error: " + Bend.BEND_HUB + " could not be reached";
   }
+  if (res.status === 401) {
+    key_dead();
+  }
+  const got = await res.json().catch(() => null) as Record<string, unknown> | null;
+  if (!res.ok || got === null) {
+    throw "Error: " + Bend.BEND_HUB + route + " answered: "
+      + (typeof got?.reason === "string" ? got.reason : String(res.status));
+  }
+  return got;
 }
 
-// key_get reads the Bender key `bend login` wrote, or logs in first
-async function key_get(): Promise<string> {
-  try {
-    const got = JSON.parse(fs.readFileSync(BENDER, "utf8")) as { key?: string };
-    if (typeof got.key === "string" && got.key !== "") {
-      return got.key;
-    }
-  } catch {}
-  return cli_login();
+// key_dead forgets a key the hub refused, so the next run logs in
+function key_dead(): never {
+  fs.rmSync(BENDER, { force: true });
+  throw "Error: " + Bend.BEND_HUB + " does not know this login: run bend login";
 }
 
-// cli_login is Bender's CLI login: start, open the page, poll until the
-// browser authorized a key, keep it (SPEC.md 6.14 of bend-lang.com)
+// cli_login starts Bender's CLI login, opens its page and polls until the
+// browser authorized a key (SPEC.md 6.14 of bend-lang.com)
 async function cli_login(): Promise<string> {
-  const start = await fetch(ORIGIN + "/bender/cli/start", { method: "POST",
+  const st = await fetch(ORIGIN + "/bender/cli/start", { method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ machine: os.hostname() }) }).catch(() => null);
-  const st = start === null ? null : await start.json().catch(() => null) as
-    { code?: string; poll_secret?: string; verify_url?: string; expires_at?: string; interval_ms?: number } | null;
+    body: JSON.stringify({ machine: os.hostname() }) }).then((r) => r.json()).catch(() => null) as
+    { poll_secret?: string; verify_url?: string; expires_at?: string; interval_ms?: number } | null;
   if (st === null || typeof st.poll_secret !== "string" || typeof st.verify_url !== "string") {
     throw "Error: " + ORIGIN + " did not start a login";
   }
@@ -584,19 +574,18 @@ async function cli_login(): Promise<string> {
   } catch {}
   const until = Date.parse(st.expires_at ?? "") || Date.now() + 600000;
   while (Date.now() < until) {
-    await new Promise((r) => setTimeout(r, st.interval_ms ?? 2000));
-    const res = await fetch(ORIGIN + "/bender/cli/poll", { method: "POST",
+    await new Promise((r) => setTimeout(r, Math.max(1000, st.interval_ms ?? 2000)));
+    const got = await fetch(ORIGIN + "/bender/cli/poll", { method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ poll_secret: st.poll_secret }) }).catch(() => null);
-    const got = res === null ? null : await res.json().catch(() => null) as
+      body: JSON.stringify({ poll_secret: st.poll_secret }) }).then((r) => r.json()).catch(() => null) as
       { status?: string; key?: string; login?: string } | null;
-    if (got !== null && got.status === "authorized" && typeof got.key === "string") {
+    if (got?.status === "authorized" && typeof got.key === "string") {
       fs.mkdirSync(path.dirname(BENDER), { recursive: true });
       fs.writeFileSync(BENDER, JSON.stringify({ key: got.key, login: got.login ?? "" }) + "\n", { mode: 0o600 });
       cli_say(2, "logged in as " + String(got.login ?? "") + "\n");
       return got.key;
     }
-    if (got === null || got.status === "expired") {
+    if (got?.status === "expired") {
       break;
     }
   }
