@@ -1893,9 +1893,13 @@ function val_box(fl: File, v: Val): string {
   }
   const out = emit_hold(fl, ["0"], "b")[0];
   const tag = emit_alias(fl, v.ws[0], "t");
+  const spares = fl.spares;
   emit_chain(fl, (i) => `${tag} == ${i}`, arms.map((arm) => () => {
+    fl.spares = [];
     file_push(fl, `${out} = ${build(arm)};`);
+    spare_flush(fl);
   }));
+  fl.spares = spares;
   return out;
 }
 
