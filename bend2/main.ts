@@ -678,6 +678,6 @@ if (import.meta.main) {
   process.exit();
 } else if (typeof Bun !== "undefined") {
   Bun.plugin(PLUGIN);
-} else if (thr.isMainThread) {
+} else if (thr.isMainThread || thr.isInternalThread === false) {
   mod.register(import.meta.url);
 }
