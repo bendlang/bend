@@ -1,6 +1,7 @@
-# io (io_args): the command line: the runtime keeps its own flags and
-# IO.args answers the rest, in order. The harness passes none, so the
-# list is empty on every lane.
+# io (io_args): the command line: the runtime keeps --threads, --gpu,
+# --gpu-build and --bend-help; IO.args answers the rest, in order
+# (--help is a program argument). The harness passes none, so the list
+# is empty on every lane.
 import Base
 
 law main:

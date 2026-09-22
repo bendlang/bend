@@ -3660,7 +3660,7 @@ static const char* CLI_HELP =
   "  --gpu on|off|4GB  run ! calls on the GPU, over this much of its memory\n"
   "                    (default: on if present, over 2GB on Metal)\n"
   "  --gpu-build       write the GPU program and exit\n"
-  "  --help            show this text\n"
+  "  --bend-help       show this text\n"
   "  --                the rest are the program's arguments (IO.args)\n";
 
 #endif
@@ -6156,7 +6156,7 @@ int main(int argc, char** argv) {
       while (i + 1 < argc) {
         io_argv[io_argc++] = argv[++i];
       }
-    } else if (strcmp(a, "--help") == 0) {
+    } else if (strcmp(a, "--bend-help") == 0) {
       printf(CLI_HELP, argv[0]);
       return 0;
     } else if (strcmp(a, "--gpu-build") == 0) {
@@ -6275,7 +6275,7 @@ function cli(argv) {
     if (argv[i] === "--") {
       cli_args.push(...argv.slice(i + 1));
       break;
-    } else if (argv[i] === "--help") {
+    } else if (argv[i] === "--bend-help") {
       io_out(1, io_bytes("usage: " + process.argv[1] + "\n"));
       process.exit(0);
     } else if (argv[i] === "--threads" || argv[i] === "--gpu") {
