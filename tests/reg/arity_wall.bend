@@ -1,9 +1,6 @@
-# regression witness (7a3f184): the machine's u8 arity tables refuse
-# what they cannot hold -- a 256-field record once compiled into a C
-# book whose u8 CID_ARITY_T entry wrapped to 0, corrupting every open
-# of the record. The wall refuses such a record outright now, its type
-# reached by pick's; a 255-field record rides in registers and every
-# backend answers 1.
+# The old u8 constructor-arity table wrapped a 256-field record to zero
+# (7a3f184). This 255-field boundary case still reads its first field;
+# record_256_fields tests the widened table and the last field.
 import Base
 
 type R255 is Data:

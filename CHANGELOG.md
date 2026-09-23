@@ -3,6 +3,12 @@
 Each release names what changed for a user. `bend update` installs the
 latest one; the GitHub release carries the same notes.
 
+## Unreleased
+
+- **C builds accept flat constructors wider than 255 words** (#991): the
+  constructor arity table grows only when needed; a checked 256-field record
+  no longer fails with "an arity over 255". Segment arities remain bounded.
+
 ## 2.0.27 (2026-09-23)
 
 - **`bend` reads no `bunfig.toml` or `.env` from the directory it runs in**

@@ -526,6 +526,9 @@ with Audio `libasound2-dev`. `bend guide` prints this text, `bend base` prints
 the Base library (`bend base Map` prints one name and everything under it), and
 `bend --help` lists the other commands.
 
+Native constructors can hold more than 255 flat fields; a segment's parameter
+list still has a 255-word limit.
+
 ## Syntax Reference
 
 Every form of the language, grouped by where it appears. Operators, literals

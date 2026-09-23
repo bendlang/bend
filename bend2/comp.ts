@@ -2947,10 +2947,11 @@ function compile_tables(fl: File, entries: Seg[]): string[] {
     defs.push(...ms.map((m, i) => `#define ${m} ${i}`));
   }
   for (const [nm, vals] of tabs) {
-    if (vals.some((v) => v > 255)) {
+    const large = vals.some((v) => v > 255);
+    if (large && nm !== "CID_ARITY_T") {
       die("an arity over 255");
     }
-    defs.push(`CONSTV u8 ${nm}[] = { ${vals.join(", ")} };`);
+    defs.push(`CONSTV ${large ? "u32" : "u8"} ${nm}[] = { ${vals.join(", ")} };`);
   }
   defs.push(`#define STAT_LEN ${fl.img.length}`, "");
   // One bank for both lanes, as wide as the widest segment or return; rp

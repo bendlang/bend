@@ -1,6 +1,6 @@
-# a constructor past WIDE (255) words holds its fields boxed, so its node
-# and its CID_ARITY_T entry (u8) fit: R2 is 512 words of R1 (64 each, flat),
-# R3 exactly 256; a def whose parameters span past WIDE words takes its
+# A constructor past WIDE (255) words boxes multi-word fields:
+# R2 is 512 words of R1 (64 each, flat), R3 exactly 256.
+# A def whose parameters span past WIDE words takes its
 # wide ones boxed, so its segment fits FID_ARITY_T (u8): sum4 takes 4 x 64
 # words and forks, so it is a segment, not a flat C helper (#944)
 import Base
