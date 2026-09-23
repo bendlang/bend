@@ -58,7 +58,8 @@ type Def  = Bend.Def & { h?: HTerm };
 type TLD  = Bend.ADT | Def;
 
 type Src = {
-  refs: Set<Name>; deps: Set<Name>; flat: boolean; loop?: boolean;
+  refs: Set<Name>; deps: Set<Name>; flat: boolean;
+  loop?: boolean; jump?: boolean; park?: boolean;
 };
 
 type Carb = {
@@ -1468,6 +1469,7 @@ function carb_book(src: Bend.Book, roots: Name[]): Carb {
         own.deps.add(ck.k);
       }
       own.loop ||= ck?.k === d;
+      own.jump ||= ck?.k === d && tail;
       if ((s.$ === "Let" && s.k.length >= 2)
         || (ck !== null && (ck.bang === true || (ck.k === d && !tail)))) {
         own.flat = false;
@@ -1477,15 +1479,17 @@ function carb_book(src: Bend.Book, roots: Name[]): Carb {
     queue.push(...own.refs);
   }
   // A loop a bang reaches under no other loop (a fork tree is one) is no
-  // spin: a spin runs whole in one device step, and a segment's loop parks
-  // when its lane's fuel runs out. An inner loop stays a spin: it runs once
-  // a turn of the loop above it, which pays a segment's call.
+  // spin, and parks at its jump when its lane's fuel runs out: a spin runs
+  // whole in one device step. An inner loop stays a spin, with no park: it
+  // runs once a turn of the loop above it, which pays a segment's call, and
+  // a park costs every kernel registers (queens 94 to 120).
   const seen = new Set<string>();
   const walk = (k: Name, under: boolean): void => {
     const own = SRCS.get(k);
     if (own !== undefined && !seen.has(k + under)) {
       seen.add(k + under);
       own.flat &&= under || !own.loop;
+      own.park ||= !under && own.jump;
       own.refs.forEach((r) => walk(r, under || own.loop === true));
     }
   };
@@ -2067,7 +2071,8 @@ function emit_frame(fl: File, words: string[], next: string): void {
 }
 
 // A self-jump reads its parameters back: the device's loop carries them
-// typed, not as words (raytrace GPU 1.72x).
+// typed, not as words (raytrace GPU 1.72x). A segment's loop may park at
+// its jump, where the jump's words are all it holds.
 function emit_jump(fl: File, args: string[], k: Name,
   bang?: boolean): void {
   const fid = seg_fid(k);
@@ -2078,6 +2083,10 @@ function emit_jump(fl: File, args: string[], k: Name,
         emit_task(fl, fid, 0, args)});`));
   }
   args.forEach((a, i) => file_push(fl, `r${i} = ${a};`));
+  if (k === fl.def && SRCS.get(k)?.park) {
+    file_push(fl, `WL_PARK(${args.length}, ${seg_ref(fl, fid)}, ${args.map(
+      (_, i) => `STK(${i}) = r${i};`).join(" ")})`);
+  }
   if (fl.seg.def !== k) {
     return file_push(fl, `WL_JMP(${seg_ref(fl, fid)});`);
   }
@@ -2987,10 +2996,7 @@ function compile_tables(fl: File, entries: Seg[]): string[] {
     `    if ((N) <= ${i}) break; ${r} = e.mem[(A) + ${i}]; \\\n`).join("");
   const last = rs.map((r, i) =>
     `    case ${i}: ${r} = (X); \\\n      break; \\\n`).join("");
-  defs.push(`#define WL_RESW ${resw}`, `#define BANGS   ${fl.bangs.size}`,
-  `#define WL_BANKN ${n}`, `#define WL_PUT(P) ${rs.map((r, i) =>
-    `(P)[${i} * LANE_STEP] = ${r};`).join(" ")}`, `#define WL_GET(P) ${
-    rs.map((r, i) => `${r} = (P)[${i} * LANE_STEP];`).join(" ")}`, "",
+  defs.push(`#define WL_RESW ${resw}`, `#define BANGS   ${fl.bangs.size}`, "",
   `#define WL_BANK Term ${ws.join(", ")};`, "",
   `#define WL_LOAD(A, N) \\\n  do { \\\n${load}  } while (0);`, "",
   `#define WL_LAST(X) \\\n  switch (war) { \\\n${last}  }`, "",
@@ -3068,15 +3074,16 @@ export function compile_book(book: Bend.Book): string {
       typeof c === "string" ? cid_mac(c) : c).join(", ")} };`,
     `static const char* SHOW_NAMES[] = { ${show.names.map((n) =>
       JSON.stringify(n)).join(", ")} };`, "#endif"];
+  const segs = compile_segs(fl);
   const defs = compile_tables(fl, entries);
   defs.push(`#define MAIN_FID ${seg_fid("main")}`, `#define MAIN_PURE ${
     Number(show !== null)}`,
-    `#define BLK_SHR ${Number(cb.hot.has("t:Array"))}`);
+    `#define BLK_SHR ${Number(cb.hot.has("t:Array"))}`,
+    `#define PARKS ${Number(segs.includes("WL_PARK("))}`);
   const tabs = [defs.join("\n"), ...[...fl.tabs].map(([r, i]) =>
     `CONSTV u64 TAB_${i}[] = { ${r} };`)].join("\n\n");
   const spins = [`CONSTV u64 STAT_IMG[] = { ${fl.img.join(", ") || 0} };`,
     ...fl.spins.map((s) => s.text)].join("\n\n");
-  const segs = compile_segs(fl);
   if (/\bundefined\b/.test([tabs, spins, segs, fl.reqs].join("\n"))) {
     die("an unbound name in the emitted C");
   }
@@ -3614,7 +3621,7 @@ typedef u32* Cur;
 #define NCLS      8
 #define NCLS_ALL  32
 #define IO_HELP   64
-// a device lane parks its task after FUEL * 4096 steps of a launch: a
+// a device lane parks its task after FUEL * 4096 loop turns of a launch: a
 // dispatch that holds the GPU trips the display's watchdog (#942); a host
 // with a tighter watchdog builds with -DFUEL=n, which the device takes too
 #ifndef FUEL
@@ -3642,7 +3649,7 @@ typedef u32* Cur;
 
 #define PAGE_UP(n) (((n) + PAGE_LEN - 1) & ~(PAGE_LEN - 1))
 #define ALC_OFF  PAGE_UP(H_BANK + 3 * NCLS_ALL)
-#define RING_OFF (ALC_OFF + CUBE * (2 * ALC_WORDS + 1))
+#define RING_OFF (ALC_OFF + CUBE * (2 * ALC_WORDS + PARKS))
 #define STAK_OFF (RING_OFF + CUBE * RING_WORDS)
 #define STAT_OFF (STAK_OFF + CUBE * STAK_LEN)
 #define HEAP_OFF (STAT_OFF + PAGE_UP(STAT_LEN))
@@ -4480,16 +4487,22 @@ WL_TABLE WL_X(FID_ENTER)
 #define WL_X(F) WL_##F,
 static const WlFn wl_tab[] = { WL_TABLE };
 #undef WL_X
-#else
-// A device self-loop hands every 4096th turn to the switch, which enters it
-// again on the words it jumped with, or parks it.
-#undef  WL_SPIN
-#define WL_SPIN for (;;) { if ((++wpoll & 4095) == 4095) { break; }
-
-// A parked task is its lane's stack, topped by its bank and fid | rn << 16
-// | seq << 24, moved to the heap (its first word the depth) and dealt as a
-// frontier task; any lane takes it back onto its own stack (at the lane's
+#define WL_PARK(N, F, S)
+#elif PARKS
+// A loop's jump into F parks its task every 4096 jumps once the lane's fuel
+// is spent: its N words S, then F | N << 16 | seq << 24, top the lane's
+// stack, which moves to the heap (its first word the depth) and is dealt as
+// a frontier task; any lane takes it back onto its own stack (at the lane's
 // alc, moved from ALC_OFF to STAK_OFF).
+#define WL_PARK(N, F, S) \
+  if ((++wjump & 4095) == 0 && (ALC_FUEL(e) == 0 || --ALC_FUEL(e) == 0)) { \
+    WL_ROOM((N) + 1) \
+    S \
+    STK(N) = (F) | (N) << 16 | seq << 24; \
+    wl_park(e, sp + ((N) + 1) * LANE_STEP); \
+    return 0; \
+  }
+
 OUTLINE void wl_park(Env e, Stk sp) {
   Stk sp0 = e.alc + (STAK_OFF - ALC_OFF);
   u32 d   = (u32)((sp - sp0) / LANE_STEP);
@@ -4505,13 +4518,12 @@ OUTLINE void wl_park(Env e, Stk sp) {
   }
 }
 
-OUTLINE Stk wl_take(Env e, Stk sp, Loc a) {
-  u32 d = (u32)e.mem[a];
-  for (u32 i = 0; i < d; i += 1) {
+OUTLINE Stk wl_take(Env e, Stk sp, Loc a, u32 m) {
+  for (u32 i = 0; i < m; i += 1) {
     sp[i * LANE_STEP] = e.mem[a + 1 + i];
   }
-  heap_free(e, cls_fit(d + 1), a);
-  return sp + (d - WL_BANKN - 1) * LANE_STEP;
+  heap_free(e, cls_fit((u32)e.mem[a] + 1), a);
+  return sp + m * LANE_STEP;
 }
 #endif
 
@@ -4522,26 +4534,22 @@ static Reply work_loop(Env e, Stk sp, Term t, u32 seq) {
 #if DEVICE
   Fid fid   = FID_ENTER;
   u32 wpoll = 0;
+#if PARKS
+  u32 wjump = 0;
   if (term_tag(t) == TAG_PRK) {
-    sp = wl_take(e, sp, term_loc(t));
-    u32 w = (u32)sp[WL_BANKN * LANE_STEP];
-    WL_GET(sp)
+    Loc a = term_loc(t);
+    u32 d = (u32)e.mem[a];
+    u32 w = (u32)e.mem[a + d];
+    u32 n = (w >> 16) & 0xFF;
+    WL_LOAD(a + d - n, n)
     fid = w & 0xFFFF;
-    rn  = (w >> 16) & 0xFF;
     seq = w >> 24;
+    sp  = wl_take(e, sp, a, d - n - 1);
   }
+#endif
   for (;;) {
-  if ((++wpoll & 4095) == 0) {
-    if (err_seen(e.mem)) {
-      return 0;
-    }
-    if (ALC_FUEL(e) == 0 || --ALC_FUEL(e) == 0) {
-      WL_ROOM(WL_BANKN + 1)
-      WL_PUT(sp)
-      sp[WL_BANKN * LANE_STEP] = fid | rn << 16 | seq << 24;
-      wl_park(e, sp + (WL_BANKN + 1) * LANE_STEP);
-      return 0;
-    }
+  if (err_spun(e.mem, &wpoll)) {
+    return 0;
   }
   switch (fid) {
 #else
@@ -4653,7 +4661,7 @@ INLINE u32 monk_step(Env e, Stk stk, Ring rg, u32 put0, bool seq, u32 base,
   u32      hi = a32_load_acq(lo + 1);
   Term     t  = (((u64)hi << 32) | a32_load(lo)) & ~RFC_BIT;
   if ((hi >> 31) != ring_lap(*get) || (!seq && (fid_nofk((u32)term_aux(t))
-    || term_tag(t) == TAG_PRK))) {
+    || (PARKS && term_tag(t) == TAG_PRK)))) {
     return 0;
   }
   a32_store(get, *get + 1);
@@ -4766,10 +4774,13 @@ extern "C" __global__ void bend_dev(Corpus H, u32 pass) {
   u32 put0      = a32_load(ring_put(H, rg));
   u32 seen_has  = 0;
   u32 seen_grew = 0;
+#if PARKS
   ALC_FUEL(e)   = FUEL;
+#endif
   for (;;) {
     if (pass) {
-      if (*ring_get(H, rg) == put0 || err_seen(H) || ALC_FUEL(e) == 0) {
+      if (*ring_get(H, rg) == put0 || err_seen(H)
+        || (PARKS && ALC_FUEL(e) == 0)) {
         break;
       }
     } else {
