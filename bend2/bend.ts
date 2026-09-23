@@ -3929,8 +3929,12 @@ export function book_valid(book: Book, done: number = 0): void {
   book.tlds = Object.create(Object.getPrototypeOf(tlds));
   book.ctrs = Object.create(Object.getPrototypeOf(book.ctrs));
   for (const k of Object.keys(tlds)) {
+    const t = tlds[k];
     if (!last.has(k)) {
-      book.tlds[k] = tlds[k];
+      book.tlds[k] = t;
+      for (const c of t.$ === "ADT" ? t.c : []) {
+        book.ctrs[c.k] = c;
+      }
     }
   }
   for (let i = done; i < book.order.length; i++) {
