@@ -1,7 +1,6 @@
 # General literal plan
 
-Status: complete up to `c45844d5` and the erasure pass after it.
-The `Word` study below waits for the user.
+Status: complete, including the `Word` study.
 
 ## Task
 
@@ -67,15 +66,33 @@ The gain comes from `Chr{Lit(U32)}`: one node per character, not 65.
 Remaining finding: `term_check` has cyclomatic complexity 51 (56 before).
 A split is a checker restructure outside this task.
 
-## Future action: the `Word` study
+## The `Word` study: do not add a Word literal
 
-Study whether `Word` can get the same compact form. `Word.Con<-p: Nat>` has a
-Nat index, so the fast check must also check the index. Answer:
+`Word(n)` is a `def`: `Word(0n)` is `Word.Nil`, `Word(1n+p)` is `Word.Con<p>`,
+and a word is least significant bit first.
 
-1. Can a `Lit(Word)` carry its width, so the fast check compares `Word.Con<p>`?
-2. Does it make the U32 and F32 steps `U32{Lit(Word, v)}` in place of the chain?
-3. Does the compiler's word-pattern table still read complete words?
-4. Do the four invariants stay true?
+1. Width: possible. `{ k: "Word"; v; w }` has type `Word.Con<w-1>`, and the
+   fast check compares `nat_from_term(p)` with `w - 1`. But it is a third
+   variant, a new field and a second condition in check-lit, for a check
+   that never fires: no program checks a word against a type.
+2. Steps: `U32{Lit(Word, v, 32)}` removes `word_to_term`, but each bit read
+   then costs three nodes (a `WCon`, a `Bool`, a new `Lit`), not two.
+3. Readers: `u32_from_term` reads the chain through `term_strip`, which does
+   not unfold, so it needs a `Word` case too (invariant 4).
+4. Invariants: 1 and 3 hold with masked bits; 2 and 4 need the new cases above.
+
+Evidence: counts of `lit_step` per type and call chain (instrumented copy).
+The checker benches unfold no literal. In the checker, U32 unfolds come from
+`term_compare` against computed values and `Word.*` functions: they read all
+32 bits, so a lazy word only adds nodes. In the compiler, 75% of U32 unfolds
+(`pure_hvm5_mini`: 4443 of 5955) came from `term_const`, which unfolded a
+literal only to find every node constant.
+
+Action taken instead (`4a62a0c6`): `term_const` answers "constant" for a
+`Lit` at once (invariant 1), except a Nat past the cap (`lit_call`, now the
+one place for that rule). Emitted C and JS are byte-identical (303 tests,
+demos, 8 programs). C emit, 9 alternating runs: `litheavy.bend` −65% time,
+−54% memory; the other 7 programs within noise.
 
 ## Method
 
