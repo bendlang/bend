@@ -94,10 +94,10 @@
 // a bare Bind name is -Name: Quant. Fill and Plus omit a datatype's
 // leading Quant parameters as a block; Plus alone fills a quant-only D.
 // a literal expands to one node per unit, unbounded by design, but a
-// string, nat, u32, f32 and a char's code stay one Lit node and unfold where
-// a chain is read (a match, a comparison, a descent, a pattern); a full
-// word, a Nat, a Char, a String, a list, a tuple and an array (its
-// slots) print back as literals; "*" takes a power of two. Arrow is
+// string, nat, u32, f32 and a char's code stay one Lit node and unfold
+// where a chain is read (a match, a comparison, a descent, a pattern);
+// a full word, a Nat, a Char, a String, a list, a tuple and an array
+// (its slots) print back as literals; "*" takes a power of two. Arrow is
 // right-associative; the domain of a written @ or & binder stops at the
 // first bare "->", so an arrow (or a nested binder) there needs parens.
 // infix "&" and "|" are right-associative, share one precedence, and
