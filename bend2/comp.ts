@@ -1478,24 +1478,31 @@ function carb_book(src: Bend.Book, roots: Name[]): Carb {
     });
     queue.push(...own.refs);
   }
-  // A loop a bang reaches under no other loop (a fork tree is one) is no
-  // spin, and parks at its jump when its lane's fuel runs out: a spin runs
-  // whole in one device step. An inner loop stays a spin, with no park: it
-  // runs once a turn of the loop above it, which pays a segment's call, and
-  // a park costs every kernel registers (queens 94 to 120).
-  const seen = new Set<string>();
-  const walk = (k: Name, under: boolean): void => {
+  carb_park(cb.bangs);
+  return cb;
+}
+
+// A loop a bang reaches under no other loop (a fork tree is one) is no
+// spin, and parks at its jump when its lane's fuel runs out: a spin runs
+// whole in one device step. The walk stops at the loop: an inner loop stays
+// a spin, with no park, as it runs once a turn of the loop above it, which
+// pays a segment's call, and a park costs every kernel registers (queens 94
+// to 120).
+function carb_park(bangs: Set<Name>): void {
+  const seen = new Set<Name>();
+  const walk = (k: Name): void => {
     const own = SRCS.get(k);
-    if (own !== undefined && !seen.has(k + under)) {
-      seen.add(k + under);
-      own.flat &&= under || !own.loop;
-      own.park ||= !under && own.jump;
-      own.refs.forEach((r) => walk(r, under || own.loop === true));
+    if (own === undefined || seen.has(k)) {
+      return;
+    }
+    seen.add(k);
+    own.flat &&= !own.loop;
+    own.park = own.jump;
+    if (!own.loop) {
+      own.refs.forEach(walk);
     }
   };
-  cb.bangs.forEach((k) => walk(k, false));
-  FLATS.clear();
-  return cb;
+  bangs.forEach(walk);
 }
 
 // The datatypes a type mentions
@@ -5394,23 +5401,26 @@ static bool corpus_grow(Corpus H, u64 need) {
   return ok;
 }
 
-static Corpus corpus_setup(bool gpu, long threads, u64 bytes) {
-  io_gpu     = gpu;
-  KEEP_WORDS = gpu ? CHUNK : CAP_WORDS;
-  // the span stops at what the device takes, asked or not (#942): an asked
-  // 8GB was wired whole; Metal's default is 2GB of it
+// The GPU's span: the asked one, else the default (Metal's is 2GB), at most
+// what the device takes (#942 wired an asked 8GB whole).
+static u64 gpu_fit(u64 bytes) {
 #ifdef __OBJC__
-  u64 dflt   = 2ull << 30;
+  u64 want = bytes != 0 ? bytes : 2ull << 30;
 #else
-  u64 dflt   = ~0ull;
+  u64 want = bytes != 0 ? bytes : ~0ull;
 #endif
-  u64 top    = gpu ? gpu_span() : 1ull << 33;
-  u64 want   = !gpu ? top : bytes != 0 ? bytes : dflt;
-  if (bytes != 0 && want > top) {
+  u64 top  = gpu_span();
+  if (bytes > top) {
     fprintf(stderr, "bend: --gpu is over the device's %lluMB; using that\n",
       (unsigned long long)(top >> 20));
   }
-  u64 size   = (want < top ? want : top) & ~16383ull;
+  return want < top ? want : top;
+}
+
+static Corpus corpus_setup(bool gpu, long threads, u64 bytes) {
+  io_gpu     = gpu;
+  KEEP_WORDS = gpu ? CHUNK : CAP_WORDS;
+  u64 size   = (gpu ? gpu_fit(bytes) : 1ull << 33) & ~16383ull;
   CORPUS     = gpu ? gpu_map(size) : corpus_map(size);
   Corpus H   = CORPUS;
 #if BEND_CUDA
