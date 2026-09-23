@@ -24,7 +24,7 @@ Every reader selects by `k`. Check-lit accepts `Lit(k, v)` at Base's type `k`.
 while these invariants hold:
 
 1. Meaning: each `Lit` means one closed tree of Base constructors.
-   `lit_step` gives the same tree as `aa823c0a`.
+   `lit_step` gives the same tree that `main` parses.
 2. Typing: the fast check accepts `Lit(k, v)` only at Base's type `k`.
    Base loads with the empty namespace, and each head constructor of Nat,
    String, U32 and F32 is declared by that type alone, so this accepts the
@@ -37,31 +37,38 @@ while these invariants hold:
 Out of scope: List, Tuple and Array (the spine is already one node per
 element), Bool and Unit (already one node), Word (see below).
 
-## Result (`aa823c0a` to `32ddef5d`)
+## Result against `main` (`6a77e124`)
 
-`bend2/bend.ts`: 43179 → 42861 tokens (`ttok`), 3961 → 3925 lines.
-`bend2/comp.ts`: −4 tokens.
-`lit_full`, `u32_to_term` and `lit_chain` are gone.
+Code: `bend2/bend.ts` 43431 → 43307 tokens, 3976 → 3954 lines; `bend2/comp.ts`
+62163 → 62207 tokens (`lit_call`). `lit_full`, `u32_to_term` and `lit_chain`
+are gone, and no literal step is copied with `term_higher`.
 
 Checks: 303 representative tests (literal, char, string, escape, pattern,
-printer, parse, eval, halt) pass as on the baseline, with byte-identical
-emitted JS and C for all 224 builds, the demos and `litheavy.bend`.
-`tsc` shows the same 4 errors as the baseline.
+printer, parse, eval, halt) and the demos give the results of `main`, with
+byte-identical emitted JS and C. `tsc` shows the same 4 errors as `main`.
 
-Measured in WSL, median of 5 rounds, alternating the two trees.
-Identical C binaries vary by up to ±15%, so smaller time changes are noise.
+Speed and memory: CPU time (user + sys) and peak memory, median of 8 rounds
+that rotate the trees; the control benches vary by 1–3%.
 
 | Case | Time | Memory |
-| --- | --- | --- |
-| `litheavy.bend` check | −80% | −72% |
-| `litheavy.bend` interpreter | −48% | −74% |
-| `litheavy.bend` C emit (15 runs) | −21% | −43% |
-| `pure_hvm5_mini` build | noise | −19% |
-| checker benches, runtime benches, other demos | noise (C emit 0.0%) | ±2% |
+| --- | ---: | ---: |
+| 5000 Char literals: run / C emit | −75% / −69% | −75% / −78% |
+| 500 Strings + 200 String proofs: run / C emit | −57% / −65% | −17% / −72% |
+| 2500 U32 + 1000 F32 literals: run / C emit | −74% / −69% | −73% / −77% |
+| `app_slash_boss_3d/PROOF` check | −3% | −63% |
+| `pure_hvm5_mini/PROOF` check | −9% | −6% |
+| `pure_par_sort` check | −20% | −2% |
+| `raytrace` C emit | −39% | −23% |
+| checker benches `trees_400`, `proofs_3200` | −2%, 0% | 0%, −1% |
 
-`litheavy.bend` is a scratch program: 5000 Char, 500 String and 2500 U32
-literals, and 200 proofs that unfold String literals.
-The gain comes from `Chr{Lit(U32)}`: one node per character, not 65.
+The literal programs are scratch files, not in the repository. A wider
+wall-clock run (7 rounds) showed the same shape: runtime bench C emit −7% to
+−27%, demo checks mostly −10% to −25%. Most of the gain on normal programs
+comes from U32 and F32 literals in `base.bend`, which `main` builds as full
+chains at parse time. The runtime is unchanged: the emitted code is the same.
+
+A per-literal cache of word steps was measured on top of the final code and
+gained nothing, so there is none.
 
 Remaining finding: `term_check` has cyclomatic complexity 51 (56 before).
 A split is a checker restructure outside this task.
@@ -88,7 +95,7 @@ The checker benches unfold no literal. In the checker, U32 unfolds come from
 (`pure_hvm5_mini`: 4443 of 5955) came from `term_const`, which unfolded a
 literal only to find every node constant.
 
-Action taken instead (`4a62a0c6`): `term_const` answers "constant" for a
+Action taken instead: `term_const` answers "constant" for a
 `Lit` at once (invariant 1), except a Nat past the cap (`lit_call`, now the
 one place for that rule). Emitted C and JS are byte-identical (303 tests,
 demos, 8 programs). C emit, 9 alternating runs: `litheavy.bend` −65% time,
@@ -104,4 +111,5 @@ demos, 8 programs). C emit, 9 alternating runs: `litheavy.bend` −65% time,
 3. Make the tree with Windows Git (`git stash create`), then `git archive` it in
    WSL into `~/lit/<name>`. WSL Git has no `core.autocrlf`.
 4. Merge stdout and stderr into one pipe, as the gate does.
-5. Measure the two trees in alternating rounds, never one tree after the other.
+5. Measure the trees in rotating rounds, never one tree after the other, and
+   compare CPU time (user + sys): wall time varies by ±10–15% here.
