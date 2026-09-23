@@ -5,8 +5,8 @@
 // a hub.ts on a random localhost port logs to a temp file; a Bun.serve plays
 // Caddy and GitHub in front of it (/install.sh with the GitHub URL turned
 // into this origin and the https-only flags dropped, since this origin is
-// plain http; the archive under /dl; the store's files under /0x<hash>;
-// /check and /ping to the hub); then
+// plain http; the archive under /dl; the store under /0x<hash>; /check
+// and /ping to the hub); then
 // install.sh runs in a temp HOME over the old launcher's layout. Checks:
 // bashka (SKIP without it) calls the script green; the install replaces the
 // launcher with the executable, drops app/, current, id, last, rep and bad,
@@ -22,15 +22,9 @@
 // the executable; a tampered sha256 installs nothing; a Windows or a MIPS
 // uname is refused in one line; a 2.0.0-2.0.7 launcher's ping and its
 // latest.json fallback name the version, no sha256 and the move notice; the
-// formula carries the sum. --publish, its hub at this origin: every LICENSE
-// beside a published file goes along and the hash covers it, the notice
-// names the terms and the shallowest LICENSE's SPDX id, else its path, as
-// the hub's /package/<hash>.json names it (a CR, a doubled space, a comment
-// marker, a stray character, no letter, a sixth line); a
-// LICENSE.md alone is left out, the notice says MIT-0 and warns; a
-// directory named License is refused before mining; the publish, a package
-// fetch, a name lookup and the check carry User-Agent: bend/<ver>. SKIP
-// when the site repo is not at lib.SITE.
+// formula carries the sum; --publish ships LICENSE files, names the license
+// as the hub does, refuses a License/ directory, and every request carries
+// User-Agent: bend/<ver>. SKIP when the site repo is not at lib.SITE.
 
 import * as child from "node:child_process";
 import * as crypto from "node:crypto";
@@ -121,8 +115,7 @@ function pkg_hash(files: Record<string, string>): string {
     + p + "\n").join("")).slice(0, 32);
 }
 
-// publish writes a package's files under TMP/pub/<dir> and publishes its
-// <dir>/lic_<dir>.bend to the hub at this origin
+// publish writes files under TMP/pub/<dir> and publishes lic_<dir>.bend
 function publish(dir: string, files: Record<string, string>):
   Promise<lib.Exec> {
   for (const [f, text] of Object.entries(files)) {

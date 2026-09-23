@@ -66,12 +66,10 @@ const CHECK = path.join(os.homedir(), ".bend", "check.json");
 
 const DAY = 86400000;
 
-// BendHub's terms: what is published there is public and permanent, and
-// a package with no LICENSE file is under MIT-0 (their s18.4)
+// BendHub's terms; s18.4 makes MIT-0 the default license
 const TERMS = "https://bend-lang.com/bender/terms#s18";
 
-// the hub's rule (hubdb.ts) for a LICENSE's SPDX id: the first of its first
-// 5 lines to match, with a letter in the id, its spaces collapsed
+// the hub's SPDX line rule (hubdb.ts)
 const SPDX_RE = /^\s*SPDX-License-Identifier:\s*([A-Za-z0-9.+\-() ]{1,80}?)\s*$/;
 
 // A package's proof of work is a nonce whose sha256(hash + " " + nonce)
@@ -190,10 +188,7 @@ async function check(): Promise<void> {
   }
 }
 
-// ua_fetch is the CLI's fetch: every request to the hub or to bend-lang.com
-// (a publish, a name, a package, a login, the check) carries User-Agent:
-// bend/<VERSION>, so the hub's log shows which bend sent it; any other
-// request (a program's own) goes out as it was.
+// ua_fetch tags every request to the hub or bend-lang.com with bend/<VERSION>
 function ua_fetch(): void {
   const raw = globalThis.fetch;
   globalThis.fetch = Object.assign((u: string | URL | Request, o: RequestInit = {}) => {
@@ -470,10 +465,7 @@ async function cli_bundle(page: string, dir: string): Promise<void> {
 
 // cli_publish checks the file, then posts what the loader read (no TODO
 // left) to the hub with its proof of work, and prints the import line.
-// Every publish first says, on stderr, that the hub is public and
-// permanent under its terms, and the license the hub will show: the
-// shallowest LICENSE's (the first by path among them) SPDX id by SPDX_RE,
-// else its path, else MIT-0, the terms' default, with a warning.
+// First it prints the terms and the license the hub will show.
 async function cli_publish(file: string, named?: string): Promise<void> {
   const seen = new Map<string, string | null>();
   const [book, n0] = await book_read(file, undefined, seen);
@@ -632,9 +624,8 @@ async function cli_login(): Promise<string> {
 // .c or .js file at its path from the entry's directory; base and the
 // store's packages stay out. A path that climbs above the entry's directory
 // takes the entry's ancestor directories along, as many as the deepest climb.
-// A file named exactly LICENSE beside a published file goes along at the
-// matching path; a directory named license in any case is refused, since
-// on a disk that ignores case it would clash with a LICENSE beside it.
+// A LICENSE beside a published file goes along; a license/ directory, in
+// any case, is refused (it clashes with LICENSE on a case-blind disk).
 function pkg_files(file: string, book: Bend.Book,
   seen: Map<string, string | null>): Record<string, string> {
   const dir  = file.slice(0, file.lastIndexOf("/") + 1);
