@@ -728,19 +728,19 @@ export type BookState = {
   seen: Map<string, string | null>;
 };
 
-// book_read loads and checks a file. unsafe_seed must be a complete checked
-// prefix of the file's own load order, with its matching loader map: its
-// sources, namespaces and checker version are trusted, not verified here.
-// The seed is never written (book_over); its term graphs stay shared, so a
-// later compile may force its elaborations' cells. n0 marks the file's own
-// claims.
-export async function book_read(file: string,
-  unsafe_seed?: BookState): Promise<BookState & { n0: number }> {
+// book_read loads and checks a file; on sees the loader's steps (book_load).
+// unsafe_seed must be a complete checked prefix of the file's own load
+// order, with its matching loader map: its sources, namespaces and checker
+// version are trusted, not verified here. The seed is never written
+// (book_over); its term graphs stay shared, so a later compile may force its
+// elaborations' cells. n0 marks the file's own claims.
+export async function book_read(file: string, unsafe_seed?: BookState,
+  on?: Parameters<typeof Bend.book_load>[5]): Promise<BookState & { n0: number }> {
   const book = unsafe_seed === undefined
     ? Bend.book_nil() : book_over(unsafe_seed.book);
   const seen = new Map(unsafe_seed?.seen);
   const done = book.order.length;
-  const n0 = await Bend.book_load(book, file, "", seen);
+  const n0 = await Bend.book_load(book, file, "", seen, undefined, on);
   const laws = path.join(path.dirname(file), "LAWS.bend");
   if (path.basename(file) === "PROOF.bend" && fs.existsSync(laws)
     && !seen.has(fs.realpathSync(laws))) {

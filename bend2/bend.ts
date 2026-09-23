@@ -1060,7 +1060,10 @@ async function name_hash(book: Book, nv: string, spn?: Span): Promise<string> {
   return got;
 }
 
-export async function book_load(book: Book, file: string, ns: string, seen: Map<string, string | null>, spn?: Span): Promise<number> {
+// book_load loads a file after its imports; on sees each new file in that order
+// (realpath, namespace, text) before its parse, and skips the parse by answering true.
+export async function book_load(book: Book, file: string, ns: string, seen: Map<string, string | null>, spn?: Span,
+  on?: (real: string, ns: string, text: string) => boolean | void): Promise<number> {
   if (file.startsWith(BEND_LIB + "/") && !fs.existsSync(file)) {
     const pkg = file.slice(BEND_LIB.length + 1).split("/")[0];
     const man = await hub_get(book, pkg + "/manifest", pkg.slice(2), spn);
@@ -1103,7 +1106,7 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
         throw Err(book, ctx_nil(), "an import ('import Base', or 'import <path> as <Name>')", "'" + line + "'", sp);
       }
       if (h[2] === undefined) {
-        await book_load(book, BASE_BEND, "", seen, sp);
+        await book_load(book, BASE_BEND, "", seen, sp, on);
       } else {
         let rel = path.posix.normalize(h[1]);
         if (!rel.endsWith(".bend")) {
@@ -1124,7 +1127,7 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
           sub = rel;
         }
         al[h[2]] = sub.replace(/\.bend$/, "");
-        await book_load(book, at, al[h[2]], seen, sp);
+        await book_load(book, at, al[h[2]], seen, sp, on);
       }
       lines[i] = "";
       continue;
@@ -1134,7 +1137,9 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
     }
   }
   const n0 = book.order.length;
-  parse_book(book, dir, lines.join("\n"), ns, al);
+  if (on?.(real, ns, text) !== true) {
+    parse_book(book, dir, lines.join("\n"), ns, al);
+  }
   if (real === BASE_BEND) {
     for (const k of book.order.slice(n0)) {
       book.tlds[k].b = true;
