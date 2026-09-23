@@ -686,7 +686,7 @@ function probe_of(t: HTerm): Probe {
 
 // A literal is a constant tree, except a Nat past the cap: U32.to_nat of
 // its word.
-function lit_call(s: Of<"Lit">): Bend.LTerm | null {
+function lit_call(s: Of<"Lit">): HTerm | null {
   return s.k === "Nat" && s.v > Bend.NAT_LITERAL_MAX
     ? Bend.App(Bend.Ref("U32.to_nat"), Bend.Lit("U32", s.v)) : null;
 }
@@ -696,7 +696,7 @@ function term_force(t: HTerm): HTerm {
   if (s.$ !== "Lit") {
     return s;
   }
-  return memo(LITS, s, () => Bend.term_higher(lit_call(s) ?? Bend.lit_step(s)));
+  return memo(LITS, s, () => lit_call(s) ?? Bend.lit_step(s));
 }
 
 function term_strip(t: HTerm): HTerm {

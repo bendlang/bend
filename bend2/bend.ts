@@ -895,7 +895,7 @@ export function term_descend(q: Quant, arg: HTerm, col: HTerm): Cmp {
   }
   const s = term_strip(arg);
   const p = term_strip(col);
-  const a = s.$ === "Lit" && p.$ === "Ctr" ? term_higher(lit_step(s)) : s;
+  const a: HTerm = s.$ === "Lit" && p.$ === "Ctr" ? lit_step(s) : s;
   switch (p.$) {
     case "Var": {
       if (a.$ === "Var" && a.i === p.i) {
@@ -1186,8 +1186,8 @@ export function tele_unbind(book: Book, T: HTerm): { doms: Array<[Quant, Name, H
 // Word
 // ====
 
-export function word_to_term(n: U32, s?: Span): LTerm {
-  let out: LTerm = Ctr("WNil", [], s);
+export function word_to_term<X>(n: U32, s?: Span): TermOf<X> {
+  let out: TermOf<X> = Ctr("WNil", [], s);
   for (let i = 31; i >= 0; i--) {
     out = Ctr("WCon", [Ctr((n >>> i) & 1 ? "True" : "False", [], s), out], s);
   }
@@ -1210,7 +1210,7 @@ export function lit_of(cs: U32[], s?: Span): LTerm {
     Ctr("SCon", [Ctr("Chr", [Lit("U32", c, s)], s), out], s), Ctr("SNil", [], s));
 }
 
-export function lit_step({ k, v, s }: Extract<LTerm, { $: "Lit" }>): LTerm {
+export function lit_step<X>({ k, v, s }: Extract<TermOf<X>, { $: "Lit" }>): TermOf<X> {
   if (k === "String") {
     const c = v.codePointAt(0);
     return c === undefined ? Ctr("SNil", [], s)
@@ -3070,7 +3070,7 @@ export function term_wnf(book: Book, term: HTerm): HTerm {
           }
           case "MAT": {
             if (tm.$ === "Lit") {
-              tm = term_higher(lit_step(tm));
+              tm = lit_step(tm);
             }
             if (tm.$ === "Ctr") {
               const ctr = tm;
@@ -3219,10 +3219,10 @@ export function term_compare(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTe
     return term_compare(mode, book, term_apply(a, x), term_apply(b, x), dep + 1);
   }
   if (a.$ === "Lit" && b.$ === "Ctr") {
-    a = term_higher(lit_step(a));
+    a = lit_step(a);
   }
   if (b.$ === "Lit" && a.$ === "Ctr") {
-    b = term_higher(lit_step(b));
+    b = lit_step(b);
   }
   switch (a.$) {
     case "Var": {
@@ -3643,7 +3643,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       if (t_wnf.$ === "ADT" && t_wnf.k === tm.k && book.tlds[tm.k]?.b === true) {
         return Check(tm, ty, uses_nil());
       }
-      return term_check(book, lhs, term_higher(lit_step(tm)), qt, ty, ctx, d);
+      return term_check(book, lhs, lit_step(tm), qt, ty, ctx, d);
     }
     // T == @q s:D<p..> -> P
     // D.c[k] = @r1 x1:F1 -> .. -> D<p..>
