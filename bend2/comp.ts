@@ -5056,8 +5056,7 @@ static id<MTLComputePipelineState> gpu_pipe(MTLComputePipelineDescriptor* d,
 static u64 gpu_span(void) {
   u64 span = [gpu_dev recommendedMaxWorkingSetSize];
   u64 most = [gpu_dev maxBufferLength];
-  span = span < most ? span : most;
-  return span < (2ull << 30) ? span : 2ull << 30;
+  return span < most ? span : most;
 }
 
 static void gpu_load(u64 bytes) {
@@ -5339,8 +5338,20 @@ static bool corpus_grow(Corpus H, u64 need) {
 static Corpus corpus_setup(bool gpu, long threads, u64 bytes) {
   io_gpu     = gpu;
   KEEP_WORDS = gpu ? CHUNK : CAP_WORDS;
-  u64 dflt   = gpu ? gpu_span() : 1ull << 33;
-  u64 size   = (gpu && bytes != 0 ? bytes : dflt) & ~16383ull;
+  // the span stops at what the device takes, asked or not (#942): an asked
+  // 8GB was wired whole; Metal's default is 2GB of it
+#ifdef __OBJC__
+  u64 dflt   = 2ull << 30;
+#else
+  u64 dflt   = ~0ull;
+#endif
+  u64 top    = gpu ? gpu_span() : 1ull << 33;
+  u64 want   = !gpu ? top : bytes != 0 ? bytes : dflt;
+  if (bytes != 0 && want > top) {
+    fprintf(stderr, "bend: --gpu is over the device's %lluMB; using that\n",
+      (unsigned long long)(top >> 20));
+  }
+  u64 size   = (want < top ? want : top) & ~16383ull;
   CORPUS     = gpu ? gpu_map(size) : corpus_map(size);
   Corpus H   = CORPUS;
 #if BEND_CUDA

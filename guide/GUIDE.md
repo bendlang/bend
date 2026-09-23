@@ -529,7 +529,7 @@ bend file.bend -o file.js # emit the JS source instead
 bend page.html -o dist    # bundle a web page that imports .bend files
 ./file --threads 8        # run a native binary on 8 CPU threads
 ./file --gpu off          # run ! calls on the CPU (the GPU is on by default)
-./file --gpu 4GB          # cap the GPU's heap at 4GB
+./file --gpu 4GB          # cap the GPU's heap at 4GB (at most the device's)
 ```
 
 A `main` that returns `IO` runs compiled; one that returns a value is normalized
