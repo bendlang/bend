@@ -275,7 +275,8 @@ async function cli_file(args: string[]): Promise<void> {
       return await cli_checkup(file);
     }
     if (only) {
-      return cli_report(...await book_read(file), 1);
+      process.exitCode = cli_report(...await book_read(file), 1) ? 1 : 0;
+      return;
     }
     const seen = new Map<string, string | null>();
     const [book, n0] = await book_read(file, undefined, seen);
@@ -680,14 +681,14 @@ async function pow_mine(hash: string, bytes: number): Promise<number> {
 
 // cli_report prints the verdict of a check on stdout, or a note before a
 // run, an emit or a publish on stderr (silent then when nothing relies on
-// a promise): the claims (the file's own, book.order from n0, and every
-// law outside Base, filled in any file: an open one fails wherever it is)
-// that are @unsafe or foreign, or whose type, body or constructor fields
-// name a def that relies on one. A law is ordered twice (declared, then
-// filled). A foreign def is a promise like @unsafe is: the checker reads
-// its type, never its code. If the book holds one, a walk from the claims
-// collects who names whom, then the promises flood back along those edges.
-function cli_report(book: Bend.Book, n0: number, fd: number): void {
+// a promise): the file's own claims (book.order from n0) and every law
+// outside Base, including fills in imported files, that are @unsafe or
+// foreign or name a def that relies on one. A law is ordered twice
+// (declaration and fill). A foreign def is a promise like @unsafe: the
+// checker reads its type, never its code. Dependencies flood back from
+// unchecked promises to the reported claims.
+// Returns whether the reported claims rely on an unchecked promise.
+function cli_report(book: Bend.Book, n0: number, fd: number): boolean {
   const met  = new Set<string>();
   const laws = book.order.filter((k) =>
     met.has(k) ? book.tlds[k].b !== true : !met.add(k));
@@ -725,6 +726,7 @@ function cli_report(book: Bend.Book, n0: number, fd: number): void {
   } else if (fd === 1) {
     cli_say(1, "All terms check.\n");
   }
+  return list.length > 0;
 }
 
 // term_refs adds to out the names a term (a span skipped) refers to.
@@ -804,8 +806,7 @@ function book_main(book: Bend.Book): Bend.Def | null {
 function book_run(book: Bend.Book, n0: number, argv: string[]): number {
   const main = book_main(book);
   if (main === null) {
-    cli_report(book, n0, 1);
-    return 0;
+    return cli_report(book, n0, 1) ? 1 : 0;
   }
   if (Comp.io_type(book) !== null) {
     return Comp.io_run(book, argv);

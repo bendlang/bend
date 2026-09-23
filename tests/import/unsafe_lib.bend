@@ -11,3 +11,4 @@ def safe(n: Nat) -> Nat:
 
 #|All terms check, but 1 def relies on unsafe or foreign code:
 #|- boom
+#|exit 1

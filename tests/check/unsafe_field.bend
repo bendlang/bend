@@ -20,3 +20,4 @@ def sound(n: Nat) -> Nat:
 #|- boom
 #|- Box
 #|- uses
+#|exit 1

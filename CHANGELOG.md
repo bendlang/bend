@@ -3,6 +3,12 @@
 Each release names what changed for a user. `bend update` installs the
 latest one; the GitHub release carries the same notes.
 
+## Unreleased
+
+- **Proof checks reject unsafe dependencies** (#966): checking a file without
+  `main`, or using `--check-only`, exits 1 if one of its own claims depends on
+  `@unsafe` or foreign code. Runs and builds still warn but can proceed.
+
 ## 2.0.27 (2026-09-23)
 
 - **`bend` reads no `bunfig.toml` or `.env` from the directory it runs in**

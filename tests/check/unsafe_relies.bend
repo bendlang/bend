@@ -21,3 +21,4 @@ def sound(n: Nat) -> Nat:
 #|- boom
 #|- innocent
 #|- by_type
+#|exit 1

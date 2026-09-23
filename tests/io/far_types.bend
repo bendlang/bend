@@ -16,3 +16,4 @@ def far.make(depth):
 
 #|All terms check, but 1 def relies on unsafe or foreign code:
 #|- far.make
+#|exit 1

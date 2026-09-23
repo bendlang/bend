@@ -38,3 +38,4 @@ def tag.on():
 #|All terms check, but 2 defs rely on unsafe or foreign code:
 #|- tag.off
 #|- tag.on
+#|exit 1

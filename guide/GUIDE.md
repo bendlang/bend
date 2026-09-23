@@ -319,9 +319,12 @@ By convention, a project keeps its laws in two files at its root. `LAWS.bend`
 imports the code and states the laws, each an open claim: the human writes it,
 the AI does not touch it. `PROOF.bend` imports `LAWS.bend` and proves each law
 with a def of the same name (`law sorted` is proven by `def Laws.sorted`): the
-AI writes it, along with the code. `bend PROOF.bend` is the gate: it fails while
-any law is open or false, and prints "All terms check." once every law holds.
-bend refuses a `PROOF.bend` that sits beside a `LAWS.bend` without importing it.
+AI writes it, along with the code. `bend PROOF.bend` is the gate: it fails
+while any law is open or false, or when its own claims rely on `@unsafe` or
+foreign code. A clean proof prints "All terms check."; a check reporting such
+dependencies exits 1. `--check-only` uses the same exit rule, while an
+ordinary run or build still permits those dependencies but warns about them.
+Bend refuses a `PROOF.bend` that sits beside a `LAWS.bend` without importing it.
 
 Bend has no tactics: a proposition is a type, and a proof is a def of that type.
 `{a == b : T}` is an equality; `{==}` proves it when both sides compute to the

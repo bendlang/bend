@@ -11,3 +11,4 @@ def keep(n: Nat) -> Nat:
 
 #|All terms check, but 1 def relies on unsafe or foreign code:
 #|- innocent
+#|exit 1
