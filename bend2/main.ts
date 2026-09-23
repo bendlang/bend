@@ -731,9 +731,11 @@ export type BookState = {
 // book_read loads and checks a file; on sees the loader's steps (book_load).
 // unsafe_seed must be a complete checked prefix of the file's own load
 // order, with its matching loader map: its sources, namespaces and checker
-// version are trusted, not verified here. The seed is never written
-// (book_over); its term graphs stay shared, so a later compile may force its
-// elaborations' cells. n0 marks the file's own claims.
+// version are trusted, not verified here. The seed is never written: the
+// file checks in a book_over child, returned flat (its tables own every
+// name, as a caller that enumerates them expects); its term graphs stay
+// shared, so a later compile may force its elaborations' cells. n0 marks
+// the file's own claims.
 export async function book_read(file: string, unsafe_seed?: BookState,
   on?: Parameters<typeof Bend.book_load>[5]): Promise<BookState & { n0: number }> {
   const book = unsafe_seed === undefined
@@ -753,7 +755,7 @@ export async function book_read(file: string, unsafe_seed?: BookState,
     throw "Error: " + String(hols) + " TODO" + (hols === 1 ? "" : "s")
       + " found.\nThe code is incomplete, and not a valid proof yet.";
   }
-  return { book, seen, n0 };
+  return { book: unsafe_seed === undefined ? book : book_flat(book), seen, n0 };
 }
 
 // book_over is a child book over a checked parent: its tables extend the
@@ -786,9 +788,6 @@ function book_main(book: Bend.Book): Bend.Def | null {
 }
 
 function book_run(book: Bend.Book, n0: number, argv: string[]): number {
-  if (Object.getPrototypeOf(book.tlds) !== null) {
-    book = book_flat(book);
-  }
   const main = book_main(book);
   if (main === null) {
     cli_report(book, n0, 1);
