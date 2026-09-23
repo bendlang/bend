@@ -3795,14 +3795,15 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
 // its x leading ~ binders peeled off both, each an opaque constant of its
 // domain for the check (a bodiless def, native like base's, so a mention
 // costs no usage and the body must hold for every closed instance)
-export function def_check(book: Book, k: Name, def: Def, z?: number): LTerm {
+export function def_check(book: Book, k: Name, def: Def, z?: number,
+  names?: Set<Name>): LTerm {
   const qs = tele_unbind(book, def.T).doms.map((dom) => dom[0]);
   const gen = def.x === 0 ? book : { ...book, tlds: Object.create(book.tlds) };
   let [t, v, T]: HTerm[] = [Ref(k), def.v as HTerm, def.T];
   for (let j = 0; j < def.x; j++) {
     const h = tele_head(gen, T, ctx_nil(), k);
     const o = k + "~" + h.k;
-    if (o in gen.tlds) {
+    if (o in gen.tlds || book_ctr(gen, o) !== null || names?.has(o)) {
       throw Err(book, ctx_nil(), "a fresh ~ binder name", h.k, h.s);
     }
     gen.tlds[o] = { $: "Def", n: 0, x: 0, T: h.A, v: null, b: true };
@@ -3888,6 +3889,10 @@ export function def_inst(book: Book, lhs: LHS, tm: Extract<HTerm, { $: "Ref" }>,
 
 export function book_valid(book: Book, done: number = 0): void {
   const tlds = book.tlds;
+  // Replay hides future declarations to reject forward references, but a
+  // template's opaque names must be fresh in the complete parsed namespace:
+  // its checked body keeps those Ref keys after the temporary TLDs are gone.
+  const names = new Set([...Object.keys(tlds), ...Object.keys(book.ctrs)]);
   const last = new Map<Name, number>();
   for (let i = 0; i < book.order.length; i++) {
     last.set(book.order[i], i);
@@ -3969,7 +3974,7 @@ export function book_valid(book: Book, done: number = 0): void {
       }
     }
     if (def.v !== null) {
-      def.e = def_check(book, k, def);
+      def.e = def_check(book, k, def, undefined, names);
     }
     book.tlds[k] = def;
   }
