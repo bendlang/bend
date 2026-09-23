@@ -3304,8 +3304,32 @@ export function term_compare(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTe
           && a.x.every((x, j) => term_compare("EQ", book, x, b.x[j], dep));
     }
     case "Ctr": {
-      return b.$ === "Ctr" && a.k === b.k && a.x.length === b.x.length
-          && a.x.every((x, j) => term_compare("EQ", book, x, b.x[j], dep));
+      // a chain through last fields (Succ, a list's tail, a word's bits) is
+      // walked in this loop, so its length costs no stack
+      if (b.$ !== "Ctr") {
+        return false;
+      }
+      let x: HTerm = a;
+      let y: HTerm = b;
+      while (x.$ === "Ctr" && y.$ === "Ctr") {
+        const p = x.x;
+        const q = y.x;
+        if (x.k !== y.k || p.length !== q.length
+            || !p.every((u, j) => j === p.length - 1 || term_compare("EQ", book, u, q[j], dep))) {
+          return false;
+        }
+        if (p.length === 0) {
+          return true;
+        }
+        x = term_wnf(book, p[p.length - 1]);
+        y = term_wnf(book, q[q.length - 1]);
+        if (x === y) {
+          return true;
+        }
+        x = x.$ === "Lit" && y.$ === "Ctr" ? term_higher(lit_step(x)) : x;
+        y = y.$ === "Lit" && x.$ === "Ctr" ? term_higher(lit_step(y)) : y;
+      }
+      return term_compare("EQ", book, x, y, dep);
     }
     case "Lit": {
       return b.$ === "Lit" && a.v === b.v;

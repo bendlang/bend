@@ -779,7 +779,12 @@ function book_err(e: unknown): string {
     return "Error: the machine stack overflowed (a deep recursion, or a"
       + " literal too large to expand)";
   }
-  return err?.$ === "Err" ? Bend.err_show(err) : String(e);
+  // showing a false law about a huge term can overflow too
+  try {
+    return err?.$ === "Err" ? Bend.err_show(err) : String(e);
+  } catch (x) {
+    return book_err(x);
+  }
 }
 
 // Load
