@@ -57,7 +57,9 @@ type Def  = Bend.Def & { h?: HTerm };
 
 type TLD  = Bend.ADT | Def;
 
-type Src = { refs: Set<Name>; deps: Set<Name>; flat: boolean };
+type Src = {
+  refs: Set<Name>; deps: Set<Name>; flat: boolean; loop?: boolean;
+};
 
 type Carb = {
   // a copy of the book whose defs carry their raised body (def_body)
@@ -1465,6 +1467,7 @@ function carb_book(src: Bend.Book, roots: Name[]): Carb {
       if (ck !== null && ck.k !== d) {
         own.deps.add(ck.k);
       }
+      own.loop ||= ck?.k === d;
       if ((s.$ === "Let" && s.k.length >= 2)
         || (ck !== null && (ck.bang === true || (ck.k === d && !tail)))) {
         own.flat = false;
@@ -1473,6 +1476,21 @@ function carb_book(src: Bend.Book, roots: Name[]): Carb {
     });
     queue.push(...own.refs);
   }
+  // A loop a bang reaches under no other loop (a fork tree is one) is no
+  // spin: a spin runs whole in one device step, and a segment's loop parks
+  // when its lane's fuel runs out. An inner loop stays a spin: it runs once
+  // a turn of the loop above it, which pays a segment's call.
+  const seen = new Set<string>();
+  const walk = (k: Name, under: boolean): void => {
+    const own = SRCS.get(k);
+    if (own !== undefined && !seen.has(k + under)) {
+      seen.add(k + under);
+      own.flat &&= under || !own.loop;
+      own.refs.forEach((r) => walk(r, under || own.loop === true));
+    }
+  };
+  cb.bangs.forEach((k) => walk(k, false));
+  FLATS.clear();
   return cb;
 }
 
