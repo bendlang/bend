@@ -1219,16 +1219,16 @@ export function lit_chain(cs: U32[], s?: Span): LTerm {
 }
 
 // one step: "" is SNil{}, "ct.." is SCon{Chr{c}, "t.."}, 0n is Zero{}, n is Succ{n-1}
-export function lit_step({ v, k, s }: Extract<LTerm, { $: "Lit" }>): LTerm {
-  if (k !== undefined) {
-    return Ctr(k, [word_to_term(v as U32, s)], s);
+export function lit_step(t: Extract<LTerm, { $: "Lit" }>): LTerm {
+  if (t.k !== undefined) {
+    return Ctr(t.k, [word_to_term(t.v as U32, t.s)], t.s);
   }
-  if (typeof v === "number") {
-    return v === 0 ? Ctr("Zero", [], s) : Ctr("Succ", [Lit(v - 1, s)], s);
+  if (typeof t.v === "number") {
+    return t.v === 0 ? Ctr("Zero", [], t.s) : Ctr("Succ", [Lit(t.v - 1, t.s)], t.s);
   }
-  const c = v.codePointAt(0);
-  return c === undefined ? Ctr("SNil", [], s)
-    : Ctr("SCon", [Ctr("Chr", [u32_to_term(c, s)], s), Lit(v.slice(c > 0xffff ? 2 : 1), s)], s);
+  const c = t.v.codePointAt(0);
+  return c === undefined ? Ctr("SNil", [], t.s)
+    : Ctr("SCon", [Ctr("Chr", [u32_to_term(c, t.s)], t.s), Lit(t.v.slice(c > 0xffff ? 2 : 1), t.s)], t.s);
 }
 
 // past it, "n + T" is Nat.add(n, T) and the compiler emits U32.to_nat(n)
@@ -1808,9 +1808,6 @@ export function parse_bind(p: Parse, t: LTerm): PVar {
 
 export function parse_patt(p: Parse, t: LTerm): Patt {
   const book = p.book;
-  if (t.$ === "Lit") {
-    t = lit_step(t);
-  }
   switch (t.$) {
     case "Var": {
       if (book_ctr(book, parse_reso(p, t.k)) !== null) {
@@ -1827,6 +1824,9 @@ export function parse_patt(p: Parse, t: LTerm): Patt {
         throw Err(book, ctx_nil(), "a " + t.k + " pattern with " + String(ctr.n) + (ctr.n === 1 ? " field" : " fields"), undefined, t.s);
       }
       return { $: "PCtr", k: t.k, x: t.x.map((x) => parse_patt(p, x)), s: t.s };
+    }
+    case "Lit": {
+      return parse_patt(p, lit_step(t));
     }
     default: {
       throw Err(book, ctx_nil(), "a pattern (a binder or a constructor)", term_show(term_lower(term_higher(t), 0)), t.s);
@@ -2027,7 +2027,7 @@ export function parse_term_base(p: Parse, beg: Loc): LTerm {
         const n = parse_term(p);
         parse_eat(p, "]");
         const s = parse_span(p, beg);
-        xs[0] = parse_term_ns(p, xs[0], T);
+        parse_term_ns(p, xs[0], T);
         let d = n;
         if (cnt) {
           const k = Math.log2(nat_from_term(n) ?? 0);
@@ -2160,10 +2160,10 @@ export function parse_term_ops(p: Parse, tm: LTerm, lvl: number): LTerm {
     }
     if (parse_at(p, "[")) {
       parse_bump(p);
-      let ix = parse_term(p);
+      const ix = parse_term(p);
       parse_eat(p, "]");
       const s = parse_grow(p, out);
-      ix = parse_term_ns(p, ix, Ref("U32", s));
+      parse_term_ns(p, ix, Ref("U32", s));
       parse_skip(p);
       if (!parse_nl(p) && parse_take(p, "<-")) {
         const v = parse_term(p, 2);
@@ -2239,19 +2239,15 @@ export function parse_term_ops(p: Parse, tm: LTerm, lvl: number): LTerm {
   }
 }
 
-export function parse_term_ns(p: Parse, tm: LTerm, T: LTerm): LTerm {
-  // ": T" selects operators and literal constructors through operator
-  // applications; named calls stop the walk, and a let's body is its value.
+export function parse_term_ns(p: Parse, tm: LTerm, T: LTerm): void {
+  // ": T" names the operators reached through operator applications, none
+  // nested; a let's body is the expression
   if (tm.$ === "Let") {
-    tm.f = parse_term_ns(p, tm.f, T);
-    return tm;
+    return parse_term_ns(p, tm.f, T);
   }
-  if (["Lit", "Ctr"].includes(tm.$)) {
-    return parse_term_literal(p, tm, T);
-  }
-  const [f] = term_unapply(tm);
+  const [f, xs] = term_unapply(tm);
   if (f.$ !== "Ref") {
-    return tm;
+    return;
   }
   if (f.k.lastIndexOf(".") === 0) {
     const h = term_unapply(T)[0];
@@ -2259,27 +2255,12 @@ export function parse_term_ns(p: Parse, tm: LTerm, T: LTerm): LTerm {
       throw Err(p.book, ctx_nil(), "a type name after : (the operators' namespace)", undefined, h.s);
     }
     f.k = parse_reso(p, h.k + f.k);
-  } else if (!["Bool.and", "Bool.or", "String.append"].includes(f.k)) {
-    return tm;
+  } else if (f.k !== "Bool.and" && f.k !== "Bool.or" && f.k !== "String.append") {
+    return;
   }
-  for (let app: LTerm = tm; app.$ === "App"; app = app.f) {
-    app.x = parse_term_ns(p, app.x, T);
+  for (const x of xs) {
+    parse_term_ns(p, x, T);
   }
-  return tm;
-}
-
-function parse_term_literal(p: Parse, tm: LTerm, T: LTerm): LTerm {
-  const [h, xs] = term_unapply(T);
-  if (h.$ !== "Var" && h.$ !== "Ref" && h.$ !== "ADT") {
-    return tm;
-  }
-  const k = parse_reso(p, h.k + ".literal");
-  if (p.book.tlds[k]?.$ !== "Def") {
-    return tm;
-  }
-  const args = h.$ === "ADT" ? h.x : xs;
-  return [...args, tm].reduce<LTerm>(
-    (f, x) => App(f, x, tm.s), Ref(k, tm.s));
 }
 
 export function parse_term_args(p: Parse, close: string): LTerm[] {
@@ -2323,9 +2304,9 @@ export function parse_term_tup(p: Parse, beg: Loc): LTerm {
     const rest = parse_term_tup(p, beg);
     return Ctr("Tuple", [b.x, rest], parse_span(p, beg));
   }
-  let out = body_flatten(b, [], () => p.sc.frs++);
+  const out = body_flatten(b, [], () => p.sc.frs++);
   if (parse_take(p, ":")) {
-    out = parse_term_ns(p, out, parse_term(p));
+    parse_term_ns(p, out, parse_term(p));
   }
   parse_eat(p, ")");
   return out;

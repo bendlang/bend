@@ -1,8 +1,8 @@
 # General literal plan
 
-Next action: Step 1, reset the branch code.
+Next action: Step 2, measure the baseline.
 
-The user approved the design and Step 1.
+The user approved the design and Step 1. Step 1 is complete.
 
 ## Task
 
@@ -95,7 +95,7 @@ Out of scope:
    Keep only the `lit_full` removal and the `term_unapply` loop from `29a75aea`.
    Remove the GUIDE section, `parse_term_literal`, and the `T.literal` tests.
 2. Measure the baseline: `ttok`, lines, and bytes from Git text.
-   Save the emitted C and JS for all tests in `tests/`.
+   Save the demo outputs and their emitted C and JS.
    Measure memory and time as specified in "Memory and performance measurement".
 3. Do the change in steps. Make one commit for each step. Run the tests after each step.
    1. Add the tag to every `Lit`, and change the readers to test `k`.
@@ -105,7 +105,8 @@ Out of scope:
       Use a table or a `switch`, whichever is smaller.
 4. Verify:
    1. Run the literal tests on the interpreter, JS and C.
-   2. Compare the emitted C and JS with the baseline, byte for byte.
+      Check and run all demos (see "Test scope").
+   2. Compare the demo outputs and the emitted C and JS with the baseline, byte for byte.
       Explain each difference, or remove it.
    3. Measure memory and time again with the same procedure.
       Report the change for each case. Record a regression and its cause.
@@ -130,9 +131,25 @@ Measure locally in WSL with the demos, the benches and the existing tests.
    3. Compiler and runtime: the `bench/runtime/*/main.bend` benches that run on
       the CPU in WSL, on JS and C. Include `lexer`, which reads strings.
    4. Demos: the `demos/pure_*` and `demos/proof_*` demos that run on the CPU.
-   5. Tests: the time to run all tests in `tests/` on the interpreter.
+   5. Tests: the literal tests only (filter below). Do not run the full suite:
+      1436 tests take too long on this machine.
 5. Record each case that cannot run, and the reason. Do not report it as a pass.
 6. Record the results in this plan as a table: case, before, after, change.
+
+## Test scope
+
+The full suite (1436 tests) takes too long on this machine. Use a representative set:
+
+1. The literal tests: the test names that match
+   `literal|^proof_u32|^proof_f32|^printer_(u32|f32)|^parse_nat` (61 tests).
+   Judge them as `gates/test.ts` does: check, interpreter, JS and C.
+2. All demos: check each `.bend` file with `--check-only`.
+   Run `main.bend` of `pure_*`, `proof_*` and `io_hello_world` on the interpreter,
+   JS and C. Keep the emitted `.js` and `.c` for the byte comparison.
+3. Copy each tree with `git archive` into `~/lit/<name>` in WSL.
+   Do not use a Windows copy: its CRLF line endings change error snippets.
+   Do not use `/tmp`: a WSL restart clears it.
+4. The runner scripts are local tools. Do not add them to the repository.
 
 ## Future actions
 
@@ -164,3 +181,33 @@ Measure locally in WSL with the demos, the benches and the existing tests.
 
 `bend2/bend.ts`: 43242 tokens by `ttok`. The cap is 43300.
 Measure again from Git text in Step 2.
+
+## Evidence log
+
+### Step 1 (complete)
+
+Changes kept from `29a75aea`:
+
+1. `lit_full` is removed. `parse_patt` and the compiler's `term_force` call `lit_step`.
+   Each field of the step is again a term that goes through the same entry point.
+2. `term_unapply` uses a `while` loop over `App` nodes. The result is the same.
+
+Size, from Git text (`ttok`):
+
+| File | Baseline | Step 1 | Change |
+| --- | ---: | ---: | ---: |
+| `bend2/bend.ts` tokens | 43179 | 43011 | −168 |
+| `bend2/bend.ts` lines | 3961 | 3938 | −23 |
+| `bend2/comp.ts` tokens | 62168 | 62168 | 0 |
+
+Checks:
+
+1. Literal tests: 61 / 61 pass on the baseline and on Step 1.
+2. Demos: all check results, run outputs, emitted JS and emitted C are
+   byte-identical to the baseline.
+3. `tsc` (7.0.2, `bend2/pack/tsconfig.json`): the same four errors as the baseline.
+   They are in `bend.ts` (`parse_term_*`, `TLD.v`) and `docs/gen_*.ts` (module `canvas`).
+   Step 1 adds no error.
+
+The demo times from this run are not valid measurements:
+the two trees ran at the same time. Step 2 measures them again.
