@@ -693,7 +693,7 @@ function term_force(t: HTerm): HTerm {
   return memo(LITS, s, () => Bend.term_higher(
     s.k === undefined && typeof s.v === "number" && s.v > Bend.NAT_LITERAL_MAX
       ? Bend.App(Bend.Ref("U32.to_nat"), Bend.u32_to_term(s.v))
-      : Bend.lit_full(s)));
+      : Bend.lit_step(s)));
 }
 
 function term_strip(t: HTerm): HTerm {

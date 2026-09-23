@@ -595,6 +595,39 @@ family; without a `: T` they belong to `Nat`. `&& ||` work on `Bool` and `++` on
 Equality of values is a call, `T.is_eq(a, b)`; `==` is only the type.
 A `Nat` literal past `256n` is `U32.to_nat(n)` underneath, up to `4294967295n`.
 
+Declare `T.literal` to convert literals in `(.. : T)` through an ordinary
+checked function. For example:
+
+```python
+type Distance is Data:
+  Distance{value: U32}
+
+def Distance.literal(n: U32) -> Distance:
+  Distance{n}
+
+def distance() -> Distance:
+  (42 : Distance)                         # Distance.literal(42)
+```
+
+The same rule accepts strings, characters, lists, tuples, and constructor
+terms. The function's input type determines which values it accepts. Each
+argument is passed once and checked normally, including affine variables
+inside a list. `(v : T<A>)` passes `A` before `v`. To convert an entire tuple,
+write `((a, b) : T)`.
+
+Conversion follows the operator namespace through operator arguments and
+the result of a let. Named calls, type annotations in braces, and operators
+with an already selected namespace stop this traversal. For a direct literal,
+`(v : U32)` does not create such a boundary when `U32.literal` is absent;
+use `{v : U32}` to check its type and stop conversion by an outer namespace.
+Namespaces without a `literal` function retain their current behavior.
+
+The input retains its existing representation and range: `42` is U32,
+`3n` is Nat, and `1.5` is already rounded to F32. A conversion does not recover
+decimal precision. Converted literals are function calls, so they cannot be
+constructor patterns. Results use the existing printer; no inverse conversion
+is inferred. Array construction remains a named `Array.new` call.
+
 ## Under the Hood
 
 Bend's compiler emits one C file, and that file is both the CPU program and the
