@@ -684,16 +684,19 @@ function cli_report(book: Bend.Book, n0: number, fd: number): void {
   }
 }
 
-// term_refs adds to out the names a term (a span skipped) refers to.
-function term_refs(tm: unknown, out: Set<string>): void {
-  if (typeof tm === "object" && tm !== null) {
+// term_refs adds to out the names a term (a span skipped) refers to. It
+// visits each node once: a let's value is shared by every use of its
+// variable, and a walk of the unshared tree is exponential in the lets.
+function term_refs(tm: unknown, out: Set<string>, seen = new Set<object>()): void {
+  if (typeof tm === "object" && tm !== null && !seen.has(tm)) {
+    seen.add(tm);
     const { $, k } = tm as { $?: string; k?: string };
     if (($ === "Ref" || $ === "ADT") && k !== undefined) {
       out.add(k);
     }
     for (const [f, v] of Object.entries(tm)) {
       if (f !== "s") {
-        term_refs(v, out);
+        term_refs(v, out, seen);
       }
     }
   }
