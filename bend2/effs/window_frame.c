@@ -61,7 +61,10 @@ static const char* window_msl =
   WIN_DEF(LOC_MASK)
   "struct Args { ulong root; uint w; uint h; uint k; };\n"
   "ulong node(device const ulong* mem, ulong t) {\n"
-  "  return t & RFC_BIT ? mem[t & LOC_MASK] >> 24 : t & LOC_MASK;\n"
+  "  ulong r = t & LOC_MASK;\n"
+  "  device const uint* words = (device const uint*)mem;\n"
+  "  return t & RFC_BIT ? (ulong(words[2 * r + 1]) << 8)\n"
+  "    | (words[2 * r] >> 24) : r;\n"
   "}\n"
   "kernel void window_dev(device const ulong* mem [[buffer(0)]],\n"
   "  constant Args& a [[buffer(1)]],\n"

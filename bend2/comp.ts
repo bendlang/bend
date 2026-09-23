@@ -3541,6 +3541,13 @@ typedef u32 Ring;
 
 typedef DEV u64* Corpus;
 
+// A redirect occupies one corpus word, but its halves are separate memory
+// locations: the count word changes atomically, the other never changes.
+typedef struct {
+  u32 cnt_loc; // count in bits 0..23, storage bits 0..7 in bits 24..31
+  u32 loc_hi;  // storage bits 8..39
+} RfcCell;
+
 typedef struct {
   Corpus   mem;
   DEV u64* alc;
@@ -3981,14 +3988,25 @@ INLINE bool term_triv(Term t) {
   return term_tag(t) <= TAG_PAK || t == TERM_HOLE || term_loc(t) < HEAP_OFF;
 }
 
+INLINE DEV RfcCell* rfc_at(Corpus H, Loc r) {
+  return (DEV RfcCell*)(H + r);
+}
+
 OUTLINE Term rfc_wrap(Env e, Term t, u32 cnt) {
   if (term_tag(t) == TAG_CLO || term_tag(t) == TAG_TSK) {
     err_post(e.mem, ERR_RFCS);
     return t;
   }
+  Loc src = term_loc(t);
   Loc r = heap_alloc(e, 0);
-  e.mem[r] = ((u64)term_loc(t) << 24) | cnt;
-  return (t & ~LOC_MASK) | RFC_BIT | r;
+  DEV RfcCell* cell = rfc_at(e.mem, r);
+  cell->cnt_loc = ((u32)src << 24) | cnt;
+  cell->loc_hi = (u32)(src >> 8);
+  // A block's aux uses only five class bits. Mirror the low eight bits of
+  // its storage here so blk_loc needn't read the cell's mutable count word.
+  u64 low = (term_tag(t) == TAG_ARR || term_tag(t) == TAG_BUF)
+    ? (src & 255) << 45 : 0;
+  return (t & ~LOC_MASK) | RFC_BIT | r | low;
 }
 
 INLINE Term rfc_seal(Env e, Term t) {
@@ -3998,17 +4016,23 @@ INLINE Term rfc_seal(Env e, Term t) {
   return rfc_wrap(e, t, 1);
 }
 
+INLINE Loc rfc_target(Corpus H, Loc r) {
+  DEV RfcCell* cell = rfc_at(H, r);
+  return ((u64)cell->loc_hi << 8) | (a32_load(&cell->cnt_loc) >> 24);
+}
+
 INLINE u64 rfc_view(Env e, Loc r) {
-  DEV u32* w = a32_at(e.mem, r);
-  u64 cell = ((u64)a32_load(w + 1) << 32) | a32_load(w);
-  if ((cell & RFC_CNT) == 1) {
-    a32_acq(w);
+  DEV RfcCell* cell = rfc_at(e.mem, r);
+  u32 lo = a32_load(&cell->cnt_loc);
+  u64 word = ((u64)cell->loc_hi << 32) | lo;
+  if ((lo & RFC_CNT) == 1) {
+    a32_acq(&cell->cnt_loc);
   }
-  return cell;
+  return word;
 }
 
 INLINE void rfc_bump(Env e, Loc r, u32 k) {
-  u32 c = a32_add(a32_at(e.mem, r), k);
+  u32 c = a32_add(&rfc_at(e.mem, r)->cnt_loc, k);
   if ((c & RFC_CNT) >= RFC_CNT - k) {
     err_post(e.mem, ERR_RFCS);
   }
@@ -4032,12 +4056,17 @@ INLINE Loc term_peek(Env e, Term t) {
   return term_loc(t);
 }
 
-// A fork's handle (BLK_SHR: an Array binder is hot) is a redirect: loaded
-// plainly, copied and dropped by a match.
+// A fork's handle (BLK_SHR: an Array binder is hot) is a redirect. Its
+// low u32 holds the atomic count; the high u32 and the handle's mirrored
+// low eight storage bits stay immutable while the handle is live.
 #define blk_shr(t) (BLK_SHR && term_rfc(t))
 
 INLINE Loc blk_loc(Corpus H, Term a) {
-  return blk_shr(a) ? H[term_loc(a)] >> 24 : term_loc(a);
+  if (!blk_shr(a)) {
+    return term_loc(a);
+  }
+  DEV RfcCell* cell = rfc_at(H, term_loc(a));
+  return ((u64)cell->loc_hi << 8) | ((a >> 45) & 255);
 }
 
 INLINE Cls blk_cls(Term t) {
@@ -4059,12 +4088,12 @@ FAR void term_drop(Env e, Term t) {
   for (;;) {
     if (!term_triv(t) && term_rfc(t)) {
       Loc      r = term_loc(t);
-      DEV u32* p = a32_at(H, r);
+      DEV u32* p = &rfc_at(H, r)->cnt_loc;
       if ((a32_sub_rel(p, 1) & RFC_CNT) != 1) {
         t = 0;
       } else {
         a32_acq(p);
-        t = (t & ~(RFC_BIT | LOC_MASK)) | (H[r] >> 24);
+        t = (t & ~(RFC_BIT | LOC_MASK)) | (rfc_view(e, r) >> 24);
         heap_free(e, 0, r);
       }
     }
@@ -4733,7 +4762,7 @@ INLINE u32 window_pix(Corpus H, Term t, u32 k, u32 x, u32 y) {
       i -= 1;
       j = ((y >> i) & 1) * 2 + ((x >> i) & 1);
     }
-    Loc l = term_rfc(t) ? H[term_loc(t)] >> 24 : term_loc(t);
+    Loc l = term_rfc(t) ? rfc_target(H, term_loc(t)) : term_loc(t);
     t = H[l + j];
   }
   return (u32)term_loc(t) & 0xFFFFFF;
