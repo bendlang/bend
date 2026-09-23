@@ -66,6 +66,10 @@ const CHECK = path.join(os.homedir(), ".bend", "check.json");
 
 const DAY = 86400000;
 
+// BendHub's terms: what is published there is public and permanent, and
+// a package with no LICENSE file is under MIT-0 (their s18.4)
+const TERMS = "https://bend-lang.com/bender/terms#s18";
+
 // A package's proof of work is a nonce whose sha256(hash + " " + nonce)
 // opens (its top 53 bits) with a number under 2^53 / work, where work is
 // POW hashes (two seconds of an M4 Max's sixteen cores) per 256 KiB of
@@ -167,8 +171,8 @@ async function check(): Promise<void> {
       fs.mkdirSync(path.dirname(CHECK), { recursive: true });
       fs.writeFileSync(CHECK, JSON.stringify(last) + "\n");
       const res = await fetch(ORIGIN + "/check?v=" + VERSION + "&os="
-        + process.platform + "&arch=" + process.arch, { headers: { "User-Agent":
-        "bend/" + VERSION }, signal: AbortSignal.timeout(3000) });
+        + process.platform + "&arch=" + process.arch,
+      { signal: AbortSignal.timeout(3000) });
       const got = await res.json() as { ver?: unknown; notice?: unknown };
       last.ver = typeof got.ver === "string" ? got.ver : VERSION;
       last.notice = typeof got.notice === "string" ? got.notice : "";
@@ -180,6 +184,21 @@ async function check(): Promise<void> {
       + (last.notice === "" ? "" : last.notice.replace(/[\x00-\x1f\x7f]/g, "")
       .slice(0, 200) + "\n"));
   }
+}
+
+// ua_fetch is the CLI's fetch: every request to the hub or to bend-lang.com
+// (a publish, a name, a package, a login, the check) carries User-Agent:
+// bend/<VERSION>, so the hub's log shows which bend sent it; any other
+// request (a program's own) goes out as it was.
+function ua_fetch(): void {
+  const raw = globalThis.fetch;
+  globalThis.fetch = Object.assign((u: string | URL | Request, o: RequestInit = {}) => {
+    const to = u instanceof Request ? u.url : String(u);
+    return !to.startsWith(Bend.BEND_HUB) && !to.startsWith(ORIGIN) ? raw(u, o)
+      : raw(u, { ...o, headers: { ...Object.fromEntries(new Headers(o.headers
+        ?? (u instanceof Request ? u.headers : undefined))),
+        "user-agent": "bend/" + VERSION } });
+  }, raw);
 }
 
 function ver_newer(ver: string): boolean {
@@ -447,6 +466,10 @@ async function cli_bundle(page: string, dir: string): Promise<void> {
 
 // cli_publish checks the file, then posts what the loader read (no TODO
 // left) to the hub with its proof of work, and prints the import line.
+// Every publish first says, on stderr, that the hub is public and
+// permanent under its terms, and the license: the shallowest LICENSE's
+// SPDX-License-Identifier (in its first 5 lines), else its path, else
+// MIT-0, the terms' default, with a warning.
 async function cli_publish(file: string, named?: string): Promise<void> {
   const seen = new Map<string, string | null>();
   const [book, n0] = await book_read(file, undefined, seen);
@@ -461,6 +484,15 @@ async function cli_publish(file: string, named?: string): Promise<void> {
   const bytes = paths.reduce((n, p) => n + Buffer.byteLength(files[p]), 0);
   const hash  = "0x" + sha256(paths.map((p) => sha256(files[p]) + " " + p
     + "\n").join("")).slice(0, 32);
+  const lic   = paths.filter((p) => path.posix.basename(p) === "LICENSE")
+    .sort((a, b) => a.split("/").length - b.split("/").length)[0];
+  const spdx  = lic === undefined ? null : /SPDX-License-Identifier:[ \t]*(\S.*?)[ \t]*$/m
+    .exec(files[lic].split("\n").slice(0, 5).join("\n"));
+  cli_say(2, "Publishing to BendHub: public and permanent, under " + TERMS
+    + "\nLicense: " + (lic === undefined ? "MIT-0, the default (no LICENSE file): "
+    + TERMS + ".4\nwarning: no file is named exactly LICENSE, so the package is"
+    + " MIT-0; to license it otherwise, put the license in a file named LICENSE"
+    + " beside " + entry : spdx === null ? "see " + lic : spdx[1] + " (" + lic + ")") + "\n");
   const auth  = named === undefined ? null : await hub_check(named);
   cli_say(2, "publishing " + String(paths.length) + " files, "
     + String(bytes) + " bytes, as " + hash + " (mining its proof of work)\n");
@@ -595,6 +627,9 @@ async function cli_login(): Promise<string> {
 // .c or .js file at its path from the entry's directory; base and the
 // store's packages stay out. A path that climbs above the entry's directory
 // takes the entry's ancestor directories along, as many as the deepest climb.
+// A file named exactly LICENSE beside a published file goes along at the
+// matching path; a directory named license in any case is refused, since
+// on a disk that ignores case it would clash with a LICENSE beside it.
 function pkg_files(file: string, book: Bend.Book,
   seen: Map<string, string | null>): Record<string, string> {
   const dir  = file.slice(0, file.lastIndexOf("/") + 1);
@@ -616,7 +651,15 @@ function pkg_files(file: string, book: Bend.Book,
       throw "Error: " + real + " cannot be published (an absolute import,"
         + " or a climb above the file system)";
     }
+    if (p.split("/").slice(0, -1).some((s) => s.toLowerCase() === "license")) {
+      throw "Error: " + real + " cannot be published: it is in a directory"
+        + " named license, which clashes with a LICENSE file; rename it";
+    }
     files[p] = fs.readFileSync(real, "utf8");
+    if (fs.readdirSync(path.dirname(real)).includes("LICENSE")) {
+      files[path.posix.join(path.posix.dirname(p), "LICENSE")] =
+        fs.readFileSync(path.join(path.dirname(real), "LICENSE"), "utf8");
+    }
   }
   return files;
 }
@@ -817,6 +860,7 @@ if (import.meta.main) {
       + " | sh\n");
     process.exit(1);
   }
+  ua_fetch();
   await cli();
   process.exit();
 } else if (typeof Bun !== "undefined") {

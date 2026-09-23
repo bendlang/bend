@@ -5,7 +5,8 @@
 // a hub.ts on a random localhost port logs to a temp file; a Bun.serve plays
 // Caddy and GitHub in front of it (/install.sh with the GitHub URL turned
 // into this origin and the https-only flags dropped, since this origin is
-// plain http; the archive under /dl; /check and /ping to the hub); then
+// plain http; the archive under /dl; the store's files under /0x<hash>;
+// /check and /ping to the hub); then
 // install.sh runs in a temp HOME over the old launcher's layout. Checks:
 // bashka (SKIP without it) calls the script green; the install replaces the
 // launcher with the executable, drops app/, current, id, last, rep and bad,
@@ -21,9 +22,16 @@
 // the executable; a tampered sha256 installs nothing; a Windows or a MIPS
 // uname is refused in one line; a 2.0.0-2.0.7 launcher's ping and its
 // latest.json fallback name the version, no sha256 and the move notice; the
-// formula carries the sum. SKIP when the site repo is not at lib.SITE.
+// formula carries the sum. --publish, its hub at this origin: every LICENSE
+// beside a published file goes along and the hash covers it, the notice
+// names the terms and the shallowest LICENSE's SPDX id, else its path; a
+// LICENSE.md alone is left out, the notice says MIT-0 and warns; a
+// directory named License is refused before mining; the publish, a package
+// fetch, a name lookup and the check carry User-Agent: bend/<ver>. SKIP
+// when the site repo is not at lib.SITE.
 
 import * as child from "node:child_process";
+import * as crypto from "node:crypto";
 import * as fs from "node:fs";
 import * as os from "node:os";
 import * as path from "node:path";
@@ -51,6 +59,11 @@ const TARGET = process.platform + "-" + process.arch;
 const SAID   = "Once a day, bend asks bend-lang.com";
 const MOVED  = "Bend's installer changed";
 const PATHS  = "/usr/bin:/bin";
+const TERMS  = "Publishing to BendHub: public and permanent, under"
+  + " https://bend-lang.com/bender/terms#s18\n";
+
+// what the Caddy stand-in saw: "<method> <path> <user-agent>"
+const seen: string[] = [];
 
 const fails: string[] = [];
 let total = 0;
@@ -99,6 +112,26 @@ function logs(): Record<string, unknown>[] {
   }
 }
 
+// pkg_hash is the hash --publish gives these files
+function pkg_hash(files: Record<string, string>): string {
+  const sha = (t: string) => crypto.createHash("sha256").update(t).digest("hex");
+  return "0x" + sha(Object.keys(files).sort().map((p) => sha(files[p]) + " "
+    + p + "\n").join("")).slice(0, 32);
+}
+
+// publish writes a package's files under TMP/pub/<dir> and publishes its
+// <dir>/lic_<dir>.bend to the hub at this origin
+function publish(dir: string, files: Record<string, string>):
+  Promise<lib.Exec> {
+  for (const [f, text] of Object.entries(files)) {
+    fs.mkdirSync(path.dirname(path.join(TMP, "pub", dir, f)),
+      { recursive: true });
+    fs.writeFileSync(path.join(TMP, "pub", dir, f), text);
+  }
+  return bend([path.join(TMP, "pub", dir, "lic_" + dir + ".bend"),
+    "--publish"], { BEND_HUB: ORIGIN });
+}
+
 function fresh(): void {
   fs.rmSync(path.join(BEND, "check.json"), { force: true });
 }
@@ -125,11 +158,14 @@ const caddy = Bun.serve({
   fetch(req) {
     const url = new URL(req.url);
     const at  = url.pathname;
+    seen.push(req.method + " " + at + " " + (req.headers.get("user-agent")
+      ?? ""));
     if (at === "/install.sh") {
       return new Response(script);
     }
-    if (at.startsWith("/dl/")) {
-      const file = path.join(DL, path.basename(at));
+    if (at.startsWith("/dl/") || /^\/0x[0-9a-f]{32}\//.test(at)) {
+      const file = at.startsWith("/dl/") ? path.join(DL, path.basename(at))
+        : path.join(TMP, "store", path.posix.normalize(at));
       return fs.existsSync(file) ? new Response(Bun.file(file))
         : new Response(null, { status: 404 });
     }
@@ -246,6 +282,50 @@ try {
   check("guide, base and a program run through the executable",
     guide.out.startsWith("# Bend") && base.out.startsWith("type Map")
     && sum5.code === 0 && sum5.out === "5n\n");
+  const two  = "import Base\ndef two() -> Nat:\n  2n\n";
+  const use  = (at: string) => "import Base\nimport ./" + at
+    + " as T\ndef main() -> Nat:\n  T.two\n";
+  const lics = { "lic_spdx.bend": use("sub/two.bend"), "sub/two.bend": two,
+    "LICENSE": "// SPDX-License-Identifier: MIT\n",
+    "sub/LICENSE": "SPDX-License-Identifier: Apache-2.0\n" };
+  const spdx = await publish("spdx", lics);
+  const hash = pkg_hash(lics);
+  const got  = await fetch(ORIGIN + "/" + hash + "/sub/LICENSE");
+  check("a LICENSE beside each published file goes along, in the hash: "
+    + spdx.err, spdx.code === 0 && spdx.out.startsWith(hash + "\n")
+    && got.ok && await got.text() === lics["sub/LICENSE"]);
+  check("the notice names the terms and the shallowest LICENSE's SPDX id",
+    spdx.err.includes(TERMS + "License: MIT (LICENSE)\n"));
+  const see  = await publish("see", { "lic_see.bend": use("two.bend"),
+    "two.bend": two, "LICENSE": "All rights reserved.\n" });
+  check("a LICENSE with no SPDX line is named by its path: " + see.err,
+    see.code === 0 && see.err.includes(TERMS + "License: see LICENSE\n"));
+  const bare = { "lic_none.bend": use("two.bend"), "two.bend": two };
+  const none = await publish("none", { ...bare, "LICENSE.md": "MIT\n" });
+  check("a LICENSE.md alone is left out, and the notice says MIT-0 and"
+    + " warns: " + none.err, none.code === 0
+    && none.out.startsWith(pkg_hash(bare) + "\n")
+    && none.err.includes(TERMS + "License: MIT-0, the default (no LICENSE"
+    + " file): https://bend-lang.com/bender/terms#s18.4\nwarning: no file is"
+    + " named exactly LICENSE"));
+  const posts = seen.filter((s) => s.startsWith("POST / ")).length;
+  const dir  = await publish("dir", { "lic_dir.bend": use("License/two.bend"),
+    "License/two.bend": two });
+  check("a directory named License is refused before mining: " + dir.err,
+    dir.code === 1 && dir.err.includes("in a directory named license")
+    && !dir.err.includes("mining")
+    && seen.filter((s) => s.startsWith("POST / ")).length === posts);
+  fs.writeFileSync(path.join(TMP, "pkg.bend"), "import Base\nimport " + hash
+    + "/sub/two.bend as T\nimport bend-ping-probe@1.0.0.0/x.bend as X\n"
+    + "def main() -> Nat:\n  T.two\n");
+  fresh();
+  await bend([path.join(TMP, "pkg.bend")], { BEND_HUB: ORIGIN });
+  const ua = (s: string) => s.endsWith(" bend/" + ver);
+  check("the publish, a package, a name and the check carry User-Agent:"
+    + " bend/" + ver, [/^POST \/ /, /^GET \/0x[0-9a-f]{32}\/manifest /,
+    /^GET \/name\/bend-ping-probe@1\.0\.0\.0 /, /^GET \/check /]
+    .every((re) => seen.some((s) => re.test(s))
+    && seen.filter((s) => re.test(s)).every(ua)));
   script = script.replace(sum, "0".repeat(64));
   const fake = await install();
   script = script.replace("0".repeat(64), sum);

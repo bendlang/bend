@@ -490,6 +490,13 @@ a file with everything it imports and prints that line.
 its author gave it on the hub, with `bend main.bend --publish
 <name>@<version>` after `bend login`.
 
+A publish is public and permanent, under BendHub's terms. Put a `LICENSE` file
+next to your entry file, ideally opening with a line like
+`SPDX-License-Identifier: MIT`; `--publish` takes every file named exactly
+`LICENSE` beside a published file, and a package without one is MIT-0. You are
+responsible for what you publish, so pick the license it may carry. Adding a
+`LICENSE` changes a package's hash: publish it as a new version.
+
 ## Tooling
 
 Bend is a single command:
