@@ -6115,6 +6115,7 @@ function show_chr(c, q) {
   const k = { 10: "n", 9: "t", 13: "r", 0: "0", 92: "\\" }[c]
     ?? (c === q.codePointAt(0) ? q : null);
   return k !== null ? "\\" + k : c < 32 || c === 127
+    || (c >= 0xD800 && c <= 0xDFFF) || c > 0x10FFFF
     ? "\\u{" + c.toString(16) + "}" : String.fromCodePoint(c);
 }
 
