@@ -3597,8 +3597,11 @@ typedef u32* Cur;
 #define NCLS_ALL  32
 #define IO_HELP   64
 // a device lane parks its task after FUEL * 4096 steps of a launch: a
-// dispatch that holds the GPU trips the display's watchdog (#942)
+// dispatch that holds the GPU trips the display's watchdog (#942); a host
+// with a tighter watchdog builds with -DFUEL=n, which the device takes too
+#ifndef FUEL
 #define FUEL      64
+#endif
 
 #define ALC_WORDS NCLS_ALL
 #define TG_HOLD   2304
@@ -5020,7 +5023,7 @@ static void gpu_run(u32 f) {
 #if BEND_CUDA
 
 static u64 gpu_hash(void) {
-  u64 key = 14695981039346656037ull ^ CUBE_LOG;
+  u64 key = 14695981039346656037ull ^ CUBE_LOG ^ (u64)FUEL << 8;
   for (const char* p = BEND_SRC; *p != 0; p += 1) {
     key = (key ^ (u8)*p) * 1099511628211ull;
   }
@@ -5043,7 +5046,7 @@ static MTLComputePipelineDescriptor* gpu_desc(void) {
   NSError* err = nil;
   MTLCompileOptions* opts = [MTLCompileOptions new];
   opts.mathMode = MTLMathModeSafe;
-  opts.preprocessorMacros = @{ @"CUBE_LOG": @(CUBE_LOG) };
+  opts.preprocessorMacros = @{ @"CUBE_LOG": @(CUBE_LOG), @"FUEL": @(FUEL) };
   id<MTLLibrary> lib = [gpu_dev newLibraryWithSource:@(BEND_SRC) options:opts
     error:&err];
   if (!lib) {
@@ -5179,15 +5182,17 @@ static bool gpu_make(const char* path) {
     CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MINOR, gpu_dev);
   char arch[40];
   char bag[24];
+  char fuel[24];
   snprintf(arch, sizeof arch, "--gpu-architecture=sm_%d%d", cc[0], cc[1]);
   snprintf(bag, sizeof bag, "-DCUBE_LOG=%u", CUBE_LOG);
-  const char* opts[] = { arch, bag, "--fmad=false", "-default-device" };
+  snprintf(fuel, sizeof fuel, "-DFUEL=%u", FUEL);
+  const char* opts[] = { arch, bag, fuel, "--fmad=false", "-default-device" };
   nvrtcProgram prog;
   if (nvrtcCreateProgram(&prog, BEND_SRC, "bend.cu", 0, NULL, NULL)
     != NVRTC_SUCCESS) {
     err_fail("cannot compile the CUDA library");
   }
-  if (nvrtcCompileProgram(prog, 4, opts) != NVRTC_SUCCESS) {
+  if (nvrtcCompileProgram(prog, 5, opts) != NVRTC_SUCCESS) {
     size_t n = 0;
     nvrtcGetProgramLogSize(prog, &n);
     char* log = calloc(n + 1, 1);
