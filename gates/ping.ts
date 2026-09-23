@@ -24,7 +24,9 @@
 // latest.json fallback name the version, no sha256 and the move notice; the
 // formula carries the sum. --publish, its hub at this origin: every LICENSE
 // beside a published file goes along and the hash covers it, the notice
-// names the terms and the shallowest LICENSE's SPDX id, else its path; a
+// names the terms and the shallowest LICENSE's SPDX id, else its path, as
+// the hub's /package/<hash>.json names it (a CR, a doubled space, a comment
+// marker, a stray character, no letter, a sixth line); a
 // LICENSE.md alone is left out, the notice says MIT-0 and warns; a
 // directory named License is refused before mining; the publish, a package
 // fetch, a name lookup and the check carry User-Agent: bend/<ver>. SKIP
@@ -286,7 +288,7 @@ try {
   const use  = (at: string) => "import Base\nimport ./" + at
     + " as T\ndef main() -> Nat:\n  T.two\n";
   const lics = { "lic_spdx.bend": use("sub/two.bend"), "sub/two.bend": two,
-    "LICENSE": "// SPDX-License-Identifier: MIT\n",
+    "LICENSE": "SPDX-License-Identifier: MIT\n",
     "sub/LICENSE": "SPDX-License-Identifier: Apache-2.0\n" };
   const spdx = await publish("spdx", lics);
   const hash = pkg_hash(lics);
@@ -296,10 +298,27 @@ try {
     && got.ok && await got.text() === lics["sub/LICENSE"]);
   check("the notice names the terms and the shallowest LICENSE's SPDX id",
     spdx.err.includes(TERMS + "License: MIT (LICENSE)\n"));
-  const see  = await publish("see", { "lic_see.bend": use("two.bend"),
-    "two.bend": two, "LICENSE": "All rights reserved.\n" });
-  check("a LICENSE with no SPDX line is named by its path: " + see.err,
-    see.code === 0 && see.err.includes(TERMS + "License: see LICENSE\n"));
+  const ids: [string, string][] = [
+    ["SPDX-License-Identifier: MIT\r\n", "MIT (LICENSE)"],
+    ["SPDX-License-Identifier: (MIT  OR Apache-2.0)\n",
+      "(MIT OR Apache-2.0) (LICENSE)"],
+    ["# SPDX-License-Identifier: MIT\n", "see LICENSE"],
+    ["// SPDX-License-Identifier: GPL-2.0-or-later\n", "see LICENSE"],
+    ["SPDX-License-Identifier: MIT <see below>\n", "see LICENSE"],
+    ["SPDX-License-Identifier: ()\n", "see LICENSE"],
+    ["1\n2\n3\n4\n5\nSPDX-License-Identifier: MIT\n", "see LICENSE"]];
+  for (const [k, [text, want]] of ids.entries()) {
+    const pkg = { ["lic_id" + String(k) + ".bend"]: use("two.bend"),
+      "two.bend": two, "LICENSE": text };
+    const run = await publish("id" + String(k), pkg);
+    const hub = await (await fetch(ORIGIN + "/package/" + pkg_hash(pkg)
+      + ".json")).json() as { license?: { id: string | null } };
+    check("a LICENSE opening " + JSON.stringify(text) + " is " + want
+      + ", as the hub names it: " + run.err, run.code === 0
+      && run.err.includes(TERMS + "License: " + want + "\n")
+      && hub.license?.id === (want === "see LICENSE" ? null
+        : want.slice(0, -" (LICENSE)".length)));
+  }
   const bare = { "lic_none.bend": use("two.bend"), "two.bend": two };
   const none = await publish("none", { ...bare, "LICENSE.md": "MIT\n" });
   check("a LICENSE.md alone is left out, and the notice says MIT-0 and"

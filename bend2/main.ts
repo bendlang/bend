@@ -70,6 +70,10 @@ const DAY = 86400000;
 // a package with no LICENSE file is under MIT-0 (their s18.4)
 const TERMS = "https://bend-lang.com/bender/terms#s18";
 
+// the hub's rule (hubdb.ts) for a LICENSE's SPDX id: the first of its first
+// 5 lines to match, with a letter in the id, its spaces collapsed
+const SPDX_RE = /^\s*SPDX-License-Identifier:\s*([A-Za-z0-9.+\-() ]{1,80}?)\s*$/;
+
 // A package's proof of work is a nonce whose sha256(hash + " " + nonce)
 // opens (its top 53 bits) with a number under 2^53 / work, where work is
 // POW hashes (two seconds of an M4 Max's sixteen cores) per 256 KiB of
@@ -467,9 +471,9 @@ async function cli_bundle(page: string, dir: string): Promise<void> {
 // cli_publish checks the file, then posts what the loader read (no TODO
 // left) to the hub with its proof of work, and prints the import line.
 // Every publish first says, on stderr, that the hub is public and
-// permanent under its terms, and the license: the shallowest LICENSE's
-// SPDX-License-Identifier (in its first 5 lines), else its path, else
-// MIT-0, the terms' default, with a warning.
+// permanent under its terms, and the license the hub will show: the
+// shallowest LICENSE's (the first by path among them) SPDX id by SPDX_RE,
+// else its path, else MIT-0, the terms' default, with a warning.
 async function cli_publish(file: string, named?: string): Promise<void> {
   const seen = new Map<string, string | null>();
   const [book, n0] = await book_read(file, undefined, seen);
@@ -486,13 +490,14 @@ async function cli_publish(file: string, named?: string): Promise<void> {
     + "\n").join("")).slice(0, 32);
   const lic   = paths.filter((p) => path.posix.basename(p) === "LICENSE")
     .sort((a, b) => a.split("/").length - b.split("/").length)[0];
-  const spdx  = lic === undefined ? null : /SPDX-License-Identifier:[ \t]*(\S.*?)[ \t]*$/m
-    .exec(files[lic].split("\n").slice(0, 5).join("\n"));
+  const spdx  = lic === undefined ? undefined : files[lic].split("\n").slice(0, 5)
+    .map((l) => SPDX_RE.exec(l)?.[1]).find((id) => /[A-Za-z]/.test(id ?? ""))
+    ?.replace(/\s+/g, " ");
   cli_say(2, "Publishing to BendHub: public and permanent, under " + TERMS
     + "\nLicense: " + (lic === undefined ? "MIT-0, the default (no LICENSE file): "
     + TERMS + ".4\nwarning: no file is named exactly LICENSE, so the package is"
     + " MIT-0; to license it otherwise, put the license in a file named LICENSE"
-    + " beside " + entry : spdx === null ? "see " + lic : spdx[1] + " (" + lic + ")") + "\n");
+    + " beside " + entry : spdx === undefined ? "see " + lic : spdx + " (" + lic + ")") + "\n");
   const auth  = named === undefined ? null : await hub_check(named);
   cli_say(2, "publishing " + String(paths.length) + " files, "
     + String(bytes) + " bytes, as " + hash + " (mining its proof of work)\n");
