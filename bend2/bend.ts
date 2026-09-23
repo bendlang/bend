@@ -1491,9 +1491,7 @@ export function term_show(term: LTerm, top: number = -1, bnd: Name[] = []): stri
         return tm.k + "{" + as.join(", ") + "}";
       }
       case "Lit": {
-        return tm.k === "String" ? "\"" + lit_text(tm.v) + "\""
-          : tm.k === "F32" ? f32_show(f32_from_bits(tm.v))
-          : String(tm.v) + (tm.k === "Nat" ? "n" : "");
+        return go(lit_step(tm), prc);
       }
       case "Mat": {
         const arms: string[] = [];
