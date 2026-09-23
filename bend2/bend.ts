@@ -69,7 +69,7 @@
 // Nat    | NUMBER "n" ("+" T)?        | Lit, read as Succ{..Zero{}}; Succ{..T}
 // U32    | NUMBER                     | Lit, read as U32{WCon{b, ..WNil{}}}
 // F32    | NUMBER "." NUMBER [EXP]    | Lit, read as F32{WCon{b, ..WNil{}}}
-// Chr    | "'" CHAR "'"               | Chr{U32}
+// Chr    | "'" CHAR "'"               | Chr{U32}, its U32 a Lit
 // Str    | "\"" [CHAR] "\""           | Lit, read as SCon{Chr, ..SNil{}}
 // Index  | x "[" i "]" ("<-" v)?      | Array.get(U32, x, i), ..set(..)
 // Fill   | D "<" [A ","?] ">"         | D<&1.., A..>
@@ -94,7 +94,7 @@
 // a bare Bind name is -Name: Quant. Fill and Plus omit a datatype's
 // leading Quant parameters as a block; Plus alone fills a quant-only D.
 // a literal expands to one node per unit, unbounded by design, but a
-// string, nat, u32 and f32 stay one Lit node and unfold where
+// string, nat, u32, f32 and a char's code stay one Lit node and unfold where
 // a chain is read (a match, a comparison, a descent, a pattern); a full
 // word, a Nat, a Char, a String, a list, a tuple and an array (its
 // slots) print back as literals; "*" takes a power of two. Arrow is
@@ -1194,13 +1194,6 @@ export function word_to_term(n: U32, s?: Span): LTerm {
   return out;
 }
 
-// U32
-// ===
-
-export function u32_to_term(n: U32, s?: Span): LTerm {
-  return Ctr("U32", [word_to_term(n, s)], s);
-}
-
 // Lit
 // ===
 // a literal is one node holding a closed value of a Base type: the type
@@ -1218,7 +1211,7 @@ export function lit_of(cs: U32[], s?: Span): LTerm {
 
 export function lit_chain(cs: U32[], s?: Span): LTerm {
   return cs.reduceRight<LTerm>((out, c) =>
-    Ctr("SCon", [Ctr("Chr", [u32_to_term(c, s)], s), out], s), Ctr("SNil", [], s));
+    Ctr("SCon", [Ctr("Chr", [Lit("U32", c, s)], s), out], s), Ctr("SNil", [], s));
 }
 
 // one step: 0n is Zero{}, n is Succ{n-1}, "" is SNil{}, "ct.." is
@@ -1227,7 +1220,7 @@ export function lit_step({ k, v, s }: Extract<LTerm, { $: "Lit" }>): LTerm {
   if (k === "String") {
     const c = v.codePointAt(0);
     return c === undefined ? Ctr("SNil", [], s)
-      : Ctr("SCon", [Ctr("Chr", [u32_to_term(c, s)], s), Lit(k, v.slice(c > 0xffff ? 2 : 1), s)], s);
+      : Ctr("SCon", [Ctr("Chr", [Lit("U32", c, s)], s), Lit(k, v.slice(c > 0xffff ? 2 : 1), s)], s);
   }
   if (k !== "Nat") {
     return Ctr(k, [word_to_term(v, s)], s);
@@ -2053,7 +2046,7 @@ export function parse_term_base(p: Parse, beg: Loc): LTerm {
         parse_fail(p, "a closing '");
       }
       const spn = parse_span(p, beg);
-      return Ctr("Chr", [u32_to_term(n, spn)], spn);
+      return Ctr("Chr", [Lit("U32", n, spn)], spn);
     }
     case '"': {
       parse_bump(p);

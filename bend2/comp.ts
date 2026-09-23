@@ -692,7 +692,7 @@ function term_force(t: HTerm): HTerm {
   // a Nat literal past the cap is U32.to_nat of its word
   return memo(LITS, s, () => Bend.term_higher(
     s.k === "Nat" && s.v > Bend.NAT_LITERAL_MAX
-      ? Bend.App(Bend.Ref("U32.to_nat"), Bend.u32_to_term(s.v))
+      ? Bend.App(Bend.Ref("U32.to_nat"), Bend.Lit("U32", s.v))
       : Bend.lit_step(s)));
 }
 
