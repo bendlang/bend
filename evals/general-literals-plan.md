@@ -1,140 +1,160 @@
 # General literal plan
 
-Next action: measure a checked-function candidate against the baseline.
+Next action: Step 1, reset the branch code.
 
-## Current state
+The user approved the design and Step 1.
 
-1. Complete: create `feature/general-literals` from `feature/U32-to-Nat`.
-2. Baseline commit: `aa823c0a558caaf1e702ec53060ab1905d71aa4b`.
-3. Complete: commit the plan and establish the selected literal test baseline.
-4. Complete: the user authorized edits to `bend2/bend.ts` for this task.
+## Task
 
-## Objective
+Make the compact `Lit` node one general mechanism.
+This is an internal representation change only.
+Do not add syntax. Do not change what a program means, prints, or rejects.
+Add every literal type that does not put correctness at risk
+and does not need a change to `bend2/bend.lean`.
+The general form must make the code smaller because it has fewer cases.
+Do not get a smaller size from dense formatting.
 
-Support more types through literal syntax. Use one common mechanism where possible.
-Find the smallest change that fully meets this objective.
-Reduce total implementation code. Preserve correctness and readable code.
+## What went wrong in the first attempt
 
-## Mandatory correctness rule
+Commit `29a75aea` added user-overloadable literals (`T.literal`).
+That is a new language feature. It is not this task.
+It did not change the `Lit` node, and it added code.
+Two of its changes fit this task: the removal of `lit_full`,
+and the `while` loop in `term_unapply`.
 
-**THE AGENT MUST ONLY MAKE CHANGES THAT DO NOT PUT CORRECTNESS AT RISK.**
+## The principle
 
-Correctness has priority over code size, generality, performance, and completion.
-Do not trade correctness for any of these objectives.
+A literal is a closed value of a base type. It stores its host value and its type.
+It unfolds one constructor layer at a time where a term head is read.
+The fields of that layer can be literals again.
 
-1. Establish why a proposed change preserves correctness before editing implementation code. State the affected rules and the reason they remain valid.
-2. Use read-only analysis when that reason is not clear. Do not implement an uncertain change to see whether tests pass.
-3. Preserve all existing checking requirements. Do not bypass a check, weaken a rejection rule, or add an unproved trusted shortcut.
-4. Use tests to check the reasoning. Passing tests alone do not establish correctness.
-5. Stop a candidate if its correctness cannot be established. Record the unresolved issue. Continue only with work that does not depend on that issue.
+The current code has the unfold, but it finds the type through special cases:
+`k === undefined`, `typeof v`, and a head constructor that the checker computes.
+The principle removes those special cases:
 
-The permission to edit `bend2/bend.ts` does not relax this rule.
-The request to try a general framework does not relax this rule.
-An incomplete feature is preferable to a change that puts correctness at risk.
+1. `Lit` is `{ $: "Lit", k, v }`. `k` is the base type name: `Nat`, `String`, `U32` or `F32`.
+   The tag is always present. It is the same kind of name as `ADT.k`.
+2. `lit_step` and the printer select their behavior by `k` only.
+3. The checker fast path becomes one rule:
+   `Lit(k, v)` checks against the base type `k`. It does not compute a head constructor.
+4. `u32_to_term` returns `Lit(U32, n)`.
+   Then `Char` (`Chr{U32}`) and each character that a String unfolds get compact storage.
+   This needs no new case.
+5. Each reader tests `k === "Nat"` (or another type name).
+   It does not test `k === undefined && typeof v === "number"`.
 
-A general framework is a candidate. Test it before a decision about its size.
-Do not reject it only because its first version adds code.
-Do not accept a smaller change that omits required behavior.
+## Correctness contract
+
+`bend2/bend.lean` line 110: "Literals are base.bend constructors, not calculus."
+The Lean model sees only the constructor tree.
+Thus the Lean proof stays valid while these four invariants stay true:
+
+1. Meaning: each `Lit` means exactly one closed tree of base constructors.
+   Repeated `lit_step` makes the same tree as the baseline makes.
+2. Typing: the fast check accepts `Lit(k, v)` only against the base type `k`.
+   Each `v` that the parser accepts makes a tree of that type.
+3. Equality: two `Lit` nodes are equal only when `k` and `v` are equal.
+   The encoding is injective. F32 stores bits, so equality is on bits, as with the tree.
+4. Reading: each reader of a term head unfolds a `Lit` before it reads the head.
+   The readers are `term_compare`, `term_descend`, the `MAT` frame in weak-head
+   normalization, `parse_patt`, infer-err, and the compiler's `term_force`.
+
+Stop a change if it makes one of these invariants uncertain.
+Record the issue, and continue only with work that does not depend on it.
+
+## Types in scope
+
+| Type | Now | After |
+| --- | --- | --- |
+| Nat, String | `Lit`, no tag | `Lit`, tag `Nat` or `String` |
+| U32, F32 | `Lit`, tag | no change |
+| Char | `Chr{U32{32-bit Word chain}}` | `Chr{Lit(U32)}` |
+| Char in an unfolded String | full Word chain | `Lit(U32)` |
+
+Out of scope:
+
+1. List, Tuple, Array: the spine already has one node for each element.
+   A compact form saves nothing and needs element types.
+2. Bool, Unit: the value is already one node.
+3. Word (`Word.Con<p>`): the type has a Nat index.
+   A fast check needs index reasoning. That is a correctness risk.
+
+## Items to verify before editing
+
+1. Is the `ADT.k` of Base's Nat, String, U32 and F32 the plain name?
+   The new check rule must accept the same terms as the `ctrs_find` rule.
+2. Does a reader need a `Ctr` from `u32_to_term` without `term_force` or `term_strip`?
+   Audit `bend2/bend.ts` and `bend2/comp.ts`. `u32_from_term` already accepts `Lit`.
+3. Does the compiler emit the same C and JS for `Chr{Lit(U32)}`?
+4. `lit_chain` (surrogates, code points past U+10FFFF) calls `u32_to_term`.
+   A `Lit(U32)` holds any 32-bit value, so this is expected to be safe. Confirm it.
+
+## Steps
+
+1. Reset the branch code to `aa823c0a`.
+   Keep only the `lit_full` removal and the `term_unapply` loop from `29a75aea`.
+   Remove the GUIDE section, `parse_term_literal`, and the `T.literal` tests.
+2. Measure the baseline: `ttok`, lines, and bytes from Git text.
+   Save the emitted C and JS for all tests in `tests/`.
+   Measure memory and time as specified in "Memory and performance measurement".
+3. Do the change in steps. Make one commit for each step. Run the tests after each step.
+   1. Add the tag to every `Lit`, and change the readers to test `k`.
+   2. Change the check fast path to compare the type name.
+   3. Make `u32_to_term` return `Lit(U32)`.
+   4. Make `lit_step` and the printer select by `k`.
+      Use a table or a `switch`, whichever is smaller.
+4. Verify:
+   1. Run the literal tests on the interpreter, JS and C.
+   2. Compare the emitted C and JS with the baseline, byte for byte.
+      Explain each difference, or remove it.
+   3. Measure memory and time again with the same procedure.
+      Report the change for each case. Record a regression and its cause.
+5. Run the `thermo-nuclear-code-quality-review` and `cyclomatic-complexity` skills.
+   Fix their findings. Do not add files.
+6. Commit when the total implementation code is smaller and all checks pass.
+
+## Memory and performance measurement
+
+The gates (`gates/perf.ts`, `gates/test.ts`) do not run on the available machines.
+Measure locally in WSL with the demos, the benches and the existing tests.
+
+1. Use `/usr/bin/time -v`. Record the maximum resident set size and the elapsed time.
+2. Run each case three times. Record the median.
+3. Measure the same cases before (Step 2) and after (Step 4) the change.
+   Use the same machine and the same `ulimit`.
+4. Cases:
+   1. Checker: each `bench/checker/*/main.bend`, check only.
+   2. Checker on literals: one test with many String and Char literals.
+      Use an existing test if one fits. Otherwise, write the file in the scratchpad.
+      Do not add it to the repository.
+   3. Compiler and runtime: the `bench/runtime/*/main.bend` benches that run on
+      the CPU in WSL, on JS and C. Include `lexer`, which reads strings.
+   4. Demos: the `demos/pure_*` and `demos/proof_*` demos that run on the CPU.
+   5. Tests: the time to run all tests in `tests/` on the interpreter.
+5. Record each case that cannot run, and the reason. Do not report it as a pass.
+6. Record the results in this plan as a table: case, before, after, change.
+
+## Future actions
+
+1. Study whether `Word` can get the same compact literal form.
+   `Word.Con<-p: Nat>` has a Nat index, so the fast check must also check the index.
+   The study must answer these questions:
+   1. Can a `Lit(Word)` carry its width, so the fast check compares the full type
+      `Word.Con<p>` and not only the name?
+   2. Does a compact `Word` make `U32` and `F32` steps smaller,
+      for example `U32{Lit(Word, v)}` in place of the 32-bit chain?
+   3. Does the compiler's word-pattern table still read complete words?
+   4. Do the four invariants in "Correctness contract" stay true?
+   Do this study only after this task is complete. Record the result in this plan.
 
 ## Constraints
 
-1. Keep implementation changes in existing files. Do not add modules, test files, or dependencies. This requested plan is the only new tracked file.
-2. Preserve existing programs, literal values, errors, and constructor meanings unless the user approves a specific change.
-3. Preserve dependent checking, affine use checks, equality, termination checks, and constructor pattern checks.
-4. Keep syntax in the parser. Keep runtime representation in the compiler. Do not add a second parser in the CLI or compiler.
-5. The user permits edits to `bend2/bend.ts` for this task. Keep changes within the agreed literal scope.
+1. Do not add files. Do not add dependencies.
+2. Run Bend in WSL Ubuntu-24.04. Do not use SSH cluster runs or GPU work.
+3. Do not change gate rules or expected output to hide a regression.
+4. Use ASD-STE100 Simplified Technical English and the `i-have-adhd` skill.
 
-Use ASD-STE100 Simplified Technical English for this plan and progress reports.
-Apply the `i-have-adhd` skill throughout the task.
-Keep technical names and commands exact.
-
-## Step 1: Establish the baseline
-
-1. Trace parsing, compact storage, checking, equality, matching, printing, and compilation for each current literal form.
-2. Record the relevant tests and their baseline results. Use WSL Ubuntu-24.04 for local Bend runs, as specified in the existing local plans.
-3. Measure lines, nonblank lines, and bytes for affected implementation files. Use `ttok` if available. Count prelude additions in the implementation total.
-4. Measure the cyclomatic complexity of functions before changes. Use the project configuration if present. Otherwise, use the skill rules and report manual counts when necessary.
-5. Record unavailable tools and test backends. Do not report an unavailable check as a pass.
-
-## Step 2: Define complete behavior
-
-1. Specify how a program selects the literal type. Check explicit namespace selection first. Define default behavior and nested expression scope.
-2. Specify the library contract. Demonstrate at least two additional types through the same mechanism. Use numeric and text examples to test generality.
-3. Specify ranges and precision. Do not pass a rounded F32 value as the original decimal value. Reject unsupported values through a defined rule.
-4. Specify patterns and printing. Preserve existing structural literal patterns. Do not treat an arbitrary conversion function as an inverse or a constructor pattern.
-5. Specify parameterized types and affine values. Check every contained term. State which forms the mechanism supports and why.
-
-Record concrete source examples and their exact ordinary-term meaning before implementation.
-Include invalid examples with expected rejection behavior.
-Do not equate more literal syntax with new native runtime types.
-
-## Step 3: Build and compare candidates
-
-1. Establish the correctness argument for the candidate. Then implement the smallest complete candidate in the canonical files. Investigate reuse of `parse_term_ns` and ordinary checked functions.
-2. Test whether a shared literal representation can replace existing cases. Keep compact storage where expansion would cause excessive work.
-3. Compare the candidate with the baseline. Include removed code, added code, helper functions, library definitions, and backend changes.
-4. Revise the candidate when a simpler design can remove conditions or duplicate paths. Do not use dense formatting to reduce the line count.
-5. Keep the smallest complete candidate that passes correctness checks. If no candidate meets the requirements, record the evidence and the unresolved design issue.
-
-Do not preserve an added layer only because it already works.
-Do not remove required behavior to obtain a smaller diff.
-Count test and documentation changes separately. Report the total diff as well.
-
-## Step 4: Verify behavior
-
-1. Extend existing Bend tests. Preserve the `#|` expected-output convention. Cover new types, explicit selection, defaults, nesting, and invalid conversions.
-2. Run existing literal tests. Include custom constructor declarations, malformed patterns, large naturals, long strings, Unicode edge cases, U32 limits, and F32 bit behavior.
-3. Verify dependent equality, structural descent, and affine use checks. Include rejection cases that could expose an unsound shortcut.
-4. Compare interpreter, JS, and C outputs where available. Check relevant performance cases for literal expansion and compiler work.
-5. Run required repository gates where available. Record baseline failures separately. Report unavailable cluster or GPU checks as remaining verification work.
-
-Use local checks first. Do not change gate rules or expected output to conceal a regression.
-The existing local plans prohibit SSH cluster runs and GPU work.
-Record that limit before any attempt to run those checks.
-
-## Step 5: Review and fix the implementation
-
-1. Run the `thermo-nuclear-code-quality-review` skill on the complete branch diff against the baseline commit.
-2. Fix its findings. Remove unnecessary layers, duplicate helpers, scattered conditions, and unclear type boundaries.
-3. Run the `cyclomatic-complexity` skill. Report each changed function with its before and after count.
-4. Fix complexity findings in existing files. Recheck affected behavior after each material correction.
-5. Repeat the relevant review after fixes. Record remaining findings and their reasons.
-
-The agent must perform the reviews and work on their findings.
-A list of recommendations alone does not complete this step.
-The only exception to the code quality review is file extraction: do not create more files.
-Use smaller functions within existing files when appropriate.
-Apply all other review requirements.
-
-## Completion conditions
-
-1. The common mechanism supports the specified additional types. Its syntax, checking, patterns, and printing follow the recorded contract.
-2. Total implementation code is smaller than the baseline. The reduction is structural and readable.
-3. Each implementation change has an explicit correctness argument and passes the applicable checks. No unresolved correctness risk or failure remains.
-4. Both reviews are complete. The agent has fixed actionable findings. No implementation files were added.
-5. This plan records measurements, test results, remaining verification limits, and the final design. Commit the implementation after verification.
-
-Do not claim completion if any condition remains unmet.
-
-## Evidence log
-
-The worktree was clean before branch creation.
-The new branch starts at the baseline commit above.
-The plan is under `evals/` because `gates/repo.ts` excludes that directory from its file allow list.
-The implementation has not changed.
-
-The existing `Lit` node stores String, Nat, U32, and F32 values.
-`lit_step` exposes constructor structure.
-`term_compare` compares compact payloads or exposes a constructor step.
-The checker only gives trusted base constructors its fast literal check.
-Other declarations must check the exposed constructor structure.
-
-`parse_term_ns` currently selects operator names from explicit syntax.
-It does not perform general type inference or convert literal values.
-The compiler expands compact literals and treats large Nat values separately.
-These paths are candidates for investigation, not approved shortcuts.
-
-### Baseline measurements
+## Baseline measurements (`aa823c0a`, Windows checkout)
 
 | File | Lines | Nonblank lines | Bytes |
 | --- | ---: | ---: | ---: |
@@ -142,112 +162,5 @@ These paths are candidates for investigation, not approved shortcuts.
 | `bend2/comp.ts` | 6354 | 5726 | 189152 |
 | `bend2/base.bend` | 3006 | 2485 | 69329 |
 
-`bend2/bend.ts` contains 43242 tokens according to `ttok`.
-Its repository limit is 43300 tokens.
-Line and byte counts above use the current Windows checkout.
-Use Git text for final comparisons to avoid line-ending differences.
-
-The selected baseline passes 18 interpreter checks, three JS checks, and three C checks.
-The checks include literal values, patterns, limits, invalid constructors, and structural descent.
-The C runtime reserves more virtual memory than the limit used for Bun.
-Run C binaries outside that limit. Do not change the runtime for this test setup.
-
-### Candidate A: an ordinary literal function
-
-Declare `T.literal` to select literal conversion in the namespace `T`.
-For example, `(42 : Distance)` means `Distance.literal(42)`.
-Similarly, `("abc" : Label)` means `Label.literal("abc")`.
-Each function declares its input type and result type through ordinary Bend syntax.
-The function can accept one of the existing compact literal types.
-Its input is the existing value, not unrounded source text.
-
-1. Keep current behavior when the namespace has no `literal` declaration.
-2. Convert literal leaves reached by the existing operator namespace traversal. Preserve its boundaries at named calls and already selected operator namespaces.
-3. Pass explicit type arguments before the literal argument. Do not infer missing arguments or select a conversion by runtime type.
-4. Check the generated function application normally. Reject a converted pattern through the existing constructor-pattern rule.
-5. Print the resulting value through existing constructor printing. Do not infer an inverse conversion.
-
-Characters, lists, tuples, and some strings become constructor terms during parsing.
-Apply the same conversion to constructor terms. This avoids dependence on compact storage.
-The conversion passes the entire term once. The checker checks all contained variables normally.
-Use `((a, b) : T)` to select a namespace for an entire tuple.
-Named function calls remain traversal boundaries, including the `Array.new` call used by array construction syntax.
-Do not add syntax-origin flags to the core term representation.
-
-### Correctness argument before Candidate A
-
-The parser only adds ordinary `Ref` and `App` terms.
-It passes a compact literal or constructor term once as the conversion argument.
-It does not add a core term form, a trusted type, or a checker exception.
-The existing checker checks each argument against the function declaration.
-It also checks the result against the surrounding expected type.
-The normal rules still check affine use, dependent arguments, and recursive descent.
-The numeric parser retains its existing limits and F32 rounding.
-The pattern parser still rejects function applications.
-No new runtime representation or compiler operation is required.
-
-Literal conversion is active only when the selected namespace declares `literal`.
-The repository has no existing `literal` declaration.
-The new convention is explicit library opt-in.
-This argument permits the parser candidate. It does not permit checker shortcuts or automatic pattern inversion.
-
-The manual baseline complexity count for `parse_term_ns` is 11.
-It includes the three-way namespace guard and the fixed-operator conjunction.
-Refactor that function if the candidate touches it.
-
-### Correctness argument before removal of `lit_full`
-
-The user permits removal of the exported helper if the replacement is safe.
-Its two callers are `parse_patt` and the compiler's `term_force`.
-
-For a valid literal, `lit_step` returns the same first constructor as `lit_full`.
-Its remaining compact children represent exactly the remaining constructor trees.
-Make `parse_patt` expose that first constructor before its existing switch.
-Its recursive field checks then expose each child through the same entry point.
-Constructor lookup, arity checks, and variable checks remain in place.
-This change does not add a recursive call around the existing pattern recursion.
-
-The compiler reads term heads through `term_force` or `term_strip`.
-The audit covered constructor fields, constant detection, ownership traversal, folding, and both emitters.
-Each field goes through those entry points before its term kind is used.
-The word-pattern table reads complete words. `lit_step` already exposes complete words for U32 and F32.
-The large-Nat conversion remains in `term_force` with its current threshold.
-The memo table still stores each exposed constructor.
-
-This replacement removes a duplicate expansion path.
-It does not change literal values, constructor layouts, or checking rules.
-Verify exact diagnostics, constructor-pattern behavior, generated outputs, and long-literal handling after the change.
-
-### Correctness argument before simplification of `term_unapply`
-
-The literal and operator selectors both use `term_unapply`.
-Replace its infinite loop and switch with a loop over `App` nodes.
-Each iteration collects the same argument and selects the same function child.
-Both versions stop at the first non-`App` node and reverse the argument list once.
-The return type and the returned term references remain the same.
-The manual complexity count decreases from 3 to 2.
-
-### Rejected candidate: generic literal builders
-
-`word_to_term`, `u32_to_term`, and `lit_step` construct only `Ctr` and `Lit` nodes.
-They construct no binder, variable, or function body.
-Their output is therefore valid for either term body representation.
-Make their TypeScript body parameter generic. Preserve all runtime operations.
-Then remove `term_higher` calls around these closed constructor results.
-`term_higher` only copied those constructors and retained their literal children.
-Removing that copy preserves the constructor fields, values, and source spans.
-The compiler's generated large-Nat application also contains only a reference and closed constructors.
-It requires no binder conversion.
-
-This change removes redundant tree traversal. It does not change a checking or reduction rule.
-Use TypeScript checks to verify the generic boundaries.
-
-The candidate was tested and removed. It did not improve the size result.
-The final implementation keeps the existing builder signatures and `term_higher` calls.
-
-### Correctness argument before field destructuring
-
-Destructure the literal fields in `lit_step` as `v`, `k`, and `s`.
-The function only reads these fields. It does not modify the input object.
-All field values, branch conditions, constructor arguments, and spans remain identical.
-This is a local readability change to the shared literal expansion function.
+`bend2/bend.ts`: 43242 tokens by `ttok`. The cap is 43300.
+Measure again from Git text in Step 2.
