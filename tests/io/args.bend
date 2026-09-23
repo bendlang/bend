@@ -1,5 +1,6 @@
-# io (io_args): the command line: the runtime keeps --threads, --gpu,
-# --gpu-build and --bend-help; IO.args answers the rest, in order
+# io (io_args): the command line: the C binary keeps --threads, --gpu,
+# --gpu-build and --bend-help, the JS lane (one thread, no GPU) only
+# --threads, --gpu and --bend-help; IO.args answers the rest, in order
 # (--help is a program argument). The harness passes none, so the list
 # is empty on every lane.
 import Base
