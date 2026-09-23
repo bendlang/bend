@@ -1237,10 +1237,10 @@ export function nat_from_term(t: LTerm): number | null {
     ? n + t.v : null;
 }
 
-export function u32_from_term<X>(tm: TermOf<X>, k: Name = "U32"): number | null {
+export function u32_from_term<X>(tm: TermOf<X>, k: "U32" | "F32" = "U32"): number | null {
   const w0 = term_strip(tm);
   if (w0.$ === "Lit") {
-    return w0.k === k ? w0.v as U32 : null;
+    return w0.k === k ? w0.v : null;
   }
   if (w0.$ !== "Ctr" || w0.k !== k || w0.x.length !== 1) {
     return null;
@@ -3631,14 +3631,14 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       const { xs, us } = tele_check(book, lhs, tel, tm.x, qt, ctx, d, tm.s);
       return Check(Ctr(tm.k, xs, tm.s), ty, us);
     }
-    // T == Base's type k of the literal
+    // T == Base's type k of the literal, no constructor removed
     // where any other T checks the literal's first step, which reports
     //       as the constructor it is
     // ----------------------------------------------------------- check-lit
     // Γ ⊢ "text" : T ~ {}    Γ ⊢ 3n : T ~ {}
     case "Lit": {
       const t_wnf = term_wnf(book, ty);
-      if (t_wnf.$ === "ADT" && t_wnf.k === tm.k && book.tlds[tm.k]?.b === true) {
+      if (t_wnf.$ === "ADT" && t_wnf.k === tm.k && t_wnf.r.length === 0 && book.tlds[tm.k]?.b === true) {
         return Check(tm, ty, uses_nil());
       }
       return term_check(book, lhs, lit_step(tm), qt, ty, ctx, d);

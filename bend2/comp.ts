@@ -1063,7 +1063,7 @@ function ctr_adt(fl: File, x: Of<"Ctr">,
   if (ty === null && adt.x.length > 0) {
     die("a constructor outside a datatype");
   }
-  return [adt, WORDS[adt.k] === W32 ? Bend.u32_from_term(x, adt.k) : null];
+  return [adt, adt.k === "U32" || adt.k === "F32" ? Bend.u32_from_term(x, adt.k) : null];
 }
 
 // A constructor's fields: the last n domains of its type, over the
