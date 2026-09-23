@@ -39,13 +39,14 @@ element), Bool and Unit (already one node), Word (see below).
 
 ## Result against `main` (`6a77e124`)
 
-Code: `bend2/bend.ts` 43431 → 43307 tokens, 3976 → 3954 lines; `bend2/comp.ts`
+Code: `bend2/bend.ts` 43431 → 43259 tokens, 3976 → 3952 lines; `bend2/comp.ts`
 62163 → 62207 tokens (`lit_call`). `lit_full`, `u32_to_term` and `lit_chain`
-are gone, and no literal step is copied with `term_higher`.
+are gone, no literal step is copied with `term_higher`, and the printer prints
+a literal as its first step (from #1003).
 
 Checks: 303 representative tests (literal, char, string, escape, pattern,
 printer, parse, eval, halt) and the demos give the results of `main`, with
-byte-identical emitted JS and C. `tsc` shows the same 4 errors as `main`.
+byte-identical emitted JS and C. `tsc` shows 4 errors, all in code this change does not touch.
 
 Speed and memory: CPU time (user + sys) and peak memory, median of 8 rounds
 that rotate the trees; the control benches vary by 1–3%.
@@ -55,7 +56,7 @@ that rotate the trees; the control benches vary by 1–3%.
 | 5000 Char literals: run / C emit | −75% / −69% | −75% / −78% |
 | 500 Strings + 200 String proofs: run / C emit | −57% / −65% | −17% / −72% |
 | 2500 U32 + 1000 F32 literals: run / C emit | −74% / −69% | −73% / −77% |
-| `app_slash_boss_3d/PROOF` check | −3% | −63% |
+| `app_slash_boss_3d/PROOF` check | −3% to +2% (noise) | −63% |
 | `pure_hvm5_mini/PROOF` check | −9% | −6% |
 | `pure_par_sort` check | −20% | −2% |
 | `raytrace` C emit | −39% | −23% |
