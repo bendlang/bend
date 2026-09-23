@@ -2969,7 +2969,10 @@ function compile_tables(fl: File, entries: Seg[]): string[] {
     `    if ((N) <= ${i}) break; ${r} = e.mem[(A) + ${i}]; \\\n`).join("");
   const last = rs.map((r, i) =>
     `    case ${i}: ${r} = (X); \\\n      break; \\\n`).join("");
-  defs.push(`#define WL_RESW ${resw}`, `#define BANGS   ${fl.bangs.size}`, "",
+  defs.push(`#define WL_RESW ${resw}`, `#define BANGS   ${fl.bangs.size}`,
+  `#define WL_BANKN ${n}`, `#define WL_PUT(P) ${rs.map((r, i) =>
+    `(P)[${i} * LANE_STEP] = ${r};`).join(" ")}`, `#define WL_GET(P) ${
+    rs.map((r, i) => `${r} = (P)[${i} * LANE_STEP];`).join(" ")}`, "",
   `#define WL_BANK Term ${ws.join(", ")};`, "",
   `#define WL_LOAD(A, N) \\\n  do { \\\n${load}  } while (0);`, "",
   `#define WL_LAST(X) \\\n  switch (war) { \\\n${last}  }`, "",
@@ -3523,6 +3526,7 @@ typedef u64 Term;
 #define TAG_BUF 4ull
 #define TAG_TSK 5ull
 #define TAG_ARR 6ull
+#define TAG_PRK 7ull
 
 #define TERM_HOLE (~0ull)
 
@@ -3592,6 +3596,9 @@ typedef u32* Cur;
 #define NCLS      8
 #define NCLS_ALL  32
 #define IO_HELP   64
+// a device lane parks its task after FUEL * 4096 steps of a launch: a
+// dispatch that holds the GPU trips the display's watchdog (#942)
+#define FUEL      64
 
 #define ALC_WORDS NCLS_ALL
 #define TG_HOLD   2304
@@ -3614,7 +3621,7 @@ typedef u32* Cur;
 
 #define PAGE_UP(n) (((n) + PAGE_LEN - 1) & ~(PAGE_LEN - 1))
 #define ALC_OFF  PAGE_UP(H_BANK + 3 * NCLS_ALL)
-#define RING_OFF (ALC_OFF + CUBE * 2 * ALC_WORDS)
+#define RING_OFF (ALC_OFF + CUBE * (2 * ALC_WORDS + 1))
 #define STAK_OFF (RING_OFF + CUBE * RING_WORDS)
 #define STAT_OFF (STAK_OFF + CUBE * STAK_LEN)
 #define HEAP_OFF (STAT_OFF + PAGE_UP(STAT_LEN))
@@ -3869,6 +3876,8 @@ INLINE void bank_push(Corpus H, Cls c, Loc head) {
 #define ALC_AT(e, i)   (e).alc[(i) * LANE_STEP]
 #define ALC_LEN(e, c)  ALC_AT(e, ALC_WORDS + (c))
 #define ALC_COLD(e, c) ALC_AT(e, 2 * ALC_WORDS + (c))
+// a device lane's fuel sits where the host keeps COLD
+#define ALC_FUEL(e)    ALC_AT(e, 2 * ALC_WORDS)
 #define KEEP(c)        (KEEP_WORDS >> (c) ? KEEP_WORDS >> (c) : 1)
 
 INLINE Cls cls_fit(u32 words) {
@@ -4450,6 +4459,39 @@ WL_TABLE WL_X(FID_ENTER)
 #define WL_X(F) WL_##F,
 static const WlFn wl_tab[] = { WL_TABLE };
 #undef WL_X
+#else
+// A device self-loop hands every 4096th turn to the switch, which enters it
+// again on the words it jumped with, or parks it.
+#undef  WL_SPIN
+#define WL_SPIN for (;;) { if ((++wpoll & 4095) == 4095) { break; }
+
+// A parked task is its lane's stack, topped by its bank and fid | rn << 16
+// | seq << 24, moved to the heap (its first word the depth) and dealt as a
+// frontier task; any lane takes it back onto its own stack (at the lane's
+// alc, moved from ALC_OFF to STAK_OFF).
+OUTLINE void wl_park(Env e, Stk sp) {
+  Stk sp0 = e.alc + (STAK_OFF - ALC_OFF);
+  u32 d   = (u32)((sp - sp0) / LANE_STEP);
+  Loc a   = heap_alloc(e, cls_fit(d + 1));
+  if (!err_seen(e.mem)) {
+    e.mem[a] = d;
+    for (u32 i = 0; i < d; i += 1) {
+      e.mem[a + 1 + i] = sp0[i * LANE_STEP];
+    }
+    u32 g = a32_add(a32_at(e.mem, H_CURSOR), 1);
+    ring_push(e.mem, ring_flip(g & (u32)(LANES - 1)), term_make(TAG_PRK, 0,
+      a));
+  }
+}
+
+OUTLINE Stk wl_take(Env e, Stk sp, Loc a) {
+  u32 d = (u32)e.mem[a];
+  for (u32 i = 0; i < d; i += 1) {
+    sp[i * LANE_STEP] = e.mem[a + 1 + i];
+  }
+  heap_free(e, cls_fit(d + 1), a);
+  return sp + (d - WL_BANKN - 1) * LANE_STEP;
+}
 #endif
 
 static Reply work_loop(Env e, Stk sp, Term t, u32 seq) {
@@ -4459,9 +4501,26 @@ static Reply work_loop(Env e, Stk sp, Term t, u32 seq) {
 #if DEVICE
   Fid fid   = FID_ENTER;
   u32 wpoll = 0;
+  if (term_tag(t) == TAG_PRK) {
+    sp = wl_take(e, sp, term_loc(t));
+    u32 w = (u32)sp[WL_BANKN * LANE_STEP];
+    WL_GET(sp)
+    fid = w & 0xFFFF;
+    rn  = (w >> 16) & 0xFF;
+    seq = w >> 24;
+  }
   for (;;) {
-  if (err_spun(e.mem, &wpoll)) {
-    return 0;
+  if ((++wpoll & 4095) == 0) {
+    if (err_seen(e.mem)) {
+      return 0;
+    }
+    if (ALC_FUEL(e) == 0 || --ALC_FUEL(e) == 0) {
+      WL_ROOM(WL_BANKN + 1)
+      WL_PUT(sp)
+      sp[WL_BANKN * LANE_STEP] = fid | rn << 16 | seq << 24;
+      wl_park(e, sp + (WL_BANKN + 1) * LANE_STEP);
+      return 0;
+    }
   }
   switch (fid) {
 #else
@@ -4560,8 +4619,8 @@ ${segs}
 // ====
 
 // One turn on a ring: its head task below put0 runs (a growing lane skips a
-// fork-free one). The host grows a row ring by ring and drains a ring; a
-// device lane does both.
+// fork-free or parked one). The host grows a row ring by ring and drains a
+// ring; a device lane does both.
 INLINE u32 monk_step(Env e, Stk stk, Ring rg, u32 put0, bool seq, u32 base,
   u32 stride, Cur cur) {
   Corpus   H   = e.mem;
@@ -4572,7 +4631,8 @@ INLINE u32 monk_step(Env e, Stk stk, Ring rg, u32 put0, bool seq, u32 base,
   DEV u32* lo = (DEV u32*)ring_slot(H, rg, *get);
   u32      hi = a32_load_acq(lo + 1);
   Term     t  = (((u64)hi << 32) | a32_load(lo)) & ~RFC_BIT;
-  if ((hi >> 31) != ring_lap(*get) || (!seq && fid_nofk((u32)term_aux(t)))) {
+  if ((hi >> 31) != ring_lap(*get) || (!seq && (fid_nofk((u32)term_aux(t))
+    || term_tag(t) == TAG_PRK))) {
     return 0;
   }
   a32_store(get, *get + 1);
@@ -4685,9 +4745,10 @@ extern "C" __global__ void bend_dev(Corpus H, u32 pass) {
   u32 put0      = a32_load(ring_put(H, rg));
   u32 seen_has  = 0;
   u32 seen_grew = 0;
+  ALC_FUEL(e)   = FUEL;
   for (;;) {
     if (pass) {
-      if (*ring_get(H, rg) == put0 || err_seen(H)) {
+      if (*ring_get(H, rg) == put0 || err_seen(H) || ALC_FUEL(e) == 0) {
         break;
       }
     } else {
