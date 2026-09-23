@@ -67,8 +67,8 @@
 // List   | "[" [A ","?] "]", A "<>" B | Con{A, ..Nil{}}, Con{A, B}
 // Array  | "[" A ":" T ("*" 2^D "n" | "^" D) "]" | Array.new(T, D, A)
 // Nat    | NUMBER "n" ("+" T)?        | Lit, read as Succ{..Zero{}}; Succ{..T}
-// U32    | NUMBER                     | U32{WCon{b, ..WNil{}}}
-// F32    | NUMBER "." NUMBER [EXP]    | F32{WCon{b, ..WNil{}}}
+// U32    | NUMBER                     | Lit, read as U32{WCon{b, ..WNil{}}}
+// F32    | NUMBER "." NUMBER [EXP]    | Lit, read as F32{WCon{b, ..WNil{}}}
 // Chr    | "'" CHAR "'"               | Chr{U32}
 // Str    | "\"" [CHAR] "\""           | Lit, read as SCon{Chr, ..SNil{}}
 // Index  | x "[" i "]" ("<-" v)?      | Array.get(U32, x, i), ..set(..)
@@ -91,7 +91,7 @@
 // a bare Bind name is -Name: Quant. Fill and Plus omit a datatype's
 // leading Quant parameters as a block; Plus alone fills a quant-only D.
 // a literal expands to one node per unit, unbounded by design, but a
-// string and a nat stay one Lit node and unfold a unit at a time where
+// string, nat, u32 and f32 stay one Lit node and unfold where
 // a chain is read (a match, a comparison, a descent, a pattern); a full
 // word, a Nat, a Char, a String, a list, a tuple and an array (its
 // slots) print back as literals; "*" takes a power of two. Arrow is
@@ -288,7 +288,7 @@ export type TermOf<B> = (
   | { $: "App"; f: TermOf<B>; x: TermOf<B> }                                       // f(x)
   | { $: "ADT"; k: Name; x: TermOf<B>[]; r: Name[] }                               // A<x0,x1,...>
   | { $: "Ctr"; k: Name; x: TermOf<B>[] }                                          // A{x0,x1,...}
-  | { $: "Lit"; v: string | number }                                               // "text", 3n
+  | { $: "Lit"; v: string | number; k?: "U32" | "F32" }                           // "text", 3n; k tags a 32-bit word
   | { $: "Mat"; k: Name; h: TermOf<B>; m: TermOf<B> }                              // \{A: h; m}
   | { $: "Efq" }                                                                   // \{}
   | { $: "Eql"; a: TermOf<B>; b: TermOf<B>; T: TermOf<B> }                         // {a == b : T}
@@ -410,8 +410,8 @@ export function Ctr<X>(k: Name, x: TermOf<X>[], s?: Span): TermOf<X> {
   return { $: "Ctr", k, x, s };
 }
 
-export function Lit<X>(v: string | number, s?: Span): TermOf<X> {
-  return { $: "Lit", v, s };
+export function Lit<X>(v: string | number, s?: Span, k?: "U32" | "F32"): TermOf<X> {
+  return { $: "Lit", v, s, k };
 }
 
 export function Mat<X>(k: Name, h: TermOf<X>, m: TermOf<X>, s?: Span): TermOf<X> {
@@ -1181,6 +1181,8 @@ export function u32_to_term(n: U32, s?: Span): LTerm {
 // unit at a time where a chain is read, so the checker pays nothing per
 // unit. a JS string holds Unicode scalar values only, so a literal that
 // spells a surrogate or a code point past U+10FFFF is its chain.
+// U32 and F32 literals tag their raw bits with the enclosing constructor;
+// both unfold to that constructor around the same 32-bit Word chain.
 
 export function lit_of(cs: U32[], s?: Span): LTerm {
   return cs.every((c) => c <= 0x10ffff && (c < 0xd800 || c > 0xdfff))
@@ -1194,6 +1196,9 @@ export function lit_chain(cs: U32[], s?: Span): LTerm {
 
 // one step: "" is SNil{}, "ct.." is SCon{Chr{c}, "t.."}, 0n is Zero{}, n is Succ{n-1}
 export function lit_step(t: Extract<LTerm, { $: "Lit" }>): LTerm {
+  if (t.k !== undefined) {
+    return Ctr(t.k, [word_to_term(t.v as U32, t.s)], t.s);
+  }
   if (typeof t.v === "number") {
     return t.v === 0 ? Ctr("Zero", [], t.s) : Ctr("Succ", [Lit(t.v - 1, t.s)], t.s);
   }
@@ -1204,6 +1209,9 @@ export function lit_step(t: Extract<LTerm, { $: "Lit" }>): LTerm {
 
 // the whole chain: a pattern's view
 export function lit_full(t: Extract<LTerm, { $: "Lit" }>): LTerm {
+  if (t.k !== undefined) {
+    return lit_step(t);
+  }
   if (typeof t.v === "string") {
     return lit_chain([...t.v].map((c) => c.codePointAt(0) as U32), t.s);
   }
@@ -1225,12 +1233,15 @@ export function nat_from_term(t: LTerm): number | null {
     t = t.x[0];
   }
   return t.$ === "Ctr" && t.k === "Zero" && t.x.length === 0 ? n
-    : t.$ === "Lit" && typeof t.v === "number" && n + t.v <= 0xffffffff
+    : t.$ === "Lit" && t.k === undefined && typeof t.v === "number" && n + t.v <= 0xffffffff
     ? n + t.v : null;
 }
 
 export function u32_from_term<X>(tm: TermOf<X>, k: Name = "U32"): number | null {
   const w0 = term_strip(tm);
+  if (w0.$ === "Lit") {
+    return w0.k === k ? w0.v as U32 : null;
+  }
   if (w0.$ !== "Ctr" || w0.k !== k || w0.x.length !== 1) {
     return null;
   }
@@ -1480,6 +1491,9 @@ export function term_show(term: LTerm, top: number = -1, bnd: Name[] = []): stri
         return tm.k + "{" + as.join(", ") + "}";
       }
       case "Lit": {
+        if (tm.k !== undefined) {
+          return tm.k === "U32" ? String(tm.v) : f32_show(f32_from_bits(tm.v as U32));
+        }
         return typeof tm.v === "number" ? String(tm.v) + "n" : "\"" + lit_text(tm.v) + "\"";
       }
       case "Mat": {
@@ -2304,7 +2318,7 @@ export function parse_term_num(p: Parse): LTerm {
       parse_fail(p, "a float literal with a finite f32 value (got " + m[0] + ")");
     }
     const spn = parse_span(p, beg);
-    return Ctr("F32", [word_to_term(f32_to_bits(v), spn)], spn);
+    return Lit(f32_to_bits(v), spn, "F32");
   }
   if (m[2] === undefined) {
     if (char_is_name(parse_peek(p))) {
@@ -2314,7 +2328,7 @@ export function parse_term_num(p: Parse): LTerm {
     if (w > 0xffffffff) {
       parse_fail(p, "a u32 literal up to 4294967295 (got " + s + ")");
     }
-    return u32_to_term(w, parse_span(p, beg));
+    return Lit(w, parse_span(p, beg), "U32");
   }
   const n = Number(s);
   if (n > 0xffffffff) {
@@ -2323,7 +2337,7 @@ export function parse_term_num(p: Parse): LTerm {
   if (parse_take(p, "+")) {
     let out = parse_term(p);
     const spn = parse_span(p, beg);
-    if (out.$ === "Lit" && typeof out.v === "number" && n + out.v <= 0xffffffff) {
+    if (out.$ === "Lit" && out.k === undefined && typeof out.v === "number" && n + out.v <= 0xffffffff) {
       return Lit(n + out.v, spn);
     }
     if (n > NAT_LITERAL_MAX) {
@@ -3279,7 +3293,7 @@ export function term_compare(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTe
           && a.x.every((x, j) => term_compare("EQ", book, x, b.x[j], dep));
     }
     case "Lit": {
-      return b.$ === "Lit" && a.v === b.v;
+      return b.$ === "Lit" && a.k === b.k && a.v === b.v;
     }
     case "Mat": {
       return b.$ === "Mat" && a.k === b.k
@@ -3619,15 +3633,15 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       const { xs, us } = tele_check(book, lhs, tel, tm.x, qt, ctx, d, tm.s);
       return Check(Ctr(tm.k, xs, tm.s), ty, us);
     }
-    // T == Base's String (or Nat) with the literal's head: SNil/SCon (Zero/Succ)
+    // T == Base's String, Nat, U32 or F32 with the literal's head
     // where any other T checks the literal's first step, which reports
     //       as the constructor it is
     // ----------------------------------------------------------- check-lit
     // Γ ⊢ "text" : T ~ {}    Γ ⊢ 3n : T ~ {}
     case "Lit": {
       const t_wnf = term_wnf(book, ty);
-      const c = typeof tm.v === "number" ? tm.v === 0 ? "Zero" : "Succ"
-              : tm.v === "" ? "SNil" : "SCon";
+      const c = tm.k ?? (typeof tm.v === "number" ? tm.v === 0 ? "Zero" : "Succ"
+              : tm.v === "" ? "SNil" : "SCon");
       if (t_wnf.$ === "ADT" && book.tlds[t_wnf.k]?.b === true
         && ctrs_find(book_adt(book, t_wnf, ctx, lhs.def).c, c) !== null) {
         return Check(tm, ty, uses_nil());
