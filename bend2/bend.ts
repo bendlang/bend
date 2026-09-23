@@ -94,10 +94,10 @@
 // a bare Bind name is -Name: Quant. Fill and Plus omit a datatype's
 // leading Quant parameters as a block; Plus alone fills a quant-only D.
 // a literal expands to one node per unit, unbounded by design, but a
-// string, nat, u32, f32 and a char's code stay one Lit node and unfold
-// where a chain is read (a match, a comparison, a descent, a pattern);
-// a full word, a Nat, a Char, a String, a list, a tuple and an array
-// (its slots) print back as literals; "*" takes a power of two. Arrow is
+// number, a string and a char's code stay one Lit node and unfold where
+// a chain is read (a match, a comparison, a descent, a pattern); a full
+// word, a Nat, a Char, a String, a list, a tuple and an array (its
+// slots) print back as literals; "*" takes a power of two. Arrow is
 // right-associative; the domain of a written @ or & binder stops at the
 // first bare "->", so an arrow (or a nested binder) there needs parens.
 // infix "&" and "|" are right-associative, share one precedence, and
@@ -1196,26 +1196,20 @@ export function word_to_term(n: U32, s?: Span): LTerm {
 
 // Lit
 // ===
-// a literal is one node holding a closed value of a Base type: the type
-// k and its host value v (a Nat's count, a String's text, a U32's or an
-// F32's bits). it means its constructor tree and unfolds one layer at a
-// time where a head is read, so the checker pays nothing per unit; a
-// layer's fields are literals again. a JS string holds Unicode scalar
-// values only, so a literal that spells a surrogate or a code point past
-// U+10FFFF is its chain.
+// a literal is one node holding a closed value of its Base type k. it
+// means its constructor tree and unfolds one layer at a time where a head
+// is read, so the checker pays nothing per unit. a JS string holds
+// Unicode scalar values only, so a literal that spells a surrogate or a
+// code point past U+10FFFF is its chain.
 
 export function lit_of(cs: U32[], s?: Span): LTerm {
-  return cs.every((c) => c <= 0x10ffff && (c < 0xd800 || c > 0xdfff))
-    ? Lit("String", cs.map((c) => String.fromCodePoint(c)).join(""), s) : lit_chain(cs, s);
-}
-
-export function lit_chain(cs: U32[], s?: Span): LTerm {
+  if (cs.every((c) => c <= 0x10ffff && (c < 0xd800 || c > 0xdfff))) {
+    return Lit("String", cs.map((c) => String.fromCodePoint(c)).join(""), s);
+  }
   return cs.reduceRight<LTerm>((out, c) =>
     Ctr("SCon", [Ctr("Chr", [Lit("U32", c, s)], s), out], s), Ctr("SNil", [], s));
 }
 
-// one step: 0n is Zero{}, n is Succ{n-1}, "" is SNil{}, "ct.." is
-// SCon{Chr{c}, "t.."}, a U32 or F32 is its constructor around its Word
 export function lit_step({ k, v, s }: Extract<LTerm, { $: "Lit" }>): LTerm {
   if (k === "String") {
     const c = v.codePointAt(0);
@@ -3639,7 +3633,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       const { xs, us } = tele_check(book, lhs, tel, tm.x, qt, ctx, d, tm.s);
       return Check(Ctr(tm.k, xs, tm.s), ty, us);
     }
-    // T == Base's type k of the literal (Nat, String, U32 or F32)
+    // T == Base's type k of the literal
     // where any other T checks the literal's first step, which reports
     //       as the constructor it is
     // ----------------------------------------------------------- check-lit
