@@ -761,14 +761,15 @@ export async function book_read(file: string, unsafe_seed?: BookState,
 // book_over is a child book over a checked parent: its tables extend the
 // parent's, which it never writes (a fill copies its law, and book_valid
 // reveals only the child's events); each template's instance table is
-// copied, so numbering continues; the order starts as the parent's.
+// copied, so numbering continues; the order and the counts of holes and
+// open laws start as the parent's.
 export function book_over(base: Bend.Book): Bend.Book {
   const tmps: Bend.Book["tmps"] = Object.create(null);
   for (const k in base.tmps) {
     tmps[k] = Object.assign(Object.create(null), base.tmps[k]);
   }
   return { tlds: Object.create(base.tlds), ctrs: Object.create(base.ctrs),
-    order: [...base.order], hols: 0, open: 0, tmps };
+    order: [...base.order], hols: base.hols, open: base.open, tmps };
 }
 
 // book_flat is the book with its tables flattened, the parent's names first
