@@ -221,20 +221,20 @@ def IO.now() -> IO(Nat):
   import "./effs/now.js"
 
 def Chan.new(-A: Type, room: U32) -> IO(Chan(A)):
-  import "./effs/chan_new.c"
-  import "./effs/chan_new.js"
+  import "./effs/chan.c"
+  import "./effs/chan.js"
 
 def Chan.send(-A: Type, chan: Chan(A), value: A) -> IO(Bool):
-  import "./effs/chan_send.c"
-  import "./effs/chan_send.js"
+  import "./effs/chan.c"
+  import "./effs/chan.js"
 
 def Chan.recv(-A: Type, chan: Chan(A)) -> IO(Maybe<&1, A>):
-  import "./effs/chan_recv.c"
-  import "./effs/chan_recv.js"
+  import "./effs/chan.c"
+  import "./effs/chan.js"
 
 def Chan.close(-A: Type, chan: Chan(A)) -> IO(Unit):
-  import "./effs/chan_close.c"
-  import "./effs/chan_close.js"
+  import "./effs/chan.c"
+  import "./effs/chan.js"
 
 def IO.fork.go(-A: Type, act: IO(A), chan: Chan(A)) -> IO(Chan(A)):
   +c = chan
