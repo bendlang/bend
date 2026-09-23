@@ -3,6 +3,42 @@
 Each release names what changed for a user. `bend update` installs the
 latest one; the GitHub release carries the same notes.
 
+## 2.0.27 (2026-09-23)
+
+- **`bend` reads no `bunfig.toml` or `.env` from the directory it runs in**
+  (#1018): the executable was a Bun program built with Bun's defaults, so a
+  project it checked could preload its own code before bend's (and print a
+  forged `All terms check.`), or set `BEND_HUB`, `BEND_ORIGIN` or `BEND_LIB`
+  for you: your Bender key went to its server on `--publish <name>@…` and
+  `bend link`, `bend update` ran its script, and its own copies of hub
+  packages, named ones included, were checked in place of the real ones. The
+  release is now built with that loading off (`package.json` and
+  `tsconfig.json` too), and the ping gate runs the installed `bend` in such a
+  project (#1023). `bun bend2/main.ts` from a checkout still reads both, as
+  any Bun program does: check a project you did not write with `bend`.
+- **A package can carry a license** (#1013): `--publish` takes every file
+  named exactly `LICENSE` beside a published file, at the same path, and the
+  hash covers it. A package without one is MIT-0 under BendHub's terms, and
+  the publish warns so. Every publish first prints, on stderr, that the hub is
+  public and permanent under https://bend-lang.com/bender/terms#s18, and the
+  license the hub will show: the `SPDX-License-Identifier` of the shallowest
+  `LICENSE`, else `see <path>`. A directory named `license` in any case is
+  refused before mining, since it clashes with a `LICENSE` on a disk that
+  ignores case. A `LICENSE` added to a published package changes its hash:
+  publish it as a new version (bend-tensors@0.0.0.2 is 0.0.0.1 plus MIT).
+- **Requests to the hub and bend-lang.com carry `User-Agent: bend/<version>`**
+  (#1013): publish, publish-check, link, name lookups, package reads, the
+  login and the daily check, so the hub's log shows which bend sent each.
+- **Datatypes name each other in any order**: every datatype is declared up
+  front, so two datatypes (a `Tree` and a `Forest`), or a def above the
+  datatypes it returns, need no forward law. A forward `D<..>` spells every
+  parameter. Base's `Word`, `Pair` and `IO` lose their laws.
+- **An `@unsafe` def may call a def written below it**, and `def f?(..)` is
+  sugar for `@unsafe def f(..)`, so two mutually recursive unsafe defs need no
+  law. Safe code is as strict as before: a live call to a def below, or a
+  mutual pair, is refused as an unfilled law, which is how a forward
+  reference is now reported (it was an undefined name).
+
 ## 2.0.26 (2026-09-23)
 
 - **A package has a name on the hub** (#996): `import <name>@<version>/file.bend
