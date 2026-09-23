@@ -4,15 +4,11 @@
 # recursed forever on the concrete type (#959)
 import Base
 
-law Cell:
-  for b: Bool
-  Data
-
 type Nest<-b: Bool> is Data:
   End{}
   More{next: Cell(b)}
 
-def Cell(b):
+def Cell(b: Bool) -> Data:
   match b:
     case False{}:
       U32

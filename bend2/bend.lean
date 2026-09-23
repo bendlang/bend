@@ -104,6 +104,10 @@
 -- file, where a helper may call a law that is filled below it and calls
 -- the helper back: that pair is mutual recursion the checker never tests
 -- (descent is tested on self-calls only). The theory has no such call.
+-- Order rules live calls only: bend.ts declares every family (with its
+-- constructors) and every def's type up front, and Book.Ok checks each
+-- entry against the whole book, so families name each other in any
+-- order with no rule of their own.
 --
 -- NOT MODELED. Char, PMap, the number sections, Show, Parse, Flatten,
 -- imports and the error window are pipeline and presentation concerns.
@@ -243,7 +247,8 @@ inductive TLD : Type
   | defn : DefD → TLD
 deriving DecidableEq
 
--- the book, in file order (a law sits where its def fills it)
+-- the book, in file order (a law sits where its def fills it); the order
+-- binds live calls only, every declaration is visible from the start
 abbrev Book := List TLD
 
 -- a context binding: quantity, type, and the value of a let binder
@@ -990,7 +995,9 @@ def Term.CtrsFull (β : Book) : Nat → Term → Prop
 -- adt_valid's walk. Each definition's type checks dead against Type, its
 -- column quantities are read off it, and its body is a case tree over
 -- the columns that checks LIVE against the type under the def's own
--- equation, so every live call points backward or descends
+-- equation, so every live call points backward or descends. Each entry
+-- checks against the whole β, never a prefix, as bend.ts declares every
+-- family and def type up front: mutual families need no rule
 def Book.Ok (β : Book) : Prop :=
   ∀ k t, Book.tld β k = some t →
     match t with

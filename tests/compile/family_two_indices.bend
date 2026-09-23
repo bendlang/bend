@@ -5,18 +5,13 @@
 # see it: 2 plus the argument count, 2 in the harness.
 import Base
 
-law Mat:
-  for r: Nat
-  for c: Nat
-  Data
-
 type Mat.Leaf is Data:
   MatB{x: U32}
 
 type Mat.Quad<-p: Nat, -q: Nat> is Data:
   MatQ{tl: Mat(p, q), tr: Mat(p, q), bl: Mat(p, q), br: Mat(p, q)}
 
-def Mat(r, c):
+def Mat(r: Nat, c: Nat) -> Data:
   match r c:
     case 0n 0n:
       Mat.Leaf

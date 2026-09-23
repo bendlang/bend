@@ -12,7 +12,6 @@
 // field) is checked and interpreted only; a foreign def with no twin for a
 // lane drops that lane; any other build failure fails its lanes.
 
-import * as child from "node:child_process";
 import * as fs from "node:fs";
 import * as path from "node:path";
 
@@ -108,45 +107,26 @@ function shard_split(tests: Test[], count: number): Test[][] {
   return shards.filter((s) => s.length > 0);
 }
 
-// Every test's source goes to every shard: a test may import another, or
-// a module from a subdirectory.
-function shard_pack(shard: Test[], tests: Test[]): Buffer {
-  const dir = fs.mkdtempSync("/tmp/bend-shard-");
-  lib.bend2_copy(path.join(dir, "bend2"));
-  for (const sub of fs.readdirSync(TESTS)) {
-    fs.mkdirSync(path.join(dir, "tests", sub), { recursive: true });
-    for (const f of fs.readdirSync(path.join(TESTS, sub))) {
-      if (!f.endsWith(".bend")) {
-        fs.cpSync(path.join(TESTS, sub, f),
-          path.join(dir, "tests", sub, f), { recursive: true });
-      }
-    }
-  }
-  for (const t of tests) {
-    fs.writeFileSync(path.join(dir, "tests", test_path(t)), t.src);
-  }
-  fs.writeFileSync(path.join(dir, "main.bend"), shard.map((t) =>
-    "import ./tests/" + test_path(t) + " as " + t.name).join("\n") + "\n");
-  fs.writeFileSync(path.join(dir, "build.txt"), test_runs(shard).map((t) =>
-    [t.name, "tests/" + test_path(t), ...t.lanes.map((l) =>
-      "-o " + t.name + (l === "js" ? ".js" : ""))].join(" ") + "\n").join(""));
-  const tar = child.spawnSync("tar", ["-czf", "-", "-C", dir, "."],
-    { maxBuffer: 1 << 28 });
-  fs.rmSync(dir, { recursive: true, force: true });
-  return tar.stdout;
-}
-
-// A build that fails leaves its message in <name>.left: the test's lanes
-// then read it as their answer, so a program the compiler cannot build
-// fails the gate.
+// The shard's aggregator and build list ride in the script, over the pack
+// every shard shares. A build that fails leaves its message in
+// <name>.left: the test's lanes then read it as their answer, so a
+// program the compiler cannot build fails the gate.
 function shard_script(shard: Test[], tag: number): string {
   const runs = test_runs(shard);
   const bangs = runs.filter((t) => /!\(/.test(t.src)).map((t) => t.name);
+  const main = shard.map((t) =>
+    "import ./tests/" + test_path(t) + " as " + t.name + "\n").join("");
+  const build = runs.map((t) => [t.name, "tests/" + test_path(t),
+    ...t.lanes.map((l) => "-o " + t.name + (l === "js" ? ".js" : ""))]
+    .join(" ") + "\n").join("");
+  const file = (name: string, text: string): string =>
+    `cat > ${name} <<'${MARK}'\n${text}${MARK}\n`;
   const probe = (kind: string, cmd: string): string =>
     `echo "${MARK} ${kind} $m"; perl -e 'alarm 5; exec @ARGV' ${cmd} 2>&1;`
     + ` echo "${MARK} exit $?";`;
   return `export BUN_JSC_maxPerThreadStackUsage=33554432;`
-    + ` d=$HOME/bend-test/${tag}; rm -rf $d; mkdir -p $d; cd $d; tar -xzf -;`
+    + ` d=$HOME/bend-test/${tag}; rm -rf $d; mkdir -p $d; cd $d; tar -xzf -;\n`
+    + file("main.bend", main) + file("build.txt", build)
     + ` echo "${MARK} checkup"; ${BUN} bend2/main.ts main.bend --checkup 2>&1;`
     + ` xargs -P 10 -L 1 sh -c 'm=$1; shift; ${BUN} bend2/main.ts "$@"`
     + ` > $m.left 2>&1 && rm $m.left' -- < build.txt; echo "${MARK} built";`
@@ -188,10 +168,9 @@ function shard_parse(shard: Test[], out: string): Map<string, Got> {
   return gots;
 }
 
-async function shard_run(shard: Test[], tests: Test[], tag: number,
+async function shard_run(shard: Test[], pack: Buffer, tag: number,
   node: number, fails: Fail[]): Promise<void> {
-  const got = await lib.ssh(node, shard_script(shard, tag),
-    shard_pack(shard, tests),
+  const got = await lib.ssh(node, shard_script(shard, tag), pack,
     20 * 60 * 1000);
   fs.mkdirSync("/tmp/bend-test", { recursive: true });
   fs.writeFileSync("/tmp/bend-test/" + String(tag) + ".txt", got.out + got.err);
@@ -212,10 +191,13 @@ if (import.meta.main) {
     fs.readdirSync(path.join(TESTS, dir)).filter((f) => f.endsWith(".bend"))
       .sort().map((f) => test_read(dir, f)));
   const nodes = await lib.node_lock();
+  // Every test's source goes to every shard: a test may import another,
+  // or a module from a subdirectory.
+  const pack = lib.pack(TESTS);
   const shards = shard_split(tests, nodes.length);
   const fails: Fail[] = [];
   await lib.node_pool(nodes, shards.map((shard, tag) => (node: number) =>
-    shard_run(shard, tests, tag, node, fails)));
+    shard_run(shard, pack, tag, node, fails)));
   fails.sort((a, b) => a.name < b.name ? -1 : 1);
   if (!lib.GATE) {
     for (const f of fails) {

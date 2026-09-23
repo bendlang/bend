@@ -1,8 +1,8 @@
 # refusal pin: bend3's --no-halt door let use2 duplicate a value of the
 # FORWARD datatype D, and the pin was that an unchecked datatype must
-# never certify Data-ness. bend has no --no-halt door: names resolve
-# upward only in a strict file, so the forward D3 in Two's field is
-# itself the refusal -- the duplication in use2 is never weighed.
+# never certify Data-ness. bend declares every datatype up front, so the
+# forward D3 in Two's field is legal, and the refusal is the duplication
+# itself: D3 is Type, so use2 consumes x twice.
 # ported from bend3: the Pair.Pair redefinition half is pinned by
 # check_data_table_checked_000 (the duplicate-declaration wall)
 import Base
@@ -26,9 +26,10 @@ law main:
 def main(): 0
 
 #|Error:
-#|- message  : a declared datatype (unknown: D3)
-#|Location: MkTwo
-#|10 | type Two is Type:
-#|11>|   MkTwo{a: D3<U32>, b: D3<U32>}
-#|12 |
+#|- expected : x
+#|- observed : x (consumed more than once)
+#|Location: use2
+#|16 |
+#|17>| def use2(x):
+#|18 |   MkTwo{x, x}
 #|exit 1

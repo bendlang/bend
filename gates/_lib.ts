@@ -113,12 +113,21 @@ export async function node_lock(): Promise<number[]> {
   return nodes;
 }
 
-// Copies what a node needs to build a program: the compiler, Base and
-// the effect kit (not bend.lean, docs or pack).
-export function bend2_copy(to: string): void {
-  fs.cpSync(path.join(ROOT, "bend2"), to, { recursive: true,
-    filter: (p) => fs.statSync(p).isDirectory() ? !/\/(docs|pack)$/.test(p)
-      : /\.(ts|bend|c|js)$/.test(p) });
+// Packs what a node needs to build the programs under dir, as one tar.gz:
+// the compiler, Base and the effect kit (not bend.lean, docs or pack)
+// beside dir, under its own name. A gate packs once and sends the same
+// bytes to every node: packing takes 0.35 s of the main thread, so a pack
+// per shard held the last of 48 launches back by 17 s.
+export function pack(dir: string): Buffer {
+  const tmp = fs.mkdtempSync("/tmp/bend-pack-");
+  fs.cpSync(path.join(ROOT, "bend2"), path.join(tmp, "bend2"), {
+    recursive: true, filter: (p) => fs.statSync(p).isDirectory()
+      ? !/\/(docs|pack)$/.test(p) : /\.(ts|bend|c|js)$/.test(p) });
+  fs.cpSync(dir, path.join(tmp, path.basename(dir)), { recursive: true });
+  const tar = child.spawnSync("tar", ["-czf", "-", "-C", tmp, "."],
+    { maxBuffer: 1 << 28 });
+  fs.rmSync(tmp, { recursive: true, force: true });
+  return tar.stdout;
 }
 
 function slot_lock(): number[] {

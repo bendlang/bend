@@ -219,23 +219,16 @@ function pin_write(cells: Cell[], chks: Chk[]): void {
 // Cell
 // ====
 
-function cell_pack(dir: string): Buffer {
-  const tmp = fs.mkdtempSync("/tmp/bend-perf-");
-  lib.bend2_copy(path.join(tmp, "bend2"));
-  fs.copyFileSync(path.join(dir, "main.bend"), path.join(tmp, "main.bend"));
-  const tar = child.spawnSync("tar", ["-czf", "-", "-C", tmp, "."],
-    { maxBuffer: 1 << 28 });
-  fs.rmSync(tmp, { recursive: true, force: true });
-  return tar.stdout;
-}
-
+// Every runtime cell gets the one pack of bench/runtime and builds its
+// bench out of it.
 function cell_script(c: Cell): string {
   const run = "./cell " + FLAGS[c.mode].replace("$gm", MEMORY[c.bench] ?? "on");
+  const src = "runtime/" + c.bench + "/main.bend";
   return `d=$HOME/bend-perf/${c.bench}-${String(c.mode)}; rm -rf $d;`
     + ` mkdir -p $d; cd $d; tar -xzf -; ${THREADS} ${lib.BUN} bend2/main.ts`
-    + ` main.bend -o main > /dev/null 2>&1; t0=$(${CLOCK}); ${lib.BUN}`
-    + ` bend2/main.ts main.bend -o main > build.txt 2>&1; b=$?;`
-    + ` t1=$(${CLOCK}); [ $b = 0 ] && { ${lib.BUN} bend2/main.ts main.bend`
+    + ` ${src} -o main > /dev/null 2>&1; t0=$(${CLOCK}); ${lib.BUN}`
+    + ` bend2/main.ts ${src} -o main > build.txt 2>&1; b=$?;`
+    + ` t1=$(${CLOCK}); [ $b = 0 ] && { ${lib.BUN} bend2/main.ts ${src}`
     + ` -o main.c >> build.txt 2>&1 && ${BUILD[c.mode]} -o cell >> build.txt`
     + ` 2>&1; b=$?; }; echo "${MARK} built $b $t0 $t1"; cat build.txt;`
     + ` if [ $b = 0 ]; then ${run} > /dev/null 2>&1; t2=$(${CLOCK});`
@@ -250,9 +243,8 @@ function cell_note(out: string): string {
   return line.slice(0, 100);
 }
 
-async function cell_run(c: Cell, node: number): Promise<void> {
-  const got = await lib.ssh(node, cell_script(c),
-    cell_pack(path.join(RUNTIME, c.bench)), 20 * 60 * 1000);
+async function cell_run(c: Cell, node: number, pack: Buffer): Promise<void> {
+  const got = await lib.ssh(node, cell_script(c), pack, 20 * 60 * 1000);
   const built = new RegExp("^" + MARK + " built (\\d+) ([\\d.]+) ([\\d.]+)$",
     "m")
     .exec(got.out);
@@ -283,13 +275,15 @@ async function cell_run(c: Cell, node: number): Promise<void> {
 // Chk
 // ===
 
+// A checker bench is megabytes of source, so each ships in its own pack.
 async function chk_run(c: Chk, node: number): Promise<void> {
   const script = `d=$HOME/bend-perf/chk-${c.bench}; rm -rf $d; mkdir -p $d;`
     + ` cd $d; tar -xzf -; for i in 1 2 3; do t0=$(${CLOCK}); ${lib.BUN}`
-    + ` bend2/main.ts main.bend > out.txt 2>&1; e=$?; t1=$(${CLOCK}); echo`
-    + ` "${MARK} check $e $t0 $t1"; cat out.txt; done; cd; rm -rf $d`;
-  const got = await lib.ssh(node, script, cell_pack(path.join(CHECKER,
-    c.bench)), 20 * 60 * 1000);
+    + ` bend2/main.ts ${c.bench}/main.bend > out.txt 2>&1; e=$?;`
+    + ` t1=$(${CLOCK}); echo "${MARK} check $e $t0 $t1"; cat out.txt; done;`
+    + ` cd; rm -rf $d`;
+  const got = await lib.ssh(node, script,
+    lib.pack(path.join(CHECKER, c.bench)), 20 * 60 * 1000);
   const runs = [...got.out.matchAll(new RegExp("^" + MARK
     + " check (\\d+) ([\\d.]+) ([\\d.]+)$", "gm"))];
   if (runs.length === 0) {
@@ -322,8 +316,9 @@ if (import.meta.main) {
   const draw = (): void => view_draw(cells, chks, pins, cpins, notes());
   draw();
   const nodes = await lib.node_lock();
+  const pack = lib.pack(RUNTIME);
   await lib.node_pool(nodes, [...cells.map((c) => async (node: number) => {
-    await cell_run(c, node);
+    await cell_run(c, node, pack);
     draw();
   }), ...chks.map((c) => async (node: number) => {
     await chk_run(c, node);

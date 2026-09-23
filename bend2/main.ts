@@ -428,7 +428,7 @@ function cli_base(what?: string): void {
   }
   const want: string[] = [];
   for (const text of src.split(/\n(?=type |law |def |@)/)) {
-    const m = /^(type|law|def) ([^\s(<:]+)/m.exec(text);
+    const m = /^(type|law|def) ([^\s(<:?]+)/m.exec(text);
     if (m === null) {
       continue;
     }
