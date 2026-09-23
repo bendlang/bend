@@ -1,8 +1,7 @@
 # General literal plan
 
-Next action: Step 2, measure the baseline.
-
-The user approved the design and Step 1. Step 1 is complete.
+Status: Steps 1 to 5 are complete. The next item is the `Word` study in
+"Future actions". It waits for the user.
 
 ## Task
 
@@ -211,3 +210,127 @@ Checks:
 
 The demo times from this run are not valid measurements:
 the two trees ran at the same time. Step 2 measures them again.
+
+### Items verified before Step 3
+
+1. Base loads with the empty namespace (`book_load(book, BASE_BEND, "", ..)`),
+   so the `ADT.k` of Base's types is the plain name.
+   Each head constructor of Nat, String, U32 and F32 (`Zero`, `Succ`, `SNil`,
+   `SCon`, `U32`, `F32`) is declared by that type alone in `base.bend`.
+   Thus "T is Base's type k" accepts exactly the terms that the old
+   `ctrs_find` rule accepted.
+2. Each reader of a U32 field unfolds it first (`u32_from_term`, the compiler's
+   `term_force`, `lit_step`). `u32_from_term` already accepts a `Lit`.
+3. and 4. are confirmed by the byte comparison: the emitted C and JS are identical,
+   and the surrogate tests in the wide set pass.
+
+### Step 3 (complete)
+
+Deviation from the plan: sub-steps 3.1, 3.2 and 3.4 are one commit (`90b643f3`).
+A required tag makes the old check condition fail for Nat and String,
+so the tag and the new check rule cannot be separate correct commits.
+
+1. `90b643f3`: `Lit` is a discriminated union.
+   `{ k: "Nat" | "U32" | "F32"; v: number } | { k: "String"; v: string }`.
+   The type states invariant 1. `lit_step`, the printer, `nat_from_term`,
+   `parse_term_num` and the compiler's `term_force` select by `k`.
+   `typeof v` and `k === undefined` are gone.
+   Check-lit is one condition: `t_wnf.k === tm.k && book.tlds[tm.k]?.b === true`.
+2. `00609397`: `u32_to_term` is removed. `'a'`, each character that a String
+   unfolds, and the compiler's large-Nat `U32.to_nat` argument use `Lit("U32", n)`.
+   Char gets compact storage with no new case.
+3. `c34bc099`: comment wrap from the review.
+
+Checks after each commit:
+
+1. Literal tests: 61 / 61.
+2. Wide set (303 tests: literal, char, string, escape, pattern, printer, parse,
+   eval, halt): 303 / 303 on the baseline and on `00609397`. Each test has the
+   same result. All 224 emitted JS and C files are byte-identical.
+3. Demos and `litheavy.bend`: outputs, emitted JS and emitted C byte-identical.
+4. `tsc`: the same four errors as the baseline. No new error.
+
+Runner notes (local tools only):
+
+1. Merge stdout and stderr into one pipe, as the gate does. Two pipes change
+   the order of messages and move a test's error into the next test's section.
+2. Make the tree with Windows Git (`git stash create`), then `git archive` in WSL.
+   WSL Git has no `core.autocrlf`, so its stash keeps CRLF from the checkout.
+
+### Step 4 (complete): size, memory and time
+
+Size, from Git text (`aa823c0a` to `c34bc099`):
+
+| File | Tokens | Lines | Nonblank | Bytes |
+| --- | ---: | ---: | ---: | ---: |
+| `bend2/bend.ts` | 43179 → 42988 (−191) | 3961 → 3931 (−30) | 3751 → 3724 | 136511 → 135861 |
+| `bend2/comp.ts` | 62168 → 62164 (−4) | 6354 → 6354 | 5726 → 5726 | 182804 → 182772 |
+
+Diff of `bend2/`: 53 insertions, 83 deletions. No test or documentation change.
+
+Method: WSL, `/usr/bin/time`, median of 5 rounds. The rounds alternate the
+two trees (ABBAB..). A first run with all baseline rounds first showed +5% to
++30% on everything, including byte-identical C binaries: that was machine drift,
+not the change. With alternation, the identical binaries (`rt.*.par`) vary by up
+to ±15%. Treat a time change inside ±15% as noise.
+
+Results (full table: 120 cases; the rest are inside the noise):
+
+| Case | Time before → after | Memory before → after |
+| --- | --- | --- |
+| `litheavy.bend` check | 1.16 s → 0.23 s (−80%) | 431 MB → 121 MB (−72%) |
+| `litheavy.bend` interpreter | 1.68 s → 0.87 s (−48%) | 700 MB → 180 MB (−74%) |
+| `litheavy.bend` build (C + JS + clang) | 7.27 s → 6.66 s (−8%) | 1767 MB → 714 MB (−60%) |
+| `litheavy.bend` C emit only (15 runs) | 2.88 s → 2.27 s (−21%) | 1081 MB → 616 MB (−43%) |
+| `pure_hvm5_mini` build | 5.27 s → 5.70 s (noise) | 260 MB → 211 MB (−19%) |
+| `pure_hvm5_mini` check | 0.18 s → 0.16 s | 99 MB → 87 MB (−12%) |
+| checker benches (5) | −3% to +7% (noise) | −0.2% to +1.8% |
+| runtime benches, C binary (16) | ±15% (noise; same binary) | same |
+| C emit only, 4 normal programs (15 runs) | 0.0% | −0.2% to −0.6% |
+
+`litheavy.bend` is a scratch program (not in the repository): 5000 Char
+literals, 500 String literals of 24 characters, 2500 U32 literals, and 200
+proofs `{String.append("..", "..") == ".." : String}` that unfold String
+literals during the check. The gain comes from `Chr{Lit(U32)}`: each character
+is one node, not a 65-node Word chain, where the checker and the compiler
+unfold a String.
+
+Normal programs have few Char literals, so their time does not change.
+The build-time spread in the 5-round table comes from clang and noise:
+the C emit step alone is 0.0% on the same programs.
+
+All outputs, emitted JS and emitted C of the measured cases are byte-identical
+(`tests.literal.out` differs only in its timing line).
+
+### Step 5 (complete)
+
+Thermo-nuclear review (the user excluded file splits for this repo):
+
+1. No structural regression. The diff removes two helpers (`lit_full`,
+   `u32_to_term`) and all `typeof v` and `k === undefined` special cases.
+2. Fixed: one header comment line was 78 characters. Rewrapped.
+3. Kept, with reason: the `Lit` overloads need one internal cast. They enforce
+   the type and value pairing at each call.
+4. Kept, with reason: `u32_from_term` keeps `w0.v as U32`. Its `k` is a `Name`
+   from `comp.ts` (`adt.k`), so the union cannot narrow there. The cast is not new.
+5. Kept, with reason: `word_to_term` has one caller (`lit_step`). Inlining the
+   32-bit loop makes `lit_step` harder to read.
+
+Cyclomatic complexity (lizard 1.x through `uvx`; manual where lizard does not
+find the function):
+
+| Function | Before | After |
+| --- | ---: | ---: |
+| `term_check` | 56 | 51 |
+| `nat_from_term` | 11 | 10 |
+| `term_show_sugar_str` | 8 | 8 |
+| `lit_step` | 6 | 6 |
+| `term_unapply` (manual) | 3 | 2 |
+| `parse_term_num` literal fold condition (manual) | 4 terms | 3 terms |
+| `comp.ts` `term_force` condition (manual) | 3 terms | 2 terms |
+| `lit_full` | 4 | removed |
+| `u32_to_term` | 1 | removed |
+
+Remaining finding: `term_check` is 51, far above 15. It is the core checker.
+A split is a checker restructure outside the literal scope. This change
+lowers it by 5 and adds no branch.
