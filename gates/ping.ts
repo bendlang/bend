@@ -18,7 +18,9 @@
 // (control characters stripped) on stderr, stdout and the exit code being
 // the command's own; a dead origin costs one run under four seconds; bend
 // update runs the installer again; guide, base and a program run through
-// the executable; a tampered sha256 installs nothing; a Windows or a MIPS
+// the executable; run in a project, it preloads none of its bunfig.toml
+// and reads none of its .env (its BEND_LIB would name a package and swap in
+// the project's copy); a tampered sha256 installs nothing; a Windows or a MIPS
 // uname is refused in one line; a 2.0.0-2.0.7 launcher's ping and its
 // latest.json fallback name the version, no sha256 and the move notice; the
 // formula carries the sum. SKIP when the site repo is not at lib.SITE.
@@ -246,6 +248,26 @@ try {
   check("guide, base and a program run through the executable",
     guide.out.startsWith("# Bend") && base.out.startsWith("type Map")
     && sum5.code === 0 && sum5.out === "5n\n");
+  const proj = path.join(TMP, "proj");
+  const pkg  = "0x0123456789abcdef0123456789abcdef";
+  fs.mkdirSync(path.join(proj, "lib", pkg), { recursive: true });
+  fs.mkdirSync(path.join(proj, "lib", "names"));
+  fs.writeFileSync(path.join(proj, "lib", "names", "bend-ping-probe@1.0.0.0"),
+    pkg + "\n");
+  fs.writeFileSync(path.join(proj, "bunfig.toml"), 'preload = ["./p.ts"]\n');
+  fs.writeFileSync(path.join(proj, "p.ts"),
+    'require("node:fs").writeFileSync("preloaded", "");\n');
+  fs.writeFileSync(path.join(proj, ".env"), "BEND_LIB=./lib\n");
+  fs.writeFileSync(path.join(proj, "lib", pkg, "x.bend"),
+    "import Base\ndef five() -> Nat:\n  5n\n");
+  fs.writeFileSync(path.join(proj, "main.bend"), "import Base\nimport"
+    + " bend-ping-probe@1.0.0.0/x.bend as X\ndef main() -> Nat:\n  X.five\n");
+  const own = await lib.exec(BIN, ["main.bend"], undefined, 25_000, { HOME,
+    PATH: PATHS, BEND_ORIGIN: ORIGIN, BEND_HUB: ORIGIN,
+    BEND_NO_TELEMETRY: "1" }, proj);
+  check("a project's bunfig.toml and .env do nothing: " + own.out + own.err,
+    !fs.existsSync(path.join(proj, "preloaded")) && own.code === 1
+    && own.err.includes("a package named bend-ping-probe@1.0.0.0 on " + ORIGIN));
   script = script.replace(sum, "0".repeat(64));
   const fake = await install();
   script = script.replace("0".repeat(64), sum);

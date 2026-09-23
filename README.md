@@ -113,6 +113,9 @@ With `LAWS.bend`, *"make no mistakes"* becomes enforceable.
 curl -fsSL https://bend-lang.com/install.sh | sh
 ```
 
+This `bend` ignores a project's `bunfig.toml` and `.env`; `bun bend2/main.ts`
+from a checkout reads them, so check untrusted code with `bend`.
+
 ### 2. Tell your agent to use Bend:
 
 Add this to your `AGENTS.md`:
