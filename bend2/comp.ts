@@ -57,7 +57,8 @@ type Def  = Bend.Def & { h?: HTerm };
 
 type TLD  = Bend.ADT | Def;
 
-type Src = { refs: Set<Name>; deps: Set<Name>; flat: boolean };
+type Src = { refs: Set<Name>; deps: Set<Name>; tails: Set<Name>;
+  flat: boolean; plain?: boolean };
 
 type Carb = {
   // a copy of the book whose defs carry their raised body (def_body)
@@ -208,14 +209,7 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     C:  "U32_BIN($0, ==, 0)",
     JS: "($0 === 0)",
   },
-  u32_min: {
-    C:  "((u32)($0) < (u32)($1) ? (u64)(u32)($0) : (u64)(u32)($1))",
-    JS: "($0 < $1 ? $0 : $1)",
-  },
-  u32_max: {
-    C:  "((u32)($0) < (u32)($1) ? (u64)(u32)($1) : (u64)(u32)($0))",
-    JS: "($0 < $1 ? $1 : $0)",
-  },
+  ...sel_ops("u32_", "U32_BIN($0, <, $1)"),
   u32_cmp: {
     C:  "(U32_BIN($0, >, $1) + U32_BIN($0, >=, $1))",
     JS: "cmp_new($0, $1)",
@@ -250,14 +244,7 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     C:  "f32_rewrap((f32)fmod(f32_unbox($0), f32_unbox($1)))",
     JS: "Math.fround($0 % $1)",
   },
-  f32_min: {
-    C:  "(f32_unbox($0) < f32_unbox($1) ? $0 : $1)",
-    JS: "($0 < $1 ? $0 : $1)",
-  },
-  f32_max: {
-    C:  "(f32_unbox($0) < f32_unbox($1) ? $1 : $0)",
-    JS: "($0 < $1 ? $1 : $0)",
-  },
+  ...sel_ops("f32_", "f32_unbox($0) < f32_unbox($1)"),
   f32_to_u32: {
     C:  "f32_to_u32($0)",
     JS: "($0 >= 1 && $0 < 4294967296 ? Math.floor($0) : 0)",
@@ -300,24 +287,14 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     C:  "($0 < $1)",
     JS: "($0 < $1)",
   },
-  nat_min: {
-    C:  "($0 < $1 ? $0 : $1)",
-    JS: "($0 < $1 ? $0 : $1)",
-  },
-  nat_max: {
-    C:  "($0 < $1 ? $1 : $0)",
-    JS: "($0 < $1 ? $1 : $0)",
-  },
+  ...sel_ops("nat_", "$0 < $1"),
   nat_divmod: {
     C:    ["($1 == 0 ? 0 : $0 / $1)", "($1 == 0 ? $0 : $0 % $1)"],
     call: true,
     JS:   "nat_divmod($0, $1)",
   },
-  ...tpl_ops("bool_", "or:|:|| xor:^:!==", "(($0) $o ($1))", "($0 $o $1)"),
-  bool_and: {
-    C:  "(($0) & ($1))",
-    JS: "($0 && $1)",
-  },
+  ...tpl_ops("bool_", "and:&:&& or:|:|| xor:^:!==", "(($0) $o ($1))",
+    "($0 $o $1)"),
   bool_not: {
     C:  "(($0) ^ 1)",
     JS: "(!$0)",
@@ -613,8 +590,6 @@ const FOLDS: Map<HTerm, HTerm | null> = new Map();
 
 const FLATS: Map<Name, boolean> = new Map();
 
-const PLAINS: Map<Name, boolean> = new Map();
-
 const SIGS: Map<Name, Sig> = new Map();
 
 const BRWS: Map<Name, boolean[]> = new Map();
@@ -663,6 +638,14 @@ function tpl_ops(pre: string, names: string, C: string, JS: string):
     out[pre + k] = { C: C.replaceAll("$o", o), JS: JS.replaceAll("$o", jo) };
   }
   return out;
+}
+
+// min and max as Base picks them over is_lt (a tie or a NaN: min's b, max's a)
+function sel_ops(pre: string, C: string): Record<string, Intr> {
+  return {
+    [pre + "min"]: { C: `(${C} ? $0 : $1)`, JS: "($0 < $1 ? $0 : $1)" },
+    [pre + "max"]: { C: `(${C} ? $1 : $0)`, JS: "($0 < $1 ? $1 : $0)" },
+  };
 }
 
 function tpl(t: Gen, xs: string[]): string {
@@ -1447,7 +1430,7 @@ function def_body(cb: Carb, k: Name): TLD | undefined {
 // refs, calls and flatness (no fork, no bang call, only tail self-calls).
 function carb_book(src: Bend.Book, roots: Name[]): Carb {
   book_owned(src);
-  [TELES, SRCS, NODES, LAYS, CYCLES, FLATS, PLAINS, SIGS, BRWS].forEach((m) =>
+  [TELES, SRCS, NODES, LAYS, CYCLES, FLATS, SIGS, BRWS].forEach((m) =>
     m.clear());
   ids_reset();
   PROBES.length = 1;
@@ -1467,7 +1450,8 @@ function carb_book(src: Bend.Book, roots: Name[]): Carb {
     }
     memo_gc();
     const tld = def_body(cb, d);
-    const own: Src = { refs: new Set(), deps: new Set(), flat: done_live(tld) };
+    const own: Src = { refs: new Set(), deps: new Set(), tails: new Set(),
+      flat: done_live(tld) };
     SRCS.set(d, own);
     for (const x of tld?.$ === "ADT" ? tld.c : tld ? [tld] : []) {
       queue.push(...type_adts(cb, x.T));
@@ -1491,6 +1475,9 @@ function carb_book(src: Bend.Book, roots: Name[]): Carb {
       const ck = call_kind(cb, s);
       if (ck !== null && ck.k !== d) {
         own.deps.add(ck.k);
+        if (tail) {
+          own.tails.add(ck.k);
+        }
       }
       if ((s.$ === "Let" && s.k.length >= 2)
         || (ck !== null && (ck.bang === true || (ck.k === d && !tail)))) {
@@ -1532,19 +1519,15 @@ function flat_of(k: Name): boolean {
   });
 }
 
-// A def is plain when its JS returns no $JMP: a self call or a closure
-// applied in tail position rides the trampoline, so its callers must
-// run_loop; every other return comes back plain through the machine
-// stack, whose depth the def DAG bounds (defs never call forward).
-function plain_of(c: Carb, k: Bend.Name): boolean {
-  return memo(PLAINS, k, () => {
-    const tld = def_body(c, k);
-    return tld?.$ === "Def" && tld.h !== undefined && tld.i === undefined
-      && !term_any(c, tld.h as HTerm, (s, tail) => {
-        const ck = tail ? call_kind(c, s) : null;
-        return ck !== null && (ck.k === k || ck.k === CLO_APPLY);
-      });
-  });
+// A def is plain, its JS returning no $JMP, when every def it tail-calls is
+// (itself loops; a closure, having no source, and a cycle are not).
+function plain_of(k: Name): boolean {
+  const own = SRCS.get(k);
+  if (own !== undefined && own.plain === undefined) {
+    own.plain = false;
+    own.plain = [...own.tails].every(plain_of);
+  }
+  return own?.plain === true;
 }
 
 // Done
@@ -3194,9 +3177,8 @@ function js_call(fl: File, k: Name, args: HTerm[],
   }
   const call = js_sat(k) + "(" + exprs.join(", ") + ")";
   return v !== "" ? "(" + v + ") => " + call
-    : def_foreign(tld) ? call
-    : k !== fl.def && plain_of(fl, k) ? call
-    : tail && k === fl.def ? "run_jump(" + js_sat(k) + ", [" + exprs.join(", ") + "])"
+    : plain_of(k) ? call
+    : tail ? "run_jump(" + js_sat(k) + ", [" + exprs.join(", ") + "])"
     : "run_loop(" + call + ")";
 }
 
@@ -3257,11 +3239,12 @@ function js_expr(fl: File, tm: HTerm,
           ty_all(fl.book, ty).B(DUMMY));
       }
       const arg = name_local(fl, "x");
-      const seg = fl.seg;
+      const seg = fl.seg, def = fl.def;
       fl.seg = seg_new("", BOX, []);
+      fl.def = "";
       js_func(fl, x, ty, [arg]);
       const lines = fl.seg.lines;
-      fl.seg = seg;
+      fl.seg = seg, fl.def = def;
       return `run_clo((${arg}) => {\n${lines.join("\n")}\n})`;
     }
     case "Hol": die("cannot compile a hole");
@@ -3292,7 +3275,9 @@ function js_func(fl: File, tm: HTerm, ty0: HTerm | null,
     return js_func(fl, term_eta(fl.book, x, ty!, 1), ty, args);
   }
   const ck = call_kind(fl, x);
-  file_push(fl, "return " + (ck === null ? js_expr(fl, x, ty)
+  file_push(fl, ck?.k === fl.def ? ck.args.map((a, i) => "$" + i + " = "
+    + js_expr(fl, a, null) + "; ").join("") + "continue;"
+    : "return " + (ck === null ? js_expr(fl, x, ty)
     : js_call(fl, ck.k, ck.args, true)) + ";");
 }
 
@@ -3346,7 +3331,6 @@ function js_match(fl: File, x: HTerm, ty: HTerm | null,
 }
 
 function js_def(fl: File, k: Name, def: Def): void {
-  fl.def = k;
   fl.fresh = new Map();
   fl.fuel = FOLD_FUEL;
   if (intr_of(fl, k, true) !== undefined) {
@@ -3354,10 +3338,18 @@ function js_def(fl: File, k: Name, def: Def): void {
   }
   const params = sig_def(fl, k).live.map(([, n]) => name_local(fl, n));
   const kont = def.i ? [name_local(fl, "k")] : [];
-  block(fl, `function ${js_sat(k)}(${[...params, ...kont].join(", ")}) {`,
+  // A tail self call loops: it sets $i and turns, binding them afresh.
+  fl.def = def.i === undefined && term_any(fl, def.h!, (s, tail) =>
+    tail && call_kind(fl, s)?.k === k) ? k : "";
+  const ins = params.map((p, i) => fl.def ? "$" + i : p);
+  block(fl, `function ${js_sat(k)}(${[...ins, ...kont].join(", ")}) {`,
     () => {
-      if (def.i === undefined) {
-        js_func(fl, def.h!, def.T, params);
+      const go = () => js_func(fl, def.h!, def.T, params);
+      if (fl.def) {
+        block(fl, "for (;;) { " + params.map((p, i) => "const " + p + " = $"
+          + i + "; ").join(""), go);
+      } else if (def.i === undefined) {
+        go();
       } else {
         const n = JSON.stringify(k);
         file_push(fl, `return { $: "$FFI", run: $0eff[${n}].run, need: $0eff[${n
