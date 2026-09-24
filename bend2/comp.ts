@@ -5667,6 +5667,8 @@ static Term io_list(Env e, const char* p, u64 n) {
 
 #define io_tup(e, a, b) io_node(e, CID(Tuple), a, b)
 #define io_done(e, v)   io_box(e, CID(Done), v)
+#define io_res(e, w, v) ((w)->code ? io_fail(e, (w)->code, NULL) \
+  : io_done(e, v))
 
 static Term io_box(Env e, u64 cid, Term v) {
   u64 l = heap_alloc(e, 0);

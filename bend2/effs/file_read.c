@@ -17,8 +17,7 @@ static Term file_read_start(Term file, u64 max, IoWork* w,
 #ifdef CID(File.read)
 
 static Term file_read_pack(Env e, IoWork* w) {
-  Term r = w->code ? io_fail(e, w->code, NULL)
-    : io_done(e, io_str(e, w->data, w->size));
+  Term r = io_res(e, w, io_str(e, w->data, w->size));
   free(w->data);
   return io_tup(e, io_hand(w->hand), r);
 }
@@ -36,8 +35,7 @@ static void __attribute__((constructor)) file_read_use(void) {
 #if defined(CID(File.read_bytes)) || defined(CID(File.read_at))
 
 static Term file_read_bytes_pack(Env e, IoWork* w) {
-  Term r = w->code ? io_fail(e, w->code, NULL)
-    : io_done(e, io_list(e, w->data, w->size));
+  Term r = io_res(e, w, io_list(e, w->data, w->size));
   free(w->data);
   return io_tup(e, io_hand(w->hand), r);
 }
