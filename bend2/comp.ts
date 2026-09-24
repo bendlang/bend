@@ -209,6 +209,10 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   ...tpl_ops("f32_", "pow atan2",
     "f32_rewrap((f32)$o(f32_unbox($0), f32_unbox($1)))",
     "Math.fround(Math.$o($0, $1))"),
+  f32_fma: {
+    C:  "f32_rewrap(fmaf(f32_unbox($0), f32_unbox($1), f32_unbox($2)))",
+    JS: "f32_fma($0, $1, $2)",
+  },
   f32_mod: {
     C:  "f32_rewrap((f32)fmod(f32_unbox($0), f32_unbox($1)))",
     JS: "Math.fround($0 % $1)",
@@ -532,6 +536,23 @@ function f32_bits(x) {
 
 function f32_from_bits(u) {
   return new Float32Array(new Uint32Array([u]).buffer)[0];
+}
+
+// a * b is exact in a double; its sum with c, rounded to odd by the TwoSum
+// error, rounds to the f32 of the exact sum (53 >= 24 + 2 bits)
+const FMA_F = new Float64Array(1);
+const FMA_I = new BigInt64Array(FMA_F.buffer);
+
+function f32_fma(a, b, c) {
+  const p = a * b;
+  const s = p + c;
+  const t = s - p;
+  const r = p - (s - t) + (c - t);
+  FMA_F[0] = s;
+  if ((r > 0 || r < 0) && (FMA_I[0] & 1n) === 0n) {
+    FMA_I[0] += r > 0 === s > 0 ? 1n : -1n;
+  }
+  return Math.fround(FMA_F[0]);
 }
 
 function f32_read(s) {

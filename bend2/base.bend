@@ -1575,6 +1575,12 @@ law F32.atan2:
   for b: F32
   F32
 
+law F32.fma:
+  for a: F32
+  for b: F32
+  for c: F32
+  F32
+
 law F32.neg:
   for a: F32
   F32
