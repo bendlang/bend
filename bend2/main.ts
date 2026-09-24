@@ -680,14 +680,18 @@ async function pow_mine(hash: string, bytes: number): Promise<number> {
 
 // cli_report prints the verdict of a check on stdout, or a note before a
 // run, an emit or a publish on stderr (silent then when nothing relies on
-// a promise): the file's own claims (book.order from n0, the loader's
-// mark) that are @unsafe or foreign, or whose type, body or constructor
-// fields name a def that relies on one. A foreign def is a promise like
-// @unsafe is: the checker reads its type, never its code. If the book
-// holds one, a walk from the claims collects who names whom, then the
-// promises flood back along those edges.
+// a promise): the claims (the file's own, book.order from n0, and every
+// law outside Base, filled in any file: an open one fails wherever it is)
+// that are @unsafe or foreign, or whose type, body or constructor fields
+// name a def that relies on one. A law is ordered twice (declared, then
+// filled). A foreign def is a promise like @unsafe is: the checker reads
+// its type, never its code. If the book holds one, a walk from the claims
+// collects who names whom, then the promises flood back along those edges.
 function cli_report(book: Bend.Book, n0: number, fd: number): void {
-  const own  = [...new Set(book.order.slice(n0))];
+  const met  = new Set<string>();
+  const laws = book.order.filter((k) =>
+    met.has(k) ? book.tlds[k].b !== true : !met.add(k));
+  const own  = [...new Set([...book.order.slice(n0), ...laws])];
   const bad  = new Set(Object.keys(book.tlds).filter((k) => {
     const t = book.tlds[k] as Bend.Def;
     return t.u === true || (t.i !== undefined && t.b !== true);
