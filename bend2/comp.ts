@@ -58,7 +58,7 @@ type Def  = Bend.Def & { h?: HTerm };
 type TLD  = Bend.ADT | Def;
 
 type Src = { refs: Set<Name>; deps: Set<Name>; tails: Set<Name>;
-  flat: boolean; plain?: boolean };
+  flat: boolean; plain?: boolean; loop?: Name[] };
 
 type Carb = {
   // a copy of the book whose defs carry their raised body (def_body)
@@ -92,6 +92,7 @@ type File = Carb & {
   consts: Map<string, Map<HTerm, Val>>;
   reqs: string;
   fuel: number;
+  loop: Name[];
 };
 
 type Gen = string | ((xs: string[]) => string);
@@ -1475,7 +1476,7 @@ function carb_book(src: Bend.Book, roots: Name[]): Carb {
       const ck = call_kind(cb, s);
       if (ck !== null && ck.k !== d) {
         own.deps.add(ck.k);
-        if (tail) {
+        if (tail && intr_of(cb, ck.k, true) === undefined) {
           own.tails.add(ck.k);
         }
       }
@@ -1519,15 +1520,47 @@ function flat_of(k: Name): boolean {
   });
 }
 
-// A def is plain, its JS returning no $JMP, when every def it tail-calls is
-// (itself loops; a closure, having no source, and a cycle are not).
+// A def is plain, its JS returning no $JMP, when every def its tail cycle
+// tail-calls is (the cycle loops; a closure, having no source, is not).
 function plain_of(k: Name): boolean {
   const own = SRCS.get(k);
   if (own !== undefined && own.plain === undefined) {
-    own.plain = false;
-    own.plain = [...own.tails].every(plain_of);
+    const loop = own.loop ?? [k];
+    const set = (b: boolean) => loop.forEach((d) => SRCS.get(d)!.plain = b);
+    set(false);
+    set(loop.every((d) => [...SRCS.get(d)!.tails].every((t) =>
+      loop.includes(t) || plain_of(t))));
   }
   return own?.plain === true;
+}
+
+// The tail-call cycles between defs (Tarjan over tails): each member records
+// its cycle, which the JS lane runs as one loop.
+function tail_loops(): void {
+  const ids = new Map<Name, number>();
+  const stack: Name[] = [];
+  const visit = (k: Name): number => {
+    const id = ids.size;
+    let low = id;
+    ids.set(k, id);
+    stack.push(k);
+    for (const d of SRCS.get(k)!.tails) {
+      low = Math.min(low, !SRCS.has(d) ? low : !ids.has(d) ? visit(d)
+        : stack.includes(d) ? ids.get(d)! : low);
+    }
+    if (low === id) {
+      const loop = stack.splice(stack.indexOf(k));
+      if (loop.length > 1) {
+        loop.forEach((d) => SRCS.get(d)!.loop = loop);
+      }
+    }
+    return low;
+  };
+  for (const k of SRCS.keys()) {
+    if (!ids.has(k)) {
+      visit(k);
+    }
+  }
 }
 
 // Done
@@ -1595,7 +1628,7 @@ function file_new(cb: Carb, js: boolean): File {
     cids: new Map(), tabs: new Map(), spins: [], spun: new Map(), clos: new Set(),
     img: [], lits: new Map(), consts: new Map(), reqs: "", fuel: 0,
     fresh: new Map(), spares: [],
-    uses: new Map(), brwl: new Map(), rest: [], def: "" };
+    uses: new Map(), brwl: new Map(), rest: [], def: "", loop: [] };
 }
 
 function file_push(fl: File, line: string): void {
@@ -3239,12 +3272,12 @@ function js_expr(fl: File, tm: HTerm,
           ty_all(fl.book, ty).B(DUMMY));
       }
       const arg = name_local(fl, "x");
-      const seg = fl.seg, def = fl.def;
+      const seg = fl.seg, loop = fl.loop;
       fl.seg = seg_new("", BOX, []);
-      fl.def = "";
+      fl.loop = [];
       js_func(fl, x, ty, [arg]);
       const lines = fl.seg.lines;
-      fl.seg = seg, fl.def = def;
+      fl.seg = seg, fl.loop = loop;
       return `run_clo((${arg}) => {\n${lines.join("\n")}\n})`;
     }
     case "Hol": die("cannot compile a hole");
@@ -3275,8 +3308,10 @@ function js_func(fl: File, tm: HTerm, ty0: HTerm | null,
     return js_func(fl, term_eta(fl.book, x, ty!, 1), ty, args);
   }
   const ck = call_kind(fl, x);
-  file_push(fl, ck?.k === fl.def ? ck.args.map((a, i) => "$" + i + " = "
-    + js_expr(fl, a, null) + "; ").join("") + "continue;"
+  const at = ck === null ? -1 : fl.loop.indexOf(ck.k);
+  file_push(fl, at >= 0 ? ck!.args.map((a, i) => "$" + i + " = "
+    + js_expr(fl, a, null) + "; ").join("")
+    + (fl.loop.length > 1 ? "$pc = " + at + "; " : "") + "continue;"
     : "return " + (ck === null ? js_expr(fl, x, ty)
     : js_call(fl, ck.k, ck.args, true)) + ";");
 }
@@ -3338,18 +3373,22 @@ function js_def(fl: File, k: Name, def: Def): void {
   }
   const params = sig_def(fl, k).live.map(([, n]) => name_local(fl, n));
   const kont = def.i ? [name_local(fl, "k")] : [];
-  // A tail self call loops: it sets $i and turns, binding them afresh.
-  fl.def = def.i === undefined && term_any(fl, def.h!, (s, tail) =>
-    tail && call_kind(fl, s)?.k === k) ? k : "";
-  const ins = params.map((p, i) => fl.def ? "$" + i : p);
-  block(fl, `function ${js_sat(k)}(${[...ins, ...kont].join(", ")}) {`,
+  // A def on a tail cycle, or tail-calling itself, runs as a loop.
+  const loop = SRCS.get(k)?.loop ?? (def.i === undefined && term_any(fl,
+    def.h!, (s, tail) => tail && call_kind(fl, s)?.k === k) ? [k] : []);
+  if (loop[0] === k) {
+    js_loop(fl, loop);
+  }
+  if (loop.length === 1) {
+    return;
+  }
+  block(fl, `function ${js_sat(k)}(${[...params, ...kont].join(", ")}) {`,
     () => {
-      const go = () => js_func(fl, def.h!, def.T, params);
-      if (fl.def) {
-        block(fl, "for (;;) { " + params.map((p, i) => "const " + p + " = $"
-          + i + "; ").join(""), go);
+      if (loop.length > 1) {
+        file_push(fl, `return ${js_sat(loop[0])}loop(${[loop.indexOf(k),
+          ...params].join(", ")});`);
       } else if (def.i === undefined) {
-        go();
+        js_func(fl, def.h!, def.T, params);
       } else {
         const n = JSON.stringify(k);
         file_push(fl, `return { $: "$FFI", run: $0eff[${n}].run, need: $0eff[${n
@@ -3359,9 +3398,39 @@ function js_def(fl: File, k: Name, def: Def): void {
   file_push(fl, "");
 }
 
+// A loop sets $i (and, in a cycle, $pc to the callee's case) and turns,
+// binding each turn's parameters afresh, so a closure keeps its own.
+function js_loop(fl: File, loop: Name[]): void {
+  const n = Math.max(...loop.map((d) => sig_def(fl, d).live.length));
+  const ins = Array.from({ length: n }, (_, i) => "$" + i);
+  const one = loop.length === 1;
+  fl.loop = loop;
+  block(fl, `function ${js_sat(loop[0])}${one ? "" : "loop"}(${
+    (one ? ins : ["$pc", ...ins]).join(", ")}) {`, () =>
+    block(fl, one ? "for (;;) {" : "for (;;) switch ($pc) {", () =>
+      loop.forEach((d, i) => {
+        memo_gc();
+        fl.fresh = new Map();
+        fl.fuel = FOLD_FUEL;
+        const def = fl.book.tlds[d] as Def;
+        const ps = sig_def(fl, d).live.map(([, x]) => name_local(fl, x));
+        const bind = ps.map((p, j) => "const " + p + " = $" + j + ";");
+        const go = () => js_func(fl, def.h!, def.T, ps);
+        if (one) {
+          bind.forEach((l) => file_push(fl, l));
+          go();
+        } else {
+          block(fl, `case ${i}: { ${bind.join(" ")}`, go);
+        }
+      })));
+  fl.loop = [];
+  file_push(fl, "");
+}
+
 export function js_lib(book: Bend.Book, roots: Name[],
   outs: Name[] | null): string {
   const cb = carb_book(book, roots.slice());
+  tail_loops();
   const fl = file_new(cb, true);
   fl.tab = 0;
   for (const [k, def] of done_defs(cb)) {
