@@ -205,14 +205,7 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     C:  "U32_BIN($0, ==, 0)",
     JS: "($0 === 0)",
   },
-  u32_min: {
-    C:  "((u32)($0) < (u32)($1) ? (u64)(u32)($0) : (u64)(u32)($1))",
-    JS: "($0 < $1 ? $0 : $1)",
-  },
-  u32_max: {
-    C:  "((u32)($0) < (u32)($1) ? (u64)(u32)($1) : (u64)(u32)($0))",
-    JS: "($0 < $1 ? $1 : $0)",
-  },
+  ...sel_ops("u32_", "U32_BIN($0, <, $1)"),
   u32_cmp: {
     C:  "(U32_BIN($0, >, $1) + U32_BIN($0, >=, $1))",
     JS: "cmp_new($0, $1)",
@@ -247,14 +240,7 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     C:  "f32_rewrap((f32)fmod(f32_unbox($0), f32_unbox($1)))",
     JS: "Math.fround($0 % $1)",
   },
-  f32_min: {
-    C:  "(f32_unbox($0) < f32_unbox($1) ? $0 : $1)",
-    JS: "($0 < $1 ? $0 : $1)",
-  },
-  f32_max: {
-    C:  "(f32_unbox($0) < f32_unbox($1) ? $1 : $0)",
-    JS: "($0 < $1 ? $1 : $0)",
-  },
+  ...sel_ops("f32_", "f32_unbox($0) < f32_unbox($1)"),
   f32_to_u32: {
     C:  "f32_to_u32($0)",
     JS: "($0 >= 1 && $0 < 4294967296 ? Math.floor($0) : 0)",
@@ -297,14 +283,7 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     C:  "($0 < $1)",
     JS: "($0 < $1)",
   },
-  nat_min: {
-    C:  "($0 < $1 ? $0 : $1)",
-    JS: "($0 < $1 ? $0 : $1)",
-  },
-  nat_max: {
-    C:  "($0 < $1 ? $1 : $0)",
-    JS: "($0 < $1 ? $1 : $0)",
-  },
+  ...sel_ops("nat_", "$0 < $1"),
   nat_divmod: {
     C:    ["($1 == 0 ? 0 : $0 / $1)", "($1 == 0 ? $0 : $0 % $1)"],
     call: true,
@@ -674,6 +653,15 @@ function tpl_ops(pre: string, names: string, C: string, JS: string):
 function tpl(t: Gen, xs: string[]): string {
   return typeof t !== "string" ? t(xs)
     : t.split(/\$(\d)/).map((p, i) => (i % 2 === 1 ? xs[+p] : p)).join("");
+}
+
+// min and max as Base writes them, a Bool.pick over is_lt: a tie or a NaN
+// answers min's second argument and max's first.
+function sel_ops(pre: string, C: string): Record<string, Intr> {
+  return {
+    [pre + "min"]: { C: `(${C} ? $0 : $1)`, JS: "($0 < $1 ? $0 : $1)" },
+    [pre + "max"]: { C: `(${C} ? $1 : $0)`, JS: "($0 < $1 ? $1 : $0)" },
+  };
 }
 
 // Succ over a literal is the next literal; over a checked sum, one more.
@@ -1543,18 +1531,18 @@ function flat_of(k: Name): boolean {
   });
 }
 
-// A def is plain when its JS returns no $JMP: a self call or a closure
-// applied in tail position rides the trampoline, so its callers must
-// run_loop; every other return comes back plain through the machine
-// stack, whose depth the def DAG bounds (defs never call forward).
+// A def is plain when its JS returns no $JMP: a foreign def, or one whose
+// tail calls all reach plain defs. Mark it non-plain while visiting it:
+// unsafe defs can form call cycles, with or without forward laws.
 function plain_of(c: Carb, k: Bend.Name): boolean {
   return memo(PLAINS, k, () => {
+    PLAINS.set(k, false);
     const tld = def_body(c, k);
-    return tld?.$ === "Def" && tld.h !== undefined && tld.i === undefined
+    return tld?.$ === "Def" && (def_foreign(tld) || tld.h !== undefined
       && !term_any(c, tld.h as HTerm, (s, tail) => {
         const ck = tail ? call_kind(c, s) : null;
-        return ck !== null && (ck.k === k || ck.k === CLO_APPLY);
-      });
+        return ck !== null && (ck.k === CLO_APPLY || !plain_of(c, ck.k));
+      }));
   });
 }
 
@@ -3122,9 +3110,31 @@ function js_sat(k: Name): string {
   return "$" + k.replace(/\W/g, "$") + "$";
 }
 
+// A foreign def short of its continuation: an IO action awaiting it.
+function js_cont(fl: File, k: Name, exprs: string[]): string {
+  const live = sig_def(fl, k).lays.length;
+  const v = def_foreign(fl.book.tlds[k]) && exprs.length === live - 1
+    ? name_local(fl, "x") : "";
+  if (v !== "") {
+    exprs.push(v);
+  } else if (exprs.length !== live) {
+    die("an under-applied def value: " + k);
+  }
+  return v;
+}
+
+function js_invoke(fl: File, k: Name, exprs: string[], tail: boolean,
+  v: string): string {
+  const call = js_sat(k) + "(" + exprs.join(", ") + ")";
+  return v !== "" ? "(" + v + ") => " + call
+    : plain_of(fl, k) ? call
+    : tail ? "run_jump(" + js_sat(k) + ", [" + exprs.join(", ") + "])"
+    : "run_loop(" + call + ")";
+}
+
 function js_call(fl: File, k: Name, args: HTerm[],
   tail: boolean): string {
-  let exprs = args.map((x) => js_expr(fl, x, null));
+  const exprs = args.map((x) => js_expr(fl, x, null));
   if (k === CLO_APPLY) {
     const [f, x] = exprs;
     return tail ? "run_tail(" + f + ", " + x + ")" : f + "(" + x + ")";
@@ -3137,26 +3147,13 @@ function js_call(fl: File, k: Name, args: HTerm[],
   if (intr === null && tld.v === null && tld.i === undefined) {
     die("a live call into the law " + k);
   }
-  // A foreign def short of its continuation: an IO action awaiting it.
-  const live = sig_def(fl, k).lays.length;
-  const v = def_foreign(tld) && exprs.length === live - 1
-    ? name_local(fl, "x") : "";
-  if (v !== "") {
-    exprs = [...exprs, v];
-  } else if (exprs.length !== live) {
-    die("an under-applied def value: " + k);
-  }
+  const v = js_cont(fl, k, exprs);
   if (intr !== null) {
     const xs = exprs.map((e) => ATOM.test(e) || STRLIT.test(e)
       ? e : emit_hold(fl, [e], "x")[0]);
     return tpl(intr, xs);
   }
-  const call = js_sat(k) + "(" + exprs.join(", ") + ")";
-  return v !== "" ? "(" + v + ") => " + call
-    : def_foreign(tld) ? call
-    : k !== fl.def && plain_of(fl, k) ? call
-    : tail && k === fl.def ? "run_jump(" + js_sat(k) + ", [" + exprs.join(", ") + "])"
-    : "run_loop(" + call + ")";
+  return js_invoke(fl, k, exprs, tail, v);
 }
 
 function js_open(fl: File, x: HLet): HTerm {
@@ -3306,7 +3303,6 @@ function js_match(fl: File, x: HTerm, ty: HTerm | null,
 }
 
 function js_def(fl: File, k: Name, def: Def): void {
-  fl.def = k;
   fl.fresh = new Map();
   fl.fuel = FOLD_FUEL;
   if (intr_of(fl, k, true) !== undefined) {
