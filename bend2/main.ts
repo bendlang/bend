@@ -404,6 +404,7 @@ function cli_build(bin: string, file: string): void {
     ? ["-x", "objective-c", "-fobjc-arc", "-fmodules"] : [];
   const libs  = [["X11", "X11"], ["alsa", "asound"]].flatMap(([h, l]) =>
     !mac && c.includes("#include <" + h + "/") ? ["-l" + l] : []);
+  if (c.includes("#include <curl/curl.h>")) libs.push("-lcurl");
   const cpu = [...objc, "-std=c11", "-O3", file, "-lpthread", "-lm",
     ...libs, "-o", path.resolve(bin)];
   const gpu = mac ? ["-DBEND_METAL=1", ...cpu]

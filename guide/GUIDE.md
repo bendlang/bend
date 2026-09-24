@@ -385,6 +385,29 @@ value}` and `Nat` as `BigInt`. A value crosses without a copy: an `Array`
 argument is the caller's own array, updated in place, so copy it first if you
 keep it.
 
+### HTTP and TLS
+
+`HTTP.request(method, url, headers, body, max_output, timeout_ms, ca_file)`
+sends an HTTP or HTTPS request and returns
+`Result<&1, &1, U32 & String, HTTP.Response>`. Request and response headers
+are `Header{name, value}` values; `Response{status, headers, body}` contains a
+UTF-8 text body. A 4xx or 5xx response is `Done` with its status and body,
+not a transport failure. Redirects are not followed. `max_output` bounds
+response headers and body together in bytes; both bounds must be positive.
+Invalid schemes and headers fail before a request is sent.
+
+`TLS.connect(host, port, ca_file, timeout_ms)` opens a verified TLS stream.
+`TLS.send(socket, bytes, timeout_ms)` and `TLS.recv(socket, max, timeout_ms)`
+send and receive `List<&2, U32>` bytes (each sent value must fit 0..255).
+`TLS.recv` returns at most 65536 bytes per call and an empty list at EOF.
+Sending and receiving return the affine handle even on failure; `TLS.close`
+consumes it. `ca_file` is an optional CA certificate path for either API;
+the empty string uses the system trust store. Certificate and host-name
+verification cannot be turned off. Native builds using these effects require
+libcurl headers and library; Bun loads the same shared library. Native calls
+run on IO helpers. The JS lane parks TLS send/recv, but TLS connect and HTTP
+requests block its event loop until they complete.
+
 ### Monads
 
 The `do` notation works for any monad, not just IO.

@@ -86,6 +86,12 @@ type Map<a, -V: Kind(a)> is Kind(a):
   MLeaf{key: String, val: V}
   MNode{pos: Nat, lo: Map<a, V>, hi: Map<a, V>}
 
+type HTTP.Header is Data:
+  Header{name: String, value: String}
+
+type HTTP.Response is Data:
+  Response{status: U32, headers: List<&2, HTTP.Header>, body: String}
+
 # Effects
 # -------
 
@@ -95,6 +101,9 @@ law File:
   Type
 
 law Socket:
+  Type
+
+law TLS:
   Type
 
 law Listener:
@@ -305,6 +314,32 @@ def TCP.poll(sock: Socket, max: U32, ms: U32) ->
   IO(Socket & Result<&1, &1, U32 & String, Maybe<&1, String>>):
   import "./effs/tcp_poll.c"
   import "./effs/tcp_poll.js"
+
+def TLS.connect(host: String, port: U32, ca_file: String, timeout_ms: U32) ->
+  IO(Result<&1, &1, U32 & String, TLS>):
+  import "./effs/tls.c"
+  import "./effs/tls.js"
+
+def TLS.send(socket: TLS, bytes: List<&2, U32>, timeout_ms: U32) ->
+  IO(TLS & Result<&1, &1, U32 & String, Unit>):
+  import "./effs/tls.c"
+  import "./effs/tls.js"
+
+def TLS.recv(socket: TLS, max: U32, timeout_ms: U32) ->
+  IO(TLS & Result<&1, &1, U32 & String, List<&2, U32>>):
+  import "./effs/tls.c"
+  import "./effs/tls.js"
+
+def TLS.close(socket: TLS) -> IO(Unit):
+  import "./effs/tls.c"
+  import "./effs/tls.js"
+
+def HTTP.request(
+  method: String, url: String, headers: List<&2, HTTP.Header>,
+  body: String, max_output: U32, timeout_ms: U32, ca_file: String
+) -> IO(Result<&1, &1, U32 & String, HTTP.Response>):
+  import "./effs/http_request.c"
+  import "./effs/http_request.js"
 
 def UDP.bind(port: U32) -> IO(Result<&1, &1, U32 & String, Socket>):
   import "./effs/udp_bind.c"

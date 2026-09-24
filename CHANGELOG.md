@@ -3,6 +3,12 @@
 Each release names what changed for a user. `bend update` installs the
 latest one; the GitHub release carries the same notes.
 
+## Unreleased
+
+- **HTTP and TLS are built-in effects**: `HTTP.request` sends bounded HTTP or
+  verified HTTPS requests with headers and status; `TLS.connect`, `send`,
+  `recv` and `close` expose a verified byte stream. Both C and JS use libcurl.
+
 ## 2.0.27 (2026-09-23)
 
 - **`bend` reads no `bunfig.toml` or `.env` from the directory it runs in**
