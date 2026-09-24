@@ -628,7 +628,7 @@ async function cli_login(): Promise<string> {
 // any case, is refused (it clashes with LICENSE on a case-blind disk).
 function pkg_files(file: string, book: Bend.Book,
   seen: Map<string, string | null>): Record<string, string> {
-  const dir  = file.slice(0, file.lastIndexOf("/") + 1);
+  const dir  = fs.realpathSync(path.dirname(file)) + "/";
   const raws = [...[...seen].flatMap(([real, ns]): [string, string][] =>
     real === BASE || ns === null || ns.startsWith("0x") ? []
       : [[ns === "" ? path.basename(file) : ns + ".bend", real]]),
@@ -774,7 +774,6 @@ async function book_read(file: string, base?: Bend.Book,
     cli_fail("PROOF.bend must import ./LAWS.bend");
   }
   Bend.book_valid(book, base?.order.length ?? 0);
-  Comp.book_owned(book, Comp.SYNTH);
   const hols = book.hols + book.open;
   if (hols > 0) {
     throw "Error: " + String(hols) + " TODO" + (hols === 1 ? "" : "s")

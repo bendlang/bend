@@ -7,3 +7,6 @@ function gauge(t) {
 function pick() {
   return null;
 }
+
+io_eff(CID(gauge), gauge);
+io_eff(CID(pick), pick);

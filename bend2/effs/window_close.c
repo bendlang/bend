@@ -46,9 +46,9 @@ static void window_close(intptr_t at) {
 
 Term window_close_run(Env e, Term* f, IoWork* w) {
   window_close((intptr_t)io_hand_v(f[0]));
-  return term_pak(CID_UNIT, 0);
+  return term_pak(CID(Unit), 0);
 }
 
 static void __attribute__((constructor)) window_close_use(void) {
-  io_eff(CID_WINDOW_CLOSE, window_close_run, 0);
+  io_eff(CID(Window.close), window_close_run, 0);
 }

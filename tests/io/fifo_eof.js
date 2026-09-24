@@ -56,3 +56,5 @@ function fifo_drain(len, hi, k) {
   };
   return go();
 }
+
+io_eff(CID(fifo.drain), fifo_drain);

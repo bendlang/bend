@@ -8,3 +8,5 @@ function audio_open(rate) {
   }
   return io_done({ rate, queued: 0, at: Date.now() });
 }
+
+io_eff(CID(Audio.open), audio_open);

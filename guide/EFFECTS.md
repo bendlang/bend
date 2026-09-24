@@ -14,8 +14,8 @@ def Clock.now() -> IO(U32):
   import "./clock.js"
 ```
 
-The host function is named after the def: lowercased, dots to underscores
-(`clock_now`). The `.c` file serves `bend x.bend -o x`; the `.js` file
+Each file registers the effect under its def with `io_eff(CID(Clock.now),
+..)`. The `.c` file serves `bend x.bend -o x`; the `.js` file
 serves `bend x.bend -o x.js` and `bend x.bend`. Every effect in Base is
 built this way: `bend2/effs/*.c` and `*.js` are the reference.
 
@@ -29,21 +29,25 @@ register it in a constructor:
 Term clock_now_run(Env e, Term* f, IoWork* w);
 
 static void __attribute__((constructor)) clock_now_use(void) {
-  io_eff(CID_CLOCK_NOW, clock_now_run, 0);
+  io_eff(CID(Clock.now), clock_now_run, 0);
 }
 ```
 
-`CID_X` is the def's name uppercased, dots to underscores. `f` holds the
-def's arguments in order: a `U32` is the word (`(u32)f[0]`), a `String` is
-taken with `io_cstr(e, f[0], &len)` (a `malloc`ed copy you free), a handle
-with `io_hand_v(f[0])`. The last argument of `io_eff` is the need: `0` runs
-the effect at once; `IO_READ` parks it until the handle in `f[0]` is
-readable; `IO_TIME` parks it for `f[0]` milliseconds. Then the loop calls
-the effect.
+`CID(Name)` is the C id of a constructor or of an effect def: the compiler
+replaces it with the name's own id, reading `Name` in the effect's
+namespace first (the file that declares the def), then in Base's, as the
+def's body would. A constructor the program does not use has no id, so
+`#ifdef CID(Name)` tests for it. `FID(name)` is a def's function id the
+same way. `f` holds the def's arguments in order: a `U32` is the word
+(`(u32)f[0]`), a `String` is taken with `io_cstr(e, f[0], &len)` (a
+`malloc`ed copy you free), a handle with `io_hand_v(f[0])`. The last
+argument of `io_eff` is the need: `0` runs the effect at once; `IO_READ`
+parks it until the handle in `f[0]` is readable; `IO_TIME` parks it for
+`f[0]` milliseconds. Then the loop calls the effect.
 
 The effect returns a Term: a `U32` is `(Term)n`, `Unit` is
-`term_pak(CID_UNIT, 0)`, a `String` is `io_str(e, p, n)`, a two-field
-constructor is `io_node(e, CID_K, a, b)`. A `Result` is `io_done(e, v)`
+`term_pak(CID(Unit), 0)`, a `String` is `io_str(e, p, n)`, a two-field
+constructor is `io_node(e, CID(K), a, b)`. A `Result` is `io_done(e, v)`
 or `io_fail(e, code, text)` (`text` NULL prints `strerror(code)`).
 `io_sys_end(w, n)` stores `errno` in `w->code` when a call fails.
 
@@ -68,18 +72,20 @@ allocate it in the run function and free it in `pack`. In `bend2/effs/`,
 
 ## The JS side
 
-The `.js` file is a plain script, wrapped in a closure; the compiler finds
-the function by name. It takes the def's arguments as JS values: a `U32` is
+The `.js` file is a plain script, run once in a closure of its own, that
+registers the effect: `io_eff(CID(Clock.now), clock_now, need)`, the need
+optional. The effect takes the def's arguments as JS values: a `U32` is
 a number, a `Nat` a `BigInt`, a `String` a string, a constructor
-`{$: "Name", field: value}`, a handle its host value (a descriptor). It
-returns the answer the same way: `io_done(v)`, `io_fail(code)`,
-`io_tup(handle, result)`, `{$: "Unit"}`.
+`{$: CID(Name), field: value}`, a handle its host value (a descriptor).
+`CID(Name)` is the constructor's tag, read as on the C side. It returns
+the answer the same way: `io_done(v)`, `io_fail(code)`,
+`io_tup(handle, result)`, `{$: CID(Unit)}`.
 
-A need is a second function, `clock_now_need`, that returns `{read: true}`
-or `{time: true}`. A blocking effect takes one more argument, `k`, and
-parks with `io_park_on(fd, out, k, more)`: it returns `undefined`, and the
-loop calls `more()` when `fd` is ready; `more` answers the value, or
-`undefined` to park again. `io_sys()` is `libc` through `bun:ffi`
+The need is a function that returns `{read: true}` or `{time: true}`. A
+blocking effect takes one more argument, `k`, and parks with
+`io_park_on(fd, out, k, more)`: it returns `undefined`, and the loop calls
+`more()` when `fd` is ready; `more` answers the value, or `undefined` to
+park again. `io_sys()` is `libc` through `bun:ffi`
 (`read`, `recv`, `poll`, `errno`); `tcp_recv.js` shows the full shape.
 
 ## A complete example
@@ -107,7 +113,7 @@ Term clock_now_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) clock_now_use(void) {
-  io_eff(CID_CLOCK_NOW, clock_now_run, 0);
+  io_eff(CID(Clock.now), clock_now_run, 0);
 }
 ```
 
@@ -117,6 +123,8 @@ static void __attribute__((constructor)) clock_now_use(void) {
 function clock_now() {
   return Math.floor(performance.now()) >>> 0;
 }
+
+io_eff(CID(Clock.now), clock_now);
 ```
 
 `bend main.bend -o main && ./main` prints a line; so do `bend main.bend -o

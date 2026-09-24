@@ -20,3 +20,5 @@ function udp_bind(port) {
   }
   return io_done(fd);
 }
+
+io_eff(CID(UDP.bind), udp_bind);

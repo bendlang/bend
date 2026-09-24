@@ -14,7 +14,7 @@ static Term file_read_start(Term file, U32 max, IoWork* w,
   return io_work(w, call, pack);
 }
 
-#ifdef CID_FILE_READ
+#ifdef CID(File.read)
 
 static Term file_read_pack(Env e, IoWork* w) {
   Term r = w->code ? io_fail(e, w->code, NULL)
@@ -28,12 +28,12 @@ Term file_read_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) file_read_use(void) {
-  io_eff(CID_FILE_READ, file_read_run, 0);
+  io_eff(CID(File.read), file_read_run, 0);
 }
 
 #endif
 
-#if defined(CID_FILE_READ_BYTES) || defined(CID_FILE_READ_AT)
+#if defined(CID(File.read_bytes)) || defined(CID(File.read_at))
 
 // The bytes as they are (0..255), one List cell each; a text reader
 // would decode them as UTF-8.
@@ -42,9 +42,9 @@ static Term file_read_bytes_pack(Env e, IoWork* w) {
   if (w->code) {
     r = io_fail(e, w->code, NULL);
   } else {
-    Term xs = term_pak(CID_NIL, 0);
+    Term xs = term_pak(CID(Nil), 0);
     for (u64 i = w->size; i > 0; i -= 1) {
-      xs = io_node(e, CID_CON, ((uint8_t*)w->data)[i - 1], xs);
+      xs = io_node(e, CID(Con), ((uint8_t*)w->data)[i - 1], xs);
     }
     r = io_done(e, xs);
   }
@@ -54,19 +54,19 @@ static Term file_read_bytes_pack(Env e, IoWork* w) {
 
 #endif
 
-#ifdef CID_FILE_READ_BYTES
+#ifdef CID(File.read_bytes)
 
 Term file_read_bytes_run(Env e, Term* f, IoWork* w) {
   return file_read_start(f[0], f[1], w, file_read_call, file_read_bytes_pack);
 }
 
 static void __attribute__((constructor)) file_read_bytes_use(void) {
-  io_eff(CID_FILE_READ_BYTES, file_read_bytes_run, 0);
+  io_eff(CID(File.read_bytes), file_read_bytes_run, 0);
 }
 
 #endif
 
-#ifdef CID_FILE_READ_AT
+#ifdef CID(File.read_at)
 
 // The bytes at an offset, as file_read_bytes gives them; the position of
 // the file does not move.
@@ -81,7 +81,7 @@ Term file_read_at_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) file_read_at_use(void) {
-  io_eff(CID_FILE_READ_AT, file_read_at_run, 0);
+  io_eff(CID(File.read_at), file_read_at_run, 0);
 }
 
 #endif

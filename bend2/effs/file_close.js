@@ -7,5 +7,7 @@ function file_close(file) {
     fs.closeSync(file);
   } catch (e) {
   }
-  return { $: "Unit" };
+  return { $: CID(Unit) };
 }
+
+io_eff(CID(File.close), file_close);

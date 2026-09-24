@@ -26,3 +26,5 @@ function tcp_recv(socket, max, k) {
 function tcp_recv_need() {
   return { read: true };
 }
+
+io_eff(CID(TCP.recv), tcp_recv, tcp_recv_need);

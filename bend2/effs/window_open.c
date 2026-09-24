@@ -261,5 +261,5 @@ Term window_open_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) window_open_use(void) {
-  io_eff(CID_WINDOW_OPEN, window_open_run, 0);
+  io_eff(CID(Window.open), window_open_run, 0);
 }

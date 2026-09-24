@@ -80,14 +80,14 @@
 // def, type, law, match, case, do, return, for, exs, where,
 // is, import, Type, Data, Kind, Quant ("as" reads only on an import
 // line, so it stays free).
-// a file's namespace is its path without ".bend": an import's path
-// joins onto the importer's namespace dir; a "0x<hash>/" path is its
-// own namespace, read from BEND_LIB and fetched from BEND_HUB on a
-// miss; a "<name>@<version>/" path is the hash the hub names it, kept under
-// BEND_LIB/names. "as Name" binds a per-file alias: Name.x resolves to the
-// file's canonical name, so two aliases of one file agree, and a def
-// of an aliased name fills it. "import Base" is the empty namespace;
-// an unknown name is the file's own, unless its bare spelling is Base's.
+// a file's namespace is its real path without ".bend", from the entry's
+// directory; a "0x<hash>/" path is its own namespace, read from BEND_LIB
+// and fetched from BEND_HUB on a miss; a "<name>@<version>/" path is the
+// hash the hub names it, kept under BEND_LIB/names. "as Name" binds a
+// per-file alias: Name.x resolves to the file's canonical name, so two
+// aliases of one file agree, and a def of an aliased name fills it.
+// "import Base" is the empty namespace; an unknown name is the file's own,
+// unless its bare spelling is Base's.
 // a def with no prior law types itself: a Bind telescope and a
 // "->" return type. a def after its law takes bare names, no "->".
 // "def f?(..)" is "@unsafe def f(..)".
@@ -314,7 +314,7 @@ export type Env = List<HTerm | ((s?: Span) => HTerm)>;
 export type Ctr  = { k: Name; n: number; T: HTerm }
 export type Ctrs = Array<Ctr>;
 export type ADT  = { $: "ADT"; n: number; g: number; T: HTerm; c: Ctrs; b?: Bool; };
-export type Def  = { $: "Def"; n: number; x: number; T: HTerm; v: HTerm | null; e?: LTerm; b?: Bool; u?: Bool; i?: string[]; };
+export type Def  = { $: "Def"; n: number; x: number; T: HTerm; v: HTerm | null; e?: LTerm; b?: Bool; u?: Bool; i?: string[]; m?: string; };
 export type TLD  = ADT | Def;
 export type Book = { tlds: Record<Name, TLD>; ctrs: Record<Name, Ctr>; order: Name[]; hols: number; open: number; tmps: Record<Name, Record<string, Name>>; };
 
@@ -1047,7 +1047,8 @@ async function name_hash(book: Book, nv: string, spn?: Span): Promise<string> {
   return got;
 }
 
-export async function book_load(book: Book, file: string, ns: string, seen: Map<string, string | null>, spn?: Span): Promise<number> {
+// a file's real path, a hub file fetched into the store on a miss
+async function book_file(book: Book, file: string, spn?: Span): Promise<string> {
   if (file.startsWith(BEND_LIB + "/") && !fs.existsSync(file)) {
     const pkg = file.slice(BEND_LIB.length + 1).split("/")[0];
     const man = await hub_get(book, pkg + "/manifest", pkg.slice(2), spn);
@@ -1063,65 +1064,70 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
   if (!fs.existsSync(file)) {
     throw Err(book, ctx_nil(), "no such file: " + file, undefined, spn);
   }
-  const real = fs.realpathSync(file);
-  const done = seen.get(real);
-  if (done === null) {
-    throw Err(book, ctx_nil(), "an import cycle through " + file, undefined, spn);
-  }
-  if (done !== undefined) {
-    if (done !== ns) {
-      throw Err(book, ctx_nil(), "one namespace per file (" + file + " is both '" + done + "' and '" + ns + "')", undefined, spn);
+  return fs.realpathSync(file);
+}
+
+export async function book_load(book: Book, file: string, ns: string, seen: Map<string, string | null>, spn?: Span): Promise<number> {
+  const real = await book_file(book, file, spn);
+  if (seen.has(real)) {
+    if (seen.get(real) === null) {
+      throw Err(book, ctx_nil(), "an import cycle through " + file, undefined, spn);
     }
     return book.order.length;
   }
   seen.set(real, null);
-  const dir   = file.slice(0, file.lastIndexOf("/") + 1);
-  const al    : Record<Name, Name> = Object.create(null);
-  const text  = fs.readFileSync(file, "utf8");
+  const dir   = real.slice(0, real.lastIndexOf("/") + 1);
+  const text  = fs.readFileSync(real, "utf8");
   const lines = text.split("\n");
-  for (let i = 0; i < lines.length; i++) {
+  const body  = lines.slice();
+  const al    : Record<Name, Name> = Object.create(null);
+  const hub   = (s: string): boolean => /^0x[0-9a-f]+\//.test(s);
+  const ok    = (s: string, lib: boolean): boolean => hub(s) === lib
+    && /^(\/|(\.\.\/)*)([A-Za-z_][\w-]*\/)*[A-Za-z_][\w-]*$/.test(s.replace(/^0x[0-9a-f]+\//, ""));
+  for (let i = 0, at = 0; i < lines.length; at += lines[i].length + 1, i++) {
     const line = lines[i].trim();
-    const m = line.match(/^import(\s.*|)$/);
-    if (m !== null) {
-      const h = m[1].match(/^\s+(\S+)(?:\s+as\s+([A-Za-z_][A-Za-z0-9_]*))?\s*(?:#.*)?$/);
-      const beg = text.split("\n", i).join("\n").length + (i && 1) + lines[i].indexOf(h === null ? line : h[1]);
-      const sp  = { src: text, beg, end: beg };
-      if (h === null || (h[2] === undefined && h[1] !== "Base")) {
-        throw Err(book, ctx_nil(), "an import ('import Base', or 'import <path> as <Name>')", "'" + line + "'", sp);
-      }
-      if (h[2] === undefined) {
-        await book_load(book, BASE_BEND, "", seen, sp);
-      } else {
-        let rel = path.posix.normalize(h[1]);
-        if (!rel.endsWith(".bend")) {
-          throw Err(book, ctx_nil(), "an import of a .bend file", "'" + h[1] + "'", sp);
-        }
-        const nv = rel.match(/^([^/]*@[^/]*)\//);
-        if (nv !== null) {
-          rel = await name_hash(book, nv[1], sp) + rel.slice(nv[1].length);
-        }
-        let at  = dir + rel;
-        let sub = path.posix.join(path.posix.dirname(ns), rel);
-        if (rel.startsWith("/")) {
-          at  = rel;
-          sub = rel;
-        }
-        if (/^0x[0-9a-f]+\//.test(rel)) {
-          at  = BEND_LIB + "/" + rel;
-          sub = rel;
-        }
-        al[h[2]] = sub.replace(/\.bend$/, "");
-        await book_load(book, at, al[h[2]], seen, sp);
-      }
-      lines[i] = "";
+    if (line === "" || line.startsWith("#")) {
       continue;
     }
-    if (line !== "" && !line.startsWith("#")) {
+    if (!/^import(\s|$)/.test(line)) {
       break;
     }
+    const m   = /^import\s+(\S+)(?:\s+as\s+([A-Za-z_]\w*))?\s*(?:#.*)?$/.exec(line);
+    const beg = at + lines[i].indexOf(m?.[1] ?? line);
+    const sp  = { src: text, beg, end: beg };
+    if (m === null || (m[2] === undefined && m[1] !== "Base")) {
+      throw Err(book, ctx_nil(), "an import ('import Base', or 'import <path> as <Name>')", "'" + line + "'", sp);
+    }
+    body[i] = "";
+    if (m[2] === undefined) {
+      await book_load(book, BASE_BEND, "", seen, sp);
+      continue;
+    }
+    if (!m[1].endsWith(".bend")) {
+      throw Err(book, ctx_nil(), "an import of a .bend file", "'" + m[1] + "'", sp);
+    }
+    if (m[2] in al) {
+      throw Err(book, ctx_nil(), "a fresh alias (" + m[2] + " names an earlier import)", "'" + line + "'", sp);
+    }
+    const bad = () => Err(book, ctx_nil(), "an import path of plain names (letters, digits, _ and -; the hub's files import the hub's)", "'" + m[1] + "'", sp);
+    const nv  = /^([^/]*@[^/]*)\//.exec(m[1]);
+    const as  = nv === null ? m[1] : await name_hash(book, nv[1], sp) + m[1].slice(nv[1].length);
+    const rel = path.posix.normalize(as);
+    if (!ok(as.replace(/^\.\//, "").slice(0, -5), hub(as))) {
+      throw bad();
+    }
+    const got = await book_file(book, hub(as) ? BEND_LIB + "/" + rel : path.posix.resolve(dir, rel), sp);
+    const lib = fs.existsSync(BEND_LIB) ? fs.realpathSync(BEND_LIB) + "/" : "\0";
+    const sub = (got.startsWith(lib) ? got.slice(lib.length)
+      : path.posix.join(path.posix.dirname(ns), path.posix.relative(dir, got))).replace(/\.bend$/, "");
+    if (!ok(sub, got.startsWith(lib)) || (hub(ns) && !got.startsWith(lib))) {
+      throw bad();
+    }
+    al[m[2]] = sub;
+    await book_load(book, got, sub, seen, sp);
   }
   const n0 = book.order.length;
-  parse_book(book, dir, lines.join("\n"), ns, al);
+  parse_book(book, dir, body.join("\n"), ns, al);
   if (real === BASE_BEND) {
     for (const k of book.order.slice(n0)) {
       book.tlds[k].b = true;
@@ -1683,8 +1689,8 @@ export function parse_lexeme(p: Parse): Name {
     p.pos += 1;
   }
   const k = p.str.slice(beg, p.pos);
-  if (k.endsWith(".")) {
-    parse_fail(p, "a name (a name cannot end in '.')");
+  if (!/^[A-Za-z_]\w*(\.[A-Za-z_]\w*)*$/.test(k)) {
+    parse_fail(p, "a name (words joined by dots, got '" + k + "')");
   }
   return k;
 }
@@ -1764,6 +1770,9 @@ export function parse_reso(p: Parse, k: Name): Name {
   let q = parse_qual(p, k);
   if (dot !== -1 && k.slice(0, dot) in p.al) {
     q = p.al[k.slice(0, dot)] + k.slice(dot);
+    if ((q in p.book.tlds || q in p.book.ctrs) && (k in p.book.tlds || k in p.book.ctrs)) {
+      parse_fail(p, "an unambiguous name (the alias " + k.slice(0, dot) + " shadows " + k + ")");
+    }
   }
   const own = q in p.book.tlds || q in p.book.ctrs;
   const far = k in p.book.tlds || k in p.book.ctrs;
@@ -2533,10 +2542,15 @@ export function parse_tele(p: Parse, close: string, tk: Name[] = []): Array<[Qua
 // Book
 // ----
 
-export function parse_fresh(p: Parse, k: Name): void {
-  if (p.book.tlds[k] !== undefined) {
-    parse_fail(p, "a fresh name (duplicate declaration: " + k + ")");
+// a declaration's key, fresh in its table: so is its bare name (a module's
+// may not repeat Base's), and its first word is no import's alias
+export function parse_fresh(p: Parse, nm: Name, tab: Record<Name, unknown> = p.book.tlds, what = "a fresh name"): Name {
+  const k = parse_qual(p, nm);
+  const a = nm.includes(".") ? nm.slice(0, nm.indexOf(".")) : "";
+  if (k in tab || nm in tab || a in p.al) {
+    parse_fail(p, what + " (" + (a in p.al ? a + " is an import's alias" : "duplicate declaration: " + nm) + ")");
   }
+  return k;
 }
 
 export function parse_def(p: Parse, book: Book, u: Bool = false): void {
@@ -2546,10 +2560,7 @@ export function parse_def(p: Parse, book: Book, u: Bool = false): void {
   const q   = parse_reso(p, nm);
   const tld = book.tlds[q];
   const law = tld?.$ === "Def" && tld.v === null && tld.b !== true && !tld.i ? tld : undefined;
-  const k   = law ? q : parse_qual(p, nm);
-  if (!law) {
-    parse_fresh(p, k);
-  }
+  const k   = law ? q : parse_fresh(p, nm);
   const n0 = p.sc.stk.length;
   parse_eat(p, "(");
   parse_skip(p);
@@ -2573,7 +2584,7 @@ export function parse_def(p: Parse, book: Book, u: Bool = false): void {
     if (!parse_take(p, "->")) {
       parse_fail(p, "'->' (a def with no return type fills a law; no law named " + nm + " is in scope)");
     }
-    def = book.tlds[k] = { $: "Def", n: tele.length, x: tk.length, T: term_higher(tele_bind(tele, parse_term(p))), v: null };
+    def = book.tlds[k] = { $: "Def", n: tele.length, x: tk.length, T: term_higher(tele_bind(tele, parse_term(p))), v: null, m: p.ns };
   }
   def.u ||= un;
   parse_eat(p, ":");
@@ -2627,8 +2638,7 @@ export function parse_book(book: Book, dir: string, src: string, ns: string = ""
     }
     if (parse_at_word(p, "type")) {
       parse_word(p, "type");
-      const k = parse_qual(p, parse_name(p));
-      parse_fresh(p, k);
+      const k = parse_fresh(p, parse_name(p));
       const n0 = p.sc.stk.length;
       parse_skip(p);
       const params = parse_take(p, "<") ? parse_tele(p, ">") : [];
@@ -2645,10 +2655,7 @@ export function parse_book(book: Book, dir: string, src: string, ns: string = ""
         if (!char_is_head(parse_peek(p)) || ["def", "type", "law"].some((w) => parse_at_word(p, w))) {
           break;
         }
-        const c = parse_qual(p, parse_name(p));
-        if (book_ctr(book, c) !== null) {
-          parse_fail(p, "a fresh constructor name (duplicate declaration: " + c + ")");
-        }
+        const c = parse_fresh(p, parse_name(p), book.ctrs, "a fresh constructor name");
         parse_eat(p, "{");
         const n1 = p.sc.stk.length;
         const fs = parse_tele(p, "}");
@@ -2664,8 +2671,7 @@ export function parse_book(book: Book, dir: string, src: string, ns: string = ""
     }
     if (parse_at_word(p, "law")) {
       parse_word(p, "law");
-      const k = parse_qual(p, parse_name(p));
-      parse_fresh(p, k);
+      const k = parse_fresh(p, parse_name(p));
       parse_eat(p, ":");
       const n0  = p.sc.stk.length;
       const cls: Array<[Bool, Quant, Name, number, LTerm, Span]> = [];
@@ -2705,7 +2711,7 @@ export function parse_book(book: Book, dir: string, src: string, ns: string = ""
         all ? All(q, c, i, A, T, s) : App(App(Ref("Exists", s), A, s), Lam(c, i, T, s), s), parse_block(p));
       parse_close(p, n0);
       const n = cls.findIndex((c) => !c[0]);
-      book.tlds[k] = { $: "Def", n: n < 0 ? cls.length : n, T: term_higher(T), v: null, x: tc };
+      book.tlds[k] = { $: "Def", n: n < 0 ? cls.length : n, T: term_higher(T), v: null, x: tc, m: p.ns };
       book.order.push(k);
       continue;
     }

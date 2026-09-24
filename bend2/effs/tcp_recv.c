@@ -25,5 +25,5 @@ Term tcp_recv_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) tcp_recv_use(void) {
-  io_eff(CID_TCP_RECV, tcp_recv_run, IO_READ);
+  io_eff(CID(TCP.recv), tcp_recv_run, IO_READ);
 }

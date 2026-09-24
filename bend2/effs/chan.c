@@ -23,8 +23,8 @@ static ChanRow* chan_rows;
 static u32      chan_len;
 static u32      chan_idle = ~0u;
 
-#define chan_some(e, v) io_box(e, CID_SOME, v)
-#define chan_bool(b)    term_pak((b) ? CID_TRUE : CID_FALSE, 0)
+#define chan_some(e, v) io_box(e, CID(Some), v)
+#define chan_bool(b)    term_pak((b) ? CID(True) : CID(False), 0)
 
 static Term chan_open(u32 room) {
   u32 i = chan_idle;
@@ -95,7 +95,7 @@ static void chan_shut(Env e, ChanRow* row) {
   row->shut = 1;
   while (row->wait.head != NULL) {
     bool rcv = row->wait.head->item == TERM_HOLE;
-    Term x = rcv ? term_pak(CID_NONE, 0) : chan_bool(false);
+    Term x = rcv ? term_pak(CID(None), 0) : chan_bool(false);
     term_sink(e, chan_wake(row, x));
   }
   if (row->size == 0) {
@@ -103,19 +103,19 @@ static void chan_shut(Env e, ChanRow* row) {
   }
 }
 
-#ifdef CID_CHAN_NEW
+#ifdef CID(Chan.new)
 
 Term chan_new_run(Env e, Term* f, IoWork* w) {
   return chan_open((u32)f[0]);
 }
 
 static void __attribute__((constructor)) chan_new_use(void) {
-  io_eff(CID_CHAN_NEW, chan_new_run, 0);
+  io_eff(CID(Chan.new), chan_new_run, 0);
 }
 
 #endif
 
-#ifdef CID_CHAN_SEND
+#ifdef CID(Chan.send)
 
 Term chan_send_run(Env e, Term* f, IoWork* w) {
   ChanRow* row = chan_at(f[0]);
@@ -136,17 +136,17 @@ Term chan_send_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) chan_send_use(void) {
-  io_eff(CID_CHAN_SEND, chan_send_run, 0);
+  io_eff(CID(Chan.send), chan_send_run, 0);
 }
 
 #endif
 
-#ifdef CID_CHAN_RECV
+#ifdef CID(Chan.recv)
 
 Term chan_recv_run(Env e, Term* f, IoWork* w) {
   ChanRow* row = chan_at(f[0]);
   if (row == NULL) {
-    return term_pak(CID_NONE, 0);
+    return term_pak(CID(None), 0);
   }
   if (row->size > 0) {
     Term v = chan_take(row);
@@ -160,29 +160,29 @@ Term chan_recv_run(Env e, Term* f, IoWork* w) {
   }
   if (row->shut) {
     chan_free(row);
-    return term_pak(CID_NONE, 0);
+    return term_pak(CID(None), 0);
   }
   return chan_park(row, w, TERM_HOLE);
 }
 
 static void __attribute__((constructor)) chan_recv_use(void) {
-  io_eff(CID_CHAN_RECV, chan_recv_run, 0);
+  io_eff(CID(Chan.recv), chan_recv_run, 0);
 }
 
 #endif
 
-#ifdef CID_CHAN_CLOSE
+#ifdef CID(Chan.close)
 
 Term chan_close_run(Env e, Term* f, IoWork* w) {
   ChanRow* row = chan_at(f[0]);
   if (row != NULL && !row->shut) {
     chan_shut(e, row);
   }
-  return term_pak(CID_UNIT, 0);
+  return term_pak(CID(Unit), 0);
 }
 
 static void __attribute__((constructor)) chan_close_use(void) {
-  io_eff(CID_CHAN_CLOSE, chan_close_run, 0);
+  io_eff(CID(Chan.close), chan_close_run, 0);
 }
 
 #endif

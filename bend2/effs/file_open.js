@@ -17,3 +17,5 @@ function file_open(path, mode) {
     return io_fail(-e.errno);
   }
 }
+
+io_eff(CID(File.open), file_open);

@@ -12,12 +12,12 @@ Term udp_poll_run(Env e, Term* f, IoWork* w) {
   u32       code = n < 0 ? (u32)errno : 0;
   Term      r;
   if (code == EAGAIN) {
-    r = io_done(e, term_pak(CID_NONE, 0));
+    r = io_done(e, term_pak(CID(None), 0));
   } else if (code != 0) {
     r = io_fail(e, code, NULL);
   } else {
     inet_ntop(AF_INET, &at.sin_addr, host, 16);
-    r = io_done(e, io_box(e, CID_SOME, io_tup(e, io_str(e, host, strlen(host)),
+    r = io_done(e, io_box(e, CID(Some), io_tup(e, io_str(e, host, strlen(host)),
       io_tup(e, ntohs(at.sin_port), io_str(e, data, (u64)n)))));
   }
   free(data);
@@ -25,5 +25,5 @@ Term udp_poll_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) udp_poll_use(void) {
-  io_eff(CID_UDP_POLL, udp_poll_run, 0);
+  io_eff(CID(UDP.poll), udp_poll_run, 0);
 }

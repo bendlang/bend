@@ -6,9 +6,9 @@
 #if defined(__OBJC__) || defined(__linux__)
 
 static Term window_node(Env e, const u32* ev) {
-  static const u32 cids[3] = { CID_KEY, CID_MOUSE, CID_MOVE };
+  static const u32 cids[3] = { CID(Key), CID(Mouse), CID(Move) };
   if (ev[0] == 3) {
-    return term_pak(CID_CLOSE, 0);
+    return term_pak(CID(Close), 0);
   }
   u32 n = ev[0] == 1 ? 4 : 2;
   Loc l = heap_alloc(e, cls_fit(n));
@@ -19,13 +19,13 @@ static Term window_node(Env e, const u32* ev) {
 }
 
 static Term window_list(Env e, const u32* p, u64 n) {
-  Term list = term_pak(CID_NIL, 0);
+  Term list = term_pak(CID(Nil), 0);
   for (u64 i = n; i > 0;) {
     i -= 1;
     Loc l = heap_alloc(e, 1);
-    e.mem[l]     = io_seal(e, window_node(e, p + 5 * i), CID_CON);
-    e.mem[l + 1] = io_seal(e, list, CID_CON);
-    list = term_ctr(CID_CON, l);
+    e.mem[l]     = io_seal(e, window_node(e, p + 5 * i), CID(Con));
+    e.mem[l + 1] = io_seal(e, list, CID(Con));
+    list = term_ctr(CID(Con), l);
   }
   return list;
 }
@@ -353,7 +353,7 @@ static Term window_frame(Env e, intptr_t at, Term image) {
 #else
 
 static Term window_frame(Env e, intptr_t at, Term image) {
-  return term_pak(CID_NIL, 0);
+  return term_pak(CID(Nil), 0);
 }
 
 #endif
@@ -364,5 +364,5 @@ Term window_frame_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) window_frame_use(void) {
-  io_eff(CID_WINDOW_FRAME, window_frame_run, 0);
+  io_eff(CID(Window.frame), window_frame_run, 0);
 }

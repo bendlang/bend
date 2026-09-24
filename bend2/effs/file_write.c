@@ -12,12 +12,12 @@ static void file_write_call(IoWork* w) {
 
 static Term file_write_pack(Env e, IoWork* w) {
   Term r = w->code != 0 ? io_fail(e, w->code, NULL)
-    : io_done(e, term_pak(CID_UNIT, 0));
+    : io_done(e, term_pak(CID(Unit), 0));
   free(w->data);
   return io_tup(e, io_hand(w->hand), r);
 }
 
-#ifdef CID_FILE_WRITE
+#ifdef CID(File.write)
 
 Term file_write_run(Env e, Term* f, IoWork* w) {
   w->hand = (intptr_t)io_hand_v(f[0]);
@@ -26,12 +26,12 @@ Term file_write_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) file_write_use(void) {
-  io_eff(CID_FILE_WRITE, file_write_run, 0);
+  io_eff(CID(File.write), file_write_run, 0);
 }
 
 #endif
 
-#ifdef CID_FILE_WRITE_BYTES
+#ifdef CID(File.write_bytes)
 
 // The bytes as they are (0..255), one List cell each; a value past 255
 // fails with EINVAL before any byte is written.
@@ -42,7 +42,7 @@ Term file_write_bytes_run(Env e, Term* f, IoWork* w) {
   w->code = 0;
   w->size = 0;
   w->data = io_mem(malloc(cap));
-  while (term_aux(xs) == CID_CON) {
+  while (term_aux(xs) == CID(Con)) {
     Term fb[2];
     spare_free(e, cls_fit(2), ctr_take(e, xs, 2, fb));
     if (w->size == cap) {
@@ -58,7 +58,7 @@ Term file_write_bytes_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) file_write_bytes_use(void) {
-  io_eff(CID_FILE_WRITE_BYTES, file_write_bytes_run, 0);
+  io_eff(CID(File.write_bytes), file_write_bytes_run, 0);
 }
 
 #endif

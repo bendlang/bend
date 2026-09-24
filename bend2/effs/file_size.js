@@ -11,3 +11,5 @@ function file_size(file) {
     return io_tup(file, io_fail(Math.abs(e.errno ?? 5)));
   }
 }
+
+io_eff(CID(File.size), file_size);

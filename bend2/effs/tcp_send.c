@@ -13,7 +13,7 @@ static Term tcp_send_more(Env e, IoWork* w) {
     w->made += io_sys_end(w, n);
   }
   Term r = w->code != 0 ? io_fail(e, w->code, NULL)
-    : io_done(e, term_pak(CID_UNIT, 0));
+    : io_done(e, term_pak(CID(Unit), 0));
   free(w->data);
   return io_tup(e, io_hand(w->hand), r);
 }
@@ -27,5 +27,5 @@ Term tcp_send_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) tcp_send_use(void) {
-  io_eff(CID_TCP_SEND, tcp_send_run, 0);
+  io_eff(CID(TCP.send), tcp_send_run, 0);
 }

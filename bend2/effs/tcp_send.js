@@ -22,7 +22,9 @@ function tcp_send(socket, data, k) {
       }
       at += n;
     }
-    return io_tup(socket, io_done({ $: "Unit" }));
+    return io_tup(socket, io_done({ $: CID(Unit) }));
   };
   return go(0);
 }
+
+io_eff(CID(TCP.send), tcp_send);

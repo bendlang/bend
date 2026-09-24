@@ -35,3 +35,5 @@ function tcp_connect(host, port, k) {
   io_park_on(fd, true, k, () => end(error()));
   return undefined;
 }
+
+io_eff(CID(TCP.connect), tcp_connect);

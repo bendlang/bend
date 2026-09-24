@@ -139,7 +139,10 @@ type Show = { cells: (number | Name)[]; names: string[] };
 // Constants
 // =========
 
-const CLO_APPLY = "Clo.apply";
+// The runtime's own segments, named with a ~ so that no file declares them.
+const CLO_APPLY = "Clo~apply";
+
+const IO_EMIT = "IO~emit";
 
 const ATOM   = /^(?:[A-Za-z_$][A-Za-z0-9_$]*|\d+n?|\d+\.\d+)$/;
 const STRLIT = new RegExp("^\"(?:[^\"\\\\]|\\\\.)*\"$");
@@ -477,7 +480,7 @@ static Term f32_read(Env e, Term s) {
   char* end;
   f32 v = strtof(text, &end);
   Term out = n > 0 && (u64)(end - text) == n && strpbrk(text, "xX(") == NULL
-    ? io_box(e, CID_SOME, f32_rewrap(v)) : term_pak(CID_NONE, 0);
+    ? io_box(e, CID(Some), f32_rewrap(v)) : term_pak(CID(None), 0);
   free(text);
   return out;
 }
@@ -570,8 +573,6 @@ const TELES: Map<HTerm, ReturnType<typeof Bend.tele_unbind>> = new Map();
 
 const SRCS: Map<Name, Src> = new Map();
 
-const LOCAL: Map<Name, string> = new Map();
-
 const FOLDS: Map<HTerm, HTerm | null> = new Map();
 
 const FLATS: Map<Name, boolean> = new Map();
@@ -595,15 +596,8 @@ const LITS = new Map<HTerm, HTerm>();
 // Name
 // ====
 
-function name_own(k: Name, tld: { T: HTerm }, head: string): string {
-  const segs = k.split(".");
-  return segs.map((_, i) => segs.slice(i).join(".")).find((own) =>
-    new RegExp("^" + head + own.replace(/\./g, "\\.") + "[(:<{\\s]", "m")
-      .test(tld.T.s?.src ?? "")) ?? k;
-}
-
 function name_clean(k: string): string {
-  return (LOCAL.get(k) ?? k).replace(/[^A-Za-z0-9_]/g, "_");
+  return k.replace(/[^A-Za-z0-9_]/g, "_");
 }
 
 function name_local(fl: File, k: Name): string {
@@ -726,7 +720,7 @@ function let_live(cb: Carb, t: HLet): boolean[] {
 }
 
 // A term's application view and its call: the direct call when the live
-// arguments meet the def's, else Clo.apply over the outermost live one.
+// arguments meet the def's, else Clo~apply over the outermost live one.
 function term_spine(cf: Carb, tm: HTerm): Spine {
   return memo(SPINES, tm, () => {
     const apps: Of<"App">[] = [];
@@ -855,8 +849,8 @@ function live_dom([q]: Dom): boolean {
 
 function intr_of(c: Carb, k: Name, js = false): Intr | undefined {
   const tld = c.book.tlds[k];
-  const it = tld?.$ === "Def" && tld.i === undefined && (tld.b || tld.v === null)
-    ? OPERATIONS[eff_name(k)] : undefined;
+  const it = tld?.$ === "Def" && tld.i === undefined && tld.b
+    ? OPERATIONS[op_name(k)] : undefined;
   return it !== undefined && (js || it.C !== undefined || it.call === true)
     ? it : undefined;
 }
@@ -1150,7 +1144,7 @@ function quant_live(q: Bend.Quant): boolean {
 // ===
 
 // A def's live parameters, the layouts a call passes and its return layout
-// (boxes for a foreign def and Clo.apply).
+// (boxes for a foreign def and Clo~apply).
 function sig_def(cb: Carb, k: Name): Sig {
   return memo(SIGS, k, () => {
     const tld = def_body(cb, k);
@@ -1198,11 +1192,11 @@ function def_foreign(tld: Bend.TLD | undefined):
   return tld?.$ === "Def" && tld.i !== undefined;
 }
 
-// Eff
-// ===
+// Op
+// ==
 
-function eff_name(k: Name): string {
-  return (LOCAL.get(k) ?? k).toLowerCase().replace(/[./]/g, "_");
+function op_name(k: Name): string {
+  return k.toLowerCase().replace(/[./]/g, "_");
 }
 
 // Io
@@ -1213,7 +1207,7 @@ export function io_base(book: Bend.Book, t: HTerm): HTerm[] | null {
   if (io?.$ !== "Def" || io.b !== true) {
     return null;
   }
-  const tlds = { ...book.tlds, IO: { ...io, v: null } };
+  const tlds = Object.assign(Object.create(null), book.tlds, { IO: { ...io, v: null } });
   const [h, xs] = Bend.term_unapply(Bend.term_wnf({ ...book, tlds }, t));
   return h.$ === "Ref" && h.k === "IO" ? xs : null;
 }
@@ -1417,15 +1411,10 @@ function carb_book(src: Bend.Book, roots: Name[]): Carb {
   book_owned(src);
   [TELES, SRCS, NODES, LAYS, CYCLES, FLATS, SIGS, BRWS].forEach((m) =>
     m.clear());
-  LOCAL.clear();
+  ids_reset();
   PROBES.length = 1;
-  for (const [k, tld] of Object.entries(src.tlds)) {
-    if (def_foreign(tld)) {
-      LOCAL.set(k, name_own(k, tld, "(def|law) "));
-    }
-  }
   const cb: Carb = {
-    book: { ...src, tlds: { ...src.tlds } },
+    book: { ...src, tlds: Object.assign(Object.create(null), src.tlds) },
     bangs: new Set(),
     sites: new Map(),
     hot: new Set(),
@@ -1517,11 +1506,49 @@ function done_defs(cb: Carb, live = done_live): [Name, Def][] {
     .filter((p) => live(p[1]));
 }
 
-// Cid
-// ===
+// Id
+// ==
+
+// A name's C id: CID_ or FID_ and the name uppercased, numbered when that
+// is taken (Done and done, a.b and a_b), so no two names share one; the
+// ids that name no key are taken first. Hand-written C writes CID(k) and
+// FID(k) (c_ids).
+const IDS: Map<string, string> = new Map();
+
+const TAKEN: Set<string> = new Set();
+
+function ids_reset(): void {
+  IDS.clear();
+  TAKEN.clear();
+  ("FID_EXIT FID_ENTER FID_ARITY_T FID_FLAG_T FID_RESW_T CID_ARITY_T"
+    + " CID_HOT_T").split(" ").forEach((id) => TAKEN.add(id));
+}
+
+function name_id(pre: string, k: string): string {
+  return memo(IDS, pre + k, () => {
+    const base = pre + name_clean(k).toUpperCase();
+    let id = base;
+    for (let n = 1; TAKEN.has(id); n += 1) {
+      id = base + "_" + n;
+    }
+    TAKEN.add(id);
+    return id;
+  });
+}
 
 function cid_mac(k: string): string {
-  return "CID_" + name_clean(k).toUpperCase();
+  return name_id("CID_", k);
+}
+
+// CID(k) and FID(k) in hand-written C and JS: k in the namespace m, else
+// as is; in C its id, in JS its key (a constructor's tag).
+function c_ids(fl: File, src: string, m = ""): string {
+  return src.replace(/\b([CF]ID)\(([\w./~-]+)\)/g, (_, p, k) => {
+    const q = [m === "" ? k : m + "." + k, k].find((q) => q in fl.book.ctrs
+      || q in fl.book.tlds || IDS.has(p + "_" + q))
+      ?? die(p + "(" + k + ") names no constructor or def");
+    return fl.js ? JSON.stringify(q) : name_id(p + "_", q);
+  });
 }
 
 // File
@@ -1583,7 +1610,7 @@ function seg_new(name: string, ret: Lay, params: string[],
 }
 
 function seg_fid(k: Name): string {
-  return "FID_" + name_clean(k).toUpperCase();
+  return name_id("FID_", k);
 }
 
 // A segment's entry: its frame popped, its parameters read from the frame
@@ -2232,7 +2259,7 @@ function emit_intr(fl: File, it: Intr, x: HTerm,
   const m = term_spine(fl, x);
   const k = (m.t as Of<"Ref">).k;
   const args = emit_each(fl, m.args, null);
-  const op = eff_name(k);
+  const op = op_name(k);
   // An intrinsic that installs count cells (blk_new, blk_keep; clone's C
   // too) heats its element type.
   if ("array_get array_new array_clone".includes(op)
@@ -2875,21 +2902,24 @@ function compile_def(fl: File, k: Name, tld: Def): void {
   emit_body(fl, tld.h as HTerm, tld.T, [], vals, null);
 }
 
+// An effect source is read once, in one namespace: true when it was.
+function effect_src(seen: Map<string, string>, path: string, m: string): boolean {
+  if ((seen.get(path) ?? m) !== m) {
+    die(path + " is imported from two namespaces, '" + seen.get(path) + "' and '" + m + "'");
+  }
+  return seen.has(path) || (seen.set(path, m), false);
+}
+
 function compile_reqs(fl: File): void {
-  const seen = new Set<string>();
+  const seen = new Map<string, string>();
   fl.spares = [];
   for (const [k, tld] of done_defs(fl, def_foreign)) {
-    const ns = k.slice(0, k.length - LOCAL.get(k)!.length);
-    const own = ns === "" ? []
-      : Object.keys(fl.book.ctrs).filter((c) => c.startsWith(ns));
-    const macs = own.map((c) => cid_mac(c.slice(ns.length)));
-    // A shared source is spliced once, its namespace's names in scope.
+    // A shared source is spliced once, its CID(k)s read in the namespace of
+    // the first def that imports it.
     const path = fs.realpathSync(tld.i!.find((x) => x.endsWith(".c"))
       ?? die("no .c import: " + k));
-    fl.reqs += macs.map((m, j) => `#pragma push_macro("${m}")\n#define ${m} ${
-      cid_mac(own[j])}\n`).join("") + (seen.has(path) ? ""
-      : (seen.add(path), fs.readFileSync(path, "utf8")))
-      + macs.map((m) => `#pragma pop_macro("${m}")\n`).join("");
+    fl.reqs += effect_src(seen, path, tld.m ?? "") ? ""
+      : c_ids(fl, fs.readFileSync(path, "utf8"), tld.m);
     const qp = [...sig_def(fl, k).live.map(([, n]) => n), "k"].map((n) =>
       name_local(fl, n));
     fl.seg = seg_new(k, BOX, qp);
@@ -2904,16 +2934,19 @@ function compile_reqs(fl: File): void {
 const RUNTIME_ADTS = ["Sigma", "String", "Word.Con", "IO.OP", "Result",
   "Maybe", "Bool", "Unit"];
 
-// Names the compiler encodes itself: SYNTH no file may declare; OWNED adds
-// Base's types, which a file without `import Base` may declare but not
-// compile.
-export const SYNTH = [CLO_APPLY];
-const OWNED = [...SYNTH, "IO", ...RUNTIME_ADTS, ...Object.keys(OPTIMIZED)];
+// Base's names the compiler encodes itself, which a file without `import
+// Base` may declare but not compile.
+const OWNED = ["IO", ...RUNTIME_ADTS, ...Object.keys(OPTIMIZED)];
 
-export function book_owned(src: Bend.Book, ks = OWNED): void {
-  for (const k of ks) {
+function book_owned(src: Bend.Book): void {
+  for (const k of OWNED) {
     if (src.tlds[k] !== undefined && src.tlds[k].b !== true) {
       die(k + " is a name the compiler encodes itself: name yours apart");
+    }
+  }
+  for (const [k, tld] of Object.entries(src.tlds)) {
+    if (def_foreign(tld) && k in src.ctrs) {
+      die(k + " names both a constructor and a foreign def: name one apart");
     }
   }
 }
@@ -2924,7 +2957,7 @@ function compile_tables(fl: File, entries: Seg[]): string[] {
   const forky = new Set(fl.segs.filter((s) => s.fork).map((s) => s.fid));
   for (let n = -1; n !== forky.size;) {
     n = forky.size;
-    for (const s of [...fl.segs, { fid: "FID_CLO_APPLY", refs: fl.clos }]) {
+    for (const s of [...fl.segs, { fid: seg_fid(CLO_APPLY), refs: fl.clos }]) {
       if (!forky.has(s.fid) && [...s.refs].some((r) => forky.has(r))) {
         forky.add(s.fid);
       }
@@ -2942,11 +2975,8 @@ function compile_tables(fl: File, entries: Seg[]): string[] {
   const defs: string[] = [];
   for (const ms of [[...fl.cids.keys()].map(cid_mac),
     [...entries.map((s) => s.fid), "FID_EXIT", "FID_ENTER"]]) {
-    const dup = [...ms, ...tabs.map((t) => t[0])].find((m, i, a) =>
-      a.indexOf(m) < i);
-    if (ms.length > 65536 || dup !== undefined) {
-      die(dup === undefined ? "an id over 65535"
-        : "two names mangle to " + dup);
+    if (ms.length > 65536) {
+      die("an id over 65535");
     }
     defs.push(...ms.map((m, i) => `#define ${m} ${i}`));
   }
@@ -3040,8 +3070,8 @@ export function compile_book(book: Bend.Book): string {
     s.host = !dev.has(s.fid);
   }
   fl.spins = fl.spins.filter((s) => live.has(s.fid));
-  const entries = [...fl.segs, seg_new("io_emit", BOX, [""]),
-    seg_new("clo_apply", BOX, ["", ""])];
+  const entries = [...fl.segs, seg_new(IO_EMIT, BOX, [""]),
+    seg_new(CLO_APPLY, BOX, ["", ""])];
   const desc = show === null ? [] : ["#if !DEVICE",
     `static const u32 SHOW_DESC[] = { ${show.cells.map((c) =>
       typeof c === "string" ? cid_mac(c) : c).join(", ")} };`,
@@ -3059,14 +3089,19 @@ export function compile_book(book: Bend.Book): string {
   if (/\bundefined\b/.test([tabs, spins, segs, fl.reqs].join("\n"))) {
     die("an unbound name in the emitted C");
   }
-  return runtime_c([tabs, ...desc].join("\n\n"), spins, segs, fl.reqs);
+  return c_ids(fl, runtime_c([tabs, ...desc].join("\n\n"), spins, segs,
+    fl.reqs));
 }
 
 // Js
 // ==
 
+// A def's JS name: its key between $s, each . a $ and any other non-word
+// character (/ - ~) a $ and its three-digit code, so no two keys share one
+// (no name segment starts with a digit).
 function js_sat(k: Name): string {
-  return "$" + k.replace(/\W/g, "$") + "$";
+  return "$" + k.replace(/\W/g, (c) => c === "." ? "$"
+    : "$" + String(c.charCodeAt(0)).padStart(3, "0")) + "$";
 }
 
 function js_call(fl: File, k: Name, args: HTerm[],
@@ -3157,7 +3192,7 @@ function js_expr(fl: File, tm: HTerm,
       }
       const keys = js_ctr(fl, x.k);
       return exprs.reduce((e, z, j) => e + ", [\"" + keys[j] + "\"]: " + z,
-        "{$: \"" + name_own(x.k, fl.book.tlds[adt.k], " +") + "\"") + "}";
+        "{$: \"" + x.k + "\"") + "}";
     }
     case "Let": return js_expr(fl, js_open(fl, x), ty);
     case "Lam": case "Mat": case "Efq": {
@@ -3243,8 +3278,7 @@ function js_match(fl: File, x: HTerm, ty: HTerm | null,
         return ["", h, [s]];
       }
       if (native === undefined) {
-        const tag = name_own(k, fl.book.tlds[adt.k], " +");
-        return [`${s}.$ === "${tag}"`, h,
+        return [`${s}.$ === "${k}"`, h,
           js_ctr(fl, k).map((f) => `${s}["${f}"]`)];
       }
       return [tpl(native[k].cond ?? "", [s]), h,
@@ -3268,9 +3302,9 @@ function js_def(fl: File, k: Name, def: Def): void {
       if (def.i === undefined) {
         js_func(fl, def.h!, def.T, params);
       } else {
-        const n = eff_name(k);
-        file_push(fl, `return { $: "$FFI", run: $0eff.${n}.run, need: $0eff.${n
-          }.need, args: [${params.join(", ")}], kont: ${kont[0]} };`);
+        const n = JSON.stringify(k);
+        file_push(fl, `return { $: "$FFI", run: $0eff[${n}].run, need: $0eff[${n
+          }].need, args: [${params.join(", ")}], kont: ${kont[0]} };`);
       }
     });
   file_push(fl, "");
@@ -3281,27 +3315,25 @@ export function js_lib(book: Bend.Book, roots: Name[],
   const cb = carb_book(book, roots.slice());
   const fl = file_new(cb, true);
   fl.tab = 0;
-  const ms = done_defs(cb).map(([k]) => js_sat(k));
   for (const [k, def] of done_defs(cb)) {
     memo_gc();
     js_def(fl, k, def);
   }
-  const grps = new Map<string, string[]>();
+  // Each source runs once in a closure of its own, its CID(k)s read in the
+  // namespace of the first def that imports it, and registers its effects
+  // with io_eff(CID(k), run, need?), as a C source does.
+  const srcs = new Map<string, string>();
   for (const [k, tld] of done_defs(cb, def_foreign)) {
     const path = fs.realpathSync(tld.i!.find((x) => x.endsWith(".js"))
       ?? die("a foreign def without a .js import: " + k));
     js_def(fl, k, tld);
-    const n = eff_name(k);
-    ms.push(n);
-    memo(grps, path, () => []).push(`  ["${n}"]: { run: typeof ${n} === "function" ? ${n} : undefined,`
-      + ` need: typeof ${n}_need === "function" ? ${n}_need : undefined },`);
+    effect_src(srcs, path, tld.m ?? "");
   }
-  const dup = ms.find((m, i) => ms.indexOf(m) < i);
-  if (dup !== undefined) die("two names mangle to " + dup);
-  const effs = grps.size === 0 ? "" : "const $0eff = {\n" + [...grps]
-    .map(([p, rows]) => "...(() => {\n" + fs.readFileSync(p, "utf8")
-      + "\nreturn {\n" + rows.join("\n") + "\n};\n})(),").join("\n")
-    + "\n};\n\n";
+  const effs = [...srcs].map(([p, m]) => "(() => {\n"
+    + c_ids(fl, fs.readFileSync(p, "utf8"), m) + "\n})();\n\n").join("")
+    + (srcs.size === 0 ? "" : "for (const k of " + JSON.stringify(done_defs(cb,
+      def_foreign).map(([k]) => k)) + ") {\n  if (!(k in $0eff)) {\n"
+    + "    throw new Error(\"bend: no effect registers \" + k);\n  }\n}\n\n");
   const tabs = [...fl.tabs].map(([r, i]) => `const TAB_${i} = [${r}];`);
   const lib = outs === null ? "" : "export default {\n" + outs.map((k) =>
     `  "${k}": run_lib(${js_sat(k)}, ${sig_def(cb, k).lays.length}),`)
@@ -4173,7 +4205,7 @@ INLINE Loc ctr_take(Env e, Term t, u32 n, THR Term* out) {
 INLINE Term term_word(Env e, Term w) {
   u32 x = 0;
   Term t = w;
-  for (u32 i = 0; i < 32 && term_aux(t) == CID_WCON; i += 1) {
+  for (u32 i = 0; i < 32 && term_aux(t) == CID(WCon); i += 1) {
     Loc l = term_peek(e, t);
     x |= (u32)(e.mem[l] & 1) << i;
     t = e.mem[l + 1];
@@ -4496,17 +4528,17 @@ ${segs}
     WL_DYN(f);
   }}
 
-  WL_CASE(FID_IO_EMIT)
+  WL_CASE(FID(IO~emit))
   {
     Term x = r0;
     WL_OPEN
     Loc l = heap_alloc(e, 0);
     e.mem[l] = x;
-    r0 = term_ctr(CID_EMIT, l);
+    r0 = term_ctr(CID(Emit), l);
     WL_RETN(1);
   }}
 
-  WL_CASE(FID_CLO_APPLY)
+  WL_CASE(FID(Clo~apply))
   {
     Term fun = r0;
     Term arg = r1;
@@ -5440,6 +5472,9 @@ static int    io_argc;
 static char** io_argv;
 
 static void io_eff(u32 cid, Effect run, u32 need) {
+  if (io_eff_rows[cid].run != NULL) {
+    err_fail("two effects register one request");
+  }
   io_eff_rows[cid] = (IoEff){ run, need };
 }
 
@@ -5483,7 +5518,7 @@ static IoAct* io_pop(IoQue* q) {
 static void io_spawn(Term m) {
   IoAct* a = io_mem(calloc(1, sizeof(IoAct)));
   a->cont  = m;
-  a->item  = term_clo(FID_IO_EMIT, 0);
+  a->item  = term_clo(FID(IO~emit), 0);
   io_push(&io_runs, a);
   io_live += 1;
 }
@@ -5532,7 +5567,7 @@ OUTLINE char* io_cstr(Env e, Term s, u64* len) {
   u64   cap = 64;
   u64   n   = 0;
   char* buf = io_mem(malloc(cap));
-  while (term_aux(s) == CID_SCON) {
+  while (term_aux(s) == CID(SCon)) {
     Term fb[2];
     spare_free(e, cls_fit(2), ctr_take(e, s, 2, fb));
     if (n + 5 > cap) {
@@ -5570,7 +5605,7 @@ static Term io_node(Env e, u64 cid, Term a, Term b) {
 // io_str decodes UTF-8 as WHATWG does: a broken sequence yields one U+FFFD
 // and its breaking byte is reread as a lead.
 static Term io_str(Env e, const char* p, u64 n) {
-  Term s    = term_pak(CID_SNIL, 0);
+  Term s    = term_pak(CID(SNil), 0);
   Loc  hole = 0;
   u64  c = 0, need = 0, lo = 0x80, hi = 0xBF;
   for (u64 i = 0; i < n || need > 0; i += 1) {
@@ -5598,23 +5633,23 @@ static Term io_str(Env e, const char* p, u64 n) {
       continue;
     }
     Loc  l = heap_alloc(e, 1);
-    Term t = term_ctr(CID_SCON, l);
+    Term t = term_ctr(CID(SCon), l);
     e.mem[l] = c;
     if (hole == 0) {
       s = t;
     } else {
-      e.mem[hole] = io_seal(e, t, CID_SCON);
+      e.mem[hole] = io_seal(e, t, CID(SCon));
     }
     hole = l + 1;
   }
   if (hole != 0) {
-    e.mem[hole] = io_seal(e, term_pak(CID_SNIL, 0), CID_SCON);
+    e.mem[hole] = io_seal(e, term_pak(CID(SNil), 0), CID(SCon));
   }
   return s;
 }
 
-#define io_tup(e, a, b) io_node(e, CID_TUPLE, a, b)
-#define io_done(e, v)   io_box(e, CID_DONE, v)
+#define io_tup(e, a, b) io_node(e, CID(Tuple), a, b)
+#define io_done(e, v)   io_box(e, CID(Done), v)
 
 static Term io_box(Env e, u64 cid, Term v) {
   Loc l = heap_alloc(e, 0);
@@ -5625,7 +5660,7 @@ static Term io_box(Env e, u64 cid, Term v) {
 static Term io_fail(Env e, u32 code, const char* text) {
   const char* s = text != NULL ? text : strerror((int)code);
   Term t = io_tup(e, code, io_str(e, s, strlen(s)));
-  return io_box(e, CID_FAIL, t);
+  return io_box(e, CID(Fail), t);
 }
 
 static lock           io_gate = PTHREAD_MUTEX_INITIALIZER;
@@ -5811,7 +5846,7 @@ static void show_val(Env e, u32 d, const Term* w, char chain) {
       break;
     case 4:
       putchar('"');
-      for (Term s = w[0]; term_aux(s) == CID_SCON;) {
+      for (Term s = w[0]; term_aux(s) == CID(SCon);) {
         Loc l = term_peek(e, s);
         show_chr(e.mem[l], '"');
         s = e.mem[l + 1];
@@ -5879,19 +5914,19 @@ static void show_val(Env e, u32 d, const Term* w, char chain) {
 // The continuation applied to the item is the next request.
 static int io_step(Env e, IoAct* a) {
   for (;;) {
-    Loc  ap  = task_node(e, FID_CLO_APPLY, TERM_HOLE, 0, 0);
+    Loc  ap  = task_node(e, FID(Clo~apply), TERM_HOLE, 0, 0);
     e.mem[ap]     = a->cont;
     e.mem[ap + 1] = a->item;
-    Term req = corpus_eval(e.mem, term_tsk(FID_CLO_APPLY, ap));
+    Term req = corpus_eval(e.mem, term_tsk(FID(Clo~apply), ap));
     u32  c   = (u32)term_aux(req);
     Loc  at  = term_peek(e, req);
-    if (c == CID_EMIT) {
+    if (c == CID(Emit)) {
       term_drop(e, req);
       free(a);
       io_live -= 1;
       return -1;
     }
-    if (c == CID_HALT) {
+    if (c == CID(Halt)) {
       io_errs(e, e.mem[at + 1]);
       return (int)(u32)e.mem[at];
     }
@@ -6085,6 +6120,19 @@ function run_loop(r) {
 function run_lib(f, n) {
   return (...a) => a.length < n ? run_lib((...b) => f(...a, ...b), n - a.length)
     : run_loop(f(...a));
+}
+
+// Effect
+// ======
+
+// An effect source registers each effect under its def's key, as in C.
+const $0eff = Object.create(null);
+
+function io_eff(k, run, need) {
+  if (k in $0eff) {
+    throw new Error("bend: two effects register " + k);
+  }
+  $0eff[k] = { run, need };
 }
 `.slice(1);
 

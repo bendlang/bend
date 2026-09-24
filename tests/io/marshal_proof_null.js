@@ -7,3 +7,6 @@ function keep(e) {
 function give() {
   return null;
 }
+
+io_eff(CID(keep), keep);
+io_eff(CID(give), give);

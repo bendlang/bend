@@ -23,3 +23,5 @@ function tcp_listen(port) {
   }
   return io_done(fd);
 }
+
+io_eff(CID(TCP.listen), tcp_listen);

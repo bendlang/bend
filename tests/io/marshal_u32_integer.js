@@ -7,3 +7,7 @@ function full() {
 function frac() {
   return 4.5;
 }
+
+io_eff(CID(zero), zero);
+io_eff(CID(full), full);
+io_eff(CID(frac), frac);

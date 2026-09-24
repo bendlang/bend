@@ -52,5 +52,5 @@ Term window_set_title_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) window_set_title_use(void) {
-  io_eff(CID_WINDOW_SET_TITLE, window_set_title_run, 0);
+  io_eff(CID(Window.set_title), window_set_title_run, 0);
 }

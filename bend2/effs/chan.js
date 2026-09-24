@@ -25,7 +25,7 @@ function chan_take(row) {
 function chan_shut(row) {
   row.shut = true;
   while (row.wait.length > 0) {
-    chan_wake(row, row.wait[0].item === CHAN_RECV ? { $: "None" } : false);
+    chan_wake(row, row.wait[0].item === CHAN_RECV ? { $: CID(None) } : false);
   }
 }
 
@@ -39,7 +39,7 @@ function chan_send(handle, value, k) {
     return false;
   }
   if (row.wait.length > 0 && row.wait[0].item === CHAN_RECV) {
-    chan_wake(row, { $: "Some", value: value });
+    chan_wake(row, { $: CID(Some), value: value });
     return true;
   }
   if (row.ring.length < row.room) {
@@ -53,13 +53,13 @@ function chan_send(handle, value, k) {
 function chan_recv(handle, k) {
   const row = handle;
   if (row.ring.length > 0) {
-    return { $: "Some", value: chan_take(row) };
+    return { $: CID(Some), value: chan_take(row) };
   }
   if (row.wait.length > 0 && row.wait[0].item !== CHAN_RECV) {
-    return { $: "Some", value: chan_wake(row, true) };
+    return { $: CID(Some), value: chan_wake(row, true) };
   }
   if (row.shut) {
-    return { $: "None" };
+    return { $: CID(None) };
   }
   row.wait.push({ cont: k, item: CHAN_RECV });
   return;
@@ -70,5 +70,10 @@ function chan_close(handle) {
   if (!row.shut) {
     chan_shut(row);
   }
-  return { $: "Unit" };
+  return { $: CID(Unit) };
 }
+
+io_eff(CID(Chan.new), chan_new);
+io_eff(CID(Chan.send), chan_send);
+io_eff(CID(Chan.recv), chan_recv);
+io_eff(CID(Chan.close), chan_close);

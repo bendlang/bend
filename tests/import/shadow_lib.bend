@@ -1,6 +1,6 @@
-# a module def named like a Base def is its own def: its namespace keeps
-# it apart, and its type is the one it declares, not Base's. alone, in the
-# root namespace, the same text is a duplicate of Base's Nat.add
+# a def named like a Base def is a duplicate of it, in the root namespace
+# and in a module alike: a module's Nat.add once stood apart from Base's,
+# and the module's Nat.add meant Base's above it and its own below
 import Base
 
 def Nat.add(a: Nat, b: Nat) -> Bool:

@@ -28,5 +28,5 @@ Term io_get_env_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) io_get_env_use(void) {
-  io_eff(CID_IO_GET_ENV, io_get_env_run, 0);
+  io_eff(CID(IO.get_env), io_get_env_run, 0);
 }

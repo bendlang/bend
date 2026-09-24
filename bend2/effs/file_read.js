@@ -11,9 +11,9 @@ function file_read_with(file, max, offset, pack) {
 }
 
 function file_read_list(b, n) {
-  let xs = { $: "Nil" };
+  let xs = { $: CID(Nil) };
   for (let i = n; i > 0; i -= 1) {
-    xs = { $: "Con", head: b[i - 1], tail: xs };
+    xs = { $: CID(Con), head: b[i - 1], tail: xs };
   }
   return xs;
 }
@@ -29,3 +29,7 @@ function file_read_bytes(file, max) {
 function file_read_at(file, offset, max) {
   return file_read_with(file, max, offset, file_read_list);
 }
+
+io_eff(CID(File.read), file_read);
+io_eff(CID(File.read_bytes), file_read_bytes);
+io_eff(CID(File.read_at), file_read_at);

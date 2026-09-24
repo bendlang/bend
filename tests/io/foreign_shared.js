@@ -5,10 +5,12 @@ function shared_make(depth) {
   const at = (d) => {
     if (d === 0) {
       next += 1;
-      return next % 2 === 1 ? { $: "Empty" } : { $: "Leaf", v: next };
+      return next % 2 === 1 ? { $: CID(Empty) } : { $: CID(Leaf), v: next };
     }
     const l = at(d - 1);
-    return { $: "Node", l, r: at(d - 1) };
+    return { $: CID(Node), l, r: at(d - 1) };
   };
   return at(depth);
 }
+
+io_eff(CID(shared.make), shared_make);

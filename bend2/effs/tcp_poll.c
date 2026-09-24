@@ -16,10 +16,10 @@ static Term tcp_poll_more(Env e, IoWork* w) {
   w->size = io_sys_end(w, recv(fd, w->data, (size_t)w->made, 0));
   if (w->code == EAGAIN) {
     return io_tick() < at ? io_wait_on(w, fd, POLLIN, at, tcp_poll_more)
-      : tcp_poll_end(e, w, io_done(e, term_pak(CID_NONE, 0)));
+      : tcp_poll_end(e, w, io_done(e, term_pak(CID(None), 0)));
   }
   return tcp_poll_end(e, w, w->code ? io_fail(e, w->code, NULL) : io_done(e,
-    io_box(e, CID_SOME, io_str(e, w->data, w->size))));
+    io_box(e, CID(Some), io_str(e, w->data, w->size))));
 }
 
 Term tcp_poll_run(Env e, Term* f, IoWork* w) {
@@ -31,5 +31,5 @@ Term tcp_poll_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) tcp_poll_use(void) {
-  io_eff(CID_TCP_POLL, tcp_poll_run, 0);
+  io_eff(CID(TCP.poll), tcp_poll_run, 0);
 }

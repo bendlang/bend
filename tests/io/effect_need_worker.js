@@ -10,3 +10,5 @@ function a_run_need() {
   asked = true;
   return { time: true };
 }
+
+io_eff(CID(A.run), a_run, a_run_need);

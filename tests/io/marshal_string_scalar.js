@@ -13,3 +13,9 @@ function edge() {
 function torn() {
   return "a\uD800";
 }
+
+io_eff(CID(low), low);
+io_eff(CID(high), high);
+io_eff(CID(apex), apex);
+io_eff(CID(edge), edge);
+io_eff(CID(torn), torn);

@@ -21,7 +21,9 @@ function udp_send_to(socket, host, port, data, k) {
       }
       return io_tup(socket, io_fail(code));
     }
-    return io_tup(socket, io_done({ $: "Unit" }));
+    return io_tup(socket, io_done({ $: CID(Unit) }));
   };
   return go();
 }
+
+io_eff(CID(UDP.send_to), udp_send_to);
