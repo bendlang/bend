@@ -6,3 +6,4 @@ import ./unsafe-law/derived.bend as D
 #|All terms check, but 2 defs rely on unsafe or foreign code:
 #|- unsafe-law/laws.false_law
 #|- unsafe-law/succ.succ_is_id
+#|exit 1

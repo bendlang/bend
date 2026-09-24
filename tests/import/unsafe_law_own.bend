@@ -7,3 +7,4 @@ def Laws.false_law?():
 
 #|All terms check, but 1 def relies on unsafe or foreign code:
 #|- unsafe-law/laws.false_law
+#|exit 1
