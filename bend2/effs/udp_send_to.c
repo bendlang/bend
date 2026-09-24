@@ -15,11 +15,9 @@ static Term udp_send_to_more(Env e, IoWork* w) {
   if (w->code == EAGAIN) {
     return io_wait_on(w, fd, POLLOUT, 0, udp_send_to_more);
   }
-  Term r = w->code != 0 ? io_fail(e, w->code, NULL)
-    : io_done(e, term_pak(CID_UNIT, 0));
   free(w->text);
   free(w->data);
-  return io_tup(e, io_hand(w->hand), r);
+  return io_back(e, w, term_pak(CID_UNIT, 0));
 }
 
 Term udp_send_to_run(Env e, Term* f, IoWork* w) {

@@ -11,10 +11,8 @@ static void file_write_call(IoWork* w) {
 }
 
 static Term file_write_pack(Env e, IoWork* w) {
-  Term r = w->code != 0 ? io_fail(e, w->code, NULL)
-    : io_done(e, term_pak(CID_UNIT, 0));
   free(w->data);
-  return io_tup(e, io_hand(w->hand), r);
+  return io_back(e, w, term_pak(CID_UNIT, 0));
 }
 
 #ifdef CID_FILE_WRITE

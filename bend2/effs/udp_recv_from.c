@@ -14,11 +14,10 @@ static Term udp_recv_from_more(Env e, IoWork* w) {
     return io_wait_on(w, fd, POLLIN, 0, udp_recv_from_more);
   }
   inet_ntop(AF_INET, &at.sin_addr, host, 16);
-  Term r = w->code ? io_fail(e, w->code, NULL)
-    : io_done(e, io_tup(e, io_str(e, host, strlen(host)),
-      io_tup(e, ntohs(at.sin_port), io_str(e, w->data, w->size))));
+  Term r = io_back(e, w, io_tup(e, io_str(e, host, strlen(host)),
+    io_tup(e, ntohs(at.sin_port), io_str(e, w->data, w->size))));
   free(w->data);
-  return io_tup(e, io_hand(w->hand), r);
+  return r;
 }
 
 Term udp_recv_from_run(Env e, Term* f, IoWork* w) {
