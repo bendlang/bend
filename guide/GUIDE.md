@@ -339,6 +339,19 @@ it through a motive `disc(_)`, where `disc` sends `0n` to `Empty` and `1n+p` to
 `Unit`, and answer `Unit{}`. `{a != b : T}` is `{a == b : T} -> Empty`, and
 `Equal.sym`, `Equal.trans` and `Equal.cong` are in Base.
 
+### JSON
+
+`JSON.read(text)` parses JSON into Base's `JSON` datatype, returning
+`Result<&1, &1, U32 & String, JSON>`; a failure carries a character offset and
+a message. `JSON.write(value)` returns the same result shape with a `String`.
+Numbers retain their decimal spelling, including precision beyond `U32` and
+`F32`. `Arr{items}` holds JSON values; `Obj{fields}` holds `Member{name, value}`
+entries. For example, `JSON.write(Obj{[Member{"ok", Boolean{True{}}}]})`
+answers `Done{"{\"ok\":true}"}`. Decoding rejects malformed escapes and
+unpaired UTF-16 surrogates; encoding rejects malformed number lexemes and
+object fields that are not members. `JSON.write` uses an `@unsafe` worklist
+recursion, so proof checks report callers as relying on an unsafe definition.
+
 ### IO and Concurrency
 
 Effects live in the `IO` type and are sequenced with `do` blocks:

@@ -3,6 +3,12 @@
 Each release names what changed for a user. `bend update` installs the
 latest one; the GitHub release carries the same notes.
 
+## Unreleased
+
+- **Base parses and writes JSON text**: `JSON.read` keeps number spellings and
+  reports malformed input; `JSON.write` escapes strings and rejects invalid
+  number lexemes and object fields. Unicode surrogate pairs decode to scalars.
+
 ## 2.0.27 (2026-09-23)
 
 - **`bend` reads no `bunfig.toml` or `.env` from the directory it runs in**
