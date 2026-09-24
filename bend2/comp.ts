@@ -18,7 +18,7 @@ type Lay = { ks: Kind[]; arms: Arm[] | null };
 
 type Arm = { k: Name; fs: Field[] };
 
-type Field = { at: number; lay: Lay };
+type Field = { at: number; lay: Lay; pack?: { index: number; size: number } };
 
 type Val = { ws: string[]; lay: Lay; stat: boolean };
 
@@ -983,21 +983,57 @@ function lay_wide(lays: Lay[]): Lay[] {
     ? lays.map((l) => l.ks.length > 1 ? BOX : l) : lays;
 }
 
-// Fields start after the tag; the packer owns their final offsets.
+// Fields start after the tag. A run of one-word fields becomes a real boxed
+// sub-node when the parent would exceed the runtime's eight-bit node arity.
 function lay_pack(arms: [Name, Lay[]][]): Lay {
   const tag = arms.length > 1 ? 1 : 0;
   const ks: Kind[] = tag === 1 ? ["w32"] : [];
   return { ks, arms: arms.map(([k, lays]) => {
-    let at = tag;
-    const fs = lays.map((lay) => {
-      const f = { at, lay };
-      for (const k of lay.ks) {
-        const old = ks[at] ?? "w32";
-        ks[at++] = old === "box" || k === "box" ? "box"
-          : old === "w64" || k === "w64" ? "w64" : "w32";
+    const groups = new Map<number, number>();
+    let words = tag + lays.reduce((n, lay) => n + lay.ks.length, 0);
+    for (let j = 0; words > WIDE && j < lays.length;) {
+      if (lays[j].ks.length !== 1) {
+        j += 1;
+        continue;
       }
-      return f;
-    });
+      let end = j;
+      while (end < lays.length && lays[end].ks.length === 1
+        && end - j < WIDE) {
+        end += 1;
+      }
+      const size = end - j;
+      if (size > 1) {
+        groups.set(j, size);
+        words -= size - 1;
+        j += size;
+      } else {
+        j += 1;
+      }
+    }
+    if (words > WIDE) {
+      die("an arity over 255");
+    }
+    let at = tag;
+    const fs: Field[] = [];
+    for (let j = 0; j < lays.length;) {
+      const size = groups.get(j) ?? 0;
+      if (size > 0) {
+        const slot = at++;
+        ks[slot] = "box";
+        for (let i = 0; i < size; i += 1) {
+          fs.push({ at: slot, lay: lays[j + i], pack: { index: i, size } });
+        }
+        j += size;
+      } else {
+        const lay = lays[j++];
+        fs.push({ at, lay });
+        for (const kind of lay.ks) {
+          const old = ks[at] ?? "w32";
+          ks[at++] = old === "box" || kind === "box" ? "box"
+            : old === "w64" || kind === "w64" ? "w64" : "w32";
+        }
+      }
+    }
     return { k, fs };
   }) };
 }
@@ -1084,15 +1120,9 @@ function ctr_flds(book: Bend.Book, k: Name,
   return xs.filter((_, j) => ds[j] === undefined || live_dom(ds[j]));
 }
 
-function ctr_build(fl: File, k: Name, exprs: string[],
-  stat = false): string {
-  const cid = cid_mac(k);
-  const node = lay_node(fl.book, k);
-  if (exprs.length === 0 || (node.ks.length === 1 && node.ks[0] === "w32")) {
-    return `term_pak(${cid}, ${exprs[0] ?? 0})`;
-  }
+function node_build(fl: File, cid: string, exprs: string[],
+  stat: boolean, hot: boolean): string {
   if (stat) {
-    fl.stat.add(k);
     const at = memo(fl.lits, exprs.join(", "), () =>
       fl.img.push(...exprs) - exprs.length);
     return `term_ctr(${cid}, STAT_OFF + ${at})`;
@@ -1103,8 +1133,27 @@ function ctr_build(fl: File, k: Name, exprs: string[],
   const s = at < 0 ? null : fl.spares.splice(at, 1)[0];
   const got = s === null ? alloc
     : s.z ? `${s.name} >= HEAP_OFF ? ${s.name} : ${alloc}` : s.name;
-  return `term_ctr(${cid}, ${node_fill(fl, "nd", got, exprs,
-    fl.hot.has(k))})`;
+  return `term_ctr(${cid}, ${node_fill(fl, "nd", got, exprs, hot)})`;
+}
+
+function ctr_build(fl: File, k: Name, exprs: string[],
+  stat = false): string {
+  const cid = cid_mac(k);
+  const node = lay_node(fl.book, k);
+  if (exprs.length === 0 || (node.ks.length === 1 && node.ks[0] === "w32")) {
+    return `term_pak(${cid}, ${exprs[0] ?? 0})`;
+  }
+  if (stat) {
+    fl.stat.add(k);
+  }
+  return node_build(fl, cid, exprs, stat, fl.hot.has(k));
+}
+
+function wide_build(fl: File, exprs: string[], stat: boolean,
+  hot: boolean): string {
+  const key = `Wide.Run.${exprs.length}`;
+  fl.cids.set(key, exprs.length);
+  return node_build(fl, cid_mac(key), exprs, stat, hot);
 }
 
 // Mat
@@ -1280,7 +1329,12 @@ function show_main(book: Bend.Book): Show | null {
           if (!live_dom(d)) {
             refuse();
           }
-          refs.push([show.cells.push(fs[f].at, 0) - 1, d[2], fs[f].lay]);
+          // Bit 16 marks a packed field: low 8 bits are the parent slot,
+          // next 8 bits its offset inside the boxed run.
+          const field = fs[f];
+          const at = field.pack === undefined ? field.at
+            : (1 << 16) | (field.pack.index << 8) | field.at;
+          refs.push([show.cells.push(at, 0) - 1, d[2], field.lay]);
         }
       }
     }
@@ -1678,7 +1732,7 @@ function node_fields(fl: File, t: string, node: Lay,
   } else {
     spare_free(fl, n, sp, z);
   }
-  return fs.map((f) => val_field(val_new(ws, node), f));
+  return val_fields(fl, val_new(ws, node), fs);
 }
 
 // Facts
@@ -1788,6 +1842,65 @@ function val_field(v: Val, f: Field): Val {
   return val_new(v.ws.slice(f.at, f.at + f.lay.ks.length), f.lay);
 }
 
+// A packed run has one parent word but still binds every source field.
+function val_fields(fl: File, v: Val, fs: Field[]): Val[] {
+  const out: Val[] = [];
+  for (let i = 0; i < fs.length;) {
+    const f = fs[i];
+    if (f.pack === undefined) {
+      out.push(val_field(v, f));
+      i += 1;
+      continue;
+    }
+    const size = f.pack.size;
+    const t = v.ws[f.at];
+    const root = fl.brwl.get(t);
+    const sp = name_local(fl, "sp");
+    let words: string[];
+    if (root === undefined) {
+      const buf = name_local(fl, "fb");
+      file_push(fl, `Term ${buf}[${size}];`);
+      file_push(fl, `u64 ${sp} = ctr_take(e, ${t}, ${size}, ${buf});`);
+      words = fs.slice(i, i + size).map((_, j) => `${buf}[${j}]`);
+    } else {
+      file_push(fl, `u64 ${sp} = term_peek(e, ${t});`);
+      words = fs.slice(i, i + size).map((_, j) => `e.mem[${sp} + ${j}]`);
+    }
+    const held = emit_hold(fl, words, "f",
+      fs.slice(i, i + size).map((field) => field.lay.ks[0]));
+    if (root === undefined) {
+      spare_free(fl, size, sp, true);
+    }
+    for (let j = 0; j < size; j += 1) {
+      if (root !== undefined && fs[i + j].lay.ks[0] === "box") {
+        fl.brwl.set(held[j], root);
+      }
+      out.push(val_new([held[j]], fs[i + j].lay));
+    }
+    i += size;
+  }
+  return out;
+}
+
+function arm_fill(fl: File, arm: Arm, vs: Val[], ws: string[]): void {
+  arm.fs.forEach((f, j) => {
+    if (f.pack !== undefined && f.pack.index !== 0) {
+      return;
+    }
+    if (f.pack !== undefined) {
+      const fields = arm.fs.slice(j, j + f.pack.size);
+      const parts = fields.map((field, i) =>
+        val_to(fl, vs[j + i], field.lay));
+      ws[f.at] = wide_build(fl, parts.flatMap((v) => val_own(fl, v)),
+        parts.every((v) => v.stat), fl.hot.has(arm.k));
+    } else {
+      val_to(fl, vs[j], f.lay).ws.forEach((w, n) => {
+        ws[f.at + n] = w;
+      });
+    }
+  });
+}
+
 function val_word(v: Val): string {
   if (v.ws.length !== 1) {
     die(`a ${v.ws.length}-word value where one word was expected`);
@@ -1841,7 +1954,8 @@ function val_to(fl: File, v: Val, lay: Lay): Val {
   }
   return val_arms(fl, lay, v.ws[0], (t, i) => `${t} == ${i}`, (arm) => {
     const from = lay_arm(v.lay, arm.k);
-    return arm.fs.map((f, j) => val_to(fl, val_field(v, from.fs[j]), f.lay));
+    const fields = val_fields(fl, v, from.fs);
+    return arm.fs.map((f, j) => val_to(fl, fields[j], f.lay));
   });
 }
 
@@ -1851,17 +1965,23 @@ function val_arms(fl: File, lay: Lay, sel: string,
   cond: (t: string, i: number) => string, read: (arm: Arm) => Val[]): Val {
   const arms = lay.arms!;
   if (arms.length <= 1) {
-    return val_new(arms.flatMap(read).flatMap((g) => g.ws), lay);
+    return val_new(arms.flatMap((arm) => {
+      const ws: string[] = [];
+      arm_fill(fl, arm, read(arm), ws);
+      return ws;
+    }), lay);
   }
   const out = emit_dst(fl, lay, "o").ws;
   const t = emit_alias(fl, sel, "t");
   const rs: string[][] = out.map(() => []);
   const bodies = arms.map((arm, i) => () => {
     file_push(fl, `${out[0]} = ${i};`);
-    read(arm).forEach((g, j) => g.ws.forEach((w, n) => {
-      rs[arm.fs[j].at + n].push(fl.brwl.get(w) ?? "");
-      file_push(fl, `${out[arm.fs[j].at + n]} = ${w};`);
-    }));
+    const ws: string[] = [];
+    arm_fill(fl, arm, read(arm), ws);
+    ws.forEach((w, j) => {
+      rs[j].push(fl.brwl.get(w) ?? "");
+      file_push(fl, `${out[j]} = ${w};`);
+    });
   });
   emit_chain(fl, (i) => cond(t, i), bodies);
   rs.forEach((r, k) => {
@@ -1880,9 +2000,11 @@ function val_box(fl: File, v: Val): string {
   }
   const arms = v.lay.arms!;
   const build = (arm: Arm): string => {
-    const fs = lay_node(fl.book, arm.k).arms![0].fs;
-    return ctr_build(fl, arm.k, arm.fs.flatMap((f, j) =>
-      val_own(fl, val_to(fl, val_field(v, f), fs[j].lay))));
+    const node = lay_node(fl.book, arm.k);
+    const fields = val_fields(fl, v, arm.fs);
+    const ws: string[] = [];
+    arm_fill(fl, node.arms![0], fields, ws);
+    return ctr_build(fl, arm.k, val_own(fl, val_new(ws, node)));
   };
   if (arms.length <= 1) {
     return arms.map(build)[0] ?? "0";
@@ -2325,9 +2447,7 @@ function emit_ctr(fl: File, x: Of<"Ctr">, ty: HTerm | null,
   const vs = emit_each(fl, flds, arm.fs.map((f) => f.lay));
   const ws = lay.ks.map((_, j) => j === 0 && lay.arms!.length > 1
     ? String(lay.arms!.indexOf(arm)) : "0");
-  arm.fs.forEach((f, j) => val_to(fl, vs[j], f.lay).ws.forEach((w, n) => {
-    ws[f.at + n] = w;
-  }));
+  arm_fill(fl, arm, vs, ws);
   const v = val_new(ws, lay, vs.every((f) => f.stat));
   const out = lay === pos ? v
     : val_new([ctr_build(fl, x.k, val_own(fl, v), v.stat)], BOX, v.stat);
@@ -2823,7 +2943,7 @@ function emit_match(fl: File, x: Of<"Mat"> | Of<"Efq">,
       }
       const arm = lay_arm(lay, k);
       return [`${sw} == ${lay.arms!.indexOf(arm)}`, h,
-        () => arm.fs.map((f) => val_field(u, f))];
+        () => val_fields(fl, u, arm.fs)];
     });
   }
   // Each arm starts from the match's state; a tail arm keeps its spares.
@@ -2951,7 +3071,7 @@ function compile_tables(fl: File, entries: Seg[]): string[] {
     defs.push(...ms.map((m, i) => `#define ${m} ${i}`));
   }
   for (const [nm, vals] of tabs) {
-    if (vals.some((v) => v > 255)) {
+    if (vals.some((v) => v > WIDE)) {
       die("an arity over 255");
     }
     defs.push(`CONSTV u8 ${nm}[] = { ${vals.join(", ")} };`);
@@ -5858,13 +5978,17 @@ static void show_val(Env e, u32 d, const Term* w, char chain) {
         if (o == '[' ? j == 0 && chain == o : j > 0) {
           fputs(", ", stdout);
         }
+        u32 pos = D[a + 4 + 2 * j];
+        const Term* field = (pos & (1u << 16))
+          ? e.mem + term_peek(e, w[pos & 255]) + ((pos >> 8) & 255)
+          : w + pos;
         if (j == 1 && o != '{') {
           tail  = true;
           chain = o;
           d     = D[a + 5 + 2 * j];
-          w     = w + D[a + 4 + 2 * j];
+          w     = field;
         } else {
-          show_val(e, D[a + 5 + 2 * j], w + D[a + 4 + 2 * j], 0);
+          show_val(e, D[a + 5 + 2 * j], field, 0);
         }
       }
     }

@@ -526,6 +526,10 @@ with Audio `libasound2-dev`. `bend guide` prints this text, `bend base` prints
 the Base library (`bend base Map` prints one name and everything under it), and
 `bend --help` lists the other commands.
 
+Native constructor layouts above 255 words box multi-word fields or a run of
+single-word fields; each runtime node keeps an eight-bit arity. A segment's
+parameter list still has a 255-word limit.
+
 ## Syntax Reference
 
 Every form of the language, grouped by where it appears. Operators, literals
