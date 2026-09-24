@@ -2243,7 +2243,8 @@ function emit_intr(fl: File, it: Intr, x: HTerm,
   if (it.call === true && it.C === undefined) {
     return arr_op(fl, op, lay_el(fl.book, m.all[0]), args);
   }
-  const ws = args.map((v) => (val_own(fl, v), val_word(v)));
+  const vs = args.map((v, i) => val_to(fl, v, sig_def(fl, k).lays[i]));
+  const ws = vs.map((v) => (val_own(fl, v), val_word(v)));
   if (Array.isArray(it.C)) {
     const as = ws.map((z) => emit_alias(fl, z, "a"));
     const vs: string[] = [];
