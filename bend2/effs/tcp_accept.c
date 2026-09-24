@@ -15,8 +15,7 @@ static Term tcp_accept_more(Env e, IoWork* w) {
   if (w->code == EAGAIN) {
     return io_wait_on(w, fd, POLLIN, 0, tcp_accept_more);
   }
-  Term r = w->code != 0 ? io_fail(e, w->code, NULL) : io_done(e, io_hand(got));
-  return io_tup(e, io_hand(fd), r);
+  return io_back(e, w, io_hand(got));
 }
 
 Term tcp_accept_run(Env e, Term* f, IoWork* w) {

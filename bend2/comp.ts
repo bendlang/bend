@@ -5613,8 +5613,11 @@ static Term io_str(Env e, const char* p, u64 n) {
   return s;
 }
 
-#define io_tup(e, a, b) io_node(e, CID_TUPLE, a, b)
-#define io_done(e, v)   io_box(e, CID_DONE, v)
+#define io_tup(e, a, b)  io_node(e, CID_TUPLE, a, b)
+#define io_done(e, v)    io_box(e, CID_DONE, v)
+#define io_res(e, w, v)  ((w)->code ? io_fail(e, (w)->code, NULL) \
+  : io_done(e, v))
+#define io_back(e, w, v) io_tup(e, io_hand((w)->hand), io_res(e, w, v))
 
 static Term io_box(Env e, u64 cid, Term v) {
   Loc l = heap_alloc(e, 0);

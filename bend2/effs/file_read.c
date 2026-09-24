@@ -17,10 +17,9 @@ static Term file_read_start(Term file, U32 max, IoWork* w,
 #ifdef CID_FILE_READ
 
 static Term file_read_pack(Env e, IoWork* w) {
-  Term r = w->code ? io_fail(e, w->code, NULL)
-    : io_done(e, io_str(e, w->data, w->size));
+  Term r = io_back(e, w, io_str(e, w->data, w->size));
   free(w->data);
-  return io_tup(e, io_hand(w->hand), r);
+  return r;
 }
 
 Term file_read_run(Env e, Term* f, IoWork* w) {
@@ -38,18 +37,12 @@ static void __attribute__((constructor)) file_read_use(void) {
 // The bytes as they are (0..255), one List cell each; a text reader
 // would decode them as UTF-8.
 static Term file_read_bytes_pack(Env e, IoWork* w) {
-  Term r;
-  if (w->code) {
-    r = io_fail(e, w->code, NULL);
-  } else {
-    Term xs = term_pak(CID_NIL, 0);
-    for (u64 i = w->size; i > 0; i -= 1) {
-      xs = io_node(e, CID_CON, ((uint8_t*)w->data)[i - 1], xs);
-    }
-    r = io_done(e, xs);
+  Term xs = term_pak(CID_NIL, 0);
+  for (u64 i = w->size; i > 0; i -= 1) {
+    xs = io_node(e, CID_CON, ((uint8_t*)w->data)[i - 1], xs);
   }
   free(w->data);
-  return io_tup(e, io_hand(w->hand), r);
+  return io_back(e, w, xs);
 }
 
 #endif

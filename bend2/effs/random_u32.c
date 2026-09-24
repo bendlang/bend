@@ -17,7 +17,7 @@ static void io_random_u32_call(IoWork* w) {
 }
 
 static Term io_random_u32_pack(Env e, IoWork* w) {
-  return w->code ? io_fail(e, w->code, NULL) : io_done(e, w->word);
+  return io_res(e, w, w->word);
 }
 
 Term io_random_u32_run(Env e, Term* f, IoWork* w) {

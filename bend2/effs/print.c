@@ -1,15 +1,11 @@
 // IO
 // ==
 
-void io_print(const char* data, uint64_t len) {
-  io_out(stdout, data, len);
-  io_out(stdout, "\n", 1);
-}
-
 Term io_print_run(Env e, Term* f, IoWork* w) {
   uint64_t n = 0;
   char* text = io_cstr(e, f[0], &n);
-  io_print(text, n);
+  io_out(stdout, text, n);
+  io_out(stdout, "\n", 1);
   free(text);
   return term_pak(CID_UNIT, 0);
 }

@@ -20,8 +20,7 @@ static void file_open_call(IoWork* w) {
 
 static Term file_open_pack(Env e, IoWork* w) {
   free(w->data);
-  return w->code != 0 ? io_fail(e, w->code, NULL)
-    : io_done(e, io_hand(w->made));
+  return io_res(e, w, io_hand(w->made));
 }
 
 Term file_open_run(Env e, Term* f, IoWork* w) {
