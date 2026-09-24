@@ -206,9 +206,11 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     JS: "($0 === 0)",
   },
   u32_min: {
+    C:  "((u32)($0) < (u32)($1) ? (u64)(u32)($0) : (u64)(u32)($1))",
     JS: "($0 < $1 ? $0 : $1)",
   },
   u32_max: {
+    C:  "((u32)($0) < (u32)($1) ? (u64)(u32)($1) : (u64)(u32)($0))",
     JS: "($0 < $1 ? $1 : $0)",
   },
   u32_cmp: {
@@ -246,9 +248,11 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     JS: "Math.fround($0 % $1)",
   },
   f32_min: {
+    C:  "(f32_unbox($0) < f32_unbox($1) ? $0 : $1)",
     JS: "($0 < $1 ? $0 : $1)",
   },
   f32_max: {
+    C:  "(f32_unbox($0) < f32_unbox($1) ? $1 : $0)",
     JS: "($0 < $1 ? $1 : $0)",
   },
   f32_to_u32: {
@@ -294,9 +298,11 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     JS: "($0 < $1)",
   },
   nat_min: {
+    C:  "($0 < $1 ? $0 : $1)",
     JS: "($0 < $1 ? $0 : $1)",
   },
   nat_max: {
+    C:  "($0 < $1 ? $1 : $0)",
     JS: "($0 < $1 ? $1 : $0)",
   },
   nat_divmod: {
@@ -306,11 +312,14 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   },
   ...tpl_ops("bool_", "or:|:|| xor:^:!==", "(($0) $o ($1))", "($0 $o $1)"),
   bool_and: {
+    C:  "(($0) & ($1))",
     JS: "($0 && $1)",
   },
   bool_not: {
+    C:  "(($0) ^ 1)",
     JS: "(!$0)",
   },
+  // the C lane matches: the untaken side may own a box to drop
   bool_pick: {
     JS: "($0 ? $1 : $2)",
   },
