@@ -1,5 +1,5 @@
 # a 200000-deep Succ chain compares with its literal in constant stack:
-# a constructor's last field is compared by a tail call
+# a constructor's last field is compared in a loop
 import Base
 
 law big:
