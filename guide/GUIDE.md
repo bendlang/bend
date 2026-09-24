@@ -367,6 +367,17 @@ answers the command line, less the runtime's own options (a `--` ends them). A
 handle (`File`, `Socket`, `Window`) is an affine, opaque value, so every effect
 on one hands it back beside its result, and no program can forge or reuse one.
 
+`Process.run(program, args, input, max_output, timeout_ms)` starts an
+executable directly, with literal arguments rather than a shell. It inherits
+the current directory and environment, writes UTF-8 `input` to its stdin, and
+answers `Done{(status, (stdout, stderr))}` even when the exit status is not
+zero. Both limits must be positive; failure to start, a timeout, or stdout
+and stderr exceeding `max_output` bytes together answer `Fail`. A native
+build runs the child on an IO helper thread; the JavaScript lane blocks while
+the child runs. On Linux, native builds need glibc 2.34 or newer to close
+inherited descriptors. It does not sandbox the child: callers must decide
+whether a command is trusted before executing it.
+
 A Bend program is a set of computations interleaved by one event loop, as in
 Node.js: each runs its pure code (in parallel, on every core) up to its next
 effect, and one that waits on a socket, a sleep or a channel steps aside for the

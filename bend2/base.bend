@@ -175,6 +175,12 @@ def IO.args() -> IO(List<String>):
   import "./effs/args.c"
   import "./effs/args.js"
 
+def Process.run(program: String, args: List<String>, input: String,
+  max_output: U32, timeout_ms: U32) ->
+  IO(Result<&1, &1, U32 & String, U32 & (String & String)>):
+  import "./effs/process_run.c"
+  import "./effs/process_run.js"
+
 def IO.die(-A: Type, code: U32, msg: String) -> IO(A):
   R => k => Halt{code, msg}
 
