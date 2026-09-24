@@ -71,6 +71,13 @@ def main() -> IO(Unit):
     m : Result<&1, &1, U32 & String, U32 & (String & String)> <-
       Process.run("/bin/sh", ["-c", "kill -TERM $$"], "", 128, 1000)
     IO.print("signal: " ++ answer(m, 143, "", ""))
+    n : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("/usr/bin/perl", ["-e", "print $SIG{PIPE} // q(default)"],
+        "", 128, 2000)
+    o : Unit <- IO.print("sigpipe default: " ++ answer(n, 0, "default", ""))
+    p : Result<&1, &1, U32 & String, U32 & (String & String)> <-
+      Process.run("/bin/sh", ["-c", "sleep 3 & echo hi"], "", 128, 1500)
+    IO.print("inherited pipe: " ++ answer(p, 0, "hi\n", ""))
 
 #|stdin: True
 #|literal argv: True
@@ -85,3 +92,5 @@ def main() -> IO(Unit):
 #|nul argument: True
 #|empty stdin: True
 #|signal: True
+#|sigpipe default: True
+#|inherited pipe: True

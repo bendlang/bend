@@ -3,12 +3,6 @@
 Each release names what changed for a user. `bend update` installs the
 latest one; the GitHub release carries the same notes.
 
-## Unreleased
-
-- **Programs can run bounded subprocesses without a shell**: `Process.run` supplies
-  literal arguments and UTF-8 stdin, captures exit status, stdout and stderr,
-  and enforces a timeout and combined output limit on native and JS lanes.
-
 ## 2.0.27 (2026-09-23)
 
 - **`bend` reads no `bunfig.toml` or `.env` from the directory it runs in**

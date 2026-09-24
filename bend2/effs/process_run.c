@@ -114,17 +114,26 @@ static void process_call(IoWork* w) {
   if (p->code == 0) {
     p->code = posix_spawn_file_actions_adddup2(&actions, pipes[2][1], 2);
   }
-  posix_spawnattr_t* attrp = NULL;
-#ifdef __APPLE__
   posix_spawnattr_t attr;
+  posix_spawnattr_t* attrp = NULL;
   if (p->code == 0) {
     p->code = posix_spawnattr_init(&attr);
     if (p->code == 0) {
       attrp = &attr;
-      p->code = posix_spawnattr_setflags(&attr, POSIX_SPAWN_CLOEXEC_DEFAULT);
+      sigset_t defaults;
+      sigemptyset(&defaults);
+      sigaddset(&defaults, SIGPIPE);
+      p->code = posix_spawnattr_setsigdefault(&attr, &defaults);
+      if (p->code == 0) {
+        short flags = POSIX_SPAWN_SETSIGDEF;
+#ifdef __APPLE__
+        flags |= POSIX_SPAWN_CLOEXEC_DEFAULT;
+#endif
+        p->code = posix_spawnattr_setflags(&attr, flags);
+      }
     }
   }
-#else
+#ifndef __APPLE__
   if (p->code == 0) {
     p->code = posix_spawn_file_actions_addclosefrom_np(&actions, 3);
   }
@@ -133,11 +142,9 @@ static void process_call(IoWork* w) {
     p->code = posix_spawnp(&child, p->argv[0], &actions, attrp, p->argv,
       environ);
   }
-#ifdef __APPLE__
   if (attrp != NULL) {
     posix_spawnattr_destroy(attrp);
   }
-#endif
   posix_spawn_file_actions_destroy(&actions);
   if (p->code != 0) {
     child = -1;
@@ -152,21 +159,22 @@ static void process_call(IoWork* w) {
   u64 deadline = io_tick() + (u64)p->timeout * 1000000ull;
   u64 written  = 0;
   while (p->code == 0) {
-    u64 now = io_tick();
-    if (now >= deadline) {
-      p->code = ETIMEDOUT;
-      break;
-    }
-    if (pipes[0][1] < 0 && pipes[1][0] < 0 && pipes[2][0] < 0) {
+    if (child >= 0) {
       pid_t got = waitpid(child, &status, WNOHANG);
       if (got == child) {
         child = -1;
-        break;
-      }
-      if (got < 0 && errno != EINTR) {
+        if (pipes[0][1] >= 0) {
+          close(pipes[0][1]); pipes[0][1] = -1;
+        }
+      } else if (got < 0 && errno != EINTR) {
         p->code = errno;
         break;
       }
+    }
+    u64 now = io_tick();
+    if (child >= 0 && now >= deadline) {
+      p->code = ETIMEDOUT;
+      break;
     }
     struct pollfd fds[3];
     int roles[3];
@@ -178,14 +186,23 @@ static void process_call(IoWork* w) {
         roles[count++] = i;
       }
     }
-    u64 left = (deadline - now + 999999ull) / 1000000ull;
-    int ms = (int)(left > 50 ? 50 : left);
+    if (child < 0 && count == 0) {
+      break;
+    }
+    int ms = 0;
+    if (child >= 0) {
+      u64 left = (deadline - now + 999999ull) / 1000000ull;
+      ms = (int)(left > 50 ? 50 : left);
+    }
     int ready = poll(fds, count, ms);
     if (ready < 0) {
       if (errno == EINTR) {
         continue;
       }
       p->code = errno;
+      break;
+    }
+    if (ready == 0 && child < 0) {
       break;
     }
     for (nfds_t k = 0; k < count && p->code == 0; k += 1) {
