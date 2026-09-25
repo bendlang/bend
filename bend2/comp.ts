@@ -179,6 +179,29 @@ const ERRS = ("|*|*|out of memory: run again with a bigger span, as in"
 
 const CMPS = "is_eq:==:=== is_ne:!=:!== is_lt:< is_le:<= is_gt:> is_ge:>=";
 
+// The natives over a double. A lane with one (C, CUDA, JS) runs them in
+// place; Metal has none, so there emit_fuse calls their Base defs, which
+// compute the same bits in integer arithmetic (base.bend's F64).
+const SOFT: Record<string, Intr> = Object.setPrototypeOf({
+  ...tpl_ops("f64_", "add:+ sub:- mul:* div:/",
+    "f64_of(f64_num($0) $o f64_num($1))"),
+  ...tpl_ops("f64_", CMPS, "(f64_num($0) $o f64_num($1))"),
+  ...tpl_ops("f64_", "sqrt", "f64_of(sqrt(f64_num($0)))",
+    "f64_of(Math.sqrt(f64_num($0)))"),
+  ...tpl_ops("f64_", "fma",
+    "f64_of(fma(f64_num($0), f64_num($1), f64_num($2)))", "f64_fma($0, $1, $2)"),
+  ...tpl_ops("f64_", "to_f32",
+    "(f64_num($0) != f64_num($0) ? 0x7FC00000 : f32_rewrap((f32)f64_num($0)))",
+    "Math.fround(f64_num(f64_of(f64_num($0))))"),
+  f64_to_u64: {
+    C:    "(f64_num($0) >= 0 && f64_num($0) < 0x1p64 ? (u64)f64_num($0) : 0)",
+    JS:   "(f64_num($0) >= 0 && f64_num($0) < 2 ** 64"
+      + " ? BigInt(Math.trunc(f64_num($0))) : 0n)",
+  },
+  ...tpl_ops("", "u64_to_f64:(double):Number f32_to_f64:f32_unbox:",
+    "f64_of($o($0))"),
+}, null);
+
 const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   ...tpl_ops("u32_", "add:+ sub:- and:& or:| xor:^",
     "U32_BIN($0, $o, $1)", "(($0 $o $1) >>> 0)"),
@@ -224,6 +247,41 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     C:  "((u64)(u32)($0))",
     JS: "Number($0 & 0xFFFFFFFFn)",
   },
+  ...tpl_ops("u64_", "add:+ sub:- mul:* and:& or:| xor:^", "($0 $o $1)",
+    "BigInt.asUintN(64, $0 $o $1)"),
+  ...tpl_ops("u64_", CMPS, "($0 $o $1)"),
+  ...tpl_ops("u64_", "cmp", "(($0 > $1) + ($0 >= $1))", "cmp_new($0, $1)"),
+  ...tpl_ops("u64_", "shln:<< shrn:>>", "($1 >= 64 ? 0 : $0 $o $1)",
+    "($1 >= 64n ? 0n : BigInt.asUintN(64, $0 $o $1))"),
+  ...tpl_ops("u64_", "div", "($1 ? $0 / $1 : $1)"),
+  ...tpl_ops("u64_", "mod", "($1 ? $0 % $1 : $0)"),
+  ...tpl_ops("u64_", "from_nat", "$0"),
+  // past 2^48-1 a U64 fail-stops as a Nat, as Nat.add does
+  u64_to_nat: {
+    C:  "nat_chk(e, $0)",
+    JS: "nat_chk($0)",
+  },
+  ...tpl_ops("u64_", "clz",
+    "($0 >> 32 ? CLZ((u32)($0 >> 32)) : $0 ? 32 + CLZ((u32)$0) : 64)",
+    "(64 - $0.toString(2).length + !$0)"),
+  ...tpl_ops("u64_", "mul_hi", "u64_mul_hi($0, $1)", "($0 * $1 >> 64n)"),
+  u64_show: {
+    JS: "String(BigInt.asUintN(64, $0))",
+  },
+  u64_read: {
+    JS: "(/^\\d+$/.test($0) && BigInt($0) >> 64n === 0n"
+      + " ? {$: \"Some\", value: BigInt($0)} : {$: \"None\"})",
+  },
+  f64_show: {
+    C:    "f32_show(e, $0, 1)",
+    call: true,
+    JS:   "f32_show(f64_num($0), 17)",
+  },
+  f64_read: {
+    C:    "f32_read(e, $0, 1)",
+    call: true,
+    JS:   "f32_read($0, f64_of)",
+  },
   ...tpl_ops("f32_", "add:+ sub:- mul:* div:/",
     "f32_rewrap(f32_unbox($0) $o f32_unbox($1))", "Math.fround($0 $o $1)"),
   f32_neg: {
@@ -251,12 +309,12 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     JS: "f32_bits($0)",
   },
   f32_show: {
-    C:    "f32_show(e, $0)",
+    C:    "f32_show(e, $0, 0)",
     call: true,
     JS:   "f32_show($0)",
   },
   f32_read: {
-    C:    "f32_read(e, $0)",
+    C:    "f32_read(e, $0, 0)",
     call: true,
     JS:   "f32_read($0)",
   },
@@ -339,6 +397,16 @@ const OPTIMIZED: Record<Name, Native> = Object.setPrototypeOf({
   F32: {
     F32: { intr: "f32_from_bits(word_to_u32($0))" },
   },
+  // a U64 is one BigInt on JS, an F64 the BigInt of its bits
+  U64: {
+    U64: {
+      intr: "(BigInt($0 >>> 0) | BigInt($1 >>> 0) << 32n)",
+      elim: ["Number($0 & 0xFFFFFFFFn)", "Number($0 >> 32n)"],
+    },
+  },
+  F64: {
+    F64: { intr: "$0", elim: ["$0"] },
+  },
   Char: {
     Chr: {
       intr: ([c]: string[]) => {
@@ -414,6 +482,28 @@ INLINE U32 f32_to_u32(U32 a) {
   return v >= 0.0f && v < 4294967296.0f ? (u32)v : 0;
 }
 
+// An F64's bits as a double and back; a NaN leaves as the one quiet NaN.
+#ifndef __METAL_VERSION__
+INLINE double f64_num(u64 x) {
+  union { u64 u; double f; } p = { x };
+  return p.f;
+}
+
+INLINE u64 f64_of(double x) {
+  union { double f; u64 u; } p = { x };
+  return x != x ? 0x7FF8000000000000ull : p.u;
+}
+#endif
+
+// The high word of a 64 x 64 bit product.
+#ifdef __METAL_VERSION__
+#define u64_mul_hi mulhi
+#elif defined(BEND_RTC)
+#define u64_mul_hi __umul64hi
+#else
+#define u64_mul_hi(a, b) ((u64)((unsigned __int128)(a) * (b) >> 64))
+#endif
+
 INLINE Nat nat_chk(Env e, Nat n) {
   if (n > NAT_IMM) {
     err_post(e.mem, ERR_NATS);
@@ -428,26 +518,35 @@ INLINE Nat nat_mul(Env e, Nat a, Nat b) {
 
 #if DEVICE
 
-#define f32_show(e, x) (err_post(e.mem, ERR_FIDS), 0)
-#define f32_read(e, s) (err_post(e.mem, ERR_FIDS), 0)
+#define f32_show(e, x, w) (err_post(e.mem, ERR_FIDS), 0)
+#define f32_read(e, s, w) (err_post(e.mem, ERR_FIDS), 0)
 
 #else
 
-static Term f32_show(Env e, Term x);
-static Term f32_read(Env e, Term s);
+static Term f32_show(Env e, Term x, bool w);
+static Term f32_read(Env e, Term s, bool w);
 
 #endif
 `.slice(1),
   IO: String.raw`
-static int f32_text(char* buf, f32 v) {
+// The shortest text of v that reads back, d the digits that always do (9
+// for an f32, 17 for an f64).
+static int f32_text(char* buf, double v, int d) {
   int n = 0;
   int p = 0;
   if (v != v) {
     return sprintf(buf, "nan");
   }
-  for (; p < 9; p += 1) {
-    n = snprintf(buf, 40, "%.*e", p, (double)v);
-    if (strtof(buf, NULL) == v) {
+  for (; p < d; p += 1) {
+    n = snprintf(buf, 40, "%.*e", p, v);
+    if ((d > 9 ? strtod(buf, NULL) : strtof(buf, NULL)) == v) {
+      break;
+    }
+    // at a power of two the gap below is half the gap above, so the
+    // shortest text may round the other way: try the next digit up
+    char* up = strchr(buf, 'e') - 1;
+    if (!(f64_of(v) << 12) && *up != '9' && fabs(strtod(buf, NULL)) < fabs(v)
+      && (*up += 1, strtod(buf, NULL) == v)) {
       break;
     }
   }
@@ -459,7 +558,7 @@ static int f32_text(char* buf, f32 v) {
   if (ex >= 21 || ex <= -7) {
     n = (int)(ep - buf) + sprintf(ep, "e%c%d", ex < 0 ? '-' : '+', abs(ex));
   } else if (ex <= p) {
-    n = snprintf(buf, 40, "%.*f", p - ex, (double)v);
+    n = snprintf(buf, 40, "%.*f", p - ex, v);
   } else {
     int s = *buf == '-';
     memmove(buf + s + 1, buf + s + 2, p);
@@ -469,18 +568,22 @@ static int f32_text(char* buf, f32 v) {
   return n;
 }
 
-static Term f32_show(Env e, Term x) {
+// w: the word is an F64's bits, not an F32's
+static Term f32_show(Env e, Term x, bool w) {
   char buf[40];
-  return io_str(e, buf, f32_text(buf, f32_unbox(x)));
+  double v = w ? f64_num(x) : f32_unbox(x);
+  return io_str(e, buf, f32_text(buf, v, w ? 17 : 9));
 }
 
-static Term f32_read(Env e, Term s) {
+static Term f32_read(Env e, Term s, bool w) {
   u64 n = 0;
   char* text = io_cstr(e, s, &n);
   char* end;
-  f32 v = strtof(text, &end);
+  double v = w ? strtod(text, &end) : strtof(text, &end);
+  u64 b = f64_of(v);
   Term out = n > 0 && (u64)(end - text) == n && strpbrk(text, "xX(") == NULL
-    ? io_box(e, CID(Some), f32_rewrap(v)) : term_pak(CID(None), 0);
+    ? io_box(e, CID(Some), w ? io_node(e, CID(F64), (u32)b, b >> 32)
+    : f32_rewrap((f32)v)) : term_pak(CID(None), 0);
   free(text);
   return out;
 }
@@ -520,7 +623,7 @@ function nat_chk(n) {
   return n;
 }
 
-function f32_show(x) {
+function f32_show(x, n = 9) {
   if (x !== x) {
     return "nan";
   }
@@ -529,7 +632,8 @@ function f32_show(x) {
       : x === 0 ? "-0" : "inf";
   }
   let s = "x";
-  for (let p = 1; p <= 9 && Math.fround(Number(s)) !== x; p += 1) {
+  for (let p = 1; p <= n
+    && (n > 9 ? Number(s) : Math.fround(Number(s))) !== x; p += 1) {
     s = String(Number(x.toExponential(p - 1)));
   }
   return s;
@@ -543,10 +647,42 @@ function f32_from_bits(u) {
   return new Float32Array(new Uint32Array([u]).buffer)[0];
 }
 
-function f32_read(s) {
+const F64_VIEW = new DataView(new ArrayBuffer(8));
+
+function f64_of(x) {
+  F64_VIEW.setFloat64(0, x);
+  return x !== x ? 0x7FF8000000000000n : F64_VIEW.getBigUint64(0);
+}
+
+function f64_num(u) {
+  F64_VIEW.setBigUint64(0, u);
+  return F64_VIEW.getFloat64(0);
+}
+
+function f64_fma(a, b, c) {
+  const [x, y, z] = [a, b, c].map(f64_num);
+  if (![x, y, z].every(isFinite)) {
+    return f64_of(isFinite(x) && isFinite(y) ? z : x * y + z);
+  }
+  const [[p, i], [q, j], [r, k]] = [a, b, c].map((v) => {
+    const e = Number(v >> 52n & 2047n);
+    const m = v & 0xFFFFFFFFFFFFFn | BigInt(e > 0) << 52n;
+    return [v >> 63n ? -m : m, Math.max(e, 1) - 1075];
+  });
+  const E = Math.min(i + j, k);
+  const s = (p * q << BigInt(i + j - E)) + (r << BigInt(k - E));
+  const n = s < 0n ? -s : s;
+  const L = Math.max(E + n.toString(2).length - 53, -1074);
+  const d = BigInt(L - E - 2);
+  const t = n >> d;
+  return f64_of(s ? (s < 0n ? -0.25 : 0.25) * Number(t | BigInt(t << d !== n))
+    * 2 ** L : x * y + z);
+}
+
+function f32_read(s, f = Math.fround) {
   const re = /^\s*[+-]?((\d+\.?\d*|\.\d+)(e[+-]?\d+)?|inf(inity)?|nan)$/i;
   const v = Number(s.replace(/inf\w*/i, "Infinity"));
-  return re.test(s) ? {$: "Some", value: Math.fround(v)} : {$: "None"};
+  return re.test(s) ? {$: "Some", value: f(v)} : {$: "None"};
 }
 
 function char_new(code) {
@@ -577,7 +713,7 @@ const FOLDS: Map<HTerm, HTerm | null> = new Map();
 
 const FLATS: Map<Name, boolean> = new Map();
 
-const SIGS: Map<Name, Sig> = new Map();
+const SIGS: Map<string, Sig> = new Map();
 
 const BRWS: Map<Name, boolean[]> = new Map();
 
@@ -617,7 +753,7 @@ function die(m: string): never {
 // Tpl
 // ===
 
-function tpl_ops(pre: string, names: string, C: string, JS: string):
+function tpl_ops(pre: string, names: string, C: string, JS = C):
   Record<string, Intr> {
   const out: Record<string, Intr> = {};
   for (const p of names.split(" ")) {
@@ -850,7 +986,7 @@ function live_dom([q]: Dom): boolean {
 function intr_of(c: Carb, k: Name, js = false): Intr | undefined {
   const tld = c.book.tlds[k];
   const it = tld?.$ === "Def" && tld.i === undefined && tld.b
-    ? OPERATIONS[op_name(k)] : undefined;
+    ? OPERATIONS[op_name(k)] ?? (js ? SOFT[op_name(k)] : undefined) : undefined;
   return it !== undefined && (js || it.C !== undefined || it.call === true)
     ? it : undefined;
 }
@@ -1025,6 +1161,11 @@ function lay_node(book: Bend.Book, k: Name): Lay {
     ? ctr_doms(book, book.ctrs[k]) : []).map((A) => lay_of(book, A)))]]));
 }
 
+// A spin's key: its def and the layouts of its erased arguments.
+function lay_key(cb: Carb, k: Name, ers: HTerm[]): string {
+  return ers.reduce((s, e) => s + "|" + JSON.stringify(lay_of(cb.book, e)), k);
+}
+
 function lay_eq(a: Lay, b: Lay): boolean {
   return a === b || JSON.stringify(a) === JSON.stringify(b);
 }
@@ -1035,6 +1176,11 @@ function lay_c(k: Kind): string {
 
 function lay_box(lay: Lay): boolean {
   return lay.arms === null && lay.ks[0] === "box";
+}
+
+// A U64 or an F64: two w32 words, low first, that a native reads as one u64.
+function lay_w64(lay: Lay): boolean {
+  return lay.arms !== null && ["U64", "F64"].includes(lay.arms[0].k);
 }
 
 function lay_arm(lay: Lay, k: Name): Arm {
@@ -1144,21 +1290,26 @@ function quant_live(q: Bend.Quant): boolean {
 // ===
 
 // A def's live parameters, the layouts a call passes and its return layout
-// (boxes for a foreign def and Clo~apply).
-function sig_def(cb: Carb, k: Name): Sig {
-  return memo(SIGS, k, () => {
+// (boxes for a foreign def and Clo~apply), at the types its erased arguments
+// name: Bool.pick at F64 passes and returns the F64 flat, not boxed.
+function sig_def(cb: Carb, k: Name, ers: HTerm[] = []): Sig {
+  return memo(SIGS, lay_key(cb, k, ers), () => {
     const tld = def_body(cb, k);
     if (tld?.$ !== "Def") {
       return { live: [], lays: [BOX, BOX], ret: BOX };
     }
-    const doms = tele_unbind(cb.book, tld.T).doms;
-    const live = doms.slice(0, tld.n).filter(live_dom);
+    const xs = ers.slice(0, Math.max(0,
+      tele_unbind(cb.book, tld.T).doms.findIndex(live_dom)));
+    const T = Bend.tele_fill(cb.book, tld.T, xs, Bend.ctx_nil());
+    const n = tld.n - xs.length;
+    const doms = tele_unbind(cb.book, T).doms;
+    const live = doms.slice(0, n).filter(live_dom);
     const lays = live.map(([, , A]) => lay_of(cb.book, A));
     if (def_foreign(tld)) {
       return { live, lays: [...lays.map(() => BOX), BOX], ret: BOX };
     }
-    const ret = lay_of(cb.book, Bend.tele_fill(cb.book, tld.T,
-      Array(tld.n).fill(DUMMY), Bend.ctx_nil()));
+    const ret = lay_of(cb.book, Bend.tele_fill(cb.book, T,
+      Array(n).fill(DUMMY), Bend.ctx_nil()));
     return { live, lays: lay_wide(lays), ret: ret.ks.length === 0 ? BOX : ret };
   });
 }
@@ -1224,8 +1375,9 @@ export function io_type(book: Bend.Book): HTerm | null {
 // A pure main prints through a descriptor of its type, a node per (type,
 // boxed?): 0 U32, 1 F32, 2 Nat, 3 Char, 4 String, 5 Eql, 6 Array (element,
 // lgs), 7 Data (boxed?, arms; per arm name, cid, fields, bracket, then an
-// (offset, node) per field). Null for an IO main; an unprintable type (a
-// function, a Type, an erased or dependent field) refuses the build.
+// (offset, node) per field), 8 U64 and 9 F64 (boxed?). Null for an IO main;
+// an unprintable type (a function, a Type, an erased or dependent field)
+// refuses the build.
 function show_main(book: Bend.Book): Show | null {
   const main = book.tlds["main"];
   if (main?.$ !== "Def" || (main.v === null && main.i === undefined)
@@ -1247,8 +1399,8 @@ function show_main(book: Bend.Book): Show | null {
     const key = String(box) + Bend.term_key(Bend.term_lower(t));
     const adt = ty_adt(book, t);
     const tld = adt && book.tlds[adt.k];
-    const kind = t.$ === "Eql" ? 5 : "U32 F32 Nat Char String . Array"
-      .split(" ").indexOf(adt?.k ?? "") & 7;
+    const kind = t.$ === "Eql" ? 5 : (("U32 F32 Nat Char String . Array . U64"
+      + " F64").split(" ").indexOf(adt?.k ?? "") + 1 || 8) - 1;
     if (ids.has(key)) {
       return ids.get(key)!;
     }
@@ -1258,7 +1410,7 @@ function show_main(book: Bend.Book): Show | null {
     const id = show.cells.push(kind) - 1;
     ids.set(key, id);
     const refs: [number, HTerm, Lay][] = [];
-    if (kind === 3) {
+    if (kind === 3 || kind > 7) {
       show.cells.push(Number(box));
     } else if (kind === 6) {
       const el = lay_el(book, adt!.x[0]);
@@ -2101,7 +2253,8 @@ function emit_jump(fl: File, args: string[], k: Name,
 
 // A call's arguments, laid out as the def takes them: nested ones first,
 // owned ones popped before borrowed ones are read (a read asks a lend).
-function emit_args(fl: File, ck: Call, jump = false, fork = false): string[] {
+function emit_args(fl: File, ck: Call, jump = false, fork = false,
+  lays = sig_def(fl, ck.k).lays): string[] {
   const brw = brw_of(fl, ck.k);
   ck.all.forEach((a, q) => {
     if (fl.hot.has(ck.k + "~" + q)) {
@@ -2111,7 +2264,6 @@ function emit_args(fl: File, ck: Call, jump = false, fork = false): string[] {
   const xs = ck.args.map((a) => term_strip(a));
   const vars = xs.filter((x) => x.$ === "Var");
   const rest = fl.rest;
-  const lays = sig_def(fl, ck.k).lays;
   const vs = ck.args.map((a, i): Val | null => {
     if (xs[i].$ === "Var") {
       return null;
@@ -2179,22 +2331,31 @@ function emit_put(fl: File, dst: Dst, v: Val): void {
   }
 }
 
-function emit_fuse(fl: File, ck: Call, dst: Dst, tail = false): void {
+function emit_fuse(fl: File, ck: Call, dst?: Dst, tail = false): Dst {
   const tld = fl.book.tlds[ck.k] as Def;
   const doms = tele_unbind(fl.book, tld.T).doms;
   const ers = ck.all.filter((_, i) => i < tld.n && !quant_live(doms[i][0]));
-  const { lays, ret } = sig_def(fl, ck.k);
+  const { lays, ret } = sig_def(fl, ck.k, ers);
   const flat = flat_of(ck.k);
-  const ws = emit_args(fl, ck, tail && !flat);
+  const ws = emit_args(fl, ck, tail && !flat, false, lays);
+  let at = 0;
+  const vals = lays.map((lay) => val_new(ws.slice(at, at += lay.ks.length),
+    lay));
   if (!flat) {
     const outer = fl.def;
     fl.def = ck.k;
-    emit_body(fl, tld.h as HTerm, tld.T, ers, lays.map((lay) =>
-      val_new(ws.splice(0, lay.ks.length), lay)), dst);
+    emit_body(fl, tld.h as HTerm, tld.T, ers, vals, dst!);
     fl.def = outer;
-    return;
+    return null;
   }
   const out = emit_dst(fl, ret);
+  // a soft native runs in place where the lane has a double, else its def
+  const it = tld.b ? SOFT[op_name(ck.k)] : undefined;
+  if (it !== undefined) {
+    file_push(fl, "#ifndef __METAL_VERSION__");
+    emit_put(fl, out, intr_c(fl, it.C as string, ck.k, vals, ret));
+    file_push(fl, "#else");
+  }
   const name = emit_native(fl, ck, ers);
   const o = name_local(fl, "o");
   file_push(fl, `Term ${o}[${out.ws.length}];`);
@@ -2202,17 +2363,23 @@ function emit_fuse(fl: File, ck: Call, dst: Dst, tail = false): void {
     file_push(fl, "return 0;");
   });
   out.ws.forEach((v, j) => file_push(fl, `${v} = ${o}[${j}];`));
+  if (it !== undefined) {
+    file_push(fl, "#endif");
+  }
   if (tail) {
     bind_dead(fl, []);
   }
-  emit_put(fl, dst, out);
+  if (dst !== undefined) {
+    emit_put(fl, dst, out);
+  }
+  return out;
 }
 
 // Opens a unit of `k`: fresh state, parameters bound, segment made.
-function emit_open(fl: File, k: Name): Val[] {
+function emit_open(fl: File, k: Name, ers: HTerm[] = []): Val[] {
   Object.assign(fl, { spares: [], tab: 2, uses: new Map(),
     fuel: FOLD_FUEL, def: k });
-  const { live, lays, ret } = sig_def(fl, k);
+  const { live, lays, ret } = sig_def(fl, k, ers);
   const vals = lays.map((l, i) =>
     val_new(l.ks.map(() => name_local(fl, live[i][1])), l));
   // a borrowed parameter's boxes are rooted in it
@@ -2227,8 +2394,7 @@ function emit_open(fl: File, k: Name): Val[] {
 }
 
 function emit_native(fl: File, ck: Call, ers: HTerm[]): string {
-  const key = [ck.k, ...ers.map((e) => JSON.stringify(lay_of(fl.book, e)))]
-    .join("|");
+  const key = lay_key(fl, ck.k, ers);
   const got = fl.spun.get(key);
   if (got !== undefined) {
     return seg_ref(fl, got);
@@ -2237,7 +2403,7 @@ function emit_native(fl: File, ck: Call, ers: HTerm[]): string {
   fl.spun.set(key, name);
   const tld = fl.book.tlds[ck.k] as Def;
   const outer = { ...fl };
-  const vals = emit_open(fl, ck.k);
+  const vals = emit_open(fl, ck.k, ers);
   const seg = fl.seg;
   seg.fid = name;
   const dst = val_new(seg.ret.ks.map(() => name_local(fl, "v")), seg.ret);
@@ -2274,20 +2440,35 @@ function emit_intr(fl: File, it: Intr, x: HTerm,
   if (it.call === true && it.C === undefined) {
     return arr_op(fl, op, lay_el(fl.book, m.all[0]), args);
   }
-  const ws = args.map((v) => (val_own(fl, v), val_word(v)));
+  // each argument in the layout the native reads (a boxed U64 from a
+  // generic def unboxes here)
+  const lays = sig_def(fl, k).lays;
+  const vs = args.map((a, i) => val_to(fl, a, lays[i]));
+  vs.forEach((v) => val_own(fl, v));
   if (Array.isArray(it.C)) {
-    const as = ws.map((z) => emit_alias(fl, z, "a"));
-    const vs: string[] = [];
+    const as = vs.map((v) => emit_alias(fl, val_word(v), "a"));
+    const os: string[] = [];
     for (const p of it.C) {
-      vs.push(emit_alias(fl, tpl(p, [...as, ...vs]), "a"));
+      os.push(emit_alias(fl, tpl(p, [...as, ...os]), "a"));
     }
-    return val_new(vs, lay_of(fl.book, ty ?? tele_unbind(fl.book,
+    return val_new(os, lay_of(fl.book, ty ?? tele_unbind(fl.book,
       (fl.book.tlds[k] as Bend.Def).T).ret));
   }
-  const C = it.C as string;
+  return intr_c(fl, it.C as string, k, vs, lay_of(fl.book, ty));
+}
+
+// A string template's C: a two-word argument (U64, F64) enters as one u64,
+// and a two-word result leaves as its halves.
+function intr_c(fl: File, C: string, k: Name, vs: Val[], lay: Lay): Val {
+  const ret = sig_def(fl, k).ret;
+  const ws = vs.map((v) => v.ws.length > 1 ? emit_alias(fl,
+    `((u64)${v.ws[1]} << 32 | ${v.ws[0]})`, "a", "w64") : val_word(v));
   const out = tpl(C, /\$(\d)[^]*\$\1/.test(C)
     ? ws.map((a) => emit_alias(fl, a, "a")) : ws);
-  const lay = lay_of(fl.book, ty);
+  if (lay_w64(ret)) {
+    const w = emit_alias(fl, out, "w", "w64");
+    return val_new([`(u32)${w}`, `(${w} >> 32)`], ret);
+  }
   return val_new([out], lay.ks.length === 1 ? lay : BOX);
 }
 
@@ -2398,8 +2579,8 @@ function emit_unfold(fl: File, s: HTerm): HTerm | null {
   const m = term_spine(fl, s);
   const d = m.tld;
   if (m.t.$ !== "Ref" || d?.$ !== "Def" || d.h === undefined
-    || m.all.length !== d.n
-    || intr_of(fl, m.t.k) !== undefined || !flat_of(m.t.k)) {
+    || m.all.length !== d.n || intr_of(fl, m.t.k) !== undefined
+    || !flat_of(m.t.k) || d.b && SOFT[op_name(m.t.k)] !== undefined) {
     return null;
   }
   const fs = m.all.map((a) => m.args.includes(a) ? emit_fold(fl, a) ?? a : a);
@@ -2463,9 +2644,7 @@ function emit_expr(fl: File, tm: HTerm, ty0: HTerm | null,
       }
       const m = term_spine(fl, x);
       if (flat_call(fl, x)) {
-        const dst = emit_dst(fl, sig_def(fl, m.call!.k).ret);
-        emit_fuse(fl, m.call!, dst);
-        return dst;
+        return emit_fuse(fl, m.call!)!;
       }
       // An eta-expansion, or a head applied to erased arguments alone.
       const y = call_eta(fl, x)
@@ -2538,7 +2717,9 @@ function emit_body(fl: File, tm: HTerm, ty0: HTerm | null,
         return emit_body(fl, x.f(t), all.B(t), ers.slice(1), args, dst);
       }
       const o = term_open(x);
-      const v = val_hold(fl, val_to(fl, args[0], lay_of(fl.book, all.A)), x.k);
+      // a parameter of a bare type variable keeps the layout it was given
+      const v = val_hold(fl, ty_wnf(fl.book, all.A)?.$ === "Var" ? args[0]
+        : val_to(fl, args[0], lay_of(fl.book, all.A)), x.k);
       bind_uses(fl, o.ps[0], v, [o.b], all.A);
       return emit_body(fl, o.b, all.B(DUMMY), ers, args.slice(1), dst);
     }
@@ -2572,7 +2753,7 @@ function emit_body(fl: File, tm: HTerm, ty0: HTerm | null,
         && !def_foreign(fl.book.tlds[ck.k])
         && (!lay_box(ret) || lay_box(fl.seg.ret));
       if (fl.seg.def !== ck.k && (flat_call(fl, x) || (dst === null && once))) {
-        return emit_fuse(fl, ck, dst, true);
+        return void emit_fuse(fl, ck, dst, true);
       }
       // A jump's returns must agree or both be one word (a box holds a word
       // as is); a call whose return disagrees becomes a cut.
@@ -2936,7 +3117,7 @@ function compile_reqs(fl: File): void {
 
 // The datatypes whose constructors the runtime or the elaborator lays itself.
 const RUNTIME_ADTS = ["Sigma", "String", "Word.Con", "IO.OP", "Result",
-  "Maybe", "Bool", "Unit"];
+  "Maybe", "Bool", "Unit", "F64"];
 
 // Base's names the compiler encodes itself, which a file without `import
 // Base` may declare but not compile.
@@ -5829,9 +6010,9 @@ static void show_chr(u64 c, char q) {
 }
 
 // The shortest text that reads back, as a literal: a point before an e
-static void show_f32(u32 x) {
+static void show_f32(double x, int d) {
   char  buf[40];
-  int   n  = f32_text(buf, f32_unbox(x));
+  int   n  = f32_text(buf, x, d);
   char* ep = memchr(buf, 'e', n);
   int   m  = ep == NULL ? n : (int)(ep - buf);
   buf[n] = 0;
@@ -5851,8 +6032,16 @@ static void show_val(Env e, u32 d, const Term* w, char chain) {
   u32  zn = 0;
   for (bool tail = true; tail;) switch (tail = false, D[d]) {
     case 0: printf("%u", (u32)w[0]); break;
-    case 1: show_f32((u32)w[0]); break;
+    case 1: show_f32(f32_unbox(w[0]), 9); break;
     case 2: printf("%llun", (unsigned long long)w[0]); break;
+    case 8:
+    case 9: {
+      const Term* v = D[d + 1] != 0 ? e.mem + term_peek(e, w[0]) : w;
+      u64 x = v[1] << 32 | (u32)v[0];
+      D[d] == 8 ? (void)printf("%lluu64", (unsigned long long)x)
+        : (show_f32(f64_num(x), 17), (void)fputs("f64", stdout));
+      break;
+    }
     case 3:
       putchar('\'');
       show_chr(D[d + 1] != 0 ? term_loc(w[0]) : w[0], '\'');
@@ -6205,11 +6394,14 @@ function show_val(D, N, d, v, chain) {
   }
   return D[d] === 0 ? String(v)
     : D[d] === 1 ? f32_show(v).replace(/^-?\d+(?=e|$)/, "$&.0")
+    : D[d] === 9 ? f32_show(f64_num(v), 17)
+      .replace(/^-?\d+(?=e|$)/, "$&.0") + "f64"
     : D[d] === 2 ? v + "n"
     : D[d] === 3 ? "'" + show_chr(v.codePointAt(0), "'") + "'"
     : D[d] === 4 ? "\"" + [...v].map((c) =>
       show_chr(c.codePointAt(0), "\"")).join("") + "\""
     : D[d] === 5 ? "{==}"
+    : D[d] === 8 ? v + "u64"
     : "[" + v.map((x) => show_val(D, N, D[d + 1], x, 0)).join(", ") + "]";
 }
 
