@@ -1502,33 +1502,28 @@ function loop_of(cb: Carb, k: Name): Name[] {
   const stack: Name[] = [];
   const visit = (k: Name): number => {
     const id = stack.push(k) - 1;
-    const tails = new Set<Name>();
     const tld = def_body(cb, k);
+    let low = id;
+    let self = false;
     if (done_live(tld)) {
       term_any(cb, tld.h as HTerm, (s, tail) => {
-        const ck = tail ? call_kind(cb, s) : null;
-        if (ck !== null) {
-          tails.add(ck.k);
+        const d = tail ? call_kind(cb, s)?.k : undefined;
+        if (d !== undefined) {
+          const at = stack.indexOf(d);
+          self ||= d === k;
+          low = Math.min(low, at >= 0 ? at : LOOPS.has(d) ? low : visit(d));
         }
         return false;
       });
     }
-    let low = id;
-    for (const d of tails) {
-      const at = stack.indexOf(d);
-      low = Math.min(low, at >= 0 ? at : LOOPS.has(d) ? low : visit(d));
-    }
     if (low === id) {
       const all = stack.splice(id);
-      const loop = all.length > 1 || tails.has(k) ? all : [];
+      const loop = all.length > 1 || self ? all : [];
       all.forEach((d) => LOOPS.set(d, loop));
     }
     return low;
   };
-  if (!LOOPS.has(k)) {
-    visit(k);
-  }
-  return LOOPS.get(k)!;
+  return memo(LOOPS, k, () => (visit(k), LOOPS.get(k)!));
 }
 
 // Done
