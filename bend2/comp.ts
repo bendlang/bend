@@ -5064,8 +5064,6 @@ static void gpu_load(u64 bytes) {
   gpu_buf = [gpu_dev newBufferWithBytesNoCopy:CORPUS length:bytes
     options:MTLResourceStorageModeShared
       | MTLResourceHazardTrackingModeUntracked deallocator:nil];
-  // the default span is under maxBufferLength, so only an asked one is over
-  // it: the refusal names the limit, so the user knows what to ask for
   u64 most = [gpu_dev maxBufferLength];
   if (!gpu_buf && bytes > most) {
     char msg[96];
