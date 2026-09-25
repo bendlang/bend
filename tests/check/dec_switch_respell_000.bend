@@ -34,5 +34,6 @@ def main():
 #|Location:
 #|20 |           h
 #|21>|         case 1+p:
+#|   |                  ^
 #|22 |           nth(d, p, t)
 #|exit 1

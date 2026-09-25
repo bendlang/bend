@@ -22,5 +22,6 @@ def main():
 #|Location: Wrap
 #|7 | type Box is Data:
 #|8>|   Wrap{a, -T: Kind(a), val: T}
+#|  |                             ^
 #|9 |
 #|exit 1

@@ -33,5 +33,6 @@ def main():
 #|Location:
 #|11 | law dupa:
 #|12>|   for a: [:U32]
+#|   |           ^
 #|13 |   APair<[:U32]>
 #|exit 1

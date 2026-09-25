@@ -17,5 +17,6 @@ def F(A): A -> Data
 #|Location: coerce
 #|7 | law coerce: F(Data) -> F(Type)
 #|8>| def coerce(x): x
+#|  |                ^
 #|9 |
 #|exit 1

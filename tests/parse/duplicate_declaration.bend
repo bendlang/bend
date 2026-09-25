@@ -18,5 +18,6 @@ def main(): Un{}
 #|Location:
 #| 9 | def main(): Un{}
 #|10>| law main:
+#|   |         ^
 #|11 |   Uu
 #|exit 1

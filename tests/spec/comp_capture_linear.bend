@@ -46,5 +46,6 @@ def main():
 #|Location: bad
 #|31 | def bad(g, xs):
 #|32>|   map(x => g(x), xs)
+#|   |   ^^^
 #|33 |
 #|exit 1

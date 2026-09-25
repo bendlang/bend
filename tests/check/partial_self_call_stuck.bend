@@ -30,5 +30,6 @@ def main(): part(2n, 1n)
 #|Location: part
 #|15 |     case 1n+p:
 #|16>|       g = part(a)
+#|   |           ^^^^
 #|17 |       g(p)
 #|exit 1

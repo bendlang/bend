@@ -24,5 +24,6 @@ def q():
 #|Location: thm
 #|15 | def thm():
 #|16>|   {==}
+#|   |   ^^^^
 #|17 |
 #|exit 1

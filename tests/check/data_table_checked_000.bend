@@ -49,5 +49,6 @@ def main(): delta(Empty, MkD2{delta(Empty)})
 #|Location:
 #|10 | 
 #|11>| law String.eq:
+#|   |              ^
 #|12 |   for a: String
 #|exit 1

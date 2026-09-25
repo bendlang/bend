@@ -23,5 +23,6 @@ def main() -> Nat:
 #|Location: h
 #| 9 | def h(x: Nat) -> Nat:
 #|10>|   g(x)
+#|   |   ^
 #|11 |
 #|exit 1

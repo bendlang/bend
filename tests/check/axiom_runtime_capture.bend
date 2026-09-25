@@ -31,5 +31,6 @@ def main():
 #|Location: tpl~0
 #|23 | def main():
 #|24>|   tpl(y => (y + magic : U32), 1)
+#|   |                 ^^^^^
 #|25 |
 #|exit 1

@@ -13,5 +13,6 @@ def dt(): rr
 #|Location: dt
 #|7 | law dt: {Data == Type : Type}
 #|8>| def dt(): rr
+#|  |           ^^
 #|9 |
 #|exit 1

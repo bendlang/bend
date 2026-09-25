@@ -21,5 +21,6 @@ def main() -> Nat:
 #|Location: caller
 #| 9 | def caller(k: Nat, x: Nat) -> Nat:
 #|10>|   T(~k, x)
+#|   |   ^
 #|11 |
 #|exit 1

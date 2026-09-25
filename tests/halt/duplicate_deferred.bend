@@ -33,5 +33,6 @@ def main(): N{}
 #|Location: loop
 #|17 |     case C{f}:
 #|18>|       D{x => loop(f(x, x))}
+#|   |              ^^^^
 #|19 |     case t:
 #|exit 1

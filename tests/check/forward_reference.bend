@@ -20,5 +20,6 @@ def later(): 0
 #|Location: main
 #| 9 | 
 #|10>| def main(): later
+#|   |             ^^^^^
 #|11 |
 #|exit 1

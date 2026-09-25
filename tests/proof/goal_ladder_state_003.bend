@@ -106,5 +106,6 @@ def mul_comm(a, b):
 #|Location: mul_comm
 #|97 |       %mul_succ(b, p) : {add(b, mul(p, b)) == _ : N}
 #|98>|       Type
+#|   |       ^^^^
 #|99 |
 #|exit 1

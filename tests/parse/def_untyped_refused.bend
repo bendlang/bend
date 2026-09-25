@@ -10,5 +10,6 @@ def add(x, y):
 #|Location:
 #|3 | # def spelled with bare names is refused at the missing arrow.
 #|4>| def add(x, y):
+#|  |              ^
 #|5 |   x
 #|exit 1

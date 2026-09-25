@@ -37,5 +37,6 @@ def main(): N{}
 #|Location: loop
 #|22 |     case C{f}:
 #|23>|       loop(f(grow(N{})))
+#|   |       ^^^^
 #|24 |     case t:
 #|exit 1

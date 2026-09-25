@@ -27,5 +27,6 @@ def main(): f(Sx6{Zx6{}})
 #|Location: f
 #|14 | def f(a):
 #|15>|   match a:
+#|   |   ^^^^^^^^
 #|16 |     case Sx6{a}:
 #|exit 1

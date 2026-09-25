@@ -42,5 +42,6 @@ def main():
 #|Location: main
 #|35 | def main():
 #|36>|   a = mk()
+#|   |   ^
 #|37 |   use2(a, a)
 #|exit 1

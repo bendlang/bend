@@ -67,5 +67,6 @@ def add_comm(a, b):
 #|Location: add_comm
 #|58 |       %add_succ(b, p) : {S{add(p, b)} == _ : N}
 #|59>|       {==}
+#|   |       ^^^^
 #|60 |
 #|exit 1

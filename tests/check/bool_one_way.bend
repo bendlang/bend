@@ -27,5 +27,6 @@ def main():
 #|Location: main
 #|21 | def main():
 #|22>|   pick(1)
+#|   |        ^
 #|23 |
 #|exit 1

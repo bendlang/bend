@@ -20,5 +20,6 @@ def main(v):
 #|Location:
 #|13 | def main(v):
 #|14>|   &y = v
+#|   |      ^
 #|15 |   y
 #|exit 1

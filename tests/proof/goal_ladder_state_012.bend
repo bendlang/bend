@@ -67,5 +67,6 @@ def add_comm(a, b):
 #|Location: add_comm
 #|55 |       %add_zero(b) : {_ == add(b, Z{}) : N}
 #|56>|       Type
+#|   |       ^^^^
 #|57 |     case S{p}:
 #|exit 1

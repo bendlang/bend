@@ -25,5 +25,6 @@ def main():
 #|Location: twice
 #|7 |   for -T: Type
 #|8>|   for +x: T
+#|  |           ^
 #|9 |   T & T
 #|exit 1

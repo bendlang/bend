@@ -26,5 +26,6 @@ def main(): f(Zx{})
 #|Location:
 #|12 |   match n:
 #|13>|     case Sx{return}:
+#|   |                   ^
 #|14 |       Zx{}
 #|exit 1

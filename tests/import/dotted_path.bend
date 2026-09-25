@@ -14,5 +14,6 @@ def main() -> U32:
 #|Location:
 #|5 | import Base
 #|6>| import ./LAWS.Nat.bend as H
+#|  |        ^
 #|7 |
 #|exit 1

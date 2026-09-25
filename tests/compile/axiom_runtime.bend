@@ -19,5 +19,6 @@ def main():
 #|Location: main
 #|13 | def main():
 #|14>|   magic
+#|   |   ^^^^^
 #|15 |
 #|exit 1

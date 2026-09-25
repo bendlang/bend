@@ -17,5 +17,6 @@ def bad() -> Nat:
 #|Location:
 #|12 | def bad() -> Nat:
 #|13>|   [0n : Nat*2n+4294967295n]
+#|   |             ^^^^^^^^^^^^^^
 #|14 | 
 #|exit 1

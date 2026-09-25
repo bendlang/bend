@@ -34,5 +34,6 @@ def main(): dupl(1n)
 #|Location: relax
 #|13 | def relax(f):
 #|14>|   f
+#|   |   ^
 #|15 | 
 #|exit 1

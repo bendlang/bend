@@ -15,5 +15,6 @@ def main(): Unit{}
 #|Location:
 #|4 | type Dd<n: Nat, A: Type> is Data:
 #|5>|   Cc{} : Dd(n, @x: Type -> x)
+#|  |        ^
 #|6 |
 #|exit 1

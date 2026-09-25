@@ -28,5 +28,6 @@ def main():
 #|Location:
 #| 8 | law f:
 #| 9>|   for a: [:U32]
+#|   |           ^
 #|10 |   for b: [:U32]
 #|exit 1

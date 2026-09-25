@@ -27,5 +27,6 @@ def main():
 #|Location: main.go
 #|12 |   match z:
 #|13>|     case h <> t:
+#|   |          ^^^^^^
 #|14 |       h
 #|exit 1

@@ -21,5 +21,6 @@ type Box is Data:
 #|Location: MkBox
 #|15 | type Box is Data:
 #|16>|   MkBox{f: Nat -> Nat}
+#|   |            ^^^^^^^^^^
 #|17 |
 #|exit 1

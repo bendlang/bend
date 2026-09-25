@@ -18,5 +18,6 @@ def main(): 0n
 #|Location: MkB
 #|7 | type BadT is Type:
 #|8>|   MkB{+f: Nat -> Nat}
+#|  |           ^^^^^^^^^^
 #|9 |
 #|exit 1

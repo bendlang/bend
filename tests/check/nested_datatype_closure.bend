@@ -40,5 +40,6 @@ def main():
 #|Location: main
 #|33 | def main():
 #|34>|   b = mk()
+#|   |   ^
 #|35 |   U32.add(use(b), use(b))
 #|exit 1

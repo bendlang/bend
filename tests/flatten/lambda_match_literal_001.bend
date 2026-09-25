@@ -23,5 +23,6 @@ def main():
 #|Location: main
 #|11 | law main:
 #|12>|   @n: Nt -> @b: Bl -> \{T: {n == n : Nt}; F: Nt}(b)
+#|   |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
 #|13 |
 #|exit 1

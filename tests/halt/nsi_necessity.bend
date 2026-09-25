@@ -36,5 +36,6 @@ def main(): Z{}
 #|Location: loop
 #|22 |     case P{a, b}:
 #|23>|       loop(a(b))
+#|   |       ^^^^
 #|24 |
 #|exit 1

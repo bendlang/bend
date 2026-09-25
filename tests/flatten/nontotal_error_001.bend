@@ -31,5 +31,6 @@ def main(): f(Sx7{Zx7{}})
 #|Location: f
 #|16 | def f(a):
 #|17>|   match a:
+#|   |   ^^^^^^^^
 #|18 |     case Sx7{Sx7{a}}:
 #|exit 1

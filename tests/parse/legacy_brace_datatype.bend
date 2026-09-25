@@ -14,5 +14,6 @@ def main(): Unit{}
 #|Location:
 #|3 | # ported from bend3
 #|4>| Nn6 { Zz6{} Ss6{p: Nn6} }
+#|  | ^
 #|5 |
 #|exit 1

@@ -41,5 +41,6 @@ def main(): 0
 #|Location: ev
 #|28 |     case c:
 #|29>|       {==}
+#|   |       ^^^^
 #|30 |
 #|exit 1

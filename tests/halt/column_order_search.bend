@@ -31,5 +31,6 @@ def main():
 #|Location:
 #|16 |     case Succ{p}:
 #|17>|       match n:
+#|   |             ^
 #|18 |         case Zero{}:
 #|exit 1

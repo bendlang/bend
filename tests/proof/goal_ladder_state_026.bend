@@ -64,5 +64,6 @@ def le_bump(r, d1, ev, e):
 #|Location: le_bump
 #|49 |     case 0n, 0n:
 #|50>|       Type
+#|   |       ^^^^
 #|51 |     case 0n, 1n+b:
 #|exit 1

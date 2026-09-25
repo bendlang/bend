@@ -22,5 +22,6 @@ def main():
 #|Location:
 #|7 |   for x: U32
 #|8>|   {[x] == [x] : [:U32]}
+#|  |                  ^
 #|9 |
 #|exit 1

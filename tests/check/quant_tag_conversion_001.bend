@@ -19,5 +19,6 @@ def relax(f):
 #|Location: relax
 #|11 | def relax(f):
 #|12>|   f
+#|   |   ^
 #|13 | 
 #|exit 1

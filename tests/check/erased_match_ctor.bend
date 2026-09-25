@@ -20,5 +20,6 @@ def main(): hidden(T8{})
 #|Location: hidden
 #|10 | 
 #|11>| def hidden(): \{F8: T8{}; \{T8: F8{}; \{}}}
+#|   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #|12 |
 #|exit 1

@@ -27,5 +27,6 @@ def duplicate(t): (z => {z : Ty(z)})(Box{consume(t), t})
 #|Location: duplicate
 #|21 | law duplicate: Res -> Box
 #|22>| def duplicate(t): (z => {z : Ty(z)})(Box{consume(t), t})
+#|   |               ^
 #|23 |
 #|exit 1

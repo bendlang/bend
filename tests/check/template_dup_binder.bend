@@ -17,5 +17,6 @@ def main() -> Unit:
 #|Location:
 #|7 | 
 #|8>| def cast(~T: Type, ~x: T, ~T: Type) -> T:
+#|  |                            ^
 #|9 |   x
 #|exit 1

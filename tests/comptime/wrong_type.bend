@@ -15,5 +15,6 @@ def main() -> Nat:
 #|Location: main
 #| 9 | def main() -> Nat:
 #|10>|   app(~Bool.not, 3n)
+#|   |        ^^^^^^^^
 #|11 |
 #|exit 1

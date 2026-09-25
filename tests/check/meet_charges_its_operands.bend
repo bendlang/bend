@@ -25,5 +25,6 @@ def dup(q):
 #|Location: dup
 #|18 | 
 #|19>| def dup(q):
+#|   |         ^
 #|20 |   P{q <&> &2, q <&> &2}
 #|exit 1

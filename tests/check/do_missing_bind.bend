@@ -20,5 +20,6 @@ def main():
 #|Location: main
 #|13 |   do Box<>:
 #|14>|     x : U32 <- Mk{3}
+#|   |     ^^^^^^^^^^^^^^^^
 #|15 |     return x
 #|exit 1

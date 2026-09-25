@@ -22,5 +22,6 @@ def main(v):
 #|Location:
 #|12 | def main(v):
 #|13>|   x = v
+#|   |   ^
 #|14 |   match x:
 #|exit 1

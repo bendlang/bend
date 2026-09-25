@@ -23,5 +23,6 @@ def main() -> Nat:
 #|Location:
 #|13 |
 #|14>| def F(f):
+#|   |         ^
 #|15 |   f
 #|exit 1

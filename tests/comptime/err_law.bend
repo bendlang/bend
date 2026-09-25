@@ -15,5 +15,6 @@ def app(~f, x):
 #|Location:
 #| 8 | 
 #| 9>| def app(~f, x):
+#|   |         ^
 #|10 |   f(x)
 #|exit 1

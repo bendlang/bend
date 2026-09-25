@@ -156,5 +156,6 @@ def main():
 #|Location: rt.rd
 #|78 |   for out: String
 #|79>|   for r: Result<&1, &1, (U32 & String), JSON>
+#|   |                                         ^^^^
 #|80 |   U32
 #|exit 1

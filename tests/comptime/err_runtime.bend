@@ -14,5 +14,6 @@ def main() -> Nat:
 #|Location:
 #| 8 | def main() -> Nat:
 #| 9>|   app(~Nat.add(1n), 3n, ~4n)
+#|   |                         ^
 #|10 |
 #|exit 1

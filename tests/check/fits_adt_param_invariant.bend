@@ -20,5 +20,6 @@ def cType(): cData
 #|Location: cType
 #|14 | law cType: Contra<Type>
 #|15>| def cType(): cData
+#|   |              ^^^^^
 #|16 |
 #|exit 1

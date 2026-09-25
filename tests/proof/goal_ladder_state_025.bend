@@ -124,5 +124,6 @@ def ack_gt(m, n):
 #|Location: ack_gt
 #|115 |         case 1n+q:
 #|116>|           Type
+#|    |           ^^^^
 #|117 |
 #|exit 1

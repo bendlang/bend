@@ -26,5 +26,6 @@ def main():
 #|Location: use
 #|14 | def use():
 #|15>|   EVIL_ADD_HOM
+#|   |   ^^^^^^^^^^^^
 #|16 |
 #|exit 1

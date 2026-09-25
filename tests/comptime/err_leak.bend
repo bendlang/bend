@@ -20,5 +20,6 @@ def main() -> Nat:
 #|Location: g
 #| 9 | def g(x: Nat) -> Nat:
 #|10>|   app(~(y => Nat.add(y, x)), 1n)
+#|   |   ^^^
 #|11 |
 #|exit 1

@@ -31,5 +31,6 @@ def main(x, b):
 #|Location: main
 #|19 |     case T{}:
 #|20>|       y = S{x}
+#|   |           ^^^^
 #|21 |       y
 #|exit 1

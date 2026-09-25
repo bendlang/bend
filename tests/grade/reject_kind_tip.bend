@@ -21,5 +21,6 @@ type Foo is Nat:
 #|Location: Foo
 #|14 | # a datatype declares a kind, not any type
 #|15>| type Foo is Nat:
+#|   |             ^^^
 #|16 |   MkFoo{}
 #|exit 1

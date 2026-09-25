@@ -21,5 +21,6 @@ def main():
 #|Location: main
 #|12 |   do IO<U32>:
 #|13>|     c : Sender<U32> & Receiver<U32> <- Chan.new(U32, 8)
+#|   |         ^^^^^^^^^^
 #|14 |     s : Result<U32, Sender<U32>> <- Chan.send(U32, c, 42)
 #|exit 1

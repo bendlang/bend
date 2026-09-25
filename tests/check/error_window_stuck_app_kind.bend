@@ -9,5 +9,6 @@ type Bad is F(Type):
 #|Location: Bad
 #|3 | law F: Type -> Type
 #|4>| type Bad is F(Type):
+#|  |             ^^^^^^^
 #|5 |
 #|exit 1

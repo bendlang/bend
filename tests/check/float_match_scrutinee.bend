@@ -25,5 +25,6 @@ def main():
 #|Location: f
 #|12 |   match x:
 #|13>|     case Chr{c}:
+#|   |          ^^^^^^
 #|14 |       0
 #|exit 1

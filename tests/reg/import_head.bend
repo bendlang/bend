@@ -14,5 +14,6 @@ def main():
 #|Location:
 #|3 | # the i
 #|4>| import Wat
+#|  |        ^
 #|5 | law main:
 #|exit 1

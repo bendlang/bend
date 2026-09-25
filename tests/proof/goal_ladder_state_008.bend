@@ -82,5 +82,6 @@ def mul_succ(a, b):
 #|Location: mul_succ
 #|73 |       %add_swap(p, b, mul(p, b)) : {S{add(p, add(b, mul(p, b)))} == S{_} : N}
 #|74>|       Type
+#|   |       ^^^^
 #|75 |
 #|exit 1

@@ -11,5 +11,6 @@ def bad() -> One -> One:
 #|Location: bad
 #|5 | def bad() -> One -> One:
 #|6>|   \{One: One{}; One: One{}}
+#|  |   ^^^^^^^^^^^^^^^^^^^^^^^^^
 #|7 |
 #|exit 1

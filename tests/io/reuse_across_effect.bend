@@ -67,5 +67,6 @@ def main():
 #|Location: main
 #|53 |   t = build(3n, 1)
 #|54>|   xs = {[1, 2, 3] : List<&2, U32>}
+#|   |   ^^
 #|55 |   do IO<Unit>:
 #|exit 1

@@ -22,5 +22,6 @@ def main(): f(k => k(41))
 #|Location:
 #|10 | def f(g):
 #|11>|   x <- g
+#|   |     ^
 #|12 |   x
 #|exit 1

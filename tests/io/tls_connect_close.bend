@@ -19,5 +19,6 @@ def main():
 #|Location: main
 #|11 |   do IO<U32>:
 #|12>|     h : Socket <- IO.try(Socket, TLS.connect("example.com", 443))
+#|   |                                  ^^^^^^^^^^^
 #|13 |     x : Unit <- TLS.close(h)
 #|exit 1

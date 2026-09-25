@@ -36,5 +36,6 @@ def main():
 #|Location:
 #|15 |       h
 #|16>|     case 1+d:
+#|   |              ^
 #|17 |       stack(d, (h * 5 : U32))
 #|exit 1

@@ -37,5 +37,6 @@ def main() -> IO(Unit):
 #|Location: main
 #|31 |   do List<Unit>:
 #|32>|     IO.print("5")
+#|   |     ^^^^^^^^^^^^^
 #|33 |
 #|exit 1

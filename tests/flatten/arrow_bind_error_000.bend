@@ -25,5 +25,6 @@ def main(): go(Pp{1, 2})
 #|Location:
 #|13 | def go(k):
 #|14>|   Pp{a, b} <- k
+#|   |            ^
 #|15 |   a
 #|exit 1

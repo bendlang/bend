@@ -27,5 +27,6 @@ type Cp<-T: Type, -x: T> is Data:
 #|Location: MkCp
 #|18 | type Cp<-T: Type, -x: T> is Data:
 #|19>|   MkCp{y: T, e: {x == y : T}}
+#|   |           ^
 #|20 | 
 #|exit 1

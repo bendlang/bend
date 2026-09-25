@@ -18,5 +18,6 @@ def main(): id(7)
 #|Location:
 #|7 | 
 #|8>| def id(): λx.x
+#|  |           ^
 #|9 |
 #|exit 1

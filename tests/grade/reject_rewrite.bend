@@ -31,5 +31,6 @@ def cheat(e, f):
 #|Location: cheat
 #|22 | def cheat(e, f):
 #|23>|   f(f(Zero{}))
+#|   |   ^^^^^^^^^^^^
 #|24 |
 #|exit 1

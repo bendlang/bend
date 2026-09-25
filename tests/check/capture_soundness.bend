@@ -52,5 +52,6 @@ def main():
 #|Location: bad
 #|36 |   }
 #|37>|   f(a => b => b, a => b => {==})
+#|   |                            ^^^^
 #|38 |
 #|exit 1

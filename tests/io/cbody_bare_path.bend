@@ -25,5 +25,6 @@ def main():
 #|Location:
 #|13 | def window(title, w, h):
 #|14>|   import path_bare.c
+#|   |          ^
 #|15 |
 #|exit 1

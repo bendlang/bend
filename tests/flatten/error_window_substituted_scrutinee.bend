@@ -23,5 +23,6 @@ def main() -> Nat:
 #|Location:
 #|11 |     case y, 1n+q:
 #|12>|       match y:
+#|   |             ^
 #|13 |         case 0n:
 #|exit 1

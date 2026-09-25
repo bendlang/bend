@@ -18,5 +18,6 @@ def main() -> U32:
 #|Location:
 #| 9 | def g(b: Aa) -> U32:
 #|10>|   Kk{a, c} : Aa = b
+#|   |   ^^^^^^^^
 #|11 |   (a + c : U32)
 #|exit 1

@@ -9,5 +9,6 @@ def match(x):
 #|Location:
 #|2 | # ported from bend3
 #|3>| def match(x):
+#|  |          ^
 #|4 |   x
 #|exit 1

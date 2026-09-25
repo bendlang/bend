@@ -14,5 +14,6 @@ def main():
 #|Location: main
 #| 8 | def main():
 #| 9>|   JSON.show(JSON.read("12.50"))
+#|   |   ^^^^^^^^^
 #|10 |
 #|exit 1

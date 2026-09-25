@@ -28,5 +28,6 @@ def main():
 #|Location: main
 #|22 | def main():
 #|23>|   [1] ++ [2]
+#|   |   ^^^
 #|24 |
 #|exit 1

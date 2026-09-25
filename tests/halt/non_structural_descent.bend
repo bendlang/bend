@@ -44,5 +44,6 @@ def main(): fold(10n)
 #|Location: fold
 #|31 |     case n:
 #|32>|       1n+ fold(ndiv(n, 2n))
+#|   |           ^^^^
 #|33 |
 #|exit 1

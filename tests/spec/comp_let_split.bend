@@ -64,5 +64,6 @@ def main():
 #|Location:
 #|17 |   for -A: Type
 #|18>|   for ~p: A -> B2
+#|   |       ^
 #|19 |   for xs: L<A>
 #|exit 1

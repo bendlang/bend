@@ -22,5 +22,6 @@ def main():
 #|Location: f
 #| 9 | 
 #|10>| def f(x):
+#|   |       ^
 #|11 |   (x + x : U32)
 #|exit 1

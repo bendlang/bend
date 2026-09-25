@@ -15,5 +15,6 @@ def main():
 #|Location: main
 #| 9 | def main():
 #|10>|   GFX.from_fn(3, x => x)
+#|   |   ^^^^^^^^^^^
 #|11 |
 #|exit 1

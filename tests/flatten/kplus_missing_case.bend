@@ -28,5 +28,6 @@ def main():
 #|Location:
 #|14 |       0
 #|15>|     case 2+k:
+#|   |              ^
 #|16 |       k
 #|exit 1

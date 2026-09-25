@@ -30,5 +30,6 @@ def main():
 #|Location: coerce
 #|16 | def coerce(p):
 #|17>|   p
+#|   |   ^
 #|18 |
 #|exit 1

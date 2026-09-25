@@ -17,5 +17,6 @@ def main(): foo$bar
 #|Location:
 #|6 | 
 #|7>| def foo$bar(): Unit{}
+#|  |        ^
 #|8 |
 #|exit 1

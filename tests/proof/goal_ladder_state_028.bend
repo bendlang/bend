@@ -56,5 +56,6 @@ def half_exists(x, e):
 #|Location: half_exists
 #|47 |     case S{S{p}}:
 #|48>|       Type
+#|   |       ^^^^
 #|49 |
 #|exit 1

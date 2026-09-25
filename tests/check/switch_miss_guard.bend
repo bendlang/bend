@@ -42,5 +42,6 @@ def main():
 #|Location: pick
 #|27 |     case p:
 #|28>|       1.5
+#|   |       ^^^
 #|29 |
 #|exit 1

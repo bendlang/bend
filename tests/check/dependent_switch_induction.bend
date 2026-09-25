@@ -40,5 +40,6 @@ def main():
 #|Location:
 #|15 |       0
 #|16>|     case 1+p:
+#|   |              ^
 #|17 |       down(p)
 #|exit 1

@@ -24,5 +24,6 @@ def main():
 #|Location: T0
 #|10 | def T0():
 #|11>|   {Zx{} != Zx{} : Nx}
+#|   |         ^^
 #|12 |
 #|exit 1

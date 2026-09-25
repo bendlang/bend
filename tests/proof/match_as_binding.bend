@@ -43,5 +43,6 @@ def main():
 #|Location:
 #|27 |   match nat_eq(h, i) as e:
 #|28>|     case True{}:
+#|   |                 ^
 #|29 |       h
 #|exit 1

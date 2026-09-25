@@ -26,5 +26,6 @@ def main(): dupl(Nat, 1n)
 #|Location: dupl
 #|11 | def dupl(T, a):
 #|12>|   +x = a
+#|   |   ^^^
 #|13 |   (x, x)
 #|exit 1

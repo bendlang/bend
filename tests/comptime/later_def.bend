@@ -20,5 +20,6 @@ def later(n: Nat) -> Nat:
 #|Location: app~0
 #| 9 | def main() -> Nat:
 #|10>|   app(~later, 3n)
+#|   |        ^^^^^
 #|11 |
 #|exit 1

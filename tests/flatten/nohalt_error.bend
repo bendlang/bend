@@ -38,5 +38,6 @@ def main(): Fx4{}
 #|Location: bad
 #|25 |     case Tx4{}:
 #|26>|       bad(flip(Tx4{}))
+#|   |       ^^^
 #|27 |     case Fx4{}:
 #|exit 1

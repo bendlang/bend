@@ -14,5 +14,6 @@ def main() -> IO(Unit):
 #|Location:
 #|4 |
 #|5>| def keep(x: Nat, ~k: Nat) -> Nat:
+#|  |                  ^
 #|6 |   x
 #|exit 1

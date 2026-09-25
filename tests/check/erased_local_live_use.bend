@@ -15,5 +15,6 @@ def f(x: Nat) -> Nat:
 #|Location: f
 #|6 | def f(x: Nat) -> Nat:
 #|7>|   -y = x
+#|  |   ^^
 #|8 |   y
 #|exit 1

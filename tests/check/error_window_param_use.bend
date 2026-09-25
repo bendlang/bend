@@ -16,5 +16,6 @@ def h(p: Nat) -> Bool:
 #|Location: h
 #| 8 | def h(p: Nat) -> Bool:
 #| 9>|   Bool.and(True{}, p)
+#|   |                    ^
 #|10 | 
 #|exit 1

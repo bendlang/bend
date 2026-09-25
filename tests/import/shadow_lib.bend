@@ -12,5 +12,6 @@ def Nat.add(a: Nat, b: Nat) -> Bool:
 #|Location:
 #|5 | 
 #|6>| def Nat.add(a: Nat, b: Nat) -> Bool:
+#|  |            ^
 #|7 |   True{}
 #|exit 1

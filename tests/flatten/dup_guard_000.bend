@@ -22,5 +22,6 @@ def main(a):
 #|Location:
 #|13 | def main(a):
 #|14>|   match a, a:
+#|   |            ^
 #|15 |     case Z{}, x:
 #|exit 1

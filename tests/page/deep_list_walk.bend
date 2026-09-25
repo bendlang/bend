@@ -35,5 +35,6 @@ def thm():
 #|Location: thm
 #|29 | def thm():
 #|30>|   {==}
+#|   |   ^^^^
 #|31 | 
 #|exit 1

@@ -52,5 +52,6 @@ def main(): loop(Z{}, More{Z{}}, S{Z{}})
 #|Location: loop
 #|37 |     case More{x}:
 #|38>|       loop(x, grow(a, More{Z{}}, b), Z{})
+#|   |       ^^^^
 #|39 |
 #|exit 1

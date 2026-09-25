@@ -22,5 +22,6 @@ def main():
 #|Location: main.out
 #|10 | def main.out():
 #|11>|   \{True: 1n; False: 0n}({True{} : Bool})
+#|   |   ^^^^^^^^^^^^^^^^^^^^^^
 #|12 |
 #|exit 1

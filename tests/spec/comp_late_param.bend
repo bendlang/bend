@@ -43,5 +43,6 @@ def main():
 #|Location:
 #|12 |   for xs: L
 #|13>|   for ~f: U32 -> U32
+#|   |       ^
 #|14 |   L
 #|exit 1

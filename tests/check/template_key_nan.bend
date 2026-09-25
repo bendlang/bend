@@ -45,5 +45,6 @@ def contradiction() -> Pick(~F32{WCon{True{}, WCon{False{}, WCon{False{}, WCon{F
 #|Location: contradiction
 #|39 | def contradiction() -> Pick(~F32{WCon{True{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{False{}, WCon{True{}, WCon{True{}, WCon{True{}, WCon{True{}, WCon{True{}, WCon{True{}, WCon{True{}, WCon{True{}, WCon{True{}, WCon{False{}, WNil{}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}):
 #|40>|   seed
+#|   |   ^^^^
 #|41 | 
 #|exit 1

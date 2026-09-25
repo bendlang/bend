@@ -23,5 +23,6 @@ def main(): f(Tt{})
 #|Location: f
 #|12 | def f(b):
 #|13>|   match b:
+#|   |   ^^^^^^^^
 #|14 |
 #|exit 1

@@ -19,5 +19,6 @@ def main(): 0
 #|Location: bad
 #| 8 | 
 #| 9>| def bad(): {==}
+#|   |            ^^^^
 #|10 |
 #|exit 1

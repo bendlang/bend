@@ -80,5 +80,6 @@ def mul_succ(a, b):
 #|Location: mul_succ
 #|71 |     case S{p}:
 #|72>|       Type
+#|   |       ^^^^
 #|73 |
 #|exit 1

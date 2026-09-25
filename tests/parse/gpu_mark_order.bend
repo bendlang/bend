@@ -24,5 +24,6 @@ def main():
 #|Location:
 #|11 | 
 #|12>| def pick<A>(x, y):
+#|   |         ^
 #|13 |   y
 #|exit 1

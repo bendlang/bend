@@ -11,5 +11,6 @@ def main() -> F32:
 #|Location:
 #|5 | def main() -> F32:
 #|6>|   1.0 +. 2.0
+#|  |        ^
 #|7 |
 #|exit 1

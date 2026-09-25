@@ -28,5 +28,6 @@ def main():
 #|Location:
 #|12 | def leak(z):
 #|13>|   -x = {z : Bool}
+#|   |   ^^
 #|14 |   match x:
 #|exit 1

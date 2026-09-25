@@ -39,5 +39,6 @@ def main():
 #|Location:
 #|25 |           0
 #|26>|     case 2+p:
+#|   |              ^
 #|27 |       p
 #|exit 1

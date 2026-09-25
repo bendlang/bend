@@ -28,5 +28,6 @@ def main():
 #|Location:
 #|12 |   match Bool.not(a), b as e:
 #|13>|     case True{}, True{}:
+#|   |                         ^
 #|14 |       1
 #|exit 1

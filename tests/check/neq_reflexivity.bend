@@ -27,5 +27,6 @@ def main():
 #|Location: prf
 #|15 | def prf():
 #|16>|   {==}
+#|   |   ^^^^
 #|17 |
 #|exit 1

@@ -39,5 +39,6 @@ def main(): N{}
 #|Location: loop
 #|23 |     case C{f}:
 #|24>|       apply1(y => loop(f(y)), C{z => z})
+#|   |                   ^^^^
 #|25 |     case t:
 #|exit 1

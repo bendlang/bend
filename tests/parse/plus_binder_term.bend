@@ -14,5 +14,6 @@ def main() -> U32:
 #|Location: main
 #|6 |   x = U32.add(1, 1)
 #|7>|   U32.add(+x, 1)
+#|  |           ^^
 #|8 | 
 #|exit 1

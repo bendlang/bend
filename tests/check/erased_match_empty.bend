@@ -20,5 +20,6 @@ def main(): Uu9{}
 #|Location: bad
 #|10 | 
 #|11>| def bad(): \{}
+#|   |            ^^^
 #|12 |
 #|exit 1

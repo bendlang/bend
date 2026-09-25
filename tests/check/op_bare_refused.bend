@@ -16,6 +16,7 @@ def main() -> Nat:
 #|Location:
 #| 8 |   + b
 #| 9>|   + c
+#|   |   ^
 #|10 | 
 #|Note: we broke this after launch, sorry. Until 2.0.16 a bare operator meant Nat.
 #|That was a bug: operators demand annotation. Wrap the expression and it'll work again.

@@ -33,5 +33,6 @@ def one_odd(ev):
 #|Location: one_odd
 #|23 |     case EZ{eq}:
 #|24>|       Type
+#|   |       ^^^^
 #|25 |     case ESS{p, e, eq}:
 #|exit 1

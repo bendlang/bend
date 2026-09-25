@@ -15,5 +15,6 @@ def main(): Unit{}
 #|Location:
 #|4 | type Bad is Data:
 #|5>|   Mk{} : U32
+#|  |        ^
 #|6 |
 #|exit 1

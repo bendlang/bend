@@ -50,5 +50,6 @@ def main(): 0
 #|Location: eq
 #|37 | def eq(t):
 #|38>|   {==}
+#|   |   ^^^^
 #|39 |
 #|exit 1

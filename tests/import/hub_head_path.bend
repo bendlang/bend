@@ -14,5 +14,6 @@ def main() -> U32:
 #|Location:
 #|5 | import Base
 #|6>| import ../0x0123456789abcdef0123456789abcdef/f.bend as F
+#|  |        ^
 #|7 |
 #|exit 1

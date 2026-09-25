@@ -9,5 +9,6 @@ law match:
 #|Location:
 #|2 | # ported from bend3
 #|3>| law match:
+#|  |          ^
 #|4 |   Unit
 #|exit 1

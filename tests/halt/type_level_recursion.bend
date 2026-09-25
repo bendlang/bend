@@ -19,5 +19,6 @@ def main(): 0n
 #|Location: a
 #| 9 | 
 #|10>| def a(): a
+#|   |          ^
 #|11 | law main:
 #|exit 1

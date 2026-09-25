@@ -27,5 +27,6 @@ def main(): Ua{}
 #|Location: q
 #|16 | 
 #|17>| def q(): {==}
+#|   |          ^^^^
 #|18 |
 #|exit 1

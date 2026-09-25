@@ -66,5 +66,6 @@ def main(): twice(Inr{2})
 #|Location: leak
 #|54 | 
 #|55>| def leak(e):
+#|   |          ^
 #|56 |   leak.go(e, la(e))
 #|exit 1

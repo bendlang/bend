@@ -23,5 +23,6 @@ def main():
 #|Location:
 #|11 | 
 #|12>| import /late/mod.bend as L
+#|   | ^
 #|13 |
 #|exit 1

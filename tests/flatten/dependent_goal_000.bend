@@ -47,5 +47,6 @@ def main(n):
 #|Location: main
 #|39 | def main(n):
 #|40>|   \{T: {==}; F: {==}}(even(n))
+#|   |   ^^^^^^^^^^^^^^^^^^^
 #|41 |
 #|exit 1

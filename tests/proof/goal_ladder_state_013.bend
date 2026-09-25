@@ -65,5 +65,6 @@ def add_comm(a, b):
 #|Location: add_comm
 #|56 |     case S{p}:
 #|57>|       Type
+#|   |       ^^^^
 #|58 |
 #|exit 1

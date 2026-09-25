@@ -14,5 +14,6 @@ def main() -> U32:
 #|Location:
 #|5 | import Base
 #|6>| import ./law.k~B.bend as E
+#|  |        ^
 #|7 |
 #|exit 1

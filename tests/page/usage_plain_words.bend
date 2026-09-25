@@ -23,5 +23,6 @@ def c2():
 #|Location: c2
 #|17 | def c2():
 #|18>|   TLam{f => TLam{x => TApp{f, TApp{f, x}}}}
+#|   |        ^
 #|19 |
 #|exit 1

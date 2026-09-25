@@ -26,5 +26,6 @@ type T<a, b, -A: Kind(a), -B: Kind(b)> is Kind(a):
 #|Location: C
 #|15 | type T<a, b, -A: Kind(a), -B: Kind(b)> is Kind(a):
 #|16>|   C{x: B}
+#|   |        ^
 #|17 | 
 #|exit 1

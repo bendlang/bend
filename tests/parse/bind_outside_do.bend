@@ -20,5 +20,6 @@ def main(): x <- half(10)
 #|Location:
 #|14 | 
 #|15>| def main(): x <- half(10)
+#|   |               ^
 #|16 |
 #|exit 1

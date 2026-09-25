@@ -32,5 +32,6 @@ def main(): f(Zw3{})
 #|Location:
 #|18 |     case Sw3{p}:
 #|19>|       match a:
+#|   |       ^^^^^^^^
 #|20 |         case Zw3{}:
 #|exit 1

@@ -108,5 +108,6 @@ def mul_comm(a, b):
 #|Location: mul_comm
 #| 99 |       %mul_comm(p, b) : {add(b, mul(p, b)) == add(b, _) : N}
 #|100>|       Type
+#|    |       ^^^^
 #|101 |
 #|exit 1

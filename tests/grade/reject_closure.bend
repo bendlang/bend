@@ -25,5 +25,6 @@ def dupf(f):
 #|Location: dupf
 #|15 | law dupf:
 #|16>|   for +f: Nat -> Nat
+#|   |           ^^^^^^^^^^
 #|17 |   Nat
 #|exit 1

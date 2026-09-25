@@ -24,5 +24,6 @@ def main() -> Nat:
 #|Location: grow~9
 #|13 |     case 1n+p:
 #|14>|       grow(~(y => f(f(y))), p)
+#|   |       ^^^^
 #|15 |
 #|exit 1

@@ -44,5 +44,6 @@ def main(): fst2(Bx2, dup2(Bx2)(mk2(Unit{})))
 #|Location: main
 #|38 | 
 #|39>| def main(): fst2(Bx2, dup2(Bx2)(mk2(Unit{})))
+#|   |                  ^^^
 #|40 |
 #|exit 1

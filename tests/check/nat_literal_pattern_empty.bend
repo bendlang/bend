@@ -26,5 +26,6 @@ def boom() -> Empty:
 #|Location:
 #|15 |   match b:
 #|16>|     case 0n:
+#|   |          ^^
 #|17 |       {\{K: q => w => f(q)} : D -> U -> Empty}(K{Zero{Un{}}})
 #|exit 1

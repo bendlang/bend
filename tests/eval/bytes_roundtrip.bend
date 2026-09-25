@@ -15,5 +15,6 @@ def main():
 #|Location: main
 #| 9 | def main():
 #|10>|   Bytes.to_string(Bytes.from_string("hi"))
+#|   |   ^^^^^^^^^^^^^^^
 #|11 |
 #|exit 1

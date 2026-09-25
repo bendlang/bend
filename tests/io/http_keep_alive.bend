@@ -92,5 +92,6 @@ def main():
 #|Location: chk_keep
 #|22 | def chk_keep():
 #|23>|   a = b2u(HTTP.keep_alive(True{}, []))
+#|   |           ^^^^^^^^^^^^^^^
 #|24 |   b = b2u(HTTP.keep_alive(True{}, [("Connection", "close")]))
 #|exit 1

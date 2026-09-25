@@ -31,5 +31,6 @@ def main(): Z{}
 #|Location: mk
 #|15 |     case Sup{f}:
 #|16>|       Sup{x => mk(x)}
+#|   |                ^^
 #|17 |     case u:
 #|exit 1

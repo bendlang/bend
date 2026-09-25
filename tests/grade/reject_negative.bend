@@ -21,5 +21,6 @@ type Knot is Data:
 #|Location: KRoll
 #|15 | type Knot is Data:
 #|16>|   KRoll{run: Knot -> Empty}
+#|   |              ^^^^^^^^^^^^^
 #|17 |
 #|exit 1

@@ -34,5 +34,6 @@ def main(x):
 #|Location:
 #|12 |   for -e: {a == b : Nat}
 #|13>|   for ~g: Nat -> Nat
+#|   |       ^
 #|14 |   for x: Nat
 #|exit 1

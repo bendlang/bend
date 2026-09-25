@@ -35,5 +35,6 @@ def contradiction() -> Pick(~ANode{ANode{ALeaf{Unit{}}, ALeaf{Unit{}}}, ALeaf{Un
 #|Location: contradiction
 #|29 | def contradiction() -> Pick(~ANode{ANode{ALeaf{Unit{}}, ALeaf{Unit{}}}, ALeaf{Unit{}}}):
 #|30>|   seed
+#|   |   ^^^^
 #|31 | 
 #|exit 1

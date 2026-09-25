@@ -36,5 +36,6 @@ def add_zero(a):
 #|Location: add_zero
 #|28 |     case Sh{p}:
 #|29>|       {==}
+#|   |       ^^^^
 #|30 |
 #|exit 1

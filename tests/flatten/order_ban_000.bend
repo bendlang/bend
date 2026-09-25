@@ -29,5 +29,6 @@ def main():
 #|Location:
 #|14 | def f(a, b):
 #|15>|   match b, a:
+#|   |            ^
 #|16 |     case Zy{}, y:
 #|exit 1

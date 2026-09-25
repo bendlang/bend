@@ -12,5 +12,6 @@ def main(): \{Qux: 3}
 #|Location: main
 #|6 |
 #|7>| def main(): \{Qux: 3}
+#|  |             ^^^^^^^^^
 #|8 |
 #|exit 1

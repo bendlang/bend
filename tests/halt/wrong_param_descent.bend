@@ -34,5 +34,6 @@ def main(): f(0n, 0n)
 #|Location: f
 #|19 |     case 1n:
 #|20>|       f(1n, Nat.sub(y, 1n))
+#|   |       ^
 #|21 |     case p:
 #|exit 1

@@ -24,5 +24,6 @@ def main():
 #|Location:
 #|17 | def main():
 #|18>|   a, b = f(1)
+#|   |    ^
 #|19 |   a
 #|exit 1

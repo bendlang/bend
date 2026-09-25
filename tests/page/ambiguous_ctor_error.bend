@@ -27,5 +27,6 @@ def main(): f(K{1})
 #|Location:
 #|7 | type B is Data:
 #|8>|   K{a: U32, b: U32}
+#|  |    ^
 #|9 |
 #|exit 1

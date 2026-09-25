@@ -20,5 +20,6 @@ def main(): 0n
 #|Location: bad
 #|10 | 
 #|11>| def bad(): bad(0n)
+#|   |            ^^^
 #|12 | law main:
 #|exit 1

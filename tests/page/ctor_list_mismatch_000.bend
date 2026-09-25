@@ -14,5 +14,6 @@ def main(): Tru{}
 #|Location: main
 #| 8 | 
 #| 9>| def main(): Tru{}
+#|   |             ^^^^^
 #|10 |
 #|exit 1

@@ -16,5 +16,6 @@ def main():
 #|Location:
 #|5 | import Base
 #|6>| import /cycle/other_half.bend as C
+#|  |        ^
 #|7 |
 #|exit 1

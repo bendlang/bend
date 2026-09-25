@@ -27,5 +27,6 @@ def up(xs):
 #|Location: up
 #|19 | def up(xs):
 #|20>|   xs
+#|   |   ^^
 #|21 | 
 #|exit 1

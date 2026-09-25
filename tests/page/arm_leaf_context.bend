@@ -51,5 +51,6 @@ def use(n, h):
 #|Location: use.at
 #|38 |     case MS{p}:
 #|39>|       p
+#|   |       ^
 #|40 | 
 #|exit 1

@@ -15,5 +15,6 @@ def main():
 #|Location:
 #|4 | import Base
 #|5>| import /shared/proof_chain.bend as P
+#|  |        ^
 #|6 |
 #|exit 1

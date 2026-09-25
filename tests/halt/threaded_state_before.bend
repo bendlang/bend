@@ -31,5 +31,6 @@ def main():
 #|Location: go
 #|16 |     case Succ{p}:
 #|17>|       go((acc + 1 : U32), p)
+#|   |       ^^
 #|18 |
 #|exit 1

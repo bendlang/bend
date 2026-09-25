@@ -41,5 +41,6 @@ def main():
 #|Location: once
 #|26 | def once(k, x):
 #|27>|   apply(y => (y + k : U32), x)
+#|   |   ^^^^^
 #|28 |
 #|exit 1

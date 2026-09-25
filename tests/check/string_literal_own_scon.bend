@@ -20,5 +20,6 @@ def boom() -> Empty:
 #|Location: boom
 #|14 | def boom() -> Empty:
 #|15>|   extract("x")
+#|   |           ^^^
 #|16 | 
 #|exit 1

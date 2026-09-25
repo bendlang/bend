@@ -16,5 +16,6 @@ def main():
 #|Location:
 #|5 | import Base
 #|6>| import /diamond/top.bend as D
+#|  |        ^
 #|7 |
 #|exit 1

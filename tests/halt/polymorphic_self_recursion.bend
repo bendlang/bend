@@ -21,5 +21,6 @@ def main(): loop(Nat)
 #|Location: loop
 #| 9 | 
 #|10>| def loop(): a => loop(a)
+#|   |                  ^^^^
 #|11 | law main:
 #|exit 1

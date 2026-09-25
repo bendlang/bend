@@ -48,5 +48,6 @@ def ones_twos(n):
 #|Location: ones_twos
 #|40 |     case 1n+n:
 #|41>|       {==}
+#|   |       ^^^^
 #|42 |
 #|exit 1

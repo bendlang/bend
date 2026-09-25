@@ -22,5 +22,6 @@ def main():
 #|Location:
 #|10 | def TT():
 #|11>|   @~g: (U32 -> U32) -> U32
+#|   |    ^
 #|12 |
 #|exit 1

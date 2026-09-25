@@ -29,5 +29,6 @@ def main(): f(Zw2{}, Zw2{})
 #|Location:
 #|16 |   match a, b:
 #|17>|     case Zw2{}:
+#|   |                ^
 #|18 |       Aw2{}
 #|exit 1

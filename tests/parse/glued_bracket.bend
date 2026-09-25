@@ -22,5 +22,6 @@ def main(): id2
 #|Location: main
 #|16 | 
 #|17>| def main(): id2
+#|   |             ^^^
 #|18 |
 #|exit 1

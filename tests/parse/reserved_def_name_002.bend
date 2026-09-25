@@ -9,5 +9,6 @@ def match(): Unit{}
 #|Location:
 #|3 | # ported from bend3
 #|4>| def match(): Unit{}
+#|  |          ^
 #|5 |
 #|exit 1

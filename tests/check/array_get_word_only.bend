@@ -21,5 +21,6 @@ def main(xs):
 #|Location:
 #|10 | law main:
 #|11>|   for xs: [:Box2]
+#|   |            ^
 #|12 |   Box2
 #|exit 1

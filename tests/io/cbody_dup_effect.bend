@@ -23,5 +23,6 @@ def main():
 #|Location:
 #|11 | def print(x):
 #|12>|   import ./lib/eff.c
+#|   |          ^
 #|13 |
 #|exit 1

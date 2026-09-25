@@ -29,5 +29,6 @@ def main(a):
 #|Location: main
 #|19 | def main(a):
 #|20>|   match a:
+#|   |   ^^^^^^^^
 #|21 |     case 0:
 #|exit 1

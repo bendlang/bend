@@ -16,5 +16,6 @@ def main() -> {Nat.add(3n, 0n) == 3n : Nat}:
 #|Location: add0
 #|7 | def add0(~n: Nat) -> {Nat.add(n, 0n) == n : Nat}:
 #|8>|   {==}
+#|  |   ^^^^
 #|9 |
 #|exit 1

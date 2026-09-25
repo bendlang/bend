@@ -54,5 +54,6 @@ def add_swap(x, y, z):
 #|Location: add_swap
 #|44 |     case S{q}:
 #|45>|       Type
+#|   |       ^^^^
 #|46 |
 #|exit 1

@@ -68,5 +68,6 @@ def len_app(xs, ys):
 #|Location: len_app
 #|58 |     case LCon{h, t}:
 #|59>|       Type
+#|   |       ^^^^
 #|60 |
 #|exit 1

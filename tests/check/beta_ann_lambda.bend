@@ -13,5 +13,6 @@ def main() -> U32:
 #|Location: main
 #|7 | def main() -> U32:
 #|8>|   {(x => x) : Nat -> Nat}(1)
+#|  |                           ^
 #|9 |
 #|exit 1

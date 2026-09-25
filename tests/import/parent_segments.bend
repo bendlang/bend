@@ -17,5 +17,6 @@ def main():
 #|Location:
 #|5 | import Base
 #|6>| import /up/up/native_mod.c as M
+#|  |        ^
 #|7 |
 #|exit 1

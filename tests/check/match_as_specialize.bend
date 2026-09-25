@@ -28,5 +28,6 @@ def main():
 #|Location:
 #|12 |   match x as e:
 #|13>|     case Zero{}:
+#|   |                 ^
 #|14 |       h
 #|exit 1

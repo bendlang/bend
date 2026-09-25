@@ -22,5 +22,6 @@ def main():
 #|Location: keep
 #|6 | law keep:
 #|7>|   for +x: List<&1, Nat>
+#|  |           ^^^^^^^
 #|8 |   List<&1, Nat>
 #|exit 1

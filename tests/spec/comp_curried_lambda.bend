@@ -32,5 +32,6 @@ def main():
 #|Location: helper
 #|19 |
 #|20>| def helper(x):
+#|   |            ^
 #|21 |   (x * x : U32)
 #|exit 1

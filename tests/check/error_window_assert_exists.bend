@@ -10,5 +10,6 @@ law bad:
 #|Location: bad
 #|3 | law bad:
 #|4>|   exs x: Type
+#|  |       ^
 #|5 |   Type
 #|exit 1

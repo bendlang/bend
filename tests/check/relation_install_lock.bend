@@ -22,5 +22,6 @@ def main():
 #|Location: bogus
 #|7 | law bogus:
 #|8>|   (3n < 2n : U32)
+#|  |    ^^
 #|9 |
 #|exit 1

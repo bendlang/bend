@@ -17,6 +17,7 @@ def t(b: Bool) -> Maybe{&2, Bool}:
 #|Location: t
 #|4 |
 #|5>| def t(b: Bool) -> Maybe{&2, Bool}:
+#|  |                   ^^^^^^^^^^^^^^^
 #|6 |   match b:
 #|Note: Maybe is a datatype: write its arguments as <>
 #|exit 1

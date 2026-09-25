@@ -30,5 +30,6 @@ def main(): 0n
 #|Location: rec
 #|17 |     case Sup{g}:
 #|18>|       rec(g(0n))
+#|   |       ^^^
 #|19 |
 #|exit 1

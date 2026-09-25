@@ -20,5 +20,6 @@ def main(): blk()
 #|Location:
 #| 9 | 
 #|10>| def blk(): {a = 7; a}
+#|   |               ^
 #|11 |
 #|exit 1

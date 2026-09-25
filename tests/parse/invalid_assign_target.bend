@@ -23,5 +23,6 @@ def main():
 #|Location:
 #|16 | def main():
 #|17>|   f(1) = 3
+#|   |   ^^^^
 #|18 |   0
 #|exit 1

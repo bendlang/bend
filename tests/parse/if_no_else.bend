@@ -22,5 +22,6 @@ def main():
 #|Location:
 #|10 | def f(b):
 #|11>|   if b: 1
+#|   |       ^
 #|12 |
 #|exit 1

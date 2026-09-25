@@ -14,5 +14,6 @@ def main():
 #|Location: main
 #| 8 | def main():
 #| 9>|   Parser.many(U32, Parser.digit())
+#|   |   ^^^^^^^^^^^
 #|10 |
 #|exit 1

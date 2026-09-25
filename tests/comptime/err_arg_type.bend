@@ -14,5 +14,6 @@ def main() -> Nat:
 #|Location: main
 #| 8 | def main() -> Nat:
 #| 9>|   T(~True{}, 2n)
+#|   |      ^^^^^^
 #|10 |
 #|exit 1

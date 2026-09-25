@@ -24,5 +24,6 @@ def main(): f(x => x)
 #|Location: f
 #|12 |   match h:
 #|13>|     case Z{}:
+#|   |          ^^^
 #|14 |       0
 #|exit 1

@@ -16,5 +16,6 @@ def bare():
 #|Location: bare
 #|10 | def bare():
 #|11>|   List
+#|   |   ^^^^
 #|12 |
 #|exit 1

@@ -15,5 +15,6 @@ def main():
 #|Location:
 #| 8 | def main():
 #| 9>|   m = [7; 16]
+#|   |         ^
 #|10 |   0
 #|exit 1

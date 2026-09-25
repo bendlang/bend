@@ -18,5 +18,6 @@ def main(): 0
 #|Location:
 #|7 | 
 #|8>| def t(): ∀x:U32.U32
+#|  |          ^
 #|9 |
 #|exit 1

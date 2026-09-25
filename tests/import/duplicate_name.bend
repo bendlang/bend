@@ -24,5 +24,6 @@ def main():
 #|Location:
 #|6 | 
 #|7>| law Nat.add:
+#|  |            ^
 #|8 |   for a: Nat
 #|exit 1

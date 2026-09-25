@@ -21,5 +21,6 @@ def main(): gamma
 #|Location: main
 #|15 | 
 #|16>| def main(): gamma
+#|   |             ^^^^^
 #|17 |
 #|exit 1

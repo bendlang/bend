@@ -17,5 +17,6 @@ def main():
 #|Location: main
 #|11 | def main():
 #|12>|   F32.sqrt(1.0, 2.0)
+#|   |   ^^^^^^^^^^^^^^^^^^
 #|13 |
 #|exit 1

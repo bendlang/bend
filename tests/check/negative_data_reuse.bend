@@ -29,5 +29,6 @@ def main(): omega(Ln{t => t})
 #|Location: omega
 #|15 |   match t:
 #|16>|     case Ln{f}:
+#|   |             ^
 #|17 |       f(Ln{f})
 #|exit 1

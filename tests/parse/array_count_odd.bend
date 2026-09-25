@@ -10,5 +10,6 @@ def main() -> Array<U32>:
 #|Location:
 #|5 | def main() -> Array<U32>:
 #|6>|   [0 : U32*3n]
+#|  |            ^^
 #|7 |
 #|exit 1

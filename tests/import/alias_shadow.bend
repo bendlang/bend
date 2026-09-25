@@ -13,5 +13,6 @@ def main() -> Nat:
 #|Location:
 #|7 | def main() -> Nat:
 #|8>|   Nat.add(2n, 2n)
+#|  |          ^
 #|9 |
 #|exit 1

@@ -31,5 +31,6 @@ def vpad(n, v):
 #|Location: vpad
 #|22 | def vpad(n, v):
 #|23>|   v
+#|   |   ^
 #|24 | 
 #|exit 1

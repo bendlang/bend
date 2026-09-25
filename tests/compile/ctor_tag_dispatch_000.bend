@@ -22,5 +22,6 @@ def main():
 #|Location:
 #|10 | type B7b is Data:
 #|11>|   K7{a: U32, b: U32}
+#|   |     ^
 #|12 |
 #|exit 1

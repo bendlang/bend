@@ -23,5 +23,6 @@ def main(n):
 #|Location: main
 #|15 | def main(n):
 #|16>|   \{Sn: (k => T{}); Zn: F{}}({Sn{n} : Nt})
+#|   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^
 #|17 |
 #|exit 1

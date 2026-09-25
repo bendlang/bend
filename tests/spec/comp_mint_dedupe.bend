@@ -60,5 +60,6 @@ def main():
 #|Location:
 #|18 |     case C{h, t}:
 #|19>|       if p(h):
+#|   |              ^
 #|20 |         C{h, filter(p, t)}
 #|exit 1

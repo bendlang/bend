@@ -13,5 +13,6 @@ def data_type(): {==}
 #|Location: data_type
 #|7 | law data_type: {Data == Type : Type}
 #|8>| def data_type(): {==}
+#|  |                  ^^^^
 #|9 |
 #|exit 1

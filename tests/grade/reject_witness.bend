@@ -38,5 +38,6 @@ def dup(T, c, x):
 #|Location: dup
 #|25 |   for -c: Copiable(T)
 #|26>|   for +x: T
+#|   |           ^
 #|27 |   Sigma<&1, &1, T, _ => T>
 #|exit 1

@@ -14,5 +14,6 @@ def main(): Mk8{}
 #|Location:
 #|3 | type Kk8 is Data:
 #|4>|   Mk8{Type: Kk8}
+#|  |           ^
 #|5 |
 #|exit 1

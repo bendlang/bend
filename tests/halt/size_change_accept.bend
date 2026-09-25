@@ -31,5 +31,6 @@ def main():
 #|Location: interleave
 #|15 |     case h <> t:
 #|16>|       h <> interleave(ys, t)
+#|   |            ^^^^^^^^^^
 #|17 |
 #|exit 1

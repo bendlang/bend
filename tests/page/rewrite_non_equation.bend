@@ -17,5 +17,6 @@ def f(e):
 #|Location: f
 #| 8 | def f(e):
 #| 9>|   %e : U32
+#|   |    ^
 #|10 |   3
 #|exit 1

@@ -107,5 +107,6 @@ def mul_comm(a, b):
 #|Location: mul_comm
 #|95 |       %mul_zero(b) : {_ == mul(b, Z{}) : N}
 #|96>|       Type
+#|   |       ^^^^
 #|97 |     case S{p}:
 #|exit 1

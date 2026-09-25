@@ -26,5 +26,6 @@ def main(): f(3n)
 #|Location: f
 #|13 |     case 5n:
 #|14>|       f(7n)
+#|   |       ^
 #|15 |     case p:
 #|exit 1

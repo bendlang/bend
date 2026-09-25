@@ -48,5 +48,6 @@ def main(): delta(MkBox6{argument => delta(MkBox6{argument})})
 #|Location: delta
 #|36 | 
 #|37>| def delta(box):
+#|   |           ^^^
 #|38 |   delta.go(box, box)
 #|exit 1

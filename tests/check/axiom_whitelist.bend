@@ -25,5 +25,6 @@ def main():
 #|Location: use
 #|13 | def use():
 #|14>|   U32.magic_hom
+#|   |   ^^^^^^^^^^^^^
 #|15 |
 #|exit 1

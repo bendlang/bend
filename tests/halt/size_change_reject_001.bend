@@ -32,5 +32,6 @@ def main(): sw(S{Z{}}, S{Z{}})
 #|Location: sw
 #|18 |     case S{p}:
 #|19>|       sw(b, S{p})
+#|   |       ^^
 #|20 |
 #|exit 1

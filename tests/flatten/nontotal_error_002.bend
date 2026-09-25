@@ -28,5 +28,6 @@ def main(): f(Se2{Ze2{}})
 #|Location: f
 #|15 | def f(a):
 #|16>|   match a:
+#|   |   ^^^^^^^^
 #|17 |     case Se2{a}:
 #|exit 1

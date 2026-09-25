@@ -13,5 +13,6 @@ def main(): \{}
 #|Location: main
 #|7 | 
 #|8>| def main(): \{}
+#|  |             ^^^
 #|9 |
 #|exit 1

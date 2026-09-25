@@ -15,5 +15,6 @@ def main():
 #|Location:
 #| 9 | def main():
 #|10>|   -5
+#|   |    ^
 #|11 |
 #|exit 1

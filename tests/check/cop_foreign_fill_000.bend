@@ -31,5 +31,6 @@ def dup(A, x):
 #|Location: magic
 #|16 |   for  x: A
 #|17>|   IO(Two<A>)
+#|   |   ^^^^^^^^^^
 #|18 | def magic(A, x):
 #|exit 1

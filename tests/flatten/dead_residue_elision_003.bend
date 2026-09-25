@@ -35,5 +35,6 @@ def main(x, y):
 #|Location:
 #|24 |     case T{}:
 #|25>|       match x:
+#|   |             ^
 #|26 |         case Z{}:
 #|exit 1

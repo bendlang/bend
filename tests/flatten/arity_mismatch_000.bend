@@ -33,5 +33,6 @@ def main(): f(Zw{}, Zw{})
 #|Location:
 #|18 |   match a, b:
 #|19>|     case Zw{}, x, Zw{}:
+#|   |                        ^
 #|20 |       Aw{x}
 #|exit 1

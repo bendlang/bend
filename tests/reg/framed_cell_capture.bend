@@ -31,5 +31,6 @@ def main():
 #|Location:
 #|17 | def frame(b):
 #|18>|   match a : Bool = b, c : Bool = a:
+#|   |         ^
 #|19 |     case x, y:
 #|exit 1

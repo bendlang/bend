@@ -23,5 +23,6 @@ def main():
 #|Location:
 #|11 | def beep(times):
 #|12>|   import ./lib/eff.c
+#|   |          ^
 #|13 |
 #|exit 1

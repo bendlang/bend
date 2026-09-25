@@ -36,5 +36,6 @@ def main(): Uu8{}
 #|Location: bad_fun
 #|21 | def bad_fun(e):
 #|22>|   %q@e : {(x => x) == _ : Opt8<Un8> -> Opt8<Un8>}; {==}
+#|   |                       ^
 #|23 |
 #|exit 1

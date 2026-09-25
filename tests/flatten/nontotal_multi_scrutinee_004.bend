@@ -34,5 +34,6 @@ def main(): f(Oy{}, Ay{})
 #|Location: f
 #|19 | def f(x, y):
 #|20>|   match x, y:
+#|   |   ^^^^^^^^^^^
 #|21 |     case Oy{}, Ay{}:
 #|exit 1

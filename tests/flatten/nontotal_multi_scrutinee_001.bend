@@ -42,5 +42,6 @@ def main(): f(Nl1{}, Nl1{}, Nl1{})
 #|Location: f
 #|23 | def f(a, b, c):
 #|24>|   match a, b, c:
+#|   |   ^^^^^^^^^^^^^^
 #|25 |     case Nl1{}, a, Nl1{}:
 #|exit 1

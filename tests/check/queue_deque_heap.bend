@@ -14,5 +14,6 @@ def main():
 #|Location: main
 #| 8 | def main():
 #| 9>|   Queue.push(1, Queue.new())
+#|   |   ^^^^^^^^^^
 #|10 |
 #|exit 1

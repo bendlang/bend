@@ -42,5 +42,6 @@ def main(): go(S{Z{}}, S{Z{}})
 #|Location: go
 #|23 |         case S{q}:
 #|24>|           go(S{Z{}}, q)
+#|   |           ^^
 #|25 |     case S{p}:
 #|exit 1

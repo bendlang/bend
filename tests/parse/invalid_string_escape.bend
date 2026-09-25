@@ -19,5 +19,6 @@ def main(): 0
 #|Location:
 #| 8 | 
 #| 9>| def x(): "a\qb"
+#|   |              ^
 #|10 |
 #|exit 1

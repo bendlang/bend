@@ -28,5 +28,6 @@ def main(): mix(Ob{}, Ob{})
 #|Location: mix
 #|13 | def mix(a, b):
 #|14>|   match a, b:
+#|   |   ^^^^^^^^^^^
 #|15 |     case Ob{}, Ob{}:
 #|exit 1

@@ -15,5 +15,6 @@ def main():
 #|Location: main
 #| 9 | def main():
 #|10>|   Bytes.encode("banana")
+#|   |   ^^^^^^^^^^^^
 #|11 |
 #|exit 1

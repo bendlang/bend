@@ -12,5 +12,6 @@ def n() -> Nat:
 #|Location: n
 #|6 | def n() -> Nat:
 #|7>|   3n
+#|  |   ^^
 #|8 | 
 #|exit 1

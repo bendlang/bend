@@ -46,5 +46,6 @@ def main():
 #|Location: loop
 #|29 |     case P9{a, b}:
 #|30>|       loop(a(b))
+#|   |       ^^^^
 #|31 |     case w:
 #|exit 1

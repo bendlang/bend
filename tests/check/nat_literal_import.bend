@@ -16,5 +16,6 @@ def main():
 #|Location: main
 #| 9 | def main():
 #|10>|   x = 2n
+#|   |       ^^
 #|11 |   Type
 #|exit 1

@@ -20,5 +20,6 @@ def main(p):
 #|Location:
 #|13 | def main(p):
 #|14>|   q = p
+#|   |   ^
 #|15 |   P{a, b} = q
 #|exit 1

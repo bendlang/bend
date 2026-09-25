@@ -24,5 +24,6 @@ def main(): 0
 #|Location: MkP6
 #|10 | type P6<-T: Type> is Type:
 #|11>|   MkP6{v: Box5<P6<T>>}
+#|   |                ^^^^
 #|12 |   End6{w: T}
 #|exit 1

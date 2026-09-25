@@ -25,5 +25,6 @@ def main():
 #|Location:
 #| 8 | law take:
 #| 9>|   for a: [:U32 -> U32]
+#|   |           ^
 #|10 |   U32
 #|exit 1

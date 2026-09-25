@@ -19,5 +19,6 @@ def main():
 #|Location:
 #|7 | import Base
 #|8>| import /lib/words.txt as W
+#|  |        ^
 #|9 |
 #|exit 1

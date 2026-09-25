@@ -25,5 +25,6 @@ def main():
 #|Location: t
 #|12 |   match f:
 #|13>|     case U32{w}:
+#|   |          ^^^^^^
 #|14 |       0
 #|exit 1

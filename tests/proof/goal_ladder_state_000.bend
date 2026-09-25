@@ -106,5 +106,6 @@ def mul_comm(a, b):
 #|Location: mul_comm
 #|94 |     case Z{}:
 #|95>|       Type
+#|   |       ^^^^
 #|96 |     case S{p}:
 #|exit 1

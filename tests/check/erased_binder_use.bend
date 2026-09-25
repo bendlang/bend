@@ -13,5 +13,6 @@ def main(): x => x
 #|Location: main
 #|7 | 
 #|8>| def main(): x => x
+#|  |             ^
 #|9 |
 #|exit 1

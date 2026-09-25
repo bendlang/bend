@@ -24,5 +24,6 @@ def main():
 #|Location: opnd
 #|10 | 
 #|11>| def opnd(x):
+#|   |          ^
 #|12 |   y = (x + 1 : U32)
 #|exit 1

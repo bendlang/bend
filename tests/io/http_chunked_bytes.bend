@@ -80,5 +80,6 @@ def main():
 #|Location: dec_eq
 #|26 |     case Done{bs}:
 #|27>|       b2u(String.eq(Bytes.decode(bs), out))
+#|   |                     ^^^^^^^^^^^^
 #|28 |     case Fail{(c, e)}:
 #|exit 1

@@ -12,5 +12,6 @@ def bad() -> Bool -> Bool:
 #|Location: bad
 #|6 | def bad() -> Bool -> Bool:
 #|7>|   \{True: True{}}
+#|  |   ^^^^^^^^^^^^^^^
 #|8 |
 #|exit 1

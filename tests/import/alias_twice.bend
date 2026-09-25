@@ -13,5 +13,6 @@ def main() -> Nat:
 #|Location:
 #|4 | import ./alias_lib.bend as M
 #|5>| import ./tmpl_chain_lib.bend as M
+#|  |        ^
 #|6 |
 #|exit 1

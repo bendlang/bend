@@ -24,5 +24,6 @@ def main():
 #|Location:
 #|11 | def f(x):
 #|12>|   h = {y => y : U32 -~> U32}
+#|   |                      ^
 #|13 |   h(x)
 #|exit 1

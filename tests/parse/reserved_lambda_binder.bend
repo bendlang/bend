@@ -11,5 +11,6 @@ def main(): Type => Type
 #|Location:
 #|5 | 
 #|6>| def main(): Type => Type
+#|  |                    ^
 #|7 |
 #|exit 1

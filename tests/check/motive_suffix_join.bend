@@ -28,5 +28,6 @@ def main():
 #|Location:
 #|13 | def j9(n, e):
 #|14>|   match Bool.not(n):
+#|   |         ^^^^^^^^^^^
 #|15 |     case False{}:
 #|exit 1

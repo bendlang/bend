@@ -14,5 +14,6 @@ def main(): (\x.x)(3)
 #|Location:
 #| 8 | 
 #| 9>| def main(): (\x.x)(3)
+#|   |               ^
 #|10 |
 #|exit 1

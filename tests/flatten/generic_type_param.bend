@@ -30,5 +30,6 @@ def main():
 #|Location:
 #|15 | 
 #|16>| def swap<A, B>(p):
+#|   |         ^
 #|17 |   match p:
 #|exit 1

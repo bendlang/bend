@@ -21,5 +21,6 @@ def f(b: N) -> U:
 #|Location:
 #|13 |   match b:
 #|14>|     case 257n:
+#|   |          ^^^^
 #|15 |       Un{}
 #|exit 1

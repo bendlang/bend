@@ -44,5 +44,6 @@ def main():
 #|Location: caller
 #|29 |   g = {y => (y + 1 : U32) : U32 -> U32}
 #|30>|   use(g, x)
+#|   |   ^^^
 #|31 |
 #|exit 1

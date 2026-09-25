@@ -22,5 +22,6 @@ def main():
 #|Location: main
 #|13 |   do IO<Unit>:
 #|14>|     a : Unit <- GFX.window("term kind", 8, 8)
+#|   |                 ^^^^^^^^^^
 #|15 |     b : Unit <- GFX.blit(GFX.from_fn(1, x => y => (x + y : U32)))
 #|exit 1

@@ -27,5 +27,6 @@ def cast(A):
 #|Location: cast
 #|19 | def cast(A):
 #|20>|   A
+#|   |   ^
 #|21 | 
 #|exit 1

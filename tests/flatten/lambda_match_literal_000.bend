@@ -22,5 +22,6 @@ def main():
 #|Location: main
 #|11 | law main:
 #|12>|   @b: Bl -> \{T: W; F: W}(b)
+#|   |             ^^^^^^^^^^^^^
 #|13 |
 #|exit 1

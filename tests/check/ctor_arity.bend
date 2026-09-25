@@ -14,5 +14,6 @@ def main(): Ra{Ra{}}
 #|Location: main
 #| 8 | 
 #| 9>| def main(): Ra{Ra{}}
+#|   |             ^^^^^^^^
 #|10 |
 #|exit 1

@@ -21,5 +21,6 @@ def main():
 #|Location:
 #| 9 | type B5 is Data:
 #|10>|   K5{a: A5}
+#|   |     ^
 #|11 |
 #|exit 1

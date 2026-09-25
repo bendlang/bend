@@ -16,5 +16,6 @@ def main() -> Nat:
 #|Location:
 #|6 |
 #|7>| def M.three() -> Nat:
+#|  |            ^
 #|8 |   3n
 #|exit 1

@@ -27,5 +27,6 @@ def main():
 #|Location:
 #|15 |   z = Zw{}
 #|16>|   Sw{p} = y
+#|   |           ^
 #|17 |   p
 #|exit 1

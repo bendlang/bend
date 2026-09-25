@@ -17,5 +17,6 @@ def th(n):
 #|Location: th
 #| 9 | def th(n):
 #|10>|   ?help
+#|   |   ^^^^^
 #|11 |
 #|exit 1

@@ -22,5 +22,6 @@ def main():
 #|Location: Mk
 #|7 | type Tag<a, -T: Kind(a)> is Data:
 #|8>|   Mk{val: T}
+#|  |           ^
 #|9 | 
 #|exit 1

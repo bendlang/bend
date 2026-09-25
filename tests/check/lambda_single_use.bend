@@ -23,5 +23,6 @@ def main():
 #|Location: main
 #|14 |   k0 = {(d => x => x) : Unit -> U32 -> U32}
 #|15>|   k = k0(Unit{})
+#|   |   ^
 #|16 |   P12{k, k}
 #|exit 1

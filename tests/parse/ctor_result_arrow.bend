@@ -15,5 +15,6 @@ def main(): Unit{}
 #|Location:
 #|4 | type Dd is Data:
 #|5>|   Cc{} : U32 -> Dd
+#|  |        ^
 #|6 |
 #|exit 1

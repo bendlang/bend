@@ -24,5 +24,6 @@ def main() -> IO(Unit):
 #|Location:
 #|14 | 
 #|15>| def f():
+#|   |      ^
 #|16 |   IO.print("body")
 #|exit 1

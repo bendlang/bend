@@ -46,5 +46,6 @@ def main():
 #|Location:
 #|31 | law thm:
 #|32>|   {LL.length(lmap(x => (x + 1 : U32), [1, 2])) = 2n : Nat}
+#|   |                                                ^
 #|33 |
 #|exit 1

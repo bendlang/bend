@@ -33,5 +33,6 @@ def main():
 #|Location:
 #|18 |       t = Zb{}
 #|19>|       match p:
+#|   |             ^
 #|20 |         case Zb{}:
 #|exit 1

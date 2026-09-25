@@ -28,5 +28,6 @@ def swap_swap(p):
 #|Location: swap_swap
 #|20 | def swap_swap(p):
 #|21>|   {==}
+#|   |   ^^^^
 #|22 |
 #|exit 1

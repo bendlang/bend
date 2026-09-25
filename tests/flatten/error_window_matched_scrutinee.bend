@@ -13,5 +13,6 @@ def bad(x: One) -> Type:
 #|Location: bad
 #|7 |     case One.new{}:
 #|8>|       x
+#|  |       ^
 #|9 | 
 #|exit 1

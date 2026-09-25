@@ -27,5 +27,6 @@ def main(): f(Zw4{})
 #|Location: f
 #|14 | def f(x):
 #|15>|   Aw4(x)
+#|   |   ^^^
 #|16 |
 #|exit 1

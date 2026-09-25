@@ -68,5 +68,6 @@ def rgo_cat(A, xs, acc):
 #|Location: rgo_cat
 #|57 |     case h <> t:
 #|58>|       Type
+#|   |       ^^^^
 #|59 |
 #|exit 1

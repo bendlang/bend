@@ -25,5 +25,6 @@ def main():
 #|Location: Forge
 #|11 | def Forge(T):
 #|12>|   Forge(T)
+#|   |   ^^^^^
 #|13 |
 #|exit 1

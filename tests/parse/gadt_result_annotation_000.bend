@@ -15,5 +15,6 @@ def main(): Unit{}
 #|Location:
 #|4 | type Ix<n: Nat> is Data:
 #|5>|   I0{} : Ix(0n)
+#|  |        ^
 #|6 |
 #|exit 1

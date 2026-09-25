@@ -49,5 +49,6 @@ def rot_x(p):
 #|Location: rot_x
 #|41 | def rot_x(p):
 #|42>|   {==}
+#|   |   ^^^^
 #|43 |
 #|exit 1

@@ -15,5 +15,6 @@ def main():
 #|Location: main
 #| 9 | def main():
 #|10>|   Deque.push_front(1, Deque.new())
+#|   |   ^^^^^^^^^^^^^^^^
 #|11 |
 #|exit 1

@@ -46,5 +46,6 @@ def main(): Z{}
 #|Location: swapped
 #|31 |     case Z{}:
 #|32>|       swapped(b, Z{})
+#|   |       ^^^^^^^
 #|33 |     case S{p}:
 #|exit 1

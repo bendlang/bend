@@ -30,5 +30,6 @@ def main(): N{}
 #|Location: loop
 #|15 |     case C{f}:
 #|16>|       loop(f(C{y => y}))
+#|   |       ^^^^
 #|17 |     case t:
 #|exit 1

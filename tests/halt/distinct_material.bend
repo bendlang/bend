@@ -36,5 +36,6 @@ def main(): Num{}
 #|Location: wnf
 #|18 |     case Cal{Lam{bod}, a2}:
 #|19>|       wnf(bod(a2))
+#|   |       ^^^
 #|20 |     case Cal{f, a2}:
 #|exit 1

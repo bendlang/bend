@@ -9,5 +9,6 @@ def bad() -> Type:
 #|Location: bad
 #|3 | def bad() -> Type:
 #|4>|   &x: Type -> Type
+#|  |   ^^^^^^^^^^^^^^^^
 #|5 |
 #|exit 1

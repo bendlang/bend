@@ -15,5 +15,6 @@ def main() -> Nat:
 #|Location: main
 #| 9 | def main() -> Nat:
 #|10>|   (x => {w : Bool -> Bool})(0n)(5n)
+#|   |          ^
 #|11 |
 #|exit 1

@@ -32,5 +32,6 @@ def main():
 #|Location:
 #|18 | def dupt(x):
 #|19>|   old = ![_:x; 1]@buf[0] <- TokB{}
+#|   |         ^
 #|20 |   other = buf@rest[1]
 #|exit 1

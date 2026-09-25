@@ -31,5 +31,6 @@ def main(): 0
 #|Location: use2
 #|16 |
 #|17>| def use2(x):
+#|   |          ^
 #|18 |   MkTwo{x, x}
 #|exit 1

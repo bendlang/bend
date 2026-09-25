@@ -15,5 +15,6 @@ def main():
 #|Location:
 #|4 | import Base
 #|5>| import /mods/canonical.bend as C
+#|  |        ^
 #|6 |
 #|exit 1

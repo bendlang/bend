@@ -12,5 +12,6 @@ def s() -> String:
 #|Location: s
 #|6 | def s() -> String:
 #|7>|   "abc"
+#|  |   ^^^^^
 #|8 | 
 #|exit 1

@@ -37,5 +37,6 @@ def main():
 #|Location: bad
 #|23 | def bad(x):
 #|24>|   {==}
+#|   |   ^^^^
 #|25 |
 #|exit 1

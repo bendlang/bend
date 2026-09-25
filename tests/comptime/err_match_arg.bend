@@ -24,5 +24,6 @@ def main() -> Nat:
 #|Location: f
 #|12 |     case h <> t:
 #|13>|       T(~h, 1n)
+#|   |       ^
 #|14 |
 #|exit 1

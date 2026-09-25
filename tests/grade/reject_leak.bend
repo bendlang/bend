@@ -91,5 +91,6 @@ def boom():
 #|Location: MkLeak
 #|17 | type Leak<-R: Type> is Data:
 #|18>|   MkLeak{L, -A: Kind(L), same: {A == R : Type}, value: A}
+#|   |                                                        ^
 #|19 |
 #|exit 1

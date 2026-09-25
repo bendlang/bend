@@ -37,5 +37,6 @@ type Nt is Data:
 #|Location:
 #|14 |   match n:
 #|15>|     case Zn{}:
+#|   |          ^^^^
 #|16 |       T{}
 #|exit 1

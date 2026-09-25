@@ -1575,8 +1575,13 @@ export function err_show(err: Err): string {
     const at  = err.spn.src.slice(0, err.spn.beg).split("\n").length;
     const beg = Math.max(1, at - 1);
     const end = Math.min(lns.length, at + 1);
+    const wid = String(end).length;
+    const col = parse_col(err.spn.src, err.spn.beg) - 1;
+    const lin = lns[at - 1];
+    const pad = lin.slice(0, col).replace(/[^\t]/g, " ");
+    const car = " ".repeat(wid) + " | " + pad + "^".repeat(Math.max(1, Math.min(err.spn.end - err.spn.beg, lin.length - col)));
     spn = "\n" + lns.slice(beg - 1, end).map((l, j) =>
-      String(beg + j).padStart(String(end).length) + (beg + j === at ? ">| " : " | ") + l).join("\n");
+      String(beg + j).padStart(wid) + (beg + j === at ? ">| " + l + "\n" + car : " | " + l)).join("\n");
   }
   const loc  = def === "" && spn === "" ? "" : "\nLocation:" + def + spn;
   const nte = err.nte === undefined ? "" : "\n" + err.nte;

@@ -18,5 +18,6 @@ def KAny(T): ({K : @U:Type -> Type})(T)
 #|Location: KAny
 #|10 | law KAny: @T:Type -> Type
 #|11>| def KAny(T): ({K : @U:Type -> Type})(T)
+#|   |                ^
 #|12 |
 #|exit 1

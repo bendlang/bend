@@ -52,5 +52,6 @@ def main(): Z{}
 #|Location: grow
 #|27 |   match t:
 #|28>|     case S{p}:
+#|   |            ^
 #|29 |       S{append(p, p)}
 #|exit 1

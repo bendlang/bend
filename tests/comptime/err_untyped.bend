@@ -13,5 +13,6 @@ def main() -> Nat:
 #|Location:
 #|3 | 
 #|4>| def app(~f, x: Nat) -> Nat:
+#|  |           ^
 #|5 |   f(x)
 #|exit 1

@@ -37,5 +37,6 @@ def main(): swap(Pq2{1, 2})
 #|Location: swap
 #|24 | def swap(p):
 #|25>|   swap.go({p : Bw7})
+#|   |            ^
 #|26 | 
 #|exit 1

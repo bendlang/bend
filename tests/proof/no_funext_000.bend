@@ -46,5 +46,6 @@ def main(): Z{}
 #|Location: add_zero_eta
 #|35 | 
 #|36>| def add_zero_eta(): x => add_zero(x)
+#|   |                     ^
 #|37 |
 #|exit 1

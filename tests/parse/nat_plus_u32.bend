@@ -12,5 +12,6 @@ def main() -> Nat:
 #|Location: main
 #|5 | def main() -> Nat:
 #|6>|   1n+5
+#|  |      ^
 #|7 | 
 #|exit 1

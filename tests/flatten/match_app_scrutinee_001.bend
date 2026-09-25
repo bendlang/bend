@@ -27,5 +27,6 @@ def main(p):
 #|Location: main
 #|17 |       c = a
 #|18>|       (\{Z:b;S: d =>d})(c)
+#|   |        ^^^^^^^^^^^^^^^
 #|19 |
 #|exit 1

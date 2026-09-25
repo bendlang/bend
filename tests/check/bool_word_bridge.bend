@@ -14,5 +14,6 @@ def main():
 #|Location: main
 #| 8 | def main():
 #| 9>|   ((1 < 2) + 5 : U32)
+#|   |     ^^^^^
 #|10 |
 #|exit 1

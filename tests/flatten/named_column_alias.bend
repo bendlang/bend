@@ -23,5 +23,6 @@ def main(x):
 #|Location:
 #|13 | def main(x):
 #|14>|   match (k = x):
+#|   |               ^
 #|15 |     case Z{}:
 #|exit 1

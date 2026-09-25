@@ -35,5 +35,6 @@ def main():
 #|Location: dup
 #|19 | law dup:
 #|20>|   for +x: Aff
+#|   |           ^^^
 #|21 |   Two
 #|exit 1

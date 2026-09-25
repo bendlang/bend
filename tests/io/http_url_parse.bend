@@ -76,5 +76,6 @@ def main():
 #|Location: main
 #|67 | def main():
 #|68>|   a = chk_https(HTTP.read_url("https://example.com/"))
+#|   |                 ^^^^^^^^^^^^^
 #|69 |   b = chk_http(HTTP.read_url("http://localhost:8080/echo?q=1"))
 #|exit 1

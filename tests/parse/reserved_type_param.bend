@@ -10,5 +10,6 @@ type Bad<match: Type>:
 #|Location:
 #|3 | # probe is `match`
 #|4>| type Bad<match: Type>:
+#|  |               ^
 #|5 |   Bb10{}
 #|exit 1

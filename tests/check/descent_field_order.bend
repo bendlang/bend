@@ -34,5 +34,6 @@ def main(): wob(MkP{2n, 0n})
 #|Location: wob
 #|20 |     case MkP{Succ{a2}, b}:
 #|21>|       wob(MkP{a2, Succ{b}})
+#|   |       ^^^
 #|22 |
 #|exit 1

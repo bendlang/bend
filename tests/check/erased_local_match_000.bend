@@ -21,5 +21,6 @@ def erase_then_match(z):
 #|Location:
 #|13 | def erase_then_match(z):
 #|14>|   -x = {z : Bit}
+#|   |   ^^
 #|15 |   match x:
 #|exit 1

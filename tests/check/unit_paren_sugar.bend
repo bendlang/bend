@@ -23,5 +23,6 @@ def main():
 #|Location:
 #|10 |   match u:
 #|11>|     case ():
+#|   |           ^
 #|12 |       7
 #|exit 1

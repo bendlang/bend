@@ -24,6 +24,7 @@ def contradiction() -> (Pick(~Unit + Unit) : Bar):
 #|Location:
 #|18 | 
 #|19>| def contradiction() -> (Pick(~Unit + Unit) : Bar):
+#|   |                                    ^
 #|20 |   Unit{}
 #|Note: we broke this after launch, sorry. Until 2.0.16 a bare operator meant Nat.
 #|That was a bug: operators demand annotation. Wrap the expression and it'll work again.

@@ -14,5 +14,6 @@ def main():
 #|Location: main
 #| 8 | def main():
 #| 9>|   Bag.total(Bag.add(1, Bag.new()))
+#|   |   ^^^^^^^^^
 #|10 |
 #|exit 1

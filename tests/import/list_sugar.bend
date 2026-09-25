@@ -17,5 +17,6 @@ def main():
 #|Location: main
 #|10 | def main():
 #|11>|   h = [Zx{}]
+#|   |       ^^^^^^
 #|12 |   Zx{}
 #|exit 1

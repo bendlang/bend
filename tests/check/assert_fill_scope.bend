@@ -33,5 +33,6 @@ def main(): early(Zn{})
 #|Location: early
 #|17 | def early(x):
 #|18>|   twice(x)
+#|   |   ^^^^^
 #|19 |
 #|exit 1

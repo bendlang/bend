@@ -30,5 +30,6 @@ def main():
 #|Location: head9
 #|15 |     case Succ{p}:
 #|16>|       (1 + {{head9 : Nat -> U32 -> U32}({p : Nat}) : U32 -> U32}({x : U32}) : U32)
+#|   |              ^^^^^
 #|17 |
 #|exit 1

@@ -17,5 +17,6 @@ def main(): Unit{}
 #|Location:
 #|5 | # declares its kind), bend error page
 #|6>| type Kk:
+#|  |        ^
 #|7 |   Zz{}
 #|exit 1

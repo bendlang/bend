@@ -14,6 +14,7 @@ def f():
 #|- expected : a term
 #|- observed : end of input
 #|Location:
-#|19 | #|exit 1
-#|20>|
+#|20 | #|exit 1
+#|21>|
+#|   | ^
 #|exit 1

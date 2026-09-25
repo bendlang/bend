@@ -28,5 +28,6 @@ def main():
 #|Location: bar
 #|13 | def bar():
 #|14>|   foo(1)
+#|   |   ^^^
 #|15 |
 #|exit 1

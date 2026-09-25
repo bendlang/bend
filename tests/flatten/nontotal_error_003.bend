@@ -24,5 +24,6 @@ def main(): pred(Se3{Ze3{}})
 #|Location: pred
 #|11 | def pred(n):
 #|12>|   match n:
+#|   |   ^^^^^^^^
 #|13 |     case Se3{p}:
 #|exit 1

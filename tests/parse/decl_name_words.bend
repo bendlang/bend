@@ -14,5 +14,6 @@ def main() -> U32:
 #|Location:
 #|4 |
 #|5>| def Vec.2d() -> U32:
+#|  |           ^
 #|6 |   0
 #|exit 1

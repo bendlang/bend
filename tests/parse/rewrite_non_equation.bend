@@ -15,5 +15,6 @@ def main(): %5 : U32; 1
 #|Location: main
 #| 9 |
 #|10>| def main(): %5 : U32; 1
+#|   |              ^
 #|11 |
 #|exit 1

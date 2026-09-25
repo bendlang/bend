@@ -24,5 +24,6 @@ def main(): 0n
 #|Location: f
 #|11 | def f(d):
 #|12>|   f(Nat.sub(d, 1n))
+#|   |   ^
 #|13 |
 #|exit 1

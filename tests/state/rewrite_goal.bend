@@ -55,5 +55,6 @@ def spec_thm(n, x):
 #|Location: spec_thm
 #|46 |       %spec_thm(p, S{x}) : {S{plus1(p, x)} == _ : MN}
 #|47>|       {==}
+#|   |       ^^^^
 #|48 |
 #|exit 1

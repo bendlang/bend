@@ -17,5 +17,6 @@ def h(p):
 #|Location: h
 #| 9 | def h(p):
 #|10>|   Bool.and(True{}, p)
+#|   |                    ^
 #|11 | 
 #|exit 1

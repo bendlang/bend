@@ -33,5 +33,6 @@ def main():
 #|Location:
 #|18 |     case Pp2{a, b}:
 #|19>|       match b, a:
+#|   |                ^
 #|20 |         case Zy2{}, y:
 #|exit 1

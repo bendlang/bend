@@ -55,5 +55,6 @@ def add_swap(x, y, z):
 #|Location: add_swap
 #|45 |       %add_succ(y, add(q, z)) : {S{add(q, add(y, z))} == _ : N}
 #|46>|       Type
+#|   |       ^^^^
 #|47 |
 #|exit 1

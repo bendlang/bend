@@ -30,5 +30,6 @@ def main():
 #|Location:
 #|16 |       1
 #|17>|     case 2+q:
+#|   |              ^
 #|18 |       (2 + q : U32)
 #|exit 1
