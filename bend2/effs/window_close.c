@@ -7,6 +7,7 @@
 
 static void window_close(intptr_t at) {
   NSWindow* win = CFBridgingRelease((void*)at);
+  [win.contentView setValue:@NO forKey:@"grab"];
   [win close];
 }
 
@@ -26,6 +27,9 @@ typedef struct {
   u32      n;
   u32      cap;
   u32*     evs;
+  u32      grab;
+  int      lx;
+  int      ly;
 } BendWin;
 #endif
 

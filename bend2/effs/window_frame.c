@@ -1,12 +1,13 @@
 // Window
 // ======
 
-// An event is five words: kind (0 key, 1 mouse, 2 move, 3 close) and
-// its fields; a frame answers the events pumped since the last one.
+// An event is five words: kind (0 key, 1 mouse, 2 move, 3 close, 4 look)
+// and its fields; a frame answers the events pumped since the last one.
 #if defined(__OBJC__) || defined(__linux__)
 
 static Term window_node(Env e, const u32* ev) {
-  static const u32 cids[3] = { CID(Key), CID(Mouse), CID(Move) };
+  static const u32 cids[5] = { CID(Key), CID(Mouse), CID(Move), 0,
+    CID(Look) };
   if (ev[0] == 3) {
     return term_pak(CID(Close), 0);
   }
@@ -197,6 +198,9 @@ typedef struct {
   u32      n;
   u32      cap;
   u32*     evs;
+  u32      grab;
+  int      lx;
+  int      ly;
 } BendWin;
 #endif
 
@@ -263,12 +267,29 @@ static void window_pump(BendWin* win) {
           ev.type == ButtonPress);
       }
     } else if (ev.type == MotionNotify) {
-      window_push(win, 2, window_clip(ev.xmotion.x, w),
-        window_clip(ev.xmotion.y, h), 0, 0);
+      win->lx = ev.xmotion.x;
+      win->ly = ev.xmotion.y;
+      if (!win->grab) {
+        window_push(win, 2, window_clip(win->lx, w), window_clip(win->ly, h),
+          0, 0);
+      }
+    } else if (ev.type == FocusOut) {
+      XUngrabPointer(win->dpy, CurrentTime);
+      win->grab = 0;
     } else if (ev.type == ClientMessage
       && (Atom)ev.xclient.data.l[0] == win->del) {
       window_push(win, 3, 0, 0, 0, 0);
     }
+  }
+  // grabbed, the motion is one look from the centre, warped back
+  int cx = w / 2;
+  int cy = h / 2;
+  if (win->grab && (win->lx != cx || win->ly != cy)) {
+    union { float f[2]; u32 u[2]; } d = { { win->lx - cx, win->ly - cy } };
+    window_push(win, 4, d.u[0], d.u[1], 0, 0);
+    win->lx = cx;
+    win->ly = cy;
+    XWarpPointer(win->dpy, None, win->win, 0, 0, 0, 0, cx, cy);
   }
 }
 

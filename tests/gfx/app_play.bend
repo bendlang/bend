@@ -43,7 +43,8 @@ def show(m: Maybe<Counter>) -> IO(Unit):
 def main() -> IO(Unit):
   do IO<Unit>:
     a : Maybe<Counter> <- App.play(~Counter, ~App{Counter.view, Counter.tick},
-      [[Key{97, True{}}], [Key{97, False{}}, Key{98, True{}}, Move{1, 2}],
+      [[Key{97, True{}}], [Key{97, False{}}, Key{98, True{}}, Move{1, 2},
+        Look{1.5, 0.25}],
         [], [Key{99, True{}}]], Counter{0})
     u : Unit <- show(a)
     b : Maybe<Counter> <- App.play(~Counter, ~App{Counter.view, Counter.tick},
@@ -57,7 +58,7 @@ def main() -> IO(Unit):
 #|frame
 #|frame
 #|frame
-#|5
+#|6
 #|frame
 #|frame
 #|quit
