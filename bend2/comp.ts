@@ -1499,10 +1499,9 @@ function flat_of(k: Name): boolean {
 }
 
 function loop_of(cb: Carb, k: Name): Name[] {
-  const ids = new Map<Name, number>();
   const stack: Name[] = [];
   const visit = (k: Name): number => {
-    const id = ids.size;
+    const id = stack.push(k) - 1;
     const tails = new Set<Name>();
     const tld = def_body(cb, k);
     if (done_live(tld)) {
@@ -1515,14 +1514,12 @@ function loop_of(cb: Carb, k: Name): Name[] {
       });
     }
     let low = id;
-    ids.set(k, id);
-    stack.push(k);
     for (const d of tails) {
-      low = Math.min(low, LOOPS.has(d) ? low : !ids.has(d) ? visit(d)
-        : stack.includes(d) ? ids.get(d)! : low);
+      const at = stack.indexOf(d);
+      low = Math.min(low, at >= 0 ? at : LOOPS.has(d) ? low : visit(d));
     }
     if (low === id) {
-      const all = stack.splice(stack.indexOf(k));
+      const all = stack.splice(id);
       const loop = all.length > 1 || tails.has(k) ? all : [];
       all.forEach((d) => LOOPS.set(d, loop));
     }
