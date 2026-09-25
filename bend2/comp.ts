@@ -5739,6 +5739,20 @@ static bool io_bit(u8* set, int fd, bool put) {
   return *at >> fd % 8 & 1;
 }
 
+// A due timer by deadline, ties by its slot among the due.
+typedef struct {
+  u64    time;
+  u64    slot;
+  IoAct* act;
+} IoDue;
+
+static int io_due_cmp(const void* x, const void* y) {
+  const IoDue* a = x;
+  const IoDue* b = y;
+  return a->time != b->time ? (a->time > b->time) - (a->time < b->time)
+    : (a->slot > b->slot) - (a->slot < b->slot);
+}
+
 static void io_wait(Env e) {
   int top  = io_wake_fd[0];
   u64 soon = 0;
@@ -5774,22 +5788,40 @@ static void io_wait(Env e) {
   }
   u64   now  = io_tick();
   IoQue todo = io_park;
+  IoQue hit  = {0};
+  u64   n    = 0;
   io_park = (IoQue){0};
   while (todo.head != NULL) {
     IoAct* a   = io_pop(&todo);
     bool   due = (a->evts != 0
         && io_bit(set[a->evts == POLLOUT], (int)a->work.word, false))
       || (a->time != 0 && a->time <= now);
-    if (!due) {
-      io_push(&io_park, a);
-      continue;
+    n += due;
+    io_push(due ? &hit : &io_park, a);
+  }
+  // A late select can find several timers due: they wake by deadline, in
+  // the slots the timers hold, so a socket's wake keeps its place.
+  IoAct** acts = io_mem(malloc(n * sizeof(IoAct*) + 1));
+  IoDue*  ts   = io_mem(malloc(n * sizeof(IoDue) + 1));
+  u64     k    = 0;
+  for (u64 i = 0; i < n; i += 1) {
+    acts[i] = io_pop(&hit);
+    if (acts[i]->evts == 0) {
+      ts[k] = (IoDue){ acts[i]->time, i, acts[i] };
+      k    += 1;
     }
-    Term x = a->work.pack(e, &a->work);
+  }
+  qsort(ts, k, sizeof(IoDue), io_due_cmp);
+  for (u64 i = 0, j = 0; i < n; i += 1) {
+    IoAct* a = acts[i]->evts == 0 ? ts[j++].act : acts[i];
+    Term   x = a->work.pack(e, &a->work);
     if (x != IO_PARK) {
       a->item = x;
       io_push(&io_runs, a);
     }
   }
+  free(acts);
+  free(ts);
   free(set[0]);
 }
 
@@ -6330,14 +6362,22 @@ function io_wait(io) {
   sys.select(top + 1, sys.ptr(set), sys.ptr(set, len), null,
     ms < 0 ? null : sys.ptr(tv));
   const now = performance.now();
+  const hit = [];
   io.waits = io.waits.filter((w) => {
     const ready = w.at <= now || w.fd !== undefined
       && set[at(w)] & 1 << (w.fd & 7);
     if (ready) {
-      io_push(io_wake, w, false);
+      hit.push(w);
     }
     return !ready;
   });
+  // A late select can find several timers due: they wake by deadline, in
+  // the slots the timers hold, so a socket's wake keeps its place.
+  const ts = hit.filter((w) => w.fd === undefined).sort((a, b) => a.at - b.at);
+  let j = 0;
+  for (const w of hit) {
+    io_push(io_wake, w.fd === undefined ? ts[j++] : w, false);
+  }
 }
 
 // Resume k with more's value; undefined means re-parked.

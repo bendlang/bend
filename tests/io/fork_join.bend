@@ -22,9 +22,9 @@ law main:
 
 def main():
   do IO<U32>:
-    a : Chan(U32) <- IO.fork(U32, work(17, 1))
+    a : Chan(U32) <- IO.fork(U32, work(3, 1))
     b : Chan(U32) <- IO.fork(U32, work(1, 2))
-    c : Chan(U32) <- IO.fork(U32, work(9, 3))
+    c : Chan(U32) <- IO.fork(U32, work(2, 3))
     x : U32 <- IO.join(U32, a)
     y : U32 <- IO.join(U32, b)
     z : U32 <- IO.join(U32, c)
