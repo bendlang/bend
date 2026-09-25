@@ -79,6 +79,7 @@ type Event is Data:
   Key{code: U32, down: Bool}
   Mouse{x: U32, y: U32, button: U32, down: Bool}
   Move{x: U32, y: U32}
+  Look{dx: F32, dy: F32}
   Close{}
 
 type Map<a, -V: Kind(a)> is Kind(a):
@@ -356,6 +357,12 @@ def Window.frame(window: Window, image: Image) ->
 def Window.set_title(window: Window, title: String) -> IO(Window):
   import "./effs/window_set_title.c"
   import "./effs/window_set_title.js"
+
+# While grabbed, the cursor is hidden and held, and the mouse's motion
+# comes as Look deltas instead of Move; losing focus releases it.
+def Window.grab(window: Window, on: Bool) -> IO(Window):
+  import "./effs/window_grab.c"
+  import "./effs/window_grab.js"
 
 def Window.close(window: Window) -> IO(Unit):
   import "./effs/window_close.c"

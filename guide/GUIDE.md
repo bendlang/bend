@@ -444,7 +444,11 @@ def main() -> IO(Unit):
 
 An `Image` is a quadtree: `Pix{color}` paints a square, and `Qua{tl, tr, bl,
 br}` splits it in four, so a frame is drawn by recursion like everything else,
-in parallel if you want. Events are `Key`, `Mouse`, `Move` and `Close`.
+in parallel if you want. Events are `Key`, `Mouse`, `Move`, `Look` and
+`Close`. For a first-person camera, `Window.grab(window, True{})` hides and
+holds the cursor, and the mouse's motion comes as `Look{dx, dy}` (signed
+`F32`, in `Move`'s units) until `Window.grab(window, False{})` or the window
+losing focus lets it go.
 `App.run` opens a window and calls `view` then `tick` once per frame, until
 `tick` answers `None`. Since the state is affine, `view` must hand it back next
 to the image. Underneath are `Window.open`, `Window.frame` and `Window.close`,

@@ -27,6 +27,9 @@ typedef struct {
   u32      n;
   u32      cap;
   u32*     evs;
+  u32      grab;
+  int      lx;
+  int      ly;
 } BendWin;
 #endif
 

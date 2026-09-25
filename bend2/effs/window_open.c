@@ -10,6 +10,7 @@
   @public
   NSMutableData* evs;
   u64            flags;
+  BOOL           grab;
 }
 @end
 
@@ -70,7 +71,34 @@
 
 - (void)move:(NSEvent*)ev {
   NSPoint p = [self at:ev];
-  [self push:2 a:p.x b:p.y c:0 d:0];
+  union { float f[2]; u32 u[2]; } d = { { ev.deltaX, ev.deltaY } };
+  if (grab) {
+    [self push:4 a:d.u[0] b:d.u[1] c:0 d:0];
+  } else {
+    [self push:2 a:p.x b:p.y c:0 d:0];
+  }
+}
+
+// Window.grab sets this by key: the cursor is hidden and held at the
+// window's centre, and only a focused window takes it.
+- (void)setGrab:(BOOL)on {
+  if (on == grab || (on && !self.window.isKeyWindow)) {
+    return;
+  }
+  grab = on;
+  if (on) {
+    NSRect r = [self.window convertRectToScreen:self.frame];
+    CGWarpMouseCursorPosition(CGPointMake(NSMidX(r),
+      NSMaxY(NSScreen.screens[0].frame) - NSMidY(r)));
+    [NSCursor hide];
+  } else {
+    [NSCursor unhide];
+  }
+  CGAssociateMouseAndMouseCursorPosition(!on);
+}
+
+- (void)windowDidResignKey:(NSNotification*)note {
+  [self setGrab:NO];
 }
 
 - (void)mouseDown:(NSEvent*)ev {
@@ -179,9 +207,10 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
 #elif defined(__linux__)
 
 // The X11 window: its own connection (so its queue holds only its
-// events), the frame's image and the events pumped since the last
-// frame, five words each (kind, a, b, c, d) as on the Mac. The same
-// block sits in window_frame.c and window_close.c under this guard.
+// events), the frame's image, the events pumped since the last frame,
+// five words each (kind, a, b, c, d) as on the Mac, and while grabbed,
+// the pointer's last spot. The same block sits in the other window
+// effects under this guard.
 #ifndef BendWin
 #define BendWin BendWin
 #include <X11/Xlib.h>
@@ -196,6 +225,9 @@ typedef struct {
   u32      n;
   u32      cap;
   u32*     evs;
+  u32      grab;
+  int      lx;
+  int      ly;
 } BendWin;
 #endif
 
@@ -229,7 +261,7 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
   XSetWMProtocols(dpy, win->win, &win->del, 1);
   XStoreName(dpy, win->win, title);
   XSelectInput(dpy, win->win, KeyPressMask | KeyReleaseMask | ButtonPressMask
-    | ButtonReleaseMask | PointerMotionMask);
+    | ButtonReleaseMask | PointerMotionMask | FocusChangeMask);
   XMapRaised(dpy, win->win);
   XFlush(dpy);
   *out = (intptr_t)win;
