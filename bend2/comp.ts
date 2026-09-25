@@ -3273,8 +3273,7 @@ function js_func(fl: File, tm: HTerm, ty0: HTerm | null,
     return js_func(fl, term_eta(fl.book, x, ty!, 1), ty, args);
   }
   const ck = call_kind(fl, x);
-  const loop = loop_of(fl, fl.seg.def);
-  const at = ck === null ? -1 : loop.indexOf(ck.k);
+  const at = ck === null ? -1 : loop_of(fl, fl.seg.def).indexOf(ck.k);
   file_push(fl, at >= 0 ? ck!.args.map((a, i) => "$" + i + " = "
     + js_expr(fl, a, null) + "; ").join("") + "$pc = " + at + "; continue;"
     : "return " + (ck === null ? js_expr(fl, x, ty)
@@ -3336,9 +3335,9 @@ function js_def(fl: File, k: Name, def: Def): void {
   if (intr_of(fl, k, true) !== undefined) {
     return;
   }
-  const loop = loop_of(fl, k);
-  if (loop.length > 0) {
-    return js_loop(fl, k, loop);
+  fl.seg.def = k;
+  if (loop_of(fl, k).length > 0) {
+    return js_loop(fl, k);
   }
   const params = sig_def(fl, k).live.map(([, n]) => name_local(fl, n));
   const kont = def.i ? [name_local(fl, "k")] : [];
@@ -3357,10 +3356,10 @@ function js_def(fl: File, k: Name, def: Def): void {
 
 // A loop sets $i and $pc to the callee's case and turns, binding each
 // turn's parameters afresh, so a closure keeps its own.
-function js_loop(fl: File, k: Name, loop: Name[]): void {
+function js_loop(fl: File, k: Name): void {
+  const loop = loop_of(fl, k);
   const n = Math.max(...loop.map((d) => sig_def(fl, d).live.length));
   const ins = Array.from({ length: n }, (_, i) => "$" + i);
-  fl.seg.def = k;
   block(fl, `function ${js_sat(k)}(${ins.join(", ")}) {`, () => {
     file_push(fl, `let $pc = ${loop.indexOf(k)};`);
     block(fl, "for (;;) switch ($pc) {", () => loop.forEach((d, i) => {
@@ -3373,7 +3372,6 @@ function js_loop(fl: File, k: Name, loop: Name[]): void {
       block(fl, `case ${i}: { ${bind}`, () => js_func(fl, def.h!, def.T, ps));
     }));
   });
-  fl.seg.def = "";
   file_push(fl, "");
 }
 
