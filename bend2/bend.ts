@@ -1014,7 +1014,7 @@ const BEND_LIB = path.resolve(process.env.BEND_LIB ?? path.join(os.homedir(), ".
 export const BEND_HUB   = process.env.BEND_HUB ?? "https://hub.bend-lang.com";
 
 // a package's <name>@<version>, as the hub rules it
-export const NAMED = /^([a-z][a-z0-9-]{11,63})@((?:0|[1-9][0-9]*)(?:\.(?:0|[1-9][0-9]*)){3})$/;
+export const NAMED = /^([a-z][a-z0-9-]{0,63})@((?:0|[1-9][0-9]*)(?:\.(?:0|[1-9][0-9]*)){3})$/;
 
 async function hub_get(book: Book, sub: string, hash: string, spn?: Span): Promise<string> {
   const res = await fetch(BEND_HUB + "/" + sub);
@@ -1029,7 +1029,7 @@ async function hub_get(book: Book, sub: string, hash: string, spn?: Span): Promi
 // name_hash asks the hub once what a name@version names
 async function name_hash(book: Book, nv: string, spn?: Span): Promise<string> {
   if (!NAMED.test(nv)) {
-    throw Err(book, ctx_nil(), "a package as <name>@<version>: a-z, 0-9 and -, 12 to 64 characters, at four numbers like 1.0.0.0", "'" + nv + "'", spn);
+    throw Err(book, ctx_nil(), "a package as <name>@<version>: a-z, 0-9 and -, 1 to 64 characters, at four numbers like 1.0.0.0", "'" + nv + "'", spn);
   }
   const at  = path.join(BEND_LIB, "names", nv);
   const old = fs.existsSync(at) ? fs.readFileSync(at, "utf8").trim() : "";

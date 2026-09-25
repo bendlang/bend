@@ -528,7 +528,7 @@ async function cli_link(named: string, hash: string): Promise<void> {
 function named_parts(named: string): [string, string] {
   const m = Bend.NAMED.exec(named);
   return m === null ? cli_fail("a package is named <name>@<version>: a-z, 0-9 and -,"
-    + " 12 to 64 characters, at four numbers like 1.0.0.0") : [m[1], m[2]];
+    + " 1 to 64 characters, at four numbers like 1.0.0.0") : [m[1], m[2]];
 }
 
 // hub_check reads the key (a login when there is none), then asks the
