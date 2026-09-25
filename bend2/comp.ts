@@ -224,6 +224,31 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     C:  "((u64)(u32)($0))",
     JS: "Number($0 & 0xFFFFFFFFn)",
   },
+  ...tpl_ops("u64_", "add:+ sub:- mul:* and:& or:| xor:^", "($0 $o $1)",
+    "BigInt.asUintN(64, $0 $o $1)"),
+  ...tpl_ops("u64_", CMPS, "($0 $o $1)"),
+  ...tpl_ops("u64_", "cmp", "(($0 > $1) + ($0 >= $1))", "cmp_new($0, $1)"),
+  ...tpl_ops("u64_", "shln:<< shrn:>>", "($1 >= 64 ? 0 : $0 $o $1)",
+    "($1 >= 64n ? 0n : BigInt.asUintN(64, $0 $o $1))"),
+  ...tpl_ops("u64_", "div", "($1 ? $0 / $1 : $1)"),
+  ...tpl_ops("u64_", "mod", "($1 ? $0 % $1 : $0)"),
+  ...tpl_ops("u64_", "from_nat", "$0"),
+  // past 2^48-1 a U64 fail-stops as a Nat, as Nat.add does
+  u64_to_nat: {
+    C:  "nat_chk(e, $0)",
+    JS: "nat_chk($0)",
+  },
+  ...tpl_ops("u64_", "clz",
+    "($0 >> 32 ? CLZ((u32)($0 >> 32)) : $0 ? 32 + CLZ((u32)$0) : 64)",
+    "(64 - $0.toString(2).length + !$0)"),
+  ...tpl_ops("u64_", "mul_hi", "u64_mul_hi($0, $1)", "($0 * $1 >> 64n)"),
+  u64_show: {
+    JS: "String(BigInt.asUintN(64, $0))",
+  },
+  u64_read: {
+    JS: "(/^\\d+$/.test($0) && BigInt($0) >> 64n === 0n"
+      + " ? {$: \"Some\", value: BigInt($0)} : {$: \"None\"})",
+  },
   ...tpl_ops("f32_", "add:+ sub:- mul:* div:/",
     "f32_rewrap(f32_unbox($0) $o f32_unbox($1))", "Math.fround($0 $o $1)"),
   f32_neg: {
@@ -339,6 +364,13 @@ const OPTIMIZED: Record<Name, Native> = Object.setPrototypeOf({
   F32: {
     F32: { intr: "f32_from_bits(word_to_u32($0))" },
   },
+  // a U64 is one BigInt on JS
+  U64: {
+    U64: {
+      intr: "(BigInt($0 >>> 0) | BigInt($1 >>> 0) << 32n)",
+      elim: ["Number($0 & 0xFFFFFFFFn)", "Number($0 >> 32n)"],
+    },
+  },
   Char: {
     Chr: {
       intr: ([c]: string[]) => {
@@ -413,6 +445,15 @@ INLINE U32 f32_to_u32(U32 a) {
   f32 v = f32_unbox(a);
   return v >= 0.0f && v < 4294967296.0f ? (u32)v : 0;
 }
+
+// The high word of a 64 x 64 bit product.
+#ifdef __METAL_VERSION__
+#define u64_mul_hi mulhi
+#elif defined(BEND_RTC)
+#define u64_mul_hi __umul64hi
+#else
+#define u64_mul_hi(a, b) ((u64)((unsigned __int128)(a) * (b) >> 64))
+#endif
 
 INLINE Nat nat_chk(Env e, Nat n) {
   if (n > NAT_IMM) {
@@ -577,7 +618,7 @@ const FOLDS: Map<HTerm, HTerm | null> = new Map();
 
 const FLATS: Map<Name, boolean> = new Map();
 
-const SIGS: Map<Name, Sig> = new Map();
+const SIGS: Map<string, Sig> = new Map();
 
 const BRWS: Map<Name, boolean[]> = new Map();
 
@@ -617,7 +658,7 @@ function die(m: string): never {
 // Tpl
 // ===
 
-function tpl_ops(pre: string, names: string, C: string, JS: string):
+function tpl_ops(pre: string, names: string, C: string, JS = C):
   Record<string, Intr> {
   const out: Record<string, Intr> = {};
   for (const p of names.split(" ")) {
@@ -1025,6 +1066,11 @@ function lay_node(book: Bend.Book, k: Name): Lay {
     ? ctr_doms(book, book.ctrs[k]) : []).map((A) => lay_of(book, A)))]]));
 }
 
+// A spin's key: its def and the layouts of its erased arguments.
+function lay_key(cb: Carb, k: Name, ers: HTerm[]): string {
+  return ers.reduce((s, e) => s + "|" + JSON.stringify(lay_of(cb.book, e)), k);
+}
+
 function lay_eq(a: Lay, b: Lay): boolean {
   return a === b || JSON.stringify(a) === JSON.stringify(b);
 }
@@ -1035,6 +1081,11 @@ function lay_c(k: Kind): string {
 
 function lay_box(lay: Lay): boolean {
   return lay.arms === null && lay.ks[0] === "box";
+}
+
+// A U64: two w32 words, low first, that a native reads as one u64.
+function lay_w64(lay: Lay): boolean {
+  return lay.arms !== null && lay.arms[0].k === "U64";
 }
 
 function lay_arm(lay: Lay, k: Name): Arm {
@@ -1144,21 +1195,26 @@ function quant_live(q: Bend.Quant): boolean {
 // ===
 
 // A def's live parameters, the layouts a call passes and its return layout
-// (boxes for a foreign def and Clo~apply).
-function sig_def(cb: Carb, k: Name): Sig {
-  return memo(SIGS, k, () => {
+// (boxes for a foreign def and Clo~apply), at the types its erased arguments
+// name: Bool.pick at U64 passes and returns the U64 flat, not boxed.
+function sig_def(cb: Carb, k: Name, ers: HTerm[] = []): Sig {
+  return memo(SIGS, lay_key(cb, k, ers), () => {
     const tld = def_body(cb, k);
     if (tld?.$ !== "Def") {
       return { live: [], lays: [BOX, BOX], ret: BOX };
     }
-    const doms = tele_unbind(cb.book, tld.T).doms;
-    const live = doms.slice(0, tld.n).filter(live_dom);
+    const xs = ers.slice(0, Math.max(0,
+      tele_unbind(cb.book, tld.T).doms.findIndex(live_dom)));
+    const T = Bend.tele_fill(cb.book, tld.T, xs, Bend.ctx_nil());
+    const n = tld.n - xs.length;
+    const doms = tele_unbind(cb.book, T).doms;
+    const live = doms.slice(0, n).filter(live_dom);
     const lays = live.map(([, , A]) => lay_of(cb.book, A));
     if (def_foreign(tld)) {
       return { live, lays: [...lays.map(() => BOX), BOX], ret: BOX };
     }
-    const ret = lay_of(cb.book, Bend.tele_fill(cb.book, tld.T,
-      Array(tld.n).fill(DUMMY), Bend.ctx_nil()));
+    const ret = lay_of(cb.book, Bend.tele_fill(cb.book, T,
+      Array(n).fill(DUMMY), Bend.ctx_nil()));
     return { live, lays: lay_wide(lays), ret: ret.ks.length === 0 ? BOX : ret };
   });
 }
@@ -1224,8 +1280,9 @@ export function io_type(book: Bend.Book): HTerm | null {
 // A pure main prints through a descriptor of its type, a node per (type,
 // boxed?): 0 U32, 1 F32, 2 Nat, 3 Char, 4 String, 5 Eql, 6 Array (element,
 // lgs), 7 Data (boxed?, arms; per arm name, cid, fields, bracket, then an
-// (offset, node) per field). Null for an IO main; an unprintable type (a
-// function, a Type, an erased or dependent field) refuses the build.
+// (offset, node) per field), 8 U64 (boxed?). Null for an IO main;
+// an unprintable type (a function, a Type, an erased or dependent field)
+// refuses the build.
 function show_main(book: Bend.Book): Show | null {
   const main = book.tlds["main"];
   if (main?.$ !== "Def" || (main.v === null && main.i === undefined)
@@ -1247,8 +1304,8 @@ function show_main(book: Bend.Book): Show | null {
     const key = String(box) + Bend.term_key(Bend.term_lower(t));
     const adt = ty_adt(book, t);
     const tld = adt && book.tlds[adt.k];
-    const kind = t.$ === "Eql" ? 5 : "U32 F32 Nat Char String . Array"
-      .split(" ").indexOf(adt?.k ?? "") & 7;
+    const kind = t.$ === "Eql" ? 5 : ("U32 F32 Nat Char String . Array . U64"
+      .split(" ").indexOf(adt?.k ?? "") + 1 || 8) - 1;
     if (ids.has(key)) {
       return ids.get(key)!;
     }
@@ -1258,7 +1315,7 @@ function show_main(book: Bend.Book): Show | null {
     const id = show.cells.push(kind) - 1;
     ids.set(key, id);
     const refs: [number, HTerm, Lay][] = [];
-    if (kind === 3) {
+    if (kind === 3 || kind > 7) {
       show.cells.push(Number(box));
     } else if (kind === 6) {
       const el = lay_el(book, adt!.x[0]);
@@ -2101,7 +2158,8 @@ function emit_jump(fl: File, args: string[], k: Name,
 
 // A call's arguments, laid out as the def takes them: nested ones first,
 // owned ones popped before borrowed ones are read (a read asks a lend).
-function emit_args(fl: File, ck: Call, jump = false, fork = false): string[] {
+function emit_args(fl: File, ck: Call, jump = false, fork = false,
+  lays = sig_def(fl, ck.k).lays): string[] {
   const brw = brw_of(fl, ck.k);
   ck.all.forEach((a, q) => {
     if (fl.hot.has(ck.k + "~" + q)) {
@@ -2111,7 +2169,6 @@ function emit_args(fl: File, ck: Call, jump = false, fork = false): string[] {
   const xs = ck.args.map((a) => term_strip(a));
   const vars = xs.filter((x) => x.$ === "Var");
   const rest = fl.rest;
-  const lays = sig_def(fl, ck.k).lays;
   const vs = ck.args.map((a, i): Val | null => {
     if (xs[i].$ === "Var") {
       return null;
@@ -2179,20 +2236,22 @@ function emit_put(fl: File, dst: Dst, v: Val): void {
   }
 }
 
-function emit_fuse(fl: File, ck: Call, dst: Dst, tail = false): void {
+function emit_fuse(fl: File, ck: Call, dst?: Dst, tail = false): Dst {
   const tld = fl.book.tlds[ck.k] as Def;
   const doms = tele_unbind(fl.book, tld.T).doms;
   const ers = ck.all.filter((_, i) => i < tld.n && !quant_live(doms[i][0]));
-  const { lays, ret } = sig_def(fl, ck.k);
+  const { lays, ret } = sig_def(fl, ck.k, ers);
   const flat = flat_of(ck.k);
-  const ws = emit_args(fl, ck, tail && !flat);
+  const ws = emit_args(fl, ck, tail && !flat, false, lays);
+  let at = 0;
+  const vals = lays.map((lay) => val_new(ws.slice(at, at += lay.ks.length),
+    lay));
   if (!flat) {
     const outer = fl.def;
     fl.def = ck.k;
-    emit_body(fl, tld.h as HTerm, tld.T, ers, lays.map((lay) =>
-      val_new(ws.splice(0, lay.ks.length), lay)), dst);
+    emit_body(fl, tld.h as HTerm, tld.T, ers, vals, dst!);
     fl.def = outer;
-    return;
+    return null;
   }
   const out = emit_dst(fl, ret);
   const name = emit_native(fl, ck, ers);
@@ -2205,14 +2264,17 @@ function emit_fuse(fl: File, ck: Call, dst: Dst, tail = false): void {
   if (tail) {
     bind_dead(fl, []);
   }
-  emit_put(fl, dst, out);
+  if (dst !== undefined) {
+    emit_put(fl, dst, out);
+  }
+  return out;
 }
 
 // Opens a unit of `k`: fresh state, parameters bound, segment made.
-function emit_open(fl: File, k: Name): Val[] {
+function emit_open(fl: File, k: Name, ers: HTerm[] = []): Val[] {
   Object.assign(fl, { spares: [], tab: 2, uses: new Map(),
     fuel: FOLD_FUEL, def: k });
-  const { live, lays, ret } = sig_def(fl, k);
+  const { live, lays, ret } = sig_def(fl, k, ers);
   const vals = lays.map((l, i) =>
     val_new(l.ks.map(() => name_local(fl, live[i][1])), l));
   // a borrowed parameter's boxes are rooted in it
@@ -2227,8 +2289,7 @@ function emit_open(fl: File, k: Name): Val[] {
 }
 
 function emit_native(fl: File, ck: Call, ers: HTerm[]): string {
-  const key = [ck.k, ...ers.map((e) => JSON.stringify(lay_of(fl.book, e)))]
-    .join("|");
+  const key = lay_key(fl, ck.k, ers);
   const got = fl.spun.get(key);
   if (got !== undefined) {
     return seg_ref(fl, got);
@@ -2237,7 +2298,7 @@ function emit_native(fl: File, ck: Call, ers: HTerm[]): string {
   fl.spun.set(key, name);
   const tld = fl.book.tlds[ck.k] as Def;
   const outer = { ...fl };
-  const vals = emit_open(fl, ck.k);
+  const vals = emit_open(fl, ck.k, ers);
   const seg = fl.seg;
   seg.fid = name;
   const dst = val_new(seg.ret.ks.map(() => name_local(fl, "v")), seg.ret);
@@ -2274,20 +2335,35 @@ function emit_intr(fl: File, it: Intr, x: HTerm,
   if (it.call === true && it.C === undefined) {
     return arr_op(fl, op, lay_el(fl.book, m.all[0]), args);
   }
-  const ws = args.map((v) => (val_own(fl, v), val_word(v)));
+  // each argument in the layout the native reads (a boxed U64 from a
+  // generic def unboxes here)
+  const lays = sig_def(fl, k).lays;
+  const vs = args.map((a, i) => val_to(fl, a, lays[i]));
+  vs.forEach((v) => val_own(fl, v));
   if (Array.isArray(it.C)) {
-    const as = ws.map((z) => emit_alias(fl, z, "a"));
-    const vs: string[] = [];
+    const as = vs.map((v) => emit_alias(fl, val_word(v), "a"));
+    const os: string[] = [];
     for (const p of it.C) {
-      vs.push(emit_alias(fl, tpl(p, [...as, ...vs]), "a"));
+      os.push(emit_alias(fl, tpl(p, [...as, ...os]), "a"));
     }
-    return val_new(vs, lay_of(fl.book, ty ?? tele_unbind(fl.book,
+    return val_new(os, lay_of(fl.book, ty ?? tele_unbind(fl.book,
       (fl.book.tlds[k] as Bend.Def).T).ret));
   }
-  const C = it.C as string;
+  return intr_c(fl, it.C as string, k, vs, lay_of(fl.book, ty));
+}
+
+// A string template's C: a two-word argument (a U64) enters as one u64,
+// and a two-word result leaves as its halves.
+function intr_c(fl: File, C: string, k: Name, vs: Val[], lay: Lay): Val {
+  const ret = sig_def(fl, k).ret;
+  const ws = vs.map((v) => v.ws.length > 1 ? emit_alias(fl,
+    `((u64)${v.ws[1]} << 32 | ${v.ws[0]})`, "a", "w64") : val_word(v));
   const out = tpl(C, /\$(\d)[^]*\$\1/.test(C)
     ? ws.map((a) => emit_alias(fl, a, "a")) : ws);
-  const lay = lay_of(fl.book, ty);
+  if (lay_w64(ret)) {
+    const w = emit_alias(fl, out, "w", "w64");
+    return val_new([`(u32)${w}`, `(${w} >> 32)`], ret);
+  }
   return val_new([out], lay.ks.length === 1 ? lay : BOX);
 }
 
@@ -2463,9 +2539,7 @@ function emit_expr(fl: File, tm: HTerm, ty0: HTerm | null,
       }
       const m = term_spine(fl, x);
       if (flat_call(fl, x)) {
-        const dst = emit_dst(fl, sig_def(fl, m.call!.k).ret);
-        emit_fuse(fl, m.call!, dst);
-        return dst;
+        return emit_fuse(fl, m.call!)!;
       }
       // An eta-expansion, or a head applied to erased arguments alone.
       const y = call_eta(fl, x)
@@ -2538,7 +2612,9 @@ function emit_body(fl: File, tm: HTerm, ty0: HTerm | null,
         return emit_body(fl, x.f(t), all.B(t), ers.slice(1), args, dst);
       }
       const o = term_open(x);
-      const v = val_hold(fl, val_to(fl, args[0], lay_of(fl.book, all.A)), x.k);
+      // a parameter of a bare type variable keeps the layout it was given
+      const v = val_hold(fl, ty_wnf(fl.book, all.A)?.$ === "Var" ? args[0]
+        : val_to(fl, args[0], lay_of(fl.book, all.A)), x.k);
       bind_uses(fl, o.ps[0], v, [o.b], all.A);
       return emit_body(fl, o.b, all.B(DUMMY), ers, args.slice(1), dst);
     }
@@ -2572,7 +2648,7 @@ function emit_body(fl: File, tm: HTerm, ty0: HTerm | null,
         && !def_foreign(fl.book.tlds[ck.k])
         && (!lay_box(ret) || lay_box(fl.seg.ret));
       if (fl.seg.def !== ck.k && (flat_call(fl, x) || (dst === null && once))) {
-        return emit_fuse(fl, ck, dst, true);
+        return void emit_fuse(fl, ck, dst, true);
       }
       // A jump's returns must agree or both be one word (a box holds a word
       // as is); a call whose return disagrees becomes a cut.
@@ -5844,6 +5920,11 @@ static void show_val(Env e, u32 d, const Term* w, char chain) {
     case 0: printf("%u", (u32)w[0]); break;
     case 1: show_f32((u32)w[0]); break;
     case 2: printf("%llun", (unsigned long long)w[0]); break;
+    case 8: {
+      const Term* v = D[d + 1] != 0 ? e.mem + term_peek(e, w[0]) : w;
+      printf("%lluu64", (unsigned long long)(v[1] << 32 | (u32)v[0]));
+      break;
+    }
     case 3:
       putchar('\'');
       show_chr(D[d + 1] != 0 ? term_loc(w[0]) : w[0], '\'');
@@ -6201,6 +6282,7 @@ function show_val(D, N, d, v, chain) {
     : D[d] === 4 ? "\"" + [...v].map((c) =>
       show_chr(c.codePointAt(0), "\"")).join("") + "\""
     : D[d] === 5 ? "{==}"
+    : D[d] === 8 ? v + "u64"
     : "[" + v.map((x) => show_val(D, N, D[d + 1], x, 0)).join(", ") + "]";
 }
 
