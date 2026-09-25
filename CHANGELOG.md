@@ -3,6 +3,54 @@
 Each release names what changed for a user. `bend update` installs the
 latest one; the GitHub release carries the same notes.
 
+## 2.0.28 (2026-09-25)
+
+- **The macOS `bend` has a valid signature** (#1025): `bun build --compile`
+  left the hash of the binary's last page stale, so every macOS release since
+  2.0.8 failed `codesign --verify`, and a Mac that checks that page killed
+  `bend` at launch with SIGKILL. The release now signs the macOS binaries
+  again, ad hoc, and verifies them before publishing.
+- **A package name is 1 to 64 characters** (#1053): the CLI asks the hub
+  about a short name instead of refusing it, so `--publish json@…` prints the
+  hub's answer (a name under 12 characters is won at auction on
+  hub.bend-lang.com) and `import std@1.0.0.0/…` resolves once the name has a
+  version.
+- **Names and namespaces cannot collide** (#1042; closes #994, #989, #1002,
+  #1005): a declared name is words joined by dots; a file's namespace is its
+  real path, so a local file cannot take a hub package's `0x<hash>`
+  namespace nor register names in another file's; only a `0x<hash>/` or
+  `name@version/` import goes to the hub. A name declared twice, a
+  redeclared Base name, a clashing alias and an effect registered twice are
+  refused. **A JS effect registers with `io_eff(CID(Name), run, need)`, as a
+  C effect does**: effect files written for 2.0.27 need that change (see
+  `bend guide effects`).
+- **An unsafe fill in an imported file is listed** (#1001, PR #1033 by
+  costamatheus97): the verdict walks from every law, wherever it is filled,
+  so a law filled by `@unsafe` code in a helper file no longer passes as a
+  clean `All terms check.`. Exit codes are unchanged.
+- **`Process.run`** (PR #1030 by oxura) runs a program directly, without a
+  shell: literal arguments, UTF-8 input, bounded output and a timeout, and it
+  answers the status, stdout and stderr, on every lane.
+- **`IO.thread_count()`** (#971, PR #1048 by aldeni) answers the native worker
+  pool's size (`--threads`, or the CPUs the process may use, up to 128), and 1
+  on the JS lanes.
+- **A checked `Nat.read` finishes** (#1008, PR #1009 by jkbennitt): a law like
+  `{Nat.read("7") == Some{7n}}` no longer compares each digit against a unary
+  2^48 - 1.
+- **Fixes**: the `.bend` loader registers in Node worker threads (PR #992 by
+  vicmcorrea); an empty `UDP.send_to` sends on Bun (PR #998 by vicmcorrea); a
+  signal that interrupts the event loop's `select` wakes nothing, on both
+  lanes (PR #1036 by aldeni); rebuilding a list in C no longer leaks 16 bytes
+  (#970, PR #987 by YidaWeng); an effect `.c` that says `undefined` in a
+  comment builds (PR #1049 by aldeni); Metal names the device's limit when
+  `--gpu` asks for more (PR #1047 by MattCozendey); the effects guide gives
+  the JS park its deadline (PR #1050 by aldeni).
+- **Simpler checker and effects, same output**: every literal is one node
+  that carries its Base type (PR #1004 by MattCozendey), three one-use C
+  helpers go (PR #981 by tachytelicdetonation), `Nat.read` checks its bound
+  with three helpers instead of eight, and the JS show escapes a surrogate as
+  C does (PR #943 by This-Is-NPC).
+
 ## 2.0.27 (2026-09-23)
 
 - **`bend` reads no `bunfig.toml` or `.env` from the directory it runs in**

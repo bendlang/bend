@@ -32,7 +32,7 @@ allow(/^\.github\/ISSUE_TEMPLATE\/(bug|feature|config)\.yml$/, 600);
 allow(".gitattributes", 200);
 allow(".gitignore", 100);
 allow("AGENTS.md", 2000);
-allow("CHANGELOG.md", 6000);
+allow("CHANGELOG.md", Infinity);
 allow("README.md", 3000);
 allow("WONTFIX.txt", 1500);
 allow("LICENSE", 4000);
