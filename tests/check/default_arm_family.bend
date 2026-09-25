@@ -35,7 +35,7 @@ def main(): 0
 
 #|Error:
 #|- expected : Pq(b)
-#|- observed : non-inferrable term '{==}'
+#|- observed : non-inferrable term
 #|Context:
 #|- b : Bq
 #|Location: ev

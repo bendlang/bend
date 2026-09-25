@@ -11,11 +11,12 @@ def t(b: Bool) -> Maybe{&2, Bool}:
 
 #|Error:
 #|- expected : Type
-#|- observed : non-inferrable term 'Maybe{&2, Bool}' (Maybe is a datatype: write its arguments as <>)
+#|- observed : non-inferrable term
 #|Context:
 #|- b : Bool
 #|Location: t
 #|4 |
 #|5>| def t(b: Bool) -> Maybe{&2, Bool}:
 #|6 |   match b:
+#|Note: Maybe is a datatype: write its arguments as <>
 #|exit 1

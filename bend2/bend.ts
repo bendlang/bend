@@ -1558,12 +1558,6 @@ export function expr_show(book: Book, x: Expr, bnd: Name[] = []): string {
   }
 }
 
-export function typeless_show(book: Book, ctx: Ctx, tm: HTerm): string {
-  return "non-inferrable term '" + expr_show(book, tm, ctx_scope(ctx)) + "'"
-    + (tm.$ === "Ctr" && book.tlds[tm.k]?.$ === "ADT"
-      ? " (" + tm.k + " is a datatype: write its arguments as <>)" : "");
-}
-
 export function err_show(err: Err): string {
   const bnd  = ctx_scope(err.ctx);
   const anns = pmap_to_array(err.ctx).sort((a, b) => a[0] - b[0]);
@@ -3564,7 +3558,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
     case "Lam": {
       const t_wnf = term_wnf(book, ty);
       if (t_wnf.$ !== "All") {
-        throw Err(book, ctx, ty, typeless_show(book, ctx, tm), tm.s, lhs.def);
+        throw Err(book, ctx, ty, "non-inferrable term", tm.s, lhs.def);
       }
       const x: HTerm = Var(tm.k, d);
       let f_lhs = lhs;
@@ -3620,7 +3614,11 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       const t_wnf = term_wnf(book, ty);
       if (t_wnf.$ !== "ADT") {
         const fam = book_ctr(book, tm.k) === null ? null : book_fam(book, tm.k);
-        throw Err(book, ctx, ty, fam === null ? typeless_show(book, ctx, tm) : Ref(fam, tm.s), tm.s, lhs.def);
+        if (fam !== null) {
+          throw Err(book, ctx, ty, Ref(fam, tm.s), tm.s, lhs.def);
+        }
+        const nte = book.tlds[tm.k]?.$ === "ADT" ? "Note: " + tm.k + " is a datatype: write its arguments as <>" : undefined;
+        throw Err(book, ctx, ty, "non-inferrable term", tm.s, lhs.def, nte);
       }
       const adt = book_adt(book, t_wnf, ctx, lhs.def);
       const ctr = ctrs_find(adt.c, tm.k);
@@ -3670,7 +3668,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
     case "Efq": {
       const t_wnf = term_wnf(book, ty);
       if (t_wnf.$ !== "All") {
-        throw Err(book, ctx, ty, typeless_show(book, ctx, tm), tm.s, lhs.def);
+        throw Err(book, ctx, ty, "non-inferrable term", tm.s, lhs.def);
       }
       if (qt.$ !== "None" && t_wnf.q.$ === "None") {
         throw Err(book, ctx, "a live scrutinee (a - scrutinee matches only in a dead region)", undefined, tm.s, lhs.def);
@@ -3723,7 +3721,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
     case "Rfl": {
       const t_wnf = term_wnf(book, ty);
       if (t_wnf.$ !== "Eql") {
-        throw Err(book, ctx, ty, typeless_show(book, ctx, tm), tm.s, lhs.def);
+        throw Err(book, ctx, ty, "non-inferrable term", tm.s, lhs.def);
       }
       if (!term_compare("EQ", book, t_wnf.a, t_wnf.b, d)) {
         throw Err(book, ctx, t_wnf.a, t_wnf.b, tm.s, lhs.def);
