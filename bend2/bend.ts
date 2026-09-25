@@ -337,7 +337,7 @@ export type Body  = Match | Local | Reply
 export type Loc   = number;
 export type Entry = [Name, number];
 export type Scope = { stk: Entry[]; frs: number; };
-export type Parse = { book: Book; dir: string; str: string; pos: Loc; sc: Scope; ns: string; al: Record<Name, Name>; };
+export type Parse = { book: Book; dir: string; str: string; pos: Loc; sc: Scope; ns: string; al: Record<Name, Name[]>; };
 export type Span  = { src: string; beg: Loc; end: Loc; };
 
 // Machine
@@ -1080,7 +1080,7 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
   const text  = fs.readFileSync(real, "utf8");
   const lines = text.split("\n");
   const body  = lines.slice();
-  const al    : Record<Name, Name> = Object.create(null);
+  const al    : Record<Name, Name[]> = Object.create(null);
   const hub   = (s: string): boolean => /^0x[0-9a-f]+\//.test(s);
   const ok    = (s: string, lib: boolean): boolean => hub(s) === lib
     && /^(\/|(\.\.\/)*)([A-Za-z_][\w-]*\/)*[A-Za-z_][\w-]*$/.test(s.replace(/^0x[0-9a-f]+\//, ""));
@@ -1103,8 +1103,11 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
       await book_load(book, BASE_BEND, "", seen, sp);
       continue;
     }
-    if (!m[1].endsWith(".bend")) {
-      throw Err(book, ctx_nil(), "an import of a .bend file", "'" + m[1] + "'", sp);
+    // a path with no suffix names a folder: every .bend file right in it
+    // (not in its subfolders) loads under the one alias
+    const fld = !/\.[^/]*$/.test(m[1]);
+    if (!fld && !m[1].endsWith(".bend")) {
+      throw Err(book, ctx_nil(), "an import of a .bend file, or of a folder", "'" + m[1] + "'", sp);
     }
     if (m[2] in al) {
       throw Err(book, ctx_nil(), "a fresh alias (" + m[2] + " names an earlier import)", "'" + line + "'", sp);
@@ -1112,19 +1115,27 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
     const bad = () => Err(book, ctx_nil(), "an import path of plain names (letters, digits, _ and -; the hub's files import the hub's)", "'" + m[1] + "'", sp);
     const nv  = /^([^/]*@[^/]*)\//.exec(m[1]);
     const as  = nv === null ? m[1] : await name_hash(book, nv[1], sp) + m[1].slice(nv[1].length);
-    const rel = path.posix.normalize(as);
-    if (!ok(as.replace(/^\.\//, "").slice(0, -5), hub(as))) {
+    const rel = path.posix.normalize(as).replace(/\/$/, "");
+    if (!ok(as.replace(/^\.\//, "").replace(fld ? /\/$/ : /\.bend$/, ""), hub(as))) {
       throw bad();
     }
-    const got = await book_file(book, hub(as) ? BEND_LIB + "/" + rel : path.posix.resolve(dir, rel), sp);
-    const lib = fs.existsSync(BEND_LIB) ? fs.realpathSync(BEND_LIB) + "/" : "\0";
-    const sub = (got.startsWith(lib) ? got.slice(lib.length)
-      : path.posix.join(path.posix.dirname(ns), path.posix.relative(dir, got))).replace(/\.bend$/, "");
-    if (!ok(sub, got.startsWith(lib)) || (hub(ns) && !got.startsWith(lib))) {
-      throw bad();
+    const fp  = await book_file(book, hub(as) ? BEND_LIB + "/" + rel : path.posix.resolve(dir, rel), sp);
+    const fls = !fld ? [fp] : fs.statSync(fp).isDirectory() ? fs.readdirSync(fp).sort()
+      .filter((f) => f.endsWith(".bend") && fs.statSync(fp + "/" + f).isFile()).map((f) => fp + "/" + f) : [];
+    if (fls.length === 0) {
+      throw Err(book, ctx_nil(), "a folder with .bend files in it", "'" + m[1] + "'", sp);
     }
-    al[m[2]] = sub;
-    await book_load(book, got, sub, seen, sp);
+    al[m[2]] = [];
+    for (const got of fls) {
+      const lib = fs.existsSync(BEND_LIB) ? fs.realpathSync(BEND_LIB) + "/" : "\0";
+      const sub = (got.startsWith(lib) ? got.slice(lib.length)
+        : path.posix.join(path.posix.dirname(ns), path.posix.relative(dir, got))).replace(/\.bend$/, "");
+      if (!ok(sub, got.startsWith(lib)) || (hub(ns) && !got.startsWith(lib))) {
+        throw bad();
+      }
+      al[m[2]].push(sub);
+      await book_load(book, got, sub, seen, sp);
+    }
   }
   const n0 = book.order.length;
   parse_book(book, dir, body.join("\n"), ns, al);
@@ -1769,7 +1780,12 @@ export function parse_reso(p: Parse, k: Name): Name {
   const dot = k.indexOf(".");
   let q = parse_qual(p, k);
   if (dot !== -1 && k.slice(0, dot) in p.al) {
-    q = p.al[k.slice(0, dot)] + k.slice(dot);
+    const qs  = p.al[k.slice(0, dot)].map((ns) => ns + k.slice(dot));
+    const hit = qs.filter((n) => n in p.book.tlds || n in p.book.ctrs);
+    if (hit.length > 1) {
+      parse_fail(p, "an unambiguous name (" + k + " is declared by more than one file of the folder " + k.slice(0, dot) + ")");
+    }
+    q = hit[0] ?? qs[0];
     if ((q in p.book.tlds || q in p.book.ctrs) && (k in p.book.tlds || k in p.book.ctrs)) {
       parse_fail(p, "an unambiguous name (the alias " + k.slice(0, dot) + " shadows " + k + ")");
     }
@@ -2613,7 +2629,7 @@ export function parse_def(p: Parse, book: Book, u: Bool = false): void {
   book.order.push(k);
 }
 
-export function parse_book(book: Book, dir: string, src: string, ns: string = "", al: Record<Name, Name> = Object.create(null)): Book {
+export function parse_book(book: Book, dir: string, src: string, ns: string = "", al: Record<Name, Name[]> = Object.create(null)): Book {
   const p: Parse = { book, dir, str: src, pos: 0, sc: { stk: [], frs: 0 }, ns, al };
   while (true) {
     parse_skip(p);

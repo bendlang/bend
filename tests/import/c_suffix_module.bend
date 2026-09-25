@@ -13,7 +13,7 @@ def main():
   0
 
 #|Error:
-#|- expected : an import of a .bend file
+#|- expected : an import of a .bend file, or of a folder
 #|- observed : '/lib/helper.c'
 #|Location:
 #|6 | import Base

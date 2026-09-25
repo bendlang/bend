@@ -12,7 +12,7 @@ def main():
   0
 
 #|Error:
-#|- expected : an import of a .bend file
+#|- expected : an import of a .bend file, or of a folder
 #|- observed : '/up/up/native_mod.c'
 #|Location:
 #|5 | import Base
