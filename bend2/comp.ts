@@ -3336,14 +3336,16 @@ function js_def(fl: File, k: Name, def: Def): void {
     return;
   }
   fl.seg.def = k;
-  if (loop_of(fl, k).length > 0) {
-    return js_loop(fl, k);
-  }
-  const params = sig_def(fl, k).live.map(([, n]) => name_local(fl, n));
+  const loop = loop_of(fl, k);
+  const n = Math.max(0, ...loop.map((d) => sig_def(fl, d).live.length));
+  const params = loop.length > 0 ? Array.from({ length: n }, (_, i) => "$" + i)
+    : sig_def(fl, k).live.map(([, x]) => name_local(fl, x));
   const kont = def.i ? [name_local(fl, "k")] : [];
   block(fl, `function ${js_sat(k)}(${[...params, ...kont].join(", ")}) {`,
     () => {
-      if (def.i === undefined) {
+      if (loop.length > 0) {
+        js_loop(fl, k, loop);
+      } else if (def.i === undefined) {
         js_func(fl, def.h!, def.T, params);
       } else {
         const n = JSON.stringify(k);
@@ -3356,23 +3358,17 @@ function js_def(fl: File, k: Name, def: Def): void {
 
 // A loop sets $i and $pc to the callee's case and turns, binding each
 // turn's parameters afresh, so a closure keeps its own.
-function js_loop(fl: File, k: Name): void {
-  const loop = loop_of(fl, k);
-  const n = Math.max(...loop.map((d) => sig_def(fl, d).live.length));
-  const ins = Array.from({ length: n }, (_, i) => "$" + i);
-  block(fl, `function ${js_sat(k)}(${ins.join(", ")}) {`, () => {
-    file_push(fl, `let $pc = ${loop.indexOf(k)};`);
-    block(fl, "for (;;) switch ($pc) {", () => loop.forEach((d, i) => {
-      memo_gc();
-      fl.fresh = new Map();
-      fl.fuel = FOLD_FUEL;
-      const def = fl.book.tlds[d] as Def;
-      const ps = sig_def(fl, d).live.map(([, x]) => name_local(fl, x));
-      const bind = ps.map((p, j) => `const ${p} = $${j};`).join(" ");
-      block(fl, `case ${i}: { ${bind}`, () => js_func(fl, def.h!, def.T, ps));
-    }));
-  });
-  file_push(fl, "");
+function js_loop(fl: File, k: Name, loop: Name[]): void {
+  file_push(fl, `let $pc = ${loop.indexOf(k)};`);
+  block(fl, "for (;;) switch ($pc) {", () => loop.forEach((d, i) => {
+    memo_gc();
+    fl.fresh = new Map();
+    fl.fuel = FOLD_FUEL;
+    const def = fl.book.tlds[d] as Def;
+    const ps = sig_def(fl, d).live.map(([, x]) => name_local(fl, x));
+    const bind = ps.map((p, j) => `const ${p} = $${j};`).join(" ");
+    block(fl, `case ${i}: { ${bind}`, () => js_func(fl, def.h!, def.T, ps));
+  }));
 }
 
 export function js_lib(book: Bend.Book, roots: Name[],
