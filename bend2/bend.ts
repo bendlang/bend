@@ -1575,13 +1575,13 @@ export function err_show(err: Err): string {
     const at  = err.spn.src.slice(0, err.spn.beg).split("\n").length;
     const beg = Math.max(1, at - 1);
     const end = Math.min(lns.length, at + 1);
-    const wid = String(end).length;
+    const num = String(end).length;
     const col = parse_col(err.spn.src, err.spn.beg) - 1;
     const lin = lns[at - 1];
     const pad = lin.slice(0, col).replace(/[^\t]/g, " ");
-    const car = " ".repeat(wid) + " | " + pad + "^".repeat(Math.max(1, Math.min(err.spn.end - err.spn.beg, lin.length - col)));
+    const car = " ".repeat(num) + " | " + pad + "^".repeat(Math.max(1, Math.min(err.spn.end - err.spn.beg, lin.length - col)));
     spn = "\n" + lns.slice(beg - 1, end).map((l, j) =>
-      String(beg + j).padStart(wid) + (beg + j === at ? ">| " + l + "\n" + car : " | " + l)).join("\n");
+      String(beg + j).padStart(num) + (beg + j === at ? ">| " + l + "\n" + car : " | " + l)).join("\n");
   }
   const loc  = def === "" && spn === "" ? "" : "\nLocation:" + def + spn;
   const nte = err.nte === undefined ? "" : "\n" + err.nte;
@@ -3619,11 +3619,8 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       const t_wnf = term_wnf(book, ty);
       if (t_wnf.$ !== "ADT") {
         const fam = book_ctr(book, tm.k) === null ? null : book_fam(book, tm.k);
-        if (fam !== null) {
-          throw Err(book, ctx, ty, Ref(fam, tm.s), tm.s, lhs.def);
-        }
-        const nte = book.tlds[tm.k]?.$ === "ADT" ? "Note: " + tm.k + " is a datatype: write its arguments as <>" : undefined;
-        throw Err(book, ctx, ty, "non-inferrable term", tm.s, lhs.def, nte);
+        const nte = fam === null && book.tlds[tm.k]?.$ === "ADT" ? "Note: " + tm.k + " is a datatype: write its arguments as <>" : undefined;
+        throw Err(book, ctx, ty, fam === null ? "non-inferrable term" : Ref(fam, tm.s), tm.s, lhs.def, nte);
       }
       const adt = book_adt(book, t_wnf, ctx, lhs.def);
       const ctr = ctrs_find(adt.c, tm.k);
