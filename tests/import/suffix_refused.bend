@@ -14,7 +14,7 @@ def main():
   0
 
 #|Error:
-#|- expected : an import of a .bend file
+#|- expected : an import of a .bend file, or of a folder
 #|- observed : '/lib/words.txt'
 #|Location:
 #|7 | import Base

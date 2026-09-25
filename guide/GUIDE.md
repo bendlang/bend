@@ -497,6 +497,10 @@ def main() -> U32:
   M.square(7)
 ```
 
+A path with no suffix imports a folder: `import ./lib as L` loads every
+`.bend` file right in `lib/` (not those in its subfolders), and `L.x` names
+the `x` that one of them declares; a name two of them declare is refused.
+
 The alias is local to the importing file, and dots inside a name are just
 characters: `U32.show` needs no module. A module's path is plain names
 (letters, digits, `_` and `-`): `math.bend` is a module, `math.extra.bend` is
@@ -550,6 +554,7 @@ and brackets are sugar for names in Base.
 # Top level
 import Base                              # the prelude
 import ./file.bend as M                  # a module; its defs are M.x
+import ./dir as M                        # every .bend file right in dir/
 type D<a, -A: Kind(a)> is Kind(a):       # a datatype and its kind
   K{x: A, xs: List<a, A>}                # one constructor per line
 def f(x: A, -y: B, +z: C) -> T:          # a def; the body follows

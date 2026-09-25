@@ -314,17 +314,25 @@ async function cli_checkup(file: string): Promise<void> {
     }
     const at = m[1].startsWith("/") ? m[1]
       : path.join(path.dirname(file), m[1]);
-    cli_say(1, "--- " + m[1] + " ---\n");
-    let code = 1;
-    try {
-      const own = /^import Base$/m.test(fs.readFileSync(at, "utf8"));
-      code = book_run(...await book_read(at, own ? base : undefined), []);
-    } catch (e) {
-      cli_say(2, book_err(e) + "\n");
-    }
-    if (code !== 0) {
-      cli_say(1, "exit " + String(code) + "\n");
-      bad = true;
+    // a folder import is checked file by file, as its files load
+    const fld = fs.existsSync(at) && fs.statSync(at).isDirectory();
+    const ims = !fld ? [m[1]] : fs.readdirSync(at).sort().filter((f) =>
+      f.endsWith(".bend") && fs.statSync(path.join(at, f)).isFile())
+      .map((f) => m[1].replace(/\/$/, "") + "/" + f);
+    for (const im of ims) {
+      const at = im.startsWith("/") ? im : path.join(path.dirname(file), im);
+      cli_say(1, "--- " + im + " ---\n");
+      let code = 1;
+      try {
+        const own = /^import Base$/m.test(fs.readFileSync(at, "utf8"));
+        code = book_run(...await book_read(at, own ? base : undefined), []);
+      } catch (e) {
+        cli_say(2, book_err(e) + "\n");
+      }
+      if (code !== 0) {
+        cli_say(1, "exit " + String(code) + "\n");
+        bad = true;
+      }
     }
   }
   if (bad) {
