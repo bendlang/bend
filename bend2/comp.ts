@@ -3077,6 +3077,9 @@ export function compile_book(book: Bend.Book): string {
         fl.cids.set(c.k, lay_node(fl.book, c.k).ks.length);
       }
     }
+    for (const k of show?.names ?? []) {
+      fl.cids.set(k, lay_node(fl.book, k).ks.length);
+    }
     for (const [k, tld] of defs) {
       compile_def(fl, k, tld);
     }
