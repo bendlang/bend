@@ -4137,8 +4137,19 @@ INLINE Loc term_peek(Env e, Term t) {
 // plainly, copied and dropped by a match.
 #define blk_shr(t) (BLK_SHR && term_rfc(t))
 
+// Its loc, bits 24.. of the cell, holds while the handle does; the count
+// below moves by 32-bit atomics, so the cell is read as one (on a device,
+// as two halves: 64-bit atomics are not everywhere).
 INLINE Loc blk_loc(Corpus H, Term a) {
-  return blk_shr(a) ? H[term_loc(a)] >> 24 : term_loc(a);
+  if (!blk_shr(a)) {
+    return term_loc(a);
+  }
+#if DEVICE
+  DEV u32* w = a32_at(H, term_loc(a));
+  return ((u64)a32_load(w + 1) << 8) | (a32_load(w) >> 24);
+#else
+  return __atomic_load_n(&H[term_loc(a)], __ATOMIC_RELAXED) >> 24;
+#endif
 }
 
 INLINE Cls blk_cls(Term t) {
