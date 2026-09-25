@@ -1,8 +1,8 @@
 # regression witness (7a3f184): a 256-field record once compiled into a C
 # book whose u8 CID_ARITY_T entry wrapped to 0, corrupting every open of
 # the record. A node past 247 words now keeps 240 plus its size class
-# there (record_256_fields, wide_record_drop); a 255-field record travels
-# boxed and every backend answers 1.
+# there (wide_record_drop); a 255-field record travels boxed and every
+# backend answers 1.
 import Base
 
 type R255 is Data:
