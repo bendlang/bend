@@ -585,6 +585,8 @@ const FOLDS: Map<HTerm, HTerm | null> = new Map();
 
 const FLATS: Map<Name, boolean> = new Map();
 
+const LOOPS: Map<Name, Name[]> = new Map();
+
 const SIGS: Map<Name, Sig> = new Map();
 
 const BRWS: Map<Name, boolean[]> = new Map();
@@ -1417,7 +1419,7 @@ function def_body(cb: Carb, k: Name): TLD | undefined {
 // refs, calls and flatness (no fork, no bang call, only tail self-calls).
 function carb_book(src: Bend.Book, roots: Name[]): Carb {
   book_owned(src);
-  [TELES, SRCS, NODES, LAYS, CYCLES, FLATS, SIGS, BRWS].forEach((m) =>
+  [TELES, SRCS, NODES, LAYS, CYCLES, FLATS, LOOPS, SIGS, BRWS].forEach((m) =>
     m.clear());
   ids_reset();
   PROBES.length = 1;
@@ -1502,10 +1504,7 @@ function flat_of(k: Name): boolean {
   });
 }
 
-const LOOPS: Map<Name, Name[]> = new Map();
-
-function tail_loops(cb: Carb): void {
-  LOOPS.clear();
+function loop_of(cb: Carb, k: Name): Name[] {
   const ids = new Map<Name, number>();
   const stack: Name[] = [];
   const visit = (k: Name): number => {
@@ -1525,22 +1524,20 @@ function tail_loops(cb: Carb): void {
     ids.set(k, id);
     stack.push(k);
     for (const d of tails) {
-      low = Math.min(low, !ids.has(d) ? visit(d)
+      low = Math.min(low, LOOPS.has(d) ? low : !ids.has(d) ? visit(d)
         : stack.includes(d) ? ids.get(d)! : low);
     }
     if (low === id) {
-      const loop = stack.splice(stack.indexOf(k));
-      if (loop.length > 1 || tails.has(k)) {
-        loop.forEach((d) => LOOPS.set(d, loop));
-      }
+      const all = stack.splice(stack.indexOf(k));
+      const loop = all.length > 1 || tails.has(k) ? all : [];
+      all.forEach((d) => LOOPS.set(d, loop));
     }
     return low;
   };
-  for (const k of SRCS.keys()) {
-    if (!ids.has(k)) {
-      visit(k);
-    }
+  if (!LOOPS.has(k)) {
+    visit(k);
   }
+  return LOOPS.get(k)!;
 }
 
 // Done
@@ -3290,7 +3287,7 @@ function js_func(fl: File, tm: HTerm, ty0: HTerm | null,
     return js_func(fl, term_eta(fl.book, x, ty!, 1), ty, args);
   }
   const ck = call_kind(fl, x);
-  const loop = LOOPS.get(fl.seg.def) ?? [];
+  const loop = loop_of(fl, fl.seg.def);
   const at = ck === null ? -1 : loop.indexOf(ck.k);
   file_push(fl, at >= 0 ? ck!.args.map((a, i) => "$" + i + " = "
     + js_expr(fl, a, null) + "; ").join("")
@@ -3356,16 +3353,16 @@ function js_def(fl: File, k: Name, def: Def): void {
   }
   const params = sig_def(fl, k).live.map(([, n]) => name_local(fl, n));
   const kont = def.i ? [name_local(fl, "k")] : [];
-  const loop = LOOPS.get(k);
-  if (loop?.[0] === k) {
+  const loop = loop_of(fl, k);
+  if (loop[0] === k) {
     js_loop(fl, loop);
   }
-  if (loop?.length === 1) {
+  if (loop.length === 1) {
     return;
   }
   block(fl, `function ${js_sat(k)}(${[...params, ...kont].join(", ")}) {`,
     () => {
-      if (loop !== undefined) {
+      if (loop.length > 0) {
         file_push(fl, `return ${js_sat(loop[0])}loop(${[loop.indexOf(k),
           ...params].join(", ")});`);
       } else if (def.i === undefined) {
@@ -3406,7 +3403,6 @@ function js_loop(fl: File, loop: Name[]): void {
 export function js_lib(book: Bend.Book, roots: Name[],
   outs: Name[] | null): string {
   const cb = carb_book(book, roots.slice());
-  tail_loops(cb);
   const fl = file_new(cb, true);
   fl.tab = 0;
   for (const [k, def] of done_defs(cb)) {
