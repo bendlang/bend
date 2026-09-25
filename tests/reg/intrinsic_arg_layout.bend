@@ -1,3 +1,5 @@
+# regression witness: a generic pick returns a boxed Bool that native
+# Bool.or/Bool.xor once read raw instead of converting to a flat tag.
 import Base
 
 def pick(-A: Data, c: Bool, a: A, b: A) -> A:
