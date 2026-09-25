@@ -3284,8 +3284,7 @@ function js_func(fl: File, tm: HTerm, ty0: HTerm | null,
   const loop = loop_of(fl, fl.seg.def);
   const at = ck === null ? -1 : loop.indexOf(ck.k);
   file_push(fl, at >= 0 ? ck!.args.map((a, i) => "$" + i + " = "
-    + js_expr(fl, a, null) + "; ").join("")
-    + (loop.length > 1 ? "$pc = " + at + "; " : "") + "continue;"
+    + js_expr(fl, a, null) + "; ").join("") + "$pc = " + at + "; continue;"
     : "return " + (ck === null ? js_expr(fl, x, ty)
     : js_call(fl, ck.k, ck.args, true)) + ";");
 }
@@ -3345,21 +3344,15 @@ function js_def(fl: File, k: Name, def: Def): void {
   if (intr_of(fl, k, true) !== undefined) {
     return;
   }
+  const loop = loop_of(fl, k);
+  if (loop.length > 0) {
+    return js_loop(fl, k, loop);
+  }
   const params = sig_def(fl, k).live.map(([, n]) => name_local(fl, n));
   const kont = def.i ? [name_local(fl, "k")] : [];
-  const loop = loop_of(fl, k);
-  if (loop[0] === k) {
-    js_loop(fl, loop);
-  }
-  if (loop.length === 1) {
-    return;
-  }
   block(fl, `function ${js_sat(k)}(${[...params, ...kont].join(", ")}) {`,
     () => {
-      if (loop.length > 0) {
-        file_push(fl, `return ${js_sat(loop[0])}loop(${[loop.indexOf(k),
-          ...params].join(", ")});`);
-      } else if (def.i === undefined) {
+      if (def.i === undefined) {
         js_func(fl, def.h!, def.T, params);
       } else {
         const n = JSON.stringify(k);
@@ -3370,26 +3363,24 @@ function js_def(fl: File, k: Name, def: Def): void {
   file_push(fl, "");
 }
 
-// A loop sets $i (and, in a cycle, $pc to the callee's case) and turns,
-// binding each turn's parameters afresh, so a closure keeps its own.
-function js_loop(fl: File, loop: Name[]): void {
+// A loop sets $i and $pc to the callee's case and turns, binding each
+// turn's parameters afresh, so a closure keeps its own.
+function js_loop(fl: File, k: Name, loop: Name[]): void {
   const n = Math.max(...loop.map((d) => sig_def(fl, d).live.length));
   const ins = Array.from({ length: n }, (_, i) => "$" + i);
-  const one = loop.length === 1;
-  fl.seg.def = loop[0];
-  block(fl, `function ${js_sat(loop[0])}${one ? "" : "loop"}(${
-    (one ? ins : ["$pc", ...ins]).join(", ")}) {`, () =>
-    block(fl, one ? "for (;;) {" : "for (;;) switch ($pc) {", () =>
-    loop.forEach((d, i) => {
+  fl.seg.def = k;
+  block(fl, `function ${js_sat(k)}(${ins.join(", ")}) {`, () => {
+    file_push(fl, `let $pc = ${loop.indexOf(k)};`);
+    block(fl, "for (;;) switch ($pc) {", () => loop.forEach((d, i) => {
       memo_gc();
       fl.fresh = new Map();
       fl.fuel = FOLD_FUEL;
       const def = fl.book.tlds[d] as Def;
       const ps = sig_def(fl, d).live.map(([, x]) => name_local(fl, x));
       const bind = ps.map((p, j) => `const ${p} = $${j};`).join(" ");
-      block(fl, `${one ? "" : `case ${i}: `}{ ${bind}`,
-        () => js_func(fl, def.h!, def.T, ps));
-    })));
+      block(fl, `case ${i}: { ${bind}`, () => js_func(fl, def.h!, def.T, ps));
+    }));
+  });
   fl.seg.def = "";
   file_push(fl, "");
 }
