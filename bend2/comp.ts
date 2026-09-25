@@ -234,9 +234,15 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   ...tpl_ops("f32_", "sqrt exp log log2 log10 sin cos tan asin acos atan"
     + " sinh cosh tanh floor ceil trunc abs:fabs:abs",
     "f32_rewrap((f32)$o(f32_unbox($0)))", "Math.fround(Math.$o($0))"),
-  ...tpl_ops("f32_", "pow atan2",
-    "f32_rewrap((f32)$o(f32_unbox($0), f32_unbox($1)))",
-    "Math.fround(Math.$o($0, $1))"),
+  ...tpl_ops("f32_", "atan2",
+    "f32_rewrap((f32)atan2(f32_unbox($0), f32_unbox($1)))",
+    "Math.fround(Math.atan2($0, $1))"),
+  // Math.pow(1, NaN) and Math.pow(±1, ±Infinity) are NaN; libm pow returns 1.
+  f32_pow: {
+    C:  "f32_rewrap((f32)pow(f32_unbox($0), f32_unbox($1)))",
+    JS: "($0 === 1 || ($0 === -1 && ($1 === Infinity || $1 === -Infinity))"
+      + " ? 1 : Math.fround(Math.pow($0, $1)))",
+  },
   f32_mod: {
     C:  "f32_rewrap((f32)fmod(f32_unbox($0), f32_unbox($1)))",
     JS: "Math.fround($0 % $1)",
