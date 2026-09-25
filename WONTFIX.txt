@@ -50,6 +50,18 @@ A handle type is a law of Base (#825)
   custom effect reuses a Base handle type. Opening this to user files touches
   consistency; we will address the gap later.
 
+F64 arithmetic answers one NaN
+  An F64 op that makes a NaN makes 0x7FF8000000000000 on every lane, so the
+  lanes agree to the bit; a payload survives moves, neg and abs only.
+
+F64 has no sin, exp or log
+  Its ops are the ones IEEE 754 rounds exactly (add, sub, mul, div, sqrt,
+  fma, conversions); a host libm differs across lanes.
+
+Metal runs F64 in software
+  Metal has no double: an F64 op there runs its Base def, bit for bit with
+  the other lanes, and slower.
+
 CAPACITY (a small team keeps the language at a size it can maintain)
 
 Windows is not supported (#788)

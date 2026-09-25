@@ -227,8 +227,8 @@ def add_zero(x):
 - Recursion must be terminating. (Use `@unsafe`, or `def f?(..)`, to disable this checker.)
 - Computed matches (`match f(x)`) aren't supported. Must split it manually.
 - There is no syntax for if-then-else: a branch is a match on True and False.
-- Numbers are Nat, U32, U64 and F32: no I64 or F64 (Metal has no f64).
-- F32 is axiomatic: nothing about floating point can be proven.
+- Numbers are Nat, U32, U64, F32 and F64: no I64 (Metal has no f64: F64 runs in software).
+- F32 is axiomatic; F64 ops are Base defs, so proofs can unfold them.
 - Strings are linked lists of characters, so text processing is slow.
 - Base is small: expect to write helpers other languages ship built in.
 - Effects are few: print, env, time, sleep, spawn, channels, files, TCP, UDP.

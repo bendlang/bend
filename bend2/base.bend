@@ -66,6 +66,10 @@ type F32 is Data:
 type U64 is Data:
   U64{lo: U32, hi: U32}
 
+# An F64 is its IEEE 754 binary64 bits.
+type F64 is Data:
+  F64{bits: U64}
+
 type Char is Data:
   Chr{code: U32}
 
@@ -1934,6 +1938,283 @@ def U64.mul_hi(a: U64, b: U64) -> U64:
         + (n << 32n >> 32n) : U64)
       (U32.to_u64(ah) * U32.to_u64(bh) + (m >> 32n) + (n >> 32n)
         + (c >> 32n) : U64)
+
+# F64
+# ---
+
+# The ops below are IEEE 754 binary64 in software: round to nearest even,
+# no flush to zero, one rounding for fma, and every NaN result is
+# 0x7FF8000000000000 (neg and abs keep a payload). A lane with a double runs
+# the same ops natively (comp.ts's SOFT); Metal, which has none, runs these.
+
+# Shifts right by n, and sets bit 0 if a set bit fell off (sticky rounding).
+def U64.shr_jam(+a: U64, +n: Nat) -> U64:
+  +s = (a >> n : U64)
+  (s .|. Bool.to_u64((s << n < a : U64)) : U64)
+
+# The low 64 bits of the 128-bit h:l shifted right by t, jammed.
+def U64.wide_jam(+h: U64, +l: U64, +t: U32) -> U64:
+  +lo = U64.shr_jam(l, U32.to_nat(t))
+  +hi = U64.shr_jam(h, U32.to_nat((t - 64 : U32)))
+  Bool.pick(U64, (t < 64 : U32), (h << U32.to_nat((64 - t : U32)) .|. lo : U64),
+    (hi .|. Bool.to_u64((0u64 < l : U64)) : U64))
+
+def F64.bits(a: F64) -> U64:
+  F64{b} = a
+  b
+
+def F64.with_sign(s: Bool, x: U64) -> F64:
+  F64{(x .|. Bool.to_u64(s) << 63n : U64)}
+
+def F64.sign(a: F64) -> Bool:
+  (1u64 << 63n <= F64.bits(a) : U64)
+
+def F64.neg(a: F64) -> F64:
+  F64{(F64.bits(a) .^. 1u64 << 63n : U64)}
+
+def F64.abs(a: F64) -> F64:
+  F64{(F64.bits(a) << 1n >> 1n : U64)}
+
+def F64.is_nan(a: F64) -> Bool:
+  (2047u64 << 52n < F64.bits(F64.abs(a)) : U64)
+
+def F64.nan() -> F64:
+  F64{(4095u64 << 51n : U64)}
+
+# 0 zero, 1 finite, 2 infinite, 3 NaN.
+def F64.class(a: F64) -> U32:
+  +m = F64.bits(F64.abs(a))
+  +i = (2047u64 << 52n : U64)
+  +f = Bool.to_u32((0u64 < m : U64))
+  (f + Bool.to_u32((i <= m : U64)) + Bool.to_u32((i < m : U64)) : U32)
+
+def F64.of_class(+c: U32, s: Bool) -> F64:
+  Bool.pick(F64, U32.is_eq(c, 3), F64.nan(), F64.with_sign(s,
+    (U32.to_u64(c) / 2u64 * 2047u64 << 52n : U64)))
+
+# The significand with its hidden bit; shift moves its top bit to bit 52,
+# mant is it moved there, expo the exponent that goes with mant.
+def F64.sig(+a: F64) -> U64:
+  +n = Bool.to_u64((0u64 < F64.bits(a) << 1n >> 53n : U64))
+  (F64.bits(a) << 12n >> 12n .|. n << 52n : U64)
+
+def F64.shift(+a: F64) -> U32:
+  (U64.clz(F64.sig(a)) - 11 : U32)
+
+def F64.mant(+a: F64) -> U64:
+  (F64.sig(a) << U32.to_nat(F64.shift(a)) : U64)
+
+def F64.expo(+a: F64) -> U32:
+  (U32.max(U64.to_u32((F64.bits(a) << 1n >> 53n : U64)), 1)
+    - F64.shift(a) : U32)
+
+# Rounds m, its top bit at k + w, to nearest even without its low k bits,
+# and puts the exponent field e + 1 above bit w (a subnormal when e is
+# negative), saturating at inf.
+def F64.pack(+e: U32, +m: U64, +k: Nat, +w: Nat, +inf: U64) -> U64:
+  +neg = (2147483647 < e : U32)
+  +x = Bool.pick(U64, neg, U64.shr_jam(m, U32.to_nat(U32.min((0 - e : U32),
+    64))), m)
+  +h = (1u64 << Nat.sub(k, 1n) : U64)
+  +t = U64.is_eq((x .&. h * 2u64 - 1u64 : U64), h)
+  +r = ((x + h) >> k .&. U64.not(Bool.to_u64(t)) : U64)
+  U64.min(inf, (r + (U32.to_u64(Bool.pick(U32, neg, 0, e)) << w) : U64))
+
+# The F64 nearest to (-1)^s * m * 2^(e - 1084), ties to even (m nonzero).
+def F64.make(s: Bool, e: U32, +m: U64) -> F64:
+  +k = (U64.clz(m) - 1 : U32)
+  F64.with_sign(s, F64.pack((e - k : U32), (m << U32.to_nat(k) : U64), 10n, 52n,
+    (2047u64 << 52n : U64)))
+
+def F64.prod_class(+t: U32, +u: U32) -> U32:
+  +hi = U32.max(t, u)
+  +z = U32.is_zero(U32.min(t, u))
+  Bool.pick(U32, (2 < hi || z && U32.is_eq(hi, 2) : U32), 3,
+    Bool.pick(U32, z, 0, hi))
+
+def U64.wide_neg(c: Bool, +h: U64, +l: U64) -> U64 & U64:
+  Bool.pick(U64 & U64, c, ((U64.not(h) + Bool.to_u64(U64.is_zero(l)) : U64),
+    (0u64 - l : U64)), (h, l))
+
+def F64.fma.fin(s: Bool, +f: U32, z: U64 & U64) -> F64:
+  (+h, +l) = z
+  +n = (U64.clz(h) + Bool.pick(U32, U64.is_zero(h), U64.clz(l), 0) - 1 : U32)
+  +m = Bool.pick(U64, (n < 64 : U32), U64.wide_jam(h, l, (64 - n : U32)),
+    (l << U32.to_nat((n - 64 : U32)) : U64))
+  Bool.pick(F64, U64.is_zero((h .|. l : U64)), F64{0u64},
+    F64.make(s, (f + 1148 - n : U32), m))
+
+def F64.fma.add(s: Bool, f: U32, +xh: U64, +xl: U64, y: U64 & U64) -> F64:
+  (yh, yl) = y
+  +zl = (xl + yl : U64)
+  +zh = (xh + yh + Bool.to_u64((zl < xl : U64)) : U64)
+  +neg = (1u64 << 63n <= zh : U64)
+  F64.fma.fin(Bool.xor(s, neg), f, U64.wide_neg(neg, zh, zl))
+
+# a * b + c for finite nonzero products: the product's 106 bits and c's
+# significand aligned on a 128-bit sum, then rounded once by F64.make.
+def F64.fma.sum(+a: F64, +b: F64, +c: F64) -> F64:
+  +ma = F64.mant(a)
+  +mb = F64.mant(b)
+  +pl = (ma * mb : U64)
+  +xh = (U64.mul_hi(ma, mb) << 20n .|. pl >> 44n : U64)
+  +yh = (F64.mant(c) << 9n : U64)
+  +t = (F64.expo(c) + 1022 - F64.expo(a) - F64.expo(b) : U32)
+  +up = Bool.and((t - 1 < 2147483647 : U32), (0u64 < yh : U64))
+  +tx = Bool.pick(U32, up, U32.min(t, 128), 0)
+  +ty = Bool.pick(U32, up, 0, U32.min((0 - t : U32), 128))
+  +d = Bool.xor(F64.sign(a), F64.sign(b))
+  +f = Bool.pick(U32, up, (F64.expo(c) - 1148 : U32),
+    (F64.expo(a) + F64.expo(b) - 2170 : U32))
+  F64.fma.add(d, f, (xh >> U32.to_nat(tx) : U64),
+    U64.wide_jam(xh, (pl << 20n : U64), tx), U64.wide_neg(Bool.xor(d,
+    F64.sign(c)), (yh >> U32.to_nat(ty) : U64), U64.wide_jam(yh, 0u64, ty)))
+
+def F64.fma(+a: F64, +b: F64, +c: F64) -> F64:
+  +p = F64.prod_class(F64.class(a), F64.class(b))
+  +q = F64.class(c)
+  +sp = Bool.xor(F64.sign(a), F64.sign(b))
+  +sc = F64.sign(c)
+  +inf = U32.is_eq((p + q : U32), 4)
+  +nan = (2 < U32.max(p, q) || inf && Bool.xor(sp, sc) : U32)
+  +z = U32.is_zero(p)
+  Bool.pick(F64, nan, F64.nan(), Bool.pick(F64, U32.is_eq(p, 2),
+    F64.of_class(2, sp), Bool.pick(F64, (U32.is_eq(q, 2)
+    || z && U32.is_ne(q, 0)), c, Bool.pick(F64, z,
+    F64.of_class(0, Bool.and(sp, sc)), F64.fma.sum(a, b, c)))))
+
+def F64.add(a: F64, b: F64) -> F64:
+  F64.fma(a, 1.0f64, b)
+
+def F64.sub(a: F64, b: F64) -> F64:
+  F64.fma(a, 1.0f64, F64.neg(b))
+
+def F64.mul(a: F64, b: F64) -> F64:
+  F64.fma(a, b, F64{(1u64 << 63n : U64)})
+
+# Restoring division of significands: one quotient bit a step, and a
+# sticky bit for a nonzero remainder.
+def F64.div.go(n: Nat, +b: U64, q: U64, +r: U64) -> U64:
+  match n:
+    case 0n:
+      (q .|. Bool.to_u64((0u64 < r : U64)) : U64)
+    case 1n+p:
+      +ge = (b <= r : U64)
+      F64.div.go(p, b, (q * 2u64 + Bool.to_u64(ge) : U64),
+        (Bool.pick(U64, ge, (r - b : U64), r) * 2u64 : U64))
+
+def F64.div(+a: F64, +b: F64) -> F64:
+  +p = F64.prod_class(F64.class(a), (2 - F64.class(b) : U32))
+  +s = Bool.xor(F64.sign(a), F64.sign(b))
+  +q = F64.div.go(63n, F64.mant(b), 0u64, F64.mant(a))
+  +e = (F64.expo(a) - F64.expo(b) + 1022 : U32)
+  Bool.pick(F64, U32.is_eq(p, 1), F64.make(s, e, q), F64.of_class(p, s))
+
+# Digit-by-digit square root, two radicand bits a step, sticky at the end.
+def F64.sqrt.go(n: Nat, +m: U64, +q: U64, +r: U64) -> U64:
+  match n:
+    case 0n:
+      (q << 8n .|. Bool.to_u64((0u64 < r : U64)) : U64)
+    case 1n+p:
+      +t = (r << 2n .|. m >> 52n : U64)
+      +c = (q << 2n .|. 1u64 : U64)
+      +ge = (c <= t : U64)
+      F64.sqrt.go(p, (m << 12n >> 10n : U64),
+        (q * 2u64 + Bool.to_u64(ge) : U64),
+        Bool.pick(U64, ge, (t - c : U64), t))
+
+def F64.sqrt(+a: F64) -> F64:
+  +c = F64.class(a)
+  +e = F64.expo(a)
+  +odd = (e .&. 1 .^. 1 : U32)
+  +r = F64.sqrt.go(55n, (F64.mant(a) << U32.to_nat(odd) : U64), 0u64, 0u64)
+  Bool.pick(F64, (U32.is_eq(c, 1) && Bool.not(F64.sign(a))),
+    F64.make(False{}, ((e + 973 - odd) / 2 + 24 : U32), r), Bool.pick(F64,
+    (U32.is_eq(c, 3) || F64.sign(a) && U32.is_ne(c, 0)), F64.nan(), a))
+
+# An order key: -0 and +0 meet, negatives flip, so U64 order is F64 order
+# for any two non-NaN values.
+def F64.key(+a: F64) -> U64:
+  +b = F64.bits(a)
+  Bool.pick(U64, U64.is_zero(F64.bits(F64.abs(a))), (1u64 << 63n : U64),
+    Bool.pick(U64, F64.sign(a), U64.not(b), (b .|. 1u64 << 63n : U64)))
+
+def F64.ord(+a: F64, +b: F64) -> Bool:
+  Bool.not(Bool.or(F64.is_nan(a), F64.is_nan(b)))
+
+def F64.is_eq(+a: F64, +b: F64) -> Bool:
+  Bool.and(F64.ord(a, b), U64.is_eq(F64.key(a), F64.key(b)))
+
+def F64.is_ne(a: F64, b: F64) -> Bool:
+  Bool.not(F64.is_eq(a, b))
+
+def F64.is_lt(+a: F64, +b: F64) -> Bool:
+  Bool.and(F64.ord(a, b), U64.is_lt(F64.key(a), F64.key(b)))
+
+def F64.is_le(+a: F64, +b: F64) -> Bool:
+  Bool.and(F64.ord(a, b), U64.is_le(F64.key(a), F64.key(b)))
+
+def F64.is_gt(a: F64, b: F64) -> Bool:
+  F64.is_lt(b, a)
+
+def F64.is_ge(a: F64, b: F64) -> Bool:
+  F64.is_le(b, a)
+
+def U64.to_f64(+u: U64) -> F64:
+  +t = Bool.to_u32((1u64 << 63n <= u : U64))
+  +m = U64.shr_jam(u, U32.to_nat(t))
+  Bool.pick(F64, U64.is_zero(u), F64{0u64}, F64.make(False{}, (1084 + t : U32),
+    m))
+
+def U32.to_f64(a: U32) -> F64:
+  U64.to_f64(U32.to_u64(a))
+
+def F32.from_bits(u: U32) -> F32:
+  U32{w} = u
+  F32{w}
+
+def F32.to_f64(f: F32) -> F64:
+  F32{w} = f
+  +b = {U32{w} : U32}
+  +e = (b << 1n >> 24n : U32)
+  +m = U32.to_u64((b << 9n >> 9n : U32))
+  +s = (2147483647 < b : U32)
+  +x = F64.make(s, (U32.max(e, 1) + 934 : U32),
+    (m .|. Bool.to_u64((0 < e : U32)) << 23n : U64))
+  Bool.pick(F64, U32.is_eq(e, 255), Bool.pick(F64, U64.is_zero(m),
+    F64.of_class(2, s), F64.nan()), Bool.pick(F64, (U32.is_zero(e) &&
+    U64.is_zero(m)), F64.of_class(0, s), x))
+
+def F64.to_u64(+a: F64) -> U64:
+  +e = F64.expo(a)
+  +up = (F64.mant(a) << U32.to_nat((e - 1075 : U32)) : U64)
+  +dn = (F64.mant(a) >> U32.to_nat(U32.min((1075 - e : U32), 64)) : U64)
+  Bool.pick(U64, (F64.sign(a) || 1 < F64.class(a) || 1086 < e : U32), 0u64,
+    Bool.pick(U64, (1075 <= e : U32), up, dn))
+
+def F64.to_u32(+a: F64) -> U32:
+  +u = F64.to_u64(a)
+  Bool.pick(U32, (u < 4294967296u64 : U64), U64.to_u32(u), 0)
+
+def F64.to_f32(+a: F64) -> F32:
+  +x = F64.pack((F64.expo(a) - 897 : U32), (F64.mant(a) << 10n : U64), 39n, 23n,
+    (255u64 << 23n : U64))
+  F32.from_bits(U64.to_u32(Bool.pick(U64, F64.is_nan(a), (511u64 << 22n : U64),
+    (x .|. Bool.to_u64(F64.sign(a)) << 31n : U64))))
+
+def F64.min(+a: F64, +b: F64) -> F64:
+  Bool.pick(F64, F64.is_lt(a, b), a, b)
+
+def F64.max(+a: F64, +b: F64) -> F64:
+  Bool.pick(F64, F64.is_lt(a, b), b, a)
+
+law F64.show:
+  for +a: F64
+  String
+
+law F64.read:
+  for s: String
+  Maybe<&2, F64>
 
 # Char
 # ----
