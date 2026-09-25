@@ -1,4 +1,4 @@
-# A million mutual tail calls must use the trampoline, including a cycle
+# A million mutual tail calls must run in constant stack, including a cycle
 # with a self-recursive member. IO.now keeps the depth out of constant folding.
 import Base
 

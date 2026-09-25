@@ -57,8 +57,7 @@ type Def  = Bend.Def & { h?: HTerm };
 
 type TLD  = Bend.ADT | Def;
 
-type Src = { refs: Set<Name>; deps: Set<Name>; tails: Set<Name>;
-  flat: boolean; plain?: boolean; loop?: Name[] };
+type Src = { refs: Set<Name>; deps: Set<Name>; flat: boolean };
 
 type Carb = {
   // a copy of the book whose defs carry their raised body (def_body)
@@ -92,7 +91,6 @@ type File = Carb & {
   consts: Map<string, Map<HTerm, Val>>;
   reqs: string;
   fuel: number;
-  loop: Name[];
 };
 
 type Gen = string | ((xs: string[]) => string);
@@ -210,7 +208,6 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     C:  "U32_BIN($0, ==, 0)",
     JS: "($0 === 0)",
   },
-  ...sel_ops("u32_", "U32_BIN($0, <, $1)"),
   u32_cmp: {
     C:  "(U32_BIN($0, >, $1) + U32_BIN($0, >=, $1))",
     JS: "cmp_new($0, $1)",
@@ -245,7 +242,6 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     C:  "f32_rewrap((f32)fmod(f32_unbox($0), f32_unbox($1)))",
     JS: "Math.fround($0 % $1)",
   },
-  ...sel_ops("f32_", "f32_unbox($0) < f32_unbox($1)"),
   f32_to_u32: {
     C:  "f32_to_u32($0)",
     JS: "($0 >= 1 && $0 < 4294967296 ? Math.floor($0) : 0)",
@@ -288,22 +284,20 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
     C:  "($0 < $1)",
     JS: "($0 < $1)",
   },
-  ...sel_ops("nat_", "$0 < $1"),
+  nat_min: {
+    C:  "($0 < $1 ? $0 : $1)",
+    JS: "($0 < $1 ? $0 : $1)",
+  },
+  nat_max: {
+    C:  "($0 < $1 ? $1 : $0)",
+    JS: "($0 < $1 ? $1 : $0)",
+  },
   nat_divmod: {
     C:    ["($1 == 0 ? 0 : $0 / $1)", "($1 == 0 ? $0 : $0 % $1)"],
     call: true,
     JS:   "nat_divmod($0, $1)",
   },
-  ...tpl_ops("bool_", "and:&:&& or:|:|| xor:^:!==", "(($0) $o ($1))",
-    "($0 $o $1)"),
-  bool_not: {
-    C:  "(($0) ^ 1)",
-    JS: "(!$0)",
-  },
-  // the C lane matches: the untaken side may own a box to drop
-  bool_pick: {
-    JS: "($0 ? $1 : $2)",
-  },
+  ...tpl_ops("bool_", "or:|:|| xor:^:!==", "(($0) $o ($1))", "($0 $o $1)"),
   string_append: {
     JS: "($0 + $1)",
   },
@@ -639,14 +633,6 @@ function tpl_ops(pre: string, names: string, C: string, JS: string):
     out[pre + k] = { C: C.replaceAll("$o", o), JS: JS.replaceAll("$o", jo) };
   }
   return out;
-}
-
-// min and max as Base picks them over is_lt (a tie or a NaN: min's b, max's a)
-function sel_ops(pre: string, C: string): Record<string, Intr> {
-  return {
-    [pre + "min"]: { C: `(${C} ? $0 : $1)`, JS: "($0 < $1 ? $0 : $1)" },
-    [pre + "max"]: { C: `(${C} ? $1 : $0)`, JS: "($0 < $1 ? $1 : $0)" },
-  };
 }
 
 function tpl(t: Gen, xs: string[]): string {
@@ -1451,8 +1437,7 @@ function carb_book(src: Bend.Book, roots: Name[]): Carb {
     }
     memo_gc();
     const tld = def_body(cb, d);
-    const own: Src = { refs: new Set(), deps: new Set(), tails: new Set(),
-      flat: done_live(tld) };
+    const own: Src = { refs: new Set(), deps: new Set(), flat: done_live(tld) };
     SRCS.set(d, own);
     for (const x of tld?.$ === "ADT" ? tld.c : tld ? [tld] : []) {
       queue.push(...type_adts(cb, x.T));
@@ -1476,9 +1461,6 @@ function carb_book(src: Bend.Book, roots: Name[]): Carb {
       const ck = call_kind(cb, s);
       if (ck !== null && ck.k !== d) {
         own.deps.add(ck.k);
-        if (tail && intr_of(cb, ck.k, true) === undefined) {
-          own.tails.add(ck.k);
-        }
       }
       if ((s.$ === "Let" && s.k.length >= 2)
         || (ck !== null && (ck.bang === true || (ck.k === d && !tail)))) {
@@ -1520,38 +1502,36 @@ function flat_of(k: Name): boolean {
   });
 }
 
-// A def is plain, its JS returning no $JMP, when every def its tail cycle
-// tail-calls is (the cycle loops; a closure, having no source, is not).
-function plain_of(k: Name): boolean {
-  const own = SRCS.get(k);
-  if (own !== undefined && own.plain === undefined) {
-    const loop = own.loop ?? [k];
-    const set = (b: boolean) => loop.forEach((d) => SRCS.get(d)!.plain = b);
-    set(false);
-    set(loop.every((d) => [...SRCS.get(d)!.tails].every((t) =>
-      loop.includes(t) || plain_of(t))));
-  }
-  return own?.plain === true;
-}
+const LOOPS: Map<Name, Name[]> = new Map();
 
-// The tail-call cycles between defs (Tarjan over tails): each member records
-// its cycle, which the JS lane runs as one loop.
-function tail_loops(): void {
+function tail_loops(cb: Carb): void {
+  LOOPS.clear();
   const ids = new Map<Name, number>();
   const stack: Name[] = [];
   const visit = (k: Name): number => {
     const id = ids.size;
+    const tails = new Set<Name>();
+    const tld = def_body(cb, k);
+    if (done_live(tld)) {
+      term_any(cb, tld.h as HTerm, (s, tail) => {
+        const ck = tail ? call_kind(cb, s) : null;
+        if (ck !== null) {
+          tails.add(ck.k);
+        }
+        return false;
+      });
+    }
     let low = id;
     ids.set(k, id);
     stack.push(k);
-    for (const d of SRCS.get(k)!.tails) {
-      low = Math.min(low, !SRCS.has(d) ? low : !ids.has(d) ? visit(d)
+    for (const d of tails) {
+      low = Math.min(low, !ids.has(d) ? visit(d)
         : stack.includes(d) ? ids.get(d)! : low);
     }
     if (low === id) {
       const loop = stack.splice(stack.indexOf(k));
-      if (loop.length > 1) {
-        loop.forEach((d) => SRCS.get(d)!.loop = loop);
+      if (loop.length > 1 || tails.has(k)) {
+        loop.forEach((d) => LOOPS.set(d, loop));
       }
     }
     return low;
@@ -1628,7 +1608,7 @@ function file_new(cb: Carb, js: boolean): File {
     cids: new Map(), tabs: new Map(), spins: [], spun: new Map(), clos: new Set(),
     img: [], lits: new Map(), consts: new Map(), reqs: "", fuel: 0,
     fresh: new Map(), spares: [],
-    uses: new Map(), brwl: new Map(), rest: [], def: "", loop: [] };
+    uses: new Map(), brwl: new Map(), rest: [], def: "" };
 }
 
 function file_push(fl: File, line: string): void {
@@ -3209,10 +3189,13 @@ function js_call(fl: File, k: Name, args: HTerm[],
     return tpl(intr, xs);
   }
   const call = js_sat(k) + "(" + exprs.join(", ") + ")";
-  return v !== "" ? "(" + v + ") => " + call
-    : plain_of(k) ? call
-    : tail ? "run_jump(" + js_sat(k) + ", [" + exprs.join(", ") + "])"
-    : "run_loop(" + call + ")";
+  if (v !== "") {
+    return "(" + v + ") => " + call;
+  }
+  if (tail || def_foreign(tld)) {
+    return call;
+  }
+  return "run_loop(" + call + ")";
 }
 
 function js_open(fl: File, x: HLet): HTerm {
@@ -3272,12 +3255,11 @@ function js_expr(fl: File, tm: HTerm,
           ty_all(fl.book, ty).B(DUMMY));
       }
       const arg = name_local(fl, "x");
-      const seg = fl.seg, loop = fl.loop;
+      const seg = fl.seg;
       fl.seg = seg_new("", BOX, []);
-      fl.loop = [];
       js_func(fl, x, ty, [arg]);
       const lines = fl.seg.lines;
-      fl.seg = seg, fl.loop = loop;
+      fl.seg = seg;
       return `run_clo((${arg}) => {\n${lines.join("\n")}\n})`;
     }
     case "Hol": die("cannot compile a hole");
@@ -3308,10 +3290,11 @@ function js_func(fl: File, tm: HTerm, ty0: HTerm | null,
     return js_func(fl, term_eta(fl.book, x, ty!, 1), ty, args);
   }
   const ck = call_kind(fl, x);
-  const at = ck === null ? -1 : fl.loop.indexOf(ck.k);
+  const loop = LOOPS.get(fl.seg.def) ?? [];
+  const at = ck === null ? -1 : loop.indexOf(ck.k);
   file_push(fl, at >= 0 ? ck!.args.map((a, i) => "$" + i + " = "
     + js_expr(fl, a, null) + "; ").join("")
-    + (fl.loop.length > 1 ? "$pc = " + at + "; " : "") + "continue;"
+    + (loop.length > 1 ? "$pc = " + at + "; " : "") + "continue;"
     : "return " + (ck === null ? js_expr(fl, x, ty)
     : js_call(fl, ck.k, ck.args, true)) + ";");
 }
@@ -3373,18 +3356,16 @@ function js_def(fl: File, k: Name, def: Def): void {
   }
   const params = sig_def(fl, k).live.map(([, n]) => name_local(fl, n));
   const kont = def.i ? [name_local(fl, "k")] : [];
-  // A def on a tail cycle, or tail-calling itself, runs as a loop.
-  const loop = SRCS.get(k)?.loop ?? (def.i === undefined && term_any(fl,
-    def.h!, (s, tail) => tail && call_kind(fl, s)?.k === k) ? [k] : []);
-  if (loop[0] === k) {
+  const loop = LOOPS.get(k);
+  if (loop?.[0] === k) {
     js_loop(fl, loop);
   }
-  if (loop.length === 1) {
+  if (loop?.length === 1) {
     return;
   }
   block(fl, `function ${js_sat(k)}(${[...params, ...kont].join(", ")}) {`,
     () => {
-      if (loop.length > 1) {
+      if (loop !== undefined) {
         file_push(fl, `return ${js_sat(loop[0])}loop(${[loop.indexOf(k),
           ...params].join(", ")});`);
       } else if (def.i === undefined) {
@@ -3404,33 +3385,28 @@ function js_loop(fl: File, loop: Name[]): void {
   const n = Math.max(...loop.map((d) => sig_def(fl, d).live.length));
   const ins = Array.from({ length: n }, (_, i) => "$" + i);
   const one = loop.length === 1;
-  fl.loop = loop;
+  fl.seg.def = loop[0];
   block(fl, `function ${js_sat(loop[0])}${one ? "" : "loop"}(${
     (one ? ins : ["$pc", ...ins]).join(", ")}) {`, () =>
     block(fl, one ? "for (;;) {" : "for (;;) switch ($pc) {", () =>
-      loop.forEach((d, i) => {
-        memo_gc();
-        fl.fresh = new Map();
-        fl.fuel = FOLD_FUEL;
-        const def = fl.book.tlds[d] as Def;
-        const ps = sig_def(fl, d).live.map(([, x]) => name_local(fl, x));
-        const bind = ps.map((p, j) => "const " + p + " = $" + j + ";");
-        const go = () => js_func(fl, def.h!, def.T, ps);
-        if (one) {
-          bind.forEach((l) => file_push(fl, l));
-          go();
-        } else {
-          block(fl, `case ${i}: { ${bind.join(" ")}`, go);
-        }
-      })));
-  fl.loop = [];
+    loop.forEach((d, i) => {
+      memo_gc();
+      fl.fresh = new Map();
+      fl.fuel = FOLD_FUEL;
+      const def = fl.book.tlds[d] as Def;
+      const ps = sig_def(fl, d).live.map(([, x]) => name_local(fl, x));
+      const bind = ps.map((p, j) => `const ${p} = $${j};`).join(" ");
+      block(fl, `${one ? "" : `case ${i}: `}{ ${bind}`,
+        () => js_func(fl, def.h!, def.T, ps));
+    })));
+  fl.seg.def = "";
   file_push(fl, "");
 }
 
 export function js_lib(book: Bend.Book, roots: Name[],
   outs: Name[] | null): string {
   const cb = carb_book(book, roots.slice());
-  tail_loops();
+  tail_loops(cb);
   const fl = file_new(cb, true);
   fl.tab = 0;
   for (const [k, def] of done_defs(cb)) {
@@ -6220,10 +6196,6 @@ function array_rmw(a, i, f) {
 
 // Run
 // ===
-
-function run_jump(f, x) {
-  return {$: "$JMP", f: f, x: x};
-}
 
 function run_tail(f, x) {
   return {$: "$JMP", f: f.j?.f === f ? f.j : f, x: [x]};
