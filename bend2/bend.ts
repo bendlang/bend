@@ -1572,14 +1572,13 @@ export function err_show(err: Err): string {
   let   spn  = "";
   if (err.spn !== undefined) {
     const lns = err.spn.src.split("\n");
-    const at  = err.spn.src.slice(0, err.spn.beg).split("\n").length;
+    const pre = err.spn.src.slice(0, err.spn.beg).split("\n");
+    const at  = pre.length;
     const beg = Math.max(1, at - 1);
     const end = Math.min(lns.length, at + 1);
     const num = String(end).length;
-    const col = parse_col(err.spn.src, err.spn.beg) - 1;
-    const lin = lns[at - 1];
-    const pad = lin.slice(0, col).replace(/[^\t]/g, " ");
-    const car = " ".repeat(num) + " | " + pad + "^".repeat(Math.max(1, Math.min(err.spn.end - err.spn.beg, lin.length - col)));
+    const lft = pre[at - 1];
+    const car = " ".repeat(num) + " | " + lft.replace(/[^\t]/g, " ") + "^".repeat(Math.max(1, Math.min(err.spn.end - err.spn.beg, lns[at - 1].length - lft.length)));
     spn = "\n" + lns.slice(beg - 1, end).map((l, j) =>
       String(beg + j).padStart(num) + (beg + j === at ? ">| " + l + "\n" + car : " | " + l)).join("\n");
   }
