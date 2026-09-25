@@ -3525,8 +3525,10 @@ using namespace metal;
 #define BARD()  \
   { __threadfence(); __syncthreads(); }
 #else
-// only clang 19+ has both, and only it compiles preserve_most soundly
-#if __has_attribute(preserve_none) && __has_attribute(preserve_most)
+// only clang 19+ has both, and only it compiles preserve_most soundly;
+// at -O0 its register allocator cannot place a preserve_none segment
+#if __has_attribute(preserve_none) && __has_attribute(preserve_most) \
+  && defined(__OPTIMIZE__)
 #define PRESERVE(A) __attribute__((A))
 #else
 #define PRESERVE(A)
