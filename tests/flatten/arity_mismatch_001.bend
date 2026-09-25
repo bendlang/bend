@@ -24,11 +24,10 @@ def main(): f(Zw2{}, Zw2{})
 
 #|Error:
 #|- expected : 2 patterns (one per scrutinee)
-#|- observed : '
-#|'
+#|- observed : 'Zw2{}'
 #|Location:
 #|16 |   match a, b:
 #|17>|     case Zw2{}:
-#|   |                ^
+#|   |          ^^^^^
 #|18 |       Aw2{}
 #|exit 1

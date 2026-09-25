@@ -14,10 +14,10 @@ def main(): Un{}
 
 #|Error:
 #|- expected : a fresh name (duplicate declaration: main)
-#|- observed : ':'
+#|- observed : 'main'
 #|Location:
 #| 9 | def main(): Un{}
 #|10>| law main:
-#|   |         ^
+#|   |     ^^^^
 #|11 |   Uu
 #|exit 1

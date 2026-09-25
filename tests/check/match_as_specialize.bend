@@ -23,11 +23,10 @@ def main():
 
 #|Error:
 #|- expected : 3 patterns (one per scrutinee)
-#|- observed : '
-#|'
+#|- observed : 'Zero{}'
 #|Location:
 #|12 |   match x as e:
 #|13>|     case Zero{}:
-#|   |                 ^
+#|   |          ^^^^^^
 #|14 |       h
 #|exit 1

@@ -12,10 +12,10 @@ def main(): Kk{}
 
 #|Error:
 #|- expected : a fresh constructor name (duplicate declaration: Kk)
-#|- observed : '{'
+#|- observed : 'Kk'
 #|Location:
 #|5 |   Kk{}
 #|6>|   Kk{a: Aa}
-#|  |     ^
+#|  |   ^^
 #|7 |
 #|exit 1

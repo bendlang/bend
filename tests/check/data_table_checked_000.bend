@@ -45,10 +45,10 @@ def main(): delta(Empty, MkD2{delta(Empty)})
 
 #|Error:
 #|- expected : a fresh name (duplicate declaration: String.eq)
-#|- observed : ':'
+#|- observed : 'String.eq'
 #|Location:
 #|10 | 
 #|11>| law String.eq:
-#|   |              ^
+#|   |     ^^^^^^^^^
 #|12 |   for a: String
 #|exit 1

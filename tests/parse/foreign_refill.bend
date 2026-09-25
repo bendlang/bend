@@ -20,10 +20,10 @@ def main() -> IO(Unit):
 
 #|Error:
 #|- expected : a fresh name (duplicate declaration: f)
-#|- observed : '('
+#|- observed : 'f'
 #|Location:
 #|14 | 
 #|15>| def f():
-#|   |      ^
+#|   |     ^
 #|16 |   IO.print("body")
 #|exit 1

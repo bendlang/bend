@@ -31,11 +31,10 @@ def main():
 
 #|Error:
 #|- expected : 1 patterns (one per scrutinee)
-#|- observed : '
-#|'
+#|- observed : '1+d'
 #|Location:
 #|15 |       h
 #|16>|     case 1+d:
-#|   |              ^
+#|   |          ^^^
 #|17 |       stack(d, (h * 5 : U32))
 #|exit 1

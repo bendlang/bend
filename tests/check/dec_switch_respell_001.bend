@@ -34,11 +34,10 @@ def main():
 
 #|Error:
 #|- expected : 1 patterns (one per scrutinee)
-#|- observed : '
-#|'
+#|- observed : '2+p'
 #|Location:
 #|25 |           0
 #|26>|     case 2+p:
-#|   |              ^
+#|   |          ^^^
 #|27 |       p
 #|exit 1

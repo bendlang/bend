@@ -20,10 +20,10 @@ def main():
 
 #|Error:
 #|- expected : a fresh name (duplicate declaration: Nat.add)
-#|- observed : ':'
+#|- observed : 'Nat.add'
 #|Location:
 #|6 | 
 #|7>| law Nat.add:
-#|  |            ^
+#|  |     ^^^^^^^
 #|8 |   for a: Nat
 #|exit 1

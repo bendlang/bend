@@ -5,10 +5,10 @@ type match:
 
 #|Error:
 #|- expected : a name (got the keyword 'match')
-#|- observed : ':'
+#|- observed : 'match'
 #|Location:
 #|2 | # ported from bend3
 #|3>| type match:
-#|  |           ^
+#|  |      ^^^^^
 #|4 |   Kk10{}
 #|exit 1

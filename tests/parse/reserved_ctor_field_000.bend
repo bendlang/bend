@@ -10,10 +10,10 @@ def main(): Mk8{}
 
 #|Error:
 #|- expected : a name (got the keyword 'Type')
-#|- observed : ':'
+#|- observed : 'Type'
 #|Location:
 #|3 | type Kk8 is Data:
 #|4>|   Mk8{Type: Kk8}
-#|  |           ^
+#|  |       ^^^^
 #|5 |
 #|exit 1

@@ -10,10 +10,10 @@ def main():
 
 #|Error:
 #|- expected : a name (got the keyword 'Type')
-#|- observed : ' '
+#|- observed : 'Type'
 #|Location:
 #| 8 | def main():
 #| 9>|   @Type -> x => Type
-#|   |        ^
+#|   |    ^^^^
 #|10 |
 #|exit 1

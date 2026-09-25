@@ -12,10 +12,10 @@ def main() -> Nat:
 
 #|Error:
 #|- expected : a fresh name (M is an import's alias)
-#|- observed : '('
+#|- observed : 'M.three'
 #|Location:
 #|6 |
 #|7>| def M.three() -> Nat:
-#|  |            ^
+#|  |     ^^^^^^^
 #|8 |   3n
 #|exit 1

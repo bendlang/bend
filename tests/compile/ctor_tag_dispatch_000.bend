@@ -18,10 +18,10 @@ def main():
 
 #|Error:
 #|- expected : a fresh constructor name (duplicate declaration: K7)
-#|- observed : '{'
+#|- observed : 'K7'
 #|Location:
 #|10 | type B7b is Data:
 #|11>|   K7{a: U32, b: U32}
-#|   |     ^
+#|   |   ^^
 #|12 |
 #|exit 1

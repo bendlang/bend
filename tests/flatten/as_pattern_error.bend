@@ -23,11 +23,10 @@ def main():
 
 #|Error:
 #|- expected : 4 patterns (one per scrutinee)
-#|- observed : '
-#|'
+#|- observed : 'True{}, True{}'
 #|Location:
 #|12 |   match Bool.not(a), b as e:
 #|13>|     case True{}, True{}:
-#|   |                         ^
+#|   |          ^^^^^^^^^^^^^^
 #|14 |       1
 #|exit 1

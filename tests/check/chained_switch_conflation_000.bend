@@ -25,11 +25,10 @@ def main():
 
 #|Error:
 #|- expected : 1 patterns (one per scrutinee)
-#|- observed : '
-#|'
+#|- observed : '2+q'
 #|Location:
 #|16 |       20
 #|17>|     case 2+q:
-#|   |              ^
+#|   |          ^^^
 #|18 |       q
 #|exit 1

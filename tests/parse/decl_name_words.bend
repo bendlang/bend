@@ -10,10 +10,10 @@ def main() -> U32:
 
 #|Error:
 #|- expected : a name (words joined by dots, got 'Vec.2d')
-#|- observed : '('
+#|- observed : 'Vec.2d'
 #|Location:
 #|4 |
 #|5>| def Vec.2d() -> U32:
-#|  |           ^
+#|  |     ^^^^^^
 #|6 |   0
 #|exit 1

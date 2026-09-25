@@ -9,10 +9,10 @@ def main() -> IO(Unit):
 
 #|Error:
 #|- expected : a fresh name (duplicate declaration: Nat.add)
-#|- observed : '('
+#|- observed : 'Nat.add'
 #|Location:
 #|5 |
 #|6>| def Nat.add(a: Nat, b: Nat) -> Bool:
-#|  |            ^
+#|  |     ^^^^^^^
 #|7 |   True{}
 #|exit 1

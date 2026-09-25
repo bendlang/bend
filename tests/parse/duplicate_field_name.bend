@@ -10,10 +10,10 @@ def main() -> U32:
 
 #|Error:
 #|- expected : a fresh field name (duplicate declaration: x)
-#|- observed : ':'
+#|- observed : 'x'
 #|Location:
 #|4 | type Aa is Data:
 #|5>|   Kk{x: U32, x: U32}
-#|  |               ^
+#|  |              ^
 #|6 |
 #|exit 1

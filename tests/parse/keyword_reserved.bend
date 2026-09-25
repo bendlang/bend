@@ -8,10 +8,10 @@ def law(): Type
 
 #|Error:
 #|- expected : a name (got the keyword 'law')
-#|- observed : ' '
+#|- observed : 'law'
 #|Location:
 #|5 | # free: only book_load's import line reads it, never parse_name.
 #|6>| law law : Type
-#|  |        ^
+#|  |     ^^^
 #|7 | def law(): Type
 #|exit 1

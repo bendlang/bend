@@ -1607,9 +1607,9 @@ export function parse_span(p: Parse, beg: Loc): Span {
   return { src: p.str, beg, end: p.pos };
 }
 
-export function parse_fail(p: Parse, exp: string): never {
-  const obs = p.pos < p.str.length ? "'" + p.str[p.pos] + "'" : "end of input";
-  throw Err(p.book, ctx_nil(), exp, obs, { src: p.str, beg: p.pos, end: p.pos });
+export function parse_fail(p: Parse, exp: string, beg: Loc = p.pos, end: Loc = p.pos): never {
+  const obs = beg < end ? "'" + p.str.slice(beg, end) + "'" : p.pos < p.str.length ? "'" + p.str[p.pos] + "'" : "end of input";
+  throw Err(p.book, ctx_nil(), exp, obs, { src: p.str, beg, end });
 }
 
 export function parse_peek(p: Parse): string {
@@ -1689,7 +1689,7 @@ export function parse_lexeme(p: Parse): Name {
   }
   const k = p.str.slice(beg, p.pos);
   if (!/^[A-Za-z_]\w*(\.[A-Za-z_]\w*)*$/.test(k)) {
-    parse_fail(p, "a name (words joined by dots, got '" + k + "')");
+    parse_fail(p, "a name (words joined by dots, got '" + k + "')", beg);
   }
   return k;
 }
@@ -1697,7 +1697,7 @@ export function parse_lexeme(p: Parse): Name {
 export function parse_name(p: Parse): Name {
   const k = parse_lexeme(p);
   if (KEYWORDS.has(k)) {
-    parse_fail(p, "a name (got the keyword '" + k + "')");
+    parse_fail(p, "a name (got the keyword '" + k + "')", p.pos - k.length);
   }
   return k;
 }
@@ -1870,16 +1870,16 @@ export function parse_term_base(p: Parse, beg: Loc): LTerm {
       return parse_term_do_stmt(p, m, ts, parse_col(p.str, p.pos));
     }
     if (k === "match") {
-      parse_fail(p, "a term (a match heads a def body, not a term)");
+      parse_fail(p, "a term (a match heads a def body, not a term)", beg);
     }
     if (k === "case") {
-      parse_fail(p, "a match heading this case (this case is orphaned)");
+      parse_fail(p, "a match heading this case (this case is orphaned)", beg);
     }
     if (k === "return") {
-      parse_fail(p, "a do-block heading this return");
+      parse_fail(p, "a do-block heading this return", beg);
     }
     if (KEYWORDS.has(k)) {
-      parse_fail(p, "a term (the keyword '" + k + "' cannot head one)");
+      parse_fail(p, "a term (the keyword '" + k + "' cannot head one)", beg);
     }
     if (parse_at(p, "{")) {
       parse_bump(p);
@@ -2319,7 +2319,7 @@ export function parse_term_num(p: Parse): LTerm {
   if (m[2] !== undefined && m[2] !== "n") {
     const v = Math.fround(Number(m[0]));
     if (!isFinite(v)) {
-      parse_fail(p, "a float literal with a finite f32 value (got " + m[0] + ")");
+      parse_fail(p, "a float literal with a finite f32 value (got " + m[0] + ")", beg);
     }
     const spn = parse_span(p, beg);
     return Lit("F32", f32_to_bits(v), spn);
@@ -2330,7 +2330,7 @@ export function parse_term_num(p: Parse): LTerm {
     }
     const w = Number(s);
     if (w > 0xffffffff) {
-      parse_fail(p, "a u32 literal up to 4294967295 (got " + s + ")");
+      parse_fail(p, "a u32 literal up to 4294967295 (got " + s + ")", beg);
     }
     return Lit("U32", w, parse_span(p, beg));
   }
@@ -2416,9 +2416,11 @@ export function parse_body(p: Parse, col: number = 0): Body {
     while (ccol > col && parse_at_word(p, "case") && parse_col(p.str, p.pos) >= ccol) {
       const rcol = parse_col(p.str, p.pos);
       parse_word(p, "case");
+      parse_skip(p);
+      const qbeg = p.pos;
       const qs = parse_terms(p);
       if (qs.length !== es.length) {
-        parse_fail(p, String(es.length) + " patterns (one per scrutinee)");
+        parse_fail(p, String(es.length) + " patterns (one per scrutinee)", qbeg, p.pos - 1);
       }
       const n0 = p.sc.stk.length;
       const pp = qs.map((q) => parse_patt(p, q));
@@ -2520,7 +2522,7 @@ export function parse_tele(p: Parse, close: string, tk: Name[] = []): Array<[Qua
     const beg = p.pos;
     const k   = parse_name(p);
     if (close === "}" && tele.some((cell) => cell[1] === k)) {
-      parse_fail(p, "a fresh field name (duplicate declaration: " + k + ")");
+      parse_fail(p, "a fresh field name (duplicate declaration: " + k + ")", p.pos - k.length);
     }
     const s   = parse_span(p, beg);
     parse_skip(p);
@@ -2547,7 +2549,7 @@ export function parse_fresh(p: Parse, nm: Name, tab: Record<Name, unknown> = p.b
   const k = parse_qual(p, nm);
   const a = nm.includes(".") ? nm.slice(0, nm.indexOf(".")) : "";
   if (k in tab || nm in tab || a in p.al) {
-    parse_fail(p, what + " (" + (a in p.al ? a + " is an import's alias" : "duplicate declaration: " + nm) + ")");
+    parse_fail(p, what + " (" + (a in p.al ? a + " is an import's alias" : "duplicate declaration: " + nm) + ")", p.pos - nm.length);
   }
   return k;
 }
@@ -2555,11 +2557,11 @@ export function parse_fresh(p: Parse, nm: Name, tab: Record<Name, unknown> = p.b
 export function parse_def(p: Parse, book: Book, u: Bool = false): void {
   parse_word(p, "def");
   const nm  = parse_name(p);
-  const un  = parse_take(p, "?") || u;
   const q   = parse_reso(p, nm);
   const tld = book.tlds[q];
   const law = tld?.$ === "Def" && tld.v === null && tld.b !== true && !tld.i ? tld : undefined;
   const k   = law ? q : parse_fresh(p, nm);
+  const un  = parse_take(p, "?") || u;
   const n0 = p.sc.stk.length;
   parse_eat(p, "(");
   parse_skip(p);

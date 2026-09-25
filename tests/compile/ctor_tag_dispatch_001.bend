@@ -18,10 +18,10 @@ def main():
 
 #|Error:
 #|- expected : a fresh constructor name (duplicate declaration: Mk8b)
-#|- observed : '{'
+#|- observed : 'Mk8b'
 #|Location:
 #|10 | type B8 is Data:
 #|11>|   Mk8b{v: U32, w: U32}
-#|   |       ^
+#|   |   ^^^^
 #|12 |
 #|exit 1

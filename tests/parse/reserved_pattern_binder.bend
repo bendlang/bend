@@ -22,10 +22,10 @@ def main(): f(Zx{})
 
 #|Error:
 #|- expected : a do-block heading this return
-#|- observed : '}'
+#|- observed : 'return'
 #|Location:
 #|12 |   match n:
 #|13>|     case Sx{return}:
-#|   |                   ^
+#|   |             ^^^^^^
 #|14 |       Zx{}
 #|exit 1
