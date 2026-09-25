@@ -971,12 +971,6 @@ function lay_el(book: Bend.Book, A: HTerm | null): Lay {
     ? tele_unbind(book, tld.c[0].T).ret : A);
 }
 
-// Past WIDE words in total, the multi-word layouts go boxed.
-function lay_wide(lays: Lay[]): Lay[] {
-  return lays.flatMap((l) => l.ks).length > WIDE
-    ? lays.map((l) => l.ks.length > 1 ? BOX : l) : lays;
-}
-
 // Fields start after the tag; the packer owns their final offsets.
 function lay_pack(arms: [Name, Lay[]][]): Lay {
   const tag = arms.length > 1 ? 1 : 0;
@@ -1165,7 +1159,9 @@ function sig_def(cb: Carb, k: Name): Sig {
     }
     const ret = lay_of(cb.book, Bend.tele_fill(cb.book, tld.T,
       Array(tld.n).fill(DUMMY), Bend.ctx_nil()));
-    return { live, lays: lay_wide(lays), ret: ret.ks.length === 0 ? BOX : ret };
+    const wide = lays.flatMap((l) => l.ks).length > WIDE;
+    return { live, lays: wide ? lays.map((l) => l.ks.length > 1 ? BOX : l)
+      : lays, ret: ret.ks.length === 0 ? BOX : ret };
   });
 }
 
