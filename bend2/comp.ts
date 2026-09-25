@@ -165,9 +165,6 @@ const W64: Lay = { ks: ["w64"], arms: null };
 const WORDS: Record<string, Lay> = Object.setPrototypeOf(
   { U32: W32, F32: W32, Nat: W64 }, null);
 
-// The widest flat layout and segment; the shader's Tri is 24 words. A wider
-// node keeps 240 plus its size class in CID_ARITY_T and a zeroed tail, so
-// term_drop walks it as an array.
 const WIDE = 247;
 
 const ERRS = ("|*|*|out of memory: run again with a bigger span, as in"
@@ -960,7 +957,7 @@ function lay_of(book: Bend.Book, A: HTerm | null): Lay {
     }
     LAYS.set(key, BOX);
     const lay = lay_pack(tld.c.map((c) =>
-      [c.k, lay_wide(ctr_doms(book, c, t.x).map((A) => lay_of(book, A)))]));
+      [c.k, ctr_doms(book, c, t.x).map((A) => lay_of(book, A))]));
     return lay.ks.length > WIDE ? BOX : lay;
   });
 }
@@ -1024,8 +1021,14 @@ function lay_cyclic(book: Bend.Book, k: Name): boolean {
 }
 
 function lay_node(book: Bend.Book, k: Name): Lay {
-  return memo(NODES, k, () => lay_pack([[k, lay_wide((book.ctrs[k]
-    ? ctr_doms(book, book.ctrs[k]) : []).map((A) => lay_of(book, A)))]]));
+  return memo(NODES, k, () => {
+    const lay = lay_pack([[k, (book.ctrs[k] ? ctr_doms(book, book.ctrs[k])
+      : []).map((A) => lay_of(book, A))]]);
+    while (lay.ks.length > WIDE && lay.ks.length & (lay.ks.length - 1)) {
+      lay.ks.push("w32");
+    }
+    return lay;
+  });
 }
 
 function lay_eq(a: Lay, b: Lay): boolean {
@@ -1673,13 +1676,6 @@ function node_fill(fl: File, k: string, alloc: string,
   exprs.forEach((w, j) => {
     file_push(fl, `e.mem[${nd} + ${j}] = ${shr ? `rfc_seal(e, ${w})` : w};`);
   });
-  const n = exprs.length;
-  if (n > WIDE) {
-    const end = 2 ** Math.ceil(Math.log2(n));
-    file_push(fl, `for (u32 z = ${n}; z < ${end}; z += 1) {`);
-    file_push(fl, `  e.mem[${nd} + z] = 0;`);
-    file_push(fl, "}");
-  }
   return nd;
 }
 
@@ -2984,7 +2980,7 @@ function compile_tables(fl: File, entries: Seg[]): string[] {
     ["FID_RESW_T", entries.map((s) =>
       s.frame === null ? 0 : s.params.length - s.frame.at.length)],
     ["CID_ARITY_T", [...fl.cids.values()].map((n) =>
-      n > WIDE ? 240 + Math.ceil(Math.log2(n)) : n)],
+      n > WIDE ? 240 + Math.log2(n) : n)],
     ["CID_HOT_T", [...fl.cids.keys()].map((k) => Number(fl.hot.has(k)))],
   ];
   const defs: string[] = [];

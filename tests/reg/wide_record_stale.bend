@@ -1,5 +1,5 @@
-# a 250-field node sits in a 256-word block whose last 6 words must read
-# zero: six 256-field String records are opened first, so their freed
+# a 250-field node is padded to 256 words, its last 6 written as zero:
+# six 256-field String records are opened first, so their freed
 # blocks still hold String pointers; six 250-field records reuse those
 # blocks and are dropped unopened, then the Strings are read again. An
 # unzeroed tail frees the stale Strings (77777!/77777!77777!/7)
