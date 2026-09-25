@@ -165,8 +165,10 @@ const W64: Lay = { ks: ["w64"], arms: null };
 const WORDS: Record<string, Lay> = Object.setPrototypeOf(
   { U32: W32, F32: W32, Nat: W64 }, null);
 
-// The widest flat layout (u8 arity tables); the shader's Tri is 24 words.
-const WIDE = 255;
+// The widest flat layout and segment; the shader's Tri is 24 words. A wider
+// node keeps 240 plus its size class in CID_ARITY_T and a zeroed tail, so
+// term_drop walks it as an array.
+const WIDE = 247;
 
 const ERRS = ("|*|*|out of memory: run again with a bigger span, as in"
   + " --gpu 8GB|a function the device does not hold|a Nat past the"
@@ -957,8 +959,9 @@ function lay_of(book: Bend.Book, A: HTerm | null): Lay {
       return BOX;
     }
     LAYS.set(key, BOX);
-    return lay_pack(tld.c.map((c) =>
+    const lay = lay_pack(tld.c.map((c) =>
       [c.k, lay_wide(ctr_doms(book, c, t.x).map((A) => lay_of(book, A)))]));
+    return lay.ks.length > WIDE ? BOX : lay;
   });
 }
 
@@ -1670,6 +1673,13 @@ function node_fill(fl: File, k: string, alloc: string,
   exprs.forEach((w, j) => {
     file_push(fl, `e.mem[${nd} + ${j}] = ${shr ? `rfc_seal(e, ${w})` : w};`);
   });
+  const n = exprs.length;
+  if (n > WIDE) {
+    const end = 2 ** Math.ceil(Math.log2(n));
+    file_push(fl, `for (u32 z = ${n}; z < ${end}; z += 1) {`);
+    file_push(fl, `  e.mem[${nd} + z] = 0;`);
+    file_push(fl, "}");
+  }
   return nd;
 }
 
@@ -2973,7 +2983,8 @@ function compile_tables(fl: File, entries: Seg[]): string[] {
       | Number(!forky.has(s.fid)) << 1)],
     ["FID_RESW_T", entries.map((s) =>
       s.frame === null ? 0 : s.params.length - s.frame.at.length)],
-    ["CID_ARITY_T", [...fl.cids.values()]],
+    ["CID_ARITY_T", [...fl.cids.values()].map((n) =>
+      n > WIDE ? 240 + Math.ceil(Math.log2(n)) : n)],
     ["CID_HOT_T", [...fl.cids.keys()].map((k) => Number(fl.hot.has(k)))],
   ];
   const defs: string[] = [];
@@ -2985,8 +2996,8 @@ function compile_tables(fl: File, entries: Seg[]): string[] {
     defs.push(...ms.map((m, i) => `#define ${m} ${i}`));
   }
   for (const [nm, vals] of tabs) {
-    if (vals.some((v) => v > 255)) {
-      die("an arity over 255");
+    if (vals.some((v) => v > (nm === "CID_ARITY_T" ? 255 : WIDE))) {
+      die("an arity over " + WIDE);
     }
     defs.push(`CONSTV u8 ${nm}[] = { ${vals.join(", ")} };`);
   }
@@ -4121,6 +4132,7 @@ FAR void term_drop(Env e, Term t) {
         u32 n   = tag == TAG_ARR ? 0 : tag == TAG_CTR ? cid_arity(aux)
           : fid_arity(aux) - (tag == TAG_CLO);
         Cls cls = tag == TAG_ARR ? 64 | blk_cls(t)
+          : n > ${WIDE} ? 64 | (n - 240)
           : cls_fit(tag == TAG_TSK ? n + 2 : n);
         c0 = H[loc];
         H[loc] = cur;
