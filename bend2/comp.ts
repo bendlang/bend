@@ -35,6 +35,7 @@ type Seg = {
   ks: Kind[];
   frame: { pop: number; at: number[] } | null;
   refs: Set<string>;
+  moved: Set<string>;
   host?: boolean;
   spin?: boolean;
   fork?: boolean;
@@ -1640,7 +1641,7 @@ function spare_flush(fl: File): void {
 function seg_new(name: string, ret: Lay, params: string[],
   ks: Kind[] = params.map(() => "w64"), frame: Seg["frame"] = null): Seg {
   return { fid: seg_fid(name), def: name, ret, lines: [], params, ks, frame,
-    refs: new Set() };
+    refs: new Set(), moved: new Set() };
 }
 
 function seg_fid(k: Name): string {
@@ -2048,6 +2049,7 @@ function bind_pop(fl: File, x: HTerm): Val {
   fl.uses.set(p, { ...b, n: b.n - 1 });
   val_owned(fl, b.val).forEach((w) => {
     file_push(fl, `${w} = term_keep(e, ${w});`);
+    fl.seg.moved.add(w);
     facts_hot(fl, b.A, true);
   });
   return b.val;
@@ -2129,7 +2131,12 @@ function emit_jump(fl: File, args: string[], k: Name,
     return file_push(fl, `WL_JMP(${seg_ref(fl, fid)});`);
   }
   fl.seg.spin = true;
-  fl.seg.params.forEach((p, i) => file_push(fl, `${p} = r${i};`));
+  fl.seg.params.forEach((p, i) => {
+    if (args[i] !== p) {
+      fl.seg.moved.add(p);
+    }
+    file_push(fl, `${p} = r${i};`);
+  });
   file_push(fl, `WL_AGAIN(${fl.seg.fid});`);
 }
 
@@ -2276,16 +2283,34 @@ function emit_native(fl: File, ck: Call, ers: HTerm[]): string {
   seg.fid = name;
   const dst = val_new(seg.ret.ks.map(() => name_local(fl, "v")), seg.ret);
   emit_body(fl, tld.h as HTerm, tld.T, ers, vals, dst);
+  const hold = spin_hold(fl, seg);
   fl.spins.push({ fid: name, refs: seg.refs, text: [`${seg.lines.length < SPIN_FAR ? "INLINE" : "FAR"} Term ${name}(Env e, THR Term* o${
     seg.ks.map((k, i) => `, ${lay_c(k)} r${i}`).join("")}) {`,
   "  u32 wpoll = 0;",
   ...dst.ws.map((v, j) => `  ${lay_c(seg.ret.ks[j])} ${v} = 0;`),
-  ...seg_take(seg).map((l) => "  " + l),
+  ...[...seg_take(seg), ...hold].map((l) => "  " + l),
   "  WL_SPIN", ...seg.lines, "  break;", "  }",
   ...dst.ws.map((v, j) => `  o[${j}] = ${v};`),
   "  return 1;", "}"].join("\n") });
   Object.assign(fl, outer);
   return name;
+}
+
+// A spin's param that every jump passes back as is, never kept, reads its
+// redirect once: a cell's loc is set at rfc_wrap only (its count moves
+// below) and the param holds a count. The reads (arr_op, arr_leaf, the
+// atomics) are emitted before the jumps are known, so are named after.
+function spin_hold(fl: File, seg: Seg): string[] {
+  return seg.params.flatMap((p) => {
+    const ex = `blk_loc(e.mem, ${p})`;
+    if (!seg.spin || seg.moved.has(p)
+      || !seg.lines.some((l) => l.includes(ex))) {
+      return [];
+    }
+    const bl = name_local(fl, "bl");
+    seg.lines = seg.lines.map((l) => l.replaceAll(ex, bl));
+    return [`Loc ${bl} = ${ex};`];
+  });
 }
 
 function emit_dst(fl: File, lay: Lay, k = "v"): Val {
