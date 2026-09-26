@@ -3000,8 +3000,58 @@ export function term_snf(book: Book, term: HTerm): HTerm {
 // same walk, kinds exact, no swap (a swap under EQ is harmless, so
 // the All case swaps unconditionally).
 
+// Syntactic identity, forcing share cells but unfolding nothing, within a
+// budget of visits (a shared node counts at each visit); heads and first
+// arguments are visited first, where terms usually differ. Identical terms
+// are convertible; false means "unknown".
+function term_same(lhs: HTerm, rhs: HTerm): boolean {
+  const st: HTerm[] = [lhs, rhs];
+  for (let n = 4096; n > 0 && st.length > 0; n--) {
+    const y = term_strip(st.pop()!);
+    const x = term_strip(st.pop()!);
+    if (x === y) {
+      continue;
+    }
+    if (x.$ !== y.$) {
+      return false;
+    }
+    const z = y as typeof x;
+    switch (x.$) {
+      case "Var": if (x.i < 0 || x.i !== (z as typeof x).i) { return false; } break;
+      case "Ref": if (x.k !== (z as typeof x).k) { return false; } break;
+      case "Lit": if (x.k !== (z as typeof x).k || x.v !== (z as typeof x).v) { return false; } break;
+      case "App": st.push(x.x, (z as typeof x).x, x.f, (z as typeof x).f); break;
+      case "Eql": st.push(x.T, (z as typeof x).T, x.b, (z as typeof x).b, x.a, (z as typeof x).a); break;
+      case "Ctr":
+      case "ADT": {
+        const w = z as typeof x;
+        if (x.k !== w.k || x.x.length !== w.x.length) {
+          return false;
+        }
+        if (x.$ === "ADT" && x.r.join() !== (w as typeof x).r.join()) {
+          return false;
+        }
+        for (let j = x.x.length - 1; j >= 0; j--) {
+          st.push(x.x[j], w.x[j]);
+        }
+        break;
+      }
+      case "Rfl": case "Efq": break;
+      default: return false;
+    }
+  }
+  return st.length === 0;
+}
+
+// Only a side that is a call can be expensive to normalize; two values
+// (constructors, lambdas...) compare structurally below at the same cost.
+function term_call(t: HTerm): boolean {
+  const s = term_strip(t);
+  return s.$ === "App" || s.$ === "Ref";
+}
+
 export function term_compare(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: number = 0): boolean {
-  if (lhs === rhs) {
+  if (lhs === rhs || ((term_call(lhs) || term_call(rhs)) && term_same(lhs, rhs))) {
     return true;
   }
   let a = term_wnf(book, lhs);

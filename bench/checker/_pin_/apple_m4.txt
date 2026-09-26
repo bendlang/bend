@@ -4,5 +4,7 @@
 | compute_1600  |   0.541s |
 | defs_12800    |   0.302s |
 | generics_3200 |   0.353s |
+| hashes_4      |   0.070s |
 | proofs_3200   |   0.811s |
+| shared_4      |   0.070s |
 | trees_400     |   0.579s |
