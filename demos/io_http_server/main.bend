@@ -47,6 +47,6 @@ def http_serve(l: Listener) -> IO(Unit):
 
 def main() -> IO(Unit):
   do IO<Unit>:
-    l : Listener <- IO.try(Listener, TCP.listen(8080))
+    l : Listener <- IO.try(Listener, TCP.listen("127.0.0.1", 8080))
     IO.print("serving http://127.0.0.1:8080")
     http_serve(l)
