@@ -16,7 +16,11 @@ No intentional compiler job, archive compression or Git operation overlaps timin
 
 Measure complete launcher wall time including snapshotting, checked bootstrap,
 derivation and focused validation; report build/validation phase durations as
-context. `/usr/bin/time` records maximum process-family RSS. Require each paired
+context. A fresh Python worker waits for one compiler process tree and records Linux
+`RUSAGE_CHILDREN.ru_maxrss` in KiB; full wall time is measured by the parent.
+The first launcher attempt stopped before compilation because `/usr/bin/time`
+is unavailable here. Its script and failed report remain preserved; the
+corrected worker changes only measurement plumbing, not the compiler or gate. Require each paired
 candidate/control full-loop ratio at most 1.05 and RSS ratio at most 1.10. Require
 complete genuine checked attempts, passing focused validations with the same
 seven known exact differences, expected checked/default API hashes and 55 exports.
