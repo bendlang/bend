@@ -4809,7 +4809,12 @@ static Term* pool_stack(void) {
   return (Term*)p;
 }
 
+// A wait yields 128 times before it sleeps: the next turn is often a few
+// microseconds away, and a condvar wake can cost a hundred.
 #define POOL_WAIT(c, cv) \
+  for (u32 s = 0; s < 128 && (c); s += 1) { \
+    sched_yield(); \
+  } \
   pthread_mutex_lock(&pool_lock); \
   while (c) { \
     pthread_cond_wait(&cv, &pool_lock); \
