@@ -41,6 +41,12 @@ Historical artifacts and their evidence remain indexed in the
 and [current strategy](experiments/STEERING.md). Known failures remain explicit;
 these gates do not establish full upstream equivalence.
 
+The [phased simplification design](design/phase7/compiler_simplification.md)
+sets the next architectural direction: reduce source size and the mechanisms
+needed to maintain the compiler while preserving its language and backend targets.
+It defines staged migrations, measurements and validation gates; it is not an
+implemented release change.
+
 ## Bend runs FAST
 
 **Target:** be as fast as C on the CPU, as fast as CUDA on the GPU. **Status:**
