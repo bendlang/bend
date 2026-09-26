@@ -1,0 +1,399 @@
+{
+  "upstream": "6018e28ecc67cf1fffc0c20c64b11023474c2df8",
+  "node": "v24.18.0",
+  "generated": "2026-09-26T19:23:56.154Z",
+  "scope": "component verification, not whole-language conformance or self-hosting",
+  "pass": true,
+  "modules": [
+    {
+      "file": "src/core/term.bend",
+      "sha256": "e47b14c3fec0043dacccdf2db0366e5d9ed29394b3a4faae47afe08e69a8f522"
+    },
+    {
+      "file": "src/core/index.bend",
+      "sha256": "56687b5ca818a3217ab8dff7960836db002b8d7ad89e5de26b1f270d5abd4624"
+    },
+    {
+      "file": "src/core/normalize.bend",
+      "sha256": "f1baf359384e1edb8633e327f8a0cf01feb790931db79bade2c44685151f2fb7"
+    },
+    {
+      "file": "src/core/graph.bend",
+      "sha256": "7d5e75fce5d473fe2c63a4ccbd3e115db29bf42bb037fa9238d5427fce62a790"
+    },
+    {
+      "file": "src/core/reach.bend",
+      "sha256": "c7c1e1ff68ad798f3888d770ee5a02b1b73abbecd58cd2df9b81619428abb2cf"
+    },
+    {
+      "file": "src/core/pretty.bend",
+      "sha256": "9b7ffdca8ba9593b48167aea4f26abd8ac2802a2cca474b67dbf0cbebfca6def"
+    },
+    {
+      "file": "src/check/quantity.bend",
+      "sha256": "e6c7a06fd45cb132d9d5d1704a6f01f81325505eed2ff5d6025e118ff4522e8a"
+    },
+    {
+      "file": "src/check/kernel.bend",
+      "sha256": "0969c4493c29ab980450c848ea24c1f4b666081dbe0eecfc2c6abe21bb0ed947"
+    },
+    {
+      "file": "src/check/specialize.bend",
+      "sha256": "9967a84c8862eabe3149c8cb125520f4913c1f1a057852138b7887bbeb9376fb"
+    },
+    {
+      "file": "src/check/prefix.bend",
+      "sha256": "35af4b272cfe893d60d4aca6433617273a1c52bb8ae4d8eeabfa0541354816cb"
+    },
+    {
+      "file": "src/check/annotate.bend",
+      "sha256": "f033d726d951723b3bd52c62317e5b47721552beaf2ac42205e2444eb70c0c14"
+    },
+    {
+      "file": "src/front/lexer.bend",
+      "sha256": "33b12e01c8b4ed2559163ace169e25a95dbf59c6a99438f5af9d8f240431b2d5"
+    },
+    {
+      "file": "src/front/parser.bend",
+      "sha256": "8daa5d7c685f67336b435b66989ad0eb17f4a9570eb38138ee5ad1a0ea490440"
+    },
+    {
+      "file": "src/front/declarations.bend",
+      "sha256": "e1376ca0c87ddde70abeada9281b83224866994b2b45b376a10603401f7971e8"
+    },
+    {
+      "file": "src/front/flatten.bend",
+      "sha256": "ed4c712480be44474eba76f98c325fcf5aba50735b2d0fe5d029613298f9e51e"
+    },
+    {
+      "file": "src/front/elaborate.bend",
+      "sha256": "b88ba5debd90eca6552eb80f881694d861d5b96492663c9af12f2f182b2f70de"
+    },
+    {
+      "file": "src/front/sugar.bend",
+      "sha256": "b8bdca5ccc2d4c9a864d8bb6f0d707486e31d75f8dfef9b1ca15e9a25f721c9f"
+    },
+    {
+      "file": "src/front/unicode.bend",
+      "sha256": "ab9f2596af9af28bc3698d9cc101cdfd8565be2008d89322b2290cb2887862b6"
+    },
+    {
+      "file": "src/front/literals_arrays.bend",
+      "sha256": "6468fe13b93ebb879c81ac8d18e2e99d4de16dabbf7dc0cc6f389e4a95343981"
+    },
+    {
+      "file": "src/front/parallel.bend",
+      "sha256": "08be770458662a402c4e4a33417381779cb327360747e6d64c1983545cf001d2"
+    },
+    {
+      "file": "src/front/fresh_work.bend",
+      "sha256": "b84c60ecf96f3c50403c7fee86d9949a3bcacb4cab529f5a94cb64e920c6db53"
+    },
+    {
+      "file": "src/front/freshen.bend",
+      "sha256": "174f3aa0192475e419051f90dc835d4fcef4ae454dcbbc14cd6898b22a2cc28c"
+    },
+    {
+      "file": "src/load/paths.bend",
+      "sha256": "56d3ac6b7bf63db2ffd1c26521fb528f56b9469c78203d01296a93fc3812d38c"
+    },
+    {
+      "file": "src/front/families.bend",
+      "sha256": "b17a1dcf30d7ff7c7a0bc0d8e9df6d58f166ab19e3889c73b2403bb0b3b14fe4"
+    },
+    {
+      "file": "src/front/validate.bend",
+      "sha256": "26e56bc64093bf2bb7661c79c47218837974b3954db5c662ccb8d18ea39196cf"
+    },
+    {
+      "file": "src/load/imports.bend",
+      "sha256": "f9ad12e894937828aea74ccd34750b3b1635943a0037db9656e9b8e514350471"
+    },
+    {
+      "file": "src/load/graph.bend",
+      "sha256": "05c9030572a608241d0974b58976addbd200287cc3c21359dd3c9aa1c07274ac"
+    },
+    {
+      "file": "src/load/seed.bend",
+      "sha256": "18100899188b1f1d088605b9a9b23e1c059abf7d6a8a65a835d024a2279bd4a3"
+    },
+    {
+      "file": "src/load/modules.bend",
+      "sha256": "5c7c19a5d75779ae3e81a44b4ab387c782cd32cf9eb5b20c02e5bede153f85c0"
+    },
+    {
+      "file": "src/diagnostic/model.bend",
+      "sha256": "dd69096c6fdcd682a45e9536eb6d475061fd285807961ac95a16b5a874358af5"
+    },
+    {
+      "file": "src/diagnostic/render.bend",
+      "sha256": "201867dba57eb715308026a3dcd36d1a61b0b51ea27c69c6ba00a3c935aedfe9"
+    },
+    {
+      "file": "src/diagnostic/trace.bend",
+      "sha256": "e47615206be3ebf22c4771de06af3d4dfc1a553f7e914bfd9114bc74c2ab1246"
+    },
+    {
+      "file": "src/diagnostic/produce.bend",
+      "sha256": "4c91e4559263e307ce4b3ed0cc11138da27617c6fe5b8bfb21033c5f975a054f"
+    },
+    {
+      "file": "src/diagnostic/frontend.bend",
+      "sha256": "3dff9649db9ced1eb6815f6fae3a540797a5fec697ef32b4b10e910ca80a88e3"
+    },
+    {
+      "file": "src/back/js/foreign.bend",
+      "sha256": "4b6d09ed9cdb914b5531b763bd65523121324bee554a8e5082c4887e728f085d"
+    },
+    {
+      "file": "src/back/js/literals.bend",
+      "sha256": "861525baf8fe999e3086a7ce1cd758e488235e23522dc97bdd8ee7694bb32ae7"
+    },
+    {
+      "file": "src/back/js/validate.bend",
+      "sha256": "917470e39b4d34c26a4f119f1b7acfca7a51926aba76a73d8397b103debca338"
+    },
+    {
+      "file": "src/back/js/choice.bend",
+      "sha256": "2b3ac6cd46a638063d793a1f40eef6f226b1602191cf345e958023a29e2b66c9"
+    },
+    {
+      "file": "src/back/js/projection.bend",
+      "sha256": "d1e327782e64ae05b05ce606350f20c61392c26255c0afefa2fff9f2c0ed1250"
+    },
+    {
+      "file": "src/back/js/emit.bend",
+      "sha256": "7bf4f547540fc148feea196efd76c2f9a5234b27a33b7d8ac794a04ff5816d78"
+    },
+    {
+      "file": "src/back/native/ir.bend",
+      "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b"
+    },
+    {
+      "file": "src/back/native/text.bend",
+      "sha256": "053f8a05ced5c13f7face492da1d16cbdbfdfd90f356c4a5d8f0bbb5d83ef5f7"
+    },
+    {
+      "file": "src/back/native/identity.bend",
+      "sha256": "79794a586a0c2f043c9bd417b97fe2092863eb3a8524250d6b49f0b77dc1810d"
+    },
+    {
+      "file": "src/back/native/layout.bend",
+      "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b"
+    },
+    {
+      "file": "src/back/native/intrinsic.bend",
+      "sha256": "8acf8c4e083b55cc33ef323552963b254ac310c22e7d8b5e3b82253776892ab0"
+    },
+    {
+      "file": "src/back/native/tables.bend",
+      "sha256": "26457cbe409162e70805b3ff0ec91946811b219f71bb2d45982663c3299daf54"
+    },
+    {
+      "file": "src/back/native/emit.bend",
+      "sha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a"
+    },
+    {
+      "file": "src/back/native/erase.bend",
+      "sha256": "11fba4f16ef4de786f68076bafbc356c139fa953c22342c9557efe8b26936be1"
+    },
+    {
+      "file": "src/back/native/bridge.bend",
+      "sha256": "88431cf52f0c9ac1b3b1c93aa4a54225ca201d0b8021283f98ba09c2aadc1c74"
+    },
+    {
+      "file": "src/back/native/direct.bend",
+      "sha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5"
+    },
+    {
+      "file": "src/back/native/pattern.bend",
+      "sha256": "5c624607c7ad2e19660efeddf694d841d7b4d867b1a3870795f9847daca7d155"
+    },
+    {
+      "file": "src/back/native/show.bend",
+      "sha256": "6f662583a276295312217ad99b777cf96988c21ffa7beca3178c043d4b040780"
+    },
+    {
+      "file": "src/back/native/parallel.bend",
+      "sha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722"
+    },
+    {
+      "file": "src/back/native/array.bend",
+      "sha256": "4e1d5c9d282ba746ac1e98df470411d477bf1449b5621c3ad413f01e883d9149"
+    },
+    {
+      "file": "src/back/native/validate.bend",
+      "sha256": "9684fcb9bb25ff0e822ac11b738a319c1353ed721c6c4d864ed984cde0bfd089"
+    },
+    {
+      "file": "src/back/native/foreign.bend",
+      "sha256": "fa71a99ac100dc31a8d6246132fb717f2d8c69f6a7cae71a48a2b960d2c89d61"
+    },
+    {
+      "file": "src/back/native/book.bend",
+      "sha256": "63e16ef3af4f1bce21f8ab912a27bd45fc4c2d232cfcdfaad275bd5083a24dc8"
+    },
+    {
+      "file": "src/driver/report.bend",
+      "sha256": "461d05ad6f7647feafd13520fd5da0c9635eee976d58bea6c7d336b862831ba2"
+    },
+    {
+      "file": "src/driver/api.bend",
+      "sha256": "a68a76de0ed77e3fc9b99193e4e0298257c97e516fbab79438123309112e63a1"
+    }
+  ],
+  "results": [
+    {
+      "name": "upstream checks all compiler modules",
+      "pass": true,
+      "exitCode": 0,
+      "seconds": 5.627846819999999,
+      "stdout": "",
+      "stderr": "Checked 36 API exports\n"
+    },
+    {
+      "name": "dependent checker and annotation",
+      "pass": true,
+      "exitCode": 0,
+      "seconds": 0.14294149500000003,
+      "stdout": "PASS Bool declaration\nPASS identity\nPASS undefined reference\nPASS constructor wrong goal\nPASS good reflexivity\nPASS bad reflexivity\nPASS affine duplication\nPASS unrestricted duplication\nPASS exhaustive match\nPASS missing branch\nPASS nondecreasing recursion\nPASS decreasing recursion\nPASS dependent grade datatype\nPASS let type mismatch propagates\nPASS let affine duplication\nPASS erased runtime access\nPASS J equality elimination\nPASS template opaque value usage\nPASS template closed call\nPASS template open call\nPASS template bare reference\nPASS duplicate definition\nPASS law signature mismatch\nPASS law signature fill\nPASS constructor namespace uniqueness\nPASS open law final rejection\nPASS beta retains matcher annotation\nPASS beta constructor has contextual goal\nPASS foreign returning native IO\nPASS foreign pure return rejected\nPASS foreign IO alias rejected\nPASS typed body annotation\nPASS effective erased lambda quantity\nPASS typed constructor child\nPASS dependent annotation source checks\nPASS dependent application result annotation\nPASS dependent application function annotation\nPASS dependent application domain substitution\nPASS annotated alias source checks\nPASS annotated alias lambda quantity\nPASS annotated alias binder type\nPASS unsafe fill governs prior signature kind\nPASS safe fill retains Data domain wall\n43 passed\n",
+      "stderr": ""
+    },
+    {
+      "name": "structured diagnostic rendering and legacy fallback",
+      "pass": true,
+      "exitCode": 0,
+      "seconds": 0.13742557099999977,
+      "stdout": "PASS expected-observed layout\nPASS message-only layout\nPASS definition without span\nPASS first-line window\nPASS line-number width transition\nPASS trailing empty line\nPASS UTF16 offset with astral character\nPASS note follows location\nPASS aligned dependent context\nPASS shadowed context indices\nPASS expected terms normalize\nPASS authoritative rejection preserved\nPASS actual undefined-reference source diagnostic\nPASS accepted program diagnostic remains empty\nPASS actual affine error payload\nPASS actual type mismatch captures context\nPASS actual reflexivity endpoints\nPASS actual recursion error context\nPASS ambiguous source is omitted\nPASS source lookup is definition-scoped\nPASS incomplete book preserves legacy diagnostic\nPASS declaration error preserves legacy diagnostic\n22 diagnostic tests passed\n",
+      "stderr": ""
+    },
+    {
+      "name": "diagnostic source parity against pinned upstream",
+      "pass": true,
+      "exitCode": 0,
+      "seconds": 0.36489760300000035,
+      "stdout": "PASS undefined reference exact source diagnostic\nPASS undefined reference with context exact source diagnostic\nPASS wrong constructor family exact source diagnostic\nPASS unknown constructor exact source diagnostic\nPASS constructor field arity exact source diagnostic\nPASS decreasing-call diagnostic exact source diagnostic\nPASS dependent context mismatch exact structured diagnostic (span unavailable)\nPASS affine diagnostic exact structured diagnostic (span unavailable)\n{\"exactSourceDiagnostics\":6,\"exactStructuredDiagnostics\":2,\"total\":8,\"mismatches\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "name": "final-core source provenance",
+      "pass": true,
+      "exitCode": 0,
+      "seconds": 0.15781709799999954,
+      "stdout": "final graph equality; imported beta-substituted reference; wrong constructor; qualified call; UTF16 offsets; exact definition filters: pass\n",
+      "stderr": ""
+    },
+    {
+      "name": "native constructor identity and provenance",
+      "pass": true,
+      "exitCode": 0,
+      "seconds": 0.38239802299999975,
+      "stdout": "PASS 71 distinct constructor identities, 26 reserved aliases, parent provenance, indexed books, Unicode and malformed encodings\nPASS pinned upstream accepts primitive-spelling and case-colliding custom constructors with fields, without Base\n",
+      "stderr": ""
+    },
+    {
+      "name": "persistent book index",
+      "pass": true,
+      "exitCode": 0,
+      "seconds": 0.34717353399999956,
+      "stdout": "PASS persistent indexed lookup, overrides, first-match order and exact hash collisions\nPASS prepared context identity and empty lookup\n",
+      "stderr": ""
+    },
+    {
+      "name": "dependency closure",
+      "pass": true,
+      "exitCode": 0,
+      "seconds": 0.06430695999999989,
+      "stdout": "5 dependency closure tests passed\n",
+      "stderr": ""
+    },
+    {
+      "name": "validated prefix reuse",
+      "pass": true,
+      "exitCode": 0,
+      "seconds": 0.06978330499999902,
+      "stdout": "PASS exact-prefix cached checking and complete-field mismatch tests\n",
+      "stderr": ""
+    },
+    {
+      "name": "parsed source handoff",
+      "pass": true,
+      "exitCode": 0,
+      "seconds": 0.14730420799999958,
+      "stdout": "PASS parsed source simple\nPASS parsed source aliases\nPASS parsed source parse error\nPASS parsed source cycle\nPASS parsed source missing source\nPASS parsed source repeated import\nPASS parsed source parallel bindings\n",
+      "stderr": ""
+    },
+    {
+      "name": "seeded loader equivalence",
+      "pass": true,
+      "exitCode": 0,
+      "seconds": 17.168956849,
+      "stdout": "exact Base seed 2248 132 \nmismatched bytes fall back 2001 2022 \nmismatched path falls back 1893 1911 \nunused Base remains absent 1 15 \ndependency order preserved 1912 118 \nnested Base import 2052 121 \n",
+      "stderr": ""
+    },
+    {
+      "name": "stack-safe binder freshening",
+      "pass": true,
+      "exitCode": 0,
+      "seconds": 0.5852123980000034,
+      "stdout": "4 independent scope comparisons; 50,000 constructors; 12,000 shadowing binders; 15,000 parallel bindings: pass\n",
+      "stderr": ""
+    },
+    {
+      "name": "stack-safe declaration freshening",
+      "pass": true,
+      "exitCode": 0,
+      "seconds": 0.8879025920000022,
+      "stdout": "exact type/value/constructor allocation; 20,000 declarations; 12,000 nested constructor books: pass\n",
+      "stderr": ""
+    },
+    {
+      "name": "main-module reporting boundary",
+      "pass": true,
+      "exitCode": 0,
+      "seconds": 0.5937211069999976,
+      "stdout": "check/unsafe_field.bend boom, Box, uses, sound\ncheck/unsafe_relies.bend boom, innocent, by_type, sound\nimport/unsafe_lib.bend boom, safe\nimport/unsafe_used.bend innocent, keep\nio/far_types.bend Far, far.make\nio/marshal_imported_nullary_type.bend Tag, tag.name, tag.off, tag.on\ncanonical main alias, dependency exclusion, duplicate fill, nested constructor, foreign origin: pass\n",
+      "stderr": ""
+    },
+    {
+      "name": "term readback",
+      "pass": true,
+      "exitCode": 0,
+      "seconds": 0.10966100999999981,
+      "stdout": "17 core readback tests passed\n",
+      "stderr": ""
+    },
+    {
+      "name": "normalization and conversion",
+      "pass": true,
+      "exitCode": 0,
+      "seconds": 0.5070816350000023,
+      "stdout": "PASS share cell\nPASS beta reduction\nPASS alpha equivalence\nPASS eta equivalence\nPASS distinct constructors\nPASS constructor match\nPASS saturated definition\nPASS stuck definition preserves head\nPASS under-applied definition\nPASS quantity minimum\nPASS kind subtype\nPASS kind direction\nPASS dependent telescope alpha\nPASS parallel let\nPASS rewrite reflexivity\nPASS strong constructor field\nPASS residual subtype\nPASS residual equality\nPASS foreign definition stays opaque\nPASS deep reflexivity\nPASS deep inequality\nPASS deep strong normalization\nPASS cell payloads affect equality\nPASS repeated unfolding freshens binders\nPASS outer binder survives inner unfolding\nPASS inner binder remains distinct\nPASS kind meet alternative\nPASS kind alternatives preserve later failures\nPASS shared recursive demands are memoized\nPASS shared match arms are memoized\nPASS shared constructor fields are memoized\n31 normalization tests passed\n",
+      "stderr": ""
+    },
+    {
+      "name": "template specialization",
+      "pass": true,
+      "exitCode": 0,
+      "seconds": 0.520129277,
+      "stdout": "PASS specialization, memoization, different keys, normalization\nPASS decreasing specialized recursion\nPASS erased open template retained\nPASS underapplied template rejected\nPASS depth guard\nPASS key growth guard\n",
+      "stderr": ""
+    },
+    {
+      "name": "JavaScript primitive ABI",
+      "pass": true,
+      "exitCode": 0,
+      "seconds": 0.25473144800000225,
+      "stdout": "runtime numeric/readback/File/Chan/TCP/UDP checks passed\nHalt terminates outstanding child effects\n",
+      "stderr": ""
+    },
+    {
+      "name": "conformance harness and host ABI safeguards",
+      "pass": true,
+      "exitCode": 0,
+      "seconds": 7.080330308999997,
+      "stdout": "✔ compiler ABI conversion handles deeply nested shared graphs without recursion (162.287902ms)\n✔ typed adapter artifacts identify helpers beside the consumed frozen driver (5.679539ms)\n✔ bootstrap never treats zero exit status as recovery from a spawn error (5.942301ms)\n✔ bootstrap captures actual upstream/compiler/build tools with clean pinned identity (147.276461ms)\n✔ bootstrap rejects build-tool drift before publishing a checked artifact (101.835078ms)\n✔ bootstrap rejects same-byte tool symlink retargets (39.140389ms)\n✔ successful git status never masks a subprocess capture error (4.682682ms)\n✔ pinned corpus is exhaustive and includes every negative namespace (265.296773ms)\n✔ infinite compiler probe is killed and filtered run cannot claim completeness (799.15759ms)\n✔ explicit stack and heap limits reach isolated compiler workers and the report (765.004078ms)\n✔ unsupported parser rejection cannot pass a checker negative (2.911766ms)\n✔ unchecked adapter never receives checker credit (0.358832ms)\n✔ a matching diagnostic still requires actual checker completion (0.411339ms)\n✔ runtime expected errors get no type/proof checker rejection credit (0.333552ms)\n✔ proper checker rejection gets separate evidence (0.325939ms)\n✔ matching frontend rejection is never a checker rejection (0.417757ms)\n✔ timeouts and crashes never count as successful rejection (1.602418ms)\n✔ runtime exit failure cannot pass by matching stdout alone (0.421517ms)\n✔ CPU fallback is not GPU conformance (0.801955ms)\n✔ ordered combined runtime output preserves stderr and nonzero exit evidence (0.683716ms)\n✔ upstream printability refusal with its exact explanatory suffix is exempt (0.48507ms)\n✔ paired native graph requires the selected source and canonical pinned Base (115.904153ms)\n✔ exact pairs do not select another fixture or lane (4.250409ms)\n✔ unknown, duplicate, empty, and ineligible pairs fail closed (1.822108ms)\n✔ previous failures move first without deleting requested controls (3.893789ms)\n✔ an explicit acceptance oracle keeps wrong rejection phases failing (0.737821ms)\n✔ external fixtures require an explicit oracle (3.393794ms)\n✔ pinned fixture oracles cannot be replaced with custom acceptance (0.883234ms)\n✔ reruns reject fixture ID collisions and changed custom inputs (26.974523ms)\n✔ acceptance-only positive check must actually reach the check phase (0.369066ms)\n✔ self-host proof records Base and actual-driver helper identities for every stage (446.750215ms)\n✔ Linux self-host resource gate reads the actual process stack limit (265.357564ms)\n✔ self-host rejects Base drift during a stage (114.508835ms)\n✔ self-host rejects host helper drift during a stage (106.729347ms)\n✔ self-host refuses legacy resume without Base/helper identity (249.286617ms)\n✔ self-host refuses resume after Base or helper changes (412.148336ms)\n✔ restoring a changed Base does not validate the preceding tainted stage (177.784167ms)\n✔ fresh self-host attempt preserves an existing report and runtime snapshot (192.489708ms)\n✔ self-host rejects same-byte source symlink retarget during a stage and on resume (272.781191ms)\n✔ selected pass stays incomplete; retained failure replays and rejects input drift (1789.041705ms)\n✔ artifact drift invalidates selected pass and output overflow remains a crash (1018.650749ms)\n✔ whole process group deadline kills delayed grandchildren (1470.517646ms)\n✔ adapter-declared inputs and expected missing assets cannot drift into a selected pass (1066.093448ms)\n✔ exact replay clears ambient configuration and rejects another Node version (913.208932ms)\n✔ a same-content input symlink retarget invalidates source identity (502.330239ms)\n✔ CPU fallback links the foreign libraries that the emitted source uses (2.405251ms)\n✔ CUDA host build embeds a separately compiled device program (3.465561ms)\n✔ Metal uses Objective-C ARC while explicit CPU can avoid GPU build (0.827807ms)\n✔ an explicit unavailable GPU target cannot silently fall back to CPU (0.982016ms)\n✔ native subprocess errors cannot report a successful exit code (6.330724ms)\nNode resource limits propagate without execution options.\n✔ tests/node-resource-args.test.mjs (215.41767ms)\nℹ tests 51\nℹ suites 0\nℹ pass 51\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 7033.860178\n",
+      "stderr": ""
+    }
+  ]
+}

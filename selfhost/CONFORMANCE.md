@@ -1,18 +1,19 @@
 # Compiler validation
 
-The ordinary CLI now uses the [consolidated Phase 5 release](../implementation/phase5/consolidated-release.md).
+The ordinary CLI uses the [S2 simplification release](../implementation/phase7/s2-report.md).
 Its [manifest](dist/release.json) identifies the exact API/source/runtime/host;
 `npm run verify:release` checks local integrity and transformation replay.
-The [final frontend gate](../implementation/phase5/final-artifact-frontend.md)
-preserves all 2,756 checked-parent observations for this optimized artifact,
-including 318 strict failures. Historical sections below retain their recorded
-artifact scope and do not substitute for the current release's separate gates.
+Fresh checked build, 21 focused paired cases, all component groups, 51 harness
+tests and exact cross-version provenance/diagnostic controls pass. The focused
+suite retains its seven known exact differences; acceptance is not exact parity.
 
-[S1](../implementation/phase7/s1-report.md) rebuilds that same selected API from
-15,961 lines of source after retiring unreachable private declarations. Both
-checked and optimized API bytes, runtime and host are unchanged. S1 has fresh
-checked, component and selected-control evidence; it does not claim a new broad
-conformance run or full-source self-host fixed point.
+The [Phase 5 frontend gate](../implementation/phase5/final-artifact-frontend.md)
+records 2,756 observations for the earlier artifact, including 318 strict failures.
+S1 retained its complete selected API bytes. S2 changes two provenance API roots;
+52 of 54 selected roots retain identical reachable generated functions. The
+changed routes have 530 new cross-version assertions and the existing 204-check
+loader/diagnostic gate. No new broad corpus sweep or full-source B1→H→H proof is
+claimed. Historical sections retain their recorded artifact scope.
 
 The supplied baseline compiler results are in [the compatibility matrix](docs/COMPATIBILITY-MATRIX.md).
 Phase 1 changes have separate artifact-specific evidence in the

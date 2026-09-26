@@ -418,11 +418,14 @@ function $diagnostic_result_locate$(result_0, origins_0) {
 }
 
 function $f_load_origins_for$(main_0, sources_0, definition_0) {
-  return run_jump($f_loaded_origins_for$, [run_loop($f_load_graph_trace$(main_0, sources_0)), definition_0]);
+  return run_jump($fp_graph_for$, [run_loop($f_graph_load$(main_0, "", sources_0, {$: "FGraph", ["book"]: {$: "Nil"}, ["error"]: "", ["done"]: {$: "Nil"}}, {$: "Nil"})), sources_0, definition_0]);
 }
 
 function $f_loaded_origins_for$(trace_0, definition_0) {
-  return run_jump($fp_loaded_origins$, [trace_0, false, definition_0]);
+  const result_0 = trace_0["result"];
+  const done_0 = trace_0["done"];
+  const sources_0 = trace_0["sources"];
+  return run_jump($fp_loaded_result$, [result_0, done_0, sources_0, definition_0]);
 }
 
 function $j_compile_error$(book_0) {
@@ -662,6 +665,7 @@ function $Bool$and$(a_0, b_0) {
 }
 
 function $String$eq$(a_0, b_0) {
+  if (typeof a_0 === "string" && typeof b_0 === "string" && a_0.isWellFormed() && b_0.isWellFormed()) return a_0 === b_0;
   return run_jump($String$eq$fin$, [run_loop($String$cmp$(a_0, b_0))]);
 }
 
@@ -1407,11 +1411,22 @@ function $diagnostic_locate$(diagnostic_0, origins_0) {
 }))), ["note"]: note_0, ["trail"]: trail_0};
 }
 
-function $fp_loaded_origins$(trace_0, all_0, definition_0) {
-  const result_0 = trace_0["result"];
-  const done_0 = trace_0["done"];
-  const sources_0 = trace_0["sources"];
-  return run_jump($fp_loaded_result$, [result_0, done_0, sources_0, all_0, definition_0]);
+function $fp_graph_for$(graph_0, sources_0, definition_0) {
+  const book_0 = graph_0["book"];
+  const error_0 = graph_0["error"];
+  const done_0 = graph_0["done"];
+  return run_jump($fp_result_for$, [run_loop($f_graph_result_at$({$: "FGraph", ["book"]: book_0, ["error"]: error_0, ["done"]: done_0}, sources_0)), done_0, sources_0, definition_0]);
+}
+
+function $fp_loaded_result$(result_0, done_0, sources_0, definition_0) {
+  const book_0 = result_0["book"];
+  const error_0 = result_0["error"];
+  const imports_0 = result_0["imports"];
+  return {$: "FProvenance", ["result"]: {$: "FResult", ["book"]: book_0, ["error"]: error_0, ["imports"]: imports_0}, ["origins"]: run_loop($f_choose$(run_loop($String$is_empty$(error_0)), run_clo((x_0) => {
+  return run_jump($fp_loaded_modules$, [run_loop($fp_loaded_reverse$(done_0, {$: "Nil"})), book_0, sources_0, definition_0]);
+}), run_clo((x_1) => {
+  return {$: "Nil"};
+})))};
 }
 
 function $j_main_error$(book_0, main_0) {
@@ -2938,15 +2953,35 @@ function $dg_origin_trail$(origins_0, name_0, trail_0) {
   }
 }
 
-function $fp_loaded_result$(result_0, done_0, sources_0, all_0, definition_0) {
+function $fp_result_for$(result_0, done_0, sources_0, definition_0) {
   const book_0 = result_0["book"];
   const error_0 = result_0["error"];
   const imports_0 = result_0["imports"];
   return {$: "FProvenance", ["result"]: {$: "FResult", ["book"]: book_0, ["error"]: error_0, ["imports"]: imports_0}, ["origins"]: run_loop($f_choose$(run_loop($String$is_empty$(error_0)), run_clo((x_0) => {
-  return run_jump($fp_loaded_modules$, [run_loop($List$reverse$(done_0)), book_0, sources_0, all_0, definition_0]);
+  return run_jump($fp_defs_for$, [book_0, run_loop($fp_modules$(done_0, sources_0)), definition_0]);
 }), run_clo((x_1) => {
   return {$: "Nil"};
 })))};
+}
+
+function $fp_loaded_modules$(done_0, book_0, sources_0, definition_0) {
+  if (done_0.$ === "Nil") {
+    return {$: "Nil"};
+  } else {
+    const entry_0 = done_0["head"];
+    const rest_0 = done_0["tail"];
+    return run_jump($List$append$, [run_loop($fp_loaded_module$(run_loop($fp_loaded_take$(book_0, run_loop($ix$(entry_0)))), run_loop($f_graph_source$(run_loop($nm$(entry_0)), sources_0)), definition_0)), run_loop($fp_loaded_modules$(rest_0, run_loop($fp_loaded_drop$(book_0, run_loop($ix$(entry_0)))), sources_0, definition_0))]);
+  }
+}
+
+function $fp_loaded_reverse$(done_0, acc_0) {
+  if (done_0.$ === "Nil") {
+    return acc_0;
+  } else {
+    const head_0 = done_0["head"];
+    const tail_0 = done_0["tail"];
+    return run_jump($fp_loaded_reverse$, [tail_0, {$: "Con", ["head"]: head_0, ["tail"]: acc_0}]);
+  }
 }
 
 function $j_printable$(book_0, ty_0, seen_0, fuel_0) {
@@ -4685,13 +4720,59 @@ function $dg_origin_scan$(origins_0, name_0, t_0, found_0) {
   }
 }
 
-function $fp_loaded_modules$(done_0, book_0, sources_0, all_0, definition_0) {
+function $fp_defs_for$(book_0, sources_0, definition_0) {
+  if (book_0.$ === "Nil") {
+    return {$: "Nil"};
+  } else {
+    const d_0 = book_0["head"];
+    const rest_0 = book_0["tail"];
+    return run_jump($fp_defs_source_for$, [d_0, rest_0, sources_0, definition_0]);
+  }
+}
+
+function $fp_modules$(done_0, sources_0) {
   if (done_0.$ === "Nil") {
     return {$: "Nil"};
   } else {
     const entry_0 = done_0["head"];
     const rest_0 = done_0["tail"];
-    return run_jump($List$append$, [run_loop($fp_loaded_module$(run_loop($fp_loaded_take$(book_0, run_loop($ix$(entry_0)))), run_loop($f_graph_source$(run_loop($nm$(entry_0)), sources_0)), all_0, definition_0)), run_loop($fp_loaded_modules$(rest_0, run_loop($fp_loaded_drop$(book_0, run_loop($ix$(entry_0)))), sources_0, all_0, definition_0))]);
+    return run_jump($fp_join$, [run_loop($fp_modules$(rest_0, sources_0)), run_loop($fp_module$(run_loop($f_graph_source$(run_loop($nm$(entry_0)), sources_0))))]);
+  }
+}
+
+function $fp_loaded_module$(book_0, source_0, definition_0) {
+  return run_jump($f_choose$, [run_loop($fp_loaded_has$(book_0, definition_0)), run_clo((x_0) => {
+  return run_jump($fp_loaded_defs$, [book_0, {$: "FPSource", ["source"]: run_loop($f_source_text$(source_0)), ["tokens"]: run_loop($f_lex$(run_loop($f_source_text$(source_0)), 1, 0, 0, {$: "Nil"}))}, definition_0]);
+}), run_clo((x_1) => {
+  return {$: "Nil"};
+})]);
+}
+
+function $fp_loaded_take$(book_0, count_0) {
+  if (book_0.$ === "Nil") {
+    return {$: "Nil"};
+  } else {
+    const head_0 = book_0["head"];
+    const tail_0 = book_0["tail"];
+    return run_jump($f_choose$, [(count_0 === 0), run_clo((x_0) => {
+    return {$: "Nil"};
+}), run_clo((x_1) => {
+    return {$: "Con", ["head"]: head_0, ["tail"]: run_loop($fp_loaded_take$(tail_0, ((count_0 - 1) >>> 0)))};
+})]);
+  }
+}
+
+function $fp_loaded_drop$(book_0, count_0) {
+  if (book_0.$ === "Nil") {
+    return {$: "Nil"};
+  } else {
+    const head_0 = book_0["head"];
+    const tail_0 = book_0["tail"];
+    return run_jump($f_choose$, [(count_0 === 0), run_clo((x_0) => {
+    return {$: "Con", ["head"]: head_0, ["tail"]: tail_0};
+}), run_clo((x_1) => {
+    return run_jump($fp_loaded_drop$, [tail_0, ((count_0 - 1) >>> 0)]);
+})]);
   }
 }
 
@@ -7705,43 +7786,59 @@ function $dg_span_same$(a_0, b_0) {
   }
 }
 
-function $fp_loaded_module$(book_0, source_0, all_0, definition_0) {
-  return run_jump($f_choose$, [run_loop($f_choose$(all_0, run_clo((x_0) => {
-  return true;
+function $fp_defs_source_for$(d_0, rest_0, sources_0, definition_0) {
+  if (sources_0.$ === "Nil") {
+    return {$: "Nil"};
+  } else {
+    const source_0 = sources_0["head"];
+    const tail_0 = sources_0["tail"];
+    return run_jump($List$append$, [run_loop($f_choose$(run_loop($String$eq$(run_loop($dn$(d_0)), definition_0)), run_clo((x_0) => {
+    return run_jump($fp_def$, [d_0, source_0]);
 }), run_clo((x_1) => {
-  return run_jump($fp_loaded_has$, [book_0, definition_0]);
-}))), run_clo((x_2) => {
-  return run_jump($fp_loaded_defs$, [book_0, {$: "FPSource", ["source"]: run_loop($f_source_text$(source_0)), ["tokens"]: run_loop($f_lex$(run_loop($f_source_text$(source_0)), 1, 0, 0, {$: "Nil"}))}, all_0, definition_0]);
-}), run_clo((x_3) => {
-  return {$: "Nil"};
-})]);
+    return {$: "Nil"};
+}))), run_loop($fp_defs_for$(rest_0, tail_0, definition_0))]);
+  }
 }
 
-function $fp_loaded_take$(book_0, count_0) {
+function $fp_join$(left_0, right_0) {
+  if (left_0.$ === "Nil") {
+    return right_0;
+  } else {
+    const head_0 = left_0["head"];
+    const tail_0 = left_0["tail"];
+    return {$: "Con", ["head"]: head_0, ["tail"]: run_loop($fp_join$(tail_0, right_0))};
+  }
+}
+
+function $fp_module$(source_0) {
+  return run_jump($fp_module_parsed$, [run_loop($f_source_text$(source_0)), run_loop($f_lex$(run_loop($f_source_text$(source_0)), 1, 0, 0, {$: "Nil"})), run_loop($f_parse$(run_loop($f_source_text$(source_0))))]);
+}
+
+function $fp_loaded_has$(book_0, definition_0) {
   if (book_0.$ === "Nil") {
-    return {$: "Nil"};
+    return false;
   } else {
     const head_0 = book_0["head"];
     const tail_0 = book_0["tail"];
-    return run_jump($f_choose$, [(count_0 === 0), run_clo((x_0) => {
-    return {$: "Nil"};
+    return run_jump($f_choose$, [run_loop($String$eq$(run_loop($dn$(head_0)), definition_0)), run_clo((x_0) => {
+    return true;
 }), run_clo((x_1) => {
-    return {$: "Con", ["head"]: head_0, ["tail"]: run_loop($fp_loaded_take$(tail_0, ((count_0 - 1) >>> 0)))};
+    return run_jump($fp_loaded_has$, [tail_0, definition_0]);
 })]);
   }
 }
 
-function $fp_loaded_drop$(book_0, count_0) {
+function $fp_loaded_defs$(book_0, source_0, definition_0) {
   if (book_0.$ === "Nil") {
     return {$: "Nil"};
   } else {
     const head_0 = book_0["head"];
     const tail_0 = book_0["tail"];
-    return run_jump($f_choose$, [(count_0 === 0), run_clo((x_0) => {
-    return {$: "Con", ["head"]: head_0, ["tail"]: tail_0};
+    return run_jump($List$append$, [run_loop($f_choose$(run_loop($String$eq$(run_loop($dn$(head_0)), definition_0)), run_clo((x_0) => {
+    return run_jump($fp_def$, [head_0, source_0]);
 }), run_clo((x_1) => {
-    return run_jump($fp_loaded_drop$, [tail_0, ((count_0 - 1) >>> 0)]);
-})]);
+    return {$: "Nil"};
+}))), run_loop($fp_loaded_defs$(tail_0, source_0, definition_0))]);
   }
 }
 
@@ -9843,33 +9940,15 @@ function $dg_span_fields$(s_0, b0_0, e0_0, b_0) {
   }
 }
 
-function $fp_loaded_has$(book_0, definition_0) {
-  if (book_0.$ === "Nil") {
-    return false;
-  } else {
-    const head_0 = book_0["head"];
-    const tail_0 = book_0["tail"];
-    return run_jump($f_choose$, [run_loop($String$eq$(run_loop($dn$(head_0)), definition_0)), run_clo((x_0) => {
-    return true;
-}), run_clo((x_1) => {
-    return run_jump($fp_loaded_has$, [tail_0, definition_0]);
-})]);
-  }
+function $fp_def$(d_0, source_0) {
+  return run_jump($List$append$, [run_loop($fp_term$(run_loop($dt$(d_0)), run_loop($dn$(d_0)), source_0, {$: "Con", ["head"]: 0, ["tail"]: {$: "Nil"}})), run_loop($List$append$(run_loop($fp_term$(run_loop($dv$(d_0)), run_loop($dn$(d_0)), source_0, {$: "Con", ["head"]: 1, ["tail"]: {$: "Nil"}})), run_loop($fp_ctors$(run_loop($dc$(d_0)), run_loop($dn$(d_0)), source_0, 0))))]);
 }
 
-function $fp_loaded_defs$(book_0, source_0, all_0, definition_0) {
-  if (book_0.$ === "Nil") {
-    return {$: "Nil"};
-  } else {
-    const head_0 = book_0["head"];
-    const tail_0 = book_0["tail"];
-    const x_0 = run_loop($String$eq$(run_loop($dn$(head_0)), definition_0));
-    return run_jump($List$append$, [run_loop($f_choose$((all_0 || x_0), run_clo((x_1) => {
-    return run_jump($fp_def$, [head_0, source_0]);
-}), run_clo((x_2) => {
-    return {$: "Nil"};
-}))), run_loop($fp_loaded_defs$(tail_0, source_0, all_0, definition_0))]);
-  }
+function $fp_module_parsed$(text_0, tokens_0, parsed_0) {
+  const book_0 = parsed_0["book"];
+  const error_0 = parsed_0["error"];
+  const imports_0 = parsed_0["imports"];
+  return run_jump($fp_event_sources$, [book_0, {$: "FPSource", ["source"]: text_0, ["tokens"]: tokens_0}]);
 }
 
 function $j_printable_ctors$(book_0, ctors_0, params_0, seen_0, fuel_0) {
@@ -12233,8 +12312,28 @@ function $norm_exact_head$(a_0, b_0) {
   return run_jump($Bool$and$, [run_loop($Bool$and$(run_loop($Bool$and$(run_loop($Bool$and$(run_loop($Bool$and$(run_loop($String$eq$(run_loop($tg$(a_0)), run_loop($tg$(b_0)))), run_loop($String$eq$(run_loop($nm$(a_0)), run_loop($nm$(b_0)))))), (x_0 === x_1))), (x_2 === x_3))), (x_4 === x_5))), run_loop($norm_exact_names$(run_loop($rm$(a_0)), run_loop($rm$(b_0))))]);
 }
 
-function $fp_def$(d_0, source_0) {
-  return run_jump($List$append$, [run_loop($fp_term$(run_loop($dt$(d_0)), run_loop($dn$(d_0)), source_0, {$: "Con", ["head"]: 0, ["tail"]: {$: "Nil"}})), run_loop($List$append$(run_loop($fp_term$(run_loop($dv$(d_0)), run_loop($dn$(d_0)), source_0, {$: "Con", ["head"]: 1, ["tail"]: {$: "Nil"}})), run_loop($fp_ctors$(run_loop($dc$(d_0)), run_loop($dn$(d_0)), source_0, 0))))]);
+function $fp_term$(t_0, definition_0, source_0, route_0) {
+  return run_jump($List$append$, [run_loop($fp_origin$(t_0, definition_0, source_0, route_0)), run_loop($fp_children$(run_loop($ks$(t_0)), definition_0, source_0, route_0, 0))]);
+}
+
+function $fp_ctors$(ctors_0, definition_0, source_0, index_0) {
+  if (ctors_0.$ === "Nil") {
+    return {$: "Nil"};
+  } else {
+    const ctor_0 = ctors_0["head"];
+    const rest_0 = ctors_0["tail"];
+    return run_jump($List$append$, [run_loop($fp_term$(run_loop($dt$(ctor_0)), definition_0, source_0, {$: "Con", ["head"]: 2, ["tail"]: {$: "Con", ["head"]: index_0, ["tail"]: {$: "Con", ["head"]: 0, ["tail"]: {$: "Nil"}}}})), run_loop($fp_ctors$(rest_0, definition_0, source_0, ((index_0 + 1) >>> 0)))]);
+  }
+}
+
+function $fp_event_sources$(book_0, source_0) {
+  if (book_0.$ === "Nil") {
+    return {$: "Nil"};
+  } else {
+    const d_0 = book_0["head"];
+    const rest_0 = book_0["tail"];
+    return {$: "Con", ["head"]: source_0, ["tail"]: run_loop($fp_event_sources$(rest_0, source_0))};
+  }
 }
 
 function $j_printable_fields$(book_0, ty_0, seen_0, fuel_0) {
@@ -13994,17 +14093,30 @@ function $norm_exact_names$(as_0, bs_0) {
   }
 }
 
-function $fp_term$(t_0, definition_0, source_0, route_0) {
-  return run_jump($List$append$, [run_loop($fp_origin$(t_0, definition_0, source_0, route_0)), run_loop($fp_children$(run_loop($ks$(t_0)), definition_0, source_0, route_0, 0))]);
+function $fp_origin$(t_0, definition_0, source_0, route_0) {
+  const text_0 = source_0["source"];
+  const tokens_0 = source_0["tokens"];
+  const x_0 = run_loop($String$eq$(run_loop($tg$(t_0)), "Ref"));
+  const x_1 = run_loop($String$eq$(run_loop($tg$(t_0)), "ADT"));
+  const x_2 = (x_0 || x_1);
+  const x_3 = run_loop($String$eq$(run_loop($tg$(t_0)), "Ctr"));
+  const x_4 = run_loop($ix$(t_0));
+  return run_jump($f_choose$, [run_loop($Bool$and$((x_2 || x_3), (x_4 >= 65536))), run_clo((x_5) => {
+  const x_6 = run_loop($ix$(t_0));
+  const x_7 = run_loop($ix$(t_0));
+  return run_jump($fp_at_token$, [t_0, definition_0, text_0, run_loop($fp_find_token$(tokens_0, (65536 === 0 ? 0 : (x_6 / 65536) >>> 0), (65536 === 0 ? x_7 : x_7 % 65536))), route_0]);
+}), run_clo((x_8) => {
+  return {$: "Nil"};
+})]);
 }
 
-function $fp_ctors$(ctors_0, definition_0, source_0, index_0) {
-  if (ctors_0.$ === "Nil") {
+function $fp_children$(terms_0, definition_0, source_0, route_0, index_0) {
+  if (terms_0.$ === "Nil") {
     return {$: "Nil"};
   } else {
-    const ctor_0 = ctors_0["head"];
-    const rest_0 = ctors_0["tail"];
-    return run_jump($List$append$, [run_loop($fp_term$(run_loop($dt$(ctor_0)), definition_0, source_0, {$: "Con", ["head"]: 2, ["tail"]: {$: "Con", ["head"]: index_0, ["tail"]: {$: "Con", ["head"]: 0, ["tail"]: {$: "Nil"}}}})), run_loop($fp_ctors$(rest_0, definition_0, source_0, ((index_0 + 1) >>> 0)))]);
+    const term_0 = terms_0["head"];
+    const rest_0 = terms_0["tail"];
+    return run_jump($List$append$, [run_loop($fp_term$(term_0, definition_0, source_0, run_loop($List$append$(route_0, {$: "Con", ["head"]: index_0, ["tail"]: {$: "Nil"}})))), run_loop($fp_children$(rest_0, definition_0, source_0, route_0, ((index_0 + 1) >>> 0)))]);
   }
 }
 
@@ -15452,30 +15564,29 @@ function $dg_lpad$(s_0, width_0) {
   return (x_4 + s_0);
 }
 
-function $fp_origin$(t_0, definition_0, source_0, route_0) {
-  const text_0 = source_0["source"];
-  const tokens_0 = source_0["tokens"];
-  const x_0 = run_loop($String$eq$(run_loop($tg$(t_0)), "Ref"));
-  const x_1 = run_loop($String$eq$(run_loop($tg$(t_0)), "ADT"));
-  const x_2 = (x_0 || x_1);
-  const x_3 = run_loop($String$eq$(run_loop($tg$(t_0)), "Ctr"));
-  const x_4 = run_loop($ix$(t_0));
-  return run_jump($f_choose$, [run_loop($Bool$and$((x_2 || x_3), (x_4 >= 65536))), run_clo((x_5) => {
-  const x_6 = run_loop($ix$(t_0));
-  const x_7 = run_loop($ix$(t_0));
-  return run_jump($fp_at_token$, [t_0, definition_0, text_0, run_loop($fp_find_token$(tokens_0, (65536 === 0 ? 0 : (x_6 / 65536) >>> 0), (65536 === 0 ? x_7 : x_7 % 65536))), route_0]);
-}), run_clo((x_8) => {
-  return {$: "Nil"};
-})]);
-}
-
-function $fp_children$(terms_0, definition_0, source_0, route_0, index_0) {
-  if (terms_0.$ === "Nil") {
+function $fp_at_token$(t_0, definition_0, text_0, tokens_0, route_0) {
+  if (tokens_0.$ === "Nil") {
     return {$: "Nil"};
   } else {
-    const term_0 = terms_0["head"];
-    const rest_0 = terms_0["tail"];
-    return run_jump($List$append$, [run_loop($fp_term$(term_0, definition_0, source_0, run_loop($List$append$(route_0, {$: "Con", ["head"]: index_0, ["tail"]: {$: "Nil"}})))), run_loop($fp_children$(rest_0, definition_0, source_0, route_0, ((index_0 + 1) >>> 0)))]);
+    const token_0 = tokens_0["head"];
+    const rest_0 = tokens_0["tail"];
+    return run_jump($fp_token_origin$, [t_0, definition_0, text_0, token_0, route_0]);
+  }
+}
+
+function $fp_find_token$(tokens_0, line_0, column_0) {
+  if (tokens_0.$ === "Nil") {
+    return {$: "Nil"};
+  } else {
+    const token_0 = tokens_0["head"];
+    const rest_0 = tokens_0["tail"];
+    const x_0 = run_loop($f_line$({$: "Con", ["head"]: token_0, ["tail"]: rest_0}));
+    const x_1 = run_loop($f_col$({$: "Con", ["head"]: token_0, ["tail"]: rest_0}));
+    return run_jump($f_choose$, [run_loop($Bool$and$((x_0 === line_0), (x_1 === column_0))), run_clo((x_2) => {
+    return {$: "Con", ["head"]: token_0, ["tail"]: rest_0};
+}), run_clo((x_3) => {
+    return run_jump($fp_find_token$, [rest_0, line_0, column_0]);
+})]);
   }
 }
 
@@ -16706,30 +16817,14 @@ function $dg_template_open$(book_0, d_0, ty_0, body_0, lhs_0, n_0, name_0) {
   return run_jump($dg_template$, [run_loop($book_put$(book_0, {$: "KDef", ["name"]: name_0, ["kind"]: "Def", ["arity"]: 0, ["templates"]: 0, ["typ"]: run_loop($kid$(ty_0, 0)), ["value"]: run_loop($atom$("Absent")), ["ctors"]: {$: "Nil"}, ["native"]: true, ["unsafe"]: false})), d_0, run_loop($subst$(run_loop($kid$(ty_0, 1)), run_loop($ix$(ty_0)), run_loop($ref$(name_0)))), run_loop($kapply$(body_0, run_loop($ref$(name_0)))), run_loop($app$(lhs_0, run_loop($ref$(name_0)))), ((n_0 - 1) >>> 0)]);
 }
 
-function $fp_at_token$(t_0, definition_0, text_0, tokens_0, route_0) {
-  if (tokens_0.$ === "Nil") {
-    return {$: "Nil"};
-  } else {
-    const token_0 = tokens_0["head"];
-    const rest_0 = tokens_0["tail"];
-    return run_jump($fp_token_origin$, [t_0, definition_0, text_0, token_0, route_0]);
-  }
-}
-
-function $fp_find_token$(tokens_0, line_0, column_0) {
-  if (tokens_0.$ === "Nil") {
-    return {$: "Nil"};
-  } else {
-    const token_0 = tokens_0["head"];
-    const rest_0 = tokens_0["tail"];
-    const x_0 = run_loop($f_line$({$: "Con", ["head"]: token_0, ["tail"]: rest_0}));
-    const x_1 = run_loop($f_col$({$: "Con", ["head"]: token_0, ["tail"]: rest_0}));
-    return run_jump($f_choose$, [run_loop($Bool$and$((x_0 === line_0), (x_1 === column_0))), run_clo((x_2) => {
-    return {$: "Con", ["head"]: token_0, ["tail"]: rest_0};
-}), run_clo((x_3) => {
-    return run_jump($fp_find_token$, [rest_0, line_0, column_0]);
-})]);
-  }
+function $fp_token_origin$(t_0, definition_0, text_0, token_0, route_0) {
+  const word_0 = token_0["text"];
+  const line_0 = token_0["f_line"];
+  const column_0 = token_0["f_col"];
+  const kind_0 = token_0["f_kind"];
+  const begin_0 = run_loop($fp_offset$(text_0, 1, 0, line_0, column_0, 0));
+  const x_0 = run_loop($fp_utf16$(word_0));
+  return {$: "Con", ["head"]: {$: "DOrigin", ["definition"]: definition_0, ["term"]: t_0, ["source"]: text_0, ["begin"]: begin_0, ["end"]: ((begin_0 + x_0) >>> 0), ["path"]: route_0}, ["tail"]: {$: "Nil"}};
 }
 
 function $j_projection_slot$(id_0, slots_0) {
@@ -17538,14 +17633,43 @@ function $f_path_parent$(parts_0) {
   }
 }
 
-function $fp_token_origin$(t_0, definition_0, text_0, token_0, route_0) {
-  const word_0 = token_0["text"];
-  const line_0 = token_0["f_line"];
-  const column_0 = token_0["f_col"];
-  const kind_0 = token_0["f_kind"];
-  const begin_0 = run_loop($fp_offset$(text_0, 1, 0, line_0, column_0, 0));
-  const x_0 = run_loop($fp_utf16$(word_0));
-  return {$: "Con", ["head"]: {$: "DOrigin", ["definition"]: definition_0, ["term"]: t_0, ["source"]: text_0, ["begin"]: begin_0, ["end"]: ((begin_0 + x_0) >>> 0), ["path"]: route_0}, ["tail"]: {$: "Nil"}};
+function $fp_offset$(text_0, line_0, column_0, targetLine_0, targetColumn_0, offset_0) {
+  const x_0 = run_loop($String$is_empty$(text_0));
+  const x_1 = run_loop($Bool$and$((line_0 === targetLine_0), (column_0 === targetColumn_0)));
+  return run_jump($f_choose$, [(x_0 || x_1), run_clo((x_2) => {
+  return offset_0;
+}), run_clo((x_3) => {
+  const x_8 = run_loop($Char$to_u32$(run_loop($f_head$(text_0))));
+  const x_11 = run_loop($f_choose$((x_8 > 65535), run_clo((x_9) => {
+  return 2;
+}), run_clo((x_10) => {
+  return 1;
+})));
+  return run_jump($fp_offset$, [run_loop($f_tail$(text_0)), run_loop($f_choose$(run_loop($Char$is_eq$(run_loop($f_head$(text_0)), "\n")), run_clo((x_4) => {
+  return ((line_0 + 1) >>> 0);
+}), run_clo((x_5) => {
+  return line_0;
+}))), run_loop($f_choose$(run_loop($Char$is_eq$(run_loop($f_head$(text_0)), "\n")), run_clo((x_6) => {
+  return 0;
+}), run_clo((x_7) => {
+  return ((column_0 + 1) >>> 0);
+}))), targetLine_0, targetColumn_0, ((offset_0 + x_11) >>> 0)]);
+})]);
+}
+
+function $fp_utf16$(text_0) {
+  return run_jump($f_choose$, [run_loop($String$is_empty$(text_0)), run_clo((x_0) => {
+  return 0;
+}), run_clo((x_1) => {
+  const x_2 = run_loop($Char$to_u32$(run_loop($f_head$(text_0))));
+  const x_5 = run_loop($f_choose$((x_2 > 65535), run_clo((x_3) => {
+  return 2;
+}), run_clo((x_4) => {
+  return 1;
+})));
+  const x_6 = run_loop($fp_utf16$(run_loop($f_tail$(text_0))));
+  return ((x_5 + x_6) >>> 0);
+})]);
 }
 
 function $f_arg_next$(p_0, end_0, acc_0) {
@@ -18192,45 +18316,6 @@ function $sp_name_keys$(ns_0) {
     const x_1 = run_loop($sp_name_keys$(rest_0));
     return (x_0 + x_1);
   }
-}
-
-function $fp_offset$(text_0, line_0, column_0, targetLine_0, targetColumn_0, offset_0) {
-  const x_0 = run_loop($String$is_empty$(text_0));
-  const x_1 = run_loop($Bool$and$((line_0 === targetLine_0), (column_0 === targetColumn_0)));
-  return run_jump($f_choose$, [(x_0 || x_1), run_clo((x_2) => {
-  return offset_0;
-}), run_clo((x_3) => {
-  const x_8 = run_loop($Char$to_u32$(run_loop($f_head$(text_0))));
-  const x_11 = run_loop($f_choose$((x_8 > 65535), run_clo((x_9) => {
-  return 2;
-}), run_clo((x_10) => {
-  return 1;
-})));
-  return run_jump($fp_offset$, [run_loop($f_tail$(text_0)), run_loop($f_choose$(run_loop($Char$is_eq$(run_loop($f_head$(text_0)), "\n")), run_clo((x_4) => {
-  return ((line_0 + 1) >>> 0);
-}), run_clo((x_5) => {
-  return line_0;
-}))), run_loop($f_choose$(run_loop($Char$is_eq$(run_loop($f_head$(text_0)), "\n")), run_clo((x_6) => {
-  return 0;
-}), run_clo((x_7) => {
-  return ((column_0 + 1) >>> 0);
-}))), targetLine_0, targetColumn_0, ((offset_0 + x_11) >>> 0)]);
-})]);
-}
-
-function $fp_utf16$(text_0) {
-  return run_jump($f_choose$, [run_loop($String$is_empty$(text_0)), run_clo((x_0) => {
-  return 0;
-}), run_clo((x_1) => {
-  const x_2 = run_loop($Char$to_u32$(run_loop($f_head$(text_0))));
-  const x_5 = run_loop($f_choose$((x_2 > 65535), run_clo((x_3) => {
-  return 2;
-}), run_clo((x_4) => {
-  return 1;
-})));
-  const x_6 = run_loop($fp_utf16$(run_loop($f_tail$(text_0))));
-  return ((x_5 + x_6) >>> 0);
-})]);
 }
 
 function $f_do_types_at$(monad_0, types_0, ts_0) {

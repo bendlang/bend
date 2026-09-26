@@ -14,13 +14,15 @@ pass, with known diagnostic differences and raw setup failures retained.
 
 ## Immediate frontier
 
-1. S2: implement the committed [provenance consolidation design](../design/phase7/s2_provenance_consolidation.md).
-   Share the loader trace and remove duplicate reparsing/source alignment. Explicit
-   variants and numeric spans are deferred: their complete replacement costs do
-   not yet fit real removals. Require at least 99 lines and 2,444 bytes saved.
-2. S3–S7 remain sequential, with50% and75% overall goals. Keep checked facts,
-   binding changes and backend factoring out of the S2 implementation until their
-   own designs/gates. Prior proven narrow candidates remain available as evidence.
+1. S2 is [complete](../implementation/phase7/s2-report.md): shared provenance trace,
+   135 fewer lines, 15,826 total. Checked/focused/component/exact provenance gates
+   pass; the validated release is installed. Explicit terms/direct spans remain
+   deferred, and no full-source speed or fixed-point claim is added.
+2. S3: design the authoritative structured-checker result before implementation.
+   Revalidate the prior 140-line candidate against the current release. Retained
+   type facts require their own net cost and correctness evidence.
+3. S4–S7 remain sequential. The 50% and 75% milestones are still unachieved and
+   unsupported by the current gross deletion inventory; do not fake their gates.
 
 Parallel agents may review independent parts of the active phase. No future-phase
 source implementation while the current phase is open. Root owns integration,

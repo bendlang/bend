@@ -1,0 +1,251 @@
+{
+  "scope": "Warm in-process public provenance calls on one frozen 61-definition source; no whole-compiler/TS ratio.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/baseline-origins.mjs",
+      "sha256": "2b573c4887735ac339b1feaa0bb7f273583a3ea4dcedcb75e6ceb673e0bcd303"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/candidate-origins.mjs",
+      "sha256": "1b729faa7de88188d88b338aafb1569da011be1a3af840e0099c0777d1bc2097"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase7/s2-evidence/time-provenance.mjs",
+      "sha256": "39b480cd35da9b9cb72bcd3986bf4baeaf717b6506ccfa790e5d554b1b5f8aa3"
+    },
+    {
+      "file": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c"
+    }
+  ],
+  "node": "v24.18.0",
+  "affinity": "Cpus_allowed_list:\t0",
+  "fixture": {
+    "text": "type Flag is Data:\n  On{}\n  Off{}\ndef item0() -> Flag:\n  On{}\ndef item1() -> Flag:\n  On{}\ndef item2() -> Flag:\n  On{}\ndef item3() -> Flag:\n  On{}\ndef item4() -> Flag:\n  On{}\ndef item5() -> Flag:\n  On{}\ndef item6() -> Flag:\n  On{}\ndef item7() -> Flag:\n  On{}\ndef item8() -> Flag:\n  On{}\ndef item9() -> Flag:\n  On{}\ndef item10() -> Flag:\n  On{}\ndef item11() -> Flag:\n  On{}\ndef item12() -> Flag:\n  On{}\ndef item13() -> Flag:\n  On{}\ndef item14() -> Flag:\n  On{}\ndef item15() -> Flag:\n  On{}\ndef item16() -> Flag:\n  On{}\ndef item17() -> Flag:\n  On{}\ndef item18() -> Flag:\n  On{}\ndef item19() -> Flag:\n  On{}\ndef item20() -> Flag:\n  On{}\ndef item21() -> Flag:\n  On{}\ndef item22() -> Flag:\n  On{}\ndef item23() -> Flag:\n  On{}\ndef item24() -> Flag:\n  On{}\ndef item25() -> Flag:\n  On{}\ndef item26() -> Flag:\n  On{}\ndef item27() -> Flag:\n  On{}\ndef item28() -> Flag:\n  On{}\ndef item29() -> Flag:\n  On{}\ndef item30() -> Flag:\n  On{}\ndef item31() -> Flag:\n  On{}\ndef item32() -> Flag:\n  On{}\ndef item33() -> Flag:\n  On{}\ndef item34() -> Flag:\n  On{}\ndef item35() -> Flag:\n  On{}\ndef item36() -> Flag:\n  On{}\ndef item37() -> Flag:\n  On{}\ndef item38() -> Flag:\n  On{}\ndef item39() -> Flag:\n  On{}\ndef item40() -> Flag:\n  On{}\ndef item41() -> Flag:\n  On{}\ndef item42() -> Flag:\n  On{}\ndef item43() -> Flag:\n  On{}\ndef item44() -> Flag:\n  On{}\ndef item45() -> Flag:\n  On{}\ndef item46() -> Flag:\n  On{}\ndef item47() -> Flag:\n  On{}\ndef item48() -> Flag:\n  On{}\ndef item49() -> Flag:\n  On{}\ndef item50() -> Flag:\n  On{}\ndef item51() -> Flag:\n  On{}\ndef item52() -> Flag:\n  On{}\ndef item53() -> Flag:\n  On{}\ndef item54() -> Flag:\n  On{}\ndef item55() -> Flag:\n  On{}\ndef item56() -> Flag:\n  On{}\ndef item57() -> Flag:\n  On{}\ndef item58() -> Flag:\n  On{}\ndef item59() -> Flag:\n  On{}\ndef missing() -> Flag:\n  Unknown\n",
+    "sourceSha256": "11afb945b47f2626e42de8710af4786e7f71339b5b86d6692dca751e751703ba"
+  },
+  "rows": [
+    {
+      "name": "all",
+      "samples": [
+        {
+          "round": 0,
+          "variant": "baseline",
+          "iterations": 5,
+          "milliseconds": 953.508855,
+          "perCallMs": 190.701771,
+          "cpuMs": 953.555
+        },
+        {
+          "round": 0,
+          "variant": "candidate",
+          "iterations": 5,
+          "milliseconds": 747.5237629999992,
+          "perCallMs": 149.50475259999985,
+          "cpuMs": 747.563
+        },
+        {
+          "round": 1,
+          "variant": "candidate",
+          "iterations": 5,
+          "milliseconds": 943.3524350000007,
+          "perCallMs": 188.67048700000015,
+          "cpuMs": 943.368
+        },
+        {
+          "round": 1,
+          "variant": "baseline",
+          "iterations": 5,
+          "milliseconds": 1259.4414350000006,
+          "perCallMs": 251.88828700000013,
+          "cpuMs": 1259.455
+        },
+        {
+          "round": 2,
+          "variant": "baseline",
+          "iterations": 5,
+          "milliseconds": 1223.6330789999993,
+          "perCallMs": 244.72661579999985,
+          "cpuMs": 1223.789
+        },
+        {
+          "round": 2,
+          "variant": "candidate",
+          "iterations": 5,
+          "milliseconds": 962.2112350000007,
+          "perCallMs": 192.44224700000012,
+          "cpuMs": 962.25
+        },
+        {
+          "round": 3,
+          "variant": "candidate",
+          "iterations": 5,
+          "milliseconds": 889.9554370000005,
+          "perCallMs": 177.9910874000001,
+          "cpuMs": 889.99
+        },
+        {
+          "round": 3,
+          "variant": "baseline",
+          "iterations": 5,
+          "milliseconds": 1233.315353,
+          "perCallMs": 246.6630706,
+          "cpuMs": 1233.334
+        }
+      ],
+      "baselineMs": 245.69484319999992,
+      "candidateMs": 183.33078720000015,
+      "ratio": 0.7461727108808941,
+      "regressionGuardPass": true
+    },
+    {
+      "name": "filtered",
+      "samples": [
+        {
+          "round": 0,
+          "variant": "baseline",
+          "iterations": 5,
+          "milliseconds": 860.3955160000005,
+          "perCallMs": 172.0791032000001,
+          "cpuMs": 860.424
+        },
+        {
+          "round": 0,
+          "variant": "candidate",
+          "iterations": 5,
+          "milliseconds": 540.3659129999978,
+          "perCallMs": 108.07318259999957,
+          "cpuMs": 540.384
+        },
+        {
+          "round": 1,
+          "variant": "candidate",
+          "iterations": 5,
+          "milliseconds": 526.3229229999997,
+          "perCallMs": 105.26458459999995,
+          "cpuMs": 526.341
+        },
+        {
+          "round": 1,
+          "variant": "baseline",
+          "iterations": 5,
+          "milliseconds": 898.7971059999982,
+          "perCallMs": 179.75942119999962,
+          "cpuMs": 898.81
+        },
+        {
+          "round": 2,
+          "variant": "baseline",
+          "iterations": 5,
+          "milliseconds": 908.7929169999989,
+          "perCallMs": 181.75858339999976,
+          "cpuMs": 908.799
+        },
+        {
+          "round": 2,
+          "variant": "candidate",
+          "iterations": 5,
+          "milliseconds": 535.7014049999998,
+          "perCallMs": 107.14028099999996,
+          "cpuMs": 535.733
+        },
+        {
+          "round": 3,
+          "variant": "candidate",
+          "iterations": 5,
+          "milliseconds": 562.9642989999993,
+          "perCallMs": 112.59285979999986,
+          "cpuMs": 562.985
+        },
+        {
+          "round": 3,
+          "variant": "baseline",
+          "iterations": 5,
+          "milliseconds": 929.9214839999986,
+          "perCallMs": 185.98429679999973,
+          "cpuMs": 929.911
+        }
+      ],
+      "baselineMs": 180.75900229999968,
+      "candidateMs": 107.60673179999976,
+      "ratio": 0.5953049664514549,
+      "regressionGuardPass": true
+    },
+    {
+      "name": "trace",
+      "samples": [
+        {
+          "round": 0,
+          "variant": "baseline",
+          "iterations": 12,
+          "milliseconds": 297.07588100000066,
+          "perCallMs": 24.75632341666672,
+          "cpuMs": 297.099
+        },
+        {
+          "round": 0,
+          "variant": "candidate",
+          "iterations": 12,
+          "milliseconds": 328.9345639999992,
+          "perCallMs": 27.4112136666666,
+          "cpuMs": 328.961
+        },
+        {
+          "round": 1,
+          "variant": "candidate",
+          "iterations": 12,
+          "milliseconds": 295.74951299999884,
+          "perCallMs": 24.645792749999902,
+          "cpuMs": 295.782
+        },
+        {
+          "round": 1,
+          "variant": "baseline",
+          "iterations": 12,
+          "milliseconds": 321.89823400000023,
+          "perCallMs": 26.824852833333352,
+          "cpuMs": 321.922
+        },
+        {
+          "round": 2,
+          "variant": "baseline",
+          "iterations": 12,
+          "milliseconds": 326.1170280000006,
+          "perCallMs": 27.17641900000005,
+          "cpuMs": 326.133
+        },
+        {
+          "round": 2,
+          "variant": "candidate",
+          "iterations": 12,
+          "milliseconds": 391.15116399999897,
+          "perCallMs": 32.59593033333325,
+          "cpuMs": 391.172
+        },
+        {
+          "round": 3,
+          "variant": "candidate",
+          "iterations": 12,
+          "milliseconds": 293.49297099999967,
+          "perCallMs": 24.457747583333305,
+          "cpuMs": 293.521
+        },
+        {
+          "round": 3,
+          "variant": "baseline",
+          "iterations": 12,
+          "milliseconds": 327.73321999999825,
+          "perCallMs": 27.31110166666652,
+          "cpuMs": 327.754
+        }
+      ],
+      "baselineMs": 27.000635916666702,
+      "candidateMs": 26.02850320833325,
+      "ratio": 0.963995932861219,
+      "regressionGuardPass": true
+    }
+  ],
+  "complete": true,
+  "peakProcessRssKiB": 333680,
+  "memoryScope": "Both APIs share one process; peak RSS is recorded, not a comparative memory result."
+}

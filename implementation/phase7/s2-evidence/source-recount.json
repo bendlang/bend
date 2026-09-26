@@ -1,0 +1,85 @@
+{
+  "kind": "phase5-static-code-size",
+  "created": "2026-09-26T19:22:26.115186+00:00",
+  "baselineCommit": "af3c639f4d52d1f2b36e1057d90e1e5a0ce2c90d",
+  "scope": "Small selected source trees only; generated compiler outputs, build trees, fixtures, documentation and result archives excluded. Host/tool counts provisional until final promotion.",
+  "method": {
+    "physical": "len(UTF8_text.splitlines()); a final newline does not create an extra empty line",
+    "nonblank": "physical lines with nonempty Python str.strip()",
+    "defs": "line-start def, optionally same-line @unsafe",
+    "laws": "line-start law",
+    "types": "line-start type",
+    "extensions": [
+      ".bend",
+      ".c",
+      ".h",
+      ".js",
+      ".mjs",
+      ".py",
+      ".sh",
+      ".ts"
+    ],
+    "productionMembership": "compiler.json modules at each revision",
+    "supportGroups": "top-level tools/conformance/development/private-compiler plus runtime JS/native and other code-extension files under src, individually reported; tests located in those directories included",
+    "experimentalMembership": "code-extension files below tools/performance, including prototype Bend drivers and test helpers",
+    "comparisonLimits": "File size and declarations only; no cyclomatic complexity, semantic complexity or runtime claim."
+  },
+  "manifests": {
+    "baselineSha256": "08c4c055006c8564139a88b793aadfe1dc0b6d100b4c3f2b26ccf8005f8d65c7",
+    "currentSha256": "08c4c055006c8564139a88b793aadfe1dc0b6d100b4c3f2b26ccf8005f8d65c7"
+  },
+  "baseline": {
+    "production": {
+      "files": 59,
+      "bytes": 494957,
+      "physical": 15961,
+      "nonblank": 13343,
+      "defs": 1473,
+      "laws": 1245,
+      "types": 61
+    }
+  },
+  "current": {
+    "production": {
+      "files": 59,
+      "bytes": 491193,
+      "physical": 15826,
+      "nonblank": 13209,
+      "defs": 1460,
+      "laws": 1232,
+      "types": 61
+    }
+  },
+  "productionChanges": [
+    {
+      "file": "selfhost/src/diagnostic/frontend.bend",
+      "before": {
+        "bytes": 12117,
+        "physical": 369,
+        "nonblank": 361,
+        "defs": 34,
+        "laws": 34,
+        "types": 2,
+        "sha256": "2384b57debd845717e7d17294ab1d0ffd3b754ee99bef8cd417b8c41e3295b17"
+      },
+      "after": {
+        "bytes": 8353,
+        "physical": 234,
+        "nonblank": 227,
+        "defs": 21,
+        "laws": 21,
+        "types": 2,
+        "sha256": "3dff9649db9ced1eb6815f6fae3a540797a5fec697ef32b4b10e910ca80a88e3"
+      },
+      "delta": {
+        "bytes": -3764,
+        "physical": -135,
+        "nonblank": -134,
+        "defs": -13,
+        "laws": -13,
+        "types": 0
+      }
+    }
+  ],
+  "currentUnchangedDuringCount": true
+}

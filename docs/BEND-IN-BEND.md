@@ -14,11 +14,12 @@ self-hosting do not establish full diagnostic or proof-checker equivalence.
 Read the [validation boundaries](../selfhost/CONFORMANCE.md) and
 [negative audit](../selfhost/docs/NEGATIVE-COMPATIBILITY.md) before relying on it.
 
-The default compiler retains the consolidated Phase 5 API in
-`selfhost/dist/typed-api.mjs`, freshly rebuilt from the
-[S1 source](../implementation/phase7/s1-report.md) with 548 obsolete lines removed.
-The selected checked and optimized APIs are byte-identical to Phase 5, including
-the maintained, verified string-equality optimization. The
+The default compiler in `selfhost/dist/typed-api.mjs` is freshly rebuilt from
+the [S2 source](../implementation/phase7/s2-report.md): 15,826 Bend lines, down
+683 lines through obsolete-code retirement and shared provenance orchestration.
+The maintained, verified string-equality optimization remains. Accepted compile
+and backend code is unchanged; exact cross-version controls cover the changed
+source-location APIs. The
 [release manifest](../selfhost/dist/release.json) binds the API to its source,
 Base, runtime and host. Historical compiler variants are retained with their
 reports; ordinary use requires no artifact selection.

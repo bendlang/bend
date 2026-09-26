@@ -551,3 +551,16 @@ mock export was repaired; sandbox EPERM and an omitted gated-test environment
 remain preserved attempts. The smaller-source release verifies and ordinary
 check/interpreter/JS smoke passes. No new full-source timing or fixed point is
 claimed. S2 design is next;50%/75% goals are still unachieved.
+
+## 2026-09-26 — S2 shared provenance trace
+
+[S2](../implementation/phase7/s2-report.md) retires duplicate source reparsing and
+origin/event alignment:135 fewer lines,134 fewer nonblank lines,3,764 fewer bytes;
+15,826 total compiler lines. Its bounded design was pushed before implementation.
+Fresh checked build,21focused controls,all components,51harness tests,530new
+cross-version provenance comparisons and204existing diagnostic comparisons pass.
+52of54selected root closures retain identical generated code; changed origin
+routes preserve exact outputs. CPU0 serial provenance medians improve25.4%/40.5%
+for all/filtered loading; existing-trace lookup has no regression. No new whole
+compiler/TS ratio or fixed point is claimed. The usable release is installed and
+all raw evidence preserved. S3 design is next;50%/75% targets remain unmet.

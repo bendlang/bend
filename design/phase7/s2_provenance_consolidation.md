@@ -1,6 +1,7 @@
 # S2: one authoritative loader trace for source provenance
 
-Status: designed before implementation. Baseline: S1 commit `af3c639`,
+Status: completed; see the [S2 report](../../implementation/phase7/s2-report.md).
+Design was committed as `19937a1` before implementation. Baseline: S1 commit `af3c639`,
 15,961 physical lines / 13,343 nonblank lines / 494,957 bytes.
 
 ## Decision and revised scope

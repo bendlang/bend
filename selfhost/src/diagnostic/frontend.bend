@@ -12,44 +12,6 @@ law f_load_origins:
   for +main: String
   for +sources: List<&2,FSource>
   FProvenance
-law fp_graph:
-  for +graph: FGraph
-  for +sources: List<&2,FSource>
-  FProvenance
-law fp_result:
-  for +result: FResult
-  for +done: List<&2,KTerm>
-  for +sources: List<&2,FSource>
-  FProvenance
-law fp_modules:
-  for +done: List<&2,KTerm>
-  for +sources: List<&2,FSource>
-  List<&2,FPSource>
-law fp_module:
-  for +source: FSource
-  List<&2,FPSource>
-law fp_module_parsed:
-  for +text: String
-  for +tokens: List<&2,FToken>
-  for +parsed: FResult
-  List<&2,FPSource>
-law fp_event_sources:
-  for +book: List<&2,KDef>
-  for +source: FPSource
-  List<&2,FPSource>
-law fp_join:
-  for +left: List<&2,FPSource>
-  for +right: List<&2,FPSource>
-  List<&2,FPSource>
-law fp_defs:
-  for +book: List<&2,KDef>
-  for +sources: List<&2,FPSource>
-  List<&2,DOrigin>
-law fp_defs_source:
-  for +d: KDef
-  for +rest: List<&2,KDef>
-  for +sources: List<&2,FPSource>
-  List<&2,DOrigin>
 law fp_def:
   for +d: KDef
   for +source: FPSource
@@ -112,60 +74,7 @@ law fp_offset:
 
 @unsafe
 def f_load_origins(main, sources):
-  fp_graph(f_graph_load(main, "", sources, FGraph{Nil{}, "", Nil{}}, Nil{}), sources)
-@unsafe
-def fp_graph(graph, sources):
-  match graph:
-    case FGraph{book, error, done}:
-      fp_result(f_graph_result_at(graph, sources), done, sources)
-@unsafe
-def fp_result(result, done, sources):
-  match result:
-    case FResult{book, error, imports}:
-      FProvenance{result, f_choose(List<&2,DOrigin>, String.is_empty(error), u => fp_defs(book, fp_modules(done, sources)), u => Nil{})}
-@unsafe
-def fp_modules(done, sources):
-  match done:
-    case Nil{}:
-      Nil{}
-    case Con{entry, rest}:
-      fp_join(fp_modules(rest, sources), fp_module(f_graph_source(nm(entry), sources)))
-@unsafe
-def fp_module(source):
-  fp_module_parsed(f_source_text(source), f_lex(f_source_text(source), 1, 0, 0, Nil{}), f_parse(f_source_text(source)))
-@unsafe
-def fp_module_parsed(text, tokens, parsed):
-  match parsed:
-    case FResult{book, error, imports}:
-      fp_event_sources(book, FPSource{text, tokens})
-@unsafe
-def fp_event_sources(book, source):
-  match book:
-    case Nil{}:
-      Nil{}
-    case Con{d, rest}:
-      Con{source, fp_event_sources(rest, source)}
-@unsafe
-def fp_join(left, right):
-  match left:
-    case Nil{}:
-      right
-    case Con{head, tail}:
-      Con{head, fp_join(tail, right)}
-@unsafe
-def fp_defs(book, sources):
-  match book:
-    case Nil{}:
-      Nil{}
-    case Con{d, rest}:
-      fp_defs_source(d, rest, sources)
-@unsafe
-def fp_defs_source(d, rest, sources):
-  match sources:
-    case Nil{}:
-      Nil{}
-    case Con{source, tail}:
-      List.append(&2,DOrigin, fp_def(d, source), fp_defs(rest, tail))
+  fp_loaded_origins(f_load_graph_trace(main, sources), True{}, "")
 @unsafe
 def fp_def(d, source):
   List.append(&2,DOrigin, fp_term(dt(d), dn(d), source, [0]), List.append(&2,DOrigin, fp_term(dv(d), dn(d), source, [1]), fp_ctors(dc(d), dn(d), source, 0)))
@@ -225,71 +134,26 @@ law f_load_origins_for:
   for +sources: List<&2,FSource>
   for +definition: String
   FProvenance
-law fp_graph_for:
-  for +graph: FGraph
-  for +sources: List<&2,FSource>
-  for +definition: String
-  FProvenance
-law fp_result_for:
-  for +result: FResult
-  for +done: List<&2,KTerm>
-  for +sources: List<&2,FSource>
-  for +definition: String
-  FProvenance
-law fp_defs_for:
-  for +book: List<&2,KDef>
-  for +sources: List<&2,FPSource>
-  for +definition: String
-  List<&2,DOrigin>
-law fp_defs_source_for:
-  for +d: KDef
-  for +rest: List<&2,KDef>
-  for +sources: List<&2,FPSource>
-  for +definition: String
-  List<&2,DOrigin>
-
 @unsafe
 def f_load_origins_for(main, sources, definition):
-  fp_graph_for(f_graph_load(main, "", sources, FGraph{Nil{}, "", Nil{}}, Nil{}), sources, definition)
-@unsafe
-def fp_graph_for(graph, sources, definition):
-  match graph:
-    case FGraph{book, error, done}:
-      fp_result_for(f_graph_result_at(graph, sources), done, sources, definition)
-@unsafe
-def fp_result_for(result, done, sources, definition):
-  match result:
-    case FResult{book, error, imports}:
-      FProvenance{result, f_choose(List<&2,DOrigin>, String.is_empty(error), u => fp_defs_for(book, fp_modules(done, sources), definition), u => Nil{})}
-@unsafe
-def fp_defs_for(book, sources, definition):
-  match book:
-    case Nil{}:
-      Nil{}
-    case Con{d, rest}:
-      fp_defs_source_for(d, rest, sources, definition)
-@unsafe
-def fp_defs_source_for(d, rest, sources, definition):
-  match sources:
-    case Nil{}:
-      Nil{}
-    case Con{source, tail}:
-      List.append(&2,DOrigin, f_choose(List<&2,DOrigin>, String.eq(dn(d), definition), u => fp_def(d, source), u => Nil{}), fp_defs_for(rest, tail, definition))
+  f_loaded_origins_for(f_load_graph_trace(main, sources), definition)
 
-# Reuse this request's loader trace. Only the defining module is lexed; no
-# source is reparsed and no dependency graph is reconstructed for presentation.
+# One trace owns module order and declaration counts for both origin APIs.
+# Filtered lookup lexes only matching modules; source is never reparsed here.
 law f_loaded_origins_for:
   for +trace: FLoadTrace
   for +definition: String
   FProvenance
-law fp_loaded_reverse:
-  for +done: List<&2,KTerm>
-  for +acc: List<&2,KTerm>
-  List<&2,KTerm>
+law fp_loaded_origins:
+  for +trace: FLoadTrace
+  for +all: Bool
+  for +definition: String
+  FProvenance
 law fp_loaded_modules:
   for +done: List<&2,KTerm>
   for +book: List<&2,KDef>
   for +sources: List<&2,FSource>
+  for +all: Bool
   for +definition: String
   List<&2,DOrigin>
 law fp_loaded_take:
@@ -307,30 +171,30 @@ law fp_loaded_has:
 law fp_loaded_module:
   for +book: List<&2,KDef>
   for +source: FSource
+  for +all: Bool
   for +definition: String
   List<&2,DOrigin>
 law fp_loaded_defs:
   for +book: List<&2,KDef>
   for +source: FPSource
+  for +all: Bool
   for +definition: String
   List<&2,DOrigin>
 
 @unsafe
 def f_loaded_origins_for(trace, definition):
+  fp_loaded_origins(trace, False{}, definition)
+@unsafe
+def fp_loaded_origins(trace, all, definition):
   match trace:
     case FLoadTrace{+result, done, sources}:
-      fp_loaded_result(result, done, sources, definition)
+      fp_loaded_result(result, done, sources, all, definition)
 @unsafe
-def fp_loaded_reverse(done, acc):
-  match done:
-    case Nil{}: acc
-    case Con{head, tail}: fp_loaded_reverse(tail, Con{head, acc})
-@unsafe
-def fp_loaded_modules(done, book, sources, definition):
+def fp_loaded_modules(done, book, sources, all, definition):
   match done:
     case Nil{}: Nil{}
     case Con{+entry, rest}:
-      List.append(&2, DOrigin, fp_loaded_module(fp_loaded_take(book, ix(entry)), f_graph_source(nm(entry), sources), definition), fp_loaded_modules(rest, fp_loaded_drop(book, ix(entry)), sources, definition))
+      List.append(&2, DOrigin, fp_loaded_module(fp_loaded_take(book, ix(entry)), f_graph_source(nm(entry), sources), all, definition), fp_loaded_modules(rest, fp_loaded_drop(book, ix(entry)), sources, all, definition))
 @unsafe
 def fp_loaded_take(book, count):
   match book:
@@ -347,23 +211,24 @@ def fp_loaded_has(book, definition):
     case Nil{}: False{}
     case Con{head, tail}: f_choose(Bool, String.eq(dn(head), definition), u => True{}, u => fp_loaded_has(tail, definition))
 @unsafe
-def fp_loaded_module(book, source, definition):
-  f_choose(List<&2,DOrigin>, fp_loaded_has(book, definition), u => fp_loaded_defs(book, FPSource{f_source_text(source), f_lex(f_source_text(source), 1, 0, 0, Nil{})}, definition), u => Nil{})
+def fp_loaded_module(book, source, all, definition):
+  f_choose(List<&2,DOrigin>, f_choose(Bool, all, u => True{}, u => fp_loaded_has(book, definition)), u => fp_loaded_defs(book, FPSource{f_source_text(source), f_lex(f_source_text(source), 1, 0, 0, Nil{})}, all, definition), u => Nil{})
 @unsafe
-def fp_loaded_defs(book, source, definition):
+def fp_loaded_defs(book, source, all, definition):
   match book:
     case Nil{}: Nil{}
     case Con{head, tail}:
-      List.append(&2, DOrigin, f_choose(List<&2,DOrigin>, String.eq(dn(head), definition), u => fp_def(head, source), u => Nil{}), fp_loaded_defs(tail, source, definition))
+      List.append(&2, DOrigin, f_choose(List<&2,DOrigin>, all || String.eq(dn(head), definition), u => fp_def(head, source), u => Nil{}), fp_loaded_defs(tail, source, all, definition))
 
 law fp_loaded_result:
   for +result: FResult
   for +done: List<&2,KTerm>
   for +sources: List<&2,FSource>
+  for +all: Bool
   for +definition: String
   FProvenance
 @unsafe
-def fp_loaded_result(result, done, sources, definition):
+def fp_loaded_result(result, done, sources, all, definition):
   match result:
     case FResult{book, error, imports}:
-      FProvenance{result, f_choose(List<&2,DOrigin>, String.is_empty(error), u => fp_loaded_modules(fp_loaded_reverse(done, Nil{}), book, sources, definition), u => Nil{})}
+      FProvenance{result, f_choose(List<&2,DOrigin>, String.is_empty(error), u => fp_loaded_modules(List.reverse(&2,KTerm,done), book, sources, all, definition), u => Nil{})}
