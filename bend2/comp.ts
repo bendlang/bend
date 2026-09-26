@@ -2810,30 +2810,44 @@ function emit_chain(fl: File, cond: (i: number) => string,
 // =======
 
 // Hand-written C and JS name ids as CID(k) and FID(k): k in the source's
-// namespace, else as is. An effect source is read once, in one namespace.
+// namespace, else as is. Only declarations loaded by the source's own file
+// or its imports may be named: the entry file is parsed later and must not
+// change a foreign source's ABI.
 
-function c_ids(fl: File, src: string, m = ""): string {
+function c_ids(fl: File, src: string, m = "", own?: Set<Name>,
+  visible?: Set<Name>): string {
   return src.replace(/\b([CF]ID)\(([\w./~-]+)\)/g, (_, p, k) => {
-    const q = [m === "" ? k : m + "." + k, k].find((q) => q in fl.book.ctrs
-      || q in fl.book.tlds || IDS.has(p + "_" + q))
-      ?? die(p + "(" + k + ") names no constructor or def");
+    const q = [m === "" ? k : m + "." + k, k].find((q, i) => {
+      const fam = q in fl.book.ctrs ? Bend.book_fam(fl.book, q) : q;
+      const scope = m !== "" && i === 0 ? own : visible;
+      return (q in fl.book.ctrs || q in fl.book.tlds || IDS.has(p + "_" + q))
+        && (scope === undefined || scope.has(fam));
+    }) ?? die(p + "(" + k + ") names no constructor or def");
     return fl.js ? JSON.stringify(q) : name_id(p + "_", q);
   });
 }
 
 function effect_srcs(fl: File, ext: string, miss: string): string[] {
-  const seen = new Map<string, string>();
+  const seen = new Map<string, { m: string; own: Set<Name>; visible: Set<Name> }>();
   for (const [k, tld] of done_defs(fl, def_foreign)) {
     const path = fs.realpathSync(tld.i!.find((x) => x.endsWith(ext))
       ?? die(miss + k));
     const m = tld.m ?? "";
-    if ((seen.get(path) ?? m) !== m) {
-      die(path + " is imported from two namespaces, '" + seen.get(path)
-        + "' and '" + m + "'");
+    if (seen.has(path)) {
+      if (seen.get(path)!.m !== m) {
+        die(path + " is imported from two namespaces, '" + seen.get(path)!.m
+          + "' and '" + m + "'");
+      }
+      continue;
     }
-    seen.set(path, m);
+    const src = tld.T.s?.src ?? die("no source for foreign def " + k);
+    const own = new Set(fl.book.order.filter((q) => fl.book.tlds[q].T.s?.src === src));
+    const end = fl.book.order.findLastIndex((q) => own.has(q));
+    const visible = new Set(fl.book.order.slice(0, end + 1));
+    seen.set(path, { m, own, visible });
   }
-  return [...seen].map(([p, m]) => c_ids(fl, fs.readFileSync(p, "utf8"), m));
+  return [...seen].map(([p, { m, own, visible }]) =>
+    c_ids(fl, fs.readFileSync(p, "utf8"), m, own, visible));
 }
 
 // C
