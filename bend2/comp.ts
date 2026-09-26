@@ -5506,7 +5506,17 @@ OUTLINE void io_sync(void) {
   }
 }
 
+// A String is a chain of Unicode scalar values (lit_of), so a code past
+// U+10FFFF or a surrogate is the refusal the interpreter and the JS
+// lane already make, spelled as char_new spells it. show_chr escapes
+// what it is given, so only a printed String brings one here.
 static u64 io_utf8(char* buf, u64 c) {
+  if (c > 0x10FFFF || (c >= 0xD800 && c <= 0xDFFF)) {
+    fflush(stdout);
+    fprintf(stderr, "bend: %llu is not a Unicode scalar value\n",
+      (unsigned long long)c);
+    _exit(1);
+  }
   u64 k = c < 0x80 ? 1 : c < 0x800 ? 2 : c < 0x10000 ? 3 : 4;
   for (u64 i = k; i > 1; i -= 1) {
     buf[i - 1] = (char)(0x80 | (c & 0x3F));
