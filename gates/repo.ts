@@ -40,6 +40,7 @@ allow("flake.nix", 1500);
 allow("bend2/base.bend", 32000);
 allow("bend2/bend.ts", 44000);
 allow("bend2/comp.ts", 64000);
+allow("bend2/dts.ts", 4000);
 allow("bend2/main.ts", 10000);
 allow("bend2/safe.ts", 20000);
 allow("bend2/bendtt.lean", 64000);
