@@ -3628,6 +3628,7 @@ static u64    ALC[CUBE_T + 1][3 * NCLS_ALL] __attribute__((aligned(128)));
 static u32    KEEP_WORDS;
 static u32    CUBE_LOG = 7;
 static u32    bank_lock;
+static _Thread_local u32 heap_hands[NCLS];
 
 static u32             pool_size;
 static u32             pool_row;
@@ -3871,7 +3872,58 @@ INLINE u32 cls_fit(u32 words) {
   return words > 1 ? 32 - CLZ(words - 1) : 0;
 }
 
+#if !DEVICE
+// Sort a parked generation by address. The pass over each byte of the
+// slot index is linear and uses no scratch heap; the ordinary alloc/free
+// path still only changes the HOT chain's head.
+OUTLINE void heap_order(Env e, u32 cls) {
+  u64 heads[256] = {0};
+  u64 tails[256];
+  u64 first = ALC_AT(e, cls);
+  u64 bits = 0;
+  for (u32 shift = 0;; shift += 8) {
+    for (u64 loc = first; loc;) {
+      u64 next = e.mem[loc];
+      u32 b = (loc >> shift) & 255;
+      if (heads[b]) {
+        e.mem[tails[b]] = loc;
+      } else {
+        heads[b] = loc;
+      }
+      tails[b] = loc;
+      if (shift == 0) {
+        bits |= loc;
+      }
+      loc = next;
+    }
+    u64 end = 0;
+    for (u32 b = 0; b < 256; b += 1) {
+      if (heads[b]) {
+        if (end) {
+          e.mem[end] = heads[b];
+        } else {
+          first = heads[b];
+        }
+        end = tails[b];
+        heads[b] = 0;
+      }
+    }
+    e.mem[end] = 0;
+    if ((bits >> (shift + 8)) == 0) {
+      break;
+    }
+  }
+  ALC_AT(e, cls) = first;
+}
+#endif
+
 OUTLINE void heap_hand(Env e, u32 cls) {
+#if !DEVICE
+  // Larger slots span pages; order smaller slots every fourth handoff.
+  if (cls < NCLS && (++heap_hands[cls] & 3) == 0) {
+    heap_order(e, cls);
+  }
+#endif
   u64 cold = ALC_COLD(e, cls);
   if (cold) {
     bank_push(e.mem, cls, cold);

@@ -626,6 +626,10 @@ jump, and a parallel call creates a join task plus one task per call, which the
 scheduler deals across CPU or GPU lanes. `paper/BendRT.pdf` has the design and
 the benchmarks.
 
+On the CPU, every fourth full free generation of small nodes is returned to
+address order before reuse. Repeated string and tree construction stays local
+even when short-lived allocations interleave their cells. GPU reuse is unchanged.
+
 Bend's theory has one universe and no positivity check: `Type : Type` holds,
 and a datatype may recurse on the left of an arrow. What keeps this consistent
 is a wall between two checking modes. Code that runs is checked *live*; types,
