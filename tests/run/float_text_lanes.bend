@@ -3,7 +3,8 @@
 # 16777217.00000000001, to the near side, and the largest decimal under
 # the overflow threshold as inf), takes ASCII space only (NBSP once read
 # as 1), and show rounds a decimal tie to even (23577.5625 once printed as
-# 23577.563)
+# 23577.563) and checks its text with that same rounding (7.0385313e-26
+# once printed as 7.038531e-26)
 import Base
 
 def bits(m: Maybe<&2, F32>) -> String:
@@ -21,8 +22,9 @@ def main.out() -> String:
     ++ (" " ++ bits(F32.read(" \t\u{b}\u{c}\r\n1")))
     ++ (" " ++ F32.show(23577.5625))
     ++ (" " ++ F32.show(F32.neg(2983783.25)))
+    ++ (" " ++ F32.show(Maybe.default(&2, F32, F32.read("7.0385313e-26"), 0.0)))
 
 def main() -> IO(Unit):
   IO.print(main.out())
 
-#|1266679809 2139095039 2147483649 None 1065353216 23577.562 -2983783.2
+#|1266679809 2139095039 2147483649 None 1065353216 23577.562 -2983783.2 7.0385313e-26

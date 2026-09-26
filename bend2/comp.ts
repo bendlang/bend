@@ -533,7 +533,7 @@ function f32_show(x) {
   }
   let q = -1;
   let t = "x";
-  while (q < 8 && Math.fround(Number(t)) !== x) {
+  while (q < 8 && (Number.isSafeInteger(x) ? Math.fround(Number(t)) : f32_round(t)) !== x) {
     t = x.toExponential(++q);
   }
   if (Number(t) !== x && /[13579]e/.test(t) && /5e/.test(x.toExponential(q + 1))) {
@@ -554,21 +554,25 @@ function f32_from_bits(u) {
   return new Float32Array(new Uint32Array([u]).buffer)[0];
 }
 
+function f32_round(s) {
+  const v = Number(s);
+  const f = Math.fround(v);
+  const g = Number.isFinite(f) ? f : Math.sign(v) * 2 ** 128;
+  const h = 2 * v - g;
+  if (f === v || h - v !== v - g || Math.fround(h) !== h) {
+    return f;
+  }
+  const [, int, frac, exp] = /(\d*)\.?(\d*)(?:e(.*))?$/i.exec(s);
+  const c = dec_cmp(BigInt(int + frac), Number(exp ?? 0) - frac.length, v);
+  return c === 0n || (c > 0n) === (Math.abs(g) > Math.abs(h)) ? f : h;
+}
+
 function f32_read(s) {
   const re = /^[\t-\r ]*[+-]?((\d+\.?\d*|\.\d+)(e[+-]?\d+)?|inf(inity)?|nan)$/i;
   if (!re.test(s)) {
     return {$: "None"};
   }
-  const v = Number(s.replace(/inf\w*/i, "Infinity"));
-  const f = Math.fround(v);
-  const g = Number.isFinite(f) ? f : Math.sign(v) * 2 ** 128;
-  const h = 2 * v - g;
-  if (f === v || h - v !== v - g || Math.fround(h) !== h) {
-    return {$: "Some", value: f};
-  }
-  const [, int, frac, exp] = /(\d*)\.?(\d*)(?:e(.*))?$/i.exec(s);
-  const c = dec_cmp(BigInt(int + frac), Number(exp ?? 0) - frac.length, v);
-  return {$: "Some", value: c === 0n || (c > 0n) === (Math.abs(g) > Math.abs(h)) ? f : h};
+  return {$: "Some", value: f32_round(s.replace(/inf\w*/i, "Infinity"))};
 }
 
 function char_new(code) {
