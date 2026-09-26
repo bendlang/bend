@@ -1,7 +1,9 @@
 # S4 C: remove private continuation boundaries
 
-Status: pre-implementation draft. Start source work only after B's checked build
-and focused boundary controls pass. This remains inside S4; its 50% milestone
+Status: **rejected before implementation** after independent pinned-language
+review. The proposed local-then-match replacement is not supported by the current
+Bend body grammar. The original proposal is retained below as an experiment,
+not an instruction to make those source edits. This remains inside S4; its 50% milestone
 and subsequent S5–S7 gates do not change. A single final stable S4 candidate can
 receive the broad frontend/performance/release gates after its focused units.
 No intermediate candidate is promoted on the strength of a proposed test.
@@ -88,3 +90,22 @@ Record actual counts, source/tool overhead, failed attempts and the accepted or
 rejected outcome in the evolving S4 report. This small reduction does not fund
 the remaining gap to 8,254 lines. Typed tag dispatch, recursive/nested helper
 fusion and checker-owned specialized terms remain separate unbudgeted research.
+
+## Decision after independent review
+
+Fourteen selected helpers inspect a computed result with a match. The pinned
+frontend rejects both matching a local binder and matching a computed expression.
+Constructor destructuring of a computed right-hand side lowers through the same
+restriction; it is not a valid workaround. Thus the proposed `+parsed = ...`
+followed by `match parsed` is invalid, even though ordinary shared scalar locals
+are valid. Constructor field quantities already make the relevant `FParsed`
+fields unrestricted; that was not the blocking issue.
+
+Only `f_ascii_space_code`, `f_adt_fill` and `f_graph_finish_alias` remain directly
+viable without matching a computed value. Their estimated combined saving is
+23 nonblank lines, below the committed 100-line acceptance gate. Do not expand
+the language, add a new eliminator framework or count the original 119-line
+estimate as a saving. Keep all seventeen helpers in this S4 release. The
+[independent review](../../implementation/phase7/s4-evidence/c-review.md) records
+exact source locations and the bounded syntax falsifier. B remains the final
+S4 integration candidate; C contributes a rejected hypothesis, not code.

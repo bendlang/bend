@@ -1,0 +1,57 @@
+{
+  "kind": "S4C-pinned-local-match-falsifier",
+  "complete": true,
+  "pass": true,
+  "rows": [
+    {
+      "id": "existing-helper-boundary",
+      "input": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/c-syntax-falsifier-01/existing-helper-boundary.bend",
+        "sha256": "86e022938cfaec6ea9b177eab7a79e5d05ab5e87030bf17277c58b72d737348a"
+      },
+      "expected": "ok",
+      "actual": "ok",
+      "pass": true
+    },
+    {
+      "id": "local-then-match",
+      "input": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/c-syntax-falsifier-01/local-then-match.bend",
+        "sha256": "150cff58de03c9aeeeb50186d41c8c2f60e2454ac30295b7f42da0285e4cff7b"
+      },
+      "expected": "parse-error",
+      "actual": "parse-error",
+      "diagnostic": "Error:\n- message  : a parameter or field scrutinee (a match cannot scrutinize a local binder: give it its own def)\nLocation:\n10 | def use(+x: Flag) -> Flag:\n11>|   +made = make(x)\n12 |   match made:",
+      "pass": true
+    },
+    {
+      "id": "computed-constructor-destructure",
+      "input": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/c-syntax-falsifier-01/computed-constructor-destructure.bend",
+        "sha256": "0bf183ee91e36587b2b29f98218ce81ea6210af0eca5dc7a19f70889b2686bfe"
+      },
+      "expected": "parse-error",
+      "actual": "parse-error",
+      "diagnostic": "Error:\n- message  : a parameter or field scrutinee (a match cannot scrutinize a computed value: give it its own def)\nLocation:\n10 | def use(+x: Flag) -> Flag:\n11>|   Box{value} = make(x)\n12 |   value",
+      "pass": true
+    }
+  ],
+  "revision": "6018e28ecc67cf1fffc0c20c64b11023474c2df8",
+  "scope": "Tiny pinned TypeScript source loading/checking only. No Bend compiler or generated artifact, timing comparison or language change.",
+  "node": "v24.18.0",
+  "affinity": "Cpus_allowed_list:\t1",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/bend.ts",
+      "sha256": "461e0c5dd12789ea293daf01c1cb5b8504f8dfcf8d38b85744665a77ecc63168"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/c-syntax-falsifier-01/runner.mjs",
+      "sha256": "7cc88c633c07b28024a6491e3a8e5c74cb064592e3ac014cac9126f05161bfaf"
+    },
+    {
+      "file": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c"
+    }
+  ]
+}
