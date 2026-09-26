@@ -24,10 +24,11 @@ pass, with known diagnostic differences and raw setup failures retained.
    Components,52harness tests and focused controls pass. Late rejection is about
    33.5% faster by request with accepted overhead below0.7%; resource guards pass.
    The validated release is installed and raw evidence preserved.
-3. S4: design frontend/book-state consolidation and confront the remaining7,433
-   lines to the50% milestone before a broad rewrite. The existing candidate
-   inventory is insufficient. No source formatting or scope migration may fake
-   that milestone. S5–S7 remain sequential behind the actual milestone gate.
+3. S4: execute the [bounded design](../design/phase7/s4_frontend_book_consolidation.md).
+   First test 425 fixed-order law/definition consolidations, with one binder per
+   line and no new assembler logic. Then recost concrete loader/error/helper
+   consolidation. Current audited budgets do not cover another 7,433 lines; the
+   phase stays open above 8,254. S5–S7 remain behind the actual milestone gate.
 
 Parallel agents may review independent parts of the active phase. No future-phase
 source implementation while the current phase is open. Root owns integration,

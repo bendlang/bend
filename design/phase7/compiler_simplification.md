@@ -396,6 +396,8 @@ do not delete annotation to meet the line budget.
 
 ### S4 — Simplify frontend and book state; reach 50%
 
+**S3 evidence revision:** the [bounded S4 design](s4_frontend_book_consolidation.md) tests fixed-order declaration consolidation and specific frontend/book duplicates. Its audited savings do not cover the remaining 7,433 lines. Validated increments may be published, but S4 stays open above 8,254 lines; no 50% claim follows from formatting or an incomplete budget.
+
 Consolidate repeated declaration/expression state, loader/elaborator bookkeeping,
 error transports and repeated book conversions around the S2/S3 contracts.
 One component owns each transformation and its result. Evaluate a direct source
