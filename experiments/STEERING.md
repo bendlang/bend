@@ -14,10 +14,10 @@ pass, with known diagnostic differences and raw setup failures retained.
 
 ## Immediate frontier
 
-1. S2: write and freeze a bounded explicit-term/provenance design before code.
-   S0 found only675 gross lines before replacement; the old2,500-line allocation
-   is unsupported. Start with a falsifiable end-to-end slice and account for all
-   variants, metadata, bridges and host costs. No increase can complete a phase.
+1. S2: implement the committed [provenance consolidation design](../design/phase7/s2_provenance_consolidation.md).
+   Share the loader trace and remove duplicate reparsing/source alignment. Explicit
+   variants and numeric spans are deferred: their complete replacement costs do
+   not yet fit real removals. Require at least 99 lines and 2,444 bytes saved.
 2. S3–S7 remain sequential, with50% and75% overall goals. Keep checked facts,
    binding changes and backend factoring out of the S2 implementation until their
    own designs/gates. Prior proven narrow candidates remain available as evidence.

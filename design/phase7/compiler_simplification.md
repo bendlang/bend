@@ -342,6 +342,8 @@ byte-identical representative output is an additional deletion-only control.
 
 ### S2 — Make terms and source ownership explicit
 
+**S0/S1 evidence revision:** execute the bounded [S2 provenance consolidation](s2_provenance_consolidation.md) first, with a net 99-line/2,444-byte minimum reduction and 15,862-line ceiling. The original explicit-term/direct-span migration and 13,500-line forecast below remain deferred hypotheses, not completed work or supported savings. This revision does not lower the 50%/75% milestone requirements.
+
 First prove a small slice inside this phase: parse, check, interpret and emit JS
 and native code for a dependent application, affine/erased argument, ADT match,
 template instance, imported name and located rejection. Keep the production
