@@ -1,0 +1,82 @@
+# Bounded numeric occurrence representation
+
+This proposal follows two failed 5% accepted-cost guards in P6-004. The current
+prototype repairs 112 missing excerpts, but adds 54.2% to Base JSON and about
+6–11% to the frozen accepted request. Do not broaden diagnostic coverage until
+a representation passes the existing common-path gate.
+
+## Representation and ownership
+
+Use ABI2 `KTerm.origin: U32` as its seventh independent field. Zero is unknown.
+A positive value is an occurrence ID in this compilation request, assigned as
+`sourceRangeStart + zeroBasedUnicodeCodepointOffset`. It is neither a semantic
+binder ID nor a structural hash. Each supplied source range has a positive
+start, exclusive end, canonical source path and exact source text. Ranges are
+nonoverlapping, and repeated aliases of one canonical physical source reuse the
+same range and parse. Substitution inserts the replacement's occurrence ID;
+alpha-renaming and semantic-preserving rebuilds keep the original occurrence
+ID. Generated nodes use zero. All six semantic fields retain their contract.
+
+This removes all per-term KOrigin objects and repeated module path strings.
+An approximate Base JSON increase is one numeric `origin` property per KTerm
+rather than a nested tagged object/path. No pointer-identity promise or global
+constructor interning is needed. Exact size and allocation measurements are
+required; estimates are not performance evidence.
+
+## Range lifetime and APIs
+
+The existing host already discovers canonical files and supplies source values.
+It allocates ranges before parsing each newly discovered physical file, using
+its UTF-16 length plus one as a conservative upper bound on the Unicode
+codepoint offsets. A validated Base cache reserves range start 1 and records
+its exclusive end; later source ranges begin at that end. A cold nonseeded
+request starts at 1. Cached Base identities, source bytes and reserved end are
+verified together. No range is reused for another source within that request.
+Range addition must be checked for U32 overflow before parsing, and malformed,
+overlapping or out-of-range externally supplied intervals must be rejected by
+an explicit validation boundary. Do not silently wrap or hash a path.
+
+Add explicit located and parsed-located FSource variants and indexed parse
+entry points. Existing FSource/FParsedSource constructors and old `f_parse`
+remain supported with unknown origins. New indexed APIs carry the source range
+explicitly. The new host uses them only when ABI2 is advertised, retaining
+old-compiler fallbacks. Source provenance outside this new explicit context is
+unknown, never guessed from another request's numeric ID. Existing old pure
+loader calls retain their behavior; there is no eager parse of unvisited files.
+The unreleased ABI1 prototype remains frozen evidence, not a supported public
+release layout.
+
+The loader's existing FLoadTrace retains each located source and range. Failure
+rendering resolves the selected occurrence ID to exactly one range, subtracts
+the start to obtain its source offset, and computes the line/column once.
+Multiline strings, comments, non-BMP characters and CR/LF controls must verify
+that the lexer advances the offset in Unicode codepoints. No source reparse or
+literal/structural matching is introduced. The old retained-token fallback can
+remain for uncovered parser constructs, per error frame, after direct lookup.
+
+## Bounded implementation and gates
+
+Keep the known version3 parser attachment/propagation sites; only replace the
+metadata representation, allocation and lookup. Update the lexer cursor with a
+single cumulative codepoint offset, including scanned comment lengths, scanned
+words, strings and symbols. Preserve the independent multiline cursor fix.
+Legacy unlocated lexing may clear token-origin metadata in one linear wrapper;
+the normal new host takes the indexed path. Direct primitive constructors
+replace kt_origin's object argument. All KTerm rebuilds copy the integer.
+
+Touched boundaries are core KTerm/constructors and their already inventoried
+patterns, lexer/parser entry points, FSource accessors/parse dispatch, loader
+trace source-map assembly, diagnostic direct lookup and versioned host/cache
+adapters. Do not change checking, semantic equality or diagnostic selection.
+
+First require a checked ABI build and small falsifiers: identical tokens from
+two files, repeated equal terms within one file, beta replacement, imported
+source ownership, seed/cold range allocation, alias deduplication, unknown
+origins, exact endpoints/overflow, comments and non-BMP/multiline text. Then
+repeat all 307 diagnostics, the independent lexer controls and default21.
+Count actual allocations, serialized cache and live graph size. Only after
+these pass, freeze a new four-process ABBA using the same control, core source,
+exact output oracle and both-opposite-pairs 5% request/process guard. Request a
+shared exclusive window. Keep every failure and do not rerun failed timings.
+
+This is a representation proposal for root review, not an implemented result.

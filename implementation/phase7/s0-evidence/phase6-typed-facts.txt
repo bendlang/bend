@@ -1,0 +1,54 @@
+# Exact typing-fact opportunities on the current release
+
+The P6-007 disposable counter run successfully checks and compiles the frozen
+60,909-byte compiler-core workload with the exact expected138,371-byte output
+(SHA-256 `016a5cedeb7e2…`). All recorded inputs remain unchanged; peak RSS is
+509,368KiB for this instrumented run. This is an attribution experiment, not a
+speed measurement or a new compiler artifact. An initial missing parent-directory
+setup failure occurred before compiler execution and is retained.
+
+| Phase/function | Calls | Repeated exact argument identities |
+| --- | ---: | ---: |
+| Checking / weak-head normalization |172,289|64,023|
+| Annotation / weak-head normalization |154,116|64,724|
+| Annotation / type reconstruction |1,205|0|
+| Annotation / application-spine reconstruction |2,817|0|
+| Layout / weak-head normalization |5,630|2,005|
+| Emission / weak-head normalization |7,695|2,386|
+
+Normalization keys include the actual immutable book and term. Annotation keys
+also include the actual lexical context. The separate count of a term seen in
+another phase deliberately ignores a possibly changed book and is not a valid
+reuse claim. `check`/`infer` counters are call counts only; the tool does not claim
+to reduce their full environment/quantity/template dependencies to cache keys.
+
+These counts argue against adding a generic type cache. Existing application-spine
+work already reconstructs each observed type once. Many normalization repeats are
+literal `All`, `ADT` and constructor heads with little work to save. The earlier
+[normalization shortcut](../phase4/analysis-normalization.md) and
+[pair-cache rejection](../phase4/private-wnf-memo.md) already investigated that
+mechanism; a high hit count does not overturn their measured results.
+
+There is a more specific opportunity:59,427 of67,727 checker calls visit
+constructors, while annotation again traverses native scalar bit trees. The JS
+backend's existing literal recognizer then collapses canonical words and its
+layout/emission walks stop at those literals. A new P6-012 experiment will test
+skipping only redundant child annotations for checked native U32/F32 literals,
+through an explicit JS-only annotation entry. Existing public annotation entries
+and native lowering will retain their old complete graphs. This is a distinct
+algorithmic intervention, with expected IR differences stated before testing,
+not a relabeling of failed exact-annotation or memoization experiments.
+
+Broad reuse of checker types across specialization remains deferred until there
+is a valid dependency contract. Chronological checking and final specialized
+annotation use different books; a term/name-only cache would conflate them.
+The P6-008 structured-error handoff separately reuses an already authoritative
+failure without such cross-book assumptions. No positive-path speedup has yet
+been measured from P6-007 itself.
+
+- [Plan](../../experiments/phase6/P6-007-typed-fact-reuse.md)
+- Counter tool: `selfhost/tools/performance/phase6/typed-fact-counts.mjs`
+- Current raw evidence: `selfhost/build/phase6/campaign/typed-facts/counts-01/`
+- Durable evidence manifest will be linked at the next preservation checkpoint.
+
+The frozen raw attribution run and consumed compiler/tool files are retained in the [shared root experiment capsule](structured-checker-evidence/manifest.json).

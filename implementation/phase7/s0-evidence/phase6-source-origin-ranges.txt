@@ -1,0 +1,81 @@
+# Numeric source-occurrence ranges (ABI2)
+
+This is the bounded representation redesign after the two rejected ABI1 pilots.
+The checked ABI2 compiler preserves all 307 complete candidate observations:
+112 repaired excerpts, 141 retained prior exact negatives, 16 custom exact
+controls, and the same 38 remaining differences. Its initial Base cache is
+2,800,678 bytes, **9.70% above** the 2,553,079-byte lexer-only control, versus
+54.2% above for ABI1. Controlled accepted cost is pending; this is not yet a
+promotion decision. The experiment was preregistered in
+[P6-004-origin-ranges.md](../../experiments/phase6/P6-004-origin-ranges.md).
+
+## Representation and supported boundary
+
+`compiler_origin_abi() == 2` identifies a seven-field KTerm whose `origin` is a
+U32. Zero means unknown. A positive value is the request's source-range start
+plus a Unicode codepoint offset. It never participates in semantic identity,
+fresh-ID bounds or semantic children. Substitution uses the replacement's
+occurrence, alpha-renaming preserves occurrence, and generated nodes use zero.
+The range table lives with the exact canonical source text in FLoadTrace.
+UTF-16 conversion happens only for the selected diagnostic span.
+
+These new private entry points have an explicit checked-boundary precondition:
+
+| Entry point | Required ownership contract |
+| --- | --- |
+| `f_parse_indexed(start, source)` | Host has reserved a positive, nonoverflowing disjoint interval for these exact source bytes. The returned graph belongs to that interval. |
+| `f_source_located(name, path, text, start, end)` | Canonical source path/text and interval match the request's validated range table; used for the cached Base source. |
+| `f_source_parsed_located(name, path, text, start, end, parsed)` | Every nonzero KTerm/FToken occurrence in `parsed` lies in this source's actual codepoint extent, not merely its UTF-16 reservation. |
+
+The supported host checks safe integers before U32 conversion, interval
+nonoverlap and every external parsed occurrence. It rejects out-of-range,
+fractional and overflowing values. Private raw ADTs bypassing that boundary
+are not a supported alternative. Existing `f_parse`, `FSource` and
+`FParsedSource` paths retain unlocated parsing and do not guess an owner.
+Indexed parse results must use their matching located-source context.
+
+A Base cache reserves start 1 and stores its exclusive end and codepoint
+extent. Version3 cache metadata is bound to compiler hash, Base hash and
+canonical source path. Cached book hashes and actual term origins are checked
+before reuse. New request sources begin after the reserved Base interval;
+cold requests begin at 1. Canonical aliases share their parse and interval.
+The host retains the original source text for each physical parse and rejects
+changed bytes on a later alias visit.
+
+## Falsifiers and intermediate failures
+
+The first ABI2 compiler build succeeded, but the existing development launcher
+rejected cacheversion3. `origin-attempt-04` preserves that infrastructure failure.
+The isolated launcher now validates the explicit new cache schema and bindings;
+it does not silently accept an unknown cache format. Attempts05/06 are genuine
+checked builds with the same API bytes.
+
+Direct controls pass 23/23 for representation/propagation and 68/68 for range,
+codepoint and boundary behavior. They cover CRLF and astral text inside strings
+and comments, all lexer token offsets, legacy unknown origins, UTF-16 spans,
+exclusive interval ends, overlapping ranges and forged KTerm/FToken IDs.
+Fifteen additional controls pass for cold versus seeded source ownership,
+identical six-field loaded books, exact imported diagnostics, canonical aliases,
+cache-range tampering, forged cached origins with recomputed book hashes, and
+forged parsed results through actual discovery.
+
+A stronger alias falsifier initially failed: changing one canonical file to
+same-length text between two alias visits reused its first parse with the second
+text. The failed observation is `origin-alias-race-01`. The small host repair
+stores and verifies original text with the physical parse; the same falsifier
+now rejects the change (`origin-alias-race-02`). This did not alter the 307-case
+coverage target or add a diagnostic-matching heuristic.
+
+ABI1 source, failed regression and both failed timings remain in the separate
+[source-provenance-evidence](source-provenance-evidence/manifest.json) capsule.
+
+## Allocation and retained size
+
+The disposable instrumented core workload allocates 937,336 KTerms versus
+928,512 in the lexer-only control, **0.95% more**. ABI2 allocates no KOrigin
+objects. ABI1 version3 had the same KTerm count plus 531,353 KNoOrigin and
+25,997 KSourceOrigin allocations. Both control and ABI2 retain 89,318 unique
+KTerms, with identical counts of list/definition nodes and an identical hash
+of the six semantic fields. Loaded-book JSON is 12,275,871 versus 11,229,106
+bytes (**9.32% more**), compared with 15,481,701 for ABI1. These are allocation
+and size results, not elapsed-time measurements.

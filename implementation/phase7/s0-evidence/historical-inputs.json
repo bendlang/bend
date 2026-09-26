@@ -1,0 +1,42 @@
+{
+  "kind": "unchanged-text-snapshots",
+  "note": "Captured prior worktree reports as plain text; embedded relative links retain original source-file context. Results are historical, not newly executed S0 gates.",
+  "files": [
+    {
+      "source": "implementation/phase6/typed-facts.md",
+      "snapshot": "phase6-typed-facts.txt",
+      "sha256": "ce90a1e1f2bf452015cfebbcc60ab7bbe5f36929c12a6a2e172d73e690acbbd9",
+      "bytes": 3365
+    },
+    {
+      "source": "implementation/phase6/structured-checker.md",
+      "snapshot": "phase6-structured-checker.txt",
+      "sha256": "3d3773f2653903f2236c79855e40de259f8bdfff19124ce56db6d98310b15ff1",
+      "bytes": 5385
+    },
+    {
+      "source": "implementation/phase6/source-provenance.md",
+      "snapshot": "phase6-source-provenance.txt",
+      "sha256": "7da0894c8f2c43120b39f9fff9f60e7f43c5ac57a74595d0d12d17aa09faf6c8",
+      "bytes": 10426
+    },
+    {
+      "source": "implementation/phase6/source-origin-ranges.md",
+      "snapshot": "phase6-source-origin-ranges.txt",
+      "sha256": "54893d94eed5e4dd0163c296baa58aeac0f0c67f615cc0f4ec382e79196c7f9a",
+      "bytes": 5049
+    },
+    {
+      "source": "implementation/phase6/source-provenance-range-proposal.md",
+      "snapshot": "phase6-source-provenance-range-proposal.txt",
+      "sha256": "33209626ae53266115880607e838a224cc0bffdc272d8d77a7b220c64efbe01e",
+      "bytes": 5068
+    },
+    {
+      "source": "experiments/STEERING.md",
+      "snapshot": "phase6-steering-at-start.txt",
+      "sha256": "9508020198ab6fa047823d8a4c76af89062638251d4732908296ba4f18233741",
+      "bytes": 4700
+    }
+  ]
+}

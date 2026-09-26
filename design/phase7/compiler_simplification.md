@@ -4,7 +4,9 @@ Status: design, not an implemented change. Written 2026-09-26 after the user
 redirected work from the interrupted performance/conformance campaign toward
 architectural simplification. This document sets the next implementation order;
 it does not resume the previous campaign's elapsed time budget or promote its
-candidates. Implementation requires a subsequent work assignment.
+candidates. The user has now authorized sequential execution: design, implement
+and report each phase. [S0's completed audit](../../implementation/phase7/s0-report.md)
+supports the first 548-line retirement and records the later budgets as unproven.
 
 The objective is to keep the same compiler purpose and language target while
 progressively reducing maintained source, repeated work and the knowledge needed

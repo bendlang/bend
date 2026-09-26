@@ -1,0 +1,89 @@
+# One authoritative structured checker result
+
+The isolated candidate removes 140 Bend lines and checks a selected rejected
+body once through the host instead of four times. All 459 pinned negative check
+observations remain exactly equal to the released compiler. Late rejection on
+the frozen core workload is about 34% faster by request and 31% by process wall;
+accepted compilation stays within 0.3% of control. This is eligible for combined
+integration, not a promoted release or a new whole-source speed comparison.
+
+## Change and compatibility
+
+The existing KChecked already carries the original failure and trace. Definition
+and template workers now preserve it, and one chronological event worker returns
+the verdict and diagnostic together. Public String APIs project the same error;
+public detailed APIs retain their complete result/book layouts. The existing
+exact-prefix guard still falls back to full checking on any mismatch. The host
+uses one result only with explicit compiler_check_result_abi version 1; old APIs
+retain their old authoritative String verdict and guarded diagnostic replay.
+Base cache validation still invokes check_book.
+
+The three source modules shrink by 17, 29 and 94 physical lines; host support
+adds two. Accepted ADT/foreign legacy String results use bad(""): success is
+represented by an empty error string. Independent review requested a clarifying
+comment, which the separately identified integration adds without expression
+changes. No new diagnostic semantics, source ABI or unchecked path is introduced.
+
+## Correctness gates
+
+- Genuine checked build and verified equality derivation; maintained 21 defaults
+  pass, with the same seven known exact diagnostic differences.
+- Fresh paired observations for all 459 pinned negative check fixtures: every
+  acceptance, phase, checked flag, diagnostic, exit and output observation equals
+  the frozen release. The 318 strict failures remain failures; completion is not
+  strict success. There are 316 exact live differences within this selection.
+- The unchanged diagnostic-reuse suite passes 204 comparisons in 23 groups,
+  including typed errors, laws/TODOs, source ownership, full structured results,
+  changed prefixes, declaration events, real Base and invalidation.
+- Unchanged kernel/annotation, diagnostic, prefix and specialization tests pass
+  on both control and candidate using disposable internal export views. Bodies
+  and maintained tests are unchanged.
+- Actual candidate-host counters observe four versus one checks of the selected
+  undefined body in both early and late no-Base fixtures. Accepted and rejected
+  complete host results are equal. A separate exact oversized-prefix fallback
+  compares the full detailed result and String verdict against the old compiler.
+
+The first oversized-prefix control inserted an event before the book, so it
+proved a normal mismatch, not exhaustion of a valid prefix. That run and tool
+are retained; the corrected follow-up appends an extra event after the complete
+book and passes. Two benchmark preparations also remain incomplete: one assumed
+that the old diagnostic included the literal identifier, and the second exposed
+that the core already declares a function named missing. The final fixture uses
+an asserted-absent p6_nonexistent_identifier. No compiler change was made to fit
+these harness corrections; no controlled timing ran before final preflight.
+
+## Controlled pilot
+
+One frozen conditional host/runtime, the unchanged 60,909-byte core, exact
+matched decoded Base graphs and separately primed compiler-specific caches.
+Each workload uses four fresh processes, control/candidate/candidate/control,
+CPU0, Node24.18.0, 4 GiB heap and 4 MiB stack. All other intentional compiler,
+archive and hash jobs were paused for the complete window. Both opposite-order
+pairs pass exact output/diagnostic and input-identity gates. Request excludes
+import/hash/output writing; process includes them. Negative reduction means
+small overhead.
+
+| Workload | Request reduction, both orders | Process reduction, both orders |
+| --- | --- | --- |
+| accepted | -0.26% / -0.12% | -0.29% / -0.02% |
+| early | 3.07% / 3.63% | 1.77% / 2.20% |
+| late | 33.69% / 33.94% | 30.62% / 31.10% |
+
+Accepted passes the predeclared 5% overhead guard. Late rejection passes the 10%
+material-improvement criterion in both orders; early rejection does not. Parsing
+and loading still happen before an early check error. These three workloads do
+not establish faster successful whole-source compilation or a new TS ratio.
+No extra timing pairs were run after the result.
+
+## Identities and evidence
+
+Candidate checked API: `515f3feda260f4876eafeb432ede0f25b841e3d38de1e25fa57f121a49540a25`.
+Derived API: `de5cfd4092bc82b1b026d4e65ae579b2d2b70ea143051cb0cf734edab02a4295`.
+Control derivative: `e2b5463678a26558e8fea1d585782e0863f1046067949a374f0469080281b15a`.
+[Candidate patch](structured-checker-candidate.patch),
+[independent review](structured-checker-independent-review.md),
+[registered experiment](../../experiments/phase6/P6-008-authoritative-structured-errors.md),
+[durable evidence](structured-checker-evidence/manifest.json).
+All raw attempts, failures, exact observations, tool snapshots and sample reports
+remain under the original campaign paths and in the evidence capsule. Combined
+frontend and final self-reproduction/release gates remain mandatory.

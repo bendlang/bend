@@ -528,3 +528,14 @@ Root's structured-error candidate removes140Bend lines and passes its first
 checked/default gate; exact broader gates remain. The next frontier is accepted
 provenance overhead, one authoritative checker result, typed-fact opportunity
 measurement, parser families and the Boolean H oracle.
+
+## 2026-09-26 — sequential simplification, S0 complete
+
+The user authorizes the [phased simplification design](../design/phase7/compiler_simplification.md)
+with design, work and report for each phase in sequence. The [S0 audit](../implementation/phase7/s0-report.md)
+changes no implementation. It verifies unchanged source/release identities and
+finds an exact 548-line obsolete-code candidate for S1, projecting 15,961 lines.
+The larger 50%/75% budgets remain unproven; S0 identifies substantial shortfalls
+in the proposed later allocations rather than crediting hypothetical savings.
+The previous steering is preserved as an audit input. S1 is the next authorized
+implementation; prior Phase 6 candidates remain separate.

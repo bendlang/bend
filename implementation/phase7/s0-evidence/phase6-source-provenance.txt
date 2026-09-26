@@ -1,0 +1,169 @@
+# Parser-owned source provenance
+
+The isolated version2/version3 prototypes repair **112 of the 150 identified missing-excerpt
+strict checks**, preserves **141/141 prior exact negative checks**, and matches
+all **16 custom source-ownership controls**. All 307 selected status/phase
+observations match pinned TypeScript. The selected harness correctly returns
+failure for the remaining 38 diagnostic differences. Both accepted-cost pilots failed the declared 5% overhead guard, so neither
+prototype is approved for integration. No production compiler or release
+artifact has been changed.
+
+This follows the [P6-004 plan](../../experiments/phase6/P6-004-source-provenance.md).
+The separate [multiline lexer repair](lexer-cursor.md) is independently reviewable.
+The prototype includes that patch; its performance control includes it too.
+
+## Representation and propagation
+
+`KTerm` gains an independent `origin` field, with either `KNoOrigin` or
+`KSourceOrigin{module,line,column}`. The module is the canonical source path;
+actual source text is resolved from this request's loader trace. Full source text
+is not duplicated into every serialized term. Parser tokens carry their owning
+module, and parsing attaches the actual occurrence's coordinates. No source is
+reparsed or searched to invent a new occurrence location.
+
+Semantic equality, specialization keys, ownership and fresh-ID bounds continue
+to inspect the original six fields. Scope changes names; alpha-renaming changes
+IDs; both preserve occurrence origin. A substitution uses the inserted term's
+origin. Beta reduction does not assign the old application's origin to an
+argument-derived result. Semantic-preserving rebuilds preserve origin, including
+normalization and reconstructed matcher datatypes. Generated nodes may remain
+unknown. The old retained-token fallback is still available for uncovered
+lowerings; removing that machinery requires additional provenance coverage.
+
+Diagnostic lookup resolves each error-trail frame before visiting its ancestor:
+explicit origin first, then the established retained-token origin for that frame.
+This order matters. Version1 first searched the entire trail for a new origin,
+causing `check/do_missing_bind.bend` to choose the enclosing do-header instead of
+the deeper binding. Its 291-row gate gained 112 exact diagnostics but lost one.
+Version2 repairs this real regression and preserves the failed version1 run.
+
+The prototype identifies its new ABI with `compiler_origin_abi() == 1`. Its private
+host recognizes the seven-field layout and new constructors; old compilers keep
+their original layout. Host-generated new terms explicitly use `KNoOrigin`.
+This does **not** claim that manually constructed old six-field terms are valid
+inputs to the new API. Existing released APIs remain untouched. Public source
+parse/load entry points remain available; the source-aware entry receives the
+canonical path from host discovery or the Bend loader.
+
+## Checked gates
+
+Both versions were built by the maintained genuine checked-B1 workflow and then
+received the separately recorded equality derivation. Their default 21-case
+acceptance/phase gates pass with the same seven existing exact differences.
+Version1's first selected gate matched all 40 diagnostics exactly: 12 previously
+missing excerpts, 12 prior exact negative fixtures and 16 custom cases. The larger
+291-row gate exposed the do-binding regression, rather than hiding it behind the
+small successful gate.
+
+Version2's combined 307-row gate covers all 150 missing-excerpt targets, all 141
+current exact negative strict passes, and the 16 custom cases. It gains 112 exact
+results, loses zero, and retains 38 differences. The custom cases cover repeated
+equal literals at different locations, repeated variables, multiline and Unicode
+literals, beta substitution, competing errors, imported errors and imported calls,
+plus accepted neighbors. No full frontend or emitted-program breadth is inferred.
+
+Seventeen direct controls exercise explicit ABI versioning, unknown generated
+origins, origin-independent semantic equality/freshness, replacement and beta
+provenance, alpha-renaming, separate module ownership, unknown-module refusal, and
+the restored deeper-leaf-before-ancestor ordering. A disposable internal export
+view exposes unchanged checked functions; it does not replace compiler logic.
+
+## Cost identified before promotion
+
+The validated Base cache grows **2,553,079→3,936,586 bytes (+54.2%)**. Both contain
+19,981 serialized KTerm occurrences. Version1 has 7,188 located and 12,793 unknown
+origin occurrences. These are JSON occurrences, not distinct objects or runtime
+allocation counts.
+
+A separate instrumented parse/load/check of the unchanged 60,909-byte accepted
+core component preserves the exact original six-field semantic book. Actual
+KTerm allocations rise **928,512→988,592 (+6.47%)**, with an additional 581,388
+KNoOrigin and 10,170 KSourceOrigin allocations. Both final live books contain
+89,318 unique KTerm objects. Instrumentation counts all relevant generated object
+literal construction sites and preserves the checked API; its disposable views
+are not timing artifacts. This material overhead motivates a representation or
+allocation improvement if the accepted-workload pilot exceeds its guard.
+
+Version2 adds 202 physical production Bend lines relative to the release,
+including the 17-line lexer increment; it is not yet a line-count reduction.
+The prospective simplification is to remove old origin reconstruction once all
+required lowering paths carry locations directly. No such removal is claimed yet.
+
+The controlled accepted-workload ABBA pilot is prepared and waiting for root's
+exclusive resource window. Both untimed preflights fully check and emit exactly
+the existing 138,371-byte core library, SHA256
+`016a5cedeb7e285adeabdad19388d99d3d9070668c15776ccc10fab8ea7b7186`.
+The guard is no more than 5% request/process overhead in both opposite-order pairs.
+The final measured result and preservation manifest will be appended here.
+
+## Exact artifacts
+
+- Lexer-only control API: `6203276543e224a50a21cf3510194b629d4e4506a22b71865ffaaa94c6fb38cf`.
+- Origin version1 API: `db7649f8ed9810419f843d5dcddb2311132155b4109fe26b96872cb54a600455`.
+- Origin version2 API: `f9be1f81cb86f69d3801211bd835b515bd060e625acf2eeeb852e1e155cb6dde`.
+
+All run material is currently under `selfhost/build/phase6/campaign/diagnostics`.
+A durable archive is required before this investigation is considered handed off;
+an ignored build path alone is not preservation. Root owns promotion and Git.
+
+## Controlled version2 cost gate: failed
+
+The exclusive four-process ABBA pilot ran from 05:41:18 to 05:42:22 UTC.
+Every sample reproduced the frozen 138,371-byte core library output exactly;
+the common ABI-aware host, source, runtime and each version's checked Base
+cache were frozen and verified. Both opposite pairs exceeded the prospectively
+specified 5% overhead guard: request overhead was **5.57% and 5.40%**, and
+whole-process overhead **5.11% and 5.10%**. Peak RSS was 486,976/489,216 KiB
+for the control and 518,716/521,968 KiB for version2. This gate failed; it does
+not justify promotion despite the diagnostic gains. Raw observations remain in
+`origin-pilot-v2-run/report.json` and have not been rerun or relabeled.
+
+The bounded version3 redesign retains ABI1 and exact occurrence ownership.
+Unknown-origin defaults return the existing node without cloning. Seven known
+fresh constructor sites create their final node with origin directly, avoiding
+an otherwise discarded intermediate node and unknown-origin object. This does
+not introduce global interning, change public origin replacement semantics, or
+remove source information. Version3 must repeat the correctness, allocation and
+matched cost gates before any integration decision.
+
+Version3's checked build and all 307 selected complete candidate observations
+match version2 exactly; the direct propagation/default/replacement controls pass
+23/23. Instrumentation reduces `KTerm` allocation to 937,336, **0.95% above the
+928,512 control**, versus 988,592 in version1. `KNoOrigin` allocation falls from
+581,388 to 531,353. `KSourceOrigin` allocation rises from 10,170 to 25,997 because
+the generated Bend match reconstructs its matched origin when reusing it.
+Source ownership and field values are preserved; this is not a claim of
+JavaScript pointer identity. The semantic six-field book hash remains identical.
+The loaded-book JSON remains 15,481,701 bytes (11,229,106 control); the Base
+cache remains 3,936,586 bytes (2,553,079 control). Version3 does not solve cache
+size growth. Its measured common-path cost gate is recorded below and failed.
+
+## Version3 cost gate: also failed
+
+The second exclusive ABBA ran 06:01:37–06:02:43 UTC. All four exact output
+checks and frozen-input checks passed. The unchanged 5% guard failed: request
+cost rose **11.04% and 6.61%**, and whole-process cost **10.41% and 6.90%**.
+This is retained as a failed redesign, without a repeat or a favorable-sample
+selection. Its two candidate RSS values were 501,772 and 501,748 KiB, versus
+487,832 and 489,448 KiB for the controls.
+
+`origin-pilot-phase-analysis.json` records exact paired phase deltas. Version2's
+cost was distributed: load +89/+106 ms, checking +198/+214 ms, annotation
++144/+175 ms, emission +78/+83 ms. Version3 reduced checking deltas to
++136/+167 ms, but annotation was +755/+155 ms. These observations support
+redesigning retained metadata and downstream copying; they do not by themselves
+identify GC as the cause. Neither version2 nor version3 is approved for release.
+
+
+## Reviewable source and preservation
+
+`source-provenance-candidate.patch` is the version3 source/host patch against
+the lexer-only project. Apply the independent lexer patch first if reproducing;
+this candidate is retained for review and is not performance-approved. The
+capsule includes every checked source snapshot, API, raw comparison, failed v1
+regression, both failed controlled pilots, instrumentation, source fixtures,
+selection provenance and reproduction scripts. Recorded Node/Linux tools and
+upstream Git metadata remain explicit external prerequisites. Absolute historic
+paths identify original inputs, not a claim that bootstrap relocation is
+identity-preserving. The next representation proposal is in
+[source-provenance-range-proposal.md](source-provenance-range-proposal.md).
