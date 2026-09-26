@@ -20,14 +20,10 @@ function file_write(file, data) {
 }
 
 function file_write_bytes(file, data) {
-  const bytes = [];
-  for (let xs = data; xs.$ === CID(Con); xs = xs.tail) {
-    bytes.push(xs.head);
-  }
-  if (bytes.some((x) => x > 255)) {
-    return io_tup(file, io_fail(22));
-  }
-  return file_write_buffer(file, Uint8Array.from(bytes));
+  const bytes = io_clist(data);
+  return bytes === null
+    ? io_tup(file, io_fail(22))
+    : file_write_buffer(file, bytes);
 }
 
 io_eff(CID(File.write), file_write);

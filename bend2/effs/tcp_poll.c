@@ -10,22 +10,33 @@ static Term tcp_poll_end(Env e, IoWork* w, Term r) {
   return io_tup(e, io_hand(w->hand), r);
 }
 
-static Term tcp_poll_more(Env e, IoWork* w) {
+static Term tcp_poll_step(Env e, IoWork* w, Term (*more)(Env, IoWork*),
+    Term (*pack)(Env, const char*, u64)) {
   int fd  = (int)w->hand;
   u64 at  = w->time;
   w->size = io_sys_end(w, recv(fd, w->data, (size_t)w->made, 0));
   if (w->code == EAGAIN) {
-    return io_tick() < at ? io_wait_on(w, fd, POLLIN, at, tcp_poll_more)
+    return io_tick() < at ? io_wait_on(w, fd, POLLIN, at, more)
       : tcp_poll_end(e, w, io_done(e, term_pak(CID(None), 0)));
   }
   return tcp_poll_end(e, w, w->code ? io_fail(e, w->code, NULL) : io_done(e,
-    io_box(e, CID(Some), io_str(e, w->data, w->size))));
+    io_box(e, CID(Some), pack(e, w->data, w->size))));
 }
 
-Term tcp_poll_run(Env e, Term* f, IoWork* w) {
+static void tcp_poll_start(Term* f, IoWork* w) {
   w->hand = (intptr_t)io_hand_v(f[0]);
   w->made = f[1] < INT32_MAX ? (intptr_t)f[1] : INT32_MAX;
   w->data = io_mem(malloc((size_t)w->made + 1));
+}
+
+#ifdef CID(TCP.poll)
+
+static Term tcp_poll_more(Env e, IoWork* w) {
+  return tcp_poll_step(e, w, tcp_poll_more, io_str);
+}
+
+Term tcp_poll_run(Env e, Term* f, IoWork* w) {
+  tcp_poll_start(f, w);
   return io_wait_on(w, (int)w->hand, POLLIN,
     io_tick() + (u64)f[2] * 1000000ull, tcp_poll_more);
 }
@@ -33,3 +44,23 @@ Term tcp_poll_run(Env e, Term* f, IoWork* w) {
 static void __attribute__((constructor)) tcp_poll_use(void) {
   io_eff(CID(TCP.poll), tcp_poll_run, 0);
 }
+
+#endif
+
+#ifdef CID(TCP.poll_bytes)
+
+static Term tcp_poll_bytes_more(Env e, IoWork* w) {
+  return tcp_poll_step(e, w, tcp_poll_bytes_more, io_list);
+}
+
+Term tcp_poll_bytes_run(Env e, Term* f, IoWork* w) {
+  tcp_poll_start(f, w);
+  return io_wait_on(w, (int)w->hand, POLLIN,
+    io_tick() + (u64)f[2] * 1000000ull, tcp_poll_bytes_more);
+}
+
+static void __attribute__((constructor)) tcp_poll_bytes_use(void) {
+  io_eff(CID(TCP.poll_bytes), tcp_poll_bytes_run, 0);
+}
+
+#endif

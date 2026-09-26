@@ -3,10 +3,9 @@
 
 // Sends what is left; a full socket (non-blocking, so EAGAIN) parks the
 // computation until the socket is writable, and the loop resumes here.
-function tcp_send(socket, data, k) {
+function tcp_send_buffer(socket, b, k) {
   const sys = io_sys();
   const fd = socket;
-  const b = io_bytes(data);
   const again = sys.mac ? 35 : 11;
   const go = (at) => {
     while (at < b.length) {
@@ -27,4 +26,16 @@ function tcp_send(socket, data, k) {
   return go(0);
 }
 
+function tcp_send(socket, data, k) {
+  return tcp_send_buffer(socket, io_bytes(data), k);
+}
+
+function tcp_send_bytes(socket, data, k) {
+  const bytes = io_clist(data);
+  return bytes === null
+    ? io_tup(socket, io_fail(22))
+    : tcp_send_buffer(socket, bytes, k);
+}
+
 io_eff(CID(TCP.send), tcp_send);
+io_eff(CID(TCP.send_bytes), tcp_send_bytes);

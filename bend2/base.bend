@@ -306,13 +306,28 @@ def TCP.send(sock: Socket, data: String) ->
   import "./effs/tcp_send.c"
   import "./effs/tcp_send.js"
 
+def TCP.send_bytes(sock: Socket, data: List<&2, U32>) ->
+  IO(Socket & Result<&1, &1, U32 & String, Unit>):
+  import "./effs/tcp_send.c"
+  import "./effs/tcp_send.js"
+
 def TCP.recv(sock: Socket, max: U32) ->
   IO(Socket & Result<&1, &1, U32 & String, String>):
   import "./effs/tcp_recv.c"
   import "./effs/tcp_recv.js"
 
+def TCP.recv_bytes(sock: Socket, max: U32) ->
+  IO(Socket & Result<&1, &1, U32 & String, List<&2, U32>>):
+  import "./effs/tcp_recv.c"
+  import "./effs/tcp_recv.js"
+
 def TCP.poll(sock: Socket, max: U32, ms: U32) ->
   IO(Socket & Result<&1, &1, U32 & String, Maybe<&1, String>>):
+  import "./effs/tcp_poll.c"
+  import "./effs/tcp_poll.js"
+
+def TCP.poll_bytes(sock: Socket, max: U32, ms: U32) ->
+  IO(Socket & Result<&1, &1, U32 & String, Maybe<&1, List<&2, U32>>>):
   import "./effs/tcp_poll.c"
   import "./effs/tcp_poll.js"
 

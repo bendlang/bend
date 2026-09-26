@@ -42,11 +42,7 @@ static Term file_read_bytes_pack(Env e, IoWork* w) {
   if (w->code) {
     r = io_fail(e, w->code, NULL);
   } else {
-    Term xs = term_pak(CID(Nil), 0);
-    for (u64 i = w->size; i > 0; i -= 1) {
-      xs = io_node(e, CID(Con), ((uint8_t*)w->data)[i - 1], xs);
-    }
-    r = io_done(e, xs);
+    r = io_done(e, io_list(e, w->data, w->size));
   }
   free(w->data);
   return io_tup(e, io_hand(w->hand), r);

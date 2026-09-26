@@ -18,6 +18,8 @@ static Term tcp_send_more(Env e, IoWork* w) {
   return io_tup(e, io_hand(w->hand), r);
 }
 
+#ifdef CID(TCP.send)
+
 Term tcp_send_run(Env e, Term* f, IoWork* w) {
   w->hand = (intptr_t)io_hand_v(f[0]);
   w->data = io_cstr(e, f[1], &w->size);
@@ -29,3 +31,22 @@ Term tcp_send_run(Env e, Term* f, IoWork* w) {
 static void __attribute__((constructor)) tcp_send_use(void) {
   io_eff(CID(TCP.send), tcp_send_run, 0);
 }
+
+#endif
+
+#ifdef CID(TCP.send_bytes)
+
+Term tcp_send_bytes_run(Env e, Term* f, IoWork* w) {
+  int bad;
+  w->hand = (intptr_t)io_hand_v(f[0]);
+  w->data = io_clist(e, f[1], &w->size, &bad);
+  w->made = 0;
+  w->code = bad ? EINVAL : 0;
+  return tcp_send_more(e, w);
+}
+
+static void __attribute__((constructor)) tcp_send_bytes_use(void) {
+  io_eff(CID(TCP.send_bytes), tcp_send_bytes_run, 0);
+}
+
+#endif

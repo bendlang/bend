@@ -5555,6 +5555,37 @@ static Term io_node(Env e, u64 cid, Term a, Term b) {
   return term_ctr(cid, l);
 }
 
+#if defined(CID(Nil)) && defined(CID(Con))
+static Term io_list(Env e, const char* p, u64 n) {
+  Term xs = term_pak(CID(Nil), 0);
+  for (u64 i = n; i > 0; i -= 1) {
+    xs = io_node(e, CID(Con), (uint8_t)p[i - 1], xs);
+  }
+  return xs;
+}
+
+static char* io_clist(Env e, Term xs, u64* len, int* bad) {
+  u64   cap = 64;
+  u64   n   = 0;
+  int   big = 0;
+  char* buf = io_mem(malloc(cap));
+  while (term_aux(xs) == CID(Con)) {
+    Term fb[2];
+    spare_free(e, cls_fit(2), ctr_take(e, xs, 2, fb));
+    if (n == cap) {
+      cap *= 2;
+      buf = io_mem(realloc(buf, cap));
+    }
+    big |= fb[0] > 255;
+    buf[n++] = (char)fb[0];
+    xs = fb[1];
+  }
+  *len = n;
+  *bad = big;
+  return buf;
+}
+#endif
+
 static Term io_str(Env e, const char* p, u64 n) {
   Term s    = term_pak(CID(SNil), 0);
   u64  hole = 0;
@@ -6234,6 +6265,22 @@ function io_bytes(text) {
 
 function io_text(b, n) {
   return new TextDecoder("utf-8", { ignoreBOM: true }).decode(b.subarray(0, n));
+}
+
+function io_list(b, n) {
+  let xs = { $: "Nil" };
+  for (let i = n; i > 0; i -= 1) {
+    xs = { $: "Con", head: b[i - 1], tail: xs };
+  }
+  return xs;
+}
+
+function io_clist(xs) {
+  const bytes = [];
+  for (; xs.$ === "Con"; xs = xs.tail) {
+    bytes.push(xs.head);
+  }
+  return bytes.some((x) => x > 255) ? null : Uint8Array.from(bytes);
 }
 
 function io_addr(host, port) {
