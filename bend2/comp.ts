@@ -106,9 +106,9 @@ type Fun = { n: number; h: HTerm | null; live: Dom[]; lays: Lay[]; ret: Lay };
 // CLO_APPLY and IO_EMIT are the runtime's own segments, named with a ~
 // so that no file declares them. FOLD_FUEL caps the nodes that unfolds
 // add to a segment, so a literal-bounded loop does not unroll into its
-// caller. A spin of SPIN_FAR lines is a call (at 128, raytrace lost
-// 31% on PAR-CPU). WIDE is the widest flat layout or segment; a node past
-// it pads to its size class and keeps 240 plus log2 of it in CID_T.
+// caller. A looping spin of SPIN_FAR lines is a call. WIDE is the widest
+// flat layout or segment; a node past it pads to its size class and keeps
+// 240 plus log2 of it in CID_T.
 
 const CLO_APPLY = "Clo~apply";
 
@@ -121,7 +121,7 @@ const TAB_BAD = /\b(?!(?:fround|imul)\()\w+\(/;
 
 const FOLD_FUEL = 8192;
 
-const SPIN_FAR = 256;
+const SPIN_FAR = 200;
 
 const USE0 = Bend.Emp<number>();
 
@@ -2276,8 +2276,8 @@ function emit_native(fl: File, k: Name, ers: HTerm[]): string {
   const dst = val_new(seg.ret.ks.map(() => name_local(fl, "v")), seg.ret);
   emit_body(sl, fun_of(fl, k).h!, fl.book.tlds[k].T, ers, vals, dst);
   FUEL = fuel;
-  fl.spins.push({ ...seg, lines: [`${seg.lines.length < SPIN_FAR
-    ? "INLINE" : "FAR"} Term ${name}(Env e, THR Term* o${
+  fl.spins.push({ ...seg, lines: [`${seg.spin && seg.lines.length >= SPIN_FAR
+    ? "FAR" : "INLINE"} Term ${name}(Env e, THR Term* o${
     seg.ks.map((k, i) => `, ${lay_c(k)} r${i}`).join("")}) {`,
   "  u32 wpoll = 0;",
   ...dst.ws.map((v, j) => `  ${lay_c(seg.ret.ks[j])} ${v} = 0;`),
@@ -3465,9 +3465,9 @@ using namespace metal;
 #define FENCE() ((void)0)
 #endif
 #endif
-#define FAR static __attribute__((noinline))
 
 #if DEVICE
+#define FAR        static __attribute__((noinline))
 #define LOCK(l)
 #define UNLOCK(l)
 #define WL_CASE(F) case F:
@@ -3475,6 +3475,7 @@ using namespace metal;
 #define WL_JMP(F)  { fid = (F); break; }
 #define WL_DYN     WL_JMP
 #else
+#define FAR        static
 #define LOCK(l)    while (__atomic_exchange_n(&(l), 1, __ATOMIC_ACQUIRE)) {}
 #define UNLOCK(l)  __atomic_store_n(&(l), 0, __ATOMIC_RELEASE)
 #define WL_FN      static PRESERVE(preserve_none) __attribute__((noinline)) Term
