@@ -374,6 +374,7 @@ const SHIMS = "sqrt exp log log2 log10 sin cos tan pow fmod".split(" ")
 const NATIVE = {
   C: String.raw`
 #ifdef __METAL_VERSION__
+#define fmaf fma
 INLINE f32 atan2_c99(f32 y, f32 x) {
   return y == 0.0f && x == x
     ? copysign(signbit(x) ? M_PI_F : 0.0f, y) : atan2(y, x);
