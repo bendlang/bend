@@ -815,7 +815,8 @@ function term_nodes(fl: File, t: HTerm): number {
 function term_const(t: HTerm): boolean {
   const s = Bend.term_strip(t);
   return s.$ === "Lit" ? lit_call(s) === null
-    : s.$ === "Ctr" && memo(CONSTS, s, () => s.x.every(term_const));
+    : s.$ === "Ctr" && (s.x.length === 0
+      || memo(CONSTS, s, () => s.x.every(term_const)));
 }
 
 function term_use(u: Bend.PMap<number>, p: Of<"Var">): number {
@@ -988,8 +989,12 @@ function lay_of(book: Bend.Book, A: HTerm | null): Lay {
   if (t === null) {
     return BOX;
   }
+  const word = WORDS[t.k];
+  if (word !== undefined) {
+    return word;
+  }
   const key = Bend.term_key(Bend.term_lower(t));
-  return WORDS[t.k] ?? memo(LAYS, key, () => {
+  return memo(LAYS, key, () => {
     const tld = book.tlds[t.k];
     if (t.k === "Array" || t.k === "IO.OP" || tld?.$ !== "ADT"
       || tld.c.some((c) => ctr_doms(book, c).some((F) => ty_holds(book, F,
