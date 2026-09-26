@@ -18,9 +18,10 @@ pass, with known diagnostic differences and raw setup failures retained.
    135 fewer lines, 15,826 total. Checked/focused/component/exact provenance gates
    pass; the validated release is installed. Explicit terms/direct spans remain
    deferred, and no full-source speed or fixed-point claim is added.
-2. S3: design the authoritative structured-checker result before implementation.
-   Revalidate the prior 140-line candidate against the current release. Retained
-   type facts require their own net cost and correctness evidence.
+2. S3: implement the committed [authoritative-checker design](../design/phase7/s3_authoritative_checker.md).
+   Revalidate the prior 140-line candidate against S2, including full frontend
+   preservation and a serial accepted/rejected pilot. Retained type facts remain
+   deferred until their replacement costs and validity are demonstrated.
 3. S4–S7 remain sequential. The 50% and 75% milestones are still unachieved and
    unsupported by the current gross deletion inventory; do not fake their gates.
 

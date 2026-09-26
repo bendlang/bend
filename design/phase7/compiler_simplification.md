@@ -370,6 +370,8 @@ revise a schema that merely exchanges implicit rules for more machinery.
 
 ### S3 — Keep checked information through specialization
 
+**S2 evidence revision:** execute the bounded [authoritative-checker design](s3_authoritative_checker.md), deleting diagnostic replay with at least130net Bend lines removed. Retained type facts and the original10,500-line forecast below remain deferred hypotheses. The50%/75% milestones are unchanged.
+
 Within a bounded slice, turn existing local `KChecked` information into retained
 facts and authoritative structured errors. Compare annotated nodes and a compact
 side table, including validity and memory costs. The candidate must produce and
