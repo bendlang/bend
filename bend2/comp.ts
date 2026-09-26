@@ -3313,6 +3313,35 @@ function js_host(fl: File, k: Name): string {
     }(run_loop(${js_sat(k)}(${xs.join(", ")}))); ${back.join(" ")} return r; }`;
 }
 
+const JS_RESERVED: Record<string, true> = {
+  await: true, break: true, case: true, catch: true, class: true,
+  const: true, continue: true, debugger: true, default: true,
+  delete: true, do: true, else: true, enum: true, export: true,
+  extends: true, false: true, finally: true, for: true, function: true,
+  if: true, import: true, in: true, instanceof: true, let: true,
+  new: true, null: true, return: true, super: true, switch: true,
+  this: true, throw: true, true: true, try: true, typeof: true,
+  var: true, void: true, while: true, with: true, yield: true,
+  implements: true, interface: true, package: true, private: true,
+  protected: true, public: true, static: true, arguments: true,
+  eval: true,
+};
+
+export function js_named(k: Name): boolean {
+  return /^[A-Za-z_]\w*$/.test(k) && !Object.hasOwn(JS_RESERVED, k);
+}
+
+// The declaration emitter uses the same live parameters and instantiated
+// result as the JS host wrapper, including raised and erased parameters.
+export function js_signatures(book: Bend.Book, outs: Name[]) {
+  const fl = file_book(book, outs, true);
+  return outs.map((k) => {
+    const { n, live } = fun_of(fl, k);
+    return { k, live, ret: Bend.tele_fill(book, book.tlds[k].T,
+      Array(n).fill(DUMMY), Bend.ctx_nil()) };
+  });
+}
+
 export function js_lib(book: Bend.Book, roots: Name[],
   outs: Name[] | null): string {
   const fl = file_book(book, roots, true);
@@ -3327,9 +3356,12 @@ export function js_lib(book: Bend.Book, roots: Name[],
     + ") {\n  if (!(k in $0eff)) {\n"
     + "    throw new Error(\"bend: no effect registers \" + k);\n  }\n}\n\n");
   const tabs = [...fl.tabs].map(([r, i]) => `const TAB_${i} = [${r}];`);
-  const lib = outs === null ? "" : "export default {\n" + outs.map((k) =>
-    `  "${k}": run_lib(${js_host(fl, k)}, ${fun_of(fl, k).lays.length}),`)
-    .join("\n") + "\n};\n";
+  const lib = outs === null ? "" : "const $0lib = {\n" + outs.map((k) =>
+    `  [${JSON.stringify(k)}]: run_lib(${js_host(fl, k)}, ${
+      fun_of(fl, k).lays.length}),`).join("\n") + "\n};\n"
+    + "export default $0lib;\n"
+    + outs.filter(js_named).map((k, i) => `const $0export${i} = $0lib[${
+      JSON.stringify(k)}];\nexport { $0export${i} as ${k} };`).join("\n") + "\n";
   const jmps = new Map<Name, boolean>();
   const jmp = (k: Name): boolean => k === CLO_APPLY || memo(jmps, k, () =>
     (jmps.set(k, true), [...fl.tails.get(k) ?? []].some(jmp)));

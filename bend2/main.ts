@@ -22,6 +22,7 @@ import type { BunPlugin } from "bun";
 
 import * as Bend from "./bend.ts";
 import * as Comp from "./comp.ts";
+import * as Dts from "./dts.ts";
 
 // Main
 // ====
@@ -36,6 +37,8 @@ const HELP = `Bend ${VERSION}: check, run, build and publish Bend programs.
 usage:
   bend <file.bend> [args]       check the file, then run main with args
   bend <file.bend> -o <out>     build a binary; <out>.c emits C, <out>.js JS
+  bend <file.bend> --lib -o <out.mjs|out.js>
+                                build ES module and matching TS declarations
   bend <file.bend> --check-only check the file and its imports; run nothing
   bend <file.bend> --publish    publish the file and its imports to the hub
   bend <file.bend> --publish <name>@<version>
@@ -213,6 +216,7 @@ async function cli_file(args: string[]): Promise<void> {
   const argv: string[] = [];
   let file: string | undefined;
   let only = false;
+  let library = false;
   let checkup = false;
   let publish = false;
   let named: string | undefined;
@@ -222,6 +226,8 @@ async function cli_file(args: string[]): Promise<void> {
       return cli_say(1, HELP);
     } else if (a === "--check-only") {
       only = true;
+    } else if (a === "--lib") {
+      library = true;
     } else if (a === "--checkup") {
       checkup = true;
     } else if (a === "--publish") {
@@ -253,6 +259,10 @@ async function cli_file(args: string[]): Promise<void> {
       cli_fail("a page bundles with -o <dir>");
     }
     return cli_bundle(file, outs[0]);
+  }
+  if (library && (outs.length !== 1 || !/\.(mjs|js)$/.test(outs[0])
+    || only || checkup || publish || argv.length !== 0)) {
+    cli_fail("--lib needs one -o <file.mjs|file.js> and no other options");
   }
   if (publish && (outs.length !== 0 || only || checkup)) {
     cli_fail("--publish takes no other option");
@@ -288,11 +298,25 @@ async function cli_file(args: string[]): Promise<void> {
     }
     const ins = new Set([...seen.keys(), ...Object.values(book.tlds).flatMap((t) =>
       t.$ === "Def" && t.i !== undefined ? t.i.map(path_real) : [])]);
-    for (const out of outs) {
+    const decl = library ? outs[0].slice(0, -(
+      outs[0].endsWith(".mjs") ? 4 : 3))
+      + (outs[0].endsWith(".mjs") ? ".d.mts" : ".d.ts") : "";
+    for (const out of library ? [outs[0], decl] : outs) {
       const at = path_real(out);
       if (ins.has(at) || (fs.existsSync(at) && fs.statSync(at).isDirectory())) {
         cli_fail("-o " + out + " is a file the program reads, or a directory");
       }
+    }
+    if (library) {
+      const exposed = lib_exports(book);
+      const js = Comp.js_lib(book, exposed, exposed);
+      const types = Dts.emit(book, exposed);
+      fs.mkdirSync(path.dirname(outs[0]), { recursive: true });
+      fs.writeFileSync(outs[0], js);
+      fs.writeFileSync(decl, types);
+      return;
+    }
+    for (const out of outs) {
       cli_emit(book, out);
     }
   } catch (e) {
@@ -827,16 +851,20 @@ function book_err(e: unknown): string {
 // Load
 // ====
 
+function lib_exports(book: Bend.Book): string[] {
+  return [...new Set(book.order)].filter((k) => {
+    const tld = book.tlds[k];
+    return tld.$ === "Def" && tld.v !== null && tld.b !== true
+      && tld.x === 0 && tld.i === undefined
+      && Comp.io_base(book, tld.T) === null;
+  });
+}
+
 async function load_js(path: string): Promise<string> {
   try {
     const [book, n0] = await book_read(path);
     cli_report(book, n0, 2);
-    const outs = [...new Set(book.order)].filter((k) => {
-      const tld = book.tlds[k];
-      return tld.$ === "Def" && tld.v !== null && tld.b !== true
-        && tld.x === 0 && tld.i === undefined
-        && Comp.io_base(book, tld.T) === null;
-    });
+    const outs = lib_exports(book);
     return Comp.js_lib(book, outs, outs);
   } catch (e) {
     throw new Error(book_err(e));

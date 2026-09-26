@@ -497,6 +497,16 @@ def main() -> U32:
   M.square(7)
 ```
 
+`bend math.bend --lib -o dist/math.mjs` checks the source, then writes a
+self-contained ES module and `dist/math.d.mts` for Node and TypeScript:
+`import { square } from "./dist/math.mjs"`. A `.js` output gets a `.d.ts`
+declaration instead (use it in an ES-module package). The same filled,
+non-Base, non-IO defs as the `.bend` loader are exported; a name with dots is
+available through the default export, for example `lib["Usage.fee"]`.
+Declarations omit erased arguments, expose `Nat` as a `bigint` bounded to
+2^48-1 at the boundary, and type unsupported dependent forms as `unknown`.
+Curried calls still work in JavaScript but the declarations type full calls.
+
 The alias is local to the importing file, and dots inside a name are just
 characters: `U32.show` needs no module. A module's path is plain names
 (letters, digits, `_` and `-`): `math.bend` is a module, `math.extra.bend` is
