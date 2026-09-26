@@ -3209,17 +3209,18 @@ export function term_snf(book: Book, term: HTerm): HTerm {
 // the All case swaps unconditionally).
 
 // Syntactic identity, forcing share cells but unfolding nothing, within a
-// node budget; heads and first arguments are visited first, where terms
-// usually differ. Identical terms are convertible; false means "unknown".
+// budget of visits (a shared node counts at each visit); heads and first
+// arguments are visited first, where terms usually differ. Identical terms
+// are convertible; false means "unknown".
 function term_same(lhs: HTerm, rhs: HTerm): boolean {
   const st: HTerm[] = [lhs, rhs];
-  for (let n = 4096; st.length > 0; n--) {
+  for (let n = 4096; n > 0 && st.length > 0; n--) {
     const y = term_strip(st.pop()!);
     const x = term_strip(st.pop()!);
     if (x === y) {
       continue;
     }
-    if (n === 0 || x.$ !== y.$) {
+    if (x.$ !== y.$) {
       return false;
     }
     const z = y as typeof x;
@@ -3247,7 +3248,7 @@ function term_same(lhs: HTerm, rhs: HTerm): boolean {
       default: return false;
     }
   }
-  return true;
+  return st.length === 0;
 }
 
 // Only a side that is a call can be expensive to normalize; two values
