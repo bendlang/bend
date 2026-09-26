@@ -33,12 +33,11 @@ static void __attribute__((constructor)) clock_now_use(void) {
 }
 ```
 
-`CID(Name)` is the C id of a constructor or of an effect def: the compiler
-replaces it with the name's own id, reading `Name` in the effect's
-namespace first (the file that declares the def), then in Base's, as the
-def's body would. A constructor the program does not use has no id, so
-`#ifdef CID(Name)` tests for it. `FID(name)` is a def's function id the
-same way. `f` holds the def's arguments in order: a `U32` is the word
+`CID(Name)` resolves a constructor or effect id in the foreign file's
+namespace, then its imports (including Base), never in a later entry file.
+An unknown name fails the build. Unused constructors have no id;
+`#ifdef CID(Name)` tests for one. `FID(name)` resolves likewise.
+`f` holds the def's arguments: a `U32` is the word
 (`(u32)f[0]`), a `String` is taken with `io_cstr(e, f[0], &len)` (a
 `malloc`ed copy you free), a handle with `io_hand_v(f[0])`. The last
 argument of `io_eff` is the need: `0` runs the effect at once; `IO_READ`
