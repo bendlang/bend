@@ -1,0 +1,62 @@
+{
+  "pass": true,
+  "pilotComplete": true,
+  "acceptedWithinFivePercent": true,
+  "rssPairs": [
+    {
+      "workload": "accepted",
+      "baselineIndex": 0,
+      "candidateIndex": 1,
+      "baselineRssKiB": 488020,
+      "candidateRssKiB": 497380,
+      "rssRatio": 1.0191795418220564
+    },
+    {
+      "workload": "accepted",
+      "baselineIndex": 3,
+      "candidateIndex": 2,
+      "baselineRssKiB": 485020,
+      "candidateRssKiB": 499096,
+      "rssRatio": 1.0290214836501588
+    },
+    {
+      "workload": "early",
+      "baselineIndex": 0,
+      "candidateIndex": 1,
+      "baselineRssKiB": 397596,
+      "candidateRssKiB": 398236,
+      "rssRatio": 1.001609674141591
+    },
+    {
+      "workload": "early",
+      "baselineIndex": 3,
+      "candidateIndex": 2,
+      "baselineRssKiB": 400164,
+      "candidateRssKiB": 397976,
+      "rssRatio": 0.9945322417808699
+    },
+    {
+      "workload": "late",
+      "baselineIndex": 0,
+      "candidateIndex": 1,
+      "baselineRssKiB": 416888,
+      "candidateRssKiB": 419640,
+      "rssRatio": 1.0066012933929496
+    },
+    {
+      "workload": "late",
+      "baselineIndex": 3,
+      "candidateIndex": 2,
+      "baselineRssKiB": 416744,
+      "candidateRssKiB": 419684,
+      "rssRatio": 1.0070546906494156
+    }
+  ],
+  "selectedApiSize": {
+    "baselineBytes": 1036548,
+    "candidateBytes": 1030277,
+    "ratio": 0.993950111331072
+  },
+  "acceptedGeneratedBytesIdentical": true,
+  "scope": "RSS is each fresh worker process high water; serial pilot. Output size/hash equality checked in each accepted pair; no full-source speed claim."
+}

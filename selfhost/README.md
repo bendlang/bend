@@ -10,10 +10,11 @@ node cli.mjs tests/conformance/typed-smoke/base-u32.bend --run
 npm run build
 ```
 
-The default uses the [smaller S2 source](../implementation/phase7/s2-report.md),
-with guarded native string equality and one shared loader trace for provenance.
-The compiler is 15,826 lines, down 683 from the simplification baseline. Fresh
-checked, component and exact provenance controls validate this release.
+The default uses the [smaller S3 source](../implementation/phase7/s3-report.md),
+with guarded native string equality, shared provenance and one authoritative
+structured checker result. The compiler is 15,687 lines, down 822 from the
+simplification baseline. Fresh checked/component gates and exact preservation
+of all 2,756 frontend observations validate this release.
 Its [release manifest](dist/release.json) binds source, API, Base,
 runtime and host; verification works after checkout relocation. Compiler edits
 use the [maintained development workflow](../docs/PHASE5_DEVELOPMENT.md) for
@@ -28,8 +29,8 @@ measures 60.25s for pinned TypeScript and 363.39s for the Phase 5 optimized comp
 and [final artifact frontend gate](../implementation/phase5/final-artifact-frontend.md)
 provide separate reproduction and equivalence evidence.
 That fixed-point evidence belongs to the pre-retirement all-definition source;
-S2 has fresh checked/component/provenance gates, not a new full fixed point or
-broad frontend sweep. These historical timings are not a new S2 measurement.
+S3 has fresh checked/component/full frontend preservation gates, not a new full
+fixed point. These historical full-source timings are not a new S3 measurement.
 
 Historical reports apply to their recorded artifacts. The
 [experiment ledger](../experiments/ledger.md), [current strategy](../experiments/STEERING.md)

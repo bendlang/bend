@@ -64,19 +64,6 @@ law check_from_exact_prefix:
   for +validated: List<&2, KDef>
   String
 
-law check_prefix_seed:
-  for +book: List<&2, KDef>
-  for +validated: List<&2, KDef>
-  for +done: List<&2, KDef>
-  String
-
-law check_prefix_step:
-  for +book: List<&2, KDef>
-  for +h: KDef
-  for +rest: List<&2, KDef>
-  for +done: List<&2, KDef>
-  String
-
 @unsafe
 def exact_names(a, b):
   match a:
@@ -159,21 +146,5 @@ def exact_prefix_head(book, h, rest):
 
 @unsafe
 def check_from_exact_prefix(book, validated):
-  kc(String, exact_prefix(book, validated), u => check_prefix_seed(book, validated, book_cached(Nil{}, norm_max_book(book))), u => check_book(book))
-
-@unsafe
-def check_prefix_seed(book, validated, done):
-  match validated:
-    case Nil{}:
-      check_events(book, done)
-    case Con{h, rest}:
-      check_prefix_step(book, h, rest, done)
-
-@unsafe
-def check_prefix_step(book, h, rest, done):
-  match book:
-    case Nil{}:
-      "invalid validated prefix"
-    case Con{x, xs}:
-      check_prefix_seed(xs, rest, book_put(done, h))
+  dg_result_error(check_book_diagnostic_from_exact_prefix(book, validated, Nil{}))
 

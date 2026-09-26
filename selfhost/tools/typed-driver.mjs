@@ -98,7 +98,7 @@ export function bootstrap({upstream=process.env.BEND_UPSTREAM||path.resolve(proj
   if(files.includes('src/core/index.bend'))exports.push('book_context','book_cached');
   if(files.includes('src/load/seed.bend'))exports.push('f_load_graph_seed','f_load_graph_seed_trace');
   if(files.includes('src/driver/report.bend'))exports.push('driver_report');
-  if(files.includes('src/diagnostic/produce.bend'))exports.push('check_book_diagnostic','check_book_diagnostic_from_exact_prefix','diagnostic_render','diagnostic_result_locate');
+  if(files.includes('src/diagnostic/produce.bend'))exports.push('compiler_check_result_abi','check_book_diagnostic','check_book_diagnostic_from_exact_prefix','diagnostic_render','diagnostic_result_locate');
   if(files.includes('src/diagnostic/frontend.bend'))exports.push('f_load_origins_for','f_loaded_origins_for');
   if(files.includes('src/back/js/validate.bend')) {
     exports.push('j_compile_error');
@@ -337,19 +337,21 @@ async function inspectWithMemo(input,{mode='check',api,args=[],timeoutMs=5000,co
     phase='check';
     trace('check book');
     const cached=graph.hasBase&&api.check_from_exact_prefix?(seed||await prepareBase(api)):null;
-    const diagnostic=cached?api.check_from_exact_prefix(loaded.book,cached.book):api.check_book(loaded.book);
+    const checkedResult=api.compiler_check_result_abi?.()===1?
+      (cached?api.check_book_diagnostic_from_exact_prefix(loaded.book,cached.book,list([])):api.check_book_diagnostic(loaded.book,list([]))):null;
+    const diagnostic=checkedResult?checkedResult.error:(cached?api.check_from_exact_prefix(loaded.book,cached.book):api.check_book(loaded.book));
     if(diagnostic) {
       let rendered='Error: '+diagnostic;
       if(api.check_book_diagnostic&&api.diagnostic_render) {
         try {
           trace('render checker diagnostic');
-          let detailed=cached&&api.check_book_diagnostic_from_exact_prefix?
+          let detailed=checkedResult||(cached&&api.check_book_diagnostic_from_exact_prefix?
             api.check_book_diagnostic_from_exact_prefix(loaded.book,cached.book,list([])):
-            api.check_book_diagnostic(loaded.book,list([]));
-          if(cached&&detailed.error!==diagnostic&&api.check_book_diagnostic_from_exact_prefix)
+            api.check_book_diagnostic(loaded.book,list([])));
+          if(!checkedResult&&cached&&detailed.error!==diagnostic&&api.check_book_diagnostic_from_exact_prefix)
             detailed=api.check_book_diagnostic(loaded.book,list([]));
-          // The ordinary checker verdict remains authoritative. Diagnostic replay
-          // can improve its presentation but cannot replace or accept a verdict.
+          // New APIs return the original authoritative result. Legacy replay can
+          // improve presentation only when its error matches the old verdict.
           if(detailed.error===diagnostic) {
             if(api.f_load_origins_for&&api.diagnostic_result_locate&&detailed.diagnostic.definition) {
               const provenance=loadTrace&&api.f_loaded_origins_for?

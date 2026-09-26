@@ -1,0 +1,817 @@
+{
+  "kind": "S3-full-frontend-preservation",
+  "complete": true,
+  "pass": true,
+  "scope": "All result fields except separately verified hostProvenance; exact status/reason/evidence and fixture identities. No diagnostic normalization.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/baseline-frontend.json",
+      "sha256": "c6ad343ebf9b6ad87d22b4515a65e98c11d815829566b75787e847fead6c9568"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/candidate-frontend.json",
+      "sha256": "3722e13efa8a27c57777af14190351622f9f18a8361f7144083200d6c09680a5"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase7/s3-evidence/compare-frontend.mjs",
+      "sha256": "62d54cacd86a6d9c1e0a4a7d361772c4185aa914c1b8cb44e1955937e1681bb9"
+    }
+  ],
+  "differences": [],
+  "counts": {
+    "observations": 2756,
+    "positiveCheck": 919,
+    "negativeCheck": 459,
+    "strictCheckFailures": 318
+  },
+  "summaries": {
+    "before": {
+      "tests": 1378,
+      "allTests": 1378,
+      "externalTests": 0,
+      "excludedTests": 0,
+      "probes": 2756,
+      "statuses": {
+        "observed": 459,
+        "pass": 1979,
+        "fail": 318
+      },
+      "lanes": {
+        "parse": {
+          "observed": 459,
+          "pass": 919
+        },
+        "check": {
+          "pass": 1060,
+          "fail": 318
+        }
+      },
+      "namespaces": {
+        "base": {
+          "observed": 4,
+          "pass": 50
+        },
+        "check": {
+          "pass": 195,
+          "observed": 146,
+          "fail": 101
+        },
+        "compile": {
+          "pass": 199,
+          "observed": 10,
+          "fail": 1
+        },
+        "comptime": {
+          "pass": 56,
+          "observed": 22,
+          "fail": 22
+        },
+        "cost": {
+          "pass": 8,
+          "observed": 1,
+          "fail": 1
+        },
+        "eval": {
+          "observed": 4,
+          "fail": 1,
+          "pass": 73
+        },
+        "flatten": {
+          "pass": 379,
+          "observed": 54,
+          "fail": 47
+        },
+        "gfx": {
+          "pass": 8
+        },
+        "grade": {
+          "pass": 6,
+          "observed": 15,
+          "fail": 13
+        },
+        "halt": {
+          "pass": 42,
+          "observed": 26,
+          "fail": 2
+        },
+        "import": {
+          "pass": 29,
+          "observed": 14,
+          "fail": 13
+        },
+        "io": {
+          "pass": 200,
+          "observed": 16,
+          "fail": 2
+        },
+        "page": {
+          "observed": 19,
+          "pass": 11,
+          "fail": 16
+        },
+        "parse": {
+          "pass": 182,
+          "observed": 63,
+          "fail": 43
+        },
+        "printer": {
+          "pass": 14
+        },
+        "proof": {
+          "pass": 90,
+          "observed": 33,
+          "fail": 33
+        },
+        "reg": {
+          "pass": 176,
+          "observed": 5,
+          "fail": 5
+        },
+        "rfc": {
+          "pass": 18
+        },
+        "run": {
+          "observed": 6,
+          "fail": 4,
+          "pass": 140
+        },
+        "show": {
+          "pass": 16
+        },
+        "spec": {
+          "observed": 13,
+          "fail": 6,
+          "pass": 11
+        },
+        "state": {
+          "pass": 16,
+          "observed": 8,
+          "fail": 8
+        },
+        "stats": {
+          "pass": 10
+        },
+        "stuck": {
+          "pass": 50
+        }
+      },
+      "checkerRejections": 84,
+      "frontendRejections": 56,
+      "uncheckedExecutions": 0
+    },
+    "after": {
+      "tests": 1378,
+      "allTests": 1378,
+      "externalTests": 0,
+      "excludedTests": 0,
+      "probes": 2756,
+      "statuses": {
+        "observed": 459,
+        "pass": 1979,
+        "fail": 318
+      },
+      "lanes": {
+        "parse": {
+          "observed": 459,
+          "pass": 919
+        },
+        "check": {
+          "pass": 1060,
+          "fail": 318
+        }
+      },
+      "namespaces": {
+        "base": {
+          "observed": 4,
+          "pass": 50
+        },
+        "check": {
+          "pass": 195,
+          "observed": 146,
+          "fail": 101
+        },
+        "compile": {
+          "pass": 199,
+          "observed": 10,
+          "fail": 1
+        },
+        "comptime": {
+          "pass": 56,
+          "observed": 22,
+          "fail": 22
+        },
+        "cost": {
+          "pass": 8,
+          "observed": 1,
+          "fail": 1
+        },
+        "eval": {
+          "observed": 4,
+          "fail": 1,
+          "pass": 73
+        },
+        "flatten": {
+          "pass": 379,
+          "observed": 54,
+          "fail": 47
+        },
+        "gfx": {
+          "pass": 8
+        },
+        "grade": {
+          "pass": 6,
+          "observed": 15,
+          "fail": 13
+        },
+        "halt": {
+          "pass": 42,
+          "observed": 26,
+          "fail": 2
+        },
+        "import": {
+          "pass": 29,
+          "observed": 14,
+          "fail": 13
+        },
+        "io": {
+          "pass": 200,
+          "observed": 16,
+          "fail": 2
+        },
+        "page": {
+          "observed": 19,
+          "pass": 11,
+          "fail": 16
+        },
+        "parse": {
+          "pass": 182,
+          "observed": 63,
+          "fail": 43
+        },
+        "printer": {
+          "pass": 14
+        },
+        "proof": {
+          "pass": 90,
+          "observed": 33,
+          "fail": 33
+        },
+        "reg": {
+          "pass": 176,
+          "observed": 5,
+          "fail": 5
+        },
+        "rfc": {
+          "pass": 18
+        },
+        "run": {
+          "observed": 6,
+          "fail": 4,
+          "pass": 140
+        },
+        "show": {
+          "pass": 16
+        },
+        "spec": {
+          "observed": 13,
+          "fail": 6,
+          "pass": 11
+        },
+        "state": {
+          "pass": 16,
+          "observed": 8,
+          "fail": 8
+        },
+        "stats": {
+          "pass": 10
+        },
+        "stuck": {
+          "pass": 50
+        }
+      },
+      "checkerRejections": 84,
+      "frontendRejections": 56,
+      "uncheckedExecutions": 0
+    }
+  },
+  "artifacts": {
+    "before": {
+      "compiler": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/equality/api.mjs",
+        "sha256": "b3a75d62c7946301d987474fe097d5eb2e08cad2edcc6b3eae5371f5c5effbed"
+      },
+      "base": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/base.bend",
+        "sha256": "b8c2734d45ec6b4ce70fee70ff06ef35e08fce885af8852d8eb77dbff020e946"
+      },
+      "runtime": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime.mjs",
+        "sha256": "26f5eee2f54b194b64f768df6ff505c67bf7a5df2159aa06caf53ecba54e910b"
+      },
+      "driver": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/tools/typed-driver.mjs",
+        "sha256": "5ba7da61f7f4b7bbc10f977089ac2d9266a8f79634405d33c42399f8e98b75fa"
+      },
+      "compilerAbi": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/tools/compiler-abi.mjs",
+        "sha256": "0bcbcaf022108877600baab1b15356db6d9917f5c4d668af936279680c126454"
+      },
+      "nodeResources": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/tools/node-resource-args.mjs",
+        "sha256": "6aefb3aee9b69b0c25d68edbf0ada6a57ba93e277d3adb8d232dfa6dff01d758"
+      },
+      "nativeBuild": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/tools/native-build.mjs",
+        "sha256": "a76f2c027459f7ffdb9fc16dc450ee33e0f39c74568df4c74d03309e662c9117"
+      },
+      "assemble": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/tools/assemble.mjs",
+        "sha256": "f7c8feff7a0b8f8b4a302c2ca8b99b363a8d7c4c9c48bc6b7a9463aa23c58b75"
+      },
+      "nativeRuntime": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/runtime.c",
+        "sha256": "1bbee6dfbe62736c94ad448ec69a8f7437526e98c0aea230b491574f5a9a85fb"
+      },
+      "nativeEffect/args.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/args.c",
+        "sha256": "7209a5fa11396fa8b0667a6738c913c40f554797e442c847a25e13a5f69676e0"
+      },
+      "nativeEffect/audio_close.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/audio_close.c",
+        "sha256": "c67f807f7400065f20045392d87ef7e73af209f1aa0ee34a1eb35d568d94feb5"
+      },
+      "nativeEffect/audio_open.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/audio_open.c",
+        "sha256": "65df9665a396a7976b4fdfa556a73ec187e3b5e669e47888615cb0c63a42ce41"
+      },
+      "nativeEffect/audio_write.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/audio_write.c",
+        "sha256": "0eaaef9f111e40224f4adc4c8978b9e35f08613996381ac9b72641e2aeb608c4"
+      },
+      "nativeEffect/chan_close.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/chan_close.c",
+        "sha256": "d88e91ca179bfcdbf8580e75f1dbea4c5f240d3fbdb980a2ee24d1e662ff478a"
+      },
+      "nativeEffect/chan_new.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/chan_new.c",
+        "sha256": "41d722added898f3a9eae186be969a7ca7f01bc3235331663b13319d14fb7ff2"
+      },
+      "nativeEffect/chan_recv.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/chan_recv.c",
+        "sha256": "7baa193d4adb09865a9397e84d41ec4fe7097cdd46150ed44513c76da126d0d1"
+      },
+      "nativeEffect/chan_send.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/chan_send.c",
+        "sha256": "f12ade43cc52af51e13d35a93221b129db11fbfa7470f38557b1c0c9ef22caa4"
+      },
+      "nativeEffect/file_close.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/file_close.c",
+        "sha256": "befd465a31b88936d772222d26b1019ea7330e59e6327d8ba90584c85e8b2fb3"
+      },
+      "nativeEffect/file_open.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/file_open.c",
+        "sha256": "f42a8bcc142b9003c7f6ca99287ca09c14f9efcbe15dea929c90c2fa062746e7"
+      },
+      "nativeEffect/file_read.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/file_read.c",
+        "sha256": "4ec0b13491c0d9564836ad23b5a65aec930d84bd19e36c90e20e9c34211a7e2b"
+      },
+      "nativeEffect/file_read_at.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/file_read_at.c",
+        "sha256": "689499b396a634a3ebb21ad2cc3846f1979b8f2747c07c15a38ee2f07c904b1c"
+      },
+      "nativeEffect/file_read_bytes.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/file_read_bytes.c",
+        "sha256": "810e08bfe4439e71dc4bae03eeae680689af8092e144b53faacd75df198ef93d"
+      },
+      "nativeEffect/file_size.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/file_size.c",
+        "sha256": "09906f3839f0f0fba1eea944c948e35f8e03627dc2b78e8debb43e0556f5d5d8"
+      },
+      "nativeEffect/file_write.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/file_write.c",
+        "sha256": "9829c7100982824fa17f78bab80150adccbddcb69a3cc47939e118018cc22504"
+      },
+      "nativeEffect/file_write_bytes.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/file_write_bytes.c",
+        "sha256": "80784b7308c00f74ffae50ec0d8278227250edb8edd71a9e33c701482438f097"
+      },
+      "nativeEffect/get_env.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/get_env.c",
+        "sha256": "62255e46c7e0c43baea62366830c4a5badb11cba517c0aa17f952f432f46d4a3"
+      },
+      "nativeEffect/listener_close.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/listener_close.c",
+        "sha256": "11247352a8311b066fff27ed85958598214ece80f23a7ac59ee981ea569351ec"
+      },
+      "nativeEffect/now.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/now.c",
+        "sha256": "da5fde65701c4fadc7560625c9615b4d60b2eefbd7b6bbe1aedda61887b825b9"
+      },
+      "nativeEffect/print.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/print.c",
+        "sha256": "709500d2ace6e2eaeec0f5f1e4373d4ec5e402b3c1e289bd70dfef7e2a635b26"
+      },
+      "nativeEffect/print_err.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/print_err.c",
+        "sha256": "72781d2adc88a4791d5530c9deff20824c38d5aa1ba43fb05aaa6a697e19f4b6"
+      },
+      "nativeEffect/random_u32.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/random_u32.c",
+        "sha256": "10ef9045dcd539bc0ff609e61c77d585fb998ceb48656944d62727716263ee2d"
+      },
+      "nativeEffect/sleep.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/sleep.c",
+        "sha256": "77e212d3baeec0b3dc0a9c7f630b43094986e433c049049d354a9681719e2ecd"
+      },
+      "nativeEffect/socket_close.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/socket_close.c",
+        "sha256": "6e2fd1717a2fab133813af88fc0f5b5a8ce44c23bf411f269e71aac38671562e"
+      },
+      "nativeEffect/spawn.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/spawn.c",
+        "sha256": "fb3dac6efa993c51f9d7a668cf8da2cac1148380b72cc18a558cba9ba70c01f3"
+      },
+      "nativeEffect/tcp_accept.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/tcp_accept.c",
+        "sha256": "e0f0cf4199c278aec722e3c9b81ff879fcec31ec96ebaf66a954db673cf535f8"
+      },
+      "nativeEffect/tcp_connect.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/tcp_connect.c",
+        "sha256": "ae1515d0ff57215b03888e76cfe4ee485750ec226c28eed05d56e417f0f84f58"
+      },
+      "nativeEffect/tcp_listen.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/tcp_listen.c",
+        "sha256": "2f206b54e6698df529f6c669755cf84e92f51736db4d38e224dd5eb3fcd0a3ed"
+      },
+      "nativeEffect/tcp_poll.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/tcp_poll.c",
+        "sha256": "9f4adfe0f4b8e025783b07fa4ba9fec619a5938135dc5f4bb8c9cf7079e82b37"
+      },
+      "nativeEffect/tcp_recv.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/tcp_recv.c",
+        "sha256": "3a105d82f4e786b992e27bec66c407caa9efbda67a63c03d95805231a21d9ba1"
+      },
+      "nativeEffect/tcp_send.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/tcp_send.c",
+        "sha256": "70a5eba01d09e2cda7a9f3b22d976f4c8ba3fb7a8c8083abddd8d12c85d8a2a4"
+      },
+      "nativeEffect/udp_bind.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/udp_bind.c",
+        "sha256": "fe405175c1890c2d19a2f6d94b2672259b47a1e6dc8f62f8e9ff540bef7a2245"
+      },
+      "nativeEffect/udp_poll.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/udp_poll.c",
+        "sha256": "66504dbbc09ab346e04cca7a22c60aacc8866555ac143088603cb4b568a64f71"
+      },
+      "nativeEffect/udp_recv_from.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/udp_recv_from.c",
+        "sha256": "140a281bca2348566030e092f3c27591893b5d945e57e2965863d02c2e6c0a65"
+      },
+      "nativeEffect/udp_send_to.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/udp_send_to.c",
+        "sha256": "8704fe7e5770af7e4dcbe24f0fecf4cfbfe61a0a69a77b129df9965e306fae8f"
+      },
+      "nativeEffect/window_close.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/window_close.c",
+        "sha256": "655afbdf8a5f7fa80963bad64b43c8dfe7ec1f80896db381792d0d6933f3be2d"
+      },
+      "nativeEffect/window_frame.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/window_frame.c",
+        "sha256": "01dc840b2145efb8c91b4ffe7360e3520753f59c42e122703c3a6190c50e1aa4"
+      },
+      "nativeEffect/window_open.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/window_open.c",
+        "sha256": "1be9c669b47a44716b9cef1aafaafa1ed2a2268730fab475efa762cf368fc21d"
+      },
+      "nativeEffect/window_set_title.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/window_set_title.c",
+        "sha256": "cd60a39ca4084794f3e7aef939de8c7e02ef0ae2158bf52a69f93c21a59ebba5"
+      },
+      "nativeEffect/write.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime/native/effs/write.c",
+        "sha256": "c1bcd80d50c4901027c801cdd8d7464ea3029361115ac47044c992ce2235a8ac"
+      },
+      "harness/run.mjs": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/tools/conformance/run.mjs",
+        "sha256": "7198c672c15d6fa9b20cd4010446966713fce1ed6054ae13bff1e6500521b6a0"
+      },
+      "harness/worker.mjs": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/tools/conformance/worker.mjs",
+        "sha256": "efeca16d731c8e37c671c7f82dddb66c9fc8792db7e31b652acfd3a0ab0e60e4"
+      },
+      "harness/inventory.mjs": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/tools/conformance/inventory.mjs",
+        "sha256": "1661cd577a897f4dd711aadec4b1b5d67031b9c315b82255538cdde6568de6fd"
+      },
+      "harness/judge.mjs": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/tools/conformance/judge.mjs",
+        "sha256": "4940d3c351457291ca3000596ff61731deb04d9c94c80b23ad3103344680b466"
+      },
+      "harness/selection.mjs": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/tools/conformance/selection.mjs",
+        "sha256": "c30b45c0c18052312c51084ae4b316370c070b3f27e657d4762b05281df254b2"
+      },
+      "harness/run-probe.mjs": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/tools/conformance/run-probe.mjs",
+        "sha256": "3dfea3af1e901b9e4850482f3ee5fdee8f0a2f463714022d397ae5282263d77c"
+      },
+      "harness/replay.mjs": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/tools/conformance/replay.mjs",
+        "sha256": "412f24d8b26ce78c1fca5584ee2a36d8d5e416bd2d58c5711427f37b171fec94"
+      },
+      "harness/persistent-probe.mjs": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/tools/conformance/persistent-probe.mjs",
+        "sha256": "b7f152f6656ed2fd461b9376092a44f85443b9aa85161a22e4b7aeaf86005225"
+      },
+      "harness/persistent-worker.mjs": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/tools/conformance/persistent-worker.mjs",
+        "sha256": "ccf069cc069171becf0d5564e50a14b3aa4d652b5147f0ef8593c1668689918d"
+      }
+    },
+    "after": {
+      "compiler": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/equality/api.mjs",
+        "sha256": "7e913551460ac736f1af35e19049d712765291255a0e579482f2e7179dcadbc6"
+      },
+      "base": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/base.bend",
+        "sha256": "b8c2734d45ec6b4ce70fee70ff06ef35e08fce885af8852d8eb77dbff020e946"
+      },
+      "runtime": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime.mjs",
+        "sha256": "26f5eee2f54b194b64f768df6ff505c67bf7a5df2159aa06caf53ecba54e910b"
+      },
+      "driver": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/tools/typed-driver.mjs",
+        "sha256": "96dd1d6637fa25e28fe3fd83a963189d12da2a939468e651ff5318dee383224c"
+      },
+      "compilerAbi": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/tools/compiler-abi.mjs",
+        "sha256": "0bcbcaf022108877600baab1b15356db6d9917f5c4d668af936279680c126454"
+      },
+      "nodeResources": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/tools/node-resource-args.mjs",
+        "sha256": "6aefb3aee9b69b0c25d68edbf0ada6a57ba93e277d3adb8d232dfa6dff01d758"
+      },
+      "nativeBuild": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/tools/native-build.mjs",
+        "sha256": "a76f2c027459f7ffdb9fc16dc450ee33e0f39c74568df4c74d03309e662c9117"
+      },
+      "assemble": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/tools/assemble.mjs",
+        "sha256": "f7c8feff7a0b8f8b4a302c2ca8b99b363a8d7c4c9c48bc6b7a9463aa23c58b75"
+      },
+      "nativeRuntime": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/runtime.c",
+        "sha256": "1bbee6dfbe62736c94ad448ec69a8f7437526e98c0aea230b491574f5a9a85fb"
+      },
+      "nativeEffect/args.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/args.c",
+        "sha256": "7209a5fa11396fa8b0667a6738c913c40f554797e442c847a25e13a5f69676e0"
+      },
+      "nativeEffect/audio_close.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/audio_close.c",
+        "sha256": "c67f807f7400065f20045392d87ef7e73af209f1aa0ee34a1eb35d568d94feb5"
+      },
+      "nativeEffect/audio_open.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/audio_open.c",
+        "sha256": "65df9665a396a7976b4fdfa556a73ec187e3b5e669e47888615cb0c63a42ce41"
+      },
+      "nativeEffect/audio_write.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/audio_write.c",
+        "sha256": "0eaaef9f111e40224f4adc4c8978b9e35f08613996381ac9b72641e2aeb608c4"
+      },
+      "nativeEffect/chan_close.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/chan_close.c",
+        "sha256": "d88e91ca179bfcdbf8580e75f1dbea4c5f240d3fbdb980a2ee24d1e662ff478a"
+      },
+      "nativeEffect/chan_new.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/chan_new.c",
+        "sha256": "41d722added898f3a9eae186be969a7ca7f01bc3235331663b13319d14fb7ff2"
+      },
+      "nativeEffect/chan_recv.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/chan_recv.c",
+        "sha256": "7baa193d4adb09865a9397e84d41ec4fe7097cdd46150ed44513c76da126d0d1"
+      },
+      "nativeEffect/chan_send.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/chan_send.c",
+        "sha256": "f12ade43cc52af51e13d35a93221b129db11fbfa7470f38557b1c0c9ef22caa4"
+      },
+      "nativeEffect/file_close.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/file_close.c",
+        "sha256": "befd465a31b88936d772222d26b1019ea7330e59e6327d8ba90584c85e8b2fb3"
+      },
+      "nativeEffect/file_open.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/file_open.c",
+        "sha256": "f42a8bcc142b9003c7f6ca99287ca09c14f9efcbe15dea929c90c2fa062746e7"
+      },
+      "nativeEffect/file_read.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/file_read.c",
+        "sha256": "4ec0b13491c0d9564836ad23b5a65aec930d84bd19e36c90e20e9c34211a7e2b"
+      },
+      "nativeEffect/file_read_at.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/file_read_at.c",
+        "sha256": "689499b396a634a3ebb21ad2cc3846f1979b8f2747c07c15a38ee2f07c904b1c"
+      },
+      "nativeEffect/file_read_bytes.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/file_read_bytes.c",
+        "sha256": "810e08bfe4439e71dc4bae03eeae680689af8092e144b53faacd75df198ef93d"
+      },
+      "nativeEffect/file_size.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/file_size.c",
+        "sha256": "09906f3839f0f0fba1eea944c948e35f8e03627dc2b78e8debb43e0556f5d5d8"
+      },
+      "nativeEffect/file_write.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/file_write.c",
+        "sha256": "9829c7100982824fa17f78bab80150adccbddcb69a3cc47939e118018cc22504"
+      },
+      "nativeEffect/file_write_bytes.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/file_write_bytes.c",
+        "sha256": "80784b7308c00f74ffae50ec0d8278227250edb8edd71a9e33c701482438f097"
+      },
+      "nativeEffect/get_env.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/get_env.c",
+        "sha256": "62255e46c7e0c43baea62366830c4a5badb11cba517c0aa17f952f432f46d4a3"
+      },
+      "nativeEffect/listener_close.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/listener_close.c",
+        "sha256": "11247352a8311b066fff27ed85958598214ece80f23a7ac59ee981ea569351ec"
+      },
+      "nativeEffect/now.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/now.c",
+        "sha256": "da5fde65701c4fadc7560625c9615b4d60b2eefbd7b6bbe1aedda61887b825b9"
+      },
+      "nativeEffect/print.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/print.c",
+        "sha256": "709500d2ace6e2eaeec0f5f1e4373d4ec5e402b3c1e289bd70dfef7e2a635b26"
+      },
+      "nativeEffect/print_err.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/print_err.c",
+        "sha256": "72781d2adc88a4791d5530c9deff20824c38d5aa1ba43fb05aaa6a697e19f4b6"
+      },
+      "nativeEffect/random_u32.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/random_u32.c",
+        "sha256": "10ef9045dcd539bc0ff609e61c77d585fb998ceb48656944d62727716263ee2d"
+      },
+      "nativeEffect/sleep.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/sleep.c",
+        "sha256": "77e212d3baeec0b3dc0a9c7f630b43094986e433c049049d354a9681719e2ecd"
+      },
+      "nativeEffect/socket_close.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/socket_close.c",
+        "sha256": "6e2fd1717a2fab133813af88fc0f5b5a8ce44c23bf411f269e71aac38671562e"
+      },
+      "nativeEffect/spawn.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/spawn.c",
+        "sha256": "fb3dac6efa993c51f9d7a668cf8da2cac1148380b72cc18a558cba9ba70c01f3"
+      },
+      "nativeEffect/tcp_accept.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/tcp_accept.c",
+        "sha256": "e0f0cf4199c278aec722e3c9b81ff879fcec31ec96ebaf66a954db673cf535f8"
+      },
+      "nativeEffect/tcp_connect.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/tcp_connect.c",
+        "sha256": "ae1515d0ff57215b03888e76cfe4ee485750ec226c28eed05d56e417f0f84f58"
+      },
+      "nativeEffect/tcp_listen.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/tcp_listen.c",
+        "sha256": "2f206b54e6698df529f6c669755cf84e92f51736db4d38e224dd5eb3fcd0a3ed"
+      },
+      "nativeEffect/tcp_poll.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/tcp_poll.c",
+        "sha256": "9f4adfe0f4b8e025783b07fa4ba9fec619a5938135dc5f4bb8c9cf7079e82b37"
+      },
+      "nativeEffect/tcp_recv.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/tcp_recv.c",
+        "sha256": "3a105d82f4e786b992e27bec66c407caa9efbda67a63c03d95805231a21d9ba1"
+      },
+      "nativeEffect/tcp_send.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/tcp_send.c",
+        "sha256": "70a5eba01d09e2cda7a9f3b22d976f4c8ba3fb7a8c8083abddd8d12c85d8a2a4"
+      },
+      "nativeEffect/udp_bind.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/udp_bind.c",
+        "sha256": "fe405175c1890c2d19a2f6d94b2672259b47a1e6dc8f62f8e9ff540bef7a2245"
+      },
+      "nativeEffect/udp_poll.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/udp_poll.c",
+        "sha256": "66504dbbc09ab346e04cca7a22c60aacc8866555ac143088603cb4b568a64f71"
+      },
+      "nativeEffect/udp_recv_from.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/udp_recv_from.c",
+        "sha256": "140a281bca2348566030e092f3c27591893b5d945e57e2965863d02c2e6c0a65"
+      },
+      "nativeEffect/udp_send_to.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/udp_send_to.c",
+        "sha256": "8704fe7e5770af7e4dcbe24f0fecf4cfbfe61a0a69a77b129df9965e306fae8f"
+      },
+      "nativeEffect/window_close.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/window_close.c",
+        "sha256": "655afbdf8a5f7fa80963bad64b43c8dfe7ec1f80896db381792d0d6933f3be2d"
+      },
+      "nativeEffect/window_frame.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/window_frame.c",
+        "sha256": "01dc840b2145efb8c91b4ffe7360e3520753f59c42e122703c3a6190c50e1aa4"
+      },
+      "nativeEffect/window_open.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/window_open.c",
+        "sha256": "1be9c669b47a44716b9cef1aafaafa1ed2a2268730fab475efa762cf368fc21d"
+      },
+      "nativeEffect/window_set_title.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/window_set_title.c",
+        "sha256": "cd60a39ca4084794f3e7aef939de8c7e02ef0ae2158bf52a69f93c21a59ebba5"
+      },
+      "nativeEffect/write.c": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime/native/effs/write.c",
+        "sha256": "c1bcd80d50c4901027c801cdd8d7464ea3029361115ac47044c992ce2235a8ac"
+      },
+      "harness/run.mjs": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/tools/conformance/run.mjs",
+        "sha256": "7198c672c15d6fa9b20cd4010446966713fce1ed6054ae13bff1e6500521b6a0"
+      },
+      "harness/worker.mjs": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/tools/conformance/worker.mjs",
+        "sha256": "efeca16d731c8e37c671c7f82dddb66c9fc8792db7e31b652acfd3a0ab0e60e4"
+      },
+      "harness/inventory.mjs": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/tools/conformance/inventory.mjs",
+        "sha256": "1661cd577a897f4dd711aadec4b1b5d67031b9c315b82255538cdde6568de6fd"
+      },
+      "harness/judge.mjs": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/tools/conformance/judge.mjs",
+        "sha256": "4940d3c351457291ca3000596ff61731deb04d9c94c80b23ad3103344680b466"
+      },
+      "harness/selection.mjs": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/tools/conformance/selection.mjs",
+        "sha256": "c30b45c0c18052312c51084ae4b316370c070b3f27e657d4762b05281df254b2"
+      },
+      "harness/run-probe.mjs": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/tools/conformance/run-probe.mjs",
+        "sha256": "3dfea3af1e901b9e4850482f3ee5fdee8f0a2f463714022d397ae5282263d77c"
+      },
+      "harness/replay.mjs": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/tools/conformance/replay.mjs",
+        "sha256": "412f24d8b26ce78c1fca5584ee2a36d8d5e416bd2d58c5711427f37b171fec94"
+      },
+      "harness/persistent-probe.mjs": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/tools/conformance/persistent-probe.mjs",
+        "sha256": "b7f152f6656ed2fd461b9376092a44f85443b9aa85161a22e4b7aeaf86005225"
+      },
+      "harness/persistent-worker.mjs": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/tools/conformance/persistent-worker.mjs",
+        "sha256": "ccf069cc069171becf0d5564e50a14b3aa4d652b5147f0ef8593c1668689918d"
+      }
+    }
+  },
+  "workerStats": {
+    "before": [
+      {
+        "stats": {
+          "starts": 22,
+          "requests": 1364,
+          "recycles": 21,
+          "timeouts": 0,
+          "failures": 0,
+          "maxRssBytes": 465166336
+        },
+        "errors": []
+      },
+      {
+        "stats": {
+          "starts": 22,
+          "requests": 1392,
+          "recycles": 21,
+          "timeouts": 0,
+          "failures": 0,
+          "maxRssBytes": 526913536
+        },
+        "errors": []
+      }
+    ],
+    "after": [
+      {
+        "stats": {
+          "starts": 23,
+          "requests": 1468,
+          "recycles": 22,
+          "timeouts": 0,
+          "failures": 0,
+          "maxRssBytes": 450560000
+        },
+        "errors": []
+      },
+      {
+        "stats": {
+          "starts": 21,
+          "requests": 1288,
+          "recycles": 20,
+          "timeouts": 0,
+          "failures": 0,
+          "maxRssBytes": 508432384
+        },
+        "errors": []
+      }
+    ]
+  }
+}

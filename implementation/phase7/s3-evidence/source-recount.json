@@ -1,0 +1,161 @@
+{
+  "kind": "phase5-static-code-size",
+  "created": "2026-09-26T19:36:55.013690+00:00",
+  "baselineCommit": "7474b0b1f9dcbde2989b9a3ca4e1a7d6a079dd1b",
+  "scope": "Small selected source trees only; generated compiler outputs, build trees, fixtures, documentation and result archives excluded. Host/tool counts provisional until final promotion.",
+  "method": {
+    "physical": "len(UTF8_text.splitlines()); a final newline does not create an extra empty line",
+    "nonblank": "physical lines with nonempty Python str.strip()",
+    "defs": "line-start def, optionally same-line @unsafe",
+    "laws": "line-start law",
+    "types": "line-start type",
+    "extensions": [
+      ".bend",
+      ".c",
+      ".h",
+      ".js",
+      ".mjs",
+      ".py",
+      ".sh",
+      ".ts"
+    ],
+    "productionMembership": "compiler.json modules at each revision",
+    "supportGroups": "top-level tools/conformance/development/private-compiler plus runtime JS/native and other code-extension files under src, individually reported; tests located in those directories included",
+    "experimentalMembership": "code-extension files below tools/performance, including prototype Bend drivers and test helpers",
+    "comparisonLimits": "File size and declarations only; no cyclomatic complexity, semantic complexity or runtime claim."
+  },
+  "manifests": {
+    "baselineSha256": "08c4c055006c8564139a88b793aadfe1dc0b6d100b4c3f2b26ccf8005f8d65c7",
+    "currentSha256": "08c4c055006c8564139a88b793aadfe1dc0b6d100b4c3f2b26ccf8005f8d65c7"
+  },
+  "baseline": {
+    "production": {
+      "files": 59,
+      "bytes": 491193,
+      "physical": 15826,
+      "nonblank": 13209,
+      "defs": 1460,
+      "laws": 1232,
+      "types": 61
+    },
+    "host": {
+      "files": 18,
+      "bytes": 84619,
+      "physical": 1327,
+      "nonblank": 1289,
+      "defs": 1,
+      "laws": 0,
+      "types": 0
+    }
+  },
+  "current": {
+    "production": {
+      "files": 59,
+      "bytes": 486768,
+      "physical": 15687,
+      "nonblank": 13093,
+      "defs": 1450,
+      "laws": 1222,
+      "types": 61
+    },
+    "host": {
+      "files": 18,
+      "bytes": 84922,
+      "physical": 1329,
+      "nonblank": 1291,
+      "defs": 1,
+      "laws": 0,
+      "types": 0
+    }
+  },
+  "productionChanges": [
+    {
+      "file": "selfhost/src/check/kernel.bend",
+      "before": {
+        "bytes": 35691,
+        "physical": 1261,
+        "nonblank": 1050,
+        "defs": 104,
+        "laws": 104,
+        "types": 2,
+        "sha256": "0969c4493c29ab980450c848ea24c1f4b666081dbe0eecfc2c6abe21bb0ed947"
+      },
+      "after": {
+        "bytes": 35212,
+        "physical": 1245,
+        "nonblank": 1036,
+        "defs": 103,
+        "laws": 103,
+        "types": 2,
+        "sha256": "0d920c6026e66ca0ff11f7d210789d398ca162d6cc3858d3a91081c6c763619f"
+      },
+      "delta": {
+        "bytes": -479,
+        "physical": -16,
+        "nonblank": -14,
+        "defs": -1,
+        "laws": -1,
+        "types": 0
+      }
+    },
+    {
+      "file": "selfhost/src/check/prefix.bend",
+      "before": {
+        "bytes": 3709,
+        "physical": 179,
+        "nonblank": 150,
+        "defs": 14,
+        "laws": 14,
+        "types": 0,
+        "sha256": "35af4b272cfe893d60d4aca6433617273a1c52bb8ae4d8eeabfa0541354816cb"
+      },
+      "after": {
+        "bytes": 3010,
+        "physical": 150,
+        "nonblank": 125,
+        "defs": 12,
+        "laws": 12,
+        "types": 0,
+        "sha256": "b95dcd2bcd8bd22d23b1bdce90e44f4e2554a127ef78d3f26a20190cf8c21322"
+      },
+      "delta": {
+        "bytes": -699,
+        "physical": -29,
+        "nonblank": -25,
+        "defs": -2,
+        "laws": -2,
+        "types": 0
+      }
+    },
+    {
+      "file": "selfhost/src/diagnostic/produce.bend",
+      "before": {
+        "bytes": 11720,
+        "physical": 346,
+        "nonblank": 296,
+        "defs": 30,
+        "laws": 30,
+        "types": 0,
+        "sha256": "4c91e4559263e307ce4b3ed0cc11138da27617c6fe5b8bfb21033c5f975a054f"
+      },
+      "after": {
+        "bytes": 8473,
+        "physical": 252,
+        "nonblank": 219,
+        "defs": 23,
+        "laws": 23,
+        "types": 0,
+        "sha256": "5e036e63cd32af0f64642bc4cea581ea191e4281c6cbb5ba840fd87b979213b5"
+      },
+      "delta": {
+        "bytes": -3247,
+        "physical": -94,
+        "nonblank": -77,
+        "defs": -7,
+        "laws": -7,
+        "types": 0
+      }
+    }
+  ],
+  "currentUnchangedDuringCount": true
+}

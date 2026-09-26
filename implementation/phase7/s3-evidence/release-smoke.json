@@ -1,0 +1,56 @@
+{
+  "source": "import Base\n\ndef main() -> U32:\n  42\n#|42\n",
+  "observations": [
+    {
+      "name": "verify-release",
+      "argv": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "tools/development/release.mjs",
+        "--verify"
+      ],
+      "exitCode": 0,
+      "stdout": "{\"complete\":true,\"artifact\":\"equality-derived-b1\",\"api\":{\"path\":\"dist/typed-api.mjs\",\"sha256\":\"7e913551460ac736f1af35e19049d712765291255a0e579482f2e7179dcadbc6\",\"bytes\":1030277},\"sourceSha256\":\"58d57867be712b3b9c9df2c1d285fa6d856da850479cda02a3d86fc2b13c3a7d\",\"newBootstrap\":false}\n",
+      "stderr": "",
+      "seconds": 0.229334922041744
+    },
+    {
+      "name": "check",
+      "argv": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "cli.mjs",
+        "tests/conformance/typed-smoke/base-u32.bend",
+        "--check-only"
+      ],
+      "exitCode": 0,
+      "stdout": "All terms check.\n",
+      "stderr": "",
+      "seconds": 4.061564813368022
+    },
+    {
+      "name": "interpret",
+      "argv": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "cli.mjs",
+        "tests/conformance/typed-smoke/base-u32.bend"
+      ],
+      "exitCode": 0,
+      "stdout": "42\n",
+      "stderr": "",
+      "seconds": 0.5962489559315145
+    },
+    {
+      "name": "javascript",
+      "argv": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "cli.mjs",
+        "tests/conformance/typed-smoke/base-u32.bend",
+        "--run"
+      ],
+      "exitCode": 0,
+      "stdout": "42\n",
+      "stderr": "",
+      "seconds": 0.9241747469641268
+    }
+  ],
+  "interpreterEqualsJavaScript": true
+}

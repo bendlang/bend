@@ -467,13 +467,6 @@ law check_open_message:
   for +n: U32
   String
 
-law check_event_guard:
-  for +rest: List<&2, KDef>
-  for +done: List<&2, KDef>
-  for +d: KDef
-  for +err: String
-  String
-
 law signature_mode:
   for +d: KDef
   for +later: List<&2, KDef>
@@ -501,13 +494,6 @@ law constructor_names:
   for +names: List<&2, String>
   String
 
-law check_event_done:
-  for +rest: List<&2, KDef>
-  for +done: List<&2, KDef>
-  for +d: KDef
-  for +err: String
-  String
-
 law check_definition:
   for +book: List<&2, KDef>
   for +d: KDef
@@ -518,7 +504,7 @@ law check_definition_type:
   for +d: KDef
   for +e: KEnv
   for +r: KChecked
-  String
+  KChecked
 
 law foreign_tip:
   for +t: KTerm
@@ -645,7 +631,7 @@ law check_template_definition:
   for +body: KTerm
   for +lhs: KTerm
   for +n: U32
-  String
+  KChecked
 
 law check_template_binder:
   for +book: List<&2, KDef>
@@ -654,7 +640,7 @@ law check_template_binder:
   for +body: KTerm
   for +lhs: KTerm
   for +n: U32
-  String
+  KChecked
 
 law check_template_open:
   for +book: List<&2, KDef>
@@ -664,7 +650,7 @@ law check_template_open:
   for +lhs: KTerm
   for +n: U32
   for +name: String
-  String
+  KChecked
 
 @unsafe
 def cb(e):
@@ -1018,15 +1004,11 @@ def declared(d):
 
 @unsafe
 def check_book(book):
-  check_events(book, book_cached(Nil{}, norm_max_book(book)))
+  dg_result_error(check_book_diagnostic(book, Nil{}))
 
 @unsafe
 def check_events(todo, done):
-  match todo:
-    case Nil{}:
-      check_open(done)
-    case Con{d, rest}:
-      check_event_guard(rest, done, d, event_error(done, d, lookup(done, dn(d))))
+  dg_result_error(dg_suffix_events(todo, done, todo, Nil{}))
 
 @unsafe
 def check_open(book):
@@ -1043,10 +1025,6 @@ def count_open(book):
 @unsafe
 def check_open_message(n):
   kc(String, U32.is_eq(n, 0), u => "", u => U32.show(n) ++ " TODO" ++ kc(String, U32.is_eq(n, 1), u => "", u => "s") ++ " found.\nThe code is incomplete, and not a valid proof yet.")
-
-@unsafe
-def check_event_guard(rest, done, d, err):
-  kc(String, String.eq(err, ""), u => check_event_done(rest, done, d, check_definition(book_put(done, declared(d)), signature_mode(d, rest))), u => dn(d) ++ ": " ++ err)
 
 @unsafe
 def signature_mode(d, later):
@@ -1077,17 +1055,23 @@ def constructor_names(done, ctrs, names):
       kc(String, has_name(names, dn(h)) || constructor_exists(done, dn(h)), u => "duplicate constructor name", u => constructor_names(done, rest, Con{dn(h), names}))
 
 @unsafe
-def check_event_done(rest, done, d, err):
-  kc(String, String.eq(err, ""), u => check_events(rest, book_put(done, d)), u => String.append(dn(d), String.append(": ", err)))
+def check_definition(book, d):
+  ce(check_definition_result(book, d))
+
+law check_definition_result:
+  for +book: List<&2, KDef>
+  for +d: KDef
+  KChecked
 
 @unsafe
-def check_definition(book, d):
+def check_definition_result(book, d):
   check_definition_type(book, d, KEnv{book, dn(d), ref(dn(d)), 0, Nil{}, du(d)}, check(KEnv{book, dn(d), ref(dn(d)), 0, Nil{}, du(d)}, Nil{}, dt(d), 0, typ(1)))
 
 @unsafe
 def check_definition_type(book, d, e, r):
-  kc(String, good(r), u => kc(String, String.eq(dk(d), "ADT"), u => check_adt_declaration(e, d),
-   u => kc(String, String.eq(tg(dv(d)), "Absent"), u => "", u => kc(String, String.eq(tg(dv(d)), "Foreign"), u => check_foreign(book, d), u => check_template_definition(book, d, dt(d), dv(d), ref(dn(d)), dx(d))))), u => ce(r))
+  # Legacy ADT/foreign checks use empty ce as success; good(bad("")) is True.
+  kc(KChecked, good(r), u => kc(KChecked, String.eq(dk(d), "ADT"), u => bad(check_adt_declaration(e, d)),
+   u => kc(KChecked, String.eq(tg(dv(d)), "Absent"), u => r, u => kc(KChecked, String.eq(tg(dv(d)), "Foreign"), u => bad(check_foreign(book, d)), u => check_template_definition(book, d, dt(d), dv(d), ref(dn(d)), dx(d))))), u => r)
 
 @unsafe
 def foreign_tip(t):
@@ -1171,11 +1155,11 @@ def contains_self(todo, name):
 
 @unsafe
 def check_template_definition(book, d, ty, body, lhs, n):
-  kc(String, U32.is_eq(n, 0), u => ce(check(KEnv{book, dn(d), lhs, self_pending(d, body), tele_quantities(book, dt(d), da(d)), du(d)}, Nil{}, body, 1, ty)), u => check_template_binder(book, d, wnf(book, ty), body, lhs, n))
+  kc(KChecked, U32.is_eq(n, 0), u => check(KEnv{book, dn(d), lhs, self_pending(d, body), tele_quantities(book, dt(d), da(d)), du(d)}, Nil{}, body, 1, ty), u => check_template_binder(book, d, wnf(book, ty), body, lhs, n))
 
 @unsafe
 def check_template_binder(book, d, ty, body, lhs, n):
-  kc(String, String.eq(tg(ty), "All"), u => check_template_open(book, d, ty, body, lhs, n, dn(d) ++ "~" ++ nm(ty) ++ U32.show(ix(ty))), u => "template telescope is too short")
+  kc(KChecked, String.eq(tg(ty), "All"), u => check_template_open(book, d, ty, body, lhs, n, dn(d) ++ "~" ++ nm(ty) ++ U32.show(ix(ty))), u => bad("template telescope is too short"))
 
 @unsafe
 def check_template_open(book, d, ty, body, lhs, n, name):

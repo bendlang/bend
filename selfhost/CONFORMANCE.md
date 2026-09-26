@@ -1,19 +1,23 @@
 # Compiler validation
 
-The ordinary CLI uses the [S2 simplification release](../implementation/phase7/s2-report.md).
+The ordinary CLI uses the [S3 simplification release](../implementation/phase7/s3-report.md).
 Its [manifest](dist/release.json) identifies the exact API/source/runtime/host;
 `npm run verify:release` checks local integrity and transformation replay.
-Fresh checked build, 21 focused paired cases, all component groups, 51 harness
-tests and exact cross-version provenance/diagnostic controls pass. The focused
-suite retains its seven known exact differences; acceptance is not exact parity.
+Fresh checked build, 21 focused paired cases, all component groups and 52 harness
+tests pass. The focused suite retains its seven known exact differences.
+
+Fresh baseline/candidate parse/check vectors compare all 2,756 observations
+exactly: 919 positive and 459 negative check fixtures, zero behavioral differences,
+and the same 318 strict check failures. Diagnostic reuse passes 204 comparisons;
+39 compound-error comparisons and host call counters validate one authoritative
+result and four-to-one failure checking. The separately verified host identity
+field differs by design; diagnostic text is not normalized.
 
 The [Phase 5 frontend gate](../implementation/phase5/final-artifact-frontend.md)
-records 2,756 observations for the earlier artifact, including 318 strict failures.
-S1 retained its complete selected API bytes. S2 changes two provenance API roots;
-52 of 54 selected roots retain identical reachable generated functions. The
-changed routes have 530 new cross-version assertions and the existing 204-check
-loader/diagnostic gate. No new broad corpus sweep or full-source B1→H→H proof is
-claimed. Historical sections retain their recorded artifact scope.
+and full-source fixed point remain historical artifact-specific evidence. S3's
+new full frontend preservation gate does not claim complete upstream conformance,
+a new live TypeScript diagnostic comparison, or a new B1→H→H proof. Historical
+sections retain their recorded scope.
 
 The supplied baseline compiler results are in [the compatibility matrix](docs/COMPATIBILITY-MATRIX.md).
 Phase 1 changes have separate artifact-specific evidence in the

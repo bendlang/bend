@@ -564,3 +564,17 @@ routes preserve exact outputs. CPU0 serial provenance medians improve25.4%/40.5%
 for all/filtered loading; existing-trace lookup has no regression. No new whole
 compiler/TS ratio or fixed point is claimed. The usable release is installed and
 all raw evidence preserved. S3 design is next;50%/75% targets remain unmet.
+
+## 2026-09-26 — S3 authoritative checker result
+
+[S3](../implementation/phase7/s3-report.md) removes139Bend lines and adds2host
+lines by preserving the original structured failure and deleting duplicate event,
+prefix and diagnostic replay workers. The compiler is15,687lines (822removed,
+4.98%). Fresh full parse/check vectors match on all2,756observations, including
+919positive/459negative check fixtures;318strict failures remain. Checked/focused,
+allcomponents,52harness tests,204diagnostic and39first-error comparisons pass;
+actualhost counters establish4→1selected failing-body checks. Serial ABBA shows
+33.5%faster late rejection byrequest,30.6%byprocess, accepted overhead<0.7% and
+maxpairedRSSgrowth2.91%; exact outputbytes remain. The usable release is installed.
+No new full-sourceTSratio orB1→H→Hproof isclaimed. S4mustfund another7,433lines
+before the50%milestone; the targetremains unmet.

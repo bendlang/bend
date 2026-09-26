@@ -1,0 +1,2188 @@
+{
+  "kind": "structured-checker-first-error",
+  "complete": true,
+  "pass": true,
+  "identities": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/api.mjs",
+      "sha256": "db97c8578746e5dfa2c3f2a8d3c0dbc2e58f5616cea14d5d177e41fb66f39604"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/api.mjs",
+      "sha256": "ba121e4098044d9f106c4e7cb3e37b0e1ce1bc77f7e42f7e5418556b7f0f3e90"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tests/structured-checker.mjs",
+      "sha256": "e7d9b08d70f70e70bb947a4078300bc79a441ec93bdc0721ff21025379995a40"
+    }
+  ],
+  "node": "v24.18.0",
+  "checks": 39,
+  "rows": [
+    {
+      "id": "type-before-body",
+      "complete": true,
+      "pass": true,
+      "result": {
+        "$": "DResult",
+        "error": "broken: undefined name",
+        "book": {
+          "$": "Con",
+          "head": {
+            "$": "KDef",
+            "name": "$kernel.cache",
+            "kind": "BookCache",
+            "arity": 0,
+            "templates": 0,
+            "typ": {
+              "$": "KTerm",
+              "tag": "Absent",
+              "name": "",
+              "id": 0,
+              "quant": 0,
+              "kids": {
+                "$": "Nil"
+              },
+              "removed": {
+                "$": "Nil"
+              }
+            },
+            "value": {
+              "$": "KTerm",
+              "tag": "Absent",
+              "name": "",
+              "id": 0,
+              "quant": 0,
+              "kids": {
+                "$": "Nil"
+              },
+              "removed": {
+                "$": "Nil"
+              }
+            },
+            "ctors": {
+              "$": "Con",
+              "head": {
+                "$": "KDef",
+                "name": "",
+                "kind": "IndexNode",
+                "arity": 1041691895,
+                "templates": 1,
+                "typ": {
+                  "$": "KTerm",
+                  "tag": "Absent",
+                  "name": "",
+                  "id": 0,
+                  "quant": 0,
+                  "kids": {
+                    "$": "Nil"
+                  },
+                  "removed": {
+                    "$": "Nil"
+                  }
+                },
+                "value": {
+                  "$": "KTerm",
+                  "tag": "Absent",
+                  "name": "",
+                  "id": 0,
+                  "quant": 0,
+                  "kids": {
+                    "$": "Nil"
+                  },
+                  "removed": {
+                    "$": "Nil"
+                  }
+                },
+                "ctors": {
+                  "$": "Con",
+                  "head": {
+                    "$": "KDef",
+                    "name": "",
+                    "kind": "IndexLeaf",
+                    "arity": 2020464800,
+                    "templates": 0,
+                    "typ": {
+                      "$": "KTerm",
+                      "tag": "Absent",
+                      "name": "",
+                      "id": 0,
+                      "quant": 0,
+                      "kids": {
+                        "$": "Nil"
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "value": {
+                      "$": "KTerm",
+                      "tag": "Absent",
+                      "name": "",
+                      "id": 0,
+                      "quant": 0,
+                      "kids": {
+                        "$": "Nil"
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "ctors": {
+                      "$": "Con",
+                      "head": {
+                        "$": "KDef",
+                        "name": "broken",
+                        "kind": "Def",
+                        "arity": 0,
+                        "templates": 0,
+                        "typ": {
+                          "$": "KTerm",
+                          "tag": "Ref",
+                          "name": "missing_type",
+                          "id": 0,
+                          "quant": 0,
+                          "kids": {
+                            "$": "Nil"
+                          },
+                          "removed": {
+                            "$": "Nil"
+                          }
+                        },
+                        "value": {
+                          "$": "KTerm",
+                          "tag": "Absent",
+                          "name": "",
+                          "id": 0,
+                          "quant": 0,
+                          "kids": {
+                            "$": "Nil"
+                          },
+                          "removed": {
+                            "$": "Nil"
+                          }
+                        },
+                        "ctors": {
+                          "$": "Nil"
+                        },
+                        "native": false,
+                        "unsafe": false
+                      },
+                      "tail": {
+                        "$": "Nil"
+                      }
+                    },
+                    "native": true,
+                    "unsafe": false
+                  },
+                  "tail": {
+                    "$": "Con",
+                    "head": {
+                      "$": "KDef",
+                      "name": "",
+                      "kind": "IndexLeaf",
+                      "arity": 1041691895,
+                      "templates": 0,
+                      "typ": {
+                        "$": "KTerm",
+                        "tag": "Absent",
+                        "name": "",
+                        "id": 0,
+                        "quant": 0,
+                        "kids": {
+                          "$": "Nil"
+                        },
+                        "removed": {
+                          "$": "Nil"
+                        }
+                      },
+                      "value": {
+                        "$": "KTerm",
+                        "tag": "Absent",
+                        "name": "",
+                        "id": 0,
+                        "quant": 0,
+                        "kids": {
+                          "$": "Nil"
+                        },
+                        "removed": {
+                          "$": "Nil"
+                        }
+                      },
+                      "ctors": {
+                        "$": "Con",
+                        "head": {
+                          "$": "KDef",
+                          "name": "Flag",
+                          "kind": "ADT",
+                          "arity": 0,
+                          "templates": 0,
+                          "typ": {
+                            "$": "KTerm",
+                            "tag": "Typ",
+                            "name": "",
+                            "id": 0,
+                            "quant": 0,
+                            "kids": {
+                              "$": "Con",
+                              "head": {
+                                "$": "KTerm",
+                                "tag": "Qua",
+                                "name": "",
+                                "id": 0,
+                                "quant": 2,
+                                "kids": {
+                                  "$": "Nil"
+                                },
+                                "removed": {
+                                  "$": "Nil"
+                                }
+                              },
+                              "tail": {
+                                "$": "Nil"
+                              }
+                            },
+                            "removed": {
+                              "$": "Nil"
+                            }
+                          },
+                          "value": {
+                            "$": "KTerm",
+                            "tag": "Absent",
+                            "name": "",
+                            "id": 0,
+                            "quant": 0,
+                            "kids": {
+                              "$": "Nil"
+                            },
+                            "removed": {
+                              "$": "Nil"
+                            }
+                          },
+                          "ctors": {
+                            "$": "Con",
+                            "head": {
+                              "$": "KDef",
+                              "name": "On",
+                              "kind": "Ctr",
+                              "arity": 0,
+                              "templates": 0,
+                              "typ": {
+                                "$": "KTerm",
+                                "tag": "ADT",
+                                "name": "Flag",
+                                "id": 0,
+                                "quant": 0,
+                                "kids": {
+                                  "$": "Nil"
+                                },
+                                "removed": {
+                                  "$": "Nil"
+                                }
+                              },
+                              "value": {
+                                "$": "KTerm",
+                                "tag": "Absent",
+                                "name": "",
+                                "id": 0,
+                                "quant": 0,
+                                "kids": {
+                                  "$": "Nil"
+                                },
+                                "removed": {
+                                  "$": "Nil"
+                                }
+                              },
+                              "ctors": {
+                                "$": "Nil"
+                              },
+                              "native": false,
+                              "unsafe": false
+                            },
+                            "tail": {
+                              "$": "Nil"
+                            }
+                          },
+                          "native": false,
+                          "unsafe": false
+                        },
+                        "tail": {
+                          "$": "Nil"
+                        }
+                      },
+                      "native": true,
+                      "unsafe": false
+                    },
+                    "tail": {
+                      "$": "Nil"
+                    }
+                  }
+                },
+                "native": true,
+                "unsafe": false
+              },
+              "tail": {
+                "$": "Nil"
+              }
+            },
+            "native": true,
+            "unsafe": false
+          },
+          "tail": {
+            "$": "Con",
+            "head": {
+              "$": "KDef",
+              "name": "broken",
+              "kind": "Def",
+              "arity": 0,
+              "templates": 0,
+              "typ": {
+                "$": "KTerm",
+                "tag": "Ref",
+                "name": "missing_type",
+                "id": 0,
+                "quant": 0,
+                "kids": {
+                  "$": "Nil"
+                },
+                "removed": {
+                  "$": "Nil"
+                }
+              },
+              "value": {
+                "$": "KTerm",
+                "tag": "Absent",
+                "name": "",
+                "id": 0,
+                "quant": 0,
+                "kids": {
+                  "$": "Nil"
+                },
+                "removed": {
+                  "$": "Nil"
+                }
+              },
+              "ctors": {
+                "$": "Nil"
+              },
+              "native": false,
+              "unsafe": false
+            },
+            "tail": {
+              "$": "Con",
+              "head": {
+                "$": "KDef",
+                "name": "Flag",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "typ": {
+                  "$": "KTerm",
+                  "tag": "Typ",
+                  "name": "",
+                  "id": 0,
+                  "quant": 0,
+                  "kids": {
+                    "$": "Con",
+                    "head": {
+                      "$": "KTerm",
+                      "tag": "Qua",
+                      "name": "",
+                      "id": 0,
+                      "quant": 2,
+                      "kids": {
+                        "$": "Nil"
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "tail": {
+                      "$": "Nil"
+                    }
+                  },
+                  "removed": {
+                    "$": "Nil"
+                  }
+                },
+                "value": {
+                  "$": "KTerm",
+                  "tag": "Absent",
+                  "name": "",
+                  "id": 0,
+                  "quant": 0,
+                  "kids": {
+                    "$": "Nil"
+                  },
+                  "removed": {
+                    "$": "Nil"
+                  }
+                },
+                "ctors": {
+                  "$": "Con",
+                  "head": {
+                    "$": "KDef",
+                    "name": "On",
+                    "kind": "Ctr",
+                    "arity": 0,
+                    "templates": 0,
+                    "typ": {
+                      "$": "KTerm",
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "id": 0,
+                      "quant": 0,
+                      "kids": {
+                        "$": "Nil"
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "value": {
+                      "$": "KTerm",
+                      "tag": "Absent",
+                      "name": "",
+                      "id": 0,
+                      "quant": 0,
+                      "kids": {
+                        "$": "Nil"
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "ctors": {
+                      "$": "Nil"
+                    },
+                    "native": false,
+                    "unsafe": false
+                  },
+                  "tail": {
+                    "$": "Nil"
+                  }
+                },
+                "native": false,
+                "unsafe": false
+              },
+              "tail": {
+                "$": "Nil"
+              }
+            }
+          }
+        },
+        "diagnostic": {
+          "$": "DDiagnostic",
+          "expected": {
+            "$": "DText",
+            "text": "a defined name"
+          },
+          "observed": {
+            "$": "DTerm",
+            "term": {
+              "$": "KTerm",
+              "tag": "Ref",
+              "name": "missing_type",
+              "id": 0,
+              "quant": 0,
+              "kids": {
+                "$": "Nil"
+              },
+              "removed": {
+                "$": "Nil"
+              }
+            }
+          },
+          "has_observed": true,
+          "context": {
+            "$": "Nil"
+          },
+          "definition": "broken",
+          "span": {
+            "$": "DNoSpan"
+          },
+          "note": "",
+          "trail": {
+            "$": "Con",
+            "head": {
+              "$": "KTerm",
+              "tag": "Ref",
+              "name": "missing_type",
+              "id": 0,
+              "quant": 0,
+              "kids": {
+                "$": "Nil"
+              },
+              "removed": {
+                "$": "Nil"
+              }
+            },
+            "tail": {
+              "$": "Con",
+              "head": {
+                "$": "KTerm",
+                "tag": "Ref",
+                "name": "missing_type",
+                "id": 0,
+                "quant": 0,
+                "kids": {
+                  "$": "Nil"
+                },
+                "removed": {
+                  "$": "Nil"
+                }
+              },
+              "tail": {
+                "$": "Nil"
+              }
+            }
+          }
+        }
+      },
+      "rendered": "Error:\n- expected : a defined name\n- observed : missing_type\nLocation: broken"
+    },
+    {
+      "id": "duplicate-before-type-and-body",
+      "complete": true,
+      "pass": true,
+      "result": {
+        "$": "DResult",
+        "error": "same: duplicate declaration",
+        "book": {
+          "$": "Con",
+          "head": {
+            "$": "KDef",
+            "name": "$kernel.cache",
+            "kind": "BookCache",
+            "arity": 0,
+            "templates": 0,
+            "typ": {
+              "$": "KTerm",
+              "tag": "Absent",
+              "name": "",
+              "id": 0,
+              "quant": 0,
+              "kids": {
+                "$": "Nil"
+              },
+              "removed": {
+                "$": "Nil"
+              }
+            },
+            "value": {
+              "$": "KTerm",
+              "tag": "Absent",
+              "name": "",
+              "id": 0,
+              "quant": 0,
+              "kids": {
+                "$": "Nil"
+              },
+              "removed": {
+                "$": "Nil"
+              }
+            },
+            "ctors": {
+              "$": "Con",
+              "head": {
+                "$": "KDef",
+                "name": "",
+                "kind": "IndexNode",
+                "arity": 1041691895,
+                "templates": 4,
+                "typ": {
+                  "$": "KTerm",
+                  "tag": "Absent",
+                  "name": "",
+                  "id": 0,
+                  "quant": 0,
+                  "kids": {
+                    "$": "Nil"
+                  },
+                  "removed": {
+                    "$": "Nil"
+                  }
+                },
+                "value": {
+                  "$": "KTerm",
+                  "tag": "Absent",
+                  "name": "",
+                  "id": 0,
+                  "quant": 0,
+                  "kids": {
+                    "$": "Nil"
+                  },
+                  "removed": {
+                    "$": "Nil"
+                  }
+                },
+                "ctors": {
+                  "$": "Con",
+                  "head": {
+                    "$": "KDef",
+                    "name": "",
+                    "kind": "IndexLeaf",
+                    "arity": 3440134715,
+                    "templates": 0,
+                    "typ": {
+                      "$": "KTerm",
+                      "tag": "Absent",
+                      "name": "",
+                      "id": 0,
+                      "quant": 0,
+                      "kids": {
+                        "$": "Nil"
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "value": {
+                      "$": "KTerm",
+                      "tag": "Absent",
+                      "name": "",
+                      "id": 0,
+                      "quant": 0,
+                      "kids": {
+                        "$": "Nil"
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "ctors": {
+                      "$": "Con",
+                      "head": {
+                        "$": "KDef",
+                        "name": "same",
+                        "kind": "Def",
+                        "arity": 0,
+                        "templates": 0,
+                        "typ": {
+                          "$": "KTerm",
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "id": 0,
+                          "quant": 0,
+                          "kids": {
+                            "$": "Nil"
+                          },
+                          "removed": {
+                            "$": "Nil"
+                          }
+                        },
+                        "value": {
+                          "$": "KTerm",
+                          "tag": "Ctr",
+                          "name": "On",
+                          "id": 0,
+                          "quant": 0,
+                          "kids": {
+                            "$": "Nil"
+                          },
+                          "removed": {
+                            "$": "Nil"
+                          }
+                        },
+                        "ctors": {
+                          "$": "Nil"
+                        },
+                        "native": false,
+                        "unsafe": false
+                      },
+                      "tail": {
+                        "$": "Nil"
+                      }
+                    },
+                    "native": true,
+                    "unsafe": false
+                  },
+                  "tail": {
+                    "$": "Con",
+                    "head": {
+                      "$": "KDef",
+                      "name": "",
+                      "kind": "IndexLeaf",
+                      "arity": 1041691895,
+                      "templates": 0,
+                      "typ": {
+                        "$": "KTerm",
+                        "tag": "Absent",
+                        "name": "",
+                        "id": 0,
+                        "quant": 0,
+                        "kids": {
+                          "$": "Nil"
+                        },
+                        "removed": {
+                          "$": "Nil"
+                        }
+                      },
+                      "value": {
+                        "$": "KTerm",
+                        "tag": "Absent",
+                        "name": "",
+                        "id": 0,
+                        "quant": 0,
+                        "kids": {
+                          "$": "Nil"
+                        },
+                        "removed": {
+                          "$": "Nil"
+                        }
+                      },
+                      "ctors": {
+                        "$": "Con",
+                        "head": {
+                          "$": "KDef",
+                          "name": "Flag",
+                          "kind": "ADT",
+                          "arity": 0,
+                          "templates": 0,
+                          "typ": {
+                            "$": "KTerm",
+                            "tag": "Typ",
+                            "name": "",
+                            "id": 0,
+                            "quant": 0,
+                            "kids": {
+                              "$": "Con",
+                              "head": {
+                                "$": "KTerm",
+                                "tag": "Qua",
+                                "name": "",
+                                "id": 0,
+                                "quant": 2,
+                                "kids": {
+                                  "$": "Nil"
+                                },
+                                "removed": {
+                                  "$": "Nil"
+                                }
+                              },
+                              "tail": {
+                                "$": "Nil"
+                              }
+                            },
+                            "removed": {
+                              "$": "Nil"
+                            }
+                          },
+                          "value": {
+                            "$": "KTerm",
+                            "tag": "Absent",
+                            "name": "",
+                            "id": 0,
+                            "quant": 0,
+                            "kids": {
+                              "$": "Nil"
+                            },
+                            "removed": {
+                              "$": "Nil"
+                            }
+                          },
+                          "ctors": {
+                            "$": "Con",
+                            "head": {
+                              "$": "KDef",
+                              "name": "On",
+                              "kind": "Ctr",
+                              "arity": 0,
+                              "templates": 0,
+                              "typ": {
+                                "$": "KTerm",
+                                "tag": "ADT",
+                                "name": "Flag",
+                                "id": 0,
+                                "quant": 0,
+                                "kids": {
+                                  "$": "Nil"
+                                },
+                                "removed": {
+                                  "$": "Nil"
+                                }
+                              },
+                              "value": {
+                                "$": "KTerm",
+                                "tag": "Absent",
+                                "name": "",
+                                "id": 0,
+                                "quant": 0,
+                                "kids": {
+                                  "$": "Nil"
+                                },
+                                "removed": {
+                                  "$": "Nil"
+                                }
+                              },
+                              "ctors": {
+                                "$": "Nil"
+                              },
+                              "native": false,
+                              "unsafe": false
+                            },
+                            "tail": {
+                              "$": "Nil"
+                            }
+                          },
+                          "native": false,
+                          "unsafe": false
+                        },
+                        "tail": {
+                          "$": "Nil"
+                        }
+                      },
+                      "native": true,
+                      "unsafe": false
+                    },
+                    "tail": {
+                      "$": "Nil"
+                    }
+                  }
+                },
+                "native": true,
+                "unsafe": false
+              },
+              "tail": {
+                "$": "Nil"
+              }
+            },
+            "native": true,
+            "unsafe": false
+          },
+          "tail": {
+            "$": "Con",
+            "head": {
+              "$": "KDef",
+              "name": "same",
+              "kind": "Def",
+              "arity": 0,
+              "templates": 0,
+              "typ": {
+                "$": "KTerm",
+                "tag": "ADT",
+                "name": "Flag",
+                "id": 0,
+                "quant": 0,
+                "kids": {
+                  "$": "Nil"
+                },
+                "removed": {
+                  "$": "Nil"
+                }
+              },
+              "value": {
+                "$": "KTerm",
+                "tag": "Ctr",
+                "name": "On",
+                "id": 0,
+                "quant": 0,
+                "kids": {
+                  "$": "Nil"
+                },
+                "removed": {
+                  "$": "Nil"
+                }
+              },
+              "ctors": {
+                "$": "Nil"
+              },
+              "native": false,
+              "unsafe": false
+            },
+            "tail": {
+              "$": "Con",
+              "head": {
+                "$": "KDef",
+                "name": "Flag",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "typ": {
+                  "$": "KTerm",
+                  "tag": "Typ",
+                  "name": "",
+                  "id": 0,
+                  "quant": 0,
+                  "kids": {
+                    "$": "Con",
+                    "head": {
+                      "$": "KTerm",
+                      "tag": "Qua",
+                      "name": "",
+                      "id": 0,
+                      "quant": 2,
+                      "kids": {
+                        "$": "Nil"
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "tail": {
+                      "$": "Nil"
+                    }
+                  },
+                  "removed": {
+                    "$": "Nil"
+                  }
+                },
+                "value": {
+                  "$": "KTerm",
+                  "tag": "Absent",
+                  "name": "",
+                  "id": 0,
+                  "quant": 0,
+                  "kids": {
+                    "$": "Nil"
+                  },
+                  "removed": {
+                    "$": "Nil"
+                  }
+                },
+                "ctors": {
+                  "$": "Con",
+                  "head": {
+                    "$": "KDef",
+                    "name": "On",
+                    "kind": "Ctr",
+                    "arity": 0,
+                    "templates": 0,
+                    "typ": {
+                      "$": "KTerm",
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "id": 0,
+                      "quant": 0,
+                      "kids": {
+                        "$": "Nil"
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "value": {
+                      "$": "KTerm",
+                      "tag": "Absent",
+                      "name": "",
+                      "id": 0,
+                      "quant": 0,
+                      "kids": {
+                        "$": "Nil"
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "ctors": {
+                      "$": "Nil"
+                    },
+                    "native": false,
+                    "unsafe": false
+                  },
+                  "tail": {
+                    "$": "Nil"
+                  }
+                },
+                "native": false,
+                "unsafe": false
+              },
+              "tail": {
+                "$": "Nil"
+              }
+            }
+          }
+        },
+        "diagnostic": {
+          "$": "DDiagnostic",
+          "expected": {
+            "$": "DText",
+            "text": "duplicate declaration"
+          },
+          "observed": {
+            "$": "DText",
+            "text": ""
+          },
+          "has_observed": false,
+          "context": {
+            "$": "Nil"
+          },
+          "definition": "same",
+          "span": {
+            "$": "DNoSpan"
+          },
+          "note": "",
+          "trail": {
+            "$": "Nil"
+          }
+        }
+      },
+      "rendered": "Error: same: duplicate declaration"
+    },
+    {
+      "id": "law-signature-before-body",
+      "complete": true,
+      "pass": true,
+      "result": {
+        "$": "DResult",
+        "error": "claim: definition does not match prior law signature",
+        "book": {
+          "$": "Con",
+          "head": {
+            "$": "KDef",
+            "name": "$kernel.cache",
+            "kind": "BookCache",
+            "arity": 0,
+            "templates": 0,
+            "typ": {
+              "$": "KTerm",
+              "tag": "Absent",
+              "name": "",
+              "id": 0,
+              "quant": 0,
+              "kids": {
+                "$": "Nil"
+              },
+              "removed": {
+                "$": "Nil"
+              }
+            },
+            "value": {
+              "$": "KTerm",
+              "tag": "Absent",
+              "name": "",
+              "id": 0,
+              "quant": 0,
+              "kids": {
+                "$": "Nil"
+              },
+              "removed": {
+                "$": "Nil"
+              }
+            },
+            "ctors": {
+              "$": "Con",
+              "head": {
+                "$": "KDef",
+                "name": "",
+                "kind": "IndexNode",
+                "arity": 1041691895,
+                "templates": 8,
+                "typ": {
+                  "$": "KTerm",
+                  "tag": "Absent",
+                  "name": "",
+                  "id": 0,
+                  "quant": 0,
+                  "kids": {
+                    "$": "Nil"
+                  },
+                  "removed": {
+                    "$": "Nil"
+                  }
+                },
+                "value": {
+                  "$": "KTerm",
+                  "tag": "Absent",
+                  "name": "",
+                  "id": 0,
+                  "quant": 0,
+                  "kids": {
+                    "$": "Nil"
+                  },
+                  "removed": {
+                    "$": "Nil"
+                  }
+                },
+                "ctors": {
+                  "$": "Con",
+                  "head": {
+                    "$": "KDef",
+                    "name": "",
+                    "kind": "IndexLeaf",
+                    "arity": 1041691895,
+                    "templates": 0,
+                    "typ": {
+                      "$": "KTerm",
+                      "tag": "Absent",
+                      "name": "",
+                      "id": 0,
+                      "quant": 0,
+                      "kids": {
+                        "$": "Nil"
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "value": {
+                      "$": "KTerm",
+                      "tag": "Absent",
+                      "name": "",
+                      "id": 0,
+                      "quant": 0,
+                      "kids": {
+                        "$": "Nil"
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "ctors": {
+                      "$": "Con",
+                      "head": {
+                        "$": "KDef",
+                        "name": "Flag",
+                        "kind": "ADT",
+                        "arity": 0,
+                        "templates": 0,
+                        "typ": {
+                          "$": "KTerm",
+                          "tag": "Typ",
+                          "name": "",
+                          "id": 0,
+                          "quant": 0,
+                          "kids": {
+                            "$": "Con",
+                            "head": {
+                              "$": "KTerm",
+                              "tag": "Qua",
+                              "name": "",
+                              "id": 0,
+                              "quant": 2,
+                              "kids": {
+                                "$": "Nil"
+                              },
+                              "removed": {
+                                "$": "Nil"
+                              }
+                            },
+                            "tail": {
+                              "$": "Nil"
+                            }
+                          },
+                          "removed": {
+                            "$": "Nil"
+                          }
+                        },
+                        "value": {
+                          "$": "KTerm",
+                          "tag": "Absent",
+                          "name": "",
+                          "id": 0,
+                          "quant": 0,
+                          "kids": {
+                            "$": "Nil"
+                          },
+                          "removed": {
+                            "$": "Nil"
+                          }
+                        },
+                        "ctors": {
+                          "$": "Con",
+                          "head": {
+                            "$": "KDef",
+                            "name": "On",
+                            "kind": "Ctr",
+                            "arity": 0,
+                            "templates": 0,
+                            "typ": {
+                              "$": "KTerm",
+                              "tag": "ADT",
+                              "name": "Flag",
+                              "id": 0,
+                              "quant": 0,
+                              "kids": {
+                                "$": "Nil"
+                              },
+                              "removed": {
+                                "$": "Nil"
+                              }
+                            },
+                            "value": {
+                              "$": "KTerm",
+                              "tag": "Absent",
+                              "name": "",
+                              "id": 0,
+                              "quant": 0,
+                              "kids": {
+                                "$": "Nil"
+                              },
+                              "removed": {
+                                "$": "Nil"
+                              }
+                            },
+                            "ctors": {
+                              "$": "Nil"
+                            },
+                            "native": false,
+                            "unsafe": false
+                          },
+                          "tail": {
+                            "$": "Nil"
+                          }
+                        },
+                        "native": false,
+                        "unsafe": false
+                      },
+                      "tail": {
+                        "$": "Nil"
+                      }
+                    },
+                    "native": true,
+                    "unsafe": false
+                  },
+                  "tail": {
+                    "$": "Con",
+                    "head": {
+                      "$": "KDef",
+                      "name": "",
+                      "kind": "IndexLeaf",
+                      "arity": 3173290095,
+                      "templates": 0,
+                      "typ": {
+                        "$": "KTerm",
+                        "tag": "Absent",
+                        "name": "",
+                        "id": 0,
+                        "quant": 0,
+                        "kids": {
+                          "$": "Nil"
+                        },
+                        "removed": {
+                          "$": "Nil"
+                        }
+                      },
+                      "value": {
+                        "$": "KTerm",
+                        "tag": "Absent",
+                        "name": "",
+                        "id": 0,
+                        "quant": 0,
+                        "kids": {
+                          "$": "Nil"
+                        },
+                        "removed": {
+                          "$": "Nil"
+                        }
+                      },
+                      "ctors": {
+                        "$": "Con",
+                        "head": {
+                          "$": "KDef",
+                          "name": "claim",
+                          "kind": "Def",
+                          "arity": 0,
+                          "templates": 0,
+                          "typ": {
+                            "$": "KTerm",
+                            "tag": "ADT",
+                            "name": "Flag",
+                            "id": 0,
+                            "quant": 0,
+                            "kids": {
+                              "$": "Nil"
+                            },
+                            "removed": {
+                              "$": "Nil"
+                            }
+                          },
+                          "value": {
+                            "$": "KTerm",
+                            "tag": "Absent",
+                            "name": "",
+                            "id": 0,
+                            "quant": 0,
+                            "kids": {
+                              "$": "Nil"
+                            },
+                            "removed": {
+                              "$": "Nil"
+                            }
+                          },
+                          "ctors": {
+                            "$": "Nil"
+                          },
+                          "native": false,
+                          "unsafe": false
+                        },
+                        "tail": {
+                          "$": "Nil"
+                        }
+                      },
+                      "native": true,
+                      "unsafe": false
+                    },
+                    "tail": {
+                      "$": "Nil"
+                    }
+                  }
+                },
+                "native": true,
+                "unsafe": false
+              },
+              "tail": {
+                "$": "Nil"
+              }
+            },
+            "native": true,
+            "unsafe": false
+          },
+          "tail": {
+            "$": "Con",
+            "head": {
+              "$": "KDef",
+              "name": "claim",
+              "kind": "Def",
+              "arity": 0,
+              "templates": 0,
+              "typ": {
+                "$": "KTerm",
+                "tag": "ADT",
+                "name": "Flag",
+                "id": 0,
+                "quant": 0,
+                "kids": {
+                  "$": "Nil"
+                },
+                "removed": {
+                  "$": "Nil"
+                }
+              },
+              "value": {
+                "$": "KTerm",
+                "tag": "Absent",
+                "name": "",
+                "id": 0,
+                "quant": 0,
+                "kids": {
+                  "$": "Nil"
+                },
+                "removed": {
+                  "$": "Nil"
+                }
+              },
+              "ctors": {
+                "$": "Nil"
+              },
+              "native": false,
+              "unsafe": false
+            },
+            "tail": {
+              "$": "Con",
+              "head": {
+                "$": "KDef",
+                "name": "Flag",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "typ": {
+                  "$": "KTerm",
+                  "tag": "Typ",
+                  "name": "",
+                  "id": 0,
+                  "quant": 0,
+                  "kids": {
+                    "$": "Con",
+                    "head": {
+                      "$": "KTerm",
+                      "tag": "Qua",
+                      "name": "",
+                      "id": 0,
+                      "quant": 2,
+                      "kids": {
+                        "$": "Nil"
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "tail": {
+                      "$": "Nil"
+                    }
+                  },
+                  "removed": {
+                    "$": "Nil"
+                  }
+                },
+                "value": {
+                  "$": "KTerm",
+                  "tag": "Absent",
+                  "name": "",
+                  "id": 0,
+                  "quant": 0,
+                  "kids": {
+                    "$": "Nil"
+                  },
+                  "removed": {
+                    "$": "Nil"
+                  }
+                },
+                "ctors": {
+                  "$": "Con",
+                  "head": {
+                    "$": "KDef",
+                    "name": "On",
+                    "kind": "Ctr",
+                    "arity": 0,
+                    "templates": 0,
+                    "typ": {
+                      "$": "KTerm",
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "id": 0,
+                      "quant": 0,
+                      "kids": {
+                        "$": "Nil"
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "value": {
+                      "$": "KTerm",
+                      "tag": "Absent",
+                      "name": "",
+                      "id": 0,
+                      "quant": 0,
+                      "kids": {
+                        "$": "Nil"
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "ctors": {
+                      "$": "Nil"
+                    },
+                    "native": false,
+                    "unsafe": false
+                  },
+                  "tail": {
+                    "$": "Nil"
+                  }
+                },
+                "native": false,
+                "unsafe": false
+              },
+              "tail": {
+                "$": "Nil"
+              }
+            }
+          }
+        },
+        "diagnostic": {
+          "$": "DDiagnostic",
+          "expected": {
+            "$": "DText",
+            "text": "definition does not match prior law signature"
+          },
+          "observed": {
+            "$": "DText",
+            "text": ""
+          },
+          "has_observed": false,
+          "context": {
+            "$": "Nil"
+          },
+          "definition": "claim",
+          "span": {
+            "$": "DNoSpan"
+          },
+          "note": "",
+          "trail": {
+            "$": "Nil"
+          }
+        }
+      },
+      "rendered": "Error: claim: definition does not match prior law signature"
+    },
+    {
+      "id": "actual-error-before-final-todo",
+      "complete": true,
+      "pass": true,
+      "result": {
+        "$": "DResult",
+        "error": "broken: undefined name",
+        "book": {
+          "$": "Con",
+          "head": {
+            "$": "KDef",
+            "name": "$kernel.cache",
+            "kind": "BookCache",
+            "arity": 0,
+            "templates": 0,
+            "typ": {
+              "$": "KTerm",
+              "tag": "Absent",
+              "name": "",
+              "id": 0,
+              "quant": 0,
+              "kids": {
+                "$": "Nil"
+              },
+              "removed": {
+                "$": "Nil"
+              }
+            },
+            "value": {
+              "$": "KTerm",
+              "tag": "Absent",
+              "name": "",
+              "id": 0,
+              "quant": 0,
+              "kids": {
+                "$": "Nil"
+              },
+              "removed": {
+                "$": "Nil"
+              }
+            },
+            "ctors": {
+              "$": "Con",
+              "head": {
+                "$": "KDef",
+                "name": "",
+                "kind": "IndexNode",
+                "arity": 1041691895,
+                "templates": 1,
+                "typ": {
+                  "$": "KTerm",
+                  "tag": "Absent",
+                  "name": "",
+                  "id": 0,
+                  "quant": 0,
+                  "kids": {
+                    "$": "Nil"
+                  },
+                  "removed": {
+                    "$": "Nil"
+                  }
+                },
+                "value": {
+                  "$": "KTerm",
+                  "tag": "Absent",
+                  "name": "",
+                  "id": 0,
+                  "quant": 0,
+                  "kids": {
+                    "$": "Nil"
+                  },
+                  "removed": {
+                    "$": "Nil"
+                  }
+                },
+                "ctors": {
+                  "$": "Con",
+                  "head": {
+                    "$": "KDef",
+                    "name": "",
+                    "kind": "IndexNode",
+                    "arity": 2279048902,
+                    "templates": 2,
+                    "typ": {
+                      "$": "KTerm",
+                      "tag": "Absent",
+                      "name": "",
+                      "id": 0,
+                      "quant": 0,
+                      "kids": {
+                        "$": "Nil"
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "value": {
+                      "$": "KTerm",
+                      "tag": "Absent",
+                      "name": "",
+                      "id": 0,
+                      "quant": 0,
+                      "kids": {
+                        "$": "Nil"
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "ctors": {
+                      "$": "Con",
+                      "head": {
+                        "$": "KDef",
+                        "name": "",
+                        "kind": "IndexLeaf",
+                        "arity": 2020464800,
+                        "templates": 0,
+                        "typ": {
+                          "$": "KTerm",
+                          "tag": "Absent",
+                          "name": "",
+                          "id": 0,
+                          "quant": 0,
+                          "kids": {
+                            "$": "Nil"
+                          },
+                          "removed": {
+                            "$": "Nil"
+                          }
+                        },
+                        "value": {
+                          "$": "KTerm",
+                          "tag": "Absent",
+                          "name": "",
+                          "id": 0,
+                          "quant": 0,
+                          "kids": {
+                            "$": "Nil"
+                          },
+                          "removed": {
+                            "$": "Nil"
+                          }
+                        },
+                        "ctors": {
+                          "$": "Con",
+                          "head": {
+                            "$": "KDef",
+                            "name": "broken",
+                            "kind": "Def",
+                            "arity": 0,
+                            "templates": 0,
+                            "typ": {
+                              "$": "KTerm",
+                              "tag": "ADT",
+                              "name": "Flag",
+                              "id": 0,
+                              "quant": 0,
+                              "kids": {
+                                "$": "Nil"
+                              },
+                              "removed": {
+                                "$": "Nil"
+                              }
+                            },
+                            "value": {
+                              "$": "KTerm",
+                              "tag": "Absent",
+                              "name": "",
+                              "id": 0,
+                              "quant": 0,
+                              "kids": {
+                                "$": "Nil"
+                              },
+                              "removed": {
+                                "$": "Nil"
+                              }
+                            },
+                            "ctors": {
+                              "$": "Nil"
+                            },
+                            "native": false,
+                            "unsafe": false
+                          },
+                          "tail": {
+                            "$": "Nil"
+                          }
+                        },
+                        "native": true,
+                        "unsafe": false
+                      },
+                      "tail": {
+                        "$": "Con",
+                        "head": {
+                          "$": "KDef",
+                          "name": "",
+                          "kind": "IndexLeaf",
+                          "arity": 2279048902,
+                          "templates": 0,
+                          "typ": {
+                            "$": "KTerm",
+                            "tag": "Absent",
+                            "name": "",
+                            "id": 0,
+                            "quant": 0,
+                            "kids": {
+                              "$": "Nil"
+                            },
+                            "removed": {
+                              "$": "Nil"
+                            }
+                          },
+                          "value": {
+                            "$": "KTerm",
+                            "tag": "Absent",
+                            "name": "",
+                            "id": 0,
+                            "quant": 0,
+                            "kids": {
+                              "$": "Nil"
+                            },
+                            "removed": {
+                              "$": "Nil"
+                            }
+                          },
+                          "ctors": {
+                            "$": "Con",
+                            "head": {
+                              "$": "KDef",
+                              "name": "unfilled",
+                              "kind": "Def",
+                              "arity": 0,
+                              "templates": 0,
+                              "typ": {
+                                "$": "KTerm",
+                                "tag": "ADT",
+                                "name": "Flag",
+                                "id": 0,
+                                "quant": 0,
+                                "kids": {
+                                  "$": "Nil"
+                                },
+                                "removed": {
+                                  "$": "Nil"
+                                }
+                              },
+                              "value": {
+                                "$": "KTerm",
+                                "tag": "Absent",
+                                "name": "",
+                                "id": 0,
+                                "quant": 0,
+                                "kids": {
+                                  "$": "Nil"
+                                },
+                                "removed": {
+                                  "$": "Nil"
+                                }
+                              },
+                              "ctors": {
+                                "$": "Nil"
+                              },
+                              "native": false,
+                              "unsafe": false
+                            },
+                            "tail": {
+                              "$": "Nil"
+                            }
+                          },
+                          "native": true,
+                          "unsafe": false
+                        },
+                        "tail": {
+                          "$": "Nil"
+                        }
+                      }
+                    },
+                    "native": true,
+                    "unsafe": false
+                  },
+                  "tail": {
+                    "$": "Con",
+                    "head": {
+                      "$": "KDef",
+                      "name": "",
+                      "kind": "IndexLeaf",
+                      "arity": 1041691895,
+                      "templates": 0,
+                      "typ": {
+                        "$": "KTerm",
+                        "tag": "Absent",
+                        "name": "",
+                        "id": 0,
+                        "quant": 0,
+                        "kids": {
+                          "$": "Nil"
+                        },
+                        "removed": {
+                          "$": "Nil"
+                        }
+                      },
+                      "value": {
+                        "$": "KTerm",
+                        "tag": "Absent",
+                        "name": "",
+                        "id": 0,
+                        "quant": 0,
+                        "kids": {
+                          "$": "Nil"
+                        },
+                        "removed": {
+                          "$": "Nil"
+                        }
+                      },
+                      "ctors": {
+                        "$": "Con",
+                        "head": {
+                          "$": "KDef",
+                          "name": "Flag",
+                          "kind": "ADT",
+                          "arity": 0,
+                          "templates": 0,
+                          "typ": {
+                            "$": "KTerm",
+                            "tag": "Typ",
+                            "name": "",
+                            "id": 0,
+                            "quant": 0,
+                            "kids": {
+                              "$": "Con",
+                              "head": {
+                                "$": "KTerm",
+                                "tag": "Qua",
+                                "name": "",
+                                "id": 0,
+                                "quant": 2,
+                                "kids": {
+                                  "$": "Nil"
+                                },
+                                "removed": {
+                                  "$": "Nil"
+                                }
+                              },
+                              "tail": {
+                                "$": "Nil"
+                              }
+                            },
+                            "removed": {
+                              "$": "Nil"
+                            }
+                          },
+                          "value": {
+                            "$": "KTerm",
+                            "tag": "Absent",
+                            "name": "",
+                            "id": 0,
+                            "quant": 0,
+                            "kids": {
+                              "$": "Nil"
+                            },
+                            "removed": {
+                              "$": "Nil"
+                            }
+                          },
+                          "ctors": {
+                            "$": "Con",
+                            "head": {
+                              "$": "KDef",
+                              "name": "On",
+                              "kind": "Ctr",
+                              "arity": 0,
+                              "templates": 0,
+                              "typ": {
+                                "$": "KTerm",
+                                "tag": "ADT",
+                                "name": "Flag",
+                                "id": 0,
+                                "quant": 0,
+                                "kids": {
+                                  "$": "Nil"
+                                },
+                                "removed": {
+                                  "$": "Nil"
+                                }
+                              },
+                              "value": {
+                                "$": "KTerm",
+                                "tag": "Absent",
+                                "name": "",
+                                "id": 0,
+                                "quant": 0,
+                                "kids": {
+                                  "$": "Nil"
+                                },
+                                "removed": {
+                                  "$": "Nil"
+                                }
+                              },
+                              "ctors": {
+                                "$": "Nil"
+                              },
+                              "native": false,
+                              "unsafe": false
+                            },
+                            "tail": {
+                              "$": "Nil"
+                            }
+                          },
+                          "native": false,
+                          "unsafe": false
+                        },
+                        "tail": {
+                          "$": "Nil"
+                        }
+                      },
+                      "native": true,
+                      "unsafe": false
+                    },
+                    "tail": {
+                      "$": "Nil"
+                    }
+                  }
+                },
+                "native": true,
+                "unsafe": false
+              },
+              "tail": {
+                "$": "Nil"
+              }
+            },
+            "native": true,
+            "unsafe": false
+          },
+          "tail": {
+            "$": "Con",
+            "head": {
+              "$": "KDef",
+              "name": "broken",
+              "kind": "Def",
+              "arity": 0,
+              "templates": 0,
+              "typ": {
+                "$": "KTerm",
+                "tag": "ADT",
+                "name": "Flag",
+                "id": 0,
+                "quant": 0,
+                "kids": {
+                  "$": "Nil"
+                },
+                "removed": {
+                  "$": "Nil"
+                }
+              },
+              "value": {
+                "$": "KTerm",
+                "tag": "Absent",
+                "name": "",
+                "id": 0,
+                "quant": 0,
+                "kids": {
+                  "$": "Nil"
+                },
+                "removed": {
+                  "$": "Nil"
+                }
+              },
+              "ctors": {
+                "$": "Nil"
+              },
+              "native": false,
+              "unsafe": false
+            },
+            "tail": {
+              "$": "Con",
+              "head": {
+                "$": "KDef",
+                "name": "unfilled",
+                "kind": "Def",
+                "arity": 0,
+                "templates": 0,
+                "typ": {
+                  "$": "KTerm",
+                  "tag": "ADT",
+                  "name": "Flag",
+                  "id": 0,
+                  "quant": 0,
+                  "kids": {
+                    "$": "Nil"
+                  },
+                  "removed": {
+                    "$": "Nil"
+                  }
+                },
+                "value": {
+                  "$": "KTerm",
+                  "tag": "Absent",
+                  "name": "",
+                  "id": 0,
+                  "quant": 0,
+                  "kids": {
+                    "$": "Nil"
+                  },
+                  "removed": {
+                    "$": "Nil"
+                  }
+                },
+                "ctors": {
+                  "$": "Nil"
+                },
+                "native": false,
+                "unsafe": false
+              },
+              "tail": {
+                "$": "Con",
+                "head": {
+                  "$": "KDef",
+                  "name": "Flag",
+                  "kind": "ADT",
+                  "arity": 0,
+                  "templates": 0,
+                  "typ": {
+                    "$": "KTerm",
+                    "tag": "Typ",
+                    "name": "",
+                    "id": 0,
+                    "quant": 0,
+                    "kids": {
+                      "$": "Con",
+                      "head": {
+                        "$": "KTerm",
+                        "tag": "Qua",
+                        "name": "",
+                        "id": 0,
+                        "quant": 2,
+                        "kids": {
+                          "$": "Nil"
+                        },
+                        "removed": {
+                          "$": "Nil"
+                        }
+                      },
+                      "tail": {
+                        "$": "Nil"
+                      }
+                    },
+                    "removed": {
+                      "$": "Nil"
+                    }
+                  },
+                  "value": {
+                    "$": "KTerm",
+                    "tag": "Absent",
+                    "name": "",
+                    "id": 0,
+                    "quant": 0,
+                    "kids": {
+                      "$": "Nil"
+                    },
+                    "removed": {
+                      "$": "Nil"
+                    }
+                  },
+                  "ctors": {
+                    "$": "Con",
+                    "head": {
+                      "$": "KDef",
+                      "name": "On",
+                      "kind": "Ctr",
+                      "arity": 0,
+                      "templates": 0,
+                      "typ": {
+                        "$": "KTerm",
+                        "tag": "ADT",
+                        "name": "Flag",
+                        "id": 0,
+                        "quant": 0,
+                        "kids": {
+                          "$": "Nil"
+                        },
+                        "removed": {
+                          "$": "Nil"
+                        }
+                      },
+                      "value": {
+                        "$": "KTerm",
+                        "tag": "Absent",
+                        "name": "",
+                        "id": 0,
+                        "quant": 0,
+                        "kids": {
+                          "$": "Nil"
+                        },
+                        "removed": {
+                          "$": "Nil"
+                        }
+                      },
+                      "ctors": {
+                        "$": "Nil"
+                      },
+                      "native": false,
+                      "unsafe": false
+                    },
+                    "tail": {
+                      "$": "Nil"
+                    }
+                  },
+                  "native": false,
+                  "unsafe": false
+                },
+                "tail": {
+                  "$": "Nil"
+                }
+              }
+            }
+          }
+        },
+        "diagnostic": {
+          "$": "DDiagnostic",
+          "expected": {
+            "$": "DText",
+            "text": "a defined name"
+          },
+          "observed": {
+            "$": "DTerm",
+            "term": {
+              "$": "KTerm",
+              "tag": "Ref",
+              "name": "missing_body",
+              "id": 0,
+              "quant": 0,
+              "kids": {
+                "$": "Nil"
+              },
+              "removed": {
+                "$": "Nil"
+              }
+            }
+          },
+          "has_observed": true,
+          "context": {
+            "$": "Nil"
+          },
+          "definition": "broken",
+          "span": {
+            "$": "DNoSpan"
+          },
+          "note": "",
+          "trail": {
+            "$": "Con",
+            "head": {
+              "$": "KTerm",
+              "tag": "Ref",
+              "name": "missing_body",
+              "id": 0,
+              "quant": 0,
+              "kids": {
+                "$": "Nil"
+              },
+              "removed": {
+                "$": "Nil"
+              }
+            },
+            "tail": {
+              "$": "Con",
+              "head": {
+                "$": "KTerm",
+                "tag": "Ref",
+                "name": "missing_body",
+                "id": 0,
+                "quant": 0,
+                "kids": {
+                  "$": "Nil"
+                },
+                "removed": {
+                  "$": "Nil"
+                }
+              },
+              "tail": {
+                "$": "Nil"
+              }
+            }
+          }
+        }
+      },
+      "rendered": "Error:\n- expected : a defined name\n- observed : missing_body\nLocation: broken"
+    }
+  ],
+  "scope": "Finite complete-result preservation and explicit competing-error oracles; no general soundness or performance claim."
+}

@@ -15,11 +15,12 @@ Read the [validation boundaries](../selfhost/CONFORMANCE.md) and
 [negative audit](../selfhost/docs/NEGATIVE-COMPATIBILITY.md) before relying on it.
 
 The default compiler in `selfhost/dist/typed-api.mjs` is freshly rebuilt from
-the [S2 source](../implementation/phase7/s2-report.md): 15,826 Bend lines, down
-683 lines through obsolete-code retirement and shared provenance orchestration.
-The maintained, verified string-equality optimization remains. Accepted compile
-and backend code is unchanged; exact cross-version controls cover the changed
-source-location APIs. The
+the [S3 source](../implementation/phase7/s3-report.md): 15,687 Bend lines, down
+822 through obsolete-code retirement, shared provenance and removal of diagnostic
+rechecking. The maintained, verified string-equality optimization remains. The
+checker returns its verdict and original error together; older artifacts retain
+the compatible host path. Fresh full frontend vectors preserve all 2,756
+observations, including known failures. The
 [release manifest](../selfhost/dist/release.json) binds the API to its source,
 Base, runtime and host. Historical compiler variants are retained with their
 reports; ordinary use requires no artifact selection.

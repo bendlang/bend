@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
-import {convertCompilerAbi} from '../../tools/typed-driver.mjs';
+import {convertCompilerAbi,inspect} from '../../tools/typed-driver.mjs';
 test('compiler ABI conversion handles deeply nested shared graphs without recursion',()=>{
   const fields={Con:['head','tail'],Nil:[],Pair:['left','right']};
   const ctor=($,a)=>({$,a});
@@ -41,4 +41,26 @@ export const createPersistentInspector=()=>{throw Error('artifact fixture must n
     for(const key of keys)if(previous[key]===undefined)delete process.env[key];else process.env[key]=previous[key];
     fs.rmSync(directory,{recursive:true,force:true});
   }
+});
+test('only the exact structured-checker capability replaces the legacy verdict',async()=>{
+  const directory=fs.mkdtempSync(path.join(os.tmpdir(),'bend-checker-capability-')),file=path.join(directory,'main.bend');
+  fs.writeFileSync(file,'# host protocol fixture\n');
+  const nil={$:'Nil'},loaded={$:'FResult',book:nil,error:'',imports:nil};
+  try{
+    for(const version of [undefined,0,2,'1',1]){
+      let stringChecks=0,renders=0;
+      const authoritative=version===1;
+      const api={f_parse:()=>loaded,f_load_graph:()=>loaded,
+        check_book:()=>{stringChecks++;assert.ok(!authoritative,'advertised structured checker must own the verdict');return 'legacy rejection';},
+        // A legacy presentation result saying success must never erase rejection.
+        check_book_diagnostic:()=>({error:authoritative?'structured rejection':'',book:nil,diagnostic:{definition:''}}),
+        diagnostic_render:result=>{renders++;return 'Error: '+result.error;}};
+      if(version!==undefined)api.compiler_check_result_abi=()=>version;
+      const result=await inspect(file,{api,mode:'check'});
+      assert.deepEqual({status:result.status,phase:result.phase,checked:result.checked,exitCode:result.exitCode},
+        {status:'error',phase:'check',checked:true,exitCode:1},String(version));
+      assert.equal(result.diagnostic,authoritative?'Error: structured rejection':'Error: legacy rejection',String(version));
+      assert.equal(stringChecks,authoritative?0:1);assert.equal(renders,authoritative?1:0);
+    }
+  }finally{fs.rmSync(directory,{recursive:true,force:true});}
 });

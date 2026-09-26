@@ -1,6 +1,7 @@
 # S3: one authoritative checker result
 
-Status: designed before implementation. Baseline: S2 commit `7474b0b`,
+Status: complete; see the [S3 report](../../implementation/phase7/s3-report.md).
+Design committed as `ab9e136` before implementation. Baseline: S2 commit `7474b0b`,
 15,826 physical lines / 13,209 nonblank lines / 491,193 bytes.
 
 ## Scope and rationale

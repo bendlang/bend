@@ -19,10 +19,11 @@ Use `npm run build` to rebuild the default with pinned upstream.
 The [maintained development command](docs/PHASE5_DEVELOPMENT.md) builds a checked
 compiler and reuses selected paired tests for short iteration cycles.
 
-The [S2 simplification report](implementation/phase7/s2-report.md) records the
-current source: 15,826 Bend lines, down 683 from the simplification baseline.
-It shares one loader trace for provenance; 52 of 54 selected API roots retain
-identical reachable generated code, with exact controls for the changed routes.
+The [S3 simplification report](implementation/phase7/s3-report.md) records the
+current source: 15,687 Bend lines, down 822 from the simplification baseline.
+It shares source provenance and one authoritative structured checker result.
+All 2,756 fresh parse/check observations match the prior release, including the
+919 positive check fixtures and 318 remaining strict failures.
 The [Phase 5 report](implementation/phase5/report.md) records the earlier API's broader evidence
 and its limits: all 919 positive frontend fixtures pass, strict check failures
 fell from 377 to 318, and exact live TypeScript differences fell from 560 to 444.
@@ -44,14 +45,14 @@ Historical artifacts and their evidence remain indexed in the
 [experiment ledger](experiments/ledger.md), [preservation index](experiments/PRESERVATION.md)
 and [current strategy](experiments/STEERING.md). Known failures remain explicit;
 these gates do not establish full upstream equivalence.
-The S2 source has a fresh checked bootstrap and component/provenance gates; its
-full all-definition fixed point and broad frontend sweep have not been rerun.
+The S3 source has a fresh checked bootstrap, full frontend preservation and
+component gates; its full all-definition fixed point has not been rerun.
 
 The [phased simplification design](design/phase7/compiler_simplification.md)
 starts with read-only hypothesis validation, then requires each implementation
 phase to reduce both code and conceptual complexity toward 50% and 75% source-line
 reductions while preserving the language and backend targets. It defines
-measurements and validation gates. S0–S2 are complete under their recorded scopes;
+measurements and validation gates. S0–S3 are complete under their recorded scopes;
 the 50% and 75% milestones remain unachieved.
 
 ## Bend runs FAST

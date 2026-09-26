@@ -1,6 +1,6 @@
 import Base
 
-# Optional rejection-only replay. The original check_book verdict is always authoritative.
+# The chronological checker returns its verdict and original diagnostic together.
 law dg_span_same:
   for +a: DSpan
   for +b: DSpan
@@ -58,76 +58,6 @@ law check_book_diagnostic:
   for +book: List<&2, KDef>
   for +origins: List<&2, DOrigin>
   DResult
-
-law dg_book_checked:
-  for +book: List<&2, KDef>
-  for +origins: List<&2, DOrigin>
-  for +error: String
-  DResult
-
-law dg_events:
-  for +todo: List<&2, KDef>
-  for +done: List<&2, KDef>
-  for +origins: List<&2, DOrigin>
-  for +error: String
-  DResult
-
-law dg_event_guard:
-  for +rest: List<&2, KDef>
-  for +done: List<&2, KDef>
-  for +d: KDef
-  for +origins: List<&2, DOrigin>
-  for +error: String
-  for +guard: String
-  DResult
-
-law dg_event_check:
-  for +rest: List<&2, KDef>
-  for +done: List<&2, KDef>
-  for +d: KDef
-  for +origins: List<&2, DOrigin>
-  for +error: String
-  for +checked: String
-  DResult
-
-law dg_definition:
-  for +book: List<&2, KDef>
-  for +d: KDef
-  KChecked
-
-law dg_definition_type:
-  for +book: List<&2, KDef>
-  for +d: KDef
-  for +r: KChecked
-  KChecked
-
-law dg_template:
-  for +book: List<&2, KDef>
-  for +d: KDef
-  for +ty: KTerm
-  for +body: KTerm
-  for +lhs: KTerm
-  for +n: U32
-  KChecked
-
-law dg_template_binder:
-  for +book: List<&2, KDef>
-  for +d: KDef
-  for +ty: KTerm
-  for +body: KTerm
-  for +lhs: KTerm
-  for +n: U32
-  KChecked
-
-law dg_template_open:
-  for +book: List<&2, KDef>
-  for +d: KDef
-  for +ty: KTerm
-  for +body: KTerm
-  for +lhs: KTerm
-  for +n: U32
-  for +name: String
-  KChecked
 
 law dg_quant_error:
   for +message: String
@@ -204,45 +134,7 @@ def dg_finish(error, book, diagnostic, origins):
 
 @unsafe
 def check_book_diagnostic(book, origins):
-  dg_book_checked(book, origins, check_book(book))
-
-@unsafe
-def dg_book_checked(book, origins, error):
-  kc(DResult, String.eq(error, ""), u => DResult{"", book, dg_no_report("", "")}, u => dg_events(book, book_cached(Nil{}, norm_max_book(book)), origins, error))
-
-@unsafe
-def dg_events(todo, done, origins, error):
-  match todo:
-    case Nil{}: dg_finish(error, done, dg_no_report("", error), origins)
-    case Con{d, rest}: dg_event_guard(rest, done, d, origins, error, event_error(done, d, lookup(done, dn(d))))
-
-@unsafe
-def dg_event_guard(rest, done, d, origins, error, guard):
-  kc(DResult, String.eq(guard, ""), u => dg_event_check(rest, done, d, origins, error, check_definition(book_put(done, declared(d)), signature_mode(d, rest))), u => dg_finish(error, done, dg_no_report(dn(d), guard), origins))
-
-@unsafe
-def dg_event_check(rest, done, d, origins, error, checked):
-  kc(DResult, String.eq(checked, ""), u => dg_events(rest, book_put(done, d), origins, error), u => dg_finish(error, book_put(done, declared(d)), dg_report(dg_definition(book_put(done, declared(d)), signature_mode(d, rest)), dn(d)), origins))
-
-@unsafe
-def dg_definition(book, d):
-  dg_definition_type(book, d, check(KEnv{book, dn(d), ref(dn(d)), 0, Nil{}, du(d)}, Nil{}, dt(d), 0, typ(1)))
-
-@unsafe
-def dg_definition_type(book, d, r):
-  kc(KChecked, Bool.not(good(r)), u => r, u => kc(KChecked, String.eq(dk(d), "ADT") || String.eq(tg(dv(d)), "Absent") || String.eq(tg(dv(d)), "Foreign"), u => bad(check_definition(book, d)), u => dg_template(book, d, dt(d), dv(d), ref(dn(d)), dx(d))))
-
-@unsafe
-def dg_template(book, d, ty, body, lhs, n):
-  kc(KChecked, U32.is_eq(n, 0), u => check(KEnv{book, dn(d), lhs, self_pending(d, body), tele_quantities(book, dt(d), da(d)), du(d)}, Nil{}, body, 1, ty), u => dg_template_binder(book, d, wnf(book, ty), body, lhs, n))
-
-@unsafe
-def dg_template_binder(book, d, ty, body, lhs, n):
-  kc(KChecked, String.eq(tg(ty), "All"), u => dg_template_open(book, d, ty, body, lhs, n, dn(d) ++ "~" ++ nm(ty) ++ U32.show(ix(ty))), u => bad("template telescope is too short"))
-
-@unsafe
-def dg_template_open(book, d, ty, body, lhs, n, name):
-  dg_template(book_put(book, KDef{name, "Def", 0, 0, kid(ty, 0), atom("Absent"), Nil{}, True{}, False{}}), d, subst(kid(ty, 1), ix(ty), ref(name)), kapply(body, ref(name)), app(lhs, ref(name)), U32.sub(n, 1))
+  dg_suffix_events(book, book_cached(Nil{}, norm_max_book(book)), book, origins)
 
 @unsafe
 def dg_quant_error(message, name, allowed, used):
@@ -260,7 +152,7 @@ def dg_ctor_error(e, t, ty, ctr):
 
 
 # The cached prefix must have passed check_book for this exact compiler and
-# source. Independently reproduce the suffix verdict; never echo a host error.
+# source. The suffix uses the same authoritative event worker as a full check.
 law check_book_diagnostic_from_exact_prefix:
   for +book: List<&2,KDef>
   for +validated: List<&2,KDef>
@@ -293,7 +185,7 @@ law dg_suffix_check:
   for +d: KDef
   for +original: List<&2,KDef>
   for +origins: List<&2,DOrigin>
-  for +checked: String
+  for +checked: KChecked
   DResult
 law dg_suffix_finish:
   for +done: List<&2,KDef>
@@ -318,10 +210,10 @@ def dg_suffix_events(todo, done, original, origins):
     case Con{d, rest}: dg_suffix_guard(rest, done, d, original, origins, event_error(done, d, lookup(done, dn(d))))
 @unsafe
 def dg_suffix_guard(rest, done, d, original, origins, guard):
-  kc(DResult, String.eq(guard, ""), u => dg_suffix_check(rest, done, d, original, origins, check_definition(book_put(done, declared(d)), signature_mode(d, rest))), u => dg_finish(dn(d) ++ ": " ++ guard, done, dg_no_report(dn(d), guard), origins))
+  kc(DResult, String.eq(guard, ""), u => dg_suffix_check(rest, done, d, original, origins, check_definition_result(book_put(done, declared(d)), signature_mode(d, rest))), u => dg_finish(dn(d) ++ ": " ++ guard, done, dg_no_report(dn(d), guard), origins))
 @unsafe
 def dg_suffix_check(rest, done, d, original, origins, checked):
-  kc(DResult, String.eq(checked, ""), u => dg_suffix_events(rest, book_put(done, d), original, origins), u => dg_finish(dn(d) ++ ": " ++ checked, book_put(done, declared(d)), dg_report(dg_definition(book_put(done, declared(d)), signature_mode(d, rest)), dn(d)), origins))
+  kc(DResult, good(checked), u => dg_suffix_events(rest, book_put(done, d), original, origins), u => dg_finish(dn(d) ++ ": " ++ ce(checked), book_put(done, declared(d)), dg_report(checked, dn(d)), origins))
 @unsafe
 def dg_suffix_finish(done, original, origins, error):
   kc(DResult, String.eq(error, ""), u => DResult{"", original, dg_no_report("", "")}, u => dg_finish(error, done, dg_no_report("", error), origins))
@@ -344,3 +236,17 @@ def dg_prefix_step(todo, head, tail, done, original, origins):
 @unsafe
 def dg_adt_error(t, d):
   kc(KChecked, String.eq(dk(d), "ADT"), u => dg_bad_detail("unknown family or wrong parameter count", dg_text(nm(t) ++ " with " ++ U32.show(da(d)) ++ kc(String, U32.is_eq(da(d), 1), u => " parameter", u => " parameters")), t), u => dg_bad_message("unknown family or wrong parameter count", dg_text("a declared datatype (unknown: " ++ nm(t) ++ ")")))
+
+# Compatibility projections and explicit capability for hosts using one verdict.
+law dg_result_error:
+  for +result: DResult
+  String
+law compiler_check_result_abi:
+  U32
+@unsafe
+def dg_result_error(result):
+  match result:
+    case DResult{error, book, diagnostic}: error
+@unsafe
+def compiler_check_result_abi():
+  1

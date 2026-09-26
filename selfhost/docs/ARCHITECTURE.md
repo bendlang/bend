@@ -124,14 +124,20 @@ remain supported. This avoids reparsing the same physical text during one
 request. It does not change the persistent Base-cache trust boundary or bypass
 import resolution, binder freshening or checking.
 
-The trace-aware loader also returns an `FLoadTrace` with the actual module order
-and declaration-event counts. Rejection reporting uses this trace to locate the
-failed declaration without loading the graph again. When a checked Base prefix
-is available, diagnostic replay independently verifies its exact identity and
-checks the suffix, including open laws. The host renders that result only if its
-error equals the authoritative checker's error; otherwise it uses the complete
-legacy diagnostic path. The trace belongs to one request and is not a stored
-verdict or a replacement for checking.
+The trace-aware loader returns `FLoadTrace` with actual module order and
+per-module declaration-event counts. All public provenance routes use this same
+alignment; they do not reparse source to reconstruct ownership. Rejection
+reporting reuses the request's trace and lexes only the defining module.
+
+One chronological event checker returns the verdict and original structured
+failure together. `check_book` and `check_from_exact_prefix` remain String APIs
+by projecting its error. The detailed APIs expose the same result without replay.
+An exact validated-prefix comparison still precedes suffix checking, including
+open laws; any mismatch falls back to the full checker. The host consumes one
+result only when `compiler_check_result_abi()` returns numeric `1`. Historical
+artifacts keep guarded replay, whose error must match the old authoritative
+verdict. Source lookup and rendering cannot accept a rejected term. The trace
+belongs to one request and is not a stored verdict or replacement for checking.
 
 Final-definition selection for TODO reporting, interpretation and specialization
 retains the last declaration of each name in reverse event order. Short lists

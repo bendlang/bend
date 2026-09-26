@@ -18,12 +18,16 @@ pass, with known diagnostic differences and raw setup failures retained.
    135 fewer lines, 15,826 total. Checked/focused/component/exact provenance gates
    pass; the validated release is installed. Explicit terms/direct spans remain
    deferred, and no full-source speed or fixed-point claim is added.
-2. S3: implement the committed [authoritative-checker design](../design/phase7/s3_authoritative_checker.md).
-   Revalidate the prior 140-line candidate against S2, including full frontend
-   preservation and a serial accepted/rejected pilot. Retained type facts remain
-   deferred until their replacement costs and validity are demonstrated.
-3. S4–S7 remain sequential. The 50% and 75% milestones are still unachieved and
-   unsupported by the current gross deletion inventory; do not fake their gates.
+2. S3 is [complete](../implementation/phase7/s3-report.md): one authoritative
+   checker result, 139 fewer Bend lines, 15,687 total; host adds2lines. All2,756
+   fresh frontend observations match S2 exactly;318strict failures remain.
+   Components,52harness tests and focused controls pass. Late rejection is about
+   33.5% faster by request with accepted overhead below0.7%; resource guards pass.
+   The validated release is installed and raw evidence preserved.
+3. S4: design frontend/book-state consolidation and confront the remaining7,433
+   lines to the50% milestone before a broad rewrite. The existing candidate
+   inventory is insufficient. No source formatting or scope migration may fake
+   that milestone. S5–S7 remain sequential behind the actual milestone gate.
 
 Parallel agents may review independent parts of the active phase. No future-phase
 source implementation while the current phase is open. Root owns integration,

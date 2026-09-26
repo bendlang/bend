@@ -1,0 +1,394 @@
+{
+  "kind": "phase6-authoritative-checker-controls",
+  "complete": true,
+  "rows": [
+    {
+      "variant": "control",
+      "name": "early",
+      "result": {
+        "status": "error",
+        "phase": "check",
+        "diagnostic": "Error:\n- expected : a defined name\n- observed : missing\nLocation: broken\n5 | def broken() -> Flag:\n6>|   missing\n7 | def value0() -> Flag:",
+        "exitCode": 1,
+        "checked": true
+      },
+      "calls": {
+        "f_parse": 1,
+        "f_source_parsed": 1,
+        "f_load_graph_seed_trace": 1,
+        "check_book": 1,
+        "check_book_diagnostic": 1,
+        "f_loaded_origins_for": 1,
+        "diagnostic_result_locate": 1,
+        "diagnostic_render": 1
+      },
+      "checks": {
+        "Flag": 6,
+        "broken": 8
+      },
+      "missingChecks": 4
+    },
+    {
+      "variant": "control",
+      "name": "late",
+      "result": {
+        "status": "error",
+        "phase": "check",
+        "diagnostic": "Error:\n- expected : a defined name\n- observed : missing\nLocation: broken\n65 | def broken() -> Flag:\n66>|   missing\n67 | ",
+        "exitCode": 1,
+        "checked": true
+      },
+      "calls": {
+        "f_parse": 1,
+        "f_source_parsed": 1,
+        "f_load_graph_seed_trace": 1,
+        "check_book": 1,
+        "check_book_diagnostic": 1,
+        "f_loaded_origins_for": 1,
+        "diagnostic_result_locate": 1,
+        "diagnostic_render": 1
+      },
+      "checks": {
+        "Flag": 6,
+        "value0": 6,
+        "value1": 6,
+        "value2": 6,
+        "value3": 6,
+        "value4": 6,
+        "value5": 6,
+        "value6": 6,
+        "value7": 6,
+        "value8": 6,
+        "value9": 6,
+        "value10": 6,
+        "value11": 6,
+        "value12": 6,
+        "value13": 6,
+        "value14": 6,
+        "value15": 6,
+        "value16": 6,
+        "value17": 6,
+        "value18": 6,
+        "value19": 6,
+        "value20": 6,
+        "value21": 6,
+        "value22": 6,
+        "value23": 6,
+        "value24": 6,
+        "value25": 6,
+        "value26": 6,
+        "value27": 6,
+        "value28": 6,
+        "value29": 6,
+        "broken": 8
+      },
+      "missingChecks": 4
+    },
+    {
+      "variant": "control",
+      "name": "accepted",
+      "result": {
+        "status": "ok",
+        "phase": "check",
+        "stdout": "All terms check.\n",
+        "exitCode": 0,
+        "checked": true,
+        "files": [
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/host-counts-01/accepted.bend"
+        ]
+      },
+      "calls": {
+        "f_parse": 1,
+        "f_source_parsed": 1,
+        "f_load_graph_seed_trace": 1,
+        "check_book": 1,
+        "driver_owned": 1,
+        "driver_todos": 1,
+        "specialize_book": 1,
+        "specialized_error": 1,
+        "specialized_book": 1,
+        "f_main_names": 1,
+        "driver_report": 1
+      },
+      "checks": {
+        "Flag": 2,
+        "value0": 2,
+        "value1": 2,
+        "value2": 2,
+        "value3": 2,
+        "value4": 2,
+        "value5": 2,
+        "value6": 2,
+        "value7": 2,
+        "value8": 2,
+        "value9": 2,
+        "value10": 2,
+        "value11": 2,
+        "value12": 2,
+        "value13": 2,
+        "value14": 2,
+        "value15": 2,
+        "value16": 2,
+        "value17": 2,
+        "value18": 2,
+        "value19": 2,
+        "value20": 2,
+        "value21": 2,
+        "value22": 2,
+        "value23": 2,
+        "value24": 2,
+        "value25": 2,
+        "value26": 2,
+        "value27": 2,
+        "value28": 2,
+        "value29": 2,
+        "main": 2
+      },
+      "missingChecks": 0
+    },
+    {
+      "variant": "candidate",
+      "name": "early",
+      "result": {
+        "status": "error",
+        "phase": "check",
+        "diagnostic": "Error:\n- expected : a defined name\n- observed : missing\nLocation: broken\n5 | def broken() -> Flag:\n6>|   missing\n7 | def value0() -> Flag:",
+        "exitCode": 1,
+        "checked": true
+      },
+      "calls": {
+        "f_parse": 1,
+        "f_source_parsed": 1,
+        "f_load_graph_seed_trace": 1,
+        "compiler_check_result_abi": 1,
+        "check_book_diagnostic": 1,
+        "f_loaded_origins_for": 1,
+        "diagnostic_result_locate": 1,
+        "diagnostic_render": 1
+      },
+      "checks": {
+        "Flag": 2,
+        "broken": 2
+      },
+      "missingChecks": 1
+    },
+    {
+      "variant": "candidate",
+      "name": "late",
+      "result": {
+        "status": "error",
+        "phase": "check",
+        "diagnostic": "Error:\n- expected : a defined name\n- observed : missing\nLocation: broken\n65 | def broken() -> Flag:\n66>|   missing\n67 | ",
+        "exitCode": 1,
+        "checked": true
+      },
+      "calls": {
+        "f_parse": 1,
+        "f_source_parsed": 1,
+        "f_load_graph_seed_trace": 1,
+        "compiler_check_result_abi": 1,
+        "check_book_diagnostic": 1,
+        "f_loaded_origins_for": 1,
+        "diagnostic_result_locate": 1,
+        "diagnostic_render": 1
+      },
+      "checks": {
+        "Flag": 2,
+        "value0": 2,
+        "value1": 2,
+        "value2": 2,
+        "value3": 2,
+        "value4": 2,
+        "value5": 2,
+        "value6": 2,
+        "value7": 2,
+        "value8": 2,
+        "value9": 2,
+        "value10": 2,
+        "value11": 2,
+        "value12": 2,
+        "value13": 2,
+        "value14": 2,
+        "value15": 2,
+        "value16": 2,
+        "value17": 2,
+        "value18": 2,
+        "value19": 2,
+        "value20": 2,
+        "value21": 2,
+        "value22": 2,
+        "value23": 2,
+        "value24": 2,
+        "value25": 2,
+        "value26": 2,
+        "value27": 2,
+        "value28": 2,
+        "value29": 2,
+        "broken": 2
+      },
+      "missingChecks": 1
+    },
+    {
+      "variant": "candidate",
+      "name": "accepted",
+      "result": {
+        "status": "ok",
+        "phase": "check",
+        "stdout": "All terms check.\n",
+        "exitCode": 0,
+        "checked": true,
+        "files": [
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/host-counts-01/accepted.bend"
+        ]
+      },
+      "calls": {
+        "f_parse": 1,
+        "f_source_parsed": 1,
+        "f_load_graph_seed_trace": 1,
+        "compiler_check_result_abi": 1,
+        "check_book_diagnostic": 1,
+        "driver_owned": 1,
+        "driver_todos": 1,
+        "specialize_book": 1,
+        "specialized_error": 1,
+        "specialized_book": 1,
+        "f_main_names": 1,
+        "driver_report": 1
+      },
+      "checks": {
+        "Flag": 2,
+        "value0": 2,
+        "value1": 2,
+        "value2": 2,
+        "value3": 2,
+        "value4": 2,
+        "value5": 2,
+        "value6": 2,
+        "value7": 2,
+        "value8": 2,
+        "value9": 2,
+        "value10": 2,
+        "value11": 2,
+        "value12": 2,
+        "value13": 2,
+        "value14": 2,
+        "value15": 2,
+        "value16": 2,
+        "value17": 2,
+        "value18": 2,
+        "value19": 2,
+        "value20": 2,
+        "value21": 2,
+        "value22": 2,
+        "value23": 2,
+        "value24": 2,
+        "value25": 2,
+        "value26": 2,
+        "value27": 2,
+        "value28": 2,
+        "value29": 2,
+        "main": 2
+      },
+      "missingChecks": 0
+    }
+  ],
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase6/structured-checker-controls.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase6/structured-checker-controls.mjs",
+      "sha256": "9c17daf29089748fc272202209d5799d5a0181326493e162156a05cecdc770c6"
+    },
+    {
+      "file": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "canonicalPath": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/tools/typed-driver.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/tools/typed-driver.mjs",
+      "sha256": "96dd1d6637fa25e28fe3fd83a963189d12da2a939468e651ff5318dee383224c"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/tools/assemble.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/tools/assemble.mjs",
+      "sha256": "f7c8feff7a0b8f8b4a302c2ca8b99b363a8d7c4c9c48bc6b7a9463aa23c58b75"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/tools/compiler-abi.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/tools/compiler-abi.mjs",
+      "sha256": "0bcbcaf022108877600baab1b15356db6d9917f5c4d668af936279680c126454"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/tools/native-build.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/tools/native-build.mjs",
+      "sha256": "a76f2c027459f7ffdb9fc16dc450ee33e0f39c74568df4c74d03309e662c9117"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/tools/node-resource-args.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/tools/node-resource-args.mjs",
+      "sha256": "6aefb3aee9b69b0c25d68edbf0ada6a57ba93e277d3adb8d232dfa6dff01d758"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/attempt.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/attempt.json",
+      "sha256": "9ed0712963b0ccf104b7d033330e9a5a17cc6c1681c2512ec96ac449ba8eb00a"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/equality/api.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/equality/api.mjs",
+      "sha256": "b3a75d62c7946301d987474fe097d5eb2e08cad2edcc6b3eae5371f5c5effbed"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/base.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/base.bend",
+      "sha256": "b8c2734d45ec6b4ce70fee70ff06ef35e08fce885af8852d8eb77dbff020e946"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/snapshot/src/runtime.mjs",
+      "sha256": "26f5eee2f54b194b64f768df6ff505c67bf7a5df2159aa06caf53ecba54e910b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/attempt.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/attempt.json",
+      "sha256": "7dac16616d98e42cff640a9da32b9a0f1f2a2a22093c0640ba30ef20c8e5a758"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/equality/api.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/equality/api.mjs",
+      "sha256": "7e913551460ac736f1af35e19049d712765291255a0e579482f2e7179dcadbc6"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/snapshot/src/runtime.mjs",
+      "sha256": "26f5eee2f54b194b64f768df6ff505c67bf7a5df2159aa06caf53ecba54e910b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/host-counts-01/early.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/host-counts-01/early.bend",
+      "sha256": "8dc6c1c253acf8f6fcd25b34e2c05b52e05834c2167ad35b656aaba18571daea"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/host-counts-01/late.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/host-counts-01/late.bend",
+      "sha256": "c901fbe11e6b20ca96105f1902a1a83157d1dd586afc09aabaae34ccc0346e01"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/host-counts-01/accepted.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/host-counts-01/accepted.bend",
+      "sha256": "3d7390cfb5d8620870b7d4a53f1edac7a8ed1cffaaab537b3cdff1ef1920c9eb"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/host-counts-01/control-instrumented.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/host-counts-01/control-instrumented.mjs",
+      "sha256": "0382b74c911ece1b81917571f5fa7e45501ae05e9622f39883552386805ce778"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/host-counts-01/candidate-instrumented.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/host-counts-01/candidate-instrumented.mjs",
+      "sha256": "26a2d521001ae3a2c760937d92567ec95042015bf57c1fe86773a013d0daab70"
+    }
+  ],
+  "scope": "Disposable check-call counters and actual new host; no timing conclusions.",
+  "oversizedPrefixFallback": true
+}

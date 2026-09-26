@@ -1,0 +1,514 @@
+{
+  "scope": "Generated function text and conservative identifier closure; changed roots need behavioral tests.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s2/attempt-01/equality/api.mjs",
+      "sha256": "b3a75d62c7946301d987474fe097d5eb2e08cad2edcc6b3eae5371f5c5effbed",
+      "bytes": 1036548
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/equality/api.mjs",
+      "sha256": "7e913551460ac736f1af35e19049d712765291255a0e579482f2e7179dcadbc6",
+      "bytes": 1030277
+    }
+  ],
+  "preservedExports": true,
+  "addedExports": [
+    "compiler_check_result_abi"
+  ],
+  "samePrefix": true,
+  "preservedExportWrappers": true,
+  "changed": [
+    "$check_book$",
+    "$check_book_diagnostic$",
+    "$check_definition$",
+    "$check_definition_type$",
+    "$check_from_exact_prefix$",
+    "$check_template_binder$",
+    "$check_template_definition$",
+    "$dg_suffix_check$",
+    "$dg_suffix_guard$"
+  ],
+  "removed": [
+    "$check_event_done$",
+    "$check_event_guard$",
+    "$check_events$",
+    "$check_prefix_seed$",
+    "$check_prefix_step$",
+    "$dg_book_checked$",
+    "$dg_definition$",
+    "$dg_definition_type$",
+    "$dg_event_check$",
+    "$dg_event_guard$",
+    "$dg_events$",
+    "$dg_template$",
+    "$dg_template_binder$",
+    "$dg_template_open$"
+  ],
+  "added": [
+    "$check_definition_result$",
+    "$compiler_check_result_abi$",
+    "$dg_result_error$"
+  ],
+  "roots": [
+    {
+      "export": "f_parse",
+      "beforeFunctions": 300,
+      "afterFunctions": 300,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "f_load",
+      "beforeFunctions": 451,
+      "afterFunctions": 451,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "f_path_join",
+      "beforeFunctions": 8,
+      "afterFunctions": 8,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "f_path_dir",
+      "beforeFunctions": 11,
+      "afterFunctions": 11,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "check_book",
+      "beforeFunctions": 369,
+      "afterFunctions": 383,
+      "unchanged": false,
+      "differentFunctions": [
+        "$check_book$",
+        "$check_book_diagnostic$",
+        "$check_definition$",
+        "$check_definition_result$",
+        "$check_definition_type$",
+        "$check_event_done$",
+        "$check_event_guard$",
+        "$check_events$",
+        "$check_template_binder$",
+        "$check_template_definition$",
+        "$dg_result_error$",
+        "$dg_suffix_check$",
+        "$dg_suffix_guard$"
+      ]
+    },
+    {
+      "export": "annotate_book",
+      "beforeFunctions": 137,
+      "afterFunctions": 137,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "j_program",
+      "beforeFunctions": 234,
+      "afterFunctions": 234,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "j_library",
+      "beforeFunctions": 227,
+      "afterFunctions": 227,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "j_expr",
+      "beforeFunctions": 166,
+      "afterFunctions": 166,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "j_descriptor",
+      "beforeFunctions": 82,
+      "afterFunctions": 82,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "j_io_type",
+      "beforeFunctions": 81,
+      "afterFunctions": 81,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "j_modules",
+      "beforeFunctions": 49,
+      "afterFunctions": 49,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "driver_has_main",
+      "beforeFunctions": 35,
+      "afterFunctions": 35,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "driver_is_io",
+      "beforeFunctions": 82,
+      "afterFunctions": 82,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "driver_interpret",
+      "beforeFunctions": 202,
+      "afterFunctions": 202,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "driver_todos",
+      "beforeFunctions": 59,
+      "afterFunctions": 59,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "driver_owned",
+      "beforeFunctions": 19,
+      "afterFunctions": 19,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "driver_emit_owned",
+      "beforeFunctions": 21,
+      "afterFunctions": 21,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "specialize_book",
+      "beforeFunctions": 447,
+      "afterFunctions": 448,
+      "unchanged": false,
+      "differentFunctions": [
+        "$check_definition$",
+        "$check_definition_result$",
+        "$check_definition_type$",
+        "$check_template_binder$",
+        "$check_template_definition$"
+      ]
+    },
+    {
+      "export": "specialized_book",
+      "beforeFunctions": 1,
+      "afterFunctions": 1,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "specialized_error",
+      "beforeFunctions": 1,
+      "afterFunctions": 1,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "nc_compile",
+      "beforeFunctions": 399,
+      "afterFunctions": 399,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "nc_foreign_paths",
+      "beforeFunctions": 135,
+      "afterFunctions": 135,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "nc_annotation_stops",
+      "beforeFunctions": 50,
+      "afterFunctions": 50,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "nc_annotated_context",
+      "beforeFunctions": 60,
+      "afterFunctions": 60,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "nc_foreign_source",
+      "beforeFunctions": 120,
+      "afterFunctions": 120,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "check_from_exact_prefix",
+      "beforeFunctions": 383,
+      "afterFunctions": 397,
+      "unchanged": false,
+      "differentFunctions": [
+        "$check_book$",
+        "$check_book_diagnostic$",
+        "$check_definition$",
+        "$check_definition_result$",
+        "$check_definition_type$",
+        "$check_event_done$",
+        "$check_event_guard$",
+        "$check_events$",
+        "$check_from_exact_prefix$",
+        "$check_prefix_seed$",
+        "$check_prefix_step$",
+        "$check_template_binder$",
+        "$check_template_definition$",
+        "$dg_result_error$",
+        "$dg_suffix_check$",
+        "$dg_suffix_guard$"
+      ]
+    },
+    {
+      "export": "exact_prefix",
+      "beforeFunctions": 41,
+      "afterFunctions": 41,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "f_load_graph",
+      "beforeFunctions": 501,
+      "afterFunctions": 501,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "f_main_names",
+      "beforeFunctions": 308,
+      "afterFunctions": 308,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "f_load_graph_trace",
+      "beforeFunctions": 502,
+      "afterFunctions": 502,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "f_source_parsed",
+      "beforeFunctions": 1,
+      "afterFunctions": 1,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "book_context",
+      "beforeFunctions": 51,
+      "afterFunctions": 51,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "book_cached",
+      "beforeFunctions": 39,
+      "afterFunctions": 39,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "f_load_graph_seed",
+      "beforeFunctions": 512,
+      "afterFunctions": 512,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "f_load_graph_seed_trace",
+      "beforeFunctions": 513,
+      "afterFunctions": 513,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "driver_report",
+      "beforeFunctions": 79,
+      "afterFunctions": 79,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "check_book_diagnostic",
+      "beforeFunctions": 390,
+      "afterFunctions": 381,
+      "unchanged": false,
+      "differentFunctions": [
+        "$check_book$",
+        "$check_book_diagnostic$",
+        "$check_definition$",
+        "$check_definition_result$",
+        "$check_definition_type$",
+        "$check_event_done$",
+        "$check_event_guard$",
+        "$check_events$",
+        "$check_template_binder$",
+        "$check_template_definition$",
+        "$dg_book_checked$",
+        "$dg_definition$",
+        "$dg_definition_type$",
+        "$dg_event_check$",
+        "$dg_event_guard$",
+        "$dg_events$",
+        "$dg_suffix_check$",
+        "$dg_suffix_guard$",
+        "$dg_template$",
+        "$dg_template_binder$",
+        "$dg_template_open$"
+      ]
+    },
+    {
+      "export": "check_book_diagnostic_from_exact_prefix",
+      "beforeFunctions": 408,
+      "afterFunctions": 395,
+      "unchanged": false,
+      "differentFunctions": [
+        "$check_book$",
+        "$check_book_diagnostic$",
+        "$check_definition$",
+        "$check_definition_result$",
+        "$check_definition_type$",
+        "$check_event_done$",
+        "$check_event_guard$",
+        "$check_events$",
+        "$check_template_binder$",
+        "$check_template_definition$",
+        "$dg_book_checked$",
+        "$dg_definition$",
+        "$dg_definition_type$",
+        "$dg_event_check$",
+        "$dg_event_guard$",
+        "$dg_events$",
+        "$dg_suffix_check$",
+        "$dg_suffix_guard$",
+        "$dg_template$",
+        "$dg_template_binder$",
+        "$dg_template_open$"
+      ]
+    },
+    {
+      "export": "diagnostic_render",
+      "beforeFunctions": 213,
+      "afterFunctions": 213,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "diagnostic_result_locate",
+      "beforeFunctions": 36,
+      "afterFunctions": 36,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "f_load_origins_for",
+      "beforeFunctions": 523,
+      "afterFunctions": 523,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "f_loaded_origins_for",
+      "beforeFunctions": 82,
+      "afterFunctions": 82,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "j_compile_error",
+      "beforeFunctions": 171,
+      "afterFunctions": 171,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "j_layout_error",
+      "beforeFunctions": 161,
+      "afterFunctions": 161,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "reach_book",
+      "beforeFunctions": 52,
+      "afterFunctions": 52,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "j_roots",
+      "beforeFunctions": 24,
+      "afterFunctions": 24,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "j_stops",
+      "beforeFunctions": 16,
+      "afterFunctions": 16,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "annotate_except",
+      "beforeFunctions": 138,
+      "afterFunctions": 138,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "annotate_selected",
+      "beforeFunctions": 138,
+      "afterFunctions": 138,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "j_program_selected",
+      "beforeFunctions": 233,
+      "afterFunctions": 233,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "j_library_selected",
+      "beforeFunctions": 226,
+      "afterFunctions": 226,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "j_foreign_paths",
+      "beforeFunctions": 38,
+      "afterFunctions": 38,
+      "unchanged": true,
+      "differentFunctions": []
+    },
+    {
+      "export": "j_foreign_error",
+      "beforeFunctions": 38,
+      "afterFunctions": 38,
+      "unchanged": true,
+      "differentFunctions": []
+    }
+  ]
+}

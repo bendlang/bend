@@ -2,15 +2,15 @@
   "kind": "bend-default-equality-release",
   "version": 1,
   "newBootstrap": false,
-  "installed": "2026-09-26T19:26:44.619Z",
+  "installed": "2026-09-26T19:47:46.525Z",
   "artifact": "equality-derived-b1",
-  "sourceSha256": "00b8c223ff070d40fefea7208eb2f7de6949ee63eea1944fdf3e04b3913db074",
+  "sourceSha256": "58d57867be712b3b9c9df2c1d285fa6d856da850479cda02a3d86fc2b13c3a7d",
   "runtimeSha256": "26f5eee2f54b194b64f768df6ff505c67bf7a5df2159aa06caf53ecba54e910b",
   "files": [
     {
       "path": "dist/typed-api.mjs",
-      "sha256": "b3a75d62c7946301d987474fe097d5eb2e08cad2edcc6b3eae5371f5c5effbed",
-      "bytes": 1036548
+      "sha256": "7e913551460ac736f1af35e19049d712765291255a0e579482f2e7179dcadbc6",
+      "bytes": 1030277
     },
     {
       "path": "dist/base.bend",
@@ -19,18 +19,18 @@
     },
     {
       "path": "dist/release-lineage/checked-api.mjs",
-      "sha256": "db97c8578746e5dfa2c3f2a8d3c0dbc2e58f5616cea14d5d177e41fb66f39604",
-      "bytes": 1036426
+      "sha256": "ba121e4098044d9f106c4e7cb3e37b0e1ce1bc77f7e42f7e5418556b7f0f3e90",
+      "bytes": 1030155
     },
     {
       "path": "dist/release-lineage/checked-bootstrap.json",
-      "sha256": "50cb56c8dbfd17bb2cbfe78146c11d1627852474bc4ff4918dcf18bb483c4551",
-      "bytes": 48244
+      "sha256": "2f7e171bc123b3a0f37e0a610a1ed7ac46ef95daaa3e50ac30d27c179534df73",
+      "bytes": 48277
     },
     {
       "path": "dist/release-lineage/derivation.json",
-      "sha256": "d9e729a66c6fc18a828f3e39967c79ceeb2e1704884053ff943d75a27511e644",
-      "bytes": 41879
+      "sha256": "be1311a400974e5f850870dc13d82227fd6fecee2f1803d76224d2d22aac753e",
+      "bytes": 41949
     },
     {
       "path": "dist/release-lineage/equality.mjs",
@@ -76,8 +76,8 @@
     },
     {
       "path": "src/check/kernel.bend",
-      "sha256": "0969c4493c29ab980450c848ea24c1f4b666081dbe0eecfc2c6abe21bb0ed947",
-      "bytes": 35691
+      "sha256": "0d920c6026e66ca0ff11f7d210789d398ca162d6cc3858d3a91081c6c763619f",
+      "bytes": 35212
     },
     {
       "path": "src/check/specialize.bend",
@@ -86,8 +86,8 @@
     },
     {
       "path": "src/check/prefix.bend",
-      "sha256": "35af4b272cfe893d60d4aca6433617273a1c52bb8ae4d8eeabfa0541354816cb",
-      "bytes": 3709
+      "sha256": "b95dcd2bcd8bd22d23b1bdce90e44f4e2554a127ef78d3f26a20190cf8c21322",
+      "bytes": 3010
     },
     {
       "path": "src/check/annotate.bend",
@@ -201,8 +201,8 @@
     },
     {
       "path": "src/diagnostic/produce.bend",
-      "sha256": "4c91e4559263e307ce4b3ed0cc11138da27617c6fe5b8bfb21033c5f975a054f",
-      "bytes": 11720
+      "sha256": "5e036e63cd32af0f64642bc4cea581ea191e4281c6cbb5ba840fd87b979213b5",
+      "bytes": 8473
     },
     {
       "path": "src/diagnostic/frontend.bend",
@@ -336,8 +336,8 @@
     },
     {
       "path": "tools/typed-driver.mjs",
-      "sha256": "5ba7da61f7f4b7bbc10f977089ac2d9266a8f79634405d33c42399f8e98b75fa",
-      "bytes": 37495
+      "sha256": "96dd1d6637fa25e28fe3fd83a963189d12da2a939468e651ff5318dee383224c",
+      "bytes": 37798
     },
     {
       "path": "tools/compiler-abi.mjs",
@@ -591,8 +591,8 @@
     }
   ],
   "lineage": {
-    "checkedParentSha256": "db97c8578746e5dfa2c3f2a8d3c0dbc2e58f5616cea14d5d177e41fb66f39604",
-    "derivationSha256": "d9e729a66c6fc18a828f3e39967c79ceeb2e1704884053ff943d75a27511e644",
+    "checkedParentSha256": "ba121e4098044d9f106c4e7cb3e37b0e1ce1bc77f7e42f7e5418556b7f0f3e90",
+    "derivationSha256": "be1311a400974e5f850870dc13d82227fd6fecee2f1803d76224d2d22aac753e",
     "upstreamRevision": "6018e28ecc67cf1fffc0c20c64b11023474c2df8"
   },
   "provenanceScope": "Original checked bootstrap and derivation reports are preserved byte-for-byte with historical paths. Local verification checks relative installed/checkout identities and exact transformation replay; it does not create or relocate bootstrap provenance.",

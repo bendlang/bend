@@ -1,8 +1,11 @@
 # Source-aware diagnostic path
 
-The trusted checker still decides acceptance. `check_book` retains its original
-string result: an empty string means acceptance. Diagnostic metadata never changes
-that decision or relaxes a check.
+One chronological checker produces the verdict and original diagnostic together.
+`check_book` retains its String API by projecting that result's error: an empty
+string means acceptance. Diagnostic formatting and source lookup never change
+that decision or relax a check. Full-book and exact-prefix checking share the
+same event worker and retain the original `KChecked` failure through definition
+and template checking.
 
 The kernel's `check` and `infer` wrappers attach context and an ancestor trail only
 when a result already contains an error. Fifteen existing failure sites preserve
@@ -12,22 +15,33 @@ type layouts are unchanged.
 
 ## APIs
 
-- `check_book_diagnostic(book, origins) -> DResult` preserves the authoritative
-  error string and derives a structured explanation on rejection.
+- `compiler_check_result_abi() -> U32` returns 1 for the authoritative-result API.
+- `check_book_diagnostic(book, origins) -> DResult` returns the authoritative
+  error, book and original structured failure from one check.
+- `check_book_diagnostic_from_exact_prefix(book, validated, origins) -> DResult`
+  skips an exactly matching, previously validated prefix. A mismatch, including
+  a prefix longer than the book, falls back to checking the full book.
 - `diagnostic_render(result) -> String` produces the complete `Error:` output.
   Unsupported declaration/TODO paths retain the original legacy output.
 - `f_load_origins_for(main, sources, definition) -> FProvenance` loads through the
   actual frontend and returns origins only for the requested definition.
+- `f_loaded_origins_for(trace, definition) -> FProvenance` reuses a successful
+  load trace to collect those origins without loading again.
 - `diagnostic_result_locate(result, origins) -> DResult` attaches source locations
   without repeating checking.
 - `f_load_origins(main, sources)` provides the unfiltered provenance map for tests
   and tools that need it. Filtering avoids tracing every Base declaration.
 
-The driver first executes its existing checker/prefix gate. On rejection it may
-request a diagnostic with an empty origin list, read the structured definition
-name, collect that definition's origins, attach them, and render. The driver checks
-that the rich result's error equals the original rejection. A mismatch or failure
-in the optional diagnostic path leaves the original rejection intact.
+When the capability is exactly version 1, the driver calls the detailed full-book
+or exact-prefix API once with an empty origin list. On rejection it reuses that
+result, collects origins for the failed definition from the existing load trace
+when available, attaches them, and renders. Source lookup or rendering failures
+leave the original rejection intact. Prefix validation remains tied to the exact
+compiler and Base source.
+
+Older compiler artifacts keep the String-checker path and optional diagnostic
+replay. The driver uses the replay's presentation only when its error equals the
+original rejection; a mismatch or optional-path failure preserves that rejection.
 
 ## Provenance and formatting
 
@@ -36,6 +50,12 @@ and a path into the final freshened declaration. Only retained lexer positions
 receive origins. Lookup requires the same definition and an exact structural term
 match. Distinct matching locations are ambiguous and are not guessed; an exact
 ancestor origin may supply a less specific location.
+
+Filtered and unfiltered provenance share one traversal of the frontend load trace,
+including its module paths, parsed records, final definitions and freshening
+bases. An explicit Boolean selects all definitions; an empty definition filter
+still means an exact empty-name filter. The traversal preserves origin order and
+returns the original load failure without attempting to collect origins.
 
 The renderer normalizes displayed terms, reconstructs shadowed binder names,
 aligns context columns, preserves adjacent source lines and line-number widths,
