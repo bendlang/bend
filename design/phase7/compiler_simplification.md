@@ -8,9 +8,11 @@ candidates. Implementation requires a subsequent work assignment.
 
 The objective is to keep the same compiler purpose and language target while
 progressively reducing maintained source, repeated work and the knowledge needed
-to change it. Start with measured retirement, prove the new information flow on
-a small slice, then migrate and delete the old machinery. Aim for roughly half
-the present compiler source. More extreme reductions require separate evidence.
+to change it. Begin with a read-only phase that challenges the hypotheses without
+changing the implementation. Every subsequent completed phase must reduce both
+net source size and conceptual complexity. The first group of implementation
+phases targets at least 50% fewer compiler lines; the later group targets at least
+75%. These are objectives to validate, not established feasibility claims.
 
 ## 1. Baseline and scope
 
@@ -204,8 +206,9 @@ evaluation, freshening and erasure have different traversal requirements.
 `KChecked` already contains a term, type and usage information. The missing
 contract is how useful facts survive checking, specialization and emission.
 Define checked definitions that preserve the information consumers require.
-Choose between annotated nodes and a compact side table in the slice experiment;
-include lookup/allocation cost and invalidation rules in that choice.
+Compare annotated nodes and a compact side table using existing evidence in S0;
+test the surviving choice in a bounded slice inside S3. Include lookup/allocation
+cost and invalidation rules in that choice.
 
 Facts belong to a particular node, binder environment and book revision. Structural
 similarity is not sufficient authority to reuse them. Substitution, freshening
@@ -233,183 +236,254 @@ emitter that exposes both models everywhere.
 
 ## 5. Phases and decision gates
 
-The line bands below are planning hypotheses for the full 16,509-line compiler
-scope, including its Bend driver. They are cumulative, overlap and are not additive
-savings. They do not authorize removing functionality to hit a quota. Physical
-line reduction must be accompanied by byte and mechanism measurements. Some
-migrations temporarily increase size; count their bridges and remove them before
-claiming completion.
+S0 is the only phase that does not change or shrink the implementation. S1–S4
+target at least 50% fewer lines; S5–S7 then target at least 75% fewer lines, both
+relative to the original 16,509-line compiler including its Bend driver. A further
+25 percentage points means halving the implementation remaining at the 50% mark.
 
-| Phase | Focus | Hypothesized total lines after completion |
-| --- | --- | ---: |
-| S0 | Freeze baseline, contracts and measurements | 16,509 |
-| S1 | Retire obsolete paths and simplify the working route | 16,000–16,400 |
-| S2 | Prove the new architecture on a small slice | No whole-compiler reduction promised |
-| S3 | Migrate term/provenance contracts and remove old bridges | 13,000–15,000 |
-| S4 | Retain checked facts; remove diagnostic/type reconstruction | 11,000–13,500 |
-| S5 | Simplify frontend, shared decisions and host boundaries | 9,000–11,500 |
-| S6 | Consolidate and release one maintained implementation | 8,000–10,000 |
-| S7 | Optional further research | ~4,100 only if a new prototype justifies it |
+The intermediate ceilings are provisional allocations of the goal, not forecasts
+backed by measured replacement code. S0 must identify concrete deletion candidates
+and replacement costs before endorsing those allocations. Adjacent phases can be
+rebalanced when dependencies demand it, with a recorded reason. The overall 50%
+and 75% objectives and the functionality contract remain fixed.
 
-### S0 — Freeze what we must preserve
+| Phase | Main simplification | Target maximum compiler lines | Cumulative reduction |
+| --- | --- | ---: | ---: |
+| S0 | Validate hypotheses using existing code and evidence; no implementation changes | 16,509 baseline | 0% |
+| S1 | Remove obsolete implementations and private helpers | 16,000 | about 3% |
+| S2 | Explicit terms and direct provenance; retire positional and origin-recovery machinery | 13,500 | about 18% |
+| S3 | Keep authoritative checked facts/errors; retire replay and duplicate inference | 10,500 | about 36% |
+| S4 | Simplify frontend, book state and boundary plumbing; deliver first milestone | **8,254** | **at least 50%** |
+| S5 | Simplify binding and environments; remove repeated renumbering machinery | 6,500 | about 61% |
+| S6 | Share backend semantic decisions; remove parallel bookkeeping | 5,000 | about 70% |
+| S7 | Factor remaining repeated traversal/control rules; deliver second milestone | **4,127** | **at least 75%** |
 
-Record manifest/source/API/runtime/Base/host/toolchain identities and the current
-dirty/candidate inventory. Preserve pending Phase 6 work without folding it into
-the baseline. Inventory public CLI/API behavior, actual runtime roots, the eight
-mechanism families above, and the three fixed context tasks.
+### Completion rule for every implementation phase
 
-Reuse existing release and conformance evidence when exact identities match.
-Prepare focused selections for each proposed change, plus finite limits for large
-input and request-history tests. Record same-machine iteration and representative
-performance baselines before changing implementation. Reserve full-source timing
-for integration; it is not the edit loop.
+A phase is complete only when its integrated compiler meets all of these rules:
 
-**Exit:** a reproducible baseline and comparison policy, including known failures,
-gated hardware, baseline context sets and a list of external callers. No new
-general benchmark framework or compiler rewrite is needed to finish this phase.
+1. Physical lines, nonblank lines and source bytes are lower than at the previous
+   completed phase, using the same responsibility scope. Charge new compiler
+   helpers, generators and required host logic wherever they are placed. Moving
+   code outside the manifest, into generated text or another language earns no
+   reduction. Keep support/runtime/test counts separately visible too.
+2. The mechanism ledger shows a net conceptual simplification: identify the
+   independent rules, alternate paths or validity contracts removed, and charge
+   any new ones. An independent review must find fewer required mechanisms or
+   invariants overall; a renamed layer or larger generic framework does not pass.
+   Datatype and function counts are supporting metrics, not this verdict.
+3. All applicable correctness, compatibility, bootstrap and performance gates pass.
+   Keep every existing gap visible and identify intentional semantic repairs.
+4. The phase's target ceiling is met, or its intermediate allocation was explicitly
+   revised on evidence before completion. S4 cannot be reported as the 50%
+   milestone above 8,254 lines, nor S7 as 75% above 4,127 lines.
+
+Prototypes, converters, measurements and release checks are substeps inside these
+phases. A temporary increase is allowed in an isolated candidate, but is not a
+completed phase or a promoted simplification. Include any surviving bridges in
+the final cost. Preserve the last smaller validated compiler if a candidate fails.
+
+### S0 — Validate the hypotheses without implementation changes
+
+Inspect current code, callers, manifests, public interfaces, TypeScript structure
+and existing experiment evidence. Record source/API/runtime/Base/host/toolchain
+identities and pending candidates without modifying or promoting them. Establish
+the mechanism inventory, fixed-task context sets and functionality baseline.
+
+For each proposed simplification, produce one evidence row containing:
+
+- The exact current functions/files and mechanism proposed for removal.
+- All consumers, dynamic/public entry points and compatibility obligations.
+- The replacement contract and why it can preserve the same behavior.
+- A conservative range for removed lines minus replacement, bridge and auxiliary
+  costs; assign each deletion to one phase so savings are not counted twice.
+- Existing supporting and contradicting evidence, a cheapest falsifier, and a
+  verdict of supported for a bounded trial, contradicted or unresolved.
+
+Challenge source provenance overhead, preservation of facts through templates,
+explicit-term verbosity, capture safety, stack/sharing requirements and backend
+differences. Inspect rejected Phase 6 attempts before proposing the same mechanism
+again. Test whether the unique deletion budget plausibly covers roughly 8,255
+lines for the first milestone and 12,382 for the second. Identify any unsupported
+portion explicitly rather than inventing a saving to balance the table.
+
+No compiler, runtime, host, harness, configuration or instrumentation changes;
+no prototype implementation or source migration. Existing read-only counters and
+unchanged baseline programs may run if an essential measurement is missing, with
+outputs isolated from the source/default artifacts. The deliverable is an audit
+report and, if needed, revised planning estimates. Read-only analysis can establish
+opportunity and falsify assumptions; it cannot prove an unimplemented replacement
+correct or fast.
+
+**Exit:** a reviewed hypothesis/deletion ledger and ranked plan, preserving known
+failures and naming unresolved feasibility. No source reduction is claimed. A
+contradicted hypothesis must be replaced or deferred before its implementation
+phase starts; unresolved feasibility receives a bounded trial inside that phase.
 
 ### S1 — Remove proven obsolete implementation
 
-Audit superseded freshening, normalization and diagnostic helpers from their
-actual entry points, exports, host strings, test roots and assembled manifests.
-Existing Phase 6 cleanup evidence can guide the audit; revalidate the exact
-candidate before adoption. Absence from a textual call search alone is insufficient.
+Delete superseded freshening, normalization and diagnostic implementations only
+after tracing actual roots, exports, host strings, tests and assembled manifests.
+Remove their private helpers, redundant forwarding and duplicate control paths
+together. Existing Phase 6 evidence can guide the work; validate the exact patch
+against the frozen baseline. Absence from textual search alone is insufficient.
 
-Delete an obsolete path together with its private helpers. Keep meaningful
-behavioral tests and public compatibility wrappers while their callers migrate.
-Standardize routine edits on the maintained checked-B1 workflow. Index historical
-tools and results so they need not be loaded for ordinary work; retain their
-reproducers and original failure status.
+Keep meaningful tests and public contracts. Standardize the working route on the
+maintained checked-B1 workflow and index historical experiments so ordinary work
+need not load them. Removing a legacy prototype outside the compiler manifest
+does not contribute to the compiler target.
 
-**Exit:** measured net source reduction, unchanged applicable observations and
-one documented working route. Byte-identical representative output is a useful
-additional gate for deletion-only changes. Archiving a legacy prototype outside
-the compiler manifest earns no compiler-line savings.
+**Concepts removed:** alternate obsolete algorithms and the private conventions
+needed to call them. **Target:** at most 16,000 lines. **Gate:** unchanged applicable
+observations, lower net lines/bytes and a reviewed retirement inventory;
+byte-identical representative output is an additional deletion-only control.
 
-### S2 — Prove an end-to-end slice before a broad rewrite
+### S2 — Make terms and source ownership explicit
 
-Use an isolated candidate and a compact set of programs covering a dependent
-application, an affine/erased argument, an ADT match, a template instance, an
-imported name and a located rejection. Carry explicit term variants, provenance
-and checked facts through these cases to interpretation and both emitters. Include
-an applicable foreign-signature/readback witness. Exercise actual generated JS and
-native programs.
+First prove a small slice inside this phase: parse, check, interpret and emit JS
+and native code for a dependent application, affine/erased argument, ADT match,
+template instance, imported name and located rejection. Keep the production
+compiler unchanged while the candidate is incomplete. Count temporary converters.
 
-The old and proposed representations can meet at one explicit conversion boundary
-for this experiment. Count all converters and support code. The candidate must
-actually produce and consume new facts; wrapping an unchanged old pipeline does
-not test the proposal. Preserve a separate production implementation throughout.
+Then migrate connected producers and consumers to explicit first-order variants
+with named fields. Keep explicit binder IDs, lazy sharing and work frames. Remove
+positional access helpers, duplicate tag-dispatch conventions and administrative
+sentinels embedded in language terms as their replacements become complete.
 
-Compare annotated nodes with a compact fact table, and direct spans with compact
-source references. Check sharing, invalidation, errors and allocation in genuine
-checked B1 and a self-emitted component where feasible. Existing failed provenance
-or typed-cache experiments are relevant counterevidence, not completed solutions.
+Carry source identity and UTF-16 offsets through syntax, elaboration and freshening.
+Specify imported/generated-node ownership and substitution provenance. Retire
+covered origin scans and structural matching. Test Unicode, multiline strings,
+repeated equal subterms, changing source graphs and persistent worker histories.
+Direct source locations can replace origin recovery while legacy diagnostic
+rechecking remains until S3; these are distinct mechanisms and savings.
 
-**Exit:** a reviewed contract and concrete deletion map for S3/S4, with measured
-slice cost and no unexplained behavior change. If the design adds more machinery
-than it removes, revise or reject it here. If facts cannot survive specialization
-safely, retain annotation and lower the forecast instead of forcing migration.
+**Concepts removed:** implicit positional term conventions and reconstructed source
+ownership. **Target:** at most 13,500 lines, with net savings including all variant
+constructors, spans and remaining bridges. **Gate:** exact parser/core/diagnostic
+controls, allocation measurements, B1/H ABI and cache-schema checks, and an initial
+checked self-reproduction at the representation integration boundary. Reject or
+revise a schema that merely exchanges implicit rules for more machinery.
 
-### S3 — Migrate core representation and provenance
+### S3 — Keep checked information through specialization
 
-Migrate one connected responsibility at a time using the agreed schema. Keep
-explicit binder IDs, lazy sharing and explicit work frames. Replace implicit child
-indices with named cases; centralize the small operations that genuinely share
-binding rules. Migrate producers and consumers together so internal adapters do
-not become a permanent second compiler.
+Within a bounded slice, turn existing local `KChecked` information into retained
+facts and authoritative structured errors. Compare annotated nodes and a compact
+side table, including validity and memory costs. The candidate must produce and
+consume new facts, not wrap an unchanged reconstruction pipeline.
 
-Carry source identity and offsets through syntax, elaboration and freshening.
-Specify imported and generated-node ownership, then retire obsolete origin scans
-and structural matching only for fully covered paths. Test Unicode, multiline
-strings, repeated equal subterms, reused request workers and changed source graphs.
+Preserve declaration visibility, open laws, quantities, termination and first-error
+order. Render errors once from the authoritative failure and remove diagnostic
+rechecking. Teach specialization to transform terms and facts together, including
+dependent types, erased template arguments, instance identity and fresh binders.
+Retain source templates and the complete semantic context for conversion.
 
-**Exit:** the migrated representation has one owner, its obsolete conventions and
-adapters are deleted, and parser/core/diagnostic controls pass. Boundaries changing
-public data require B1/H ABI checks, cache schema/version checks and an initial
-checked self-reproduction gate before dependent work expands.
+Migrate erasure, foreign marshalling, layout and readback consumers. Remove
+`ka_type`-style reconstruction only when each consumer has valid retained facts;
+normalization can still legitimately act on those types. Avoid a new generic cache:
+earlier instrumentation did not establish repeated identical annotation inputs.
 
-### S4 — Make checking authoritative through specialization
+**Concepts removed:** diagnostic replay and rediscovery of already established
+types. **Target:** at most 10,500 lines. **Gate:** dependent/template/quantity/FFI
+execution controls, full frontend vector and accepted/rejected request-history
+measurements. If facts cannot survive specialization safely, stop that candidate;
+do not delete annotation to meet the line budget.
 
-Publish structured checker failures and retained success facts. Preserve declaration
-visibility, open laws, quantity demand, termination checks and first-error order.
-Remove rejection replay once all diagnostics consume the authoritative result.
-Render errors once, preserving the public API at its boundary.
+### S4 — Simplify frontend and book state; reach 50%
 
-Teach specialization to transform terms and facts together, including dependent
-applications, erased template arguments, instance identity and fresh binders.
-Retain source templates and full type context for conversion. Track recursion and
-growth limits explicitly. Backends consume the retained facts for erasure, foreign
-marshalling, layout and readback. Retire `ka_type`-style reconstruction only after
-every live consumer has a valid replacement; normalization still has legitimate
-work to do on retained types.
+Consolidate repeated declaration/expression state, loader/elaborator bookkeeping,
+error transports and repeated book conversions around the S2/S3 contracts.
+One component owns each transformation and its result. Evaluate a direct source
+cursor against token materialization only where S0 identifies net savings and a
+slice preserves grammar, Unicode positions and first-error order. A separate
+lexer is not inherently wrong.
 
-Begin with no new generic memoization layer. Previous instrumentation did not
-establish repeated identical annotation inputs; reducing information loss is a
-different hypothesis from caching repeated calls.
+Remove scattered host representation branching by using one boundary adapter,
+while continuing to test genuine B1/H forms and preserve their lineage. Simplify
+consumer state plumbing without yet conflating JS and native lowering. Delete
+superseded result wrappers and migration bridges rather than adding a permanent
+parallel pipeline.
 
-**Exit:** no diagnostic recheck on migrated paths; no duplicate inference pass for
-facts already retained correctly; exact changed-observation accounting; focused
-dependent/template/quantity/FFI controls and the full frontend gate. Measure both
-accepted and rejected requests, peak memory and persistent-worker contamination.
+**Concepts removed:** redundant intermediate states, error transports and boundary
+conversion policies. **Target:** at most **8,254 lines**, meeting the first **50%**
+milestone. **Gate:** reduced dependencies and fixed-task context, relevant backend
+execution, full frontend comparison, checked B1 to H to H reproduction, release
+integrity, relocated CLI and controlled performance comparisons. Ship a usable
+smaller compiler as part of this phase. A 10,000-line result is progress, but does
+not complete this milestone.
 
-### S5 — Simplify frontend and consumers around the new contracts
+### S5 — Simplify binding and environments
 
-With representation and facts stable, consolidate redundant declaration/expression
-bookkeeping, error transports and fresh-ID plumbing. Evaluate a direct source
-cursor against the existing token pipeline only if it removes net machinery while
-preserving grammar, Unicode offsets and first-error behavior. Do not assume a
-separate lexer is itself a defect. Similarly, remove a freshening pass only after
-demonstrating capture-safe allocation under imports and specialization.
+Start from the validated 50% milestone. Investigate a compact first-order binding
+contract that avoids whole-program renumbering and duplicated environment handling.
+Compare retaining globally unique IDs with local indices plus explicit environment
+identity using actual retained costs. Keep the option with fewer independent
+binding invariants; TypeScript's function-valued binders are not a drop-in choice.
 
-Share backend reachability and semantic descriptors where the contract is identical.
-Keep target-specific erasure/layout choices explicit. Consolidate host conversion
-at one boundary while continuing to support and test genuine B1 and H shapes;
-removing scattered branching does not erase their provenance differences.
-Reduce experiment-specific execution helpers through the existing development
-workflow rather than adding a replacement framework.
+A bounded candidate must cover shadowing, imports, parallel binders, open terms,
+template materialization and substitution of both terms and checked facts. Preserve
+sharing and explicit stack bounds. Delete old renumbering and environment adapters
+only after producers, transformations and consumers share the replacement contract.
 
-**Exit:** named mechanisms or state transitions actually disappear, dependencies
-and fixed-task review context shrink, and affected backend programs execute with
-unchanged observable behavior. Native ownership/disposal, partial applications,
-parallel joins, large constructors and readback require dedicated controls.
+**Concepts removed:** repeated global freshening and competing environment/identity
+rules. **Target:** at most 6,500 lines. **Gate:** capture and dependent-substitution
+controls, deep/shared terms, ABI validity and checked self-reproduction. If local
+indices require more shifting/level machinery than they remove, reject that design;
+the target does not justify a more complicated binding model.
 
-### S6 — Delete migration scaffolding and ship one compiler
+### S6 — Share backend semantic decisions
 
-Remove converters, duplicate implementations, dead exports and superseded caches.
-Update source assembly, host ABI documentation, the compiler guide and public
-examples together. Keep one maintained build/test/release route; historical
-artifacts remain evidence, not competing defaults.
+Use retained checked facts and the simpler binding contract to express genuinely
+common executable-value decisions once: live definitions, erased arguments,
+constructor identities, foreign signatures and result/readback descriptions.
+Delete independently maintained decision code and bookkeeping in consumers.
 
-Freeze the integrated source. Run full frontend comparison, affected broad backend
-lanes, actual checked B1 to H to H reproduction, integrity verification and a
-relocated ordinary CLI check. A fixed point requires equal successive self-emitted
-bytes for this frozen source; it need not equal the pre-refactor compiler bytes.
-Run controlled full-source and generated-program comparisons after correctness.
+The small shared description must remove more machinery than its construction,
+interpretation and validity rules add. Keep backend-specific intrinsic stops and
+layouts explicit. JS closures/trampolines and native ownership/segments/fork-join
+lowering remain distinct; a flag-driven universal emitter is not the objective.
 
-**Exit:** one reproducible release, a final line/byte/mechanism/context dashboard,
-all remaining gaps and unverified hardware stated, and reproducible before/after
-evidence. If a sound design reaches 10,000 lines rather than 8,000, report that
-result and its remaining costs. Do not compress code to manufacture a 50% claim.
+**Concepts removed:** duplicate semantic plans and parallel identity/erasure/foreign
+bookkeeping. **Target:** at most 5,000 lines. **Gate:** actual JS/native execution,
+readback/FFI, ownership/disposal, partial applications, large constructors, parallel
+joins and generated-size/runtime comparisons. Hardware-gated GPU execution remains
+separate from preservation of its generation path.
 
-### S7 — Optional research toward 75%, with an explicit stop
+### S7 — Factor residual traversal/control duplication; reach 75%
 
-Only after S6, profile the remaining source and review burden. Candidates include
-a more compact first-order binding/environment model or narrowly shared traversal
-descriptions that remove repeated semantic rules. Each needs an independent slice,
-all costs counted, and the same bootstrap/behavior/performance gates. Avoid a
-general metacompiler whose implementation and generated output hide the real cost.
+Recount the remaining code and revisit S0's residual deletion ledger. Investigate
+small first-order worklist or result-handling primitives for structurally identical
+walks, such as name/free-variable collection and related bookkeeping. Keep distinct
+evaluation, dependent-checking and erasure rules visible. Each abstraction must
+retire named duplicate traversal/control implementations and their invariants;
+merely shortening syntax or removing comments cannot qualify.
 
-| Reduction from baseline | Remaining lines | Remaining bytes for the same text reduction | Interpretation |
-| --- | ---: | ---: | --- |
-| 50% | about 8,250 | about 255 KB | Architectural goal; 8–10k lines and 250–350 KB is the initial planning range. |
-| 75% | about 4,130 | about 127 KB | Research hypothesis, below the complete TypeScript compiler's size. |
-| 90% | about 1,650 | about 51 KB | No credible complete implementation proposal established. |
-| 95% | about 825 | about 25.5 KB | No credible complete implementation proposal established. |
+Use one bounded candidate at a time. Charge abstraction drivers, operation tags,
+special cases, generated helpers and any extra host logic. Avoid a metacompiler or
+universal visitor whose configuration recreates the complexity it hides. Delete
+obsolete traversal drivers and private wrappers only after equivalent behavior,
+sharing and resource bounds are demonstrated.
 
-These percentages apply separately to lines and bytes. Achieving one does not
-establish the other. Task-specific context might shrink much more than total code
-through strong interfaces and concise current documentation, but 75–95% context
-reduction also needs the fixed-task measurements rather than an assertion.
+**Concepts removed:** repeated traversal/control protocols with the same contract.
+**Target:** at most **4,127 lines**, meeting the **75%** milestone. **Gate:** the full
+integrated release gate used at S4, plus measured net conceptual reduction, context
+sizes and final source accounting. Consolidation and release are included in the
+phase; they are not a separate phase without reductions.
+
+### Feasibility and honest milestone reporting
+
+The 75% target is substantially more uncertain than 50%: it would leave fewer
+lines than the complete pinned TypeScript compiler. The later phases describe
+concrete hypotheses to test, not an established route to that size. If S0 or later
+experiments show insufficient safe savings, report the shortfall and retain the
+last smaller validated version. Rework the mechanism, not the functionality or
+accounting, and do not declare the milestone achieved.
+
+Report byte and review-context reductions separately. A 50% text reduction would
+require at most 254,968 bytes; 75% would require at most 127,484 bytes. The line
+milestones do not automatically establish those byte targets, or an equal reduction
+in semantic concepts. Each phase must show a net decrease in implementation
+mechanisms; the language responsibilities remain. Reductions of 90–95% in complete
+implementation size remain outside this plan's supported proposals.
 
 ## 6. Validation and performance policy
 
