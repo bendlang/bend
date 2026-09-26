@@ -1,0 +1,23 @@
+{
+  "argv": [
+    "taskset",
+    "-c",
+    "1",
+    "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+    "--test",
+    "tests/conformance/inventory.test.mjs",
+    "tests/conformance/judge.test.mjs",
+    "tests/conformance/abi.test.mjs",
+    "tests/conformance/selection.test.mjs",
+    "tests/conformance/targeted.test.mjs",
+    "tests/conformance/native-adapter.test.mjs",
+    "tests/conformance/selfhost-provenance.test.mjs",
+    "tests/conformance/bootstrap-provenance.test.mjs",
+    "tests/node-resource-args.test.mjs",
+    "tests/native-build.test.mjs"
+  ],
+  "exitCode": 0,
+  "seconds": 11.387969508301467,
+  "BEND_UPSTREAM": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream",
+  "reason": "Repeat with the original component environment to execute all three upstream-gated tests; harness-03 omitted this environment entry."
+}

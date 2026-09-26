@@ -19,7 +19,10 @@ Use `npm run build` to rebuild the default with pinned upstream.
 The [maintained development command](docs/PHASE5_DEVELOPMENT.md) builds a checked
 compiler and reuses selected paired tests for short iteration cycles.
 
-The [Phase 5 report](implementation/phase5/report.md) records the current release
+The [S1 simplification report](implementation/phase7/s1-report.md) records the
+current source: 15,961 Bend lines after removing 548 lines of obsolete paths.
+Its checked and optimized compiler APIs are byte-identical to the Phase 5 release.
+The [Phase 5 report](implementation/phase5/report.md) records that API's broader evidence
 and its limits: all 919 positive frontend fixtures pass, strict check failures
 fell from 377 to 318, and exact live TypeScript differences fell from 560 to 444.
 The [controlled full-source comparison](implementation/phase5/full-source-comparison.md)
@@ -28,7 +31,7 @@ optimized compiler: **6.03× slower** under the documented workflow/cache policy
 A checked API rebuild took 14.63 seconds in the final integration; full
 self-reproduction remains a separate integration gate.
 
-The [checked self-host proof](implementation/phase5/final-selfhost.md) reproduces
+The historical [checked self-host proof](implementation/phase5/final-selfhost.md) reproduces
 identical compiler bytes through B1→H→H. The optimized compiler and self-emitted
 compiler each preserve all 2,756 frontend observations in the
 [final artifact gate](implementation/phase5/final-artifact-frontend.md).
@@ -40,6 +43,8 @@ Historical artifacts and their evidence remain indexed in the
 [experiment ledger](experiments/ledger.md), [preservation index](experiments/PRESERVATION.md)
 and [current strategy](experiments/STEERING.md). Known failures remain explicit;
 these gates do not establish full upstream equivalence.
+The S1 source has a fresh checked bootstrap; its full all-definition fixed point
+has not been rerun after the retirement.
 
 The [phased simplification design](design/phase7/compiler_simplification.md)
 starts with read-only hypothesis validation, then requires each implementation

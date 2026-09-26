@@ -11,10 +11,6 @@ law ff_term:
   for +r: FFlatten
   KTerm
 
-law ff_next:
-  for +r: FFlatten
-  U32
-
 law ff_flat:
   for +t: KTerm
   for +vars: List<&2, KTerm>
@@ -151,12 +147,6 @@ def ff_term(r):
   match r:
     case FFlatten{t, next}:
       t
-
-@unsafe
-def ff_next(r):
-  match r:
-    case FFlatten{t, next}:
-      next
 
 @unsafe
 def ff_flat(t, vars, next):

@@ -149,30 +149,6 @@ law strong:
 def strong(book, t):
   graph_strong(book, t)
 
-law norm_strong:
-  for +book: List<&2, KDef>
-  for +t: KTerm
-  KTerm
-
-@unsafe
-def norm_strong(book, t):
-  match t:
-    case KTerm{tag, name, id, quant, kids, removed}:
-      KTerm{tag, name, id, quant, norm_strongs(book, kids), removed}
-
-law norm_strongs:
-  for +book: List<&2, KDef>
-  for +ts: List<&2, KTerm>
-  List<&2, KTerm>
-
-@unsafe
-def norm_strongs(book, ts):
-  match ts:
-    case Nil{}:
-      Nil{}
-    case Con{h, t}:
-      Con{strong(book, h), norm_strongs(book, t)}
-
 law norm_max:
   for +a: U32
   for +b: U32
@@ -188,14 +164,6 @@ law norm_max_term:
 @unsafe
 def norm_max_term(t):
   norm_max_walk(Con{t, Nil{}}, 0)
-
-law norm_max_terms:
-  for +ts: List<&2, KTerm>
-  U32
-
-@unsafe
-def norm_max_terms(ts):
-  norm_max_walk(ts, 0)
 
 law norm_max_book:
   for +book: List<&2, KDef>
@@ -228,61 +196,6 @@ law norm_compare:
 def norm_compare(book, a, b, le, fresh):
   kc(Bool, norm_exact(a, b), u => True{}, u => norm_cmp_loop(book, Con{KNormCmp{a, b, le, fresh}, Nil{}}, Nil{}))
 
-law norm_compare_heads:
-  for +book: List<&2, KDef>
-  for +a: KTerm
-  for +b: KTerm
-  for +le: Bool
-  for +fresh: U32
-  Bool
-
-@unsafe
-def norm_compare_heads(book, a, b, le, fresh):
-  kc(Bool, Bool.or(String.eq(tg(a), "Lam"), String.eq(tg(b), "Lam")), u => norm_compare(book, app(a, var("_", fresh)), app(b, var("_", fresh)), le, U32.add(fresh, 1)), u => kc(Bool, String.eq(tg(a), tg(b)), u => norm_compare_same(book, a, b, le, fresh), u => False{}))
-law norm_compare_same:
-  for +book: List<&2, KDef>
-  for +a: KTerm
-  for +b: KTerm
-  for +le: Bool
-  for +fresh: U32
-  Bool
-
-@unsafe
-def norm_compare_same(book, a, b, le, fresh):
-  kc(Bool, String.eq(tg(a), "Var"), u => U32.is_eq(ix(a), ix(b)), u => kc(Bool, String.eq(tg(a), "Typ"), u => kc(Bool, le, u => norm_kind(book, a, b, wnf(book, kid(a, 0)), wnf(book, kid(b, 0)), fresh), u => norm_compare(book, kid(a, 0), kid(b, 0), False{}, fresh)), u => kc(Bool, String.eq(tg(a), "All"), u => Bool.and(U32.is_eq(qt(a), qt(b)), Bool.and(norm_compare(book, kid(b, 0), kid(a, 0), le, fresh), norm_compare(book, subst(kid(a, 1), ix(a), var("_", fresh)), subst(kid(b, 1), ix(b), var("_", fresh)), le, U32.add(fresh, 1)))), u => kc(Bool, String.eq(tg(a), "ADT"), u => Bool.and(String.eq(nm(a), nm(b)), Bool.and(norm_removed(rm(a), rm(b), le), norm_compare_terms(book, ks(a), ks(b), fresh))), u => kc(Bool, String.eq(tg(a), "Qua"), u => U32.is_eq(qt(a), qt(b)), u => norm_compare_plain(book, a, b, fresh))))))
-law norm_compare_plain:
-  for +book: List<&2, KDef>
-  for +a: KTerm
-  for +b: KTerm
-  for +fresh: U32
-  Bool
-
-@unsafe
-def norm_compare_plain(book, a, b, fresh):
-  kc(Bool, Bool.or(String.eq(tg(a), "Ref"), String.eq(tg(a), "Hol")), u => String.eq(nm(a), nm(b)), u => kc(Bool, Bool.or(String.eq(tg(a), "Ctr"), String.eq(tg(a), "Mat")), u => Bool.and(String.eq(nm(a), nm(b)), norm_compare_terms(book, ks(a), ks(b), fresh)), u => kc(Bool, Bool.or(Bool.or(String.eq(tg(a), "App"), String.eq(tg(a), "Min")), Bool.or(String.eq(tg(a), "Eql"), String.eq(tg(a), "Rwt"))), u => norm_compare_terms(book, ks(a), ks(b), fresh), u => Bool.or(String.eq(tg(a), "Qnt"), Bool.or(String.eq(tg(a), "Rfl"), String.eq(tg(a), "Efq"))))))
-law norm_compare_terms:
-  for +book: List<&2, KDef>
-  for +as: List<&2, KTerm>
-  for +bs: List<&2, KTerm>
-  for +fresh: U32
-  Bool
-
-@unsafe
-def norm_compare_terms(book, as, bs, fresh):
-  match as:
-    case Nil{}:
-      match bs:
-        case Nil{}:
-          True{}
-        case Con{h, t}:
-          False{}
-    case Con{ah, at}:
-      match bs:
-        case Nil{}:
-          False{}
-        case Con{bh, bt}:
-          Bool.and(norm_compare(book, ah, bh, False{}, fresh), norm_compare_terms(book, at, bt, fresh))
-
 law norm_subset:
   for +as: List<&2, String>
   for +bs: List<&2, String>
@@ -305,18 +218,6 @@ law norm_removed:
 @unsafe
 def norm_removed(as, bs, le):
   kc(Bool, le, u => norm_subset(as, bs), u => Bool.and(U32.is_eq(norm_names_len(as), norm_names_len(bs)), norm_subset(as, bs)))
-law norm_kind:
-  for +book: List<&2, KDef>
-  for +a: KTerm
-  for +b: KTerm
-  for +g: KTerm
-  for +h: KTerm
-  for +fresh: U32
-  Bool
-
-@unsafe
-def norm_kind(book, a, b, g, h, fresh):
-  kc(Bool, Bool.or(Bool.and(String.eq(tg(g), "Qua"), U32.is_eq(qt(g), 2)), Bool.and(String.eq(tg(h), "Qua"), Bool.not(U32.is_eq(qt(h), 2)))), u => True{}, u => kc(Bool, String.eq(tg(g), "Min"), u => Bool.and(norm_compare(book, kt("Typ", "", 0, 0, Con{kid(g, 0), Nil{}}), b, True{}, fresh), norm_compare(book, kt("Typ", "", 0, 0, Con{kid(g, 1), Nil{}}), b, True{}, fresh)), u => kc(Bool, String.eq(tg(h), "Min"), u => Bool.or(norm_compare(book, a, kt("Typ", "", 0, 0, Con{kid(h, 0), Nil{}}), True{}, fresh), norm_compare(book, a, kt("Typ", "", 0, 0, Con{kid(h, 1), Nil{}}), True{}, fresh)), u => norm_compare(book, g, h, True{}, fresh))))
 law norm_let:
   for +ts: List<&2, KTerm>
   KTerm
@@ -420,45 +321,8 @@ law norm_defs_join:
   for +b: List<&2, KDef>
   List<&2, KDef>
 
-law norm_snf_go:
-  for +book: List<&2, KDef>
-  for +t: KTerm
-  for +stack: List<&2, KNormFrame>
-  for +fresh: U32
-  KTerm
-
-law norm_snf_head:
-  for +book: List<&2, KDef>
-  for +t: KTerm
-  for +stack: List<&2, KNormFrame>
-  for +fresh: U32
-  KTerm
-
 law norm_rebind:
   for +t: KTerm
-  for +fresh: U32
-  KTerm
-
-law norm_snf_open:
-  for +book: List<&2, KDef>
-  for +t: KTerm
-  for +stack: List<&2, KNormFrame>
-  for +fresh: U32
-  KTerm
-
-law norm_snf_children:
-  for +book: List<&2, KDef>
-  for +parent: KTerm
-  for +done: List<&2, KTerm>
-  for +todo: List<&2, KTerm>
-  for +stack: List<&2, KNormFrame>
-  for +fresh: U32
-  KTerm
-
-law norm_snf_return:
-  for +book: List<&2, KDef>
-  for +t: KTerm
-  for +stack: List<&2, KNormFrame>
   for +fresh: U32
   KTerm
 
@@ -487,36 +351,8 @@ def norm_defs_join(a, b):
       Con{h, norm_defs_join(rest, b)}
 
 @unsafe
-def norm_snf_go(book, t, stack, fresh):
-  norm_snf_head(book, wnf(book, t), stack, fresh)
-
-@unsafe
-def norm_snf_head(book, t, stack, fresh):
-  kc(KTerm, String.eq(tg(t), "Lam") || String.eq(tg(t), "All"), u => norm_snf_open(book, norm_rebind(t, fresh), stack, U32.add(fresh, 1)), u => norm_snf_open(book, t, stack, fresh))
-
-@unsafe
 def norm_rebind(t, fresh):
   KTerm{tg(t), nm(t), fresh, qt(t), kc(List<&2, KTerm>, String.eq(tg(t), "Lam"), u => Con{subst(kid(t, 0), ix(t), var(nm(t), fresh)), Nil{}}, u => Con{kid(t, 0), Con{subst(kid(t, 1), ix(t), var(nm(t), fresh)), Nil{}}}), rm(t)}
-
-@unsafe
-def norm_snf_open(book, t, stack, fresh):
-  norm_snf_children(book, t, Nil{}, ks(t), stack, fresh)
-
-@unsafe
-def norm_snf_children(book, parent, done, todo, stack, fresh):
-  match todo:
-    case Nil{}:
-      norm_snf_return(book, KTerm{tg(parent), nm(parent), ix(parent), qt(parent), List.reverse(&2, KTerm, done), rm(parent)}, stack, fresh)
-    case Con{h, rest}:
-      norm_snf_go(book, h, Con{KNormFrame{parent, done, rest}, stack}, fresh)
-
-@unsafe
-def norm_snf_return(book, t, stack, fresh):
-  match stack:
-    case Nil{}:
-      t
-    case Con{KNormFrame{parent, done, todo}, rest}:
-      norm_snf_children(book, parent, Con{t, done}, todo, rest, fresh)
 
 # Syntactic reflexivity precedes evaluation, as pointer reflexivity does in
 # upstream. Cell contents are included; different stored values never match.

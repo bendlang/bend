@@ -5,18 +5,6 @@ type N_WordKind is Data:
   N_W64{}
   N_Box{}
 
-type N_Field is Data:
-  N_Field{+offset: U32, +words: List<&2, N_WordKind>}
-
-type N_Arm is Data:
-  N_Arm{+name: String, +fields: List<&2, N_Field>}
-
-type N_Layout is Data:
-  N_Layout{+words: List<&2, N_WordKind>, +arms: List<&2, N_Arm>}
-
-type N_Value is Data:
-  N_Value{+words: List<&2, String>, +layout: N_Layout, +static: Bool}
-
 type N_Param is Data:
   N_Param{+name: String, +kind: N_WordKind}
 

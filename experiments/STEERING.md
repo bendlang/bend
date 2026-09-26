@@ -6,21 +6,21 @@ Each phase has a design, implementation/validation and report, committed and
 pushed before the next phase begins. There is no renewed historical time budget.
 
 S0's [read-only report](../implementation/phase7/s0-report.md) is complete.
-Production is unchanged at 16,509 lines / 509,937 bytes; the existing release
-verifies. The pinned upstream remains `6018e28`. Prior conformance and timing
-results retain their artifact scope; this audit does not improve those metrics.
+S1's [retirement report](../implementation/phase7/s1-report.md) is complete:
+15,961 lines / 494,957 bytes after removing548 obsolete lines. Fresh checked and
+optimized selected APIs exactly match the prior release; the smaller-source
+release is installed. Component checks,51 harness tests and21 focused controls
+pass, with known diagnostic differences and raw setup failures retained.
 
 ## Immediate frontier
 
-1. S1: implement only the reviewed 548-line retirement, targeting 15,961 lines.
-   Verify source/block hashes, roots, genuinely checked builds and selected output.
-   Preserve active graph evaluation, stack-safe freshening and public APIs.
-2. S2: after S1 closes, write a bounded explicit-term/provenance migration design.
-   Its former 2,500-line reduction allocation is not supported by S0's evidence:
-   only 675 gross lines were identified before replacement costs. No unsupported
-   target becomes a completion claim.
-3. Later S3–S7 remain sequential, with 50% and 75% overall goals. Each completed
-   phase must lower net source size and conceptual complexity and pass its gates.
+1. S2: write and freeze a bounded explicit-term/provenance design before code.
+   S0 found only675 gross lines before replacement; the old2,500-line allocation
+   is unsupported. Start with a falsifiable end-to-end slice and account for all
+   variants, metadata, bridges and host costs. No increase can complete a phase.
+2. S3–S7 remain sequential, with50% and75% overall goals. Keep checked facts,
+   binding changes and backend factoring out of the S2 implementation until their
+   own designs/gates. Prior proven narrow candidates remain available as evidence.
 
 Parallel agents may review independent parts of the active phase. No future-phase
 source implementation while the current phase is open. Root owns integration,

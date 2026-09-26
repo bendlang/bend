@@ -33,10 +33,6 @@ law f_dt:
   for +d: KDef
   KTerm
 
-law f_dv:
-  for +d: KDef
-  KTerm
-
 law f_dk:
   for +d: KDef
   String
@@ -266,11 +262,6 @@ law f_statement:
   for +p: FParsed
   FParsed
 
-law f_typed_let:
-  for +n: KTerm
-  for +p: FParsed
-  FParsed
-
 law f_let_ann:
   for +ty: KTerm
   for +p: FParsed
@@ -367,12 +358,6 @@ def f_dt(d):
       typ
 
 @unsafe
-def f_dv(d):
-  match d:
-    case KDef{name, kind, arity, templates, typ, value, ctors, native, unsafe}:
-      value
-
-@unsafe
 def f_dk(d):
   match d:
     case KDef{name, kind, arity, templates, typ, value, ctors, native, unsafe}:
@@ -383,14 +368,6 @@ def f_dx(d):
   match d:
     case KDef{name, kind, arity, templates, typ, value, ctors, native, unsafe}:
       templates
-
-@unsafe
-def f_replace(d, book):
-  match book:
-    case Nil{}:
-      [d]
-    case Con{+x, xs}:
-      f_choose(List<&2, KDef>, f_eq(f_dn(d), f_dn(x)), u => Con{d, xs}, u => Con{x, f_replace(d, xs)})
 
 @unsafe
 def f_tops(ts0, book, imports, unsafe):
@@ -580,12 +557,6 @@ def f_statement(p):
       f_choose(FParsed, f_eq(f_tx(ts), "="), u => f_let_value(n, f_expr(f_tl(ts), 0)), u => f_choose(FParsed, f_eq(f_tx(ts), ":"), u => f_typed_let_try(n, ts, f_expr(f_tl(ts), 0)), u => f_statement_more(FParsed{n, ts})))
 
 @unsafe
-def f_typed_let(n, p):
-  match p:
-    case FParsed{ty, ts}:
-      f_let_value(n, f_let_ann(ty, f_expr(f_pr(f_expect(FParsed{ty, ts}, "=")), 0)))
-
-@unsafe
 def f_let_ann(ty, p):
   match p:
     case FParsed{v, ts}:
@@ -631,11 +602,6 @@ def f_case_pat(p, indent, heads, rows, pats):
 def f_case_body(p, indent, heads, rows, pats):
   f_case_checked(p, indent, heads, rows, pats)
 
-
-law f_replace:
-  for +d: KDef
-  for +book: List<&2, KDef>
-  List<&2, KDef>
 
 @unsafe
 def f_put(d, book):

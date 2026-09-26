@@ -212,10 +212,6 @@ law f_string:
   for +s: String
   KTerm
 
-law f_string_escape:
-  for +s: String
-  KTerm
-
 law f_escape_code:
   for +c: Char
   U32
@@ -458,10 +454,6 @@ def f_literal(s):
 @unsafe
 def f_string(s):
   f_choose(KTerm, Char.is_eq(f_head(s), '"'), u => kt("Ctr", "SNil", 0, 1, Nil{}), u => f_string_decoded(f_decode_char(s)))
-
-@unsafe
-def f_string_escape(s):
-  kt("Ctr", "SCon", 0, 1, [kt("Ctr", "Chr", 0, 1, [f_u32(f_escape_code(f_head(s)))]), f_string(f_tail(s))])
 
 @unsafe
 def f_escape_code(c):

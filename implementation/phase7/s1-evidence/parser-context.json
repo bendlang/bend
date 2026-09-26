@@ -1,0 +1,256 @@
+{
+  "task": "Repair parser first-error selection when an earlier malformed array element, definition type, or match header is overwritten by a later body/delimiter error, preserving imported-source ownership and accepted neighbors.",
+  "selection_policy": "Review-context proxy with full-file units, not transitive dependency closure or measured human/model effort. Freeze these task obligations and compare the replacement files serving the same roles; do not count only edited lines after migration.",
+  "baseline": {
+    "files": 30,
+    "physical_lines": 5716,
+    "bytes": 198816
+  },
+  "current": {
+    "files": 30,
+    "physical_lines": 5674,
+    "bytes": 197979
+  },
+  "files": [
+    {
+      "path": "selfhost/src/core/term.bend",
+      "category": "implementation_local",
+      "physical_lines": 463,
+      "bytes": 8527,
+      "sha256": "e47b14c3fec0043dacccdf2db0366e5d9ed29394b3a4faae47afe08e69a8f522",
+      "rationale": "KTerm/Error/Absent tags and positional field contract used by parser results."
+    },
+    {
+      "path": "selfhost/src/front/lexer.bend",
+      "category": "implementation_local",
+      "physical_lines": 340,
+      "bytes": 8804,
+      "sha256": "33b12e01c8b4ed2559163ace169e25a95dbf59c6a99438f5af9d8f240431b2d5",
+      "rationale": "Token cursor, whitespace, line/column and EOF behavior determine which error is first."
+    },
+    {
+      "path": "selfhost/src/front/parser.bend",
+      "category": "implementation_local",
+      "physical_lines": 637,
+      "bytes": 21518,
+      "sha256": "8daa5d7c685f67336b435b66989ad0eb17f4a9570eb38138ee5ad1a0ea490440",
+      "rationale": "Expression/error propagation, expectation rendering and parser-result contract."
+    },
+    {
+      "path": "selfhost/src/front/declarations.bend",
+      "category": "implementation_local",
+      "physical_lines": 703,
+      "bytes": 22567,
+      "sha256": "e1376ca0c87ddde70abeada9281b83224866994b2b45b376a10603401f7971e8",
+      "rationale": "Definition signature/body and match row/body evaluation order; public parser result."
+    },
+    {
+      "path": "selfhost/src/front/literals_arrays.bend",
+      "category": "implementation_local",
+      "physical_lines": 197,
+      "bytes": 5734,
+      "sha256": "6468fe13b93ebb879c81ac8d18e2e99d4de16dabbf7dc0cc6f389e4a95343981",
+      "rationale": "Array first-element error propagation, one of the concrete known repair sites."
+    },
+    {
+      "path": "selfhost/src/front/validate.bend",
+      "category": "implementation_local",
+      "physical_lines": 290,
+      "bytes": 9681,
+      "sha256": "26e56bc64093bf2bb7661c79c47218837974b3954db5c662ccb8d18ea39196cf",
+      "rationale": "Match arity/pattern validation and delayed f_case_checked ordering."
+    },
+    {
+      "path": "selfhost/src/front/elaborate.bend",
+      "category": "implementation_integration",
+      "physical_lines": 512,
+      "bytes": 14741,
+      "sha256": "b88ba5debd90eca6552eb80f881694d861d5b96492663c9af12f2f182b2f70de",
+      "rationale": "Scope/lowering preserves or changes Error nodes before graph validation."
+    },
+    {
+      "path": "selfhost/src/front/sugar.bend",
+      "category": "implementation_integration",
+      "physical_lines": 358,
+      "bytes": 9396,
+      "sha256": "b8bdca5ccc2d4c9a864d8bb6f0d707486e31d75f8dfef9b1ca15e9a25f721c9f",
+      "rationale": "f_error_* traversal and f_validate_result choose authoritative frontend error."
+    },
+    {
+      "path": "selfhost/src/load/graph.bend",
+      "category": "implementation_integration",
+      "physical_lines": 574,
+      "bytes": 17020,
+      "sha256": "05c9030572a608241d0974b58976addbd200287cc3c21359dd3c9aa1c07274ac",
+      "rationale": "Imported error ordering and post-validation source owner recovery."
+    },
+    {
+      "path": "selfhost/src/load/modules.bend",
+      "category": "implementation_integration",
+      "physical_lines": 337,
+      "bytes": 8878,
+      "sha256": "5c7c19a5d75779ae3e81a44b4ab387c782cd32cf9eb5b20c02e5bede153f85c0",
+      "rationale": "FSource/FParsedSource, parse handoff and loader result contracts."
+    },
+    {
+      "path": "selfhost/src/load/imports.bend",
+      "category": "implementation_integration",
+      "physical_lines": 13,
+      "bytes": 733,
+      "sha256": "f9ad12e894937828aea74ccd34750b3b1635943a0037db9656e9b8e514350471",
+      "rationale": "Leading import parser boundary used by imported first-error controls."
+    },
+    {
+      "path": "selfhost/CONFORMANCE.md",
+      "category": "contracts",
+      "physical_lines": 44,
+      "bytes": 3561,
+      "sha256": "a113a5f2a8b51657872c4925a006e83d3621410a0a607ecd0f5a851e0d442abc",
+      "rationale": "Exact output versus acceptance/phase distinction and pinned reference obligations."
+    },
+    {
+      "path": "selfhost/docs/ARCHITECTURE.md",
+      "category": "contracts",
+      "physical_lines": 245,
+      "bytes": 15301,
+      "sha256": "4a15be939d08e90d12a59a285b08970fefbdc9e733ffd7dd9f7a6de08d3e7851",
+      "rationale": "Current parser/elaborator/loader ownership and representation contract."
+    },
+    {
+      "path": "docs/PHASE5_DEVELOPMENT.md",
+      "category": "contracts",
+      "physical_lines": 116,
+      "bytes": 6664,
+      "sha256": "fac1004b42c16641918a080cbc30e9e90995d064146edd584ef02703c2ba6fca",
+      "rationale": "Maintained checked build and validation invocation/lineage contract."
+    },
+    {
+      "path": "selfhost/tests/frontend/phase5-parser-expectations/cases.json",
+      "category": "test_oracles",
+      "physical_lines": 251,
+      "bytes": 8470,
+      "sha256": "21ce2b3b0fc21e21ca55ac3ebff20d5c631a8059588d69308ad111e18286f56c",
+      "rationale": "Maintained parser-expectation exact/fallback controls; keep complete file as review unit."
+    },
+    {
+      "path": "selfhost/tests/frontend/phase5-embedded-parser/confirmed-cases.json",
+      "category": "test_oracles",
+      "physical_lines": 307,
+      "bytes": 10325,
+      "sha256": "c5c8a9a1dacb9c356e92b0fefc430de18a33497833c1cf7aa560a398ba5a59fa",
+      "rationale": "Maintained embedded and imported error-order controls; keep complete file as review unit."
+    },
+    {
+      "path": "selfhost/tests/frontend/phase5-parser-expectations/first-legacy-before-term.bend",
+      "category": "test_fixtures",
+      "physical_lines": 5,
+      "bytes": 63,
+      "sha256": "39cf18d214c2eb3f8bc56f3e7be66e284716c8c8326056473894d74f34b4a03b",
+      "rationale": "Earlier legacy error must survive later located expression error."
+    },
+    {
+      "path": "selfhost/tests/frontend/phase5-parser-expectations/first-term-before-later.bend",
+      "category": "test_fixtures",
+      "physical_lines": 5,
+      "bytes": 61,
+      "sha256": "321febab91b4b7553ab596fcb7ef791fe777c7604af8ab50cd61334d8c510581",
+      "rationale": "Earlier expression error must survive later malformed group."
+    },
+    {
+      "path": "selfhost/tests/frontend/phase5-parser-expectations/term-semicolon-list.bend",
+      "category": "test_fixtures",
+      "physical_lines": 3,
+      "bytes": 40,
+      "sha256": "05e6867866f731726c569ecbcfd2952845d504e09bc6927b4411cd384c919725",
+      "rationale": "Array/list delimiter and error boundary neighbor."
+    },
+    {
+      "path": "selfhost/tests/frontend/phase5-parser-expectations/valid-neighbor.bend",
+      "category": "test_fixtures",
+      "physical_lines": 3,
+      "bytes": 50,
+      "sha256": "9654b60fa4f90fdeebcd552f8fbf4cc59136a7980e928ed608babbb552916afd",
+      "rationale": "Accepted parser neighbor."
+    },
+    {
+      "path": "selfhost/tests/frontend/phase5-embedded-parser/two-errors.bend",
+      "category": "test_fixtures",
+      "physical_lines": 5,
+      "bytes": 63,
+      "sha256": "f5bc2dfc2a915e1465834311bca7c84cf138319a86d7d7cd5b34f801cf4ee869",
+      "rationale": "Competing malformed constructs in source order."
+    },
+    {
+      "path": "selfhost/tests/frontend/phase5-embedded-parser/legacy-first.bend",
+      "category": "test_fixtures",
+      "physical_lines": 5,
+      "bytes": 61,
+      "sha256": "a7dabfefca4b164c06aa0585fe8d457cc92aa6ba7a20904b4efd5fe90a94f856",
+      "rationale": "Legacy first-error fallback control."
+    },
+    {
+      "path": "selfhost/tests/frontend/phase5-embedded-parser/nested-value-first.bend",
+      "category": "test_fixtures",
+      "physical_lines": 4,
+      "bytes": 48,
+      "sha256": "f9f948c7cbcc1dca492ee52e240ad0f9483ff442956983ffb151a962b2ab6ff6",
+      "rationale": "Nested value/body error order control."
+    },
+    {
+      "path": "selfhost/tests/frontend/phase5-embedded-parser/import-error-first.bend",
+      "category": "test_fixtures",
+      "physical_lines": 5,
+      "bytes": 73,
+      "sha256": "3c5bbce063390c3a7cf88648b3f764c0197be1e45b37969b8f6ab43899ef0a4f",
+      "rationale": "Imported failure competes with main source failure."
+    },
+    {
+      "path": "selfhost/tests/frontend/phase5-embedded-parser/Bad.bend",
+      "category": "test_fixtures",
+      "physical_lines": 3,
+      "bytes": 38,
+      "sha256": "f4332fb2d25fe8ef26d544ae3e86ef5237bae50f71f1b74d68909638f8f094e0",
+      "rationale": "Imported negative control dependency."
+    },
+    {
+      "path": "selfhost/tests/frontend/phase5-embedded-parser/Good.bend",
+      "category": "test_fixtures",
+      "physical_lines": 3,
+      "bytes": 37,
+      "sha256": "882ef00e9f4b13f259cf189a72305dfcc4a28d1105e76b8cbd336f4d113834b0",
+      "rationale": "Imported accepted control dependency."
+    },
+    {
+      "path": "selfhost/tools/conformance/judge.mjs",
+      "category": "oracle_harness",
+      "physical_lines": 59,
+      "bytes": 4919,
+      "sha256": "4940d3c351457291ca3000596ff61731deb04d9c94c80b23ad3103344680b466",
+      "rationale": "Distinguishes exact expectations from acceptance/phase controls."
+    },
+    {
+      "path": "selfhost/tools/conformance/adapters/upstream.mjs",
+      "category": "oracle_harness",
+      "physical_lines": 70,
+      "bytes": 6836,
+      "sha256": "7414d35c6f58ba7e7542afa28816c9cdc1a81bbff9511bc9b37686d40a65a7dd",
+      "rationale": "Pinned live oracle and import/source preprocessing behavior."
+    },
+    {
+      "path": "implementation/phase6/parser-first-errors.md",
+      "category": "existing_repair_evidence",
+      "physical_lines": 44,
+      "bytes": 9278,
+      "sha256": "b3bab5c685ce57e1df22228786227500f44d959781094d1e283747c301b7c690",
+      "rationale": "Existing bounded A/B/combined findings and false fixture assumptions; history, not promoted code."
+    },
+    {
+      "path": "implementation/phase6/parser-first-errors-candidate.patch",
+      "category": "existing_repair_evidence",
+      "physical_lines": 73,
+      "bytes": 4492,
+      "sha256": "03fd30168dcf05da90d631714406bd58446c1ce2bab0b96e0709c272594fd8d7",
+      "rationale": "Exact independent early-error repairs and delayed arity helper retirement used to fix task scope."
+    }
+  ]
+}

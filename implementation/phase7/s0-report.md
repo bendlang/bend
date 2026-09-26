@@ -55,18 +55,24 @@ No new full-suite, self-reproduction or performance claim is made by S0.
 | S2 explicit term access/provenance | 675 gross lines identified before replacement; 65 constructed core/administrative tags need representation policy | None | Bounded trial only. New variants/metadata/bridges must remove more code and rules than they add. |
 | S3 authoritative checker failure | Existing isolated candidate removes 140 Bend lines and adds two host lines; exact 459-negative observations and accepted/late-error timings retained | 140 candidate Bend lines, 138 across required languages; not promoted | Supported narrow candidate, but combined current-source validation still required. Preserve first error and public detailed-result shape. |
 | S3 retained type facts | `annotate.bend` is 400 lines total; `KChecked` already retains local term/type/uses. Specialized books/binders differ from chronological checking | None; 400 is a gross module size, not a deletion estimate | Unresolved. Dependent substitutions, templates and consumer facts must survive without stale-book reuse. |
-| S4 frontend/loader plumbing | 224 gross lines identified: 62 duplicate selectors/length, 92 legacy-loader declarations, 70 duplicate error traversal | None; conditional net estimate 84–175 | Bounded trial only. Public fallback loader and first-error behavior must remain correct. |
+| S4 frontend/loader plumbing | 214 gross lines after overlap correction: 52 duplicate selectors/length, 92 legacy-loader declarations, 70 duplicate error traversal | None; conditional net estimate requires reallocation after S1 | Bounded trial only. Public fallback loader and first-error behavior must remain correct. |
 | S5 binding model | Active explicit-stack freshening, normalization sharing and template binder shifts have distinct obligations | None | Unresolved. Capture/stack/sharing counterexamples decide; obsolete S1 freshening is not counted again. |
 | S6 backend semantic planning | Backends total 4,011 lines but their target models differ; TS already implements additional native optimization | None | Unresolved. Show identical decisions and actual net deletion before introducing a shared plan. |
 | S7 residual traversal/control | No exact residual inventory exists before earlier migrations | None | Unresolved. No general visitor/metacompiler budget can be credited in advance. |
 
-The source-level identified gross pools of S1, S2, annotation and S4 total 1,847
+The source-level identified gross pools of S1, S2, annotation and S4 total 1,837
 lines, even before replacement. Adding the separately measured 140-line error
-candidate gives 1,987, subject to rechecking cross-phase interactions. This does
+candidate gives 1,977, subject to rechecking cross-phase interactions. This does
 not explain the 8,255 lines needed for 50% or 12,382 needed for 75%. In particular,
 after S1, deleting all 675 S2 lines with no replacement would leave 15,286 lines,
 still 1,786 above the provisional S2 ceiling of 13,500. S0 rejects that ceiling
 as an evidence-backed forecast; it remains a planning goal requiring a new budget.
+
+S1 review correction: the original S0 summary at `83c8ebc` counted the ten-line
+`f_dv` accessor in both S1 and S4. It is assigned to S1 only; S4's selector pool
+is 52, not 62 lines. The original raw S0 audit retains its stated estimate and this
+erratum makes the correction explicit. The exact S1 deletion inventory and its
+548-line total were unaffected.
 
 ## Concrete findings
 

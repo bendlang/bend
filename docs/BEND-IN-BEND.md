@@ -14,9 +14,11 @@ self-hosting do not establish full diagnostic or proof-checker equivalence.
 Read the [validation boundaries](../selfhost/CONFORMANCE.md) and
 [negative audit](../selfhost/docs/NEGATIVE-COMPATIBILITY.md) before relying on it.
 
-The default compiler is the consolidated Phase 5 version in
-`selfhost/dist/typed-api.mjs`. It includes the maintained, verified string-equality
-optimization and the final Phase 5 source changes. The
+The default compiler retains the consolidated Phase 5 API in
+`selfhost/dist/typed-api.mjs`, freshly rebuilt from the
+[S1 source](../implementation/phase7/s1-report.md) with 548 obsolete lines removed.
+The selected checked and optimized APIs are byte-identical to Phase 5, including
+the maintained, verified string-equality optimization. The
 [release manifest](../selfhost/dist/release.json) binds the API to its source,
 Base, runtime and host. Historical compiler variants are retained with their
 reports; ordinary use requires no artifact selection.
@@ -89,9 +91,11 @@ changes; run a new build when compiler source changes. The equality
 profile is a verified derivative with separate provenance and is used by the
 default release build.
 
-The [current report](../implementation/phase5/report.md) and
+The [current source report](../implementation/phase7/s1-report.md) and historical
+[Phase 5 report](../implementation/phase5/report.md) and
 [frontend comparison](../implementation/phase5/final-conformance.md) describe the
-current source and consolidated default. For experimental source changes, keep
+source reduction and unchanged API's broader evidence. The Phase 5 full fixed
+point has not been rerun for the smaller all-definition source. For experimental source changes, keep
 the release stable and select a newly built attempt explicitly:
 
 ```sh

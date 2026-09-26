@@ -65,3 +65,10 @@ review must confirm that only obsolete paths disappeared. Any live reference,
 supported export loss, checking failure, unexplained output drift or component
 regression rejects its deletion unit. Do not add other Phase 6 candidates to this
 phase merely because they have earlier successful observations.
+
+Validation-discovered harness repair: the unchanged artifact-location fixture in
+`tests/conformance/abi.test.mjs` omitted `createPersistentInspector`, now imported
+by the maintained adapter. The suite reaches 50/51 harness tests before this ESM
+link error. Add the missing fixture export with a throwing body so unexpected
+execution cannot silently pass. This adds one test line, changes no compiler/host
+behavior or oracle, and will be verified by rerunning the failed harness group.

@@ -2,9 +2,9 @@
   "kind": "bend-default-equality-release",
   "version": 1,
   "newBootstrap": false,
-  "installed": "2026-09-23T02:50:51.335Z",
+  "installed": "2026-09-26T19:03:37.568Z",
   "artifact": "equality-derived-b1",
-  "sourceSha256": "e3b927d13dc2645e19171b72de60c49dd5bc5e5059863937153b957e2ce0ec1d",
+  "sourceSha256": "90675fb38a8ad68fc7b301417246d99f40c8af2678a8a2316923cebb2eb4a04f",
   "runtimeSha256": "26f5eee2f54b194b64f768df6ff505c67bf7a5df2159aa06caf53ecba54e910b",
   "files": [
     {
@@ -24,13 +24,13 @@
     },
     {
       "path": "dist/release-lineage/checked-bootstrap.json",
-      "sha256": "9c83893c7073490899dd6c82f4c3eff11b96bc2c96fae98cb516dde64aa27b88",
-      "bytes": 50420
+      "sha256": "af4abdc6cc8649c98a63259d9914c2ab176387c7c2fa738b38e1536979828f79",
+      "bytes": 48244
     },
     {
       "path": "dist/release-lineage/derivation.json",
-      "sha256": "e4e3959b9453ace557fe794cc7a63fe16b12bed23b697d71cdd8abfe65ae134a",
-      "bytes": 44215
+      "sha256": "135d9cc64112e55b10d324e1fa8f26380cb4f184e887eca85d45911ced058b4c",
+      "bytes": 41879
     },
     {
       "path": "dist/release-lineage/equality.mjs",
@@ -51,8 +51,8 @@
     },
     {
       "path": "src/core/normalize.bend",
-      "sha256": "ae09f471bbf06633b9f308f9451835f7863a5c03535e8a6cf5ce6b31dbf0048d",
-      "bytes": 22801
+      "sha256": "f1baf359384e1edb8633e327f8a0cf01feb790931db79bade2c44685151f2fb7",
+      "bytes": 17027
     },
     {
       "path": "src/core/graph.bend",
@@ -106,18 +106,18 @@
     },
     {
       "path": "src/front/declarations.bend",
-      "sha256": "8b1770217f3dcdd9907c85574b58fd18c8b2af585ac0b381f7ac7b26b5dc155f",
-      "bytes": 23216
+      "sha256": "e1376ca0c87ddde70abeada9281b83224866994b2b45b376a10603401f7971e8",
+      "bytes": 22567
     },
     {
       "path": "src/front/flatten.bend",
-      "sha256": "463d88f1c7de9828e1826d201f8b8de249f99e1d0bb64ae9768ba64d1f75af1e",
-      "bytes": 8624
+      "sha256": "ed4c712480be44474eba76f98c325fcf5aba50735b2d0fe5d029613298f9e51e",
+      "bytes": 8510
     },
     {
       "path": "src/front/elaborate.bend",
-      "sha256": "1616789ccae3d10c5cb4929948800fd13bf96f38040bf42257d160e6f0bff424",
-      "bytes": 14929
+      "sha256": "b88ba5debd90eca6552eb80f881694d861d5b96492663c9af12f2f182b2f70de",
+      "bytes": 14741
     },
     {
       "path": "src/front/sugar.bend",
@@ -146,8 +146,8 @@
     },
     {
       "path": "src/front/freshen.bend",
-      "sha256": "7b054636ae2cc593307d4ba8fea19bfd7e03363a6eb90e154abdd6ae50ba4d57",
-      "bytes": 5354
+      "sha256": "174f3aa0192475e419051f90dc835d4fcef4ae454dcbbc14cd6898b22a2cc28c",
+      "bytes": 1222
     },
     {
       "path": "src/load/paths.bend",
@@ -241,8 +241,8 @@
     },
     {
       "path": "src/back/native/ir.bend",
-      "sha256": "2014202ac84403ce7720970870693f6f566cf81aea7ad44d69cf44ae65909f41",
-      "bytes": 1260
+      "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b",
+      "bytes": 929
     },
     {
       "path": "src/back/native/text.bend",
@@ -256,8 +256,8 @@
     },
     {
       "path": "src/back/native/layout.bend",
-      "sha256": "3470eca359bdee3add2e8672bd8456c2a9533231a861854b5257e8a22df291da",
-      "bytes": 2599
+      "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b",
+      "bytes": 135
     },
     {
       "path": "src/back/native/intrinsic.bend",
@@ -321,8 +321,8 @@
     },
     {
       "path": "src/back/native/book.bend",
-      "sha256": "56c161c2c0bd33ddb66d239a4283081331e98bf4112ceaebd1d3c76db14bb23e",
-      "bytes": 15658
+      "sha256": "63e16ef3af4f1bce21f8ab912a27bd45fc4c2d232cfcdfaad275bd5083a24dc8",
+      "bytes": 14330
     },
     {
       "path": "src/driver/report.bend",
@@ -592,7 +592,7 @@
   ],
   "lineage": {
     "checkedParentSha256": "5969c53d34a088bc9630eb2c065c2eea7fd260294cf3fefb14dffb305b7e4667",
-    "derivationSha256": "e4e3959b9453ace557fe794cc7a63fe16b12bed23b697d71cdd8abfe65ae134a",
+    "derivationSha256": "135d9cc64112e55b10d324e1fa8f26380cb4f184e887eca85d45911ced058b4c",
     "upstreamRevision": "6018e28ecc67cf1fffc0c20c64b11023474c2df8"
   },
   "provenanceScope": "Original checked bootstrap and derivation reports are preserved byte-for-byte with historical paths. Local verification checks relative installed/checkout identities and exact transformation replay; it does not create or relocate bootstrap provenance.",

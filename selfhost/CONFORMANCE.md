@@ -8,6 +8,12 @@ preserves all 2,756 checked-parent observations for this optimized artifact,
 including 318 strict failures. Historical sections below retain their recorded
 artifact scope and do not substitute for the current release's separate gates.
 
+[S1](../implementation/phase7/s1-report.md) rebuilds that same selected API from
+15,961 lines of source after retiring unreachable private declarations. Both
+checked and optimized API bytes, runtime and host are unchanged. S1 has fresh
+checked, component and selected-control evidence; it does not claim a new broad
+conformance run or full-source self-host fixed point.
+
 The supplied baseline compiler results are in [the compatibility matrix](docs/COMPATIBILITY-MATRIX.md).
 Phase 1 changes have separate artifact-specific evidence in the
 [implementation report](../implementation/phase1/report.md).

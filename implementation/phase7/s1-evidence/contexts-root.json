@@ -1,0 +1,198 @@
+{
+  "dependent_application_check": {
+    "baseline": {
+      "physical": 3156,
+      "nonblank": 2652,
+      "bytes": 106647
+    },
+    "current": {
+      "bytes": 100873,
+      "physical": 2992,
+      "nonblank": 2510
+    },
+    "files": [
+      {
+        "file": "selfhost/src/core/term.bend",
+        "bytes": 8527,
+        "physical": 463,
+        "nonblank": 373,
+        "sha256": "e47b14c3fec0043dacccdf2db0366e5d9ed29394b3a4faae47afe08e69a8f522"
+      },
+      {
+        "file": "selfhost/src/core/normalize.bend",
+        "bytes": 17027,
+        "physical": 560,
+        "nonblank": 476,
+        "sha256": "f1baf359384e1edb8633e327f8a0cf01feb790931db79bade2c44685151f2fb7"
+      },
+      {
+        "file": "selfhost/src/check/kernel.bend",
+        "bytes": 35691,
+        "physical": 1261,
+        "nonblank": 1050,
+        "sha256": "0969c4493c29ab980450c848ea24c1f4b666081dbe0eecfc2c6abe21bb0ed947"
+      },
+      {
+        "file": "selfhost/src/check/quantity.bend",
+        "bytes": 3514,
+        "physical": 175,
+        "nonblank": 143,
+        "sha256": "e6c7a06fd45cb132d9d5d1704a6f01f81325505eed2ff5d6025e118ff4522e8a"
+      },
+      {
+        "file": "selfhost/src/diagnostic/trace.bend",
+        "bytes": 4866,
+        "physical": 131,
+        "nonblank": 106,
+        "sha256": "e47615206be3ebf22c4771de06af3d4dfc1a553f7e914bfd9114bc74c2ab1246"
+      },
+      {
+        "file": "selfhost/docs/ARCHITECTURE.md",
+        "bytes": 15301,
+        "physical": 245,
+        "nonblank": 205,
+        "sha256": "4a15be939d08e90d12a59a285b08970fefbdc9e733ffd7dd9f7a6de08d3e7851"
+      },
+      {
+        "file": "selfhost/tests/kernel.mjs",
+        "bytes": 9256,
+        "physical": 88,
+        "nonblank": 88,
+        "sha256": "5e2c1ed9caaa9e066de6f1623b7968657d90a325e65906e3f088a581c6cf0c4a"
+      },
+      {
+        "file": "selfhost/tests/kernel-upstream.mjs",
+        "bytes": 2643,
+        "physical": 33,
+        "nonblank": 33,
+        "sha256": "0dc76ff714b0de284794dc93207e81084cedb560e95011dcafb1abd5bd771add"
+      },
+      {
+        "file": "selfhost/tests/specialize.mjs",
+        "bytes": 4048,
+        "physical": 36,
+        "nonblank": 36,
+        "sha256": "b337e7d86f13c0e72f77d42ca77b7f3ed3c3ddf736768fdd7f6596846aaedcf9"
+      }
+    ]
+  },
+  "constructor_lowering_js_native": {
+    "baseline": {
+      "physical": 3397,
+      "nonblank": 2857,
+      "bytes": 126336
+    },
+    "current": {
+      "bytes": 123541,
+      "physical": 3295,
+      "nonblank": 2774
+    },
+    "files": [
+      {
+        "file": "selfhost/src/core/term.bend",
+        "bytes": 8527,
+        "physical": 463,
+        "nonblank": 373,
+        "sha256": "e47b14c3fec0043dacccdf2db0366e5d9ed29394b3a4faae47afe08e69a8f522"
+      },
+      {
+        "file": "selfhost/src/check/annotate.bend",
+        "bytes": 10850,
+        "physical": 400,
+        "nonblank": 334,
+        "sha256": "f033d726d951723b3bd52c62317e5b47721552beaf2ac42205e2444eb70c0c14"
+      },
+      {
+        "file": "selfhost/src/back/js/emit.bend",
+        "bytes": 29673,
+        "physical": 981,
+        "nonblank": 815,
+        "sha256": "7bf4f547540fc148feea196efd76c2f9a5234b27a33b7d8ac794a04ff5816d78"
+      },
+      {
+        "file": "selfhost/src/back/js/validate.bend",
+        "bytes": 10093,
+        "physical": 290,
+        "nonblank": 242,
+        "sha256": "917470e39b4d34c26a4f119f1b7acfca7a51926aba76a73d8397b103debca338"
+      },
+      {
+        "file": "selfhost/src/back/js/test-layout.mjs",
+        "bytes": 2976,
+        "physical": 24,
+        "nonblank": 24,
+        "sha256": "da8581e621afa20a5562686646236d0b1d82afcf2462661fd01af163e79f7067"
+      },
+      {
+        "file": "selfhost/src/back/js/test.mjs",
+        "bytes": 5257,
+        "physical": 38,
+        "nonblank": 38,
+        "sha256": "129cce560b5c7a4795d62d1aceb5ac3a0b8faef1166c0215d82823a548485b06"
+      },
+      {
+        "file": "selfhost/src/back/native/bridge.bend",
+        "bytes": 21605,
+        "physical": 441,
+        "nonblank": 367,
+        "sha256": "88431cf52f0c9ac1b3b1c93aa4a54225ca201d0b8021283f98ba09c2aadc1c74"
+      },
+      {
+        "file": "selfhost/src/back/native/erase.bend",
+        "bytes": 3479,
+        "physical": 85,
+        "nonblank": 72,
+        "sha256": "11fba4f16ef4de786f68076bafbc356c139fa953c22342c9557efe8b26936be1"
+      },
+      {
+        "file": "selfhost/src/back/native/identity.bend",
+        "bytes": 2540,
+        "physical": 93,
+        "nonblank": 79,
+        "sha256": "79794a586a0c2f043c9bd417b97fe2092863eb3a8524250d6b49f0b77dc1810d"
+      },
+      {
+        "file": "selfhost/src/back/native/ir.bend",
+        "bytes": 929,
+        "physical": 25,
+        "nonblank": 19,
+        "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b"
+      },
+      {
+        "file": "selfhost/src/back/native/layout.bend",
+        "bytes": 135,
+        "physical": 7,
+        "nonblank": 6,
+        "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b"
+      },
+      {
+        "file": "selfhost/src/back/native/show.bend",
+        "bytes": 6832,
+        "physical": 156,
+        "nonblank": 131,
+        "sha256": "6f662583a276295312217ad99b777cf96988c21ffa7beca3178c043d4b040780"
+      },
+      {
+        "file": "selfhost/src/back/native/README.md",
+        "bytes": 4349,
+        "physical": 82,
+        "nonblank": 66,
+        "sha256": "715e13e19f9d7b4d08a5c142eb1c87b6a71b9977245bd4ff59209816de36d9e4"
+      },
+      {
+        "file": "selfhost/src/back/native/fixtures.mjs",
+        "bytes": 5112,
+        "physical": 75,
+        "nonblank": 74,
+        "sha256": "54c0f615bdbd6d2b8976a157012b6c38c597d578820787937e331f91c3772d31"
+      },
+      {
+        "file": "selfhost/src/back/native/tests.mjs",
+        "bytes": 11184,
+        "physical": 135,
+        "nonblank": 134,
+        "sha256": "0623bfc95123e8b11bf345cc7171f7582c9dad2fa4db27fce8265cc7b5c1ab86"
+      }
+    ]
+  }
+}

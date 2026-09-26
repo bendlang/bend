@@ -1,0 +1,283 @@
+{
+  "kind": "phase5-static-code-size",
+  "created": "2026-09-26T18:56:51.927789+00:00",
+  "baselineCommit": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+  "method": {
+    "physical": "len(UTF8_text.splitlines()); a final newline does not create an extra empty line",
+    "nonblank": "physical lines with nonempty Python str.strip()",
+    "defs": "line-start def, optionally same-line @unsafe",
+    "laws": "line-start law",
+    "types": "line-start type",
+    "extensions": [
+      ".bend",
+      ".c",
+      ".h",
+      ".js",
+      ".mjs",
+      ".py",
+      ".sh",
+      ".ts"
+    ],
+    "productionMembership": "compiler.json modules at each revision",
+    "supportGroups": "top-level tools/conformance/development/private-compiler plus runtime JS/native and other code-extension files under src, individually reported; tests located in those directories included",
+    "experimentalMembership": "code-extension files below tools/performance, including prototype Bend drivers and test helpers",
+    "comparisonLimits": "File size and declarations only; no cyclomatic complexity, semantic complexity or runtime claim."
+  },
+  "manifests": {
+    "baselineSha256": "08c4c055006c8564139a88b793aadfe1dc0b6d100b4c3f2b26ccf8005f8d65c7",
+    "currentSha256": "08c4c055006c8564139a88b793aadfe1dc0b6d100b4c3f2b26ccf8005f8d65c7"
+  },
+  "productionChanges": [
+    {
+      "file": "selfhost/src/back/native/book.bend",
+      "before": {
+        "bytes": 15658,
+        "physical": 366,
+        "nonblank": 304,
+        "defs": 47,
+        "laws": 14,
+        "types": 2,
+        "sha256": "56c161c2c0bd33ddb66d239a4283081331e98bf4112ceaebd1d3c76db14bb23e"
+      },
+      "after": {
+        "bytes": 14330,
+        "physical": 320,
+        "nonblank": 266,
+        "defs": 42,
+        "laws": 11,
+        "types": 2,
+        "sha256": "63e16ef3af4f1bce21f8ab912a27bd45fc4c2d232cfcdfaad275bd5083a24dc8"
+      },
+      "delta": {
+        "bytes": -1328,
+        "physical": -46,
+        "nonblank": -38,
+        "defs": -5,
+        "laws": -3,
+        "types": 0
+      }
+    },
+    {
+      "file": "selfhost/src/back/native/ir.bend",
+      "before": {
+        "bytes": 1260,
+        "physical": 37,
+        "nonblank": 27,
+        "defs": 0,
+        "laws": 0,
+        "types": 11,
+        "sha256": "2014202ac84403ce7720970870693f6f566cf81aea7ad44d69cf44ae65909f41"
+      },
+      "after": {
+        "bytes": 929,
+        "physical": 25,
+        "nonblank": 19,
+        "defs": 0,
+        "laws": 0,
+        "types": 7,
+        "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b"
+      },
+      "delta": {
+        "bytes": -331,
+        "physical": -12,
+        "nonblank": -8,
+        "defs": 0,
+        "laws": 0,
+        "types": -4
+      }
+    },
+    {
+      "file": "selfhost/src/back/native/layout.bend",
+      "before": {
+        "bytes": 2599,
+        "physical": 97,
+        "nonblank": 81,
+        "defs": 17,
+        "laws": 0,
+        "types": 0,
+        "sha256": "3470eca359bdee3add2e8672bd8456c2a9533231a861854b5257e8a22df291da"
+      },
+      "after": {
+        "bytes": 135,
+        "physical": 7,
+        "nonblank": 6,
+        "defs": 1,
+        "laws": 0,
+        "types": 0,
+        "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b"
+      },
+      "delta": {
+        "bytes": -2464,
+        "physical": -90,
+        "nonblank": -75,
+        "defs": -16,
+        "laws": 0,
+        "types": 0
+      }
+    },
+    {
+      "file": "selfhost/src/core/normalize.bend",
+      "before": {
+        "bytes": 22801,
+        "physical": 724,
+        "nonblank": 618,
+        "defs": 58,
+        "laws": 58,
+        "types": 3,
+        "sha256": "ae09f471bbf06633b9f308f9451835f7863a5c03535e8a6cf5ce6b31dbf0048d"
+      },
+      "after": {
+        "bytes": 17027,
+        "physical": 560,
+        "nonblank": 476,
+        "defs": 45,
+        "laws": 45,
+        "types": 3,
+        "sha256": "f1baf359384e1edb8633e327f8a0cf01feb790931db79bade2c44685151f2fb7"
+      },
+      "delta": {
+        "bytes": -5774,
+        "physical": -164,
+        "nonblank": -142,
+        "defs": -13,
+        "laws": -13,
+        "types": 0
+      }
+    },
+    {
+      "file": "selfhost/src/front/declarations.bend",
+      "before": {
+        "bytes": 23216,
+        "physical": 737,
+        "nonblank": 613,
+        "defs": 61,
+        "laws": 61,
+        "types": 2,
+        "sha256": "8b1770217f3dcdd9907c85574b58fd18c8b2af585ac0b381f7ac7b26b5dc155f"
+      },
+      "after": {
+        "bytes": 22567,
+        "physical": 703,
+        "nonblank": 585,
+        "defs": 58,
+        "laws": 58,
+        "types": 2,
+        "sha256": "e1376ca0c87ddde70abeada9281b83224866994b2b45b376a10603401f7971e8"
+      },
+      "delta": {
+        "bytes": -649,
+        "physical": -34,
+        "nonblank": -28,
+        "defs": -3,
+        "laws": -3,
+        "types": 0
+      }
+    },
+    {
+      "file": "selfhost/src/front/elaborate.bend",
+      "before": {
+        "bytes": 14929,
+        "physical": 520,
+        "nonblank": 427,
+        "defs": 46,
+        "laws": 46,
+        "types": 0,
+        "sha256": "1616789ccae3d10c5cb4929948800fd13bf96f38040bf42257d160e6f0bff424"
+      },
+      "after": {
+        "bytes": 14741,
+        "physical": 512,
+        "nonblank": 421,
+        "defs": 45,
+        "laws": 45,
+        "types": 0,
+        "sha256": "b88ba5debd90eca6552eb80f881694d861d5b96492663c9af12f2f182b2f70de"
+      },
+      "delta": {
+        "bytes": -188,
+        "physical": -8,
+        "nonblank": -6,
+        "defs": -1,
+        "laws": -1,
+        "types": 0
+      }
+    },
+    {
+      "file": "selfhost/src/front/flatten.bend",
+      "before": {
+        "bytes": 8624,
+        "physical": 294,
+        "nonblank": 246,
+        "defs": 23,
+        "laws": 23,
+        "types": 2,
+        "sha256": "463d88f1c7de9828e1826d201f8b8de249f99e1d0bb64ae9768ba64d1f75af1e"
+      },
+      "after": {
+        "bytes": 8510,
+        "physical": 284,
+        "nonblank": 238,
+        "defs": 22,
+        "laws": 22,
+        "types": 2,
+        "sha256": "ed4c712480be44474eba76f98c325fcf5aba50735b2d0fe5d029613298f9e51e"
+      },
+      "delta": {
+        "bytes": -114,
+        "physical": -10,
+        "nonblank": -8,
+        "defs": -1,
+        "laws": -1,
+        "types": 0
+      }
+    },
+    {
+      "file": "selfhost/src/front/freshen.bend",
+      "before": {
+        "bytes": 5354,
+        "physical": 245,
+        "nonblank": 204,
+        "defs": 19,
+        "laws": 19,
+        "types": 3,
+        "sha256": "7b054636ae2cc593307d4ba8fea19bfd7e03363a6eb90e154abdd6ae50ba4d57"
+      },
+      "after": {
+        "bytes": 1222,
+        "physical": 61,
+        "nonblank": 49,
+        "defs": 5,
+        "laws": 5,
+        "types": 2,
+        "sha256": "174f3aa0192475e419051f90dc835d4fcef4ae454dcbbc14cd6898b22a2cc28c"
+      },
+      "delta": {
+        "bytes": -4132,
+        "physical": -184,
+        "nonblank": -155,
+        "defs": -14,
+        "laws": -14,
+        "types": -1
+      }
+    }
+  ],
+  "currentUnchangedDuringCount": true,
+  "baseline": {
+    "files": 59,
+    "bytes": 509937,
+    "physical": 16509,
+    "nonblank": 13803,
+    "defs": 1526,
+    "laws": 1280,
+    "types": 66
+  },
+  "current": {
+    "files": 59,
+    "bytes": 494957,
+    "physical": 15961,
+    "nonblank": 13343,
+    "defs": 1473,
+    "laws": 1245,
+    "types": 61
+  }
+}

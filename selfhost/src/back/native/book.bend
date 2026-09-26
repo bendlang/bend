@@ -26,10 +26,6 @@ law nc_refs:
   for +t: KTerm
   List<&2, String>
 
-law nc_refs_list:
-  for +ts: List<&2, KTerm>
-  List<&2, String>
-
 law nc_compile_defs:
   for +book: List<&2, KDef>
   for +todo: List<&2, String>
@@ -52,10 +48,6 @@ def nc_refs_go(todo: List<&2, KTerm>, +acc: List<&2, String>) -> List<&2, String
     case Nil{}: nt_reverse(String, acc, Nil{})
     case Con{+h, +rest}:
       nc_refs_go(nt_append(KTerm, ks(h), rest), nt_choose(List<&2, String>, String.eq(tg(h), "Ref"), u => Con{nm(h), acc}, u => acc))
-
-@unsafe
-def nc_refs_list(ts):
-  nc_refs_go(ts, Nil{})
 
 @unsafe
 def nc_refs(t):
@@ -86,32 +78,6 @@ def nc_definition(+book: List<&2, KDef>, +d: KDef, +n: U32) -> KTerm:
     u => nt_choose(KTerm, nc_foreign(d),
       u => nc_foreign_tel(book, dt(d), dn(d), Nil{}, n),
       u => nc_erase(book, dv(d))))
-
-law nc_term_bang:
-  for +t: KTerm
-  for +name: String
-  Bool
-
-law nc_terms_bang:
-  for +ts: List<&2, KTerm>
-  for +name: String
-  Bool
-
-@unsafe
-def nc_terms_bang(ts, name):
-  match ts:
-    case Nil{}: False{}
-    case Con{h, rest}: nc_term_bang(h, name) || nc_terms_bang(rest, name)
-
-@unsafe
-def nc_term_bang(t, name):
-  (String.eq(tg(t), "Ref") && U32.is_eq(qt(t), 3) && String.eq(nm(t), name)) || nc_terms_bang(ks(t), name)
-
-@unsafe
-def nc_book_bang(ds: List<&2, KDef>, +name: String) -> Bool:
-  match ds:
-    case Nil{}: False{}
-    case Con{d, rest}: nc_term_bang(dv(d), name) || nc_book_bang(rest, name)
 
 @unsafe
 def nc_call_head(+t: KTerm) -> KTerm:
@@ -216,18 +182,6 @@ def nc_add_ctors(cs: List<&2, N_Constructor>, +acc: List<&2, N_Constructor>) -> 
   match cs:
     case Nil{}: acc
     case Con{N_Constructor{+k, +a, +h}, rest}: nc_add_ctors(rest, nt_choose(List<&2, N_Constructor>, nc_has_ctor(acc, k), u => acc, u => List.append(&2, N_Constructor, acc, [N_Constructor{k, a, h}])))
-
-@unsafe
-def nc_show_cells(+ty: KTerm) -> String:
-  +k = nm(ty)
-  nt_choose(String, String.eq(k, "U32"), u => "0", u =>
-  nt_choose(String, String.eq(k, "F32"), u => "1", u =>
-  nt_choose(String, String.eq(k, "Nat"), u => "2", u =>
-  nt_choose(String, String.eq(k, "Char"), u => "3, 0", u =>
-  nt_choose(String, String.eq(k, "String"), u => "4", u =>
-  nt_choose(String, String.eq(k, "Bool"), u => "7, 0, 2, 0, CID_FALSE, 0, 1, CID_TRUE, 0", u =>
-  nt_choose(String, String.eq(k, "Unit"), u => "7, 1, 1, 2, CID_UNIT, 0", u =>
-  nt_choose(String, String.eq(tg(ty), "Eql"), u => "5", u => ""))))))))
 
 @unsafe
 def nc_show(+cells: String) -> String:

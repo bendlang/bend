@@ -539,3 +539,15 @@ The larger 50%/75% budgets remain unproven; S0 identifies substantial shortfalls
 in the proposed later allocations rather than crediting hypothetical savings.
 The previous steering is preserved as an audit input. S1 is the next authorized
 implementation; prior Phase 6 candidates remain separate.
+
+## 2026-09-26 — S1 obsolete paths retired
+
+[S1](../implementation/phase7/s1-report.md) removes548 physical compiler lines,
+460 nonblank lines and14,980bytes, reaching15,961lines. The54-root checked and
+optimized APIs are byte-identical to their baseline; active compiler behavior,
+host and runtime remain unchanged. Fresh checked build,21 focused controls,
+compiler/runtime components and51/51 harness tests pass. A stale artifact-test
+mock export was repaired; sandbox EPERM and an omitted gated-test environment
+remain preserved attempts. The smaller-source release verifies and ordinary
+check/interpreter/JS smoke passes. No new full-source timing or fixed point is
+claimed. S2 design is next;50%/75% goals are still unachieved.

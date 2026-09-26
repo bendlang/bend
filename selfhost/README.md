@@ -10,8 +10,10 @@ node cli.mjs tests/conformance/typed-smoke/base-u32.bend --run
 npm run build
 ```
 
-The default is the validated Phase 5 compiler, with guarded native string
-equality. Its [release manifest](dist/release.json) binds source, API, Base,
+The default retains the validated Phase 5 API, with guarded native string
+equality, rebuilt from the [smaller S1 source](../implementation/phase7/s1-report.md).
+S1 removes 548 obsolete lines; both generated APIs remain byte-identical.
+Its [release manifest](dist/release.json) binds source, API, Base,
 runtime and host; verification works after checkout relocation. Compiler edits
 use the [maintained development workflow](../docs/PHASE5_DEVELOPMENT.md) for
 checked builds and short paired selections. Ordinary compilation has no upstream
@@ -24,6 +26,8 @@ measures 60.25s for pinned TypeScript and 363.39s for this optimized compiler
 (6.03×), under its documented cache policy. The [checked fixed point](../implementation/phase5/final-selfhost.md)
 and [final artifact frontend gate](../implementation/phase5/final-artifact-frontend.md)
 provide separate reproduction and equivalence evidence.
+That fixed-point evidence belongs to the pre-retirement all-definition source;
+S1 has a fresh checked bootstrap and component gates, not a new full fixed point.
 
 Historical reports apply to their recorded artifacts. The
 [experiment ledger](../experiments/ledger.md), [current strategy](../experiments/STEERING.md)
