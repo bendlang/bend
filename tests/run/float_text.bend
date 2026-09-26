@@ -1,5 +1,5 @@
-# float text: F32.show is printf's %g (a JS emulation past exact
-# ties), F32.read strtof's grammar behind a whole-string gate, so a
+# float text: F32.show is printf's %g (a JS emulation, exact ties
+# included), F32.read strtof's grammar behind a whole-string gate, so a
 # spelling reads back to its value and a non-number answers None
 import Base
 

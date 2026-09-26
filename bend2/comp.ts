@@ -511,6 +511,18 @@ function nat_host(n) {
   return { [Symbol.toPrimitive]() { throw "bend: ${ERRS[5]}"; } };
 }
 
+function dec_cmp(d, k, x) {
+  let p = 0n;
+  x = Math.abs(x);
+  while (!Number.isInteger(x)) {
+    x *= 2;
+    p += 1n;
+  }
+  const a = d * 10n ** BigInt(Math.max(k, 0)) << p;
+  const c = BigInt(x) * 10n ** BigInt(Math.max(-k, 0));
+  return a - c;
+}
+
 function f32_show(x) {
   if (x !== x) {
     return "nan";
@@ -519,11 +531,19 @@ function f32_show(x) {
     return x < 0 ? "-inf"
       : x === 0 ? "-0" : "inf";
   }
-  let s = "x";
-  for (let p = 1; p <= 9 && Math.fround(Number(s)) !== x; p += 1) {
-    s = String(Number(x.toExponential(p - 1)));
+  let q = -1;
+  let t = "x";
+  while (q < 8 && (Number.isSafeInteger(x) ? Math.fround(Number(t)) : f32_round(t)) !== x) {
+    t = x.toExponential(++q);
   }
-  return s;
+  if (Number(t) !== x && /[13579]e/.test(t) && /5e/.test(x.toExponential(q + 1))) {
+    const [m, k] = t.split("e");
+    const n = BigInt(m.replace(/\D/g, ""));
+    if (dec_cmp(2n * n - 1n, k - q, 2 * x) === 0n) {
+      t = (x < 0 ? "-" : "") + (n - 1n) + "e" + (k - q);
+    }
+  }
+  return String(Number(t));
 }
 
 function f32_bits(x) {
@@ -534,10 +554,25 @@ function f32_from_bits(u) {
   return new Float32Array(new Uint32Array([u]).buffer)[0];
 }
 
+function f32_round(s) {
+  const v = Number(s);
+  const f = Math.fround(v);
+  const g = Number.isFinite(f) ? f : Math.sign(v) * 2 ** 128;
+  const h = 2 * v - g;
+  if (f === v || h - v !== v - g || Math.fround(h) !== h) {
+    return f;
+  }
+  const [, int, frac, exp] = /(\d*)\.?(\d*)(?:e(.*))?$/i.exec(s);
+  const c = dec_cmp(BigInt(int + frac), Number(exp ?? 0) - frac.length, v);
+  return c === 0n || (c > 0n) === (Math.abs(g) > Math.abs(h)) ? f : h;
+}
+
 function f32_read(s) {
-  const re = /^\s*[+-]?((\d+\.?\d*|\.\d+)(e[+-]?\d+)?|inf(inity)?|nan)$/i;
-  const v = Number(s.replace(/inf\w*/i, "Infinity"));
-  return re.test(s) ? {$: "Some", value: Math.fround(v)} : {$: "None"};
+  const re = /^[\t-\r ]*[+-]?((\d+\.?\d*|\.\d+)(e[+-]?\d+)?|inf(inity)?|nan)$/i;
+  if (!re.test(s)) {
+    return {$: "None"};
+  }
+  return {$: "Some", value: f32_round(s.replace(/inf\w*/i, "Infinity"))};
 }
 
 function char_new(code) {
