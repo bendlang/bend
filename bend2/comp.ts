@@ -2143,11 +2143,11 @@ function emit_jump(fl: File, args: string[], k: Name, bang?: boolean): void {
   }
   args.forEach((a, i) => file_push(fl, `r${i} = ${a};`));
   if (fl.seg.def !== k) {
-    return file_push(fl, `WL_JMP(${seg_ref(fl, fid)});`);
+    return file_push(fl, `WL_GO(${seg_ref(fl, fid)}, ${args.length});`);
   }
   fl.seg.spin = true;
   fl.seg.params.forEach((p, i) => file_push(fl, `${p} = r${i};`));
-  file_push(fl, `WL_AGAIN(${fl.seg.fid});`);
+  file_push(fl, `WL_AGAIN(${fl.seg.fid}, ${args.length});`);
 }
 
 function emit_args(fl: File, ck: Spine, jump = false, fork = false): string[] {
@@ -2918,6 +2918,11 @@ function compile_tables(fl: File, entries: Seg[]): string[] {
   `#define WL_SIG Env e, DEV Term* sp, u32 seq, u32 rn, ${ws.map((w) =>
     "Term " + w).join(", ")}`, "", `#define WL_ALL e, sp, seq, rn, ${ws
     .join(", ")}`, "",
+  `#define WL_PARK_N ${n}`,
+  `#define WL_PARK_SAVE(K) ${rs.map((r, i) =>
+    `if ((K) > ${i}) sp[${i} * CUBE] = ${r};`).join(" ")}`,
+  `#define WL_PARK_TAKE(K) ${rs.map((r, i) =>
+    `if ((K) > ${i}) ${r} = sp[${i} * CUBE];`).join(" ")}`, "",
   `#define WL_TABLE ${entries.map((s) => `WL_X(${s.fid})`).join(" ")}`
     + " WL_X(FID_EXIT)");
   return defs;
@@ -3474,6 +3479,7 @@ using namespace metal;
 #define WL_OPEN    {
 #define WL_JMP(F)  { fid = (F); break; }
 #define WL_DYN     WL_JMP
+#define WL_GO(F, K) WL_JMP(F)
 #else
 #define LOCK(l)    while (__atomic_exchange_n(&(l), 1, __ATOMIC_ACQUIRE)) {}
 #define UNLOCK(l)  __atomic_store_n(&(l), 0, __ATOMIC_RELEASE)
@@ -3481,11 +3487,12 @@ using namespace metal;
 #define WL_CASE(F) WL_FN WL_##F(WL_SIG)
 #define WL_OPEN    { WL_BANK u32 rn;
 #define WL_JMP(F)  __attribute__((musttail)) return WL_##F(WL_ALL)
+#define WL_GO(F, K) __attribute__((musttail)) return WL_##F(WL_ALL)
 #define WL_DYN(F)  __attribute__((musttail)) return wl_tab[F](WL_ALL)
 #endif
 #define WL_SPIN     for (;;) { if (err_spun(e.mem, &wpoll)) { return 0; }
 #define WL_SPUN     } break;
-#define WL_AGAIN(F) continue
+#define WL_AGAIN(F, K) continue
 
 #define LANE_STEP (DEVICE ? (long)CUBE : 1)
 #define STK(I)    sp[(long)(I) * LANE_STEP]
@@ -3602,7 +3609,11 @@ typedef u32 __attribute__((may_alias)) u32a;
 
 #define H_BUMP       0
 #define H_CAP        1
+#define H_TWIN       2  // split: the host's nodes sent back (count, at, room),
+                        // the lanes' Bank rows
 #define H_CURSOR     LINE
+#define H_PARKED     (LINE + 1)
+#define H_BUDGET     (LINE + 2)
 #define H_ROOT_DONE  (2 * LINE)
 #define H_ERROR_CODE (3 * LINE)
 #define H_ROOT_WORD  (4 * LINE)
@@ -3629,6 +3640,31 @@ static u32    KEEP_WORDS;
 static u32    CUBE_LOG = 7;
 static u32    bank_lock;
 
+// A twin splits its heap (BEND_SPLIT): the host's pages from the bottom,
+// the lanes' from the top (twin_top on, the lanes' H_CAP), so a turn leaves
+// the host's pages alone. A node of the lanes the host frees goes back to
+// them (twin_give), and one of the host's a lane frees comes back (H_TWIN),
+// up to TWIN_LIST a turn: past it the side that frees keeps the node, as a
+// walk that rebuilds what it reads reuses it while it's still in cache (a
+// frame hands back a few).
+#if BEND_CUDA
+#define TWIN_SPLIT 1
+#define TWIN_LIST (1u << 12)  // nodes a turn hands either way at most
+static u64 twin_top = ~0ull;
+static u64 twin_list[TWIN_LIST];
+static u32 twin_n;
+
+static bool twin_give(u64 loc, u32 cls) {
+  u32 i = __atomic_fetch_add(&twin_n, 1, __ATOMIC_RELAXED);
+  if (i < TWIN_LIST) {
+    twin_list[i] = loc | (u64)cls << 56;
+  }
+  return i < TWIN_LIST;
+}
+#else
+#define TWIN_SPLIT 0
+#endif
+
 static u32             pool_size;
 static u32             pool_row;
 static bool            pool_grow;
@@ -3654,6 +3690,12 @@ static id<MTLComputeCommandEncoder> gpu_enc;
 static CUdevice   gpu_dev;
 static CUmodule   gpu_lib;
 static CUfunction gpu_pso;
+static CUcontext  gpu_ctx;
+static bool       gpu_twin;
+static bool gpu_fault(void* addr);
+#endif
+#if !BEND_CUDA
+#define gpu_twin false
 #endif
 static bool io_gpu;
 static DEV Term*  io_stk;
@@ -3824,7 +3866,11 @@ A32_LOOP(fadd, f32_rewrap(f32_unbox(o) + f32_unbox(v)))
 // A stack of exact generations per class. The host pops and pushes at rd;
 // a device pass pops below rd and pushes above top, compacted after it.
 
+#if BEND_SPLIT
+#define bank_at(H, c) ((DEV Bank*)((H) + (H)[H_TWIN + 3]) + (c))
+#else
 #define bank_at(H, c) ((DEV Bank*)((H) + H_BANK) + (c))
+#endif
 
 INLINE u64 bank_pop(DEV u64* H, u32 c) {
   DEV Bank* b = bank_at(H, c);
@@ -3900,12 +3946,22 @@ OUTLINE u64 heap_alloc_miss(Env e, u32 cls) {
   u32 n = got ? KEEP(cls) : cls < NCLS ? QUANTUM >> cls : 1;
   if (!got) {
     u32 pages = (n << cls) >> PAGE_BITS;
+#if BEND_SPLIT
+    u32 top = a32_sub(a32_at(H, H_CAP), pages);
+    u32 p   = top - pages;
+    if (top < a32_load(a32_at(H, H_BUMP)) + pages) {
+      a32_add(a32_at(H, H_CAP), pages);
+      err_post(H, ERR_HEAP);
+      return HEAP_OFF;
+    }
+#else
     u32 p     = a32_add(a32_at(H, H_BUMP), pages);
     if ((u64)p + pages > a32_load_acq(a32_at(H, H_CAP))
       && !corpus_grow(H, (u64)p + pages)) {
       err_post(H, ERR_HEAP);
       return HEAP_OFF;
     }
+#endif
     got = HEAP_OFF + ((u64)p << PAGE_BITS);
     for (u32 i = 1; i <= n; i += 1) {
       H[got + ((u64)(i - 1) << cls)] = i < n ? got + ((u64)i << cls) : 0;
@@ -3930,6 +3986,19 @@ INLINE void heap_free(Env e, u32 cls, u64 loc) {
   if (err_seen(e.mem)) {
     return;
   }
+#if BEND_SPLIT
+  if (loc < HEAP_OFF + ((u64)(u32)e.mem[H_BUMP] << PAGE_BITS)) {
+    u32 i = a32_add(a32_at(e.mem, H_TWIN), 1);
+    if (i < (u32)e.mem[H_TWIN + 2]) {
+      ((DEV u64*)e.mem[H_TWIN + 1])[i] = loc | (u64)cls << 56;
+      return;
+    }
+  }
+#elif TWIN_SPLIT
+  if (loc >= twin_top && twin_give(loc, cls)) {
+    return;
+  }
+#endif
   e.mem[loc]       = ALC_AT(e, cls);
   ALC_AT(e, cls)   = loc;
   ALC_LEN(e, cls) += 1ull << cls;
@@ -4338,6 +4407,22 @@ INLINE u32 ring_flip(u32 i) {
 
 #define ring_pick(b, s, c) ((b) + (s) * (a32_add(c, 1) & (CUBE_T - 1)))
 
+#if BEND_PARK || (BEND_CUDA && !DEVICE)
+// A twin's mend (gpu_rings): the slots ring r took since its put was from,
+// short of the live ones', get their lap and no task, as a take leaves them.
+// How many.
+INLINE u32 ring_mend(DEV u64* H, u32 r, u32 from) {
+  u32 get  = *ring_get(H, r);
+  u32 put  = *ring_put(H, r);
+  u32 took = get - from <= put - from ? get - from : 0;
+  took = took < RING_LEN - (put - get) ? took : (u32)(RING_LEN - (put - get));
+  for (u32 i = get - took; i != get; i += 1) {
+    ((DEV u32*)ring_slot(H, r, i))[1] = ring_lap(i) << 31;
+  }
+  return took;
+}
+#endif
+
 // Task
 // ====
 
@@ -4431,7 +4516,7 @@ ${spins}
 #undef  WL_AGAIN
 #define WL_SPIN
 #define WL_SPUN
-#define WL_AGAIN(F) __attribute__((musttail)) return WL_##F(WL_ALL)
+#define WL_AGAIN(F, K) __attribute__((musttail)) return WL_##F(WL_ALL)
 
 typedef Term (PRESERVE(preserve_none) *WlFn)(WL_SIG);
 #define WL_X(F) WL_FN WL_##F(WL_SIG);
@@ -4442,6 +4527,77 @@ static const WlFn wl_tab[] = { WL_TABLE };
 #undef WL_X
 #endif
 
+// Park (-DBEND_PARK, a twin's lanes, under a display driver's watchdog): a
+// lane past its budget (H_BUDGET ns from its group's start) parks at its
+// next jump, self-jump or return. Its K live registers go on its stack, and
+// fid, seq, rn, K and depth into the two words under it; it replies
+// TERM_HOLE, and a later pass 1 resumes it before its ring. A pure spin_N's
+// loop cannot park.
+#if BEND_PARK
+#define PARK_AT(stk, i) (stk)[((long)(i) - 2) * CUBE]
+#define PARK_ON(stk)    (PARK_AT(stk, 0) != 0)
+// a lane's stack base, from any of its slots: the lanes interleave by CUBE
+#define PARK_BASE(H, sp) \
+  ((H) + STAK_OFF + 2 * CUBE + (u64)((sp) - ((H) + STAK_OFF)) % CUBE)
+
+// with no room for the registers the lane goes on, as if not due; F is
+// read first, as a return's is the stack slot the registers go to
+#define WL_PARK(F, K) \
+  if (sp + WL_PARK_N * CUBE < e.mem + STAT_OFF) { \
+    u32       pf   = (F); \
+    DEV Term* park = PARK_BASE(e.mem, sp); \
+    WL_PARK_SAVE(K) \
+    PARK_AT(park, 1) = (u64)(sp - park) / CUBE; \
+    PARK_AT(park, 0) = (1ull << 63) | (u64)pf << 32 \
+      | (u64)(seq & 0xFFFF) << 16 | (u64)(K) << 8 | (rn & 0xFF); \
+    a32_add(a32_at(e.mem, H_PARKED), 1); \
+    return TERM_HOLE; \
+  }
+
+#undef  WL_GO
+#define WL_GO(F, K) \
+  { \
+    if (pdue) { \
+      WL_PARK(F, K) \
+    } \
+    WL_JMP(F); \
+  }
+
+#undef  WL_RETN
+#define WL_RETN(N) \
+  { \
+    rn  = (N); \
+    sp -= LANE_STEP; \
+    if (pdue) { \
+      WL_PARK((u32)STK(0), N) \
+    } \
+    WL_DYN((u32)STK(0)); \
+  }
+
+// a segment's own loop never reaches the top, so it asks for itself
+#undef  WL_AGAIN
+#define WL_AGAIN(F, K) \
+  { \
+    if ((wpoll & 4095) == 0 && park_due(e.mem)) { \
+      WL_PARK(F, K) \
+    } \
+    continue; \
+  }
+
+__shared__ u64 park_t0;
+
+INLINE u64 park_now(void) {
+  u64 t;
+  asm volatile("mov.u64 %0, %%globaltimer;" : "=l"(t));
+  return t;
+}
+
+INLINE bool park_due(DEV u64* H) {
+  u64 b = H[H_BUDGET];
+  return b != 0 && park_now() - park_t0 > b;
+}
+#endif
+
 static Term work_loop(Env e, DEV Term* sp, Term t, u32 seq) {
   WL_BANK
   u32 rn = 0;
@@ -4449,10 +4605,27 @@ static Term work_loop(Env e, DEV Term* sp, Term t, u32 seq) {
 #if DEVICE
   u32 fid   = FID_ENTER;
   u32 wpoll = 0;
+#if BEND_PARK
+  bool pdue = false;
+  if (t == TERM_HOLE) {
+    u64 w = PARK_AT(sp, 0);
+    u32 k = (u32)(w >> 8) & 0xFF;
+    fid   = (u32)(w >> 32) & 0xFFFF;
+    seq   = (u32)(w >> 16) & 0xFFFF;
+    rn    = (u32)w & 0xFF;
+    PARK_AT(sp, 0) = 0;
+    sp   += PARK_AT(sp, 1) * CUBE;
+    WL_PARK_TAKE(k)
+    a32_sub(a32_at(e.mem, H_PARKED), 1);
+  }
+#endif
   for (;;) {
   if (err_spun(e.mem, &wpoll)) {
     return 0;
   }
+#if BEND_PARK
+  pdue |= (wpoll & 4095) == 0 && park_due(e.mem);
+#endif
   switch (fid) {
 #else
   return WL_FID_ENTER(WL_ALL);
@@ -4552,12 +4725,32 @@ ${segs}
 
 // One turn on a ring: its head task below put0 runs (a growing
 // lane skips a fork-free one). The host grows a row ring by
-// ring and drains a ring; a device lane does both.
+// ring and drains a ring; a device lane does both. A parked lane
+// resumes before its ring, as a drain; 3 if it parks.
 INLINE u32 monk_step(Env e, DEV Term* stk, u32 rg, u32 put0, u32 base, u32 stride,
   TG u32* cur) {
   DEV u64* H   = e.mem;
   bool     seq = stride == 0;
   DEV u32* get = ring_get(H, rg);
+#if BEND_PARK
+  Term t = TERM_HOLE;
+  if (PARK_ON(stk)) {
+    seq    = false;
+    stride = 0;
+  } else {
+    if (*get == put0) {
+      return 0;
+    }
+    DEV u32* lo = (DEV u32*)ring_slot(H, rg, *get);
+    u32      hi = a32_load_acq(lo + 1);
+    t = (((u64)hi << 32) | a32_load(lo)) & ~RFC_BIT;
+    if ((hi >> 31) != ring_lap(*get)
+      || (!seq && fid_nofk((u32)term_aux(t)))) {
+      return 0;
+    }
+    a32_store(get, *get + 1);
+  }
+#else
   if (*get == put0) {
     return 0;
   }
@@ -4568,12 +4761,18 @@ INLINE u32 monk_step(Env e, DEV Term* stk, u32 rg, u32 put0, u32 base, u32 strid
     return 0;
   }
   a32_store(get, *get + 1);
+#endif
   u32 spin = 0;
   for (;;) {
     Term r = work_loop(e, stk, t, seq);
     if (r == 0) {
       return 2;
     }
+#if BEND_PARK
+    if (r == TERM_HOLE) {
+      return 3;
+    }
+#endif
     if ((u32)H[task_tail(r) + 1] == 0) {
       if (err_spun(H, &spin)) {
         return 2;
@@ -4624,6 +4823,18 @@ INLINE void dev_cut(Env e) {
   }
 }
 
+#if BEND_SPLIT
+// A split twin's lanes take back their nodes the host freed, each lane every
+// LANES-th into its chains.
+extern "C" __global__ void twin_give(DEV u64* H, u64* list, u32 n) {
+  u32 me = blockIdx.x * blockDim.x + threadIdx.x;
+  Env e  = { H, H + ALC_OFF + me };
+  for (u32 i = me; me < LANES && i < n; i += LANES) {
+    heap_free(e, (u32)(list[i] >> 56), list[i] & ((1ull << 56) - 1));
+  }
+}
+#endif
+
 INLINE void bank_pack(DEV u64* H, u32 lane) {
   for (u32 c = 0; c < NCLS_ALL; c += 1) {
     DEV Bank* b  = bank_at(H, c);
@@ -4670,13 +4881,23 @@ extern "C" __global__ void bend_dev(DEV u64* H, u32 pass) {
       a32_store(vote + i, 0);
     }
   }
+#if BEND_PARK
+  stk += 2 * CUBE;
+  if (lane == 0) {
+    park_t0 = park_now();
+  }
+#endif
   BAR();
   u32 put0      = a32_load(ring_put(H, rg));
   u32 seen_has  = 0;
   u32 seen_grew = 0;
   for (;;) {
     if (pass) {
+#if BEND_PARK
+      if ((*ring_get(H, rg) == put0 && !PARK_ON(stk)) || err_seen(H)) {
+#else
       if (*ring_get(H, rg) == put0 || err_seen(H)) {
+#endif
         break;
       }
     } else {
@@ -4693,8 +4914,16 @@ extern "C" __global__ void bend_dev(DEV u64* H, u32 pass) {
       }
       seen_has = has;
     }
+#if BEND_PARK
+    u32 ran = !pass && PARK_ON(stk) ? 0 : monk_step(e, stk, rg, put0,
+      row * CUBE_T, pass ? 0 : stride, vote);
+    if (pass && ran == 3) {
+      break;
+    }
+#else
     u32 ran = monk_step(e, stk, rg, put0, row * CUBE_T, pass ? 0 : stride,
       vote);
+#endif
     if (!pass) {
       if (ran == 1) {
         a32_add(vote + 1, 1);
@@ -4709,6 +4938,16 @@ extern "C" __global__ void bend_dev(DEV u64* H, u32 pass) {
   }
   dev_cut(e);
 }
+
+#if BEND_PARK
+// a twin's mend of the device's copy, a lane a ring (gpu_rings)
+extern "C" __global__ void ring_mend_dev(DEV u64* H, u32* from) {
+  u32 r = blockIdx.x * blockDim.x + threadIdx.x;
+  if (r < LANES) {
+    ring_mend(H, r, from[r]);
+  }
+}
+#endif
 
 #endif
 
@@ -4739,6 +4978,51 @@ extern "C" __global__ void window_dev(DEV u64* H, Term root, u32 w, u32 h,
   u32 y = blockIdx.y * blockDim.y + threadIdx.y;
   if (x < w && y < h) {
     out[y * w + x] = window_pix(H, root, k, x, y);
+  }
+}
+#endif
+
+#if BEND_PARK
+INLINE u64 twin_mix(u64 z) {
+  z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9ull;
+  z = (z ^ (z >> 27)) * 0x94D049BB133111EBull;
+  return z ^ (z >> 31);
+}
+
+// A twin's chunk sums, two to a chunk of words words from lo: pass 0 takes
+// them for the chunks the host holds (keep), pass 1 keeps those whose sums
+// held through the turn. A block is a chunk under n, or one from m on.
+extern "C" __global__ void twin_sum(DEV u64* H, u64 lo, u32 words, u32 n,
+  u32 m, u8* keep, u64* sums, u32 pass) {
+  __shared__ u64 part[2][256];
+  u32 k = blockIdx.x;
+  u32 c = k < n ? k : m + (k - n);
+  u32 t = threadIdx.x;
+  u64 a = 0;
+  u64 b = 0;
+  if (!keep[k]) {
+    return;
+  }
+  for (u32 i = t; i < words; i += 256) {
+    u64 w = H[lo + (u64)c * words + i];
+    a += twin_mix(w ^ ((u64)i * 0x9E3779B97F4A7C15ull));
+    b += twin_mix(w + ((u64)i << 32) + 0xD1B54A32D192ED03ull);
+  }
+  part[0][t] = a;
+  part[1][t] = b;
+  __syncthreads();
+  for (u32 s = 128; s > 0; s /= 2) {
+    if (t < s) {
+      part[0][t] += part[0][t + s];
+      part[1][t] += part[1][t + s];
+    }
+    __syncthreads();
+  }
+  if (t == 0 && pass == 0) {
+    sums[2 * c]     = part[0][0];
+    sums[2 * c + 1] = part[1][0];
+  } else if (t == 0) {
+    keep[k] = sums[2 * c] == part[0][0] && sums[2 * c + 1] == part[1][0];
   }
 }
 #endif
@@ -4794,15 +5078,32 @@ static void* pool_mmap(u64 bytes) {
   return p;
 }
 
+#if BEND_CUDA
+static void gpu_trap(int sig, siginfo_t* si, void* uc) {
+  if (!gpu_fault(si->si_addr)) {
+    err_trap(sig);
+  }
+}
+#endif
+
+// A twin's trap calls CUDA, so its signal stack is a real one (named at
+// each use, as SIGSTKSZ may be a call).
+#define POOL_ALT (gpu_twin ? 1ull << 20 : SIGSTKSZ)
 static Term* pool_stack(void) {
   u64   len = 1ull << 31;
-  char* p   = pool_mmap(len + 16384 + SIGSTKSZ);
+  char* p   = pool_mmap(len + 16384 + POOL_ALT);
   if (mprotect(p + len, 16384, PROT_NONE) != 0) {
     err_fail("stack guard failed");
   }
-  stack_t ss = { .ss_sp = p + len + 16384, .ss_size = SIGSTKSZ };
+  stack_t ss = { .ss_sp = p + len + 16384, .ss_size = POOL_ALT };
   sigaltstack(&ss, NULL);
   struct sigaction sa = { .sa_handler = err_trap, .sa_flags = SA_ONSTACK };
+#if BEND_CUDA
+  if (gpu_twin) {
+    sa = (struct sigaction){ .sa_sigaction = gpu_trap,
+      .sa_flags = SA_ONSTACK | SA_SIGINFO };
+  }
+#endif
   sigaction(SIGSEGV, &sa, NULL);
   sigaction(SIGBUS, &sa, NULL);
   return (Term*)p;
@@ -4951,7 +5252,7 @@ static void gpu_run(u32 f) {
 #if BEND_CUDA
 
 static u64 gpu_hash(void) {
-  u64 key = 14695981039346656037ull ^ CUBE_LOG;
+  u64 key = 14695981039346656037ull ^ CUBE_LOG ^ (u64)gpu_twin << 8;
   for (const char* p = BEND_SRC; *p != 0; p += 1) {
     key = (key ^ (u8)*p) * 1099511628211ull;
   }
@@ -5076,24 +5377,459 @@ static void gpu_shape(int units) {
   CUBE_LOG = 31 - CLZ(units < 16 ? 16 : units > 128 ? 128 : units);
 }
 
+// A device with concurrent managed access shares a managed corpus with the
+// host. Without it (WDDM, WSL2 among them) a managed block the size of VRAM
+// takes the video memory manager down: a discrete Pascal or later gets a
+// twin, and any other device stays on the cores.
 static bool gpu_probe(void) {
-  int       managed = 0;
-  CUcontext ctx;
+  int managed = 0;
+  int major   = 0;
+  int shared  = 1;
   setenv("CUDA_DEVICE_MAX_CONNECTIONS", "1", 0);
   if (cuInit(0) == CUDA_SUCCESS && cuDeviceGet(&gpu_dev, 0) == CUDA_SUCCESS) {
     cuDeviceGetAttribute(&managed,
       CU_DEVICE_ATTRIBUTE_CONCURRENT_MANAGED_ACCESS, gpu_dev);
+    cuDeviceGetAttribute(&major,
+      CU_DEVICE_ATTRIBUTE_COMPUTE_CAPABILITY_MAJOR, gpu_dev);
+    cuDeviceGetAttribute(&shared, CU_DEVICE_ATTRIBUTE_INTEGRATED, gpu_dev);
   }
   int l2 = 1 << 23;
   cuDeviceGetAttribute(&l2, CU_DEVICE_ATTRIBUTE_L2_CACHE_SIZE, gpu_dev);
   gpu_shape(l2 >> 16);
-  return managed != 0
-    && cuDevicePrimaryCtxRetain(&ctx, gpu_dev) == CUDA_SUCCESS
-    && cuCtxSetCurrent(ctx) == CUDA_SUCCESS;
+  bool ok = (managed != 0 || (major >= 6 && shared == 0))
+    && cuDevicePrimaryCtxRetain(&gpu_ctx, gpu_dev) == CUDA_SUCCESS
+    && cuCtxSetCurrent(gpu_ctx) == CUDA_SUCCESS;
+  gpu_twin = ok && managed == 0;
+  return ok;
+}
+
+// The twin: gpu_vram, device memory as large as the host's corpus. Every
+// Loc is an index and the host never runs during a turn, so a turn copies
+// up what it can touch, and down after. The free-list rows (the host keeps
+// ALC[]) and the lanes' stacks stay in VRAM. The heap is lazy, in chunks:
+// after a turn each the host held that the turn changed (twin_sum's sums
+// before and after) is stale (no access); a host touch downloads it clean
+// (read-only), a host write makes it dirty (read-write), and the next turn
+// uploads the dirty ones. One written again within two ups is hot and stays
+// dirty, so it goes up each turn without a fault (the hot ones cool each 64
+// ups): each protection change is a system call (on Windows a lock and a
+// flush of every core too). The bump cannot say what the host wrote: heap_free
+// and heap_alloc rewrite freed slots under it. A fault fills its chunk
+// through gpu_alias, a second mapping, while the chunk still traps, so no
+// other thread sees it half filled. Every copy goes through gpu_alias, whose
+// steps are pinned once each has carried twice its size (GPU_PIN at most): a
+// pinned copy runs about twice as fast, and a pin costs about two copies.
+#ifndef GPU_WALL
+#define GPU_WALL 250000000ull  // ns a twin's launch runs, far under a TDR
+#endif
+#ifndef GPU_PIN
+#define GPU_PIN (2ull << 30)  // bytes of gpu_alias a twin pins at most
+#endif
+// split, the host faults only on the lanes' nodes it reads: finer is
+// cheaper, down to 256 KiB, past which a walk's faults cost more
+#define GPU_CHUNK (TWIN_SPLIT ? 1ull << 18 : 1ull << 21)
+#define GPU_STEP  (8ull << 20)  // a pin's stall stays inside a frame's slack
+#define GPU_DIRTY 0
+#define GPU_STALE 1
+#define GPU_CLEAN 2
+#define GPU_LOAD  3  // a fault fills it; a touch meanwhile retries
+
+// ns a group runs before its lanes park: GPU_WALL over the waves of groups
+// the device fits at once
+static u64       gpu_budget;
+static u64*      gpu_vram;
+static char*     gpu_alias;
+static u8*       gpu_state;       // a chunk's GPU_DIRTY, _STALE or _CLEAN
+static u8*       gpu_hot;         // one the host writes each turn: kept dirty
+static u32*      gpu_wrote;       // the up before a chunk's last write, + 1
+static u32       gpu_ups;         // the ups so far
+static u64       gpu_cool;        // where the host's clean chunks cool next
+static u64       gpu_lo, gpu_hi;  // the chunks' bytes in the corpus
+static u32       gpu_lock;
+static u64       gpu_size;        // the corpus's bytes
+static u64*      gpu_heat;        // bytes a step carried; ~0 once pinned
+static u64       gpu_pinned;      // bytes pinned (a refusal sets GPU_PIN)
+
+// the step at byte at is pinned once hot
+static void gpu_pin(u64 at, u64 n) {
+  u64* heat = &gpu_heat[at / GPU_STEP];
+  u64  lo   = at & ~(GPU_STEP - 1);
+  u64  len  = gpu_size - lo < GPU_STEP ? gpu_size - lo : GPU_STEP;
+  if (*heat == ~0ull || (*heat += n) < 2 * GPU_STEP || gpu_pinned >= GPU_PIN) {
+    return;
+  }
+  bool ok = cuMemHostRegister(gpu_alias + lo, len, 0) == CUDA_SUCCESS;
+  *heat      = ok ? ~0ull : 0;
+  gpu_pinned = ok ? gpu_pinned + len : GPU_PIN;
+}
+
+// a copy is cut at the steps: CUDA refuses one across two pinned ranges
+static void gpu_copy(u64 lo, u64 hi, bool up) {
+  for (u64 to; lo < hi; lo = to) {
+    CUdeviceptr d   = (CUdeviceptr)(uintptr_t)(gpu_vram + lo);
+    u64*        h   = (u64*)gpu_alias + lo;
+    u64         cut = (lo * 8 / GPU_STEP + 1) * (GPU_STEP / 8);
+    to = hi < cut ? hi : cut;
+    gpu_pin(lo * 8, (to - lo) * 8);
+    if ((up ? cuMemcpyHtoD(d, h, (to - lo) * 8)
+      : cuMemcpyDtoH(h, d, (to - lo) * 8)) != CUDA_SUCCESS) {
+      err_fail("corpus copy failed");
+    }
+  }
+}
+
+// the chunks [lo, hi) enter a state, under gpu_lock
+static bool gpu_set(u64 lo, u64 hi, u8 state) {
+  char* p = (char*)CORPUS + gpu_lo + lo * GPU_CHUNK;
+  u64   n = (hi - lo) * GPU_CHUNK;
+#ifdef _WIN32
+  DWORD was;
+  bool  ok = n == 0 || VirtualProtect(p, n, state == GPU_STALE
+    ? PAGE_NOACCESS : state == GPU_CLEAN ? PAGE_READONLY : PAGE_READWRITE,
+    &was);
+#else
+  bool  ok = n == 0 || mprotect(p, n, state == GPU_STALE ? PROT_NONE
+    : state == GPU_CLEAN ? PROT_READ : PROT_READ | PROT_WRITE) == 0;
+#endif
+  if (ok) {
+    memset(gpu_state + lo, state, hi - lo);
+  }
+  return ok;
+}
+
+// Of the rings only [get, put) is ever read: the counter planes go, and
+// the slot planes some ring has live. A slot one side pushed and took since
+// the last sync (from its put then) keeps, on the other side, the word of an
+// older lap, which a take racing the next push there would pass: the side
+// the copy lands on mends those (ring_mend), the host its own down and
+// ring_mend_dev the device's up, rather than their planes crossing whole.
+static void gpu_rings(bool up) {
+  static u8          live[1u << 17];  // RING_LEN at its widest (CUBE_LOG 0)
+  static u32         from[1u << 14];  // a ring's put at the last sync
+  static CUfunction  mend;
+  static CUdeviceptr at;
+  u64*               H    = CORPUS;
+  u64                took = 0;
+  gpu_copy(RING_OFF + RING_LEN * LANES, RING_OFF + (RING_LEN + 2) * LANES, up);
+  memset(live, 0, RING_LEN);
+  for (u32 r = 0; r < LANES; r += 1) {
+    u32 get = a32_load(ring_get(H, r));
+    u32 n   = a32_load(ring_put(H, r)) - get;
+    n = n < RING_LEN ? n : (u32)RING_LEN;
+    for (u32 i = 0; i < n; i += 1) {
+      live[(get + i) & (RING_LEN - 1)] = 1;
+    }
+    took += up ? get != from[r] : ring_mend(H, r, from[r]);
+  }
+  for (u64 w = 0; w < RING_LEN; w += 1) {
+    u64 lo = w;
+    while (w < RING_LEN && live[w]) {
+      w += 1;
+    }
+    gpu_copy(RING_OFF + lo * LANES, RING_OFF + w * LANES, up);
+  }
+  void* args[] = { &gpu_vram, &at };
+  if (up && took != 0 && ((mend == NULL && (cuModuleGetFunction(&mend, gpu_lib,
+    "ring_mend_dev") != CUDA_SUCCESS || cuMemAlloc(&at, LANES * 4)
+    != CUDA_SUCCESS)) || cuMemcpyHtoD(at, from, LANES * 4) != CUDA_SUCCESS
+    || cuLaunchKernel(mend, (u32)(LANES + 255) / 256, 1, 1, 256, 1, 1, 0, NULL,
+    args, NULL) != CUDA_SUCCESS)) {
+    err_fail("device launch failed");
+  }
+  for (u32 r = 0; r < LANES; r += 1) {
+    from[r] = a32_load(ring_put(H, r));
+  }
+}
+
+static CUfunction  gpu_sum_fn;
+static CUdeviceptr gpu_keep_d;
+static CUdeviceptr gpu_sums_d;
+static u8*         gpu_keep;      // a held chunk twin_sum keeps, packed
+static u64         gpu_n, gpu_m;  // the host's chunks under n, the lanes' from m
+static u64         gpu_sn, gpu_sm;  // gpu_n and gpu_m at pass 0
+
+#define gpu_in(c) ((c) < gpu_n || (c) >= gpu_m)
+
+// the next chunk a walk takes from c: the gap between the ranges is skipped
+#define gpu_next(c) ((c) >= gpu_n && (c) < gpu_m ? gpu_m : (c))
+
+// twin_sum over the held chunks, packed (those under gpu_sn, then those from
+// gpu_sm): pass 0 sums those the host holds, and pass 1 leaves gpu_keep on
+// those of them the turn did not change.
+static void gpu_sum(u64 all, u32 pass) {
+  u64   lo     = gpu_lo / 8;
+  u32   words  = GPU_CHUNK / 8;
+  u32   n      = 0;
+  u32   m      = 0;
+  void* args[] = { &gpu_vram, &lo, &words, &n, &m, &gpu_keep_d, &gpu_sums_d,
+    &pass };
+  if (gpu_keep == NULL && ((gpu_keep = calloc(all + 1, 1)) == NULL
+    || cuModuleGetFunction(&gpu_sum_fn, gpu_lib, "twin_sum") != CUDA_SUCCESS
+    || cuMemAlloc(&gpu_keep_d, all + 1) != CUDA_SUCCESS
+    || cuMemAlloc(&gpu_sums_d, (all + 1) * 16) != CUDA_SUCCESS)) {
+    err_fail("the twin's sums failed");
+  }
+  if (pass == 0) {
+    gpu_sn = gpu_n < all ? gpu_n : all;
+    gpu_sm = gpu_m > all ? all : gpu_m > gpu_sn ? gpu_m : gpu_sn;
+  }
+  n = (u32)gpu_sn;
+  m = (u32)gpu_sm;
+  u64 held = gpu_sn + (all - gpu_sm);
+  for (u64 k = 0; pass == 0 && k < held; k += 1) {
+    gpu_keep[k] = gpu_state[k < gpu_sn ? k : gpu_sm + (k - gpu_sn)]
+      != GPU_STALE;
+  }
+  if (held != 0 && ((pass == 0 && cuMemcpyHtoD(gpu_keep_d, gpu_keep, held)
+    != CUDA_SUCCESS) || cuLaunchKernel(gpu_sum_fn, (u32)held, 1, 1, 256, 1, 1,
+    0, NULL, args, NULL) != CUDA_SUCCESS || (pass == 1
+    && cuMemcpyDtoH(gpu_keep, gpu_keep_d, held) != CUDA_SUCCESS))) {
+    err_fail("the twin's sums failed");
+  }
+}
+
+// whether twin_sum kept chunk c through the turn (held at pass 0)
+static bool gpu_kept(u64 c) {
+  return c < gpu_sn ? gpu_keep[c] : c >= gpu_sm && gpu_keep[gpu_sn + c - gpu_sm];
+}
+
+// The static image goes at once, and the heap's chunks lazily: the host's,
+// under its bump, and the lanes', from H_CAP up (none unless split). Up, the
+// dirty ones go; down, those the turn changed go stale.
+static void gpu_heap(u64 end, bool up) {
+  u64*   H   = CORPUS;
+  u64    e   = end * 8;
+  u64    top = (HEAP_OFF + ((u64)a32_load(a32_at(H, H_CAP)) << PAGE_BITS)) * 8;
+  u64    all = (gpu_hi - gpu_lo) / GPU_CHUNK;
+  u64    te  = e < gpu_lo ? gpu_lo : (e + GPU_CHUNK - 1) & ~(GPU_CHUNK - 1);
+  gpu_n = (te - gpu_lo) / GPU_CHUNK;
+  gpu_m = top < gpu_lo ? 0 : (top - gpu_lo) / GPU_CHUNK;
+  gpu_copy(STAT_OFF, (e < gpu_lo ? e : gpu_lo) / 8, up);
+  LOCK(gpu_lock);
+  gpu_ups += up;
+  if (up && gpu_ups % 64 == 0) {
+    memset(gpu_hot, 0, all);
+  }
+  for (u64 c = 0; up && c < all; c = gpu_next(c + 1)) {
+    u64 lo = c;
+    while (c < all && gpu_in(c) && gpu_state[c] == GPU_DIRTY) {
+      c += 1;
+    }
+    gpu_copy((gpu_lo + lo * GPU_CHUNK) / 8, (gpu_lo + c * GPU_CHUNK) / 8, up);
+    for (u64 d = lo; d < c; d += 1) {
+      u64 a = d;
+      while (d < c && !gpu_hot[d]) {
+        d += 1;
+      }
+      if (!gpu_set(a, d, GPU_CLEAN)) {
+        err_fail("corpus protection failed");
+      }
+    }
+  }
+  // a slice of the host's clean chunks goes stale each up, so the held ones
+  // (twin_sum's) are those it touched lately, not all it ever did
+  u64 lo = gpu_n == 0 ? 0 : gpu_cool % gpu_n;
+  u64 hi = lo + gpu_n / 512 + 1 < gpu_n ? lo + gpu_n / 512 + 1 : gpu_n;
+  for (u64 c = lo; up && c < hi; c += 1) {
+    u64 a = c;
+    while (c < hi && gpu_state[c] == GPU_CLEAN && !gpu_hot[c]) {
+      c += 1;
+    }
+    if (!gpu_set(a, c, GPU_STALE)) {
+      err_fail("corpus protection failed");
+    }
+  }
+  gpu_cool = up ? hi : gpu_cool;
+  gpu_sum(all, !up);
+  for (u64 c = 0; !up && c < all; c = gpu_next(c + 1)) {
+    u64 lo = c;
+    while (c < all && gpu_in(c) && !gpu_kept(c) && gpu_state[c] != GPU_STALE) {
+      c += 1;
+    }
+    if (!gpu_set(lo, c, GPU_STALE)) {
+      err_fail("corpus protection failed");
+    }
+  }
+  UNLOCK(gpu_lock);
+}
+
+// A host touch of a stale chunk downloads it (the context is made current
+// on the faulting thread) outside gpu_lock, so faults on other chunks go on,
+// and one of a clean chunk is a write; false for a fault that is not the
+// twin's.
+static bool gpu_fault(void* addr) {
+  u64 off = (u64)((char*)addr - (char*)CORPUS);
+  if (gpu_state == NULL || (char*)addr < (char*)CORPUS || off < gpu_lo
+    || off >= gpu_hi) {
+    return false;
+  }
+  u64  c  = (off - gpu_lo) / GPU_CHUNK;
+  u64  at = gpu_lo + c * GPU_CHUNK;
+  bool ok = true;
+  LOCK(gpu_lock);
+  u8 was = gpu_state[c];
+  if (was == GPU_STALE) {
+    gpu_state[c] = GPU_LOAD;
+  } else if (was == GPU_CLEAN) {
+    ok = gpu_set(c, c + 1, GPU_DIRTY);
+    gpu_hot[c]   = gpu_wrote[c] != 0 && gpu_wrote[c] + 1 >= gpu_ups;
+    gpu_wrote[c] = gpu_ups + 1;
+  }
+  UNLOCK(gpu_lock);
+  if (was == GPU_STALE) {
+    ok = cuCtxSetCurrent(gpu_ctx) == CUDA_SUCCESS
+      && cuMemcpyDtoH(gpu_alias + at,
+        (CUdeviceptr)(uintptr_t)((char*)gpu_vram + at), GPU_CHUNK)
+        == CUDA_SUCCESS;
+    LOCK(gpu_lock);
+    ok = ok && gpu_set(c, c + 1, GPU_CLEAN);
+    UNLOCK(gpu_lock);
+  } else if (was == GPU_LOAD) {
+#ifdef _WIN32
+    SwitchToThread();
+#else
+    sched_yield();
+#endif
+  }
+  return ok;
+}
+
+#if TWIN_SPLIT
+static CUfunction  gpu_give_fn;
+static CUdeviceptr gpu_give_d;
+static CUdeviceptr gpu_back_d;
+
+// A split twin's first sync: the lanes' pages start at the last whole chunk
+// and their Bank rows sit on the page past the chunks (their entries in the
+// device's copy of the host's banks), so no bank crosses.
+static void gpu_split(u64* H, u64 end) {
+  Bank rows[NCLS_ALL];
+  u64  top  = (gpu_hi / 8 - HEAP_OFF) >> PAGE_BITS;
+  u32  bump = a32_load(a32_at(H, H_BUMP));
+  u64  at   = end / 8 - PAGE_LEN;
+  for (u32 c = 0; c < NCLS_ALL; c += 1) {
+    rows[c] = (Bank){ bank_at(H, c)->off, 0, 0, 0 };
+  }
+  if (cuModuleGetFunction(&gpu_give_fn, gpu_lib, "twin_give") != CUDA_SUCCESS
+    || cuMemAlloc(&gpu_give_d, TWIN_LIST * 8) != CUDA_SUCCESS
+    || cuMemAlloc(&gpu_back_d, TWIN_LIST * 8) != CUDA_SUCCESS
+    || cuMemcpyHtoD((CUdeviceptr)(uintptr_t)(gpu_vram + at), rows,
+      sizeof rows) != CUDA_SUCCESS) {
+    err_fail("corpus reservation failed");
+  }
+  a32_store(a32_at(H, H_CAP), top > bump ? (u32)top : bump);
+  H[H_TWIN]     = 0;
+  H[H_TWIN + 1] = gpu_back_d;
+  H[H_TWIN + 2] = TWIN_LIST;
+  H[H_TWIN + 3] = at;
+}
+
+// Up, the lanes' nodes the host freed go to them (twin_give); down, the
+// host frees its nodes the lanes sent back, and learns the lanes' bound.
+static void gpu_trade(u64* H, bool up) {
+  u32   n      = up ? twin_n : (u32)H[H_TWIN];
+  void* args[] = { &gpu_vram, &gpu_give_d, &n };
+  n = n < TWIN_LIST ? n : TWIN_LIST;
+  if (n != 0 && (up ? cuMemcpyHtoD(gpu_give_d, twin_list, n * 8)
+    != CUDA_SUCCESS || cuLaunchKernel(gpu_give_fn, (u32)(LANES + 255) / 256,
+    1, 1, 256, 1, 1, 0, NULL, args, NULL) != CUDA_SUCCESS
+    : cuMemcpyDtoH(twin_list, gpu_back_d, n * 8) != CUDA_SUCCESS)) {
+    err_fail("corpus copy failed");
+  }
+  for (u32 i = 0; !up && i < n; i += 1) {
+    heap_free((Env){ H, ALC[0] }, (u32)(twin_list[i] >> 56),
+      twin_list[i] & ((1ull << 56) - 1));
+  }
+  if (up) {
+    twin_n = 0;
+  } else {
+    H[H_TWIN] = 0;
+    twin_top  = HEAP_OFF + ((u64)a32_load(a32_at(H, H_CAP)) << PAGE_BITS);
+  }
+}
+#endif
+
+// Down, the header leads: the bump and the banks come from it.
+static void gpu_sync(bool up) {
+  u64* H = CORPUS;
+  if (!gpu_twin) {
+    return;
+  }
+  if (gpu_state == NULL) {
+    u64 cap = a32_load(a32_at(H, H_CAP));
+    u64 end = (HEAP_OFF + (cap << PAGE_BITS)) * 8;
+    gpu_lo    = (HEAP_OFF * 8 + GPU_CHUNK - 1) & ~(GPU_CHUNK - 1);
+    gpu_hi    = (end - (TWIN_SPLIT ? PAGE_LEN * 8 : 0)) & ~(GPU_CHUNK - 1);
+    gpu_hi    = gpu_hi < gpu_lo ? gpu_lo : gpu_hi;
+    gpu_state = calloc((gpu_hi - gpu_lo) / GPU_CHUNK + 1, 1);
+    gpu_hot   = calloc((gpu_hi - gpu_lo) / GPU_CHUNK + 1, 1);
+    gpu_wrote = calloc((gpu_hi - gpu_lo) / GPU_CHUNK + 1, sizeof(u32));
+    if (gpu_state == NULL || gpu_hot == NULL || gpu_wrote == NULL) {
+      err_fail("corpus reservation failed");
+    }
+#if TWIN_SPLIT
+    gpu_split(H, end);
+#endif
+  }
+  gpu_copy(0, ALC_OFF, up);
+  gpu_rings(up);
+  gpu_heap(HEAP_OFF + (((u64)a32_load(a32_at(H, H_BUMP)) + 1) << PAGE_BITS),
+    up);
+#if TWIN_SPLIT
+  gpu_trade(H, up);
+#else
+  for (u32 c = 0; c < NCLS_ALL; c += 1) {
+    Bank* b = bank_at(H, c);
+    u32   n = b->wr > b->rd ? b->wr : b->rd;
+    n = b->top > n ? b->top : n;
+    gpu_copy(b->off, b->off + n + 1, up);
+  }
+#endif
+}
+
+// A twin's host corpus is two mappings of one zeroed section; its device
+// side, and the lanes' park words under their stacks, start at zero.
+static u64* gpu_twin_map(u64 bytes) {
+  void*       h = NULL;
+  CUdeviceptr v = 0;
+#ifdef _WIN32
+  HANDLE s = CreateFileMappingW(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE,
+    (DWORD)(bytes >> 32), (DWORD)bytes, NULL);
+  if (s != NULL) {
+    h         = MapViewOfFile(s, FILE_MAP_ALL_ACCESS, 0, 0, bytes);
+    gpu_alias = MapViewOfFile(s, FILE_MAP_ALL_ACCESS, 0, 0, bytes);
+    CloseHandle(s);
+  }
+#else
+  int fd = memfd_create("bend-corpus", 0);
+  if (fd >= 0 && ftruncate(fd, (off_t)bytes) == 0) {
+    h         = mmap(NULL, bytes, PROT_READ | PROT_WRITE,
+      MAP_SHARED | MAP_NORESERVE, fd, 0);
+    gpu_alias = mmap(NULL, bytes, PROT_READ | PROT_WRITE,
+      MAP_SHARED | MAP_NORESERVE, fd, 0);
+  }
+  if (fd >= 0) {
+    close(fd);
+  }
+  h         = h == MAP_FAILED ? NULL : h;
+  gpu_alias = gpu_alias == MAP_FAILED ? NULL : gpu_alias;
+#endif
+  gpu_size = bytes;
+  gpu_heat = calloc(bytes / GPU_STEP + 1, sizeof(u64));
+  if (h == NULL || gpu_alias == NULL || gpu_heat == NULL
+    || cuMemAlloc(&v, bytes) != CUDA_SUCCESS
+    || cuMemsetD8(v, 0, (STAK_OFF + 2 * CUBE) * 8) != CUDA_SUCCESS) {
+    err_fail("corpus reservation failed");
+  }
+  gpu_vram = (u64*)(uintptr_t)v;
+  return (u64*)h;
 }
 
 static u64* gpu_map(u64 bytes) {
   CUdeviceptr p = 0;
+  if (gpu_twin) {
+    return gpu_twin_map(bytes);
+  }
   if (cuMemAllocManaged(&p, bytes, CU_MEM_ATTACH_GLOBAL) != CUDA_SUCCESS) {
     err_fail("corpus reservation failed");
   }
@@ -5116,13 +5852,15 @@ static bool gpu_make(const char* path) {
   char bag[24];
   snprintf(arch, sizeof arch, "--gpu-architecture=sm_%d%d", cc[0], cc[1]);
   snprintf(bag, sizeof bag, "-DCUBE_LOG=%u", CUBE_LOG);
-  const char* opts[] = { arch, bag, "--fmad=false", "-default-device" };
+  const char* opts[] = { arch, bag, "--fmad=false", "-default-device",
+    "-DBEND_PARK=1", "-DBEND_SPLIT=1" };
   nvrtcProgram prog;
   if (nvrtcCreateProgram(&prog, BEND_SRC, "bend.cu", 0, NULL, NULL)
     != NVRTC_SUCCESS) {
     err_fail("cannot compile the CUDA library");
   }
-  if (nvrtcCompileProgram(prog, 4, opts) != NVRTC_SUCCESS) {
+  if (nvrtcCompileProgram(prog, gpu_twin ? 5 + TWIN_SPLIT : 4, opts)
+    != NVRTC_SUCCESS) {
     size_t n = 0;
     nvrtcGetProgramLogSize(prog, &n);
     char* log = calloc(n + 1, 1);
@@ -5149,21 +5887,31 @@ static bool gpu_make(const char* path) {
   return path == NULL || ok;
 }
 
+// A twin is device memory, which WDDM pages out under pressure: it stops
+// an eighth (at least 512 MB) short of what is free.
 static u64 gpu_span(void) {
   size_t span = 0;
+  size_t free = 0;
   cuDeviceTotalMem(&span, gpu_dev);
+  if (gpu_twin && cuMemGetInfo(&free, &span) == CUDA_SUCCESS) {
+    u64 keep = free / 8 > 512ull << 20 ? free / 8 : 512ull << 20;
+    span = free > keep ? free - keep : 0;
+  }
   return span;
 }
 
 static void gpu_load(u64 bytes) {
   const char* path = gpu_path();
-  int         fd   = open(path, O_RDONLY);
-  struct stat st   = { 0 };
   u64         key  = 0;
-  char*       bin  = fd < 0 || fstat(fd, &st) != 0 || st.st_size <= 8 ? NULL
-    : mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
-  if (bin != NULL && bin != MAP_FAILED) {
+  FILE*       f    = fopen(path, "rb");
+  long        len  = f == NULL || fseek(f, 0, SEEK_END) != 0 ? 0 : ftell(f);
+  char*       bin  = len > 8 && fseek(f, 0, SEEK_SET) == 0 ? malloc(len)
+    : NULL;
+  if (bin != NULL && fread(bin, 1, len, f) == (size_t)len) {
     memcpy(&key, bin, 8);
+  }
+  if (f != NULL) {
+    fclose(f);
   }
   if (key != gpu_hash()
     || cuModuleLoadData(&gpu_lib, bin + 8) != CUDA_SUCCESS) {
@@ -5173,20 +5921,57 @@ static void gpu_load(u64 bytes) {
   if (cuModuleGetFunction(&gpu_pso, gpu_lib, "bend_dev") != CUDA_SUCCESS) {
     err_fail("cannot load the GPU program");
   }
+  int per = 0;
+  int sms = 0;
+  if (gpu_twin) {
+    cuOccupancyMaxActiveBlocksPerMultiprocessor(&per, gpu_pso, CUBE_T,
+      TG_HOLD * 8);
+    cuDeviceGetAttribute(&sms, CU_DEVICE_ATTRIBUTE_MULTIPROCESSOR_COUNT,
+      gpu_dev);
+    u64 fit    = per > 0 && sms > 0 ? (u64)per * sms : 1;
+    gpu_budget = GPU_WALL / ((CUBE_G + fit - 1) / fit);
+  }
 }
 
 static void gpu_kernel(u32 pass, u32 groups) {
-  void* args[] = { &CORPUS, &pass };
+  u64*  mem    = gpu_twin ? gpu_vram : CORPUS;
+  void* args[] = { &mem, &pass };
   if (cuLaunchKernel(gpu_pso, groups, 1, 1, CUBE_T, 1, 1, TG_HOLD * 8, NULL,
     args, NULL) != CUDA_SUCCESS) {
     err_fail("device launch failed");
   }
 }
 
-static void gpu_pass(u32 f) {
-  gpu_run(f);
-  if (cuCtxSynchronize() != CUDA_SUCCESS) {
+static void gpu_wait(void) {
+  CUresult r = cuCtxSynchronize();
+  if (r == CUDA_ERROR_LAUNCH_TIMEOUT) {
+    err_fail("the display driver's watchdog stopped a GPU pass (--gpu off"
+      " runs it on the cores)");
+  }
+  if (r != CUDA_SUCCESS) {
     err_fail("device fault");
+  }
+}
+
+// A twin's header crosses each pass (cube_run reads its cursor and flags),
+// and drains resume its parked lanes until none is left.
+static void gpu_pass(u32 f) {
+  u64* H = CORPUS;
+  if (gpu_twin) {
+    H[H_BUDGET] = gpu_budget;
+    gpu_copy(0, ALC_OFF, true);
+  }
+  gpu_run(f);
+  gpu_wait();
+  if (gpu_twin) {
+    gpu_copy(0, ALC_OFF, false);
+  }
+  while (gpu_twin && a32_load(a32_at(H, H_PARKED)) != 0
+    && a32_load(a32_at(H, H_ERROR_CODE)) == 0) {
+    gpu_kernel(1, CUBE_G);
+    gpu_kernel(2, 1);
+    gpu_wait();
+    gpu_copy(0, ALC_OFF, false);
   }
 }
 
@@ -5198,6 +5983,10 @@ static void gpu_pass(u32 f) {
 #define gpu_load(b)
 #define gpu_pass(f)
 
+#endif
+
+#if !BEND_CUDA
+#define gpu_sync(up)
 #endif
 
 // Cube
@@ -5304,7 +6093,7 @@ static u64* corpus_setup(bool gpu, long threads, u64 bytes) {
   CORPUS     = gpu ? gpu_map(size) : corpus_map(size);
   u64* H     = CORPUS;
 #if BEND_CUDA
-  if (gpu) {
+  if (gpu && !gpu_twin) {
     cuMemsetD8((CUdeviceptr)(uintptr_t)H, 0, STAK_OFF * 8);
     cuCtxSynchronize();
   }
@@ -5339,7 +6128,9 @@ OUTLINE Term corpus_eval(u64* H, Term t) {
         H[tl]     = TERM_HOLE;
         a32_store(a32_at(H, H_CURSOR), 1);
         ring_push(H, 0, t);
+        gpu_sync(true);
         cube_run(H, true);
+        gpu_sync(false);
         Term p = task_deliver(H, cont, idx, rv, root_take(H, rv));
         if (root_done(H)) {
           break;

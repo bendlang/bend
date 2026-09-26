@@ -279,12 +279,16 @@ static u64         window_len;
 #endif
 
 // The frame's pixels: window_dev on the device while the corpus is
-// there (the tree's pages never leave it), else window_pix a pixel at
-// a time.
+// there (the tree's pages never leave it; a twin's host writes go up
+// first, and the fill leaves the device's heap as it was), else
+// window_pix a pixel at a time.
 static void window_fill(Env e, u32* pix, u32 w, u32 h, Term image, u32 k) {
 #if BEND_CUDA
   if (io_gpu) {
-    u64*   H    = e.mem;
+    u64*   H    = gpu_twin ? gpu_vram : e.mem;
+    if (gpu_twin) {
+      gpu_sync(true);
+    }
     u64    len  = (u64)w * h * 4;
     void*  args[] = { &H, &image, &w, &h, &k, &window_buf };
     if (window_pso == NULL && cuModuleGetFunction(&window_pso, gpu_lib,
