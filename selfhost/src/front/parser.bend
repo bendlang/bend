@@ -3,33 +3,6 @@
 type FParsed is Data:
   FParsed{+term: KTerm, +rest: List<&2, FToken>}
 
-law f_pn:
-  for +p: FParsed
-  KTerm
-
-law f_pr:
-  for +p: FParsed
-  List<&2, FToken>
-
-law f_atid:
-  for +ts: List<&2, FToken>
-  U32
-
-law f_err:
-  for +ts: List<&2, FToken>
-  for +msg: String
-  FParsed
-
-law f_expect:
-  for +p: FParsed
-  for +s: String
-  FParsed
-
-law f_app:
-  for +f: KTerm
-  for +xs: List<&2, KTerm>
-  KTerm
-
 law f_args:
   for +ts: List<&2, FToken>
   for +end: String
@@ -68,14 +41,6 @@ law f_grade:
   for +ts: List<&2, FToken>
   FParsed
 
-law f_quant:
-  for +ts: List<&2, FToken>
-  U32
-
-law f_unmark:
-  for +ts: List<&2, FToken>
-  List<&2, FToken>
-
 law f_all:
   for +ts: List<&2, FToken>
   for +exi: Bool
@@ -102,17 +67,8 @@ law f_group:
   for +p: FParsed
   FParsed
 
-law f_group_ann:
-  for +n: KTerm
-  for +p: FParsed
-  FParsed
-
 law f_tuple:
   for +n: KTerm
-  for +p: FParsed
-  FParsed
-
-law f_list:
   for +p: FParsed
   FParsed
 
@@ -140,10 +96,6 @@ law f_equation_type:
   for +neg: Bool
   for +p: FParsed
   FParsed
-
-law f_prec:
-  for +s: String
-  U32
 
 law f_grow:
   for +p: FParsed
@@ -188,33 +140,48 @@ law f_matcher_tail:
   FParsed
 
 @unsafe
-def f_pn(p):
+def f_pn(
+  +p: FParsed,
+) -> KTerm:
   match p:
     case FParsed{n, ts}:
       n
 
 @unsafe
-def f_pr(p):
+def f_pr(
+  +p: FParsed,
+) -> List<&2, FToken>:
   match p:
     case FParsed{n, ts}:
       ts
 
 @unsafe
-def f_atid(ts):
+def f_atid(
+  +ts: List<&2, FToken>,
+) -> U32:
   U32.add(U32.mul(f_line(ts), 65536), f_col(ts))
 
 @unsafe
-def f_err(ts, msg):
+def f_err(
+  +ts: List<&2, FToken>,
+  +msg: String,
+) -> FParsed:
   FParsed{kt("Error", "line " ++ U32.show(f_line(ts)) ++ ":" ++ U32.show(f_col(ts)) ++ ": " ++ msg ++ "; got " ++ f_tx(ts), 0, 0, Nil{}), Nil{}}
 
 @unsafe
-def f_expect(p, s):
+def f_expect(
+  +p: FParsed,
+  +s: String,
+) -> FParsed:
   match p:
     case FParsed{+n, +ts}:
       f_choose(FParsed, f_eq(tg(n), "Error") || f_eq(f_tx(ts), s), u => FParsed{n, f_tl(ts)}, u => f_choose(FParsed, f_eq(s, ")") || f_eq(s, "}") || f_eq(s, "]"), u => fpe_error(ts, "expected " ++ s, "'" ++ s ++ "'"), u => f_err(ts, "expected " ++ s)))
 
 @unsafe
-def f_app(f, xs):
+def f_app(
+  +f: KTerm,
+  +xs: List<&2, KTerm>,
+) -> KTerm:
   match xs:
     case Nil{}:
       f
@@ -222,7 +189,11 @@ def f_app(f, xs):
       f_app(kt("App", "", 0, 1, [f, x]), xt)
 
 @unsafe
-def f_args_base(ts, end, acc):
+def f_args_base(
+  +ts: List<&2, FToken>,
+  +end: String,
+  +acc: List<&2, KTerm>,
+) -> FParsed:
   +spaced = f_space(ts)
   f_choose(FParsed, f_eq(f_tx(spaced), ";"), u => fpe_error(spaced, f_choose(String, f_eq(end, "]"), u => "expected term; a list does not use semicolon separators", u => "expected term; arguments do not use semicolon separators"), "a term"), u => f_choose(FParsed, f_eq(f_tx(spaced), end), u => FParsed{kt("Args", "", 0, 1, List.reverse(&2, KTerm, acc)), f_tl(spaced)}, u => f_arg_next(f_expr(spaced, 0), end, acc)))
 
@@ -237,7 +208,9 @@ def f_expr(ts, min):
   f_grow(f_atom(f_skip(ts)), min)
 
 @unsafe
-def f_atom_base(ts):
+def f_atom_base(
+  +ts: List<&2, FToken>,
+) -> FParsed:
   f_choose(FParsed, f_eq(f_tx(ts), "("), u => f_group(f_body(f_tl(ts))),
     u => f_choose(FParsed, f_eq(f_tx(ts), "{"), u => f_brace(f_tl(ts)),
     u => f_choose(FParsed, f_eq(f_tx(ts), "["), u => f_array(f_tl(ts)),
@@ -322,11 +295,15 @@ def f_grade(ts):
   f_choose(FParsed, f_eq(f_tx(ts), "0") || f_eq(f_tx(ts), "1") || f_eq(f_tx(ts), "2"), u => FParsed{kt("Qua", "", 0, f_choose(U32, f_eq(f_tx(ts), "0"), u => 0, u => f_choose(U32, f_eq(f_tx(ts), "1"), u => 1, u => 2)), Nil{}), f_tl(ts)}, u => f_all(ts, True{}))
 
 @unsafe
-def f_quant(ts):
+def f_quant(
+  +ts: List<&2, FToken>,
+) -> U32:
   f_choose(U32, f_eq(f_tx(ts), "-") || f_eq(f_tx(ts), "~"), u => 0, u => f_choose(U32, f_eq(f_tx(ts), "+") || f_eq(f_tx(ts), "+bind"), u => 2, u => 1))
 
 @unsafe
-def f_unmark(ts):
+def f_unmark(
+  +ts: List<&2, FToken>,
+) -> List<&2, FToken>:
   f_choose(List<&2, FToken>, U32.is_eq(f_quant(ts), 1), u => ts, u => f_tl(ts))
 
 @unsafe
@@ -352,7 +329,10 @@ def f_group(p):
       f_choose(FParsed, f_eq(f_tx(ts), ","), u => f_tuple(n, f_group(f_body(f_tl(ts)))), u => f_choose(FParsed, f_eq(f_tx(ts), ":"), u => f_group_namespace(n, f_expect(f_expr(f_tl(ts), 0), ")")), u => f_expect(FParsed{n, ts}, ")")))
 
 @unsafe
-def f_group_ann(n, p):
+def f_group_ann(
+  +n: KTerm,
+  +p: FParsed,
+) -> FParsed:
   match p:
     case FParsed{ty, ts}:
       FParsed{kt("Ann", "", 0, 1, [n, ty]), ts}
@@ -364,7 +344,9 @@ def f_tuple(n, p):
       FParsed{kt("Ctr", "Tuple", 0, 1, [n, m]), ts}
 
 @unsafe
-def f_list(p):
+def f_list(
+  +p: FParsed,
+) -> FParsed:
   match p:
     case FParsed{+n, ts}:
       FParsed{f_choose(KTerm, f_eq(tg(n), "Error"), u => n, u => f_list_nodes(ks(n))), ts}
@@ -400,7 +382,9 @@ def f_equation_type(a, b, neg, p):
       FParsed{f_choose(KTerm, neg, u => kt("All", "_", 0, 1, [kt("Eql", "", 0, 1, [a, b, ty]), kt("Ref", "Empty", 0, 1, Nil{})]), u => kt("Eql", "", 0, 1, [a, b, ty])), ts}
 
 @unsafe
-def f_prec(s):
+def f_prec(
+  +s: String,
+) -> U32:
   f_choose(U32, f_eq(s, "=>") || f_eq(s, "->"), u => 1,
     u => f_choose(U32, f_eq(s, "&") || f_eq(s, "|"), u => 2,
     u => f_choose(U32, f_eq(s, "||"), u => 3,
@@ -415,7 +399,10 @@ def f_prec(s):
     u => f_choose(U32, f_eq(s, "*") || f_eq(s, "/") || f_eq(s, "%"), u => 12, u => 0))))))))))))
 
 @unsafe
-def f_grow_base(p, min):
+def f_grow_base(
+  +p: FParsed,
+  +min: U32,
+) -> FParsed:
   match p:
     case FParsed{+n, +ts}:
       f_choose(FParsed, f_eq(tg(n), "Error"), u => FParsed{n, ts},
@@ -472,28 +459,13 @@ def f_matcher_tail(name, n, p):
       FParsed{kt("Mat", name, 0, 1, [n, m]), ts}
 
 
-law f_atom_base:
-  for +ts: List<&2, FToken>
-  FParsed
-
 @unsafe
 def f_atom(ts):
   f_choose(FParsed, f_eq(f_tx(ts), "~"), u => f_template_expr(f_expr(f_tl(ts), 0)), u => f_choose(FParsed, f_eq(f_tx(ts), "do"), u => f_do_start(f_tl(ts)), u => f_choose(FParsed, f_eq(f_tx(ts), "%"), u => f_rewrite(f_tl(ts)), u => f_atom_base(ts))))
 
-law f_args_base:
-  for +ts: List<&2, FToken>
-  for +end: String
-  for +acc: List<&2, KTerm>
-  FParsed
-
 @unsafe
 def f_args(ts, end, acc):
   f_choose(FParsed, f_eq(end, ">") && f_eq(f_tx(ts), ">>"), u => FParsed{kt("Args", "", 0, 1, List.reverse(&2, KTerm, acc)), Con{FToken{">", f_line(ts), U32.add(f_col(ts), 1), 0}, f_tl(ts)}}, u => f_args_base(ts, end, acc))
-
-law f_grow_base:
-  for +p: FParsed
-  for +min: U32
-  FParsed
 
 @unsafe
 def f_grow(p, min):
@@ -524,10 +496,6 @@ law fpe_error:
   for +legacy: String
   for +expected: String
   FParsed
-law fpe_finish:
-  for +source: String
-  for +raw: FRawResult
-  FResult
 law fpe_render:
   for +source: String
   for +error: KTerm
@@ -549,9 +517,6 @@ law fpe_message:
   for +error: KTerm
   for +observed: String
   String
-law fpe_lines_count:
-  for +lines: List<&2,String>
-  U32
 law fpe_snippet:
   for +lines: List<&2,String>
   for +at: U32
@@ -583,7 +548,10 @@ def fpe_legacy(ts, legacy, expected):
   FParsed{kt("Error", legacy, f_line(ts), f_col(ts), [kt("ParseExpected", expected, 0, 0, Nil{}), kt("ParseToken", f_tx(ts), 0, 0, Nil{})]), Nil{}}
 
 @unsafe
-def fpe_finish(source, raw):
+def fpe_finish(
+  +source: String,
+  +raw: FRawResult,
+) -> FResult:
   match raw:
     case FRawResult{book, error, imports}:
       FResult{book, fpe_render(source, error), imports}
@@ -605,7 +573,9 @@ def fpe_message(source, error, observed):
   "Error:\n- expected : " ++ nm(kid(error, 0)) ++ "\n- observed : " ++ observed ++ "\nLocation:" ++ fpe_snippet(String.lines(source), ix(error))
 
 @unsafe
-def fpe_lines_count(lines):
+def fpe_lines_count(
+  +lines: List<&2,String>,
+) -> U32:
   match lines:
     case Nil{}: 0
     case Con{head, tail}: U32.add(1, fpe_lines_count(tail))
@@ -627,11 +597,10 @@ def fpe_pad(text, width):
 
 # The pinned parser tests constructor freshness immediately after its name.
 # A next-token position is equivalent only when the name and brace are adjacent.
-law fpe_fresh:
-  for +ts: List<&2,FToken>
-  for +legacy: String
-  for +expected: String
-  FParsed
 @unsafe
-def fpe_fresh(ts, legacy, expected):
+def fpe_fresh(
+  +ts: List<&2,FToken>,
+  +legacy: String,
+  +expected: String,
+) -> FParsed:
   f_choose(FParsed, U32.is_eq(f_line(ts), f_line(f_tl(ts))) && U32.is_eq(f_col(f_tl(ts)), U32.add(f_col(ts), U32.from_nat(String.length(f_tx(ts))))), u => fpe_error(f_tl(ts), legacy, expected), u => f_err(f_tl(ts), legacy))

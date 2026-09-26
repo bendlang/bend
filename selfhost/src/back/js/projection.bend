@@ -1,12 +1,6 @@
 # A one-constructor matcher whose entire arm selects a live field is a pure
 # projection. Consume the complete constructor telescope: eta-short arms may
 # apply a function-valued field to remaining constructor arguments instead.
-law j_projection_worker:
-  for +book: List<&2, KDef>
-  for +t: KTerm
-  for +ty: KTerm
-  String
-
 law j_projection_match:
   for +book: List<&2, KDef>
   for +t: KTerm
@@ -30,15 +24,12 @@ law j_projection_code:
   for +slot: String
   String
 
-law j_l_global_worker:
-  for +book: List<&2, KDef>
-  for +d: KDef
-  for +t: KTerm
-  for +worker: String
-  String
-
 @unsafe
-def j_projection_worker(book, t, ty):
+def j_projection_worker(
+  +book: List<&2, KDef>,
+  +t: KTerm,
+  +ty: KTerm,
+) -> String:
   kc(String, String.eq(tg(j_strip(t)), "Mat"), u => j_projection_match(book, j_strip(t), wnf(book, ty)), u => "")
 
 @unsafe
@@ -64,6 +55,11 @@ def j_projection_code(name, slot):
   kc(String, String.eq(slot, ""), u => "", u => "fn(1,function(a){return project(" ++ j_quote(name) ++ ",a[0]).slice()[" ++ slot ++ "];})")
 
 @unsafe
-def j_l_global_worker(book, d, t, worker):
+def j_l_global_worker(
+  +book: List<&2, KDef>,
+  +d: KDef,
+  +t: KTerm,
+  +worker: String,
+) -> String:
   "G[" ++ j_quote(dn(d)) ++ "]=" ++ kc(String, Bool.not(String.eq(worker, "")), u => worker,
     u => kc(String, (String.eq(tg(j_strip(t)), "Lam") || String.eq(tg(j_strip(t)), "Mat")), u => j_expr(book, Nil{}, t, dt(d), False{}), u => "fn(0,function(){return " ++ j_expr(book, Nil{}, t, dt(d), True{}) ++ ";})")) ++ ";\n"

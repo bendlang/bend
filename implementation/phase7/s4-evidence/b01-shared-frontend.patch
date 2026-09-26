@@ -1,0 +1,709 @@
+--- a/selfhost/src/check/kernel.bend
++++ b/selfhost/src/check/kernel.bend
+@@ -897,13 +897,6 @@
+   dg_result_error(check_book_diagnostic(book, Nil{}))
+ 
+ @unsafe
+-def check_events(
+-  +todo: List<&2, KDef>,
+-  +done: List<&2, KDef>,
+-) -> String:
+-  dg_result_error(dg_suffix_events(todo, done, todo, Nil{}))
+-
+-@unsafe
+ def check_open(
+   +book: List<&2, KDef>,
+ ) -> String:
+--- a/selfhost/src/front/declarations.bend
++++ b/selfhost/src/front/declarations.bend
+@@ -5,10 +5,6 @@
+ # Internal parser transport only; public FResult remains unchanged.
+ type FRawResult is Data:
+   FRawResult{+book: List<&2, KDef>, +error: KTerm, +imports: List<&2, KTerm>}
+-
+-law f_dn:
+-  for +d: KDef
+-  String
+ 
+ law f_put:
+   for +d: KDef
+@@ -254,16 +250,6 @@
+   FRawResult{List.reverse(&2, KDef, book), err, List.reverse(&2, KTerm, imports)}
+ 
+ @unsafe
+-def f_len(
+-  +xs: List<&2, KTerm>,
+-) -> U32:
+-  match xs:
+-    case Nil{}:
+-      0
+-    case Con{x, xt}:
+-      U32.add(1, f_len(xt))
+-
+-@unsafe
+ def f_find(
+   +name: String,
+   +book: List<&2, KDef>,
+@@ -272,37 +258,7 @@
+     case Nil{}:
+       KDef{name, "Missing", 0, 0, atom("Absent"), atom("Absent"), Nil{}, False{}, False{}}
+     case Con{+d, ds}:
+-      f_choose(KDef, f_eq(name, f_dn(d)), u => d, u => f_find(name, ds))
+-
+-@unsafe
+-def f_dn(d):
+-  match d:
+-    case KDef{name, kind, arity, templates, typ, value, ctors, native, unsafe}:
+-      name
+-
+-@unsafe
+-def f_dt(
+-  +d: KDef,
+-) -> KTerm:
+-  match d:
+-    case KDef{name, kind, arity, templates, typ, value, ctors, native, unsafe}:
+-      typ
+-
+-@unsafe
+-def f_dk(
+-  +d: KDef,
+-) -> String:
+-  match d:
+-    case KDef{name, kind, arity, templates, typ, value, ctors, native, unsafe}:
+-      kind
+-
+-@unsafe
+-def f_dx(
+-  +d: KDef,
+-) -> U32:
+-  match d:
+-    case KDef{name, kind, arity, templates, typ, value, ctors, native, unsafe}:
+-      templates
++      f_choose(KDef, f_eq(name, dn(d)), u => d, u => f_find(name, ds))
+ 
+ @unsafe
+ def f_tops(ts0, book, imports, unsafe):
+@@ -417,7 +373,7 @@
+ ) -> FRawResult:
+   match p:
+     case FParsed{+pars, +ts}:
+-      f_choose(FRawResult, f_eq(tg(pars), "Error"), u => f_result(book, pars, imports), u => f_choose(FRawResult, f_eq(f_tx(ts), "->"), u => f_def_type(name, ks(pars), f_expr(f_tl(ts), 0), book, imports, unsafe), u => f_def_type(name, ks(pars), FParsed{f_dt(f_find(name, book)), ts}, book, imports, unsafe)))
++      f_choose(FRawResult, f_eq(tg(pars), "Error"), u => f_result(book, pars, imports), u => f_choose(FRawResult, f_eq(f_tx(ts), "->"), u => f_def_type(name, ks(pars), f_expr(f_tl(ts), 0), book, imports, unsafe), u => f_def_type(name, ks(pars), FParsed{dt(f_find(name, book)), ts}, book, imports, unsafe)))
+ 
+ @unsafe
+ def f_def_type(name, pars, p, book, imports, unsafe):
+@@ -427,17 +383,17 @@
+ 
+ @unsafe
+ def f_def_signature(name, pars, ty, book):
+-  f_choose(KTerm, f_eq(f_dk(f_find(name, book)), "Missing"), u => f_tbind(pars, ty), u => ty)
++  f_choose(KTerm, f_eq(dk(f_find(name, book)), "Missing"), u => f_tbind(pars, ty), u => ty)
+ 
+ @unsafe
+ def f_def_body(name, pars, ty, p, book, imports, unsafe):
+   match p:
+     case FParsed{+body, ts}:
+-      f_choose(FRawResult, f_eq(tg(body), "Error"), u => f_result(book, body, imports), u => f_tops(ts, f_put(KDef{name, "Def", f_len(pars), f_choose(U32, f_eq(f_dk(f_find(name, book)), "Missing"), u => f_templates(pars), u => f_dx(f_find(name, book))), ty, kt("Body", "", fc_start(pars, ty, body, Bool.not(f_eq(f_dk(f_find(name, book)), "Missing"))), 0, [kt("Params", "", 0, 0, pars), body]), Nil{}, False{}, unsafe}, book), imports, False{}))
++      f_choose(FRawResult, f_eq(tg(body), "Error"), u => f_result(book, body, imports), u => f_tops(ts, f_put(KDef{name, "Def", terms_len(pars), f_choose(U32, f_eq(dk(f_find(name, book)), "Missing"), u => f_templates(pars), u => dx(f_find(name, book))), ty, kt("Body", "", fc_start(pars, ty, body, Bool.not(f_eq(dk(f_find(name, book)), "Missing"))), 0, [kt("Params", "", 0, 0, pars), body]), Nil{}, False{}, unsafe}, book), imports, False{}))
+ 
+ @unsafe
+ def f_foreign(name, pars, ty, ts, book, imports, unsafe, paths):
+-  f_choose(FRawResult, f_eq(f_tx(ts), "import"), u => f_choose(FRawResult, f_foreign_path_valid(ts), u => f_foreign(name, pars, ty, f_skip(f_tl(f_tl(ts))), book, imports, unsafe, Con{kt("Path", f_unquote(f_tx(f_tl(ts))), 0, 0, Nil{}), paths}), u => f_result(book, fpe_foreign(f_space(f_tl(ts))), imports)), u => f_tops(ts, f_put(KDef{name, "Def", f_len(pars), 0, ty, kt("Foreign", name, 0, 0, List.reverse(&2, KTerm, paths)), Nil{}, False{}, unsafe}, book), imports, False{}))
++  f_choose(FRawResult, f_eq(f_tx(ts), "import"), u => f_choose(FRawResult, f_foreign_path_valid(ts), u => f_foreign(name, pars, ty, f_skip(f_tl(f_tl(ts))), book, imports, unsafe, Con{kt("Path", f_unquote(f_tx(f_tl(ts))), 0, 0, Nil{}), paths}), u => f_result(book, fpe_foreign(f_space(f_tl(ts))), imports)), u => f_tops(ts, f_put(KDef{name, "Def", terms_len(pars), 0, ty, kt("Foreign", name, 0, 0, List.reverse(&2, KTerm, paths)), Nil{}, False{}, unsafe}, book), imports, False{}))
+ 
+ @unsafe
+ def f_law_base(
+@@ -451,7 +407,7 @@
+ 
+ @unsafe
+ def f_law_clause(name, exi, ts, book, imports, clauses):
+-  f_choose(FRawResult, Bool.not(exi) && f_eq(f_tx(ts), "~") && U32.is_lt(f_templates(clauses), f_len(clauses)),
++  f_choose(FRawResult, Bool.not(exi) && f_eq(f_tx(ts), "~") && U32.is_lt(f_templates(clauses), terms_len(clauses)),
+     u => f_result(book, f_pn(fpe_error(ts, "expected a plain clause (only leading clauses take ~)", "a plain clause (only leading clauses take ~)")), imports),
+     u => f_law_type(name, kt(f_choose(String, exi, u => "Exists", u => f_choose(String, f_eq(f_tx(ts), "~"), u => "Template", u => "Bind")), f_tx(f_unmark(ts)), f_atid(ts), f_quant(ts), Nil{}), f_expr(f_tl(f_tl(f_unmark(ts))), 0), book, imports, clauses))
+ 
+@@ -501,13 +457,13 @@
+ 
+ @unsafe
+ def f_type_ctors(name, pars, ty, ts, book, imports, ctors):
+-  f_choose(FRawResult, U32.is_gt(f_col(ts), 0) && f_eq(f_tx(f_tl(ts)), "{"), u => f_choose(FRawResult, Bool.not(f_eq(dk(f_find(f_tx(ts), ctors)), "Missing")) || Bool.not(f_eq(dk(f_ctor_lookup(f_tx(ts), book)), "Missing")), u => f_result(book, f_pn(fpe_fresh(ts, "expected a fresh constructor name (duplicate declaration: " ++ f_tx(ts) ++ ")", "a fresh constructor name (duplicate declaration: " ++ f_tx(ts) ++ ")")), imports), u => f_type_ctor(name, pars, ty, f_tx(ts), f_tele(f_tl(f_tl(ts)), "}", Nil{}), book, imports, ctors)), u => f_tops(ts, Con{KDef{name, "ADT", f_len(pars), 0, f_tbind(pars, ty), atom("Absent"), List.reverse(&2, KDef, ctors), False{}, False{}}, book}, imports, False{}))
++  f_choose(FRawResult, U32.is_gt(f_col(ts), 0) && f_eq(f_tx(f_tl(ts)), "{"), u => f_choose(FRawResult, Bool.not(f_eq(dk(f_find(f_tx(ts), ctors)), "Missing")) || Bool.not(f_eq(dk(f_ctor_lookup(f_tx(ts), book)), "Missing")), u => f_result(book, f_pn(fpe_fresh(ts, "expected a fresh constructor name (duplicate declaration: " ++ f_tx(ts) ++ ")", "a fresh constructor name (duplicate declaration: " ++ f_tx(ts) ++ ")")), imports), u => f_type_ctor(name, pars, ty, f_tx(ts), f_tele(f_tl(f_tl(ts)), "}", Nil{}), book, imports, ctors)), u => f_tops(ts, Con{KDef{name, "ADT", terms_len(pars), 0, f_tbind(pars, ty), atom("Absent"), List.reverse(&2, KDef, ctors), False{}, False{}}, book}, imports, False{}))
+ 
+ @unsafe
+ def f_type_ctor(name, pars, ty, ctor, p, book, imports, ctors):
+   match p:
+     case FParsed{fields, ts}:
+-      f_choose(FRawResult, f_eq(tg(fields), "Error"), u => f_result(book, fields, imports), u => f_type_ctors(name, pars, ty, f_skip(ts), book, imports, Con{KDef{ctor, "Ctr", f_len(ks(fields)), 0, f_tbind(pars, f_tbind(ks(fields), kt("ADT", name, 0, 1, f_param_refs(pars)))), kt("Absent", ctor, 0, 0, Nil{}), Nil{}, False{}, False{}}, ctors}))
++      f_choose(FRawResult, f_eq(tg(fields), "Error"), u => f_result(book, fields, imports), u => f_type_ctors(name, pars, ty, f_skip(ts), book, imports, Con{KDef{ctor, "Ctr", terms_len(ks(fields)), 0, f_tbind(pars, f_tbind(ks(fields), kt("ADT", name, 0, 1, f_param_refs(pars)))), kt("Absent", ctor, 0, 0, Nil{}), Nil{}, False{}, False{}}, ctors}))
+ 
+ @unsafe
+ def f_param_refs(pars):
+--- a/selfhost/src/front/flatten.bend
++++ b/selfhost/src/front/flatten.bend
+@@ -139,15 +139,15 @@
+ def ff_parallel(t, vars, r):
+   match r:
+     case FFlatten{body, next}:
+-      FFlatten{f_lbind(vars, kt("Let", "", 0, 1, f_concat(f_parallel_binds(ks(kid(t, 0)), ks(kid(t, 1))), [f_unlamb(body, f_len(ks(kid(t, 0))))]))), next}
++      FFlatten{f_lbind(vars, kt("Let", "", 0, 1, norm_join(f_parallel_binds(ks(kid(t, 0)), ks(kid(t, 1))), [f_unlamb(body, terms_len(ks(kid(t, 0))))]))), next}
+ 
+ @unsafe
+ def ff_match(heads, rows, vars, next):
+   match heads:
+     case Nil{}:
+-      f_choose(FFlatten, U32.is_eq(f_len(rows), 0), u => FFlatten{atom("Efq"), next}, u => ff_flat(kid(terms_at(rows, 0), 1), vars, next))
++      f_choose(FFlatten, U32.is_eq(terms_len(rows), 0), u => FFlatten{atom("Efq"), next}, u => ff_flat(kid(terms_at(rows, 0), 1), vars, next))
+     case Con{+h, hs}:
+-      f_choose(FFlatten, f_eq(tg(f_first_ctor(rows)), "Absent") && U32.is_gt(f_len(rows), 0) && f_has_id(vars, ix(h)), u => ff_match(hs, f_var_rows(rows, h), f_mark_vars(vars, ix(h), f_mark_rows(rows, qt(h))), next), u => ff_column(h, hs, rows, vars, next))
++      f_choose(FFlatten, f_eq(tg(f_first_ctor(rows)), "Absent") && U32.is_gt(terms_len(rows), 0) && f_has_id(vars, ix(h)), u => ff_match(hs, f_var_rows(rows, h), f_mark_vars(vars, ix(h), f_mark_rows(rows, qt(h))), next), u => ff_column(h, hs, rows, vars, next))
+ 
+ @unsafe
+ def ff_column(h, hs, rows, vars, next):
+@@ -185,7 +185,7 @@
+ def ff_fields_done(h, hs, rows, v, vs, c, r):
+   match r:
+     case FFields{+fields, next}:
+-      ff_hit_done(h, hs, rows, v, vs, c, ff_match(f_concat(fields, hs), f_hit_rows(rows, c, fields, v), f_concat(fields, vs), next))
++      ff_hit_done(h, hs, rows, v, vs, c, ff_match(norm_join(fields, hs), f_hit_rows(rows, c, fields, v), norm_join(fields, vs), next))
+ 
+ @unsafe
+ def ff_hit_done(h, hs, rows, v, vs, c, r):
+@@ -221,7 +221,7 @@
+     case Nil{}:
+       Nil{}
+     case Con{+p, rest}:
+-      f_choose(List<&2,KTerm>, f_eq(tg(p), "Ref") || f_eq(tg(p), "Var"), u => fc_bind(p, fc_binders(rest)), u => f_concat(fc_binders(ks(p)), fc_binders(rest)))
++      f_choose(List<&2,KTerm>, f_eq(tg(p), "Ref") || f_eq(tg(p), "Var"), u => fc_bind(p, fc_binders(rest)), u => norm_join(fc_binders(ks(p)), fc_binders(rest)))
+ 
+ @unsafe
+ def fc_bind_count(
+@@ -251,8 +251,8 @@
+     u => f_choose(U32, f_eq(tg(t), "All"), u => U32.add(1, U32.add(fc_term(kid(t, 0), env), fc_term(kid(t, 1), fc_bind(t, env)))),
+     u => f_choose(U32, f_eq(tg(t), "Lam"), u => U32.add(1, U32.add(fc_ref(nm(t), env), fc_term(kid(t, 0), fc_bind(t, env)))),
+     u => f_choose(U32, f_eq(tg(t), "Match"), u => U32.add(fc_terms(ks(kid(t, 0)), env), fc_rows(f_tail_terms(ks(t)), env)),
+-    u => f_choose(U32, f_eq(tg(t), "Local"), u => U32.add(f_choose(U32, U32.is_eq(qt(kid(t, 0)), 0), u => 0, u => fc_term(kid(t, 0), env)), U32.add(fc_term(kid(t, 1), env), U32.add(fc_bind_count([kid(t, 0)]), fc_term(kid(t, 2), f_concat(fc_binders([kid(t, 0)]), env))))),
+-    u => f_choose(U32, f_eq(tg(t), "Parallel"), u => U32.add(fc_terms(ks(kid(t, 0)), env), U32.add(fc_terms(ks(kid(t, 1)), env), U32.add(fc_bind_count(ks(kid(t, 0))), fc_term(kid(t, 2), f_concat(fc_binders(ks(kid(t, 0))), env))))),
++    u => f_choose(U32, f_eq(tg(t), "Local"), u => U32.add(f_choose(U32, U32.is_eq(qt(kid(t, 0)), 0), u => 0, u => fc_term(kid(t, 0), env)), U32.add(fc_term(kid(t, 1), env), U32.add(fc_bind_count([kid(t, 0)]), fc_term(kid(t, 2), norm_join(fc_binders([kid(t, 0)]), env))))),
++    u => f_choose(U32, f_eq(tg(t), "Parallel"), u => U32.add(fc_terms(ks(kid(t, 0)), env), U32.add(fc_terms(ks(kid(t, 1)), env), U32.add(fc_bind_count(ks(kid(t, 0))), fc_term(kid(t, 2), norm_join(fc_binders(ks(kid(t, 0))), env))))),
+     u => f_choose(U32, f_eq(tg(t), "Mat"), u => U32.add(fc_ref(nm(t), env), fc_terms(ks(t), env)),
+     u => fc_terms(ks(t), env)))))))))
+ 
+@@ -262,9 +262,9 @@
+     case Nil{}:
+       0
+     case Con{+r, rest}:
+-      U32.add(fc_terms(ks(kid(r, 0)), env), U32.add(fc_bind_count(ks(kid(r, 0))), U32.add(fc_term(kid(r, 1), f_concat(fc_binders(ks(kid(r, 0))), env)), fc_rows(rest, env))))
++      U32.add(fc_terms(ks(kid(r, 0)), env), U32.add(fc_bind_count(ks(kid(r, 0))), U32.add(fc_term(kid(r, 1), norm_join(fc_binders(ks(kid(r, 0))), env)), fc_rows(rest, env))))
+ 
+ @unsafe
+ def fc_start(pars, ty, body, filled):
+-  U32.add(f_choose(U32, filled, u => f_len(pars), u => fc_term(ty, Nil{})), fc_term(body, pars))
+-
++  U32.add(f_choose(U32, filled, u => terms_len(pars), u => fc_term(ty, Nil{})), fc_term(body, pars))
++
+--- a/selfhost/src/front/elaborate.bend
++++ b/selfhost/src/front/elaborate.bend
+@@ -17,11 +17,6 @@
+ 
+ law f_tail_terms:
+   for +xs: List<&2, KTerm>
+-  List<&2, KTerm>
+-
+-law f_concat:
+-  for +xs: List<&2, KTerm>
+-  for +ys: List<&2, KTerm>
+   List<&2, KTerm>
+ 
+ law f_scope:
+@@ -207,14 +202,6 @@
+       xt
+ 
+ @unsafe
+-def f_concat(xs, ys):
+-  match xs:
+-    case Nil{}:
+-      ys
+-    case Con{x, xt}:
+-      Con{x, f_concat(xt, ys)}
+-
+-@unsafe
+ def f_vars(
+   +xs: List<&2, KTerm>,
+ ) -> List<&2, KTerm>:
+@@ -234,7 +221,7 @@
+     u => f_choose(KTerm, f_eq(tg(t), "Literal"), u => f_literal(nm(t)),
+     u => f_choose(KTerm, f_eq(tg(t), "All"), u => kt("All", nm(t), ix(t), qt(t), [f_scope(kid(t, 0), env, book), f_scope(kid(t, 1), Con{kt("Var", nm(t), ix(t), qt(t), Nil{}), env}, book)]),
+     u => f_choose(KTerm, f_eq(tg(t), "Lam"), u => f_scope_lambda(t, env, book),
+-    u => f_choose(KTerm, f_eq(tg(t), "Body"), u => ff_term(ff_flat(f_scope_body(kid(t, 1), f_concat(f_vars(ks(kid(t, 0))), env), book), f_vars(ks(kid(t, 0))), ix(t))),
++    u => f_choose(KTerm, f_eq(tg(t), "Body"), u => ff_term(ff_flat(f_scope_body(kid(t, 1), norm_join(f_vars(ks(kid(t, 0))), env), book), f_vars(ks(kid(t, 0))), ix(t))),
+     u => f_choose(KTerm, f_eq(tg(t), "Local") || f_eq(tg(t), "Match"), u => f_flat(f_scope_body(t, env, book), Nil{}),
+     u => KTerm{tg(t), nm(t), ix(t), qt(t), f_scope_terms(ks(t), env, book), rm(t)}))))))
+ 
+@@ -268,7 +255,7 @@
+     case Nil{}:
+       Nil{}
+     case Con{+x, xt}:
+-      f_choose(List<&2, KTerm>, f_eq(tg(x), "Var"), u => Con{x, f_penv(xt)}, u => f_concat(f_penv(ks(x)), f_penv(xt)))
++      f_choose(List<&2, KTerm>, f_eq(tg(x), "Var"), u => Con{x, f_penv(xt)}, u => norm_join(f_penv(ks(x)), f_penv(xt)))
+ 
+ @unsafe
+ def f_scope_body_base(
+@@ -352,9 +339,9 @@
+ def f_flat_match(heads, rows, vars):
+   match heads:
+     case Nil{}:
+-      f_choose(KTerm, U32.is_eq(f_len(rows), 0), u => atom("Efq"), u => f_flat(kid(terms_at(rows, 0), 1), vars))
++      f_choose(KTerm, U32.is_eq(terms_len(rows), 0), u => atom("Efq"), u => f_flat(kid(terms_at(rows, 0), 1), vars))
+     case Con{+h, hs}:
+-      f_choose(KTerm, f_eq(tg(f_first_ctor(rows)), "Absent") && U32.is_gt(f_len(rows), 0) && f_has_id(vars, ix(h)), u => f_flat_match(hs, f_var_rows(rows, h), f_mark_vars(vars, ix(h), f_mark_rows(rows, qt(h)))), u => f_flat_column(h, hs, rows, vars))
++      f_choose(KTerm, f_eq(tg(f_first_ctor(rows)), "Absent") && U32.is_gt(terms_len(rows), 0) && f_has_id(vars, ix(h)), u => f_flat_match(hs, f_var_rows(rows, h), f_mark_vars(vars, ix(h), f_mark_rows(rows, qt(h)))), u => f_flat_column(h, hs, rows, vars))
+ 
+ @unsafe
+ def f_var_rows(rows, v):
+@@ -386,7 +373,7 @@
+ 
+ @unsafe
+ def f_flat_fields(h, hs, rows, v, vs, c, fields):
+-  kt("Mat", nm(c), 0, 1, [f_flat_match(f_concat(fields, hs), f_hit_rows(rows, c, fields, v), f_concat(fields, vs)), f_flat_match(Con{h, hs}, f_miss_rows(rows, nm(c)), Con{v, vs})])
++  kt("Mat", nm(c), 0, 1, [f_flat_match(norm_join(fields, hs), f_hit_rows(rows, c, fields, v), norm_join(fields, vs)), f_flat_match(Con{h, hs}, f_miss_rows(rows, nm(c)), Con{v, vs})])
+ 
+ @unsafe
+ def f_hit_rows(rows, c, fields, v):
+@@ -398,7 +385,7 @@
+ 
+ @unsafe
+ def f_hit_row(r, c, fields, v):
+-  kt("Row", "", 0, qt(r), [kt("Patterns", "", 0, 1, f_concat(f_choose(List<&2, KTerm>, f_eq(tg(f_rowpat(r)), "Var"), u => fields, u => ks(f_rowpat(r))), f_tail_terms(ks(kid(r, 0))))), f_choose(KTerm, U32.is_eq(qt(r), 0), u => kid(r, 1), u => f_sub(f_choose(KTerm, f_eq(tg(f_rowpat(r)), "Var"), u => f_sub(kid(r, 1), ix(f_rowpat(r)), v), u => kid(r, 1)), ix(v), kt("Ctr", nm(c), 0, 1, fields)))])
++  kt("Row", "", 0, qt(r), [kt("Patterns", "", 0, 1, norm_join(f_choose(List<&2, KTerm>, f_eq(tg(f_rowpat(r)), "Var"), u => fields, u => ks(f_rowpat(r))), f_tail_terms(ks(kid(r, 0))))), f_choose(KTerm, U32.is_eq(qt(r), 0), u => kid(r, 1), u => f_sub(f_choose(KTerm, f_eq(tg(f_rowpat(r)), "Var"), u => f_sub(kid(r, 1), ix(f_rowpat(r)), v), u => kid(r, 1)), ix(v), kt("Ctr", nm(c), 0, 1, fields)))])
+ 
+ @unsafe
+ def f_miss_rows(rows, name):
+--- a/selfhost/src/front/sugar.bend
++++ b/selfhost/src/front/sugar.bend
+@@ -57,26 +57,6 @@
+   for +v: KTerm
+   for +p: FParsed
+   FParsed
+-
+-law f_error_terms:
+-  for +ts: List<&2, KTerm>
+-  String
+-
+-law f_error_more:
+-  for +err: String
+-  for +rest: List<&2, KTerm>
+-  String
+-
+-law f_error_def_next:
+-  for +err: String
+-  for +ctors: List<&2,KDef>
+-  for +rest: List<&2,KDef>
+-  String
+-
+-law f_error_defs_more:
+-  for +err: String
+-  for +rest: List<&2,KDef>
+-  String
+ 
+ law f_validate_result:
+   for +r: FResult
+@@ -117,7 +97,7 @@
+     case Nil{}:
+       atom("Absent")
+     case Con{+x, xt}:
+-      f_choose(KTerm, U32.is_eq(f_len(xt), 0), u => x, u => f_last(xt))
++      f_choose(KTerm, U32.is_eq(terms_len(xt), 0), u => x, u => f_last(xt))
+ 
+ @unsafe
+ def f_init(
+@@ -127,7 +107,7 @@
+     case Nil{}:
+       Nil{}
+     case Con{x, +xt}:
+-      f_choose(List<&2, KTerm>, U32.is_eq(f_len(xt), 0), u => Nil{}, u => Con{x, f_init(xt)})
++      f_choose(List<&2, KTerm>, U32.is_eq(terms_len(xt), 0), u => Nil{}, u => Con{x, f_init(xt)})
+ 
+ @unsafe
+ def f_do_start(ts):
+@@ -170,7 +150,7 @@
+ ) -> List<&2,KTerm>:
+   match types:
+     case Nil{}: [ty]
+-    case Con{head, rest}: f_concat(f_init(types), [ty, f_last(types)])
++    case Con{head, rest}: norm_join(f_init(types), [ty, f_last(types)])
+ 
+ @unsafe
+ def f_do_types(monad, p):
+@@ -190,7 +170,7 @@
+ def f_do_return(monad, types, position, p):
+   match p:
+     case FParsed{n, ts}:
+-      FParsed{f_app(kt("Ref", monad ++ ".pure", position, 1, Nil{}), f_concat(types, [n])), ts}
++      FParsed{f_app(kt("Ref", monad ++ ".pure", position, 1, Nil{}), norm_join(types, [n])), ts}
+ 
+ @unsafe
+ def f_do_statement(monad, types, p, indent):
+@@ -214,43 +194,19 @@
+ def f_do_tail(monad, types, binder, ty, pure, v, p):
+   match p:
+     case FParsed{body, ts}:
+-      FParsed{f_choose(KTerm, pure, u => kt("Local", "Do", 0, 1, [binder, kt("Ann", "", 0, 1, [v, ty]), body]), u => f_app(kt("Ref", monad ++ ".bind", ix(binder), 1, Nil{}), f_concat(f_do_bind_types(types, ty), [v, kt("Lam", nm(binder), ix(binder), qt(binder), [body])]))), ts}
++      FParsed{f_choose(KTerm, pure, u => kt("Local", "Do", 0, 1, [binder, kt("Ann", "", 0, 1, [v, ty]), body]), u => f_app(kt("Ref", monad ++ ".bind", ix(binder), 1, Nil{}), norm_join(f_do_bind_types(types, ty), [v, kt("Lam", nm(binder), ix(binder), qt(binder), [body])]))), ts}
+ 
+ @unsafe
+ def f_error_term(
+   +t: KTerm,
+ ) -> String:
+-  f_choose(String, f_eq(tg(t), "Error"), u => nm(t), u => f_error_terms(ks(t)))
+-
+-@unsafe
+-def f_error_terms(ts):
+-  match ts:
+-    case Nil{}:
+-      ""
+-    case Con{t, rest}:
+-      f_error_more(f_error_term(t), rest)
+-
+-@unsafe
+-def f_error_more(err, rest):
+-  f_choose(String, String.is_empty(err), u => f_error_terms(rest), u => err)
++  nm(fpe_term(t))
+ 
+ @unsafe
+ def f_error_defs(
+   +ds: List<&2,KDef>,
+ ) -> String:
+-  match ds:
+-    case Nil{}:
+-      ""
+-    case Con{+d, rest}:
+-      f_error_def_next(f_error_terms([dt(d), dv(d)]), dc(d), rest)
+-
+-@unsafe
+-def f_error_def_next(err, ctors, rest):
+-  f_choose(String, String.is_empty(err), u => f_error_defs_more(f_error_defs(ctors), rest), u => err)
+-
+-@unsafe
+-def f_error_defs_more(err, rest):
+-  f_choose(String, String.is_empty(err), u => f_error_defs(rest), u => err)
++  nm(fpe_defs(ds))
+ 
+ @unsafe
+ def f_validate_result(r):
+--- a/selfhost/src/front/parallel.bend
++++ b/selfhost/src/front/parallel.bend
+@@ -76,7 +76,7 @@
+   +ts: List<&2, FToken>,
+   +pats: List<&2, KTerm>,
+ ) -> FParsed:
+-  f_choose(FParsed, f_eq(f_tx(ts), "="), u => f_parallel_values(f_tl(ts), List.reverse(&2, KTerm, pats), f_len(pats), Nil{}), u => f_parallel_pat(f_expr(ts, 0), pats))
++  f_choose(FParsed, f_eq(f_tx(ts), "="), u => f_parallel_values(f_tl(ts), List.reverse(&2, KTerm, pats), terms_len(pats), Nil{}), u => f_parallel_pat(f_expr(ts, 0), pats))
+ 
+ @unsafe
+ def f_parallel_pat(p, pats):
+@@ -128,7 +128,7 @@
+ 
+ @unsafe
+ def f_flat_parallel(t, vars):
+-  f_lbind(vars, kt("Let", "", 0, 1, f_concat(f_parallel_binds(ks(kid(t, 0)), ks(kid(t, 1))), [f_unlamb(f_flat(kid(t, 2), ks(kid(t, 0))), f_len(ks(kid(t, 0))))])))
++  f_lbind(vars, kt("Let", "", 0, 1, norm_join(f_parallel_binds(ks(kid(t, 0)), ks(kid(t, 1))), [f_unlamb(f_flat(kid(t, 2), ks(kid(t, 0))), terms_len(ks(kid(t, 0))))])))
+ 
+ @unsafe
+ def f_statement_more(p):
+--- a/selfhost/src/front/families.bend
++++ b/selfhost/src/front/families.bend
+@@ -58,7 +58,7 @@
+ 
+ @unsafe
+ def f_adt_fill(t, args, arity, g):
+-  f_choose(KTerm, U32.is_eq(U32.add(f_len(args), g), arity), u => KTerm{"ADT", nm(t), ix(t), qt(t), f_concat(f_quants(g, f_choose(U32, U32.is_eq(qt(t), 2), u => 2, u => 1)), args), rm(t)}, u => KTerm{"ADT", nm(t), ix(t), qt(t), f_choose(List<&2,KTerm>, U32.is_eq(qt(t), 2), u => f_concat(f_quants(g, 2), f_drop_terms(args, g)), u => args), rm(t)})
++  f_choose(KTerm, U32.is_eq(U32.add(terms_len(args), g), arity), u => KTerm{"ADT", nm(t), ix(t), qt(t), norm_join(f_quants(g, f_choose(U32, U32.is_eq(qt(t), 2), u => 2, u => 1)), args), rm(t)}, u => KTerm{"ADT", nm(t), ix(t), qt(t), f_choose(List<&2,KTerm>, U32.is_eq(qt(t), 2), u => norm_join(f_quants(g, 2), f_drop_terms(args, g)), u => args), rm(t)})
+ 
+ @unsafe
+ def f_drop_terms(ts, n):
+--- a/selfhost/src/front/validate.bend
++++ b/selfhost/src/front/validate.bend
+@@ -100,7 +100,7 @@
+ 
+ @unsafe
+ def f_valid_ctor_pattern(p, ctr, book):
+-  f_choose(String, f_eq(dk(ctr), "Missing"), u => "unknown constructor pattern: " ++ nm(p), u => f_choose(String, U32.is_eq(da(ctr), f_len(ks(p))), u => f_valid_patterns(ks(p), book), u => "constructor pattern field count differs: " ++ nm(p)))
++  f_choose(String, f_eq(dk(ctr), "Missing"), u => "unknown constructor pattern: " ++ nm(p), u => f_choose(String, U32.is_eq(da(ctr), terms_len(ks(p))), u => f_valid_patterns(ks(p), book), u => "constructor pattern field count differs: " ++ nm(p)))
+ 
+ @unsafe
+ def f_valid_patterns(ps, book):
+@@ -126,7 +126,7 @@
+ 
+ @unsafe
+ def f_pattern_env(pats, env):
+-  f_concat(List.reverse(&2, KTerm, f_penv(pats)), env)
++  norm_join(List.reverse(&2, KTerm, f_penv(pats)), env)
+ 
+ @unsafe
+ def f_scope_row_valid(r, pats, env, book, err):
+@@ -140,7 +140,7 @@
+ def f_case_checked(p, indent, heads, rows, pats):
+   match p:
+     case FParsed{n, ts}:
+-      f_choose(FParsed, U32.is_eq(f_len(pats), f_len(heads)), u => f_match_cases(f_skip(ts), indent, heads, Con{kt("Row", "", 0, 1, [kt("Patterns", "", 0, 1, pats), n]), rows}), u => f_err(ts, "one pattern is required per match scrutinee"))
++      f_choose(FParsed, U32.is_eq(terms_len(pats), terms_len(heads)), u => f_match_cases(f_skip(ts), indent, heads, Con{kt("Row", "", 0, 1, [kt("Patterns", "", 0, 1, pats), n]), rows}), u => f_err(ts, "one pattern is required per match scrutinee"))
+ 
+ 
+ law f_alias_valid:
+@@ -176,7 +176,7 @@
+ 
+ @unsafe
+ def f_validate_param(ts, end, acc):
+-  f_choose(FParsed, f_eq(f_tx(ts), "~") && Bool.not(f_eq(end, ")")), u => f_err(ts, "~ is only allowed on def or law template parameters"), u => f_choose(FParsed, Bool.not(f_valid_name(f_tx(f_unmark(ts)))), u => f_err(ts, "reserved parameter name"), u => f_choose(FParsed, f_eq(f_tx(ts), "~") && U32.is_lt(f_templates(acc), f_len(acc)), u => f_err(ts, "only leading parameters may use ~"), u => f_tele_binder(f_tx(f_unmark(ts)), f_atid(ts), f_quant(ts), f_eq(f_tx(ts), "~"), f_tl(f_unmark(ts)), end, acc))))
++  f_choose(FParsed, f_eq(f_tx(ts), "~") && Bool.not(f_eq(end, ")")), u => f_err(ts, "~ is only allowed on def or law template parameters"), u => f_choose(FParsed, Bool.not(f_valid_name(f_tx(f_unmark(ts)))), u => f_err(ts, "reserved parameter name"), u => f_choose(FParsed, f_eq(f_tx(ts), "~") && U32.is_lt(f_templates(acc), terms_len(acc)), u => f_err(ts, "only leading parameters may use ~"), u => f_tele_binder(f_tx(f_unmark(ts)), f_atid(ts), f_quant(ts), f_eq(f_tx(ts), "~"), f_tl(f_unmark(ts)), end, acc))))
+ 
+ 
+ law f_valid_name:
+@@ -216,7 +216,7 @@
+ 
+ @unsafe
+ def f_def_prior(name, p, book, imports, unsafe, old):
+-  f_choose(FRawResult, f_eq(dk(old), "Missing"), u => f_def_base(name, p, book, imports, unsafe), u => f_choose(FRawResult, f_eq(dk(old), "Def") && f_eq(tg(dv(old)), "Absent") && f_bare_params(ks(f_pn(p))) && U32.is_ge(f_len(ks(f_pn(p))), dx(old)), u => f_choose(FRawResult, f_eq(f_tx(f_pr(p)), ":"), u => f_def_base(name, p, book, imports, unsafe), u => f_result(book, f_pn(f_err(f_pr(p), "expected : (a definition filling a law has no return annotation)")), imports)), u => f_result(book, kt("Error", "a definition must uniquely fill its law with plain parameter names", 0, 0, Nil{}), imports)))
++  f_choose(FRawResult, f_eq(dk(old), "Missing"), u => f_def_base(name, p, book, imports, unsafe), u => f_choose(FRawResult, f_eq(dk(old), "Def") && f_eq(tg(dv(old)), "Absent") && f_bare_params(ks(f_pn(p))) && U32.is_ge(terms_len(ks(f_pn(p))), dx(old)), u => f_choose(FRawResult, f_eq(f_tx(f_pr(p)), ":"), u => f_def_base(name, p, book, imports, unsafe), u => f_result(book, f_pn(f_err(f_pr(p), "expected : (a definition filling a law has no return annotation)")), imports)), u => f_result(book, kt("Error", "a definition must uniquely fill its law with plain parameter names", 0, 0, Nil{}), imports)))
+ 
+ law f_scope_local_valid:
+   for +t: KTerm
+--- a/selfhost/src/load/graph.bend
++++ b/selfhost/src/load/graph.bend
+@@ -51,46 +51,9 @@
+   for +stack: List<&2,String>
+   FGraph
+ 
+-law f_graph_source_load:
+-  for +s: FSource
+-  for +ns: String
+-  for +sources: List<&2,FSource>
+-  for +g: FGraph
+-  for +stack: List<&2,String>
+-  FGraph
+-
+-law f_graph_cached:
+-  for +s: FSource
+-  for +ns: String
+-  for +sources: List<&2,FSource>
+-  for +g: FGraph
+-  for +stack: List<&2,String>
+-  for +entry: KTerm
+-  FGraph
+-
+ law f_graph_error:
+   for +g: FGraph
+   for +err: String
+-  FGraph
+-
+-law f_graph_parsed:
+-  for +s: FSource
+-  for +ns: String
+-  for +sources: List<&2,FSource>
+-  for +g: FGraph
+-  for +stack: List<&2,String>
+-  for +r: FResult
+-  FGraph
+-
+-law f_graph_imports:
+-  for +s: FSource
+-  for +ns: String
+-  for +book: List<&2,KDef>
+-  for +allimports: List<&2, KTerm>
+-  for +imports: List<&2, KTerm>
+-  for +sources: List<&2,FSource>
+-  for +g: FGraph
+-  for +stack: List<&2,String>
+   FGraph
+ 
+ law f_graph_aliases:
+@@ -192,17 +155,8 @@
+ 
+ @unsafe
+ def f_graph_load(path, ns, sources, g, stack):
+-  f_graph_source_load(f_graph_source(path, sources), ns, sources, g, stack)
+-
+-@unsafe
+-def f_graph_source_load(s, ns, sources, g, stack):
+-  match g:
+-    case FGraph{book, +err, +done}:
+-      f_choose(FGraph, Bool.not(String.is_empty(err)), u => FGraph{book, err, done}, u => f_choose(FGraph, String.is_empty(f_source_path(s)), u => FGraph{book, "module source was not supplied", done}, u => f_choose(FGraph, has_name(stack, f_source_path(s)), u => FGraph{book, "cyclic import through " ++ f_source_path(s), done}, u => f_graph_cached(s, ns, sources, FGraph{book, err, done}, stack, f_env(f_source_path(s), done)))))
+-
+-@unsafe
+-def f_graph_cached(s, ns, sources, g, stack, entry):
+-  f_choose(FGraph, f_eq(tg(entry), "Absent"), u => f_graph_parsed(s, ns, sources, g, Con{f_source_path(s), stack}, f_parse_source(s)), u => f_choose(FGraph, f_eq(nm(kid(entry, 0)), ns), u => g, u => f_graph_error(g, "one namespace per source file: " ++ f_source_path(s))))
++  # fs_source rejects empty source paths before this disabled seed can match.
++  fs_load(path, ns, sources, g, stack, FSeed{"", Nil{}})
+ 
+ @unsafe
+ def f_graph_error(g, err):
+@@ -211,12 +165,6 @@
+       FGraph{book, err, done}
+ 
+ @unsafe
+-def f_graph_parsed(s, ns, sources, g, stack, r):
+-  match r:
+-    case FResult{book, +err, imports}:
+-      f_choose(FGraph, String.is_empty(err), u => f_graph_imports(s, ns, book, imports, imports, sources, g, stack), u => f_graph_error(g, err))
+-
+-@unsafe
+ def f_import_namespace(
+   +im: KTerm,
+   +ns: String,
+@@ -230,14 +178,6 @@
+   +sources: List<&2,FSource>,
+ ) -> String:
+   f_choose(String, f_eq(nm(im), "Base"), u => f_source_path(f_source("Base", sources)), u => f_path_normal(f_path_join(f_path_dir(f_source_path(s)), nm(im))))
+-
+-@unsafe
+-def f_graph_imports(s, ns, book, allimports, imports, sources, g, stack):
+-  match imports:
+-    case Nil{}:
+-      f_graph_finish(s, ns, book, f_graph_aliases(allimports, ns), g)
+-    case Con{+im, rest}:
+-      f_graph_imports(s, ns, book, allimports, rest, sources, f_graph_load(f_import_pathname(im, s, sources), f_import_namespace(im, ns), sources, g, stack), stack)
+ 
+ @unsafe
+ def f_graph_aliases(imports, ns):
+@@ -281,7 +221,7 @@
+ 
+ @unsafe
+ def f_graph_finish_alias(s, ns, book, imports, prior, err, done):
+-  FGraph{f_defs_append(prior, f_path_defs(f_module_defs(book, Nil{}, f_family_book(prior), ns, imports), f_path_dir(f_source_path(s)), f_eq(f_source_name(s), "Base"))), err, Con{kt("Loaded", f_source_path(s), f_graph_count_defs(book, 0), 0, [ref(ns)]), done}}
++  FGraph{norm_defs_join(prior, f_path_defs(f_module_defs(book, Nil{}, f_family_book(prior), ns, imports), f_path_dir(f_source_path(s)), f_eq(f_source_name(s), "Base"))), err, Con{kt("Loaded", f_source_path(s), f_graph_count_defs(book, 0), 0, [ref(ns)]), done}}
+ 
+ 
+ law f_module_defs:
+@@ -327,11 +267,6 @@
+   for +seen: List<&2,String>
+   List<&2,String>
+ 
+-law f_main_seen:
+-  for +name: String
+-  for +seen: List<&2,String>
+-  Bool
+-
+ @unsafe
+ def f_main_names(
+   +main: String,
+@@ -351,15 +286,7 @@
+     case Nil{}:
+       Nil{}
+     case Con{+d, rest}:
+-      f_choose(List<&2,String>, f_main_seen(dn(d), seen), u => f_main_order(rest, seen), u => Con{dn(d), f_main_order(rest, Con{dn(d), seen})})
+-
+-@unsafe
+-def f_main_seen(name, seen):
+-  match seen:
+-    case Nil{}:
+-      False{}
+-    case Con{head, rest}:
+-      String.eq(name, head) || f_main_seen(name, rest)
++      f_choose(List<&2,String>, has_name(seen, dn(d)), u => f_main_order(rest, seen), u => Con{dn(d), f_main_order(rest, Con{dn(d), seen})})
+ 
+ # Request-local trace of the exact graph that produced the freshened core.
+ # Loaded.id records declaration-event count, including separate law/fill events.
+@@ -434,6 +361,14 @@
+   for +done: List<&2,KTerm>
+   for +sources: List<&2,FSource>
+   FResult
++law fpe_term:
++  for +t: KTerm
++  KTerm
++
++law fpe_defs:
++  for +ds: List<&2,KDef>
++  KTerm
++
+ law fpe_terms:
+   for +ts: List<&2,KTerm>
+   KTerm
+@@ -491,9 +426,7 @@
+ 
+ # Exactly the existing f_error_* traversal order, including empty-name Error skip.
+ @unsafe
+-def fpe_term(
+-  +t: KTerm,
+-) -> KTerm:
++def fpe_term(t):
+   f_choose(KTerm, f_eq(tg(t), "Error"), u => f_choose(KTerm, String.is_empty(nm(t)), u => atom("Absent"), u => t), u => fpe_terms(ks(t)))
+ @unsafe
+ def fpe_terms(ts):
+@@ -509,9 +442,7 @@
+ ) -> KTerm:
+   fpe_defs_next(fpe_terms([dt(d), dv(d)]), dc(d))
+ @unsafe
+-def fpe_defs(
+-  +ds: List<&2,KDef>,
+-) -> KTerm:
++def fpe_defs(ds):
+   match ds:
+     case Nil{}: atom("Absent")
+     case Con{head, tail}: fpe_defs_next(fpe_def(head), tail)
+--- a/selfhost/src/load/seed.bend
++++ b/selfhost/src/load/seed.bend
+@@ -115,7 +115,7 @@
+ def fs_inject(g, seed):
+   match g:
+     case FGraph{book, err, done}:
+-      FGraph{f_defs_append(book, fs_book(seed)), err, Con{kt("Loaded", fs_path(seed), f_graph_count_defs(fs_book(seed), 0), 0, [ref("")]), done}}
++      FGraph{norm_defs_join(book, fs_book(seed)), err, Con{kt("Loaded", fs_path(seed), f_graph_count_defs(fs_book(seed), 0), 0, [ref("")]), done}}
+ 
+ @unsafe
+ def fs_parsed(s, ns, sources, g, stack, r, seed):
+--- a/selfhost/src/load/modules.bend
++++ b/selfhost/src/load/modules.bend
+@@ -81,11 +81,6 @@
+   for +stack: List<&2, String>
+   FLoaded
+ 
+-law f_defs_append:
+-  for +xs: List<&2, KDef>
+-  for +ys: List<&2, KDef>
+-  List<&2, KDef>
+-
+ law f_load_imports:
+   for +imports: List<&2, KTerm>
+   for +sources: List<&2, FSource>
+@@ -142,7 +137,7 @@
+     case Nil{}:
+       name
+     case Con{+im, rest}:
+-      f_choose(String, U32.is_gt(f_len(ks(im)), 0) && f_prefix(name, nm(kid(im, 0)) ++ "."), u => nm(im) ++ "." ++ f_drop_prefix(name, nm(kid(im, 0)) ++ "."), u => f_alias(name, rest))
++      f_choose(String, U32.is_gt(terms_len(ks(im)), 0) && f_prefix(name, nm(kid(im, 0)) ++ "."), u => nm(im) ++ "." ++ f_drop_prefix(name, nm(kid(im, 0)) ++ "."), u => f_alias(name, rest))
+ 
+ @unsafe
+ def f_declared(
+@@ -153,7 +148,7 @@
+     case Nil{}:
+       False{}
+     case Con{+d, ds}:
+-      f_eq(name, f_dn(d)) || f_declared(name, dc(d)) || f_declared(name, ds)
++      f_eq(name, dn(d)) || f_declared(name, dc(d)) || f_declared(name, ds)
+ 
+ @unsafe
+ def f_resolve_name(
+@@ -260,14 +255,6 @@
+       f_choose(FLoaded, String.is_empty(err), u => f_load_imports(imports, sources, Con{name, seen}, Con{name, stack}, book), u => FLoaded{book, err, seen})
+ 
+ @unsafe
+-def f_defs_append(xs, ys):
+-  match xs:
+-    case Nil{}:
+-      ys
+-    case Con{x, xt}:
+-      Con{x, f_defs_append(xt, ys)}
+-
+-@unsafe
+ def f_load_imports(imports, sources, seen, stack, book):
+   match imports:
+     case Nil{}:
+@@ -279,7 +266,7 @@
+ def f_load_import_next(imports, sources, stack, book, r):
+   match r:
+     case FLoaded{defs, +err, seen}:
+-      f_choose(FLoaded, String.is_empty(err), u => f_load_imports(imports, sources, seen, stack, f_defs_append(defs, book)), u => FLoaded{book, err, seen})
++      f_choose(FLoaded, String.is_empty(err), u => f_load_imports(imports, sources, seen, stack, norm_defs_join(defs, book)), u => FLoaded{book, err, seen})
+ 
+ 
+ law f_qual_optional:

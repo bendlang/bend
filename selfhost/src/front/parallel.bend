@@ -1,10 +1,5 @@
 # Simultaneous bindings preserve separate values and the full binder scope.
 
-law f_parallel:
-  for +ts: List<&2, FToken>
-  for +pats: List<&2, KTerm>
-  FParsed
-
 law f_parallel_pat:
   for +p: FParsed
   for +pats: List<&2, KTerm>
@@ -77,8 +72,11 @@ law f_typed_let_try:
   FParsed
 
 @unsafe
-def f_parallel(ts, pats):
-  f_choose(FParsed, f_eq(f_tx(ts), "="), u => f_parallel_values(f_tl(ts), List.reverse(&2, KTerm, pats), f_len(pats), Nil{}), u => f_parallel_pat(f_expr(ts, 0), pats))
+def f_parallel(
+  +ts: List<&2, FToken>,
+  +pats: List<&2, KTerm>,
+) -> FParsed:
+  f_choose(FParsed, f_eq(f_tx(ts), "="), u => f_parallel_values(f_tl(ts), List.reverse(&2, KTerm, pats), terms_len(pats), Nil{}), u => f_parallel_pat(f_expr(ts, 0), pats))
 
 @unsafe
 def f_parallel_pat(p, pats):
@@ -130,7 +128,7 @@ def f_unlamb(body, n):
 
 @unsafe
 def f_flat_parallel(t, vars):
-  f_lbind(vars, kt("Let", "", 0, 1, f_concat(f_parallel_binds(ks(kid(t, 0)), ks(kid(t, 1))), [f_unlamb(f_flat(kid(t, 2), ks(kid(t, 0))), f_len(ks(kid(t, 0))))])))
+  f_lbind(vars, kt("Let", "", 0, 1, norm_join(f_parallel_binds(ks(kid(t, 0)), ks(kid(t, 1))), [f_unlamb(f_flat(kid(t, 2), ks(kid(t, 0))), terms_len(ks(kid(t, 0))))])))
 
 @unsafe
 def f_statement_more(p):

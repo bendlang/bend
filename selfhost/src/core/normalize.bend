@@ -2,39 +2,22 @@ import Base
 
 # Weak head evaluation, strong normalization, and definitional conversion.
 # Native definitions without equations remain opaque, as in the upstream kernel.
-law norm_join:
-  for +a: List<&2, KTerm>
-  for +b: List<&2, KTerm>
-  List<&2, KTerm>
-
 @unsafe
-def norm_join(a, b):
-  match a:
-    case Nil{}:
-      b
-    case Con{h, t}:
-      Con{h, norm_join(t, b)}
-
-law norm_apply:
-  for +t: KTerm
-  for +args: List<&2, KTerm>
-  KTerm
-
-@unsafe
-def norm_apply(t, args):
+def norm_apply(
+  +t: KTerm,
+  +args: List<&2, KTerm>,
+) -> KTerm:
   match args:
     case Nil{}:
       t
     case Con{h, rest}:
       norm_apply(app(t, h), rest)
 
-law wnf:
-  for +book: List<&2, KDef>
-  for +t: KTerm
-  KTerm
-
 @unsafe
-def wnf(book, t):
+def wnf(
+  +book: List<&2, KDef>,
+  +t: KTerm,
+) -> KTerm:
   norm_eval(book, t, Nil{}, 0, atom("Absent"))
 
 law norm_eval:
@@ -45,16 +28,14 @@ law norm_eval:
   for +fallback: KTerm
   KTerm
 
-law norm_eval_node:
-  for +book: List<&2, KDef>
-  for +t: KTerm
-  for +args: List<&2, KTerm>
-  for +left: U32
-  for +fallback: KTerm
-  KTerm
-
 @unsafe
-def norm_eval_node(book, t, args, left, fallback):
+def norm_eval_node(
+  +book: List<&2, KDef>,
+  +t: KTerm,
+  +args: List<&2, KTerm>,
+  +left: U32,
+  +fallback: KTerm,
+) -> KTerm:
   kc(KTerm, String.eq(tg(t), "App"), u => norm_eval(book, kid(t, 0), Con{kid(t, 1), args}, left, fallback), u => kc(KTerm, String.eq(tg(t), "Ann"), u => norm_eval(book, kid(t, 0), args, left, fallback), u => kc(KTerm, String.eq(tg(t), "Let"), u => norm_eval(book, norm_let(ks(t)), args, left, fallback), u => kc(KTerm, String.eq(tg(t), "Ref"), u => norm_ref(book, t, args, lookup(book, nm(t))), u => kc(KTerm, String.eq(tg(t), "Min"), u => norm_apply(norm_min(book, kid(t, 0), kid(t, 1)), args), u => kc(KTerm, String.eq(tg(t), "Rwt"), u => kc(KTerm, String.eq(tg(wnf(book, kid(t, 0))), "Rfl"), u => norm_eval(book, kid(t, 2), args, left, fallback), u => norm_apply(t, args)), u => norm_args(book, t, args, left, fallback)))))))
 law norm_ref:
   for +book: List<&2, KDef>
@@ -140,29 +121,23 @@ law norm_min_right:
 @unsafe
 def norm_min_right(a, b):
   kc(KTerm, String.eq(tg(b), "Qua"), u => kc(KTerm, U32.is_eq(qt(b), 2), u => a, u => kc(KTerm, Bool.and(U32.is_eq(qt(b), 1), Bool.not(String.eq(tg(a), "Qua"))), u => kt("Min", "", 0, 0, Con{a, Con{b, Nil{}}}), u => b)), u => kt("Min", "", 0, 0, Con{a, Con{b, Nil{}}}))
-law strong:
-  for +book: List<&2, KDef>
-  for +t: KTerm
-  KTerm
-
 @unsafe
-def strong(book, t):
+def strong(
+  +book: List<&2, KDef>,
+  +t: KTerm,
+) -> KTerm:
   graph_strong(book, t)
 
-law norm_max:
-  for +a: U32
-  for +b: U32
-  U32
-
 @unsafe
-def norm_max(a, b):
+def norm_max(
+  +a: U32,
+  +b: U32,
+) -> U32:
   kc(U32, U32.is_le(a, b), u => b, u => a)
-law norm_max_term:
-  for +t: KTerm
-  U32
-
 @unsafe
-def norm_max_term(t):
+def norm_max_term(
+  +t: KTerm,
+) -> U32:
   norm_max_walk(Con{t, Nil{}}, 0)
 
 law norm_max_book:
@@ -173,15 +148,13 @@ law norm_max_book:
 def norm_max_book(book):
   norm_max_defs(book, 0)
 
-law compare:
-  for +book: List<&2, KDef>
-  for +a: KTerm
-  for +b: KTerm
-  for +le: Bool
-  Bool
-
 @unsafe
-def compare(book, a, b, le):
+def compare(
+  +book: List<&2, KDef>,
+  +a: KTerm,
+  +b: KTerm,
+  +le: Bool,
+) -> Bool:
   norm_compare(book, a, b, le, U32.add(1, norm_max(norm_book_bound(book), norm_max(norm_max_term(a), norm_max_term(b)))))
 
 law norm_compare:
@@ -196,27 +169,23 @@ law norm_compare:
 def norm_compare(book, a, b, le, fresh):
   kc(Bool, norm_exact(a, b), u => True{}, u => norm_cmp_loop(book, Con{KNormCmp{a, b, le, fresh}, Nil{}}, Nil{}))
 
-law norm_subset:
-  for +as: List<&2, String>
-  for +bs: List<&2, String>
-  Bool
-
 @unsafe
-def norm_subset(as, bs):
+def norm_subset(
+  +as: List<&2, String>,
+  +bs: List<&2, String>,
+) -> Bool:
   match bs:
     case Nil{}:
       True{}
     case Con{h, t}:
       Bool.and(has_name(as, h), norm_subset(as, t))
 
-law norm_removed:
-  for +as: List<&2, String>
-  for +bs: List<&2, String>
-  for +le: Bool
-  Bool
-
 @unsafe
-def norm_removed(as, bs, le):
+def norm_removed(
+  +as: List<&2, String>,
+  +bs: List<&2, String>,
+  +le: Bool,
+) -> Bool:
   kc(Bool, le, u => norm_subset(as, bs), u => Bool.and(U32.is_eq(norm_names_len(as), norm_names_len(bs)), norm_subset(as, bs)))
 law norm_let:
   for +ts: List<&2, KTerm>
@@ -316,16 +285,6 @@ law norm_max_defs:
   for +bound: U32
   U32
 
-law norm_defs_join:
-  for +a: List<&2, KDef>
-  for +b: List<&2, KDef>
-  List<&2, KDef>
-
-law norm_rebind:
-  for +t: KTerm
-  for +fresh: U32
-  KTerm
-
 @unsafe
 def norm_max_walk(todo, bound):
   match todo:
@@ -343,15 +302,10 @@ def norm_max_defs(todo, bound):
       norm_max_defs(norm_defs_join(dc(h), rest), norm_max(bound, norm_max(norm_max_term(dt(h)), norm_max_term(dv(h)))))
 
 @unsafe
-def norm_defs_join(a, b):
-  match a:
-    case Nil{}:
-      b
-    case Con{h, rest}:
-      Con{h, norm_defs_join(rest, b)}
-
-@unsafe
-def norm_rebind(t, fresh):
+def norm_rebind(
+  +t: KTerm,
+  +fresh: U32,
+) -> KTerm:
   KTerm{tg(t), nm(t), fresh, qt(t), kc(List<&2, KTerm>, String.eq(tg(t), "Lam"), u => Con{subst(kid(t, 0), ix(t), var(nm(t), fresh)), Nil{}}, u => Con{kid(t, 0), Con{subst(kid(t, 1), ix(t), var(nm(t), fresh)), Nil{}}}), rm(t)}
 
 # Syntactic reflexivity precedes evaluation, as pointer reflexivity does in
@@ -420,18 +374,6 @@ law norm_cmp_loop:
 law norm_cmp_quick:
   for +a: KTerm
   for +b: KTerm
-  Bool
-
-law norm_cmp_fail:
-  for +book: List<&2, KDef>
-  for +alts: List<&2, KNormAlt>
-  Bool
-
-law norm_cmp_test:
-  for +book: List<&2, KDef>
-  for +yes: Bool
-  for +rest: List<&2, KNormCmp>
-  for +alts: List<&2, KNormAlt>
   Bool
 
 law norm_cmp_heads:
@@ -503,7 +445,10 @@ def norm_cmp_quick(a, b):
   kc(Bool, String.eq(tg(a), "App") || String.eq(tg(a), "Ref") || String.eq(tg(a), "Var"), u => norm_exact(a, b), u => False{})
 
 @unsafe
-def norm_cmp_fail(book, alts):
+def norm_cmp_fail(
+  +book: List<&2, KDef>,
+  +alts: List<&2, KNormAlt>,
+) -> Bool:
   match alts:
     case Nil{}:
       False{}
@@ -511,7 +456,12 @@ def norm_cmp_fail(book, alts):
       norm_cmp_loop(book, todo, rest)
 
 @unsafe
-def norm_cmp_test(book, yes, rest, alts):
+def norm_cmp_test(
+  +book: List<&2, KDef>,
+  +yes: Bool,
+  +rest: List<&2, KNormCmp>,
+  +alts: List<&2, KNormAlt>,
+) -> Bool:
   kc(Bool, yes, u => norm_cmp_loop(book, rest, alts), u => norm_cmp_fail(book, alts))
 
 @unsafe

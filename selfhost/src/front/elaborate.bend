@@ -1,9 +1,5 @@
 # Name resolution, literal expansion, and ordered pattern-matrix compilation.
 
-law f_elaborate:
-  for +r: FResult
-  FResult
-
 law f_elab_defs:
   for +ds: List<&2, KDef>
   for +book: List<&2, KDef>
@@ -23,15 +19,6 @@ law f_tail_terms:
   for +xs: List<&2, KTerm>
   List<&2, KTerm>
 
-law f_concat:
-  for +xs: List<&2, KTerm>
-  for +ys: List<&2, KTerm>
-  List<&2, KTerm>
-
-law f_vars:
-  for +xs: List<&2, KTerm>
-  List<&2, KTerm>
-
 law f_scope:
   for +t: KTerm
   for +env: List<&2, KTerm>
@@ -48,14 +35,6 @@ law f_scope_terms:
   for +xs: List<&2, KTerm>
   for +env: List<&2, KTerm>
   for +book: List<&2, KDef>
-  List<&2, KTerm>
-
-law f_patterns:
-  for +xs: List<&2, KTerm>
-  List<&2, KTerm>
-
-law f_penv:
-  for +xs: List<&2, KTerm>
   List<&2, KTerm>
 
 law f_scope_body:
@@ -84,12 +63,6 @@ law f_scope_row:
   for +book: List<&2, KDef>
   KTerm
 
-law f_sub:
-  for +t: KTerm
-  for +id: U32
-  for +v: KTerm
-  KTerm
-
 law f_subs:
   for +ts: List<&2, KTerm>
   for +id: U32
@@ -110,10 +83,6 @@ law f_flat_let:
   for +t: KTerm
   for +vars: List<&2, KTerm>
   for +body: KTerm
-  KTerm
-
-law f_rowpat:
-  for +r: KTerm
   KTerm
 
 law f_first_ctor:
@@ -186,24 +155,6 @@ law f_miss_rows:
   for +name: String
   List<&2, KTerm>
 
-law f_word:
-  for +n: U32
-  for +bits: U32
-  KTerm
-
-law f_u32:
-  for +n: U32
-  KTerm
-
-law f_nat:
-  for +n: U32
-  KTerm
-
-law f_number:
-  for +s: String
-  for +acc: U32
-  KTerm
-
 law f_literal:
   for +s: String
   KTerm
@@ -212,12 +163,10 @@ law f_string:
   for +s: String
   KTerm
 
-law f_escape_code:
-  for +c: Char
-  U32
-
 @unsafe
-def f_elaborate(r):
+def f_elaborate(
+  +r: FResult,
+) -> FResult:
   match r:
     case FResult{+book, err, imports}:
       f_validate_result(FResult{f_elab_defs(book, f_family_book(book)), err, imports})
@@ -253,15 +202,9 @@ def f_tail_terms(xs):
       xt
 
 @unsafe
-def f_concat(xs, ys):
-  match xs:
-    case Nil{}:
-      ys
-    case Con{x, xt}:
-      Con{x, f_concat(xt, ys)}
-
-@unsafe
-def f_vars(xs):
+def f_vars(
+  +xs: List<&2, KTerm>,
+) -> List<&2, KTerm>:
   match xs:
     case Nil{}:
       Nil{}
@@ -269,12 +212,16 @@ def f_vars(xs):
       Con{kt("Var", nm(x), ix(x), 1, Nil{}), f_vars(xt)}
 
 @unsafe
-def f_scope_base(t, env, book):
+def f_scope_base(
+  +t: KTerm,
+  +env: List<&2, KTerm>,
+  +book: List<&2, KDef>,
+) -> KTerm:
   f_choose(KTerm, f_eq(tg(t), "Ref"), u => f_scope_ref(t, f_env(nm(t), env), book),
     u => f_choose(KTerm, f_eq(tg(t), "Literal"), u => f_literal(nm(t)),
     u => f_choose(KTerm, f_eq(tg(t), "All"), u => kt("All", nm(t), ix(t), qt(t), [f_scope(kid(t, 0), env, book), f_scope(kid(t, 1), Con{kt("Var", nm(t), ix(t), qt(t), Nil{}), env}, book)]),
     u => f_choose(KTerm, f_eq(tg(t), "Lam"), u => f_scope_lambda(t, env, book),
-    u => f_choose(KTerm, f_eq(tg(t), "Body"), u => ff_term(ff_flat(f_scope_body(kid(t, 1), f_concat(f_vars(ks(kid(t, 0))), env), book), f_vars(ks(kid(t, 0))), ix(t))),
+    u => f_choose(KTerm, f_eq(tg(t), "Body"), u => ff_term(ff_flat(f_scope_body(kid(t, 1), norm_join(f_vars(ks(kid(t, 0))), env), book), f_vars(ks(kid(t, 0))), ix(t))),
     u => f_choose(KTerm, f_eq(tg(t), "Local") || f_eq(tg(t), "Match"), u => f_flat(f_scope_body(t, env, book), Nil{}),
     u => KTerm{tg(t), nm(t), ix(t), qt(t), f_scope_terms(ks(t), env, book), rm(t)}))))))
 
@@ -291,7 +238,9 @@ def f_scope_terms(xs, env, book):
       Con{f_scope(x, env, book), f_scope_terms(xt, env, book)}
 
 @unsafe
-def f_patterns(xs):
+def f_patterns(
+  +xs: List<&2, KTerm>,
+) -> List<&2, KTerm>:
   match xs:
     case Nil{}:
       Nil{}
@@ -299,15 +248,21 @@ def f_patterns(xs):
       Con{f_choose(KTerm, f_eq(tg(x), "Ref"), u => kt("Var", nm(x), ix(x), qt(x), Nil{}), u => f_choose(KTerm, f_eq(tg(x), "Literal"), u => f_pattern_literal(nm(x)), u => kt(tg(x), nm(x), ix(x), qt(x), f_patterns(ks(x))))), f_patterns(xt)}
 
 @unsafe
-def f_penv(xs):
+def f_penv(
+  +xs: List<&2, KTerm>,
+) -> List<&2, KTerm>:
   match xs:
     case Nil{}:
       Nil{}
     case Con{+x, xt}:
-      f_choose(List<&2, KTerm>, f_eq(tg(x), "Var"), u => Con{x, f_penv(xt)}, u => f_concat(f_penv(ks(x)), f_penv(xt)))
+      f_choose(List<&2, KTerm>, f_eq(tg(x), "Var"), u => Con{x, f_penv(xt)}, u => norm_join(f_penv(ks(x)), f_penv(xt)))
 
 @unsafe
-def f_scope_body_base(t, env, book):
+def f_scope_body_base(
+  +t: KTerm,
+  +env: List<&2, KTerm>,
+  +book: List<&2, KDef>,
+) -> KTerm:
   f_choose(KTerm, f_eq(tg(t), "Local"), u => f_scope_local(t, f_patterns([kid(t, 0)]), env, book), u => f_choose(KTerm, f_eq(tg(t), "Match"), u => kt("Match", "", 0, 1, Con{kt("Heads", "", 0, 1, f_scope_terms(ks(kid(t, 0)), env, book)), f_scope_rows(f_tail_terms(ks(t)), env, book)}), u => f_scope(t, env, book)))
 
 @unsafe
@@ -328,7 +283,11 @@ def f_scope_row(r, pats, env, book):
   f_scope_row_valid(r, pats, env, book, f_valid_patterns(pats, book))
 
 @unsafe
-def f_sub(t, id, v):
+def f_sub(
+  +t: KTerm,
+  +id: U32,
+  +v: KTerm,
+) -> KTerm:
   f_choose(KTerm, f_eq(tg(t), "Var") && U32.is_eq(ix(t), id), u => v, u => KTerm{tg(t), nm(t), ix(t), qt(t), f_subs(ks(t), id, v), rm(t)})
 
 @unsafe
@@ -340,7 +299,10 @@ def f_subs(ts, id, v):
       Con{f_sub(t, id, v), f_subs(rest, id, v)}
 
 @unsafe
-def f_flat_base(t, vars):
+def f_flat_base(
+  +t: KTerm,
+  +vars: List<&2, KTerm>,
+) -> KTerm:
   f_choose(KTerm, f_eq(tg(t), "Match"), u => f_flat_match(ks(kid(t, 0)), f_tail_terms(ks(t)), vars), u => f_choose(KTerm, f_eq(tg(t), "Local"), u => f_flat_local(t, vars), u => f_lbind(vars, t)))
 
 @unsafe
@@ -352,7 +314,9 @@ def f_flat_let(t, vars, body):
   f_choose(KTerm, f_eq(tg(body), "Lam"), u => f_lbind(vars, kt("Let", "", 0, 1, [kt("Bind", nm(kid(t, 0)), ix(kid(t, 0)), qt(kid(t, 0)), [kid(t, 1)]), kid(body, 0)])), u => kt("Error", "a match cannot scrutinize a local binding", 0, 0, Nil{}))
 
 @unsafe
-def f_rowpat(r):
+def f_rowpat(
+  +r: KTerm,
+) -> KTerm:
   kid(kid(r, 0), 0)
 
 @unsafe
@@ -375,9 +339,9 @@ def f_has_id(vars, id):
 def f_flat_match(heads, rows, vars):
   match heads:
     case Nil{}:
-      f_choose(KTerm, U32.is_eq(f_len(rows), 0), u => atom("Efq"), u => f_flat(kid(terms_at(rows, 0), 1), vars))
+      f_choose(KTerm, U32.is_eq(terms_len(rows), 0), u => atom("Efq"), u => f_flat(kid(terms_at(rows, 0), 1), vars))
     case Con{+h, hs}:
-      f_choose(KTerm, f_eq(tg(f_first_ctor(rows)), "Absent") && U32.is_gt(f_len(rows), 0) && f_has_id(vars, ix(h)), u => f_flat_match(hs, f_var_rows(rows, h), f_mark_vars(vars, ix(h), f_mark_rows(rows, qt(h)))), u => f_flat_column(h, hs, rows, vars))
+      f_choose(KTerm, f_eq(tg(f_first_ctor(rows)), "Absent") && U32.is_gt(terms_len(rows), 0) && f_has_id(vars, ix(h)), u => f_flat_match(hs, f_var_rows(rows, h), f_mark_vars(vars, ix(h), f_mark_rows(rows, qt(h)))), u => f_flat_column(h, hs, rows, vars))
 
 @unsafe
 def f_var_rows(rows, v):
@@ -409,7 +373,7 @@ def f_fresh_fields(ps, id):
 
 @unsafe
 def f_flat_fields(h, hs, rows, v, vs, c, fields):
-  kt("Mat", nm(c), 0, 1, [f_flat_match(f_concat(fields, hs), f_hit_rows(rows, c, fields, v), f_concat(fields, vs)), f_flat_match(Con{h, hs}, f_miss_rows(rows, nm(c)), Con{v, vs})])
+  kt("Mat", nm(c), 0, 1, [f_flat_match(norm_join(fields, hs), f_hit_rows(rows, c, fields, v), norm_join(fields, vs)), f_flat_match(Con{h, hs}, f_miss_rows(rows, nm(c)), Con{v, vs})])
 
 @unsafe
 def f_hit_rows(rows, c, fields, v):
@@ -421,7 +385,7 @@ def f_hit_rows(rows, c, fields, v):
 
 @unsafe
 def f_hit_row(r, c, fields, v):
-  kt("Row", "", 0, qt(r), [kt("Patterns", "", 0, 1, f_concat(f_choose(List<&2, KTerm>, f_eq(tg(f_rowpat(r)), "Var"), u => fields, u => ks(f_rowpat(r))), f_tail_terms(ks(kid(r, 0))))), f_choose(KTerm, U32.is_eq(qt(r), 0), u => kid(r, 1), u => f_sub(f_choose(KTerm, f_eq(tg(f_rowpat(r)), "Var"), u => f_sub(kid(r, 1), ix(f_rowpat(r)), v), u => kid(r, 1)), ix(v), kt("Ctr", nm(c), 0, 1, fields)))])
+  kt("Row", "", 0, qt(r), [kt("Patterns", "", 0, 1, norm_join(f_choose(List<&2, KTerm>, f_eq(tg(f_rowpat(r)), "Var"), u => fields, u => ks(f_rowpat(r))), f_tail_terms(ks(kid(r, 0))))), f_choose(KTerm, U32.is_eq(qt(r), 0), u => kid(r, 1), u => f_sub(f_choose(KTerm, f_eq(tg(f_rowpat(r)), "Var"), u => f_sub(kid(r, 1), ix(f_rowpat(r)), v), u => kid(r, 1)), ix(v), kt("Ctr", nm(c), 0, 1, fields)))])
 
 @unsafe
 def f_miss_rows(rows, name):
@@ -432,19 +396,29 @@ def f_miss_rows(rows, name):
       f_choose(List<&2, KTerm>, f_eq(tg(f_rowpat(r)), "Ctr") && f_eq(nm(f_rowpat(r)), name), u => f_miss_rows(rs, name), u => Con{r, f_miss_rows(rs, name)})
 
 @unsafe
-def f_word(n, bits):
+def f_word(
+  +n: U32,
+  +bits: U32,
+) -> KTerm:
   f_choose(KTerm, U32.is_eq(bits, 0), u => kt("Ctr", "WNil", 0, 1, Nil{}), u => kt("Ctr", "WCon", 0, 1, [kt("Ctr", f_choose(String, U32.is_eq(U32.and(n, 1), 0), u => "False", u => "True"), 0, 1, Nil{}), f_word(U32.shrn(n, 1n), U32.sub(bits, 1))]))
 
 @unsafe
-def f_u32(n):
+def f_u32(
+  +n: U32,
+) -> KTerm:
   kt("Ctr", "U32", 0, 1, [f_word(n, 32)])
 
 @unsafe
-def f_nat(n):
+def f_nat(
+  +n: U32,
+) -> KTerm:
   f_choose(KTerm, U32.is_gt(n, 256), u => app(ref("U32.to_nat"), f_u32(n)), u => f_choose(KTerm, U32.is_eq(n, 0), u => kt("Ctr", "Zero", 0, 1, Nil{}), u => kt("Ctr", "Succ", 0, 1, [f_nat(U32.sub(n, 1))])))
 
 @unsafe
-def f_number(s, acc):
+def f_number(
+  +s: String,
+  +acc: U32,
+) -> KTerm:
   f_choose(KTerm, String.is_empty(s), u => f_u32(acc), u => f_choose(KTerm, f_eq(s, "n"), u => f_nat(acc), u => f_choose(KTerm, Char.is_digit(f_head(s)) && (U32.is_lt(acc, 429496729) || (U32.is_eq(acc, 429496729) && U32.is_le(Char.to_u32(f_head(s)), 53))), u => f_number(f_tail(s), U32.add(U32.mul(acc, 10), U32.sub(Char.to_u32(f_head(s)), 48))), u => kt("Error", "invalid or unsupported numeric literal", 0, 0, Nil{}))))
 
 @unsafe
@@ -456,20 +430,11 @@ def f_string(s):
   f_choose(KTerm, Char.is_eq(f_head(s), '"'), u => kt("Ctr", "SNil", 0, 1, Nil{}), u => f_string_decoded(f_decode_char(s)))
 
 @unsafe
-def f_escape_code(c):
+def f_escape_code(
+  +c: Char,
+) -> U32:
   f_choose(U32, Char.is_eq(c, 'n'), u => 10, u => f_choose(U32, Char.is_eq(c, 't'), u => 9, u => f_choose(U32, Char.is_eq(c, 'r'), u => 13, u => f_choose(U32, Char.is_eq(c, '0'), u => 0, u => Char.to_u32(c)))))
 
-
-law f_scope_body_base:
-  for +t: KTerm
-  for +env: List<&2, KTerm>
-  for +book: List<&2, KDef>
-  KTerm
-
-law f_flat_base:
-  for +t: KTerm
-  for +vars: List<&2, KTerm>
-  KTerm
 
 @unsafe
 def f_scope_body(t, env, book):
@@ -479,14 +444,12 @@ def f_scope_body(t, env, book):
 def f_flat(t, vars):
   f_choose(KTerm, f_eq(tg(t), "Parallel"), u => f_flat_parallel(t, vars), u => f_flat_base(t, vars))
 
-law f_scope_base:
-  for +t: KTerm
-  for +env: List<&2, KTerm>
-  for +book: List<&2, KDef>
-  KTerm
-
 @unsafe
-def f_scope_lower(t, env, book):
+def f_scope_lower(
+  +t: KTerm,
+  +env: List<&2, KTerm>,
+  +book: List<&2, KDef>,
+) -> KTerm:
   f_choose(KTerm, f_eq(tg(t), "Write"), u => f_scope(kid(t, 0), env, book), u => f_choose(KTerm, f_eq(tg(t), "ADT"), u => f_adt(t, f_scope_terms(ks(t), env, book), f_find(nm(t), book)), u => f_choose(KTerm, f_eq(tg(t), "App"), u => f_scope_app(f_scope(kid(t, 0), env, book), f_scope(kid(t, 1), env, book)), u => f_scope_base(t, env, book))))
 
 law f_family_book:
@@ -500,12 +463,6 @@ def f_family_book(book):
       Nil{}
     case Con{+d, rest}:
       f_choose(List<&2, KDef>, f_eq(dk(d), "ADT") || U32.is_gt(dx(d), 0), u => Con{d, f_family_book(rest)}, u => f_family_book(rest))
-
-law f_scope_lower:
-  for +t: KTerm
-  for +env: List<&2, KTerm>
-  for +book: List<&2, KDef>
-  KTerm
 
 @unsafe
 def f_scope(t, env, book):

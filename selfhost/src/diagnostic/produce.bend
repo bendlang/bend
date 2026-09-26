@@ -1,11 +1,6 @@
 import Base
 
 # The chronological checker returns its verdict and original diagnostic together.
-law dg_span_same:
-  for +a: DSpan
-  for +b: DSpan
-  Bool
-
 law dg_span_fields:
   for +s: String
   for +b0: U32
@@ -13,46 +8,12 @@ law dg_span_fields:
   for +b: DSpan
   Bool
 
-law dg_has_span:
-  for +s: DSpan
-  Bool
-
-law dg_origin_scan:
-  for +origins: List<&2, DOrigin>
-  for +name: String
-  for +t: KTerm
-  for +found: DSpan
-  DSpan
-
-law dg_origin_trail:
-  for +origins: List<&2, DOrigin>
-  for +name: String
-  for +trail: List<&2, KTerm>
-  DSpan
-
 law dg_origin_found:
   for +origins: List<&2, DOrigin>
   for +name: String
   for +rest: List<&2, KTerm>
   for +found: DSpan
   DSpan
-
-law diagnostic_locate:
-  for +diagnostic: DDiagnostic
-  for +origins: List<&2, DOrigin>
-  DDiagnostic
-
-law diagnostic_result_locate:
-  for +result: DResult
-  for +origins: List<&2, DOrigin>
-  DResult
-
-law dg_finish:
-  for +error: String
-  for +book: List<&2, KDef>
-  for +diagnostic: DDiagnostic
-  for +origins: List<&2, DOrigin>
-  DResult
 
 law check_book_diagnostic:
   for +book: List<&2, KDef>
@@ -83,7 +44,10 @@ law dg_adt_error:
   KChecked
 
 @unsafe
-def dg_span_same(a, b):
+def dg_span_same(
+  +a: DSpan,
+  +b: DSpan,
+) -> Bool:
   match a:
     case DNoSpan{}: False{}
     case DSpan{s, b0, e0}: dg_span_fields(s, b0, e0, b)
@@ -95,20 +59,31 @@ def dg_span_fields(s, b0, e0, b):
     case DSpan{t, b1, e1}: String.eq(s, t) && U32.is_eq(b0, b1) && U32.is_eq(e0, e1)
 
 @unsafe
-def dg_has_span(s):
+def dg_has_span(
+  +s: DSpan,
+) -> Bool:
   match s:
     case DNoSpan{}: False{}
     case DSpan{source, begin, end}: True{}
 
 @unsafe
-def dg_origin_scan(origins, name, t, found):
+def dg_origin_scan(
+  +origins: List<&2, DOrigin>,
+  +name: String,
+  +t: KTerm,
+  +found: DSpan,
+) -> DSpan:
   match origins:
     case Nil{}: found
     case Con{DOrigin{definition, term, source, begin, end, path}, rest}:
       kc(DSpan, String.eq(name, definition) && norm_exact(t, term), u => kc(DSpan, Bool.not(dg_has_span(found)) || dg_span_same(found, DSpan{source, begin, end}), u => dg_origin_scan(rest, name, t, DSpan{source, begin, end}), u => DNoSpan{}), u => dg_origin_scan(rest, name, t, found))
 
 @unsafe
-def dg_origin_trail(origins, name, trail):
+def dg_origin_trail(
+  +origins: List<&2, DOrigin>,
+  +name: String,
+  +trail: List<&2, KTerm>,
+) -> DSpan:
   match trail:
     case Nil{}: DNoSpan{}
     case Con{h, rest}: dg_origin_found(origins, name, rest, dg_origin_scan(origins, name, h, DNoSpan{}))
@@ -118,18 +93,29 @@ def dg_origin_found(origins, name, rest, found):
   kc(DSpan, dg_has_span(found), u => found, u => dg_origin_trail(origins, name, rest))
 
 @unsafe
-def diagnostic_locate(diagnostic, origins):
+def diagnostic_locate(
+  +diagnostic: DDiagnostic,
+  +origins: List<&2, DOrigin>,
+) -> DDiagnostic:
   match diagnostic:
     case DDiagnostic{expected, observed, has_observed, context, definition, span, note, trail}:
       DDiagnostic{expected, observed, has_observed, context, definition, kc(DSpan, dg_has_span(span), u => span, u => dg_origin_trail(origins, definition, trail)), note, trail}
 
 @unsafe
-def diagnostic_result_locate(result, origins):
+def diagnostic_result_locate(
+  +result: DResult,
+  +origins: List<&2, DOrigin>,
+) -> DResult:
   match result:
     case DResult{error, book, diagnostic}: DResult{error, book, diagnostic_locate(diagnostic, origins)}
 
 @unsafe
-def dg_finish(error, book, diagnostic, origins):
+def dg_finish(
+  +error: String,
+  +book: List<&2, KDef>,
+  +diagnostic: DDiagnostic,
+  +origins: List<&2, DOrigin>,
+) -> DResult:
   DResult{error, book, diagnostic_locate(diagnostic, origins)}
 
 @unsafe
@@ -241,12 +227,10 @@ def dg_adt_error(t, d):
 law dg_result_error:
   for +result: DResult
   String
-law compiler_check_result_abi:
-  U32
 @unsafe
 def dg_result_error(result):
   match result:
     case DResult{error, book, diagnostic}: error
 @unsafe
-def compiler_check_result_abi():
+def compiler_check_result_abi() -> U32:
   1

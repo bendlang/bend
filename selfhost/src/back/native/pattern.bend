@@ -7,13 +7,6 @@ type NPLevel is Data:
 type NPRow is Data:
   NPRow{+index: U32, +body: KTerm, +residual: U32, +apply: Bool, +last: Bool}
 
-law np_level:
-  for +term: KTerm
-  for +zero: KTerm
-  for +successor: KTerm
-  for +hasZero: Bool
-  for +hasSucc: Bool
-  NPLevel
 law np_level_mat:
   for +term: KTerm
   for +zero: KTerm
@@ -21,11 +14,6 @@ law np_level_mat:
   for +hasZero: Bool
   for +hasSucc: Bool
   NPLevel
-law np_collect:
-  for +term: KTerm
-  for +depth: U32
-  for +built: List<&2,NPRow>
-  List<&2,NPRow>
 law np_collect_level:
   for +term: KTerm
   for +depth: U32
@@ -78,22 +66,30 @@ law np_match_apply:
   for +env: List<&2,NC_Binding>
   for +next: U32
   NC_Code
-law np_supported:
-  for +term: KTerm
-  Bool
-
 @unsafe
-def np_supported(term):
+def np_supported(
+  +term: KTerm,
+) -> Bool:
   String.eq(tg(term), "Mat") && ((String.eq(nm(term), "Zero") && (U32.is_eq(ix(term), 0) || U32.is_eq(ix(term), 1))) || (String.eq(nm(term), "Succ") && (U32.is_eq(ix(term), 0) || U32.is_eq(ix(term), 2))))
 @unsafe
-def np_level(term, zero, successor, hasZero, hasSucc):
+def np_level(
+  +term: KTerm,
+  +zero: KTerm,
+  +successor: KTerm,
+  +hasZero: Bool,
+  +hasSucc: Bool,
+) -> NPLevel:
   nt_choose(NPLevel, String.eq(tg(term), "Mat"), u => np_level_mat(term, zero, successor, hasZero, hasSucc), u => NPLevel{zero, successor, term, hasZero, hasSucc, True{}})
 @unsafe
 def np_level_mat(term, zero, successor, hasZero, hasSucc):
   nt_choose(NPLevel, np_supported(term) && String.eq(nm(term), "Zero") && Bool.not(hasZero), u => np_level(kid(term, 1), kid(term, 0), successor, True{}, hasSucc), u =>
     nt_choose(NPLevel, np_supported(term) && String.eq(nm(term), "Succ") && Bool.not(hasSucc), u => np_level(kid(term, 1), zero, kid(term, 0), hasZero, True{}), u => NPLevel{zero, successor, term, hasZero, hasSucc, False{}}))
 @unsafe
-def np_collect(term, depth, built):
+def np_collect(
+  +term: KTerm,
+  +depth: U32,
+  +built: List<&2,NPRow>,
+) -> List<&2,NPRow>:
   np_collect_level(term, depth, built, np_level(term, atom("Efq"), atom("Efq"), False{}, False{}))
 @unsafe
 def np_collect_level(term, depth, built, level):
@@ -129,15 +125,14 @@ def np_row_code(book, body, residual, apply, word, env, next):
     u => nc_prepend("Term v_" ++ U32.show(nc_id(next)) ++ " = (" ++ word ++ " - " ++ U32.show(residual) ++ "ull);\n", nc_lower(book, app(body, var("", nc_id(next))), Con{nc_binding(nc_id(next)), env}, U32.inc(next))),
     u => nc_lower(book, body, env, next))
 
-law np_level_valid:
-  for +level: NPLevel
-  Bool
 law np_can_match:
   for +term: KTerm
   Bool
 
 @unsafe
-def np_level_valid(level):
+def np_level_valid(
+  +level: NPLevel,
+) -> Bool:
   match level:
     case NPLevel{zero, successor, fallback, hasZero, hasSucc, valid}:
       valid && (hasZero || hasSucc)

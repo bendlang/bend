@@ -1,0 +1,25 @@
+{
+  "kind": "s4-frozen-s3-core-source-pair",
+  "complete": true,
+  "pass": true,
+  "api": "selfhost/build/phase7/s3/attempt-01/api.mjs",
+  "apiSha256": "ba121e4098044d9f106c4e7cb3e37b0e1ce1bc77f7e42f7e5418556b7f0f3e90",
+  "rows": [
+    {
+      "version": "baseline",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/core-pilot-01/baseline/core.bend",
+      "sha256": "f9977208ec98802295684c912836141b01a802d14590e33b71d004f14f8dd659",
+      "parseError": "",
+      "loadError": "",
+      "checkError": ""
+    },
+    {
+      "version": "pilot",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/core-pilot-01/pilot/core.bend",
+      "sha256": "d087e217e30fc9835bf0c111a9300d988596b15f4415552380fe12f163796ef6",
+      "parseError": "",
+      "loadError": "",
+      "checkError": ""
+    }
+  ]
+}

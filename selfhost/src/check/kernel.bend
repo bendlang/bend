@@ -7,115 +7,6 @@ type KChecked is Data:
 type KEnv is Data:
   KEnv{+book: List<&2, KDef>, +name: String, +lhs: KTerm, +pending: U32, +quantities: List<&2, KTerm>, +unsafe: Bool}
 
-law cb:
-  for +e: KEnv
-  List<&2, KDef>
-
-law cn:
-  for +e: KEnv
-  String
-
-law cl:
-  for +e: KEnv
-  KTerm
-
-law cp:
-  for +e: KEnv
-  U32
-
-law cq:
-  for +e: KEnv
-  List<&2, KTerm>
-
-law cu:
-  for +e: KEnv
-  Bool
-
-law ct:
-  for +r: KChecked
-  KTerm
-
-law cy:
-  for +r: KChecked
-  KTerm
-
-law cs:
-  for +r: KChecked
-  List<&2, KTerm>
-
-law ce:
-  for +r: KChecked
-  String
-
-law ok:
-  for +t: KTerm
-  for +ty: KTerm
-  for +us: List<&2, KTerm>
-  KChecked
-
-law bad:
-  for +msg: String
-  KChecked
-
-law good:
-  for +r: KChecked
-  Bool
-
-law checked:
-  for +r: KChecked
-  for +t: KTerm
-  for +ty: KTerm
-  KChecked
-
-law both:
-  for +a: KChecked
-  for +b: KChecked
-  for +t: KTerm
-  for +ty: KTerm
-  for +join: Bool
-  KChecked
-
-law ctx_get:
-  for +ctx: List<&2, KTerm>
-  for +id: U32
-  KTerm
-
-law ctx_bind:
-  for +ctx: List<&2, KTerm>
-  for +id: U32
-  for +q: U32
-  for +name: String
-  for +ty: KTerm
-  List<&2, KTerm>
-
-law kindq:
-  for +e: KEnv
-  for +q: U32
-  U32
-
-law kapply:
-  for +fn: KTerm
-  for +x: KTerm
-  KTerm
-
-law lhs_step:
-  for +e: KEnv
-  for +x: KTerm
-  KEnv
-
-law unargs:
-  for +t: KTerm
-  for +acc: List<&2, KTerm>
-  List<&2, KTerm>
-
-law infer:
-  for +e: KEnv
-  for +ctx: List<&2, KTerm>
-  for +t: KTerm
-  for +dem: U32
-  for +sp: List<&2, KTerm>
-  KChecked
-
 law infer_node:
   for +e: KEnv
   for +ctx: List<&2, KTerm>
@@ -176,25 +67,10 @@ law tele_check:
   for +dem: U32
   KChecked
 
-law tele_check_head:
-  for +e: KEnv
-  for +ctx: List<&2, KTerm>
-  for +tel: KTerm
-  for +h: KTerm
-  for +rest: List<&2, KTerm>
-  for +dem: U32
-  KChecked
-
 law tele_check_done:
   for +a: KChecked
   for +b: KChecked
   KChecked
-
-law tele_fill:
-  for +book: List<&2, KDef>
-  for +tel: KTerm
-  for +args: List<&2, KTerm>
-  KTerm
 
 law tele_fill_head:
   for +book: List<&2, KDef>
@@ -321,20 +197,6 @@ law check_let_done:
   for +us: List<&2, KTerm>
   KChecked
 
-law remaining:
-  for +cs: List<&2, KDef>
-  for +removed: List<&2, String>
-  List<&2, KDef>
-
-law defs_empty:
-  for +ds: List<&2, KDef>
-  Bool
-
-law ctx_dead:
-  for +book: List<&2, KDef>
-  for +ctx: List<&2, KTerm>
-  Bool
-
 law dead_type:
   for +book: List<&2, KDef>
   for +ty: KTerm
@@ -385,14 +247,6 @@ law mat_goal_head:
   for +xs: List<&2, KTerm>
   KTerm
 
-law lhs_ext:
-  for +lhs: KTerm
-  for +name: String
-  for +tel: KTerm
-  for +n: U32
-  for +xs: List<&2, KTerm>
-  KTerm
-
 law mat_lhs:
   for +e: KEnv
   for +name: String
@@ -430,34 +284,11 @@ law check_rwt_goal:
   for +fresh: U32
   KChecked
 
-law tele_quantities:
-  for +book: List<&2, KDef>
-  for +ty: KTerm
-  for +n: U32
-  List<&2, KTerm>
-
 law tele_quantities_head:
   for +book: List<&2, KDef>
   for +ty: KTerm
   for +n: U32
   List<&2, KTerm>
-
-law declared:
-  for +d: KDef
-  KDef
-
-law check_book:
-  for +book: List<&2, KDef>
-  String
-
-law check_events:
-  for +todo: List<&2, KDef>
-  for +done: List<&2, KDef>
-  String
-
-law check_open:
-  for +book: List<&2, KDef>
-  String
 
 law count_open:
   for +book: List<&2, KDef>
@@ -467,36 +298,15 @@ law check_open_message:
   for +n: U32
   String
 
-law signature_mode:
-  for +d: KDef
-  for +later: List<&2, KDef>
-  KDef
-
 law signature_fill_mode:
   for +d: KDef
   for +fill: KDef
   KDef
 
-law event_error:
-  for +done: List<&2, KDef>
-  for +d: KDef
-  for +old: KDef
-  String
-
-law constructor_exists:
-  for +ds: List<&2, KDef>
-  for +name: String
-  Bool
-
 law constructor_names:
   for +done: List<&2, KDef>
   for +ctrs: List<&2, KDef>
   for +names: List<&2, String>
-  String
-
-law check_definition:
-  for +book: List<&2, KDef>
-  for +d: KDef
   String
 
 law check_definition_type:
@@ -506,23 +316,10 @@ law check_definition_type:
   for +r: KChecked
   KChecked
 
-law foreign_tip:
-  for +t: KTerm
-  KTerm
-
-law foreign_head:
-  for +t: KTerm
-  KTerm
-
 law check_foreign:
   for +book: List<&2, KDef>
   for +d: KDef
   String
-
-law tele_tip:
-  for +book: List<&2, KDef>
-  for +t: KTerm
-  KTerm
 
 law tele_tip_head:
   for +book: List<&2, KDef>
@@ -614,11 +411,6 @@ law template_arg_done:
   for +r: KChecked
   KChecked
 
-law self_pending:
-  for +d: KDef
-  for +body: KTerm
-  U32
-
 law contains_self:
   for +todo: List<&2, KTerm>
   for +name: String
@@ -653,87 +445,128 @@ law check_template_open:
   KChecked
 
 @unsafe
-def cb(e):
+def cb(
+  +e: KEnv,
+) -> List<&2, KDef>:
   match e:
     case KEnv{book, name, lhs, pending, quantities, unsafe}:
       book
 
 @unsafe
-def cn(e):
+def cn(
+  +e: KEnv,
+) -> String:
   match e:
     case KEnv{book, name, lhs, pending, quantities, unsafe}:
       name
 
 @unsafe
-def cl(e):
+def cl(
+  +e: KEnv,
+) -> KTerm:
   match e:
     case KEnv{book, name, lhs, pending, quantities, unsafe}:
       lhs
 
 @unsafe
-def cp(e):
+def cp(
+  +e: KEnv,
+) -> U32:
   match e:
     case KEnv{book, name, lhs, pending, quantities, unsafe}:
       pending
 
 @unsafe
-def cq(e):
+def cq(
+  +e: KEnv,
+) -> List<&2, KTerm>:
   match e:
     case KEnv{book, name, lhs, pending, quantities, unsafe}:
       quantities
 
 @unsafe
-def cu(e):
+def cu(
+  +e: KEnv,
+) -> Bool:
   match e:
     case KEnv{book, name, lhs, pending, quantities, unsafe}:
       unsafe
 
 @unsafe
-def ct(r):
+def ct(
+  +r: KChecked,
+) -> KTerm:
   match r:
     case KChecked{term, typ, uses, error}:
       term
 
 @unsafe
-def cy(r):
+def cy(
+  +r: KChecked,
+) -> KTerm:
   match r:
     case KChecked{term, typ, uses, error}:
       typ
 
 @unsafe
-def cs(r):
+def cs(
+  +r: KChecked,
+) -> List<&2, KTerm>:
   match r:
     case KChecked{term, typ, uses, error}:
       uses
 
 @unsafe
-def ce(r):
+def ce(
+  +r: KChecked,
+) -> String:
   match r:
     case KChecked{term, typ, uses, error}:
       error
 
 @unsafe
-def ok(t, ty, us):
+def ok(
+  +t: KTerm,
+  +ty: KTerm,
+  +us: List<&2, KTerm>,
+) -> KChecked:
   KChecked{t, ty, us, ""}
 
 @unsafe
-def bad(msg):
+def bad(
+  +msg: String,
+) -> KChecked:
   KChecked{atom("Error"), atom("Error"), Nil{}, msg}
 
 @unsafe
-def good(r):
+def good(
+  +r: KChecked,
+) -> Bool:
   String.eq(ce(r), "")
 
 @unsafe
-def checked(r, t, ty):
+def checked(
+  +r: KChecked,
+  +t: KTerm,
+  +ty: KTerm,
+) -> KChecked:
   kc(KChecked, good(r), u => ok(t, ty, cs(r)), u => r)
 
 @unsafe
-def both(a, b, t, ty, join):
+def both(
+  +a: KChecked,
+  +b: KChecked,
+  +t: KTerm,
+  +ty: KTerm,
+  +join: Bool,
+) -> KChecked:
   kc(KChecked, good(a), u => kc(KChecked, good(b), u => ok(t, ty, uses_merge(cs(a), cs(b), join)), u => b), u => a)
 
 @unsafe
-def ctx_get(ctx, id):
+def ctx_get(
+  +ctx: List<&2, KTerm>,
+  +id: U32,
+) -> KTerm:
   match ctx:
     case Nil{}:
       atom("Absent")
@@ -741,27 +574,51 @@ def ctx_get(ctx, id):
       kc(KTerm, U32.is_eq(ix(h), id), u => h, u => ctx_get(t, id))
 
 @unsafe
-def ctx_bind(ctx, id, q, name, ty):
+def ctx_bind(
+  +ctx: List<&2, KTerm>,
+  +id: U32,
+  +q: U32,
+  +name: String,
+  +ty: KTerm,
+) -> List<&2, KTerm>:
   Con{kt("Bind", name, id, q, Con{ty, Nil{}}), ctx}
 
 @unsafe
-def kindq(e, q):
+def kindq(
+  +e: KEnv,
+  +q: U32,
+) -> U32:
   kc(U32, cu(e) && U32.is_eq(q, 2), u => 1, u => q)
 
 @unsafe
-def kapply(fn, x):
+def kapply(
+  +fn: KTerm,
+  +x: KTerm,
+) -> KTerm:
   kc(KTerm, String.eq(tg(strip(fn)), "Lam"), u => subst(kid(strip(fn), 0), ix(strip(fn)), x), u => app(fn, x))
 
 @unsafe
-def lhs_step(e, x):
+def lhs_step(
+  +e: KEnv,
+  +x: KTerm,
+) -> KEnv:
   kc(KEnv, U32.is_eq(cp(e), 0), u => e, u => KEnv{cb(e), cn(e), kapply(cl(e), x), U32.sub(cp(e), 1), cq(e), cu(e)})
 
 @unsafe
-def unargs(t, acc):
+def unargs(
+  +t: KTerm,
+  +acc: List<&2, KTerm>,
+) -> List<&2, KTerm>:
   kc(List<&2, KTerm>, String.eq(tg(t), "App"), u => unargs(kid(t, 0), Con{kid(t, 1), acc}), u => acc)
 
 @unsafe
-def infer(e, ctx, t, dem, sp):
+def infer(
+  +e: KEnv,
+  +ctx: List<&2, KTerm>,
+  +t: KTerm,
+  +dem: U32,
+  +sp: List<&2, KTerm>,
+) -> KChecked:
   dg_trace(e, ctx, t, atom("Absent"), infer_node(e, ctx, core_beta(t), dem, sp))
 
 @unsafe
@@ -817,7 +674,14 @@ def tele_check(e, ctx, tel, args, dem):
       tele_check_cached_head(e, ctx, wnf(cb(e), tel), h, t, dem)
 
 @unsafe
-def tele_check_head(e, ctx, tel, h, rest, dem):
+def tele_check_head(
+  +e: KEnv,
+  +ctx: List<&2, KTerm>,
+  +tel: KTerm,
+  +h: KTerm,
+  +rest: List<&2, KTerm>,
+  +dem: U32,
+) -> KChecked:
   kc(KChecked, String.eq(tg(tel), "All"), u => tele_check_done(check(e, ctx, h, qdem(qt(tel), dem), kid(tel, 0)), tele_check(e, ctx, subst(kid(tel, 1), ix(tel), h), rest, dem)), u => bad("too many telescope arguments"))
 
 @unsafe
@@ -825,7 +689,11 @@ def tele_check_done(a, b):
   both(a, b, ct(b), cy(b), False{})
 
 @unsafe
-def tele_fill(book, tel, args):
+def tele_fill(
+  +book: List<&2, KDef>,
+  +tel: KTerm,
+  +args: List<&2, KTerm>,
+) -> KTerm:
   match args:
     case Nil{}:
       tel
@@ -912,7 +780,10 @@ def check_let_done(r, bs, us):
       kc(KChecked, U32.is_gt(uses_get(cs(r), ix(h)), qt(h)), u => dg_quant_error("let binder consumed more than allowed", nm(h), qt(h), uses_get(cs(r), ix(h))), u => kc(KChecked, good(r), u => check_let_done(ok(ct(r), cy(r), uses_del(cs(r), ix(h))), t, us), u => r))
 
 @unsafe
-def remaining(cs, removed):
+def remaining(
+  +cs: List<&2, KDef>,
+  +removed: List<&2, String>,
+) -> List<&2, KDef>:
   match cs:
     case Nil{}:
       Nil{}
@@ -920,7 +791,9 @@ def remaining(cs, removed):
       kc(List<&2, KDef>, has_name(removed, dn(h)), u => remaining(t, removed), u => Con{h, remaining(t, removed)})
 
 @unsafe
-def defs_empty(ds):
+def defs_empty(
+  +ds: List<&2, KDef>,
+) -> Bool:
   match ds:
     case Nil{}:
       True{}
@@ -928,7 +801,10 @@ def defs_empty(ds):
       False{}
 
 @unsafe
-def ctx_dead(book, ctx):
+def ctx_dead(
+  +book: List<&2, KDef>,
+  +ctx: List<&2, KTerm>,
+) -> Bool:
   match ctx:
     case Nil{}:
       False{}
@@ -969,7 +845,13 @@ def mat_goal_head(book, goal, tel, n, name, xs):
   all(kc(U32, U32.is_eq(qt(tel), 0), u => 0, u => kc(U32, U32.is_eq(qt(tel), 1), u => qt(goal), u => qadd(qt(goal), qt(goal)))), nm(tel), ix(tel), kid(tel, 0), mat_goal(book, goal, kid(tel, 1), U32.sub(n, 1), name, norm_join(xs, Con{var(nm(tel), ix(tel)), Nil{}})))
 
 @unsafe
-def lhs_ext(lhs, name, tel, n, xs):
+def lhs_ext(
+  +lhs: KTerm,
+  +name: String,
+  +tel: KTerm,
+  +n: U32,
+  +xs: List<&2, KTerm>,
+) -> KTerm:
   kc(KTerm, U32.is_eq(n, 0), u => kapply(lhs, kt("Ctr", name, 0, 0, xs)), u => kt("Lam", nm(tel), ix(tel), qt(tel), Con{lhs_ext(lhs, name, kid(tel, 1), U32.sub(n, 1), norm_join(xs, Con{var(nm(tel), ix(tel)), Nil{}})), Nil{}}))
 
 @unsafe
@@ -991,7 +873,11 @@ def check_rwt_goal(e, ctx, t, dem, ty, r, eq, fresh):
    u => dg_bad_detail("rewrite motive does not fit goal", ty, kapply(kapply(kid(t, 1), kid(eq, 1)), kid(t, 0))))
 
 @unsafe
-def tele_quantities(book, ty, n):
+def tele_quantities(
+  +book: List<&2, KDef>,
+  +ty: KTerm,
+  +n: U32,
+) -> List<&2, KTerm>:
   kc(List<&2, KTerm>, U32.is_eq(n, 0), u => Nil{}, u => tele_quantities_head(book, wnf(book, ty), n))
 
 @unsafe
@@ -999,19 +885,21 @@ def tele_quantities_head(book, ty, n):
   Con{qua(kc(U32, String.eq(tg(ty), "All"), u => qt(ty), u => 1)), tele_quantities(book, kid(ty, 1), U32.sub(n, 1))}
 
 @unsafe
-def declared(d):
+def declared(
+  +d: KDef,
+) -> KDef:
   KDef{dn(d), dk(d), da(d), dx(d), dt(d), atom("Absent"), dc(d), db(d), du(d)}
 
 @unsafe
-def check_book(book):
+def check_book(
+  +book: List<&2, KDef>,
+) -> String:
   dg_result_error(check_book_diagnostic(book, Nil{}))
 
 @unsafe
-def check_events(todo, done):
-  dg_result_error(dg_suffix_events(todo, done, todo, Nil{}))
-
-@unsafe
-def check_open(book):
+def check_open(
+  +book: List<&2, KDef>,
+) -> String:
   check_open_message(count_open(book))
 
 @unsafe
@@ -1027,7 +915,10 @@ def check_open_message(n):
   kc(String, U32.is_eq(n, 0), u => "", u => U32.show(n) ++ " TODO" ++ kc(String, U32.is_eq(n, 1), u => "", u => "s") ++ " found.\nThe code is incomplete, and not a valid proof yet.")
 
 @unsafe
-def signature_mode(d, later):
+def signature_mode(
+  +d: KDef,
+  +later: List<&2, KDef>,
+) -> KDef:
   kc(KDef, String.eq(dk(d), "Def") && String.eq(tg(dv(d)), "Absent") && Bool.not(du(d)), u => signature_fill_mode(d, lookup(later, dn(d))), u => d)
 
 @unsafe
@@ -1035,11 +926,18 @@ def signature_fill_mode(d, fill):
   KDef{dn(d), dk(d), da(d), dx(d), dt(d), dv(d), dc(d), db(d), du(d) || (String.eq(dk(fill), "Def") && Bool.not(String.eq(tg(dv(fill)), "Absent")) && du(fill))}
 
 @unsafe
-def event_error(done, d, old):
+def event_error(
+  +done: List<&2, KDef>,
+  +d: KDef,
+  +old: KDef,
+) -> String:
   kc(String, String.eq(dk(old), "Absent"), u => kc(String, String.eq(dk(d), "ADT"), u => constructor_names(done, dc(d), Nil{}), u => ""), u => kc(String, String.eq(dk(old), "Def") && String.eq(dk(d), "Def") && String.eq(tg(dv(old)), "Absent") && Bool.not(String.eq(tg(dv(d)), "Absent")), u => kc(String, compare(done, dt(old), dt(d), False{}) && U32.is_eq(dx(old), dx(d)), u => "", u => "definition does not match prior law signature"), u => "duplicate declaration"))
 
 @unsafe
-def constructor_exists(ds, name):
+def constructor_exists(
+  +ds: List<&2, KDef>,
+  +name: String,
+) -> Bool:
   match ds:
     case Nil{}:
       False{}
@@ -1055,7 +953,10 @@ def constructor_names(done, ctrs, names):
       kc(String, has_name(names, dn(h)) || constructor_exists(done, dn(h)), u => "duplicate constructor name", u => constructor_names(done, rest, Con{dn(h), names}))
 
 @unsafe
-def check_definition(book, d):
+def check_definition(
+  +book: List<&2, KDef>,
+  +d: KDef,
+) -> String:
   ce(check_definition_result(book, d))
 
 law check_definition_result:
@@ -1074,11 +975,15 @@ def check_definition_type(book, d, e, r):
    u => kc(KChecked, String.eq(tg(dv(d)), "Absent"), u => r, u => kc(KChecked, String.eq(tg(dv(d)), "Foreign"), u => bad(check_foreign(book, d)), u => check_template_definition(book, d, dt(d), dv(d), ref(dn(d)), dx(d))))), u => r)
 
 @unsafe
-def foreign_tip(t):
+def foreign_tip(
+  +t: KTerm,
+) -> KTerm:
   kc(KTerm, String.eq(tg(strip(t)), "All"), u => foreign_tip(kid(strip(t), 1)), u => strip(t))
 
 @unsafe
-def foreign_head(t):
+def foreign_head(
+  +t: KTerm,
+) -> KTerm:
   kc(KTerm, String.eq(tg(t), "App"), u => foreign_head(kid(t, 0)), u => t)
 
 @unsafe
@@ -1086,7 +991,10 @@ def check_foreign(book, d):
   kc(String, U32.is_eq(dx(d), 0) && String.eq(tg(foreign_head(foreign_tip(dt(d)))), "Ref") && String.eq(nm(foreign_head(foreign_tip(dt(d)))), "IO") && String.eq(dk(lookup(book, "IO")), "Def") && db(lookup(book, "IO")), u => "", u => "foreign definition must return base IO directly")
 
 @unsafe
-def tele_tip(book, t):
+def tele_tip(
+  +book: List<&2, KDef>,
+  +t: KTerm,
+) -> KTerm:
   tele_tip_head(book, wnf(book, t))
 
 @unsafe
@@ -1142,7 +1050,10 @@ def template_arg_done(e, ty, h, rest, n, r):
   kc(KChecked, good(r), u => template_args(e, subst(kid(ty, 1), ix(ty), h), rest, U32.sub(n, 1)), u => bad("template argument is open or ill-typed"))
 
 @unsafe
-def self_pending(d, body):
+def self_pending(
+  +d: KDef,
+  +body: KTerm,
+) -> U32:
   kc(U32, Bool.not(du(d)) && contains_self(Con{body, Nil{}}, dn(d)), u => U32.sub(da(d), dx(d)), u => 0)
 
 @unsafe
@@ -1175,24 +1086,8 @@ law tele_check_cached_head:
   for +dem: U32
   KChecked
 
-law tele_check_static:
-  for +e: KEnv
-  for +ctx: List<&2, KTerm>
-  for +tel: KTerm
-  for +args: List<&2, KTerm>
-  for +dem: U32
-  KChecked
-
 # A failed fact uses the original remaining traversal, avoiding repeated scans
 # of dependent tails. The public tele_check_head retains its existing behavior.
-law tele_check_legacy:
-  for +e: KEnv
-  for +ctx: List<&2, KTerm>
-  for +tel: KTerm
-  for +args: List<&2, KTerm>
-  for +dem: U32
-  KChecked
-
 law tele_check_legacy_head:
   for +e: KEnv
   for +ctx: List<&2, KTerm>
@@ -1209,7 +1104,13 @@ def tele_check_cached_head(e, ctx, tel, h, rest, dem):
     u => bad("too many telescope arguments"))
 
 @unsafe
-def tele_check_static(e, ctx, tel, args, dem):
+def tele_check_static(
+  +e: KEnv,
+  +ctx: List<&2, KTerm>,
+  +tel: KTerm,
+  +args: List<&2, KTerm>,
+  +dem: U32,
+) -> KChecked:
   match args:
     case Nil{}: ok(atom("Args"), tel, Nil{})
     case Con{h, rest}:
@@ -1218,7 +1119,13 @@ def tele_check_static(e, ctx, tel, args, dem):
         u => tele_check(e, ctx, tel, args, dem))
 
 @unsafe
-def tele_check_legacy(e, ctx, tel, args, dem):
+def tele_check_legacy(
+  +e: KEnv,
+  +ctx: List<&2, KTerm>,
+  +tel: KTerm,
+  +args: List<&2, KTerm>,
+  +dem: U32,
+) -> KChecked:
   match args:
     case Nil{}: ok(atom("Args"), tel, Nil{})
     case Con{h, rest}:

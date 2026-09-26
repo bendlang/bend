@@ -16,22 +16,6 @@ law dg_bad_message:
   for +expected: KTerm
   KChecked
 
-law dg_pair:
-  for +expected: KTerm
-  for +observed: KTerm
-  KTerm
-
-law dg_family:
-  for +book: List<&2, KDef>
-  for +name: String
-  String
-
-law dg_typeless:
-  for +book: List<&2, KDef>
-  for +ctx: List<&2, KTerm>
-  for +t: KTerm
-  KTerm
-
 law dg_trace:
   for +e: KEnv
   for +ctx: List<&2, KTerm>
@@ -56,20 +40,6 @@ law dg_reason:
   for +code: String
   KTerm
 
-law dg_as_expr:
-  for +t: KTerm
-  DExpr
-
-law dg_no_report:
-  for +name: String
-  for +message: String
-  DDiagnostic
-
-law dg_report:
-  for +r: KChecked
-  for +name: String
-  DDiagnostic
-
 @unsafe
 def dg_text(s):
   kt("DText", s, 0, 0, Nil{})
@@ -83,17 +53,27 @@ def dg_bad_message(message, expected):
   KChecked{kt("DDetail", "", 0, 0, [expected, atom("Absent")]), atom("Error"), Nil{}, message}
 
 @unsafe
-def dg_pair(expected, observed):
+def dg_pair(
+  +expected: KTerm,
+  +observed: KTerm,
+) -> KTerm:
   kt("DDetail", "", 0, 1, [expected, observed])
 
 @unsafe
-def dg_family(book, name):
+def dg_family(
+  +book: List<&2, KDef>,
+  +name: String,
+) -> String:
   match book:
     case Nil{}: ""
     case Con{d, rest}: kc(String, String.eq(dk(d), "ADT") && Bool.not(String.eq(dk(lookup(dc(d), name)), "Absent")), u => dn(d), u => dg_family(rest, name))
 
 @unsafe
-def dg_typeless(book, ctx, t):
+def dg_typeless(
+  +book: List<&2, KDef>,
+  +ctx: List<&2, KTerm>,
+  +t: KTerm,
+) -> KTerm:
   dg_text("non-inferrable term '" ++ dg_expr(book, DTerm{t}, dg_scope(List.reverse(&2, KTerm, ctx), Nil{})) ++ "'" ++ kc(String, String.eq(tg(t), "Ctr") && String.eq(dk(lookup(book, nm(t))), "ADT"), u => " (" ++ nm(t) ++ " is a datatype: write its arguments as <>)", u => ""))
 
 @unsafe
@@ -118,14 +98,22 @@ def dg_reason(e, ctx, t, ty, code):
    u => kt("DDetail", "", 0, 0, [dg_text(code), atom("Absent")]))))))))))
 
 @unsafe
-def dg_as_expr(t):
+def dg_as_expr(
+  +t: KTerm,
+) -> DExpr:
   kc(DExpr, String.eq(tg(t), "DText"), u => DText{nm(t)}, u => DTerm{t})
 
 @unsafe
-def dg_no_report(name, message):
+def dg_no_report(
+  +name: String,
+  +message: String,
+) -> DDiagnostic:
   DDiagnostic{DText{message}, DText{""}, False{}, Nil{}, name, DNoSpan{}, "", Nil{}}
 
 @unsafe
-def dg_report(r, name):
+def dg_report(
+  +r: KChecked,
+  +name: String,
+) -> DDiagnostic:
   kc(DDiagnostic, String.eq(tg(ct(r)), "DTrace"), u => DDiagnostic{dg_as_expr(kid(ct(r), 0)), dg_as_expr(kid(ct(r), 1)), U32.is_eq(qt(ct(r)), 1), ks(kid(ct(r), 2)), nm(ct(r)), DNoSpan{}, "", ks(kid(ct(r), 4))}, u => dg_no_report(name, ce(r)))
 

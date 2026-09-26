@@ -1,16 +1,6 @@
 import Base
 
 # Persistent exact-name index for checked books. Source event lists remain intact.
-law index_hash:
-  for +name: String
-  for +acc: U32
-  U32
-
-law index_child:
-  for +tree: KDef
-  for +right: Bool
-  KDef
-
 law index_child_list:
   for +ds: List<&2, KDef>
   for +right: Bool
@@ -20,95 +10,23 @@ law index_first:
   for +ds: List<&2, KDef>
   KDef
 
-law index_find:
-  for +tree: KDef
-  for +name: String
-  for +hash: U32
-  for +bits: U32
-  KDef
-
 law index_bucket:
   for +ds: List<&2, KDef>
   for +name: String
   KDef
 
-law index_remove:
-  for +ds: List<&2, KDef>
-  for +name: String
-  List<&2, KDef>
-
-law index_set:
-  for +tree: KDef
-  for +d: KDef
-  for +hash: U32
-  for +bits: U32
-  KDef
-
 # Compressed persistent binary trie. Internal nodes carry one discriminating
 # hash bit; leaves retain exact-name buckets for complete 32-bit collisions.
-law index_tip:
-  for +tree: KDef
-  for +hash: U32
-  KDef
-
-law index_split_bit:
-  for +diff: U32
-  U32
-
-law index_leaf:
-  for +d: KDef
-  for +hash: U32
-  for +ds: List<&2, KDef>
-  KDef
-
-law index_node:
-  for +hash: U32
-  for +mask: U32
-  for +left: KDef
-  for +right: KDef
-  KDef
-
-law index_join:
-  for +tree: KDef
-  for +d: KDef
-  for +hash: U32
-  for +mask: U32
-  KDef
-
-law index_insert:
-  for +tree: KDef
-  for +d: KDef
-  for +hash: U32
-  for +mask: U32
-  KDef
-
-law index_build:
-  for +book: List<&2, KDef>
-  KDef
-
 law index_lookup:
   for +cache: KDef
   for +name: String
   KDef
 
-law book_cached:
-  for +book: List<&2, KDef>
-  for +bound: U32
-  List<&2, KDef>
-
-law index_put_rest:
-  for +cache: KDef
-  for +rest: List<&2, KDef>
-  for +name: String
-  List<&2, KDef>
-
-law book_put:
-  for +book: List<&2, KDef>
-  for +d: KDef
-  List<&2, KDef>
-
 @unsafe
-def index_hash(name, acc):
+def index_hash(
+  +name: String,
+  +acc: U32,
+) -> U32:
   match name:
     case SNil{}:
       acc
@@ -116,7 +34,10 @@ def index_hash(name, acc):
       index_hash(rest, U32.mul(U32.xor(acc, Char.to_u32(h)), 16777619))
 
 @unsafe
-def index_child(tree, right):
+def index_child(
+  +tree: KDef,
+  +right: Bool,
+) -> KDef:
   index_child_list(dc(tree), right)
 
 @unsafe
@@ -138,7 +59,12 @@ def index_first(ds):
 # The public callers supply complete 32-bit hashes. `bits` remains in this
 # internal ABI for the native identifier validator; paths use stored masks.
 @unsafe
-def index_find(tree, name, hash, bits):
+def index_find(
+  +tree: KDef,
+  +name: String,
+  +hash: U32,
+  +bits: U32,
+) -> KDef:
   kc(KDef, String.eq(dk(tree), "Absent"), u => missing(), u =>
     kc(KDef, U32.is_eq(dx(tree), 0),
       u => kc(KDef, U32.is_eq(da(tree), hash), u => index_bucket(dc(tree), name), u => missing()),
@@ -153,7 +79,10 @@ def index_bucket(ds, name):
       kc(KDef, String.eq(dn(h), name), u => h, u => index_bucket(rest, name))
 
 @unsafe
-def index_remove(ds, name):
+def index_remove(
+  +ds: List<&2, KDef>,
+  +name: String,
+) -> List<&2, KDef>:
   match ds:
     case Nil{}:
       Nil{}
@@ -161,31 +90,55 @@ def index_remove(ds, name):
       kc(List<&2, KDef>, String.eq(dn(h), name), u => index_remove(rest, name), u => Con{h, index_remove(rest, name)})
 
 @unsafe
-def index_tip(tree, hash):
+def index_tip(
+  +tree: KDef,
+  +hash: U32,
+) -> KDef:
   kc(KDef, U32.is_eq(dx(tree), 0), u => tree,
     u => index_tip(index_child(tree, Bool.not(U32.is_eq(U32.and(hash, dx(tree)), 0))), hash))
 
 # U32 subtraction wraps: x & (0 - x) isolates its lowest set bit, or 0.
 @unsafe
-def index_split_bit(diff):
+def index_split_bit(
+  +diff: U32,
+) -> U32:
   U32.and(diff, U32.sub(0, diff))
 
 @unsafe
-def index_leaf(d, hash, ds):
+def index_leaf(
+  +d: KDef,
+  +hash: U32,
+  +ds: List<&2, KDef>,
+) -> KDef:
   KDef{"", "IndexLeaf", hash, 0, atom("Absent"), atom("Absent"), Con{d, index_remove(ds, dn(d))}, True{}, False{}}
 
 @unsafe
-def index_node(hash, mask, left, right):
+def index_node(
+  +hash: U32,
+  +mask: U32,
+  +left: KDef,
+  +right: KDef,
+) -> KDef:
   KDef{"", "IndexNode", hash, mask, atom("Absent"), atom("Absent"), Con{left, Con{right, Nil{}}}, True{}, False{}}
 
 @unsafe
-def index_join(tree, d, hash, mask):
+def index_join(
+  +tree: KDef,
+  +d: KDef,
+  +hash: U32,
+  +mask: U32,
+) -> KDef:
   kc(KDef, U32.is_eq(U32.and(hash, mask), 0),
     u => index_node(da(tree), mask, index_leaf(d, hash, Nil{}), tree),
     u => index_node(da(tree), mask, tree, index_leaf(d, hash, Nil{})))
 
 @unsafe
-def index_insert(tree, d, hash, mask):
+def index_insert(
+  +tree: KDef,
+  +d: KDef,
+  +hash: U32,
+  +mask: U32,
+) -> KDef:
   kc(KDef, Bool.not(U32.is_eq(mask, 0)) && (U32.is_eq(dx(tree), 0) || U32.is_lt(mask, dx(tree))),
     u => index_join(tree, d, hash, mask),
     u => kc(KDef, U32.is_eq(dx(tree), 0),
@@ -195,12 +148,19 @@ def index_insert(tree, d, hash, mask):
         u => index_node(da(tree), dx(tree), index_child(tree, False{}), index_insert(index_child(tree, True{}), d, hash, mask)))))
 
 @unsafe
-def index_set(tree, d, hash, bits):
+def index_set(
+  +tree: KDef,
+  +d: KDef,
+  +hash: U32,
+  +bits: U32,
+) -> KDef:
   kc(KDef, String.eq(dk(tree), "Absent"), u => index_leaf(d, hash, Nil{}),
     u => index_insert(tree, d, hash, index_split_bit(U32.xor(hash, da(index_tip(tree, hash))))))
 
 @unsafe
-def index_build(book):
+def index_build(
+  +book: List<&2, KDef>,
+) -> KDef:
   match book:
     case Nil{}:
       missing()
@@ -212,19 +172,29 @@ def index_lookup(cache, name):
   index_find(index_first(dc(cache)), name, index_hash(name, 2166136261), 32)
 
 @unsafe
-def book_cached(book, bound):
+def book_cached(
+  +book: List<&2, KDef>,
+  +bound: U32,
+) -> List<&2, KDef>:
   Con{KDef{"$kernel.cache", "BookCache", bound, 0, atom("Absent"), atom("Absent"), Con{index_build(book), Nil{}}, True{}, False{}}, book}
 
 # A cached name miss proves the declaration list contains nothing to remove.
 # Missing definitions have the empty name. Preserve the generic empty-name case
 # through filtering, even for malformed/duplicate books supplied through the API.
 @unsafe
-def index_put_rest(cache, rest, name):
+def index_put_rest(
+  +cache: KDef,
+  +rest: List<&2, KDef>,
+  +name: String,
+) -> List<&2, KDef>:
   kc(List<&2, KDef>, Bool.not(String.eq(name, "")) && String.eq(dn(index_lookup(cache, name)), ""),
     u => rest, u => index_remove(rest, name))
 
 @unsafe
-def book_put(book, d):
+def book_put(
+  +book: List<&2, KDef>,
+  +d: KDef,
+) -> List<&2, KDef>:
   match book:
     case Nil{}:
       Con{d, Nil{}}
@@ -234,12 +204,10 @@ def book_put(book, d):
 
 # An immutable context may be reused by several backend phases. Never nest the
 # sentinel or recompute its maximum binder ID from the index's implementation.
-law book_context:
-  for +book: List<&2, KDef>
-  List<&2, KDef>
-
 @unsafe
-def book_context(book):
+def book_context(
+  +book: List<&2, KDef>,
+) -> List<&2, KDef>:
   match book:
     case Nil{}:
       book_cached(book, 0)
@@ -249,24 +217,6 @@ def book_context(book):
 
 # Exact final-definition selection. Short event lists use the original scan.
 # Marker values distinguish even the empty name from an unsuccessful lookup.
-law book_final_fast:
-  for +book: List<&2,KDef>
-  for +done: List<&2,KDef>
-  List<&2,KDef>
-
-law book_final_names_valid:
-  for +book: List<&2,KDef>
-  Bool
-
-law book_final_name_valid:
-  for +name: String
-  Bool
-
-law book_final_large:
-  for +book: List<&2,KDef>
-  for +remaining: U32
-  Bool
-
 law book_final_reverse:
   for +book: List<&2,KDef>
   for +done: List<&2,KDef>
@@ -293,19 +243,16 @@ law book_final_filter:
   for +seen: KDef
   List<&2,KDef>
 
-law book_final_seen:
-  for +seen: KDef
-  for +name: String
-  for +hash: U32
-  Bool
-
 law book_final_legacy:
   for +book: List<&2,KDef>
   for +done: List<&2,KDef>
   List<&2,KDef>
 
 @unsafe
-def book_final_large(book, remaining):
+def book_final_large(
+  +book: List<&2,KDef>,
+  +remaining: U32,
+) -> Bool:
   match book:
     case Nil{}: U32.is_eq(remaining, 0)
     case Con{h, rest}:
@@ -315,7 +262,9 @@ def book_final_large(book, remaining):
 # Projection and Char.to_u32 do not throw on surrogate codepoints; only the
 # unchanged legacy comparisons decide whether such input must fail.
 @unsafe
-def book_final_name_valid(name):
+def book_final_name_valid(
+  +name: String,
+) -> Bool:
   match name:
     case SNil{}: True{}
     case SCon{h, rest}:
@@ -323,7 +272,9 @@ def book_final_name_valid(name):
         u => False{}, u => book_final_name_valid(rest))
 
 @unsafe
-def book_final_names_valid(book):
+def book_final_names_valid(
+  +book: List<&2,KDef>,
+) -> Bool:
   match book:
     case Nil{}: True{}
     case Con{d, rest}:
@@ -331,7 +282,10 @@ def book_final_names_valid(book):
         u => book_final_names_valid(rest), u => False{})
 
 @unsafe
-def book_final_fast(book, done):
+def book_final_fast(
+  +book: List<&2,KDef>,
+  +done: List<&2,KDef>,
+) -> List<&2,KDef>:
   kc(List<&2,KDef>, book_final_large(book, 256),
     u => kc(List<&2,KDef>, book_final_names_valid(book),
       u => kc(List<&2,KDef>, book_final_names_valid(done),
@@ -347,7 +301,11 @@ def book_final_reverse(book, done):
     case Con{d, rest}: book_final_reverse(rest, Con{d, done})
 
 @unsafe
-def book_final_seen(seen, name, hash):
+def book_final_seen(
+  +seen: KDef,
+  +name: String,
+  +hash: U32,
+) -> Bool:
   String.eq(dk(index_find(seen, name, hash, 32)), "$final.seen")
 
 @unsafe

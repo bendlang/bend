@@ -13,21 +13,10 @@ law j_l_capture:
   for +seen: List<&2, String>
   String
 
-law j_l_deep:
-  for +t: KTerm
-  for +depth: U32
-  Bool
-
 law j_l_deeps:
   for +ts: List<&2, KTerm>
   for +depth: U32
   Bool
-
-law j_l_mark:
-  for +t: KTerm
-  for +path: String
-  for +depth: U32
-  KTerm
 
 law j_l_marks:
   for +ts: List<&2, KTerm>
@@ -99,12 +88,10 @@ law j_l_bindings:
 # JavaScript emission from the checked first-order core.
 # Emission is Bend2; JavaScript only supplies primitive values and effects.
 # Erased binders retain a null ABI slot, but their arguments are never evaluated.
-law j_escape:
-  for +s: String
-  String
-
 @unsafe
-def j_escape(s):
+def j_escape(
+  +s: String,
+) -> String:
   match s:
     case SNil{}:
       ""
@@ -158,13 +145,11 @@ law j_local:
 def j_local(id):
   "x" ++ U32.show(id)
 
-law j_env:
-  for +env: List<&2, KTerm>
-  for +id: U32
-  KTerm
-
 @unsafe
-def j_env(env, id):
+def j_env(
+  +env: List<&2, KTerm>,
+  +id: U32,
+) -> KTerm:
   match env:
     case Nil{}:
       atom("Absent")
@@ -201,14 +186,12 @@ law j_app_type:
 def j_app_type(ty, arg):
   kc(KTerm, String.eq(tg(ty), "All"), u => subst(kid(ty, 1), ix(ty), arg), u => atom("Absent"))
 
-law j_exprs:
-  for +book: List<&2, KDef>
-  for +env: List<&2, KTerm>
-  for +xs: List<&2, KTerm>
-  String
-
 @unsafe
-def j_exprs(book, env, xs):
+def j_exprs(
+  +book: List<&2, KDef>,
+  +env: List<&2, KTerm>,
+  +xs: List<&2, KTerm>,
+) -> String:
   match xs:
     case Nil{}:
       ""
@@ -309,16 +292,14 @@ law j_apply:
 def j_apply(book, env, t, tail, fty):
   j_apply_spine(book, env, t, tail, fty, j_call_spine(t, Nil{}))
 
-law j_apply_one:
-  for +book: List<&2, KDef>
-  for +env: List<&2, KTerm>
-  for +t: KTerm
-  for +tail: Bool
-  for +fty: KTerm
-  String
-
 @unsafe
-def j_apply_one(book, env, t, tail, fty):
+def j_apply_one(
+  +book: List<&2, KDef>,
+  +env: List<&2, KTerm>,
+  +t: KTerm,
+  +tail: Bool,
+  +fty: KTerm,
+) -> String:
   kc(String, tail, u => "jump(", u => "call(") ++ j_expr(book, env, kid(t, 0), fty, False{}) ++ ",[" ++ kc(String, String.eq(tg(fty), "All") && U32.is_eq(qt(fty), 0), u => "null", u => j_expr(book, env, kid(t, 1), kid(fty, 0), False{})) ++ "])"
 
 law j_call_spine:
@@ -399,14 +380,12 @@ law j_descriptor:
 def j_descriptor(book, ty, fuel):
   j_desc_kind(book, wnf(book, ty), fuel)
 
-law j_desc_head:
-  for +book: List<&2, KDef>
-  for +ty: KTerm
-  for +fuel: U32
-  String
-
 @unsafe
-def j_desc_head(book, ty, fuel):
+def j_desc_head(
+  +book: List<&2, KDef>,
+  +ty: KTerm,
+  +fuel: U32,
+) -> String:
   j_desc_head_on(book, ty, fuel, nm(ty))
 
 law j_desc_head_on:
@@ -428,36 +407,30 @@ law j_intrinsic:
 def j_intrinsic(name):
   String.contains("|U32.add|U32.sub|U32.and|U32.or|U32.xor|U32.is_eq|U32.is_ne|U32.is_lt|U32.is_le|U32.is_gt|U32.is_ge|U32.mul|U32.div|U32.mod|U32.inc|U32.shl|U32.shr|U32.shln|U32.shrn|U32.not|U32.is_zero|U32.cmp|U32.to_f32|U32.to_nat|U32.from_nat|F32.add|F32.sub|F32.mul|F32.div|F32.neg|F32.is_eq|F32.is_ne|F32.is_lt|F32.is_le|F32.is_gt|F32.is_ge|F32.sqrt|F32.exp|F32.log|F32.log2|F32.log10|F32.sin|F32.cos|F32.tan|F32.asin|F32.acos|F32.atan|F32.sinh|F32.cosh|F32.tanh|F32.floor|F32.ceil|F32.trunc|F32.abs|F32.pow|F32.atan2|F32.mod|F32.to_u32|F32.bits|F32.show|F32.read|Nat.add|Nat.sub|Nat.mul|Nat.double|Nat.cmp|Nat.is_lt|Nat.divmod|Array.new|Array.set|Array.get|Array.swap|Array.size|Array.clone|IO.pure|IO.bind|IO.try|IO.pass|IO.die|IO.args|IO.print|IO.write|IO.print_err|IO.get_env|IO.now|IO.sleep|IO.random_u32|IO.spawn|IO.fork|IO.join|String.append|String.length|String.eq|String.contains|String.starts_with|String.reverse|String.is_empty|Bool.or|Bool.xor|", "|" ++ name ++ "|")
 
-law j_def:
-  for +book: List<&2, KDef>
-  for +d: KDef
-  String
-
 @unsafe
-def j_def(book, d):
+def j_def(
+  +book: List<&2, KDef>,
+  +d: KDef,
+) -> String:
   kc(String, String.eq(tg(dv(d)), "Foreign"), u => j_foreign_def(book, d), u => kc(String, String.eq(dk(d), "Def") && U32.is_eq(dx(d), 0) && Bool.not(String.eq(tg(dv(d)), "Absent")) && Bool.not(String.eq(tg(dv(d)), "Foreign")),
     u => kc(String, db(d) && j_intrinsic(dn(d)), u => "if(!Object.hasOwn(G," ++ j_quote(dn(d)) ++ "))", u => "") ++ j_l_def(book, d),
     u => ""))
 
-law j_defs:
-  for +book: List<&2, KDef>
-  for +defs: List<&2, KDef>
-  String
-
 @unsafe
-def j_defs(book, defs):
+def j_defs(
+  +book: List<&2, KDef>,
+  +defs: List<&2, KDef>,
+) -> String:
   match defs:
     case Nil{}:
       ""
     case Con{d, rest}:
       j_def(book, d) ++ j_defs(book, rest)
 
-law j_program:
-  for +book: List<&2, KDef>
-  String
-
 @unsafe
-def j_program(book):
+def j_program(
+  +book: List<&2, KDef>,
+) -> String:
   j_program_selected(book, book)
 
 law j_program_selected:
@@ -654,30 +627,26 @@ def j_desc_args(book, args, fuel):
       ""
     case Con{h, rest}:
       j_descriptor(book, h, fuel) ++ "," ++ j_desc_args(book, rest, fuel)
-law j_ctor_args:
-  for +book: List<&2, KDef>
-  for +env: List<&2, KTerm>
-  for +args: List<&2, KTerm>
-  for +tel: KTerm
-  String
-
 @unsafe
-def j_ctor_args(book, env, args, tel):
+def j_ctor_args(
+  +book: List<&2, KDef>,
+  +env: List<&2, KTerm>,
+  +args: List<&2, KTerm>,
+  +tel: KTerm,
+) -> String:
   match args:
     case Nil{}:
       ""
     case Con{h, rest}:
       kc(String, String.eq(tg(tel), "All") && U32.is_eq(qt(tel), 0), u => "null", u => j_expr(book, env, h, kid(tel, 0), False{})) ++ "," ++ j_ctor_args(book, env, rest, j_app_type(tel, h))
 
-law j_constructor:
-  for +book: List<&2, KDef>
-  for +env: List<&2, KTerm>
-  for +t: KTerm
-  for +ty: KTerm
-  String
-
 @unsafe
-def j_constructor(book, env, t, ty):
+def j_constructor(
+  +book: List<&2, KDef>,
+  +env: List<&2, KTerm>,
+  +t: KTerm,
+  +ty: KTerm,
+) -> String:
   j_constructor_literal(book, env, t, ty, j_literal_typed(book, t, ty))
 
 # Constructor fields in return position are evaluated by the application
@@ -758,12 +727,10 @@ def j_io_spine(t, args):
 
 # Library output exposes the same primitive ABI as generated executables;
 # callers may use G/call/list/ctor without invoking main.
-law j_library:
-  for +book: List<&2, KDef>
-  String
-
 @unsafe
-def j_library(book):
+def j_library(
+  +book: List<&2, KDef>,
+) -> String:
   j_library_selected(book, book)
 
 law j_library_selected:
@@ -794,13 +761,11 @@ law j_desc_kind:
 def j_desc_kind(book, ty, fuel):
   kc(String, String.eq(tg(ty), "All"), u => "[\"Fun\"," ++ U32.show(qt(ty)) ++ "," ++ j_descriptor(book, kid(ty, 0), fuel) ++ "," ++ j_descriptor(book, kid(ty, 1), fuel) ++ "]", u => j_desc_head(book, ty, fuel))
 # Roots and intrinsic stops for the shared dependency reachability pass.
-law j_roots:
-  for +book: List<&2, KDef>
-  for +library: Bool
-  List<&2, String>
-
 @unsafe
-def j_roots(book, library):
+def j_roots(
+  +book: List<&2, KDef>,
+  +library: Bool,
+) -> List<&2, String>:
   kc(List<&2, String>, library, u => j_library_roots(book), u => ["main"])
 
 law j_library_roots:
@@ -815,12 +780,10 @@ def j_library_roots(book):
     case Con{d, rest}:
       kc(List<&2, String>, String.eq(dk(d), "Def") && U32.is_eq(dx(d), 0) && Bool.not(String.eq(tg(dv(d)), "Absent")) && (Bool.not(db(d)) || String.eq(tg(dv(d)), "Foreign")), u => Con{dn(d), j_library_roots(rest)}, u => j_library_roots(rest))
 
-law j_stops:
-  for +book: List<&2, KDef>
-  List<&2, String>
-
 @unsafe
-def j_stops(book):
+def j_stops(
+  +book: List<&2, KDef>,
+) -> List<&2, String>:
   match book:
     case Nil{}:
       Nil{}
@@ -897,7 +860,10 @@ def j_l_capture(env, seen):
       kc(String, has_name(seen, j_local(ix(h))), u => j_l_capture(rest, seen), u => j_local(ix(h)) ++ "," ++ j_l_capture(rest, Con{j_local(ix(h)), seen}))
 
 @unsafe
-def j_l_deep(t, depth):
+def j_l_deep(
+  +t: KTerm,
+  +depth: U32,
+) -> Bool:
   kc(Bool, String.eq(tg(t), "Ann"), u => j_l_deep(kid(t, 0), depth), u =>
   kc(Bool, String.eq(tg(t), "Var") || String.eq(tg(t), "Ref"), u => False{}, u =>
   kc(Bool, String.eq(tg(t), "Lam") || String.eq(tg(t), "Mat"), u => kc(Bool, U32.is_ge(depth, 32), u => True{}, u => j_l_deeps(ks(t), U32.inc(depth))), u => j_l_deeps(ks(t), depth))))
@@ -909,7 +875,11 @@ def j_l_deeps(ts, depth):
     case Con{h, rest}: kc(Bool, j_l_deep(h, depth), u => True{}, u => j_l_deeps(rest, depth))
 
 @unsafe
-def j_l_mark(t, path, depth):
+def j_l_mark(
+  +t: KTerm,
+  +path: String,
+  +depth: U32,
+) -> KTerm:
   kc(KTerm, String.eq(tg(t), "Ann"), u => KTerm{tg(t), nm(t), ix(t), qt(t), [j_l_mark(kid(t, 0), path, depth), kid(t, 1)], rm(t)}, u =>
   kc(KTerm, String.eq(tg(t), "Var") || String.eq(tg(t), "Ref"), u => t, u =>
   kc(KTerm, String.eq(tg(t), "Lam") || String.eq(tg(t), "Mat"), u =>

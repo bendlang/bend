@@ -15,12 +15,19 @@ Read the [validation boundaries](../selfhost/CONFORMANCE.md) and
 [negative audit](../selfhost/docs/NEGATIVE-COMPATIBILITY.md) before relying on it.
 
 The default compiler in `selfhost/dist/typed-api.mjs` is freshly rebuilt from
-the [S3 source](../implementation/phase7/s3-report.md): 15,687 Bend lines, down
-822 through obsolete-code retirement, shared provenance and removal of diagnostic
-rechecking. The maintained, verified string-equality optimization remains. The
-checker returns its verdict and original error together; older artifacts retain
-the compatible host path. Fresh full frontend vectors preserve all 2,756
-observations, including known failures. The
+the [S4 checkpoint](../implementation/phase7/s4-report.md): 14,667 Bend lines,
+12,505 nonblank lines and 470,062 source bytes. It shares provenance, the original
+structured checker error, canonical graph loading, embedded-error selection and
+basic list operations, and removes redundant forward declarations. Generic term/
+definition concatenation lives with its datatypes in `core/term.bend`; ordinary
+and seeded graph loads share `load/seed.bend`, with the disabled seed rejected
+by the existing missing-path ordering. Required forward laws remain.
+
+The maintained string-equality optimization remains. The checker returns its
+verdict and original error together; older artifacts retain the compatible host
+path. Fresh full frontend vectors preserve all 2,756 observations, including
+known failures. Default and relocated check/interpreter/JS/native CPU smoke pass.
+The 50% and 75% simplification targets are still unachieved. The
 [release manifest](../selfhost/dist/release.json) binds the API to its source,
 Base, runtime and host. Historical compiler variants are retained with their
 reports; ordinary use requires no artifact selection.
@@ -128,13 +135,23 @@ The default API's checked parent and exact transformation are under
 are under `dist/release-history/`. The optimized API has no bootstrap sidecar:
 it is a verified derivative of the checked parent, not a new upstream bootstrap.
 The separately self-emitted compiler has its own [checked fixed-point proof](../implementation/phase5/final-selfhost.md).
-Its performance must not be confused with the default's measured 6.03× ratio.
+Its performance must not be confused with the historical Phase 5 default's measured 6.03× ratio; S4 has no new full-source TypeScript measurement.
 
 ## Full self-reproduction and component checks
 
 `src/compiler.json` gives the ordered module list and upstream pin.
 `tools/assemble.mjs` links those modules into one source file, ordering types,
 laws and definitions. It does not parse user programs or implement compilation.
+
+Compiler helpers can use typed `def` headers when their signatures need no
+earlier forward declaration. Preserve parameter quantities and use the assembled
+definition order when deciding whether a law is needed. Bootstrap capability
+selection also currently depends on the literal laws for `j_layout_error`,
+`annotate_selected` and `j_program_selected`; retain them. A declaration edit
+must preserve the complete selected export set, even when focused checking tests
+pass. The [S4 report](../implementation/phase7/s4-report.md) records the caught
+capability loss and the corrected source-authoring trial.
+
 The pinned upstream compiler is used explicitly as the initial bootstrap tool:
 
 ```sh
@@ -214,3 +231,19 @@ The `selfhost-baseline-2026-09-21` tag and original archive reports preserve the
 supplied implementation. Historical conformance or fixed-point evidence applies
 to its recorded artifact hashes; it is never evidence for a later compiler merely
 because the source files have the same names.
+
+For a frontend loader/error refactor, the maintained cross-version boundary test
+compares complete ordered results, error precedence, cached parse payloads, seed
+selection and input immutability. Use genuinely checked named-field APIs and a
+fresh evidence directory, for example from `selfhost/`:
+
+```sh
+node --stack-size=4096 tests/frontend/shared-operations.mjs \
+  /absolute/baseline/api.mjs /absolute/candidate/api.mjs /absolute/new-results
+```
+
+This test exposes existing checked private bodies for observation; it neither
+rewrites them nor establishes self-reproduction. S4's A02 declaration-source proof
+is a genuine checked B1→H→H fixed point. The installed B02 source has its own
+checked bootstrap and byte-identical B01 behavioral/performance evidence; A02's
+full-source fixed point is not relabeled as B02's.

@@ -1,0 +1,4 @@
+Debian clang version 19.1.7 (3~deb11u1)
+Target: x86_64-pc-linux-gnu
+Thread model: posix
+InstalledDir: /tmp/bend-s4-clang19/root/usr/lib/llvm-19/bin

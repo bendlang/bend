@@ -1,10 +1,5 @@
 # Transitive promise reporting follows type, constructor-field and body refs.
 # Caller supplies the main module's own declaration names in source order.
-law driver_report:
-  for +book: List<&2,KDef>
-  for +names: List<&2,String>
-  String
-
 law dr_bad_names:
   for +book: List<&2,KDef>
   for names: List<&2,String>
@@ -36,7 +31,10 @@ law dr_lines:
   String
 
 @unsafe
-def driver_report(book, names):
+def driver_report(
+  +book: List<&2,KDef>,
+  +names: List<&2,String>,
+) -> String:
   dr_verdict(dr_bad_names(book_cached(book, norm_max_book(book)), names))
 
 @unsafe

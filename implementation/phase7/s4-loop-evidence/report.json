@@ -1,0 +1,228 @@
+{
+  "kind": "S4-final-development-loop-ABBA",
+  "complete": true,
+  "pass": true,
+  "started": "2026-09-26T21:25:28.605169+00:00",
+  "rows": [
+    {
+      "index": 0,
+      "variant": "A",
+      "argv": [
+        "taskset",
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=4096",
+        "/home/ai/bend2/build/publish/bend/selfhost/tools/development/workflow.mjs",
+        "run",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4-loop-02/0-A/config.json",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4-loop-02/0-A/attempt"
+      ],
+      "started": "2026-09-26T21:25:28.605837+00:00",
+      "exitCode": 0,
+      "wallSeconds": 35.13327255193144,
+      "resources": {
+        "wallSeconds": 35.03505215793848,
+        "maxRssKiB": 1861388,
+        "exitCode": 0,
+        "method": "Fresh Python worker, one process tree, Linux wait/rusage children maxRSS in KiB."
+      },
+      "focused": {
+        "complete": true,
+        "pass": true,
+        "exactDifferences": 7,
+        "strictExact": false,
+        "artifactKind": "derived-b1"
+      },
+      "api": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4-loop-02/0-A/attempt/equality/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4-loop-02/0-A/attempt/equality/api.mjs",
+        "sha256": "7e913551460ac736f1af35e19049d712765291255a0e579482f2e7179dcadbc6"
+      },
+      "checkedApi": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4-loop-02/0-A/attempt/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4-loop-02/0-A/attempt/api.mjs",
+        "sha256": "ba121e4098044d9f106c4e7cb3e37b0e1ce1bc77f7e42f7e5418556b7f0f3e90"
+      },
+      "exports": 55,
+      "phaseSeconds": {
+        "build": 20.845,
+        "validation": 13.046
+      },
+      "pass": true
+    },
+    {
+      "index": 1,
+      "variant": "B",
+      "argv": [
+        "taskset",
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=4096",
+        "/home/ai/bend2/build/publish/bend/selfhost/tools/development/workflow.mjs",
+        "run",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4-loop-02/1-B/config.json",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4-loop-02/1-B/attempt"
+      ],
+      "started": "2026-09-26T21:26:03.816264+00:00",
+      "exitCode": 0,
+      "wallSeconds": 34.88346534082666,
+      "resources": {
+        "wallSeconds": 34.78544237697497,
+        "maxRssKiB": 1897392,
+        "exitCode": 0,
+        "method": "Fresh Python worker, one process tree, Linux wait/rusage children maxRSS in KiB."
+      },
+      "focused": {
+        "complete": true,
+        "pass": true,
+        "exactDifferences": 7,
+        "strictExact": false,
+        "artifactKind": "derived-b1"
+      },
+      "api": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4-loop-02/1-B/attempt/equality/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4-loop-02/1-B/attempt/equality/api.mjs",
+        "sha256": "9826ac8f2cb2ad17ab07d7a1f3fcefc701c64cd44d3c50333b3410d761d98b7f"
+      },
+      "checkedApi": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4-loop-02/1-B/attempt/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4-loop-02/1-B/attempt/api.mjs",
+        "sha256": "f201bdea7ea4041483b40704f622703945858e981c404a4d7e50979b74370110"
+      },
+      "exports": 55,
+      "phaseSeconds": {
+        "build": 20.712,
+        "validation": 12.948
+      },
+      "pass": true
+    },
+    {
+      "index": 2,
+      "variant": "B",
+      "argv": [
+        "taskset",
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=4096",
+        "/home/ai/bend2/build/publish/bend/selfhost/tools/development/workflow.mjs",
+        "run",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4-loop-02/2-B/config.json",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4-loop-02/2-B/attempt"
+      ],
+      "started": "2026-09-26T21:26:38.825317+00:00",
+      "exitCode": 0,
+      "wallSeconds": 35.08361872890964,
+      "resources": {
+        "wallSeconds": 34.98545606806874,
+        "maxRssKiB": 1899564,
+        "exitCode": 0,
+        "method": "Fresh Python worker, one process tree, Linux wait/rusage children maxRSS in KiB."
+      },
+      "focused": {
+        "complete": true,
+        "pass": true,
+        "exactDifferences": 7,
+        "strictExact": false,
+        "artifactKind": "derived-b1"
+      },
+      "api": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4-loop-02/2-B/attempt/equality/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4-loop-02/2-B/attempt/equality/api.mjs",
+        "sha256": "9826ac8f2cb2ad17ab07d7a1f3fcefc701c64cd44d3c50333b3410d761d98b7f"
+      },
+      "checkedApi": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4-loop-02/2-B/attempt/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4-loop-02/2-B/attempt/api.mjs",
+        "sha256": "f201bdea7ea4041483b40704f622703945858e981c404a4d7e50979b74370110"
+      },
+      "exports": 55,
+      "phaseSeconds": {
+        "build": 20.872,
+        "validation": 12.959
+      },
+      "pass": true
+    },
+    {
+      "index": 3,
+      "variant": "A",
+      "argv": [
+        "taskset",
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=4096",
+        "/home/ai/bend2/build/publish/bend/selfhost/tools/development/workflow.mjs",
+        "run",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4-loop-02/3-A/config.json",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4-loop-02/3-A/attempt"
+      ],
+      "started": "2026-09-26T21:27:13.963824+00:00",
+      "exitCode": 0,
+      "wallSeconds": 34.831939589232206,
+      "resources": {
+        "wallSeconds": 34.735020980704576,
+        "maxRssKiB": 1838920,
+        "exitCode": 0,
+        "method": "Fresh Python worker, one process tree, Linux wait/rusage children maxRSS in KiB."
+      },
+      "focused": {
+        "complete": true,
+        "pass": true,
+        "exactDifferences": 7,
+        "strictExact": false,
+        "artifactKind": "derived-b1"
+      },
+      "api": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4-loop-02/3-A/attempt/equality/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4-loop-02/3-A/attempt/equality/api.mjs",
+        "sha256": "7e913551460ac736f1af35e19049d712765291255a0e579482f2e7179dcadbc6"
+      },
+      "checkedApi": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4-loop-02/3-A/attempt/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4-loop-02/3-A/attempt/api.mjs",
+        "sha256": "ba121e4098044d9f106c4e7cb3e37b0e1ce1bc77f7e42f7e5418556b7f0f3e90"
+      },
+      "exports": 55,
+      "phaseSeconds": {
+        "build": 20.711,
+        "validation": 12.915
+      },
+      "pass": true
+    }
+  ],
+  "pairs": [
+    {
+      "control": 0,
+      "candidate": 1,
+      "wallRatio": 0.9928897255234185,
+      "rssRatio": 1.01934255512553
+    },
+    {
+      "control": 3,
+      "candidate": 2,
+      "wallRatio": 1.007225527565948,
+      "rssRatio": 1.0329780523350662
+    }
+  ],
+  "guards": {
+    "wallRatio": 1.05,
+    "rssRatio": 1.1
+  },
+  "scope": "Four fresh full checked/equality/focused development attempts; serial CPU0, same source functionality and21-case selection. No source-versus-TypeScript ratio.",
+  "runner": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-loop-evidence/run.py",
+    "sha256": "5731a2d4cf4d5b6d9b81347a86ba42edb7466d8915cadcb1867dfcf277fb3e93"
+  },
+  "workflow": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/development/workflow.mjs",
+    "sha256": "a85428ae724a921511caec545831e4837a2e723ae9609eacef1166c05a5043ff"
+  },
+  "finished": "2026-09-26T21:27:48.856660+00:00"
+}

@@ -1,0 +1,3988 @@
+{
+  "kind": "phase7-s4-d-actual-b02-context-recount",
+  "schema": 1,
+  "complete": true,
+  "status": "ACTUAL B02 source counts, not a validation verdict. No compiler, API or benchmark execution by this audit.",
+  "repository": "/home/ai/bend2/build/publish/bend",
+  "candidate_project": "selfhost/build/phase7/s4/candidate-b02-project",
+  "baseline_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+  "immutable_B01_inputs": [
+    {
+      "file": "implementation/phase7/s4-evidence/context-counts.json",
+      "physical": 4665,
+      "nonblank": 4665,
+      "bytes": 159122,
+      "sha256": "c494b500b1ed03d0c8037e475c33328a9639676ea0749943c5bb5811d744b601"
+    },
+    {
+      "file": "implementation/phase7/s4-evidence/context-counts.md",
+      "physical": 167,
+      "nonblank": 139,
+      "bytes": 8718,
+      "sha256": "4399568ba70721eaa62f0c30e63547149c6550e7144b63c64fa2d6aa2832c779"
+    }
+  ],
+  "methods": {
+    "physical": "len(UTF8_text.splitlines()); a final newline does not create an extra empty line",
+    "nonblank": "physical lines with nonempty Python str.strip()",
+    "bytes": "Length of original UTF-8 file bytes, without newline normalization.",
+    "hashes": "SHA-256 of exact file bytes. Manifest hash: sorted repository-relative logical paths, TAB, lowercase SHA-256, LF, UTF-8.",
+    "mapping": "Map every S0 selfhost/src/ path to candidate-b02-project/src/ at the same relative path, including source-local test/docs entries. Keep all other original logical context paths at their current repository locations. Original bytes come from S0 Git; only absent historical parser evidence uses current bytes after exact frozen-hash verification.",
+    "scope": "Three original task sets remain intact, with all original entries and whole-file units. Supplementary replacement owners are reported separately, with original-S0 and symmetric-expanded comparisons; no transitive closure is claimed.",
+    "delta": "candidate minus baseline; negative counts are reductions.",
+    "declarations": "Same S0 line-start def/law/type regexes; law migration changes authored interfaces, not the number of semantic rules.",
+    "complexity_limits": "File/context size proxy only. Blank separators earn no conceptual reduction credit; no cyclomatic, cognitive, semantic, runtime or 50% milestone claim."
+  },
+  "production": {
+    "baseline": {
+      "files": 59,
+      "physical": 16509,
+      "nonblank": 13803,
+      "bytes": 509937
+    },
+    "candidate": {
+      "files": 59,
+      "physical": 14667,
+      "nonblank": 12505,
+      "bytes": 470062
+    },
+    "delta_from_S0": {
+      "files": 0,
+      "physical": -1842,
+      "nonblank": -1298,
+      "bytes": -39875
+    },
+    "delta_from_B01": {
+      "files": 0,
+      "physical": 0,
+      "nonblank": 0,
+      "bytes": 0
+    },
+    "candidate_manifest_sha256": "18fde00d33eec65a7e44578040b14642306a2e7bdc8d9145f0398fd43e5ed6af",
+    "changed_from_B01": [
+      {
+        "logical_path": "selfhost/src/core/normalize.bend",
+        "B01": {
+          "bytes": 16605,
+          "physical": 534,
+          "nonblank": 463,
+          "sha256": "efb95c1ae957f3c7b0c9efa5e761c9fa49325c236efb72a01bb240420ba5f973",
+          "file": "selfhost/build/phase7/s4/candidate-b01-project/src/core/normalize.bend",
+          "declarations": {
+            "defs": 45,
+            "laws": 32,
+            "types": 3
+          }
+        },
+        "B02": {
+          "physical": 510,
+          "nonblank": 442,
+          "bytes": 16209,
+          "sha256": "9716a4eed46fae3e0bcd99fb4df3754e89cd2b39d724fc6225d9d11ec5e1b2ab",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/core/normalize.bend"
+        },
+        "delta": {
+          "physical": -24,
+          "nonblank": -21,
+          "bytes": -396
+        }
+      },
+      {
+        "logical_path": "selfhost/src/core/term.bend",
+        "B01": {
+          "bytes": 7930,
+          "physical": 394,
+          "nonblank": 338,
+          "sha256": "04bcc073b38e35bfac713ae161bbdf8bd59804aa59c6e1ad0127059441836395",
+          "file": "selfhost/build/phase7/s4/candidate-b01-project/src/core/term.bend",
+          "declarations": {
+            "defs": 43,
+            "laws": 9,
+            "types": 2
+          }
+        },
+        "B02": {
+          "physical": 418,
+          "nonblank": 359,
+          "bytes": 8326,
+          "sha256": "4fc40e715ceb59d581b91fb006f84698429e687e1ab86d460fc2d49d878bb80c",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/core/term.bend"
+        },
+        "delta": {
+          "physical": 24,
+          "nonblank": 21,
+          "bytes": 396
+        }
+      }
+    ],
+    "files": [
+      {
+        "logical_path": "selfhost/src/back/js/choice.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 3670,
+          "physical": 101,
+          "nonblank": 84,
+          "sha256": "2b3ac6cd46a638063d793a1f40eef6f226b1602191cf345e958023a29e2b66c9",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/back/js/choice.bend"
+          },
+          "declarations": {
+            "defs": 9,
+            "laws": 9,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 97,
+          "nonblank": 82,
+          "bytes": 3583,
+          "sha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/js/choice.bend"
+        },
+        "delta": {
+          "physical": -4,
+          "nonblank": -2,
+          "bytes": -87
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/back/js/emit.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 29673,
+          "physical": 981,
+          "nonblank": 815,
+          "sha256": "7bf4f547540fc148feea196efd76c2f9a5234b27a33b7d8ac794a04ff5816d78",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/back/js/emit.bend"
+          },
+          "declarations": {
+            "defs": 85,
+            "laws": 85,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 951,
+          "nonblank": 800,
+          "bytes": 29207,
+          "sha256": "6d6db9de9c6c41211f545b4867362402ebebe03db05f77c99dbd020ec08ba016",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/js/emit.bend"
+        },
+        "delta": {
+          "physical": -30,
+          "nonblank": -15,
+          "bytes": -466
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/back/js/foreign.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 5493,
+          "physical": 174,
+          "nonblank": 142,
+          "sha256": "4b6d09ed9cdb914b5531b763bd65523121324bee554a8e5082c4887e728f085d",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/back/js/foreign.bend"
+          },
+          "declarations": {
+            "defs": 16,
+            "laws": 16,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 160,
+          "nonblank": 135,
+          "bytes": 5295,
+          "sha256": "e71e6822524c8ccca4b75c38946dab05838623b4f80196d5200c4b620c014599",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/js/foreign.bend"
+        },
+        "delta": {
+          "physical": -14,
+          "nonblank": -7,
+          "bytes": -198
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/back/js/literals.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 5062,
+          "physical": 187,
+          "nonblank": 150,
+          "sha256": "861525baf8fe999e3086a7ce1cd758e488235e23522dc97bdd8ee7694bb32ae7",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/back/js/literals.bend"
+          },
+          "declarations": {
+            "defs": 18,
+            "laws": 18,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 183,
+          "nonblank": 148,
+          "bytes": 5004,
+          "sha256": "48f687d8a021a8159f54d29c9fa3049df91a968503bd53be9b5efa5ca27a7db0",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/js/literals.bend"
+        },
+        "delta": {
+          "physical": -4,
+          "nonblank": -2,
+          "bytes": -58
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/back/js/projection.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 2451,
+          "physical": 69,
+          "nonblank": 58,
+          "sha256": "d1e327782e64ae05b05ce606350f20c61392c26255c0afefa2fff9f2c0ed1250",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/back/js/projection.bend"
+          },
+          "declarations": {
+            "defs": 6,
+            "laws": 6,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 65,
+          "nonblank": 56,
+          "bytes": 2355,
+          "sha256": "f534d7c74f396527a9d3e3a06bececebcf0b68d92400ccf46b8125e82735ef09",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/js/projection.bend"
+        },
+        "delta": {
+          "physical": -4,
+          "nonblank": -2,
+          "bytes": -96
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/back/js/validate.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 10093,
+          "physical": 290,
+          "nonblank": 242,
+          "sha256": "917470e39b4d34c26a4f119f1b7acfca7a51926aba76a73d8397b103debca338",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/back/js/validate.bend"
+          },
+          "declarations": {
+            "defs": 24,
+            "laws": 24,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 284,
+          "nonblank": 239,
+          "bytes": 10001,
+          "sha256": "880d8e4095c3689db17b1e11bb5e100e7ef860c11f2828d0fd79ff3f172e4cb8",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/js/validate.bend"
+        },
+        "delta": {
+          "physical": -6,
+          "nonblank": -3,
+          "bytes": -92
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/back/native/array.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 1814,
+          "physical": 27,
+          "nonblank": 24,
+          "sha256": "4e1d5c9d282ba746ac1e98df470411d477bf1449b5621c3ad413f01e883d9149",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/back/native/array.bend"
+          },
+          "declarations": {
+            "defs": 3,
+            "laws": 1,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 27,
+          "nonblank": 24,
+          "bytes": 1814,
+          "sha256": "4e1d5c9d282ba746ac1e98df470411d477bf1449b5621c3ad413f01e883d9149",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/array.bend"
+        },
+        "delta": {
+          "physical": 0,
+          "nonblank": 0,
+          "bytes": 0
+        },
+        "unchanged": true
+      },
+      {
+        "logical_path": "selfhost/src/back/native/book.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 15658,
+          "physical": 366,
+          "nonblank": 304,
+          "sha256": "56c161c2c0bd33ddb66d239a4283081331e98bf4112ceaebd1d3c76db14bb23e",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/back/native/book.bend"
+          },
+          "declarations": {
+            "defs": 47,
+            "laws": 14,
+            "types": 2
+          }
+        },
+        "candidate": {
+          "physical": 316,
+          "nonblank": 264,
+          "bytes": 14283,
+          "sha256": "0f0e31315a8d9cbf362778aa2887abf3ac23850aafb58b28407cba53a3d352f3",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/book.bend"
+        },
+        "delta": {
+          "physical": -50,
+          "nonblank": -40,
+          "bytes": -1375
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/back/native/bridge.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 21605,
+          "physical": 441,
+          "nonblank": 367,
+          "sha256": "88431cf52f0c9ac1b3b1c93aa4a54225ca201d0b8021283f98ba09c2aadc1c74",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/back/native/bridge.bend"
+          },
+          "declarations": {
+            "defs": 64,
+            "laws": 8,
+            "types": 3
+          }
+        },
+        "candidate": {
+          "physical": 435,
+          "nonblank": 364,
+          "bytes": 21509,
+          "sha256": "d6342724c81278a4907a875128630210147d2e1ba6e90bd0ab1cacd02cdb991d",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/bridge.bend"
+        },
+        "delta": {
+          "physical": -6,
+          "nonblank": -3,
+          "bytes": -96
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/back/native/direct.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 4200,
+          "physical": 88,
+          "nonblank": 74,
+          "sha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/back/native/direct.bend"
+          },
+          "declarations": {
+            "defs": 14,
+            "laws": 1,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 88,
+          "nonblank": 74,
+          "bytes": 4200,
+          "sha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/direct.bend"
+        },
+        "delta": {
+          "physical": 0,
+          "nonblank": 0,
+          "bytes": 0
+        },
+        "unchanged": true
+      },
+      {
+        "logical_path": "selfhost/src/back/native/emit.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 5084,
+          "physical": 111,
+          "nonblank": 93,
+          "sha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/back/native/emit.bend"
+          },
+          "declarations": {
+            "defs": 19,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 111,
+          "nonblank": 93,
+          "bytes": 5084,
+          "sha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/emit.bend"
+        },
+        "delta": {
+          "physical": 0,
+          "nonblank": 0,
+          "bytes": 0
+        },
+        "unchanged": true
+      },
+      {
+        "logical_path": "selfhost/src/back/native/erase.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 3479,
+          "physical": 85,
+          "nonblank": 72,
+          "sha256": "11fba4f16ef4de786f68076bafbc356c139fa953c22342c9557efe8b26936be1",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/back/native/erase.bend"
+          },
+          "declarations": {
+            "defs": 9,
+            "laws": 4,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 83,
+          "nonblank": 71,
+          "bytes": 3439,
+          "sha256": "56ed6538d90549f7f4cc949201f3ca6fd588a7273ea500dda96d0ce054f10007",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/erase.bend"
+        },
+        "delta": {
+          "physical": -2,
+          "nonblank": -1,
+          "bytes": -40
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/back/native/foreign.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 2987,
+          "physical": 53,
+          "nonblank": 46,
+          "sha256": "fa71a99ac100dc31a8d6246132fb717f2d8c69f6a7cae71a48a2b960d2c89d61",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/back/native/foreign.bend"
+          },
+          "declarations": {
+            "defs": 8,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 53,
+          "nonblank": 46,
+          "bytes": 2987,
+          "sha256": "fa71a99ac100dc31a8d6246132fb717f2d8c69f6a7cae71a48a2b960d2c89d61",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/foreign.bend"
+        },
+        "delta": {
+          "physical": 0,
+          "nonblank": 0,
+          "bytes": 0
+        },
+        "unchanged": true
+      },
+      {
+        "logical_path": "selfhost/src/back/native/identity.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 2540,
+          "physical": 93,
+          "nonblank": 79,
+          "sha256": "79794a586a0c2f043c9bd417b97fe2092863eb3a8524250d6b49f0b77dc1810d",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/back/native/identity.bend"
+          },
+          "declarations": {
+            "defs": 7,
+            "laws": 7,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 89,
+          "nonblank": 77,
+          "bytes": 2476,
+          "sha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/identity.bend"
+        },
+        "delta": {
+          "physical": -4,
+          "nonblank": -2,
+          "bytes": -64
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/back/native/intrinsic.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 4905,
+          "physical": 29,
+          "nonblank": 24,
+          "sha256": "8acf8c4e083b55cc33ef323552963b254ac310c22e7d8b5e3b82253776892ab0",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/back/native/intrinsic.bend"
+          },
+          "declarations": {
+            "defs": 5,
+            "laws": 0,
+            "types": 1
+          }
+        },
+        "candidate": {
+          "physical": 29,
+          "nonblank": 24,
+          "bytes": 4905,
+          "sha256": "8acf8c4e083b55cc33ef323552963b254ac310c22e7d8b5e3b82253776892ab0",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/intrinsic.bend"
+        },
+        "delta": {
+          "physical": 0,
+          "nonblank": 0,
+          "bytes": 0
+        },
+        "unchanged": true
+      },
+      {
+        "logical_path": "selfhost/src/back/native/ir.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 1260,
+          "physical": 37,
+          "nonblank": 27,
+          "sha256": "2014202ac84403ce7720970870693f6f566cf81aea7ad44d69cf44ae65909f41",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/back/native/ir.bend"
+          },
+          "declarations": {
+            "defs": 0,
+            "laws": 0,
+            "types": 11
+          }
+        },
+        "candidate": {
+          "physical": 25,
+          "nonblank": 19,
+          "bytes": 929,
+          "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/ir.bend"
+        },
+        "delta": {
+          "physical": -12,
+          "nonblank": -8,
+          "bytes": -331
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/back/native/layout.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 2599,
+          "physical": 97,
+          "nonblank": 81,
+          "sha256": "3470eca359bdee3add2e8672bd8456c2a9533231a861854b5257e8a22df291da",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/back/native/layout.bend"
+          },
+          "declarations": {
+            "defs": 17,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 7,
+          "nonblank": 6,
+          "bytes": 135,
+          "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/layout.bend"
+        },
+        "delta": {
+          "physical": -90,
+          "nonblank": -75,
+          "bytes": -2464
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/back/native/parallel.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 5003,
+          "physical": 94,
+          "nonblank": 81,
+          "sha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/back/native/parallel.bend"
+          },
+          "declarations": {
+            "defs": 12,
+            "laws": 1,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 94,
+          "nonblank": 81,
+          "bytes": 5003,
+          "sha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/parallel.bend"
+        },
+        "delta": {
+          "physical": 0,
+          "nonblank": 0,
+          "bytes": 0
+        },
+        "unchanged": true
+      },
+      {
+        "logical_path": "selfhost/src/back/native/pattern.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 5481,
+          "physical": 146,
+          "nonblank": 141,
+          "sha256": "5c624607c7ad2e19660efeddf694d841d7b4d867b1a3870795f9847daca7d155",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/back/native/pattern.bend"
+          },
+          "declarations": {
+            "defs": 13,
+            "laws": 13,
+            "types": 2
+          }
+        },
+        "candidate": {
+          "physical": 141,
+          "nonblank": 137,
+          "bytes": 5324,
+          "sha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/pattern.bend"
+        },
+        "delta": {
+          "physical": -5,
+          "nonblank": -4,
+          "bytes": -157
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/back/native/show.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 6832,
+          "physical": 156,
+          "nonblank": 131,
+          "sha256": "6f662583a276295312217ad99b777cf96988c21ffa7beca3178c043d4b040780",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/back/native/show.bend"
+          },
+          "declarations": {
+            "defs": 19,
+            "laws": 5,
+            "types": 2
+          }
+        },
+        "candidate": {
+          "physical": 152,
+          "nonblank": 129,
+          "bytes": 6723,
+          "sha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/show.bend"
+        },
+        "delta": {
+          "physical": -4,
+          "nonblank": -2,
+          "bytes": -109
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/back/native/tables.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 8584,
+          "physical": 221,
+          "nonblank": 184,
+          "sha256": "26457cbe409162e70805b3ff0ec91946811b219f71bb2d45982663c3299daf54",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/back/native/tables.bend"
+          },
+          "declarations": {
+            "defs": 37,
+            "laws": 1,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 221,
+          "nonblank": 184,
+          "bytes": 8584,
+          "sha256": "26457cbe409162e70805b3ff0ec91946811b219f71bb2d45982663c3299daf54",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/tables.bend"
+        },
+        "delta": {
+          "physical": 0,
+          "nonblank": 0,
+          "bytes": 0
+        },
+        "unchanged": true
+      },
+      {
+        "logical_path": "selfhost/src/back/native/text.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 2595,
+          "physical": 103,
+          "nonblank": 84,
+          "sha256": "053f8a05ced5c13f7face492da1d16cbdbfdfd90f356c4a5d8f0bbb5d83ef5f7",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/back/native/text.bend"
+          },
+          "declarations": {
+            "defs": 18,
+            "laws": 2,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 101,
+          "nonblank": 83,
+          "bytes": 2545,
+          "sha256": "20ca7aa5627b698771340d4a2e944caef9b1d100d0f2478a75a622b43a4d647b",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/text.bend"
+        },
+        "delta": {
+          "physical": -2,
+          "nonblank": -1,
+          "bytes": -50
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/back/native/validate.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 2871,
+          "physical": 62,
+          "nonblank": 52,
+          "sha256": "9684fcb9bb25ff0e822ac11b738a319c1353ed721c6c4d864ed984cde0bfd089",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/back/native/validate.bend"
+          },
+          "declarations": {
+            "defs": 11,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 62,
+          "nonblank": 52,
+          "bytes": 2871,
+          "sha256": "9684fcb9bb25ff0e822ac11b738a319c1353ed721c6c4d864ed984cde0bfd089",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/validate.bend"
+        },
+        "delta": {
+          "physical": 0,
+          "nonblank": 0,
+          "bytes": 0
+        },
+        "unchanged": true
+      },
+      {
+        "logical_path": "selfhost/src/check/annotate.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 10850,
+          "physical": 400,
+          "nonblank": 334,
+          "sha256": "f033d726d951723b3bd52c62317e5b47721552beaf2ac42205e2444eb70c0c14",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/check/annotate.bend"
+          },
+          "declarations": {
+            "defs": 32,
+            "laws": 32,
+            "types": 1
+          }
+        },
+        "candidate": {
+          "physical": 388,
+          "nonblank": 328,
+          "bytes": 10649,
+          "sha256": "05d934d7b0a25cd72b6770436be273ab64ccce8753e4f0f6df9e672164246be6",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/check/annotate.bend"
+        },
+        "delta": {
+          "physical": -12,
+          "nonblank": -6,
+          "bytes": -201
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/check/kernel.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 35691,
+          "physical": 1261,
+          "nonblank": 1050,
+          "sha256": "0969c4493c29ab980450c848ea24c1f4b666081dbe0eecfc2c6abe21bb0ed947",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/check/kernel.bend"
+          },
+          "declarations": {
+            "defs": 104,
+            "laws": 104,
+            "types": 2
+          }
+        },
+        "candidate": {
+          "physical": 1152,
+          "nonblank": 987,
+          "bytes": 33907,
+          "sha256": "a5a65f57412d0b3a961203a1e0dd5326a5d107ad3d9ff5ca48c0aff756747eeb",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/check/kernel.bend"
+        },
+        "delta": {
+          "physical": -109,
+          "nonblank": -63,
+          "bytes": -1784
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/check/prefix.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 3709,
+          "physical": 179,
+          "nonblank": 150,
+          "sha256": "35af4b272cfe893d60d4aca6433617273a1c52bb8ae4d8eeabfa0541354816cb",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/check/prefix.bend"
+          },
+          "declarations": {
+            "defs": 14,
+            "laws": 14,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 140,
+          "nonblank": 120,
+          "bytes": 2851,
+          "sha256": "96172741f314f801eb20c8d071c8de8c5f3b8f2a8e3312d5f9e6858c4d9a2dac",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/check/prefix.bend"
+        },
+        "delta": {
+          "physical": -39,
+          "nonblank": -30,
+          "bytes": -858
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/check/quantity.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 3514,
+          "physical": 175,
+          "nonblank": 143,
+          "sha256": "e6c7a06fd45cb132d9d5d1704a6f01f81325505eed2ff5d6025e118ff4522e8a",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/check/quantity.bend"
+          },
+          "declarations": {
+            "defs": 15,
+            "laws": 15,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 157,
+          "nonblank": 134,
+          "bytes": 3289,
+          "sha256": "5f5cf65dca94a786691d1246f9b3002074eb9ae9715e387c802dd3c91486258b",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/check/quantity.bend"
+        },
+        "delta": {
+          "physical": -18,
+          "nonblank": -9,
+          "bytes": -225
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/check/specialize.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 24327,
+          "physical": 972,
+          "nonblank": 800,
+          "sha256": "9967a84c8862eabe3149c8cb125520f4913c1f1a057852138b7887bbeb9376fb",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/check/specialize.bend"
+          },
+          "declarations": {
+            "defs": 83,
+            "laws": 83,
+            "types": 5
+          }
+        },
+        "candidate": {
+          "physical": 916,
+          "nonblank": 772,
+          "bytes": 23704,
+          "sha256": "db583c76fbc41502f500665c69c48bd4aa3ce2fcc30e7192b9dab317c7d7f21b",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/check/specialize.bend"
+        },
+        "delta": {
+          "physical": -56,
+          "nonblank": -28,
+          "bytes": -623
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/core/graph.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 14602,
+          "physical": 503,
+          "nonblank": 425,
+          "sha256": "7d5e75fce5d473fe2c63a4ccbd3e115db29bf42bb037fa9238d5427fce62a790",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/core/graph.bend"
+          },
+          "declarations": {
+            "defs": 36,
+            "laws": 36,
+            "types": 5
+          }
+        },
+        "candidate": {
+          "physical": 475,
+          "nonblank": 411,
+          "bytes": 14245,
+          "sha256": "50ba21e52eb93a9153606f5d620ac2c613127063f294fe962b4c0a836224f8a3",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/core/graph.bend"
+        },
+        "delta": {
+          "physical": -28,
+          "nonblank": -14,
+          "bytes": -357
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/core/index.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 10245,
+          "physical": 381,
+          "nonblank": 319,
+          "sha256": "56687b5ca818a3217ab8dff7960836db002b8d7ad89e5de26b1f270d5abd4624",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/core/index.bend"
+          },
+          "declarations": {
+            "defs": 30,
+            "laws": 30,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 339,
+          "nonblank": 298,
+          "bytes": 9480,
+          "sha256": "c3cab805705f5dedcfe65691d4bc5c98710058bf8a62e0c39610ff398cf2872e",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/core/index.bend"
+        },
+        "delta": {
+          "physical": -42,
+          "nonblank": -21,
+          "bytes": -765
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/core/normalize.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 22801,
+          "physical": 724,
+          "nonblank": 618,
+          "sha256": "ae09f471bbf06633b9f308f9451835f7863a5c03535e8a6cf5ce6b31dbf0048d",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/core/normalize.bend"
+          },
+          "declarations": {
+            "defs": 58,
+            "laws": 58,
+            "types": 3
+          }
+        },
+        "candidate": {
+          "physical": 510,
+          "nonblank": 442,
+          "bytes": 16209,
+          "sha256": "9716a4eed46fae3e0bcd99fb4df3754e89cd2b39d724fc6225d9d11ec5e1b2ab",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/core/normalize.bend"
+        },
+        "delta": {
+          "physical": -214,
+          "nonblank": -176,
+          "bytes": -6592
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/core/pretty.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 15722,
+          "physical": 584,
+          "nonblank": 477,
+          "sha256": "9b7ffdca8ba9593b48167aea4f26abd8ac2802a2cca474b67dbf0cbebfca6def",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/core/pretty.bend"
+          },
+          "declarations": {
+            "defs": 53,
+            "laws": 53,
+            "types": 2
+          }
+        },
+        "candidate": {
+          "physical": 524,
+          "nonblank": 447,
+          "bytes": 14941,
+          "sha256": "8711e8ec480a194569dade743b570fa964a5b8783249a90cabc445e10e26b53e",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/core/pretty.bend"
+        },
+        "delta": {
+          "physical": -60,
+          "nonblank": -30,
+          "bytes": -781
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/core/reach.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 3677,
+          "physical": 131,
+          "nonblank": 107,
+          "sha256": "c7c1e1ff68ad798f3888d770ee5a02b1b73abbecd58cd2df9b81619428abb2cf",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/core/reach.bend"
+          },
+          "declarations": {
+            "defs": 12,
+            "laws": 12,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 129,
+          "nonblank": 106,
+          "bytes": 3635,
+          "sha256": "d46a6eed5910cd404ec4603cb735a9d402b1896e702ceb1770efe16344ef992c",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/core/reach.bend"
+        },
+        "delta": {
+          "physical": -2,
+          "nonblank": -1,
+          "bytes": -42
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/core/term.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 8527,
+          "physical": 463,
+          "nonblank": 373,
+          "sha256": "e47b14c3fec0043dacccdf2db0366e5d9ed29394b3a4faae47afe08e69a8f522",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/core/term.bend"
+          },
+          "declarations": {
+            "defs": 43,
+            "laws": 43,
+            "types": 2
+          }
+        },
+        "candidate": {
+          "physical": 418,
+          "nonblank": 359,
+          "bytes": 8326,
+          "sha256": "4fc40e715ceb59d581b91fb006f84698429e687e1ab86d460fc2d49d878bb80c",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/core/term.bend"
+        },
+        "delta": {
+          "physical": -45,
+          "nonblank": -14,
+          "bytes": -201
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/diagnostic/frontend.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 12117,
+          "physical": 369,
+          "nonblank": 361,
+          "sha256": "2384b57debd845717e7d17294ab1d0ffd3b754ee99bef8cd417b8c41e3295b17",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/diagnostic/frontend.bend"
+          },
+          "declarations": {
+            "defs": 34,
+            "laws": 34,
+            "types": 2
+          }
+        },
+        "candidate": {
+          "physical": 229,
+          "nonblank": 222,
+          "bytes": 8124,
+          "sha256": "8727de8ffa6d6fb1022ada1fec7bf53f97d9b696a51666eaa20c22ff16a8f842",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/diagnostic/frontend.bend"
+        },
+        "delta": {
+          "physical": -140,
+          "nonblank": -139,
+          "bytes": -3993
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/diagnostic/model.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 805,
+          "physical": 19,
+          "nonblank": 15,
+          "sha256": "dd69096c6fdcd682a45e9536eb6d475061fd285807961ac95a16b5a874358af5",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/diagnostic/model.bend"
+          },
+          "declarations": {
+            "defs": 0,
+            "laws": 0,
+            "types": 5
+          }
+        },
+        "candidate": {
+          "physical": 19,
+          "nonblank": 15,
+          "bytes": 805,
+          "sha256": "dd69096c6fdcd682a45e9536eb6d475061fd285807961ac95a16b5a874358af5",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/diagnostic/model.bend"
+        },
+        "delta": {
+          "physical": 0,
+          "nonblank": 0,
+          "bytes": 0
+        },
+        "unchanged": true
+      },
+      {
+        "logical_path": "selfhost/src/diagnostic/produce.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 11720,
+          "physical": 346,
+          "nonblank": 296,
+          "sha256": "4c91e4559263e307ce4b3ed0cc11138da27617c6fe5b8bfb21033c5f975a054f",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/diagnostic/produce.bend"
+          },
+          "declarations": {
+            "defs": 30,
+            "laws": 30,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 236,
+          "nonblank": 210,
+          "bytes": 8138,
+          "sha256": "9f1bf3e8683941b301649db680b4b7b3017d302651f62817c7b752b9625c5797",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/diagnostic/produce.bend"
+        },
+        "delta": {
+          "physical": -110,
+          "nonblank": -86,
+          "bytes": -3582
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/diagnostic/render.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 5628,
+          "physical": 214,
+          "nonblank": 173,
+          "sha256": "201867dba57eb715308026a3dcd36d1a61b0b51ea27c69c6ba00a3c935aedfe9",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/diagnostic/render.bend"
+          },
+          "declarations": {
+            "defs": 20,
+            "laws": 20,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 184,
+          "nonblank": 158,
+          "bytes": 5198,
+          "sha256": "21890a0d7db39db143c93ae15a2273d690ca6afe0dd263ac04af8985bcc166be",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/diagnostic/render.bend"
+        },
+        "delta": {
+          "physical": -30,
+          "nonblank": -15,
+          "bytes": -430
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/diagnostic/trace.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 4866,
+          "physical": 131,
+          "nonblank": 106,
+          "sha256": "e47615206be3ebf22c4771de06af3d4dfc1a553f7e914bfd9114bc74c2ab1246",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/diagnostic/trace.bend"
+          },
+          "declarations": {
+            "defs": 12,
+            "laws": 12,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 119,
+          "nonblank": 100,
+          "bytes": 4681,
+          "sha256": "a05fdb89e4d2aa38143f849524949bf4e225c4b9eedfebfe998f167caaaf99d0",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/diagnostic/trace.bend"
+        },
+        "delta": {
+          "physical": -12,
+          "nonblank": -6,
+          "bytes": -185
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/driver/api.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 3115,
+          "physical": 122,
+          "nonblank": 99,
+          "sha256": "a68a76de0ed77e3fc9b99193e4e0298257c97e516fbab79438123309112e63a1",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/driver/api.bend"
+          },
+          "declarations": {
+            "defs": 12,
+            "laws": 12,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 108,
+          "nonblank": 92,
+          "bytes": 2926,
+          "sha256": "096e60ddf14525fac1f5c94da4de7adac53ea0df7b6eb5e8988e835e92212cbf",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/driver/api.bend"
+        },
+        "delta": {
+          "physical": -14,
+          "nonblank": -7,
+          "bytes": -189
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/driver/report.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 2126,
+          "physical": 84,
+          "nonblank": 71,
+          "sha256": "461d05ad6f7647feafd13520fd5da0c9635eee976d58bea6c7d336b862831ba2",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/driver/report.bend"
+          },
+          "declarations": {
+            "defs": 7,
+            "laws": 7,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 82,
+          "nonblank": 70,
+          "bytes": 2091,
+          "sha256": "f115aab2d00fc6f71db57a972d919db590a22319cec89e7b6b892efe47959b99",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/driver/report.bend"
+        },
+        "delta": {
+          "physical": -2,
+          "nonblank": -1,
+          "bytes": -35
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/front/declarations.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 23216,
+          "physical": 737,
+          "nonblank": 613,
+          "sha256": "8b1770217f3dcdd9907c85574b58fd18c8b2af585ac0b381f7ac7b26b5dc155f",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/front/declarations.bend"
+          },
+          "declarations": {
+            "defs": 61,
+            "laws": 61,
+            "types": 2
+          }
+        },
+        "candidate": {
+          "physical": 619,
+          "nonblank": 527,
+          "bytes": 21153,
+          "sha256": "ea488d9b26663285b66d7a625f9eb1488c872f0f003590ba9b49cae08269a2a7",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/front/declarations.bend"
+        },
+        "delta": {
+          "physical": -118,
+          "nonblank": -86,
+          "bytes": -2063
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/front/elaborate.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 14929,
+          "physical": 520,
+          "nonblank": 427,
+          "sha256": "1616789ccae3d10c5cb4929948800fd13bf96f38040bf42257d160e6f0bff424",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/front/elaborate.bend"
+          },
+          "declarations": {
+            "defs": 46,
+            "laws": 46,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 469,
+          "nonblank": 395,
+          "bytes": 14183,
+          "sha256": "88611afd27cae1af669dfaece8dd8bf2a9d185ec9ab06b576069bb8475fec800",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/front/elaborate.bend"
+        },
+        "delta": {
+          "physical": -51,
+          "nonblank": -32,
+          "bytes": -746
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/front/families.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 6332,
+          "physical": 207,
+          "nonblank": 168,
+          "sha256": "b17a1dcf30d7ff7c7a0bc0d8e9df6d58f166ab19e3889c73b2403bb0b3b14fe4",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/front/families.bend"
+          },
+          "declarations": {
+            "defs": 18,
+            "laws": 18,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 203,
+          "nonblank": 166,
+          "bytes": 6289,
+          "sha256": "8bf0c69ad09a5d8793f56a5f6f967838857fbf43b8d2f2806521d801a1fd66f0",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/front/families.bend"
+        },
+        "delta": {
+          "physical": -4,
+          "nonblank": -2,
+          "bytes": -43
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/front/flatten.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 8624,
+          "physical": 294,
+          "nonblank": 246,
+          "sha256": "463d88f1c7de9828e1826d201f8b8de249f99e1d0bb64ae9768ba64d1f75af1e",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/front/flatten.bend"
+          },
+          "declarations": {
+            "defs": 23,
+            "laws": 23,
+            "types": 2
+          }
+        },
+        "candidate": {
+          "physical": 270,
+          "nonblank": 231,
+          "bytes": 8364,
+          "sha256": "0eb3b45ddec363d21e715b491cd19698e4dd6a50b259800edad42dd1e4338392",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/front/flatten.bend"
+        },
+        "delta": {
+          "physical": -24,
+          "nonblank": -15,
+          "bytes": -260
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/front/fresh_work.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 7057,
+          "physical": 202,
+          "nonblank": 195,
+          "sha256": "b84c60ecf96f3c50403c7fee86d9949a3bcacb4cab529f5a94cb64e920c6db53",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/front/fresh_work.bend"
+          },
+          "declarations": {
+            "defs": 14,
+            "laws": 14,
+            "types": 2
+          }
+        },
+        "candidate": {
+          "physical": 200,
+          "nonblank": 193,
+          "bytes": 6978,
+          "sha256": "bb91910966d0e82fc1e1c65be12b149056db6e22503f0fad1d560e4900d7a5ee",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/front/fresh_work.bend"
+        },
+        "delta": {
+          "physical": -2,
+          "nonblank": -2,
+          "bytes": -79
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/front/freshen.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 5354,
+          "physical": 245,
+          "nonblank": 204,
+          "sha256": "7b054636ae2cc593307d4ba8fea19bfd7e03363a6eb90e154abdd6ae50ba4d57",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/front/freshen.bend"
+          },
+          "declarations": {
+            "defs": 19,
+            "laws": 19,
+            "types": 3
+          }
+        },
+        "candidate": {
+          "physical": 57,
+          "nonblank": 47,
+          "bytes": 1168,
+          "sha256": "26abdc135603675f2ab3dffc3c049a20982500907d8819a3fdfea42ba917136a",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/front/freshen.bend"
+        },
+        "delta": {
+          "physical": -188,
+          "nonblank": -157,
+          "bytes": -4186
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/front/lexer.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 8804,
+          "physical": 340,
+          "nonblank": 280,
+          "sha256": "33b12e01c8b4ed2559163ace169e25a95dbf59c6a99438f5af9d8f240431b2d5",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/front/lexer.bend"
+          },
+          "declarations": {
+            "defs": 29,
+            "laws": 29,
+            "types": 2
+          }
+        },
+        "candidate": {
+          "physical": 302,
+          "nonblank": 261,
+          "bytes": 8357,
+          "sha256": "aed5103d42d33312f6e5e873ae786646be42f7332f04a80b78ab0cca70d31f31",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/front/lexer.bend"
+        },
+        "delta": {
+          "physical": -38,
+          "nonblank": -19,
+          "bytes": -447
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/front/literals_arrays.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 5734,
+          "physical": 197,
+          "nonblank": 155,
+          "sha256": "6468fe13b93ebb879c81ac8d18e2e99d4de16dabbf7dc0cc6f389e4a95343981",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/front/literals_arrays.bend"
+          },
+          "declarations": {
+            "defs": 20,
+            "laws": 20,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 197,
+          "nonblank": 155,
+          "bytes": 5734,
+          "sha256": "6468fe13b93ebb879c81ac8d18e2e99d4de16dabbf7dc0cc6f389e4a95343981",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/front/literals_arrays.bend"
+        },
+        "delta": {
+          "physical": 0,
+          "nonblank": 0,
+          "bytes": 0
+        },
+        "unchanged": true
+      },
+      {
+        "logical_path": "selfhost/src/front/parallel.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 4117,
+          "physical": 146,
+          "nonblank": 119,
+          "sha256": "08be770458662a402c4e4a33417381779cb327360747e6d64c1983545cf001d2",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/front/parallel.bend"
+          },
+          "declarations": {
+            "defs": 13,
+            "laws": 13,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 144,
+          "nonblank": 118,
+          "bytes": 4097,
+          "sha256": "8e9c25dc74b2976527c722072ab253863ed8839d9b84d7a6549ab7d0105ab8a9",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/front/parallel.bend"
+        },
+        "delta": {
+          "physical": -2,
+          "nonblank": -1,
+          "bytes": -20
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/front/parser.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 21518,
+          "physical": 637,
+          "nonblank": 530,
+          "sha256": "8daa5d7c685f67336b435b66989ad0eb17f4a9570eb38138ee5ad1a0ea490440",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/front/parser.bend"
+          },
+          "declarations": {
+            "defs": 58,
+            "laws": 58,
+            "types": 1
+          }
+        },
+        "candidate": {
+          "physical": 606,
+          "nonblank": 513,
+          "bytes": 21132,
+          "sha256": "c2ea3940944434dea9d52c146e998831288b5d4bc1d45e3ce80030bf89c91129",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/front/parser.bend"
+        },
+        "delta": {
+          "physical": -31,
+          "nonblank": -17,
+          "bytes": -386
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/front/sugar.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 9396,
+          "physical": 358,
+          "nonblank": 292,
+          "sha256": "b8bdca5ccc2d4c9a864d8bb6f0d707486e31d75f8dfef9b1ca15e9a25f721c9f",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/front/sugar.bend"
+          },
+          "declarations": {
+            "defs": 32,
+            "laws": 32,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 302,
+          "nonblank": 250,
+          "bytes": 8257,
+          "sha256": "ce5ef60fada67616142961f07a07c0c2a29283e4b553028480ccf7810687d547",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/front/sugar.bend"
+        },
+        "delta": {
+          "physical": -56,
+          "nonblank": -42,
+          "bytes": -1139
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/front/unicode.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 2813,
+          "physical": 82,
+          "nonblank": 63,
+          "sha256": "ab9f2596af9af28bc3698d9cc101cdfd8565be2008d89322b2290cb2887862b6",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/front/unicode.bend"
+          },
+          "declarations": {
+            "defs": 9,
+            "laws": 9,
+            "types": 1
+          }
+        },
+        "candidate": {
+          "physical": 78,
+          "nonblank": 61,
+          "bytes": 2775,
+          "sha256": "ca1576b9c9a1992157c98bb66da63ca45aff204c724d902e2e88c5ee87662a51",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/front/unicode.bend"
+        },
+        "delta": {
+          "physical": -4,
+          "nonblank": -2,
+          "bytes": -38
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/front/validate.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 9681,
+          "physical": 290,
+          "nonblank": 233,
+          "sha256": "26e56bc64093bf2bb7661c79c47218837974b3954db5c662ccb8d18ea39196cf",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/front/validate.bend"
+          },
+          "declarations": {
+            "defs": 27,
+            "laws": 27,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 284,
+          "nonblank": 230,
+          "bytes": 9588,
+          "sha256": "f6e275e614512e29f6e66103660c500efad0dfa9a2d99821fa57c2d1645abbeb",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/front/validate.bend"
+        },
+        "delta": {
+          "physical": -6,
+          "nonblank": -3,
+          "bytes": -93
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/load/graph.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 17020,
+          "physical": 574,
+          "nonblank": 499,
+          "sha256": "05c9030572a608241d0974b58976addbd200287cc3c21359dd3c9aa1c07274ac",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/load/graph.bend"
+          },
+          "declarations": {
+            "defs": 52,
+            "laws": 52,
+            "types": 1
+          }
+        },
+        "candidate": {
+          "physical": 477,
+          "nonblank": 422,
+          "bytes": 14150,
+          "sha256": "6a5ab7cecafed72e49c06fc912127d87c9ccecea9cd0b341eb430ac5bee284bc",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/load/graph.bend"
+        },
+        "delta": {
+          "physical": -97,
+          "nonblank": -77,
+          "bytes": -2870
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/load/imports.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 733,
+          "physical": 13,
+          "nonblank": 10,
+          "sha256": "f9ad12e894937828aea74ccd34750b3b1635943a0037db9656e9b8e514350471",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/load/imports.bend"
+          },
+          "declarations": {
+            "defs": 1,
+            "laws": 1,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 13,
+          "nonblank": 10,
+          "bytes": 733,
+          "sha256": "f9ad12e894937828aea74ccd34750b3b1635943a0037db9656e9b8e514350471",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/load/imports.bend"
+        },
+        "delta": {
+          "physical": 0,
+          "nonblank": 0,
+          "bytes": 0
+        },
+        "unchanged": true
+      },
+      {
+        "logical_path": "selfhost/src/load/modules.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 8878,
+          "physical": 337,
+          "nonblank": 280,
+          "sha256": "5c7c19a5d75779ae3e81a44b4ab387c782cd32cf9eb5b20c02e5bede153f85c0",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/load/modules.bend"
+          },
+          "declarations": {
+            "defs": 27,
+            "laws": 27,
+            "types": 3
+          }
+        },
+        "candidate": {
+          "physical": 304,
+          "nonblank": 259,
+          "bytes": 8265,
+          "sha256": "a7fd4c42cd13cc8165cec2a4e9f71f070fb10703910f7780064bd533aaa711fe",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/load/modules.bend"
+        },
+        "delta": {
+          "physical": -33,
+          "nonblank": -21,
+          "bytes": -613
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/load/paths.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 2290,
+          "physical": 93,
+          "nonblank": 74,
+          "sha256": "56d3ac6b7bf63db2ffd1c26521fb528f56b9469c78203d01296a93fc3812d38c",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/load/paths.bend"
+          },
+          "declarations": {
+            "defs": 9,
+            "laws": 9,
+            "types": 0
+          }
+        },
+        "candidate": {
+          "physical": 83,
+          "nonblank": 69,
+          "bytes": 2127,
+          "sha256": "6e51e3501ed057ca53b48c3f02506199e2000a5b30fb62aa243843e94d9af877",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/load/paths.bend"
+        },
+        "delta": {
+          "physical": -10,
+          "nonblank": -5,
+          "bytes": -163
+        },
+        "unchanged": false
+      },
+      {
+        "logical_path": "selfhost/src/load/seed.bend",
+        "category": "production_bend",
+        "rationale": null,
+        "baseline": {
+          "bytes": 5460,
+          "physical": 168,
+          "nonblank": 143,
+          "sha256": "18100899188b1f1d088605b9a9b23e1c059abf7d6a8a65a835d024a2279bd4a3",
+          "source": {
+            "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+            "git_path": "selfhost/src/load/seed.bend"
+          },
+          "declarations": {
+            "defs": 12,
+            "laws": 12,
+            "types": 1
+          }
+        },
+        "candidate": {
+          "physical": 160,
+          "nonblank": 139,
+          "bytes": 5257,
+          "sha256": "b26df24719588df4fc4fd57f143bc35ec92e77e0f849429380a3797fab8077e4",
+          "file": "selfhost/build/phase7/s4/candidate-b02-project/src/load/seed.bend"
+        },
+        "delta": {
+          "physical": -8,
+          "nonblank": -4,
+          "bytes": -203
+        },
+        "unchanged": false
+      }
+    ]
+  },
+  "contexts": {
+    "parser_first_error": {
+      "task": "Repair parser first-error selection when an earlier malformed array element, definition type, or match header is overwritten by a later body/delimiter error, preserving imported-source ownership and accepted neighbors.",
+      "frozen_selection_policy": "Review-context proxy with full-file units, not transitive dependency closure or measured human/model effort. Freeze these task obligations and compare the replacement files serving the same roles; do not count only edited lines after migration.",
+      "original_S0": {
+        "files": 30,
+        "physical": 5716,
+        "nonblank": 4851,
+        "bytes": 198816
+      },
+      "fixed_paths": {
+        "totals": {
+          "files": 30,
+          "physical": 5258,
+          "nonblank": 4554,
+          "bytes": 191321
+        },
+        "delta_from_S0": {
+          "files": 0,
+          "physical": -458,
+          "nonblank": -297,
+          "bytes": -7495
+        },
+        "files": [
+          {
+            "logical_path": "selfhost/src/core/term.bend",
+            "category": "implementation_local",
+            "rationale": "KTerm/Error/Absent tags and positional field contract used by parser results.",
+            "baseline": {
+              "bytes": 8527,
+              "physical": 463,
+              "nonblank": 373,
+              "sha256": "e47b14c3fec0043dacccdf2db0366e5d9ed29394b3a4faae47afe08e69a8f522",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/core/term.bend"
+              }
+            },
+            "candidate": {
+              "physical": 418,
+              "nonblank": 359,
+              "bytes": 8326,
+              "sha256": "4fc40e715ceb59d581b91fb006f84698429e687e1ab86d460fc2d49d878bb80c",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/core/term.bend"
+            },
+            "delta": {
+              "physical": -45,
+              "nonblank": -14,
+              "bytes": -201
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/src/front/lexer.bend",
+            "category": "implementation_local",
+            "rationale": "Token cursor, whitespace, line/column and EOF behavior determine which error is first.",
+            "baseline": {
+              "bytes": 8804,
+              "physical": 340,
+              "nonblank": 280,
+              "sha256": "33b12e01c8b4ed2559163ace169e25a95dbf59c6a99438f5af9d8f240431b2d5",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/front/lexer.bend"
+              }
+            },
+            "candidate": {
+              "physical": 302,
+              "nonblank": 261,
+              "bytes": 8357,
+              "sha256": "aed5103d42d33312f6e5e873ae786646be42f7332f04a80b78ab0cca70d31f31",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/front/lexer.bend"
+            },
+            "delta": {
+              "physical": -38,
+              "nonblank": -19,
+              "bytes": -447
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/src/front/parser.bend",
+            "category": "implementation_local",
+            "rationale": "Expression/error propagation, expectation rendering and parser-result contract.",
+            "baseline": {
+              "bytes": 21518,
+              "physical": 637,
+              "nonblank": 530,
+              "sha256": "8daa5d7c685f67336b435b66989ad0eb17f4a9570eb38138ee5ad1a0ea490440",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/front/parser.bend"
+              }
+            },
+            "candidate": {
+              "physical": 606,
+              "nonblank": 513,
+              "bytes": 21132,
+              "sha256": "c2ea3940944434dea9d52c146e998831288b5d4bc1d45e3ce80030bf89c91129",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/front/parser.bend"
+            },
+            "delta": {
+              "physical": -31,
+              "nonblank": -17,
+              "bytes": -386
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/src/front/declarations.bend",
+            "category": "implementation_local",
+            "rationale": "Definition signature/body and match row/body evaluation order; public parser result.",
+            "baseline": {
+              "bytes": 23216,
+              "physical": 737,
+              "nonblank": 613,
+              "sha256": "8b1770217f3dcdd9907c85574b58fd18c8b2af585ac0b381f7ac7b26b5dc155f",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/front/declarations.bend"
+              }
+            },
+            "candidate": {
+              "physical": 619,
+              "nonblank": 527,
+              "bytes": 21153,
+              "sha256": "ea488d9b26663285b66d7a625f9eb1488c872f0f003590ba9b49cae08269a2a7",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/front/declarations.bend"
+            },
+            "delta": {
+              "physical": -118,
+              "nonblank": -86,
+              "bytes": -2063
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/src/front/literals_arrays.bend",
+            "category": "implementation_local",
+            "rationale": "Array first-element error propagation, one of the concrete known repair sites.",
+            "baseline": {
+              "bytes": 5734,
+              "physical": 197,
+              "nonblank": 155,
+              "sha256": "6468fe13b93ebb879c81ac8d18e2e99d4de16dabbf7dc0cc6f389e4a95343981",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/front/literals_arrays.bend"
+              }
+            },
+            "candidate": {
+              "physical": 197,
+              "nonblank": 155,
+              "bytes": 5734,
+              "sha256": "6468fe13b93ebb879c81ac8d18e2e99d4de16dabbf7dc0cc6f389e4a95343981",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/front/literals_arrays.bend"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          },
+          {
+            "logical_path": "selfhost/src/front/validate.bend",
+            "category": "implementation_local",
+            "rationale": "Match arity/pattern validation and delayed f_case_checked ordering.",
+            "baseline": {
+              "bytes": 9681,
+              "physical": 290,
+              "nonblank": 233,
+              "sha256": "26e56bc64093bf2bb7661c79c47218837974b3954db5c662ccb8d18ea39196cf",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/front/validate.bend"
+              }
+            },
+            "candidate": {
+              "physical": 284,
+              "nonblank": 230,
+              "bytes": 9588,
+              "sha256": "f6e275e614512e29f6e66103660c500efad0dfa9a2d99821fa57c2d1645abbeb",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/front/validate.bend"
+            },
+            "delta": {
+              "physical": -6,
+              "nonblank": -3,
+              "bytes": -93
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/src/front/elaborate.bend",
+            "category": "implementation_integration",
+            "rationale": "Scope/lowering preserves or changes Error nodes before graph validation.",
+            "baseline": {
+              "bytes": 14929,
+              "physical": 520,
+              "nonblank": 427,
+              "sha256": "1616789ccae3d10c5cb4929948800fd13bf96f38040bf42257d160e6f0bff424",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/front/elaborate.bend"
+              }
+            },
+            "candidate": {
+              "physical": 469,
+              "nonblank": 395,
+              "bytes": 14183,
+              "sha256": "88611afd27cae1af669dfaece8dd8bf2a9d185ec9ab06b576069bb8475fec800",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/front/elaborate.bend"
+            },
+            "delta": {
+              "physical": -51,
+              "nonblank": -32,
+              "bytes": -746
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/src/front/sugar.bend",
+            "category": "implementation_integration",
+            "rationale": "f_error_* traversal and f_validate_result choose authoritative frontend error.",
+            "baseline": {
+              "bytes": 9396,
+              "physical": 358,
+              "nonblank": 292,
+              "sha256": "b8bdca5ccc2d4c9a864d8bb6f0d707486e31d75f8dfef9b1ca15e9a25f721c9f",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/front/sugar.bend"
+              }
+            },
+            "candidate": {
+              "physical": 302,
+              "nonblank": 250,
+              "bytes": 8257,
+              "sha256": "ce5ef60fada67616142961f07a07c0c2a29283e4b553028480ccf7810687d547",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/front/sugar.bend"
+            },
+            "delta": {
+              "physical": -56,
+              "nonblank": -42,
+              "bytes": -1139
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/src/load/graph.bend",
+            "category": "implementation_integration",
+            "rationale": "Imported error ordering and post-validation source owner recovery.",
+            "baseline": {
+              "bytes": 17020,
+              "physical": 574,
+              "nonblank": 499,
+              "sha256": "05c9030572a608241d0974b58976addbd200287cc3c21359dd3c9aa1c07274ac",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/load/graph.bend"
+              }
+            },
+            "candidate": {
+              "physical": 477,
+              "nonblank": 422,
+              "bytes": 14150,
+              "sha256": "6a5ab7cecafed72e49c06fc912127d87c9ccecea9cd0b341eb430ac5bee284bc",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/load/graph.bend"
+            },
+            "delta": {
+              "physical": -97,
+              "nonblank": -77,
+              "bytes": -2870
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/src/load/modules.bend",
+            "category": "implementation_integration",
+            "rationale": "FSource/FParsedSource, parse handoff and loader result contracts.",
+            "baseline": {
+              "bytes": 8878,
+              "physical": 337,
+              "nonblank": 280,
+              "sha256": "5c7c19a5d75779ae3e81a44b4ab387c782cd32cf9eb5b20c02e5bede153f85c0",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/load/modules.bend"
+              }
+            },
+            "candidate": {
+              "physical": 304,
+              "nonblank": 259,
+              "bytes": 8265,
+              "sha256": "a7fd4c42cd13cc8165cec2a4e9f71f070fb10703910f7780064bd533aaa711fe",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/load/modules.bend"
+            },
+            "delta": {
+              "physical": -33,
+              "nonblank": -21,
+              "bytes": -613
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/src/load/imports.bend",
+            "category": "implementation_integration",
+            "rationale": "Leading import parser boundary used by imported first-error controls.",
+            "baseline": {
+              "bytes": 733,
+              "physical": 13,
+              "nonblank": 10,
+              "sha256": "f9ad12e894937828aea74ccd34750b3b1635943a0037db9656e9b8e514350471",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/load/imports.bend"
+              }
+            },
+            "candidate": {
+              "physical": 13,
+              "nonblank": 10,
+              "bytes": 733,
+              "sha256": "f9ad12e894937828aea74ccd34750b3b1635943a0037db9656e9b8e514350471",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/load/imports.bend"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          },
+          {
+            "logical_path": "selfhost/CONFORMANCE.md",
+            "category": "contracts",
+            "rationale": "Exact output versus acceptance/phase distinction and pinned reference obligations.",
+            "baseline": {
+              "bytes": 3561,
+              "physical": 44,
+              "nonblank": 40,
+              "sha256": "a113a5f2a8b51657872c4925a006e83d3621410a0a607ecd0f5a851e0d442abc",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/CONFORMANCE.md"
+              }
+            },
+            "candidate": {
+              "physical": 55,
+              "nonblank": 49,
+              "bytes": 4209,
+              "sha256": "ac5be46641de72ccfca6ebf0be839aa8bd32b1206b412716bb45bb2361802137",
+              "file": "selfhost/CONFORMANCE.md"
+            },
+            "delta": {
+              "physical": 11,
+              "nonblank": 9,
+              "bytes": 648
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/docs/ARCHITECTURE.md",
+            "category": "contracts",
+            "rationale": "Current parser/elaborator/loader ownership and representation contract.",
+            "baseline": {
+              "bytes": 15301,
+              "physical": 245,
+              "nonblank": 205,
+              "sha256": "4a15be939d08e90d12a59a285b08970fefbdc9e733ffd7dd9f7a6de08d3e7851",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/docs/ARCHITECTURE.md"
+              }
+            },
+            "candidate": {
+              "physical": 251,
+              "nonblank": 210,
+              "bytes": 15716,
+              "sha256": "4cdd72041379280ce355060a77ede307671016db474c01ddc64683b19a95e97e",
+              "file": "selfhost/docs/ARCHITECTURE.md"
+            },
+            "delta": {
+              "physical": 6,
+              "nonblank": 5,
+              "bytes": 415
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "docs/PHASE5_DEVELOPMENT.md",
+            "category": "contracts",
+            "rationale": "Maintained checked build and validation invocation/lineage contract.",
+            "baseline": {
+              "bytes": 6664,
+              "physical": 116,
+              "nonblank": 99,
+              "sha256": "fac1004b42c16641918a080cbc30e9e90995d064146edd584ef02703c2ba6fca",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "docs/PHASE5_DEVELOPMENT.md"
+              }
+            },
+            "candidate": {
+              "physical": 116,
+              "nonblank": 99,
+              "bytes": 6664,
+              "sha256": "fac1004b42c16641918a080cbc30e9e90995d064146edd584ef02703c2ba6fca",
+              "file": "docs/PHASE5_DEVELOPMENT.md"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          },
+          {
+            "logical_path": "selfhost/tests/frontend/phase5-parser-expectations/cases.json",
+            "category": "test_oracles",
+            "rationale": "Maintained parser-expectation exact/fallback controls; keep complete file as review unit.",
+            "baseline": {
+              "bytes": 8470,
+              "physical": 251,
+              "nonblank": 251,
+              "sha256": "21ce2b3b0fc21e21ca55ac3ebff20d5c631a8059588d69308ad111e18286f56c",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/tests/frontend/phase5-parser-expectations/cases.json"
+              }
+            },
+            "candidate": {
+              "physical": 251,
+              "nonblank": 251,
+              "bytes": 8470,
+              "sha256": "21ce2b3b0fc21e21ca55ac3ebff20d5c631a8059588d69308ad111e18286f56c",
+              "file": "selfhost/tests/frontend/phase5-parser-expectations/cases.json"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          },
+          {
+            "logical_path": "selfhost/tests/frontend/phase5-embedded-parser/confirmed-cases.json",
+            "category": "test_oracles",
+            "rationale": "Maintained embedded and imported error-order controls; keep complete file as review unit.",
+            "baseline": {
+              "bytes": 10325,
+              "physical": 307,
+              "nonblank": 307,
+              "sha256": "c5c8a9a1dacb9c356e92b0fefc430de18a33497833c1cf7aa560a398ba5a59fa",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/tests/frontend/phase5-embedded-parser/confirmed-cases.json"
+              }
+            },
+            "candidate": {
+              "physical": 307,
+              "nonblank": 307,
+              "bytes": 10325,
+              "sha256": "c5c8a9a1dacb9c356e92b0fefc430de18a33497833c1cf7aa560a398ba5a59fa",
+              "file": "selfhost/tests/frontend/phase5-embedded-parser/confirmed-cases.json"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          },
+          {
+            "logical_path": "selfhost/tests/frontend/phase5-parser-expectations/first-legacy-before-term.bend",
+            "category": "test_fixtures",
+            "rationale": "Earlier legacy error must survive later located expression error.",
+            "baseline": {
+              "bytes": 63,
+              "physical": 5,
+              "nonblank": 5,
+              "sha256": "39cf18d214c2eb3f8bc56f3e7be66e284716c8c8326056473894d74f34b4a03b",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/tests/frontend/phase5-parser-expectations/first-legacy-before-term.bend"
+              }
+            },
+            "candidate": {
+              "physical": 5,
+              "nonblank": 5,
+              "bytes": 63,
+              "sha256": "39cf18d214c2eb3f8bc56f3e7be66e284716c8c8326056473894d74f34b4a03b",
+              "file": "selfhost/tests/frontend/phase5-parser-expectations/first-legacy-before-term.bend"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          },
+          {
+            "logical_path": "selfhost/tests/frontend/phase5-parser-expectations/first-term-before-later.bend",
+            "category": "test_fixtures",
+            "rationale": "Earlier expression error must survive later malformed group.",
+            "baseline": {
+              "bytes": 61,
+              "physical": 5,
+              "nonblank": 5,
+              "sha256": "321febab91b4b7553ab596fcb7ef791fe777c7604af8ab50cd61334d8c510581",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/tests/frontend/phase5-parser-expectations/first-term-before-later.bend"
+              }
+            },
+            "candidate": {
+              "physical": 5,
+              "nonblank": 5,
+              "bytes": 61,
+              "sha256": "321febab91b4b7553ab596fcb7ef791fe777c7604af8ab50cd61334d8c510581",
+              "file": "selfhost/tests/frontend/phase5-parser-expectations/first-term-before-later.bend"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          },
+          {
+            "logical_path": "selfhost/tests/frontend/phase5-parser-expectations/term-semicolon-list.bend",
+            "category": "test_fixtures",
+            "rationale": "Array/list delimiter and error boundary neighbor.",
+            "baseline": {
+              "bytes": 40,
+              "physical": 3,
+              "nonblank": 3,
+              "sha256": "05e6867866f731726c569ecbcfd2952845d504e09bc6927b4411cd384c919725",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/tests/frontend/phase5-parser-expectations/term-semicolon-list.bend"
+              }
+            },
+            "candidate": {
+              "physical": 3,
+              "nonblank": 3,
+              "bytes": 40,
+              "sha256": "05e6867866f731726c569ecbcfd2952845d504e09bc6927b4411cd384c919725",
+              "file": "selfhost/tests/frontend/phase5-parser-expectations/term-semicolon-list.bend"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          },
+          {
+            "logical_path": "selfhost/tests/frontend/phase5-parser-expectations/valid-neighbor.bend",
+            "category": "test_fixtures",
+            "rationale": "Accepted parser neighbor.",
+            "baseline": {
+              "bytes": 50,
+              "physical": 3,
+              "nonblank": 3,
+              "sha256": "9654b60fa4f90fdeebcd552f8fbf4cc59136a7980e928ed608babbb552916afd",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/tests/frontend/phase5-parser-expectations/valid-neighbor.bend"
+              }
+            },
+            "candidate": {
+              "physical": 3,
+              "nonblank": 3,
+              "bytes": 50,
+              "sha256": "9654b60fa4f90fdeebcd552f8fbf4cc59136a7980e928ed608babbb552916afd",
+              "file": "selfhost/tests/frontend/phase5-parser-expectations/valid-neighbor.bend"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          },
+          {
+            "logical_path": "selfhost/tests/frontend/phase5-embedded-parser/two-errors.bend",
+            "category": "test_fixtures",
+            "rationale": "Competing malformed constructs in source order.",
+            "baseline": {
+              "bytes": 63,
+              "physical": 5,
+              "nonblank": 5,
+              "sha256": "f5bc2dfc2a915e1465834311bca7c84cf138319a86d7d7cd5b34f801cf4ee869",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/tests/frontend/phase5-embedded-parser/two-errors.bend"
+              }
+            },
+            "candidate": {
+              "physical": 5,
+              "nonblank": 5,
+              "bytes": 63,
+              "sha256": "f5bc2dfc2a915e1465834311bca7c84cf138319a86d7d7cd5b34f801cf4ee869",
+              "file": "selfhost/tests/frontend/phase5-embedded-parser/two-errors.bend"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          },
+          {
+            "logical_path": "selfhost/tests/frontend/phase5-embedded-parser/legacy-first.bend",
+            "category": "test_fixtures",
+            "rationale": "Legacy first-error fallback control.",
+            "baseline": {
+              "bytes": 61,
+              "physical": 5,
+              "nonblank": 5,
+              "sha256": "a7dabfefca4b164c06aa0585fe8d457cc92aa6ba7a20904b4efd5fe90a94f856",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/tests/frontend/phase5-embedded-parser/legacy-first.bend"
+              }
+            },
+            "candidate": {
+              "physical": 5,
+              "nonblank": 5,
+              "bytes": 61,
+              "sha256": "a7dabfefca4b164c06aa0585fe8d457cc92aa6ba7a20904b4efd5fe90a94f856",
+              "file": "selfhost/tests/frontend/phase5-embedded-parser/legacy-first.bend"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          },
+          {
+            "logical_path": "selfhost/tests/frontend/phase5-embedded-parser/nested-value-first.bend",
+            "category": "test_fixtures",
+            "rationale": "Nested value/body error order control.",
+            "baseline": {
+              "bytes": 48,
+              "physical": 4,
+              "nonblank": 4,
+              "sha256": "f9f948c7cbcc1dca492ee52e240ad0f9483ff442956983ffb151a962b2ab6ff6",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/tests/frontend/phase5-embedded-parser/nested-value-first.bend"
+              }
+            },
+            "candidate": {
+              "physical": 4,
+              "nonblank": 4,
+              "bytes": 48,
+              "sha256": "f9f948c7cbcc1dca492ee52e240ad0f9483ff442956983ffb151a962b2ab6ff6",
+              "file": "selfhost/tests/frontend/phase5-embedded-parser/nested-value-first.bend"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          },
+          {
+            "logical_path": "selfhost/tests/frontend/phase5-embedded-parser/import-error-first.bend",
+            "category": "test_fixtures",
+            "rationale": "Imported failure competes with main source failure.",
+            "baseline": {
+              "bytes": 73,
+              "physical": 5,
+              "nonblank": 5,
+              "sha256": "3c5bbce063390c3a7cf88648b3f764c0197be1e45b37969b8f6ab43899ef0a4f",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/tests/frontend/phase5-embedded-parser/import-error-first.bend"
+              }
+            },
+            "candidate": {
+              "physical": 5,
+              "nonblank": 5,
+              "bytes": 73,
+              "sha256": "3c5bbce063390c3a7cf88648b3f764c0197be1e45b37969b8f6ab43899ef0a4f",
+              "file": "selfhost/tests/frontend/phase5-embedded-parser/import-error-first.bend"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          },
+          {
+            "logical_path": "selfhost/tests/frontend/phase5-embedded-parser/Bad.bend",
+            "category": "test_fixtures",
+            "rationale": "Imported negative control dependency.",
+            "baseline": {
+              "bytes": 38,
+              "physical": 3,
+              "nonblank": 3,
+              "sha256": "f4332fb2d25fe8ef26d544ae3e86ef5237bae50f71f1b74d68909638f8f094e0",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/tests/frontend/phase5-embedded-parser/Bad.bend"
+              }
+            },
+            "candidate": {
+              "physical": 3,
+              "nonblank": 3,
+              "bytes": 38,
+              "sha256": "f4332fb2d25fe8ef26d544ae3e86ef5237bae50f71f1b74d68909638f8f094e0",
+              "file": "selfhost/tests/frontend/phase5-embedded-parser/Bad.bend"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          },
+          {
+            "logical_path": "selfhost/tests/frontend/phase5-embedded-parser/Good.bend",
+            "category": "test_fixtures",
+            "rationale": "Imported accepted control dependency.",
+            "baseline": {
+              "bytes": 37,
+              "physical": 3,
+              "nonblank": 3,
+              "sha256": "882ef00e9f4b13f259cf189a72305dfcc4a28d1105e76b8cbd336f4d113834b0",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/tests/frontend/phase5-embedded-parser/Good.bend"
+              }
+            },
+            "candidate": {
+              "physical": 3,
+              "nonblank": 3,
+              "bytes": 37,
+              "sha256": "882ef00e9f4b13f259cf189a72305dfcc4a28d1105e76b8cbd336f4d113834b0",
+              "file": "selfhost/tests/frontend/phase5-embedded-parser/Good.bend"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          },
+          {
+            "logical_path": "selfhost/tools/conformance/judge.mjs",
+            "category": "oracle_harness",
+            "rationale": "Distinguishes exact expectations from acceptance/phase controls.",
+            "baseline": {
+              "bytes": 4919,
+              "physical": 59,
+              "nonblank": 58,
+              "sha256": "4940d3c351457291ca3000596ff61731deb04d9c94c80b23ad3103344680b466",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/tools/conformance/judge.mjs"
+              }
+            },
+            "candidate": {
+              "physical": 59,
+              "nonblank": 58,
+              "bytes": 4919,
+              "sha256": "4940d3c351457291ca3000596ff61731deb04d9c94c80b23ad3103344680b466",
+              "file": "selfhost/tools/conformance/judge.mjs"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          },
+          {
+            "logical_path": "selfhost/tools/conformance/adapters/upstream.mjs",
+            "category": "oracle_harness",
+            "rationale": "Pinned live oracle and import/source preprocessing behavior.",
+            "baseline": {
+              "bytes": 6836,
+              "physical": 70,
+              "nonblank": 70,
+              "sha256": "7414d35c6f58ba7e7542afa28816c9cdc1a81bbff9511bc9b37686d40a65a7dd",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/tools/conformance/adapters/upstream.mjs"
+              }
+            },
+            "candidate": {
+              "physical": 70,
+              "nonblank": 70,
+              "bytes": 6836,
+              "sha256": "7414d35c6f58ba7e7542afa28816c9cdc1a81bbff9511bc9b37686d40a65a7dd",
+              "file": "selfhost/tools/conformance/adapters/upstream.mjs"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          },
+          {
+            "logical_path": "implementation/phase6/parser-first-errors.md",
+            "category": "existing_repair_evidence",
+            "rationale": "Existing bounded A/B/combined findings and false fixture assumptions; history, not promoted code.",
+            "baseline": {
+              "bytes": 9278,
+              "physical": 44,
+              "nonblank": 24,
+              "sha256": "b3bab5c685ce57e1df22228786227500f44d959781094d1e283747c301b7c690",
+              "source": {
+                "file": "implementation/phase6/parser-first-errors.md",
+                "reason": "Not tracked at S0 revision; current historical artifact matches exact frozen S0 SHA-256."
+              }
+            },
+            "candidate": {
+              "physical": 44,
+              "nonblank": 24,
+              "bytes": 9278,
+              "sha256": "b3bab5c685ce57e1df22228786227500f44d959781094d1e283747c301b7c690",
+              "file": "implementation/phase6/parser-first-errors.md"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          },
+          {
+            "logical_path": "implementation/phase6/parser-first-errors-candidate.patch",
+            "category": "existing_repair_evidence",
+            "rationale": "Exact independent early-error repairs and delayed arity helper retirement used to fix task scope.",
+            "baseline": {
+              "bytes": 4492,
+              "physical": 73,
+              "nonblank": 64,
+              "sha256": "03fd30168dcf05da90d631714406bd58446c1ce2bab0b96e0709c272594fd8d7",
+              "source": {
+                "file": "implementation/phase6/parser-first-errors-candidate.patch",
+                "reason": "Not tracked at S0 revision; current historical artifact matches exact frozen S0 SHA-256."
+              }
+            },
+            "candidate": {
+              "physical": 73,
+              "nonblank": 64,
+              "bytes": 4492,
+              "sha256": "03fd30168dcf05da90d631714406bd58446c1ce2bab0b96e0709c272594fd8d7",
+              "file": "implementation/phase6/parser-first-errors-candidate.patch"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          }
+        ]
+      },
+      "replacement_owner_union": {
+        "totals": {
+          "files": 31,
+          "physical": 5418,
+          "nonblank": 4693,
+          "bytes": 196578
+        },
+        "delta_from_S0": {
+          "files": 1,
+          "physical": -298,
+          "nonblank": -158,
+          "bytes": -2238
+        },
+        "extra_files": [
+          {
+            "logical_path": "selfhost/src/load/seed.bend",
+            "category": "supplementary_replacement_owner",
+            "rationale": "B01 f_graph_load delegates ordinary loading to fs_load; seed.bend now owns the graph traversal previously in the original graph.bend review unit.",
+            "baseline": {
+              "bytes": 5460,
+              "physical": 168,
+              "nonblank": 143,
+              "sha256": "18100899188b1f1d088605b9a9b23e1c059abf7d6a8a65a835d024a2279bd4a3",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/load/seed.bend"
+              }
+            },
+            "candidate": {
+              "physical": 160,
+              "nonblank": 139,
+              "bytes": 5257,
+              "sha256": "b26df24719588df4fc4fd57f143bc35ec92e77e0f849429380a3797fab8077e4",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/load/seed.bend"
+            },
+            "delta": {
+              "physical": -8,
+              "nonblank": -4,
+              "bytes": -203
+            },
+            "unchanged": false
+          }
+        ]
+      }
+    },
+    "dependent_application_check": {
+      "task": "dependent_application_check",
+      "frozen_selection_policy": "Term and quantity conventions, application checking/conversion and error wrapping, architecture contract, kernel and specialization regression callers. Count entire files for a reproducible conservative review set.",
+      "original_S0": {
+        "files": 9,
+        "physical": 3156,
+        "nonblank": 2652,
+        "bytes": 106647
+      },
+      "fixed_paths": {
+        "totals": {
+          "files": 9,
+          "physical": 2764,
+          "nonblank": 2389,
+          "bytes": 98075
+        },
+        "delta_from_S0": {
+          "files": 0,
+          "physical": -392,
+          "nonblank": -263,
+          "bytes": -8572
+        },
+        "files": [
+          {
+            "logical_path": "selfhost/src/core/term.bend",
+            "category": "fixed_original_context",
+            "rationale": null,
+            "baseline": {
+              "bytes": 8527,
+              "physical": 463,
+              "nonblank": 373,
+              "sha256": "e47b14c3fec0043dacccdf2db0366e5d9ed29394b3a4faae47afe08e69a8f522",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/core/term.bend"
+              }
+            },
+            "candidate": {
+              "physical": 418,
+              "nonblank": 359,
+              "bytes": 8326,
+              "sha256": "4fc40e715ceb59d581b91fb006f84698429e687e1ab86d460fc2d49d878bb80c",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/core/term.bend"
+            },
+            "delta": {
+              "physical": -45,
+              "nonblank": -14,
+              "bytes": -201
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/src/core/normalize.bend",
+            "category": "fixed_original_context",
+            "rationale": null,
+            "baseline": {
+              "bytes": 22801,
+              "physical": 724,
+              "nonblank": 618,
+              "sha256": "ae09f471bbf06633b9f308f9451835f7863a5c03535e8a6cf5ce6b31dbf0048d",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/core/normalize.bend"
+              }
+            },
+            "candidate": {
+              "physical": 510,
+              "nonblank": 442,
+              "bytes": 16209,
+              "sha256": "9716a4eed46fae3e0bcd99fb4df3754e89cd2b39d724fc6225d9d11ec5e1b2ab",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/core/normalize.bend"
+            },
+            "delta": {
+              "physical": -214,
+              "nonblank": -176,
+              "bytes": -6592
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/src/check/kernel.bend",
+            "category": "fixed_original_context",
+            "rationale": null,
+            "baseline": {
+              "bytes": 35691,
+              "physical": 1261,
+              "nonblank": 1050,
+              "sha256": "0969c4493c29ab980450c848ea24c1f4b666081dbe0eecfc2c6abe21bb0ed947",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/check/kernel.bend"
+              }
+            },
+            "candidate": {
+              "physical": 1152,
+              "nonblank": 987,
+              "bytes": 33907,
+              "sha256": "a5a65f57412d0b3a961203a1e0dd5326a5d107ad3d9ff5ca48c0aff756747eeb",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/check/kernel.bend"
+            },
+            "delta": {
+              "physical": -109,
+              "nonblank": -63,
+              "bytes": -1784
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/src/check/quantity.bend",
+            "category": "fixed_original_context",
+            "rationale": null,
+            "baseline": {
+              "bytes": 3514,
+              "physical": 175,
+              "nonblank": 143,
+              "sha256": "e6c7a06fd45cb132d9d5d1704a6f01f81325505eed2ff5d6025e118ff4522e8a",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/check/quantity.bend"
+              }
+            },
+            "candidate": {
+              "physical": 157,
+              "nonblank": 134,
+              "bytes": 3289,
+              "sha256": "5f5cf65dca94a786691d1246f9b3002074eb9ae9715e387c802dd3c91486258b",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/check/quantity.bend"
+            },
+            "delta": {
+              "physical": -18,
+              "nonblank": -9,
+              "bytes": -225
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/src/diagnostic/trace.bend",
+            "category": "fixed_original_context",
+            "rationale": null,
+            "baseline": {
+              "bytes": 4866,
+              "physical": 131,
+              "nonblank": 106,
+              "sha256": "e47615206be3ebf22c4771de06af3d4dfc1a553f7e914bfd9114bc74c2ab1246",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/diagnostic/trace.bend"
+              }
+            },
+            "candidate": {
+              "physical": 119,
+              "nonblank": 100,
+              "bytes": 4681,
+              "sha256": "a05fdb89e4d2aa38143f849524949bf4e225c4b9eedfebfe998f167caaaf99d0",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/diagnostic/trace.bend"
+            },
+            "delta": {
+              "physical": -12,
+              "nonblank": -6,
+              "bytes": -185
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/docs/ARCHITECTURE.md",
+            "category": "fixed_original_context",
+            "rationale": null,
+            "baseline": {
+              "bytes": 15301,
+              "physical": 245,
+              "nonblank": 205,
+              "sha256": "4a15be939d08e90d12a59a285b08970fefbdc9e733ffd7dd9f7a6de08d3e7851",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/docs/ARCHITECTURE.md"
+              }
+            },
+            "candidate": {
+              "physical": 251,
+              "nonblank": 210,
+              "bytes": 15716,
+              "sha256": "4cdd72041379280ce355060a77ede307671016db474c01ddc64683b19a95e97e",
+              "file": "selfhost/docs/ARCHITECTURE.md"
+            },
+            "delta": {
+              "physical": 6,
+              "nonblank": 5,
+              "bytes": 415
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/tests/kernel.mjs",
+            "category": "fixed_original_context",
+            "rationale": null,
+            "baseline": {
+              "bytes": 9256,
+              "physical": 88,
+              "nonblank": 88,
+              "sha256": "5e2c1ed9caaa9e066de6f1623b7968657d90a325e65906e3f088a581c6cf0c4a",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/tests/kernel.mjs"
+              }
+            },
+            "candidate": {
+              "physical": 88,
+              "nonblank": 88,
+              "bytes": 9256,
+              "sha256": "5e2c1ed9caaa9e066de6f1623b7968657d90a325e65906e3f088a581c6cf0c4a",
+              "file": "selfhost/tests/kernel.mjs"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          },
+          {
+            "logical_path": "selfhost/tests/kernel-upstream.mjs",
+            "category": "fixed_original_context",
+            "rationale": null,
+            "baseline": {
+              "bytes": 2643,
+              "physical": 33,
+              "nonblank": 33,
+              "sha256": "0dc76ff714b0de284794dc93207e81084cedb560e95011dcafb1abd5bd771add",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/tests/kernel-upstream.mjs"
+              }
+            },
+            "candidate": {
+              "physical": 33,
+              "nonblank": 33,
+              "bytes": 2643,
+              "sha256": "0dc76ff714b0de284794dc93207e81084cedb560e95011dcafb1abd5bd771add",
+              "file": "selfhost/tests/kernel-upstream.mjs"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          },
+          {
+            "logical_path": "selfhost/tests/specialize.mjs",
+            "category": "fixed_original_context",
+            "rationale": null,
+            "baseline": {
+              "bytes": 4048,
+              "physical": 36,
+              "nonblank": 36,
+              "sha256": "b337e7d86f13c0e72f77d42ca77b7f3ed3c3ddf736768fdd7f6596846aaedcf9",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/tests/specialize.mjs"
+              }
+            },
+            "candidate": {
+              "physical": 36,
+              "nonblank": 36,
+              "bytes": 4048,
+              "sha256": "b337e7d86f13c0e72f77d42ca77b7f3ed3c3ddf736768fdd7f6596846aaedcf9",
+              "file": "selfhost/tests/specialize.mjs"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          }
+        ]
+      },
+      "replacement_owner_union": {
+        "totals": {
+          "files": 10,
+          "physical": 3000,
+          "nonblank": 2599,
+          "bytes": 106213
+        },
+        "delta_from_S0": {
+          "files": 1,
+          "physical": -156,
+          "nonblank": -53,
+          "bytes": -434
+        },
+        "extra_files": [
+          {
+            "logical_path": "selfhost/src/diagnostic/produce.bend",
+            "category": "supplementary_replacement_owner",
+            "rationale": "Conservative supplementary owner: S3 kernel check_book/error wrapping delegates to check_book_diagnostic/dg_result_error here. Application checking itself remains in kernel.bend; this extra whole file covers the replaced book-level error path rather than claiming a minimal application-only set.",
+            "baseline": {
+              "bytes": 11720,
+              "physical": 346,
+              "nonblank": 296,
+              "sha256": "4c91e4559263e307ce4b3ed0cc11138da27617c6fe5b8bfb21033c5f975a054f",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/diagnostic/produce.bend"
+              }
+            },
+            "candidate": {
+              "physical": 236,
+              "nonblank": 210,
+              "bytes": 8138,
+              "sha256": "9f1bf3e8683941b301649db680b4b7b3017d302651f62817c7b752b9625c5797",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/diagnostic/produce.bend"
+            },
+            "delta": {
+              "physical": -110,
+              "nonblank": -86,
+              "bytes": -3582
+            },
+            "unchanged": false
+          }
+        ]
+      }
+    },
+    "constructor_lowering_js_native": {
+      "task": "constructor_lowering_js_native",
+      "frozen_selection_policy": "Shared input/fact conventions, JS constructor/representation code and native constructor/ownership/layout/readback code, plus actual backend tests. Runtime implementation is a dependency but not included for a lowering-only change; expanding runtime scope must expand the context consistently.",
+      "original_S0": {
+        "files": 15,
+        "physical": 3397,
+        "nonblank": 2857,
+        "bytes": 126336
+      },
+      "fixed_paths": {
+        "totals": {
+          "files": 15,
+          "physical": 3186,
+          "nonblank": 2728,
+          "bytes": 122272
+        },
+        "delta_from_S0": {
+          "files": 0,
+          "physical": -211,
+          "nonblank": -129,
+          "bytes": -4064
+        },
+        "files": [
+          {
+            "logical_path": "selfhost/src/core/term.bend",
+            "category": "fixed_original_context",
+            "rationale": null,
+            "baseline": {
+              "bytes": 8527,
+              "physical": 463,
+              "nonblank": 373,
+              "sha256": "e47b14c3fec0043dacccdf2db0366e5d9ed29394b3a4faae47afe08e69a8f522",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/core/term.bend"
+              }
+            },
+            "candidate": {
+              "physical": 418,
+              "nonblank": 359,
+              "bytes": 8326,
+              "sha256": "4fc40e715ceb59d581b91fb006f84698429e687e1ab86d460fc2d49d878bb80c",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/core/term.bend"
+            },
+            "delta": {
+              "physical": -45,
+              "nonblank": -14,
+              "bytes": -201
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/src/check/annotate.bend",
+            "category": "fixed_original_context",
+            "rationale": null,
+            "baseline": {
+              "bytes": 10850,
+              "physical": 400,
+              "nonblank": 334,
+              "sha256": "f033d726d951723b3bd52c62317e5b47721552beaf2ac42205e2444eb70c0c14",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/check/annotate.bend"
+              }
+            },
+            "candidate": {
+              "physical": 388,
+              "nonblank": 328,
+              "bytes": 10649,
+              "sha256": "05d934d7b0a25cd72b6770436be273ab64ccce8753e4f0f6df9e672164246be6",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/check/annotate.bend"
+            },
+            "delta": {
+              "physical": -12,
+              "nonblank": -6,
+              "bytes": -201
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/src/back/js/emit.bend",
+            "category": "fixed_original_context",
+            "rationale": null,
+            "baseline": {
+              "bytes": 29673,
+              "physical": 981,
+              "nonblank": 815,
+              "sha256": "7bf4f547540fc148feea196efd76c2f9a5234b27a33b7d8ac794a04ff5816d78",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/back/js/emit.bend"
+              }
+            },
+            "candidate": {
+              "physical": 951,
+              "nonblank": 800,
+              "bytes": 29207,
+              "sha256": "6d6db9de9c6c41211f545b4867362402ebebe03db05f77c99dbd020ec08ba016",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/js/emit.bend"
+            },
+            "delta": {
+              "physical": -30,
+              "nonblank": -15,
+              "bytes": -466
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/src/back/js/validate.bend",
+            "category": "fixed_original_context",
+            "rationale": null,
+            "baseline": {
+              "bytes": 10093,
+              "physical": 290,
+              "nonblank": 242,
+              "sha256": "917470e39b4d34c26a4f119f1b7acfca7a51926aba76a73d8397b103debca338",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/back/js/validate.bend"
+              }
+            },
+            "candidate": {
+              "physical": 284,
+              "nonblank": 239,
+              "bytes": 10001,
+              "sha256": "880d8e4095c3689db17b1e11bb5e100e7ef860c11f2828d0fd79ff3f172e4cb8",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/js/validate.bend"
+            },
+            "delta": {
+              "physical": -6,
+              "nonblank": -3,
+              "bytes": -92
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/src/back/js/test-layout.mjs",
+            "category": "fixed_original_context",
+            "rationale": null,
+            "baseline": {
+              "bytes": 2976,
+              "physical": 24,
+              "nonblank": 24,
+              "sha256": "da8581e621afa20a5562686646236d0b1d82afcf2462661fd01af163e79f7067",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/back/js/test-layout.mjs"
+              }
+            },
+            "candidate": {
+              "physical": 24,
+              "nonblank": 24,
+              "bytes": 2976,
+              "sha256": "da8581e621afa20a5562686646236d0b1d82afcf2462661fd01af163e79f7067",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/js/test-layout.mjs"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          },
+          {
+            "logical_path": "selfhost/src/back/js/test.mjs",
+            "category": "fixed_original_context",
+            "rationale": null,
+            "baseline": {
+              "bytes": 5257,
+              "physical": 38,
+              "nonblank": 38,
+              "sha256": "129cce560b5c7a4795d62d1aceb5ac3a0b8faef1166c0215d82823a548485b06",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/back/js/test.mjs"
+              }
+            },
+            "candidate": {
+              "physical": 38,
+              "nonblank": 38,
+              "bytes": 5257,
+              "sha256": "129cce560b5c7a4795d62d1aceb5ac3a0b8faef1166c0215d82823a548485b06",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/js/test.mjs"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          },
+          {
+            "logical_path": "selfhost/src/back/native/bridge.bend",
+            "category": "fixed_original_context",
+            "rationale": null,
+            "baseline": {
+              "bytes": 21605,
+              "physical": 441,
+              "nonblank": 367,
+              "sha256": "88431cf52f0c9ac1b3b1c93aa4a54225ca201d0b8021283f98ba09c2aadc1c74",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/back/native/bridge.bend"
+              }
+            },
+            "candidate": {
+              "physical": 435,
+              "nonblank": 364,
+              "bytes": 21509,
+              "sha256": "d6342724c81278a4907a875128630210147d2e1ba6e90bd0ab1cacd02cdb991d",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/bridge.bend"
+            },
+            "delta": {
+              "physical": -6,
+              "nonblank": -3,
+              "bytes": -96
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/src/back/native/erase.bend",
+            "category": "fixed_original_context",
+            "rationale": null,
+            "baseline": {
+              "bytes": 3479,
+              "physical": 85,
+              "nonblank": 72,
+              "sha256": "11fba4f16ef4de786f68076bafbc356c139fa953c22342c9557efe8b26936be1",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/back/native/erase.bend"
+              }
+            },
+            "candidate": {
+              "physical": 83,
+              "nonblank": 71,
+              "bytes": 3439,
+              "sha256": "56ed6538d90549f7f4cc949201f3ca6fd588a7273ea500dda96d0ce054f10007",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/erase.bend"
+            },
+            "delta": {
+              "physical": -2,
+              "nonblank": -1,
+              "bytes": -40
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/src/back/native/identity.bend",
+            "category": "fixed_original_context",
+            "rationale": null,
+            "baseline": {
+              "bytes": 2540,
+              "physical": 93,
+              "nonblank": 79,
+              "sha256": "79794a586a0c2f043c9bd417b97fe2092863eb3a8524250d6b49f0b77dc1810d",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/back/native/identity.bend"
+              }
+            },
+            "candidate": {
+              "physical": 89,
+              "nonblank": 77,
+              "bytes": 2476,
+              "sha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/identity.bend"
+            },
+            "delta": {
+              "physical": -4,
+              "nonblank": -2,
+              "bytes": -64
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/src/back/native/ir.bend",
+            "category": "fixed_original_context",
+            "rationale": null,
+            "baseline": {
+              "bytes": 1260,
+              "physical": 37,
+              "nonblank": 27,
+              "sha256": "2014202ac84403ce7720970870693f6f566cf81aea7ad44d69cf44ae65909f41",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/back/native/ir.bend"
+              }
+            },
+            "candidate": {
+              "physical": 25,
+              "nonblank": 19,
+              "bytes": 929,
+              "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/ir.bend"
+            },
+            "delta": {
+              "physical": -12,
+              "nonblank": -8,
+              "bytes": -331
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/src/back/native/layout.bend",
+            "category": "fixed_original_context",
+            "rationale": null,
+            "baseline": {
+              "bytes": 2599,
+              "physical": 97,
+              "nonblank": 81,
+              "sha256": "3470eca359bdee3add2e8672bd8456c2a9533231a861854b5257e8a22df291da",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/back/native/layout.bend"
+              }
+            },
+            "candidate": {
+              "physical": 7,
+              "nonblank": 6,
+              "bytes": 135,
+              "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/layout.bend"
+            },
+            "delta": {
+              "physical": -90,
+              "nonblank": -75,
+              "bytes": -2464
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/src/back/native/show.bend",
+            "category": "fixed_original_context",
+            "rationale": null,
+            "baseline": {
+              "bytes": 6832,
+              "physical": 156,
+              "nonblank": 131,
+              "sha256": "6f662583a276295312217ad99b777cf96988c21ffa7beca3178c043d4b040780",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/back/native/show.bend"
+              }
+            },
+            "candidate": {
+              "physical": 152,
+              "nonblank": 129,
+              "bytes": 6723,
+              "sha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/show.bend"
+            },
+            "delta": {
+              "physical": -4,
+              "nonblank": -2,
+              "bytes": -109
+            },
+            "unchanged": false
+          },
+          {
+            "logical_path": "selfhost/src/back/native/README.md",
+            "category": "fixed_original_context",
+            "rationale": null,
+            "baseline": {
+              "bytes": 4349,
+              "physical": 82,
+              "nonblank": 66,
+              "sha256": "715e13e19f9d7b4d08a5c142eb1c87b6a71b9977245bd4ff59209816de36d9e4",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/back/native/README.md"
+              }
+            },
+            "candidate": {
+              "physical": 82,
+              "nonblank": 66,
+              "bytes": 4349,
+              "sha256": "715e13e19f9d7b4d08a5c142eb1c87b6a71b9977245bd4ff59209816de36d9e4",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/README.md"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          },
+          {
+            "logical_path": "selfhost/src/back/native/fixtures.mjs",
+            "category": "fixed_original_context",
+            "rationale": null,
+            "baseline": {
+              "bytes": 5112,
+              "physical": 75,
+              "nonblank": 74,
+              "sha256": "54c0f615bdbd6d2b8976a157012b6c38c597d578820787937e331f91c3772d31",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/back/native/fixtures.mjs"
+              }
+            },
+            "candidate": {
+              "physical": 75,
+              "nonblank": 74,
+              "bytes": 5112,
+              "sha256": "54c0f615bdbd6d2b8976a157012b6c38c597d578820787937e331f91c3772d31",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/fixtures.mjs"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          },
+          {
+            "logical_path": "selfhost/src/back/native/tests.mjs",
+            "category": "fixed_original_context",
+            "rationale": null,
+            "baseline": {
+              "bytes": 11184,
+              "physical": 135,
+              "nonblank": 134,
+              "sha256": "0623bfc95123e8b11bf345cc7171f7582c9dad2fa4db27fce8265cc7b5c1ab86",
+              "source": {
+                "git_revision": "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+                "git_path": "selfhost/src/back/native/tests.mjs"
+              }
+            },
+            "candidate": {
+              "physical": 135,
+              "nonblank": 134,
+              "bytes": 11184,
+              "sha256": "0623bfc95123e8b11bf345cc7171f7582c9dad2fa4db27fce8265cc7b5c1ab86",
+              "file": "selfhost/build/phase7/s4/candidate-b02-project/src/back/native/tests.mjs"
+            },
+            "delta": {
+              "physical": 0,
+              "nonblank": 0,
+              "bytes": 0
+            },
+            "unchanged": true
+          }
+        ]
+      },
+      "replacement_owner_union": {
+        "totals": {
+          "files": 15,
+          "physical": 3186,
+          "nonblank": 2728,
+          "bytes": 122272
+        },
+        "delta_from_S0": {
+          "files": 0,
+          "physical": -211,
+          "nonblank": -129,
+          "bytes": -4064
+        },
+        "extra_files": []
+      }
+    }
+  },
+  "D_ownership_interpretation": "Exactly 24 physical / 21 nonblank lines / 396 bytes move from normalize.bend to term.bend. Parser adds them in its existing term owner and no longer needs the unrelated remainder of normalize for the shared joins; seed remains included. Checker includes both owners and is unchanged. Backend includes term only and grows by the moved block size. No production saving is credited.",
+  "maintained_test_audit": {
+    "selection_command": [
+      "git",
+      "-C",
+      "/home/ai/bend2/build/publish/bend",
+      "diff",
+      "--name-status",
+      "fc509f4cd5bf00b2cd600922b4e40c5d7b9a1e01",
+      "8cc51c1",
+      "--",
+      "selfhost/tests"
+    ],
+    "selection_output": "M\tselfhost/tests/conformance/abi.test.mjs\nA\tselfhost/tests/provenance-consolidation.mjs\nA\tselfhost/tests/structured-checker.mjs\n",
+    "end_revision": "8cc51c1 (S3 completion, before S4)",
+    "files": [
+      {
+        "file": "selfhost/tests/frontend/shared-operations.mjs",
+        "physical": 142,
+        "nonblank": 141,
+        "bytes": 12567,
+        "sha256": "743df27b870eb933e8f330d125df072c9ae58b4a5021a7d551cc88fcfba15cf6",
+        "classification": "direct_B_D_validation",
+        "rationale": "Whole ordered graph/trace/cached-parse/seed checks and direct embedded-error first-selection controls. Required visible supplement when discussing B/D frontend preservation.",
+        "baseline": null,
+        "change_from_S0": "new file"
+      },
+      {
+        "file": "selfhost/tests/provenance-consolidation.mjs",
+        "physical": 127,
+        "nonblank": 124,
+        "bytes": 9575,
+        "sha256": "1e8f3aaef128ec93d90e363bfdd5d91bd5b4657f7badc93d2843a83d7d638a57",
+        "classification": "relevant_S2_imported_provenance_integration",
+        "rationale": "Whole ordered result/trace/provenance equality, exact token ranges and final declaration routes; covers parse rejection and import graph controls. Relevant to original imported-source ownership obligation, but not itself a competing-parser-error oracle.",
+        "baseline": null,
+        "change_from_S0": "new file"
+      },
+      {
+        "file": "selfhost/tests/structured-checker.mjs",
+        "physical": 51,
+        "nonblank": 51,
+        "bytes": 4600,
+        "sha256": "e7d9b08d70f70e70bb947a4078300bc79a441ec93bdc0721ff21025379995a40",
+        "classification": "distinct_S3_checker_first_error_task",
+        "rationale": "Constructs KDef books directly; compares check_book_diagnostic, String projections, rendered errors and exact-prefix checks. Type-before-body/duplicate/signature/TODO ordering concerns checking after parsing, not parser delimiter/array/match-header selection.",
+        "baseline": null,
+        "change_from_S0": "new file"
+      },
+      {
+        "file": "selfhost/tests/conformance/abi.test.mjs",
+        "physical": 66,
+        "nonblank": 66,
+        "bytes": 4472,
+        "sha256": "f409d3d2f4107ce727c90d9855c6024848093968f6179ef591e3fcc00539fe69",
+        "classification": "distinct_host_ABI_and_checker_capability_task",
+        "rationale": "S1 changes the frozen-driver mock to expose createPersistentInspector; S3 adds inspect and versioned authoritative-checker capability tests. The file also tests deep shared ABI conversion. These are host/artifact/checker contracts, not parser-source first-error oracles.",
+        "baseline": {
+          "physical": 43,
+          "nonblank": 43,
+          "bytes": 2767,
+          "sha256": "ad8c13a86687f3d945d3d3715c723e8cbce810747b15e55aa3d3af34e4c4f8e4"
+        },
+        "change_from_S0": {
+          "physical": 23,
+          "nonblank": 23,
+          "bytes": 1705
+        }
+      },
+      {
+        "file": "selfhost/tools/compiler-abi.mjs",
+        "physical": 92,
+        "nonblank": 89,
+        "bytes": 4264,
+        "sha256": "0bcbcaf022108877600baab1b15356db6d9917f5c4d668af936279680c126454",
+        "classification": "optional_provenance_harness_adapter",
+        "rationale": "Provenance test imports this unchanged host ABI wrapper, used only when a compared module exposes positional G. Count it separately for review of that alternate harness path; named-field default API comparison bypasses wrapping.",
+        "baseline": {
+          "physical": 92,
+          "nonblank": 89,
+          "bytes": 4264,
+          "sha256": "0bcbcaf022108877600baab1b15356db6d9917f5c4d668af936279680c126454"
+        },
+        "change_from_S0": {
+          "physical": 0,
+          "nonblank": 0,
+          "bytes": 0
+        }
+      }
+    ],
+    "parser_supplement_variants": [
+      {
+        "name": "source_owners_only",
+        "additional_files": [],
+        "totals": {
+          "files": 31,
+          "physical": 5418,
+          "nonblank": 4693,
+          "bytes": 196578
+        },
+        "delta_from_original_S0": {
+          "files": 1,
+          "physical": -298,
+          "nonblank": -158,
+          "bytes": -2238
+        },
+        "scope": "Whole named files, not execution dependency closure; historical result archives are not required review units."
+      },
+      {
+        "name": "plus_direct_shared_operation_control",
+        "additional_files": [
+          "selfhost/tests/frontend/shared-operations.mjs"
+        ],
+        "totals": {
+          "files": 32,
+          "physical": 5560,
+          "nonblank": 4834,
+          "bytes": 209145
+        },
+        "delta_from_original_S0": {
+          "files": 2,
+          "physical": -156,
+          "nonblank": -17,
+          "bytes": 10329
+        },
+        "scope": "Whole named files, not execution dependency closure; historical result archives are not required review units."
+      },
+      {
+        "name": "plus_relevant_imported_provenance_control",
+        "additional_files": [
+          "selfhost/tests/frontend/shared-operations.mjs",
+          "selfhost/tests/provenance-consolidation.mjs"
+        ],
+        "totals": {
+          "files": 33,
+          "physical": 5687,
+          "nonblank": 4958,
+          "bytes": 218720
+        },
+        "delta_from_original_S0": {
+          "files": 3,
+          "physical": -29,
+          "nonblank": 107,
+          "bytes": 19904
+        },
+        "scope": "Whole named files, not execution dependency closure; historical result archives are not required review units."
+      },
+      {
+        "name": "plus_optional_provenance_ABI_adapter",
+        "additional_files": [
+          "selfhost/tests/frontend/shared-operations.mjs",
+          "selfhost/tests/provenance-consolidation.mjs",
+          "selfhost/tools/compiler-abi.mjs"
+        ],
+        "totals": {
+          "files": 34,
+          "physical": 5779,
+          "nonblank": 5047,
+          "bytes": 222984
+        },
+        "delta_from_original_S0": {
+          "files": 4,
+          "physical": 63,
+          "nonblank": 196,
+          "bytes": 24168
+        },
+        "scope": "Whole named files, not execution dependency closure; historical result archives are not required review units."
+      },
+      {
+        "name": "broader_checker_and_host_protocol_test_files",
+        "additional_files": [
+          "selfhost/tests/frontend/shared-operations.mjs",
+          "selfhost/tests/provenance-consolidation.mjs",
+          "selfhost/tools/compiler-abi.mjs",
+          "selfhost/tests/structured-checker.mjs",
+          "selfhost/tests/conformance/abi.test.mjs"
+        ],
+        "totals": {
+          "files": 36,
+          "physical": 5896,
+          "nonblank": 5164,
+          "bytes": 232056
+        },
+        "delta_from_original_S0": {
+          "files": 6,
+          "physical": 180,
+          "nonblank": 313,
+          "bytes": 33240
+        },
+        "scope": "Whole named files, not execution dependency closure; historical result archives are not required review units."
+      }
+    ],
+    "checker_plus_relevant_checker_host_test_files": {
+      "files": [
+        "selfhost/tests/structured-checker.mjs",
+        "selfhost/tests/conformance/abi.test.mjs"
+      ],
+      "totals": {
+        "files": 12,
+        "physical": 3117,
+        "nonblank": 2716,
+        "bytes": 115285
+      },
+      "delta_from_original_S0": {
+        "files": 3,
+        "physical": -39,
+        "nonblank": 64,
+        "bytes": 8638
+      }
+    },
+    "caveats": [
+      "The original 30 parser-context entries are retained; new controls are supplemental whole files.",
+      "Provenance integration is relevant to imported-source ownership; it is not a replacement for frozen exact parser-error manifests/fixtures.",
+      "Structured checker and host capability tests are a distinct checking task; their broader optional cost remains explicit.",
+      "The optional broad test-file union is not a complete host-harness context: it does not add typed-driver or all transitive imports.",
+      "Raw run archives/benchmark histories do not become mandatory source review files merely because they exist. No new test is claimed unnecessary to release validation."
+    ]
+  },
+  "B01_inputs_unchanged": true,
+  "source_inputs_unchanged_during_count": true,
+  "candidate_compiler_manifest": {
+    "file": "selfhost/build/phase7/s4/candidate-b02-project/src/compiler.json",
+    "sha256": "08c4c055006c8564139a88b793aadfe1dc0b6d100b4c3f2b26ccf8005f8d65c7",
+    "modules": 59
+  }
+}

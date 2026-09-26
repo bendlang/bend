@@ -1,0 +1,95 @@
+{
+  "complete": true,
+  "affinity": [
+    1
+  ],
+  "nice": 10,
+  "environment": {
+    "PATH": "/tmp/bend-s4-clang19/root/usr/lib/llvm-19/bin:/tmp/bend-s4-clang19/root/usr/bin:/home/ai/.deno/bin:/home/ai/.elan/bin:/home/ai/.local/bin:/home/ai/.cargo/bin:/home/ai/.local/bin:/home/ai/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games",
+    "LD_LIBRARY_PATH": "/tmp/bend-s4-clang19/root/usr/lib/x86_64-linux-gnu",
+    "CC": "/tmp/bend-s4-clang19/root/usr/lib/llvm-19/bin/clang"
+  },
+  "commands": [
+    {
+      "name": "clang-version",
+      "argv": [
+        "/tmp/bend-s4-clang19/root/usr/lib/llvm-19/bin/clang",
+        "--version"
+      ],
+      "exit": 0,
+      "elapsedSeconds": 0.018649224657565355,
+      "stdout": "/tmp/bend-s4-clang19/evidence/clang-version.stdout",
+      "stderr": "/tmp/bend-s4-clang19/evidence/clang-version.stderr"
+    },
+    {
+      "name": "clang-ldd",
+      "argv": [
+        "ldd",
+        "/tmp/bend-s4-clang19/root/usr/lib/llvm-19/bin/clang"
+      ],
+      "exit": 0,
+      "elapsedSeconds": 0.025120258331298828,
+      "stdout": "/tmp/bend-s4-clang19/evidence/clang-ldd.stdout",
+      "stderr": "/tmp/bend-s4-clang19/evidence/clang-ldd.stderr"
+    },
+    {
+      "name": "clang-resource-dir",
+      "argv": [
+        "/tmp/bend-s4-clang19/root/usr/lib/llvm-19/bin/clang",
+        "-print-resource-dir"
+      ],
+      "exit": 0,
+      "elapsedSeconds": 0.02033660700544715,
+      "stdout": "/tmp/bend-s4-clang19/evidence/clang-resource-dir.stdout",
+      "stderr": "/tmp/bend-s4-clang19/evidence/clang-resource-dir.stderr"
+    },
+    {
+      "name": "clang-smoke-compile",
+      "argv": [
+        "/tmp/bend-s4-clang19/root/usr/lib/llvm-19/bin/clang",
+        "-std=c11",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "/tmp/bend-s4-clang19/smoke.c",
+        "-o",
+        "/tmp/bend-s4-clang19/smoke"
+      ],
+      "exit": 0,
+      "elapsedSeconds": 0.08694853307679296,
+      "stdout": "/tmp/bend-s4-clang19/evidence/clang-smoke-compile.stdout",
+      "stderr": "/tmp/bend-s4-clang19/evidence/clang-smoke-compile.stderr"
+    },
+    {
+      "name": "clang-smoke-run",
+      "argv": [
+        "/tmp/bend-s4-clang19/smoke"
+      ],
+      "exit": 0,
+      "elapsedSeconds": 0.0015898710116744041,
+      "stdout": "/tmp/bend-s4-clang19/evidence/clang-smoke-run.stdout",
+      "stderr": "/tmp/bend-s4-clang19/evidence/clang-smoke-run.stderr"
+    }
+  ],
+  "packageManifest": "/tmp/bend-s4-clang19/evidence/package-manifest.json",
+  "smokeOutputVerified": true,
+  "missingLibraries": false,
+  "artifacts": [
+    {
+      "path": "/tmp/bend-s4-clang19/root/usr/lib/llvm-19/bin/clang",
+      "bytes": 132272,
+      "sha256": "bbd866f17a7cf2baf40ae0f406cfe76a63f5a2022234f5eba58f37a04d27c2d4"
+    },
+    {
+      "path": "/tmp/bend-s4-clang19/smoke.c",
+      "bytes": 294,
+      "sha256": "45feafcce37dc9b1af175aa64e6407ebcbbe9b25599c8f48b573d4727d8664ca"
+    },
+    {
+      "path": "/tmp/bend-s4-clang19/smoke",
+      "bytes": 16648,
+      "sha256": "7b1fd724e9df88d157848b21ecc6790c00ed790e5802c2050a8a4d3e349c30e3"
+    }
+  ]
+}

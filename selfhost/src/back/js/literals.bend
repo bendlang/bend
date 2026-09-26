@@ -9,12 +9,10 @@ law j_strip:
 def j_strip(t):
   kc(KTerm, String.eq(tg(t), "Ann"), u => j_strip(kid(t, 0)), u => t)
 
-law j_literal:
-  for +t: KTerm
-  String
-
 @unsafe
-def j_literal(t):
+def j_literal(
+  +t: KTerm,
+) -> String:
   j_literal_node(j_strip(t))
 
 law j_literal_node:
@@ -164,12 +162,6 @@ def j_string_text(value):
 
 # Literal compression follows checked type provenance, so ordinary constructors
 # named Zero, Succ, SNil, etc. keep their user-defined layout in libraries.
-law j_literal_typed:
-  for +book: List<&2, KDef>
-  for +t: KTerm
-  for +ty: KTerm
-  String
-
 law j_literal_provenance:
   for +book: List<&2, KDef>
   for +ty: KTerm
@@ -177,7 +169,11 @@ law j_literal_provenance:
   String
 
 @unsafe
-def j_literal_typed(book, t, ty):
+def j_literal_typed(
+  +book: List<&2, KDef>,
+  +t: KTerm,
+  +ty: KTerm,
+) -> String:
   +literal = j_literal(t)
   kc(String, String.eq(literal, ""), u => "", u => j_literal_provenance(book, wnf(book, ty), literal))
 

@@ -16,15 +16,6 @@ law f_rename_var:
   for +env: List<&2, KTerm>
   KTerm
 
-law f_fresh_defs:
-  for +ds: List<&2,KDef>
-  for +next: U32
-  FFreshDefs
-
-law f_fresh_result:
-  for +r: FResult
-  FResult
-
 law f_fresh_result_end:
   for +r: FFreshDefs
   for +err: String
@@ -44,11 +35,16 @@ def f_rename_var(t, env):
       f_choose(KTerm, U32.is_eq(ix(t), ix(m)), u => kt("Var", nm(t), ix(kid(m, 0)), qt(t), Nil{}), u => f_rename_var(t, ms))
 
 @unsafe
-def f_fresh_defs(ds, next):
+def f_fresh_defs(
+  +ds: List<&2,KDef>,
+  +next: U32,
+) -> FFreshDefs:
   f_fresh_book_stack(ds, next)
 
 @unsafe
-def f_fresh_result(r):
+def f_fresh_result(
+  +r: FResult,
+) -> FResult:
   match r:
     case FResult{book, err, imports}:
       f_fresh_result_end(f_fresh_defs(book, 1), err, imports)

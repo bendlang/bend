@@ -6,27 +6,11 @@
 type FSeed is Data:
   FSeed{+path: String, +book: List<&2, KDef>}
 
-law f_load_graph_seed:
-  for +main: String
-  for +sources: List<&2, FSource>
-  for +seedPath: String
-  for +seedText: String
-  for +seedBook: List<&2, KDef>
-  FResult
-
 law f_seed_matches:
   for +source: FSource
   for +path: String
   for +text: String
   Bool
-
-law fs_path:
-  for +seed: FSeed
-  String
-
-law fs_book:
-  for +seed: FSeed
-  List<&2, KDef>
 
 law fs_load:
   for +path: String
@@ -84,7 +68,13 @@ law fs_imports:
   FGraph
 
 @unsafe
-def f_load_graph_seed(main, sources, seedPath, seedText, seedBook):
+def f_load_graph_seed(
+  +main: String,
+  +sources: List<&2, FSource>,
+  +seedPath: String,
+  +seedText: String,
+  +seedBook: List<&2, KDef>,
+) -> FResult:
   f_choose(FResult, f_seed_matches(f_source("Base", sources), seedPath, seedText), u => f_graph_result_at(fs_load(main, "", sources, FGraph{Nil{}, "", Nil{}}, Nil{}, FSeed{seedPath, seedBook}), sources), u => f_load_graph(main, sources))
 
 @unsafe
@@ -92,13 +82,17 @@ def f_seed_matches(source, path, text):
   Bool.not(String.is_empty(path)) && f_eq(f_source_name(source), "Base") && f_eq(f_source_path(source), path) && f_seed_text_equal(f_source_text(source), text)
 
 @unsafe
-def fs_path(seed):
+def fs_path(
+  +seed: FSeed,
+) -> String:
   match seed:
     case FSeed{path, book}:
       path
 
 @unsafe
-def fs_book(seed):
+def fs_book(
+  +seed: FSeed,
+) -> List<&2, KDef>:
   match seed:
     case FSeed{path, book}:
       book
@@ -121,7 +115,7 @@ def fs_cached(s, ns, sources, g, stack, entry, seed):
 def fs_inject(g, seed):
   match g:
     case FGraph{book, err, done}:
-      FGraph{f_defs_append(book, fs_book(seed)), err, Con{kt("Loaded", fs_path(seed), f_graph_count_defs(fs_book(seed), 0), 0, [ref("")]), done}}
+      FGraph{norm_defs_join(book, fs_book(seed)), err, Con{kt("Loaded", fs_path(seed), f_graph_count_defs(fs_book(seed), 0), 0, [ref("")]), done}}
 
 @unsafe
 def fs_parsed(s, ns, sources, g, stack, r, seed):
@@ -155,14 +149,12 @@ def f_seed_text_equal(a, b):
     case _ _:
       False{}
 
-law f_load_graph_seed_trace:
-  for +main: String
-  for +sources: List<&2,FSource>
-  for +seedPath: String
-  for +seedText: String
-  for +seedBook: List<&2,KDef>
-  FLoadTrace
-
 @unsafe
-def f_load_graph_seed_trace(main, sources, seedPath, seedText, seedBook):
+def f_load_graph_seed_trace(
+  +main: String,
+  +sources: List<&2,FSource>,
+  +seedPath: String,
+  +seedText: String,
+  +seedBook: List<&2,KDef>,
+) -> FLoadTrace:
   f_choose(FLoadTrace, f_seed_matches(f_source("Base", sources), seedPath, seedText), u => f_graph_trace(fs_load(main, "", sources, FGraph{Nil{}, "", Nil{}}, Nil{}, FSeed{seedPath, seedBook}), sources), u => f_load_graph_trace(main, sources))

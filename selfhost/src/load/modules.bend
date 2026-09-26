@@ -11,54 +11,15 @@ type FLoadTrace is Data:
 type FLoaded is Data:
   FLoaded{+book: List<&2, KDef>, +error: String, +seen: List<&2, String>}
 
-law f_parse_at:
-  for +source: String
-  for +namespace: String
-  FResult
-
 law f_qual_result:
   for +r: FResult
   for +ns: String
   FResult
 
-law f_qual_name:
-  for +name: String
-  for +ns: String
-  String
-
-law f_prefix:
-  for +s: String
-  for +prefix: String
-  Bool
-
-law f_drop_prefix:
-  for +s: String
-  for +prefix: String
-  String
-
 law f_alias:
   for +name: String
   for +imports: List<&2, KTerm>
   String
-
-law f_declared:
-  for +name: String
-  for +book: List<&2, KDef>
-  Bool
-
-law f_resolve_name:
-  for +name: String
-  for +book: List<&2, KDef>
-  for +ns: String
-  for +imports: List<&2, KTerm>
-  String
-
-law f_qual_term:
-  for +t: KTerm
-  for +book: List<&2, KDef>
-  for +ns: String
-  for +imports: List<&2, KTerm>
-  KTerm
 
 law f_qual_terms:
   for +ts: List<&2, KTerm>
@@ -66,13 +27,6 @@ law f_qual_terms:
   for +ns: String
   for +imports: List<&2, KTerm>
   List<&2, KTerm>
-
-law f_qual_defs:
-  for +ds: List<&2, KDef>
-  for +book: List<&2, KDef>
-  for +ns: String
-  for +imports: List<&2, KTerm>
-  List<&2, KDef>
 
 law f_qual_def:
   for +d: KDef
@@ -97,11 +51,6 @@ law f_source_text:
 law f_source_path:
   for +source: FSource
   String
-
-law f_load:
-  for +main: String
-  for +sources: List<&2, FSource>
-  FResult
 
 law f_loaded_result:
   for +r: FLoaded
@@ -132,11 +81,6 @@ law f_load_parsed:
   for +stack: List<&2, String>
   FLoaded
 
-law f_defs_append:
-  for +xs: List<&2, KDef>
-  for +ys: List<&2, KDef>
-  List<&2, KDef>
-
 law f_load_imports:
   for +imports: List<&2, KTerm>
   for +sources: List<&2, FSource>
@@ -154,7 +98,10 @@ law f_load_import_next:
   FLoaded
 
 @unsafe
-def f_parse_at(source, namespace):
+def f_parse_at(
+  +source: String,
+  +namespace: String,
+) -> FResult:
   f_qual_result(f_elaborate(f_parse(source)), namespace)
 
 @unsafe
@@ -164,15 +111,24 @@ def f_qual_result(r, ns):
       FResult{f_qual_optional(book, book, ns, imports), err, imports}
 
 @unsafe
-def f_qual_name(name, ns):
+def f_qual_name(
+  +name: String,
+  +ns: String,
+) -> String:
   f_choose(String, String.is_empty(ns), u => name, u => ns ++ "." ++ name)
 
 @unsafe
-def f_prefix(s, prefix):
+def f_prefix(
+  +s: String,
+  +prefix: String,
+) -> Bool:
   f_choose(Bool, String.is_empty(prefix), u => True{}, u => f_choose(Bool, String.is_empty(s), u => False{}, u => Char.is_eq(f_head(s), f_head(prefix)) && f_prefix(f_tail(s), f_tail(prefix))))
 
 @unsafe
-def f_drop_prefix(s, prefix):
+def f_drop_prefix(
+  +s: String,
+  +prefix: String,
+) -> String:
   f_choose(String, String.is_empty(prefix), u => s, u => f_drop_prefix(f_tail(s), f_tail(prefix)))
 
 @unsafe
@@ -181,22 +137,35 @@ def f_alias(name, imports):
     case Nil{}:
       name
     case Con{+im, rest}:
-      f_choose(String, U32.is_gt(f_len(ks(im)), 0) && f_prefix(name, nm(kid(im, 0)) ++ "."), u => nm(im) ++ "." ++ f_drop_prefix(name, nm(kid(im, 0)) ++ "."), u => f_alias(name, rest))
+      f_choose(String, U32.is_gt(terms_len(ks(im)), 0) && f_prefix(name, nm(kid(im, 0)) ++ "."), u => nm(im) ++ "." ++ f_drop_prefix(name, nm(kid(im, 0)) ++ "."), u => f_alias(name, rest))
 
 @unsafe
-def f_declared(name, book):
+def f_declared(
+  +name: String,
+  +book: List<&2, KDef>,
+) -> Bool:
   match book:
     case Nil{}:
       False{}
     case Con{+d, ds}:
-      f_eq(name, f_dn(d)) || f_declared(name, dc(d)) || f_declared(name, ds)
+      f_eq(name, dn(d)) || f_declared(name, dc(d)) || f_declared(name, ds)
 
 @unsafe
-def f_resolve_name(name, book, ns, imports):
+def f_resolve_name(
+  +name: String,
+  +book: List<&2, KDef>,
+  +ns: String,
+  +imports: List<&2, KTerm>,
+) -> String:
   f_choose(String, f_declared(name, book), u => f_qual_name(name, ns), u => f_alias(name, imports))
 
 @unsafe
-def f_qual_term(t, book, ns, imports):
+def f_qual_term(
+  +t: KTerm,
+  +book: List<&2, KDef>,
+  +ns: String,
+  +imports: List<&2, KTerm>,
+) -> KTerm:
   KTerm{tg(t), f_choose(String, f_eq(tg(t), "Ref") || f_eq(tg(t), "ADT") || f_eq(tg(t), "Ctr") || f_eq(tg(t), "Mat"), u => f_resolve_name(nm(t), book, ns, imports), u => nm(t)), ix(t), qt(t), f_qual_terms(ks(t), book, ns, imports), rm(t)}
 
 @unsafe
@@ -208,7 +177,12 @@ def f_qual_terms(ts, book, ns, imports):
       Con{f_qual_term(t, book, ns, imports), f_qual_terms(rest, book, ns, imports)}
 
 @unsafe
-def f_qual_defs(ds, book, ns, imports):
+def f_qual_defs(
+  +ds: List<&2, KDef>,
+  +book: List<&2, KDef>,
+  +ns: String,
+  +imports: List<&2, KTerm>,
+) -> List<&2, KDef>:
   match ds:
     case Nil{}:
       Nil{}
@@ -254,7 +228,10 @@ def f_source_path(source):
       path
 
 @unsafe
-def f_load(main, sources):
+def f_load(
+  +main: String,
+  +sources: List<&2, FSource>,
+) -> FResult:
   f_loaded_result(f_load_module(main, "", sources, Nil{}, Nil{}))
 
 @unsafe
@@ -278,14 +255,6 @@ def f_load_parsed(name, r, sources, seen, stack):
       f_choose(FLoaded, String.is_empty(err), u => f_load_imports(imports, sources, Con{name, seen}, Con{name, stack}, book), u => FLoaded{book, err, seen})
 
 @unsafe
-def f_defs_append(xs, ys):
-  match xs:
-    case Nil{}:
-      ys
-    case Con{x, xt}:
-      Con{x, f_defs_append(xt, ys)}
-
-@unsafe
 def f_load_imports(imports, sources, seen, stack, book):
   match imports:
     case Nil{}:
@@ -297,7 +266,7 @@ def f_load_imports(imports, sources, seen, stack, book):
 def f_load_import_next(imports, sources, stack, book, r):
   match r:
     case FLoaded{defs, +err, seen}:
-      f_choose(FLoaded, String.is_empty(err), u => f_load_imports(imports, sources, seen, stack, f_defs_append(defs, book)), u => FLoaded{book, err, seen})
+      f_choose(FLoaded, String.is_empty(err), u => f_load_imports(imports, sources, seen, stack, norm_defs_join(defs, book)), u => FLoaded{book, err, seen})
 
 
 law f_qual_optional:
@@ -313,19 +282,17 @@ def f_qual_optional(defs, book, ns, imports):
 
 # Invocation-local parse handoff. The driver supplies the unqualified result of
 # this compiler's parser; graph elaboration and validation still run normally.
-law f_source_parsed:
-  for +name: String
-  for +path: String
-  for +text: String
-  for +parsed: FResult
-  FSource
-
 law f_parse_source:
   for +source: FSource
   FResult
 
 @unsafe
-def f_source_parsed(name, path, text, parsed):
+def f_source_parsed(
+  +name: String,
+  +path: String,
+  +text: String,
+  +parsed: FResult,
+) -> FSource:
   FParsedSource{name, path, text, parsed}
 
 @unsafe

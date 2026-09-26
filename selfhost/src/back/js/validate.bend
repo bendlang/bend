@@ -2,12 +2,10 @@ import Base
 
 # Build-time entry checks shared by native and JavaScript executable drivers.
 # Pure functions and type values belong to the normalizer/term-printer lane.
-law j_compile_error:
-  for +book: List<&2, KDef>
-  String
-
 @unsafe
-def j_compile_error(book):
+def j_compile_error(
+  +book: List<&2, KDef>,
+) -> String:
   kc(String, String.eq(dk(lookup(book, "IO")), "Absent"), u => "a build needs import Base", u => j_main_error(book, lookup(book, "main")))
 
 law j_main_error:
@@ -121,22 +119,18 @@ law j_layout_def:
 def j_layout_def(book, defs, d, todo, seen, stops):
   j_layout_visit(book, defs, kc(List<&2, String>, String.eq(dk(d), "Def") && U32.is_eq(dx(d), 0), u => j_layout_term(book, Nil{}, dv(d), dt(d), todo), u => todo), seen, stops)
 
-law j_layout_mark:
-  for +bad: Bool
-  for +todo: List<&2, String>
-  List<&2, String>
-
 @unsafe
-def j_layout_mark(bad, todo):
+def j_layout_mark(
+  +bad: Bool,
+  +todo: List<&2, String>,
+) -> List<&2, String>:
   kc(List<&2, String>, bad, u => Con{"$layout.open-array", todo}, u => todo)
 
-law j_layout_open:
-  for +book: List<&2, KDef>
-  for +ty: KTerm
-  Bool
-
 @unsafe
-def j_layout_open(book, ty):
+def j_layout_open(
+  +book: List<&2, KDef>,
+  +ty: KTerm,
+) -> Bool:
   j_layout_open_head(book, wnf(book, ty))
 
 law j_layout_open_head:

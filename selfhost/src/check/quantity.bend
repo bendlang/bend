@@ -1,47 +1,6 @@
 import Base
 
 
-law qadd:
-  for +a: U32
-  for +b: U32
-  U32
-
-law qjoin:
-  for +a: U32
-  for +b: U32
-  U32
-
-law qdem:
-  for +q: U32
-  for +d: U32
-  U32
-
-law uses_get:
-  for +xs: List<&2, KTerm>
-  for +id: U32
-  U32
-
-law uses_del:
-  for +xs: List<&2, KTerm>
-  for +id: U32
-  List<&2, KTerm>
-
-law uses_merge:
-  for +a: List<&2, KTerm>
-  for +b: List<&2, KTerm>
-  for +join: Bool
-  List<&2, KTerm>
-
-law strip:
-  for +t: KTerm
-  KTerm
-
-law descend:
-  for +q: U32
-  for +a: KTerm
-  for +p: KTerm
-  U32
-
 law descend_go:
   for +a: KTerm
   for +p: KTerm
@@ -68,12 +27,6 @@ law descend_sub:
   for +ps: List<&2, KTerm>
   U32
 
-law descend_spine:
-  for +qs: List<&2, KTerm>
-  for +args: List<&2, KTerm>
-  for +cols: List<&2, KTerm>
-  Bool
-
 law descend_step:
   for +ord: U32
   for +qs: List<&2, KTerm>
@@ -82,19 +35,31 @@ law descend_step:
   Bool
 
 @unsafe
-def qadd(a, b):
+def qadd(
+  +a: U32,
+  +b: U32,
+) -> U32:
   kc(U32, U32.is_eq(a, 0), u => b, u => kc(U32, U32.is_eq(b, 0), u => a, u => 2))
 
 @unsafe
-def qjoin(a, b):
+def qjoin(
+  +a: U32,
+  +b: U32,
+) -> U32:
   kc(U32, U32.is_gt(a, b), u => a, u => b)
 
 @unsafe
-def qdem(q, d):
+def qdem(
+  +q: U32,
+  +d: U32,
+) -> U32:
   kc(U32, U32.is_eq(q, 0), u => 0, u => d)
 
 @unsafe
-def uses_get(xs, id):
+def uses_get(
+  +xs: List<&2, KTerm>,
+  +id: U32,
+) -> U32:
   match xs:
     case Nil{}:
       0
@@ -102,7 +67,10 @@ def uses_get(xs, id):
       kc(U32, U32.is_eq(ix(h), id), u => qt(h), u => uses_get(t, id))
 
 @unsafe
-def uses_del(xs, id):
+def uses_del(
+  +xs: List<&2, KTerm>,
+  +id: U32,
+) -> List<&2, KTerm>:
   match xs:
     case Nil{}:
       Nil{}
@@ -110,7 +78,11 @@ def uses_del(xs, id):
       kc(List<&2, KTerm>, U32.is_eq(ix(h), id), u => uses_del(t, id), u => Con{h, uses_del(t, id)})
 
 @unsafe
-def uses_merge(a, b, join):
+def uses_merge(
+  +a: List<&2, KTerm>,
+  +b: List<&2, KTerm>,
+  +join: Bool,
+) -> List<&2, KTerm>:
   match a:
     case Nil{}:
       b
@@ -118,11 +90,17 @@ def uses_merge(a, b, join):
       Con{kt("Use", "", ix(h), kc(U32, join, u => qjoin(qt(h), uses_get(b, ix(h))), u => qadd(qt(h), uses_get(b, ix(h)))), Nil{}), uses_merge(t, uses_del(b, ix(h)), join)}
 
 @unsafe
-def strip(t):
+def strip(
+  +t: KTerm,
+) -> KTerm:
   core_force(t)
 
 @unsafe
-def descend(q, a, p):
+def descend(
+  +q: U32,
+  +a: KTerm,
+  +p: KTerm,
+) -> U32:
   kc(U32, U32.is_eq(q, 0), u => 1, u => descend_go(strip(a), strip(p)))
 
 @unsafe
@@ -162,7 +140,11 @@ def descend_sub(a, ps):
       kc(U32, U32.is_eq(descend(1, a, h), 2), u => descend_sub(a, t), u => 0)
 
 @unsafe
-def descend_spine(qs, args, cols):
+def descend_spine(
+  +qs: List<&2, KTerm>,
+  +args: List<&2, KTerm>,
+  +cols: List<&2, KTerm>,
+) -> Bool:
   match cols:
     case Nil{}:
       False{}

@@ -2,20 +2,6 @@ import Base
 
 # Type-directed readback for backends. Run only on a validated, specialized book.
 # ka_type reconstructs types without repeating validation; the kernel never calls it.
-law ka_wrap:
-  for +t: KTerm
-  for +ty: KTerm
-  KTerm
-
-law annotate_book:
-  for +book: List<&2, KDef>
-  List<&2, KDef>
-
-law annotate_except:
-  for +book: List<&2, KDef>
-  for +stops: List<&2, String>
-  List<&2, KDef>
-
 law annotate_selected:
   for +book: List<&2, KDef>
   for +selected: List<&2, KDef>
@@ -84,13 +70,6 @@ law ka_app:
   for +fty: KTerm
   KTerm
 
-law ka_args:
-  for +e: KEnv
-  for +ctx: List<&2, KTerm>
-  for +tel: KTerm
-  for +xs: List<&2, KTerm>
-  List<&2, KTerm>
-
 law ka_args_head:
   for +e: KEnv
   for +ctx: List<&2, KTerm>
@@ -142,15 +121,23 @@ law ka_rwt:
   KTerm
 
 @unsafe
-def ka_wrap(t, ty):
+def ka_wrap(
+  +t: KTerm,
+  +ty: KTerm,
+) -> KTerm:
   kt("Ann", "", 0, 0, Con{t, Con{ty, Nil{}}})
 
 @unsafe
-def annotate_book(book):
+def annotate_book(
+  +book: List<&2, KDef>,
+) -> List<&2, KDef>:
   ka_defs(book_context(book), book)
 
 @unsafe
-def annotate_except(book, stops):
+def annotate_except(
+  +book: List<&2, KDef>,
+  +stops: List<&2, String>,
+) -> List<&2, KDef>:
   ka_defs_except(book_context(book), book, stops)
 
 @unsafe
@@ -221,7 +208,12 @@ def ka_app(e, ctx, t, fty):
   app(annotate(e, ctx, kid(t, 0), fty), annotate(e, ctx, kid(t, 1), kid(fty, 0)))
 
 @unsafe
-def ka_args(e, ctx, tel, xs):
+def ka_args(
+  +e: KEnv,
+  +ctx: List<&2, KTerm>,
+  +tel: KTerm,
+  +xs: List<&2, KTerm>,
+) -> List<&2, KTerm>:
   match xs:
     case Nil{}:
       Nil{}
@@ -266,12 +258,6 @@ law ka_spine_eligible:
   for +t: KTerm
   Bool
 
-law ka_spine:
-  for +e: KEnv
-  for +ctx: List<&2, KTerm>
-  for +t: KTerm
-  KAnnotatedSpine
-
 law ka_spine_finish:
   for +e: KEnv
   for +ctx: List<&2, KTerm>
@@ -306,7 +292,11 @@ def ka_spine_eligible(t):
   kc(Bool, String.eq(tg(t), "App"), u => ka_spine_eligible(kid(t, 0)), u => String.eq(tg(t), "Ref") || String.eq(tg(t), "Var"))
 
 @unsafe
-def ka_spine(e, ctx, t):
+def ka_spine(
+  +e: KEnv,
+  +ctx: List<&2, KTerm>,
+  +t: KTerm,
+) -> KAnnotatedSpine:
   kc(KAnnotatedSpine, String.eq(tg(t), "App"), u => ka_spine_finish(e, ctx, kid(t, 1), ka_spine(e, ctx, kid(t, 0))), u => KAnnotatedSpine{t, ka_type(e, ctx, t)})
 
 @unsafe
@@ -355,13 +345,6 @@ law ka_args_cached_head:
   for +rest: List<&2, KTerm>
   List<&2, KTerm>
 
-law ka_args_static:
-  for +e: KEnv
-  for +ctx: List<&2, KTerm>
-  for +tel: KTerm
-  for +xs: List<&2, KTerm>
-  List<&2, KTerm>
-
 @unsafe
 def ka_args_cached(e, ctx, tel, xs):
   match xs:
@@ -376,7 +359,12 @@ def ka_args_cached_head(e, ctx, tel, h, rest):
     u => ka_args_head(e, ctx, tel, h, rest))
 
 @unsafe
-def ka_args_static(e, ctx, tel, xs):
+def ka_args_static(
+  +e: KEnv,
+  +ctx: List<&2, KTerm>,
+  +tel: KTerm,
+  +xs: List<&2, KTerm>,
+) -> List<&2, KTerm>:
   match xs:
     case Nil{}: Nil{}
     case Con{h, rest}:

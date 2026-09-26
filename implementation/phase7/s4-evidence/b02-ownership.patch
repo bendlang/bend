@@ -1,0 +1,77 @@
+--- a/selfhost/src/core/term.bend
++++ b/selfhost/src/core/term.bend
+@@ -392,3 +392,27 @@
+     case Nil{}:
+       Bool.not(String.eq(tg(f), "Lam"))
+ 
++@unsafe
++def norm_join(
++  +a: List<&2, KTerm>,
++  +b: List<&2, KTerm>,
++) -> List<&2, KTerm>:
++  match a:
++    case Nil{}:
++      b
++    case Con{h, t}:
++      Con{h, norm_join(t, b)}
++
++law norm_defs_join:
++  for +a: List<&2, KDef>
++  for +b: List<&2, KDef>
++  List<&2, KDef>
++
++@unsafe
++def norm_defs_join(a, b):
++  match a:
++    case Nil{}:
++      b
++    case Con{h, rest}:
++      Con{h, norm_defs_join(rest, b)}
++
+--- a/selfhost/src/core/normalize.bend
++++ b/selfhost/src/core/normalize.bend
+@@ -2,17 +2,6 @@
+ 
+ # Weak head evaluation, strong normalization, and definitional conversion.
+ # Native definitions without equations remain opaque, as in the upstream kernel.
+-@unsafe
+-def norm_join(
+-  +a: List<&2, KTerm>,
+-  +b: List<&2, KTerm>,
+-) -> List<&2, KTerm>:
+-  match a:
+-    case Nil{}:
+-      b
+-    case Con{h, t}:
+-      Con{h, norm_join(t, b)}
+-
+ @unsafe
+ def norm_apply(
+   +t: KTerm,
+@@ -296,11 +285,6 @@
+   for +bound: U32
+   U32
+ 
+-law norm_defs_join:
+-  for +a: List<&2, KDef>
+-  for +b: List<&2, KDef>
+-  List<&2, KDef>
+-
+ @unsafe
+ def norm_max_walk(todo, bound):
+   match todo:
+@@ -316,14 +300,6 @@
+       bound
+     case Con{h, rest}:
+       norm_max_defs(norm_defs_join(dc(h), rest), norm_max(bound, norm_max(norm_max_term(dt(h)), norm_max_term(dv(h)))))
+-
+-@unsafe
+-def norm_defs_join(a, b):
+-  match a:
+-    case Nil{}:
+-      b
+-    case Con{h, rest}:
+-      Con{h, norm_defs_join(rest, b)}
+ 
+ @unsafe
+ def norm_rebind(

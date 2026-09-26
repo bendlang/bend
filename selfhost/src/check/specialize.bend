@@ -17,85 +17,6 @@ type KSpecTerm is Data:
 type KSpecTerms is Data:
   KSpecTerms{+state: KSpecState, +terms: List<&2, KTerm>}
 
-law specialized_book:
-  for +r: KSpecialized
-  List<&2, KDef>
-
-law specialized_error:
-  for +r: KSpecialized
-  String
-
-law sp_book:
-  for +st: KSpecState
-  List<&2, KDef>
-
-law sp_memo:
-  for +st: KSpecState
-  List<&2, KSpecMemo>
-
-law sp_serial:
-  for +st: KSpecState
-  U32
-
-law sp_fresh:
-  for +st: KSpecState
-  U32
-
-law sp_error:
-  for +st: KSpecState
-  String
-
-law sp_state:
-  for +r: KSpecTerm
-  KSpecState
-
-law sp_value:
-  for +r: KSpecTerm
-  KTerm
-
-law sp_states:
-  for +r: KSpecTerms
-  KSpecState
-
-law sp_values:
-  for +r: KSpecTerms
-  List<&2, KTerm>
-
-law sp_mtemplate:
-  for +m: KSpecMemo
-  String
-
-law sp_mkey:
-  for +m: KSpecMemo
-  String
-
-law sp_mname:
-  for +m: KSpecMemo
-  String
-
-law sp_active:
-  for +m: KSpecMemo
-  Bool
-
-law sp_fail:
-  for +st: KSpecState
-  for +err: String
-  KSpecState
-
-law sp_put:
-  for +st: KSpecState
-  for +d: KDef
-  KSpecState
-
-law sp_canonical:
-  for +book: List<&2, KDef>
-  for +done: List<&2, KDef>
-  List<&2, KDef>
-
-law specialize_book:
-  for +book: List<&2, KDef>
-  KSpecialized
-
 law sp_finish:
   for +st: KSpecState
   KSpecialized
@@ -117,18 +38,6 @@ law sp_definition_done:
   for +r: KSpecTerm
   KSpecState
 
-law sp_len:
-  for +s: String
-  U32
-
-law sp_key_string:
-  for +s: String
-  String
-
-law term_key:
-  for +t: KTerm
-  String
-
 law sp_keys:
   for +ts: List<&2, KTerm>
   String
@@ -137,28 +46,7 @@ law sp_name_keys:
   for +ns: List<&2, String>
   String
 
-law sp_find:
-  for +ms: List<&2, KSpecMemo>
-  for +name: String
-  for +key: String
-  KSpecMemo
-
-law sp_done_memo:
-  for +ms: List<&2, KSpecMemo>
-  for +name: String
-  List<&2, KSpecMemo>
-
-law sp_take:
-  for +ts: List<&2, KTerm>
-  for +n: U32
-  List<&2, KTerm>
-
 law sp_take_next:
-  for +ts: List<&2, KTerm>
-  for +n: U32
-  List<&2, KTerm>
-
-law sp_drop:
   for +ts: List<&2, KTerm>
   for +n: U32
   List<&2, KTerm>
@@ -168,22 +56,10 @@ law sp_drop_next:
   for +n: U32
   List<&2, KTerm>
 
-law sp_shift:
-  for +t: KTerm
-  for +offset: U32
-  KTerm
-
 law sp_shifts:
   for +ts: List<&2, KTerm>
   for +offset: U32
   List<&2, KTerm>
-
-law sp_type:
-  for +st: KSpecState
-  for +t: KTerm
-  for +ctx: List<&2, KTerm>
-  for +owner: String
-  KTerm
 
 law sp_term:
   for +st: KSpecState
@@ -517,109 +393,150 @@ law sp_rewrite_done:
   KSpecTerm
 
 @unsafe
-def specialized_book(r):
+def specialized_book(
+  +r: KSpecialized,
+) -> List<&2, KDef>:
   match r:
     case KSpecialized{book, error}:
       book
 
 @unsafe
-def specialized_error(r):
+def specialized_error(
+  +r: KSpecialized,
+) -> String:
   match r:
     case KSpecialized{book, error}:
       error
 
 @unsafe
-def sp_book(st):
+def sp_book(
+  +st: KSpecState,
+) -> List<&2, KDef>:
   match st:
     case KSpecState{book, memo, serial, fresh, error, templates}:
       book
 
 @unsafe
-def sp_memo(st):
+def sp_memo(
+  +st: KSpecState,
+) -> List<&2, KSpecMemo>:
   match st:
     case KSpecState{book, memo, serial, fresh, error, templates}:
       memo
 
 @unsafe
-def sp_serial(st):
+def sp_serial(
+  +st: KSpecState,
+) -> U32:
   match st:
     case KSpecState{book, memo, serial, fresh, error, templates}:
       serial
 
 @unsafe
-def sp_fresh(st):
+def sp_fresh(
+  +st: KSpecState,
+) -> U32:
   match st:
     case KSpecState{book, memo, serial, fresh, error, templates}:
       fresh
 
 @unsafe
-def sp_error(st):
+def sp_error(
+  +st: KSpecState,
+) -> String:
   match st:
     case KSpecState{book, memo, serial, fresh, error, templates}:
       error
 
 @unsafe
-def sp_state(r):
+def sp_state(
+  +r: KSpecTerm,
+) -> KSpecState:
   match r:
     case KSpecTerm{state, term}:
       state
 
 @unsafe
-def sp_value(r):
+def sp_value(
+  +r: KSpecTerm,
+) -> KTerm:
   match r:
     case KSpecTerm{state, term}:
       term
 
 @unsafe
-def sp_states(r):
+def sp_states(
+  +r: KSpecTerms,
+) -> KSpecState:
   match r:
     case KSpecTerms{state, terms}:
       state
 
 @unsafe
-def sp_values(r):
+def sp_values(
+  +r: KSpecTerms,
+) -> List<&2, KTerm>:
   match r:
     case KSpecTerms{state, terms}:
       terms
 
 @unsafe
-def sp_mtemplate(m):
+def sp_mtemplate(
+  +m: KSpecMemo,
+) -> String:
   match m:
     case KSpecMemo{template, key, name, active}:
       template
 
 @unsafe
-def sp_mkey(m):
+def sp_mkey(
+  +m: KSpecMemo,
+) -> String:
   match m:
     case KSpecMemo{template, key, name, active}:
       key
 
 @unsafe
-def sp_mname(m):
+def sp_mname(
+  +m: KSpecMemo,
+) -> String:
   match m:
     case KSpecMemo{template, key, name, active}:
       name
 
 @unsafe
-def sp_active(m):
+def sp_active(
+  +m: KSpecMemo,
+) -> Bool:
   match m:
     case KSpecMemo{template, key, name, active}:
       active
 
 @unsafe
-def sp_fail(st, err):
+def sp_fail(
+  +st: KSpecState,
+  +err: String,
+) -> KSpecState:
   KSpecState{sp_book(st), sp_memo(st), sp_serial(st), sp_fresh(st), kc(String, String.eq(sp_error(st), ""), u => err, u => sp_error(st)), sp_templates(st)}
 
 @unsafe
-def sp_put(st, d):
+def sp_put(
+  +st: KSpecState,
+  +d: KDef,
+) -> KSpecState:
   KSpecState{Con{d, index_remove(sp_book(st), dn(d))}, sp_memo(st), sp_serial(st), sp_fresh(st), sp_error(st), sp_templates(st)}
 
 @unsafe
-def sp_canonical(book, done):
+def sp_canonical(
+  +book: List<&2, KDef>,
+  +done: List<&2, KDef>,
+) -> List<&2, KDef>:
   book_final_fast(book, done)
 
 @unsafe
-def specialize_book(book):
+def specialize_book(
+  +book: List<&2, KDef>,
+) -> KSpecialized:
   sp_finish(sp_definitions(book, sp_initial(sp_canonical(book, Nil{}), norm_max_book(book))))
 
 @unsafe
@@ -643,15 +560,21 @@ def sp_definition_done(rest, d, r):
   sp_definitions(rest, sp_put(sp_state(r), KDef{dn(d), dk(d), da(d), dx(d), dt(d), sp_value(r), dc(d), db(d), du(d)}))
 
 @unsafe
-def sp_len(s):
+def sp_len(
+  +s: String,
+) -> U32:
   U32.from_nat(String.length(s))
 
 @unsafe
-def sp_key_string(s):
+def sp_key_string(
+  +s: String,
+) -> String:
   U32.show(sp_len(s)) ++ ":" ++ s
 
 @unsafe
-def term_key(t):
+def term_key(
+  +t: KTerm,
+) -> String:
   sp_key_string(tg(t)) ++ sp_key_string(nm(t)) ++ U32.show(ix(t)) ++ ":" ++ U32.show(qt(t)) ++ "[" ++ sp_keys(ks(t)) ++ "][" ++ sp_name_keys(rm(t)) ++ "]"
 
 @unsafe
@@ -671,7 +594,11 @@ def sp_name_keys(ns):
       sp_key_string(h) ++ sp_name_keys(rest)
 
 @unsafe
-def sp_find(ms, name, key):
+def sp_find(
+  +ms: List<&2, KSpecMemo>,
+  +name: String,
+  +key: String,
+) -> KSpecMemo:
   match ms:
     case Nil{}:
       KSpecMemo{"", "", "", False{}}
@@ -679,7 +606,10 @@ def sp_find(ms, name, key):
       kc(KSpecMemo, String.eq(sp_mtemplate(h), name) && String.eq(sp_mkey(h), key), u => h, u => sp_find(rest, name, key))
 
 @unsafe
-def sp_done_memo(ms, name):
+def sp_done_memo(
+  +ms: List<&2, KSpecMemo>,
+  +name: String,
+) -> List<&2, KSpecMemo>:
   match ms:
     case Nil{}:
       Nil{}
@@ -687,7 +617,10 @@ def sp_done_memo(ms, name):
       Con{kc(KSpecMemo, String.eq(sp_mname(h), name), u => KSpecMemo{sp_mtemplate(h), sp_mkey(h), sp_mname(h), False{}}, u => h), sp_done_memo(rest, name)}
 
 @unsafe
-def sp_take(ts, n):
+def sp_take(
+  +ts: List<&2, KTerm>,
+  +n: U32,
+) -> List<&2, KTerm>:
   kc(List<&2, KTerm>, U32.is_eq(n, 0), u => Nil{}, u => sp_take_next(ts, n))
 
 @unsafe
@@ -699,7 +632,10 @@ def sp_take_next(ts, n):
       Con{h, sp_take(rest, U32.sub(n, 1))}
 
 @unsafe
-def sp_drop(ts, n):
+def sp_drop(
+  +ts: List<&2, KTerm>,
+  +n: U32,
+) -> List<&2, KTerm>:
   kc(List<&2, KTerm>, U32.is_eq(n, 0), u => ts, u => sp_drop_next(ts, n))
 
 @unsafe
@@ -711,7 +647,10 @@ def sp_drop_next(ts, n):
       sp_drop(rest, U32.sub(n, 1))
 
 @unsafe
-def sp_shift(t, offset):
+def sp_shift(
+  +t: KTerm,
+  +offset: U32,
+) -> KTerm:
   KTerm{tg(t), nm(t), kc(U32, String.eq(tg(t), "Var") || String.eq(tg(t), "All") || String.eq(tg(t), "Lam") || String.eq(tg(t), "Bind") || String.eq(tg(t), "Sub"), u => U32.add(ix(t), offset), u => ix(t)), qt(t), sp_shifts(ks(t), offset), rm(t)}
 
 @unsafe
@@ -723,7 +662,12 @@ def sp_shifts(ts, offset):
       Con{sp_shift(h, offset), sp_shifts(rest, offset)}
 
 @unsafe
-def sp_type(st, t, ctx, owner):
+def sp_type(
+  +st: KSpecState,
+  +t: KTerm,
+  +ctx: List<&2, KTerm>,
+  +owner: String,
+) -> KTerm:
   cy(infer(KEnv{sp_book(st), owner, ref(owner), 0, Nil{}, True{}}, ctx, t, 0, Nil{}))
 
 @unsafe

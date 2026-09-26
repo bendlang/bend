@@ -8,11 +8,6 @@ type FFFrame is Data:
   FFLetValue{+env: List<&2,KTerm>, +bodyenv: List<&2,KTerm>, +id: U32, +binding: KTerm, +pending: List<&2,KTerm>, +built: List<&2,KTerm>}
   FFLetBody{+built: List<&2,KTerm>}
 
-law f_fresh_stack:
-  for +term: KTerm
-  for +env: List<&2,KTerm>
-  for +next: U32
-  FFresh
 law ffw_walk:
   for +term: KTerm
   for +env: List<&2,KTerm>
@@ -57,7 +52,11 @@ law ffw_let_tail:
   FFresh
 
 @unsafe
-def f_fresh_stack(term, env, next):
+def f_fresh_stack(
+  +term: KTerm,
+  +env: List<&2,KTerm>,
+  +next: U32,
+) -> FFresh:
   ffw_walk(term, env, next, Nil{})
 @unsafe
 def ffw_walk(term, env, next, stack):
@@ -131,10 +130,6 @@ def ffw_reverse_onto(items, onto):
 type FFDefFrame is Data:
   FFDefFrame{+definition: KDef, +pending: List<&2,KDef>, +built: List<&2,KDef>, +typ: KTerm, +value: KTerm}
 
-law f_fresh_book_stack:
-  for +book: List<&2,KDef>
-  for +next: U32
-  FFreshDefs
 law ffd_walk:
   for +book: List<&2,KDef>
   for +next: U32
@@ -169,7 +164,10 @@ law ffd_frame:
   FFreshDefs
 
 @unsafe
-def f_fresh_book_stack(book, next):
+def f_fresh_book_stack(
+  +book: List<&2,KDef>,
+  +next: U32,
+) -> FFreshDefs:
   ffd_walk(book, next, Nil{}, Nil{})
 @unsafe
 def ffd_walk(book, next, built, stack):

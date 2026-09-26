@@ -1,0 +1,55 @@
+{
+  "complete": true,
+  "source": "Debian security signed InRelease + package index; same bytes downloaded from official Debian snapshot",
+  "indexSha256": "f8863ad9e81b60ff7056c01764e15c3c6ec9e144ab6874304d0e4349af1a5fb1",
+  "packages": [
+    {
+      "package": "clang-19",
+      "version": "1:19.1.7-3~deb11u1",
+      "architecture": "amd64",
+      "bytes": 135448,
+      "sha256": "7cab7e019253973b2c89ecb650bba91dc550feb515dbe04090229050e872ed2f",
+      "snapshotSha1": "67978281b0a6fd048b38c53c442cd54ff2db2f3a",
+      "url": "https://snapshot.debian.org/file/67978281b0a6fd048b38c53c442cd54ff2db2f3a",
+      "path": "/tmp/bend-s4-clang19/packages/clang-19_19.1.7-3~deb11u1_amd64.deb",
+      "depends": "libc6 (>= 2.14), libclang-cpp19 (>= 1:19.1.7), libgcc-s1 (>= 3.0), libllvm19 (= 1:19.1.7-3~deb11u1), libstdc++6 (>= 5.2), libstdc++-10-dev, libgcc-10-dev, libobjc-10-dev, libclang-common-19-dev (= 1:19.1.7-3~deb11u1), llvm-19-linker-tools (= 1:19.1.7-3~deb11u1), libclang1-19 (= 1:19.1.7-3~deb11u1), libc6-dev, binutils",
+      "debControlVerified": true
+    },
+    {
+      "package": "libclang-common-19-dev",
+      "version": "1:19.1.7-3~deb11u1",
+      "architecture": "amd64",
+      "bytes": 766168,
+      "sha256": "74ac30ff1d6f77fe84a3bc4a3ed339fc6eaff2de5eb3de600b3f627561622194",
+      "snapshotSha1": "a27ff0a9e06fb23ba0ad61a9bd61b53a4454f980",
+      "url": "https://snapshot.debian.org/file/a27ff0a9e06fb23ba0ad61a9bd61b53a4454f980",
+      "path": "/tmp/bend-s4-clang19/packages/libclang-common-19-dev_19.1.7-3~deb11u1_amd64.deb",
+      "depends": "",
+      "debControlVerified": true
+    },
+    {
+      "package": "libclang-cpp19",
+      "version": "1:19.1.7-3~deb11u1",
+      "architecture": "amd64",
+      "bytes": 13127592,
+      "sha256": "58d5ac715fe9e28ca4770a88909bd06fd8ad81a6862121db9d8a652f0a3e6700",
+      "snapshotSha1": "a2903543fbaa6dd47ec1d08e2fd0eec94546336b",
+      "url": "https://snapshot.debian.org/file/a2903543fbaa6dd47ec1d08e2fd0eec94546336b",
+      "path": "/tmp/bend-s4-clang19/packages/libclang-cpp19_19.1.7-3~deb11u1_amd64.deb",
+      "depends": "libc6 (>= 2.29), libgcc-s1 (>= 3.0), libllvm19 (= 1:19.1.7-3~deb11u1), libstdc++6 (>= 9)",
+      "debControlVerified": true
+    },
+    {
+      "package": "libllvm19",
+      "version": "1:19.1.7-3~deb11u1",
+      "architecture": "amd64",
+      "bytes": 25893096,
+      "sha256": "307052e4591ad5f18a9feb2c64cbe781d8d437ab6dd3f9506edf1cb0becdc8a3",
+      "snapshotSha1": "0f89cb9679bcedc14b96718ea8ba4ee4836f7277",
+      "url": "https://snapshot.debian.org/file/0f89cb9679bcedc14b96718ea8ba4ee4836f7277",
+      "path": "/tmp/bend-s4-clang19/packages/libllvm19_19.1.7-3~deb11u1_amd64.deb",
+      "depends": "libc6 (>= 2.29), libedit2 (>= 2.11-20080614-0), libffi7 (>= 3.3~20180313), libgcc-s1 (>= 3.3), libstdc++6 (>= 9), libxml2 (>= 2.7.4), libzstd1 (>= 1.4.0), zlib1g (>= 1:1.2.0)",
+      "debControlVerified": true
+    }
+  ]
+}

@@ -15,11 +15,6 @@ law f_ctor_more:
   for +rest: List<&2,KDef>
   KDef
 
-law f_valid_pattern:
-  for +p: KTerm
-  for +book: List<&2,KDef>
-  String
-
 law f_valid_ctor_pattern:
   for +p: KTerm
   for +ctr: KDef
@@ -97,12 +92,15 @@ def f_ctor_more(name, found, rest):
   f_choose(KDef, f_eq(dk(found), "Missing"), u => f_ctor_lookup(name, rest), u => found)
 
 @unsafe
-def f_valid_pattern(p, book):
+def f_valid_pattern(
+  +p: KTerm,
+  +book: List<&2,KDef>,
+) -> String:
   f_choose(String, f_eq(tg(p), "Var"), u => f_choose(String, Bool.not(f_valid_name(nm(p))), u => "reserved pattern binder: " ++ nm(p), u => f_choose(String, f_eq(dk(f_ctor_lookup(nm(p), book)), "Missing"), u => "", u => "a constructor pattern requires braces: " ++ nm(p))), u => f_choose(String, f_eq(tg(p), "Ctr"), u => f_valid_ctor_pattern(p, f_ctor_lookup(nm(p), book), book), u => "expected a binder or constructor pattern"))
 
 @unsafe
 def f_valid_ctor_pattern(p, ctr, book):
-  f_choose(String, f_eq(dk(ctr), "Missing"), u => "unknown constructor pattern: " ++ nm(p), u => f_choose(String, U32.is_eq(da(ctr), f_len(ks(p))), u => f_valid_patterns(ks(p), book), u => "constructor pattern field count differs: " ++ nm(p)))
+  f_choose(String, f_eq(dk(ctr), "Missing"), u => "unknown constructor pattern: " ++ nm(p), u => f_choose(String, U32.is_eq(da(ctr), terms_len(ks(p))), u => f_valid_patterns(ks(p), book), u => "constructor pattern field count differs: " ++ nm(p)))
 
 @unsafe
 def f_valid_patterns(ps, book):
@@ -128,7 +126,7 @@ def f_valid_patterns_mode_next(err, ps, book, names):
 
 @unsafe
 def f_pattern_env(pats, env):
-  f_concat(List.reverse(&2, KTerm, f_penv(pats)), env)
+  norm_join(List.reverse(&2, KTerm, f_penv(pats)), env)
 
 @unsafe
 def f_scope_row_valid(r, pats, env, book, err):
@@ -142,7 +140,7 @@ def f_lambda_valid(a, body):
 def f_case_checked(p, indent, heads, rows, pats):
   match p:
     case FParsed{n, ts}:
-      f_choose(FParsed, U32.is_eq(f_len(pats), f_len(heads)), u => f_match_cases(f_skip(ts), indent, heads, Con{kt("Row", "", 0, 1, [kt("Patterns", "", 0, 1, pats), n]), rows}), u => f_err(ts, "one pattern is required per match scrutinee"))
+      f_choose(FParsed, U32.is_eq(terms_len(pats), terms_len(heads)), u => f_match_cases(f_skip(ts), indent, heads, Con{kt("Row", "", 0, 1, [kt("Patterns", "", 0, 1, pats), n]), rows}), u => f_err(ts, "one pattern is required per match scrutinee"))
 
 
 law f_alias_valid:
@@ -152,13 +150,6 @@ law f_alias_valid:
 law f_alias_chars:
   for +s: String
   Bool
-
-law f_import_alias:
-  for +ts: List<&2, FToken>
-  for +path: String
-  for +book: List<&2,KDef>
-  for +imports: List<&2, KTerm>
-  FRawResult
 
 law f_validate_param:
   for +ts: List<&2, FToken>
@@ -175,12 +166,17 @@ def f_alias_chars(s):
   f_choose(Bool, String.is_empty(s), u => True{}, u => (Char.is_alpha(f_head(s)) || Char.is_digit(f_head(s)) || Char.is_eq(f_head(s), '_')) && f_alias_chars(f_tail(s)))
 
 @unsafe
-def f_import_alias(ts, path, book, imports):
+def f_import_alias(
+  +ts: List<&2, FToken>,
+  +path: String,
+  +book: List<&2,KDef>,
+  +imports: List<&2, KTerm>,
+) -> FRawResult:
   f_choose(FRawResult, String.ends_with(path, ".bend") && f_alias_valid(f_tx(f_tl(ts))), u => f_tops(f_tl(f_tl(ts)), book, Con{kt("Import", path, 0, 0, [kt("Alias", f_tx(f_tl(ts)), 0, 0, Nil{})]), imports}, False{}), u => f_result(book, kt("Error", "an import requires a .bend path and a valid alias", 0, 0, Nil{}), imports))
 
 @unsafe
 def f_validate_param(ts, end, acc):
-  f_choose(FParsed, f_eq(f_tx(ts), "~") && Bool.not(f_eq(end, ")")), u => f_err(ts, "~ is only allowed on def or law template parameters"), u => f_choose(FParsed, Bool.not(f_valid_name(f_tx(f_unmark(ts)))), u => f_err(ts, "reserved parameter name"), u => f_choose(FParsed, f_eq(f_tx(ts), "~") && U32.is_lt(f_templates(acc), f_len(acc)), u => f_err(ts, "only leading parameters may use ~"), u => f_tele_binder(f_tx(f_unmark(ts)), f_atid(ts), f_quant(ts), f_eq(f_tx(ts), "~"), f_tl(f_unmark(ts)), end, acc))))
+  f_choose(FParsed, f_eq(f_tx(ts), "~") && Bool.not(f_eq(end, ")")), u => f_err(ts, "~ is only allowed on def or law template parameters"), u => f_choose(FParsed, Bool.not(f_valid_name(f_tx(f_unmark(ts)))), u => f_err(ts, "reserved parameter name"), u => f_choose(FParsed, f_eq(f_tx(ts), "~") && U32.is_lt(f_templates(acc), terms_len(acc)), u => f_err(ts, "only leading parameters may use ~"), u => f_tele_binder(f_tx(f_unmark(ts)), f_atid(ts), f_quant(ts), f_eq(f_tx(ts), "~"), f_tl(f_unmark(ts)), end, acc))))
 
 
 law f_valid_name:
@@ -199,10 +195,6 @@ def f_valid_name(s):
 def f_name_chars(s):
   f_choose(Bool, String.is_empty(s), u => True{}, u => f_ident(f_head(s)) && f_name_chars(f_tail(s)))
 
-law f_bare_params:
-  for +params: List<&2, KTerm>
-  Bool
-
 law f_def_prior:
   for +name: String
   for +p: FParsed
@@ -213,7 +205,9 @@ law f_def_prior:
   FRawResult
 
 @unsafe
-def f_bare_params(params):
+def f_bare_params(
+  +params: List<&2, KTerm>,
+) -> Bool:
   match params:
     case Nil{}:
       True{}
@@ -222,7 +216,7 @@ def f_bare_params(params):
 
 @unsafe
 def f_def_prior(name, p, book, imports, unsafe, old):
-  f_choose(FRawResult, f_eq(dk(old), "Missing"), u => f_def_base(name, p, book, imports, unsafe), u => f_choose(FRawResult, f_eq(dk(old), "Def") && f_eq(tg(dv(old)), "Absent") && f_bare_params(ks(f_pn(p))) && U32.is_ge(f_len(ks(f_pn(p))), dx(old)), u => f_choose(FRawResult, f_eq(f_tx(f_pr(p)), ":"), u => f_def_base(name, p, book, imports, unsafe), u => f_result(book, f_pn(f_err(f_pr(p), "expected : (a definition filling a law has no return annotation)")), imports)), u => f_result(book, kt("Error", "a definition must uniquely fill its law with plain parameter names", 0, 0, Nil{}), imports)))
+  f_choose(FRawResult, f_eq(dk(old), "Missing"), u => f_def_base(name, p, book, imports, unsafe), u => f_choose(FRawResult, f_eq(dk(old), "Def") && f_eq(tg(dv(old)), "Absent") && f_bare_params(ks(f_pn(p))) && U32.is_ge(terms_len(ks(f_pn(p))), dx(old)), u => f_choose(FRawResult, f_eq(f_tx(f_pr(p)), ":"), u => f_def_base(name, p, book, imports, unsafe), u => f_result(book, f_pn(f_err(f_pr(p), "expected : (a definition filling a law has no return annotation)")), imports)), u => f_result(book, kt("Error", "a definition must uniquely fill its law with plain parameter names", 0, 0, Nil{}), imports)))
 
 law f_scope_local_valid:
   for +t: KTerm

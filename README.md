@@ -19,17 +19,22 @@ Use `npm run build` to rebuild the default with pinned upstream.
 The [maintained development command](docs/PHASE5_DEVELOPMENT.md) builds a checked
 compiler and reuses selected paired tests for short iteration cycles.
 
-The [S3 simplification report](implementation/phase7/s3-report.md) records the
-current source: 15,687 Bend lines, down 822 from the simplification baseline.
-It shares source provenance and one authoritative structured checker result.
-All 2,756 fresh parse/check observations match the prior release, including the
-919 positive check fixtures and 318 remaining strict failures.
+The [S4 simplification checkpoint](implementation/phase7/s4-report.md) records the
+current compiler: **14,667 Bend lines**, down 1,842 (11.16%) from the original
+baseline; nonblank lines are down 9.40% and source bytes 7.82%. It removes redundant
+forward declarations and shares loader/error/list operations. All 2,756 frontend
+observations match the prior release, including 318 remaining strict failures.
+The installed release passes integrity and relocated check/interpreter/JS/native
+smoke. A controlled checked-build-plus-focused-test loop remains about 35 seconds
+on the measured machine. The 50% and 75% milestones remain open; later phases
+have not been started.
 The [Phase 5 report](implementation/phase5/report.md) records the earlier API's broader evidence
 and its limits: all 919 positive frontend fixtures pass, strict check failures
 fell from 377 to 318, and exact live TypeScript differences fell from 560 to 444.
 The [controlled full-source comparison](implementation/phase5/full-source-comparison.md)
-measures 60.25 seconds for pinned TypeScript and 363.39 seconds for the validated
-optimized compiler: **6.03× slower** under the documented workflow/cache policy.
+historically measured 60.25 seconds for pinned TypeScript and 363.39 seconds for
+the Phase 5 optimized compiler: **6.03× slower** under its workflow/cache policy.
+S4 does not remeasure that whole-source ratio; its focused cost gates pass.
 A checked API rebuild took 14.63 seconds in the final integration; full
 self-reproduction remains a separate integration gate.
 

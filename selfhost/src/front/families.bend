@@ -1,14 +1,5 @@
 # Family quantity inference, beta normalization and pattern quantity joins.
 
-law f_leading_quants:
-  for +ty: KTerm
-  U32
-
-law f_quants:
-  for +n: U32
-  for +q: U32
-  List<&2, KTerm>
-
 law f_adt:
   for +t: KTerm
   for +args: List<&2, KTerm>
@@ -49,11 +40,16 @@ law f_mark_fields:
   List<&2, KTerm>
 
 @unsafe
-def f_leading_quants(ty):
+def f_leading_quants(
+  +ty: KTerm,
+) -> U32:
   f_choose(U32, f_eq(tg(ty), "All") && f_eq(tg(kid(ty, 0)), "Qnt"), u => U32.add(1, f_leading_quants(kid(ty, 1))), u => 0)
 
 @unsafe
-def f_quants(n, q):
+def f_quants(
+  +n: U32,
+  +q: U32,
+) -> List<&2, KTerm>:
   f_choose(List<&2, KTerm>, U32.is_eq(n, 0), u => Nil{}, u => Con{qua(q), f_quants(U32.sub(n, 1), q)})
 
 @unsafe
@@ -62,7 +58,7 @@ def f_adt(t, args, d):
 
 @unsafe
 def f_adt_fill(t, args, arity, g):
-  f_choose(KTerm, U32.is_eq(U32.add(f_len(args), g), arity), u => KTerm{"ADT", nm(t), ix(t), qt(t), f_concat(f_quants(g, f_choose(U32, U32.is_eq(qt(t), 2), u => 2, u => 1)), args), rm(t)}, u => KTerm{"ADT", nm(t), ix(t), qt(t), f_choose(List<&2,KTerm>, U32.is_eq(qt(t), 2), u => f_concat(f_quants(g, 2), f_drop_terms(args, g)), u => args), rm(t)})
+  f_choose(KTerm, U32.is_eq(U32.add(terms_len(args), g), arity), u => KTerm{"ADT", nm(t), ix(t), qt(t), norm_join(f_quants(g, f_choose(U32, U32.is_eq(qt(t), 2), u => 2, u => 1)), args), rm(t)}, u => KTerm{"ADT", nm(t), ix(t), qt(t), f_choose(List<&2,KTerm>, U32.is_eq(qt(t), 2), u => norm_join(f_quants(g, 2), f_drop_terms(args, g)), u => args), rm(t)})
 
 @unsafe
 def f_drop_terms(ts, n):

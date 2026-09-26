@@ -11,13 +11,6 @@ type NC_Binding is Data:
 type NC_Code is Data:
   NC_Code{+body: String, +segments: List<&2, N_Segment>, +fresh: U32, +error: String}
 
-law nc_lower:
-  for +book: List<&2, KDef>
-  for +t: KTerm
-  for +env: List<&2, NC_Binding>
-  for +n: U32
-  NC_Code
-
 @unsafe
 def nc_word(+id: U32, +env: List<&2, NC_Binding>) -> String:
   match env:
@@ -102,11 +95,6 @@ law nc_occurs:
   for +id: U32
   Bool
 
-law nc_occurs_list:
-  for +ts: List<&2, KTerm>
-  for +id: U32
-  Bool
-
 law nc_lower_live:
   for +book: List<&2, KDef>
   for +t: KTerm
@@ -115,7 +103,10 @@ law nc_lower_live:
   NC_Code
 
 @unsafe
-def nc_occurs_list(ts, id):
+def nc_occurs_list(
+  +ts: List<&2, KTerm>,
+  +id: U32,
+) -> Bool:
   match ts:
     case Nil{}: False{}
     case Con{h, t}: nc_occurs(h, id) || nc_occurs_list(t, id)
@@ -158,7 +149,12 @@ def nc_prepend(code: String, x: NC_Code) -> NC_Code:
     case NC_Code{body, segs, fresh, err}: NC_Code{code ++ body, segs, fresh, err}
 
 @unsafe
-def nc_lower(book, t, env, n):
+def nc_lower(
+  +book: List<&2, KDef>,
+  +t: KTerm,
+  +env: List<&2, NC_Binding>,
+  +n: U32,
+) -> NC_Code:
   nc_prepend(nc_drop_dead(env, t), nc_lower_live(book, t, nc_live_env(env, t), n))
 
 @unsafe
@@ -391,12 +387,10 @@ def nc_literal(+t: KTerm) -> NC_Literal:
 law nc_compact:
   for +t: KTerm
   KTerm
-law nc_compact_list:
-  for +ts: List<&2, KTerm>
-  List<&2, KTerm>
-
 @unsafe
-def nc_compact_list(ts):
+def nc_compact_list(
+  +ts: List<&2, KTerm>,
+) -> List<&2, KTerm>:
   match ts:
     case Nil{}: Nil{}
     case Con{h, rest}: Con{nc_compact(h), nc_compact_list(rest)}

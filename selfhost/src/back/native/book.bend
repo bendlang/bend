@@ -38,10 +38,6 @@ law nc_term_fork:
   for +t: KTerm
   Bool
 
-law nc_terms_fork:
-  for +ts: List<&2, KTerm>
-  Bool
-
 @unsafe
 def nc_refs_go(todo: List<&2, KTerm>, +acc: List<&2, String>) -> List<&2, String>:
   match todo:
@@ -84,7 +80,9 @@ def nc_call_head(+t: KTerm) -> KTerm:
   nt_choose(KTerm, String.eq(tg(t), "App"), u => nc_call_head(kid(t, 0)), u => t)
 
 @unsafe
-def nc_terms_fork(ts):
+def nc_terms_fork(
+  +ts: List<&2, KTerm>,
+) -> Bool:
   match ts:
     case Nil{}: False{}
     case Con{+h, +rest}:
@@ -217,12 +215,10 @@ law nc_bangs_term:
   for +t: KTerm
   List<&2, String>
 
-law nc_bangs_terms:
-  for +ts: List<&2, KTerm>
-  List<&2, String>
-
 @unsafe
-def nc_bangs_terms(ts):
+def nc_bangs_terms(
+  +ts: List<&2, KTerm>,
+) -> List<&2, String>:
   match ts:
     case Nil{}: Nil{}
     case Con{h, rest}: List.append(&2, String, nc_bangs_term(h), nc_bangs_terms(rest))

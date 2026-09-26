@@ -4,10 +4,6 @@
 type FGraph is Data:
   FGraph{+book: List<&2, KDef>, +error: String, +done: List<&2, KTerm>}
 
-law f_path_normal:
-  for +s: String
-  String
-
 law f_path_parts:
   for +s: String
   for +part: String
@@ -29,29 +25,6 @@ law f_path_join_parts:
   for +acc: String
   String
 
-law f_drop_chars:
-  for +s: String
-  for +n: U32
-  String
-
-law f_strip_bend:
-  for +s: String
-  String
-
-law f_graph_source:
-  for +path: String
-  for +sources: List<&2,FSource>
-  FSource
-
-law f_load_graph:
-  for +main: String
-  for +sources: List<&2,FSource>
-  FResult
-
-law f_graph_result:
-  for +g: FGraph
-  FResult
-
 # Freshness is checked only after all existing graph/parser/elaborator errors.
 # The index stores latest prior events; constructors have a separate namespace.
 law f_graph_fresh_result:
@@ -70,14 +43,6 @@ law f_graph_fresh_hashed:
   for +hash: U32
   String
 
-law f_graph_fresh_name:
-  for +rest: List<&2,KDef>
-  for +done: KDef
-  for +d: KDef
-  for +hash: U32
-  for +old: KDef
-  String
-
 law f_graph_load:
   for +path: String
   for +ns: String
@@ -86,57 +51,9 @@ law f_graph_load:
   for +stack: List<&2,String>
   FGraph
 
-law f_graph_source_load:
-  for +s: FSource
-  for +ns: String
-  for +sources: List<&2,FSource>
-  for +g: FGraph
-  for +stack: List<&2,String>
-  FGraph
-
-law f_graph_cached:
-  for +s: FSource
-  for +ns: String
-  for +sources: List<&2,FSource>
-  for +g: FGraph
-  for +stack: List<&2,String>
-  for +entry: KTerm
-  FGraph
-
 law f_graph_error:
   for +g: FGraph
   for +err: String
-  FGraph
-
-law f_graph_parsed:
-  for +s: FSource
-  for +ns: String
-  for +sources: List<&2,FSource>
-  for +g: FGraph
-  for +stack: List<&2,String>
-  for +r: FResult
-  FGraph
-
-law f_import_namespace:
-  for +im: KTerm
-  for +ns: String
-  String
-
-law f_import_pathname:
-  for +im: KTerm
-  for +s: FSource
-  for +sources: List<&2,FSource>
-  String
-
-law f_graph_imports:
-  for +s: FSource
-  for +ns: String
-  for +book: List<&2,KDef>
-  for +allimports: List<&2, KTerm>
-  for +imports: List<&2, KTerm>
-  for +sources: List<&2,FSource>
-  for +g: FGraph
-  for +stack: List<&2,String>
   FGraph
 
 law f_graph_aliases:
@@ -144,20 +61,10 @@ law f_graph_aliases:
   for +ns: String
   List<&2, KTerm>
 
-law f_alias_term:
-  for +t: KTerm
-  for +imports: List<&2, KTerm>
-  KTerm
-
 law f_alias_terms:
   for +ts: List<&2, KTerm>
   for +imports: List<&2, KTerm>
   List<&2, KTerm>
-
-law f_alias_defs:
-  for +ds: List<&2,KDef>
-  for +imports: List<&2, KTerm>
-  List<&2,KDef>
 
 law f_graph_finish:
   for +s: FSource
@@ -178,7 +85,9 @@ law f_graph_finish_alias:
   FGraph
 
 @unsafe
-def f_path_normal(s):
+def f_path_normal(
+  +s: String,
+) -> String:
   f_path_parts(s, "", Nil{}, Char.is_eq(f_head(s), '/'))
 
 @unsafe
@@ -206,15 +115,23 @@ def f_path_join_parts(parts, acc):
       f_path_join_parts(rest, acc ++ f_choose(String, String.is_empty(acc) || f_eq(acc, "/"), u => "", u => "/") ++ part)
 
 @unsafe
-def f_drop_chars(s, n):
+def f_drop_chars(
+  +s: String,
+  +n: U32,
+) -> String:
   f_choose(String, U32.is_eq(n, 0), u => s, u => f_drop_chars(f_tail(s), U32.sub(n, 1)))
 
 @unsafe
-def f_strip_bend(s):
+def f_strip_bend(
+  +s: String,
+) -> String:
   String.reverse(f_drop_chars(String.reverse(s), 5))
 
 @unsafe
-def f_graph_source(path, sources):
+def f_graph_source(
+  +path: String,
+  +sources: List<&2,FSource>,
+) -> FSource:
   match sources:
     case Nil{}:
       FSource{"", "", ""}
@@ -222,28 +139,24 @@ def f_graph_source(path, sources):
       f_choose(FSource, f_eq(path, f_source_name(s)) || f_eq(path, f_source_path(s)), u => s, u => f_graph_source(path, rest))
 
 @unsafe
-def f_load_graph(main, sources):
+def f_load_graph(
+  +main: String,
+  +sources: List<&2,FSource>,
+) -> FResult:
   f_graph_result_at(f_graph_load(main, "", sources, FGraph{Nil{}, "", Nil{}}, Nil{}), sources)
 
 @unsafe
-def f_graph_result(g):
+def f_graph_result(
+  +g: FGraph,
+) -> FResult:
   match g:
     case FGraph{book, err, done}:
       f_fresh_result(f_graph_fresh_result(f_validate_result(FResult{book, err, Nil{}})))
 
 @unsafe
 def f_graph_load(path, ns, sources, g, stack):
-  f_graph_source_load(f_graph_source(path, sources), ns, sources, g, stack)
-
-@unsafe
-def f_graph_source_load(s, ns, sources, g, stack):
-  match g:
-    case FGraph{book, +err, +done}:
-      f_choose(FGraph, Bool.not(String.is_empty(err)), u => FGraph{book, err, done}, u => f_choose(FGraph, String.is_empty(f_source_path(s)), u => FGraph{book, "module source was not supplied", done}, u => f_choose(FGraph, has_name(stack, f_source_path(s)), u => FGraph{book, "cyclic import through " ++ f_source_path(s), done}, u => f_graph_cached(s, ns, sources, FGraph{book, err, done}, stack, f_env(f_source_path(s), done)))))
-
-@unsafe
-def f_graph_cached(s, ns, sources, g, stack, entry):
-  f_choose(FGraph, f_eq(tg(entry), "Absent"), u => f_graph_parsed(s, ns, sources, g, Con{f_source_path(s), stack}, f_parse_source(s)), u => f_choose(FGraph, f_eq(nm(kid(entry, 0)), ns), u => g, u => f_graph_error(g, "one namespace per source file: " ++ f_source_path(s))))
+  # fs_source rejects empty source paths before this disabled seed can match.
+  fs_load(path, ns, sources, g, stack, FSeed{"", Nil{}})
 
 @unsafe
 def f_graph_error(g, err):
@@ -252,26 +165,19 @@ def f_graph_error(g, err):
       FGraph{book, err, done}
 
 @unsafe
-def f_graph_parsed(s, ns, sources, g, stack, r):
-  match r:
-    case FResult{book, +err, imports}:
-      f_choose(FGraph, String.is_empty(err), u => f_graph_imports(s, ns, book, imports, imports, sources, g, stack), u => f_graph_error(g, err))
-
-@unsafe
-def f_import_namespace(im, ns):
+def f_import_namespace(
+  +im: KTerm,
+  +ns: String,
+) -> String:
   f_choose(String, f_eq(nm(im), "Base"), u => "", u => f_strip_bend(f_path_normal(f_path_join(f_path_dir(ns), nm(im)))))
 
 @unsafe
-def f_import_pathname(im, s, sources):
+def f_import_pathname(
+  +im: KTerm,
+  +s: FSource,
+  +sources: List<&2,FSource>,
+) -> String:
   f_choose(String, f_eq(nm(im), "Base"), u => f_source_path(f_source("Base", sources)), u => f_path_normal(f_path_join(f_path_dir(f_source_path(s)), nm(im))))
-
-@unsafe
-def f_graph_imports(s, ns, book, allimports, imports, sources, g, stack):
-  match imports:
-    case Nil{}:
-      f_graph_finish(s, ns, book, f_graph_aliases(allimports, ns), g)
-    case Con{+im, rest}:
-      f_graph_imports(s, ns, book, allimports, rest, sources, f_graph_load(f_import_pathname(im, s, sources), f_import_namespace(im, ns), sources, g, stack), stack)
 
 @unsafe
 def f_graph_aliases(imports, ns):
@@ -282,7 +188,10 @@ def f_graph_aliases(imports, ns):
       Con{kt("Import", f_import_namespace(im, ns), 0, 0, ks(im)), f_graph_aliases(rest, ns)}
 
 @unsafe
-def f_alias_term(t, imports):
+def f_alias_term(
+  +t: KTerm,
+  +imports: List<&2, KTerm>,
+) -> KTerm:
   KTerm{tg(t), f_choose(String, f_eq(tg(t), "Ref") || f_eq(tg(t), "ADT") || f_eq(tg(t), "Ctr") || f_eq(tg(t), "Mat"), u => f_alias(nm(t), imports), u => nm(t)), ix(t), qt(t), f_alias_terms(ks(t), imports), rm(t)}
 
 @unsafe
@@ -294,7 +203,10 @@ def f_alias_terms(ts, imports):
       Con{f_alias_term(t, imports), f_alias_terms(rest, imports)}
 
 @unsafe
-def f_alias_defs(ds, imports):
+def f_alias_defs(
+  +ds: List<&2,KDef>,
+  +imports: List<&2, KTerm>,
+) -> List<&2,KDef>:
   match ds:
     case Nil{}:
       Nil{}
@@ -309,7 +221,7 @@ def f_graph_finish(s, ns, book, imports, g):
 
 @unsafe
 def f_graph_finish_alias(s, ns, book, imports, prior, err, done):
-  FGraph{f_defs_append(prior, f_path_defs(f_module_defs(book, Nil{}, f_family_book(prior), ns, imports), f_path_dir(f_source_path(s)), f_eq(f_source_name(s), "Base"))), err, Con{kt("Loaded", f_source_path(s), f_graph_count_defs(book, 0), 0, [ref(ns)]), done}}
+  FGraph{norm_defs_join(prior, f_path_defs(f_module_defs(book, Nil{}, f_family_book(prior), ns, imports), f_path_dir(f_source_path(s)), f_eq(f_source_name(s), "Base"))), err, Con{kt("Loaded", f_source_path(s), f_graph_count_defs(book, 0), 0, [ref(ns)]), done}}
 
 
 law f_module_defs:
@@ -346,11 +258,6 @@ def f_module_def(d, rest, visible, scope, ns, imports):
 # remain nested and lowering introduces terms rather than declaration events.
 # Thus this source selection exactly recovers order.slice(n0), without rerunning
 # imported modules or changing FResult's stable ABI. Call after a successful load.
-law f_main_names:
-  for +main: String
-  for +sources: List<&2,FSource>
-  List<&2,String>
-
 law f_main_result_names:
   for +r: FResult
   List<&2,String>
@@ -360,13 +267,11 @@ law f_main_order:
   for +seen: List<&2,String>
   List<&2,String>
 
-law f_main_seen:
-  for +name: String
-  for +seen: List<&2,String>
-  Bool
-
 @unsafe
-def f_main_names(main, sources):
+def f_main_names(
+  +main: String,
+  +sources: List<&2,FSource>,
+) -> List<&2,String>:
   f_main_result_names(f_parse_source(f_graph_source(main, sources)))
 
 @unsafe
@@ -381,23 +286,11 @@ def f_main_order(book, seen):
     case Nil{}:
       Nil{}
     case Con{+d, rest}:
-      f_choose(List<&2,String>, f_main_seen(dn(d), seen), u => f_main_order(rest, seen), u => Con{dn(d), f_main_order(rest, Con{dn(d), seen})})
-
-@unsafe
-def f_main_seen(name, seen):
-  match seen:
-    case Nil{}:
-      False{}
-    case Con{head, rest}:
-      String.eq(name, head) || f_main_seen(name, rest)
+      f_choose(List<&2,String>, has_name(seen, dn(d)), u => f_main_order(rest, seen), u => Con{dn(d), f_main_order(rest, Con{dn(d), seen})})
 
 # Request-local trace of the exact graph that produced the freshened core.
 # Loaded.id records declaration-event count, including separate law/fill events.
 
-law f_load_graph_trace:
-  for +main: String
-  for +sources: List<&2,FSource>
-  FLoadTrace
 law f_graph_trace:
   for +graph: FGraph
   for +sources: List<&2,FSource>
@@ -408,7 +301,10 @@ law f_graph_count_defs:
   U32
 
 @unsafe
-def f_load_graph_trace(main, sources):
+def f_load_graph_trace(
+  +main: String,
+  +sources: List<&2,FSource>,
+) -> FLoadTrace:
   f_graph_trace(f_graph_load(main, "", sources, FGraph{Nil{}, "", Nil{}}, Nil{}), sources)
 @unsafe
 def f_graph_trace(graph, sources):
@@ -436,7 +332,13 @@ def f_graph_fresh_names(todo, done):
       f_graph_fresh_hashed(rest, done, d, index_hash(dn(d), 2166136261))
 
 @unsafe
-def f_graph_fresh_name(rest, done, d, hash, old):
+def f_graph_fresh_name(
+  +rest: List<&2,KDef>,
+  +done: KDef,
+  +d: KDef,
+  +hash: U32,
+  +old: KDef,
+) -> String:
   f_choose(String, f_eq(dk(old), "Absent") || (f_eq(dk(old), "Def") && f_eq(dk(d), "Def") && f_eq(tg(dv(old)), "Absent") && Bool.not(f_eq(tg(dv(d)), "Absent")) && (Bool.not(db(old)) || db(d))), u => f_graph_fresh_names(rest, index_set(done, d, hash, 32)), u => "expected a fresh name (duplicate declaration: " ++ dn(d) ++ ")")
 
 @unsafe
@@ -462,18 +364,17 @@ law fpe_rejected:
 law fpe_term:
   for +t: KTerm
   KTerm
+
+law fpe_defs:
+  for +ds: List<&2,KDef>
+  KTerm
+
 law fpe_terms:
   for +ts: List<&2,KTerm>
   KTerm
 law fpe_terms_next:
   for +error: KTerm
   for +rest: List<&2,KTerm>
-  KTerm
-law fpe_def:
-  for +d: KDef
-  KTerm
-law fpe_defs:
-  for +ds: List<&2,KDef>
   KTerm
 law fpe_defs_next:
   for +error: KTerm
@@ -536,7 +437,9 @@ def fpe_terms(ts):
 def fpe_terms_next(error, rest):
   f_choose(KTerm, f_eq(tg(error), "Absent"), u => fpe_terms(rest), u => error)
 @unsafe
-def fpe_def(d):
+def fpe_def(
+  +d: KDef,
+) -> KTerm:
   fpe_defs_next(fpe_terms([dt(d), dv(d)]), dc(d))
 @unsafe
 def fpe_defs(ds):

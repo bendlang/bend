@@ -578,3 +578,29 @@ actualhost counters establish4→1selected failing-body checks. Serial ABBA show
 maxpairedRSSgrowth2.91%; exact outputbytes remain. The usable release is installed.
 No new full-sourceTSratio orB1→H→Hproof isclaimed. S4mustfund another7,433lines
 before the50%milestone; the targetremains unmet.
+
+## 2026-09-26 — S4 bounded checkpoint installed; milestone remains open
+
+[S4](../implementation/phase7/s4-report.md) removes another 1,020 physical /
+588 nonblank lines / 16,706 bytes, reaching 14,667 / 12,505 / 470,062. The original
+baseline reduction is 11.16% physical, 9.40% nonblank and 7.82% bytes. Corrected
+declaration candidate A02 passes genuine checked B1→H→H byte equality; the first
+425-law attempt is preserved as rejected after losing two bootstrap exports.
+B01 shares loader and embedded-error walks and common list operations. All 2,756
+frontend observations match S3 exactly; 318 strict failures remain. Component,
+harness, provenance, diagnostic and native smoke gates pass. Serial host cost
+increases at most 1.53%; raw/parsed graph medians increase 1.94%/2.63%; memory
+and size guards pass. This is simplification with small cost, not a speedup.
+
+The proposed continuation fusion is rejected with a reproducible pinned-language
+falsifier. B02 relocates unchanged generic joins to their datatype owner and
+produces byte-identical B01 compiler images. Its own genuine checked bootstrap
+is installed; default and relocated integrity/check/interpreter/JS/native smoke
+pass. Source-only context improves, but new test obligations prevent uniform
+context/byte reduction. A02's H proof remains A02's, not B02's. All rejected
+attempts, raw measurements and artifact identities are preserved. Another 6,413
+lines are needed for the 50% milestone; no later phase is reported complete.
+The final controlled S3/S4/S4/S3 development-loop gate takes about 35 seconds
+per fresh checked/focused attempt: paired wall differences −0.71%/+0.72%,
+maximum RSS increase 3.30%. The failed first measurement setup is retained;
+all four actual attempts and runtime/memory guards pass.

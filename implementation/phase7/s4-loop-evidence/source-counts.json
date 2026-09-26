@@ -1,0 +1,24 @@
+{
+  "scope": "Additional one-off final loop measurement/preservation programs, charged separately from S4 compiler savings and first capsule tooling.",
+  "files": [
+    {
+      "file": "implementation/phase7/s4-loop-evidence/capture.py",
+      "lines": 22,
+      "nonblank": 22,
+      "bytes": 2047,
+      "sha256": "351b3666339b28d50a5ac9e92631d3dd087bf063cc4477e93903418c0807de41"
+    },
+    {
+      "file": "implementation/phase7/s4-loop-evidence/run.py",
+      "lines": 43,
+      "nonblank": 43,
+      "bytes": 5204,
+      "sha256": "5731a2d4cf4d5b6d9b81347a86ba42edb7466d8915cadcb1867dfcf277fb3e93"
+    }
+  ],
+  "totals": {
+    "lines": 65,
+    "nonblank": 65,
+    "bytes": 7251
+  }
+}

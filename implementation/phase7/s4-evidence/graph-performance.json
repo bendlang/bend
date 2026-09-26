@@ -1,0 +1,1207 @@
+{
+  "kind": "S4-unseeded-graph-cost",
+  "complete": true,
+  "pass": true,
+  "started": "2026-09-26T20:59:40.071Z",
+  "executions": [
+    {
+      "variant": "baseline",
+      "mode": "oracle",
+      "label": "oracle-baseline",
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "--expose-gc",
+          "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/graph-cost.mjs",
+          "--worker",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/config.json",
+          "baseline",
+          "oracle",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/oracle-baseline"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/oracle-baseline/command/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/oracle-baseline/command/stderr",
+        "timeoutMs": 120000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 55,
+        "wallMs": 11666.448154
+      }
+    },
+    {
+      "variant": "candidate",
+      "mode": "oracle",
+      "label": "oracle-candidate",
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "--expose-gc",
+          "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/graph-cost.mjs",
+          "--worker",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/config.json",
+          "candidate",
+          "oracle",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/oracle-candidate"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/oracle-candidate/command/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/oracle-candidate/command/stderr",
+        "timeoutMs": 120000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 56,
+        "wallMs": 12111.068578
+      }
+    },
+    {
+      "variant": "baseline",
+      "mode": "raw",
+      "label": "raw-00-baseline",
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "--expose-gc",
+          "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/graph-cost.mjs",
+          "--worker",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/config.json",
+          "baseline",
+          "raw",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-00-baseline"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-00-baseline/command/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-00-baseline/command/stderr",
+        "timeoutMs": 120000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 52,
+        "wallMs": 20400.610181000004
+      }
+    },
+    {
+      "variant": "candidate",
+      "mode": "raw",
+      "label": "raw-01-candidate",
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "--expose-gc",
+          "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/graph-cost.mjs",
+          "--worker",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/config.json",
+          "candidate",
+          "raw",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-01-candidate"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-01-candidate/command/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-01-candidate/command/stderr",
+        "timeoutMs": 120000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 53,
+        "wallMs": 20632.879960000006
+      }
+    },
+    {
+      "variant": "candidate",
+      "mode": "raw",
+      "label": "raw-02-candidate",
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "--expose-gc",
+          "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/graph-cost.mjs",
+          "--worker",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/config.json",
+          "candidate",
+          "raw",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-02-candidate"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-02-candidate/command/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-02-candidate/command/stderr",
+        "timeoutMs": 120000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 53,
+        "wallMs": 20696.476442
+      }
+    },
+    {
+      "variant": "baseline",
+      "mode": "raw",
+      "label": "raw-03-baseline",
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "--expose-gc",
+          "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/graph-cost.mjs",
+          "--worker",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/config.json",
+          "baseline",
+          "raw",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-03-baseline"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-03-baseline/command/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-03-baseline/command/stderr",
+        "timeoutMs": 120000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 52,
+        "wallMs": 20396.106912999996
+      }
+    },
+    {
+      "variant": "baseline",
+      "mode": "raw",
+      "label": "raw-04-baseline",
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "--expose-gc",
+          "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/graph-cost.mjs",
+          "--worker",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/config.json",
+          "baseline",
+          "raw",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-04-baseline"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-04-baseline/command/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-04-baseline/command/stderr",
+        "timeoutMs": 120000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 52,
+        "wallMs": 20247.762174000003
+      }
+    },
+    {
+      "variant": "candidate",
+      "mode": "raw",
+      "label": "raw-05-candidate",
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "--expose-gc",
+          "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/graph-cost.mjs",
+          "--worker",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/config.json",
+          "candidate",
+          "raw",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-05-candidate"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-05-candidate/command/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-05-candidate/command/stderr",
+        "timeoutMs": 120000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 53,
+        "wallMs": 20673.567505999992
+      }
+    },
+    {
+      "variant": "candidate",
+      "mode": "raw",
+      "label": "raw-06-candidate",
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "--expose-gc",
+          "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/graph-cost.mjs",
+          "--worker",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/config.json",
+          "candidate",
+          "raw",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-06-candidate"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-06-candidate/command/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-06-candidate/command/stderr",
+        "timeoutMs": 120000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 53,
+        "wallMs": 20663.237831000006
+      }
+    },
+    {
+      "variant": "baseline",
+      "mode": "raw",
+      "label": "raw-07-baseline",
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "--expose-gc",
+          "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/graph-cost.mjs",
+          "--worker",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/config.json",
+          "baseline",
+          "raw",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-07-baseline"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-07-baseline/command/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-07-baseline/command/stderr",
+        "timeoutMs": 120000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 52,
+        "wallMs": 20263.70266499999
+      }
+    },
+    {
+      "variant": "baseline",
+      "mode": "parsed",
+      "label": "parsed-00-baseline",
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "--expose-gc",
+          "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/graph-cost.mjs",
+          "--worker",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/config.json",
+          "baseline",
+          "parsed",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-00-baseline"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-00-baseline/command/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-00-baseline/command/stderr",
+        "timeoutMs": 120000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 55,
+        "wallMs": 15523.519364000007
+      }
+    },
+    {
+      "variant": "candidate",
+      "mode": "parsed",
+      "label": "parsed-01-candidate",
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "--expose-gc",
+          "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/graph-cost.mjs",
+          "--worker",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/config.json",
+          "candidate",
+          "parsed",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-01-candidate"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-01-candidate/command/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-01-candidate/command/stderr",
+        "timeoutMs": 120000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 56,
+        "wallMs": 15909.98696900002
+      }
+    },
+    {
+      "variant": "candidate",
+      "mode": "parsed",
+      "label": "parsed-02-candidate",
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "--expose-gc",
+          "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/graph-cost.mjs",
+          "--worker",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/config.json",
+          "candidate",
+          "parsed",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-02-candidate"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-02-candidate/command/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-02-candidate/command/stderr",
+        "timeoutMs": 120000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 56,
+        "wallMs": 15793.860545000003
+      }
+    },
+    {
+      "variant": "baseline",
+      "mode": "parsed",
+      "label": "parsed-03-baseline",
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "--expose-gc",
+          "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/graph-cost.mjs",
+          "--worker",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/config.json",
+          "baseline",
+          "parsed",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-03-baseline"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-03-baseline/command/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-03-baseline/command/stderr",
+        "timeoutMs": 120000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 55,
+        "wallMs": 15375.491220000025
+      }
+    },
+    {
+      "variant": "baseline",
+      "mode": "parsed",
+      "label": "parsed-04-baseline",
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "--expose-gc",
+          "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/graph-cost.mjs",
+          "--worker",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/config.json",
+          "baseline",
+          "parsed",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-04-baseline"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-04-baseline/command/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-04-baseline/command/stderr",
+        "timeoutMs": 120000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 55,
+        "wallMs": 15566.642457999958
+      }
+    },
+    {
+      "variant": "candidate",
+      "mode": "parsed",
+      "label": "parsed-05-candidate",
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "--expose-gc",
+          "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/graph-cost.mjs",
+          "--worker",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/config.json",
+          "candidate",
+          "parsed",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-05-candidate"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-05-candidate/command/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-05-candidate/command/stderr",
+        "timeoutMs": 120000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 56,
+        "wallMs": 16246.65029999998
+      }
+    },
+    {
+      "variant": "candidate",
+      "mode": "parsed",
+      "label": "parsed-06-candidate",
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "--expose-gc",
+          "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/graph-cost.mjs",
+          "--worker",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/config.json",
+          "candidate",
+          "parsed",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-06-candidate"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-06-candidate/command/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-06-candidate/command/stderr",
+        "timeoutMs": 120000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 56,
+        "wallMs": 15814.213113999984
+      }
+    },
+    {
+      "variant": "baseline",
+      "mode": "parsed",
+      "label": "parsed-07-baseline",
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "--expose-gc",
+          "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/graph-cost.mjs",
+          "--worker",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/config.json",
+          "baseline",
+          "parsed",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-07-baseline"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-07-baseline/command/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-07-baseline/command/stderr",
+        "timeoutMs": 120000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 55,
+        "wallMs": 15707.979630000016
+      }
+    }
+  ],
+  "samples": [
+    {
+      "kind": "S4-graph-cost-worker",
+      "variant": "baseline",
+      "mode": "raw",
+      "complete": true,
+      "affinity": "0",
+      "rows": [],
+      "rssBeforeTimingBytes": 497733632,
+      "milliseconds": 9541.330646999999,
+      "cpuMs": 9543.549,
+      "iterations": 5,
+      "warmups": 3,
+      "perCallMs": 1908.2661293999997,
+      "peakRssKiB": 490260,
+      "rssAfterTimingBytes": 500527104,
+      "graphSha256": "9efd55381725ec873366aef6eee86106140f6da6798ed30127bce73f6820b663",
+      "inputSha256": "a13ce51574f41cc4ce2e305534ea1e2e9caf65f2192dd131425d1e0e181c0233",
+      "block": 0,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-00-baseline/result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-00-baseline/result.json",
+        "sha256": "e6582eace697bdf70b8120fda0ae8d21999aa9dd596e9e86ab053fda1fc29a5c"
+      }
+    },
+    {
+      "kind": "S4-graph-cost-worker",
+      "variant": "candidate",
+      "mode": "raw",
+      "complete": true,
+      "affinity": "0",
+      "rows": [],
+      "rssBeforeTimingBytes": 497291264,
+      "milliseconds": 9686.487854,
+      "cpuMs": 9700.527,
+      "iterations": 5,
+      "warmups": 3,
+      "perCallMs": 1937.2975708000001,
+      "peakRssKiB": 490092,
+      "rssAfterTimingBytes": 500772864,
+      "graphSha256": "9efd55381725ec873366aef6eee86106140f6da6798ed30127bce73f6820b663",
+      "inputSha256": "a13ce51574f41cc4ce2e305534ea1e2e9caf65f2192dd131425d1e0e181c0233",
+      "block": 1,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-01-candidate/result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-01-candidate/result.json",
+        "sha256": "1481eb546f8944dbd05ae9dfb351a69a4bd716d39ec0b250d50f68683a9fb43b"
+      }
+    },
+    {
+      "kind": "S4-graph-cost-worker",
+      "variant": "candidate",
+      "mode": "raw",
+      "complete": true,
+      "affinity": "0",
+      "rows": [],
+      "rssBeforeTimingBytes": 499773440,
+      "milliseconds": 9582.198894000001,
+      "cpuMs": 9584.407,
+      "iterations": 5,
+      "warmups": 3,
+      "perCallMs": 1916.4397788,
+      "peakRssKiB": 491992,
+      "rssAfterTimingBytes": 501837824,
+      "graphSha256": "9efd55381725ec873366aef6eee86106140f6da6798ed30127bce73f6820b663",
+      "inputSha256": "a13ce51574f41cc4ce2e305534ea1e2e9caf65f2192dd131425d1e0e181c0233",
+      "block": 2,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-02-candidate/result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-02-candidate/result.json",
+        "sha256": "5c5171d699da60d432e32b5f386b93675a92c4db111ac3fd60da89736217ce4f"
+      }
+    },
+    {
+      "kind": "S4-graph-cost-worker",
+      "variant": "baseline",
+      "mode": "raw",
+      "complete": true,
+      "affinity": "0",
+      "rows": [],
+      "rssBeforeTimingBytes": 497741824,
+      "milliseconds": 9471.489983,
+      "cpuMs": 9473.713,
+      "iterations": 5,
+      "warmups": 3,
+      "perCallMs": 1894.2979965999998,
+      "peakRssKiB": 490008,
+      "rssAfterTimingBytes": 501157888,
+      "graphSha256": "9efd55381725ec873366aef6eee86106140f6da6798ed30127bce73f6820b663",
+      "inputSha256": "a13ce51574f41cc4ce2e305534ea1e2e9caf65f2192dd131425d1e0e181c0233",
+      "block": 3,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-03-baseline/result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-03-baseline/result.json",
+        "sha256": "253333f8ed7d9d347e70f2aee3626d5cfdff932a6c8a10bcc722998b5a7694d0"
+      }
+    },
+    {
+      "kind": "S4-graph-cost-worker",
+      "variant": "baseline",
+      "mode": "raw",
+      "complete": true,
+      "affinity": "0",
+      "rows": [],
+      "rssBeforeTimingBytes": 495550464,
+      "milliseconds": 9483.23864,
+      "cpuMs": 9485.443,
+      "iterations": 5,
+      "warmups": 3,
+      "perCallMs": 1896.647728,
+      "peakRssKiB": 488396,
+      "rssAfterTimingBytes": 498311168,
+      "graphSha256": "9efd55381725ec873366aef6eee86106140f6da6798ed30127bce73f6820b663",
+      "inputSha256": "a13ce51574f41cc4ce2e305534ea1e2e9caf65f2192dd131425d1e0e181c0233",
+      "block": 4,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-04-baseline/result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-04-baseline/result.json",
+        "sha256": "b9489d28943fd30a92e055e6a7e2368c9ba553fa353d6d604934acfc1a78809d"
+      }
+    },
+    {
+      "kind": "S4-graph-cost-worker",
+      "variant": "candidate",
+      "mode": "raw",
+      "complete": true,
+      "affinity": "0",
+      "rows": [],
+      "rssBeforeTimingBytes": 499118080,
+      "milliseconds": 9675.901648,
+      "cpuMs": 9678.089,
+      "iterations": 5,
+      "warmups": 3,
+      "perCallMs": 1935.1803295999998,
+      "peakRssKiB": 491876,
+      "rssAfterTimingBytes": 502865920,
+      "graphSha256": "9efd55381725ec873366aef6eee86106140f6da6798ed30127bce73f6820b663",
+      "inputSha256": "a13ce51574f41cc4ce2e305534ea1e2e9caf65f2192dd131425d1e0e181c0233",
+      "block": 5,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-05-candidate/result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-05-candidate/result.json",
+        "sha256": "1a47788ca2582d8e6f6ec42efac7a668fd032d38d1919d2634887b038ed063a7"
+      }
+    },
+    {
+      "kind": "S4-graph-cost-worker",
+      "variant": "candidate",
+      "mode": "raw",
+      "complete": true,
+      "affinity": "0",
+      "rows": [],
+      "rssBeforeTimingBytes": 499564544,
+      "milliseconds": 9674.347850999999,
+      "cpuMs": 9676.474,
+      "iterations": 5,
+      "warmups": 3,
+      "perCallMs": 1934.8695701999998,
+      "peakRssKiB": 492316,
+      "rssAfterTimingBytes": 503345152,
+      "graphSha256": "9efd55381725ec873366aef6eee86106140f6da6798ed30127bce73f6820b663",
+      "inputSha256": "a13ce51574f41cc4ce2e305534ea1e2e9caf65f2192dd131425d1e0e181c0233",
+      "block": 6,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-06-candidate/result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-06-candidate/result.json",
+        "sha256": "1822b93e033d78b718bf6e22b2dc287bcb20bcb49e525009bf22f8c5cf9ac4b2"
+      }
+    },
+    {
+      "kind": "S4-graph-cost-worker",
+      "variant": "baseline",
+      "mode": "raw",
+      "complete": true,
+      "affinity": "0",
+      "rows": [],
+      "rssBeforeTimingBytes": 499089408,
+      "milliseconds": 9498.767625,
+      "cpuMs": 9512.672,
+      "iterations": 5,
+      "warmups": 3,
+      "perCallMs": 1899.753525,
+      "peakRssKiB": 491320,
+      "rssAfterTimingBytes": 501735424,
+      "graphSha256": "9efd55381725ec873366aef6eee86106140f6da6798ed30127bce73f6820b663",
+      "inputSha256": "a13ce51574f41cc4ce2e305534ea1e2e9caf65f2192dd131425d1e0e181c0233",
+      "block": 7,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-07-baseline/result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/raw-07-baseline/result.json",
+        "sha256": "8cfcf5a48ab1fdd3aca6676766c7e7dcde225b3ad65d4da788ba5f7502684097"
+      }
+    },
+    {
+      "kind": "S4-graph-cost-worker",
+      "variant": "baseline",
+      "mode": "parsed",
+      "complete": true,
+      "affinity": "0",
+      "rows": [],
+      "rssBeforeTimingBytes": 442814464,
+      "milliseconds": 6516.138882000001,
+      "cpuMs": 6518.5,
+      "iterations": 5,
+      "warmups": 3,
+      "perCallMs": 1303.2277764000003,
+      "peakRssKiB": 516684,
+      "rssAfterTimingBytes": 528240640,
+      "graphSha256": "9efd55381725ec873366aef6eee86106140f6da6798ed30127bce73f6820b663",
+      "inputSha256": "d5789543248bac31760fedc1daf2c48aa0e484752c66f462c6acde1cf2231a36",
+      "block": 0,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-00-baseline/result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-00-baseline/result.json",
+        "sha256": "de2d76d96465e7fc96b528484260133e2d74bccb0b29cc34dd91cec397b81915"
+      }
+    },
+    {
+      "kind": "S4-graph-cost-worker",
+      "variant": "candidate",
+      "mode": "parsed",
+      "complete": true,
+      "affinity": "0",
+      "rows": [],
+      "rssBeforeTimingBytes": 439660544,
+      "milliseconds": 6712.481916000001,
+      "cpuMs": 6726.135,
+      "iterations": 5,
+      "warmups": 3,
+      "perCallMs": 1342.4963832,
+      "peakRssKiB": 517180,
+      "rssAfterTimingBytes": 529076224,
+      "graphSha256": "9efd55381725ec873366aef6eee86106140f6da6798ed30127bce73f6820b663",
+      "inputSha256": "d5789543248bac31760fedc1daf2c48aa0e484752c66f462c6acde1cf2231a36",
+      "block": 1,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-01-candidate/result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-01-candidate/result.json",
+        "sha256": "02c9f13a2c4a10f88b4552cd5524679f5a033caffc324509569db790497acaec"
+      }
+    },
+    {
+      "kind": "S4-graph-cost-worker",
+      "variant": "candidate",
+      "mode": "parsed",
+      "complete": true,
+      "affinity": "0",
+      "rows": [],
+      "rssBeforeTimingBytes": 438333440,
+      "milliseconds": 6624.255415000001,
+      "cpuMs": 6637.376,
+      "iterations": 5,
+      "warmups": 3,
+      "perCallMs": 1324.8510830000002,
+      "peakRssKiB": 518116,
+      "rssAfterTimingBytes": 529899520,
+      "graphSha256": "9efd55381725ec873366aef6eee86106140f6da6798ed30127bce73f6820b663",
+      "inputSha256": "d5789543248bac31760fedc1daf2c48aa0e484752c66f462c6acde1cf2231a36",
+      "block": 2,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-02-candidate/result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-02-candidate/result.json",
+        "sha256": "a02e4f0e707740b1137de48c12b726e1547dd66ba718f4cecba567b0fbcc9f92"
+      }
+    },
+    {
+      "kind": "S4-graph-cost-worker",
+      "variant": "baseline",
+      "mode": "parsed",
+      "complete": true,
+      "affinity": "0",
+      "rows": [],
+      "rssBeforeTimingBytes": 440414208,
+      "milliseconds": 6401.539186,
+      "cpuMs": 6404.19,
+      "iterations": 5,
+      "warmups": 3,
+      "perCallMs": 1280.3078372,
+      "peakRssKiB": 515396,
+      "rssAfterTimingBytes": 527642624,
+      "graphSha256": "9efd55381725ec873366aef6eee86106140f6da6798ed30127bce73f6820b663",
+      "inputSha256": "d5789543248bac31760fedc1daf2c48aa0e484752c66f462c6acde1cf2231a36",
+      "block": 3,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-03-baseline/result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-03-baseline/result.json",
+        "sha256": "979ee8c4ff668bfdd428578e48e2f9ebf9544d4fb244ca3a3fb8e84bb5ea7873"
+      }
+    },
+    {
+      "kind": "S4-graph-cost-worker",
+      "variant": "baseline",
+      "mode": "parsed",
+      "complete": true,
+      "affinity": "0",
+      "rows": [],
+      "rssBeforeTimingBytes": 443211776,
+      "milliseconds": 6478.463725000001,
+      "cpuMs": 6480.976,
+      "iterations": 5,
+      "warmups": 3,
+      "perCallMs": 1295.6927450000003,
+      "peakRssKiB": 518392,
+      "rssAfterTimingBytes": 530325504,
+      "graphSha256": "9efd55381725ec873366aef6eee86106140f6da6798ed30127bce73f6820b663",
+      "inputSha256": "d5789543248bac31760fedc1daf2c48aa0e484752c66f462c6acde1cf2231a36",
+      "block": 4,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-04-baseline/result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-04-baseline/result.json",
+        "sha256": "5b9d622f7ad3bcfe2d9f2d56c1539920d9ea26555291fc551ca95ddff0737671"
+      }
+    },
+    {
+      "kind": "S4-graph-cost-worker",
+      "variant": "candidate",
+      "mode": "parsed",
+      "complete": true,
+      "affinity": "0",
+      "rows": [],
+      "rssBeforeTimingBytes": 459812864,
+      "milliseconds": 6986.602348,
+      "cpuMs": 7003.219,
+      "iterations": 5,
+      "warmups": 3,
+      "perCallMs": 1397.3204696,
+      "peakRssKiB": 545212,
+      "rssAfterTimingBytes": 558297088,
+      "graphSha256": "9efd55381725ec873366aef6eee86106140f6da6798ed30127bce73f6820b663",
+      "inputSha256": "d5789543248bac31760fedc1daf2c48aa0e484752c66f462c6acde1cf2231a36",
+      "block": 5,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-05-candidate/result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-05-candidate/result.json",
+        "sha256": "4ab456c218a163b6587f14fa689918f65b2f552d5e6f23034c6ea3d174cd5d7a"
+      }
+    },
+    {
+      "kind": "S4-graph-cost-worker",
+      "variant": "candidate",
+      "mode": "parsed",
+      "complete": true,
+      "affinity": "0",
+      "rows": [],
+      "rssBeforeTimingBytes": 440569856,
+      "milliseconds": 6605.192109,
+      "cpuMs": 6607.831,
+      "iterations": 5,
+      "warmups": 3,
+      "perCallMs": 1321.0384218,
+      "peakRssKiB": 519304,
+      "rssAfterTimingBytes": 531251200,
+      "graphSha256": "9efd55381725ec873366aef6eee86106140f6da6798ed30127bce73f6820b663",
+      "inputSha256": "d5789543248bac31760fedc1daf2c48aa0e484752c66f462c6acde1cf2231a36",
+      "block": 6,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-06-candidate/result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-06-candidate/result.json",
+        "sha256": "e1e52b07fe372614cabe00ddd73c3dab34f66511caca176062d63a7bf4bb354c"
+      }
+    },
+    {
+      "kind": "S4-graph-cost-worker",
+      "variant": "baseline",
+      "mode": "parsed",
+      "complete": true,
+      "affinity": "0",
+      "rows": [],
+      "rssBeforeTimingBytes": 434147328,
+      "milliseconds": 6615.670487000001,
+      "cpuMs": 6618.07,
+      "iterations": 5,
+      "warmups": 3,
+      "perCallMs": 1323.1340974000002,
+      "peakRssKiB": 517772,
+      "rssAfterTimingBytes": 529412096,
+      "graphSha256": "9efd55381725ec873366aef6eee86106140f6da6798ed30127bce73f6820b663",
+      "inputSha256": "d5789543248bac31760fedc1daf2c48aa0e484752c66f462c6acde1cf2231a36",
+      "block": 7,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-07-baseline/result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/parsed-07-baseline/result.json",
+        "sha256": "bd87892650447ba872bc5173bac0e0e454853cc5ba77cdaefccd88e2caf5f517"
+      }
+    }
+  ],
+  "scope": "Frozen real four-core source. Ordinary f_load_graph only; raw/parsed main with own-API parsed canonical Base outside requests. Fresh processes, serial CPU 0. No checker, host-loop, native, fixed-point or TypeScript ratio claim.",
+  "order": [
+    "baseline",
+    "candidate",
+    "candidate",
+    "baseline",
+    "baseline",
+    "candidate",
+    "candidate",
+    "baseline"
+  ],
+  "guards": {
+    "runtimeRatio": 1.05,
+    "peakRssRatio": 1.1,
+    "apiBytesRatio": 1.1
+  },
+  "warmups": 3,
+  "iterations": 5,
+  "childTimeoutMs": 120000,
+  "totalTimeoutMs": 900000,
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/graph-cost.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/graph-cost.mjs",
+      "sha256": "9545e754b6fb2b30776f716175289b3d057a2fcf62c878d7c31a19ba6d39054e"
+    },
+    {
+      "file": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "canonicalPath": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase4/private/component/core.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase4/private/component/core.bend",
+      "sha256": "7ea730ae3e2ee190ff55a0def12f8410203fee9fa2c0573df52265b583523ccf"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/base.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/base.bend",
+      "sha256": "b8c2734d45ec6b4ce70fee70ff06ef35e08fce885af8852d8eb77dbff020e946"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/attempt.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/attempt.json",
+      "sha256": "91805bb5e840ae16a53bf2b1b39134de1a95e3029ef41b18c7c7fe172a643705"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/attempt.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/attempt.json",
+      "sha256": "e361c66da22b067e0f91999c0edae8737de6847eeddb9e98f70e3938338da261"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/development/workflow.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/development/workflow.mjs",
+      "sha256": "a85428ae724a921511caec545831e4837a2e723ae9609eacef1166c05a5043ff"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/development/process.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/development/process.mjs",
+      "sha256": "fe6afbc8964f695e3b7bfe8c636b6da6295fd7265fcdebbf58839f3eafce4989"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/config.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/config.json",
+      "sha256": "a2ba2f40dac37c2702578b6ecbffb71a465ec44a94a5ae13647fd9a3e03816fd"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/oracle-baseline/result.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/oracle-baseline/result.json",
+      "sha256": "4d21ad50e8b129c454fc91d1aa471eed2e9e378304863d85b651c21f27fcaf1f"
+    }
+  ],
+  "apis": {
+    "baseline": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/equality/api.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/equality/api.mjs",
+      "sha256": "7e913551460ac736f1af35e19049d712765291255a0e579482f2e7179dcadbc6"
+    },
+    "candidate": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/equality/api.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/equality/api.mjs",
+      "sha256": "9826ac8f2cb2ad17ab07d7a1f3fcefc701c64cd44d3c50333b3410d761d98b7f"
+    }
+  },
+  "attempts": [
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02",
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01"
+  ],
+  "node": {
+    "file": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+    "version": "v24.18.0"
+  },
+  "coreBytes": 60909,
+  "baseBytes": 64336,
+  "apiBytes": {
+    "baseline": 1030277,
+    "candidate": 1023803
+  },
+  "oracleExact": true,
+  "oracles": {
+    "baseline": {
+      "kind": "S4-graph-cost-worker",
+      "variant": "baseline",
+      "mode": "oracle",
+      "complete": true,
+      "affinity": "0",
+      "rows": [
+        {
+          "kind": "raw",
+          "inputSha256": "a13ce51574f41cc4ce2e305534ea1e2e9caf65f2192dd131425d1e0e181c0233",
+          "artifacts": {
+            "graph": {
+              "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/oracle-baseline/raw-graph.json",
+              "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/oracle-baseline/raw-graph.json",
+              "sha256": "9efd55381725ec873366aef6eee86106140f6da6798ed30127bce73f6820b663"
+            },
+            "trace": {
+              "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/oracle-baseline/raw-trace.json",
+              "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/oracle-baseline/raw-trace.json",
+              "sha256": "683a83afd286101fc6825f11396c00093f1ec76c6c61a9129c131276758312c4"
+            }
+          }
+        },
+        {
+          "kind": "parsed",
+          "inputSha256": "d5789543248bac31760fedc1daf2c48aa0e484752c66f462c6acde1cf2231a36",
+          "artifacts": {
+            "graph": {
+              "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/oracle-baseline/parsed-graph.json",
+              "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/oracle-baseline/parsed-graph.json",
+              "sha256": "9efd55381725ec873366aef6eee86106140f6da6798ed30127bce73f6820b663"
+            },
+            "trace": {
+              "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/oracle-baseline/parsed-trace.json",
+              "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/oracle-baseline/parsed-trace.json",
+              "sha256": "0c3c8c52a0a539f5be5a2d3e22cb2571a119093b8608ac365f36d4eb6863993b"
+            }
+          }
+        }
+      ]
+    },
+    "candidate": {
+      "kind": "S4-graph-cost-worker",
+      "variant": "candidate",
+      "mode": "oracle",
+      "complete": true,
+      "affinity": "0",
+      "rows": [
+        {
+          "kind": "raw",
+          "inputSha256": "a13ce51574f41cc4ce2e305534ea1e2e9caf65f2192dd131425d1e0e181c0233",
+          "artifacts": {
+            "graph": {
+              "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/oracle-candidate/raw-graph.json",
+              "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/oracle-candidate/raw-graph.json",
+              "sha256": "9efd55381725ec873366aef6eee86106140f6da6798ed30127bce73f6820b663"
+            },
+            "trace": {
+              "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/oracle-candidate/raw-trace.json",
+              "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/oracle-candidate/raw-trace.json",
+              "sha256": "683a83afd286101fc6825f11396c00093f1ec76c6c61a9129c131276758312c4"
+            }
+          }
+        },
+        {
+          "kind": "parsed",
+          "inputSha256": "d5789543248bac31760fedc1daf2c48aa0e484752c66f462c6acde1cf2231a36",
+          "artifacts": {
+            "graph": {
+              "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/oracle-candidate/parsed-graph.json",
+              "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/oracle-candidate/parsed-graph.json",
+              "sha256": "9efd55381725ec873366aef6eee86106140f6da6798ed30127bce73f6820b663"
+            },
+            "trace": {
+              "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/oracle-candidate/parsed-trace.json",
+              "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/graph-cost-01/oracle-candidate/parsed-trace.json",
+              "sha256": "0c3c8c52a0a539f5be5a2d3e22cb2571a119093b8608ac365f36d4eb6863993b"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "summary": [
+    {
+      "mode": "raw",
+      "baseline": {
+        "milliseconds": 1898.2006265,
+        "peakRssKiB": 490134
+      },
+      "candidate": {
+        "milliseconds": 1935.0249498999997,
+        "peakRssKiB": 491934
+      },
+      "runtimeRatio": 1.0193995950090367,
+      "peakRssRatio": 1.0036724650809778,
+      "runtimeGuardPass": true,
+      "memoryGuardPass": true
+    },
+    {
+      "mode": "parsed",
+      "baseline": {
+        "milliseconds": 1299.4602607000002,
+        "peakRssKiB": 517228
+      },
+      "candidate": {
+        "milliseconds": 1333.6737331000002,
+        "peakRssKiB": 518710
+      },
+      "runtimeRatio": 1.0263289870685,
+      "peakRssRatio": 1.0028652741150905,
+      "runtimeGuardPass": true,
+      "memoryGuardPass": true
+    }
+  ],
+  "apiBytesRatio": 0.9937162530076863,
+  "apiSizeGuardPass": true,
+  "elapsedMs": 326143.63253,
+  "finished": "2026-09-26T21:05:06.216Z"
+}

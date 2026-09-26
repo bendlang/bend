@@ -1,0 +1,140 @@
+{
+  "baseline": "selfhost/build/phase7/s4/candidate-a02-project",
+  "candidate": "selfhost/build/phase7/s4/candidate-b01-project",
+  "modules": 59,
+  "before": {
+    "physical": 14857,
+    "nonblank": 12668,
+    "bytes": 474656,
+    "defs": 1450,
+    "laws": 799,
+    "types": 61
+  },
+  "after": {
+    "physical": 14667,
+    "nonblank": 12505,
+    "bytes": 470062,
+    "defs": 1433,
+    "laws": 789,
+    "types": 61
+  },
+  "removed": {
+    "physical": 190,
+    "nonblank": 163,
+    "bytes": 4594,
+    "defs": 17,
+    "laws": 10,
+    "types": 0
+  },
+  "retired_helpers": [
+    "check_events",
+    "f_concat",
+    "f_defs_append",
+    "f_dk",
+    "f_dn",
+    "f_dt",
+    "f_dx",
+    "f_error_def_next",
+    "f_error_defs_more",
+    "f_error_more",
+    "f_error_terms",
+    "f_graph_cached",
+    "f_graph_imports",
+    "f_graph_parsed",
+    "f_graph_source_load",
+    "f_len",
+    "f_main_seen"
+  ],
+  "primitive_replacements": {
+    "f_dn": 2,
+    "f_dt": 1,
+    "f_dk": 3,
+    "f_dx": 1,
+    "f_len": 22,
+    "f_concat": 19,
+    "f_defs_append": 3
+  },
+  "restored_forward_laws": [
+    "fpe_term",
+    "fpe_defs"
+  ],
+  "changed_files": [
+    {
+      "file": "src/check/kernel.bend",
+      "before_sha256": "7a17d68eafa5d250e05e7c977937a7d8029207b43a1ec797e795caefb46fcefa",
+      "after_sha256": "a5a65f57412d0b3a961203a1e0dd5326a5d107ad3d9ff5ca48c0aff756747eeb",
+      "physical_removed": 7,
+      "bytes_removed": 151
+    },
+    {
+      "file": "src/front/declarations.bend",
+      "before_sha256": "acb0c17332797ac414ea0eab0a6478c4485bd2b29a0de75c9a5afd9709121ad9",
+      "after_sha256": "ea488d9b26663285b66d7a625f9eb1488c872f0f003590ba9b49cae08269a2a7",
+      "physical_removed": 44,
+      "bytes_removed": 728
+    },
+    {
+      "file": "src/front/flatten.bend",
+      "before_sha256": "0fa8fae96620ab3f99241436ac46d8201b01e414d2c42ed37f3daf7c5fc900f4",
+      "after_sha256": "0eb3b45ddec363d21e715b491cd19698e4dd6a50b259800edad42dd1e4338392",
+      "physical_removed": 0,
+      "bytes_removed": -23
+    },
+    {
+      "file": "src/front/elaborate.bend",
+      "before_sha256": "8773a648988663c7aa2ee440f2612a450b28ba7a9bf943fd1c84e71fddb00c76",
+      "after_sha256": "88611afd27cae1af669dfaece8dd8bf2a9d185ec9ab06b576069bb8475fec800",
+      "physical_removed": 13,
+      "bytes_removed": 194
+    },
+    {
+      "file": "src/front/sugar.bend",
+      "before_sha256": "920c7904d8a8bcdc90f38dc109836a262d4d574bcca71d7b8c042bddfcfef6fa",
+      "after_sha256": "ce5ef60fada67616142961f07a07c0c2a29283e4b553028480ccf7810687d547",
+      "physical_removed": 44,
+      "bytes_removed": 996
+    },
+    {
+      "file": "src/front/parallel.bend",
+      "before_sha256": "b08dfeb585b4f196fa1ecd1313c42972f164d80822624d34f664d066ab4a80af",
+      "after_sha256": "8e9c25dc74b2976527c722072ab253863ed8839d9b84d7a6549ab7d0105ab8a9",
+      "physical_removed": 0,
+      "bytes_removed": -9
+    },
+    {
+      "file": "src/front/families.bend",
+      "before_sha256": "ad6c331583f510bef384bb23ac41bb455a7b85a8c2d72ceb0232443a1dd98e1b",
+      "after_sha256": "8bf0c69ad09a5d8793f56a5f6f967838857fbf43b8d2f2806521d801a1fd66f0",
+      "physical_removed": 0,
+      "bytes_removed": -6
+    },
+    {
+      "file": "src/front/validate.bend",
+      "before_sha256": "7d7a2e7d7093a8d00502f688a2d525626eea30ae931ab94d3d057aea90380ebb",
+      "after_sha256": "f6e275e614512e29f6e66103660c500efad0dfa9a2d99821fa57c2d1645abbeb",
+      "physical_removed": 0,
+      "bytes_removed": -21
+    },
+    {
+      "file": "src/load/graph.bend",
+      "before_sha256": "9f168450d0ba908b8ba21129af28e156f5786afc5e9d7c64680a82d0752f59c8",
+      "after_sha256": "6a5ab7cecafed72e49c06fc912127d87c9ccecea9cd0b341eb430ac5bee284bc",
+      "physical_removed": 69,
+      "bytes_removed": 2369
+    },
+    {
+      "file": "src/load/seed.bend",
+      "before_sha256": "db10779d9b777baddfafe30c3532e9cd980a96427ba536af7284741769d09842",
+      "after_sha256": "b26df24719588df4fc4fd57f143bc35ec92e77e0f849429380a3797fab8077e4",
+      "physical_removed": 0,
+      "bytes_removed": -1
+    },
+    {
+      "file": "src/load/modules.bend",
+      "before_sha256": "e5f75aadb04e69a16feed737e3e4c6101e752d92b65bc3f6f01b122ed0c65424",
+      "after_sha256": "a7fd4c42cd13cc8165cec2a4e9f71f070fb10703910f7780064bd533aaa711fe",
+      "physical_removed": 13,
+      "bytes_removed": 216
+    }
+  ]
+}

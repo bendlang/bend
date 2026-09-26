@@ -1,0 +1,966 @@
+{
+  "kind": "diagnostic-and-loader-trace-equivalence",
+  "started": "2026-09-26T20:53:28.772Z",
+  "complete": true,
+  "node": {
+    "path": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+    "version": "v24.18.0",
+    "args": [
+      "--stack-size=4096"
+    ]
+  },
+  "identity": {
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/api.mjs": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/api.mjs",
+      "sha256": "f201bdea7ea4041483b40704f622703945858e981c404a4d7e50979b74370110"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/api.mjs": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/api.mjs",
+      "sha256": "ba121e4098044d9f106c4e7cb3e37b0e1ce1bc77f7e42f7e5418556b7f0f3e90"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/base.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/base.bend",
+      "sha256": "b8c2734d45ec6b4ce70fee70ff06ef35e08fce885af8852d8eb77dbff020e946"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/src/runtime.mjs": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime.mjs",
+      "sha256": "26f5eee2f54b194b64f768df6ff505c67bf7a5df2159aa06caf53ecba54e910b"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/tools/typed-driver.mjs": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/typed-driver.mjs",
+      "sha256": "96dd1d6637fa25e28fe3fd83a963189d12da2a939468e651ff5318dee383224c"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/tests/diagnostic-reuse.mjs": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tests/diagnostic-reuse.mjs",
+      "sha256": "ee604eee109486f79447c2cd1dac3ef68082bf9abaf58ddd780eac12b449aabd"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/tools/assemble.mjs": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/assemble.mjs",
+      "sha256": "f7c8feff7a0b8f8b4a302c2ca8b99b363a8d7c4c9c48bc6b7a9463aa23c58b75"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/tools/compiler-abi.mjs": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/compiler-abi.mjs",
+      "sha256": "0bcbcaf022108877600baab1b15356db6d9917f5c4d668af936279680c126454"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/tools/node-resource-args.mjs": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/node-resource-args.mjs",
+      "sha256": "6aefb3aee9b69b0c25d68edbf0ada6a57ba93e277d3adb8d232dfa6dff01d758"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/tools/native-build.mjs": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/native-build.mjs",
+      "sha256": "a76f2c027459f7ffdb9fc16dc450ee33e0f39c74568df4c74d03309e662c9117"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/undefined.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/undefined.bend",
+      "sha256": "0e663bdb00196c4f94d364532c2a578d2ca2170553643be6a3b90969c6354c52"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/context.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/context.bend",
+      "sha256": "f9803218280f5d0fd7703981d90bf5da92fdb71fa2f7274df84b12945c41dd58"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/wrong-family.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/wrong-family.bend",
+      "sha256": "e96adaace3154546d1fdd7025a33dcfe1f0f9173718e85134d1dde0d7baadf0e"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/unknown-constructor.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/unknown-constructor.bend",
+      "sha256": "6398bc5877a4841562580859a6b72018d4c2b50be7b9895a14e4f3cf7ec718d2"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/field-arity.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/field-arity.bend",
+      "sha256": "ae2a9a7679b3378ea72f0091ed744f2f4f1f66b46f55256691bc4f76342a21d2"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/termination.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/termination.bend",
+      "sha256": "ba04967e85e03a25bdee1ffe069a6aa522b362a7dec14583be1b0a11eec2f1cb"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/dependent.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/dependent.bend",
+      "sha256": "2f666031af894d1ff9ca67f5fb25d69f8e14f35174ebed0a5bb043e09c77d3c8"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/affine.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/affine.bend",
+      "sha256": "15b588b4ba39077a0b6e82858bab230f7ab3a6d73704d46332856aeaf0e86bcd"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/law-fill.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/law-fill.bend",
+      "sha256": "c8df4c7abb27be76a24a0a5d265712aa219ea8d74b067ca528aaa5126a10a03e"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/open-law.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/open-law.bend",
+      "sha256": "5683387975d90c04c49a6465a43f82dce4503a1f99e5661de3861dc5b4ee9a71"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/positive.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/positive.bend",
+      "sha256": "b58493779307369733c61081a5e540489cb65fad54dc219c2593258a0729df44"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/unicode.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/unicode.bend",
+      "sha256": "a3899fea83a723d37bd4f86e9ddfee56dc3b044b018b405364a5e279b0f82c2d"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/first-error-order.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/first-error-order.bend",
+      "sha256": "f5c3632403490f91bee655d56efccd12537d9c7917cb83f792f4ec06099281e1"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/prefix-guards.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/prefix-guards.bend",
+      "sha256": "7a7b87de1dadc482f4a7b6cef4fb6c8102c04565633fa1d8f5561d1d0c2e91d6"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/duplicate-core.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/duplicate-core.bend",
+      "sha256": "8ae60b8b715a106aa1ceb2a1c7b0f74ec3a65fb7632d8a5758e5121eae27417a"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/graph/shared.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/graph/shared.bend",
+      "sha256": "02a6a216843387b7ddb38b1a98ebd2e885259dff6f604dde79645c9e53be7b8b"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/graph/left.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/graph/left.bend",
+      "sha256": "b4fefcfe67fa3c70f457e712044acf1fa87d03ddea28b283e48d11ee2d3022a4"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/graph/right.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/graph/right.bend",
+      "sha256": "ba2e45b38860371175a24ae88ad421a6f6e60e290980b94daad9d5d7b2e1014a"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/graph/main.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/graph/main.bend",
+      "sha256": "bf591bf1abf452a43b45a2e9d0d383e41890060e8be8886babf5cac815c0478e"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/parse-error.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/parse-error.bend",
+      "sha256": "463514cf765bde2e976df1e313b03040c871a2a0a5f96c07656283fd5e9a84d5"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/missing-import.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/missing-import.bend",
+      "sha256": "186c1eb62b43741587b3a7c3cb8b49d21a827045bd8740bf7d2794985e2d71eb"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/cycle.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/cycle.bend",
+      "sha256": "5e6f4e46a179d6c8f37cd8a8fb8811560f3cb97cb30ae8e140535c793fd32dd7"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/duplicate-source.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/duplicate-source.bend",
+      "sha256": "99302d5db698be8a51ed0d5442d3951b7195231d0d05156e4d5246f81007882d"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/tests/base/bytes_ops.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/tests/base/bytes_ops.bend",
+      "sha256": "5bc01d7c682525e1adfbba42f8a0f248e291f6a00045896f7eab15b6a89c0e5e"
+    },
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/seed-mutation.bend": {
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/seed-mutation.bend",
+      "sha256": "d9c23d080338f1b1b9b4c9deaeecd9283eb0af11a81022ba913b5cba70487013"
+    }
+  },
+  "checks": 204,
+  "rows": [
+    {
+      "id": "undefined",
+      "pass": true,
+      "milliseconds": 107.62425800000001,
+      "error": "main: undefined name",
+      "definition": "main",
+      "resultSha256": "2745733d2259f300572b29d510072ff4df8a9eb74a0b8ac06b39005aa3d76f67",
+      "origins": 2
+    },
+    {
+      "id": "context",
+      "pass": true,
+      "milliseconds": 49.91351700000001,
+      "error": "use: undefined name",
+      "definition": "use",
+      "resultSha256": "1e6b52d235265d1aa3992c40cd1d6761f37506fee765d9354394432853b5f344",
+      "origins": 3
+    },
+    {
+      "id": "wrong-family",
+      "pass": true,
+      "milliseconds": 53.411869000000024,
+      "error": "main: constructor does not belong to goal or field count differs",
+      "definition": "main",
+      "resultSha256": "4bfde507192b8ddb7de257e3067972fc4841b46868f3cd3142b6f96cdb3e7d93",
+      "origins": 2
+    },
+    {
+      "id": "unknown-constructor",
+      "pass": true,
+      "milliseconds": 24.978118999999992,
+      "error": "main: constructor does not belong to goal or field count differs",
+      "definition": "main",
+      "resultSha256": "0215a94f88a28cbe8baa8576f7c9804e8968196fce90dfc899379c91194f73fe",
+      "origins": 2
+    },
+    {
+      "id": "field-arity",
+      "pass": true,
+      "milliseconds": 27.33529199999998,
+      "error": "main: constructor does not belong to goal or field count differs",
+      "definition": "main",
+      "resultSha256": "f7b9a5e857e85c5d477cd79905945f35e42495b3bc2fbf0eb920e4769e779eab",
+      "origins": 2
+    },
+    {
+      "id": "termination",
+      "pass": true,
+      "milliseconds": 24.58196399999997,
+      "error": "loop: nondecreasing self-call",
+      "definition": "loop",
+      "resultSha256": "8f30f4f75923320c85d6d1eab214cb88f4a0c8957fdc69fcd75df94c40352198",
+      "origins": 3
+    },
+    {
+      "id": "dependent",
+      "pass": true,
+      "milliseconds": 18.985321999999996,
+      "error": "wrong: type mismatch",
+      "definition": "wrong",
+      "resultSha256": "0e32f666c19a7c56128e639e3193c48bc52f2a61d329123bc4025962b562a526",
+      "origins": 1
+    },
+    {
+      "id": "affine",
+      "pass": true,
+      "milliseconds": 29.12955500000004,
+      "error": "dup: affine variable consumed more than allowed",
+      "definition": "dup",
+      "resultSha256": "a0bf910f457a594c2ba90d700b71af1c480cde3ed497748011dc58f2646d03b8",
+      "origins": 3
+    },
+    {
+      "id": "law-fill",
+      "pass": true,
+      "milliseconds": 17.457689999999957,
+      "error": "main: undefined name",
+      "definition": "main",
+      "resultSha256": "e79a67659aac1a72d8a3bd6eb0b0e77d0fd375f0fcba508a9bf49a6cfae7009a",
+      "origins": 3
+    },
+    {
+      "id": "open-law",
+      "pass": true,
+      "milliseconds": 10.473274000000004,
+      "error": "1 TODO found.\nThe code is incomplete, and not a valid proof yet.",
+      "definition": "",
+      "resultSha256": "1ea8ed99b0f838592d6247c380d4d87346a3ac67cbe2eae611ab1ce9e8a48f3e",
+      "origins": 0
+    },
+    {
+      "id": "positive",
+      "pass": true,
+      "milliseconds": 11.26291500000002,
+      "error": "",
+      "definition": "",
+      "resultSha256": "b3a6e05c35ca02d8e77a8d220c39eeb9f06c63ffc58034ea1d6345ec9507fd91",
+      "origins": 0
+    },
+    {
+      "id": "unicode",
+      "pass": true,
+      "milliseconds": 16.406080999999972,
+      "error": "value: undefined name",
+      "definition": "value",
+      "resultSha256": "2ff7f74e76683c4f60f62cd305e3a9bee73a1dba58745f2b036da468d2821e04",
+      "origins": 2
+    },
+    {
+      "id": "first-error-order",
+      "pass": true,
+      "milliseconds": 16.350960999999984,
+      "error": "first: undefined name",
+      "definition": "first",
+      "resultSha256": "629c0303639a01bdb59f242fe8926d5056ba3adf994b434f06a93a1b82e1df35",
+      "origins": 2
+    },
+    {
+      "id": "complete-prefix-mismatch-guards",
+      "pass": true,
+      "milliseconds": 16.31021999999996,
+      "mutations": 15
+    },
+    {
+      "id": "duplicate-core-event-guard",
+      "pass": true,
+      "milliseconds": 5.397382999999991,
+      "diagnosticError": "value: duplicate declaration"
+    },
+    {
+      "id": "diamond-import-origin-trace",
+      "pass": true,
+      "milliseconds": 92.04906700000004,
+      "modules": 4,
+      "names": [
+        "shared.Flag",
+        "shared.broken",
+        "left.left",
+        "right.right",
+        "main",
+        "not-present"
+      ]
+    },
+    {
+      "id": "parse-error",
+      "pass": true,
+      "milliseconds": 2.0053300000000718,
+      "error": "line 0:0: reserved parameter name; got <eof>"
+    },
+    {
+      "id": "missing-import",
+      "pass": true,
+      "milliseconds": 3.3325849999999946,
+      "error": "module source was not supplied"
+    },
+    {
+      "id": "cycle",
+      "pass": true,
+      "milliseconds": 2.9697290000000294,
+      "error": "cyclic import through /home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/cycle.bend"
+    },
+    {
+      "id": "duplicate-source",
+      "pass": true,
+      "milliseconds": 4.571078000000057,
+      "error": "a definition must uniquely fill its law with plain parameter names"
+    },
+    {
+      "id": "base-seed-and-targeted-origins",
+      "pass": true,
+      "milliseconds": 12779.958211,
+      "error": "main: undefined name",
+      "bookSha256": "411e9292ca7fd3b8682029b53938bae95c6b596cec08c6f49d096b63a1bbe95b",
+      "origins": 3
+    },
+    {
+      "id": "seed-source-and-canonical-path-invalidation",
+      "pass": true,
+      "milliseconds": 9361.990646,
+      "changed": [
+        "text",
+        "canonical path"
+      ]
+    },
+    {
+      "id": "host-exact-rejection-parity",
+      "pass": true,
+      "milliseconds": 0.5763949999964098,
+      "cases": 14,
+      "candidateCalls": {
+        "f_load_graph": {
+          "count": 1,
+          "milliseconds": 2700.907421
+        },
+        "check_book": {
+          "count": 1,
+          "milliseconds": 2895.52088
+        },
+        "f_parse": {
+          "count": 14,
+          "milliseconds": 25.387558999999783
+        },
+        "f_source_parsed": {
+          "count": 14,
+          "milliseconds": 0.15218599999934668
+        },
+        "f_load_graph_seed_trace": {
+          "count": 14,
+          "milliseconds": 258.68682100000115
+        },
+        "compiler_check_result_abi": {
+          "count": 14,
+          "milliseconds": 0.09488400000100228
+        },
+        "check_book_diagnostic": {
+          "count": 13,
+          "milliseconds": 17.290148000000045
+        },
+        "f_loaded_origins_for": {
+          "count": 12,
+          "milliseconds": 20.83932300000015
+        },
+        "diagnostic_result_locate": {
+          "count": 12,
+          "milliseconds": 0.9450810000016645
+        },
+        "diagnostic_render": {
+          "count": 13,
+          "milliseconds": 34.02266000000054
+        },
+        "driver_owned": {
+          "count": 1,
+          "milliseconds": 0.18306699999993725
+        },
+        "driver_todos": {
+          "count": 1,
+          "milliseconds": 0.5516509999997652
+        },
+        "specialize_book": {
+          "count": 1,
+          "milliseconds": 0.6068750000004002
+        },
+        "specialized_error": {
+          "count": 1,
+          "milliseconds": 0.025364000000081433
+        },
+        "specialized_book": {
+          "count": 1,
+          "milliseconds": 0.022204999999303254
+        },
+        "f_main_names": {
+          "count": 1,
+          "milliseconds": 0.21062799999981507
+        },
+        "driver_report": {
+          "count": 1,
+          "milliseconds": 0.9460220000000845
+        },
+        "check_book_diagnostic_from_exact_prefix": {
+          "count": 1,
+          "milliseconds": 96.50640999999996
+        }
+      },
+      "baselineCalls": {
+        "f_parse": {
+          "count": 14,
+          "milliseconds": 84.37030700000031
+        },
+        "f_source_parsed": {
+          "count": 14,
+          "milliseconds": 0.143070999999793
+        },
+        "f_load_graph_seed_trace": {
+          "count": 14,
+          "milliseconds": 368.2465989999995
+        },
+        "compiler_check_result_abi": {
+          "count": 14,
+          "milliseconds": 0.08078800000021147
+        },
+        "check_book_diagnostic": {
+          "count": 13,
+          "milliseconds": 61.3963250000005
+        },
+        "f_loaded_origins_for": {
+          "count": 12,
+          "milliseconds": 40.19207500000016
+        },
+        "diagnostic_result_locate": {
+          "count": 12,
+          "milliseconds": 1.5072660000001292
+        },
+        "diagnostic_render": {
+          "count": 13,
+          "milliseconds": 49.40662399999951
+        },
+        "driver_owned": {
+          "count": 1,
+          "milliseconds": 0.1677750000001197
+        },
+        "driver_todos": {
+          "count": 1,
+          "milliseconds": 0.6853160000000571
+        },
+        "specialize_book": {
+          "count": 1,
+          "milliseconds": 0.9410319999999501
+        },
+        "specialized_error": {
+          "count": 1,
+          "milliseconds": 0.03634099999999307
+        },
+        "specialized_book": {
+          "count": 1,
+          "milliseconds": 0.034136999999873296
+        },
+        "f_main_names": {
+          "count": 1,
+          "milliseconds": 0.42462799999998424
+        },
+        "driver_report": {
+          "count": 1,
+          "milliseconds": 1.7732989999999518
+        },
+        "check_book_diagnostic_from_exact_prefix": {
+          "count": 1,
+          "milliseconds": 171.55090100000007
+        }
+      }
+    }
+  ],
+  "failures": [],
+  "scope": "Checked emitted Bend API candidate versus frozen B1 and independent legacy diagnostic/origin entry points. No correctness inferred from timing.",
+  "host": {
+    "candidate": {
+      "rows": [
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/undefined.bend",
+          "milliseconds": 113.82661800000005,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error:\n- expected : a defined name\n- observed : absent\nLocation: main\n5 | def main() -> Flag:\n6>|   absent\n7 | ",
+            "exitCode": 1,
+            "checked": true
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/context.bend",
+          "milliseconds": 125.77336399999967,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error:\n- expected : a defined name\n- observed : absent\nContext:\n- x : Flag\nLocation: use\n5 | def use(x: Flag) -> Flag:\n6>|   absent\n7 | ",
+            "exitCode": 1,
+            "checked": true
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/wrong-family.bend",
+          "milliseconds": 119.9552620000004,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error:\n- expected : Flag\n- observed : Other\nLocation: main\n7 | def main() -> Flag:\n8>|   Other{}\n9 | ",
+            "exitCode": 1,
+            "checked": true
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/unknown-constructor.bend",
+          "milliseconds": 108.67223100000047,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error:\n- expected : a declared constructor (Flag declares On, Off)\n- observed : Never{}\nLocation: main\n5 | def main() -> Flag:\n6>|   Never{}\n7 | ",
+            "exitCode": 1,
+            "checked": true
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/field-arity.bend",
+          "milliseconds": 113.94710099999975,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error:\n- expected : Mk with 1 field\n- observed : Mk{}\nLocation: main\n7 | def main() -> Box:\n8>|   Mk{}\n9 | ",
+            "exitCode": 1,
+            "checked": true
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/termination.bend",
+          "milliseconds": 130.4492449999998,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error:\n- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)\n- observed : loop\nContext:\n- x : Flag\nLocation: loop\n5 | def loop(x: Flag) -> Flag:\n6>|   loop(x)\n7 | ",
+            "exitCode": 1,
+            "checked": true
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/dependent.bend",
+          "milliseconds": 129.41149099999984,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error:\n- expected : Type\n- observed : Flag\nContext:\n- x : Flag\nLocation: wrong",
+            "exitCode": 1,
+            "checked": true
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/affine.bend",
+          "milliseconds": 123.32626399999936,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error:\n- expected : x\n- observed : x (consumed more than once)\nLocation: dup",
+            "exitCode": 1,
+            "checked": true
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/law-fill.bend",
+          "milliseconds": 76.75937199999953,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error:\n- expected : a defined name\n- observed : missing\nLocation: main\n7 | def main():\n8>|   missing\n9 | ",
+            "exitCode": 1,
+            "checked": true
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/open-law.bend",
+          "milliseconds": 74.13484799999969,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error: 1 TODO found.\nThe code is incomplete, and not a valid proof yet.",
+            "exitCode": 1,
+            "checked": true
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/positive.bend",
+          "milliseconds": 76.55540699999983,
+          "result": {
+            "status": "ok",
+            "phase": "check",
+            "stdout": "All terms check.\n",
+            "exitCode": 0,
+            "checked": true,
+            "files": [
+              "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/positive.bend"
+            ]
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/unicode.bend",
+          "milliseconds": 76.14804800000002,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error:\n- expected : a defined name\n- observed : absent\nLocation: value\n6 |   # 😀 UTF16 source offset\n7>|   absent\n8 | ",
+            "exitCode": 1,
+            "checked": true
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/first-error-order.bend",
+          "milliseconds": 79.68304700000044,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error:\n- expected : a defined name\n- observed : missing_first\nLocation: first\n5 | def first() -> Flag:\n6>|   missing_first\n7 | def later() -> Flag:",
+            "exitCode": 1,
+            "checked": true
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/tests/base/bytes_ops.bend",
+          "milliseconds": 426.2289810000002,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error:\n- expected : a defined name\n- observed : Bytes.encode\nLocation: main\n 9 | def main():\n10>|   Bytes.encode(\"banana\")\n11 | ",
+            "exitCode": 1,
+            "checked": true
+          }
+        }
+      ],
+      "calls": {
+        "f_load_graph": {
+          "count": 1,
+          "milliseconds": 2700.907421
+        },
+        "check_book": {
+          "count": 1,
+          "milliseconds": 2895.52088
+        },
+        "f_parse": {
+          "count": 14,
+          "milliseconds": 25.387558999999783
+        },
+        "f_source_parsed": {
+          "count": 14,
+          "milliseconds": 0.15218599999934668
+        },
+        "f_load_graph_seed_trace": {
+          "count": 14,
+          "milliseconds": 258.68682100000115
+        },
+        "compiler_check_result_abi": {
+          "count": 14,
+          "milliseconds": 0.09488400000100228
+        },
+        "check_book_diagnostic": {
+          "count": 13,
+          "milliseconds": 17.290148000000045
+        },
+        "f_loaded_origins_for": {
+          "count": 12,
+          "milliseconds": 20.83932300000015
+        },
+        "diagnostic_result_locate": {
+          "count": 12,
+          "milliseconds": 0.9450810000016645
+        },
+        "diagnostic_render": {
+          "count": 13,
+          "milliseconds": 34.02266000000054
+        },
+        "driver_owned": {
+          "count": 1,
+          "milliseconds": 0.18306699999993725
+        },
+        "driver_todos": {
+          "count": 1,
+          "milliseconds": 0.5516509999997652
+        },
+        "specialize_book": {
+          "count": 1,
+          "milliseconds": 0.6068750000004002
+        },
+        "specialized_error": {
+          "count": 1,
+          "milliseconds": 0.025364000000081433
+        },
+        "specialized_book": {
+          "count": 1,
+          "milliseconds": 0.022204999999303254
+        },
+        "f_main_names": {
+          "count": 1,
+          "milliseconds": 0.21062799999981507
+        },
+        "driver_report": {
+          "count": 1,
+          "milliseconds": 0.9460220000000845
+        },
+        "check_book_diagnostic_from_exact_prefix": {
+          "count": 1,
+          "milliseconds": 96.50640999999996
+        }
+      },
+      "cache": {
+        "compilerSha256": "f201bdea7ea4041483b40704f622703945858e981c404a4d7e50979b74370110",
+        "baseSha256": "b8c2734d45ec6b4ce70fee70ff06ef35e08fce885af8852d8eb77dbff020e946",
+        "bookSha256": "411e9292ca7fd3b8682029b53938bae95c6b596cec08c6f49d096b63a1bbe95b",
+        "sourcePath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/base.bend"
+      }
+    },
+    "baseline": {
+      "rows": [
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/undefined.bend",
+          "milliseconds": 178.764053,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error:\n- expected : a defined name\n- observed : absent\nLocation: main\n5 | def main() -> Flag:\n6>|   absent\n7 | ",
+            "exitCode": 1,
+            "checked": true
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/context.bend",
+          "milliseconds": 158.60686099999998,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error:\n- expected : a defined name\n- observed : absent\nContext:\n- x : Flag\nLocation: use\n5 | def use(x: Flag) -> Flag:\n6>|   absent\n7 | ",
+            "exitCode": 1,
+            "checked": true
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/wrong-family.bend",
+          "milliseconds": 177.36826999999994,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error:\n- expected : Flag\n- observed : Other\nLocation: main\n7 | def main() -> Flag:\n8>|   Other{}\n9 | ",
+            "exitCode": 1,
+            "checked": true
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/unknown-constructor.bend",
+          "milliseconds": 144.226131,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error:\n- expected : a declared constructor (Flag declares On, Off)\n- observed : Never{}\nLocation: main\n5 | def main() -> Flag:\n6>|   Never{}\n7 | ",
+            "exitCode": 1,
+            "checked": true
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/field-arity.bend",
+          "milliseconds": 102.51719199999991,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error:\n- expected : Mk with 1 field\n- observed : Mk{}\nLocation: main\n7 | def main() -> Box:\n8>|   Mk{}\n9 | ",
+            "exitCode": 1,
+            "checked": true
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/termination.bend",
+          "milliseconds": 105.02690499999994,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error:\n- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)\n- observed : loop\nContext:\n- x : Flag\nLocation: loop\n5 | def loop(x: Flag) -> Flag:\n6>|   loop(x)\n7 | ",
+            "exitCode": 1,
+            "checked": true
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/dependent.bend",
+          "milliseconds": 128.62567000000013,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error:\n- expected : Type\n- observed : Flag\nContext:\n- x : Flag\nLocation: wrong",
+            "exitCode": 1,
+            "checked": true
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/affine.bend",
+          "milliseconds": 112.44236499999988,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error:\n- expected : x\n- observed : x (consumed more than once)\nLocation: dup",
+            "exitCode": 1,
+            "checked": true
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/law-fill.bend",
+          "milliseconds": 103.82392299999992,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error:\n- expected : a defined name\n- observed : missing\nLocation: main\n7 | def main():\n8>|   missing\n9 | ",
+            "exitCode": 1,
+            "checked": true
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/open-law.bend",
+          "milliseconds": 127.75042400000007,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error: 1 TODO found.\nThe code is incomplete, and not a valid proof yet.",
+            "exitCode": 1,
+            "checked": true
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/positive.bend",
+          "milliseconds": 135.76891,
+          "result": {
+            "status": "ok",
+            "phase": "check",
+            "stdout": "All terms check.\n",
+            "exitCode": 0,
+            "checked": true,
+            "files": [
+              "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/positive.bend"
+            ]
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/unicode.bend",
+          "milliseconds": 140.12205799999992,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error:\n- expected : a defined name\n- observed : absent\nLocation: value\n6 |   # 😀 UTF16 source offset\n7>|   absent\n8 | ",
+            "exitCode": 1,
+            "checked": true
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/boundary-gates-01/diagnostic/fixtures/first-error-order.bend",
+          "milliseconds": 136.80796600000008,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error:\n- expected : a defined name\n- observed : missing_first\nLocation: first\n5 | def first() -> Flag:\n6>|   missing_first\n7 | def later() -> Flag:",
+            "exitCode": 1,
+            "checked": true
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/tests/base/bytes_ops.bend",
+          "milliseconds": 611.8459889999997,
+          "result": {
+            "status": "error",
+            "phase": "check",
+            "diagnostic": "Error:\n- expected : a defined name\n- observed : Bytes.encode\nLocation: main\n 9 | def main():\n10>|   Bytes.encode(\"banana\")\n11 | ",
+            "exitCode": 1,
+            "checked": true
+          }
+        }
+      ],
+      "calls": {
+        "f_parse": {
+          "count": 14,
+          "milliseconds": 84.37030700000031
+        },
+        "f_source_parsed": {
+          "count": 14,
+          "milliseconds": 0.143070999999793
+        },
+        "f_load_graph_seed_trace": {
+          "count": 14,
+          "milliseconds": 368.2465989999995
+        },
+        "compiler_check_result_abi": {
+          "count": 14,
+          "milliseconds": 0.08078800000021147
+        },
+        "check_book_diagnostic": {
+          "count": 13,
+          "milliseconds": 61.3963250000005
+        },
+        "f_loaded_origins_for": {
+          "count": 12,
+          "milliseconds": 40.19207500000016
+        },
+        "diagnostic_result_locate": {
+          "count": 12,
+          "milliseconds": 1.5072660000001292
+        },
+        "diagnostic_render": {
+          "count": 13,
+          "milliseconds": 49.40662399999951
+        },
+        "driver_owned": {
+          "count": 1,
+          "milliseconds": 0.1677750000001197
+        },
+        "driver_todos": {
+          "count": 1,
+          "milliseconds": 0.6853160000000571
+        },
+        "specialize_book": {
+          "count": 1,
+          "milliseconds": 0.9410319999999501
+        },
+        "specialized_error": {
+          "count": 1,
+          "milliseconds": 0.03634099999999307
+        },
+        "specialized_book": {
+          "count": 1,
+          "milliseconds": 0.034136999999873296
+        },
+        "f_main_names": {
+          "count": 1,
+          "milliseconds": 0.42462799999998424
+        },
+        "driver_report": {
+          "count": 1,
+          "milliseconds": 1.7732989999999518
+        },
+        "check_book_diagnostic_from_exact_prefix": {
+          "count": 1,
+          "milliseconds": 171.55090100000007
+        }
+      },
+      "cache": {
+        "compilerSha256": "ba121e4098044d9f106c4e7cb3e37b0e1ce1bc77f7e42f7e5418556b7f0f3e90",
+        "baseSha256": "b8c2734d45ec6b4ce70fee70ff06ef35e08fce885af8852d8eb77dbff020e946",
+        "bookSha256": "411e9292ca7fd3b8682029b53938bae95c6b596cec08c6f49d096b63a1bbe95b",
+        "sourcePath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/base.bend"
+      }
+    }
+  },
+  "finished": "2026-09-26T20:54:01.890Z"
+}

@@ -66,15 +66,13 @@ law nt_replace_go:
   for +acc: String
   String
 
-law nt_replace_step:
-  for +s: String
-  for +key: String
-  for +value: String
-  for +acc: String
-  String
-
 @unsafe
-def nt_replace_step(s, key, value, acc):
+def nt_replace_step(
+  +s: String,
+  +key: String,
+  +value: String,
+  +acc: String,
+) -> String:
   match s:
     case SNil{}: acc
     case SCon{h, t}: nt_replace_go(t, key, value, acc ++ SCon{h, ""})

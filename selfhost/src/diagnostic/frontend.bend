@@ -8,14 +8,6 @@ type FProvenance is Data:
 type FPSource is Data:
   FPSource{+source: String, +tokens: List<&2,FToken>}
 
-law f_load_origins:
-  for +main: String
-  for +sources: List<&2,FSource>
-  FProvenance
-law fp_def:
-  for +d: KDef
-  for +source: FPSource
-  List<&2,DOrigin>
 law fp_ctors:
   for +ctors: List<&2,KDef>
   for +definition: String
@@ -73,10 +65,16 @@ law fp_offset:
   U32
 
 @unsafe
-def f_load_origins(main, sources):
+def f_load_origins(
+  +main: String,
+  +sources: List<&2,FSource>,
+) -> FProvenance:
   fp_loaded_origins(f_load_graph_trace(main, sources), True{}, "")
 @unsafe
-def fp_def(d, source):
+def fp_def(
+  +d: KDef,
+  +source: FPSource,
+) -> List<&2,DOrigin>:
   List.append(&2,DOrigin, fp_term(dt(d), dn(d), source, [0]), List.append(&2,DOrigin, fp_term(dv(d), dn(d), source, [1]), fp_ctors(dc(d), dn(d), source, 0)))
 @unsafe
 def fp_ctors(ctors, definition, source, index):
@@ -129,13 +127,12 @@ def fp_offset(text, line, column, targetLine, targetColumn, offset):
 
 # Rejection-only lookup limits expensive source mapping to the definition named
 # by the structured checker event. No diagnostic text is parsed or interpreted.
-law f_load_origins_for:
-  for +main: String
-  for +sources: List<&2,FSource>
-  for +definition: String
-  FProvenance
 @unsafe
-def f_load_origins_for(main, sources, definition):
+def f_load_origins_for(
+  +main: String,
+  +sources: List<&2,FSource>,
+  +definition: String,
+) -> FProvenance:
   f_loaded_origins_for(f_load_graph_trace(main, sources), definition)
 
 # One trace owns module order and declaration counts for both origin APIs.
@@ -149,13 +146,6 @@ law fp_loaded_origins:
   for +all: Bool
   for +definition: String
   FProvenance
-law fp_loaded_modules:
-  for +done: List<&2,KTerm>
-  for +book: List<&2,KDef>
-  for +sources: List<&2,FSource>
-  for +all: Bool
-  for +definition: String
-  List<&2,DOrigin>
 law fp_loaded_take:
   for +book: List<&2,KDef>
   for +count: U32
@@ -164,10 +154,6 @@ law fp_loaded_drop:
   for +book: List<&2,KDef>
   for +count: U32
   List<&2,KDef>
-law fp_loaded_has:
-  for +book: List<&2,KDef>
-  for +definition: String
-  Bool
 law fp_loaded_module:
   for +book: List<&2,KDef>
   for +source: FSource
@@ -190,7 +176,13 @@ def fp_loaded_origins(trace, all, definition):
     case FLoadTrace{+result, done, sources}:
       fp_loaded_result(result, done, sources, all, definition)
 @unsafe
-def fp_loaded_modules(done, book, sources, all, definition):
+def fp_loaded_modules(
+  +done: List<&2,KTerm>,
+  +book: List<&2,KDef>,
+  +sources: List<&2,FSource>,
+  +all: Bool,
+  +definition: String,
+) -> List<&2,DOrigin>:
   match done:
     case Nil{}: Nil{}
     case Con{+entry, rest}:
@@ -206,7 +198,10 @@ def fp_loaded_drop(book, count):
     case Nil{}: Nil{}
     case Con{head, tail}: f_choose(List<&2,KDef>, U32.is_eq(count, 0), u => book, u => fp_loaded_drop(tail, U32.sub(count, 1)))
 @unsafe
-def fp_loaded_has(book, definition):
+def fp_loaded_has(
+  +book: List<&2,KDef>,
+  +definition: String,
+) -> Bool:
   match book:
     case Nil{}: False{}
     case Con{head, tail}: f_choose(Bool, String.eq(dn(head), definition), u => True{}, u => fp_loaded_has(tail, definition))

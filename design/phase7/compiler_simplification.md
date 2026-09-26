@@ -8,6 +8,14 @@ candidates. The user has now authorized sequential execution: design, implement
 and report each phase. [S0's completed audit](../../implementation/phase7/s0-report.md)
 supports the first 548-line retirement and records the later budgets as unproven.
 
+Execution checkpoint: [S1](../../implementation/phase7/s1-report.md),
+[S2](../../implementation/phase7/s2-report.md) and
+[S3](../../implementation/phase7/s3-report.md) have validated smaller releases.
+[S4's bounded checkpoint](../../implementation/phase7/s4-report.md) reaches
+14,667 lines (11.16% below baseline). Its 8,254-line milestone remains open;
+S5–S7 have not started. The provisional target table below remains a goal,
+not a forecast or a list of completed work.
+
 The objective is to keep the same compiler purpose and language target while
 progressively reducing maintained source, repeated work and the knowledge needed
 to change it. Begin with a read-only phase that challenges the hypotheses without

@@ -1,5 +1,9 @@
 # S4 D: put shared list helpers with their datatypes
 
+Execution outcome: accepted as part of the [validated S4 checkpoint](../../implementation/phase7/s4-report.md).
+The following is the original pre-implementation plan; actual results and limits
+are in the report.
+
 Status: pre-implementation bounded proposal. B01 is checked and preserves all
 2,756 frontend observations. Its controlled host cost is within the existing
 5% runtime / 10% memory and size gates; graph-cost validation is still running.

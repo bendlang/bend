@@ -4,12 +4,6 @@
 # as value references. Stopped primitives retain their types and declarations;
 # the backend supplies the exact intrinsic set whose bodies it replaces.
 
-law reach_book:
-  for +book: List<&2, KDef>
-  for +roots: List<&2, String>
-  for +stops: List<&2, String>
-  List<&2, KDef>
-
 law kr_filter:
   for book: List<&2, KDef>
   for +live: List<&2, String>
@@ -73,7 +67,11 @@ law kr_push:
   List<&2, String>
 
 @unsafe
-def reach_book(book, roots, stops):
+def reach_book(
+  +book: List<&2, KDef>,
+  +roots: List<&2, String>,
+  +stops: List<&2, String>,
+) -> List<&2, KDef>:
   kr_filter(book, kr_visit(book, roots, Nil{}, stops))
 
 @unsafe

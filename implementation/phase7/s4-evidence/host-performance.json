@@ -1,0 +1,2080 @@
+{
+  "kind": "phase6-structured-checker-ABBA",
+  "complete": true,
+  "started": "2026-09-26T20:57:22.429Z",
+  "preparation": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/report.json",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/report.json",
+    "sha256": "25f9b629cc3c2b17832eece5d4303f8c6379b9d27b8a57592026456b5dd52b22"
+  },
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-config.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-config.json",
+      "sha256": "eef5b0d1e17493fc012265aeff3afb63cec316e6449b2ae66c7c319a7229a349"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase6/structured-checker-compare.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase6/structured-checker-compare.mjs",
+      "sha256": "0e26292ea82fbf422fac9ebf7dab58d1b697de219c7730696bbbb7281cd2b806"
+    },
+    {
+      "file": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "canonicalPath": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/attempt.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/attempt.json",
+      "sha256": "91805bb5e840ae16a53bf2b1b39134de1a95e3029ef41b18c7c7fe172a643705"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/attempt.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/attempt.json",
+      "sha256": "e361c66da22b067e0f91999c0edae8737de6847eeddb9e98f70e3938338da261"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/equality/api.mjs.derivation.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/equality/api.mjs.derivation.json",
+      "sha256": "ec96ad9bf5954f44ac5f279a1dce9aa607cdc8d90a87eb033c2b0882f502b0d0"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/equality/api.mjs.derivation.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/equality/api.mjs.derivation.json",
+      "sha256": "cfd259fc0f08fdd26fb77d290313db744a96872b9249ea50de33169c2dbddb0e"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/equality/equality.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/equality/equality.mjs",
+      "sha256": "57ddb92c7f9727789078b7493b4f99b8aeb165934e24344a31ab8dbeb851ea63"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/equality/equality.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/equality/equality.mjs",
+      "sha256": "57ddb92c7f9727789078b7493b4f99b8aeb165934e24344a31ab8dbeb851ea63"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/bend.ts",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/bend.ts",
+      "sha256": "461e0c5dd12789ea293daf01c1cb5b8504f8dfcf8d38b85744665a77ecc63168"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/comp.ts",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/comp.ts",
+      "sha256": "1cf3b5ffea86697656f8ef4d6c26040f16ac512fd92485d164f8a14425871bd0"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/base.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/base.bend",
+      "sha256": "b8c2734d45ec6b4ce70fee70ff06ef35e08fce885af8852d8eb77dbff020e946"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/tools/typed-driver.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/tools/typed-driver.mjs",
+      "sha256": "96dd1d6637fa25e28fe3fd83a963189d12da2a939468e651ff5318dee383224c"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/tools/stage0-library.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/tools/stage0-library.mjs",
+      "sha256": "89b07ed768b06691c5dc9e4bbdd4af96205355d0145793dfbd307924494cd8f0"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/tools/assemble.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/tools/assemble.mjs",
+      "sha256": "f7c8feff7a0b8f8b4a302c2ca8b99b363a8d7c4c9c48bc6b7a9463aa23c58b75"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/tools/compiler-abi.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/tools/compiler-abi.mjs",
+      "sha256": "0bcbcaf022108877600baab1b15356db6d9917f5c4d668af936279680c126454"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/tools/node-resource-args.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/tools/node-resource-args.mjs",
+      "sha256": "6aefb3aee9b69b0c25d68edbf0ada6a57ba93e277d3adb8d232dfa6dff01d758"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/tools/native-build.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/tools/native-build.mjs",
+      "sha256": "a76f2c027459f7ffdb9fc16dc450ee33e0f39c74568df4c74d03309e662c9117"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/src/compiler.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/src/compiler.json",
+      "sha256": "08c4c055006c8564139a88b793aadfe1dc0b6d100b4c3f2b26ccf8005f8d65c7"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/compiler.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/compiler.bend",
+      "sha256": "50854a407848671ad15fbe805c4daf19bef30644455e46299241a51895f95586"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/core/term.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/core/term.bend",
+      "sha256": "04bcc073b38e35bfac713ae161bbdf8bd59804aa59c6e1ad0127059441836395"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/core/index.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/core/index.bend",
+      "sha256": "c3cab805705f5dedcfe65691d4bc5c98710058bf8a62e0c39610ff398cf2872e"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/core/normalize.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/core/normalize.bend",
+      "sha256": "efb95c1ae957f3c7b0c9efa5e761c9fa49325c236efb72a01bb240420ba5f973"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/core/graph.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/core/graph.bend",
+      "sha256": "50ba21e52eb93a9153606f5d620ac2c613127063f294fe962b4c0a836224f8a3"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/core/reach.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/core/reach.bend",
+      "sha256": "d46a6eed5910cd404ec4603cb735a9d402b1896e702ceb1770efe16344ef992c"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/core/pretty.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/core/pretty.bend",
+      "sha256": "8711e8ec480a194569dade743b570fa964a5b8783249a90cabc445e10e26b53e"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/check/quantity.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/check/quantity.bend",
+      "sha256": "5f5cf65dca94a786691d1246f9b3002074eb9ae9715e387c802dd3c91486258b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/check/kernel.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/check/kernel.bend",
+      "sha256": "7a17d68eafa5d250e05e7c977937a7d8029207b43a1ec797e795caefb46fcefa"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/check/specialize.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/check/specialize.bend",
+      "sha256": "db583c76fbc41502f500665c69c48bd4aa3ce2fcc30e7192b9dab317c7d7f21b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/check/prefix.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/check/prefix.bend",
+      "sha256": "96172741f314f801eb20c8d071c8de8c5f3b8f2a8e3312d5f9e6858c4d9a2dac"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/check/annotate.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/check/annotate.bend",
+      "sha256": "05d934d7b0a25cd72b6770436be273ab64ccce8753e4f0f6df9e672164246be6"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/lexer.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/lexer.bend",
+      "sha256": "aed5103d42d33312f6e5e873ae786646be42f7332f04a80b78ab0cca70d31f31"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/parser.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/parser.bend",
+      "sha256": "c2ea3940944434dea9d52c146e998831288b5d4bc1d45e3ce80030bf89c91129"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/declarations.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/declarations.bend",
+      "sha256": "acb0c17332797ac414ea0eab0a6478c4485bd2b29a0de75c9a5afd9709121ad9"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/flatten.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/flatten.bend",
+      "sha256": "0fa8fae96620ab3f99241436ac46d8201b01e414d2c42ed37f3daf7c5fc900f4"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/elaborate.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/elaborate.bend",
+      "sha256": "8773a648988663c7aa2ee440f2612a450b28ba7a9bf943fd1c84e71fddb00c76"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/sugar.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/sugar.bend",
+      "sha256": "920c7904d8a8bcdc90f38dc109836a262d4d574bcca71d7b8c042bddfcfef6fa"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/unicode.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/unicode.bend",
+      "sha256": "ca1576b9c9a1992157c98bb66da63ca45aff204c724d902e2e88c5ee87662a51"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/literals_arrays.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/literals_arrays.bend",
+      "sha256": "6468fe13b93ebb879c81ac8d18e2e99d4de16dabbf7dc0cc6f389e4a95343981"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/parallel.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/parallel.bend",
+      "sha256": "b08dfeb585b4f196fa1ecd1313c42972f164d80822624d34f664d066ab4a80af"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/fresh_work.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/fresh_work.bend",
+      "sha256": "bb91910966d0e82fc1e1c65be12b149056db6e22503f0fad1d560e4900d7a5ee"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/freshen.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/freshen.bend",
+      "sha256": "26abdc135603675f2ab3dffc3c049a20982500907d8819a3fdfea42ba917136a"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/load/paths.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/load/paths.bend",
+      "sha256": "6e51e3501ed057ca53b48c3f02506199e2000a5b30fb62aa243843e94d9af877"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/families.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/families.bend",
+      "sha256": "ad6c331583f510bef384bb23ac41bb455a7b85a8c2d72ceb0232443a1dd98e1b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/validate.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/front/validate.bend",
+      "sha256": "7d7a2e7d7093a8d00502f688a2d525626eea30ae931ab94d3d057aea90380ebb"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/load/imports.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/load/imports.bend",
+      "sha256": "f9ad12e894937828aea74ccd34750b3b1635943a0037db9656e9b8e514350471"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/load/graph.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/load/graph.bend",
+      "sha256": "9f168450d0ba908b8ba21129af28e156f5786afc5e9d7c64680a82d0752f59c8"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/load/seed.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/load/seed.bend",
+      "sha256": "db10779d9b777baddfafe30c3532e9cd980a96427ba536af7284741769d09842"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/load/modules.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/load/modules.bend",
+      "sha256": "e5f75aadb04e69a16feed737e3e4c6101e752d92b65bc3f6f01b122ed0c65424"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/diagnostic/model.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/diagnostic/model.bend",
+      "sha256": "dd69096c6fdcd682a45e9536eb6d475061fd285807961ac95a16b5a874358af5"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/diagnostic/render.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/diagnostic/render.bend",
+      "sha256": "21890a0d7db39db143c93ae15a2273d690ca6afe0dd263ac04af8985bcc166be"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/diagnostic/trace.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/diagnostic/trace.bend",
+      "sha256": "a05fdb89e4d2aa38143f849524949bf4e225c4b9eedfebfe998f167caaaf99d0"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/diagnostic/produce.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/diagnostic/produce.bend",
+      "sha256": "9f1bf3e8683941b301649db680b4b7b3017d302651f62817c7b752b9625c5797"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/diagnostic/frontend.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/diagnostic/frontend.bend",
+      "sha256": "8727de8ffa6d6fb1022ada1fec7bf53f97d9b696a51666eaa20c22ff16a8f842"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/js/foreign.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/js/foreign.bend",
+      "sha256": "e71e6822524c8ccca4b75c38946dab05838623b4f80196d5200c4b620c014599"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/js/literals.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/js/literals.bend",
+      "sha256": "48f687d8a021a8159f54d29c9fa3049df91a968503bd53be9b5efa5ca27a7db0"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/js/validate.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/js/validate.bend",
+      "sha256": "880d8e4095c3689db17b1e11bb5e100e7ef860c11f2828d0fd79ff3f172e4cb8"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/js/choice.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/js/choice.bend",
+      "sha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/js/projection.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/js/projection.bend",
+      "sha256": "f534d7c74f396527a9d3e3a06bececebcf0b68d92400ccf46b8125e82735ef09"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/js/emit.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/js/emit.bend",
+      "sha256": "6d6db9de9c6c41211f545b4867362402ebebe03db05f77c99dbd020ec08ba016"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/ir.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/ir.bend",
+      "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/text.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/text.bend",
+      "sha256": "20ca7aa5627b698771340d4a2e944caef9b1d100d0f2478a75a622b43a4d647b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/identity.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/identity.bend",
+      "sha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/layout.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/layout.bend",
+      "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/intrinsic.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/intrinsic.bend",
+      "sha256": "8acf8c4e083b55cc33ef323552963b254ac310c22e7d8b5e3b82253776892ab0"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/tables.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/tables.bend",
+      "sha256": "26457cbe409162e70805b3ff0ec91946811b219f71bb2d45982663c3299daf54"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/emit.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/emit.bend",
+      "sha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/erase.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/erase.bend",
+      "sha256": "56ed6538d90549f7f4cc949201f3ca6fd588a7273ea500dda96d0ce054f10007"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/bridge.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/bridge.bend",
+      "sha256": "d6342724c81278a4907a875128630210147d2e1ba6e90bd0ab1cacd02cdb991d"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/direct.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/direct.bend",
+      "sha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/pattern.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/pattern.bend",
+      "sha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/show.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/show.bend",
+      "sha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/parallel.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/parallel.bend",
+      "sha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/array.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/array.bend",
+      "sha256": "4e1d5c9d282ba746ac1e98df470411d477bf1449b5621c3ad413f01e883d9149"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/validate.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/validate.bend",
+      "sha256": "9684fcb9bb25ff0e822ac11b738a319c1353ed721c6c4d864ed984cde0bfd089"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/foreign.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/foreign.bend",
+      "sha256": "fa71a99ac100dc31a8d6246132fb717f2d8c69f6a7cae71a48a2b960d2c89d61"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/book.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/back/native/book.bend",
+      "sha256": "0f0e31315a8d9cbf362778aa2887abf3ac23850aafb58b28407cba53a3d352f3"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/driver/report.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/driver/report.bend",
+      "sha256": "f115aab2d00fc6f71db57a972d919db590a22319cec89e7b6b892efe47959b99"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/driver/api.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/build/typed/snapshots/8558fa2fde4795bf6536dbc36acfd005224b960fcb4a115aa2543337f68e3e8e/src/driver/api.bend",
+      "sha256": "096e60ddf14525fac1f5c94da4de7adac53ea0df7b6eb5e8988e835e92212cbf"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/api.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/api.mjs",
+      "sha256": "ba121e4098044d9f106c4e7cb3e37b0e1ce1bc77f7e42f7e5418556b7f0f3e90"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/api.mjs.bootstrap.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/api.mjs.bootstrap.json",
+      "sha256": "ef2791524eb9c0774f603e0e82eb73c46a57b89e40eb8873ff11c6ff2edb8bc4"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/typed-driver.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/typed-driver.mjs",
+      "sha256": "96dd1d6637fa25e28fe3fd83a963189d12da2a939468e651ff5318dee383224c"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/stage0-library.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/stage0-library.mjs",
+      "sha256": "89b07ed768b06691c5dc9e4bbdd4af96205355d0145793dfbd307924494cd8f0"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/assemble.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/assemble.mjs",
+      "sha256": "f7c8feff7a0b8f8b4a302c2ca8b99b363a8d7c4c9c48bc6b7a9463aa23c58b75"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/compiler-abi.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/compiler-abi.mjs",
+      "sha256": "0bcbcaf022108877600baab1b15356db6d9917f5c4d668af936279680c126454"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/node-resource-args.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/node-resource-args.mjs",
+      "sha256": "6aefb3aee9b69b0c25d68edbf0ada6a57ba93e277d3adb8d232dfa6dff01d758"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/native-build.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/native-build.mjs",
+      "sha256": "a76f2c027459f7ffdb9fc16dc450ee33e0f39c74568df4c74d03309e662c9117"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/src/compiler.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/src/compiler.json",
+      "sha256": "08c4c055006c8564139a88b793aadfe1dc0b6d100b4c3f2b26ccf8005f8d65c7"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/compiler.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/compiler.bend",
+      "sha256": "963a6ccf237f33f848ab8415c0667570659b8a5fe6e63becb093bcc050078510"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/core/term.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/core/term.bend",
+      "sha256": "04bcc073b38e35bfac713ae161bbdf8bd59804aa59c6e1ad0127059441836395"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/core/index.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/core/index.bend",
+      "sha256": "c3cab805705f5dedcfe65691d4bc5c98710058bf8a62e0c39610ff398cf2872e"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/core/normalize.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/core/normalize.bend",
+      "sha256": "efb95c1ae957f3c7b0c9efa5e761c9fa49325c236efb72a01bb240420ba5f973"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/core/graph.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/core/graph.bend",
+      "sha256": "50ba21e52eb93a9153606f5d620ac2c613127063f294fe962b4c0a836224f8a3"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/core/reach.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/core/reach.bend",
+      "sha256": "d46a6eed5910cd404ec4603cb735a9d402b1896e702ceb1770efe16344ef992c"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/core/pretty.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/core/pretty.bend",
+      "sha256": "8711e8ec480a194569dade743b570fa964a5b8783249a90cabc445e10e26b53e"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/check/quantity.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/check/quantity.bend",
+      "sha256": "5f5cf65dca94a786691d1246f9b3002074eb9ae9715e387c802dd3c91486258b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/check/kernel.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/check/kernel.bend",
+      "sha256": "a5a65f57412d0b3a961203a1e0dd5326a5d107ad3d9ff5ca48c0aff756747eeb"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/check/specialize.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/check/specialize.bend",
+      "sha256": "db583c76fbc41502f500665c69c48bd4aa3ce2fcc30e7192b9dab317c7d7f21b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/check/prefix.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/check/prefix.bend",
+      "sha256": "96172741f314f801eb20c8d071c8de8c5f3b8f2a8e3312d5f9e6858c4d9a2dac"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/check/annotate.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/check/annotate.bend",
+      "sha256": "05d934d7b0a25cd72b6770436be273ab64ccce8753e4f0f6df9e672164246be6"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/lexer.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/lexer.bend",
+      "sha256": "aed5103d42d33312f6e5e873ae786646be42f7332f04a80b78ab0cca70d31f31"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/parser.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/parser.bend",
+      "sha256": "c2ea3940944434dea9d52c146e998831288b5d4bc1d45e3ce80030bf89c91129"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/declarations.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/declarations.bend",
+      "sha256": "ea488d9b26663285b66d7a625f9eb1488c872f0f003590ba9b49cae08269a2a7"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/flatten.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/flatten.bend",
+      "sha256": "0eb3b45ddec363d21e715b491cd19698e4dd6a50b259800edad42dd1e4338392"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/elaborate.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/elaborate.bend",
+      "sha256": "88611afd27cae1af669dfaece8dd8bf2a9d185ec9ab06b576069bb8475fec800"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/sugar.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/sugar.bend",
+      "sha256": "ce5ef60fada67616142961f07a07c0c2a29283e4b553028480ccf7810687d547"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/unicode.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/unicode.bend",
+      "sha256": "ca1576b9c9a1992157c98bb66da63ca45aff204c724d902e2e88c5ee87662a51"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/literals_arrays.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/literals_arrays.bend",
+      "sha256": "6468fe13b93ebb879c81ac8d18e2e99d4de16dabbf7dc0cc6f389e4a95343981"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/parallel.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/parallel.bend",
+      "sha256": "8e9c25dc74b2976527c722072ab253863ed8839d9b84d7a6549ab7d0105ab8a9"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/fresh_work.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/fresh_work.bend",
+      "sha256": "bb91910966d0e82fc1e1c65be12b149056db6e22503f0fad1d560e4900d7a5ee"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/freshen.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/freshen.bend",
+      "sha256": "26abdc135603675f2ab3dffc3c049a20982500907d8819a3fdfea42ba917136a"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/load/paths.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/load/paths.bend",
+      "sha256": "6e51e3501ed057ca53b48c3f02506199e2000a5b30fb62aa243843e94d9af877"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/families.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/families.bend",
+      "sha256": "8bf0c69ad09a5d8793f56a5f6f967838857fbf43b8d2f2806521d801a1fd66f0"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/validate.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/front/validate.bend",
+      "sha256": "f6e275e614512e29f6e66103660c500efad0dfa9a2d99821fa57c2d1645abbeb"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/load/imports.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/load/imports.bend",
+      "sha256": "f9ad12e894937828aea74ccd34750b3b1635943a0037db9656e9b8e514350471"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/load/graph.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/load/graph.bend",
+      "sha256": "6a5ab7cecafed72e49c06fc912127d87c9ccecea9cd0b341eb430ac5bee284bc"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/load/seed.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/load/seed.bend",
+      "sha256": "b26df24719588df4fc4fd57f143bc35ec92e77e0f849429380a3797fab8077e4"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/load/modules.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/load/modules.bend",
+      "sha256": "a7fd4c42cd13cc8165cec2a4e9f71f070fb10703910f7780064bd533aaa711fe"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/diagnostic/model.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/diagnostic/model.bend",
+      "sha256": "dd69096c6fdcd682a45e9536eb6d475061fd285807961ac95a16b5a874358af5"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/diagnostic/render.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/diagnostic/render.bend",
+      "sha256": "21890a0d7db39db143c93ae15a2273d690ca6afe0dd263ac04af8985bcc166be"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/diagnostic/trace.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/diagnostic/trace.bend",
+      "sha256": "a05fdb89e4d2aa38143f849524949bf4e225c4b9eedfebfe998f167caaaf99d0"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/diagnostic/produce.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/diagnostic/produce.bend",
+      "sha256": "9f1bf3e8683941b301649db680b4b7b3017d302651f62817c7b752b9625c5797"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/diagnostic/frontend.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/diagnostic/frontend.bend",
+      "sha256": "8727de8ffa6d6fb1022ada1fec7bf53f97d9b696a51666eaa20c22ff16a8f842"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/js/foreign.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/js/foreign.bend",
+      "sha256": "e71e6822524c8ccca4b75c38946dab05838623b4f80196d5200c4b620c014599"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/js/literals.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/js/literals.bend",
+      "sha256": "48f687d8a021a8159f54d29c9fa3049df91a968503bd53be9b5efa5ca27a7db0"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/js/validate.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/js/validate.bend",
+      "sha256": "880d8e4095c3689db17b1e11bb5e100e7ef860c11f2828d0fd79ff3f172e4cb8"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/js/choice.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/js/choice.bend",
+      "sha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/js/projection.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/js/projection.bend",
+      "sha256": "f534d7c74f396527a9d3e3a06bececebcf0b68d92400ccf46b8125e82735ef09"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/js/emit.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/js/emit.bend",
+      "sha256": "6d6db9de9c6c41211f545b4867362402ebebe03db05f77c99dbd020ec08ba016"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/ir.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/ir.bend",
+      "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/text.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/text.bend",
+      "sha256": "20ca7aa5627b698771340d4a2e944caef9b1d100d0f2478a75a622b43a4d647b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/identity.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/identity.bend",
+      "sha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/layout.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/layout.bend",
+      "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/intrinsic.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/intrinsic.bend",
+      "sha256": "8acf8c4e083b55cc33ef323552963b254ac310c22e7d8b5e3b82253776892ab0"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/tables.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/tables.bend",
+      "sha256": "26457cbe409162e70805b3ff0ec91946811b219f71bb2d45982663c3299daf54"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/emit.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/emit.bend",
+      "sha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/erase.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/erase.bend",
+      "sha256": "56ed6538d90549f7f4cc949201f3ca6fd588a7273ea500dda96d0ce054f10007"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/bridge.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/bridge.bend",
+      "sha256": "d6342724c81278a4907a875128630210147d2e1ba6e90bd0ab1cacd02cdb991d"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/direct.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/direct.bend",
+      "sha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/pattern.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/pattern.bend",
+      "sha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/show.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/show.bend",
+      "sha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/parallel.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/parallel.bend",
+      "sha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/array.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/array.bend",
+      "sha256": "4e1d5c9d282ba746ac1e98df470411d477bf1449b5621c3ad413f01e883d9149"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/validate.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/validate.bend",
+      "sha256": "9684fcb9bb25ff0e822ac11b738a319c1353ed721c6c4d864ed984cde0bfd089"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/foreign.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/foreign.bend",
+      "sha256": "fa71a99ac100dc31a8d6246132fb717f2d8c69f6a7cae71a48a2b960d2c89d61"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/book.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/back/native/book.bend",
+      "sha256": "0f0e31315a8d9cbf362778aa2887abf3ac23850aafb58b28407cba53a3d352f3"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/driver/report.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/driver/report.bend",
+      "sha256": "f115aab2d00fc6f71db57a972d919db590a22319cec89e7b6b892efe47959b99"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/driver/api.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/build/typed/snapshots/1702f9d132517fac5bb0aba8e411dfb41b6dc8dd3860fa39124113804e574faa/src/driver/api.bend",
+      "sha256": "096e60ddf14525fac1f5c94da4de7adac53ea0df7b6eb5e8988e835e92212cbf"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/api.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/api.mjs",
+      "sha256": "f201bdea7ea4041483b40704f622703945858e981c404a4d7e50979b74370110"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/api.mjs.bootstrap.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/api.mjs.bootstrap.json",
+      "sha256": "f503949a2bf52a3d36d4b3513dd5a12bfd016ab72708f6633fa9bb66d263732d"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/development/workflow.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/development/workflow.mjs",
+      "sha256": "a85428ae724a921511caec545831e4837a2e723ae9609eacef1166c05a5043ff"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/development/equality.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/development/equality.mjs",
+      "sha256": "57ddb92c7f9727789078b7493b4f99b8aeb165934e24344a31ab8dbeb851ea63"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/development/process.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/development/process.mjs",
+      "sha256": "fe6afbc8964f695e3b7bfe8c636b6da6295fd7265fcdebbf58839f3eafce4989"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/conformance/inventory.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/conformance/inventory.mjs",
+      "sha256": "1661cd577a897f4dd711aadec4b1b5d67031b9c315b82255538cdde6568de6fd"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/host/tools/typed-driver.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/host/tools/typed-driver.mjs",
+      "sha256": "96dd1d6637fa25e28fe3fd83a963189d12da2a939468e651ff5318dee383224c"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/host/tools/compiler-abi.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/host/tools/compiler-abi.mjs",
+      "sha256": "0bcbcaf022108877600baab1b15356db6d9917f5c4d668af936279680c126454"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/host/tools/native-build.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/host/tools/native-build.mjs",
+      "sha256": "a76f2c027459f7ffdb9fc16dc450ee33e0f39c74568df4c74d03309e662c9117"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/host/tools/node-resource-args.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/host/tools/node-resource-args.mjs",
+      "sha256": "6aefb3aee9b69b0c25d68edbf0ada6a57ba93e277d3adb8d232dfa6dff01d758"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/host/tools/assemble.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/host/tools/assemble.mjs",
+      "sha256": "f7c8feff7a0b8f8b4a302c2ca8b99b363a8d7c4c9c48bc6b7a9463aa23c58b75"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase5/equality-worker.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase5/equality-worker.mjs",
+      "sha256": "fa265212b0ad2a3198f9414ea128bec135c7fac8e997aa383a2b70dce8319b49"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/worker.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/worker.mjs",
+      "sha256": "fa265212b0ad2a3198f9414ea128bec135c7fac8e997aa383a2b70dce8319b49"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/src/runtime.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/snapshot/src/runtime.mjs",
+      "sha256": "26f5eee2f54b194b64f768df6ff505c67bf7a5df2159aa06caf53ecba54e910b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/equality/api.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/equality/api.mjs",
+      "sha256": "7e913551460ac736f1af35e19049d712765291255a0e579482f2e7179dcadbc6"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/equality/api.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/equality/api.mjs",
+      "sha256": "9826ac8f2cb2ad17ab07d7a1f3fcefc701c64cd44d3c50333b3410d761d98b7f"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase4/private/component/core.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase4/private/component/core.bend",
+      "sha256": "7ea730ae3e2ee190ff55a0def12f8410203fee9fa2c0573df52265b583523ccf"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/early.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/early.bend",
+      "sha256": "74a34fe1fc917c7ee3dd9cbec5c7556bea7dbf709c7c8f580469c375bddda5cb"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/late.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/late.bend",
+      "sha256": "3bff3a9a5679f2c8be51a69978c9db7977fe37a6b507c8af56f431224027341d"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/host/build/typed/cache/base-7e913551460ac736f1af35e19049d712765291255a0e579482f2e7179dcadbc6-b8c2734d45ec6b4ce70fee70ff06ef35e08fce885af8852d8eb77dbff020e946-17959e2d779b5ff942b3612057f623370b55ace5688d31734f9eff6f35f1d0de.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/host/build/typed/cache/base-7e913551460ac736f1af35e19049d712765291255a0e579482f2e7179dcadbc6-b8c2734d45ec6b4ce70fee70ff06ef35e08fce885af8852d8eb77dbff020e946-17959e2d779b5ff942b3612057f623370b55ace5688d31734f9eff6f35f1d0de.json",
+      "sha256": "d8f4a48ce683f322955441b8f7d7e05068b8fd5dea0b4f35b56535ec7b46b2f9"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/host/build/typed/cache/base-9826ac8f2cb2ad17ab07d7a1f3fcefc701c64cd44d3c50333b3410d761d98b7f-b8c2734d45ec6b4ce70fee70ff06ef35e08fce885af8852d8eb77dbff020e946-17959e2d779b5ff942b3612057f623370b55ace5688d31734f9eff6f35f1d0de.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/host/build/typed/cache/base-9826ac8f2cb2ad17ab07d7a1f3fcefc701c64cd44d3c50333b3410d761d98b7f-b8c2734d45ec6b4ce70fee70ff06ef35e08fce885af8852d8eb77dbff020e946-17959e2d779b5ff942b3612057f623370b55ace5688d31734f9eff6f35f1d0de.json",
+      "sha256": "daeb0bc09b780694a6b2810b2278e2e92fa970bc97fe521c18cc1726cd4694a3"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/report.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/report.json",
+      "sha256": "25f9b629cc3c2b17832eece5d4303f8c6379b9d27b8a57592026456b5dd52b22"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase6/structured-checker-compare.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase6/structured-checker-compare.mjs",
+      "sha256": "0e26292ea82fbf422fac9ebf7dab58d1b697de219c7730696bbbb7281cd2b806"
+    }
+  ],
+  "rows": [
+    {
+      "variant": "control",
+      "workload": "accepted",
+      "request": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-0-control.request.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-0-control.request.json",
+        "sha256": "a4af9dbb338c774fab657a8d18797c746c460edda778de700cf390dd88c12f97"
+      },
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/worker.mjs",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-0-control.request.json",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-0-control.result.json"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-0-control-process/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-0-control-process/stderr",
+        "timeoutMs": 90000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 0,
+        "wallMs": 13324.610177999999
+      },
+      "passed": true,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-0-control.result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-0-control.result.json",
+        "sha256": "c4182158cdc75cf8cce24ffce14c0c71797e24314d6a4dac51dc797bc57e20fd"
+      },
+      "observation": {
+        "variant": "control",
+        "result": {
+          "status": "ok",
+          "phase": "compile",
+          "verdict": "All terms check.\n",
+          "exitCode": 0,
+          "checked": true,
+          "files": [
+            "/home/ai/bend2/build/publish/bend/selfhost/build/phase4/private/component/core.bend",
+            "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/base.bend"
+          ]
+        },
+        "emitted": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-0-control.mjs",
+          "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-0-control.mjs",
+          "sha256": "016a5cedeb7e285adeabdad19388d99d3d9070668c15776ccc10fab8ea7b7186",
+          "bytes": 138371
+        },
+        "importMs": 38.18528600000002,
+        "requestMs": 12312.314451999999,
+        "cpuMs": 12312.054,
+        "phases": {
+          "f_parse": 911.085716,
+          "f_source_parsed": 0.034687999999960084,
+          "f_load_graph_seed_trace": 1173.161434,
+          "compiler_check_result_abi": 0.020359000000098604,
+          "check_book_diagnostic_from_exact_prefix": 4228.83862,
+          "driver_owned": 1.7654570000004242,
+          "driver_todos": 62.75666699999965,
+          "specialize_book": 163.3907650000001,
+          "specialized_error": 0.033822000000327535,
+          "specialized_book": 0.027215000000069267,
+          "driver_emit_owned": 2.358991999999489,
+          "book_context": 41.90371200000027,
+          "j_roots": 2.6918750000004366,
+          "j_stops": 337.1918889999997,
+          "reach_book": 390.6881030000004,
+          "j_foreign_error": 30.728253000000223,
+          "annotate_selected": 3118.445311999999,
+          "j_layout_error": 580.3537069999984,
+          "j_foreign_paths": 28.495312000000922,
+          "j_library_selected": 1156.9409350000005,
+          "j_modules": 0.05516399999942223
+        },
+        "calls": {
+          "f_parse": 1,
+          "f_source_parsed": 1,
+          "f_load_graph_seed_trace": 1,
+          "compiler_check_result_abi": 1,
+          "check_book_diagnostic_from_exact_prefix": 1,
+          "driver_owned": 1,
+          "driver_todos": 1,
+          "specialize_book": 1,
+          "specialized_error": 1,
+          "specialized_book": 1,
+          "driver_emit_owned": 1,
+          "book_context": 1,
+          "j_roots": 1,
+          "j_stops": 2,
+          "reach_book": 1,
+          "j_foreign_error": 1,
+          "annotate_selected": 1,
+          "j_layout_error": 1,
+          "j_foreign_paths": 1,
+          "j_library_selected": 1,
+          "j_modules": 1
+        },
+        "maxRssKiB": 479972,
+        "node": {
+          "path": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "version": "v24.18.0",
+          "args": [
+            "--stack-size=4096",
+            "--max-old-space-size=4096"
+          ]
+        },
+        "affinity": "Cpus_allowed_list:\t0",
+        "inputsVerified": true
+      },
+      "index": 0
+    },
+    {
+      "variant": "candidate",
+      "workload": "accepted",
+      "request": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-1-candidate.request.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-1-candidate.request.json",
+        "sha256": "ecd07a69d7e99063be3d87686f3906c9af0fe1a2a483b66f9840bdc0b9ec0081"
+      },
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/worker.mjs",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-1-candidate.request.json",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-1-candidate.result.json"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-1-candidate-process/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-1-candidate-process/stderr",
+        "timeoutMs": 90000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 0,
+        "wallMs": 13354.714379000001
+      },
+      "passed": true,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-1-candidate.result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-1-candidate.result.json",
+        "sha256": "6199f2490491cb531d4f18d07f30316c231a5a47759510555e9cd35ac40479fd"
+      },
+      "observation": {
+        "variant": "candidate",
+        "result": {
+          "status": "ok",
+          "phase": "compile",
+          "verdict": "All terms check.\n",
+          "exitCode": 0,
+          "checked": true,
+          "files": [
+            "/home/ai/bend2/build/publish/bend/selfhost/build/phase4/private/component/core.bend",
+            "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/base.bend"
+          ]
+        },
+        "emitted": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-1-candidate.mjs",
+          "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-1-candidate.mjs",
+          "sha256": "016a5cedeb7e285adeabdad19388d99d3d9070668c15776ccc10fab8ea7b7186",
+          "bytes": 138371
+        },
+        "importMs": 38.714945,
+        "requestMs": 12338.611049000001,
+        "cpuMs": 12338.453,
+        "phases": {
+          "f_parse": 874.3020209999999,
+          "f_source_parsed": 0.035601000000042404,
+          "f_load_graph_seed_trace": 1227.483962,
+          "compiler_check_result_abi": 0.020410999999967316,
+          "check_book_diagnostic_from_exact_prefix": 4297.184218,
+          "driver_owned": 1.7718970000005356,
+          "driver_todos": 62.81213300000036,
+          "specialize_book": 157.7660820000001,
+          "specialized_error": 0.03154499999982363,
+          "specialized_book": 0.027337000000443368,
+          "driver_emit_owned": 2.2459289999997054,
+          "book_context": 40.052998000000116,
+          "j_roots": 2.6740499999996246,
+          "j_stops": 329.37493500000073,
+          "reach_book": 387.0222249999997,
+          "j_foreign_error": 30.349651999999878,
+          "annotate_selected": 3123.3825159999997,
+          "j_layout_error": 571.6593200000007,
+          "j_foreign_paths": 28.100604999999632,
+          "j_library_selected": 1120.0172740000016,
+          "j_modules": 0.05613899999843852
+        },
+        "calls": {
+          "f_parse": 1,
+          "f_source_parsed": 1,
+          "f_load_graph_seed_trace": 1,
+          "compiler_check_result_abi": 1,
+          "check_book_diagnostic_from_exact_prefix": 1,
+          "driver_owned": 1,
+          "driver_todos": 1,
+          "specialize_book": 1,
+          "specialized_error": 1,
+          "specialized_book": 1,
+          "driver_emit_owned": 1,
+          "book_context": 1,
+          "j_roots": 1,
+          "j_stops": 2,
+          "reach_book": 1,
+          "j_foreign_error": 1,
+          "annotate_selected": 1,
+          "j_layout_error": 1,
+          "j_foreign_paths": 1,
+          "j_library_selected": 1,
+          "j_modules": 1
+        },
+        "maxRssKiB": 482160,
+        "node": {
+          "path": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "version": "v24.18.0",
+          "args": [
+            "--stack-size=4096",
+            "--max-old-space-size=4096"
+          ]
+        },
+        "affinity": "Cpus_allowed_list:\t0",
+        "inputsVerified": true
+      },
+      "index": 1
+    },
+    {
+      "variant": "candidate",
+      "workload": "accepted",
+      "request": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-2-candidate.request.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-2-candidate.request.json",
+        "sha256": "072d6e56a6dc627479b74dac1ab2911f7931d730e8ae0a6f7199e7286a907602"
+      },
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/worker.mjs",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-2-candidate.request.json",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-2-candidate.result.json"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-2-candidate-process/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-2-candidate-process/stderr",
+        "timeoutMs": 90000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 0,
+        "wallMs": 13342.735229000002
+      },
+      "passed": true,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-2-candidate.result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-2-candidate.result.json",
+        "sha256": "d0066d1a0d8dca0b5829c1bf109246249273d050046e9c4998105966074ef32a"
+      },
+      "observation": {
+        "variant": "candidate",
+        "result": {
+          "status": "ok",
+          "phase": "compile",
+          "verdict": "All terms check.\n",
+          "exitCode": 0,
+          "checked": true,
+          "files": [
+            "/home/ai/bend2/build/publish/bend/selfhost/build/phase4/private/component/core.bend",
+            "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/base.bend"
+          ]
+        },
+        "emitted": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-2-candidate.mjs",
+          "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-2-candidate.mjs",
+          "sha256": "016a5cedeb7e285adeabdad19388d99d3d9070668c15776ccc10fab8ea7b7186",
+          "bytes": 138371
+        },
+        "importMs": 37.91300199999995,
+        "requestMs": 12340.230761,
+        "cpuMs": 12340.11,
+        "phases": {
+          "f_parse": 859.50873,
+          "f_source_parsed": 0.034699000000046,
+          "f_load_graph_seed_trace": 1220.9531559999998,
+          "compiler_check_result_abi": 0.026652000000012777,
+          "check_book_diagnostic_from_exact_prefix": 4283.016777,
+          "driver_owned": 1.770633000000089,
+          "driver_todos": 62.30148399999962,
+          "specialize_book": 156.85528800000066,
+          "specialized_error": 0.029142000000319968,
+          "specialized_book": 0.025768999999854714,
+          "driver_emit_owned": 2.082448000000113,
+          "book_context": 40.391505999999936,
+          "j_roots": 2.582390000000487,
+          "j_stops": 331.9720299999999,
+          "reach_book": 389.5955899999999,
+          "j_foreign_error": 30.71866500000033,
+          "annotate_selected": 3144.021739999999,
+          "j_layout_error": 572.3930209999999,
+          "j_foreign_paths": 28.103895000000193,
+          "j_library_selected": 1133.5981890000003,
+          "j_modules": 0.0549700000010489
+        },
+        "calls": {
+          "f_parse": 1,
+          "f_source_parsed": 1,
+          "f_load_graph_seed_trace": 1,
+          "compiler_check_result_abi": 1,
+          "check_book_diagnostic_from_exact_prefix": 1,
+          "driver_owned": 1,
+          "driver_todos": 1,
+          "specialize_book": 1,
+          "specialized_error": 1,
+          "specialized_book": 1,
+          "driver_emit_owned": 1,
+          "book_context": 1,
+          "j_roots": 1,
+          "j_stops": 2,
+          "reach_book": 1,
+          "j_foreign_error": 1,
+          "annotate_selected": 1,
+          "j_layout_error": 1,
+          "j_foreign_paths": 1,
+          "j_library_selected": 1,
+          "j_modules": 1
+        },
+        "maxRssKiB": 480604,
+        "node": {
+          "path": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "version": "v24.18.0",
+          "args": [
+            "--stack-size=4096",
+            "--max-old-space-size=4096"
+          ]
+        },
+        "affinity": "Cpus_allowed_list:\t0",
+        "inputsVerified": true
+      },
+      "index": 2
+    },
+    {
+      "variant": "control",
+      "workload": "accepted",
+      "request": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-3-control.request.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-3-control.request.json",
+        "sha256": "97660fd761ba6afd3037f966fead4a9989a672b679c3fdce74bdd746f293b9b9"
+      },
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/worker.mjs",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-3-control.request.json",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-3-control.result.json"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-3-control-process/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-3-control-process/stderr",
+        "timeoutMs": 90000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 0,
+        "wallMs": 13224.036721999997
+      },
+      "passed": true,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-3-control.result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-3-control.result.json",
+        "sha256": "65bbf42cc713ee0bfbd9a194274fb257277042500eb6d2b3e8d5f9d22ad10d5d"
+      },
+      "observation": {
+        "variant": "control",
+        "result": {
+          "status": "ok",
+          "phase": "compile",
+          "verdict": "All terms check.\n",
+          "exitCode": 0,
+          "checked": true,
+          "files": [
+            "/home/ai/bend2/build/publish/bend/selfhost/build/phase4/private/component/core.bend",
+            "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/base.bend"
+          ]
+        },
+        "emitted": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-3-control.mjs",
+          "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/accepted-3-control.mjs",
+          "sha256": "016a5cedeb7e285adeabdad19388d99d3d9070668c15776ccc10fab8ea7b7186",
+          "bytes": 138371
+        },
+        "importMs": 38.16817699999996,
+        "requestMs": 12213.268624,
+        "cpuMs": 12213.037,
+        "phases": {
+          "f_parse": 858.2551930000001,
+          "f_source_parsed": 0.0349229999999352,
+          "f_load_graph_seed_trace": 1181.1820639999999,
+          "compiler_check_result_abi": 0.01822500000025684,
+          "check_book_diagnostic_from_exact_prefix": 4236.1978,
+          "driver_owned": 1.7422950000000128,
+          "driver_todos": 61.35186900000008,
+          "specialize_book": 159.67897100000027,
+          "specialized_error": 0.03420499999992899,
+          "specialized_book": 0.026917000000139524,
+          "driver_emit_owned": 2.295302000000447,
+          "book_context": 40.052615000000515,
+          "j_roots": 2.6224990000000616,
+          "j_stops": 330.9242060000006,
+          "reach_book": 392.5059309999997,
+          "j_foreign_error": 30.746908999999505,
+          "annotate_selected": 3100.7093529999993,
+          "j_layout_error": 580.0295409999999,
+          "j_foreign_paths": 28.179713999999876,
+          "j_library_selected": 1125.717059999999,
+          "j_modules": 0.05181099999936123
+        },
+        "calls": {
+          "f_parse": 1,
+          "f_source_parsed": 1,
+          "f_load_graph_seed_trace": 1,
+          "compiler_check_result_abi": 1,
+          "check_book_diagnostic_from_exact_prefix": 1,
+          "driver_owned": 1,
+          "driver_todos": 1,
+          "specialize_book": 1,
+          "specialized_error": 1,
+          "specialized_book": 1,
+          "driver_emit_owned": 1,
+          "book_context": 1,
+          "j_roots": 1,
+          "j_stops": 2,
+          "reach_book": 1,
+          "j_foreign_error": 1,
+          "annotate_selected": 1,
+          "j_layout_error": 1,
+          "j_foreign_paths": 1,
+          "j_library_selected": 1,
+          "j_modules": 1
+        },
+        "maxRssKiB": 480684,
+        "node": {
+          "path": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "version": "v24.18.0",
+          "args": [
+            "--stack-size=4096",
+            "--max-old-space-size=4096"
+          ]
+        },
+        "affinity": "Cpus_allowed_list:\t0",
+        "inputsVerified": true
+      },
+      "index": 3
+    },
+    {
+      "variant": "control",
+      "workload": "early",
+      "request": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-0-control.request.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-0-control.request.json",
+        "sha256": "343f7d8caeee526117d00549578859a5dff80c32b4e5be099140987371da7891"
+      },
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/worker.mjs",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-0-control.request.json",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-0-control.result.json"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-0-control-process/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-0-control-process/stderr",
+        "timeoutMs": 90000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 0,
+        "wallMs": 3581.1562019999983
+      },
+      "passed": true,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-0-control.result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-0-control.result.json",
+        "sha256": "3fd3fd4d3c3f8f8b71b893697ec7a085f2561df9527285975746d1067dab8e48"
+      },
+      "observation": {
+        "variant": "control",
+        "result": {
+          "status": "error",
+          "phase": "check",
+          "diagnostic": "Error: p6_failure: undefined name",
+          "exitCode": 1,
+          "checked": true
+        },
+        "importMs": 38.261814000000015,
+        "requestMs": 2590.915481,
+        "cpuMs": 2590.952,
+        "phases": {
+          "f_parse": 861.147199,
+          "f_source_parsed": 0.034930000000031214,
+          "f_load_graph_seed_trace": 1185.3952659999998,
+          "compiler_check_result_abi": 0.01838399999996909,
+          "check_book_diagnostic_from_exact_prefix": 161.26237700000001,
+          "f_loaded_origins_for": 282.18668100000014,
+          "diagnostic_result_locate": 0.3975239999999758,
+          "diagnostic_render": 20.448139000000083
+        },
+        "calls": {
+          "f_parse": 1,
+          "f_source_parsed": 1,
+          "f_load_graph_seed_trace": 1,
+          "compiler_check_result_abi": 1,
+          "check_book_diagnostic_from_exact_prefix": 1,
+          "f_loaded_origins_for": 1,
+          "diagnostic_result_locate": 1,
+          "diagnostic_render": 1
+        },
+        "maxRssKiB": 398552,
+        "node": {
+          "path": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "version": "v24.18.0",
+          "args": [
+            "--stack-size=4096",
+            "--max-old-space-size=4096"
+          ]
+        },
+        "affinity": "Cpus_allowed_list:\t0",
+        "inputsVerified": true
+      },
+      "index": 0
+    },
+    {
+      "variant": "candidate",
+      "workload": "early",
+      "request": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-1-candidate.request.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-1-candidate.request.json",
+        "sha256": "43ab3864c324cabd2e4a421e38bd197dbac0005ca5f4d509331284f615ea2b2e"
+      },
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/worker.mjs",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-1-candidate.request.json",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-1-candidate.result.json"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-1-candidate-process/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-1-candidate-process/stderr",
+        "timeoutMs": 90000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 0,
+        "wallMs": 3615.1488409999947
+      },
+      "passed": true,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-1-candidate.result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-1-candidate.result.json",
+        "sha256": "3bff4c9ea6b4cfc2860e2ed6a3b6ad95dad68116d22f0b38c639aa8d8b4f6aad"
+      },
+      "observation": {
+        "variant": "candidate",
+        "result": {
+          "status": "error",
+          "phase": "check",
+          "diagnostic": "Error: p6_failure: undefined name",
+          "exitCode": 1,
+          "checked": true
+        },
+        "importMs": 38.03156899999999,
+        "requestMs": 2618.687907,
+        "cpuMs": 2618.728,
+        "phases": {
+          "f_parse": 863.1657730000001,
+          "f_source_parsed": 0.035097000000178014,
+          "f_load_graph_seed_trace": 1210.6016029999998,
+          "compiler_check_result_abi": 0.018420000000332948,
+          "check_book_diagnostic_from_exact_prefix": 153.92172100000016,
+          "f_loaded_origins_for": 289.9442979999999,
+          "diagnostic_result_locate": 0.5501450000001569,
+          "diagnostic_render": 20.164738999999827
+        },
+        "calls": {
+          "f_parse": 1,
+          "f_source_parsed": 1,
+          "f_load_graph_seed_trace": 1,
+          "compiler_check_result_abi": 1,
+          "check_book_diagnostic_from_exact_prefix": 1,
+          "f_loaded_origins_for": 1,
+          "diagnostic_result_locate": 1,
+          "diagnostic_render": 1
+        },
+        "maxRssKiB": 397436,
+        "node": {
+          "path": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "version": "v24.18.0",
+          "args": [
+            "--stack-size=4096",
+            "--max-old-space-size=4096"
+          ]
+        },
+        "affinity": "Cpus_allowed_list:\t0",
+        "inputsVerified": true
+      },
+      "index": 1
+    },
+    {
+      "variant": "candidate",
+      "workload": "early",
+      "request": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-2-candidate.request.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-2-candidate.request.json",
+        "sha256": "046f1f3f87f74f4e8a399cd2c5c5c018fe7a27183fd59b9db01c40e7cee3e858"
+      },
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/worker.mjs",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-2-candidate.request.json",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-2-candidate.result.json"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-2-candidate-process/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-2-candidate-process/stderr",
+        "timeoutMs": 90000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 0,
+        "wallMs": 3635.323655
+      },
+      "passed": true,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-2-candidate.result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-2-candidate.result.json",
+        "sha256": "ab4aaecee748e867c072b749310c73b81c95e2ed4a78343afe7fe1adc68f59d3"
+      },
+      "observation": {
+        "variant": "candidate",
+        "result": {
+          "status": "error",
+          "phase": "check",
+          "diagnostic": "Error: p6_failure: undefined name",
+          "exitCode": 1,
+          "checked": true
+        },
+        "importMs": 38.316326999999944,
+        "requestMs": 2632.956446,
+        "cpuMs": 2632.985,
+        "phases": {
+          "f_parse": 865.4977919999999,
+          "f_source_parsed": 0.036336000000119384,
+          "f_load_graph_seed_trace": 1219.859649,
+          "compiler_check_result_abi": 0.018823999999767693,
+          "check_book_diagnostic_from_exact_prefix": 155.54521699999987,
+          "f_loaded_origins_for": 291.6923190000002,
+          "diagnostic_result_locate": 0.5553540000000794,
+          "diagnostic_render": 20.39640499999996
+        },
+        "calls": {
+          "f_parse": 1,
+          "f_source_parsed": 1,
+          "f_load_graph_seed_trace": 1,
+          "compiler_check_result_abi": 1,
+          "check_book_diagnostic_from_exact_prefix": 1,
+          "f_loaded_origins_for": 1,
+          "diagnostic_result_locate": 1,
+          "diagnostic_render": 1
+        },
+        "maxRssKiB": 398256,
+        "node": {
+          "path": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "version": "v24.18.0",
+          "args": [
+            "--stack-size=4096",
+            "--max-old-space-size=4096"
+          ]
+        },
+        "affinity": "Cpus_allowed_list:\t0",
+        "inputsVerified": true
+      },
+      "index": 2
+    },
+    {
+      "variant": "control",
+      "workload": "early",
+      "request": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-3-control.request.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-3-control.request.json",
+        "sha256": "96152d531537910c29ef3c4a5ba4ac335f76d1844760e08c8c409ccc5724ec68"
+      },
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/worker.mjs",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-3-control.request.json",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-3-control.result.json"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-3-control-process/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-3-control-process/stderr",
+        "timeoutMs": 90000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 0,
+        "wallMs": 3587.1626410000026
+      },
+      "passed": true,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-3-control.result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/early-3-control.result.json",
+        "sha256": "7c16be58b02f749c2e6b867db9848995861e2a6f7ab4d8b56238f53365fb62c4"
+      },
+      "observation": {
+        "variant": "control",
+        "result": {
+          "status": "error",
+          "phase": "check",
+          "diagnostic": "Error: p6_failure: undefined name",
+          "exitCode": 1,
+          "checked": true
+        },
+        "importMs": 38.30481600000002,
+        "requestMs": 2593.3614430000002,
+        "cpuMs": 2593.314,
+        "phases": {
+          "f_parse": 860.033494,
+          "f_source_parsed": 0.03487200000017765,
+          "f_load_graph_seed_trace": 1183.4641219999999,
+          "compiler_check_result_abi": 0.0200009999998656,
+          "check_book_diagnostic_from_exact_prefix": 160.7146859999998,
+          "f_loaded_origins_for": 288.5568030000004,
+          "diagnostic_result_locate": 0.4036879999998746,
+          "diagnostic_render": 20.29292200000009
+        },
+        "calls": {
+          "f_parse": 1,
+          "f_source_parsed": 1,
+          "f_load_graph_seed_trace": 1,
+          "compiler_check_result_abi": 1,
+          "check_book_diagnostic_from_exact_prefix": 1,
+          "f_loaded_origins_for": 1,
+          "diagnostic_result_locate": 1,
+          "diagnostic_render": 1
+        },
+        "maxRssKiB": 396240,
+        "node": {
+          "path": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "version": "v24.18.0",
+          "args": [
+            "--stack-size=4096",
+            "--max-old-space-size=4096"
+          ]
+        },
+        "affinity": "Cpus_allowed_list:\t0",
+        "inputsVerified": true
+      },
+      "index": 3
+    },
+    {
+      "variant": "control",
+      "workload": "late",
+      "request": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-0-control.request.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-0-control.request.json",
+        "sha256": "1bc9c625d0364f9e72d7496f0ae3b1303d70f952502ea260103a6192608b8082"
+      },
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/worker.mjs",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-0-control.request.json",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-0-control.result.json"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-0-control-process/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-0-control-process/stderr",
+        "timeoutMs": 90000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 0,
+        "wallMs": 7820.857762
+      },
+      "passed": true,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-0-control.result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-0-control.result.json",
+        "sha256": "b0f48cd1f99ea5dddd27944b142739988ac567dda6ac4a802a6821864d9eb00a"
+      },
+      "observation": {
+        "variant": "control",
+        "result": {
+          "status": "error",
+          "phase": "check",
+          "diagnostic": "Error: p6_failure: undefined name",
+          "exitCode": 1,
+          "checked": true
+        },
+        "importMs": 38.31781699999999,
+        "requestMs": 6828.295432000001,
+        "cpuMs": 6828.207,
+        "phases": {
+          "f_parse": 867.562007,
+          "f_source_parsed": 0.03343199999994795,
+          "f_load_graph_seed_trace": 1191.8935490000001,
+          "compiler_check_result_abi": 0.020266999999876134,
+          "check_book_diagnostic_from_exact_prefix": 4267.529318999999,
+          "f_loaded_origins_for": 399.7515400000002,
+          "diagnostic_result_locate": 1.9929029999993872,
+          "diagnostic_render": 20.122883
+        },
+        "calls": {
+          "f_parse": 1,
+          "f_source_parsed": 1,
+          "f_load_graph_seed_trace": 1,
+          "compiler_check_result_abi": 1,
+          "check_book_diagnostic_from_exact_prefix": 1,
+          "f_loaded_origins_for": 1,
+          "diagnostic_result_locate": 1,
+          "diagnostic_render": 1
+        },
+        "maxRssKiB": 403684,
+        "node": {
+          "path": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "version": "v24.18.0",
+          "args": [
+            "--stack-size=4096",
+            "--max-old-space-size=4096"
+          ]
+        },
+        "affinity": "Cpus_allowed_list:\t0",
+        "inputsVerified": true
+      },
+      "index": 0
+    },
+    {
+      "variant": "candidate",
+      "workload": "late",
+      "request": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-1-candidate.request.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-1-candidate.request.json",
+        "sha256": "6be6b314b840ba81745b2e1d37b89405a4fc1a8eac6a1447a30eb5d57fe7edd1"
+      },
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/worker.mjs",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-1-candidate.request.json",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-1-candidate.result.json"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-1-candidate-process/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-1-candidate-process/stderr",
+        "timeoutMs": 90000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 0,
+        "wallMs": 7863.893735999998
+      },
+      "passed": true,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-1-candidate.result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-1-candidate.result.json",
+        "sha256": "37acd1a072321ffd1aaa76fe07a9dfcb97a3527d97e70e8d8cacbed21a017d31"
+      },
+      "observation": {
+        "variant": "candidate",
+        "result": {
+          "status": "error",
+          "phase": "check",
+          "diagnostic": "Error: p6_failure: undefined name",
+          "exitCode": 1,
+          "checked": true
+        },
+        "importMs": 38.18590000000006,
+        "requestMs": 6865.373759,
+        "cpuMs": 6865.255,
+        "phases": {
+          "f_parse": 858.955115,
+          "f_source_parsed": 0.03789999999980864,
+          "f_load_graph_seed_trace": 1212.72118,
+          "compiler_check_result_abi": 0.019264000000021042,
+          "check_book_diagnostic_from_exact_prefix": 4289.015189,
+          "f_loaded_origins_for": 402.4503910000003,
+          "diagnostic_result_locate": 2.078147999999601,
+          "diagnostic_render": 20.277592000000368
+        },
+        "calls": {
+          "f_parse": 1,
+          "f_source_parsed": 1,
+          "f_load_graph_seed_trace": 1,
+          "compiler_check_result_abi": 1,
+          "check_book_diagnostic_from_exact_prefix": 1,
+          "f_loaded_origins_for": 1,
+          "diagnostic_result_locate": 1,
+          "diagnostic_render": 1
+        },
+        "maxRssKiB": 402152,
+        "node": {
+          "path": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "version": "v24.18.0",
+          "args": [
+            "--stack-size=4096",
+            "--max-old-space-size=4096"
+          ]
+        },
+        "affinity": "Cpus_allowed_list:\t0",
+        "inputsVerified": true
+      },
+      "index": 1
+    },
+    {
+      "variant": "candidate",
+      "workload": "late",
+      "request": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-2-candidate.request.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-2-candidate.request.json",
+        "sha256": "c107d7e28be4bd1ad8eee1ee63e4fcb7910e168ee3299407b9a2a5731582969e"
+      },
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/worker.mjs",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-2-candidate.request.json",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-2-candidate.result.json"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-2-candidate-process/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-2-candidate-process/stderr",
+        "timeoutMs": 90000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 0,
+        "wallMs": 7844.629648000002
+      },
+      "passed": true,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-2-candidate.result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-2-candidate.result.json",
+        "sha256": "c95a9448c5af8b4a576c4c3d9f4aea88c85b0c9d07deafcb0004d2931425c7c1"
+      },
+      "observation": {
+        "variant": "candidate",
+        "result": {
+          "status": "error",
+          "phase": "check",
+          "diagnostic": "Error: p6_failure: undefined name",
+          "exitCode": 1,
+          "checked": true
+        },
+        "importMs": 42.96162700000002,
+        "requestMs": 6838.396285,
+        "cpuMs": 6838.332,
+        "phases": {
+          "f_parse": 859.6422100000001,
+          "f_source_parsed": 0.06186500000012529,
+          "f_load_graph_seed_trace": 1213.668823,
+          "compiler_check_result_abi": 0.021573999999873195,
+          "check_book_diagnostic_from_exact_prefix": 4260.3052769999995,
+          "f_loaded_origins_for": 396.76234400000067,
+          "diagnostic_result_locate": 2.0717160000003787,
+          "diagnostic_render": 22.108259000000544
+        },
+        "calls": {
+          "f_parse": 1,
+          "f_source_parsed": 1,
+          "f_load_graph_seed_trace": 1,
+          "compiler_check_result_abi": 1,
+          "check_book_diagnostic_from_exact_prefix": 1,
+          "f_loaded_origins_for": 1,
+          "diagnostic_result_locate": 1,
+          "diagnostic_render": 1
+        },
+        "maxRssKiB": 404596,
+        "node": {
+          "path": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "version": "v24.18.0",
+          "args": [
+            "--stack-size=4096",
+            "--max-old-space-size=4096"
+          ]
+        },
+        "affinity": "Cpus_allowed_list:\t0",
+        "inputsVerified": true
+      },
+      "index": 2
+    },
+    {
+      "variant": "control",
+      "workload": "late",
+      "request": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-3-control.request.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-3-control.request.json",
+        "sha256": "b387751ec0a560822a6d1995f4032ddf44c2e368129de843feab999314d84d4b"
+      },
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "0",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-prepare-01/worker.mjs",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-3-control.request.json",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-3-control.result.json"
+        ],
+        "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-3-control-process/stdout",
+        "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-3-control-process/stderr",
+        "timeoutMs": 90000,
+        "maxBytes": 16777216,
+        "exitCode": 0,
+        "signal": null,
+        "error": null,
+        "timedOut": false,
+        "overflow": false,
+        "logBytes": 0,
+        "wallMs": 7766.175880999988
+      },
+      "passed": true,
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-3-control.result.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/host-cost-run-01/late-3-control.result.json",
+        "sha256": "8653878bb534dc03250c701dac1424fa258dd5a0894b81d5a53c540185e9ad0c"
+      },
+      "observation": {
+        "variant": "control",
+        "result": {
+          "status": "error",
+          "phase": "check",
+          "diagnostic": "Error: p6_failure: undefined name",
+          "exitCode": 1,
+          "checked": true
+        },
+        "importMs": 38.24022000000002,
+        "requestMs": 6772.256332000001,
+        "cpuMs": 6772.111,
+        "phases": {
+          "f_parse": 860.8398649999999,
+          "f_source_parsed": 0.03417100000001483,
+          "f_load_graph_seed_trace": 1180.961407,
+          "compiler_check_result_abi": 0.02028699999982564,
+          "check_book_diagnostic_from_exact_prefix": 4228.056243000001,
+          "f_loaded_origins_for": 398.9845599999999,
+          "diagnostic_result_locate": 2.032179000000724,
+          "diagnostic_render": 21.84932299999946
+        },
+        "calls": {
+          "f_parse": 1,
+          "f_source_parsed": 1,
+          "f_load_graph_seed_trace": 1,
+          "compiler_check_result_abi": 1,
+          "check_book_diagnostic_from_exact_prefix": 1,
+          "f_loaded_origins_for": 1,
+          "diagnostic_result_locate": 1,
+          "diagnostic_render": 1
+        },
+        "maxRssKiB": 401756,
+        "node": {
+          "path": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "version": "v24.18.0",
+          "args": [
+            "--stack-size=4096",
+            "--max-old-space-size=4096"
+          ]
+        },
+        "affinity": "Cpus_allowed_list:\t0",
+        "inputsVerified": true
+      },
+      "index": 3
+    }
+  ],
+  "pairs": [
+    {
+      "workload": "accepted",
+      "control": 0,
+      "candidate": 1,
+      "requestReduction": -0.0021357964095638504,
+      "processReduction": -0.0022592931874063638
+    },
+    {
+      "workload": "accepted",
+      "control": 3,
+      "candidate": 2,
+      "requestReduction": -0.010395426556860432,
+      "processReduction": -0.008975966226903553
+    },
+    {
+      "workload": "early",
+      "control": 0,
+      "candidate": 1,
+      "requestReduction": -0.010719155527713742,
+      "processReduction": -0.00949208498110532
+    },
+    {
+      "workload": "early",
+      "control": 3,
+      "candidate": 2,
+      "requestReduction": -0.015267830524308357,
+      "processReduction": -0.01342593543140036
+    },
+    {
+      "workload": "late",
+      "control": 0,
+      "candidate": 1,
+      "requestReduction": -0.00543009999629418,
+      "processReduction": -0.005502717899960041
+    },
+    {
+      "workload": "late",
+      "control": 3,
+      "candidate": 2,
+      "requestReduction": -0.00976630974339776,
+      "processReduction": -0.010101981747793198
+    }
+  ],
+  "order": [
+    "control",
+    "candidate",
+    "candidate",
+    "control"
+  ],
+  "scope": "Four fresh processes per workload, same frozen conditional host/runtime/Base and equality profile, separately primed API-specific Base caches with exact decoded graph equality. Request excludes import/hash/output write; process and RSS include them. No full-source speed claim.",
+  "deadline": "2026-09-26T21:54:45.383924+00:00",
+  "acceptedWithinFivePercent": true,
+  "materialRejectionGains": {
+    "early": false,
+    "late": false
+  },
+  "inputsVerified": true,
+  "finished": "2026-09-26T20:59:11.563Z"
+}

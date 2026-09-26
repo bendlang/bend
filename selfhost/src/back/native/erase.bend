@@ -17,12 +17,6 @@ law nc_erase_list:
   for +ts: List<&2, KTerm>
   List<&2, KTerm>
 
-law nc_erase_args:
-  for +book: List<&2, KDef>
-  for +tel: KTerm
-  for +xs: List<&2, KTerm>
-  List<&2, KTerm>
-
 @unsafe
 def nc_tele_fill(+book: List<&2, KDef>, +tel: KTerm, args: List<&2, KTerm>) -> KTerm:
   match args:
@@ -40,7 +34,11 @@ def nc_live_count_head(book, head, left):
   U32.add(nt_bool(Bool.not(U32.is_eq(qt(head), 0))), nc_live_count(book, kid(head, 1), U32.sub(left, 1)))
 
 @unsafe
-def nc_erase_args(book, tel, xs):
+def nc_erase_args(
+  +book: List<&2, KDef>,
+  +tel: KTerm,
+  +xs: List<&2, KTerm>,
+) -> List<&2, KTerm>:
   match xs:
     case Nil{}: Nil{}
     case Con{h, rest}:

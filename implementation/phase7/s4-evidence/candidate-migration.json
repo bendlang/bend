@@ -1,0 +1,6335 @@
+{
+  "kind": "phase7-s4-declaration-migration",
+  "complete": true,
+  "toolSha256": "ad6a0430fbbbe128156f4a8ac0f4060994199be9e9852c9fac16702625ed828d",
+  "baseline": "8cc51c1",
+  "mode": "all",
+  "inventorySha256": "bc31164c1b71d0c6a4707d18f5a2a9ec411e21350c6da994bb3e2039299ee8b7",
+  "manifestSha256": "08c4c055006c8564139a88b793aadfe1dc0b6d100b4c3f2b26ccf8005f8d65c7",
+  "inputTree": {
+    "back/js/README.md": "bd9fdb3506be1271d18712d05872b1aa04962bd7486c606a4d0df4958492f3bb",
+    "back/js/benchmark-build-parser.mjs": "8c4c285c66e8f92163b9b26d2d116d64bfa3238540f2cf8ddddd24d06e7511bf",
+    "back/js/benchmark-parser.mjs": "f53eb33edebb061e4fee9740c47c796bd217066b1adec2410aba9636b4cdbccb",
+    "back/js/choice.bend": "2b3ac6cd46a638063d793a1f40eef6f226b1602191cf345e958023a29e2b66c9",
+    "back/js/emit.bend": "7bf4f547540fc148feea196efd76c2f9a5234b27a33b7d8ac794a04ff5816d78",
+    "back/js/experiments/README.md": "23d422e1031753179859b172741acb2a3b3b34ae03b5cccb04a705b9f0ed3575",
+    "back/js/experiments/allocation-performance.json": "74bc44755908cfcfec076a5aef4a007fe9d840095e10e4345fc0fe3cb7d71374",
+    "back/js/experiments/constructor-provenance.json": "247396a86c58b5c58305896f7e4be9122d930fdca8bd6aaf0b927da8a99eff11",
+    "back/js/experiments/deep-closures-report.json": "2e2db323f64ab6a31ad36f2c1b57019ebb4557d173b1e60f07804080f33401a8",
+    "back/js/experiments/deep-closures.patch": "1824a23a67d4114e79bb7c4074983a94cff8a46ca7c21d8415fceec0f90811ba",
+    "back/js/experiments/full-js-summary.json": "be70707873221a8b40531d9da4aeed354210ef10e09a5eab7b39c8684f1d3ba7",
+    "back/js/experiments/leading-lambda-cache.patch": "225af951d9f5d479c23f5a27fe9e085450ada7930b7211cf468ad8f299de3679",
+    "back/js/experiments/lexical-benchmark.json": "662459ab0252971ec8f639bf12bd10e615132dc9a81709f3c470efd24a28f377",
+    "back/js/experiments/lexical.patch": "e8f9dc190a8e413dcbea167e7b85d3bc318e0e263e9c384df0cc31bc0a5af6b5",
+    "back/js/experiments/runtime-fast.patch": "c376c9b9cd54c03e375382a0385c60ff03ce57d6aef849c9b6b707708972b9cf",
+    "back/js/experiments/runtime-hosts.json": "7b0b718b42ee54ac20d152fd5f54da09a46d76850073a46236180a824525458b",
+    "back/js/foreign.bend": "4b6d09ed9cdb914b5531b763bd65523121324bee554a8e5082c4887e728f085d",
+    "back/js/literals.bend": "861525baf8fe999e3086a7ce1cd758e488235e23522dc97bdd8ee7694bb32ae7",
+    "back/js/projection.bend": "d1e327782e64ae05b05ce606350f20c61392c26255c0afefa2fff9f2c0ed1250",
+    "back/js/survey.mjs": "3a428111c0cd236a1382103e5f0e7cc9eb5d1a28f8a75cd74b2c1cb2b3156a24",
+    "back/js/test-choice.mjs": "93d1ed44f2cba80367fbbce182158641435940e8b8f591360a802d1428e70d26",
+    "back/js/test-foreign.mjs": "9eef0426b565d4b827d488e9e2f48e39a1e46fca4bf999e472f55327977f65cc",
+    "back/js/test-global-initializers.mjs": "9c7609e7ef63c1eae585786252e4057338cae57e6439bb58fa0dd90e23c07d25",
+    "back/js/test-layout.mjs": "da8581e621afa20a5562686646236d0b1d82afcf2462661fd01af163e79f7067",
+    "back/js/test-projection.mjs": "40a3b4fb806dccb1b8a367eadad9f5cdae99dca0bb55bd391f4c4aa32c7d6400",
+    "back/js/test-provenance.mjs": "520a69fd6b1fcb06258bd3f248f3087454e93830041fecd01f22bb41b65becc4",
+    "back/js/test-string-eq.mjs": "e3300bb78770907b2aeba25bc6f04405d772a0897be658e8a0d9a4b068623839",
+    "back/js/test-string-primitives.mjs": "1e3dd2f63233456f68f8754299b5a57ce4327923e5eb0a7da8306a6d40df49ce",
+    "back/js/test-validation.mjs": "d6a99b64a880c8f329759878bf23d47df9fcd0071be77605ee6a6f7ecaa4ee55",
+    "back/js/test.mjs": "129cce560b5c7a4795d62d1aceb5ac3a0b8faef1166c0215d82823a548485b06",
+    "back/js/validate.bend": "917470e39b4d34c26a4f119f1b7acfca7a51926aba76a73d8397b103debca338",
+    "back/native/README.md": "715e13e19f9d7b4d08a5c142eb1c87b6a71b9977245bd4ff59209816de36d9e4",
+    "back/native/array.bend": "4e1d5c9d282ba746ac1e98df470411d477bf1449b5621c3ad413f01e883d9149",
+    "back/native/book.bend": "63e16ef3af4f1bce21f8ab912a27bd45fc4c2d232cfcdfaad275bd5083a24dc8",
+    "back/native/bridge.bend": "88431cf52f0c9ac1b3b1c93aa4a54225ca201d0b8021283f98ba09c2aadc1c74",
+    "back/native/direct.bend": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5",
+    "back/native/emit.bend": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a",
+    "back/native/erase.bend": "11fba4f16ef4de786f68076bafbc356c139fa953c22342c9557efe8b26936be1",
+    "back/native/fixtures/override_add.bend": "a3b434fd37f3f349d08eded47348b7c0f536c30bc66d65d7acd560d29a634e22",
+    "back/native/fixtures.mjs": "54c0f615bdbd6d2b8976a157012b6c38c597d578820787937e331f91c3772d31",
+    "back/native/foreign.bend": "fa71a99ac100dc31a8d6246132fb717f2d8c69f6a7cae71a48a2b960d2c89d61",
+    "back/native/identity.bend": "79794a586a0c2f043c9bd417b97fe2092863eb3a8524250d6b49f0b77dc1810d",
+    "back/native/intrinsic.bend": "8acf8c4e083b55cc33ef323552963b254ac310c22e7d8b5e3b82253776892ab0",
+    "back/native/ir.bend": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b",
+    "back/native/layout.bend": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b",
+    "back/native/manifest.txt": "6b80b0ecbaa914e3fd6763be9f30434c4224920afd31e6b6a500c5070a358f33",
+    "back/native/parallel.bend": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722",
+    "back/native/pattern.bend": "5c624607c7ad2e19660efeddf694d841d7b4d867b1a3870795f9847daca7d155",
+    "back/native/show.bend": "6f662583a276295312217ad99b777cf96988c21ffa7beca3178c043d4b040780",
+    "back/native/tables.bend": "26457cbe409162e70805b3ff0ec91946811b219f71bb2d45982663c3299daf54",
+    "back/native/tests.mjs": "0623bfc95123e8b11bf345cc7171f7582c9dad2fa4db27fce8265cc7b5c1ab86",
+    "back/native/text.bend": "053f8a05ced5c13f7face492da1d16cbdbfdfd90f356c4a5d8f0bbb5d83ef5f7",
+    "back/native/validate.bend": "9684fcb9bb25ff0e822ac11b738a319c1353ed721c6c4d864ed984cde0bfd089",
+    "check/annotate.bend": "f033d726d951723b3bd52c62317e5b47721552beaf2ac42205e2444eb70c0c14",
+    "check/kernel.bend": "0d920c6026e66ca0ff11f7d210789d398ca162d6cc3858d3a91081c6c763619f",
+    "check/prefix.bend": "b95dcd2bcd8bd22d23b1bdce90e44f4e2554a127ef78d3f26a20190cf8c21322",
+    "check/quantity.bend": "e6c7a06fd45cb132d9d5d1704a6f01f81325505eed2ff5d6025e118ff4522e8a",
+    "check/specialize.bend": "9967a84c8862eabe3149c8cb125520f4913c1f1a057852138b7887bbeb9376fb",
+    "compiler.bend": "a7f64505c53a6af2cd4beeb363cb650971487254f758612a446cf44c2903733d",
+    "compiler.json": "08c4c055006c8564139a88b793aadfe1dc0b6d100b4c3f2b26ccf8005f8d65c7",
+    "core/graph.bend": "7d5e75fce5d473fe2c63a4ccbd3e115db29bf42bb037fa9238d5427fce62a790",
+    "core/index.bend": "56687b5ca818a3217ab8dff7960836db002b8d7ad89e5de26b1f270d5abd4624",
+    "core/normalize.bend": "f1baf359384e1edb8633e327f8a0cf01feb790931db79bade2c44685151f2fb7",
+    "core/pretty.bend": "9b7ffdca8ba9593b48167aea4f26abd8ac2802a2cca474b67dbf0cbebfca6def",
+    "core/reach.bend": "c7c1e1ff68ad798f3888d770ee5a02b1b73abbecd58cd2df9b81619428abb2cf",
+    "core/term.bend": "e47b14c3fec0043dacccdf2db0366e5d9ed29394b3a4faae47afe08e69a8f522",
+    "diagnostic/README.md": "c911467a770fdb3835c812f2bbacaaed7cbb4767da8cc49bcc00169010a0d7f1",
+    "diagnostic/frontend.bend": "3dff9649db9ced1eb6815f6fae3a540797a5fec697ef32b4b10e910ca80a88e3",
+    "diagnostic/kernel-instrumentation.patch": "273a3e1d126ad4591aafd2a2f5d20c41fcac5fae69b17fdabe75b5686cafd698",
+    "diagnostic/model.bend": "dd69096c6fdcd682a45e9536eb6d475061fd285807961ac95a16b5a874358af5",
+    "diagnostic/produce.bend": "5e036e63cd32af0f64642bc4cea581ea191e4281c6cbb5ba840fd87b979213b5",
+    "diagnostic/render.bend": "201867dba57eb715308026a3dcd36d1a61b0b51ea27c69c6ba00a3c935aedfe9",
+    "diagnostic/trace.bend": "e47615206be3ebf22c4771de06af3d4dfc1a553f7e914bfd9114bc74c2ab1246",
+    "driver/api.bend": "a68a76de0ed77e3fc9b99193e4e0298257c97e516fbab79438123309112e63a1",
+    "driver/report.bend": "461d05ad6f7647feafd13520fd5da0c9635eee976d58bea6c7d336b862831ba2",
+    "front/declarations.bend": "e1376ca0c87ddde70abeada9281b83224866994b2b45b376a10603401f7971e8",
+    "front/elaborate.bend": "b88ba5debd90eca6552eb80f881694d861d5b96492663c9af12f2f182b2f70de",
+    "front/families.bend": "b17a1dcf30d7ff7c7a0bc0d8e9df6d58f166ab19e3889c73b2403bb0b3b14fe4",
+    "front/flatten.bend": "ed4c712480be44474eba76f98c325fcf5aba50735b2d0fe5d029613298f9e51e",
+    "front/fresh_work.bend": "b84c60ecf96f3c50403c7fee86d9949a3bcacb4cab529f5a94cb64e920c6db53",
+    "front/freshen.bend": "174f3aa0192475e419051f90dc835d4fcef4ae454dcbbc14cd6898b22a2cc28c",
+    "front/lexer.bend": "33b12e01c8b4ed2559163ace169e25a95dbf59c6a99438f5af9d8f240431b2d5",
+    "front/literals_arrays.bend": "6468fe13b93ebb879c81ac8d18e2e99d4de16dabbf7dc0cc6f389e4a95343981",
+    "front/parallel.bend": "08be770458662a402c4e4a33417381779cb327360747e6d64c1983545cf001d2",
+    "front/parser.bend": "8daa5d7c685f67336b435b66989ad0eb17f4a9570eb38138ee5ad1a0ea490440",
+    "front/sugar.bend": "b8bdca5ccc2d4c9a864d8bb6f0d707486e31d75f8dfef9b1ca15e9a25f721c9f",
+    "front/unicode.bend": "ab9f2596af9af28bc3698d9cc101cdfd8565be2008d89322b2290cb2887862b6",
+    "front/validate.bend": "26e56bc64093bf2bb7661c79c47218837974b3954db5c662ccb8d18ea39196cf",
+    "load/graph.bend": "05c9030572a608241d0974b58976addbd200287cc3c21359dd3c9aa1c07274ac",
+    "load/imports.bend": "f9ad12e894937828aea74ccd34750b3b1635943a0037db9656e9b8e514350471",
+    "load/modules.bend": "5c7c19a5d75779ae3e81a44b4ab387c782cd32cf9eb5b20c02e5bede153f85c0",
+    "load/paths.bend": "56d3ac6b7bf63db2ffd1c26521fb528f56b9469c78203d01296a93fc3812d38c",
+    "load/seed.bend": "18100899188b1f1d088605b9a9b23e1c059abf7d6a8a65a835d024a2279bd4a3",
+    "runtime/js/README.md": "83e65be8ce5db054999d6bd70adbbb83b2c11cf77fed19f905349716b48db713",
+    "runtime/js/base.mjs": "9ccfa9c8db7abd1a08520f0df27feb2b3163fd9d2929bf4db8dcbe5de9015eb3",
+    "runtime/js/build.mjs": "4be85d590521e9453f0e7eb46f7b7d9d35bfd803510089c23db192c09d2b2a12",
+    "runtime/js/core.mjs": "cd9641ecd4a54d4b0c0c4a9bbbaec4208ff053f5d1226868aca58995cdcefc21",
+    "runtime/js/effects.mjs": "f33faa95620ecaa7561df76dcd623af7cea1ec001484b59fc7ae2f72405f0fac",
+    "runtime/js/foreign.mjs": "22b442bde5caf73f669fa94f6027ee9454b6934e61fa440a4bf5fb05c399dbff",
+    "runtime/js/readback.mjs": "de7b7930f6e4167b7e44aaef6621b31d53b6d10e23f6e1a93366a214118dee69",
+    "runtime/js/test-apply.mjs": "ca8e877deb0db259f9c22bb5dc17bb774a413c1018796d08f63800ca834c82c1",
+    "runtime/js/test.mjs": "f3c05227a11f1ee8a47c236527876fb32698584227e5a2862321e355b337409a",
+    "runtime/native/LICENSE": "0beb288abd3d067e231f3fbe7df1f8ee37344061fc67f22018150a19e4b26c35",
+    "runtime/native/ORIGIN.md": "cc7d2b0e50253e3ccc3f88ed5c92134b3faba5a8c6eb86ae7aa9c7b5e7dd7073",
+    "runtime/native/effs/args.c": "7209a5fa11396fa8b0667a6738c913c40f554797e442c847a25e13a5f69676e0",
+    "runtime/native/effs/audio_close.c": "c67f807f7400065f20045392d87ef7e73af209f1aa0ee34a1eb35d568d94feb5",
+    "runtime/native/effs/audio_open.c": "65df9665a396a7976b4fdfa556a73ec187e3b5e669e47888615cb0c63a42ce41",
+    "runtime/native/effs/audio_write.c": "0eaaef9f111e40224f4adc4c8978b9e35f08613996381ac9b72641e2aeb608c4",
+    "runtime/native/effs/chan_close.c": "d88e91ca179bfcdbf8580e75f1dbea4c5f240d3fbdb980a2ee24d1e662ff478a",
+    "runtime/native/effs/chan_new.c": "41d722added898f3a9eae186be969a7ca7f01bc3235331663b13319d14fb7ff2",
+    "runtime/native/effs/chan_recv.c": "7baa193d4adb09865a9397e84d41ec4fe7097cdd46150ed44513c76da126d0d1",
+    "runtime/native/effs/chan_send.c": "f12ade43cc52af51e13d35a93221b129db11fbfa7470f38557b1c0c9ef22caa4",
+    "runtime/native/effs/file_close.c": "befd465a31b88936d772222d26b1019ea7330e59e6327d8ba90584c85e8b2fb3",
+    "runtime/native/effs/file_open.c": "f42a8bcc142b9003c7f6ca99287ca09c14f9efcbe15dea929c90c2fa062746e7",
+    "runtime/native/effs/file_read.c": "4ec0b13491c0d9564836ad23b5a65aec930d84bd19e36c90e20e9c34211a7e2b",
+    "runtime/native/effs/file_read_at.c": "689499b396a634a3ebb21ad2cc3846f1979b8f2747c07c15a38ee2f07c904b1c",
+    "runtime/native/effs/file_read_bytes.c": "810e08bfe4439e71dc4bae03eeae680689af8092e144b53faacd75df198ef93d",
+    "runtime/native/effs/file_size.c": "09906f3839f0f0fba1eea944c948e35f8e03627dc2b78e8debb43e0556f5d5d8",
+    "runtime/native/effs/file_write.c": "9829c7100982824fa17f78bab80150adccbddcb69a3cc47939e118018cc22504",
+    "runtime/native/effs/file_write_bytes.c": "80784b7308c00f74ffae50ec0d8278227250edb8edd71a9e33c701482438f097",
+    "runtime/native/effs/get_env.c": "62255e46c7e0c43baea62366830c4a5badb11cba517c0aa17f952f432f46d4a3",
+    "runtime/native/effs/listener_close.c": "11247352a8311b066fff27ed85958598214ece80f23a7ac59ee981ea569351ec",
+    "runtime/native/effs/now.c": "da5fde65701c4fadc7560625c9615b4d60b2eefbd7b6bbe1aedda61887b825b9",
+    "runtime/native/effs/print.c": "709500d2ace6e2eaeec0f5f1e4373d4ec5e402b3c1e289bd70dfef7e2a635b26",
+    "runtime/native/effs/print_err.c": "72781d2adc88a4791d5530c9deff20824c38d5aa1ba43fb05aaa6a697e19f4b6",
+    "runtime/native/effs/random_u32.c": "10ef9045dcd539bc0ff609e61c77d585fb998ceb48656944d62727716263ee2d",
+    "runtime/native/effs/sleep.c": "77e212d3baeec0b3dc0a9c7f630b43094986e433c049049d354a9681719e2ecd",
+    "runtime/native/effs/socket_close.c": "6e2fd1717a2fab133813af88fc0f5b5a8ce44c23bf411f269e71aac38671562e",
+    "runtime/native/effs/spawn.c": "fb3dac6efa993c51f9d7a668cf8da2cac1148380b72cc18a558cba9ba70c01f3",
+    "runtime/native/effs/tcp_accept.c": "e0f0cf4199c278aec722e3c9b81ff879fcec31ec96ebaf66a954db673cf535f8",
+    "runtime/native/effs/tcp_connect.c": "ae1515d0ff57215b03888e76cfe4ee485750ec226c28eed05d56e417f0f84f58",
+    "runtime/native/effs/tcp_listen.c": "2f206b54e6698df529f6c669755cf84e92f51736db4d38e224dd5eb3fcd0a3ed",
+    "runtime/native/effs/tcp_poll.c": "9f4adfe0f4b8e025783b07fa4ba9fec619a5938135dc5f4bb8c9cf7079e82b37",
+    "runtime/native/effs/tcp_recv.c": "3a105d82f4e786b992e27bec66c407caa9efbda67a63c03d95805231a21d9ba1",
+    "runtime/native/effs/tcp_send.c": "70a5eba01d09e2cda7a9f3b22d976f4c8ba3fb7a8c8083abddd8d12c85d8a2a4",
+    "runtime/native/effs/udp_bind.c": "fe405175c1890c2d19a2f6d94b2672259b47a1e6dc8f62f8e9ff540bef7a2245",
+    "runtime/native/effs/udp_poll.c": "66504dbbc09ab346e04cca7a22c60aacc8866555ac143088603cb4b568a64f71",
+    "runtime/native/effs/udp_recv_from.c": "140a281bca2348566030e092f3c27591893b5d945e57e2965863d02c2e6c0a65",
+    "runtime/native/effs/udp_send_to.c": "8704fe7e5770af7e4dcbe24f0fecf4cfbfe61a0a69a77b129df9965e306fae8f",
+    "runtime/native/effs/window_close.c": "655afbdf8a5f7fa80963bad64b43c8dfe7ec1f80896db381792d0d6933f3be2d",
+    "runtime/native/effs/window_frame.c": "01dc840b2145efb8c91b4ffe7360e3520753f59c42e122703c3a6190c50e1aa4",
+    "runtime/native/effs/window_open.c": "1be9c669b47a44716b9cef1aafaafa1ed2a2268730fab475efa762cf368fc21d",
+    "runtime/native/effs/window_set_title.c": "cd60a39ca4084794f3e7aef939de8c7e02ef0ae2158bf52a69f93c21a59ebba5",
+    "runtime/native/effs/write.c": "c1bcd80d50c4901027c801cdd8d7464ea3029361115ac47044c992ce2235a8ac",
+    "runtime/native/runtime.c": "1bbee6dfbe62736c94ad448ec69a8f7437526e98c0aea230b491574f5a9a85fb",
+    "runtime.mjs": "26f5eee2f54b194b64f768df6ff505c67bf7a5df2159aa06caf53ecba54e910b"
+  },
+  "modules": [
+    {
+      "file": "src/core/term.bend",
+      "before": {
+        "physical": 463,
+        "nonblank": 373,
+        "bytes": 8527
+      },
+      "after": {
+        "physical": 394,
+        "nonblank": 338,
+        "bytes": 7930
+      },
+      "beforeSha256": "e47b14c3fec0043dacccdf2db0366e5d9ed29394b3a4faae47afe08e69a8f522",
+      "afterSha256": "04bcc073b38e35bfac713ae161bbdf8bd59804aa59c6e1ad0127059441836395"
+    },
+    {
+      "file": "src/core/index.bend",
+      "before": {
+        "physical": 381,
+        "nonblank": 319,
+        "bytes": 10245
+      },
+      "after": {
+        "physical": 339,
+        "nonblank": 298,
+        "bytes": 9480
+      },
+      "beforeSha256": "56687b5ca818a3217ab8dff7960836db002b8d7ad89e5de26b1f270d5abd4624",
+      "afterSha256": "c3cab805705f5dedcfe65691d4bc5c98710058bf8a62e0c39610ff398cf2872e"
+    },
+    {
+      "file": "src/core/normalize.bend",
+      "before": {
+        "physical": 560,
+        "nonblank": 476,
+        "bytes": 17027
+      },
+      "after": {
+        "physical": 534,
+        "nonblank": 463,
+        "bytes": 16605
+      },
+      "beforeSha256": "f1baf359384e1edb8633e327f8a0cf01feb790931db79bade2c44685151f2fb7",
+      "afterSha256": "efb95c1ae957f3c7b0c9efa5e761c9fa49325c236efb72a01bb240420ba5f973"
+    },
+    {
+      "file": "src/core/graph.bend",
+      "before": {
+        "physical": 503,
+        "nonblank": 425,
+        "bytes": 14602
+      },
+      "after": {
+        "physical": 475,
+        "nonblank": 411,
+        "bytes": 14245
+      },
+      "beforeSha256": "7d5e75fce5d473fe2c63a4ccbd3e115db29bf42bb037fa9238d5427fce62a790",
+      "afterSha256": "50ba21e52eb93a9153606f5d620ac2c613127063f294fe962b4c0a836224f8a3"
+    },
+    {
+      "file": "src/core/reach.bend",
+      "before": {
+        "physical": 131,
+        "nonblank": 107,
+        "bytes": 3677
+      },
+      "after": {
+        "physical": 129,
+        "nonblank": 106,
+        "bytes": 3635
+      },
+      "beforeSha256": "c7c1e1ff68ad798f3888d770ee5a02b1b73abbecd58cd2df9b81619428abb2cf",
+      "afterSha256": "d46a6eed5910cd404ec4603cb735a9d402b1896e702ceb1770efe16344ef992c"
+    },
+    {
+      "file": "src/core/pretty.bend",
+      "before": {
+        "physical": 584,
+        "nonblank": 477,
+        "bytes": 15722
+      },
+      "after": {
+        "physical": 524,
+        "nonblank": 447,
+        "bytes": 14941
+      },
+      "beforeSha256": "9b7ffdca8ba9593b48167aea4f26abd8ac2802a2cca474b67dbf0cbebfca6def",
+      "afterSha256": "8711e8ec480a194569dade743b570fa964a5b8783249a90cabc445e10e26b53e"
+    },
+    {
+      "file": "src/check/quantity.bend",
+      "before": {
+        "physical": 175,
+        "nonblank": 143,
+        "bytes": 3514
+      },
+      "after": {
+        "physical": 157,
+        "nonblank": 134,
+        "bytes": 3289
+      },
+      "beforeSha256": "e6c7a06fd45cb132d9d5d1704a6f01f81325505eed2ff5d6025e118ff4522e8a",
+      "afterSha256": "5f5cf65dca94a786691d1246f9b3002074eb9ae9715e387c802dd3c91486258b"
+    },
+    {
+      "file": "src/check/kernel.bend",
+      "before": {
+        "physical": 1245,
+        "nonblank": 1036,
+        "bytes": 35212
+      },
+      "after": {
+        "physical": 1159,
+        "nonblank": 993,
+        "bytes": 34058
+      },
+      "beforeSha256": "0d920c6026e66ca0ff11f7d210789d398ca162d6cc3858d3a91081c6c763619f",
+      "afterSha256": "7a17d68eafa5d250e05e7c977937a7d8029207b43a1ec797e795caefb46fcefa"
+    },
+    {
+      "file": "src/check/specialize.bend",
+      "before": {
+        "physical": 972,
+        "nonblank": 800,
+        "bytes": 24327
+      },
+      "after": {
+        "physical": 916,
+        "nonblank": 772,
+        "bytes": 23704
+      },
+      "beforeSha256": "9967a84c8862eabe3149c8cb125520f4913c1f1a057852138b7887bbeb9376fb",
+      "afterSha256": "db583c76fbc41502f500665c69c48bd4aa3ce2fcc30e7192b9dab317c7d7f21b"
+    },
+    {
+      "file": "src/check/prefix.bend",
+      "before": {
+        "physical": 150,
+        "nonblank": 125,
+        "bytes": 3010
+      },
+      "after": {
+        "physical": 140,
+        "nonblank": 120,
+        "bytes": 2851
+      },
+      "beforeSha256": "b95dcd2bcd8bd22d23b1bdce90e44f4e2554a127ef78d3f26a20190cf8c21322",
+      "afterSha256": "96172741f314f801eb20c8d071c8de8c5f3b8f2a8e3312d5f9e6858c4d9a2dac"
+    },
+    {
+      "file": "src/check/annotate.bend",
+      "before": {
+        "physical": 400,
+        "nonblank": 334,
+        "bytes": 10850
+      },
+      "after": {
+        "physical": 386,
+        "nonblank": 327,
+        "bytes": 10597
+      },
+      "beforeSha256": "f033d726d951723b3bd52c62317e5b47721552beaf2ac42205e2444eb70c0c14",
+      "afterSha256": "8e158ac16fee79f54633d606450b5c5619860d86c294c0d119a312d5a8d5cad8"
+    },
+    {
+      "file": "src/front/lexer.bend",
+      "before": {
+        "physical": 340,
+        "nonblank": 280,
+        "bytes": 8804
+      },
+      "after": {
+        "physical": 302,
+        "nonblank": 261,
+        "bytes": 8357
+      },
+      "beforeSha256": "33b12e01c8b4ed2559163ace169e25a95dbf59c6a99438f5af9d8f240431b2d5",
+      "afterSha256": "aed5103d42d33312f6e5e873ae786646be42f7332f04a80b78ab0cca70d31f31"
+    },
+    {
+      "file": "src/front/parser.bend",
+      "before": {
+        "physical": 637,
+        "nonblank": 530,
+        "bytes": 21518
+      },
+      "after": {
+        "physical": 606,
+        "nonblank": 513,
+        "bytes": 21132
+      },
+      "beforeSha256": "8daa5d7c685f67336b435b66989ad0eb17f4a9570eb38138ee5ad1a0ea490440",
+      "afterSha256": "c2ea3940944434dea9d52c146e998831288b5d4bc1d45e3ce80030bf89c91129"
+    },
+    {
+      "file": "src/front/declarations.bend",
+      "before": {
+        "physical": 703,
+        "nonblank": 585,
+        "bytes": 22567
+      },
+      "after": {
+        "physical": 663,
+        "nonblank": 565,
+        "bytes": 21881
+      },
+      "beforeSha256": "e1376ca0c87ddde70abeada9281b83224866994b2b45b376a10603401f7971e8",
+      "afterSha256": "acb0c17332797ac414ea0eab0a6478c4485bd2b29a0de75c9a5afd9709121ad9"
+    },
+    {
+      "file": "src/front/flatten.bend",
+      "before": {
+        "physical": 284,
+        "nonblank": 238,
+        "bytes": 8510
+      },
+      "after": {
+        "physical": 270,
+        "nonblank": 231,
+        "bytes": 8341
+      },
+      "beforeSha256": "ed4c712480be44474eba76f98c325fcf5aba50735b2d0fe5d029613298f9e51e",
+      "afterSha256": "0fa8fae96620ab3f99241436ac46d8201b01e414d2c42ed37f3daf7c5fc900f4"
+    },
+    {
+      "file": "src/front/elaborate.bend",
+      "before": {
+        "physical": 512,
+        "nonblank": 421,
+        "bytes": 14741
+      },
+      "after": {
+        "physical": 482,
+        "nonblank": 406,
+        "bytes": 14377
+      },
+      "beforeSha256": "b88ba5debd90eca6552eb80f881694d861d5b96492663c9af12f2f182b2f70de",
+      "afterSha256": "8773a648988663c7aa2ee440f2612a450b28ba7a9bf943fd1c84e71fddb00c76"
+    },
+    {
+      "file": "src/front/sugar.bend",
+      "before": {
+        "physical": 358,
+        "nonblank": 292,
+        "bytes": 9396
+      },
+      "after": {
+        "physical": 346,
+        "nonblank": 286,
+        "bytes": 9253
+      },
+      "beforeSha256": "b8bdca5ccc2d4c9a864d8bb6f0d707486e31d75f8dfef9b1ca15e9a25f721c9f",
+      "afterSha256": "920c7904d8a8bcdc90f38dc109836a262d4d574bcca71d7b8c042bddfcfef6fa"
+    },
+    {
+      "file": "src/front/unicode.bend",
+      "before": {
+        "physical": 82,
+        "nonblank": 63,
+        "bytes": 2813
+      },
+      "after": {
+        "physical": 78,
+        "nonblank": 61,
+        "bytes": 2775
+      },
+      "beforeSha256": "ab9f2596af9af28bc3698d9cc101cdfd8565be2008d89322b2290cb2887862b6",
+      "afterSha256": "ca1576b9c9a1992157c98bb66da63ca45aff204c724d902e2e88c5ee87662a51"
+    },
+    {
+      "file": "src/front/literals_arrays.bend",
+      "before": {
+        "physical": 197,
+        "nonblank": 155,
+        "bytes": 5734
+      },
+      "after": {
+        "physical": 197,
+        "nonblank": 155,
+        "bytes": 5734
+      },
+      "beforeSha256": "6468fe13b93ebb879c81ac8d18e2e99d4de16dabbf7dc0cc6f389e4a95343981",
+      "afterSha256": "6468fe13b93ebb879c81ac8d18e2e99d4de16dabbf7dc0cc6f389e4a95343981"
+    },
+    {
+      "file": "src/front/parallel.bend",
+      "before": {
+        "physical": 146,
+        "nonblank": 119,
+        "bytes": 4117
+      },
+      "after": {
+        "physical": 144,
+        "nonblank": 118,
+        "bytes": 4088
+      },
+      "beforeSha256": "08be770458662a402c4e4a33417381779cb327360747e6d64c1983545cf001d2",
+      "afterSha256": "b08dfeb585b4f196fa1ecd1313c42972f164d80822624d34f664d066ab4a80af"
+    },
+    {
+      "file": "src/front/fresh_work.bend",
+      "before": {
+        "physical": 202,
+        "nonblank": 195,
+        "bytes": 7057
+      },
+      "after": {
+        "physical": 200,
+        "nonblank": 193,
+        "bytes": 6978
+      },
+      "beforeSha256": "b84c60ecf96f3c50403c7fee86d9949a3bcacb4cab529f5a94cb64e920c6db53",
+      "afterSha256": "bb91910966d0e82fc1e1c65be12b149056db6e22503f0fad1d560e4900d7a5ee"
+    },
+    {
+      "file": "src/front/freshen.bend",
+      "before": {
+        "physical": 61,
+        "nonblank": 49,
+        "bytes": 1222
+      },
+      "after": {
+        "physical": 57,
+        "nonblank": 47,
+        "bytes": 1168
+      },
+      "beforeSha256": "174f3aa0192475e419051f90dc835d4fcef4ae454dcbbc14cd6898b22a2cc28c",
+      "afterSha256": "26abdc135603675f2ab3dffc3c049a20982500907d8819a3fdfea42ba917136a"
+    },
+    {
+      "file": "src/load/paths.bend",
+      "before": {
+        "physical": 93,
+        "nonblank": 74,
+        "bytes": 2290
+      },
+      "after": {
+        "physical": 83,
+        "nonblank": 69,
+        "bytes": 2127
+      },
+      "beforeSha256": "56d3ac6b7bf63db2ffd1c26521fb528f56b9469c78203d01296a93fc3812d38c",
+      "afterSha256": "6e51e3501ed057ca53b48c3f02506199e2000a5b30fb62aa243843e94d9af877"
+    },
+    {
+      "file": "src/front/families.bend",
+      "before": {
+        "physical": 207,
+        "nonblank": 168,
+        "bytes": 6332
+      },
+      "after": {
+        "physical": 203,
+        "nonblank": 166,
+        "bytes": 6283
+      },
+      "beforeSha256": "b17a1dcf30d7ff7c7a0bc0d8e9df6d58f166ab19e3889c73b2403bb0b3b14fe4",
+      "afterSha256": "ad6c331583f510bef384bb23ac41bb455a7b85a8c2d72ceb0232443a1dd98e1b"
+    },
+    {
+      "file": "src/front/validate.bend",
+      "before": {
+        "physical": 290,
+        "nonblank": 233,
+        "bytes": 9681
+      },
+      "after": {
+        "physical": 284,
+        "nonblank": 230,
+        "bytes": 9567
+      },
+      "beforeSha256": "26e56bc64093bf2bb7661c79c47218837974b3954db5c662ccb8d18ea39196cf",
+      "afterSha256": "7d7a2e7d7093a8d00502f688a2d525626eea30ae931ab94d3d057aea90380ebb"
+    },
+    {
+      "file": "src/load/imports.bend",
+      "before": {
+        "physical": 13,
+        "nonblank": 10,
+        "bytes": 733
+      },
+      "after": {
+        "physical": 13,
+        "nonblank": 10,
+        "bytes": 733
+      },
+      "beforeSha256": "f9ad12e894937828aea74ccd34750b3b1635943a0037db9656e9b8e514350471",
+      "afterSha256": "f9ad12e894937828aea74ccd34750b3b1635943a0037db9656e9b8e514350471"
+    },
+    {
+      "file": "src/load/graph.bend",
+      "before": {
+        "physical": 574,
+        "nonblank": 499,
+        "bytes": 17020
+      },
+      "after": {
+        "physical": 546,
+        "nonblank": 483,
+        "bytes": 16519
+      },
+      "beforeSha256": "05c9030572a608241d0974b58976addbd200287cc3c21359dd3c9aa1c07274ac",
+      "afterSha256": "9f168450d0ba908b8ba21129af28e156f5786afc5e9d7c64680a82d0752f59c8"
+    },
+    {
+      "file": "src/load/seed.bend",
+      "before": {
+        "physical": 168,
+        "nonblank": 143,
+        "bytes": 5460
+      },
+      "after": {
+        "physical": 160,
+        "nonblank": 139,
+        "bytes": 5256
+      },
+      "beforeSha256": "18100899188b1f1d088605b9a9b23e1c059abf7d6a8a65a835d024a2279bd4a3",
+      "afterSha256": "db10779d9b777baddfafe30c3532e9cd980a96427ba536af7284741769d09842"
+    },
+    {
+      "file": "src/load/modules.bend",
+      "before": {
+        "physical": 337,
+        "nonblank": 280,
+        "bytes": 8878
+      },
+      "after": {
+        "physical": 317,
+        "nonblank": 270,
+        "bytes": 8481
+      },
+      "beforeSha256": "5c7c19a5d75779ae3e81a44b4ab387c782cd32cf9eb5b20c02e5bede153f85c0",
+      "afterSha256": "e5f75aadb04e69a16feed737e3e4c6101e752d92b65bc3f6f01b122ed0c65424"
+    },
+    {
+      "file": "src/diagnostic/model.bend",
+      "before": {
+        "physical": 19,
+        "nonblank": 15,
+        "bytes": 805
+      },
+      "after": {
+        "physical": 19,
+        "nonblank": 15,
+        "bytes": 805
+      },
+      "beforeSha256": "dd69096c6fdcd682a45e9536eb6d475061fd285807961ac95a16b5a874358af5",
+      "afterSha256": "dd69096c6fdcd682a45e9536eb6d475061fd285807961ac95a16b5a874358af5"
+    },
+    {
+      "file": "src/diagnostic/render.bend",
+      "before": {
+        "physical": 214,
+        "nonblank": 173,
+        "bytes": 5628
+      },
+      "after": {
+        "physical": 184,
+        "nonblank": 158,
+        "bytes": 5198
+      },
+      "beforeSha256": "201867dba57eb715308026a3dcd36d1a61b0b51ea27c69c6ba00a3c935aedfe9",
+      "afterSha256": "21890a0d7db39db143c93ae15a2273d690ca6afe0dd263ac04af8985bcc166be"
+    },
+    {
+      "file": "src/diagnostic/trace.bend",
+      "before": {
+        "physical": 131,
+        "nonblank": 106,
+        "bytes": 4866
+      },
+      "after": {
+        "physical": 119,
+        "nonblank": 100,
+        "bytes": 4681
+      },
+      "beforeSha256": "e47615206be3ebf22c4771de06af3d4dfc1a553f7e914bfd9114bc74c2ab1246",
+      "afterSha256": "a05fdb89e4d2aa38143f849524949bf4e225c4b9eedfebfe998f167caaaf99d0"
+    },
+    {
+      "file": "src/diagnostic/produce.bend",
+      "before": {
+        "physical": 252,
+        "nonblank": 219,
+        "bytes": 8473
+      },
+      "after": {
+        "physical": 236,
+        "nonblank": 210,
+        "bytes": 8138
+      },
+      "beforeSha256": "5e036e63cd32af0f64642bc4cea581ea191e4281c6cbb5ba840fd87b979213b5",
+      "afterSha256": "9f1bf3e8683941b301649db680b4b7b3017d302651f62817c7b752b9625c5797"
+    },
+    {
+      "file": "src/diagnostic/frontend.bend",
+      "before": {
+        "physical": 234,
+        "nonblank": 227,
+        "bytes": 8353
+      },
+      "after": {
+        "physical": 229,
+        "nonblank": 222,
+        "bytes": 8124
+      },
+      "beforeSha256": "3dff9649db9ced1eb6815f6fae3a540797a5fec697ef32b4b10e910ca80a88e3",
+      "afterSha256": "8727de8ffa6d6fb1022ada1fec7bf53f97d9b696a51666eaa20c22ff16a8f842"
+    },
+    {
+      "file": "src/back/js/foreign.bend",
+      "before": {
+        "physical": 174,
+        "nonblank": 142,
+        "bytes": 5493
+      },
+      "after": {
+        "physical": 160,
+        "nonblank": 135,
+        "bytes": 5295
+      },
+      "beforeSha256": "4b6d09ed9cdb914b5531b763bd65523121324bee554a8e5082c4887e728f085d",
+      "afterSha256": "e71e6822524c8ccca4b75c38946dab05838623b4f80196d5200c4b620c014599"
+    },
+    {
+      "file": "src/back/js/literals.bend",
+      "before": {
+        "physical": 187,
+        "nonblank": 150,
+        "bytes": 5062
+      },
+      "after": {
+        "physical": 183,
+        "nonblank": 148,
+        "bytes": 5004
+      },
+      "beforeSha256": "861525baf8fe999e3086a7ce1cd758e488235e23522dc97bdd8ee7694bb32ae7",
+      "afterSha256": "48f687d8a021a8159f54d29c9fa3049df91a968503bd53be9b5efa5ca27a7db0"
+    },
+    {
+      "file": "src/back/js/validate.bend",
+      "before": {
+        "physical": 290,
+        "nonblank": 242,
+        "bytes": 10093
+      },
+      "after": {
+        "physical": 282,
+        "nonblank": 238,
+        "bytes": 9946
+      },
+      "beforeSha256": "917470e39b4d34c26a4f119f1b7acfca7a51926aba76a73d8397b103debca338",
+      "afterSha256": "d3ff3ec4bda343af3ec8046ddcc108b0cfbfa134cd26b7a9abc65d268a426092"
+    },
+    {
+      "file": "src/back/js/choice.bend",
+      "before": {
+        "physical": 101,
+        "nonblank": 84,
+        "bytes": 3670
+      },
+      "after": {
+        "physical": 97,
+        "nonblank": 82,
+        "bytes": 3583
+      },
+      "beforeSha256": "2b3ac6cd46a638063d793a1f40eef6f226b1602191cf345e958023a29e2b66c9",
+      "afterSha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3"
+    },
+    {
+      "file": "src/back/js/projection.bend",
+      "before": {
+        "physical": 69,
+        "nonblank": 58,
+        "bytes": 2451
+      },
+      "after": {
+        "physical": 65,
+        "nonblank": 56,
+        "bytes": 2355
+      },
+      "beforeSha256": "d1e327782e64ae05b05ce606350f20c61392c26255c0afefa2fff9f2c0ed1250",
+      "afterSha256": "f534d7c74f396527a9d3e3a06bececebcf0b68d92400ccf46b8125e82735ef09"
+    },
+    {
+      "file": "src/back/js/emit.bend",
+      "before": {
+        "physical": 981,
+        "nonblank": 815,
+        "bytes": 29673
+      },
+      "after": {
+        "physical": 951,
+        "nonblank": 800,
+        "bytes": 29207
+      },
+      "beforeSha256": "7bf4f547540fc148feea196efd76c2f9a5234b27a33b7d8ac794a04ff5816d78",
+      "afterSha256": "6d6db9de9c6c41211f545b4867362402ebebe03db05f77c99dbd020ec08ba016"
+    },
+    {
+      "file": "src/back/native/ir.bend",
+      "before": {
+        "physical": 25,
+        "nonblank": 19,
+        "bytes": 929
+      },
+      "after": {
+        "physical": 25,
+        "nonblank": 19,
+        "bytes": 929
+      },
+      "beforeSha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b",
+      "afterSha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b"
+    },
+    {
+      "file": "src/back/native/text.bend",
+      "before": {
+        "physical": 103,
+        "nonblank": 84,
+        "bytes": 2595
+      },
+      "after": {
+        "physical": 101,
+        "nonblank": 83,
+        "bytes": 2545
+      },
+      "beforeSha256": "053f8a05ced5c13f7face492da1d16cbdbfdfd90f356c4a5d8f0bbb5d83ef5f7",
+      "afterSha256": "20ca7aa5627b698771340d4a2e944caef9b1d100d0f2478a75a622b43a4d647b"
+    },
+    {
+      "file": "src/back/native/identity.bend",
+      "before": {
+        "physical": 93,
+        "nonblank": 79,
+        "bytes": 2540
+      },
+      "after": {
+        "physical": 89,
+        "nonblank": 77,
+        "bytes": 2476
+      },
+      "beforeSha256": "79794a586a0c2f043c9bd417b97fe2092863eb3a8524250d6b49f0b77dc1810d",
+      "afterSha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a"
+    },
+    {
+      "file": "src/back/native/layout.bend",
+      "before": {
+        "physical": 7,
+        "nonblank": 6,
+        "bytes": 135
+      },
+      "after": {
+        "physical": 7,
+        "nonblank": 6,
+        "bytes": 135
+      },
+      "beforeSha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b",
+      "afterSha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b"
+    },
+    {
+      "file": "src/back/native/intrinsic.bend",
+      "before": {
+        "physical": 29,
+        "nonblank": 24,
+        "bytes": 4905
+      },
+      "after": {
+        "physical": 29,
+        "nonblank": 24,
+        "bytes": 4905
+      },
+      "beforeSha256": "8acf8c4e083b55cc33ef323552963b254ac310c22e7d8b5e3b82253776892ab0",
+      "afterSha256": "8acf8c4e083b55cc33ef323552963b254ac310c22e7d8b5e3b82253776892ab0"
+    },
+    {
+      "file": "src/back/native/tables.bend",
+      "before": {
+        "physical": 221,
+        "nonblank": 184,
+        "bytes": 8584
+      },
+      "after": {
+        "physical": 221,
+        "nonblank": 184,
+        "bytes": 8584
+      },
+      "beforeSha256": "26457cbe409162e70805b3ff0ec91946811b219f71bb2d45982663c3299daf54",
+      "afterSha256": "26457cbe409162e70805b3ff0ec91946811b219f71bb2d45982663c3299daf54"
+    },
+    {
+      "file": "src/back/native/emit.bend",
+      "before": {
+        "physical": 111,
+        "nonblank": 93,
+        "bytes": 5084
+      },
+      "after": {
+        "physical": 111,
+        "nonblank": 93,
+        "bytes": 5084
+      },
+      "beforeSha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a",
+      "afterSha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a"
+    },
+    {
+      "file": "src/back/native/erase.bend",
+      "before": {
+        "physical": 85,
+        "nonblank": 72,
+        "bytes": 3479
+      },
+      "after": {
+        "physical": 83,
+        "nonblank": 71,
+        "bytes": 3439
+      },
+      "beforeSha256": "11fba4f16ef4de786f68076bafbc356c139fa953c22342c9557efe8b26936be1",
+      "afterSha256": "56ed6538d90549f7f4cc949201f3ca6fd588a7273ea500dda96d0ce054f10007"
+    },
+    {
+      "file": "src/back/native/bridge.bend",
+      "before": {
+        "physical": 441,
+        "nonblank": 367,
+        "bytes": 21605
+      },
+      "after": {
+        "physical": 435,
+        "nonblank": 364,
+        "bytes": 21509
+      },
+      "beforeSha256": "88431cf52f0c9ac1b3b1c93aa4a54225ca201d0b8021283f98ba09c2aadc1c74",
+      "afterSha256": "d6342724c81278a4907a875128630210147d2e1ba6e90bd0ab1cacd02cdb991d"
+    },
+    {
+      "file": "src/back/native/direct.bend",
+      "before": {
+        "physical": 88,
+        "nonblank": 74,
+        "bytes": 4200
+      },
+      "after": {
+        "physical": 88,
+        "nonblank": 74,
+        "bytes": 4200
+      },
+      "beforeSha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5",
+      "afterSha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5"
+    },
+    {
+      "file": "src/back/native/pattern.bend",
+      "before": {
+        "physical": 146,
+        "nonblank": 141,
+        "bytes": 5481
+      },
+      "after": {
+        "physical": 141,
+        "nonblank": 137,
+        "bytes": 5324
+      },
+      "beforeSha256": "5c624607c7ad2e19660efeddf694d841d7b4d867b1a3870795f9847daca7d155",
+      "afterSha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4"
+    },
+    {
+      "file": "src/back/native/show.bend",
+      "before": {
+        "physical": 156,
+        "nonblank": 131,
+        "bytes": 6832
+      },
+      "after": {
+        "physical": 152,
+        "nonblank": 129,
+        "bytes": 6723
+      },
+      "beforeSha256": "6f662583a276295312217ad99b777cf96988c21ffa7beca3178c043d4b040780",
+      "afterSha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d"
+    },
+    {
+      "file": "src/back/native/parallel.bend",
+      "before": {
+        "physical": 94,
+        "nonblank": 81,
+        "bytes": 5003
+      },
+      "after": {
+        "physical": 94,
+        "nonblank": 81,
+        "bytes": 5003
+      },
+      "beforeSha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722",
+      "afterSha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722"
+    },
+    {
+      "file": "src/back/native/array.bend",
+      "before": {
+        "physical": 27,
+        "nonblank": 24,
+        "bytes": 1814
+      },
+      "after": {
+        "physical": 27,
+        "nonblank": 24,
+        "bytes": 1814
+      },
+      "beforeSha256": "4e1d5c9d282ba746ac1e98df470411d477bf1449b5621c3ad413f01e883d9149",
+      "afterSha256": "4e1d5c9d282ba746ac1e98df470411d477bf1449b5621c3ad413f01e883d9149"
+    },
+    {
+      "file": "src/back/native/validate.bend",
+      "before": {
+        "physical": 62,
+        "nonblank": 52,
+        "bytes": 2871
+      },
+      "after": {
+        "physical": 62,
+        "nonblank": 52,
+        "bytes": 2871
+      },
+      "beforeSha256": "9684fcb9bb25ff0e822ac11b738a319c1353ed721c6c4d864ed984cde0bfd089",
+      "afterSha256": "9684fcb9bb25ff0e822ac11b738a319c1353ed721c6c4d864ed984cde0bfd089"
+    },
+    {
+      "file": "src/back/native/foreign.bend",
+      "before": {
+        "physical": 53,
+        "nonblank": 46,
+        "bytes": 2987
+      },
+      "after": {
+        "physical": 53,
+        "nonblank": 46,
+        "bytes": 2987
+      },
+      "beforeSha256": "fa71a99ac100dc31a8d6246132fb717f2d8c69f6a7cae71a48a2b960d2c89d61",
+      "afterSha256": "fa71a99ac100dc31a8d6246132fb717f2d8c69f6a7cae71a48a2b960d2c89d61"
+    },
+    {
+      "file": "src/back/native/book.bend",
+      "before": {
+        "physical": 320,
+        "nonblank": 266,
+        "bytes": 14330
+      },
+      "after": {
+        "physical": 316,
+        "nonblank": 264,
+        "bytes": 14283
+      },
+      "beforeSha256": "63e16ef3af4f1bce21f8ab912a27bd45fc4c2d232cfcdfaad275bd5083a24dc8",
+      "afterSha256": "0f0e31315a8d9cbf362778aa2887abf3ac23850aafb58b28407cba53a3d352f3"
+    },
+    {
+      "file": "src/driver/report.bend",
+      "before": {
+        "physical": 84,
+        "nonblank": 71,
+        "bytes": 2126
+      },
+      "after": {
+        "physical": 82,
+        "nonblank": 70,
+        "bytes": 2091
+      },
+      "beforeSha256": "461d05ad6f7647feafd13520fd5da0c9635eee976d58bea6c7d336b862831ba2",
+      "afterSha256": "f115aab2d00fc6f71db57a972d919db590a22319cec89e7b6b892efe47959b99"
+    },
+    {
+      "file": "src/driver/api.bend",
+      "before": {
+        "physical": 122,
+        "nonblank": 99,
+        "bytes": 3115
+      },
+      "after": {
+        "physical": 108,
+        "nonblank": 92,
+        "bytes": 2926
+      },
+      "beforeSha256": "a68a76de0ed77e3fc9b99193e4e0298257c97e516fbab79438123309112e63a1",
+      "afterSha256": "096e60ddf14525fac1f5c94da4de7adac53ea0df7b6eb5e8988e835e92212cbf"
+    }
+  ],
+  "transformed": [
+    {
+      "name": "all",
+      "lawLine": 170,
+      "definitionLine": 179,
+      "binders": [
+        "+q: U32",
+        "+name: String",
+        "+id: U32",
+        "+a: KTerm",
+        "+b: KTerm"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "app",
+      "lawLine": 161,
+      "definitionLine": 167,
+      "binders": [
+        "+f: KTerm",
+        "+x: KTerm"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "atom",
+      "lawLine": 38,
+      "definitionLine": 43,
+      "binders": [
+        "+tag: String"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "core_beta",
+      "lawLine": 380,
+      "definitionLine": 385,
+      "binders": [
+        "+t: KTerm"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "core_force",
+      "lawLine": 323,
+      "definitionLine": 368,
+      "binders": [
+        "+t: KTerm"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "core_subst_stable",
+      "lawLine": 393,
+      "definitionLine": 407,
+      "binders": [
+        "+t: KTerm"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "da",
+      "lawLine": 202,
+      "definitionLine": 207,
+      "binders": [
+        "+d: KDef"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "db",
+      "lawLine": 252,
+      "definitionLine": 257,
+      "binders": [
+        "+d: KDef"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "dc",
+      "lawLine": 242,
+      "definitionLine": 247,
+      "binders": [
+        "+d: KDef"
+      ],
+      "result": "List<&2, KDef>",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "dk",
+      "lawLine": 192,
+      "definitionLine": 197,
+      "binders": [
+        "+d: KDef"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "dn",
+      "lawLine": 182,
+      "definitionLine": 187,
+      "binders": [
+        "+d: KDef"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "dt",
+      "lawLine": 222,
+      "definitionLine": 227,
+      "binders": [
+        "+d: KDef"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "du",
+      "lawLine": 262,
+      "definitionLine": 267,
+      "binders": [
+        "+d: KDef"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "dv",
+      "lawLine": 232,
+      "definitionLine": 237,
+      "binders": [
+        "+d: KDef"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "dx",
+      "lawLine": 212,
+      "definitionLine": 217,
+      "binders": [
+        "+d: KDef"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "has_name",
+      "lawLine": 304,
+      "definitionLine": 310,
+      "binders": [
+        "+ns: List<&2, String>",
+        "+name: String"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "ix",
+      "lawLine": 66,
+      "definitionLine": 71,
+      "binders": [
+        "+t: KTerm"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "kc",
+      "lawLine": 3,
+      "definitionLine": 11,
+      "binders": [
+        "-A: Type",
+        "+b: Bool",
+        "yes: Unit -> A",
+        "no: Unit -> A"
+      ],
+      "result": "A",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "kid",
+      "lawLine": 119,
+      "definitionLine": 125,
+      "binders": [
+        "+t: KTerm",
+        "+n: U32"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "ks",
+      "lawLine": 86,
+      "definitionLine": 91,
+      "binders": [
+        "+t: KTerm"
+      ],
+      "result": "List<&2, KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "kt",
+      "lawLine": 26,
+      "definitionLine": 35,
+      "binders": [
+        "+tag: String",
+        "+name: String",
+        "+id: U32",
+        "+quant: U32",
+        "+kids: List<&2, KTerm>"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "lookup",
+      "lawLine": 279,
+      "definitionLine": 285,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+name: String"
+      ],
+      "result": "KDef",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "missing",
+      "lawLine": 272,
+      "definitionLine": 276,
+      "binders": [],
+      "result": "KDef",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "nm",
+      "lawLine": 56,
+      "definitionLine": 61,
+      "binders": [
+        "+t: KTerm"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "qt",
+      "lawLine": 76,
+      "definitionLine": 81,
+      "binders": [
+        "+t: KTerm"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "qua",
+      "lawLine": 145,
+      "definitionLine": 150,
+      "binders": [
+        "+q: U32"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "ref",
+      "lawLine": 137,
+      "definitionLine": 142,
+      "binders": [
+        "+name: String"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "rm",
+      "lawLine": 96,
+      "definitionLine": 101,
+      "binders": [
+        "+t: KTerm"
+      ],
+      "result": "List<&2, String>",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "subst",
+      "lawLine": 342,
+      "definitionLine": 349,
+      "binders": [
+        "+t: KTerm",
+        "+id: U32",
+        "+v: KTerm"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "terms_at",
+      "lawLine": 106,
+      "definitionLine": 112,
+      "binders": [
+        "+ts: List<&2, KTerm>",
+        "+n: U32"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "terms_len",
+      "lawLine": 292,
+      "definitionLine": 297,
+      "binders": [
+        "+ts: List<&2, KTerm>"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "tg",
+      "lawLine": 46,
+      "definitionLine": 51,
+      "binders": [
+        "+t: KTerm"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "typ",
+      "lawLine": 153,
+      "definitionLine": 158,
+      "binders": [
+        "+q: U32"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "var",
+      "lawLine": 128,
+      "definitionLine": 134,
+      "binders": [
+        "+name: String",
+        "+id: U32"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/term.bend"
+    },
+    {
+      "name": "book_cached",
+      "lawLine": 94,
+      "definitionLine": 215,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+bound: U32"
+      ],
+      "result": "List<&2, KDef>",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/index.bend"
+    },
+    {
+      "name": "book_context",
+      "lawLine": 237,
+      "definitionLine": 242,
+      "binders": [
+        "+book: List<&2, KDef>"
+      ],
+      "result": "List<&2, KDef>",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/index.bend"
+    },
+    {
+      "name": "book_final_fast",
+      "lawLine": 252,
+      "definitionLine": 334,
+      "binders": [
+        "+book: List<&2,KDef>",
+        "+done: List<&2,KDef>"
+      ],
+      "result": "List<&2,KDef>",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/index.bend"
+    },
+    {
+      "name": "book_final_large",
+      "lawLine": 265,
+      "definitionLine": 308,
+      "binders": [
+        "+book: List<&2,KDef>",
+        "+remaining: U32"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/index.bend"
+    },
+    {
+      "name": "book_final_name_valid",
+      "lawLine": 261,
+      "definitionLine": 318,
+      "binders": [
+        "+name: String"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/index.bend"
+    },
+    {
+      "name": "book_final_names_valid",
+      "lawLine": 257,
+      "definitionLine": 326,
+      "binders": [
+        "+book: List<&2,KDef>"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/index.bend"
+    },
+    {
+      "name": "book_final_seen",
+      "lawLine": 296,
+      "definitionLine": 350,
+      "binders": [
+        "+seen: KDef",
+        "+name: String",
+        "+hash: U32"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/index.bend"
+    },
+    {
+      "name": "book_put",
+      "lawLine": 105,
+      "definitionLine": 227,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+d: KDef"
+      ],
+      "result": "List<&2, KDef>",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/index.bend"
+    },
+    {
+      "name": "index_build",
+      "lawLine": 85,
+      "definitionLine": 203,
+      "binders": [
+        "+book: List<&2, KDef>"
+      ],
+      "result": "KDef",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/index.bend"
+    },
+    {
+      "name": "index_child",
+      "lawLine": 9,
+      "definitionLine": 119,
+      "binders": [
+        "+tree: KDef",
+        "+right: Bool"
+      ],
+      "result": "KDef",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/index.bend"
+    },
+    {
+      "name": "index_find",
+      "lawLine": 23,
+      "definitionLine": 141,
+      "binders": [
+        "+tree: KDef",
+        "+name: String",
+        "+hash: U32",
+        "+bits: U32"
+      ],
+      "result": "KDef",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/index.bend"
+    },
+    {
+      "name": "index_hash",
+      "lawLine": 4,
+      "definitionLine": 111,
+      "binders": [
+        "+name: String",
+        "+acc: U32"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/index.bend"
+    },
+    {
+      "name": "index_insert",
+      "lawLine": 78,
+      "definitionLine": 188,
+      "binders": [
+        "+tree: KDef",
+        "+d: KDef",
+        "+hash: U32",
+        "+mask: U32"
+      ],
+      "result": "KDef",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/index.bend"
+    },
+    {
+      "name": "index_join",
+      "lawLine": 71,
+      "definitionLine": 182,
+      "binders": [
+        "+tree: KDef",
+        "+d: KDef",
+        "+hash: U32",
+        "+mask: U32"
+      ],
+      "result": "KDef",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/index.bend"
+    },
+    {
+      "name": "index_leaf",
+      "lawLine": 58,
+      "definitionLine": 174,
+      "binders": [
+        "+d: KDef",
+        "+hash: U32",
+        "+ds: List<&2, KDef>"
+      ],
+      "result": "KDef",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/index.bend"
+    },
+    {
+      "name": "index_node",
+      "lawLine": 64,
+      "definitionLine": 178,
+      "binders": [
+        "+hash: U32",
+        "+mask: U32",
+        "+left: KDef",
+        "+right: KDef"
+      ],
+      "result": "KDef",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/index.bend"
+    },
+    {
+      "name": "index_put_rest",
+      "lawLine": 99,
+      "definitionLine": 222,
+      "binders": [
+        "+cache: KDef",
+        "+rest: List<&2, KDef>",
+        "+name: String"
+      ],
+      "result": "List<&2, KDef>",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/index.bend"
+    },
+    {
+      "name": "index_remove",
+      "lawLine": 35,
+      "definitionLine": 156,
+      "binders": [
+        "+ds: List<&2, KDef>",
+        "+name: String"
+      ],
+      "result": "List<&2, KDef>",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/index.bend"
+    },
+    {
+      "name": "index_set",
+      "lawLine": 40,
+      "definitionLine": 198,
+      "binders": [
+        "+tree: KDef",
+        "+d: KDef",
+        "+hash: U32",
+        "+bits: U32"
+      ],
+      "result": "KDef",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/index.bend"
+    },
+    {
+      "name": "index_split_bit",
+      "lawLine": 54,
+      "definitionLine": 170,
+      "binders": [
+        "+diff: U32"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/index.bend"
+    },
+    {
+      "name": "index_tip",
+      "lawLine": 49,
+      "definitionLine": 164,
+      "binders": [
+        "+tree: KDef",
+        "+hash: U32"
+      ],
+      "result": "KDef",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/index.bend"
+    },
+    {
+      "name": "compare",
+      "lawLine": 176,
+      "definitionLine": 184,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+a: KTerm",
+        "+b: KTerm",
+        "+le: Bool"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/normalize.bend"
+    },
+    {
+      "name": "norm_apply",
+      "lawLine": 18,
+      "definitionLine": 24,
+      "binders": [
+        "+t: KTerm",
+        "+args: List<&2, KTerm>"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/normalize.bend"
+    },
+    {
+      "name": "norm_cmp_fail",
+      "lawLine": 425,
+      "definitionLine": 506,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+alts: List<&2, KNormAlt>"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/normalize.bend"
+    },
+    {
+      "name": "norm_cmp_test",
+      "lawLine": 430,
+      "definitionLine": 514,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+yes: Bool",
+        "+rest: List<&2, KNormCmp>",
+        "+alts: List<&2, KNormAlt>"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/normalize.bend"
+    },
+    {
+      "name": "norm_eval_node",
+      "lawLine": 48,
+      "definitionLine": 57,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+t: KTerm",
+        "+args: List<&2, KTerm>",
+        "+left: U32",
+        "+fallback: KTerm"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/normalize.bend"
+    },
+    {
+      "name": "norm_join",
+      "lawLine": 5,
+      "definitionLine": 11,
+      "binders": [
+        "+a: List<&2, KTerm>",
+        "+b: List<&2, KTerm>"
+      ],
+      "result": "List<&2, KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/normalize.bend"
+    },
+    {
+      "name": "norm_max",
+      "lawLine": 152,
+      "definitionLine": 158,
+      "binders": [
+        "+a: U32",
+        "+b: U32"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/normalize.bend"
+    },
+    {
+      "name": "norm_max_term",
+      "lawLine": 160,
+      "definitionLine": 165,
+      "binders": [
+        "+t: KTerm"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/normalize.bend"
+    },
+    {
+      "name": "norm_rebind",
+      "lawLine": 324,
+      "definitionLine": 354,
+      "binders": [
+        "+t: KTerm",
+        "+fresh: U32"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/normalize.bend"
+    },
+    {
+      "name": "norm_removed",
+      "lawLine": 212,
+      "definitionLine": 219,
+      "binders": [
+        "+as: List<&2, String>",
+        "+bs: List<&2, String>",
+        "+le: Bool"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/normalize.bend"
+    },
+    {
+      "name": "norm_subset",
+      "lawLine": 199,
+      "definitionLine": 205,
+      "binders": [
+        "+as: List<&2, String>",
+        "+bs: List<&2, String>"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/normalize.bend"
+    },
+    {
+      "name": "strong",
+      "lawLine": 143,
+      "definitionLine": 149,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+t: KTerm"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/normalize.bend"
+    },
+    {
+      "name": "wnf",
+      "lawLine": 31,
+      "definitionLine": 37,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+t: KTerm"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/normalize.bend"
+    },
+    {
+      "name": "g_cache",
+      "lawLine": 96,
+      "definitionLine": 360,
+      "binders": [
+        "+st: GState",
+        "+id: U32",
+        "+t: KTerm"
+      ],
+      "result": "GState",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/graph.bend"
+    },
+    {
+      "name": "g_get",
+      "lawLine": 50,
+      "definitionLine": 316,
+      "binders": [
+        "+heap: GHeap",
+        "+id: U32"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/graph.bend"
+    },
+    {
+      "name": "g_heap",
+      "lawLine": 26,
+      "definitionLine": 280,
+      "binders": [
+        "+st: GState"
+      ],
+      "result": "GHeap",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/graph.bend"
+    },
+    {
+      "name": "g_next",
+      "lawLine": 30,
+      "definitionLine": 286,
+      "binders": [
+        "+st: GState"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/graph.bend"
+    },
+    {
+      "name": "g_put",
+      "lawLine": 55,
+      "definitionLine": 324,
+      "binders": [
+        "+heap: GHeap",
+        "+id: U32",
+        "+value: KTerm"
+      ],
+      "result": "GHeap",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/graph.bend"
+    },
+    {
+      "name": "g_share",
+      "lawLine": 69,
+      "definitionLine": 336,
+      "binders": [
+        "+st: GState",
+        "+t: KTerm"
+      ],
+      "result": "GResult",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/graph.bend"
+    },
+    {
+      "name": "g_share_head",
+      "lawLine": 86,
+      "definitionLine": 352,
+      "binders": [
+        "+st: GState",
+        "+t: KTerm"
+      ],
+      "result": "GResult",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/graph.bend"
+    },
+    {
+      "name": "g_share_terms",
+      "lawLine": 74,
+      "definitionLine": 340,
+      "binders": [
+        "+st: GState",
+        "+ts: List<&2, KTerm>",
+        "+done: List<&2, KTerm>"
+      ],
+      "result": "GTerms",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/graph.bend"
+    },
+    {
+      "name": "g_snf_go",
+      "lawLine": 238,
+      "definitionLine": 467,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+st: GState",
+        "+t: KTerm",
+        "+stack: List<&2, KNormFrame>",
+        "+fresh: U32"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/graph.bend"
+    },
+    {
+      "name": "g_state",
+      "lawLine": 34,
+      "definitionLine": 292,
+      "binders": [
+        "+r: GResult"
+      ],
+      "result": "GState",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/graph.bend"
+    },
+    {
+      "name": "g_states",
+      "lawLine": 42,
+      "definitionLine": 304,
+      "binders": [
+        "+r: GTerms"
+      ],
+      "result": "GState",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/graph.bend"
+    },
+    {
+      "name": "g_term",
+      "lawLine": 38,
+      "definitionLine": 298,
+      "binders": [
+        "+r: GResult"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/graph.bend"
+    },
+    {
+      "name": "g_terms",
+      "lawLine": 46,
+      "definitionLine": 310,
+      "binders": [
+        "+r: GTerms"
+      ],
+      "result": "List<&2, KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/graph.bend"
+    },
+    {
+      "name": "g_wnf",
+      "lawLine": 102,
+      "definitionLine": 364,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+st: GState",
+        "+t: KTerm"
+      ],
+      "result": "GResult",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/graph.bend"
+    },
+    {
+      "name": "reach_book",
+      "lawLine": 7,
+      "definitionLine": 76,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+roots: List<&2, String>",
+        "+stops: List<&2, String>"
+      ],
+      "result": "List<&2, KDef>",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/reach.bend"
+    },
+    {
+      "name": "kp_adt",
+      "lawLine": 91,
+      "definitionLine": 373,
+      "binders": [
+        "+t: KTerm",
+        "+p: U32",
+        "+env: List<&2, KPName>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_application",
+      "lawLine": 81,
+      "definitionLine": 362,
+      "binders": [
+        "s: KPChain",
+        "+p: U32",
+        "+env: List<&2, KPName>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_array",
+      "lawLine": 174,
+      "definitionLine": 464,
+      "binders": [
+        "+t: KTerm"
+      ],
+      "result": "Maybe<&2, List<&2, KTerm>>",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_bind",
+      "lawLine": 58,
+      "definitionLine": 342,
+      "binders": [
+        "+env: List<&2, KPName>",
+        "+t: KTerm"
+      ],
+      "result": "List<&2, KPName>",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_bound",
+      "lawLine": 53,
+      "definitionLine": 336,
+      "binders": [
+        "env: List<&2, KPName>",
+        "+name: String"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_chain",
+      "lawLine": 69,
+      "definitionLine": 352,
+      "binders": [
+        "+t: KTerm",
+        "+name: String",
+        "+arity: U32",
+        "+acc: List<&2, KTerm>"
+      ],
+      "result": "KPChain",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_char",
+      "lawLine": 137,
+      "definitionLine": 425,
+      "binders": [
+        "+t: KTerm",
+        "+quote: U32"
+      ],
+      "result": "Maybe<&2, String>",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_ctor",
+      "lawLine": 183,
+      "definitionLine": 475,
+      "binders": [
+        "+t: KTerm",
+        "+p: U32",
+        "+env: List<&2, KPName>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_depth",
+      "lawLine": 49,
+      "definitionLine": 330,
+      "binders": [
+        "env: List<&2, KPName>"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_each",
+      "lawLine": 63,
+      "definitionLine": 346,
+      "binders": [
+        "ts: List<&2, KTerm>",
+        "+p: U32",
+        "+env: List<&2, KPName>"
+      ],
+      "result": "List<&2, String>",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_eq",
+      "lawLine": 9,
+      "definitionLine": 289,
+      "binders": [
+        "+a: String",
+        "+b: String"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_escape",
+      "lawLine": 132,
+      "definitionLine": 415,
+      "binders": [
+        "+n: U32",
+        "+quote: U32"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_float",
+      "lawLine": 112,
+      "definitionLine": 394,
+      "binders": [
+        "n: U32"
+      ],
+      "result": "F32",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_float_show",
+      "lawLine": 116,
+      "definitionLine": 399,
+      "binders": [
+        "+n: U32"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_hex",
+      "lawLine": 124,
+      "definitionLine": 407,
+      "binders": [
+        "+n: U32"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_is",
+      "lawLine": 14,
+      "definitionLine": 293,
+      "binders": [
+        "+t: KTerm",
+        "+tag: String",
+        "+name: String"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_join",
+      "lawLine": 24,
+      "definitionLine": 301,
+      "binders": [
+        "xs: List<&2, String>",
+        "+sep: String"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_list",
+      "lawLine": 156,
+      "definitionLine": 446,
+      "binders": [
+        "chain: KPChain",
+        "+p: U32",
+        "+env: List<&2, KPName>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_matches",
+      "lawLine": 222,
+      "definitionLine": 510,
+      "binders": [
+        "+t: KTerm",
+        "+env: List<&2, KPName>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_nat",
+      "lawLine": 167,
+      "definitionLine": 458,
+      "binders": [
+        "+t: KTerm",
+        "+n: Nat",
+        "+p: U32",
+        "+env: List<&2, KPName>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_number",
+      "lawLine": 108,
+      "definitionLine": 390,
+      "binders": [
+        "+t: KTerm"
+      ],
+      "result": "Maybe<&2, U32>",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_par",
+      "lawLine": 29,
+      "definitionLine": 308,
+      "binders": [
+        "+s: String",
+        "+yes: Bool"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_quant",
+      "lawLine": 20,
+      "definitionLine": 297,
+      "binders": [
+        "+q: U32"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_removed",
+      "lawLine": 87,
+      "definitionLine": 367,
+      "binders": [
+        "xs: List<&2, String>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_scope",
+      "lawLine": 38,
+      "definitionLine": 316,
+      "binders": [
+        "env: List<&2, KPName>",
+        "+id: U32",
+        "+name: String"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_show",
+      "lawLine": 34,
+      "definitionLine": 312,
+      "binders": [
+        "+t: KTerm"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_spine",
+      "lawLine": 76,
+      "definitionLine": 358,
+      "binders": [
+        "+t: KTerm",
+        "+acc: List<&2, KTerm>"
+      ],
+      "result": "KPChain",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_string",
+      "lawLine": 147,
+      "definitionLine": 435,
+      "binders": [
+        "+t: KTerm"
+      ],
+      "result": "Maybe<&2, String>",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_tuple",
+      "lawLine": 162,
+      "definitionLine": 453,
+      "binders": [
+        "chain: KPChain",
+        "+env: List<&2, KPName>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "kp_word",
+      "lawLine": 101,
+      "definitionLine": 383,
+      "binders": [
+        "+t: KTerm",
+        "+bit: U32",
+        "+left: U32",
+        "+acc: U32"
+      ],
+      "result": "Maybe<&2, U32>",
+      "separatorLinesRemoved": 1,
+      "file": "src/core/pretty.bend"
+    },
+    {
+      "name": "descend",
+      "lawLine": 39,
+      "definitionLine": 125,
+      "binders": [
+        "+q: U32",
+        "+a: KTerm",
+        "+p: KTerm"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/quantity.bend"
+    },
+    {
+      "name": "descend_spine",
+      "lawLine": 71,
+      "definitionLine": 165,
+      "binders": [
+        "+qs: List<&2, KTerm>",
+        "+args: List<&2, KTerm>",
+        "+cols: List<&2, KTerm>"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/quantity.bend"
+    },
+    {
+      "name": "qadd",
+      "lawLine": 4,
+      "definitionLine": 85,
+      "binders": [
+        "+a: U32",
+        "+b: U32"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/quantity.bend"
+    },
+    {
+      "name": "qdem",
+      "lawLine": 14,
+      "definitionLine": 93,
+      "binders": [
+        "+q: U32",
+        "+d: U32"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/quantity.bend"
+    },
+    {
+      "name": "qjoin",
+      "lawLine": 9,
+      "definitionLine": 89,
+      "binders": [
+        "+a: U32",
+        "+b: U32"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/quantity.bend"
+    },
+    {
+      "name": "strip",
+      "lawLine": 35,
+      "definitionLine": 121,
+      "binders": [
+        "+t: KTerm"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/quantity.bend"
+    },
+    {
+      "name": "uses_del",
+      "lawLine": 24,
+      "definitionLine": 105,
+      "binders": [
+        "+xs: List<&2, KTerm>",
+        "+id: U32"
+      ],
+      "result": "List<&2, KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/quantity.bend"
+    },
+    {
+      "name": "uses_get",
+      "lawLine": 19,
+      "definitionLine": 97,
+      "binders": [
+        "+xs: List<&2, KTerm>",
+        "+id: U32"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/quantity.bend"
+    },
+    {
+      "name": "uses_merge",
+      "lawLine": 29,
+      "definitionLine": 113,
+      "binders": [
+        "+a: List<&2, KTerm>",
+        "+b: List<&2, KTerm>",
+        "+join: Bool"
+      ],
+      "result": "List<&2, KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/quantity.bend"
+    },
+    {
+      "name": "bad",
+      "lawLine": 56,
+      "definitionLine": 720,
+      "binders": [
+        "+msg: String"
+      ],
+      "result": "KChecked",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "both",
+      "lawLine": 70,
+      "definitionLine": 732,
+      "binders": [
+        "+a: KChecked",
+        "+b: KChecked",
+        "+t: KTerm",
+        "+ty: KTerm",
+        "+join: Bool"
+      ],
+      "result": "KChecked",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "cb",
+      "lawLine": 10,
+      "definitionLine": 656,
+      "binders": [
+        "+e: KEnv"
+      ],
+      "result": "List<&2, KDef>",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "ce",
+      "lawLine": 46,
+      "definitionLine": 710,
+      "binders": [
+        "+r: KChecked"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "check_book",
+      "lawLine": 449,
+      "definitionLine": 1006,
+      "binders": [
+        "+book: List<&2, KDef>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "check_definition",
+      "lawLine": 497,
+      "definitionLine": 1058,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+d: KDef"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "check_events",
+      "lawLine": 453,
+      "definitionLine": 1010,
+      "binders": [
+        "+todo: List<&2, KDef>",
+        "+done: List<&2, KDef>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "check_open",
+      "lawLine": 458,
+      "definitionLine": 1014,
+      "binders": [
+        "+book: List<&2, KDef>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "checked",
+      "lawLine": 64,
+      "definitionLine": 728,
+      "binders": [
+        "+r: KChecked",
+        "+t: KTerm",
+        "+ty: KTerm"
+      ],
+      "result": "KChecked",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "cl",
+      "lawLine": 18,
+      "definitionLine": 668,
+      "binders": [
+        "+e: KEnv"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "cn",
+      "lawLine": 14,
+      "definitionLine": 662,
+      "binders": [
+        "+e: KEnv"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "constructor_exists",
+      "lawLine": 486,
+      "definitionLine": 1042,
+      "binders": [
+        "+ds: List<&2, KDef>",
+        "+name: String"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "cp",
+      "lawLine": 22,
+      "definitionLine": 674,
+      "binders": [
+        "+e: KEnv"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "cq",
+      "lawLine": 26,
+      "definitionLine": 680,
+      "binders": [
+        "+e: KEnv"
+      ],
+      "result": "List<&2, KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "cs",
+      "lawLine": 42,
+      "definitionLine": 704,
+      "binders": [
+        "+r: KChecked"
+      ],
+      "result": "List<&2, KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "ct",
+      "lawLine": 34,
+      "definitionLine": 692,
+      "binders": [
+        "+r: KChecked"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "ctx_bind",
+      "lawLine": 83,
+      "definitionLine": 744,
+      "binders": [
+        "+ctx: List<&2, KTerm>",
+        "+id: U32",
+        "+q: U32",
+        "+name: String",
+        "+ty: KTerm"
+      ],
+      "result": "List<&2, KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "ctx_dead",
+      "lawLine": 333,
+      "definitionLine": 931,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+ctx: List<&2, KTerm>"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "ctx_get",
+      "lawLine": 78,
+      "definitionLine": 736,
+      "binders": [
+        "+ctx: List<&2, KTerm>",
+        "+id: U32"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "cu",
+      "lawLine": 30,
+      "definitionLine": 686,
+      "binders": [
+        "+e: KEnv"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "cy",
+      "lawLine": 38,
+      "definitionLine": 698,
+      "binders": [
+        "+r: KChecked"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "declared",
+      "lawLine": 445,
+      "definitionLine": 1002,
+      "binders": [
+        "+d: KDef"
+      ],
+      "result": "KDef",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "defs_empty",
+      "lawLine": 329,
+      "definitionLine": 923,
+      "binders": [
+        "+ds: List<&2, KDef>"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "event_error",
+      "lawLine": 480,
+      "definitionLine": 1038,
+      "binders": [
+        "+done: List<&2, KDef>",
+        "+d: KDef",
+        "+old: KDef"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "foreign_head",
+      "lawLine": 513,
+      "definitionLine": 1081,
+      "binders": [
+        "+t: KTerm"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "foreign_tip",
+      "lawLine": 509,
+      "definitionLine": 1077,
+      "binders": [
+        "+t: KTerm"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "good",
+      "lawLine": 60,
+      "definitionLine": 724,
+      "binders": [
+        "+r: KChecked"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "infer",
+      "lawLine": 111,
+      "definitionLine": 764,
+      "binders": [
+        "+e: KEnv",
+        "+ctx: List<&2, KTerm>",
+        "+t: KTerm",
+        "+dem: U32",
+        "+sp: List<&2, KTerm>"
+      ],
+      "result": "KChecked",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "kapply",
+      "lawLine": 96,
+      "definitionLine": 752,
+      "binders": [
+        "+fn: KTerm",
+        "+x: KTerm"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "kindq",
+      "lawLine": 91,
+      "definitionLine": 748,
+      "binders": [
+        "+e: KEnv",
+        "+q: U32"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "lhs_ext",
+      "lawLine": 388,
+      "definitionLine": 972,
+      "binders": [
+        "+lhs: KTerm",
+        "+name: String",
+        "+tel: KTerm",
+        "+n: U32",
+        "+xs: List<&2, KTerm>"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "lhs_step",
+      "lawLine": 101,
+      "definitionLine": 756,
+      "binders": [
+        "+e: KEnv",
+        "+x: KTerm"
+      ],
+      "result": "KEnv",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "ok",
+      "lawLine": 50,
+      "definitionLine": 716,
+      "binders": [
+        "+t: KTerm",
+        "+ty: KTerm",
+        "+us: List<&2, KTerm>"
+      ],
+      "result": "KChecked",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "remaining",
+      "lawLine": 324,
+      "definitionLine": 915,
+      "binders": [
+        "+cs: List<&2, KDef>",
+        "+removed: List<&2, String>"
+      ],
+      "result": "List<&2, KDef>",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "self_pending",
+      "lawLine": 617,
+      "definitionLine": 1145,
+      "binders": [
+        "+d: KDef",
+        "+body: KTerm"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "signature_mode",
+      "lawLine": 470,
+      "definitionLine": 1030,
+      "binders": [
+        "+d: KDef",
+        "+later: List<&2, KDef>"
+      ],
+      "result": "KDef",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "tele_check_head",
+      "lawLine": 179,
+      "definitionLine": 820,
+      "binders": [
+        "+e: KEnv",
+        "+ctx: List<&2, KTerm>",
+        "+tel: KTerm",
+        "+h: KTerm",
+        "+rest: List<&2, KTerm>",
+        "+dem: U32"
+      ],
+      "result": "KChecked",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "tele_check_legacy",
+      "lawLine": 1188,
+      "definitionLine": 1221,
+      "binders": [
+        "+e: KEnv",
+        "+ctx: List<&2, KTerm>",
+        "+tel: KTerm",
+        "+args: List<&2, KTerm>",
+        "+dem: U32"
+      ],
+      "result": "KChecked",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "tele_check_static",
+      "lawLine": 1178,
+      "definitionLine": 1212,
+      "binders": [
+        "+e: KEnv",
+        "+ctx: List<&2, KTerm>",
+        "+tel: KTerm",
+        "+args: List<&2, KTerm>",
+        "+dem: U32"
+      ],
+      "result": "KChecked",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "tele_fill",
+      "lawLine": 193,
+      "definitionLine": 828,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+tel: KTerm",
+        "+args: List<&2, KTerm>"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "tele_quantities",
+      "lawLine": 433,
+      "definitionLine": 994,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+ty: KTerm",
+        "+n: U32"
+      ],
+      "result": "List<&2, KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "tele_tip",
+      "lawLine": 522,
+      "definitionLine": 1089,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+t: KTerm"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "unargs",
+      "lawLine": 106,
+      "definitionLine": 760,
+      "binders": [
+        "+t: KTerm",
+        "+acc: List<&2, KTerm>"
+      ],
+      "result": "List<&2, KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/kernel.bend"
+    },
+    {
+      "name": "sp_active",
+      "lawLine": 76,
+      "definitionLine": 604,
+      "binders": [
+        "+m: KSpecMemo"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "sp_book",
+      "lawLine": 28,
+      "definitionLine": 532,
+      "binders": [
+        "+st: KSpecState"
+      ],
+      "result": "List<&2, KDef>",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "sp_canonical",
+      "lawLine": 90,
+      "definitionLine": 618,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+done: List<&2, KDef>"
+      ],
+      "result": "List<&2, KDef>",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "sp_done_memo",
+      "lawLine": 146,
+      "definitionLine": 682,
+      "binders": [
+        "+ms: List<&2, KSpecMemo>",
+        "+name: String"
+      ],
+      "result": "List<&2, KSpecMemo>",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "sp_drop",
+      "lawLine": 161,
+      "definitionLine": 702,
+      "binders": [
+        "+ts: List<&2, KTerm>",
+        "+n: U32"
+      ],
+      "result": "List<&2, KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "sp_error",
+      "lawLine": 44,
+      "definitionLine": 556,
+      "binders": [
+        "+st: KSpecState"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "sp_fail",
+      "lawLine": 80,
+      "definitionLine": 610,
+      "binders": [
+        "+st: KSpecState",
+        "+err: String"
+      ],
+      "result": "KSpecState",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "sp_find",
+      "lawLine": 140,
+      "definitionLine": 674,
+      "binders": [
+        "+ms: List<&2, KSpecMemo>",
+        "+name: String",
+        "+key: String"
+      ],
+      "result": "KSpecMemo",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "sp_fresh",
+      "lawLine": 40,
+      "definitionLine": 550,
+      "binders": [
+        "+st: KSpecState"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "sp_key_string",
+      "lawLine": 124,
+      "definitionLine": 650,
+      "binders": [
+        "+s: String"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "sp_len",
+      "lawLine": 120,
+      "definitionLine": 646,
+      "binders": [
+        "+s: String"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "sp_memo",
+      "lawLine": 32,
+      "definitionLine": 538,
+      "binders": [
+        "+st: KSpecState"
+      ],
+      "result": "List<&2, KSpecMemo>",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "sp_mkey",
+      "lawLine": 68,
+      "definitionLine": 592,
+      "binders": [
+        "+m: KSpecMemo"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "sp_mname",
+      "lawLine": 72,
+      "definitionLine": 598,
+      "binders": [
+        "+m: KSpecMemo"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "sp_mtemplate",
+      "lawLine": 64,
+      "definitionLine": 586,
+      "binders": [
+        "+m: KSpecMemo"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "sp_put",
+      "lawLine": 85,
+      "definitionLine": 614,
+      "binders": [
+        "+st: KSpecState",
+        "+d: KDef"
+      ],
+      "result": "KSpecState",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "sp_serial",
+      "lawLine": 36,
+      "definitionLine": 544,
+      "binders": [
+        "+st: KSpecState"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "sp_shift",
+      "lawLine": 171,
+      "definitionLine": 714,
+      "binders": [
+        "+t: KTerm",
+        "+offset: U32"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "sp_state",
+      "lawLine": 48,
+      "definitionLine": 562,
+      "binders": [
+        "+r: KSpecTerm"
+      ],
+      "result": "KSpecState",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "sp_states",
+      "lawLine": 56,
+      "definitionLine": 574,
+      "binders": [
+        "+r: KSpecTerms"
+      ],
+      "result": "KSpecState",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "sp_take",
+      "lawLine": 151,
+      "definitionLine": 690,
+      "binders": [
+        "+ts: List<&2, KTerm>",
+        "+n: U32"
+      ],
+      "result": "List<&2, KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "sp_type",
+      "lawLine": 181,
+      "definitionLine": 726,
+      "binders": [
+        "+st: KSpecState",
+        "+t: KTerm",
+        "+ctx: List<&2, KTerm>",
+        "+owner: String"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "sp_value",
+      "lawLine": 52,
+      "definitionLine": 568,
+      "binders": [
+        "+r: KSpecTerm"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "sp_values",
+      "lawLine": 60,
+      "definitionLine": 580,
+      "binders": [
+        "+r: KSpecTerms"
+      ],
+      "result": "List<&2, KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "specialize_book",
+      "lawLine": 95,
+      "definitionLine": 622,
+      "binders": [
+        "+book: List<&2, KDef>"
+      ],
+      "result": "KSpecialized",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "specialized_book",
+      "lawLine": 20,
+      "definitionLine": 520,
+      "binders": [
+        "+r: KSpecialized"
+      ],
+      "result": "List<&2, KDef>",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "specialized_error",
+      "lawLine": 24,
+      "definitionLine": 526,
+      "binders": [
+        "+r: KSpecialized"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "term_key",
+      "lawLine": 128,
+      "definitionLine": 654,
+      "binders": [
+        "+t: KTerm"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/specialize.bend"
+    },
+    {
+      "name": "check_from_exact_prefix",
+      "lawLine": 62,
+      "definitionLine": 148,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+validated: List<&2, KDef>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/prefix.bend"
+    },
+    {
+      "name": "exact_def",
+      "lawLine": 35,
+      "definitionLine": 112,
+      "binders": [
+        "+a: KDef",
+        "+b: KDef"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/prefix.bend"
+    },
+    {
+      "name": "exact_names",
+      "lawLine": 4,
+      "definitionLine": 68,
+      "binders": [
+        "+a: List<&2, String>",
+        "+b: List<&2, String>"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/prefix.bend"
+    },
+    {
+      "name": "exact_prefix",
+      "lawLine": 51,
+      "definitionLine": 132,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+prefix: List<&2, KDef>"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/prefix.bend"
+    },
+    {
+      "name": "exact_term",
+      "lawLine": 19,
+      "definitionLine": 92,
+      "binders": [
+        "+a: KTerm",
+        "+b: KTerm"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/prefix.bend"
+    },
+    {
+      "name": "annotate_book",
+      "lawLine": 10,
+      "definitionLine": 149,
+      "binders": [
+        "+book: List<&2, KDef>"
+      ],
+      "result": "List<&2, KDef>",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/annotate.bend"
+    },
+    {
+      "name": "annotate_except",
+      "lawLine": 14,
+      "definitionLine": 153,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+stops: List<&2, String>"
+      ],
+      "result": "List<&2, KDef>",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/annotate.bend"
+    },
+    {
+      "name": "annotate_selected",
+      "lawLine": 19,
+      "definitionLine": 157,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+selected: List<&2, KDef>",
+        "+stops: List<&2, String>"
+      ],
+      "result": "List<&2, KDef>",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/annotate.bend"
+    },
+    {
+      "name": "ka_args",
+      "lawLine": 87,
+      "definitionLine": 224,
+      "binders": [
+        "+e: KEnv",
+        "+ctx: List<&2, KTerm>",
+        "+tel: KTerm",
+        "+xs: List<&2, KTerm>"
+      ],
+      "result": "List<&2, KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/annotate.bend"
+    },
+    {
+      "name": "ka_args_static",
+      "lawLine": 358,
+      "definitionLine": 379,
+      "binders": [
+        "+e: KEnv",
+        "+ctx: List<&2, KTerm>",
+        "+tel: KTerm",
+        "+xs: List<&2, KTerm>"
+      ],
+      "result": "List<&2, KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/annotate.bend"
+    },
+    {
+      "name": "ka_spine",
+      "lawLine": 269,
+      "definitionLine": 309,
+      "binders": [
+        "+e: KEnv",
+        "+ctx: List<&2, KTerm>",
+        "+t: KTerm"
+      ],
+      "result": "KAnnotatedSpine",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/annotate.bend"
+    },
+    {
+      "name": "ka_wrap",
+      "lawLine": 5,
+      "definitionLine": 145,
+      "binders": [
+        "+t: KTerm",
+        "+ty: KTerm"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/check/annotate.bend"
+    },
+    {
+      "name": "f_choose",
+      "lawLine": 8,
+      "definitionLine": 146,
+      "binders": [
+        "-A: Type",
+        "+b: Bool",
+        "yes: Unit -> A",
+        "no: Unit -> A"
+      ],
+      "result": "A",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/lexer.bend"
+    },
+    {
+      "name": "f_col",
+      "lawLine": 32,
+      "definitionLine": 182,
+      "binders": [
+        "+ts: List<&2, FToken>"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/lexer.bend"
+    },
+    {
+      "name": "f_eq",
+      "lawLine": 15,
+      "definitionLine": 154,
+      "binders": [
+        "+a: String",
+        "+b: String"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/lexer.bend"
+    },
+    {
+      "name": "f_head",
+      "lawLine": 44,
+      "definitionLine": 203,
+      "binders": [
+        "+s: String"
+      ],
+      "result": "Char",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/lexer.bend"
+    },
+    {
+      "name": "f_ident",
+      "lawLine": 52,
+      "definitionLine": 219,
+      "binders": [
+        "+c: Char"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/lexer.bend"
+    },
+    {
+      "name": "f_kind",
+      "lawLine": 36,
+      "definitionLine": 190,
+      "binders": [
+        "+ts: List<&2, FToken>"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/lexer.bend"
+    },
+    {
+      "name": "f_lex_scanned",
+      "lawLine": 81,
+      "definitionLine": 252,
+      "binders": [
+        "+sc: FScanned",
+        "+l: U32",
+        "+c: U32",
+        "+d: U32",
+        "+k: U32",
+        "+acc: List<&2, FToken>"
+      ],
+      "result": "List<&2, FToken>",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/lexer.bend"
+    },
+    {
+      "name": "f_lex_symbol",
+      "lawLine": 90,
+      "definitionLine": 260,
+      "binders": [
+        "+s: String",
+        "+l: U32",
+        "+c: U32",
+        "+d: U32",
+        "+acc: List<&2, FToken>"
+      ],
+      "result": "List<&2, FToken>",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/lexer.bend"
+    },
+    {
+      "name": "f_line",
+      "lawLine": 28,
+      "definitionLine": 174,
+      "binders": [
+        "+ts: List<&2, FToken>"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/lexer.bend"
+    },
+    {
+      "name": "f_pair_op",
+      "lawLine": 77,
+      "definitionLine": 248,
+      "binders": [
+        "+s: String"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/lexer.bend"
+    },
+    {
+      "name": "f_scan_comment",
+      "lawLine": 62,
+      "definitionLine": 229,
+      "binders": [
+        "+s: String"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/lexer.bend"
+    },
+    {
+      "name": "f_scan_quote",
+      "lawLine": 66,
+      "definitionLine": 234,
+      "binders": [
+        "+s: String",
+        "+quote: Char",
+        "+acc: String",
+        "+n: U32"
+      ],
+      "result": "FScanned",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/lexer.bend"
+    },
+    {
+      "name": "f_scan_word",
+      "lawLine": 56,
+      "definitionLine": 223,
+      "binders": [
+        "+s: String",
+        "+acc: String",
+        "+n: U32"
+      ],
+      "result": "FScanned",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/lexer.bend"
+    },
+    {
+      "name": "f_skip",
+      "lawLine": 40,
+      "definitionLine": 198,
+      "binders": [
+        "+ts: List<&2, FToken>"
+      ],
+      "result": "List<&2, FToken>",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/lexer.bend"
+    },
+    {
+      "name": "f_space",
+      "lawLine": 334,
+      "definitionLine": 339,
+      "binders": [
+        "+ts: List<&2,FToken>"
+      ],
+      "result": "List<&2,FToken>",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/lexer.bend"
+    },
+    {
+      "name": "f_tail",
+      "lawLine": 48,
+      "definitionLine": 211,
+      "binders": [
+        "+s: String"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/lexer.bend"
+    },
+    {
+      "name": "f_tl",
+      "lawLine": 24,
+      "definitionLine": 166,
+      "binders": [
+        "+ts: List<&2, FToken>"
+      ],
+      "result": "List<&2, FToken>",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/lexer.bend"
+    },
+    {
+      "name": "f_two",
+      "lawLine": 73,
+      "definitionLine": 244,
+      "binders": [
+        "+s: String"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/lexer.bend"
+    },
+    {
+      "name": "f_tx",
+      "lawLine": 20,
+      "definitionLine": 158,
+      "binders": [
+        "+ts: List<&2, FToken>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/lexer.bend"
+    },
+    {
+      "name": "f_app",
+      "lawLine": 28,
+      "definitionLine": 217,
+      "binders": [
+        "+f: KTerm",
+        "+xs: List<&2, KTerm>"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/parser.bend"
+    },
+    {
+      "name": "f_args_base",
+      "lawLine": 483,
+      "definitionLine": 225,
+      "binders": [
+        "+ts: List<&2, FToken>",
+        "+end: String",
+        "+acc: List<&2, KTerm>"
+      ],
+      "result": "FParsed",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/parser.bend"
+    },
+    {
+      "name": "f_atid",
+      "lawLine": 14,
+      "definitionLine": 203,
+      "binders": [
+        "+ts: List<&2, FToken>"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/parser.bend"
+    },
+    {
+      "name": "f_atom_base",
+      "lawLine": 475,
+      "definitionLine": 240,
+      "binders": [
+        "+ts: List<&2, FToken>"
+      ],
+      "result": "FParsed",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/parser.bend"
+    },
+    {
+      "name": "f_err",
+      "lawLine": 18,
+      "definitionLine": 207,
+      "binders": [
+        "+ts: List<&2, FToken>",
+        "+msg: String"
+      ],
+      "result": "FParsed",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/parser.bend"
+    },
+    {
+      "name": "f_expect",
+      "lawLine": 23,
+      "definitionLine": 211,
+      "binders": [
+        "+p: FParsed",
+        "+s: String"
+      ],
+      "result": "FParsed",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/parser.bend"
+    },
+    {
+      "name": "f_group_ann",
+      "lawLine": 105,
+      "definitionLine": 355,
+      "binders": [
+        "+n: KTerm",
+        "+p: FParsed"
+      ],
+      "result": "FParsed",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/parser.bend"
+    },
+    {
+      "name": "f_grow_base",
+      "lawLine": 493,
+      "definitionLine": 418,
+      "binders": [
+        "+p: FParsed",
+        "+min: U32"
+      ],
+      "result": "FParsed",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/parser.bend"
+    },
+    {
+      "name": "f_list",
+      "lawLine": 115,
+      "definitionLine": 367,
+      "binders": [
+        "+p: FParsed"
+      ],
+      "result": "FParsed",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/parser.bend"
+    },
+    {
+      "name": "f_pn",
+      "lawLine": 6,
+      "definitionLine": 191,
+      "binders": [
+        "+p: FParsed"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/parser.bend"
+    },
+    {
+      "name": "f_pr",
+      "lawLine": 10,
+      "definitionLine": 197,
+      "binders": [
+        "+p: FParsed"
+      ],
+      "result": "List<&2, FToken>",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/parser.bend"
+    },
+    {
+      "name": "f_prec",
+      "lawLine": 144,
+      "definitionLine": 403,
+      "binders": [
+        "+s: String"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/parser.bend"
+    },
+    {
+      "name": "f_quant",
+      "lawLine": 71,
+      "definitionLine": 325,
+      "binders": [
+        "+ts: List<&2, FToken>"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/parser.bend"
+    },
+    {
+      "name": "f_unmark",
+      "lawLine": 75,
+      "definitionLine": 329,
+      "binders": [
+        "+ts: List<&2, FToken>"
+      ],
+      "result": "List<&2, FToken>",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/parser.bend"
+    },
+    {
+      "name": "fpe_finish",
+      "lawLine": 527,
+      "definitionLine": 586,
+      "binders": [
+        "+source: String",
+        "+raw: FRawResult"
+      ],
+      "result": "FResult",
+      "separatorLinesRemoved": 0,
+      "file": "src/front/parser.bend"
+    },
+    {
+      "name": "fpe_fresh",
+      "lawLine": 630,
+      "definitionLine": 636,
+      "binders": [
+        "+ts: List<&2,FToken>",
+        "+legacy: String",
+        "+expected: String"
+      ],
+      "result": "FParsed",
+      "separatorLinesRemoved": 0,
+      "file": "src/front/parser.bend"
+    },
+    {
+      "name": "fpe_lines_count",
+      "lawLine": 552,
+      "definitionLine": 608,
+      "binders": [
+        "+lines: List<&2,String>"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 0,
+      "file": "src/front/parser.bend"
+    },
+    {
+      "name": "f_body_at",
+      "lawLine": 257,
+      "definitionLine": 550,
+      "binders": [
+        "+ts: List<&2, FToken>"
+      ],
+      "result": "FParsed",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/declarations.bend"
+    },
+    {
+      "name": "f_def_base",
+      "lawLine": 621,
+      "definitionLine": 456,
+      "binders": [
+        "+name: String",
+        "+p: FParsed",
+        "+book: List<&2, KDef>",
+        "+imports: List<&2, KTerm>",
+        "+unsafe: Bool"
+      ],
+      "result": "FRawResult",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/declarations.bend"
+    },
+    {
+      "name": "f_dk",
+      "lawLine": 36,
+      "definitionLine": 361,
+      "binders": [
+        "+d: KDef"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/declarations.bend"
+    },
+    {
+      "name": "f_dt",
+      "lawLine": 32,
+      "definitionLine": 355,
+      "binders": [
+        "+d: KDef"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/declarations.bend"
+    },
+    {
+      "name": "f_dx",
+      "lawLine": 40,
+      "definitionLine": 367,
+      "binders": [
+        "+d: KDef"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/declarations.bend"
+    },
+    {
+      "name": "f_find",
+      "lawLine": 23,
+      "definitionLine": 341,
+      "binders": [
+        "+name: String",
+        "+book: List<&2, KDef>"
+      ],
+      "result": "KDef",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/declarations.bend"
+    },
+    {
+      "name": "f_import",
+      "lawLine": 70,
+      "definitionLine": 393,
+      "binders": [
+        "+ts: List<&2, FToken>",
+        "+book: List<&2, KDef>",
+        "+imports: List<&2, KTerm>"
+      ],
+      "result": "FRawResult",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/declarations.bend"
+    },
+    {
+      "name": "f_law_base",
+      "lawLine": 673,
+      "definitionLine": 482,
+      "binders": [
+        "+name: String",
+        "+ts: List<&2, FToken>",
+        "+book: List<&2, KDef>",
+        "+imports: List<&2, KTerm>",
+        "+clauses: List<&2, KTerm>"
+      ],
+      "result": "FRawResult",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/declarations.bend"
+    },
+    {
+      "name": "f_law_bind",
+      "lawLine": 193,
+      "definitionLine": 498,
+      "binders": [
+        "+clauses: List<&2, KTerm>",
+        "+ty: KTerm"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/declarations.bend"
+    },
+    {
+      "name": "f_lbind",
+      "lawLine": 113,
+      "definitionLine": 440,
+      "binders": [
+        "+pars: List<&2, KTerm>",
+        "+body: KTerm"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/declarations.bend"
+    },
+    {
+      "name": "f_len",
+      "lawLine": 19,
+      "definitionLine": 333,
+      "binders": [
+        "+xs: List<&2, KTerm>"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/declarations.bend"
+    },
+    {
+      "name": "f_let_ann",
+      "lawLine": 265,
+      "definitionLine": 560,
+      "binders": [
+        "+ty: KTerm",
+        "+p: FParsed"
+      ],
+      "result": "FParsed",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/declarations.bend"
+    },
+    {
+      "name": "f_match_cases",
+      "lawLine": 293,
+      "definitionLine": 588,
+      "binders": [
+        "+ts: List<&2, FToken>",
+        "+indent: U32",
+        "+heads: List<&2, KTerm>",
+        "+rows: List<&2, KTerm>"
+      ],
+      "result": "FParsed",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/declarations.bend"
+    },
+    {
+      "name": "f_parse",
+      "lawLine": 9,
+      "definitionLine": 325,
+      "binders": [
+        "+source: String"
+      ],
+      "result": "FResult",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/declarations.bend"
+    },
+    {
+      "name": "f_result",
+      "lawLine": 13,
+      "definitionLine": 329,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+err: KTerm",
+        "+imports: List<&2, KTerm>"
+      ],
+      "result": "FRawResult",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/declarations.bend"
+    },
+    {
+      "name": "f_tbind",
+      "lawLine": 108,
+      "definitionLine": 432,
+      "binders": [
+        "+pars: List<&2, KTerm>",
+        "+result: KTerm"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/declarations.bend"
+    },
+    {
+      "name": "f_tele_binder",
+      "lawLine": 88,
+      "definitionLine": 422,
+      "binders": [
+        "+name: String",
+        "+id: U32",
+        "+q: U32",
+        "+temp: Bool",
+        "+ts: List<&2, FToken>",
+        "+end: String",
+        "+acc: List<&2, KTerm>"
+      ],
+      "result": "FParsed",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/declarations.bend"
+    },
+    {
+      "name": "f_templates",
+      "lawLine": 118,
+      "definitionLine": 448,
+      "binders": [
+        "+pars: List<&2, KTerm>"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/declarations.bend"
+    },
+    {
+      "name": "f_type_base",
+      "lawLine": 610,
+      "definitionLine": 512,
+      "binders": [
+        "+name: String",
+        "+ts: List<&2, FToken>",
+        "+book: List<&2, KDef>",
+        "+imports: List<&2, KTerm>"
+      ],
+      "result": "FRawResult",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/declarations.bend"
+    },
+    {
+      "name": "f_type_named",
+      "lawLine": 681,
+      "definitionLine": 618,
+      "binders": [
+        "+name: String",
+        "+ts: List<&2, FToken>",
+        "+book: List<&2, KDef>",
+        "+imports: List<&2, KTerm>"
+      ],
+      "result": "FRawResult",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/declarations.bend"
+    },
+    {
+      "name": "fc_bind",
+      "lawLine": 110,
+      "definitionLine": 234,
+      "binders": [
+        "+v: KTerm",
+        "+env: List<&2, KTerm>"
+      ],
+      "result": "List<&2, KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/flatten.bend"
+    },
+    {
+      "name": "fc_bind_count",
+      "lawLine": 119,
+      "definitionLine": 246,
+      "binders": [
+        "+ps: List<&2, KTerm>"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/flatten.bend"
+    },
+    {
+      "name": "fc_binders",
+      "lawLine": 115,
+      "definitionLine": 238,
+      "binders": [
+        "+ps: List<&2, KTerm>"
+      ],
+      "result": "List<&2, KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/flatten.bend"
+    },
+    {
+      "name": "fc_ref",
+      "lawLine": 105,
+      "definitionLine": 230,
+      "binders": [
+        "+name: String",
+        "+env: List<&2, KTerm>"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/flatten.bend"
+    },
+    {
+      "name": "fc_terms",
+      "lawLine": 123,
+      "definitionLine": 254,
+      "binders": [
+        "+ts: List<&2, KTerm>",
+        "+env: List<&2, KTerm>"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/flatten.bend"
+    },
+    {
+      "name": "ff_flat",
+      "lawLine": 14,
+      "definitionLine": 152,
+      "binders": [
+        "+t: KTerm",
+        "+vars: List<&2, KTerm>",
+        "+next: U32"
+      ],
+      "result": "FFlatten",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/flatten.bend"
+    },
+    {
+      "name": "ff_term",
+      "lawLine": 10,
+      "definitionLine": 146,
+      "binders": [
+        "+r: FFlatten"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/flatten.bend"
+    },
+    {
+      "name": "f_elaborate",
+      "lawLine": 3,
+      "definitionLine": 220,
+      "binders": [
+        "+r: FResult"
+      ],
+      "result": "FResult",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/elaborate.bend"
+    },
+    {
+      "name": "f_escape_code",
+      "lawLine": 215,
+      "definitionLine": 459,
+      "binders": [
+        "+c: Char"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/elaborate.bend"
+    },
+    {
+      "name": "f_flat_base",
+      "lawLine": 469,
+      "definitionLine": 343,
+      "binders": [
+        "+t: KTerm",
+        "+vars: List<&2, KTerm>"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/elaborate.bend"
+    },
+    {
+      "name": "f_nat",
+      "lawLine": 198,
+      "definitionLine": 443,
+      "binders": [
+        "+n: U32"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/elaborate.bend"
+    },
+    {
+      "name": "f_number",
+      "lawLine": 202,
+      "definitionLine": 447,
+      "binders": [
+        "+s: String",
+        "+acc: U32"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/elaborate.bend"
+    },
+    {
+      "name": "f_patterns",
+      "lawLine": 53,
+      "definitionLine": 294,
+      "binders": [
+        "+xs: List<&2, KTerm>"
+      ],
+      "result": "List<&2, KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/elaborate.bend"
+    },
+    {
+      "name": "f_penv",
+      "lawLine": 57,
+      "definitionLine": 302,
+      "binders": [
+        "+xs: List<&2, KTerm>"
+      ],
+      "result": "List<&2, KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/elaborate.bend"
+    },
+    {
+      "name": "f_rowpat",
+      "lawLine": 115,
+      "definitionLine": 355,
+      "binders": [
+        "+r: KTerm"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/elaborate.bend"
+    },
+    {
+      "name": "f_scope_base",
+      "lawLine": 482,
+      "definitionLine": 272,
+      "binders": [
+        "+t: KTerm",
+        "+env: List<&2, KTerm>",
+        "+book: List<&2, KDef>"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/elaborate.bend"
+    },
+    {
+      "name": "f_scope_body_base",
+      "lawLine": 463,
+      "definitionLine": 310,
+      "binders": [
+        "+t: KTerm",
+        "+env: List<&2, KTerm>",
+        "+book: List<&2, KDef>"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/elaborate.bend"
+    },
+    {
+      "name": "f_scope_lower",
+      "lawLine": 504,
+      "definitionLine": 489,
+      "binders": [
+        "+t: KTerm",
+        "+env: List<&2, KTerm>",
+        "+book: List<&2, KDef>"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/elaborate.bend"
+    },
+    {
+      "name": "f_sub",
+      "lawLine": 87,
+      "definitionLine": 331,
+      "binders": [
+        "+t: KTerm",
+        "+id: U32",
+        "+v: KTerm"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/elaborate.bend"
+    },
+    {
+      "name": "f_u32",
+      "lawLine": 194,
+      "definitionLine": 439,
+      "binders": [
+        "+n: U32"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/elaborate.bend"
+    },
+    {
+      "name": "f_vars",
+      "lawLine": 31,
+      "definitionLine": 264,
+      "binders": [
+        "+xs: List<&2, KTerm>"
+      ],
+      "result": "List<&2, KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/elaborate.bend"
+    },
+    {
+      "name": "f_word",
+      "lawLine": 189,
+      "definitionLine": 435,
+      "binders": [
+        "+n: U32",
+        "+bits: U32"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/elaborate.bend"
+    },
+    {
+      "name": "f_do_bind_types",
+      "lawLine": 170,
+      "definitionLine": 184,
+      "binders": [
+        "+types: List<&2,KTerm>",
+        "+ty: KTerm"
+      ],
+      "result": "List<&2,KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/sugar.bend"
+    },
+    {
+      "name": "f_error_defs",
+      "lawLine": 82,
+      "definitionLine": 250,
+      "binders": [
+        "+ds: List<&2,KDef>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/sugar.bend"
+    },
+    {
+      "name": "f_error_term",
+      "lawLine": 69,
+      "definitionLine": 234,
+      "binders": [
+        "+t: KTerm"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/sugar.bend"
+    },
+    {
+      "name": "f_init",
+      "lawLine": 7,
+      "definitionLine": 137,
+      "binders": [
+        "+xs: List<&2, KTerm>"
+      ],
+      "result": "List<&2, KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/sugar.bend"
+    },
+    {
+      "name": "f_last",
+      "lawLine": 3,
+      "definitionLine": 129,
+      "binders": [
+        "+xs: List<&2, KTerm>"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/sugar.bend"
+    },
+    {
+      "name": "f_write_statement",
+      "lawLine": 316,
+      "definitionLine": 332,
+      "binders": [
+        "+n: KTerm",
+        "+ts: List<&2, FToken>"
+      ],
+      "result": "FParsed",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/sugar.bend"
+    },
+    {
+      "name": "f_float_bits",
+      "lawLine": 39,
+      "definitionLine": 80,
+      "binders": [
+        "+bits: U32"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/unicode.bend"
+    },
+    {
+      "name": "f_hex",
+      "lawLine": 17,
+      "definitionLine": 56,
+      "binders": [
+        "+c: Char"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/unicode.bend"
+    },
+    {
+      "name": "f_parallel",
+      "lawLine": 3,
+      "definitionLine": 80,
+      "binders": [
+        "+ts: List<&2, FToken>",
+        "+pats: List<&2, KTerm>"
+      ],
+      "result": "FParsed",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/parallel.bend"
+    },
+    {
+      "name": "f_fresh_book_stack",
+      "lawLine": 134,
+      "definitionLine": 172,
+      "binders": [
+        "+book: List<&2,KDef>",
+        "+next: U32"
+      ],
+      "result": "FFreshDefs",
+      "separatorLinesRemoved": 0,
+      "file": "src/front/fresh_work.bend"
+    },
+    {
+      "name": "f_fresh_stack",
+      "lawLine": 11,
+      "definitionLine": 60,
+      "binders": [
+        "+term: KTerm",
+        "+env: List<&2,KTerm>",
+        "+next: U32"
+      ],
+      "result": "FFresh",
+      "separatorLinesRemoved": 0,
+      "file": "src/front/fresh_work.bend"
+    },
+    {
+      "name": "f_fresh_defs",
+      "lawLine": 19,
+      "definitionLine": 47,
+      "binders": [
+        "+ds: List<&2,KDef>",
+        "+next: U32"
+      ],
+      "result": "FFreshDefs",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/freshen.bend"
+    },
+    {
+      "name": "f_fresh_result",
+      "lawLine": 24,
+      "definitionLine": 51,
+      "binders": [
+        "+r: FResult"
+      ],
+      "result": "FResult",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/freshen.bend"
+    },
+    {
+      "name": "f_path_defs",
+      "lawLine": 36,
+      "definitionLine": 81,
+      "binders": [
+        "+ds: List<&2,KDef>",
+        "+dir: String",
+        "+native: Bool"
+      ],
+      "result": "List<&2,KDef>",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/paths.bend"
+    },
+    {
+      "name": "f_path_dir",
+      "lawLine": 11,
+      "definitionLine": 57,
+      "binders": [
+        "+path: String"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/paths.bend"
+    },
+    {
+      "name": "f_path_join",
+      "lawLine": 21,
+      "definitionLine": 65,
+      "binders": [
+        "+dir: String",
+        "+path: String"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/paths.bend"
+    },
+    {
+      "name": "f_path_result",
+      "lawLine": 42,
+      "definitionLine": 89,
+      "binders": [
+        "+r: FResult",
+        "+path: String",
+        "+native: Bool"
+      ],
+      "result": "FResult",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/paths.bend"
+    },
+    {
+      "name": "f_path_term",
+      "lawLine": 26,
+      "definitionLine": 69,
+      "binders": [
+        "+t: KTerm",
+        "+dir: String"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/paths.bend"
+    },
+    {
+      "name": "f_leading_quants",
+      "lawLine": 3,
+      "definitionLine": 52,
+      "binders": [
+        "+ty: KTerm"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/families.bend"
+    },
+    {
+      "name": "f_quants",
+      "lawLine": 7,
+      "definitionLine": 56,
+      "binders": [
+        "+n: U32",
+        "+q: U32"
+      ],
+      "result": "List<&2, KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/families.bend"
+    },
+    {
+      "name": "f_bare_params",
+      "lawLine": 202,
+      "definitionLine": 216,
+      "binders": [
+        "+params: List<&2, KTerm>"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/validate.bend"
+    },
+    {
+      "name": "f_import_alias",
+      "lawLine": 156,
+      "definitionLine": 178,
+      "binders": [
+        "+ts: List<&2, FToken>",
+        "+path: String",
+        "+book: List<&2,KDef>",
+        "+imports: List<&2, KTerm>"
+      ],
+      "result": "FRawResult",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/validate.bend"
+    },
+    {
+      "name": "f_valid_pattern",
+      "lawLine": 18,
+      "definitionLine": 100,
+      "binders": [
+        "+p: KTerm",
+        "+book: List<&2,KDef>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/front/validate.bend"
+    },
+    {
+      "name": "f_alias_defs",
+      "lawLine": 157,
+      "definitionLine": 297,
+      "binders": [
+        "+ds: List<&2,KDef>",
+        "+imports: List<&2, KTerm>"
+      ],
+      "result": "List<&2,KDef>",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/graph.bend"
+    },
+    {
+      "name": "f_alias_term",
+      "lawLine": 147,
+      "definitionLine": 285,
+      "binders": [
+        "+t: KTerm",
+        "+imports: List<&2, KTerm>"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/graph.bend"
+    },
+    {
+      "name": "f_drop_chars",
+      "lawLine": 32,
+      "definitionLine": 209,
+      "binders": [
+        "+s: String",
+        "+n: U32"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/graph.bend"
+    },
+    {
+      "name": "f_graph_fresh_name",
+      "lawLine": 73,
+      "definitionLine": 439,
+      "binders": [
+        "+rest: List<&2,KDef>",
+        "+done: KDef",
+        "+d: KDef",
+        "+hash: U32",
+        "+old: KDef"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/graph.bend"
+    },
+    {
+      "name": "f_graph_result",
+      "lawLine": 51,
+      "definitionLine": 229,
+      "binders": [
+        "+g: FGraph"
+      ],
+      "result": "FResult",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/graph.bend"
+    },
+    {
+      "name": "f_graph_source",
+      "lawLine": 41,
+      "definitionLine": 217,
+      "binders": [
+        "+path: String",
+        "+sources: List<&2,FSource>"
+      ],
+      "result": "FSource",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/graph.bend"
+    },
+    {
+      "name": "f_import_namespace",
+      "lawLine": 120,
+      "definitionLine": 261,
+      "binders": [
+        "+im: KTerm",
+        "+ns: String"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/graph.bend"
+    },
+    {
+      "name": "f_import_pathname",
+      "lawLine": 125,
+      "definitionLine": 265,
+      "binders": [
+        "+im: KTerm",
+        "+s: FSource",
+        "+sources: List<&2,FSource>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/graph.bend"
+    },
+    {
+      "name": "f_load_graph",
+      "lawLine": 46,
+      "definitionLine": 225,
+      "binders": [
+        "+main: String",
+        "+sources: List<&2,FSource>"
+      ],
+      "result": "FResult",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/graph.bend"
+    },
+    {
+      "name": "f_load_graph_trace",
+      "lawLine": 397,
+      "definitionLine": 411,
+      "binders": [
+        "+main: String",
+        "+sources: List<&2,FSource>"
+      ],
+      "result": "FLoadTrace",
+      "separatorLinesRemoved": 0,
+      "file": "src/load/graph.bend"
+    },
+    {
+      "name": "f_main_names",
+      "lawLine": 349,
+      "definitionLine": 369,
+      "binders": [
+        "+main: String",
+        "+sources: List<&2,FSource>"
+      ],
+      "result": "List<&2,String>",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/graph.bend"
+    },
+    {
+      "name": "f_path_normal",
+      "lawLine": 7,
+      "definitionLine": 181,
+      "binders": [
+        "+s: String"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/graph.bend"
+    },
+    {
+      "name": "f_strip_bend",
+      "lawLine": 37,
+      "definitionLine": 213,
+      "binders": [
+        "+s: String"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/graph.bend"
+    },
+    {
+      "name": "fpe_def",
+      "lawLine": 472,
+      "definitionLine": 539,
+      "binders": [
+        "+d: KDef"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 0,
+      "file": "src/load/graph.bend"
+    },
+    {
+      "name": "fpe_defs",
+      "lawLine": 475,
+      "definitionLine": 542,
+      "binders": [
+        "+ds: List<&2,KDef>"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 0,
+      "file": "src/load/graph.bend"
+    },
+    {
+      "name": "fpe_term",
+      "lawLine": 462,
+      "definitionLine": 528,
+      "binders": [
+        "+t: KTerm"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 0,
+      "file": "src/load/graph.bend"
+    },
+    {
+      "name": "f_load_graph_seed",
+      "lawLine": 9,
+      "definitionLine": 87,
+      "binders": [
+        "+main: String",
+        "+sources: List<&2, FSource>",
+        "+seedPath: String",
+        "+seedText: String",
+        "+seedBook: List<&2, KDef>"
+      ],
+      "result": "FResult",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/seed.bend"
+    },
+    {
+      "name": "f_load_graph_seed_trace",
+      "lawLine": 158,
+      "definitionLine": 167,
+      "binders": [
+        "+main: String",
+        "+sources: List<&2,FSource>",
+        "+seedPath: String",
+        "+seedText: String",
+        "+seedBook: List<&2,KDef>"
+      ],
+      "result": "FLoadTrace",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/seed.bend"
+    },
+    {
+      "name": "fs_book",
+      "lawLine": 27,
+      "definitionLine": 101,
+      "binders": [
+        "+seed: FSeed"
+      ],
+      "result": "List<&2, KDef>",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/seed.bend"
+    },
+    {
+      "name": "fs_path",
+      "lawLine": 23,
+      "definitionLine": 95,
+      "binders": [
+        "+seed: FSeed"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/seed.bend"
+    },
+    {
+      "name": "f_declared",
+      "lawLine": 44,
+      "definitionLine": 187,
+      "binders": [
+        "+name: String",
+        "+book: List<&2, KDef>"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/modules.bend"
+    },
+    {
+      "name": "f_drop_prefix",
+      "lawLine": 34,
+      "definitionLine": 175,
+      "binders": [
+        "+s: String",
+        "+prefix: String"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/modules.bend"
+    },
+    {
+      "name": "f_load",
+      "lawLine": 101,
+      "definitionLine": 257,
+      "binders": [
+        "+main: String",
+        "+sources: List<&2, FSource>"
+      ],
+      "result": "FResult",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/modules.bend"
+    },
+    {
+      "name": "f_parse_at",
+      "lawLine": 14,
+      "definitionLine": 157,
+      "binders": [
+        "+source: String",
+        "+namespace: String"
+      ],
+      "result": "FResult",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/modules.bend"
+    },
+    {
+      "name": "f_prefix",
+      "lawLine": 29,
+      "definitionLine": 171,
+      "binders": [
+        "+s: String",
+        "+prefix: String"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/modules.bend"
+    },
+    {
+      "name": "f_qual_defs",
+      "lawLine": 70,
+      "definitionLine": 211,
+      "binders": [
+        "+ds: List<&2, KDef>",
+        "+book: List<&2, KDef>",
+        "+ns: String",
+        "+imports: List<&2, KTerm>"
+      ],
+      "result": "List<&2, KDef>",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/modules.bend"
+    },
+    {
+      "name": "f_qual_name",
+      "lawLine": 24,
+      "definitionLine": 167,
+      "binders": [
+        "+name: String",
+        "+ns: String"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/modules.bend"
+    },
+    {
+      "name": "f_qual_term",
+      "lawLine": 56,
+      "definitionLine": 199,
+      "binders": [
+        "+t: KTerm",
+        "+book: List<&2, KDef>",
+        "+ns: String",
+        "+imports: List<&2, KTerm>"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/modules.bend"
+    },
+    {
+      "name": "f_resolve_name",
+      "lawLine": 49,
+      "definitionLine": 195,
+      "binders": [
+        "+name: String",
+        "+book: List<&2, KDef>",
+        "+ns: String",
+        "+imports: List<&2, KTerm>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/modules.bend"
+    },
+    {
+      "name": "f_source_parsed",
+      "lawLine": 316,
+      "definitionLine": 328,
+      "binders": [
+        "+name: String",
+        "+path: String",
+        "+text: String",
+        "+parsed: FResult"
+      ],
+      "result": "FSource",
+      "separatorLinesRemoved": 1,
+      "file": "src/load/modules.bend"
+    },
+    {
+      "name": "dg_context",
+      "lawLine": 67,
+      "definitionLine": 181,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+ctx: List<&2, KTerm>",
+        "+env: List<&2, KPName>",
+        "+width: U32"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/render.bend"
+    },
+    {
+      "name": "dg_context_width",
+      "lawLine": 57,
+      "definitionLine": 169,
+      "binders": [
+        "+ctx: List<&2, KTerm>"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/render.bend"
+    },
+    {
+      "name": "dg_expr",
+      "lawLine": 61,
+      "definitionLine": 175,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+expr: DExpr",
+        "+env: List<&2, KPName>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/render.bend"
+    },
+    {
+      "name": "dg_line_at",
+      "lawLine": 12,
+      "definitionLine": 121,
+      "binders": [
+        "+s: String",
+        "+offset: U32",
+        "+line: U32"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/render.bend"
+    },
+    {
+      "name": "dg_lines_count",
+      "lawLine": 32,
+      "definitionLine": 140,
+      "binders": [
+        "+lines: List<&2, String>"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/render.bend"
+    },
+    {
+      "name": "dg_location",
+      "lawLine": 74,
+      "definitionLine": 187,
+      "binders": [
+        "+name: String",
+        "+span: DSpan"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/render.bend"
+    },
+    {
+      "name": "dg_lpad",
+      "lawLine": 22,
+      "definitionLine": 132,
+      "binders": [
+        "+s: String",
+        "+width: U32"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/render.bend"
+    },
+    {
+      "name": "dg_padding",
+      "lawLine": 18,
+      "definitionLine": 128,
+      "binders": [
+        "+n: U32"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/render.bend"
+    },
+    {
+      "name": "dg_render",
+      "lawLine": 84,
+      "definitionLine": 195,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+diagnostic: DDiagnostic"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/render.bend"
+    },
+    {
+      "name": "dg_rpad",
+      "lawLine": 27,
+      "definitionLine": 136,
+      "binders": [
+        "+s: String",
+        "+width: U32"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/render.bend"
+    },
+    {
+      "name": "dg_scope",
+      "lawLine": 52,
+      "definitionLine": 163,
+      "binders": [
+        "+ctx: List<&2, KTerm>",
+        "+env: List<&2, KPName>"
+      ],
+      "result": "List<&2, KPName>",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/render.bend"
+    },
+    {
+      "name": "dg_snippet",
+      "lawLine": 36,
+      "definitionLine": 146,
+      "binders": [
+        "+span: DSpan"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/render.bend"
+    },
+    {
+      "name": "dg_units",
+      "lawLine": 4,
+      "definitionLine": 111,
+      "binders": [
+        "+c: Char"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/render.bend"
+    },
+    {
+      "name": "dg_width",
+      "lawLine": 8,
+      "definitionLine": 115,
+      "binders": [
+        "+s: String"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/render.bend"
+    },
+    {
+      "name": "diagnostic_render",
+      "lawLine": 100,
+      "definitionLine": 205,
+      "binders": [
+        "+result: DResult"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/render.bend"
+    },
+    {
+      "name": "dg_as_expr",
+      "lawLine": 59,
+      "definitionLine": 121,
+      "binders": [
+        "+t: KTerm"
+      ],
+      "result": "DExpr",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/trace.bend"
+    },
+    {
+      "name": "dg_family",
+      "lawLine": 24,
+      "definitionLine": 90,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+name: String"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/trace.bend"
+    },
+    {
+      "name": "dg_no_report",
+      "lawLine": 63,
+      "definitionLine": 125,
+      "binders": [
+        "+name: String",
+        "+message: String"
+      ],
+      "result": "DDiagnostic",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/trace.bend"
+    },
+    {
+      "name": "dg_pair",
+      "lawLine": 19,
+      "definitionLine": 86,
+      "binders": [
+        "+expected: KTerm",
+        "+observed: KTerm"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/trace.bend"
+    },
+    {
+      "name": "dg_report",
+      "lawLine": 68,
+      "definitionLine": 129,
+      "binders": [
+        "+r: KChecked",
+        "+name: String"
+      ],
+      "result": "DDiagnostic",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/trace.bend"
+    },
+    {
+      "name": "dg_typeless",
+      "lawLine": 29,
+      "definitionLine": 96,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+ctx: List<&2, KTerm>",
+        "+t: KTerm"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/trace.bend"
+    },
+    {
+      "name": "compiler_check_result_abi",
+      "lawLine": 244,
+      "definitionLine": 251,
+      "binders": [],
+      "result": "U32",
+      "separatorLinesRemoved": 0,
+      "file": "src/diagnostic/produce.bend"
+    },
+    {
+      "name": "dg_finish",
+      "lawLine": 50,
+      "definitionLine": 132,
+      "binders": [
+        "+error: String",
+        "+book: List<&2, KDef>",
+        "+diagnostic: DDiagnostic",
+        "+origins: List<&2, DOrigin>"
+      ],
+      "result": "DResult",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/produce.bend"
+    },
+    {
+      "name": "dg_has_span",
+      "lawLine": 16,
+      "definitionLine": 98,
+      "binders": [
+        "+s: DSpan"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/produce.bend"
+    },
+    {
+      "name": "dg_origin_scan",
+      "lawLine": 20,
+      "definitionLine": 104,
+      "binders": [
+        "+origins: List<&2, DOrigin>",
+        "+name: String",
+        "+t: KTerm",
+        "+found: DSpan"
+      ],
+      "result": "DSpan",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/produce.bend"
+    },
+    {
+      "name": "dg_origin_trail",
+      "lawLine": 27,
+      "definitionLine": 111,
+      "binders": [
+        "+origins: List<&2, DOrigin>",
+        "+name: String",
+        "+trail: List<&2, KTerm>"
+      ],
+      "result": "DSpan",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/produce.bend"
+    },
+    {
+      "name": "dg_span_same",
+      "lawLine": 4,
+      "definitionLine": 86,
+      "binders": [
+        "+a: DSpan",
+        "+b: DSpan"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/produce.bend"
+    },
+    {
+      "name": "diagnostic_locate",
+      "lawLine": 40,
+      "definitionLine": 121,
+      "binders": [
+        "+diagnostic: DDiagnostic",
+        "+origins: List<&2, DOrigin>"
+      ],
+      "result": "DDiagnostic",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/produce.bend"
+    },
+    {
+      "name": "diagnostic_result_locate",
+      "lawLine": 45,
+      "definitionLine": 127,
+      "binders": [
+        "+result: DResult",
+        "+origins: List<&2, DOrigin>"
+      ],
+      "result": "DResult",
+      "separatorLinesRemoved": 1,
+      "file": "src/diagnostic/produce.bend"
+    },
+    {
+      "name": "f_load_origins",
+      "lawLine": 11,
+      "definitionLine": 76,
+      "binders": [
+        "+main: String",
+        "+sources: List<&2,FSource>"
+      ],
+      "result": "FProvenance",
+      "separatorLinesRemoved": 0,
+      "file": "src/diagnostic/frontend.bend"
+    },
+    {
+      "name": "f_load_origins_for",
+      "lawLine": 132,
+      "definitionLine": 138,
+      "binders": [
+        "+main: String",
+        "+sources: List<&2,FSource>",
+        "+definition: String"
+      ],
+      "result": "FProvenance",
+      "separatorLinesRemoved": 0,
+      "file": "src/diagnostic/frontend.bend"
+    },
+    {
+      "name": "fp_def",
+      "lawLine": 15,
+      "definitionLine": 79,
+      "binders": [
+        "+d: KDef",
+        "+source: FPSource"
+      ],
+      "result": "List<&2,DOrigin>",
+      "separatorLinesRemoved": 0,
+      "file": "src/diagnostic/frontend.bend"
+    },
+    {
+      "name": "fp_loaded_has",
+      "lawLine": 167,
+      "definitionLine": 209,
+      "binders": [
+        "+book: List<&2,KDef>",
+        "+definition: String"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 0,
+      "file": "src/diagnostic/frontend.bend"
+    },
+    {
+      "name": "fp_loaded_modules",
+      "lawLine": 152,
+      "definitionLine": 193,
+      "binders": [
+        "+done: List<&2,KTerm>",
+        "+book: List<&2,KDef>",
+        "+sources: List<&2,FSource>",
+        "+all: Bool",
+        "+definition: String"
+      ],
+      "result": "List<&2,DOrigin>",
+      "separatorLinesRemoved": 0,
+      "file": "src/diagnostic/frontend.bend"
+    },
+    {
+      "name": "j_ctor_metadata",
+      "lawLine": 109,
+      "definitionLine": 114,
+      "binders": [
+        "+defs: List<&2, KDef>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/foreign.bend"
+    },
+    {
+      "name": "j_foreign_def",
+      "lawLine": 36,
+      "definitionLine": 42,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+d: KDef"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/foreign.bend"
+    },
+    {
+      "name": "j_foreign_error",
+      "lawLine": 156,
+      "definitionLine": 161,
+      "binders": [
+        "+book: List<&2, KDef>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/foreign.bend"
+    },
+    {
+      "name": "j_foreign_name",
+      "lawLine": 16,
+      "definitionLine": 21,
+      "binders": [
+        "+name: String"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/foreign.bend"
+    },
+    {
+      "name": "j_foreign_path",
+      "lawLine": 4,
+      "definitionLine": 9,
+      "binders": [
+        "+paths: List<&2, KTerm>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/foreign.bend"
+    },
+    {
+      "name": "j_foreign_paths",
+      "lawLine": 144,
+      "definitionLine": 149,
+      "binders": [
+        "+book: List<&2, KDef>"
+      ],
+      "result": "List<&2, String>",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/foreign.bend"
+    },
+    {
+      "name": "j_modules",
+      "lawLine": 74,
+      "definitionLine": 80,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+sources: List<&2, KTerm>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/foreign.bend"
+    },
+    {
+      "name": "j_literal",
+      "lawLine": 12,
+      "definitionLine": 17,
+      "binders": [
+        "+t: KTerm"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/literals.bend"
+    },
+    {
+      "name": "j_literal_typed",
+      "lawLine": 167,
+      "definitionLine": 180,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+t: KTerm",
+        "+ty: KTerm"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/literals.bend"
+    },
+    {
+      "name": "j_compile_error",
+      "lawLine": 5,
+      "definitionLine": 10,
+      "binders": [
+        "+book: List<&2, KDef>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/validate.bend"
+    },
+    {
+      "name": "j_layout_error",
+      "lawLine": 85,
+      "definitionLine": 93,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+defs: List<&2, KDef>",
+        "+roots: List<&2, String>",
+        "+stops: List<&2, String>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/validate.bend"
+    },
+    {
+      "name": "j_layout_mark",
+      "lawLine": 124,
+      "definitionLine": 130,
+      "binders": [
+        "+bad: Bool",
+        "+todo: List<&2, String>"
+      ],
+      "result": "List<&2, String>",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/validate.bend"
+    },
+    {
+      "name": "j_layout_open",
+      "lawLine": 133,
+      "definitionLine": 139,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+ty: KTerm"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/validate.bend"
+    },
+    {
+      "name": "j_choice_call",
+      "lawLine": 3,
+      "definitionLine": 60,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+spine: KTerm"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/choice.bend"
+    },
+    {
+      "name": "j_choice_emit",
+      "lawLine": 27,
+      "definitionLine": 86,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+env: List<&2, KTerm>",
+        "+spine: KTerm",
+        "+tail: Bool"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/choice.bend"
+    },
+    {
+      "name": "j_l_global_worker",
+      "lawLine": 33,
+      "definitionLine": 67,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+d: KDef",
+        "+t: KTerm",
+        "+worker: String"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/projection.bend"
+    },
+    {
+      "name": "j_projection_worker",
+      "lawLine": 4,
+      "definitionLine": 41,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+t: KTerm",
+        "+ty: KTerm"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/projection.bend"
+    },
+    {
+      "name": "j_apply_one",
+      "lawLine": 312,
+      "definitionLine": 321,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+env: List<&2, KTerm>",
+        "+t: KTerm",
+        "+tail: Bool",
+        "+fty: KTerm"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/emit.bend"
+    },
+    {
+      "name": "j_constructor",
+      "lawLine": 672,
+      "definitionLine": 680,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+env: List<&2, KTerm>",
+        "+t: KTerm",
+        "+ty: KTerm"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/emit.bend"
+    },
+    {
+      "name": "j_ctor_args",
+      "lawLine": 657,
+      "definitionLine": 665,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+env: List<&2, KTerm>",
+        "+args: List<&2, KTerm>",
+        "+tel: KTerm"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/emit.bend"
+    },
+    {
+      "name": "j_def",
+      "lawLine": 431,
+      "definitionLine": 437,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+d: KDef"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/emit.bend"
+    },
+    {
+      "name": "j_defs",
+      "lawLine": 442,
+      "definitionLine": 448,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+defs: List<&2, KDef>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/emit.bend"
+    },
+    {
+      "name": "j_desc_head",
+      "lawLine": 402,
+      "definitionLine": 409,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+ty: KTerm",
+        "+fuel: U32"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/emit.bend"
+    },
+    {
+      "name": "j_env",
+      "lawLine": 161,
+      "definitionLine": 167,
+      "binders": [
+        "+env: List<&2, KTerm>",
+        "+id: U32"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/emit.bend"
+    },
+    {
+      "name": "j_escape",
+      "lawLine": 102,
+      "definitionLine": 107,
+      "binders": [
+        "+s: String"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/emit.bend"
+    },
+    {
+      "name": "j_exprs",
+      "lawLine": 204,
+      "definitionLine": 211,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+env: List<&2, KTerm>",
+        "+xs: List<&2, KTerm>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/emit.bend"
+    },
+    {
+      "name": "j_l_deep",
+      "lawLine": 16,
+      "definitionLine": 900,
+      "binders": [
+        "+t: KTerm",
+        "+depth: U32"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/emit.bend"
+    },
+    {
+      "name": "j_l_mark",
+      "lawLine": 26,
+      "definitionLine": 912,
+      "binders": [
+        "+t: KTerm",
+        "+path: String",
+        "+depth: U32"
+      ],
+      "result": "KTerm",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/emit.bend"
+    },
+    {
+      "name": "j_library",
+      "lawLine": 761,
+      "definitionLine": 766,
+      "binders": [
+        "+book: List<&2, KDef>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/emit.bend"
+    },
+    {
+      "name": "j_program",
+      "lawLine": 455,
+      "definitionLine": 460,
+      "binders": [
+        "+book: List<&2, KDef>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/emit.bend"
+    },
+    {
+      "name": "j_roots",
+      "lawLine": 797,
+      "definitionLine": 803,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+library: Bool"
+      ],
+      "result": "List<&2, String>",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/emit.bend"
+    },
+    {
+      "name": "j_stops",
+      "lawLine": 818,
+      "definitionLine": 823,
+      "binders": [
+        "+book: List<&2, KDef>"
+      ],
+      "result": "List<&2, String>",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/js/emit.bend"
+    },
+    {
+      "name": "nt_replace_step",
+      "lawLine": 69,
+      "definitionLine": 77,
+      "binders": [
+        "+s: String",
+        "+key: String",
+        "+value: String",
+        "+acc: String"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/native/text.bend"
+    },
+    {
+      "name": "nc_ctor_display",
+      "lawLine": 24,
+      "definitionLine": 72,
+      "binders": [
+        "+name: String"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/native/identity.bend"
+    },
+    {
+      "name": "nc_ctor_identity",
+      "lawLine": 6,
+      "definitionLine": 46,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+name: String"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/native/identity.bend"
+    },
+    {
+      "name": "nc_erase_args",
+      "lawLine": 20,
+      "definitionLine": 43,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+tel: KTerm",
+        "+xs: List<&2, KTerm>"
+      ],
+      "result": "List<&2, KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/native/erase.bend"
+    },
+    {
+      "name": "nc_compact_list",
+      "lawLine": 394,
+      "definitionLine": 399,
+      "binders": [
+        "+ts: List<&2, KTerm>"
+      ],
+      "result": "List<&2, KTerm>",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/native/bridge.bend"
+    },
+    {
+      "name": "nc_lower",
+      "lawLine": 14,
+      "definitionLine": 161,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+t: KTerm",
+        "+env: List<&2, NC_Binding>",
+        "+n: U32"
+      ],
+      "result": "NC_Code",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/native/bridge.bend"
+    },
+    {
+      "name": "nc_occurs_list",
+      "lawLine": 105,
+      "definitionLine": 118,
+      "binders": [
+        "+ts: List<&2, KTerm>",
+        "+id: U32"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/native/bridge.bend"
+    },
+    {
+      "name": "np_collect",
+      "lawLine": 24,
+      "definitionLine": 96,
+      "binders": [
+        "+term: KTerm",
+        "+depth: U32",
+        "+built: List<&2,NPRow>"
+      ],
+      "result": "List<&2,NPRow>",
+      "separatorLinesRemoved": 0,
+      "file": "src/back/native/pattern.bend"
+    },
+    {
+      "name": "np_level",
+      "lawLine": 10,
+      "definitionLine": 89,
+      "binders": [
+        "+term: KTerm",
+        "+zero: KTerm",
+        "+successor: KTerm",
+        "+hasZero: Bool",
+        "+hasSucc: Bool"
+      ],
+      "result": "NPLevel",
+      "separatorLinesRemoved": 0,
+      "file": "src/back/native/pattern.bend"
+    },
+    {
+      "name": "np_level_valid",
+      "lawLine": 132,
+      "definitionLine": 140,
+      "binders": [
+        "+level: NPLevel"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 0,
+      "file": "src/back/native/pattern.bend"
+    },
+    {
+      "name": "np_supported",
+      "lawLine": 81,
+      "definitionLine": 86,
+      "binders": [
+        "+term: KTerm"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/native/pattern.bend"
+    },
+    {
+      "name": "nc_show_arms",
+      "lawLine": 34,
+      "definitionLine": 92,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+cs: List<&2, KDef>",
+        "+args: List<&2, KTerm>",
+        "+types: List<&2, KTerm>"
+      ],
+      "result": "NC_Desc",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/native/show.bend"
+    },
+    {
+      "name": "nc_show_fields",
+      "lawLine": 18,
+      "definitionLine": 82,
+      "binders": [
+        "+book: List<&2, KDef>",
+        "+tel: KTerm",
+        "+left: U32",
+        "+i: U32",
+        "+types: List<&2, KTerm>"
+      ],
+      "result": "NC_Desc",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/native/show.bend"
+    },
+    {
+      "name": "nc_bangs_terms",
+      "lawLine": 220,
+      "definitionLine": 225,
+      "binders": [
+        "+ts: List<&2, KTerm>"
+      ],
+      "result": "List<&2, String>",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/native/book.bend"
+    },
+    {
+      "name": "nc_terms_fork",
+      "lawLine": 41,
+      "definitionLine": 87,
+      "binders": [
+        "+ts: List<&2, KTerm>"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/back/native/book.bend"
+    },
+    {
+      "name": "driver_report",
+      "lawLine": 3,
+      "definitionLine": 39,
+      "binders": [
+        "+book: List<&2,KDef>",
+        "+names: List<&2,String>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/driver/report.bend"
+    },
+    {
+      "name": "driver_emit_owned",
+      "lawLine": 90,
+      "definitionLine": 105,
+      "binders": [
+        "+book: List<&2,KDef>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/driver/api.bend"
+    },
+    {
+      "name": "driver_final",
+      "lawLine": 22,
+      "definitionLine": 28,
+      "binders": [
+        "+book: List<&2,KDef>",
+        "+done: List<&2,KDef>"
+      ],
+      "result": "List<&2,KDef>",
+      "separatorLinesRemoved": 1,
+      "file": "src/driver/api.bend"
+    },
+    {
+      "name": "driver_has_main",
+      "lawLine": 2,
+      "definitionLine": 7,
+      "binders": [
+        "+book: List<&2, KDef>"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/driver/api.bend"
+    },
+    {
+      "name": "driver_interpret",
+      "lawLine": 18,
+      "definitionLine": 32,
+      "binders": [
+        "+book: List<&2, KDef>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/driver/api.bend"
+    },
+    {
+      "name": "driver_is_io",
+      "lawLine": 10,
+      "definitionLine": 15,
+      "binders": [
+        "+book: List<&2, KDef>"
+      ],
+      "result": "Bool",
+      "separatorLinesRemoved": 1,
+      "file": "src/driver/api.bend"
+    },
+    {
+      "name": "driver_owned",
+      "lawLine": 75,
+      "definitionLine": 80,
+      "binders": [
+        "+book: List<&2,KDef>"
+      ],
+      "result": "String",
+      "separatorLinesRemoved": 1,
+      "file": "src/driver/api.bend"
+    },
+    {
+      "name": "driver_todos",
+      "lawLine": 36,
+      "definitionLine": 41,
+      "binders": [
+        "+book: List<&2,KDef>"
+      ],
+      "result": "U32",
+      "separatorLinesRemoved": 1,
+      "file": "src/driver/api.bend"
+    }
+  ],
+  "before": {
+    "physical": 15687,
+    "nonblank": 13093,
+    "bytes": 486768
+  },
+  "after": {
+    "physical": 14853,
+    "nonblank": 12666,
+    "bytes": 474549
+  },
+  "saved": {
+    "physical": 834,
+    "nonblank": 427,
+    "bytes": 12219
+  },
+  "separatorLinesRemoved": 407,
+  "bytesSavedExcludingSeparatorNewlines": 11812,
+  "outputProject": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/candidate-project",
+  "outputTree": {
+    "back/js/README.md": "bd9fdb3506be1271d18712d05872b1aa04962bd7486c606a4d0df4958492f3bb",
+    "back/js/benchmark-build-parser.mjs": "8c4c285c66e8f92163b9b26d2d116d64bfa3238540f2cf8ddddd24d06e7511bf",
+    "back/js/benchmark-parser.mjs": "f53eb33edebb061e4fee9740c47c796bd217066b1adec2410aba9636b4cdbccb",
+    "back/js/choice.bend": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3",
+    "back/js/emit.bend": "6d6db9de9c6c41211f545b4867362402ebebe03db05f77c99dbd020ec08ba016",
+    "back/js/experiments/README.md": "23d422e1031753179859b172741acb2a3b3b34ae03b5cccb04a705b9f0ed3575",
+    "back/js/experiments/allocation-performance.json": "74bc44755908cfcfec076a5aef4a007fe9d840095e10e4345fc0fe3cb7d71374",
+    "back/js/experiments/constructor-provenance.json": "247396a86c58b5c58305896f7e4be9122d930fdca8bd6aaf0b927da8a99eff11",
+    "back/js/experiments/deep-closures-report.json": "2e2db323f64ab6a31ad36f2c1b57019ebb4557d173b1e60f07804080f33401a8",
+    "back/js/experiments/deep-closures.patch": "1824a23a67d4114e79bb7c4074983a94cff8a46ca7c21d8415fceec0f90811ba",
+    "back/js/experiments/full-js-summary.json": "be70707873221a8b40531d9da4aeed354210ef10e09a5eab7b39c8684f1d3ba7",
+    "back/js/experiments/leading-lambda-cache.patch": "225af951d9f5d479c23f5a27fe9e085450ada7930b7211cf468ad8f299de3679",
+    "back/js/experiments/lexical-benchmark.json": "662459ab0252971ec8f639bf12bd10e615132dc9a81709f3c470efd24a28f377",
+    "back/js/experiments/lexical.patch": "e8f9dc190a8e413dcbea167e7b85d3bc318e0e263e9c384df0cc31bc0a5af6b5",
+    "back/js/experiments/runtime-fast.patch": "c376c9b9cd54c03e375382a0385c60ff03ce57d6aef849c9b6b707708972b9cf",
+    "back/js/experiments/runtime-hosts.json": "7b0b718b42ee54ac20d152fd5f54da09a46d76850073a46236180a824525458b",
+    "back/js/foreign.bend": "e71e6822524c8ccca4b75c38946dab05838623b4f80196d5200c4b620c014599",
+    "back/js/literals.bend": "48f687d8a021a8159f54d29c9fa3049df91a968503bd53be9b5efa5ca27a7db0",
+    "back/js/projection.bend": "f534d7c74f396527a9d3e3a06bececebcf0b68d92400ccf46b8125e82735ef09",
+    "back/js/survey.mjs": "3a428111c0cd236a1382103e5f0e7cc9eb5d1a28f8a75cd74b2c1cb2b3156a24",
+    "back/js/test-choice.mjs": "93d1ed44f2cba80367fbbce182158641435940e8b8f591360a802d1428e70d26",
+    "back/js/test-foreign.mjs": "9eef0426b565d4b827d488e9e2f48e39a1e46fca4bf999e472f55327977f65cc",
+    "back/js/test-global-initializers.mjs": "9c7609e7ef63c1eae585786252e4057338cae57e6439bb58fa0dd90e23c07d25",
+    "back/js/test-layout.mjs": "da8581e621afa20a5562686646236d0b1d82afcf2462661fd01af163e79f7067",
+    "back/js/test-projection.mjs": "40a3b4fb806dccb1b8a367eadad9f5cdae99dca0bb55bd391f4c4aa32c7d6400",
+    "back/js/test-provenance.mjs": "520a69fd6b1fcb06258bd3f248f3087454e93830041fecd01f22bb41b65becc4",
+    "back/js/test-string-eq.mjs": "e3300bb78770907b2aeba25bc6f04405d772a0897be658e8a0d9a4b068623839",
+    "back/js/test-string-primitives.mjs": "1e3dd2f63233456f68f8754299b5a57ce4327923e5eb0a7da8306a6d40df49ce",
+    "back/js/test-validation.mjs": "d6a99b64a880c8f329759878bf23d47df9fcd0071be77605ee6a6f7ecaa4ee55",
+    "back/js/test.mjs": "129cce560b5c7a4795d62d1aceb5ac3a0b8faef1166c0215d82823a548485b06",
+    "back/js/validate.bend": "d3ff3ec4bda343af3ec8046ddcc108b0cfbfa134cd26b7a9abc65d268a426092",
+    "back/native/README.md": "715e13e19f9d7b4d08a5c142eb1c87b6a71b9977245bd4ff59209816de36d9e4",
+    "back/native/array.bend": "4e1d5c9d282ba746ac1e98df470411d477bf1449b5621c3ad413f01e883d9149",
+    "back/native/book.bend": "0f0e31315a8d9cbf362778aa2887abf3ac23850aafb58b28407cba53a3d352f3",
+    "back/native/bridge.bend": "d6342724c81278a4907a875128630210147d2e1ba6e90bd0ab1cacd02cdb991d",
+    "back/native/direct.bend": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5",
+    "back/native/emit.bend": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a",
+    "back/native/erase.bend": "56ed6538d90549f7f4cc949201f3ca6fd588a7273ea500dda96d0ce054f10007",
+    "back/native/fixtures/override_add.bend": "a3b434fd37f3f349d08eded47348b7c0f536c30bc66d65d7acd560d29a634e22",
+    "back/native/fixtures.mjs": "54c0f615bdbd6d2b8976a157012b6c38c597d578820787937e331f91c3772d31",
+    "back/native/foreign.bend": "fa71a99ac100dc31a8d6246132fb717f2d8c69f6a7cae71a48a2b960d2c89d61",
+    "back/native/identity.bend": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a",
+    "back/native/intrinsic.bend": "8acf8c4e083b55cc33ef323552963b254ac310c22e7d8b5e3b82253776892ab0",
+    "back/native/ir.bend": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b",
+    "back/native/layout.bend": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b",
+    "back/native/manifest.txt": "6b80b0ecbaa914e3fd6763be9f30434c4224920afd31e6b6a500c5070a358f33",
+    "back/native/parallel.bend": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722",
+    "back/native/pattern.bend": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4",
+    "back/native/show.bend": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d",
+    "back/native/tables.bend": "26457cbe409162e70805b3ff0ec91946811b219f71bb2d45982663c3299daf54",
+    "back/native/tests.mjs": "0623bfc95123e8b11bf345cc7171f7582c9dad2fa4db27fce8265cc7b5c1ab86",
+    "back/native/text.bend": "20ca7aa5627b698771340d4a2e944caef9b1d100d0f2478a75a622b43a4d647b",
+    "back/native/validate.bend": "9684fcb9bb25ff0e822ac11b738a319c1353ed721c6c4d864ed984cde0bfd089",
+    "check/annotate.bend": "8e158ac16fee79f54633d606450b5c5619860d86c294c0d119a312d5a8d5cad8",
+    "check/kernel.bend": "7a17d68eafa5d250e05e7c977937a7d8029207b43a1ec797e795caefb46fcefa",
+    "check/prefix.bend": "96172741f314f801eb20c8d071c8de8c5f3b8f2a8e3312d5f9e6858c4d9a2dac",
+    "check/quantity.bend": "5f5cf65dca94a786691d1246f9b3002074eb9ae9715e387c802dd3c91486258b",
+    "check/specialize.bend": "db583c76fbc41502f500665c69c48bd4aa3ce2fcc30e7192b9dab317c7d7f21b",
+    "compiler.bend": "a7f64505c53a6af2cd4beeb363cb650971487254f758612a446cf44c2903733d",
+    "compiler.json": "08c4c055006c8564139a88b793aadfe1dc0b6d100b4c3f2b26ccf8005f8d65c7",
+    "core/graph.bend": "50ba21e52eb93a9153606f5d620ac2c613127063f294fe962b4c0a836224f8a3",
+    "core/index.bend": "c3cab805705f5dedcfe65691d4bc5c98710058bf8a62e0c39610ff398cf2872e",
+    "core/normalize.bend": "efb95c1ae957f3c7b0c9efa5e761c9fa49325c236efb72a01bb240420ba5f973",
+    "core/pretty.bend": "8711e8ec480a194569dade743b570fa964a5b8783249a90cabc445e10e26b53e",
+    "core/reach.bend": "d46a6eed5910cd404ec4603cb735a9d402b1896e702ceb1770efe16344ef992c",
+    "core/term.bend": "04bcc073b38e35bfac713ae161bbdf8bd59804aa59c6e1ad0127059441836395",
+    "diagnostic/README.md": "c911467a770fdb3835c812f2bbacaaed7cbb4767da8cc49bcc00169010a0d7f1",
+    "diagnostic/frontend.bend": "8727de8ffa6d6fb1022ada1fec7bf53f97d9b696a51666eaa20c22ff16a8f842",
+    "diagnostic/kernel-instrumentation.patch": "273a3e1d126ad4591aafd2a2f5d20c41fcac5fae69b17fdabe75b5686cafd698",
+    "diagnostic/model.bend": "dd69096c6fdcd682a45e9536eb6d475061fd285807961ac95a16b5a874358af5",
+    "diagnostic/produce.bend": "9f1bf3e8683941b301649db680b4b7b3017d302651f62817c7b752b9625c5797",
+    "diagnostic/render.bend": "21890a0d7db39db143c93ae15a2273d690ca6afe0dd263ac04af8985bcc166be",
+    "diagnostic/trace.bend": "a05fdb89e4d2aa38143f849524949bf4e225c4b9eedfebfe998f167caaaf99d0",
+    "driver/api.bend": "096e60ddf14525fac1f5c94da4de7adac53ea0df7b6eb5e8988e835e92212cbf",
+    "driver/report.bend": "f115aab2d00fc6f71db57a972d919db590a22319cec89e7b6b892efe47959b99",
+    "front/declarations.bend": "acb0c17332797ac414ea0eab0a6478c4485bd2b29a0de75c9a5afd9709121ad9",
+    "front/elaborate.bend": "8773a648988663c7aa2ee440f2612a450b28ba7a9bf943fd1c84e71fddb00c76",
+    "front/families.bend": "ad6c331583f510bef384bb23ac41bb455a7b85a8c2d72ceb0232443a1dd98e1b",
+    "front/flatten.bend": "0fa8fae96620ab3f99241436ac46d8201b01e414d2c42ed37f3daf7c5fc900f4",
+    "front/fresh_work.bend": "bb91910966d0e82fc1e1c65be12b149056db6e22503f0fad1d560e4900d7a5ee",
+    "front/freshen.bend": "26abdc135603675f2ab3dffc3c049a20982500907d8819a3fdfea42ba917136a",
+    "front/lexer.bend": "aed5103d42d33312f6e5e873ae786646be42f7332f04a80b78ab0cca70d31f31",
+    "front/literals_arrays.bend": "6468fe13b93ebb879c81ac8d18e2e99d4de16dabbf7dc0cc6f389e4a95343981",
+    "front/parallel.bend": "b08dfeb585b4f196fa1ecd1313c42972f164d80822624d34f664d066ab4a80af",
+    "front/parser.bend": "c2ea3940944434dea9d52c146e998831288b5d4bc1d45e3ce80030bf89c91129",
+    "front/sugar.bend": "920c7904d8a8bcdc90f38dc109836a262d4d574bcca71d7b8c042bddfcfef6fa",
+    "front/unicode.bend": "ca1576b9c9a1992157c98bb66da63ca45aff204c724d902e2e88c5ee87662a51",
+    "front/validate.bend": "7d7a2e7d7093a8d00502f688a2d525626eea30ae931ab94d3d057aea90380ebb",
+    "load/graph.bend": "9f168450d0ba908b8ba21129af28e156f5786afc5e9d7c64680a82d0752f59c8",
+    "load/imports.bend": "f9ad12e894937828aea74ccd34750b3b1635943a0037db9656e9b8e514350471",
+    "load/modules.bend": "e5f75aadb04e69a16feed737e3e4c6101e752d92b65bc3f6f01b122ed0c65424",
+    "load/paths.bend": "6e51e3501ed057ca53b48c3f02506199e2000a5b30fb62aa243843e94d9af877",
+    "load/seed.bend": "db10779d9b777baddfafe30c3532e9cd980a96427ba536af7284741769d09842",
+    "runtime/js/README.md": "83e65be8ce5db054999d6bd70adbbb83b2c11cf77fed19f905349716b48db713",
+    "runtime/js/base.mjs": "9ccfa9c8db7abd1a08520f0df27feb2b3163fd9d2929bf4db8dcbe5de9015eb3",
+    "runtime/js/build.mjs": "4be85d590521e9453f0e7eb46f7b7d9d35bfd803510089c23db192c09d2b2a12",
+    "runtime/js/core.mjs": "cd9641ecd4a54d4b0c0c4a9bbbaec4208ff053f5d1226868aca58995cdcefc21",
+    "runtime/js/effects.mjs": "f33faa95620ecaa7561df76dcd623af7cea1ec001484b59fc7ae2f72405f0fac",
+    "runtime/js/foreign.mjs": "22b442bde5caf73f669fa94f6027ee9454b6934e61fa440a4bf5fb05c399dbff",
+    "runtime/js/readback.mjs": "de7b7930f6e4167b7e44aaef6621b31d53b6d10e23f6e1a93366a214118dee69",
+    "runtime/js/test-apply.mjs": "ca8e877deb0db259f9c22bb5dc17bb774a413c1018796d08f63800ca834c82c1",
+    "runtime/js/test.mjs": "f3c05227a11f1ee8a47c236527876fb32698584227e5a2862321e355b337409a",
+    "runtime/native/LICENSE": "0beb288abd3d067e231f3fbe7df1f8ee37344061fc67f22018150a19e4b26c35",
+    "runtime/native/ORIGIN.md": "cc7d2b0e50253e3ccc3f88ed5c92134b3faba5a8c6eb86ae7aa9c7b5e7dd7073",
+    "runtime/native/effs/args.c": "7209a5fa11396fa8b0667a6738c913c40f554797e442c847a25e13a5f69676e0",
+    "runtime/native/effs/audio_close.c": "c67f807f7400065f20045392d87ef7e73af209f1aa0ee34a1eb35d568d94feb5",
+    "runtime/native/effs/audio_open.c": "65df9665a396a7976b4fdfa556a73ec187e3b5e669e47888615cb0c63a42ce41",
+    "runtime/native/effs/audio_write.c": "0eaaef9f111e40224f4adc4c8978b9e35f08613996381ac9b72641e2aeb608c4",
+    "runtime/native/effs/chan_close.c": "d88e91ca179bfcdbf8580e75f1dbea4c5f240d3fbdb980a2ee24d1e662ff478a",
+    "runtime/native/effs/chan_new.c": "41d722added898f3a9eae186be969a7ca7f01bc3235331663b13319d14fb7ff2",
+    "runtime/native/effs/chan_recv.c": "7baa193d4adb09865a9397e84d41ec4fe7097cdd46150ed44513c76da126d0d1",
+    "runtime/native/effs/chan_send.c": "f12ade43cc52af51e13d35a93221b129db11fbfa7470f38557b1c0c9ef22caa4",
+    "runtime/native/effs/file_close.c": "befd465a31b88936d772222d26b1019ea7330e59e6327d8ba90584c85e8b2fb3",
+    "runtime/native/effs/file_open.c": "f42a8bcc142b9003c7f6ca99287ca09c14f9efcbe15dea929c90c2fa062746e7",
+    "runtime/native/effs/file_read.c": "4ec0b13491c0d9564836ad23b5a65aec930d84bd19e36c90e20e9c34211a7e2b",
+    "runtime/native/effs/file_read_at.c": "689499b396a634a3ebb21ad2cc3846f1979b8f2747c07c15a38ee2f07c904b1c",
+    "runtime/native/effs/file_read_bytes.c": "810e08bfe4439e71dc4bae03eeae680689af8092e144b53faacd75df198ef93d",
+    "runtime/native/effs/file_size.c": "09906f3839f0f0fba1eea944c948e35f8e03627dc2b78e8debb43e0556f5d5d8",
+    "runtime/native/effs/file_write.c": "9829c7100982824fa17f78bab80150adccbddcb69a3cc47939e118018cc22504",
+    "runtime/native/effs/file_write_bytes.c": "80784b7308c00f74ffae50ec0d8278227250edb8edd71a9e33c701482438f097",
+    "runtime/native/effs/get_env.c": "62255e46c7e0c43baea62366830c4a5badb11cba517c0aa17f952f432f46d4a3",
+    "runtime/native/effs/listener_close.c": "11247352a8311b066fff27ed85958598214ece80f23a7ac59ee981ea569351ec",
+    "runtime/native/effs/now.c": "da5fde65701c4fadc7560625c9615b4d60b2eefbd7b6bbe1aedda61887b825b9",
+    "runtime/native/effs/print.c": "709500d2ace6e2eaeec0f5f1e4373d4ec5e402b3c1e289bd70dfef7e2a635b26",
+    "runtime/native/effs/print_err.c": "72781d2adc88a4791d5530c9deff20824c38d5aa1ba43fb05aaa6a697e19f4b6",
+    "runtime/native/effs/random_u32.c": "10ef9045dcd539bc0ff609e61c77d585fb998ceb48656944d62727716263ee2d",
+    "runtime/native/effs/sleep.c": "77e212d3baeec0b3dc0a9c7f630b43094986e433c049049d354a9681719e2ecd",
+    "runtime/native/effs/socket_close.c": "6e2fd1717a2fab133813af88fc0f5b5a8ce44c23bf411f269e71aac38671562e",
+    "runtime/native/effs/spawn.c": "fb3dac6efa993c51f9d7a668cf8da2cac1148380b72cc18a558cba9ba70c01f3",
+    "runtime/native/effs/tcp_accept.c": "e0f0cf4199c278aec722e3c9b81ff879fcec31ec96ebaf66a954db673cf535f8",
+    "runtime/native/effs/tcp_connect.c": "ae1515d0ff57215b03888e76cfe4ee485750ec226c28eed05d56e417f0f84f58",
+    "runtime/native/effs/tcp_listen.c": "2f206b54e6698df529f6c669755cf84e92f51736db4d38e224dd5eb3fcd0a3ed",
+    "runtime/native/effs/tcp_poll.c": "9f4adfe0f4b8e025783b07fa4ba9fec619a5938135dc5f4bb8c9cf7079e82b37",
+    "runtime/native/effs/tcp_recv.c": "3a105d82f4e786b992e27bec66c407caa9efbda67a63c03d95805231a21d9ba1",
+    "runtime/native/effs/tcp_send.c": "70a5eba01d09e2cda7a9f3b22d976f4c8ba3fb7a8c8083abddd8d12c85d8a2a4",
+    "runtime/native/effs/udp_bind.c": "fe405175c1890c2d19a2f6d94b2672259b47a1e6dc8f62f8e9ff540bef7a2245",
+    "runtime/native/effs/udp_poll.c": "66504dbbc09ab346e04cca7a22c60aacc8866555ac143088603cb4b568a64f71",
+    "runtime/native/effs/udp_recv_from.c": "140a281bca2348566030e092f3c27591893b5d945e57e2965863d02c2e6c0a65",
+    "runtime/native/effs/udp_send_to.c": "8704fe7e5770af7e4dcbe24f0fecf4cfbfe61a0a69a77b129df9965e306fae8f",
+    "runtime/native/effs/window_close.c": "655afbdf8a5f7fa80963bad64b43c8dfe7ec1f80896db381792d0d6933f3be2d",
+    "runtime/native/effs/window_frame.c": "01dc840b2145efb8c91b4ffe7360e3520753f59c42e122703c3a6190c50e1aa4",
+    "runtime/native/effs/window_open.c": "1be9c669b47a44716b9cef1aafaafa1ed2a2268730fab475efa762cf368fc21d",
+    "runtime/native/effs/window_set_title.c": "cd60a39ca4084794f3e7aef939de8c7e02ef0ae2158bf52a69f93c21a59ebba5",
+    "runtime/native/effs/write.c": "c1bcd80d50c4901027c801cdd8d7464ea3029361115ac47044c992ce2235a8ac",
+    "runtime/native/runtime.c": "1bbee6dfbe62736c94ad448ec69a8f7437526e98c0aea230b491574f5a9a85fb",
+    "runtime.mjs": "26f5eee2f54b194b64f768df6ff505c67bf7a5df2159aa06caf53ecba54e910b"
+  },
+  "eventsBefore": 2733,
+  "eventsAfter": 2308,
+  "lawCountAfter": 797,
+  "bodiesPreservedByDisjointEdits": true,
+  "definitionOrderPreserved": true,
+  "assemblerUnchanged": true
+}

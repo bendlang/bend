@@ -3,11 +3,6 @@ import Base
 # C identifiers fold case and punctuation. Encode every non-Base constructor
 # with decimal Unicode scalars so distinct source names remain distinct after
 # that transformation. Only the enclosing ADT's provenance grants Base ABI.
-law nc_ctor_identity:
-  for +book: List<&2, KDef>
-  for +name: String
-  String
-
 law nc_ctor_owned:
   for +book: List<&2, KDef>
   for +name: String
@@ -18,10 +13,6 @@ law nc_ctor_encode:
   String
 
 law nc_ctor_codes:
-  for +name: String
-  String
-
-law nc_ctor_display:
   for +name: String
   String
 
@@ -43,7 +34,10 @@ law nc_ctor_decode_step:
   String
 
 @unsafe
-def nc_ctor_identity(book, name):
+def nc_ctor_identity(
+  +book: List<&2, KDef>,
+  +name: String,
+) -> String:
   kc(String, nc_ctor_owned(book, name), u => name, u => nc_ctor_encode(name))
 
 @unsafe
@@ -69,7 +63,9 @@ def nc_ctor_codes(name):
       U32.show(Char.to_u32(h)) ++ "_" ++ nc_ctor_codes(rest)
 
 @unsafe
-def nc_ctor_display(name):
+def nc_ctor_display(
+  +name: String,
+) -> String:
   kc(String, String.starts_with(name, "$ctor."),
     u => nc_ctor_decode(String.drop(name, String.length("$ctor.")), 0, 0, "", name),
     u => name)

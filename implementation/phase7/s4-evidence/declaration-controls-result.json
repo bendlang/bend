@@ -1,0 +1,2234 @@
+{
+  "kind": "s4-declaration-controls",
+  "complete": true,
+  "pass": true,
+  "node": "v24.18.0",
+  "rows": [
+    {
+      "id": "multiline-erased-dependent",
+      "expected": "ok",
+      "complete": true,
+      "pass": true,
+      "versions": {
+        "before": {
+          "input": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/multiline-erased-dependent-before.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/multiline-erased-dependent-before.bend",
+            "sha256": "2620aa868fd9d395a2ad4ea24265244fc992c724b1fc1365db17948a150295f2"
+          },
+          "upstream": {
+            "status": "ok"
+          },
+          "bend": {
+            "parseError": "",
+            "loadError": "",
+            "checkError": "",
+            "status": "ok",
+            "signatures": [
+              {
+                "name": "Flag",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "Typ",
+                  "name": "",
+                  "quant": 0,
+                  "removed": [],
+                  "kids": [
+                    {
+                      "tag": "Qua",
+                      "name": "",
+                      "quant": 2,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "identity",
+                "kind": "Def",
+                "arity": 2,
+                "templates": 0,
+                "native": false,
+                "unsafe": true,
+                "type": {
+                  "tag": "All",
+                  "name": "A",
+                  "quant": 0,
+                  "removed": [],
+                  "id": 0,
+                  "kids": [
+                    {
+                      "tag": "Typ",
+                      "name": "",
+                      "quant": 0,
+                      "removed": [],
+                      "kids": [
+                        {
+                          "tag": "Qua",
+                          "name": "",
+                          "quant": 1,
+                          "removed": [],
+                          "kids": []
+                        }
+                      ]
+                    },
+                    {
+                      "tag": "All",
+                      "name": "value",
+                      "quant": 1,
+                      "removed": [],
+                      "id": 1,
+                      "kids": [
+                        {
+                          "tag": "Var",
+                          "name": "A",
+                          "quant": 0,
+                          "removed": [],
+                          "id": 0,
+                          "kids": []
+                        },
+                        {
+                          "tag": "Var",
+                          "name": "A",
+                          "quant": 0,
+                          "removed": [],
+                          "id": 0,
+                          "kids": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "after": {
+          "input": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/multiline-erased-dependent-after.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/multiline-erased-dependent-after.bend",
+            "sha256": "03c772bc720ccf0050ef4bfcaceb1749954e345da33fd56f8cb9077fef58c357"
+          },
+          "upstream": {
+            "status": "ok"
+          },
+          "bend": {
+            "parseError": "",
+            "loadError": "",
+            "checkError": "",
+            "status": "ok",
+            "signatures": [
+              {
+                "name": "Flag",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "Typ",
+                  "name": "",
+                  "quant": 0,
+                  "removed": [],
+                  "kids": [
+                    {
+                      "tag": "Qua",
+                      "name": "",
+                      "quant": 2,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "identity",
+                "kind": "Def",
+                "arity": 2,
+                "templates": 0,
+                "native": false,
+                "unsafe": true,
+                "type": {
+                  "tag": "All",
+                  "name": "A",
+                  "quant": 0,
+                  "removed": [],
+                  "id": 0,
+                  "kids": [
+                    {
+                      "tag": "Typ",
+                      "name": "",
+                      "quant": 0,
+                      "removed": [],
+                      "kids": [
+                        {
+                          "tag": "Qua",
+                          "name": "",
+                          "quant": 1,
+                          "removed": [],
+                          "kids": []
+                        }
+                      ]
+                    },
+                    {
+                      "tag": "All",
+                      "name": "value",
+                      "quant": 1,
+                      "removed": [],
+                      "id": 1,
+                      "kids": [
+                        {
+                          "tag": "Var",
+                          "name": "A",
+                          "quant": 0,
+                          "removed": [],
+                          "id": 0,
+                          "kids": []
+                        },
+                        {
+                          "tag": "Var",
+                          "name": "A",
+                          "quant": 0,
+                          "removed": [],
+                          "id": 0,
+                          "kids": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "unsafe-fill-kind",
+      "expected": "ok",
+      "complete": true,
+      "pass": true,
+      "versions": {
+        "before": {
+          "input": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/unsafe-fill-kind-before.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/unsafe-fill-kind-before.bend",
+            "sha256": "1b601fe85790f3e40ec009b7e1dba1dedf28033c4b63d83608f443b4322f00a7"
+          },
+          "upstream": {
+            "status": "ok"
+          },
+          "bend": {
+            "parseError": "",
+            "loadError": "",
+            "checkError": "",
+            "status": "ok",
+            "signatures": [
+              {
+                "name": "Flag",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "Typ",
+                  "name": "",
+                  "quant": 0,
+                  "removed": [],
+                  "kids": [
+                    {
+                      "tag": "Qua",
+                      "name": "",
+                      "quant": 2,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "use",
+                "kind": "Def",
+                "arity": 1,
+                "templates": 0,
+                "native": false,
+                "unsafe": true,
+                "type": {
+                  "tag": "All",
+                  "name": "f",
+                  "quant": 1,
+                  "removed": [],
+                  "id": 2,
+                  "kids": [
+                    {
+                      "tag": "All",
+                      "name": "g",
+                      "quant": 2,
+                      "removed": [],
+                      "id": 1,
+                      "kids": [
+                        {
+                          "tag": "All",
+                          "name": "_",
+                          "quant": 1,
+                          "removed": [],
+                          "id": 0,
+                          "kids": [
+                            {
+                              "tag": "ADT",
+                              "name": "Flag",
+                              "quant": 1,
+                              "removed": [],
+                              "kids": []
+                            },
+                            {
+                              "tag": "ADT",
+                              "name": "Flag",
+                              "quant": 1,
+                              "removed": [],
+                              "kids": []
+                            }
+                          ]
+                        },
+                        {
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "quant": 1,
+                          "removed": [],
+                          "kids": []
+                        }
+                      ]
+                    },
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "after": {
+          "input": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/unsafe-fill-kind-after.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/unsafe-fill-kind-after.bend",
+            "sha256": "32fb07b1dab0ccb3466c40f44f00d2128f751a4626fb45e0c72dc9f1ba7c9326"
+          },
+          "upstream": {
+            "status": "ok"
+          },
+          "bend": {
+            "parseError": "",
+            "loadError": "",
+            "checkError": "",
+            "status": "ok",
+            "signatures": [
+              {
+                "name": "Flag",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "Typ",
+                  "name": "",
+                  "quant": 0,
+                  "removed": [],
+                  "kids": [
+                    {
+                      "tag": "Qua",
+                      "name": "",
+                      "quant": 2,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "use",
+                "kind": "Def",
+                "arity": 1,
+                "templates": 0,
+                "native": false,
+                "unsafe": true,
+                "type": {
+                  "tag": "All",
+                  "name": "f",
+                  "quant": 1,
+                  "removed": [],
+                  "id": 2,
+                  "kids": [
+                    {
+                      "tag": "All",
+                      "name": "g",
+                      "quant": 2,
+                      "removed": [],
+                      "id": 1,
+                      "kids": [
+                        {
+                          "tag": "All",
+                          "name": "_",
+                          "quant": 1,
+                          "removed": [],
+                          "id": 0,
+                          "kids": [
+                            {
+                              "tag": "ADT",
+                              "name": "Flag",
+                              "quant": 1,
+                              "removed": [],
+                              "kids": []
+                            },
+                            {
+                              "tag": "ADT",
+                              "name": "Flag",
+                              "quant": 1,
+                              "removed": [],
+                              "kids": []
+                            }
+                          ]
+                        },
+                        {
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "quant": 1,
+                          "removed": [],
+                          "kids": []
+                        }
+                      ]
+                    },
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "safe-kind-wall",
+      "expected": "check-error",
+      "complete": true,
+      "pass": true,
+      "versions": {
+        "before": {
+          "input": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/safe-kind-wall-before.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/safe-kind-wall-before.bend",
+            "sha256": "f32441edce114599d9c9ca3700f9670495bfe71b9bacddfbed068203469a1132"
+          },
+          "upstream": {
+            "status": "check-error",
+            "diagnostic": "Error:\n- expected : Data\n- observed : Type\nLocation: use\n4 | law use:\n5>|   for f: @+g: (Flag -> Flag) -> Flag\n6 |   Flag"
+          },
+          "bend": {
+            "parseError": "",
+            "loadError": "",
+            "checkError": "use: type mismatch",
+            "status": "check-error",
+            "signatures": [
+              {
+                "name": "Flag",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "Typ",
+                  "name": "",
+                  "quant": 0,
+                  "removed": [],
+                  "kids": [
+                    {
+                      "tag": "Qua",
+                      "name": "",
+                      "quant": 2,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "use",
+                "kind": "Def",
+                "arity": 1,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "All",
+                  "name": "f",
+                  "quant": 1,
+                  "removed": [],
+                  "id": 2,
+                  "kids": [
+                    {
+                      "tag": "All",
+                      "name": "g",
+                      "quant": 2,
+                      "removed": [],
+                      "id": 1,
+                      "kids": [
+                        {
+                          "tag": "All",
+                          "name": "_",
+                          "quant": 1,
+                          "removed": [],
+                          "id": 0,
+                          "kids": [
+                            {
+                              "tag": "ADT",
+                              "name": "Flag",
+                              "quant": 1,
+                              "removed": [],
+                              "kids": []
+                            },
+                            {
+                              "tag": "ADT",
+                              "name": "Flag",
+                              "quant": 1,
+                              "removed": [],
+                              "kids": []
+                            }
+                          ]
+                        },
+                        {
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "quant": 1,
+                          "removed": [],
+                          "kids": []
+                        }
+                      ]
+                    },
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "after": {
+          "input": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/safe-kind-wall-after.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/safe-kind-wall-after.bend",
+            "sha256": "c92636eb1961dccbe9a0b179990c7060794b2c71c867b91b4b8487274087cb60"
+          },
+          "upstream": {
+            "status": "check-error",
+            "diagnostic": "Error:\n- expected : Data\n- observed : Type\nLocation: use\n4 | def use(\n5>|   f: @+g: (Flag -> Flag) -> Flag\n6 | ) -> Flag:"
+          },
+          "bend": {
+            "parseError": "",
+            "loadError": "",
+            "checkError": "use: type mismatch",
+            "status": "check-error",
+            "signatures": [
+              {
+                "name": "Flag",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "Typ",
+                  "name": "",
+                  "quant": 0,
+                  "removed": [],
+                  "kids": [
+                    {
+                      "tag": "Qua",
+                      "name": "",
+                      "quant": 2,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "use",
+                "kind": "Def",
+                "arity": 1,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "All",
+                  "name": "f",
+                  "quant": 1,
+                  "removed": [],
+                  "id": 2,
+                  "kids": [
+                    {
+                      "tag": "All",
+                      "name": "g",
+                      "quant": 2,
+                      "removed": [],
+                      "id": 1,
+                      "kids": [
+                        {
+                          "tag": "All",
+                          "name": "_",
+                          "quant": 1,
+                          "removed": [],
+                          "id": 0,
+                          "kids": [
+                            {
+                              "tag": "ADT",
+                              "name": "Flag",
+                              "quant": 1,
+                              "removed": [],
+                              "kids": []
+                            },
+                            {
+                              "tag": "ADT",
+                              "name": "Flag",
+                              "quant": 1,
+                              "removed": [],
+                              "kids": []
+                            }
+                          ]
+                        },
+                        {
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "quant": 1,
+                          "removed": [],
+                          "kids": []
+                        }
+                      ]
+                    },
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "unrestricted-parameter",
+      "expected": "ok",
+      "complete": true,
+      "pass": true,
+      "versions": {
+        "before": {
+          "input": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/unrestricted-parameter-before.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/unrestricted-parameter-before.bend",
+            "sha256": "2e7b36b9d7dd67b00a8aa6f1af63d4cdaef12511204c84a0b9ffbb2997cd9c42"
+          },
+          "upstream": {
+            "status": "ok"
+          },
+          "bend": {
+            "parseError": "",
+            "loadError": "",
+            "checkError": "",
+            "status": "ok",
+            "signatures": [
+              {
+                "name": "Flag",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "Typ",
+                  "name": "",
+                  "quant": 0,
+                  "removed": [],
+                  "kids": [
+                    {
+                      "tag": "Qua",
+                      "name": "",
+                      "quant": 2,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "twice",
+                "kind": "Def",
+                "arity": 2,
+                "templates": 0,
+                "native": false,
+                "unsafe": true,
+                "type": {
+                  "tag": "All",
+                  "name": "f",
+                  "quant": 2,
+                  "removed": [],
+                  "id": 1,
+                  "kids": [
+                    {
+                      "tag": "All",
+                      "name": "_",
+                      "quant": 1,
+                      "removed": [],
+                      "id": 0,
+                      "kids": [
+                        {
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "quant": 1,
+                          "removed": [],
+                          "kids": []
+                        },
+                        {
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "quant": 1,
+                          "removed": [],
+                          "kids": []
+                        }
+                      ]
+                    },
+                    {
+                      "tag": "All",
+                      "name": "x",
+                      "quant": 1,
+                      "removed": [],
+                      "id": 2,
+                      "kids": [
+                        {
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "quant": 1,
+                          "removed": [],
+                          "kids": []
+                        },
+                        {
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "quant": 1,
+                          "removed": [],
+                          "kids": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "after": {
+          "input": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/unrestricted-parameter-after.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/unrestricted-parameter-after.bend",
+            "sha256": "eb8f26d0187725c4471a2587359ddd41e2bda92b1d4d0d1997f0068769f1be11"
+          },
+          "upstream": {
+            "status": "ok"
+          },
+          "bend": {
+            "parseError": "",
+            "loadError": "",
+            "checkError": "",
+            "status": "ok",
+            "signatures": [
+              {
+                "name": "Flag",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "Typ",
+                  "name": "",
+                  "quant": 0,
+                  "removed": [],
+                  "kids": [
+                    {
+                      "tag": "Qua",
+                      "name": "",
+                      "quant": 2,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "twice",
+                "kind": "Def",
+                "arity": 2,
+                "templates": 0,
+                "native": false,
+                "unsafe": true,
+                "type": {
+                  "tag": "All",
+                  "name": "f",
+                  "quant": 2,
+                  "removed": [],
+                  "id": 1,
+                  "kids": [
+                    {
+                      "tag": "All",
+                      "name": "_",
+                      "quant": 1,
+                      "removed": [],
+                      "id": 0,
+                      "kids": [
+                        {
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "quant": 1,
+                          "removed": [],
+                          "kids": []
+                        },
+                        {
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "quant": 1,
+                          "removed": [],
+                          "kids": []
+                        }
+                      ]
+                    },
+                    {
+                      "tag": "All",
+                      "name": "x",
+                      "quant": 1,
+                      "removed": [],
+                      "id": 2,
+                      "kids": [
+                        {
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "quant": 1,
+                          "removed": [],
+                          "kids": []
+                        },
+                        {
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "quant": 1,
+                          "removed": [],
+                          "kids": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "affine-parameter-rejected",
+      "expected": "check-error",
+      "complete": true,
+      "pass": true,
+      "versions": {
+        "before": {
+          "input": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/affine-parameter-rejected-before.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/affine-parameter-rejected-before.bend",
+            "sha256": "feabbcbb3aa70fb076cab6de0f67eb439987866d601adedd48df69b5a93a0333"
+          },
+          "upstream": {
+            "status": "check-error",
+            "diagnostic": "Error:\n- expected : f\n- observed : f (consumed more than once)\nLocation: twice\n 9 | @unsafe\n10>| def twice(f, x):\n11 |   f(f(x))"
+          },
+          "bend": {
+            "parseError": "",
+            "loadError": "",
+            "checkError": "twice: affine variable consumed more than allowed",
+            "status": "check-error",
+            "signatures": [
+              {
+                "name": "Flag",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "Typ",
+                  "name": "",
+                  "quant": 0,
+                  "removed": [],
+                  "kids": [
+                    {
+                      "tag": "Qua",
+                      "name": "",
+                      "quant": 2,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "twice",
+                "kind": "Def",
+                "arity": 2,
+                "templates": 0,
+                "native": false,
+                "unsafe": true,
+                "type": {
+                  "tag": "All",
+                  "name": "f",
+                  "quant": 1,
+                  "removed": [],
+                  "id": 1,
+                  "kids": [
+                    {
+                      "tag": "All",
+                      "name": "_",
+                      "quant": 1,
+                      "removed": [],
+                      "id": 0,
+                      "kids": [
+                        {
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "quant": 1,
+                          "removed": [],
+                          "kids": []
+                        },
+                        {
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "quant": 1,
+                          "removed": [],
+                          "kids": []
+                        }
+                      ]
+                    },
+                    {
+                      "tag": "All",
+                      "name": "x",
+                      "quant": 1,
+                      "removed": [],
+                      "id": 2,
+                      "kids": [
+                        {
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "quant": 1,
+                          "removed": [],
+                          "kids": []
+                        },
+                        {
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "quant": 1,
+                          "removed": [],
+                          "kids": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "after": {
+          "input": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/affine-parameter-rejected-after.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/affine-parameter-rejected-after.bend",
+            "sha256": "6667722980d10bf8abdbeb4fd265d0bcb83587c1858901490abb08e0ce2c4c6c"
+          },
+          "upstream": {
+            "status": "check-error",
+            "diagnostic": "Error:\n- expected : f\n- observed : f (consumed more than once)\nLocation: twice\n5 | def twice(\n6>|   f: Flag -> Flag,\n7 |   x: Flag"
+          },
+          "bend": {
+            "parseError": "",
+            "loadError": "",
+            "checkError": "twice: affine variable consumed more than allowed",
+            "status": "check-error",
+            "signatures": [
+              {
+                "name": "Flag",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "Typ",
+                  "name": "",
+                  "quant": 0,
+                  "removed": [],
+                  "kids": [
+                    {
+                      "tag": "Qua",
+                      "name": "",
+                      "quant": 2,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "twice",
+                "kind": "Def",
+                "arity": 2,
+                "templates": 0,
+                "native": false,
+                "unsafe": true,
+                "type": {
+                  "tag": "All",
+                  "name": "f",
+                  "quant": 1,
+                  "removed": [],
+                  "id": 1,
+                  "kids": [
+                    {
+                      "tag": "All",
+                      "name": "_",
+                      "quant": 1,
+                      "removed": [],
+                      "id": 0,
+                      "kids": [
+                        {
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "quant": 1,
+                          "removed": [],
+                          "kids": []
+                        },
+                        {
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "quant": 1,
+                          "removed": [],
+                          "kids": []
+                        }
+                      ]
+                    },
+                    {
+                      "tag": "All",
+                      "name": "x",
+                      "quant": 1,
+                      "removed": [],
+                      "id": 2,
+                      "kids": [
+                        {
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "quant": 1,
+                          "removed": [],
+                          "kids": []
+                        },
+                        {
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "quant": 1,
+                          "removed": [],
+                          "kids": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "self-recursive-decreasing",
+      "expected": "ok",
+      "complete": true,
+      "pass": true,
+      "versions": {
+        "before": {
+          "input": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/self-recursive-decreasing-before.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/self-recursive-decreasing-before.bend",
+            "sha256": "5b591e471d6ce4533884791f0eabcd423237aab2964015bac87fc84f41081457"
+          },
+          "upstream": {
+            "status": "ok"
+          },
+          "bend": {
+            "parseError": "",
+            "loadError": "",
+            "checkError": "",
+            "status": "ok",
+            "signatures": [
+              {
+                "name": "Count",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "Typ",
+                  "name": "",
+                  "quant": 0,
+                  "removed": [],
+                  "kids": [
+                    {
+                      "tag": "Qua",
+                      "name": "",
+                      "quant": 2,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "Flag",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "Typ",
+                  "name": "",
+                  "quant": 0,
+                  "removed": [],
+                  "kids": [
+                    {
+                      "tag": "Qua",
+                      "name": "",
+                      "quant": 2,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "fold",
+                "kind": "Def",
+                "arity": 1,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "All",
+                  "name": "n",
+                  "quant": 1,
+                  "removed": [],
+                  "id": 0,
+                  "kids": [
+                    {
+                      "tag": "ADT",
+                      "name": "Count",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    },
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "after": {
+          "input": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/self-recursive-decreasing-after.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/self-recursive-decreasing-after.bend",
+            "sha256": "1fef25332cafed35cc56c0b86342eb298b73a3b9520050d6a33575fa161a4235"
+          },
+          "upstream": {
+            "status": "ok"
+          },
+          "bend": {
+            "parseError": "",
+            "loadError": "",
+            "checkError": "",
+            "status": "ok",
+            "signatures": [
+              {
+                "name": "Count",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "Typ",
+                  "name": "",
+                  "quant": 0,
+                  "removed": [],
+                  "kids": [
+                    {
+                      "tag": "Qua",
+                      "name": "",
+                      "quant": 2,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "Flag",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "Typ",
+                  "name": "",
+                  "quant": 0,
+                  "removed": [],
+                  "kids": [
+                    {
+                      "tag": "Qua",
+                      "name": "",
+                      "quant": 2,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "fold",
+                "kind": "Def",
+                "arity": 1,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "All",
+                  "name": "n",
+                  "quant": 1,
+                  "removed": [],
+                  "id": 0,
+                  "kids": [
+                    {
+                      "tag": "ADT",
+                      "name": "Count",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    },
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "unsafe-self-recursion",
+      "expected": "ok",
+      "complete": true,
+      "pass": true,
+      "versions": {
+        "before": {
+          "input": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/unsafe-self-recursion-before.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/unsafe-self-recursion-before.bend",
+            "sha256": "e1307e22bf9e12321ecd5b798b9ce49d7d4960d5c58728f599a0a7c96f9c15f7"
+          },
+          "upstream": {
+            "status": "ok"
+          },
+          "bend": {
+            "parseError": "",
+            "loadError": "",
+            "checkError": "",
+            "status": "ok",
+            "signatures": [
+              {
+                "name": "Flag",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "Typ",
+                  "name": "",
+                  "quant": 0,
+                  "removed": [],
+                  "kids": [
+                    {
+                      "tag": "Qua",
+                      "name": "",
+                      "quant": 2,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "loop",
+                "kind": "Def",
+                "arity": 1,
+                "templates": 0,
+                "native": false,
+                "unsafe": true,
+                "type": {
+                  "tag": "All",
+                  "name": "x",
+                  "quant": 1,
+                  "removed": [],
+                  "id": 0,
+                  "kids": [
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    },
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "after": {
+          "input": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/unsafe-self-recursion-after.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/unsafe-self-recursion-after.bend",
+            "sha256": "bc139b3defb269e228c1c15bbb5e4aa0faf0cf6b3561dc1ae49262a82cfef818"
+          },
+          "upstream": {
+            "status": "ok"
+          },
+          "bend": {
+            "parseError": "",
+            "loadError": "",
+            "checkError": "",
+            "status": "ok",
+            "signatures": [
+              {
+                "name": "Flag",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "Typ",
+                  "name": "",
+                  "quant": 0,
+                  "removed": [],
+                  "kids": [
+                    {
+                      "tag": "Qua",
+                      "name": "",
+                      "quant": 2,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "loop",
+                "kind": "Def",
+                "arity": 1,
+                "templates": 0,
+                "native": false,
+                "unsafe": true,
+                "type": {
+                  "tag": "All",
+                  "name": "x",
+                  "quant": 1,
+                  "removed": [],
+                  "id": 0,
+                  "kids": [
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    },
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "multiline-final-comma",
+      "expected": "ok",
+      "complete": true,
+      "pass": true,
+      "versions": {
+        "before": {
+          "input": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/multiline-final-comma-before.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/multiline-final-comma-before.bend",
+            "sha256": "0d811d8a10f3cd713fb93830068dc57578968e30259543f0e8d79ac790fec6fc"
+          },
+          "upstream": {
+            "status": "ok"
+          },
+          "bend": {
+            "parseError": "",
+            "loadError": "",
+            "checkError": "",
+            "status": "ok",
+            "signatures": [
+              {
+                "name": "Flag",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "Typ",
+                  "name": "",
+                  "quant": 0,
+                  "removed": [],
+                  "kids": [
+                    {
+                      "tag": "Qua",
+                      "name": "",
+                      "quant": 2,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "commas",
+                "kind": "Def",
+                "arity": 2,
+                "templates": 0,
+                "native": false,
+                "unsafe": true,
+                "type": {
+                  "tag": "All",
+                  "name": "A",
+                  "quant": 0,
+                  "removed": [],
+                  "id": 0,
+                  "kids": [
+                    {
+                      "tag": "Typ",
+                      "name": "",
+                      "quant": 0,
+                      "removed": [],
+                      "kids": [
+                        {
+                          "tag": "Qua",
+                          "name": "",
+                          "quant": 1,
+                          "removed": [],
+                          "kids": []
+                        }
+                      ]
+                    },
+                    {
+                      "tag": "All",
+                      "name": "value",
+                      "quant": 1,
+                      "removed": [],
+                      "id": 1,
+                      "kids": [
+                        {
+                          "tag": "Var",
+                          "name": "A",
+                          "quant": 0,
+                          "removed": [],
+                          "id": 0,
+                          "kids": []
+                        },
+                        {
+                          "tag": "Var",
+                          "name": "A",
+                          "quant": 0,
+                          "removed": [],
+                          "id": 0,
+                          "kids": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "after": {
+          "input": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/multiline-final-comma-after.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/multiline-final-comma-after.bend",
+            "sha256": "b5e2aa484a8939c9261dbcc1f3324802ad32acb858ee4d25542176021048c645"
+          },
+          "upstream": {
+            "status": "ok"
+          },
+          "bend": {
+            "parseError": "",
+            "loadError": "",
+            "checkError": "",
+            "status": "ok",
+            "signatures": [
+              {
+                "name": "Flag",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "Typ",
+                  "name": "",
+                  "quant": 0,
+                  "removed": [],
+                  "kids": [
+                    {
+                      "tag": "Qua",
+                      "name": "",
+                      "quant": 2,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "commas",
+                "kind": "Def",
+                "arity": 2,
+                "templates": 0,
+                "native": false,
+                "unsafe": true,
+                "type": {
+                  "tag": "All",
+                  "name": "A",
+                  "quant": 0,
+                  "removed": [],
+                  "id": 0,
+                  "kids": [
+                    {
+                      "tag": "Typ",
+                      "name": "",
+                      "quant": 0,
+                      "removed": [],
+                      "kids": [
+                        {
+                          "tag": "Qua",
+                          "name": "",
+                          "quant": 1,
+                          "removed": [],
+                          "kids": []
+                        }
+                      ]
+                    },
+                    {
+                      "tag": "All",
+                      "name": "value",
+                      "quant": 1,
+                      "removed": [],
+                      "id": 1,
+                      "kids": [
+                        {
+                          "tag": "Var",
+                          "name": "A",
+                          "quant": 0,
+                          "removed": [],
+                          "id": 0,
+                          "kids": []
+                        },
+                        {
+                          "tag": "Var",
+                          "name": "A",
+                          "quant": 0,
+                          "removed": [],
+                          "id": 0,
+                          "kids": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "retained-mutual-laws",
+      "expected": "ok",
+      "complete": true,
+      "pass": true,
+      "versions": {
+        "before": {
+          "input": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/retained-mutual-laws-before.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/retained-mutual-laws-before.bend",
+            "sha256": "9908069a5079a483f065fb0ce10d99375c795969b2a9e13a5fdccd582fc6e5cf"
+          },
+          "upstream": {
+            "status": "ok"
+          },
+          "bend": {
+            "parseError": "",
+            "loadError": "",
+            "checkError": "",
+            "status": "ok",
+            "signatures": [
+              {
+                "name": "Flag",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "Typ",
+                  "name": "",
+                  "quant": 0,
+                  "removed": [],
+                  "kids": [
+                    {
+                      "tag": "Qua",
+                      "name": "",
+                      "quant": 2,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "leaf",
+                "kind": "Def",
+                "arity": 1,
+                "templates": 0,
+                "native": false,
+                "unsafe": true,
+                "type": {
+                  "tag": "All",
+                  "name": "x",
+                  "quant": 1,
+                  "removed": [],
+                  "id": 0,
+                  "kids": [
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    },
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "left",
+                "kind": "Def",
+                "arity": 1,
+                "templates": 0,
+                "native": false,
+                "unsafe": true,
+                "type": {
+                  "tag": "All",
+                  "name": "x",
+                  "quant": 1,
+                  "removed": [],
+                  "id": 0,
+                  "kids": [
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    },
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "right",
+                "kind": "Def",
+                "arity": 1,
+                "templates": 0,
+                "native": false,
+                "unsafe": true,
+                "type": {
+                  "tag": "All",
+                  "name": "x",
+                  "quant": 1,
+                  "removed": [],
+                  "id": 0,
+                  "kids": [
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    },
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "after": {
+          "input": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/retained-mutual-laws-after.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/retained-mutual-laws-after.bend",
+            "sha256": "ad040b65d4aa61d698344c44977c5f1103f09ade71960cf0113149f359fcf784"
+          },
+          "upstream": {
+            "status": "ok"
+          },
+          "bend": {
+            "parseError": "",
+            "loadError": "",
+            "checkError": "",
+            "status": "ok",
+            "signatures": [
+              {
+                "name": "Flag",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "Typ",
+                  "name": "",
+                  "quant": 0,
+                  "removed": [],
+                  "kids": [
+                    {
+                      "tag": "Qua",
+                      "name": "",
+                      "quant": 2,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "leaf",
+                "kind": "Def",
+                "arity": 1,
+                "templates": 0,
+                "native": false,
+                "unsafe": true,
+                "type": {
+                  "tag": "All",
+                  "name": "x",
+                  "quant": 1,
+                  "removed": [],
+                  "id": 0,
+                  "kids": [
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    },
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "left",
+                "kind": "Def",
+                "arity": 1,
+                "templates": 0,
+                "native": false,
+                "unsafe": true,
+                "type": {
+                  "tag": "All",
+                  "name": "x",
+                  "quant": 1,
+                  "removed": [],
+                  "id": 0,
+                  "kids": [
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    },
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "right",
+                "kind": "Def",
+                "arity": 1,
+                "templates": 0,
+                "native": false,
+                "unsafe": true,
+                "type": {
+                  "tag": "All",
+                  "name": "x",
+                  "quant": 1,
+                  "removed": [],
+                  "id": 0,
+                  "kids": [
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    },
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "missing-forward-law",
+      "expected": "check-error",
+      "complete": true,
+      "pass": true,
+      "versions": {
+        "before": {
+          "input": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/missing-forward-law-before.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/missing-forward-law-before.bend",
+            "sha256": "26f247caa2c13235a4139fcb90c744c75d60602a7a7acb425512de742559f23c"
+          },
+          "upstream": {
+            "status": "check-error",
+            "diagnostic": "Error:\n- expected : a defined name\n- observed : later\nContext:\n- x : Flag\nLocation: early\n 9 | def early(x):\n10>|   later(x)\n11 | "
+          },
+          "bend": {
+            "parseError": "",
+            "loadError": "",
+            "checkError": "early: undefined name",
+            "status": "check-error",
+            "signatures": [
+              {
+                "name": "Flag",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "Typ",
+                  "name": "",
+                  "quant": 0,
+                  "removed": [],
+                  "kids": [
+                    {
+                      "tag": "Qua",
+                      "name": "",
+                      "quant": 2,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "early",
+                "kind": "Def",
+                "arity": 1,
+                "templates": 0,
+                "native": false,
+                "unsafe": true,
+                "type": {
+                  "tag": "All",
+                  "name": "x",
+                  "quant": 1,
+                  "removed": [],
+                  "id": 0,
+                  "kids": [
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    },
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "later",
+                "kind": "Def",
+                "arity": 1,
+                "templates": 0,
+                "native": false,
+                "unsafe": true,
+                "type": {
+                  "tag": "All",
+                  "name": "x",
+                  "quant": 1,
+                  "removed": [],
+                  "id": 0,
+                  "kids": [
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    },
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "after": {
+          "input": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/missing-forward-law-after.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/missing-forward-law-after.bend",
+            "sha256": "24cf7418433743926c98194ea6881629def6417a6c68ac2682664e52326625b4"
+          },
+          "upstream": {
+            "status": "check-error",
+            "diagnostic": "Error:\n- expected : a defined name\n- observed : later\nContext:\n- x : Flag\nLocation: early\n7 | ) -> Flag:\n8>|   later(x)\n9 | "
+          },
+          "bend": {
+            "parseError": "",
+            "loadError": "",
+            "checkError": "early: undefined name",
+            "status": "check-error",
+            "signatures": [
+              {
+                "name": "Flag",
+                "kind": "ADT",
+                "arity": 0,
+                "templates": 0,
+                "native": false,
+                "unsafe": false,
+                "type": {
+                  "tag": "Typ",
+                  "name": "",
+                  "quant": 0,
+                  "removed": [],
+                  "kids": [
+                    {
+                      "tag": "Qua",
+                      "name": "",
+                      "quant": 2,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "early",
+                "kind": "Def",
+                "arity": 1,
+                "templates": 0,
+                "native": false,
+                "unsafe": true,
+                "type": {
+                  "tag": "All",
+                  "name": "x",
+                  "quant": 1,
+                  "removed": [],
+                  "id": 0,
+                  "kids": [
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    },
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "later",
+                "kind": "Def",
+                "arity": 1,
+                "templates": 0,
+                "native": false,
+                "unsafe": true,
+                "type": {
+                  "tag": "All",
+                  "name": "x",
+                  "quant": 1,
+                  "removed": [],
+                  "id": 0,
+                  "kids": [
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    },
+                    {
+                      "tag": "ADT",
+                      "name": "Flag",
+                      "quant": 1,
+                      "removed": [],
+                      "kids": []
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "marked-parameter-needs-type",
+      "expected": "parse-error",
+      "complete": true,
+      "pass": true,
+      "versions": {
+        "before": {
+          "input": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/marked-parameter-needs-type-before.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/marked-parameter-needs-type-before.bend",
+            "sha256": "3e7b5d41b56abb802a1b5a32257de741f3d508dc13a038d5a6cc275f64b07107"
+          },
+          "upstream": {
+            "status": "parse-error",
+            "diagnostic": "Error:\n- expected : ':'\n- observed : ')'\nLocation:\n6 |   +x\n7>| ) -> Flag:\n8 |   Flag{}"
+          },
+          "bend": {
+            "parseError": "line 7:0: expected : (a marked parameter requires its type); got )",
+            "loadError": "line 7:0: expected : (a marked parameter requires its type); got )",
+            "status": "parse-error"
+          }
+        },
+        "after": {
+          "input": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/marked-parameter-needs-type-after.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/marked-parameter-needs-type-after.bend",
+            "sha256": "3e7b5d41b56abb802a1b5a32257de741f3d508dc13a038d5a6cc275f64b07107"
+          },
+          "upstream": {
+            "status": "parse-error",
+            "diagnostic": "Error:\n- expected : ':'\n- observed : ')'\nLocation:\n6 |   +x\n7>| ) -> Flag:\n8 |   Flag{}"
+          },
+          "bend": {
+            "parseError": "line 7:0: expected : (a marked parameter requires its type); got )",
+            "loadError": "line 7:0: expected : (a marked parameter requires its type); got )",
+            "status": "parse-error"
+          }
+        }
+      }
+    },
+    {
+      "id": "typed-fill-cannot-repeat-law",
+      "expected": "parse-error",
+      "complete": true,
+      "pass": true,
+      "versions": {
+        "before": {
+          "input": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/typed-fill-cannot-repeat-law-before.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/typed-fill-cannot-repeat-law-before.bend",
+            "sha256": "ab8e702c150ed78012fb717a4865ee3a78c4004580c67e9ea24be700ad7781cb"
+          },
+          "upstream": {
+            "status": "parse-error",
+            "diagnostic": "Error:\n- expected : a name\n- observed : '-'\nLocation:\n10 |   x: Flag\n11>| ) -> Flag:\n12 |   x"
+          },
+          "bend": {
+            "parseError": "a definition must uniquely fill its law with plain parameter names",
+            "loadError": "a definition must uniquely fill its law with plain parameter names",
+            "status": "parse-error"
+          }
+        },
+        "after": {
+          "input": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/typed-fill-cannot-repeat-law-after.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/declaration-controls-02/typed-fill-cannot-repeat-law-after.bend",
+            "sha256": "ab8e702c150ed78012fb717a4865ee3a78c4004580c67e9ea24be700ad7781cb"
+          },
+          "upstream": {
+            "status": "parse-error",
+            "diagnostic": "Error:\n- expected : a name\n- observed : '-'\nLocation:\n10 |   x: Flag\n11>| ) -> Flag:\n12 |   x"
+          },
+          "bend": {
+            "parseError": "a definition must uniquely fill its law with plain parameter names",
+            "loadError": "a definition must uniquely fill its law with plain parameter names",
+            "status": "parse-error"
+          }
+        }
+      }
+    }
+  ],
+  "identities": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/api.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/api.mjs",
+      "sha256": "ba121e4098044d9f106c4e7cb3e37b0e1ce1bc77f7e42f7e5418556b7f0f3e90"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/api.mjs.bootstrap.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s3/attempt-01/api.mjs.bootstrap.json",
+      "sha256": "2f7e171bc123b3a0f37e0a610a1ed7ac46ef95daaa3e50ac30d27c179534df73"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/base.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/base.bend",
+      "sha256": "b8c2734d45ec6b4ce70fee70ff06ef35e08fce885af8852d8eb77dbff020e946"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/bend.ts",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/bend.ts",
+      "sha256": "461e0c5dd12789ea293daf01c1cb5b8504f8dfcf8d38b85744665a77ecc63168"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/declaration-controls.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/declaration-controls.mjs",
+      "sha256": "29bfd56f89d621f730b05b27dfc9e23d5207cf8805941a3b7fa2ec9fc2e84c22"
+    }
+  ],
+  "scope": "Pinned TypeScript and frozen checked B1 parse/check controls; normalized signatures compare source forms, not raw event streams. No runtime, performance or fixed-point claim."
+}

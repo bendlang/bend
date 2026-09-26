@@ -1,0 +1,904 @@
+{
+  "kind": "S4-D-module-ownership",
+  "complete": true,
+  "movedPhysical": 24,
+  "movedNonblank": 21,
+  "movedBytes": 396,
+  "rows": [
+    {
+      "file": "src/core/term.bend",
+      "before": [
+        394,
+        338,
+        7930
+      ],
+      "after": [
+        418,
+        359,
+        8326
+      ],
+      "beforeSha256": "04bcc073b38e35bfac713ae161bbdf8bd59804aa59c6e1ad0127059441836395",
+      "afterSha256": "4fc40e715ceb59d581b91fb006f84698429e687e1ab86d460fc2d49d878bb80c"
+    },
+    {
+      "file": "src/core/index.bend",
+      "before": [
+        339,
+        298,
+        9480
+      ],
+      "after": [
+        339,
+        298,
+        9480
+      ],
+      "beforeSha256": "c3cab805705f5dedcfe65691d4bc5c98710058bf8a62e0c39610ff398cf2872e",
+      "afterSha256": "c3cab805705f5dedcfe65691d4bc5c98710058bf8a62e0c39610ff398cf2872e"
+    },
+    {
+      "file": "src/core/normalize.bend",
+      "before": [
+        534,
+        463,
+        16605
+      ],
+      "after": [
+        510,
+        442,
+        16209
+      ],
+      "beforeSha256": "efb95c1ae957f3c7b0c9efa5e761c9fa49325c236efb72a01bb240420ba5f973",
+      "afterSha256": "9716a4eed46fae3e0bcd99fb4df3754e89cd2b39d724fc6225d9d11ec5e1b2ab"
+    },
+    {
+      "file": "src/core/graph.bend",
+      "before": [
+        475,
+        411,
+        14245
+      ],
+      "after": [
+        475,
+        411,
+        14245
+      ],
+      "beforeSha256": "50ba21e52eb93a9153606f5d620ac2c613127063f294fe962b4c0a836224f8a3",
+      "afterSha256": "50ba21e52eb93a9153606f5d620ac2c613127063f294fe962b4c0a836224f8a3"
+    },
+    {
+      "file": "src/core/reach.bend",
+      "before": [
+        129,
+        106,
+        3635
+      ],
+      "after": [
+        129,
+        106,
+        3635
+      ],
+      "beforeSha256": "d46a6eed5910cd404ec4603cb735a9d402b1896e702ceb1770efe16344ef992c",
+      "afterSha256": "d46a6eed5910cd404ec4603cb735a9d402b1896e702ceb1770efe16344ef992c"
+    },
+    {
+      "file": "src/core/pretty.bend",
+      "before": [
+        524,
+        447,
+        14941
+      ],
+      "after": [
+        524,
+        447,
+        14941
+      ],
+      "beforeSha256": "8711e8ec480a194569dade743b570fa964a5b8783249a90cabc445e10e26b53e",
+      "afterSha256": "8711e8ec480a194569dade743b570fa964a5b8783249a90cabc445e10e26b53e"
+    },
+    {
+      "file": "src/check/quantity.bend",
+      "before": [
+        157,
+        134,
+        3289
+      ],
+      "after": [
+        157,
+        134,
+        3289
+      ],
+      "beforeSha256": "5f5cf65dca94a786691d1246f9b3002074eb9ae9715e387c802dd3c91486258b",
+      "afterSha256": "5f5cf65dca94a786691d1246f9b3002074eb9ae9715e387c802dd3c91486258b"
+    },
+    {
+      "file": "src/check/kernel.bend",
+      "before": [
+        1152,
+        987,
+        33907
+      ],
+      "after": [
+        1152,
+        987,
+        33907
+      ],
+      "beforeSha256": "a5a65f57412d0b3a961203a1e0dd5326a5d107ad3d9ff5ca48c0aff756747eeb",
+      "afterSha256": "a5a65f57412d0b3a961203a1e0dd5326a5d107ad3d9ff5ca48c0aff756747eeb"
+    },
+    {
+      "file": "src/check/specialize.bend",
+      "before": [
+        916,
+        772,
+        23704
+      ],
+      "after": [
+        916,
+        772,
+        23704
+      ],
+      "beforeSha256": "db583c76fbc41502f500665c69c48bd4aa3ce2fcc30e7192b9dab317c7d7f21b",
+      "afterSha256": "db583c76fbc41502f500665c69c48bd4aa3ce2fcc30e7192b9dab317c7d7f21b"
+    },
+    {
+      "file": "src/check/prefix.bend",
+      "before": [
+        140,
+        120,
+        2851
+      ],
+      "after": [
+        140,
+        120,
+        2851
+      ],
+      "beforeSha256": "96172741f314f801eb20c8d071c8de8c5f3b8f2a8e3312d5f9e6858c4d9a2dac",
+      "afterSha256": "96172741f314f801eb20c8d071c8de8c5f3b8f2a8e3312d5f9e6858c4d9a2dac"
+    },
+    {
+      "file": "src/check/annotate.bend",
+      "before": [
+        388,
+        328,
+        10649
+      ],
+      "after": [
+        388,
+        328,
+        10649
+      ],
+      "beforeSha256": "05d934d7b0a25cd72b6770436be273ab64ccce8753e4f0f6df9e672164246be6",
+      "afterSha256": "05d934d7b0a25cd72b6770436be273ab64ccce8753e4f0f6df9e672164246be6"
+    },
+    {
+      "file": "src/front/lexer.bend",
+      "before": [
+        302,
+        261,
+        8357
+      ],
+      "after": [
+        302,
+        261,
+        8357
+      ],
+      "beforeSha256": "aed5103d42d33312f6e5e873ae786646be42f7332f04a80b78ab0cca70d31f31",
+      "afterSha256": "aed5103d42d33312f6e5e873ae786646be42f7332f04a80b78ab0cca70d31f31"
+    },
+    {
+      "file": "src/front/parser.bend",
+      "before": [
+        606,
+        513,
+        21132
+      ],
+      "after": [
+        606,
+        513,
+        21132
+      ],
+      "beforeSha256": "c2ea3940944434dea9d52c146e998831288b5d4bc1d45e3ce80030bf89c91129",
+      "afterSha256": "c2ea3940944434dea9d52c146e998831288b5d4bc1d45e3ce80030bf89c91129"
+    },
+    {
+      "file": "src/front/declarations.bend",
+      "before": [
+        619,
+        527,
+        21153
+      ],
+      "after": [
+        619,
+        527,
+        21153
+      ],
+      "beforeSha256": "ea488d9b26663285b66d7a625f9eb1488c872f0f003590ba9b49cae08269a2a7",
+      "afterSha256": "ea488d9b26663285b66d7a625f9eb1488c872f0f003590ba9b49cae08269a2a7"
+    },
+    {
+      "file": "src/front/flatten.bend",
+      "before": [
+        270,
+        231,
+        8364
+      ],
+      "after": [
+        270,
+        231,
+        8364
+      ],
+      "beforeSha256": "0eb3b45ddec363d21e715b491cd19698e4dd6a50b259800edad42dd1e4338392",
+      "afterSha256": "0eb3b45ddec363d21e715b491cd19698e4dd6a50b259800edad42dd1e4338392"
+    },
+    {
+      "file": "src/front/elaborate.bend",
+      "before": [
+        469,
+        395,
+        14183
+      ],
+      "after": [
+        469,
+        395,
+        14183
+      ],
+      "beforeSha256": "88611afd27cae1af669dfaece8dd8bf2a9d185ec9ab06b576069bb8475fec800",
+      "afterSha256": "88611afd27cae1af669dfaece8dd8bf2a9d185ec9ab06b576069bb8475fec800"
+    },
+    {
+      "file": "src/front/sugar.bend",
+      "before": [
+        302,
+        250,
+        8257
+      ],
+      "after": [
+        302,
+        250,
+        8257
+      ],
+      "beforeSha256": "ce5ef60fada67616142961f07a07c0c2a29283e4b553028480ccf7810687d547",
+      "afterSha256": "ce5ef60fada67616142961f07a07c0c2a29283e4b553028480ccf7810687d547"
+    },
+    {
+      "file": "src/front/unicode.bend",
+      "before": [
+        78,
+        61,
+        2775
+      ],
+      "after": [
+        78,
+        61,
+        2775
+      ],
+      "beforeSha256": "ca1576b9c9a1992157c98bb66da63ca45aff204c724d902e2e88c5ee87662a51",
+      "afterSha256": "ca1576b9c9a1992157c98bb66da63ca45aff204c724d902e2e88c5ee87662a51"
+    },
+    {
+      "file": "src/front/literals_arrays.bend",
+      "before": [
+        197,
+        155,
+        5734
+      ],
+      "after": [
+        197,
+        155,
+        5734
+      ],
+      "beforeSha256": "6468fe13b93ebb879c81ac8d18e2e99d4de16dabbf7dc0cc6f389e4a95343981",
+      "afterSha256": "6468fe13b93ebb879c81ac8d18e2e99d4de16dabbf7dc0cc6f389e4a95343981"
+    },
+    {
+      "file": "src/front/parallel.bend",
+      "before": [
+        144,
+        118,
+        4097
+      ],
+      "after": [
+        144,
+        118,
+        4097
+      ],
+      "beforeSha256": "8e9c25dc74b2976527c722072ab253863ed8839d9b84d7a6549ab7d0105ab8a9",
+      "afterSha256": "8e9c25dc74b2976527c722072ab253863ed8839d9b84d7a6549ab7d0105ab8a9"
+    },
+    {
+      "file": "src/front/fresh_work.bend",
+      "before": [
+        200,
+        193,
+        6978
+      ],
+      "after": [
+        200,
+        193,
+        6978
+      ],
+      "beforeSha256": "bb91910966d0e82fc1e1c65be12b149056db6e22503f0fad1d560e4900d7a5ee",
+      "afterSha256": "bb91910966d0e82fc1e1c65be12b149056db6e22503f0fad1d560e4900d7a5ee"
+    },
+    {
+      "file": "src/front/freshen.bend",
+      "before": [
+        57,
+        47,
+        1168
+      ],
+      "after": [
+        57,
+        47,
+        1168
+      ],
+      "beforeSha256": "26abdc135603675f2ab3dffc3c049a20982500907d8819a3fdfea42ba917136a",
+      "afterSha256": "26abdc135603675f2ab3dffc3c049a20982500907d8819a3fdfea42ba917136a"
+    },
+    {
+      "file": "src/load/paths.bend",
+      "before": [
+        83,
+        69,
+        2127
+      ],
+      "after": [
+        83,
+        69,
+        2127
+      ],
+      "beforeSha256": "6e51e3501ed057ca53b48c3f02506199e2000a5b30fb62aa243843e94d9af877",
+      "afterSha256": "6e51e3501ed057ca53b48c3f02506199e2000a5b30fb62aa243843e94d9af877"
+    },
+    {
+      "file": "src/front/families.bend",
+      "before": [
+        203,
+        166,
+        6289
+      ],
+      "after": [
+        203,
+        166,
+        6289
+      ],
+      "beforeSha256": "8bf0c69ad09a5d8793f56a5f6f967838857fbf43b8d2f2806521d801a1fd66f0",
+      "afterSha256": "8bf0c69ad09a5d8793f56a5f6f967838857fbf43b8d2f2806521d801a1fd66f0"
+    },
+    {
+      "file": "src/front/validate.bend",
+      "before": [
+        284,
+        230,
+        9588
+      ],
+      "after": [
+        284,
+        230,
+        9588
+      ],
+      "beforeSha256": "f6e275e614512e29f6e66103660c500efad0dfa9a2d99821fa57c2d1645abbeb",
+      "afterSha256": "f6e275e614512e29f6e66103660c500efad0dfa9a2d99821fa57c2d1645abbeb"
+    },
+    {
+      "file": "src/load/imports.bend",
+      "before": [
+        13,
+        10,
+        733
+      ],
+      "after": [
+        13,
+        10,
+        733
+      ],
+      "beforeSha256": "f9ad12e894937828aea74ccd34750b3b1635943a0037db9656e9b8e514350471",
+      "afterSha256": "f9ad12e894937828aea74ccd34750b3b1635943a0037db9656e9b8e514350471"
+    },
+    {
+      "file": "src/load/graph.bend",
+      "before": [
+        477,
+        422,
+        14150
+      ],
+      "after": [
+        477,
+        422,
+        14150
+      ],
+      "beforeSha256": "6a5ab7cecafed72e49c06fc912127d87c9ccecea9cd0b341eb430ac5bee284bc",
+      "afterSha256": "6a5ab7cecafed72e49c06fc912127d87c9ccecea9cd0b341eb430ac5bee284bc"
+    },
+    {
+      "file": "src/load/seed.bend",
+      "before": [
+        160,
+        139,
+        5257
+      ],
+      "after": [
+        160,
+        139,
+        5257
+      ],
+      "beforeSha256": "b26df24719588df4fc4fd57f143bc35ec92e77e0f849429380a3797fab8077e4",
+      "afterSha256": "b26df24719588df4fc4fd57f143bc35ec92e77e0f849429380a3797fab8077e4"
+    },
+    {
+      "file": "src/load/modules.bend",
+      "before": [
+        304,
+        259,
+        8265
+      ],
+      "after": [
+        304,
+        259,
+        8265
+      ],
+      "beforeSha256": "a7fd4c42cd13cc8165cec2a4e9f71f070fb10703910f7780064bd533aaa711fe",
+      "afterSha256": "a7fd4c42cd13cc8165cec2a4e9f71f070fb10703910f7780064bd533aaa711fe"
+    },
+    {
+      "file": "src/diagnostic/model.bend",
+      "before": [
+        19,
+        15,
+        805
+      ],
+      "after": [
+        19,
+        15,
+        805
+      ],
+      "beforeSha256": "dd69096c6fdcd682a45e9536eb6d475061fd285807961ac95a16b5a874358af5",
+      "afterSha256": "dd69096c6fdcd682a45e9536eb6d475061fd285807961ac95a16b5a874358af5"
+    },
+    {
+      "file": "src/diagnostic/render.bend",
+      "before": [
+        184,
+        158,
+        5198
+      ],
+      "after": [
+        184,
+        158,
+        5198
+      ],
+      "beforeSha256": "21890a0d7db39db143c93ae15a2273d690ca6afe0dd263ac04af8985bcc166be",
+      "afterSha256": "21890a0d7db39db143c93ae15a2273d690ca6afe0dd263ac04af8985bcc166be"
+    },
+    {
+      "file": "src/diagnostic/trace.bend",
+      "before": [
+        119,
+        100,
+        4681
+      ],
+      "after": [
+        119,
+        100,
+        4681
+      ],
+      "beforeSha256": "a05fdb89e4d2aa38143f849524949bf4e225c4b9eedfebfe998f167caaaf99d0",
+      "afterSha256": "a05fdb89e4d2aa38143f849524949bf4e225c4b9eedfebfe998f167caaaf99d0"
+    },
+    {
+      "file": "src/diagnostic/produce.bend",
+      "before": [
+        236,
+        210,
+        8138
+      ],
+      "after": [
+        236,
+        210,
+        8138
+      ],
+      "beforeSha256": "9f1bf3e8683941b301649db680b4b7b3017d302651f62817c7b752b9625c5797",
+      "afterSha256": "9f1bf3e8683941b301649db680b4b7b3017d302651f62817c7b752b9625c5797"
+    },
+    {
+      "file": "src/diagnostic/frontend.bend",
+      "before": [
+        229,
+        222,
+        8124
+      ],
+      "after": [
+        229,
+        222,
+        8124
+      ],
+      "beforeSha256": "8727de8ffa6d6fb1022ada1fec7bf53f97d9b696a51666eaa20c22ff16a8f842",
+      "afterSha256": "8727de8ffa6d6fb1022ada1fec7bf53f97d9b696a51666eaa20c22ff16a8f842"
+    },
+    {
+      "file": "src/back/js/foreign.bend",
+      "before": [
+        160,
+        135,
+        5295
+      ],
+      "after": [
+        160,
+        135,
+        5295
+      ],
+      "beforeSha256": "e71e6822524c8ccca4b75c38946dab05838623b4f80196d5200c4b620c014599",
+      "afterSha256": "e71e6822524c8ccca4b75c38946dab05838623b4f80196d5200c4b620c014599"
+    },
+    {
+      "file": "src/back/js/literals.bend",
+      "before": [
+        183,
+        148,
+        5004
+      ],
+      "after": [
+        183,
+        148,
+        5004
+      ],
+      "beforeSha256": "48f687d8a021a8159f54d29c9fa3049df91a968503bd53be9b5efa5ca27a7db0",
+      "afterSha256": "48f687d8a021a8159f54d29c9fa3049df91a968503bd53be9b5efa5ca27a7db0"
+    },
+    {
+      "file": "src/back/js/validate.bend",
+      "before": [
+        284,
+        239,
+        10001
+      ],
+      "after": [
+        284,
+        239,
+        10001
+      ],
+      "beforeSha256": "880d8e4095c3689db17b1e11bb5e100e7ef860c11f2828d0fd79ff3f172e4cb8",
+      "afterSha256": "880d8e4095c3689db17b1e11bb5e100e7ef860c11f2828d0fd79ff3f172e4cb8"
+    },
+    {
+      "file": "src/back/js/choice.bend",
+      "before": [
+        97,
+        82,
+        3583
+      ],
+      "after": [
+        97,
+        82,
+        3583
+      ],
+      "beforeSha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3",
+      "afterSha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3"
+    },
+    {
+      "file": "src/back/js/projection.bend",
+      "before": [
+        65,
+        56,
+        2355
+      ],
+      "after": [
+        65,
+        56,
+        2355
+      ],
+      "beforeSha256": "f534d7c74f396527a9d3e3a06bececebcf0b68d92400ccf46b8125e82735ef09",
+      "afterSha256": "f534d7c74f396527a9d3e3a06bececebcf0b68d92400ccf46b8125e82735ef09"
+    },
+    {
+      "file": "src/back/js/emit.bend",
+      "before": [
+        951,
+        800,
+        29207
+      ],
+      "after": [
+        951,
+        800,
+        29207
+      ],
+      "beforeSha256": "6d6db9de9c6c41211f545b4867362402ebebe03db05f77c99dbd020ec08ba016",
+      "afterSha256": "6d6db9de9c6c41211f545b4867362402ebebe03db05f77c99dbd020ec08ba016"
+    },
+    {
+      "file": "src/back/native/ir.bend",
+      "before": [
+        25,
+        19,
+        929
+      ],
+      "after": [
+        25,
+        19,
+        929
+      ],
+      "beforeSha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b",
+      "afterSha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b"
+    },
+    {
+      "file": "src/back/native/text.bend",
+      "before": [
+        101,
+        83,
+        2545
+      ],
+      "after": [
+        101,
+        83,
+        2545
+      ],
+      "beforeSha256": "20ca7aa5627b698771340d4a2e944caef9b1d100d0f2478a75a622b43a4d647b",
+      "afterSha256": "20ca7aa5627b698771340d4a2e944caef9b1d100d0f2478a75a622b43a4d647b"
+    },
+    {
+      "file": "src/back/native/identity.bend",
+      "before": [
+        89,
+        77,
+        2476
+      ],
+      "after": [
+        89,
+        77,
+        2476
+      ],
+      "beforeSha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a",
+      "afterSha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a"
+    },
+    {
+      "file": "src/back/native/layout.bend",
+      "before": [
+        7,
+        6,
+        135
+      ],
+      "after": [
+        7,
+        6,
+        135
+      ],
+      "beforeSha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b",
+      "afterSha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b"
+    },
+    {
+      "file": "src/back/native/intrinsic.bend",
+      "before": [
+        29,
+        24,
+        4905
+      ],
+      "after": [
+        29,
+        24,
+        4905
+      ],
+      "beforeSha256": "8acf8c4e083b55cc33ef323552963b254ac310c22e7d8b5e3b82253776892ab0",
+      "afterSha256": "8acf8c4e083b55cc33ef323552963b254ac310c22e7d8b5e3b82253776892ab0"
+    },
+    {
+      "file": "src/back/native/tables.bend",
+      "before": [
+        221,
+        184,
+        8584
+      ],
+      "after": [
+        221,
+        184,
+        8584
+      ],
+      "beforeSha256": "26457cbe409162e70805b3ff0ec91946811b219f71bb2d45982663c3299daf54",
+      "afterSha256": "26457cbe409162e70805b3ff0ec91946811b219f71bb2d45982663c3299daf54"
+    },
+    {
+      "file": "src/back/native/emit.bend",
+      "before": [
+        111,
+        93,
+        5084
+      ],
+      "after": [
+        111,
+        93,
+        5084
+      ],
+      "beforeSha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a",
+      "afterSha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a"
+    },
+    {
+      "file": "src/back/native/erase.bend",
+      "before": [
+        83,
+        71,
+        3439
+      ],
+      "after": [
+        83,
+        71,
+        3439
+      ],
+      "beforeSha256": "56ed6538d90549f7f4cc949201f3ca6fd588a7273ea500dda96d0ce054f10007",
+      "afterSha256": "56ed6538d90549f7f4cc949201f3ca6fd588a7273ea500dda96d0ce054f10007"
+    },
+    {
+      "file": "src/back/native/bridge.bend",
+      "before": [
+        435,
+        364,
+        21509
+      ],
+      "after": [
+        435,
+        364,
+        21509
+      ],
+      "beforeSha256": "d6342724c81278a4907a875128630210147d2e1ba6e90bd0ab1cacd02cdb991d",
+      "afterSha256": "d6342724c81278a4907a875128630210147d2e1ba6e90bd0ab1cacd02cdb991d"
+    },
+    {
+      "file": "src/back/native/direct.bend",
+      "before": [
+        88,
+        74,
+        4200
+      ],
+      "after": [
+        88,
+        74,
+        4200
+      ],
+      "beforeSha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5",
+      "afterSha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5"
+    },
+    {
+      "file": "src/back/native/pattern.bend",
+      "before": [
+        141,
+        137,
+        5324
+      ],
+      "after": [
+        141,
+        137,
+        5324
+      ],
+      "beforeSha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4",
+      "afterSha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4"
+    },
+    {
+      "file": "src/back/native/show.bend",
+      "before": [
+        152,
+        129,
+        6723
+      ],
+      "after": [
+        152,
+        129,
+        6723
+      ],
+      "beforeSha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d",
+      "afterSha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d"
+    },
+    {
+      "file": "src/back/native/parallel.bend",
+      "before": [
+        94,
+        81,
+        5003
+      ],
+      "after": [
+        94,
+        81,
+        5003
+      ],
+      "beforeSha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722",
+      "afterSha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722"
+    },
+    {
+      "file": "src/back/native/array.bend",
+      "before": [
+        27,
+        24,
+        1814
+      ],
+      "after": [
+        27,
+        24,
+        1814
+      ],
+      "beforeSha256": "4e1d5c9d282ba746ac1e98df470411d477bf1449b5621c3ad413f01e883d9149",
+      "afterSha256": "4e1d5c9d282ba746ac1e98df470411d477bf1449b5621c3ad413f01e883d9149"
+    },
+    {
+      "file": "src/back/native/validate.bend",
+      "before": [
+        62,
+        52,
+        2871
+      ],
+      "after": [
+        62,
+        52,
+        2871
+      ],
+      "beforeSha256": "9684fcb9bb25ff0e822ac11b738a319c1353ed721c6c4d864ed984cde0bfd089",
+      "afterSha256": "9684fcb9bb25ff0e822ac11b738a319c1353ed721c6c4d864ed984cde0bfd089"
+    },
+    {
+      "file": "src/back/native/foreign.bend",
+      "before": [
+        53,
+        46,
+        2987
+      ],
+      "after": [
+        53,
+        46,
+        2987
+      ],
+      "beforeSha256": "fa71a99ac100dc31a8d6246132fb717f2d8c69f6a7cae71a48a2b960d2c89d61",
+      "afterSha256": "fa71a99ac100dc31a8d6246132fb717f2d8c69f6a7cae71a48a2b960d2c89d61"
+    },
+    {
+      "file": "src/back/native/book.bend",
+      "before": [
+        316,
+        264,
+        14283
+      ],
+      "after": [
+        316,
+        264,
+        14283
+      ],
+      "beforeSha256": "0f0e31315a8d9cbf362778aa2887abf3ac23850aafb58b28407cba53a3d352f3",
+      "afterSha256": "0f0e31315a8d9cbf362778aa2887abf3ac23850aafb58b28407cba53a3d352f3"
+    },
+    {
+      "file": "src/driver/report.bend",
+      "before": [
+        82,
+        70,
+        2091
+      ],
+      "after": [
+        82,
+        70,
+        2091
+      ],
+      "beforeSha256": "f115aab2d00fc6f71db57a972d919db590a22319cec89e7b6b892efe47959b99",
+      "afterSha256": "f115aab2d00fc6f71db57a972d919db590a22319cec89e7b6b892efe47959b99"
+    },
+    {
+      "file": "src/driver/api.bend",
+      "before": [
+        108,
+        92,
+        2926
+      ],
+      "after": [
+        108,
+        92,
+        2926
+      ],
+      "beforeSha256": "096e60ddf14525fac1f5c94da4de7adac53ea0df7b6eb5e8988e835e92212cbf",
+      "afterSha256": "096e60ddf14525fac1f5c94da4de7adac53ea0df7b6eb5e8988e835e92212cbf"
+    }
+  ],
+  "before": [
+    14667,
+    12505,
+    470062
+  ],
+  "after": [
+    14667,
+    12505,
+    470062
+  ]
+}

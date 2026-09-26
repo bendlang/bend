@@ -1,0 +1,63 @@
+{
+  "complete": true,
+  "scope": "Serial ABBA A02/B01 host cost on real core fixture; no full-source TypeScript ratio.",
+  "rows": [
+    {
+      "workload": "accepted",
+      "control": 0,
+      "candidate": 1,
+      "requestRatio": 1.0021357964095639,
+      "processRatio": 1.0022592931874064,
+      "rssRatio": 1.004558599251623
+    },
+    {
+      "workload": "accepted",
+      "control": 3,
+      "candidate": 2,
+      "requestRatio": 1.0103954265568604,
+      "processRatio": 1.0089759662269036,
+      "rssRatio": 0.9998335704953775
+    },
+    {
+      "workload": "early",
+      "control": 0,
+      "candidate": 1,
+      "requestRatio": 1.0107191555277137,
+      "processRatio": 1.0094920849811053,
+      "rssRatio": 0.9971998635058913
+    },
+    {
+      "workload": "early",
+      "control": 3,
+      "candidate": 2,
+      "requestRatio": 1.0152678305243084,
+      "processRatio": 1.0134259354314004,
+      "rssRatio": 1.0050878255602664
+    },
+    {
+      "workload": "late",
+      "control": 0,
+      "candidate": 1,
+      "requestRatio": 1.0054300999962942,
+      "processRatio": 1.00550271789996,
+      "rssRatio": 0.9962049523885019
+    },
+    {
+      "workload": "late",
+      "control": 3,
+      "candidate": 2,
+      "requestRatio": 1.0097663097433978,
+      "processRatio": 1.0101019817477932,
+      "rssRatio": 1.0070689672338435
+    }
+  ],
+  "requestProcessLimit": 1.05,
+  "rssLimit": 1.1,
+  "apiSizeLimit": 1.1,
+  "apiBytes": [
+    1030277,
+    1023803
+  ],
+  "apiRatio": 0.9937162530076863,
+  "pass": true
+}

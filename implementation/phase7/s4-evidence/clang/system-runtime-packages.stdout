@@ -1,0 +1,11 @@
+binutils 2.35.2-2 install ok installed
+libc6 2.31-13+deb11u14 install ok installed
+libc6-dev 2.31-13+deb11u14 install ok installed
+libedit2 3.1-20191231-2+b1 install ok installed
+libffi7 3.3-6 install ok installed
+libgcc-10-dev 10.2.1-6 install ok installed
+libstdc++-10-dev 10.2.1-6 install ok installed
+libstdc++6 10.2.1-6 install ok installed
+libxml2 2.9.10+dfsg-6.7+deb11u10 install ok installed
+libzstd1 1.4.8+dfsg-2.1 install ok installed
+zlib1g 1:1.2.11.dfsg-2+deb11u2 install ok installed

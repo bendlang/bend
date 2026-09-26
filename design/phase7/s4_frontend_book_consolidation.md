@@ -1,5 +1,10 @@
 # S4: reduce declaration and frontend bookkeeping
 
+Execution outcome: a validated A+B+D checkpoint is installed at 14,667 lines;
+C is rejected. [The report](../../implementation/phase7/s4-report.md) preserves
+all attempts and gates. The 50% milestone remains open; this design's original
+budgets below are not claims of additional achieved reductions.
+
 Status: bounded design before implementation. Baseline: S3 commit `8cc51c1`,
 15,687 Bend lines / 13,093 nonblank / 486,768 bytes. The 50% milestone remains
 **8,254 lines**; another **7,433 lines** must disappear to reach it.

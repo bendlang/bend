@@ -1,44 +1,34 @@
 # Driver queries stay in Bend. The host supplies files and runs emitted programs.
-law driver_has_main:
-  for +book: List<&2, KDef>
-  Bool
-
 @unsafe
-def driver_has_main(book):
+def driver_has_main(
+  +book: List<&2, KDef>,
+) -> Bool:
   Bool.not(String.eq(tg(dv(lookup(book, "main"))), "Absent"))
 
-law driver_is_io:
-  for +book: List<&2, KDef>
-  Bool
-
 @unsafe
-def driver_is_io(book):
+def driver_is_io(
+  +book: List<&2, KDef>,
+) -> Bool:
   j_io_type(book, dt(lookup(book, "main")))
 
-law driver_interpret:
-  for +book: List<&2, KDef>
-  String
-
-law driver_final:
-  for +book: List<&2,KDef>
-  for +done: List<&2,KDef>
-  List<&2,KDef>
-
 @unsafe
-def driver_final(book, done):
+def driver_final(
+  +book: List<&2,KDef>,
+  +done: List<&2,KDef>,
+) -> List<&2,KDef>:
   book_final_fast(book, done)
 
 @unsafe
-def driver_interpret(book):
+def driver_interpret(
+  +book: List<&2, KDef>,
+) -> String:
   +final = driver_final(book, Nil{})
   kp_show(strong(final, dv(lookup(final, "main"))))
 
-law driver_todos:
-  for +book: List<&2,KDef>
-  U32
-
 @unsafe
-def driver_todos(book):
+def driver_todos(
+  +book: List<&2,KDef>,
+) -> U32:
   driver_count_todos(driver_final(book, Nil{}))
 
 law driver_count_todos:
@@ -72,12 +62,10 @@ def driver_holes_terms(ts):
 
 # This synthesized closure dispatcher name is reserved even in check-only mode.
 # It is a compiler-name gate after checking, not a type/proof inference rule.
-law driver_owned:
-  for +book: List<&2,KDef>
-  String
-
 @unsafe
-def driver_owned(book):
+def driver_owned(
+  +book: List<&2,KDef>,
+) -> String:
   match book:
     case Nil{}: ""
     case Con{d, rest}:
@@ -87,10 +75,6 @@ def driver_owned(book):
 
 # Exact pinned compiler OWNED datatype set. User definitions remain valid for
 # pure checking/normalization but cannot use the runtime's intrinsic layouts.
-law driver_emit_owned:
-  for +book: List<&2,KDef>
-  String
-
 law driver_owned_names:
   for +book: List<&2,KDef>
   for +names: List<&2,String>
@@ -102,7 +86,9 @@ law driver_owned_name:
   Bool
 
 @unsafe
-def driver_emit_owned(book):
+def driver_emit_owned(
+  +book: List<&2,KDef>,
+) -> String:
   driver_owned_names(book, ["Clo.apply", "IO", "Sigma", "String", "Word.Con", "IO.OP", "Result", "Maybe", "Bool", "Unit", "Nat", "U32", "F32", "Char", "Array"])
 
 @unsafe

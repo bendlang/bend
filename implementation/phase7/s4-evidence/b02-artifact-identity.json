@@ -1,0 +1,202 @@
+{
+  "complete": true,
+  "pass": true,
+  "scope": "B02 genuine checked/focused attempt; compiler/runtime/Base/host bytes identical to B01. Source order changed; B01 behavioral/cost evidence applies to these exact API bytes. No B02 H fixed-point claim.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/attempt.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/attempt.json",
+      "sha256": "e361c66da22b067e0f91999c0edae8737de6847eeddb9e98f70e3938338da261"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b02/attempt.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b02/attempt.json",
+      "sha256": "ed05435eeb1f1dfc86d3dd582b327ebcd060fe4b949bed363f1ae2e672c6fa05"
+    }
+  ],
+  "rows": [
+    {
+      "name": "api",
+      "before": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/equality/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/equality/api.mjs",
+        "sha256": "9826ac8f2cb2ad17ab07d7a1f3fcefc701c64cd44d3c50333b3410d761d98b7f"
+      },
+      "after": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b02/equality/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b02/equality/api.mjs",
+        "sha256": "9826ac8f2cb2ad17ab07d7a1f3fcefc701c64cd44d3c50333b3410d761d98b7f"
+      },
+      "byteIdentical": true
+    },
+    {
+      "name": "checkedApi",
+      "before": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/api.mjs",
+        "sha256": "f201bdea7ea4041483b40704f622703945858e981c404a4d7e50979b74370110"
+      },
+      "after": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b02/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b02/api.mjs",
+        "sha256": "f201bdea7ea4041483b40704f622703945858e981c404a4d7e50979b74370110"
+      },
+      "byteIdentical": true
+    },
+    {
+      "name": "runtime",
+      "before": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/src/runtime.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/src/runtime.mjs",
+        "sha256": "26f5eee2f54b194b64f768df6ff505c67bf7a5df2159aa06caf53ecba54e910b"
+      },
+      "after": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b02/snapshot/src/runtime.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b02/snapshot/src/runtime.mjs",
+        "sha256": "26f5eee2f54b194b64f768df6ff505c67bf7a5df2159aa06caf53ecba54e910b"
+      },
+      "byteIdentical": true
+    },
+    {
+      "name": "base",
+      "before": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/base.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/base.bend",
+        "sha256": "b8c2734d45ec6b4ce70fee70ff06ef35e08fce885af8852d8eb77dbff020e946"
+      },
+      "after": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/base.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/base.bend",
+        "sha256": "b8c2734d45ec6b4ce70fee70ff06ef35e08fce885af8852d8eb77dbff020e946"
+      },
+      "byteIdentical": true
+    },
+    {
+      "name": "typed-driver",
+      "before": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/typed-driver.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/typed-driver.mjs",
+        "sha256": "96dd1d6637fa25e28fe3fd83a963189d12da2a939468e651ff5318dee383224c"
+      },
+      "after": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b02/snapshot/tools/typed-driver.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b02/snapshot/tools/typed-driver.mjs",
+        "sha256": "96dd1d6637fa25e28fe3fd83a963189d12da2a939468e651ff5318dee383224c"
+      },
+      "byteIdentical": true
+    },
+    {
+      "name": "compiler-abi",
+      "before": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/compiler-abi.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/compiler-abi.mjs",
+        "sha256": "0bcbcaf022108877600baab1b15356db6d9917f5c4d668af936279680c126454"
+      },
+      "after": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b02/snapshot/tools/compiler-abi.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b02/snapshot/tools/compiler-abi.mjs",
+        "sha256": "0bcbcaf022108877600baab1b15356db6d9917f5c4d668af936279680c126454"
+      },
+      "byteIdentical": true
+    },
+    {
+      "name": "native-build",
+      "before": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/native-build.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/native-build.mjs",
+        "sha256": "a76f2c027459f7ffdb9fc16dc450ee33e0f39c74568df4c74d03309e662c9117"
+      },
+      "after": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b02/snapshot/tools/native-build.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b02/snapshot/tools/native-build.mjs",
+        "sha256": "a76f2c027459f7ffdb9fc16dc450ee33e0f39c74568df4c74d03309e662c9117"
+      },
+      "byteIdentical": true
+    },
+    {
+      "name": "node-resource-args",
+      "before": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/node-resource-args.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/node-resource-args.mjs",
+        "sha256": "6aefb3aee9b69b0c25d68edbf0ada6a57ba93e277d3adb8d232dfa6dff01d758"
+      },
+      "after": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b02/snapshot/tools/node-resource-args.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b02/snapshot/tools/node-resource-args.mjs",
+        "sha256": "6aefb3aee9b69b0c25d68edbf0ada6a57ba93e277d3adb8d232dfa6dff01d758"
+      },
+      "byteIdentical": true
+    },
+    {
+      "name": "assemble",
+      "before": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/assemble.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/assemble.mjs",
+        "sha256": "f7c8feff7a0b8f8b4a302c2ca8b99b363a8d7c4c9c48bc6b7a9463aa23c58b75"
+      },
+      "after": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b02/snapshot/tools/assemble.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b02/snapshot/tools/assemble.mjs",
+        "sha256": "f7c8feff7a0b8f8b4a302c2ca8b99b363a8d7c4c9c48bc6b7a9463aa23c58b75"
+      },
+      "byteIdentical": true
+    }
+  ],
+  "exports": [
+    "f_parse",
+    "f_load",
+    "f_path_join",
+    "f_path_dir",
+    "check_book",
+    "annotate_book",
+    "j_program",
+    "j_library",
+    "j_expr",
+    "j_descriptor",
+    "j_io_type",
+    "j_modules",
+    "driver_has_main",
+    "driver_is_io",
+    "driver_interpret",
+    "driver_todos",
+    "driver_owned",
+    "driver_emit_owned",
+    "specialize_book",
+    "specialized_book",
+    "specialized_error",
+    "nc_compile",
+    "nc_foreign_paths",
+    "nc_annotation_stops",
+    "nc_annotated_context",
+    "nc_foreign_source",
+    "check_from_exact_prefix",
+    "exact_prefix",
+    "f_load_graph",
+    "f_main_names",
+    "f_load_graph_trace",
+    "f_source_parsed",
+    "book_context",
+    "book_cached",
+    "f_load_graph_seed",
+    "f_load_graph_seed_trace",
+    "driver_report",
+    "compiler_check_result_abi",
+    "check_book_diagnostic",
+    "check_book_diagnostic_from_exact_prefix",
+    "diagnostic_render",
+    "diagnostic_result_locate",
+    "f_load_origins_for",
+    "f_loaded_origins_for",
+    "j_compile_error",
+    "j_layout_error",
+    "reach_book",
+    "j_roots",
+    "j_stops",
+    "annotate_except",
+    "annotate_selected",
+    "j_program_selected",
+    "j_library_selected",
+    "j_foreign_paths",
+    "j_foreign_error"
+  ]
+}

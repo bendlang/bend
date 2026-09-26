@@ -1,24 +1,20 @@
 import Base
 
 # Foreign source linkage, argument erasure and ABI descriptors.
-law j_foreign_path:
-  for +paths: List<&2, KTerm>
-  String
-
 @unsafe
-def j_foreign_path(paths):
+def j_foreign_path(
+  +paths: List<&2, KTerm>,
+) -> String:
   match paths:
     case Nil{}:
       ""
     case Con{h, rest}:
       kc(String, String.ends_with(nm(h), ".js\"") || String.ends_with(nm(h), ".js"), u => nm(h), u => j_foreign_path(rest))
 
-law j_foreign_name:
-  for +name: String
-  String
-
 @unsafe
-def j_foreign_name(name):
+def j_foreign_name(
+  +name: String,
+) -> String:
   j_foreign_chars(String.to_lower(name))
 
 law j_foreign_chars:
@@ -33,13 +29,11 @@ def j_foreign_chars(name):
     case SCon{h, rest}:
       kc(String, Char.is_eq(h, '.') || Char.is_eq(h, '/'), u => "_", u => Char.show(h)) ++ j_foreign_chars(rest)
 
-law j_foreign_def:
-  for +book: List<&2, KDef>
-  for +d: KDef
-  String
-
 @unsafe
-def j_foreign_def(book, d):
+def j_foreign_def(
+  +book: List<&2, KDef>,
+  +d: KDef,
+) -> String:
   kc(String, j_builtin_effect(dn(d)), u => "if(!Object.hasOwn(G," ++ j_quote(dn(d)) ++ "))", u => "") ++ "G[" ++ j_quote(dn(d)) ++ "]=fn(" ++ U32.show(da(d)) ++ ",function(a){const v=scope(null);return {io:()=>foreignCall(" ++ j_quote(j_foreign_path(ks(dv(d)))) ++ "," ++ j_quote(dn(d)) ++ ",a,[" ++ j_foreign_args(book, dt(d), da(d)) ++ "]," ++ j_descriptor(book, j_io_result(book, j_foreign_return(book, dt(d), da(d))), 64) ++ ")};});\n"
 
 law j_foreign_args:
@@ -71,13 +65,11 @@ law j_io_result:
 def j_io_result(book, ty):
   kid(wnf(book, kid(wnf(book, kid(ty, 1)), 0)), 0)
 
-law j_modules:
-  for +book: List<&2, KDef>
-  for +sources: List<&2, KTerm>
-  String
-
 @unsafe
-def j_modules(book, sources):
+def j_modules(
+  +book: List<&2, KDef>,
+  +sources: List<&2, KTerm>,
+) -> String:
   match sources:
     case Nil{}:
       ""
@@ -106,12 +98,10 @@ law j_module_export:
 def j_module_export(name, implementation):
   j_quote(name) ++ ":typeof " ++ implementation ++ "===\"function\"?" ++ implementation ++ ":undefined,"
 
-law j_ctor_metadata:
-  for +defs: List<&2, KDef>
-  String
-
 @unsafe
-def j_ctor_metadata(defs):
+def j_ctor_metadata(
+  +defs: List<&2, KDef>,
+) -> String:
   match defs:
     case Nil{}:
       ""
@@ -141,24 +131,20 @@ def j_field_keys(ty, skip):
   kc(String, String.eq(tg(ty), "All"), u => kc(String, U32.is_eq(skip, 0), u => j_quote(nm(ty)) ++ "," ++ j_field_keys(kid(ty, 1), 0), u => j_field_keys(kid(ty, 1), U32.sub(skip, 1))), u => "")
 
 # Called after reachability: the host reads exactly these foreign source bytes.
-law j_foreign_paths:
-  for +book: List<&2, KDef>
-  List<&2, String>
-
 @unsafe
-def j_foreign_paths(book):
+def j_foreign_paths(
+  +book: List<&2, KDef>,
+) -> List<&2, String>:
   match book:
     case Nil{}:
       Nil{}
     case Con{d, rest}:
       kc(List<&2, String>, String.eq(tg(j_strip(dv(d))), "Foreign") && Bool.not(j_builtin_effect(dn(d))), u => Con{j_foreign_path(ks(j_strip(dv(d)))), j_foreign_paths(rest)}, u => j_foreign_paths(rest))
 
-law j_foreign_error:
-  for +book: List<&2, KDef>
-  String
-
 @unsafe
-def j_foreign_error(book):
+def j_foreign_error(
+  +book: List<&2, KDef>,
+) -> String:
   match book:
     case Nil{}:
       ""

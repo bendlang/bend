@@ -1,0 +1,98 @@
+{
+  "complete": true,
+  "pass": true,
+  "candidate": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/equality/api.mjs",
+    "sha256": "9826ac8f2cb2ad17ab07d7a1f3fcefc701c64cd44d3c50333b3410d761d98b7f"
+  },
+  "runtime": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/src/runtime.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/src/runtime.mjs",
+    "sha256": "26f5eee2f54b194b64f768df6ff505c67bf7a5df2159aa06caf53ecba54e910b"
+  },
+  "base": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/base.bend",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream/bend2/base.bend",
+    "sha256": "b8c2734d45ec6b4ce70fee70ff06ef35e08fce885af8852d8eb77dbff020e946"
+  },
+  "fixture": {
+    "path": "/home/ai/bend2/build/publish/bend/selfhost/tests/conformance/typed-smoke/base-u32.bend",
+    "sha256": "5a2d51d91c8bf26594d03f438de453e8ad8dc9f9ddcdfd3f28d8e3f1651bcb22"
+  },
+  "observations": [
+    {
+      "name": "check",
+      "argv": [
+        "taskset",
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/typed-driver.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/tests/conformance/typed-smoke/base-u32.bend",
+        "--check-only"
+      ],
+      "started": 1790456070.3507073,
+      "exitCode": 0,
+      "stdout": "All terms check.\n",
+      "stderr": "",
+      "seconds": 0.8672387599945068
+    },
+    {
+      "name": "interpreter",
+      "argv": [
+        "taskset",
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/typed-driver.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/tests/conformance/typed-smoke/base-u32.bend"
+      ],
+      "started": 1790456071.2752404,
+      "exitCode": 0,
+      "stdout": "42\n",
+      "stderr": "",
+      "seconds": 0.9176981449127197
+    },
+    {
+      "name": "javascript",
+      "argv": [
+        "taskset",
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/typed-driver.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/tests/conformance/typed-smoke/base-u32.bend",
+        "--run"
+      ],
+      "started": 1790456072.2721322,
+      "exitCode": 0,
+      "stdout": "42\n",
+      "stderr": "",
+      "seconds": 1.470000982284546
+    },
+    {
+      "name": "native",
+      "argv": [
+        "taskset",
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/snapshot/tools/typed-driver.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/tests/conformance/typed-smoke/base-u32.bend",
+        "--run",
+        "--cpu"
+      ],
+      "started": 1790456073.7425888,
+      "exitCode": 0,
+      "stdout": "42\n",
+      "stderr": "",
+      "seconds": 2.019545793533325
+    }
+  ],
+  "scope": "Correctness smoke, not controlled timing or broad backend conformance."
+}

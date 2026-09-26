@@ -15,27 +15,12 @@ law nc_show_nodes:
   for +cells: List<&2, String>
   NC_Show
 
-law nc_show_fields:
-  for +book: List<&2, KDef>
-  for +tel: KTerm
-  for +left: U32
-  for +i: U32
-  for +types: List<&2, KTerm>
-  NC_Desc
-
 law nc_show_field:
   for +book: List<&2, KDef>
   for +tel: KTerm
   for +left: U32
   for +i: U32
   for +d: NC_Desc
-  NC_Desc
-
-law nc_show_arms:
-  for +book: List<&2, KDef>
-  for +cs: List<&2, KDef>
-  for +args: List<&2, KTerm>
-  for +types: List<&2, KTerm>
   NC_Desc
 
 law nc_show_arm:
@@ -79,7 +64,13 @@ def nc_desc_join(+a: NC_Desc, +b: NC_Desc) -> NC_Desc:
   NC_Desc{List.append(&2, String, nc_desc_cells(a), nc_desc_cells(b)), nc_desc_types(b), nt_choose(String, String.eq(nc_desc_error(a), ""), u => nc_desc_error(b), u => nc_desc_error(a))}
 
 @unsafe
-def nc_show_fields(book, tel, left, i, types):
+def nc_show_fields(
+  +book: List<&2, KDef>,
+  +tel: KTerm,
+  +left: U32,
+  +i: U32,
+  +types: List<&2, KTerm>,
+) -> NC_Desc:
   nt_choose(NC_Desc, U32.is_eq(left, 0), u => NC_Desc{Nil{}, types, ""}, u =>
     nt_choose(NC_Desc, U32.is_eq(qt(wnf(book, tel)), 0), u => NC_Desc{Nil{}, types, "native readback cannot print an erased field"}, u =>
       nc_show_field(book, wnf(book, tel), left, i, nc_show_ref(book, kid(wnf(book, tel), 0), types))))
@@ -89,7 +80,12 @@ def nc_show_field(book, tel, left, i, d):
   nc_desc_join(NC_Desc{Con{U32.show(i), nc_desc_cells(d)}, nc_desc_types(d), nc_desc_error(d)}, nc_show_fields(book, kid(tel, 1), U32.sub(left, 1), U32.inc(i), nc_desc_types(d)))
 
 @unsafe
-def nc_show_arms(book, cs, args, types):
+def nc_show_arms(
+  +book: List<&2, KDef>,
+  +cs: List<&2, KDef>,
+  +args: List<&2, KTerm>,
+  +types: List<&2, KTerm>,
+) -> NC_Desc:
   match cs:
     case Nil{}: NC_Desc{Nil{}, types, ""}
     case Con{+c, rest}: nc_show_arm(book, c, rest, args, nc_show_fields(book, nc_tele_fill(book, dt(c), args), da(c), 0, types))

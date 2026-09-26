@@ -1,14 +1,12 @@
 import Base
 
-law kc:
-  for -A: Type
-  for +b: Bool
-  for yes: Unit -> A
-  for no: Unit -> A
-  A
-
 @unsafe
-def kc(A, b, yes, no):
+def kc(
+  -A: Type,
+  +b: Bool,
+  yes: Unit -> A,
+  no: Unit -> A,
+) -> A:
   match b:
     case True{}:
       yes(Unit{})
@@ -23,291 +21,232 @@ type KTerm is Data:
 type KDef is Data:
   KDef{+name: String, +kind: String, +arity: U32, +templates: U32, +typ: KTerm, +value: KTerm, +ctors: List<&2, KDef>, +native: Bool, +unsafe: Bool}
 
-law kt:
-  for +tag: String
-  for +name: String
-  for +id: U32
-  for +quant: U32
-  for +kids: List<&2, KTerm>
-  KTerm
-
 @unsafe
-def kt(tag, name, id, quant, kids):
+def kt(
+  +tag: String,
+  +name: String,
+  +id: U32,
+  +quant: U32,
+  +kids: List<&2, KTerm>,
+) -> KTerm:
   KTerm{tag, name, id, quant, kids, Nil{}}
 
-law atom:
-  for +tag: String
-  KTerm
-
 @unsafe
-def atom(tag):
+def atom(
+  +tag: String,
+) -> KTerm:
   kt(tag, "", 0, 0, Nil{})
 
-law tg:
-  for +t: KTerm
-  String
-
 @unsafe
-def tg(t):
+def tg(
+  +t: KTerm,
+) -> String:
   match t:
     case KTerm{tag, name, id, quant, kids, removed}:
       tag
 
-law nm:
-  for +t: KTerm
-  String
-
 @unsafe
-def nm(t):
+def nm(
+  +t: KTerm,
+) -> String:
   match t:
     case KTerm{tag, name, id, quant, kids, removed}:
       name
 
-law ix:
-  for +t: KTerm
-  U32
-
 @unsafe
-def ix(t):
+def ix(
+  +t: KTerm,
+) -> U32:
   match t:
     case KTerm{tag, name, id, quant, kids, removed}:
       id
 
-law qt:
-  for +t: KTerm
-  U32
-
 @unsafe
-def qt(t):
+def qt(
+  +t: KTerm,
+) -> U32:
   match t:
     case KTerm{tag, name, id, quant, kids, removed}:
       quant
 
-law ks:
-  for +t: KTerm
-  List<&2, KTerm>
-
 @unsafe
-def ks(t):
+def ks(
+  +t: KTerm,
+) -> List<&2, KTerm>:
   match t:
     case KTerm{tag, name, id, quant, kids, removed}:
       kids
 
-law rm:
-  for +t: KTerm
-  List<&2, String>
-
 @unsafe
-def rm(t):
+def rm(
+  +t: KTerm,
+) -> List<&2, String>:
   match t:
     case KTerm{tag, name, id, quant, kids, removed}:
       removed
 
-law terms_at:
-  for +ts: List<&2, KTerm>
-  for +n: U32
-  KTerm
-
 @unsafe
-def terms_at(ts, n):
+def terms_at(
+  +ts: List<&2, KTerm>,
+  +n: U32,
+) -> KTerm:
   match ts:
     case Nil{}:
       atom("Absent")
     case Con{h, t}:
       kc(KTerm, U32.is_eq(n, 0), u => h, u => terms_at(t, U32.sub(n, 1)))
 
-law kid:
-  for +t: KTerm
-  for +n: U32
-  KTerm
-
 @unsafe
-def kid(t, n):
+def kid(
+  +t: KTerm,
+  +n: U32,
+) -> KTerm:
   terms_at(ks(t), n)
 
-law var:
-  for +name: String
-  for +id: U32
-  KTerm
-
 @unsafe
-def var(name, id):
+def var(
+  +name: String,
+  +id: U32,
+) -> KTerm:
   kt("Var", name, id, 0, Nil{})
 
-law ref:
-  for +name: String
-  KTerm
-
 @unsafe
-def ref(name):
+def ref(
+  +name: String,
+) -> KTerm:
   kt("Ref", name, 0, 0, Nil{})
 
-law qua:
-  for +q: U32
-  KTerm
-
 @unsafe
-def qua(q):
+def qua(
+  +q: U32,
+) -> KTerm:
   kt("Qua", "", 0, q, Nil{})
 
-law typ:
-  for +q: U32
-  KTerm
-
 @unsafe
-def typ(q):
+def typ(
+  +q: U32,
+) -> KTerm:
   kt("Typ", "", 0, 0, Con{qua(q), Nil{}})
 
-law app:
-  for +f: KTerm
-  for +x: KTerm
-  KTerm
-
 @unsafe
-def app(f, x):
+def app(
+  +f: KTerm,
+  +x: KTerm,
+) -> KTerm:
   kt("App", "", 0, 0, Con{f, Con{x, Nil{}}})
 
-law all:
-  for +q: U32
-  for +name: String
-  for +id: U32
-  for +a: KTerm
-  for +b: KTerm
-  KTerm
-
 @unsafe
-def all(q, name, id, a, b):
+def all(
+  +q: U32,
+  +name: String,
+  +id: U32,
+  +a: KTerm,
+  +b: KTerm,
+) -> KTerm:
   kt("All", name, id, q, Con{a, Con{b, Nil{}}})
 
-law dn:
-  for +d: KDef
-  String
-
 @unsafe
-def dn(d):
+def dn(
+  +d: KDef,
+) -> String:
   match d:
     case KDef{name, kind, arity, templates, typ, value, ctors, native, unsafe}:
       name
 
-law dk:
-  for +d: KDef
-  String
-
 @unsafe
-def dk(d):
+def dk(
+  +d: KDef,
+) -> String:
   match d:
     case KDef{name, kind, arity, templates, typ, value, ctors, native, unsafe}:
       kind
 
-law da:
-  for +d: KDef
-  U32
-
 @unsafe
-def da(d):
+def da(
+  +d: KDef,
+) -> U32:
   match d:
     case KDef{name, kind, arity, templates, typ, value, ctors, native, unsafe}:
       arity
 
-law dx:
-  for +d: KDef
-  U32
-
 @unsafe
-def dx(d):
+def dx(
+  +d: KDef,
+) -> U32:
   match d:
     case KDef{name, kind, arity, templates, typ, value, ctors, native, unsafe}:
       templates
 
-law dt:
-  for +d: KDef
-  KTerm
-
 @unsafe
-def dt(d):
+def dt(
+  +d: KDef,
+) -> KTerm:
   match d:
     case KDef{name, kind, arity, templates, typ, value, ctors, native, unsafe}:
       typ
 
-law dv:
-  for +d: KDef
-  KTerm
-
 @unsafe
-def dv(d):
+def dv(
+  +d: KDef,
+) -> KTerm:
   match d:
     case KDef{name, kind, arity, templates, typ, value, ctors, native, unsafe}:
       value
 
-law dc:
-  for +d: KDef
-  List<&2, KDef>
-
 @unsafe
-def dc(d):
+def dc(
+  +d: KDef,
+) -> List<&2, KDef>:
   match d:
     case KDef{name, kind, arity, templates, typ, value, ctors, native, unsafe}:
       ctors
 
-law db:
-  for +d: KDef
-  Bool
-
 @unsafe
-def db(d):
+def db(
+  +d: KDef,
+) -> Bool:
   match d:
     case KDef{name, kind, arity, templates, typ, value, ctors, native, unsafe}:
       native
 
-law du:
-  for +d: KDef
-  Bool
-
 @unsafe
-def du(d):
+def du(
+  +d: KDef,
+) -> Bool:
   match d:
     case KDef{name, kind, arity, templates, typ, value, ctors, native, unsafe}:
       unsafe
 
-law missing:
-  KDef
-
 @unsafe
-def missing():
+def missing() -> KDef:
   KDef{"", "Absent", 0, 0, atom("Absent"), atom("Absent"), Nil{}, False{}, False{}}
 
-law lookup:
-  for +book: List<&2, KDef>
-  for +name: String
-  KDef
-
 @unsafe
-def lookup(book, name):
+def lookup(
+  +book: List<&2, KDef>,
+  +name: String,
+) -> KDef:
   match book:
     case Nil{}:
       missing()
     case Con{d, rest}:
       kc(KDef, String.eq(dk(d), "BookCache"), u => index_lookup(d, name), u => kc(KDef, String.eq(dn(d), name), u => d, u => lookup(rest, name)))
 
-law terms_len:
-  for +ts: List<&2, KTerm>
-  U32
-
 @unsafe
-def terms_len(ts):
+def terms_len(
+  +ts: List<&2, KTerm>,
+) -> U32:
   match ts:
     case Nil{}:
       0
     case Con{h, t}:
       U32.add(1, terms_len(t))
 
-law has_name:
-  for +ns: List<&2, String>
-  for +name: String
-  Bool
-
 @unsafe
-def has_name(ns, name):
+def has_name(
+  +ns: List<&2, String>,
+  +name: String,
+) -> Bool:
   match ns:
     case Nil{}:
       False{}
@@ -319,10 +258,6 @@ law subst_terms:
   for +id: U32
   for +v: KTerm
   List<&2, KTerm>
-
-law core_force:
-  for +t: KTerm
-  KTerm
 
 law core_rebuild:
   for +t: KTerm
@@ -339,14 +274,12 @@ law subst_node:
   for +v: KTerm
   KTerm
 
-law subst:
-  for +t: KTerm
-  for +id: U32
-  for +v: KTerm
-  KTerm
-
 @unsafe
-def subst(t, id, v):
+def subst(
+  +t: KTerm,
+  +id: U32,
+  +v: KTerm,
+) -> KTerm:
   kc(KTerm, String.eq(tg(t), "Var"), u => kc(KTerm, U32.is_eq(ix(t), id), u => v, u => t), u => subst_node(t, id, v))
 
 @unsafe
@@ -365,7 +298,9 @@ def subst_terms(ts, id, v):
 
 
 @unsafe
-def core_force(t):
+def core_force(
+  +t: KTerm,
+) -> KTerm:
   kc(KTerm, String.eq(tg(t), "Ann"), u => core_force(kid(t, 0)),
     u => kc(KTerm, String.eq(tg(t), "Var") && U32.is_gt(terms_len(ks(t)), 0), u => core_force(kid(t, 0)), u => t))
 
@@ -377,12 +312,10 @@ def core_rebuild(t):
 def core_apply(f, x):
   kc(KTerm, String.eq(tg(f), "Lam"), u => subst(kid(f, 0), ix(f), x), u => app(f, x))
 
-law core_beta:
-  for +t: KTerm
-  KTerm
-
 @unsafe
-def core_beta(t):
+def core_beta(
+  +t: KTerm,
+) -> KTerm:
   kc(KTerm, String.eq(tg(t), "App"), u => core_apply(core_beta(kid(t, 0)), kid(t, 1)), u => t)
 
 # Scan in substitution order: Var test, children, then App rebuilding.
@@ -390,10 +323,6 @@ def core_beta(t):
 # A canonical App also survives substitution unchanged if both children do and
 # its unchanged function is not Lam. Every metadata/arity check is necessary
 # because core_rebuild canonicalizes App nodes even without beta reduction.
-law core_subst_stable:
-  for +t: KTerm
-  Bool
-
 law core_subst_stable_terms:
   for +ts: List<&2, KTerm>
   Bool
@@ -404,7 +333,9 @@ law core_subst_stable_app:
   Bool
 
 @unsafe
-def core_subst_stable(t):
+def core_subst_stable(
+  +t: KTerm,
+) -> Bool:
   match t:
     case KTerm{tag, name, id, quant, kids, removed}:
       kc(Bool, String.eq(tag, "Var"), u => False{},
@@ -460,4 +391,28 @@ def core_subst_stable_app_last(f, x, rest):
     case Con{h, tail}: False{}
     case Nil{}:
       Bool.not(String.eq(tg(f), "Lam"))
+
+@unsafe
+def norm_join(
+  +a: List<&2, KTerm>,
+  +b: List<&2, KTerm>,
+) -> List<&2, KTerm>:
+  match a:
+    case Nil{}:
+      b
+    case Con{h, t}:
+      Con{h, norm_join(t, b)}
+
+law norm_defs_join:
+  for +a: List<&2, KDef>
+  for +b: List<&2, KDef>
+  List<&2, KDef>
+
+@unsafe
+def norm_defs_join(a, b):
+  match a:
+    case Nil{}:
+      b
+    case Con{h, rest}:
+      Con{h, norm_defs_join(rest, b)}
 

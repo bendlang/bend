@@ -5,96 +5,6 @@ type FToken is Data:
 type FScanned is Data:
   FScanned{+word: String, +rest: String, size: U32}
 
-law f_choose:
-  for -A: Type
-  for +b: Bool
-  for yes: Unit -> A
-  for no: Unit -> A
-  A
-
-law f_eq:
-  for +a: String
-  for +b: String
-  Bool
-
-law f_tx:
-  for +ts: List<&2, FToken>
-  String
-
-law f_tl:
-  for +ts: List<&2, FToken>
-  List<&2, FToken>
-
-law f_line:
-  for +ts: List<&2, FToken>
-  U32
-
-law f_col:
-  for +ts: List<&2, FToken>
-  U32
-
-law f_kind:
-  for +ts: List<&2, FToken>
-  U32
-
-law f_skip:
-  for +ts: List<&2, FToken>
-  List<&2, FToken>
-
-law f_head:
-  for +s: String
-  Char
-
-law f_tail:
-  for +s: String
-  String
-
-law f_ident:
-  for +c: Char
-  Bool
-
-law f_scan_word:
-  for +s: String
-  for +acc: String
-  for +n: U32
-  FScanned
-
-law f_scan_comment:
-  for +s: String
-  String
-
-law f_scan_quote:
-  for +s: String
-  for +quote: Char
-  for +acc: String
-  for +n: U32
-  FScanned
-
-law f_two:
-  for +s: String
-  String
-
-law f_pair_op:
-  for +s: String
-  Bool
-
-law f_lex_scanned:
-  for +sc: FScanned
-  for +l: U32
-  for +c: U32
-  for +d: U32
-  for +k: U32
-  for +acc: List<&2, FToken>
-  List<&2, FToken>
-
-law f_lex_symbol:
-  for +s: String
-  for +l: U32
-  for +c: U32
-  for +d: U32
-  for +acc: List<&2, FToken>
-  List<&2, FToken>
-
 law f_lex:
   for +s: String
   for +l: U32
@@ -143,7 +53,12 @@ law f_ascii_space_code:
   Bool
 
 @unsafe
-def f_choose(A, b, yes, no):
+def f_choose(
+  -A: Type,
+  +b: Bool,
+  yes: Unit -> A,
+  no: Unit -> A,
+) -> A:
   match b:
     case True{}:
       yes(Unit{})
@@ -151,11 +66,16 @@ def f_choose(A, b, yes, no):
       no(Unit{})
 
 @unsafe
-def f_eq(a, b):
+def f_eq(
+  +a: String,
+  +b: String,
+) -> Bool:
   String.eq(a, b)
 
 @unsafe
-def f_tx(ts):
+def f_tx(
+  +ts: List<&2, FToken>,
+) -> String:
   match ts:
     case Nil{}:
       "<eof>"
@@ -163,7 +83,9 @@ def f_tx(ts):
       t
 
 @unsafe
-def f_tl(ts):
+def f_tl(
+  +ts: List<&2, FToken>,
+) -> List<&2, FToken>:
   match ts:
     case Nil{}:
       Nil{}
@@ -171,7 +93,9 @@ def f_tl(ts):
       rest
 
 @unsafe
-def f_line(ts):
+def f_line(
+  +ts: List<&2, FToken>,
+) -> U32:
   match ts:
     case Nil{}:
       0
@@ -179,7 +103,9 @@ def f_line(ts):
       l
 
 @unsafe
-def f_col(ts):
+def f_col(
+  +ts: List<&2, FToken>,
+) -> U32:
   match ts:
     case Nil{}:
       0
@@ -187,7 +113,9 @@ def f_col(ts):
       c
 
 @unsafe
-def f_kind(ts):
+def f_kind(
+  +ts: List<&2, FToken>,
+) -> U32:
   match ts:
     case Nil{}:
       0
@@ -195,12 +123,16 @@ def f_kind(ts):
       k
 
 @unsafe
-def f_skip(ts):
+def f_skip(
+  +ts: List<&2, FToken>,
+) -> List<&2, FToken>:
   f_choose(List<&2, FToken>, Bool.or(f_eq(f_tx(ts), "\n"), f_eq(f_tx(ts), ";")),
     u => f_skip(f_tl(ts)), u => ts)
 
 @unsafe
-def f_head(s):
+def f_head(
+  +s: String,
+) -> Char:
   match s:
     case SNil{}:
       '\0'
@@ -208,7 +140,9 @@ def f_head(s):
       h
 
 @unsafe
-def f_tail(s):
+def f_tail(
+  +s: String,
+) -> String:
   match s:
     case SNil{}:
       ""
@@ -216,22 +150,35 @@ def f_tail(s):
       t
 
 @unsafe
-def f_ident(c):
+def f_ident(
+  +c: Char,
+) -> Bool:
   f_ascii_ident_code(Char.to_u32(c))
 
 @unsafe
-def f_scan_word(s, acc, n):
+def f_scan_word(
+  +s: String,
+  +acc: String,
+  +n: U32,
+) -> FScanned:
   f_choose(FScanned, f_choose(Bool, f_ident(f_head(s)), u => True{}, u => (f_ascii_char_eq(f_head(s), '+') || f_ascii_char_eq(f_head(s), '-')) && (f_ascii_char_eq(f_head(acc), 'e') || f_ascii_char_eq(f_head(acc), 'E')) && f_ascii_digit(f_head(f_tail(s)))),
     u => f_scan_word(f_tail(s), SCon{f_head(s), acc}, U32.add(n, 1)),
     u => FScanned{String.reverse(acc), s, n})
 
 @unsafe
-def f_scan_comment(s):
+def f_scan_comment(
+  +s: String,
+) -> String:
   f_choose(String, String.is_empty(s) || f_ascii_char_eq(f_head(s), '\n'),
     u => s, u => f_scan_comment(f_tail(s)))
 
 @unsafe
-def f_scan_quote(s, quote, acc, n):
+def f_scan_quote(
+  +s: String,
+  +quote: Char,
+  +acc: String,
+  +n: U32,
+) -> FScanned:
   f_choose(FScanned, String.is_empty(s),
     u => FScanned{"", "", 0},
     u => f_choose(FScanned, f_ascii_char_eq(f_head(s), quote),
@@ -241,15 +188,26 @@ def f_scan_quote(s, quote, acc, n):
         u => f_scan_quote(f_tail(s), quote, SCon{f_head(s), acc}, U32.add(n, 1)))))
 
 @unsafe
-def f_two(s):
+def f_two(
+  +s: String,
+) -> String:
   SCon{f_head(s), SCon{f_head(f_tail(s)), ""}}
 
 @unsafe
-def f_pair_op(s):
+def f_pair_op(
+  +s: String,
+) -> Bool:
   f_eq(s, "->") || f_eq(s, "=>") || f_eq(s, "<-") || f_eq(s, "++") || f_eq(s, "<>") || f_eq(s, "==") || f_eq(s, "!=") || f_eq(s, "<=") || f_eq(s, ">=") || f_eq(s, "&&") || f_eq(s, "||") || f_eq(s, "<<") || f_eq(s, ">>")
 
 @unsafe
-def f_lex_scanned(sc, l, c, d, k, acc):
+def f_lex_scanned(
+  +sc: FScanned,
+  +l: U32,
+  +c: U32,
+  +d: U32,
+  +k: U32,
+  +acc: List<&2, FToken>,
+) -> List<&2, FToken>:
   match sc:
     case FScanned{word, rest, size}:
       f_choose(List<&2, FToken>, U32.is_eq(size, 0),
@@ -257,7 +215,13 @@ def f_lex_scanned(sc, l, c, d, k, acc):
         u => f_lex(rest, l, U32.add(c, size), d, Con{FToken{word, l, c, k}, acc}))
 
 @unsafe
-def f_lex_symbol(s, l, c, d, acc):
+def f_lex_symbol(
+  +s: String,
+  +l: U32,
+  +c: U32,
+  +d: U32,
+  +acc: List<&2, FToken>,
+) -> List<&2, FToken>:
   f_choose(List<&2, FToken>, f_pair_op(f_two(s)) && Bool.not(f_eq(f_two(s), "++") && String.ends_with(f_tx(acc), "n") && U32.is_eq(c, U32.add(f_col(acc), U32.from_nat(String.length(f_tx(acc)))))),
     u => f_lex(f_tail(f_tail(s)), l, U32.add(c, 2), d, Con{FToken{f_choose(String, f_eq(f_two(s), ">>") && U32.is_gt(c, U32.add(f_col(acc), U32.from_nat(String.length(f_tx(acc))))), u => ">>op", u => f_two(s)), l, c, 0}, acc}),
     u => f_lex(f_tail(s), l, U32.add(c, 1),
@@ -331,10 +295,8 @@ def f_ascii_space_code(code):
   U32.is_eq(code, 32) || U32.is_le(U32.sub(code, 9), 4)
 
 # Header and argument whitespace preserves statement semicolons.
-law f_space:
-  for +ts: List<&2,FToken>
-  List<&2,FToken>
-
 @unsafe
-def f_space(ts):
+def f_space(
+  +ts: List<&2,FToken>,
+) -> List<&2,FToken>:
   f_choose(List<&2,FToken>, f_eq(f_tx(ts), "\n"), u => f_space(f_tl(ts)), u => ts)

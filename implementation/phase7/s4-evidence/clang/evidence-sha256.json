@@ -1,0 +1,302 @@
+[
+  {
+    "path": "/tmp/bend-s4-clang19/README.md",
+    "bytes": 2571,
+    "sha256": "748c307c28558c24ffcb7bfdf21c7675a098e8ca0279f041743ddaad4a2c9ff2"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/download.py",
+    "bytes": 2215,
+    "sha256": "a18aafcbdb5c19bb02137fa58de50371a2750141643c366ebcebdd5c45f9ee61"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/archive-pool-04.stderr",
+    "bytes": 367,
+    "sha256": "a318793dc9571bcea7a6e1db427b3aa0ad5163648cf79808077227907399bc78"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/clang-19-download-08.stderr",
+    "bytes": 317,
+    "sha256": "e08670eea820cbc708ecebcf9f906b25bd97852cc69727f38f7d36a2738a2c29"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/clang-19-download-08.stdout",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/clang-19-extract.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/clang-19-extract.stdout",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/clang-19-snapshot-07.json",
+    "bytes": 387,
+    "sha256": "2f9b4eb701ad3280eeb69eb050e25be66838ec06232aa32b3adf25aa6f4fb424"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/clang-19-snapshot-07.stderr",
+    "bytes": 317,
+    "sha256": "c0af4595ab84f752ee6c8877e998d9812d08796d38be0f9d6dc10db57ac69f12"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/clang-ldd.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/clang-ldd.stdout",
+    "bytes": 1620,
+    "sha256": "979da89a154880ae578fd3c4803aaf537b2a3c7ca1d25a235e0803ca0894f9f1"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/clang-resource-dir.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/clang-resource-dir.stdout",
+    "bytes": 55,
+    "sha256": "c3a73295f357c750c1084a3a89b1c27efcbd6522fc82220983c1ddd01a30a9b7"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/clang-smoke-compile.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/clang-smoke-compile.stdout",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/clang-smoke-run.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/clang-smoke-run.stdout",
+    "bytes": 17,
+    "sha256": "cbaa0c636e65bbbaa6da3d560dbc627e77c3f37f7bd4c4931e2a7500ef3fa35b"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/clang-version.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/clang-version.stdout",
+    "bytes": 148,
+    "sha256": "28bcdaf4bed58b8b38ef8a42d01c45042a012c7114c447c1581473ffc02b4985"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/download-01.stderr",
+    "bytes": 777,
+    "sha256": "269e7cceb5d63b390b6f44300f92ca03417fa156bb391cbd27d988e0b1342ca2"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/download-01.stdout",
+    "bytes": 677,
+    "sha256": "71bae6ba2da95362c3960509f508610a43061ce232b763026b4d07104d4b52d9"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/download-02.stderr",
+    "bytes": 733,
+    "sha256": "c2133a8e5c05a53e96ffd33a52e7c56d34d9636833aef4f5806ff74b57eecb13"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/download-02.stdout",
+    "bytes": 633,
+    "sha256": "779e43da58400beab8aaab5a3c9a9f0970ff6780e72afe29eb68be0e54ce1e37"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/download-06.stderr",
+    "bytes": 367,
+    "sha256": "a318793dc9571bcea7a6e1db427b3aa0ad5163648cf79808077227907399bc78"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/download-06.stdout",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/inrelease-verification.stderr",
+    "bytes": 474,
+    "sha256": "a10dd7d037bc0459aa19b1e6bff8a5fc8603082609abb70f752f2cd47c462531"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/inrelease-verification.stdout",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/libclang-common-19-dev-download-08.stderr",
+    "bytes": 317,
+    "sha256": "fded50ca4e47039abe0130eca6160df37e4dd3db0cbd72e439d6e108e284be59"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/libclang-common-19-dev-download-08.stdout",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/libclang-common-19-dev-extract.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/libclang-common-19-dev-extract.stdout",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/libclang-common-19-dev-snapshot-07.json",
+    "bytes": 401,
+    "sha256": "85aa9899e79cf40ccd58541dd619413e08e1958a9bf71b29d8f178d06819bcec"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/libclang-common-19-dev-snapshot-07.stderr",
+    "bytes": 317,
+    "sha256": "7f08a0570fdc74adbb102f226a0986508dd98b11e0273d0d6ba431bb9e55a307"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/libclang-cpp19-download-08.stderr",
+    "bytes": 396,
+    "sha256": "5822f1de5f8a83baedc0f3548686bd62553d659ebc6667743bc0e4e96fc23741"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/libclang-cpp19-download-08.stdout",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/libclang-cpp19-extract.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/libclang-cpp19-extract.stdout",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/libclang-cpp19-snapshot-07.json",
+    "bytes": 393,
+    "sha256": "fc4797be44a3441386c2db4f9875c5006144c238f006035ea81889d2c51e26d4"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/libclang-cpp19-snapshot-07.stderr",
+    "bytes": 317,
+    "sha256": "a26c9ec66d6e6ae5b3ebae54bc6b4e0c34024e572902110ad4a88a9e2711c65a"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/libllvm19-download-08.stderr",
+    "bytes": 317,
+    "sha256": "791099e752942aaf20e82b90288404ab6b91b34c313abf852f9535724e29deee"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/libllvm19-download-08.stdout",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/libllvm19-extract.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/libllvm19-extract.stdout",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/libllvm19-snapshot-07.json",
+    "bytes": 388,
+    "sha256": "214bcb04bd789081203fadaa5125c4932087f6144c4016060cef1a431fb3d66a"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/libllvm19-snapshot-07.stderr",
+    "bytes": 317,
+    "sha256": "18afde034753aa53b713a39ad8692628bde01d23a2bb6d0df3125b57b265030d"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/package-manifest.json",
+    "bytes": 2920,
+    "sha256": "4621715fa1c16d36da9cfe8caa6fd9b17059371b854b99b20ee747ea390c169f"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/security-inrelease-05.data",
+    "bytes": 27111,
+    "sha256": "405ed3dd62cd1fb797b1f5340ccef3f14b32352e564ba65b4d68c29933660ff4"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/security-inrelease-05.stderr",
+    "bytes": 317,
+    "sha256": "581ea00e8476c014f74867cbb3feb524e19200daf538062c95ac03f2639462f8"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/security-packages-05.data",
+    "bytes": 474876,
+    "sha256": "f8863ad9e81b60ff7056c01764e15c3c6ec9e144ab6874304d0e4349af1a5fb1"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/security-packages-05.stderr",
+    "bytes": 317,
+    "sha256": "5ae31360d5ad7ec06366f35ea7d374c24760bd55439578cd87372fc66304c89b"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/security-release-04.data",
+    "bytes": 25461,
+    "sha256": "38f9844c99ed12eca4d5642fb8c276e8ead2b276e9241d663ce7464930339d40"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/security-release-04.stderr",
+    "bytes": 317,
+    "sha256": "c3bf1d09644fc6ec70b6142071cd929c5c2525f1194106eb80b5fae548227109"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/selected-packages-05.txt",
+    "bytes": 3082,
+    "sha256": "6aadcd08e8e4261573812bac1c4fa63f013ab2fd90f3f9782d863daf9dcaa14d"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/snapshot-version-04.stderr",
+    "bytes": 367,
+    "sha256": "a318793dc9571bcea7a6e1db427b3aa0ad5163648cf79808077227907399bc78"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/snapshot-version-05.data",
+    "bytes": 4585,
+    "sha256": "4e1de8fe0280e483153b23b310ccc0fb5e2ac50ab309013a751634bc23203543"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/snapshot-version-05.stderr",
+    "bytes": 396,
+    "sha256": "cc9dc29659621fe7fa84f7ff55a0aa4d9dccd66c148e49611aba5d448fdddb3c"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/system-runtime-packages.stderr",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/system-runtime-packages.stdout",
+    "bytes": 497,
+    "sha256": "8e8b3bbfde22c59b47ef0784da16033f65e92eccae6a7bc00f96a3a47861d96d"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/evidence/verification.json",
+    "bytes": 3096,
+    "sha256": "c163e89923957a3a521b21a1badc6cc66f3f3d30be0ebd16e13a21b370486f09"
+  },
+  {
+    "path": "/tmp/bend-s4-clang19/verify.py",
+    "bytes": 2388,
+    "sha256": "9f363ab929deea9c123fdc2c84c6b087cdff4ebd28a46bce9a1dfc3c202b8f08"
+  }
+]

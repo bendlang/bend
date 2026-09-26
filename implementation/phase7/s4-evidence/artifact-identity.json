@@ -1,0 +1,54 @@
+{
+  "kind": "S4-A-artifact-identity",
+  "pairs": [
+    {
+      "file": "api.mjs",
+      "beforeSha256": "ba121e4098044d9f106c4e7cb3e37b0e1ce1bc77f7e42f7e5418556b7f0f3e90",
+      "afterSha256": "f2f3bdc2fe03c9851fd26b8afcadb8fd65dd9b82c9afa4106a3e57ea60a7c3f0",
+      "byteIdentity": false,
+      "beforeBytes": 1030155,
+      "afterBytes": 1021045
+    },
+    {
+      "file": "equality/api.mjs",
+      "beforeSha256": "7e913551460ac736f1af35e19049d712765291255a0e579482f2e7179dcadbc6",
+      "afterSha256": "01d9fc96bdf820b17fa167f8da8527beefadfd25f6f3ae8f56d9937e7422b00c",
+      "byteIdentity": false,
+      "beforeBytes": 1030277,
+      "afterBytes": 1021167
+    },
+    {
+      "file": "snapshot/src/runtime.mjs",
+      "beforeSha256": "26f5eee2f54b194b64f768df6ff505c67bf7a5df2159aa06caf53ecba54e910b",
+      "afterSha256": "26f5eee2f54b194b64f768df6ff505c67bf7a5df2159aa06caf53ecba54e910b",
+      "byteIdentity": true,
+      "beforeBytes": 39290,
+      "afterBytes": 39290
+    },
+    {
+      "file": "snapshot/tools/typed-driver.mjs",
+      "beforeSha256": "96dd1d6637fa25e28fe3fd83a963189d12da2a939468e651ff5318dee383224c",
+      "afterSha256": "96dd1d6637fa25e28fe3fd83a963189d12da2a939468e651ff5318dee383224c",
+      "byteIdentity": true,
+      "beforeBytes": 37798,
+      "afterBytes": 37798
+    },
+    {
+      "file": "snapshot/tools/compiler-abi.mjs",
+      "beforeSha256": "0bcbcaf022108877600baab1b15356db6d9917f5c4d668af936279680c126454",
+      "afterSha256": "0bcbcaf022108877600baab1b15356db6d9917f5c4d668af936279680c126454",
+      "byteIdentity": true,
+      "beforeBytes": 4264,
+      "afterBytes": 4264
+    },
+    {
+      "file": "snapshot/tools/assemble.mjs",
+      "beforeSha256": "f7c8feff7a0b8f8b4a302c2ca8b99b363a8d7c4c9c48bc6b7a9463aa23c58b75",
+      "afterSha256": "f7c8feff7a0b8f8b4a302c2ca8b99b363a8d7c4c9c48bc6b7a9463aa23c58b75",
+      "byteIdentity": true,
+      "beforeBytes": 3317,
+      "afterBytes": 3317
+    }
+  ],
+  "pass": false
+}

@@ -1,10 +1,5 @@
 # Eliminate a validated Boolean-choice combinator only at a fully applied call
 # with two literal lambda thunks. Names do not establish semantic identity.
-law j_choice_call:
-  for +book: List<&2, KDef>
-  for +spine: KTerm
-  Bool
-
 law j_choice_definition:
   for +book: List<&2, KDef>
   for +d: KDef
@@ -23,13 +18,6 @@ law j_choice_leaf:
   for +t: KTerm
   for +binder: U32
   Bool
-
-law j_choice_emit:
-  for +book: List<&2, KDef>
-  for +env: List<&2, KTerm>
-  for +spine: KTerm
-  for +tail: Bool
-  String
 
 law j_choice_after_type:
   for +book: List<&2, KDef>
@@ -57,7 +45,10 @@ law j_choice_branch:
   String
 
 @unsafe
-def j_choice_call(book, spine):
+def j_choice_call(
+  +book: List<&2, KDef>,
+  +spine: KTerm,
+) -> Bool:
   kc(Bool, String.eq(tg(spine), "Call") && U32.is_eq(terms_len(ks(spine)), 4), u =>
     kc(Bool, String.eq(tg(j_strip(kid(spine, 2))), "Lam") && String.eq(tg(j_strip(kid(spine, 3))), "Lam") && String.eq(j_l_name(j_strip(kid(spine, 2))), "") && String.eq(j_l_name(j_strip(kid(spine, 3))), ""), u => j_choice_definition(book, lookup(book, nm(spine))), u => False{}), u => False{})
 
@@ -83,7 +74,12 @@ def j_choice_leaf(t, binder):
   String.eq(tg(j_strip(kid(t, 1))), "Ctr") && String.eq(nm(j_strip(kid(t, 1))), "Unit") && U32.is_eq(terms_len(ks(j_strip(kid(t, 1)))), 0)
 
 @unsafe
-def j_choice_emit(book, env, spine, tail):
+def j_choice_emit(
+  +book: List<&2, KDef>,
+  +env: List<&2, KTerm>,
+  +spine: KTerm,
+  +tail: Bool,
+) -> String:
   j_choice_after_type(book, env, ks(spine), tail, wnf(book, j_app_type(wnf(book, dt(lookup(book, nm(spine)))), kid(spine, 0))))
 
 @unsafe

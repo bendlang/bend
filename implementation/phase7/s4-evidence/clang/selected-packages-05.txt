@@ -1,0 +1,70 @@
+Package: clang-19
+Source: llvm-toolchain-19
+Version: 1:19.1.7-3~deb11u1
+Installed-Size: 391
+Maintainer: LLVM Packaging Team <pkg-llvm-team@lists.alioth.debian.org>
+Architecture: amd64
+Provides: c++-compiler, c-compiler, objc++-compiler, objc-compiler
+Depends: libc6 (>= 2.14), libclang-cpp19 (>= 1:19.1.7), libgcc-s1 (>= 3.0), libllvm19 (= 1:19.1.7-3~deb11u1), libstdc++6 (>= 5.2), libstdc++-10-dev, libgcc-10-dev, libobjc-10-dev, libclang-common-19-dev (= 1:19.1.7-3~deb11u1), llvm-19-linker-tools (= 1:19.1.7-3~deb11u1), libclang1-19 (= 1:19.1.7-3~deb11u1), libc6-dev, binutils
+Suggests: clang-19-doc, wasi-libc
+Description: C, C++ and Objective-C compiler
+Homepage: https://www.llvm.org/
+Description-md5: c364160e44345420df0f2e97b3082b69
+Recommends: llvm-19-dev, python3, clang-tools-19
+Section: devel
+Priority: optional
+Filename: pool/updates/main/l/llvm-toolchain-19/clang-19_19.1.7-3~deb11u1_amd64.deb
+Size: 135448
+SHA256: 7cab7e019253973b2c89ecb650bba91dc550feb515dbe04090229050e872ed2f
+
+Package: libclang-common-19-dev
+Source: llvm-toolchain-19
+Version: 1:19.1.7-3~deb11u1
+Installed-Size: 13475
+Maintainer: LLVM Packaging Team <pkg-llvm-team@lists.alioth.debian.org>
+Architecture: amd64
+Description: Clang library - Common development package
+Homepage: https://www.llvm.org/
+Description-md5: c70051d53e23270c29353f55183e81aa
+Multi-Arch: same
+Recommends: libclang-rt-19-dev
+Section: libdevel
+Priority: optional
+Filename: pool/updates/main/l/llvm-toolchain-19/libclang-common-19-dev_19.1.7-3~deb11u1_amd64.deb
+Size: 766168
+SHA256: 74ac30ff1d6f77fe84a3bc4a3ed339fc6eaff2de5eb3de600b3f627561622194
+
+Package: libclang-cpp19
+Source: llvm-toolchain-19
+Version: 1:19.1.7-3~deb11u1
+Installed-Size: 69034
+Maintainer: LLVM Packaging Team <pkg-llvm-team@lists.alioth.debian.org>
+Architecture: amd64
+Depends: libc6 (>= 2.29), libgcc-s1 (>= 3.0), libllvm19 (= 1:19.1.7-3~deb11u1), libstdc++6 (>= 9)
+Description: C++ interface to the Clang library
+Homepage: https://www.llvm.org/
+Description-md5: 8acc7c5b41666c14f1ef5e79310225e6
+Section: libs
+Priority: optional
+Filename: pool/updates/main/l/llvm-toolchain-19/libclang-cpp19_19.1.7-3~deb11u1_amd64.deb
+Size: 13127592
+SHA256: 58d5ac715fe9e28ca4770a88909bd06fd8ad81a6862121db9d8a652f0a3e6700
+
+Package: libllvm19
+Source: llvm-toolchain-19
+Version: 1:19.1.7-3~deb11u1
+Installed-Size: 126037
+Maintainer: LLVM Packaging Team <pkg-llvm-team@lists.alioth.debian.org>
+Architecture: amd64
+Replaces: llvm-19-dev (<< 1:19.1.0~++rc3-1~exp2)
+Depends: libc6 (>= 2.29), libedit2 (>= 2.11-20080614-0), libffi7 (>= 3.3~20180313), libgcc-s1 (>= 3.3), libstdc++6 (>= 9), libxml2 (>= 2.7.4), libzstd1 (>= 1.4.0), zlib1g (>= 1:1.2.0)
+Breaks: llvm-19-dev (<< 1:19.1.0~++rc3-1~exp2)
+Description: Modular compiler and toolchain technologies, runtime library
+Homepage: https://www.llvm.org/
+Description-md5: a8854f4edf76a8c14ce34dc209bd1d11
+Multi-Arch: same
+Section: libs
+Priority: optional
+Filename: pool/updates/main/l/llvm-toolchain-19/libllvm19_19.1.7-3~deb11u1_amd64.deb
+Size: 25893096
+SHA256: 307052e4591ad5f18a9feb2c64cbe781d8d437ab6dd3f9506edf1cb0becdc8a3

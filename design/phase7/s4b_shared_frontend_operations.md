@@ -1,5 +1,9 @@
 # S4 B: share existing frontend operations
 
+Execution outcome: accepted as part of the [validated S4 checkpoint](../../implementation/phase7/s4-report.md).
+The following is the original pre-implementation plan; actual results and limits
+are in the report.
+
 Pre-implementation plan. The source baseline is the corrected S4 A candidate
 (`attempt-a02`): 14,857 physical / 12,668 nonblank Bend lines, 474,656 bytes,
 1,450 definitions and 799 laws. Its checked/default APIs and all 55 exports are

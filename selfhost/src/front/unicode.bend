@@ -14,10 +14,6 @@ law f_escape_valid:
   for +c: Char
   Bool
 
-law f_hex:
-  for +c: Char
-  U32
-
 law f_decode_unicode:
   for +s: String
   for +code: U32
@@ -36,10 +32,6 @@ law f_char_decoded:
   for +d: FDecoded
   KTerm
 
-law f_float_bits:
-  for +bits: U32
-  KTerm
-
 @unsafe
 def f_decode_char(s):
   f_choose(FDecoded, String.is_empty(s), u => FDecoded{0, "", "expected character"}, u => f_choose(FDecoded, Char.is_eq(f_head(s), '\\'), u => f_decode_escape(f_tail(s)), u => FDecoded{Char.to_u32(f_head(s)), f_tail(s), ""}))
@@ -53,7 +45,9 @@ def f_escape_valid(c):
   Char.is_eq(c, 'n') || Char.is_eq(c, 't') || Char.is_eq(c, 'r') || Char.is_eq(c, '0') || Char.is_eq(c, '\\') || Char.is_eq(c, '\'') || Char.is_eq(c, '"')
 
 @unsafe
-def f_hex(c):
+def f_hex(
+  +c: Char,
+) -> U32:
   f_choose(U32, Char.is_digit(c), u => U32.sub(Char.to_u32(c), 48), u => f_choose(U32, U32.is_ge(Char.to_u32(Char.to_lower(c)), 97) && U32.is_le(Char.to_u32(Char.to_lower(c)), 102), u => U32.sub(Char.to_u32(Char.to_lower(c)), 87), u => 16))
 
 @unsafe
@@ -77,6 +71,8 @@ def f_char_decoded(d):
       f_choose(KTerm, String.is_empty(err) && f_eq(rest, "'"), u => kt("Ctr", "Chr", 0, 1, [f_u32(code)]), u => kt("Error", "character literal requires one character and a closing quote", 0, 0, Nil{}))
 
 @unsafe
-def f_float_bits(bits):
+def f_float_bits(
+  +bits: U32,
+) -> KTerm:
   f_choose(KTerm, U32.is_eq(U32.and(bits, 2139095040), 2139095040), u => kt("Error", "float literal must be finite", 0, 0, Nil{}), u => kt("Ctr", "F32", 0, 1, [f_word(bits, 32)]))
 

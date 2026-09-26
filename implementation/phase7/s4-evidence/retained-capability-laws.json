@@ -1,0 +1,22 @@
+[
+  {
+    "file": "src/back/js/validate.bend",
+    "name": "j_layout_error",
+    "restored": {
+      "physical": 2,
+      "nonblank": 1,
+      "bytes": 55
+    },
+    "separatorLines": 1
+  },
+  {
+    "file": "src/check/annotate.bend",
+    "name": "annotate_selected",
+    "restored": {
+      "physical": 2,
+      "nonblank": 1,
+      "bytes": 52
+    },
+    "separatorLines": 1
+  }
+]

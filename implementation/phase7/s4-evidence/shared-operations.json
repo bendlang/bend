@@ -1,0 +1,429 @@
+{
+  "kind": "shared-frontend-operations",
+  "complete": true,
+  "pass": true,
+  "checks": 626,
+  "rows": [
+    {
+      "id": "empty",
+      "mode": "raw",
+      "pass": true,
+      "error": "",
+      "graphSha256": "c08c06e30add4ae09930cce79e2151a8408410995706e4f993558773bf6aba5c",
+      "traceSha256": "be6d40cad4f8d09f18d6b9fc1f766fb9f992f6c6f8e8ef1aece606453749be96"
+    },
+    {
+      "id": "empty",
+      "mode": "parsed",
+      "pass": true,
+      "error": "",
+      "graphSha256": "c08c06e30add4ae09930cce79e2151a8408410995706e4f993558773bf6aba5c",
+      "traceSha256": "c37ab3b890d9e239a1f6d0d30eb6bbe1eb0a7114c957610bae9eb408d9b54754"
+    },
+    {
+      "id": "simple",
+      "mode": "raw",
+      "pass": true,
+      "error": "",
+      "graphSha256": "190f563bc2c5a8ad12dcfbb847940b24a22731885bcdacc83e54899663052333",
+      "traceSha256": "794b6b7b57d2f89d7dbfbf6a328f455af4dcd1e4e7e45e7b20044929dec24b06"
+    },
+    {
+      "id": "simple",
+      "mode": "parsed",
+      "pass": true,
+      "error": "",
+      "graphSha256": "190f563bc2c5a8ad12dcfbb847940b24a22731885bcdacc83e54899663052333",
+      "traceSha256": "e0ba321a7bd7594396e0897fec2bb83909b8a9d56a6516afe3ca6ceb084763b0"
+    },
+    {
+      "id": "law-fill",
+      "mode": "raw",
+      "pass": true,
+      "error": "",
+      "graphSha256": "074b432469698489eb33d97df57c7573b327ed017cf2367169741cfc4bd57dd0",
+      "traceSha256": "4d257522925cd0fd64fa016a2aa37df31813ed68d7937e7a0e2125b54ec982a1"
+    },
+    {
+      "id": "law-fill",
+      "mode": "parsed",
+      "pass": true,
+      "error": "",
+      "graphSha256": "074b432469698489eb33d97df57c7573b327ed017cf2367169741cfc4bd57dd0",
+      "traceSha256": "2da744b19e5631cf231e570510236c587289300be678f52647186a17b8618006"
+    },
+    {
+      "id": "parse-error",
+      "mode": "raw",
+      "pass": true,
+      "error": "line 0:0: reserved parameter name; got <eof>",
+      "graphSha256": "a81914affc3dd0e80504ff4a6f525fab49bff00bfb1e413975f64b7afa66850c",
+      "traceSha256": "6c308cdb0699efda4f70f9afd8bd37af9d8d7df8df641ae8650b42918fe4ec05"
+    },
+    {
+      "id": "parse-error",
+      "mode": "parsed",
+      "pass": true,
+      "error": "line 0:0: reserved parameter name; got <eof>",
+      "graphSha256": "a81914affc3dd0e80504ff4a6f525fab49bff00bfb1e413975f64b7afa66850c",
+      "traceSha256": "96575748ff24b472ab5a027a358ea64087e51e66a459e0f09278558c6f3680b3"
+    },
+    {
+      "id": "missing-source",
+      "mode": "raw",
+      "pass": true,
+      "error": "module source was not supplied",
+      "graphSha256": "eb32ff64fde0c2c08240cb3347234dc62285425d19e8811fb36a1ee5ab5ff959",
+      "traceSha256": "228db0b7606e3e9a215c4ec793274bc047381b711a50c8b0d6a4b2a8836c6abb"
+    },
+    {
+      "id": "missing-source",
+      "mode": "parsed",
+      "pass": true,
+      "error": "module source was not supplied",
+      "graphSha256": "eb32ff64fde0c2c08240cb3347234dc62285425d19e8811fb36a1ee5ab5ff959",
+      "traceSha256": "228db0b7606e3e9a215c4ec793274bc047381b711a50c8b0d6a4b2a8836c6abb"
+    },
+    {
+      "id": "empty-main-path",
+      "mode": "raw",
+      "pass": true,
+      "error": "module source was not supplied",
+      "graphSha256": "eb32ff64fde0c2c08240cb3347234dc62285425d19e8811fb36a1ee5ab5ff959",
+      "traceSha256": "a71ce9026b6b1ec740abbdc59984242bed77275e5ede3abcddc888ad7a043d46"
+    },
+    {
+      "id": "empty-main-path",
+      "mode": "parsed",
+      "pass": true,
+      "error": "module source was not supplied",
+      "graphSha256": "eb32ff64fde0c2c08240cb3347234dc62285425d19e8811fb36a1ee5ab5ff959",
+      "traceSha256": "67c43551aae61164cd9237e1a989d4438fd9c48d613ee7a267a5fb78c9a30264"
+    },
+    {
+      "id": "missing-import",
+      "mode": "raw",
+      "pass": true,
+      "error": "module source was not supplied",
+      "graphSha256": "eb32ff64fde0c2c08240cb3347234dc62285425d19e8811fb36a1ee5ab5ff959",
+      "traceSha256": "e5939c8007cacdf62539684bdcc9b6c9982e93650490ad4dfda19304d3a1223f"
+    },
+    {
+      "id": "missing-import",
+      "mode": "parsed",
+      "pass": true,
+      "error": "module source was not supplied",
+      "graphSha256": "eb32ff64fde0c2c08240cb3347234dc62285425d19e8811fb36a1ee5ab5ff959",
+      "traceSha256": "1a7d4687a5aeb1c753fbbe2c358ad5fd88665bcde5a784ee9d06eb9f2270ad9a"
+    },
+    {
+      "id": "cycle",
+      "mode": "raw",
+      "pass": true,
+      "error": "cyclic import through /shared/main.bend",
+      "graphSha256": "16db1caa20544e86d9d59f9c12aba2a42e3a56ab80390609dd0b2cfed8dd453f",
+      "traceSha256": "2b3aeb5ecaa7b4aad6d2fdd22d24fd3260ed9703fe46122edb333b950f78c1b9"
+    },
+    {
+      "id": "cycle",
+      "mode": "parsed",
+      "pass": true,
+      "error": "cyclic import through /shared/main.bend",
+      "graphSha256": "16db1caa20544e86d9d59f9c12aba2a42e3a56ab80390609dd0b2cfed8dd453f",
+      "traceSha256": "69490046731976e4da8717b6ffd4679ac8e117944669b75fae38eeac2be16582"
+    },
+    {
+      "id": "aliases",
+      "mode": "raw",
+      "pass": true,
+      "error": "",
+      "graphSha256": "43ce3566c0666cdfa2256f12a71555af7bb85a45b984ee40fd3028067ebaad03",
+      "traceSha256": "cfbde935b280838515391cf30fe686b449a56f71d4f91638402ba1db2fd0423e"
+    },
+    {
+      "id": "aliases",
+      "mode": "parsed",
+      "pass": true,
+      "error": "",
+      "graphSha256": "43ce3566c0666cdfa2256f12a71555af7bb85a45b984ee40fd3028067ebaad03",
+      "traceSha256": "a75d16d90bd82d79f50915f8cce6377c3debb184ca83286467708771e36983f6"
+    },
+    {
+      "id": "diamond",
+      "mode": "raw",
+      "pass": true,
+      "error": "",
+      "graphSha256": "40967d0f5ad38dc489ad02208bcf32637dc850f53bbb17b6dc796e89ecbd8a3e",
+      "traceSha256": "93be0ae11d6b04fa4122111b6c18a40695e121ce53b59c487f25c023e36bb658"
+    },
+    {
+      "id": "diamond",
+      "mode": "parsed",
+      "pass": true,
+      "error": "",
+      "graphSha256": "40967d0f5ad38dc489ad02208bcf32637dc850f53bbb17b6dc796e89ecbd8a3e",
+      "traceSha256": "8e355b646074da631001dff8ba9556a311354e7a7c79125f4988796a4adc3bcd"
+    },
+    {
+      "id": "duplicate-declaration",
+      "mode": "raw",
+      "pass": true,
+      "error": "a definition must uniquely fill its law with plain parameter names",
+      "graphSha256": "2d7727cf9950fccb291362761824f9333545a5d9d96177d0b8bc231b72b27eb3",
+      "traceSha256": "45cfc3a40c0b18e4491456104ca2e762364f9e585ace92f94321a9611aeab26b"
+    },
+    {
+      "id": "duplicate-declaration",
+      "mode": "parsed",
+      "pass": true,
+      "error": "a definition must uniquely fill its law with plain parameter names",
+      "graphSha256": "2d7727cf9950fccb291362761824f9333545a5d9d96177d0b8bc231b72b27eb3",
+      "traceSha256": "c8d5c499f6efa076858b0f11b2e7424928e561620aae70defe47156c700b0c02"
+    },
+    {
+      "id": "partial-failure",
+      "mode": "raw",
+      "pass": true,
+      "error": "module source was not supplied",
+      "graphSha256": "e122c0d08fe651a08c81506d0197619f9cc7bc3ba1e8d7ec39aecaeeb8342964",
+      "traceSha256": "4ed787fa08d8368e28522e2f12984c90ee02365e924e2da38bbbcede2b0dab52"
+    },
+    {
+      "id": "partial-failure",
+      "mode": "parsed",
+      "pass": true,
+      "error": "module source was not supplied",
+      "graphSha256": "e122c0d08fe651a08c81506d0197619f9cc7bc3ba1e8d7ec39aecaeeb8342964",
+      "traceSha256": "d712e03168b8efcd0521c1590540103bd32792ed9fdb7d7fe147e1e14b77c681"
+    },
+    {
+      "id": "empty-base-path",
+      "mode": "raw",
+      "pass": true,
+      "error": "module source was not supplied",
+      "graphSha256": "eb32ff64fde0c2c08240cb3347234dc62285425d19e8811fb36a1ee5ab5ff959",
+      "traceSha256": "1cb88660cf892fcb12340b9f09998a720e265a51cc28e5e1b895922c99ce9f1b"
+    },
+    {
+      "id": "empty-base-path",
+      "mode": "parsed",
+      "pass": true,
+      "error": "module source was not supplied",
+      "graphSha256": "eb32ff64fde0c2c08240cb3347234dc62285425d19e8811fb36a1ee5ab5ff959",
+      "traceSha256": "d7fdca950cf291df5542fe7ac8e3acc76936fae70dce67fa0304a16db3346cdd"
+    },
+    {
+      "id": "valid-base",
+      "mode": "raw",
+      "pass": true,
+      "error": "",
+      "graphSha256": "3f5845267d664c9313b469a76048d0da3689074459df39b1b11a9f8bc2eec11a",
+      "traceSha256": "30108839da0a603b75a3e40700a098bd331a6c4078bc9e45d786d7c8ea765998"
+    },
+    {
+      "id": "valid-base",
+      "mode": "parsed",
+      "pass": true,
+      "error": "",
+      "graphSha256": "3f5845267d664c9313b469a76048d0da3689074459df39b1b11a9f8bc2eec11a",
+      "traceSha256": "028a173ddbbd2e8aaeb5f4b7ac29dc92480deee3de55f92ffb570dde560e7a16"
+    },
+    {
+      "id": "unused-base",
+      "mode": "raw",
+      "pass": true,
+      "error": "",
+      "graphSha256": "ced5a32a7affb2a600eae553147624b3f0ebf04c15e66e338f3748145c6e28cc",
+      "traceSha256": "38d55fb723bee1b6ccd1cc37776ebdf3bbd9959d605c1eb009cc7a35958eb81c"
+    },
+    {
+      "id": "unused-base",
+      "mode": "parsed",
+      "pass": true,
+      "error": "",
+      "graphSha256": "ced5a32a7affb2a600eae553147624b3f0ebf04c15e66e338f3748145c6e28cc",
+      "traceSha256": "623f4453f425ceac3131da8ccf1297baff2748d7c9dae0af0f04a27029819e71"
+    },
+    {
+      "id": "invalid-text-valid-parse",
+      "mode": "trusted-parsed",
+      "pass": true,
+      "error": "",
+      "graphSha256": "190f563bc2c5a8ad12dcfbb847940b24a22731885bcdacc83e54899663052333",
+      "traceSha256": "81cec60df41c6bd725e930268e0f60a6882f648295e8183958f4d4b251052d00"
+    },
+    {
+      "id": "valid-text-invalid-parse",
+      "mode": "trusted-parsed",
+      "pass": true,
+      "error": "line 0:0: reserved parameter name; got <eof>",
+      "graphSha256": "a81914affc3dd0e80504ff4a6f525fab49bff00bfb1e413975f64b7afa66850c",
+      "traceSha256": "4ab2e33a80a6689dd90c62c76abe1be0d98d918e6b4a260d1722ac9b4f48af15"
+    },
+    {
+      "id": "seed-selection-valid",
+      "mode": "raw",
+      "pass": true,
+      "selected": true
+    },
+    {
+      "id": "seed-selection-stale-text",
+      "mode": "raw",
+      "pass": true,
+      "selected": false
+    },
+    {
+      "id": "seed-selection-stale-path",
+      "mode": "raw",
+      "pass": true,
+      "selected": false
+    },
+    {
+      "id": "seed-selection-disabled",
+      "mode": "raw",
+      "pass": true,
+      "selected": false
+    },
+    {
+      "id": "seed-selection-unused",
+      "mode": "raw",
+      "pass": true,
+      "selected": false
+    },
+    {
+      "id": "seed-selection-valid",
+      "mode": "parsed",
+      "pass": true,
+      "selected": true
+    },
+    {
+      "id": "seed-selection-stale-text",
+      "mode": "parsed",
+      "pass": true,
+      "selected": false
+    },
+    {
+      "id": "seed-selection-stale-path",
+      "mode": "parsed",
+      "pass": true,
+      "selected": false
+    },
+    {
+      "id": "seed-selection-disabled",
+      "mode": "parsed",
+      "pass": true,
+      "selected": false
+    },
+    {
+      "id": "seed-selection-unused",
+      "mode": "parsed",
+      "pass": true,
+      "selected": false
+    },
+    {
+      "id": "prior-error-wins",
+      "pass": true,
+      "error": "earlier error"
+    },
+    {
+      "id": "missing-before-cycle",
+      "pass": true,
+      "error": "module source was not supplied"
+    },
+    {
+      "id": "empty-base-before-seed",
+      "pass": true,
+      "error": "module source was not supplied"
+    },
+    {
+      "id": "cycle-before-cache",
+      "pass": true,
+      "error": "cyclic import through /shared/main.bend"
+    },
+    {
+      "id": "namespace-conflict",
+      "pass": true,
+      "error": "one namespace per source file: /shared/main.bend"
+    },
+    {
+      "id": "term-absent",
+      "pass": true,
+      "error": ""
+    },
+    {
+      "id": "term-named",
+      "pass": true,
+      "error": "first"
+    },
+    {
+      "id": "term-empty-error-children",
+      "pass": true,
+      "error": ""
+    },
+    {
+      "id": "term-children-left-first",
+      "pass": true,
+      "error": "left"
+    },
+    {
+      "id": "term-skip-empty-child",
+      "pass": true,
+      "error": "next"
+    },
+    {
+      "id": "book-empty",
+      "pass": true,
+      "error": ""
+    },
+    {
+      "id": "book-type-before-value",
+      "pass": true,
+      "error": "type"
+    },
+    {
+      "id": "book-value-before-ctor",
+      "pass": true,
+      "error": "value"
+    },
+    {
+      "id": "book-ctor-before-next",
+      "pass": true,
+      "error": "ctor"
+    },
+    {
+      "id": "book-nested-ctor",
+      "pass": true,
+      "error": "deep"
+    },
+    {
+      "id": "book-empty-error-skips-children",
+      "pass": true,
+      "error": "next"
+    }
+  ],
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-a02/api.mjs",
+      "sha256": "ba121e4098044d9f106c4e7cb3e37b0e1ce1bc77f7e42f7e5418556b7f0f3e90"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b01/api.mjs",
+      "sha256": "f201bdea7ea4041483b40704f622703945858e981c404a4d7e50979b74370110"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tests/frontend/shared-operations.mjs",
+      "sha256": "743df27b870eb933e8f330d125df072c9ae58b4a5021a7d551cc88fcfba15cf6"
+    }
+  ],
+  "scope": "Exact ordered graph/trace/seed results and embedded-error selection; test-only exports retain checked bodies. No timing or fixed-point claim.",
+  "exposures": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/b-controls-01/baseline.mjs",
+      "sha256": "48ae8d549bcc005785a2f988e61309b5d9cbae100a6384ac67722de64812f03f"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/b-controls-01/candidate.mjs",
+      "sha256": "56ed4991996cfd394e93774faf9a1e86f139cdd6219cc156f0caae1cc071cf06"
+    }
+  ]
+}

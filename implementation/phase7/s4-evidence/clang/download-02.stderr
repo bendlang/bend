@@ -1,0 +1,4 @@
+E: Failed to fetch http://security.debian.org/debian-security/pool/updates/main/l/llvm-toolchain-19/clang-19_19.1.7-3%7edeb11u1_amd64.deb  404  Not Found [IP: 2a04:4e42::644 80]
+E: Failed to fetch http://security.debian.org/debian-security/pool/updates/main/l/llvm-toolchain-19/libclang-common-19-dev_19.1.7-3%7edeb11u1_amd64.deb  404  Not Found [IP: 2a04:4e42::644 80]
+E: Failed to fetch http://security.debian.org/debian-security/pool/updates/main/l/llvm-toolchain-19/libclang-cpp19_19.1.7-3%7edeb11u1_amd64.deb  404  Not Found [IP: 2a04:4e42::644 80]
+E: Failed to fetch http://security.debian.org/debian-security/pool/updates/main/l/llvm-toolchain-19/libllvm19_19.1.7-3%7edeb11u1_amd64.deb  404  Not Found [IP: 2a04:4e42::644 80]

@@ -1,11 +1,6 @@
 import Base
 
 # Exact IR prefix validation for the host cache. Never accepts a changed prefix.
-law exact_names:
-  for +a: List<&2, String>
-  for +b: List<&2, String>
-  Bool
-
 law exact_names_empty:
   for +b: List<&2, String>
   Bool
@@ -14,11 +9,6 @@ law exact_names_head:
   for +h: String
   for +rest: List<&2, String>
   for +b: List<&2, String>
-  Bool
-
-law exact_term:
-  for +a: KTerm
-  for +b: KTerm
   Bool
 
 law exact_terms:
@@ -32,11 +22,6 @@ law exact_terms_head:
   for +b: List<&2, KTerm>
   Bool
 
-law exact_def:
-  for +a: KDef
-  for +b: KDef
-  Bool
-
 law exact_defs:
   for +a: List<&2, KDef>
   for +b: List<&2, KDef>
@@ -48,24 +33,17 @@ law exact_defs_head:
   for +b: List<&2, KDef>
   Bool
 
-law exact_prefix:
-  for +book: List<&2, KDef>
-  for +prefix: List<&2, KDef>
-  Bool
-
 law exact_prefix_head:
   for +book: List<&2, KDef>
   for +h: KDef
   for +rest: List<&2, KDef>
   Bool
 
-law check_from_exact_prefix:
-  for +book: List<&2, KDef>
-  for +validated: List<&2, KDef>
-  String
-
 @unsafe
-def exact_names(a, b):
+def exact_names(
+  +a: List<&2, String>,
+  +b: List<&2, String>,
+) -> Bool:
   match a:
     case Nil{}:
       exact_names_empty(b)
@@ -89,7 +67,10 @@ def exact_names_head(h, rest, b):
       String.eq(h, x) && exact_names(rest, xs)
 
 @unsafe
-def exact_term(a, b):
+def exact_term(
+  +a: KTerm,
+  +b: KTerm,
+) -> Bool:
   String.eq(tg(a), tg(b)) && String.eq(nm(a), nm(b)) && U32.is_eq(ix(a), ix(b)) && U32.is_eq(qt(a), qt(b)) && exact_terms(ks(a), ks(b)) && exact_names(rm(a), rm(b))
 
 @unsafe
@@ -109,7 +90,10 @@ def exact_terms_head(h, rest, b):
       exact_term(h, x) && exact_terms(rest, xs)
 
 @unsafe
-def exact_def(a, b):
+def exact_def(
+  +a: KDef,
+  +b: KDef,
+) -> Bool:
   String.eq(dn(a), dn(b)) && String.eq(dk(a), dk(b)) && U32.is_eq(da(a), da(b)) && U32.is_eq(dx(a), dx(b)) && Bool.not(Bool.xor(db(a), db(b))) && Bool.not(Bool.xor(du(a), du(b))) && exact_term(dt(a), dt(b)) && exact_term(dv(a), dv(b)) && exact_defs(dc(a), dc(b))
 
 @unsafe
@@ -129,7 +113,10 @@ def exact_defs_head(h, rest, b):
       exact_def(h, x) && exact_defs(rest, xs)
 
 @unsafe
-def exact_prefix(book, prefix):
+def exact_prefix(
+  +book: List<&2, KDef>,
+  +prefix: List<&2, KDef>,
+) -> Bool:
   match prefix:
     case Nil{}:
       True{}
@@ -145,6 +132,9 @@ def exact_prefix_head(book, h, rest):
       exact_def(x, h) && exact_prefix(xs, rest)
 
 @unsafe
-def check_from_exact_prefix(book, validated):
+def check_from_exact_prefix(
+  +book: List<&2, KDef>,
+  +validated: List<&2, KDef>,
+) -> String:
   dg_result_error(check_book_diagnostic_from_exact_prefix(book, validated, Nil{}))
 

@@ -1,0 +1,87 @@
+{
+  "scope": "New maintained shared-operations test plus top-level one-off S4 validation/migration programs. Historical copied tools, nested syntax falsifier and generated evidence are separately identified; no compiler-size saving claimed for these additions.",
+  "files": [
+    {
+      "file": "implementation/phase7/s4-evidence/capture-raw.py",
+      "lines": 22,
+      "nonblank": 22,
+      "bytes": 2074,
+      "sha256": "a0c03fdcdc9a46bfaf0d8a3a1ed6d490738025f9fc3711db5fdcb86d2cfe9212"
+    },
+    {
+      "file": "implementation/phase7/s4-evidence/move-joins.py",
+      "lines": 25,
+      "nonblank": 25,
+      "bytes": 2401,
+      "sha256": "3df43c6f4f533faed55649eeb03c5bfccf5d06b4943af1e5ff5eff8a378d33c1"
+    },
+    {
+      "file": "implementation/phase7/s4-evidence/candidate-smoke.py",
+      "lines": 22,
+      "nonblank": 22,
+      "bytes": 2160,
+      "sha256": "35dd5cbc003305ccde753ff43b57f3c4ab9e6ac4f15f75a2d5f9d5b85e049083"
+    },
+    {
+      "file": "implementation/phase7/s4-evidence/boundary-gates.py",
+      "lines": 31,
+      "nonblank": 31,
+      "bytes": 2320,
+      "sha256": "bde69119538dd6ccdb6ffae7317390b0e73f08a296485c7d0f2526f9093d6d96"
+    },
+    {
+      "file": "implementation/phase7/s4-evidence/release-smoke.py",
+      "lines": 37,
+      "nonblank": 37,
+      "bytes": 3381,
+      "sha256": "a2cc9ea9b8ec603a1e6470080707b174f4f89092e50acce3c1701976e1b0101b"
+    },
+    {
+      "file": "implementation/phase7/s4-evidence/migrate-declarations.py",
+      "lines": 191,
+      "nonblank": 172,
+      "bytes": 9903,
+      "sha256": "23c542bd0f0e6db77b2b7a66b6eb35e69ab685f3b0d8deecbe1004f940f5d1c9"
+    },
+    {
+      "file": "implementation/phase7/s4-evidence/checked-selfhost.mjs",
+      "lines": 53,
+      "nonblank": 52,
+      "bytes": 3997,
+      "sha256": "2682ab4684de583b601b840ca566acd6098ae7253b8807c647e6153412ff971b"
+    },
+    {
+      "file": "implementation/phase7/s4-evidence/declaration-controls.mjs",
+      "lines": 103,
+      "nonblank": 103,
+      "bytes": 9043,
+      "sha256": "29bfd56f89d621f730b05b27dfc9e23d5207cf8805941a3b7fa2ec9fc2e84c22"
+    },
+    {
+      "file": "implementation/phase7/s4-evidence/core-pilot.mjs",
+      "lines": 46,
+      "nonblank": 45,
+      "bytes": 2977,
+      "sha256": "3b487f57c1b43b0d9ade730ed94cb714eb61391527c2a75ae4615d9465be6315"
+    },
+    {
+      "file": "implementation/phase7/s4-evidence/graph-cost.mjs",
+      "lines": 155,
+      "nonblank": 151,
+      "bytes": 11847,
+      "sha256": "9545e754b6fb2b30776f716175289b3d057a2fcf62c878d7c31a19ba6d39054e"
+    },
+    {
+      "file": "selfhost/tests/frontend/shared-operations.mjs",
+      "lines": 142,
+      "nonblank": 141,
+      "bytes": 12567,
+      "sha256": "743df27b870eb933e8f330d125df072c9ae58b4a5021a7d551cc88fcfba15cf6"
+    }
+  ],
+  "total": {
+    "lines": 827,
+    "nonblank": 801,
+    "bytes": 62670
+  }
+}

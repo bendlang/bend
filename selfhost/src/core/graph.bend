@@ -23,41 +23,6 @@ type GFrame is Data:
   GMinB{+other: KTerm, +args: List<&2, KTerm>}
   GRewrite{+original: KTerm, +args: List<&2, KTerm>, +pending: U32, +fallback: KTerm}
 
-law g_heap:
-  for +st: GState
-  GHeap
-
-law g_next:
-  for +st: GState
-  U32
-
-law g_state:
-  for +r: GResult
-  GState
-
-law g_term:
-  for +r: GResult
-  KTerm
-
-law g_states:
-  for +r: GTerms
-  GState
-
-law g_terms:
-  for +r: GTerms
-  List<&2, KTerm>
-
-law g_get:
-  for +heap: GHeap
-  for +id: U32
-  KTerm
-
-law g_put:
-  for +heap: GHeap
-  for +id: U32
-  for +value: KTerm
-  GHeap
-
 law g_put_node:
   for +old: KTerm
   for +left: GHeap
@@ -66,43 +31,15 @@ law g_put_node:
   for +value: KTerm
   GHeap
 
-law g_share:
-  for +st: GState
-  for +t: KTerm
-  GResult
-
-law g_share_terms:
-  for +st: GState
-  for +ts: List<&2, KTerm>
-  for +done: List<&2, KTerm>
-  GTerms
-
 law g_shared_term:
   for +rest: List<&2, KTerm>
   for +done: List<&2, KTerm>
   for +r: GResult
   GTerms
 
-law g_share_head:
-  for +st: GState
-  for +t: KTerm
-  GResult
-
 law g_shared_head:
   for +t: KTerm
   for +r: GTerms
-  GResult
-
-law g_cache:
-  for +st: GState
-  for +id: U32
-  for +t: KTerm
-  GState
-
-law g_wnf:
-  for +book: List<&2, KDef>
-  for +st: GState
-  for +t: KTerm
   GResult
 
 law g_eval:
@@ -235,14 +172,6 @@ law graph_strong:
   for +t: KTerm
   KTerm
 
-law g_snf_go:
-  for +book: List<&2, KDef>
-  for +st: GState
-  for +t: KTerm
-  for +stack: List<&2, KNormFrame>
-  for +fresh: U32
-  KTerm
-
 law g_snf_head:
   for +book: List<&2, KDef>
   for +stack: List<&2, KNormFrame>
@@ -277,43 +206,58 @@ law g_snf_return:
   KTerm
 
 @unsafe
-def g_heap(st):
+def g_heap(
+  +st: GState,
+) -> GHeap:
   match st:
     case GState{heap, next}:
       heap
 
 @unsafe
-def g_next(st):
+def g_next(
+  +st: GState,
+) -> U32:
   match st:
     case GState{heap, next}:
       next
 
 @unsafe
-def g_state(r):
+def g_state(
+  +r: GResult,
+) -> GState:
   match r:
     case GResult{state, term}:
       state
 
 @unsafe
-def g_term(r):
+def g_term(
+  +r: GResult,
+) -> KTerm:
   match r:
     case GResult{state, term}:
       term
 
 @unsafe
-def g_states(r):
+def g_states(
+  +r: GTerms,
+) -> GState:
   match r:
     case GTerms{state, terms}:
       state
 
 @unsafe
-def g_terms(r):
+def g_terms(
+  +r: GTerms,
+) -> List<&2, KTerm>:
   match r:
     case GTerms{state, terms}:
       terms
 
 @unsafe
-def g_get(heap, id):
+def g_get(
+  +heap: GHeap,
+  +id: U32,
+) -> KTerm:
   match heap:
     case GEmpty{}:
       atom("Absent")
@@ -321,7 +265,11 @@ def g_get(heap, id):
       kc(KTerm, U32.is_eq(id, 0), u => value, u => kc(KTerm, U32.is_eq(U32.and(id, 1), 0), u => g_get(left, U32.shr(id)), u => g_get(right, U32.shr(id))))
 
 @unsafe
-def g_put(heap, id, value):
+def g_put(
+  +heap: GHeap,
+  +id: U32,
+  +value: KTerm,
+) -> GHeap:
   match heap:
     case GEmpty{}:
       g_put_node(atom("Absent"), GEmpty{}, GEmpty{}, id, value)
@@ -333,11 +281,18 @@ def g_put_node(old, left, right, id, value):
   kc(GHeap, U32.is_eq(id, 0), u => GNode{value, left, right}, u => kc(GHeap, U32.is_eq(U32.and(id, 1), 0), u => GNode{old, g_put(left, U32.shr(id), value), right}, u => GNode{old, left, g_put(right, U32.shr(id), value)}))
 
 @unsafe
-def g_share(st, t):
+def g_share(
+  +st: GState,
+  +t: KTerm,
+) -> GResult:
   kc(GResult, String.eq(tg(t), "GCell"), u => GResult{st, t}, u => GResult{GState{g_put(g_heap(st), g_next(st), kt("GThunk", "", 0, 0, Con{t, Nil{}})), U32.add(g_next(st), 1)}, kt("GCell", "", g_next(st), 0, Nil{})})
 
 @unsafe
-def g_share_terms(st, ts, done):
+def g_share_terms(
+  +st: GState,
+  +ts: List<&2, KTerm>,
+  +done: List<&2, KTerm>,
+) -> GTerms:
   match ts:
     case Nil{}:
       GTerms{st, List.reverse(&2, KTerm, done)}
@@ -349,7 +304,10 @@ def g_shared_term(rest, done, r):
   g_share_terms(g_state(r), rest, Con{g_term(r), done})
 
 @unsafe
-def g_share_head(st, t):
+def g_share_head(
+  +st: GState,
+  +t: KTerm,
+) -> GResult:
   kc(GResult, String.eq(tg(t), "Ctr") || String.eq(tg(t), "ADT") || String.eq(tg(t), "Mat") || String.eq(tg(t), "Eql") || String.eq(tg(t), "Min") || String.eq(tg(t), "Typ"), u => g_shared_head(t, g_share_terms(st, ks(t), Nil{})), u => GResult{st, t})
 
 @unsafe
@@ -357,11 +315,19 @@ def g_shared_head(t, r):
   GResult{g_states(r), KTerm{tg(t), nm(t), ix(t), qt(t), g_terms(r), rm(t)}}
 
 @unsafe
-def g_cache(st, id, t):
+def g_cache(
+  +st: GState,
+  +id: U32,
+  +t: KTerm,
+) -> GState:
   GState{g_put(g_heap(st), id, kt("GValue", "", 0, 0, Con{t, Nil{}})), g_next(st)}
 
 @unsafe
-def g_wnf(book, st, t):
+def g_wnf(
+  +book: List<&2, KDef>,
+  +st: GState,
+  +t: KTerm,
+) -> GResult:
   g_eval(book, st, t, Nil{}, 0, atom("Absent"), Nil{})
 
 @unsafe
@@ -464,7 +430,13 @@ def graph_strong(book, t):
   g_start(book, t, norm_max(norm_book_bound(book), norm_max_term(t)))
 
 @unsafe
-def g_snf_go(book, st, t, stack, fresh):
+def g_snf_go(
+  +book: List<&2, KDef>,
+  +st: GState,
+  +t: KTerm,
+  +stack: List<&2, KNormFrame>,
+  +fresh: U32,
+) -> KTerm:
   g_snf_head(book, stack, fresh, g_wnf(book, st, t))
 
 @unsafe

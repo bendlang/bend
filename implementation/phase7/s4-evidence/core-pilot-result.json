@@ -1,0 +1,246 @@
+{
+  "kind": "S4-core-declaration-pilot",
+  "complete": true,
+  "pass": true,
+  "node": "v24.18.0",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase7/s4-evidence/core-pilot.mjs",
+      "sha256": "3b487f57c1b43b0d9ade730ed94cb714eb61391527c2a75ae4615d9465be6315"
+    },
+    {
+      "file": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c"
+    }
+  ],
+  "variants": [
+    {
+      "name": "baseline",
+      "project": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/baseline-project",
+      "modules": [
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/baseline-project/src/core/term.bend",
+          "sha256": "e47b14c3fec0043dacccdf2db0366e5d9ed29394b3a4faae47afe08e69a8f522"
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/baseline-project/src/core/index.bend",
+          "sha256": "56687b5ca818a3217ab8dff7960836db002b8d7ad89e5de26b1f270d5abd4624"
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/baseline-project/src/core/normalize.bend",
+          "sha256": "f1baf359384e1edb8633e327f8a0cf01feb790931db79bade2c44685151f2fb7"
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/baseline-project/src/core/graph.bend",
+          "sha256": "7d5e75fce5d473fe2c63a4ccbd3e115db29bf42bb037fa9238d5427fce62a790"
+        }
+      ],
+      "runs": [
+        {
+          "label": "checked-build",
+          "execution": {
+            "command": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+            "args": [
+              "--stack-size=4096",
+              "--max-old-space-size=4096",
+              "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/baseline-project/tools/stage0-library.mjs",
+              "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/core-pilot-01/baseline/core.bend",
+              "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/core-pilot-01/baseline/api.mjs",
+              "wnf",
+              "strong",
+              "compare",
+              "lookup",
+              "book_cached",
+              "book_context",
+              "book_put"
+            ],
+            "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/core-pilot-01/baseline/checked-build/stdout",
+            "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/core-pilot-01/baseline/checked-build/stderr",
+            "timeoutMs": 120000,
+            "maxBytes": 16777216,
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "timedOut": false,
+            "overflow": false,
+            "logBytes": 22,
+            "wallMs": 685.354813
+          }
+        },
+        {
+          "label": "normalization",
+          "execution": {
+            "command": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+            "args": [
+              "--stack-size=4096",
+              "--max-old-space-size=4096",
+              "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/baseline-project/tests/normalize.mjs"
+            ],
+            "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/core-pilot-01/baseline/normalization/stdout",
+            "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/core-pilot-01/baseline/normalization/stderr",
+            "timeoutMs": 120000,
+            "maxBytes": 16777216,
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "timedOut": false,
+            "overflow": false,
+            "logBytes": 924,
+            "wallMs": 401.07761300000016
+          }
+        },
+        {
+          "label": "index",
+          "execution": {
+            "command": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+            "args": [
+              "--stack-size=4096",
+              "--max-old-space-size=4096",
+              "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/baseline-project/tests/index.mjs"
+            ],
+            "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/core-pilot-01/baseline/index/stdout",
+            "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/core-pilot-01/baseline/index/stderr",
+            "timeoutMs": 120000,
+            "maxBytes": 16777216,
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "timedOut": false,
+            "overflow": false,
+            "logBytes": 135,
+            "wallMs": 314.7407189999999
+          }
+        }
+      ],
+      "assembly": {
+        "output": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/core-pilot-01/baseline/core.bend",
+        "files": 4,
+        "declarations": 318,
+        "bytes": 61004
+      },
+      "source": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/core-pilot-01/baseline/core.bend",
+        "sha256": "f9977208ec98802295684c912836141b01a802d14590e33b71d004f14f8dd659"
+      },
+      "api": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/core-pilot-01/baseline/api.mjs",
+        "sha256": "749f57342f84527bd823a202bcfbe88d5c6e86ecfde010fd4f5c0ac5712c574b"
+      }
+    },
+    {
+      "name": "pilot",
+      "project": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/pilot-project",
+      "modules": [
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/pilot-project/src/core/term.bend",
+          "sha256": "04bcc073b38e35bfac713ae161bbdf8bd59804aa59c6e1ad0127059441836395"
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/pilot-project/src/core/index.bend",
+          "sha256": "56687b5ca818a3217ab8dff7960836db002b8d7ad89e5de26b1f270d5abd4624"
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/pilot-project/src/core/normalize.bend",
+          "sha256": "f1baf359384e1edb8633e327f8a0cf01feb790931db79bade2c44685151f2fb7"
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/pilot-project/src/core/graph.bend",
+          "sha256": "7d5e75fce5d473fe2c63a4ccbd3e115db29bf42bb037fa9238d5427fce62a790"
+        }
+      ],
+      "runs": [
+        {
+          "label": "checked-build",
+          "execution": {
+            "command": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+            "args": [
+              "--stack-size=4096",
+              "--max-old-space-size=4096",
+              "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/pilot-project/tools/stage0-library.mjs",
+              "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/core-pilot-01/pilot/core.bend",
+              "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/core-pilot-01/pilot/api.mjs",
+              "wnf",
+              "strong",
+              "compare",
+              "lookup",
+              "book_cached",
+              "book_context",
+              "book_put"
+            ],
+            "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/core-pilot-01/pilot/checked-build/stdout",
+            "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/core-pilot-01/pilot/checked-build/stderr",
+            "timeoutMs": 120000,
+            "maxBytes": 16777216,
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "timedOut": false,
+            "overflow": false,
+            "logBytes": 22,
+            "wallMs": 731.8644079999999
+          }
+        },
+        {
+          "label": "normalization",
+          "execution": {
+            "command": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+            "args": [
+              "--stack-size=4096",
+              "--max-old-space-size=4096",
+              "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/pilot-project/tests/normalize.mjs"
+            ],
+            "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/core-pilot-01/pilot/normalization/stdout",
+            "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/core-pilot-01/pilot/normalization/stderr",
+            "timeoutMs": 120000,
+            "maxBytes": 16777216,
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "timedOut": false,
+            "overflow": false,
+            "logBytes": 924,
+            "wallMs": 402.30106399999977
+          }
+        },
+        {
+          "label": "index",
+          "execution": {
+            "command": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+            "args": [
+              "--stack-size=4096",
+              "--max-old-space-size=4096",
+              "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/pilot-project/tests/index.mjs"
+            ],
+            "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/core-pilot-01/pilot/index/stdout",
+            "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/core-pilot-01/pilot/index/stderr",
+            "timeoutMs": 120000,
+            "maxBytes": 16777216,
+            "exitCode": 0,
+            "signal": null,
+            "error": null,
+            "timedOut": false,
+            "overflow": false,
+            "logBytes": 135,
+            "wallMs": 335.1219460000002
+          }
+        }
+      ],
+      "assembly": {
+        "output": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/core-pilot-01/pilot/core.bend",
+        "files": 4,
+        "declarations": 284,
+        "bytes": 59292
+      },
+      "source": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/core-pilot-01/pilot/core.bend",
+        "sha256": "d087e217e30fc9835bf0c111a9300d988596b15f4415552380fe12f163796ef6"
+      },
+      "api": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/core-pilot-01/pilot/api.mjs",
+        "sha256": "749f57342f84527bd823a202bcfbe88d5c6e86ecfde010fd4f5c0ac5712c574b"
+      }
+    }
+  ],
+  "selectedApiByteIdentity": true,
+  "finished": "2026-09-26T20:09:07.700Z"
+}

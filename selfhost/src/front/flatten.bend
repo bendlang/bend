@@ -7,16 +7,6 @@ type FFlatten is Data:
 type FFields is Data:
   FFields{+fields: List<&2, KTerm>, next: U32}
 
-law ff_term:
-  for +r: FFlatten
-  KTerm
-
-law ff_flat:
-  for +t: KTerm
-  for +vars: List<&2, KTerm>
-  for +next: U32
-  FFlatten
-
 law ff_local:
   for +t: KTerm
   for +vars: List<&2, KTerm>
@@ -102,29 +92,6 @@ law ff_miss_done:
   for +r: FFlatten
   FFlatten
 
-law fc_ref:
-  for +name: String
-  for +env: List<&2, KTerm>
-  U32
-
-law fc_bind:
-  for +v: KTerm
-  for +env: List<&2, KTerm>
-  List<&2, KTerm>
-
-law fc_binders:
-  for +ps: List<&2, KTerm>
-  List<&2, KTerm>
-
-law fc_bind_count:
-  for +ps: List<&2, KTerm>
-  U32
-
-law fc_terms:
-  for +ts: List<&2, KTerm>
-  for +env: List<&2, KTerm>
-  U32
-
 law fc_term:
   for +t: KTerm
   for +env: List<&2, KTerm>
@@ -143,13 +110,19 @@ law fc_start:
   U32
 
 @unsafe
-def ff_term(r):
+def ff_term(
+  +r: FFlatten,
+) -> KTerm:
   match r:
     case FFlatten{t, next}:
       t
 
 @unsafe
-def ff_flat(t, vars, next):
+def ff_flat(
+  +t: KTerm,
+  +vars: List<&2, KTerm>,
+  +next: U32,
+) -> FFlatten:
   f_choose(FFlatten, f_eq(tg(t), "Match"), u => ff_match(ks(kid(t, 0)), f_tail_terms(ks(t)), vars, next), u => f_choose(FFlatten, f_eq(tg(t), "Local"), u => ff_local(t, vars, next), u => f_choose(FFlatten, f_eq(tg(t), "Parallel"), u => ff_parallel(t, vars, ff_flat(kid(t, 2), ks(kid(t, 0)), next)), u => FFlatten{f_lbind(vars, t), next})))
 
 @unsafe
@@ -166,15 +139,15 @@ def ff_let(t, vars, r):
 def ff_parallel(t, vars, r):
   match r:
     case FFlatten{body, next}:
-      FFlatten{f_lbind(vars, kt("Let", "", 0, 1, f_concat(f_parallel_binds(ks(kid(t, 0)), ks(kid(t, 1))), [f_unlamb(body, f_len(ks(kid(t, 0))))]))), next}
+      FFlatten{f_lbind(vars, kt("Let", "", 0, 1, norm_join(f_parallel_binds(ks(kid(t, 0)), ks(kid(t, 1))), [f_unlamb(body, terms_len(ks(kid(t, 0))))]))), next}
 
 @unsafe
 def ff_match(heads, rows, vars, next):
   match heads:
     case Nil{}:
-      f_choose(FFlatten, U32.is_eq(f_len(rows), 0), u => FFlatten{atom("Efq"), next}, u => ff_flat(kid(terms_at(rows, 0), 1), vars, next))
+      f_choose(FFlatten, U32.is_eq(terms_len(rows), 0), u => FFlatten{atom("Efq"), next}, u => ff_flat(kid(terms_at(rows, 0), 1), vars, next))
     case Con{+h, hs}:
-      f_choose(FFlatten, f_eq(tg(f_first_ctor(rows)), "Absent") && U32.is_gt(f_len(rows), 0) && f_has_id(vars, ix(h)), u => ff_match(hs, f_var_rows(rows, h), f_mark_vars(vars, ix(h), f_mark_rows(rows, qt(h))), next), u => ff_column(h, hs, rows, vars, next))
+      f_choose(FFlatten, f_eq(tg(f_first_ctor(rows)), "Absent") && U32.is_gt(terms_len(rows), 0) && f_has_id(vars, ix(h)), u => ff_match(hs, f_var_rows(rows, h), f_mark_vars(vars, ix(h), f_mark_rows(rows, qt(h))), next), u => ff_column(h, hs, rows, vars, next))
 
 @unsafe
 def ff_column(h, hs, rows, vars, next):
@@ -212,7 +185,7 @@ def ff_field_cons(p, r):
 def ff_fields_done(h, hs, rows, v, vs, c, r):
   match r:
     case FFields{+fields, next}:
-      ff_hit_done(h, hs, rows, v, vs, c, ff_match(f_concat(fields, hs), f_hit_rows(rows, c, fields, v), f_concat(fields, vs), next))
+      ff_hit_done(h, hs, rows, v, vs, c, ff_match(norm_join(fields, hs), f_hit_rows(rows, c, fields, v), norm_join(fields, vs), next))
 
 @unsafe
 def ff_hit_done(h, hs, rows, v, vs, c, r):
@@ -227,23 +200,33 @@ def ff_miss_done(c, hit, r):
       FFlatten{kt("Mat", nm(c), 0, 1, [hit, miss]), next}
 
 @unsafe
-def fc_ref(name, env):
+def fc_ref(
+  +name: String,
+  +env: List<&2, KTerm>,
+) -> U32:
   f_choose(U32, f_contains(name, '.') || Bool.not(f_eq(tg(f_env(name, env)), "Absent")), u => 0, u => 1)
 
 @unsafe
-def fc_bind(v, env):
+def fc_bind(
+  +v: KTerm,
+  +env: List<&2, KTerm>,
+) -> List<&2, KTerm>:
   f_choose(List<&2,KTerm>, f_eq(nm(v), "_"), u => env, u => Con{v, env})
 
 @unsafe
-def fc_binders(ps):
+def fc_binders(
+  +ps: List<&2, KTerm>,
+) -> List<&2, KTerm>:
   match ps:
     case Nil{}:
       Nil{}
     case Con{+p, rest}:
-      f_choose(List<&2,KTerm>, f_eq(tg(p), "Ref") || f_eq(tg(p), "Var"), u => fc_bind(p, fc_binders(rest)), u => f_concat(fc_binders(ks(p)), fc_binders(rest)))
+      f_choose(List<&2,KTerm>, f_eq(tg(p), "Ref") || f_eq(tg(p), "Var"), u => fc_bind(p, fc_binders(rest)), u => norm_join(fc_binders(ks(p)), fc_binders(rest)))
 
 @unsafe
-def fc_bind_count(ps):
+def fc_bind_count(
+  +ps: List<&2, KTerm>,
+) -> U32:
   match ps:
     case Nil{}:
       0
@@ -251,7 +234,10 @@ def fc_bind_count(ps):
       U32.add(f_choose(U32, f_eq(tg(p), "Ref") || f_eq(tg(p), "Var"), u => 1, u => fc_bind_count(ks(p))), fc_bind_count(rest))
 
 @unsafe
-def fc_terms(ts, env):
+def fc_terms(
+  +ts: List<&2, KTerm>,
+  +env: List<&2, KTerm>,
+) -> U32:
   match ts:
     case Nil{}:
       0
@@ -265,8 +251,8 @@ def fc_term(t, env):
     u => f_choose(U32, f_eq(tg(t), "All"), u => U32.add(1, U32.add(fc_term(kid(t, 0), env), fc_term(kid(t, 1), fc_bind(t, env)))),
     u => f_choose(U32, f_eq(tg(t), "Lam"), u => U32.add(1, U32.add(fc_ref(nm(t), env), fc_term(kid(t, 0), fc_bind(t, env)))),
     u => f_choose(U32, f_eq(tg(t), "Match"), u => U32.add(fc_terms(ks(kid(t, 0)), env), fc_rows(f_tail_terms(ks(t)), env)),
-    u => f_choose(U32, f_eq(tg(t), "Local"), u => U32.add(f_choose(U32, U32.is_eq(qt(kid(t, 0)), 0), u => 0, u => fc_term(kid(t, 0), env)), U32.add(fc_term(kid(t, 1), env), U32.add(fc_bind_count([kid(t, 0)]), fc_term(kid(t, 2), f_concat(fc_binders([kid(t, 0)]), env))))),
-    u => f_choose(U32, f_eq(tg(t), "Parallel"), u => U32.add(fc_terms(ks(kid(t, 0)), env), U32.add(fc_terms(ks(kid(t, 1)), env), U32.add(fc_bind_count(ks(kid(t, 0))), fc_term(kid(t, 2), f_concat(fc_binders(ks(kid(t, 0))), env))))),
+    u => f_choose(U32, f_eq(tg(t), "Local"), u => U32.add(f_choose(U32, U32.is_eq(qt(kid(t, 0)), 0), u => 0, u => fc_term(kid(t, 0), env)), U32.add(fc_term(kid(t, 1), env), U32.add(fc_bind_count([kid(t, 0)]), fc_term(kid(t, 2), norm_join(fc_binders([kid(t, 0)]), env))))),
+    u => f_choose(U32, f_eq(tg(t), "Parallel"), u => U32.add(fc_terms(ks(kid(t, 0)), env), U32.add(fc_terms(ks(kid(t, 1)), env), U32.add(fc_bind_count(ks(kid(t, 0))), fc_term(kid(t, 2), norm_join(fc_binders(ks(kid(t, 0))), env))))),
     u => f_choose(U32, f_eq(tg(t), "Mat"), u => U32.add(fc_ref(nm(t), env), fc_terms(ks(t), env)),
     u => fc_terms(ks(t), env)))))))))
 
@@ -276,9 +262,9 @@ def fc_rows(rs, env):
     case Nil{}:
       0
     case Con{+r, rest}:
-      U32.add(fc_terms(ks(kid(r, 0)), env), U32.add(fc_bind_count(ks(kid(r, 0))), U32.add(fc_term(kid(r, 1), f_concat(fc_binders(ks(kid(r, 0))), env)), fc_rows(rest, env))))
+      U32.add(fc_terms(ks(kid(r, 0)), env), U32.add(fc_bind_count(ks(kid(r, 0))), U32.add(fc_term(kid(r, 1), norm_join(fc_binders(ks(kid(r, 0))), env)), fc_rows(rest, env))))
 
 @unsafe
 def fc_start(pars, ty, body, filled):
-  U32.add(f_choose(U32, filled, u => f_len(pars), u => fc_term(ty, Nil{})), fc_term(body, pars))
+  U32.add(f_choose(U32, filled, u => terms_len(pars), u => fc_term(ty, Nil{})), fc_term(body, pars))
 

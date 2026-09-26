@@ -32,3 +32,11 @@ This is a measured development-loop comparison, not a full-source Bend-versus-
 TypeScript compilation ratio or a new self-emitted compiler proof. Evidence is
 separate under `selfhost/build/phase7/s4-loop/` because the original S4 raw capsule
 has already been frozen and read back. Do not overwrite that capsule.
+
+Execution outcome: the corrected four-sample gate passes; see the
+[S4 report](../../implementation/phase7/s4-report.md). Linux RSS here means the
+largest waited-for process high-water mark, not simultaneous tree memory. Review
+found incomplete detached-child cleanup in the one-off wrapper's timeout branch.
+All four measured attempts completed normally within the intended limits; the
+limitation is preserved with the runner rather than silently changing its hash.
+The original workflow remains the maintained process supervisor.
