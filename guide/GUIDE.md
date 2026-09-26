@@ -367,6 +367,9 @@ answers the command line, less the runtime's own options (a `--` ends them). A
 handle (`File`, `Socket`, `Window`) is an affine, opaque value, so every effect
 on one hands it back beside its result, and no program can forge or reuse one.
 
+The JavaScript compiler lifts deep continuations into separate functions so
+long `do` blocks load in Node and Bun without overflowing their parsers.
+
 `Process.run(program, args, input, max_output, timeout_ms)` starts an
 executable directly, with literal arguments rather than a shell. It inherits
 the current directory and environment, writes UTF-8 `input` to its stdin, and

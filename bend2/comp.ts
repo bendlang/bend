@@ -76,6 +76,10 @@ type File = {
   uses: Map<Of<"Var">, Bind>;
   rest: HTerm[];
   def: Name;
+  js_names?: Set<string>;
+  js_used?: Set<string>;
+  js_depth?: number;
+  js_helpers?: string[];
 };
 
 type Tpl = string | ((xs: string[]) => string);
@@ -605,7 +609,9 @@ function name_local(fl: File, k: Name): string {
   const base = name_clean(k).replace(/^_+/, "");
   const n = fl.fresh.get(base) ?? 0;
   fl.fresh.set(base, n + 1);
-  return "_" + base + "_" + n;
+  const name = "_" + base + "_" + n;
+  fl.js_names?.add(name);
+  return name;
 }
 
 function name_id(pre: string, k: string): string {
@@ -3071,6 +3077,7 @@ function js_expr(fl: File, tm: HTerm, ty0: HTerm | null): string {
   const [x, ty] = ty_peel(tm, ty0);
   switch (x.$) {
     case "Var": {
+      fl.js_used?.add(x.k);
       return x.k;
     }
     case "Ref":
@@ -3116,11 +3123,27 @@ function js_expr(fl: File, tm: HTerm, ty0: HTerm | null): string {
         return js_expr(fl, (x as Of<"Lam">).f(Bend.Var("null", 0)),
           ty_all(fl.book, ty).B(DUMMY));
       }
+      const depth = fl.js_depth ?? 0;
+      const lift = depth >= 32;
+      const names = lift ? new Set(fl.js_names) : null;
       const arg = name_local(fl, "x");
-      const cl = { ...fl, seg: seg_new("", BOX, []) };
+      const cl = { ...fl, seg: seg_new("", BOX, []),
+        js_depth: lift ? 0 : depth + 1,
+        js_used: lift ? new Set<string>() : fl.js_used };
       js_func(cl, x, ty, [arg]);
-      return `run_clo((${arg}) => {\n${seg_text(cl.seg.lines, 1)
-        .join("\n")}\n})`;
+      const body = seg_text(cl.seg.lines, 1).join("\n");
+      if (!lift) {
+        return `run_clo((${arg}) => {\n${body}\n})`;
+      }
+      // A generated Var can be a projection like _x_0["field"]; capture
+      // only locals named before this closure, never its own binders.
+      const used = [...cl.js_used!].flatMap((v) =>
+        v.match(/(?:_[A-Za-z0-9_]+_\d+|\$\d+)/g) ?? []);
+      const captures = [...new Set(used.filter((v) => names!.has(v)))];
+      const helper = "$0clo" + fl.js_helpers!.length + "$";
+      fl.js_helpers!.push(`function ${helper}(${[...captures, arg].join(", ")}) {\n${body}\n}`);
+      captures.forEach((v) => fl.js_used?.add(v));
+      return `run_clo((${arg}) => ${helper}(${[...captures, arg].join(", ")}))`;
     }
     default: {
       return "null";
@@ -3213,7 +3236,8 @@ function js_def(fl: File, k: Name, def: Bend.Def): void {
     return;
   }
   FUEL = FOLD_FUEL;
-  fl = { ...fl, fresh: new Map() };
+  fl = { ...fl, fresh: new Map(), js_names: new Set(), js_depth: 0,
+    js_used: undefined };
   fl.seg.def = k;
   const { live, h } = fun_of(fl, k);
   const loop = loop_of(fl, k);
@@ -3316,8 +3340,8 @@ function js_host(fl: File, k: Name): string {
 export function js_lib(book: Bend.Book, roots: Name[],
   outs: Name[] | null): string {
   const fl = file_book(book, roots, true);
+  fl.js_helpers = [];
   for (const [k, def] of done_defs(fl, (t) => done_live(t) || def_foreign(t))) {
-    memo_gc();
     js_def(fl, k, def);
   }
   const srcs = effect_srcs(fl, ".js", "a foreign def without a .js import: ");
@@ -3333,9 +3357,9 @@ export function js_lib(book: Bend.Book, roots: Name[],
   const jmps = new Map<Name, boolean>();
   const jmp = (k: Name): boolean => k === CLO_APPLY || memo(jmps, k, () =>
     (jmps.set(k, true), [...fl.tails.get(k) ?? []].some(jmp)));
-  const funs = [fl.seg, ...fl.spins].flatMap((f) => seg_text(f.lines, 0))
-    .join("\n").replace(/\x01([^\x02]*)\x02/g, (_, k) => jmp(k) ? "run_loop"
-      : "");
+  const funs = [[fl.seg, ...fl.spins].flatMap((f) => seg_text(f.lines, 0))
+    .join("\n"), ...fl.js_helpers].join("\n")
+    .replace(/\x01([^\x02]*)\x02/g, (_, k) => jmp(k) ? "run_loop" : "");
   return RUNTIME + effs + "// Program\n// =======\n\n"
     + [funs, ...tabs].join("\n") + lib;
 }
