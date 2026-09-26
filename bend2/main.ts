@@ -707,7 +707,9 @@ function cli_report(book: Bend.Book, n0: number, fd: number): void {
       for (const c of t.$ === "ADT" ? t.c : [t]) {
         term_refs(Bend.term_lower(c.T), rs);
       }
-      term_refs(t.$ === "Def" ? t.e : undefined, rs);
+      if (t.$ === "Def" && t.e !== undefined) {
+        term_refs(t.e, rs);
+      }
       for (const r of rs) {
         (uses[r] ??= []).push(k);
         q.push(r);
@@ -727,17 +729,100 @@ function cli_report(book: Bend.Book, n0: number, fd: number): void {
   }
 }
 
-// term_refs adds to out the names a term (a span skipped) refers to.
-function term_refs(tm: unknown, out: Set<string>): void {
-  if (typeof tm === "object" && tm !== null) {
-    const { $, k } = tm as { $?: string; k?: string };
-    if (($ === "Ref" || $ === "ADT") && k !== undefined) {
-      out.add(k);
+// term_refs adds to out the names a term refers to: every Ref and ADT
+// head, reached through the term's own shape. A checked subterm carries
+// its type as the value of a Var, and that type is walked too.
+function term_refs(t: Bend.LTerm | Bend.HTerm | Bend.Patt, out: Set<string>): void {
+  switch (t.$) {
+    case "Ref": {
+      out.add(t.k);
+      return;
     }
-    for (const [f, v] of Object.entries(tm)) {
-      if (f !== "s") {
-        term_refs(v, out);
+    case "ADT": {
+      out.add(t.k);
+      for (const x of t.x) {
+        term_refs(x, out);
       }
+      return;
+    }
+    case "Ctr":
+    case "PCtr": {
+      for (const x of t.x) {
+        term_refs(x, out);
+      }
+      return;
+    }
+    case "Var": {
+      if (t.v !== undefined) {
+        term_refs(t.v, out);
+      }
+      return;
+    }
+    case "Sub": {
+      term_refs(t.v, out);
+      term_refs(t.f, out);
+      return;
+    }
+    case "Let": {
+      for (const x of t.v) {
+        term_refs(x, out);
+      }
+      if (typeof t.f !== "function") {
+        term_refs(t.f, out);
+      }
+      return;
+    }
+    case "All": {
+      term_refs(t.A, out);
+      if (typeof t.B !== "function") {
+        term_refs(t.B, out);
+      }
+      return;
+    }
+    case "Lam": {
+      if (typeof t.f !== "function") {
+        term_refs(t.f, out);
+      }
+      return;
+    }
+    case "Typ": {
+      term_refs(t.g, out);
+      return;
+    }
+    case "Min": {
+      term_refs(t.a, out);
+      term_refs(t.b, out);
+      return;
+    }
+    case "App": {
+      term_refs(t.f, out);
+      term_refs(t.x, out);
+      return;
+    }
+    case "Mat": {
+      term_refs(t.h, out);
+      term_refs(t.m, out);
+      return;
+    }
+    case "Eql": {
+      term_refs(t.a, out);
+      term_refs(t.b, out);
+      term_refs(t.T, out);
+      return;
+    }
+    case "Rwt": {
+      term_refs(t.e, out);
+      term_refs(t.p, out);
+      term_refs(t.f, out);
+      return;
+    }
+    case "Ann": {
+      term_refs(t.x, out);
+      term_refs(t.T, out);
+      return;
+    }
+    default: {
+      return;
     }
   }
 }
