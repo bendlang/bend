@@ -2319,7 +2319,8 @@ function emit_intr(fl: File, it: Intr, m: Spine, ty: HTerm | null): Val {
   const C = it.C as string;
   const out = tpl(C, /\$(\d)[^]*\$\1/.test(C)
     ? ws.map((a) => emit_alias(fl, a, "a")) : ws);
-  const lay = lay_of(fl.book, ty);
+  const lay = lay_of(fl.book, ty ?? tele_unbind(fl.book,
+    (fl.book.tlds[k] as Bend.Def).T).ret);
   return val_new([out], lay.ks.length === 1 ? lay : BOX);
 }
 
