@@ -9,7 +9,7 @@ law main:
 
 def main():
   do IO<U32>:
-    l : Listener <- IO.try(Listener, TCP.listen(19233))
+    l : Listener <- IO.try(Listener, TCP.listen("127.0.0.1", 19233))
     x : Unit <- Listener.close(l)
     p : Unit <- IO.print("closed")
     return 0

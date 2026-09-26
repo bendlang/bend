@@ -1,16 +1,15 @@
 // UDP
 // ===
 
-function udp_bind(port) {
+function udp_bind(host, port) {
+  const at = io_addr(host, Number(port));
+  if (at === null) {
+    return io_fail(22);
+  }
   const sys = io_sys();
   const fd = sys.socket(2, 2, 0);
   if (fd < 0) {
     return io_fail(sys.errno());
-  }
-  const at = io_addr("0.0.0.0", Number(port));
-  if (at === null) {
-    sys.close(fd);
-    return io_fail(22);
   }
   if (sys.bind(fd, sys.ptr(at), 16) < 0
     || sys.fcntl(fd, 4, sys.fcntl(fd, 3, 0) | (sys.mac ? 4 : 0x800)) < 0) {

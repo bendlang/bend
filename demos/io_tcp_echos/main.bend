@@ -62,6 +62,6 @@ def serve(l: Listener) -> IO(Unit):
 
 def main() -> IO(Unit):
   do IO<Unit>:
-    l : Listener <- IO.try(Listener, TCP.listen(7777))
+    l : Listener <- IO.try(Listener, TCP.listen("127.0.0.1", 7777))
     IO.print("echoing on 127.0.0.1:7777")
     serve(l)

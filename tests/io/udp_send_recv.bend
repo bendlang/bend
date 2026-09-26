@@ -119,7 +119,7 @@ def udp_bind_any(tries, port):
     case 1n+t:
       rest = udp_bind_any(t, (port + 1 : U32))
       do IO<Socket & U32>:
-        r : Result<&1, &1, (U32 & String), Socket> <- UDP.bind(port)
+        r : Result<&1, &1, (U32 & String), Socket> <- UDP.bind("127.0.0.1", port)
         udp_retry(port, r, rest)
 
 law main:

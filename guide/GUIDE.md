@@ -367,6 +367,11 @@ answers the command line, less the runtime's own options (a `--` ends them). A
 handle (`File`, `Socket`, `Window`) is an affine, opaque value, so every effect
 on one hands it back beside its result, and no program can forge or reuse one.
 
+`TCP.listen(host, port)` and `UDP.bind(host, port)` bind an IPv4 literal.
+Use `"127.0.0.1"` for a local-only server; `"0.0.0.0"` deliberately exposes
+it on every interface. Invalid addresses and ports above 65535 return
+`Fail` with `EINVAL`.
+
 `Process.run(program, args, input, max_output, timeout_ms)` starts an
 executable directly, with literal arguments rather than a shell. It inherits
 the current directory and environment, writes UTF-8 `input` to its stdin, and

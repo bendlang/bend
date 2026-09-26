@@ -287,7 +287,7 @@ def File.close(file: File) -> IO(Unit):
   import "./effs/file_close.c"
   import "./effs/file_close.js"
 
-def TCP.listen(port: U32) -> IO(Result<&1, &1, U32 & String, Listener>):
+def TCP.listen(host: String, port: U32) -> IO(Result<&1, &1, U32 & String, Listener>):
   import "./effs/tcp_listen.c"
   import "./effs/tcp_listen.js"
 
@@ -316,7 +316,7 @@ def TCP.poll(sock: Socket, max: U32, ms: U32) ->
   import "./effs/tcp_poll.c"
   import "./effs/tcp_poll.js"
 
-def UDP.bind(port: U32) -> IO(Result<&1, &1, U32 & String, Socket>):
+def UDP.bind(host: String, port: U32) -> IO(Result<&1, &1, U32 & String, Socket>):
   import "./effs/udp_bind.c"
   import "./effs/udp_bind.js"
 
