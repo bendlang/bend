@@ -1004,8 +1004,10 @@ export async function book_load(book: Book, file: string, ns: string, seen: Map<
     if (!ok(sub, got.startsWith(lib)) || (hub(ns) && !got.startsWith(lib))) {
       throw bad();
     }
-    al[m[2]] = sub;
+    // one file is one module: a file already loaded keeps the namespace
+    // of its first import, however this path spells it
     await book_load(book, got, sub, seen, sp);
+    al[m[2]] = seen.get(got) ?? sub;
   }
   const n0 = book.order.length;
   parse_book(book, dir, body.join("\n"), ns, al);
