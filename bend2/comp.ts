@@ -206,9 +206,9 @@ const OPERATIONS: Record<string, Intr> = Object.setPrototypeOf({
   ...tpl_ops("f32_", "sqrt exp log log2 log10 sin cos tan asin acos atan"
     + " sinh cosh tanh floor ceil trunc abs:fabs:abs",
     "f32_rewrap((f32)$o(f32_unbox($0)))", "Math.fround(Math.$o($0))"),
-  ...tpl_ops("f32_", "pow atan2",
+  ...tpl_ops("f32_", "pow:pow:f32_pow atan2:atan2:Math.atan2",
     "f32_rewrap((f32)$o(f32_unbox($0), f32_unbox($1)))",
-    "Math.fround(Math.$o($0, $1))"),
+    "Math.fround($o($0, $1))"),
   f32_mod: {
     C:  "f32_rewrap((f32)fmod(f32_unbox($0), f32_unbox($1)))",
     JS: "Math.fround($0 % $1)",
@@ -524,6 +524,10 @@ function f32_show(x) {
     s = String(Number(x.toExponential(p - 1)));
   }
   return s;
+}
+
+function f32_pow(x, y) {
+  return x === 1 || x === -1 && Math.abs(y) === Infinity ? 1 : Math.pow(x, y);
 }
 
 function f32_bits(x) {
