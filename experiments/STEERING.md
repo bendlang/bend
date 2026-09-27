@@ -1,6 +1,8 @@
 # Current compiler experiment strategy
 
-Current authorization: sequential simplification, starting 2026-09-26.
+Current authorization: sequential simplification, starting 2026-09-26; on
+2026-09-27 the user authorizes the [architectural design](../design/phase7/architectural_experiments.md)
+and isolated trials to choose the best direction.
 [Overall design](../design/phase7/compiler_simplification.md).
 Each phase has a design, implementation/validation and report, committed and
 pushed before the next phase begins. There is no renewed historical time budget.
@@ -52,3 +54,15 @@ The interrupted Phase 6 steering is preserved byte-for-byte in the
 [S0 snapshot](../implementation/phase7/s0-evidence/phase6-steering-at-start.txt).
 Its candidates remain unpromoted unless a current phase explicitly adopts and
 validates one. Existing failed provenance/Boolean/cache attempts remain failed.
+
+## Architectural research inside S4
+
+Start P7-A01 checked output, P7-A02 first-order semantic values, and P7-A03 shared
+binding operations independently. The [design](../design/phase7/architectural_experiments.md)
+also records five deferred alternatives. Baseline source/default stays intact.
+Root serializes builds/timing; small standalone modules are checked stage0
+components, while edited full compilers use the checked B1 workflow. Preserve
+unsupported boundaries and failed attempts. First compare actual replacement
+size, independent invariants, semantic controls and operation cost; no invented
+50% savings or automatic promotion. Review each first feasibility slice before
+expanding it. There is no renewed historical multi-hour deadline.

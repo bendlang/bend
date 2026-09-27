@@ -604,3 +604,13 @@ The final controlled S3/S4/S4/S3 development-loop gate takes about 35 seconds
 per fresh checked/focused attempt: paired wall differences −0.71%/+0.72%,
 maximum RSS increase 3.30%. The failed first measurement setup is retained;
 all four actual attempts and runtime/memory guards pass.
+
+## 2026-09-27 — architectural experiment design
+
+The user authorizes recording eight architectural ideas and trying the recommended
+first three to find the best direction. The [prospective design](../design/phase7/architectural_experiments.md)
+starts isolated P7-A01 checked output, P7-A02 semantic values, and P7-A03 binding
+operations inside the still-open S4 milestone. Each hypothesis has its own record
+under phase7. Candidate implementation, correctness, measurement and promotion
+remain separate; no prototype has run and no source saving is claimed. The
+installed 14,667-line compiler is the unchanged comparison control.
