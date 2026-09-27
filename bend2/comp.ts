@@ -3227,6 +3227,53 @@ function js_match(fl: File, x: HTerm, ty: HTerm | null, args: string[]): void {
     js_func(fl, h, null, [...fs, ...args.slice(1)])));
 }
 
+// A reverse loop: a def whose two parameters are a String and an
+// accumulator, emitted as an endless block that returns the
+// accumulator when the string is empty and otherwise prepends one code
+// point of the string to the accumulator while advancing the string
+// past it. Every name is back-referenced, so a def that only looks
+// like this does not match, and nothing else in the file is touched.
+
+const REV_NAME = "([\\w$]+)";
+
+const REV_LOOP = new RegExp(`^function ${REV_NAME}`
+  + `\\(${REV_NAME}, ${REV_NAME}\\) \\{\\nfor \\(;;\\) \\{\\n\\{\\n`
+  + `const ${REV_NAME} = \\2;\\nconst ${REV_NAME} = \\3;\\n`
+  + `if \\(\\4 === ""\\) \\{\\nreturn \\5;\\n\\} else \\{\\n`
+  + `const ${REV_NAME} = \\(\\4\\.codePointAt\\(0\\) > 0xFFFF`
+  + ` \\? \\4\\.slice\\(0, 2\\) : \\4\\[0\\]\\);\\n`
+  + `const ${REV_NAME} = \\(\\4\\.codePointAt\\(0\\) > 0xFFFF`
+  + ` \\? \\4\\.slice\\(2\\) : \\4\\.slice\\(1\\)\\);\\n`
+  + `\\2 = \\7;\\n\\3 = \\(\\6 \\+ \\5\\);\\ncontinue;`
+  + `\\n\\}\\n\\}\\n\\}\\n\\}`);
+
+// js_reverse replaces the def whose emitted lines begin at `at` by the
+// flat Array.from(s).reverse().join("") + acc: the same value over code
+// points, with no rope per character. In JavaScriptCore every + is a
+// rope node, so a reversed string reaches the host as a chain of
+// one-character nodes, all of them alive while the string is. The def
+// gives the precondition -- a lone tail loop whose two live parameters
+// are Strings -- and the emitted lines give the names. Its answer is
+// the defs it replaced, 0 or 1.
+
+function js_reverse(fl: File, k: Name, at: number): number {
+  const { live } = fun_of(fl, k);
+  const loop = loop_of(fl, k);
+  const lines = fl.seg.lines;
+  if (live.length !== 2 || loop.length !== 1 || loop[0] !== k
+    || live.some(([, , A]) => ty_adt(fl.book, A)?.k !== "String")
+    || lines.length !== at + 17) {
+    return 0;
+  }
+  const m = REV_LOOP.exec(lines.slice(at, at + 17).join("\n"));
+  if (m === null) {
+    return 0;
+  }
+  lines.splice(at, 17, `function ${m[1]}(${m[2]}, ${m[3]}) {`,
+    `return Array.from(${m[2]}).reverse().join("") + ${m[3]};`, "}");
+  return 1;
+}
+
 function js_def(fl: File, k: Name, def: Bend.Def): void {
   if (intr_of(fl, k, true) !== undefined) {
     return;
@@ -3250,6 +3297,7 @@ function js_def(fl: File, k: Name, def: Bend.Def): void {
       file_push(fl, `return { $: "$FFI", run: $0eff[${n}].run, need: $0eff[${
         n}].need, args: [${args}], kont: ${xs.at(-1)} };`));
   }
+  const at = fl.seg.lines.length;
   block(fl, `function ${js_sat(k)}(${params.join(", ")}) {`, () => {
     if (loop.length === 0) {
       return js_func(fl, h!, def.T, params);
@@ -3270,6 +3318,7 @@ function js_def(fl: File, k: Name, def: Bend.Def): void {
         });
       }));
   });
+  js_reverse(fl, k, at);
   file_push(fl, "");
 }
 
