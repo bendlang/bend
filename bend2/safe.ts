@@ -1399,21 +1399,35 @@ export function kernel_bin(): string {
   return bin;
 }
 
-// the kernel's verdict on a .bendtt file: [ok, text]. Its output goes
-// to a file, not a pipe: under load, bun's spawnSync returned an empty
-// pipe for a kernel that printed its verdict and exited 0 (4 in 32 gate
-// runs; 0 in 24 with a file)
-function kernel_check(file: string): [boolean, string] {
+// The kernel's verdict on the private elaboration: [ok, text]. Its output
+// goes to a file, not a pipe: under load, bun's spawnSync returned an empty
+// pipe for a kernel that printed its verdict and exited 0.
+function kernel_check(file: string, dir: string): [boolean, string] {
   const env = { ...process.env, LEAN_STACK_SIZE_KB: "4194304" };
-  const log = path.join(os.tmpdir(), "bendtt-" + String(process.pid) + ".out");
-  const fd = fs.openSync(log, "w");
-  const got = child.spawnSync(kernel_bin(), [file], { stdio: ["ignore", fd, fd], env });
-  fs.closeSync(fd);
+  const log = path.join(dir, "kernel.out");
+  const fd = fs.openSync(log, "wx", 0o600);
+  let got: child.SpawnSyncReturns<Buffer>;
+  try {
+    got = child.spawnSync(kernel_bin(), [file], { stdio: ["ignore", fd, fd], env });
+  } finally {
+    fs.closeSync(fd);
+  }
   const text = fs.readFileSync(log, "utf8").trim();
-  fs.unlinkSync(log);
   return text === "" ? [false, "the kernel gave no verdict (status " + String(got.status) + ", signal " + String(got.signal)
     + (got.error === undefined ? "" : ", " + got.error.message) + ")"]
     : [got.status === 0, text];
+}
+
+// Publish next to the source without ever opening an existing output path:
+// rename replaces even a symlink, and the staging file shares its filesystem.
+function safe_publish(out: string, text: string): void {
+  const stage = out + "." + crypto.randomBytes(12).toString("hex") + ".tmp";
+  fs.writeFileSync(stage, text, { flag: "wx", mode: 0o600 });
+  try {
+    fs.renameSync(stage, out);
+  } finally {
+    fs.rmSync(stage, { force: true });
+  }
 }
 
 // -o <out>.bendtt: writes the elaboration of a book bend2 checked to
@@ -1424,15 +1438,25 @@ export function safe_emit(book: Book, out: string): [number, string[]] {
   return [got.n, got.oos.map(([k, why]) => "- " + k + ": " + why + "\n")];
 }
 
-// --safe: elaborates a book bend2 checked to <file>.bendtt, then gives
-// the kernel's verdict on it, and the defs out of its scope with why
+// --safe: the kernel checks a private copy of the elaborated book, then
+// publishes the same text at <file>.bendtt for inspection and diagnostics
 export function safe_check(book: Book, file: string): [boolean, string] {
+  const got = safe_book(book);
   const out = file.replace(/\.bend$/, "") + ".bendtt";
-  const [n, oos] = safe_emit(book, out);
-  if (n === 0) {
-    return [oos.length === 0, "BendTT: " + (oos.length === 0 ? "nothing to check.\n" : "out of scope:\n" + oos.join(""))];
+  const oos = got.oos.map(([k, why]) => "- " + k + ": " + why + "\n");
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "bend-safe-"));
+  try {
+    const source = path.join(dir, "book.bendtt");
+    fs.writeFileSync(source, got.text, { flag: "wx", mode: 0o600 });
+    const verdict = got.n === 0 ? null : kernel_check(source, dir);
+    safe_publish(out, got.text);
+    if (verdict === null) {
+      return [oos.length === 0, "BendTT: " + (oos.length === 0 ? "nothing to check.\n" : "out of scope:\n" + oos.join(""))];
+    }
+    const [ok, text] = verdict;
+    const but = ok && oos.length !== 0 ? ", but " + String(oos.length) + " out of scope:" : "";
+    return [ok, "BendTT: " + (but === "" ? text : text.replace(/\.$/, "") + but) + "\n" + (ok ? oos.join("") : "")];
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
   }
-  const [ok, text] = kernel_check(out);
-  const but = ok && oos.length !== 0 ? ", but " + String(oos.length) + " out of scope:" : "";
-  return [ok, "BendTT: " + (but === "" ? text : text.replace(/\.$/, "") + but) + "\n" + (ok ? oos.join("") : "")];
 }

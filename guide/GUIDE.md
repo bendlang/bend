@@ -324,8 +324,10 @@ any law is open or false, and prints "All terms check." once every law holds.
 bend refuses a `PROOF.bend` that sits beside a `LAWS.bend` without importing it.
 
 `bend PROOF.bend --safe` checks the proofs a second time, with a small kernel
-that has a proof in Lean. It translates the checked file to BendTT, writes it to
-`PROOF.bendtt`, and gives it to the kernel (`-o PROOF.bendtt` only writes it).
+that has a proof in Lean. The kernel reads the BendTT translation from a private
+temporary file, not from the project directory. After the check, Bend atomically
+publishes the same text as `PROOF.bendtt` for inspection, replacing an existing
+symlink rather than following it (`-o PROOF.bendtt` only writes the translation).
 The translation has no proof, so read the `.bendtt` file to confirm a law. A
 foreign def is checked as a model built from its type, not as its C or JS code.
 `@unsafe` defs are out of scope: `--safe` lists what it leaves out, and why.
