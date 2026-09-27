@@ -519,9 +519,22 @@ function f32_show(x) {
     return x < 0 ? "-inf"
       : x === 0 ? "-0" : "inf";
   }
+  // JS rounds a tie up, C to even. They differ only where the tie's digits
+  // read back; then its x = M * 2^e (M odd) has at most 10 digits, E + 1 -
+  // e with E = floor(log10(|x|)), so x * 2^(10 - E) is whole: cut to even.
   let s = "x";
-  for (let p = 1; p <= 9 && Math.fround(Number(s)) !== x; p += 1) {
+  const k = Math.max(10 - Math.floor(Math.log10(Math.abs(x))), 0);
+  for (let p = 1, ok = false; p <= 9 && !ok; p += 1) {
     s = String(Number(x.toExponential(p - 1)));
+    ok = Math.fround(Number(s)) === x;
+    if (ok && Number.isInteger(x * 2 ** k) && /5e/.test(x.toExponential(p))) {
+      const [m, e] = x.toExponential(99).split("e");
+      const d = m.replace(/[-.]/g, "");
+      if (/^50*$/.test(d.slice(p)) && d[p - 1] % 2 === 0) {
+        s = String(Number(m.slice(0, m.indexOf(".") + p) + "e" + e));
+        ok = Math.fround(Number(s)) === x;
+      }
+    }
   }
   return s;
 }
