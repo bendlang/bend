@@ -253,6 +253,14 @@ def File.open(path: String, mode: String) ->
   import "./effs/file_open.c"
   import "./effs/file_open.js"
 
+# path, read-only, below root and never through a symbolic link: a link,
+# a missing name, a directory, an empty, "." or ".." component and a
+# climb out of root all fail. root is taken as given.
+def File.open_under(root: String, path: String) ->
+  IO(Result<&1, &1, U32 & String, File>):
+  import "./effs/file_open_under.c"
+  import "./effs/file_open_under.js"
+
 def File.read(file: File, max: U32) ->
   IO(File & Result<&1, &1, U32 & String, String>):
   import "./effs/file_read.c"
