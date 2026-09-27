@@ -401,7 +401,10 @@ underscores. You can add your own effects the same way. Only the event loop runs
 them, so proofs, termination and the GPU never touch host code. In the other
 direction, a JS file may `import Game from "./game.bend"` (with `bend2/main.ts`
 preloaded) and call every non-IO def, with constructors as `{$: "Name", field:
-value}` and `Nat` as `BigInt`. A value crosses without a copy: an `Array`
+value}` and `Nat` as `BigInt`. A constructor built when its file is the root
+may use a short tag, while another library importing that file uses a qualified
+tag. The typed JS boundary accepts either spelling, converts nested `Nat`
+fields, and rejects an unexpected constructor tag with `TypeError`. An `Array`
 argument is the caller's own array, updated in place, so copy it first if you
 keep it.
 

@@ -3282,7 +3282,8 @@ function js_marshal(fl: File, A: HTerm | null, out: boolean): string {
   }
   const name = "$0m" + fl.spun.size;
   fl.spun.set(key, name);
-  const arms = (book.tlds[t.k] as Bend.ADT).c.flatMap((c) => {
+  const ctors = (book.tlds[t.k] as Bend.ADT).c;
+  const arms = ctors.flatMap((c) => {
     const fs = js_ctr(book, c, t.x).flatMap(([, n, B]) => {
       const f = js_marshal(fl, B, out);
       return f === "" ? [] : [[n, f]];
@@ -3292,12 +3293,25 @@ function js_marshal(fl: File, A: HTerm | null, out: boolean): string {
       `, ${js_key(m)}${f}(v["${m}"])`).join("");
     const end = n === undefined ? "return top[0];"
       : `key = "${n}"; v = v[key]; continue;`;
-    return fs.length === 0 ? []
-      : [`case "${c.k}": at = at[key] = {...v${copy}}; ${end}`];
+    const tag = JSON.stringify(c.k);
+    const short = c.k.slice(c.k.lastIndexOf(".") + 1);
+    const step = (alias: boolean): string => fs.length === 0
+      ? alias ? `at[key] = {...v, $: ${tag}}; ${end}` : end
+      : `at = at[key] = {...v${alias ? `, $: ${tag}` : ""}${copy}}; ${end}`;
+    return [`case ${tag}: ${step(false)}`, ...short === c.k ? []
+      : [`case ${JSON.stringify(short)}: ${step(true)}`]];
   });
+  // A file loaded as the root has short tags; the same file imported by
+  // another root has qualified tags. A typed boundary makes either spelling
+  // local before Nat fields enter the JS lane.
+  const root = ctors.filter((c) => !c.k.includes(".")).map((c) =>
+    `if (typeof v.$ === "string" && v.$.endsWith(${JSON.stringify("." + c.k)
+    })) { v = at[key] = {...v, $: ${JSON.stringify(c.k)}}; continue; }`);
   fl.spins.push({ ...seg_new("", BOX, ["v"]), lines: [`function ${name}(v) {`,
     "const top = [v];", "for (let at = top, key = 0;;) {", "switch (v.$) {",
-    ...arms, "default: at[key] = v; return top[0];", "}", "}", "}", ""] });
+    ...arms, "default:", ...root,
+    `throw new TypeError("unexpected constructor " + String(v.$)
+      + " for " + ${JSON.stringify(t.k)});`, "}", "}", "}", ""] });
   return name;
 }
 
