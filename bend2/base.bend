@@ -283,6 +283,15 @@ def File.write_bytes(file: File, data: List<&2, U32>) ->
   import "./effs/file_write.c"
   import "./effs/file_write.js"
 
+# The file's bytes from off, len of them, onto the socket: the kernel's
+# sendfile on the C lane, so no byte passes through the program; every
+# lane leaves the file's position alone. Done once all len are out; a
+# file that ends first fails with ENODATA after what it had went out.
+def File.sendfile(sock: Socket, file: File, off: U32, len: U32) ->
+  IO(Socket & File & Result<&1, &1, U32 & String, Unit>):
+  import "./effs/file_sendfile.c"
+  import "./effs/file_sendfile.js"
+
 def File.close(file: File) -> IO(Unit):
   import "./effs/file_close.c"
   import "./effs/file_close.js"
