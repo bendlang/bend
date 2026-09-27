@@ -73,6 +73,12 @@
   [self push:2 a:p.x b:p.y c:0 d:0];
 }
 
+- (void)scrollWheel:(NSEvent*)ev {
+  NSPoint p = [self at:ev];
+  [self push:4 a:p.x b:p.y c:(u32)f32_rewrap((f32)ev.scrollingDeltaX)
+    d:(u32)f32_rewrap((f32)ev.scrollingDeltaY)];
+}
+
 - (void)mouseDown:(NSEvent*)ev {
   [self mouse:ev down:YES];
 }

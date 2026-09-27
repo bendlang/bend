@@ -1,16 +1,17 @@
 // Window
 // ======
 
-// An event is five words: kind (0 key, 1 mouse, 2 move, 3 close) and
-// its fields; a frame answers the events pumped since the last one.
+// An event is five words: kind (0 key, 1 mouse, 2 move, 3 close, 4 scroll)
+// and its fields; a frame answers the events pumped since the last one.
 #if defined(__OBJC__) || defined(__linux__)
 
 static Term window_node(Env e, const u32* ev) {
-  static const u32 cids[3] = { CID(Key), CID(Mouse), CID(Move) };
+  static const u32 cids[5] = { CID(Key), CID(Mouse), CID(Move),
+    CID(Close), CID(Scroll) };
   if (ev[0] == 3) {
     return term_pak(CID(Close), 0);
   }
-  u32 n = ev[0] == 1 ? 4 : 2;
+  u32 n = ev[0] == 1 || ev[0] == 4 ? 4 : 2;
   u64 l = heap_alloc(e, cls_fit(n));
   for (u32 j = 0; j < n; j += 1) {
     e.mem[l + j] = ev[1 + j];
@@ -257,7 +258,13 @@ static void window_pump(BendWin* win) {
       window_push(win, 0, window_key(&ev.xkey), ev.type == KeyPress, 0, 0);
     } else if (ev.type == ButtonPress || ev.type == ButtonRelease) {
       u32 b = ev.xbutton.button;
-      if (b >= 1 && b <= 3) {
+      if (ev.type == ButtonPress && b >= 4 && b <= 7) {
+        f32 dx = b == 6 ? -1.0f : b == 7 ? 1.0f : 0.0f;
+        f32 dy = b == 4 ? 1.0f : b == 5 ? -1.0f : 0.0f;
+        window_push(win, 4, window_clip(ev.xbutton.x, w),
+          window_clip(ev.xbutton.y, h), (u32)f32_rewrap(dx),
+          (u32)f32_rewrap(dy));
+      } else if (b >= 1 && b <= 3) {
         window_push(win, 1, window_clip(ev.xbutton.x, w),
           window_clip(ev.xbutton.y, h), b == 1 ? 0 : 4 - b,
           ev.type == ButtonPress);

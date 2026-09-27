@@ -451,7 +451,12 @@ def main() -> IO(Unit):
 
 An `Image` is a quadtree: `Pix{color}` paints a square, and `Qua{tl, tr, bl,
 br}` splits it in four, so a frame is drawn by recursion like everything else,
-in parallel if you want. Events are `Key`, `Mouse`, `Move` and `Close`.
+in parallel if you want. Events are `Key`, `Mouse`, `Move`,
+`Scroll{x: U32, y: U32, dx: F32, dy: F32}` and `Close`. A scroll carries the
+pointer position and signed deltas; fractional trackpad deltas are preserved.
+On X11, wheel buttons 4/5 report `dy` +1/−1 and 6/7 report `dx` −1/+1;
+button releases do not scroll. On macOS the deltas are AppKit's native
+`scrollingDeltaX/Y`, including its precise trackpad values.
 `App.run` opens a window and calls `view` then `tick` once per frame, until
 `tick` answers `None`. Since the state is affine, `view` must hand it back next
 to the image. Underneath are `Window.open`, `Window.frame` and `Window.close`,

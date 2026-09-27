@@ -79,6 +79,7 @@ type Event is Data:
   Key{code: U32, down: Bool}
   Mouse{x: U32, y: U32, button: U32, down: Bool}
   Move{x: U32, y: U32}
+  Scroll{x: U32, y: U32, dx: F32, dy: F32}
   Close{}
 
 type Map<a, -V: Kind(a)> is Kind(a):
