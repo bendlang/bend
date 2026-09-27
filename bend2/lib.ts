@@ -1,4 +1,6 @@
-// The ES module's TypeScript view of Bend values at the JS boundary.
+// Build a Bend book as an ES module and its TypeScript view at the JS boundary.
+import * as fs from "node:fs";
+import * as path from "node:path";
 import * as Bend from "./bend.ts";
 import * as Comp from "./comp.ts";
 
@@ -101,4 +103,27 @@ export function emit(book: Bend.Book, outs: Bend.Name[]): string {
           + `export { $0export${i} as ${k} };`
         : `export declare function ${k}(${params}): ${result};`).join("\n")
     + `\ndeclare const $bend: {\n${props}\n};\nexport default $bend;\n`;
+}
+
+export function names(book: Bend.Book): string[] {
+  return [...new Set(book.order)].filter((k) => {
+    const tld = book.tlds[k];
+    return tld.$ === "Def" && tld.v !== null && tld.b !== true
+      && tld.x === 0 && tld.i === undefined
+      && Comp.io_base(book, tld.T) === null;
+  });
+}
+
+export function declaration(out: string): string {
+  const mjs = out.endsWith(".mjs");
+  return out.slice(0, mjs ? -4 : -3) + (mjs ? ".d.mts" : ".d.ts");
+}
+
+export function write(book: Bend.Book, out: string): void {
+  const exposed = names(book);
+  const js = Comp.js_lib(book, exposed, exposed);
+  const types = emit(book, exposed);
+  fs.mkdirSync(path.dirname(out), { recursive: true });
+  fs.writeFileSync(out, js);
+  fs.writeFileSync(declaration(out), types);
 }

@@ -23,7 +23,7 @@ import type { BunPlugin } from "bun";
 import * as Bend from "./bend.ts";
 import * as Comp from "./comp.ts";
 import * as Safe from "./safe.ts";
-import * as Dts from "./dts.ts";
+import * as Lib from "./lib.ts";
 
 // Main
 // ====
@@ -314,9 +314,7 @@ async function cli_file(args: string[]): Promise<void> {
     }
     const ins = new Set([...seen.keys(), ...Object.values(book.tlds).flatMap((t) =>
       t.$ === "Def" && t.i !== undefined ? t.i.map(path_real) : [])]);
-    const decl = library ? outs[0].slice(0, -(
-      outs[0].endsWith(".mjs") ? 4 : 3))
-      + (outs[0].endsWith(".mjs") ? ".d.mts" : ".d.ts") : "";
+    const decl = library ? Lib.declaration(outs[0]) : "";
     for (const out of library ? [outs[0], decl] : outs) {
       const at = path_real(out);
       if (ins.has(at) || (fs.existsSync(at) && fs.statSync(at).isDirectory())) {
@@ -324,12 +322,7 @@ async function cli_file(args: string[]): Promise<void> {
       }
     }
     if (library) {
-      const exposed = lib_exports(book);
-      const js = Comp.js_lib(book, exposed, exposed);
-      const types = Dts.emit(book, exposed);
-      fs.mkdirSync(path.dirname(outs[0]), { recursive: true });
-      fs.writeFileSync(outs[0], js);
-      fs.writeFileSync(decl, types);
+      Lib.write(book, outs[0]);
       return;
     }
     for (const out of outs) {
@@ -872,20 +865,11 @@ function book_err(e: unknown): string {
 // Load
 // ====
 
-function lib_exports(book: Bend.Book): string[] {
-  return [...new Set(book.order)].filter((k) => {
-    const tld = book.tlds[k];
-    return tld.$ === "Def" && tld.v !== null && tld.b !== true
-      && tld.x === 0 && tld.i === undefined
-      && Comp.io_base(book, tld.T) === null;
-  });
-}
-
 async function load_js(path: string): Promise<string> {
   try {
     const [book, n0] = await book_read(path);
     cli_report(book, n0, 2);
-    const outs = lib_exports(book);
+    const outs = Lib.names(book);
     return Comp.js_lib(book, outs, outs);
   } catch (e) {
     throw new Error(book_err(e));
