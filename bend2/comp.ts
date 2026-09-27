@@ -554,7 +554,28 @@ function f32_from_bits(u) {
 function f32_read(s) {
   const re = /^\s*[+-]?((\d+\.?\d*|\.\d+)(e[+-]?\d+)?|inf(inity)?|nan)$/i;
   const v = Number(s.replace(/inf\w*/i, "Infinity"));
-  return re.test(s) ? {$: "Some", value: Math.fround(v)} : {$: "None"};
+  return re.test(s) ? {$: "Some", value: f32_near(s, v)} : {$: "None"};
+}
+
+// f32_near rounds s as strtof does. Its double v double-rounds only when
+// v is a float midpoint, f + h with g = v + h the other float (2^128 as
+// the float past the largest); then s's own digits pick the side.
+function f32_near(s, v) {
+  const f = Math.fround(v), a = Math.abs(v), fa = Math.abs(f);
+  const h = v - (Number.isFinite(f) ? f : Math.sign(f) * 2 ** 128);
+  const g = Math.abs(v + h);
+  if (h === 0 || h !== h || Math.sign(v) * g - v !== h
+    || Math.fround(g) !== g) {
+    return f;
+  }
+  const [, i, d, e] = /(\d*)\.?(\d*)(?:e([+-]?\d+))?/i
+    .exec(s.trim().replace(/^[+-]/, ""));
+  const k = Number(e ?? 0) - d.length;
+  const t = (n) => 10n ** BigInt(Math.max(n, 0));
+  const l = BigInt(i + d) * t(k) * 2n ** 150n;
+  const r = BigInt(a * 2 ** 150) * t(-k);
+  return l === r ? f
+    : Math.sign(v) * (l > r ? Math.max(fa, g) : Math.min(fa, g));
 }
 
 function char_new(code) {
