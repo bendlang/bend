@@ -278,9 +278,31 @@ static CUdeviceptr window_buf;
 static u64         window_len;
 #endif
 
+// The s x s square of t at (x, y) of the frame: a Qua by quarters,
+// else the color window_pix reads at its corner.
+static void window_sq(Env e, u32* pix, u32 w, u32 h, Term t, u32 s, u32 x,
+  u32 y) {
+  if (x >= w || y >= h) {
+    return;
+  }
+  if (s > 1 && term_tag(t) == TAG_CTR) {
+    u64 l = term_peek(e, t);
+    s /= 2;
+    for (u32 j = 0; j < 4; j += 1) {
+      window_sq(e, pix, w, h, e.mem[l + j], s, x + j % 2 * s, y + j / 2 * s);
+    }
+    return;
+  }
+  u32 c = window_pix(e.mem, t, 0, 0, 0);
+  for (u32 i = y; i < h && i < y + s; i += 1) {
+    for (u32 j = x; j < w && j < x + s; j += 1) {
+      pix[i * w + j] = c;
+    }
+  }
+}
+
 // The frame's pixels: window_dev on the device while the corpus is
-// there (the tree's pages never leave it), else window_pix a pixel at
-// a time.
+// there (the tree's pages never leave it), else window_sq from the root.
 static void window_fill(Env e, u32* pix, u32 w, u32 h, Term image, u32 k) {
 #if BEND_CUDA
   if (io_gpu) {
@@ -308,11 +330,7 @@ static void window_fill(Env e, u32* pix, u32 w, u32 h, Term image, u32 k) {
     return;
   }
 #endif
-  for (u32 y = 0; y < h; y += 1) {
-    for (u32 x = 0; x < w; x += 1) {
-      pix[y * w + x] = window_pix(e.mem, image, k, x, y);
-    }
-  }
+  window_sq(e, pix, w, h, image, 1u << k, 0, 0);
 }
 
 // A frame waits for the next 60 Hz tick, as the Mac's display sync.
