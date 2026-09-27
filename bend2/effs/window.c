@@ -32,7 +32,13 @@ typedef struct {
 
 #endif
 
-#ifdef CID(Window.open)
+#if defined(CID(Window.open)) || defined(CID(Window.open_resizable))
+
+static const char* window_no_display(bool resizable) {
+  return resizable
+    ? "Window.open_resizable: no display (build a native binary with bend <file> -o <out> and run it from a desktop session)"
+    : "Window.open: no display (build a native binary with bend <file> -o <out> and run it from a desktop session)";
+}
 
 #ifdef __OBJC__
 
@@ -91,8 +97,9 @@ typedef struct {
 - (NSPoint)at:(NSEvent*)ev {
   CGSize  size = ((CAMetalLayer*)self.layer).drawableSize;
   NSPoint p    = [self convertPoint:ev.locationInWindow fromView:nil];
-  return NSMakePoint(fmax(0, fmin(floor(p.x), size.width - 1)),
-    fmax(0, fmin(floor(p.y), size.height - 1)));
+  CGFloat scale = self.window.backingScaleFactor;
+  return NSMakePoint(fmax(0, fmin(floor(p.x * scale), size.width - 1)),
+    fmax(0, fmin(floor(p.y * scale), size.height - 1)));
 }
 
 - (void)mouse:(NSEvent*)ev down:(BOOL)down {
@@ -183,12 +190,38 @@ typedef struct {
   return NO;
 }
 
+- (void)resize {
+  if (self.window == nil) {
+    return;
+  }
+  CGFloat scale = self.window.backingScaleFactor;
+  CGSize size = self.bounds.size;
+  u32 w = (u32)fmax(1, fmin(16384, ceil(size.width * scale)));
+  u32 h = (u32)fmax(1, fmin(16384, ceil(size.height * scale)));
+  CAMetalLayer* layer = (CAMetalLayer*)self.layer;
+  layer.contentsScale = scale;
+  if (layer.drawableSize.width != w || layer.drawableSize.height != h) {
+    layer.drawableSize = CGSizeMake(w, h);
+    [self push:CID(Resize) a:w b:h c:0 d:0];
+  }
+}
+
+- (void)windowDidResize:(NSNotification*)note {
+  [self resize];
+}
+
+- (void)windowDidChangeBackingProperties:(NSNotification*)note {
+  CGFloat max = 16384.0 / self.window.backingScaleFactor;
+  self.window.contentMaxSize = NSMakeSize(max, max);
+  [self resize];
+}
+
 @end
 
 static id<MTLDevice> window_dev;
 
-static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
-  const char** why) {
+static u32 window_make(const char* title, u32 w, u32 h, bool resizable,
+  intptr_t* out, const char** why) {
   if (w < 1 || h < 1 || w > 16384 || h > 16384) {
     return EINVAL;
   }
@@ -213,21 +246,35 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
       initWithContentRect:NSMakeRect(0, 0, 1, 1)
       styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskClosable
         | NSWindowStyleMaskMiniaturizable
+        | (resizable ? NSWindowStyleMaskResizable : 0)
       backing:NSBackingStoreBuffered defer:NO];
     win.releasedWhenClosed = NO;
     win.acceptsMouseMovedEvents = YES;
     win.title = [NSString stringWithCString:title
       encoding:NSISOLatin1StringEncoding];
     [win setContentSize:NSMakeSize(w, h)];
+    if (ceil(w * win.backingScaleFactor) > 16384
+      || ceil(h * win.backingScaleFactor) > 16384) {
+      [win close];
+      return EINVAL;
+    }
+    if (resizable) {
+      CGFloat max = 16384.0 / win.backingScaleFactor;
+      win.contentMinSize = NSMakeSize(1, 1);
+      win.contentMaxSize = NSMakeSize(max, max);
+    }
     BendView* view = [[BendView alloc] initWithFrame:win.contentLayoutRect];
+    view.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
     view->evs   = [NSMutableData new];
     view->flags = NSEvent.modifierFlags;
     view.wantsLayer = YES;
     CAMetalLayer* layer = (CAMetalLayer*)view.layer;
+    layer.contentsScale = win.backingScaleFactor;
     layer.device = window_dev;
     layer.pixelFormat = MTLPixelFormatBGRA8Unorm;
     layer.framebufferOnly = NO;
-    layer.drawableSize = CGSizeMake(w, h);
+    layer.drawableSize = CGSizeMake(ceil(w * win.backingScaleFactor),
+      ceil(h * win.backingScaleFactor));
     layer.displaySyncEnabled = YES;
     layer.maximumDrawableCount = 2;
     win.contentView = view;
@@ -243,14 +290,14 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
 
 #elif defined(__linux__)
 
-static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
-  const char** why) {
+static u32 window_make(const char* title, u32 w, u32 h, bool resizable,
+  intptr_t* out, const char** why) {
   if (w < 1 || h < 1 || w > 16384 || h > 16384) {
     return EINVAL;
   }
   Display* dpy = XOpenDisplay(NULL);
   if (dpy == NULL) {
-    *why = "Window.open: no display (build a native binary with bend <file> -o <out> and run it from a desktop session)";
+    *why = window_no_display(resizable);
     return ENOTSUP;
   }
   int scr = DefaultScreen(dpy);
@@ -267,13 +314,15 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
   win->img = XCreateImage(dpy, DefaultVisual(dpy, scr), DefaultDepth(dpy, scr),
     ZPixmap, 0, io_mem(calloc(w * h, 4)), w, h, 32, w * 4);
   win->img->byte_order = LSBFirst;
-  XSizeHints hints = { .flags = PMinSize | PMaxSize, .min_width = w,
-    .min_height = h, .max_width = w, .max_height = h };
+  XSizeHints hints = { .flags = PMinSize | PMaxSize, .min_width = resizable ? 1 : w,
+    .min_height = resizable ? 1 : h, .max_width = resizable ? 16384 : w,
+    .max_height = resizable ? 16384 : h };
   XSetWMNormalHints(dpy, win->win, &hints);
   XSetWMProtocols(dpy, win->win, &win->del, 1);
   XStoreName(dpy, win->win, title);
   XSelectInput(dpy, win->win, KeyPressMask | KeyReleaseMask | ButtonPressMask
-    | ButtonReleaseMask | PointerMotionMask | FocusChangeMask);
+    | ButtonReleaseMask | PointerMotionMask | FocusChangeMask
+    | StructureNotifyMask);
   XMapRaised(dpy, win->win);
   XFlush(dpy);
   *out = (intptr_t)win;
@@ -282,21 +331,21 @@ static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
 
 #else
 
-static u32 window_make(const char* title, u32 w, u32 h, intptr_t* out,
-  const char** why) {
-  *why = "Window.open: no display (build a native binary with bend <file> -o <out> and run it from a desktop session)";
+static u32 window_make(const char* title, u32 w, u32 h, bool resizable,
+  intptr_t* out, const char** why) {
+  *why = window_no_display(resizable);
   return ENOTSUP;
 }
 
 #endif
 
-Term window_open_run(Env e, Term* f, IoWork* w) {
+static Term window_open_with(Env e, Term* f, bool resizable) {
   uint64_t n = 0;
   char* title = io_cstr(e, f[0], &n);
   intptr_t out;
   const char* why = NULL;
   u32 q = io_nul(title, n) ? EILSEQ
-    : window_make(title, (u32)f[1], (u32)f[2], &out, &why);
+    : window_make(title, (u32)f[1], (u32)f[2], resizable, &out, &why);
   free(title);
   if (q != 0) {
     return io_fail(e, q, why);
@@ -304,8 +353,25 @@ Term window_open_run(Env e, Term* f, IoWork* w) {
   return io_done(e, io_hand(out));
 }
 
+#ifdef CID(Window.open)
+Term window_open_run(Env e, Term* f, IoWork* w) {
+  return window_open_with(e, f, false);
+}
+#endif
+
+#ifdef CID(Window.open_resizable)
+Term window_open_resizable_run(Env e, Term* f, IoWork* w) {
+  return window_open_with(e, f, true);
+}
+#endif
+
 static void __attribute__((constructor)) window_open_use(void) {
+#ifdef CID(Window.open)
   io_eff(CID(Window.open), window_open_run, 0);
+#endif
+#ifdef CID(Window.open_resizable)
+  io_eff(CID(Window.open_resizable), window_open_resizable_run, 0);
+#endif
 }
 
 #endif
@@ -556,7 +622,18 @@ static void window_pump(BendWin* win) {
   while (XPending(win->dpy) > 0) {
     XEvent ev;
     XNextEvent(win->dpy, &ev);
-    if (ev.type == KeyPress || ev.type == KeyRelease) {
+    if (ev.type == ConfigureNotify) {
+      int nw = ev.xconfigure.width;
+      int nh = ev.xconfigure.height;
+      if (nw < 1 || nh < 1 || nw > 16384 || nh > 16384) {
+        err_fail("invalid window size");
+      }
+      if ((u32)nw != w || (u32)nh != h) {
+        w = nw;
+        h = nh;
+        window_push(win, CID(Resize), w, h, 0, 0);
+      }
+    } else if (ev.type == KeyPress || ev.type == KeyRelease) {
       window_push(win, CID(Key), window_key(&ev.xkey), ev.type == KeyPress,
         0, 0);
     } else if (ev.type == ButtonPress || ev.type == ButtonRelease) {
@@ -585,6 +662,21 @@ static void window_pump(BendWin* win) {
     } else if (ev.type == ClientMessage
       && (Atom)ev.xclient.data.l[0] == win->del) {
       window_push(win, CID(Close), 0, 0, 0, 0);
+    }
+  }
+  XImage* img = win->img;
+  if (w != (u32)img->width || h != (u32)img->height) {
+    // Every pixel is filled on the next frame; keep the 32-bit ZPixmap.
+    img->data = io_mem(realloc(img->data, (size_t)w * h * 4));
+    img->width = w;
+    img->height = h;
+    img->bytes_per_line = w * 4;
+    if (win->grab) {
+      cx = w / 2;
+      cy = h / 2;
+      XWarpPointer(win->dpy, None, win->win, 0, 0, 0, 0, cx, cy);
+      x = cx;
+      y = cy;
     }
   }
   // grabbed, the frame's motion is one look from the centre
