@@ -1,11 +1,11 @@
 # P7-A01 — Checked terms replace annotation replay
 
-- Owner: research_staging_ir; independent reviewer assigned at result review.
-- Started: 2026-09-27; prospective plan, no outcome yet.
+- Owner: research_staging_ir; independent reviewer: root (independent controls, timing and source-boundary review).
+- Started/completed bounded trial: 2026-09-27; original plan preserved in commit `4b2e4c7`.
 - Objective: a smaller, simpler, more capable Bend compiler with fast iteration.
-- Correctness: unchecked; no prototype result at this design checkpoint.
-- Measurement: not run.
-- Decision: investigate.
+- Correctness: genuine checked B1 and 21 focused controls; 148 direct-output assertions pass.
+- Measurement: serial ABBA: compile preparation 16.85–17.67% faster; check-only 25.39–25.45% slower, RSS +44.74–46.36%.
+- Decision: continue mechanism; reject unconditional Candidate01.
 - Design: [architectural experiments](../../design/phase7/architectural_experiments.md#a01--successful-checking-produces-executable-checked-terms).
 
 ## Claim and cheapest disproof
@@ -28,12 +28,18 @@ correctness, timing, cost accounting and publication gates.
 
 ## Results and review
 
-No run yet. Preserve attempts and counterexamples; report unsupported boundaries
-and replacement infrastructure. No promotion or source saving is credited here.
+Candidate01 adds 23 lines and five helpers; no pass is retired. Direct output
+executes nine program pairs identically. Let/match/rewrite reconstruction and
+template-instance ownership remain unresolved. The next discriminator is output/
+discard policy before allocations, not a global replacement.
+
+[Detailed results](../../implementation/phase7/architecture-evidence/checked-output/report.md).
+[Comparative decision](../../implementation/phase7/architecture-report.md).
 
 ## Preservation
 
-This plan is tracked. Result sources, controls and reports will live under
-`implementation/phase7/architecture-evidence/`; large raw artifacts need a
-verified archive or a complete regeneration recipe with named dependencies.
+Sources, controls and reports are tracked under
+`implementation/phase7/architecture-evidence/`. The shared
+[verified evidence capsule](../../implementation/phase7/architecture-evidence/README.md)
+retains raw attempts, failures and generated outputs.
 

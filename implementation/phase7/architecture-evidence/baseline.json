@@ -1,0 +1,380 @@
+{
+  "commit": "22f6e8e21be5390d50831f9cbe4aab1147ff217d",
+  "upstream": "6018e28ecc67cf1fffc0c20c64b11023474c2df8",
+  "node": "v24.18.0",
+  "releaseVerification": "passed before prototypes; release.mjs --verify",
+  "modulesAndArtifacts": [
+    {
+      "file": "selfhost/src/core/term.bend",
+      "sha256": "4fc40e715ceb59d581b91fb006f84698429e687e1ab86d460fc2d49d878bb80c",
+      "bytes": 8326,
+      "lines": 418
+    },
+    {
+      "file": "selfhost/src/core/index.bend",
+      "sha256": "c3cab805705f5dedcfe65691d4bc5c98710058bf8a62e0c39610ff398cf2872e",
+      "bytes": 9480,
+      "lines": 339
+    },
+    {
+      "file": "selfhost/src/core/normalize.bend",
+      "sha256": "9716a4eed46fae3e0bcd99fb4df3754e89cd2b39d724fc6225d9d11ec5e1b2ab",
+      "bytes": 16209,
+      "lines": 510
+    },
+    {
+      "file": "selfhost/src/core/graph.bend",
+      "sha256": "50ba21e52eb93a9153606f5d620ac2c613127063f294fe962b4c0a836224f8a3",
+      "bytes": 14245,
+      "lines": 475
+    },
+    {
+      "file": "selfhost/src/core/reach.bend",
+      "sha256": "d46a6eed5910cd404ec4603cb735a9d402b1896e702ceb1770efe16344ef992c",
+      "bytes": 3635,
+      "lines": 129
+    },
+    {
+      "file": "selfhost/src/core/pretty.bend",
+      "sha256": "8711e8ec480a194569dade743b570fa964a5b8783249a90cabc445e10e26b53e",
+      "bytes": 14941,
+      "lines": 524
+    },
+    {
+      "file": "selfhost/src/check/quantity.bend",
+      "sha256": "5f5cf65dca94a786691d1246f9b3002074eb9ae9715e387c802dd3c91486258b",
+      "bytes": 3289,
+      "lines": 157
+    },
+    {
+      "file": "selfhost/src/check/kernel.bend",
+      "sha256": "a5a65f57412d0b3a961203a1e0dd5326a5d107ad3d9ff5ca48c0aff756747eeb",
+      "bytes": 33907,
+      "lines": 1152
+    },
+    {
+      "file": "selfhost/src/check/specialize.bend",
+      "sha256": "db583c76fbc41502f500665c69c48bd4aa3ce2fcc30e7192b9dab317c7d7f21b",
+      "bytes": 23704,
+      "lines": 916
+    },
+    {
+      "file": "selfhost/src/check/prefix.bend",
+      "sha256": "96172741f314f801eb20c8d071c8de8c5f3b8f2a8e3312d5f9e6858c4d9a2dac",
+      "bytes": 2851,
+      "lines": 140
+    },
+    {
+      "file": "selfhost/src/check/annotate.bend",
+      "sha256": "05d934d7b0a25cd72b6770436be273ab64ccce8753e4f0f6df9e672164246be6",
+      "bytes": 10649,
+      "lines": 388
+    },
+    {
+      "file": "selfhost/src/front/lexer.bend",
+      "sha256": "aed5103d42d33312f6e5e873ae786646be42f7332f04a80b78ab0cca70d31f31",
+      "bytes": 8357,
+      "lines": 302
+    },
+    {
+      "file": "selfhost/src/front/parser.bend",
+      "sha256": "c2ea3940944434dea9d52c146e998831288b5d4bc1d45e3ce80030bf89c91129",
+      "bytes": 21132,
+      "lines": 606
+    },
+    {
+      "file": "selfhost/src/front/declarations.bend",
+      "sha256": "ea488d9b26663285b66d7a625f9eb1488c872f0f003590ba9b49cae08269a2a7",
+      "bytes": 21153,
+      "lines": 619
+    },
+    {
+      "file": "selfhost/src/front/flatten.bend",
+      "sha256": "0eb3b45ddec363d21e715b491cd19698e4dd6a50b259800edad42dd1e4338392",
+      "bytes": 8364,
+      "lines": 270
+    },
+    {
+      "file": "selfhost/src/front/elaborate.bend",
+      "sha256": "88611afd27cae1af669dfaece8dd8bf2a9d185ec9ab06b576069bb8475fec800",
+      "bytes": 14183,
+      "lines": 469
+    },
+    {
+      "file": "selfhost/src/front/sugar.bend",
+      "sha256": "ce5ef60fada67616142961f07a07c0c2a29283e4b553028480ccf7810687d547",
+      "bytes": 8257,
+      "lines": 302
+    },
+    {
+      "file": "selfhost/src/front/unicode.bend",
+      "sha256": "ca1576b9c9a1992157c98bb66da63ca45aff204c724d902e2e88c5ee87662a51",
+      "bytes": 2775,
+      "lines": 78
+    },
+    {
+      "file": "selfhost/src/front/literals_arrays.bend",
+      "sha256": "6468fe13b93ebb879c81ac8d18e2e99d4de16dabbf7dc0cc6f389e4a95343981",
+      "bytes": 5734,
+      "lines": 197
+    },
+    {
+      "file": "selfhost/src/front/parallel.bend",
+      "sha256": "8e9c25dc74b2976527c722072ab253863ed8839d9b84d7a6549ab7d0105ab8a9",
+      "bytes": 4097,
+      "lines": 144
+    },
+    {
+      "file": "selfhost/src/front/fresh_work.bend",
+      "sha256": "bb91910966d0e82fc1e1c65be12b149056db6e22503f0fad1d560e4900d7a5ee",
+      "bytes": 6978,
+      "lines": 200
+    },
+    {
+      "file": "selfhost/src/front/freshen.bend",
+      "sha256": "26abdc135603675f2ab3dffc3c049a20982500907d8819a3fdfea42ba917136a",
+      "bytes": 1168,
+      "lines": 57
+    },
+    {
+      "file": "selfhost/src/load/paths.bend",
+      "sha256": "6e51e3501ed057ca53b48c3f02506199e2000a5b30fb62aa243843e94d9af877",
+      "bytes": 2127,
+      "lines": 83
+    },
+    {
+      "file": "selfhost/src/front/families.bend",
+      "sha256": "8bf0c69ad09a5d8793f56a5f6f967838857fbf43b8d2f2806521d801a1fd66f0",
+      "bytes": 6289,
+      "lines": 203
+    },
+    {
+      "file": "selfhost/src/front/validate.bend",
+      "sha256": "f6e275e614512e29f6e66103660c500efad0dfa9a2d99821fa57c2d1645abbeb",
+      "bytes": 9588,
+      "lines": 284
+    },
+    {
+      "file": "selfhost/src/load/imports.bend",
+      "sha256": "f9ad12e894937828aea74ccd34750b3b1635943a0037db9656e9b8e514350471",
+      "bytes": 733,
+      "lines": 13
+    },
+    {
+      "file": "selfhost/src/load/graph.bend",
+      "sha256": "6a5ab7cecafed72e49c06fc912127d87c9ccecea9cd0b341eb430ac5bee284bc",
+      "bytes": 14150,
+      "lines": 477
+    },
+    {
+      "file": "selfhost/src/load/seed.bend",
+      "sha256": "b26df24719588df4fc4fd57f143bc35ec92e77e0f849429380a3797fab8077e4",
+      "bytes": 5257,
+      "lines": 160
+    },
+    {
+      "file": "selfhost/src/load/modules.bend",
+      "sha256": "a7fd4c42cd13cc8165cec2a4e9f71f070fb10703910f7780064bd533aaa711fe",
+      "bytes": 8265,
+      "lines": 304
+    },
+    {
+      "file": "selfhost/src/diagnostic/model.bend",
+      "sha256": "dd69096c6fdcd682a45e9536eb6d475061fd285807961ac95a16b5a874358af5",
+      "bytes": 805,
+      "lines": 19
+    },
+    {
+      "file": "selfhost/src/diagnostic/render.bend",
+      "sha256": "21890a0d7db39db143c93ae15a2273d690ca6afe0dd263ac04af8985bcc166be",
+      "bytes": 5198,
+      "lines": 184
+    },
+    {
+      "file": "selfhost/src/diagnostic/trace.bend",
+      "sha256": "a05fdb89e4d2aa38143f849524949bf4e225c4b9eedfebfe998f167caaaf99d0",
+      "bytes": 4681,
+      "lines": 119
+    },
+    {
+      "file": "selfhost/src/diagnostic/produce.bend",
+      "sha256": "9f1bf3e8683941b301649db680b4b7b3017d302651f62817c7b752b9625c5797",
+      "bytes": 8138,
+      "lines": 236
+    },
+    {
+      "file": "selfhost/src/diagnostic/frontend.bend",
+      "sha256": "8727de8ffa6d6fb1022ada1fec7bf53f97d9b696a51666eaa20c22ff16a8f842",
+      "bytes": 8124,
+      "lines": 229
+    },
+    {
+      "file": "selfhost/src/back/js/foreign.bend",
+      "sha256": "e71e6822524c8ccca4b75c38946dab05838623b4f80196d5200c4b620c014599",
+      "bytes": 5295,
+      "lines": 160
+    },
+    {
+      "file": "selfhost/src/back/js/literals.bend",
+      "sha256": "48f687d8a021a8159f54d29c9fa3049df91a968503bd53be9b5efa5ca27a7db0",
+      "bytes": 5004,
+      "lines": 183
+    },
+    {
+      "file": "selfhost/src/back/js/validate.bend",
+      "sha256": "880d8e4095c3689db17b1e11bb5e100e7ef860c11f2828d0fd79ff3f172e4cb8",
+      "bytes": 10001,
+      "lines": 284
+    },
+    {
+      "file": "selfhost/src/back/js/choice.bend",
+      "sha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3",
+      "bytes": 3583,
+      "lines": 97
+    },
+    {
+      "file": "selfhost/src/back/js/projection.bend",
+      "sha256": "f534d7c74f396527a9d3e3a06bececebcf0b68d92400ccf46b8125e82735ef09",
+      "bytes": 2355,
+      "lines": 65
+    },
+    {
+      "file": "selfhost/src/back/js/emit.bend",
+      "sha256": "6d6db9de9c6c41211f545b4867362402ebebe03db05f77c99dbd020ec08ba016",
+      "bytes": 29207,
+      "lines": 951
+    },
+    {
+      "file": "selfhost/src/back/native/ir.bend",
+      "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b",
+      "bytes": 929,
+      "lines": 25
+    },
+    {
+      "file": "selfhost/src/back/native/text.bend",
+      "sha256": "20ca7aa5627b698771340d4a2e944caef9b1d100d0f2478a75a622b43a4d647b",
+      "bytes": 2545,
+      "lines": 101
+    },
+    {
+      "file": "selfhost/src/back/native/identity.bend",
+      "sha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a",
+      "bytes": 2476,
+      "lines": 89
+    },
+    {
+      "file": "selfhost/src/back/native/layout.bend",
+      "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b",
+      "bytes": 135,
+      "lines": 7
+    },
+    {
+      "file": "selfhost/src/back/native/intrinsic.bend",
+      "sha256": "8acf8c4e083b55cc33ef323552963b254ac310c22e7d8b5e3b82253776892ab0",
+      "bytes": 4905,
+      "lines": 29
+    },
+    {
+      "file": "selfhost/src/back/native/tables.bend",
+      "sha256": "26457cbe409162e70805b3ff0ec91946811b219f71bb2d45982663c3299daf54",
+      "bytes": 8584,
+      "lines": 221
+    },
+    {
+      "file": "selfhost/src/back/native/emit.bend",
+      "sha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a",
+      "bytes": 5084,
+      "lines": 111
+    },
+    {
+      "file": "selfhost/src/back/native/erase.bend",
+      "sha256": "56ed6538d90549f7f4cc949201f3ca6fd588a7273ea500dda96d0ce054f10007",
+      "bytes": 3439,
+      "lines": 83
+    },
+    {
+      "file": "selfhost/src/back/native/bridge.bend",
+      "sha256": "d6342724c81278a4907a875128630210147d2e1ba6e90bd0ab1cacd02cdb991d",
+      "bytes": 21509,
+      "lines": 435
+    },
+    {
+      "file": "selfhost/src/back/native/direct.bend",
+      "sha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5",
+      "bytes": 4200,
+      "lines": 88
+    },
+    {
+      "file": "selfhost/src/back/native/pattern.bend",
+      "sha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4",
+      "bytes": 5324,
+      "lines": 141
+    },
+    {
+      "file": "selfhost/src/back/native/show.bend",
+      "sha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d",
+      "bytes": 6723,
+      "lines": 152
+    },
+    {
+      "file": "selfhost/src/back/native/parallel.bend",
+      "sha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722",
+      "bytes": 5003,
+      "lines": 94
+    },
+    {
+      "file": "selfhost/src/back/native/array.bend",
+      "sha256": "4e1d5c9d282ba746ac1e98df470411d477bf1449b5621c3ad413f01e883d9149",
+      "bytes": 1814,
+      "lines": 27
+    },
+    {
+      "file": "selfhost/src/back/native/validate.bend",
+      "sha256": "9684fcb9bb25ff0e822ac11b738a319c1353ed721c6c4d864ed984cde0bfd089",
+      "bytes": 2871,
+      "lines": 62
+    },
+    {
+      "file": "selfhost/src/back/native/foreign.bend",
+      "sha256": "fa71a99ac100dc31a8d6246132fb717f2d8c69f6a7cae71a48a2b960d2c89d61",
+      "bytes": 2987,
+      "lines": 53
+    },
+    {
+      "file": "selfhost/src/back/native/book.bend",
+      "sha256": "0f0e31315a8d9cbf362778aa2887abf3ac23850aafb58b28407cba53a3d352f3",
+      "bytes": 14283,
+      "lines": 316
+    },
+    {
+      "file": "selfhost/src/driver/report.bend",
+      "sha256": "f115aab2d00fc6f71db57a972d919db590a22319cec89e7b6b892efe47959b99",
+      "bytes": 2091,
+      "lines": 82
+    },
+    {
+      "file": "selfhost/src/driver/api.bend",
+      "sha256": "096e60ddf14525fac1f5c94da4de7adac53ea0df7b6eb5e8988e835e92212cbf",
+      "bytes": 2926,
+      "lines": 108
+    },
+    {
+      "file": "selfhost/src/compiler.json",
+      "sha256": "08c4c055006c8564139a88b793aadfe1dc0b6d100b4c3f2b26ccf8005f8d65c7",
+      "bytes": 1956,
+      "lines": 64
+    },
+    {
+      "file": "selfhost/dist/release.json",
+      "sha256": "faf8e69a1e28fc088e9dd3bd370ec0e9812f39a703feb9019219b53f3736bb67",
+      "bytes": 20037,
+      "lines": 600
+    },
+    {
+      "file": "selfhost/dist/typed-api.mjs",
+      "sha256": "9826ac8f2cb2ad17ab07d7a1f3fcefc701c64cd44d3c50333b3410d761d98b7f",
+      "bytes": 1023803,
+      "lines": 19235
+    }
+  ]
+}

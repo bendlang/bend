@@ -614,3 +614,26 @@ operations inside the still-open S4 milestone. Each hypothesis has its own recor
 under phase7. Candidate implementation, correctness, measurement and promotion
 remain separate; no prototype has run and no source saving is claimed. The
 installed 14,667-line compiler is the unchanged comparison control.
+
+## 2026-09-27 — three architectural trials compared
+
+The [comparison report](../implementation/phase7/architecture-report.md) records
+three actual isolated Bend prototypes. A01 checked output passes genuine B1,
+21 focused controls and 148 direct-output assertions; its preparation workload
+takes about 17% less time but check-only costs about 25% more and 45% more peak RSS.
+A02 semantic values reduce substitution-heavy normalization time about 47%, but
+closed constructor data costs 3.415× and median process RSS about 1.95×. Stronger
+controls expose and retain quotation, shape and conversion-demand failures before
+correction. The final selected suite passes 100 controls, but a later All-domain
+witness remains a known demand regression; a codomain probe is inconclusive.
+A03's 965 observations pass, but the runtime generic walker adds 22 lines and
+slows freshening 19–23% and shifting 81–82%.
+
+These are bounded operation measurements, not whole-compiler or TypeScript
+comparisons. None is promoted and no production simplification is credited.
+Checked-output ownership is the best next investigation, beginning with output/
+discard policy before allocations. The installed 14,667-line S4 compiler remains
+byte-identical and passes release verification; 318 strict failures remain the
+previous recorded full-frontend result. Sources, original failed attempts, exact
+artifacts, measurement workers and final decisions are preserved in the
+[shared evidence capsule](../implementation/phase7/architecture-evidence/README.md).

@@ -1,0 +1,1445 @@
+{
+  "kind": "checked-output-slice",
+  "complete": true,
+  "pass": true,
+  "checks": 148,
+  "rows": [
+    {
+      "id": "constructor",
+      "pass": true,
+      "definitions": 2,
+      "program": "On{}\n",
+      "codeSha256": "a3c60e2979a59684130750557948a45deea4ed7e32f67a3f115b7a280786cd35",
+      "directAnnotationCalls": 0
+    },
+    {
+      "id": "identity-application",
+      "pass": true,
+      "definitions": 3,
+      "program": "Off{}\n",
+      "codeSha256": "856a5e66dda9312475112339e3d42a8bebf3470291207622a3a27a5f4ebd156e",
+      "directAnnotationCalls": 0
+    },
+    {
+      "id": "erased-argument",
+      "pass": true,
+      "definitions": 3,
+      "program": "On{}\n",
+      "codeSha256": "bf21e808dd3011378f6e333c40f3bbb120df48108050f81e4cf13d4c4c86e79e",
+      "directAnnotationCalls": 0
+    },
+    {
+      "id": "dependent-application",
+      "pass": true,
+      "definitions": 3,
+      "program": "On{}\n",
+      "codeSha256": "6b1a743f0e963a6aaef7325f30d4416a5894e79dd437e9c2576cef586483c91e",
+      "directAnnotationCalls": 0
+    },
+    {
+      "id": "dependent-constructor-telescope",
+      "pass": true,
+      "definitions": 3,
+      "program": "Box{Off{}}\n",
+      "codeSha256": "21da11a58174cacef5938ece5ad3ed334282f586807c4971c9789333b6f0604d",
+      "directAnnotationCalls": 0
+    },
+    {
+      "id": "two-constructor-fields",
+      "pass": true,
+      "definitions": 3,
+      "program": "Bag{On{}, Off{}}\n",
+      "codeSha256": "6f01021e359a80675ab7d821b6535fed43e20ee65a29d0b12cedd2f677c5d9c2",
+      "directAnnotationCalls": 0
+    },
+    {
+      "id": "higher-order-function-argument",
+      "pass": true,
+      "definitions": 4,
+      "program": "Off{}\n",
+      "codeSha256": "99f70251d868d9df34d4ba68a84db72ec407088b2e098f9862bf19881e76742f",
+      "directAnnotationCalls": 0
+    },
+    {
+      "id": "annotated-beta",
+      "pass": true,
+      "definitions": 2,
+      "program": "On{}\n",
+      "codeSha256": "f8561915cc4f7f2bce4f2759e407135cb09161ac48a1987e581e5d9ba3a7ca5c",
+      "directAnnotationCalls": 0
+    },
+    {
+      "id": "after-existing-template-specialization",
+      "pass": true,
+      "definitions": 4,
+      "program": "On{}\n",
+      "codeSha256": "3843d36c56c5240c5db6dd2940179740629e5097c432f839e707eb1ac0e6b648",
+      "directAnnotationCalls": 0
+    },
+    {
+      "id": "undefined-name",
+      "pass": true,
+      "rejected": "main: undefined name",
+      "exactFailedResults": 1
+    },
+    {
+      "id": "affine-duplicate",
+      "pass": true,
+      "rejected": "dup: affine variable consumed more than allowed",
+      "exactFailedResults": 1
+    },
+    {
+      "id": "constructor-goal",
+      "pass": true,
+      "rejected": "main: constructor requires a datatype goal",
+      "exactFailedResults": 1
+    },
+    {
+      "id": "argument-goal",
+      "pass": true,
+      "rejected": "main: type mismatch",
+      "exactFailedResults": 1
+    },
+    {
+      "id": "first-error",
+      "pass": true,
+      "rejected": "main: undefined name",
+      "exactFailedResults": 1
+    },
+    {
+      "id": "chronological-forward-reference",
+      "pass": true,
+      "rejected": "main: undefined name",
+      "exactFailedResults": 0
+    },
+    {
+      "id": "chronological-law-unfilled-use",
+      "pass": true,
+      "rejected": "main: live use of an unfilled law",
+      "exactFailedResults": 1
+    }
+  ],
+  "boundaries": [
+    {
+      "id": "unsupported-let",
+      "termMatchesAnnotation": false,
+      "directTerm": {
+        "$": "KTerm",
+        "tag": "Ann",
+        "name": "",
+        "id": 0,
+        "quant": 0,
+        "kids": {
+          "$": "Con",
+          "head": {
+            "$": "KTerm",
+            "tag": "Ctr",
+            "name": "On",
+            "id": 0,
+            "quant": 0,
+            "kids": {
+              "$": "Nil"
+            },
+            "removed": {
+              "$": "Nil"
+            }
+          },
+          "tail": {
+            "$": "Con",
+            "head": {
+              "$": "KTerm",
+              "tag": "ADT",
+              "name": "Flag",
+              "id": 0,
+              "quant": 0,
+              "kids": {
+                "$": "Nil"
+              },
+              "removed": {
+                "$": "Nil"
+              }
+            },
+            "tail": {
+              "$": "Nil"
+            }
+          }
+        },
+        "removed": {
+          "$": "Nil"
+        }
+      },
+      "baselineAnnotatedTerm": {
+        "$": "KTerm",
+        "tag": "Ann",
+        "name": "",
+        "id": 0,
+        "quant": 0,
+        "kids": {
+          "$": "Con",
+          "head": {
+            "$": "KTerm",
+            "tag": "Let",
+            "name": "",
+            "id": 0,
+            "quant": 0,
+            "kids": {
+              "$": "Con",
+              "head": {
+                "$": "KTerm",
+                "tag": "Bind",
+                "name": "x",
+                "id": 700,
+                "quant": 1,
+                "kids": {
+                  "$": "Con",
+                  "head": {
+                    "$": "KTerm",
+                    "tag": "Ann",
+                    "name": "",
+                    "id": 0,
+                    "quant": 0,
+                    "kids": {
+                      "$": "Con",
+                      "head": {
+                        "$": "KTerm",
+                        "tag": "Ctr",
+                        "name": "On",
+                        "id": 0,
+                        "quant": 0,
+                        "kids": {
+                          "$": "Nil"
+                        },
+                        "removed": {
+                          "$": "Nil"
+                        }
+                      },
+                      "tail": {
+                        "$": "Con",
+                        "head": {
+                          "$": "KTerm",
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "id": 0,
+                          "quant": 0,
+                          "kids": {
+                            "$": "Nil"
+                          },
+                          "removed": {
+                            "$": "Nil"
+                          }
+                        },
+                        "tail": {
+                          "$": "Nil"
+                        }
+                      }
+                    },
+                    "removed": {
+                      "$": "Nil"
+                    }
+                  },
+                  "tail": {
+                    "$": "Nil"
+                  }
+                },
+                "removed": {
+                  "$": "Nil"
+                }
+              },
+              "tail": {
+                "$": "Con",
+                "head": {
+                  "$": "KTerm",
+                  "tag": "Ann",
+                  "name": "",
+                  "id": 0,
+                  "quant": 0,
+                  "kids": {
+                    "$": "Con",
+                    "head": {
+                      "$": "KTerm",
+                      "tag": "Var",
+                      "name": "x",
+                      "id": 700,
+                      "quant": 0,
+                      "kids": {
+                        "$": "Con",
+                        "head": {
+                          "$": "KTerm",
+                          "tag": "Ann",
+                          "name": "",
+                          "id": 0,
+                          "quant": 0,
+                          "kids": {
+                            "$": "Con",
+                            "head": {
+                              "$": "KTerm",
+                              "tag": "Ctr",
+                              "name": "On",
+                              "id": 0,
+                              "quant": 0,
+                              "kids": {
+                                "$": "Nil"
+                              },
+                              "removed": {
+                                "$": "Nil"
+                              }
+                            },
+                            "tail": {
+                              "$": "Con",
+                              "head": {
+                                "$": "KTerm",
+                                "tag": "ADT",
+                                "name": "Flag",
+                                "id": 0,
+                                "quant": 0,
+                                "kids": {
+                                  "$": "Nil"
+                                },
+                                "removed": {
+                                  "$": "Nil"
+                                }
+                              },
+                              "tail": {
+                                "$": "Nil"
+                              }
+                            }
+                          },
+                          "removed": {
+                            "$": "Nil"
+                          }
+                        },
+                        "tail": {
+                          "$": "Nil"
+                        }
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "tail": {
+                      "$": "Con",
+                      "head": {
+                        "$": "KTerm",
+                        "tag": "ADT",
+                        "name": "Flag",
+                        "id": 0,
+                        "quant": 0,
+                        "kids": {
+                          "$": "Nil"
+                        },
+                        "removed": {
+                          "$": "Nil"
+                        }
+                      },
+                      "tail": {
+                        "$": "Nil"
+                      }
+                    }
+                  },
+                  "removed": {
+                    "$": "Nil"
+                  }
+                },
+                "tail": {
+                  "$": "Nil"
+                }
+              }
+            },
+            "removed": {
+              "$": "Nil"
+            }
+          },
+          "tail": {
+            "$": "Con",
+            "head": {
+              "$": "KTerm",
+              "tag": "ADT",
+              "name": "Flag",
+              "id": 0,
+              "quant": 0,
+              "kids": {
+                "$": "Nil"
+              },
+              "removed": {
+                "$": "Nil"
+              }
+            },
+            "tail": {
+              "$": "Nil"
+            }
+          }
+        },
+        "removed": {
+          "$": "Nil"
+        }
+      },
+      "supported": false,
+      "reason": "Checked children/binder structure not reconstructed by this bounded slice."
+    },
+    {
+      "id": "unsupported-match",
+      "termMatchesAnnotation": false,
+      "directTerm": {
+        "$": "KTerm",
+        "tag": "Ann",
+        "name": "",
+        "id": 0,
+        "quant": 0,
+        "kids": {
+          "$": "Con",
+          "head": {
+            "$": "KTerm",
+            "tag": "App",
+            "name": "",
+            "id": 0,
+            "quant": 0,
+            "kids": {
+              "$": "Con",
+              "head": {
+                "$": "KTerm",
+                "tag": "Ann",
+                "name": "",
+                "id": 0,
+                "quant": 0,
+                "kids": {
+                  "$": "Con",
+                  "head": {
+                    "$": "KTerm",
+                    "tag": "Mat",
+                    "name": "On",
+                    "id": 0,
+                    "quant": 0,
+                    "kids": {
+                      "$": "Con",
+                      "head": {
+                        "$": "KTerm",
+                        "tag": "Ctr",
+                        "name": "Off",
+                        "id": 0,
+                        "quant": 0,
+                        "kids": {
+                          "$": "Nil"
+                        },
+                        "removed": {
+                          "$": "Nil"
+                        }
+                      },
+                      "tail": {
+                        "$": "Con",
+                        "head": {
+                          "$": "KTerm",
+                          "tag": "Mat",
+                          "name": "Off",
+                          "id": 0,
+                          "quant": 0,
+                          "kids": {
+                            "$": "Con",
+                            "head": {
+                              "$": "KTerm",
+                              "tag": "Ctr",
+                              "name": "On",
+                              "id": 0,
+                              "quant": 0,
+                              "kids": {
+                                "$": "Nil"
+                              },
+                              "removed": {
+                                "$": "Nil"
+                              }
+                            },
+                            "tail": {
+                              "$": "Con",
+                              "head": {
+                                "$": "KTerm",
+                                "tag": "Efq",
+                                "name": "",
+                                "id": 0,
+                                "quant": 0,
+                                "kids": {
+                                  "$": "Nil"
+                                },
+                                "removed": {
+                                  "$": "Nil"
+                                }
+                              },
+                              "tail": {
+                                "$": "Nil"
+                              }
+                            }
+                          },
+                          "removed": {
+                            "$": "Nil"
+                          }
+                        },
+                        "tail": {
+                          "$": "Nil"
+                        }
+                      }
+                    },
+                    "removed": {
+                      "$": "Nil"
+                    }
+                  },
+                  "tail": {
+                    "$": "Con",
+                    "head": {
+                      "$": "KTerm",
+                      "tag": "All",
+                      "name": "x",
+                      "id": 701,
+                      "quant": 1,
+                      "kids": {
+                        "$": "Con",
+                        "head": {
+                          "$": "KTerm",
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "id": 0,
+                          "quant": 0,
+                          "kids": {
+                            "$": "Nil"
+                          },
+                          "removed": {
+                            "$": "Nil"
+                          }
+                        },
+                        "tail": {
+                          "$": "Con",
+                          "head": {
+                            "$": "KTerm",
+                            "tag": "ADT",
+                            "name": "Flag",
+                            "id": 0,
+                            "quant": 0,
+                            "kids": {
+                              "$": "Nil"
+                            },
+                            "removed": {
+                              "$": "Nil"
+                            }
+                          },
+                          "tail": {
+                            "$": "Nil"
+                          }
+                        }
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "tail": {
+                      "$": "Nil"
+                    }
+                  }
+                },
+                "removed": {
+                  "$": "Nil"
+                }
+              },
+              "tail": {
+                "$": "Con",
+                "head": {
+                  "$": "KTerm",
+                  "tag": "Ann",
+                  "name": "",
+                  "id": 0,
+                  "quant": 0,
+                  "kids": {
+                    "$": "Con",
+                    "head": {
+                      "$": "KTerm",
+                      "tag": "Ctr",
+                      "name": "On",
+                      "id": 0,
+                      "quant": 0,
+                      "kids": {
+                        "$": "Nil"
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "tail": {
+                      "$": "Con",
+                      "head": {
+                        "$": "KTerm",
+                        "tag": "ADT",
+                        "name": "Flag",
+                        "id": 0,
+                        "quant": 0,
+                        "kids": {
+                          "$": "Nil"
+                        },
+                        "removed": {
+                          "$": "Nil"
+                        }
+                      },
+                      "tail": {
+                        "$": "Nil"
+                      }
+                    }
+                  },
+                  "removed": {
+                    "$": "Nil"
+                  }
+                },
+                "tail": {
+                  "$": "Nil"
+                }
+              }
+            },
+            "removed": {
+              "$": "Nil"
+            }
+          },
+          "tail": {
+            "$": "Con",
+            "head": {
+              "$": "KTerm",
+              "tag": "ADT",
+              "name": "Flag",
+              "id": 0,
+              "quant": 0,
+              "kids": {
+                "$": "Nil"
+              },
+              "removed": {
+                "$": "Nil"
+              }
+            },
+            "tail": {
+              "$": "Nil"
+            }
+          }
+        },
+        "removed": {
+          "$": "Nil"
+        }
+      },
+      "baselineAnnotatedTerm": {
+        "$": "KTerm",
+        "tag": "Ann",
+        "name": "",
+        "id": 0,
+        "quant": 0,
+        "kids": {
+          "$": "Con",
+          "head": {
+            "$": "KTerm",
+            "tag": "App",
+            "name": "",
+            "id": 0,
+            "quant": 0,
+            "kids": {
+              "$": "Con",
+              "head": {
+                "$": "KTerm",
+                "tag": "Ann",
+                "name": "",
+                "id": 0,
+                "quant": 0,
+                "kids": {
+                  "$": "Con",
+                  "head": {
+                    "$": "KTerm",
+                    "tag": "Mat",
+                    "name": "On",
+                    "id": 0,
+                    "quant": 0,
+                    "kids": {
+                      "$": "Con",
+                      "head": {
+                        "$": "KTerm",
+                        "tag": "Ann",
+                        "name": "",
+                        "id": 0,
+                        "quant": 0,
+                        "kids": {
+                          "$": "Con",
+                          "head": {
+                            "$": "KTerm",
+                            "tag": "Ctr",
+                            "name": "Off",
+                            "id": 0,
+                            "quant": 0,
+                            "kids": {
+                              "$": "Nil"
+                            },
+                            "removed": {
+                              "$": "Nil"
+                            }
+                          },
+                          "tail": {
+                            "$": "Con",
+                            "head": {
+                              "$": "KTerm",
+                              "tag": "ADT",
+                              "name": "Flag",
+                              "id": 0,
+                              "quant": 0,
+                              "kids": {
+                                "$": "Nil"
+                              },
+                              "removed": {
+                                "$": "Nil"
+                              }
+                            },
+                            "tail": {
+                              "$": "Nil"
+                            }
+                          }
+                        },
+                        "removed": {
+                          "$": "Nil"
+                        }
+                      },
+                      "tail": {
+                        "$": "Con",
+                        "head": {
+                          "$": "KTerm",
+                          "tag": "Ann",
+                          "name": "",
+                          "id": 0,
+                          "quant": 0,
+                          "kids": {
+                            "$": "Con",
+                            "head": {
+                              "$": "KTerm",
+                              "tag": "Mat",
+                              "name": "Off",
+                              "id": 0,
+                              "quant": 0,
+                              "kids": {
+                                "$": "Con",
+                                "head": {
+                                  "$": "KTerm",
+                                  "tag": "Ann",
+                                  "name": "",
+                                  "id": 0,
+                                  "quant": 0,
+                                  "kids": {
+                                    "$": "Con",
+                                    "head": {
+                                      "$": "KTerm",
+                                      "tag": "Ctr",
+                                      "name": "On",
+                                      "id": 0,
+                                      "quant": 0,
+                                      "kids": {
+                                        "$": "Nil"
+                                      },
+                                      "removed": {
+                                        "$": "Nil"
+                                      }
+                                    },
+                                    "tail": {
+                                      "$": "Con",
+                                      "head": {
+                                        "$": "KTerm",
+                                        "tag": "ADT",
+                                        "name": "Flag",
+                                        "id": 0,
+                                        "quant": 0,
+                                        "kids": {
+                                          "$": "Nil"
+                                        },
+                                        "removed": {
+                                          "$": "Nil"
+                                        }
+                                      },
+                                      "tail": {
+                                        "$": "Nil"
+                                      }
+                                    }
+                                  },
+                                  "removed": {
+                                    "$": "Nil"
+                                  }
+                                },
+                                "tail": {
+                                  "$": "Con",
+                                  "head": {
+                                    "$": "KTerm",
+                                    "tag": "Ann",
+                                    "name": "",
+                                    "id": 0,
+                                    "quant": 0,
+                                    "kids": {
+                                      "$": "Con",
+                                      "head": {
+                                        "$": "KTerm",
+                                        "tag": "Efq",
+                                        "name": "",
+                                        "id": 0,
+                                        "quant": 0,
+                                        "kids": {
+                                          "$": "Nil"
+                                        },
+                                        "removed": {
+                                          "$": "Nil"
+                                        }
+                                      },
+                                      "tail": {
+                                        "$": "Con",
+                                        "head": {
+                                          "$": "KTerm",
+                                          "tag": "All",
+                                          "name": "x",
+                                          "id": 701,
+                                          "quant": 1,
+                                          "kids": {
+                                            "$": "Con",
+                                            "head": {
+                                              "$": "KTerm",
+                                              "tag": "ADT",
+                                              "name": "Flag",
+                                              "id": 0,
+                                              "quant": 0,
+                                              "kids": {
+                                                "$": "Nil"
+                                              },
+                                              "removed": {
+                                                "$": "Con",
+                                                "head": "Off",
+                                                "tail": {
+                                                  "$": "Con",
+                                                  "head": "On",
+                                                  "tail": {
+                                                    "$": "Nil"
+                                                  }
+                                                }
+                                              }
+                                            },
+                                            "tail": {
+                                              "$": "Con",
+                                              "head": {
+                                                "$": "KTerm",
+                                                "tag": "ADT",
+                                                "name": "Flag",
+                                                "id": 0,
+                                                "quant": 0,
+                                                "kids": {
+                                                  "$": "Nil"
+                                                },
+                                                "removed": {
+                                                  "$": "Nil"
+                                                }
+                                              },
+                                              "tail": {
+                                                "$": "Nil"
+                                              }
+                                            }
+                                          },
+                                          "removed": {
+                                            "$": "Nil"
+                                          }
+                                        },
+                                        "tail": {
+                                          "$": "Nil"
+                                        }
+                                      }
+                                    },
+                                    "removed": {
+                                      "$": "Nil"
+                                    }
+                                  },
+                                  "tail": {
+                                    "$": "Nil"
+                                  }
+                                }
+                              },
+                              "removed": {
+                                "$": "Nil"
+                              }
+                            },
+                            "tail": {
+                              "$": "Con",
+                              "head": {
+                                "$": "KTerm",
+                                "tag": "All",
+                                "name": "x",
+                                "id": 701,
+                                "quant": 1,
+                                "kids": {
+                                  "$": "Con",
+                                  "head": {
+                                    "$": "KTerm",
+                                    "tag": "ADT",
+                                    "name": "Flag",
+                                    "id": 0,
+                                    "quant": 0,
+                                    "kids": {
+                                      "$": "Nil"
+                                    },
+                                    "removed": {
+                                      "$": "Con",
+                                      "head": "On",
+                                      "tail": {
+                                        "$": "Nil"
+                                      }
+                                    }
+                                  },
+                                  "tail": {
+                                    "$": "Con",
+                                    "head": {
+                                      "$": "KTerm",
+                                      "tag": "ADT",
+                                      "name": "Flag",
+                                      "id": 0,
+                                      "quant": 0,
+                                      "kids": {
+                                        "$": "Nil"
+                                      },
+                                      "removed": {
+                                        "$": "Nil"
+                                      }
+                                    },
+                                    "tail": {
+                                      "$": "Nil"
+                                    }
+                                  }
+                                },
+                                "removed": {
+                                  "$": "Nil"
+                                }
+                              },
+                              "tail": {
+                                "$": "Nil"
+                              }
+                            }
+                          },
+                          "removed": {
+                            "$": "Nil"
+                          }
+                        },
+                        "tail": {
+                          "$": "Nil"
+                        }
+                      }
+                    },
+                    "removed": {
+                      "$": "Nil"
+                    }
+                  },
+                  "tail": {
+                    "$": "Con",
+                    "head": {
+                      "$": "KTerm",
+                      "tag": "All",
+                      "name": "x",
+                      "id": 701,
+                      "quant": 1,
+                      "kids": {
+                        "$": "Con",
+                        "head": {
+                          "$": "KTerm",
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "id": 0,
+                          "quant": 0,
+                          "kids": {
+                            "$": "Nil"
+                          },
+                          "removed": {
+                            "$": "Nil"
+                          }
+                        },
+                        "tail": {
+                          "$": "Con",
+                          "head": {
+                            "$": "KTerm",
+                            "tag": "ADT",
+                            "name": "Flag",
+                            "id": 0,
+                            "quant": 0,
+                            "kids": {
+                              "$": "Nil"
+                            },
+                            "removed": {
+                              "$": "Nil"
+                            }
+                          },
+                          "tail": {
+                            "$": "Nil"
+                          }
+                        }
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "tail": {
+                      "$": "Nil"
+                    }
+                  }
+                },
+                "removed": {
+                  "$": "Nil"
+                }
+              },
+              "tail": {
+                "$": "Con",
+                "head": {
+                  "$": "KTerm",
+                  "tag": "Ann",
+                  "name": "",
+                  "id": 0,
+                  "quant": 0,
+                  "kids": {
+                    "$": "Con",
+                    "head": {
+                      "$": "KTerm",
+                      "tag": "Ctr",
+                      "name": "On",
+                      "id": 0,
+                      "quant": 0,
+                      "kids": {
+                        "$": "Nil"
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "tail": {
+                      "$": "Con",
+                      "head": {
+                        "$": "KTerm",
+                        "tag": "ADT",
+                        "name": "Flag",
+                        "id": 0,
+                        "quant": 0,
+                        "kids": {
+                          "$": "Nil"
+                        },
+                        "removed": {
+                          "$": "Nil"
+                        }
+                      },
+                      "tail": {
+                        "$": "Nil"
+                      }
+                    }
+                  },
+                  "removed": {
+                    "$": "Nil"
+                  }
+                },
+                "tail": {
+                  "$": "Nil"
+                }
+              }
+            },
+            "removed": {
+              "$": "Nil"
+            }
+          },
+          "tail": {
+            "$": "Con",
+            "head": {
+              "$": "KTerm",
+              "tag": "ADT",
+              "name": "Flag",
+              "id": 0,
+              "quant": 0,
+              "kids": {
+                "$": "Nil"
+              },
+              "removed": {
+                "$": "Nil"
+              }
+            },
+            "tail": {
+              "$": "Nil"
+            }
+          }
+        },
+        "removed": {
+          "$": "Nil"
+        }
+      },
+      "supported": false,
+      "reason": "Checked children/binder structure not reconstructed by this bounded slice."
+    },
+    {
+      "id": "unsupported-template-before-specialization",
+      "termMatchesAnnotation": true,
+      "directTerm": {
+        "$": "KTerm",
+        "tag": "Ann",
+        "name": "",
+        "id": 0,
+        "quant": 0,
+        "kids": {
+          "$": "Con",
+          "head": {
+            "$": "KTerm",
+            "tag": "App",
+            "name": "",
+            "id": 0,
+            "quant": 0,
+            "kids": {
+              "$": "Con",
+              "head": {
+                "$": "KTerm",
+                "tag": "Ann",
+                "name": "",
+                "id": 0,
+                "quant": 0,
+                "kids": {
+                  "$": "Con",
+                  "head": {
+                    "$": "KTerm",
+                    "tag": "Ref",
+                    "name": "choose",
+                    "id": 0,
+                    "quant": 0,
+                    "kids": {
+                      "$": "Nil"
+                    },
+                    "removed": {
+                      "$": "Nil"
+                    }
+                  },
+                  "tail": {
+                    "$": "Con",
+                    "head": {
+                      "$": "KTerm",
+                      "tag": "All",
+                      "name": "x",
+                      "id": 500,
+                      "quant": 0,
+                      "kids": {
+                        "$": "Con",
+                        "head": {
+                          "$": "KTerm",
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "id": 0,
+                          "quant": 0,
+                          "kids": {
+                            "$": "Nil"
+                          },
+                          "removed": {
+                            "$": "Nil"
+                          }
+                        },
+                        "tail": {
+                          "$": "Con",
+                          "head": {
+                            "$": "KTerm",
+                            "tag": "ADT",
+                            "name": "Flag",
+                            "id": 0,
+                            "quant": 0,
+                            "kids": {
+                              "$": "Nil"
+                            },
+                            "removed": {
+                              "$": "Nil"
+                            }
+                          },
+                          "tail": {
+                            "$": "Nil"
+                          }
+                        }
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "tail": {
+                      "$": "Nil"
+                    }
+                  }
+                },
+                "removed": {
+                  "$": "Nil"
+                }
+              },
+              "tail": {
+                "$": "Con",
+                "head": {
+                  "$": "KTerm",
+                  "tag": "Ann",
+                  "name": "",
+                  "id": 0,
+                  "quant": 0,
+                  "kids": {
+                    "$": "Con",
+                    "head": {
+                      "$": "KTerm",
+                      "tag": "Ctr",
+                      "name": "On",
+                      "id": 0,
+                      "quant": 0,
+                      "kids": {
+                        "$": "Nil"
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "tail": {
+                      "$": "Con",
+                      "head": {
+                        "$": "KTerm",
+                        "tag": "ADT",
+                        "name": "Flag",
+                        "id": 0,
+                        "quant": 0,
+                        "kids": {
+                          "$": "Nil"
+                        },
+                        "removed": {
+                          "$": "Nil"
+                        }
+                      },
+                      "tail": {
+                        "$": "Nil"
+                      }
+                    }
+                  },
+                  "removed": {
+                    "$": "Nil"
+                  }
+                },
+                "tail": {
+                  "$": "Nil"
+                }
+              }
+            },
+            "removed": {
+              "$": "Nil"
+            }
+          },
+          "tail": {
+            "$": "Con",
+            "head": {
+              "$": "KTerm",
+              "tag": "ADT",
+              "name": "Flag",
+              "id": 0,
+              "quant": 0,
+              "kids": {
+                "$": "Nil"
+              },
+              "removed": {
+                "$": "Nil"
+              }
+            },
+            "tail": {
+              "$": "Nil"
+            }
+          }
+        },
+        "removed": {
+          "$": "Nil"
+        }
+      },
+      "baselineAnnotatedTerm": {
+        "$": "KTerm",
+        "tag": "Ann",
+        "name": "",
+        "id": 0,
+        "quant": 0,
+        "kids": {
+          "$": "Con",
+          "head": {
+            "$": "KTerm",
+            "tag": "App",
+            "name": "",
+            "id": 0,
+            "quant": 0,
+            "kids": {
+              "$": "Con",
+              "head": {
+                "$": "KTerm",
+                "tag": "Ann",
+                "name": "",
+                "id": 0,
+                "quant": 0,
+                "kids": {
+                  "$": "Con",
+                  "head": {
+                    "$": "KTerm",
+                    "tag": "Ref",
+                    "name": "choose",
+                    "id": 0,
+                    "quant": 0,
+                    "kids": {
+                      "$": "Nil"
+                    },
+                    "removed": {
+                      "$": "Nil"
+                    }
+                  },
+                  "tail": {
+                    "$": "Con",
+                    "head": {
+                      "$": "KTerm",
+                      "tag": "All",
+                      "name": "x",
+                      "id": 500,
+                      "quant": 0,
+                      "kids": {
+                        "$": "Con",
+                        "head": {
+                          "$": "KTerm",
+                          "tag": "ADT",
+                          "name": "Flag",
+                          "id": 0,
+                          "quant": 0,
+                          "kids": {
+                            "$": "Nil"
+                          },
+                          "removed": {
+                            "$": "Nil"
+                          }
+                        },
+                        "tail": {
+                          "$": "Con",
+                          "head": {
+                            "$": "KTerm",
+                            "tag": "ADT",
+                            "name": "Flag",
+                            "id": 0,
+                            "quant": 0,
+                            "kids": {
+                              "$": "Nil"
+                            },
+                            "removed": {
+                              "$": "Nil"
+                            }
+                          },
+                          "tail": {
+                            "$": "Nil"
+                          }
+                        }
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "tail": {
+                      "$": "Nil"
+                    }
+                  }
+                },
+                "removed": {
+                  "$": "Nil"
+                }
+              },
+              "tail": {
+                "$": "Con",
+                "head": {
+                  "$": "KTerm",
+                  "tag": "Ann",
+                  "name": "",
+                  "id": 0,
+                  "quant": 0,
+                  "kids": {
+                    "$": "Con",
+                    "head": {
+                      "$": "KTerm",
+                      "tag": "Ctr",
+                      "name": "On",
+                      "id": 0,
+                      "quant": 0,
+                      "kids": {
+                        "$": "Nil"
+                      },
+                      "removed": {
+                        "$": "Nil"
+                      }
+                    },
+                    "tail": {
+                      "$": "Con",
+                      "head": {
+                        "$": "KTerm",
+                        "tag": "ADT",
+                        "name": "Flag",
+                        "id": 0,
+                        "quant": 0,
+                        "kids": {
+                          "$": "Nil"
+                        },
+                        "removed": {
+                          "$": "Nil"
+                        }
+                      },
+                      "tail": {
+                        "$": "Nil"
+                      }
+                    }
+                  },
+                  "removed": {
+                    "$": "Nil"
+                  }
+                },
+                "tail": {
+                  "$": "Nil"
+                }
+              }
+            },
+            "removed": {
+              "$": "Nil"
+            }
+          },
+          "tail": {
+            "$": "Con",
+            "head": {
+              "$": "KTerm",
+              "tag": "ADT",
+              "name": "Flag",
+              "id": 0,
+              "quant": 0,
+              "kids": {
+                "$": "Nil"
+              },
+              "removed": {
+                "$": "Nil"
+              }
+            },
+            "tail": {
+              "$": "Nil"
+            }
+          }
+        },
+        "removed": {
+          "$": "Nil"
+        }
+      },
+      "supported": false,
+      "reason": "No instance book is produced; existing specialization still required."
+    }
+  ],
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b02/api.mjs",
+      "sha256": "f201bdea7ea4041483b40704f622703945858e981c404a4d7e50979b74370110"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-attempt-01/api.mjs",
+      "sha256": "5efa1b35c7b3585731fc0937fcb26e3a50a1af3ffcb983bd52a83cdeaebf245b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime.mjs",
+      "sha256": "26f5eee2f54b194b64f768df6ff505c67bf7a5df2159aa06caf53ecba54e910b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase7/architecture-evidence/checked-output/controls.mjs",
+      "sha256": "b9d1dabbd384ba17b8ceae77e300a5e73d0395458c11a266b25bf1348cbc7974"
+    }
+  ],
+  "scope": "Successful Ref/Var/App/Lam/Ctr/Ann checked outputs consumed by unchanged JavaScript backend; chronological validation stays separate. No specialization retirement or performance claim.",
+  "exposures": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-controls-01/baseline-exposed.mjs",
+      "sha256": "f390b3f187999f5cb0b14bdb08fe139f5b9462dedb42b414e6a2c6d393b9250c"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-controls-01/candidate-exposed.mjs",
+      "sha256": "7b83ef46d9d8cd63df50ca372279cd25a5ec5a3827869bb4fc5362b1171b6432"
+    }
+  ]
+}

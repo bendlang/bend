@@ -10,9 +10,9 @@ node cli.mjs tests/conformance/typed-smoke/base-u32.bend --run
 npm run build
 ```
 
-The default uses the [smaller S3 source](../implementation/phase7/s3-report.md),
+The default uses the [smaller S4 source](../implementation/phase7/s4-report.md),
 with guarded native string equality, shared provenance and one authoritative
-structured checker result. The compiler is 15,687 lines, down 822 from the
+structured checker result. The compiler is 14,667 lines, down 1,842 from the
 simplification baseline. Fresh checked/component gates and exact preservation
 of all 2,756 frontend observations validate this release.
 Its [release manifest](dist/release.json) binds source, API, Base,
@@ -29,8 +29,14 @@ measures 60.25s for pinned TypeScript and 363.39s for the Phase 5 optimized comp
 and [final artifact frontend gate](../implementation/phase5/final-artifact-frontend.md)
 provide separate reproduction and equivalence evidence.
 That fixed-point evidence belongs to the pre-retirement all-definition source;
-S3 has fresh checked/component/full frontend preservation gates, not a new full
-fixed point. These historical full-source timings are not a new S3 measurement.
+S4 B02 has fresh checked/component/frontend-preservation gates; the S4 report
+separately identifies A02's fixed-point evidence. These historical full-source
+timings are not a new S4 measurement.
+
+The [architectural trial report](../implementation/phase7/architecture-report.md)
+compares checked output, semantic values and shared binding traversal. Their
+sources, controls and failed attempts are preserved as research artifacts. None
+is installed; checked-output ownership is the recommended next investigation.
 
 Historical reports apply to their recorded artifacts. The
 [experiment ledger](../experiments/ledger.md), [current strategy](../experiments/STEERING.md)

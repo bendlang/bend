@@ -60,6 +60,14 @@ reductions while preserving the language and backend targets. It defines
 measurements and validation gates. S0–S3 are complete under their recorded scopes;
 the 50% and 75% milestones remain unachieved.
 
+The [architectural experiment design](design/phase7/architectural_experiments.md)
+records eight ways to reduce compiler complexity. The
+[first three trials](implementation/phase7/architecture-report.md) favor retaining
+checked output as the next investigation; semantic values show workload-dependent
+cost, and the shared binding walker is larger and slower. These are isolated
+prototypes with preserved counterexamples and measurements; the installed
+compiler remains the validated S4 release.
+
 ## Bend runs FAST
 
 **Target:** be as fast as C on the CPU, as fast as CUDA on the GPU. **Status:**

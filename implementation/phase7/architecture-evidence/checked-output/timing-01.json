@@ -1,0 +1,498 @@
+{
+  "kind": "checked-output-bounded-cost",
+  "complete": true,
+  "pass": true,
+  "scope": "Repeated checking of one successful immutable definition with 128 nested identity calls; compile lane includes baseline annotation versus direct candidate output; excludes loading, parsing, full-book chronology, backend emission and process startup from request times.",
+  "protocol": {
+    "cpu": 0,
+    "workerOrder": [
+      "A",
+      "B",
+      "B",
+      "A"
+    ],
+    "lanes": [
+      "check",
+      "compile"
+    ],
+    "warmBatches": 3,
+    "measuredBatches": 7,
+    "requestsPerBatch": 32,
+    "nestedApplications": 128
+  },
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b02/api.mjs",
+      "sha256": "f201bdea7ea4041483b40704f622703945858e981c404a4d7e50979b74370110"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-attempt-01/api.mjs",
+      "sha256": "5efa1b35c7b3585731fc0937fcb26e3a50a1af3ffcb983bd52a83cdeaebf245b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime.mjs",
+      "sha256": "26f5eee2f54b194b64f768df6ff505c67bf7a5df2159aa06caf53ecba54e910b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase7/architecture-evidence/checked-output/timing.mjs",
+      "sha256": "89ff0dc6d91ebec0055386a8592bb9f422f61ca425690665009a2af880ffa75b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/timing-worker.mjs",
+      "sha256": "9fb9d12f78dd53bfcf31a1d854667ae66db2ac09dd6e8a957cecba482679b12d"
+    }
+  ],
+  "workers": [
+    {
+      "lane": "check",
+      "variant": "A",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=4096",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/timing-worker.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/config.json",
+        "A",
+        "check",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/check-0-A.json"
+      ],
+      "status": 0,
+      "signal": null,
+      "stdout": "{\"pass\":true,\"variant\":\"A\",\"lane\":\"check\",\"maxRssKiB\":147452,\"milliseconds\":[207.64408400000002,206.589064,206.01367199999981,206.575554,206.23921699999983,204.69259599999987,205.301512]}\n",
+      "stderr": "",
+      "processMilliseconds": 2978.8264440000003,
+      "result": {
+        "pass": true,
+        "variant": "A",
+        "lane": "check",
+        "milliseconds": [
+          207.64408400000002,
+          206.589064,
+          206.01367199999981,
+          206.575554,
+          206.23921699999983,
+          204.69259599999987,
+          205.301512
+        ],
+        "requestsPerBatch": 32,
+        "warmBatches": 3,
+        "measuredBatches": 7,
+        "resultSha256": "d7ad5915583d3b83f3b38c2a90dbe61b03f680af4269de59551c2bf0f2afc90e",
+        "maxRssKiB": 147452,
+        "heapUsed": 21797136,
+        "node": "v24.18.0",
+        "affinity": "Cpus_allowed_list:\t0",
+        "apiSha256": "f390b3f187999f5cb0b14bdb08fe139f5b9462dedb42b414e6a2c6d393b9250c",
+        "fixtureSha256": "332e859e06e95ec8dd2b5a862198a526a118490219c4e64e3efc8aedc78581de",
+        "workerSha256": "9fb9d12f78dd53bfcf31a1d854667ae66db2ac09dd6e8a957cecba482679b12d"
+      }
+    },
+    {
+      "lane": "check",
+      "variant": "B",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=4096",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/timing-worker.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/config.json",
+        "B",
+        "check",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/check-1-B.json"
+      ],
+      "status": 0,
+      "signal": null,
+      "stdout": "{\"pass\":true,\"variant\":\"B\",\"lane\":\"check\",\"maxRssKiB\":215808,\"milliseconds\":[259.3277069999999,258.73516100000006,278.5367070000002,259.6374189999997,252.34035200000017,239.95305199999984,239.67327099999966]}\n",
+      "stderr": "",
+      "processMilliseconds": 3621.4023629999997,
+      "result": {
+        "pass": true,
+        "variant": "B",
+        "lane": "check",
+        "milliseconds": [
+          259.3277069999999,
+          258.73516100000006,
+          278.5367070000002,
+          259.6374189999997,
+          252.34035200000017,
+          239.95305199999984,
+          239.67327099999966
+        ],
+        "requestsPerBatch": 32,
+        "warmBatches": 3,
+        "measuredBatches": 7,
+        "resultSha256": "d7ad5915583d3b83f3b38c2a90dbe61b03f680af4269de59551c2bf0f2afc90e",
+        "maxRssKiB": 215808,
+        "heapUsed": 72991224,
+        "node": "v24.18.0",
+        "affinity": "Cpus_allowed_list:\t0",
+        "apiSha256": "7b83ef46d9d8cd63df50ca372279cd25a5ec5a3827869bb4fc5362b1171b6432",
+        "fixtureSha256": "332e859e06e95ec8dd2b5a862198a526a118490219c4e64e3efc8aedc78581de",
+        "workerSha256": "9fb9d12f78dd53bfcf31a1d854667ae66db2ac09dd6e8a957cecba482679b12d"
+      }
+    },
+    {
+      "lane": "check",
+      "variant": "B",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=4096",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/timing-worker.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/config.json",
+        "B",
+        "check",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/check-2-B.json"
+      ],
+      "status": 0,
+      "signal": null,
+      "stdout": "{\"pass\":true,\"variant\":\"B\",\"lane\":\"check\",\"maxRssKiB\":214892,\"milliseconds\":[258.69516299999987,260.2261100000003,280.4205240000001,258.7429830000001,252.77606000000014,242.47555399999965,241.4388899999999]}\n",
+      "stderr": "",
+      "processMilliseconds": 3607.173593999999,
+      "result": {
+        "pass": true,
+        "variant": "B",
+        "lane": "check",
+        "milliseconds": [
+          258.69516299999987,
+          260.2261100000003,
+          280.4205240000001,
+          258.7429830000001,
+          252.77606000000014,
+          242.47555399999965,
+          241.4388899999999
+        ],
+        "requestsPerBatch": 32,
+        "warmBatches": 3,
+        "measuredBatches": 7,
+        "resultSha256": "d7ad5915583d3b83f3b38c2a90dbe61b03f680af4269de59551c2bf0f2afc90e",
+        "maxRssKiB": 214892,
+        "heapUsed": 72991296,
+        "node": "v24.18.0",
+        "affinity": "Cpus_allowed_list:\t0",
+        "apiSha256": "7b83ef46d9d8cd63df50ca372279cd25a5ec5a3827869bb4fc5362b1171b6432",
+        "fixtureSha256": "332e859e06e95ec8dd2b5a862198a526a118490219c4e64e3efc8aedc78581de",
+        "workerSha256": "9fb9d12f78dd53bfcf31a1d854667ae66db2ac09dd6e8a957cecba482679b12d"
+      }
+    },
+    {
+      "lane": "check",
+      "variant": "A",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=4096",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/timing-worker.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/config.json",
+        "A",
+        "check",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/check-3-A.json"
+      ],
+      "status": 0,
+      "signal": null,
+      "stdout": "{\"pass\":true,\"variant\":\"A\",\"lane\":\"check\",\"maxRssKiB\":148468,\"milliseconds\":[207.874638,206.49727299999995,205.8192919999999,205.771213,206.820424,206.30963199999997,204.98152899999968]}\n",
+      "stderr": "",
+      "processMilliseconds": 2978.932234,
+      "result": {
+        "pass": true,
+        "variant": "A",
+        "lane": "check",
+        "milliseconds": [
+          207.874638,
+          206.49727299999995,
+          205.8192919999999,
+          205.771213,
+          206.820424,
+          206.30963199999997,
+          204.98152899999968
+        ],
+        "requestsPerBatch": 32,
+        "warmBatches": 3,
+        "measuredBatches": 7,
+        "resultSha256": "d7ad5915583d3b83f3b38c2a90dbe61b03f680af4269de59551c2bf0f2afc90e",
+        "maxRssKiB": 148468,
+        "heapUsed": 21797680,
+        "node": "v24.18.0",
+        "affinity": "Cpus_allowed_list:\t0",
+        "apiSha256": "f390b3f187999f5cb0b14bdb08fe139f5b9462dedb42b414e6a2c6d393b9250c",
+        "fixtureSha256": "332e859e06e95ec8dd2b5a862198a526a118490219c4e64e3efc8aedc78581de",
+        "workerSha256": "9fb9d12f78dd53bfcf31a1d854667ae66db2ac09dd6e8a957cecba482679b12d"
+      }
+    },
+    {
+      "lane": "compile",
+      "variant": "A",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=4096",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/timing-worker.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/config.json",
+        "A",
+        "compile",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/compile-0-A.json"
+      ],
+      "status": 0,
+      "signal": null,
+      "stdout": "{\"pass\":true,\"variant\":\"A\",\"lane\":\"compile\",\"maxRssKiB\":216468,\"milliseconds\":[321.7039920000002,309.4681419999997,368.7658220000003,306.05444499999976,327.7982710000001,300.8864440000002,313.73837499999945]}\n",
+      "stderr": "",
+      "processMilliseconds": 4272.786974000001,
+      "result": {
+        "pass": true,
+        "variant": "A",
+        "lane": "compile",
+        "milliseconds": [
+          321.7039920000002,
+          309.4681419999997,
+          368.7658220000003,
+          306.05444499999976,
+          327.7982710000001,
+          300.8864440000002,
+          313.73837499999945
+        ],
+        "requestsPerBatch": 32,
+        "warmBatches": 3,
+        "measuredBatches": 7,
+        "resultSha256": "abe069f40495803f16b718ad014bafede625f17e5abbb685290d3aad4afc49c6",
+        "maxRssKiB": 216468,
+        "heapUsed": 12854552,
+        "node": "v24.18.0",
+        "affinity": "Cpus_allowed_list:\t0",
+        "apiSha256": "f390b3f187999f5cb0b14bdb08fe139f5b9462dedb42b414e6a2c6d393b9250c",
+        "fixtureSha256": "332e859e06e95ec8dd2b5a862198a526a118490219c4e64e3efc8aedc78581de",
+        "workerSha256": "9fb9d12f78dd53bfcf31a1d854667ae66db2ac09dd6e8a957cecba482679b12d"
+      }
+    },
+    {
+      "lane": "compile",
+      "variant": "B",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=4096",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/timing-worker.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/config.json",
+        "B",
+        "compile",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/compile-1-B.json"
+      ],
+      "status": 0,
+      "signal": null,
+      "stdout": "{\"pass\":true,\"variant\":\"B\",\"lane\":\"compile\",\"maxRssKiB\":215420,\"milliseconds\":[259.46612200000004,258.9534800000001,279.66214200000013,258.2975040000001,252.3597289999998,240.90713899999992,240.20586400000002]}\n",
+      "stderr": "",
+      "processMilliseconds": 3632.030426000001,
+      "result": {
+        "pass": true,
+        "variant": "B",
+        "lane": "compile",
+        "milliseconds": [
+          259.46612200000004,
+          258.9534800000001,
+          279.66214200000013,
+          258.2975040000001,
+          252.3597289999998,
+          240.90713899999992,
+          240.20586400000002
+        ],
+        "requestsPerBatch": 32,
+        "warmBatches": 3,
+        "measuredBatches": 7,
+        "resultSha256": "abe069f40495803f16b718ad014bafede625f17e5abbb685290d3aad4afc49c6",
+        "maxRssKiB": 215420,
+        "heapUsed": 40725560,
+        "node": "v24.18.0",
+        "affinity": "Cpus_allowed_list:\t0",
+        "apiSha256": "7b83ef46d9d8cd63df50ca372279cd25a5ec5a3827869bb4fc5362b1171b6432",
+        "fixtureSha256": "332e859e06e95ec8dd2b5a862198a526a118490219c4e64e3efc8aedc78581de",
+        "workerSha256": "9fb9d12f78dd53bfcf31a1d854667ae66db2ac09dd6e8a957cecba482679b12d"
+      }
+    },
+    {
+      "lane": "compile",
+      "variant": "B",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=4096",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/timing-worker.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/config.json",
+        "B",
+        "compile",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/compile-2-B.json"
+      ],
+      "status": 0,
+      "signal": null,
+      "stdout": "{\"pass\":true,\"variant\":\"B\",\"lane\":\"compile\",\"maxRssKiB\":215848,\"milliseconds\":[257.97448800000006,259.53117399999996,280.97532,260.51869399999987,252.04863399999977,242.3901639999999,240.78042000000005]}\n",
+      "stderr": "",
+      "processMilliseconds": 3613.022299,
+      "result": {
+        "pass": true,
+        "variant": "B",
+        "lane": "compile",
+        "milliseconds": [
+          257.97448800000006,
+          259.53117399999996,
+          280.97532,
+          260.51869399999987,
+          252.04863399999977,
+          242.3901639999999,
+          240.78042000000005
+        ],
+        "requestsPerBatch": 32,
+        "warmBatches": 3,
+        "measuredBatches": 7,
+        "resultSha256": "abe069f40495803f16b718ad014bafede625f17e5abbb685290d3aad4afc49c6",
+        "maxRssKiB": 215848,
+        "heapUsed": 40675112,
+        "node": "v24.18.0",
+        "affinity": "Cpus_allowed_list:\t0",
+        "apiSha256": "7b83ef46d9d8cd63df50ca372279cd25a5ec5a3827869bb4fc5362b1171b6432",
+        "fixtureSha256": "332e859e06e95ec8dd2b5a862198a526a118490219c4e64e3efc8aedc78581de",
+        "workerSha256": "9fb9d12f78dd53bfcf31a1d854667ae66db2ac09dd6e8a957cecba482679b12d"
+      }
+    },
+    {
+      "lane": "compile",
+      "variant": "A",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=4096",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/timing-worker.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/config.json",
+        "A",
+        "compile",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/compile-3-A.json"
+      ],
+      "status": 0,
+      "signal": null,
+      "stdout": "{\"pass\":true,\"variant\":\"A\",\"lane\":\"compile\",\"maxRssKiB\":213112,\"milliseconds\":[327.4732809999998,310.2334899999996,332.97195899999997,304.9802609999997,328.91958999999997,299.34446800000023,300.6437270000001]}\n",
+      "stderr": "",
+      "processMilliseconds": 4244.6891270000015,
+      "result": {
+        "pass": true,
+        "variant": "A",
+        "lane": "compile",
+        "milliseconds": [
+          327.4732809999998,
+          310.2334899999996,
+          332.97195899999997,
+          304.9802609999997,
+          328.91958999999997,
+          299.34446800000023,
+          300.6437270000001
+        ],
+        "requestsPerBatch": 32,
+        "warmBatches": 3,
+        "measuredBatches": 7,
+        "resultSha256": "abe069f40495803f16b718ad014bafede625f17e5abbb685290d3aad4afc49c6",
+        "maxRssKiB": 213112,
+        "heapUsed": 14501728,
+        "node": "v24.18.0",
+        "affinity": "Cpus_allowed_list:\t0",
+        "apiSha256": "f390b3f187999f5cb0b14bdb08fe139f5b9462dedb42b414e6a2c6d393b9250c",
+        "fixtureSha256": "332e859e06e95ec8dd2b5a862198a526a118490219c4e64e3efc8aedc78581de",
+        "workerSha256": "9fb9d12f78dd53bfcf31a1d854667ae66db2ac09dd6e8a957cecba482679b12d"
+      }
+    }
+  ],
+  "config": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/config.json",
+    "sha256": "531fce0c65ea95dc128458ce9babe6ce1cb76104c91aed0f53ebf8283f6e6e43"
+  },
+  "outputSha256": "2b5706f98d5cb1ac29d4ddf54b9bca2f7f437bbb2be0baf6af85d9121b82bb5e",
+  "summary": {
+    "check": {
+      "workerBatchMedians": [
+        {
+          "variant": "A",
+          "ms": 206.23921699999983,
+          "maxRssKiB": 147452
+        },
+        {
+          "variant": "B",
+          "ms": 258.73516100000006,
+          "maxRssKiB": 215808
+        },
+        {
+          "variant": "B",
+          "ms": 258.69516299999987,
+          "maxRssKiB": 214892
+        },
+        {
+          "variant": "A",
+          "ms": 206.30963199999997,
+          "maxRssKiB": 148468
+        }
+      ],
+      "oppositeOrderPairs": [
+        {
+          "requestTimeRatio": 1.2545390967034182,
+          "maxRssRatio": 1.4635813688522366
+        },
+        {
+          "requestTimeRatio": 1.2539170396077286,
+          "maxRssRatio": 1.4473960718808094
+        }
+      ]
+    },
+    "compile": {
+      "workerBatchMedians": [
+        {
+          "variant": "A",
+          "ms": 313.73837499999945,
+          "maxRssKiB": 216468
+        },
+        {
+          "variant": "B",
+          "ms": 258.2975040000001,
+          "maxRssKiB": 215420
+        },
+        {
+          "variant": "B",
+          "ms": 257.97448800000006,
+          "maxRssKiB": 215848
+        },
+        {
+          "variant": "A",
+          "ms": 310.2334899999996,
+          "maxRssKiB": 213112
+        }
+      ],
+      "oppositeOrderPairs": [
+        {
+          "requestTimeRatio": 0.8232894812437291,
+          "maxRssRatio": 0.9951586377663211
+        },
+        {
+          "requestTimeRatio": 0.8315494500609859,
+          "maxRssRatio": 1.0128383197567477
+        }
+      ]
+    }
+  }
+}

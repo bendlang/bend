@@ -181,3 +181,15 @@ retains 1,050,446 compressed bytes, SHA-256
 Its malformed-data graph gate remains failed; its separately named checked
 core-output gate passes exact bytes. Archive verification changes neither verdict.
 Both experiments leave released source and artifacts unchanged.
+
+## Phase 7 architectural trial comparison — 2026-09-27
+
+The [shared architecture capsule](../implementation/phase7/architecture-evidence/README.md)
+preserves 1,869 regular members in 6,227,562 compressed bytes.
+SHA-256: `0eeebf0355b35db235410a90ce9af167697687ba8580715a762209c27bdf99d8`. Every member was reopened and
+verified by hash, size and confined path. It retains A01's checked compiler and
+generated programs; A03's original and corrected measurement workloads; all
+seven A02 attempts, both candidate05 demand suites and the final candidate07
+residual probes; every timing worker; baseline identities; and research source.
+The final All-domain demand regression remains a failure, the codomain probe
+remains inconclusive, and archive verification promotes none of the candidates.

@@ -1,0 +1,20 @@
+law sp_shifts:
+  for +ts: List<&2, KTerm>
+  for +offset: U32
+  List<&2, KTerm>
+
+@unsafe
+def sp_shift(
+  +t: KTerm,
+  +offset: U32,
+) -> KTerm:
+  KTerm{tg(t), nm(t), kc(U32, String.eq(tg(t), "Var") || String.eq(tg(t), "All") || String.eq(tg(t), "Lam") || String.eq(tg(t), "Bind") || String.eq(tg(t), "Sub"), u => U32.add(ix(t), offset), u => ix(t)), qt(t), sp_shifts(ks(t), offset), rm(t)}
+
+@unsafe
+def sp_shifts(ts, offset):
+  match ts:
+    case Nil{}:
+      Nil{}
+    case Con{h, rest}:
+      Con{sp_shift(h, offset), sp_shifts(rest, offset)}
+

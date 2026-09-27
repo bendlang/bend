@@ -1,0 +1,711 @@
+{
+  "kind": "P7-A02 checked component controls",
+  "generated": "2026-09-27T07:19:43.343Z",
+  "scope": "Empty book, explicit first-order closures, exact conversion, limited supported grammar",
+  "notEstablished": [
+    "Whole compiler correctness or speed",
+    "Definition unfolding",
+    "Match/rewrite/Min",
+    "Kind subtyping",
+    "Stack safety",
+    "Self-hosting"
+  ],
+  "pass": true,
+  "total": 100,
+  "passed": 100,
+  "sharing": [
+    {
+      "copies": 1,
+      "steps": 77,
+      "hits": 0,
+      "cells": 26
+    },
+    {
+      "copies": 2,
+      "steps": 78,
+      "hits": 1,
+      "cells": 27
+    },
+    {
+      "copies": 4,
+      "steps": 80,
+      "hits": 3,
+      "cells": 29
+    },
+    {
+      "copies": 8,
+      "steps": 84,
+      "hits": 7,
+      "cells": 33
+    },
+    {
+      "copies": 32,
+      "steps": 108,
+      "hits": 31,
+      "cells": 57
+    },
+    {
+      "copies": 128,
+      "steps": 204,
+      "hits": 127,
+      "cells": 153
+    }
+  ],
+  "demandWitnesses": [
+    {
+      "name": "early-mismatch",
+      "mode": "old",
+      "command": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "args": [
+        "--stack-size=4096",
+        "--max-old-space-size=512",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-07/demand-witness.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-07/api.mjs",
+        "old",
+        "early-mismatch"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "{\"mode\":\"old\",\"name\":\"early-mismatch\",\"distinctBinderIds\":true,\"result\":false}\n",
+      "stderr": ""
+    },
+    {
+      "name": "early-mismatch",
+      "mode": "new",
+      "command": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "args": [
+        "--stack-size=4096",
+        "--max-old-space-size=512",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-07/demand-witness.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-07/api.mjs",
+        "new",
+        "early-mismatch"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "{\"mode\":\"new\",\"name\":\"early-mismatch\",\"distinctBinderIds\":true,\"result\":false}\n",
+      "stderr": ""
+    },
+    {
+      "name": "reflexivity",
+      "mode": "old",
+      "command": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "args": [
+        "--stack-size=4096",
+        "--max-old-space-size=512",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-07/demand-witness.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-07/api.mjs",
+        "old",
+        "reflexivity"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "{\"mode\":\"old\",\"name\":\"reflexivity\",\"distinctBinderIds\":true,\"result\":true}\n",
+      "stderr": ""
+    },
+    {
+      "name": "reflexivity",
+      "mode": "new",
+      "command": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "args": [
+        "--stack-size=4096",
+        "--max-old-space-size=512",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-07/demand-witness.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-07/api.mjs",
+        "new",
+        "reflexivity"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "{\"mode\":\"new\",\"name\":\"reflexivity\",\"distinctBinderIds\":true,\"result\":true}\n",
+      "stderr": ""
+    },
+    {
+      "name": "wrapped-reflexivity",
+      "mode": "old",
+      "command": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "args": [
+        "--stack-size=4096",
+        "--max-old-space-size=512",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-07/demand-witness.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-07/api.mjs",
+        "old",
+        "wrapped-reflexivity"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "{\"mode\":\"old\",\"name\":\"wrapped-reflexivity\",\"distinctBinderIds\":true,\"result\":true}\n",
+      "stderr": ""
+    },
+    {
+      "name": "wrapped-reflexivity",
+      "mode": "new",
+      "command": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "args": [
+        "--stack-size=4096",
+        "--max-old-space-size=512",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-07/demand-witness.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-07/api.mjs",
+        "new",
+        "wrapped-reflexivity"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "{\"mode\":\"new\",\"name\":\"wrapped-reflexivity\",\"distinctBinderIds\":true,\"result\":true}\n",
+      "stderr": ""
+    },
+    {
+      "name": "nested-reflexivity",
+      "mode": "old",
+      "command": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "args": [
+        "--stack-size=4096",
+        "--max-old-space-size=512",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-07/demand-witness.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-07/api.mjs",
+        "old",
+        "nested-reflexivity"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "{\"mode\":\"old\",\"name\":\"nested-reflexivity\",\"distinctBinderIds\":true,\"result\":true}\n",
+      "stderr": ""
+    },
+    {
+      "name": "nested-reflexivity",
+      "mode": "new",
+      "command": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "args": [
+        "--stack-size=4096",
+        "--max-old-space-size=512",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-07/demand-witness.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-07/api.mjs",
+        "new",
+        "nested-reflexivity"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "{\"mode\":\"new\",\"name\":\"nested-reflexivity\",\"distinctBinderIds\":true,\"result\":true}\n",
+      "stderr": ""
+    },
+    {
+      "name": "constructor-arity",
+      "mode": "old",
+      "command": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "args": [
+        "--stack-size=4096",
+        "--max-old-space-size=512",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-07/demand-witness.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-07/api.mjs",
+        "old",
+        "constructor-arity"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "{\"mode\":\"old\",\"name\":\"constructor-arity\",\"distinctBinderIds\":true,\"result\":false}\n",
+      "stderr": ""
+    },
+    {
+      "name": "constructor-arity",
+      "mode": "new",
+      "command": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "args": [
+        "--stack-size=4096",
+        "--max-old-space-size=512",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-07/demand-witness.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-07/api.mjs",
+        "new",
+        "constructor-arity"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "{\"mode\":\"new\",\"name\":\"constructor-arity\",\"distinctBinderIds\":true,\"result\":false}\n",
+      "stderr": ""
+    },
+    {
+      "name": "neutral-arity",
+      "mode": "old",
+      "command": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "args": [
+        "--stack-size=4096",
+        "--max-old-space-size=512",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-07/demand-witness.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-07/api.mjs",
+        "old",
+        "neutral-arity"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "{\"mode\":\"old\",\"name\":\"neutral-arity\",\"distinctBinderIds\":true,\"result\":false}\n",
+      "stderr": ""
+    },
+    {
+      "name": "neutral-arity",
+      "mode": "new",
+      "command": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "args": [
+        "--stack-size=4096",
+        "--max-old-space-size=512",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-07/demand-witness.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-07/api.mjs",
+        "new",
+        "neutral-arity"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "{\"mode\":\"new\",\"name\":\"neutral-arity\",\"distinctBinderIds\":true,\"result\":false}\n",
+      "stderr": ""
+    }
+  ],
+  "deepQuotation": {
+    "scope": "exploratory requirement; excluded from slice pass, failures remain explicit",
+    "rows": [
+      {
+        "depth": 100,
+        "oldDepth": 100,
+        "prototypeDepth": 100,
+        "pass": true
+      },
+      {
+        "depth": 1000,
+        "oldDepth": 1000,
+        "prototypeDepth": 1000,
+        "pass": true
+      },
+      {
+        "depth": 5000,
+        "oldDepth": 5000,
+        "prototypeDepth": 5000,
+        "pass": true
+      }
+    ]
+  },
+  "rows": [
+    {
+      "name": "normalization: constructor",
+      "pass": true
+    },
+    {
+      "name": "normalization: identity beta",
+      "pass": true
+    },
+    {
+      "name": "normalization: open variable",
+      "pass": true
+    },
+    {
+      "name": "normalization: opaque reference",
+      "pass": true
+    },
+    {
+      "name": "normalization: opaque application spine",
+      "pass": true
+    },
+    {
+      "name": "normalization: closure capture",
+      "pass": true
+    },
+    {
+      "name": "normalization: normalization under lambda",
+      "pass": true
+    },
+    {
+      "name": "normalization: dependent telescope",
+      "pass": true
+    },
+    {
+      "name": "normalization: parallel let",
+      "pass": true
+    },
+    {
+      "name": "normalization: parallel let RHS outer scope",
+      "pass": true
+    },
+    {
+      "name": "normalization: parallel let RHS does not see sibling",
+      "pass": true
+    },
+    {
+      "name": "normalization: nested let",
+      "pass": true
+    },
+    {
+      "name": "normalization: legacy shared variable payload",
+      "pass": true
+    },
+    {
+      "name": "normalization: annotation",
+      "pass": true
+    },
+    {
+      "name": "normalization: equality data",
+      "pass": true
+    },
+    {
+      "name": "normalization: constructor field closure",
+      "pass": true
+    },
+    {
+      "name": "normalization: quantity",
+      "pass": true
+    },
+    {
+      "name": "normalization: erased dependent function",
+      "pass": true
+    },
+    {
+      "name": "normalization: applied inert All preserves spine",
+      "pass": true
+    },
+    {
+      "name": "normalization: nested textual shadowing",
+      "pass": true
+    },
+    {
+      "name": "normalization: fresh opening avoids high free identifier",
+      "pass": true
+    },
+    {
+      "name": "normalization: capture after beta under telescope",
+      "pass": true
+    },
+    {
+      "name": "normalization: dependent domain contains binder",
+      "pass": true
+    },
+    {
+      "name": "quotation metadata modulo binder IDs: constructor",
+      "pass": true
+    },
+    {
+      "name": "quotation metadata modulo binder IDs: identity beta",
+      "pass": true
+    },
+    {
+      "name": "quotation metadata modulo binder IDs: open variable",
+      "pass": true
+    },
+    {
+      "name": "quotation metadata modulo binder IDs: opaque reference",
+      "pass": true
+    },
+    {
+      "name": "quotation metadata modulo binder IDs: opaque application spine",
+      "pass": true
+    },
+    {
+      "name": "quotation metadata modulo binder IDs: closure capture",
+      "pass": true
+    },
+    {
+      "name": "quotation metadata modulo binder IDs: normalization under lambda",
+      "pass": true
+    },
+    {
+      "name": "quotation metadata modulo binder IDs: dependent telescope",
+      "pass": true
+    },
+    {
+      "name": "quotation metadata modulo binder IDs: parallel let",
+      "pass": true
+    },
+    {
+      "name": "quotation metadata modulo binder IDs: parallel let RHS outer scope",
+      "pass": true
+    },
+    {
+      "name": "quotation metadata modulo binder IDs: parallel let RHS does not see sibling",
+      "pass": true
+    },
+    {
+      "name": "quotation metadata modulo binder IDs: nested let",
+      "pass": true
+    },
+    {
+      "name": "quotation metadata modulo binder IDs: legacy shared variable payload",
+      "pass": true
+    },
+    {
+      "name": "quotation metadata modulo binder IDs: annotation",
+      "pass": true
+    },
+    {
+      "name": "quotation metadata modulo binder IDs: equality data",
+      "pass": true
+    },
+    {
+      "name": "quotation metadata modulo binder IDs: constructor field closure",
+      "pass": true
+    },
+    {
+      "name": "quotation metadata modulo binder IDs: quantity",
+      "pass": true
+    },
+    {
+      "name": "quotation metadata modulo binder IDs: erased dependent function",
+      "pass": true
+    },
+    {
+      "name": "quotation metadata modulo binder IDs: applied inert All preserves spine",
+      "pass": true
+    },
+    {
+      "name": "quotation metadata modulo binder IDs: nested textual shadowing",
+      "pass": true
+    },
+    {
+      "name": "quotation metadata modulo binder IDs: fresh opening avoids high free identifier",
+      "pass": true
+    },
+    {
+      "name": "quotation metadata modulo binder IDs: capture after beta under telescope",
+      "pass": true
+    },
+    {
+      "name": "quotation metadata modulo binder IDs: dependent domain contains binder",
+      "pass": true
+    },
+    {
+      "name": "conversion: alpha",
+      "pass": true
+    },
+    {
+      "name": "conversion: eta",
+      "pass": true
+    },
+    {
+      "name": "conversion: nested eta",
+      "pass": true
+    },
+    {
+      "name": "conversion: dependent alpha",
+      "pass": true
+    },
+    {
+      "name": "conversion: dependent alpha with outer",
+      "pass": true
+    },
+    {
+      "name": "conversion: different constructor",
+      "pass": true
+    },
+    {
+      "name": "conversion: different opaque reference",
+      "pass": true
+    },
+    {
+      "name": "conversion: different free variable",
+      "pass": true
+    },
+    {
+      "name": "conversion: different quantity",
+      "pass": true
+    },
+    {
+      "name": "conversion: different binder quantity",
+      "pass": true
+    },
+    {
+      "name": "conversion: different field",
+      "pass": true
+    },
+    {
+      "name": "conversion: different arity",
+      "pass": true
+    },
+    {
+      "name": "conversion: beta",
+      "pass": true
+    },
+    {
+      "name": "conversion: All neutral args",
+      "pass": true
+    },
+    {
+      "name": "conversion: nested textual shadowing alpha",
+      "pass": true
+    },
+    {
+      "name": "conversion: nested textual shadowing swapped",
+      "pass": true
+    },
+    {
+      "name": "conversion: neutral spine alpha",
+      "pass": true
+    },
+    {
+      "name": "conversion: neutral spine order",
+      "pass": true
+    },
+    {
+      "name": "unused divergent argument remains unforced",
+      "pass": true
+    },
+    {
+      "name": "weak head leaves divergent constructor field unforced",
+      "pass": true
+    },
+    {
+      "name": "shared argument: 1 demands",
+      "pass": true
+    },
+    {
+      "name": "shared argument: 2 demands",
+      "pass": true
+    },
+    {
+      "name": "shared argument: 4 demands",
+      "pass": true
+    },
+    {
+      "name": "shared argument: 8 demands",
+      "pass": true
+    },
+    {
+      "name": "shared argument: 32 demands",
+      "pass": true
+    },
+    {
+      "name": "shared argument: 128 demands",
+      "pass": true
+    },
+    {
+      "name": "extra demands do not reevaluate delayed argument",
+      "pass": true
+    },
+    {
+      "name": "shared constructor fields retain memoized computation",
+      "pass": true
+    },
+    {
+      "name": "conversion demand: early-mismatch (old)",
+      "pass": true
+    },
+    {
+      "name": "conversion demand: early-mismatch (new)",
+      "pass": true
+    },
+    {
+      "name": "conversion demand: reflexivity (old)",
+      "pass": true
+    },
+    {
+      "name": "conversion demand: reflexivity (new)",
+      "pass": true
+    },
+    {
+      "name": "conversion demand: wrapped-reflexivity (old)",
+      "pass": true
+    },
+    {
+      "name": "conversion demand: wrapped-reflexivity (new)",
+      "pass": true
+    },
+    {
+      "name": "conversion demand: nested-reflexivity (old)",
+      "pass": true
+    },
+    {
+      "name": "conversion demand: nested-reflexivity (new)",
+      "pass": true
+    },
+    {
+      "name": "conversion demand: constructor-arity (old)",
+      "pass": true
+    },
+    {
+      "name": "conversion demand: constructor-arity (new)",
+      "pass": true
+    },
+    {
+      "name": "conversion demand: neutral-arity (old)",
+      "pass": true
+    },
+    {
+      "name": "conversion demand: neutral-arity (new)",
+      "pass": true
+    },
+    {
+      "name": "explicit unsupported boundary: match",
+      "pass": true,
+      "scope": "rejected by slice, not a conformance pass for this construct"
+    },
+    {
+      "name": "explicit unsupported boundary: rewrite",
+      "pass": true,
+      "scope": "rejected by slice, not a conformance pass for this construct"
+    },
+    {
+      "name": "explicit unsupported boundary: quantity meet",
+      "pass": true,
+      "scope": "rejected by slice, not a conformance pass for this construct"
+    },
+    {
+      "name": "explicit unsupported boundary: residual datatype",
+      "pass": true,
+      "scope": "rejected by slice, not a conformance pass for this construct"
+    },
+    {
+      "name": "explicit unsupported boundary: malformed lambda",
+      "pass": true,
+      "scope": "rejected by slice, not a conformance pass for this construct"
+    },
+    {
+      "name": "explicit unsupported boundary: empty let",
+      "pass": true,
+      "scope": "rejected by slice, not a conformance pass for this construct"
+    },
+    {
+      "name": "explicit unsupported boundary: standalone binding",
+      "pass": true,
+      "scope": "rejected by slice, not a conformance pass for this construct"
+    },
+    {
+      "name": "explicit unsupported boundary: reserved binder identifier",
+      "pass": true,
+      "scope": "rejected by slice, not a conformance pass for this construct"
+    },
+    {
+      "name": "explicit unsupported boundary: malformed Ref children",
+      "pass": true,
+      "scope": "rejected by slice, not a conformance pass for this construct"
+    },
+    {
+      "name": "explicit unsupported boundary: malformed Rfl children",
+      "pass": true,
+      "scope": "rejected by slice, not a conformance pass for this construct"
+    },
+    {
+      "name": "explicit unsupported boundary: malformed Qnt children",
+      "pass": true,
+      "scope": "rejected by slice, not a conformance pass for this construct"
+    },
+    {
+      "name": "explicit unsupported boundary: malformed Qua children",
+      "pass": true,
+      "scope": "rejected by slice, not a conformance pass for this construct"
+    },
+    {
+      "name": "explicit unsupported boundary: malformed Typ arity",
+      "pass": true,
+      "scope": "rejected by slice, not a conformance pass for this construct"
+    },
+    {
+      "name": "explicit unsupported boundary: malformed Eql arity",
+      "pass": true,
+      "scope": "rejected by slice, not a conformance pass for this construct"
+    }
+  ]
+}

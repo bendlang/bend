@@ -1,0 +1,38 @@
+{
+  "scope": "Additional experiment preparation, control and measurement programs; not production compiler runtime or deletion credit",
+  "files": [
+    {
+      "file": "prepare.py",
+      "physicalLines": 75,
+      "nonblankLines": 66,
+      "bytes": 4240,
+      "sha256": "9c21b1c684a54ca687139d68392128bc1ccf91baf0910bd8bb40ef9353604a19"
+    },
+    {
+      "file": "controls.mjs",
+      "physicalLines": 129,
+      "nonblankLines": 128,
+      "bytes": 10612,
+      "sha256": "b9d1dabbd384ba17b8ceae77e300a5e73d0395458c11a266b25bf1348cbc7974"
+    },
+    {
+      "file": "timing.mjs",
+      "physicalLines": 73,
+      "nonblankLines": 73,
+      "bytes": 6644,
+      "sha256": "89ff0dc6d91ebec0055386a8592bb9f422f61ca425690665009a2af880ffa75b"
+    },
+    {
+      "file": "timing-worker.mjs",
+      "physicalLines": 38,
+      "nonblankLines": 38,
+      "bytes": 2219,
+      "sha256": "9fb9d12f78dd53bfcf31a1d854667ae66db2ac09dd6e8a957cecba482679b12d"
+    }
+  ],
+  "totals": {
+    "physicalLines": 315,
+    "nonblankLines": 305,
+    "bytes": 23715
+  }
+}

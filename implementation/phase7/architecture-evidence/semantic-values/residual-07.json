@@ -1,0 +1,104 @@
+{
+  "plan": {
+    "candidate": "semantic-values-07",
+    "scope": "Two residual raw-term conversion demand probes, not typing acceptance",
+    "timeoutSeconds": 2,
+    "cpu": "0",
+    "inputs": [
+      {
+        "file": "api.mjs",
+        "sha256": "a4be15a4d9fe3586aa061291b31426e47470e3f82545558d0bab44b9cc52ca43"
+      },
+      {
+        "file": "residual-witness.mjs",
+        "sha256": "ce85b74a54b19515a03ff3c38f7239c34b11ece7efa8277aa769bb3344ec4b9d"
+      }
+    ]
+  },
+  "rows": [
+    {
+      "name": "all-domain",
+      "mode": "old",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=512",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-residual-07/residual-witness.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-residual-07/api.mjs",
+        "old",
+        "all-domain"
+      ],
+      "exitCode": 0,
+      "timedOut": false,
+      "stdout": "{\"name\":\"all-domain\",\"mode\":\"old\",\"supported\":true,\"distinctBinderIds\":true,\"phase\":\"before conversion\"}\n{\"name\":\"all-domain\",\"mode\":\"old\",\"result\":false}\n",
+      "stderr": "",
+      "elapsedSeconds": 0.06033087195828557
+    },
+    {
+      "name": "all-domain",
+      "mode": "new",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=512",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-residual-07/residual-witness.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-residual-07/api.mjs",
+        "new",
+        "all-domain"
+      ],
+      "exitCode": null,
+      "timedOut": true,
+      "stdout": "{\"name\":\"all-domain\",\"mode\":\"new\",\"supported\":true,\"distinctBinderIds\":true,\"phase\":\"before conversion\"}\n",
+      "stderr": null,
+      "elapsedSeconds": 2.014287024270743
+    },
+    {
+      "name": "all-body",
+      "mode": "old",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=512",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-residual-07/residual-witness.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-residual-07/api.mjs",
+        "old",
+        "all-body"
+      ],
+      "exitCode": null,
+      "timedOut": true,
+      "stdout": "{\"name\":\"all-body\",\"mode\":\"old\",\"supported\":true,\"distinctBinderIds\":true,\"phase\":\"before conversion\"}\n",
+      "stderr": null,
+      "elapsedSeconds": 2.007471222896129
+    },
+    {
+      "name": "all-body",
+      "mode": "new",
+      "command": [
+        "taskset",
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=512",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-residual-07/residual-witness.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-residual-07/api.mjs",
+        "new",
+        "all-body"
+      ],
+      "exitCode": null,
+      "timedOut": true,
+      "stdout": "{\"name\":\"all-body\",\"mode\":\"new\",\"supported\":true,\"distinctBinderIds\":true,\"phase\":\"before conversion\"}\n",
+      "stderr": null,
+      "elapsedSeconds": 2.0142874349839985
+    }
+  ]
+}

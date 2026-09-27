@@ -1,0 +1,935 @@
+{
+  "pass": true,
+  "plan": {
+    "kind": "P7-A02 serial operation microbenchmark",
+    "candidate": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-05",
+    "order": [
+      "old",
+      "new",
+      "new",
+      "old",
+      "old",
+      "new",
+      "new",
+      "old"
+    ],
+    "cpu": "0",
+    "node": "v24.18.0",
+    "executable": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+    "stackKiB": 4096,
+    "heapMiB": 4096,
+    "workloads": [
+      "closed constructor Pack with128 Pair fields",
+      "64 applied lambda binders, retaining first and last variables"
+    ],
+    "warmups": 10,
+    "samples": 3,
+    "repetitions": {
+      "closed": 100,
+      "beta": 50
+    },
+    "boundary": "Entire public strong(emptyBook,input) versus sv_observe(input).term, including scope guard, max-ID initialization and observation counters; setup/import/exact-oracle comparisons excluded",
+    "limits": "Empty book and named grammar only; not whole-compiler throughput, TypeScript comparison or emitted user-code benchmark",
+    "memory": "Per fresh Node worker process.resourceUsage().maxRSS; includes imports, controls and both workloads",
+    "identities": [
+      {
+        "file": "benchmark.mjs",
+        "sha256": "d672757f5353c2d57318837811f8114032c6a0a7e2cfc7c81d5875f30d725d21"
+      },
+      {
+        "file": "benchmark-worker.mjs",
+        "sha256": "4a38ea37b90847fd493b929821a1e802eff2ae3e8103ba3223a8e9136aff32c0"
+      },
+      {
+        "file": "api.mjs",
+        "sha256": "49654e6628f9bacc3d56bb7de43512da4e791e9939650731ca9bb77126294869"
+      }
+    ],
+    "nodeSha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+    "prepared": "2026-09-27T07:12:34.536Z"
+  },
+  "summaries": [
+    {
+      "workload": "closed-constructor-data",
+      "oldWorkerMediansMs": [
+        3.1621258,
+        2.41575834,
+        2.395124059999999,
+        2.3690823699999997
+      ],
+      "newWorkerMediansMs": [
+        8.135196159999998,
+        8.060417490000003,
+        8.293131709999997,
+        8.63116857
+      ],
+      "oldMedianMs": 2.4054411999999994,
+      "newMedianMs": 8.214163934999998,
+      "ratio": 3.414826325831619,
+      "inputHashes": [
+        "dfd95824dd5715a190c4b065899933131dafd7d314bf091f2f38f875b8a4126d"
+      ]
+    },
+    {
+      "workload": "64-dependent-environment-beta-steps",
+      "oldWorkerMediansMs": [
+        3.5997517400000016,
+        3.402674979999997,
+        3.440162540000001,
+        3.1606063200000016
+      ],
+      "newWorkerMediansMs": [
+        1.8204810799999995,
+        1.8095869800000037,
+        1.8599619199999962,
+        1.8258661399999982
+      ],
+      "oldMedianMs": 3.421418759999999,
+      "newMedianMs": 1.823173609999999,
+      "ratio": 0.5328706416515935,
+      "inputHashes": [
+        "5e97278e2e619d99cf1cd9a71f31e7ae10950cc3b2d89fc230cbe99ea4bff5a7"
+      ]
+    }
+  ],
+  "memory": {
+    "oldKiB": [
+      106080,
+      104544,
+      104328,
+      101712
+    ],
+    "newKiB": [
+      204616,
+      203372,
+      204076,
+      203460
+    ]
+  },
+  "workers": [
+    {
+      "index": 0,
+      "variant": "old",
+      "command": "taskset",
+      "args": [
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=4096",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-bench-01/benchmark-worker.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-bench-01/api.mjs",
+        "old",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-bench-01/00-old.json"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 2075.841217,
+      "observation": {
+        "variant": "old",
+        "pass": true,
+        "node": "v24.18.0",
+        "apiSha256": "49654e6628f9bacc3d56bb7de43512da4e791e9939650731ca9bb77126294869",
+        "results": [
+          {
+            "name": "closed-constructor-data",
+            "inputHash": "dfd95824dd5715a190c4b065899933131dafd7d314bf091f2f38f875b8a4126d",
+            "warmups": 10,
+            "samples": [
+              {
+                "sample": 0,
+                "repetitions": 100,
+                "elapsedMs": 478.625845,
+                "perRequestMs": 4.78625845
+              },
+              {
+                "sample": 1,
+                "repetitions": 100,
+                "elapsedMs": 316.21258,
+                "perRequestMs": 3.1621258
+              },
+              {
+                "sample": 2,
+                "repetitions": 100,
+                "elapsedMs": 261.501755,
+                "perRequestMs": 2.61501755
+              }
+            ]
+          },
+          {
+            "name": "64-dependent-environment-beta-steps",
+            "inputHash": "5e97278e2e619d99cf1cd9a71f31e7ae10950cc3b2d89fc230cbe99ea4bff5a7",
+            "warmups": 10,
+            "samples": [
+              {
+                "sample": 0,
+                "repetitions": 50,
+                "elapsedMs": 194.42395499999998,
+                "perRequestMs": 3.8884790999999996
+              },
+              {
+                "sample": 1,
+                "repetitions": 50,
+                "elapsedMs": 171.93499900000006,
+                "perRequestMs": 3.4386999800000013
+              },
+              {
+                "sample": 2,
+                "repetitions": 50,
+                "elapsedMs": 179.98758700000008,
+                "perRequestMs": 3.5997517400000016
+              }
+            ]
+          }
+        ],
+        "resourceUsage": {
+          "userCPUTime": 2020847,
+          "systemCPUTime": 44018,
+          "maxRSS": 106080,
+          "sharedMemorySize": 0,
+          "unsharedDataSize": 0,
+          "unsharedStackSize": 0,
+          "minorPageFault": 17453,
+          "majorPageFault": 0,
+          "swappedOut": 0,
+          "fsRead": 0,
+          "fsWrite": 0,
+          "ipcSent": 0,
+          "ipcReceived": 0,
+          "signalsCount": 0,
+          "voluntaryContextSwitches": 1302,
+          "involuntaryContextSwitches": 1206
+        },
+        "memoryUsage": {
+          "rss": 108052480,
+          "heapTotal": 47165440,
+          "heapUsed": 17762416,
+          "external": 2459611,
+          "arrayBuffers": 237473
+        }
+      }
+    },
+    {
+      "index": 1,
+      "variant": "new",
+      "command": "taskset",
+      "args": [
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=4096",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-bench-01/benchmark-worker.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-bench-01/api.mjs",
+        "new",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-bench-01/01-new.json"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 3666.1732469999997,
+      "observation": {
+        "variant": "new",
+        "pass": true,
+        "node": "v24.18.0",
+        "apiSha256": "49654e6628f9bacc3d56bb7de43512da4e791e9939650731ca9bb77126294869",
+        "results": [
+          {
+            "name": "closed-constructor-data",
+            "inputHash": "dfd95824dd5715a190c4b065899933131dafd7d314bf091f2f38f875b8a4126d",
+            "warmups": 10,
+            "samples": [
+              {
+                "sample": 0,
+                "repetitions": 100,
+                "elapsedMs": 1242.5714699999999,
+                "perRequestMs": 12.425714699999999
+              },
+              {
+                "sample": 1,
+                "repetitions": 100,
+                "elapsedMs": 813.5196159999998,
+                "perRequestMs": 8.135196159999998
+              },
+              {
+                "sample": 2,
+                "repetitions": 100,
+                "elapsedMs": 774.9367270000002,
+                "perRequestMs": 7.749367270000002
+              }
+            ]
+          },
+          {
+            "name": "64-dependent-environment-beta-steps",
+            "inputHash": "5e97278e2e619d99cf1cd9a71f31e7ae10950cc3b2d89fc230cbe99ea4bff5a7",
+            "warmups": 10,
+            "samples": [
+              {
+                "sample": 0,
+                "repetitions": 50,
+                "elapsedMs": 122.07015100000035,
+                "perRequestMs": 2.441403020000007
+              },
+              {
+                "sample": 1,
+                "repetitions": 50,
+                "elapsedMs": 91.02405399999998,
+                "perRequestMs": 1.8204810799999995
+              },
+              {
+                "sample": 2,
+                "repetitions": 50,
+                "elapsedMs": 79.10150900000008,
+                "perRequestMs": 1.5820301800000016
+              }
+            ]
+          }
+        ],
+        "resourceUsage": {
+          "userCPUTime": 3590211,
+          "systemCPUTime": 51974,
+          "maxRSS": 204616,
+          "sharedMemorySize": 0,
+          "unsharedDataSize": 0,
+          "unsharedStackSize": 0,
+          "minorPageFault": 45438,
+          "majorPageFault": 0,
+          "swappedOut": 0,
+          "fsRead": 0,
+          "fsWrite": 0,
+          "ipcSent": 0,
+          "ipcReceived": 0,
+          "signalsCount": 0,
+          "voluntaryContextSwitches": 2179,
+          "involuntaryContextSwitches": 1667
+        },
+        "memoryUsage": {
+          "rss": 208039936,
+          "heapTotal": 148615168,
+          "heapUsed": 38706056,
+          "external": 2459611,
+          "arrayBuffers": 237473
+        }
+      }
+    },
+    {
+      "index": 2,
+      "variant": "new",
+      "command": "taskset",
+      "args": [
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=4096",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-bench-01/benchmark-worker.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-bench-01/api.mjs",
+        "new",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-bench-01/02-new.json"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 3660.7610490000006,
+      "observation": {
+        "variant": "new",
+        "pass": true,
+        "node": "v24.18.0",
+        "apiSha256": "49654e6628f9bacc3d56bb7de43512da4e791e9939650731ca9bb77126294869",
+        "results": [
+          {
+            "name": "closed-constructor-data",
+            "inputHash": "dfd95824dd5715a190c4b065899933131dafd7d314bf091f2f38f875b8a4126d",
+            "warmups": 10,
+            "samples": [
+              {
+                "sample": 0,
+                "repetitions": 100,
+                "elapsedMs": 1236.026637,
+                "perRequestMs": 12.36026637
+              },
+              {
+                "sample": 1,
+                "repetitions": 100,
+                "elapsedMs": 806.0417490000002,
+                "perRequestMs": 8.060417490000003
+              },
+              {
+                "sample": 2,
+                "repetitions": 100,
+                "elapsedMs": 774.1540539999996,
+                "perRequestMs": 7.741540539999996
+              }
+            ]
+          },
+          {
+            "name": "64-dependent-environment-beta-steps",
+            "inputHash": "5e97278e2e619d99cf1cd9a71f31e7ae10950cc3b2d89fc230cbe99ea4bff5a7",
+            "warmups": 10,
+            "samples": [
+              {
+                "sample": 0,
+                "repetitions": 50,
+                "elapsedMs": 123.15326400000004,
+                "perRequestMs": 2.463065280000001
+              },
+              {
+                "sample": 1,
+                "repetitions": 50,
+                "elapsedMs": 90.47934900000018,
+                "perRequestMs": 1.8095869800000037
+              },
+              {
+                "sample": 2,
+                "repetitions": 50,
+                "elapsedMs": 80.05053399999997,
+                "perRequestMs": 1.6010106799999995
+              }
+            ]
+          }
+        ],
+        "resourceUsage": {
+          "userCPUTime": 3556856,
+          "systemCPUTime": 80019,
+          "maxRSS": 203372,
+          "sharedMemorySize": 0,
+          "unsharedDataSize": 0,
+          "unsharedStackSize": 0,
+          "minorPageFault": 48240,
+          "majorPageFault": 0,
+          "swappedOut": 0,
+          "fsRead": 0,
+          "fsWrite": 0,
+          "ipcSent": 0,
+          "ipcReceived": 0,
+          "signalsCount": 0,
+          "voluntaryContextSwitches": 2176,
+          "involuntaryContextSwitches": 1651
+        },
+        "memoryUsage": {
+          "rss": 206934016,
+          "heapTotal": 148615168,
+          "heapUsed": 22524352,
+          "external": 2459611,
+          "arrayBuffers": 237473
+        }
+      }
+    },
+    {
+      "index": 3,
+      "variant": "old",
+      "command": "taskset",
+      "args": [
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=4096",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-bench-01/benchmark-worker.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-bench-01/api.mjs",
+        "old",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-bench-01/03-old.json"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 1743.0266550000015,
+      "observation": {
+        "variant": "old",
+        "pass": true,
+        "node": "v24.18.0",
+        "apiSha256": "49654e6628f9bacc3d56bb7de43512da4e791e9939650731ca9bb77126294869",
+        "results": [
+          {
+            "name": "closed-constructor-data",
+            "inputHash": "dfd95824dd5715a190c4b065899933131dafd7d314bf091f2f38f875b8a4126d",
+            "warmups": 10,
+            "samples": [
+              {
+                "sample": 0,
+                "repetitions": 100,
+                "elapsedMs": 360.08306100000004,
+                "perRequestMs": 3.6008306100000005
+              },
+              {
+                "sample": 1,
+                "repetitions": 100,
+                "elapsedMs": 241.575834,
+                "perRequestMs": 2.41575834
+              },
+              {
+                "sample": 2,
+                "repetitions": 100,
+                "elapsedMs": 200.86269900000002,
+                "perRequestMs": 2.0086269900000002
+              }
+            ]
+          },
+          {
+            "name": "64-dependent-environment-beta-steps",
+            "inputHash": "5e97278e2e619d99cf1cd9a71f31e7ae10950cc3b2d89fc230cbe99ea4bff5a7",
+            "warmups": 10,
+            "samples": [
+              {
+                "sample": 0,
+                "repetitions": 50,
+                "elapsedMs": 197.393599,
+                "perRequestMs": 3.94787198
+              },
+              {
+                "sample": 1,
+                "repetitions": 50,
+                "elapsedMs": 170.13374899999985,
+                "perRequestMs": 3.402674979999997
+              },
+              {
+                "sample": 2,
+                "repetitions": 50,
+                "elapsedMs": 170.07804499999997,
+                "perRequestMs": 3.4015608999999993
+              }
+            ]
+          }
+        ],
+        "resourceUsage": {
+          "userCPUTime": 1692281,
+          "systemCPUTime": 32005,
+          "maxRSS": 104544,
+          "sharedMemorySize": 0,
+          "unsharedDataSize": 0,
+          "unsharedStackSize": 0,
+          "minorPageFault": 16949,
+          "majorPageFault": 0,
+          "swappedOut": 0,
+          "fsRead": 0,
+          "fsWrite": 0,
+          "ipcSent": 0,
+          "ipcReceived": 0,
+          "signalsCount": 0,
+          "voluntaryContextSwitches": 1063,
+          "involuntaryContextSwitches": 1007
+        },
+        "memoryUsage": {
+          "rss": 105676800,
+          "heapTotal": 45330432,
+          "heapUsed": 15576760,
+          "external": 2459647,
+          "arrayBuffers": 237509
+        }
+      }
+    },
+    {
+      "index": 4,
+      "variant": "old",
+      "command": "taskset",
+      "args": [
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=4096",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-bench-01/benchmark-worker.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-bench-01/api.mjs",
+        "old",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-bench-01/04-old.json"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 1760.3506109999998,
+      "observation": {
+        "variant": "old",
+        "pass": true,
+        "node": "v24.18.0",
+        "apiSha256": "49654e6628f9bacc3d56bb7de43512da4e791e9939650731ca9bb77126294869",
+        "results": [
+          {
+            "name": "closed-constructor-data",
+            "inputHash": "dfd95824dd5715a190c4b065899933131dafd7d314bf091f2f38f875b8a4126d",
+            "warmups": 10,
+            "samples": [
+              {
+                "sample": 0,
+                "repetitions": 100,
+                "elapsedMs": 362.28919900000005,
+                "perRequestMs": 3.6228919900000007
+              },
+              {
+                "sample": 1,
+                "repetitions": 100,
+                "elapsedMs": 239.51240599999994,
+                "perRequestMs": 2.395124059999999
+              },
+              {
+                "sample": 2,
+                "repetitions": 100,
+                "elapsedMs": 214.51951999999994,
+                "perRequestMs": 2.1451951999999994
+              }
+            ]
+          },
+          {
+            "name": "64-dependent-environment-beta-steps",
+            "inputHash": "5e97278e2e619d99cf1cd9a71f31e7ae10950cc3b2d89fc230cbe99ea4bff5a7",
+            "warmups": 10,
+            "samples": [
+              {
+                "sample": 0,
+                "repetitions": 50,
+                "elapsedMs": 196.01310999999987,
+                "perRequestMs": 3.9202621999999976
+              },
+              {
+                "sample": 1,
+                "repetitions": 50,
+                "elapsedMs": 172.00812700000006,
+                "perRequestMs": 3.440162540000001
+              },
+              {
+                "sample": 2,
+                "repetitions": 50,
+                "elapsedMs": 170.59283900000014,
+                "perRequestMs": 3.4118567800000026
+              }
+            ]
+          }
+        ],
+        "resourceUsage": {
+          "userCPUTime": 1709573,
+          "systemCPUTime": 32029,
+          "maxRSS": 104328,
+          "sharedMemorySize": 0,
+          "unsharedDataSize": 0,
+          "unsharedStackSize": 0,
+          "minorPageFault": 17047,
+          "majorPageFault": 0,
+          "swappedOut": 0,
+          "fsRead": 0,
+          "fsWrite": 0,
+          "ipcSent": 0,
+          "ipcReceived": 0,
+          "signalsCount": 0,
+          "voluntaryContextSwitches": 1060,
+          "involuntaryContextSwitches": 1001
+        },
+        "memoryUsage": {
+          "rss": 105566208,
+          "heapTotal": 45330432,
+          "heapUsed": 15576600,
+          "external": 2459647,
+          "arrayBuffers": 237509
+        }
+      }
+    },
+    {
+      "index": 5,
+      "variant": "new",
+      "command": "taskset",
+      "args": [
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=4096",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-bench-01/benchmark-worker.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-bench-01/api.mjs",
+        "new",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-bench-01/05-new.json"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 3735.3215959999998,
+      "observation": {
+        "variant": "new",
+        "pass": true,
+        "node": "v24.18.0",
+        "apiSha256": "49654e6628f9bacc3d56bb7de43512da4e791e9939650731ca9bb77126294869",
+        "results": [
+          {
+            "name": "closed-constructor-data",
+            "inputHash": "dfd95824dd5715a190c4b065899933131dafd7d314bf091f2f38f875b8a4126d",
+            "warmups": 10,
+            "samples": [
+              {
+                "sample": 0,
+                "repetitions": 100,
+                "elapsedMs": 1249.086396,
+                "perRequestMs": 12.490863959999999
+              },
+              {
+                "sample": 1,
+                "repetitions": 100,
+                "elapsedMs": 815.643174,
+                "perRequestMs": 8.15643174
+              },
+              {
+                "sample": 2,
+                "repetitions": 100,
+                "elapsedMs": 829.3131709999998,
+                "perRequestMs": 8.293131709999997
+              }
+            ]
+          },
+          {
+            "name": "64-dependent-environment-beta-steps",
+            "inputHash": "5e97278e2e619d99cf1cd9a71f31e7ae10950cc3b2d89fc230cbe99ea4bff5a7",
+            "warmups": 10,
+            "samples": [
+              {
+                "sample": 0,
+                "repetitions": 50,
+                "elapsedMs": 122.50139000000036,
+                "perRequestMs": 2.450027800000007
+              },
+              {
+                "sample": 1,
+                "repetitions": 50,
+                "elapsedMs": 92.9980959999998,
+                "perRequestMs": 1.8599619199999962
+              },
+              {
+                "sample": 2,
+                "repetitions": 50,
+                "elapsedMs": 81.17984699999988,
+                "perRequestMs": 1.6235969399999977
+              }
+            ]
+          }
+        ],
+        "resourceUsage": {
+          "userCPUTime": 3638923,
+          "systemCPUTime": 71978,
+          "maxRSS": 204076,
+          "sharedMemorySize": 0,
+          "unsharedDataSize": 0,
+          "unsharedStackSize": 0,
+          "minorPageFault": 46660,
+          "majorPageFault": 0,
+          "swappedOut": 0,
+          "fsRead": 0,
+          "fsWrite": 0,
+          "ipcSent": 0,
+          "ipcReceived": 0,
+          "signalsCount": 0,
+          "voluntaryContextSwitches": 2187,
+          "involuntaryContextSwitches": 1660
+        },
+        "memoryUsage": {
+          "rss": 207781888,
+          "heapTotal": 148615168,
+          "heapUsed": 22524352,
+          "external": 2459611,
+          "arrayBuffers": 237473
+        }
+      }
+    },
+    {
+      "index": 6,
+      "variant": "new",
+      "command": "taskset",
+      "args": [
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=4096",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-bench-01/benchmark-worker.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-bench-01/api.mjs",
+        "new",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-bench-01/06-new.json"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 3739.48214,
+      "observation": {
+        "variant": "new",
+        "pass": true,
+        "node": "v24.18.0",
+        "apiSha256": "49654e6628f9bacc3d56bb7de43512da4e791e9939650731ca9bb77126294869",
+        "results": [
+          {
+            "name": "closed-constructor-data",
+            "inputHash": "dfd95824dd5715a190c4b065899933131dafd7d314bf091f2f38f875b8a4126d",
+            "warmups": 10,
+            "samples": [
+              {
+                "sample": 0,
+                "repetitions": 100,
+                "elapsedMs": 1252.980605,
+                "perRequestMs": 12.52980605
+              },
+              {
+                "sample": 1,
+                "repetitions": 100,
+                "elapsedMs": 863.116857,
+                "perRequestMs": 8.63116857
+              },
+              {
+                "sample": 2,
+                "repetitions": 100,
+                "elapsedMs": 787.530812,
+                "perRequestMs": 7.87530812
+              }
+            ]
+          },
+          {
+            "name": "64-dependent-environment-beta-steps",
+            "inputHash": "5e97278e2e619d99cf1cd9a71f31e7ae10950cc3b2d89fc230cbe99ea4bff5a7",
+            "warmups": 10,
+            "samples": [
+              {
+                "sample": 0,
+                "repetitions": 50,
+                "elapsedMs": 122.18595899999991,
+                "perRequestMs": 2.443719179999998
+              },
+              {
+                "sample": 1,
+                "repetitions": 50,
+                "elapsedMs": 91.29330699999991,
+                "perRequestMs": 1.8258661399999982
+              },
+              {
+                "sample": 2,
+                "repetitions": 50,
+                "elapsedMs": 80.80329100000017,
+                "perRequestMs": 1.6160658200000035
+              }
+            ]
+          }
+        ],
+        "resourceUsage": {
+          "userCPUTime": 3651033,
+          "systemCPUTime": 63983,
+          "maxRSS": 203460,
+          "sharedMemorySize": 0,
+          "unsharedDataSize": 0,
+          "unsharedStackSize": 0,
+          "minorPageFault": 48141,
+          "majorPageFault": 0,
+          "swappedOut": 0,
+          "fsRead": 0,
+          "fsWrite": 0,
+          "ipcSent": 0,
+          "ipcReceived": 0,
+          "signalsCount": 0,
+          "voluntaryContextSwitches": 2180,
+          "involuntaryContextSwitches": 1654
+        },
+        "memoryUsage": {
+          "rss": 207060992,
+          "heapTotal": 148615168,
+          "heapUsed": 22524352,
+          "external": 2459611,
+          "arrayBuffers": 237473
+        }
+      }
+    },
+    {
+      "index": 7,
+      "variant": "old",
+      "command": "taskset",
+      "args": [
+        "-c",
+        "0",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=4096",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-bench-01/benchmark-worker.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-bench-01/api.mjs",
+        "old",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/semantic-values-bench-01/07-old.json"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "elapsedMs": 1711.0582869999998,
+      "observation": {
+        "variant": "old",
+        "pass": true,
+        "node": "v24.18.0",
+        "apiSha256": "49654e6628f9bacc3d56bb7de43512da4e791e9939650731ca9bb77126294869",
+        "results": [
+          {
+            "name": "closed-constructor-data",
+            "inputHash": "dfd95824dd5715a190c4b065899933131dafd7d314bf091f2f38f875b8a4126d",
+            "warmups": 10,
+            "samples": [
+              {
+                "sample": 0,
+                "repetitions": 100,
+                "elapsedMs": 360.80303,
+                "perRequestMs": 3.6080303
+              },
+              {
+                "sample": 1,
+                "repetitions": 100,
+                "elapsedMs": 236.90823699999999,
+                "perRequestMs": 2.3690823699999997
+              },
+              {
+                "sample": 2,
+                "repetitions": 100,
+                "elapsedMs": 206.46234600000014,
+                "perRequestMs": 2.0646234600000013
+              }
+            ]
+          },
+          {
+            "name": "64-dependent-environment-beta-steps",
+            "inputHash": "5e97278e2e619d99cf1cd9a71f31e7ae10950cc3b2d89fc230cbe99ea4bff5a7",
+            "warmups": 10,
+            "samples": [
+              {
+                "sample": 0,
+                "repetitions": 50,
+                "elapsedMs": 185.6731299999999,
+                "perRequestMs": 3.713462599999998
+              },
+              {
+                "sample": 1,
+                "repetitions": 50,
+                "elapsedMs": 158.03031600000008,
+                "perRequestMs": 3.1606063200000016
+              },
+              {
+                "sample": 2,
+                "repetitions": 50,
+                "elapsedMs": 156.94927299999995,
+                "perRequestMs": 3.138985459999999
+              }
+            ]
+          }
+        ],
+        "resourceUsage": {
+          "userCPUTime": 1685665,
+          "systemCPUTime": 8007,
+          "maxRSS": 101712,
+          "sharedMemorySize": 0,
+          "unsharedDataSize": 0,
+          "unsharedStackSize": 0,
+          "minorPageFault": 17136,
+          "majorPageFault": 0,
+          "swappedOut": 0,
+          "fsRead": 0,
+          "fsWrite": 0,
+          "ipcSent": 0,
+          "ipcReceived": 0,
+          "signalsCount": 0,
+          "voluntaryContextSwitches": 1061,
+          "involuntaryContextSwitches": 997
+        },
+        "memoryUsage": {
+          "rss": 103186432,
+          "heapTotal": 45330432,
+          "heapUsed": 15576760,
+          "external": 2459647,
+          "arrayBuffers": 237509
+        }
+      }
+    }
+  ]
+}

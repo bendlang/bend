@@ -1,0 +1,31 @@
+{
+  "scope": "hypothetical scoped replacement, not installed source reduction",
+  "oldTermFreshening": {
+    "physical": 124,
+    "nonblank": 119,
+    "bytes": 4463
+  },
+  "oldTemplateShift": {
+    "physical": 20,
+    "nonblank": 17,
+    "bytes": 545
+  },
+  "candidate": {
+    "physical": 166,
+    "nonblank": 151,
+    "bytes": 5518
+  },
+  "retained": [
+    "FFresh type",
+    "f_rename_var",
+    "declaration-list worklist",
+    "f_fresh_term wrapper",
+    "existing core term operations"
+  ],
+  "compatibility": "Any required f_fresh_stack or sp_shift alias would add adapter cost beyond this optimistic pool.",
+  "optimisticNetDelta": {
+    "physical": 22,
+    "nonblank": 15,
+    "bytes": 510
+  }
+}

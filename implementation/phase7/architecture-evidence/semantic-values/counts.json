@@ -1,0 +1,307 @@
+{
+  "method": "Conservative lexical dependency closure with strings/comments masked. Block counts exclude trailing blank separators; whole-module counts include them. Shared Base primitives remain runtime/library dependencies.",
+  "prototype": {
+    "file": "implementation/phase7/architecture-evidence/semantic-values/semantic-values.bend",
+    "physical": 547,
+    "nonblank": 454,
+    "bytes": 19316
+  },
+  "definitions": 69,
+  "forwardLaws": 12,
+  "types": 12,
+  "sharedDefinitions": [
+    {
+      "name": "all",
+      "file": "term.bend",
+      "line": 139,
+      "physical": 9,
+      "nonblank": 9,
+      "bytes": 143
+    },
+    {
+      "name": "app",
+      "file": "term.bend",
+      "line": 132,
+      "physical": 6,
+      "nonblank": 6,
+      "bytes": 100
+    },
+    {
+      "name": "atom",
+      "file": "term.bend",
+      "line": 35,
+      "physical": 5,
+      "nonblank": 5,
+      "bytes": 73
+    },
+    {
+      "name": "ix",
+      "file": "term.bend",
+      "line": 57,
+      "physical": 7,
+      "nonblank": 7,
+      "bytes": 112
+    },
+    {
+      "name": "kc",
+      "file": "term.bend",
+      "line": 4,
+      "physical": 15,
+      "nonblank": 14,
+      "bytes": 310
+    },
+    {
+      "name": "kid",
+      "file": "term.bend",
+      "line": 100,
+      "physical": 6,
+      "nonblank": 6,
+      "bytes": 74
+    },
+    {
+      "name": "ks",
+      "file": "term.bend",
+      "line": 73,
+      "physical": 7,
+      "nonblank": 7,
+      "bytes": 126
+    },
+    {
+      "name": "kt",
+      "file": "term.bend",
+      "line": 25,
+      "physical": 9,
+      "nonblank": 9,
+      "bytes": 157
+    },
+    {
+      "name": "nm",
+      "file": "term.bend",
+      "line": 49,
+      "physical": 7,
+      "nonblank": 7,
+      "bytes": 117
+    },
+    {
+      "name": "norm_exact",
+      "file": "normalize.bend",
+      "line": 334,
+      "physical": 3,
+      "nonblank": 3,
+      "bytes": 79
+    },
+    {
+      "name": "norm_exact_head",
+      "file": "normalize.bend",
+      "line": 348,
+      "physical": 3,
+      "nonblank": 3,
+      "bytes": 225
+    },
+    {
+      "name": "norm_exact_lists",
+      "file": "normalize.bend",
+      "line": 338,
+      "physical": 9,
+      "nonblank": 9,
+      "bytes": 279
+    },
+    {
+      "name": "norm_exact_names",
+      "file": "normalize.bend",
+      "line": 352,
+      "physical": 12,
+      "nonblank": 11,
+      "bytes": 396
+    },
+    {
+      "name": "norm_join",
+      "file": "term.bend",
+      "line": 396,
+      "physical": 10,
+      "nonblank": 10,
+      "bytes": 176
+    },
+    {
+      "name": "norm_max",
+      "file": "normalize.bend",
+      "line": 132,
+      "physical": 6,
+      "nonblank": 6,
+      "bytes": 97
+    },
+    {
+      "name": "norm_max_term",
+      "file": "normalize.bend",
+      "line": 138,
+      "physical": 5,
+      "nonblank": 5,
+      "bytes": 84
+    },
+    {
+      "name": "norm_max_walk",
+      "file": "normalize.bend",
+      "line": 289,
+      "physical": 7,
+      "nonblank": 7,
+      "bytes": 173
+    },
+    {
+      "name": "qt",
+      "file": "term.bend",
+      "line": 65,
+      "physical": 7,
+      "nonblank": 7,
+      "bytes": 115
+    },
+    {
+      "name": "rm",
+      "file": "term.bend",
+      "line": 81,
+      "physical": 7,
+      "nonblank": 7,
+      "bytes": 130
+    },
+    {
+      "name": "terms_at",
+      "file": "term.bend",
+      "line": 89,
+      "physical": 10,
+      "nonblank": 10,
+      "bytes": 212
+    },
+    {
+      "name": "terms_len",
+      "file": "term.bend",
+      "line": 236,
+      "physical": 9,
+      "nonblank": 9,
+      "bytes": 144
+    },
+    {
+      "name": "tg",
+      "file": "term.bend",
+      "line": 41,
+      "physical": 7,
+      "nonblank": 7,
+      "bytes": 116
+    },
+    {
+      "name": "var",
+      "file": "term.bend",
+      "line": 107,
+      "physical": 6,
+      "nonblank": 6,
+      "bytes": 90
+    }
+  ],
+  "sharedLaws": [
+    {
+      "name": "norm_exact",
+      "file": "normalize.bend",
+      "line": 313,
+      "physical": 4,
+      "nonblank": 4,
+      "bytes": 55
+    },
+    {
+      "name": "norm_exact_head",
+      "file": "normalize.bend",
+      "line": 323,
+      "physical": 4,
+      "nonblank": 4,
+      "bytes": 60
+    },
+    {
+      "name": "norm_exact_lists",
+      "file": "normalize.bend",
+      "line": 318,
+      "physical": 4,
+      "nonblank": 4,
+      "bytes": 83
+    },
+    {
+      "name": "norm_exact_names",
+      "file": "normalize.bend",
+      "line": 328,
+      "physical": 4,
+      "nonblank": 4,
+      "bytes": 85
+    },
+    {
+      "name": "norm_max_walk",
+      "file": "normalize.bend",
+      "line": 278,
+      "physical": 4,
+      "nonblank": 4,
+      "bytes": 72
+    }
+  ],
+  "sharedTypes": [
+    {
+      "name": "KTerm",
+      "file": "term.bend",
+      "line": 18,
+      "physical": 2,
+      "nonblank": 2,
+      "bytes": 132
+    }
+  ],
+  "prototypeFunctionsUnreachableFromPublicRoots": [],
+  "reusedBlockTotals": {
+    "physical": 194,
+    "nonblank": 192,
+    "bytes": 4015
+  },
+  "auxiliary": [
+    {
+      "file": "implementation/phase7/architecture-evidence/semantic-values/benchmark-worker.mjs",
+      "physical": 43,
+      "nonblank": 42,
+      "bytes": 2514
+    },
+    {
+      "file": "implementation/phase7/architecture-evidence/semantic-values/benchmark.mjs",
+      "physical": 66,
+      "nonblank": 65,
+      "bytes": 5282
+    },
+    {
+      "file": "implementation/phase7/architecture-evidence/semantic-values/census.py",
+      "physical": 61,
+      "nonblank": 60,
+      "bytes": 4003
+    },
+    {
+      "file": "implementation/phase7/architecture-evidence/semantic-values/controls.mjs",
+      "physical": 221,
+      "nonblank": 208,
+      "bytes": 12325
+    },
+    {
+      "file": "implementation/phase7/architecture-evidence/semantic-values/demand-witness.mjs",
+      "physical": 36,
+      "nonblank": 36,
+      "bytes": 1900
+    },
+    {
+      "file": "implementation/phase7/architecture-evidence/semantic-values/residual-witness.mjs",
+      "physical": 27,
+      "nonblank": 27,
+      "bytes": 1545
+    },
+    {
+      "file": "implementation/phase7/architecture-evidence/semantic-values/run.mjs",
+      "physical": 91,
+      "nonblank": 89,
+      "bytes": 5373
+    }
+  ],
+  "productionLinesDeleted": 0,
+  "productionLinesAdded": 0,
+  "oldWholePool": {
+    "normalize": 510,
+    "graph": 475,
+    "warning": "985 minus prototype is not a net saving. Old modules implement excluded semantics and explicit work stacks, and the prototype retains the listed helpers."
+  }
+}

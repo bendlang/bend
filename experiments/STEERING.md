@@ -57,12 +57,18 @@ validates one. Existing failed provenance/Boolean/cache attempts remain failed.
 
 ## Architectural research inside S4
 
-Start P7-A01 checked output, P7-A02 first-order semantic values, and P7-A03 shared
-binding operations independently. The [design](../design/phase7/architectural_experiments.md)
-also records five deferred alternatives. Baseline source/default stays intact.
-Root serializes builds/timing; small standalone modules are checked stage0
-components, while edited full compilers use the checked B1 workflow. Preserve
-unsupported boundaries and failed attempts. First compare actual replacement
-size, independent invariants, semantic controls and operation cost; no invented
-50% savings or automatic promotion. Review each first feasibility slice before
-expanding it. There is no renewed historical multi-hour deadline.
+The [first comparison](../implementation/phase7/architecture-report.md) is complete.
+P7-A01 checked output helps compile preparation but penalizes check-only requests;
+its unconditional implementation is not promoted. P7-A02 semantic values help a
+substitution-heavy workload but regress closed data and memory; demand-order
+counterexamples and fixes remain preserved, including a final unresolved
+All-domain demand regression. P7-A03 runtime shared binding
+traversal is rejected: larger source and slower operations. All are isolated,
+actually checked prototypes; production/default source remains unchanged.
+
+The next bounded hypothesis is A01 output/discard policy before allocation,
+followed by a real annotation-pass deletion boundary only if both workload lanes
+pass. No savings are earned yet. Five alternative ideas remain deferred in the
+[design](../design/phase7/architectural_experiments.md). Keep measured operations,
+full compiler throughput, correctness and promotion separate. No new TypeScript
+ratio or conformance reduction was measured, and the 50% milestone remains open.

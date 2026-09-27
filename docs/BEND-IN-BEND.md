@@ -32,6 +32,12 @@ The 50% and 75% simplification targets are still unachieved. The
 Base, runtime and host. Historical compiler variants are retained with their
 reports; ordinary use requires no artifact selection.
 
+The [architectural experiment design](../design/phase7/architectural_experiments.md)
+and [comparison report](../implementation/phase7/architecture-report.md) describe
+the current simplification research. Three isolated Bend prototypes test checked
+output, semantic values and shared binding traversal. Their operation timings
+are not whole-compiler speedups; none replaces the installed S4 compiler.
+
 ## Run the compiler
 
 Use Node.js 24 or newer. From the repository root:

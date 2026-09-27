@@ -1,0 +1,17 @@
+{
+  "pass": true,
+  "localMarkdownFilesChecked": 11,
+  "missingLocalLinks": [],
+  "stagedFilesAudited": 54,
+  "noProductionOrPhase6ChangesStaged": true,
+  "whitespace": "Pass excluding three immutable evidence files: two old-source pools retain trailing blank lines and unified patch context lines retain their required prefix spaces.",
+  "archiveVerified": {
+    "pass": true,
+    "members": 1869,
+    "bytes": 6227562,
+    "sha256": "0eeebf0355b35db235410a90ce9af167697687ba8580715a762209c27bdf99d8"
+  },
+  "releaseVerification": "passed; preserved in raw/baseline/release-verification-final.json",
+  "sourceArtifactIdentity": "unchanged; preserved in raw/baseline/unchanged-final.json",
+  "experimentalSemanticStatus": "A02 residual All-domain failure remains; no candidate promoted"
+}

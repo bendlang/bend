@@ -1,0 +1,166 @@
+{
+  "kind": "implementer-preservation-audit",
+  "notIndependentSourceReview": true,
+  "pass": true,
+  "rows": [
+    {
+      "label": "input-0",
+      "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/s4/attempt-b02/api.mjs",
+      "expected": "f201bdea7ea4041483b40704f622703945858e981c404a4d7e50979b74370110",
+      "actual": "f201bdea7ea4041483b40704f622703945858e981c404a4d7e50979b74370110",
+      "pass": true
+    },
+    {
+      "label": "input-1",
+      "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-attempt-01/api.mjs",
+      "expected": "5efa1b35c7b3585731fc0937fcb26e3a50a1af3ffcb983bd52a83cdeaebf245b",
+      "actual": "5efa1b35c7b3585731fc0937fcb26e3a50a1af3ffcb983bd52a83cdeaebf245b",
+      "pass": true
+    },
+    {
+      "label": "input-2",
+      "path": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime.mjs",
+      "expected": "26f5eee2f54b194b64f768df6ff505c67bf7a5df2159aa06caf53ecba54e910b",
+      "actual": "26f5eee2f54b194b64f768df6ff505c67bf7a5df2159aa06caf53ecba54e910b",
+      "pass": true
+    },
+    {
+      "label": "input-3",
+      "path": "/home/ai/bend2/build/publish/bend/implementation/phase7/architecture-evidence/checked-output/timing.mjs",
+      "expected": "89ff0dc6d91ebec0055386a8592bb9f422f61ca425690665009a2af880ffa75b",
+      "actual": "89ff0dc6d91ebec0055386a8592bb9f422f61ca425690665009a2af880ffa75b",
+      "pass": true
+    },
+    {
+      "label": "input-4",
+      "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/timing-worker.mjs",
+      "expected": "9fb9d12f78dd53bfcf31a1d854667ae66db2ac09dd6e8a957cecba482679b12d",
+      "actual": "9fb9d12f78dd53bfcf31a1d854667ae66db2ac09dd6e8a957cecba482679b12d",
+      "pass": true
+    },
+    {
+      "label": "config",
+      "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/config.json",
+      "expected": "531fce0c65ea95dc128458ce9babe6ce1cb76104c91aed0f53ebf8283f6e6e43",
+      "actual": "531fce0c65ea95dc128458ce9babe6ce1cb76104c91aed0f53ebf8283f6e6e43",
+      "pass": true
+    },
+    {
+      "label": "exposure-A",
+      "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/baseline-exposed.mjs",
+      "expected": "f390b3f187999f5cb0b14bdb08fe139f5b9462dedb42b414e6a2c6d393b9250c",
+      "actual": "f390b3f187999f5cb0b14bdb08fe139f5b9462dedb42b414e6a2c6d393b9250c",
+      "pass": true
+    },
+    {
+      "label": "exposure-B",
+      "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/candidate-exposed.mjs",
+      "expected": "7b83ef46d9d8cd63df50ca372279cd25a5ec5a3827869bb4fc5362b1171b6432",
+      "actual": "7b83ef46d9d8cd63df50ca372279cd25a5ec5a3827869bb4fc5362b1171b6432",
+      "pass": true
+    },
+    {
+      "label": "fixture",
+      "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase7/architecture/checked-measure-01/fixture.json",
+      "expected": "332e859e06e95ec8dd2b5a862198a526a118490219c4e64e3efc8aedc78581de",
+      "actual": "332e859e06e95ec8dd2b5a862198a526a118490219c4e64e3efc8aedc78581de",
+      "pass": true
+    },
+    {
+      "label": "worker-0-affinity",
+      "pass": true
+    },
+    {
+      "label": "worker-0-node",
+      "pass": true
+    },
+    {
+      "label": "worker-0-source",
+      "pass": true
+    },
+    {
+      "label": "worker-1-affinity",
+      "pass": true
+    },
+    {
+      "label": "worker-1-node",
+      "pass": true
+    },
+    {
+      "label": "worker-1-source",
+      "pass": true
+    },
+    {
+      "label": "worker-2-affinity",
+      "pass": true
+    },
+    {
+      "label": "worker-2-node",
+      "pass": true
+    },
+    {
+      "label": "worker-2-source",
+      "pass": true
+    },
+    {
+      "label": "worker-3-affinity",
+      "pass": true
+    },
+    {
+      "label": "worker-3-node",
+      "pass": true
+    },
+    {
+      "label": "worker-3-source",
+      "pass": true
+    },
+    {
+      "label": "worker-4-affinity",
+      "pass": true
+    },
+    {
+      "label": "worker-4-node",
+      "pass": true
+    },
+    {
+      "label": "worker-4-source",
+      "pass": true
+    },
+    {
+      "label": "worker-5-affinity",
+      "pass": true
+    },
+    {
+      "label": "worker-5-node",
+      "pass": true
+    },
+    {
+      "label": "worker-5-source",
+      "pass": true
+    },
+    {
+      "label": "worker-6-affinity",
+      "pass": true
+    },
+    {
+      "label": "worker-6-node",
+      "pass": true
+    },
+    {
+      "label": "worker-6-source",
+      "pass": true
+    },
+    {
+      "label": "worker-7-affinity",
+      "pass": true
+    },
+    {
+      "label": "worker-7-node",
+      "pass": true
+    },
+    {
+      "label": "worker-7-source",
+      "pass": true
+    }
+  ]
+}

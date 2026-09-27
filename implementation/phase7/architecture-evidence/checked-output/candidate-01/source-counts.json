@@ -1,0 +1,24 @@
+{
+  "baseline": {
+    "physicalLines": 1152,
+    "nonblankLines": 987,
+    "bytes": 33907,
+    "sha256": "a5a65f57412d0b3a961203a1e0dd5326a5d107ad3d9ff5ca48c0aff756747eeb"
+  },
+  "candidate": {
+    "physicalLines": 1175,
+    "nonblankLines": 1005,
+    "bytes": 34890,
+    "sha256": "7c8805bff1a8058694a65d6f73b574155cc6b4c52719cb9ac377b06f9731f23e"
+  },
+  "addedHelpers": [
+    "co_typed",
+    "co_inferred",
+    "co_right",
+    "co_application",
+    "co_constructor"
+  ],
+  "removedModules": [],
+  "retiredProductionLines": 0,
+  "scope": "Supported checked-output mechanics only; all original annotation and specialization functionality remains."
+}

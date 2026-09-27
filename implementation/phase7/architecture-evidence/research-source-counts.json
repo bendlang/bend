@@ -1,0 +1,195 @@
+{
+  "scope": "Additional research context; snapshots are not maintained production implementations. Compiler savings are zero. JSON/logs/reports/archives are evidence, excluded from executable source totals.",
+  "categories": {
+    "harness-and-preservation": {
+      "physical": 1168,
+      "nonblank": 1125,
+      "bytes": 76116
+    },
+    "new-prototype": {
+      "physical": 713,
+      "nonblank": 605,
+      "bytes": 24834
+    },
+    "retained-comparator-snapshot": {
+      "physical": 144,
+      "nonblank": 136,
+      "bytes": 5008
+    },
+    "full-compiler-snapshot": {
+      "physical": 1175,
+      "nonblank": 1005,
+      "bytes": 34890
+    }
+  },
+  "files": [
+    {
+      "file": "audit.py",
+      "category": "harness-and-preservation",
+      "physical": 67,
+      "nonblank": 58,
+      "bytes": 3765,
+      "sha256": "db6b84bd246b17ab6fe66a09750a37f1399185408efdf3c7096e46b8be9f2f29"
+    },
+    {
+      "file": "binding-schema/binding-schema.bend",
+      "category": "new-prototype",
+      "physical": 166,
+      "nonblank": 151,
+      "bytes": 5518,
+      "sha256": "73feb3fb6bbdb308579cf035edf31c6b9c9d7fdc8db852e18c2cc126f695af2b"
+    },
+    {
+      "file": "binding-schema/controls.mjs",
+      "category": "harness-and-preservation",
+      "physical": 80,
+      "nonblank": 80,
+      "bytes": 5204,
+      "sha256": "4845685de736c7f11c4dbef3cefed8efeae66d3f127bdcba3599fe5f38b8e8cd"
+    },
+    {
+      "file": "binding-schema/measure.mjs",
+      "category": "harness-and-preservation",
+      "physical": 49,
+      "nonblank": 49,
+      "bytes": 3923,
+      "sha256": "4059fd4d77dcca12ed9e7750661b603b35f2d7920346f394278c288a34b56f4f"
+    },
+    {
+      "file": "binding-schema/old-scope-pool.bend.txt",
+      "category": "retained-comparator-snapshot",
+      "physical": 124,
+      "nonblank": 119,
+      "bytes": 4463,
+      "sha256": "05aea8f43fc9a9c246a566d18a142d885677e61394e0aa755a1bb2af361e19e6"
+    },
+    {
+      "file": "binding-schema/old-shift-pool.bend.txt",
+      "category": "retained-comparator-snapshot",
+      "physical": 20,
+      "nonblank": 17,
+      "bytes": 545,
+      "sha256": "335ac9b40cdfc3187ab5f29d0272129ecbc5ac9ae3d148ba79dbb3edc4b7d503"
+    },
+    {
+      "file": "build-component.mjs",
+      "category": "harness-and-preservation",
+      "physical": 46,
+      "nonblank": 46,
+      "bytes": 3642,
+      "sha256": "80baa091fb2dac6cb55876a63346048a44a974826ebbaa6b4daf6d60883765da"
+    },
+    {
+      "file": "checked-output/candidate-01/kernel.bend",
+      "category": "full-compiler-snapshot",
+      "physical": 1175,
+      "nonblank": 1005,
+      "bytes": 34890,
+      "sha256": "7c8805bff1a8058694a65d6f73b574155cc6b4c52719cb9ac377b06f9731f23e"
+    },
+    {
+      "file": "checked-output/controls.mjs",
+      "category": "harness-and-preservation",
+      "physical": 129,
+      "nonblank": 128,
+      "bytes": 10612,
+      "sha256": "b9d1dabbd384ba17b8ceae77e300a5e73d0395458c11a266b25bf1348cbc7974"
+    },
+    {
+      "file": "checked-output/prepare.py",
+      "category": "harness-and-preservation",
+      "physical": 75,
+      "nonblank": 66,
+      "bytes": 4240,
+      "sha256": "9c21b1c684a54ca687139d68392128bc1ccf91baf0910bd8bb40ef9353604a19"
+    },
+    {
+      "file": "checked-output/timing-worker.mjs",
+      "category": "harness-and-preservation",
+      "physical": 38,
+      "nonblank": 38,
+      "bytes": 2219,
+      "sha256": "9fb9d12f78dd53bfcf31a1d854667ae66db2ac09dd6e8a957cecba482679b12d"
+    },
+    {
+      "file": "checked-output/timing.mjs",
+      "category": "harness-and-preservation",
+      "physical": 73,
+      "nonblank": 73,
+      "bytes": 6644,
+      "sha256": "89ff0dc6d91ebec0055386a8592bb9f422f61ca425690665009a2af880ffa75b"
+    },
+    {
+      "file": "preserve.py",
+      "category": "harness-and-preservation",
+      "physical": 66,
+      "nonblank": 60,
+      "bytes": 2925,
+      "sha256": "2490a336e5d23bba3bd91aed509c29c440ea85320139724af54c67950cd938d9"
+    },
+    {
+      "file": "semantic-values/benchmark-worker.mjs",
+      "category": "harness-and-preservation",
+      "physical": 43,
+      "nonblank": 42,
+      "bytes": 2514,
+      "sha256": "4a38ea37b90847fd493b929821a1e802eff2ae3e8103ba3223a8e9136aff32c0"
+    },
+    {
+      "file": "semantic-values/benchmark.mjs",
+      "category": "harness-and-preservation",
+      "physical": 66,
+      "nonblank": 65,
+      "bytes": 5282,
+      "sha256": "d672757f5353c2d57318837811f8114032c6a0a7e2cfc7c81d5875f30d725d21"
+    },
+    {
+      "file": "semantic-values/census.py",
+      "category": "harness-and-preservation",
+      "physical": 61,
+      "nonblank": 60,
+      "bytes": 4003,
+      "sha256": "09d2a71e40665ad0c74c03c7cc15ade08865a8ab5703d6522ea273c691fc78c5"
+    },
+    {
+      "file": "semantic-values/controls.mjs",
+      "category": "harness-and-preservation",
+      "physical": 221,
+      "nonblank": 208,
+      "bytes": 12325,
+      "sha256": "0846f82ab6cdc703a02d8c5347e6d86245ece812833ee6025b727c2cfb3650ac"
+    },
+    {
+      "file": "semantic-values/demand-witness.mjs",
+      "category": "harness-and-preservation",
+      "physical": 36,
+      "nonblank": 36,
+      "bytes": 1900,
+      "sha256": "d20585fbae539bff0f555597579858fd51c6c9fef82cfc4c031724c1b013babb"
+    },
+    {
+      "file": "semantic-values/residual-witness.mjs",
+      "category": "harness-and-preservation",
+      "physical": 27,
+      "nonblank": 27,
+      "bytes": 1545,
+      "sha256": "ce85b74a54b19515a03ff3c38f7239c34b11ece7efa8277aa769bb3344ec4b9d"
+    },
+    {
+      "file": "semantic-values/run.mjs",
+      "category": "harness-and-preservation",
+      "physical": 91,
+      "nonblank": 89,
+      "bytes": 5373,
+      "sha256": "6c639f5e8549eaf9aac7d3699fc91198c3388ca5ec23e9d54efbed9f63f3ba0b"
+    },
+    {
+      "file": "semantic-values/semantic-values.bend",
+      "category": "new-prototype",
+      "physical": 547,
+      "nonblank": 454,
+      "bytes": 19316,
+      "sha256": "cde519a86320070df6373183651f7dd9ec317d5b5727eb4d69e995273a1aa576"
+    }
+  ]
+}

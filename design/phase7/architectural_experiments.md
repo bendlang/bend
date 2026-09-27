@@ -10,6 +10,10 @@ The user asks to write down the ideas, try the recommended experiments, and find
 which is best. Historical campaign deadlines do not apply. Start with bounded
 feasibility experiments, independently owned, before a broader implementation.
 
+The [completed first comparison](../../implementation/phase7/architecture-report.md)
+records actual results and the next decision. The proposals and prospective
+budgets below remain hypotheses unless that report explicitly validates them.
+
 ## Baseline and success criteria
 
 The 59 manifest modules contain 14,667 physical lines, 12,505 nonblank lines and
