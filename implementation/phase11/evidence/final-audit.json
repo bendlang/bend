@@ -1,0 +1,52 @@
+{
+  "kind": "phase11-publication-final-audit",
+  "complete": true,
+  "pass": true,
+  "date": "2026-09-28T09:05:04.245909+00:00",
+  "scope": "Read-only final checks after capture/verification/materialization/full independent byte-mode recovery; only this publication metadata is new.",
+  "rootFinalInputs": [
+    {
+      "file": "selfhost/build/phase11/consolidation-01.json",
+      "sha256": "045660dda4fe5956a82ec25c88d31dad1e386e5c0cc9c431ead90c0f77070d06",
+      "pass": true
+    },
+    {
+      "file": "selfhost/build/phase11/documentation-review-01.json",
+      "sha256": "61842c0b48b79383cedabbf01810593f96925cfaff55eb9a925743b827893edf",
+      "pass": true
+    },
+    {
+      "file": "selfhost/dist/release.json",
+      "sha256": "490ff7289d78d382cac99e6e6ac88dc71df840e8166b44e444600d8446818543",
+      "pass": true
+    },
+    {
+      "file": "selfhost/dist/typed-api.mjs",
+      "sha256": "63c861e900450ab2045474d6c822371d30c56019521a12c13d8e4c62009ddf1f",
+      "pass": true
+    }
+  ],
+  "explicitReports": [
+    "implementation/phase11/call_review.md",
+    "implementation/phase11/calls.md",
+    "implementation/phase11/checker-stack.md",
+    "implementation/phase11/checker.md",
+    "implementation/phase11/known_work.md",
+    "implementation/phase11/patterns.md",
+    "implementation/phase11/scope_guard.md"
+  ],
+  "allReportsPresent": true,
+  "livePhase6Payloads": [],
+  "bytecodePayloads": [],
+  "publicationFilesAtLeast100MB": [],
+  "unresolvedRepositoryReferences": 0,
+  "archive": {
+    "file": "raw.tar.gz",
+    "bytes": 23289650,
+    "sha256": "d2759a82bb13cf5a38b819acce9769fe529ce6cf57e4b81668a5ab6f2de1e099"
+  },
+  "recoveredFiles": 12362,
+  "newArchiveMembers": 2223,
+  "prerequisiteCapsules": 7,
+  "remainingHistoricalExternalGroups": 1
+}
