@@ -252,6 +252,11 @@ def Term.takes : Term → Bool
   | Efq       => true
   | _         => false
 
+-- an argument x : A as the checker puts it into a type: a λ or λ-match
+-- goes annotated, so a call of it there infers
+def Term.arg (x A : Term) : Term :=
+  if Term.takes x then Ann x A else x
+
 -- a former whose parts may bind a variable
 def Term.binds : Term → Bool
   | All .. | Lam .. | Sig .. | Rwt .. => true
@@ -980,7 +985,7 @@ def Term.infer (ck : Lib) : Nat → Ctx → Term → Res Term
     | All p A B => do
       Res.need (p == q) "an argument of its binder's quantity"
       Term.check ck n c x A
-      pure (Term.inst B x)
+      pure (Term.inst B (Term.arg x A))
     | F => Ctx.fail c "a function" F
   | _ + 1, _, Enu _ => pure (Typ Q2)
   | n + 1, c, Eql a b T => do
@@ -2241,7 +2246,11 @@ theorem chk (hcl : Sees ck bk) (n : Nat) : ∀ c t T, Ctx.ok bk c →
       rename_i e
       obtain ⟨rfl, h2, rfl⟩ := h
       rw [Chk, inst_sub]
-      exact .app (.conv (I _ _ h1) (wnf_fits hcl e).2) (C _ _ h2)
+      refine .conv (.app (.conv (I _ _ h1) (wnf_fits hcl e).2) (C _ _ h2))
+        (.inl ⟨_, .refl, .step (par_inst (par_refl _) ?_) .refl⟩)
+      unfold Term.arg; split
+      · exact .unann (par_refl _)
+      · exact par_refl _
     · subst h
       exact .enu
     · obtain ⟨h1, h2, h3, rfl⟩ := h
