@@ -1448,16 +1448,20 @@ def U32.from_nat(n: Nat) -> U32:
     case 1n+p:
       U32.inc(U32.from_nat(p))
 
-def U32.log2.go(+k: Nat, +n: U32, +d: Nat) -> Nat:
+# Halves the search for the top bit: at 2^p, n drops those low bits and
+# b counts them when anything is left above them (branchless, so the
+# call descends in the arm).
+def U32.log2.go(+k: Nat, +n: U32, b: Nat) -> Nat:
   match k:
     case 0n:
-      d
+      b
     case 1n+p:
-      U32.log2.go(p, U32.shr(n),
-        Nat.add(d, U32.to_nat(Bool.to_u32(U32.is_lt(1, n)))))
+      +s = U32.to_nat(U32.shln(1, p))
+      +t = Nat.mul(s, U32.to_nat(Bool.to_u32(U32.is_ne(U32.shrn(n, s), 0))))
+      U32.log2.go(p, U32.shrn(n, t), Nat.add(b, t))
 
-def U32.log2(+n: U32) -> Nat:
-  U32.log2.go(32n, n, 0n)
+def U32.log2(n: U32) -> Nat:
+  U32.log2.go(5n, n, 0n)
 
 def U32.divmod.go.fin(-p: Nat, q: Word(p), s: U32, b: U32, g: Bool) ->
   Word(1n+p) & U32:
