@@ -813,3 +813,16 @@ are linked in the report. Preserve every failed attempt, including zero-count
 underflow, setup/oracle mistakes, and status-zero EPERM launch records. Invalid
 call microtimings are excluded. No performance ratio is inferred from archive
 capture, profiling, operation counts, or historical different-source measurements.
+
+
+## 2026-09-28 — Phase12 avoidable-work investigation started
+
+User authorizes another optimization round. The
+[prospective design](../design/phase12/avoidable_work.md) preserves Phase11
+`f8244c9`, selected API63c861e9 and unchanged upstream b2111cf. Root profiles the
+actual final release before choosing integrations. Independent bounded owners
+inspect delayed normalizer fallback, remaining branch/call work and rediscovered
+checked/literal structure; plans precede probes and no live source changes happen
+before evidence. The [report](../implementation/phase12/avoidable_work.md) will
+separate actual correctness, measurements and promotion from the1.2–1.5× estimate.
+No new speed, conformance or fixed-point result is claimed.
