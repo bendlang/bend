@@ -1448,9 +1448,6 @@ def U32.from_nat(n: Nat) -> U32:
     case 1n+p:
       U32.inc(U32.from_nat(p))
 
-# Halves the search for the top bit: at 2^p, n drops those low bits and
-# b counts them when anything is left above them (branchless, so the
-# call descends in the arm).
 def U32.log2.go(+k: Nat, +n: U32, b: Nat) -> Nat:
   match k:
     case 0n:
@@ -2531,9 +2528,9 @@ def Map.diff(a, b):
 def Map.new(a, -V: Kind(a)) -> Map<a, V>:
   MTip{}
 
-# Map.put.go, Map.ins.go, Map.seek.go, Map.get.go and Map.pop.go take the
-# node they are in, whole, and the key's bit at it: the child they descend
-# into is that node's field, a node rebuilt
+# Map.put.go, Map.ins.go, Map.seek.go, Map.has.go, Map.get.go and
+# Map.pop.go take the node they are in, whole, and the key's bit at it:
+# the child they descend into is that node's field, a node rebuilt
 def Map.put.go(-a: Quant, -V: Kind(a), node: Map<a, V>, x: V, kb: String & Bool) -> Map<a, V>:
   match node kb:
     case MNode{p, MTip{}, hi} Tuple{key, False{}}:
@@ -2678,18 +2675,37 @@ def Map.set.go(
 def Map.set(a, -V: Kind(a), m: Map<a, V>, key: String, x: V) -> Map<a, V>:
   Map.set.go(a, V, x, Map.seek(a, V, m, key))
 
-def Map.has.fin(
-  a, -V: Kind(a), r: Map<a, V> & String & Maybe<&2, String>
-) -> Map<a, V> & Bool:
-  (m2, key2, found) = r
-  match found:
-    case None{}:
-      (m2, False{})
-    case Some{k}:
-      (m2, String.eq(key2, k))
+def Map.has.leaf(a, -V: Kind(a), v: V, r: (String & String) & Cmp) ->
+  Map<a, V> & Bool:
+  ((key2, k2), c) = r
+  (MLeaf{k2, v}, Cmp.is_eq(c))
 
-def Map.has(a, -V: Kind(a), m: Map<a, V>, key: String) -> Map<a, V> & Bool:
-  Map.has.fin(a, V, Map.seek(a, V, m, key))
+def Map.has.go(-a: Quant, -V: Kind(a), node: Map<a, V>, kb: String & Bool) ->
+  Map<a, V> & Bool:
+  match node kb:
+    case MNode{p, MTip{}, hi} Tuple{key, False{}}:
+      (MNode{p, MTip{}, hi}, False{})
+    case MNode{p, MLeaf{k, v}, hi} Tuple{key, False{}}:
+      Map.lo(a, V, Bool, p, hi, Map.has.leaf(a, V, v, String.cmp(key, k)))
+    case MNode{p, MNode{+q, c, d}, hi} Tuple{key, False{}}:
+      Map.lo(a, V, Bool, p, hi, Map.has.go(a, V, MNode{q, c, d}, Map.bit(key, q)))
+    case MNode{p, lo, MTip{}} Tuple{key, True{}}:
+      (MNode{p, lo, MTip{}}, False{})
+    case MNode{p, lo, MLeaf{k, v}} Tuple{key, True{}}:
+      Map.hi(a, V, Bool, p, lo, Map.has.leaf(a, V, v, String.cmp(key, k)))
+    case MNode{p, lo, MNode{+q, c, d}} Tuple{key, True{}}:
+      Map.hi(a, V, Bool, p, lo, Map.has.go(a, V, MNode{q, c, d}, Map.bit(key, q)))
+    case m _:
+      (m, False{})
+
+def Map.has(-a: Quant, -V: Kind(a), m: Map<a, V>, key: String) -> Map<a, V> & Bool:
+  match m:
+    case MTip{}:
+      (MTip{}, False{})
+    case MLeaf{k, v}:
+      Map.has.leaf(a, V, v, String.cmp(key, k))
+    case MNode{+pos, lo, hi}:
+      Map.has.go(a, V, MNode{pos, lo, hi}, Map.bit(key, pos))
 
 def Map.get.leaf(-V: Data, d: V, +v: V, r: (String & String) & Cmp) ->
   Map<&2, V> & V:
@@ -2782,8 +2798,12 @@ def Map.pop(-a: Quant, -V: Kind(a), m: Map<a, V>, key: String) -> Map<a, V> & Ma
     case MNode{+pos, lo, hi}:
       Map.pop.go(a, V, MNode{pos, lo, hi}, Map.bit(key, pos))
 
+def Map.del.fin(a, -V: Kind(a), r: Map<a, V> & Maybe<a, V>) -> Map<a, V>:
+  (m2, x) = r
+  m2
+
 def Map.del(a, -V: Kind(a), m: Map<a, V>, key: String) -> Map<a, V>:
-  Pair.fst(Map<a, V>, Maybe<a, V>, Map.pop(a, V, m, key))
+  Map.del.fin(a, V, Map.pop(a, V, m, key))
 
 def Map.to_list.go(
   a, -V: Kind(a), m: Map<a, V>, acc: List<a, Sigma<&2, a, String, _ => V>>
