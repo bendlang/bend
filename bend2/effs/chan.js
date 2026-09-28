@@ -9,7 +9,7 @@ const CHAN_RECV = Symbol();
 
 function chan_wake(row, x) {
   const w = row.wait.shift();
-  io_push(w.cont, x, false);
+  io_push(w.cont, x, false, w.poll);
   return w.item;
 }
 
@@ -45,7 +45,11 @@ function chan_send(row, value, k) {
     row.ring.push(value);
     return true;
   }
-  row.wait.push({ cont: k, item: value });
+  const io = globalThis.BEND_IO;
+  if (io.poll === null || !io.holds({ k, again: () => chan_send(row, value, k),
+    cancel: () => false })) {
+    row.wait.push({ cont: k, item: value, poll: io.poll });
+  }
   return;
 }
 
@@ -59,7 +63,11 @@ function chan_recv(row, k) {
   if (row.shut) {
     return { $: CID(None) };
   }
-  row.wait.push({ cont: k, item: CHAN_RECV });
+  const io = globalThis.BEND_IO;
+  if (io.poll === null || !io.holds({ k, again: () => chan_recv(row, k),
+    cancel: () => ({ $: CID(None) }) })) {
+    row.wait.push({ cont: k, item: CHAN_RECV, poll: io.poll });
+  }
   return;
 }
 

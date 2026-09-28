@@ -5459,6 +5459,8 @@ typedef struct IoWork {
   Term           item;
   u64            time;
   short          evts;
+  u32            held;
+  struct IoPoll* poll;
   struct IoWork* next;
 } IoWork;
 
@@ -5532,10 +5534,12 @@ static IoWork* io_pop(IoWork** q) {
   return a;
 }
 
+#define io_emit() term_clo(FID(IO~emit), 0)
+
 static void io_spawn(Term m) {
   IoWork* a = io_mem(calloc(1, sizeof(IoWork)));
   a->cont  = m;
-  a->item  = term_clo(FID(IO~emit), 0);
+  a->item  = io_emit();
   io_push(&io_runs, a);
   io_live += 1;
 }
@@ -5554,12 +5558,18 @@ static void io_park_add(IoWork* w) {
   io_push(&p, w);
 }
 
+// IO.poll's effects (io_poll.c) set these: a park under a poll is held.
+static bool (*io_holds)(IoWork* w);
+static IoWork* (*io_hold)(Env e, IoWork* w);
+
 static Term io_wait_on(IoWork* w, int fd, short evts, u64 time, IoPack more) {
   w->word = (u32)fd;
   w->pack = more;
   w->time = time;
   w->evts = evts;
-  io_park_add(w);
+  if (w->poll == NULL || !io_holds(w)) {
+    io_park_add(w);
+  }
   return IO_PARK;
 }
 
@@ -5991,14 +6001,15 @@ static void io_step(Env e, IoWork* a) {
     u32 need = io_eff_rows[c].ask;
     u32 word = (u32)(need & IO_READ ? io_hand_v(e.mem[at]) : e.mem[at]);
     a->cont  = req;
-    if (need != 0) {
-      io_wait_on(a, (int)word, need & IO_READ ? POLLIN : 0,
-        need & IO_TIME ? io_tick() + (u64)word * 1000000ull : 0, io_exec);
-      return;
-    }
-    Term x = io_exec(e, a);
+    Term x = need != 0 ? io_wait_on(a, (int)word, need & IO_READ ? POLLIN : 0,
+      need & IO_TIME ? io_tick() + (u64)word * 1000000ull : 0, io_exec)
+      : io_exec(e, a);
     if (x == IO_PARK) {
-      return;
+      if (!a->held) {
+        return;
+      }
+      a = io_hold(e, a);
+      continue;
     }
     a->item = x;
   }
@@ -6363,9 +6374,9 @@ function io_addr(host, port) {
   return b;
 }
 
-function io_push(fun, arg, fresh) {
+function io_push(fun, arg, fresh, poll) {
   const io = globalThis.BEND_IO;
-  io.runs.push({ fun, arg });
+  io.runs.push({ fun, arg, poll });
   io.live += fresh ? 1 : 0;
 }
 
@@ -6396,7 +6407,7 @@ function io_wait(io) {
     const ready = w.at <= now || w.fd !== undefined
       && set[at(w)] & 1 << (w.fd & 7);
     if (ready) {
-      io_push(io_wake, w, false);
+      io_push(io_wake, w, false, w.poll);
     }
     return !ready;
   });
@@ -6408,9 +6419,13 @@ function io_wake(w) {
 }
 
 function io_park_on(fd, out, k, more, at) {
-  const ws = globalThis.BEND_IO.waits;
-  const i = ws.findLastIndex((w) => (w.at ?? Infinity) <= (at ?? Infinity));
-  ws.splice(i + 1, 0, { fd, out, k, more, at });
+  const io = globalThis.BEND_IO;
+  const w = { fd, out, k, more, at, poll: io.poll };
+  if (io.poll === null || !io.holds(w)) {
+    const i = io.waits.findLastIndex((v) =>
+      (v.at ?? Infinity) <= (at ?? Infinity));
+    io.waits.splice(i + 1, 0, w);
+  }
 }
 
 function io_run(m) {
@@ -6431,6 +6446,7 @@ function io_run(m) {
         continue;
       }
       const s = io.runs.shift();
+      io.poll = s.poll ?? null;
       let op = s.fun(s.arg);
       while (op !== undefined) {
         if (op.$ === "Emit") {
@@ -6441,18 +6457,15 @@ function io_run(m) {
           io_errs(op.message);
           return op.code;
         }
-        const need = op.need?.() ?? {};
-        if (need.time || need.read) {
-          const more = () => op.run(...op.args, op.kont);
-          io_park_on(need.read ? op.args[0] : undefined, false, op.kont, more,
-            need.read ? undefined : performance.now() + Number(op.args[0]));
-          break;
-        }
-        const x = op.run(...op.args, op.kont);
-        if (x === undefined) {
-          break;
-        }
-        op = op.kont(x);
+        // a parked op answers undefined, and io.next if IO.poll held it
+        const o = op;
+        const need = o.need?.() ?? {};
+        const x = need.time || need.read ? io_park_on(need.read ? o.args[0]
+          : undefined, false, o.kont, () => o.run(...o.args, o.kont),
+          need.read ? undefined : performance.now() + Number(o.args[0]))
+          : o.run(...o.args, o.kont);
+        op = x === undefined ? io.next : x?.$ === "$GO" ? x.op : o.kont(x);
+        io.next = undefined;
       }
     }
   } catch (req) {

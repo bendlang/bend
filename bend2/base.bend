@@ -113,9 +113,18 @@ law Chan:
   for -A: Type
   Data
 
+# The rest of a polled act, held where it would wait (IO.poll).
+law IO.Rest:
+  for -A: Type
+  Type
+
 type IO.OP<-R: Type> is Type:
   Emit{value: R}
   Halt{code: U32, message: String}
+
+type IO.Step<-A: Type> is Type:
+  Ready{value: A}
+  Wait{rest: IO.Rest(A)}
 
 type App<-S: Type> is Type:
   App{view: S -> Pair(S, Image), tick: List<Event> -> S -> IO(Maybe<S>)}
@@ -260,6 +269,40 @@ def IO.within(-A: Type, ms: U32, act: IO(A)) -> IO(Maybe<&1, A>):
   both = IO.bind(Chan(Maybe<&1, A>), Chan(Maybe<&1, A>), IO.fork(Maybe<&1, A>, won),
     IO.fork.go(Maybe<&1, A>, late))
   IO.bind(Chan(Maybe<&1, A>), Maybe<&1, A>, both, c => IO.join(Maybe<&1, A>, c))
+
+# Runs act until it answers or would wait. Ready{x} if it answered x;
+# Wait{rest} if it would park (a channel full or empty, a socket not ready,
+# a sleep): rest is act from there on, its waiting effect not yet started.
+# IO.resume(rest) waits as act would have, IO.poll(IO.resume(rest)) polls
+# it again, and IO.cancel(rest) answers the held effect cancelled (a send
+# False, a recv None) and goes on. Work on the IO threads (files,
+# processes) runs to its end.
+def IO.poll(-A: Type, act: IO(A)) -> IO(IO.Step<A>):
+  run = IO.poll.run(A, IO.bind(A, A, act, IO.poll.end(A)))
+  IO.bind(Or(A, IO.Rest(A)), IO.Step<A>, run, IO.poll.step(A))
+
+def IO.poll.step(-A: Type, r: Or(A, IO.Rest(A))) -> IO(IO.Step<A>):
+  match r:
+    case Inl{value}:
+      IO.pure(IO.Step<A>, Ready{value})
+    case Inr{value}:
+      IO.pure(IO.Step<A>, Wait{value})
+
+def IO.poll.run(-A: Type, act: IO(A)) -> IO(Or(A, IO.Rest(A))):
+  import "./effs/io_poll.c"
+  import "./effs/io_poll.js"
+
+def IO.poll.end(-A: Type, x: A) -> IO(A):
+  import "./effs/io_poll.c"
+  import "./effs/io_poll.js"
+
+def IO.resume(-A: Type, rest: IO.Rest(A)) -> IO(A):
+  import "./effs/io_poll.c"
+  import "./effs/io_poll.js"
+
+def IO.cancel(-A: Type, rest: IO.Rest(A)) -> IO(A):
+  import "./effs/io_poll.c"
+  import "./effs/io_poll.js"
 
 def File.open(path: String, mode: String) ->
   IO(Result<&1, &1, U32 & String, File>):

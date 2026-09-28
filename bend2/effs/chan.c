@@ -55,11 +55,20 @@ static ChanRow* chan_at(Term t) {
   return row != NULL && row->live && row->gen == (u32)(v >> 24) ? row : NULL;
 }
 
+static Term chan_again(Env e, IoWork* w);
+
 // Parks the effect's activation on row with item: a sent value, or
-// TERM_HOLE for a receiver.
-static Term chan_park(ChanRow* row, IoWork* w, Term item) {
+// TERM_HOLE for a receiver; under IO.poll it is held, and chan_again runs
+// it again.
+static Term chan_park(ChanRow* row, IoWork* w, Term chan, Term item) {
   w->item = item;
-  io_push(&row->wait, w);
+  w->hand = (intptr_t)io_hand_v(chan);
+  w->pack = chan_again;
+  w->evts = 0;
+  w->time = 0;
+  if (w->poll == NULL || !io_holds(w)) {
+    io_push(&row->wait, w);
+  }
   return IO_PARK;
 }
 
@@ -131,7 +140,7 @@ Term chan_send_run(Env e, Term* f, IoWork* w) {
     row->size += 1;
     return chan_bool(true);
   }
-  return chan_park(row, w, f[1]);
+  return chan_park(row, w, f[0], f[1]);
 }
 
 static void __attribute__((constructor)) chan_send_use(void) {
@@ -161,7 +170,7 @@ Term chan_recv_run(Env e, Term* f, IoWork* w) {
     chan_free(row);
     return term_pak(CID(None), 0);
   }
-  return chan_park(row, w, TERM_HOLE);
+  return chan_park(row, w, f[0], TERM_HOLE);
 }
 
 static void __attribute__((constructor)) chan_recv_use(void) {
@@ -169,6 +178,20 @@ static void __attribute__((constructor)) chan_recv_use(void) {
 }
 
 #endif
+
+static Term chan_again(Env e, IoWork* w) {
+  Term f[2] = { io_hand(w->hand), w->item };
+#ifdef CID(Chan.recv)
+  if (w->item == TERM_HOLE) {
+    return chan_recv_run(e, f, w);
+  }
+#endif
+#ifdef CID(Chan.send)
+  return chan_send_run(e, f, w);
+#else
+  return IO_PARK;
+#endif
+}
 
 #ifdef CID(Chan.close)
 
