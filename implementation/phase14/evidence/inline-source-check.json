@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "pass": true,
+  "contracts": [
+    {
+      "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+      "inlineSources": 23,
+      "sha256": "fb15db37954395fd054c7800395ca38b8612364be7edb36a02cf511e84ad6cdd"
+    },
+    {
+      "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+      "inlineSources": 28,
+      "sha256": "34c6c0a262c664fdae9733743dc5e695d208af6fdc937ab9574005681138c1d3"
+    },
+    {
+      "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+      "inlineSources": 10,
+      "sha256": "6ca959b46b9b3fa861893d36e51e25deb26cb50da5c22fa798beb79ffc487036"
+    }
+  ],
+  "verifiedInlineSourceFields": 61,
+  "negativeControls": [
+    "wrong report kind refused",
+    "changed byte-pinned report refused",
+    "unknown source field remains a normal reference"
+  ],
+  "scope": "Exact inherited adapter contracts only; no inventory, prerequisite archive verification or Phase14 capture yet."
+}

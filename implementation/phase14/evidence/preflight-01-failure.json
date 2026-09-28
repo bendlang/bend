@@ -1,0 +1,11 @@
+{
+  "complete": false,
+  "exitCode": 1,
+  "stage": "inventory",
+  "error": "RecursionError: maximum recursion depth exceeded in legacy json_references on retained linked compiler API values",
+  "consumedAdapter": {
+    "file": "implementation/phase14/evidence/collect-preflight01.py",
+    "sha256": "f622037edf136df58a4f7b6e0722173bd0cb05a61b9a8140b2e1c07fa468c806"
+  },
+  "correction": "Iterative depth-first traversal preserving all original path/hash pairs, pointer order and exact inline-source contracts. No data omitted."
+}

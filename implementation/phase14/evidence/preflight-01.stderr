@@ -1,0 +1,2000 @@
+Traceback (most recent call last):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 73, in <module>
+    legacy.main()
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 389, in main
+    result, _, _ = inventory(args.root.resolve(), selection)
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 56, in inventory
+    manifest, objects, initial = original_inventory(root, selection)
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 202, in inventory
+    new_refs.extend(json_references(value, name))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 111, in json_references
+    yield from json_references(child, origin, pointer + '/' + str(key))
+  File "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/collect.py", line 32, in references
+    for ref in original_references(value, origin, pointer):
+RecursionError: maximum recursion depth exceeded

@@ -1,0 +1,58 @@
+{
+  "kind": "phase14-final-root-freeze",
+  "rootExplicitFreeze": true,
+  "captureAuthorized": true,
+  "closedAt": "2026-09-28T22:46:21.050934+00:00",
+  "installedApi": "9136be92928eda4b3b8e9c99e4e35d62504a825b458ff237c514d4e99f21206b",
+  "allCompilerTimingAndValidationProducersClosed": true,
+  "allReportsAndProductDocsFinal": true,
+  "agents": {
+    "laws": "compiler work frozen; evidence publication only remains",
+    "differences": "all42release checks/report frozen",
+    "dispatch": "controls/report/finalindependentreview closed"
+  },
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase14/conformance_and_dispatch.md",
+      "sha256": "6a9ee4e03e201b0a5567a071dd7d1a8f4d09f75a615a518456c2044c8da05f73"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase14/imported-laws.md",
+      "sha256": "696f485f6770dc832e54df6e07df4ec3698fe25b95418734c56ea067dd489061"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase14/exact-differences.md",
+      "sha256": "335c18d9e5f64193e5d1a2df44a6d2008cfecc05bd78da8bce5b5456e896ecf5"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase14/source-dispatch.md",
+      "sha256": "12d8a0c98300ecf320963170445bb87639b9b00c1643a64423b987508746ccd4"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase14/release-validation.md",
+      "sha256": "6c425fe51efeb18e19629148b47bbbcb8aceab19a2a7601609d7943355eb3d5f"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/release.json",
+      "sha256": "7b39fc8af133881da4cfd6f6e2362388b7b32943470ea44a63fb12ef2737e70e"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase14/frontend-audit-02/report.json",
+      "sha256": "07ad60eea99526b5d2676fc724f8b092e519aacd0be45f5385e2bea76346e1c5"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase14/check-matrix-01/report.json",
+      "sha256": "adccc343c133bb647381340647677c0a1008a527d656fa4e5efdfc4900cd6516"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase14/release-smoke-01/checks/report.json",
+      "sha256": "4226f9545e743efa1c0595d1e20d9e8041ad643839c52e12dd655922f26de353"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase14/unrelated-audit-01.json",
+      "sha256": "c3032d06db85281f5abc1ee123e931b39196b8358e85ce1e35508c10a9bb0b35"
+    }
+  ],
+  "unrelatedPhase6Files": 75,
+  "scope": "Root authorizes evidence owner to finalize selection, preflight, capture and independently verify recovery. No measured jobs remain. Root will perform read-only review, then explicit staging/commit/push. Publication metadata only may be finalized outside captured roots."
+}

@@ -1,0 +1,12 @@
+{
+  "complete": true,
+  "pass": true,
+  "randomSeed": 14001,
+  "shallowEquivalenceCases": 200,
+  "allPositiveHashPathPairs": 15,
+  "deepTailCount": 2000,
+  "legacyDeepTraversalOverflows": true,
+  "iterativeDeepReferenceExact": true,
+  "historicalInlineFieldsVerified": 61,
+  "scope": "Exact reference ordering/content equivalence; no omitted raw books or generic source exceptions."
+}
