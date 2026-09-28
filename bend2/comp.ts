@@ -5258,8 +5258,8 @@ static void gpu_pass(u32 f) {
 // Cube
 // ====
 
-// Under a unit (CUBE_T / LINE a row) per thread, the host's column grows
-// to the rows that give one, no more: each touches a page of every plane.
+// Under a row per thread, the host's column grows to a row per thread: a
+// row is CUBE_T / LINE units, and each touches a page of every plane.
 
 static void cube_run(u64* H, bool gpu) {
   for (;;) {
@@ -5273,9 +5273,8 @@ static void cube_run(u64* H, bool gpu) {
     if (gpu) {
       gpu_pass(f);
     } else {
-      if (f * (CUBE_T / LINE) < pool_size) {
-        row_grow((Env){ H, ALC[0] }, io_stk, 0, CUBE_G,
-          (pool_size + CUBE_T / LINE - 1) / (CUBE_T / LINE));
+      if (f < pool_size) {
+        row_grow((Env){ H, ALC[0] }, io_stk, 0, CUBE_G, pool_size);
       }
       if (f < CUBE) {
         pool_turn(true);
