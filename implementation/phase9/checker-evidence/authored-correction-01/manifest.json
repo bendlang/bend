@@ -1,0 +1,26 @@
+{
+  "kind": "phase9-post-capture-authored-correction",
+  "scope": "One documentation command correction only; compiler, source, runtime, validation and timing evidence are unchanged. Main capsule remains intact.",
+  "reason": "The documented CLI option --check is unsupported; the actual supported option is --check-only.",
+  "file": "implementation/phase9/checker_speed.md",
+  "archived": {
+    "file": "implementation/phase9/checker_speed.md",
+    "type": "file",
+    "bytes": 17669,
+    "sha256": "c40dc8490bbd55d88b123c5322509dd85551d7052be9b69752b5133889d62b60",
+    "mode": 420,
+    "store": "self"
+  },
+  "corrected": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase9/checker_speed.md",
+    "sha256": "438b0c99d7fbdeb8e359b33419150907a5a3b3c5f5ef88868e69ac985b46d40d",
+    "bytes": 17674
+  },
+  "correctedSnapshot": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase9/checker-evidence/authored-correction-01/checker_speed.md.snapshot",
+    "sha256": "438b0c99d7fbdeb8e359b33419150907a5a3b3c5f5ef88868e69ac985b46d40d",
+    "bytes": 17674
+  },
+  "exactSingleReplacementVerified": true,
+  "oldOccurrenceCount": 1
+}

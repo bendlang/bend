@@ -86,8 +86,12 @@ selection before increasing a deadline.
 The optional `"profile": "equality"` delegates to the separate checked-B1
 equality derivation helper. It retains the untouched checked API and records a
 distinct derived artifact. Unknown bodies or missing provenance are refused.
-The focused workflow gate and a full2,756-observation frontend gate pass for this
-route; `"checked"` remains the default. On the frozen second integration, an
+The development workflow defaults to `"checked"`; `npm run build` defaults to
+`"equality"` after the [Phase9 current-pin validation](../implementation/phase9/checker_speed.md).
+An explicit profile overrides either default.
+
+Historically, the focused workflow gate and a full 2,756-observation frontend
+gate passed for this route. On the frozen Phase5 second integration, an
 exclusive four-core ABBA comparison reduced mean full frontend wall from301.9
 to229.8seconds (23.9%), retaining every known failure. This is an artifact-specific
 workflow result, not a general compiler or generated-program speed claim; see

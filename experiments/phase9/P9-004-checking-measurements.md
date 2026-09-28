@@ -32,3 +32,21 @@ record the changed workload rather than hiding the failure.
 The output is a checking comparison, not emitted-program performance, full
 compilation or a fresh self-hosted fixed point. No baseline claim is borrowed from
 the historical 6.03x full-compilation comparison.
+
+
+## Recorded outcomes
+
+The original prospective plan remains above. The baseline profile completed
+checking but its Node JSON summary failed at the string-size limit. A streaming
+recovery, its first two failures and four parser controls remain preserved.
+Caller attribution identifies the chronological cache omission; P9-005 records
+its counter-backed fix. The integrated02 residual profile places the maximum-ID
+helpers below 1% of weighted samples and triggers the bounded P9-006 string-guard
+experiment. Neither concurrent profile is a controlled timing result.
+
+The final source is integrated03 with the repaired Nat inference diagnostic and
+version-3 equality. The complete frontend vector and exact inference controls
+pass their preservation assessment, retaining the stated upstream gaps. The
+six-row same-source serial comparison is preserved under
+`selfhost/build/phase9/final-matrix-03/`; its final numbers, resource policy and
+release decision are consolidated in the [report](../../implementation/phase9/checker_speed.md).

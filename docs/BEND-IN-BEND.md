@@ -9,7 +9,7 @@ does not invoke the TypeScript compiler.
 
 The active target is upstream
 [`b2111cf43244e65f76ddc278ee695e669f720cbf`](https://github.com/bendlang/bend/tree/b2111cf43244e65f76ddc278ee695e669f720cbf)
-(Bend 2.0.32 era). The [migration report](../implementation/phase8/upstream_and_conformance.md)
+(Bend 2.0.32 era). The [Phase9 report](../implementation/phase9/checker_speed.md)
 records checked artifact identities, current conformance, measured cost and
 remaining gaps. This experimental port does not establish independent proof
 validity; `--verdict` is explicitly unsupported.
@@ -22,10 +22,10 @@ remain research artifacts; neither is installed. Historical 50% and 75% source
 reduction targets remain unachieved.
 
 The [release manifest](../selfhost/dist/release.json) binds the installed compiler
-to source, checked bootstrap, Base, runtime and host. A checked B1 release is
-byte-identical to authentic upstream emission. It is not a new self-hosting fixed
-point; older equality-derived and fixed-point evidence belongs to its recorded
-artifacts. [Conformance](../selfhost/CONFORMANCE.md) distinguishes acceptance,
+to source, checked bootstrap, Base, runtime and host. The installed API is a
+guarded native-equality derivative of a genuine checked B1. Its original checked
+parent and exact transformation are preserved separately. This is not a new
+self-hosting fixed point. [Conformance](../selfhost/CONFORMANCE.md) distinguishes acceptance,
 proof trust, exact diagnostics, execution and unavailable platforms.
 
 ## Run the compiler
@@ -47,8 +47,8 @@ and remains outside the measured coverage here. Without `--run`, the default
 checks the program and interprets `main`.
 
 `verify:release` checks installed bytes, current source/runtime/host identities,
-and its genuine checked-bootstrap lineage. Historical equality releases additionally
-verify their exact transformation replay. It works after moving
+and its genuine checked-bootstrap lineage, including exact equality-transformation
+replay. It works after moving
 the checkout; original bootstrap reports retain their historical paths and are
 not relabeled as new proofs. This verifies integrity and lineage, not another
 run of all conformance tests. Normal CLI execution does not rebuild source.
@@ -72,8 +72,8 @@ npm run build
 npm run verify:release
 ```
 
-The build creates a fresh immutable attempt, checks all compiler source,
-runs the maintained focused paired selection, then
+The build creates a fresh immutable attempt, checks all compiler source, applies
+the guarded equality profile, runs the maintained focused paired selection, then
 installs the result. A failed selected gate prevents installation. To choose a
 different upstream location or selection, use a development JSON config:
 
@@ -84,7 +84,7 @@ npm run build -- /absolute/release-config.json /absolute/new-attempt
 Config fields and selection semantics are documented in the
 [maintained workflow guide](PHASE5_DEVELOPMENT.md). Broad conformance and checked
 self-reproduction are release/integration gates, not every small edit's build.
-The [Phase8 report](../implementation/phase8/upstream_and_conformance.md) records
+The [Phase9 report](../implementation/phase9/checker_speed.md) records
 the current artifact's evidence and remaining failures.
 
 ## Work on the current source
@@ -93,11 +93,13 @@ For new compiler edits, use the [Phase 5 development workflow](PHASE5_DEVELOPMEN
 It builds a genuinely checked compiler, freezes source/runtime/host identities,
 prepares a validated Base cache and runs selected tests against pinned TypeScript.
 The workflow's `validate` command reuses that frozen compiler for fixture-only
-changes; run a new build when compiler source changes. The checked profile is the default. The historical equality
-profile is source-sensitive and must not be applied to new upstream output
-without validating its transformation contract.
+changes; run a new build when compiler source changes. The development workflow
+defaults to `checked`; release builds default to `equality`. Set `"profile":
+"checked"` explicitly to build an unchanged upstream-emitted API. The equality
+profile recognizes the reviewed current and historical contracts and rejects
+unknown runtime, dependency or public-ABI changes.
 
-The [Phase8 report](../implementation/phase8/upstream_and_conformance.md) gives the
+The [Phase9 report](../implementation/phase9/checker_speed.md) gives the
 current source and artifact identities. Keep experiments isolated by selecting a
 frozen attempt explicitly:
 
@@ -156,7 +158,7 @@ BEND_TYPED_API="$PWD/build/candidate-api.mjs" \
 
 This writes a checked API plus the assembled source and provenance in
 `build/typed/`. Keep source, API, runtime and host snapshots immutable during
-validation. Full self-reproduction has not been rerun for Phase8. The advanced
+validation. Full self-reproduction has not been rerun for Phase9. The advanced
 runner, separate from the checked release build, is:
 
 ```sh
@@ -191,6 +193,14 @@ format cannot be resumed because they lack this provenance. Preserve the same
 canonical Base path when comparing output bytes across native and JS hosts.
 
 ## Internal boundaries and performance
+
+The [Phase9 controlled comparison](../implementation/phase9/checker_speed.md)
+checks identical final source in 66.84 s, versus 208.22 s for the preserved
+compiler and 2.94 s for pinned TypeScript: 3.12× faster, with a 22.74× remaining
+process-time gap. It excludes emission. A checked build plus the maintained
+21 focused controls takes about 27 s in the recorded development attempt.
+Keep routine edits on that short path and reserve full-source/broad gates for
+integration. The report separates these measurements and remaining gaps.
 
 The [architecture](../selfhost/docs/ARCHITECTURE.md) describes the first-order
 `KTerm`/`KDef` core and component responsibilities. The phase 1 changes retain

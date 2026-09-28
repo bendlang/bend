@@ -387,9 +387,10 @@ def kp_nat(
   +p: U32,
   +env: List<&2, KPName>,
 ) -> String:
+  kc(String, core_nat(t), u => kc(String, Nat.is_le(n, U32.to_nat(U32.sub(4294967295, qt(t)))), u => Nat.show(Nat.add(n, U32.to_nat(qt(t)))) ++ "n", u => kp_par(Nat.show(n) ++ "n+" ++ U32.show(qt(t)) ++ "n", U32.is_gt(p, 2))), u =>
   kc(String, kp_is(t, "Ctr", "Zero"), u => Nat.show(n) ++ "n",
     u => kc(String, kp_is(t, "Ctr", "Succ") && U32.is_eq(terms_len(ks(t)), 1), u => kp_nat(kid(t, 0), Nat.add(n, 1n), p, env),
-      u => kp_par(Nat.show(n) ++ "n+" ++ kp_go(t, 2, env), U32.is_gt(p, 2))))
+      u => kp_par(Nat.show(n) ++ "n+" ++ kp_go(t, 2, env), U32.is_gt(p, 2)))))
 
 @unsafe
 def kp_array(
@@ -464,6 +465,7 @@ def kp_go(t, p, env):
 
 @unsafe
 def kp_go_tail(t, p, env):
+  kc(String, core_nat(t), u => U32.show(qt(t)) ++ "n", u =>
   kc(String, kp_eq(tg(t), "App"), u => kp_application(kp_spine(t, Nil{}), p, env),
     u => kc(String, kp_eq(tg(t), "ADT"), u => kp_adt(t, p, env),
     u => kc(String, kp_eq(tg(t), "Ctr"), u => kp_ctor(t, p, env),
@@ -473,7 +475,7 @@ def kp_go_tail(t, p, env):
     u => kc(String, kp_eq(tg(t), "Rfl"), u => "{==}",
     u => kc(String, kp_eq(tg(t), "Hol"), u => "?" ++ nm(t),
     u => kc(String, kp_eq(tg(t), "Ann"), u => "{" ++ kp_go(kid(t, 0), 2, env) ++ " : " ++ kp_go(kid(t, 1), 2, env) ++ "}",
-    u => kp_go_last(t, p, env))))))))))
+    u => kp_go_last(t, p, env)))))))))))
 
 @unsafe
 def kp_go_last(t, p, env):

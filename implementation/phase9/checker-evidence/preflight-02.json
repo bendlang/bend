@@ -1,0 +1,251 @@
+{
+  "kind": "phase9-archive-preflight",
+  "complete": true,
+  "scope": "Read-only draft inventory before final authored freeze; not a published capsule.",
+  "summary": {
+    "files": 25192,
+    "objects": 8024,
+    "logicalBytes": 762685876,
+    "uniqueBytes": 612397920,
+    "newArchiveObjects": 4569,
+    "newArchiveBytesBeforeCompression": 588094230,
+    "externalPrerequisites": 25,
+    "omittedFiles": 289,
+    "omittedBytes": 1868310842,
+    "referenceStatuses": {
+      "captured-external-object": 130601,
+      "captured-object": 3633,
+      "external-prerequisite": 108,
+      "external-toolchain-identity": 115,
+      "omitted-derived-input": 109
+    }
+  },
+  "unresolvedRepositoryReferences": [],
+  "remainingHistoricalExternalReferences": [
+    {
+      "path": "/workspace/scratch/4de8c3a3f107/bend2-selfhost/build/typed/lexical-selfhost/bootstrap-api.mjs",
+      "sha256": "0e3c00f419b7e9fc4565ca52e3b14864121f48351ffe8dc7108a93a43a3d2115",
+      "status": "external-prerequisite",
+      "observedIn": {
+        "selfhost/build/phase9/checker-work-01/baseline-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/baseline-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/baseline-project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/baseline-project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/combined-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/combined-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/combined-project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/combined-project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/exact-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/exact-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/exact-project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/exact-project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/lambda-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/lambda-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/lambda-project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/lambda-project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/lookup-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/lookup-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/lookup-project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/lookup-project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/chronological-cache-01/checked-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/chronological-cache-01/checked-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/chronological-cache-01/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/chronological-cache-01/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/chronological-cache-02/checked-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/chronological-cache-02/checked-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/chronological-cache-02/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/chronological-cache-02/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/integrated-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/integrated-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/integrated-02/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/integrated-02/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/integrated-03/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/integrated-03/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/literals/attempt-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/literals/attempt-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/literals/nat-attempt-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/literals/nat-attempt-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/literals/nat-attempt-02/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/literals/nat-attempt-02/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/literals/nat-attempt-03/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/literals/nat-attempt-03/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/literals/nat-attempt-04/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/literals/nat-attempt-04/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/literals/nat-attempt-05/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/literals/nat-attempt-05/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/literals/nat-project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/literals/nat-project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/literals/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/literals/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase8/release-07/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase8/release-07/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ]
+      }
+    }
+  ],
+  "prospectivePlanRestored": true,
+  "unparsedJson": []
+}

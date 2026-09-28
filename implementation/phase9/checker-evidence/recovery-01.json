@@ -1,0 +1,41 @@
+{
+  "kind": "phase9-evidence-recovery-check",
+  "complete": true,
+  "pass": true,
+  "scope": "Recovered byte identities and file modes, plus lossless raw-profile stream; no compiler execution.",
+  "recoveredFiles": 25194,
+  "recoveredDirectory": "/tmp/phase9-evidence-recovery-01",
+  "capsuleManifest": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase9/checker-evidence/capsule-01/manifest.json",
+    "type": "file",
+    "bytes": 28017704,
+    "sha256": "8350c3d730182bafb4fecf98e562b32b548f43c6de4da616b61c5d69bb135731",
+    "mode": 420
+  },
+  "profileManifest": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase9/profile-evidence/baseline-01/manifest.json",
+    "type": "file",
+    "bytes": 1280,
+    "sha256": "0f0d8ad5e7fd97010c0642de002051480c7dc5981733b4dd9c9afef9d3a0907a",
+    "mode": 420
+  },
+  "profileGzip": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase9/profile-evidence/baseline-01/checking.cpuprofile.gz",
+    "type": "file",
+    "bytes": 54791942,
+    "sha256": "89963a067d05c57e2100262e34aaa704f55ee688ba7aa4c23f6d2d11ed490038",
+    "mode": 420
+  },
+  "profileRecoveredStream": {
+    "bytes": 1573317008,
+    "sha256": "05e62a8dad989161a2d117c17d8beaaa00508c796a136ac475a9bc18cbd3dd33",
+    "persistedToDisk": false
+  },
+  "tool": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase9/checker-evidence/recovery-check.py",
+    "type": "file",
+    "bytes": 2995,
+    "sha256": "d8cb7f57493a56a08c98f23822026ba5f8cce59a06de32c3b00417b186912274",
+    "mode": 420
+  }
+}

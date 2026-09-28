@@ -1,16 +1,17 @@
 # Compiler validation
 
 The current target is upstream `b2111cf43244e65f76ddc278ee695e669f720cbf`,
-Bend2 2.0.32 era. The [Phase8 report](../implementation/phase8/upstream_and_conformance.md)
+Bend2 2.0.32 era. The [Phase9 report](../implementation/phase9/checker_speed.md)
 records full reference/candidate vectors, focused regression controls, execution,
-known gaps and exact artifact identities. Its [raw evidence](../implementation/phase8/migration-evidence/README.md)
+known gaps and exact artifact identities. Its [raw evidence](../implementation/phase9/checker-evidence/README.md)
 preserves failures as well as passes.
 
-The installed [release manifest](dist/release.json) identifies a genuine checked
-B1, its source, Base, runtime and host. `npm run verify:release` verifies integrity
+The installed [release manifest](dist/release.json) identifies a guarded equality
+derivative, its genuine checked B1 parent, source, Base, runtime and host.
+`npm run verify:release` verifies integrity
 and lineage after relocation. It does not rerun conformance or claim a new
-self-hosted fixed point. Historical equality-derived/fixed-point evidence is not
-transferred to the current artifact.
+self-hosted fixed point. Historical fixed-point evidence is not transferred to
+the current artifact.
 
 The new upstream fixture gate has 1,498 fixtures: 1,001 positive expectations,
 482 validation negatives, 11 declaration-only proof-trust refusals and 4 cases
@@ -19,27 +20,33 @@ import support without independent oracles. `typeAccepted`, `proofTrust` and
 `kernelChecked` keep these outcomes separate; no run claims Lean validation.
 
 The final paired frontend run completes 2,996 observations. All 1,001 positive
-programs parse and 997 accept types. Among 482 validation negatives, 481 reject and
-one times out; none is observed accepting invalid types. Strict checks record
-1,002 passes, 494 failures and 2 timeouts. There are 734 exact reference differences
-(536 check, 198 parse), including diagnostic and phase differences. Seven of 11
+programs parse and 1,000 accept types. All 482 validation negatives reject;
+none is observed accepting invalid types. Strict checks record
+1,005 passes and 493 failures, with no timeouts. There are 731 exact reference differences
+(533 check, 198 parse), including diagnostic and phase differences. Seven of 11
 trust-refusal fixtures reach the proper phase; four imported-law fills fail early.
-These counts refer to the same checked API installed in release07; its changed
-runtime is separately validated on 44 final execution observations.
+The long-string stack failure is the sole remaining positive type-check failure.
+These frontend counts do not establish full backend conformance.
 
-Current bounded regression gates include 21 maintained development controls,
+Phase9 adds 21 maintained development controls, exact checker/cache controls,
+literal boundary and native execution checks, and ordinary/relocated release
+validation. The report gives artifact-specific totals and retained failures.
+Inherited Phase8 evidence includes 21 maintained development controls,
 134 frontend observations, 26 semantic observations, 32 soundness observations,
 18 semantic execution observations, 35 import/JS executions, 44 foreign-runtime
 executions and 13 native/scanner controls. Some sets overlap. Do not add them
 as if they counted unique language programs or infer full backend conformance.
 Exact diagnostics are compared separately from custom acceptance/phase oracles.
 
-Known remaining gaps include large Nat/string literals, imported law fills,
+Known remaining gaps include long strings, imported law fills,
 diagnostic carets/text and some error phases. The maintained component suite
 preserves its diagnostic-source parity failure against new upstream instead of
 weakening that exact gate. Native Process requires a libc symbol missing on this
 host, which also blocks upstream. GPU and interactive device execution are not
-validated here. Consult the report for the final full-corpus counts.
+validated here. Deep Nat patterns now check but retain a backend scaling problem,
+also reproduced with explicit constructors on the pre-compact compiler. Compact
+source Nat payloads remain U32-sized; wider runtime values retain their dynamic
+representation. Consult the report for the final full-corpus counts.
 
 ## Historical evidence
 

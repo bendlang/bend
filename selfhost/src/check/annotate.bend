@@ -170,6 +170,7 @@ def annotate(e, ctx, t, ty):
 
 @unsafe
 def ka_node(e, ctx, t, ty):
+  kc(KTerm, core_nat(t), u => kc(KTerm, core_nat_type(cb(e), ty), u => t, u => ka_node(e, ctx, core_nat_step(t), ty)), u =>
   kc(KTerm, String.eq(tg(t), "Ann"), u => ka_node(e, ctx, kid(t, 0), wnf(cb(e), kid(t, 1))),
    u => kc(KTerm, String.eq(tg(t), "Lam"), u => ka_lam(e, ctx, t, ty),
    u => kc(KTerm, String.eq(tg(t), "App"), u => kc(KTerm, ka_spine_eligible(t), u => ka_app_spine(e, ctx, t), u => ka_app(e, ctx, t, wnf(cb(e), ka_type(e, ctx, kid(t, 0))))),
@@ -177,7 +178,7 @@ def ka_node(e, ctx, t, ty):
    u => kc(KTerm, String.eq(tg(t), "Mat"), u => ka_mat(e, ctx, t, ty, wnf(cb(e), kid(ty, 0))),
    u => kc(KTerm, String.eq(tg(t), "Let"), u => kt("Let", nm(t), ix(t), qt(t), ka_let(e, ctx, ctx, ks(t), ty)),
    u => kc(KTerm, String.eq(tg(t), "Rwt"), u => ka_rwt(e, ctx, t, wnf(cb(e), ka_type(e, ctx, kid(t, 0)))),
-   u => t)))))))
+   u => t))))))))
 
 @unsafe
 def ka_type(e, ctx, t):

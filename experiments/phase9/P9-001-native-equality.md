@@ -95,3 +95,23 @@ promotion decision belong in the linked implementation report. Keep every
 rejected guard/ABI/semantic attempt visible. Large artifacts must be archived
 with their exact sources and prerequisites before the phase closes; an ignored
 path or checksum by itself is not durable evidence.
+
+## Outcome update — 2026-09-28
+
+The prospective plan above remains unchanged. The current emitter now has its
+own guarded version-2 profile; historical version-1 bytes and replay remain
+supported. Boundary controls pass 12 applicable groups on the current API and
+11 applicable groups on the old API, with one additional old-pin registration
+explicitly inapplicable. Historical release verification and exact transformation
+replay pass. Actual compiler controls pass 27 paired cases: 24 accepted/rejected
+checks and three byte-identical emitted JavaScript programs whose executions
+match their fixtures. Setup/oracle failures remain preserved in separate attempts.
+
+Root's independent source review found no blocker. The candidate is accepted for
+integration: the first combined equality-profile workflow passes its genuine
+bootstrap and all 21 maintained controls, retaining 12 exact TypeScript
+observation differences. That combined build also contains other checker changes;
+it cannot isolate this derivative's speed contribution. Final broad conformance,
+controlled timing and installed-release acceptance remain root-owned phase gates.
+This experiment has not installed a release or established an isolated compiler
+speedup. See the implementation report for exact artifact identities and scope.

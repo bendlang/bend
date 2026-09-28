@@ -398,12 +398,13 @@ def g_min_left(book, st, a, b, args, stack):
 
 @unsafe
 def g_match(book, st, arm, original, raw, x, args, pending, fallback, stack):
+  kc(GResult, core_nat(x), u => g_match(book, st, arm, original, raw, core_nat_step(x), args, pending, fallback, stack), u =>
   kc(GResult, Bool.not(String.eq(tg(x), "Ctr")), u => g_return(book, st, norm_stuck(original, raw, args, pending, fallback), stack),
    u => kc(GResult, String.eq(tg(arm), "Ann"), u => g_match(book, st, kid(arm, 0), original, raw, x, args, pending, fallback, stack),
    u => kc(GResult, String.eq(tg(arm), "Mat"), u => kc(GResult, String.eq(nm(arm), nm(x)),
      u => g_eval(book, st, kid(arm, 0), norm_join(ks(x), args), kc(U32, U32.is_eq(pending, 0), u => 0, u => U32.add(norm_dec(pending), terms_len(ks(x)))), fallback, stack),
      u => g_match(book, st, kid(arm, 1), original, raw, x, args, pending, fallback, stack)),
-   u => kc(GResult, String.eq(tg(arm), "Efq"), u => g_return(book, st, norm_stuck(original, raw, args, pending, fallback), stack), u => g_eval(book, st, arm, Con{x, args}, pending, fallback, stack)))))
+   u => kc(GResult, String.eq(tg(arm), "Efq"), u => g_return(book, st, norm_stuck(original, raw, args, pending, fallback), stack), u => g_eval(book, st, arm, Con{x, args}, pending, fallback, stack))))))
 
 @unsafe
 def g_let(book, st, ts, bindings, args, pending, fallback, stack):

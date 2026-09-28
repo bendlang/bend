@@ -1,5 +1,8 @@
 import Base
 
+# A failed corresponding field must not be searched again as a proper subterm.
+type KDescent is Data:
+  KDescent{order: U32, bad: U32}
 
 law descend_go:
   for +a: KTerm
@@ -10,7 +13,16 @@ law descend_fields:
   for +a: List<&2, KTerm>
   for +p: List<&2, KTerm>
   for +ord: U32
-  U32
+  for +index: U32
+  KDescent
+
+law descend_field:
+  for +a: List<&2, KTerm>
+  for +p: List<&2, KTerm>
+  for +ord: U32
+  for +index: U32
+  for +field: U32
+  KDescent
 
 law terms_tail:
   for +ts: List<&2, KTerm>
@@ -19,12 +31,14 @@ law terms_tail:
 law descend_ctr:
   for +a: KTerm
   for +p: KTerm
-  for +ord: U32
+  for +result: KDescent
   U32
 
 law descend_sub:
   for +a: KTerm
   for +ps: List<&2, KTerm>
+  for +bad: U32
+  for +index: U32
   U32
 
 law descend_step:
@@ -105,19 +119,24 @@ def descend(
 
 @unsafe
 def descend_go(a, p):
+  kc(U32, core_nat(a) && String.eq(tg(p), "Ctr"), u => descend_go(core_nat_step(a), p), u =>
   kc(U32, String.eq(tg(p), "Var"),
     u => kc(U32, String.eq(tg(a), "Var") && U32.is_eq(ix(a), ix(p)), u => 1, u => 2),
     u => kc(U32, String.eq(tg(p), "Ctr"),
-      u => descend_ctr(a, p, kc(U32, String.eq(tg(a), "Ctr") && String.eq(nm(a), nm(p)) && U32.is_eq(terms_len(ks(a)), terms_len(ks(p))), u => descend_fields(ks(a), ks(p), 1), u => 2)),
-      u => 2))
+      u => descend_ctr(a, p, kc(KDescent, String.eq(tg(a), "Ctr") && String.eq(nm(a), nm(p)) && U32.is_eq(terms_len(ks(a)), terms_len(ks(p))), u => descend_fields(ks(a), ks(p), 1, 0), u => KDescent{2, 4294967295})),
+      u => 2)))
 
 @unsafe
-def descend_fields(a, p, ord):
+def descend_fields(a, p, ord, index):
   match a:
     case Nil{}:
-      ord
+      KDescent{ord, 4294967295}
     case Con{h, t}:
-      kc(U32, U32.is_eq(ord, 2), u => 2, u => descend_fields(t, terms_tail(p), kc(U32, U32.is_eq(descend(1, h, terms_at(p, 0)), 1), u => ord, u => descend(1, h, terms_at(p, 0)))))
+      descend_field(t, terms_tail(p), ord, index, descend(1, h, terms_at(p, 0)))
+
+@unsafe
+def descend_field(a, p, ord, index, field):
+  kc(KDescent, U32.is_eq(field, 2), u => KDescent{2, index}, u => descend_fields(a, p, kc(U32, U32.is_eq(field, 1), u => ord, u => field), U32.inc(index)))
 
 @unsafe
 def terms_tail(ts):
@@ -128,16 +147,18 @@ def terms_tail(ts):
       t
 
 @unsafe
-def descend_ctr(a, p, ord):
-  kc(U32, U32.is_eq(ord, 2), u => descend_sub(a, ks(p)), u => ord)
+def descend_ctr(a, p, result):
+  match result:
+    case KDescent{ord, bad}:
+      kc(U32, U32.is_eq(ord, 2), u => descend_sub(a, ks(p), bad, 0), u => ord)
 
 @unsafe
-def descend_sub(a, ps):
+def descend_sub(a, ps, bad, index):
   match ps:
     case Nil{}:
       2
     case Con{h, t}:
-      kc(U32, U32.is_eq(descend(1, a, h), 2), u => descend_sub(a, t), u => 0)
+      kc(U32, U32.is_eq(index, bad), u => descend_sub(a, t, bad, U32.inc(index)), u => kc(U32, U32.is_eq(descend(1, a, h), 2), u => descend_sub(a, t, bad, U32.inc(index)), u => 0))
 
 @unsafe
 def descend_spine(
@@ -154,4 +175,3 @@ def descend_spine(
 @unsafe
 def descend_step(ord, qs, args, cols):
   kc(Bool, U32.is_eq(ord, 0), u => True{}, u => kc(Bool, U32.is_eq(ord, 1), u => descend_spine(qs, args, cols), u => False{}))
-

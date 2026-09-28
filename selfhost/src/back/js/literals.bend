@@ -21,7 +21,8 @@ law j_literal_node:
 
 @unsafe
 def j_literal_node(t):
-  kc(String, String.eq(tg(t), "Ctr"), u => j_literal_ctor(t), u => "")
+  kc(String, core_nat(t), u => U32.show(qt(t)) ++ "n", u =>
+  kc(String, String.eq(tg(t), "Ctr"), u => j_literal_ctor(t), u => ""))
 
 law j_literal_ctor:
   for +t: KTerm
@@ -100,7 +101,8 @@ law j_nat:
 
 @unsafe
 def j_nat(t, acc):
-  kc(Maybe<&2, Nat>, String.eq(tg(t), "Ctr"), u => kc(Maybe<&2, Nat>, String.eq(nm(t), "Zero"), u => Some{acc}, u => kc(Maybe<&2, Nat>, String.eq(nm(t), "Succ"), u => j_nat(j_strip(kid(t, 0)), Nat.add(acc, 1n)), u => None{})), u => None{})
+  kc(Maybe<&2, Nat>, core_nat(t), u => Some{Nat.add(acc, U32.to_nat(qt(t)))}, u =>
+  kc(Maybe<&2, Nat>, String.eq(tg(t), "Ctr"), u => kc(Maybe<&2, Nat>, String.eq(nm(t), "Zero"), u => Some{acc}, u => kc(Maybe<&2, Nat>, String.eq(nm(t), "Succ"), u => j_nat(j_strip(kid(t, 0)), Nat.add(acc, 1n)), u => None{})), u => None{}))
 
 law j_nat_text:
   for +value: Maybe<&2, Nat>

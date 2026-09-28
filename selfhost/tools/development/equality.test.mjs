@@ -1,5 +1,9 @@
 // Run with EQUALITY_TEST_API pointing at a genuine checked B1 API.
-import test from 'node:test';
+import nodeTest from 'node:test';
+import {createHash} from 'node:crypto';
+const planned=[],completed=[],failures=[];
+const test=(name,fn)=>{planned.push(name);return nodeTest(name,async t=>{try{await fn(t);completed.push(name);}catch(error){failures.push({name,error:String(error.stack??error)});throw error;}});};
+test.after=nodeTest.after;
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -11,6 +15,8 @@ const input=process.env.EQUALITY_TEST_API;
 assert.ok(input,'Set EQUALITY_TEST_API to a genuine checked B1 API');
 const source=fs.readFileSync(input,'utf8'),temp=fs.mkdtempSync(path.join(os.tmpdir(),'bend-equality-tests-'));
 const candidate=transformEquality(source);
+const legacy=candidate.stats.version===1;
+const declaration=name=>new RegExp('^function '+name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\([^\\n]*\\) \\{','m');
 const expose='\nexport const equality=(a,b)=>run_loop($String$eq$(a,b));\nexport const staged=run_lib($String$eq$,2);\n';
 const modules=[];
 for(const [name,body]of [['original',source],['derived',candidate.source]]) {
@@ -20,15 +26,37 @@ const observe=(module,a,b)=>{try{return {ok:true,value:module.equality(a,b)}}cat
 
 test('reviewed body guards and exact single insertion',()=>{
   assert.equal(candidate.stats.replacements,1);assert.equal(Object.keys(candidate.stats.bodyHashes).length,11);
+  const at=source.search(declaration('$String$eq$')),open=source.indexOf('\n',at)+1,added=candidate.source.length-source.length;
+  assert.equal(candidate.source.slice(0,open),source.slice(0,open));assert.equal(candidate.source.slice(open+added),source.slice(open));
   assert.ok(candidate.source.length>source.length);assert.equal(candidate.stats.exports.length,new Set(candidate.stats.exports).size);
   assert.throws(()=>transformEquality(candidate.source),/Unsupported equality dependency/);
 });
+test('explicit transform versions retain prior bytes and reject cross-emitter profiles',()=>{
+  assert.throws(()=>transformEquality(source,0),/Unsupported generated runtime/);
+  assert.throws(()=>transformEquality(source,4),/Unsupported generated runtime/);
+  assert.throws(()=>transformEquality(source,'2'),/Unsupported generated runtime/);
+  if(legacy) {
+    assert.deepEqual(transformEquality(source,1),candidate);
+    assert.throws(()=>transformEquality(source,2),/Unsupported generated runtime/);
+    assert.throws(()=>transformEquality(source,3),/Unsupported generated runtime/);
+  } else {
+    const historical=transformEquality(source,2);
+    const oldGuard='  if (typeof _a_0 === "string" && typeof _b_0 === "string" && _a_0.isWellFormed() && _b_0.isWellFormed()) return _a_0 === _b_0;\n';
+    const newGuard='  if (typeof _a_0 === "string" && typeof _b_0 === "string") return _a_0 === _b_0;\n';
+    assert.equal(historical.stats.version,2);assert.equal(candidate.stats.version,3);
+    assert.equal(historical.source.split(oldGuard).length,2);
+    assert.equal(historical.source.replace(oldGuard,newGuard),candidate.source);
+    assert.deepEqual({...historical.stats,version:3},candidate.stats);
+    assert.deepEqual(transformEquality(source,3),candidate);
+    assert.throws(()=>transformEquality(source,1),/Unsupported generated runtime/);
+  }
+});
 test('reject changed equality dependency and runtime',()=>{
-  assert.throws(()=>transformEquality(source.replace('function $Char$cmp$(a_0, b_0) {','function $Char$cmp$(a_0, b_0) {\n  void 0;')),/Unsupported equality dependency/);
+  assert.throws(()=>transformEquality(source.replace(declaration('$Char$cmp$'),match=>match+'\n  void 0;')),/Unsupported equality dependency/);
   assert.throws(()=>transformEquality(source.replace('function char_new(code) {','function char_new(code) {\n void 0;')),/Unsupported generated runtime/);
 });
 test('reject duplicate, nested and rebound protected function bindings',()=>{
-  const body=source.match(/function \$String\$eq\$\(a_0, b_0\) \{\n[^\n]*\n\}/)[0];
+  const body=source.match(/function \$String\$eq\$\([^)]*\) \{\n[^\n]*\n\}/)[0];
   assert.throws(()=>transformEquality(source.replace('export default {',body+'\nexport default {')),/duplicate/);
   assert.throws(()=>transformEquality(source.replace('export default {','function $probe$() {\n'+body+'\n}\nexport default {')),/Nested equality binding/);
   assert.throws(()=>transformEquality(source.replace('export default {','function $probe$() {\n $String$eq$ = null;\n}\nexport default {')),/Rebound/);
@@ -49,13 +77,23 @@ test('reject protected function and arrow parameter bindings, including destruct
     'function $probe$() { return $String$eq$ => 1; }'
   ])assert.throws(()=>transformEquality(source.replace('export default {',body+'\nexport default {')),/Shadowed equality parameter/);
 });
+test('current public marshalling and arity are exact reviewed syntax',()=>{
+  if(legacy)return;
+  for(const [before,after]of [
+    ['return r; }, 1)', 'return null; }, 1)'],
+    ['$f_parse$((a0))', '$f_parse$((String(a0)))'],
+    ['return r; }, 1)', 'return r; }, 2)'],
+    ['(a0); return r;', '(a0); $String$eq$ = null; return r;']
+  ])assert.throws(()=>transformEquality(source.replace(before,after)),/Unsupported export marshalling/);
+});
+
 test('Unicode, malformed UTF-16 and non-string values preserve exact observations',()=>{
   const values=['','a','b','abc','abd','a\0b','\0','é','e\u0301','λ','中','🙂','𝄞','\ud800','\udc00','a\ud800','b\ud800','\ud800a','\udc00a','\ud800\ud800','\udc00\ud800','🙂\ud800',null,undefined,0,1,true,false,{},new String('abc')];
   for(let i=0;i<values.length;i++)for(let j=0;j<values.length;j++)assert.deepEqual(observe(modules[1],values[i],values[j]),observe(modules[0],values[i],values[j]),`${i},${j}`);
   for(const n of [128,512,2048])for(const tail of ['','x','🙂'])assert.deepEqual(observe(modules[1],'ab'.repeat(n),'ab'.repeat(n)+tail),observe(modules[0],'ab'.repeat(n),'ab'.repeat(n)+tail));
 });
 test('malformed suffixes retain early mismatch/exhaustion and demanded-error order',()=>{
-  for(const [a,b,expected]of [['x\ud800','y\ud800',false],['','\ud800',false],['\ud800','',false],['x\ud800','x\ud800','bend: 55296 is not a Unicode scalar value'],['\ud800','\udc00','bend: 55296 is not a Unicode scalar value']]) {
+  for(const [a,b,expected]of [['x\ud800','y\ud800',false],['','\ud800',false],['\ud800','',false],['x\ud800','x\ud800',legacy?'bend: 55296 is not a Unicode scalar value':true],['\ud800','\udc00',legacy?'bend: 55296 is not a Unicode scalar value':false]]) {
     for(const module of modules){const result=observe(module,a,b);assert.equal(typeof expected==='boolean'?result.value:result.error,expected);}
   }
 });
@@ -73,6 +111,21 @@ test('fallback objects and staged arguments preserve observed demand',()=>{
     assert.equal(module.staged('a','a','ignored'),true);
   }
 });
+test('actual public compiler exports retain zero arity, currying and extra arguments',()=>{
+  const observeApi=module=>{
+    const api=module.default,events=[],arg=(name,value)=>(events.push(name),value);
+    const partial=api.f_path_join(arg('left','folder/'));
+    assert.deepEqual(events,['left']);
+    const joined=partial(arg('right','file'));
+    assert.deepEqual(events,['left','right']);assert.equal(joined,'folder/file');
+    const parsed=api.f_parse('def main() -> U32:\n  0\n'),before=JSON.stringify(parsed);
+    const checked=api.check_book(parsed.book);
+    assert.equal(JSON.stringify(parsed),before,'Public checker mutated parsed data');
+    return {abi:api.compiler_check_result_abi(),joined,extra:api.f_path_join('folder/','file','ignored'),checked,parsed};
+  };
+  assert.deepEqual(observeApi(modules[1]),observeApi(modules[0]));
+});
+
 test('fresh derivation has distinct honest lineage, replays and rejects drift',async()=>{
   const report=process.env.EQUALITY_TEST_BOOTSTRAP;
   assert.ok(report,'Set EQUALITY_TEST_BOOTSTRAP to the matching normal bootstrap report');
@@ -84,7 +137,7 @@ test('fresh derivation has distinct honest lineage, replays and rejects drift',a
 });
 test('incomplete/bootstrap identity mismatch retains explicit refusal report',async()=>{
   const report=JSON.parse(fs.readFileSync(process.env.EQUALITY_TEST_BOOTSTRAP,'utf8'));
-  for(const [name,mutate]of [['incomplete',r=>r.provenance.verifiedAfterBuild=false],['wrong-api',r=>r.apiSha256='0'.repeat(64)],['wrong-stage',r=>r.stage='selfhost']]) {
+  for(const [name,mutate]of [['incomplete',r=>r.provenance.verifiedAfterBuild=false],['wrong-api',r=>r.apiSha256='0'.repeat(64)],['wrong-stage',r=>r.stage='selfhost'],['wrong-pin',r=>r.revision='0'.repeat(40)],['wrong-base',r=>r.baseSha256='0'.repeat(64)],['wrong-recipe',r=>r.provenance.inputs.find(x=>x.role==='host-tool'&&x.file.endsWith('/stage0-library.mjs')).sha256='0'.repeat(64)],['wrong-source',r=>r.sourceSha256='0'.repeat(64)]]) {
     const changed=structuredClone(report);mutate(changed);const file=path.join(temp,name+'.json');fs.writeFileSync(file,JSON.stringify(changed));const output=path.join(temp,name);
     await assert.rejects(()=>deriveEquality({api:input,bootstrapReport:file,outputDirectory:output}));
     const failure=JSON.parse(fs.readFileSync(path.join(output,'api.mjs.derivation.json'),'utf8'));assert.equal(failure.complete,false);assert.equal(typeof failure.error,'string');
@@ -92,4 +145,10 @@ test('incomplete/bootstrap identity mismatch retains explicit refusal report',as
   }
 });
 
-test.after(()=>{fs.rmSync(temp,{recursive:true,force:true});});
+test.after(()=>{
+  if(process.env.EQUALITY_TEST_REPORT){
+    const identity=file=>({file:String(file),sha256:createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
+    fs.writeFileSync(process.env.EQUALITY_TEST_REPORT,JSON.stringify({pass:completed.length===planned.length,planned,completed,failures,transform:candidate.stats,api:identity(input),bootstrap:identity(process.env.EQUALITY_TEST_BOOTSTRAP),tool:identity(new URL('./equality.mjs',import.meta.url)),test:identity(new URL(import.meta.url)),node:process.version,legacyNewExportTestApplicable:!legacy},null,2)+'\n',{flag:'wx'});
+  }
+  fs.rmSync(temp,{recursive:true,force:true});
+});

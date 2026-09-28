@@ -15,7 +15,9 @@ selection. Compiler edits need a new attempt; fixture-only edits can reuse it.
 
 `"profile":"equality"` explicitly derives a guarded optimized API from the
 untouched checked build. It writes a separate `api.mjs.derivation.json`, never
-a copied bootstrap sidecar. The default profile is `"checked"`. Unknown equality
+a copied bootstrap sidecar. The development default profile is `"checked"`;
+`release.mjs --build` defaults to `"equality"` after the Phase9 current-pin guards
+and compiler controls. An explicit profile overrides either default. Unknown equality
 bodies or provenance are refused.
 
 The CLI reports `pass` and `exactDifferences` separately. Custom acceptance/phase

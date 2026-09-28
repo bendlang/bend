@@ -1,0 +1,374 @@
+{
+  "kind": "phase9-checker-evidence-publication",
+  "complete": true,
+  "pass": true,
+  "scope": "One final experimental capsule, retained failures, exact byte/mode recovery and separate lossless baseline-profile recovery. Archive verification is not compiler validation.",
+  "capsule": {
+    "directory": "implementation/phase9/checker-evidence/capsule-01",
+    "manifest": {
+      "file": "implementation/phase9/checker-evidence/capsule-01/manifest.json",
+      "bytes": 28017704,
+      "sha256": "8350c3d730182bafb4fecf98e562b32b548f43c6de4da616b61c5d69bb135731"
+    },
+    "archive": {
+      "file": "implementation/phase9/checker-evidence/capsule-01/raw.tar.gz",
+      "bytes": 51300565,
+      "sha256": "1fe756502ba33038b436c124946066393dd617fc9b6f78bd028507fab1899d76"
+    },
+    "summary": {
+      "files": 25194,
+      "objects": 8026,
+      "logicalBytes": 762706370,
+      "uniqueBytes": 612418414,
+      "newArchiveObjects": 4572,
+      "newArchiveBytesBeforeCompression": 588130575,
+      "externalPrerequisites": 25,
+      "omittedFiles": 289,
+      "omittedBytes": 1868310842,
+      "referenceStatuses": {
+        "captured-external-object": 130601,
+        "captured-object": 3633,
+        "external-prerequisite": 109,
+        "external-toolchain-identity": 115,
+        "omitted-derived-input": 109
+      }
+    }
+  },
+  "verification": {
+    "pass": true,
+    "files": 25194,
+    "objects": 4572,
+    "externalCapsules": 5,
+    "archiveSha256": "1fe756502ba33038b436c124946066393dd617fc9b6f78bd028507fab1899d76",
+    "archiveBytes": 51300565,
+    "scope": "Archive byte identity only; recorded failed experiments remain failures."
+  },
+  "materialization": {
+    "pass": true,
+    "recoveredFiles": 25194,
+    "destination": "/tmp/phase9-evidence-recovery-01"
+  },
+  "recoveryCheck": {
+    "file": "implementation/phase9/checker-evidence/recovery-01.json",
+    "bytes": 1563,
+    "sha256": "f27f71cdd223f69c173e6f91903172472349b9d523a34dfffe1f95b382499537"
+  },
+  "recoveryTool": {
+    "file": "implementation/phase9/checker-evidence/recovery-check.py",
+    "bytes": 2995,
+    "sha256": "d8cb7f57493a56a08c98f23822026ba5f8cce59a06de32c3b00417b186912274"
+  },
+  "externalCapsules": [
+    {
+      "manifest": "implementation/phase8/conformance-harness-evidence/manifest.json",
+      "manifestSha256": "7f366a89d10282ad80ae13b6c7ae863909f9d0cc384286957caf20082198e5e1",
+      "archive": "implementation/phase8/conformance-harness-evidence/raw.tar.gz",
+      "archiveSha256": "b011854d9869ee6db4262668c0523a36ab84d253c13b901b57a39bc53ba42422",
+      "archiveBytes": 2258668,
+      "objects": 227
+    },
+    {
+      "manifest": "implementation/phase8/selected-js-evidence/manifest.json",
+      "manifestSha256": "7c07e21aeefa3b6b7f11c90c9a31782f599b60db4c3686ab711b4df84fb9cbeb",
+      "archive": "implementation/phase8/selected-js-evidence/raw.tar.gz",
+      "archiveSha256": "979c49ea277715353669c4ceb5da0373c97990ea6e071a54669958ae8bf243cb",
+      "archiveBytes": 6315169,
+      "objects": 1685
+    },
+    {
+      "manifest": "implementation/phase8/selected-js-evidence/release07-manifest.json",
+      "manifestSha256": "84fa6fa420a2c57f0a8e1dd0e27d226ac5b1f0aa54d032f59962d3caf7bce3d2",
+      "archive": "implementation/phase8/selected-js-evidence/release07.tar.gz",
+      "archiveSha256": "edb92c370acecb8a4d5bec53f9ddc39679f74917b596530fc2d0f418b9fe02df",
+      "archiveBytes": 852682,
+      "objects": 187
+    },
+    {
+      "manifest": "implementation/phase8/migration-evidence/capsule-01/manifest.json",
+      "manifestSha256": "ae41fbe1f173b1e01815c146cb874dfbd9a813e6986b42aed1ab34f8732ac886",
+      "archive": "implementation/phase8/migration-evidence/capsule-01/raw.tar.gz",
+      "archiveSha256": "7b4c8b7d3841b42508b4283446ec3858ea9b8ef29b26f19e19d66b7f2487713c",
+      "archiveBytes": 21314537,
+      "objects": 10470
+    },
+    {
+      "manifest": "implementation/phase8/migration-evidence/capsule-02/manifest.json",
+      "manifestSha256": "d69330ece69432a9385fbafee431e5bac44df751ed28f242d6e35746403d9725",
+      "archive": "implementation/phase8/migration-evidence/capsule-02/raw.tar.gz",
+      "archiveSha256": "acec1dfe5b20b49451c086e880da70ab0fcc88bf8a9ff908cc4aa4e98b201551",
+      "archiveBytes": 32836,
+      "objects": 16
+    }
+  ],
+  "baselineProfile": {
+    "manifest": {
+      "file": "implementation/phase9/profile-evidence/baseline-01/manifest.json",
+      "bytes": 1280,
+      "sha256": "0f0d8ad5e7fd97010c0642de002051480c7dc5981733b4dd9c9afef9d3a0907a"
+    },
+    "gzip": {
+      "file": "implementation/phase9/profile-evidence/baseline-01/checking.cpuprofile.gz",
+      "bytes": 54791942,
+      "sha256": "89963a067d05c57e2100262e34aaa704f55ee688ba7aa4c23f6d2d11ed490038"
+    },
+    "verifiedRecoveredStream": {
+      "bytes": 1573317008,
+      "sha256": "05e62a8dad989161a2d117c17d8beaaa00508c796a136ac475a9bc18cbd3dd33",
+      "persistedToDisk": false
+    }
+  },
+  "postCaptureAuthoredCorrection": {
+    "manifest": {
+      "file": "implementation/phase9/checker-evidence/authored-correction-01/manifest.json",
+      "bytes": 1159,
+      "sha256": "7070ca6f7a81484361923cc07636f411ac640a5c39adcaf5965bee33e7d2e289"
+    },
+    "correctedSnapshot": {
+      "file": "implementation/phase9/checker-evidence/authored-correction-01/checker_speed.md.snapshot",
+      "bytes": 17674,
+      "sha256": "438b0c99d7fbdeb8e359b33419150907a5a3b3c5f5ef88868e69ac985b46d40d"
+    },
+    "archivedReportSha256": "c40dc8490bbd55d88b123c5322509dd85551d7052be9b69752b5133889d62b60",
+    "correctedReportSha256": "438b0c99d7fbdeb8e359b33419150907a5a3b3c5f5ef88868e69ac985b46d40d",
+    "exactSingleReplacementVerified": true,
+    "currentTrackedReportMatchesSnapshot": true,
+    "reason": "The documented CLI option --check is unsupported; the actual supported option is --check-only.",
+    "recoveryInstruction": "After ordinary archive recovery, copy authored-correction-01/checker_speed.md.snapshot over implementation/phase9/checker_speed.md in the recovered tree if the final corrected publication text is wanted. The unmodified archive retains the original document snapshot."
+  },
+  "unresolvedRepositoryReferences": [],
+  "remainingHistoricalExternalReferences": [
+    {
+      "path": "/workspace/scratch/4de8c3a3f107/bend2-selfhost/build/typed/lexical-selfhost/bootstrap-api.mjs",
+      "sha256": "0e3c00f419b7e9fc4565ca52e3b14864121f48351ffe8dc7108a93a43a3d2115",
+      "status": "external-prerequisite",
+      "observedIn": {
+        "implementation/phase9/checker-evidence/preflight-02.json": [
+          "/remainingHistoricalExternalReferences/0/path"
+        ],
+        "selfhost/build/phase9/checker-work-01/baseline-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/baseline-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/baseline-project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/baseline-project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/combined-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/combined-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/combined-project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/combined-project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/exact-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/exact-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/exact-project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/exact-project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/lambda-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/lambda-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/lambda-project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/lambda-project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/lookup-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/lookup-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/lookup-project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/checker-work-01/lookup-project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/chronological-cache-01/checked-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/chronological-cache-01/checked-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/chronological-cache-01/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/chronological-cache-01/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/chronological-cache-02/checked-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/chronological-cache-02/checked-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/chronological-cache-02/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/chronological-cache-02/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/integrated-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/integrated-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/integrated-02/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/integrated-02/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/integrated-03/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/integrated-03/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/literals/attempt-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/literals/attempt-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/literals/nat-attempt-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/literals/nat-attempt-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/literals/nat-attempt-02/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/literals/nat-attempt-02/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/literals/nat-attempt-03/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/literals/nat-attempt-03/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/literals/nat-attempt-04/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/literals/nat-attempt-04/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/literals/nat-attempt-05/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/literals/nat-attempt-05/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/literals/nat-project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/literals/nat-project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/literals/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/literals/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase8/release-07/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase8/release-07/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ]
+      }
+    }
+  ],
+  "limitations": [
+    "Inherited pre-Phase9 lexical-selfhost API 0e3c00f4\u2026 is unavailable; its old copied backend experiment references remain explicit. It is not a Phase9 compiler artifact.",
+    "Node, Clang and host libraries/headers remain external prerequisites; original request paths need adaptation when replayed elsewhere.",
+    "Derived Base caches and incidental historical result copies retain identities and omission reasons rather than duplicate payloads.",
+    "The baseline profile gzip and five bound prior capsules are required with the main archive.",
+    "Publication metadata and the exact post-capture documentation correction sidecar are tracked alongside the single capsule."
+  ]
+}

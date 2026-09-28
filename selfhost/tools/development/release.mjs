@@ -61,7 +61,7 @@ export function verifyRelease(root=project){
  assert.equal(derivation.original.api.sha256,parent.sha256);assert.equal(derivation.output.sha256,api.sha256);
  assert.equal(derivation.original.bootstrapReport.sha256,files['dist/release-lineage/checked-bootstrap.json'].sha256);
  assert.equal(derivation.toolSnapshot.sha256,files['dist/release-lineage/equality.mjs'].sha256);
- const replay=transformEquality(fs.readFileSync(check(parent,root),'utf8'));
+ const replay=transformEquality(fs.readFileSync(check(parent,root),'utf8'),derivation.transform.version);
  assert.equal(digest(replay.source),api.sha256);assert.deepEqual(replay.stats,derivation.transform);
  return manifest;
 }
@@ -119,7 +119,7 @@ export async function buildRelease(configFile,output){
  const config=configFile?read(fs.realpathSync(configFile)):{};
  // Resolve user configuration before writing the durable effective configuration.
  for(const name of ['project','upstream','selection'])if(config[name])config[name]=path.resolve(path.dirname(path.resolve(configFile)),config[name]);
- config.project=project;config.profile??='checked';
+ config.project=project;config.profile??='equality';
  const effective=output+'.release-config.json';fs.writeFileSync(effective,JSON.stringify(config,null,2)+'\n',{flag:'wx'});
  const result=await runDevelopment(effective,output);
  assert.equal(result.build?.complete,true,'Checked release build failed');assert.equal(result.validation?.complete,true,'Focused release validation incomplete');assert.equal(result.validation?.pass,true,'Focused release validation failed');

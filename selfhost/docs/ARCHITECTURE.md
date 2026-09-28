@@ -56,6 +56,32 @@ a separate C identifier namespace so user `Clo.apply` cannot collide. Its genera
 boxed representation differs from upstream's flat-layout optimizations; runtime
 and performance equivalence are distinct validation questions.
 
+## Checker bounds and literals
+
+Checking keeps two independent persistent books: one supplies all declared
+signatures and chronological bodies, while the other records only prior events
+for duplicate and law-fill checks. Both start from an immutable empty index with
+the maximum binder ID of the complete input. This shares a bound, not declaration
+visibility. Each subsequent index update remains independent. Constructor-name
+search skips internal BookCache metadata. Exact validated-prefix checks retain
+the same fallback to ordinary checking.
+
+Conversion tries exact equality before finding fresh binder IDs. Lambda checking
+rechecks a domain's kind only for the quantity promotion that requires it; public
+book checking validates signatures first. Termination descent remembers its first
+failed field comparison and skips that already-tested child during subterm search.
+
+Source Nat literals have a compact `LitNat` core form. Its quantity field holds
+a U32 payload; its binder ID is zero and other fields are canonical and empty.
+Matching, conversion and descent expose one Zero/Succ layer when needed. Native
+Base Nat checking and annotation retain the compact form; custom Nat definitions
+use ordinary constructor checking. Both emitters and readback handle the form.
+Overflow keeps dynamic construction instead of wrapping the value. The compact
+source payload is fixed-width; this does not restrict wider runtime Nat values.
+Strings still expand into ordinary core constructors, and long strings remain
+a known limit. The [Phase9 report](../../implementation/phase9/checker_speed.md)
+records the source, semantic controls and measured costs of these changes.
+
 ## Compiler source assembly
 
 The compiler implementation modules use one shared internal namespace, with

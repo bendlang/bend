@@ -1,7 +1,8 @@
 # Full-suite conformance harness
 
 This directory is testing infrastructure, not a compiler. The upstream checkout
-is read only, and must match `6018e28ecc67cf1fffc0c20c64b11023474c2df8`.
+is read only, and must match the active manifest pin,
+`b2111cf43244e65f76ddc278ee695e669f720cbf`.
 Every `.bend` file under upstream `tests/` is discovered recursively, including
 imports, foreign effects, proofs, malformed syntax and declaration-only tests.
 `#|` lines are the oracle. Namespace names do not determine error phases.

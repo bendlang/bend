@@ -1,0 +1,11 @@
+--- archived/checker_speed.md
++++ corrected/checker_speed.md
+@@ -230,7 +230,7 @@
+ ```sh
+ cd selfhost
+ npm run verify:release
+-node cli.mjs tests/conformance/typed-smoke/base-u32.bend --check
++node cli.mjs tests/conformance/typed-smoke/base-u32.bend --check-only
+ ```
+ 
+ `npm run build` now selects the validated equality derivative by default. The

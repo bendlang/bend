@@ -416,3 +416,21 @@ def norm_defs_join(a, b):
     case Con{h, rest}:
       Con{h, norm_defs_join(rest, b)}
 
+
+# Compact source Nat literals use the U32 quantity slot as payload, never id.
+# All other fields are canonical and empty; consumers expose only one layer.
+@unsafe
+def core_nat(+t: KTerm) -> Bool:
+  kc(Bool, String.eq(tg(t), "LitNat"), u => String.eq(nm(t), "") && U32.is_eq(ix(t), 0) && U32.is_eq(U32.add(qt(t), 0), qt(t)) && U32.is_eq(terms_len(ks(t)), 0) && List.is_empty(&2, String, rm(t)), u => False{})
+
+@unsafe
+def core_nat_make(+n: U32) -> KTerm:
+  kt("LitNat", "", 0, n, Nil{})
+
+@unsafe
+def core_nat_step(+t: KTerm) -> KTerm:
+  kc(KTerm, U32.is_eq(qt(t), 0), u => kt("Ctr", "Zero", 0, 1, Nil{}), u => kt("Ctr", "Succ", 0, 1, [core_nat_make(U32.sub(qt(t), 1))]))
+
+@unsafe
+def core_nat_type(+book: List<&2, KDef>, +ty: KTerm) -> Bool:
+  String.eq(tg(ty), "ADT") && String.eq(nm(ty), "Nat") && List.is_empty(&2, String, rm(ty)) && db(lookup(book, "Nat"))

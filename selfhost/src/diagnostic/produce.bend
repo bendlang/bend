@@ -120,7 +120,19 @@ def dg_finish(
 
 @unsafe
 def check_book_diagnostic(book, origins):
-  dg_suffix_events(book, check_declarations(book, book_cached(Nil{}, norm_max_book(book))), Nil{}, book, origins)
+  dg_seed_books(book, Nil{}, origins, book_cached(Nil{}, norm_max_book(book)))
+
+law dg_seed_books:
+  for +book: List<&2, KDef>
+  for +validated: List<&2, KDef>
+  for +origins: List<&2, DOrigin>
+  for +seed: List<&2, KDef>
+  DResult
+
+# The immutable empty cache seeds independent declaration and event indexes.
+@unsafe
+def dg_seed_books(book, validated, origins, seed):
+  dg_prefix_seed(book, validated, check_declarations(book, seed), seed, book, origins)
 
 @unsafe
 def dg_quant_error(message, name, allowed, used):
@@ -187,7 +199,7 @@ law dg_suffix_finish:
 
 @unsafe
 def check_book_diagnostic_from_exact_prefix(book, validated, origins):
-  kc(DResult, exact_prefix(book, validated), u => dg_prefix_seed(book, validated, check_declarations(book, book_cached(Nil{}, norm_max_book(book))), Nil{}, book, origins), u => check_book_diagnostic(book, origins))
+  kc(DResult, exact_prefix(book, validated), u => dg_seed_books(book, validated, origins, book_cached(Nil{}, norm_max_book(book))), u => check_book_diagnostic(book, origins))
 @unsafe
 def dg_prefix_seed(todo, validated, done, seen, original, origins):
   match validated:

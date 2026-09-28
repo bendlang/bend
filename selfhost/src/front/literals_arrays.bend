@@ -135,7 +135,16 @@ def f_index_value(n, idx, p, min):
 
 @unsafe
 def f_nat_extend(a, b):
-  f_choose(KTerm, f_eq(tg(a), "Ctr") && f_eq(nm(a), "Zero"), u => b, u => f_choose(KTerm, f_eq(tg(a), "Ctr") && f_eq(nm(a), "Succ"), u => kt("Ctr", "Succ", 0, 1, [f_nat_extend(kid(a, 0), b)]), u => f_app(ref("Nat.add"), [a, b])))
+  f_nat_extend_value(a, b, f_choose(KTerm, f_eq(tg(b), "Literal") && String.ends_with(nm(b), "n"), u => f_literal(nm(b)), u => b))
+
+@unsafe
+def f_nat_extend_value(+a: KTerm, +b: KTerm, +value: KTerm) -> KTerm:
+  f_choose(KTerm, core_nat(a) && core_nat(value) && U32.is_le(qt(value), U32.sub(4294967295, qt(a))), u => kt("Literal", U32.show(U32.add(qt(a), qt(value))) ++ "n", 0, 1, Nil{}),
+    u => f_choose(KTerm, core_nat(a) && U32.is_le(qt(a), 256), u => f_nat_prefix(qt(a), b), u => f_app(ref("Nat.add"), [a, b])))
+
+@unsafe
+def f_nat_prefix(+n: U32, +b: KTerm) -> KTerm:
+  f_choose(KTerm, U32.is_eq(n, 0), u => b, u => kt("Ctr", "Succ", 0, 1, [f_nat_prefix(U32.sub(n, 1), b)]))
 
 @unsafe
 def f_namespace(t, ty):

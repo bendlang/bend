@@ -78,3 +78,32 @@ semantic, conformance and full-source checking gates before release promotion.
 Track this plan, bounded controls, ablation patches/manifests and the outcome
 report. Root records durable evidence packaging and checkpoint identity. No
 measurements or success claims are asserted by this pre-execution plan.
+
+## Outcome checkpoint — 2026-09-28
+
+The original prospective bytes are retained in
+`selfhost/build/phase9/checker-work-01/prospective-plan.md` (SHA-256
+`34da87fae4712b52225bbc69d0826649c267d9babe9b58f7758544c7ef9a2fe3`).
+See the linked implementation report for current outcomes; this appendix does
+not revise the original hypotheses or erase strict failures.
+
+All three independent and the combined source candidates genuinely bootstrap.
+Each preserves 40 full baseline observations and agrees with TypeScript's
+semantic metadata; existing strict diagnostic failures remain. Five checked
+components each pass 93 assertions. The raw unvalidated-goal lambda boundary is
+explicitly retained, with public invalid-signature rejection unchanged.
+
+Twenty fresh workers produce 900 verified concurrent operation samples. Matched
+largest-size medians attribute 1.37× to exact conversion, 1.72× to nested-lambda
+checking, 28.26× to complex-domain lambda **body checking after validation**, and
+1.90× to successful deep lookup; missing lookup is approximately unchanged.
+The large body-only number is not a definition or compiler speedup. Full ranges,
+scope, memory observations and retained samples are in the report. The exclusive
+narrow confirmation then passed eight fresh workers/144 samples in 18.79 seconds:
+combined exact comparison 1.37×, lambda depth 1.73×, complex-domain body 29.74×,
+complete synthetic book 1.57×, successful lookup 1.94×, missing lookup 1.009×.
+The final controlled integrated gate remains root's.
+
+Decision: tested source applied and promoted to integration, not a claim of final
+release performance. The stronger cache-flow follow-up is recorded separately
+as [P9-005](P9-005-chronological-cache.md).

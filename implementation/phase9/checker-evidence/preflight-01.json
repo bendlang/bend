@@ -1,0 +1,29 @@
+{
+  "kind": "phase9-archive-preflight",
+  "status": "draft inventory before final authored freeze",
+  "summary": {
+    "files": 25452,
+    "objects": 8054,
+    "logicalBytes": 993984067,
+    "uniqueBytes": 641297159,
+    "newArchiveObjects": 4599,
+    "newArchiveBytesBeforeCompression": 616993469,
+    "externalPrerequisites": 25,
+    "omittedFiles": 24,
+    "omittedBytes": 1633192511,
+    "referenceStatuses": {
+      "captured-external-object": 263537,
+      "captured-object": 3639,
+      "external-prerequisite": 700,
+      "external-toolchain-identity": 115,
+      "omitted-derived-input": 81,
+      "unresolved-repository-reference": 557
+    }
+  },
+  "missingCurrentBytes": [
+    "P9-003 prospective record, owner restoring exact git bytes"
+  ],
+  "matchedHistoricalCopies": 264,
+  "changedHistoricalCopies": [],
+  "policy": "Omit only listed historical result basenames whose captured copies were verified equal to current tracked originals; retain all Phase9 original attempts and source snapshots."
+}

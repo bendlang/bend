@@ -1,5 +1,19 @@
 # Compiler evidence preservation index
 
+## Phase9 checker speed and literal conformance — 2026-09-28
+
+The [final report](../implementation/phase9/checker_speed.md) links the controlled
+six-process comparison, all 2,996 frontend observations and 42 installed/relocated
+release checks. The [main capsule](../implementation/phase9/checker-evidence/README.md)
+preserves exact checked/derived compiler inputs, experiment plans, operation
+controls, measurement rows, profiles, emitted programs and failed attempts.
+Previously preserved byte objects are reused by hash with explicit prerequisite
+archives. The [baseline profile archive](../implementation/phase9/profile-evidence/README.md)
+separately retains the full 1.57 GB raw profile as a verified lossless gzip.
+Toolchains, omitted rebuildable caches and recovery steps are explicit. Historical
+failures remain failures; this release is a checked B1 derivative, not a new
+self-reproduction proof.
+
 ## Phase8 upstream migration — 2026-09-28
 
 The [final migration report](../implementation/phase8/upstream_and_conformance.md)

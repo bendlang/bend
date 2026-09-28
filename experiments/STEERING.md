@@ -6,24 +6,35 @@ conformance. The [Phase9 design](../design/phase9/checker_speed.md) was committe
 as `e7b2846` before experiments. Historical 50%/75% line goals remain unmet and
 do not block correctness or speed work. No historical time budget is renewed.
 
-## Active Phase9 frontier
+## Phase9 release frontier
 
-1. Preserve Phase8 release07, its complete frontend vector and its 73.20x checking
-   comparison. CPU0 sampling is diagnostic; concurrent timings are not promotion
-   evidence.
-2. P9-001 adapts guarded native equality. P9-002 independently tests lambda-kind
-   rechecks, fresh-bound demand and duplicate context lookup. Genuine checked
-   ablations and semantic falsifiers precede combinations.
-3. P9-003 first tests duplicated termination-descent traversal; compact literals
-   remain a distinct representation hypothesis with capture/precision obligations.
-4. Root integrates survivors, runs new-source baseline/candidate/TypeScript
-   comparisons and broad regressions, then installs and documents a validated
-   default. No unmeasured speed claim or fresh fixed-point claim.
+The [Phase9 report](../implementation/phase9/checker_speed.md) consolidates the
+cached chronological checker, reduced conversion/lambda/lookup work, guarded
+version-3 native equality, repaired descent and compact U32-sized Nat literals.
+Version-1/2 derivations remain replayable. The final integrated03 frontend has
+1,000/1,001 positive type acceptances, 482/482 determinate negative refusals,
+zero observed invalid acceptances and zero timeouts. Exact reference differences
+remain 731; four imported-law trust cases and long strings remain unresolved.
+The final diagnostic regression is repaired and exact baseline controls pass.
 
-Agents own disjoint source areas and CPU1/2/3 for development. All compiler work
-pauses during the final serial CPU0 measurement. Preserve unrelated Phase6 work.
+Controlled same-final-source checking takes **66.84 s**, versus **208.22 s** for
+Phase8 and **2.94 s** for pinned TypeScript: **3.12× faster**, with a remaining
+**22.74× process-wall gap**. Two fresh samples per compiler run in serial on one
+CPU; this excludes emission. Memory remains about 1.5 GiB. These values replace
+no historical full-compilation or generated-program runtime measurement.
 
-## Consolidated Phase8 frontier
+Next bounded investigations should target loader declaration membership,
+generated-call/allocation overhead and deep-pattern layout validation. Compact
+strings and imported-law fills are separate semantic priorities. Preserve the
+existing scopes and falsifiers; do not infer full backend equivalence or a new
+self-hosted fixed point. Use the approximately 27-second checked build plus
+focused controls for routine changes and small operation/counter series before
+another broad experiment. The 50%/75% source-reduction goals remain unmet.
+
+Preserve unrelated Phase6 work. All intentional compiler jobs stop during the
+controlled serial comparison; failed and superseded attempts remain evidence.
+
+## Consolidated Phase8 frontier (historical)
 
 The [migration checkpoint](../implementation/phase8/upstream_and_conformance.md)
 is installed and validated against upstream b2111cf (2.0.32 era). It has a genuine

@@ -377,8 +377,9 @@ def nc_word_literal(+t: KTerm, +bit: U32, +value: U32) -> NC_Literal:
 
 @unsafe
 def nc_nat_literal(+t: KTerm, +value: U32) -> NC_Literal:
+  nt_choose(NC_Literal, core_nat(t), u => nt_choose(NC_Literal, U32.is_le(qt(t), U32.sub(4294967295, value)), u => NC_Literal{True{}, U32.add(value, qt(t))}, u => NC_Literal{False{}, 0}), u =>
   nt_choose(NC_Literal, String.eq(tg(t), "Ctr") && String.eq(nm(t), "Zero"), u => NC_Literal{True{}, value}, u =>
-    nt_choose(NC_Literal, String.eq(tg(t), "Ctr") && String.eq(nm(t), "Succ"), u => nc_nat_literal(kid(t, 0), U32.inc(value)), u => NC_Literal{False{}, 0}))
+    nt_choose(NC_Literal, String.eq(tg(t), "Ctr") && String.eq(nm(t), "Succ"), u => nc_nat_literal(kid(t, 0), U32.inc(value)), u => NC_Literal{False{}, 0})))
 
 @unsafe
 def nc_literal(+t: KTerm) -> NC_Literal:
@@ -403,7 +404,8 @@ def nc_compact_ctor(+t: KTerm, lit: NC_Literal) -> KTerm:
 
 @unsafe
 def nc_compact(t):
-  nt_choose(KTerm, String.eq(tg(t), "Ctr"), u => nc_compact_ctor(t, nc_literal(t)), u => kt(tg(t), nm(t), ix(t), qt(t), nc_compact_list(ks(t))))
+  kc(KTerm, core_nat(t), u => kt("NWord", U32.show(qt(t)), 0, 0, Nil{}), u =>
+  nt_choose(KTerm, String.eq(tg(t), "Ctr"), u => nc_compact_ctor(t, nc_literal(t)), u => kt(tg(t), nm(t), ix(t), qt(t), nc_compact_list(ks(t)))))
 
 @unsafe
 def nc_lower_ctor(+book: List<&2, KDef>, +t: KTerm, +env: List<&2, NC_Binding>, +n: U32, lit: NC_Literal) -> NC_Code:

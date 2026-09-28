@@ -635,11 +635,12 @@ def infer_node(e, ctx, t, dem, sp):
    u => kc(KChecked, String.eq(tg(t), "ADT"), u => infer_adt(e, ctx, t, dem, lookup(cb(e), nm(t))),
    u => kc(KChecked, String.eq(tg(t), "Eql"), u => both(check(e, ctx, kid(t, 2), 0, typ(1)), both(check(e, ctx, kid(t, 0), 0, kid(t, 2)), check(e, ctx, kid(t, 1), 0, kid(t, 2)), t, typ(2), False{}), t, typ(2), False{}),
    u => kc(KChecked, String.eq(tg(t), "Ann"), u => both(check(e, ctx, kid(t, 1), 0, typ(1)), check(e, ctx, kid(t, 0), dem, kid(t, 1)), kid(t, 0), kid(t, 1), False{}),
-   u => bad("cannot infer: annotation required"))))))))))))
+   u => kc(KChecked, core_nat(t), u => infer(e, ctx, core_nat_step(t), dem, sp), u => bad("cannot infer: annotation required")))))))))))))
 
 @unsafe
 def infer_var(ctx, t, dem):
-  kc(KChecked, String.eq(tg(ctx_get(ctx, ix(t))), "Absent"), u => bad("unbound variable"), u => ok(t, kid(ctx_get(ctx, ix(t)), 0), Con{kt("Use", "", ix(t), dem, Nil{}), Nil{}}))
+  +bound = ctx_get(ctx, ix(t))
+  kc(KChecked, String.eq(tg(bound), "Absent"), u => bad("unbound variable"), u => ok(t, kid(bound, 0), Con{kt("Use", "", ix(t), dem, Nil{}), Nil{}}))
 
 @unsafe
 def infer_ref(e, t, dem, sp, d):
@@ -711,6 +712,7 @@ def check(e, ctx, t, dem, ty):
 
 @unsafe
 def check_node(e, ctx, t, dem, ty):
+  kc(KChecked, core_nat(t), u => kc(KChecked, core_nat_type(cb(e), wnf(cb(e), ty)), u => ok(t, ty, Nil{}), u => check(e, ctx, core_nat_step(t), dem, ty)), u =>
   kc(KChecked, String.eq(tg(t), "Lam"), u => check_lam(e, ctx, t, dem, wnf(cb(e), ty)),
    u => kc(KChecked, String.eq(tg(t), "Ctr"), u => check_ctr(e, ctx, t, dem, wnf(cb(e), ty)),
    u => kc(KChecked, String.eq(tg(t), "Mat") || String.eq(tg(t), "Efq"), u => check_mat(e, ctx, t, dem, wnf(cb(e), ty)),
@@ -718,7 +720,7 @@ def check_node(e, ctx, t, dem, ty):
    u => kc(KChecked, String.eq(tg(t), "Hol"), u => bad("unresolved hole"),
    u => kc(KChecked, String.eq(tg(t), "Let"), u => check_let(e, ctx, ctx, ks(t), dem, ty, Nil{}, Nil{}),
    u => kc(KChecked, String.eq(tg(t), "Rwt"), u => check_rwt(e, ctx, t, dem, ty, infer(e, ctx, kid(t, 0), dem, Nil{})),
-   u => check_fits(e, infer(e, ctx, t, dem, Nil{}), ty))))))))
+   u => check_fits(e, infer(e, ctx, t, dem, Nil{}), ty)))))))))
 
 @unsafe
 def check_fits(e, r, ty):
@@ -730,7 +732,7 @@ def check_lam(e, ctx, t, dem, ty):
 
 @unsafe
 def check_lam_q(e, ctx, t, dem, ty, q):
-  check_lam_done(t, ty, q, both(check(e, ctx, kid(ty, 0), 0, typ(kindq(e, q))), check(lhs_step(e, var(nm(t), ix(t))), ctx_bind(ctx, ix(t), q, nm(t), kid(ty, 0)), kid(t, 0), dem, subst(kid(ty, 1), ix(ty), var(nm(t), ix(t)))), t, ty, False{}))
+  check_lam_done(t, ty, q, both(kc(KChecked, U32.is_eq(qt(t), 2) && U32.is_eq(qt(ty), 1), u => check(e, ctx, kid(ty, 0), 0, typ(kindq(e, q))), u => ok(t, ty, Nil{})), check(lhs_step(e, var(nm(t), ix(t))), ctx_bind(ctx, ix(t), q, nm(t), kid(ty, 0)), kid(t, 0), dem, subst(kid(ty, 1), ix(ty), var(nm(t), ix(t)))), t, ty, False{}))
 
 @unsafe
 def check_lam_done(t, ty, q, r):
@@ -977,7 +979,7 @@ def constructor_exists(
     case Nil{}:
       False{}
     case Con{h, rest}:
-      Bool.not(String.eq(dk(lookup(dc(h), name)), "Absent")) || constructor_exists(rest, name)
+      Bool.not(String.eq(dk(h), "BookCache")) && Bool.not(String.eq(dk(lookup(dc(h), name)), "Absent")) || constructor_exists(rest, name)
 
 @unsafe
 def constructor_names(done, ctrs, names):

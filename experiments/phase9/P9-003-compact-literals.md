@@ -132,3 +132,62 @@ Retain every failed attempt and the installed release07 as control. Store raw
 rows and source patches durably before final consolidation. The findings report
 records correctness, measurement and promotion separately; this prospective
 record stays unchanged after execution.
+
+## Post-registration record (does not revise the prospective hypothesis)
+
+Root approved and integrated the narrow descent repair after reviewing its
+failed-field state against upstream. The isolated compact-Nat stage was then
+explicitly authorized. Final candidate05 uses `LitNat` with empty name, id zero,
+no children/removals and an exact U32 payload in `quant`; it does not add arbitrary
+precision to the internal source-literal representation or change public Nat ABI.
+All parser, pattern, check/fallback, normalization/graph, annotation, readback and
+JS/native consumer changes are included in the same +41-net-line candidate.
+
+The [findings report](../../implementation/phase9/literal-feasibility.md) records
+five named attempts, including bootstrap syntax failure, malformed-payload
+controls, native U32 wrapping falsifier, and an above-U32 readback mismatch.
+Final candidate05 passes 120 direct controls and agrees semantically with upstream
+on all 40 selected source observations; five pre-existing exact negative diagnostics
+remain strict failures. Four boundary programs pass actual native execution.
+
+The deep 300-pattern backend case still times out. An equivalent explicit
+Succ/Zero source on the descent-only baseline also times out in both JS/native,
+with the same costly layout-validation phase. Thus compact Nat repairs its check
+acceptance without claiming complete or fast backend support. The long String
+representation gap remains outside this narrower implementation.
+
+Review artifacts are `selfhost/build/phase9/literals/compact-nat-current-root.patch`
+and `integration-current-inputs.json` in that directory. The patch was applied
+with fuzz zero to a temporary copy of current root source, preserving the separate
+kernel/normalize changes; production has not received this compact candidate.
+Its fresh complete-source ordinary-check/trust preflight is the final owner gate.
+Combined integration, broader conformance and controlled measurements remain
+root-owned. Findings never convert a selected pass into a full-conformance claim.
+
+
+Final owner gate: candidate05 passes complete-source ordinary checking and the
+expected unsafe trust refusal, with exact unsafe-definition agreement against
+pinned TypeScript and no changed bound inputs. The preflight is concurrent and
+cannot establish a controlled speedup. Root integration is recommended for the
+two repaired Nat check gaps, while deep-pattern backend scaling and long String
+remain explicit follow-ups. Compact production edits and combined promotion stay
+root-owned; the owner's outputs are frozen and CPU3 work paused.
+
+Integrated02 follow-up: full frontend review found one missed literal-inference
+diagnostic regression (nat_literal_import), alongside the four expected semantic
+improvements. Its raw vector is retained. Root authorized the narrow infer_node
+fallback to inspect core_nat_step before reporting cannot-infer, matching upstream's
+undeclared-constructor diagnostic rule. A six-source exact baseline diagnostic
+gate was added, including declared custom Nat counterexamples; root owns the
+integrated03 build and observations. No new checker acceptance is intended.
+
+Final integration outcome: integrated03's six exact-baseline inference cases all
+pass (twelve actual observations), restoring the diagnostic regression. Fresh
+frontend03 has exactly the four justified baseline changes: three positive
+acceptance repairs and one negative timeout becoming a determinate refusal.
+The final 40-row literal vector is unchanged from the previously reviewed result.
+No remaining timeout or unexpected invalid acceptance occurs in the complete
+parse/check sweep; long String remains its sole positive checking gap. Backend
+scaling and exact diagnostic/trust gaps remain explicit. The root owns the
+controlled timing and release; no broader performance or execution claim is
+inferred from these results.

@@ -1,0 +1,34 @@
+{
+  "kind": "phase9-lossless-profile-preservation",
+  "complete": true,
+  "scope": "Byte preservation only. The original profile attempt and failed summary statuses are unchanged.",
+  "raw": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase9/baseline-profile-02/checking.cpuprofile",
+    "bytes": 1573317008,
+    "sha256": "05e62a8dad989161a2d117c17d8beaaa00508c796a136ac475a9bc18cbd3dd33"
+  },
+  "python": "3.9.2 (default, May 14 2026, 03:00:00) \n[GCC 10.2.1 20210110]",
+  "zlib": "1.2.11",
+  "startedUnixSeconds": 1790573162.60315,
+  "gzipLevel": 6,
+  "gzipMtime": 0,
+  "compressedBytes": 54791942,
+  "compressedSha256": "89963a067d05c57e2100262e34aaa704f55ee688ba7aa4c23f6d2d11ed490038",
+  "roundtrip": {
+    "pass": true,
+    "bytes": 1573317008,
+    "sha256": "05e62a8dad989161a2d117c17d8beaaa00508c796a136ac475a9bc18cbd3dd33"
+  },
+  "parts": [
+    {
+      "file": "checking.cpuprofile.gz",
+      "bytes": 54791942,
+      "sha256": "89963a067d05c57e2100262e34aaa704f55ee688ba7aa4c23f6d2d11ed490038"
+    }
+  ],
+  "tool": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase9/profile-evidence/preserve.py",
+    "sha256": "d99bc95a737cf7d5c0cf852096bbbc47707f956d1fdfc5ecb59dc396c0e321d1"
+  },
+  "finishedUnixSeconds": 1790573188.9448051
+}

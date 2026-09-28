@@ -698,3 +698,39 @@ P9-001 adapts the native equality derivative; P9-002 tests three independent
 checker work reductions; P9-003 separates duplicated descent from compact
 literal representation; P9-004 owns baseline/residual profiling and the final
 same-source controlled comparison. No candidate is promoted at this point.
+
+## 2026-09-28 — Phase9 checked compiler released
+
+The [final report](../implementation/phase9/checker_speed.md) records the installed
+`integrated-03` checked B1 and version-3 equality derivative. Chronological law
+checking shares an immutable binder-bound seed; exact conversion, lambda checking
+and successful lookup avoid redundant work. Descent avoids repeated failed-child
+comparison, and compact Nat literals repair the two Nat checking failures.
+The initial cache-metadata and later Nat-inference diagnostic regressions are
+repaired; both failed attempts remain preserved. Native equality retains guarded
+provenance and exact historical version replay.
+
+The controlled same-final-source checking comparison is **66.84 s versus 208.22 s**
+for Phase8, **3.12× faster**. Pinned TypeScript takes **2.94 s**, leaving a **22.74×**
+process-wall gap. Two serial fresh processes per compiler use one CPU and retain
+every result; peak memory remains about 1.5 GiB. These are checking costs, not
+full compilation or generated-program runtime. The approximately 27-second
+checked-build/focused loop remains appropriate for routine edits.
+
+All 2,996 frontend observations complete without timeouts. Positive type acceptance
+improves from 997/1,001 to **1,000/1,001**, and all **482/482** validation negatives
+determinately refuse, with zero observed invalid acceptances. Exactly four baseline
+observations improve; all others are unchanged. There remain 731 exact reference
+differences, one long-string positive failure and four imported-law trust cases
+that fail before the intended phase. All **42** ordinary/relocated release checks
+pass across interpreter, JS and native execution. No new self-hosted fixed point
+or full backend-equivalence claim is made.
+
+**Updated frontier:** investigate remaining declaration-membership scans,
+generated-call/allocation overhead and deep-pattern layout costs with small
+controlled series. Compact strings and imported-law fills are semantic priorities.
+Source is 15,050 physical lines across 59 modules, 73 more than Phase8; the earlier
+50%/75% simplification goals remain unmet. The
+[preservation index](../implementation/phase9/checker-evidence/README.md) retains
+failures, complete measurements, exact inputs and the final release. Unrelated
+Phase6 work remains outside this promotion.

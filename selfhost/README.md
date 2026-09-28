@@ -1,7 +1,7 @@
 # Bend2 compiler port in Bend2
 
 Use the [compiler guide](../docs/BEND-IN-BEND.md) and
-[Phase8 release report](../implementation/phase8/upstream_and_conformance.md).
+[Phase9 release report](../implementation/phase9/checker_speed.md).
 The current target is upstream
 [`b2111cf43244e65f76ddc278ee695e669f720cbf`](https://github.com/bendlang/bend/tree/b2111cf43244e65f76ddc278ee695e669f720cbf),
 after the Bend2 2.0.32 release.
@@ -13,10 +13,11 @@ node cli.mjs tests/conformance/typed-smoke/base-u32.bend --run
 npm run build
 ```
 
-The compiler contains14,977 physical /12,779 nonblank Bend lines in59 modules.
+The compiler contains 15,050 physical /12,843 nonblank Bend lines in 59 modules.
 It retains the validated S4 simplifications while adding current declaration,
 namespace, typing and effect semantics. The [release manifest](dist/release.json)
-binds the exact source, genuine checked API, Base, runtime and host. Verification
+binds the exact source, genuine checked parent, equality-derived API, Base,
+runtime and host. Verification
 works after relocation. Compiler edits use the
 [checked development workflow](../docs/PHASE5_DEVELOPMENT.md); ordinary compilation
 has no upstream TypeScript fallback.

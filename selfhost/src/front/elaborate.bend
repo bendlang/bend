@@ -412,7 +412,7 @@ def f_u32(
 def f_nat(
   +n: U32,
 ) -> KTerm:
-  f_choose(KTerm, U32.is_gt(n, 256), u => app(ref("U32.to_nat"), f_u32(n)), u => f_choose(KTerm, U32.is_eq(n, 0), u => kt("Ctr", "Zero", 0, 1, Nil{}), u => kt("Ctr", "Succ", 0, 1, [f_nat(U32.sub(n, 1))])))
+  core_nat_make(n)
 
 @unsafe
 def f_number(
