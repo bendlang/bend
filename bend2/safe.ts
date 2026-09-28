@@ -176,7 +176,7 @@ function safe_book(book: Book): { text: string; oos: Array<[Name, string]> } {
     for (const [k, T, v] of e.out) {
       const r = bad.has(k) ? undefined : [...o_refs(T), ...o_refs(v)].find((r) => bad.has(r));
       if (r !== undefined) {
-        bad.set(k, "names " + r + ", out of scope: " + (e.fail.get(r) ?? bad.get(r)));
+        bad.set(k, "names " + B.name_key(r) + ", out of scope: " + (e.fail.get(r) ?? bad.get(r)));
         more = true;
       }
     }
@@ -280,13 +280,13 @@ function item_emit(e: Safe, k: Name, cols: Cols, n: string): void {
   }
   const tld = e.book.tlds[k];
   if (tld === undefined) {
-    oos("an unknown name " + k);
+    oos("an unknown name " + B.name_key(k));
   }
   if (tld.$ === "ADT") {
     return adt_emit(e, cols, n, tld);
   }
   if (tld.u === true) {
-    oos("uses " + (tld.b === true ? "base's" : "the") + " @unsafe def " + k);
+    oos("uses " + (tld.b === true ? "base's" : "the") + " @unsafe def " + B.name_key(k));
   }
   def_emit(e, k, cols, n, tld);
 }
@@ -296,7 +296,7 @@ function item_emit(e: Safe, k: Name, cols: Cols, n: string): void {
 // its type
 function def_emit(e: Safe, k: Name, cols: Cols, n: string, tld: Def): void {
   const T = type_drop(e, tld.T, cols);
-  const t = tld.e !== undefined ? null : model(e, T) ?? oos("no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + k);
+  const t = tld.e !== undefined ? null : model(e, T) ?? oos("no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + B.name_key(k));
   const s = { ...scope_nil(), self: n };
   const To = term(e, s, T, false);
   e.out.push([n, To, t === null ? arm(e, s, k, cols, []) : tree(e, s, t, []), t !== null]);
@@ -490,7 +490,7 @@ function fresh(e: Safe, n: string): string {
 // a bend2 name spelled with BendTT's name characters: any other one is
 // _hex_
 function name_tt(k: Name): string {
-  return k.replace(/[^A-Za-z0-9_.]|^[.0-9]/g, (c) => "_" + (c.codePointAt(0) ?? 0).toString(16) + "_");
+  return B.name_key(k).replace(/[^A-Za-z0-9_.]|^[.0-9]/g, (c) => "_" + (c.codePointAt(0) ?? 0).toString(16) + "_");
 }
 
 // Quant
@@ -691,7 +691,7 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
     case "Mat": {
       const ctr = e.book.ctrs[x.k];
       if (ctr === undefined) {
-        oos("an unknown constructor " + x.k);
+        oos("an unknown constructor " + B.name_key(x.k));
       }
       const [hT, mT] = goals(e, all, ctr);
       const h = tree(e, s, typed(x.h, hT), [...fs, { n: ctr.n, cv }]);
@@ -843,7 +843,7 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
     case "ADT": {
       const tld = e.book.tlds[x.k];
       if (tld?.$ !== "ADT") {
-        oos("an unknown datatype " + x.k);
+        oos("an unknown datatype " + B.name_key(x.k));
       }
       return args(e, s, x.k, tld.T, x.x, live);
     }
@@ -918,9 +918,9 @@ function spine(e: Safe, s: Scope, t: HTerm, live: boolean): O {
   // bend2's instance of a template is the template at its ~ arguments
   const g = e.inst.get(f.k);
   const [k, ys] = g === undefined ? [f.k, xs] : [g[0], [...g[1], ...xs]];
-  const tld = e.book.tlds[k] ?? oos("an unknown name " + k);
+  const tld = e.book.tlds[k] ?? oos("an unknown name " + B.name_key(k));
   if (tld.$ === "Def" && ys.length < tld.x) {
-    oos("a template " + k + " short of its ~ arguments");
+    oos("a template " + B.name_key(k) + " short of its ~ arguments");
   }
   return args(e, s, k, tld.T, ys, live);
 }
@@ -1155,7 +1155,7 @@ function qsig_eq(e: Safe, T: HTerm, A: HTerm, d: number): boolean {
 function ctr_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Ctr" }>, T: HTerm | null, live: boolean): O {
   const ctr = e.book.ctrs[x.k];
   if (ctr === undefined) {
-    oos("an unknown constructor " + x.k);
+    oos("an unknown constructor " + B.name_key(x.k));
   }
   const w = B.u32_from_term(x) ?? B.u32_from_term(x, "F32");
   if (!s.sub && w !== null) {
@@ -1435,7 +1435,7 @@ function kernel_check(text: string): boolean {
 export function safe_emit(book: Book, out: string): string[] {
   const got = safe_book(book);
   fs.writeFileSync(out, got.text);
-  return got.oos.map(([k, why]) => "- " + k + ": " + why + "\n");
+  return got.oos.map(([k, why]) => "- " + B.name_key(k) + ": " + why + "\n");
 }
 
 // --verdict: whether every def of a book bend2 checked is in the kernel's

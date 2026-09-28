@@ -1379,12 +1379,14 @@ export function io_run(book: Bend.Book, args: string[]): number {
 function file_book(book: Bend.Book, roots: Name[], js: boolean): File {
   for (const k of OWNED) {
     if (book.tlds[k] && !book.tlds[k].b) {
-      die(k + " is a name the compiler encodes itself: name yours apart");
+      die(Bend.name_key(k)
+        + " is a name the compiler encodes itself: name yours apart");
     }
   }
   for (const [k, tld] of Object.entries(book.tlds)) {
     if (def_foreign(tld) && k in book.ctrs) {
-      die(k + " names both a constructor and a foreign def: name one apart");
+      die(Bend.name_key(k)
+        + " names both a constructor and a foreign def: name one apart");
     }
   }
   [TELES, SRCS, LOOPS, NODES, LAYS, FLATS, FUNS, BRWS, IDS, TAKEN]
@@ -2514,7 +2516,7 @@ function emit_expr(fl: File, tm: HTerm, ty0: HTerm | null,
         return emit_zero(fl, ty);
       }
       if (!def_foreign(m.tld)) {
-        die(`a live call into the law ${g.k}`);
+        die(`a live call into the law ${Bend.name_key(g.k)}`);
       }
       return val_new([seg_clo(fl, seg_fid(g.k),
         emit_each(fl, m.args, m.args.map(() => BOX))
@@ -2834,10 +2836,10 @@ function c_ids(fl: File, src: string, m = ""): string {
     if (!p) {
       return t;
     }
-    const q = [m === "" ? k : m + "." + k, k].find((q) => q in fl.book.ctrs
+    const q = [m === "" ? k : m + ":" + k, k].find((q) => q in fl.book.ctrs
       || q in fl.book.tlds || IDS.has(p + "_" + q))
       ?? die(`${p}(${k}) names no constructor or def`);
-    return fl.js ? JSON.stringify(q) : name_id(p + "_", q);
+    return fl.js ? JSON.stringify(Bend.name_key(q)) : name_id(p + "_", q);
   });
 }
 
@@ -2845,7 +2847,7 @@ function effect_srcs(fl: File, ext: string, miss: string): string[] {
   const seen = new Map<string, string>();
   for (const [k, tld] of done_defs(fl, def_foreign)) {
     const path = fs.realpathSync(tld.i!.find((x) => x.endsWith(ext))
-      ?? die(miss + k));
+      ?? die(miss + Bend.name_key(k)));
     const m = tld.m ?? "";
     if ((seen.get(path) ?? m) !== m) {
       die(path + " is imported from two namespaces, '" + seen.get(path)
@@ -2915,7 +2917,8 @@ export function compile_book(book: Bend.Book): string {
     `static const u32 SHOW_DESC[] = { ${show.map((c) =>
       typeof c === "string" ? cid_mac(c) : c).join(", ")} };`,
     `static const char* SHOW_NAMES[] = { ${show.filter((c) =>
-      typeof c === "string").map((n) => JSON.stringify(n)).join(", ")} };`,
+      typeof c === "string").map((n) => JSON.stringify(Bend.name_key(n)))
+      .join(", ")} };`,
     "#endif"];
   const entries = [...fl.segs, seg_new(IO_EMIT, BOX, [""]),
     seg_new(CLO_APPLY, BOX, ["", ""])];
@@ -3026,7 +3029,7 @@ function js_call(fl: File, k: Name, args: HTerm[], tail: boolean): string {
   }
   const intr = intr_of(fl, k, true)?.JS ?? null;
   if (intr === null && !fun_runs(tld)) {
-    die("a live call into the law " + k);
+    die("a live call into the law " + Bend.name_key(k));
   }
   const v = def_foreign(tld) && exprs.length === fun_of(fl, k).lays.length - 1
     ? name_local(fl, "x") : "";
@@ -3090,7 +3093,8 @@ function js_expr(fl: File, tm: HTerm, ty0: HTerm | null): string {
         return tpl(native[x.k].intr, exprs);
       }
       const fs = ctr_live(fl.book, fl.book.ctrs[x.k]);
-      return `{$: "${x.k}"${exprs.map((z, j) => ", " + js_key(fs[j][1]) + z)
+      const tag = Bend.name_key(x.k);
+      return `{$: "${tag}"${exprs.map((z, j) => ", " + js_key(fs[j][1]) + z)
         .join("")}}`;
     }
     case "Let": {
@@ -3184,7 +3188,7 @@ function js_match(fl: File, x: HTerm, ty: HTerm | null, args: string[]): void {
         return ["", h, [s]];
       }
       if (native === undefined) {
-        return [`${s}.$ === "${k}"`, h,
+        return [`${s}.$ === "${Bend.name_key(k)}"`, h,
           ctr_live(fl.book, fl.book.ctrs[k]).map(([, f]) => `${s}["${f}"]`)];
       }
       return [tpl(native[k].cond ?? "", [s]), h,
@@ -3212,7 +3216,7 @@ function js_def(fl: File, k: Name, def: Bend.Def): void {
     params.push(name_local(fl, "k"));
     const xs = params.map((p, i) =>
       `${js_marshal(fl, doms[i][2], true)}(${p})`);
-    const n = JSON.stringify(k);
+    const n = JSON.stringify(Bend.name_key(k));
     return block(fl, `function ${js_sat(k)}(${params.join(", ")}) {`, () =>
       file_push(fl, `return { $: "$FFI", run: $0eff[${n}].run, need: $0eff[${
         n}].need, args: [${xs.slice(0, -1).join(", ")}], kont: ${xs.at(-1)
@@ -3282,16 +3286,19 @@ function js_marshal(fl: File, A: HTerm | null, out: boolean): string {
     const [n] = fs.filter(([, f]) => f === name).pop() ?? [];
     const copy = fs.filter(([m]) => m !== n).map(([m, f]) =>
       `, ${js_key(m)}${f}(v["${m}"])`).join("");
-    return `case "${c.k}": ` + (fs.length === 0 ? "at[key] = v; return top[0];"
+    const tag = Bend.name_key(c.k);
+    return `case "${tag}": ` + (fs.length === 0 ? "at[key] = v; return top[0];"
       : `at = at[key] = {...v${copy}}; ` + (n === undefined ? "return top[0];"
       : `key = "${n}"; v = v[key]; continue;`));
   });
+  const tk = Bend.name_key(t.k);
+  const tags = cs.map((c) => Bend.name_key(c.k)).join(", ");
   fl.spins.push({ ...seg_new("", BOX, ["v"]), lines: [`function ${name}(v) {`,
     "const top = [v];", "for (let at = top, key = 0;;) {", "switch (v.$) {",
     // TODO(#1105): a tag is the key the loading book gives its constructor,
     // so it depends on the root file; make tags the same in every book
-    ...arms, `default: throw "bend: ${t.k} has no tag " + v?.$ + " (its tags: ${
-      cs.map((c) => c.k).join(", ")}); a tag names its constructor as the"
+    ...arms, `default: throw "bend: ${tk} has no tag " + v?.$ + " (its tags: ${
+      tags}); a tag names its constructor as the"
       + " loading file sees it, which a later version will make the same"
       + " everywhere (#1105)";`, "}", "}", "}", ""] });
   return name;
@@ -3323,13 +3330,15 @@ export function js_lib(book: Bend.Book, mod = false): string {
     js_def(fl, k, def);
   }
   const srcs = effect_srcs(fl, ".js", "a foreign def without a .js import: ");
+  const ids = JSON.stringify(done_defs(fl, def_foreign)
+    .map(([k]) => Bend.name_key(k)));
   const effs = srcs.map((t) => `(() => {\n${t}\n})();\n\n`).join("")
-    + (srcs.length === 0 ? "" : `for (const k of ${JSON.stringify(
-      done_defs(fl, def_foreign).map(([k]) => k))}) {\n  if (!(k in $0eff)) {
+    + (srcs.length === 0 ? "" : `for (const k of ${ids}) {
+  if (!(k in $0eff)) {
     throw new Error("bend: no effect registers " + k);\n  }\n}\n\n`);
   const lib = outs === null ? "" : `export default {\n${outs.map((k) =>
-    `  "${k}": run_lib(${js_host(fl, k)}, ${fun_of(fl, k).lays.length}),`)
-    .join("\n")}\n};\n`;
+    `  "${Bend.name_key(k)}": run_lib(${js_host(fl, k)}, ${
+      fun_of(fl, k).lays.length}),`).join("\n")}\n};\n`;
   const jmps = new Map<Name, boolean>();
   const jmp = (k: Name): boolean => k === CLO_APPLY || memo(jmps, k, () =>
     (jmps.set(k, true), [...fl.tails.get(k) ?? []].some(jmp)));
@@ -3345,8 +3354,8 @@ export function js_book(book: Bend.Book): string {
   const show = show_main(book);
   return `${lib}\n${RUNTIME_MAIN}\ncli(process.argv.slice(1));\nio_exit(${
     js_sat("main")}, ${JSON.stringify(show && [show.map((c) =>
-      typeof c === "string" ? 0 : c), show.filter((c) =>
-      typeof c === "string")])});`;
+      typeof c === "string" ? 0 : c), show.flatMap((c) =>
+      typeof c === "string" ? [Bend.name_key(c)] : [])])});`;
 }
 
 // RuntimeC

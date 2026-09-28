@@ -717,7 +717,7 @@ function cli_verdict(book: Bend.Book, kernel: boolean): number {
   if (bad.length !== 0) {
     cli_say(2, FAIL + "\nError: " + String(bad.length) + " def" + (bad.length === 1
       ? " relies" : "s rely") + " on unsafe or foreign code:\n"
-      + bad.map((k) => "- " + k + "\n").join(""));
+      + bad.map((k) => "- " + Bend.name_key(k) + "\n").join(""));
     return 1;
   }
   if (kernel && !Safe.safe_check(book)) {

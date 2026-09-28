@@ -882,7 +882,7 @@ export function book_fam(book: Book, k: Name): Name {
 export function book_adt(book: Book, tm: Extract<HTerm, { $: "ADT" }>, ctx: Ctx, def?: Name): ADT {
   const tld = book.tlds[tm.k];
   if (tld === undefined || tld.$ !== "ADT") {
-    throw Err(book, ctx, "a declared datatype (unknown: " + tm.k + ")", undefined, tm.s, def);
+    throw Err(book, ctx, "a declared datatype (unknown: " + name_key(tm.k) + ")", undefined, tm.s, def);
   }
   if (tm.r.length === 0) {
     return tld;
@@ -1201,17 +1201,20 @@ function f32_show(x: number): string {
   return (Object.is(x, -0) ? "-0" : s).replace(/^-?\d+(?=e|$)/, "$&.0").replace("Infinity", "inf");
 }
 
+// a key as output spells it: ns:name is internal, and ns.name is shown
+export function name_key(k: Name): string {
+  return k.replace(":", ".");
+}
+
 // a key as a file spells it: its own names bare, an imported file's
-// through its alias; any other key as is
+// through its alias; any other key as name_key does
 export function name_show(file: File | undefined, k: Name): string {
   if (file === undefined) {
-    return k;
+    return name_key(k);
   }
-  if (file.ns !== "" && k.startsWith(file.ns + ".")) {
-    return k.slice(file.ns.length + 1);
-  }
-  const a = Object.keys(file.al).find((a) => k.startsWith(file.al[a] + "."));
-  return a === undefined ? k : a + k.slice(file.al[a].length);
+  const [ns, nm] = k.includes(":") ? k.split(":") : ["", k];
+  const a = Object.keys(file.al).find((a) => file.al[a] === ns);
+  return ns === file.ns ? nm : a === undefined ? name_key(k) : a + "." + nm;
 }
 
 export function term_show(term: LTerm, top: number = -1, bnd: Name[] = [], file?: File): string {
@@ -1661,14 +1664,14 @@ export function parse_var(p: Parse, k: Name, s?: Span): LTerm {
 }
 
 export function parse_qual(p: Parse, k: Name): Name {
-  return p.ns === "" ? k : p.ns + "." + k;
+  return p.ns === "" ? k : p.ns + ":" + k;
 }
 
 export function parse_reso(p: Parse, k: Name): Name {
   const dot = k.indexOf(".");
   let q = parse_qual(p, k);
   if (dot !== -1 && k.slice(0, dot) in p.al) {
-    q = p.al[k.slice(0, dot)] + k.slice(dot);
+    q = p.al[k.slice(0, dot)] + ":" + k.slice(dot + 1);
     if (q !== k && (q in p.book.tlds || q in p.book.ctrs) && (k in p.book.tlds || k in p.book.ctrs)) {
       parse_fail(p, "an unambiguous name (the alias " + k.slice(0, dot) + " shadows " + k + ")");
     }
@@ -1711,17 +1714,17 @@ export function parse_patt(p: Parse, t: LTerm): Patt {
   switch (t.$) {
     case "Var": {
       if (book_ctr(book, parse_reso(p, t.k)) !== null) {
-        throw Err(book, ctx_nil(), "a braced constructor pattern (" + t.k + " is a constructor: write " + t.k + "{}, or rename the binder)", undefined, t.s);
+        throw Err(book, ctx_nil(), "a braced constructor pattern (" + name_key(t.k) + " is a constructor: write " + name_key(t.k) + "{}, or rename the binder)", undefined, t.s);
       }
       return parse_bind(p, t);
     }
     case "Ctr": {
       const ctr = book_ctr(book, t.k);
       if (ctr === null) {
-        throw Err(book, ctx_nil(), "a declared constructor (unknown: " + t.k + ")", undefined, t.s);
+        throw Err(book, ctx_nil(), "a declared constructor (unknown: " + name_key(t.k) + ")", undefined, t.s);
       }
       if (ctr.n !== t.x.length) {
-        throw Err(book, ctx_nil(), "a " + t.k + " pattern with " + String(ctr.n) + (ctr.n === 1 ? " field" : " fields"), undefined, t.s);
+        throw Err(book, ctx_nil(), "a " + name_key(t.k) + " pattern with " + String(ctr.n) + (ctr.n === 1 ? " field" : " fields"), undefined, t.s);
       }
       return { $: "PCtr", k: t.k, x: t.x.map((x) => parse_patt(p, x)), s: t.s };
     }
@@ -2034,7 +2037,7 @@ export function parse_term_ops(p: Parse, tm: LTerm, beg: number, lvl: number): L
       const ts: LTerm[] = [];
       for (parse_skip(p); x > 0 && parse_at(p, "~"); parse_skip(p)) {
         if (ts.length === x) {
-          parse_fail(p, "a term (" + out.k + " takes " + String(x) + " ~)");
+          parse_fail(p, "a term (" + name_key(out.k) + " takes " + String(x) + " ~)");
         }
         parse_bump(p);
         ts.push(parse_term(p));
@@ -3328,7 +3331,7 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
         }
       }
       if (tld.$ === "ADT" && tld.n > 0) {
-        throw Err(book, ctx, "a family instance (write " + tm.k + "<..>)", tm, tm.s, lhs.def);
+        throw Err(book, ctx, "a family instance (write " + name_key(tm.k) + "<..>)", tm, tm.s, lhs.def);
       }
       return Infer(Ref(k, tm.s, tm.b), book.tlds[k].T, uses_nil(), x);
     }
@@ -3400,7 +3403,7 @@ export function term_infer(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ctx: Ctx,
     case "ADT": {
       const adt = book_adt(book, tm, ctx, lhs.def);
       if (tm.x.length !== adt.n) {
-        throw Err(book, ctx, tm.k + " with " + String(adt.n) + (adt.n === 1 ? " parameter" : " parameters"), tm, tm.s, lhs.def);
+        throw Err(book, ctx, name_key(tm.k) + " with " + String(adt.n) + (adt.n === 1 ? " parameter" : " parameters"), tm, tm.s, lhs.def);
       }
       const { xs, us, tel } = tele_check(book, lhs, adt.T, tm.x, qt, ctx, d, tm.s);
       return Infer(ADT(tm.k, xs, tm.s, tm.r), tel, us);
@@ -3556,12 +3559,12 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       const ctr = adt.c.find((c) => c.k === tm.k);
       if (ctr === undefined) {
         if (book_ctr(book, tm.k) === null) {
-          throw Err(book, ctx, "a declared constructor (" + t_wnf.k + " declares " + adt.c.map((c) => c.k).join(", ") + ")", tm, tm.s, lhs.def);
+          throw Err(book, ctx, "a declared constructor (" + name_key(t_wnf.k) + " declares " + adt.c.map((c) => name_key(c.k)).join(", ") + ")", tm, tm.s, lhs.def);
         }
         throw Err(book, ctx, ty, Ref(book_fam(book, tm.k), tm.s), tm.s, lhs.def);
       }
       if (tm.x.length !== ctr.n) {
-        throw Err(book, ctx, tm.k + " with " + String(ctr.n) + (ctr.n === 1 ? " field" : " fields"), tm, tm.s, lhs.def);
+        throw Err(book, ctx, name_key(tm.k) + " with " + String(ctr.n) + (ctr.n === 1 ? " field" : " fields"), tm, tm.s, lhs.def);
       }
       const tel = tele_fill(book, ctr.T, t_wnf.x, ctx, lhs.def, tm.s);
       const { xs, us } = tele_check(book, lhs, tel, tm.x, qt, ctx, d, tm.s);
@@ -3615,7 +3618,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
       switch (tm.$) {
         case "Efq": {
           if (rem.length !== 0 && !ctx_dead(book, ctx)) {
-            throw Err(book, ctx, "cases for " + rem.map((c) => c.k).join(", "), tm, tm.s, lhs.def);
+            throw Err(book, ctx, "cases for " + rem.map((c) => name_key(c.k)).join(", "), tm, tm.s, lhs.def);
           }
           return Check(tm, ty, uses_nil());
         }
@@ -3624,7 +3627,7 @@ export function term_check(book: Book, lhs: LHS, tm: HTerm, qt: Quant, ty: HTerm
           const t_all = t_wnf;
           const ctr   = rem.find((c) => c.k === tm.k);
           if (ctr === undefined) {
-            throw Err(book, ctx, "a constructor of " + a_wnf.k + " (missing, or already matched)", tm, tm.s, lhs.def);
+            throw Err(book, ctx, "a constructor of " + name_key(a_wnf.k) + " (missing, or already matched)", tm, tm.s, lhs.def);
           }
           const tel = tele_fill(book, ctr.T, a_wnf.x, ctx, lhs.def, tm.s);
           function term_check_mat_goal(cur: HTerm, n: number, xs: HTerm[]): HTerm {
@@ -3813,7 +3816,7 @@ export function book_valid(book: Book, done: number = 0): void {
           for (const [d, [q, x, A]] of doms.entries()) {
             ctx = ctx_bind(ctx, d, q, x, A);
           }
-          throw Err(book, ctx, "a kind (type " + k + "<..> is Kind(g))", kind, kind.s ?? tld.T.s, k);
+          throw Err(book, ctx, "a kind (type " + name_key(k) + "<..> is Kind(g))", kind, kind.s ?? tld.T.s, k);
         }
         for (const ctr of tld.c) {
           let tel: HTerm = ctr.T;
@@ -3828,7 +3831,7 @@ export function book_valid(book: Book, done: number = 0): void {
             ctx = ctx_bind(ctx, d, t_all.q, t_all.k, t_all.A);
             tel = t_all.B(Var(t_all.k, d));
           }
-          const exp = "a telescope tipped at " + k + " applied to its own parameters";
+          const exp = "a telescope tipped at " + name_key(k) + " applied to its own parameters";
           const tip = term_wnf(book, tel);
           if (tip.$ !== "ADT" || tip.k !== k || tip.x.length !== tld.n || tip.r.length !== 0) {
             throw Err(book, ctx, exp, tip, undefined, ctr.k);
