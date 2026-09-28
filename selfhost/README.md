@@ -1,11 +1,11 @@
 # Bend2 compiler port in Bend2
 
 Use the [compiler guide](../docs/BEND-IN-BEND.md) and
-[Phase12 release report](../implementation/phase12/avoidable_work.md).
-The [Phase13 rewriter report](../implementation/phase13/structured_rewriter.md)
-preserves a prototype with 10.6% less checking time; integration is deferred
-because its speed/complexity tradeoff does not meet the agreed target. The
-installed compiler and development commands remain those of Phase12.
+[Phase14 release report](../implementation/phase14/conformance_and_dispatch.md).
+The current release fixes imported-law fills, renders checker carets and uses
+source-level normalizer workers. Same-source checking takes 24.98s versus 27.40s
+for Phase12 and 2.81s for pinned TypeScript. Exact frontend differences fall
+730→603. The larger Phase13 rewriter remains a preserved, uninstalled experiment.
 
 The current target is upstream
 [`b2111cf43244e65f76ddc278ee695e669f720cbf`](https://github.com/bendlang/bend/tree/b2111cf43244e65f76ddc278ee695e669f720cbf),
@@ -18,7 +18,7 @@ node cli.mjs tests/conformance/typed-smoke/base-u32.bend --run
 npm run build
 ```
 
-The compiler contains 15,130 physical /12,916 nonblank Bend lines in 59 modules.
+The compiler contains 15,264 physical /13,038 nonblank Bend lines in 59 modules.
 It retains the validated S4 simplifications while adding current declaration,
 namespace, typing and effect semantics. The [release manifest](dist/release.json)
 binds the exact source, genuine checked parent, equality/choice-derived API, Base,
@@ -139,7 +139,7 @@ remain in `dist/selfhost/`; the [preservation index](../experiments/PRESERVATION
 and [experiment ledger](../experiments/ledger.md) identify their exact scope.
 They are not alternate defaults. The current release can run after relocation
 without an upstream checkout, as verified by its
-[Phase12 installed/relocated CLI checks](../implementation/phase12/avoidable_work.md).
+[Phase14 installed/relocated CLI checks](../implementation/phase14/release-validation.md).
 The earlier [Phase5 clean-package evidence](../implementation/phase5/relocated-cli-evidence/README.md)
 applies to that historical artifact.
 

@@ -205,7 +205,7 @@ def f_alias_defs(+ds: List<&2,KDef>, +imports: List<&2,KTerm>, +scope: List<&2,K
   match ds:
     case Nil{}: Nil{}
     case Con{+d, rest}:
-      Con{KDef{dn(d), dk(d), da(d), dx(d), f_alias_term(dt(d), imports, scope), f_alias_term(dv(d), imports, scope), f_alias_defs(dc(d), imports, scope), db(d), du(d)}, f_alias_defs(rest, imports, scope)}
+      Con{f_graph_fill_alias(KDef{dn(d), dk(d), da(d), dx(d), f_alias_term(dt(d), imports, scope), f_alias_term(dv(d), imports, scope), f_alias_defs(dc(d), imports, scope), db(d), du(d)}, imports, scope), f_alias_defs(rest, imports, scope)}
 
 @unsafe
 def f_graph_finish(s, ns, book, imports, g):
@@ -249,7 +249,7 @@ def f_module_defs(todo, visible, scope, ns, imports):
 
 @unsafe
 def f_module_def(d, rest, visible, scope, ns, imports):
-  Con{f_choose(KDef, String.is_empty(ns), u => f_elab_def(d, scope), u => f_qual_def(f_elab_def(d, scope), visible, ns, imports)), f_module_defs(rest, visible, scope, ns, imports)}
+  Con{f_choose(KDef, f_eq(dk(d), "ImportFill"), u => KDef{dn(d), "Def", da(d), dx(d), dt(d), f_qual_term(f_scope(dv(d), Nil{}, scope), visible, ns, imports), Nil{}, db(d), du(d)}, u => f_choose(KDef, String.is_empty(ns), u => f_elab_def(d, scope), u => f_qual_def(f_elab_def(d, scope), visible, ns, imports))), f_module_defs(rest, visible, scope, ns, imports)}
 
 # Reporting uses the main module's declaration events, excluding dependencies.
 # Upstream appends to book.order only for def/type/law declarations; constructors
@@ -425,7 +425,7 @@ def fpe_rejected(result, book, done, sources):
 # Exactly the existing f_error_* traversal order, including empty-name Error skip.
 @unsafe
 def fpe_term(t):
-  f_choose(KTerm, f_eq(tg(t), "Error"), u => f_choose(KTerm, String.is_empty(nm(t)), u => atom("Absent"), u => t), u => fpe_terms(ks(t)))
+  f_choose(KTerm, f_eq(tg(t), "Error"), u => f_choose(KTerm, String.is_empty(nm(t)), u => atom("Absent"), u => t), u => f_choose(KTerm, f_eq(tg(t), "ImportLaw"), u => kt("Error", "imported law fills require the canonical graph loader", 0, 0, Nil{}), u => fpe_terms(ks(t))))
 @unsafe
 def fpe_terms(ts):
   match ts:
@@ -504,3 +504,16 @@ def f_path_nonempty(parts: List<&2,String>) -> List<&2,String>:
     case Nil{}: Nil{}
     case Con{+part, +rest}:
       f_choose(List<&2,String>, String.is_empty(part), u => f_path_nonempty(rest), u => Con{part, f_path_nonempty(rest)})
+
+# Imported fills retain their raw telescope until dependencies have loaded.
+# The temporary kind protects the already-canonical law type and name from
+# module qualification; f_module_def eliminates it before checker entry.
+@unsafe
+def f_graph_fill_alias(+d: KDef, +imports: List<&2,KTerm>, +scope: List<&2,KDef>) -> KDef:
+  f_choose(KDef, f_eq(tg(dt(d)), "ImportLaw"), u => f_graph_fill(d, f_find(f_alias(dn(d), imports), List.reverse(&2, KDef, scope))), u => d)
+
+@unsafe
+def f_graph_fill(+d: KDef, +old: KDef) -> KDef:
+  f_choose(KDef, f_eq(dk(old), "Def") && f_eq(tg(dv(old)), "Absent") && Bool.not(db(old)) && f_bare_params(ks(dt(d))) && U32.is_ge(da(d), dx(old)) && (Bool.not(f_eq(tg(dv(d)), "Foreign")) || U32.is_eq(dx(old), 0)),
+    u => KDef{dn(old), "ImportFill", da(d), dx(old), dt(old), f_choose(KTerm, f_eq(tg(dv(d)), "Body"), u => kt("Body", "", fc_start(ks(dt(d)), dt(old), kid(dv(d), 1), True{}), 0, ks(dv(d))), u => dv(d)), Nil{}, False{}, du(old) || du(d)},
+    u => KDef{dn(d), "Def", da(d), dx(d), kt("Error", "an imported definition must uniquely fill a non-native law with plain parameter names", 0, 0, Nil{}), dv(d), dc(d), db(d), du(d)})

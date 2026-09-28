@@ -388,8 +388,8 @@ async function inspectWithMemo(input,{mode='check',api,args=[],timeoutMs=5000,co
     }
     const needReport=mode==='check'||(mode==='interpreter'&&!api.driver_has_main(book))||withReport;
     if(needReport)trace('report declarations');
-    const verdict=needReport&&api.driver_report?api.driver_report(book,list([])):'ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n';
-    const unsafeDefinitions=needReport&&api.driver_bad_names?array(api.driver_bad_names(book)):[];
+    const verdict=needReport&&api.driver_report?api.driver_report(loaded.book,list([])):'ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n';
+    const unsafeDefinitions=needReport&&api.driver_bad_names?array(api.driver_bad_names(loaded.book)):[];
     const trust={typeAccepted:true,proofTrust:needReport?(unsafeDefinitions.length?'failed':'passed'):'not-assessed',unsafeDefinitions,kernelChecked:false};
     if((proofOnly||!api.driver_has_main(book))&&['check','interpreter'].includes(mode)&&trust.proofTrust==='failed')
       return {status:'error',phase:'verdict',diagnostic:verdict,exitCode:1,checked:true,...trust};

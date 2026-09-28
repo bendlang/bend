@@ -388,7 +388,7 @@ def f_def_base(
 ) -> FRawResult:
   match p:
     case FParsed{+pars, +ts}:
-      f_choose(FRawResult, f_eq(tg(pars), "Error"), u => f_result(book, pars, imports), u => f_choose(FRawResult, f_eq(f_tx(ts), "->"), u => f_def_type(name, ks(pars), f_expr(f_tl(ts), 0), book, imports, unsafe), u => f_def_type(name, ks(pars), FParsed{dt(f_find(name, book)), ts}, book, imports, unsafe)))
+      f_choose(FRawResult, f_eq(tg(pars), "Error"), u => f_result(book, pars, imports), u => f_choose(FRawResult, f_eq(f_tx(ts), "->"), u => f_def_type(name, ks(pars), f_expr(f_tl(ts), 0), book, imports, unsafe), u => f_def_type(name, ks(pars), FParsed{f_choose(KTerm, f_eq(dk(f_find(name, book)), "Missing") && Bool.not(f_eq(f_alias(name, imports), name)), u => kt("ImportLaw", name, 0, 0, ks(pars)), u => dt(f_find(name, book))), ts}, book, imports, unsafe)))
 
 @unsafe
 def f_def_type(name, pars, p, book, imports, unsafe):
@@ -398,7 +398,7 @@ def f_def_type(name, pars, p, book, imports, unsafe):
 
 @unsafe
 def f_def_signature(name, pars, ty, book):
-  f_choose(KTerm, f_eq(dk(f_find(name, book)), "Missing"), u => f_tbind(pars, ty), u => ty)
+  f_choose(KTerm, f_eq(dk(f_find(name, book)), "Missing") && Bool.not(f_eq(tg(ty), "ImportLaw")), u => f_tbind(pars, ty), u => ty)
 
 @unsafe
 def f_def_body(name, pars, ty, p, book, imports, unsafe):

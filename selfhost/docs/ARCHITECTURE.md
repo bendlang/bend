@@ -47,6 +47,16 @@ The Phase12 experiment restores the allocation rather than raising the limit.
 Delayed-spine reconstruction also remains unpromoted: its small diagnostic gain
 did not justify another internal protocol.
 
+Phase14 expresses the six `norm_eval_node` tag choices as Boolean-parameter
+workers. Each worker executes its original selected body or tests the next tag;
+`App`, `Ann`, `Let`, `Ref`, `Min`, `Rwt` and the final fallback keep their order.
+The pinned bootstrap compiler emits direct conditionals/calls for these workers,
+avoiding intermediate choice closures and trampoline messages. Unlike the index
+workers, this chain is not emitted as one mutually recursive loop. Its finite
+call-depth cost is covered by fresh and saved-history controls; it is not a
+general stack-safety guarantee. The nested rewrite-proof choice and initial
+normalizer fallback stay unchanged. No new JavaScript transformation is needed.
+
 Emission selects reachable definitions while retaining the complete indexed book
 as its type context. Annotation reconstructs the checked types needed for erasure,
 runtime layouts, foreign marshalling and readback. Backend-specific intrinsic
@@ -64,6 +74,32 @@ boxed representation differs from upstream's flat-layout optimizations; runtime
 and performance equivalence are distinct validation questions.
 
 ## Checker bounds and literals
+
+Imported law fills are resolved after dependencies load. For an omitted return
+type under a declared import alias, the parser temporarily stores `ImportLaw`
+with the original parameter telescope. The existing graph alias traversal looks
+up the latest canonical declaration and requires an unfilled, non-native law,
+plain binder names and a compatible template count. The fill retains that law's
+type, name and unsafe flag. A temporary `ImportFill` definition kind protects its
+canonical signature while the ordinary module pass elaborates/qualifies its body;
+the pass eliminates the marker before returning the checked loader input. Raw,
+cached parsed-source and seeded graph paths share this behavior. The older
+name-based loader explicitly refuses a remaining marker because it lacks the
+canonical dependency context.
+
+An import alias is not a namespace for fresh annotated definitions. Such a
+declaration is a parse error. Loaded declaration events also supply proof-report
+order; final-definition lookup supplies dependency bodies. The host passes this
+event book to the Bend reporter instead of the specialized unique book. Checking
+and materialization still use their existing books. Template trust is assessed
+from source declarations, matching the pinned upstream controls; specialization
+must not accidentally make an unsafe source declaration appear trusted.
+
+Checker diagnostics render existing source spans with a caret row. Offsets use
+UTF-16 code units, tabs retain their alignment, and a multiline span is clipped
+to its first displayed line. Empty/reversed spans still receive one caret.
+Rendering does not repair an incorrect originating span: those remaining exact
+differences are recorded separately. Parser diagnostics retain their own path.
 
 Checking keeps two independent persistent books: one supplies all declared
 signatures and chronological bodies, while the other records only prior events

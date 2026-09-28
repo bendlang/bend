@@ -207,7 +207,7 @@ def f_bare_params(
 
 @unsafe
 def f_def_prior(name, p, book, imports, unsafe, old):
-  f_choose(FRawResult, f_eq(dk(old), "Missing"), u => f_def_base(name, p, book, imports, unsafe), u => f_choose(FRawResult, f_eq(dk(old), "Def") && f_eq(tg(dv(old)), "Absent") && f_bare_params(ks(f_pn(p))) && U32.is_ge(terms_len(ks(f_pn(p))), dx(old)), u => f_choose(FRawResult, f_eq(f_tx(f_pr(p)), ":"), u => f_def_base(name, p, book, imports, unsafe), u => f_result(book, f_pn(f_err(f_pr(p), "expected : (a definition filling a law has no return annotation)")), imports)), u => f_result(book, kt("Error", "a definition must uniquely fill its law with plain parameter names", 0, 0, Nil{}), imports)))
+  f_choose(FRawResult, f_eq(dk(old), "Missing"), u => f_choose(FRawResult, Bool.not(f_eq(f_alias(name, imports), name)) && f_eq(f_tx(f_pr(p)), "->"), u => f_result(book, f_pn(f_err(f_pr(p), "an import alias can only name a law fill without a return annotation")), imports), u => f_def_base(name, p, book, imports, unsafe)), u => f_choose(FRawResult, f_eq(dk(old), "Def") && f_eq(tg(dv(old)), "Absent") && f_bare_params(ks(f_pn(p))) && U32.is_ge(terms_len(ks(f_pn(p))), dx(old)), u => f_choose(FRawResult, f_eq(f_tx(f_pr(p)), ":"), u => f_def_base(name, p, book, imports, unsafe), u => f_result(book, f_pn(f_err(f_pr(p), "expected : (a definition filling a law has no return annotation)")), imports)), u => f_result(book, kt("Error", "a definition must uniquely fill its law with plain parameter names", 0, 0, Nil{}), imports)))
 
 law f_scope_local_valid:
   for +t: KTerm

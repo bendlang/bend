@@ -18,6 +18,13 @@ const final = manifests.candidate, baseline = manifests.baseline;
 assert.equal(final.base.sha256, baseline.base.sha256, 'Same pinned Base required');
 assert.equal(final.runtime.sha256, baseline.runtime.sha256, 'Same output runtime required');
 assert.equal(final.config.upstream, baseline.config.upstream, 'Same pinned checkout required');
+const hostFiles = m => new Map(m.snapshot.sources
+  .map(({frozen}) => [path.relative(m.snapshot.root, frozen.file), frozen])
+  .filter(([name]) => name.startsWith('tools/')));
+const oldHosts = hostFiles(baseline), newHosts = hostFiles(final);
+assert.deepEqual([...newHosts.keys()].sort(), [...oldHosts.keys()].sort(), 'Host file membership drift');
+for (const [name, item] of newHosts)
+  if (name !== 'tools/typed-driver.mjs') assert.equal(item.sha256, oldHosts.get(name).sha256, 'Host drift: ' + name);
 for (const name of ['compiler-abi.mjs', 'conformance/adapters/typed.mjs', 'conformance/adapters/upstream.mjs'])
   assert.equal(identity(path.join(final.snapshot.root, 'tools', name)).sha256,
     identity(path.join(baseline.snapshot.root, 'tools', name)).sha256, 'Host drift: ' + name);

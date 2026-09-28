@@ -85,7 +85,7 @@ def dr_lines(names):
 def driver_bad_names(
   +book: List<&2,KDef>,
 ) -> List<&2,String>:
-  dr_bad_names(book_cached(book, norm_max_book(book)), dr_own_names(book, Nil{}))
+  dr_bad_names(book_cached(book_final_fast(book, Nil{}), norm_max_book(book)), dr_own_names(book, Nil{}))
 
 @unsafe
 def dr_own_names(

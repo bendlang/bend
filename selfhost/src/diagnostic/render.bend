@@ -4,6 +4,8 @@ import Base
 law dg_snippet_at:
   for +lines: List<&2, String>
   for +at: U32
+  for +left: String
+  for +length: U32
   String
 
 law dg_snippet_lines:
@@ -11,6 +13,8 @@ law dg_snippet_lines:
   for +at: U32
   for +end: U32
   for +line: U32
+  for +left: String
+  for +length: U32
   String
 
 law dg_location_text:
@@ -94,18 +98,44 @@ def dg_snippet(
 ) -> String:
   match span:
     case DNoSpan{}: ""
-    case DSpan{source, begin, end}: dg_snippet_at(String.lines(source), dg_line_at(source, begin, 1))
+    case DSpan{source, begin, end}: dg_snippet_at(String.lines(source), dg_line_at(source, begin, 1), dg_marker_left(source, begin, ""), kc(U32, U32.is_gt(end, begin), u => U32.sub(end, begin), u => 0))
 
 @unsafe
-def dg_snippet_at(lines, at):
-  dg_snippet_lines(lines, at, kc(U32, U32.is_lt(dg_lines_count(lines), U32.add(at, 1)), u => dg_lines_count(lines), u => U32.add(at, 1)), 1)
+def dg_marker_left(
+  +source: String,
+  +offset: U32,
+  +left: String,
+) -> String:
+  match source:
+    case SNil{}: left
+    case SCon{c, rest}:
+      kc(String, U32.is_eq(offset, 0), u => left, u => kc(String, U32.is_lt(offset, dg_units(c)), u => left ++ dg_padding(offset), u => dg_marker_left(rest, U32.sub(offset, dg_units(c)), kc(String, Char.is_eq(c, '\n'), u => "", u => left ++ kc(String, Char.is_eq(c, '\t'), u => "\t", u => dg_padding(dg_units(c)))))))
 
 @unsafe
-def dg_snippet_lines(lines, at, end, line):
+def dg_carets(
+  +count: U32,
+) -> String:
+  kc(String, U32.is_eq(count, 0), u => "", u => "^" ++ dg_carets(U32.sub(count, 1)))
+
+@unsafe
+def dg_marker(
+  +text: String,
+  +width: U32,
+  +left: String,
+  +length: U32,
+) -> String:
+  dg_padding(width) ++ " | " ++ left ++ dg_carets(norm_max(1, U32.min(length, kc(U32, U32.is_gt(dg_width(text), dg_width(left)), u => U32.sub(dg_width(text), dg_width(left)), u => 0))))
+
+@unsafe
+def dg_snippet_at(lines, at, left, length):
+  dg_snippet_lines(lines, at, kc(U32, U32.is_lt(dg_lines_count(lines), U32.add(at, 1)), u => dg_lines_count(lines), u => U32.add(at, 1)), 1, left, length)
+
+@unsafe
+def dg_snippet_lines(lines, at, end, line, left, length):
   match lines:
     case Nil{}: ""
     case Con{h, rest}:
-      kc(String, U32.is_gt(line, end), u => "", u => kc(String, U32.is_lt(U32.add(line, 1), at), u => "", u => "\n" ++ dg_lpad(U32.show(line), dg_width(U32.show(end))) ++ kc(String, U32.is_eq(line, at), u => ">| ", u => " | ") ++ h) ++ dg_snippet_lines(rest, at, end, U32.add(line, 1)))
+      kc(String, U32.is_gt(line, end), u => "", u => kc(String, U32.is_lt(U32.add(line, 1), at), u => "", u => "\n" ++ dg_lpad(U32.show(line), dg_width(U32.show(end))) ++ kc(String, U32.is_eq(line, at), u => ">| " ++ h ++ "\n" ++ dg_marker(h, dg_width(U32.show(end)), left, length), u => " | " ++ h)) ++ dg_snippet_lines(rest, at, end, U32.add(line, 1), left, length))
 
 @unsafe
 def dg_scope(

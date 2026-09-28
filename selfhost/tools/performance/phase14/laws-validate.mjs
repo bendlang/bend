@@ -1,0 +1,7 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {supervise,requireExecution} from '../../development/process.mjs';
+import {verifyAttempt,identity,verifyIdentity} from '../../development/workflow.mjs';
+const [attemptArg,selectionArg,outArg]=process.argv.slice(2),attempt=fs.realpathSync(attemptArg),selection=fs.realpathSync(selectionArg),out=path.resolve(outArg);
+fs.mkdirSync(out);const inputs=[import.meta.filename,selection,process.execPath].map(identity),report={kind:'phase14-laws-validation',complete:false,inputs};const save=()=>fs.writeFileSync(path.join(out,'launcher.json'),JSON.stringify(report,null,2)+'\n');save();
+try{const m=await verifyAttempt(attempt);report.api=m.api;const e=await supervise('taskset',['-c','2',process.execPath,'--stack-size=4096','--max-old-space-size=4096',path.resolve('selfhost/tools/development/workflow.mjs'),'validate',attempt,selection,path.join(out,'validation')],{directory:path.join(out,'execution'),timeoutMs:300000});report.execution=e;save();requireExecution(e,[0,1]);const v=JSON.parse(fs.readFileSync(path.join(out,'validation/report.json')));if(!v.complete)throw Error(v.error??'Incomplete validation');report.validation=v;inputs.forEach(verifyIdentity);await verifyAttempt(attempt);report.complete=true;}catch(e){report.error=e.stack;process.exitCode=1;}save();console.log(JSON.stringify({complete:report.complete,error:report.error,pass:report.validation?.pass}));

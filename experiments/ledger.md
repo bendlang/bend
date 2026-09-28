@@ -904,3 +904,38 @@ and test source-level normalizer dispatch following the successful index pattern
 The [report](../implementation/phase14/conformance_and_dispatch.md) will separate
 semantic changes, exact output, scoped controls, controlled timings and promotion.
 No new result is claimed at this checkpoint; all unrelated Phase6 work stays untouched.
+
+## Phase14 conformance and source dispatch completed — 2026-09-28
+
+The [report](../implementation/phase14/conformance_and_dispatch.md) promotes
+combined-01 API9136be92, retaining upstream b2111cf. Deferred imported-law fills
+now inherit canonical signatures after dependency loading; all11trust refusals
+match exactly. Source-order trust reporting uses final declarations. Checker
+carets remove a shared diagnostic gap, and six source normalizer workers avoid
+intermediate choices without extending the maintained JavaScript helper.
+
+The full2,996-observation gate preserves all1,001positive accepts and482negative
+refusals. Exact differences fall730→603(194parse/409check),127new matches and no
+regressions. The two alias-declaration observations now refuse at the proper parse
+phase;26other checker changes add only carets while retaining an exact gap. No
+unexpected semantic delta, invalid acceptance or timeout is observed. The71/78
+strict diagnostic family still fails for seven prior span errors.
+
+Controlled identical-final-source checking is27.40→24.98s,8.82%less process time;
+pinned TypeScript is2.81s, leaving8.88×gap. Exactly two reviewed host argument edits
+are explicit; remaining hosts/Base/runtime match. The separate identical-host
+pilot saves9.03%. Ratios are not multiplied. Source grows134lines/4,670bytes/11defs
+and two temporary markers; maintained JS helper/runtime stay unchanged. This is
+not a source reduction or generated-program runtime speed claim.
+
+Both checked builds pass26focused controls. All226paired saved-history observations,
+41paired backend rows,16helper groups,five authentic replays and42installed/relocated
+CLI checks pass within their stated scopes. The full launcher's null/undefined
+postprocessing failure remains failed; a strict identity-bound audit reuses the
+healthy vector without rerunning fixtures. Earlier failed fixtures/attempts and
+strict differences remain in [preserved evidence](../implementation/phase14/evidence/README.md).
+
+**Updated frontier:** address another measured shared diagnostic cause; profile this
+exact release before expanding source dispatch. The Phase13 rewriter stays deferred.
+Keep rejected seed/branch transformations excluded until their history failures
+are addressed. All75unrelated Phase6 files remain unchanged and unstaged.

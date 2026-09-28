@@ -1,5 +1,22 @@
 # Compiler evidence preservation index
 
+
+## Phase14 conformance and source dispatch — 2026-09-28
+
+The [report](../implementation/phase14/conformance_and_dispatch.md) and
+[evidence capsule](../implementation/phase14/evidence/README.md) retain checked
+candidates, source/host identities, law/diagnostic/dispatch controls, failed and
+cancelled setups, original exact histories, full frontend/backend observations,
+controlled matrices and installed/relocated release checks. Ten bound prerequisite
+capsules supply shared objects. Publication requires closed producers and complete
+independent byte/mode recovery; failures retain their original status. Node/Clang
+and derived caches have explicit external/regeneration boundaries. All75unrelated
+Phase6 files are identity-only inputs and remain unstaged.
+
+The [Phase13 capsule](../implementation/phase13/evidence/README.md) separately
+preserves its deferred larger rewriter, profiles, negative controls and frozen
+pilot measurements; it is a prerequisite rather than an installed transformation.
+
 ## Phase12 avoidable-work optimization — 2026-09-28
 
 The [report](../implementation/phase12/avoidable_work.md) and

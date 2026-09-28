@@ -414,7 +414,7 @@ function $driver_report$(_book_0, _names_0) {
 }
 
 function $driver_bad_names$(_book_0) {
-  return $dr_bad_names$(($book_cached$(_book_0, ($norm_max_book$(_book_0)))), run_loop($dr_own_names$(_book_0, {$: "Nil"})));
+  return $dr_bad_names$(($book_cached$(run_loop($book_final_fast$(_book_0, {$: "Nil"})), ($norm_max_book$(_book_0)))), run_loop($dr_own_names$(_book_0, {$: "Nil"})));
 }
 
 function $compiler_check_result_abi$() {
@@ -1488,6 +1488,22 @@ function $dr_bad_names$(_book_0, _names_0) {
   }
 }
 
+function $book_final_fast$(_book_0, _done_0) {
+  return run_tail((run_loop($book_final_large$(_book_0, 256))) ? ((_x_0) => {
+  return run_tail((run_loop($book_final_names_valid$(_book_0))) ? ((_x_1) => {
+  return run_tail((run_loop($book_final_names_valid$(_done_0))) ? ((_x_2) => {
+  return $book_final_scan$(($book_final_reverse$(_book_0, {$: "Nil"})), ($missing$()), {$: "Nil"}, _done_0);
+}) : ((_x_3) => {
+  return $book_final_legacy$(_book_0, _done_0);
+}), {$: "Unit"});
+}) : ((_x_4) => {
+  return $book_final_legacy$(_book_0, _done_0);
+}), {$: "Unit"});
+}) : ((_x_5) => {
+  return $book_final_legacy$(_book_0, _done_0);
+}), {$: "Unit"});
+}
+
 function $dr_own_names$(_book_0, _seen_0) {
   if (_book_0.$ === "Nil") {
     return {$: "Nil"};
@@ -2228,22 +2244,6 @@ function $j_module_export$(_name_0, _implementation_0) {
 
 function $j_foreign_name$(_name_0) {
   return $j_foreign_chars$(($String$to_lower$(_name_0)));
-}
-
-function $book_final_fast$(_book_0, _done_0) {
-  return run_tail((run_loop($book_final_large$(_book_0, 256))) ? ((_x_0) => {
-  return run_tail((run_loop($book_final_names_valid$(_book_0))) ? ((_x_1) => {
-  return run_tail((run_loop($book_final_names_valid$(_done_0))) ? ((_x_2) => {
-  return $book_final_scan$(($book_final_reverse$(_book_0, {$: "Nil"})), ($missing$()), {$: "Nil"}, _done_0);
-}) : ((_x_3) => {
-  return $book_final_legacy$(_book_0, _done_0);
-}), {$: "Unit"});
-}) : ((_x_4) => {
-  return $book_final_legacy$(_book_0, _done_0);
-}), {$: "Unit"});
-}) : ((_x_5) => {
-  return $book_final_legacy$(_book_0, _done_0);
-}), {$: "Unit"});
 }
 
 function $kp_go$(_t_0, _p_0, _env_0) {
@@ -3004,6 +3004,83 @@ function $dr_relies$(_book_0, _todo_0, _seen_0) {
 }) : ((_x_1) => {
   return $dr_relies_def$(_book_0, _rest_0, {$: "Con", "head": _name_0, "tail": _seen_0}, run_loop($kr_resolve$(_book_0, _name_0)));
 }), {$: "Unit"});
+  }
+}
+
+function $book_final_large$(_book_0, _remaining_0) {
+  if (_book_0.$ === "Nil") {
+    return (_remaining_0 === 0);
+  } else {
+    const _rest_0 = _book_0["tail"];
+    if (((_remaining_0 === 0))) {
+const _x_0 = {$: "Unit"};
+return true;
+} else {
+const _x_1 = {$: "Unit"};
+return {$: "$JMP", f: $book_final_large$, x: [_rest_0, ((_remaining_0 - 1) >>> 0)]};
+}
+  }
+}
+
+function $book_final_names_valid$(_book_0) {
+  if (_book_0.$ === "Nil") {
+    return true;
+  } else {
+    const _d_0 = _book_0["head"];
+    const _rest_0 = _book_0["tail"];
+    if ((run_loop($book_final_name_valid$(($dn$(_d_0)))))) {
+const _x_0 = {$: "Unit"};
+return {$: "$JMP", f: $book_final_names_valid$, x: [_rest_0]};
+} else {
+const _x_1 = {$: "Unit"};
+return false;
+}
+  }
+}
+
+function $book_final_scan$(_book_0, _seen_0, _kept_0, _done_0) {
+  if (_book_0.$ === "Nil") {
+    return $book_final_reverse$(_kept_0, run_loop($book_final_filter$(_done_0, _seen_0)));
+  } else {
+    const _d_0 = _book_0["head"];
+    const _rest_0 = _book_0["tail"];
+    return $book_final_step$(_d_0, _rest_0, _seen_0, _kept_0, _done_0, ($index_hash$(($dn$(_d_0)), 2166136261)));
+  }
+}
+
+function $book_final_reverse$($0, $1) {
+  for (;;) {
+    {
+      const _book_0 = $0;
+      const _done_0 = $1;
+      if (_book_0.$ === "Nil") {
+        return _done_0;
+      } else {
+        const _d_0 = _book_0["head"];
+        const _rest_0 = _book_0["tail"];
+        $0 = _rest_0;
+        $1 = {$: "Con", "head": _d_0, "tail": _done_0};
+        continue;
+      }
+    }
+  }
+}
+
+function $book_final_legacy$($0, $1) {
+  for (;;) {
+    {
+      const _book_0 = $0;
+      const _done_0 = $1;
+      if (_book_0.$ === "Nil") {
+        return _done_0;
+      } else {
+        const _d_0 = _book_0["head"];
+        const _rest_0 = _book_0["tail"];
+        $0 = _rest_0;
+        $1 = {$: "Con", "head": _d_0, "tail": run_loop($index_remove$(_done_0, ($dn$(_d_0))))};
+        continue;
+      }
+    }
   }
 }
 
@@ -3963,35 +4040,7 @@ function $norm_var$(_book_0, _t_0, _values_0, _args_0, _left_0, _fallback_0) {
 }
 
 function $norm_eval_node$(_book_0, _t_0, _args_0, _left_0, _fallback_0) {
-  return run_tail((($String$eq$(($tg$(_t_0)), "App"))) ? ((_x_0) => {
-  return $norm_eval$(_book_0, run_loop($kid$(_t_0, 0)), {$: "Con", "head": run_loop($kid$(_t_0, 1)), "tail": _args_0}, _left_0, _fallback_0);
-}) : ((_x_1) => {
-  return run_tail((($String$eq$(($tg$(_t_0)), "Ann"))) ? ((_x_2) => {
-  return $norm_eval$(_book_0, run_loop($kid$(_t_0, 0)), _args_0, _left_0, _fallback_0);
-}) : ((_x_3) => {
-  return run_tail((($String$eq$(($tg$(_t_0)), "Let"))) ? ((_x_4) => {
-  return $norm_eval$(_book_0, run_loop($norm_let$(($ks$(_t_0)))), _args_0, _left_0, _fallback_0);
-}) : ((_x_5) => {
-  return run_tail((($String$eq$(($tg$(_t_0)), "Ref"))) ? ((_x_6) => {
-  return $norm_ref$(_book_0, _t_0, _args_0, run_loop($lookup$(_book_0, ($nm$(_t_0)))));
-}) : ((_x_7) => {
-  return run_tail((($String$eq$(($tg$(_t_0)), "Min"))) ? ((_x_8) => {
-  return $norm_apply$(run_loop($norm_min$(_book_0, run_loop($kid$(_t_0, 0)), run_loop($kid$(_t_0, 1)))), _args_0);
-}) : ((_x_9) => {
-  return run_tail((($String$eq$(($tg$(_t_0)), "Rwt"))) ? ((_x_10) => {
-  return run_tail((($String$eq$(($tg$(run_loop($wnf$(_book_0, run_loop($kid$(_t_0, 0)))))), "Rfl"))) ? ((_x_11) => {
-  return $norm_eval$(_book_0, run_loop($kid$(_t_0, 2)), _args_0, _left_0, _fallback_0);
-}) : ((_x_12) => {
-  return $norm_apply$(_t_0, _args_0);
-}), {$: "Unit"});
-}) : ((_x_13) => {
-  return $norm_args$(_book_0, _t_0, _args_0, _left_0, _fallback_0);
-}), {$: "Unit"});
-}), {$: "Unit"});
-}), {$: "Unit"});
-}), {$: "Unit"});
-}), {$: "Unit"});
-}), {$: "Unit"});
+  return $norm_node_app$(_book_0, _t_0, _args_0, _left_0, _fallback_0, ($String$eq$(($tg$(_t_0)), "App")));
 }
 
 function $index_find$($0, $1, $2, $3, $4) {
@@ -4083,83 +4132,6 @@ function $String$to_lower$(_s_0) {
     const _h_0 = (_s_0.codePointAt(0) > 0xFFFF ? _s_0.slice(0, 2) : _s_0[0]);
     const _t_0 = (_s_0.codePointAt(0) > 0xFFFF ? _s_0.slice(2) : _s_0.slice(1));
     return (($Char$to_lower$(_h_0)) + ($String$to_lower$(_t_0)));
-  }
-}
-
-function $book_final_large$(_book_0, _remaining_0) {
-  if (_book_0.$ === "Nil") {
-    return (_remaining_0 === 0);
-  } else {
-    const _rest_0 = _book_0["tail"];
-    if (((_remaining_0 === 0))) {
-const _x_0 = {$: "Unit"};
-return true;
-} else {
-const _x_1 = {$: "Unit"};
-return {$: "$JMP", f: $book_final_large$, x: [_rest_0, ((_remaining_0 - 1) >>> 0)]};
-}
-  }
-}
-
-function $book_final_names_valid$(_book_0) {
-  if (_book_0.$ === "Nil") {
-    return true;
-  } else {
-    const _d_0 = _book_0["head"];
-    const _rest_0 = _book_0["tail"];
-    if ((run_loop($book_final_name_valid$(($dn$(_d_0)))))) {
-const _x_0 = {$: "Unit"};
-return {$: "$JMP", f: $book_final_names_valid$, x: [_rest_0]};
-} else {
-const _x_1 = {$: "Unit"};
-return false;
-}
-  }
-}
-
-function $book_final_scan$(_book_0, _seen_0, _kept_0, _done_0) {
-  if (_book_0.$ === "Nil") {
-    return $book_final_reverse$(_kept_0, run_loop($book_final_filter$(_done_0, _seen_0)));
-  } else {
-    const _d_0 = _book_0["head"];
-    const _rest_0 = _book_0["tail"];
-    return $book_final_step$(_d_0, _rest_0, _seen_0, _kept_0, _done_0, ($index_hash$(($dn$(_d_0)), 2166136261)));
-  }
-}
-
-function $book_final_reverse$($0, $1) {
-  for (;;) {
-    {
-      const _book_0 = $0;
-      const _done_0 = $1;
-      if (_book_0.$ === "Nil") {
-        return _done_0;
-      } else {
-        const _d_0 = _book_0["head"];
-        const _rest_0 = _book_0["tail"];
-        $0 = _rest_0;
-        $1 = {$: "Con", "head": _d_0, "tail": _done_0};
-        continue;
-      }
-    }
-  }
-}
-
-function $book_final_legacy$($0, $1) {
-  for (;;) {
-    {
-      const _book_0 = $0;
-      const _done_0 = $1;
-      if (_book_0.$ === "Nil") {
-        return _done_0;
-      } else {
-        const _d_0 = _book_0["head"];
-        const _rest_0 = _book_0["tail"];
-        $0 = _rest_0;
-        $1 = {$: "Con", "head": _d_0, "tail": run_loop($index_remove$(_done_0, ($dn$(_d_0))))};
-        continue;
-      }
-    }
   }
 }
 
@@ -4920,6 +4892,46 @@ function $dr_relies_def$(_book_0, _todo_0, _seen_0, _d_0) {
   return true;
 }) : ((_x_3) => {
   return $dr_relies$(_book_0, ($kr_dependencies$(_d_0, {$: "Nil"}, _todo_0)), _seen_0);
+}), {$: "Unit"});
+}
+
+function $book_final_name_valid$(_name_0) {
+  if (_name_0 === "") {
+    return true;
+  } else {
+    const _h_0 = (_name_0.codePointAt(0) > 0xFFFF ? _name_0.slice(0, 2) : _name_0[0]);
+    const _rest_0 = (_name_0.codePointAt(0) > 0xFFFF ? _name_0.slice(2) : _name_0.slice(1));
+    const _x_0 = ($Char$to_u32$(_h_0));
+    const _x_1 = ((_x_0 - 55296) >>> 0);
+    if (((_x_1 <= 2047))) {
+const _x_2 = {$: "Unit"};
+return false;
+} else {
+const _x_3 = {$: "Unit"};
+return {$: "$JMP", f: $book_final_name_valid$, x: [_rest_0]};
+}
+  }
+}
+
+function $book_final_filter$(_done_0, _seen_0) {
+  if (_done_0.$ === "Nil") {
+    return {$: "Nil"};
+  } else {
+    const _d_0 = _done_0["head"];
+    const _rest_0 = _done_0["tail"];
+    return run_tail((($book_final_seen$(_seen_0, ($dn$(_d_0)), ($index_hash$(($dn$(_d_0)), 2166136261))))) ? ((_x_0) => {
+  return $book_final_filter$(_rest_0, _seen_0);
+}) : ((_x_1) => {
+  return {$: "Con", "head": _d_0, "tail": run_loop($book_final_filter$(_rest_0, _seen_0))};
+}), {$: "Unit"});
+  }
+}
+
+function $book_final_step$(_d_0, _rest_0, _seen_0, _kept_0, _done_0, _hash_0) {
+  return run_tail((($book_final_seen$(_seen_0, ($dn$(_d_0)), _hash_0))) ? ((_x_0) => {
+  return $book_final_scan$(_rest_0, _seen_0, _kept_0, _done_0);
+}) : ((_x_1) => {
+  return $book_final_scan$(_rest_0, run_loop($index_set$(_seen_0, {$: "KDef", "name": ($dn$(_d_0)), "kind": "$final.seen", "arity": 0, "templates": 0, "typ": ($atom$("Absent")), "value": ($atom$("Absent")), "ctors": {$: "Nil"}, "native": true, "unsafe": false}, _hash_0, 32)), {$: "Con", "head": _d_0, "tail": _kept_0}, _done_0);
 }), {$: "Unit"});
 }
 
@@ -5844,62 +5856,11 @@ function $norm_apply$($0, $1) {
   }
 }
 
-function $norm_let$(_ts_0) {
-  if (_ts_0.$ === "Nil") {
-    return $atom$("Absent");
+function $norm_node_app$(_book_0, _t_0, _args_0, _left_0, _fallback_0, _selected_0) {
+  if (_selected_0) {
+    return $norm_eval$(_book_0, run_loop($kid$(_t_0, 0)), {$: "Con", "head": run_loop($kid$(_t_0, 1)), "tail": _args_0}, _left_0, _fallback_0);
   } else {
-    const _h_0 = _ts_0["head"];
-    const _rest_0 = _ts_0["tail"];
-    return $norm_let_tail$(_h_0, _rest_0);
-  }
-}
-
-function $norm_ref$(_book_0, _t_0, _args_0, _d_0) {
-  return run_tail((($String$eq$(($dk$(_d_0)), "ADT"))) ? ((_x_0) => {
-  const _x_1 = ($da$(_d_0));
-  return run_tail(((_x_1 === 0)) ? ((_x_2) => {
-  return $norm_apply$(($kt$("ADT", ($nm$(_t_0)), 0, 0, {$: "Nil"})), _args_0);
-}) : ((_x_3) => {
-  return $norm_apply$(_t_0, _args_0);
-}), {$: "Unit"});
-}) : ((_x_4) => {
-  const _x_5 = ($String$eq$(($tg$(($dv$(_d_0)))), "Absent"));
-  const _x_6 = ($String$eq$(($tg$(($dv$(_d_0)))), "Foreign"));
-  const _x_7 = ($da$(_d_0));
-  const _x_8 = ($terms_len$(_args_0));
-  return run_tail((($Bool$and$(($Bool$not$((_x_5 || _x_6))), (_x_7 <= _x_8)))) ? ((_x_9) => {
-  return $norm_eval$(_book_0, ($dv$(_d_0)), _args_0, ($da$(_d_0)), ($norm_apply$(_t_0, _args_0)));
-}) : ((_x_10) => {
-  return $norm_apply$(_t_0, _args_0);
-}), {$: "Unit"});
-}), {$: "Unit"});
-}
-
-function $norm_min$(_book_0, _a_0, _b_0) {
-  return $norm_min_left$(_book_0, run_loop($wnf$(_book_0, _a_0)), _b_0);
-}
-
-function $norm_args$(_book_0, _t_0, _args_0, _left_0, _fallback_0) {
-  if (_args_0.$ === "Nil") {
-    return _t_0;
-  } else {
-    const _x_0 = _args_0["head"];
-    const _rest_0 = _args_0["tail"];
-    return run_tail((($String$eq$(($tg$(_t_0)), "Lam"))) ? ((_x_1) => {
-  return $norm_eval$(_book_0, run_loop($subst$(run_loop($kid$(_t_0, 0)), ($ix$(_t_0)), _x_0)), _rest_0, run_loop($norm_dec$(_left_0)), _fallback_0);
-}) : ((_x_2) => {
-  return run_tail((($String$eq$(($tg$(_t_0)), "Mat"))) ? ((_x_3) => {
-  return $norm_match$(_book_0, _t_0, _t_0, _x_0, run_loop($wnf$(_book_0, _x_0)), _rest_0, _left_0, _fallback_0);
-}) : ((_x_4) => {
-  if ((($Bool$and$(($String$eq$(($tg$(_t_0)), "Efq")), ($Bool$not$((_left_0 === 0))))))) {
-const _x_5 = {$: "Unit"};
-return _fallback_0;
-} else {
-const _x_6 = {$: "Unit"};
-return {$: "$JMP", f: $norm_apply$, x: [_t_0, {$: "Con", "head": _x_0, "tail": _rest_0}]};
-}
-}), {$: "Unit"});
-}), {$: "Unit"});
+    return $norm_node_ann$(_book_0, _t_0, _args_0, _left_0, _fallback_0, ($String$eq$(($tg$(_t_0)), "Ann")));
   }
 }
 
@@ -5967,46 +5928,6 @@ function $Char$to_lower$(_c_0) {
   const _x_1 = _c_0.codePointAt(0);
   const _x_2 = (Math.imul(_x_0, 32) >>> 0);
   return char_new(((_x_1 + _x_2) >>> 0));
-}
-
-function $book_final_name_valid$(_name_0) {
-  if (_name_0 === "") {
-    return true;
-  } else {
-    const _h_0 = (_name_0.codePointAt(0) > 0xFFFF ? _name_0.slice(0, 2) : _name_0[0]);
-    const _rest_0 = (_name_0.codePointAt(0) > 0xFFFF ? _name_0.slice(2) : _name_0.slice(1));
-    const _x_0 = ($Char$to_u32$(_h_0));
-    const _x_1 = ((_x_0 - 55296) >>> 0);
-    if (((_x_1 <= 2047))) {
-const _x_2 = {$: "Unit"};
-return false;
-} else {
-const _x_3 = {$: "Unit"};
-return {$: "$JMP", f: $book_final_name_valid$, x: [_rest_0]};
-}
-  }
-}
-
-function $book_final_filter$(_done_0, _seen_0) {
-  if (_done_0.$ === "Nil") {
-    return {$: "Nil"};
-  } else {
-    const _d_0 = _done_0["head"];
-    const _rest_0 = _done_0["tail"];
-    return run_tail((($book_final_seen$(_seen_0, ($dn$(_d_0)), ($index_hash$(($dn$(_d_0)), 2166136261))))) ? ((_x_0) => {
-  return $book_final_filter$(_rest_0, _seen_0);
-}) : ((_x_1) => {
-  return {$: "Con", "head": _d_0, "tail": run_loop($book_final_filter$(_rest_0, _seen_0))};
-}), {$: "Unit"});
-  }
-}
-
-function $book_final_step$(_d_0, _rest_0, _seen_0, _kept_0, _done_0, _hash_0) {
-  return run_tail((($book_final_seen$(_seen_0, ($dn$(_d_0)), _hash_0))) ? ((_x_0) => {
-  return $book_final_scan$(_rest_0, _seen_0, _kept_0, _done_0);
-}) : ((_x_1) => {
-  return $book_final_scan$(_rest_0, run_loop($index_set$(_seen_0, {$: "KDef", "name": ($dn$(_d_0)), "kind": "$final.seen", "arity": 0, "templates": 0, "typ": ($atom$("Absent")), "value": ($atom$("Absent")), "ctors": {$: "Nil"}, "native": true, "unsafe": false}, _hash_0, 32)), {$: "Con", "head": _d_0, "tail": _kept_0}, _done_0);
-}), {$: "Unit"});
 }
 
 function $kp_index$(_env_0, _id_0) {
@@ -7018,6 +6939,10 @@ return {$: "$JMP", f: $f_graph_error$, x: [_g_0, _err_0]};
 }
 }
 
+function $book_final_seen$(_seen_0, _name_0, _hash_0) {
+  return $String$eq$(($dk$(run_loop($index_find$(_seen_0, _name_0, _hash_0, 32)))), "$final.seen");
+}
+
 function $dg_suffix_finish$(_done_0, _seen_0, _original_0, _origins_0, _error_0) {
   return run_tail((($String$eq$(_error_0, ""))) ? ((_x_0) => {
   return {$: "DResult", "error": "", "book": _original_0, "diagnostic": ($dg_no_report$("", ""))};
@@ -7807,74 +7732,12 @@ function $app$(_f_0, _x_0) {
   return $kt$("App", "", 0, 0, {$: "Con", "head": _f_0, "tail": {$: "Con", "head": _x_0, "tail": {$: "Nil"}}});
 }
 
-function $norm_let_tail$(_h_0, _rest_0) {
-  if (_rest_0.$ === "Nil") {
-    return _h_0;
+function $norm_node_ann$(_book_0, _t_0, _args_0, _left_0, _fallback_0, _selected_0) {
+  if (_selected_0) {
+    return $norm_eval$(_book_0, run_loop($kid$(_t_0, 0)), _args_0, _left_0, _fallback_0);
   } else {
-    const _x_0 = _rest_0["head"];
-    const _xs_0 = _rest_0["tail"];
-    return $subst$(run_loop($norm_let$({$: "Con", "head": _x_0, "tail": _xs_0})), ($ix$(_h_0)), run_loop($kid$(_h_0, 0)));
+    return $norm_node_let$(_book_0, _t_0, _args_0, _left_0, _fallback_0, ($String$eq$(($tg$(_t_0)), "Let")));
   }
-}
-
-function $norm_min_left$(_book_0, _a_0, _b_0) {
-  const _x_0 = ($qt$(_a_0));
-  return run_tail((($Bool$and$(($String$eq$(($tg$(_a_0)), "Qua")), (_x_0 === 2)))) ? ((_x_1) => {
-  return $wnf$(_book_0, _b_0);
-}) : ((_x_2) => {
-  const _x_3 = ($qt$(_a_0));
-  return run_tail((($Bool$and$(($String$eq$(($tg$(_a_0)), "Qua")), (_x_3 === 0)))) ? ((_x_4) => {
-  return _a_0;
-}) : ((_x_5) => {
-  return $norm_min_right$(_a_0, run_loop($wnf$(_book_0, _b_0)));
-}), {$: "Unit"});
-}), {$: "Unit"});
-}
-
-function $norm_dec$(_n_0) {
-  if (((_n_0 === 0))) {
-const _x_0 = {$: "Unit"};
-return 0;
-} else {
-const _x_1 = {$: "Unit"};
-return ((_n_0 - 1) >>> 0);
-}
-}
-
-function $norm_match$(_book_0, _arm_0, _original_0, _raw_0, _x_0, _args_0, _left_0, _fallback_0) {
-  return run_tail((run_loop($core_nat$(_x_0))) ? ((_x_1) => {
-  return $norm_match$(_book_0, _arm_0, _original_0, _raw_0, run_loop($core_nat_step$(_x_0)), _args_0, _left_0, _fallback_0);
-}) : ((_x_2) => {
-  return run_tail((($String$eq$(($tg$(_x_0)), "Ctr"))) ? ((_x_3) => {
-  return run_tail((($String$eq$(($tg$(_arm_0)), "Ann"))) ? ((_x_4) => {
-  return $norm_match$(_book_0, run_loop($kid$(_arm_0, 0)), _original_0, _raw_0, _x_0, _args_0, _left_0, _fallback_0);
-}) : ((_x_5) => {
-  return run_tail((($String$eq$(($tg$(_arm_0)), "Mat"))) ? ((_x_6) => {
-  return run_tail((($String$eq$(($nm$(_arm_0)), ($nm$(_x_0))))) ? ((_x_7) => {
-  return run_tail(((_left_0 === 0)) ? ((_x_8) => {
-  return $norm_eval$(_book_0, run_loop($kid$(_arm_0, 0)), ($norm_join$(($ks$(_x_0)), _args_0)), 0, _fallback_0);
-}) : ((_x_9) => {
-  const _x_10 = run_loop($norm_dec$(_left_0));
-  const _x_11 = ($terms_len$(($ks$(_x_0))));
-  return $norm_eval$(_book_0, run_loop($kid$(_arm_0, 0)), ($norm_join$(($ks$(_x_0)), _args_0)), ((_x_10 + _x_11) >>> 0), _fallback_0);
-}), {$: "Unit"});
-}) : ((_x_12) => {
-  return $norm_match$(_book_0, run_loop($kid$(_arm_0, 1)), _original_0, _raw_0, _x_0, _args_0, _left_0, _fallback_0);
-}), {$: "Unit"});
-}) : ((_x_13) => {
-  if ((($String$eq$(($tg$(_arm_0)), "Efq")))) {
-const _x_14 = {$: "Unit"};
-return {$: "$JMP", f: $norm_stuck$, x: [_original_0, _raw_0, _args_0, _left_0, _fallback_0]};
-} else {
-const _x_15 = {$: "Unit"};
-return {$: "$JMP", f: $norm_eval$, x: [_book_0, _arm_0, {$: "Con", "head": _x_0, "tail": _args_0}, _left_0, _fallback_0]};
-}
-}), {$: "Unit"});
-}), {$: "Unit"});
-}) : ((_x_16) => {
-  return $norm_stuck$(_original_0, _raw_0, _args_0, _left_0, _fallback_0);
-}), {$: "Unit"});
-}), {$: "Unit"});
 }
 
 function $index_find_leaf$($0, $1, $2, $3, $4) {
@@ -7944,10 +7807,6 @@ function $Char$is_upper$(_c_0) {
   const _x_0 = _c_0.codePointAt(0);
   const _x_1 = _c_0.codePointAt(0);
   return $Bool$and$((_x_0 >= 65), (_x_1 <= 90));
-}
-
-function $book_final_seen$(_seen_0, _name_0, _hash_0) {
-  return $String$eq$(($dk$(run_loop($index_find$(_seen_0, _name_0, _hash_0, 32)))), "$final.seen");
 }
 
 function $kp_is$(_t_0, _tag_0, _name_0) {
@@ -9200,7 +9059,12 @@ function $dg_snippet$(_span_0) {
   } else {
     const _source_0 = _span_0["source"];
     const _begin_0 = _span_0["begin"];
-    return $dg_snippet_at$(($String$lines$(_source_0)), run_loop($dg_line_at$(_source_0, _begin_0, 1)));
+    const _end_0 = _span_0["end"];
+    return $dg_snippet_at$(($String$lines$(_source_0)), run_loop($dg_line_at$(_source_0, _begin_0, 1)), run_loop($dg_marker_left$(_source_0, _begin_0, "")), run_loop(run_tail(((_end_0 > _begin_0)) ? ((_x_0) => {
+  return ((_end_0 - _begin_0) >>> 0);
+}) : ((_x_1) => {
+  return 0;
+}), {$: "Unit"})));
   }
 }
 
@@ -9627,17 +9491,21 @@ function $f_expr$(_ts_0, _min_0) {
 
 function $f_def_prior$(_name_0, _p_0, _book_0, _imports_0, _unsafe_0, _old_0) {
   return run_tail((($f_eq$(($dk$(_old_0)), "Missing"))) ? ((_x_0) => {
+  return run_tail((($Bool$and$(($Bool$not$(($f_eq$(run_loop($f_alias$(_name_0, _imports_0)), _name_0)))), ($f_eq$(($f_tx$(($f_pr$(_p_0)))), "->"))))) ? ((_x_1) => {
+  return $f_result$(_book_0, ($f_pn$(($f_err$(($f_pr$(_p_0)), "an import alias can only name a law fill without a return annotation")))), _imports_0);
+}) : ((_x_2) => {
   return $f_def_base$(_name_0, _p_0, _book_0, _imports_0, _unsafe_0);
-}) : ((_x_1) => {
-  const _x_2 = ($terms_len$(($ks$(($f_pn$(_p_0))))));
-  const _x_3 = ($dx$(_old_0));
-  return run_tail((($Bool$and$(($Bool$and$(($Bool$and$(($f_eq$(($dk$(_old_0)), "Def")), ($f_eq$(($tg$(($dv$(_old_0)))), "Absent")))), ($f_bare_params$(($ks$(($f_pn$(_p_0)))))))), (_x_2 >= _x_3)))) ? ((_x_4) => {
-  return run_tail((($f_eq$(($f_tx$(($f_pr$(_p_0)))), ":"))) ? ((_x_5) => {
+}), {$: "Unit"});
+}) : ((_x_3) => {
+  const _x_4 = ($terms_len$(($ks$(($f_pn$(_p_0))))));
+  const _x_5 = ($dx$(_old_0));
+  return run_tail((($Bool$and$(($Bool$and$(($Bool$and$(($f_eq$(($dk$(_old_0)), "Def")), ($f_eq$(($tg$(($dv$(_old_0)))), "Absent")))), ($f_bare_params$(($ks$(($f_pn$(_p_0)))))))), (_x_4 >= _x_5)))) ? ((_x_6) => {
+  return run_tail((($f_eq$(($f_tx$(($f_pr$(_p_0)))), ":"))) ? ((_x_7) => {
   return $f_def_base$(_name_0, _p_0, _book_0, _imports_0, _unsafe_0);
-}) : ((_x_6) => {
+}) : ((_x_8) => {
   return $f_result$(_book_0, ($f_pn$(($f_err$(($f_pr$(_p_0)), "expected : (a definition filling a law has no return annotation)")))), _imports_0);
 }), {$: "Unit"});
-}) : ((_x_7) => {
+}) : ((_x_9) => {
   return $f_result$(_book_0, ($kt$("Error", "a definition must uniquely fill its law with plain parameter names", 0, 0, {$: "Nil"})), _imports_0);
 }), {$: "Unit"});
 }), {$: "Unit"});
@@ -10048,32 +9916,12 @@ function $j_literal_ctor$(_t_0) {
 }), {$: "Unit"});
 }
 
-function $norm_min_right$(_a_0, _b_0) {
-  return run_tail((($String$eq$(($tg$(_b_0)), "Qua"))) ? ((_x_0) => {
-  const _x_1 = ($qt$(_b_0));
-  return run_tail(((_x_1 === 2)) ? ((_x_2) => {
-  return _a_0;
-}) : ((_x_3) => {
-  const _x_4 = ($qt$(_b_0));
-  if ((($Bool$and$((_x_4 === 1), ($Bool$not$(($String$eq$(($tg$(_a_0)), "Qua")))))))) {
-const _x_5 = {$: "Unit"};
-return {$: "$JMP", f: $kt$, x: ["Min", "", 0, 0, {$: "Con", "head": _a_0, "tail": {$: "Con", "head": _b_0, "tail": {$: "Nil"}}}]};
-} else {
-const _x_6 = {$: "Unit"};
-return _b_0;
-}
-}), {$: "Unit"});
-}) : ((_x_7) => {
-  return $kt$("Min", "", 0, 0, {$: "Con", "head": _a_0, "tail": {$: "Con", "head": _b_0, "tail": {$: "Nil"}}});
-}), {$: "Unit"});
-}
-
-function $norm_stuck$(_t_0, _x_0, _args_0, _left_0, _fallback_0) {
-  return run_tail(((_left_0 === 0)) ? ((_x_1) => {
-  return $norm_apply$(($app$(_t_0, _x_0)), _args_0);
-}) : ((_x_2) => {
-  return _fallback_0;
-}), {$: "Unit"});
+function $norm_node_let$(_book_0, _t_0, _args_0, _left_0, _fallback_0, _selected_0) {
+  if (_selected_0) {
+    return $norm_eval$(_book_0, run_loop($norm_let$(($ks$(_t_0)))), _args_0, _left_0, _fallback_0);
+  } else {
+    return $norm_node_ref$(_book_0, _t_0, _args_0, _left_0, _fallback_0, ($String$eq$(($tg$(_t_0)), "Ref")));
+  }
 }
 
 function $index_find_hash$(_tree_0, _name_0, _same_0) {
@@ -11290,14 +11138,14 @@ return 1;
 }
 }
 
-function $dg_snippet_at$(_lines_0, _at_0) {
+function $dg_snippet_at$(_lines_0, _at_0, _left_0, _length_0) {
   const _x_0 = ($dg_lines_count$(_lines_0));
   const _x_1 = ((_at_0 + 1) >>> 0);
   return $dg_snippet_lines$(_lines_0, _at_0, run_loop(run_tail(((_x_0 < _x_1)) ? ((_x_2) => {
   return $dg_lines_count$(_lines_0);
 }) : ((_x_3) => {
   return ((_at_0 + 1) >>> 0);
-}), {$: "Unit"})), 1);
+}), {$: "Unit"})), 1, _left_0, _length_0);
 }
 
 function $dg_line_at$(_s_0, _offset_0, _line_0) {
@@ -11316,6 +11164,36 @@ function $dg_line_at$(_s_0, _offset_0, _line_0) {
 }) : ((_x_5) => {
   return _line_0;
 }), {$: "Unit"})));
+}), {$: "Unit"});
+  }
+}
+
+function $dg_marker_left$(_source_0, _offset_0, _left_0) {
+  if (_source_0 === "") {
+    return _left_0;
+  } else {
+    const _c_0 = (_source_0.codePointAt(0) > 0xFFFF ? _source_0.slice(0, 2) : _source_0[0]);
+    const _rest_0 = (_source_0.codePointAt(0) > 0xFFFF ? _source_0.slice(2) : _source_0.slice(1));
+    return run_tail(((_offset_0 === 0)) ? ((_x_0) => {
+  return _left_0;
+}) : ((_x_1) => {
+  const _x_2 = run_loop($dg_units$(_c_0));
+  return run_tail(((_offset_0 < _x_2)) ? ((_x_3) => {
+  const _x_4 = run_loop($dg_padding$(_offset_0));
+  return (_left_0 + _x_4);
+}) : ((_x_5) => {
+  const _x_6 = run_loop($dg_units$(_c_0));
+  return $dg_marker_left$(_rest_0, ((_offset_0 - _x_6) >>> 0), run_loop(run_tail((($Char$is_eq$(_c_0, "\n"))) ? ((_x_7) => {
+  return "";
+}) : ((_x_8) => {
+  const _x_11 = run_loop(run_tail((($Char$is_eq$(_c_0, "\t"))) ? ((_x_9) => {
+  return "\t";
+}) : ((_x_10) => {
+  return $dg_padding$(run_loop($dg_units$(_c_0)));
+}), {$: "Unit"}));
+  return (_left_0 + _x_11);
+}), {$: "Unit"})));
+}), {$: "Unit"});
 }), {$: "Unit"});
   }
 }
@@ -11667,6 +11545,31 @@ function $f_atom$(_ts_0) {
 }), {$: "Unit"});
 }
 
+function $f_alias$(_name_0, _imports_0) {
+  if (_imports_0.$ === "Nil") {
+    return _name_0;
+  } else {
+    const _im_0 = _imports_0["head"];
+    const _rest_0 = _imports_0["tail"];
+    const _x_0 = ($terms_len$(($ks$(_im_0))));
+    const _x_1 = ($nm$(run_loop($kid$(_im_0, 0))));
+    return run_tail((($Bool$and$((_x_0 > 0), run_loop($f_prefix$(_name_0, (_x_1 + ".")))))) ? ((_x_2) => {
+  const _x_3 = ($nm$(run_loop($kid$(_im_0, 0))));
+  const _x_4 = run_loop($f_drop_prefix$(_name_0, (_x_3 + ".")));
+  const _x_5 = ($nm$(_im_0));
+  const _x_6 = ("." + _x_4);
+  return (_x_5 + _x_6);
+}) : ((_x_7) => {
+  return $f_alias$(_name_0, _rest_0);
+}), {$: "Unit"});
+  }
+}
+
+function $f_pr$(_p_0) {
+  const _ts_0 = _p_0["rest"];
+  return _ts_0;
+}
+
 function $f_def_base$(_name_0, _p_0, _book_0, _imports_0, _unsafe_0) {
   const _pars_0 = _p_0["term"];
   const _ts_0 = _p_0["rest"];
@@ -11676,7 +11579,11 @@ function $f_def_base$(_name_0, _p_0, _book_0, _imports_0, _unsafe_0) {
   return run_tail((($f_eq$(($f_tx$(_ts_0)), "->"))) ? ((_x_2) => {
   return $f_def_type$(_name_0, ($ks$(_pars_0)), run_loop($f_expr$(($f_tl$(_ts_0)), 0)), _book_0, _imports_0, _unsafe_0);
 }) : ((_x_3) => {
-  return $f_def_type$(_name_0, ($ks$(_pars_0)), {$: "FParsed", "term": ($dt$(run_loop($f_find$(_name_0, _book_0)))), "rest": _ts_0}, _book_0, _imports_0, _unsafe_0);
+  return $f_def_type$(_name_0, ($ks$(_pars_0)), {$: "FParsed", "term": run_loop(run_tail((($Bool$and$(($f_eq$(($dk$(run_loop($f_find$(_name_0, _book_0)))), "Missing")), ($Bool$not$(($f_eq$(run_loop($f_alias$(_name_0, _imports_0)), _name_0))))))) ? ((_x_4) => {
+  return $kt$("ImportLaw", _name_0, 0, 0, ($ks$(_pars_0)));
+}) : ((_x_5) => {
+  return $dt$(run_loop($f_find$(_name_0, _book_0)));
+}), {$: "Unit"})), "rest": _ts_0}, _book_0, _imports_0, _unsafe_0);
 }), {$: "Unit"});
 }), {$: "Unit"});
 }
@@ -11689,11 +11596,6 @@ function $f_bare_params$(_params_0) {
     const _rest_0 = _params_0["tail"];
     return $Bool$and$(($Bool$and$(($f_eq$(($tg$(run_loop($kid$(_p_0, 0)))), "Qnt")), ($Bool$not$(($f_eq$(($tg$(_p_0)), "Template")))))), ($f_bare_params$(_rest_0)));
   }
-}
-
-function $f_pr$(_p_0) {
-  const _ts_0 = _p_0["rest"];
-  return _ts_0;
 }
 
 function $f_validate_param$(_ts_0, _end_0, _acc_0) {
@@ -12158,6 +12060,24 @@ function $j_string$(_t_0, _acc_0) {
 }) : ((_x_5) => {
   return {$: "None"};
 }), {$: "Unit"});
+}
+
+function $norm_let$(_ts_0) {
+  if (_ts_0.$ === "Nil") {
+    return $atom$("Absent");
+  } else {
+    const _h_0 = _ts_0["head"];
+    const _rest_0 = _ts_0["tail"];
+    return $norm_let_tail$(_h_0, _rest_0);
+  }
+}
+
+function $norm_node_ref$(_book_0, _t_0, _args_0, _left_0, _fallback_0, _selected_0) {
+  if (_selected_0) {
+    return $norm_ref$(_book_0, _t_0, _args_0, run_loop($lookup$(_book_0, ($nm$(_t_0)))));
+  } else {
+    return $norm_node_min$(_book_0, _t_0, _args_0, _left_0, _fallback_0, ($String$eq$(($tg$(_t_0)), "Min")));
+  }
 }
 
 function $index_bucket$(_ds_0, _name_0) {
@@ -13063,7 +12983,11 @@ const _x_2 = {$: "Unit"};
 return _t_0;
 }
 }) : ((_x_3) => {
+  return run_tail((($f_eq$(($tg$(_t_0)), "ImportLaw"))) ? ((_x_4) => {
+  return $kt$("Error", "imported law fills require the canonical graph loader", 0, 0, {$: "Nil"});
+}) : ((_x_5) => {
   return $fpe_terms$(($ks$(_t_0)));
+}), {$: "Unit"});
 }), {$: "Unit"});
 }
 
@@ -13077,7 +13001,7 @@ function $f_alias_defs$(_ds_0, _imports_0, _scope_0) {
   } else {
     const _d_0 = _ds_0["head"];
     const _rest_0 = _ds_0["tail"];
-    return {$: "Con", "head": {$: "KDef", "name": ($dn$(_d_0)), "kind": ($dk$(_d_0)), "arity": ($da$(_d_0)), "templates": ($dx$(_d_0)), "typ": run_loop($f_alias_term$(($dt$(_d_0)), _imports_0, _scope_0)), "value": run_loop($f_alias_term$(($dv$(_d_0)), _imports_0, _scope_0)), "ctors": ($f_alias_defs$(($dc$(_d_0)), _imports_0, _scope_0)), "native": ($db$(_d_0)), "unsafe": ($du$(_d_0))}, "tail": ($f_alias_defs$(_rest_0, _imports_0, _scope_0))};
+    return {$: "Con", "head": run_loop($f_graph_fill_alias$({$: "KDef", "name": ($dn$(_d_0)), "kind": ($dk$(_d_0)), "arity": ($da$(_d_0)), "templates": ($dx$(_d_0)), "typ": run_loop($f_alias_term$(($dt$(_d_0)), _imports_0, _scope_0)), "value": run_loop($f_alias_term$(($dv$(_d_0)), _imports_0, _scope_0)), "ctors": ($f_alias_defs$(($dc$(_d_0)), _imports_0, _scope_0)), "native": ($db$(_d_0)), "unsafe": ($du$(_d_0))}, _imports_0, _scope_0)), "tail": ($f_alias_defs$(_rest_0, _imports_0, _scope_0))};
   }
 }
 
@@ -13247,7 +13171,7 @@ return {$: "$JMP", f: $norm_cmp_fail$, x: [_book_0, _alts_0]};
 }), {$: "Unit"});
 }
 
-function $dg_snippet_lines$(_lines_0, _at_0, _end_0, _line_0) {
+function $dg_snippet_lines$(_lines_0, _at_0, _end_0, _line_0, _left_0, _length_0) {
   if (_lines_0.$ === "Nil") {
     return "";
   } else {
@@ -13257,21 +13181,23 @@ function $dg_snippet_lines$(_lines_0, _at_0, _end_0, _line_0) {
   return "";
 }) : ((_x_1) => {
   const _x_2 = ((_line_0 + 1) >>> 0);
-  const _x_11 = run_loop(run_tail(((_x_2 < _at_0)) ? ((_x_3) => {
+  const _x_13 = run_loop(run_tail(((_x_2 < _at_0)) ? ((_x_3) => {
   return "";
 }) : ((_x_4) => {
-  const _x_7 = run_loop(run_tail(((_line_0 === _at_0)) ? ((_x_5) => {
-  return ">| ";
-}) : ((_x_6) => {
-  return " | ";
+  const _x_10 = ($dg_lpad$(($U32$show$(_line_0)), ($dg_width$(($U32$show$(_end_0))))));
+  const _x_11 = run_loop(run_tail(((_line_0 === _at_0)) ? ((_x_5) => {
+  const _x_6 = ($dg_marker$(_h_0, ($dg_width$(($U32$show$(_end_0)))), _left_0, _length_0));
+  const _x_7 = ("\n" + _x_6);
+  const _x_8 = (_h_0 + _x_7);
+  return (">| " + _x_8);
+}) : ((_x_9) => {
+  return (" | " + _h_0);
 }), {$: "Unit"}));
-  const _x_8 = ($dg_lpad$(($U32$show$(_line_0)), ($dg_width$(($U32$show$(_end_0))))));
-  const _x_9 = (_x_7 + _h_0);
-  const _x_10 = (_x_8 + _x_9);
-  return ("\n" + _x_10);
+  const _x_12 = (_x_10 + _x_11);
+  return ("\n" + _x_12);
 }), {$: "Unit"}));
-  const _x_12 = run_loop($dg_snippet_lines$(_rest_0, _at_0, _end_0, ((_line_0 + 1) >>> 0)));
-  return (_x_11 + _x_12);
+  const _x_14 = run_loop($dg_snippet_lines$(_rest_0, _at_0, _end_0, ((_line_0 + 1) >>> 0), _left_0, _length_0));
+  return (_x_13 + _x_14);
 }), {$: "Unit"});
   }
 }
@@ -13668,6 +13594,26 @@ return {$: "$JMP", f: $fpe_error$, x: [_ts_0, "expected term", "a term"]};
 }), {$: "Unit"});
 }
 
+function $f_prefix$(_s_0, _prefix_0) {
+  return run_tail((($String$is_empty$(_prefix_0))) ? ((_x_0) => {
+  return true;
+}) : ((_x_1) => {
+  return run_tail((($String$is_empty$(_s_0))) ? ((_x_2) => {
+  return false;
+}) : ((_x_3) => {
+  return $Bool$and$(($Char$is_eq$(($f_head$(_s_0)), ($f_head$(_prefix_0)))), run_loop($f_prefix$(($f_tail$(_s_0)), ($f_tail$(_prefix_0)))));
+}), {$: "Unit"});
+}), {$: "Unit"});
+}
+
+function $f_drop_prefix$(_s_0, _prefix_0) {
+  return run_tail((($String$is_empty$(_prefix_0))) ? ((_x_0) => {
+  return _s_0;
+}) : ((_x_1) => {
+  return $f_drop_prefix$(($f_tail$(_s_0)), ($f_tail$(_prefix_0)));
+}), {$: "Unit"});
+}
+
 function $f_def_type$(_name_0, _pars_0, _p_0, _book_0, _imports_0, _unsafe_0) {
   const _ty_0 = _p_0["term"];
   const _ts_0 = _p_0["rest"];
@@ -13935,6 +13881,45 @@ function $j_string_head$(_head_0, _tail_0, _acc_0) {
 }), {$: "Unit"});
 }
 
+function $norm_let_tail$(_h_0, _rest_0) {
+  if (_rest_0.$ === "Nil") {
+    return _h_0;
+  } else {
+    const _x_0 = _rest_0["head"];
+    const _xs_0 = _rest_0["tail"];
+    return $subst$(run_loop($norm_let$({$: "Con", "head": _x_0, "tail": _xs_0})), ($ix$(_h_0)), run_loop($kid$(_h_0, 0)));
+  }
+}
+
+function $norm_ref$(_book_0, _t_0, _args_0, _d_0) {
+  return run_tail((($String$eq$(($dk$(_d_0)), "ADT"))) ? ((_x_0) => {
+  const _x_1 = ($da$(_d_0));
+  return run_tail(((_x_1 === 0)) ? ((_x_2) => {
+  return $norm_apply$(($kt$("ADT", ($nm$(_t_0)), 0, 0, {$: "Nil"})), _args_0);
+}) : ((_x_3) => {
+  return $norm_apply$(_t_0, _args_0);
+}), {$: "Unit"});
+}) : ((_x_4) => {
+  const _x_5 = ($String$eq$(($tg$(($dv$(_d_0)))), "Absent"));
+  const _x_6 = ($String$eq$(($tg$(($dv$(_d_0)))), "Foreign"));
+  const _x_7 = ($da$(_d_0));
+  const _x_8 = ($terms_len$(_args_0));
+  return run_tail((($Bool$and$(($Bool$not$((_x_5 || _x_6))), (_x_7 <= _x_8)))) ? ((_x_9) => {
+  return $norm_eval$(_book_0, ($dv$(_d_0)), _args_0, ($da$(_d_0)), ($norm_apply$(_t_0, _args_0)));
+}) : ((_x_10) => {
+  return $norm_apply$(_t_0, _args_0);
+}), {$: "Unit"});
+}), {$: "Unit"});
+}
+
+function $norm_node_min$(_book_0, _t_0, _args_0, _left_0, _fallback_0, _selected_0) {
+  if (_selected_0) {
+    return $norm_apply$(run_loop($norm_min$(_book_0, run_loop($kid$(_t_0, 0)), run_loop($kid$(_t_0, 1)))), _args_0);
+  } else {
+    return $norm_node_rwt$(_book_0, _t_0, _args_0, _left_0, _fallback_0, ($String$eq$(($tg$(_t_0)), "Rwt")));
+  }
+}
+
 function $kp_float_point$(_s_0) {
   if (_s_0 === "") {
     return ".0";
@@ -14152,6 +14137,16 @@ function $g_let_sub$($0, $1) {
       }
     }
   }
+}
+
+function $norm_dec$(_n_0) {
+  if (((_n_0 === 0))) {
+const _x_0 = {$: "Unit"};
+return 0;
+} else {
+const _x_1 = {$: "Unit"};
+return ((_n_0 - 1) >>> 0);
+}
 }
 
 function $sp_template_checked$(_st_0, _d_0, _closed_0, _rest_0, _ctx_0, _owner_0, _depth_0, _checked_0) {
@@ -14666,6 +14661,14 @@ function $f_module_defs$(_todo_0, _visible_0, _scope_0, _ns_0, _imports_0) {
   }
 }
 
+function $f_graph_fill_alias$(_d_0, _imports_0, _scope_0) {
+  return run_tail((($f_eq$(($tg$(($dt$(_d_0)))), "ImportLaw"))) ? ((_x_0) => {
+  return $f_graph_fill$(_d_0, run_loop($f_find$(run_loop($f_alias$(($dn$(_d_0)), _imports_0)), ($List$reverse$(_scope_0)))));
+}) : ((_x_1) => {
+  return _d_0;
+}), {$: "Unit"});
+}
+
 function $f_alias_term$(_t_0, _imports_0, _scope_0) {
   const _x_0 = ($f_eq$(($tg$(_t_0)), "Ref"));
   const _x_1 = ($f_eq$(($tg$(_t_0)), "ADT"));
@@ -14959,6 +14962,22 @@ function $dg_lpad$(_s_0, _width_0) {
   return 0;
 }), {$: "Unit"}))));
   return (_x_4 + _s_0);
+}
+
+function $dg_marker$(_text_0, _width_0, _left_0, _length_0) {
+  const _x_0 = ($dg_width$(_text_0));
+  const _x_1 = ($dg_width$(_left_0));
+  const _x_6 = run_loop($dg_carets$(run_loop($norm_max$(1, ($U32$min$(_length_0, run_loop(run_tail(((_x_0 > _x_1)) ? ((_x_2) => {
+  const _x_3 = ($dg_width$(_text_0));
+  const _x_4 = ($dg_width$(_left_0));
+  return ((_x_3 - _x_4) >>> 0);
+}) : ((_x_5) => {
+  return 0;
+}), {$: "Unit"}))))))));
+  const _x_7 = (_left_0 + _x_6);
+  const _x_8 = run_loop($dg_padding$(_width_0));
+  const _x_9 = (" | " + _x_7);
+  return (_x_8 + _x_9);
 }
 
 function $fp_origin$(_t_0, _definition_0, _source_0, _route_0) {
@@ -15349,7 +15368,7 @@ function $f_foreign$(_name_0, _pars_0, _ty_0, _ts_0, _book_0, _imports_0, _unsaf
 }
 
 function $f_def_signature$(_name_0, _pars_0, _ty_0, _book_0) {
-  if ((($f_eq$(($dk$(run_loop($f_find$(_name_0, _book_0)))), "Missing")))) {
+  if ((($Bool$and$(($f_eq$(($dk$(run_loop($f_find$(_name_0, _book_0)))), "Missing")), ($Bool$not$(($f_eq$(($tg$(_ty_0)), "ImportLaw")))))))) {
 const _x_0 = {$: "Unit"};
 return {$: "$JMP", f: $f_tbind$, x: [_pars_0, _ty_0]};
 } else {
@@ -16037,6 +16056,22 @@ function $j_string_char$(_value_0, _tail_0, _acc_0) {
   }
 }
 
+function $norm_min$(_book_0, _a_0, _b_0) {
+  return $norm_min_left$(_book_0, run_loop($wnf$(_book_0, _a_0)), _b_0);
+}
+
+function $norm_node_rwt$(_book_0, _t_0, _args_0, _left_0, _fallback_0, _selected_0) {
+  if (_selected_0) {
+    return run_tail((($String$eq$(($tg$(run_loop($wnf$(_book_0, run_loop($kid$(_t_0, 0)))))), "Rfl"))) ? ((_x_0) => {
+  return $norm_eval$(_book_0, run_loop($kid$(_t_0, 2)), _args_0, _left_0, _fallback_0);
+}) : ((_x_1) => {
+  return $norm_apply$(_t_0, _args_0);
+}), {$: "Unit"});
+  } else {
+    return $norm_args$(_book_0, _t_0, _args_0, _left_0, _fallback_0);
+  }
+}
+
 function $Cmp$is_le$(_c_0) {
   if (_c_0.$ === "LT") {
     return true;
@@ -16559,11 +16594,34 @@ function $nc_field_word$(_name_0, _word_0, _i_0) {
 }
 
 function $f_module_def$(_d_0, _rest_0, _visible_0, _scope_0, _ns_0, _imports_0) {
-  return {$: "Con", "head": run_loop(run_tail((($String$is_empty$(_ns_0))) ? ((_x_0) => {
-  return $f_elab_def$(_d_0, _scope_0);
+  return {$: "Con", "head": run_loop(run_tail((($f_eq$(($dk$(_d_0)), "ImportFill"))) ? ((_x_0) => {
+  return {$: "KDef", "name": ($dn$(_d_0)), "kind": "Def", "arity": ($da$(_d_0)), "templates": ($dx$(_d_0)), "typ": ($dt$(_d_0)), "value": ($f_qual_term$(run_loop($f_scope$(($dv$(_d_0)), {$: "Nil"}, _scope_0)), _visible_0, _ns_0, _imports_0)), "ctors": {$: "Nil"}, "native": ($db$(_d_0)), "unsafe": ($du$(_d_0))};
 }) : ((_x_1) => {
+  return run_tail((($String$is_empty$(_ns_0))) ? ((_x_2) => {
+  return $f_elab_def$(_d_0, _scope_0);
+}) : ((_x_3) => {
   return $f_qual_def$(($f_elab_def$(_d_0, _scope_0)), _visible_0, _ns_0, _imports_0);
+}), {$: "Unit"});
 }), {$: "Unit"})), "tail": ($f_module_defs$(_rest_0, _visible_0, _scope_0, _ns_0, _imports_0))};
+}
+
+function $f_graph_fill$(_d_0, _old_0) {
+  const _x_0 = ($da$(_d_0));
+  const _x_1 = ($dx$(_old_0));
+  const _x_2 = ($dx$(_old_0));
+  const _x_3 = ($Bool$not$(($f_eq$(($tg$(($dv$(_d_0)))), "Foreign"))));
+  const _x_4 = (_x_2 === 0);
+  return run_tail((($Bool$and$(($Bool$and$(($Bool$and$(($Bool$and$(($Bool$and$(($f_eq$(($dk$(_old_0)), "Def")), ($f_eq$(($tg$(($dv$(_old_0)))), "Absent")))), ($Bool$not$(($db$(_old_0)))))), ($f_bare_params$(($ks$(($dt$(_d_0)))))))), (_x_0 >= _x_1))), (_x_3 || _x_4)))) ? ((_x_5) => {
+  const _x_8 = ($du$(_old_0));
+  const _x_9 = ($du$(_d_0));
+  return {$: "KDef", "name": ($dn$(_old_0)), "kind": "ImportFill", "arity": ($da$(_d_0)), "templates": ($dx$(_old_0)), "typ": ($dt$(_old_0)), "value": run_loop(run_tail((($f_eq$(($tg$(($dv$(_d_0)))), "Body"))) ? ((_x_6) => {
+  return $kt$("Body", "", ($fc_start$(($ks$(($dt$(_d_0)))), ($dt$(_old_0)), run_loop($kid$(($dv$(_d_0)), 1)), true)), 0, ($ks$(($dv$(_d_0)))));
+}) : ((_x_7) => {
+  return $dv$(_d_0);
+}), {$: "Unit"})), "ctors": {$: "Nil"}, "native": false, "unsafe": (_x_8 || _x_9)};
+}) : ((_x_10) => {
+  return {$: "KDef", "name": ($dn$(_d_0)), "kind": "Def", "arity": ($da$(_d_0)), "templates": ($dx$(_d_0)), "typ": ($kt$("Error", "an imported definition must uniquely fill a non-native law with plain parameter names", 0, 0, {$: "Nil"})), "value": ($dv$(_d_0)), "ctors": ($dc$(_d_0)), "native": ($db$(_d_0)), "unsafe": ($du$(_d_0))};
+}), {$: "Unit"});
 }
 
 function $f_alias_named$(_t_0, _imports_0, _scope_0, _name_0) {
@@ -16578,26 +16636,6 @@ function $f_alias_named$(_t_0, _imports_0, _scope_0, _name_0) {
 }) : ((_x_5) => {
   return {$: "KTerm", "tag": ($tg$(_t_0)), "name": _name_0, "id": ($ix$(_t_0)), "quant": ($qt$(_t_0)), "kids": ($f_alias_terms$(($ks$(_t_0)), _imports_0, _scope_0)), "removed": ($rm$(_t_0))};
 }), {$: "Unit"});
-}
-
-function $f_alias$(_name_0, _imports_0) {
-  if (_imports_0.$ === "Nil") {
-    return _name_0;
-  } else {
-    const _im_0 = _imports_0["head"];
-    const _rest_0 = _imports_0["tail"];
-    const _x_0 = ($terms_len$(($ks$(_im_0))));
-    const _x_1 = ($nm$(run_loop($kid$(_im_0, 0))));
-    return run_tail((($Bool$and$((_x_0 > 0), run_loop($f_prefix$(_name_0, (_x_1 + ".")))))) ? ((_x_2) => {
-  const _x_3 = ($nm$(run_loop($kid$(_im_0, 0))));
-  const _x_4 = run_loop($f_drop_prefix$(_name_0, (_x_3 + ".")));
-  const _x_5 = ($nm$(_im_0));
-  const _x_6 = ("." + _x_4);
-  return (_x_5 + _x_6);
-}) : ((_x_7) => {
-  return $f_alias$(_name_0, _rest_0);
-}), {$: "Unit"});
-  }
 }
 
 function $f_path_push$(_part_0, _parts_0) {
@@ -16895,6 +16933,19 @@ function $norm_cmp_plain$(_book_0, _a_0, _b_0, _le_0, _fresh_0, _rest_0, _alts_0
 }), {$: "Unit"});
 }), {$: "Unit"});
 }), {$: "Unit"});
+}
+
+function $dg_carets$(_count_0) {
+  return run_tail(((_count_0 === 0)) ? ((_x_0) => {
+  return "";
+}) : ((_x_1) => {
+  const _x_2 = run_loop($dg_carets$(((_count_0 - 1) >>> 0)));
+  return ("^" + _x_2);
+}), {$: "Unit"});
+}
+
+function $U32$min$(_a_0, _b_0) {
+  return $Bool$pick$((_a_0 < _b_0), _a_0, _b_0);
 }
 
 function $fp_at_token$(_t_0, _definition_0, _text_0, _tokens_0, _route_0) {
@@ -17344,7 +17395,7 @@ function $f_declared$(_name_0, _book_0) {
   } else {
     const _d_0 = _book_0["head"];
     const _ds_0 = _book_0["tail"];
-    return run_tail((($f_eq$(_name_0, ($dn$(_d_0))))) ? ((_x_0) => {
+    return run_tail((($Bool$and$(($f_eq$(_name_0, ($dn$(_d_0)))), ($Bool$not$(($f_eq$(($dk$(_d_0)), "ImportFill"))))))) ? ((_x_0) => {
   return true;
 }) : ((_x_1) => {
   if ((run_loop($f_declared$(_name_0, ($dc$(_d_0)))))) {
@@ -17590,6 +17641,44 @@ function $Nat$show$go$($0, $1, $2) {
   }
 }
 
+function $norm_min_left$(_book_0, _a_0, _b_0) {
+  const _x_0 = ($qt$(_a_0));
+  return run_tail((($Bool$and$(($String$eq$(($tg$(_a_0)), "Qua")), (_x_0 === 2)))) ? ((_x_1) => {
+  return $wnf$(_book_0, _b_0);
+}) : ((_x_2) => {
+  const _x_3 = ($qt$(_a_0));
+  return run_tail((($Bool$and$(($String$eq$(($tg$(_a_0)), "Qua")), (_x_3 === 0)))) ? ((_x_4) => {
+  return _a_0;
+}) : ((_x_5) => {
+  return $norm_min_right$(_a_0, run_loop($wnf$(_book_0, _b_0)));
+}), {$: "Unit"});
+}), {$: "Unit"});
+}
+
+function $norm_args$(_book_0, _t_0, _args_0, _left_0, _fallback_0) {
+  if (_args_0.$ === "Nil") {
+    return _t_0;
+  } else {
+    const _x_0 = _args_0["head"];
+    const _rest_0 = _args_0["tail"];
+    return run_tail((($String$eq$(($tg$(_t_0)), "Lam"))) ? ((_x_1) => {
+  return $norm_eval$(_book_0, run_loop($subst$(run_loop($kid$(_t_0, 0)), ($ix$(_t_0)), _x_0)), _rest_0, run_loop($norm_dec$(_left_0)), _fallback_0);
+}) : ((_x_2) => {
+  return run_tail((($String$eq$(($tg$(_t_0)), "Mat"))) ? ((_x_3) => {
+  return $norm_match$(_book_0, _t_0, _t_0, _x_0, run_loop($wnf$(_book_0, _x_0)), _rest_0, _left_0, _fallback_0);
+}) : ((_x_4) => {
+  if ((($Bool$and$(($String$eq$(($tg$(_t_0)), "Efq")), ($Bool$not$((_left_0 === 0))))))) {
+const _x_5 = {$: "Unit"};
+return _fallback_0;
+} else {
+const _x_6 = {$: "Unit"};
+return {$: "$JMP", f: $norm_apply$, x: [_t_0, {$: "Con", "head": _x_0, "tail": _rest_0}]};
+}
+}), {$: "Unit"});
+}), {$: "Unit"});
+  }
+}
+
 function $kp_array_join$(_a_0, _b_0) {
   if (_a_0.$ === "Some") {
     const _x_0 = _a_0["value"];
@@ -17681,6 +17770,26 @@ function $g_min_left$(_book_0, _st_0, _a_0, _b_0, _args_0, _stack_0) {
 }) : ((_x_5) => {
   return $g_eval$(_book_0, _st_0, _b_0, {$: "Nil"}, 0, ($atom$("Absent")), {$: "Con", "head": {$: "GMinB", "other": _a_0, "args": _args_0}, "tail": _stack_0});
 }), {$: "Unit"});
+}), {$: "Unit"});
+}
+
+function $norm_min_right$(_a_0, _b_0) {
+  return run_tail((($String$eq$(($tg$(_b_0)), "Qua"))) ? ((_x_0) => {
+  const _x_1 = ($qt$(_b_0));
+  return run_tail(((_x_1 === 2)) ? ((_x_2) => {
+  return _a_0;
+}) : ((_x_3) => {
+  const _x_4 = ($qt$(_b_0));
+  if ((($Bool$and$((_x_4 === 1), ($Bool$not$(($String$eq$(($tg$(_a_0)), "Qua")))))))) {
+const _x_5 = {$: "Unit"};
+return {$: "$JMP", f: $kt$, x: ["Min", "", 0, 0, {$: "Con", "head": _a_0, "tail": {$: "Con", "head": _b_0, "tail": {$: "Nil"}}}]};
+} else {
+const _x_6 = {$: "Unit"};
+return _b_0;
+}
+}), {$: "Unit"});
+}) : ((_x_7) => {
+  return $kt$("Min", "", 0, 0, {$: "Con", "head": _a_0, "tail": {$: "Con", "head": _b_0, "tail": {$: "Nil"}}});
 }), {$: "Unit"});
 }
 
@@ -17856,26 +17965,6 @@ function $f_alias_terms$(_ts_0, _imports_0, _scope_0) {
     const _rest_0 = _ts_0["tail"];
     return {$: "Con", "head": run_loop($f_alias_term$(_t_0, _imports_0, _scope_0)), "tail": ($f_alias_terms$(_rest_0, _imports_0, _scope_0))};
   }
-}
-
-function $f_prefix$(_s_0, _prefix_0) {
-  return run_tail((($String$is_empty$(_prefix_0))) ? ((_x_0) => {
-  return true;
-}) : ((_x_1) => {
-  return run_tail((($String$is_empty$(_s_0))) ? ((_x_2) => {
-  return false;
-}) : ((_x_3) => {
-  return $Bool$and$(($Char$is_eq$(($f_head$(_s_0)), ($f_head$(_prefix_0)))), run_loop($f_prefix$(($f_tail$(_s_0)), ($f_tail$(_prefix_0)))));
-}), {$: "Unit"});
-}), {$: "Unit"});
-}
-
-function $f_drop_prefix$(_s_0, _prefix_0) {
-  return run_tail((($String$is_empty$(_prefix_0))) ? ((_x_0) => {
-  return _s_0;
-}) : ((_x_1) => {
-  return $f_drop_prefix$(($f_tail$(_s_0)), ($f_tail$(_prefix_0)));
-}), {$: "Unit"});
 }
 
 function $f_path_parent$(_parts_0) {
@@ -18077,6 +18166,14 @@ function $norm_cmp_ref$(_book_0, _a_0, _b_0, _le_0, _n_0, _fresh_0, _rest_0, _al
   return $norm_cmp_ref$(_book_0, ($app$(_a_0, ($var$("_", _fresh_0)))), ($app$(_b_0, ($var$("_", _fresh_0)))), _le_0, ((_n_0 - 1) >>> 0), ((_fresh_0 + 1) >>> 0), _rest_0, _alts_0);
 }), {$: "Unit"});
 }), {$: "Unit"});
+}
+
+function $Bool$pick$(_c_0, _a_0, _b_0) {
+  if (!_c_0) {
+    return _b_0;
+  } else {
+    return _a_0;
+  }
 }
 
 function $fp_token_origin$(_t_0, _definition_0, _text_0, _token_0, _route_0) {
@@ -18630,6 +18727,42 @@ function $core_subst_stable_app_tail$(_f_0, _tail_0) {
   }
 }
 
+function $norm_match$(_book_0, _arm_0, _original_0, _raw_0, _x_0, _args_0, _left_0, _fallback_0) {
+  return run_tail((run_loop($core_nat$(_x_0))) ? ((_x_1) => {
+  return $norm_match$(_book_0, _arm_0, _original_0, _raw_0, run_loop($core_nat_step$(_x_0)), _args_0, _left_0, _fallback_0);
+}) : ((_x_2) => {
+  return run_tail((($String$eq$(($tg$(_x_0)), "Ctr"))) ? ((_x_3) => {
+  return run_tail((($String$eq$(($tg$(_arm_0)), "Ann"))) ? ((_x_4) => {
+  return $norm_match$(_book_0, run_loop($kid$(_arm_0, 0)), _original_0, _raw_0, _x_0, _args_0, _left_0, _fallback_0);
+}) : ((_x_5) => {
+  return run_tail((($String$eq$(($tg$(_arm_0)), "Mat"))) ? ((_x_6) => {
+  return run_tail((($String$eq$(($nm$(_arm_0)), ($nm$(_x_0))))) ? ((_x_7) => {
+  return run_tail(((_left_0 === 0)) ? ((_x_8) => {
+  return $norm_eval$(_book_0, run_loop($kid$(_arm_0, 0)), ($norm_join$(($ks$(_x_0)), _args_0)), 0, _fallback_0);
+}) : ((_x_9) => {
+  const _x_10 = run_loop($norm_dec$(_left_0));
+  const _x_11 = ($terms_len$(($ks$(_x_0))));
+  return $norm_eval$(_book_0, run_loop($kid$(_arm_0, 0)), ($norm_join$(($ks$(_x_0)), _args_0)), ((_x_10 + _x_11) >>> 0), _fallback_0);
+}), {$: "Unit"});
+}) : ((_x_12) => {
+  return $norm_match$(_book_0, run_loop($kid$(_arm_0, 1)), _original_0, _raw_0, _x_0, _args_0, _left_0, _fallback_0);
+}), {$: "Unit"});
+}) : ((_x_13) => {
+  if ((($String$eq$(($tg$(_arm_0)), "Efq")))) {
+const _x_14 = {$: "Unit"};
+return {$: "$JMP", f: $norm_stuck$, x: [_original_0, _raw_0, _args_0, _left_0, _fallback_0]};
+} else {
+const _x_15 = {$: "Unit"};
+return {$: "$JMP", f: $norm_eval$, x: [_book_0, _arm_0, {$: "Con", "head": _x_0, "tail": _args_0}, _left_0, _fallback_0]};
+}
+}), {$: "Unit"});
+}), {$: "Unit"});
+}) : ((_x_16) => {
+  return $norm_stuck$(_original_0, _raw_0, _args_0, _left_0, _fallback_0);
+}), {$: "Unit"});
+}), {$: "Unit"});
+}
+
 function $kp_digit$(_n_0) {
   return $Char$show$(($Char$from_u32$(run_loop(run_tail(((_n_0 < 10)) ? ((_x_0) => {
   return ((_n_0 + 48) >>> 0);
@@ -18674,6 +18807,14 @@ function $g_share_terms$($0, $1, $2) {
       $pc = 0; continue;
     }
   }
+}
+
+function $norm_stuck$(_t_0, _x_0, _args_0, _left_0, _fallback_0) {
+  return run_tail(((_left_0 === 0)) ? ((_x_1) => {
+  return $norm_apply$(($app$(_t_0, _x_0)), _args_0);
+}) : ((_x_2) => {
+  return _fallback_0;
+}), {$: "Unit"});
 }
 
 function $sp_mname$(_m_0) {

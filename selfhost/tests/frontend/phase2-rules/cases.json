@@ -131,5 +131,37 @@
     "file": "local-constructor-field-count.bend",
     "accept": false,
     "rejectPhase": "parse"
+  },
+  {
+    "id": "import/unsafe_law_derived.bend",
+    "lanes": [
+      "check"
+    ],
+    "accept": false,
+    "rejectPhase": "verdict"
+  },
+  {
+    "id": "import/unsafe_law_fill.bend",
+    "lanes": [
+      "check"
+    ],
+    "accept": false,
+    "rejectPhase": "verdict"
+  },
+  {
+    "id": "import/unsafe_law_own.bend",
+    "lanes": [
+      "check"
+    ],
+    "accept": false,
+    "rejectPhase": "verdict"
+  },
+  {
+    "id": "import/unsafe_law_unused.bend",
+    "lanes": [
+      "check"
+    ],
+    "accept": false,
+    "rejectPhase": "verdict"
   }
 ]

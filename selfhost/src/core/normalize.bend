@@ -36,7 +36,98 @@ def norm_eval_node(
   +left: U32,
   +fallback: KTerm,
 ) -> KTerm:
-  kc(KTerm, String.eq(tg(t), "App"), u => norm_eval(book, kid(t, 0), Con{kid(t, 1), args}, left, fallback), u => kc(KTerm, String.eq(tg(t), "Ann"), u => norm_eval(book, kid(t, 0), args, left, fallback), u => kc(KTerm, String.eq(tg(t), "Let"), u => norm_eval(book, norm_let(ks(t)), args, left, fallback), u => kc(KTerm, String.eq(tg(t), "Ref"), u => norm_ref(book, t, args, lookup(book, nm(t))), u => kc(KTerm, String.eq(tg(t), "Min"), u => norm_apply(norm_min(book, kid(t, 0), kid(t, 1)), args), u => kc(KTerm, String.eq(tg(t), "Rwt"), u => kc(KTerm, String.eq(tg(wnf(book, kid(t, 0))), "Rfl"), u => norm_eval(book, kid(t, 2), args, left, fallback), u => norm_apply(t, args)), u => norm_args(book, t, args, left, fallback)))))))
+  norm_node_app(book, t, args, left, fallback, String.eq(tg(t), "App"))
+
+@unsafe
+def norm_node_app(
+  +book: List<&2, KDef>,
+  +t: KTerm,
+  +args: List<&2, KTerm>,
+  +left: U32,
+  +fallback: KTerm,
+  +selected: Bool,
+) -> KTerm:
+  match selected:
+    case True{}:
+      norm_eval(book, kid(t, 0), Con{kid(t, 1), args}, left, fallback)
+    case False{}:
+      norm_node_ann(book, t, args, left, fallback, String.eq(tg(t), "Ann"))
+
+@unsafe
+def norm_node_ann(
+  +book: List<&2, KDef>,
+  +t: KTerm,
+  +args: List<&2, KTerm>,
+  +left: U32,
+  +fallback: KTerm,
+  +selected: Bool,
+) -> KTerm:
+  match selected:
+    case True{}:
+      norm_eval(book, kid(t, 0), args, left, fallback)
+    case False{}:
+      norm_node_let(book, t, args, left, fallback, String.eq(tg(t), "Let"))
+
+@unsafe
+def norm_node_let(
+  +book: List<&2, KDef>,
+  +t: KTerm,
+  +args: List<&2, KTerm>,
+  +left: U32,
+  +fallback: KTerm,
+  +selected: Bool,
+) -> KTerm:
+  match selected:
+    case True{}:
+      norm_eval(book, norm_let(ks(t)), args, left, fallback)
+    case False{}:
+      norm_node_ref(book, t, args, left, fallback, String.eq(tg(t), "Ref"))
+
+@unsafe
+def norm_node_ref(
+  +book: List<&2, KDef>,
+  +t: KTerm,
+  +args: List<&2, KTerm>,
+  +left: U32,
+  +fallback: KTerm,
+  +selected: Bool,
+) -> KTerm:
+  match selected:
+    case True{}:
+      norm_ref(book, t, args, lookup(book, nm(t)))
+    case False{}:
+      norm_node_min(book, t, args, left, fallback, String.eq(tg(t), "Min"))
+
+@unsafe
+def norm_node_min(
+  +book: List<&2, KDef>,
+  +t: KTerm,
+  +args: List<&2, KTerm>,
+  +left: U32,
+  +fallback: KTerm,
+  +selected: Bool,
+) -> KTerm:
+  match selected:
+    case True{}:
+      norm_apply(norm_min(book, kid(t, 0), kid(t, 1)), args)
+    case False{}:
+      norm_node_rwt(book, t, args, left, fallback, String.eq(tg(t), "Rwt"))
+
+@unsafe
+def norm_node_rwt(
+  +book: List<&2, KDef>,
+  +t: KTerm,
+  +args: List<&2, KTerm>,
+  +left: U32,
+  +fallback: KTerm,
+  +selected: Bool,
+) -> KTerm:
+  match selected:
+    case True{}:
+      kc(KTerm, String.eq(tg(wnf(book, kid(t, 0))), "Rfl"), u => norm_eval(book, kid(t, 2), args, left, fallback), u => norm_apply(t, args))
+    case False{}:
+      norm_args(book, t, args, left, fallback)
+
 law norm_ref:
   for +book: List<&2, KDef>
   for +t: KTerm

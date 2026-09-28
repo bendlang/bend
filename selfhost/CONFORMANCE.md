@@ -1,63 +1,58 @@
 # Compiler validation
 
-The current target is upstream `b2111cf43244e65f76ddc278ee695e669f720cbf`,
-Bend2 2.0.32 era. The [Phase12 report](../implementation/phase12/avoidable_work.md)
-records full reference/candidate vectors, focused regression controls, execution,
-known gaps and exact artifact identities. Its [raw evidence](../implementation/phase12/evidence/README.md)
-preserves failures as well as passes.
+The target remains upstream `b2111cf43244e65f76ddc278ee695e669f720cbf`, Bend2
+2.0.32 era. The [Phase14 report](../implementation/phase14/conformance_and_dispatch.md)
+and [evidence](../implementation/phase14/evidence/README.md) bind the exact checked
+parent, selected derivative, inputs, controls, full vectors and preserved failures.
 
-The installed [release manifest](dist/release.json) identifies a guarded equality/choice
-derivative, its genuine checked B1 parent, source, Base, runtime and host.
-`npm run verify:release` verifies integrity
-and lineage after relocation. It does not rerun conformance or claim a new
-self-hosted fixed point. Historical fixed-point evidence is not transferred to
-the current artifact.
+The [release manifest](dist/release.json) identifies the installed guarded
+version5 derivative, genuine checked B1, source, Base, runtime and host.
+`npm run verify:release` checks integrity/lineage after relocation; it does not
+rerun conformance or establish a new self-hosted fixed point. There is no proof
+kernel validation, and `--verdict` remains unsupported.
 
-The new upstream fixture gate has 1,498 fixtures: 1,001 positive expectations,
-482 validation negatives, 11 declaration-only proof-trust refusals and 4 cases
-whose expected error happens during emission. Eleven additional Bend files are
-import support without independent oracles. `typeAccepted`, `proofTrust` and
-`kernelChecked` keep these outcomes separate; no run claims Lean validation.
+The full inventory has 1,498 fixtures: 1,001 positive expectations, 482 validation
+negatives, 11 declaration-only trust refusals and four later-emission errors.
+Eleven additional Bend files supply imports without independent oracles.
+The final run completes all 2,996 parse/check observations. All 1,001 positives
+accept types; all 482 validation negatives reject, with no observed invalid
+acceptance, timeout or unresolved observation. All 11 trust cases now type-check
+and reach the intended proof-trust refusal, exactly matching TypeScript.
 
-The final candidate frontend run, compared with the retained unchanged-pin
-reference, completes 2,996 observations. All 1,001 positive
-programs parse and all 1,001 accept types. All 482 validation negatives reject;
-none is observed accepting invalid types. Strict checks record
-1,006 passes and 492 failures, with no timeouts. There are 730 exact reference differences
-(532 check, 198 parse), including diagnostic and phase differences. Seven of 11
-trust-refusal fixtures reach the proper phase; four imported-law fills fail early.
-The long-string fixture passes at the same 4 MiB stack in the final full run
-and in both retained 53- and 60-request history replays. Phase12 rejects the
-normalizer seed cleanup and broad branch inlining after reproducing stack
-regressions. The narrower released transformation preserves all 2,996 Phase11
-observations. A different history consisting of the former 21 focused cases
-before the string can overflow even on Phase11; the new focused gate runs the
-string first. These observations do not establish general stack safety.
-These frontend counts do not establish full backend conformance.
+Exact reference differences fall from 730 to **603**: 194 parse and 409 check,
+across 409 unique fixtures. There are 127 new exact matches and zero lost matches.
+Strict check results are **1,085 passes / 413 failures**. These counts differ
+because exact reference comparison and expected-fixture verdicts are separate
+oracles. Eight improvements cover the four imported-law cases across both lanes;
+119 improve checker diagnostics. Another 26 observations add carets but retain
+an exact difference. `import/alias_decl.bend` now refuses at the correct parse
+phase in both lanes, while retaining different diagnostic text.
 
-The final combined compiler passes 22 maintained controls, 16 derivation
-regression groups, and current plus historical version1–4 byte replay. A fresh
-37-row paired backend selection passes with three known exact TypeScript
-differences. Nat300 emits native C, builds with Clang16 and returns `306n`.
-Raw arithmetic, constructor identity and demand controls are separately recorded;
-their counts are not additional unique conformance fixtures. Historical Phase9
-and Phase10 evidence remains tied to those artifacts.
-Inherited Phase8 evidence includes 21 maintained development controls,
-134 frontend observations, 26 semantic observations, 32 soundness observations,
-18 semantic execution observations, 35 import/JS executions, 44 foreign-runtime
-executions and 13 native/scanner controls. Some sets overlap. Do not add them
-as if they counted unique language programs or infer full backend conformance.
-Exact diagnostics are compared separately from custom acceptance/phase oracles.
+Both final build variants pass the maintained 26-case development gate, retaining
+12 existing exact diagnostic gaps. The release passes 16 unchanged derivation
+regression groups and five current/historical version1–5 byte replays. Its
+41-row paired backend selection passes with three known exact differences,
+including a dependent imported-law fill that returns `5n` in the interpreter,
+JavaScript and actual Clang16/native execution. All 42 ordinary/relocated CLI
+checks pass; relocation supplies no upstream checkout. These scoped execution
+results do not establish full backend conformance.
 
-Known remaining gaps include imported law fills,
-diagnostic carets/text and some error phases. The maintained component suite
-preserves its diagnostic-source parity failure against new upstream instead of
-weakening that exact gate. Native Process requires a libc symbol missing on this
-host, which also blocks upstream. GPU and interactive device execution are not
-validated here. Open-Succ compaction resolves the retained Nat300 native C
-expansion case; this does not establish all-pattern backend scalability. Compact
-source Nat payloads remain U32-sized; wider runtime values retain their dynamic
-representation. Consult the report for the final full-corpus counts.
+The fresh 6,000-character string and exact 53/60-request histories pass at the
+original 4MiB stack / 4GiB heap limits. Conformance-only and combined candidates
+agree on every paired result and predecessor. The old 21-case prefix can overflow
+even Phase11; the maintained selection keeps the string first. Rejected seed and
+broader branch transformations remain excluded. Finite histories do not establish
+general stack safety.
+
+Known remaining gaps include parser diagnostics, error spans/text and some
+rejection phases. The renderer's selected family is exact in 71 of 78 cases;
+seven existing span-origin failures remain. Acceptance/refusal agreement does
+not prove the intended rule caused every rejection. The old component suite's
+new-upstream diagnostic-source parity failure remains preserved. Native Process
+requires a libc symbol unavailable on this host, also blocking upstream. GPU
+and interactive devices are unvalidated. Source Nat payloads remain U32-sized;
+wider runtime values use dynamic representations. Historical control sets overlap
+and must not be summed into a claimed total of unique conformance programs.
 
 ## Historical evidence
 

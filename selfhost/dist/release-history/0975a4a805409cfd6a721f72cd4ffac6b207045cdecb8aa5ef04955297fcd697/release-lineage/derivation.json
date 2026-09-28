@@ -1,0 +1,4704 @@
+{
+  "kind": "bend-derived-b1-equality",
+  "version": 1,
+  "complete": true,
+  "newBootstrap": false,
+  "started": "2026-09-28T16:10:59.739Z",
+  "scope": "Compiler-host data with standard unmodified JavaScript built-ins; not arbitrary reflective/proxy/monkeypatched-host equivalence.",
+  "tool": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/tools/development/equality.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/tools/development/equality.mjs",
+    "sha256": "84a065f61b9c6c6c1ebd8cdfe10dca1a8017f40d19302a84515e1c3a2cc356d9"
+  },
+  "node": {
+    "file": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+    "canonicalPath": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+    "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c"
+  },
+  "original": {
+    "api": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/api.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/api.mjs",
+      "sha256": "a8453133f37a0965b7291795af2e06c7c65e3ee7c97a8ff4b14b98cfba2e5568"
+    },
+    "bootstrapReport": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/api.mjs.bootstrap.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/api.mjs.bootstrap.json",
+      "sha256": "52cf89a5f65485e75b989ab11a2dc3b5d2f1d8b2b0db29ac1580cc8560c7ffd3"
+    },
+    "source": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/compiler.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/compiler.bend",
+      "sha256": "828e6f650faf5bfb5fb1974f49facb6aaca850d2e002cb3afec8adc1335b2825"
+    },
+    "inputs": [
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8/bend2/bend.ts",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8/bend2/bend.ts",
+        "sha256": "924197360cefc61a9314072e9cb1ef46a9266550eb527f535c36839a3b102bcb"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8/bend2/comp.ts",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8/bend2/comp.ts",
+        "sha256": "86980ed99c39e945d4abbf5cf2e9931605ec2f5f70955e0b428cddd8b1f29106"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8/bend2/base.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8/bend2/base.bend",
+        "sha256": "00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/tools/typed-driver.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/tools/typed-driver.mjs",
+        "sha256": "b94f5f8b863f29212d1966680c67f660f1bf4c613d84f89855ae69eeae7d36d5"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/tools/stage0-library.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/tools/stage0-library.mjs",
+        "sha256": "9f1ce29e0a41fa44211ad8f84196c2d5f3fa207f676000018734bd49e131c401"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/tools/assemble.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/tools/assemble.mjs",
+        "sha256": "f7c8feff7a0b8f8b4a302c2ca8b99b363a8d7c4c9c48bc6b7a9463aa23c58b75"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/tools/compiler-abi.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/tools/compiler-abi.mjs",
+        "sha256": "0bcbcaf022108877600baab1b15356db6d9917f5c4d668af936279680c126454"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/tools/node-resource-args.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/tools/node-resource-args.mjs",
+        "sha256": "6aefb3aee9b69b0c25d68edbf0ada6a57ba93e277d3adb8d232dfa6dff01d758"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/tools/native-build.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/tools/native-build.mjs",
+        "sha256": "a76f2c027459f7ffdb9fc16dc450ee33e0f39c74568df4c74d03309e662c9117"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/src/compiler.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/src/compiler.json",
+        "sha256": "ab7eea752c873a2f3948c2343087016888725248dfaab4d42689d9291ea58ddc"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/compiler.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/compiler.bend",
+        "sha256": "828e6f650faf5bfb5fb1974f49facb6aaca850d2e002cb3afec8adc1335b2825"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/core/term.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/core/term.bend",
+        "sha256": "6b8ba9643462d665a610079b5ea805c69aa0c642e4bfe2502a771aa18106e00a"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/core/index.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/core/index.bend",
+        "sha256": "d6a80b85b6006f7750545dffe49aa0caf181fd0f555ac251be56b6c886677223"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/core/normalize.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/core/normalize.bend",
+        "sha256": "8d4deb08685dfd9284850afb478ce5b30674f1fe53c4a7144f481f2bf4ed10ec"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/core/graph.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/core/graph.bend",
+        "sha256": "c42ed354bd347eecc2a5b9a72805f2d39d60916f0c5d069c283d8854ccda2068"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/core/reach.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/core/reach.bend",
+        "sha256": "b7ead8697a4da7e57a9b047635217786aa5bb4644b5c35298698b71ad35a45d3"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/core/pretty.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/core/pretty.bend",
+        "sha256": "0b9fe3ecb43c93a44a897a49c2d3c7ac3baf874aacae87879b73cc99c1c8fd86"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/check/quantity.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/check/quantity.bend",
+        "sha256": "a5f12eec8a4471d314f2d8744da59ea5123e3ddcfc4bc37f2ebc0bdc1bada1d0"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/check/kernel.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/check/kernel.bend",
+        "sha256": "f6fd9983d3cf52006031cd3c898f37bd4d3388323ee889946cb5ba9a4db7c4cd"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/check/specialize.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/check/specialize.bend",
+        "sha256": "4c60561e5dfc581e449fe49a3e3cf086f3929531e2e28fa7ba459a5d9055bcb9"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/check/prefix.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/check/prefix.bend",
+        "sha256": "96172741f314f801eb20c8d071c8de8c5f3b8f2a8e3312d5f9e6858c4d9a2dac"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/check/annotate.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/check/annotate.bend",
+        "sha256": "67ddeccd4f36da6e9a7ce0c3b5400051594044e82c9c578a3ff715f036c4857b"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/lexer.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/lexer.bend",
+        "sha256": "b369e1bca95a81fd7ce796d8e3c4c515339b8eef3a19844c1bdc07b3e7e74149"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/parser.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/parser.bend",
+        "sha256": "d50323e97e4d4c1ef2d294f9eebdd31b8738f226333027f96d36aa89212fab3c"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/declarations.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/declarations.bend",
+        "sha256": "dce9be2e24c4660d164afca753784df7bed29d68fc46f69be2075e046e1a2e6b"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/flatten.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/flatten.bend",
+        "sha256": "0eb3b45ddec363d21e715b491cd19698e4dd6a50b259800edad42dd1e4338392"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/elaborate.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/elaborate.bend",
+        "sha256": "665301c415ebbff00485b3a180e8ccede73fd1c67f7ac04f4e9864791645dc21"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/sugar.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/sugar.bend",
+        "sha256": "6800db22a86e1bd125eb75b421fd46c2921e61a4a1a763637fc15c47021473dc"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/unicode.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/unicode.bend",
+        "sha256": "ca1576b9c9a1992157c98bb66da63ca45aff204c724d902e2e88c5ee87662a51"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/literals_arrays.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/literals_arrays.bend",
+        "sha256": "00dbaefbd7dce4b1b30d8623d44a7418296eb4892adbcf4e96c00d20d8c71ff6"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/parallel.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/parallel.bend",
+        "sha256": "1f7e2b52c128fdeff404ac2c6dd94e9fcf2e401da1ceeb2929f81d4b1d4adf18"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/fresh_work.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/fresh_work.bend",
+        "sha256": "bd8a0e3b4470d4da7bbc223ae04f36b78878fd6fa41bd3ec1594409a34e70dbd"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/freshen.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/freshen.bend",
+        "sha256": "26abdc135603675f2ab3dffc3c049a20982500907d8819a3fdfea42ba917136a"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/load/paths.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/load/paths.bend",
+        "sha256": "6e51e3501ed057ca53b48c3f02506199e2000a5b30fb62aa243843e94d9af877"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/families.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/families.bend",
+        "sha256": "f569eac960ce89166117a67798e7eae874137776f21aed49d0c553017248ebda"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/validate.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/front/validate.bend",
+        "sha256": "aa8a154000b926e4521cab11f8b776664d771650a5178bc7c426f794ad4482d2"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/load/imports.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/load/imports.bend",
+        "sha256": "f9ad12e894937828aea74ccd34750b3b1635943a0037db9656e9b8e514350471"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/load/graph.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/load/graph.bend",
+        "sha256": "a19253601f46826227114add5b57372f4babf5299e51ed9b654f5a47c19a6d5a"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/load/seed.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/load/seed.bend",
+        "sha256": "ce587f0ac5c31a2f6535145ce46f48b227da3574f518dc6c0acf31232f0bfd86"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/load/modules.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/load/modules.bend",
+        "sha256": "27a3b119e2a9b8d556a42afef2bcc2258a01ed6cd25fd85489898810f111e628"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/diagnostic/model.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/diagnostic/model.bend",
+        "sha256": "dd69096c6fdcd682a45e9536eb6d475061fd285807961ac95a16b5a874358af5"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/diagnostic/render.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/diagnostic/render.bend",
+        "sha256": "21890a0d7db39db143c93ae15a2273d690ca6afe0dd263ac04af8985bcc166be"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/diagnostic/trace.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/diagnostic/trace.bend",
+        "sha256": "a05fdb89e4d2aa38143f849524949bf4e225c4b9eedfebfe998f167caaaf99d0"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/diagnostic/produce.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/diagnostic/produce.bend",
+        "sha256": "1bf8149853d7bfdbf99a035a3b68e9aa88cc8674d7af8c2ca8d11f194c94950f"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/diagnostic/frontend.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/diagnostic/frontend.bend",
+        "sha256": "8727de8ffa6d6fb1022ada1fec7bf53f97d9b696a51666eaa20c22ff16a8f842"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/js/foreign.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/js/foreign.bend",
+        "sha256": "0f397f84a989c6fc9a52eaf962742e673cdba243864c0bbe7c16ce4ffd8eb065"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/js/literals.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/js/literals.bend",
+        "sha256": "a211b24a0fe20d9b83ffbbbc0051b578c166b89782ed57eba88ca8404a572de8"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/js/validate.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/js/validate.bend",
+        "sha256": "f8fc315bf80dabbf8afd1b6ced8e7c322b8ef96d73859d47e01c4b317afb72a0"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/js/choice.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/js/choice.bend",
+        "sha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/js/projection.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/js/projection.bend",
+        "sha256": "f534d7c74f396527a9d3e3a06bececebcf0b68d92400ccf46b8125e82735ef09"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/js/emit.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/js/emit.bend",
+        "sha256": "d979511d259305b6ac77bd858137808c3af431a53c7e1cec817e7f68e218f68a"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/ir.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/ir.bend",
+        "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/text.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/text.bend",
+        "sha256": "20ca7aa5627b698771340d4a2e944caef9b1d100d0f2478a75a622b43a4d647b"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/identity.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/identity.bend",
+        "sha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/layout.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/layout.bend",
+        "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/intrinsic.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/intrinsic.bend",
+        "sha256": "8acf8c4e083b55cc33ef323552963b254ac310c22e7d8b5e3b82253776892ab0"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/tables.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/tables.bend",
+        "sha256": "edd92590e285d2a6158cbd9d9a465d8bd55cbbab9ee4cbcbb018ece1cccc506a"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/emit.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/emit.bend",
+        "sha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/erase.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/erase.bend",
+        "sha256": "56ed6538d90549f7f4cc949201f3ca6fd588a7273ea500dda96d0ce054f10007"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/bridge.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/bridge.bend",
+        "sha256": "5c0337ae0e94e8adff750517f5d2ad4366aef06073433121d58a713bdabf4462"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/direct.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/direct.bend",
+        "sha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/pattern.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/pattern.bend",
+        "sha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/show.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/show.bend",
+        "sha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/parallel.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/parallel.bend",
+        "sha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/array.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/array.bend",
+        "sha256": "4e1d5c9d282ba746ac1e98df470411d477bf1449b5621c3ad413f01e883d9149"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/validate.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/validate.bend",
+        "sha256": "d0c1e75c5dbda3d2e65ea227667191252c49f71b63f0765c358c2041a0f484bb"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/foreign.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/foreign.bend",
+        "sha256": "ed7a06662072e73d45d10b1898599936b106dc22956a4fceea8d04ac22fb6d3c"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/book.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/back/native/book.bend",
+        "sha256": "0f0e31315a8d9cbf362778aa2887abf3ac23850aafb58b28407cba53a3d352f3"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/driver/report.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/driver/report.bend",
+        "sha256": "c92bb06d000a5523c4c72bf1c14e32609f69c67183ff8638a72c8c250e352024"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/driver/api.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/snapshot/build/typed/snapshots/364bcf7c6cfdc468f2914a7e73667f4e80d4e9b4a5a0f9084a49c6dc5d5c350f/src/driver/api.bend",
+        "sha256": "465af609ce69cb82c37010c1f1a2a235dbfa32fd5dd5c337e0d0d618f651d221"
+      }
+    ],
+    "exports": [
+      "f_parse",
+      "f_load",
+      "f_path_join",
+      "f_path_dir",
+      "check_book",
+      "annotate_book",
+      "j_program",
+      "j_library",
+      "j_expr",
+      "j_descriptor",
+      "j_io_type",
+      "j_modules",
+      "driver_has_main",
+      "driver_is_io",
+      "driver_interpret",
+      "driver_todos",
+      "driver_emit_owned",
+      "specialize_book",
+      "specialized_book",
+      "specialized_error",
+      "nc_compile",
+      "nc_foreign_paths",
+      "nc_annotation_stops",
+      "nc_annotated_context",
+      "nc_foreign_source",
+      "nc_foreign_scope",
+      "check_from_exact_prefix",
+      "exact_prefix",
+      "f_load_graph",
+      "f_main_names",
+      "f_load_graph_trace",
+      "f_source_parsed",
+      "book_context",
+      "book_cached",
+      "f_load_graph_seed",
+      "f_load_graph_seed_trace",
+      "driver_report",
+      "driver_bad_names",
+      "compiler_check_result_abi",
+      "check_book_diagnostic",
+      "check_book_diagnostic_from_exact_prefix",
+      "diagnostic_render",
+      "diagnostic_result_locate",
+      "f_load_origins_for",
+      "f_loaded_origins_for",
+      "j_compile_error",
+      "j_layout_error",
+      "reach_book",
+      "j_roots",
+      "j_stops",
+      "annotate_except",
+      "kf_source",
+      "annotate_selected",
+      "j_program_selected",
+      "j_library_selected",
+      "j_foreign_paths",
+      "j_foreign_error"
+    ],
+    "revision": "b2111cf43244e65f76ddc278ee695e669f720cbf"
+  },
+  "output": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/equality/api.mjs",
+    "sha256": "0975a4a805409cfd6a721f72cd4ffac6b207045cdecb8aa5ef04955297fcd697"
+  },
+  "transform": {
+    "version": 5,
+    "replacements": 1,
+    "runtimeHash": "241696c207b257ba28e159699e08e749c1625542a92d901a663ac3f04dfd20fd",
+    "bodyHashes": {
+      "$String$eq$": "26dd80c6e6b136f7fcb9cc776bbc3ccacd266e78bf435717f583609714cd891c",
+      "$String$eq$fin$": "81980e7732008da140f269c549130c531a369aa52b269b3d8515e37d5c8257f9",
+      "$Cmp$is_eq$": "417e2e7e25f1763d69999103c58ae81a4f361cf30cda047b95a9e35a6ca219df",
+      "$String$cmp$": "3b9cc1202ef9b17b946b18ba7b8f599c6c76e1c8fdb8cde809f40bdce21246cb",
+      "$Char$cmp$": "a4e9dd89bbabd5fde4d39e3de2642955203ac11782e78809cc11d9d7a2b7053a",
+      "$String$cmp$fin$": "11504d8a211c258eddd5f88ac1d2967c593b447eca5c94c6c50b1b1dd7eed231",
+      "$String$cmp$rec$": "b36b6180e994b0edfe4ea7686690e7cd69d8f8462221ce07342d47e78f453aa0",
+      "run_loop": "b1f937dcb68edc1033b01d5a6055938ec2e34103bacd41b68c36f2ea66bd1c8f",
+      "run_lib": "c1cbbf9ec05ef6f9a72bf0950a221e1c4e58c496ad8e44ddd8f16dd849d51822",
+      "char_new": "7a9fbfa94b70aae2289d3de7c044ae5ac902151b5a4648d9f5f60444d2573081",
+      "cmp_new": "8fac78c9271fde4683b81923d57f2f58107f0ed4e8cf69efb8294c381d575e2c"
+    },
+    "exports": [
+      "f_parse",
+      "f_load",
+      "f_path_join",
+      "f_path_dir",
+      "check_book",
+      "annotate_book",
+      "j_program",
+      "j_library",
+      "j_expr",
+      "j_descriptor",
+      "j_io_type",
+      "j_modules",
+      "driver_has_main",
+      "driver_is_io",
+      "driver_interpret",
+      "driver_todos",
+      "driver_emit_owned",
+      "specialize_book",
+      "specialized_book",
+      "specialized_error",
+      "nc_compile",
+      "nc_foreign_paths",
+      "nc_annotation_stops",
+      "nc_annotated_context",
+      "nc_foreign_source",
+      "nc_foreign_scope",
+      "check_from_exact_prefix",
+      "exact_prefix",
+      "f_load_graph",
+      "f_main_names",
+      "f_load_graph_trace",
+      "f_source_parsed",
+      "book_context",
+      "book_cached",
+      "f_load_graph_seed",
+      "f_load_graph_seed_trace",
+      "driver_report",
+      "driver_bad_names",
+      "compiler_check_result_abi",
+      "check_book_diagnostic",
+      "check_book_diagnostic_from_exact_prefix",
+      "diagnostic_render",
+      "diagnostic_result_locate",
+      "f_load_origins_for",
+      "f_loaded_origins_for",
+      "j_compile_error",
+      "j_layout_error",
+      "reach_book",
+      "j_roots",
+      "j_stops",
+      "annotate_except",
+      "kf_source",
+      "annotate_selected",
+      "j_program_selected",
+      "j_library_selected",
+      "j_foreign_paths",
+      "j_foreign_error"
+    ],
+    "functions": 1531,
+    "choices": {
+      "kind": "literal-choice-tail-derivative",
+      "version": 1,
+      "runtimeSha256": "241696c207b257ba28e159699e08e749c1625542a92d901a663ac3f04dfd20fd",
+      "inputSha256": "3d5ce0a7fd71f3e2574c7ca41050120ac261cfb8e2f5eda0acc876f203a06c63",
+      "outputSha256": "9883e097c65fda9f94d3795ba3bb778d4372c0bd027b37ecb0fe27af8e60de01",
+      "sites": 1419,
+      "skipped": [],
+      "protectedBodies": [
+        {
+          "name": "$kc$",
+          "sha256": "aa06d94d00588b5f7695a5477c5f6b58013b338ba1704f593d2bee37c4dc079c"
+        },
+        {
+          "name": "$f_choose$",
+          "sha256": "48013e56ef914b008bb4f97ccc01b46dab2185acb1b2416e968998167fad3c78"
+        },
+        {
+          "name": "$nt_choose$",
+          "sha256": "b9ce6db260eb104f50c785603ed2a2cc45f7f5d89ebe30d8f0193b0445532343"
+        }
+      ],
+      "scope": "Only saturated structurally verified choices with two literal run_clo arrows; keep original runtime, exports and trampoline boundary."
+    },
+    "tailChoices": {
+      "kind": "return-choice-leaf-derivative",
+      "version": 1,
+      "sites": 164,
+      "deferredGeneratedCalls": 161,
+      "skipped": [
+        {
+          "at": 4701,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 5337,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 8125,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 8435,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 8571,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 8905,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 9704,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 10326,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 10389,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 12381,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 13131,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 13759,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 16626,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 17899,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 19001,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 19502,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 20343,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 20902,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 21807,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 21919,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 22301,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 22466,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 22761,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 22978,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 23228,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 23519,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 24177,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 24372,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 25220,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 26919,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 27374,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 27490,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 27671,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 27982,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 28122,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 28303,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 28464,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 28624,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 28773,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 28935,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 29072,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 29199,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 29527,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 29765,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 30334,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 31244,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 31683,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 36086,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 37083,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 38337,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 40126,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 41217,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 42734,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 43692,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 43907,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 44501,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 44608,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 45332,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 50119,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 50695,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 55011,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 55106,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 55433,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 56014,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 56229,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 56748,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 57379,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 60941,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 62238,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 62845,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 62890,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 63381,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 64264,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 64578,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 65318,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 65458,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 65688,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 66208,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 67627,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 69929,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 73506,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 74117,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 75176,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 77212,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 78594,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 78672,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 78751,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 79233,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 79374,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 79851,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 79968,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 80170,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 80508,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 80612,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 80766,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 81079,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 81620,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 83231,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 84020,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 85370,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 86555,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 89941,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 91472,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 92228,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 92366,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 92545,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 92956,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 93405,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 93521,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 104258,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 105920,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 106435,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 109025,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 109848,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 111817,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 111987,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 112186,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 113370,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 117932,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 119402,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 121525,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 121653,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 124358,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 124517,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 124677,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 125221,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 125371,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 125589,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 125746,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 125967,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 126148,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 130832,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 131283,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 134346,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 134494,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 134696,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 134974,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 135081,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 135203,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 135343,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 136201,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 137956,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 138496,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 138637,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 138938,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 139128,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 142268,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 142374,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 142478,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 142708,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 142943,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 143352,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 143678,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 144504,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 144734,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 144910,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 145096,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 145272,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 145475,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 145546,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 150672,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 150732,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 151400,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 151576,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 152003,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 152149,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 152314,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 152437,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 152561,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 152757,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 152860,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 153350,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 153453,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 153593,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 154685,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 155417,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 156528,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 156793,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 156935,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 157163,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 157360,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 157558,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 157762,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 159819,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 162300,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 162573,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 162985,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 163135,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 164346,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 166645,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 166748,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 167450,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 167582,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 167817,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 167989,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 169652,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 170166,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 170974,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 171207,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 173740,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 174924,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 175125,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 175320,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 175977,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 176323,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 176395,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 177529,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 182017,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 183253,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 185206,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 187984,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 190448,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 190618,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 191337,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 192106,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 192477,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 193080,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 194110,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 194428,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 194818,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 195034,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 198503,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 198565,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 198782,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 198987,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 199121,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 199191,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 199494,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 199855,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 200049,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 200266,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 200678,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 203038,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 203141,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 204324,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 205411,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 208338,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 210380,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 210479,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 210891,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 211498,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 211735,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 214525,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 214908,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 216145,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 216686,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 217698,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 218314,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 218456,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 218583,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 218706,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 220950,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 222996,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 227326,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 228176,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 228367,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 228558,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 228749,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 228974,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 229170,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 229658,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 229860,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 230752,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 230924,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 231375,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 232243,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 232605,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 233436,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 234497,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 234654,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 234718,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 235068,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 235720,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 235862,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 235997,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 236129,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 236239,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 236461,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 236606,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 236826,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 237179,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 237348,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 237517,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 237673,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 238320,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 238425,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 238559,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 238702,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 238868,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 239079,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 239916,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 240944,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 241463,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 241722,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 242041,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 242548,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 242661,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 243181,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 243496,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 243681,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 248000,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 249146,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 250907,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 251382,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 251870,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 251945,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 252147,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 254825,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 255445,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 256339,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 256422,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 256884,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 257070,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 257274,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 257502,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 257674,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 257848,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 257913,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 258553,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 258709,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 261124,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 261195,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 261640,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 263458,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 265152,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 265537,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 266055,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 269766,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 271239,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 271755,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 272653,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 274402,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 275236,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 275583,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 276417,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 277501,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 279525,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 279701,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 280191,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 280396,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 280466,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 280674,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 280746,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 280825,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 285675,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 286743,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 291352,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 297624,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 298617,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 298760,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 299044,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 299470,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 299816,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 300532,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 300671,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 300939,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 301140,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 301502,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 303774,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 305707,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 305920,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 306118,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 306364,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 309071,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 309558,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 309659,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 309776,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 310074,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 310268,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 310401,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 310808,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 312776,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 312894,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 313955,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 314525,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 315439,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 317175,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 317236,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 317683,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 318795,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 319192,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 319278,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 319846,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 323417,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 324414,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 325409,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 325990,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 326271,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 327434,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 328435,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 335494,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 336020,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 336700,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 336942,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 337189,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 337375,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 337425,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 338054,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 338547,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 338732,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 338782,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 340207,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 340455,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 340505,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 341061,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 342855,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 343816,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 344513,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 344757,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 344969,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 345547,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 345942,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 346466,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 354558,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 354938,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 355088,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 355239,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 355352,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 355568,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 355762,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 355975,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 356595,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 356958,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 358531,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 360822,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 361014,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 361205,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 361466,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 361691,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 361967,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 362066,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 362687,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 363276,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 363535,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 363946,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 364469,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 365504,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 366172,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 366824,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 368047,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 368274,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 368513,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 368750,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 368969,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 369162,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 369354,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 369644,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 370339,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 371246,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 371427,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 374145,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 376380,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 387174,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 387379,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 387787,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 387860,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 388357,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 388950,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 389090,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 393580,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 396770,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 397169,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 397358,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 397545,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 397872,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 399274,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 400661,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 402053,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 402416,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 402987,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 403629,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 403679,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 403830,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 403944,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 405580,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 405915,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 406917,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 408197,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 408639,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 408953,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 409277,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 410747,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 412350,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 412901,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 413343,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 414384,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 414518,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 415791,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 415926,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 416960,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 417442,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 417824,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 418860,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 419143,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 419267,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 419615,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 419767,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 419892,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 420236,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 420375,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 421257,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 421472,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 421647,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 422101,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 422682,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 423137,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 423408,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 430285,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 430414,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 431793,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 432551,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 434647,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 434898,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 434968,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 435204,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 436118,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 436282,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 436352,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 436480,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 436993,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 437063,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 437211,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 438264,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 438399,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 438803,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 438994,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 439756,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 441655,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 442338,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 443017,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 443771,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 444224,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 444760,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 445357,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 445611,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 448183,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 448266,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 449323,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 449455,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 449640,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 449845,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 449978,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 450116,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 450421,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 450819,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 451087,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 451275,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 451700,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 452033,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 456146,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 456350,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 457971,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 458309,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 458452,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 465414,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 465950,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 466205,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 466474,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 466779,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 467105,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 467259,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 467409,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 467553,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 467875,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 467961,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 468119,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 471749,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 473729,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 474595,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 474979,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 475916,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 476439,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 476501,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 476780,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 476956,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 477234,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 477392,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 477554,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 477679,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 477866,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 478957,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 479257,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 479497,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 480228,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 482439,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 482603,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 482767,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 482987,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 483288,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 483359,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 483746,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 484217,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 486566,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 486718,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 486798,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 486884,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 487192,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 487425,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 487509,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 487598,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 487687,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 487854,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 488013,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 488657,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 488949,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 490321,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 491507,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 491995,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 492886,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 493297,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 493438,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 493559,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 493680,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 493807,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 494030,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 494165,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 494379,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 494617,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 494978,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 495163,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 495394,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 495616,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 496375,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 496510,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 496734,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 497742,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 497937,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 498403,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 498721,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 499715,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 499924,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 500098,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 500370,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 500771,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 501166,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 502523,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 502852,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 503000,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 503200,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 504021,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 504119,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 504199,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 504804,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 505699,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 506310,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 507307,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 507760,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 508193,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 508755,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 509345,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 509497,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 509804,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 509967,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 514614,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 515818,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 516237,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 518101,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 518252,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 518407,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 518651,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 518879,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 519143,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 519273,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 519963,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 520107,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 520932,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 521284,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 521438,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 521614,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 521729,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 522576,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 522895,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 522945,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 523411,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 523751,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 530591,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 530875,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 532095,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 533135,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 533290,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 533636,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 534569,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 536032,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 536309,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 536695,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 537883,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 538608,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 538814,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 539076,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 539434,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 539703,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 540176,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 540660,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 541038,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 541139,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 541660,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 541731,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 542375,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 542897,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 543157,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 543207,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 543587,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 543803,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 543873,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 544339,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 544468,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 545080,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 545151,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 545497,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 546834,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 550199,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 550573,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 550676,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 551071,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 551298,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 551798,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 552331,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 552921,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 554528,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 554873,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 555230,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 555665,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 555993,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 556425,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 556593,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 556985,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 557286,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 557454,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 557765,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 558377,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 558921,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 559373,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 559869,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 560432,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 560800,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 561256,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 561816,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 562387,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 562458,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 563660,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 564677,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 565438,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 566038,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 566428,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 572244,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 582340,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 582868,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 584371,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 584813,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 585029,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 585277,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 585856,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 586510,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 586755,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 586918,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 587041,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 587481,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 587614,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 588027,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 589029,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 590440,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 590923,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 591439,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 592611,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 592793,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 593394,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 593477,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 593559,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 593642,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 593724,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 593808,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 594191,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 594607,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 594788,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 597272,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 597729,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 598639,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 600922,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 601444,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 602309,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 603251,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 604745,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 605886,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 606416,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 607070,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 607213,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 607406,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 607548,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 607723,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 608729,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 609696,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 610208,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 610545,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 611108,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 611742,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 613776,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 614584,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 614746,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 614925,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 616065,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 616597,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 616960,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 617173,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 617968,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 618986,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 619107,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 619614,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 620438,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 620863,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 621176,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 621426,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 621496,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 621885,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 622173,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 622226,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 622497,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 622708,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 623394,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 625008,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 625280,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 625642,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 626057,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 626432,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 626833,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 626947,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 627146,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 627336,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 627890,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 628819,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 629024,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 629828,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 630518,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 630990,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 631129,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 631863,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 632377,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 632661,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 632792,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 633244,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 634020,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 640665,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 641457,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 641873,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 642723,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 643171,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 643672,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 645058,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 646073,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 646263,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 646393,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 648867,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 649842,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 650188,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 650410,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 650638,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 650863,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 650935,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 651562,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 652094,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 652322,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 653165,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 653255,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 653673,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 655230,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 655564,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 655860,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 656858,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 657146,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 658458,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 658557,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 658876,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 659573,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 660149,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 660264,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 660687,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 661068,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 661684,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 662870,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 663666,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 664243,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 665080,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 667181,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 667291,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 668433,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 668848,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 669230,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 669320,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 669408,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 669508,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 669602,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 669697,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 669789,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 669881,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 669973,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 670065,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 670157,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 670251,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 670347,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 670442,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 670537,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 670631,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 670727,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 670821,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 671471,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 671764,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 672000,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 672793,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 673605,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 673844,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 675340,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 675626,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 675982,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 676348,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 676453,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 676706,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 677295,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 677376,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 677757,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 677881,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 678104,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 678422,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 678734,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 678996,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 679767,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 680330,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 681330,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 681878,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 682125,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 682669,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 682857,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 682924,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 683303,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 683497,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 683698,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 685113,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 685482,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 685955,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 687558,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 687774,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 688604,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 691789,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 691981,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 692288,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 692984,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 693532,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 695678,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 696427,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 696865,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 697503,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 697948,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 698076,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 699122,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 700707,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 701115,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 701274,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 701689,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 702475,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 702567,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 702658,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 705103,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 705528,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 705612,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 708678,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 710122,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 710206,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 711024,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 712134,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 712449,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 712907,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 717053,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 717923,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 718806,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 719442,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 719830,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 720854,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 721008,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 721322,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 721727,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 722084,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 722431,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 722652,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 723069,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 723382,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 724039,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 724700,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 725575,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 725847,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 726949,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 727373,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 728714,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 729164,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 729579,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 730075,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 731001,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 731281,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 731659,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 732353,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 733019,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 733085,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 733565,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 734161,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 734263,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 734714,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 734999,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 735254,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 736766,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 737763,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 738130,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 738508,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 738883,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 739365,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 739752,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 740165,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 740401,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 741064,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 741209,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 742679,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 743113,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 743432,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 743917,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 744176,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 745085,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 745728,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 746033,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 746098,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 746272,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 746560,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 748560,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 750351,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 751217,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 752280,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 753562,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 753806,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        }
+      ],
+      "runtimeSha256": "241696c207b257ba28e159699e08e749c1625542a92d901a663ac3f04dfd20fd",
+      "inputSha256": "9883e097c65fda9f94d3795ba3bb778d4372c0bd027b37ecb0fe27af8e60de01",
+      "outputSha256": "0975a4a805409cfd6a721f72cd4ffac6b207045cdecb8aa5ef04955297fcd697",
+      "scope": "Only returned literal Unit choices with one-return branches, no declarations and no calls except terminal direct generated calls with call-free arguments. Unit bindings and original boundaries around all non-tail call work remain. Runtime/public exports stay exact; private unforced tail-message representation is not an invariant."
+    }
+  },
+  "toolSnapshot": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/equality/equality.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/equality/equality.mjs",
+    "sha256": "84a065f61b9c6c6c1ebd8cdfe10dca1a8017f40d19302a84515e1c3a2cc356d9"
+  },
+  "finished": "2026-09-28T16:11:00.899Z"
+}

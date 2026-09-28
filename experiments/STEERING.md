@@ -1,98 +1,98 @@
 # Current compiler experiment strategy
 
-Phase14 is active under its [design](../design/phase14/conformance_and_dispatch.md):
-fix imported-law semantics, classify exact differences and correct one shared
-cause, with a bounded source-level normalizer dispatch pilot. Phase12 remains
-installed until integration gates pass. Dispatch feasibility is capped at 90
-minutes; no prior multi-hour budget is renewed. Preserve unrelated Phase6 work.
-[Current report](../implementation/phase14/conformance_and_dispatch.md).
+Phase14 is complete under its [design](../design/phase14/conformance_and_dispatch.md).
+The [report](../implementation/phase14/conformance_and_dispatch.md) selects
+combined-01, API9136be92, with unchanged upstream b2111cf. Imported-law resolution,
+checker caret rendering and source normalizer dispatch are installed. No earlier
+multi-hour budget is renewed. All unrelated Phase6 work remains untouched.
 
-Phase13 is complete; integration is deferred. The
-[report](../implementation/phase13/structured_rewriter.md) and
-[evidence](../implementation/phase13/evidence/README.md) preserve all pilots.
-Named-worker lifting is 1.01% slower; one-owner selector fusion uses 6.63% less
-checking time; six-owner fusion uses 10.56% less (27.36→24.47s). The latter passes
-bounded controls and exact 53/60-request histories, but its self-contained helper
-adds 239 lines/7,010 bytes. It misses the roughly 20% target without a compensating
-complexity reduction. Phase12 remains installed; no conformance change is claimed.
+## Released Phase14 frontier
 
-Phase12 completes the user's next avoid-redundant-work round on2026-09-28.
-No historical time budget is renewed. Preserve unrelated Phase6 work.
-The [design](../design/phase12/avoidable_work.md),
-[report](../implementation/phase12/avoidable_work.md) and
-[evidence](../implementation/phase12/evidence/README.md) record the decisions.
+Same-final-source checking is **27.40→24.98s**, **8.82% less time** than Phase12.
+Pinned TypeScript is **2.81s**, leaving an **8.88×** process gap (old release9.74×
+in this same matrix). Each variant has two serial fresh-process samples, CPU0,
+4MiB stack/4GiB heap; intentional competing compiler/archive jobs were closed.
+The comparison binds exactly two trust-report host edits and unchanged remaining
+hosts/Base/runtime. The identical-host dispatch pilot separately saves9.03%.
+Do not multiply these ratios or combine them with older different-source samples.
+Peak observed RSS rises1.47%; no memory or user-program runtime gain is claimed.
 
-## Released Phase12 frontier
+All2,996frontend observations finish with all1,001positive accepts,482negative
+refusals and11exact intended trust refusals. Exact differences fall730→603
+(194parse/409check,409unique fixtures), with127new matches and zero lost matches.
+Strict checks are1,085pass/413fail. Twenty-six further checker observations add
+carets but retain old gaps; two alias-declaration observations restore parser
+refusal while retaining diagnostic differences. No unexpected semantic delta,
+invalid acceptance, timeout or missing observation is observed.
 
-The selected compiler is integrated-03, API
-`0975a4a805409cfd6a721f72cd4ffac6b207045cdecb8aa5ef04955297fcd697`.
-Upstream remains b2111cf. Typed local constructor lookup and literal reuse
-remove8Bend lines and one wrapper. The equality profile version5 adds native
-choices and164restricted returned-branch blocks, with161terminal calls using
-the existing trampoline message. Runtime and public forcing stay unchanged;
-versions1–4 replay authentic original artifacts exactly.
+The final compiler passes26maintained focused cases,41paired backend rows
+(three known exact differences),16unchanged helper groups,five authentic byte
+replays, and42ordinary/relocated CLI checks. The imported-law program returns5n
+through interpretation, JS and actual native execution. A fresh long string and
+both exact53/60request histories pass for conformance-only versus combined,
+all226paired observations and predecessors exact at the original resource limits.
+The first full audit's null/undefined postprocessing failure is preserved; a
+strict identity-bound audit reuses its healthy vector without rerunning fixtures.
 
-Controlled same-source checking is **29.56→26.90s**, **1.10× faster**. Pinned
-TypeScript is **2.86s**, leaving a **9.42×** process gap. The1.2–1.5× planning
-estimate is not met for checking. Nat300 JS is **15.73→7.90s (1.99×)**;
-native C emission is **3.71→2.78s (1.33×)**. JS and C bytes remain identical,
-and actual execution returns306n. Native timings exclude Clang. Each matrix
-uses serial fresh processes with intentional competing compiler/archive jobs
-paused; historical ratios are not multiplied into a new claim.
+Source is15,264physical/13,038nonblank Bend lines,501,056bytes across59modules,
+1,495defs/793laws/63types: +134lines,+4,670bytes,+11defs. Imported law loading adds
+two temporary markers removed before checker entry. Six dispatch workers replace
+intermediate choices; three renderer helpers use existing spans. The maintained
+JS helper/runtime are unchanged; two host arguments add14bytes and focused tests
+addfourcases. Research launchers and evidence are counted separately. Historical
+50%/75%simplification targets remain open.
 
-The final2996frontend observations match Phase11 exactly: all1001positive cases
-check, all482validation negatives reject, and no invalid acceptance/timeout is
-observed. There remain730exact TS differences (198parse/532check), strict
-1006pass/492fail, and four imported-law trust cases fail early. The37paired
-backend rows pass with three known exact differences. Current and relocated
-CLI checks are separately bound to the installed release. No H→H fixedpoint,
-proof-kernel, GPU or general generated-program runtime gain is claimed.
+## Next priorities
 
-Source is15130physical/12916nonblank Bend lines across59modules,496386bytes,
-1484defs/793laws/63types. The host transformation adds23lines/5802bytes and
-its tests add37lines/4368bytes; source reduction does not remove that complexity.
-The50%/75% simplification targets remain open. The checked build plus22focused
-cases spans27.59s; it is not a paired gain versus Phase11's21-case observation.
+1. Classify the remaining603exact differences and select another shared cause with
+   cheap paired witnesses. Parser messages and originating spans remain separate
+   from the corrected checker renderer. The71/78selected renderer family still
+   fails for seven inherited spans; do not claim they are fixed.
+2. Profile this exact installed release before another speed round. Source branch
+   workers avoid allocation/dispatch without additional JS rewriting, but the
+   normalizer chain is not a mutually recursive loop. Require demand/order controls
+   and exact saved histories before broadening this technique.
+3. Reuse the Phase13 selector prototype only for a substantially larger measured
+   opportunity or a cheaper implementation. Do not revive rejected seed cleanup
+   or broader branch inlining without addressing their saved counterexamples.
 
-## Rejected candidates and next experiment boundary
+The full acceptance corpus has no observed positive rejection or invalid negative
+acceptance, but rejection reason/phase and exact diagnostics still differ. Backend,
+proof-kernel and GPU coverage remain separate. There is no new self-hosted fixed
+point or universal stack-safety/compiler-soundness claim.
 
-The seed cleanup is rejected even though finite semantic and fresh-worker
-controls pass: under exactly53requests it overflows while baseline and JS-only
-pass, with all52preceding results exact. Broad returned-branch inlining also
-fails fresh and matched-history controls after restoring the normalizer.
-Both initial integrations remain failed. The final no-seed leaf candidate
-passes both53/60request histories at4MiB, all predecessors exact.
+## Retained experiments and operating rules
 
-A different history (old21focused cases before the string) can overflow even
-Phase11. The maintained22-case selection puts the string first for its
-fresh-worker comparison. Do not use that inherited failure to excuse a changed
-result under a history the baseline accepts. Preserve actual histories and
-resource policy; fixture order is not general stack-safety evidence.
+[Phase13](../implementation/phase13/structured_rewriter.md) remains deferred:
+named-worker lifting is1.01%slower; six-owner selector fusion saves10.56%but adds
+239helperlines/7,010bytes. Phase14's smaller source change was accepted because
+it avoids that maintained JS machinery. The original profiles, controls and
+prototype remain preserved.
 
-Delayed normalizer spine reconstruction remains deferred for weak benefit and
-added protocol cost. Larger term/compact-string changes need new discriminating
-evidence. Do not broaden branch inlining or revive the seed cleanup without
-addressing the retained counterexamples. Phase13 profiles this final API: exclusive samples assign 14.55% to dispatch and
-13.47% to GC. Removing intermediate work helps; shifting closures to capture
-arrays alone does not. Reuse the preserved prototype and profiles before another
-rewriter trial; broader grammar needs new evidence of substantial savings or
-cheaper maintenance. Imported-law semantics and exact diagnostics remain priorities.
+[Phase12](../implementation/phase12/avoidable_work.md) retains typed constructor
+lookup/literal reuse and guarded version5 literal-choice/leaf-branch lowering.
+It rejects seed cleanup and broader inlining despite passing finite controls:
+matched histories overflow with those candidates while their baseline passes.
+The initial Absent fallback allocation remains. Delayed normalizer reconstruction
+stays deferred for weak benefit and added protocol cost.
 
-## Historical evidence and operating rules
+A different history (the old21focused cases before the string) can overflow even
+Phase11. The maintained selection keeps the string first. Do not use inherited
+failure under one history to excuse changed results under another. Preserve
+actual request order and resource policy; finite controls are not universal safety.
 
-[Phase11](../implementation/phase11/known_work.md) retains checker/offload and
-native-Succ improvements, [Phase10](../implementation/phase10/repeated_work.md)
-the loader/index/layout changes, [Phase9](../implementation/phase9/checker_speed.md)
-the compact-Nat/checker work, and [Phase8](../implementation/phase8/upstream_and_conformance.md)
-the upstream migration. Their measurements use their recorded source/artifacts.
-S4's simplifications and older genuine fixedpoints remain in the
-[Phase7 report](../implementation/phase7/s4-report.md). Rejected binder and
-semantic-value trials remain research evidence, not installed mechanisms.
+[Phase11](../implementation/phase11/known_work.md),
+[Phase10](../implementation/phase10/repeated_work.md),
+[Phase9](../implementation/phase9/checker_speed.md) and
+[Phase8](../implementation/phase8/upstream_and_conformance.md) retain their own
+artifact-specific measurements and gates. S4 simplifications and older genuine
+fixed points remain in the [Phase7 report](../implementation/phase7/s4-report.md).
 
-Routine edits use [checked B1 development](../docs/PHASE5_DEVELOPMENT.md).
-Keep checked B1, guarded derivative and self-emitted H distinct. Unknown
-profiles/bindings/input identities must fail closed. Completed capture is not
-a correctness pass. Preserve rejected attempts and superseded consumed tools.
-Pause intentional compiler/archive jobs for controlled timing; check launch
-errors, signals, timeouts and overflow as well as status and semantic oracles.
-Frozen plans stay unchanged; outcomes go in reports, ledger and this frontier.
+Routine edits use [checked B1 development](../docs/PHASE5_DEVELOPMENT.md). Keep
+checked B1, guarded derivative and self-emitted H distinct. Unknown profiles,
+bindings or identities fail closed. Freeze plans before probes; put outcomes in
+reports/ledger. Preserve failures and superseded consumed tools. Close all producers
+before evidence capture; verify every restored byte/mode. Capture completion is
+not a correctness pass. Check errors, signals, timeouts and overflow alongside
+exit status and semantic oracles. Archive/recovery and toolchains are documented
+in the [Phase14 evidence](../implementation/phase14/evidence/README.md).
