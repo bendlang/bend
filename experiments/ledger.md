@@ -778,3 +778,14 @@ The [verified evidence capsule](../implementation/phase10/evidence/README.md)
 retains exact inputs, rejected attempts, complete measurements and release lineage.
 Unrelated Phase6 files remain outside the commit. The 50%/75% reduction targets
 remain unmet.
+
+## 2026-09-28 — Phase11 upstream-guided optimization started
+
+The user authorizes further work and larger conceptual changes, and suggests
+rereading TypeScript. [Design](../design/phase11/known_work.md) `cf29bae` preserves
+released Phase10 `5f561c4` and unchanged upstream b2111cf. Fresh actual-release
+profiling, pattern/native expansion, checker normalization and branch/call costs
+have independent bounded investigations and prospective records. The
+[report](../implementation/phase11/known_work.md) will separate component evidence,
+whole-workflow measurements, semantic gates and promotion. No new performance,
+conformance or fixed-point result is claimed at this checkpoint.

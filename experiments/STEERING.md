@@ -1,11 +1,19 @@
 # Current compiler experiment strategy
 
-Current authorization (2026-09-28): repeat the measured optimization cycle with
-design, implementation, report and commit/push. The
-[Phase10 design](../design/phase10/repeated_work.md) was committed as `1449aaf`
-before candidate integration. No historical time budget is renewed.
+Current authorization (2026-09-28): further optimization, including larger changes
+and rereading pinned TypeScript. [Phase11 design](../design/phase11/known_work.md)
+was committed as `cf29bae` before candidate implementation. No old time budget is
+renewed. Baseline is released Phase10 `5f561c4`; production remains unchanged.
 
-## Phase10 release frontier
+## Phase11 investigation
+
+Fresh final-release profiling owns CPU0. Independent bounded owners compare
+pattern reconstruction/native expansion, checker normalization, and branch/call
+lowering with pinned TypeScript. Plans precede probes; isolated checked candidates
+precede review/integration. Root owns controlled comparison, release and archive.
+Outcomes: [Phase11 report](../implementation/phase11/known_work.md).
+
+## Phase10 release frontier (baseline)
 
 The [Phase10 report](../implementation/phase10/repeated_work.md) integrates
 conditional loader membership, loop-emitting index workers and typed/Nat layout
