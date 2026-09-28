@@ -1,0 +1,21 @@
+// Frozen-workload checking measurement; compiler algorithms stay in the adapters.
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {pathToFileURL} from 'node:url';
+const [requestFile,resultFile]=process.argv.slice(2);
+const request=JSON.parse(fs.readFileSync(requestFile));
+const identity=file=>({file:path.resolve(file),canonicalPath:fs.realpathSync(file),sha256:createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
+const verify=()=>{for(const item of request.inputs)assert.deepEqual(identity(item.file),item)};
+verify();
+for(const key of Object.keys(process.env))if(key.startsWith('BEND_')||key==='NODE_OPTIONS')delete process.env[key];
+Object.assign(process.env,{BEND_UPSTREAM:request.upstream,BEND_BASE:request.base,BEND_TYPED_API:request.api,BEND_TYPED_RUNTIME:request.runtime,BEND_TYPED_TRACE:''});
+const beforeImport=performance.now(),adapter=await import(pathToFileURL(request.adapter)),importMs=performance.now()-beforeImport;
+const begin=performance.now(),cpu=process.cpuUsage();
+const result=await adapter.probe({test:{id:'phase8/compiler-source',file:request.source},lane:'check',workdir:request.workdir,timeoutMs:request.timeoutMs,upstream:request.upstream});
+const requestMs=performance.now()-begin,used=process.cpuUsage(cpu);
+verify();
+const pass=result.typeAccepted===true&&result.proofTrust==='failed'&&result.phase==='verdict'&&result.exitCode===1;
+fs.writeFileSync(resultFile,JSON.stringify({variant:request.variant,pass,result,requestMs,importMs,cpuMs:(used.user+used.system)/1000,maxRssKiB:process.resourceUsage().maxRSS,node:{path:process.execPath,version:process.version,args:process.execArgv},affinity:fs.readFileSync('/proc/self/status','utf8').split('\n').find(s=>s.startsWith('Cpus_allowed_list:')),inputsVerified:true},null,2)+'\n',{flag:'wx'});
+assert.ok(pass,'Current compiler source must pass ordinary checking and report unsafe trust');
