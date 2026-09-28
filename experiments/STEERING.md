@@ -1,11 +1,33 @@
 # Current compiler experiment strategy
 
-Current authorization: sequential simplification, starting 2026-09-26; on
-2026-09-27 the user authorizes the [architectural design](../design/phase7/architectural_experiments.md)
-and isolated trials to choose the best direction.
-[Overall design](../design/phase7/compiler_simplification.md).
-Each phase has a design, implementation/validation and report, committed and
-pushed before the next phase begins. There is no renewed historical time budget.
+Current authorization (2026-09-28): update to current upstream, improve
+conformance, and retain the best validated simplifications. The
+[Phase8 design](../design/phase8/upstream_and_conformance.md) supersedes the
+percentage-reduction-first strategy. The historical 50%/75% goals remain unmet;
+they no longer block migration or correctness work. No historical time budget
+has been renewed.
+
+## Active Phase8 frontier
+
+1. Freeze S4 B02 (`69947fc`) and old upstream `6018e28` as the control; release
+   integrity passes. New target is immutable `b2111cf` (2.0.32-era), verified
+   against upstream main. Keep its checkout separate until migration is validated.
+2. Adapt bootstrap APIs and test real checked output/host ABI before any speed
+   claim. Preserve full source checking and reject holes. Internal Number Nat
+   does not imply a changed public BigInt ABI.
+3. Migrate upfront declarations, current Base, language/namespace changes and
+   conformance oracles. Retain authoritative errors/shared provenance. Revalidate
+   prior Phase6 fixes against the new target instead of replaying their old claims.
+4. Validate changed JS/native runtime boundaries, measure frozen candidates,
+   install one usable compiler only after appropriate gates, and publish reports.
+
+Root owns integration/release/timing. Agents own only explicitly assigned files.
+Old pin/reference source remains an immutable control; merging the new upstream
+commit and changing the active pin is explicitly authorized. Rejected Phase7
+semantic-value and generic-walker prototypes remain unpromoted. Checked-output
+ownership is deferred behind the upstream/conformance migration.
+
+## Historical Phase7 checkpoints
 
 S0's [read-only report](../implementation/phase7/s0-report.md) is complete.
 S1's [retirement report](../implementation/phase7/s1-report.md) is complete:
@@ -14,7 +36,7 @@ optimized selected APIs exactly match the prior release; the smaller-source
 release is installed. Component checks,51 harness tests and21 focused controls
 pass, with known diagnostic differences and raw setup failures retained.
 
-## Immediate frontier
+## Previous simplification frontier
 
 1. S2 is [complete](../implementation/phase7/s2-report.md): shared provenance trace,
    135 fewer lines, 15,826 total. Checked/focused/component/exact provenance gates
@@ -37,9 +59,8 @@ pass, with known diagnostic differences and raw setup failures retained.
    ±0.8% paired wall cost and +3.3% RSS; its guards pass.
 4. The 50% milestone remains **open**, with another 6,413 lines required. The
    continuation-fusion proposal was falsified by pinned language syntax; the
-   other architectural savings remain unfunded. Further implementation requires
-   a new bounded architectural hypothesis and deletion/replacement budget inside
-   S4. Do not advance to S5–S7 or claim the 50%/75% targets were achieved. Review
+   other architectural savings remain unfunded. The old S5–S7 simplification sequence is deferred by the new migration
+   authorization; do not claim the 50%/75% targets were achieved. Review
    context is not uniformly smaller after including new validation obligations.
 
 Parallel agents may review independent parts of the active phase. No future-phase

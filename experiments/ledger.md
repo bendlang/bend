@@ -637,3 +637,16 @@ byte-identical and passes release verification; 318 strict failures remain the
 previous recorded full-frontend result. Sources, original failed attempts, exact
 artifacts, measurement workers and final decisions are preserved in the
 [shared evidence capsule](../implementation/phase7/architecture-evidence/README.md).
+
+## 2026-09-28 — upstream and conformance migration authorized
+
+The user authorizes updating upstream, improving conformance and using validated
+simplifications. The [prospective Phase8 design](../design/phase8/upstream_and_conformance.md)
+freezes target `b2111cf43244e65f76ddc278ee695e669f720cbf`, 118 commits beyond the
+old pin. S4 B02 source/API/release identities are preserved; initial release
+verification passes. New and old upstream checkouts are separate. Bootstrap API,
+Nat host boundaries, upfront declarations and current verdict rules need explicit
+migration. No compiler candidate has run yet and no speed gain is claimed.
+Percentage line goals are no longer prerequisites; the rejected general evaluator
+and runtime generic walker remain out. P8-001 and P8-002 own the first bounded
+bootstrap and conformance hypotheses. Prior dirty Phase6 work remains untouched.

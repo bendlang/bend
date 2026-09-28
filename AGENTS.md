@@ -48,5 +48,7 @@ For this fork's compiler written in Bend under `selfhost/`, read
 file per hypothesis, link exact run evidence, preserve rejected attempts and
 separate correctness, measurement and promotion decisions. Use the checked B1
 workflow in `docs/PHASE5_DEVELOPMENT.md` for routine edits; reserve full
-self-reproduction and broad conformance for justified integration gates. The
-pinned upstream reference and the human-written `bend2/bend.ts` stay unchanged.
+self-reproduction and broad conformance for justified integration gates. Historical pinned reference checkouts stay unchanged. An explicitly authorized
+upstream migration may merge a new upstream commit and update the active pin;
+never hand-edit the human-written `bend2/bend.ts`. Preserve the old baseline and
+validate the new source/ABI/fixture boundaries separately.
