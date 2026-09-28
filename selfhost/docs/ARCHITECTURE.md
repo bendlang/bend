@@ -82,6 +82,26 @@ Strings still expand into ordinary core constructors, and long strings remain
 a known limit. The [Phase9 report](../../implementation/phase9/checker_speed.md)
 records the source, semantic controls and measured costs of these changes.
 
+## Avoiding repeated work
+
+Loader alias ambiguity uses explicit conditional evaluation before searching
+declarations. A successful membership search returns immediately; no symbol table
+or alias-resolution rule is changed. Boolean conjunction/disjunction alone does
+not defer these searches in the current pipeline.
+
+The persistent definition index uses Boolean-parameter branch workers for lookup.
+Pinned upstream lowers their mutual tail recursion to a loop, avoiding branch
+closure allocation. The trie, hashes, collision buckets and source event order
+remain the same. This is a property of the checked release's upstream emission,
+not a claim that every self-emitted compiler has the same machine-level behavior.
+
+Backend layout validation can use a checked constructor's normalized ADT to find
+its telescope locally. Unknown shapes retain the general search. Native Nat
+Zero/Succ layers traverse their fields directly instead of repeatedly recognizing
+an entire literal suffix. Dynamic-tail dependencies and open-Array refusals remain
+part of that traversal. See the [Phase10 report](../../implementation/phase10/repeated_work.md)
+for the checked-book invariants, controls and remaining emitted-code size limits.
+
 ## Compiler source assembly
 
 The compiler implementation modules use one shared internal namespace, with

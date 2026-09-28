@@ -1,7 +1,7 @@
 # Bend2 compiler port in Bend2
 
 Use the [compiler guide](../docs/BEND-IN-BEND.md) and
-[Phase9 release report](../implementation/phase9/checker_speed.md).
+[Phase10 release report](../implementation/phase10/repeated_work.md).
 The current target is upstream
 [`b2111cf43244e65f76ddc278ee695e669f720cbf`](https://github.com/bendlang/bend/tree/b2111cf43244e65f76ddc278ee695e669f720cbf),
 after the Bend2 2.0.32 release.
@@ -13,7 +13,7 @@ node cli.mjs tests/conformance/typed-smoke/base-u32.bend --run
 npm run build
 ```
 
-The compiler contains 15,050 physical /12,843 nonblank Bend lines in 59 modules.
+The compiler contains 15,107 physical /12,895 nonblank Bend lines in 59 modules.
 It retains the validated S4 simplifications while adding current declaration,
 namespace, typing and effect semantics. The [release manifest](dist/release.json)
 binds the exact source, genuine checked parent, equality-derived API, Base,
@@ -134,7 +134,9 @@ remain in `dist/selfhost/`; the [preservation index](../experiments/PRESERVATION
 and [experiment ledger](../experiments/ledger.md) identify their exact scope.
 They are not alternate defaults. The current release can run after relocation
 without an upstream checkout, as verified by its
-[clean-package CLI checks](../implementation/phase5/relocated-cli-evidence/README.md).
+[Phase10 installed/relocated CLI checks](../implementation/phase10/repeated_work.md).
+The earlier [Phase5 clean-package evidence](../implementation/phase5/relocated-cli-evidence/README.md)
+applies to that historical artifact.
 
 ## Earlier prototype
 

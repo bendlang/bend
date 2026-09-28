@@ -190,7 +190,7 @@ def f_alias_term(+t: KTerm, +imports: List<&2,KTerm>, +scope: List<&2,KDef>) -> 
 
 @unsafe
 def f_alias_named(+t: KTerm, +imports: List<&2,KTerm>, +scope: List<&2,KDef>, +name: String) -> KTerm:
-  f_choose(KTerm, Bool.not(String.eq(name, nm(t))) && f_declared(name, scope) && f_declared(nm(t), scope),
+  f_choose(KTerm, f_choose(Bool, Bool.not(String.eq(name, nm(t))), u => f_declared(name, scope) && f_declared(nm(t), scope), u => False{}),
     u => kt("Error", "expected an unambiguous name (an import alias shadows " ++ nm(t) ++ ")", 0, 0, Nil{}),
     u => KTerm{tg(t), name, ix(t), qt(t), f_alias_terms(ks(t), imports, scope), rm(t)})
 

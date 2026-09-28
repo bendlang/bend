@@ -1,5 +1,18 @@
 # Compiler evidence preservation index
 
+## Phase10 repeated-work optimization — 2026-09-28
+
+The [report](../implementation/phase10/repeated_work.md) records the controlled
+full-source checking and deep-Nat JS matrices, unchanged 2,996-row frontend vector,
+and final installed/relocated release checks. The
+[evidence capsule](../implementation/phase10/evidence/README.md) preserves raw
+profiles, checked candidates, failed and rejected probes, component controls,
+measurements and final source/API/lineage. Its publication record verifies all
+selected bytes and independent restoration; shared historical objects use the
+explicit Phase9/Phase8 prerequisite archives. Rebuildable caches and external
+toolchains are documented. Failed native builds and unchecked-book differences
+remain failures/boundaries. No new self-hosted fixed point is claimed.
+
 ## Phase9 checker speed and literal conformance — 2026-09-28
 
 The [final report](../implementation/phase9/checker_speed.md) links the controlled

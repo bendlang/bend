@@ -17,10 +17,10 @@ This fork develops the compiler in [`selfhost/`](selfhost/README.md), on branch
 from `selfhost/`, run `npm run verify:release`, then `node cli.mjs FILE --run`.
 `npm run build` checks and rebuilds the default with pinned upstream.
 
-The [Phase9 release report](implementation/phase9/checker_speed.md)
-records checker optimizations, compact Nat literals, current validation and
+The [Phase10 release report](implementation/phase10/repeated_work.md)
+records loader, index and layout optimizations, current validation and
 remaining gaps against upstream **b2111cf, Bend 2.0.32 era**. The compiler has
-**15,050 Bend lines in 59 modules**. It retains S4's shared loader, provenance
+**15,107 Bend lines in 59 modules**. It retains S4's shared loader, provenance
 and authoritative checker result. The historical
 50% and 75% simplification targets remain unachieved. Rejected generic binder
 and evaluator prototypes remain unpromoted.
@@ -32,8 +32,8 @@ and self-checking remain separate integration gates. Ordinary compilation runs
 the Bend implementation without a TypeScript fallback; independent BendTT
 `--verdict` validation is not implemented.
 
-Controlled full-source checking improves **3.12×** over the preserved compiler:
-**66.84 s versus 208.22 s**. Pinned TypeScript takes **2.94 s**, leaving a **22.74×**
+Controlled full-source checking improves another **1.30×** over Phase9:
+**51.75 s versus 67.04 s**. Pinned TypeScript takes **2.89 s**, leaving a **17.93×**
 process-time gap. This measures checking, not emission or generated-program speed.
 
 The final frontend run accepts 1,000/1,001 positive programs. All 482 validation

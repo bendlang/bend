@@ -148,7 +148,7 @@ def f_declared(
     case Nil{}:
       False{}
     case Con{+d, ds}:
-      f_eq(name, dn(d)) || f_declared(name, dc(d)) || f_declared(name, ds)
+      f_choose(Bool, f_eq(name, dn(d)), u => True{}, u => f_choose(Bool, f_declared(name, dc(d)), u => True{}, u => f_declared(name, ds)))
 
 @unsafe
 def f_resolve_name(

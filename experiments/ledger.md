@@ -550,7 +550,7 @@ compiler/runtime components and51/51 harness tests pass. A stale artifact-test
 mock export was repaired; sandbox EPERM and an omitted gated-test environment
 remain preserved attempts. The smaller-source release verifies and ordinary
 check/interpreter/JS smoke passes. No new full-source timing or fixed point is
-claimed. S2 design is next;50%/75% goals are still unachieved.
+claimed. S2 design is next; 50%/75% goals are still unachieved.
 
 ## 2026-09-26 — S2 shared provenance trace
 
@@ -563,7 +563,7 @@ cross-version provenance comparisons and204existing diagnostic comparisons pass.
 routes preserve exact outputs. CPU0 serial provenance medians improve25.4%/40.5%
 for all/filtered loading; existing-trace lookup has no regression. No new whole
 compiler/TS ratio or fixed point is claimed. The usable release is installed and
-all raw evidence preserved. S3 design is next;50%/75% targets remain unmet.
+all raw evidence preserved. S3 design is next; 50%/75% targets remain unmet.
 
 ## 2026-09-26 — S3 authoritative checker result
 
@@ -677,7 +677,7 @@ Native Process is blocked by the same unavailable libc symbol in upstream.
 GPU and interactive devices remain outside measured coverage.
 
 The compiler retains S4 simplifications and grows310 lines for new behavior:
-14,977 physical /12,779 nonblank lines across59 modules, still9.28% below the
+14,977 physical /12,779 nonblank lines across 59 modules, still9.28% below the
 original16,509-line baseline. Generated API shrinks27.80%. No new50%/75% claim or
 unchecked generic rewrite is promoted.
 
@@ -734,3 +734,47 @@ Source is 15,050 physical lines across 59 modules, 73 more than Phase8; the earl
 [preservation index](../implementation/phase9/checker-evidence/README.md) retains
 failures, complete measurements, exact inputs and the final release. Unrelated
 Phase6 work remains outside this promotion.
+
+## 2026-09-28 — Phase10 repeated-work cycle started
+
+The user asks to repeat the successful method. The
+[prospective design](../design/phase10/repeated_work.md) is committed and pushed
+as `1449aaf`; Phase9 `f21e9f0` remains the installed baseline. A fresh profile of
+its immutable `integrated-03` passes checking and input-identity guards. Loader
+membership, deep-pattern layout and profile-ranked generated/index overhead
+have separate bounded owners and prospective records. The
+[outcome report](../implementation/phase10/repeated_work.md) will distinguish
+operation counts, measured times, semantic gates and actual promotion. No new
+speed gain or conformance change is claimed at this checkpoint.
+
+## 2026-09-28 — Phase10 repeated-work compiler released
+
+The [final report](../implementation/phase10/repeated_work.md) installs checked
+`integrated-01` and its guarded equality derivative on unchanged upstream b2111cf.
+Conditional alias/membership guards avoid unnecessary scans; Boolean-parameter
+index workers become an upstream-generated loop; typed constructor lookup and
+layer-by-layer Nat validation remove repeated layout searches. Raw malformed-book
+boundaries, failed syntax probes and the native Nat300 timeout remain explicit.
+
+Serial same-final-source checking improves **1.30×**, **67.04→51.75 seconds**,
+with pinned TypeScript at **2.89 seconds**: **17.93×** remaining process-wall gap.
+Memory stays about 1.5 GiB. Separate serial Nat300 JS runs improve **1.38×**
+(34.17→24.74 seconds), and the layout pass improves **19.09×** (9.48→0.50 seconds).
+The emitted JS is byte-identical and all four runs produce 306n; no generated-
+program runtime speedup is claimed. Two samples per variant remain descriptive.
+
+All **2,996** frontend observations match Phase9 exactly; 1,000/1,001 positive types,
+482/482 negative refusals and 731 exact TypeScript differences are unchanged.
+All **42** installed/relocated release checks pass with interpreter, JS and native
+execution; the final Nat32 native witness also passes. The initial sandboxed
+smoke's six Clang EPERM failures remain beside the successful fresh permitted run.
+No new self-hosted fixed point, Lean kernel check or GPU evidence is asserted.
+
+Source adds 57 physical lines to **15,107** across 59 modules, five helper definitions
+and no new type. The observed checked-build/focused interval is 26.19 seconds.
+Long strings/imported-law fills remain semantic priorities; a fresh final-artifact
+profile and reconstructed-pattern/native code expansion are next speed targets.
+The [verified evidence capsule](../implementation/phase10/evidence/README.md)
+retains exact inputs, rejected attempts, complete measurements and release lineage.
+Unrelated Phase6 files remain outside the commit. The 50%/75% reduction targets
+remain unmet.

@@ -1,0 +1,156 @@
+{
+  "kind": "phase10-evidence-preflight-summary",
+  "complete": true,
+  "captureAuthorized": false,
+  "scope": "Read-only inventory while compiler/document producers remain active; not final capture.",
+  "summary": {
+    "files": 7189,
+    "objects": 3460,
+    "logicalBytes": 286457499,
+    "uniqueBytes": 245451373,
+    "newArchiveObjects": 479,
+    "newArchiveBytesBeforeCompression": 227751666,
+    "externalPrerequisites": 25,
+    "omittedFiles": 43,
+    "omittedBytes": 55484123,
+    "referenceStatuses": {
+      "captured-external-object": 35145,
+      "captured-object": 612,
+      "external-prerequisite": 56,
+      "external-toolchain-identity": 54,
+      "omitted-derived-input": 16
+    }
+  },
+  "unresolvedRepositoryReferences": [],
+  "remainingHistoricalExternalReferences": [
+    {
+      "path": "/workspace/scratch/4de8c3a3f107/bend2-selfhost/build/typed/lexical-selfhost/bootstrap-api.mjs",
+      "sha256": "0e3c00f419b7e9fc4565ca52e3b14864121f48351ffe8dc7108a93a43a3d2115",
+      "status": "external-prerequisite",
+      "observedIn": {
+        "selfhost/build/phase10/layout-candidate-01/attempt/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase10/layout-candidate-01/attempt/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase10/layout-candidate-01/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase10/layout-candidate-01/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase10/layout-combined-01/attempt/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase10/layout-combined-01/attempt/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase10/layout-combined-01/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase10/layout-combined-01/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase10/layout-recognition-01/attempt/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase10/layout-recognition-01/attempt/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase10/layout-recognition-01/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase10/layout-recognition-01/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase10/membership-candidates-01/alias-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase10/membership-candidates-01/alias-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase10/membership-candidates-01/alias-project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase10/membership-candidates-01/alias-project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase10/membership-candidates-01/combined-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase10/membership-candidates-01/combined-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase10/membership-candidates-01/combined-project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase10/membership-candidates-01/combined-project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase10/overhead-index-01/checked-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase10/overhead-index-01/checked-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase10/overhead-index-01/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase10/overhead-index-01/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase9/integrated-03/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase9/integrated-03/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ]
+      }
+    }
+  ],
+  "preflightInput": {
+    "file": "implementation/phase10/evidence/preflight-03.json",
+    "sha256": "d10f53bedb32f7a2b254c48701383e00fcae86fdad88f9808111af3acd2bdf6e"
+  },
+  "notes": [
+    "All current repository source/API dependencies are captured or explicitly omitted rebuildable caches.",
+    "One inherited lexical-selfhost API external path is unavailable, identical to the Phase9 historical limitation; it is not a Phase10 compiler input.",
+    "Initial preflight included unrelated legacy dist bundles; narrowed selection excludes those. No experiment artifacts removed.",
+    "Await explicit root FREEZE before final inventory/capture."
+  ]
+}

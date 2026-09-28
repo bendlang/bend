@@ -1,9 +1,9 @@
 # Compiler validation
 
 The current target is upstream `b2111cf43244e65f76ddc278ee695e669f720cbf`,
-Bend2 2.0.32 era. The [Phase9 report](../implementation/phase9/checker_speed.md)
+Bend2 2.0.32 era. The [Phase10 report](../implementation/phase10/repeated_work.md)
 records full reference/candidate vectors, focused regression controls, execution,
-known gaps and exact artifact identities. Its [raw evidence](../implementation/phase9/checker-evidence/README.md)
+known gaps and exact artifact identities. Its [raw evidence](../implementation/phase10/evidence/README.md)
 preserves failures as well as passes.
 
 The installed [release manifest](dist/release.json) identifies a guarded equality
@@ -28,9 +28,10 @@ trust-refusal fixtures reach the proper phase; four imported-law fills fail earl
 The long-string stack failure is the sole remaining positive type-check failure.
 These frontend counts do not establish full backend conformance.
 
-Phase9 adds 21 maintained development controls, exact checker/cache controls,
-literal boundary and native execution checks, and ordinary/relocated release
-validation. The report gives artifact-specific totals and retained failures.
+Phase10 preserves all 2,996 Phase9 frontend observations exactly and adds
+loader/index/layout controls. Its report gives artifact-specific validation,
+measurements and retained failures. Phase9 literal/backend evidence remains
+historical evidence for its own artifact.
 Inherited Phase8 evidence includes 21 maintained development controls,
 134 frontend observations, 26 semantic observations, 32 soundness observations,
 18 semantic execution observations, 35 import/JS executions, 44 foreign-runtime

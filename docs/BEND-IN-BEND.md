@@ -9,7 +9,7 @@ does not invoke the TypeScript compiler.
 
 The active target is upstream
 [`b2111cf43244e65f76ddc278ee695e669f720cbf`](https://github.com/bendlang/bend/tree/b2111cf43244e65f76ddc278ee695e669f720cbf)
-(Bend 2.0.32 era). The [Phase9 report](../implementation/phase9/checker_speed.md)
+(Bend 2.0.32 era). The [Phase10 report](../implementation/phase10/repeated_work.md)
 records checked artifact identities, current conformance, measured cost and
 remaining gaps. This experimental port does not establish independent proof
 validity; `--verdict` is explicitly unsupported.
@@ -84,7 +84,7 @@ npm run build -- /absolute/release-config.json /absolute/new-attempt
 Config fields and selection semantics are documented in the
 [maintained workflow guide](PHASE5_DEVELOPMENT.md). Broad conformance and checked
 self-reproduction are release/integration gates, not every small edit's build.
-The [Phase9 report](../implementation/phase9/checker_speed.md) records
+The [Phase10 report](../implementation/phase10/repeated_work.md) records
 the current artifact's evidence and remaining failures.
 
 ## Work on the current source
@@ -99,7 +99,7 @@ defaults to `checked`; release builds default to `equality`. Set `"profile":
 profile recognizes the reviewed current and historical contracts and rejects
 unknown runtime, dependency or public-ABI changes.
 
-The [Phase9 report](../implementation/phase9/checker_speed.md) gives the
+The [Phase10 report](../implementation/phase10/repeated_work.md) gives the
 current source and artifact identities. Keep experiments isolated by selecting a
 frozen attempt explicitly:
 
@@ -158,7 +158,7 @@ BEND_TYPED_API="$PWD/build/candidate-api.mjs" \
 
 This writes a checked API plus the assembled source and provenance in
 `build/typed/`. Keep source, API, runtime and host snapshots immutable during
-validation. Full self-reproduction has not been rerun for Phase9. The advanced
+validation. Full self-reproduction has not been rerun for Phase10. The advanced
 runner, separate from the checked release build, is:
 
 ```sh
@@ -194,11 +194,11 @@ canonical Base path when comparing output bytes across native and JS hosts.
 
 ## Internal boundaries and performance
 
-The [Phase9 controlled comparison](../implementation/phase9/checker_speed.md)
-checks identical final source in 66.84 s, versus 208.22 s for the preserved
-compiler and 2.94 s for pinned TypeScript: 3.12× faster, with a 22.74× remaining
+The [Phase10 controlled comparison](../implementation/phase10/repeated_work.md)
+checks identical final source in 51.75 s, versus 67.04 s for Phase9
+and 2.89 s for pinned TypeScript: 1.30× faster, with a 17.93× remaining
 process-time gap. It excludes emission. A checked build plus the maintained
-21 focused controls takes about 27 s in the recorded development attempt.
+21 focused controls takes about 26 s in the recorded development attempt.
 Keep routine edits on that short path and reserve full-source/broad gates for
 integration. The report separates these measurements and remaining gaps.
 
@@ -249,6 +249,6 @@ node --stack-size=4096 tests/frontend/shared-operations.mjs \
 
 This test exposes existing checked private bodies for observation; it neither
 rewrites them nor establishes self-reproduction. S4's A02 declaration-source proof
-is a genuine checked B1→H→H fixed point. The installed B02 source has its own
+is a genuine checked B1→H→H fixed point. Historical S4 B02 has its own
 checked bootstrap and byte-identical B01 behavioral/performance evidence; A02's
 full-source fixed point is not relabeled as B02's.

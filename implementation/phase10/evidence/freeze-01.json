@@ -1,0 +1,8 @@
+{
+  "kind": "phase10-root-producer-freeze",
+  "recordedUtc": "2026-09-28T07:43:41.715722+00:00",
+  "rootExplicitFreeze": true,
+  "captureAuthorized": true,
+  "rootMessage": "FREEZE. Root explicitly closes all Phase10 compiler, measurement, release, documentation, report, source and tool producers. Capture authorized now. Final root docs/report/ledger/steering/preservation index complete, no placeholders; independent audit fixes applied. Final defaultAPI ff876..., source d7e5..., successful release-install-01; release-smoke-01 retained6Clang EPERM failures(30/36pass), identical fresh permitted release-smoke-02 all42pass; integrated-native32-01 allpass38n. All compiler sessions closed. Preserve failedrun01.",
+  "scope": "All Phase10 compiler, measurement, release, documentation, report, source and tool producers closed; only evidence publication metadata may be written."
+}

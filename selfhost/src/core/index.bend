@@ -46,7 +46,9 @@ def index_child_list(ds, right):
     case Nil{}:
       missing()
     case Con{h, rest}:
-      kc(KDef, right, u => index_first(rest), u => h)
+      match right:
+        case True{}: index_first(rest)
+        case False{}: h
 
 @unsafe
 def index_first(ds):
@@ -65,10 +67,44 @@ def index_find(
   +hash: U32,
   +bits: U32,
 ) -> KDef:
-  kc(KDef, String.eq(dk(tree), "Absent"), u => missing(), u =>
-    kc(KDef, U32.is_eq(dx(tree), 0),
-      u => kc(KDef, U32.is_eq(da(tree), hash), u => index_bucket(dc(tree), name), u => missing()),
-      u => index_find(index_child(tree, Bool.not(U32.is_eq(U32.and(hash, dx(tree)), 0))), name, hash, bits)))
+  index_find_absent(tree, name, hash, bits, String.eq(dk(tree), "Absent"))
+
+@unsafe
+def index_find_absent(
+  +tree: KDef,
+  +name: String,
+  +hash: U32,
+  +bits: U32,
+  +absent: Bool,
+) -> KDef:
+  match absent:
+    case True{}: missing()
+    case False{}:
+      index_find_leaf(tree, name, hash, bits, U32.is_eq(dx(tree), 0))
+
+@unsafe
+def index_find_leaf(
+  +tree: KDef,
+  +name: String,
+  +hash: U32,
+  +bits: U32,
+  +leaf: Bool,
+) -> KDef:
+  match leaf:
+    case True{}:
+      index_find_hash(tree, name, U32.is_eq(da(tree), hash))
+    case False{}:
+      index_find(index_child(tree, Bool.not(U32.is_eq(U32.and(hash, dx(tree)), 0))), name, hash, bits)
+
+@unsafe
+def index_find_hash(
+  +tree: KDef,
+  +name: String,
+  +same: Bool,
+) -> KDef:
+  match same:
+    case True{}: index_bucket(dc(tree), name)
+    case False{}: missing()
 
 @unsafe
 def index_bucket(ds, name):

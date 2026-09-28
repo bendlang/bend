@@ -1,43 +1,51 @@
 # Current compiler experiment strategy
 
-Current authorization (2026-09-28): design, implement and report targeted checker
-speed improvements, followed by evidence-led residual work and literal
-conformance. The [Phase9 design](../design/phase9/checker_speed.md) was committed
-as `e7b2846` before experiments. Historical 50%/75% line goals remain unmet and
-do not block correctness or speed work. No historical time budget is renewed.
+Current authorization (2026-09-28): repeat the measured optimization cycle with
+design, implementation, report and commit/push. The
+[Phase10 design](../design/phase10/repeated_work.md) was committed as `1449aaf`
+before candidate integration. No historical time budget is renewed.
 
-## Phase9 release frontier
+## Phase10 release frontier
 
-The [Phase9 report](../implementation/phase9/checker_speed.md) consolidates the
-cached chronological checker, reduced conversion/lambda/lookup work, guarded
-version-3 native equality, repaired descent and compact U32-sized Nat literals.
-Version-1/2 derivations remain replayable. The final integrated03 frontend has
-1,000/1,001 positive type acceptances, 482/482 determinate negative refusals,
-zero observed invalid acceptances and zero timeouts. Exact reference differences
-remain 731; four imported-law trust cases and long strings remain unresolved.
-The final diagnostic regression is repaired and exact baseline controls pass.
+The [Phase10 report](../implementation/phase10/repeated_work.md) integrates
+conditional loader membership, loop-emitting index workers and typed/Nat layout
+validation. Immutable `integrated-01` targets unchanged upstream b2111cf. Its
+selected API is `ff876a357db2d44d3e1fbd37ab694a16d2fa0f47d60c9d500603e634c8c645f9`.
 
-Controlled same-final-source checking takes **66.84 s**, versus **208.22 s** for
-Phase8 and **2.94 s** for pinned TypeScript: **3.12× faster**, with a remaining
-**22.74× process-wall gap**. Two fresh samples per compiler run in serial on one
-CPU; this excludes emission. Memory remains about 1.5 GiB. These values replace
-no historical full-compilation or generated-program runtime measurement.
+Controlled checking of the same final source takes **51.75 s**, versus **67.04 s**
+for Phase9 and **2.89 s** for TypeScript: **1.30× faster**, with a **17.93×**
+process-wall gap. Two serial fresh samples per compiler run on one CPU. This
+excludes emission; memory stays about 1.5 GiB. The separate Nat300 JS process falls
+34.17→24.74 s (1.38×), with identical generated JS; layout falls 9.48→0.50 s (19.09×).
+Native Nat300 still emits 20.59 MB C and exceeds the 90 s Clang build bound.
 
-Next bounded investigations should target loader declaration membership,
-generated-call/allocation overhead and deep-pattern layout validation. Compact
-strings and imported-law fills are separate semantic priorities. Preserve the
-existing scopes and falsifiers; do not infer full backend equivalence or a new
-self-hosted fixed point. Use the approximately 27-second checked build plus
-focused controls for routine changes and small operation/counter series before
-another broad experiment. The 50%/75% source-reduction goals remain unmet.
+All 2,996 frontend observations match Phase9 exactly:1,000/1,001 positive types,
+482/482 negative refusals, zero observed invalid acceptances/timeouts,731 exact
+TypeScript differences. Long strings and four imported-law trust cases remain.
+No new self-hosted fixed point, Lean/GPU gate or general runtime improvement is
+claimed. The source grows 57 lines to 15,107; 50%/75% reduction goals remain unmet.
 
-Preserve unrelated Phase6 work. All intentional compiler jobs stop during the
-controlled serial comparison; failed and superseded attempts remain evidence.
+Use the checked build/focused loop (observed 26.19 s) and small discriminating
+probes for routine work. Next semantic priorities are compact strings and
+imported-law fills. Next speed work should profile the final release afresh and
+investigate repeated reconstructed pattern terms/native code expansion. Keep
+whole-compiler measurements separate from operation and component speedups.
+Preserve unrelated Phase6 work; all intentional compiler/archive jobs pause for
+controlled comparisons. Failed and superseded attempts remain evidence.
+
+## Phase9 release frontier (historical)
+
+The [Phase9 report](../implementation/phase9/checker_speed.md) records immutable
+`integrated-03`, chronological checker reuse, conversion/lambda/lookup reductions,
+guarded native equality, descent repairs and compact Nat literals. Its own older
+final-source comparison was 66.84 s versus 208.22 s Phase8 and 2.94 s TypeScript
+(3.12× improvement, 22.74× gap). Different-source measurements must not be combined
+with Phase10 ratios. The exact frontend vector is the Phase10 regression baseline.
 
 ## Consolidated Phase8 frontier (historical)
 
 The [migration checkpoint](../implementation/phase8/upstream_and_conformance.md)
-is installed and validated against upstream b2111cf (2.0.32 era). It has a genuine
+was installed and validated against upstream b2111cf (2.0.32 era). It has a genuine
 checked B1 and independently preserved source/host/runtime identities, no fallback,
 30 ordinary/relocated release checks, and the best validated S4 simplifications.
 The rejected generic binder/evaluator prototypes remain unpromoted.

@@ -170,7 +170,7 @@ def j_layout_kind(book, env, t, ty, todo, key):
   kc(List<&2, String>, String.eq(key, "App"), u => j_layout_app(book, env, t, wnf(book, j_type(book, env, kid(t, 0))), todo), u =>
   kc(List<&2, String>, String.eq(key, "Lam"), u => j_layout_lam(book, env, t, wnf(book, ty), todo), u =>
   kc(List<&2, String>, String.eq(key, "Mat"), u => j_layout_match(book, env, t, wnf(book, ty), todo), u =>
-  kc(List<&2, String>, String.eq(key, "Ctr"), u => kc(List<&2, String>, Bool.not(String.eq(j_literal_typed(book, t, ty), "")), u => todo, u => j_layout_mark(j_layout_open(book, ty), j_layout_fields(book, env, ks(t), j_specialize(book, dt(j_find_ctor(book, nm(t))), ks(wnf(book, ty))), todo))), u =>
+  kc(List<&2, String>, String.eq(key, "Ctr"), u => kc(List<&2, String>, Bool.not(String.eq(kc(String, j_layout_native_nat(book, t, wnf(book, ty)), u => "", u => j_literal_typed(book, t, ty)), "")), u => todo, u => j_layout_mark(j_layout_open(book, ty), j_layout_fields(book, env, ks(t), j_specialize(book, dt(j_layout_ctor(book, wnf(book, ty), nm(t))), ks(wnf(book, ty))), todo))), u =>
   kc(List<&2, String>, String.eq(key, "Let"), u => j_layout_let(book, env, ks(t), ty, todo), u =>
   kc(List<&2, String>, String.eq(key, "Rwt"), u => j_layout_term(book, env, kid(t, 2), ty, todo), u => todo))))))))
 
@@ -196,7 +196,7 @@ law j_layout_match:
 
 @unsafe
 def j_layout_match(book, env, t, ty, todo):
-  j_layout_mark(j_layout_open(book, kid(ty, 0)), j_layout_term(book, env, kid(t, 0), j_arm_type(book, ty, nm(t)), kc(List<&2, String>, U32.is_eq(j_constructor_count(book, wnf(book, kid(ty, 0))), 1), u => todo, u => j_layout_term(book, env, kid(t, 1), ty, todo))))
+  j_layout_mark(j_layout_open(book, kid(ty, 0)), j_layout_term(book, env, kid(t, 0), j_arm_tel(book, j_specialize(book, dt(j_layout_ctor(book, wnf(book, kid(ty, 0)), nm(t))), ks(wnf(book, kid(ty, 0)))), kid(ty, 1)), kc(List<&2, String>, U32.is_eq(j_constructor_count(book, wnf(book, kid(ty, 0))), 1), u => todo, u => j_layout_term(book, env, kid(t, 1), ty, todo))))
 
 law j_layout_app:
   for +book: List<&2, KDef>
@@ -282,3 +282,24 @@ def j_layout_bindings(book, env, xs, todo):
     case Con{h, Nil{}}: todo
     case Con{h, rest}:
       j_layout_bindings(book, env, rest, kc(List<&2, String>, U32.is_eq(qt(h), 0), u => todo, u => j_layout_term(book, env, kid(h, 0), j_type(book, env, kid(h, 0)), todo)))
+
+# Checked constructor terms identify their ADT; its local telescope lookup avoids
+# repeatedly scanning every unrelated definition. Unknown shapes retain fallback.
+@unsafe
+def j_layout_ctor(
+  +book: List<&2, KDef>,
+  +ty: KTerm,
+  +name: String,
+) -> KDef:
+  +d = lookup(dc(lookup(book, nm(ty))), name)
+  kc(KDef, String.eq(tg(ty), "ADT") && String.eq(dk(d), "Ctr"), u => d, u => j_find_ctor(book, name))
+
+# A checked native Nat layer has no layout-sensitive fields. Visit its field
+# normally, preserving dynamic-tail references, instead of rescanning its suffix.
+@unsafe
+def j_layout_native_nat(
+  +book: List<&2, KDef>,
+  +t: KTerm,
+  +ty: KTerm,
+) -> Bool:
+  String.eq(tg(ty), "ADT") && String.eq(nm(ty), "Nat") && db(lookup(book, "Nat")) && ((String.eq(nm(t), "Zero") && U32.is_eq(terms_len(ks(t)), 0)) || (String.eq(nm(t), "Succ") && U32.is_eq(terms_len(ks(t)), 1)))

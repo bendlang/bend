@@ -3915,24 +3915,59 @@ function $norm_eval_node$(_book_0, _t_0, _args_0, _left_0, _fallback_0) {
 }));
 }
 
-function $index_find$(_tree_0, _name_0, _hash_0, _bits_0) {
-  return $kc$(($String$eq$(($dk$(_tree_0)), "Absent")), run_clo((_x_0) => {
-  return $missing$();
-}), run_clo((_x_1) => {
-  const _x_2 = ($dx$(_tree_0));
-  return $kc$((_x_2 === 0), run_clo((_x_3) => {
-  const _x_4 = ($da$(_tree_0));
-  return $kc$((_x_4 === _hash_0), run_clo((_x_5) => {
-  return $index_bucket$(($dc$(_tree_0)), _name_0);
-}), run_clo((_x_6) => {
-  return $missing$();
-}));
-}), run_clo((_x_7) => {
-  const _x_8 = ($dx$(_tree_0));
-  const _x_9 = ((_hash_0 & _x_8) >>> 0);
-  return $index_find$(run_loop($index_child$(_tree_0, ($Bool$not$((_x_9 === 0))))), _name_0, _hash_0, _bits_0);
-}));
-}));
+function $index_find$($0, $1, $2, $3, $4) {
+  let $pc = 0;
+  for (;;) switch ($pc) {
+    case 0: {
+      const _tree_0 = $0;
+      const _name_0 = $1;
+      const _hash_0 = $2;
+      const _bits_0 = $3;
+      $0 = _tree_0;
+      $1 = _name_0;
+      $2 = _hash_0;
+      $3 = _bits_0;
+      $4 = ($String$eq$(($dk$(_tree_0)), "Absent"));
+      $pc = 1; continue;
+    }
+    case 1: {
+      const _tree_0 = $0;
+      const _name_0 = $1;
+      const _hash_0 = $2;
+      const _bits_0 = $3;
+      const _absent_0 = $4;
+      if (_absent_0) {
+        return $missing$();
+      } else {
+        const _x_0 = ($dx$(_tree_0));
+        $0 = _tree_0;
+        $1 = _name_0;
+        $2 = _hash_0;
+        $3 = _bits_0;
+        $4 = (_x_0 === 0);
+        $pc = 2; continue;
+      }
+    }
+    case 2: {
+      const _tree_0 = $0;
+      const _name_0 = $1;
+      const _hash_0 = $2;
+      const _bits_0 = $3;
+      const _leaf_0 = $4;
+      if (_leaf_0) {
+        const _x_0 = ($da$(_tree_0));
+        return $index_find_hash$(_tree_0, _name_0, (_x_0 === _hash_0));
+      } else {
+        const _x_1 = ($dx$(_tree_0));
+        const _x_2 = ((_hash_0 & _x_1) >>> 0);
+        $0 = ($index_child$(_tree_0, ($Bool$not$((_x_2 === 0)))));
+        $1 = _name_0;
+        $2 = _hash_0;
+        $3 = _bits_0;
+        $pc = 0; continue;
+      }
+    }
+  }
 }
 
 function $index_first$(_ds_0) {
@@ -4729,9 +4764,9 @@ function $index_insert$(_tree_0, _d_0, _hash_0, _mask_0) {
   const _x_9 = ($dx$(_tree_0));
   const _x_10 = ((_hash_0 & _x_9) >>> 0);
   return $kc$((_x_10 === 0), run_clo((_x_11) => {
-  return $index_node$(($da$(_tree_0)), ($dx$(_tree_0)), run_loop($index_insert$(run_loop($index_child$(_tree_0, false)), _d_0, _hash_0, _mask_0)), run_loop($index_child$(_tree_0, true)));
+  return $index_node$(($da$(_tree_0)), ($dx$(_tree_0)), run_loop($index_insert$(($index_child$(_tree_0, false)), _d_0, _hash_0, _mask_0)), ($index_child$(_tree_0, true)));
 }), run_clo((_x_12) => {
-  return $index_node$(($da$(_tree_0)), ($dx$(_tree_0)), run_loop($index_child$(_tree_0, false)), run_loop($index_insert$(run_loop($index_child$(_tree_0, true)), _d_0, _hash_0, _mask_0)));
+  return $index_node$(($da$(_tree_0)), ($dx$(_tree_0)), ($index_child$(_tree_0, false)), run_loop($index_insert$(($index_child$(_tree_0, true)), _d_0, _hash_0, _mask_0)));
 }));
 }));
 }));
@@ -4749,7 +4784,7 @@ function $index_tip$(_tree_0, _hash_0) {
 }), run_clo((_x_2) => {
   const _x_3 = ($dx$(_tree_0));
   const _x_4 = ((_hash_0 & _x_3) >>> 0);
-  return $index_tip$(run_loop($index_child$(_tree_0, ($Bool$not$((_x_4 === 0))))), _hash_0);
+  return $index_tip$(($index_child$(_tree_0, ($Bool$not$((_x_4 === 0))))), _hash_0);
 }));
 }
 
@@ -5742,22 +5777,59 @@ function $norm_args$(_book_0, _t_0, _args_0, _left_0, _fallback_0) {
   }
 }
 
-function $index_bucket$(_ds_0, _name_0) {
-  if (_ds_0.$ === "Nil") {
-    return $missing$();
-  } else {
-    const _h_0 = _ds_0["head"];
-    const _rest_0 = _ds_0["tail"];
-    return $kc$(($String$eq$(($dn$(_h_0)), _name_0)), run_clo((_x_0) => {
-  return _h_0;
-}), run_clo((_x_1) => {
-  return $index_bucket$(_rest_0, _name_0);
-}));
+function $index_find_absent$($0, $1, $2, $3, $4) {
+  let $pc = 1;
+  for (;;) switch ($pc) {
+    case 0: {
+      const _tree_0 = $0;
+      const _name_0 = $1;
+      const _hash_0 = $2;
+      const _bits_0 = $3;
+      $0 = _tree_0;
+      $1 = _name_0;
+      $2 = _hash_0;
+      $3 = _bits_0;
+      $4 = ($String$eq$(($dk$(_tree_0)), "Absent"));
+      $pc = 1; continue;
+    }
+    case 1: {
+      const _tree_0 = $0;
+      const _name_0 = $1;
+      const _hash_0 = $2;
+      const _bits_0 = $3;
+      const _absent_0 = $4;
+      if (_absent_0) {
+        return $missing$();
+      } else {
+        const _x_0 = ($dx$(_tree_0));
+        $0 = _tree_0;
+        $1 = _name_0;
+        $2 = _hash_0;
+        $3 = _bits_0;
+        $4 = (_x_0 === 0);
+        $pc = 2; continue;
+      }
+    }
+    case 2: {
+      const _tree_0 = $0;
+      const _name_0 = $1;
+      const _hash_0 = $2;
+      const _bits_0 = $3;
+      const _leaf_0 = $4;
+      if (_leaf_0) {
+        const _x_0 = ($da$(_tree_0));
+        return $index_find_hash$(_tree_0, _name_0, (_x_0 === _hash_0));
+      } else {
+        const _x_1 = ($dx$(_tree_0));
+        const _x_2 = ((_hash_0 & _x_1) >>> 0);
+        $0 = ($index_child$(_tree_0, ($Bool$not$((_x_2 === 0)))));
+        $1 = _name_0;
+        $2 = _hash_0;
+        $3 = _bits_0;
+        $pc = 0; continue;
+      }
+    }
   }
-}
-
-function $index_child$(_tree_0, _right_0) {
-  return $index_child_list$(($dc$(_tree_0)), _right_0);
 }
 
 function $Char$show$(_c_0) {
@@ -6751,6 +6823,10 @@ function $index_node$(_hash_0, _mask_0, _left_0, _right_0) {
   return {$: "KDef", "name": "", "kind": "IndexNode", "arity": _hash_0, "templates": _mask_0, "typ": ($atom$("Absent")), "value": ($atom$("Absent")), "ctors": {$: "Con", "head": _left_0, "tail": {$: "Con", "head": _right_0, "tail": {$: "Nil"}}}, "native": true, "unsafe": false};
 }
 
+function $index_child$(_tree_0, _right_0) {
+  return $index_child_list$(($dc$(_tree_0)), _right_0);
+}
+
 function $fs_path$(_seed_0) {
   const _path_0 = _seed_0["path"];
   return _path_0;
@@ -6964,18 +7040,22 @@ function $j_layout_kind$(_book_0, _env_0, _t_0, _ty_0, _todo_0, _key_0) {
   return $j_layout_match$(_book_0, _env_0, _t_0, run_loop($wnf$(_book_0, _ty_0)), _todo_0);
 }), run_clo((_x_9) => {
   return $kc$(($String$eq$(_key_0, "Ctr")), run_clo((_x_10) => {
-  return $kc$(($Bool$not$(($String$eq$(run_loop($j_literal_typed$(_book_0, _t_0, _ty_0)), "")))), run_clo((_x_11) => {
-  return _todo_0;
+  return $kc$(($Bool$not$(($String$eq$(run_loop($kc$(($j_layout_native_nat$(_book_0, _t_0, run_loop($wnf$(_book_0, _ty_0)))), run_clo((_x_11) => {
+  return "";
 }), run_clo((_x_12) => {
-  return $j_layout_mark$(run_loop($j_layout_open$(_book_0, _ty_0)), ($j_layout_fields$(_book_0, _env_0, ($ks$(_t_0)), ($j_specialize$(_book_0, ($dt$(run_loop($j_find_ctor$(_book_0, ($nm$(_t_0)))))), ($ks$(run_loop($wnf$(_book_0, _ty_0)))))), _todo_0)));
+  return $j_literal_typed$(_book_0, _t_0, _ty_0);
+}))), "")))), run_clo((_x_13) => {
+  return _todo_0;
+}), run_clo((_x_14) => {
+  return $j_layout_mark$(run_loop($j_layout_open$(_book_0, _ty_0)), ($j_layout_fields$(_book_0, _env_0, ($ks$(_t_0)), ($j_specialize$(_book_0, ($dt$(run_loop($j_layout_ctor$(_book_0, run_loop($wnf$(_book_0, _ty_0)), ($nm$(_t_0)))))), ($ks$(run_loop($wnf$(_book_0, _ty_0)))))), _todo_0)));
 }));
-}), run_clo((_x_13) => {
-  return $kc$(($String$eq$(_key_0, "Let")), run_clo((_x_14) => {
-  return $j_layout_let$(_book_0, _env_0, ($ks$(_t_0)), _ty_0, _todo_0);
 }), run_clo((_x_15) => {
-  return $kc$(($String$eq$(_key_0, "Rwt")), run_clo((_x_16) => {
-  return $j_layout_term$(_book_0, _env_0, run_loop($kid$(_t_0, 2)), _ty_0, _todo_0);
+  return $kc$(($String$eq$(_key_0, "Let")), run_clo((_x_16) => {
+  return $j_layout_let$(_book_0, _env_0, ($ks$(_t_0)), _ty_0, _todo_0);
 }), run_clo((_x_17) => {
+  return $kc$(($String$eq$(_key_0, "Rwt")), run_clo((_x_18) => {
+  return $j_layout_term$(_book_0, _env_0, run_loop($kid$(_t_0, 2)), _ty_0, _todo_0);
+}), run_clo((_x_19) => {
   return _todo_0;
 }));
 }));
@@ -7621,17 +7701,58 @@ function $norm_match$(_book_0, _arm_0, _original_0, _raw_0, _x_0, _args_0, _left
 }));
 }
 
-function $index_child_list$(_ds_0, _right_0) {
-  if (_ds_0.$ === "Nil") {
-    return $missing$();
-  } else {
-    const _h_0 = _ds_0["head"];
-    const _rest_0 = _ds_0["tail"];
-    return $kc$(_right_0, run_clo((_x_0) => {
-  return $index_first$(_rest_0);
-}), run_clo((_x_1) => {
-  return _h_0;
-}));
+function $index_find_leaf$($0, $1, $2, $3, $4) {
+  let $pc = 2;
+  for (;;) switch ($pc) {
+    case 0: {
+      const _tree_0 = $0;
+      const _name_0 = $1;
+      const _hash_0 = $2;
+      const _bits_0 = $3;
+      $0 = _tree_0;
+      $1 = _name_0;
+      $2 = _hash_0;
+      $3 = _bits_0;
+      $4 = ($String$eq$(($dk$(_tree_0)), "Absent"));
+      $pc = 1; continue;
+    }
+    case 1: {
+      const _tree_0 = $0;
+      const _name_0 = $1;
+      const _hash_0 = $2;
+      const _bits_0 = $3;
+      const _absent_0 = $4;
+      if (_absent_0) {
+        return $missing$();
+      } else {
+        const _x_0 = ($dx$(_tree_0));
+        $0 = _tree_0;
+        $1 = _name_0;
+        $2 = _hash_0;
+        $3 = _bits_0;
+        $4 = (_x_0 === 0);
+        $pc = 2; continue;
+      }
+    }
+    case 2: {
+      const _tree_0 = $0;
+      const _name_0 = $1;
+      const _hash_0 = $2;
+      const _bits_0 = $3;
+      const _leaf_0 = $4;
+      if (_leaf_0) {
+        const _x_0 = ($da$(_tree_0));
+        return $index_find_hash$(_tree_0, _name_0, (_x_0 === _hash_0));
+      } else {
+        const _x_1 = ($dx$(_tree_0));
+        const _x_2 = ((_hash_0 & _x_1) >>> 0);
+        $0 = ($index_child$(_tree_0, ($Bool$not$((_x_2 === 0)))));
+        $1 = _name_0;
+        $2 = _hash_0;
+        $3 = _bits_0;
+        $pc = 0; continue;
+      }
+    }
   }
 }
 
@@ -8648,6 +8769,20 @@ function $fpe_defs$(_ds_0) {
   }
 }
 
+function $index_child_list$(_ds_0, _right_0) {
+  if (_ds_0.$ === "Nil") {
+    return $missing$();
+  } else {
+    const _h_0 = _ds_0["head"];
+    const _rest_0 = _ds_0["tail"];
+    if (_right_0) {
+      return $index_first$(_rest_0);
+    } else {
+      return _h_0;
+    }
+  }
+}
+
 function $fs_book$(_seed_0) {
   const _book_0 = _seed_0["book"];
   return _book_0;
@@ -8946,11 +9081,19 @@ function $j_layout_lam$(_book_0, _env_0, _t_0, _ty_0, _todo_0) {
 
 function $j_layout_match$(_book_0, _env_0, _t_0, _ty_0, _todo_0) {
   const _x_0 = ($j_constructor_count$(_book_0, run_loop($wnf$(_book_0, run_loop($kid$(_ty_0, 0))))));
-  return $j_layout_mark$(run_loop($j_layout_open$(_book_0, run_loop($kid$(_ty_0, 0)))), run_loop($j_layout_term$(_book_0, _env_0, run_loop($kid$(_t_0, 0)), run_loop($j_arm_type$(_book_0, _ty_0, ($nm$(_t_0)))), run_loop($kc$((_x_0 === 1), run_clo((_x_1) => {
+  return $j_layout_mark$(run_loop($j_layout_open$(_book_0, run_loop($kid$(_ty_0, 0)))), run_loop($j_layout_term$(_book_0, _env_0, run_loop($kid$(_t_0, 0)), run_loop($j_arm_tel$(_book_0, ($j_specialize$(_book_0, ($dt$(run_loop($j_layout_ctor$(_book_0, run_loop($wnf$(_book_0, run_loop($kid$(_ty_0, 0)))), ($nm$(_t_0)))))), ($ks$(run_loop($wnf$(_book_0, run_loop($kid$(_ty_0, 0)))))))), run_loop($kid$(_ty_0, 1)))), run_loop($kc$((_x_0 === 1), run_clo((_x_1) => {
   return _todo_0;
 }), run_clo((_x_2) => {
   return $j_layout_term$(_book_0, _env_0, run_loop($kid$(_t_0, 1)), _ty_0, _todo_0);
 }))))));
+}
+
+function $j_layout_native_nat$(_book_0, _t_0, _ty_0) {
+  const _x_0 = ($terms_len$(($ks$(_t_0))));
+  const _x_1 = ($terms_len$(($ks$(_t_0))));
+  const _x_2 = ($Bool$and$(($String$eq$(($nm$(_t_0)), "Zero")), (_x_0 === 0)));
+  const _x_3 = ($Bool$and$(($String$eq$(($nm$(_t_0)), "Succ")), (_x_1 === 1)));
+  return $Bool$and$(($Bool$and$(($Bool$and$(($String$eq$(($tg$(_ty_0)), "ADT")), ($String$eq$(($nm$(_ty_0)), "Nat")))), ($db$(run_loop($lookup$(_book_0, "Nat")))))), (_x_2 || _x_3));
 }
 
 function $j_layout_open$(_book_0, _ty_0) {
@@ -8984,6 +9127,15 @@ function $j_layout_fields$($0, $1, $2, $3, $4) {
       }
     }
   }
+}
+
+function $j_layout_ctor$(_book_0, _ty_0, _name_0) {
+  const _d_0 = run_loop($lookup$(($dc$(run_loop($lookup$(_book_0, ($nm$(_ty_0)))))), _name_0));
+  return $kc$(($Bool$and$(($String$eq$(($tg$(_ty_0)), "ADT")), ($String$eq$(($dk$(_d_0)), "Ctr")))), run_clo((_x_0) => {
+  return _d_0;
+}), run_clo((_x_1) => {
+  return $j_find_ctor$(_book_0, _name_0);
+}));
 }
 
 function $j_layout_let$(_book_0, _env_0, _xs_0, _ty_0, _todo_0) {
@@ -9693,6 +9845,14 @@ function $norm_stuck$(_t_0, _x_0, _args_0, _left_0, _fallback_0) {
 }), run_clo((_x_2) => {
   return _fallback_0;
 }));
+}
+
+function $index_find_hash$(_tree_0, _name_0, _same_0) {
+  if (_same_0) {
+    return $index_bucket$(($dc$(_tree_0)), _name_0);
+  } else {
+    return $missing$();
+  }
 }
 
 function $kp_float_show$(_n_0) {
@@ -11756,6 +11916,20 @@ function $j_string$(_t_0, _acc_0) {
 }), run_clo((_x_5) => {
   return {$: "None"};
 }));
+}
+
+function $index_bucket$(_ds_0, _name_0) {
+  if (_ds_0.$ === "Nil") {
+    return $missing$();
+  } else {
+    const _h_0 = _ds_0["head"];
+    const _rest_0 = _ds_0["tail"];
+    return $kc$(($String$eq$(($dn$(_h_0)), _name_0)), run_clo((_x_0) => {
+  return _h_0;
+}), run_clo((_x_1) => {
+  return $index_bucket$(_rest_0, _name_0);
+}));
+  }
 }
 
 function $kp_float_text$(_s_0) {
@@ -15350,7 +15524,7 @@ function $ffw_kids$($0, $1, $2, $3, $4, $5) {
 }
 
 function $f_resolve_name$(_name_0, _book_0, _ns_0, _imports_0) {
-  return $f_choose$(($f_declared$(_name_0, _book_0)), run_clo((_x_0) => {
+  return $f_choose$(run_loop($f_declared$(_name_0, _book_0)), run_clo((_x_0) => {
   return $f_qual_name$(_name_0, _ns_0);
 }), run_clo((_x_1) => {
   return $f_alias$(_name_0, _imports_0);
@@ -16101,11 +16275,15 @@ function $f_module_def$(_d_0, _rest_0, _visible_0, _scope_0, _ns_0, _imports_0) 
 }
 
 function $f_alias_named$(_t_0, _imports_0, _scope_0, _name_0) {
-  return $f_choose$(($Bool$and$(($Bool$and$(($Bool$not$(($String$eq$(_name_0, ($nm$(_t_0)))))), ($f_declared$(_name_0, _scope_0)))), ($f_declared$(($nm$(_t_0)), _scope_0)))), run_clo((_x_0) => {
-  const _x_1 = ($nm$(_t_0));
-  const _x_2 = (_x_1 + ")");
-  return $kt$("Error", ("expected an unambiguous name (an import alias shadows " + _x_2), 0, 0, {$: "Nil"});
-}), run_clo((_x_3) => {
+  return $f_choose$(run_loop($f_choose$(($Bool$not$(($String$eq$(_name_0, ($nm$(_t_0)))))), run_clo((_x_0) => {
+  return $Bool$and$(run_loop($f_declared$(_name_0, _scope_0)), run_loop($f_declared$(($nm$(_t_0)), _scope_0)));
+}), run_clo((_x_1) => {
+  return false;
+}))), run_clo((_x_2) => {
+  const _x_3 = ($nm$(_t_0));
+  const _x_4 = (_x_3 + ")");
+  return $kt$("Error", ("expected an unambiguous name (an import alias shadows " + _x_4), 0, 0, {$: "Nil"});
+}), run_clo((_x_5) => {
   return {$: "KTerm", "tag": ($tg$(_t_0)), "name": _name_0, "id": ($ix$(_t_0)), "quant": ($qt$(_t_0)), "kids": ($f_alias_terms$(($ks$(_t_0)), _imports_0, _scope_0)), "removed": ($rm$(_t_0))};
 }));
 }
@@ -16858,11 +17036,15 @@ function $f_declared$(_name_0, _book_0) {
   } else {
     const _d_0 = _book_0["head"];
     const _ds_0 = _book_0["tail"];
-    const _x_0 = ($f_eq$(_name_0, ($dn$(_d_0))));
-    const _x_1 = ($f_declared$(_name_0, ($dc$(_d_0))));
-    const _x_2 = (_x_0 || _x_1);
-    const _x_3 = ($f_declared$(_name_0, _ds_0));
-    return (_x_2 || _x_3);
+    return $f_choose$(($f_eq$(_name_0, ($dn$(_d_0)))), run_clo((_x_0) => {
+  return true;
+}), run_clo((_x_1) => {
+  return $f_choose$(run_loop($f_declared$(_name_0, ($dc$(_d_0)))), run_clo((_x_2) => {
+  return true;
+}), run_clo((_x_3) => {
+  return $f_declared$(_name_0, _ds_0);
+}));
+}));
   }
 }
 
