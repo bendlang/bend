@@ -1,0 +1,762 @@
+{
+  "cases": [
+    {
+      "id": "phase8/unsafe-suffix",
+      "file": "unsafe-suffix.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/unsafe-decorator",
+      "file": "unsafe-decorator.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/unsafe-both",
+      "file": "unsafe-both.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/unsafe-law-fill",
+      "file": "unsafe-law-fill.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/unsafe-spaced-suffix",
+      "file": "unsafe-spaced-suffix.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/unsafe-double-suffix",
+      "file": "unsafe-double-suffix.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/unsafe-missing-open",
+      "file": "unsafe-missing-open.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/definition-newline-name",
+      "file": "definition-newline-name.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/definition-spaced-open",
+      "file": "definition-spaced-open.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/name-qualified-valid",
+      "file": "name-qualified-valid.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/name-empty-segment",
+      "file": "name-empty-segment.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/name-numeric-segment",
+      "file": "name-numeric-segment.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/name-trailing-dot",
+      "file": "name-trailing-dot.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/name-reference-empty-segment",
+      "file": "name-reference-empty-segment.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/name-binder-empty-segment",
+      "file": "name-binder-empty-segment.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/field-duplicate",
+      "file": "field-duplicate.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/field-marked-duplicate",
+      "file": "field-marked-duplicate.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/field-other-constructor",
+      "file": "field-other-constructor.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/typed-let-name",
+      "file": "typed-let-name.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/typed-let-marked",
+      "file": "typed-let-marked.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/typed-let-pattern",
+      "file": "typed-let-pattern.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/untyped-let-pattern",
+      "file": "untyped-let-pattern.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/typed-let-call",
+      "file": "typed-let-call.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/typed-reply-rewind",
+      "file": "typed-reply-rewind.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/array-count",
+      "file": "array-count.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/array-depth",
+      "file": "array-depth.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/array-separator-newline",
+      "file": "array-separator-newline.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/array-separator-semicolon",
+      "file": "array-separator-semicolon.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/array-separator-comma",
+      "file": "array-separator-comma.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/array-separator-equals",
+      "file": "array-separator-equals.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/array-separator-tilde",
+      "file": "array-separator-tilde.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/array-separator-bracket",
+      "file": "array-separator-bracket.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/array-first-error",
+      "file": "array-first-error.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/definition-type-first-error",
+      "file": "definition-type-first-error.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/match-arity-first-error",
+      "file": "match-arity-first-error.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/match-body-error",
+      "file": "match-body-error.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/quote-physical-newline",
+      "file": "quote-physical-newline.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/quote-escaped-newline",
+      "file": "quote-escaped-newline.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/forward-datatype-reference",
+      "file": "forward-datatype-reference.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/forward-quantity-omission/parse",
+      "file": "forward-quantity-omission.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/forward-quantity-omission/check",
+      "file": "forward-quantity-omission.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/forward-constructor-pattern",
+      "file": "forward-constructor-pattern.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/forward-marked-datatype/parse",
+      "file": "forward-marked-datatype.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/forward-marked-datatype/check",
+      "file": "forward-marked-datatype.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/nested-constructor-descent",
+      "file": "nested-constructor-descent.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/nested-constructor-nondecrease/parse",
+      "file": "nested-constructor-nondecrease.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/nested-constructor-nondecrease/check",
+      "file": "nested-constructor-nondecrease.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-bare-unbound/parse",
+      "file": "prefix-bare-unbound.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/prefix-bare-unbound/check",
+      "file": "prefix-bare-unbound.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-bare-defined/parse",
+      "file": "prefix-bare-defined.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/prefix-bare-defined/check",
+      "file": "prefix-bare-defined.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-bound/parse",
+      "file": "prefix-bound.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/prefix-bound/check",
+      "file": "prefix-bound.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-bound-empty-call/parse",
+      "file": "prefix-bound-empty-call.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/prefix-bound-empty-call/check",
+      "file": "prefix-bound-empty-call.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-unbound-empty-call",
+      "file": "prefix-unbound-empty-call.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-defined-empty-call",
+      "file": "prefix-defined-empty-call.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-bound-double-call/parse",
+      "file": "prefix-bound-double-call.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/prefix-bound-double-call/check",
+      "file": "prefix-bound-double-call.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-dotted-bound/parse",
+      "file": "prefix-dotted-bound.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/prefix-dotted-bound/check",
+      "file": "prefix-dotted-bound.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-dotted-unbound",
+      "file": "prefix-dotted-unbound.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-dotted-defined",
+      "file": "prefix-dotted-defined.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-dotted-future",
+      "file": "prefix-dotted-future.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-call-argument",
+      "file": "prefix-call-argument.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-nonquantified-type",
+      "file": "prefix-nonquantified-type.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-quantified-type",
+      "file": "prefix-quantified-type.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-quantified-empty-call",
+      "file": "prefix-quantified-empty-call.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-parameterized-type",
+      "file": "prefix-parameterized-type.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-parameterized-empty-call",
+      "file": "prefix-parameterized-empty-call.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-parameterized-applied-empty-call",
+      "file": "prefix-parameterized-applied-empty-call.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-double/parse",
+      "file": "prefix-double.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/prefix-double/check",
+      "file": "prefix-double.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-rebinding",
+      "file": "prefix-rebinding.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-infix-concat",
+      "file": "prefix-infix-concat.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-operand-error",
+      "file": "prefix-operand-error.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-noncapture/parse",
+      "file": "prefix-noncapture.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/prefix-noncapture/check",
+      "file": "prefix-noncapture.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    }
+  ]
+}

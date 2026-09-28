@@ -54,7 +54,9 @@ def f_quants(
 
 @unsafe
 def f_adt(t, args, d):
-  f_adt_fill(t, args, da(d), f_leading_quants(dt(d)))
+  f_choose(KTerm, U32.is_eq(qt(t), 2) && (Bool.not(f_eq(dk(d), "ADT")) || U32.is_eq(f_leading_quants(dt(d)), 0) || (Bool.not(f_eq(tg(t), "ADT")) && U32.is_lt(f_leading_quants(dt(d)), da(d)))),
+    u => kt("Error", "a quantified datatype after + (+D<..> sets D's leading quantities to &2)", ix(t), 0, Nil{}),
+    u => f_adt_fill(t, args, da(d), f_leading_quants(dt(d))))
 
 @unsafe
 def f_adt_fill(t, args, arity, g):
@@ -144,7 +146,7 @@ law f_scope_lambda_var:
 
 @unsafe
 def f_scope_call(t, env, book):
-  f_scope_call_head(t, env, book, f_scope(kid(t, 0), env, book))
+  f_choose(KTerm, U32.is_eq(qt(t), 2), u => f_scope_marked_call(kid(t, 0), env, book), u => f_scope_call_head(t, env, book, f_scope(kid(t, 0), env, book)))
 
 @unsafe
 def f_scope_call_head(t, env, book, head):
@@ -176,7 +178,23 @@ def f_scope_apply_many(head, args):
 
 @unsafe
 def f_scope_reference(t, bound, book):
-  f_choose(KTerm, U32.is_eq(qt(t), 2) && Bool.not(f_eq(dk(f_find(nm(t), book)), "ADT")), u => kt("Error", "+ marks a binder or a quantified datatype, not a value reference", 0, 0, Nil{}), u => f_choose(KTerm, U32.is_eq(qt(t), 3) && (Bool.not(f_eq(tg(bound), "Absent")) || f_eq(dk(f_find(nm(t), book)), "ADT")), u => kt("Error", "offload requires a named definition", 0, 0, Nil{}), u => f_choose(KTerm, Bool.not(f_eq(tg(bound), "Absent")), u => kt("Var", nm(bound), ix(bound), qt(bound), Nil{}), u => f_choose(KTerm, f_eq(dk(f_find(nm(t), book)), "ADT"), u => f_adt(t, Nil{}, f_find(nm(t), book)), u => f_choose(KTerm, Char.is_eq(f_head(nm(t)), '.') && Bool.not(Char.is_eq(f_head(f_tail(nm(t))), '.')), u => kt("Error", "a type for this operator (write (a " ++ f_operator_display(nm(t), ["+", "-", "*", "/", "%", "<", ">op", "<=", ">=", "<<", ">>op", ".&.", ".|.", ".^."]) ++ " b : Nat))", ix(t), 0, Nil{}), u => t)))))
+  f_choose(KTerm, U32.is_eq(qt(t), 2), u => f_scope_marked(t, bound, f_find(nm(t), book), False{}), u => f_choose(KTerm, U32.is_eq(qt(t), 3) && (Bool.not(f_eq(tg(bound), "Absent")) || f_eq(dk(f_find(nm(t), book)), "ADT")), u => kt("Error", "offload requires a named definition", 0, 0, Nil{}), u => f_choose(KTerm, Bool.not(f_eq(tg(bound), "Absent")), u => kt("Var", nm(bound), ix(bound), qt(bound), Nil{}), u => f_choose(KTerm, f_eq(dk(f_find(nm(t), book)), "ADT"), u => f_adt(t, Nil{}, f_find(nm(t), book)), u => f_choose(KTerm, Char.is_eq(f_head(nm(t)), '.') && Bool.not(Char.is_eq(f_head(f_tail(nm(t))), '.')), u => kt("Error", "a type for this operator (write (a " ++ f_operator_display(nm(t), ["+", "-", "*", "/", "%", "<", ">op", "<=", ">=", "<<", ">>op", ".&.", ".|.", ".^."]) ++ " b : Nat))", ix(t), 0, Nil{}), u => t)))))
+
+# A bare marked value is an unbound variable. Empty calls turn an unbound
+# spelling into a reference, while a lexical binder remains a variable.
+@unsafe
+def f_scope_marked(+t: KTerm, +bound: KTerm, +definition: KDef, +called: Bool) -> KTerm:
+  f_choose(KTerm, f_eq(dk(definition), "ADT"), u => f_adt(KTerm{tg(t), nm(t), ix(t), 2, ks(t), rm(t)}, Nil{}, definition),
+    u => f_choose(KTerm, Bool.not(f_eq(tg(bound), "Absent")) || (Bool.not(called) && Bool.not(String.contains(nm(t), "."))),
+      u => kt("FUnboundVar", nm(t), ix(t), 0, Nil{}),
+      u => kt("Error", "a quantified datatype after + (+D<..> sets D's leading quantities to &2)", ix(t), 0, Nil{})))
+
+@unsafe
+def f_scope_marked_call(+t: KTerm, +env: List<&2,KTerm>, +book: List<&2,KDef>) -> KTerm:
+  f_choose(KTerm, f_eq(tg(t), "Call") && U32.is_eq(terms_len(ks(t)), 1), u => f_scope_marked_call(kid(t, 0), env, book),
+    u => f_choose(KTerm, f_eq(tg(t), "Ref") && Bool.not(U32.is_eq(qt(t), 3)), u => f_scope_marked(t, f_env(nm(t), env), f_find(nm(t), book), True{}),
+    u => f_choose(KTerm, f_eq(tg(t), "ADT"), u => f_adt(KTerm{tg(t), nm(t), ix(t), 2, ks(t), rm(t)}, f_scope_terms(ks(t), env, book), f_find(nm(t), book)),
+    u => kt("Error", "a quantified datatype after + (+D<..> sets D's leading quantities to &2)", ix(t), 0, Nil{}))))
 
 @unsafe
 def f_scope_lambda(t, env, book):

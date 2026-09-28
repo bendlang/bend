@@ -252,6 +252,7 @@ law mat_lhs:
   for +name: String
   for +tel: KTerm
   for +n: U32
+  for +avoid: List<&2,KTerm>
   KEnv
 
 law check_rwt:
@@ -833,7 +834,7 @@ def check_mat_type(e, ctx, t, dem, ty, a):
 @unsafe
 def check_mat_ctr(e, ctx, t, dem, ty, a, ctr):
   kc(KChecked, String.eq(dk(ctr), "Absent"), u => dg_bad_detail("unknown or duplicate match constructor", dg_text("a constructor of " ++ nm(a) ++ " (missing, or already matched)"), t),
-   u => both(check(mat_lhs(e, nm(t), tele_fill(cb(e), dt(ctr), ks(a)), da(ctr)), ctx, kid(t, 0), dem, mat_goal(cb(e), ty, tele_fill(cb(e), dt(ctr), ks(a)), da(ctr), nm(t), Nil{})),
+   u => both(check(mat_lhs(e, nm(t), tele_fill(cb(e), dt(ctr), ks(a)), da(ctr), Con{t, Con{ty, ctx}}), ctx, kid(t, 0), dem, mat_goal(cb(e), ty, tele_fill(cb(e), dt(ctr), ks(a)), da(ctr), nm(t), Nil{})),
    check(e, ctx, kid(t, 1), dem, all(qt(ty), nm(ty), ix(ty), KTerm{tg(a), nm(a), ix(a), qt(a), ks(a), Con{nm(t), rm(a)}}, kid(ty, 1))), t, ty, True{}))
 
 @unsafe
@@ -851,12 +852,16 @@ def lhs_ext(
   +tel: KTerm,
   +n: U32,
   +xs: List<&2, KTerm>,
+  +fresh: U32,
 ) -> KTerm:
-  kc(KTerm, U32.is_eq(n, 0), u => kapply(lhs, kt("Ctr", name, 0, 0, xs)), u => kt("Lam", nm(tel), ix(tel), qt(tel), Con{lhs_ext(lhs, name, kid(tel, 1), U32.sub(n, 1), norm_join(xs, Con{var(nm(tel), ix(tel)), Nil{}})), Nil{}}))
+  kc(KTerm, U32.is_eq(n, 0), u => kapply(lhs, kt("Ctr", name, 0, 0, xs)), u => kt("Lam", nm(tel), fresh, qt(tel), Con{lhs_ext(lhs, name, kid(tel, 1), U32.sub(n, 1), norm_join(xs, Con{var(nm(tel), fresh), Nil{}}), U32.add(fresh, 1)), Nil{}}))
 
 @unsafe
-def mat_lhs(e, name, tel, n):
-  kc(KEnv, U32.is_eq(cp(e), 0), u => e, u => KEnv{cb(e), cn(e), lhs_ext(cl(e), name, tel, n, Nil{}), U32.add(U32.sub(cp(e), 1), n), cq(e), cu(e)})
+def mat_lhs(e, name, tel, n, avoid):
+  # A nested match may reuse the same constructor telescope while the outer
+  # column still binds its fields. Only names/quantities come from that telescope:
+  # generated lambdas and constructor fields receive fresh matching identities.
+  kc(KEnv, U32.is_eq(cp(e), 0), u => e, u => KEnv{cb(e), cn(e), lhs_ext(cl(e), name, tel, n, Nil{}, U32.add(1, norm_max_walk(Con{cl(e), Con{tel, avoid}}, norm_book_bound(cb(e))))), U32.add(U32.sub(cp(e), 1), n), cq(e), cu(e)})
 
 @unsafe
 def check_rwt(e, ctx, t, dem, ty, r):
@@ -919,11 +924,31 @@ def signature_mode(
   +d: KDef,
   +later: List<&2, KDef>,
 ) -> KDef:
-  kc(KDef, String.eq(dk(d), "Def") && String.eq(tg(dv(d)), "Absent") && Bool.not(du(d)), u => signature_fill_mode(d, lookup(later, dn(d))), u => d)
+  kc(KDef, String.eq(dk(d), "Def") && String.eq(tg(dv(d)), "Absent"), u => signature_fill_mode(d, lookup(later, dn(d))), u => d)
 
 @unsafe
 def signature_fill_mode(d, fill):
-  KDef{dn(d), dk(d), da(d), dx(d), dt(d), dv(d), dc(d), db(d), du(d) || (String.eq(dk(fill), "Def") && Bool.not(String.eq(tg(dv(fill)), "Absent")) && du(fill))}
+  kc(KDef, String.eq(dk(fill), "Def"), u => declared(fill), u => d)
+
+# Every declaration is visible; only completed bodies may unfold. A separate
+# event history retains duplicate/law diagnostics without hiding future types.
+@unsafe
+def check_declarations(
+  +todo: List<&2,KDef>,
+  +done: List<&2,KDef>,
+) -> List<&2,KDef>:
+  match todo:
+    case Nil{}: done
+    case Con{d, rest}:
+      check_declarations(rest, book_put(done, kc(KDef, String.eq(tg(dv(d)), "Foreign"), u => d, u => declared(d))))
+
+@unsafe
+def check_event_install(
+  +done: List<&2,KDef>,
+  +d: KDef,
+  +rest: List<&2,KDef>,
+) -> List<&2,KDef>:
+  kc(List<&2,KDef>, String.eq(dk(lookup(rest, dn(d))), "Absent"), u => book_put(done, d), u => done)
 
 @unsafe
 def event_error(

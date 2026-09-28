@@ -276,9 +276,24 @@ def f_top_ready(ts, book, imports, unsafe):
     u => f_choose(FRawResult, f_eq(f_tx(ts), "@") && f_eq(f_tx(f_tl(ts)), "unsafe"), u => f_tops(f_tl(f_tl(ts)), book, imports, True{}),
     u => f_choose(FRawResult, f_eq(f_tx(ts), "import"), u => f_import_leading(ts, book, imports, unsafe),
     u => f_choose(FRawResult, f_eq(f_tx(ts), "law"), u => f_law(f_tx(f_tl(ts)), f_skip(f_tl(f_tl(f_tl(ts)))), book, imports, Nil{}),
-    u => f_choose(FRawResult, f_eq(f_tx(ts), "def"), u => f_def(f_tx(f_tl(ts)), f_tele(f_tl(f_tl(f_tl(ts))), ")", Nil{}), book, imports, unsafe),
+    u => f_choose(FRawResult, f_eq(f_tx(ts), "def"), u => f_def_header(f_space(f_tl(ts)), book, imports, unsafe),
     u => f_choose(FRawResult, f_eq(f_tx(ts), "type"), u => f_type(f_tx(f_tl(ts)), f_tl(f_tl(ts)), book, imports),
     u => f_result(book, f_pn(f_choose(FParsed, f_eq(f_tx(ts), "@"), u => f_err(ts, "expected def, law, type or import"), u => fpe_error(ts, "expected def, law, type or import", "'def', 'type' or 'law'"))), imports)))))))
+
+@unsafe
+def f_def_header(
+  +ts: List<&2,FToken>,
+  +book: List<&2,KDef>,
+  +imports: List<&2,KTerm>,
+  +unsafe: Bool,
+) -> FRawResult:
+  +suffix = f_eq(f_tx(f_tl(ts)), "?") && U32.is_eq(f_line(ts), f_line(f_tl(ts))) && U32.is_eq(f_col(f_tl(ts)), U32.add(f_col(ts), U32.from_nat(String.length(f_tx(ts)))))
+  +rest = f_space(f_choose(List<&2,FToken>, suffix, u => f_tl(f_tl(ts)), u => f_tl(ts)))
+  f_choose(FRawResult, Bool.not(f_valid_name(f_tx(ts))),
+    u => f_result(book, f_pn(fpe_error(ts, "invalid definition name", "a name (words joined by dots, got '" ++ f_tx(ts) ++ "')")), imports),
+    u => f_choose(FRawResult, f_eq(f_tx(rest), "("),
+      u => f_def(f_tx(ts), f_tele(f_tl(rest), ")", Nil{}), book, imports, unsafe || suffix),
+      u => f_result(book, f_pn(fpe_error(rest, "expected (", "'('")), imports)))
 
 @unsafe
 def f_import(
@@ -379,7 +394,7 @@ def f_def_base(
 def f_def_type(name, pars, p, book, imports, unsafe):
   match p:
     case FParsed{+ty, +ts}:
-      f_choose(FRawResult, f_eq(tg(ty), "Absent"), u => f_result(book, kt("Error", "definition without return type needs a law: " ++ name, 0, 0, Nil{}), imports), u => f_choose(FRawResult, f_eq(f_tx(f_skip(f_tl(ts))), "import"), u => f_foreign(name, pars, f_def_signature(name, pars, ty, book), f_skip(f_tl(ts)), book, imports, unsafe, Nil{}), u => f_def_body(name, pars, f_def_signature(name, pars, ty, book), f_body(f_pr(f_expect(FParsed{ty, ts}, ":"))), book, imports, unsafe)))
+      f_choose(FRawResult, f_eq(tg(ty), "Error"), u => f_result(book, ty, imports), u => f_choose(FRawResult, f_eq(tg(ty), "Absent"), u => f_result(book, kt("Error", "definition without return type needs a law: " ++ name, 0, 0, Nil{}), imports), u => f_choose(FRawResult, f_eq(f_tx(f_skip(f_tl(ts))), "import"), u => f_foreign(name, pars, f_def_signature(name, pars, ty, book), f_skip(f_tl(ts)), book, imports, unsafe, Nil{}), u => f_def_body(name, pars, f_def_signature(name, pars, ty, book), f_body(f_pr(f_expect(FParsed{ty, ts}, ":"))), book, imports, unsafe))))
 
 @unsafe
 def f_def_signature(name, pars, ty, book):
@@ -531,7 +546,7 @@ def f_match_cases(
 
 @unsafe
 def f_case_pats(ts, indent, heads, rows, pats):
-  f_choose(FParsed, f_eq(f_tx(ts), ":"), u => f_case_body(f_body_context(f_tl(ts), U32.add(indent, 1)), indent, heads, rows, List.reverse(&2, KTerm, pats)), u => f_case_pat(f_expr(f_choose(List<&2, FToken>, f_eq(f_tx(ts), ","), u => f_tl(ts), u => ts), 0), indent, heads, rows, pats))
+  f_choose(FParsed, f_eq(f_tx(ts), ":"), u => f_choose(FParsed, U32.is_eq(terms_len(pats), terms_len(heads)), u => f_case_body(f_body_context(f_tl(ts), U32.add(indent, 1)), indent, heads, rows, List.reverse(&2, KTerm, pats)), u => fpe_error(ts, "one pattern is required per match scrutinee", U32.show(terms_len(heads)) ++ " patterns (one per scrutinee)")), u => f_case_pat(f_expr(f_choose(List<&2, FToken>, f_eq(f_tx(ts), ","), u => f_tl(ts), u => ts), 0), indent, heads, rows, pats))
 
 @unsafe
 def f_case_pat(p, indent, heads, rows, pats):
@@ -541,7 +556,9 @@ def f_case_pat(p, indent, heads, rows, pats):
 
 @unsafe
 def f_case_body(p, indent, heads, rows, pats):
-  f_case_checked(p, indent, heads, rows, pats)
+  match p:
+    case FParsed{+n, ts}:
+      f_choose(FParsed, f_eq(tg(n), "Error"), u => FParsed{n, ts}, u => f_match_cases(f_skip(ts), indent, heads, Con{kt("Row", "", 0, 1, [kt("Patterns", "", 0, 1, pats), n]), rows}))
 
 
 @unsafe

@@ -1,0 +1,42 @@
+// Supplemental binding controls on independently checked Bend worker exports.
+// The small API is a stage0-checked component, not a self-hosted B1 artifact.
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import {pathToFileURL} from 'node:url';
+const [api,proof,output]=process.argv.slice(2);
+if(!api||!proof||!output)throw Error('Usage: lhs-binding-audit.mjs API COMPONENT_BUILD_REPORT NEW_DIRECTORY');
+fs.mkdirSync(output,{recursive:false});
+const hash=file=>crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+const checked=JSON.parse(fs.readFileSync(proof,'utf8'));
+if(checked.kind!=='phase8-checked-lhs-component'||!checked.pass||checked.api.sha256!==hash(api))throw Error('Checked component identity differs');
+for(const item of checked.inputs)if(hash(item.file)!==item.sha256)throw Error('Changed component input '+item.file);
+const {default:K}=await import(pathToFileURL(path.resolve(api)));
+const B={mat:(...args)=>K.mat_lhs(...args),apply:(...args)=>K.kapply(...args)};
+const nil={$:'Nil'},list=xs=>xs.reduceRight((tail,head)=>({$:'Con',head,tail}),nil);
+const term=(tag,name='',id=0,quant=1,kids=[])=>({$:'KTerm',tag,name,id,quant,kids:list(kids),removed:nil});
+const variable=id=>term('Var','v'+id,id),reference=name=>term('Ref',name),app=(f,x)=>term('App','',0,0,[f,x]);
+const lam=(name,id,body)=>term('Lam',name,id,1,[body]),all=(name,id,body)=>term('All',name,id,1,[reference('T'),body]);
+const telescope=all('q',3,all('c',4,all('d',5,reference('T'))));
+const lhs=lam('lo',4,lam('hi',5,app(app(reference('f'),variable(4)),variable(5))));
+const env={ $:'KEnv',book:nil,name:'f',lhs,pending:2,quantities:list([term('Qua','',0,1),term('Qua','',0,1)]),unsafe:false};
+const avoid=list([term('Ctx','ambient',1000,1,[variable(1200)])]);
+const array=xs=>{const out=[];for(let p=xs;p.$==='Con';p=p.tail)out.push(p.head);return out;};
+const view=t=>{const ks=array(t.kids);return t.tag==='Var'?'#'+t.id:t.tag==='Ref'?t.name:t.tag==='App'?'('+view(ks[0])+' '+view(ks[1])+')':t.tag==='Ctr'?t.name+'{'+ks.map(view).join(',')+'}':t.tag+'#'+t.id;};
+const apply=(t,ids)=>ids.reduce((f,id)=>B.apply(f,variable(id)),t);
+const rows=[];const check=(name,actual,expected)=>rows.push({name,actual,expected,pass:JSON.stringify(actual)===JSON.stringify(expected)});
+const extended=B.mat(env,'Node',telescope,3,avoid);
+check('nested-telescope-does-not-capture-pending-sibling',view(apply(extended.lhs,[21,22,23,24])),'((f Node{#21,#22,#23}) #24)');
+check('pending-column-count',extended.pending,4);
+let cursor=extended.lhs;const generated=[];for(let i=0;i<3;i++){generated.push(cursor.id);cursor=array(cursor.kids)[0];}
+check('generated-binders-distinct-and-fresh-to-context',new Set(generated).size===3&&generated.every(id=>id>1200),true);
+check('outer-pending-binder-survives',cursor.tag==='Lam'&&cursor.id===5,true);
+const nestedEnv={...extended,lhs:B.apply(extended.lhs,variable(201)),pending:3};
+const nested=B.mat(nestedEnv,'Node',telescope,3,avoid);
+check('repeated-same-constructor-keeps-both-levels',view(apply(nested.lhs,[301,302,303,202,203])),'((f Node{#201,Node{#301,#302,#303},#202}) #203)');
+const empty=B.mat(env,'Tip',reference('T'),0,avoid);
+check('nullary-match-retains-pending-sibling',view(apply(empty.lhs,[24])),'((f Tip{}) #24)');
+const done={...env,pending:0};
+check('completed-lhs-remains-unchanged',B.mat(done,'Node',telescope,3,avoid),done);
+const report={kind:'phase8-lhs-binding-workers',scope:'Supplemental independently stage0-checked Bend-worker binding gate; not a B1 self-host artifact or performance comparison',inputs:[api,proof,import.meta.filename].map(file=>({file:fs.realpathSync(file),sha256:hash(file)})),rows,pass:rows.every(row=>row.pass)};
+fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify({output,pass:report.pass,controls:rows.length,failures:rows.filter(row=>!row.pass).map(row=>row.name)}));if(!report.pass)process.exitCode=1;

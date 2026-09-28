@@ -3,7 +3,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
-import {PIN,sha256} from './inventory.mjs';
+import {PIN,PIN_MANIFEST,sha256} from './inventory.mjs';
 import {probeKey} from './selection.mjs';
 const [configFile,outputDirectory]=process.argv.slice(2);
 if(!configFile||!outputDirectory)throw Error('usage: node target.mjs CONFIG.json NEW_OUTPUT_DIRECTORY');
@@ -56,6 +56,12 @@ for(const file of harnessFiles){
   if(file==='run.mjs')source=source.replace("const project=path.resolve(import.meta.dirname,'../..');",'const project='+JSON.stringify(project)+';');
   fs.mkdirSync(path.dirname(destination),{recursive:true});fs.writeFileSync(destination,source);harnessSources.push({file,sourceSha256:hash(sourceFile),consumedSha256:hash(destination)});
 }
+// inventory.mjs resolves its pin from the adjacent compiler source manifest,
+// including in this smaller harness snapshot. Never fall back to a live pin.
+const pinDestination=path.join(harness,'src/compiler.json'),pinSource=fs.readFileSync(PIN_MANIFEST);
+if(JSON.parse(pinSource).upstream!==PIN)throw Error('Compiler upstream pin changed while freezing');
+fs.mkdirSync(path.dirname(pinDestination),{recursive:true});fs.writeFileSync(pinDestination,pinSource);
+harnessSources.push({file:'src/compiler.json',sourceSha256:sha256(pinSource),consumedSha256:hash(pinDestination)});
 for(const file of ['native-build.mjs','node-resource-args.mjs'])fs.copyFileSync(path.join(project,'tools',file),path.join(harness,'tools',file));
 if(adapter===path.join(import.meta.dirname,'adapters/native-graph.mjs')){
   const destination=path.join(harness,'tools/conformance/adapters/native-graph.mjs');fs.copyFileSync(adapter,destination);adapter=destination;
@@ -77,10 +83,10 @@ for(const [name,selectedAdapter] of [['reference',path.join(harness,'tools/confo
 }
 if(!report.error){
   const a=JSON.parse(fs.readFileSync(report.attempts.reference.file,'utf8')),b=JSON.parse(fs.readFileSync(report.attempts.candidate.file,'utf8')),before=new Map(a.results.map(row=>[probeKey(row),row]));
-  const observation=row=>{const r=row.result||{};return {status:r.status??row.status,phase:r.phase??null,checked:r.checked??null,exitCode:r.exitCode??null,diagnostic:r.diagnostic??null,output:r.output??r.stdout??null}};
+  const observation=row=>{const r=row.result||{};return {status:r.status??row.status,phase:r.phase??null,checked:r.checked??null,typeAccepted:r.typeAccepted??null,proofTrust:r.proofTrust??null,kernelChecked:r.kernelChecked??null,unsafeDefinitions:r.unsafeDefinitions??null,exitCode:r.exitCode??null,diagnostic:r.diagnostic??null,output:r.output??r.stdout??null}};
   report.rows=b.results.map(row=>{
     const reference=before.get(probeKey(row));before.delete(probeKey(row));const x=reference?observation(reference):null,y=observation(row);
-    const semantic=value=>value&&({status:value.status,phase:value.phase,checked:value.checked,exitCode:value.exitCode,output:value.phase==='runtime'?value.output:null});
+    const semantic=value=>value&&({status:value.status,phase:value.phase,checked:value.checked,typeAccepted:value.typeAccepted,proofTrust:value.proofTrust,kernelChecked:value.kernelChecked,exitCode:value.exitCode,output:value.phase==='runtime'?value.output:null});
     return {id:row.id,lane:row.lane,referenceVerdict:reference?.status??'missing',candidateVerdict:row.status,reference:x,candidate:y,exactAgreement:JSON.stringify(x)===JSON.stringify(y),semanticAgreement:JSON.stringify(semantic(x))===JSON.stringify(semantic(y)),referenceEvidence:reference?.evidence??null,candidateEvidence:row.evidence??null};
   });
   report.missing=[...before.values()].map(row=>({id:row.id,lane:row.lane}));

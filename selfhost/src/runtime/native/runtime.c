@@ -2294,24 +2294,38 @@ static u64 io_utf8(char* buf, u64 c) {
   return k;
 }
 
-OUTLINE char* io_cstr(Env e, Term s, u64* len) {
+// io_cbuf writes a String (cons SCon) as UTF-8, or a List (cons Con) as
+// its bytes, with no UTF-8: NULL if a value is past 255.
+OUTLINE char* io_cbuf(Env e, Term s, u64* len, u64 cons) {
   u64   cap = 64;
   u64   n   = 0;
+  u64   bad = 0;
   char* buf = io_mem(malloc(cap));
-  while (term_aux(s) == CID_SCON) {
+  while (term_aux(s) == cons) {
     Term fb[2];
     spare_free(e, cls_fit(2), ctr_take(e, s, 2, fb));
     if (n + 5 > cap) {
       cap *= 2;
       buf = io_mem(realloc(buf, cap));
     }
-    n += io_utf8(buf + n, fb[0]);
+    if (cons == CID_SCON) {
+      n += io_utf8(buf + n, fb[0]);
+    } else {
+      bad |= fb[0] > 255;
+      buf[n++] = (char)fb[0];
+    }
     s = fb[1];
   }
   buf[n] = 0;
   *len = n;
+  if (bad) {
+    free(buf);
+    return NULL;
+  }
   return buf;
 }
+
+#define io_cstr(e, s, len) io_cbuf(e, s, len, CID_SCON)
 
 OUTLINE void io_errs(Env e, Term s) {
   u64   n    = 0;
@@ -2331,6 +2345,15 @@ static Term io_node(Env e, u64 cid, Term a, Term b) {
   e.mem[l]     = io_seal(e, a, cid);
   e.mem[l + 1] = io_seal(e, b, cid);
   return term_ctr(cid, l);
+}
+
+// Bytes cross the IO boundary without UTF-8 decoding.
+static Term io_list(Env e, const char* p, u64 n) {
+  Term xs = term_pak(CID_NIL, 0);
+  for (u64 i = n; i > 0; i -= 1) {
+    xs = io_node(e, CID_CON, (uint8_t)p[i - 1], xs);
+  }
+  return xs;
 }
 
 // io_str decodes UTF-8 as WHATWG does: the lead byte sets the count of

@@ -212,7 +212,18 @@ def f_lex_scanned(
     case FScanned{word, rest, size}:
       f_choose(List<&2, FToken>, U32.is_eq(size, 0),
         u => List.reverse(&2, FToken, Con{FToken{"unterminated string", l, c, 3}, acc}),
-        u => f_lex(rest, l, U32.add(c, size), d, Con{FToken{word, l, c, k}, acc}))
+        u => f_choose(List<&2,FToken>, U32.is_eq(k, 2), u => f_lex_quote_end(word, rest, l, c, d, Con{FToken{word, l, c, k}, acc}), u => f_lex(rest, l, U32.add(c, size), d, Con{FToken{word, l, c, k}, acc})))
+
+# Quoted words may span physical lines; escaped n remains two ordinary columns.
+@unsafe
+def f_lex_quote_end(
+  +word: String, +rest: String,
+  +line: U32, +column: U32, +depth: U32,
+  +tokens: List<&2,FToken>,
+) -> List<&2,FToken>:
+  match word:
+    case SNil{}: f_lex(rest, line, column, depth, tokens)
+    case SCon{head, tail}: f_choose(List<&2,FToken>, Char.is_eq(head, '\n'), u => f_lex_quote_end(tail, rest, U32.add(line, 1), 0, depth, tokens), u => f_lex_quote_end(tail, rest, line, U32.add(column, 1), depth, tokens))
 
 @unsafe
 def f_lex_symbol(

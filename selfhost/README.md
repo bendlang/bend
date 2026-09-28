@@ -1,5 +1,11 @@
 # Bend2 compiler port in Bend2
 
+The active source is migrating to upstream2.0.32. Read the
+[Phase8 compiler notes](../docs/PHASE8_MIGRATION.md) and
+[validation report](../implementation/phase8/upstream_and_conformance.md) for the
+new pin and measured scope. Until consolidation, the installed distribution below
+remains the preserved historical release.
+
 Use the [compiler guide](../docs/BEND-IN-BEND.md) for the consolidated default:
 
 ```sh

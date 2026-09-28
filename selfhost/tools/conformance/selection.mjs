@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import {describeFixture,probes,sha256} from './inventory.mjs';
+import {describeFixture,expectation,probes,sha256} from './inventory.mjs';
 export const successful = row => ['pass','not-applicable'].includes(row.status)||(row.lane==='parse'&&row.status==='observed');
 export const probeKey = row => row.id+'\0'+row.lane;
 export function selectProbes(manifest,{selection='',rerun='',filter='',lanes=[]}={}) {
@@ -17,7 +17,7 @@ export function selectProbes(manifest,{selection='',rerun='',filter='',lanes=[]}
         if(known.has(id)&&known.get(id).file!==file)throw Error('Fixture ID collision: '+id);
         if(!known.has(id)){
           const test=describeFixture(file,id);
-          if(entry.expected!==undefined){if(typeof entry.expected!=='string')throw Error('Expected oracle must be text');test.expected=entry.expected.trim();test.negative=test.expected.startsWith('Error:');test.hasExpectation=true;}
+          if(entry.expected!==undefined){if(typeof entry.expected!=='string')throw Error('Expected oracle must be text');Object.assign(test,expectation(entry.expected));test.hasExpectation=true;}
           if(!test.hasExpectation&&typeof entry.accept==='boolean'){test.oracle='acceptance';test.accept=entry.accept;test.rejectPhase=entry.rejectPhase??null;test.negative=!entry.accept;}
           else if(!test.hasExpectation)throw Error('External fixture requires #| oracle, explicit expected, or explicit accept/rejectPhase: '+file);
           known.set(id,test);external.push(test);

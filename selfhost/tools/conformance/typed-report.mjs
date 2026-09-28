@@ -1,7 +1,7 @@
 import {semanticSummary} from './semantic-summary.mjs';
 import path from 'node:path';
 export function typedReport(report,file) {
-  const rows=report.results,inv=report.inventory,sem=semanticSummary(rows);
+  const rows=report.results,inv=report.inventory,sem=semanticSummary(rows,inv.tests);
   const lanes=['parse','check','interpreter','js','native','metal','cuda'];
   const n=(rs,status)=>rs.filter(r=>r.status===status).length;
   const laneRows=(lane,namespace,negative)=>rows.filter(r=>r.lane===lane&&(!namespace||r.namespace===namespace)&&(negative===undefined||r.negative===negative));
@@ -11,9 +11,9 @@ export function typedReport(report,file) {
 
 This report measures the typed Bend compiler against the complete pinned upstream
 corpus. **Strict full-suite verdict: ${report.complete?'complete':'incomplete'}.**
-There are ${inv.total} source fixtures in ${Object.keys(inv.namespaces).length} namespaces:
+There are ${inv.total} gate fixtures in ${Object.keys(inv.namespaces).length} namespaces:
 ${inv.tests.filter(t=>!t.negative).length} positive and ${inv.tests.filter(t=>t.negative).length}
-with an \`Error:\` expectation. No namespace is removed. GPU hardware gates and
+with an expected failure or proof-trust refusal. No namespace is removed. GPU hardware gates and
 negative rejection differences remain visible; they never count as successful tests.
 
 Pinned upstream: \`${inv.revision}\`.
@@ -49,6 +49,8 @@ ${Object.entries(sem.errorExpectations.rejectedByPhase).map(([phase,count])=>`| 
 | Accepted by checker; exact later rejection confirmed | ${sem.errorExpectations.acceptedWithExpectedLaterRejection.length} |
 | Accepted; expected later rejection not established | ${sem.errorExpectations.acceptedWithoutExpectedLaterRejection.length} |
 | Timeout or crash | ${sem.errorExpectations.timeoutsOrCrashes.length} |
+| Declaration-only trust refusals after type acceptance | ${sem.proofTrustExpectations.typeAccepted}/${sem.proofTrustExpectations.total} |
+| Exact trust-refusal matches | ${sem.proofTrustExpectations.exactPasses} |
 
 There are **${evidence('checker-rejection')} exact checker-rejection comparisons** across
 all lanes, **${evidence('frontend-rejection')} exact frontend rejections**, and

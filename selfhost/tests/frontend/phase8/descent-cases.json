@@ -1,0 +1,32 @@
+{
+  "cases": [
+    {
+      "id": "phase8/nested-constructor-descent",
+      "file": "nested-constructor-descent.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/nested-constructor-nondecrease/parse",
+      "file": "nested-constructor-nondecrease.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/nested-constructor-nondecrease/check",
+      "file": "nested-constructor-nondecrease.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    }
+  ]
+}

@@ -120,7 +120,7 @@ def dg_finish(
 
 @unsafe
 def check_book_diagnostic(book, origins):
-  dg_suffix_events(book, book_cached(Nil{}, norm_max_book(book)), book, origins)
+  dg_suffix_events(book, check_declarations(book, book_cached(Nil{}, norm_max_book(book))), Nil{}, book, origins)
 
 @unsafe
 def dg_quant_error(message, name, allowed, used):
@@ -148,12 +148,14 @@ law dg_prefix_seed:
   for +todo: List<&2,KDef>
   for +validated: List<&2,KDef>
   for +done: List<&2,KDef>
+  for +seen: List<&2,KDef>
   for +original: List<&2,KDef>
   for +origins: List<&2,DOrigin>
   DResult
 law dg_suffix_events:
   for +todo: List<&2,KDef>
   for +done: List<&2,KDef>
+  for +seen: List<&2,KDef>
   for +original: List<&2,KDef>
   for +origins: List<&2,DOrigin>
   DResult
@@ -161,6 +163,7 @@ law dg_suffix_guard:
   for +rest: List<&2,KDef>
   for +done: List<&2,KDef>
   for +d: KDef
+  for +seen: List<&2,KDef>
   for +original: List<&2,KDef>
   for +origins: List<&2,DOrigin>
   for +guard: String
@@ -169,12 +172,14 @@ law dg_suffix_check:
   for +rest: List<&2,KDef>
   for +done: List<&2,KDef>
   for +d: KDef
+  for +seen: List<&2,KDef>
   for +original: List<&2,KDef>
   for +origins: List<&2,DOrigin>
   for +checked: KChecked
   DResult
 law dg_suffix_finish:
   for +done: List<&2,KDef>
+  for +seen: List<&2,KDef>
   for +original: List<&2,KDef>
   for +origins: List<&2,DOrigin>
   for +error: String
@@ -182,26 +187,26 @@ law dg_suffix_finish:
 
 @unsafe
 def check_book_diagnostic_from_exact_prefix(book, validated, origins):
-  kc(DResult, exact_prefix(book, validated), u => dg_prefix_seed(book, validated, book_cached(Nil{}, norm_max_book(book)), book, origins), u => check_book_diagnostic(book, origins))
+  kc(DResult, exact_prefix(book, validated), u => dg_prefix_seed(book, validated, check_declarations(book, book_cached(Nil{}, norm_max_book(book))), Nil{}, book, origins), u => check_book_diagnostic(book, origins))
 @unsafe
-def dg_prefix_seed(todo, validated, done, original, origins):
+def dg_prefix_seed(todo, validated, done, seen, original, origins):
   match validated:
-    case Nil{}: dg_suffix_events(todo, done, original, origins)
+    case Nil{}: dg_suffix_events(todo, done, seen, original, origins)
     case Con{head, tail}:
-      dg_prefix_step(todo, head, tail, done, original, origins)
+      dg_prefix_step(todo, head, tail, done, seen, original, origins)
 @unsafe
-def dg_suffix_events(todo, done, original, origins):
+def dg_suffix_events(todo, done, seen, original, origins):
   match todo:
-    case Nil{}: dg_suffix_finish(done, original, origins, check_open(done))
-    case Con{d, rest}: dg_suffix_guard(rest, done, d, original, origins, event_error(done, d, lookup(done, dn(d))))
+    case Nil{}: dg_suffix_finish(done, seen, original, origins, check_open(done))
+    case Con{d, rest}: dg_suffix_guard(rest, done, d, seen, original, origins, event_error(seen, d, lookup(seen, dn(d))))
 @unsafe
-def dg_suffix_guard(rest, done, d, original, origins, guard):
-  kc(DResult, String.eq(guard, ""), u => dg_suffix_check(rest, done, d, original, origins, check_definition_result(book_put(done, declared(d)), signature_mode(d, rest))), u => dg_finish(dn(d) ++ ": " ++ guard, done, dg_no_report(dn(d), guard), origins))
+def dg_suffix_guard(rest, done, d, seen, original, origins, guard):
+  kc(DResult, String.eq(guard, ""), u => dg_suffix_check(rest, done, d, seen, original, origins, check_definition_result(done, signature_mode(d, rest))), u => dg_finish(dn(d) ++ ": " ++ guard, done, dg_no_report(dn(d), guard), origins))
 @unsafe
-def dg_suffix_check(rest, done, d, original, origins, checked):
-  kc(DResult, good(checked), u => dg_suffix_events(rest, book_put(done, d), original, origins), u => dg_finish(dn(d) ++ ": " ++ ce(checked), book_put(done, declared(d)), dg_report(checked, dn(d)), origins))
+def dg_suffix_check(rest, done, d, seen, original, origins, checked):
+  kc(DResult, good(checked), u => dg_suffix_events(rest, check_event_install(done, d, rest), book_put(seen, d), original, origins), u => dg_finish(dn(d) ++ ": " ++ ce(checked), book_put(done, declared(d)), dg_report(checked, dn(d)), origins))
 @unsafe
-def dg_suffix_finish(done, original, origins, error):
+def dg_suffix_finish(done, seen, original, origins, error):
   kc(DResult, String.eq(error, ""), u => DResult{"", original, dg_no_report("", "")}, u => dg_finish(error, done, dg_no_report("", error), origins))
 
 law dg_prefix_step:
@@ -209,14 +214,15 @@ law dg_prefix_step:
   for +head: KDef
   for +tail: List<&2,KDef>
   for +done: List<&2,KDef>
+  for +seen: List<&2,KDef>
   for +original: List<&2,KDef>
   for +origins: List<&2,DOrigin>
   DResult
 @unsafe
-def dg_prefix_step(todo, head, tail, done, original, origins):
+def dg_prefix_step(todo, head, tail, done, seen, original, origins):
   match todo:
     case Nil{}: check_book_diagnostic(original, origins)
-    case Con{event, rest}: dg_prefix_seed(rest, tail, book_put(done, head), original, origins)
+    case Con{event, rest}: dg_prefix_seed(rest, tail, check_event_install(done, head, rest), book_put(seen, head), original, origins)
 
 # The checker verdict stays unchanged; only rejection metadata differs.
 @unsafe

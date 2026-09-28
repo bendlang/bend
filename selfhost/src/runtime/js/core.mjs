@@ -7,6 +7,8 @@ import {getSystemErrorMap} from 'node:util';
 import {randomBytes} from 'node:crypto';
 import net from 'node:net';
 import dgram from 'node:dgram';
+import {spawn} from 'node:child_process';
+import {constants as hostConstants} from 'node:os';
 const G=Object.create(null), constructors=Object.create(null), showSchemas=Object.create(null), constructorOwn=Object.create(null), constructorNative=Object.create(null);
 const scope=p=>Object.create(p);
 const bad=m=>{throw Error(m)};

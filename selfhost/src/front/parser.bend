@@ -211,12 +211,13 @@ def f_expr(ts, min):
 def f_atom_base(
   +ts: List<&2, FToken>,
 ) -> FParsed:
-  f_choose(FParsed, f_eq(f_tx(ts), "("), u => f_group(f_body(f_tl(ts))),
+  f_choose(FParsed, f_eq(f_tx(ts), "++"), u => f_atom_base(Con{FToken{"+", f_line(ts), f_col(ts), 0}, Con{FToken{"+", f_line(ts), U32.add(f_col(ts), 1), 0}, f_tl(ts)}}),
+    u => f_choose(FParsed, f_eq(f_tx(ts), "("), u => f_group(f_body(f_tl(ts))),
     u => f_choose(FParsed, f_eq(f_tx(ts), "{"), u => f_brace(f_tl(ts)),
     u => f_choose(FParsed, f_eq(f_tx(ts), "["), u => f_array(f_tl(ts)),
     u => f_choose(FParsed, f_eq(f_tx(ts), "@"), u => f_all(f_tl(ts), False{}),
     u => f_choose(FParsed, f_eq(f_tx(ts), "&"), u => f_grade(f_tl(ts)),
-    u => f_choose(FParsed, f_eq(f_tx(ts), "+") || f_eq(f_tx(ts), "+bind"), u => f_mark(f_atom(f_tl(ts)), 2),
+    u => f_choose(FParsed, f_eq(f_tx(ts), "+") || f_eq(f_tx(ts), "+bind"), u => f_mark(f_expr(f_tl(ts), 12), 2),
     u => f_choose(FParsed, f_eq(f_tx(ts), "?"), u => FParsed{kt("Hol", f_tx(f_tl(ts)), 0, 0, Nil{}), f_tl(f_tl(ts))},
     u => f_choose(FParsed, f_eq(f_tx(ts), "\\"), u => f_matcher(f_tl(f_tl(ts))),
     u => f_choose(FParsed, f_eq(f_tx(ts), "Type") || f_eq(f_tx(ts), "Data"), u => FParsed{kt("Typ", "", 0, 0, [kt("Qua", "", 0, f_choose(U32, f_eq(f_tx(ts), "Data"), u => 2, u => 1), Nil{})]), f_tl(ts)},
@@ -224,7 +225,7 @@ def f_atom_base(
     u => f_choose(FParsed, f_eq(f_tx(ts), "Kind"), u => f_kind_wrap(f_expect(f_expr(f_tl(f_tl(ts)), 0), ")")),
     u => f_choose(FParsed, U32.is_eq(f_kind_token(ts), 2), u => FParsed{kt("Literal", f_tx(ts), 0, 1, Nil{}), f_tl(ts)},
     u => f_choose(FParsed, U32.is_eq(f_kind_token(ts), 1) && Bool.not(f_reserved(f_tx(ts))), u => f_atom_name(ts),
-    u => f_choose(FParsed, f_reserved(f_tx(ts)), u => f_err(ts, "expected term"), u => fpe_error(ts, "expected term", "a term")))))))))))))))
+    u => f_choose(FParsed, f_reserved(f_tx(ts)), u => f_err(ts, "expected term"), u => fpe_error(ts, "expected term", "a term"))))))))))))))))
 
 # A constructor brace belongs to the raw name only when lexically adjacent.
 # General term growth must not absorb the next independent braced value.
@@ -238,9 +239,11 @@ def f_atom_name(ts):
     u => f_choose(FParsed, String.ends_with(f_tx(ts), "n") && f_eq(f_tx(f_tl(ts)), "+") && U32.is_eq(f_line(ts), f_line(f_tl(ts))) && U32.is_eq(f_col(f_tl(ts)), U32.add(f_col(ts), U32.from_nat(String.length(f_tx(ts))))),
       u => f_atom_nat_start(ts, f_literal(f_tx(ts))),
       u => FParsed{kt("Literal", f_tx(ts), f_atid(ts), 1, Nil{}), f_tl(ts)}),
+    u => f_choose(FParsed, Bool.not(f_valid_name(f_tx(ts))),
+      u => fpe_error(ts, "invalid name", "a name (words joined by dots, got '" ++ f_tx(ts) ++ "')"),
     u => f_choose(FParsed, f_eq(f_tx(f_tl(ts)), "{") && U32.is_eq(f_line(ts), f_line(f_tl(ts))) && U32.is_eq(f_col(f_tl(ts)), U32.add(f_col(ts), U32.from_nat(String.length(f_tx(ts))))),
       u => f_atom_constructor(f_tx(ts), f_atid(ts), f_args(f_tl(f_tl(ts)), "}", Nil{})),
-      u => FParsed{kt("Ref", f_tx(ts), f_atid(ts), 1, Nil{}), f_tl(ts)}))
+      u => FParsed{kt("Ref", f_tx(ts), f_atid(ts), 1, Nil{}), f_tl(ts)})))
 
 # Immediate n+ is part of the numeric atom, at every surrounding precedence.
 law f_atom_nat_start:
@@ -288,7 +291,9 @@ def f_kind_wrap(p):
 def f_mark(p, q):
   match p:
     case FParsed{+n, ts}:
-      f_choose(FParsed, f_eq(tg(n), "Ref") || f_eq(tg(n), "ADT") || f_eq(tg(n), "Error"), u => FParsed{kt(tg(n), nm(n), ix(n), q, ks(n)), ts}, u => f_err(ts, "+ requires a binder or quantified datatype"))
+      f_choose(FParsed, f_eq(tg(n), "Error"), u => FParsed{n, ts},
+        u => f_choose(FParsed, (f_eq(tg(n), "Ref") && Bool.not(U32.is_eq(qt(n), 3))) || f_eq(tg(n), "ADT") || (f_eq(tg(n), "Call") && U32.is_eq(terms_len(ks(n)), 1)), u => FParsed{KTerm{tg(n), nm(n), ix(n), q, ks(n), rm(n)}, ts},
+        u => fpe_error(f_space(ts), "+ requires a binder or quantified datatype", "a quantified datatype after + (+D<..> sets D's leading quantities to &2)")))
 
 @unsafe
 def f_grade(ts):

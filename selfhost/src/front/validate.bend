@@ -67,14 +67,6 @@ law f_lambda_valid:
   for +body: KTerm
   KTerm
 
-law f_case_checked:
-  for +p: FParsed
-  for +indent: U32
-  for +heads: List<&2, KTerm>
-  for +rows: List<&2, KTerm>
-  for +pats: List<&2, KTerm>
-  FParsed
-
 @unsafe
 def f_reserved(s):
   f_eq(s, "def") || f_eq(s, "type") || f_eq(s, "law") || f_eq(s, "match") || f_eq(s, "case") || f_eq(s, "do") || f_eq(s, "return") || f_eq(s, "for") || f_eq(s, "exs") || f_eq(s, "where") || f_eq(s, "is") || f_eq(s, "import") || f_eq(s, "Type") || f_eq(s, "Data") || f_eq(s, "Kind") || f_eq(s, "Quant")
@@ -136,13 +128,6 @@ def f_scope_row_valid(r, pats, env, book, err):
 def f_lambda_valid(a, body):
   f_choose(KTerm, f_eq(tg(a), "Ref") && f_valid_name(nm(a)), u => kt("Lam", nm(a), ix(a), qt(a), [body]), u => kt("Error", "a lambda binder must be a non-reserved name", 0, 0, Nil{}))
 
-@unsafe
-def f_case_checked(p, indent, heads, rows, pats):
-  match p:
-    case FParsed{n, ts}:
-      f_choose(FParsed, U32.is_eq(terms_len(pats), terms_len(heads)), u => f_match_cases(f_skip(ts), indent, heads, Con{kt("Row", "", 0, 1, [kt("Patterns", "", 0, 1, pats), n]), rows}), u => f_err(ts, "one pattern is required per match scrutinee"))
-
-
 law f_alias_valid:
   for +s: String
   Bool
@@ -176,7 +161,13 @@ def f_import_alias(
 
 @unsafe
 def f_validate_param(ts, end, acc):
-  f_choose(FParsed, f_eq(f_tx(ts), "~") && Bool.not(f_eq(end, ")")), u => f_err(ts, "~ is only allowed on def or law template parameters"), u => f_choose(FParsed, Bool.not(f_valid_name(f_tx(f_unmark(ts)))), u => f_err(ts, "reserved parameter name"), u => f_choose(FParsed, f_eq(f_tx(ts), "~") && U32.is_lt(f_templates(acc), terms_len(acc)), u => f_err(ts, "only leading parameters may use ~"), u => f_tele_binder(f_tx(f_unmark(ts)), f_atid(ts), f_quant(ts), f_eq(f_tx(ts), "~"), f_tl(f_unmark(ts)), end, acc))))
+  f_choose(FParsed, f_eq(f_tx(ts), "~") && Bool.not(f_eq(end, ")")), u => f_err(ts, "~ is only allowed on def or law template parameters"), u => f_choose(FParsed, Bool.not(f_valid_name(f_tx(f_unmark(ts)))), u => f_err(ts, "reserved parameter name"), u => f_choose(FParsed, f_eq(end, "}") && f_named_field(f_tx(f_unmark(ts)), acc), u => fpe_error(f_unmark(ts), "duplicate constructor field", "a fresh field name (duplicate declaration: " ++ f_tx(f_unmark(ts)) ++ ")"), u => f_choose(FParsed, f_eq(f_tx(ts), "~") && U32.is_lt(f_templates(acc), terms_len(acc)), u => f_err(ts, "only leading parameters may use ~"), u => f_tele_binder(f_tx(f_unmark(ts)), f_atid(ts), f_quant(ts), f_eq(f_tx(ts), "~"), f_tl(f_unmark(ts)), end, acc)))))
+
+@unsafe
+def f_named_field(+name: String, +fields: List<&2,KTerm>) -> Bool:
+  match fields:
+    case Nil{}: False{}
+    case Con{field, rest}: f_eq(name, nm(field)) || f_named_field(name, rest)
 
 
 law f_valid_name:
@@ -189,11 +180,11 @@ law f_name_chars:
 
 @unsafe
 def f_valid_name(s):
-  (Char.is_alpha(f_head(s)) || Char.is_eq(f_head(s), '_')) && f_name_chars(s) && Bool.not(f_reserved(s)) && Bool.not(String.ends_with(s, "."))
+  (f_ascii_alpha(f_head(s)) || Char.is_eq(f_head(s), '_')) && f_name_chars(s) && Bool.not(f_reserved(s))
 
 @unsafe
 def f_name_chars(s):
-  f_choose(Bool, String.is_empty(s), u => True{}, u => f_ident(f_head(s)) && f_name_chars(f_tail(s)))
+  f_choose(Bool, String.is_empty(s), u => True{}, u => f_ident(f_head(s)) && (Bool.not(Char.is_eq(f_head(s), '.')) || f_ascii_alpha(f_head(f_tail(s))) || Char.is_eq(f_head(f_tail(s)), '_')) && f_name_chars(f_tail(s)))
 
 law f_def_prior:
   for +name: String

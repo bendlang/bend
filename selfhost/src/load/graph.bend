@@ -221,7 +221,7 @@ def f_graph_finish(s, ns, book, imports, g):
 
 @unsafe
 def f_graph_finish_alias(s, ns, book, imports, prior, err, done):
-  FGraph{norm_defs_join(prior, f_path_defs(f_module_defs(book, Nil{}, f_family_book(prior), ns, imports), f_path_dir(f_source_path(s)), f_eq(f_source_name(s), "Base"))), err, Con{kt("Loaded", f_source_path(s), f_graph_count_defs(book, 0), 0, [ref(ns)]), done}}
+  FGraph{norm_defs_join(prior, f_path_defs(f_module_defs(book, book, f_family_book(prior), ns, imports), f_path_dir(f_source_path(s)), f_eq(f_source_name(s), "Base"))), err, Con{kt("Loaded", f_source_path(s), f_graph_count_defs(book, 0), 0, [ref(ns)]), done}}
 
 
 law f_module_defs:
@@ -247,7 +247,9 @@ def f_module_defs(todo, visible, scope, ns, imports):
     case Nil{}:
       Nil{}
     case Con{+d, rest}:
-      f_module_def(d, rest, Con{d, visible}, f_choose(List<&2,KDef>, f_eq(dk(d), "ADT") || U32.is_gt(dx(d), 0), u => Con{d, scope}, u => scope), ns, imports)
+      # Qualification sees the whole module. Parser sugar sees only prior
+      # families/templates; checker declaration visibility is a separate rule.
+      f_module_def(d, rest, visible, f_choose(List<&2,KDef>, f_eq(dk(d), "ADT") || U32.is_gt(dx(d), 0), u => Con{d, scope}, u => scope), ns, imports)
 
 @unsafe
 def f_module_def(d, rest, visible, scope, ns, imports):

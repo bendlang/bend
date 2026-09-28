@@ -74,7 +74,7 @@ def j_modules(
     case Nil{}:
       ""
     case Con{source, rest}:
-      "foreignModules[" ++ j_quote(nm(source)) ++ "]=(()=>{\n" ++ nm(kid(source, 0)) ++ "\nreturn {" ++ j_module_exports(book, nm(source)) ++ "};})();\n" ++ j_modules(book, rest)
+      "foreignModules[" ++ j_quote(nm(source)) ++ "]=(()=>{const registered=Object.create(null);const io_eff=(name,fn)=>{registered[name]=fn;};\n" ++ j_source_parts(ks(source)) ++ "\nreturn Object.assign({" ++ j_module_exports(book, nm(source)) ++ "},registered);})();\n" ++ j_modules(book, rest)
 
 law j_module_exports:
   for +book: List<&2, KDef>
@@ -157,4 +157,12 @@ law j_builtin_effect:
 
 @unsafe
 def j_builtin_effect(name):
-  String.contains("|IO.print|IO.write|IO.print_err|IO.get_env|IO.args|IO.random_u32|IO.spawn|IO.sleep|IO.now|Chan.new|Chan.send|Chan.recv|Chan.close|File.open|File.read|File.read_bytes|File.read_at|File.size|File.write|File.write_bytes|File.close|TCP.listen|TCP.accept|TCP.connect|TCP.send|TCP.recv|TCP.poll|UDP.bind|UDP.send_to|UDP.recv_from|UDP.poll|Socket.close|Listener.close|Window.open|Window.frame|Window.set_title|Window.close|Audio.open|Audio.write|Audio.close|", "|" ++ name ++ "|")
+  String.contains("|IO.print|IO.write|IO.print_err|IO.get_env|IO.args|IO.random_u32|IO.spawn|IO.sleep|IO.now|IO.thread_count|Process.run|Chan.new|Chan.send|Chan.recv|Chan.close|File.open|File.read|File.read_bytes|File.read_at|File.size|File.write|File.write_bytes|File.close|TCP.listen|TCP.accept|TCP.connect|TCP.send|TCP.recv|TCP.send_bytes|TCP.recv_bytes|TCP.poll|UDP.bind|UDP.send_to|UDP.recv_from|UDP.poll|Socket.close|Listener.close|Window.open|Window.frame|Window.set_title|Window.grab|Window.close|Audio.open|Audio.write|Audio.close|", "|" ++ name ++ "|")
+
+# The shared scanner resolves foreign identifiers before either backend emits.
+@unsafe
+def j_source_parts(+parts: List<&2,KTerm>) -> String:
+  match parts:
+    case Nil{}: ""
+    case Con{part, rest}:
+      kc(String, String.eq(tg(part), "Text"), u => nm(part), u => j_quote(nm(part))) ++ j_source_parts(rest)

@@ -1,3 +1,5 @@
+// Adapted from upstream b2111cf43244e65f76ddc278ee695e669f720cbf.
+// Uses the retained selfhost runtime and its CID_* constructor ABI.
 // TCP
 // ===
 
@@ -18,6 +20,8 @@ static Term tcp_send_more(Env e, IoWork* w) {
   return io_tup(e, io_hand(w->hand), r);
 }
 
+#ifdef CID_TCP_SEND
+
 Term tcp_send_run(Env e, Term* f, IoWork* w) {
   w->hand = (intptr_t)io_hand_v(f[0]);
   w->data = io_cstr(e, f[1], &w->size);
@@ -29,3 +33,22 @@ Term tcp_send_run(Env e, Term* f, IoWork* w) {
 static void __attribute__((constructor)) tcp_send_use(void) {
   io_eff(CID_TCP_SEND, tcp_send_run, 0);
 }
+
+#endif
+
+#ifdef CID_TCP_SEND_BYTES
+
+// A value past 255 fails with EINVAL before any byte is sent.
+Term tcp_send_bytes_run(Env e, Term* f, IoWork* w) {
+  w->hand = (intptr_t)io_hand_v(f[0]);
+  w->data = io_cbuf(e, f[1], &w->size, CID_CON);
+  w->made = 0;
+  w->code = w->data == NULL ? EINVAL : 0;
+  return tcp_send_more(e, w);
+}
+
+static void __attribute__((constructor)) tcp_send_bytes_use(void) {
+  io_eff(CID_TCP_SEND_BYTES, tcp_send_bytes_run, 0);
+}
+
+#endif

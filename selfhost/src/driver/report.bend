@@ -1,5 +1,5 @@
 # Transitive promise reporting follows type, constructor-field and body refs.
-# Caller supplies the main module's own declaration names in source order.
+# Every declaration outside Base contributes to the trust verdict.
 law dr_bad_names:
   for +book: List<&2,KDef>
   for names: List<&2,String>
@@ -35,7 +35,7 @@ def driver_report(
   +book: List<&2,KDef>,
   +names: List<&2,String>,
 ) -> String:
-  dr_verdict(dr_bad_names(book_cached(book, norm_max_book(book)), names))
+  dr_verdict(driver_bad_names(book))
 
 @unsafe
 def dr_bad_names(book, names):
@@ -63,9 +63,9 @@ def dr_relies_def(book, todo, seen, d):
 @unsafe
 def dr_verdict(names):
   match names:
-    case Nil{}: "All terms check.\n"
+    case Nil{}: "ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n"
     case Con{+name, +rest}:
-      "All terms check, but " ++ U32.show(dr_count(names)) ++
+      "SOME PROOFS FAIL\nError: " ++ U32.show(dr_count(names)) ++
       kc(String, U32.is_eq(dr_count(names), 1), u => " def relies", u => " defs rely") ++
       " on unsafe or foreign code:\n" ++ dr_lines(names)
 
@@ -80,3 +80,21 @@ def dr_lines(names):
   match names:
     case Nil{}: ""
     case Con{+name, +rest}: "- " ++ name ++ "\n" ++ dr_lines(rest)
+
+@unsafe
+def driver_bad_names(
+  +book: List<&2,KDef>,
+) -> List<&2,String>:
+  dr_bad_names(book_cached(book, norm_max_book(book)), dr_own_names(book, Nil{}))
+
+@unsafe
+def dr_own_names(
+  +book: List<&2,KDef>,
+  +seen: List<&2,String>,
+) -> List<&2,String>:
+  match book:
+    case Nil{}: Nil{}
+    case Con{d, rest}:
+      kc(List<&2,String>, db(d) || has_name(seen, dn(d)),
+        u => dr_own_names(rest, seen),
+        u => Con{dn(d), dr_own_names(rest, Con{dn(d), seen})})

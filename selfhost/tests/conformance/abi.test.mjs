@@ -59,7 +59,7 @@ test('only the exact structured-checker capability replaces the legacy verdict',
       const result=await inspect(file,{api,mode:'check'});
       assert.deepEqual({status:result.status,phase:result.phase,checked:result.checked,exitCode:result.exitCode},
         {status:'error',phase:'check',checked:true,exitCode:1},String(version));
-      assert.equal(result.diagnostic,authoritative?'Error: structured rejection':'Error: legacy rejection',String(version));
+      assert.equal(result.diagnostic,authoritative?'SOME PROOFS FAIL\nError: structured rejection':'SOME PROOFS FAIL\nError: legacy rejection',String(version));
       assert.equal(stringChecks,authoritative?0:1);assert.equal(renders,authoritative?1:0);
     }
   }finally{fs.rmSync(directory,{recursive:true,force:true});}

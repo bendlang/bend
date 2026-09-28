@@ -1,0 +1,27 @@
+// Freeze and build selected existing workers using the checked stage0 helper.
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import {spawnSync} from 'node:child_process';
+const [candidate,upstream,output]=process.argv.slice(2);
+if(!candidate||!upstream||!output)throw Error('Usage: lhs-component.mjs CHECKED_CANDIDATE UPSTREAM NEW_DIRECTORY');
+fs.mkdirSync(output,{recursive:false});
+const hash=file=>crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+const identify=file=>({file:fs.realpathSync(file),sha256:hash(file)});
+const bootstrapFile=path.resolve(candidate,'dist/typed-bootstrap-report.json');
+const bootstrap=JSON.parse(fs.readFileSync(bootstrapFile,'utf8'));
+if(hash(bootstrap.source)!==bootstrap.sourceSha256)throw Error('Original assembled source changed');
+for(const module of bootstrap.modules)if(hash(path.join(path.dirname(bootstrap.source),module.file))!==module.sha256)throw Error('Original module changed');
+const source=path.resolve(output,'compiler.bend'),helper=path.resolve(output,'stage0-library.mjs'),api=path.resolve(output,'workers.mjs');
+fs.copyFileSync(bootstrap.source,source);fs.copyFileSync(path.join(candidate,'tools/stage0-library.mjs'),helper);
+const inputs=[source,helper,bootstrapFile,bootstrap.source,...bootstrap.modules.map(module=>path.join(path.dirname(bootstrap.source),module.file)),import.meta.filename,process.execPath,...['bend.ts','comp.ts','base.bend'].map(file=>path.resolve(upstream,'bend2',file))].map(identify);
+const args=['-c','3',process.execPath,'--stack-size=4096','--max-old-space-size=6144',helper,source,api,'mat_lhs','kapply'];
+const report={kind:'phase8-checked-lhs-component',started:new Date().toISOString(),pass:false,scope:'Complete candidate source checked by pinned upstream before selecting two existing worker exports; supplemental component, not B1',inputs,originalSource:identify(bootstrap.source),moduleManifest:bootstrap.modules,command:['taskset',...args],environment:{BEND_UPSTREAM:fs.realpathSync(upstream),BEND_BASE:fs.realpathSync(path.join(upstream,'bend2/base.bend'))},node:process.version};
+const save=()=>fs.writeFileSync(path.join(output,'build-report.json'),JSON.stringify(report,null,2)+'\n');save();
+const result=spawnSync('taskset',args,{env:{...process.env,...report.environment},encoding:'utf8',timeout:180000,maxBuffer:2**24});
+fs.writeFileSync(path.join(output,'build.stdout'),result.stdout??'');fs.writeFileSync(path.join(output,'build.stderr'),result.stderr??'');
+report.exitCode=result.status;report.signal=result.signal;report.error=result.error?.message??null;
+report.changedInputs=inputs.filter(item=>hash(item.file)!==item.sha256);
+report.pass=result.status===0&&!result.error&&report.changedInputs.length===0&&fs.existsSync(api)&&/Checked 2 API exports/.test(result.stderr);
+if(fs.existsSync(api))report.api=identify(api);report.finished=new Date().toISOString();save();
+console.log(JSON.stringify({output,pass:report.pass,error:report.error,exitCode:report.exitCode}));if(!report.pass)process.exitCode=1;

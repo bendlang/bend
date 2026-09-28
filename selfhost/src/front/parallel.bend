@@ -140,5 +140,4 @@ def f_statement_more(p):
 def f_typed_let_try(n, old, p):
   match p:
     case FParsed{ty, +ts}:
-      f_choose(FParsed, f_eq(f_tx(ts), "="), u => f_let_value(n, f_let_ann(ty, f_expr(f_tl(ts), 0))), u => FParsed{n, old})
-
+      f_choose(FParsed, f_eq(f_tx(ts), "="), u => f_choose(FParsed, f_eq(tg(n), "Ref"), u => f_let_value(n, f_let_ann(ty, f_expr(f_tl(ts), 0))), u => f_err(ts, "a name (a parallel or typed let binds names; destructure in its body)")), u => FParsed{n, old})

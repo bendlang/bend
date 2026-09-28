@@ -1,0 +1,298 @@
+{
+  "cases": [
+    {
+      "id": "phase8/prefix-bare-unbound/parse",
+      "file": "prefix-bare-unbound.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/prefix-bare-unbound/check",
+      "file": "prefix-bare-unbound.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-bare-defined/parse",
+      "file": "prefix-bare-defined.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/prefix-bare-defined/check",
+      "file": "prefix-bare-defined.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-bound/parse",
+      "file": "prefix-bound.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/prefix-bound/check",
+      "file": "prefix-bound.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-bound-empty-call/parse",
+      "file": "prefix-bound-empty-call.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/prefix-bound-empty-call/check",
+      "file": "prefix-bound-empty-call.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-unbound-empty-call",
+      "file": "prefix-unbound-empty-call.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-defined-empty-call",
+      "file": "prefix-defined-empty-call.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-bound-double-call/parse",
+      "file": "prefix-bound-double-call.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/prefix-bound-double-call/check",
+      "file": "prefix-bound-double-call.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-dotted-bound/parse",
+      "file": "prefix-dotted-bound.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/prefix-dotted-bound/check",
+      "file": "prefix-dotted-bound.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-dotted-unbound",
+      "file": "prefix-dotted-unbound.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-dotted-defined",
+      "file": "prefix-dotted-defined.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-dotted-future",
+      "file": "prefix-dotted-future.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-call-argument",
+      "file": "prefix-call-argument.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-nonquantified-type",
+      "file": "prefix-nonquantified-type.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-quantified-type",
+      "file": "prefix-quantified-type.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-quantified-empty-call",
+      "file": "prefix-quantified-empty-call.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-parameterized-type",
+      "file": "prefix-parameterized-type.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-parameterized-empty-call",
+      "file": "prefix-parameterized-empty-call.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-parameterized-applied-empty-call",
+      "file": "prefix-parameterized-applied-empty-call.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-double/parse",
+      "file": "prefix-double.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/prefix-double/check",
+      "file": "prefix-double.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-rebinding",
+      "file": "prefix-rebinding.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-infix-concat",
+      "file": "prefix-infix-concat.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-operand-error",
+      "file": "prefix-operand-error.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/prefix-noncapture/parse",
+      "file": "prefix-noncapture.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/prefix-noncapture/check",
+      "file": "prefix-noncapture.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    }
+  ]
+}

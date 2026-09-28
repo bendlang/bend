@@ -31,7 +31,8 @@ function array(value) {
 const hash=file=>crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 const trace=(message)=>{if(process.env.BEND_TYPED_TRACE)process.stderr.write(`[typed ${new Date().toISOString()}] ${message}\n`);};
 
-const bootstrapPin='6018e28ecc67cf1fffc0c20c64b11023474c2df8';
+const compilerTarget=JSON.parse(fs.readFileSync(path.join(project,'src/compiler.json'),'utf8'));
+const bootstrapPin=compilerTarget.upstream;
 // Bootstrap is synchronous, but its subprocess output need not use pipes.
 // Some process supervisors report EPERM for pipe capture even after status 0.
 // Retain the actual spawn error; file capture avoids that ambiguity.
@@ -70,7 +71,7 @@ export function verifyBootstrapProvenance(provenance) {
   return true;
 }
 
-export function bootstrap({upstream=process.env.BEND_UPSTREAM||path.resolve(project,'../upstream-bend'),timeoutMs=120000,nativeSnapshot=process.env.BEND_TYPED_NATIVE_SNAPSHOT,nativeModules}={}) {
+export function bootstrap({upstream=process.env.BEND_UPSTREAM||path.resolve(project,'.bootstrap/upstream-phase8'),timeoutMs=120000,nativeSnapshot=process.env.BEND_TYPED_NATIVE_SNAPSHOT,nativeModules}={}) {
   const provenance=captureBootstrapProvenance(upstream),revision=provenance.upstream.revision;
   const manifest=path.join(project,'src/compiler.json');
   if(!fs.existsSync(manifest))throw Error('Compiler module manifest is missing: '+manifest);
@@ -97,14 +98,14 @@ export function bootstrap({upstream=process.env.BEND_UPSTREAM||path.resolve(proj
   if(files.includes('src/load/modules.bend'))exports.push('f_source_parsed');
   if(files.includes('src/core/index.bend'))exports.push('book_context','book_cached');
   if(files.includes('src/load/seed.bend'))exports.push('f_load_graph_seed','f_load_graph_seed_trace');
-  if(files.includes('src/driver/report.bend'))exports.push('driver_report');
+  if(files.includes('src/driver/report.bend'))exports.push('driver_report','driver_bad_names');
   if(files.includes('src/diagnostic/produce.bend'))exports.push('compiler_check_result_abi','check_book_diagnostic','check_book_diagnostic_from_exact_prefix','diagnostic_render','diagnostic_result_locate');
   if(files.includes('src/diagnostic/frontend.bend'))exports.push('f_load_origins_for','f_loaded_origins_for');
   if(files.includes('src/back/js/validate.bend')) {
     exports.push('j_compile_error');
     if(fs.readFileSync(path.join(project,'src/back/js/validate.bend'),'utf8').includes('law j_layout_error:'))exports.push('j_layout_error');
   }
-  if(files.includes('src/core/reach.bend'))exports.push('reach_book','j_roots','j_stops','annotate_except');
+  if(files.includes('src/core/reach.bend'))exports.push('reach_book','j_roots','j_stops','annotate_except','kf_source');
   if(fs.readFileSync(path.join(project,'src/check/annotate.bend'),'utf8').includes('law annotate_selected:'))exports.push('annotate_selected');
   if(fs.readFileSync(path.join(project,'src/back/js/emit.bend'),'utf8').includes('law j_program_selected:'))exports.push('j_program_selected','j_library_selected');
   if(files.includes('src/back/js/foreign.bend'))exports.push('j_foreign_paths','j_foreign_error');
@@ -181,7 +182,7 @@ async function loadApiForIdentity(identity=null) {
   // runtime uses positional fields. This is an ABI conversion, not elaboration.
   const fields={Nil:[],Con:['head','tail'],FSource:['name','path','text'],FParsedSource:['name','path','text','parsed'],FResult:['book','error','imports'],FLoadTrace:['result','done','sources'],
     KTerm:['tag','name','id','quant','kids','removed'],KDef:['name','kind','arity','templates','typ','value','ctors','native','unsafe'],
-    KSpecialized:['book','error'],NC_Result:['source','error'],
+    KSpecialized:['book','error'],NC_Result:['source','error'],KF_Source:['parts','error'],
     DText:['text'],DTerm:['term'],DNoSpan:[],DSpan:['source','begin','end'],
     DOrigin:['definition','term','source','begin','end','path'],
     DDiagnostic:['expected','observed','has_observed','context','definition','span','note','trail'],
@@ -288,15 +289,19 @@ export async function prepareBase(api) {
   return {...cached,sourceText:info.sourceText};
 }
 
-function foreignSources(graph,extension,required=null) {
+function foreignSources(graph,extension,required=null,api=null,book=null) {
   const term=(tag,name,kids=[])=>({$:'KTerm',tag,name,id:0,quant:0,kids:list(kids),removed:list([])});
   const files=required===null?graph.foreign.filter(f=>path.extname(f.path)===extension):[...new Set(required)].map(file=>({name:file,path:file}));
-  return list(files.map(file=>term('Source',file.name,[term('Text',fs.readFileSync(file.path,'utf8'))])));
+  return list(files.map(file=>{const source=fs.readFileSync(file.path,'utf8');
+    if(!api?.kf_source)return term('Source',file.name,[term('Text',source)]);
+    const parsed=api.kf_source(book,file.name,source);if(parsed.error)throw Object.assign(Error(parsed.error),{phase:'compile'});
+    return {$:'KTerm',tag:'Source',name:file.name,id:0,quant:0,kids:parsed.parts,removed:list([])};
+  }));
 }
 
 
 export async function inspect(input,options={}) {
-  return inspectWithMemo(input,options);
+  return observation(await inspectWithMemo(input,options));
 }
 
 // An inspector owns its API and a single immutable decoded Base book. Public
@@ -307,13 +312,20 @@ export async function createPersistentInspector() {
   if(fs.realpathSync(apiPath)!==identity.canonicalPath||hash(apiPath)!==identity.sha256)
     throw Error('Compiler API changed while creating persistent inspector');
   const memo={entry:null,identity};
-  return Object.freeze({inspect(input,options={}) {
+  return Object.freeze({async inspect(input,options={}) {
     if(!['parse','check'].includes(options.mode??'check'))throw Error('Persistent inspector supports only parse/check');
-    return inspectWithMemo(input,{...options,api},memo);
+    return observation(await inspectWithMemo(input,{...options,api},memo));
   }});
 }
 
-async function inspectWithMemo(input,{mode='check',api,args=[],timeoutMs=5000,combinedOutput=false,withReport=false}={},memo=null) {
+function observation(result) {
+  const validation=['load','parse','check'].includes(result.phase);
+  const accepted=result.typeAccepted??(result.checked===true&&!(validation&&result.status!=='ok'));
+  return {typeAccepted:accepted,proofTrust:'not-assessed',kernelChecked:false,...result,
+    ...(validation&&result.status==='error'&&result.diagnostic&&!result.diagnostic.startsWith('SOME PROOFS FAIL\n')?{diagnostic:'SOME PROOFS FAIL\n'+result.diagnostic}:{})};
+}
+
+async function inspectWithMemo(input,{mode='check',api,args=[],timeoutMs=5000,combinedOutput=false,withReport=false,proofOnly=false}={},memo=null) {
   api??=await loadApi();
   let phase='load';
   try {
@@ -378,11 +390,15 @@ async function inspectWithMemo(input,{mode='check',api,args=[],timeoutMs=5000,co
     }
     const needReport=mode==='check'||(mode==='interpreter'&&!api.driver_has_main(book))||withReport;
     if(needReport)trace('report declarations');
-    const verdict=needReport&&api.driver_report&&api.f_main_names?api.driver_report(book,api.f_main_names(graph.main,graph.sources)):'All terms check.\n';
-    if(mode==='check') return {status:'ok',phase,stdout:verdict,exitCode:0,checked:true,files:graph.files};
+    const verdict=needReport&&api.driver_report?api.driver_report(book,list([])):'ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n';
+    const unsafeDefinitions=needReport&&api.driver_bad_names?array(api.driver_bad_names(book)):[];
+    const trust={typeAccepted:true,proofTrust:needReport?(unsafeDefinitions.length?'failed':'passed'):'not-assessed',unsafeDefinitions,kernelChecked:false};
+    if((proofOnly||!api.driver_has_main(book))&&['check','interpreter'].includes(mode)&&trust.proofTrust==='failed')
+      return {status:'error',phase:'verdict',diagnostic:verdict,exitCode:1,checked:true,...trust};
+    if(mode==='check') return {status:'ok',phase,stdout:verdict,exitCode:0,checked:true,files:graph.files,...trust};
     let interpreterIO=false;
     if(mode==='interpreter') {
-      if(!api.driver_has_main(book)) return {status:'ok',phase:'runtime',stdout:verdict,exitCode:0,checked:true};
+      if(!api.driver_has_main(book)) return {status:'ok',phase:'runtime',stdout:verdict,exitCode:0,checked:true,...trust};
       interpreterIO=api.driver_is_io(book);
       if(!interpreterIO) {
         phase='runtime';
@@ -429,9 +445,10 @@ async function inspectWithMemo(input,{mode='check',api,args=[],timeoutMs=5000,co
       const nativeInputs=[...graph.files,path.join(project,'src/runtime/native/runtime.c')];
       const requests=[...new Set(paths)].map(file=>{
         let resolved=path.resolve(file);
-        if(!fs.existsSync(resolved)&&path.dirname(resolved)===path.join(path.dirname(basePath),'effs'))resolved=path.join(project,'src/runtime/native/effs',path.basename(resolved));
+        if(path.dirname(resolved)===path.join(path.dirname(basePath),'effs'))resolved=path.join(project,'src/runtime/native/effs',path.basename(resolved));
         nativeInputs.push(resolved);
         const source=fs.readFileSync(resolved,'utf8');
+        if(api.kf_source){const parsed=api.kf_source(book,file,source);if(parsed.error)throw Object.assign(Error(parsed.error),{phase:'compile'});}
         trace('marshal native foreign source '+file);
         return api.nc_foreign_source?api.nc_foreign_source(book,file,source):source;
       }).join('\n');
@@ -443,9 +460,9 @@ async function inspectWithMemo(input,{mode='check',api,args=[],timeoutMs=5000,co
     trace('emit '+mode);
     const jsPaths=api.j_foreign_paths?array(api.j_foreign_paths(book)):null;
     const emitted=selectedEmission?(mode==='library'?api.j_library_selected(contextBook,book):api.j_program_selected(contextBook,book)):(mode==='library'?api.j_library(book):api.j_program(book));
-    const code=fs.readFileSync(runtimePath,'utf8')+'\n'+api.j_modules(book,foreignSources(graph,'.js',jsPaths))+'\n'+emitted;
+    const code=fs.readFileSync(runtimePath,'utf8')+'\n'+api.j_modules(book,foreignSources(graph,'.js',jsPaths,api,contextBook))+'\n'+emitted;
     trace('emitted '+Buffer.byteLength(code)+' bytes');
-    if(interpreterIO)return {...await executeCompiled({status:'ok',code},{timeoutMs,args:['--',...args],combinedOutput}),verdict};
+    if(interpreterIO)return {...await executeCompiled({status:'ok',code},{timeoutMs,args:['--',...args],combinedOutput,programName:path.basename(input,'.bend')}),verdict};
     return {status:'ok',phase,code,verdict,exitCode:0,checked:true,files:[...graph.files,...jsPaths||[]]};
   } catch(error) {
     trace('compiler exception: '+(error.stack||error.message));
@@ -456,19 +473,19 @@ async function inspectWithMemo(input,{mode='check',api,args=[],timeoutMs=5000,co
 export async function execute(input,{workdir,timeoutMs=5000,args=[],api,backend='js',combinedOutput=false,withReport=false}={}) {
   const compiled=await inspect(input,{mode:backend==='js'?'compile':'native',api,withReport});
   if(compiled.status!=='ok') return compiled;
-  return {...await executeCompiled(compiled,{workdir,timeoutMs,args,backend,combinedOutput}),verdict:compiled.verdict};
+  return {...await executeCompiled(compiled,{workdir,timeoutMs,args,backend,combinedOutput,programName:path.basename(input,'.bend')}),typeAccepted:true,proofTrust:compiled.proofTrust,kernelChecked:false,verdict:compiled.verdict};
 }
 
-async function executeCompiled(compiled,{workdir,timeoutMs=5000,args=[],backend='js',combinedOutput=false}={}) {
+async function executeCompiled(compiled,{workdir,timeoutMs=5000,args=[],backend='js',combinedOutput=false,programName='program'}={}) {
   const own=!workdir;
   workdir??=fs.mkdtempSync(path.join(os.tmpdir(),'bend-typed-run-'));
   try {
-    const file=path.join(workdir,backend==='js'?'program.mjs':'program.c');fs.writeFileSync(file,compiled.code);
+    const file=path.join(workdir,programName+(backend==='js'?'.mjs':'.c'));fs.writeFileSync(file,compiled.code);
     const runtimeNodeArgs=backend==='js'?nodeResourceArgs():[];
     let command=process.execPath,commandArgs=[...runtimeNodeArgs,file,...args];
     let built=null;
     if(backend!=='js') {
-      const binary=path.join(workdir,'program');
+      const binary=path.join(workdir,programName);
       built=buildNative({source:compiled.code,file,binary,target:backend==='native'?'auto':backend,cwd:workdir,timeoutMs});
       if(built.status!=='ok')return built;
       command=binary;commandArgs=[...(backend==='metal'||backend==='cuda'?['--gpu','on']:[]),...args];
@@ -494,7 +511,7 @@ async function executeCompiled(compiled,{workdir,timeoutMs=5000,args=[],backend=
 export async function main(args) {
   if(args[0]==='--bootstrap') {const report=bootstrap();console.log('Bootstrapped checked Bend API: '+report.apiSha256);return;}
   if(args[0]==='--prepare-base') {const result=await prepareBase();console.log('Base checked by generated Bend API: '+result.baseSha256);return;}
-  if(args.length===1&&['version','--version'].includes(args[0])) {console.log('Bend2 port targeting 2.0.21');return;}
+  if(args.length===1&&['version','--version'].includes(args[0])) {console.log('Bend2 port targeting '+compilerTarget.targetVersion);return;}
   const optionArgs=args.slice(0,args.includes('--')?args.indexOf('--'):args.length);
   if(!args.length||optionArgs.includes('--help')||optionArgs.includes('-h')) {console.log('node cli.mjs FILE.bend [ARGS] [--check-only | --checkup | --interpret | --run | --library]\n  [-o OUTPUT]... [--native | --cpu | --metal | --cuda]\nDefault: check, then interpret main; .js/.mjs output emits JavaScript, .c emits C, other output builds a binary.\nnode tools/typed-driver.mjs --bootstrap');if(!args.length)process.exitCode=1;return;}
   let input,mode='interpreter',programArgs=[],library=false,backend='js',checkup=false,only=false;
@@ -503,6 +520,7 @@ export async function main(args) {
     const arg=args.shift();
     if(arg==='--check-only') {mode='check';only=true;}
     else if(arg==='--checkup')checkup=true;
+    else if(arg==='--verdict')throw Error('--verdict requires the independent BendTT kernel; this self-hosted compiler does not implement kernel validation');
     else if(arg==='--interpret') mode='interpreter';
     else if(arg==='--run') mode='run';
     else if(arg==='--library') {mode='library';library=true;}
@@ -538,7 +556,7 @@ export async function main(args) {
       const extension=path.extname(output),binary=!library&&!['.js','.mjs','.c'].includes(extension);
       const emission=library?'library':backend!=='js'||extension==='.c'||binary?'native':'compile';
       let result=compiled.get(emission);
-      if(!result){result=await inspect(input,{mode:emission,timeoutMs:120000,withReport:true});compiled.set(emission,result);printVerdict(result);}
+      if(!result){result=await inspect(input,{mode:emission,timeoutMs:120000,withReport:true});compiled.set(emission,result);}
       if(result.status!=='ok'){printResult(result);process.exitCode=result.exitCode??1;return;}
       const target=fs.existsSync(output)?fs.realpathSync(output):output;
       if(fs.existsSync(output)&&fs.statSync(output).isDirectory())throw Error('Output is a directory');
@@ -559,13 +577,11 @@ export async function main(args) {
     process.exitCode=0;return;
   }
   if(library)mode='library';
-  const result=mode==='run'?await execute(input,{args:programArgs,timeoutMs:120000,backend,withReport:true}):await inspect(input,{mode,args:programArgs,timeoutMs:120000,withReport:true});
-  printVerdict(result);
+  const result=mode==='run'?await execute(input,{args:programArgs,timeoutMs:120000,backend,withReport:true}):await inspect(input,{mode,args:programArgs,timeoutMs:120000,withReport:true,proofOnly:only});
   if(result.status==='ok'&&mode==='library')process.stdout.write(result.code);
   else printResult(result);
   process.exitCode=result.exitCode??(result.status==='ok'?0:1);
 }
-function printVerdict(result){if(result.verdict&&result.verdict!=='All terms check.\n'&&result.stdout!==result.verdict)process.stderr.write(result.verdict);}
 function printResult(result){
   if(result.stdout)process.stdout.write(result.stdout);
   if(result.stderr)process.stderr.write(result.stderr);

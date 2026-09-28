@@ -60,11 +60,12 @@ def f_fresh_stack(
   ffw_walk(term, env, next, Nil{})
 @unsafe
 def ffw_walk(term, env, next, stack):
-  f_choose(FFresh, String.eq(tg(term), "Var"), u => ffw_done(f_rename_var(term, env), next, stack),
+  f_choose(FFresh, String.eq(tg(term), "FUnboundVar"), u => ffw_done(kt("Var", nm(term), next, 1, Nil{}), U32.add(next, 1), stack),
+    u => f_choose(FFresh, String.eq(tg(term), "Var"), u => ffw_done(f_rename_var(term, env), next, stack),
     u => f_choose(FFresh, String.eq(tg(term), "All"), u => ffw_walk(kid(term, 0), env, U32.add(next, 1), Con{FFAllA{term, env, next}, stack}),
     u => f_choose(FFresh, String.eq(tg(term), "Lam"), u => ffw_walk(kid(term, 0), Con{kt("Map", "", ix(term), 0, [var(nm(term), next)]), env}, U32.add(next, 1), Con{FFLambda{term, next}, stack}),
     u => f_choose(FFresh, String.eq(tg(term), "Let"), u => ffw_let(env, env, ks(term), Nil{}, next, stack),
-    u => ffw_kids(term, env, ks(term), Nil{}, next, stack)))))
+    u => ffw_kids(term, env, ks(term), Nil{}, next, stack))))))
 @unsafe
 def ffw_done(term, next, stack):
   match stack:

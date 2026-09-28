@@ -94,19 +94,20 @@ def f_array(ts):
 def f_array_first(p):
   match p:
     case FParsed{+n, +ts}:
-      f_choose(FParsed, f_eq(f_tx(ts), ":"), u => f_array_type(n, f_expr(f_tl(ts), 12)), u => f_list(f_args(f_choose(List<&2, FToken>, f_eq(f_tx(ts), ","), u => f_tl(ts), u => ts), "]", [n])))
+      f_choose(FParsed, f_eq(tg(n), "Error"), u => FParsed{n, ts}, u => f_choose(FParsed, f_eq(f_tx(ts), ":"), u => f_array_type(n, f_expr(f_tl(ts), 12)), u => f_list(f_args(f_choose(List<&2, FToken>, f_eq(f_tx(ts), ","), u => f_tl(ts), u => ts), "]", [n]))))
 
 @unsafe
 def f_array_type(n, p):
   match p:
-    case FParsed{ty, +ts}:
-      f_array_size(n, ty, f_eq(f_tx(ts), "*"), f_expect(f_expr(f_tl(ts), 0), "]"))
+    case FParsed{+ty, +ts}:
+      +rest = f_space(ts)
+      f_choose(FParsed, f_eq(tg(ty), "Error"), u => FParsed{ty, ts}, u => f_choose(FParsed, f_eq(f_tx(rest), "*") || f_eq(f_tx(rest), "^"), u => f_array_size(n, ty, f_eq(f_tx(rest), "*"), f_expr(f_tl(rest), 0)), u => fpe_error(rest, "expected * or ^ after array element type", "'^'")))
 
 @unsafe
 def f_array_size(n, ty, count, p):
   match p:
-    case FParsed{size, ts}:
-      FParsed{f_app(ref("Array.new"), [ty, f_choose(KTerm, count, u => f_array_depth(size), u => size), f_namespace(n, ty)]), ts}
+    case FParsed{+size, +ts}:
+      f_choose(FParsed, f_eq(tg(size), "Error"), u => FParsed{size, ts}, u => f_expect(FParsed{f_app(ref("Array.new"), [ty, f_choose(KTerm, count, u => f_array_depth(size), u => size), f_namespace(n, ty)]), f_space(ts)}, "]"))
 
 @unsafe
 def f_array_depth(size):

@@ -1,3 +1,5 @@
+// Adapted from upstream b2111cf43244e65f76ddc278ee695e669f720cbf.
+// Uses the retained selfhost runtime and its CID_* constructor ABI.
 // File
 // ====
 
@@ -17,6 +19,8 @@ static Term file_write_pack(Env e, IoWork* w) {
   return io_tup(e, io_hand(w->hand), r);
 }
 
+#ifdef CID_FILE_WRITE
+
 Term file_write_run(Env e, Term* f, IoWork* w) {
   w->hand = (intptr_t)io_hand_v(f[0]);
   w->data = io_cstr(e, f[1], &w->size);
@@ -26,3 +30,22 @@ Term file_write_run(Env e, Term* f, IoWork* w) {
 static void __attribute__((constructor)) file_write_use(void) {
   io_eff(CID_FILE_WRITE, file_write_run, 0);
 }
+
+#endif
+
+#ifdef CID_FILE_WRITE_BYTES
+
+// A value past 255 fails with EINVAL before any byte is written.
+Term file_write_bytes_run(Env e, Term* f, IoWork* w) {
+  w->hand = (intptr_t)io_hand_v(f[0]);
+  w->data = io_cbuf(e, f[1], &w->size, CID_CON);
+  w->code = w->data == NULL ? EINVAL : 0;
+  return w->code ? file_write_pack(e, w)
+    : io_work(w, file_write_call, file_write_pack);
+}
+
+static void __attribute__((constructor)) file_write_bytes_use(void) {
+  io_eff(CID_FILE_WRITE_BYTES, file_write_bytes_run, 0);
+}
+
+#endif

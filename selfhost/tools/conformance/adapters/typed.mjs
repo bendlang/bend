@@ -8,7 +8,7 @@ process.env.BEND_TYPED_RUNTIME=runtimePath;
 process.env.BEND_BASE=basePath;
 process.env.BEND_TYPED_TRACE??='1';
 export const name='typed-bend';
-export const artifacts={compiler:apiPath,base:basePath,runtime:runtimePath,driver:driverPath,compilerAbi:compilerAbiPath,nodeResources:nodeResourceArgsPath,
+export const artifacts={compilerManifest:path.join(project,'src/compiler.json'),compiler:apiPath,base:basePath,runtime:runtimePath,driver:driverPath,compilerAbi:compilerAbiPath,nodeResources:nodeResourceArgsPath,
   nativeBuild:path.join(path.dirname(driverPath),'native-build.mjs'),assemble:path.join(path.dirname(driverPath),'assemble.mjs'),nativeRuntime:path.join(project,'src/runtime/native/runtime.c')};
 const nativeEffects=path.join(project,'src/runtime/native/effs');
 for(const file of fs.readdirSync(nativeEffects))if(fs.statSync(path.join(nativeEffects,file)).isFile())artifacts['nativeEffect/'+file]=path.join(nativeEffects,file);
@@ -17,7 +17,7 @@ const adapterDigest=crypto.createHash('sha256').update(fs.readFileSync(new URL(i
 const digest=crypto.createHash('sha256').update(fs.readFileSync(apiPath)).digest('hex');
 const livePath=path.join(project,'build/typed',`live-${digest.slice(0,12)}.jsonl`);
 export const capabilities={parse:true,check:true,interpreter:true,js:true,native:true,metal:true,cuda:true,
-  modules:true,foreign:true,dependentTypes:true,affine:true,termination:true,proofs:true};
+  modules:true,foreign:true,dependentTypes:true,affine:true,termination:true,proofs:true,proofKernel:false,checkOracle:'validation-plus-declaration-verdict'};
 // A persistent session owns the loaded API and one immutable decoded Base cache.
 // Every request verifies the complete cache bytes, discovers sources, constructs
 // a fresh graph, validates its prefix and gets its own work directory.

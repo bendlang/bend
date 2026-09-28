@@ -49,5 +49,23 @@ def nc_foreign_base(ds: List<&2, KDef>, +path: String) -> Bool:
       nt_choose(Bool, nc_foreign_has(ks(nc_unann(dv(d))), path), u => db(d), u => nc_foreign_base(rest, path))
 
 @unsafe
+def nc_foreign_parts(+book: List<&2, KDef>, parts: List<&2, KTerm>) -> String:
+  match parts:
+    case Nil{}: ""
+    case Con{+h, rest}:
+      nt_choose(String, String.eq(tg(h), "Text"), u => nm(h),
+        u => nt_choose(String, String.eq(tg(h), "FID"), u => nt_fid(nc_ref_name(book, nm(h))),
+          u => nt_cid(nt_choose(String, String.eq(dk(lookup(book, nm(h))), "Def"), u => nm(h), u => nc_ctor_identity(book, nm(h)))))) ++ nc_foreign_parts(book, rest)
+
+@unsafe
+def nc_foreign_checked(+book: List<&2, KDef>, +path: String, +source: String, parsed: KF_Source) -> String:
+  match parsed:
+    case KF_Source{+parts, +error}:
+      nt_choose(String, String.eq(error, ""),
+        u => nt_choose(String, nc_foreign_base(book, path), u => nc_foreign_parts(book, parts),
+          u => nc_foreign_wrap(nc_constructors(book, book), nc_foreign_namespace(book, path, source), nc_foreign_parts(book, parts))),
+        u => "#error invalid foreign source identifier\n")
+
+@unsafe
 def nc_foreign_source(+book: List<&2, KDef>, +path: String, +source: String) -> String:
-  nt_choose(String, nc_foreign_base(book, path), u => source, u => nc_foreign_wrap(nc_constructors(book, book), nc_foreign_namespace(book, path, source), source))
+  nc_foreign_checked(book, path, source, kf_source(book, path, source))

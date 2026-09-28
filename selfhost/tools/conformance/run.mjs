@@ -4,14 +4,14 @@ import os from 'node:os';
 import path from 'node:path';
 import {spawn} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
-import {inventory,probes,sha256,walk} from './inventory.mjs';
+import {inventory,probes,sha256,walk,PIN_MANIFEST} from './inventory.mjs';
 import {selectProbes,successful} from './selection.mjs';
 import {runProbe} from './run-probe.mjs';
 import {createPersistentRunner} from './persistent-probe.mjs';
 import {judge} from './judge.mjs';
 
 const project=path.resolve(import.meta.dirname,'../..');
-const options={upstream:process.env.BEND_UPSTREAM||path.resolve(project,'../upstream-bend'),
+const options={upstream:process.env.BEND_UPSTREAM||path.join(project,'.bootstrap/upstream-phase8'),
   adapter:path.join(import.meta.dirname,'adapters/prototype.mjs'),output:path.join(project,'tests/conformance/latest.json'),
   jobs:8,timeout:5000,'worker-mode':'isolated','recycle-after':'64','rss-limit-mb':'1024',lanes:'parse,check,interpreter,js,native,metal,cuda',filter:'',gpu:'','stack-kb':0,'heap-mb':0,selection:'',rerun:'',retain:'none','selected-exit':'0'};
 for(let i=2;i<process.argv.length;i++) {
@@ -50,7 +50,7 @@ const persistent=options['worker-mode']==='persistent';
 if(persistent&&(!Array.isArray(adapter.persistentLanes)||typeof adapter.createPersistentSession!=='function'))throw Error('Persistent mode requires adapter persistentLanes and createPersistentSession');
 const harnessFiles=['run.mjs','worker.mjs','inventory.mjs','judge.mjs','selection.mjs','run-probe.mjs','replay.mjs',...(persistent?['persistent-probe.mjs','persistent-worker.mjs']:[])];
 const initialIdentity={adapter:adapter.name||options.adapter,capabilities:adapter.capabilities,persistentLanes:adapter.persistentLanes??null,workerMode:options['worker-mode'],adapterSha256:sha256(fs.readFileSync(options.adapter)),
-  artifacts:Object.fromEntries(Object.entries({...adapter.artifacts,...Object.fromEntries(harnessFiles.map(file=>['harness/'+file,path.join(import.meta.dirname,file)]))}).map(([name,file])=>[name,{file,sha256:sha256(fs.readFileSync(file))}]))};
+  artifacts:Object.fromEntries(Object.entries({...adapter.artifacts,'harness/compilerManifest':PIN_MANIFEST,...Object.fromEntries(harnessFiles.map(file=>['harness/'+file,path.join(import.meta.dirname,file)]))}).map(([name,file])=>[name,{file,sha256:sha256(fs.readFileSync(file))}]))};
 if(!['none','failed','all'].includes(options.retain))throw Error('Invalid --retain');
 if(!['0','1'].includes(String(options['selected-exit'])))throw Error('Invalid --selected-exit');
 for(const key of ['selection','rerun'])if(options[key])options[key]=path.resolve(options[key]);
@@ -94,7 +94,7 @@ try {
     try {
     while(next<jobs.length) {
       const index=next++,{test,lane}=jobs[index],start=performance.now();
-      const base={id:test.id,namespace:test.namespace,negative:test.negative,lane};
+      const base={id:test.id,namespace:test.namespace,negative:test.negative,failureKind:test.failureKind,lane};
       const gate=hardwareGate(lane);
       if(gate) {record({...base,status:'hardware-gated',reason:gate,implemented:!!adapter.capabilities[lane]});continue;}
       if(persistent&&!adapter.persistentLanes.includes(lane)) {record({...base,status:'unsupported',reason:`Persistent mode does not implement ${lane}; rerun with --worker-mode isolated.`,implemented:false});continue;}
@@ -120,6 +120,7 @@ const summary={tests:tests.length,allTests:manifest.total,externalTests:selected
   statuses:counts(results),lanes:Object.fromEntries(lanes.map(l=>[l,counts(results.filter(r=>r.lane===l))])),
   namespaces:Object.fromEntries(Object.keys(manifest.namespaces).map(n=>[n,counts(results.filter(r=>r.namespace===n))])),
   checkerRejections:results.filter(r=>r.evidence==='checker-rejection').length,
+  proofTrustRejections:results.filter(r=>r.evidence==='proof-trust-rejection').length,
   frontendRejections:results.filter(r=>r.evidence==='frontend-rejection').length,
   uncheckedExecutions:results.filter(r=>r.evidence==='unchecked-execution').length};
 const allRequired=manifest.tests.flatMap(t=>probes(t)).length;

@@ -10,7 +10,7 @@ const run=args=>spawnSync(process.execPath,[cli,...args],{cwd:project,encoding:'
 test('public CLI defaults to main evaluation and retains explicit check-only',()=>{
   const source=path.join(import.meta.dirname,'typed-smoke/bool.bend');
   const evaluated=run([source]);assert.equal(evaluated.status,0,evaluated.stderr);assert.equal(evaluated.stdout,'On{}\n');
-  const checked=run(['--check-only',source]);assert.equal(checked.status,0,checked.stderr);assert.equal(checked.stdout,'All terms check.\n');
+  const checked=run(['--check-only',source]);assert.equal(checked.status,0,checked.stderr);assert.equal(checked.stdout,'ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n');
   const conflicted=run([source,'--check-only','--run']);assert.notEqual(conflicted.status,0);assert.equal(conflicted.stdout,'');
 });
 test('multiple output suffixes route to JS and native C without overwriting inputs',()=>{
