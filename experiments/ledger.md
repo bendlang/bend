@@ -893,3 +893,14 @@ The [evidence capsule](../implementation/phase13/evidence/README.md) preserves
 profiles, failed attempts, consumed tools, exact histories and all measurements;
 publication checks full byte/mode recovery. All 75 unrelated Phase6 files remain
 unchanged and unstaged.
+
+## Phase14 conformance-first phase started — 2026-09-28
+
+The user authorizes the recommended next phase. The
+[design](../design/phase14/conformance_and_dispatch.md) preserves Phase12 API
+0975a4a8 and upstream b2111cf. Independent bounded owners investigate the four
+imported-law cases, group exact differences and select one shared correction,
+and test source-level normalizer dispatch following the successful index pattern.
+The [report](../implementation/phase14/conformance_and_dispatch.md) will separate
+semantic changes, exact output, scoped controls, controlled timings and promotion.
+No new result is claimed at this checkpoint; all unrelated Phase6 work stays untouched.

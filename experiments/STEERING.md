@@ -1,5 +1,12 @@
 # Current compiler experiment strategy
 
+Phase14 is active under its [design](../design/phase14/conformance_and_dispatch.md):
+fix imported-law semantics, classify exact differences and correct one shared
+cause, with a bounded source-level normalizer dispatch pilot. Phase12 remains
+installed until integration gates pass. Dispatch feasibility is capped at 90
+minutes; no prior multi-hour budget is renewed. Preserve unrelated Phase6 work.
+[Current report](../implementation/phase14/conformance_and_dispatch.md).
+
 Phase13 is complete; integration is deferred. The
 [report](../implementation/phase13/structured_rewriter.md) and
 [evidence](../implementation/phase13/evidence/README.md) preserve all pilots.
