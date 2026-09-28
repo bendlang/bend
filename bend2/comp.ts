@@ -1971,27 +1971,26 @@ function show_main(book: Bend.Book): (number | Name)[] | null {
   }
   const show: (number | Name)[] = [];
   let names = 0;
-  const ids = new Map<Lay, Map<string, number>>();
+  const ids = new Map<string, number>();
   const refuse = (): never => die("main's type " + Bend.term_show(
     Bend.term_lower(main.T)) + " cannot be printed (a function, a Type, an"
     + " erased or dependent field)");
   const node = (T: HTerm, lay: Lay): number => {
     const t = ty_wnf(book, T) as HTerm;
     const box = lay_box(lay);
-    const key = Bend.term_key(Bend.term_lower(t));
-    const rows = memo(ids, lay, () => new Map());
+    const key = JSON.stringify(lay) + Bend.term_key(Bend.term_lower(t));
     const adt = ty_adt(book, t);
     const tld = adt && book.tlds[adt.k];
     const kind = t.$ === "Eql" ? 5 : "U32 F32 Nat Char String . Array"
       .split(" ").indexOf(adt?.k ?? "") & 7;
-    if (rows.has(key)) {
-      return rows.get(key)!;
+    if (ids.has(key)) {
+      return ids.get(key)!;
     }
     if (kind !== 5 && (adt === null || adt.k === "IO.OP" || tld?.$ !== "ADT")) {
       return refuse();
     }
     const id = show.push(kind) - 1;
-    rows.set(key, id);
+    ids.set(key, id);
     const refs: [number, HTerm, Lay][] = [];
     if (kind === 3) {
       show.push(Number(box));
