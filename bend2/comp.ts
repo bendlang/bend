@@ -1953,7 +1953,7 @@ function memo_gc(): void {
 // ====
 
 // A pure main prints through a descriptor of its type, a node per (type,
-// boxed?): 0 U32, 1 F32, 2 Nat, 3 Char, 4 String, 5 Eql, 6 Array (element,
+// layout): 0 U32, 1 F32, 2 Nat, 3 Char, 4 String, 5 Eql, 6 Array (element,
 // lgs), 7 Data (boxed?, arms; per arm name, cid, fields, bracket, then an
 // (offset, node) per field). An IO main has none; an unprintable type (a
 // function, a Type, an erased or dependent field) refuses the build.
@@ -1971,26 +1971,27 @@ function show_main(book: Bend.Book): (number | Name)[] | null {
   }
   const show: (number | Name)[] = [];
   let names = 0;
-  const ids = new Map<string, number>();
+  const ids = new Map<Lay, Map<string, number>>();
   const refuse = (): never => die("main's type " + Bend.term_show(
     Bend.term_lower(main.T)) + " cannot be printed (a function, a Type, an"
     + " erased or dependent field)");
   const node = (T: HTerm, lay: Lay): number => {
     const t = ty_wnf(book, T) as HTerm;
     const box = lay_box(lay);
-    const key = String(box) + Bend.term_key(Bend.term_lower(t));
+    const key = Bend.term_key(Bend.term_lower(t));
+    const rows = memo(ids, lay, () => new Map());
     const adt = ty_adt(book, t);
     const tld = adt && book.tlds[adt.k];
     const kind = t.$ === "Eql" ? 5 : "U32 F32 Nat Char String . Array"
       .split(" ").indexOf(adt?.k ?? "") & 7;
-    if (ids.has(key)) {
-      return ids.get(key)!;
+    if (rows.has(key)) {
+      return rows.get(key)!;
     }
     if (kind !== 5 && (adt === null || adt.k === "IO.OP" || tld?.$ !== "ADT")) {
       return refuse();
     }
     const id = show.push(kind) - 1;
-    ids.set(key, id);
+    rows.set(key, id);
     const refs: [number, HTerm, Lay][] = [];
     if (kind === 3) {
       show.push(Number(box));
