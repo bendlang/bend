@@ -82,6 +82,7 @@ type Event is Data:
   Look{dx: F32, dy: F32}
   Scroll{x: U32, y: U32, dx: F32, dy: F32}
   Close{}
+  Resize{width: U32, height: U32}
 
 type Map<a, -V: Kind(a)> is Kind(a):
   MTip{}
@@ -370,6 +371,11 @@ def Listener.close(listener: Listener) -> IO(Unit):
   import "./effs/listener_close.js"
 
 def Window.open(title: String, width: U32, height: U32) ->
+  IO(Result<&1, &1, U32 & String, Window>):
+  import "./effs/window.c"
+  import "./effs/window_open.js"
+
+def Window.open_resizable(title: String, width: U32, height: U32) ->
   IO(Result<&1, &1, U32 & String, Window>):
   import "./effs/window.c"
   import "./effs/window_open.js"
@@ -3029,6 +3035,13 @@ def App.run(
 ) -> IO(Unit):
   do IO<Unit>:
     window : Window <- IO.try(Window, Window.open(title, width, height))
+    App.loop(~S, ~app, 4294967295n, window, state)
+
+def App.run_resizable(
+  ~S: Type, ~app: App<S>, title: String, width: U32, height: U32, state: S
+) -> IO(Unit):
+  do IO<Unit>:
+    window : Window <- IO.try(Window, Window.open_resizable(title, width, height))
     App.loop(~S, ~app, 4294967295n, window, state)
 
 def App.more(-S: Type, rest: S -> IO(Maybe<S>), next: Maybe<S>) ->
