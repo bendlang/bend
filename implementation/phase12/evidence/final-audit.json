@@ -1,0 +1,89 @@
+{
+  "pass": true,
+  "scope": "Post-publication metadata audit; no compiler rerun or new correctness scope.",
+  "publication": {
+    "file": "implementation/phase12/evidence/publication.json",
+    "sha256": "2fbd1b79e6ace38c195592a52245b0f66c9a57b5a4cc52a3249e6f01c04371bd"
+  },
+  "recovery": {
+    "kind": "phase12-independent-recovery-check",
+    "complete": true,
+    "pass": true,
+    "scope": "Recovered byte identity, type, size, mode and symlink target; no compiler execution.",
+    "recoveredFiles": 30182,
+    "recoveredDirectory": "/tmp/phase12-evidence-recovery-01",
+    "capsuleManifest": {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase12/evidence/capsule-01/manifest.json",
+      "type": "file",
+      "bytes": 35562397,
+      "sha256": "a62927bd40dfad4fb55c1c676baa7cddac091e6ed0905738e0c4e3d339688fb4",
+      "mode": 420
+    },
+    "tool": {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase12/evidence/recovery-check.py",
+      "type": "file",
+      "bytes": 1802,
+      "sha256": "70f54327be4eb135f31f8a192dc812ae006b8ddbc70ada3a827a7e6c68558356",
+      "mode": 420
+    }
+  },
+  "unchangedUnrelatedPhase6": 75,
+  "unresolvedRepositoryReferences": 0,
+  "missingLocalLinks": [],
+  "documents": [
+    {
+      "file": "README.md",
+      "sha256": "e3570f8046bb4a7d870b91304bad54a5d8435bf18ad5d75b2b93d9fd45372e19"
+    },
+    {
+      "file": "selfhost/README.md",
+      "sha256": "99407a685eae628499cd70e2fc6bd6ba824b49fabc8bcffcb5aea48e1db25c75"
+    },
+    {
+      "file": "selfhost/CONFORMANCE.md",
+      "sha256": "6702336500fe7a531c7e38aa3cf5deff663a4e4e2480d006d112518cd6829739"
+    },
+    {
+      "file": "docs/BEND-IN-BEND.md",
+      "sha256": "354aeb7953d08f6fa2bea249e100fb6d47b0e52860856316a6616f1f49aa47c6"
+    },
+    {
+      "file": "docs/PHASE5_DEVELOPMENT.md",
+      "sha256": "44ff2a934ed56b042c0b9b1dae209b1a59f4f2d3e4ac5beb75de3ee7b9f4ec22"
+    },
+    {
+      "file": "selfhost/docs/ARCHITECTURE.md",
+      "sha256": "2f60e664eb5f54fe3ae5ea181b390e5cb0523078a6c636f4de7f40b4098a9522"
+    },
+    {
+      "file": "selfhost/tools/development/README.md",
+      "sha256": "309abfa753bbd8058a7ff009e79694d8f003a77bae67b4e3578ae5171c5d787a"
+    },
+    {
+      "file": "implementation/phase12/avoidable_work.md",
+      "sha256": "7913fcee6a82d161722c55004a84f1450065ff717278815a0975c8cca7ac7955"
+    },
+    {
+      "file": "implementation/phase12/calls.md",
+      "sha256": "43d050cd922630e40f5d90c6348a41c12aeaa966a8cd7c333278d3bc85158a6a"
+    },
+    {
+      "file": "implementation/phase12/normalizer.md",
+      "sha256": "aaaaf4429bb4fadc187ea431dafe9def3373aedcd05da614c9a478f24e4967c4"
+    },
+    {
+      "file": "implementation/phase12/known_structure.md",
+      "sha256": "f373e04a0c4d0c7cffad30bc3fc009a260ca48c041a4fe2b01f6666ccc3ebb78"
+    },
+    {
+      "file": "experiments/STEERING.md",
+      "sha256": "61835cadd85f98d8ca6cfdeb0a82ec22d90e010bec37971e9a35a31ca02c5b79"
+    }
+  ],
+  "whitespaceException": {
+    "file": "selfhost/tools/performance/phase12/call-maintained-tests.fragment",
+    "sha256": "7044ab2601763cd82e8a5f78c589708665871e69b7644c49bfecdc4e42246eb7",
+    "diagnostic": "new blank line at EOF",
+    "reason": "Exact frozen experimental test fragment retains its consumed trailing separator newline. Archived bytes and staged bytes are identical; do not alter historical experimental input merely for formatting. Production/documentation diff is checked separately with only this exact fragment and patch data excluded."
+  }
+}

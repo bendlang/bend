@@ -1,0 +1,13 @@
+{
+  "kind": "evidence-plan-failure",
+  "complete": true,
+  "pass": false,
+  "command": ["python3", "implementation/phase8/migration-evidence/collect.py", "plan", "implementation/phase12/evidence/selection.json", "implementation/phase12/evidence/preflight-02.json"],
+  "exitCode": 1,
+  "execSessionId": 70723,
+  "destinationWritten": false,
+  "stdout": "implementation/phase12/evidence/preflight-02.stdout",
+  "stderr": "implementation/phase12/evidence/preflight-02.stderr",
+  "failure": "FileNotFoundError: [Errno 2] No such file or directory: '/home/ai/bend2/build/publish/bend/selfhost/build/phase12/normalizer-stack-01/02-seed/observations.json.artifacts/0/.worker-capture-FDoPKg/stderr'",
+  "interpretation": "A new active stack-regression producer removed a transient capture during inventory. Preserve stdout/stderr and defer further full-root preflight until producer closure. No archive was captured and no inventory was emitted."
+}

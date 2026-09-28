@@ -77,7 +77,9 @@ const currentFastProfile=Object.freeze({...currentProfile,version:3,
 // Version4 also avoids literal choice-thunk wrappers while retaining the original
 // trampoline boundary. Historical versions1/2/3 retain exact byte replay.
 const currentChoiceProfile=Object.freeze({...currentFastProfile,version:4});
-const profiles=Object.freeze([legacyProfile,currentChoiceProfile,currentFastProfile,currentProfile]);
+// Version5 adds native choices and guarded leaf-only return blocks; versions1–4 replay unchanged.
+const currentTailProfile=Object.freeze({...currentChoiceProfile,version:5});
+const profiles=Object.freeze([legacyProfile,currentTailProfile,currentChoiceProfile,currentFastProfile,currentProfile]);
 
 // The current compiler roots have identity public marshaling, emitted exactly
 // in this shape. Refuse any new ABI shape until separately reviewed.
@@ -123,8 +125,8 @@ function tokens(source,start) {
 }
 
 function choiceBody(name){return `function ${name}(_b_0, _yes_0, _no_0) {\n  if (_b_0) {\n    return run_tail(_yes_0, {$: "Unit"});\n  } else {\n    return run_tail(_no_0, {$: "Unit"});\n  }\n}`;}
-function transformChoices(source){
- const marker=prefixEnd,runtime=currentProfile.runtimeHash,names=new Set(['$kc$','$f_choose$']);
+function transformChoices(source,native=false){
+ const marker=prefixEnd,runtime=currentProfile.runtimeHash,names=new Set(native?['$kc$','$f_choose$','$nt_choose$']:['$kc$','$f_choose$']);
  const markerAt=source.indexOf(marker);assert.ok(markerAt>=0,'Missing runtime boundary');const start=markerAt+marker.length;assert.equal(sha(source.slice(0,start)),runtime,'Unknown runtime');const ts=tokens(source,start),functions=new Map();let at=0;
  while(ts[at]?.text==='function'){const first=at,name=ts[at+1]?.text;assert.match(name,/^\$[\w$]+\$$/);assert.equal(ts[at+2]?.text,'(');const body=ts[at+2].close+1;assert.equal(ts[body]?.text,'{');const end=ts[body].close;assert.ok(!functions.has(name),'Duplicate function');functions.set(name,{start:first,end,source:source.slice(ts[first].start,ts[end].end)});at=end+1;}
  assert.equal(ts[at]?.text,'export');assert.equal(ts[at+1]?.text,'default');assert.equal(ts[at+2]?.text,'{');assert.equal(ts[at+2].close,ts.length-2);assert.equal(ts.at(-1).text,';');
@@ -144,6 +146,23 @@ function transformChoices(source){
  const render=(lo,hi)=>{if(lo===hi)return '';let output='',cursor=ts[lo].start;for(let i=lo;i<hi;i++){const s=sites.get(i);if(!s||s.end>=hi)continue;output+=source.slice(cursor,ts[i].start)+'run_tail(('+render(...s.args[0])+') ? ('+render(...s.yes)+') : ('+render(...s.no)+'), {$: "Unit"})';cursor=ts[s.end].end;i=s.end;}return output+source.slice(cursor,ts[hi-1].end);};
  const program=source.slice(0,start)+source.slice(start,ts[0].start)+render(0,ts.length)+source.slice(ts.at(-1).end);
  return {source:program,report:{kind:'literal-choice-tail-derivative',version:1,runtimeSha256:runtime,inputSha256:sha(source),outputSha256:sha(program),sites:sites.size,skipped,protectedBodies:[...names].map(name=>({name,sha256:sha(functions.get(name).source)})),scope:'Only saturated structurally verified choices with two literal run_clo arrows; keep original runtime, exports and trampoline boundary.'}};
+}
+
+function transformTailChoices(source){
+ const marker=prefixEnd,runtime=currentProfile.runtimeHash;
+ const start=source.indexOf(marker)+marker.length;assert.ok(start>=marker.length);assert.equal(sha(source.slice(0,start)),runtime,'Unsupported runtime');const ts=tokens(source,start),functions=new Map();let at=0;
+ while(ts[at]?.text==='function'){const first=at,name=ts[at+1].text;assert.match(name,/^\$[\w$]+\$$/);assert.ok(!functions.has(name),'Duplicate generated binding');assert.equal(ts[at+2].text,'(');const body=ts[at+2].close+1;assert.equal(ts[body].text,'{');functions.set(name,{first,body,end:ts[body].close});at=ts[body].close+1;}
+ assert.equal(ts[at]?.text,'export');assert.equal(ts[at+1]?.text,'default');assert.equal(ts[at+2]?.text,'{');assert.equal(ts[at+2].close,ts.length-2);assert.equal(ts.at(-1).text,';');
+ const protectedNames=new Set([...functions.keys(),'run_tail','run_loop','run_clo','run_lib']);
+ for(let i=0;i<ts.length;i++){const t=ts[i].text,prev=ts[i-1]?.text,next=ts[i+1]?.text;assert.ok(!['this','arguments','super','new','eval','function*','yield','await','try','finally'].includes(t),'Unsupported lexical/control dependency');if(t==='function')assert.equal(functions.get(ts[i+1]?.text)?.first,i,'Nested function');let params;if(t==='function')params=i+2;else if(t==='('&&ts[ts[i].close+1]?.text==='='&&ts[ts[i].close+2]?.text==='>')params=i;if(params!==undefined){assert.equal(ts[params]?.text,'(');assert.ok(!ts.slice(params+1,ts[params].close).some(x=>protectedNames.has(x.text)),'Protected parameter');}if(!protectedNames.has(t))continue;assert.ok(!['let','const','var'].includes(prev)&&next!=='='&&!(['+','-','*','/','&','|','^','?'].includes(next)&&['=',next].includes(ts[i+2]?.text)),'Rebound protected name');if(prev!=='function')assert.ok(next==='('&&!['.','new'].includes(prev),'Unsupported protected reference');}
+ const split=open=>{const out=[];let lo=open+1;for(let i=lo;i<ts[open].close;i++){if(ts[i].close!==undefined){i=ts[i].close;continue;}if(ts[i].text===','){out.push([lo,i]);lo=i+1;}}if(lo<ts[open].close)out.push([lo,ts[open].close]);return out;};
+ const strip=([lo,hi])=>{while(ts[lo]?.text==='('&&ts[lo].close===hi-1){lo++;hi--;}return[lo,hi];};
+ const semicolon=(lo,hi)=>{for(let i=lo;i<hi;i++){if(ts[i].close!==undefined){i=ts[i].close;continue;}if(ts[i].text===';')return i;}return-1;};
+ const branch=range=>{const[lo,hi]=strip(range);if(ts[lo]?.text!=='('||ts[lo].close!==lo+2||!/^[A-Za-z_$][\w$]*$/.test(ts[lo+1]?.text??'')||ts[lo+3]?.text!=='='||ts[lo+4]?.text!=='>'||ts[lo+5]?.text!=='{'||ts[lo+5].close!==hi-1)return null;const body=lo+5,end=hi-1,param=ts[lo+1].text;let i=body+1;if(ts[i]?.text!=='return'||semicolon(i+1,end)!==end-1)return null;const [el,eh]=strip([i+1,end-1]),direct=functions.has(ts[el]?.text)&&ts[el+1]?.text==='('&&ts[el+1].close===eh-1;for(let j=i+1;j<end-1;j++)if(ts[j].text==='('&&( /^[A-Za-z_$][\w$]*$/.test(ts[j-1]?.text??'')&&!['return','typeof','void'].includes(ts[j-1].text)||[')',']','.'].includes(ts[j-1]?.text))&&!(direct&&j===el+1))return null;return{body,end,param,ret:i,expr:[i+1,end-1]};};
+ const sites=new Map(),skipped=[];for(let i=0;i<at;i++){if(ts[i].text!=='return'||ts[i+1]?.text!=='run_tail'||ts[i+2]?.text!=='('||ts[ts[i+2].close+1]?.text!==';')continue;const args=split(i+2);if(args.length!==2)continue;const[lo,hi]=args[0],q=ts[lo]?.close+1;if(ts[lo]?.text!=='('||ts[q]?.text!=='?')continue;const yesStart=q+1,colon=ts[yesStart]?.close+1;if(ts[yesStart]?.text!=='('||ts[colon]?.text!==':')continue;const noStart=colon+1;if(ts[noStart]?.text!=='('||ts[noStart].close!==hi-1)continue;const unit=ts.slice(...args[1]).map(x=>x.text).join('');if(unit!=='{$:"Unit"}')continue;const yes=branch([yesStart,colon]),no=branch([noStart,hi]);if(!yes||!no){skipped.push({at:ts[i].start,reason:'Branch is not one return with call-free terminal arguments'});continue;}sites.set(i,{end:ts[i+2].close+2,condition:[lo,q],yes,no});}
+ let deferred=0;const renderBranch=b=>{let text='const '+b.param+' = {$: "Unit"};\n';const[lo,hi]=strip(b.expr);if(functions.has(ts[lo]?.text)&&ts[lo+1]?.text==='('&&ts[lo+1].close===hi-1){deferred++;const args=split(lo+1).map(a=>render(...a));return text+'return {$: "$JMP", f: '+ts[lo].text+', x: ['+args.join(', ')+']};';}return text+render(b.ret,b.end);};
+ const render=(lo,hi)=>{if(lo===hi)return'';let text='',cursor=ts[lo].start;for(let i=lo;i<hi;i++){const site=sites.get(i);if(!site||site.end>hi)continue;text+=source.slice(cursor,ts[i].start)+'if ('+render(...site.condition)+') {\n'+renderBranch(site.yes)+'\n} else {\n'+renderBranch(site.no)+'\n}';cursor=ts[site.end-1].end;i=site.end-1;}return text+source.slice(cursor,ts[hi-1].end);};
+ const program=source.slice(0,start)+source.slice(start,ts[0].start)+render(0,ts.length)+source.slice(ts.at(-1).end);return{source:program,report:{kind:'return-choice-leaf-derivative',version:1,sites:sites.size,deferredGeneratedCalls:deferred,skipped,runtimeSha256:runtime,inputSha256:sha(source),outputSha256:sha(program),scope:'Only returned literal Unit choices with one-return branches, no declarations and no calls except terminal direct generated calls with call-free arguments. Unit bindings and original boundaries around all non-tail call work remain. Runtime/public exports stay exact; private unforced tail-message representation is not an invariant.'}};
 }
 
 export function transformEquality(source,version) {
@@ -193,8 +212,12 @@ export function transformEquality(source,version) {
   const replacement=target.source.replace('{\n','{\n'+guard);
   const equalitySource=source.slice(0,target.start)+replacement+source.slice(target.end);
   const stats={version:profile.version,replacements:1,runtimeHash,bodyHashes,exports,functions:functions.size};
-  if(profile.version===4){
-    const choice=transformChoices(equalitySource);
+  if(profile.version>=4){
+    const choice=transformChoices(equalitySource,profile.version>=5);
+    if(profile.version===5){
+      const tail=transformTailChoices(choice.source);
+      return {source:tail.source,stats:{...stats,choices:choice.report,tailChoices:tail.report}};
+    }
     return {source:choice.source,stats:{...stats,choices:choice.report}};
   }
   return {source:equalitySource,stats};

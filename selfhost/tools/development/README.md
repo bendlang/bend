@@ -9,7 +9,7 @@ node tools/development/workflow.mjs validate ATTEMPT SELECTION.json NEW_VALIDATI
 
 A minimal configuration is `{"upstream":".bootstrap/upstream-phase8"}`. Paths resolve
 against the configuration file. The first command freezes source/runtime/tools,
-runs the genuine checked bootstrap and checks the existing 21 frontend witnesses
+runs the genuine checked bootstrap and checks the 22 frontend witnesses (including the long-string stack regression)
 against pinned TypeScript. The second reuses that verified compiler for another
 selection. Compiler edits need a new attempt; fixture-only edits can reuse it.
 
@@ -20,12 +20,16 @@ a copied bootstrap sidecar. The development default profile is `"checked"`;
 and compiler controls. An explicit profile overrides either default. Unknown equality
 bodies or provenance are refused.
 
-Phase11 keeps that profile name for compatibility. Its version4 transform also
-lowers structurally verified literal Boolean choices to the existing tail-call
-boundary, avoiding unused branch and wrapper allocation. Historical versions1/2/3
-still replay byte for byte. This optimizes the checked B1 image; it does not
+Phase12 keeps that profile name for compatibility. Version5 includes native
+choice helpers and lowers only lone-return literal branches without nested call
+work to scoped blocks. Other branches retain their closure boundary. Terminal
+generated calls with call-free arguments use the existing trampoline message, preserving bounded tail
+stack and the original runtime/public forcing wrappers. Current export/runtime
+and binding guards are prerequisites; this is not an arbitrary-JavaScript
+optimizer. Historical versions1/2/3/4 still replay byte for byte. Private unforced
+message shape is not invariant. This optimizes the checked B1 image; it does not
 establish a new self-emitted fixed point. See the
-[Phase11 report](../../../implementation/phase11/known_work.md) for the controls.
+[Phase12 report](../../../implementation/phase12/avoidable_work.md) for controls.
 
 The CLI reports `pass` and `exactDifferences` separately. Custom acceptance/phase
 oracles can pass while exact diagnostics differ; `"strictExact":true` also

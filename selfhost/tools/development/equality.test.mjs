@@ -24,24 +24,24 @@ for(const [name,body]of [['original',source],['derived',candidate.source]]) {
 }
 const observe=(module,a,b)=>{try{return {ok:true,value:module.equality(a,b)}}catch(e){return {ok:false,error:typeof e==='string'?e:{name:e.name,message:e.message}}}};
 
-test('reviewed equality insertion and optional version4 choice lowering',()=>{
+test('reviewed equality insertion and optional current-profile choice lowering',()=>{
   assert.equal(candidate.stats.replacements,1);assert.equal(Object.keys(candidate.stats.bodyHashes).length,11);
-  const scalar=candidate.stats.version===4?transformEquality(source,3):candidate;
+  const scalar=candidate.stats.version>=4?transformEquality(source,3):candidate;
   const at=source.search(declaration('$String$eq$')),open=source.indexOf('\n',at)+1,added=scalar.source.length-source.length;
   assert.equal(scalar.source.slice(0,open),source.slice(0,open));assert.equal(scalar.source.slice(open+added),source.slice(open));
   assert.ok(scalar.source.length>source.length);assert.equal(candidate.stats.exports.length,new Set(candidate.stats.exports).size);
-  if(candidate.stats.version===4){assert.ok(candidate.stats.choices.sites>0);assert.equal(candidate.stats.choices.outputSha256,createHash('sha256').update(candidate.source).digest('hex'));}
+  if(candidate.stats.version>=4){assert.ok(candidate.stats.choices.sites>0);assert.equal((candidate.stats.tailChoices??candidate.stats.choices).outputSha256,createHash('sha256').update(candidate.source).digest('hex'));}
   assert.throws(()=>transformEquality(candidate.source),/Unsupported equality dependency/);
 });
 test('explicit versions retain historical equality bytes and reject cross-emitter profiles',()=>{
-  for(const version of [0,5,'2'])assert.throws(()=>transformEquality(source,version),/Unsupported generated runtime/);
-  if(legacy){assert.deepEqual(transformEquality(source,1),candidate);for(const version of [2,3,4])assert.throws(()=>transformEquality(source,version),/Unsupported generated runtime/);}
+  for(const version of [0,6,'2'])assert.throws(()=>transformEquality(source,version),/Unsupported generated runtime/);
+  if(legacy){assert.deepEqual(transformEquality(source,1),candidate);for(const version of [2,3,4,5])assert.throws(()=>transformEquality(source,version),/Unsupported generated runtime/);}
   else{
     const historical=transformEquality(source,2),v3=transformEquality(source,3);
     const oldGuard='  if (typeof _a_0 === "string" && typeof _b_0 === "string" && _a_0.isWellFormed() && _b_0.isWellFormed()) return _a_0 === _b_0;\n';
     const newGuard='  if (typeof _a_0 === "string" && typeof _b_0 === "string") return _a_0 === _b_0;\n';
     assert.equal(historical.source.split(oldGuard).length,2);assert.equal(historical.source.replace(oldGuard,newGuard),v3.source);assert.deepEqual({...historical.stats,version:3},v3.stats);
-    assert.equal(candidate.stats.version,4);assert.deepEqual(transformEquality(source,4),candidate);const {choices,...baseStats}=candidate.stats;assert.deepEqual({...baseStats,version:3},v3.stats);assert.ok(choices.sites>0);
+    assert.equal(candidate.stats.version,5);assert.deepEqual(transformEquality(source,5),candidate);const v4=transformEquality(source,4),{choices,...baseStats}=v4.stats;assert.deepEqual({...baseStats,version:3},v3.stats);assert.ok(choices.sites>0);assert.equal(candidate.stats.choices.protectedBodies.length,3);assert.ok(candidate.stats.tailChoices.sites>0);assert.ok(candidate.stats.tailChoices.deferredGeneratedCalls>0);
     assert.throws(()=>transformEquality(source,1),/Unsupported generated runtime/);
   }
 });
@@ -140,6 +140,43 @@ test('actual public compiler exports retain zero arity, currying and extra argum
     return {abi:api.compiler_check_result_abi(),joined,extra:api.f_path_join('folder/','file','ignored'),checked,parsed};
   };
   assert.deepEqual(observeApi(modules[1]),observeApi(modules[0]));
+});
+
+test('version5 guards generated callees and lexical control dependencies',()=>{
+  if(legacy)return;
+  for(const probe of [
+    'function $probe$() { const $lookup$=null; return 0; }',
+    'function $probe$($lookup$) { return 0; }',
+    'function $probe$({x:$lookup$}) { return 0; }',
+    'function $probe$() { return obj.$lookup$(null, "x"); }',
+    'function $probe$() { return this; }',
+    'function $probe$() { return arguments; }',
+    'function $probe$() { return new.target; }',
+    'function $probe$() { try { return 0; } finally {} }',
+    'function $probe$() { function $inner$() { return 0; } return 0; }'
+  ])assert.throws(()=>transformEquality(source.replace('export default {',()=>probe+'\nexport default {'),5),undefined,probe);
+});
+test('version5 leaf guards preserve non-tail boundaries, Unit captures, effects and arity',async()=>{
+  if(legacy)return;
+  const probe=`
+function $phase12_leaf$(_a,_b,_effect) { const _done=_effect("callee"); return _a+_b; }
+function $phase12_order$(_b,_effect) { return $kc$(_effect("condition",_b),run_clo((_u)=>{return $phase12_leaf$(_effect("first",3),_effect("second",4),_effect);}),run_clo((_u)=>{const _done=_effect("other");return 0;})); }
+function $phase12_down$(_n,_a) { return $kc$(_n>0,run_clo((_u)=>{return $phase12_down$(_n-1,_a+1);}),run_clo((_u)=>{return _a;})); }
+function $phase12_keep$(_n) { return $nt_choose$(_n>0,run_clo((_u)=>{return (_v)=>{return _u.$+":"+_n+":"+_v;};}),run_clo((_u)=>{return (_v)=>{return _u.$+":zero";};})); }
+function $phase12_nested$(_n) { return $kc$(_n>0,run_clo((_u)=>{return $phase12_down$($phase12_down$(_n,0),0);}),run_clo((_u)=>{return 0;})); }
+function $phase12_nonterminal$(_n,_f) { return $kc$(_n>0,run_clo((_u)=>{return _f(_n)+1;}),run_clo((_u)=>{return 0;})); }
+function $phase12_optional$(_n,_f) { return $kc$(_n>0,run_clo((_u)=>{return $phase12_down$(_f?.(_n),0);}),run_clo((_u)=>{return 0;})); }
+function $phase12_unit$(_b) { return $kc$(_b,run_clo((_u)=>{return _u;}),run_clo((_v)=>{return _v;})); }
+`;
+  const augmented=source.replace('export default {',()=>probe+'\nexport default {'),lowered=transformEquality(augmented,5).source;
+  const body=name=>{const start=lowered.indexOf('function $phase12_'+name+'$'),end=lowered.indexOf('\nfunction ',start+1),exportAt=lowered.indexOf('\nexport default',start+1);assert.ok(start>=0);return lowered.slice(start,end<0?exportAt:Math.min(end,exportAt));};
+  for(const name of ['order','nested','nonterminal','optional'])assert.ok(body(name).includes('return run_tail('),'Non-tail boundary retained: '+name);
+  for(const name of ['down','keep','unit'])assert.ok(!body(name).includes('return run_tail('),'Leaf transformed: '+name);
+  assert.ok(body('down').includes('f: $phase12_down$, x: ['));assert.ok(body('keep').includes('const _u = {$: "Unit"}'));assert.ok(body('unit').includes('const _v = {$: "Unit"}'));
+  const expose='\nexport const p12order=run_lib((b,e)=>run_loop($phase12_order$(b,e)),2);\nexport const p12down=(n,a)=>run_loop($phase12_down$(n,a));\nexport const p12keep=n=>run_loop($phase12_keep$(n));\nexport const p12unit=b=>run_loop($phase12_unit$(b));\nexport const p12nested=n=>run_loop($phase12_nested$(n));\nexport const p12nonterminal=(n,f)=>run_loop($phase12_nonterminal$(n,f));\n';
+  const images=[];for(const [name,text]of [['before',augmented],['after',lowered]]){const file=path.join(temp,'phase12-leaf-'+name+'.mjs');fs.writeFileSync(file,text+expose);images.push(await import(pathToFileURL(file)));}
+  const observation=m=>{const rows=[];for(const stop of ['none','condition','first','second','callee','other'])for(const condition of [false,true]){const log=[];let result;try{result={value:m.p12order(condition)((name,value)=>{log.push(name);if(name===stop)throw Error(name);return value;},'extra')};}catch(e){result={error:e.name+': '+e.message};}rows.push({condition,stop,log,result});}return{rows,deep:m.p12down(100000,0),capture:m.p12keep(7)('x'),zero:m.p12keep(0)('x'),unit:[m.p12unit(true),m.p12unit(false)],nested:m.p12nested(17),nonterminal:m.p12nonterminal(4,n=>n*2)};};
+  assert.deepEqual(observation(images[1]),observation(images[0]));
 });
 
 test('fresh derivation has distinct honest lineage, replays and rejects drift',async()=>{

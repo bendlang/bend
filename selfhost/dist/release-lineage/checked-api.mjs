@@ -2068,15 +2068,16 @@ function $core_nat$(_t_0) {
 }
 
 function $j_constructor_mode$(_book_0, _env_0, _t_0, _ty_0, _tail_0) {
-  return $kc$(($Bool$and$(_tail_0, ($String$eq$(run_loop($j_literal_typed$(_book_0, _t_0, _ty_0)), "")))), run_clo((_x_0) => {
-  const _x_1 = ($j_ctor_thunks$(_book_0, _env_0, ($ks$(_t_0)), ($j_specialize$(_book_0, ($dt$(run_loop($j_find_ctor$(_book_0, ($nm$(_t_0)))))), ($ks$(run_loop($wnf$(_book_0, _ty_0))))))));
+  const _literal_0 = run_loop($j_literal_typed$(_book_0, _t_0, _ty_0));
+  return $kc$(($Bool$and$(_tail_0, ($String$eq$(_literal_0, "")))), run_clo((_x_0) => {
+  const _x_1 = ($j_ctor_thunks$(_book_0, _env_0, ($ks$(_t_0)), ($j_specialize$(_book_0, ($dt$(run_loop($j_layout_ctor$(_book_0, run_loop($wnf$(_book_0, _ty_0)), ($nm$(_t_0)))))), ($ks$(run_loop($wnf$(_book_0, _ty_0))))))));
   const _x_2 = (_x_1 + "])");
   const _x_3 = ($j_quote$(($nm$(_t_0))));
   const _x_4 = (",[" + _x_2);
   const _x_5 = (_x_3 + _x_4);
   return ("build(" + _x_5);
 }), run_clo((_x_6) => {
-  return $j_constructor$(_book_0, _env_0, _t_0, _ty_0);
+  return $j_constructor_literal$(_book_0, _env_0, _t_0, _ty_0, _literal_0);
 }));
 }
 
@@ -3679,18 +3680,26 @@ function $j_specialize$($0, $1, $2) {
   }
 }
 
-function $j_find_ctor$(_book_0, _name_0) {
-  if (_book_0.$ === "Nil") {
-    return $missing$();
-  } else {
-    const _d_0 = _book_0["head"];
-    const _rest_0 = _book_0["tail"];
-    return $j_found_ctor$(run_loop($lookup$(($dc$(_d_0)), _name_0)), _rest_0, _name_0);
-  }
+function $j_layout_ctor$(_book_0, _ty_0, _name_0) {
+  const _d_0 = run_loop($lookup$(($dc$(run_loop($lookup$(_book_0, ($nm$(_ty_0)))))), _name_0));
+  return $kc$(($Bool$and$(($String$eq$(($tg$(_ty_0)), "ADT")), ($String$eq$(($dk$(_d_0)), "Ctr")))), run_clo((_x_0) => {
+  return _d_0;
+}), run_clo((_x_1) => {
+  return $j_find_ctor$(_book_0, _name_0);
+}));
 }
 
-function $j_constructor$(_book_0, _env_0, _t_0, _ty_0) {
-  return $j_constructor_literal$(_book_0, _env_0, _t_0, _ty_0, run_loop($j_literal_typed$(_book_0, _t_0, _ty_0)));
+function $j_constructor_literal$(_book_0, _env_0, _t_0, _ty_0, _literal_0) {
+  return $kc$(($String$eq$(_literal_0, "")), run_clo((_x_0) => {
+  const _x_1 = ($j_ctor_args$(_book_0, _env_0, ($ks$(_t_0)), ($j_specialize$(_book_0, ($dt$(run_loop($j_layout_ctor$(_book_0, run_loop($wnf$(_book_0, _ty_0)), ($nm$(_t_0)))))), ($ks$(run_loop($wnf$(_book_0, _ty_0))))))));
+  const _x_2 = (_x_1 + "])");
+  const _x_3 = ($j_quote$(($nm$(_t_0))));
+  const _x_4 = (",[" + _x_2);
+  const _x_5 = (_x_3 + _x_4);
+  return ("ctor(" + _x_5);
+}), run_clo((_x_6) => {
+  return _literal_0;
+}));
 }
 
 function $j_lambda_count$(_t_0) {
@@ -5589,25 +5598,32 @@ function $j_literal_provenance$(_book_0, _ty_0, _literal_0) {
 }));
 }
 
-function $j_found_ctor$(_found_0, _rest_0, _name_0) {
-  return $kc$(($String$eq$(($dk$(_found_0)), "Absent")), run_clo((_x_0) => {
-  return $j_find_ctor$(_rest_0, _name_0);
-}), run_clo((_x_1) => {
-  return _found_0;
-}));
+function $j_find_ctor$(_book_0, _name_0) {
+  if (_book_0.$ === "Nil") {
+    return $missing$();
+  } else {
+    const _d_0 = _book_0["head"];
+    const _rest_0 = _book_0["tail"];
+    return $j_found_ctor$(run_loop($lookup$(($dc$(_d_0)), _name_0)), _rest_0, _name_0);
+  }
 }
 
-function $j_constructor_literal$(_book_0, _env_0, _t_0, _ty_0, _literal_0) {
-  return $kc$(($String$eq$(_literal_0, "")), run_clo((_x_0) => {
-  const _x_1 = ($j_ctor_args$(_book_0, _env_0, ($ks$(_t_0)), ($j_specialize$(_book_0, ($dt$(run_loop($j_find_ctor$(_book_0, ($nm$(_t_0)))))), ($ks$(run_loop($wnf$(_book_0, _ty_0))))))));
-  const _x_2 = (_x_1 + "])");
-  const _x_3 = ($j_quote$(($nm$(_t_0))));
-  const _x_4 = (",[" + _x_2);
-  const _x_5 = (_x_3 + _x_4);
-  return ("ctor(" + _x_5);
-}), run_clo((_x_6) => {
-  return _literal_0;
-}));
+function $j_ctor_args$(_book_0, _env_0, _args_0, _tel_0) {
+  if (_args_0.$ === "Nil") {
+    return "";
+  } else {
+    const _h_0 = _args_0["head"];
+    const _rest_0 = _args_0["tail"];
+    const _x_0 = ($qt$(_tel_0));
+    const _x_3 = ($j_ctor_args$(_book_0, _env_0, _rest_0, run_loop($j_app_type$(_tel_0, _h_0))));
+    const _x_4 = run_loop($kc$(($Bool$and$(($String$eq$(($tg$(_tel_0)), "All")), (_x_0 === 0))), run_clo((_x_1) => {
+  return "null";
+}), run_clo((_x_2) => {
+  return $j_expr$(_book_0, _env_0, _h_0, run_loop($kid$(_tel_0, 0)), false);
+})));
+    const _x_5 = ("," + _x_3);
+    return (_x_4 + _x_5);
+  }
 }
 
 function $j_lambda_bind$(_book_0, _env_0, _t_0, _ty_0, _at_0) {
@@ -7590,22 +7606,12 @@ function $j_literal_node$(_t_0) {
 }));
 }
 
-function $j_ctor_args$(_book_0, _env_0, _args_0, _tel_0) {
-  if (_args_0.$ === "Nil") {
-    return "";
-  } else {
-    const _h_0 = _args_0["head"];
-    const _rest_0 = _args_0["tail"];
-    const _x_0 = ($qt$(_tel_0));
-    const _x_3 = ($j_ctor_args$(_book_0, _env_0, _rest_0, run_loop($j_app_type$(_tel_0, _h_0))));
-    const _x_4 = run_loop($kc$(($Bool$and$(($String$eq$(($tg$(_tel_0)), "All")), (_x_0 === 0))), run_clo((_x_1) => {
-  return "null";
-}), run_clo((_x_2) => {
-  return $j_expr$(_book_0, _env_0, _h_0, run_loop($kid$(_tel_0, 0)), false);
-})));
-    const _x_5 = ("," + _x_3);
-    return (_x_4 + _x_5);
-  }
+function $j_found_ctor$(_found_0, _rest_0, _name_0) {
+  return $kc$(($String$eq$(($dk$(_found_0)), "Absent")), run_clo((_x_0) => {
+  return $j_find_ctor$(_rest_0, _name_0);
+}), run_clo((_x_1) => {
+  return _found_0;
+}));
 }
 
 function $all$(_q_0, _name_0, _id_0, _a_0, _b_0) {
@@ -9180,15 +9186,6 @@ function $j_layout_fields$($0, $1, $2, $3, $4) {
       }
     }
   }
-}
-
-function $j_layout_ctor$(_book_0, _ty_0, _name_0) {
-  const _d_0 = run_loop($lookup$(($dc$(run_loop($lookup$(_book_0, ($nm$(_ty_0)))))), _name_0));
-  return $kc$(($Bool$and$(($String$eq$(($tg$(_ty_0)), "ADT")), ($String$eq$(($dk$(_d_0)), "Ctr")))), run_clo((_x_0) => {
-  return _d_0;
-}), run_clo((_x_1) => {
-  return $j_find_ctor$(_book_0, _name_0);
-}));
 }
 
 function $j_layout_let$(_book_0, _env_0, _xs_0, _ty_0, _todo_0) {
@@ -13113,7 +13110,7 @@ function $j_l_children$(_book_0, _env_0, _t_0, _ty_0) {
 }), run_clo((_x_9) => {
   return $kc$(($String$eq$(($tg$(_t_0)), "Ctr")), run_clo((_x_10) => {
   return $kc$(($String$eq$(run_loop($j_literal_typed$(_book_0, _t_0, _ty_0)), "")), run_clo((_x_11) => {
-  return $j_l_fields$(_book_0, _env_0, ($ks$(_t_0)), ($j_specialize$(_book_0, ($dt$(run_loop($j_find_ctor$(_book_0, ($nm$(_t_0)))))), ($ks$(run_loop($wnf$(_book_0, _ty_0)))))));
+  return $j_l_fields$(_book_0, _env_0, ($ks$(_t_0)), ($j_specialize$(_book_0, ($dt$(run_loop($j_layout_ctor$(_book_0, run_loop($wnf$(_book_0, _ty_0)), ($nm$(_t_0)))))), ($ks$(run_loop($wnf$(_book_0, _ty_0)))))));
 }), run_clo((_x_12) => {
   return "";
 }));

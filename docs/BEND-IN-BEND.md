@@ -9,7 +9,7 @@ does not invoke the TypeScript compiler.
 
 The active target is upstream
 [`b2111cf43244e65f76ddc278ee695e669f720cbf`](https://github.com/bendlang/bend/tree/b2111cf43244e65f76ddc278ee695e669f720cbf)
-(Bend 2.0.32 era). The [Phase11 report](../implementation/phase11/known_work.md)
+(Bend 2.0.32 era). The [Phase12 report](../implementation/phase12/avoidable_work.md)
 records checked artifact identities, current conformance, measured cost and
 remaining gaps. This experimental port does not establish independent proof
 validity; `--verdict` is explicitly unsupported.
@@ -84,7 +84,7 @@ npm run build -- /absolute/release-config.json /absolute/new-attempt
 Config fields and selection semantics are documented in the
 [maintained workflow guide](PHASE5_DEVELOPMENT.md). Broad conformance and checked
 self-reproduction are release/integration gates, not every small edit's build.
-The [Phase11 report](../implementation/phase11/known_work.md) records
+The [Phase12 report](../implementation/phase12/avoidable_work.md) records
 the current artifact's evidence and remaining failures.
 
 ## Work on the current source
@@ -97,11 +97,16 @@ changes; run a new build when compiler source changes. The development workflow
 defaults to `checked`; release builds default to `equality`. Set `"profile":
 "checked"` explicitly to build an unchanged upstream-emitted API. The equality
 profile recognizes the reviewed current and historical contracts and rejects
-unknown runtime, dependency or public-ABI changes. Version4 also recognizes
-literal Boolean choices and avoids their wrapper allocations while preserving
-the original trampoline. Historical versions1/2/3 retain exact byte replay.
+unknown runtime, dependency or public-ABI changes. Version5 includes native
+literal choices and a restricted branch transformation: one-return branches with
+call-free terminal arguments become scoped blocks, with generated tail calls
+using the existing trampoline message. Other branches keep their closure
+boundary. Runtime bytes and public forcing wrappers stay unchanged; private
+unforced message identity is outside this contract. Historical versions1/2/3/4
+retain exact byte replay. The normalizer seed change and broader branch
+transformation failed stack controls and are excluded.
 
-The [Phase11 report](../implementation/phase11/known_work.md) gives the
+The [Phase12 report](../implementation/phase12/avoidable_work.md) gives the
 current source and artifact identities. Keep experiments isolated by selecting a
 frozen attempt explicitly:
 
@@ -160,7 +165,7 @@ BEND_TYPED_API="$PWD/build/candidate-api.mjs" \
 
 This writes a checked API plus the assembled source and provenance in
 `build/typed/`. Keep source, API, runtime and host snapshots immutable during
-validation. Full self-reproduction has not been rerun for Phase11. The advanced
+validation. Full self-reproduction has not been rerun for Phase12. The advanced
 runner, separate from the checked release build, is:
 
 ```sh
@@ -196,18 +201,19 @@ canonical Base path when comparing output bytes across native and JS hosts.
 
 ## Internal boundaries and performance
 
-The [Phase11 controlled comparison](../implementation/phase11/known_work.md)
-checks identical final source in 29.73 s, versus 51.44 s for Phase10
-and 2.79 s for pinned TypeScript: 1.73× faster, with a 10.67× remaining
+The [Phase12 controlled comparison](../implementation/phase12/avoidable_work.md)
+checks identical final source in 26.90 s, versus 29.56 s for Phase11
+and 2.86 s for pinned TypeScript: 9% less time, with a 9.42× remaining
 process-time gap. It excludes emission. The separate Nat300 JS workflow takes
-15.61 s versus 24.45 s, with identical generated JavaScript. Native open-Succ
-compaction reduces that fixture's C from 20.59 MB to 269 KB and its actual native
-build/run passes. These are workload-specific results, not general runtime ratios.
+7.90 s versus 15.73 s, with identical generated JavaScript and execution results.
+Native C retains Phase11's compact 269 KB output and actual build/run gate.
+These are workload-specific compilation results, not general runtime ratios.
 
-The checked build and maintained 21 focused controls took 23.54 s in the recorded
-combined development attempt. Keep routine edits on that short path and reserve
-full-source/broad gates for integration. The report gives exact boundaries,
-resource limits, artifacts and failures for each measurement.
+The checked build and maintained 22 focused controls span 27.59 s in the recorded
+combined development attempt. This is an observation, not a paired loop speedup;
+Phase11's recorded loop used 21 cases. Keep routine edits on that short path and
+reserve full-source/broad gates for integration. The report gives exact boundaries,
+resource limits, artifacts and rejected stack-regressing candidates.
 
 The [architecture](../selfhost/docs/ARCHITECTURE.md) describes the first-order
 `KTerm`/`KDef` core and component responsibilities. The phase 1 changes retain

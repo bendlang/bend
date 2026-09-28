@@ -1,5 +1,12 @@
 [
   {
+    "id": "check/string_literal_long.bend",
+    "lanes": [
+      "check"
+    ],
+    "accept": true
+  },
+  {
     "id": "law-fill-changed-type",
     "file": "law-fill-changed-type.bend",
     "accept": false,

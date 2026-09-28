@@ -1,80 +1,79 @@
 # Current compiler experiment strategy
 
-Current authorization (2026-09-28): try another round of avoiding known redundant
-work. [Phase12 design](../design/phase12/avoidable_work.md) starts from Phase11
-`f8244c9`. No historical time budget is renewed. Preserve unrelated Phase6 work.
+Phase12 completes the user's next avoid-redundant-work round on2026-09-28.
+No historical time budget is renewed. Preserve unrelated Phase6 work.
+The [design](../design/phase12/avoidable_work.md),
+[report](../implementation/phase12/avoidable_work.md) and
+[evidence](../implementation/phase12/evidence/README.md) record the decisions.
 
-## Phase12 investigation
+## Released Phase12 frontier
 
-Root first verifies and profiles the actual Phase11 release on CPU0. Parallel
-owners initially inspect normalizer fallback, residual generated choices/calls,
-and reused checked/literal structure without compiler jobs. Prospective plans
-precede probes and stay unchanged; outcomes go in reports and this frontier.
-Use bounded counts/counterexamples and actual checked isolated candidates before
-integration. [Canonical report](../implementation/phase12/avoidable_work.md).
+The selected compiler is integrated-03, API
+`0975a4a805409cfd6a721f72cd4ffac6b207045cdecb8aa5ef04955297fcd697`.
+Upstream remains b2111cf. Typed local constructor lookup and literal reuse
+remove8Bend lines and one wrapper. The equality profile version5 adds native
+choices and164restricted returned-branch blocks, with161terminal calls using
+the existing trampoline message. Runtime and public forcing stay unchanged;
+versions1–4 replay authentic original artifacts exactly.
 
-No Phase12 gain, semantic fix or release is claimed yet. The1.2–1.5× estimate is
-only a planning hypothesis. Avoid broad compact-string or semantic-value changes
-unless current evidence justifies their validation and complexity cost. Root owns
-integration, controlled timings, preservation, release and commit/push.
+Controlled same-source checking is **29.56→26.90s**, **1.10× faster**. Pinned
+TypeScript is **2.86s**, leaving a **9.42×** process gap. The1.2–1.5× planning
+estimate is not met for checking. Nat300 JS is **15.73→7.90s (1.99×)**;
+native C emission is **3.71→2.78s (1.33×)**. JS and C bytes remain identical,
+and actual execution returns306n. Native timings exclude Clang. Each matrix
+uses serial fresh processes with intentional competing compiler/archive jobs
+paused; historical ratios are not multiplied into a new claim.
 
-## Phase11 release frontier
+The final2996frontend observations match Phase11 exactly: all1001positive cases
+check, all482validation negatives reject, and no invalid acceptance/timeout is
+observed. There remain730exact TS differences (198parse/532check), strict
+1006pass/492fail, and four imported-law trust cases fail early. The37paired
+backend rows pass with three known exact differences. Current and relocated
+CLI checks are separately bound to the installed release. No H→H fixedpoint,
+proof-kernel, GPU or general generated-program runtime gain is claimed.
 
-The [report](../implementation/phase11/known_work.md) integrates lazy offload
-lookup, one shared constructor telescope, bounded native open-Succ compaction
-and guarded literal-choice lowering in the checked B1 derivative.
-Upstream remains b2111cf; selected API is
-`63c861e900450ab2045474d6c822371d30c56019521a12c13d8e4c62009ddf1f`.
-The `equality` profile now selects version4, with exact v1/v2/v3 replay.
+Source is15130physical/12916nonblank Bend lines across59modules,496386bytes,
+1484defs/793laws/63types. The host transformation adds23lines/5802bytes and
+its tests add37lines/4368bytes; source reduction does not remove that complexity.
+The50%/75% simplification targets remain open. The checked build plus22focused
+cases spans27.59s; it is not a paired gain versus Phase11's21-case observation.
 
-Controlled full-source checking is **29.73 s**, versus **51.44 s** Phase10 and
-**2.79 s** pinned TypeScript: **1.73× faster**, with a **10.67×** process gap.
-The same-source six-process matrix excludes emission; maximum RSS falls modestly.
-Nat300 JS is **24.45→15.61 s (1.57×)** with identical generated JS.
-Native C emission is **27.03→3.61 s (7.49×)**, and C shrinks **98.69%** to269KB.
-That exact C builds with Clang16 and returns306n; emission timings exclude Clang.
-All matrices pause intentional competing compiler/archive jobs and retain failures.
+## Rejected candidates and next experiment boundary
 
-All1,001 positive frontend fixtures check; all482 validation negatives reject.
-The former long-string stack overflow passes at the same4MiB stack, reproduced
-by choice lowering alone with unchanged Bend source. This is not compact strings.
-Other2,995 observations match Phase10. There are730 exact TS differences
-(198parse/532check); four imported-law trust cases still fail early.
-No invalid acceptances/timeouts were observed;37paired backend rows pass.
+The seed cleanup is rejected even though finite semantic and fresh-worker
+controls pass: under exactly53requests it overflows while baseline and JS-only
+pass, with all52preceding results exact. Broad returned-branch inlining also
+fails fresh and matched-history controls after restoring the normalizer.
+Both initial integrations remain failed. The final no-seed leaf candidate
+passes both53/60request histories at4MiB, all predecessors exact.
 
-Source is15,138physical/12,923nonblank Bend lines, +31/+28 overPhase10; two helpers,
-one law and two private native tags are added. Simplification50%/75% goals remain
-open. No new self-hosted fixed point, proof-kernel/GPU gate or general runtime
-speedup is claimed. The checked/focused development observation is23.54s.
+A different history (old21focused cases before the string) can overflow even
+Phase11. The maintained22-case selection puts the string first for its
+fresh-worker comparison. Do not use that inherited failure to excuse a changed
+result under a history the baseline accepts. Preserve actual histories and
+resource policy; fixture order is not general stack-safety evidence.
 
-Duplicate exact-comparison work is deferred for inconsistent benefit; delayed
-normalizer fallback remains unimplemented. New speed work should first profile
-this final artifact. Imported-law fills and exact diagnostics are the next
-semantic priorities. Keep checked B1, derivatives and self-emitted artifacts
-distinct. Invalid call microtimings with EPERM remain excluded.
+Delayed normalizer spine reconstruction remains deferred for weak benefit and
+added protocol cost. Larger term/compact-string changes need new discriminating
+evidence. Do not broaden branch inlining or revive the seed cleanup without
+addressing the retained counterexamples. Profile this final API before choosing
+another hotspot; imported-law semantics and exact diagnostics remain priorities.
 
-## Historical evidence and constraints
+## Historical evidence and operating rules
 
-[Phase10](../implementation/phase10/repeated_work.md) preserves loader/index/layout
-improvements and its own different-source performance baseline. [Phase9](../implementation/phase9/checker_speed.md)
-records earlier checking/Nat changes. [Phase8](../implementation/phase8/upstream_and_conformance.md)
-records the upstream migration. Never multiply different-source speed ratios.
+[Phase11](../implementation/phase11/known_work.md) retains checker/offload and
+native-Succ improvements, [Phase10](../implementation/phase10/repeated_work.md)
+the loader/index/layout changes, [Phase9](../implementation/phase9/checker_speed.md)
+the compact-Nat/checker work, and [Phase8](../implementation/phase8/upstream_and_conformance.md)
+the upstream migration. Their measurements use their recorded source/artifacts.
+S4's simplifications and older genuine fixedpoints remain in the
+[Phase7 report](../implementation/phase7/s4-report.md). Rejected binder and
+semantic-value trials remain research evidence, not installed mechanisms.
 
-S4's validated simplifications and genuine older fixed points remain in the
-[Phase7 report](../implementation/phase7/s4-report.md). The rejected generic binder,
-unconditional checked-output and semantic-value trials remain in the
-[architecture report](../implementation/phase7/architecture-report.md); investigate
-new discriminating evidence before reconsidering them. The50%/75% source-reduction
-goals remain open, and archive/tool lines are distinct from compiler source counts.
-
-Routine edits use [checked B1 development](../docs/PHASE5_DEVELOPMENT.md), not a
-full self-reproduction. Unknown generated shapes and changed input identities
-must fail closed. Keep checked B1, guarded derivative, self-emitted H, native
-compiler host and emitted user code distinct. Complete observation coverage can
-retain strict conformance failures; do not turn capture completion into a pass.
-
-CPU0 belongs to root profiling/final comparisons; isolated tiny development
-probes may use CPU1/2/3 after root releases the slot. Pause all intentional
-compiler/archive jobs for controlled comparisons. Use existing Node24.18.0 and
-record Clang availability before native gates. Preserve errors, timeouts,
-counterexamples, invalid timings and superseded tools with exact identities.
+Routine edits use [checked B1 development](../docs/PHASE5_DEVELOPMENT.md).
+Keep checked B1, guarded derivative and self-emitted H distinct. Unknown
+profiles/bindings/input identities must fail closed. Completed capture is not
+a correctness pass. Preserve rejected attempts and superseded consumed tools.
+Pause intentional compiler/archive jobs for controlled timing; check launch
+errors, signals, timeouts and overflow as well as status and semantic oracles.
+Frozen plans stay unchanged; outcomes go in reports, ledger and this frontier.

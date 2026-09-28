@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 407, in <module>
+    main()
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 389, in main
+    result, _, _ = inventory(args.root.resolve(), selection)
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 183, in inventory
+    observed[path] = identity(path)
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 35, in identity
+    before = path.lstat()
+  File "/usr/lib/python3.9/pathlib.py", line 1359, in lstat
+    return self._accessor.lstat(self)
+FileNotFoundError: [Errno 2] No such file or directory: '/home/ai/bend2/build/publish/bend/selfhost/build/phase12/normalizer-stack-01/02-seed/observations.json.artifacts/0/.worker-capture-FDoPKg/stderr'

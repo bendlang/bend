@@ -1,0 +1,9 @@
+{
+  "pass": false,
+  "unresolvedIdentities": 1,
+  "unresolvedReferenceOccurrences": 50,
+  "resolution": "Explicitly select the currently consumed baseline Base cache path so the unchanged collector records its matching identity and existing derived-cache omission reason. Cache bytes are reconstructible from the preserved baseline API/Base/host; no compiler input or verdict changes.",
+  "file": "selfhost/build/phase11/integrated-01/snapshot/build/typed/cache/base-63c861e900450ab2045474d6c822371d30c56019521a12c13d8e4c62009ddf1f-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json",
+  "sha256": "ec64fc5787f044d07881c9e660096f0a28417fdf598003ba8bf5d65be5ed4c10",
+  "next": "preflight-04"
+}

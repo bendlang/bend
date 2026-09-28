@@ -1,0 +1,22 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+const project = path.resolve(import.meta.dirname, '../../..'), out = path.resolve(process.argv[2]); fs.mkdirSync(out);
+const root = path.join(project, 'build/phase12'), inputs = [import.meta.filename];
+const read = relative => { const file = path.join(root, relative); inputs.push(file); return JSON.parse(fs.readFileSync(file, 'utf8')); };
+const baseline = read('structure-baseline-01/report.json'), variants = {};
+for (const name of ['reuse', 'lookup', 'combined']) variants[name] = read(`structure-${name}-counts-01/report.json`);
+const ladder = Object.entries(variants).flatMap(([name, report]) => report.rows.map(row => {
+  const original = baseline.rows.find(item => item.name === row.name);
+  const observation = row => ({ ...row.result.observation, files: row.result.observation.files?.map(file => file === row.input.file ? '$fixture:' + row.input.sha256 : file) });
+  return { variant: name, fixture: row.name, identicalSourceBytes: row.input.sha256 === original.input.sha256, observationNormalization: 'Only this generated fixture path is replaced by its exact source SHA; Base and all other paths/fields remain exact.', exactCode: JSON.stringify(row.result.code) === JSON.stringify(original.result.code), exactObservation: JSON.stringify(observation(row)) === JSON.stringify(observation(original)), exactOutput: JSON.stringify(row.result.execution) === JSON.stringify(original.result.execution), pass: report.pass && original.result.pass && row.result.pass };
+}));
+const first = read('structure-controls-01/report.json'), retry = read('structure-controls-02/report.json');
+const rows = new Map(first.rows.map(row => [`${row.name}/${row.variant}`, { ...row, source: 'structure-controls-01/report.json' }]));
+for (const row of retry.rows) rows.set(`${row.name}/${row.variant}`, { ...row, source: 'structure-controls-02/report.json' });
+const controls = [...rows.values()], pairs = [...new Set(controls.map(row => row.name))].map(name => { const pair = controls.filter(row => row.name === name); return { name, exact: JSON.stringify(pair[0].result) === JSON.stringify(pair[1].result), pass: pair.every(row => row.result.pass && row.execution.exitCode === 0 && !row.execution.error && !row.execution.signal && !row.execution.timedOut && !row.execution.overflow) }; });
+const raw = read('structure-raw-01/report.json');
+const builds = ['reuse', 'lookup', 'combined'].map(name => { const validation = read(`structure-${name}-01/attempt/validation-001/report.json`); return { name, complete: validation.complete, pass: validation.pass, exactDifferences: validation.selected.exactDifferences }; });
+const identity = file => ({ file, sha256: crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex') });
+const report = { scope: 'Read-only synthesis of original/retry evidence. The original malformed dependent-alias fixture remains a failed setup; it is replaced only by its explicit corrected paired observations.', inputs: inputs.map(identity), ladder, controls, pairs, rawPass: raw.pass, builds, pass: baseline.pass && ladder.every(row => row.identicalSourceBytes && row.exactCode && row.exactObservation && row.exactOutput && row.pass) && pairs.length === 18 && pairs.every(row => row.exact && row.pass) && raw.pass && builds.every(row => row.complete && row.pass) };
+fs.writeFileSync(path.join(out, 'report.json'), JSON.stringify(report, null, 2) + '\n'); console.log(JSON.stringify({ pass: report.pass, ladderPairs: ladder.length, controlPairs: pairs.length, builds })); if (!report.pass) process.exitCode = 1;

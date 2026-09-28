@@ -1,0 +1,29 @@
+test('version5 guards generated callees and lexical control dependencies',()=>{
+  if(legacy)return;
+  for(const probe of [
+    'function $probe$() { const $lookup$=null; return 0; }',
+    'function $probe$($lookup$) { return 0; }',
+    'function $probe$({x:$lookup$}) { return 0; }',
+    'function $probe$() { return obj.$lookup$(null, "x"); }',
+    'function $probe$() { return this; }',
+    'function $probe$() { return arguments; }',
+    'function $probe$() { return new.target; }',
+    'function $probe$() { try { return 0; } finally {} }',
+    'function $probe$() { function $inner$() { return 0; } return 0; }'
+  ])assert.throws(()=>transformEquality(source.replace('export default {',()=>probe+'\nexport default {'),5),undefined,probe);
+});
+test('version5 tail blocks preserve Unit captures, effects, recursion and public arity',async()=>{
+  if(legacy)return;
+  const probe=`
+function $phase12_leaf$(_a,_b,_effect) { const _done=_effect("callee"); return _a+_b; }
+function $phase12_order$(_b,_effect) { return $kc$(_effect("condition",_b),run_clo((_u)=>{return $phase12_leaf$(_effect("first",3),_effect("second",4),_effect);}),run_clo((_u)=>{const _done=_effect("other");return 0;})); }
+function $phase12_down$(_n,_a) { return $kc$(_n>0,run_clo((_u)=>{return $phase12_down$(_n-1,_a+1);}),run_clo((_u)=>{return _a;})); }
+function $phase12_keep$(_n) { return $nt_choose$(_n>0,run_clo((_u)=>{return run_clo((_v)=>{return _u.$+":"+_n+":"+_v;});}),run_clo((_u)=>{return run_clo((_v)=>{return "zero";});})); }
+`;
+  const augmented=source.replace('export default {',()=>probe+'\nexport default {');
+  const expose='\nexport const p12order=run_lib((b,e)=>run_loop($phase12_order$(b,e)),2);\nexport const p12down=(n,a)=>run_loop($phase12_down$(n,a));\nexport const p12keep=n=>run_loop($phase12_keep$(n));\n';
+  const images=[];for(const [name,text]of [['before',augmented],['after',transformEquality(augmented,5).source]]){const file=path.join(temp,'phase12-'+name+'.mjs');fs.writeFileSync(file,text+expose);images.push(await import(pathToFileURL(file)));}
+  const observation=m=>{const rows=[];for(const stop of ['none','condition','first','second','callee','other'])for(const condition of [false,true]){const log=[];let result;try{result={value:m.p12order(condition)((name,value)=>{log.push(name);if(name===stop)throw Error(name);return value;},'extra')};}catch(e){result={error:e.name+': '+e.message};}rows.push({condition,stop,log,result});}return{rows,deep:m.p12down(100000,0),capture:m.p12keep(7)('x'),zero:m.p12keep(0)('x')};};
+  assert.deepEqual(observation(images[1]),observation(images[0]));
+});
+

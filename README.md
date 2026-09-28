@@ -17,9 +17,9 @@ This fork develops the compiler in [`selfhost/`](selfhost/README.md), on branch
 from `selfhost/`, run `npm run verify:release`, then `node cli.mjs FILE --run`.
 `npm run build` checks and rebuilds the default with pinned upstream.
 
-The [Phase11 release report](implementation/phase11/known_work.md) records
-branch, checker and native-emission optimizations against upstream **b2111cf,
-Bend 2.0.32 era**. The compiler has **15,138 Bend lines in 59 modules**, retaining
+The [Phase12 release report](implementation/phase12/avoidable_work.md) records
+typed constructor lookup, literal reuse and guarded call optimizations against upstream **b2111cf,
+Bend 2.0.32 era**. The compiler has **15,130 Bend lines in 59 modules**, retaining
 S4's shared loader, provenance and authoritative checker result. The historical
 50% and 75% simplification targets remain unachieved.
 
@@ -29,11 +29,11 @@ parent and derive guarded native equality and literal-choice optimizations.
 Ordinary compilation runs the Bend implementation without a TypeScript fallback;
 independent BendTT `--verdict` validation is not implemented.
 
-Controlled full-source checking improves **1.73×** over Phase10:
-**51.44 → 29.73 s**. Pinned TypeScript takes **2.79 s**, leaving a **10.67×**
+Controlled full-source checking takes **9% less time** than Phase11:
+**29.56 → 26.90 s**. Pinned TypeScript takes **2.86 s**, leaving a **9.42×**
 process-time gap. This measures checking and trust reporting, excluding emission.
-For the separate Nat300 fixture, generated C shrinks **98.69%**, from 20.59 MB
-to 269 KB, and the native executable builds and returns the expected result.
+The separate Nat300 JS compilation workflow improves **1.99×**, from
+**15.73 to 7.90 s**, with identical generated JavaScript and execution results.
 
 The final frontend run accepts all **1,001 positive programs** and rejects all
 **482 validation negatives**, with zero observed invalid acceptances. The former

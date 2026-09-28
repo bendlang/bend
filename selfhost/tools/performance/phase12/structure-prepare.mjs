@@ -1,0 +1,23 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+
+const project = path.resolve(import.meta.dirname, '../../..'), out = path.resolve(process.argv[2]);
+fs.mkdirSync(out);
+const baseline = path.join(project, 'build/phase11/integrated-01/snapshot'), candidate = path.join(out, 'project');
+fs.mkdirSync(candidate);
+for (const directory of ['src', 'tools', 'tests']) fs.cpSync(path.join(baseline, directory), path.join(candidate, directory), { recursive: true });
+const file = path.join(candidate, 'src/back/js/emit.bend'), before = fs.readFileSync(file, 'utf8');
+const wrapper = '@unsafe\ndef j_constructor(\n  +book: List<&2, KDef>,\n  +env: List<&2, KTerm>,\n  +t: KTerm,\n  +ty: KTerm,\n) -> String:\n  j_constructor_literal(book, env, t, ty, j_literal_typed(book, t, ty))\n\n';
+if (before.split(wrapper).length !== 2) throw Error('Nonunique wrapper preimage');
+let after = before.replace(wrapper, '');
+const marker = 'def j_constructor_mode(book, env, t, ty, tail):\n';
+if (after.split(marker).length !== 2) throw Error('Nonunique mode preimage');
+after = after.replace(marker, marker + '  +literal = j_literal_typed(book, t, ty)\n');
+const predicate = 'tail && String.eq(j_literal_typed(book, t, ty), "")';
+if (after.split(predicate).length !== 2 || after.split('j_constructor(book, env, t, ty)').length !== 2) throw Error('Nonunique constructor predicate/call');
+after = after.replace(predicate, 'tail && String.eq(literal, "")').replace('j_constructor(book, env, t, ty)', 'j_constructor_literal(book, env, t, ty, literal)');
+fs.writeFileSync(file, after);
+const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
+fs.writeFileSync(path.join(out, 'manifest.json'), JSON.stringify({ baseline, candidate, file, beforeSha256: hash(before), afterSha256: hash(after), lineDelta: after.split('\n').length - before.split('\n').length, byteDelta: Buffer.byteLength(after) - Buffer.byteLength(before), helpersDelta: -1, change: 'Reuse the eager literal result at its original demand position; remove the sole-caller private constructor wrapper. No public API change.' }, null, 2) + '\n');
+fs.writeFileSync(path.join(out, 'config.json'), JSON.stringify({ project: candidate, upstream: path.join(project, '.bootstrap/upstream-phase8'), profile: 'equality', jobs: 1, cpu: '1', timeoutMs: 30000 }, null, 2) + '\n');

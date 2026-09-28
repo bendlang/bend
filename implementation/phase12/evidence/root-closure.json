@@ -1,0 +1,17 @@
+{
+  "rootExplicitFreeze": true,
+  "captureAuthorized": false,
+  "at": "2026-09-28T16:28:17.710097+00:00",
+  "reason": "All selected compiler, test, report, tool and documentation producers are closed. Preflight first; publication metadata only may change.",
+  "ownersClosed": [
+    "root",
+    "p10_layout",
+    "p10_membership",
+    "research_binders_semantics"
+  ],
+  "finalApi": "0975a4a805409cfd6a721f72cd4ffac6b207045cdecb8aa5ef04955297fcd697",
+  "review": {
+    "file": "selfhost/build/phase12/final-report-review-01/report.json",
+    "sha256": "6428b446d9850eee426932df85c7ed2a502b4d86f9a2dcf750cd1297ab92673c"
+  }
+}

@@ -40,6 +40,13 @@ the ordinary core term format. Weak evaluation and conversion retain the kernel'
 existing interface. Binder freshening also uses explicit frames so large generated
 terms do not depend on the host JavaScript call-stack depth.
 
+Weak evaluation retains its original initial `Absent` fallback allocation.
+Reusing the input term in that otherwise unreachable slot passed finite semantic
+controls but regressed the 4MiB long-string check under a matched request history.
+The Phase12 experiment restores the allocation rather than raising the limit.
+Delayed-spine reconstruction also remains unpromoted: its small diagnostic gain
+did not justify another internal protocol.
+
 Emission selects reachable definitions while retaining the complete indexed book
 as its type context. Annotation reconstructs the checked types needed for erasure,
 runtime layouts, foreign marshalling and readback. Backend-specific intrinsic
@@ -79,7 +86,7 @@ use ordinary constructor checking. Both emitters and readback handle the form.
 Overflow keeps dynamic construction instead of wrapping the value. The compact
 source payload is fixed-width; this does not restrict wider runtime Nat values.
 Strings still expand into ordinary core constructors. The retained long-string
-case passes the final Phase11 full frontend run with a 4MiB stack; this is a
+case passes the final Phase12 full frontend run with a 4MiB stack; this is a
 bounded fixture result, not support for arbitrarily long strings. The
 [Phase9 report](../../implementation/phase9/checker_speed.md)
 records the source, semantic controls and measured costs of these changes.
@@ -114,6 +121,18 @@ Zero/Succ layers traverse their fields directly instead of repeatedly recognizin
 an entire literal suffix. Dynamic-tail dependencies and open-Array refusals remain
 part of that traversal. See the [Phase10 report](../../implementation/phase10/repeated_work.md)
 for the checked-book invariants, controls and remaining emitted-code size limits.
+
+The JS constructor emitter also uses that existing typed local lookup at its
+three nonliteral field-traversal sites. Checked books give constructors unique
+owners; unknown types or missing local constructors retain the general search.
+It shares the literal text already computed at constructor entry instead of
+recognizing the same tree again. The first recognition and nonliteral-branch
+demand stay in their original positions. No new cache or term representation is
+introduced. Repeated normalization of a nonliteral constructor's type remains;
+reflective host objects and deliberately ambiguous unchecked constructor books
+are outside this checked-source equivalence contract. The
+[Phase12 investigation](../../implementation/phase12/known_structure.md) records
+the ablations, exact emission controls and operation counts.
 
 After typed erasure, native lowering combines an open run of unary `Succ` nodes
 into private `NNatAdd`/`NNatSum` terms. User-owned constructors have already been
@@ -279,14 +298,22 @@ and cannot turn a selected pass into a whole-suite conformance claim.
 ## Validation processes
 
 The development `equality` profile is a compatibility name for an explicit
-checked-B1 derivative. Version4 adds guarded literal-choice lowering to native
-string equality: recognized saturated choices evaluate the condition once,
-allocate only the selected branch closure, and retain the original trampoline
-boundary, runtime and exports. Dynamic thunks keep the general path. Structural
-guards reject unsupported bodies or rebinding, and historical versions1/2/3
-retain exact byte replay. This compiler-host derivative does not change emitted
-user-JS behavior or establish a new self-emitted fixed point. See the
-[workflow](../../docs/PHASE5_DEVELOPMENT.md).
+checked-B1 derivative. Version5 retains native string equality and literal-choice
+lowering, includes the native choice helper, and replaces eligible returned literal
+branch closures with scoped blocks. Each branch must be one return without nested
+call work; a terminal generated call may have only call-free arguments. Other
+branches keep their original closure boundary. This restriction retains boundaries
+around non-tail recursion that the wider rejected trial moved into larger frames.
+Eligible terminal generated calls become ordinary messages
+for the unchanged trampoline. The original runtime and public forcing exports
+remain exact; Unit bindings, argument order and bounded tail stack are preserved.
+Unknown branch bodies retain the prior path, while unsupported lexical features
+and protected-name rebinding are refused. The transform is always behind the
+reviewed runtime/profile/export guards, not a standalone arbitrary-JS optimizer.
+Historical versions1/2/3/4 retain exact replay. Private unforced message shape,
+reflection and mutated host prototypes are outside the contract. This host-image
+derivative does not change emitted user-JS behavior or establish a new self-emitted
+fixed point. See the [workflow](../../docs/PHASE5_DEVELOPMENT.md).
 
 The [private compiler image](../tools/private-compiler/README.md) specializes a
 completed checked self-emitted compiler for a dedicated process. Static saturated

@@ -1,0 +1,19 @@
+{
+  "kind": "evidence-plan-failure",
+  "complete": true,
+  "pass": false,
+  "command": ["python3", "implementation/phase8/migration-evidence/collect.py", "plan", "implementation/phase12/evidence/selection.json", "implementation/phase12/evidence/preflight-01.json"],
+  "exitCode": 1,
+  "execSessionId": 42630,
+  "destinationWritten": false,
+  "failure": "FileNotFoundError: [Errno 2] No such file or directory: '/home/ai/bend2/build/publish/bend/selfhost/build/phase12/backend-01/selected/candidate.json.artifacts/34/.worker-capture-TPUWLt/stderr'",
+  "trace": [
+    "collect.py:407 main()",
+    "collect.py:389 result, _, _ = inventory(args.root.resolve(), selection)",
+    "collect.py:183 observed[path] = identity(path)",
+    "collect.py:35 before = path.lstat()",
+    "/usr/lib/python3.9/pathlib.py:1359 return self._accessor.lstat(self)"
+  ],
+  "recordProvenance": "Structured transcription of the original exec session's returned failure; the failed collector wrote no inventory JSON.",
+  "interpretation": "An active backend producer removed a transient worker-capture file after directory enumeration and before identity hashing. This plan was not an archive capture or successful inventory. Preserve the original failure and retry only into a fresh destination after coordination."
+}

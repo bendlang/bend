@@ -28,8 +28,12 @@ Then run Node 24 with a new attempt directory:
 node tools/development/workflow.mjs run development.json build/dev/attempt-01
 ```
 
-The default selection is the existing 21 frontend acceptance/rejection-phase
-witnesses. It does not assert exact diagnostic agreement. Supply `"selection"`
+The default selection is 22 frontend acceptance/rejection-phase witnesses,
+including the 6,000-character string stack regression added in Phase12. That
+witness runs first, preserving its fresh-worker comparison. Phase11 itself can
+overflow at4MiB after the previous21-case history, and rejected Phase12 variants
+fail separate stack controls; those failures are retained in the Phase12 report. This gate does not claim general
+stack safety. It does not assert exact diagnostic agreement. Supply `"selection"`
 to choose exact upstream probes or custom fixtures using the
 [selected harness format](PHASE2_DEVELOPMENT.md#select-exact-upstream-probes).
 Parse/check selections reuse persistent workers; a selection containing an
@@ -90,15 +94,20 @@ The development workflow defaults to `"checked"`; `npm run build` defaults to
 `"equality"` after the [Phase9 current-pin validation](../implementation/phase9/checker_speed.md).
 An explicit profile overrides either default.
 
-In Phase11, `equality` remains the compatibility profile name. Its version4
-derivative also lowers structurally verified saturated choices with two literal
-branch closures. It evaluates the condition once, allocates only the selected
-closure and keeps the original runtime, exports and trampoline boundary;
-nonliteral thunks retain the general path. Unsupported generated shapes or
-protected-name rebinding are refused. Historical versions1/2/3 replay their
-original transformation bytes exactly. The untouched checked B1 and explicit
-derivation record remain separate; this is not a newly self-emitted fixed point
-or a change to emitted user-JS behavior.
+In Phase12, `equality` remains the compatibility profile name. Its version5
+includes native-choice helpers and replaces a restricted set of returned literal
+branch closures with scoped blocks. Both branches must contain one return and
+no nested call work; a terminal generated call may have only call-free arguments.
+Other branches keep their closure boundary. The condition is evaluated once, the chosen Unit parameter
+retains its binding, and terminal generated calls use the unchanged runtime's
+tail-message format. Public forcing wrappers, runtime bytes, argument order and
+bounded tail stack remain protected by the reviewed profile/export/binding guards.
+Unsupported branch statements retain the prior path; unsupported lexical or
+protected-binding changes are refused. Historical versions1/2/3/4 replay their
+original bytes exactly. Private unforced message identity is not invariant.
+The untouched checked B1 and explicit derivation record remain separate; this
+is not a newly self-emitted fixed point or a change to emitted user-JS behavior.
+See the [Phase12 report](../implementation/phase12/avoidable_work.md).
 
 The [Phase11 report](../implementation/phase11/known_work.md) records the combined
 source offload demand guard, shared constructor telescope and native open-Succ

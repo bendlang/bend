@@ -1,0 +1,22 @@
+test('version5 leaf guards preserve non-tail boundaries, Unit captures, effects and arity',async()=>{
+  if(legacy)return;
+  const probe=`
+function $phase12_leaf$(_a,_b,_effect) { const _done=_effect("callee"); return _a+_b; }
+function $phase12_order$(_b,_effect) { return $kc$(_effect("condition",_b),run_clo((_u)=>{return $phase12_leaf$(_effect("first",3),_effect("second",4),_effect);}),run_clo((_u)=>{const _done=_effect("other");return 0;})); }
+function $phase12_down$(_n,_a) { return $kc$(_n>0,run_clo((_u)=>{return $phase12_down$(_n-1,_a+1);}),run_clo((_u)=>{return _a;})); }
+function $phase12_keep$(_n) { return $nt_choose$(_n>0,run_clo((_u)=>{return (_v)=>{return _u.$+":"+_n+":"+_v;};}),run_clo((_u)=>{return (_v)=>{return _u.$+":zero";};})); }
+function $phase12_nested$(_n) { return $kc$(_n>0,run_clo((_u)=>{return $phase12_down$($phase12_down$(_n,0),0);}),run_clo((_u)=>{return 0;})); }
+function $phase12_nonterminal$(_n,_f) { return $kc$(_n>0,run_clo((_u)=>{return _f(_n)+1;}),run_clo((_u)=>{return 0;})); }
+function $phase12_optional$(_n,_f) { return $kc$(_n>0,run_clo((_u)=>{return $phase12_down$(_f?.(_n),0);}),run_clo((_u)=>{return 0;})); }
+function $phase12_unit$(_b) { return $kc$(_b,run_clo((_u)=>{return _u;}),run_clo((_v)=>{return _v;})); }
+`;
+  const augmented=source.replace('export default {',()=>probe+'\nexport default {'),lowered=transformEquality(augmented,5).source;
+  const body=name=>{const start=lowered.indexOf('function $phase12_'+name+'$'),end=lowered.indexOf('\nfunction ',start+1),exportAt=lowered.indexOf('\nexport default',start+1);assert.ok(start>=0);return lowered.slice(start,end<0?exportAt:Math.min(end,exportAt));};
+  for(const name of ['order','nested','nonterminal','optional'])assert.ok(body(name).includes('return run_tail('),'Non-tail boundary retained: '+name);
+  for(const name of ['down','keep','unit'])assert.ok(!body(name).includes('return run_tail('),'Leaf transformed: '+name);
+  assert.ok(body('down').includes('f: $phase12_down$, x: ['));assert.ok(body('keep').includes('const _u = {$: "Unit"}'));assert.ok(body('unit').includes('const _v = {$: "Unit"}'));
+  const expose='\nexport const p12order=run_lib((b,e)=>run_loop($phase12_order$(b,e)),2);\nexport const p12down=(n,a)=>run_loop($phase12_down$(n,a));\nexport const p12keep=n=>run_loop($phase12_keep$(n));\nexport const p12unit=b=>run_loop($phase12_unit$(b));\nexport const p12nested=n=>run_loop($phase12_nested$(n));\nexport const p12nonterminal=(n,f)=>run_loop($phase12_nonterminal$(n,f));\n';
+  const images=[];for(const [name,text]of [['before',augmented],['after',lowered]]){const file=path.join(temp,'phase12-leaf-'+name+'.mjs');fs.writeFileSync(file,text+expose);images.push(await import(pathToFileURL(file)));}
+  const observation=m=>{const rows=[];for(const stop of ['none','condition','first','second','callee','other'])for(const condition of [false,true]){const log=[];let result;try{result={value:m.p12order(condition)((name,value)=>{log.push(name);if(name===stop)throw Error(name);return value;},'extra')};}catch(e){result={error:e.name+': '+e.message};}rows.push({condition,stop,log,result});}return{rows,deep:m.p12down(100000,0),capture:m.p12keep(7)('x'),zero:m.p12keep(0)('x'),unit:[m.p12unit(true),m.p12unit(false)],nested:m.p12nested(17),nonterminal:m.p12nonterminal(4,n=>n*2)};};
+  assert.deepEqual(observation(images[1]),observation(images[0]));
+});

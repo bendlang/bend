@@ -1,0 +1,78 @@
+{
+  "rootExplicitFreeze": true,
+  "captureAuthorized": true,
+  "at": "2026-09-28T16:30:46.963379+00:00",
+  "producersClosed": [
+    "root: compiler, gates, matrices, release, reports, documentation",
+    "p10_layout: structure controls and independent review",
+    "p10_membership: call controls and replay",
+    "research_binders_semantics: normalizer controls/report"
+  ],
+  "selectedApi": "0975a4a805409cfd6a721f72cd4ffac6b207045cdecb8aa5ef04955297fcd697",
+  "preflight": {
+    "files": 30182,
+    "objects": 13234,
+    "logicalBytes": 554774212,
+    "uniqueBytes": 421181944,
+    "newArchiveObjects": 9638,
+    "newArchiveBytesBeforeCompression": 377468117,
+    "externalPrerequisites": 25,
+    "omittedFiles": 125,
+    "omittedBytes": 217408374,
+    "referenceStatuses": {
+      "captured-external-object": 191402,
+      "captured-object": 2974,
+      "external-prerequisite": 180,
+      "external-toolchain-identity": 205,
+      "omitted-derived-input": 306
+    }
+  },
+  "metadata": [
+    {
+      "file": "implementation/phase12/evidence/root-closure.json",
+      "sha256": "39c6173d51dae4ede47b3bb7af8ca7744c43d449fab0cd46e038af1dad01f34c",
+      "bytes": 624
+    },
+    {
+      "file": "implementation/phase12/evidence/selection.json",
+      "sha256": "dd768404918f16e2671b735358d78ab111b5e65186319447709de3bd09b70e99",
+      "bytes": 35592
+    },
+    {
+      "file": "implementation/phase12/evidence/preflight-03.json",
+      "sha256": "28592b73a87b2f3fce36a51c6e56698f47b2561c0117e444e821b6e25f9245e9",
+      "bytes": 35561461
+    },
+    {
+      "file": "implementation/phase12/evidence/preflight-03.stdout",
+      "sha256": "eace1e21bb876d88c9746b88a16391b1027af96ec1a918578e1bc534daf88ee5",
+      "bytes": 508
+    },
+    {
+      "file": "implementation/phase12/evidence/preflight-03.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "implementation/phase12/evidence/preflight-03-decision.json",
+      "sha256": "337fbea527d075bb2d600ad075a6124b7adb783722a221ef51ab18570d8483dc",
+      "bytes": 776
+    },
+    {
+      "file": "implementation/phase12/evidence/preflight-04.json",
+      "sha256": "5388d3d07c34670b9486066e14cbba4376c412003c66070848eafa681fc659c1",
+      "bytes": 35562247
+    },
+    {
+      "file": "implementation/phase12/evidence/preflight-04.stdout",
+      "sha256": "d6f690e0469ba7f957a4c1ab343d310b66cee910167d4b5123c80ae0f0a7dbe9",
+      "bytes": 465
+    },
+    {
+      "file": "implementation/phase12/evidence/preflight-04.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "scope": "Final source/tool/report/observation freeze; only unselected publication metadata and git operations may follow. The selected cache metadata correction resolves the sole preflight03 repository identity gap without changing any compiler observation."
+}

@@ -1,9 +1,9 @@
 # Compiler validation
 
 The current target is upstream `b2111cf43244e65f76ddc278ee695e669f720cbf`,
-Bend2 2.0.32 era. The [Phase11 report](../implementation/phase11/known_work.md)
+Bend2 2.0.32 era. The [Phase12 report](../implementation/phase12/avoidable_work.md)
 records full reference/candidate vectors, focused regression controls, execution,
-known gaps and exact artifact identities. Its [raw evidence](../implementation/phase11/evidence/README.md)
+known gaps and exact artifact identities. Its [raw evidence](../implementation/phase12/evidence/README.md)
 preserves failures as well as passes.
 
 The installed [release manifest](dist/release.json) identifies a guarded equality/choice
@@ -26,16 +26,19 @@ none is observed accepting invalid types. Strict checks record
 1,006 passes and 492 failures, with no timeouts. There are 730 exact reference differences
 (532 check, 198 parse), including diagnostic and phase differences. Seven of 11
 trust-refusal fixtures reach the proper phase; four imported-law fills fail early.
-The previously failing long-string fixture now passes at the same 4 MiB stack.
-Two fresh runs each reproduce the old failure and the new acceptance; the choice
-derivative alone is sufficient with unchanged Bend source. This is a bounded
-resource improvement, not compact-string support or general stack safety.
+The long-string fixture passes at the same 4 MiB stack in the final full run
+and in both retained 53- and 60-request history replays. Phase12 rejects the
+normalizer seed cleanup and broad branch inlining after reproducing stack
+regressions. The narrower released transformation preserves all 2,996 Phase11
+observations. A different history consisting of the former 21 focused cases
+before the string can overflow even on Phase11; the new focused gate runs the
+string first. These observations do not establish general stack safety.
 These frontend counts do not establish full backend conformance.
 
-Phase11 preserves the other 2,995 Phase10 frontend observations exactly. The final
-combined compiler passes 21 maintained controls, 14 derivation regression groups,
-and a fresh 37-row paired backend selection (three known exact TypeScript
-differences). Nat300 emits native C, builds with Clang16 and returns `306n`.
+The final combined compiler passes 22 maintained controls, 16 derivation
+regression groups, and current plus historical version1–4 byte replay. A fresh
+37-row paired backend selection passes with three known exact TypeScript
+differences. Nat300 emits native C, builds with Clang16 and returns `306n`.
 Raw arithmetic, constructor identity and demand controls are separately recorded;
 their counts are not additional unique conformance fixtures. Historical Phase9
 and Phase10 evidence remains tied to those artifacts.

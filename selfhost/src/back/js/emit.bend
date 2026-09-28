@@ -640,15 +640,6 @@ def j_ctor_args(
     case Con{h, rest}:
       kc(String, String.eq(tg(tel), "All") && U32.is_eq(qt(tel), 0), u => "null", u => j_expr(book, env, h, kid(tel, 0), False{})) ++ "," ++ j_ctor_args(book, env, rest, j_app_type(tel, h))
 
-@unsafe
-def j_constructor(
-  +book: List<&2, KDef>,
-  +env: List<&2, KTerm>,
-  +t: KTerm,
-  +ty: KTerm,
-) -> String:
-  j_constructor_literal(book, env, t, ty, j_literal_typed(book, t, ty))
-
 # Constructor fields in return position are evaluated by the application
 # trampoline, retaining source order without growing the host call stack.
 law j_constructor_mode:
@@ -661,7 +652,8 @@ law j_constructor_mode:
 
 @unsafe
 def j_constructor_mode(book, env, t, ty, tail):
-  kc(String, tail && String.eq(j_literal_typed(book, t, ty), ""), u => "build(" ++ j_quote(nm(t)) ++ ",[" ++ j_ctor_thunks(book, env, ks(t), j_specialize(book, dt(j_find_ctor(book, nm(t))), ks(wnf(book, ty)))) ++ "])", u => j_constructor(book, env, t, ty))
+  +literal = j_literal_typed(book, t, ty)
+  kc(String, tail && String.eq(literal, ""), u => "build(" ++ j_quote(nm(t)) ++ ",[" ++ j_ctor_thunks(book, env, ks(t), j_specialize(book, dt(j_layout_ctor(book, wnf(book, ty), nm(t))), ks(wnf(book, ty)))) ++ "])", u => j_constructor_literal(book, env, t, ty, literal))
 
 law j_ctor_thunks:
   for +book: List<&2, KDef>
@@ -688,7 +680,7 @@ law j_constructor_literal:
 
 @unsafe
 def j_constructor_literal(book, env, t, ty, literal):
-  kc(String, String.eq(literal, ""), u => "ctor(" ++ j_quote(nm(t)) ++ ",[" ++ j_ctor_args(book, env, ks(t), j_specialize(book, dt(j_find_ctor(book, nm(t))), ks(wnf(book, ty)))) ++ "])", u => literal)
+  kc(String, String.eq(literal, ""), u => "ctor(" ++ j_quote(nm(t)) ++ ",[" ++ j_ctor_args(book, env, ks(t), j_specialize(book, dt(j_layout_ctor(book, wnf(book, ty), nm(t))), ks(wnf(book, ty)))) ++ "])", u => literal)
 
 law j_io_type:
   for +book: List<&2, KDef>
@@ -911,7 +903,7 @@ def j_l_children(book, env, t, ty):
   kc(String, String.eq(tg(t), "Mat"), u => j_l_mat(book, env, t, wnf(book, ty)), u =>
   kc(String, String.eq(tg(t), "App"), u => j_l_app(book, env, t, wnf(book, j_type(book, env, kid(t, 0)))), u =>
   kc(String, String.eq(tg(t), "Let"), u => j_l_bindings(book, env, ks(t)) ++ j_l_walk(book, j_context(book, env, ks(t)), j_body(ks(t)), ty), u =>
-  kc(String, String.eq(tg(t), "Ctr"), u => kc(String, String.eq(j_literal_typed(book, t, ty), ""), u => j_l_fields(book, env, ks(t), j_specialize(book, dt(j_find_ctor(book, nm(t))), ks(wnf(book, ty)))), u => ""), u =>
+  kc(String, String.eq(tg(t), "Ctr"), u => kc(String, String.eq(j_literal_typed(book, t, ty), ""), u => j_l_fields(book, env, ks(t), j_specialize(book, dt(j_layout_ctor(book, wnf(book, ty), nm(t))), ks(wnf(book, ty)))), u => ""), u =>
   kc(String, String.eq(tg(t), "Rwt"), u => j_l_walk(book, env, kid(t, 2), ty), u => ""))))))
 
 @unsafe

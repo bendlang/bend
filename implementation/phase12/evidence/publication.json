@@ -1,0 +1,628 @@
+{
+  "kind": "phase12-evidence-publication",
+  "complete": true,
+  "pass": true,
+  "scope": "One final capsule, retained failures and independently checked byte/mode recovery; not a new compiler validation claim.",
+  "freeze": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase12/evidence/root-freeze.json",
+    "type": "file",
+    "bytes": 2928,
+    "sha256": "15ea534c92a2169ab16673d40b55d161608273f855e3ade1cf12c0b12bafc990",
+    "mode": 420
+  },
+  "commands": [
+    {
+      "label": "capture",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py",
+        "capture",
+        "/home/ai/bend2/build/publish/bend/implementation/phase12/evidence/selection.json",
+        "/home/ai/bend2/build/publish/bend/implementation/phase12/evidence/capsule-01"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "file": "implementation/phase12/evidence/publication-run-01/capture.stdout",
+        "type": "file",
+        "bytes": 283,
+        "sha256": "9a5833d664efa5d57cb51a4384dbb769f62156e05716f9ff320e6fdd46627d30",
+        "mode": 420
+      },
+      "stderr": {
+        "file": "implementation/phase12/evidence/publication-run-01/capture.stderr",
+        "type": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mode": 420
+      }
+    },
+    {
+      "label": "verify",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py",
+        "verify",
+        "/home/ai/bend2/build/publish/bend/implementation/phase12/evidence/capsule-01"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "file": "implementation/phase12/evidence/publication-run-01/verify.stdout",
+        "type": "file",
+        "bytes": 283,
+        "sha256": "9a5833d664efa5d57cb51a4384dbb769f62156e05716f9ff320e6fdd46627d30",
+        "mode": 420
+      },
+      "stderr": {
+        "file": "implementation/phase12/evidence/publication-run-01/verify.stderr",
+        "type": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mode": 420
+      }
+    },
+    {
+      "label": "materialize",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py",
+        "materialize",
+        "/home/ai/bend2/build/publish/bend/implementation/phase12/evidence/capsule-01",
+        "/tmp/phase12-evidence-recovery-01"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "file": "implementation/phase12/evidence/publication-run-01/materialize.stdout",
+        "type": "file",
+        "bytes": 100,
+        "sha256": "71d1e100b10b475c92714b17a73545207255d88e7e9f57003be87141f3455a54",
+        "mode": 420
+      },
+      "stderr": {
+        "file": "implementation/phase12/evidence/publication-run-01/materialize.stderr",
+        "type": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mode": 420
+      }
+    },
+    {
+      "label": "recovery-check",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/ai/bend2/build/publish/bend/implementation/phase12/evidence/recovery-check.py",
+        "/home/ai/bend2/build/publish/bend/implementation/phase12/evidence/capsule-01",
+        "/tmp/phase12-evidence-recovery-01",
+        "/home/ai/bend2/build/publish/bend/implementation/phase12/evidence/recovery-01.json"
+      ],
+      "exitCode": 0,
+      "stdout": {
+        "file": "implementation/phase12/evidence/publication-run-01/recovery-check.stdout",
+        "type": "file",
+        "bytes": 58,
+        "sha256": "8c6433bcc482421ca95a5ae183fd83836b80429c9a25f8bcd14db7e8009f2a30",
+        "mode": 420
+      },
+      "stderr": {
+        "file": "implementation/phase12/evidence/publication-run-01/recovery-check.stderr",
+        "type": "file",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "mode": 420
+      }
+    }
+  ],
+  "capture": {
+    "pass": true,
+    "files": 30182,
+    "objects": 9638,
+    "externalCapsules": 8,
+    "archiveSha256": "7220c8dbc6a95eb0b5cf46a9cd6a0057f9fc79871eaed2826b2b58d4b5cf8cf7",
+    "archiveBytes": 40915372,
+    "scope": "Archive byte identity only; recorded failed experiments remain failures."
+  },
+  "verification": {
+    "pass": true,
+    "files": 30182,
+    "objects": 9638,
+    "externalCapsules": 8,
+    "archiveSha256": "7220c8dbc6a95eb0b5cf46a9cd6a0057f9fc79871eaed2826b2b58d4b5cf8cf7",
+    "archiveBytes": 40915372,
+    "scope": "Archive byte identity only; recorded failed experiments remain failures."
+  },
+  "materialization": {
+    "pass": true,
+    "recoveredFiles": 30182,
+    "destination": "/tmp/phase12-evidence-recovery-01"
+  },
+  "capsule": {
+    "directory": "implementation/phase12/evidence/capsule-01",
+    "manifest": {
+      "file": "implementation/phase12/evidence/capsule-01/manifest.json",
+      "type": "file",
+      "bytes": 35562397,
+      "sha256": "a62927bd40dfad4fb55c1c676baa7cddac091e6ed0905738e0c4e3d339688fb4",
+      "mode": 420
+    },
+    "archive": {
+      "file": "implementation/phase12/evidence/capsule-01/raw.tar.gz",
+      "type": "file",
+      "bytes": 40915372,
+      "sha256": "7220c8dbc6a95eb0b5cf46a9cd6a0057f9fc79871eaed2826b2b58d4b5cf8cf7",
+      "mode": 420
+    },
+    "summary": {
+      "files": 30182,
+      "objects": 13234,
+      "logicalBytes": 554774212,
+      "uniqueBytes": 421181944,
+      "newArchiveObjects": 9638,
+      "newArchiveBytesBeforeCompression": 377468117,
+      "externalPrerequisites": 25,
+      "omittedFiles": 125,
+      "omittedBytes": 217408374,
+      "referenceStatuses": {
+        "captured-external-object": 191402,
+        "captured-object": 2974,
+        "external-prerequisite": 180,
+        "external-toolchain-identity": 205,
+        "omitted-derived-input": 306
+      }
+    }
+  },
+  "recoveryCheck": {
+    "file": "implementation/phase12/evidence/recovery-01.json",
+    "type": "file",
+    "bytes": 802,
+    "sha256": "f3b43745f0a6a9fb5e006b44fd38df80ed5e16bc231331371101571d4c2645ce",
+    "mode": 420
+  },
+  "externalCapsules": [
+    {
+      "manifest": "implementation/phase8/conformance-harness-evidence/manifest.json",
+      "manifestSha256": "7f366a89d10282ad80ae13b6c7ae863909f9d0cc384286957caf20082198e5e1",
+      "archive": "implementation/phase8/conformance-harness-evidence/raw.tar.gz",
+      "archiveSha256": "b011854d9869ee6db4262668c0523a36ab84d253c13b901b57a39bc53ba42422",
+      "archiveBytes": 2258668,
+      "objects": 227
+    },
+    {
+      "manifest": "implementation/phase8/selected-js-evidence/manifest.json",
+      "manifestSha256": "7c07e21aeefa3b6b7f11c90c9a31782f599b60db4c3686ab711b4df84fb9cbeb",
+      "archive": "implementation/phase8/selected-js-evidence/raw.tar.gz",
+      "archiveSha256": "979c49ea277715353669c4ceb5da0373c97990ea6e071a54669958ae8bf243cb",
+      "archiveBytes": 6315169,
+      "objects": 1685
+    },
+    {
+      "manifest": "implementation/phase8/selected-js-evidence/release07-manifest.json",
+      "manifestSha256": "84fa6fa420a2c57f0a8e1dd0e27d226ac5b1f0aa54d032f59962d3caf7bce3d2",
+      "archive": "implementation/phase8/selected-js-evidence/release07.tar.gz",
+      "archiveSha256": "edb92c370acecb8a4d5bec53f9ddc39679f74917b596530fc2d0f418b9fe02df",
+      "archiveBytes": 852682,
+      "objects": 187
+    },
+    {
+      "manifest": "implementation/phase8/migration-evidence/capsule-01/manifest.json",
+      "manifestSha256": "ae41fbe1f173b1e01815c146cb874dfbd9a813e6986b42aed1ab34f8732ac886",
+      "archive": "implementation/phase8/migration-evidence/capsule-01/raw.tar.gz",
+      "archiveSha256": "7b4c8b7d3841b42508b4283446ec3858ea9b8ef29b26f19e19d66b7f2487713c",
+      "archiveBytes": 21314537,
+      "objects": 10470
+    },
+    {
+      "manifest": "implementation/phase8/migration-evidence/capsule-02/manifest.json",
+      "manifestSha256": "d69330ece69432a9385fbafee431e5bac44df751ed28f242d6e35746403d9725",
+      "archive": "implementation/phase8/migration-evidence/capsule-02/raw.tar.gz",
+      "archiveSha256": "acec1dfe5b20b49451c086e880da70ab0fcc88bf8a9ff908cc4aa4e98b201551",
+      "archiveBytes": 32836,
+      "objects": 16
+    },
+    {
+      "manifest": "implementation/phase9/checker-evidence/capsule-01/manifest.json",
+      "manifestSha256": "8350c3d730182bafb4fecf98e562b32b548f43c6de4da616b61c5d69bb135731",
+      "archive": "implementation/phase9/checker-evidence/capsule-01/raw.tar.gz",
+      "archiveSha256": "1fe756502ba33038b436c124946066393dd617fc9b6f78bd028507fab1899d76",
+      "archiveBytes": 51300565,
+      "objects": 4572
+    },
+    {
+      "manifest": "implementation/phase10/evidence/capsule-01/manifest.json",
+      "manifestSha256": "d92eef03e88e1ebecd7d1096296aad5f468d7ccdc61374798dd1068b5d179c82",
+      "archive": "implementation/phase10/evidence/capsule-01/raw.tar.gz",
+      "archiveSha256": "07befeada237b14e25911bde00710c02a4691f797d9ac12349f35c756222fd00",
+      "archiveBytes": 19252898,
+      "objects": 2171
+    },
+    {
+      "manifest": "implementation/phase11/evidence/capsule-01/manifest.json",
+      "manifestSha256": "6daea31338b89451a0e3ead48d44179301d46f1ce6e2f954c3012dba9d14f86c",
+      "archive": "implementation/phase11/evidence/capsule-01/raw.tar.gz",
+      "archiveSha256": "d2759a82bb13cf5a38b819acce9769fe529ce6cf57e4b81668a5ab6f2de1e099",
+      "archiveBytes": 23289650,
+      "objects": 2223
+    }
+  ],
+  "unresolvedRepositoryReferences": [],
+  "remainingHistoricalExternalReferences": [
+    {
+      "path": "/workspace/scratch/4de8c3a3f107/bend2-selfhost/build/typed/lexical-selfhost/bootstrap-api.mjs",
+      "sha256": "0e3c00f419b7e9fc4565ca52e3b14864121f48351ffe8dc7108a93a43a3d2115",
+      "status": "external-prerequisite",
+      "observedIn": {
+        "selfhost/build/phase12/call-broad-noseed-01/broad/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-broad-noseed-01/broad/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-broad-noseed-prefix-01/broad/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-broad-noseed-prefix-01/broad/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-leaf-maintained-01/attempt/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-leaf-maintained-01/attempt/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-leaf-maintained-01/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-leaf-maintained-01/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-leaf-noseed-prefix-01/leaf/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-leaf-noseed-prefix-01/leaf/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-leaf-noseed-prefix-02/leaf/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-leaf-noseed-prefix-02/leaf/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-maintained-01/attempt/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-maintained-01/attempt/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-maintained-01/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-maintained-01/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-native-counts-01/host/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-native-counts-01/host/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-native-counts-02/host/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-native-counts-02/host/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-native-maintained-01/attempt/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-native-maintained-01/attempt/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-native-maintained-01/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-native-maintained-01/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-prefix-current-v4-01/currentV4/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-prefix-current-v4-01/currentV4/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-prefix-replay-01/A/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-prefix-replay-01/A/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-prefix-replay-01/baseline/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-prefix-replay-01/baseline/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-prefix-replay-01/leaf/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-prefix-replay-01/leaf/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-prefix-replay-02/A/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-prefix-replay-02/A/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-prefix-replay-02/baseline/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-prefix-replay-02/baseline/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-prefix-replay-02/leaf/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-prefix-replay-02/leaf/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-stack-01/A/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-stack-01/A/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-stack-01/B/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-stack-01/B/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-stack-01/v4/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-stack-01/v4/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-stack-01/v5/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-stack-01/v5/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-stack-leaf-01/leaf/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-stack-leaf-01/leaf/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-stack-variants-01/noconst/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-stack-variants-01/noconst/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-stack-variants-01/noconst-unit/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-stack-variants-01/noconst-unit/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-stack-variants-01/unit/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-stack-variants-01/unit/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/call-tail-selected-01/host/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/call-tail-selected-01/host/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/integrated-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/integrated-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/integrated-02/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/integrated-02/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/integrated-03/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/integrated-03/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/normalizer-candidate-01/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/normalizer-candidate-01/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/normalizer-checked-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/normalizer-checked-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/normalizer-prefix-replay-01/js/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/normalizer-prefix-replay-01/js/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/normalizer-prefix-replay-01/seed/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/normalizer-prefix-replay-01/seed/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/normalizer-seed-candidate-01/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/normalizer-seed-candidate-01/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/normalizer-seed-checked-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/normalizer-seed-checked-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/structure-combined-01/attempt/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/structure-combined-01/attempt/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/structure-combined-01/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/structure-combined-01/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/structure-lookup-01/attempt/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/structure-lookup-01/attempt/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/structure-lookup-01/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/structure-lookup-01/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/structure-reuse-01/attempt/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/structure-reuse-01/attempt/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/structure-reuse-01/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/structure-reuse-01/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase11/integrated-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase11/integrated-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ]
+      }
+    }
+  ],
+  "limitations": [
+    "The eight bound prerequisite capsules and separately retained Phase9 profile gzip remain required.",
+    "Node, Clang, headers and host libraries remain external toolchain prerequisites; replay paths need adaptation.",
+    "Derived Base caches are omitted with identities and must be prepared again.",
+    "The inherited unavailable lexical-selfhost API is historical context, not a Phase12 consumed compiler artifact."
+  ],
+  "publisher": {
+    "file": "implementation/phase12/evidence/publish.py",
+    "type": "file",
+    "bytes": 5465,
+    "sha256": "4db97d7254cbbbd705c7c5613459fa36be93686dad3cb4d5d0fc11fed5a45615",
+    "mode": 420
+  }
+}

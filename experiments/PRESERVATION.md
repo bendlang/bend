@@ -1,5 +1,19 @@
 # Compiler evidence preservation index
 
+## Phase12 avoidable-work optimization — 2026-09-28
+
+The [report](../implementation/phase12/avoidable_work.md) and
+[evidence capsule](../implementation/phase12/evidence/README.md) retain the fresh
+profile, isolated ablations, rejected integrations, exact request histories,
+source/API/checked provenance, three controlled matrices and final release checks.
+Seed cleanup and broad inlining remain rejected; complete failed captures do
+not become conformance passes. Eight bound prerequisite capsules share objects;
+Node/Clang/toolchains and rebuildable Base caches are explicit prerequisites.
+The publication record binds independent file-byte/mode recovery. Preserved
+preflight and launcher failures stay visible. Unrelated Phase6 payloads are
+excluded; their original hashes are checked before staging owned changes.
+
+
 ## Phase11 known-work optimization — 2026-09-28
 
 The [report](../implementation/phase11/known_work.md) records the final checked
