@@ -677,6 +677,20 @@ function probe_of(t: HTerm): Of<"Var"> {
   return PROBES[(term_force(t) as Of<"Var">).i];
 }
 
+// Graph
+// =====
+
+function graph_close<K>(set: Set<K>, edges: K[][]): Set<K> {
+  for (const k of set) {
+    for (const [a, b] of edges) {
+      if (a === k) {
+        set.add(b);
+      }
+    }
+  }
+  return set;
+}
+
 // Term
 // ====
 
@@ -1521,15 +1535,10 @@ function facts_ctr(fl: File, c: Bend.Ctr, xs: HTerm[]): void {
 }
 
 function facts_lend(fl: File): void {
-  for (let n = -1; n !== fl.lend.size;) {
-    n = fl.lend.size;
-    fl.lend.forEach((l) => {
-      const [a, r] = l.split("<");
-      if (r !== undefined && fl.lend.has(r)) {
-        fl.lend.add(a);
-      }
-    });
-  }
+  graph_close(fl.lend, [...fl.lend].flatMap((l) => {
+    const [a, r] = l.split("<");
+    return r === undefined ? [] : [[r, a]];
+  }));
   BRWS.forEach((bs, k) => bs.forEach((b, i) => {
     if (b && !fl.lend.has(k + "~" + i)) {
       fl.own.add(k + "~" + i);
@@ -2912,14 +2921,8 @@ function compile_tables(fl: File, entries: Seg[]): string[] {
     cids.set(k, fun_of(fl, k).lays.length);
   }
   const forky = new Set(fl.segs.filter((s) => s.fork).map((s) => s.fid));
-  for (let n = -1; n !== forky.size;) {
-    n = forky.size;
-    for (const s of [...fl.segs, { fid: seg_fid(CLO_APPLY), refs: fl.clos }]) {
-      if (!forky.has(s.fid) && [...s.refs].some((r) => forky.has(r))) {
-        forky.add(s.fid);
-      }
-    }
-  }
+  graph_close(forky, [...fl.segs, { fid: seg_fid(CLO_APPLY), refs: fl.clos }]
+    .flatMap((s) => [...s.refs].map((r) => [r, s.fid])));
   const ars = [...cids.values()].map((n) => n > WIDE ? 240 + Math.log2(n) : n);
   if (entries.some((s) => s.params.length > WIDE) || ars.some((n) => n > 255)) {
     die("an arity over " + WIDE);
@@ -3002,14 +3005,10 @@ export function compile_book(book: Bend.Book): string {
     reqs = compile_reqs(fl);
     facts_lend(fl);
   } while (was !== facts());
-  const reach = (from: string[]): Set<string> => {
-    const set = new Set<string>();
-    const grab = (fid: string) => set.has(fid) || (set.add(fid)
-      && [...fl.segs, ...fl.spins].find((s) => s.fid === fid)?.refs
-        .forEach(grab));
-    from.forEach(grab);
-    return set;
-  };
+  const edges = [...fl.segs, ...fl.spins].flatMap((s) =>
+    [...s.refs].map((r) => [s.fid, r]));
+  const reach = (from: string[]): Set<string> =>
+    graph_close(new Set(from), edges);
   const live = reach([seg_fid("main")]);
   const wide = [...fl.bangs].some((k) =>
     fun_of(fl, k).live.some(([, , A]) => ty_clo(fl.book, A)));
