@@ -5,11 +5,13 @@ type One is Data:
 def bad() -> One -> One:
   \{One: One{}; One: One{}}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a constructor of One (missing, or already matched)
 #|- observed : \{One: One{}}
 #|Location: bad
 #|5 | def bad() -> One -> One:
 #|6>|   \{One: One{}; One: One{}}
+#|  |   ^^^^^^^^^^^^^^^^^^^^^^^^^
 #|7 |
 #|exit 1

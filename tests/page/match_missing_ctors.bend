@@ -17,11 +17,13 @@ law main:
 
 def main(): f(Tt{})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : cases for Tt, Ff
 #|- observed : \{}
 #|Location: f
 #|12 | def f(b):
 #|13>|   match b:
+#|   |   ^^^^^^^^
 #|14 |
 #|exit 1

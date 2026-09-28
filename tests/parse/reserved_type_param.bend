@@ -4,11 +4,13 @@
 type Bad<match: Type>:
   Bb10{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a name (got the keyword 'match')
-#|- observed : ':'
+#|- observed : 'match'
 #|Location:
 #|3 | # probe is `match`
 #|4>| type Bad<match: Type>:
+#|  |          ^^^^^
 #|5 |   Bb10{}
 #|exit 1

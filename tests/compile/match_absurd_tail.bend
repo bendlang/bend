@@ -21,8 +21,8 @@ law main:
   IO(Unit)
 
 def main():
+  f = absurd.arm
   do IO<Unit>:
-    f = absurd.arm
     IO.print("ok")
 
 #|ok

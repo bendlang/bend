@@ -7,11 +7,13 @@ def rr(): {==}
 law dt: {Data == Type : Type}
 def dt(): rr
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : {Data == Type : Type}
 #|- observed : {Data == Data : Type}
 #|Location: dt
 #|7 | law dt: {Data == Type : Type}
 #|8>| def dt(): rr
+#|  |           ^^
 #|9 |
 #|exit 1

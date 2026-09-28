@@ -13,11 +13,13 @@ law main:
 
 def main(): 0n
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
 #|- observed : a
 #|Location: a
 #| 9 | 
 #|10>| def a(): a
+#|   |          ^
 #|11 | law main:
 #|exit 1

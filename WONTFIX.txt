@@ -4,20 +4,17 @@ Read this file before you open an issue.
 
 DESIGN (intentional choices)
 
-@unsafe programs check and exit 0 (#776, #805)
-  The checker prints "All terms check, with N unsafe annotations." and exits
-  0. `@unsafe` is a choice the author made in the source; read the note, not
-  the exit code.
-
 `bend file.bend` runs a pure main lazily; compiled lanes are strict (#775)
   The checker skips an unused argument; a binary evaluates it. Same value,
   different cost.
 
-The checker skips dead code (#820, #878)
+The checker skips dead code (#820, #878, #973, #1091)
   In `(y => x)(e)`, `e` is dead: a comment, invisible to the theory, with no
-  runtime effect. A match arm an earlier arm shadows, which wins no leaf, is
-  dead the same way. The checker visits neither. This makes the check faster
-  and costs no correctness: the term it checks is the term it runs.
+  runtime effect. A match arm an earlier arm shadows, or a fallback past a
+  type's last constructor, wins no leaf and is dead the same way. The checker
+  visits neither. This makes the check faster and costs no correctness: the
+  term it checks is the term it runs. A written redex reduces as it is read,
+  so `(x => x(x))(x => x(x))` never ends (#973).
 
 `~` template arguments are compile-time (#784)
   A `~` argument must be closed. A def parameter is a runtime value, so it
@@ -25,7 +22,7 @@ The checker skips dead code (#820, #878)
 
 Allocation failure fail-stops the runtime (#792)
   Out of memory is fatal everywhere, not a `Fail`. A program bounds the `max`
-  it passes to a receive effect; the runtime does not clamp it.
+  it passes to a receive effect; the runtime only caps it at INT32_MAX.
 
 The C compiler is clang only (#773)
   The C output uses `#embed` and clang pragmas. gcc is not a target.
@@ -36,6 +33,36 @@ The termination check reads arguments left to right (#770)
 
 No common-subexpression elimination (#812)
   Two calls of `f(p)` run twice. Bind the value once.
+
+The checker is not optimal: some terms are exponential or overflow (#993, #1075)
+  bend.ts is not beta-optimal and recurses on the machine stack. No checker
+  avoids every case: `F(100000 * 2) == F(100000 + 100000)` unrolls fully,
+  since the sides differ. So conversion takes no layer that makes equality
+  quadratic (an identity pass before each reduction) or every check slower
+  by a constant (hash-consing, a memo of seen terms): each layer covers one
+  more family and slows every proof. Fix the representation instead: a def
+  opens a value before it copies it (as U32.max does), and a law keeps its
+  large constants and depths abstract. Do not open an issue per exponential
+  or overflow.
+
+A fallback arm does not refine a dependent goal (#1091)
+  In `case rest:` the scrutinee stays a variable. Write the constructor arms.
+
+`!` goes to the GPU only at the root of an IO step (#1065)
+  Inside CPU-parallel work, it runs on the CPU.
+
+F32.show's last digit may differ per lane on a decimal tie (#1079)
+  C rounds to even, JS away from zero; both read back to the same F32.
+
+A compound type argument takes parens (#1110)
+  Write `Maybe<(U32 & U32)>`. The parser does not backtrack, so a glued `<`
+  reads its first argument at comparison level.
+
+A function with a `+` parameter is not a plain function (#1111)
+  `@+x:A -> B` and `A -> B` are different types. Pass `x => f(x)` instead.
+
+The installer edits no shell file (#995)
+  It prints the PATH line; add it to your shell's config.
 
 The hub client trusts the manifest path grammar on POSIX only (#788)
   The path guard is POSIX. Windows is not a supported host (see CAPACITY).
@@ -57,6 +84,21 @@ Windows is not supported (#788)
 
 No Vulkan or other extra GPU lanes (#811)
   Metal and CUDA only.
+
+`!` runs on the CPU on WSL2 GPUs (#1066)
+  They lack concurrent managed access; a device copy of the corpus is a
+  second memory model we cannot maintain.
+
+No DNS, TLS, crypto or HTTP in Base (#846)
+  TCP.connect takes an IPv4 address; JS's IO loop cannot wait on a lookup.
+  TLS and crypto need OpenSSL: build them as hub packages over TCP bytes.
+
+No cancellation of blocking effects (#1034)
+  IO.within bounds the wait; the losing effect still runs to its end.
+
+Server helpers stay out of Base (#1106, #1117)
+  Base holds the effects no library can build. A confined open or a
+  sendfile is a foreign effect: ship it as a hub package.
 
 gcc is not supported (#773)
   See DESIGN.
@@ -85,6 +127,16 @@ A Nat past 2^48-1, or an array past block class 31, fail-stops (#779)
   bound.
 
 SOON (we will add it; do not open an issue)
+
+U64 (#1027)
+  We will add it ourselves; we do not merge PRs for U64 or U128.
+
+F64 (#1120)
+  It needs U64's 64-bit word design; we add both together, and we do not
+  merge PRs for F64.
+
+F32 that computes in the checker (#1017)
+  F32 operations are axioms today; bit-level definitions are planned.
 
 Continuation passing for non-tail calls on the JS lane (#798, #802)
   Deep recursion (String.length over 100k chars, List.length over 200k

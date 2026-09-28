@@ -9,11 +9,13 @@ law main:
 
 def main(): %5 : U32; 1
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : an annotated term (cannot infer)
 #|- observed : 5
 #|Location: main
 #| 9 |
 #|10>| def main(): %5 : U32; 1
+#|   |              ^
 #|11 |
 #|exit 1

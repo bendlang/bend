@@ -13,11 +13,13 @@ def main():
   h = (![0:W4{5}, _:W4{7}; 1] : [:W4])
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : '!'
 #|Location:
 #|12 | def main():
 #|13>|   h = (![0:W4{5}, _:W4{7}; 1] : [:W4])
+#|   |        ^
 #|14 |   0
 #|exit 1

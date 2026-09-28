@@ -18,11 +18,13 @@ def thm():
 def q():
   &0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : q <&> &1
 #|- observed : &1
 #|Location: thm
 #|15 | def thm():
 #|16>|   {==}
+#|   |   ^^^^
 #|17 |
 #|exit 1

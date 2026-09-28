@@ -9,6 +9,7 @@ law h:
 def h(p):
   Bool.and(True{}, p)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : Bool
 #|- observed : Nat
@@ -17,5 +18,6 @@ def h(p):
 #|Location: h
 #| 9 | def h(p):
 #|10>|   Bool.and(True{}, p)
+#|   |                    ^
 #|11 | 
 #|exit 1

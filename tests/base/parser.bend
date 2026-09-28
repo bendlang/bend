@@ -8,11 +8,13 @@ law main:
 def main():
   Parser.digits()
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a defined name
 #|- observed : Parser.digits
 #|Location: main
 #| 8 | def main():
 #| 9>|   Parser.digits()
+#|   |   ^^^^^^^^^^^^^
 #|10 |
 #|exit 1

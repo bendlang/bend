@@ -10,11 +10,13 @@ def main():
   m : [:U32] = ![1:5, _:0; 2]
   m[1]
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : ':'
 #|Location:
 #| 9 | def main():
 #|10>|   m : [:U32] = ![1:5, _:0; 2]
+#|   |        ^
 #|11 |   m[1]
 #|exit 1

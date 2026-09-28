@@ -27,6 +27,7 @@ law main:
 
 def main(): Num{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
 #|- observed : wnf
@@ -36,5 +37,6 @@ def main(): Num{}
 #|Location: wnf
 #|18 |     case Cal{Lam{bod}, a2}:
 #|19>|       wnf(bod(a2))
+#|   |       ^^^
 #|20 |     case Cal{f, a2}:
 #|exit 1

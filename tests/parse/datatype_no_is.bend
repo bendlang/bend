@@ -11,11 +11,13 @@ law main:
 
 def main(): Unit{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : 'is'
 #|- observed : ':'
 #|Location:
 #|5 | # declares its kind), bend error page
 #|6>| type Kk:
+#|  |        ^
 #|7 |   Zz{}
 #|exit 1

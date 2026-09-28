@@ -9,11 +9,13 @@ law main:
 def main():
   nan
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a defined name
 #|- observed : nan
 #|Location: main
 #| 9 | def main():
 #|10>|   nan
+#|   |   ^^^
 #|11 |
 #|exit 1

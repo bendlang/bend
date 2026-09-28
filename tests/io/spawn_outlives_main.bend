@@ -9,7 +9,7 @@ law late:
 
 def late():
   do IO<Unit>:
-    Unit <- IO.sleep(20)
+    Unit <- IO.sleep(1)
     IO.print("late")
 
 law main:

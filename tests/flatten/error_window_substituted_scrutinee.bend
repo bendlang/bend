@@ -18,10 +18,12 @@ def f(a: Nat, b: Nat) -> Nat:
 def main() -> Nat:
   f(3n, 2n)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)
 #|Location:
 #|11 |     case y, 1n+q:
 #|12>|       match y:
+#|   |             ^
 #|13 |         case 0n:
 #|exit 1

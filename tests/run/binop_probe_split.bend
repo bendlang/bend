@@ -17,11 +17,13 @@ law main:
 def main():
   (f(0, 1) * 100 + f(5, 1) : U32)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : '}'
 #|- observed : ':'
 #|Location:
 #|11 | def f(n, y):
 #|12>|   (\{0: 7; k => (k * 2 : U32)}(n : U32) + y : U32)
+#|   |       ^
 #|13 |
 #|exit 1

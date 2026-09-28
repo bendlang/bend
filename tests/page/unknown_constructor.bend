@@ -6,11 +6,13 @@ law main:
 
 def main(): \{Qux: 3}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a constructor of U32 (missing, or already matched)
 #|- observed : \{Qux: 3}
 #|Location: main
 #|6 |
 #|7>| def main(): \{Qux: 3}
+#|  |             ^^^^^^^^^
 #|8 |
 #|exit 1

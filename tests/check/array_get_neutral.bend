@@ -12,11 +12,13 @@ def main(a):
   z = a@m[0]
   z
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : ':'
 #|Location:
 #|7 | law main:
 #|8>|   for a: [:U32]
+#|  |           ^
 #|9 |   U32
 #|exit 1

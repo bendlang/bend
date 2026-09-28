@@ -43,7 +43,7 @@ law main:
 
 def main():
   do IO<U32>:
-    s : Socket <- IO.try(Socket, UDP.bind(0))
+    s : Socket <- IO.try(Socket, UDP.bind("127.0.0.1", 0))
     a : Socket <- probe(s, "1.2.3.")
     b : Socket <- probe(a, "1.2.3.256")
     c : Socket <- probe(b, "1.2.3")

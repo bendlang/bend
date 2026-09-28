@@ -21,12 +21,13 @@ law main:
 def main():
   f(3)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : 1 patterns (one per scrutinee)
-#|- observed : '
-#|'
+#|- observed : '2+k'
 #|Location:
 #|14 |       0
 #|15>|     case 2+k:
+#|   |          ^^^
 #|16 |       k
 #|exit 1

@@ -15,11 +15,13 @@ law main:
 
 def main(): gamma
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a defined name
 #|- observed : gamma
 #|Location: main
 #|15 | 
 #|16>| def main(): gamma
+#|   |             ^^^^^
 #|17 |
 #|exit 1

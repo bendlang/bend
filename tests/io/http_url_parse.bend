@@ -70,11 +70,13 @@ def main():
   c = chk_bad(HTTP.read_url("ftp://x/"))
   (a * 100 + b * 10 + c : U32)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a defined name
 #|- observed : HTTP.read_url
 #|Location: main
 #|67 | def main():
 #|68>|   a = chk_https(HTTP.read_url("https://example.com/"))
+#|   |                 ^^^^^^^^^^^^^
 #|69 |   b = chk_http(HTTP.read_url("http://localhost:8080/echo?q=1"))
 #|exit 1

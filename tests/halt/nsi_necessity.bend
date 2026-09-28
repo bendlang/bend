@@ -27,6 +27,7 @@ law main:
 
 def main(): Z{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
 #|- observed : loop
@@ -36,5 +37,6 @@ def main(): Z{}
 #|Location: loop
 #|22 |     case P{a, b}:
 #|23>|       loop(a(b))
+#|   |       ^^^^
 #|24 |
 #|exit 1

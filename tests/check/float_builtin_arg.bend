@@ -10,11 +10,13 @@ law main:
 def main():
   F32.sqrt(4)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : F32
 #|- observed : U32
 #|Location: main
 #|10 | def main():
 #|11>|   F32.sqrt(4)
+#|   |            ^
 #|12 |
 #|exit 1

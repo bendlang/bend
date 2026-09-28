@@ -11,11 +11,13 @@ def main():
   wrd = (![0: 10, 1: 20, _: 7; 2] : [:U32])
   wrd@w1[5] <- 99
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : '!'
 #|Location:
 #|10 | def main():
 #|11>|   wrd = (![0: 10, 1: 20, _: 7; 2] : [:U32])
+#|   |          ^
 #|12 |   wrd@w1[5] <- 99
 #|exit 1

@@ -3,3 +3,4 @@
 .agents/
 node_modules/
 *.tgz
+*.bendtt

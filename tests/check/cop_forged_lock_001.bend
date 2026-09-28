@@ -25,6 +25,7 @@ law main:
 def main():
   Type
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : Data
 #|- observed : Type
@@ -33,5 +34,6 @@ def main():
 #|Location: Mk
 #| 9 | type Box<-A: Type> is Data:
 #|10>|   Mk{x: A}
+#|   |         ^
 #|11 | 
 #|exit 1

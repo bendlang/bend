@@ -17,11 +17,13 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : '!'
 #|Location:
 #| 8 | law bad:
 #| 9>|   {![0:1, _:7; 1] == ![0:1, _:8; 1] : [:U32]}
+#|   |    ^
 #|10 |
 #|exit 1

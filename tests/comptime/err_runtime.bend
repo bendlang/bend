@@ -8,11 +8,13 @@ def app(~f: Nat -> Nat, x: Nat, y: Nat) -> Nat:
 def main() -> Nat:
   app(~Nat.add(1n), 3n, ~4n)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : '~'
 #|Location:
 #| 8 | def main() -> Nat:
 #| 9>|   app(~Nat.add(1n), 3n, ~4n)
+#|   |                         ^
 #|10 |
 #|exit 1

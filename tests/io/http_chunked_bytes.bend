@@ -71,6 +71,7 @@ law main:
 def main():
   (chk_chunked() * 100 + chk_chunked_bad() * 10 + chk_pack() : U32)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a defined name
 #|- observed : Bytes.decode
@@ -80,5 +81,6 @@ def main():
 #|Location: dec_eq
 #|26 |     case Done{bs}:
 #|27>|       b2u(String.eq(Bytes.decode(bs), out))
+#|   |                     ^^^^^^^^^^^^
 #|28 |     case Fail{(c, e)}:
 #|exit 1

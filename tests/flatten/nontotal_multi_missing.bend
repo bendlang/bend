@@ -19,11 +19,13 @@ law main:
 
 def main(): f(Aa1{})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : cases for Bb1, Cc1
 #|- observed : \{}
 #|Location: f
 #|12 | def f(x):
 #|13>|   match x:
+#|   |   ^^^^^^^^
 #|14 |     case Aa1{}:
 #|exit 1

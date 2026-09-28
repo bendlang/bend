@@ -54,11 +54,13 @@ law main:
 def main():
   fold(a => b => (a + b : U32), odds(), 0)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : '='
 #|- observed : ':'
 #|Location:
 #|18 |     case C{h, t}:
 #|19>|       if p(h):
+#|   |              ^
 #|20 |         C{h, filter(p, t)}
 #|exit 1

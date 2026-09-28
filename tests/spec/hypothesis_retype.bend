@@ -41,12 +41,13 @@ law main:
 def main():
   repro(0n, 0n, {==})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : 3 patterns (one per scrutinee)
-#|- observed : '
-#|'
+#|- observed : 'True{}'
 #|Location:
 #|32 |   match nat_eq(n, m) as e:
 #|33>|     case True{}:
+#|   |          ^^^^^^
 #|34 |       use(True{}, False{}, h)
 #|exit 1

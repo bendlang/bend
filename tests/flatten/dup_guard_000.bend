@@ -17,10 +17,12 @@ def main(a):
     case k, x:
       k
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)
 #|Location:
 #|13 | def main(a):
 #|14>|   match a, a:
+#|   |            ^
 #|15 |     case Z{}, x:
 #|exit 1

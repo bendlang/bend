@@ -21,6 +21,7 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
 #|- observed : interleave
@@ -31,5 +32,6 @@ def main():
 #|Location: interleave
 #|15 |     case h <> t:
 #|16>|       h <> interleave(ys, t)
+#|   |            ^^^^^^^^^^
 #|17 |
 #|exit 1

@@ -59,6 +59,7 @@ def len_app(xs, ys):
       %len_app(t, ys) : {S{len(app(t, ys))} == S{_} : N}
       {==}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : {len(ys) == len(ys) : N}
 #|- observed : Type
@@ -67,5 +68,6 @@ def len_app(xs, ys):
 #|Location: len_app
 #|56 |     case LNil{}:
 #|57>|       Type
+#|   |       ^^^^
 #|58 |     case LCon{h, t}:
 #|exit 1

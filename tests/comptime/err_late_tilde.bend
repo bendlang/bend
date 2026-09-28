@@ -8,11 +8,13 @@ def keep(x: Nat, ~k: Nat) -> Nat:
 def main() -> IO(Unit):
   IO.print(Nat.show(keep(3n, 5n)))
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a plain binder (only leading binders take ~)
 #|- observed : '~'
 #|Location:
 #|4 |
 #|5>| def keep(x: Nat, ~k: Nat) -> Nat:
+#|  |                  ^
 #|6 |   x
 #|exit 1

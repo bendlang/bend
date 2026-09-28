@@ -11,10 +11,12 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- message  : no such file: /cycle/other_half.bend
 #|Location:
 #|5 | import Base
 #|6>| import /cycle/other_half.bend as C
+#|  |        ^
 #|7 |
 #|exit 1

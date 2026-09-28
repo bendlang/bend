@@ -19,11 +19,13 @@ law main:
 def main():
   window("x", 1, 1)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : '"'
 #|- observed : 'p'
 #|Location:
 #|13 | def window(title, w, h):
 #|14>|   import path_bare.c
+#|   |          ^
 #|15 |
 #|exit 1

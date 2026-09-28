@@ -3,6 +3,318 @@
 Each release names what changed for a user. `bend update` installs the
 latest one; the GitHub release carries the same notes.
 
+## 2.0.32 (2026-09-27)
+
+- **One verdict: `ALL PROOFS CHECK` or `SOME PROOFS FAIL`**: `bend f.bend`
+  on a file with no main (or `--check-only`) prints one of the two. A proof
+  holds when bend checks it and it uses no `@unsafe` def and no user foreign
+  code, imports included. `--verdict` (was `--safe`) also rechecks every
+  def with the proven BendTT kernel; it no longer writes `f.bendtt`, and
+  `-o f.bendtt` does. Function-typed terms go to the kernel η-long.
+- **Breaking: `TCP.listen` and `UDP.bind` take the address to bind** (#1088,
+  PR #1098 by oxura): a server no longer listens on every interface.
+- **Breaking: `IO.args()` starts with the program as invoked** (#935), as C's
+  argv does; the arguments start at index 1.
+- **`IO.within` races an action against a deadline** (#1034).
+- **`TCP.send_bytes` and `TCP.recv_bytes`** carry bytes as they are (#846).
+- **`-o f.mjs` writes an ES module** of a Bend file (#1029).
+- **Windows**: `Window.grab` holds the cursor for a first-person camera, and
+  the mouse's motion comes as `Look{dx, dy}` (#921, PR #1073 by
+  nicolas-abril); `Scroll{x, y, dx, dy}` events come from the wheel and the
+  trackpad (#1020, PR #1114 by oxura); macOS input no longer lags (#842);
+  Shift+Tab on X11 gives the Mac's back tab; the Linux window fills a frame
+  by squares, about 6x faster (PR #1115 by costamatheus97).
+- **Fixes**:
+  - A native intrinsic on a nullary def keeps its result layout (#1093,
+    PR #1094 by chiliec).
+  - One file is one module however an import spells its path (#1087,
+    PR #1103 by MattCozendey), and an alias that matches the file name
+    works (#1082).
+  - F32 text rounds once to the nearest f32 on every lane and in literals
+    (#1055); `F32.pow(±1, y)` is 1 on JS as on C (#1060).
+  - A pure main that prints a datatype through a family field builds (#1067).
+  - Two defs with the same body are equal (#1028).
+  - A fallback arm past a datatype's last constructor is dead code (#1091).
+  - An error names a hub def the way you write it (#965), and a `+` binder's
+    error names the right binder (#980).
+  - A compound type argument without parens is a clean parse error (#1110).
+  - A shared Array's redirect reads cannot race its count (#975).
+  - Timers wake in deadline order; clang's version probe no longer fails
+    under load.
+  - `--gpu on` names the reason a CUDA GPU is unusable (#1064).
+  - A JS host tag the type lacks is a clean error (#1105).
+
+## 2.0.31 (2026-09-27)
+
+- **`bend` help: one aligned line per command**: a table builds the list,
+  so every description starts in one column; `--publish [<name>@<version>]`
+  is one line, and `bend guide` is the last command.
+
+## 2.0.30 (2026-09-27)
+
+- **`bend f.bend --safe` rechecks a file with a proven kernel**: after
+  bend's own checker, it translates the file to BendTT (`f.bendtt`) and
+  checks that with `bend2/bendtt.lean`, a small kernel with a Lean proof
+  that no def it accepts has type `Empty` and that live code halts. The
+  first run builds the kernel with Lean v4.34.0 (elan's toolchain, or
+  `$BENDTT` names a built one). `@unsafe` defs stay out of scope, and
+  `--safe` lists them. `-o f.bendtt` only writes the translation.
+- **The kernel has full J**: a rewrite's motive can name the evidence.
+- **base.bend**: the `Array.get`, `Array.swap` and `Map` helpers recurse on
+  their own pieces, so the kernel checks them; a few `.if`/`.bit`/`.deep`
+  helpers and five laws are gone.
+- **The BendTT paper** (`paper/BendTT.pdf`) is rewritten for the new kernel;
+  `bend2/bend.lean` is gone, and `bend2/bendtt.lean` is the only Lean file.
+
+## 2.0.29 (2026-09-26)
+
+- **The JS lane runs about 2.3x faster** (PR #1061 by nicolas-abril, and a
+  Nat that is a JS number): a Nat is a double, exact below the 2^48 - 1 cap
+  the C lane shares, and BigInt only where a value crosses to the host; a
+  tail cycle is a loop, and a def calls another directly unless the callee
+  can bounce. The JS lane recurses at least as deep as before. A Nat that a
+  host passes in (negative, past 2^53 or not an integer) now fails with the
+  C lane's Nat message instead of printing garbage.
+- **Errors underline their span** (PR #1063 by nicolas-abril): a location
+  marks the exact text, and a non-inferrable term is no longer echoed.
+- **A checked recursion on a Nat literal is linear** (#983): the descent
+  check no longer takes 2^n steps on a literal like `30n`.
+- **A constructor of any width builds on C** (#991, PR #1068 by
+  nicolas-abril).
+- **Compiled binaries pass `--help` to `IO.args`** (#934, PR #988 by
+  YidaWeng); the runtime's own help is `--bend-help`.
+- **Fixes**: a boxed Bool from a generic pick reaches `Bool.or` as a flat tag
+  on C (#1026, PR #1038 by vicmcorrea); `Process.run` stops at the child's
+  exit even when a descendant holds its pipes (#1051, PR #1054 by
+  Yi-111-a); `TCP.listen`'s backlog is 512, so a burst of 10k connections is
+  answered in full (PR #977 by aldeni).
+- **Simpler compiler and checker, same output**: the compiler's types go
+  from 31 to 16 and the C runtime's type names from 26 to 14, with one
+  atomic family for the host, Metal and CUDA; the parser reads operators
+  from one table (parsing 7-22% faster, checking 2-6% faster). A file that
+  ends in `<` now says "expected a term". Tested on macOS (Metal), Linux
+  x86-64, and CUDA from Pascal to Blackwell.
+
+## 2.0.28 (2026-09-25)
+
+- **The macOS `bend` has a valid signature** (#1025): `bun build --compile`
+  left the hash of the binary's last page stale, so every macOS release since
+  2.0.8 failed `codesign --verify`, and a Mac that checks that page killed
+  `bend` at launch with SIGKILL. The release now signs the macOS binaries
+  again, ad hoc, and verifies them before publishing.
+- **A package name is 1 to 64 characters** (#1053): the CLI asks the hub
+  about a short name instead of refusing it, so `--publish json@…` prints the
+  hub's answer (a name under 12 characters is won at auction on
+  hub.bend-lang.com) and `import std@1.0.0.0/…` resolves once the name has a
+  version.
+- **Names and namespaces cannot collide** (#1042; closes #994, #989, #1002,
+  #1005): a declared name is words joined by dots; a file's namespace is its
+  real path, so a local file cannot take a hub package's `0x<hash>`
+  namespace nor register names in another file's; only a `0x<hash>/` or
+  `name@version/` import goes to the hub. A name declared twice, a
+  redeclared Base name, a clashing alias and an effect registered twice are
+  refused. **A JS effect registers with `io_eff(CID(Name), run, need)`, as a
+  C effect does**: effect files written for 2.0.27 need that change (see
+  `bend guide effects`).
+- **An unsafe fill in an imported file is listed** (#1001, PR #1033 by
+  costamatheus97): the verdict walks from every law, wherever it is filled,
+  so a law filled by `@unsafe` code in a helper file no longer passes as a
+  clean `All terms check.`. Exit codes are unchanged.
+- **`Process.run`** (PR #1030 by oxura) runs a program directly, without a
+  shell: literal arguments, UTF-8 input, bounded output and a timeout, and it
+  answers the status, stdout and stderr, on every lane.
+- **`IO.thread_count()`** (#971, PR #1048 by aldeni) answers the native worker
+  pool's size (`--threads`, or the CPUs the process may use, up to 128), and 1
+  on the JS lanes.
+- **A checked `Nat.read` finishes** (#1008, PR #1009 by jkbennitt): a law like
+  `{Nat.read("7") == Some{7n}}` no longer compares each digit against a unary
+  2^48 - 1.
+- **Fixes**: the `.bend` loader registers in Node worker threads (PR #992 by
+  vicmcorrea); an empty `UDP.send_to` sends on Bun (PR #998 by vicmcorrea); a
+  signal that interrupts the event loop's `select` wakes nothing, on both
+  lanes (PR #1036 by aldeni); rebuilding a list in C no longer leaks 16 bytes
+  (#970, PR #987 by YidaWeng); an effect `.c` that says `undefined` in a
+  comment builds (PR #1049 by aldeni); Metal names the device's limit when
+  `--gpu` asks for more (PR #1047 by MattCozendey); the effects guide gives
+  the JS park its deadline (PR #1050 by aldeni).
+- **Simpler checker and effects, same output**: every literal is one node
+  that carries its Base type (PR #1004 by MattCozendey), three one-use C
+  helpers go (PR #981 by tachytelicdetonation), `Nat.read` checks its bound
+  with three helpers instead of eight, and the JS show escapes a surrogate as
+  C does (PR #943 by This-Is-NPC).
+
+## 2.0.27 (2026-09-23)
+
+- **`bend` reads no `bunfig.toml` or `.env` from the directory it runs in**
+  (#1018): the executable was a Bun program built with Bun's defaults, so a
+  project it checked could preload its own code before bend's (and print a
+  forged `All terms check.`), or set `BEND_HUB`, `BEND_ORIGIN` or `BEND_LIB`
+  for you: your Bender key went to its server on `--publish <name>@…` and
+  `bend link`, `bend update` ran its script, and its own copies of hub
+  packages, named ones included, were checked in place of the real ones. The
+  release is now built with that loading off (`package.json` and
+  `tsconfig.json` too), and the ping gate runs the installed `bend` in such a
+  project (#1023). `bun bend2/main.ts` from a checkout still reads both, as
+  any Bun program does: check a project you did not write with `bend`.
+- **A package can carry a license** (#1013): `--publish` takes every file
+  named exactly `LICENSE` beside a published file, at the same path, and the
+  hash covers it. A package without one is MIT-0 under BendHub's terms, and
+  the publish warns so. Every publish first prints, on stderr, that the hub is
+  public and permanent under https://bend-lang.com/bender/terms#s18, and the
+  license the hub will show: the `SPDX-License-Identifier` of the shallowest
+  `LICENSE`, else `see <path>`. A directory named `license` in any case is
+  refused before mining, since it clashes with a `LICENSE` on a disk that
+  ignores case. A `LICENSE` added to a published package changes its hash:
+  publish it as a new version (bend-tensors@0.0.0.2 is 0.0.0.1 plus MIT).
+- **Requests to the hub and bend-lang.com carry `User-Agent: bend/<version>`**
+  (#1013): publish, publish-check, link, name lookups, package reads, the
+  login and the daily check, so the hub's log shows which bend sent each.
+- **Datatypes name each other in any order**: every datatype is declared up
+  front, so two datatypes (a `Tree` and a `Forest`), or a def above the
+  datatypes it returns, need no forward law. A forward `D<..>` spells every
+  parameter. Base's `Word`, `Pair` and `IO` lose their laws.
+- **An `@unsafe` def may call a def written below it**, and `def f?(..)` is
+  sugar for `@unsafe def f(..)`, so two mutually recursive unsafe defs need no
+  law. Safe code is as strict as before: a live call to a def below, or a
+  mutual pair, is refused as an unfilled law, which is how a forward
+  reference is now reported (it was an undefined name).
+
+## 2.0.26 (2026-09-23)
+
+- **A package has a name on the hub** (#996): `import <name>@<version>/file.bend
+  as P` asks hub.bend-lang.com once what the name and version name, keeps the
+  answer under `~/.bend/lib/names`, and loads the package by that hash as
+  before, so a version never moves and a cached name works offline. `bend
+  <file> --publish <name>@<version>` publishes and names in one run, after
+  the hub confirms the name is yours or free and the version goes up; `bend
+  link <name>@<version> 0x<hash>` names a package already published; `bend
+  login` logs in to Bender for both. A name is a-z, 0-9 and -, 12 to 64
+  characters; a version is four numbers like 1.0.0.0. The first:
+  `import bend-tensors@0.0.0.1/bend_tensors.bend as T`.
+- **The effects guide calls `io_node` and `io_wait_on` as the runtime
+  declares them** (#947): `io_node` takes four arguments and `io_wait_on`
+  five, the fourth an absolute `io_tick()` deadline, 0 for none, so an
+  effect written from the guide compiles.
+- **A second book compiled in one process starts from a fresh probe list**
+  (#976): the bun loader and `io_run` no longer retain the binder variables
+  of every previous compilation.
+- **Simpler compiler, same output**: the channel runtime lives in
+  `effs/chan.c` and `effs/chan.js` beside `Chan.new`, `send`, `recv` and
+  `close`, so a program carries it only when it uses a channel, and both
+  match emitters share their table and arms; emitted C and JS are
+  byte-identical except the channel programs' requests.
+- The README links the standalone `bend2-lsp` (#953, by don2e4).
+
+## 2.0.25 (2026-09-21)
+
+- **A literal is a `Nat` or `String` by name only where the datatype is
+  Base's**: a file that declares its own `Nat` checks a literal
+  structurally again, so `type Nat: Succ{e: Empty}` no longer admits `1n`
+  and a closed `Empty` (#941). An array count past the nat cap is refused
+  instead of making a fractional literal that defeats termination (#954).
+- **A wide record compiles**: any field list past 255 words has its
+  multi-word fields boxed, for constructor layouts, nodes and def
+  signatures alike, so a 512-word record no longer dies "an arity over
+  255" (#944). A recursive datatype hidden behind a type family is boxed
+  instead of overflowing the compiler (#959). A datatype named
+  `__proto__`, `constructor` or `toString` compiles (#948). Still open: a
+  join holding several wide results, or a wide value held across a
+  non-tail call, is refused with the same message.
+- **An annotated lambda or match applied where it stands compiles** on both
+  lanes, as its let-bound form did (#956).
+- **A read parked on a FIFO sees its end on macOS** (#928, PR #932 by
+  PedroVIOliv): both IO loops wait with `select`, since Darwin's `poll`
+  never reports a named pipe's close.
+- **A foreign effect's scheduling helper cannot be overwritten** by an
+  effect named `X_need`, in either discovery order (#946, PR #951 by
+  tachytelicdetonation).
+- **A generated C local carries a `_` prefix** (PR #926 by nood-co1), so a
+  host macro such as macOS's `ts_32` cannot capture it; emitted C grows by
+  1 to 5 %.
+- **The Node and Bun loaders report unsafe and foreign dependencies** on
+  stderr, as the CLI does (PR #933 by vicmcorrea), and two books compiled in
+  one process no longer share layout memos (PR #961 by vicmcorrea).
+- **Simpler compiler and effects, same output**: the layout packer assigns
+  offsets once (PR #945 by tachytelicdetonation), the array intrinsics share
+  one cell path (PR #955 by PedroVIOliv), the facts fixpoint compares set
+  sizes (PR #960 by byronbenharris), the JS emitter keeps one descriptor per
+  native constructor (PR #952 by ramonzx6), one `BEND_RTC` macro serves the
+  device compilers (PR #963 by costamatheus97), and the file and audio
+  effects share one source each (PRs #950 and #939 by tachytelicdetonation
+  and tontontimiro).
+
+## 2.0.24 (2026-09-21)
+
+- **A string or nat literal is one `Lit` node in the checker** (PRs #907 and
+  #924 by MattCozendey): a literal unfolds one constructor at a time when it
+  is compared, matched or checked, so 50 defs of 1000-char strings check in
+  0.14 s and 74 MB instead of 4 s and 2.6 GB, a 200k-char literal checks
+  instead of overflowing the stack, 2000 defs of `200n` check in 0.18 s
+  instead of 1.06 s, a self-call on a nat literal past 256 passes the
+  termination check, and `1n+0n` is `1n`. The compiled output is unchanged.
+- **The device hands no leaf off**: a fork-free leaf reached from a forking
+  def inside a bang runs on heap continuations on the GPU again, as in
+  2.0.21, so a `do Result` loop of hundreds of turns under a parallel tree no
+  longer dies with "memory fault". The host keeps PR #876's handoff and its
+  gains; symreg on Metal stays at 0.32 s (#930).
+
+## 2.0.23 (2026-09-20)
+
+- **`Array.map` walks the block**: Base's map reads each cell and writes the
+  result into a fresh array instead of splitting and rebuilding the tree, so
+  16M U32 map in 15 ms instead of 176 ms at a fifth of the memory. Its
+  elements are `Data` now; a map over affine elements is written from the
+  tree by hand (#911, #913).
+- A template refuses a second `~` binder of one name, in a def or a law's
+  `for ~T` clauses; the two became one opaque constant in the generic check
+  and let a closed `Empty` through (#905).
+- The C lane heats a stuck family's type argument at every instantiation, so
+  a record carried through `F(n, RT)` is opened as the record it is (#916).
+- Inside an imported module, a local named like one of the module's own defs
+  binds, in a let, a `+` let, a pattern, a `+` pattern and a lambda (#915).
+- A right spine of forks under `!` runs on the GPU at any depth the cores
+  take: the device grow pass no longer stops after 128 turns (#918).
+- The JS lane names a def from a hyphenated or absolute import path legally,
+  `--checkup` opens an absolute import as the run does, and `-o out.cjs`
+  emits the CommonJS program (#904, #906, #908, #910).
+
+## 2.0.22 (2026-09-20)
+
+- **An `@unsafe` def forks an array**: `Array.fork` gives two handles to one
+  block, `Array.join` merges them back, and `Array.atomic.*` (add, sub, and,
+  or, xor, min, max, cas, fadd) act on the shared block from the cores and the
+  GPU. A match on a shared handle copies its part, as a clone does (#885).
+- Two `@unsafe` defs recurse into each other through their laws: an unsafe
+  body may call a law that is not yet filled, as it may call itself without
+  descent.
+- A typed let, `x : T = v`, binds `x` to `{v : T}`; a let with a pattern
+  takes no type (destructure in the body).
+- A `do` block of one statement is typed by its header, and the header's
+  leading quantities are filled once for `bind`, `pure` and the annotation:
+  `do Result<String, U32>:` with a bind now checks (#900).
+- A word match compares the whole word: a string, char, U32 or F32 literal
+  pattern is one equality and its default one else, so three string arms
+  compile to 291 KB of C, not 16.7 MB (#892).
+- An Array cell is its element datatype's open layout, so a generic body over
+  `Array<Boxed<A>>` and its callers agree on the block class; the C lane no
+  longer takes the ANode arm for a leaf (#893).
+- A node shared through a family with two or more indices is opened with
+  `ctr_take` on the C lane, instead of read and freed as owned (#901).
+- A C table's F32 row is the constant's own bits: a signalling NaN keeps its
+  payload (#897).
+- A constructor refuses a repeated field name; the JS lane keyed both fields
+  on one property (#899).
+- A module imported through `../` or a dot directory works inside an annotated
+  operator: an operator is the name whose only dot leads it (#903).
+- A GPU out-of-heap reports at once instead of after seconds of aliased
+  allocation, a `--gpu` span under the fixed region fails with its message
+  instead of a segfault, and a lane's stack ends at the static image: its
+  2049th word no longer overwrites a constant (#889).
+- Fork-free leaves run sequentially and CPU ring work is dealt across workers
+  (PR #876 by nicolas-abril): binarytrees 0.31 → 0.20 s and symreg on the GPU
+  0.56 → 0.32 s on an M4 Max. On the GPU a fork-free leaf reached from a
+  forking def now runs on its lane's 2048-word stack, as a fork kid does.
+
 ## 2.0.21 (2026-09-20)
 
 - A template instance that calls back into an instance whose body is

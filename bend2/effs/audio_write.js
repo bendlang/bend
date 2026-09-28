@@ -4,7 +4,7 @@
 function audio_write(audio, samples) {
   const s = audio;
   let n = 0;
-  for (let xs = samples; xs.$ === "Con"; xs = xs.tail) {
+  for (let xs = samples; xs.$ === CID(Con); xs = xs.tail) {
     n += 1;
   }
   const now = Date.now();
@@ -15,3 +15,5 @@ function audio_write(audio, samples) {
   }
   return io_tup(audio, Math.floor(s.queued));
 }
+
+io_eff(CID(Audio.write), audio_write);

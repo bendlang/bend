@@ -12,6 +12,7 @@ def g(x: Nat) -> Nat:
 def main() -> Nat:
   g(1n)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a bound variable
 #|- observed : y^-1
@@ -20,5 +21,6 @@ def main() -> Nat:
 #|Location: g
 #| 9 | def g(x: Nat) -> Nat:
 #|10>|   app(~(y => +y), x)
+#|   |              ^^
 #|11 |
 #|exit 1

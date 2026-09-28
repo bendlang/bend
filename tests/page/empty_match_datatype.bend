@@ -7,11 +7,13 @@ law main:
 
 def main(): \{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a datatype
 #|- observed : @_:U32 -> U32
 #|Location: main
 #|7 | 
 #|8>| def main(): \{}
+#|  |             ^^^
 #|9 |
 #|exit 1

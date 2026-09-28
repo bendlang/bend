@@ -21,6 +21,7 @@ def bad(x):
       match b:
         case B0{}: B0{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : cases for B1
 #|- observed : \{}
@@ -29,5 +30,6 @@ def bad(x):
 #|Location: bad
 #|20 |     case Pack{v, b}:
 #|21>|       match b:
+#|   |       ^^^^^^^^
 #|22 |         case B0{}: B0{}
 #|exit 1

@@ -20,11 +20,13 @@ def main():
     x : U32 <- beep(3)
     return x
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : '"'
 #|- observed : '.'
 #|Location:
 #|12 | def beep(times):
 #|13>|   import ./lib/eff.c
+#|   |          ^
 #|14 |
 #|exit 1

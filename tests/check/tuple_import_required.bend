@@ -10,11 +10,13 @@ def main():
   x = (1, 2)
   Type
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a declared constructor
 #|- observed : (1, 2)
 #|Location: main
 #| 9 | def main():
 #|10>|   x = (1, 2)
+#|   |       ^^^^^^
 #|11 |   Type
 #|exit 1

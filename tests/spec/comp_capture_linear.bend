@@ -37,6 +37,7 @@ law main:
 def main():
   bad(y => (y + 1 : U32), C{1, C{2, N{}}})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a template applied to closed ~ arguments (g is a variable here, not comptime: pass it at run time)
 #|- observed : map
@@ -46,5 +47,6 @@ def main():
 #|Location: bad
 #|31 | def bad(g, xs):
 #|32>|   map(x => g(x), xs)
+#|   |   ^^^
 #|33 |
 #|exit 1

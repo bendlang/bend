@@ -11,11 +11,13 @@ def main():
   h = [Zx{}]
   Zx{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a declared constructor
 #|- observed : [Zx{}]
 #|Location: main
 #|10 | def main():
 #|11>|   h = [Zx{}]
+#|   |       ^^^^^^
 #|12 |   Zx{}
 #|exit 1

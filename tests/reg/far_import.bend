@@ -3,9 +3,9 @@
 # it, so its effect's CID_FAR_TYPES_DEEP was CID_____IO_FAR_TYPES_DEEP in
 # the program and its JS tag "far_types.Deep" was "../io/far_types.Deep",
 # and neither lane built. An effect now names its module's constructors
-# as the module does: in C through aliases pushed around its text (its
-# Deep shadows this program's own Deep there and nowhere else), in JS
-# through tags that are the module's spelling.
+# as the module does, CID(Deep) on both lanes, read in the module's
+# namespace (its Deep, not this program's): a C id, or in JS the tag,
+# which is the constructor's key.
 import Base
 import ../io/far_types.bend as F
 

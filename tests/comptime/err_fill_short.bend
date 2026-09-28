@@ -17,11 +17,13 @@ def F(f):
 def main() -> Nat:
   F(~(h => h(1n)), ~inc)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a name for each ~ clause of the law (2)
 #|- observed : ':'
 #|Location:
 #|13 |
 #|14>| def F(f):
+#|   |         ^
 #|15 |   f
 #|exit 1

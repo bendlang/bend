@@ -35,4 +35,5 @@ def vpad(n, v):
   %add_zero(n) : Vec(_)
   v
 
-#|All terms check.
+#|ALL PROOFS CHECK
+#|Use --verdict for mathematical validity.

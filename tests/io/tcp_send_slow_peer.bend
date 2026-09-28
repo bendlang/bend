@@ -1,11 +1,13 @@
 # io (io_tcp_send_slow_peer): a peer that never reads must not stop the
-# loop or hold a helper. 70 clients connect and sit; the server sends
-# 64 KiB chunks to each until the send fails, so 70 senders sit on full
-# sockets at once, more than the 64 helper threads. A send that would
-# block parks its computation until the socket is writable, so main's
-# print lands at 600 ms and a File.open (a helper job) answers at once.
-# Before this, the JS lane's send blocked the loop thread outright and
-# the C lane's send held a helper, and the canary waited ~1.5 s.
+# loop or hold a helper. 70 clients connect one after another and sit;
+# the server sends 64 KiB chunks to each until the send fails, so 70
+# senders sit on full sockets at once, more than the 64 helper threads.
+# A send that would block parks its computation until the socket is
+# writable, so main's print lands once every client is accepted and a
+# File.open (a helper job) answers at once. Before this, the JS lane's
+# send blocked the loop thread outright and the C lane's send held a
+# helper, and the canary waited until the holders let go 1.5 s later.
+# The holders still sit, so main ends the process with IO.die code 0.
 import Base
 
 def chunk(n: Nat, acc: String) -> String:
@@ -56,21 +58,16 @@ def hold.got(r: Result<&1, &1, (U32 & String), Socket>) -> IO(Unit):
     case Fail{e}:
       IO.pure(Unit, Unit{})
 
-def hold(port: U32, i: U32) -> IO(Unit):
-  do IO<Unit>:
-    Unit <- IO.sleep((i * 4 : U32))
-    r : Result<&1, &1, (U32 & String), Socket> <- TCP.connect("127.0.0.1", port)
-    hold.got(r)
-
-def holders(port: U32, n: Nat, +i: U32) -> IO(Unit):
+def holders(port: U32, n: Nat) -> IO(Unit):
   match n:
     case 0n:
       IO.pure(Unit, Unit{})
     case 1n+p:
       +pt = port
       do IO<Unit>:
-        Unit <- IO.spawn(Unit, hold(pt, i))
-        holders(pt, p, (i - 1 : U32))
+        r : Result<&1, &1, (U32 & String), Socket> <- TCP.connect("127.0.0.1", pt)
+        Unit <- IO.spawn(Unit, hold.got(r))
+        holders(pt, p)
 
 def canary.read(m: File & Result<&1, &1, (U32 & String), String>) -> IO(Unit):
   (f, r) = m
@@ -96,12 +93,13 @@ def main.go(b: Listener & U32) -> IO(U32):
   (l, port) = b
   +p = port
   do IO<U32>:
-    Unit <- IO.spawn(Unit, serve(70n, l))
-    Unit <- holders(p, 70n, 70)
-    Unit <- IO.sleep(600)
+    a : Chan(Unit) <- IO.fork(Unit, serve(70n, l))
+    Unit <- holders(p, 70n)
+    Unit <- IO.join(Unit, a)
+    Unit <- IO.sleep(10)
     Unit <- IO.print("loop alive")
     Unit <- canary()
-    return 0
+    IO.die(U32, 0, "")
 
 def tcp_retry(port: U32, r: Result<&1, &1, (U32 & String), Listener>, rest: IO(Listener & U32)) -> IO(Listener & U32):
   match r:
@@ -117,7 +115,7 @@ def tcp_listen_any(tries: Nat, +port: U32) -> IO(Listener & U32):
     case 1n+t:
       rest = tcp_listen_any(t, (port + 1 : U32))
       do IO<Listener & U32>:
-        r : Result<&1, &1, (U32 & String), Listener> <- TCP.listen(port)
+        r : Result<&1, &1, (U32 & String), Listener> <- TCP.listen("127.0.0.1", port)
         tcp_retry(port, r, rest)
 
 def main() -> IO(U32):

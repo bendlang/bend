@@ -24,11 +24,13 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : '('
 #|- observed : '<'
 #|Location:
 #|15 | 
 #|16>| def swap<A, B>(p):
+#|   |         ^
 #|17 |   match p:
 #|exit 1

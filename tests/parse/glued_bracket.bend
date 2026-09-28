@@ -16,11 +16,13 @@ law main:
 
 def main(): id2
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : U32
 #|- observed : @-A:Type -> @x:A -> A
 #|Location: main
 #|16 | 
 #|17>| def main(): id2
+#|   |             ^^^
 #|18 |
 #|exit 1

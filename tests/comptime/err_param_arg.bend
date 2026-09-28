@@ -12,6 +12,7 @@ def caller(k: Nat, x: Nat) -> Nat:
 def main() -> Nat:
   caller(1n, 2n)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a template applied to closed ~ arguments (k is a variable here, not comptime: pass it at run time)
 #|- observed : T
@@ -21,5 +22,6 @@ def main() -> Nat:
 #|Location: caller
 #| 9 | def caller(k: Nat, x: Nat) -> Nat:
 #|10>|   T(~k, x)
+#|   |   ^
 #|11 |
 #|exit 1

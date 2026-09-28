@@ -13,4 +13,5 @@ def ap_eq(f, g, e):
   %e : {f(3) == _(3) : U32}
   {==}
 
-#|All terms check.
+#|ALL PROOFS CHECK
+#|Use --verdict for mathematical validity.

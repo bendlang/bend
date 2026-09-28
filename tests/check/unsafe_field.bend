@@ -16,7 +16,9 @@ def uses(b: Box) -> Nat:
 def sound(n: Nat) -> Nat:
   n
 
-#|All terms check, but 3 defs rely on unsafe or foreign code:
+#|SOME PROOFS FAIL
+#|Error: 3 defs rely on unsafe or foreign code:
 #|- boom
 #|- Box
 #|- uses
+#|exit 1

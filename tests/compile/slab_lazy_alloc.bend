@@ -10,11 +10,13 @@ def main():
   a = (![70000: 9, _: 1; 131072] : [:U32])
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : '!'
 #|Location:
 #| 9 | def main():
 #|10>|   a = (![70000: 9, _: 1; 131072] : [:U32])
+#|   |        ^
 #|11 |   0
 #|exit 1

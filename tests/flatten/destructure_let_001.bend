@@ -15,10 +15,12 @@ def main(p):
   P{a, b} = q
   (a - b : U32)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- message  : a parameter or field scrutinee (a match cannot scrutinize a local binder: give it its own def)
 #|Location:
 #|13 | def main(p):
 #|14>|   q = p
+#|   |   ^
 #|15 |   P{a, b} = q
 #|exit 1

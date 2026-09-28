@@ -26,7 +26,7 @@ def ticks(n: Nat) -> IO(Unit):
       IO.print("ticks done")
     case 1n+p:
       do IO<Unit>:
-        Unit <- IO.sleep(100)
+        Unit <- IO.sleep(1)
         Unit <- IO.print("tick")
         ticks(p)
 

@@ -85,5 +85,5 @@ certificate at arbitrary coordinates, and a safe cell is off the flag,
 because the flag's cell is in the room, so a step never sets `won`.
 `run_safe` carries the invariant through any list of moves and answers
 the final cell; both laws (never won, never on the flag) read off it. No
-axioms, no TODOs, no `unsafe`: `bend PROOF.bend` answers "All terms
-check."
+axioms, no TODOs, no `unsafe`: `bend PROOF.bend` answers "ALL PROOFS
+CHECK".

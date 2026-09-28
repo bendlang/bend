@@ -22,11 +22,13 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a filled definition (an unfilled law is a dead claim: live code cannot use it)
 #|- observed : foo
 #|Location: bar
 #|13 | def bar():
 #|14>|   foo(1)
+#|   |   ^^^
 #|15 |
 #|exit 1

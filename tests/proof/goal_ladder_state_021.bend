@@ -59,6 +59,7 @@ def rgo_cat(A, xs, acc):
       %rgo_cat(A, t, [h]) : {LL.append(A, _, acc) == LL.append(A, LL.reverse.go(A, t, Nil{}), h <> acc) : List<&2, A>}
       Type
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : {LL.append(A, LL.append(A, LL.reverse.go(A, t, []), [h]), acc) == LL.append(A, LL.reverse.go(A, t, []), h <> acc) : List<&2, A>}
 #|- observed : Type
@@ -70,5 +71,6 @@ def rgo_cat(A, xs, acc):
 #|Location: rgo_cat
 #|59 |       %rgo_cat(A, t, [h]) : {LL.append(A, _, acc) == LL.append(A, LL.reverse.go(A, t, Nil{}), h <> acc) : List<&2, A>}
 #|60>|       Type
+#|   |       ^^^^
 #|61 |
 #|exit 1

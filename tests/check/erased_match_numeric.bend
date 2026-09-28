@@ -16,11 +16,13 @@ law main:
 def main():
   hidden(5)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : '}'
 #|- observed : ':'
 #|Location:
 #|10 | def hidden():
 #|11>|   \{0: 0; (1)}
+#|   |      ^
 #|12 |
 #|exit 1

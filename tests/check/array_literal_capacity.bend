@@ -20,11 +20,13 @@ law main:
 def main():
   go(7)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : '!'
 #|Location:
 #|11 | def go(a):
 #|12>|   old = ![_:9; 1]@m[0] <- 5
+#|   |         ^
 #|13 |   x = m@m2[0]
 #|exit 1

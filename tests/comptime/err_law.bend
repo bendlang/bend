@@ -9,11 +9,13 @@ law app:
 def app(~f, x):
   f(x)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a name
 #|- observed : '~'
 #|Location:
 #| 8 | 
 #| 9>| def app(~f, x):
+#|   |         ^
 #|10 |   f(x)
 #|exit 1

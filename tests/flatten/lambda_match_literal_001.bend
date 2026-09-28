@@ -14,6 +14,7 @@ law main:
 def main():
   n => \{T: {==}; F: n}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : an annotated term (cannot infer)
 #|- observed : \{T: {n == n : Nt}; F: Nt}
@@ -23,5 +24,6 @@ def main():
 #|Location: main
 #|11 | law main:
 #|12>|   @n: Nt -> @b: Bl -> \{T: {n == n : Nt}; F: Nt}(b)
+#|   |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
 #|13 |
 #|exit 1

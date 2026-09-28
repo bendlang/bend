@@ -72,6 +72,7 @@ def mul_succ(a, b):
       %add_swap(p, b, mul(p, b)) : {S{add(p, add(b, mul(p, b)))} == S{_} : N}
       {==}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : {Z{} == Z{} : N}
 #|- observed : Type
@@ -80,5 +81,6 @@ def mul_succ(a, b):
 #|Location: mul_succ
 #|68 |     case Z{}:
 #|69>|       Type
+#|   |       ^^^^
 #|70 |     case S{p}:
 #|exit 1

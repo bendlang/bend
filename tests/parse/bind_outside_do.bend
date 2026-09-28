@@ -14,11 +14,13 @@ law main:
 
 def main(): x <- half(10)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : 'def', 'type' or 'law'
 #|- observed : '<'
 #|Location:
 #|14 | 
 #|15>| def main(): x <- half(10)
+#|   |               ^
 #|16 |
 #|exit 1

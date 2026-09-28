@@ -14,6 +14,7 @@ law main:
 def main():
   \{T: S{Z{}}; F: Z{}}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : an annotated term (cannot infer)
 #|- observed : \{T: W; F: W}
@@ -22,5 +23,6 @@ def main():
 #|Location: main
 #|11 | law main:
 #|12>|   @b: Bl -> \{T: W; F: W}(b)
+#|   |             ^^^^^^^^^^^^^
 #|13 |
 #|exit 1

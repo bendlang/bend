@@ -3,11 +3,13 @@
 # ported from bend3
 def match(): Unit{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a name (got the keyword 'match')
-#|- observed : '('
+#|- observed : 'match'
 #|Location:
 #|3 | # ported from bend3
 #|4>| def match(): Unit{}
+#|  |     ^^^^^
 #|5 |
 #|exit 1

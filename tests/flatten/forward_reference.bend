@@ -32,10 +32,12 @@ type Nt is Data:
   Zn{}
   Sn{p: Nt}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- message  : a declared constructor (unknown: Zn)
 #|Location:
 #|14 |   match n:
 #|15>|     case Zn{}:
+#|   |          ^^^^
 #|16 |       T{}
 #|exit 1

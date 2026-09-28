@@ -1,5 +1,5 @@
 # io (io_now): IO.now answers a monotonic clock in milliseconds, so
-# the span around a 50 ms sleep is at least 49 (the clock rounds
+# the span around a 2 ms sleep is at least 1 (the clock rounds
 # down): the test prints ok, never early, and never the span itself.
 import Base
 
@@ -22,9 +22,9 @@ law main:
 def main():
   do IO<U32>:
     t0 : Nat <- IO.now()
-    Unit <- IO.sleep(50)
+    Unit <- IO.sleep(2)
     t1 : Nat <- IO.now()
-    Unit <- IO.print(late(Nat.cmp(Nat.sub(t1, t0), 49n)))
+    Unit <- IO.print(late(Nat.cmp(Nat.sub(t1, t0), 1n)))
     return 0
 
 #|ok

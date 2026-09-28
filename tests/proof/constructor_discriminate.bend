@@ -46,4 +46,5 @@ law ne:
 
 def ne(): e => t_ne_f(e)
 
-#|All terms check.
+#|ALL PROOFS CHECK
+#|Use --verdict for mathematical validity.

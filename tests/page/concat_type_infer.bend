@@ -22,11 +22,13 @@ law main:
 def main():
   [1] ++ [2]
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : String
 #|- observed : List
 #|Location: main
 #|22 | def main():
 #|23>|   [1] ++ [2]
+#|   |   ^^^
 #|24 |
 #|exit 1

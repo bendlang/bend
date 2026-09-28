@@ -22,6 +22,7 @@ law main:
 
 def main(): worse(Unit5, Empty5, U5{})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : b
 #|- observed : a
@@ -32,5 +33,6 @@ def main(): worse(Unit5, Empty5, U5{})
 #|Location: worse
 #|17 | 
 #|18>| def worse(): a => b => x => x
+#|   |                             ^
 #|19 |
 #|exit 1

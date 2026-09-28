@@ -26,10 +26,12 @@ law main:
 def main():
   frame(True{})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)
 #|Location:
 #|17 | def frame(b):
 #|18>|   match a : Bool = b, c : Bool = a:
+#|   |         ^
 #|19 |     case x, y:
 #|exit 1

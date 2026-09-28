@@ -19,11 +19,13 @@ def main():
   h = (![0:1, _:0; 2] : [:U32 -> U32])
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : ':'
 #|Location:
 #| 8 | law take:
 #| 9>|   for a: [:U32 -> U32]
+#|   |           ^
 #|10 |   U32
 #|exit 1

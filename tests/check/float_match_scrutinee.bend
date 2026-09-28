@@ -19,11 +19,13 @@ law main:
 def main():
   f(1.5)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a constructor of F32 (missing, or already matched)
 #|- observed : \{Chr: (c => 0)}
 #|Location: f
 #|12 |   match x:
 #|13>|     case Chr{c}:
+#|   |          ^^^^^^
 #|14 |       0
 #|exit 1

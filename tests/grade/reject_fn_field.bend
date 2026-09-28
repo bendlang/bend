@@ -15,11 +15,13 @@ type List<a, -A: Kind(a)> is Kind(a):
 type Box is Data:
   MkBox{f: Nat -> Nat}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : Data
 #|- observed : Type
 #|Location: MkBox
 #|15 | type Box is Data:
 #|16>|   MkBox{f: Nat -> Nat}
+#|   |            ^^^^^^^^^^
 #|17 |
 #|exit 1

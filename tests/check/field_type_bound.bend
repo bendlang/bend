@@ -8,11 +8,13 @@ law main:
 
 def main(): Mk9{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a defined name
 #|- observed : Missing9
 #|Location: Mk9
 #|3 | type Bad9 is Data:
 #|4>|   Mk9{x: Missing9}
+#|  |          ^^^^^^^^
 #|5 |
 #|exit 1

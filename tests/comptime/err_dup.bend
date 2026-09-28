@@ -7,11 +7,13 @@ def app(~f: Nat -> Nat, x: Nat) -> Nat:
 def app(~f: Nat -> Nat, x: Nat) -> Nat:
   f(x)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a fresh name (duplicate declaration: app)
-#|- observed : '('
+#|- observed : 'app'
 #|Location:
 #|6 | 
 #|7>| def app(~f: Nat -> Nat, x: Nat) -> Nat:
+#|  |     ^^^
 #|8 |   f(x)
 #|exit 1

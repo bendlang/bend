@@ -14,11 +14,13 @@ def main(v):
   &y = v
   y
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : ':'
 #|- observed : '='
 #|Location:
 #|13 | def main(v):
 #|14>|   &y = v
+#|   |      ^
 #|15 |   y
 #|exit 1

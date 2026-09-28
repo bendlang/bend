@@ -32,11 +32,13 @@ law main:
 def main():
   u0(1)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a plain clause (only leading clauses take ~)
 #|- observed : '~'
 #|Location:
 #|10 |   for n: Nat
 #|11>|   for ~g: U32 -> U32
+#|   |       ^
 #|12 |   for x: U32
 #|exit 1

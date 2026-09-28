@@ -71,6 +71,7 @@ def mul_succ(a, b):
       %mul_succ(p, b) : {S{add(p, add(b, mul(p, b)))} == S{add(b, _)} : N}
       Type
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : {S{add(p, add(b, mul(p, b)))} == S{add(b, add(p, mul(p, b)))} : N}
 #|- observed : Type
@@ -80,5 +81,6 @@ def mul_succ(a, b):
 #|Location: mul_succ
 #|71 |       %mul_succ(p, b) : {S{add(p, add(b, mul(p, b)))} == S{add(b, _)} : N}
 #|72>|       Type
+#|   |       ^^^^
 #|73 |
 #|exit 1

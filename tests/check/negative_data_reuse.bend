@@ -23,11 +23,13 @@ law main:
 
 def main(): omega(Ln{t => t})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : f
 #|- observed : f (consumed more than once)
 #|Location: omega
 #|15 |   match t:
 #|16>|     case Ln{f}:
+#|   |             ^
 #|17 |       f(Ln{f})
 #|exit 1

@@ -15,6 +15,7 @@ law main:
 def main(n):
   (\{Zn: A{}; Sn: (x => B{x})})({n : Nt})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : an annotated term (cannot infer)
 #|- observed : \{Zn: A{}; Sn: (x => B{x})}
@@ -23,5 +24,6 @@ def main(n):
 #|Location: main
 #|15 | def main(n):
 #|16>|   (\{Zn: A{}; Sn: (x => B{x})})({n : Nt})
+#|   |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #|17 |
 #|exit 1

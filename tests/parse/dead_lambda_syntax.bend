@@ -8,11 +8,13 @@ law main:
 
 def main(): (\x.x)(3)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : '{'
 #|- observed : 'x'
 #|Location:
 #| 8 | 
 #| 9>| def main(): (\x.x)(3)
+#|   |               ^
 #|10 |
 #|exit 1

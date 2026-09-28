@@ -28,11 +28,13 @@ law main:
 
 def main(): f(Oy{}, Ay{})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : cases for By, Cy
 #|- observed : \{}
 #|Location: f
 #|19 | def f(x, y):
 #|20>|   match x, y:
+#|   |   ^^^^^^^^^^^
 #|21 |     case Oy{}, Ay{}:
 #|exit 1

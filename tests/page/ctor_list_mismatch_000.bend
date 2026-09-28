@@ -8,11 +8,13 @@ law main:
 
 def main(): Tru{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a declared constructor (MB declares T, F)
 #|- observed : Tru{}
 #|Location: main
 #| 8 | 
 #| 9>| def main(): Tru{}
+#|   |             ^^^^^
 #|10 |
 #|exit 1

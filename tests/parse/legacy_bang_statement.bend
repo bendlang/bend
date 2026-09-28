@@ -9,11 +9,13 @@ law main:
 
 def main(): ! x = 1; x
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : '!'
 #|Location:
 #| 9 | 
 #|10>| def main(): ! x = 1; x
+#|   |             ^
 #|11 |
 #|exit 1

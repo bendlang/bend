@@ -16,11 +16,13 @@ law main:
 def main():
   IO.print(Nat.show(main.out()))
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : an annotated term (cannot infer)
 #|- observed : \{True: 1n; False: 0n}
 #|Location: main.out
 #|10 | def main.out():
 #|11>|   \{True: 1n; False: 0n}({True{} : Bool})
+#|   |   ^^^^^^^^^^^^^^^^^^^^^^
 #|12 |
 #|exit 1

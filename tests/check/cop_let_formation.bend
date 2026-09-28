@@ -17,6 +17,7 @@ law main:
 
 def main(): dupl(Nat, 1n)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : Data
 #|- observed : Type
@@ -26,5 +27,7 @@ def main(): dupl(Nat, 1n)
 #|Location: dupl
 #|11 | def dupl(T, a):
 #|12>|   +x = a
+#|   |   ^^^
 #|13 |   (x, x)
+#|Note: +x can be used many times, so its type must be Data.
 #|exit 1

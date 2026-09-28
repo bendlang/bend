@@ -14,11 +14,13 @@ def main():
   m = (![0:P5{1,2}, 100000:P5{3,4}, _:N5{}; 131072] : [:P5])
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : '!'
 #|Location:
 #|13 | def main():
 #|14>|   m = (![0:P5{1,2}, 100000:P5{3,4}, _:N5{}; 131072] : [:P5])
+#|   |        ^
 #|15 |   0
 #|exit 1

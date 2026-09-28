@@ -22,11 +22,13 @@ law main:
 
 def main(): f(Zu{})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a pattern (a binder or a constructor)
 #|- observed : x => x
 #|Location:
 #|16 |   match a:
 #|17>|     case x => x:
+#|   |          ^
 #|18 |       Au{}
 #|exit 1

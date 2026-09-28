@@ -109,6 +109,10 @@ def Laws.esc_quits(pre, post, g):
       Laws.esc_quits(rest, post, g)
     case Move{x, y} <> rest:
       Laws.esc_quits(rest, post, g)
+    case Look{dx, dy} <> rest:
+      Laws.esc_quits(rest, post, g)
+    case Scroll{x, y, dx, dy} <> rest:
+      Laws.esc_quits(rest, post, g)
     case Close{} <> rest:
       {==}
 

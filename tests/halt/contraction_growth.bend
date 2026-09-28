@@ -46,11 +46,13 @@ law main:
 
 def main(): Z{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : p
 #|- observed : p (consumed more than once)
 #|Location: grow
 #|27 |   match t:
 #|28>|     case S{p}:
+#|   |            ^
 #|29 |       S{append(p, p)}
 #|exit 1

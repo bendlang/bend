@@ -27,11 +27,13 @@ law main:
 def main():
   dupa(arr())
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : ':'
 #|Location:
 #|11 | law dupa:
 #|12>|   for a: [:U32]
+#|   |           ^
 #|13 |   APair<[:U32]>
 #|exit 1

@@ -10,11 +10,13 @@ law boom:
 def boom():
   IO.pure(Unit, Unit{})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a fresh name (duplicate declaration: IO)
-#|- observed : '('
+#|- observed : 'IO'
 #|Location:
 #|3 | # a native claim of the library cannot be filled by a later file
 #|4>| def IO(A):
+#|  |     ^^
 #|5 |   Empty
 #|exit 1

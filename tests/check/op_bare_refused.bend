@@ -11,11 +11,13 @@ def sum3(a: Nat, b: Nat, c: Nat) -> Nat:
 def main() -> Nat:
   sum3(1n, 2n, 3n)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- message  : a type for this operator (write (a + b : Nat))
 #|Location:
 #| 8 |   + b
 #| 9>|   + c
+#|   |   ^
 #|10 | 
 #|Note: we broke this after launch, sorry. Until 2.0.16 a bare operator meant Nat.
 #|That was a bug: operators demand annotation. Wrap the expression and it'll work again.

@@ -14,11 +14,13 @@ def main():
     x : U32 <- Mk{3}
     return x
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a defined name
 #|- observed : Box.bind
 #|Location: main
 #|13 |   do Box<>:
 #|14>|     x : U32 <- Mk{3}
+#|   |     ^^^^^^^^^^^^^^^^
 #|15 |     return x
 #|exit 1

@@ -16,11 +16,13 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : '}'
 #|- observed : ':'
 #|Location:
 #|7 | law bad:
 #|8>|   @f:(U32 -> U32 -> U32) -> @y:U32 -> {(\{0: 0; 1+: f(y)})(2) == f(y, 2) : U32}
+#|  |                                            ^
 #|9 |
 #|exit 1

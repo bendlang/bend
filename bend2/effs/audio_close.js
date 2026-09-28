@@ -2,5 +2,7 @@
 // =====
 
 function audio_close(audio) {
-  return { $: "Unit" };
+  return { $: CID(Unit) };
 }
+
+io_eff(CID(Audio.close), audio_close);

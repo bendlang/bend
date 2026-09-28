@@ -18,11 +18,13 @@ law main:
 def main():
   f(3)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : '~'
 #|Location:
 #|11 | def f(x):
 #|12>|   h = {y => y : U32 -~> U32}
+#|   |                      ^
 #|13 |   h(x)
 #|exit 1

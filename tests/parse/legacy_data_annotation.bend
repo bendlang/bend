@@ -8,11 +8,13 @@ law main:
 
 def main(): Unit{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : 'def', 'type' or 'law'
 #|- observed : 'N'
 #|Location:
 #|3 | # ported from bend3
 #|4>| Nn7 : Data { Zz7{} }
+#|  | ^
 #|5 |
 #|exit 1

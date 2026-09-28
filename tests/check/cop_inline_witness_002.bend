@@ -33,6 +33,7 @@ law audit_clone:
 def audit_clone(f):
   count((U32 -> U32), audit_dup((U32 -> U32), f))
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : Data
 #|- observed : Type
@@ -41,5 +42,6 @@ def audit_clone(f):
 #|Location: audit_clone
 #|33 | def audit_clone(f):
 #|34>|   count((U32 -> U32), audit_dup((U32 -> U32), f))
+#|   |          ^^^^^^^^^^
 #|35 |
 #|exit 1

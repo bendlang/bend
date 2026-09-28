@@ -26,12 +26,13 @@ law main:
 
 def main(): f(Zw{}, Zw{})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : 2 patterns (one per scrutinee)
-#|- observed : '
-#|'
+#|- observed : 'Zw{}, x, Zw{}'
 #|Location:
 #|18 |   match a, b:
 #|19>|     case Zw{}, x, Zw{}:
+#|   |          ^^^^^^^^^^^^^
 #|20 |       Aw{x}
 #|exit 1

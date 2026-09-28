@@ -8,11 +8,13 @@ law main:
 def main():
   JSON.show(JSON.read("12.50"))
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a defined name
 #|- observed : JSON.show
 #|Location: main
 #| 8 | def main():
 #| 9>|   JSON.show(JSON.read("12.50"))
+#|   |   ^^^^^^^^^
 #|10 |
 #|exit 1

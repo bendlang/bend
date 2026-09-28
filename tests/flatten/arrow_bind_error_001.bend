@@ -16,11 +16,13 @@ law main:
 
 def main(): f(k => k(41))
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : 'def', 'type' or 'law'
 #|- observed : '<'
 #|Location:
 #|10 | def f(g):
 #|11>|   x <- g
+#|   |     ^
 #|12 |   x
 #|exit 1

@@ -9,11 +9,13 @@ law main:
 def main():
   \{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : cases for U32
 #|- observed : \{}
 #|Location: main
 #| 9 | def main():
 #|10>|   \{}
+#|   |   ^^^
 #|11 |
 #|exit 1

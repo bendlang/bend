@@ -333,7 +333,7 @@ async function checker_rows(keep: string[]): Promise<string[][]> {
       const dir = tmp_dir(lang);
       const ran = await checker_cell(lang, path.join(CHECKER, name), dir)
         .finally(() => fs.rmSync(dir, { recursive: true, force: true }));
-      if (lang === "bend" && !ran.out.includes("All terms check.")) {
+      if (lang === "bend" && !ran.out.includes("ALL PROOFS CHECK")) {
         throw new Error(name + ": Bend did not check: " + ran.out.slice(-200));
       }
       row.push(ran.over ? ">" + String(CHECK_TIMEOUT) + "s"

@@ -26,10 +26,12 @@ law main:
 def main():
   ack(3n, 2n)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)
 #|Location:
 #|16 |     case Succ{p}:
 #|17>|       match n:
+#|   |             ^
 #|18 |         case Zero{}:
 #|exit 1

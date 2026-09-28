@@ -17,11 +17,13 @@ law main:
 def main():
   beep(3)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : '"'
 #|- observed : '.'
 #|Location:
 #|11 | def beep(times):
 #|12>|   import ./lib/eff.c
+#|   |          ^
 #|13 |
 #|exit 1

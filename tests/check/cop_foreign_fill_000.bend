@@ -25,11 +25,13 @@ law dup:
 def dup(A, x):
   magic(A, x)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a foreign definition returning base IO(...) directly (return type aliases are not unfolded)
 #|- observed : magic
 #|Location: magic
 #|16 |   for  x: A
 #|17>|   IO(Two<A>)
+#|   |   ^^^^^^^^^^
 #|18 | def magic(A, x):
 #|exit 1

@@ -26,6 +26,7 @@ law main:
 
 def main(): Uu8{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : @_:Opt8<Un8> -> Opt8<Un8>
 #|- observed : @_:Opt8<Emp8> -> Opt8<Emp8>
@@ -36,5 +37,6 @@ def main(): Uu8{}
 #|Location: bad_fun
 #|21 | def bad_fun(e):
 #|22>|   %q@e : {(x => x) == _ : Opt8<Un8> -> Opt8<Un8>}; {==}
+#|   |                       ^
 #|23 |
 #|exit 1

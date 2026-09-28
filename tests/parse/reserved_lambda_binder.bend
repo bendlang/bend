@@ -5,11 +5,13 @@ law main:
 
 def main(): Type => Type
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a lambda binder (one name: k => body)
 #|- observed : ' '
 #|Location:
 #|5 | 
 #|6>| def main(): Type => Type
+#|  |                    ^
 #|7 |
 #|exit 1

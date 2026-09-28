@@ -25,6 +25,7 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : @_:{1n == 1n : Nat} -> Empty
 #|- observed : @_:{1n == 1n : Nat} -> Empty
@@ -34,5 +35,6 @@ def main():
 #|Location: sneaky
 #|13 | def sneaky(Empty, w):
 #|14>|   w
+#|   |   ^
 #|15 | 
 #|exit 1

@@ -29,6 +29,7 @@ law main:
 
 def main(): N{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
 #|- observed : loop
@@ -37,5 +38,6 @@ def main(): N{}
 #|Location: loop
 #|22 |     case C{f}:
 #|23>|       loop(f(grow(N{})))
+#|   |       ^^^^
 #|24 |     case t:
 #|exit 1

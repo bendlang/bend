@@ -109,6 +109,7 @@ law main:
 
 def main(): Uu{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : f
 #|- observed : f (consumed more than once)
@@ -117,5 +118,6 @@ def main(): Uu{}
 #|Location: tauinner
 #|43 | 
 #|44>| def tauinner(): x => f => p => w => y => p(f(y(x)(f)))
+#|   |                      ^
 #|45 |
 #|exit 1

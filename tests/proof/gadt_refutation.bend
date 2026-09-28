@@ -83,4 +83,5 @@ def one_odd(ev):
     case ESS{p, e, eq}:
       z_ne_s(p, s_inj(Z{}, S{p}, eq))
 
-#|All terms check.
+#|ALL PROOFS CHECK
+#|Use --verdict for mathematical validity.

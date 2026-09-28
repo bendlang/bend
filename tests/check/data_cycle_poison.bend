@@ -36,11 +36,13 @@ def main():
   a = mk()
   use2(a, a)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a
 #|- observed : a (consumed more than once)
 #|Location: main
 #|35 | def main():
 #|36>|   a = mk()
+#|   |   ^
 #|37 |   use2(a, a)
 #|exit 1

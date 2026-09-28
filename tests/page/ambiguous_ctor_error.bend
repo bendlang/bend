@@ -21,11 +21,13 @@ law main:
 
 def main(): f(K{1})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a fresh constructor name (duplicate declaration: K)
-#|- observed : '{'
+#|- observed : 'K'
 #|Location:
 #|7 | type B is Data:
 #|8>|   K{a: U32, b: U32}
+#|  |   ^
 #|9 |
 #|exit 1

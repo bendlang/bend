@@ -23,11 +23,13 @@ def main():
     r : Result<&1, &1, (U32 & String), String> <- HTTP.fetch("http://bend-test.invalid/")
     die_on(r)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a defined name
 #|- observed : HTTP.fetch
 #|Location: main
 #|22 |   do IO<U32>:
 #|23>|     r : Result<&1, &1, (U32 & String), String> <- HTTP.fetch("http://bend-test.invalid/")
+#|   |                                                   ^^^^^^^^^^
 #|24 |     die_on(r)
 #|exit 1

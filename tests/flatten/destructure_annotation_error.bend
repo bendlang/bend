@@ -29,6 +29,7 @@ law main:
 
 def main(): swap(Pq2{1, 2})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : Bw7
 #|- observed : Pw2
@@ -37,5 +38,6 @@ def main(): swap(Pq2{1, 2})
 #|Location: swap
 #|24 | def swap(p):
 #|25>|   swap.go({p : Bw7})
+#|   |            ^
 #|26 | 
 #|exit 1

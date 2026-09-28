@@ -29,5 +29,5 @@ Term udp_recv_from_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) udp_recv_from_use(void) {
-  io_eff(CID_UDP_RECV_FROM, udp_recv_from_run, IO_READ);
+  io_eff(CID(UDP.recv_from), udp_recv_from_run, IO_READ);
 }

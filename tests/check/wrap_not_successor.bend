@@ -29,6 +29,7 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : f(U32.add(1, x))
 #|- observed : 0
@@ -37,5 +38,6 @@ def main():
 #|Location: bad
 #|23 | def bad(x):
 #|24>|   {==}
+#|   |   ^^^^
 #|25 |
 #|exit 1

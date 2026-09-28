@@ -11,6 +11,7 @@ law relax:
 def relax(f):
   f
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : @x:Nat -> Nat
 #|- observed : @+x:Nat -> Nat
@@ -19,5 +20,6 @@ def relax(f):
 #|Location: relax
 #|11 | def relax(f):
 #|12>|   f
+#|   |   ^
 #|13 | 
 #|exit 1

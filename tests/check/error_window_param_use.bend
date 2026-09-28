@@ -8,6 +8,7 @@ import Base
 def h(p: Nat) -> Bool:
   Bool.and(True{}, p)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : Bool
 #|- observed : Nat
@@ -16,5 +17,6 @@ def h(p: Nat) -> Bool:
 #|Location: h
 #| 8 | def h(p: Nat) -> Bool:
 #| 9>|   Bool.and(True{}, p)
+#|   |                    ^
 #|10 | 
 #|exit 1

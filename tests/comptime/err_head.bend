@@ -5,11 +5,13 @@ import Base
 def main() -> Nat:
   Nat.add(~1n, 2n)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : '~'
 #|Location:
 #|5 | def main() -> Nat:
 #|6>|   Nat.add(~1n, 2n)
+#|  |           ^
 #|7 |
 #|exit 1

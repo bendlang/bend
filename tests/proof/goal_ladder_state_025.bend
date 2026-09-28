@@ -115,6 +115,7 @@ def ack_gt(m, n):
         case 1n+q:
           Type
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : LE(2n+q, ack(p, ack(1n+p, q)))
 #|- observed : Type
@@ -124,5 +125,6 @@ def ack_gt(m, n):
 #|Location: ack_gt
 #|115 |         case 1n+q:
 #|116>|           Type
+#|    |           ^^^^
 #|117 |
 #|exit 1

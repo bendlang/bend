@@ -8,11 +8,13 @@ law main:
 def main():
   u2f(1)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a defined name
 #|- observed : u2f
 #|Location: main
 #| 8 | def main():
 #| 9>|   u2f(1)
+#|   |   ^^^
 #|10 |
 #|exit 1

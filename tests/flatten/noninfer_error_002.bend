@@ -21,6 +21,7 @@ law main:
 def main():
   Z{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : an annotated term (cannot infer)
 #|- observed : \{Sn: (k => Z{})}
@@ -29,5 +30,6 @@ def main():
 #|Location: f
 #|15 | def f(n):
 #|16>|   \{Sn: (k => Z{})}(Sn{n})
+#|   |   ^^^^^^^^^^^^^^^^^
 #|17 |
 #|exit 1

@@ -30,10 +30,12 @@ def main(x, y):
     case F{}:
       K2{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)
 #|Location:
 #|24 |     case T{}:
 #|25>|       match x:
+#|   |             ^
 #|26 |         case Z{}:
 #|exit 1

@@ -58,6 +58,7 @@ def len_app(xs, ys):
     case LCon{h, t}:
       Type
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : {S{len(app(t, ys))} == S{add(len(t), len(ys))} : N}
 #|- observed : Type
@@ -68,5 +69,6 @@ def len_app(xs, ys):
 #|Location: len_app
 #|58 |     case LCon{h, t}:
 #|59>|       Type
+#|   |       ^^^^
 #|60 |
 #|exit 1

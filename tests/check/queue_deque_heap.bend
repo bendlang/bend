@@ -8,11 +8,13 @@ law main:
 def main():
   Queue.push(1, Queue.new())
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a defined name
 #|- observed : Queue.push
 #|Location: main
 #| 8 | def main():
 #| 9>|   Queue.push(1, Queue.new())
+#|   |   ^^^^^^^^^^
 #|10 |
 #|exit 1

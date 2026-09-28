@@ -30,3 +30,5 @@ function tcp_accept(listener, k) {
 function tcp_accept_need() {
   return { read: true };
 }
+
+io_eff(CID(TCP.accept), tcp_accept, tcp_accept_need);

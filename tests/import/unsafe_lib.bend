@@ -1,5 +1,5 @@
 # a module with an @unsafe def: its own verdict names it (and nothing
-# else), and an importer's verdict names only what the importer uses
+# else), and so does an importer's, with every def of its own that uses it
 import Base
 
 @unsafe
@@ -9,5 +9,7 @@ def boom() -> Empty:
 def safe(n: Nat) -> Nat:
   n
 
-#|All terms check, but 1 def relies on unsafe or foreign code:
+#|SOME PROOFS FAIL
+#|Error: 1 def relies on unsafe or foreign code:
 #|- boom
+#|exit 1

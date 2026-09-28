@@ -8,11 +8,13 @@ law main:
 def main():
   1 ^ 2
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : 'def', 'type' or 'law'
 #|- observed : '^'
 #|Location:
 #| 8 | def main():
 #| 9>|   1 ^ 2
+#|   |     ^
 #|10 |
 #|exit 1

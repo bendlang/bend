@@ -9,11 +9,13 @@ law main:
 def main():
   GFX.from_fn(3, x => x)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a defined name
 #|- observed : GFX.from_fn
 #|Location: main
 #| 9 | def main():
 #|10>|   GFX.from_fn(3, x => x)
+#|   |   ^^^^^^^^^^^
 #|11 |
 #|exit 1

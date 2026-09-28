@@ -6,11 +6,13 @@ type Bool is Data:
 def bad() -> Bool -> Bool:
   \{True: True{}}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : cases for False
 #|- observed : \{}
 #|Location: bad
 #|6 | def bad() -> Bool -> Bool:
 #|7>|   \{True: True{}}
+#|  |   ^^^^^^^^^^^^^^^
 #|8 |
 #|exit 1

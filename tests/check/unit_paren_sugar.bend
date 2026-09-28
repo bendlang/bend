@@ -17,11 +17,13 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : ')'
 #|Location:
 #|10 |   match u:
 #|11>|     case ():
+#|   |           ^
 #|12 |       7
 #|exit 1

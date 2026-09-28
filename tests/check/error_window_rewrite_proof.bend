@@ -4,6 +4,7 @@ def bad(e: {Type == Type : Type}) -> Type:
   %h@e : h
   Type
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : Type
 #|- observed : {Type == _ : Type}
@@ -14,5 +15,6 @@ def bad(e: {Type == Type : Type}) -> Type:
 #|Location: bad
 #|3 | def bad(e: {Type == Type : Type}) -> Type:
 #|4>|   %h@e : h
+#|  |          ^
 #|5 |   Type
 #|exit 1

@@ -15,10 +15,12 @@ law main:
 
 def main(): hidden(T8{})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- message  : a live scrutinee (a - scrutinee matches only in a dead region)
 #|Location: hidden
 #|10 | 
 #|11>| def hidden(): \{F8: T8{}; \{T8: F8{}; \{}}}
+#|   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #|12 |
 #|exit 1

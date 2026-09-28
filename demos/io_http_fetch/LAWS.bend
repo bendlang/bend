@@ -1,10 +1,13 @@
-# The laws of the HTTP client. They pin http_body, its pure part: the
-# cut that strips the status line and the headers off a response.
-# PROOF.bend must prove them.
+# The laws of the HTTP client, on http_body, its pure part. They state
+# two facts: a text that starts with a blank line has the rest as its
+# body, and the body is a suffix of the text. They do not pin the cut of
+# a response with a status line and headers: an http_body that only
+# strips a leading blank line satisfies both. PROOF.bend must prove them.
 import Base
 import ./main.bend as Fetch
 
-# LAW: the text after a blank line is the body, whatever follows it.
+# LAW: a text that starts with a blank line ("\r\n\r\n") has the rest
+# as its body, whatever the rest is.
 law body_after_blank:
   for b: String
   {Fetch.http_body("\r\n\r\n" ++ b) == b : String}

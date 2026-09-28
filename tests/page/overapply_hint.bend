@@ -9,11 +9,13 @@ law main:
 
 def main(): id(1, 2)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a function type
 #|- observed : U32
 #|Location: main
 #| 9 | 
 #|10>| def main(): id(1, 2)
+#|   |             ^^^^^^^^
 #|11 |
 #|exit 1

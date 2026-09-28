@@ -36,11 +36,13 @@ law main:
 def main():
   caller(C{1, N{}})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a plain clause (only leading clauses take ~)
 #|- observed : '~'
 #|Location:
 #|14 |   for -B: Type
 #|15>|   for ~f: A -> B
+#|   |       ^
 #|16 |   for xs: L<A>
 #|exit 1

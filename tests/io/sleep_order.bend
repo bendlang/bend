@@ -18,10 +18,10 @@ law main:
 
 def main():
   do IO<U32>:
-    Unit <- IO.spawn(Unit, ping(5, "a"))
-    Unit <- IO.spawn(Unit, ping(5, "b"))
-    Unit <- IO.spawn(Unit, ping(5, "c"))
-    Unit <- IO.spawn(Unit, ping(5, "d"))
+    Unit <- IO.spawn(Unit, ping(1, "a"))
+    Unit <- IO.spawn(Unit, ping(1, "b"))
+    Unit <- IO.spawn(Unit, ping(1, "c"))
+    Unit <- IO.spawn(Unit, ping(1, "d"))
     return 0
 
 #|a

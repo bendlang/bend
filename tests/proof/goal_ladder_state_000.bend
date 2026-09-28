@@ -98,6 +98,7 @@ def mul_comm(a, b):
       %mul_comm(p, b) : {add(b, mul(p, b)) == add(b, _) : N}
       {==}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : {Z{} == mul(b, Z{}) : N}
 #|- observed : Type
@@ -106,5 +107,6 @@ def mul_comm(a, b):
 #|Location: mul_comm
 #|94 |     case Z{}:
 #|95>|       Type
+#|   |       ^^^^
 #|96 |     case S{p}:
 #|exit 1

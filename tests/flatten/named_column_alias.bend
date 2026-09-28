@@ -17,11 +17,13 @@ def main(x):
     case S{p}:
       x
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : ')'
 #|Location:
 #|13 | def main(x):
 #|14>|   match (k = x):
+#|   |               ^
 #|15 |     case Z{}:
 #|exit 1

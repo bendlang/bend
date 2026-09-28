@@ -9,11 +9,13 @@ law U32:
 def U32():
   Type
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a fresh name (duplicate declaration: U32)
-#|- observed : ':'
+#|- observed : 'U32'
 #|Location:
 #|5 | 
 #|6>| law U32:
+#|  |     ^^^
 #|7 |   Type
 #|exit 1

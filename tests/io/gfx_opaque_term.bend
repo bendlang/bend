@@ -16,11 +16,13 @@ def main():
     ws : List<U32> <- GFX.gfx_events()
     GFX.blit(GFX.qua(GFX.pix(1), GFX.pix(2), GFX.pix(3), GFX.qua(GFX.pix(4), GFX.pix(5), GFX.pix(6), GFX.pix(7))))
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a defined name
 #|- observed : GFX.window
 #|Location: main
 #|13 |   do IO<Unit>:
 #|14>|     a : Unit <- GFX.window("term kind", 8, 8)
+#|   |                 ^^^^^^^^^^
 #|15 |     b : Unit <- GFX.blit(GFX.from_fn(1, x => y => (x + y : U32)))
 #|exit 1

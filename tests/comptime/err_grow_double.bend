@@ -16,6 +16,7 @@ def grow(~f: Nat -> Nat, x: Nat) -> Nat:
 def main() -> Nat:
   grow(~inc, 2n)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a ~ argument that stops growing
 #|- observed : grow
@@ -24,5 +25,6 @@ def main() -> Nat:
 #|Location: grow~9
 #|13 |     case 1n+p:
 #|14>|       grow(~(y => f(f(y))), p)
+#|   |       ^^^^
 #|15 |
 #|exit 1

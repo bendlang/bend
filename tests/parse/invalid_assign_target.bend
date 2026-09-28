@@ -17,11 +17,13 @@ def main():
   f(1) = 3
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a pattern (a binder or a constructor)
 #|- observed : f(1)
 #|Location:
 #|16 | def main():
 #|17>|   f(1) = 3
+#|   |   ^^^^
 #|18 |   0
 #|exit 1

@@ -22,11 +22,13 @@ law main:
 
 def main(): mix(Ob{}, Ob{})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : cases for Ib
 #|- observed : \{}
 #|Location: mix
 #|13 | def mix(a, b):
 #|14>|   match a, b:
+#|   |   ^^^^^^^^^^^
 #|15 |     case Ob{}, Ob{}:
 #|exit 1

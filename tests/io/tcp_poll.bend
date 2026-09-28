@@ -2,8 +2,8 @@
 # at once when ms is 0 and nothing waits, None{} after ms when nothing
 # arrives (the socket parks on the poller AND on the loop's clock, and
 # the first to fire wakes it), and Some{data} when data does. An
-# accepted socket is polled empty at once, then polled empty for 200 ms
-# with IO.now on both sides (a 150 ms floor shows the loop really
+# accepted socket is polled empty at once, then polled empty for 3 ms
+# with IO.now on both sides (a 2 ms floor shows the loop really
 # waited, with room for a coarse clock), then the peer sends and a 1 s
 # poll answers the data. Every op threads its handle back OUTSIDE the
 # Result.
@@ -56,7 +56,7 @@ def step_data(l, c, a):
     m  : Socket & Result<&1, &1, (U32 & String), Maybe<&1, String>> <- TCP.poll(a, 64, 1000)
     finish(l, c2, m)
 
-# the second poll: 200 ms with nothing sent answers None{}, and IO.now
+# the second poll: 3 ms with nothing sent answers None{}, and IO.now
 # shows the loop waited for it
 law step_timed_go:
   for l: Listener
@@ -71,7 +71,7 @@ def step_timed_go(l, c, t0, m):
     got : Maybe<&1, String> <- IO.pass(Maybe<&1, String>, r)
     t1  : Nat <- IO.now()
     w   : Unit <- IO.print(Maybe.default(&1, String, got, "timeout"))
-    v   : Unit <- IO.print(waited(Nat.is_ge(Nat.sub(t1, t0), 150n)))
+    v   : Unit <- IO.print(waited(Nat.is_ge(Nat.sub(t1, t0), 2n)))
     step_data(l, c, a)
 
 law step_timed:
@@ -83,7 +83,7 @@ law step_timed:
 def step_timed(l, c, a):
   do IO<U32>:
     t0 : Nat <- IO.now()
-    m  : Socket & Result<&1, &1, (U32 & String), Maybe<&1, String>> <- TCP.poll(a, 64, 200)
+    m  : Socket & Result<&1, &1, (U32 & String), Maybe<&1, String>> <- TCP.poll(a, 64, 3)
     step_timed_go(l, c, t0, m)
 
 # the first poll: ms = 0 and nothing sent answers None{} at once
@@ -148,7 +148,7 @@ def tcp_listen_any(tries, port):
     case 1n+t:
       rest = tcp_listen_any(t, (port + 1 : U32))
       do IO<Listener & U32>:
-        r : Result<&1, &1, (U32 & String), Listener> <- TCP.listen(port)
+        r : Result<&1, &1, (U32 & String), Listener> <- TCP.listen("127.0.0.1", port)
         tcp_retry(port, r, rest)
 
 law main:

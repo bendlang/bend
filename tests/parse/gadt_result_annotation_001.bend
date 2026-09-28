@@ -9,11 +9,13 @@ law main:
 
 def main():Unit{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : 'def', 'type' or 'law'
 #|- observed : ':'
 #|Location:
 #|5 | type Ix2<n:Nat> is Data:
 #|6>|   I0x{}:Ix2(0n)
+#|  |        ^
 #|7 | law main:
 #|exit 1

@@ -17,11 +17,13 @@ law main:
 def main():
   f(1)!
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : 'def', 'type' or 'law'
 #|- observed : '!'
 #|Location:
 #|17 | def main():
 #|18>|   f(1)!
+#|   |       ^
 #|19 |
 #|exit 1

@@ -16,11 +16,13 @@ def main():
   a = m[0] <- Mk9{5}
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : ':'
 #|Location:
 #|14 | def main():
 #|15>|   m : [:Box9] = ![0:Mk9{1}, _:Mk9{7}; 1]
+#|   |        ^
 #|16 |   a = m[0] <- Mk9{5}
 #|exit 1

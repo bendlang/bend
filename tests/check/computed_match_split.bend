@@ -46,10 +46,12 @@ law main:
 def main():
   0n
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- message  : a parameter or field scrutinee (a match cannot scrutinize a computed value: give it its own def)
 #|Location:
 #|36 | def or_true(n):
 #|37>|   match isz(n):
+#|   |         ^^^^^^
 #|38 |     case True{}:
 #|exit 1

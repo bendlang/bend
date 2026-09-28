@@ -18,11 +18,13 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : ':'
 #|- observed : 'e'
 #|Location:
 #|12 | def sym3(x, y, e):
 #|13>|   %[h => {y == h : U32}] e {=}
+#|   |                          ^
 #|14 |
 #|exit 1

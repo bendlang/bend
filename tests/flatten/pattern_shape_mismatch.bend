@@ -23,11 +23,13 @@ def main(a):
     case FZero{}:
       B{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : cases for True
 #|- observed : \{}
 #|Location: main
 #|19 | def main(a):
 #|20>|   match a:
+#|   |   ^^^^^^^^
 #|21 |     case 0:
 #|exit 1

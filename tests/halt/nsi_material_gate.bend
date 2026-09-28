@@ -30,6 +30,7 @@ law main:
 
 def main(): N{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
 #|- observed : loop
@@ -39,5 +40,6 @@ def main(): N{}
 #|Location: loop
 #|23 |     case C{f}:
 #|24>|       apply1(y => loop(f(y)), C{z => z})
+#|   |                   ^^^^
 #|25 |     case t:
 #|exit 1

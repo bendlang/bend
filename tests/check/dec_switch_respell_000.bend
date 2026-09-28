@@ -27,12 +27,13 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : 1 patterns (one per scrutinee)
-#|- observed : '
-#|'
+#|- observed : '1+p'
 #|Location:
 #|20 |           h
 #|21>|         case 1+p:
+#|   |              ^^^
 #|22 |           nth(d, p, t)
 #|exit 1

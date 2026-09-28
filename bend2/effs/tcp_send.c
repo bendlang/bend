@@ -13,10 +13,12 @@ static Term tcp_send_more(Env e, IoWork* w) {
     w->made += io_sys_end(w, n);
   }
   Term r = w->code != 0 ? io_fail(e, w->code, NULL)
-    : io_done(e, term_pak(CID_UNIT, 0));
+    : io_done(e, term_pak(CID(Unit), 0));
   free(w->data);
   return io_tup(e, io_hand(w->hand), r);
 }
+
+#ifdef CID(TCP.send)
 
 Term tcp_send_run(Env e, Term* f, IoWork* w) {
   w->hand = (intptr_t)io_hand_v(f[0]);
@@ -27,5 +29,24 @@ Term tcp_send_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) tcp_send_use(void) {
-  io_eff(CID_TCP_SEND, tcp_send_run, 0);
+  io_eff(CID(TCP.send), tcp_send_run, 0);
 }
+
+#endif
+
+#ifdef CID(TCP.send_bytes)
+
+// A value past 255 fails with EINVAL before any byte is sent.
+Term tcp_send_bytes_run(Env e, Term* f, IoWork* w) {
+  w->hand = (intptr_t)io_hand_v(f[0]);
+  w->data = io_cbuf(e, f[1], &w->size, CID(Con));
+  w->made = 0;
+  w->code = w->data == NULL ? EINVAL : 0;
+  return tcp_send_more(e, w);
+}
+
+static void __attribute__((constructor)) tcp_send_bytes_use(void) {
+  io_eff(CID(TCP.send_bytes), tcp_send_bytes_run, 0);
+}
+
+#endif

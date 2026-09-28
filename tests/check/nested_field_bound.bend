@@ -15,11 +15,13 @@ law main:
 
 def main(): 0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : Data
 #|- observed : Type
 #|Location: MkBad
 #|10 | type Bad is Data:
 #|11>|   MkBad{v: Box7<(U32 -> U32)>}
+#|   |                  ^^^^^^^^^^
 #|12 |
 #|exit 1

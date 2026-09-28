@@ -26,6 +26,7 @@ law main:
 
 def main(): dupl(1n)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : @-x:Nat -> Nat
 #|- observed : @x:Nat -> Nat
@@ -34,5 +35,6 @@ def main(): dupl(1n)
 #|Location: relax
 #|13 | def relax(f):
 #|14>|   f
+#|   |   ^
 #|15 | 
 #|exit 1

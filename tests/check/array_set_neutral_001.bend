@@ -12,11 +12,13 @@ def main(a):
   x = a@m[0] <- 5
   x
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : ':'
 #|Location:
 #|7 | law main:
 #|8>|   for a: [:U32]
+#|  |           ^
 #|9 |   U32
 #|exit 1

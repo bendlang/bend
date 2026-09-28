@@ -16,11 +16,13 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : ':'
 #|Location:
 #|7 |   for x: U32
 #|8>|   {[x] == [x] : [:U32]}
+#|  |                  ^
 #|9 |
 #|exit 1

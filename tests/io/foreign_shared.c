@@ -4,11 +4,11 @@
 static Term shared_make_at(Env e, u32 depth, u32* next) {
   if (depth == 0) {
     *next += 1;
-    return *next % 2 == 1 ? term_pak(CID_EMPTY, 0) : term_pak(CID_LEAF, *next);
+    return *next % 2 == 1 ? term_pak(CID(Empty), 0) : term_pak(CID(Leaf), *next);
   }
   Term l = shared_make_at(e, depth - 1, next);
   Term r = shared_make_at(e, depth - 1, next);
-  return io_node(e, CID_NODE, l, r);
+  return io_node(e, CID(Node), l, r);
 }
 
 Term shared_make_run(Env e, Term* f, IoWork* w) {
@@ -17,5 +17,5 @@ Term shared_make_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) foreign_shared_use(void) {
-  io_eff(CID_SHARED_MAKE, shared_make_run, 0);
+  io_eff(CID(shared.make), shared_make_run, 0);
 }

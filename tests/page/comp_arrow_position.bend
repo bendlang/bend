@@ -16,11 +16,13 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a name
 #|- observed : '~'
 #|Location:
 #|10 | def TT():
 #|11>|   @~g: (U32 -> U32) -> U32
+#|   |    ^
 #|12 |
 #|exit 1

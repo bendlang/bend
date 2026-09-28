@@ -15,11 +15,13 @@ type List<a, -A: Kind(a)> is Kind(a):
 type Foo is Nat:
   MkFoo{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a kind (type Foo<..> is Kind(g))
 #|- observed : Nat
 #|Location: Foo
 #|14 | # a datatype declares a kind, not any type
 #|15>| type Foo is Nat:
+#|   |             ^^^
 #|16 |   MkFoo{}
 #|exit 1

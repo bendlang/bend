@@ -29,6 +29,7 @@ law dup:
 def dup(T, c, x):
   Tuple{x, x}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : Data
 #|- observed : Type
@@ -38,5 +39,7 @@ def dup(T, c, x):
 #|Location: dup
 #|25 |   for -c: Copiable(T)
 #|26>|   for +x: T
+#|   |           ^
 #|27 |   Sigma<&1, &1, T, _ => T>
+#|Note: +x can be used many times, so its type must be Data.
 #|exit 1

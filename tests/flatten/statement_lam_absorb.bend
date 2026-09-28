@@ -30,11 +30,13 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : '}'
 #|- observed : ':'
 #|Location:
 #|24 |   p = {P8a{k, (k + 1 : U32)} : P8a}
 #|25>|   \{0: eat(p, 7); n => eat(p, n)}
+#|   |      ^
 #|26 |
 #|exit 1

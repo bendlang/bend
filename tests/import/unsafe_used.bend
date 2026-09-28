@@ -1,5 +1,5 @@
-# using does: a def that names the module's @unsafe def relies on unsafe,
-# and the verdict lists it (the module's own def is not this file's claim)
+# a def that names the module's @unsafe def relies on unsafe too: the
+# verdict lists both
 import Base
 import ./unsafe_lib.bend as L
 
@@ -9,5 +9,8 @@ def innocent() -> Empty:
 def keep(n: Nat) -> Nat:
   L.safe(n)
 
-#|All terms check, but 1 def relies on unsafe or foreign code:
+#|SOME PROOFS FAIL
+#|Error: 2 defs rely on unsafe or foreign code:
+#|- unsafe_lib.boom
 #|- innocent
+#|exit 1

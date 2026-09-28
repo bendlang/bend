@@ -21,11 +21,13 @@ law main:
 def main():
   main.go(U32.is_eq(3, 3))
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a constructor of Bool (missing, or already matched)
 #|- observed : \{Con: (h => t => h); Nil: 0}
 #|Location: main.go
 #|12 |   match z:
 #|13>|     case h <> t:
+#|   |          ^^^^^^
 #|14 |       h
 #|exit 1

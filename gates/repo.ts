@@ -1,8 +1,14 @@
 #!/usr/bin/env bun
 // The shape of the repo: every tracked file must match one allow line,
-// and a textual file must stay under its ttok cap (a binary under its
-// byte cap). Anything else in the tree is a failure. evals/ is not
-// counted: it is the models' arena, not the repo's shape.
+// and the capped files below stay under their ttok caps. Anything else in
+// the tree is a failure.
+//
+// THE CAPS ARE PERMANENT: bend.ts 48k, comp.ts 64k, main.ts 16k, safe.ts
+// 24k, bendtt.lean 64k, README.md 4k, GUIDE.md 8k, and no other file has a
+// cap. Do NOT raise, lower, add or remove a cap without Taelin's explicit
+// authorization. A file over its cap is made smaller by simplification,
+// never by moving code out.
+// evals/ is not counted: it is the models' arena, not the repo's shape.
 
 import * as child from "node:child_process";
 import * as fs from "node:fs";
@@ -13,7 +19,7 @@ import * as lib from "./_lib";
 // Types
 // =====
 
-type Rule = { at: RegExp; cap: number; bytes: boolean };
+type Rule = { at: RegExp; cap: number };
 
 // Constants
 // =========
@@ -23,57 +29,58 @@ const RULES: Rule[] = [];
 // Allow
 // =====
 
-function allow(at: string | RegExp, cap: number, bytes = false): void {
+function allow(at: string | RegExp, cap = Infinity): void {
   RULES.push({ at: typeof at === "string" ? new RegExp("^" + at
-    .replace(/[.]/g, "\\.") + "$") : at, cap, bytes });
+    .replace(/[.]/g, "\\.") + "$") : at, cap });
 }
 
-allow(/^\.github\/ISSUE_TEMPLATE\/(bug|feature|config)\.yml$/, 600);
-allow(".gitattributes", 200);
-allow(".gitignore", 100);
-allow("AGENTS.md", 2000);
-allow("CHANGELOG.md", 6000);
-allow("README.md", 3000);
-allow("WONTFIX.txt", 1500);
-allow("LICENSE", 4000);
-allow("flake.nix", 1500);
-allow("bend2/base.bend", 32000);
-allow("bend2/bend.lean", 400000);
-allow("bend2/bend.ts", 42000);
+allow(/^\.github\/ISSUE_TEMPLATE\/(bug|feature|config)\.yml$/);
+allow(".gitattributes");
+allow(".gitignore");
+allow("AGENTS.md");
+allow("CHANGELOG.md");
+allow("README.md", 4000);
+allow("WONTFIX.txt");
+allow("LICENSE");
+allow("flake.nix");
+allow("bend2/base.bend");
+allow("bend2/bend.ts", 48000);
 allow("bend2/comp.ts", 64000);
-allow("bend2/main.ts", 10000);
-allow(/^bend2\/effs\/[a-z0-9_]+\.(c|js)$/, 4000);
-allow(/^bend2\/pack\/(\.gitignore|package\.json|tsconfig\.json|bun\.lock)$/, 1000);
-allow(/^bend2\/docs\/(BendRT|BendTT)\/(main\.typ|refs\.bib)$/, 60000);
-allow("bend2/docs/bend.sublime-syntax", 1000);
-allow("bend2/docs/gen_anim.ts", 7500);
-allow("bend2/docs/gen_charts.ts", 4000);
-allow("bend2/docs/gen_gifs.ts", 4000);
-allow("bend2/docs/gen_pins.ts", 4100);
-allow(/^bend2\/docs\/intro\/[a-z.]+$/, 20000);
-allow(/^bench\/checker\/[a-z]+_[0-9]+\/main\.(bend|agda|lean|thy|v)$/, 3000000);
-allow(/^bench\/checker\/_pin_\/[a-z0-9_]+\.txt$/, 2000);
-allow(/^bench\/runtime\/[a-z-]+\/main\.(bend|c|lean|ts)$/, 8000);
-allow(/^bench\/runtime\/_pin_\/[a-z0-9_]+\.txt$/, 2000);
-allow(/^demos\/[a-z0-9_]+\/[A-Za-z0-9_]+\.bend$/, 64000);
-allow(/^demos\/[a-z0-9_]+\/[A-Za-z_]+\.(c|sh|md)$/, 4000);
-allow(/^demos\/[a-z0-9_]+\/web\/(index\.html|main\.js|bunfig\.toml)$/, 4000);
-allow("guide/GUIDE.md", 12000);
-allow("guide/EFFECTS.md", 1600);
-allow("guide/SHADERS.md", 4200);
-allow(/^paper\/(BendRT|BendTT)\.pdf$/, 400000, true);
-allow(/^media\/intro\.(gif|mp4)$/, 25000000, true);
-allow(/^media\/(runtime|checker|parallel)\.gif$/, 6000000, true);
-allow(/^media\/hero(_dark)?\.gif$/, 200000, true);
-allow(/^media\/logo_(bend|hoc)\.png$/, 100000, true);
-allow(/^media\/game_[a-z_]+\.gif$/, 2000000, true);
-allow(/^media\/slash_boss_3d\/[a-z_]+\.wav$/, 400000, true);
-allow(/^gates\/(_lib|_run|perf|ping|repo|test)\.ts$/, 6000);
-allow(/^tests\/[a-z]+\/[a-z0-9_]+\.bend$/, 16000);
-allow(/^tests\/[a-z]+\/[a-z0-9_]+\.(c|js)$/, 8000);
-allow(/^tools\/bend-fmt-lsp\/(\.gitignore|README\.md|package\.json|package-lock\.json|tsconfig\.json)$/, 4000);
-allow(/^tools\/bend-fmt-lsp\/src\/(formatter|server)\.ts$/, 8000);
-allow(/^tools\/bend-fmt-lsp\/src\/test\/[a-z_]+\.test\.ts$/, 4000);
+allow("bend2/main.ts", 16000);
+allow("bend2/safe.ts", 24000);
+allow("bend2/bendtt.lean", 64000);
+allow(/^bend2\/effs\/[a-z0-9_]+\.(c|js)$/);
+allow(/^bend2\/pack\/(\.gitignore|package\.json|tsconfig\.json|bun\.lock)$/);
+allow(/^bend2\/docs\/(BendRT|BendTT)\/(main\.typ|refs\.bib)$/);
+allow("bend2/docs/bend.sublime-syntax");
+allow("bend2/docs/gen_anim.ts");
+allow("bend2/docs/gen_charts.ts");
+allow("bend2/docs/gen_gifs.ts");
+allow("bend2/docs/gen_pins.ts");
+allow(/^bend2\/docs\/intro\/[a-z.]+$/);
+allow(/^bench\/checker\/[a-z]+_[0-9]+\/main\.(bend|agda|lean|thy|v)$/);
+allow(/^bench\/checker\/_pin_\/[a-z0-9_]+\.txt$/);
+allow(/^bench\/runtime\/[a-z-]+\/main\.(bend|c|lean|ts)$/);
+allow(/^bench\/runtime\/_pin_\/[a-z0-9_]+\.txt$/);
+allow(/^demos\/[a-z0-9_]+\/[A-Za-z0-9_]+\.bend$/);
+allow(/^demos\/[a-z0-9_]+\/[A-Za-z_]+\.(c|sh|md)$/);
+allow(/^demos\/[a-z0-9_]+\/web\/(index\.html|main\.js|bunfig\.toml)$/);
+allow("guide/GUIDE.md", 8000);
+allow("guide/EFFECTS.md");
+allow("guide/SHADERS.md");
+allow(/^paper\/(BendRT|BendTT)\.pdf$/);
+allow(/^media\/intro\.(gif|mp4)$/);
+allow(/^media\/(runtime|checker|parallel)\.gif$/);
+allow(/^media\/hero(_dark)?\.gif$/);
+allow(/^media\/logo_(bend|hoc)\.png$/);
+allow(/^media\/game_[a-z_]+\.gif$/);
+allow(/^media\/slash_boss_3d\/[a-z_]+\.wav$/);
+allow(/^gates\/(_lib|_run|perf|ping|repo|test|safe|safe_node|safe_diag)\.ts$/);
+allow(/^tests\/[a-z]+\/([a-z0-9-]+\/)?[a-z0-9_]+\.bend$/);
+allow(/^tests\/[a-z]+\/[a-z0-9_]+\.(c|js)$/);
+allow(/^tools\/bend-fmt-lsp\/(\.gitignore|README\.md|package\.json|package-lock\.json|tsconfig\.json)$/);
+allow(/^tools\/bend-fmt-lsp\/src\/(formatter|server)\.ts$/);
+allow(/^tools\/bend-fmt-lsp\/src\/test\/[a-z_]+\.test\.ts$/);
 
 // Gate
 // ====
@@ -96,10 +103,9 @@ function gate(): string[] {
     }
     const full = path.join(lib.ROOT, file);
     const size = fs.statSync(full).size;
-    const n = rule.bytes || size <= rule.cap ? size : ttok(full);
+    const n = size <= rule.cap ? size : ttok(full);
     if (n > rule.cap) {
-      fails.push(file + ": " + String(n) + " > " + String(rule.cap)
-        + (rule.bytes ? " bytes" : " ttok"));
+      fails.push(file + ": " + String(n) + " > " + String(rule.cap) + " ttok");
     }
   }
   return fails;

@@ -24,6 +24,7 @@ law main:
 
 def main(): N{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
 #|- observed : loop
@@ -33,5 +34,6 @@ def main(): N{}
 #|Location: loop
 #|17 |     case C{f}:
 #|18>|       D{x => loop(f(x, x))}
+#|   |              ^^^^
 #|19 |     case t:
 #|exit 1

@@ -26,10 +26,12 @@ law main:
 def main():
   flip(On{})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- message  : a parameter or field scrutinee (a match cannot scrutinize a local binder: give it its own def)
 #|Location:
 #|15 | def flip(v):
 #|16>|   x = v
+#|   |   ^
 #|17 |   match x:
 #|exit 1

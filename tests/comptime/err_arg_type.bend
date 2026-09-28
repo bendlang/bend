@@ -8,11 +8,13 @@ def T(~n: Nat, x: Nat) -> Nat:
 def main() -> Nat:
   T(~True{}, 2n)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : Nat
 #|- observed : Bool
 #|Location: main
 #| 8 | def main() -> Nat:
 #| 9>|   T(~True{}, 2n)
+#|   |      ^^^^^^
 #|10 |
 #|exit 1

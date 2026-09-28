@@ -1,7 +1,7 @@
 # io (io_codec_seal_shared): a string built ON THE SEAM and handed to
 # a program that refcounts String must arrive SEALED. This book keeps
-# a + String binder (String is Data), so SCon is hot and its entry in
-# CID_HOT_T is 1: the kit's io_str codec (the file leg shares
+# a + String binder (String is Data), so SCon is hot and its hot bit in
+# CID_T is 1: the kit's io_str codec (the file leg shares
 # File.read's answer) rfc_seals the tail it stores. Unsealed, a shared
 # take meets a raw non-trivial field and span_fade posts error 8.
 import Base

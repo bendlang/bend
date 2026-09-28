@@ -8,10 +8,10 @@ function tree_make(depth) {
   const at = (d) => {
     if (d === 0) {
       next += 1;
-      return next % 2 === 1 ? { $: "Empty" } : { $: "Leaf", v: next };
+      return next % 2 === 1 ? { $: CID(Empty) } : { $: CID(Leaf), v: next };
     }
     const l = at(d - 1);
-    return { $: "Node", l, r: at(d - 1) };
+    return { $: CID(Node), l, r: at(d - 1) };
   };
   return at(depth);
 }
@@ -20,9 +20,12 @@ function tree_make(depth) {
 // =====
 
 function chain_make(n) {
-  let c = { $: "End" };
+  let c = { $: CID(End) };
   for (let i = 0; i < n; i += 1) {
-    c = { $: "Cell", v: i, next: c };
+    c = { $: CID(Cell), v: i, next: c };
   }
   return c;
 }
+
+io_eff(CID(tree.make), tree_make);
+io_eff(CID(chain.make), chain_make);

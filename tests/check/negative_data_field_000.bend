@@ -20,6 +20,7 @@ law main:
 
 def main(): Type
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : f
 #|- observed : f (consumed more than once)
@@ -28,5 +29,6 @@ def main(): Type
 #|Location: delta
 #|14 |   match d:
 #|15>|     case DCon{f}:
+#|   |               ^
 #|16 |       f(DCon{f})
 #|exit 1

@@ -14,11 +14,13 @@ law main:
 
 def main(): blk()
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : ':'
 #|- observed : '='
 #|Location:
 #| 9 | 
 #|10>| def blk(): {a = 7; a}
+#|   |               ^
 #|11 |
 #|exit 1

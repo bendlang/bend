@@ -86,11 +86,13 @@ law main:
 def main():
   (chk_keep() * 100 + chk_stamp() * 10 + chk_head() : U32)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a defined name
 #|- observed : HTTP.keep_alive
 #|Location: chk_keep
 #|22 | def chk_keep():
 #|23>|   a = b2u(HTTP.keep_alive(True{}, []))
+#|   |           ^^^^^^^^^^^^^^^
 #|24 |   b = b2u(HTTP.keep_alive(True{}, [("Connection", "close")]))
 #|exit 1

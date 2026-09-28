@@ -18,11 +18,13 @@ law main:
 def main():
   opnd(5)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : -x
 #|- observed : x
 #|Location: opnd
 #|10 | 
 #|11>| def opnd(x):
+#|   |          ^
 #|12 |   y = (x + 1 : U32)
 #|exit 1

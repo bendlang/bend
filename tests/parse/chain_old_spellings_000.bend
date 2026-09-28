@@ -5,11 +5,13 @@ import Base
 def main() -> Nat:
   1n +n 2n
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : '='
 #|- observed : '2'
 #|Location:
 #|5 | def main() -> Nat:
 #|6>|   1n +n 2n
+#|  |         ^
 #|7 |
 #|exit 1

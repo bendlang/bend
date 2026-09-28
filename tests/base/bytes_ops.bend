@@ -9,11 +9,13 @@ law main:
 def main():
   Bytes.encode("banana")
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a defined name
 #|- observed : Bytes.encode
 #|Location: main
 #| 9 | def main():
 #|10>|   Bytes.encode("banana")
+#|   |   ^^^^^^^^^^^^
 #|11 |
 #|exit 1

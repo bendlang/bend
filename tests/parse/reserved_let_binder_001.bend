@@ -10,11 +10,13 @@ def main():
   do = 1
   2
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a name
 #|- observed : '='
 #|Location:
 #| 9 | def main():
 #|10>|   do = 1
+#|   |      ^
 #|11 |   2
 #|exit 1

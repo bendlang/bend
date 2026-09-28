@@ -18,11 +18,13 @@ law main:
 
 def main(): f(x => x)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a datatype
 #|- observed : @_:U32 -> U32
 #|Location: f
 #|12 |   match h:
 #|13>|     case Z{}:
+#|   |          ^^^
 #|14 |       0
 #|exit 1

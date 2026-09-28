@@ -23,10 +23,12 @@ law main:
 def main():
   0n
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- message  : a parameter or field scrutinee (a match cannot scrutinize a computed value: give it its own def)
 #|Location:
 #|13 | def j9(n, e):
 #|14>|   match Bool.not(n):
+#|   |         ^^^^^^^^^^^
 #|15 |     case False{}:
 #|exit 1

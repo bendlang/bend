@@ -8,11 +8,13 @@ law main:
 def main():
   Bag.total(Bag.add(1, Bag.new()))
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a defined name
 #|- observed : Bag.total
 #|Location: main
 #| 8 | def main():
 #| 9>|   Bag.total(Bag.add(1, Bag.new()))
+#|   |   ^^^^^^^^^
 #|10 |
 #|exit 1

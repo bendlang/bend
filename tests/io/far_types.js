@@ -8,10 +8,12 @@ function far_make(depth) {
   const at = (d) => {
     if (d === 0) {
       next += 1;
-      return { $: "Near", v: next };
+      return { $: CID(Near), v: next };
     }
     const l = at(d - 1);
-    return { $: "Deep", l, r: at(d - 1) };
+    return { $: CID(Deep), l, r: at(d - 1) };
   };
   return at(depth);
 }
+
+io_eff(CID(far.make), far_make);

@@ -22,6 +22,7 @@ law cheat:
 def cheat(e, f):
   f(f(Zero{}))
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a function type
 #|- observed : %e : Kind(_); @_:Nat -> Nat
@@ -31,5 +32,6 @@ def cheat(e, f):
 #|Location: cheat
 #|22 | def cheat(e, f):
 #|23>|   f(f(Zero{}))
+#|   |   ^^^^^^^^^^^^
 #|24 |
 #|exit 1

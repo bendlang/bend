@@ -16,11 +16,13 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : U32
 #|- observed : Nat
 #|Location: bogus
 #|7 | law bogus:
 #|8>|   (3n < 2n : U32)
+#|  |    ^^
 #|9 |
 #|exit 1

@@ -34,6 +34,7 @@ law main:
 
 def main(): go(S{Z{}}, S{Z{}})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
 #|- observed : go
@@ -42,5 +43,6 @@ def main(): go(S{Z{}}, S{Z{}})
 #|Location: go
 #|23 |         case S{q}:
 #|24>|           go(S{Z{}}, q)
+#|   |           ^^
 #|25 |     case S{p}:
 #|exit 1

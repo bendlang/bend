@@ -12,11 +12,13 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : an import of a .bend file
 #|- observed : '/lib/helper.c'
 #|Location:
 #|6 | import Base
 #|7>| import /lib/helper.c as H
+#|  |        ^
 #|8 |
 #|exit 1

@@ -20,4 +20,5 @@ def swap_swap(p):
   (a, b) = p
   {==}
 
-#|All terms check.
+#|ALL PROOFS CHECK
+#|Use --verdict for mathematical validity.

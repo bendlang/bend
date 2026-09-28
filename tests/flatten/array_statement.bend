@@ -36,4 +36,4 @@ def main.rd1(j, k, w, r):
 def main(i, j, k, v, w):
   main.rd1(j, k, w, [v : U32*4n][i])
 
-#|i => j => k => v => w => main.rd1(j, k, w, Array.get.if(U32, [v, v], [v, v], 2, U32.and(i, 3), Cmp.is_lt(U32.cmp(U32.and(i, 3), 2))))
+#|i => j => k => v => w => main.rd1(j, k, w, Array.get.go(U32, [v, v, v, v], 4, U32.and(i, 3), Cmp.is_lt(U32.cmp(U32.and(i, 3), 2))))

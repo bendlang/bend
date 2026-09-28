@@ -9,11 +9,13 @@ law main:
 def main():
   `a
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : '`'
 #|Location:
 #| 9 | def main():
 #|10>|   `a
+#|   |   ^
 #|11 |
 #|exit 1

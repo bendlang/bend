@@ -17,6 +17,7 @@ def main(p):
       c = a
       (\{Z:b;S: d =>d})(c)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : an annotated term (cannot infer)
 #|- observed : \{Z: b; S: (d => d)}
@@ -27,5 +28,6 @@ def main(p):
 #|Location: main
 #|17 |       c = a
 #|18>|       (\{Z:b;S: d =>d})(c)
+#|   |        ^^^^^^^^^^^^^^^
 #|19 |
 #|exit 1

@@ -57,6 +57,7 @@ def add_comm(a, b):
       %add_succ(b, p) : {S{add(p, b)} == _ : N}
       Type
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : {S{add(p, b)} == S{add(b, p)} : N}
 #|- observed : Type
@@ -66,5 +67,6 @@ def add_comm(a, b):
 #|Location: add_comm
 #|57 |       %add_succ(b, p) : {S{add(p, b)} == _ : N}
 #|58>|       Type
+#|   |       ^^^^
 #|59 |
 #|exit 1

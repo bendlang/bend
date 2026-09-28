@@ -9,11 +9,13 @@ law main:
 
 def main(): Unit{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : 'def', 'type' or 'law'
 #|- observed : ':'
 #|Location:
 #|4 | type Bad is Data:
 #|5>|   Mk{} : U32
+#|  |        ^
 #|6 |
 #|exit 1

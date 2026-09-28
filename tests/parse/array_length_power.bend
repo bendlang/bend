@@ -9,11 +9,13 @@ def main():
   m = [7; 16]
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : ';'
 #|Location:
 #| 8 | def main():
 #| 9>|   m = [7; 16]
+#|   |         ^
 #|10 |   0
 #|exit 1

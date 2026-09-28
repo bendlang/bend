@@ -35,6 +35,7 @@ law main:
 
 def main(): f(Zz2b{}, Nl2{}, Zz2b{}, Nl2{})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : cases for Cl2
 #|- observed : \{}
@@ -44,5 +45,6 @@ def main(): f(Zz2b{}, Nl2{}, Zz2b{}, Nl2{})
 #|Location: f
 #|24 | def f(a, b, c, d):
 #|25>|   match a, b, c, d:
+#|   |   ^^^^^^^^^^^^^^^^^
 #|26 |     case Zz2b{}, xs, b, Nl2{}:
 #|exit 1

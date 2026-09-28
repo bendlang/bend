@@ -16,11 +16,13 @@ law main:
 def main():
   f(True{})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : '='
 #|- observed : ':'
 #|Location:
 #|10 | def f(b):
 #|11>|   if b: 1
+#|   |       ^
 #|12 |
 #|exit 1

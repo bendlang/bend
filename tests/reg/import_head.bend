@@ -8,11 +8,13 @@ law main:
 def main():
   1n
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : an import ('import Base', or 'import <path> as <Name>')
 #|- observed : 'import Wat'
 #|Location:
 #|3 | # the i
 #|4>| import Wat
+#|  |        ^
 #|5 | law main:
 #|exit 1

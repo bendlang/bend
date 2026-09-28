@@ -139,7 +139,7 @@ def tcp_listen_any(tries, port):
     case 1n+t:
       rest = tcp_listen_any(t, (port + 1 : U32))
       do IO<Listener & U32>:
-        r : Result<&1, &1, (U32 & String), Listener> <- TCP.listen(port)
+        r : Result<&1, &1, (U32 & String), Listener> <- TCP.listen("127.0.0.1", port)
         tcp_retry(port, r, rest)
 
 law main:

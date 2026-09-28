@@ -10,11 +10,13 @@ law bare:
 def bare():
   List
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a family instance (write List<..>)
 #|- observed : List
 #|Location: bare
 #|10 | def bare():
 #|11>|   List
+#|   |   ^^^^
 #|12 |
 #|exit 1

@@ -22,6 +22,7 @@ law vpad:
 def vpad(n, v):
   v
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : Vec(Nat.add(n, 0n))
 #|- observed : Vec(n)
@@ -31,5 +32,6 @@ def vpad(n, v):
 #|Location: vpad
 #|22 | def vpad(n, v):
 #|23>|   v
+#|   |   ^
 #|24 | 
 #|exit 1

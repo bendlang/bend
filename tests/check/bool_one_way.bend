@@ -21,11 +21,13 @@ law main:
 def main():
   pick(1)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : Bool
 #|- observed : U32
 #|Location: main
 #|21 | def main():
 #|22>|   pick(1)
+#|   |        ^
 #|23 |
 #|exit 1

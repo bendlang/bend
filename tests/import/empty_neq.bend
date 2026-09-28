@@ -16,6 +16,7 @@ law main:
 def main():
   Zx{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a defined name
 #|- observed : Empty
@@ -24,5 +25,6 @@ def main():
 #|Location: T0
 #|10 | def T0():
 #|11>|   {Zx{} != Zx{} : Nx}
+#|   |         ^^
 #|12 |
 #|exit 1

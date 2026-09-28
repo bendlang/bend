@@ -13,6 +13,7 @@ law main:
 def main():
   0n
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : Data
 #|- observed : Kind(a)
@@ -22,5 +23,6 @@ def main():
 #|Location: Mk
 #|7 | type Tag<a, -T: Kind(a)> is Data:
 #|8>|   Mk{val: T}
+#|  |           ^
 #|9 | 
 #|exit 1

@@ -28,10 +28,12 @@ law main:
 def main():
   Zy2{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)
 #|Location:
 #|18 |     case Pp2{a, b}:
 #|19>|       match b, a:
+#|   |                ^
 #|20 |         case Zy2{}, y:
 #|exit 1

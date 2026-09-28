@@ -19,6 +19,7 @@ law cast:
 def cast(A):
   A
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : Data
 #|- observed : Type
@@ -27,5 +28,6 @@ def cast(A):
 #|Location: cast
 #|19 | def cast(A):
 #|20>|   A
+#|   |   ^
 #|21 | 
 #|exit 1

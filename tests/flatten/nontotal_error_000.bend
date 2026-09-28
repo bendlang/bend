@@ -21,11 +21,13 @@ law main:
 
 def main(): f(Sx6{Zx6{}})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : cases for Zx6
 #|- observed : \{}
 #|Location: f
 #|14 | def f(a):
 #|15>|   match a:
+#|   |   ^^^^^^^^
 #|16 |     case Sx6{a}:
 #|exit 1

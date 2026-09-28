@@ -22,11 +22,13 @@ law main:
 
 def main(): f(Se2{Ze2{}})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : cases for Ze2
 #|- observed : \{}
 #|Location: f
 #|15 | def f(a):
 #|16>|   match a:
+#|   |   ^^^^^^^^
 #|17 |     case Se2{a}:
 #|exit 1

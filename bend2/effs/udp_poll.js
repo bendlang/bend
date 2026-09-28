@@ -11,13 +11,15 @@ function udp_poll(socket, max) {
     sys.ptr(len));
   const n = Number(got);
   if (n < 0 && sys.errno() === (sys.mac ? 35 : 11)) {
-    return io_tup(socket, io_done({ $: "None" }));
+    return io_tup(socket, io_done({ $: CID(None) }));
   }
   if (n < 0) {
     return io_tup(socket, io_fail(sys.errno()));
   }
   const host = peer[4] + "." + peer[5] + "." + peer[6] + "." + peer[7];
   const port = (peer[2] << 8) | peer[3];
-  return io_tup(socket, io_done({ $: "Some",
+  return io_tup(socket, io_done({ $: CID(Some),
     value: io_tup(host, port, io_text(b, n)) }));
 }
+
+io_eff(CID(UDP.poll), udp_poll);

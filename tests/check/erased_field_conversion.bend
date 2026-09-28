@@ -21,11 +21,13 @@ law main:
 
 def main(): Ua{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : Mka{Unit10, Ua{}}
 #|- observed : Mka{Empty10, Ua{}}
 #|Location: q
 #|16 | 
 #|17>| def q(): {==}
+#|   |          ^^^^
 #|18 |
 #|exit 1

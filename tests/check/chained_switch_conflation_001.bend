@@ -23,12 +23,13 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : 1 patterns (one per scrutinee)
-#|- observed : '
-#|'
+#|- observed : '2+q'
 #|Location:
 #|16 |       1
 #|17>|     case 2+q:
+#|   |          ^^^
 #|18 |       (2 + q : U32)
 #|exit 1

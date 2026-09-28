@@ -36,6 +36,7 @@ law ones_twos:
 def ones_twos(n):
   {==}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : ones(n)
 #|- observed : twos(n)
@@ -44,5 +45,6 @@ def ones_twos(n):
 #|Location: ones_twos
 #|36 | def ones_twos(n):
 #|37>|   {==}
+#|   |   ^^^^
 #|38 |
 #|exit 1

@@ -22,6 +22,7 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : {0 == 0 : U32}
 #|- observed : @_:{0 == 0 : U32} -> Empty
@@ -30,5 +31,6 @@ def main():
 #|Location: coerce
 #|16 | def coerce(p):
 #|17>|   p
+#|   |   ^
 #|18 |
 #|exit 1

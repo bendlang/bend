@@ -3,11 +3,13 @@
 def bad() -> Type:
   &x: Type -> Type
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a defined name
 #|- observed : Exists
 #|Location: bad
 #|3 | def bad() -> Type:
 #|4>|   &x: Type -> Type
+#|  |   ^^^^^^^^^^^^^^^^
 #|5 |
 #|exit 1

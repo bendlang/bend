@@ -10,6 +10,7 @@ def main() -> Nat:
   g = {y => Nat.add(y, 10n) : Nat -> Nat}
   app(~g, 1n)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a template applied to closed ~ arguments (g is a variable here, not comptime: pass it at run time)
 #|- observed : app
@@ -18,5 +19,6 @@ def main() -> Nat:
 #|Location: main
 #|10 |   g = {y => Nat.add(y, 10n) : Nat -> Nat}
 #|11>|   app(~g, 1n)
+#|   |   ^^^
 #|12 |
 #|exit 1

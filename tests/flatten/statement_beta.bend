@@ -18,11 +18,13 @@ law main:
 def main():
   usem(\{0: 9; n => (n * 2 : U32)})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : '}'
 #|- observed : ':'
 #|Location:
 #|18 | def main():
 #|19>|   usem(\{0: 9; n => (n * 2 : U32)})
+#|   |           ^
 #|20 |
 #|exit 1

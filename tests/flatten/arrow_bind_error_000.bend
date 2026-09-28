@@ -19,11 +19,13 @@ law main:
 
 def main(): go(Pp{1, 2})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : 'def', 'type' or 'law'
 #|- observed : '<'
 #|Location:
 #|13 | def go(k):
 #|14>|   Pp{a, b} <- k
+#|   |            ^
 #|15 |   a
 #|exit 1

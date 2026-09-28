@@ -33,12 +33,13 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : 1 patterns (one per scrutinee)
-#|- observed : '
-#|'
+#|- observed : '1+p'
 #|Location:
 #|15 |       0
 #|16>|     case 1+p:
+#|   |          ^^^
 #|17 |       down(p)
 #|exit 1

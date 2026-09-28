@@ -7,11 +7,13 @@ def app(~f, x: Nat) -> Nat:
 def main() -> Nat:
   app(~Nat.add(1n), 3n)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : ':'
 #|- observed : ','
 #|Location:
 #|3 | 
 #|4>| def app(~f, x: Nat) -> Nat:
+#|  |           ^
 #|5 |   f(x)
 #|exit 1

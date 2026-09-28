@@ -13,11 +13,13 @@ law main:
 
 def main(): 0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : an escape (\n \t \r \0 \\ \' \" \u{1F600})
 #|- observed : 'b'
 #|Location:
 #| 8 | 
 #| 9>| def x(): "a\qb"
+#|   |              ^
 #|10 |
 #|exit 1

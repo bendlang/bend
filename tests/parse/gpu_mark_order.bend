@@ -18,11 +18,13 @@ law main:
 def main():
   pick<U32>!(1, 2)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : '('
 #|- observed : '<'
 #|Location:
 #|11 | 
 #|12>| def pick<A>(x, y):
+#|   |         ^
 #|13 |   y
 #|exit 1

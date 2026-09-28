@@ -8,7 +8,7 @@ law main:
 
 def main():
   do IO<U32>:
-    t : Chan(Unit) <- IO.fork(Unit, IO.sleep(5))
+    t : Chan(Unit) <- IO.fork(Unit, IO.sleep(1))
     a : Unit <- IO.join(Unit, t)
     u : Unit <- IO.spawn(Unit, IO.pure(Unit, Unit{}))
     b : Unit <- IO.print("joined")

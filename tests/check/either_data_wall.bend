@@ -60,11 +60,13 @@ law main:
 
 def main(): twice(Inr{2})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : e
 #|- observed : e (consumed more than once)
 #|Location: leak
 #|54 | 
 #|55>| def leak(e):
+#|   |          ^
 #|56 |   leak.go(e, la(e))
 #|exit 1

@@ -35,6 +35,7 @@ law main:
 def main():
   (caller(3) * 10 + use(inc, 5) : U32)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a template applied to closed ~ arguments (g is a variable here, not comptime: pass it at run time)
 #|- observed : use
@@ -44,5 +45,6 @@ def main():
 #|Location: caller
 #|29 |   g = {y => (y + 1 : U32) : U32 -> U32}
 #|30>|   use(g, x)
+#|   |   ^^^
 #|31 |
 #|exit 1

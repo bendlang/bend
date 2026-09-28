@@ -279,7 +279,7 @@ def no_flag(+x: Nat, +y: Nat, +hp: T(okpos(x, y)),
 # passed in, so it is computed once for the whole walk.
 
 def fchk(+s: String, +x: Nat, +y: Nat) -> Bool:
-  imp(okpos(x, y), Bool.not(Laws.flag_at(y, x, s)))
+  imp(okpos(x, y), Bool.not(Game.flag_at(y, x, s)))
 
 def fchk_row(+s: String, +x: Nat, y: Nat) -> Bool:
   match y:
@@ -341,19 +341,19 @@ def fcert(+s: String, +x: Nat, +y: Nat, ca: T(fchk_all(s, 11n)),
 
 # on a safe cell the page draws no flag: the certificate says so
 def off_F(+x: Nat, +y: Nat, +hp: T(okpos(x, y)))
-  -> {False{} == Laws.flag_at(y, x, Laws.drawn()) : Bool}:
+  -> {False{} == Game.flag_at(y, x, Game.drawn()) : Bool}:
   and_split(Game.nat_le(x, 11n) && Game.nat_le(y, 7n),
     Bool.not(room(x, y)) && Bool.not(Game.wall(x, y)), hp,
-    {False{} == Laws.flag_at(y, x, Laws.drawn()) : Bool},
+    {False{} == Game.flag_at(y, x, Game.drawn()) : Bool},
     wb => wnr =>
       and_split(Game.nat_le(x, 11n), Game.nat_le(y, 7n), wb,
-        {False{} == Laws.flag_at(y, x, Laws.drawn()) : Bool},
+        {False{} == Game.flag_at(y, x, Game.drawn()) : Bool},
         lx => ly =>
-          bool_case(Laws.flag_at(y, x, Laws.drawn()), z => {False{} == z : Bool},
+          bool_case(Game.flag_at(y, x, Game.drawn()), z => {False{} == z : Bool},
             et => Empty.absurd({False{} == True{} : Bool},
-              not_elim(Laws.flag_at(y, x, Laws.drawn()),
-                imp_elim(okpos(x, y), Bool.not(Laws.flag_at(y, x, Laws.drawn())),
-                  fcert(Laws.drawn(), x, y, Unit{}, lx, ly), hp),
+              not_elim(Game.flag_at(y, x, Game.drawn()),
+                imp_elim(okpos(x, y), Bool.not(Game.flag_at(y, x, Game.drawn())),
+                  fcert(Game.drawn(), x, y, Unit{}, lx, ly), hp),
                 %et : T(_)
                 Unit{})),
             ef => {==})))
@@ -476,9 +476,9 @@ def Laws.you_cant_win(moves):
 def Laws.never_on_flag(moves):
   use_safe(moves, Game.start_x(), Game.start_y(),
     run_safe(moves, Game.start_x(), Game.start_y(), Unit{}),
-    {Laws.at_flag(Game.replay(Game.start(), moves)) == False{} : Bool},
+    {Game.at_flag(Game.replay(Game.start(), moves)) == False{} : Bool},
     nx => ny => hq => eq =>
       %sym(Game.Game, Game.run(moves, Game.Game{Game.start_x(), Game.start_y(), False{}}),
-        Game.Game{nx, ny, False{}}, eq) : {Laws.at_flag(_) == False{} : Bool}
+        Game.Game{nx, ny, False{}}, eq) : {Game.at_flag(_) == False{} : Bool}
       %off_F(nx, ny, hq) : {_ == False{} : Bool}
       {==})

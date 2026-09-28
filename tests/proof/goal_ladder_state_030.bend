@@ -46,6 +46,7 @@ def one_odd(ev):
     case ESS{p, e, eq}:
       Type
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : Emp
 #|- observed : Type
@@ -56,5 +57,6 @@ def one_odd(ev):
 #|Location: one_odd
 #|46 |     case ESS{p, e, eq}:
 #|47>|       Type
+#|   |       ^^^^
 #|48 |
 #|exit 1

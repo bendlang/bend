@@ -12,11 +12,13 @@ law main:
 def main():
   [1]
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : Fx
 #|- observed : List
 #|Location: main
 #|12 | def main():
 #|13>|   [1]
+#|   |   ^^^
 #|14 |
 #|exit 1

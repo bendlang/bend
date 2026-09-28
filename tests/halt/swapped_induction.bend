@@ -38,6 +38,7 @@ law main:
 
 def main(): Z{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
 #|- observed : swapped
@@ -46,5 +47,6 @@ def main(): Z{}
 #|Location: swapped
 #|31 |     case Z{}:
 #|32>|       swapped(b, Z{})
+#|   |       ^^^^^^^
 #|33 |     case S{p}:
 #|exit 1

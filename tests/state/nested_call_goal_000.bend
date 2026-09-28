@@ -43,6 +43,7 @@ law turn_turn:
 def turn_turn(d):
   {==}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : turn(turn(d))
 #|- observed : back(d)
@@ -51,5 +52,6 @@ def turn_turn(d):
 #|Location: turn_turn
 #|43 | def turn_turn(d):
 #|44>|   {==}
+#|   |   ^^^^
 #|45 |
 #|exit 1

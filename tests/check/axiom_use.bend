@@ -22,6 +22,7 @@ law main:
 
 def main(): 0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a filled definition (an unfilled law is a dead claim: live code cannot use it)
 #|- observed : plus_comm
@@ -31,5 +32,6 @@ def main(): 0
 #|Location: shift
 #|17 | def shift(a, b):
 #|18>|   %h@plus_comm(a, b) : {U32.add(_, 0) == U32.add(U32.add(b, a), 0) : U32}; {==}
+#|   |      ^^^^^^^^^
 #|19 |
 #|exit 1

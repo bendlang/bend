@@ -14,6 +14,7 @@ law f:
 def f(x):
   x => {==}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : x^0
 #|- observed : NS{x^0}
@@ -23,5 +24,6 @@ def f(x):
 #|Location: f
 #|14 | def f(x):
 #|15>|   x => {==}
+#|   |        ^^^^
 #|16 |
 #|exit 1

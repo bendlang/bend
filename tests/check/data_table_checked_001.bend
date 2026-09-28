@@ -42,11 +42,13 @@ law main:
 
 def main(): delta(MkBox6{argument => delta(MkBox6{argument})})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : box
 #|- observed : box (consumed more than once)
 #|Location: delta
 #|36 | 
 #|37>| def delta(box):
+#|   |           ^^^
 #|38 |   delta.go(box, box)
 #|exit 1

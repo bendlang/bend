@@ -23,6 +23,7 @@ law main:
 
 def main(): sw(S{Z{}}, S{Z{}})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
 #|- observed : sw
@@ -32,5 +33,6 @@ def main(): sw(S{Z{}}, S{Z{}})
 #|Location: sw
 #|18 |     case S{p}:
 #|19>|       sw(b, S{p})
+#|   |       ^^
 #|20 |
 #|exit 1

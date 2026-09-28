@@ -32,6 +32,7 @@ law main:
 def main():
   once(10, 1)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a template applied to closed ~ arguments (k is a variable here, not comptime: pass it at run time)
 #|- observed : apply
@@ -41,5 +42,6 @@ def main():
 #|Location: once
 #|26 | def once(k, x):
 #|27>|   apply(y => (y + k : U32), x)
+#|   |   ^^^^^
 #|28 |
 #|exit 1

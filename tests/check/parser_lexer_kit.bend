@@ -8,11 +8,13 @@ law main:
 def main():
   Parser.read(U32, Parser.digit(), "7")
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a defined name
 #|- observed : Parser.read
 #|Location: main
 #| 8 | def main():
 #| 9>|   Parser.read(U32, Parser.digit(), "7")
+#|   |   ^^^^^^^^^^^
 #|10 |
 #|exit 1

@@ -15,10 +15,12 @@ law main:
 
 def main(): Uu9{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- message  : a live scrutinee (a - scrutinee matches only in a dead region)
 #|Location: bad
 #|10 | 
 #|11>| def bad(): \{}
+#|   |            ^^^
 #|12 |
 #|exit 1

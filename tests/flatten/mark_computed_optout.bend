@@ -20,11 +20,13 @@ law main:
 def main():
   f(2n)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : '!'
 #|Location:
 #|10 | def f(n):
 #|11>|   match n!:
+#|   |          ^
 #|12 |     case Zero{}:
 #|exit 1

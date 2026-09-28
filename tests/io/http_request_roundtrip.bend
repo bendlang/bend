@@ -129,6 +129,7 @@ law main:
 def main():
   (chk_parse() * 1000 + chk_roundtrip() * 100 + chk_response() * 10 + chk_bad() : U32)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a defined name
 #|- observed : HTTP.get_header
@@ -140,5 +141,6 @@ def main():
 #|Location: req_score
 #|38 |   (m, p, hs, b) = req
 #|39>|   (b2u(String.eq(m, "GET")) + b2u(String.eq(p, "/a")) + b2u(String.eq(HTTP.get_header("", "Host", hs), "x")) + b2u(String.eq(HTTP.get_header("", "ACCEPT", hs), "*/*")) : U32)
+#|   |                                                                       ^^^^^^^^^^^^^^^
 #|40 |
 #|exit 1

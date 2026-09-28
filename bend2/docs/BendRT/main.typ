@@ -23,7 +23,7 @@
     let p = counter(page).get().first()
     if p > 1 {
       set text(size: 8pt)
-      if calc.even(p) [#p #h(1fr) Victor Taelin] else [BendRT: A Parallel Runtime for CPUs and GPUs #h(1fr) #p]
+      if calc.even(p) [#p #h(1fr) Victor Taelin et al.] else [BendRT: A Parallel Runtime for CPUs and GPUs #h(1fr) #p]
     }
   },
 )
@@ -75,7 +75,9 @@
   v(10pt)
   text(size: 17.3pt, weight: "bold")[BendRT: A Parallel Runtime for CPUs and GPUs]
   v(2pt)
-  text(size: 11pt)[Victor Taelin]
+  text(size: 11pt)[Victor Taelin, Lorenzo W Battistela, Paulo J Cavalcanti]
+  linebreak()
+  text(size: 11pt)[Nicolas Abril, Vitor Chiarelli Neves, Vanessa Ostroski]
   linebreak()
   text(size: 10pt)[Higher Order Company]
   linebreak()
@@ -276,8 +278,8 @@ first call in place; each step pushes the next frame, and the last
 jumps into the joiner with both results in the bank.
 
 The emitted file is the runtime template, the program's tables and
-segments, and the C source of every effect it imports; `--threads`,
-`--parallel` and `--gpu` pick the executor at run time.
+segments, and the C source of every effect it imports; `--threads`
+and `--gpu` pick the executor at run time.
 
 = Memory <sec:memory>
 
@@ -474,7 +476,7 @@ behind a hash of the text), and a launch loads it, or compiles it once
 when the file is missing or stale, so host and device run the same
 functions by construction.
 
-The span is decided once, before the first dispatch: `--gpu-memory`,
+The span is decided once, before the first dispatch: `--gpu <size>`,
 else 2 GB on Metal, where a buffer cannot grow under a running kernel,
 and the whole card on CUDA, whose managed pages fault in on demand.
 Metal wraps the host mapping in one zero-copy buffer at the same

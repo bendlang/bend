@@ -33,6 +33,7 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : isZ(U32{WCon{_4, _5}})
 #|- observed : F32
@@ -42,5 +43,6 @@ def main():
 #|Location: pick
 #|27 |     case p:
 #|28>|       1.5
+#|   |       ^^^
 #|29 |
 #|exit 1

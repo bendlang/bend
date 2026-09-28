@@ -27,13 +27,15 @@ def absurd(-A: Type, e: Empty) -> A:
 def false_theorem() -> {False{} == True{} : Bit}:
   absurd({False{} == True{} : Bit}, boom())
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
 #|- observed : loop
 #|Context:
 #|- u : Unit
 #|Location: bounce~0
-#|16 | def loop(~k: Key, u: Unit) -> Empty:
-#|17>|   bounce(~loop(~k), u)
-#|18 | 
+#|18 | def loop(~k: Key, u: Unit) -> Empty:
+#|19>|   bounce(~loop(~k), u)
+#|   |           ^^^^
+#|20 | 
 #|exit 1

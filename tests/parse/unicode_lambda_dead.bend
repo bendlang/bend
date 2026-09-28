@@ -12,11 +12,13 @@ law main:
 
 def main(): id(7)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : 'λ'
 #|Location:
 #|7 | 
 #|8>| def id(): λx.x
+#|  |           ^
 #|9 |
 #|exit 1

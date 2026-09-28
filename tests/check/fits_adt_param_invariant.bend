@@ -14,11 +14,13 @@ def cData(): Contra{cid}
 law cType: Contra<Type>
 def cType(): cData
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : Contra<Type>
 #|- observed : Contra<Data>
 #|Location: cType
 #|14 | law cType: Contra<Type>
 #|15>| def cType(): cData
+#|   |              ^^^^^
 #|16 |
 #|exit 1

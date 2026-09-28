@@ -21,11 +21,13 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : '('
 #|- observed : '<'
 #|Location:
 #|14 | 
 #|15>| def wrap<A>(x):
+#|   |         ^
 #|16 |   Done{x}
 #|exit 1

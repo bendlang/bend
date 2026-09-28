@@ -21,6 +21,7 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
 #|- observed : head9
@@ -30,5 +31,6 @@ def main():
 #|Location: head9
 #|15 |     case Succ{p}:
 #|16>|       (1 + {{head9 : Nat -> U32 -> U32}({p : Nat}) : U32 -> U32}({x : U32}) : U32)
+#|   |              ^^^^^
 #|17 |
 #|exit 1

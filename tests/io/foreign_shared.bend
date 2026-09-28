@@ -3,7 +3,7 @@
 # nodes and sums both trees. Sharing heats Tree, so the program's own Node
 # seals its fields; the twin's io_node must seal the same way, and it
 # cannot know: whether a type is hot is a fact of the whole program. So
-# io_node and io_box seal by the constructor's own entry in CID_HOT_T,
+# io_node and io_box seal by the constructor's own hot bit in CID_T,
 # the fact the emitter wrote for its own constructors, and a twin passes
 # no flag (a twin that laid the tree unsealed fail-stopped here).
 import Base

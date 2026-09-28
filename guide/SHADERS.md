@@ -164,7 +164,7 @@ fork tree: build lists.
 - A wide record round-trips the stack: a 52-word record per list entry made the
   draw 6.3 -> 12.1 ms; a 22-word camera on every mesh call, +2-4% build. Build
   wide data where used (`Hook.cam(F)`).
-- A def or continuation takes at most 255 words ("an arity over 255"): four
+- A def or continuation takes at most 247 words ("an arity over 247"): four
   15-field records in one parallel let fail to compile. Wrap a big header in a
   constructor of the tree it heads.
 - Use the typed `pick(c, a: F32, b: F32)` and `word(c, a: U32, b: U32)`; the

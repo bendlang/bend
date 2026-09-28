@@ -36,6 +36,7 @@ law main:
 
 def main(): fold(10n)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
 #|- observed : fold
@@ -44,5 +45,6 @@ def main(): fold(10n)
 #|Location: fold
 #|31 |     case n:
 #|32>|       1n+ fold(ndiv(n, 2n))
+#|   |           ^^^^
 #|33 |
 #|exit 1

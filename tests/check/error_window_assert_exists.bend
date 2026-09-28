@@ -4,11 +4,13 @@ law bad:
   exs x: Type
   Type
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a defined name
 #|- observed : Exists
 #|Location: bad
 #|3 | law bad:
 #|4>|   exs x: Type
+#|  |       ^
 #|5 |   Type
 #|exit 1

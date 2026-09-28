@@ -10,10 +10,12 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- message  : no such file: /shared/proof_chain.bend
 #|Location:
 #|4 | import Base
 #|5>| import /shared/proof_chain.bend as P
+#|  |        ^
 #|6 |
 #|exit 1

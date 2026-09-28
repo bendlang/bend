@@ -7,12 +7,13 @@ law main:
 
 def main(): 4294967296
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a u32 literal up to 4294967295 (got 4294967296)
-#|- observed : '
-#|'
+#|- observed : '4294967296'
 #|Location:
 #|7 | 
 #|8>| def main(): 4294967296
+#|  |             ^^^^^^^^^^
 #|9 |
 #|exit 1

@@ -11,11 +11,13 @@ def main():
   m = (![0:5, _:0; 1] : U32)
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : '!'
 #|Location:
 #|10 | def main():
 #|11>|   m = (![0:5, _:0; 1] : U32)
+#|   |        ^
 #|12 |   0
 #|exit 1

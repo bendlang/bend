@@ -13,11 +13,13 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : an import of a .bend file
 #|- observed : '/lib/words.txt'
 #|Location:
 #|7 | import Base
 #|8>| import /lib/words.txt as W
+#|  |        ^
 #|9 |
 #|exit 1

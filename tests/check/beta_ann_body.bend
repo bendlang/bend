@@ -9,11 +9,13 @@ def w(b: Nat) -> Nat:
 def main() -> Nat:
   (x => {w : Bool -> Bool})(0n)(5n)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : @_:Bool -> Bool
 #|- observed : @b:Nat -> Nat
 #|Location: main
 #| 9 | def main() -> Nat:
 #|10>|   (x => {w : Bool -> Bool})(0n)(5n)
+#|   |          ^
 #|11 |
 #|exit 1

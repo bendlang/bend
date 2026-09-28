@@ -37,6 +37,7 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
 #|- observed : loop
@@ -46,5 +47,6 @@ def main():
 #|Location: loop
 #|29 |     case P9{a, b}:
 #|30>|       loop(a(b))
+#|   |       ^^^^
 #|31 |     case w:
 #|exit 1

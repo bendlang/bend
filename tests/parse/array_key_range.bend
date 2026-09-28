@@ -10,11 +10,13 @@ def main():
   m = [0:5, _:0; 1]
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : '^'
 #|- observed : ','
 #|Location:
 #| 9 | def main():
 #|10>|   m = [0:5, _:0; 1]
+#|   |           ^
 #|11 |   0
 #|exit 1

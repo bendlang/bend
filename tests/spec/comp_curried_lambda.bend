@@ -26,11 +26,13 @@ law main:
 def main():
   (app2(x => y => (x * 10 + y : U32), 3, 4) + helper(2) : U32)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : x
 #|- observed : x (consumed more than once)
 #|Location: helper
 #|19 |
 #|20>| def helper(x):
+#|   |            ^
 #|21 |   (x * x : U32)
 #|exit 1

@@ -1,8 +1,8 @@
-# a record of records past 256 words is a node, as a recursive type is:
-# BoxK<BoxK<U32>> is 64 flat words, one level more is 512 (boxed), and
-# the level above is eight boxes, flat again. The seeded build crosses
-# the box on the way in and the match on the way out; the constant
-# chain (#843, 8^7 words at depth 7) folds to one static image
+# a value past 247 words travels boxed: BoxK<BoxK<U32>> is 64 flat words,
+# one level more is one box of a 512-word node, and the level above eight
+# boxes, flat again. The seeded build crosses the box on the way in
+# and the match on the way out; the constant chain (#843, 8^7 words at
+# depth 7) folds to one static image
 import Base
 
 type BoxK<-a: Data> is Data:

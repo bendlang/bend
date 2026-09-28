@@ -25,11 +25,13 @@ law main:
 
 def main(): f(Sx7{Zx7{}})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : cases for Zx7
 #|- observed : \{}
 #|Location: f
 #|16 | def f(a):
 #|17>|   match a:
+#|   |   ^^^^^^^^
 #|18 |     case Sx7{Sx7{a}}:
 #|exit 1

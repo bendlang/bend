@@ -8,11 +8,13 @@ law main:
 def main():
   1.x
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a numeric literal (NUMBER is U32, NUMBER n is Nat)
 #|- observed : '.'
 #|Location:
 #| 8 | def main():
 #| 9>|   1.x
+#|   |    ^
 #|10 |
 #|exit 1

@@ -40,11 +40,13 @@ law main:
 def main():
   total(map(U32, U32, x => (x + 1 : U32), C{1, C{2, N{}}}))
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a plain clause (only leading clauses take ~)
 #|- observed : '~'
 #|Location:
 #|14 |   for -B: Type
 #|15>|   for ~f: A -> B
+#|   |       ^
 #|16 |   for xs: L<A>
 #|exit 1

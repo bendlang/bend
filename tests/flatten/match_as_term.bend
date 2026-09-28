@@ -23,6 +23,7 @@ def main(x, b):
       y = S{x}
       S{y}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : an annotated term (cannot infer)
 #|- observed : S{x}
@@ -31,5 +32,6 @@ def main(x, b):
 #|Location: main
 #|19 |     case T{}:
 #|20>|       y = S{x}
+#|   |           ^^^^
 #|21 |       y
 #|exit 1

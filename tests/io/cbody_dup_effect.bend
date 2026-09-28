@@ -17,11 +17,13 @@ law main:
 def main():
   IO.print("hi")
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : '"'
 #|- observed : '.'
 #|Location:
 #|11 | def print(x):
 #|12>|   import ./lib/eff.c
+#|   |          ^
 #|13 |
 #|exit 1

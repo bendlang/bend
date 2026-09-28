@@ -16,11 +16,14 @@ law main:
 def main():
   0n
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : Data
 #|- observed : Type
 #|Location: keep
 #|6 | law keep:
 #|7>|   for +x: List<&1, Nat>
+#|  |           ^^^^^^^
 #|8 |   List<&1, Nat>
+#|Note: +x can be used many times, so its type must be Data.
 #|exit 1

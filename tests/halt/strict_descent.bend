@@ -22,6 +22,7 @@ law main:
 
 def main(): Z{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)
 #|- observed : mk
@@ -31,5 +32,6 @@ def main(): Z{}
 #|Location: mk
 #|15 |     case Sup{f}:
 #|16>|       Sup{x => mk(x)}
+#|   |                ^^
 #|17 |     case u:
 #|exit 1

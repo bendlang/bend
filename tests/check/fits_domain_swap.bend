@@ -10,6 +10,7 @@ def K(T): @+x:T -> Empty
 law KAny: @T:Type -> Type
 def KAny(T): ({K : @U:Type -> Type})(T)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : @U:Type -> Type
 #|- observed : @T:Data -> Type
@@ -18,5 +19,6 @@ def KAny(T): ({K : @U:Type -> Type})(T)
 #|Location: KAny
 #|10 | law KAny: @T:Type -> Type
 #|11>| def KAny(T): ({K : @U:Type -> Type})(T)
+#|   |                ^
 #|12 |
 #|exit 1

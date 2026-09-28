@@ -3,11 +3,13 @@
 def match(x):
   x
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a name (got the keyword 'match')
-#|- observed : '('
+#|- observed : 'match'
 #|Location:
 #|2 | # ported from bend3
 #|3>| def match(x):
+#|  |     ^^^^^
 #|4 |   x
 #|exit 1

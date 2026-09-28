@@ -59,6 +59,7 @@ def main():
     d : Unit <- IO.print(U32.show(lsum(xs)))
     return Unit{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : xs
 #|- observed : xs (consumed more than once)
@@ -67,5 +68,6 @@ def main():
 #|Location: main
 #|53 |   t = build(3n, 1)
 #|54>|   xs = {[1, 2, 3] : List<&2, U32>}
+#|   |   ^^
 #|55 |   do IO<Unit>:
 #|exit 1

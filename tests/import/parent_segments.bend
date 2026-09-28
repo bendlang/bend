@@ -11,11 +11,13 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : an import of a .bend file
 #|- observed : '/up/up/native_mod.c'
 #|Location:
 #|5 | import Base
 #|6>| import /up/up/native_mod.c as M
+#|  |        ^
 #|7 |
 #|exit 1

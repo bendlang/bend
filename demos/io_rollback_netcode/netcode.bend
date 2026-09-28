@@ -719,7 +719,7 @@ def Client.open(
   room: String, me: String
 ) -> IO(Client<P, S>):
   do IO<Client<P, S>>:
-    sock : Socket <- IO.try(Socket, UDP.bind(0))
+    sock : Socket <- IO.try(Socket, UDP.bind("0.0.0.0", 0))
     c : Client<P, S> <- Client.hello(P, S, init, sock, host, port, room, me)
     Client.sync(~P, ~S, ~game, 400n, c)
 
@@ -913,5 +913,5 @@ def Server.loop(sm: Socket & Map<&2, Room>) -> IO(Unit):
 def Server.run(+port: U32) -> IO(Unit):
   do IO<Unit>:
     Unit <- IO.print("relay on 0.0.0.0:" ++ U32.show(port))
-    sock : Socket <- IO.try(Socket, UDP.bind(port))
+    sock : Socket <- IO.try(Socket, UDP.bind("0.0.0.0", port))
     Server.loop((sock, Map.new(&2, Room)))

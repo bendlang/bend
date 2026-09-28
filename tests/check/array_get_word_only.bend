@@ -15,11 +15,13 @@ def main(xs):
   x = xs@ys[0]
   x
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a term
 #|- observed : ':'
 #|Location:
 #|10 | law main:
 #|11>|   for xs: [:Box2]
+#|   |            ^
 #|12 |   Box2
 #|exit 1

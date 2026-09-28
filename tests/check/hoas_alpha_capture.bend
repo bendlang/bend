@@ -13,11 +13,13 @@ law main:
 
 def main(): 0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : x => y => x
 #|- observed : x => y => y
 #|Location: bad
 #| 8 | 
 #| 9>| def bad(): {==}
+#|   |            ^^^^
 #|10 |
 #|exit 1

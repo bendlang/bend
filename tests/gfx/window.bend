@@ -3,7 +3,8 @@
 # display (the JS backend, a node with no session)
 # Window.open Fails with one line and ENOTSUP on every lane and the frames
 # fold unshown; on a display it frames each image (the shared one twice: a
-# frame answers it unconsumed), then closes.
+# frame answers it unconsumed), grabs the mouse for the last two and
+# lets it go, then closes.
 import Base
 
 def count(xs: List<Event>) -> U32:
@@ -58,8 +59,10 @@ def shown(w: Window) -> IO(Unit):
   do IO<Unit>:
     w1 : Window <- frames(1n, (w, Pix{7}))
     w2 : Window <- frames(1n, (w1, build(6n, 0, 0)))
-    w3 : Window <- frames(2n, (w2, Qua{q, Pix{1}, q, Pix{2}}))
-    close(w3)
+    g : Window <- Window.grab(w2, True{})
+    w3 : Window <- frames(2n, (g, Qua{q, Pix{1}, q, Pix{2}}))
+    w4 : Window <- Window.grab(w3, False{})
+    close(w4)
 
 def sup(yes: Bool, code: U32) -> String:
   match yes:

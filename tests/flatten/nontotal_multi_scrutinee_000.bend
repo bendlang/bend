@@ -42,6 +42,7 @@ law main:
 
 def main(): f(Nl0{}, Nl0{})
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : cases for Zz0
 #|- observed : \{}
@@ -50,5 +51,6 @@ def main(): f(Nl0{}, Nl0{})
 #|Location: f
 #|25 | def f(a, b):
 #|26>|   match a, b:
+#|   |   ^^^^^^^^^^^
 #|27 |     case Cl0{Sz0{a}, b}, Cl0{Sz0{c}, d}:
 #|exit 1

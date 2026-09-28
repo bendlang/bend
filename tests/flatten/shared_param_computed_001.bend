@@ -17,10 +17,12 @@ def main(v):
     case S{p}:
       p
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- message  : a parameter or field scrutinee (a match cannot scrutinize a local binder: give it its own def)
 #|Location:
 #|12 | def main(v):
 #|13>|   x = v
+#|   |   ^
 #|14 |   match x:
 #|exit 1

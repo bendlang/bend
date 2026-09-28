@@ -11,11 +11,13 @@ law main:
 def main():
   F32.sqrt(1.0, 2.0)
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a function type
 #|- observed : F32
 #|Location: main
 #|11 | def main():
 #|12>|   F32.sqrt(1.0, 2.0)
+#|   |   ^^^^^^^^^^^^^^^^^^
 #|13 |
 #|exit 1

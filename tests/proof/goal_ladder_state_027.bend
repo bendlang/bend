@@ -240,6 +240,7 @@ def div_spec(n, d1):
     case 1n+p:
       div_spec.go(p, d1, div_spec(p, d1))
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : Sigma<&1, &1, Nat, q => Sigma<&1, &1, Nat, r => Sigma<&1, &1, LE(r, d1), e2 => {1n+p == add(mul(q, 1n+d1), r) : Nat}>>>
 #|- observed : Type
@@ -253,5 +254,6 @@ def div_spec(n, d1):
 #|Location: div_spec.go
 #|233 |   (q, r, ev, eq0) = w
 #|234>|   Type
+#|    |   ^^^^
 #|235 |
 #|exit 1

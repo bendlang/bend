@@ -18,13 +18,6 @@ def Frac.den(q: Frac) -> Nat:
   Frac{num, den} = q
   den
 
-def Nat.pow(+b: Nat, n: Nat) -> Nat:
-  match n:
-    case 0n:
-      1n
-    case 1n+p:
-      Nat.mul(b, Nat.pow(b, p))
-
 def Frac.pow(+q: Frac, +n: Nat) -> Frac:
   Frac{Nat.pow(Frac.num(q), n), Nat.pow(Frac.den(q), n)}
 

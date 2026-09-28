@@ -6,4 +6,5 @@ law f:
 def f():
   1
 
-#|All terms check.
+#|ALL PROOFS CHECK
+#|Use --verdict for mathematical validity.

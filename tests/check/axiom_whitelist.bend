@@ -19,11 +19,13 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a filled definition (an unfilled law is a dead claim: live code cannot use it)
 #|- observed : U32.magic_hom
 #|Location: use
 #|13 | def use():
 #|14>|   U32.magic_hom
+#|   |   ^^^^^^^^^^^^^
 #|15 |
 #|exit 1

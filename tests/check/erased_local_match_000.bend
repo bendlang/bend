@@ -16,10 +16,12 @@ def erase_then_match(z):
     case On{}: On{}
     case Off{}: Off{}
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- message  : a parameter or field scrutinee (a match cannot scrutinize a local binder: give it its own def)
 #|Location:
 #|13 | def erase_then_match(z):
 #|14>|   -x = {z : Bit}
+#|   |   ^^
 #|15 |   match x:
 #|exit 1

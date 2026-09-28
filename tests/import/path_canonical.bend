@@ -10,10 +10,12 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- message  : no such file: /mods/canonical.bend
 #|Location:
 #|4 | import Base
 #|5>| import /mods/canonical.bend as C
+#|  |        ^
 #|6 |
 #|exit 1

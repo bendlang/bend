@@ -15,11 +15,13 @@ law main:
 def main():
   0
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : a fresh constructor name (duplicate declaration: K5)
-#|- observed : '{'
+#|- observed : 'K5'
 #|Location:
 #| 9 | type B5 is Data:
 #|10>|   K5{a: A5}
+#|   |   ^^
 #|11 |
 #|exit 1

@@ -9,11 +9,13 @@ law main:
 def main():
   [1, 2]
 
+#|SOME PROOFS FAIL
 #|Error:
 #|- expected : Array<U32>
 #|- observed : List
 #|Location: main
 #| 9 | def main():
 #|10>|   [1, 2]
+#|   |   ^^^^^^
 #|11 |
 #|exit 1
