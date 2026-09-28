@@ -264,7 +264,7 @@ by the team:
 
 - [Lorenzo W Battistela](https://github.com/Lorenzobattistela)
 - [Paulo J Cavalcanti](https://github.com/pjcavalcanti)
-- [Nico](https://github.com/nicolas-abril)
+- [Nico Abril](https://github.com/nicolas-abril)
 - [Vanessa Ostroski](https://github.com/Ostrowskii)
 - [Vitor Chiarelli Neves](https://github.com/Sipher)
 - [Alex Van de Sande](https://x.com/avsa)
