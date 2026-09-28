@@ -1253,7 +1253,7 @@ static Reply work_loop(Env e, Stk sp, Term t, bool seq) {
     WL_RETN(1);
   }}
 
-  WL_CASE(FID_CLO_APPLY)
+  WL_CASE(BEND_CLO_APPLY)
   {
     Term fun = r0;
     Term arg = r1;
@@ -2727,10 +2727,10 @@ static int io_step(Env e, IoAct* a) {
   // Yield only after a completed effect: the activation owns its next item.
   u64 deadline = io_tick() + 4000000ull;
   for (;;) {
-    Loc  ap  = task_node(e, FID_CLO_APPLY, TERM_HOLE, 0, 0);
+    Loc  ap  = task_node(e, BEND_CLO_APPLY, TERM_HOLE, 0, 0);
     e.mem[ap]     = a->cont;
     e.mem[ap + 1] = a->item;
-    Term req = corpus_eval(e.mem, term_tsk(FID_CLO_APPLY, ap));
+    Term req = corpus_eval(e.mem, term_tsk(BEND_CLO_APPLY, ap));
     u32  c   = (u32)term_aux(req);
     Loc  at  = term_peek(e, req);
     if (c == CID_EMIT) {

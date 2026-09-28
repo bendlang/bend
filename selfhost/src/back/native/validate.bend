@@ -4,7 +4,7 @@ def nv_owned(book: List<&2, KDef>) -> String:
   match book:
     case Nil{}: ""
     case Con{+d, +rest}:
-      nt_choose(String, Bool.not(db(d)) && nb_contains(["Clo.apply", "IO", "Sigma", "String", "Word.Con", "IO.OP", "Result", "Maybe", "Bool", "Unit", "Nat", "U32", "F32", "Char", "Array"], dn(d)),
+      nt_choose(String, Bool.not(db(d)) && nb_contains(["IO", "Sigma", "String", "Word.Con", "IO.OP", "Result", "Maybe", "Bool", "Unit", "Nat", "U32", "F32", "Char", "Array"], dn(d)),
         u => dn(d) ++ " is a name the compiler encodes itself: name yours apart",
         u => nv_owned(rest))
 
@@ -17,7 +17,7 @@ def nv_ctor_names(cs: List<&2, N_Constructor>) -> List<&2, String>:
 @unsafe
 def nv_seg_names_go(ss: List<&2, N_Segment>, acc: List<&2, String>) -> List<&2, String>:
   match ss:
-    case Nil{}: nt_reverse(String, acc, ["FID_IO_EMIT", "FID_CLO_APPLY", "FID_EXIT", "FID_ENTER"])
+    case Nil{}: nt_reverse(String, acc, ["FID_IO_EMIT", "BEND_CLO_APPLY", "FID_EXIT", "FID_ENTER"])
     case Con{N_Segment{k, ps, r, f, b, refs, host, spin, fork, bang}, rest}: nv_seg_names_go(rest, Con{nt_fid(k), acc})
 
 @unsafe

@@ -366,7 +366,7 @@ def nc_intrinsic(+k: String, +ws: List<&2, String>, +n: U32) -> NC_Code:
 def nc_apply_code(+ws: List<&2, String>, +n: U32) -> NC_Code:
   NC_Code{ "{ Term fn = " ++ nc_head(ws) ++ "; Term arg = " ++ nc_head(nc_tail(ws)) ++ ";\n"
     ++ "Fid f = (Fid)term_aux(fn);\n"
-    ++ "if (!seq && fid_bangs(f)) {\n  u32 war = fid_arity(f) - 1;\n  Loc src = term_loc(fn);\n  Loc dst = task_node(e, f, WL_CONT, WL_IDX, 0);\n  for (u32 j = 0; j < war; ++j) e.mem[dst + j] = e.mem[src + j];\n  e.mem[dst + war] = arg;\n  spare_free(e, cls_fit(war), src);\n  return term_tsk(f, dst);\n}\nr0 = fn; r1 = arg; WL_JMP(FID_CLO_APPLY);\n}\n", Nil{}, n, ""}
+    ++ "if (!seq && fid_bangs(f)) {\n  u32 war = fid_arity(f) - 1;\n  Loc src = term_loc(fn);\n  Loc dst = task_node(e, f, WL_CONT, WL_IDX, 0);\n  for (u32 j = 0; j < war; ++j) e.mem[dst + j] = e.mem[src + j];\n  e.mem[dst + war] = arg;\n  spare_free(e, cls_fit(war), src);\n  return term_tsk(f, dst);\n}\nr0 = fn; r1 = arg; WL_JMP(BEND_CLO_APPLY);\n}\n", Nil{}, n, ""}
 
 @unsafe
 def nc_word_literal(+t: KTerm, +bit: U32, +value: U32) -> NC_Literal:

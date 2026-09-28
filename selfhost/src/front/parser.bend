@@ -412,10 +412,25 @@ def f_grow_base(
     case FParsed{+n, +ts}:
       f_choose(FParsed, f_eq(tg(n), "Error"), u => FParsed{n, ts},
         u => f_choose(FParsed, f_eq(f_tx(ts), "(") || (f_eq(f_tx(ts), "<") && Char.is_upper(f_head(nm(n)))),
-          u => f_grow_args(n, f_tx(ts), min, f_args(f_tl(ts), f_choose(String, f_eq(f_tx(ts), "("), u => ")", u => ">"), Nil{})),
+          u => f_grow_args(n, f_tx(ts), min, f_choose(FParsed, f_eq(f_tx(ts), "("), u => f_args(f_tl(ts), ")", Nil{}), u => f_family_first(f_space(f_tl(ts))))),
         u => f_choose(FParsed, U32.is_gt(f_prec(f_tx(ts)), min) && Bool.not((f_eq(f_tx(ts), "%") || f_eq(f_tx(ts), "-")) && U32.is_eq(f_col(f_tl(ts)), U32.add(f_col(ts), 1)) && Char.is_alpha(f_head(f_tx(f_tl(ts))))) && Bool.not(f_eq(f_tx(ts), ">")) && Bool.not(f_eq(f_tx(ts), ">>") && (f_eq(f_tx(f_tl(ts)), ")") || f_eq(f_tx(f_tl(ts)), "}") || f_eq(f_tx(f_tl(ts)), ",") || f_eq(f_tx(f_tl(ts)), ":") || f_eq(f_tx(f_tl(ts)), ">") || f_eq(f_tx(f_tl(ts)), "\n") || f_eq(f_tx(f_tl(ts)), "->") || f_eq(f_tx(f_tl(ts)), "<eof>") || f_eq(f_tx(f_tl(ts)), "]"))),
           u => f_binary(n, f_tx(ts), min, f_rhs(f_tl(ts), f_tx(ts), f_choose(U32, f_eq(f_tx(ts), "=>") || f_eq(f_tx(ts), "->") || f_eq(f_tx(ts), "<>") || f_eq(f_tx(ts), "&") || f_eq(f_tx(ts), "|"), u => U32.sub(f_prec(f_tx(ts)), 1), u => f_prec(f_tx(ts))))),
           u => FParsed{n, ts})))
+
+# The first angle argument is parsed at comparison precedence. Compound type
+# operators need explicit parentheses; later comma arguments retain full terms.
+@unsafe
+def f_family_first(+ts: List<&2,FToken>) -> FParsed:
+  f_choose(FParsed, f_eq(f_tx(ts), ">") || f_eq(f_tx(ts), ">>"), u => f_args(ts, ">", Nil{}), u => f_family_first_done(f_expr(ts, 5)))
+
+@unsafe
+def f_family_first_done(+p: FParsed) -> FParsed:
+  match p:
+    case FParsed{+n, +ts}:
+      f_choose(FParsed, f_eq(tg(n), "Error"), u => FParsed{n, ts},
+        u => f_choose(FParsed, f_eq(f_tx(f_space(ts)), "&") || f_eq(f_tx(f_space(ts)), "|") || f_eq(f_tx(f_space(ts)), "->"),
+          u => fpe_error(f_space(ts), "a compound type argument takes parentheses", "'>' or ',' (a compound type argument takes parens: F<(A & B)>)"),
+          u => f_arg_next(FParsed{n, ts}, ">", Nil{})))
 
 @unsafe
 def f_grow_args(n, op, min, p):

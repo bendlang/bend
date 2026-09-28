@@ -4,7 +4,7 @@
 # supplied. All other graph checks and final global alpha-renaming still run.
 # The driver binds seedBook to the checked Base bytes and compiler API hash.
 type FSeed is Data:
-  FSeed{+path: String, +book: List<&2, KDef>}
+  FSeed{+path: String, +book: List<&2, KDef>, +root: String}
 
 law f_seed_matches:
   for +source: FSource
@@ -75,7 +75,7 @@ def f_load_graph_seed(
   +seedText: String,
   +seedBook: List<&2, KDef>,
 ) -> FResult:
-  f_choose(FResult, f_seed_matches(f_source("Base", sources), seedPath, seedText), u => f_graph_result_at(fs_load(main, "", sources, FGraph{Nil{}, "", Nil{}}, Nil{}, FSeed{seedPath, seedBook}), sources), u => f_load_graph(main, sources))
+  f_choose(FResult, f_seed_matches(f_source("Base", sources), seedPath, seedText), u => f_graph_result_at(fs_load(main, "", sources, FGraph{Nil{}, "", Nil{}}, Nil{}, FSeed{seedPath, seedBook, f_path_dir(f_source_path(f_graph_source(main, sources)))}), sources), u => f_load_graph(main, sources))
 
 @unsafe
 def f_seed_matches(source, path, text):
@@ -86,7 +86,7 @@ def fs_path(
   +seed: FSeed,
 ) -> String:
   match seed:
-    case FSeed{path, book}:
+    case FSeed{path, book, root}:
       path
 
 @unsafe
@@ -94,7 +94,7 @@ def fs_book(
   +seed: FSeed,
 ) -> List<&2, KDef>:
   match seed:
-    case FSeed{path, book}:
+    case FSeed{path, book, root}:
       book
 
 @unsafe
@@ -109,7 +109,7 @@ def fs_source(s, ns, sources, g, stack, seed):
 
 @unsafe
 def fs_cached(s, ns, sources, g, stack, entry, seed):
-  f_choose(FGraph, f_eq(tg(entry), "Absent"), u => f_choose(FGraph, String.is_empty(ns) && f_eq(f_source_name(s), "Base") && f_eq(f_source_path(s), fs_path(seed)), u => fs_inject(g, seed), u => fs_parsed(s, ns, sources, g, Con{f_source_path(s), stack}, f_parse_source(s), seed)), u => f_choose(FGraph, f_eq(nm(kid(entry, 0)), ns), u => g, u => f_graph_error(g, "one namespace per source file: " ++ f_source_path(s))))
+  f_choose(FGraph, f_eq(tg(entry), "Absent"), u => f_choose(FGraph, String.is_empty(ns) && f_eq(f_source_name(s), "Base") && f_eq(f_source_path(s), fs_path(seed)), u => fs_inject(g, seed), u => fs_parsed(s, ns, sources, g, Con{f_source_path(s), stack}, f_parse_source(s), seed)), u => g)
 
 @unsafe
 def fs_inject(g, seed):
@@ -127,9 +127,9 @@ def fs_parsed(s, ns, sources, g, stack, r, seed):
 def fs_imports(s, ns, book, allimports, imports, sources, g, stack, seed):
   match imports:
     case Nil{}:
-      f_graph_finish(s, ns, book, f_graph_aliases(allimports, ns), g)
+      f_graph_finish(s, ns, book, f_graph_aliases(allimports, s, sources, fs_root(seed)), g)
     case Con{+im, rest}:
-      fs_imports(s, ns, book, allimports, rest, sources, fs_load(f_import_pathname(im, s, sources), f_import_namespace(im, ns), sources, g, stack, seed), stack, seed)
+      fs_imports(s, ns, book, allimports, rest, sources, fs_load(f_import_pathname(im, s, sources), f_import_namespace_at(im, s, sources, fs_root(seed)), sources, g, stack, seed), stack, seed)
 
 
 # Base is larger than the call-stack limit of the library's recursive compare.
@@ -157,4 +157,9 @@ def f_load_graph_seed_trace(
   +seedText: String,
   +seedBook: List<&2,KDef>,
 ) -> FLoadTrace:
-  f_choose(FLoadTrace, f_seed_matches(f_source("Base", sources), seedPath, seedText), u => f_graph_trace(fs_load(main, "", sources, FGraph{Nil{}, "", Nil{}}, Nil{}, FSeed{seedPath, seedBook}), sources), u => f_load_graph_trace(main, sources))
+  f_choose(FLoadTrace, f_seed_matches(f_source("Base", sources), seedPath, seedText), u => f_graph_trace(fs_load(main, "", sources, FGraph{Nil{}, "", Nil{}}, Nil{}, FSeed{seedPath, seedBook, f_path_dir(f_source_path(f_graph_source(main, sources)))}), sources), u => f_load_graph_trace(main, sources))
+
+@unsafe
+def fs_root(+seed: FSeed) -> String:
+  match seed:
+    case FSeed{path, book, root}: root

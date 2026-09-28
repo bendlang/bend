@@ -221,6 +221,6 @@ def kf_scan(book, ns, source, word, text, parts):
   kc(KF_Source, Bool.not(word) && (String.starts_with(source, "CID(") || String.starts_with(source, "FID(")), u => kf_token(book, ns, source, text, parts), u => kf_char(book, ns, source, text, parts))
 
 @unsafe
-def kf_source(+book: List<&2, KDef>, path: String, source: String) -> KF_Source:
-  +ns = kf_namespace(book, path)
+def kf_source(+book: List<&2, KDef>, scope: List<&2, KDef>, path: String, source: String) -> KF_Source:
+  +ns = kf_namespace(scope, path)
   kc(KF_Source, String.eq(tg(ns), "Error"), u => KF_Source{Nil{}, nm(ns)}, u => kf_scan(book, nm(ns), source, False{}, "", Nil{}))

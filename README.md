@@ -13,60 +13,30 @@ That's Bend - and nothing else.
 ## Compiler written in Bend
 
 This fork develops the compiler in [`selfhost/`](selfhost/README.md), on branch
-`selfhost/bootstrap`. Start with [building, running and validating the compiler](docs/BEND-IN-BEND.md).
-From `selfhost/`, run `npm run verify:release`, then `node cli.mjs FILE --run`.
-Use `npm run build` to rebuild the default with pinned upstream.
-The [maintained development command](docs/PHASE5_DEVELOPMENT.md) builds a checked
-compiler and reuses selected paired tests for short iteration cycles.
+`selfhost/bootstrap`. Start with the [compiler guide](docs/BEND-IN-BEND.md):
+from `selfhost/`, run `npm run verify:release`, then `node cli.mjs FILE --run`.
+`npm run build` checks and rebuilds the default with pinned upstream.
 
-The [S4 simplification checkpoint](implementation/phase7/s4-report.md) records the
-current compiler: **14,667 Bend lines**, down 1,842 (11.16%) from the original
-baseline; nonblank lines are down 9.40% and source bytes 7.82%. It removes redundant
-forward declarations and shares loader/error/list operations. All 2,756 frontend
-observations match the prior release, including 318 remaining strict failures.
-The installed release passes integrity and relocated check/interpreter/JS/native
-smoke. A controlled checked-build-plus-focused-test loop remains about 35 seconds
-on the measured machine. The 50% and 75% milestones remain open; later phases
-have not been started.
-The [Phase 5 report](implementation/phase5/report.md) records the earlier API's broader evidence
-and its limits: all 919 positive frontend fixtures pass, strict check failures
-fell from 377 to 318, and exact live TypeScript differences fell from 560 to 444.
-The [controlled full-source comparison](implementation/phase5/full-source-comparison.md)
-historically measured 60.25 seconds for pinned TypeScript and 363.39 seconds for
-the Phase 5 optimized compiler: **6.03× slower** under its workflow/cache policy.
-S4 does not remeasure that whole-source ratio; its focused cost gates pass.
-A checked API rebuild took 14.63 seconds in the final integration; full
-self-reproduction remains a separate integration gate.
+The [Phase8 release report](implementation/phase8/upstream_and_conformance.md)
+records the migration to upstream **b2111cf, Bend 2.0.32 era**, conformance fixes,
+current validation and remaining gaps. The compiler has **14,977 Bend lines in
+59 modules**. It retains S4's shared loader, provenance and authoritative checker
+result; the migration adds necessary language/runtime behavior. The historical
+50% and 75% simplification targets remain unachieved. Rejected generic binder
+and evaluator prototypes remain unpromoted.
 
-The historical [checked self-host proof](implementation/phase5/final-selfhost.md) reproduces
-identical compiler bytes through B1→H→H. The optimized compiler and self-emitted
-compiler each preserve all 2,756 frontend observations in the
-[final artifact gate](implementation/phase5/final-artifact-frontend.md).
-The [broad JS/native gate](implementation/phase5/broad-backends.md) records current
-backend coverage and the remaining large-record native timeout. The
-[Phase 6 opening experiments](implementation/phase6/report.md) target semantic gaps
-and remaining compilation cost; their candidates are separate from this release.
-Historical artifacts and their evidence remain indexed in the
-[experiment ledger](experiments/ledger.md), [preservation index](experiments/PRESERVATION.md)
-and [current strategy](experiments/STEERING.md). Known failures remain explicit;
-these gates do not establish full upstream equivalence.
-The S3 source has a fresh checked bootstrap, full frontend preservation and
-component gates; its full all-definition fixed point has not been rerun.
+The [development workflow](docs/PHASE5_DEVELOPMENT.md) builds a genuine checked
+compiler and runs short paired selections. The measured migration integration
+attempt took about27 seconds for bootstrap plus21 focused checks. Full conformance
+and self-checking remain separate integration gates. Ordinary compilation runs
+the Bend implementation without a TypeScript fallback; independent BendTT
+`--verdict` validation is not implemented.
 
-The [phased simplification design](design/phase7/compiler_simplification.md)
-starts with read-only hypothesis validation, then requires each implementation
-phase to reduce both code and conceptual complexity toward 50% and 75% source-line
-reductions while preserving the language and backend targets. It defines
-measurements and validation gates. S0–S3 are complete under their recorded scopes;
-the 50% and 75% milestones remain unachieved.
-
-The [architectural experiment design](design/phase7/architectural_experiments.md)
-records eight ways to reduce compiler complexity. The
-[first three trials](implementation/phase7/architecture-report.md) favor retaining
-checked output as the next investigation; semantic values show workload-dependent
-cost, and the shared binding walker is larger and slower. These are isolated
-prototypes with preserved counterexamples and measurements; the installed
-compiler remains the validated S4 release.
+Read [conformance](selfhost/CONFORMANCE.md) for acceptance, exact diagnostics,
+execution coverage and unsupported environments. Historical fixed points and
+performance ratios apply only to their recorded compiler artifacts. Designs,
+rejected attempts and raw evidence remain linked from the
+[experiment ledger](experiments/ledger.md) and [current strategy](experiments/STEERING.md).
 
 ## Bend runs FAST
 

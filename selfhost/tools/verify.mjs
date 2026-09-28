@@ -8,7 +8,7 @@ import {spawnSync} from 'node:child_process';
 import {assemble} from './assemble.mjs';
 const root=path.resolve(import.meta.dirname,'..');
 const manifest=JSON.parse(fs.readFileSync(path.join(root,'src/compiler.json'),'utf8'));
-const upstream=process.env.BEND_UPSTREAM||path.join(root,'.bootstrap/upstream');
+const upstream=process.env.BEND_UPSTREAM||path.join(root,'.bootstrap/upstream-phase8');
 const dir=process.env.BEND_COMPONENT_DIR?path.resolve(process.env.BEND_COMPONENT_DIR):path.join(root,'build/verify');
 if(process.env.BEND_COMPONENT_DIR&&fs.existsSync(dir))throw Error('Use a fresh BEND_COMPONENT_DIR to preserve component evidence');
 const source=path.join(dir,'compiler.bend'),api=path.join(dir,'api.mjs');

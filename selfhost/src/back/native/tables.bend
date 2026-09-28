@@ -91,7 +91,7 @@ def nb_bank(+ss: List<&2, N_Segment>) -> String:
 @unsafe
 def nb_seg_ids_go(ss: List<&2, N_Segment>, +i: U32, +acc: String) -> String:
   match ss:
-    case Nil{}: acc ++ "#define FID_IO_EMIT " ++ U32.show(i) ++ "\n#define FID_CLO_APPLY " ++ U32.show(U32.add(i, 1)) ++ "\n#define FID_EXIT " ++ U32.show(U32.add(i, 2)) ++ "\n#define FID_ENTER " ++ U32.show(U32.add(i, 3)) ++ "\n"
+    case Nil{}: acc ++ "#define FID_IO_EMIT " ++ U32.show(i) ++ "\n#define BEND_CLO_APPLY " ++ U32.show(U32.add(i, 1)) ++ "\n#define FID_EXIT " ++ U32.show(U32.add(i, 2)) ++ "\n#define FID_ENTER " ++ U32.show(U32.add(i, 3)) ++ "\n"
     case Con{N_Segment{+k, +ps, +r, +f, +b, +refs, +h, +s, +fork, +bang}, t}: nb_seg_ids_go(t, U32.inc(i), acc ++ "#define " ++ nt_fid(k) ++ " " ++ U32.show(i) ++ "\n")
 
 @unsafe
@@ -202,7 +202,7 @@ def nb_ctr_hot(+cs: List<&2, N_Constructor>) -> String:
 @unsafe
 def nb_dispatch_go(ss: List<&2, N_Segment>, +acc: String) -> String:
   match ss:
-    case Nil{}: acc ++ "WL_X(FID_IO_EMIT) WL_X(FID_CLO_APPLY) WL_X(FID_EXIT)"
+    case Nil{}: acc ++ "WL_X(FID_IO_EMIT) WL_X(BEND_CLO_APPLY) WL_X(FID_EXIT)"
     case Con{N_Segment{+k, +ps, +r, +f, +b, +refs, +h, +s, +fork, +bang}, t}: nb_dispatch_go(t, acc ++ "WL_X(" ++ nt_fid(k) ++ ") ")
 
 @unsafe

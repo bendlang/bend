@@ -38,10 +38,42 @@ assert.deepEqual(unlist((await io('TCP.recv_bytes',server,4))[1].a[0]),[0,255,19
 badCode((await io('TCP.send_bytes',client,list([256])))[1],22);
 await io('Socket.close',client);await io('Socket.close',server);await io('Listener.close',listener);
 badCode(await io('TCP.listen','not-an-ip',0),22);badCode(await io('UDP.bind','not-an-ip',0),22);
-console.log('Phase8 host effects: process/argv/thread/TCP contracts passed');
+`;
+const foreignChecks=String.raw`
+import assert from 'node:assert/strict';
+// Mirror descriptors actually emitted for native forms, including recursion.
+showSchemas.Nat=()=>['ADT',{Zero:[],Succ:[['Named','Nat',[]]]}];
+showSchemas.Bool=()=>['ADT',{False:[],True:[]}];
+showSchemas['Word.Con']=()=>['ADT',{WCon:[['Named','Bool',[]],null]}];
+showSchemas.U32=()=>['ADT',{U32:[['Named','Word.Con',[null]]]}];
+showSchemas.F32=()=>['ADT',{F32:[['Named','Word.Con',[null]]]}];
+showSchemas.Char=()=>['ADT',{Chr:[['Named','U32',[]]]}];
+showSchemas.String=()=>['ADT',{SNil:[],SCon:[['Char'],['Named','String',[]]]}];
+constructors.Box=['n'];constructorOwn.Box='Box';showSchemas.Box=()=>['ADT',{Box:[['Named','Nat',[]]]}];
+assert.deepEqual(foreignIn({$:'Box',n:5n},['Named','Box',[]]),{$:'Box',a:[5n]});
+for(const invalid of [{$:'Bogus',n:5n},{n:5n},null,[]])assert.throws(()=>foreignIn(invalid,['Named','Box',[]]),/Box has no tag/);
+for(const [name,values] of [['Nat',[0n,5n,1n<<100n]],['U32',[0,5,4294967295]],['F32',[0,-0,Infinity,NaN]],['Bool',[false,true]],['String',['','ok','Привет 🌍']]]){
+  for(const value of values)assert.ok(Object.is(foreignIn(value,['Named',name,[]]),value),name+' native representation');
+  assert.equal(foreignHasNat(['Named',name,[]]),name==='Nat');
+}
+assert.equal(foreignIn('🌍',['Char']),'🌍');
+assert.equal(foreignOut(0x1f30d,['Char']),'🌍');
+assert.equal(foreignHasNat(['Named','Box',[]]),true);
+assert.equal(foreignHasNat(['Named','Undefined',[]]),false);
+showSchemas.GenericMaybe=p=>['ADT',{None:[],Some:[p[0]]}];
+showSchemas.PairOfMaybe=()=>['ADT',{PairOfMaybe:[['Named','GenericMaybe',[['Named','Nat',[]]]],['Named','GenericMaybe',[['Named','Bool',[]]]]]}];
+assert.equal(foreignHasNat(['Named','PairOfMaybe',[]]),true,'distinct instantiations must inspect their arguments before the seen-name guard');
+assert.throws(()=>foreignIn({$:'Bogus'},['Named','PairOfMaybe',[]]),/PairOfMaybe has no tag Bogus/);
+constructors.Wrapped=['box'];constructorOwn.Wrapped='Wrapped';showSchemas.Wrapped=()=>['ADT',{Wrapped:[['Named','Box',[]]]}];
+assert.deepEqual(foreignIn({$:'Wrapped',box:{$:'Box',n:5n}},['Named','Wrapped',[]]),{$:'Wrapped',a:[{$:'Box',a:[5n]}]});
+assert.throws(()=>foreignIn({$:'Wrapped',box:{$:'Bogus',n:5n}},['Named','Wrapped',[]]),/Box has no tag Bogus/);
+assert.deepEqual(foreignIn([0n,5n],['Array',['Named','Nat',[]]]),{array:[0n,5n]});
+assert.deepEqual(foreignIn({$:'Tuple',fst:5n,snd:true},['Tuple',['Named','Nat',[]],['Named','Bool',[]]]),[5n,true]);
+console.log('Phase8 foreign-tag and primitive representation contracts passed');
 `;
 try{
-  fs.writeFileSync(file,fs.readFileSync(new URL('../../runtime.mjs',import.meta.url),'utf8')+'\n'+checks);
+  const selected=process.argv.includes('--foreign-only')?foreignChecks:checks+'\n'+foreignChecks.replace("import assert from 'node:assert/strict';",'');
+  fs.writeFileSync(file,fs.readFileSync(new URL('../../runtime.mjs',import.meta.url),'utf8')+'\n'+selected);
   const result=spawnSync(process.execPath,[file,'--threads','2','--help','argument'],{stdio:'inherit',timeout:10000});
   if(result.error)throw result.error;
   assert.equal(result.status,0);

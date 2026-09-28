@@ -400,6 +400,7 @@ law norm_cmp_plain:
   for +book: List<&2, KDef>
   for +a: KTerm
   for +b: KTerm
+  for +le: Bool
   for +fresh: U32
   for +rest: List<&2, KNormCmp>
   for +alts: List<&2, KNormAlt>
@@ -478,14 +479,34 @@ def norm_cmp_same(book, a, b, le, fresh, rest, alts):
      u => norm_cmp_loop(book, Con{KNormCmp{kid(b, 0), kid(a, 0), le, fresh}, Con{KNormCmp{subst(kid(a, 1), ix(a), var("_", fresh)), subst(kid(b, 1), ix(b), var("_", fresh)), le, U32.add(fresh, 1)}, rest}}, alts), u => norm_cmp_fail(book, alts)),
    u => kc(Bool, String.eq(tg(a), "ADT"), u => kc(Bool, String.eq(nm(a), nm(b)) && norm_removed(rm(a), rm(b), le), u => norm_cmp_fields(book, ks(a), ks(b), fresh, rest, alts), u => norm_cmp_fail(book, alts)),
    u => kc(Bool, String.eq(tg(a), "Qua"), u => norm_cmp_test(book, U32.is_eq(qt(a), qt(b)), rest, alts),
-   u => norm_cmp_plain(book, a, b, fresh, rest, alts))))))
+   u => norm_cmp_plain(book, a, b, le, fresh, rest, alts))))))
 
 @unsafe
-def norm_cmp_plain(book, a, b, fresh, rest, alts):
-  kc(Bool, String.eq(tg(a), "Ref") || String.eq(tg(a), "Hol"), u => norm_cmp_test(book, String.eq(nm(a), nm(b)), rest, alts),
+def norm_cmp_plain(book, a, b, le, fresh, rest, alts):
+  kc(Bool, String.eq(tg(a), "Ref"), u => kc(Bool, String.eq(nm(a), nm(b)), u => norm_cmp_loop(book, rest, alts), u => norm_cmp_ref(book, a, b, le, norm_max(da(lookup(book, nm(a))), da(lookup(book, nm(b)))), fresh, rest, alts)),
+   u => kc(Bool, String.eq(tg(a), "Hol"), u => norm_cmp_test(book, String.eq(nm(a), nm(b)), rest, alts),
    u => kc(Bool, String.eq(tg(a), "Ctr") || String.eq(tg(a), "Mat"), u => kc(Bool, String.eq(nm(a), nm(b)), u => norm_cmp_fields(book, ks(a), ks(b), fresh, rest, alts), u => norm_cmp_fail(book, alts)),
+   u => kc(Bool, String.eq(tg(a), "App") && String.eq(tg(kid(a, 0)), "Ref") && String.eq(tg(kid(b, 0)), "Ref"), u => kc(Bool, String.eq(nm(kid(a, 0)), nm(kid(b, 0))), u => norm_cmp_loop(book, Con{KNormCmp{kid(a, 1), kid(b, 1), False{}, fresh}, rest}, alts), u => norm_cmp_fail(book, alts)),
    u => kc(Bool, String.eq(tg(a), "App") || String.eq(tg(a), "Min") || String.eq(tg(a), "Eql") || String.eq(tg(a), "Rwt"), u => norm_cmp_fields(book, ks(a), ks(b), fresh, rest, alts),
-   u => norm_cmp_test(book, String.eq(tg(a), "Qnt") || String.eq(tg(a), "Rfl") || String.eq(tg(a), "Efq"), rest, alts))))
+   u => norm_cmp_test(book, String.eq(tg(a), "Qnt") || String.eq(tg(a), "Rfl") || String.eq(tg(a), "Efq"), rest, alts))))))
+
+# Only bare, under-applied definitions compare extensionally. Stuck App heads
+# above stay nominal, avoiding repeated eta expansion of an opaque application.
+@unsafe
+def norm_cmp_ref(
+  +book: List<&2, KDef>,
+  +a: KTerm,
+  +b: KTerm,
+  +le: Bool,
+  +n: U32,
+  +fresh: U32,
+  +rest: List<&2, KNormCmp>,
+  +alts: List<&2, KNormAlt>,
+) -> Bool:
+  kc(Bool, U32.is_eq(n, 0), u => norm_cmp_fail(book, alts),
+   u => kc(Bool, U32.is_eq(n, 1),
+     u => norm_cmp_loop(book, Con{KNormCmp{app(a, var("_", fresh)), app(b, var("_", fresh)), le, U32.add(fresh, 1)}, rest}, alts),
+     u => norm_cmp_ref(book, app(a, var("_", fresh)), app(b, var("_", fresh)), le, U32.sub(n, 1), U32.add(fresh, 1), rest, alts)))
 
 @unsafe
 def norm_cmp_fields(book, as, bs, fresh, rest, alts):

@@ -1,0 +1,188 @@
+{
+  "cases": [
+    {
+      "id": "phase8/current-do-header-quantity-span/parse",
+      "file": "current-do-header-quantity-span.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/current-do-header-quantity-span/check",
+      "file": "current-do-header-quantity-span.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/current-do-header-typed/parse",
+      "file": "current-do-header-typed.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/current-do-header-typed/check",
+      "file": "current-do-header-typed.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/current-later-def/parse",
+      "file": "current-later-def.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/current-later-def/check",
+      "file": "current-later-def.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/current-type-arg-parens",
+      "file": "current-type-arg-parens.bend",
+      "accept": false,
+      "rejectPhase": "parse",
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/do-header-constructor",
+      "file": "do-header-constructor.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/do-header-padded",
+      "file": "do-header-padded.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/do-header-def-family",
+      "file": "do-header-def-family.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/do-header-nested-step",
+      "file": "do-header-nested-step.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/do-header-bind-return",
+      "file": "do-header-bind-return.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/do-header-assignment",
+      "file": "do-header-assignment.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/comptime-prior-def",
+      "file": "comptime-prior-def.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/comptime-future-unused",
+      "file": "comptime-future-unused.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/comptime-unsafe-template",
+      "file": "comptime-unsafe-template.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/family-compound-parenthesized",
+      "file": "family-compound-parenthesized.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/family-later-compound-argument",
+      "file": "family-later-compound-argument.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/glued-numeric-comparison",
+      "file": "glued-numeric-comparison.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    }
+  ]
+}

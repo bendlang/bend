@@ -5,9 +5,9 @@ import path from 'node:path';
 import childProcess,{spawnSync} from 'node:child_process';
 import {syncBuiltinESMExports} from 'node:module';
 import test from 'node:test';
-import {inventory,probes} from '../../tools/conformance/inventory.mjs';
+import {inventory,probes,PIN} from '../../tools/conformance/inventory.mjs';
 const project=path.resolve(import.meta.dirname,'../..');
-const upstream=process.env.BEND_UPSTREAM||path.resolve(project,'../upstream-bend');
+const upstream=process.env.BEND_UPSTREAM||path.join(project,'.bootstrap/upstream-phase8');
 const available=fs.existsSync(path.join(upstream,'tests'));
 test('successful git status never masks a subprocess capture error',context=>{
   const mocked=context.mock.method(childProcess,'spawnSync',()=>({status:0,signal:null,error:new Error('spawnSync git EPERM')}));
@@ -17,12 +17,18 @@ test('successful git status never masks a subprocess capture error',context=>{
 });
 test('pinned corpus is exhaustive and includes every negative namespace',{skip:!available},()=>{
   const inv=inventory(upstream);
-  assert.equal(inv.total,1378);
+  assert.equal(PIN,'b2111cf43244e65f76ddc278ee695e669f720cbf');
+  assert.equal(inv.revision,PIN);
+  assert.equal(inv.total,1498);
+  assert.equal(inv.bendSourceCount,1509);
+  assert.equal(inv.supportSources.length,11);
+  assert.ok(inv.supportSources.every(t=>!t.hasExpectation));
+  assert.equal(inv.tests.filter(t=>!t.negative).length,1001);
   assert.equal(Object.keys(inv.namespaces).length,24);
-  assert.equal(inv.tests.filter(t=>t.negative).length,459);
+  assert.equal(inv.tests.filter(t=>t.negative).length,497);
   assert.equal(inv.tests.filter(t=>!t.hasExpectation).length,0);
   assert.equal(new Set(inv.tests.map(t=>t.id)).size,inv.total);
-  assert.equal(inv.effects.length,80);
+  assert.equal(inv.effects.length,68);
   for(const fixture of inv.tests) {
     assert.ok(probes(fixture).some(p=>p.lane==='check'));
     if(fixture.main) assert.ok(probes(fixture).some(p=>p.lane==='interpreter')); 
@@ -43,7 +49,7 @@ test('infinite compiler probe is killed and filtered run cannot claim completene
     assert.equal(child.status,1,child.stderr);
     const report=JSON.parse(fs.readFileSync(output,'utf8'));
     assert.equal(report.complete,false);
-    assert.equal(report.summary.excludedTests,1377);
+    assert.equal(report.summary.excludedTests,1497);
     assert.equal(report.results[0].status,'timeout');
   } finally {fs.rmSync(temporary,{recursive:true,force:true});}
 });

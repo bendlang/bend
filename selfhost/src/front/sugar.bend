@@ -170,13 +170,13 @@ def f_do(monad, types, ts, indent):
 def f_do_return(monad, types, position, p):
   match p:
     case FParsed{n, ts}:
-      FParsed{f_app(kt("Ref", monad ++ ".pure", position, 1, Nil{}), norm_join(types, [n])), ts}
+      FParsed{kt("FDo", monad, position, 1, [kt("ADT", monad, position, 1, types), n]), ts}
 
 @unsafe
 def f_do_statement(monad, types, p, indent):
   match p:
     case FParsed{+n, +ts}:
-      f_choose(FParsed, f_eq(f_tx(ts), ":") && f_eq(tg(n), "Ref") && f_alias_valid(nm(n)), u => f_do_annotated(monad, types, n, f_expr(f_tl(ts), 1), indent), u => f_choose(FParsed, f_eq(f_tx(ts), "<-"), u => f_do_value(monad, types, kt("Ref", "_", ix(n), 1, Nil{}), n, False{}, f_expr(f_tl(ts), 0), indent), u => f_choose(FParsed, (f_eq(f_tx(ts), ";") || U32.is_eq(f_col(f_skip(ts)), indent)) && Bool.not(f_eq(f_tx(f_skip(ts)), "<eof>")), u => f_do_value(monad, types, kt("Ref", "_", ix(n), 1, Nil{}), ref("Unit"), False{}, FParsed{n, ts}, indent), u => FParsed{n, ts})))
+      f_choose(FParsed, f_eq(f_tx(ts), ":") && f_eq(tg(n), "Ref") && f_alias_valid(nm(n)), u => f_do_annotated(monad, types, n, f_expr(f_tl(ts), 1), indent), u => f_choose(FParsed, f_eq(f_tx(ts), "<-"), u => f_do_value(monad, types, kt("Ref", "_", ix(n), 1, Nil{}), n, False{}, f_expr(f_tl(ts), 0), indent), u => f_choose(FParsed, (f_eq(f_tx(ts), ";") || U32.is_eq(f_col(f_skip(ts)), indent)) && Bool.not(f_eq(f_tx(f_skip(ts)), "<eof>")), u => f_do_value(monad, types, kt("Ref", "_", ix(n), 1, Nil{}), ref("Unit"), False{}, FParsed{n, ts}, indent), u => FParsed{kt("FDo", monad, ix(n), 0, [kt("ADT", monad, ix(n), 1, types), n]), ts})))
 
 @unsafe
 def f_do_annotated(monad, types, binder, p, indent):
@@ -194,7 +194,7 @@ def f_do_value(monad, types, binder, ty, pure, p, indent):
 def f_do_tail(monad, types, binder, ty, pure, v, p):
   match p:
     case FParsed{body, ts}:
-      FParsed{f_choose(KTerm, pure, u => kt("Local", "Do", 0, 1, [binder, kt("Ann", "", 0, 1, [v, ty]), body]), u => f_app(kt("Ref", monad ++ ".bind", ix(binder), 1, Nil{}), norm_join(f_do_bind_types(types, ty), [v, kt("Lam", nm(binder), ix(binder), qt(binder), [body])]))), ts}
+      FParsed{f_choose(KTerm, pure, u => kt("Local", "Do", 0, 1, [binder, kt("Ann", "", 0, 1, [v, ty]), body]), u => kt("FDo", monad, ix(binder), 2, [kt("ADT", monad, ix(binder), 1, types), ty, v, kt("Lam", nm(binder), ix(binder), qt(binder), [body])])), ts}
 
 @unsafe
 def f_error_term(

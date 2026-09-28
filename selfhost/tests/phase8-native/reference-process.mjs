@@ -1,0 +1,24 @@
+// Isolate the native Process.run libc requirement against the pinned oracle.
+import fs from 'node:fs';
+import path from 'node:path';
+import crypto from 'node:crypto';
+import {spawnSync} from 'node:child_process';
+import {pathToFileURL} from 'node:url';
+const project=path.resolve(import.meta.dirname,'../..');
+const upstream=path.join(project,'.bootstrap/upstream-phase8');
+const output=path.resolve(process.argv[2]);fs.mkdirSync(output,{recursive:false});
+const file=path.join(upstream,'tests/io/process_run_parallel.bend');
+const sha=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+const report={kind:'phase8-native-process-upstream-environment-probe',started:new Date().toISOString(),upstream,node:process.version,libc:spawnSync('getconf',['GNU_LIBC_VERSION'],{encoding:'utf8'}).stdout.trim(),toolchainEnv:Object.fromEntries(['CC','CPATH','LIBRARY_PATH','LD_LIBRARY_PATH'].map(k=>[k,process.env[k]??null])),inputs:[file,...['bend.ts','comp.ts','base.bend'].map(n=>path.join(upstream,'bend2',n))].map(file=>({file,sha256:sha(file)})),complete:false};
+const save=()=>fs.writeFileSync(path.join(output,'report.json'),JSON.stringify(report,null,2)+'\n');save();
+const B=await import(pathToFileURL(path.join(upstream,'bend2/bend.ts')));
+const C=await import(pathToFileURL(path.join(upstream,'bend2/comp.ts')));
+const {buildNative}=await import('../../tools/native-build.mjs');
+const book=B.book_nil();await B.book_load(book,file,'',new Map());B.book_valid(book);
+if(book.hols!==0)throw Error('Unresolved holes');
+const source=C.compile_book(book),c=path.join(output,'process_run_parallel.c');fs.writeFileSync(c,source);
+report.generatedSource={file:c,sha256:sha(c)};save();
+report.nativeBuild=buildNative({source,file:c,binary:path.join(output,'process_run_parallel'),target:'cpu',cwd:output,timeoutMs:20000});
+report.sameMissingLibcOperation=report.nativeBuild.status==='error'&&/undeclared function 'posix_spawn_file_actions_addclosefrom_np'/.test(report.nativeBuild.diagnostic);
+report.complete=true;report.finished=new Date().toISOString();save();console.log(JSON.stringify({output,libc:report.libc,sameMissingLibcOperation:report.sameMissingLibcOperation,nativeBuild:report.nativeBuild}));
+if(!report.sameMissingLibcOperation)process.exitCode=1;

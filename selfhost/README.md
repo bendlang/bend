@@ -1,77 +1,38 @@
 # Bend2 compiler port in Bend2
 
-The active source is migrating to upstream2.0.32. Read the
-[Phase8 compiler notes](../docs/PHASE8_MIGRATION.md) and
-[validation report](../implementation/phase8/upstream_and_conformance.md) for the
-new pin and measured scope. Until consolidation, the installed distribution below
-remains the preserved historical release.
-
-Use the [compiler guide](../docs/BEND-IN-BEND.md) for the consolidated default:
+Use the [compiler guide](../docs/BEND-IN-BEND.md) and
+[Phase8 release report](../implementation/phase8/upstream_and_conformance.md).
+The current target is upstream
+[`b2111cf43244e65f76ddc278ee695e669f720cbf`](https://github.com/bendlang/bend/tree/b2111cf43244e65f76ddc278ee695e669f720cbf),
+after the Bend2 2.0.32 release.
 
 ```sh
 # From selfhost/, with Node.js 24 or newer:
 npm run verify:release
 node cli.mjs tests/conformance/typed-smoke/base-u32.bend --run
-# Rebuild source using the pinned upstream checkout:
 npm run build
 ```
 
-The default uses the [smaller S4 source](../implementation/phase7/s4-report.md),
-with guarded native string equality, shared provenance and one authoritative
-structured checker result. The compiler is 14,667 lines, down 1,842 from the
-simplification baseline. Fresh checked/component gates and exact preservation
-of all 2,756 frontend observations validate this release.
-Its [release manifest](dist/release.json) binds source, API, Base,
-runtime and host; verification works after checkout relocation. Compiler edits
-use the [maintained development workflow](../docs/PHASE5_DEVELOPMENT.md) for
-checked builds and short paired selections. Ordinary compilation has no upstream
-TypeScript fallback.
+The compiler contains14,977 physical /12,779 nonblank Bend lines in59 modules.
+It retains the validated S4 simplifications while adding current declaration,
+namespace, typing and effect semantics. The [release manifest](dist/release.json)
+binds the exact source, genuine checked API, Base, runtime and host. Verification
+works after relocation. Compiler edits use the
+[checked development workflow](../docs/PHASE5_DEVELOPMENT.md); ordinary compilation
+has no upstream TypeScript fallback.
 
-The [Phase 5 report](../implementation/phase5/report.md) records 919/919 positive
-frontend fixtures, 318 remaining strict check failures and 444 exact live
-TypeScript differences. The [controlled full-source comparison](../implementation/phase5/full-source-comparison.md)
-measures 60.25s for pinned TypeScript and 363.39s for the Phase 5 optimized compiler
-(6.03×), under its documented cache policy. The [checked fixed point](../implementation/phase5/final-selfhost.md)
-and [final artifact frontend gate](../implementation/phase5/final-artifact-frontend.md)
-provide separate reproduction and equivalence evidence.
-That fixed-point evidence belongs to the pre-retirement all-definition source;
-S4 B02 has fresh checked/component/frontend-preservation gates; the S4 report
-separately identifies A02's fixed-point evidence. These historical full-source
-timings are not a new S4 measurement.
+This is an experimental compatibility port. Read [CONFORMANCE.md](CONFORMANCE.md)
+for current measured results and remaining semantic/diagnostic gaps. Type checking,
+proof trust, backend execution and independent proof validation are separate.
+`--verdict` is unsupported; successful fixtures do not establish proof validity.
+The previous1378-fixture results,6.03× full-compilation comparison and self-hosted
+fixed points are historical, not measurements of this release.
 
-The [architectural trial report](../implementation/phase7/architecture-report.md)
-compares checked output, semantic values and shared binding traversal. Their
-sources, controls and failed attempts are preserved as research artifacts. None
-is installed; checked-output ownership is the recommended next investigation.
-
-Historical reports apply to their recorded artifacts. The
-[experiment ledger](../experiments/ledger.md), [current strategy](../experiments/STEERING.md)
-and [preservation index](../experiments/PRESERVATION.md) retain decisions and
-failed experiments. Read the [experiment workflow](../experiments/README.md)
-before a new optimization investigation.
-
-This project targets Bend2 2.0.21 at upstream revision
-[`6018e28ecc67cf1fffc0c20c64b11023474c2df8`](https://github.com/bendlang/bend/tree/6018e28ecc67cf1fffc0c20c64b11023474c2df8).
-It contains a modular typed compiler written in Bend2, plus the earlier
-self-hosting surface compiler used as a regression baseline.
-
-**The typed port is under compatibility validation. Do not treat its presence
-as a claim of full upstream equivalence or use its checker as a trusted proof
-verifier.** The reports distinguish implemented components, measured passes,
-incorrect behavior, and targets that have not been tested on hardware.
-
-The supplied baseline's recorded full run covers all 1,378 upstream fixtures. All 919 positive
-programs parse and check; every eligible positive interpreter, JavaScript and
-native CPU probe either matches its expected result or its exact upstream
-output exemption. Negative compatibility still includes diagnostic rendering,
-different rejection phases/rules, and unproven intended-rule coverage. See the
-[compatibility matrix](docs/COMPATIBILITY-MATRIX.md) and
-[negative-test audit](docs/NEGATIVE-COMPATIBILITY.md).
-The typed compiler also passed a complete checked, byte-identical self-rebuild;
-see [the self-hosting report](dist/selfhost/seed-verification/report.json).
-Those are historical baseline observations. The current release's
-[broad JS/native report](../implementation/phase5/broad-backends.md) records its
-remaining negative diagnostic failures and one large-record native timeout.
+The [experiment ledger](../experiments/ledger.md), [current strategy](../experiments/STEERING.md)
+and [preservation index](../experiments/PRESERVATION.md) retain historical artifacts,
+failed experiments and promotion decisions. The generic binder/evaluator
+[architectural trials](../implementation/phase7/architecture-report.md) remain
+research artifacts; their larger/slower implementations were not promoted.
 
 ## Use the typed compiler
 

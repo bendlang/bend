@@ -157,7 +157,7 @@ def f_import_alias(
   +book: List<&2,KDef>,
   +imports: List<&2, KTerm>,
 ) -> FRawResult:
-  f_choose(FRawResult, String.ends_with(path, ".bend") && f_alias_valid(f_tx(f_tl(ts))), u => f_tops(f_tl(f_tl(ts)), book, Con{kt("Import", path, 0, 0, [kt("Alias", f_tx(f_tl(ts)), 0, 0, Nil{})]), imports}, False{}), u => f_result(book, kt("Error", "an import requires a .bend path and a valid alias", 0, 0, Nil{}), imports))
+  f_choose(FRawResult, String.ends_with(path, ".bend") && f_alias_valid(f_tx(f_tl(ts))), u => f_choose(FRawResult, f_import_used(f_tx(f_tl(ts)), imports), u => f_result(book, kt("Error", "expected a fresh alias (" ++ f_tx(f_tl(ts)) ++ " names an earlier import)", 0, 0, Nil{}), imports), u => f_tops(f_tl(f_tl(ts)), book, Con{kt("Import", path, 0, 0, [kt("Alias", f_tx(f_tl(ts)), 0, 0, Nil{})]), imports}, False{})), u => f_result(book, kt("Error", "an import requires a .bend path and a valid alias", 0, 0, Nil{}), imports))
 
 @unsafe
 def f_validate_param(ts, end, acc):
@@ -273,3 +273,9 @@ def f_contains_var_terms(ts):
       False{}
     case Con{+t, rest}:
       f_contains_var(t) || f_contains_var_terms(rest)
+
+@unsafe
+def f_import_used(+name: String, +imports: List<&2,KTerm>) -> Bool:
+  match imports:
+    case Nil{}: False{}
+    case Con{im, rest}: String.eq(name, nm(kid(im, 0))) || f_import_used(name, rest)

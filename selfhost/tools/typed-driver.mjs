@@ -20,7 +20,7 @@ export const apiPath=path.resolve(process.env.BEND_TYPED_API||path.join(project,
 export const runtimePath=path.resolve(process.env.BEND_TYPED_RUNTIME||path.join(project,'src/runtime.mjs'));
 const bundledBasePath=path.join(project,'dist/base.bend');
 export const basePath=path.resolve(process.env.BEND_BASE||bundledBasePath);
-const roots=['f_parse','f_load','f_path_join','f_path_dir','check_book','annotate_book','j_program','j_library','j_expr','j_descriptor','j_io_type','j_modules','driver_has_main','driver_is_io','driver_interpret','driver_todos','driver_owned','driver_emit_owned'];
+const roots=['f_parse','f_load','f_path_join','f_path_dir','check_book','annotate_book','j_program','j_library','j_expr','j_descriptor','j_io_type','j_modules','driver_has_main','driver_is_io','driver_interpret','driver_todos','driver_emit_owned'];
 const list=values=>values.reduceRight((tail,head)=>({$: 'Con',head,tail}),{$:'Nil'});
 function array(value) {
   const values=[];
@@ -92,7 +92,7 @@ export function bootstrap({upstream=process.env.BEND_UPSTREAM||path.resolve(proj
     exports.push('nc_compile','nc_foreign_paths');
     if(fs.readFileSync(path.join(project,'src/back/native/book.bend'),'utf8').includes('nc_annotation_stops('))exports.push('nc_annotation_stops','nc_annotated_context');
   }
-  if(files.includes('src/back/native/foreign.bend'))exports.push('nc_foreign_source');
+  if(files.includes('src/back/native/foreign.bend'))exports.push('nc_foreign_source','nc_foreign_scope');
   if(files.includes('src/check/prefix.bend'))exports.push('check_from_exact_prefix','exact_prefix');
   if(files.includes('src/load/graph.bend'))exports.push('f_load_graph','f_main_names','f_load_graph_trace');
   if(files.includes('src/load/modules.bend'))exports.push('f_source_parsed');
@@ -289,12 +289,12 @@ export async function prepareBase(api) {
   return {...cached,sourceText:info.sourceText};
 }
 
-function foreignSources(graph,extension,required=null,api=null,book=null) {
+function foreignSources(graph,extension,required=null,api=null,book=null,scope=book) {
   const term=(tag,name,kids=[])=>({$:'KTerm',tag,name,id:0,quant:0,kids:list(kids),removed:list([])});
   const files=required===null?graph.foreign.filter(f=>path.extname(f.path)===extension):[...new Set(required)].map(file=>({name:file,path:file}));
   return list(files.map(file=>{const source=fs.readFileSync(file.path,'utf8');
     if(!api?.kf_source)return term('Source',file.name,[term('Text',source)]);
-    const parsed=api.kf_source(book,file.name,source);if(parsed.error)throw Object.assign(Error(parsed.error),{phase:'compile'});
+    const parsed=api.kf_source(book,scope,file.name,source);if(parsed.error)throw Object.assign(Error(parsed.error),{phase:'compile'});
     return {$:'KTerm',tag:'Source',name:file.name,id:0,quant:0,kids:parsed.parts,removed:list([])};
   }));
 }
@@ -377,8 +377,6 @@ async function inspectWithMemo(input,{mode='check',api,args=[],timeoutMs=5000,co
       }
       return {status:'error',phase,diagnostic:rendered,exitCode:1,checked:true};
     }
-    const owned=api.driver_owned?api.driver_owned(loaded.book):'';
-    if(owned)return {status:'error',phase:'compile',diagnostic:'Error: '+owned,exitCode:1,checked:true};
     const todos=api.driver_todos(loaded.book);
     if(todos) return {status:'error',phase,diagnostic:`Error: ${todos} TODO${todos===1?'':'s'} found.\nThe code is incomplete, and not a valid proof yet.`,exitCode:1,checked:true};
     let book=loaded.book;
@@ -442,15 +440,17 @@ async function inspectWithMemo(input,{mode='check',api,args=[],timeoutMs=5000,co
       if(!api.nc_compile)return {status:'unsupported',phase,reason:'Native emitter was not bootstrapped.',checked:true};
       trace('collect native foreign paths');
       const paths=api.nc_foreign_paths?array(api.nc_foreign_paths(book)):graph.foreign.filter(f=>path.extname(f.path)==='.c').map(f=>f.path);
+      const foreignScope=api.nc_foreign_scope?api.nc_foreign_scope(book):book;
       const nativeInputs=[...graph.files,path.join(project,'src/runtime/native/runtime.c')];
       const requests=[...new Set(paths)].map(file=>{
         let resolved=path.resolve(file);
         if(path.dirname(resolved)===path.join(path.dirname(basePath),'effs'))resolved=path.join(project,'src/runtime/native/effs',path.basename(resolved));
         nativeInputs.push(resolved);
         const source=fs.readFileSync(resolved,'utf8');
-        if(api.kf_source){const parsed=api.kf_source(book,file,source);if(parsed.error)throw Object.assign(Error(parsed.error),{phase:'compile'});}
+        const parsed=api.kf_source?api.kf_source(book,foreignScope,file,source):null;
+        if(parsed?.error)throw Object.assign(Error(parsed.error),{phase:'compile'});
         trace('marshal native foreign source '+file);
-        return api.nc_foreign_source?api.nc_foreign_source(book,file,source):source;
+        return api.nc_foreign_source?api.nc_foreign_source(book,foreignScope,file,source,parsed):source;
       }).join('\n');
       trace('emit native');
       const native=api.nc_compile(book,fs.readFileSync(path.join(project,'src/runtime/native/runtime.c'),'utf8'),requests);
@@ -460,7 +460,7 @@ async function inspectWithMemo(input,{mode='check',api,args=[],timeoutMs=5000,co
     trace('emit '+mode);
     const jsPaths=api.j_foreign_paths?array(api.j_foreign_paths(book)):null;
     const emitted=selectedEmission?(mode==='library'?api.j_library_selected(contextBook,book):api.j_program_selected(contextBook,book)):(mode==='library'?api.j_library(book):api.j_program(book));
-    const code=fs.readFileSync(runtimePath,'utf8')+'\n'+api.j_modules(book,foreignSources(graph,'.js',jsPaths,api,contextBook))+'\n'+emitted;
+    const code=fs.readFileSync(runtimePath,'utf8')+'\n'+api.j_modules(book,foreignSources(graph,'.js',jsPaths,api,contextBook,book))+'\n'+emitted;
     trace('emitted '+Buffer.byteLength(code)+' bytes');
     if(interpreterIO)return {...await executeCompiled({status:'ok',code},{timeoutMs,args:['--',...args],combinedOutput,programName:path.basename(input,'.bend')}),verdict};
     return {status:'ok',phase,code,verdict,exitCode:0,checked:true,files:[...graph.files,...jsPaths||[]]};

@@ -58,14 +58,16 @@ def nc_foreign_parts(+book: List<&2, KDef>, parts: List<&2, KTerm>) -> String:
           u => nt_cid(nt_choose(String, String.eq(dk(lookup(book, nm(h))), "Def"), u => nm(h), u => nc_ctor_identity(book, nm(h)))))) ++ nc_foreign_parts(book, rest)
 
 @unsafe
-def nc_foreign_checked(+book: List<&2, KDef>, +path: String, +source: String, parsed: KF_Source) -> String:
+def nc_foreign_source(+book: List<&2, KDef>, +scope: List<&2, KDef>, +path: String, +source: String, parsed: KF_Source) -> String:
   match parsed:
     case KF_Source{+parts, +error}:
       nt_choose(String, String.eq(error, ""),
-        u => nt_choose(String, nc_foreign_base(book, path), u => nc_foreign_parts(book, parts),
-          u => nc_foreign_wrap(nc_constructors(book, book), nc_foreign_namespace(book, path, source), nc_foreign_parts(book, parts))),
+        u => nt_choose(String, nc_foreign_base(scope, path), u => nc_foreign_parts(book, parts),
+          u => nc_foreign_wrap(nc_constructors(book, book), nc_foreign_namespace(scope, path, source), nc_foreign_parts(book, parts))),
         u => "#error invalid foreign source identifier\n")
 
+# Exactly the definition closure used by nc_foreign_paths; types and all other
+# definitions remain in the separate full context for identifier resolution.
 @unsafe
-def nc_foreign_source(+book: List<&2, KDef>, +path: String, +source: String) -> String:
-  nc_foreign_checked(book, path, source, kf_source(book, path, source))
+def nc_foreign_scope(+book: List<&2, KDef>) -> List<&2, KDef>:
+  kr_filter(book, nc_live_names(book, ["main"], Nil{}))

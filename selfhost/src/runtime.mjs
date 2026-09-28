@@ -409,12 +409,34 @@ async function runmain(descriptor=null,isIO=false){
 const foreignModules=Object.create(null);
 const foreignOrigins=new WeakMap();
 function descriptor(d){return d?.[0]==='Named'?showSchemas[d[1]]?.(d[2])??d:d}
+// Upstream validates tags only in aggregate layouts that marshal Nat values.
+// Primitive foreign values stay trusted, including their native JS shapes.
+function foreignHasNat(type){
+  const todo=[type],seen=new Set();
+  while(todo.length){
+    const d=todo.pop();if(!d)continue;
+    if(d[0]==='Named'){
+      if(d[1]==='Nat')return true;
+      todo.push(...d[2]??[]);
+      if(!seen.has(d[1])){seen.add(d[1]);const t=descriptor(d);if(t!==d)todo.push(t)}
+    }else if(d[0]==='ADT')todo.push(...Object.values(d[1]).flat());
+    else if(d[0]==='Fun')todo.push(d[2],d[3]);
+    else if(['Tuple','List','Array'].includes(d[0]))todo.push(...d.slice(1));
+  }
+  return false;
+}
 function foreignOut(x,d=null){return foreignConvert(x,d,true)}
 function foreignIn(x,d=null){return foreignConvert(x,d,false)}
 function foreignConvert(root,type,outgoing){
   const result={value:null},work=[[result,'value',root,type]];
   while(work.length){
     const [parent,key,x,d]=work.pop();
+    const desc=descriptor(d);
+    if(!outgoing&&desc?.[0]==='ADT'&&d?.[1]!=='Nat'&&foreignHasNat(d)){
+      const tags=Object.keys(desc[1]);
+      if(!tags.some(k=>k===x?.$||constructorOwn[k]===x?.$))
+        bad((d?.[0]==='Named'?d[1]:'datatype')+' has no tag '+String(x?.$)+' (its tags: '+tags.map(k=>constructorOwn[k]??k).join(', ')+'); a tag names its constructor as the loading file sees it, which a later version will make the same everywhere (#1105)');
+    }
     if(outgoing&&x!==null&&typeof x==='object'&&foreignOrigins.has(x)){parent[key]=foreignOrigins.get(x);continue}
     if(outgoing&&(x===null||x?.proof||x?.typeName)||d?.[0]==='Erased'){parent[key]=null;continue}
     if(d?.[0]==='Char'){parent[key]=outgoing&&typeof x!=='string'?String.fromCodePoint(x):x;continue}
@@ -437,7 +459,6 @@ function foreignConvert(root,type,outgoing){
       continue;
     }
     if(!x.$){parent[key]=x;continue}
-    const desc=descriptor(d);
     const tag=outgoing?x.$:desc?.[0]==='ADT'?(Object.keys(desc[1]).find(k=>k===x.$||constructorOwn[k]===x.$)??x.$):x.$;
     const ds=d?.[0]==='List'&&tag==='Con'?[d[1],d]:desc?.[0]==='ADT'?desc[1]?.[tag]:null;
     const keys=constructors[tag]??({Con:['head','tail'],Some:['value'],Done:['value'],Fail:['error']}[x.$])??(outgoing?x.a.map((_,i)=>String(i)):Object.keys(x).filter(k=>k!=='$'));

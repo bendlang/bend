@@ -1,0 +1,44 @@
+{
+  "cases": [
+    {
+      "id": "phase8/current-dead-default-residual",
+      "file": "current-dead-default-residual.bend",
+      "accept": true,
+      "expected": "Unit{}",
+      "lanes": [
+        "interpreter",
+        "js"
+      ]
+    },
+    {
+      "id": "phase8/current-eta-long-sides",
+      "file": "current-eta-long-sides.bend",
+      "accept": true,
+      "expected": "6",
+      "lanes": [
+        "interpreter",
+        "js"
+      ]
+    },
+    {
+      "id": "phase8/current-mutual-type-def",
+      "file": "current-mutual-type-def.bend",
+      "accept": true,
+      "expected": "6",
+      "lanes": [
+        "interpreter",
+        "js"
+      ]
+    },
+    {
+      "id": "phase8/dead-fallback-skips-body",
+      "file": "dead-fallback-skips-body.bend",
+      "accept": true,
+      "expected": "0",
+      "lanes": [
+        "interpreter",
+        "js"
+      ]
+    }
+  ]
+}

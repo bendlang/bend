@@ -7,36 +7,26 @@ JavaScript supplies filesystem/process orchestration, a primitive runtime, and
 an adapter for the compiler's public data representation. Ordinary compilation
 does not invoke the TypeScript compiler.
 
-The language and Base library are pinned to upstream
-`6018e28ecc67cf1fffc0c20c64b11023474c2df8` (Bend 2.0.21). This is an experimental
-compiler under compatibility validation. Successful positive fixtures and
-self-hosting do not establish full diagnostic or proof-checker equivalence.
-Read the [validation boundaries](../selfhost/CONFORMANCE.md) and
-[negative audit](../selfhost/docs/NEGATIVE-COMPATIBILITY.md) before relying on it.
+The active target is upstream
+[`b2111cf43244e65f76ddc278ee695e669f720cbf`](https://github.com/bendlang/bend/tree/b2111cf43244e65f76ddc278ee695e669f720cbf)
+(Bend 2.0.32 era). The [migration report](../implementation/phase8/upstream_and_conformance.md)
+records checked artifact identities, current conformance, measured cost and
+remaining gaps. This experimental port does not establish independent proof
+validity; `--verdict` is explicitly unsupported.
 
-The default compiler in `selfhost/dist/typed-api.mjs` is freshly rebuilt from
-the [S4 checkpoint](../implementation/phase7/s4-report.md): 14,667 Bend lines,
-12,505 nonblank lines and 470,062 source bytes. It shares provenance, the original
-structured checker error, canonical graph loading, embedded-error selection and
-basic list operations, and removes redundant forward declarations. Generic term/
-definition concatenation lives with its datatypes in `core/term.bend`; ordinary
-and seeded graph loads share `load/seed.bend`, with the disabled seed rejected
-by the existing missing-path ordering. Required forward laws remain.
+The current source retains S4's shared loader, provenance, structured checking
+result and list operations. It adds upfront datatype/signature visibility while
+keeping definition bodies chronological. The [architecture](../selfhost/docs/ARCHITECTURE.md)
+explains these boundaries. Rejected generic binder and semantic-value experiments
+remain research artifacts; neither is installed. Historical 50% and 75% source
+reduction targets remain unachieved.
 
-The maintained string-equality optimization remains. The checker returns its
-verdict and original error together; older artifacts retain the compatible host
-path. Fresh full frontend vectors preserve all 2,756 observations, including
-known failures. Default and relocated check/interpreter/JS/native CPU smoke pass.
-The 50% and 75% simplification targets are still unachieved. The
-[release manifest](../selfhost/dist/release.json) binds the API to its source,
-Base, runtime and host. Historical compiler variants are retained with their
-reports; ordinary use requires no artifact selection.
-
-The [architectural experiment design](../design/phase7/architectural_experiments.md)
-and [comparison report](../implementation/phase7/architecture-report.md) describe
-the current simplification research. Three isolated Bend prototypes test checked
-output, semantic values and shared binding traversal. Their operation timings
-are not whole-compiler speedups; none replaces the installed S4 compiler.
+The [release manifest](../selfhost/dist/release.json) binds the installed compiler
+to source, checked bootstrap, Base, runtime and host. A checked B1 release is
+byte-identical to authentic upstream emission. It is not a new self-hosting fixed
+point; older equality-derived and fixed-point evidence belongs to its recorded
+artifacts. [Conformance](../selfhost/CONFORMANCE.md) distinguishes acceptance,
+proof trust, exact diagnostics, execution and unavailable platforms.
 
 ## Run the compiler
 
@@ -57,7 +47,8 @@ and remains outside the measured coverage here. Without `--run`, the default
 checks the program and interprets `main`.
 
 `verify:release` checks installed bytes, current source/runtime/host identities,
-and exact replay of the guarded equality transformation. It works after moving
+and its genuine checked-bootstrap lineage. Historical equality releases additionally
+verify their exact transformation replay. It works after moving
 the checkout; original bootstrap reports retain their historical paths and are
 not relabeled as new proofs. This verifies integrity and lineage, not another
 run of all conformance tests. Normal CLI execution does not rebuild source.
@@ -70,8 +61,8 @@ checkout, prepare it once from `selfhost/`:
 
 ```sh
 mkdir -p .bootstrap
-git clone https://github.com/bendlang/bend.git .bootstrap/upstream
-git -C .bootstrap/upstream checkout --detach 6018e28ecc67cf1fffc0c20c64b11023474c2df8
+git clone https://github.com/bendlang/bend.git .bootstrap/upstream-phase8
+git -C .bootstrap/upstream-phase8 checkout --detach b2111cf43244e65f76ddc278ee695e669f720cbf
 ```
 
 Then build and verify from `selfhost/`:
@@ -81,8 +72,8 @@ npm run build
 npm run verify:release
 ```
 
-The build creates a fresh immutable attempt, checks all compiler source, derives
-the equality optimization, runs the maintained focused paired selection, then
+The build creates a fresh immutable attempt, checks all compiler source,
+runs the maintained focused paired selection, then
 installs the result. A failed selected gate prevents installation. To choose a
 different upstream location or selection, use a development JSON config:
 
@@ -93,8 +84,8 @@ npm run build -- /absolute/release-config.json /absolute/new-attempt
 Config fields and selection semantics are documented in the
 [maintained workflow guide](PHASE5_DEVELOPMENT.md). Broad conformance and checked
 self-reproduction are release/integration gates, not every small edit's build.
-The [Phase 5 report](../implementation/phase5/report.md) records the shipped
-artifact's broader evidence and remaining failures.
+The [Phase8 report](../implementation/phase8/upstream_and_conformance.md) records
+the current artifact's evidence and remaining failures.
 
 ## Work on the current source
 
@@ -102,9 +93,9 @@ For new compiler edits, use the [Phase 5 development workflow](PHASE5_DEVELOPMEN
 It builds a genuinely checked compiler, freezes source/runtime/host identities,
 prepares a validated Base cache and runs selected tests against pinned TypeScript.
 The workflow's `validate` command reuses that frozen compiler for fixture-only
-changes; run a new build when compiler source changes. The equality
-profile is a verified derivative with separate provenance and is used by the
-default release build.
+changes; run a new build when compiler source changes. The checked profile is the default. The historical equality
+profile is source-sensitive and must not be applied to new upstream output
+without validating its transformation contract.
 
 The [current source report](../implementation/phase7/s1-report.md) and historical
 [Phase 5 report](../implementation/phase5/report.md) and

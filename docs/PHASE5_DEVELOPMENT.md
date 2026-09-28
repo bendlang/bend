@@ -2,7 +2,7 @@
 
 For ordinary use and rebuilding the shipped compiler, start with the
 [consolidated compiler guide](BEND-IN-BEND.md). `npm run build` composes this
-workflow with verified equality derivation and installation; `npm run
+workflow with checked B1 installation; `npm run
 verify:release` checks the installed package. The commands below retain isolated
 attempts for experiments without replacing the default.
 
@@ -16,7 +16,7 @@ From `selfhost/`, create a small configuration, with paths relative to that file
 
 ```json
 {
-  "upstream": ".bootstrap/upstream",
+  "upstream": ".bootstrap/upstream-phase8",
   "jobs": 1,
   "cpu": "3"
 }

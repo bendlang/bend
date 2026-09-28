@@ -58,12 +58,15 @@ law f_graph_error:
 
 law f_graph_aliases:
   for +imports: List<&2, KTerm>
-  for +ns: String
+  for +source: FSource
+  for +sources: List<&2,FSource>
+  for +root: String
   List<&2, KTerm>
 
 law f_alias_terms:
   for +ts: List<&2, KTerm>
   for +imports: List<&2, KTerm>
+  for +scope: List<&2,KDef>
   List<&2, KTerm>
 
 law f_graph_finish:
@@ -156,20 +159,13 @@ def f_graph_result(
 @unsafe
 def f_graph_load(path, ns, sources, g, stack):
   # fs_source rejects empty source paths before this disabled seed can match.
-  fs_load(path, ns, sources, g, stack, FSeed{"", Nil{}})
+  fs_load(path, ns, sources, g, stack, FSeed{"", Nil{}, f_path_dir(f_source_path(f_graph_source(path, sources)))})
 
 @unsafe
 def f_graph_error(g, err):
   match g:
     case FGraph{book, old, done}:
       FGraph{book, err, done}
-
-@unsafe
-def f_import_namespace(
-  +im: KTerm,
-  +ns: String,
-) -> String:
-  f_choose(String, f_eq(nm(im), "Base"), u => "", u => f_strip_bend(f_path_normal(f_path_join(f_path_dir(ns), nm(im)))))
 
 @unsafe
 def f_import_pathname(
@@ -180,44 +176,44 @@ def f_import_pathname(
   f_choose(String, f_eq(nm(im), "Base"), u => f_source_path(f_source("Base", sources)), u => f_path_normal(f_path_join(f_path_dir(f_source_path(s)), nm(im))))
 
 @unsafe
-def f_graph_aliases(imports, ns):
+def f_graph_aliases(imports, source, sources, root):
   match imports:
     case Nil{}:
       Nil{}
     case Con{+im, rest}:
-      Con{kt("Import", f_import_namespace(im, ns), 0, 0, ks(im)), f_graph_aliases(rest, ns)}
+      Con{kt("Import", f_import_namespace_at(im, source, sources, root), 0, 0, ks(im)), f_graph_aliases(rest, source, sources, root)}
+
+# Alias ambiguity uses the loaded declaration scope before rewriting names.
+@unsafe
+def f_alias_term(+t: KTerm, +imports: List<&2,KTerm>, +scope: List<&2,KDef>) -> KTerm:
+  f_alias_named(t, imports, scope, f_choose(String, f_eq(tg(t), "Ref") || f_eq(tg(t), "ADT") || f_eq(tg(t), "Ctr") || f_eq(tg(t), "Mat"), u => f_alias(nm(t), imports), u => nm(t)))
 
 @unsafe
-def f_alias_term(
-  +t: KTerm,
-  +imports: List<&2, KTerm>,
-) -> KTerm:
-  KTerm{tg(t), f_choose(String, f_eq(tg(t), "Ref") || f_eq(tg(t), "ADT") || f_eq(tg(t), "Ctr") || f_eq(tg(t), "Mat"), u => f_alias(nm(t), imports), u => nm(t)), ix(t), qt(t), f_alias_terms(ks(t), imports), rm(t)}
+def f_alias_named(+t: KTerm, +imports: List<&2,KTerm>, +scope: List<&2,KDef>, +name: String) -> KTerm:
+  f_choose(KTerm, Bool.not(String.eq(name, nm(t))) && f_declared(name, scope) && f_declared(nm(t), scope),
+    u => kt("Error", "expected an unambiguous name (an import alias shadows " ++ nm(t) ++ ")", 0, 0, Nil{}),
+    u => KTerm{tg(t), name, ix(t), qt(t), f_alias_terms(ks(t), imports, scope), rm(t)})
 
 @unsafe
-def f_alias_terms(ts, imports):
+def f_alias_terms(ts, imports, scope):
   match ts:
-    case Nil{}:
-      Nil{}
-    case Con{t, rest}:
-      Con{f_alias_term(t, imports), f_alias_terms(rest, imports)}
+    case Nil{}: Nil{}
+    case Con{t, rest}: Con{f_alias_term(t, imports, scope), f_alias_terms(rest, imports, scope)}
 
 @unsafe
-def f_alias_defs(
-  +ds: List<&2,KDef>,
-  +imports: List<&2, KTerm>,
-) -> List<&2,KDef>:
+def f_alias_defs(+ds: List<&2,KDef>, +imports: List<&2,KTerm>, +scope: List<&2,KDef>) -> List<&2,KDef>:
   match ds:
-    case Nil{}:
-      Nil{}
+    case Nil{}: Nil{}
     case Con{+d, rest}:
-      Con{KDef{dn(d), dk(d), da(d), dx(d), f_alias_term(dt(d), imports), f_alias_term(dv(d), imports), f_alias_defs(dc(d), imports), db(d), du(d)}, f_alias_defs(rest, imports)}
+      Con{KDef{dn(d), dk(d), da(d), dx(d), f_alias_term(dt(d), imports, scope), f_alias_term(dv(d), imports, scope), f_alias_defs(dc(d), imports, scope), db(d), du(d)}, f_alias_defs(rest, imports, scope)}
 
 @unsafe
 def f_graph_finish(s, ns, book, imports, g):
   match g:
-    case FGraph{prior, err, done}:
-      f_graph_finish_alias(s, ns, f_alias_defs(book, imports), imports, prior, err, done)
+    case FGraph{prior, +err, done}:
+      # Reuse the ordinary freshness rule before module qualification can hide
+      # a collision with Base or another declaration in the root namespace.
+      f_graph_finish_alias(s, ns, f_alias_defs(book, imports, prior), imports, prior, f_choose(String, String.is_empty(err), u => f_graph_fresh_names(book, index_build(List.reverse(&2,KDef,prior))), u => err), done)
 
 @unsafe
 def f_graph_finish_alias(s, ns, book, imports, prior, err, done):
@@ -477,3 +473,34 @@ def fpe_unique_source(path, sources, found):
 @unsafe
 def fpe_source_render(legacy, error, source):
   f_choose(String, f_eq(tg(source), "ParseSource"), u => fpe_render(nm(source), error), u => legacy)
+
+# Canonical module namespaces are relative to the entry's real directory.
+# Reaching a file through another spelling therefore cannot create another name.
+@unsafe
+def f_relative_parts(+root: List<&2,String>, +file: List<&2,String>) -> String:
+  match root file:
+    case Con{r, rs} Con{f, fs}:
+      f_choose(String, String.eq(r, f), u => f_relative_parts(rs, fs), u => f_relative_parents(root) ++ f_path_join_parts(file, ""))
+    case _ _:
+      f_relative_parents(root) ++ f_path_join_parts(file, "")
+
+@unsafe
+def f_relative_parents(+root: List<&2,String>) -> String:
+  match root:
+    case Nil{}: ""
+    case Con{part, rest}: "../" ++ f_relative_parents(rest)
+
+@unsafe
+def f_import_namespace_at(+im: KTerm, +source: FSource, +sources: List<&2,FSource>, +root: String) -> String:
+  f_choose(String, f_eq(nm(im), "Base"), u => "", u => f_strip_bend(f_relative_parts(f_path_segments(f_path_normal(root)), f_path_segments(f_source_path(f_graph_source(f_import_pathname(im, source, sources), sources))))))
+
+@unsafe
+def f_path_segments(+path: String) -> List<&2,String>:
+  f_path_nonempty(String.split(path, '/'))
+
+@unsafe
+def f_path_nonempty(parts: List<&2,String>) -> List<&2,String>:
+  match parts:
+    case Nil{}: Nil{}
+    case Con{+part, +rest}:
+      f_choose(List<&2,String>, String.is_empty(part), u => f_path_nonempty(rest), u => Con{part, f_path_nonempty(rest)})

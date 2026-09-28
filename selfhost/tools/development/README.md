@@ -7,7 +7,7 @@ node tools/development/workflow.mjs run CONFIG.json NEW_ATTEMPT
 node tools/development/workflow.mjs validate ATTEMPT SELECTION.json NEW_VALIDATION
 ```
 
-A minimal configuration is `{"upstream":".bootstrap/upstream"}`. Paths resolve
+A minimal configuration is `{"upstream":".bootstrap/upstream-phase8"}`. Paths resolve
 against the configuration file. The first command freezes source/runtime/tools,
 runs the genuine checked bootstrap and checks the existing 21 frontend witnesses
 against pinned TypeScript. The second reuses that verified compiler for another

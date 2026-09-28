@@ -1,0 +1,182 @@
+{
+  "cases": [
+    {
+      "id": "phase8/current-dead-default-residual",
+      "file": "current-dead-default-residual.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/current-eta-long-sides",
+      "file": "current-eta-long-sides.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/current-mutual-type-def",
+      "file": "current-mutual-type-def.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/eta-bare-equivalent",
+      "file": "eta-bare-equivalent.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/eta-bare-different/parse",
+      "file": "eta-bare-different.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/eta-bare-different/check",
+      "file": "eta-bare-different.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/eta-bare-two-arguments",
+      "file": "eta-bare-two-arguments.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/eta-stuck-partial-heads/parse",
+      "file": "eta-stuck-partial-heads.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/eta-stuck-partial-heads/check",
+      "file": "eta-stuck-partial-heads.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/eta-opaque-distinct-laws/parse",
+      "file": "eta-opaque-distinct-laws.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/eta-opaque-distinct-laws/check",
+      "file": "eta-opaque-distinct-laws.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/forward-live-datatype",
+      "file": "forward-live-datatype.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/forward-live-definition/parse",
+      "file": "forward-live-definition.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/forward-live-definition/check",
+      "file": "forward-live-definition.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/dead-fallback-skips-body",
+      "file": "dead-fallback-skips-body.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse",
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/dead-fallback-keeps-explicit-case/parse",
+      "file": "dead-fallback-keeps-explicit-case.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/dead-fallback-keeps-explicit-case/check",
+      "file": "dead-fallback-keeps-explicit-case.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    },
+    {
+      "id": "phase8/live-fallback-checks-body/parse",
+      "file": "live-fallback-checks-body.bend",
+      "accept": true,
+      "rejectPhase": null,
+      "lanes": [
+        "parse"
+      ]
+    },
+    {
+      "id": "phase8/live-fallback-checks-body/check",
+      "file": "live-fallback-checks-body.bend",
+      "accept": false,
+      "rejectPhase": "check",
+      "lanes": [
+        "check"
+      ]
+    }
+  ]
+}

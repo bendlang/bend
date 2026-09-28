@@ -1,23 +1,40 @@
 # Compiler validation
 
-The ordinary CLI uses the [S3 simplification release](../implementation/phase7/s3-report.md).
-Its [manifest](dist/release.json) identifies the exact API/source/runtime/host;
-`npm run verify:release` checks local integrity and transformation replay.
-Fresh checked build, 21 focused paired cases, all component groups and 52 harness
-tests pass. The focused suite retains its seven known exact differences.
+The current target is upstream `b2111cf43244e65f76ddc278ee695e669f720cbf`,
+Bend2 2.0.32 era. The [Phase8 report](../implementation/phase8/upstream_and_conformance.md)
+records full reference/candidate vectors, focused regression controls, execution,
+known gaps and exact artifact identities. Its [raw evidence](../implementation/phase8/migration-evidence/README.md)
+preserves failures as well as passes.
 
-Fresh baseline/candidate parse/check vectors compare all 2,756 observations
-exactly: 919 positive and 459 negative check fixtures, zero behavioral differences,
-and the same 318 strict check failures. Diagnostic reuse passes 204 comparisons;
-39 compound-error comparisons and host call counters validate one authoritative
-result and four-to-one failure checking. The separately verified host identity
-field differs by design; diagnostic text is not normalized.
+The installed [release manifest](dist/release.json) identifies a genuine checked
+B1, its source, Base, runtime and host. `npm run verify:release` verifies integrity
+and lineage after relocation. It does not rerun conformance or claim a new
+self-hosted fixed point. Historical equality-derived/fixed-point evidence is not
+transferred to the current artifact.
 
-The [Phase 5 frontend gate](../implementation/phase5/final-artifact-frontend.md)
-and full-source fixed point remain historical artifact-specific evidence. S3's
-new full frontend preservation gate does not claim complete upstream conformance,
-a new live TypeScript diagnostic comparison, or a new B1→H→H proof. Historical
-sections retain their recorded scope.
+The new upstream fixture gate has1,498 fixtures:1,001 positive expectations,
+482 validation negatives,11 declaration-only proof-trust refusals and4 cases
+whose expected error happens during emission. Eleven additional Bend files are
+import support without independent oracles. `typeAccepted`, `proofTrust` and
+`kernelChecked` keep these outcomes separate; no run claims Lean validation.
+
+Current bounded regression gates include21 maintained development controls,
+134 frontend observations,26 semantic observations,32 soundness observations,
+18 semantic execution observations,35 import/JS executions,44 foreign-runtime
+executions and13 native/scanner controls. Some sets overlap. Do not add them
+as if they counted unique language programs or infer full backend conformance.
+Exact diagnostics are compared separately from custom acceptance/phase oracles.
+
+Known remaining gaps include large Nat/string literals, imported law fills,
+diagnostic carets/text and some error phases. The maintained component suite
+preserves its diagnostic-source parity failure against new upstream instead of
+weakening that exact gate. Native Process requires a libc symbol missing on this
+host, which also blocks upstream. GPU and interactive device execution are not
+validated here. Consult the report for the final full-corpus counts.
+
+## Historical evidence
+
+The following sections describe their recorded old-pin artifacts.
 
 The supplied baseline compiler results are in [the compatibility matrix](docs/COMPATIBILITY-MATRIX.md).
 Phase 1 changes have separate artifact-specific evidence in the

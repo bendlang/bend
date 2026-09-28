@@ -1,6 +1,6 @@
 import Base
-import ./tags.bend as A
-import ./tags.bend as B
+import ./tags_left.bend as A
+import ./tags_right.bend as B
 
 def main() -> IO(Unit):
   do IO<Unit>:

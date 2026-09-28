@@ -219,3 +219,18 @@ def f_operator_display(name, ops):
       name
     case Con{+op, rest}:
       f_choose(String, f_eq(f_operator(op), name), u => f_choose(String, f_eq(op, ">op"), u => ">", u => f_choose(String, f_eq(op, ">>op"), u => ">>", u => op)), u => f_operator_display(name, rest))
+
+# Do headers need the same chronological datatype quantities as written types.
+# Keep their raw arguments until this pass, before choosing pure/bind/Ann.
+@unsafe
+def f_scope_do(+t: KTerm, +env: List<&2,KTerm>, +book: List<&2,KDef>) -> KTerm:
+  f_scope_do_args(t, env, book, f_scope_terms(ks(f_choose(KTerm, f_eq(dk(f_find(nm(t), book)), "ADT"),
+    u => f_adt(kid(t, 0), ks(kid(t, 0)), f_find(nm(t), book)), u => kid(t, 0))), env, book))
+
+@unsafe
+def f_scope_do_args(+t: KTerm, +env: List<&2,KTerm>, +book: List<&2,KDef>, +types: List<&2,KTerm>) -> KTerm:
+  f_choose(KTerm, U32.is_eq(qt(t), 0),
+    u => kt("Ann", "", ix(t), 1, [f_scope(kid(t, 1), env, book), f_choose(KTerm, f_eq(dk(f_find(nm(t), book)), "ADT"), u => kt("ADT", nm(t), ix(t), 1, types), u => norm_apply(ref(nm(t)), types))]),
+    u => f_choose(KTerm, U32.is_eq(qt(t), 1),
+      u => norm_apply(kt("Ref", nm(t) ++ ".pure", ix(t), 1, Nil{}), norm_join(types, [f_scope(kid(t, 1), env, book)])),
+      u => norm_apply(kt("Ref", nm(t) ++ ".bind", ix(t), 1, Nil{}), norm_join(f_do_bind_types(types, f_scope(kid(t, 1), env, book)), [f_scope(kid(t, 2), env, book), f_scope(kid(t, 3), env, book)]))))

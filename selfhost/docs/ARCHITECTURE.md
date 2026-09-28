@@ -29,8 +29,9 @@ separately in the conformance report.
 
 The loader parses the source graph, resolves imports and aliases, elaborates
 surface syntax, and gives binders distinct IDs. The checker validates declaration
-order, types, quantities and recursive calls before specialization creates live
-template instances. The normalizer also supplies definitional equality and the
+types, quantities and recursive calls with all signatures and ADTs visible;
+validated bodies become available in declaration order. Specialization uses the
+same declaration environment when creating live template instances. The normalizer also supplies definitional equality and the
 interpreter's result.
 
 Strong normalization uses explicit work frames and a persistent heap of lazy
@@ -47,7 +48,11 @@ the type context itself would lose constructors and dependent type definitions.
 
 The JavaScript backend emits functions and trampolined applications against the
 JavaScript runtime. The native backend lowers to segments, closures and fork
-continuations, then emits C against the pinned CPU/Metal/CUDA runtime. Its general
+continuations, then emits C against the retained compatible CPU/Metal/CUDA runtime.
+Foreign CID/FID scanning is shared in Bend. Reachable effects determine the
+foreign-source namespace; the full book resolves identifiers. The host provides
+file bytes and backend-compatible Base effects. Internal closure dispatch uses
+a separate C identifier namespace so user `Clo.apply` cannot collide. Its general
 boxed representation differs from upstream's flat-layout optimizations; runtime
 and performance equivalence are distinct validation questions.
 

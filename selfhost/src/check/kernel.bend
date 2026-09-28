@@ -647,7 +647,7 @@ def infer_ref(e, t, dem, sp, d):
    u => kc(KChecked, String.eq(dk(d), "ADT") && U32.is_gt(da(d), 0), u => bad("a family requires angle-bracket parameters"),
    u => kc(KChecked, U32.is_eq(dem, 0), u => ok(t, dt(d), Nil{}),
    u => kc(KChecked, String.eq(nm(t), cn(e)) && Bool.not(cu(e)) && Bool.not(descend_spine(cq(e), sp, unargs(cl(e), Nil{}))), u => bad("nondecreasing self-call"),
-   u => kc(KChecked, String.eq(tg(dv(d)), "Absent") && Bool.not(db(d)) && Bool.not(cu(e)) && Bool.not(String.eq(nm(t), cn(e))), u => bad("live use of an unfilled law"),
+   u => kc(KChecked, String.eq(dk(d), "Def") && String.eq(tg(dv(d)), "Absent") && Bool.not(db(d)) && Bool.not(cu(e)) && Bool.not(String.eq(nm(t), cn(e))), u => bad("live use of an unfilled law"),
    u => infer_template(e, t, dem, sp, d))))))
 
 @unsafe
@@ -835,7 +835,17 @@ def check_mat_type(e, ctx, t, dem, ty, a):
 def check_mat_ctr(e, ctx, t, dem, ty, a, ctr):
   kc(KChecked, String.eq(dk(ctr), "Absent"), u => dg_bad_detail("unknown or duplicate match constructor", dg_text("a constructor of " ++ nm(a) ++ " (missing, or already matched)"), t),
    u => both(check(mat_lhs(e, nm(t), tele_fill(cb(e), dt(ctr), ks(a)), da(ctr), Con{t, Con{ty, ctx}}), ctx, kid(t, 0), dem, mat_goal(cb(e), ty, tele_fill(cb(e), dt(ctr), ks(a)), da(ctr), nm(t), Nil{})),
-   check(e, ctx, kid(t, 1), dem, all(qt(ty), nm(ty), ix(ty), KTerm{tg(a), nm(a), ix(a), qt(a), ks(a), Con{nm(t), rm(a)}}, kid(ty, 1))), t, ty, True{}))
+   check(e, ctx, mat_rest(cb(e), t, a), dem, all(qt(ty), nm(ty), ix(ty), KTerm{tg(a), nm(a), ix(a), qt(a), ks(a), Con{nm(t), rm(a)}}, kid(ty, 1))), t, ty, True{}))
+
+# A non-case fallback past the final constructor is unreachable. The checker
+# and annotation pass share this choice so backends receive the same Efq.
+@unsafe
+def mat_rest(
+  +book: List<&2, KDef>,
+  +t: KTerm,
+  +a: KTerm,
+) -> KTerm:
+  kc(KTerm, Bool.not(String.eq(tg(kid(t, 1)), "Mat")) && defs_empty(remaining(dc(lookup(book, nm(a))), Con{nm(t), rm(a)})), u => atom("Efq"), u => kid(t, 1))
 
 @unsafe
 def mat_goal(book, goal, tel, n, name, xs):

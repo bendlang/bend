@@ -553,11 +553,16 @@ def sp_definitions(todo, st):
 
 @unsafe
 def sp_definition_next(rest, st, d):
-  kc(KSpecState, U32.is_gt(dx(d), 0) || String.eq(tg(dv(d)), "Absent") || String.eq(dk(d), "ADT") || Bool.not(sp_needed(sp_templates(st), dv(d))), u => sp_definitions(rest, st), u => sp_definition_done(rest, d, sp_term(st, dv(d), Nil{}, dt(d), dn(d), 0)))
+  kc(KSpecState, U32.is_gt(dx(d), 0) || String.eq(tg(dv(d)), "Absent") || String.eq(dk(d), "ADT") || Bool.not(sp_needed(sp_templates(st), dv(d))), u => sp_definition_install(rest, st, d), u => sp_definition_done(rest, d, sp_term(st, dv(d), Nil{}, dt(d), dn(d), 0)))
+
+# Instance checks see the same declarations and earlier bodies as the caller.
+@unsafe
+def sp_definition_install(+rest: List<&2,KDef>, +st: KSpecState, +d: KDef) -> KSpecState:
+  sp_definitions(rest, KSpecState{check_event_install(sp_book(st), d, rest), sp_memo(st), sp_serial(st), sp_fresh(st), sp_error(st), sp_templates(st)})
 
 @unsafe
 def sp_definition_done(rest, d, r):
-  sp_definitions(rest, sp_put(sp_state(r), KDef{dn(d), dk(d), da(d), dx(d), dt(d), sp_value(r), dc(d), db(d), du(d)}))
+  sp_definition_install(rest, sp_state(r), KDef{dn(d), dk(d), da(d), dx(d), dt(d), sp_value(r), dc(d), db(d), du(d)})
 
 @unsafe
 def sp_len(
@@ -875,7 +880,7 @@ law sp_neededs:
 
 @unsafe
 def sp_initial(book, bound):
-  KSpecState{sp_stamp(book, bound), Nil{}, 0, U32.add(bound, 1), "", sp_template_book(book)}
+  KSpecState{sp_stamp(check_declarations(book, Nil{}), bound), Nil{}, 0, U32.add(bound, 1), "", sp_template_book(book)}
 
 @unsafe
 def sp_stamp(book, bound):

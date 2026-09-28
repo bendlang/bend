@@ -60,19 +60,6 @@ def driver_holes_terms(ts):
     case Nil{}: 0
     case Con{t, rest}: U32.add(driver_holes(t), driver_holes_terms(rest))
 
-# This synthesized closure dispatcher name is reserved even in check-only mode.
-# It is a compiler-name gate after checking, not a type/proof inference rule.
-@unsafe
-def driver_owned(
-  +book: List<&2,KDef>,
-) -> String:
-  match book:
-    case Nil{}: ""
-    case Con{d, rest}:
-      kc(String, String.eq(dn(d), "Clo.apply") && Bool.not(db(d)),
-        u => "Clo.apply is a name the compiler encodes itself: name yours apart",
-        u => driver_owned(rest))
-
 # Exact pinned compiler OWNED datatype set. User definitions remain valid for
 # pure checking/normalization but cannot use the runtime's intrinsic layouts.
 law driver_owned_names:
@@ -89,7 +76,7 @@ law driver_owned_name:
 def driver_emit_owned(
   +book: List<&2,KDef>,
 ) -> String:
-  driver_owned_names(book, ["Clo.apply", "IO", "Sigma", "String", "Word.Con", "IO.OP", "Result", "Maybe", "Bool", "Unit", "Nat", "U32", "F32", "Char", "Array"])
+  driver_owned_names(book, ["IO", "Sigma", "String", "Word.Con", "IO.OP", "Result", "Maybe", "Bool", "Unit", "Nat", "U32", "F32", "Char", "Array"])
 
 @unsafe
 def driver_owned_names(book, names):
