@@ -3797,11 +3797,13 @@ INLINE bool a32_swp(DEV u32* p, u32* e, u32 v) {
 #define ACQ RLX
 #define ACR RLX
 #define a32_acq(p) FENCE()
+#define w64_load(p) (*(p))
 #else
 #define REL memory_order_release
 #define ACQ memory_order_acquire
 #define ACR memory_order_acq_rel
 #define a32_acq(p) ((void)a32_load_acq(p))
+#define w64_load(p) atomic_load_explicit((_Atomic u64*)(p), RLX)
 #endif
 
 #define a32_store(p, v)     atomic_store_explicit(A32(p), v, RLX)
@@ -4048,8 +4050,8 @@ INLINE Term rfc_seal(Env e, Term t) {
 }
 
 // A redirect cell holds its target's loc over a 24-bit count, which
-// changes by atomic adds on the low half: the cell is read as two atomic
-// halves, never as one plain word.
+// changes by atomic adds on the low half, so a host never reads it as one
+// plain word.
 INLINE u64 rfc_view(DEV u64* H, u64 r) {
   DEV u32* w = a32_at(H, r);
   u64 cell = ((u64)a32_load(w + 1) << 32) | a32_load(w);
@@ -4086,18 +4088,8 @@ INLINE u64 term_peek(DEV u64* H, Term t) {
 
 #define blk_shr(t) (BLK_SHR && term_rfc(t))
 
-// A fork's handle reads only its redirect's target, which no count add
-// changes, not even in a torn read: the CPU loads the word as one relaxed
-// atomic (the same plain load), a device plainly (atomics cost Metal ~4x).
 INLINE u64 blk_loc(DEV u64* H, Term a) {
-  if (!blk_shr(a)) {
-    return term_loc(a);
-  }
-#if DEVICE
-  return H[term_loc(a)] >> 24;
-#else
-  return __atomic_load_n(&H[term_loc(a)], __ATOMIC_RELAXED) >> 24;
-#endif
+  return blk_shr(a) ? w64_load(&H[term_loc(a)]) >> 24 : term_loc(a);
 }
 
 INLINE u32 blk_cls(Term t) {
