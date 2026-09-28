@@ -209,6 +209,15 @@ process-time gap. It excludes emission. The separate Nat300 JS workflow takes
 Native C retains Phase11's compact 269 KB output and actual build/run gate.
 These are workload-specific compilation results, not general runtime ratios.
 
+The [Phase13 investigation](../implementation/phase13/structured_rewriter.md)
+profiles that release and tests a structured rewriter. Its best prototype
+removes intermediate branch-selection dispatches, reducing paired full-source
+checking from 27.36 to 24.47 s (10.6%). It is preserved as an experiment: the
+self-contained helper adds 7 KB, so it does not meet the agreed speed/complexity
+integration target. Version5 remains the installed transformation. No new
+TypeScript ratio, broad conformance result or user-program runtime gain follows
+from the pilot.
+
 The checked build and maintained 22 focused controls span 27.59 s in the recorded
 combined development attempt. This is an observation, not a paired loop speedup;
 Phase11's recorded loop used 21 cases. Keep routine edits on that short path and

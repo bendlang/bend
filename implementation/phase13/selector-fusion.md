@@ -4,7 +4,8 @@ The [prospective followup](../../experiments/phase13/P13-005-selector-fusion.md)
 tests whether removing intermediate tag-selection steps is more useful than
 replacing closures with explicit captures. Plain worker lifting kept dispatch
 unchanged and was 1.01% slower on the paired complete-source pilot. The current
-release remains Phase12; this followup has no accepted performance result yet.
+release remains Phase12. The completed paired pilot records 6.63% less process
+time, earning the bounded six-owner followup described below.
 
 The initial rule is restricted to `norm_eval_node`. A removable false arrow has
 exactly one returned choice, no use of its Unit parameter, and a nested comparison
@@ -31,7 +32,7 @@ Unknown references to those dependencies still fail closed. The retry uses a
 new attempt directory; the failed record is unchanged.
 
 Independent semantic controls, fresh-string and exact-history gates, operation
-counts and controlled measurements will determine the outcome.
+counts and controlled measurements establish the bounded outcome below.
 
 ## Frozen candidate and diagnostic counts
 
@@ -81,3 +82,8 @@ owners under the exact same rule. It does not yet earn production integration:
 the prototype still carries 626 helper/support/historical lines against the
 maintained helper's 296, before tests. Any relaxed grammar or binding domain
 requires a separately recorded prospective decision and independent controls.
+
+The subsequent [six-owner pilot](constant-scope-selectors.md) reaches 10.56% less
+process time. The [final phase decision](structured_rewriter.md) defers production
+integration because the self-contained helper grows and the gain stays below
+the agreed investment target. This one-owner pilot remains a separate comparison.

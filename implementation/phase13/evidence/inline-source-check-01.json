@@ -1,0 +1,863 @@
+{
+  "kind": "phase13-inline-source-reference-controls",
+  "complete": true,
+  "pass": true,
+  "adapter": {
+    "type": "file",
+    "bytes": 3729,
+    "sha256": "b6d16e360976897497e88fb46fef759e8acbb2c5efa6d3faf2dca511985af404",
+    "mode": 420
+  },
+  "reports": [
+    {
+      "file": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+      "type": "file",
+      "bytes": 13907,
+      "sha256": "fb15db37954395fd054c7800395ca38b8612364be7edb36a02cf511e84ad6cdd",
+      "mode": 420,
+      "inlineReferences": [
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/baseline/0/source",
+          "sha256": "3ffbc8a60fc760432dc6e5626fe050d4301eb547ebd14bf0543ca093827ed1f9",
+          "bytes": 155,
+          "start": 143580,
+          "end": 143735,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/baseline/1/source",
+          "sha256": "bce5f5f6130fbda95f39de3e3915fec389b288673fbb939577fb20696ea62884",
+          "bytes": 1240,
+          "start": 143746,
+          "end": 144986,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/baseline/2/source",
+          "sha256": "b59a77bd6c072764a30f6cefef80a8c3cf5c336e1e761ab98d3ca1cc1d15dffa",
+          "bytes": 101,
+          "start": 143816,
+          "end": 143917,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/baseline/3/source",
+          "sha256": "7a5d967df0fa82a8b95265616de8bb531527ee6c85a038c1663f2ab37009459b",
+          "bytes": 1053,
+          "start": 143928,
+          "end": 144981,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/baseline/4/source",
+          "sha256": "6e2d0839056b13188f889d29632f0c5083347a546f9f286fe7c33f26fa37d440",
+          "bytes": 111,
+          "start": 143998,
+          "end": 144109,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/baseline/5/source",
+          "sha256": "745dbed5e1316c7f2fbd5f3bd4a22a5463ceb75e4391985f2feff1daedd1f2c8",
+          "bytes": 856,
+          "start": 144120,
+          "end": 144976,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/baseline/6/source",
+          "sha256": "86860f8f8f43b3b3073af024a8b6aea277ff371269c6de58bc2412f5c0231cbb",
+          "bytes": 101,
+          "start": 144190,
+          "end": 144291,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/baseline/7/source",
+          "sha256": "3c7c31833602a474d8052d788606310c0efda45ab13c2255077ef1441b8393ab",
+          "bytes": 669,
+          "start": 144302,
+          "end": 144971,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/baseline/8/source",
+          "sha256": "74efe57021bd6786764c4d91d671f5b923021724fff7012c8269878bf58975fb",
+          "bytes": 128,
+          "start": 144372,
+          "end": 144500,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/baseline/9/source",
+          "sha256": "64347ede4b6ac6399dfd10a8e960add6a4fe7d45377394f32ada5b5b2bd2e40e",
+          "bytes": 455,
+          "start": 144511,
+          "end": 144966,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/baseline/10/source",
+          "sha256": "e459943287ce353aa36e368bb14d66d60273e1ce1118524f906af59c2931308d",
+          "bytes": 287,
+          "start": 144581,
+          "end": 144868,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/baseline/11/source",
+          "sha256": "62e23124526ea4f2c9dd6dfbd47e49beb378dc1259d03658a56f2b2aa115dfaf",
+          "bytes": 102,
+          "start": 144698,
+          "end": 144800,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/baseline/12/source",
+          "sha256": "dd8431cce6f959e85be645c5af7123daaf07739868f8df1fdfba2a22d6f78471",
+          "bytes": 52,
+          "start": 144811,
+          "end": 144863,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/baseline/13/source",
+          "sha256": "acd33b6feaba1c46c5b3bf5150f8db7dd657b087c4c153a1439759ddb3d7ba34",
+          "bytes": 82,
+          "start": 144879,
+          "end": 144961,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/candidate/0/source",
+          "sha256": "3ffbc8a60fc760432dc6e5626fe050d4301eb547ebd14bf0543ca093827ed1f9",
+          "bytes": 155,
+          "start": 145263,
+          "end": 145418,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/candidate/1/source",
+          "sha256": "b59a77bd6c072764a30f6cefef80a8c3cf5c336e1e761ab98d3ca1cc1d15dffa",
+          "bytes": 101,
+          "start": 145467,
+          "end": 145568,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/candidate/2/source",
+          "sha256": "6e2d0839056b13188f889d29632f0c5083347a546f9f286fe7c33f26fa37d440",
+          "bytes": 111,
+          "start": 145617,
+          "end": 145728,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/candidate/3/source",
+          "sha256": "86860f8f8f43b3b3073af024a8b6aea277ff371269c6de58bc2412f5c0231cbb",
+          "bytes": 101,
+          "start": 145777,
+          "end": 145878,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/candidate/4/source",
+          "sha256": "74efe57021bd6786764c4d91d671f5b923021724fff7012c8269878bf58975fb",
+          "bytes": 128,
+          "start": 145927,
+          "end": 146055,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/candidate/5/source",
+          "sha256": "4910b33bc8748a7ac4836fab587bb079a97ac6615ae38ec2254c64ae05325e3e",
+          "bytes": 294,
+          "start": 146104,
+          "end": 146398,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/candidate/6/source",
+          "sha256": "62e23124526ea4f2c9dd6dfbd47e49beb378dc1259d03658a56f2b2aa115dfaf",
+          "bytes": 102,
+          "start": 146221,
+          "end": 146323,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/candidate/7/source",
+          "sha256": "dd8431cce6f959e85be645c5af7123daaf07739868f8df1fdfba2a22d6f78471",
+          "bytes": 52,
+          "start": 146328,
+          "end": 146380,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/candidate/8/source",
+          "sha256": "acd33b6feaba1c46c5b3bf5150f8db7dd657b087c4c153a1439759ddb3d7ba34",
+          "bytes": 82,
+          "start": 146405,
+          "end": 146487,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        }
+      ],
+      "remainingFileReferences": [
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/inputs/0/file",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase13/control-selector-bodies.mjs",
+          "sha256": "ce580ad1fe817e905520f64bb94d862c9d2c72c02e6a6e6f1188d8d0b597037a"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/inputs/0/canonicalPath",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase13/control-selector-bodies.mjs",
+          "sha256": "ce580ad1fe817e905520f64bb94d862c9d2c72c02e6a6e6f1188d8d0b597037a"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/inputs/1/file",
+          "path": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/inputs/1/canonicalPath",
+          "path": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/inputs/2/file",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase13/rewriter-structure.mjs",
+          "sha256": "375f80302ee243c4ca754c9c982ddc0f7c671d0394d092eee61414d86115f8ca"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/inputs/2/canonicalPath",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase13/rewriter-structure.mjs",
+          "sha256": "375f80302ee243c4ca754c9c982ddc0f7c671d0394d092eee61414d86115f8ca"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/inputs/3/file",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase13/control-selector-bodies-01/consumed-structure.mjs",
+          "sha256": "375f80302ee243c4ca754c9c982ddc0f7c671d0394d092eee61414d86115f8ca"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/inputs/3/canonicalPath",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase13/control-selector-bodies-01/consumed-structure.mjs",
+          "sha256": "375f80302ee243c4ca754c9c982ddc0f7c671d0394d092eee61414d86115f8ca"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/inputs/4/file",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/api.mjs",
+          "sha256": "a8453133f37a0965b7291795af2e06c7c65e3ee7c97a8ff4b14b98cfba2e5568"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/inputs/4/canonicalPath",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/api.mjs",
+          "sha256": "a8453133f37a0965b7291795af2e06c7c65e3ee7c97a8ff4b14b98cfba2e5568"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/inputs/5/file",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase13/selector-norm-eval-02/api.mjs",
+          "sha256": "5a1a9449ec9a190e1bee0b695d211fd83e5672a6e1fc87623c3e3826268d4441"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+          "pointer": "/inputs/5/canonicalPath",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase13/selector-norm-eval-02/api.mjs",
+          "sha256": "5a1a9449ec9a190e1bee0b695d211fd83e5672a6e1fc87623c3e3826268d4441"
+        }
+      ]
+    },
+    {
+      "file": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+      "type": "file",
+      "bytes": 20379,
+      "sha256": "34c6c0a262c664fdae9733743dc5e695d208af6fdc937ab9574005681138c1d3",
+      "mode": 420,
+      "inlineReferences": [
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/baseline/0/source",
+          "sha256": "3ffbc8a60fc760432dc6e5626fe050d4301eb547ebd14bf0543ca093827ed1f9",
+          "bytes": 155,
+          "start": 145260,
+          "end": 145415,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/baseline/1/source",
+          "sha256": "1a8a7b3dd74c5eb4d49250d4ecf0482fcbb3584ca51f40d7b9a9b4abb092f29c",
+          "bytes": 1282,
+          "start": 145420,
+          "end": 146702,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/baseline/2/source",
+          "sha256": "b59a77bd6c072764a30f6cefef80a8c3cf5c336e1e761ab98d3ca1cc1d15dffa",
+          "bytes": 101,
+          "start": 145490,
+          "end": 145591,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/baseline/3/source",
+          "sha256": "908f23b4ca71ab8e96ece0fd902c29c046ca1fbfbec9250c4a36aa3112939523",
+          "bytes": 1088,
+          "start": 145596,
+          "end": 146684,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/baseline/4/source",
+          "sha256": "6e2d0839056b13188f889d29632f0c5083347a546f9f286fe7c33f26fa37d440",
+          "bytes": 111,
+          "start": 145666,
+          "end": 145777,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/baseline/5/source",
+          "sha256": "828de104c519007fdd9c7a0855b41ef5f00da5c1790fd1e52533c2d9c68205e4",
+          "bytes": 884,
+          "start": 145782,
+          "end": 146666,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/baseline/6/source",
+          "sha256": "86860f8f8f43b3b3073af024a8b6aea277ff371269c6de58bc2412f5c0231cbb",
+          "bytes": 101,
+          "start": 145852,
+          "end": 145953,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/baseline/7/source",
+          "sha256": "cac8bfec2962f7ea05b0327c08daa14c9c3c5ce7934aeb9963564464afcb31d3",
+          "bytes": 690,
+          "start": 145958,
+          "end": 146648,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/baseline/8/source",
+          "sha256": "74efe57021bd6786764c4d91d671f5b923021724fff7012c8269878bf58975fb",
+          "bytes": 128,
+          "start": 146028,
+          "end": 146156,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/baseline/9/source",
+          "sha256": "5c892e49df73d7c9e1f71d25dd544167c7aac9d1e5abeb6303f290bd9b09110e",
+          "bytes": 469,
+          "start": 146161,
+          "end": 146630,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/baseline/10/source",
+          "sha256": "4910b33bc8748a7ac4836fab587bb079a97ac6615ae38ec2254c64ae05325e3e",
+          "bytes": 294,
+          "start": 146231,
+          "end": 146525,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/baseline/11/source",
+          "sha256": "62e23124526ea4f2c9dd6dfbd47e49beb378dc1259d03658a56f2b2aa115dfaf",
+          "bytes": 102,
+          "start": 146348,
+          "end": 146450,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/baseline/12/source",
+          "sha256": "dd8431cce6f959e85be645c5af7123daaf07739868f8df1fdfba2a22d6f78471",
+          "bytes": 52,
+          "start": 146455,
+          "end": 146507,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/baseline/13/source",
+          "sha256": "acd33b6feaba1c46c5b3bf5150f8db7dd657b087c4c153a1439759ddb3d7ba34",
+          "bytes": 82,
+          "start": 146530,
+          "end": 146612,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/candidate/0/source",
+          "sha256": "3ffbc8a60fc760432dc6e5626fe050d4301eb547ebd14bf0543ca093827ed1f9",
+          "bytes": 155,
+          "start": 145263,
+          "end": 145418,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/candidate/1/source",
+          "sha256": "b59a77bd6c072764a30f6cefef80a8c3cf5c336e1e761ab98d3ca1cc1d15dffa",
+          "bytes": 101,
+          "start": 145467,
+          "end": 145568,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/candidate/2/source",
+          "sha256": "6e2d0839056b13188f889d29632f0c5083347a546f9f286fe7c33f26fa37d440",
+          "bytes": 111,
+          "start": 145617,
+          "end": 145728,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/candidate/3/source",
+          "sha256": "86860f8f8f43b3b3073af024a8b6aea277ff371269c6de58bc2412f5c0231cbb",
+          "bytes": 101,
+          "start": 145777,
+          "end": 145878,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/candidate/4/source",
+          "sha256": "74efe57021bd6786764c4d91d671f5b923021724fff7012c8269878bf58975fb",
+          "bytes": 128,
+          "start": 145927,
+          "end": 146055,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/candidate/5/source",
+          "sha256": "4910b33bc8748a7ac4836fab587bb079a97ac6615ae38ec2254c64ae05325e3e",
+          "bytes": 294,
+          "start": 146104,
+          "end": 146398,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/candidate/6/source",
+          "sha256": "62e23124526ea4f2c9dd6dfbd47e49beb378dc1259d03658a56f2b2aa115dfaf",
+          "bytes": 102,
+          "start": 146221,
+          "end": 146323,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/candidate/7/source",
+          "sha256": "dd8431cce6f959e85be645c5af7123daaf07739868f8df1fdfba2a22d6f78471",
+          "bytes": 52,
+          "start": 146328,
+          "end": 146380,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/candidate/8/source",
+          "sha256": "acd33b6feaba1c46c5b3bf5150f8db7dd657b087c4c153a1439759ddb3d7ba34",
+          "bytes": 82,
+          "start": 146405,
+          "end": 146487,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/removed/0/source",
+          "sha256": "1a8a7b3dd74c5eb4d49250d4ecf0482fcbb3584ca51f40d7b9a9b4abb092f29c",
+          "bytes": 1282,
+          "start": 145420,
+          "end": 146702,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/removed/1/source",
+          "sha256": "908f23b4ca71ab8e96ece0fd902c29c046ca1fbfbec9250c4a36aa3112939523",
+          "bytes": 1088,
+          "start": 145596,
+          "end": 146684,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/removed/2/source",
+          "sha256": "828de104c519007fdd9c7a0855b41ef5f00da5c1790fd1e52533c2d9c68205e4",
+          "bytes": 884,
+          "start": 145782,
+          "end": 146666,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/removed/3/source",
+          "sha256": "cac8bfec2962f7ea05b0327c08daa14c9c3c5ce7934aeb9963564464afcb31d3",
+          "bytes": 690,
+          "start": 145958,
+          "end": 146648,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/removed/4/source",
+          "sha256": "5c892e49df73d7c9e1f71d25dd544167c7aac9d1e5abeb6303f290bd9b09110e",
+          "bytes": 469,
+          "start": 146161,
+          "end": 146630,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        }
+      ],
+      "remainingFileReferences": [
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/inputs/0/file",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase13/control-selector-bodies-v2.mjs",
+          "sha256": "adf02c2566ff565cd06fd5558abb4f78b6cef746cf465a0af6be494f55b8a763"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/inputs/0/canonicalPath",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase13/control-selector-bodies-v2.mjs",
+          "sha256": "adf02c2566ff565cd06fd5558abb4f78b6cef746cf465a0af6be494f55b8a763"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/inputs/1/file",
+          "path": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/inputs/1/canonicalPath",
+          "path": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/inputs/2/file",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase13/rewriter-structure.mjs",
+          "sha256": "375f80302ee243c4ca754c9c982ddc0f7c671d0394d092eee61414d86115f8ca"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/inputs/2/canonicalPath",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase13/rewriter-structure.mjs",
+          "sha256": "375f80302ee243c4ca754c9c982ddc0f7c671d0394d092eee61414d86115f8ca"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/inputs/3/file",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase13/control-selector-bodies-02/consumed-structure.mjs",
+          "sha256": "375f80302ee243c4ca754c9c982ddc0f7c671d0394d092eee61414d86115f8ca"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/inputs/3/canonicalPath",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase13/control-selector-bodies-02/consumed-structure.mjs",
+          "sha256": "375f80302ee243c4ca754c9c982ddc0f7c671d0394d092eee61414d86115f8ca"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/inputs/4/file",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase13/selector-norm-eval-02/manifest.json",
+          "sha256": "904e76e41abdcd56a3632cbbee5afdf889bddb86e69dc055d21eff8099b1d1d3"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/inputs/4/canonicalPath",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase13/selector-norm-eval-02/manifest.json",
+          "sha256": "904e76e41abdcd56a3632cbbee5afdf889bddb86e69dc055d21eff8099b1d1d3"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/inputs/5/file",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/equality/api.mjs",
+          "sha256": "0975a4a805409cfd6a721f72cd4ffac6b207045cdecb8aa5ef04955297fcd697"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/inputs/5/canonicalPath",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/equality/api.mjs",
+          "sha256": "0975a4a805409cfd6a721f72cd4ffac6b207045cdecb8aa5ef04955297fcd697"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/inputs/6/file",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase13/selector-norm-eval-02/api.mjs",
+          "sha256": "5a1a9449ec9a190e1bee0b695d211fd83e5672a6e1fc87623c3e3826268d4441"
+        },
+        {
+          "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+          "pointer": "/inputs/6/canonicalPath",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase13/selector-norm-eval-02/api.mjs",
+          "sha256": "5a1a9449ec9a190e1bee0b695d211fd83e5672a6e1fc87623c3e3826268d4441"
+        }
+      ]
+    },
+    {
+      "file": "selfhost/build/phase13/control-const-bodies-01/report.json",
+      "type": "file",
+      "bytes": 19671,
+      "sha256": "6ca959b46b9b3fa861893d36e51e25deb26cb50da5c22fa798beb79ffc487036",
+      "mode": 420,
+      "inlineReferences": [
+        {
+          "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+          "pointer": "/owners/1/constants/0/source",
+          "sha256": "f95b60e0ac92114f5470ab65b97105eb3c547fdad765b4c47f67ca4b81b618be",
+          "bytes": 48,
+          "start": 478533,
+          "end": 478581,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+          "pointer": "/owners/1/constants/1/source",
+          "sha256": "ceb1068e7c7c1f1ab826b364e8a8f4546f70b2fc57a2d12e327d6e198c283824",
+          "bytes": 48,
+          "start": 478584,
+          "end": 478632,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+          "pointer": "/owners/2/constants/0/source",
+          "sha256": "6b2238709550b78dd0daa58e24d719a40cdba5c7fad7d9b0e922d2dd9200be11",
+          "bytes": 44,
+          "start": 282152,
+          "end": 282196,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+          "pointer": "/owners/2/constants/1/source",
+          "sha256": "259323607c5a153d7aec15d2850dae4610bf8759073b814e087d4c9a8a9a3892",
+          "bytes": 42,
+          "start": 282199,
+          "end": 282241,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+          "pointer": "/owners/2/constants/2/source",
+          "sha256": "f5f0ebb722d4874eedeb9554ae0fc57eadb8a88bfeca8da0243fe42358602e63",
+          "bytes": 26,
+          "start": 282619,
+          "end": 282645,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+          "pointer": "/owners/2/constants/3/source",
+          "sha256": "f91a9a526ab0ad165f018ec3df00d5b6590f8be67b855752615983e9b1ec65a2",
+          "bytes": 26,
+          "start": 282749,
+          "end": 282775,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+          "pointer": "/owners/3/constants/0/source",
+          "sha256": "bc5096c534c78588bc85fc66106e1808a2e943cc861c0fbd05ded73f3ead7b05",
+          "bytes": 29,
+          "start": 212298,
+          "end": 212327,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+          "pointer": "/owners/3/constants/1/source",
+          "sha256": "d2a0185dfbc7c98b092a35710582796b76bd8a225991fe55c7c25b2e6982655c",
+          "bytes": 32,
+          "start": 212332,
+          "end": 212364,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+          "pointer": "/owners/3/constants/2/source",
+          "sha256": "9714d846df25620c59a68fb509c808a5a1928f6ec4296a7d82bb47460acc3813",
+          "bytes": 25,
+          "start": 212875,
+          "end": 212900,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        },
+        {
+          "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+          "pointer": "/owners/3/constants/3/source",
+          "sha256": "6a118abdac020dd6d0a8bf2a9ed9e95b43386651f01a7815ab1b6408d42ba6c9",
+          "bytes": 25,
+          "start": 212930,
+          "end": 212955,
+          "storage": "UTF-8 source string retained inside the captured original JSON report"
+        }
+      ],
+      "remainingFileReferences": [
+        {
+          "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+          "pointer": "/inputs/0/file",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase13/control-const-bodies.mjs",
+          "sha256": "6c958d14f78c9d47f4e7d7cb49371e25c4202d80b595d7e44688e14dc9fd2850"
+        },
+        {
+          "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+          "pointer": "/inputs/0/canonicalPath",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase13/control-const-bodies.mjs",
+          "sha256": "6c958d14f78c9d47f4e7d7cb49371e25c4202d80b595d7e44688e14dc9fd2850"
+        },
+        {
+          "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+          "pointer": "/inputs/1/file",
+          "path": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c"
+        },
+        {
+          "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+          "pointer": "/inputs/1/canonicalPath",
+          "path": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c"
+        },
+        {
+          "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+          "pointer": "/inputs/2/file",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase13/rewriter-structure.mjs",
+          "sha256": "375f80302ee243c4ca754c9c982ddc0f7c671d0394d092eee61414d86115f8ca"
+        },
+        {
+          "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+          "pointer": "/inputs/2/canonicalPath",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase13/rewriter-structure.mjs",
+          "sha256": "375f80302ee243c4ca754c9c982ddc0f7c671d0394d092eee61414d86115f8ca"
+        },
+        {
+          "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+          "pointer": "/inputs/3/file",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase13/control-const-bodies-01/consumed-structure.mjs",
+          "sha256": "375f80302ee243c4ca754c9c982ddc0f7c671d0394d092eee61414d86115f8ca"
+        },
+        {
+          "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+          "pointer": "/inputs/3/canonicalPath",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase13/control-const-bodies-01/consumed-structure.mjs",
+          "sha256": "375f80302ee243c4ca754c9c982ddc0f7c671d0394d092eee61414d86115f8ca"
+        },
+        {
+          "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+          "pointer": "/inputs/4/file",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase13/rewriter-selector-const-combined-01/manifest.json",
+          "sha256": "441605c8740a4ed1c16f209a0d0b07dbf6b438224ba53cc0710d5dc7bed62cfb"
+        },
+        {
+          "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+          "pointer": "/inputs/4/canonicalPath",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase13/rewriter-selector-const-combined-01/manifest.json",
+          "sha256": "441605c8740a4ed1c16f209a0d0b07dbf6b438224ba53cc0710d5dc7bed62cfb"
+        },
+        {
+          "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+          "pointer": "/inputs/5/file",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/equality/api.mjs",
+          "sha256": "0975a4a805409cfd6a721f72cd4ffac6b207045cdecb8aa5ef04955297fcd697"
+        },
+        {
+          "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+          "pointer": "/inputs/5/canonicalPath",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase12/integrated-03/equality/api.mjs",
+          "sha256": "0975a4a805409cfd6a721f72cd4ffac6b207045cdecb8aa5ef04955297fcd697"
+        },
+        {
+          "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+          "pointer": "/inputs/6/file",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase13/rewriter-selector-const-combined-01/api.mjs",
+          "sha256": "7eca544a1f2e3ab637064533117f290bd576c5774d111a619fdd12755817c81e"
+        },
+        {
+          "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+          "pointer": "/inputs/6/canonicalPath",
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase13/rewriter-selector-const-combined-01/api.mjs",
+          "sha256": "7eca544a1f2e3ab637064533117f290bd576c5774d111a619fdd12755817c81e"
+        }
+      ]
+    }
+  ],
+  "negativeControls": [
+    {
+      "report": "selfhost/build/phase13/control-selector-bodies-01/report.json",
+      "refused": "Inline-source hash mismatch: selfhost/build/phase13/control-selector-bodies-01/report.json/baseline/0/source"
+    },
+    {
+      "report": "selfhost/build/phase13/control-selector-bodies-02/report.json",
+      "refused": "Inline-source hash mismatch: selfhost/build/phase13/control-selector-bodies-02/report.json/baseline/0/source"
+    },
+    {
+      "report": "selfhost/build/phase13/control-const-bodies-01/report.json",
+      "refused": "Inline-source hash mismatch: selfhost/build/phase13/control-const-bodies-01/report.json/owners/1/constants/0/source"
+    }
+  ],
+  "ordinaryFileReferencesPreserved": [
+    {
+      "report": "ordinary-report.json",
+      "pointer": "/file",
+      "path": "real/input.mjs",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    {
+      "report": "ordinary-report.json",
+      "pointer": "/source",
+      "path": "real/source.mjs",
+      "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ]
+}

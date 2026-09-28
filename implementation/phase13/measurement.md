@@ -1,9 +1,11 @@
 # Phase13 measurement and replay
 
-Status: both experimental images pass the paired fresh/history correctness gate.
-Plain worker lifting takes 1.01% more process time; the selector follow-up takes
-6.63% less. The latter justifies inspecting bounded expansion of the same rule,
-not promotion. The prospective
+Status: the three experimental images pass the paired fresh/history correctness
+gate and exclusive pilot comparisons. Plain worker lifting takes 1.01% more
+process time; selector fusion takes 6.63% less; the constant-scope expansion
+takes 10.56% less. Root defers production promotion: the best result falls below
+the agreed roughly20% target and the concrete standalone helper is larger.
+The usable Phase12 compiler remains selected. The prospective
 [P13-004 plan](../../experiments/phase13/P13-004-measurement.md)
 binds released Phase12 API `0975a4a8…`, exact stack histories, resource policy and
 separate complexity accounting. Root completed the unchanged-baseline profile
@@ -207,3 +209,70 @@ bounded inventory of other sites admitted by the same exact rule. Its outcome
 must justify a separately frozen expanded candidate and repeated correctness
 gates; this one-family image is not promoted. All measurement CPU jobs are closed
 and raw comparison inputs remain unchanged.
+
+## Constant-scope expansion gate
+
+The prospective [P13-006 plan](../../experiments/phase13/P13-006-constant-scope-selectors.md)
+permits narrowly guarded local constants while preserving their initialization
+and demand positions. The separately frozen
+`rewriter-selector-const-combined-01/manifest.json` identifies API
+`7eca544a1f2e3ab637064533117f290bd576c5774d111a619fdd12755817c81e`.
+It selects six checking owners accepted by the actual transform; it does not
+silently weaken the refused `core_subst_stable` case.
+
+After the independent extended semantic controls passed, the unchanged v2
+measurement tool ran `measure-const-history-01/report.json` on CPU3. Both fresh
+6,000-character checks and all 226 paired exact-history observations pass with
+complete results equal to Phase12. Original digests and the historical seed
+failure remain distinct. There are no worker restarts, errors or input changes;
+the full transformation and report replay before and after execution. The
+supervised launcher closes with exit zero and no error, signal, timeout or
+overflow. Resources and cache policy are unchanged. This is another experimental
+derivative gate, not a new checked bootstrap or final conformance suite.
+
+The actual prototype dependency count is 640 helper/support/legacy physical
+lines, or 847 including the same 207 retained maintained test lines: 823
+nonblank lines and 64,819 bytes. The exact report is
+`measure-preparation-03/complexity-const-report.json`. This includes the full
+historical helper and does not assume that a future integration removes code.
+Root completed the exclusive ABBA run using the frozen
+`measure-preparation-03/pilot-const-config.json`. The completed
+`measure-const-pilot-01/report.json` passes all four complete-result and input/
+launch checks. Mean process wall falls from 27.362s to 24.474s, 10.56% less;
+mean request time falls from 26.207s to 23.327s, 10.99% less. The unchanged v2
+measurement tools and all raw samples remain retained. No additional experiment
+is planned by this owner.
+
+## Final complexity and decision
+
+The implementation owner also prepared one actual standalone feasibility helper,
+not merely an estimate of future deduplication. Its frozen identity is
+`cdf6d41c68b79d77b120ab6e367c2805a94c512338c5672afee21144c49df6d4`
+at `rewriter-maintained-01/project/tools/development/equality.mjs`. Independent
+static accounting in `measure-preparation-05/complexity-standalone-helper-report.json`
+finds 535 physical / 519 nonblank lines and 34,355 bytes, including historical
+profiles. It imports only Node built-ins: no legacy helper or parser dependency
+is hidden outside that total. Against 296 / 285 lines and 27,345 bytes, it adds
+239 physical lines and 7,010 bytes, about 80.7% more lines and 25.6% more source
+bytes. Independent experiment controls remain additional code. The preceding
+`measure-preparation-04` audit is retained: its import check correctly identified
+that adding the old tests at their original path still imports the old helper,
+so that aggregate cannot describe a runnable standalone replacement test bundle.
+The final comparison counts the actual two helper files directly; it neither
+hides that unresolved test dependency nor credits tests as removed code.
+The owner's closed `rewriter-maintained-replay-01/report.json` separately verifies
+authentic v1–v5 bytes/statistics with both lineage verifiers and reproduces the
+same `7eca544a…` API/report through the feasibility helper's default and explicit
+v6 profile. That compatibility success does not install or promote the helper.
+
+The structured implementation therefore demonstrates a bounded checking speed
+gain, but no reduction in implementation length or obligation count. Historical
+reproduction, selector scope, Unit demand, constant initialization and resource
+behavior still require distinct guards and evidence. Root's decision is to keep
+Phase12 installed and preserve these experimental results for future work.
+No Phase13 production release, fresh TypeScript speed ratio, full conformance
+claim, new bootstrap or generated-program runtime improvement follows from
+these pilots. Calibration, three candidate gates and three exclusive ABBA
+comparisons remain separate retained runs. All owned compiler/CPU jobs are
+closed, consumed inputs remain unchanged, and this owner has performed no
+archive capture.

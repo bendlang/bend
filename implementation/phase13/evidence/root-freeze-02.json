@@ -1,0 +1,10 @@
+{
+  "rootExplicitFreeze": true,
+  "captureAuthorized": true,
+  "time": "2026-09-28T20:18:38.230428+00:00",
+  "supersedes": "root-freeze.json",
+  "reason": "The original collector preflight mistook embedded source strings for filenames. A Phase13-only adapter now validates exactly61 inline source strings and preserves all file references; legacy collector and compiler results untouched.",
+  "scope": "All experiment producers remain closed. Only evidence adapter/publication documentation changed after first freeze. Inline hash/refusal controls pass. Final selected bytes frozen before second preflight.",
+  "adapterControls": "inline-source-check-01.json",
+  "finalChecks": "selfhost/build/phase13/final-gates-01.json"
+}

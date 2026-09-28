@@ -146,6 +146,16 @@ separately. Reference discovery still traverses that tail. These mechanisms and
 their retained failures are recorded in the
 [Phase11 report](../../implementation/phase11/known_work.md).
 
+The [Phase13 structured-rewriter experiment](../../implementation/phase13/structured_rewriter.md)
+finds that replacing branch closures with named workers alone adds capture-array
+work without removing trampoline dispatches. Selector fusion instead removes
+intermediate tag-selection closures and dispatches while retaining selected body
+arrows and their execution order. The six-owner prototype passes bounded
+semantic and saved-history controls and reduces full-source checking time by
+10.6%; it remains uninstalled because its maintained helper would grow by 7 KB.
+Constants stay in their original scopes. Neither these finite controls nor
+retaining body arrows establishes general stack safety.
+
 ## Compiler source assembly
 
 The compiler implementation modules use one shared internal namespace, with

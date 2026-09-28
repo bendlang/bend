@@ -6,6 +6,8 @@ unsupported-shape acceptance; the corrected helper passes 17 controls. Root's
 separate measurement rejects plain lifting as a speed optimization. The smaller
 selector pilot passes 30 paired observations and 23 refusal controls, and all
 nine surviving real normalizer arrows are byte-identical to their originals.
+The separately planned constant-scope extension also passes its independent
+controls: 72 paired observations, 45 refusals and actual-image range checks.
 The [prospective controls](../../experiments/phase13/P13-003-controls.md) precede
 any execution. The implementation owner's proposed syntax is reviewed below;
 these are bounded controls, not a general compiler-equivalence conclusion.
@@ -352,3 +354,67 @@ comparison and the eventual promotion decision. No live compiler source,
 maintained helper, runtime, upstream snapshot or installed artifact was changed
 by this reviewer. The frozen prospective P13-003 plan remains unchanged; all
 failed and corrected attempts are retained separately.
+
+## Constant-scope extension: separate plan and actual controls
+
+After the first selector pilot survived root's gates, the frozen
+[P13-006 plan](../../experiments/phase13/P13-006-constant-scope-selectors.md)
+authorized a narrow extension: permit single initialized `const` declarations
+that remain in their original blocks, never shadow an owner parameter, and
+exempt only their own declaration's `=` from the write check. The scanner still
+visits the whole initializer and nested callbacks. No constant value is moved,
+substituted or captured. The removable false-body and owner-parameter condition
+requirements remain unchanged.
+
+Independent static review of `rewriter-selector-const.mjs`, SHA256
+`071f5b05b5c5afecd598258153d69f2c1d639a09c4ee952b1c33f24c0f0a2e75`,
+finds those restrictions implemented directly. The owner's inventory retains
+six of the seven planned owners; `core_subst_stable` has no eligible selector
+under this rule. The combined image is
+`7eca544a1f2e3ab637064533117f290bd576c5774d111a619fdd12755817c81e`,
+with 28 removed intermediate selectors. Both independent behavioral harnesses
+first reproduce that exact combined API from the genuine checked parent.
+
+`control-const-inherited-01` passes the original **30 paired observations** and
+**22 unchanged refusals**. The first pilot's blanket const-declaration refusal
+is intentionally replaced by the new positive/negative declaration tests; it is
+the explicitly authorized domain extension, not a waived failure. Of these 22
+refusals, 17 pass v5 and are refused by the selector; five fail the prerequisite.
+
+`control-const-01` passes **14 positive scenarios on three tags each**, giving
+**42 paired observations**, and **23 new refusals**. Positive controls cover
+selected/unselected throwing initializers, preceding initializer effects,
+returned closures, sibling and nested local constants, lexical `undefined`,
+parenthesized comma expressions, separate declarations and initializer
+callbacks. Both a selected-branch later declaration and a later parent
+declaration preserve their TDZ errors. Exact saved observations include the
+initializer/body effects and errors. Every surviving synthetic arrow and every
+constant declaration string remains identical to its v5 counterpart.
+
+New refusals cover owner-parameter shadowing in selected, sibling and nested
+blocks; direct/property/increment/compound writes inside initializers and their
+callbacks; `let`, destructuring, multiple declarators, missing initializers and
+bare arrows; a constant before the child return; use of a constant as the nested
+tag source; and an initializer reading the discarded Unit. Twenty-two pass the
+v5 prerequisite and fail the selector; a protected helper-name declaration is
+refused by the prerequisite. Missing-initializer syntax is a structural refusal
+probe, not an accepted JavaScript-program equivalence case.
+
+The actual-image supplement `control-const-bodies-01` passes across all six
+selected owners. It records **52 exact surviving arrows**, **two changed
+enclosing arrows containing declared nested rewrite sites**, and **28 removed
+arrows matching the declared discarded-Unit names**. All **10 constant
+declaration strings and their nearest surviving-arrow ownership** are unchanged.
+All unselected top-level function bodies remain exact. The two changed containers
+are reported explicitly; the report does not claim their complete arrow bytes
+are unchanged, or that a declared nested site alone proves general equivalence.
+
+All three attempts complete with exit 0; there are no failed const-extension
+attempts to omit. Their prospective run plans, consumed helpers, inputs, outputs,
+full observations, identities and launch records are retained separately. These
+are synthetic/static CPU2 controls with no explicit stack flag, not compiler
+history gates or performance results. Every owned process is closed. The
+measurement owner runs the unchanged fresh and matched histories at 4 MiB;
+root alone decides promotion after the remaining correctness and timing gates.
+The original helper, earlier reports/tools and frozen prospective plans remain
+unchanged. No further domain relaxation was implemented or tested here.

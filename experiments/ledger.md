@@ -859,3 +859,37 @@ boundaries. Independent capture/demand/stack review and exact53/60histories prec
 whole-source timing. Expansion requires meaningful benefit; no speedup is promised.
 The [report](../implementation/phase13/structured_rewriter.md) will retain failures
 and distinguish checked provenance, correctness, timing and promotion.
+
+## Phase13 structured-rewriter experiment completed — 2026-09-28
+
+The [report](../implementation/phase13/structured_rewriter.md) closes the staged
+[design](../design/phase13/structured_rewriter.md). The installed Phase12 compiler,
+upstream b2111cf, Bend source and conformance frontier remain unchanged.
+A shared structural view replays authentic transformation versions 1–5 exactly.
+Named-worker lifting removes closures but adds capture arrays; complete-source
+checking is 1.01% slower, so it is rejected. Actual unsafe-capture cases and their
+corrected recognizer remain preserved.
+
+Selector fusion removes intermediate selection work while retaining selected
+body arrows. Its one-owner pilot reduces process time by 6.63%; bounded const-scope
+recognition in six owners reaches **27.36→24.47 s, 10.56% less time**. Each image
+passes independent semantic controls, a fresh long string and both exact saved
+53/60-request histories before timing. These are finite controls, not a general
+stack-safety or compiler-soundness proof. All timing rows use separate exclusive
+ABBA comparisons with two samples per image; no new TypeScript ratio is inferred.
+
+**Decision: defer integration.** A self-contained helper reproduces the prototype
+and historical versions exactly, but grows from 296 to 535 lines and adds 7,010
+bytes. The smaller gain does not compensate with simpler maintained machinery
+and misses the roughly 20% checking target. No new checked release or broad
+conformance gate is claimed for the experimental image. The last installed
+TypeScript comparison remains 9.42×, and semantic gaps remain unchanged.
+
+**Updated frontier:** remove measured intermediate work, not just closure syntax.
+Keep this selector prototype for a cheaper implementation or a demonstrably
+larger opportunity; do not broaden branch inlining past saved counterexamples.
+Imported-law semantics and exact diagnostics remain useful next priorities.
+The [evidence capsule](../implementation/phase13/evidence/README.md) preserves
+profiles, failed attempts, consumed tools, exact histories and all measurements;
+publication checks full byte/mode recovery. All 75 unrelated Phase6 files remain
+unchanged and unstaged.

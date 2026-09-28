@@ -2,6 +2,11 @@
 
 Use the [compiler guide](../docs/BEND-IN-BEND.md) and
 [Phase12 release report](../implementation/phase12/avoidable_work.md).
+The [Phase13 rewriter report](../implementation/phase13/structured_rewriter.md)
+preserves a prototype with 10.6% less checking time; integration is deferred
+because its speed/complexity tradeoff does not meet the agreed target. The
+installed compiler and development commands remain those of Phase12.
+
 The current target is upstream
 [`b2111cf43244e65f76ddc278ee695e669f720cbf`](https://github.com/bendlang/bend/tree/b2111cf43244e65f76ddc278ee695e669f720cbf),
 after the Bend2 2.0.32 release.

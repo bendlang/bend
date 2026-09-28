@@ -1,0 +1,10 @@
+{
+  "rootExplicitFreeze": true,
+  "captureAuthorized": true,
+  "time": "2026-09-28T20:19:37.180731+00:00",
+  "supersedes": "root-freeze-02.json",
+  "reason": "Preflight02 found two original Phase12 history Base caches absent from the initial selection. Their exact identities now register as omitted derived inputs; cache bytes remain outside the capsule.",
+  "scope": "No experiment, helper or compiler changes after prior freeze. Evidence selection and recovery guide frozen for final preflight.",
+  "adapterControls": "inline-source-check-01.json",
+  "finalChecks": "selfhost/build/phase13/final-gates-01.json"
+}

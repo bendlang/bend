@@ -43,6 +43,12 @@ Historical fixed points and performance ratios apply only to their recorded
 artifacts. Designs, rejected attempts and raw evidence remain linked from the
 [experiment ledger](experiments/ledger.md) and [current strategy](experiments/STEERING.md).
 
+The [Phase13 structured-rewriter experiment](implementation/phase13/structured_rewriter.md)
+produced a prototype with **10.6% less checking time** (27.36 → 24.47 s in its
+paired pilot). Integration is deferred: the helper grows by 7 KB and the gain
+falls below the agreed investment target. The installed Phase12 release and its
+conformance results remain unchanged.
+
 ## Bend runs FAST
 
 **Target:** be as fast as C on the CPU, as fast as CUDA on the GPU. **Status:**

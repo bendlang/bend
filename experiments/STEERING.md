@@ -1,11 +1,13 @@
 # Current compiler experiment strategy
 
-Phase13 is active: the user authorizes the complete bounded structured-rewriter
-experiment, under its [design](../design/phase13/structured_rewriter.md). Profile
-Phase12 first, reproducev5bytes structurally, then test explicit branch workers
-with capture/demand/stack controls. Roughly20%less checking time or a compelling
-speed/complexity tradeoff gates expansion. Phase12 stays installed until gates
-justify replacement. [Current report](../implementation/phase13/structured_rewriter.md).
+Phase13 is complete; integration is deferred. The
+[report](../implementation/phase13/structured_rewriter.md) and
+[evidence](../implementation/phase13/evidence/README.md) preserve all pilots.
+Named-worker lifting is 1.01% slower; one-owner selector fusion uses 6.63% less
+checking time; six-owner fusion uses 10.56% less (27.36→24.47s). The latter passes
+bounded controls and exact 53/60-request histories, but its self-contained helper
+adds 239 lines/7,010 bytes. It misses the roughly 20% target without a compensating
+complexity reduction. Phase12 remains installed; no conformance change is claimed.
 
 Phase12 completes the user's next avoid-redundant-work round on2026-09-28.
 No historical time budget is renewed. Preserve unrelated Phase6 work.
@@ -63,8 +65,11 @@ resource policy; fixture order is not general stack-safety evidence.
 Delayed normalizer spine reconstruction remains deferred for weak benefit and
 added protocol cost. Larger term/compact-string changes need new discriminating
 evidence. Do not broaden branch inlining or revive the seed cleanup without
-addressing the retained counterexamples. Profile this final API before choosing
-another hotspot; imported-law semantics and exact diagnostics remain priorities.
+addressing the retained counterexamples. Phase13 profiles this final API: exclusive samples assign 14.55% to dispatch and
+13.47% to GC. Removing intermediate work helps; shifting closures to capture
+arrays alone does not. Reuse the preserved prototype and profiles before another
+rewriter trial; broader grammar needs new evidence of substantial savings or
+cheaper maintenance. Imported-law semantics and exact diagnostics remain priorities.
 
 ## Historical evidence and operating rules
 

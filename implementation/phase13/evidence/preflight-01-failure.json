@@ -1,0 +1,14 @@
+{
+  "kind": "phase13-preservation-preflight-failure",
+  "scope": "Reproduction retaining the original collector error; original preflight also failed with this exception. Compiler results are unaffected.",
+  "argv": [
+    "python3",
+    "implementation/phase8/migration-evidence/collect.py",
+    "plan",
+    "implementation/phase13/evidence/selection.json",
+    "implementation/phase13/evidence/preflight-01.json"
+  ],
+  "exitCode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py\", line 407, in <module>\n    main()\n  File \"/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py\", line 389, in main\n    result, _, _ = inventory(args.root.resolve(), selection)\n  File \"/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py\", line 217, in inventory\n    if candidate.is_file() and not candidate.is_symlink() and not exclusion(local.as_posix(), selection):\n  File \"/usr/lib/python3.9/pathlib.py\", line 1439, in is_file\n    return S_ISREG(self.stat().st_mode)\n  File \"/usr/lib/python3.9/pathlib.py\", line 1221, in stat\n    return self._accessor.stat(self)\nOSError: [Errno 36] File name too long: '/home/ai/bend2/build/publish/bend/(_x_1) => {\\n  return $kc$(($String$eq$(($tg$(_t_0)), \"Ann\")), run_clo((_x_2) => {\\n  return $norm_eval$(_book_0, run_loop($kid$(_t_0, 0)), _args_0, _left_0, _fallback_0);\\n}), run_clo((_x_3) => {\\n  return $kc$(($String$eq$(($tg$(_t_0)), \"Let\")), run_clo((_x_4) => {\\n  return $norm_eval$(_book_0, run_loop($norm_let$(($ks$(_t_0)))), _args_0, _left_0, _fallback_0);\\n}), run_clo((_x_5) => {\\n  return $kc$(($String$eq$(($tg$(_t_0)), \"Ref\")), run_clo((_x_6) => {\\n  return $norm_ref$(_book_0, _t_0, _args_0, run_loop($lookup$(_book_0, ($nm$(_t_0)))));\\n}), run_clo((_x_7) => {\\n  return $kc$(($String$eq$(($tg$(_t_0)), \"Min\")), run_clo((_x_8) => {\\n  return $norm_apply$(run_loop($norm_min$(_book_0, run_loop($kid$(_t_0, 0)), run_loop($kid$(_t_0, 1)))), _args_0);\\n}), run_clo((_x_9) => {\\n  return $kc$(($String$eq$(($tg$(_t_0)), \"Rwt\")), run_clo((_x_10) => {\\n  return $kc$(($String$eq$(($tg$(run_loop($wnf$(_book_0, run_loop($kid$(_t_0, 0)))))), \"Rfl\")), run_clo((_x_11) => {\\n  return $norm_eval$(_book_0, run_loop($kid$(_t_0, 2)), _args_0, _left_0, _fallback_0);\\n}), run_clo((_x_12) => {\\n  return $norm_apply$(_t_0, _args_0);\\n}));\\n}), run_clo((_x_13) => {\\n  return $norm_args$(_book_0, _t_0, _args_0, _left_0, _fallback_0);\\n}));\\n}));\\n}));\\n}));\\n}));\\n}'\n"
+}
