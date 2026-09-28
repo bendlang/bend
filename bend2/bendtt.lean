@@ -252,8 +252,7 @@ def Term.takes : Term → Bool
   | Efq       => true
   | _         => false
 
--- an argument x : A as the checker puts it into a type: a λ or λ-match
--- goes annotated, so a call of it there infers
+-- an argument as it enters a type: a λ goes annotated, so its calls infer
 def Term.arg (x A : Term) : Term :=
   if Term.takes x then Ann x A else x
 
