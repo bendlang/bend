@@ -11,8 +11,7 @@ static Term tcp_recv_with(Env e, IoWork* w, IoPack more,
   if (w->code == EAGAIN) {
     return io_wait_on(w, fd, POLLIN, 0, more);
   }
-  Term r = w->code ? io_fail(e, w->code, NULL)
-    : io_done(e, read(e, w->data, w->size));
+  Term r = io_res(e, w, read(e, w->data, w->size));
   free(w->data);
   return io_tup(e, io_hand(w->hand), r);
 }

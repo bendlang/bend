@@ -18,8 +18,8 @@ static Term tcp_poll_more(Env e, IoWork* w) {
     return io_tick() < at ? io_wait_on(w, fd, POLLIN, at, tcp_poll_more)
       : tcp_poll_end(e, w, io_done(e, term_pak(CID(None), 0)));
   }
-  return tcp_poll_end(e, w, w->code ? io_fail(e, w->code, NULL) : io_done(e,
-    io_box(e, CID(Some), io_str(e, w->data, w->size))));
+  return tcp_poll_end(e, w,
+    io_res(e, w, io_box(e, CID(Some), io_str(e, w->data, w->size))));
 }
 
 Term tcp_poll_run(Env e, Term* f, IoWork* w) {
