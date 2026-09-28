@@ -1,0 +1,16 @@
+{
+  "kind": "phase11-prospective-plan-recovery",
+  "complete": true,
+  "pass": true,
+  "origin": {
+    "revision": "3e760a19181c3bf16d56d2dda5d20f0ad7d113a6",
+    "path": "experiments/phase11/P11-004-calls.md",
+    "sha256": "109a68a992fc412d35d8085fd97a3d417b3f95e8b49a8fba4fa96704cd1176a3"
+  },
+  "recovered": {
+    "path": "implementation/phase11/evidence/historical/P11-004-calls.prospective.md",
+    "sha256": "109a68a992fc412d35d8085fd97a3d417b3f95e8b49a8fba4fa96704cd1176a3",
+    "bytes": 3968
+  },
+  "reason": "Root later appended experiment outcomes. The exact original prospective bytes referenced by the call producer freeze remain distinct and are recovered from their committed version."
+}

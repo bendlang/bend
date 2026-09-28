@@ -32,3 +32,7 @@ selected error order; reject on supported-source observation change. Node24.18.0
 4MiB stack,4GiB heap,CPU0 for bounded probes; counts are not timings. Root will
 measure complete combined compiler serially. Outcome:
 [scope guard report](../../implementation/phase11/scope_guard.md).
+
+## Final disposition
+
+Guard promoted with finite-data demand controls; see [scope report](../../implementation/phase11/scope_guard.md).

@@ -58,3 +58,7 @@ pass existing kernel/normalizer and adversarial controls, and preserve complete
 public observations before root integration. Selected supplemental components
 are not B1 or fixed points. Keep each ablation separate and preserve failures.
 Whole-source timing, broad conformance, installation and git belong to root.
+
+## Final disposition
+
+Shared telescope promoted; exact/combined shortcuts deferred. See [checker report](../../implementation/phase11/checker.md).

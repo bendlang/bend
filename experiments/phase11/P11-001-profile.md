@@ -17,3 +17,7 @@ Separate genuine representation/algorithm differences from incidental line count
 Record findings in [the report](../../implementation/phase11/known_work.md).
 No production mutation or optimization is authorized by this diagnostic itself;
 subsequent source candidates require their own prospective hypothesis and gates.
+
+## Final disposition
+
+Final profile complete; see [combined report](../../implementation/phase11/known_work.md).

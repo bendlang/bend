@@ -1,0 +1,45 @@
+--- a/selfhost/src/back/native/bridge.bend
++++ b/selfhost/src/back/native/bridge.bend
+@@ -396,11 +396,16 @@
+     case Nil{}: Nil{}
+     case Con{h, rest}: Con{nc_compact(h), nc_compact_list(rest)}
+ 
++law nc_compact_succ:
++  for +t: KTerm
++  for +count: U32
++  KTerm
++
+ @unsafe
+ def nc_compact_ctor(+t: KTerm, lit: NC_Literal) -> KTerm:
+   match lit:
+     case NC_Literal{valid, value}:
+-      nt_choose(KTerm, valid, u => kt("NWord", U32.show(value), 0, 0, Nil{}), u => kt(tg(t), nm(t), ix(t), qt(t), nc_compact_list(ks(t))))
++      nt_choose(KTerm, valid, u => kt("NWord", U32.show(value), 0, 0, Nil{}), u => nt_choose(KTerm, String.eq(nm(t), "Succ") && U32.is_eq(terms_len(ks(t)), 1), u => nc_compact_succ(kid(t, 0), 1), u => kt(tg(t), nm(t), ix(t), qt(t), nc_compact_list(ks(t)))))
+ 
+ @unsafe
+ def nc_compact(t):
+@@ -424,6 +429,8 @@
+   nt_choose(NC_Code, String.eq(tag, "App"), u => nd_app(book, t, env, n), u =>
+   nt_choose(NC_Code, String.eq(tag, "Let"), u => nt_choose(NC_Code, U32.is_gt(terms_len(ks(t)), 2), u => nc_parallel(book, ks(t), env, n), u => nc_lets(book, ks(t), env, n)), u =>
+   nt_choose(NC_Code, String.eq(tag, "NSeqLet"), u => nc_lets(book, ks(t), env, n), u =>
++  nt_choose(NC_Code, String.eq(tag, "NNatAdd"), u => nc_lower(book, nc_sequence("NNatSum", nm(t), ks(t), Nil{}, n), env, U32.inc(n)), u =>
++  nt_choose(NC_Code, String.eq(tag, "NNatSum"), u => nc_return("nat_chk(e, nat_chk(e, " ++ nc_head(nc_values(ks(t), env)) ++ " + 1) + " ++ nm(t) ++ "ull)", n), u =>
+   nt_choose(NC_Code, String.eq(tag, "Ctr"), u => nc_lower_ctor(book, t, env, n, nc_literal(t)), u =>
+   nt_choose(NC_Code, String.eq(tag, "NCtr"), u => nc_constructor(nm(t), nc_values(ks(t), env), n), u =>
+   nt_choose(NC_Code, String.eq(tag, "NApply"), u => nc_apply_code(nc_values(ks(t), env), n), u =>
+@@ -434,4 +441,14 @@
+   nt_choose(NC_Code, String.eq(tag, "NOp"), u => nc_intrinsic(nm(t), nc_values(ks(t), env), n), u =>
+   nt_choose(NC_Code, String.eq(tag, "Efq"), u => NC_Code{"err_post(e.mem, ERR_FIDS); return 0;\n", Nil{}, n, ""}, u =>
+   nt_choose(NC_Code, String.eq(tag, "Rwt"), u => nc_lower(book, kid(t, 2), env, n), u =>
+-  nc_fail("native lowering does not support core node " ++ tag, n)))))))))))))))))))
++  nc_fail("native lowering does not support core node " ++ tag, n)))))))))))))))))))))
++
++# Typed erasure renames user-owned constructors; this pass sees native Succ only.
++# Keep the first checked increment: even a malformed foreign U64 tail retains
++# its original wrapping/error behavior before the bounded remaining offset.
++@unsafe
++def nc_compact_succ(t, count):
++  nt_choose(KTerm, U32.is_eq(count, 0), u => nc_compact(t), u =>
++  nt_choose(KTerm, String.eq(tg(t), "Ctr") && String.eq(nm(t), "Succ") && U32.is_eq(terms_len(ks(t)), 1) && U32.is_lt(count, 4294967295),
++    u => nc_compact_succ(kid(t, 0), U32.inc(count)),
++    u => nt_choose(KTerm, U32.is_eq(count, 1), u => kt("Ctr", "Succ", 0, 0, [nc_compact(t)]), u => kt("NNatAdd", U32.show(U32.sub(count, 1)), 0, 0, [nc_compact(t)]))))

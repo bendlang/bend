@@ -24,32 +24,48 @@ for(const [name,body]of [['original',source],['derived',candidate.source]]) {
 }
 const observe=(module,a,b)=>{try{return {ok:true,value:module.equality(a,b)}}catch(e){return {ok:false,error:typeof e==='string'?e:{name:e.name,message:e.message}}}};
 
-test('reviewed body guards and exact single insertion',()=>{
+test('reviewed equality insertion and optional version4 choice lowering',()=>{
   assert.equal(candidate.stats.replacements,1);assert.equal(Object.keys(candidate.stats.bodyHashes).length,11);
-  const at=source.search(declaration('$String$eq$')),open=source.indexOf('\n',at)+1,added=candidate.source.length-source.length;
-  assert.equal(candidate.source.slice(0,open),source.slice(0,open));assert.equal(candidate.source.slice(open+added),source.slice(open));
-  assert.ok(candidate.source.length>source.length);assert.equal(candidate.stats.exports.length,new Set(candidate.stats.exports).size);
+  const scalar=candidate.stats.version===4?transformEquality(source,3):candidate;
+  const at=source.search(declaration('$String$eq$')),open=source.indexOf('\n',at)+1,added=scalar.source.length-source.length;
+  assert.equal(scalar.source.slice(0,open),source.slice(0,open));assert.equal(scalar.source.slice(open+added),source.slice(open));
+  assert.ok(scalar.source.length>source.length);assert.equal(candidate.stats.exports.length,new Set(candidate.stats.exports).size);
+  if(candidate.stats.version===4){assert.ok(candidate.stats.choices.sites>0);assert.equal(candidate.stats.choices.outputSha256,createHash('sha256').update(candidate.source).digest('hex'));}
   assert.throws(()=>transformEquality(candidate.source),/Unsupported equality dependency/);
 });
-test('explicit transform versions retain prior bytes and reject cross-emitter profiles',()=>{
-  assert.throws(()=>transformEquality(source,0),/Unsupported generated runtime/);
-  assert.throws(()=>transformEquality(source,4),/Unsupported generated runtime/);
-  assert.throws(()=>transformEquality(source,'2'),/Unsupported generated runtime/);
-  if(legacy) {
-    assert.deepEqual(transformEquality(source,1),candidate);
-    assert.throws(()=>transformEquality(source,2),/Unsupported generated runtime/);
-    assert.throws(()=>transformEquality(source,3),/Unsupported generated runtime/);
-  } else {
-    const historical=transformEquality(source,2);
+test('explicit versions retain historical equality bytes and reject cross-emitter profiles',()=>{
+  for(const version of [0,5,'2'])assert.throws(()=>transformEquality(source,version),/Unsupported generated runtime/);
+  if(legacy){assert.deepEqual(transformEquality(source,1),candidate);for(const version of [2,3,4])assert.throws(()=>transformEquality(source,version),/Unsupported generated runtime/);}
+  else{
+    const historical=transformEquality(source,2),v3=transformEquality(source,3);
     const oldGuard='  if (typeof _a_0 === "string" && typeof _b_0 === "string" && _a_0.isWellFormed() && _b_0.isWellFormed()) return _a_0 === _b_0;\n';
     const newGuard='  if (typeof _a_0 === "string" && typeof _b_0 === "string") return _a_0 === _b_0;\n';
-    assert.equal(historical.stats.version,2);assert.equal(candidate.stats.version,3);
-    assert.equal(historical.source.split(oldGuard).length,2);
-    assert.equal(historical.source.replace(oldGuard,newGuard),candidate.source);
-    assert.deepEqual({...historical.stats,version:3},candidate.stats);
-    assert.deepEqual(transformEquality(source,3),candidate);
+    assert.equal(historical.source.split(oldGuard).length,2);assert.equal(historical.source.replace(oldGuard,newGuard),v3.source);assert.deepEqual({...historical.stats,version:3},v3.stats);
+    assert.equal(candidate.stats.version,4);assert.deepEqual(transformEquality(source,4),candidate);const {choices,...baseStats}=candidate.stats;assert.deepEqual({...baseStats,version:3},v3.stats);assert.ok(choices.sites>0);
     assert.throws(()=>transformEquality(source,1),/Unsupported generated runtime/);
   }
+});
+test('version4 rejects member callees, rebinding, destructuring and protected nesting',()=>{
+  if(legacy)return;
+  const rejected=[
+    'function $probe$() { return obj.$kc$(true, run_clo((u)=>1), run_clo((u)=>2)); }',
+    'function $probe$() { return obj?.$f_choose$(true, run_clo((u)=>1), run_clo((u)=>2)); }',
+    'function $probe$() { const {$kc$} = obj; return 0; }',
+    'function $probe$() { let [run_clo] = values; return 0; }',
+    'function $probe$() { ({x:$kc$} = obj); return 0; }',
+    'function $probe$() { ($f_choose$) = replacement; return 0; }',
+    'function $probe$() { function run_tail(a,b) { return 0; } return 0; }',
+    'function $probe$() { function $kc$(a,b,c) { return 0; } return 0; }',
+    'function $probe$($kc$) { return 0; }',
+    'function $probe$() { return (({x:run_tail})=>1)(obj); }',
+    'function $probe$() { return $kc$.call(null,true,()=>1,()=>2); }',
+    'function $probe$() { return new $kc$(true,run_clo((u)=>1),run_clo((u)=>2)); }',
+    'function $kc$(a,b,c) { return 0; }'
+  ];
+  for(const probe of rejected)assert.throws(()=>transformEquality(source.replace('export default {',()=>probe+'\nexport default {'),4),undefined,probe);
+  const probe='function $probe$(_c_0,_y_0,_n_0) { return $kc$(_c_0,_y_0,_n_0); }';
+  const kept=transformEquality(source.replace('export default {',()=>probe+'\nexport default {'));
+  assert.ok(kept.source.includes(probe));assert.equal(kept.stats.choices.skipped.length,candidate.stats.choices.skipped.length+1);
 });
 test('reject changed equality dependency and runtime',()=>{
   assert.throws(()=>transformEquality(source.replace(declaration('$Char$cmp$'),match=>match+'\n  void 0;')),/Unsupported equality dependency/);

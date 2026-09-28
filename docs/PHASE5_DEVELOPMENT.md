@@ -90,6 +90,25 @@ The development workflow defaults to `"checked"`; `npm run build` defaults to
 `"equality"` after the [Phase9 current-pin validation](../implementation/phase9/checker_speed.md).
 An explicit profile overrides either default.
 
+In Phase11, `equality` remains the compatibility profile name. Its version4
+derivative also lowers structurally verified saturated choices with two literal
+branch closures. It evaluates the condition once, allocates only the selected
+closure and keeps the original runtime, exports and trampoline boundary;
+nonliteral thunks retain the general path. Unsupported generated shapes or
+protected-name rebinding are refused. Historical versions1/2/3 replay their
+original transformation bytes exactly. The untouched checked B1 and explicit
+derivation record remain separate; this is not a newly self-emitted fixed point
+or a change to emitted user-JS behavior.
+
+The [Phase11 report](../implementation/phase11/known_work.md) records the combined
+source offload demand guard, shared constructor telescope and native open-Succ
+compaction, their failed attempts, and final validation. Native compaction uses
+private `NNatAdd`/`NNatSum` terms after constructor identity and erasure are known;
+it evaluates the tail once and preserves the first checked increment before a
+bounded residual addition. U32 run counts and the runtime's 48-bit Nat cap are
+distinct bounds. The retained long-string fixture passes the final full frontend
+run with a 4MiB stack; that result does not establish unbounded string support.
+
 Historically, the focused workflow gate and a full 2,756-observation frontend
 gate passed for this route. On the frozen Phase5 second integration, an
 exclusive four-core ABBA comparison reduced mean full frontend wall from301.9

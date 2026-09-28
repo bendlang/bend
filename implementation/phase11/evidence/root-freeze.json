@@ -1,0 +1,34 @@
+{
+  "kind": "phase11-root-final-freeze",
+  "rootExplicitFreeze": true,
+  "captureAuthorized": true,
+  "time": "2026-09-28T09:02:25.077726+00:00",
+  "scope": "All compiler/source/runtime/tools/test and documentation/report producers are closed. No more edits to selected owned content. Evidence publisher may finalize selection metadata, capture, verify, restore and independently hash/mode-check the capsule. Commit/push and publication metadata are the remaining work.",
+  "preflight": {
+    "file": "implementation/phase11/evidence/preflight-04.json",
+    "sha256": "c1deddee70b333a28ffe222b3bc3a5d1c9841b781634877f0d79b3ddc0aa5e3a",
+    "unresolvedRepositoryReferences": 0
+  },
+  "finalInputs": [
+    {
+      "file": "selfhost/build/phase11/consolidation-01.json",
+      "sha256": "045660dda4fe5956a82ec25c88d31dad1e386e5c0cc9c431ead90c0f77070d06"
+    },
+    {
+      "file": "selfhost/build/phase11/documentation-review-01.json",
+      "sha256": "61842c0b48b79383cedabbf01810593f96925cfaff55eb9a925743b827893edf"
+    },
+    {
+      "file": "selfhost/dist/release.json",
+      "sha256": "490ff7289d78d382cac99e6e6ac88dc71df840e8166b44e444600d8446818543"
+    },
+    {
+      "file": "selfhost/dist/typed-api.mjs",
+      "sha256": "63c861e900450ab2045474d6c822371d30c56019521a12c13d8e4c62009ddf1f"
+    }
+  ],
+  "compilerJobsActive": false,
+  "allThreeControlledMatricesPass": true,
+  "releaseSmokePasses": 42,
+  "unrelatedPhase6FilesPreserved": 75
+}

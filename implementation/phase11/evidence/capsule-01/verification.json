@@ -1,0 +1,9 @@
+{
+  "pass": true,
+  "files": 12362,
+  "objects": 2223,
+  "externalCapsules": 7,
+  "archiveSha256": "d2759a82bb13cf5a38b819acce9769fe529ce6cf57e4b81668a5ab6f2de1e099",
+  "archiveBytes": 23289650,
+  "scope": "Archive byte identity only; recorded failed experiments remain failures."
+}

@@ -78,8 +78,10 @@ Base Nat checking and annotation retain the compact form; custom Nat definitions
 use ordinary constructor checking. Both emitters and readback handle the form.
 Overflow keeps dynamic construction instead of wrapping the value. The compact
 source payload is fixed-width; this does not restrict wider runtime Nat values.
-Strings still expand into ordinary core constructors, and long strings remain
-a known limit. The [Phase9 report](../../implementation/phase9/checker_speed.md)
+Strings still expand into ordinary core constructors. The retained long-string
+case passes the final Phase11 full frontend run with a 4MiB stack; this is a
+bounded fixture result, not support for arbitrarily long strings. The
+[Phase9 report](../../implementation/phase9/checker_speed.md)
 records the source, semantic controls and measured costs of these changes.
 
 ## Avoiding repeated work
@@ -88,6 +90,17 @@ Loader alias ambiguity uses explicit conditional evaluation before searching
 declarations. A successful membership search returns immediately; no symbol table
 or alias-resolution rule is changed. Boolean conjunction/disjunction alone does
 not defer these searches in the current pipeline.
+
+Source offload resolution likewise uses explicit branches: it searches the book
+only for an offload-marked reference whose local binding has not already selected
+the refusal. Ordinary references retain their later resolution path. This
+preserves results and error order on finite well-formed compiler data; irrelevant
+lookups on malformed raw host objects are outside that equivalence boundary.
+
+Match checking fills a constructor telescope once and shares it between the
+arm's context and goal. The missing-constructor refusal precedes that work, and
+arm/default checking and usage merging retain their order. This shares one local
+immutable value rather than introducing a cache or changing declaration visibility.
 
 The persistent definition index uses Boolean-parameter branch workers for lookup.
 Pinned upstream lowers their mutual tail recursion to a loop, avoiding branch
@@ -101,6 +114,18 @@ Zero/Succ layers traverse their fields directly instead of repeatedly recognizin
 an entire literal suffix. Dynamic-tail dependencies and open-Array refusals remain
 part of that traversal. See the [Phase10 report](../../implementation/phase10/repeated_work.md)
 for the checked-book invariants, controls and remaining emitted-code size limits.
+
+After typed erasure, native lowering combines an open run of unary `Succ` nodes
+into private `NNatAdd`/`NNatSum` terms. User-owned constructors have already been
+renamed; closed literals keep their existing path. One continuation evaluates
+the dynamic tail once, then computes a checked first increment followed by the
+remaining offset. Preserving that first check retains U64 wrapping/error behavior
+even for malformed foreign values. A passing first check establishes the 48-bit
+Nat cap, and a U32 run-count bound makes the remaining addition safe in U64.
+Zero count preserves the tail, and reaching the count cap compacts the rest
+separately. Reference discovery still traverses that tail. These mechanisms and
+their retained failures are recorded in the
+[Phase11 report](../../implementation/phase11/known_work.md).
 
 ## Compiler source assembly
 
@@ -252,6 +277,16 @@ Targeted differential attempts retain their own harness and input identities,
 and cannot turn a selected pass into a whole-suite conformance claim.
 
 ## Validation processes
+
+The development `equality` profile is a compatibility name for an explicit
+checked-B1 derivative. Version4 adds guarded literal-choice lowering to native
+string equality: recognized saturated choices evaluate the condition once,
+allocate only the selected branch closure, and retain the original trampoline
+boundary, runtime and exports. Dynamic thunks keep the general path. Structural
+guards reject unsupported bodies or rebinding, and historical versions1/2/3
+retain exact byte replay. This compiler-host derivative does not change emitted
+user-JS behavior or establish a new self-emitted fixed point. See the
+[workflow](../../docs/PHASE5_DEVELOPMENT.md).
 
 The [private compiler image](../tools/private-compiler/README.md) specializes a
 completed checked self-emitted compiler for a dedicated process. Static saturated

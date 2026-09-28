@@ -1,0 +1,4 @@
+import fs from 'node:fs';import path from 'node:path';import crypto from 'node:crypto';import{pathToFileURL}from'node:url';
+const request=JSON.parse(fs.readFileSync(process.argv[2]));const {loadApi,inspect}=await import(pathToFileURL(request.driver));const api=await loadApi();const started=performance.now();const observation=await inspect(request.file,{mode:'native',api});const compileMs=performance.now()-started;let code;
+if(observation.code){code={bytes:Buffer.byteLength(observation.code),sha256:crypto.createHash('sha256').update(observation.code).digest('hex')};fs.writeFileSync(path.join(request.directory,'program.c'),observation.code);delete observation.code;}
+const pass=observation.status==='ok'&&observation.checked===true&&observation.typeAccepted===true&&Boolean(code);fs.writeFileSync(path.join(request.directory,'result.json'),JSON.stringify({compileMs,observation,code,pass,maxRssKiB:process.resourceUsage().maxRSS},null,2)+'\n');if(!pass)process.exitCode=1;

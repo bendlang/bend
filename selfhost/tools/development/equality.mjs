@@ -1,5 +1,6 @@
 // Explicit checked-B1 derivative. This does not create bootstrap provenance.
 import fs from 'node:fs';
+import assert from 'node:assert/strict';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {fileURLToPath,pathToFileURL} from 'node:url';
@@ -73,7 +74,10 @@ const currentProfile=Object.freeze({
 const currentFastProfile=Object.freeze({...currentProfile,version:3,
   guard:'  if (typeof _a_0 === "string" && typeof _b_0 === "string") return _a_0 === _b_0;\n'
 });
-const profiles=Object.freeze([legacyProfile,currentFastProfile,currentProfile]);
+// Version4 also avoids literal choice-thunk wrappers while retaining the original
+// trampoline boundary. Historical versions1/2/3 retain exact byte replay.
+const currentChoiceProfile=Object.freeze({...currentFastProfile,version:4});
+const profiles=Object.freeze([legacyProfile,currentChoiceProfile,currentFastProfile,currentProfile]);
 
 // The current compiler roots have identity public marshaling, emitted exactly
 // in this shape. Refuse any new ABI shape until separately reviewed.
@@ -116,6 +120,30 @@ function tokens(source,start) {
     }
   }
   requireThat(!stack.length,'Unbalanced generated module');return out;
+}
+
+function choiceBody(name){return `function ${name}(_b_0, _yes_0, _no_0) {\n  if (_b_0) {\n    return run_tail(_yes_0, {$: "Unit"});\n  } else {\n    return run_tail(_no_0, {$: "Unit"});\n  }\n}`;}
+function transformChoices(source){
+ const marker=prefixEnd,runtime=currentProfile.runtimeHash,names=new Set(['$kc$','$f_choose$']);
+ const markerAt=source.indexOf(marker);assert.ok(markerAt>=0,'Missing runtime boundary');const start=markerAt+marker.length;assert.equal(sha(source.slice(0,start)),runtime,'Unknown runtime');const ts=tokens(source,start),functions=new Map();let at=0;
+ while(ts[at]?.text==='function'){const first=at,name=ts[at+1]?.text;assert.match(name,/^\$[\w$]+\$$/);assert.equal(ts[at+2]?.text,'(');const body=ts[at+2].close+1;assert.equal(ts[body]?.text,'{');const end=ts[body].close;assert.ok(!functions.has(name),'Duplicate function');functions.set(name,{start:first,end,source:source.slice(ts[first].start,ts[end].end)});at=end+1;}
+ assert.equal(ts[at]?.text,'export');assert.equal(ts[at+1]?.text,'default');assert.equal(ts[at+2]?.text,'{');assert.equal(ts[at+2].close,ts.length-2);assert.equal(ts.at(-1).text,';');
+ for(const name of names)assert.equal(functions.get(name)?.source,choiceBody(name),'Unsupported choice body: '+name);
+ const protectedNames=new Set([...names,'run_clo','run_tail','run_loop']);
+ for(let j=0;j<ts.length;j++){
+  let params;if(ts[j].text==='function')params=j+2;else if(ts[j].text==='('&&ts[ts[j].close+1]?.text==='='&&ts[ts[j].close+2]?.text==='>')params=j;
+  if(params!==undefined){assert.equal(ts[params]?.text,'(');assert.ok(!ts.slice(params+1,ts[params].close).some(t=>protectedNames.has(t.text)),'Shadowed protected parameter');}
+  if(!protectedNames.has(ts[j].text))continue;const prev=ts[j-1]?.text,next=ts[j+1]?.text;
+  assert.ok(!['let','const','var'].includes(prev)&&next!=='='&&!(['+','-','*','/','&','|','^','?'].includes(next)&&['=',next].includes(ts[j+2]?.text)),'Rebound dependency');
+  if(prev==='function')assert.equal(functions.get(ts[j].text)?.start,j-1,'Nested protected declaration');else assert.ok(next==='('&&!['.','new'].includes(prev),'Unsupported protected reference or member callee');
+ }
+ const sites=new Map(),skipped=[];
+ const split=(open)=>{const args=[];let begin=open+1;for(let i=begin;i<ts[open].close;i++){if(ts[i].close!==undefined){i=ts[i].close;continue;}if(ts[i].text===','){args.push([begin,i]);begin=i+1;}}if(begin<ts[open].close)args.push([begin,ts[open].close]);return args;};
+ const arrow=([lo,hi])=>{if(ts[lo]?.text!=='run_clo'||ts[lo+1]?.text!=='('||ts[lo+1].close!==hi-1)return null;const p=lo+2;if(ts[p]?.text!=='('||ts[p].close!==p+2||!/^[A-Za-z_$][\w$]*$/.test(ts[p+1]?.text??'')||ts[p+3]?.text!=='='||ts[p+4]?.text!=='>'||ts[p+5]?.text!=='{'||ts[p+5].close!==hi-2)return null;return [p,hi-1];};
+ for(let i=0;i<at;i++)if(names.has(ts[i].text)&&ts[i-1]?.text!=='function'&&ts[i+1]?.text==='('){const end=ts[i+1].close,args=split(i+1),yes=args.length===3?arrow(args[1]):null,no=args.length===3?arrow(args[2]):null;if(yes&&no)sites.set(i,{first:i,end,args,yes,no});else skipped.push({at:ts[i].start,name:ts[i].text,argumentCount:args.length});}
+ const render=(lo,hi)=>{if(lo===hi)return '';let output='',cursor=ts[lo].start;for(let i=lo;i<hi;i++){const s=sites.get(i);if(!s||s.end>=hi)continue;output+=source.slice(cursor,ts[i].start)+'run_tail(('+render(...s.args[0])+') ? ('+render(...s.yes)+') : ('+render(...s.no)+'), {$: "Unit"})';cursor=ts[s.end].end;i=s.end;}return output+source.slice(cursor,ts[hi-1].end);};
+ const program=source.slice(0,start)+source.slice(start,ts[0].start)+render(0,ts.length)+source.slice(ts.at(-1).end);
+ return {source:program,report:{kind:'literal-choice-tail-derivative',version:1,runtimeSha256:runtime,inputSha256:sha(source),outputSha256:sha(program),sites:sites.size,skipped,protectedBodies:[...names].map(name=>({name,sha256:sha(functions.get(name).source)})),scope:'Only saturated structurally verified choices with two literal run_clo arrows; keep original runtime, exports and trampoline boundary.'}};
 }
 
 export function transformEquality(source,version) {
@@ -163,7 +191,13 @@ export function transformEquality(source,version) {
   }
   const target=functions.get('$String$eq$');
   const replacement=target.source.replace('{\n','{\n'+guard);
-  return {source:source.slice(0,target.start)+replacement+source.slice(target.end),stats:{version:profile.version,replacements:1,runtimeHash,bodyHashes,exports,functions:functions.size}};
+  const equalitySource=source.slice(0,target.start)+replacement+source.slice(target.end);
+  const stats={version:profile.version,replacements:1,runtimeHash,bodyHashes,exports,functions:functions.size};
+  if(profile.version===4){
+    const choice=transformChoices(equalitySource);
+    return {source:choice.source,stats:{...stats,choices:choice.report}};
+  }
+  return {source:equalitySource,stats};
 }
 
 function verifyBootstrap(apiFile,reportFile) {

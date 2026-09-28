@@ -1,5 +1,18 @@
 # Compiler evidence preservation index
 
+## Phase11 known-work optimization — 2026-09-28
+
+The [report](../implementation/phase11/known_work.md) records the final checked
+compiler, full frontend regression with one improved string fixture, actual
+native execution and three serial controlled matrices. Its
+[evidence capsule](../implementation/phase11/evidence/README.md) retains complete
+profiles, hypotheses, source, guarded derivations, failures, superseded tools,
+raw observations and final release checks. Publication verifies selected bytes
+and independently restores file bytes/modes using seven bound historical
+capsules. Invalid launcher timings remain excluded; historical failures retain
+their original verdicts. Unrelated Phase6 dirty work is neither adopted nor staged.
+No new self-hosted fixed point or general backend conformance is claimed.
+
 ## Phase10 repeated-work optimization — 2026-09-28
 
 The [report](../implementation/phase10/repeated_work.md) records the controlled

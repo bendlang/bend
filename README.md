@@ -17,32 +17,30 @@ This fork develops the compiler in [`selfhost/`](selfhost/README.md), on branch
 from `selfhost/`, run `npm run verify:release`, then `node cli.mjs FILE --run`.
 `npm run build` checks and rebuilds the default with pinned upstream.
 
-The [Phase10 release report](implementation/phase10/repeated_work.md)
-records loader, index and layout optimizations, current validation and
-remaining gaps against upstream **b2111cf, Bend 2.0.32 era**. The compiler has
-**15,107 Bend lines in 59 modules**. It retains S4's shared loader, provenance
-and authoritative checker result. The historical
-50% and 75% simplification targets remain unachieved. Rejected generic binder
-and evaluator prototypes remain unpromoted.
+The [Phase11 release report](implementation/phase11/known_work.md) records
+branch, checker and native-emission optimizations against upstream **b2111cf,
+Bend 2.0.32 era**. The compiler has **15,138 Bend lines in 59 modules**, retaining
+S4's shared loader, provenance and authoritative checker result. The historical
+50% and 75% simplification targets remain unachieved.
 
 The [development workflow](docs/PHASE5_DEVELOPMENT.md) builds a genuine checked
-compiler and runs short paired selections. Release builds preserve a genuine
-checked parent and derive a guarded native string-equality optimization. Full conformance
-and self-checking remain separate integration gates. Ordinary compilation runs
-the Bend implementation without a TypeScript fallback; independent BendTT
-`--verdict` validation is not implemented.
+compiler and runs short paired selections. Release builds preserve that checked
+parent and derive guarded native equality and literal-choice optimizations.
+Ordinary compilation runs the Bend implementation without a TypeScript fallback;
+independent BendTT `--verdict` validation is not implemented.
 
-Controlled full-source checking improves another **1.30×** over Phase9:
-**51.75 s versus 67.04 s**. Pinned TypeScript takes **2.89 s**, leaving a **17.93×**
-process-time gap. This measures checking, not emission or generated-program speed.
+Controlled full-source checking improves **1.73×** over Phase10:
+**51.44 → 29.73 s**. Pinned TypeScript takes **2.79 s**, leaving a **10.67×**
+process-time gap. This measures checking and trust reporting, excluding emission.
+For the separate Nat300 fixture, generated C shrinks **98.69%**, from 20.59 MB
+to 269 KB, and the native executable builds and returns the expected result.
 
-The final frontend run accepts 1,000/1,001 positive programs. All 482 validation
-negatives reject; none is observed incorrectly accepting. Long strings remain
-the positive checking gap, and exact diagnostic differences remain.
-Read [conformance](selfhost/CONFORMANCE.md) for acceptance, exact diagnostics,
-execution coverage and unsupported environments. Historical fixed points and
-performance ratios apply only to their recorded compiler artifacts. Designs,
-rejected attempts and raw evidence remain linked from the
+The final frontend run accepts all **1,001 positive programs** and rejects all
+**482 validation negatives**, with zero observed invalid acceptances. The former
+long-string stack failure now passes; imported-law and exact diagnostic gaps
+remain. Read [conformance](selfhost/CONFORMANCE.md) for the measured boundaries.
+Historical fixed points and performance ratios apply only to their recorded
+artifacts. Designs, rejected attempts and raw evidence remain linked from the
 [experiment ledger](experiments/ledger.md) and [current strategy](experiments/STEERING.md).
 
 ## Bend runs FAST

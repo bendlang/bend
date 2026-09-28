@@ -64,3 +64,7 @@ Coordinate checked-build launches with root. No full-source benchmark, broad
 suite or installed release change by this task. Keep every failed/raw run and
 preimage, distinguish structural counts and concurrent small screens from root's
 controlled full-source measurement. Root owns integration, measurement and archive.
+
+## Final disposition
+
+Maintained version4 promoted; invalid microtimings excluded. See [call report](../../implementation/phase11/calls.md) and [final combined measurements](../../implementation/phase11/known_work.md).

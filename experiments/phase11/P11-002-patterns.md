@@ -2,10 +2,13 @@
 
 - Owner: backend-pattern agent; independent integration/review: root.
 - Started: 2026-09-28. Initial read-only investigation bounded to ten minutes.
-- Baseline: Phase10 release, repository5f561c45e2e86c1e35e0ede8c73ab4342ae50e61;
-  selected APIff876a357db2d44d3e1fbd37ab694a16d2fa0f47d60c9d500603e634c8c645f9.
+- Baseline: Phase10 release, repository `5f561c45e2e86c1e35e0ede8c73ab4342ae50e61`;
+  selected API `ff876a357db2d44d3e1fbd37ab694a16d2fa0f47d60c9d500603e634c8c645f9`.
 - Pinned upstream: b2111cf; unchanged human-written TypeScript sources.
-- Correctness/measurement: prospective; no candidate or new timing yet.
+- Original plan: prospective; written before candidate or new timing.
+- Outcome: checked native candidate02 passed bounded gates and was handed to root
+  for independent integration/release verification. The report retains candidate01's
+  zero-count failure, corrected raw-harness ABI error, and original blocked vector.
 - Report: [patterns.md](../../implementation/phase11/patterns.md).
 
 ## Hypothesis and smallest falsifier
@@ -47,3 +50,7 @@ computed values beyond source U32 and native cap boundaries. A changed refusal,
 skipped/eager field, repeated tail execution, malformed native output or inherited
 candidate from a rejected historical prototype blocks promotion. Root owns any
 production edits, final broader suite, exclusive timing and release.
+
+## Final disposition
+
+Candidate02 promoted; [native report](../../implementation/phase11/patterns.md) and [final combined results](../../implementation/phase11/known_work.md).

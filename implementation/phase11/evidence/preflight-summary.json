@@ -1,0 +1,26 @@
+{
+  "kind": "phase11-evidence-preflight-summary",
+  "complete": true,
+  "pass": true,
+  "finalPreflight": "preflight-04.json",
+  "rootFreeze": "root-freeze.json",
+  "summary": {
+    "files": 12362,
+    "objects": 5739,
+    "logicalBytes": 411110565,
+    "uniqueBytes": 311607122,
+    "newArchiveObjects": 2223,
+    "newArchiveBytesBeforeCompression": 253457386,
+    "externalPrerequisites": 25,
+    "omittedFiles": 98,
+    "omittedBytes": 118755207,
+    "referenceStatuses": {
+      "captured-external-object": 86396,
+      "captured-object": 1400,
+      "external-prerequisite": 88,
+      "external-toolchain-identity": 127,
+      "omitted-derived-input": 117
+    }
+  },
+  "scope": "Read/hash-only closure preflight before final selection declaration; final capture and verification are authoritative."
+}

@@ -20,6 +20,13 @@ a copied bootstrap sidecar. The development default profile is `"checked"`;
 and compiler controls. An explicit profile overrides either default. Unknown equality
 bodies or provenance are refused.
 
+Phase11 keeps that profile name for compatibility. Its version4 transform also
+lowers structurally verified literal Boolean choices to the existing tail-call
+boundary, avoiding unused branch and wrapper allocation. Historical versions1/2/3
+still replay byte for byte. This optimizes the checked B1 image; it does not
+establish a new self-emitted fixed point. See the
+[Phase11 report](../../../implementation/phase11/known_work.md) for the controls.
+
 The CLI reports `pass` and `exactDifferences` separately. Custom acceptance/phase
 oracles can pass while exact diagnostics differ; `"strictExact":true` also
 requires exact agreement. Failed commands, verdicts and replay histories remain

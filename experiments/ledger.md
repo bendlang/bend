@@ -789,3 +789,27 @@ have independent bounded investigations and prospective records. The
 [report](../implementation/phase11/known_work.md) will separate component evidence,
 whole-workflow measurements, semantic gates and promotion. No new performance,
 conformance or fixed-point result is claimed at this checkpoint.
+
+
+## 2026-09-28 — Phase11 final integration
+
+[Design](../design/phase11/known_work.md), [report](../implementation/phase11/known_work.md),
+[evidence](../implementation/phase11/evidence/README.md). Promote lazy offload
+lookup, shared constructor telescope, bounded open-Succ lowering and reviewed
+version4 choice derivative. Exact-comparison shortcut deferred; delayed fallback
+unimplemented. Current pin stays b2111cf. Final API63c861e9 is an explicit
+checked-B1 derivative with historical replay, not a new bootstrap/fixedpoint.
+
+Serial same-source checking51.443→29.729s (1.7304×); TS2.785s, remaining10.674×.
+Nat300 JS24.450→15.611s with identical code; native emission27.032→3.609s,
+C20,589,858→269,358B. Actual Clang/run succeeds306n. Full frontend:1,001positive
+acceptances,482negative refusals, zero invalid acceptances/timeouts,730exactTS
+differences. Long-string fixture improves; all other2,995observations unchanged.
+Four imported-law trust cases still fail early. Final37row paired backend gate
+passes with3exact differences. Source adds31lines to15,138; reduction goals open.
+
+Independent operation/derivation/boundary controls and final release validation
+are linked in the report. Preserve every failed attempt, including zero-count
+underflow, setup/oracle mistakes, and status-zero EPERM launch records. Invalid
+call microtimings are excluded. No performance ratio is inferred from archive
+capture, profiling, operation counts, or historical different-source measurements.

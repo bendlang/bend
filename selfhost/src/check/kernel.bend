@@ -836,8 +836,7 @@ def check_mat_type(e, ctx, t, dem, ty, a):
 @unsafe
 def check_mat_ctr(e, ctx, t, dem, ty, a, ctr):
   kc(KChecked, String.eq(dk(ctr), "Absent"), u => dg_bad_detail("unknown or duplicate match constructor", dg_text("a constructor of " ++ nm(a) ++ " (missing, or already matched)"), t),
-   u => both(check(mat_lhs(e, nm(t), tele_fill(cb(e), dt(ctr), ks(a)), da(ctr), Con{t, Con{ty, ctx}}), ctx, kid(t, 0), dem, mat_goal(cb(e), ty, tele_fill(cb(e), dt(ctr), ks(a)), da(ctr), nm(t), Nil{})),
-   check(e, ctx, mat_rest(cb(e), t, a), dem, all(qt(ty), nm(ty), ix(ty), KTerm{tg(a), nm(a), ix(a), qt(a), ks(a), Con{nm(t), rm(a)}}, kid(ty, 1))), t, ty, True{}))
+   u => check_mat_filled(e, ctx, t, dem, ty, a, ctr, tele_fill(cb(e), dt(ctr), ks(a))))
 
 # A non-case fallback past the final constructor is unreachable. The checker
 # and annotation pass share this choice so backends receive the same Efq.
@@ -1187,3 +1186,18 @@ def tele_check_after_head(e, ctx, tel, h, rest, dem, checked_head):
   kc(KChecked, core_subst_stable(kid(tel, 1)),
     u => tele_check_done(checked_head, tele_check_static(e, ctx, kid(tel, 1), rest, dem)),
     u => tele_check_done(checked_head, tele_check_legacy(e, ctx, subst(kid(tel, 1), ix(tel), h), rest, dem)))
+
+# Reuse the same instantiated constructor telescope for the lhs and arm goal.
+@unsafe
+def check_mat_filled(
+  +e: KEnv,
+  +ctx: List<&2, KTerm>,
+  +t: KTerm,
+  +dem: U32,
+  +ty: KTerm,
+  +a: KTerm,
+  +ctr: KDef,
+  +tel: KTerm,
+) -> KChecked:
+  both(check(mat_lhs(e, nm(t), tel, da(ctr), Con{t, Con{ty, ctx}}), ctx, kid(t, 0), dem, mat_goal(cb(e), ty, tel, da(ctr), nm(t), Nil{})),
+   check(e, ctx, mat_rest(cb(e), t, a), dem, all(qt(ty), nm(ty), ix(ty), KTerm{tg(a), nm(a), ix(a), qt(a), ks(a), Con{nm(t), rm(a)}}, kid(ty, 1))), t, ty, True{})

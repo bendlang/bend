@@ -1,45 +1,51 @@
 # Current compiler experiment strategy
 
-Current authorization (2026-09-28): further optimization, including larger changes
-and rereading pinned TypeScript. [Phase11 design](../design/phase11/known_work.md)
-was committed as `cf29bae` before candidate implementation. No old time budget is
-renewed. Baseline is released Phase10 `5f561c4`; production remains unchanged.
+Current authorization (2026-09-28): optimize further and reread pinned TypeScript.
+The [Phase11 design](../design/phase11/known_work.md) preceded implementation.
+No historical time budget is renewed. Preserve unrelated Phase6 dirty work.
 
-## Phase11 investigation
+## Phase11 release frontier
 
-Fresh final-release profiling owns CPU0. Independent bounded owners compare
-pattern reconstruction/native expansion, checker normalization, and branch/call
-lowering with pinned TypeScript. Plans precede probes; isolated checked candidates
-precede review/integration. Root owns controlled comparison, release and archive.
-Outcomes: [Phase11 report](../implementation/phase11/known_work.md).
+The [report](../implementation/phase11/known_work.md) integrates lazy offload
+lookup, one shared constructor telescope, bounded native open-Succ compaction
+and guarded literal-choice lowering in the checked B1 derivative.
+Upstream remains b2111cf; selected API is
+`63c861e900450ab2045474d6c822371d30c56019521a12c13d8e4c62009ddf1f`.
+The `equality` profile now selects version4, with exact v1/v2/v3 replay.
 
-## Phase10 release frontier (baseline)
+Controlled full-source checking is **29.73 s**, versus **51.44 s** Phase10 and
+**2.79 s** pinned TypeScript: **1.73× faster**, with a **10.67×** process gap.
+The same-source six-process matrix excludes emission; maximum RSS falls modestly.
+Nat300 JS is **24.45→15.61 s (1.57×)** with identical generated JS.
+Native C emission is **27.03→3.61 s (7.49×)**, and C shrinks **98.69%** to269KB.
+That exact C builds with Clang16 and returns306n; emission timings exclude Clang.
+All matrices pause intentional competing compiler/archive jobs and retain failures.
 
-The [Phase10 report](../implementation/phase10/repeated_work.md) integrates
-conditional loader membership, loop-emitting index workers and typed/Nat layout
-validation. Immutable `integrated-01` targets unchanged upstream b2111cf. Its
-selected API is `ff876a357db2d44d3e1fbd37ab694a16d2fa0f47d60c9d500603e634c8c645f9`.
+All1,001 positive frontend fixtures check; all482 validation negatives reject.
+The former long-string stack overflow passes at the same4MiB stack, reproduced
+by choice lowering alone with unchanged Bend source. This is not compact strings.
+Other2,995 observations match Phase10. There are730 exact TS differences
+(198parse/532check); four imported-law trust cases still fail early.
+No invalid acceptances/timeouts were observed;37paired backend rows pass.
 
-Controlled checking of the same final source takes **51.75 s**, versus **67.04 s**
-for Phase9 and **2.89 s** for TypeScript: **1.30× faster**, with a **17.93×**
-process-wall gap. Two serial fresh samples per compiler run on one CPU. This
-excludes emission; memory stays about 1.5 GiB. The separate Nat300 JS process falls
-34.17→24.74 s (1.38×), with identical generated JS; layout falls 9.48→0.50 s (19.09×).
-Native Nat300 still emits 20.59 MB C and exceeds the 90 s Clang build bound.
+Source is15,138physical/12,923nonblank Bend lines, +31/+28 overPhase10; two helpers,
+one law and two private native tags are added. Simplification50%/75% goals remain
+open. No new self-hosted fixed point, proof-kernel/GPU gate or general runtime
+speedup is claimed. The checked/focused development observation is23.54s.
 
-All 2,996 frontend observations match Phase9 exactly:1,000/1,001 positive types,
-482/482 negative refusals, zero observed invalid acceptances/timeouts,731 exact
-TypeScript differences. Long strings and four imported-law trust cases remain.
-No new self-hosted fixed point, Lean/GPU gate or general runtime improvement is
-claimed. The source grows 57 lines to 15,107; 50%/75% reduction goals remain unmet.
+Duplicate exact-comparison work is deferred for inconsistent benefit; delayed
+normalizer fallback remains unimplemented. New speed work should first profile
+this final artifact. Imported-law fills and exact diagnostics are the next
+semantic priorities. Keep checked B1, derivatives and self-emitted artifacts
+distinct. Invalid call microtimings with EPERM remain excluded.
 
-Use the checked build/focused loop (observed 26.19 s) and small discriminating
-probes for routine work. Next semantic priorities are compact strings and
-imported-law fills. Next speed work should profile the final release afresh and
-investigate repeated reconstructed pattern terms/native code expansion. Keep
-whole-compiler measurements separate from operation and component speedups.
-Preserve unrelated Phase6 work; all intentional compiler/archive jobs pause for
-controlled comparisons. Failed and superseded attempts remain evidence.
+## Phase10 baseline (historical)
+
+The [report](../implementation/phase10/repeated_work.md) preserves loader/index/
+layout changes. Its older-source result was51.75s versus67.04s Phase9 and2.89s TS.
+Do not combine that ratio with Phase11's same-source matrix. It preserved all
+2,996 Phase9 observations, with one positive string failure. Native Nat300 emitted
+20.59MB and exceeded the90s Clang build limit. All artifacts remain preserved.
 
 ## Phase9 release frontier (historical)
 
