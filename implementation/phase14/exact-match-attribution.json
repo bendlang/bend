@@ -1,0 +1,1153 @@
+{
+  "kind": "phase14-exact-match-attribution-correction",
+  "complete": true,
+  "pass": true,
+  "inputs": [
+    {
+      "file": "selfhost/build/phase14/frontend-audit-02/report.json",
+      "sha256": "07ad60eea99526b5d2676fc724f8b092e519aacd0be45f5385e2bea76346e1c5"
+    },
+    {
+      "file": "selfhost/build/phase14/frontend-audit-02/baseline-comparison.json",
+      "sha256": "19ee9a6d839605d741a3ac1dbcaeea229d6ca9d6dcd463d1230a498b5e52de5b"
+    }
+  ],
+  "method": "Filter the127new exact matches from the completed delta audit. Separate four named imported-law cases across both lanes, diagnostic-only changes excluding verdict/evidence consequences, and remaining changes to unsafeDefinitions plus diagnostic/output. Preserve all raw comparison fields.",
+  "counts": {
+    "checker-caret": 71,
+    "trust-reporting": 48,
+    "imported-law": 8
+  },
+  "groups": {
+    "checker-caret": [
+      {
+        "id": "base/bytes_ops.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "base/heap_queue_deque.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "base/json.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "base/parser.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/assert_fill_scope.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/axiom_import_warn.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/axiom_use.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/axiom_whitelist.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/beta_ann_body.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/cop_circular_witness_000.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/data_bound_instantiation.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/descent_field_order.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/eval_target_missing.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/fits_adt_param_invariant.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/fits_domain_swap.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/fits_eql_invariant.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/forward_reference_scope.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/forward_reference.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/json_number_format.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/parser_lexer_kit.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/parser_repetition.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/partial_self_call_stuck.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/queue_deque_heap.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/rand_bag_ops.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/template_key_empty.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/template_key_nan.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/unbound_old_builtin.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/unsafe_forward_safe.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "compile/axiom_runtime.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "eval/bag_ops.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "eval/bytes_roundtrip.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "eval/wildcard_no_reference.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "flatten/ctor_call_syntax.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "flatten/nohalt_error.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/ann_transparency.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/before_type_check.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/distinct_material.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/duplicate_deferred.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/joint_group_spend.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/joint_group_sum.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/literal_descent_linear.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/literal_reject.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/non_structural_descent.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/non_structural_field.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/nsi_material_gate.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/nsi_necessity.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/polymorphic_self_recursion.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/recursive_equality_proof.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/reject_fresh_mint.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/reject_remint_call.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/size_change_accept.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/size_change_reject_000.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/size_change_reject_001.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/strict_descent.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/swapped_induction.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/threaded_state_before.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/type_level_recursion.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/unguarded_decrement.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "halt/wrong_param_descent.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "io/gfx_opaque_term.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "io/http_chunked_bytes.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "io/http_fetch_fail.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "io/http_keep_alive.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "io/http_request_roundtrip.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "io/http_router.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "io/http_url_parse.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "io/json_roundtrip.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "io/tls_connect_close.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/float_special_literals.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/glued_bracket.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "run/gfx_ppm_codec.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      }
+    ],
+    "trust-reporting": [
+      {
+        "id": "check/unsafe_field.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "unsafeDefinitions",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/unsafe_relies.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "unsafeDefinitions",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "comptime/unsafe.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "import/unsafe_used.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "unsafeDefinitions",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "io/cid_unknown.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/effect_ctr_name.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/effect_need_collision_reverse.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/effect_need_collision.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/effect_proto.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/effect_runtime_shadow.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/effect_undefined_word.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/fifo_eof.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/foreign_arrow_arity.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/foreign_shared.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/foreign_types.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/help_flood.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/marshal_bool_strict.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/marshal_char_scalar.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/marshal_char_strict.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/marshal_char_type.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/marshal_closure.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/marshal_deep_value.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/marshal_erased_binders.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/marshal_erased_fields.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/marshal_imported_nullary_type.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "unsafeDefinitions",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "io/marshal_imported_nullary.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/marshal_nat_bigint.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/marshal_native_forms.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/marshal_proof_null.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/marshal_string_scalar.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/marshal_tag_unknown.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/marshal_type_null.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/marshal_u32_integer.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/nat_host_bounds.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/nat_host_neg.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/reenter_closure.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/select_eintr.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "io/shared_module_state.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "reg/far_import.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "run/array_atomic_fadd.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "run/array_fork_unshare.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "run/array_fork.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "run/js_group_args.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "run/stencil3d.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "run/unsafe_forward.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "run/unsafe_mark.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "run/unsafe_mutual.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      },
+      {
+        "id": "run/unsafe_tail_cycle.bend",
+        "lane": "check",
+        "changedAxes": [
+          "unsafeDefinitions",
+          "output"
+        ]
+      }
+    ],
+    "imported-law": [
+      {
+        "id": "import/unsafe_law_derived.bend",
+        "lane": "parse",
+        "changedAxes": [
+          "status",
+          "exitCode",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/unsafe_law_derived.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "phase",
+          "checked",
+          "typeAccepted",
+          "proofTrust",
+          "unsafeDefinitions",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/unsafe_law_fill.bend",
+        "lane": "parse",
+        "changedAxes": [
+          "status",
+          "exitCode",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/unsafe_law_fill.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "phase",
+          "checked",
+          "typeAccepted",
+          "proofTrust",
+          "unsafeDefinitions",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/unsafe_law_own.bend",
+        "lane": "parse",
+        "changedAxes": [
+          "status",
+          "exitCode",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/unsafe_law_own.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "phase",
+          "checked",
+          "typeAccepted",
+          "proofTrust",
+          "unsafeDefinitions",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/unsafe_law_unused.bend",
+        "lane": "parse",
+        "changedAxes": [
+          "status",
+          "exitCode",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/unsafe_law_unused.bend",
+        "lane": "check",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "phase",
+          "checked",
+          "typeAccepted",
+          "proofTrust",
+          "unsafeDefinitions",
+          "diagnostic"
+        ]
+      }
+    ]
+  },
+  "scope": "Postpublication documentation correction only; compiler, full observations, exact improvement total and existing frozen capsule remain unchanged."
+}

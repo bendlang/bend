@@ -939,3 +939,15 @@ strict differences remain in [preserved evidence](../implementation/phase14/evid
 exact release before expanding source dispatch. The Phase13 rewriter stays deferred.
 Keep rejected seed/branch transformations excluded until their history failures
 are addressed. All75unrelated Phase6 files remain unchanged and unstaged.
+
+
+## Phase14 attribution correction
+
+A read-only follow-up audit separates the127new exact matches into71checker-caret
+improvements,48trust-reporting improvements and8imported-law observations. The
+initial main report/CONFORMANCE incorrectly attributed119to checker rendering.
+The [corrected report](../implementation/phase14/conformance_and_dispatch.md) and
+[per-observation audit](../implementation/phase14/exact-match-attribution.json)
+retain the exact breakdown. Total improvement, compiler, timings and validation
+results are unchanged. The original capsule preserves the pre-correction wording
+and all raw evidence; it has not been rewritten.

@@ -35,7 +35,7 @@ controls guard the wider trust effect; the full corpus audits every output delta
 checker spans. UTF-16 offsets, tabs, clipping and empty/reversed ranges have direct
 reference controls. The selected family becomes exact in 71 of 78 observations;
 seven earlier span-origin errors remain strict failures. Across the full corpus,
-the renderer yields 119 new exact checker observations. It does not change parsing,
+the renderer yields 71 new exact checker observations. It does not change parsing,
 infer a better error span or relax the exact oracle.
 
 [Source dispatch](source-dispatch.md) expresses six normalizer tag choices as
@@ -103,7 +103,8 @@ addendum. Exact comparison retains paths, diagnostics and all semantic axes.
 | Strict check passes/failures | 1,006/492 | 1,085/413 |
 
 There are 127 new exact matches and zero lost exact matches. Eight improvements
-are the four imported-law cases across two lanes; 119 are checker diagnostics.
+are the four imported-law cases across two lanes; 71 are checker diagnostics
+and 48 correct unsafe-definition lists and their diagnostic/output text.
 Another 26 checker observations add only caret rows while retaining an existing
 exact difference. Both `import/alias_decl.bend` observations now refuse during
 parsing, restoring the reference phase while retaining a diagnostic-text gap.
@@ -198,3 +199,13 @@ raw observations, commands, consumed tools, measurements and release checks. It
 requires closed producers, zero unresolved repository references and complete
 byte/mode recovery with ten prerequisite capsules. Publication/recovery records
 establish preservation, not additional compiler-correctness results.
+
+
+## Postpublication attribution correction
+
+The [attribution audit](exact-match-attribution.json) corrects the earlier claim
+that all 119 remaining checker improvements came from rendering. They comprise
+71 caret-only improvements and 48 trust-reporting improvements. Together with
+eight imported-law observations, the total remains 127. The original capsule
+retains the earlier wording and all original raw observations; this documentation
+correction changes neither the compiler nor any validation/performance result.

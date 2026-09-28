@@ -24,7 +24,7 @@ across 409 unique fixtures. There are 127 new exact matches and zero lost matche
 Strict check results are **1,085 passes / 413 failures**. These counts differ
 because exact reference comparison and expected-fixture verdicts are separate
 oracles. Eight improvements cover the four imported-law cases across both lanes;
-119 improve checker diagnostics. Another 26 observations add carets but retain
+71 improve checker diagnostics and 48 correct trust-reporting lists/output. Another 26 observations add carets but retain
 an exact difference. `import/alias_decl.bend` now refuses at the correct parse
 phase in both lanes, while retaining different diagnostic text.
 
