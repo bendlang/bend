@@ -97,18 +97,15 @@ changes; run a new build when compiler source changes. The checked profile is th
 profile is source-sensitive and must not be applied to new upstream output
 without validating its transformation contract.
 
-The [current source report](../implementation/phase7/s1-report.md) and historical
-[Phase 5 report](../implementation/phase5/report.md) and
-[frontend comparison](../implementation/phase5/final-conformance.md) describe the
-source reduction and unchanged API's broader evidence. The Phase 5 full fixed
-point has not been rerun for the smaller all-definition source. For experimental source changes, keep
-the release stable and select a newly built attempt explicitly:
+The [Phase8 report](../implementation/phase8/upstream_and_conformance.md) gives the
+current source and artifact identities. Keep experiments isolated by selecting a
+frozen attempt explicitly:
 
 ```sh
 # From selfhost/, after creating build/dev/attempt-01 with the maintained workflow.
 BEND_TYPED_API="$PWD/build/dev/attempt-01/api.mjs" \
 BEND_TYPED_RUNTIME="$PWD/build/dev/attempt-01/snapshot/src/runtime.mjs" \
-BEND_BASE="$PWD/.bootstrap/upstream/bend2/base.bend" \
+BEND_BASE="$PWD/.bootstrap/upstream-phase8/bend2/base.bend" \
   node build/dev/attempt-01/snapshot/tools/typed-driver.mjs \
   tests/conformance/typed-smoke/base-u32.bend --check-only
 ```
@@ -127,12 +124,12 @@ already generated compiler. Historical artifacts under `dist/phase1/` and
 `dist/selfhost/` keep their original evidence. See the
 [Phase 1 report](../implementation/phase1/report.md) for their historical limits.
 
-The default API's checked parent and exact transformation are under
-`dist/release-lineage/`. The old default and its authentic bootstrap sidecars
-are under `dist/release-history/`. The optimized API has no bootstrap sidecar:
-it is a verified derivative of the checked parent, not a new upstream bootstrap.
-The separately self-emitted compiler has its own [checked fixed-point proof](../implementation/phase5/final-selfhost.md).
-Its performance must not be confused with the historical Phase 5 default's measured 6.03× ratio; S4 has no new full-source TypeScript measurement.
+The installed checked API and original bootstrap report are in
+`dist/release-lineage/`. Previous defaults and their original lineage are under
+`dist/release-history/`. Original reports retain historical paths; relocated
+integrity checks do not manufacture new bootstrap evidence. The separately
+self-emitted compiler retains its historical
+[checked fixed-point proof](../implementation/phase5/final-selfhost.md).
 
 ## Full self-reproduction and component checks
 
@@ -159,7 +156,8 @@ BEND_TYPED_API="$PWD/build/candidate-api.mjs" \
 
 This writes a checked API plus the assembled source and provenance in
 `build/typed/`. Keep source, API, runtime and host snapshots immutable during
-validation. Generate a local self-hosting chain with:
+validation. Full self-reproduction has not been rerun for Phase8. The advanced
+runner, separate from the checked release build, is:
 
 ```sh
 BEND_TYPED_API="$PWD/build/candidate-api.mjs" \

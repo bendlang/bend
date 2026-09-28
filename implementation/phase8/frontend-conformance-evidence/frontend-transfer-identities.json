@@ -1,0 +1,57 @@
+{
+  "claim": "Artifact identities for explicit frontend-evidence transfer; runtime difference is separately tested through actual final-release execution. Full06 raw report remains unchanged.",
+  "artifacts": [
+    {
+      "path": "api.mjs",
+      "candidate06": "e928f77778de9dc72267e26b6a7ccb029cac318ccd35dd8f9248da1c6374bbe4",
+      "release07": "e928f77778de9dc72267e26b6a7ccb029cac318ccd35dd8f9248da1c6374bbe4",
+      "equal": true
+    },
+    {
+      "path": "snapshot/tools/typed-driver.mjs",
+      "candidate06": "b94f5f8b863f29212d1966680c67f660f1bf4c613d84f89855ae69eeae7d36d5",
+      "release07": "b94f5f8b863f29212d1966680c67f660f1bf4c613d84f89855ae69eeae7d36d5",
+      "equal": true
+    },
+    {
+      "path": "snapshot/tools/compiler-abi.mjs",
+      "candidate06": "0bcbcaf022108877600baab1b15356db6d9917f5c4d668af936279680c126454",
+      "release07": "0bcbcaf022108877600baab1b15356db6d9917f5c4d668af936279680c126454",
+      "equal": true
+    },
+    {
+      "path": "snapshot/tools/node-resource-args.mjs",
+      "candidate06": "6aefb3aee9b69b0c25d68edbf0ada6a57ba93e277d3adb8d232dfa6dff01d758",
+      "release07": "6aefb3aee9b69b0c25d68edbf0ada6a57ba93e277d3adb8d232dfa6dff01d758",
+      "equal": true
+    },
+    {
+      "path": "snapshot/tools/assemble.mjs",
+      "candidate06": "f7c8feff7a0b8f8b4a302c2ca8b99b363a8d7c4c9c48bc6b7a9463aa23c58b75",
+      "release07": "f7c8feff7a0b8f8b4a302c2ca8b99b363a8d7c4c9c48bc6b7a9463aa23c58b75",
+      "equal": true
+    },
+    {
+      "path": "snapshot/tools/conformance/adapters/typed.mjs",
+      "candidate06": "0ad9c892b45c2fb2a111817e6bea2f232c20f1197f495801a2fb4499498ba3d2",
+      "release07": "0ad9c892b45c2fb2a111817e6bea2f232c20f1197f495801a2fb4499498ba3d2",
+      "equal": true
+    },
+    {
+      "path": "snapshot/src/compiler.json",
+      "candidate06": "ab7eea752c873a2f3948c2343087016888725248dfaab4d42689d9291ea58ddc",
+      "release07": "ab7eea752c873a2f3948c2343087016888725248dfaab4d42689d9291ea58ddc",
+      "equal": true
+    },
+    {
+      "path": "snapshot/src/runtime.mjs",
+      "candidate06": "78845fd6a99d90fa1dba8093c8af81a5665bc95ca0b69691adc9e366ac5665e7",
+      "release07": "1766d6d674f5c64eb481a647fe1d7bf751529d6861d4d4f4697999f005e772f0",
+      "equal": false
+    }
+  ],
+  "base": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8/bend2/base.bend",
+    "sha256": "00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94"
+  }
+}

@@ -27,11 +27,13 @@ and evaluator prototypes remain unpromoted.
 
 The [development workflow](docs/PHASE5_DEVELOPMENT.md) builds a genuine checked
 compiler and runs short paired selections. The measured migration integration
-attempt took about27 seconds for bootstrap plus21 focused checks. Full conformance
+attempt took about 27 seconds for bootstrap plus 21 focused checks. Full conformance
 and self-checking remain separate integration gates. Ordinary compilation runs
 the Bend implementation without a TypeScript fallback; independent BendTT
 `--verdict` validation is not implemented.
 
+The final frontend run accepts 997/1,001 positive programs. Among 482 validation
+negatives, 481 reject and 1 times out; none is observed incorrectly accepting.
 Read [conformance](selfhost/CONFORMANCE.md) for acceptance, exact diagnostics,
 execution coverage and unsupported environments. Historical fixed points and
 performance ratios apply only to their recorded compiler artifacts. Designs,

@@ -1,0 +1,1686 @@
+{
+  "kind": "phase8-conformance-harness-evidence",
+  "scope": "Completed reference/harness controls and full frontend reference only; candidate compilation and release provenance are separate.",
+  "archive": "raw.tar.gz",
+  "archiveSha256": "b011854d9869ee6db4262668c0523a36ab84d253c13b901b57a39bc53ba42422",
+  "archiveBytes": 2258668,
+  "identities": 335,
+  "objects": 227,
+  "files": [
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.json",
+      "bytes": 1887342,
+      "sha256": "3f843c754f537c5c52c22f2ac95ef270a4eb5fb2399e1cbd17eec5c3a94ae36f"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.json.artifacts/0/args.cjs",
+      "bytes": 19713,
+      "sha256": "1f06c924d6b230840379eaf63e815956eb247e73862f1cbcf67ad9097b80aba6"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.json.artifacts/0/program.output",
+      "bytes": 7,
+      "sha256": "383835c0149021ae8676cd58eca43823e72da715833c9bf6963f0ee9d191028e"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.json.artifacts/0/request.json",
+      "bytes": 1374,
+      "sha256": "fcdcff081dfd6fc52d2201cb7d9c78b2960af252484aefb745097c35fdcb8718"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.json.artifacts/0/response.json",
+      "bytes": 299,
+      "sha256": "a1fb311368b3ac8e1a1ae95544bfb18579f6a9e6e23bf359dab92f26aa2c0d75"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.json.artifacts/0/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.json.artifacts/0/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.json.artifacts/1/args.cjs",
+      "bytes": 19713,
+      "sha256": "1f06c924d6b230840379eaf63e815956eb247e73862f1cbcf67ad9097b80aba6"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.json.artifacts/1/program.output",
+      "bytes": 7,
+      "sha256": "383835c0149021ae8676cd58eca43823e72da715833c9bf6963f0ee9d191028e"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.json.artifacts/1/request.json",
+      "bytes": 1365,
+      "sha256": "8c55e37f36df0656e07dcf2ceb53b1991062b3f744186c9bae06ee805f1c5f1b"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.json.artifacts/1/response.json",
+      "bytes": 287,
+      "sha256": "0c683187ed3805cc01570c5a2ab065f7627dfbf23413ac4eb7220847abf941c0"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.json.artifacts/1/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.json.artifacts/1/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.json.artifacts/2/args",
+      "bytes": 1102944,
+      "sha256": "76b546cbe6adb6a79b9d59a8dc0c64c04f33d0dbf325c4eb986d62e829888904"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.json.artifacts/2/args.c",
+      "bytes": 91464,
+      "sha256": "10b7b7abc686ab0cf61d3d345c7aea0d123ee2b135efb7e318b8e8082fb8cb39"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.json.artifacts/2/native-build.json",
+      "bytes": 383,
+      "sha256": "e5025bfb1cc3bfe523c8cf234d18ec7b2a73235eadf99418480de071b490fb0f"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.json.artifacts/2/program.output",
+      "bytes": 7,
+      "sha256": "383835c0149021ae8676cd58eca43823e72da715833c9bf6963f0ee9d191028e"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.json.artifacts/2/request.json",
+      "bytes": 1369,
+      "sha256": "1e9e6eacf8f0e4173d2756a98063629229b02c9ec1c9da8be512d68577b8cf2b"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.json.artifacts/2/response.json",
+      "bytes": 244,
+      "sha256": "9de16a238ef7271e0688f12e8649f1452e7c1d5513fa267c5e539d9fda3fecfe"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.json.artifacts/2/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.json.artifacts/2/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.json.artifacts/identity.json",
+      "bytes": 654375,
+      "sha256": "03589905b974a06ba2f20c56d6e0919edcbc55fa1111625800c819c907928315"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.progress.jsonl",
+      "bytes": 2437,
+      "sha256": "0390eb1f38f46b40be225842c8094678b084ec9bfc435342bf45b0454b136a6b"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-reference.stdout",
+      "bytes": 1178,
+      "sha256": "cec0bfe7959260563493179327e1bf3a965bf2217981894f6b7144e1e4901a35"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/argv-selection.json",
+      "bytes": 140,
+      "sha256": "4598401b62d4eeb27f3e83ad67d998b2cd83b87a930fbffc92fd9ea3b66ed5b3"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/cli-version.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/cli-version.stdout",
+      "bytes": 28,
+      "sha256": "6d5d05a4de20e1eb71d32a998648660959034e34f4e07febe3f9b2de84bfc33a"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/final-tests-v2.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/final-tests-v2.stdout",
+      "bytes": 3211,
+      "sha256": "39b328708a26a507dc578ceca8e1e599ec7ce2d018e48517b4db417fac7335fe"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/final-tests-v3.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/final-tests-v3.stdout",
+      "bytes": 3647,
+      "sha256": "678c6f335aa10845a94a46d3e21c4161c739234147901f1bad9bb3e931f6afd6"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/final-tests.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/final-tests.stdout",
+      "bytes": 3126,
+      "sha256": "98f7f5044cc11ee493d69e89b93504c99cdbba92a23bf8d53780528f939bb75f"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/initial-tests.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/initial-tests.stdout",
+      "bytes": 4964,
+      "sha256": "f2de37edac224b34464383d456ea501615741d7766a48f93a273afd6200c7511"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json",
+      "bytes": 1903543,
+      "sha256": "82e926bc18c910045b6e9e9a8da3810ae1fa165677b47153df409e6398d58d1d"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/0/request.json",
+      "bytes": 1441,
+      "sha256": "cac6c58f02d2fba4b1785bedf23e65b7d833c6f62de47f02f33f6dbade52e4a0"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/0/response.json",
+      "bytes": 274,
+      "sha256": "535cb47d243931f64071e4c30e9aabb8c633598383267be60a836f20ba5aad83"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/0/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/0/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/1/request.json",
+      "bytes": 1451,
+      "sha256": "f70c5cbfcab86439c6252d68ae1e921070631febfd99e85373e71b3e0a67c323"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/1/response.json",
+      "bytes": 290,
+      "sha256": "03c8d745721e40edc89889c21ab67e0e0d84e9b05b473dfa66d34b71f9da1226"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/1/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/1/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/10/request.json",
+      "bytes": 1892,
+      "sha256": "d0140b0475f50c5122c01bc857716b3cb82ed59b38a7b42d44fd3bc8f821e03f"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/10/response.json",
+      "bytes": 271,
+      "sha256": "f5d0090f5ef5c5eed3944c0f74ad4533f8606e4724b4d6747958e3d576076358"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/10/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/10/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/11/request.json",
+      "bytes": 1453,
+      "sha256": "ac4fd0feed62324c40131298192b6c297a0dc25f5d6783452e2de733b24c101f"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/11/response.json",
+      "bytes": 218,
+      "sha256": "057048d0f767e1dd62704f17f5bda8b969046e4494fdc1162cd02856fbcf8612"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/11/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/11/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/12/request.json",
+      "bytes": 1361,
+      "sha256": "987e48f33718a7c9aa083f456d9faa340c08043bc5426da347085189ceb66feb"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/12/response.json",
+      "bytes": 240,
+      "sha256": "f26817b9a05b7f41ed3ff443db153e760a47cd0de8ddb815ed6a6c482ca8736a"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/12/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/12/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/13/request.json",
+      "bytes": 1367,
+      "sha256": "09e9d192e5592f9b598fb41adbef73ec03fa7e307ce568b89514453ef058e495"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/13/response.json",
+      "bytes": 170,
+      "sha256": "19540c593561ed829b5d940207ffc32b423f8eac6945349f7b1950d5a64785b8"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/13/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/13/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/14/request.json",
+      "bytes": 1615,
+      "sha256": "04e127a9b5601e931878464bedac8ef7b2363bc05474bd2be6b64e902f6e5206"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/14/response.json",
+      "bytes": 374,
+      "sha256": "8d6d279a459aed051394612b2646070a9cda268e120c450e9b0863ab3ffb69cc"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/14/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/14/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/15/request.json",
+      "bytes": 1461,
+      "sha256": "b6bbc51954e3501989ee0b9536cda704c61f2e247cb63d37778f2e6901e909d3"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/15/response.json",
+      "bytes": 239,
+      "sha256": "49c2815c3d8bb53606f6d80d2d3f5239c4fd078d979d0b6c8fc4dff6c5653c27"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/15/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/15/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/16/request.json",
+      "bytes": 1607,
+      "sha256": "359aa2df7c4dde9eb7d04d6ccd489cda219849c89eedd9b70a8337cb9085c5a5"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/16/response.json",
+      "bytes": 238,
+      "sha256": "42fb02710d182ba06722238f6f01bacc6bda9d250866bf19e8b95ef7f13395d8"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/16/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/16/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/2/request.json",
+      "bytes": 1651,
+      "sha256": "7823af027c95c72ce234d5b12c8e58d57c4a0981fedc84377822d466e8cd40ee"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/2/response.json",
+      "bytes": 400,
+      "sha256": "b1d0c7762dac56024fda31f168bdcfcdf2916c164811a0ba38610ed0dceffbfc"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/2/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/2/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/3/request.json",
+      "bytes": 1586,
+      "sha256": "9ee95a8994bd28ee8053178cc400505cfa25d76f0280eb7d8d3b581047a73d2d"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/3/response.json",
+      "bytes": 289,
+      "sha256": "8a8ad6e8083f63b21c45ab2c8e8999137ac92696ad7ae03979f4271d01352e20"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/3/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/3/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/4/request.json",
+      "bytes": 1587,
+      "sha256": "e05298e47853fd818dce8e0a1cf9d087c0cb81a874d0731cfc32d9654d3cdbfd"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/4/response.json",
+      "bytes": 289,
+      "sha256": "8a8ad6e8083f63b21c45ab2c8e8999137ac92696ad7ae03979f4271d01352e20"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/4/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/4/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/5/request.json",
+      "bytes": 1585,
+      "sha256": "7f437aa7bd51564bf8d9ae9bdf86fd1b80074b2290cc33cec06755f2993af1f2"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/5/response.json",
+      "bytes": 279,
+      "sha256": "9569ae8172a274868b940d047a23f35a592e7c3af1584a3b531861ff444088ac"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/5/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/5/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/6/request.json",
+      "bytes": 1426,
+      "sha256": "0789da911a5eafed55c865a46f988e692655ffa22757e456e495782a094be25a"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/6/response.json",
+      "bytes": 247,
+      "sha256": "c5d7ad37154c3704bce60db6cada878c87d7ea918ca174abcd1e5deb272870ba"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/6/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/6/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/7/request.json",
+      "bytes": 1545,
+      "sha256": "f0fe6c67a808383cb6feb930ec8698584da50bb071b26f1b88a1b1c655f732ca"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/7/response.json",
+      "bytes": 269,
+      "sha256": "ae7787f122a7bba1fa17fdcb80ab48de279b632b0bc501b61177e5f203574f11"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/7/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/7/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/8/request.json",
+      "bytes": 1552,
+      "sha256": "f598bac7f16d23f55963573b5eae6a29d73754fc72f28bce6a97b00df571970c"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/8/response.json",
+      "bytes": 291,
+      "sha256": "c6a0495d053e79676f2a53f407e4778452c386d887d9a5c11df57939163a294b"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/8/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/8/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/9/request.json",
+      "bytes": 1614,
+      "sha256": "da897b453cf0bd69c85614e0be41f0376412346ceff044ceafef42534bd9ead8"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/9/response.json",
+      "bytes": 255,
+      "sha256": "4be6b483ffc1597255826bfe266bf9a15483c4fea65196d33a55dccbef23ea63"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/9/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/9/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.json.artifacts/identity.json",
+      "bytes": 653854,
+      "sha256": "706989b000e74b6da9239a80ebab604b8df4142b7f04bb5acce141aaba294280"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.progress.jsonl",
+      "bytes": 13980,
+      "sha256": "3983f8ae2fc69915d41d53380dba5e58e19fa1f8fa675a3d1f2078883a28beb3"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/reference.stdout",
+      "bytes": 1253,
+      "sha256": "f21a14498a8724ae81757749cd0500a5b8789b70170b306bd38580493888bbbe"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/selection.json",
+      "bytes": 1565,
+      "sha256": "0b39c86e7d3fb5bba924a806a7b3cec5227cafd80c51b4713bcefdba877b2fd4"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/upstream-before-argv.mjs",
+      "bytes": 7999,
+      "sha256": "2cdbf1f4ccb2311b256adcc775fc1e0e70a3abb3087187974f34fd265e5dfedd"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json",
+      "bytes": 1898714,
+      "sha256": "63dac8d0d704e571f2fb8d6479906bdcf209cf2631e59f7b2d4082f6767502b1"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/0/request.json",
+      "bytes": 1492,
+      "sha256": "e7984bda7ded7ab8b6c1294b8197b4fa79196ece82b37c4ff0ccbf227dcc0836"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/0/response.json",
+      "bytes": 193,
+      "sha256": "b60ce5c5efffdece82b88c95f6db533268c90a6dc8953cc5baa451603e62f5c4"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/0/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/0/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/1/request.json",
+      "bytes": 1483,
+      "sha256": "6655b6051665bd42b7b09e9423cf9e1a8e02a1149edcc5626a02cdddfcd10cc5"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/1/response.json",
+      "bytes": 193,
+      "sha256": "b60ce5c5efffdece82b88c95f6db533268c90a6dc8953cc5baa451603e62f5c4"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/1/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/1/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/10/request.json",
+      "bytes": 1367,
+      "sha256": "3c75a9fbca4f95c48af8caaff483c19472a8ab400a86e494518ed876e1882b97"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/10/response.json",
+      "bytes": 146,
+      "sha256": "d6ed49112c3361b68fed60c5ccf86d5f5bceb611d5e6b4ab42952a6afdc72c4b"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/10/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/10/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/11/args.cjs",
+      "bytes": 19713,
+      "sha256": "1f06c924d6b230840379eaf63e815956eb247e73862f1cbcf67ad9097b80aba6"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/11/program.output",
+      "bytes": 7,
+      "sha256": "383835c0149021ae8676cd58eca43823e72da715833c9bf6963f0ee9d191028e"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/11/request.json",
+      "bytes": 1361,
+      "sha256": "96c18298953fd94533cee4211167d7888badee1e9cd477c74e88e5ab29a59a0d"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/11/response.json",
+      "bytes": 282,
+      "sha256": "50506d534e28941b3110b26a18738db7cffcce2ba76e573b527b33ed42c60cd9"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/11/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/11/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/12/args.cjs",
+      "bytes": 19713,
+      "sha256": "1f06c924d6b230840379eaf63e815956eb247e73862f1cbcf67ad9097b80aba6"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/12/program.output",
+      "bytes": 7,
+      "sha256": "383835c0149021ae8676cd58eca43823e72da715833c9bf6963f0ee9d191028e"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/12/request.json",
+      "bytes": 1352,
+      "sha256": "210dc7df9322b85d20837e2b7ccbaf9ca20e76077bea03f9812f30ca05122ad1"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/12/response.json",
+      "bytes": 270,
+      "sha256": "9e03bcedae589d04e0034796dd563047a4ea04bd5f7835e340a236fb8ec97de9"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/12/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/12/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/13/args",
+      "bytes": 1102944,
+      "sha256": "76b546cbe6adb6a79b9d59a8dc0c64c04f33d0dbf325c4eb986d62e829888904"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/13/args.c",
+      "bytes": 91464,
+      "sha256": "10b7b7abc686ab0cf61d3d345c7aea0d123ee2b135efb7e318b8e8082fb8cb39"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/13/native-build.json",
+      "bytes": 379,
+      "sha256": "4f9f8b0c47153ff6b30852ce549e19be87e41a8b6c16ca03d77bec8ad269b01d"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/13/program.output",
+      "bytes": 7,
+      "sha256": "383835c0149021ae8676cd58eca43823e72da715833c9bf6963f0ee9d191028e"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/13/request.json",
+      "bytes": 1356,
+      "sha256": "dee42dc03e6e9daff5bf58f07126399ba0a190478731ec07d6a342c575ff2f4b"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/13/response.json",
+      "bytes": 227,
+      "sha256": "ea425fd108ecf640fd0549ecbfbc6d8b82071ef8c5dacc264536368e523a3b64"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/13/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/13/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/2/request.json",
+      "bytes": 1531,
+      "sha256": "983358cd756ea63a3188b8f0f0f01d8c845cbae0f1d48368705bec4f0c6a4167"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/2/response.json",
+      "bytes": 220,
+      "sha256": "5f84cbafa9e8db2fc8009ab84890b90da3243b4951913c3541e4b5cfc2ad7d2d"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/2/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/2/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/3/request.json",
+      "bytes": 1522,
+      "sha256": "51ad15c46ee01e928960e949736394131e3870e88d49944d832067bdbf4592b5"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/3/response.json",
+      "bytes": 220,
+      "sha256": "5f84cbafa9e8db2fc8009ab84890b90da3243b4951913c3541e4b5cfc2ad7d2d"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/3/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/3/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/4/request.json",
+      "bytes": 1614,
+      "sha256": "99a5607ec59d62065b44ea31af5f2f9c53697e7293e961adaed18e138ad75e64"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/4/response.json",
+      "bytes": 215,
+      "sha256": "d82cc83da928a2d0d4f761993fe2d7d387a1a3f30952880b4085def5006eca97"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/4/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/4/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/5/request.json",
+      "bytes": 1605,
+      "sha256": "df277090f7e4b62cd9b493cb28608f9d420bab22468521c855b9e29e8e1f194c"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/5/response.json",
+      "bytes": 215,
+      "sha256": "d82cc83da928a2d0d4f761993fe2d7d387a1a3f30952880b4085def5006eca97"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/5/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/5/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/6/request.json",
+      "bytes": 1609,
+      "sha256": "29b883698c15a801f187c9fe7045a370797749c172aa2b8020e8e496850cfa46"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/6/response.json",
+      "bytes": 215,
+      "sha256": "d82cc83da928a2d0d4f761993fe2d7d387a1a3f30952880b4085def5006eca97"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/6/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/6/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/7/request.json",
+      "bytes": 1445,
+      "sha256": "84da81d542088acfb7f261e2ef3c72dd7bc19364c8194f127eaaee0d4063d92a"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/7/response.json",
+      "bytes": 183,
+      "sha256": "25f874c717161a4f32c87a14e392d14d82e1c70a25fbc526940429beb5501b32"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/7/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/7/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/8/request.json",
+      "bytes": 1436,
+      "sha256": "511deb2f7b7cb35c458657af66a509fe001146dc84f2cfee2210c4d438bd6bce"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/8/response.json",
+      "bytes": 183,
+      "sha256": "25f874c717161a4f32c87a14e392d14d82e1c70a25fbc526940429beb5501b32"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/8/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/8/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/9/request.json",
+      "bytes": 1440,
+      "sha256": "0812dc0fac9dc27975a89eee19813b7cd814b3affeb276fb290b4fb0b5a2fc73"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/9/response.json",
+      "bytes": 183,
+      "sha256": "25f874c717161a4f32c87a14e392d14d82e1c70a25fbc526940429beb5501b32"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/9/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/9/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.json.artifacts/identity.json",
+      "bytes": 654383,
+      "sha256": "45801e99a9ae4cb9eea2503b825152f05c5a4dedc2050ffdc13d99743da935b2"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.progress.jsonl",
+      "bytes": 10455,
+      "sha256": "eb48957ee7c82a67df25c549afe386acc86e5f534a9d45e451f02d11e4ac0129"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/reference.stdout",
+      "bytes": 1226,
+      "sha256": "73f8ca28f88442f2a6a779c2b69eaaf5d925fa7195e4486197183e8c91c77682"
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-02/selection.json",
+      "bytes": 723,
+      "sha256": "1a168304e8e64b9501775af0bc4b72400c4b66a6030680e2a1025e05ec384aff"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/src/compiler.json",
+      "bytes": 1985,
+      "sha256": "ab7eea752c873a2f3948c2343087016888725248dfaab4d42689d9291ea58ddc"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/conformance/adapters/native-graph.mjs",
+      "bytes": 5387,
+      "sha256": "51cf3338d8d32fcae3ff2b5d8dbdf7f30317859ca65f1f0cf1084c8ceb0fb7b5"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/conformance/adapters/pipeline.mjs",
+      "bytes": 2322,
+      "sha256": "468491f6d6f8f176cddf77f771012cfe65125650abd9d9257ff5fc79216a8d3e"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/conformance/adapters/prototype.mjs",
+      "bytes": 1978,
+      "sha256": "b7c75e09bc85f04d12a4288922a97654a9a41fa2fcac0cd2f988d289eff6c6a5"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/conformance/adapters/typed.mjs",
+      "bytes": 3265,
+      "sha256": "0ad9c892b45c2fb2a111817e6bea2f232c20f1197f495801a2fb4499498ba3d2"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/conformance/adapters/upstream.mjs",
+      "bytes": 8056,
+      "sha256": "85aa6400373478c0f82e33430fc57a644fc16c2d6c3f87b0d985633461e5a85b"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/conformance/bootstrap-variant.mjs",
+      "bytes": 2700,
+      "sha256": "013a631d640dbd54f74e45a2cd6afd9710de1630092b8026f8b8520a754354f8"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/conformance/compare-artifacts.mjs",
+      "bytes": 2940,
+      "sha256": "d4d4fac0db9a13c81e5ef4278efd058e67bc50b6f3bdc39394c81356ccfb81e0"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/conformance/freeze-adapter.mjs",
+      "bytes": 1524,
+      "sha256": "3b9b806bf8e7f2b5e001e27193bb121c10893abf9de0f23cc630ef73a4a0ffe8"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/conformance/inventory.mjs",
+      "bytes": 6459,
+      "sha256": "91a1bd7be11e6e66a68c94251814286c9d0173d94a38b445240123bc558bc308"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/conformance/judge.mjs",
+      "bytes": 6345,
+      "sha256": "af05b8926bc14fdedf764f2187029363b1f01db2baf5f89787083e3a41395fbb"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/conformance/merge-reports.mjs",
+      "bytes": 4271,
+      "sha256": "43dc310a1a85d1884569b9b29ed5d0d6039b1d96862f47742442c5cdb57bd6f5"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/conformance/persistent-probe.mjs",
+      "bytes": 12847,
+      "sha256": "b7f152f6656ed2fd461b9376092a44f85443b9aa85161a22e4b7aeaf86005225"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/conformance/persistent-worker.mjs",
+      "bytes": 6311,
+      "sha256": "ccf069cc069171becf0d5564e50a14b3aa4d652b5147f0ef8593c1668689918d"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/conformance/replay.mjs",
+      "bytes": 3571,
+      "sha256": "412f24d8b26ce78c1fca5584ee2a36d8d5e416bd2d58c5711427f37b171fec94"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/conformance/report.mjs",
+      "bytes": 6893,
+      "sha256": "255fe2ce4acfbf4979d5bd97c6c5eab1c7815c4d86ce48a136f1773131eedf44"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/conformance/run-probe.mjs",
+      "bytes": 4068,
+      "sha256": "3dfea3af1e901b9e4850482f3ee5fdee8f0a2f463714022d397ae5282263d77c"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/conformance/run.mjs",
+      "bytes": 13004,
+      "sha256": "c47d4a9420511789c2c2c6ed7a47b0429738353533713129ae2c0338e6f3d796"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/conformance/selection.mjs",
+      "bytes": 4474,
+      "sha256": "ecdb5a8c451554c3d2dce4ca5e7725e299fa9b63c042e2cf2f7f9c440b2baa7d"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/conformance/selfhost.mjs",
+      "bytes": 9660,
+      "sha256": "5cc368dfa6cdcf5dae6ad83653e030d641b70744834509246bb30008a10f8863"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/conformance/semantic-summary.mjs",
+      "bytes": 4777,
+      "sha256": "b0ab2acdc50ed48700e89fcdf840d4538b73c1ad5ae3970b79ea877db2ace47e"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/conformance/target.mjs",
+      "bytes": 10610,
+      "sha256": "e2ac5403100458239cc65cbc5da77605fbfb108a54d6ae337190dd467e0e0f50"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/conformance/typed-report.mjs",
+      "bytes": 8315,
+      "sha256": "a9fdbf16dcc301338f9a5a4234175e12cc225bb2e7efc0ec2c11a50146e84ddd"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/conformance/verify-seed.mjs",
+      "bytes": 5662,
+      "sha256": "7a0b8512ae2917f2c530695a849832a9242bdb5d063a231f84477f99ae7e142f"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/conformance/worker.mjs",
+      "bytes": 613,
+      "sha256": "efeca16d731c8e37c671c7f82dddb66c9fc8792db7e31b652acfd3a0ab0e60e4"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/native-build.mjs",
+      "bytes": 4027,
+      "sha256": "a76f2c027459f7ffdb9fc16dc450ee33e0f39c74568df4c74d03309e662c9117"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/harness/tools/node-resource-args.mjs",
+      "bytes": 685,
+      "sha256": "6aefb3aee9b69b0c25d68edbf0ada6a57ba93e277d3adb8d232dfa6dff01d758"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/launch.json",
+      "bytes": 10161,
+      "sha256": "0153b9952ff15ff4f0dcc5fe54a1015204eb339de1db69fcc66c313b1cf310b5"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/launcher.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/launcher.stdout",
+      "bytes": 2224,
+      "sha256": "0ab5aeb1090a4abd34767b975313c1c56052eecd34751542321b140124038ed9"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json",
+      "bytes": 4822384,
+      "sha256": "827e80c14d500f8ff77dd4e30f1e0fa4817780055ef783839741150fbf0fad31"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/1695/request.json",
+      "bytes": 2276,
+      "sha256": "7f730c5a5de6a9c6d5785d2c2897f6c7d4e5ce7ca9defd419fce444e142ef4a4"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/1695/response.json",
+      "bytes": 248,
+      "sha256": "8caad19b5ff6ecde609191a949251641a0414d3c8e374055c1662cc802052403"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/1695/worker.done",
+      "bytes": 184,
+      "sha256": "a76fed1c30f8ba9250a1e13dd1727af0f348ba1a191f9882cbcc9ba3724c6d58"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/1695/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/1695/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/1709/request.json",
+      "bytes": 2315,
+      "sha256": "e835f69fb2e550b300e9d97a7040194fbf9ac204563d6eecbd4d9ee980e08df2"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/1709/response.json",
+      "bytes": 252,
+      "sha256": "c50c2ceda5663f27cbbf6311848a238e6af8d3efc160087abaca0ec097a13188"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/1709/worker.done",
+      "bytes": 184,
+      "sha256": "604afda08f4f37bfd30dc8a56c03b3b3ad0a108e325133628569a7fca726d918"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/1709/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/1709/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/1783/request.json",
+      "bytes": 2398,
+      "sha256": "3ccefe42f71b8e7720ed31f7d09c99683ca6a1cfcfa5116d14f97568e69f7dc7"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/1783/response.json",
+      "bytes": 238,
+      "sha256": "738bec02479a25f8fa2971eb8dbec8867c3763df9051c3c9d1ddd1086905c8a3"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/1783/worker.done",
+      "bytes": 184,
+      "sha256": "8524779c66af4e2ac3e8617e86dce2ebb9e41a6f947e5787b95a0f5d908e45cd"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/1783/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/1783/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/2479/request.json",
+      "bytes": 2229,
+      "sha256": "3271222981c14f86fceb2d5142bdf66d9f51f4239b2524a8aee460032c6bb5e9"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/2479/response.json",
+      "bytes": 218,
+      "sha256": "057048d0f767e1dd62704f17f5bda8b969046e4494fdc1162cd02856fbcf8612"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/2479/worker.done",
+      "bytes": 184,
+      "sha256": "b6994acf1cb616d93dc1580f7a7cddf7b99599a19da37ecb2d2111c8d83545ee"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/2479/worker.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/2479/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/identity.json",
+      "bytes": 654940,
+      "sha256": "f01a0f524d28f9dc83a7bd5c1fe691eec3e0488559e3f6e1d5f1c445e88234f1"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-1/64-f1052d116431df216b488b66cc47f1cd.json.active",
+      "bytes": 201,
+      "sha256": "57eb1221ea1e3b1d5f196209ebbd717c38603fd4c4c4ef94fbc18b3bc6926c4f"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-10/64-3e24c68c485495b914d100a3783b7d32.json.active",
+      "bytes": 202,
+      "sha256": "c411ecae774a6c5b62e9af8d37edb63277472b4a97e95ca72f58f1ed6cdcac40"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-11/64-098dd245a74bb5d644fa331780b672d2.json.active",
+      "bytes": 202,
+      "sha256": "a36724299f9559cc062a33d8f51344f3dc8d86b0255da12670b281acf8bcab54"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-12/64-7728799c3850d2222d564b17b88cb97c.json.active",
+      "bytes": 202,
+      "sha256": "5f14ef10ecf0674e57b3f3bd421025395dcfac931987768a2533fbebde7768ca"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-13/64-45ddec820172b92e7bc01994649a06ba.json.active",
+      "bytes": 202,
+      "sha256": "584e0ecdd7a2208a51fd74a1308c8020c153dd7b9bca4bad8d3f9365b15d84c5"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-14/64-abd99faa4114cd480f13a354fcf60bb6.json.active",
+      "bytes": 202,
+      "sha256": "b8376c881656995075042ae7ec1c86926556bd911e9dc7f088db411e90796d41"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-15/64-af28263db16b4635c2308ab5814d94c5.json.active",
+      "bytes": 202,
+      "sha256": "b519bee850a33be522696f9162231e157415978693c4e80df3e98edfd46b40f2"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-16/64-c744abf4433d3f3d8038804e5407cb70.json.active",
+      "bytes": 203,
+      "sha256": "1b401cbe0776ed378aa42ca0a0457efb7dbf481496e8ca334abe1a3a9627ec54"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-18/64-18ade51ba26543a53058a4d546ebded3.json.active",
+      "bytes": 203,
+      "sha256": "c883dc64321ebf58f60c625427cf04a32a3de3a1b5d3bb3b363d3937b083030f"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-19/64-ff69a2bed876d777e4c2306c8081da73.json.active",
+      "bytes": 203,
+      "sha256": "157f35abeea3c41bc428b6a430ac5684e20f60f502afff0c4adfa2e2c9173fd3"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-2/64-1748aec1881ba280b5a474ef2f0eb5e3.json.active",
+      "bytes": 202,
+      "sha256": "f3bf2d67ded773a00d19412d073bd9c7ace3cf6a186659b3198919407ede5f9a"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-20/64-f071340f4df1e437c61044ca16142a3c.json.active",
+      "bytes": 203,
+      "sha256": "ab15425533d8f6d384230d3a272c067d90e40a5e81b83b9ebd44e96a65134317"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-24/64-311f2b94ce31a7f82d969cc4198c7ef8.json.active",
+      "bytes": 203,
+      "sha256": "638ec935686ebee614deca983211be72578caf6daea604a0bc7dfe11a535549a"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-25/64-96df81fe7776650825a8038c957d3f9d.json.active",
+      "bytes": 203,
+      "sha256": "a14f8c1c077e12c3ef6b97ebe591bb85a6911464e1257a14eaa08f46de99ac2f"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-26/64-f0491a5782c5176e5bd6f901d699820a.json.active",
+      "bytes": 203,
+      "sha256": "0d5dd113b5e82e5b03989a38b0801ced780ad29ba02ca7046e6d83635aeac7d3"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-27/64-ae75b68df6d44e01d9150d51ecf16260.json.active",
+      "bytes": 203,
+      "sha256": "1ba77e3c259e12459b3668f4ff3b8572ef7197dce07eccaaab78ffa91124098b"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-28/64-851174f11ef7e1bd576e11e5f990a0cd.json.active",
+      "bytes": 203,
+      "sha256": "7e9f5d7e18400d58e2c579139fe2ef9dab3a9ff75135911845ba1d6c8c496af5"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-29/64-7f90d9fed1e4a734f86b95feb520641c.json.active",
+      "bytes": 203,
+      "sha256": "e7fdb93e6bb8143f2a18a745fc9454cdd5a8d529a4f59f4e229f4cb28d0b51ad"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-3/64-9c18741ea7b83a3e69fc182d33f45326.json.active",
+      "bytes": 202,
+      "sha256": "473557bc8c48671370dda5a2fcd770d4ba80eca577cb99bac2a068dedbd49dfb"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-30/64-7d17bc5f7a27a37fc10114a25cb494fd.json.active",
+      "bytes": 203,
+      "sha256": "cbf73e6dd820963f05bfc5181f30ff62bf8d7e0454c27a6fd830b8e1f1c6c9e2"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-31/64-6e03634cc6c64dedb92cc7aa4b539663.json.active",
+      "bytes": 203,
+      "sha256": "b809881afc540d182baea6822969ac6479a9ca34e1aeaf1706452be89689b9ab"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-32/64-3b4425ec493dd6c11682a26d7eca176f.json.active",
+      "bytes": 203,
+      "sha256": "a71b2277ddb2726252bcf6e8f62b9638ec89ad1893dbc98f99dfbde175e8c9e4"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-33/64-a5b060d9c490a9468d6213773ed6e874.json.active",
+      "bytes": 203,
+      "sha256": "2dd5d851042965ea686b845e6cc2943153ee4125b245d92b907911b947ae7a1e"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-34/64-068b9bc1f35397495c4a10611805dfda.json.active",
+      "bytes": 203,
+      "sha256": "a6749d13cf33fb9903479900cfe361fb7d8f06c659bcf522ad95b42bdfa1092a"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-35/64-add760734146115db225d41205864d56.json.active",
+      "bytes": 203,
+      "sha256": "011c5eb6f2eec434863d1aa45b65e7c39a8724c530139243a26323930f28cc20"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-37/64-851165b4f70c41c2493bbbe31f23f4f7.json.active",
+      "bytes": 203,
+      "sha256": "a2faf8f6d4cc29c19cbc466dffc66cbd8c25b16eff2788d91b001b481a3ded5b"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-38/64-e277fd3f5e0b8b8e69d80812d26aa4d9.json.active",
+      "bytes": 203,
+      "sha256": "1699d1c44359400fa147e58fd6ecb6a7c3ee21190ee96e6539eb40073c1bc53b"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-39/64-50fb464b270f60306f896ac41af655a3.json.active",
+      "bytes": 203,
+      "sha256": "656b63c51b6dd66030de7bd4b856b12bdeebe9f41f0fe42a0460466eae5210bd"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-4/64-56ceb607087a6a0df76bd26a2ecad361.json.active",
+      "bytes": 202,
+      "sha256": "fa5dc92a886f024c9ca961632c2c3ba50940b490940ac13cae0494354b293b4f"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-40/64-d90e84cd5e4859cac50e6a3cc2d1bbbc.json.active",
+      "bytes": 203,
+      "sha256": "bad5cb5eeeb784437887d0ab86e61802c2dd864e93037df0d97dd614194f1a48"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-41/64-64ec38c285cb61daf66d4fd68caf828e.json.active",
+      "bytes": 203,
+      "sha256": "7a64ab761509cb52f4c605f66f21d2849b407aa46b181a4a2769703fc38e830e"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-42/64-bfcea2f7b285d89a1cee88ea49777ce4.json.active",
+      "bytes": 203,
+      "sha256": "d6a887bd1711ef3543a9e464573ac76b1713b7d23878c4f69d35e513dcc80cd3"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-43/64-3ede1f45f96af8dc5722440d171cee36.json.active",
+      "bytes": 203,
+      "sha256": "ceb377eec06117c927c0e2bf0ce2c8f9f3a81ffa40dfe8cefc4db5e8dcff4396"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-44/64-85fae20f78363ab25d430d26fb691ae4.json.active",
+      "bytes": 203,
+      "sha256": "97ce51e8be9548aafd541abdb8c0e7d8307d05ca7fc3859904028cd4ca1a0c2d"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-45/64-3d66b854bd66be1ed40a88588b19fb94.json.active",
+      "bytes": 203,
+      "sha256": "6bef4c9bf9d3fd61fc295ab5b20ac195aeb43c7af9817e5fd32313adabcd86e6"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-46/64-ca518b45b6fcb1f798ec3c4dfd81be06.json.active",
+      "bytes": 203,
+      "sha256": "8dd51d65b529612d9b19310d1577c6a115674c8191e957f8d1b9430e4f879147"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-47/52-197856f3886dd70391db7b8ba790d0d4.json.active",
+      "bytes": 203,
+      "sha256": "236bbaddc416ecf856a6b0f34acb8381fce5fbe4a0a3370b341bdf63ecb1bb64"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-5/64-657d608249b22958ab9796140982287a.json.active",
+      "bytes": 202,
+      "sha256": "b7adaf24ffbc126ac35e809d717ccf57ac7965ed2051058346c86f0f165c53c3"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-6/64-6d09cd601c91b7340bd417a54e54c090.json.active",
+      "bytes": 202,
+      "sha256": "2f6b2e2c3adccb4fc446be133baed0b0a1cade7e2a04ee7bc006a42b9bb30339"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-7/64-78146d6c8e750a6a4684430da7fdebac.json.active",
+      "bytes": 202,
+      "sha256": "66aaa4f0a9216b8513e03d4a244f511932a802bfacd14793e822cd5c947d6551"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-8/64-a5e78e96cc29e71146b23ba0fc3ccd45.json.active",
+      "bytes": 202,
+      "sha256": "952f782e067426be4daa6a6dd5b8517dfc5d51bad943a4773ef5a605424ab55c"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/queue-9/64-bf87540c2e6d297a2d561fe24cc657dc.json.active",
+      "bytes": 202,
+      "sha256": "706b9fb1c7125d550a1ef2041cd4e2a44a90c63afb51eb6f3f1f93f685104c8a"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-1.json",
+      "bytes": 176065,
+      "sha256": "bd1fb487e442964265d3b145267099ac27b5829d14877df47485647b57f4885f"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-10.json",
+      "bytes": 174353,
+      "sha256": "fc03f6347dee8be2c838b35649f484dde9f3d0b3aca39406ba7c8b866c9ed410"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-11.json",
+      "bytes": 173532,
+      "sha256": "31b833de3184772c4291d42fff0c6fbc01c87ab17c1bc36548312406c2dfd8ff"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-12.json",
+      "bytes": 174182,
+      "sha256": "4c0545c38e0e0a224f6840e63dd093481f8e265e497b17911e612e46d32cef67"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-13.json",
+      "bytes": 180287,
+      "sha256": "05ed4cedc34200f807bdf1a887206b9aafabed558469191a42d9f7b69e768754"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-14.json",
+      "bytes": 173493,
+      "sha256": "fd107e4ac501d072aeb6a849083e32aa04f1df314a35b15661869ccbb4431983"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-15.json",
+      "bytes": 173620,
+      "sha256": "cce3b581aa365a2871425e49373ff612957f7b4dfe8560086197fc647f624c2d"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-16.json",
+      "bytes": 177240,
+      "sha256": "93d1acf8c374a25e71e5e7397459c1a952a0b77402ab402e8e3a3279c8a598d4"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-17.json",
+      "bytes": 173539,
+      "sha256": "ffa74e28a4d310c077bd020597fafab7b558ae71f449084517ca3fd6ab10b5c1"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-18.json",
+      "bytes": 178939,
+      "sha256": "aae861dea870ae8fd6cdd497f25706ea8b60f6101861c9b94d3cf461cedbb2eb"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-19.json",
+      "bytes": 176726,
+      "sha256": "39a31c68e3c753a3405fd4bce43b7215f27f5bac37b6748554a264002dcc4625"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-2.json",
+      "bytes": 179763,
+      "sha256": "b7c1b1fb7526f04d4a1282fae031042044320378162b7e4c61813a4932ed8a0a"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-20.json",
+      "bytes": 174616,
+      "sha256": "57fd45ff4fd4cb7d5896d593481cdc2e536920750292d4809cd3f96566964ee9"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-21.json",
+      "bytes": 177355,
+      "sha256": "b6327a20ed615aaa517b63ed29855e0b1a1089c117a981d94a80d8c8ea0b4849"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-22.json",
+      "bytes": 176717,
+      "sha256": "9d0de28d9a315df5f156e4337a6bd3eb172287609ceeacb9dba3026f843cdf8f"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-23.json",
+      "bytes": 176436,
+      "sha256": "ea6c717976b0268ccaac0d21e01d8b198efa0baefb16e7bc9f2891c2d33ae731"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-24.json",
+      "bytes": 184823,
+      "sha256": "93de0fc8dc0cad568bf2de2127840edd53a2963c3574902c94c2fd79d0b1421a"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-25.json",
+      "bytes": 185058,
+      "sha256": "d6dda7241ad87549fc66d219665daa75a7546f338b29bc2952cb3716aebc7832"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-26.json",
+      "bytes": 184816,
+      "sha256": "84591e5d2ed467b05b4b4d97718eb81ed230b5a8adb48a72e4a80988810e24c3"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-27.json",
+      "bytes": 177430,
+      "sha256": "9ece2e06783efcd34a134c92d698eeee8ecd7a87cf5d7db13e246069f892b4fc"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-28.json",
+      "bytes": 182994,
+      "sha256": "03953cfab84937ba33a538c1e8688025cdf21d19587a79ff8099b9783fcc145c"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-29.json",
+      "bytes": 185025,
+      "sha256": "5e22bc551940df444d0907b154f411e638f0cf6e75c8aa28cd29d2ab7da8ac26"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-3.json",
+      "bytes": 181931,
+      "sha256": "69c40b5417f9322d7a45b8bb946af8d48d5a199ee3e39e041086666fe931e2dc"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-30.json",
+      "bytes": 175378,
+      "sha256": "df08584706ce29b5ecfddc6fb8150b5f4aab1c1353fd451fffd224e7e67ce2c3"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-31.json",
+      "bytes": 203896,
+      "sha256": "b00d2c711a03c0e18043a75f72b83c6aa90805ffbd5006a658703e0aa5db8818"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-32.json",
+      "bytes": 173717,
+      "sha256": "e5c77d5a51691126a43aeb491fd81abdec351ee848b01ca05522de2e8d009a9c"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-33.json",
+      "bytes": 176920,
+      "sha256": "23cae5b6de4c2424d74bea32749da24a41d3bac4647fe1cfa76e960a38d46188"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-34.json",
+      "bytes": 178462,
+      "sha256": "38fc5997f7e2c465c98f028db776219d1fd36bb48bf3340f36c8f32288926543"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-35.json",
+      "bytes": 177523,
+      "sha256": "d7be6ccb25acbeea6d30e496b68a4613ce53bd02c3ac0cc0175fc98ff2414d9d"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-36.json",
+      "bytes": 174369,
+      "sha256": "3441e7853efa1824bc2f877b517b3de9fc82510f3639045fc171c26b6130ca53"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-37.json",
+      "bytes": 184385,
+      "sha256": "956bf2aba0aff325b8bae7e3c6c6a6a693feacbc3884e880da1534060867ce25"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-38.json",
+      "bytes": 179355,
+      "sha256": "e356068f2c89d1229f52424d248112d39e2750fccc8fe967c164ed1eff61f056"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-39.json",
+      "bytes": 173376,
+      "sha256": "fd79118347cfcbca27afa065c6155e485f8d7bcee20d4e07234646aa39aae8e4"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-4.json",
+      "bytes": 178228,
+      "sha256": "e1b7ef08055b997f0750dc251140b62c5dbe9addf0330b768277469f2427abf5"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-40.json",
+      "bytes": 172784,
+      "sha256": "5f6aed183c42b394f608e8d95be02cbfb129b12124f4dfef016c18c273dcf077"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-41.json",
+      "bytes": 173902,
+      "sha256": "e2f31b02796646dfd0392002412ad7d08ed6e2f84538aead372f09de242dc96a"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-42.json",
+      "bytes": 173596,
+      "sha256": "9ebbfc4763822ff85d4cf7650775eba7a4a8f34ef59e6c47bb7fb8ed1ed762df"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-43.json",
+      "bytes": 173896,
+      "sha256": "550437a6fc13e25df7264e0d970f7a70aae12434eb88288d8dfbcf42411ce1bb"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-44.json",
+      "bytes": 173227,
+      "sha256": "88b9e255cf3d06c2631d0489c3524404305fc05ed23538dab13e41cccbdb6f75"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-45.json",
+      "bytes": 174151,
+      "sha256": "d93ec2985ebcf22b1ff339d9b7c3589b387804a98f1075d9fe9763c3913fc0d0"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-46.json",
+      "bytes": 179839,
+      "sha256": "d82eac5af80ea5822a5e550d03dcb097a3ae4161904a84da529fb1eacad50098"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-47.json",
+      "bytes": 139455,
+      "sha256": "1fc6beff39d7aaf0131af740247255e3bf237d0e1ab8a66fbd5e3b1038b8f424"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-5.json",
+      "bytes": 179399,
+      "sha256": "88af9713583bab6b33e0d57dc14fcef4b34df2a08cf0dd01c4d2087095878d67"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-6.json",
+      "bytes": 179756,
+      "sha256": "aac0c1d982688ca3f76a6031088a2502c4b49d92dbbfc0723bbae55f16cd9916"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-7.json",
+      "bytes": 179740,
+      "sha256": "abec71211be3bb0645e36a4948307265bfa772a4b56fccfe90129ca1b266783c"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-8.json",
+      "bytes": 179741,
+      "sha256": "bf853f4d6e59990540e594ac17552b293a969a664b0b41fa93ed503ca57c7594"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json.artifacts/worker-0/session-9.json",
+      "bytes": 176776,
+      "sha256": "1c6665849f60741ec509adad6fb972f1a8b5456f92b689f81b80df8ce34e4a38"
+    },
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.progress.jsonl",
+      "bytes": 1922313,
+      "sha256": "14bd3ba284b52689d9712cce212da2d28b50e144c94eb8038b72fa997f6544c6"
+    },
+    {
+      "file": "selfhost/tests/conformance/phase8-comparison.test.mjs",
+      "bytes": 3652,
+      "sha256": "40b5d52973f24de2b19006e58f16344f078f9b99c375b59bf914d0fd110c0af1"
+    },
+    {
+      "file": "selfhost/tests/conformance/phase8-oracles.test.mjs",
+      "bytes": 7737,
+      "sha256": "29b4b2486eadd09059f14cc73b2646c0ee2a7cec22fe6ee07e49e33acc09b020"
+    },
+    {
+      "file": "selfhost/tests/conformance/phase8-upstream.test.mjs",
+      "bytes": 6846,
+      "sha256": "2d4bd29d1fb27ea17f3a5e293603d9aca6c5d6477f37ae2e31ff4f1a85d3b97f"
+    },
+    {
+      "file": "selfhost/tools/conformance/adapters/typed.mjs",
+      "bytes": 3265,
+      "sha256": "0ad9c892b45c2fb2a111817e6bea2f232c20f1197f495801a2fb4499498ba3d2"
+    },
+    {
+      "file": "selfhost/tools/conformance/adapters/upstream.mjs",
+      "bytes": 8196,
+      "sha256": "7c821ff14d1589af78bfcb8349692cf5c175c079dd511dabd4e40f953db82492"
+    },
+    {
+      "file": "selfhost/tools/conformance/compare-artifacts.mjs",
+      "bytes": 5377,
+      "sha256": "8a96dd74c912cc5f2eeaef094540097e74578ed2a359bdd5e0fc341ade0a9849"
+    },
+    {
+      "file": "selfhost/tools/conformance/inventory.mjs",
+      "bytes": 6459,
+      "sha256": "91a1bd7be11e6e66a68c94251814286c9d0173d94a38b445240123bc558bc308"
+    },
+    {
+      "file": "selfhost/tools/conformance/judge.mjs",
+      "bytes": 6345,
+      "sha256": "af05b8926bc14fdedf764f2187029363b1f01db2baf5f89787083e3a41395fbb"
+    },
+    {
+      "file": "selfhost/tools/conformance/run.mjs",
+      "bytes": 13014,
+      "sha256": "d967ec1dc348d3be8ea2b27cecc8419d9fbf1926f97657b6e70436c01c48bd93"
+    },
+    {
+      "file": "selfhost/tools/conformance/selection.mjs",
+      "bytes": 4474,
+      "sha256": "ecdb5a8c451554c3d2dce4ca5e7725e299fa9b63c042e2cf2f7f9c440b2baa7d"
+    },
+    {
+      "file": "selfhost/tools/conformance/semantic-summary.mjs",
+      "bytes": 4777,
+      "sha256": "b0ab2acdc50ed48700e89fcdf840d4538b73c1ad5ae3970b79ea877db2ace47e"
+    },
+    {
+      "file": "selfhost/tools/conformance/target.mjs",
+      "bytes": 10610,
+      "sha256": "e2ac5403100458239cc65cbc5da77605fbfb108a54d6ae337190dd467e0e0f50"
+    }
+  ]
+}

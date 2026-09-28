@@ -650,3 +650,41 @@ migration. No compiler candidate has run yet and no speed gain is claimed.
 Percentage line goals are no longer prerequisites; the rejected general evaluator
 and runtime generic walker remain out. P8-001 and P8-002 own the first bounded
 bootstrap and conformance hypotheses. Prior dirty Phase6 work remains untouched.
+
+
+## 2026-09-28 — upstream migration consolidated
+
+The [Phase8 report](../implementation/phase8/upstream_and_conformance.md) records
+one installed genuine checked release targeting b2111cf, after2.0.32. The API is
+e928f777…6374bbe4; source0f5425ac…6a47822; final runtime1766d6d6…5e772f0.
+Whole-book bootstrap, ABI controls, focused language and backend gates, and
+30 ordinary/relocated release steps pass. All19 component groups ran;18 pass,
+while six source diagnostics retain missing-caret differences.
+
+The final2,996-row paired frontend run accepts997/1,001 positives, rejects481/482
+validation negatives and leaves one negative timeout. Seven incorrect acceptances
+are fixed; none is observed in the final vector. Exact differences fall743→734
+within the new target. Four new positive literal cases and four imported-law
+trust cases remain. All913 common-path current positives pass;121 paths were
+added, one removed, and510 common source hashes changed. Reports preserve these
+categories instead of borrowing old-pin conformance claims.
+
+All192 focused parse/check observations,18 semantic outputs,35 import/JS outputs,
+44 final foreign-runtime outputs and13 native/scanner controls pass their explicit
+oracles; selections overlap. The first tag guard's primitive regression and the
+subsequent generic-parameter falsifier remain beside corrected actual executions.
+Native Process is blocked by the same unavailable libc symbol in upstream.
+GPU and interactive devices remain outside measured coverage.
+
+The compiler retains S4 simplifications and grows310 lines for new behavior:
+14,977 physical /12,779 nonblank lines across59 modules, still9.28% below the
+original16,509-line baseline. Generated API shrinks27.80%. No new50%/75% claim or
+unchecked generic rewrite is promoted.
+
+P8-001's unchanged-source operation comparison improves1.45–1.52×. P8-003's
+separate controlled full-source **checking** comparison records205.26s Bend versus
+2.80s TypeScript,73.20× process wall; it does not measure full compilation.
+A coarse profile locates most time in checking. The measured checked-build plus
+focused loop is about27s. All samples, failed attempts, exact identities and
+archived byte objects remain linked from the [preservation index](PRESERVATION.md).
+The checked release is not relabeled a fresh self-hosted fixed point.

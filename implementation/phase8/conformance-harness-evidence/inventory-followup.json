@@ -1,0 +1,21 @@
+{
+  "purpose": "Repair stale Phase5 inventory constants after initial broader suite had 112/114 passes; rerun only the two failed inventory cases.",
+  "result": "2/2 pass",
+  "files": [
+    {
+      "file": "selfhost/tests/conformance/inventory.test.mjs",
+      "sha256": "88bb8baf044bd3522d28e6a74ca46c9d1d99edd35d2473f75e86ad4f630760cc",
+      "bytes": 4371
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/inventory-tests-v2.stdout",
+      "sha256": "75d608424c8102e8ddedd5e38bdf5fb816b1c057c19ef49c329d114ac3bdc16f",
+      "bytes": 297
+    },
+    {
+      "file": "selfhost/build/phase8/harness-controls-01/inventory-tests-v2.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ]
+}

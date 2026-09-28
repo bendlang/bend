@@ -1,5 +1,20 @@
 # Compiler evidence preservation index
 
+## Phase8 upstream migration — 2026-09-28
+
+The [final migration report](../implementation/phase8/upstream_and_conformance.md)
+links source identities, the complete paired frontend vector, controlled checking
+cost and installed/relocated release tests. The
+[main capsule](../implementation/phase8/migration-evidence/README.md) preserves
+finished attempts, requests/results, frozen source/API/runtime/host, emitted
+programs and failures. It reuses separately verified
+[reference/harness](../implementation/phase8/conformance-harness-evidence/README.md)
+and [JS execution](../implementation/phase8/selected-js-evidence/README.md)
+content-addressed archives without nesting copies. Toolchain prerequisites and
+omitted derived caches are explicit. Capsule capture success is not compiler
+conformance success; the known failed observations remain failed.
+
+
 ## Phase 5 checkpoint — 2026-09-23 02:14 UTC
 
 The [campaign report](../implementation/phase5/report.md) links each source

@@ -1,0 +1,195 @@
+{
+  "complete": true,
+  "scope": "Completed Phase8 upstream migration: authentic bootstrap/release provenance, frontend/conformance/native/JS controls including failed attempts, final release smoke and controlled timing. Operator must close all selected producers before capture.",
+  "include": [
+    "selfhost/build/phase8",
+    "selfhost/src",
+    "selfhost/tools",
+    "selfhost/tests/phase8-bootstrap",
+    "selfhost/tests/phase8-native",
+    "selfhost/tests/conformance/phase8-fixtures",
+    "selfhost/.bootstrap/upstream-phase8/bend2",
+    "selfhost/.bootstrap/upstream-phase8/tests",
+    "selfhost/.bootstrap/upstream/bend2",
+    "selfhost/.bootstrap/upstream/tests",
+    "selfhost/dist/typed-api.mjs",
+    "selfhost/dist/base.bend",
+    "selfhost/dist/release.json",
+    "selfhost/dist/release-lineage",
+    "README.md",
+    "selfhost/CONFORMANCE.md",
+    "docs",
+    "design/phase8",
+    "experiments/phase8",
+    "experiments/README.md",
+    "experiments/ledger.md",
+    "experiments/STEERING.md",
+    "implementation/phase8/source-inventory.json",
+    "implementation/phase8/migration-evidence/collect.py",
+    "implementation/phase8/migration-evidence/test_collect.py",
+    "implementation/phase8/migration-evidence/README.md",
+    "implementation/phase8/migration-evidence/selection.json",
+    "implementation/phase8/conformance-harness-evidence/manifest.json",
+    "implementation/phase8/conformance-harness-evidence/archive.py",
+    "implementation/phase8/conformance-harness-evidence/README.md",
+    "implementation/phase8/selected-js-evidence/manifest.json",
+    "implementation/phase8/selected-js-evidence/archive.py",
+    "implementation/phase8/selected-js-evidence/README.md",
+    "implementation/phase8/migration-evidence/collector-controls-01.json",
+    "implementation/phase8/migration-evidence/preflight-01.json",
+    "implementation/phase8/migration-evidence/toolchain-prerequisites.json",
+    "selfhost/cli.mjs",
+    "selfhost/legacy-cli.mjs",
+    "selfhost/README.md",
+    "selfhost/package.json",
+    "selfhost/LICENSE",
+    "selfhost/UPSTREAM-LICENSE",
+    "selfhost/NOTICE",
+    "AGENTS.md",
+    "selfhost/.bootstrap/upstream-phase8/CHANGELOG.md",
+    "selfhost/.bootstrap/upstream-phase8/README.md",
+    "selfhost/.bootstrap/upstream-phase8/LICENSE",
+    "selfhost/.bootstrap/upstream-phase8/flake.nix",
+    "selfhost/.bootstrap/upstream/README.md",
+    "selfhost/.bootstrap/upstream/LICENSE",
+    "selfhost/.bootstrap/upstream/flake.nix",
+    "implementation/phase8/selected-js-evidence/release07-manifest.json",
+    "implementation/phase8/selected-js-evidence/archive-release07.py",
+    "implementation/phase8/frontend-conformance-evidence",
+    "implementation/phase8/conformance-harness-evidence/frontend-triage.mjs",
+    "implementation/phase8/conformance-harness-evidence/corpus-migration.mjs",
+    "implementation/phase8/migration-evidence/review.md",
+    "implementation/phase8/migration-evidence/preflight-03.json",
+    "experiments/PRESERVATION.md",
+    "implementation/phase8/checking-cost.md",
+    "implementation/phase8/checking-cost.json",
+    "implementation/phase8/supporting-changes.json",
+    "docs/BEND-IN-BEND.md",
+    "implementation/phase8/migration-evidence/collector-controls-02.json",
+    "implementation/phase8/migration-evidence/capture-01.stdout",
+    "implementation/phase8/migration-evidence/capture-01.stderr",
+    "implementation/phase8/migration-evidence/cosmetic-recapture.json"
+  ],
+  "includeGlobs": [
+    "selfhost/tests/conformance/phase8-*.mjs",
+    "implementation/phase8/*.md",
+    "implementation/phase8/*.json"
+  ],
+  "omit": [
+    {
+      "pattern": "selfhost/build/phase8/bootstrap-original-project/tests/conformance/[^/]+\\.json",
+      "reason": "Incidental copied results from earlier phases, not Phase8 experiment outputs. Their identities are retained; Phase8 attempts and their frozen harness sources are retained in full."
+    },
+    {
+      "pattern": "selfhost/build/phase1/clang/.*",
+      "reason": "External Clang toolchain installation; binary identities and version are recorded as prerequisites, not embedded."
+    }
+  ],
+  "externalCapsules": [
+    "implementation/phase8/conformance-harness-evidence/manifest.json",
+    "implementation/phase8/selected-js-evidence/manifest.json",
+    "implementation/phase8/selected-js-evidence/release07-manifest.json",
+    "implementation/phase8/migration-evidence/capsule-01/manifest.json"
+  ],
+  "externalPrerequisites": [
+    {
+      "path": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "role": "Node executable",
+      "version": "v24.18.0"
+    },
+    {
+      "path": "selfhost/build/phase1/clang/root/usr/bin/clang-16",
+      "role": "Native C compiler executable",
+      "version": "Debian Clang 16.0.6"
+    },
+    {
+      "path": "/lib/x86_64-linux-gnu/libc.so.6",
+      "role": "Host C runtime; native Process.run needs unavailable posix_spawn_file_actions_addclosefrom_np",
+      "version": "glibc 2.31"
+    },
+    {
+      "path": "/lib/x86_64-linux-gnu/libdl.so.2",
+      "role": "Dynamically linked Node/Clang prerequisite; recorded identity only"
+    },
+    {
+      "path": "/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "role": "Dynamically linked Node/Clang prerequisite; recorded identity only"
+    },
+    {
+      "path": "/lib/x86_64-linux-gnu/libm.so.6",
+      "role": "Dynamically linked Node/Clang prerequisite; recorded identity only"
+    },
+    {
+      "path": "/lib/x86_64-linux-gnu/libpthread.so.0",
+      "role": "Dynamically linked Node/Clang prerequisite; recorded identity only"
+    },
+    {
+      "path": "/lib/x86_64-linux-gnu/libstdc++.so.6",
+      "role": "Dynamically linked Node/Clang prerequisite; recorded identity only"
+    },
+    {
+      "path": "/lib64/ld-linux-x86-64.so.2",
+      "role": "Dynamically linked Node/Clang prerequisite; recorded identity only"
+    },
+    {
+      "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase1/clang/root/usr/lib/x86_64-linux-gnu/libLLVM-16.so.1",
+      "role": "Dynamically linked Node/Clang prerequisite; recorded identity only"
+    },
+    {
+      "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase1/clang/root/usr/lib/x86_64-linux-gnu/libclang-cpp.so.16",
+      "role": "Dynamically linked Node/Clang prerequisite; recorded identity only"
+    },
+    {
+      "path": "/lib/x86_64-linux-gnu/libbsd.so.0",
+      "role": "Dynamically linked Node/Clang prerequisite; recorded identity only"
+    },
+    {
+      "path": "/lib/x86_64-linux-gnu/libedit.so.2",
+      "role": "Dynamically linked Node/Clang prerequisite; recorded identity only"
+    },
+    {
+      "path": "/lib/x86_64-linux-gnu/libffi.so.7",
+      "role": "Dynamically linked Node/Clang prerequisite; recorded identity only"
+    },
+    {
+      "path": "/lib/x86_64-linux-gnu/libicudata.so.67",
+      "role": "Dynamically linked Node/Clang prerequisite; recorded identity only"
+    },
+    {
+      "path": "/lib/x86_64-linux-gnu/libicuuc.so.67",
+      "role": "Dynamically linked Node/Clang prerequisite; recorded identity only"
+    },
+    {
+      "path": "/lib/x86_64-linux-gnu/liblzma.so.5",
+      "role": "Dynamically linked Node/Clang prerequisite; recorded identity only"
+    },
+    {
+      "path": "/lib/x86_64-linux-gnu/libmd.so.0",
+      "role": "Dynamically linked Node/Clang prerequisite; recorded identity only"
+    },
+    {
+      "path": "/lib/x86_64-linux-gnu/librt.so.1",
+      "role": "Dynamically linked Node/Clang prerequisite; recorded identity only"
+    },
+    {
+      "path": "/lib/x86_64-linux-gnu/libtinfo.so.6",
+      "role": "Dynamically linked Node/Clang prerequisite; recorded identity only"
+    },
+    {
+      "path": "/lib/x86_64-linux-gnu/libxml2.so.2",
+      "role": "Dynamically linked Node/Clang prerequisite; recorded identity only"
+    },
+    {
+      "path": "/lib/x86_64-linux-gnu/libz.so.1",
+      "role": "Dynamically linked Node/Clang prerequisite; recorded identity only"
+    },
+    {
+      "path": "/lib/x86_64-linux-gnu/libz3.so.4",
+      "role": "Dynamically linked Node/Clang prerequisite; recorded identity only"
+    },
+    {
+      "path": "/lib/x86_64-linux-gnu/libzstd.so.1",
+      "role": "Dynamically linked Node/Clang prerequisite; recorded identity only"
+    }
+  ]
+}

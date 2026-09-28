@@ -1,0 +1,7 @@
+{
+  "pass": false,
+  "archivePublished": false,
+  "expectedDuringActiveRun": true,
+  "reason": "Initial inventory refused a selected file disappearing while full frontend producer was active. Final capture requires all producers closed.",
+  "path": "selfhost/build/phase8/candidate-frontend-06/candidate.json.artifacts/2763/request.json"
+}

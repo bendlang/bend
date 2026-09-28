@@ -1,0 +1,99 @@
+{
+  "pass": true,
+  "checks": 23,
+  "scope": "Synthetic archive integrity and recovery controls only.",
+  "results": [
+    {
+      "name": "CRLF JSON dependency closure",
+      "pass": true
+    },
+    {
+      "name": "derived cache payload omitted with exact identity",
+      "pass": true
+    },
+    {
+      "name": "prior archive bytes reused",
+      "pass": true
+    },
+    {
+      "name": "malformed negative-control JSON remains captured",
+      "pass": true
+    },
+    {
+      "name": "external tool bytes recorded without payload selection",
+      "pass": true
+    },
+    {
+      "name": "draft capture rejected",
+      "pass": true
+    },
+    {
+      "name": "archive byte verification",
+      "pass": true
+    },
+    {
+      "name": "existing capsule replacement rejected",
+      "pass": true
+    },
+    {
+      "name": "all files and modes recover exactly",
+      "pass": true
+    },
+    {
+      "name": "omitted cache not materialized",
+      "pass": true
+    },
+    {
+      "name": "existing recovery replacement rejected",
+      "pass": true
+    },
+    {
+      "name": "nested capsule reuses all existing objects",
+      "pass": true
+    },
+    {
+      "name": "nested capsule recovery exact",
+      "pass": true
+    },
+    {
+      "name": "missing nested prerequisite rejected",
+      "pass": true
+    },
+    {
+      "name": "nested prerequisite manifest mutation rejected",
+      "pass": true
+    },
+    {
+      "name": "corrupt archive rejected",
+      "pass": true
+    },
+    {
+      "name": "changed prerequisite manifest rejected",
+      "pass": true
+    },
+    {
+      "name": "symlink target metadata bound to archived object",
+      "pass": true
+    },
+    {
+      "name": "external file size metadata bound to archived object",
+      "pass": true
+    },
+    {
+      "name": "escaping recovery name rejected",
+      "pass": true
+    },
+    {
+      "name": "absolute symlink recovery rejected before creation",
+      "pass": true
+    },
+    {
+      "name": "unsafe recovery destination absent",
+      "pass": true
+    },
+    {
+      "name": "restored archive verifies",
+      "pass": true
+    }
+  ]
+}

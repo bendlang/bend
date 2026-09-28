@@ -1,0 +1,28 @@
+{
+  "scope": "Read-only dynamic dependency inventory; no toolchain payload embedded. Same LD_LIBRARY_PATH as passing native controls.",
+  "environment": {
+    "LD_LIBRARY_PATH": "/home/ai/bend2/build/publish/bend/selfhost/build/phase1/clang/root/usr/lib/x86_64-linux-gnu"
+  },
+  "results": [
+    {
+      "binary": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "command": [
+        "ldd",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node"
+      ],
+      "exitCode": 0,
+      "stdout": "\tlinux-vdso.so.1 (0x00007ffe1c449000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007f568f8d0000)\n\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007f568f703000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f568f5bf000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f568f5a5000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f568f583000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f568f3af000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007f568f8e1000)\n",
+      "stderr": ""
+    },
+    {
+      "binary": "/home/ai/bend2/build/publish/bend/selfhost/build/phase1/clang/root/usr/bin/clang-16",
+      "command": [
+        "ldd",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase1/clang/root/usr/bin/clang-16"
+      ],
+      "exitCode": 0,
+      "stdout": "\tlinux-vdso.so.1 (0x00007ffd4fd90000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f5344bd4000)\n\tlibclang-cpp.so.16 => /home/ai/bend2/build/publish/bend/selfhost/build/phase1/clang/root/usr/lib/x86_64-linux-gnu/libclang-cpp.so.16 (0x00007f5340faf000)\n\tlibLLVM-16.so.1 => /home/ai/bend2/build/publish/bend/selfhost/build/phase1/clang/root/usr/lib/x86_64-linux-gnu/libLLVM-16.so.1 (0x00007f53399b0000)\n\tlibstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007f53397e3000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f533969f000)\n\tlibgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f5339683000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f53394af000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007f5344c25000)\n\tlibffi.so.7 => /lib/x86_64-linux-gnu/libffi.so.7 (0x00007f53394a3000)\n\tlibedit.so.2 => /lib/x86_64-linux-gnu/libedit.so.2 (0x00007f533946a000)\n\tlibrt.so.1 => /lib/x86_64-linux-gnu/librt.so.1 (0x00007f5339460000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007f5339458000)\n\tlibz3.so.4 => /lib/x86_64-linux-gnu/libz3.so.4 (0x00007f5337e7d000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007f5337e60000)\n\tlibzstd.so.1 => /lib/x86_64-linux-gnu/libzstd.so.1 (0x00007f5337d85000)\n\tlibtinfo.so.6 => /lib/x86_64-linux-gnu/libtinfo.so.6 (0x00007f5337d56000)\n\tlibxml2.so.2 => /lib/x86_64-linux-gnu/libxml2.so.2 (0x00007f5337ba8000)\n\tlibbsd.so.0 => /lib/x86_64-linux-gnu/libbsd.so.0 (0x00007f5337b8f000)\n\tlibicuuc.so.67 => /lib/x86_64-linux-gnu/libicuuc.so.67 (0x00007f53379a6000)\n\tliblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x00007f533797e000)\n\tlibmd.so.0 => /lib/x86_64-linux-gnu/libmd.so.0 (0x00007f5337971000)\n\tlibicudata.so.67 => /lib/x86_64-linux-gnu/libicudata.so.67 (0x00007f5335e58000)\n",
+      "stderr": ""
+    }
+  ]
+}

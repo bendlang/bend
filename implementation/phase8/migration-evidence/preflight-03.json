@@ -1,0 +1,23 @@
+{
+  "scope": "Full draft inventory after all compiler jobs closed, before final authored documentation freeze. No archive published; capture will recompute identities.",
+  "summary": {
+    "files": 27277,
+    "objects": 12485,
+    "logicalBytes": 307323551,
+    "uniqueBytes": 247175725,
+    "newArchiveObjects": 10465,
+    "newArchiveBytesBeforeCompression": 184721138,
+    "externalPrerequisites": 24,
+    "omittedFiles": 47,
+    "omittedBytes": 59394601,
+    "referenceStatuses": {
+      "captured-external-object": 16433,
+      "captured-object": 76669,
+      "external-prerequisite": 36,
+      "external-toolchain-identity": 26,
+      "omitted-derived-input": 24
+    }
+  },
+  "externalHistoricalReferenceNote": "All 36 unresolved external occurrences refer to one copied historical lexical-selfhost API at /workspace/scratch/4de8c3a3f107/bend2-selfhost/build/typed/lexical-selfhost/bootstrap-api.mjs, SHA 0e3c00f419b7e9fc4565ca52e3b14864121f48351ffe8dc7108a93a43a3d2115. This is referenced by inherited earlier-phase reports under src/back/js/experiments, not the Phase8 release compiler. No unresolved repository-local reference remains.",
+  "operatorDeclaredComplete": false
+}

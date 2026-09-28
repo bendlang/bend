@@ -12,16 +12,25 @@ and lineage after relocation. It does not rerun conformance or claim a new
 self-hosted fixed point. Historical equality-derived/fixed-point evidence is not
 transferred to the current artifact.
 
-The new upstream fixture gate has1,498 fixtures:1,001 positive expectations,
-482 validation negatives,11 declaration-only proof-trust refusals and4 cases
+The new upstream fixture gate has 1,498 fixtures: 1,001 positive expectations,
+482 validation negatives, 11 declaration-only proof-trust refusals and 4 cases
 whose expected error happens during emission. Eleven additional Bend files are
 import support without independent oracles. `typeAccepted`, `proofTrust` and
 `kernelChecked` keep these outcomes separate; no run claims Lean validation.
 
-Current bounded regression gates include21 maintained development controls,
-134 frontend observations,26 semantic observations,32 soundness observations,
-18 semantic execution observations,35 import/JS executions,44 foreign-runtime
-executions and13 native/scanner controls. Some sets overlap. Do not add them
+The final paired frontend run completes 2,996 observations. All 1,001 positive
+programs parse and 997 accept types. Among 482 validation negatives, 481 reject and
+one times out; none is observed accepting invalid types. Strict checks record
+1,002 passes, 494 failures and 2 timeouts. There are 734 exact reference differences
+(536 check, 198 parse), including diagnostic and phase differences. Seven of 11
+trust-refusal fixtures reach the proper phase; four imported-law fills fail early.
+These counts refer to the same checked API installed in release07; its changed
+runtime is separately validated on 44 final execution observations.
+
+Current bounded regression gates include 21 maintained development controls,
+134 frontend observations, 26 semantic observations, 32 soundness observations,
+18 semantic execution observations, 35 import/JS executions, 44 foreign-runtime
+executions and 13 native/scanner controls. Some sets overlap. Do not add them
 as if they counted unique language programs or infer full backend conformance.
 Exact diagnostics are compared separately from custom acceptance/phase oracles.
 

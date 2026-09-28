@@ -1,0 +1,72 @@
+{
+  "kind": "phase8-full-source-check-cost",
+  "mode": "measure",
+  "started": "2026-09-28T01:59:20.119Z",
+  "finished": "2026-09-28T02:06:17.384Z",
+  "complete": true,
+  "policy": "Fresh processes; TypeScript checks Base; Bend uses its validated disk Base cache. Checking and trust reporting only, no emission.",
+  "attempt": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase8/release-07/attempt.json",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase8/release-07/attempt.json",
+    "sha256": "a495374d504126ef67ffa15fc582efc6247e7b056e228fab9dd3e6f549585556"
+  },
+  "source": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase8/release-07/snapshot/build/typed/snapshots/077b188828962f0df391b66e09d6be995e414eb2b004a1a21dd7e0699bee7436/compiler.bend",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase8/release-07/snapshot/build/typed/snapshots/077b188828962f0df391b66e09d6be995e414eb2b004a1a21dd7e0699bee7436/compiler.bend",
+    "sha256": "0f5425ac8a2298f444b0907632088b406da61420407331e80708d9fea6a47822"
+  },
+  "cache": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase8/release-07/snapshot/build/typed/cache/base-e928f77778de9dc72267e26b6a7ccb029cac318ccd35dd8f9248da1c6374bbe4-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase8/release-07/snapshot/build/typed/cache/base-e928f77778de9dc72267e26b6a7ccb029cac318ccd35dd8f9248da1c6374bbe4-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json",
+    "sha256": "6bf778617ca1695541d9fe4ac793bed7c5cdf0825757d5da092dbcb06ee05c06"
+  },
+  "variants": {
+    "typescript": {
+      "samples": 2,
+      "meanRequestMs": 1805.305865,
+      "meanProcessWallMs": 2803.9461029999875,
+      "maxRssKiB": 421792
+    },
+    "bend": {
+      "samples": 2,
+      "meanRequestMs": 204200.497783,
+      "meanProcessWallMs": 205260.29487749998,
+      "maxRssKiB": 1644132
+    }
+  },
+  "ratios": {
+    "request": 113.11130249000769,
+    "process": 73.20408001348123
+  },
+  "unsafeDefinitionSetsAgree": true,
+  "samples": [
+    {
+      "variant": "typescript",
+      "processWallMs": 2774.1412920000002,
+      "requestMs": 1819.5842510000002,
+      "maxRssKiB": 421792,
+      "pass": true
+    },
+    {
+      "variant": "bend",
+      "processWallMs": 204720.77001200002,
+      "requestMs": 203663.777112,
+      "maxRssKiB": 1608852,
+      "pass": true
+    },
+    {
+      "variant": "bend",
+      "processWallMs": 205799.81974299997,
+      "requestMs": 204737.218454,
+      "maxRssKiB": 1644132,
+      "pass": true
+    },
+    {
+      "variant": "typescript",
+      "processWallMs": 2833.7509139999747,
+      "requestMs": 1791.0274789999999,
+      "maxRssKiB": 419596,
+      "pass": true
+    }
+  ]
+}

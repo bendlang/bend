@@ -1,0 +1,174 @@
+{
+  "inputs": [
+    {
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json",
+      "sha256": "827e80c14d500f8ff77dd4e30f1e0fa4817780055ef783839741150fbf0fad31"
+    },
+    {
+      "file": "selfhost/build/phase8/candidate-frontend-06/candidate.json",
+      "sha256": "185a19b4c17218a915b12830de7a9f26bf3bd473d93b8ad97048adba20c0b858"
+    }
+  ],
+  "fixtureCount": 1498,
+  "positive": {
+    "total": 1001,
+    "referenceAccepted": 1001,
+    "candidateAccepted": 997,
+    "notTypeAccepted": [
+      {
+        "id": "check/string_literal_descends.bend",
+        "status": "timeout"
+      },
+      {
+        "id": "check/string_literal_long.bend",
+        "status": "fail",
+        "phase": "check",
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError: Maximum call stack size exceeded"
+      },
+      {
+        "id": "compile/nat_pattern_deep.bend",
+        "status": "fail",
+        "phase": "check",
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)\n- observed : down\nLocation: down\n 8 |     case 300n:\n 9>|       down(299n)\n10 |     case _:"
+      },
+      {
+        "id": "proof/nat_literal_unfolds.bend",
+        "status": "fail",
+        "phase": "check",
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)\n- observed : down\nLocation: down\n45 |     case 300n:\n46>|       down(299n)\n47 |     case _:"
+      }
+    ],
+    "laterRefusals": []
+  },
+  "validationNegative": {
+    "total": 482,
+    "referenceRefused": 482,
+    "candidateRefused": 481,
+    "unexpectedTypeAcceptance": [],
+    "unresolved": [
+      {
+        "id": "halt/literal_descent_linear.bend",
+        "status": "timeout"
+      }
+    ],
+    "refusalPhases": {
+      "check": 289,
+      "parse": 183,
+      "load": 9
+    }
+  },
+  "deferredErrors": {
+    "total": 4,
+    "referenceTypeAccepted": [
+      "io/cid_unknown.bend",
+      "io/effect_ctr_name.bend",
+      "io/main_foreign.bend",
+      "reg/array_open_element.bend"
+    ],
+    "candidateTypeAccepted": [
+      "io/cid_unknown.bend",
+      "io/effect_ctr_name.bend",
+      "io/main_foreign.bend",
+      "reg/array_open_element.bend"
+    ],
+    "unexpected": [],
+    "note": "Frontend type acceptance alone does not demonstrate the expected later compile refusal; execution controls remain separate evidence."
+  },
+  "proofTrust": {
+    "total": 11,
+    "referenceRefusals": 11,
+    "candidateTypeAccepted": 7,
+    "candidateRefusals": 7,
+    "exactPasses": 3,
+    "unmatched": [
+      {
+        "id": "check/unsafe_field.bend",
+        "status": "fail",
+        "phase": "verdict",
+        "typeAccepted": true,
+        "proofTrust": "failed",
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError: 3 defs rely on unsafe or foreign code:\n- uses\n- Box\n- boom\n"
+      },
+      {
+        "id": "check/unsafe_relies.bend",
+        "status": "fail",
+        "phase": "verdict",
+        "typeAccepted": true,
+        "proofTrust": "failed",
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError: 3 defs rely on unsafe or foreign code:\n- by_type\n- innocent\n- boom\n"
+      },
+      {
+        "id": "import/unsafe_law_derived.bend",
+        "status": "fail",
+        "phase": "parse",
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError: definition without return type needs a law: S.succ_is_id"
+      },
+      {
+        "id": "import/unsafe_law_fill.bend",
+        "status": "fail",
+        "phase": "parse",
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError: definition without return type needs a law: Laws.false_law"
+      },
+      {
+        "id": "import/unsafe_law_own.bend",
+        "status": "fail",
+        "phase": "parse",
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError: definition without return type needs a law: Laws.false_law"
+      },
+      {
+        "id": "import/unsafe_law_unused.bend",
+        "status": "fail",
+        "phase": "parse",
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError: definition without return type needs a law: Laws.one"
+      },
+      {
+        "id": "import/unsafe_used.bend",
+        "status": "fail",
+        "phase": "verdict",
+        "typeAccepted": true,
+        "proofTrust": "failed",
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError: 2 defs rely on unsafe or foreign code:\n- innocent\n- unsafe_lib.boom\n"
+      },
+      {
+        "id": "io/marshal_imported_nullary_type.bend",
+        "status": "fail",
+        "phase": "verdict",
+        "typeAccepted": true,
+        "proofTrust": "failed",
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError: 2 defs rely on unsafe or foreign code:\n- tag.on\n- tag.off\n"
+      }
+    ],
+    "kernelChecked": false
+  },
+  "exactCheckStatuses": {
+    "fail": 494,
+    "pass": 1002,
+    "timeout": 2
+  },
+  "note": "Semantic acceptance/refusal counts are distinct from exact fixture passes. Timeouts establish neither acceptance nor rejection. No proof kernel has been run."
+}

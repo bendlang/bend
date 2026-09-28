@@ -1,0 +1,10 @@
+✔ pinned corpus is exhaustive and includes every negative namespace (186.481224ms)
+✔ infinite compiler probe is killed and filtered run cannot claim completeness (789.780196ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1009.261447

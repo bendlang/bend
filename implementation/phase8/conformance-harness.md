@@ -144,3 +144,48 @@ stale: the actual new-target observations reject in all three lanes. One unsafe
 main and all three IO.args lanes also pass with unassessed execution trust.
 No input or artifact changed during this gate. Earlier execution observations
 with eagerly computed trust metadata remain retained, not rewritten.
+
+## Durable evidence
+
+The [evidence directory](conformance-harness-evidence/README.md) retains the full
+reference vectors and focused harness/native observations in a content-addressed
+archive: 335 path identities, 227 objects, 2,258,668 compressed bytes, SHA-256
+`b011854d9869ee6db4262668c0523a36ab84d253c13b901b57a39bc53ba42422`.
+Every object was verified after archiving and every original input was checked
+for changes. The separate [candidate execution report](selected-js-execution.md)
+records actual candidate03 gaps and its preserved permission failure.
+
+A subsequent broader maintained harness suite passed 112 of 114 tests; its two
+failures were old inventory constants. The targeted correction binds the new
+pin and 1,498/1,497 total/excluded counts, 1,001 positive/497 negative fixtures,
+11 support sources and the new 68-file effects inventory. Only those two tests
+were rerun, and both pass; their follow-up logs are retained beside the archive.
+The earlier failed suite and the original archive are unchanged.
+
+## First complete candidate03 frontend comparison
+
+The frozen reference and candidate03 vectors each contain all **2,996 parse and
+check observations**. `compare-artifacts.mjs --strict-paths` pairs every row with
+zero missing rows and rejects changed fixture or target-manifest identities.
+Neither run changed inputs or artifacts. The comparison is retained at
+`selfhost/build/phase8/candidate-frontend-03/reference-comparison.json`.
+
+There are **743 exact observation differences: 543 check and 200 parse**. This
+unit includes diagnostic text, paths, phase and trust metadata, so it is not a
+count of unsafe type acceptances. Candidate03's strict check rows comprise
+**995 pass, 501 fail and 2 timeout**. It establishes type acceptance for
+**991/1,001 positive fixtures**, and positive parse succeeds on **999/1,001**.
+Only **3/11 proof-trust fixtures** match the complete strict oracle.
+
+Seven negative fixtures are additionally type accepted beyond the reference's
+four known deferred compile failures: `check/do_header_quantity_span`,
+`check/do_header_typed`, `comptime/later_def`, `import/alias_shadow`,
+`import/alias_twice`, `import/shadow_base` and `parse/type_arg_parens` (all `.bend`).
+These are semantic gaps requiring fixes; they are not waived as formatting
+differences. The two request timeouts are `check/string_literal_descends.bend`
+and `halt/literal_descent_linear.bend`. A positive acceptance can also be
+followed by an erroneous later refusal: `check/name_owned_def.bend` type-checks
+but candidate03 rejects its reserved compiler name during compilation.
+
+This vector predates the subsequent fixes. It remains an immutable migration
+baseline and makes no claim about final release conformance.

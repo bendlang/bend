@@ -1,0 +1,52 @@
+{
+  "reason": "Root corrected numeric spacing in authored documentation after the first successful local capture. All compiler experiment evidence and production sources remained unchanged. Keep capsule-01 intact; capsule-02 reuses its objects and preserves final authored bytes. The collector gained bounded support for its own capsule schema and passed23 integrity controls.",
+  "priorCapsule": "capsule-01",
+  "priorManifestSha256": "ae41fbe1f173b1e01815c146cb874dfbd9a813e6986b42aed1ab34f8732ac886",
+  "priorArchive": {
+    "file": "raw.tar.gz",
+    "bytes": 21314537,
+    "sha256": "7b4c8b7d3841b42508b4283446ec3858ea9b8ef29b26f19e19d66b7f2487713c"
+  },
+  "changedAuthoredDocuments": [
+    {
+      "file": "README.md",
+      "capsule01Sha256": "d4f79e5cf670a8e35684473bceaa732314aeb6edd175825f796afe0d2ea9a5c9",
+      "currentSha256": "79ac5346f021b1cff6a651d91528e5fa46a54db100bde1f8467e672256b9f11d"
+    },
+    {
+      "file": "docs/PHASE8_MIGRATION.md",
+      "capsule01Sha256": "049c7e4143cd1a8d3ccdfd031faddd6f0330e875a5c02014feb54b3daedb4f3e",
+      "currentSha256": "4e0b33d20d0a29339a69c7872ed90983ea809a1df7979943876bc378ec5167e7"
+    },
+    {
+      "file": "experiments/STEERING.md",
+      "capsule01Sha256": "1358bceb157c28d8d5a43818c02f79e4a5223f14accff8a8a1337fabb9b43699",
+      "currentSha256": "20e3a0004bc838cbb1cbdb7a8481431604d51e02f4ac150755012c71efad041b"
+    },
+    {
+      "file": "experiments/phase8/P8-001-upstream-bootstrap.md",
+      "capsule01Sha256": "effab70aa8e3d9bdd0c984b37b44f542dddb904a1e2bbdddfbb399ee1ebf2435",
+      "currentSha256": "d56d9ce54b008cdf2cb9d34b17e62381f7f9ce2c27ac6a55dcd01b37748e7dd0"
+    },
+    {
+      "file": "experiments/phase8/P8-002-conformance-migration.md",
+      "capsule01Sha256": "dd14040f0138584c9196878fc5d2aa2a5460fa915e125ac9314022f312f028cc",
+      "currentSha256": "0cc0661e7d0de4ca1a844f096c91b9e36631cbc03670186e2559038d3b4fecb0"
+    },
+    {
+      "file": "implementation/phase8/checking-cost.md",
+      "capsule01Sha256": "750e5e297652efb86b89270b9e5ac647e8ecad2b3b65bb4cdec82451774cc44f",
+      "currentSha256": "b42c2110ef85b3bfb13ad86ffaee2fb2817d773e998c26487a0f2d8a5736b66b"
+    },
+    {
+      "file": "implementation/phase8/upstream_and_conformance.md",
+      "capsule01Sha256": "0f5ff226bd926ae89f7ce15d4a73882b45196bf053b444259c6bfffc0409619a",
+      "currentSha256": "4811e3e7b93e7e7159fdc87c1f56032992db0a3d66a8fac4de1a194ad3c4737e"
+    },
+    {
+      "file": "selfhost/CONFORMANCE.md",
+      "capsule01Sha256": "02330a6323525463b0f5b686c4dc6847cbb9f62426d9ec933f374a25cf0dd8d9",
+      "currentSha256": "00a9c6a4a61f75876e3729b9ff4ba456f49e331a9e4a705f72fe83d0d5952af5"
+    }
+  ]
+}

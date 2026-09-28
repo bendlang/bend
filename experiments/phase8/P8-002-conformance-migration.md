@@ -12,5 +12,16 @@ Falsifiers: positive acceptance regressions, changed first-error selection,
 unsafe/safe visibility confusion, stale namespace or prefix cache acceptance.
 Separate phase/classification, selected rule and exact presentation results.
 
-Correctness: not yet run. Measurement: not run. Decision: investigate.
-Preserve each candidate and its failures before combined validation/promotion.
+Correctness: the installed checked release retains the best S4 simplifications
+and fixes the seven invalid acceptances found in the new corpus. Focused gates
+cover 192 parse/check observations, 18 exact semantic executions, 35 import/JS
+executions, 44 final foreign-runtime executions and 13 native/scanner controls;
+sets overlap. All 19 maintained component groups ran; the source-diagnostic group
+retains six real caret differences, while the other 18 groups pass.
+
+Decision: promote bounded semantic/runtime improvements, retaining literal,
+imported-law and diagnostic gaps explicitly. No full conformance or source-line
+reduction milestone is claimed. Final full-corpus metrics and current checking
+cost are recorded in the [implementation report](../../implementation/phase8/upstream_and_conformance.md).
+All failed candidates, runtime regressions and setup-invalid attempts remain in
+the [evidence index](../../implementation/phase8/migration-evidence/README.md).

@@ -1,0 +1,1176 @@
+{
+  "kind": "phase8-selected-execution-evidence",
+  "scope": "Final release07 actual 44-row foreign execution gate, API/runtime/host identities and explicit 06-to07 frontend transfer identities. Earlier failed attempts remain in the original raw.tar.gz; full frontend vectors are separate.",
+  "archive": "release07.tar.gz",
+  "archiveSha256": "edb92c370acecb8a4d5bec53f9ddc39679f74917b596530fc2d0f418b9fe02df",
+  "archiveBytes": 852682,
+  "identities": 233,
+  "objects": 187,
+  "files": [
+    {
+      "file": "selfhost/build/phase8/release-07/api.mjs",
+      "bytes": 739211,
+      "sha256": "e928f77778de9dc72267e26b6a7ccb029cac318ccd35dd8f9248da1c6374bbe4"
+    },
+    {
+      "file": "selfhost/build/phase8/release-07/api.mjs.bootstrap.json",
+      "bytes": 47970,
+      "sha256": "93e37a3a3da5b1110903a150d927230405c8bda6e5b362d52596d34c79749168"
+    },
+    {
+      "file": "selfhost/build/phase8/release-07/snapshot/src/compiler.json",
+      "bytes": 1985,
+      "sha256": "ab7eea752c873a2f3948c2343087016888725248dfaab4d42689d9291ea58ddc"
+    },
+    {
+      "file": "selfhost/build/phase8/release-07/snapshot/src/runtime.mjs",
+      "bytes": 42401,
+      "sha256": "1766d6d674f5c64eb481a647fe1d7bf751529d6861d4d4f4697999f005e772f0"
+    },
+    {
+      "file": "selfhost/build/phase8/release-07/snapshot/tools/assemble.mjs",
+      "bytes": 3317,
+      "sha256": "f7c8feff7a0b8f8b4a302c2ca8b99b363a8d7c4c9c48bc6b7a9463aa23c58b75"
+    },
+    {
+      "file": "selfhost/build/phase8/release-07/snapshot/tools/compiler-abi.mjs",
+      "bytes": 4264,
+      "sha256": "0bcbcaf022108877600baab1b15356db6d9917f5c4d668af936279680c126454"
+    },
+    {
+      "file": "selfhost/build/phase8/release-07/snapshot/tools/conformance/adapters/typed.mjs",
+      "bytes": 3265,
+      "sha256": "0ad9c892b45c2fb2a111817e6bea2f232c20f1197f495801a2fb4499498ba3d2"
+    },
+    {
+      "file": "selfhost/build/phase8/release-07/snapshot/tools/node-resource-args.mjs",
+      "bytes": 685,
+      "sha256": "6aefb3aee9b69b0c25d68edbf0ada6a57ba93e277d3adb8d232dfa6dff01d758"
+    },
+    {
+      "file": "selfhost/build/phase8/release-07/snapshot/tools/typed-driver.mjs",
+      "bytes": 39539,
+      "sha256": "b94f5f8b863f29212d1966680c67f660f1bf4c613d84f89855ae69eeae7d36d5"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json",
+      "bytes": 1971737,
+      "sha256": "b17d31f637956c7bc5b3f0847b6af8101ccb25f91cafc84d7b92bb9b347ff36c"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/0/request.json",
+      "bytes": 1569,
+      "sha256": "c32a703a288b1561f0d74cafb5a88526c03806e5065cf1af8ce6d2bc631ca4ae"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/0/response.json",
+      "bytes": 377,
+      "sha256": "12e3950a17962dd842846848d228b3876035c9363502a338a43998fe84b33d01"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/0/worker.stderr",
+      "bytes": 1718,
+      "sha256": "b71c7bb25efe41c89953a30e8333166fe085975522265c28da0b2e824be3b5f6"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/0/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/1/request.json",
+      "bytes": 1560,
+      "sha256": "5a2cf881c1783a20678098841780f711321b052a955a1d26dc47dc80a333b377"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/1/response.json",
+      "bytes": 377,
+      "sha256": "12e3950a17962dd842846848d228b3876035c9363502a338a43998fe84b33d01"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/1/worker.stderr",
+      "bytes": 1851,
+      "sha256": "484cb4aeccab2794e9f41934333d630fde0383bb800892a1989c47d881b0b52e"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/1/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/10/request.json",
+      "bytes": 1654,
+      "sha256": "b0cc5465185ad53f46731435183f6059d0d4250a652b016f72379db9115687f8"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/10/response.json",
+      "bytes": 518,
+      "sha256": "9224fd18deac0ae8571e2e884cec8ab5502f721fc468c6df707556e9104c55d8"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/10/worker.stderr",
+      "bytes": 834,
+      "sha256": "84bc9a4642762a9687086cf793a71bf8bf69b4d07d1ff0be97a96a15d8301f7d"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/10/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/11/marshal_bool_strict.mjs",
+      "bytes": 46876,
+      "sha256": "bc39a574997fbdbaac1f6a3eac5462d3d36a52e4edc660d6504f3caf84eccca4"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/11/request.json",
+      "bytes": 1645,
+      "sha256": "0bed5cfc68084ecef73a192477d5fa95f6dd69fd979e6939fc6d046caecba7dd"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/11/response.json",
+      "bytes": 518,
+      "sha256": "7fb847175fba2593a94168c131afb700e7ac2ebffc568244ca58576d1e967061"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/11/runtime-output.log",
+      "bytes": 5,
+      "sha256": "cbda94fecc7e47c611296a22971ab8e8d8100ffaa274c5bc590db99686c16302"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/11/worker.stderr",
+      "bytes": 830,
+      "sha256": "26fd8a094436ea9d1dd2a6fa05823c3b2ef4f4deaaf52850e00e926540d636ac"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/11/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/12/request.json",
+      "bytes": 1602,
+      "sha256": "fbbd744d15f2dc60f7d0a63079973c4fecebe170c575bfb4c27868cde5a86cf6"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/12/response.json",
+      "bytes": 595,
+      "sha256": "fd913cfea5140df456a5edd3ae9bd39f9aca52f0a49bc9ede6ddf5580cd4944c"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/12/worker.stderr",
+      "bytes": 834,
+      "sha256": "ee475e8990ccc71690959b278b3b46db986dacae56ac0ce33f42fdbe24682229"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/12/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/13/marshal_char_scalar.mjs",
+      "bytes": 46388,
+      "sha256": "b7ae4ccc9dc95e44dfe37ad8b9b47080e4fb3e0495e79a941706a74bafdaec88"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/13/request.json",
+      "bytes": 1593,
+      "sha256": "c702984f06870b0f8e41c2c6282429bf5f4858062f3394c64adf14a07248b635"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/13/response.json",
+      "bytes": 595,
+      "sha256": "380c1073f5312f98822092710e71f2df3400c80c9651c71c714789d91c02a184"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/13/runtime-output.log",
+      "bytes": 42,
+      "sha256": "d4d29e92c35df7027cd1a4709288b55805354567b72324acbb3b09faff6e0a13"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/13/worker.stderr",
+      "bytes": 830,
+      "sha256": "9c3f7cc0296bb6f09b1262fae77c3779a7b5a9bc2a5549209911e7c19bb1bbac"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/13/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/14/request.json",
+      "bytes": 1651,
+      "sha256": "11cb88541cfaf3f4de500f1d074b5c76f8de54239c7af2300d2ce8dabf393f0e"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/14/response.json",
+      "bytes": 514,
+      "sha256": "3591ed3a3a35e9c15196ad3b6d82f808a881c2b14285a87951d7df6966de3f73"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/14/worker.stderr",
+      "bytes": 834,
+      "sha256": "04cc4d9818ce8ac5fb91c644f9f37f001bdc3427ea51cbfe527b8668c21586f2"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/14/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/15/marshal_char_strict.mjs",
+      "bytes": 46708,
+      "sha256": "80058fc442186b05815bad7b62fb433b14253753e46a98a3d3626f2f46a220c4"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/15/request.json",
+      "bytes": 1642,
+      "sha256": "f9433b25301978610ccf3cc3b4aa248129fdcd536c0dc29a21e6bcb754336f44"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/15/response.json",
+      "bytes": 514,
+      "sha256": "aaa6713c61d551ee54be69a064fc17cb0544ccd04d4c9ecdc6a226ab15019a28"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/15/runtime-output.log",
+      "bytes": 3,
+      "sha256": "b076024029dc538c05cf06e5ff1f54cc64da9510eb742e4f6b117afccef83666"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/15/worker.stderr",
+      "bytes": 830,
+      "sha256": "e22973b2a480f2c01359233384ebedb7b50ee7a71f8861e3df87207c9d89b986"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/15/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/16/request.json",
+      "bytes": 1738,
+      "sha256": "97c6b539bb59b7713fd9e8042901ad0ea6c5a0a9b7ffdc0b87603df6a655761f"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/16/response.json",
+      "bytes": 536,
+      "sha256": "e2540fe6e175caf0a58722913b9ecc3f528bf0faded8e766a74ee80dffd3bbab"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/16/worker.stderr",
+      "bytes": 830,
+      "sha256": "f49b9b1c443bf73da7549485d00ad811a9bf2f333da98a81c1b27da124348336"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/16/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/17/marshal_char_type.mjs",
+      "bytes": 51230,
+      "sha256": "cbf36f2be4dbfc76b4ec2245ffd067a2982af592fea8203249c8c42c3d207903"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/17/request.json",
+      "bytes": 1729,
+      "sha256": "21460956b95e20d031c8efb093354420b026d3d5f3db1387ac92ad5d50654a0d"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/17/response.json",
+      "bytes": 536,
+      "sha256": "f615ff98ddf8d446c00217cc5beed25af324dbbc56fb8e10153ebca2121ee095"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/17/runtime-output.log",
+      "bytes": 12,
+      "sha256": "814d983d1af2e711ea72c626e0a15f8d3bef9ff4289bb9d220714c97957a61cc"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/17/worker.stderr",
+      "bytes": 826,
+      "sha256": "31380b5747859489d70a42b99ab35a011904df389f6bae804c013cc85df00f2f"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/17/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/18/request.json",
+      "bytes": 1727,
+      "sha256": "d08336ae7f3a36a2f476c2ddd5f80962a790c59ff649060730c99b388222d839"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/18/response.json",
+      "bytes": 534,
+      "sha256": "49798d865577e61a5597275ad63049bf0f76e32740df40d394b089bccf4e354d"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/18/worker.stderr",
+      "bytes": 826,
+      "sha256": "e95eb21d615b9fd6f0234fed9cc47cd28784fd7c06ce5b11ac7e1a43a746537d"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/18/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/19/marshal_closure.mjs",
+      "bytes": 50911,
+      "sha256": "b9ab8ea20d342a2fe5fed8c1d0392171357d3e4f7bb464313ee35ac7c946b6ee"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/19/request.json",
+      "bytes": 1718,
+      "sha256": "0e40c4ada05c7cbbb43e2b42c7bd42e1a3b7b90f5e70ece094ebd53d4752b1c8"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/19/response.json",
+      "bytes": 534,
+      "sha256": "e4647bc783334cf6a37a8947c2f79f20ec3b381eef70db3bce49011f70a6be42"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/19/runtime-output.log",
+      "bytes": 11,
+      "sha256": "6848a2eab800f6d1e6b8339800d3cfcbbee5bbf8d5dd487ef31962e5b50a6d2a"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/19/worker.stderr",
+      "bytes": 822,
+      "sha256": "e58979bfe336ce21d634cf2b95a50d4c6ba29c843d3461d93e3ffbd9271212ee"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/19/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/2/request.json",
+      "bytes": 1658,
+      "sha256": "2533c1b94e08b0c77aa9f3d1886aa3b007d9b30b018767fa6a88bbcd9dd11d11"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/2/response.json",
+      "bytes": 514,
+      "sha256": "14d808987120ba7f18b6c22b30415b291560680716766503bf6c633e4af100c6"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/2/worker.stderr",
+      "bytes": 834,
+      "sha256": "297159c8f429d0d1d42127b38c6a3e9357f1777474e4581e849c71479e432d72"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/2/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/20/request.json",
+      "bytes": 1670,
+      "sha256": "d8c6ff57df66861ef9d736ac6a2e19788c1c282bc146b3f7adccc97611204ce3"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/20/response.json",
+      "bytes": 524,
+      "sha256": "8205d9eea71b9dd39e344b01bd7ec67195af1066946af00a7b270084b740f0ac"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/20/worker.stderr",
+      "bytes": 832,
+      "sha256": "c95f141748f2efbad1add640b06a5f7fa1732e24921f7d36fd6e41fa9e242f3d"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/20/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/21/marshal_deep_value.mjs",
+      "bytes": 49647,
+      "sha256": "be292d2c26afc2ffbbf087929b0de6b38f39708d9d720eb2c18e472568856138"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/21/request.json",
+      "bytes": 1661,
+      "sha256": "e4c77fbffa1d5570c063951bcc59798bee01f43a164ed59a68243642e204d5fd"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/21/response.json",
+      "bytes": 524,
+      "sha256": "66f9978ee13e58759392184f9d409f7d400d6446c9516d649ad607fc46af8b53"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/21/runtime-output.log",
+      "bytes": 8,
+      "sha256": "f61a7e3e8496c79e992ddd50949f19acbf748c94128136d88d0755be144a02dc"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/21/worker.stderr",
+      "bytes": 828,
+      "sha256": "0638d42af14cd01f23e4b14704f1393bd357becb131fa3f55b1262bd5c04cc41"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/21/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/22/request.json",
+      "bytes": 1686,
+      "sha256": "f3261cab8d47fef7b8a1ada7ba65ef9880d6f6e9dccdbbcfc5a3daf5e72ff9bb"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/22/response.json",
+      "bytes": 522,
+      "sha256": "027921ea1c9a038f76d11afadc93669edbde81a78f05f69bf5a368804e6930c5"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/22/worker.stderr",
+      "bytes": 840,
+      "sha256": "f182591ce4b99ee3386cad4193ba4ffc55d35f8c256175c36a3032f43225b23b"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/22/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/23/marshal_erased_binders.mjs",
+      "bytes": 49077,
+      "sha256": "0e3418bb03af655edefc34577c82a7f2f3848463f211b7dbdd50abb22ce6b3ba"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/23/request.json",
+      "bytes": 1677,
+      "sha256": "09c18367d6275c77303904a66fea43c2294364799d0a9b374c719d3858880660"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/23/response.json",
+      "bytes": 522,
+      "sha256": "bee7125e680350f7b38e44245c1986a256e4db312c9a03e20f6b117abde0429a"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/23/runtime-output.log",
+      "bytes": 6,
+      "sha256": "f8e153361d6407fec1f5985f52dfe458f2942a20f15a04441f8f971ea1a40b44"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/23/worker.stderr",
+      "bytes": 836,
+      "sha256": "78a9d8fd5725f19a5954a80b691b2715bc5e10a609901dace5f31aaa9148e80a"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/23/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/24/request.json",
+      "bytes": 1664,
+      "sha256": "4bae944923f5f3d0b87f4a83e44d3c7c0a5dbc7582360fe543ef049cc9f9f12b"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/24/response.json",
+      "bytes": 522,
+      "sha256": "ae1851453cee8ab18af4a9d2912f0fc09ab3ec81025fd85e2ea07d789e5d2de7"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/24/worker.stderr",
+      "bytes": 838,
+      "sha256": "7b1f12eb571ef95e8391ef0565e52b740f9043cf121d5dba80ce7c45308dd0f9"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/24/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/25/marshal_erased_fields.mjs",
+      "bytes": 49478,
+      "sha256": "d53bd52530fa8314ff85ad15bae7e88a401aa4e12c585b45a20dfb44d8646b13"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/25/request.json",
+      "bytes": 1655,
+      "sha256": "4b491556308bc5d010fe18f27dfa37e688d6266c95b2a9a6bf9657b9604c53b6"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/25/response.json",
+      "bytes": 522,
+      "sha256": "e593262879efc03f81b044b83b8dc18e81f70000ecd9bf063a2c5af9683c75a6"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/25/runtime-output.log",
+      "bytes": 6,
+      "sha256": "4810908d42f917dd0d0d17aa2e9d570a50fc00120dca473196bc6ba3cfb36f1b"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/25/worker.stderr",
+      "bytes": 834,
+      "sha256": "918432e3f18e65d1a09dae71717b9c1e993dc7b38a21be86e8800bfc8ff84f5f"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/25/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/26/request.json",
+      "bytes": 1600,
+      "sha256": "bb715b3f1b3acf8f3ef5ec2e36b9501d929fa2022ba8e561cde3e168b04c6631"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/26/response.json",
+      "bytes": 524,
+      "sha256": "e415d435b147b1f51c8a1377b4b4aa87e68d9ac9c0944d247560a78a48dc624a"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/26/worker.stderr",
+      "bytes": 997,
+      "sha256": "103a9843ca5f1713729c29511253dd753d7959662a09b46266507310482071ce"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/26/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/27/marshal_imported_nullary.mjs",
+      "bytes": 48252,
+      "sha256": "fffd0846ad5098093cfb288b96b73939f9f5098b162cc75a524749266a2ef161"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/27/request.json",
+      "bytes": 1591,
+      "sha256": "01852b5584abe268c5c6ccfb481c316bd344a653c9619357c9026ca594a503e0"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/27/response.json",
+      "bytes": 524,
+      "sha256": "b80aaca91568b7ccb072b6e076dd035e1e426cd4a9c0d325dbcf9210c4adda97"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/27/runtime-output.log",
+      "bytes": 7,
+      "sha256": "60b149a543ecda9a78680cc0039593b226bf724da01d09c9dad73f3eaf833548"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/27/worker.stderr",
+      "bytes": 993,
+      "sha256": "46c716c81fc55ef60b05c9b8636db9f0eef32ea696163cb2846445da8275d775"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/27/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/28/request.json",
+      "bytes": 1746,
+      "sha256": "49c81bc66d30054fa6b3a86a4fa5d5b181a1be00d78cb712496b35e6db6e255e"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/28/response.json",
+      "bytes": 542,
+      "sha256": "60950fe42d38ecb32efd92830236d6054e10f2c408376d7c91e357c577af8210"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/28/worker.stderr",
+      "bytes": 832,
+      "sha256": "681dbefff391b0aab57ca466d8798167699f37ba603acecfaa648236ad4cab13"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/28/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/29/marshal_nat_bigint.mjs",
+      "bytes": 47754,
+      "sha256": "f40b4e8e6e08427b6d5ef8f140b10c98f6e98901aa46a7749d22ecc756b01e2e"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/29/request.json",
+      "bytes": 1737,
+      "sha256": "b11e42ec6a03d74c71e467c3d2c91f38357465a254fd5c758b6aedcd0138594d"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/29/response.json",
+      "bytes": 542,
+      "sha256": "79827688014babc4a7de036403daa23f297826d101f3c39f28c1e297c5959d49"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/29/runtime-output.log",
+      "bytes": 15,
+      "sha256": "a847a9f231fc574bc68c9a805966d8f17463ef3cb9f911f0afa2bc435c1463d4"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/29/worker.stderr",
+      "bytes": 828,
+      "sha256": "f47e4ed53bb7836246f9a90c43c033cc5b5dad3bed0154fe00fe854e2b9bbb0c"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/29/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/3/foreign_arrow_arity.mjs",
+      "bytes": 48515,
+      "sha256": "5be1de6f7647b3d1c8ff58257a96f32107083dcd885b82c90ff157fe5fed5d97"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/3/request.json",
+      "bytes": 1649,
+      "sha256": "adcf9e30afe64d80a19df17f3665cdcb198e421da00c5a9a1c369d48e2736cf2"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/3/response.json",
+      "bytes": 514,
+      "sha256": "dd4631968b83005b605aa501fc1a382ad4fe70f41c7f0e4b9a901551c78d7f4e"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/3/runtime-output.log",
+      "bytes": 3,
+      "sha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/3/worker.stderr",
+      "bytes": 830,
+      "sha256": "31be89a6a517c3e520763bea4b3d51acc225c0e79cb41ff556017729cece0378"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/3/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/30/request.json",
+      "bytes": 2017,
+      "sha256": "9136b97edbe149ca26b949f2484c5c491afda6831a12ed69ff8b9d311218ca9c"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/30/response.json",
+      "bytes": 548,
+      "sha256": "efd9c327e5ff84b61a919dd4cf60077c72823baaa3b2617f24612c088cdec02a"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/30/worker.stderr",
+      "bytes": 836,
+      "sha256": "ac5f755b50d769c387c1a48a3841902571672a457244886a9b602c39063a34eb"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/30/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/31/marshal_native_forms.mjs",
+      "bytes": 52647,
+      "sha256": "40b19733e7b10366056a227263407dd64a3b1fe57304aa2848a40c3377fe7d53"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/31/request.json",
+      "bytes": 2008,
+      "sha256": "0e3c799a0827972756d7cc577525f6ca6829201a9a6193bfac8ec7d1ff9d3115"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/31/response.json",
+      "bytes": 548,
+      "sha256": "12d0ed52a8cbbdeb5189b73c6fdf7013899965532961738844a3effc3044756a"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/31/runtime-output.log",
+      "bytes": 15,
+      "sha256": "7ea860e12906570e55798c74862ac3e9d2faa8779644a0de0266973c950562de"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/31/worker.stderr",
+      "bytes": 832,
+      "sha256": "5791b3acad3e0ee7b77eab346ed6b7656f1a368db55a5f01bc60dd97d33c6e2e"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/31/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/32/request.json",
+      "bytes": 1649,
+      "sha256": "88a28688671cf457f5fe0343802ce881ee87ab59b77f36d44a7847a79498b2a7"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/32/response.json",
+      "bytes": 518,
+      "sha256": "9dc65330a57502354ee7fb1309e59856159b1541611828950c7fce26ec3787e1"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/32/worker.stderr",
+      "bytes": 832,
+      "sha256": "65d32f51fea4df39c8085fcf35e300803a6ce8c24033f2b3ce44686e03b53f23"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/32/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/33/marshal_proof_null.mjs",
+      "bytes": 49145,
+      "sha256": "9347ac9ef5bae7c1cac07db798ac4cd6472148595998a8392a18654de37d3f8f"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/33/request.json",
+      "bytes": 1640,
+      "sha256": "0fa61ba6fe4081c51677fa029002da8a7dcc60eac4da1770e11499c7713ef464"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/33/response.json",
+      "bytes": 518,
+      "sha256": "a4d8572edb9d0fe813434902b67c9a225f14738b482e74ce748d04cb9122768c"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/33/runtime-output.log",
+      "bytes": 4,
+      "sha256": "d0d729a093ba914dd4924b65f6012cbf992aaa930f3fbfc0e5b3b6981836bb8f"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/33/worker.stderr",
+      "bytes": 828,
+      "sha256": "059edb0d010142635932bb8dac8ee1fb0e97eae2e3b82048ced8bd1e48aab892"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/33/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/34/request.json",
+      "bytes": 1936,
+      "sha256": "149c597a57ca11f68e456d73893935a4993418d9bb91a184e64bc4ef78aeffb2"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/34/response.json",
+      "bytes": 544,
+      "sha256": "98dfdc7862a0a2a0066ac6e6169f276aeb3523fb4663ce986b3e4b21c576386a"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/34/worker.stderr",
+      "bytes": 838,
+      "sha256": "79bc3661e5124b5c90b36b191d731210cc2cd24445f5080f740c34834965ac9d"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/34/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/35/marshal_string_scalar.mjs",
+      "bytes": 51070,
+      "sha256": "6cf17b5ef473ea855df8440ecfd51776926b158fe31727204d491c23de1199ad"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/35/request.json",
+      "bytes": 1927,
+      "sha256": "ff4de2c68d4991bc82f4f8038504fed8af029918e5c840eb832c68beb90bef3f"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/35/response.json",
+      "bytes": 544,
+      "sha256": "cf03cf0c97dfc972f6a2ec56d2852d57a7a835ea40a8f08ed1cdf367d917e6c8"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/35/runtime-output.log",
+      "bytes": 14,
+      "sha256": "c5061e29da497fe14cfa70c04e767de714896ccb7081244b6e08f91268d14539"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/35/worker.stderr",
+      "bytes": 834,
+      "sha256": "d0de90d24e5170d7fe3ed9f360855bc685e730cb5798d3c9abbbca06718ddc4f"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/35/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/36/request.json",
+      "bytes": 1820,
+      "sha256": "d13f1eadd55bcd06a49a8fd91c76e57c310a333663808daf9c99faf59bcf8263"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/36/response.json",
+      "bytes": 839,
+      "sha256": "fc45611c4ff1e7f72010a6ade04239a5bc4f897585f42d1a7f50fc2c9770b7d6"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/36/worker.stderr",
+      "bytes": 834,
+      "sha256": "bd8bd1ae9eb2326fd5ce691465808917e1e97f6c1cd7b772d500a882c1f960c6"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/36/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/37/marshal_tag_unknown.mjs",
+      "bytes": 49636,
+      "sha256": "6fdc9b2898788271e393a337ed5ab82802a0e4c77c68bba10db1f69f28fbec80"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/37/request.json",
+      "bytes": 1811,
+      "sha256": "da9a5bb3f931d41d7659b5535e55d301eca7635281eebe6b16b979d5cc693a1d"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/37/response.json",
+      "bytes": 839,
+      "sha256": "7a3d0fe59e29f3ab1dcd4e4bb30e67ecf675f54eec30a7814351929558388527"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/37/runtime-output.log",
+      "bytes": 163,
+      "sha256": "b6b54881de4e68c9995ce08c5ad81495e696e92bf058bac2b8c8912b5c4fc1c5"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/37/worker.stderr",
+      "bytes": 830,
+      "sha256": "4054fadc052552cfde1e32d76c7ed3c7961a8a05224b220e0333e8b6dcb16dd7"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/37/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/38/request.json",
+      "bytes": 1643,
+      "sha256": "72d12820777c71a99199242e1a0dc9c5aeaf91aa64e8d8e5175c358dd78de305"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/38/response.json",
+      "bytes": 514,
+      "sha256": "c00a55b0522c4f5dd9d98d9b3e7137dec9ddac273d3c7a692dbb59cbd256dedc"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/38/worker.stderr",
+      "bytes": 830,
+      "sha256": "c833cd38fb1eb4b3e11a73bdb0dbed466d32d1e07c08dc444b09b7218408c260"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/38/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/39/marshal_type_null.mjs",
+      "bytes": 49717,
+      "sha256": "c14a296d97d247b8e0f1105260ae15bbc1ac9c9e57062bb52c2b17cef062a503"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/39/request.json",
+      "bytes": 1634,
+      "sha256": "c9eea3cd64e1092f3d2a2707d4b7c0066028bb869cbe63f1f5d57e1cd6067a92"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/39/response.json",
+      "bytes": 514,
+      "sha256": "fa7a57445f8b6a4677e3fa2d6c46c85744c8d4e62b921b1975adfb1848afaebe"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/39/runtime-output.log",
+      "bytes": 3,
+      "sha256": "6e2ae11dad0616f66bbb2b6e6556f580bb987fd911d7132aa6bee2bfc7cc7b52"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/39/worker.stderr",
+      "bytes": 826,
+      "sha256": "2d4a6fbef0babbc4068872e705dab5daddbf421668beedb73029743284ac10bf"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/39/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/4/request.json",
+      "bytes": 1658,
+      "sha256": "affed9ab180703185a935c95e7eeb6840c9777bd3b8a898e884d7946fbc12e4b"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/4/response.json",
+      "bytes": 516,
+      "sha256": "623f046dd524ec55f648b02356e10bcdc4bcc4fbca073605e43cfb2f1adf460f"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/4/worker.stderr",
+      "bytes": 824,
+      "sha256": "64cb30b324e0f225f8f777561e5e48f12778153bf2627f0e0808d1f3c2c35f3a"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/4/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/40/request.json",
+      "bytes": 1751,
+      "sha256": "782625174170e5ac6e514c1a49e9b459fae69452201593d1dfa950d3a37c5025"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/40/response.json",
+      "bytes": 542,
+      "sha256": "f2e0225ba9b463cc3440b6839c2b5ed28ceece413c5451c4500dffef527e3f38"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/40/worker.stderr",
+      "bytes": 834,
+      "sha256": "6802abee01ff2671c8f4e04228c12b45c517c90ed71b7ca42d6735c802147f0e"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/40/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/41/marshal_u32_integer.mjs",
+      "bytes": 49570,
+      "sha256": "5d8d04a865742e584fae5610efc6cbc72550fab9414acefdc65b33294bb57403"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/41/request.json",
+      "bytes": 1742,
+      "sha256": "b449f401d80f800bda7bb9fb97f182f07b0e295d140d6e2d44aa519a2bc25129"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/41/response.json",
+      "bytes": 542,
+      "sha256": "c711fa24c69cb55c6503b9b75a3400f2e47b8365a0892ef12ab027b86dc3f676"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/41/runtime-output.log",
+      "bytes": 15,
+      "sha256": "1dbbd46ad17447ffc80411daced30142869eb5f3e510abffa2223085155a1d23"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/41/worker.stderr",
+      "bytes": 830,
+      "sha256": "8f3069de79a9fa858c377dbd047ee02225ae52d49f505e8714bf08d612661efa"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/41/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/42/request.json",
+      "bytes": 1833,
+      "sha256": "0a4a5ef2b1eb3e345b5fe23891aa297b1e4123cbf83f6d33b4361167811b78b1"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/42/response.json",
+      "bytes": 857,
+      "sha256": "963031ce754c7c1547650b1b4e9b8ed54297fe2275e995b0ab2089a68f213342"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/42/worker.stderr",
+      "bytes": 830,
+      "sha256": "74898647862eab639666b42a602bd5010f0d21713da433180bcf5ebbd8464196"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/42/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/43/marshal_generic_nat.mjs",
+      "bytes": 47562,
+      "sha256": "c65640b49f95dacce70c8bdd9c5d9c943b1b7cc26070448129c33fb4aadbd1c1"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/43/request.json",
+      "bytes": 1824,
+      "sha256": "606f163c0270dbabcbe85650b08b0ac1779864d4d803f2f75bc23859fbda26cd"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/43/response.json",
+      "bytes": 857,
+      "sha256": "7e983d7d60d8b29f6907f895c37c689b02baa422e8ae366d99f9092132f6b6ff"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/43/runtime-output.log",
+      "bytes": 172,
+      "sha256": "0d673635a8d853db695e9598dfb01ae961aa430569e37648d4187b43d8922376"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/43/worker.stderr",
+      "bytes": 826,
+      "sha256": "2706c860535c9af38dddf6ba589d1c3d7e881fefd75d8ece5d38fb83422cd5ad"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/43/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/5/foreign_shared.mjs",
+      "bytes": 49778,
+      "sha256": "3c866d6ca2b02807f28c351e786b15cb4f3104d9a716835079b1e344a7347b42"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/5/request.json",
+      "bytes": 1649,
+      "sha256": "14d96c0f4c2c3de1f95344cca2b16bc054533d4a781c943bc5ed4f0721f4445b"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/5/response.json",
+      "bytes": 516,
+      "sha256": "33e5271daf032bbbe24a94ec6e5271510f429724107c3ddd74d3dbf78340094d"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/5/runtime-output.log",
+      "bytes": 4,
+      "sha256": "e595be81bf15aa95763adb4fc0ba525bbed1971cf5fccdf3a946cd37025fb2c9"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/5/worker.stderr",
+      "bytes": 820,
+      "sha256": "0810904cd27316498645554aae4f9e5401792cd3783fc18878e05ee756685541"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/5/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/6/request.json",
+      "bytes": 1809,
+      "sha256": "08d93feb77c1dbcea3e500616fc01eaa442f0839b73d9af77d28a54d59942e06"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/6/response.json",
+      "bytes": 514,
+      "sha256": "eb32d3cee3fdf62ff12bc921d696880deac45efe7c8a0a999606b73c0defb9f9"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/6/worker.stderr",
+      "bytes": 822,
+      "sha256": "e722fa005363a3acada5e78b7ba0c9cec55903c39a392dbb207805f376ad11dc"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/6/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/7/foreign_types.mjs",
+      "bytes": 50483,
+      "sha256": "df00f2c7adc94384ab662953c6918d8eef94f79640a9bd17e9869e46c01bc8f6"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/7/request.json",
+      "bytes": 1800,
+      "sha256": "254eab346052c7e5f70d993862cf2f5193e6a213dc9ef13bafedad358be04273"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/7/response.json",
+      "bytes": 514,
+      "sha256": "aac4d94d7027eeb54b060b1743251c95e87df63b2c7634b201ddd52152582aea"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/7/runtime-output.log",
+      "bytes": 3,
+      "sha256": "94d5a38598be77593d4781b8fbd74cb4e2cd05bb006b1b531988ab2db90de9c9"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/7/worker.stderr",
+      "bytes": 818,
+      "sha256": "596fc8a1bd3292b52c55ab995ff68dee324bd3e8b69c271a9e176a8395a56748"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/7/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/8/request.json",
+      "bytes": 1691,
+      "sha256": "cfb40ddf373ba22b3a2c463599412ac2d40b6fb0a42b13ae6681d2f574f73b57"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/8/response.json",
+      "bytes": 399,
+      "sha256": "c784e8bf7f1f0bbc6584982d2c5daafdd1e9284663a5a3c127edffe0b66ccf68"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/8/worker.stderr",
+      "bytes": 551,
+      "sha256": "6a3c4551ba76f6cc3d96e73be7c3024942af6907e82ad264496f63f0ee11e900"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/8/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/9/request.json",
+      "bytes": 1682,
+      "sha256": "3736b9657b98809d5d7cdb4ede38926f95620dde574c59847b3843dc10d2e348"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/9/response.json",
+      "bytes": 399,
+      "sha256": "c784e8bf7f1f0bbc6584982d2c5daafdd1e9284663a5a3c127edffe0b66ccf68"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/9/worker.stderr",
+      "bytes": 551,
+      "sha256": "5cbc62a28cec2097854344a7105618d40c0664b18bfe308f5bd9d0f63d8cc862"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/9/worker.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.json.artifacts/identity.json",
+      "bytes": 667776,
+      "sha256": "4d3175012fcb08a44a364c7238f2019c5d618863026cc0fc4e3da66b9a8c4f05"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/candidate.progress.jsonl",
+      "bytes": 49916,
+      "sha256": "856dcf66686c152ea1193cc9d665cb40e52aead116a6ee71fc942b8d90e4544b"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/frontend-transfer-identities.json",
+      "bytes": 2460,
+      "sha256": "ed0216c16bfb5c7a8f045d3629494051ce34ea268933aaba17f19dfd9158fcec"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/launcher.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/launcher.stdout",
+      "bytes": 1155,
+      "sha256": "0b9ddc15241e23570b95630267df5a5d422ac72a78267fed07343ccb081161d6"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/selection.json",
+      "bytes": 2692,
+      "sha256": "2eb674222537fd2611e21045dfdbda72d7732bc4d6e6d02c932017f2e522cc81"
+    },
+    {
+      "file": "selfhost/build/phase8/release07-foreign-01/variant.json",
+      "bytes": 1135,
+      "sha256": "83fa80e6784a861f1a557bfdd5b43f10fce4cc674b598c4a3a23d2d1640adcc8"
+    }
+  ]
+}

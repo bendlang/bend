@@ -1,0 +1,37 @@
+{
+  "baselineCommit": "69947fc",
+  "checkpointCommit": "a9f6593",
+  "scope": "Tracked code/fixture diff outside manifest Bend modules; archived/generated release bundles and prose excluded. Generated runtime is counted separately from its source fragments. Counts are not claimed as compiler source simplification.",
+  "categories": {
+    "Generated JS runtime": {
+      "addedLines": 56,
+      "removedLines": 5,
+      "changedFiles": 1,
+      "netLines": 51
+    },
+    "JS runtime source fragments/build": {
+      "addedLines": 56,
+      "removedLines": 5,
+      "changedFiles": 3,
+      "netLines": 51
+    },
+    "Native runtime/effects C": {
+      "addedLines": 1741,
+      "removedLines": 61,
+      "changedFiles": 12,
+      "netLines": 1680
+    },
+    "Tests and fixtures": {
+      "addedLines": 3258,
+      "removedLines": 8,
+      "changedFiles": 139,
+      "netLines": 3250
+    },
+    "Host/build/validation tooling": {
+      "addedLines": 369,
+      "removedLines": 164,
+      "changedFiles": 18,
+      "netLines": 205
+    }
+  }
+}

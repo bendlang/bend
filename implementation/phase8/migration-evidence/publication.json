@@ -1,0 +1,65 @@
+{
+  "kind": "phase8-migration-evidence-publication",
+  "finalCapsule": "capsule-02",
+  "collectorControls": {
+    "initial": 19,
+    "final": 23,
+    "pass": true
+  },
+  "capsules": [
+    {
+      "directory": "capsule-01",
+      "manifestBytes": 21900133,
+      "manifestSha256": "ae41fbe1f173b1e01815c146cb874dfbd9a813e6986b42aed1ab34f8732ac886",
+      "archive": {
+        "file": "raw.tar.gz",
+        "bytes": 21314537,
+        "sha256": "7b4c8b7d3841b42508b4283446ec3858ea9b8ef29b26f19e19d66b7f2487713c"
+      },
+      "files": 27282,
+      "verification": {
+        "pass": true,
+        "files": 27282,
+        "objects": 10470,
+        "externalCapsules": 3,
+        "archiveSha256": "7b4c8b7d3841b42508b4283446ec3858ea9b8ef29b26f19e19d66b7f2487713c",
+        "archiveBytes": 21314537,
+        "scope": "Archive byte identity only; recorded failed experiments remain failures."
+      }
+    },
+    {
+      "directory": "capsule-02",
+      "manifestBytes": 22884073,
+      "manifestSha256": "d69330ece69432a9385fbafee431e5bac44df751ed28f242d6e35746403d9725",
+      "archive": {
+        "file": "raw.tar.gz",
+        "bytes": 32836,
+        "sha256": "acec1dfe5b20b49451c086e880da70ab0fcc88bf8a9ff908cc4aa4e98b201551"
+      },
+      "files": 27286,
+      "verification": {
+        "pass": true,
+        "files": 27286,
+        "objects": 16,
+        "externalCapsules": 4,
+        "archiveSha256": "acec1dfe5b20b49451c086e880da70ab0fcc88bf8a9ff908cc4aa4e98b201551",
+        "archiveBytes": 32836,
+        "scope": "Archive byte identity only; recorded failed experiments remain failures."
+      }
+    }
+  ],
+  "materialization": {
+    "pass": true,
+    "recoveredFiles": 27286,
+    "destination": "/tmp/phase8-final-recovery-01",
+    "allRecoveredIdentitiesRehashed": 27286,
+    "includesModesAndSymlinkTargets": true
+  },
+  "externalPrerequisiteCount": 24,
+  "limitations": [
+    "Node, Clang and24 total executable/shared-library prerequisite identities are recorded, not embedded. Derived Base caches and incidental pre-Phase8 copied results are retained by identity only.",
+    "36 external historical-report occurrences name the same unavailable earlier-phase lexical-selfhost API; this is not the Phase8 release compiler.",
+    "The generic reference index reports raw.tar.gz from cosmetic-recapture.json as unresolved relative to repository root. It denotes capsule-01/raw.tar.gz; that exact archive SHA256 and length are independently bound and verified in externalCapsules. This is a relative-path heuristic limitation, not missing experiment evidence.",
+    "Archive integrity is distinct from compiler correctness: all recorded failed and unsupported experiments remain failures/limitations."
+  ]
+}
