@@ -1835,6 +1835,17 @@ function arr_new(fl: File, d: string, v: Val, el: Lay): string {
   return `blk_new(e, ${Number(arr)}, ${d}, ${lgs}, ${ws.length}, ${fv})`;
 }
 
+function arr_q(fl: File, k: Kind): boolean {
+  return k === "box" && fl.hot.has("t:Array");
+}
+
+function arr_loc(fl: File, a: string): string {
+  const p = fl.seg.params.indexOf(a);
+  return fl.seg.ks.reduce((s, k, i) => fl.seg.fid.startsWith("spin_")
+    && arr_q(fl, k) && (p < 0 || p === i)
+    ? `${a} == h${i} ? q${i} : ${s}` : s, `blk_loc(e.mem, ${a})`);
+}
+
 function arr_op(fl: File, k: string, el: Lay, args: Val[]): Val {
   const { arr, lgs } = lay_arr(el);
   if (k === "array_new") {
@@ -1844,7 +1855,7 @@ function arr_op(fl: File, k: string, el: Lay, args: Val[]): Val {
   if (k === "array_size") {
     return val_new([a, `(1ull << (blk_cls(${a}) - ${lgs}))`], arr_lay(W32));
   }
-  const [l, at] = emit_hold(fl, [`blk_loc(e.mem, ${a})`,
+  const [l, at] = emit_hold(fl, [arr_loc(fl, a),
     `blk_at(${a}, ${args[1].ws[0]}, ${lgs})`], "at");
   const old = arr_cells(fl, l, at, el,
     k === "array_get" ? "blk_keep(e, $)" : "e.mem[$]");
@@ -1862,7 +1873,7 @@ function arr_op(fl: File, k: string, el: Lay, args: Val[]): Val {
 }
 
 function arr_leaf(fl: File, s: string, el: Lay): Val {
-  const got = arr_cells(fl, `blk_loc(e.mem, ${s})`, "0", el,
+  const got = arr_cells(fl, arr_loc(fl, s), "0", el,
     `blk_shr(${s}) ? blk_keep(e, $) : e.mem[$]`);
   file_push(fl, `blk_free(e, ${s});`);
   return got;
@@ -2258,7 +2269,10 @@ function emit_fuse(fl: File, ck: Spine, dst: Val | null, tail = false): void {
   const name = emit_native(fl, k, ers);
   const o = name_local(fl, "o");
   file_push(fl, `Term ${o}[${out.ws.length}];`);
-  block(fl, `if (${name}(${["e", o, ...ws].join(", ")}) == 0) {`, () => {
+  const ks = lays.flatMap((l) => l.ks);
+  const xs = ws.flatMap((w, i) => !arr_q(fl, ks[i]) ? [w]
+    : [w = emit_alias(fl, w, "a"), arr_loc(fl, w)]);
+  block(fl, `if (${name}(${["e", o, ...xs].join(", ")}) == 0) {`, () => {
     file_push(fl, "return 0;");
   });
   out.ws.forEach((v, j) => file_push(fl, `${v} = ${o}[${j}];`));
@@ -2301,8 +2315,10 @@ function emit_native(fl: File, k: Name, ers: HTerm[]): string {
   FUEL = fuel;
   fl.spins.push({ ...seg, lines: [`${seg.lines.length < SPIN_FAR
     ? "INLINE" : "FAR"} Term ${name}(Env e, THR Term* o${
-    seg.ks.map((k, i) => `, ${lay_c(k)} r${i}`).join("")}) {`,
-  "  u32 wpoll = 0;",
+    seg.ks.map((k, i) => `, ${lay_c(k)} r${i}${arr_q(fl, k)
+      ? `, u64 q${i}` : ""}`).join("")}) {`,
+  "  u32 wpoll = 0;", ...seg.ks.flatMap((k, i) =>
+    arr_q(fl, k) ? [`  Term h${i} = r${i};`] : []),
   ...dst.ws.map((v, j) => `  ${lay_c(seg.ret.ks[j])} ${v} = 0;`),
   ...seg_take(seg).map((l) => "  " + l),
   "  WL_SPIN", ...seg_text(seg.lines, 2), "  break;", "  }",
@@ -4070,8 +4086,18 @@ INLINE u64 term_peek(DEV u64* H, Term t) {
 
 #define blk_shr(t) (BLK_SHR && term_rfc(t))
 
+// A fork's handle reads only its redirect's target, which no count add
+// changes, not even in a torn read: the CPU loads the word as one relaxed
+// atomic (the same plain load), a device plainly (atomics cost Metal ~4x).
 INLINE u64 blk_loc(DEV u64* H, Term a) {
-  return BLK_SHR ? term_peek(H, a) : term_loc(a);
+  if (!blk_shr(a)) {
+    return term_loc(a);
+  }
+#if DEVICE
+  return H[term_loc(a)] >> 24;
+#else
+  return __atomic_load_n(&H[term_loc(a)], __ATOMIC_RELAXED) >> 24;
+#endif
 }
 
 INLINE u32 blk_cls(Term t) {
