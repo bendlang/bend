@@ -5436,6 +5436,9 @@ OUTLINE Term corpus_eval(u64* H, Term t) {
 
 #define IO_READ 1
 #define IO_TIME 2
+#define IO_IN   4
+#define IO_OUT  8
+#define IO_HAND 16
 #define IO_PARK TERM_HOLE
 
 #define io_hand(v)   term_make(TAG_PAK, (u64)(v) >> 40, (u64)(v) & LOC_MASK)
@@ -5459,7 +5462,6 @@ typedef struct IoWork {
   Term           item;
   u64            time;
   short          evts;
-  u32            held;
   struct IoPoll* poll;
   struct IoWork* next;
 } IoWork;
@@ -5536,6 +5538,9 @@ static IoWork* io_pop(IoWork** q) {
 
 #define io_emit() term_clo(FID(IO~emit), 0)
 
+// Set by io_poll.c: takes a polled request that would wait, or its end.
+static bool (*io_polled)(Env e, IoWork* a);
+
 static void io_spawn(Term m) {
   IoWork* a = io_mem(calloc(1, sizeof(IoWork)));
   a->cont  = m;
@@ -5558,18 +5563,12 @@ static void io_park_add(IoWork* w) {
   io_push(&p, w);
 }
 
-// IO.poll's effects (io_poll.c) set these: a park under a poll is held.
-static bool (*io_holds)(IoWork* w);
-static IoWork* (*io_hold)(Env e, IoWork* w);
-
 static Term io_wait_on(IoWork* w, int fd, short evts, u64 time, IoPack more) {
   w->word = (u32)fd;
   w->pack = more;
   w->time = time;
   w->evts = evts;
-  if (w->poll == NULL || !io_holds(w)) {
-    io_park_add(w);
-  }
+  io_park_add(w);
   return IO_PARK;
 }
 
@@ -5979,12 +5978,19 @@ static void show_val(Env e, u32 d, const Term* w, char chain) {
 
 static void io_step(Env e, IoWork* a) {
   for (;;) {
-    u64  ap  = task_node(e, FID(Clo~apply), TERM_HOLE, 0, 0);
-    e.mem[ap]     = a->cont;
-    e.mem[ap + 1] = a->item;
-    Term req = corpus_eval(e.mem, term_tsk(FID(Clo~apply), ap));
-    u32  c   = (u32)term_aux(req);
-    u64  at  = term_peek(e.mem, req);
+    Term req = a->item;
+    if (a->cont != 0) {
+      u64 ap = task_node(e, FID(Clo~apply), TERM_HOLE, 0, 0);
+      e.mem[ap]     = a->cont;
+      e.mem[ap + 1] = a->item;
+      req = corpus_eval(e.mem, term_tsk(FID(Clo~apply), ap));
+    }
+    u32 c   = (u32)term_aux(req);
+    u64 at  = term_peek(e.mem, req);
+    a->cont = req;
+    if (a->poll != NULL && io_polled(e, a)) {
+      return;
+    }
     if (c == CID(Emit)) {
       term_drop(e, req);
       free(a);
@@ -5998,18 +6004,16 @@ static void io_step(Env e, IoWork* a) {
     if (io_eff_rows[c].run == NULL) {
       err_fail("an alien request");
     }
-    u32 need = io_eff_rows[c].ask;
+    u32 need = io_eff_rows[c].ask & (IO_READ | IO_TIME);
     u32 word = (u32)(need & IO_READ ? io_hand_v(e.mem[at]) : e.mem[at]);
-    a->cont  = req;
-    Term x = need != 0 ? io_wait_on(a, (int)word, need & IO_READ ? POLLIN : 0,
-      need & IO_TIME ? io_tick() + (u64)word * 1000000ull : 0, io_exec)
-      : io_exec(e, a);
+    if (need != 0) {
+      io_wait_on(a, (int)word, need & IO_READ ? POLLIN : 0,
+        need & IO_TIME ? io_tick() + (u64)word * 1000000ull : 0, io_exec);
+      return;
+    }
+    Term x = io_exec(e, a);
     if (x == IO_PARK) {
-      if (!a->held) {
-        return;
-      }
-      a = io_hold(e, a);
-      continue;
+      return;
     }
     a->item = x;
   }
@@ -6177,11 +6181,11 @@ function run_lib(f, n) {
 
 const $0eff = Object.create(null);
 
-function io_eff(k, run, need) {
+function io_eff(k, run, need, poll) {
   if (k in $0eff) {
     throw new Error("bend: two effects register " + k);
   }
-  $0eff[k] = { run, need };
+  $0eff[k] = { run, need, poll };
 }
 `.slice(1);
 
@@ -6420,12 +6424,9 @@ function io_wake(w) {
 
 function io_park_on(fd, out, k, more, at) {
   const io = globalThis.BEND_IO;
-  const w = { fd, out, k, more, at, poll: io.poll };
-  if (io.poll === null || !io.holds(w)) {
-    const i = io.waits.findLastIndex((v) =>
-      (v.at ?? Infinity) <= (at ?? Infinity));
-    io.waits.splice(i + 1, 0, w);
-  }
+  const i = io.waits.findLastIndex((w) =>
+    (w.at ?? Infinity) <= (at ?? Infinity));
+  io.waits.splice(i + 1, 0, { fd, out, k, more, at, poll: io.poll });
 }
 
 function io_run(m) {
@@ -6449,6 +6450,9 @@ function io_run(m) {
       io.poll = s.poll ?? null;
       let op = s.fun(s.arg);
       while (op !== undefined) {
+        if (io.poll !== null && io.polled(op)) {
+          break;
+        }
         if (op.$ === "Emit") {
           io.live -= 1;
           break;
@@ -6457,15 +6461,18 @@ function io_run(m) {
           io_errs(op.message);
           return op.code;
         }
-        // a parked op answers undefined, and io.next if IO.poll held it
-        const o = op;
-        const need = o.need?.() ?? {};
-        const x = need.time || need.read ? io_park_on(need.read ? o.args[0]
-          : undefined, false, o.kont, () => o.run(...o.args, o.kont),
-          need.read ? undefined : performance.now() + Number(o.args[0]))
-          : o.run(...o.args, o.kont);
-        op = x === undefined ? io.next : x?.$ === "$GO" ? x.op : o.kont(x);
-        io.next = undefined;
+        const need = op.need?.() ?? {};
+        if (need.time || need.read) {
+          const more = () => op.run(...op.args, op.kont);
+          io_park_on(need.read ? op.args[0] : undefined, false, op.kont, more,
+            need.read ? undefined : performance.now() + Number(op.args[0]));
+          break;
+        }
+        const x = op.run(...op.args, op.kont);
+        if (x === undefined) {
+          break;
+        }
+        op = op.kont(x);
       }
     }
   } catch (req) {

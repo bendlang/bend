@@ -32,4 +32,5 @@ function udp_recv_from_need() {
   return { read: true };
 }
 
-io_eff(CID(UDP.recv_from), udp_recv_from, udp_recv_from_need);
+io_eff(CID(UDP.recv_from), udp_recv_from, udp_recv_from_need,
+  { fd: "in" });

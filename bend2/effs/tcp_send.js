@@ -36,5 +36,5 @@ function tcp_send_bytes(socket, data, k) {
   return b === null ? io_tup(socket, io_fail(22)) : tcp_send_with(socket, b, k);
 }
 
-io_eff(CID(TCP.send), tcp_send);
-io_eff(CID(TCP.send_bytes), tcp_send_bytes);
+io_eff(CID(TCP.send), tcp_send, undefined, { fd: "out" });
+io_eff(CID(TCP.send_bytes), tcp_send_bytes, undefined, { fd: "out" });

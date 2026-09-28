@@ -35,5 +35,5 @@ function tcp_recv_bytes(socket, max, k) {
   return tcp_recv_with(socket, max, k, io_list);
 }
 
-io_eff(CID(TCP.recv), tcp_recv);
-io_eff(CID(TCP.recv_bytes), tcp_recv_bytes);
+io_eff(CID(TCP.recv), tcp_recv, undefined, { fd: "in" });
+io_eff(CID(TCP.recv_bytes), tcp_recv_bytes, undefined, { fd: "in" });

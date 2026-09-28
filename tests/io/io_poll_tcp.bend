@@ -37,14 +37,14 @@ def talk(c: Socket, p: Listener & Result<&1, &1, U32 & String, Socket>) -> IO(Un
   do IO<Unit>:
     a  : Socket <- IO.pass(Socket, ar)
     p1 : IO.Step<(Socket & Result<&1, &1, U32 & String, String>)> <-
-      IO.poll(Socket & Result<&1, &1, U32 & String, String>, TCP.recv(a, 16))
+      IO.poll(Socket & Result<&1, &1, U32 & String, String>, 0, TCP.recv(a, 16))
     q1 : IO.Step<(Socket & Result<&1, &1, U32 & String, String>)> <-
       tell(Socket & Result<&1, &1, U32 & String, String>, "recv, nothing sent", p1)
     s1 : Socket & Result<&1, &1, U32 & String, Unit> <- TCP.send(c, "hi")
     c1 : Socket <- send_go(s1)
     Unit <- IO.sleep(50)
     p2 : IO.Step<(Socket & Result<&1, &1, U32 & String, String>)> <-
-      IO.poll(Socket & Result<&1, &1, U32 & String, String>,
+      IO.poll(Socket & Result<&1, &1, U32 & String, String>, 0,
         get(Socket & Result<&1, &1, U32 & String, String>, q1))
     q2 : IO.Step<(Socket & Result<&1, &1, U32 & String, String>)> <-
       tell(Socket & Result<&1, &1, U32 & String, String>, "rest, once sent", p2)
@@ -59,13 +59,13 @@ def main_go(b: Listener & U32) -> IO(Unit):
   (l, port) = b
   do IO<Unit>:
     p0 : IO.Step<(Listener & Result<&1, &1, U32 & String, Socket>)> <-
-      IO.poll(Listener & Result<&1, &1, U32 & String, Socket>, TCP.accept(l))
+      IO.poll(Listener & Result<&1, &1, U32 & String, Socket>, 0, TCP.accept(l))
     q0 : IO.Step<(Listener & Result<&1, &1, U32 & String, Socket>)> <-
       tell(Listener & Result<&1, &1, U32 & String, Socket>, "accept, no peer", p0)
     c : Socket <- IO.try(Socket, TCP.connect("127.0.0.1", port))
     Unit <- IO.sleep(50)
     p1 : IO.Step<(Listener & Result<&1, &1, U32 & String, Socket>)> <-
-      IO.poll(Listener & Result<&1, &1, U32 & String, Socket>,
+      IO.poll(Listener & Result<&1, &1, U32 & String, Socket>, 0,
         get(Listener & Result<&1, &1, U32 & String, Socket>, q0))
     q1 : IO.Step<(Listener & Result<&1, &1, U32 & String, Socket>)> <-
       tell(Listener & Result<&1, &1, U32 & String, Socket>, "rest, once connected", p1)

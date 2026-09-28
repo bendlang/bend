@@ -270,16 +270,19 @@ def IO.within(-A: Type, ms: U32, act: IO(A)) -> IO(Maybe<&1, A>):
     IO.fork.go(Maybe<&1, A>, late))
   IO.bind(Chan(Maybe<&1, A>), Maybe<&1, A>, both, c => IO.join(Maybe<&1, A>, c))
 
-# Runs act until it answers or would wait. Ready{x} if it answered x;
-# Wait{rest} if it would park (a channel full or empty, a socket not ready,
-# a sleep): rest is act from there on, its waiting effect not yet started.
-# IO.resume(rest) waits as act would have, IO.poll(IO.resume(rest)) polls
-# it again, and IO.cancel(rest) answers the held effect cancelled (a send
-# False, a recv None) and goes on. Work on the IO threads (files,
-# processes) runs to its end.
-def IO.poll(-A: Type, act: IO(A)) -> IO(IO.Step<A>):
-  run = IO.poll.run(A, IO.bind(A, A, act, IO.poll.end(A)))
-  IO.bind(Or(A, IO.Rest(A)), IO.Step<A>, run, IO.poll.step(A))
+# Runs act until it answers or would wait. Where act would wait before
+# starting an effect (a channel full or empty, a socket not ready, a
+# sleep), IO.poll waits up to ms for it to be ready, then answers
+# Wait{rest}: rest is act from there on, that effect not started.
+# IO.resume(rest) runs it as act would have, IO.poll(ms, IO.resume(rest))
+# polls it again, and IO.cancel(rest) answers the effect cancelled and goes
+# on: a send False, a recv None, a sleep at once, a socket's effect
+# (socket, Fail{ECANCELED}). An effect that already started (a send half
+# written, a connect, work on the IO threads) runs to its end, as does one
+# that declares no wait (see effs/io_poll.c).
+def IO.poll(-A: Type, ms: U32, act: IO(A)) -> IO(IO.Step<A>):
+  IO.bind(Or(A, IO.Rest(A)), IO.Step<A>, IO.poll.run(A, ms, act),
+    IO.poll.step(A))
 
 def IO.poll.step(-A: Type, r: Or(A, IO.Rest(A))) -> IO(IO.Step<A>):
   match r:
@@ -288,11 +291,7 @@ def IO.poll.step(-A: Type, r: Or(A, IO.Rest(A))) -> IO(IO.Step<A>):
     case Inr{value}:
       IO.pure(IO.Step<A>, Wait{value})
 
-def IO.poll.run(-A: Type, act: IO(A)) -> IO(Or(A, IO.Rest(A))):
-  import "./effs/io_poll.c"
-  import "./effs/io_poll.js"
-
-def IO.poll.end(-A: Type, x: A) -> IO(A):
+def IO.poll.run(-A: Type, ms: U32, act: IO(A)) -> IO(Or(A, IO.Rest(A))):
   import "./effs/io_poll.c"
   import "./effs/io_poll.js"
 
@@ -381,10 +380,42 @@ def TCP.recv_bytes(sock: Socket, max: U32) ->
   import "./effs/tcp_recv.c"
   import "./effs/tcp_recv.js"
 
-def TCP.poll(sock: Socket, max: U32, ms: U32) ->
+# A recv that waits at most ms: Some{data} ("" is the peer's close), or
+# None{} once ms pass with nothing to read.
+def TCP.poll(sock: Socket, +max: U32, ms: U32) ->
   IO(Socket & Result<&1, &1, U32 & String, Maybe<&1, String>>):
-  import "./effs/tcp_poll.c"
-  import "./effs/tcp_poll.js"
+  TCP.poll.go(sock, max, ms, U32.is_eq(max, 0))
+
+def TCP.poll.go(sock: Socket, max: U32, ms: U32, zero: Bool) ->
+  IO(Socket & Result<&1, &1, U32 & String, Maybe<&1, String>>):
+  match zero:
+    case True{}:
+      IO.bind(Socket & Result<&1, &1, U32 & String, String>,
+        Socket & Result<&1, &1, U32 & String, Maybe<&1, String>>,
+        TCP.recv(sock, max), m => TCP.poll.got(String, Ready{m}))
+    case False{}:
+      IO.bind(IO.Step<(Socket & Result<&1, &1, U32 & String, String>)>,
+        Socket & Result<&1, &1, U32 & String, Maybe<&1, String>>,
+        IO.poll(Socket & Result<&1, &1, U32 & String, String>, ms,
+          TCP.recv(sock, max)),
+        TCP.poll.got(String))
+
+def TCP.poll.got(-A: Type, s: IO.Step<(Socket & Result<&1, &1, U32 & String, A>)>) ->
+  IO(Socket & Result<&1, &1, U32 & String, Maybe<&1, A>>):
+  match s:
+    case Ready{(so, r)}:
+      IO.pure(Socket & Result<&1, &1, U32 & String, Maybe<&1, A>>,
+        (so, Result.map(&1, &1, U32 & String, A, Maybe<&1, A>, x => Some{x}, r)))
+    case Wait{rest}:
+      IO.bind(Socket & Result<&1, &1, U32 & String, A>,
+        Socket & Result<&1, &1, U32 & String, Maybe<&1, A>>,
+        IO.cancel(Socket & Result<&1, &1, U32 & String, A>, rest),
+        m => TCP.poll.none(A, m))
+
+def TCP.poll.none(-A: Type, m: Socket & Result<&1, &1, U32 & String, A>) ->
+  IO(Socket & Result<&1, &1, U32 & String, Maybe<&1, A>>):
+  (so, r) = m
+  IO.pure(Socket & Result<&1, &1, U32 & String, Maybe<&1, A>>, (so, Done{None{}}))
 
 def UDP.bind(host: String, port: U32) -> IO(Result<&1, &1, U32 & String, Socket>):
   import "./effs/udp_bind.c"
@@ -400,10 +431,15 @@ def UDP.recv_from(sock: Socket, max: U32) ->
   import "./effs/udp_recv_from.c"
   import "./effs/udp_recv_from.js"
 
+# UDP.recv_from without the wait: Some{(host, port, data)}, or None{} if
+# nothing waits.
 def UDP.poll(sock: Socket, max: U32) ->
   IO(Socket & Result<&1, &1, U32 & String, Maybe<&1, String & U32 & String>>):
-  import "./effs/udp_poll.c"
-  import "./effs/udp_poll.js"
+  IO.bind(IO.Step<(Socket & Result<&1, &1, U32 & String, String & U32 & String>)>,
+    Socket & Result<&1, &1, U32 & String, Maybe<&1, String & U32 & String>>,
+    IO.poll(Socket & Result<&1, &1, U32 & String, String & U32 & String>, 0,
+      UDP.recv_from(sock, max)),
+    TCP.poll.got(String & U32 & String))
 
 def Socket.close(socket: Socket) -> IO(Unit):
   import "./effs/socket_close.c"

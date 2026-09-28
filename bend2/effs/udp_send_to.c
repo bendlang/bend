@@ -36,5 +36,5 @@ Term udp_send_to_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) udp_send_to_use(void) {
-  io_eff(CID(UDP.send_to), udp_send_to_run, 0);
+  io_eff(CID(UDP.send_to), udp_send_to_run, IO_OUT | IO_HAND);
 }

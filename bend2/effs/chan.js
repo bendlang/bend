@@ -45,11 +45,7 @@ function chan_send(row, value, k) {
     row.ring.push(value);
     return true;
   }
-  const io = globalThis.BEND_IO;
-  if (io.poll === null || !io.holds({ k, again: () => chan_send(row, value, k),
-    cancel: () => false })) {
-    row.wait.push({ cont: k, item: value, poll: io.poll });
-  }
+  row.wait.push({ cont: k, item: value, poll: globalThis.BEND_IO.poll });
   return;
 }
 
@@ -63,11 +59,7 @@ function chan_recv(row, k) {
   if (row.shut) {
     return { $: CID(None) };
   }
-  const io = globalThis.BEND_IO;
-  if (io.poll === null || !io.holds({ k, again: () => chan_recv(row, k),
-    cancel: () => ({ $: CID(None) }) })) {
-    row.wait.push({ cont: k, item: CHAN_RECV, poll: io.poll });
-  }
+  row.wait.push({ cont: k, item: CHAN_RECV, poll: globalThis.BEND_IO.poll });
   return;
 }
 
@@ -78,7 +70,20 @@ function chan_close(row) {
   return { $: CID(Unit) };
 }
 
+// IO.poll: when a step would wait, what a cancel answers, and the waits.
+function chan_recvs(row) {
+  return row.wait.length > 0 && row.wait[0].item === CHAN_RECV;
+}
+
 io_eff(CID(Chan.new), chan_new);
-io_eff(CID(Chan.send), chan_send);
-io_eff(CID(Chan.recv), chan_recv);
+
+io_eff(CID(Chan.send), chan_send, undefined, {
+  wait: (row) => !row.shut && !chan_recvs(row) && row.ring.length >= row.room,
+  cancel: () => false,
+  list: (row) => row.wait });
+io_eff(CID(Chan.recv), chan_recv, undefined, {
+  wait: (row) => !row.shut && row.ring.length === 0
+    && (row.wait.length === 0 || chan_recvs(row)),
+  cancel: () => ({ $: CID(None) }),
+  list: (row) => row.wait });
 io_eff(CID(Chan.close), chan_close);

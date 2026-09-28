@@ -38,7 +38,7 @@ def show_got(s: IO.Step<Maybe<&1, U32>>) -> IO(Unit):
 
 def poll_recv(name: String, +ch: Chan(U32)) -> IO(Unit):
   do IO<Unit>:
-    r : IO.Step<Maybe<&1, U32>> <- IO.poll(Maybe<&1, U32>, Chan.recv(U32, ch))
+    r : IO.Step<Maybe<&1, U32>> <- IO.poll(Maybe<&1, U32>, 0, Chan.recv(U32, ch))
     s : IO.Step<Maybe<&1, U32>> <- tell(Maybe<&1, U32>, name, r)
     show_got(s)
 
@@ -46,9 +46,9 @@ def chans(c: Chan(U32)) -> IO(U32):
   +ch = c
   do IO<U32>:
     Unit <- poll_recv("recv empty", ch)
-    s1 : IO.Step<Bool> <- IO.poll(Bool, Chan.send(U32, ch, 7))
+    s1 : IO.Step<Bool> <- IO.poll(Bool, 0, Chan.send(U32, ch, 7))
     t1 : IO.Step<Bool> <- tell(Bool, "send room", s1)
-    s2 : IO.Step<Bool> <- IO.poll(Bool, Chan.send(U32, ch, 8))
+    s2 : IO.Step<Bool> <- IO.poll(Bool, 0, Chan.send(U32, ch, 8))
     late : IO.Step<Bool> <- tell(Bool, "send full", s2)
     Unit <- poll_recv("recv one", ch)
     Unit <- poll_recv("recv, the held send not in", ch)
@@ -71,26 +71,27 @@ def cancels(c: Chan(U32)) -> IO(U32):
   +ch = c
   do IO<U32>:
     Bool <- Chan.send(U32, ch, 1)
-    s : IO.Step<Bool> <- IO.poll(Bool, Chan.send(U32, ch, 2))
+    s : IO.Step<Bool> <- IO.poll(Bool, 0, Chan.send(U32, ch, 2))
     t : IO.Step<Bool> <- tell(Bool, "send full", s)
     ok : Bool <- drop_step(Bool, t, False{})
     Unit <- IO.print(String.append("cancelled send: ", Bool.show(ok)))
     Unit <- poll_recv("recv the first", ch)
     Unit <- poll_recv("recv, the cancelled send not in", ch)
-    r : IO.Step<Maybe<&1, U32>> <- IO.poll(Maybe<&1, U32>, Chan.recv(U32, ch))
+    r : IO.Step<Maybe<&1, U32>> <- IO.poll(Maybe<&1, U32>, 0, Chan.recv(U32, ch))
     m : Maybe<&1, U32> <- drop_step(Maybe<&1, U32>, r, None{})
     Unit <- IO.print(String.append("cancelled recv: ", got(m)))
     return 0
 
+# a held sleep has not started: its rest sleeps the whole 30 ms, so a
+# poll of 10 ms answers Wait and one of 100 ms lets it end
 def naps() -> IO(U32):
   do IO<U32>:
-    z1 : IO.Step<Unit> <- IO.poll(Unit, IO.sleep(30))
+    z1 : IO.Step<Unit> <- IO.poll(Unit, 0, IO.sleep(30))
     n1 : IO.Step<Unit> <- tell(Unit, "sleep", z1)
-    z2 : IO.Step<Unit> <- IO.poll(Unit, get(Unit, n1))
-    n2 : IO.Step<Unit> <- tell(Unit, "rest at once", z2)
-    Unit <- IO.sleep(60)
-    z3 : IO.Step<Unit> <- IO.poll(Unit, get(Unit, n2))
-    n3 : IO.Step<Unit> <- tell(Unit, "rest later", z3)
+    z2 : IO.Step<Unit> <- IO.poll(Unit, 10, get(Unit, n1))
+    n2 : IO.Step<Unit> <- tell(Unit, "rest, 10 ms", z2)
+    z3 : IO.Step<Unit> <- IO.poll(Unit, 100, get(Unit, n2))
+    n3 : IO.Step<Unit> <- tell(Unit, "rest, 100 ms", z3)
     return 0
 
 def two(d: Chan(U32)) -> IO(U32):
@@ -99,7 +100,7 @@ def two(d: Chan(U32)) -> IO(U32):
     IO.bind(Maybe<&1, U32>, U32, Chan.recv(U32, ch), m =>
       IO.bind(Unit, U32, IO.print("after"), v => IO.pure(U32, 5))))
   do IO<U32>:
-    p : IO.Step<U32> <- IO.poll(U32, act)
+    p : IO.Step<U32> <- IO.poll(U32, 0, act)
     q : IO.Step<U32> <- tell(U32, "two effects", p)
     Unit <- IO.spawn(Bool, Chan.send(U32, ch, 1))
     x : U32 <- get(U32, q)
@@ -134,8 +135,8 @@ def main() -> IO(U32):
 #|recv, the cancelled send not in: wait
 #|cancelled recv: closed
 #|sleep: wait
-#|rest at once: wait
-#|rest later: ready
+#|rest, 10 ms: wait
+#|rest, 100 ms: ready
 #|before
 #|two effects: wait
 #|after

@@ -26,4 +26,4 @@ function udp_send_to(socket, host, port, data, k) {
   return go();
 }
 
-io_eff(CID(UDP.send_to), udp_send_to);
+io_eff(CID(UDP.send_to), udp_send_to, undefined, { fd: "out" });

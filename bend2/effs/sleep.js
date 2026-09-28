@@ -9,4 +9,5 @@ function io_sleep_need() {
   return { time: true };
 }
 
-io_eff(CID(IO.sleep), io_sleep, io_sleep_need);
+io_eff(CID(IO.sleep), io_sleep, io_sleep_need,
+  { time: true, cancel: () => ({ $: CID(Unit) }) });

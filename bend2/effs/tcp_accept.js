@@ -31,4 +31,4 @@ function tcp_accept_need() {
   return { read: true };
 }
 
-io_eff(CID(TCP.accept), tcp_accept, tcp_accept_need);
+io_eff(CID(TCP.accept), tcp_accept, tcp_accept_need, { fd: "in" });
