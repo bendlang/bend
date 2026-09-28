@@ -1,5 +1,12 @@
 # Current compiler experiment strategy
 
+Phase13 is active: the user authorizes the complete bounded structured-rewriter
+experiment, under its [design](../design/phase13/structured_rewriter.md). Profile
+Phase12 first, reproducev5bytes structurally, then test explicit branch workers
+with capture/demand/stack controls. Roughly20%less checking time or a compelling
+speed/complexity tradeoff gates expansion. Phase12 stays installed until gates
+justify replacement. [Current report](../implementation/phase13/structured_rewriter.md).
+
 Phase12 completes the user's next avoid-redundant-work round on2026-09-28.
 No historical time budget is renewed. Preserve unrelated Phase6 work.
 The [design](../design/phase12/avoidable_work.md),

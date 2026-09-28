@@ -849,3 +849,13 @@ plans, checked attempts, failures, exact tools, measurements and release checks;
 publication binds full byte/mode recovery and explicit prerequisites. Next work
 starts from a profile of this final API. No new fixedpoint, kernel/GPU gate or
 generated-program runtime gain is claimed. Unrelated Phase6 work stays untouched.
+
+## Phase13 structured-rewriter experiment started — 2026-09-28
+
+The user authorizes the staged [design](../design/phase13/structured_rewriter.md):
+profile the actualPhase12release, reproduce its guarded transformations through
+a shared structured view, then try explicit branch workers that preserve execution
+boundaries. Independent capture/demand/stack review and exact53/60histories precede
+whole-source timing. Expansion requires meaningful benefit; no speedup is promised.
+The [report](../implementation/phase13/structured_rewriter.md) will retain failures
+and distinguish checked provenance, correctness, timing and promotion.
