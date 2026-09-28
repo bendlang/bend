@@ -688,3 +688,13 @@ A coarse profile locates most time in checking. The measured checked-build plus
 focused loop is about27s. All samples, failed attempts, exact identities and
 archived byte objects remain linked from the [preservation index](PRESERVATION.md).
 The checked release is not relabeled a fresh self-hosted fixed point.
+
+## 2026-09-28 — targeted checker speed phase authorized
+
+The user requests design, implementation and report. The prospective
+[Phase9 design](../design/phase9/checker_speed.md), committed as `e7b2846` before
+experiments, preserves the Phase8 release and targets measured checker work.
+P9-001 adapts the native equality derivative; P9-002 tests three independent
+checker work reductions; P9-003 separates duplicated descent from compact
+literal representation; P9-004 owns baseline/residual profiling and the final
+same-source controlled comparison. No candidate is promoted at this point.

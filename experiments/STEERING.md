@@ -1,11 +1,27 @@
 # Current compiler experiment strategy
 
-Current authorization (2026-09-28): update to current upstream, improve
-conformance, and retain the best validated simplifications. The
-[Phase8 design](../design/phase8/upstream_and_conformance.md) supersedes the
-percentage-reduction-first strategy. The historical 50%/75% goals remain unmet;
-they no longer block migration or correctness work. No historical time budget
-has been renewed.
+Current authorization (2026-09-28): design, implement and report targeted checker
+speed improvements, followed by evidence-led residual work and literal
+conformance. The [Phase9 design](../design/phase9/checker_speed.md) was committed
+as `e7b2846` before experiments. Historical 50%/75% line goals remain unmet and
+do not block correctness or speed work. No historical time budget is renewed.
+
+## Active Phase9 frontier
+
+1. Preserve Phase8 release07, its complete frontend vector and its 73.20x checking
+   comparison. CPU0 sampling is diagnostic; concurrent timings are not promotion
+   evidence.
+2. P9-001 adapts guarded native equality. P9-002 independently tests lambda-kind
+   rechecks, fresh-bound demand and duplicate context lookup. Genuine checked
+   ablations and semantic falsifiers precede combinations.
+3. P9-003 first tests duplicated termination-descent traversal; compact literals
+   remain a distinct representation hypothesis with capture/precision obligations.
+4. Root integrates survivors, runs new-source baseline/candidate/TypeScript
+   comparisons and broad regressions, then installs and documents a validated
+   default. No unmeasured speed claim or fresh fixed-point claim.
+
+Agents own disjoint source areas and CPU1/2/3 for development. All compiler work
+pauses during the final serial CPU0 measurement. Preserve unrelated Phase6 work.
 
 ## Consolidated Phase8 frontier
 
