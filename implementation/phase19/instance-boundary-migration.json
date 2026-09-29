@@ -1,0 +1,573 @@
+{
+  "kind": "phase19-live-checker-boundary-receipt",
+  "complete": true,
+  "pass": true,
+  "installed": false,
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-build-02/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-build-02/equality/api.mjs",
+    "sha256": "3d18f92ba57ba966f3a67bd1c46780418550ec33d7bb6955f5bfe3d4c495d649"
+  },
+  "publicRows": 100,
+  "projectionControls": 4,
+  "retainedOriginalFailure": {
+    "rows": 100,
+    "failed": [
+      "prefix-reuse/program/empty",
+      "prefix-reuse/program/partial",
+      "prefix-reuse/program/full",
+      "prefix-reuse/program/changed",
+      "prefix-nested/program/empty",
+      "prefix-nested/program/partial",
+      "prefix-nested/program/full",
+      "prefix-nested/program/changed",
+      "law-fill/program/empty",
+      "law-fill/program/partial",
+      "law-fill/program/full",
+      "law-fill/program/changed",
+      "future-body-after/program/empty",
+      "future-body-after/program/partial",
+      "future-body-after/program/full",
+      "future-body-after/program/changed",
+      "generic-success/program/empty",
+      "generic-success/program/partial",
+      "generic-success/program/full",
+      "generic-success/program/changed"
+    ]
+  },
+  "projectionScope": "Runtime call/data-head inventory only, not full checked-term equivalence. Ignore Ann type branches symmetrically; Ref/ADT equivalence only for known datatype names.",
+  "backendExecutionTested": false,
+  "processesClosed": true,
+  "boundFiles": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase19/instance-boundary-migration.md",
+      "bytes": 3256,
+      "sha256": "3c0a046ae091b03b60c6d611e4faf46720c1378ef91750565c8dc6af649f618a"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-01/consumed-runner.mjs",
+      "bytes": 2400,
+      "sha256": "194245a9b70943dd20d7cd7edd89a594705a6d6cef758d8c6c358fdc72d7f2c7"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-01/process/stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-01/process/stdout",
+      "bytes": 668,
+      "sha256": "278f1509bbb1048284eeda148cf2ffefc1089fe224358903d244c4b30eeaa724"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-01/report.json",
+      "bytes": 2637,
+      "sha256": "e0da2cbfa8dee584429bed3cf6c4ec72829a26072cfe5b6864ee3bf06240ed81"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-01/result/consumed-tool.mjs",
+      "bytes": 7729,
+      "sha256": "45cdecdbbd11f8148d0c3e2f8e49f545c2a0dd7f73faf646e82cb38d96ae5227"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-01/result/future-body-after-source-book.json",
+      "bytes": 2531,
+      "sha256": "3ab86742e297a96c42468b66d77a149b7b530a17cbca2e1842e541075e4a3205"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-01/result/future-body-before-source-book.json",
+      "bytes": 2532,
+      "sha256": "c3f5f6fadedc0cb0876353a4e553e631edb86b795f63d655f7f7dda6713ba717"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-01/result/generic-private-failure-source-book.json",
+      "bytes": 2490,
+      "sha256": "2cd9e8726c1c716ab4df65434b4f403dd01440cd02c597b05f263bdb57347353"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-01/result/generic-success-source-book.json",
+      "bytes": 3547,
+      "sha256": "e900976476e4bc6254ee52d99b0bd44964e8b829c4083084ac8a73055b11c4b9"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-01/result/instance-failure-source-book.json",
+      "bytes": 6226,
+      "sha256": "c9bd326d7c8d812bcb6aab7d2606f512e784d1911038ebf5e1899f5bd7f29ab3"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-01/result/law-fill-source-book.json",
+      "bytes": 2249,
+      "sha256": "a05d64247f790bf6e5333764b045ff32aa681d386e83b36fa4f352c8216a0de7"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-01/result/open-law-source-book.json",
+      "bytes": 1401,
+      "sha256": "31f31bd8e0563b64a3d2eeac4de680d56d91cef4c15f81acc96f4cd96cdca8db"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-01/result/prefix-nested-source-book.json",
+      "bytes": 7895,
+      "sha256": "83fbd3993f3dfcc9041b8ca119fce9568a4a81fd13ca7ef84404181dd0f472c1"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-01/result/prefix-reuse-source-book.json",
+      "bytes": 6966,
+      "sha256": "2b8ea2fe720a9960710890f4e363d7df6a71b84ed9bea00ca78183dab2486f22"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-01/result/report.json",
+      "bytes": 30188,
+      "sha256": "071e061e998c3583ba88cea9a7cf335960e1ada93d6b005944f693685897cff1"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-01/result/todo-body-source-book.json",
+      "bytes": 1401,
+      "sha256": "746a2667a45709c9ebc5f6908b9fa86bd131e037856438be52a35e5db1a44c59"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/consumed-runner.mjs",
+      "bytes": 2406,
+      "sha256": "c1b62e18ed59c2553f765169397960ea2612e9906fb88ba928dc7d731761caa4"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/process/stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/process/stdout",
+      "bytes": 53,
+      "sha256": "177f440d65eca0945545b986652aa5e99d087b50f8203f2cc499201e5e8913ad"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/report.json",
+      "bytes": 2651,
+      "sha256": "b00392f1c5527395015fddbe25229dbb18e436e19c543ca155d72f2c46140e0e"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/consumed-tool.mjs",
+      "bytes": 8829,
+      "sha256": "ad3b3142ca62bfece6007cc14446f48dabf7bd4c2bceabb399a0998201e13035"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/future-body-after-program-changed.json",
+      "bytes": 2222,
+      "sha256": "f32c0998193a2a8ae9187703bd6a55b52046b03ca1b909b926eb437bed2a82db"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/future-body-after-program-empty.json",
+      "bytes": 2222,
+      "sha256": "f32c0998193a2a8ae9187703bd6a55b52046b03ca1b909b926eb437bed2a82db"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/future-body-after-program-full.json",
+      "bytes": 2222,
+      "sha256": "f32c0998193a2a8ae9187703bd6a55b52046b03ca1b909b926eb437bed2a82db"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/future-body-after-program-partial.json",
+      "bytes": 2222,
+      "sha256": "f32c0998193a2a8ae9187703bd6a55b52046b03ca1b909b926eb437bed2a82db"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/future-body-after-respecialized.json",
+      "bytes": 2321,
+      "sha256": "dfdd06dd7198b7bbdddb4269258a0c607edcf4f9664047482b1d78aac0ab2a41"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/future-body-after-source-book.json",
+      "bytes": 2531,
+      "sha256": "3ab86742e297a96c42468b66d77a149b7b530a17cbca2e1842e541075e4a3205"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/future-body-after-specialized.json",
+      "bytes": 2321,
+      "sha256": "dfdd06dd7198b7bbdddb4269258a0c607edcf4f9664047482b1d78aac0ab2a41"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/future-body-before-program-changed.json",
+      "bytes": 7267,
+      "sha256": "ad950f1d73959fc7da86565bd715cd43aa5efd5382362f6b38197f398c9def74"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/future-body-before-program-empty.json",
+      "bytes": 7267,
+      "sha256": "ad950f1d73959fc7da86565bd715cd43aa5efd5382362f6b38197f398c9def74"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/future-body-before-program-full.json",
+      "bytes": 7267,
+      "sha256": "ad950f1d73959fc7da86565bd715cd43aa5efd5382362f6b38197f398c9def74"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/future-body-before-program-partial.json",
+      "bytes": 7267,
+      "sha256": "ad950f1d73959fc7da86565bd715cd43aa5efd5382362f6b38197f398c9def74"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/future-body-before-source-book.json",
+      "bytes": 2532,
+      "sha256": "c3f5f6fadedc0cb0876353a4e553e631edb86b795f63d655f7f7dda6713ba717"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/future-body-before-specialized.json",
+      "bytes": 3449,
+      "sha256": "7e753de71d5b6fbc259764d39bf07cb801d2459cea3450b323bc14416fa08140"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/generic-private-failure-program-changed.json",
+      "bytes": 9340,
+      "sha256": "8f8df1202799e4905a6f417e7782b554b756dfc609ac636f6ad481d6e05b2c88"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/generic-private-failure-program-empty.json",
+      "bytes": 9340,
+      "sha256": "8f8df1202799e4905a6f417e7782b554b756dfc609ac636f6ad481d6e05b2c88"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/generic-private-failure-program-full.json",
+      "bytes": 9340,
+      "sha256": "8f8df1202799e4905a6f417e7782b554b756dfc609ac636f6ad481d6e05b2c88"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/generic-private-failure-program-partial.json",
+      "bytes": 9340,
+      "sha256": "8f8df1202799e4905a6f417e7782b554b756dfc609ac636f6ad481d6e05b2c88"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/generic-private-failure-source-book.json",
+      "bytes": 2490,
+      "sha256": "2cd9e8726c1c716ab4df65434b4f403dd01440cd02c597b05f263bdb57347353"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/generic-private-failure-specialized.json",
+      "bytes": 4789,
+      "sha256": "faad384f810db7e7cab06e4b5c49b8b399d32205d78e226575ce0d903753fe48"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/generic-success-program-changed.json",
+      "bytes": 4403,
+      "sha256": "345baa9e92a39f13fa606fdc6f63c683f623afcbc9b74f5b8fcf55fe1e686328"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/generic-success-program-empty.json",
+      "bytes": 4403,
+      "sha256": "345baa9e92a39f13fa606fdc6f63c683f623afcbc9b74f5b8fcf55fe1e686328"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/generic-success-program-full.json",
+      "bytes": 4403,
+      "sha256": "345baa9e92a39f13fa606fdc6f63c683f623afcbc9b74f5b8fcf55fe1e686328"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/generic-success-program-partial.json",
+      "bytes": 4403,
+      "sha256": "345baa9e92a39f13fa606fdc6f63c683f623afcbc9b74f5b8fcf55fe1e686328"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/generic-success-respecialized.json",
+      "bytes": 4502,
+      "sha256": "f005f880b40212afd703486005f2dc10273186db3c95a6a8cb64a9e2ded2534f"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/generic-success-source-book.json",
+      "bytes": 3547,
+      "sha256": "e900976476e4bc6254ee52d99b0bd44964e8b829c4083084ac8a73055b11c4b9"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/generic-success-specialized.json",
+      "bytes": 4502,
+      "sha256": "f005f880b40212afd703486005f2dc10273186db3c95a6a8cb64a9e2ded2534f"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/instance-failure-program-changed.json",
+      "bytes": 21382,
+      "sha256": "6839b116e8cc136bc6c43426ce7cd400a1386918f3ad27d895022024bf691665"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/instance-failure-program-empty.json",
+      "bytes": 21382,
+      "sha256": "6839b116e8cc136bc6c43426ce7cd400a1386918f3ad27d895022024bf691665"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/instance-failure-program-full.json",
+      "bytes": 21382,
+      "sha256": "6839b116e8cc136bc6c43426ce7cd400a1386918f3ad27d895022024bf691665"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/instance-failure-program-partial.json",
+      "bytes": 21382,
+      "sha256": "6839b116e8cc136bc6c43426ce7cd400a1386918f3ad27d895022024bf691665"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/instance-failure-source-book.json",
+      "bytes": 6226,
+      "sha256": "c9bd326d7c8d812bcb6aab7d2606f512e784d1911038ebf5e1899f5bd7f29ab3"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/instance-failure-specialized.json",
+      "bytes": 13279,
+      "sha256": "206e247e1608e2b20e60ef8a94c702fdc0edee1709967fa351b3e674d568cd11"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/law-fill-program-changed.json",
+      "bytes": 2081,
+      "sha256": "5454d8de4a945a18b91b9f77d68f853fd094ba31c1a8dfca39485332b726f69a"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/law-fill-program-empty.json",
+      "bytes": 2081,
+      "sha256": "5454d8de4a945a18b91b9f77d68f853fd094ba31c1a8dfca39485332b726f69a"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/law-fill-program-full.json",
+      "bytes": 2081,
+      "sha256": "5454d8de4a945a18b91b9f77d68f853fd094ba31c1a8dfca39485332b726f69a"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/law-fill-program-partial.json",
+      "bytes": 2081,
+      "sha256": "5454d8de4a945a18b91b9f77d68f853fd094ba31c1a8dfca39485332b726f69a"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/law-fill-respecialized.json",
+      "bytes": 2180,
+      "sha256": "186f62b9c1924054c3dcbc490355c2ef5f624b2462de24c74f9257ea86d8e299"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/law-fill-source-book.json",
+      "bytes": 2249,
+      "sha256": "a05d64247f790bf6e5333764b045ff32aa681d386e83b36fa4f352c8216a0de7"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/law-fill-specialized.json",
+      "bytes": 2180,
+      "sha256": "186f62b9c1924054c3dcbc490355c2ef5f624b2462de24c74f9257ea86d8e299"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/open-law-program-changed.json",
+      "bytes": 1780,
+      "sha256": "c050ed805ec3ee3a1be3aecc8353dd57e60bfb45427fa046fe08c2cfa96b6121"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/open-law-program-empty.json",
+      "bytes": 1780,
+      "sha256": "c050ed805ec3ee3a1be3aecc8353dd57e60bfb45427fa046fe08c2cfa96b6121"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/open-law-program-full.json",
+      "bytes": 1780,
+      "sha256": "c050ed805ec3ee3a1be3aecc8353dd57e60bfb45427fa046fe08c2cfa96b6121"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/open-law-program-partial.json",
+      "bytes": 1780,
+      "sha256": "c050ed805ec3ee3a1be3aecc8353dd57e60bfb45427fa046fe08c2cfa96b6121"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/open-law-respecialized.json",
+      "bytes": 1749,
+      "sha256": "3c7083dd8d01980e81999a34f536ebb33e35666bb53ebb039dd9ec0b35fd9fd1"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/open-law-source-book.json",
+      "bytes": 1401,
+      "sha256": "31f31bd8e0563b64a3d2eeac4de680d56d91cef4c15f81acc96f4cd96cdca8db"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/open-law-specialized.json",
+      "bytes": 1749,
+      "sha256": "3c7083dd8d01980e81999a34f536ebb33e35666bb53ebb039dd9ec0b35fd9fd1"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/prefix-nested-program-changed.json",
+      "bytes": 11846,
+      "sha256": "995492685a20c49a4f03ac17373261154987b9b7e49f63ccaf371154680c9d0c"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/prefix-nested-program-empty.json",
+      "bytes": 11846,
+      "sha256": "995492685a20c49a4f03ac17373261154987b9b7e49f63ccaf371154680c9d0c"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/prefix-nested-program-full.json",
+      "bytes": 11846,
+      "sha256": "995492685a20c49a4f03ac17373261154987b9b7e49f63ccaf371154680c9d0c"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/prefix-nested-program-partial.json",
+      "bytes": 11846,
+      "sha256": "995492685a20c49a4f03ac17373261154987b9b7e49f63ccaf371154680c9d0c"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/prefix-nested-respecialized.json",
+      "bytes": 11945,
+      "sha256": "722eee5689286929d0ea49d0eeba9b664980d5ecb2e887a976a5797761d4a342"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/prefix-nested-source-book.json",
+      "bytes": 7895,
+      "sha256": "83fbd3993f3dfcc9041b8ca119fce9568a4a81fd13ca7ef84404181dd0f472c1"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/prefix-nested-specialized.json",
+      "bytes": 11945,
+      "sha256": "722eee5689286929d0ea49d0eeba9b664980d5ecb2e887a976a5797761d4a342"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/prefix-reuse-program-changed.json",
+      "bytes": 8104,
+      "sha256": "c67225ee18da582b65390c721fdc224f9f2fa35a42dbe28e802cb3dd5a49010d"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/prefix-reuse-program-empty.json",
+      "bytes": 8104,
+      "sha256": "c67225ee18da582b65390c721fdc224f9f2fa35a42dbe28e802cb3dd5a49010d"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/prefix-reuse-program-full.json",
+      "bytes": 8104,
+      "sha256": "c67225ee18da582b65390c721fdc224f9f2fa35a42dbe28e802cb3dd5a49010d"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/prefix-reuse-program-partial.json",
+      "bytes": 8104,
+      "sha256": "c67225ee18da582b65390c721fdc224f9f2fa35a42dbe28e802cb3dd5a49010d"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/prefix-reuse-respecialized.json",
+      "bytes": 8203,
+      "sha256": "2cee1715db291a7e5f28c91e7d016a5e8547b22bcdd36afd4adecb44eb0d74d8"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/prefix-reuse-source-book.json",
+      "bytes": 6966,
+      "sha256": "2b8ea2fe720a9960710890f4e363d7df6a71b84ed9bea00ca78183dab2486f22"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/prefix-reuse-specialized.json",
+      "bytes": 8203,
+      "sha256": "2cee1715db291a7e5f28c91e7d016a5e8547b22bcdd36afd4adecb44eb0d74d8"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/report.json",
+      "bytes": 22709,
+      "sha256": "b3d4a038e158fc0a2ab5e374c9d96b90775814c7716d26621ad67de60ac162f5"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/todo-body-program-changed.json",
+      "bytes": 1780,
+      "sha256": "cebef152d75fb7d91516c269ae6605ef83ff8600d684e400e76a0123a80ec3e3"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/todo-body-program-empty.json",
+      "bytes": 1780,
+      "sha256": "cebef152d75fb7d91516c269ae6605ef83ff8600d684e400e76a0123a80ec3e3"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/todo-body-program-full.json",
+      "bytes": 1780,
+      "sha256": "cebef152d75fb7d91516c269ae6605ef83ff8600d684e400e76a0123a80ec3e3"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/todo-body-program-partial.json",
+      "bytes": 1780,
+      "sha256": "cebef152d75fb7d91516c269ae6605ef83ff8600d684e400e76a0123a80ec3e3"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/todo-body-respecialized.json",
+      "bytes": 1749,
+      "sha256": "dd18dbe9ea9286d3fe26daaa4e84c5c9adad276258b15c5e0fa5db9b06fbd83e"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/todo-body-source-book.json",
+      "bytes": 1401,
+      "sha256": "746a2667a45709c9ebc5f6908b9fa86bd131e037856438be52a35e5db1a44c59"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-candidate-02/result/todo-body-specialized.json",
+      "bytes": 1749,
+      "sha256": "dd18dbe9ea9286d3fe26daaa4e84c5c9adad276258b15c5e0fa5db9b06fbd83e"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-oracle-01/consumed-runner.mjs",
+      "bytes": 2400,
+      "sha256": "194245a9b70943dd20d7cd7edd89a594705a6d6cef758d8c6c358fdc72d7f2c7"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-oracle-01/process/stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-oracle-01/process/stdout",
+      "bytes": 60,
+      "sha256": "be589372717e5b73883a369522bc57e3b127d14e497f8388e0791a2276316bb4"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-oracle-01/report.json",
+      "bytes": 2004,
+      "sha256": "1a25d046476c48611a3e04ba3610acec09cfbcf9ca0aaa20dfb3f96a4f75adad"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-oracle-01/result/consumed-tool.mjs",
+      "bytes": 3138,
+      "sha256": "b958aafac8ea2e8a2546c9d1b110fec79089c6a6e7067b372ebee49ea0013653"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-oracle-01/result/report.json",
+      "bytes": 24447,
+      "sha256": "5c5967e38cbcb4750da0a2bdd255ab88b41b03f8c7390706310ca37242dc8c2e"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-oracle-02/consumed-runner.mjs",
+      "bytes": 2406,
+      "sha256": "c1b62e18ed59c2553f765169397960ea2612e9906fb88ba928dc7d731761caa4"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-oracle-02/process/stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-oracle-02/process/stdout",
+      "bytes": 60,
+      "sha256": "be589372717e5b73883a369522bc57e3b127d14e497f8388e0791a2276316bb4"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-oracle-02/report.json",
+      "bytes": 2022,
+      "sha256": "43089a4538867728c08e5953c3b9826afc7f0c14b1fdcb7c5935963306ba1de9"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-oracle-02/result/consumed-tool.mjs",
+      "bytes": 4500,
+      "sha256": "804aebee0fead766803e271a12e5d11fa071ac8912959426f3b7fac581f33662"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-boundary-oracle-02/result/report.json",
+      "bytes": 54795,
+      "sha256": "3a259a038fbeb017078259443cd705c593b48aab6de0c29bd79b4b0b8d600e6a"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase19/instance-boundary-controls-v2.mjs",
+      "bytes": 8829,
+      "sha256": "ad3b3142ca62bfece6007cc14446f48dabf7bd4c2bceabb399a0998201e13035"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase19/instance-boundary-migration-report.py",
+      "bytes": 2149,
+      "sha256": "54f83b2c9ad51dd533bf90e915c34ce7faad6d3ba233f315173f479ea33c5bd4"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase19/instance-boundary-oracle-v2.mjs",
+      "bytes": 4500,
+      "sha256": "804aebee0fead766803e271a12e5d11fa071ac8912959426f3b7fac581f33662"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase19/instance-boundary-run-v2.mjs",
+      "bytes": 2406,
+      "sha256": "c1b62e18ed59c2553f765169397960ea2612e9906fb88ba928dc7d731761caa4"
+    }
+  ]
+}
