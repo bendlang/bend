@@ -1,5 +1,12 @@
 # Current compiler experiment strategy
 
+Phase15 is active under its [design](../design/phase15/parser_conformance_and_speed.md):
+validate parser/load ordering, share parser caret rendering, and profile the exact
+release before one bounded source optimization. Phase14 stays installed until the
+combined gates pass. See the [current report](../implementation/phase15/parser_conformance_and_speed.md).
+The90-minute speed feasibility cap begins at the explicit profiling grant; no
+older multi-hour budget is renewed. Preserve all75unrelated Phase6 files.
+
 Phase14 is complete under its [design](../design/phase14/conformance_and_dispatch.md).
 The [report](../implementation/phase14/conformance_and_dispatch.md) selects
 combined-01, API9136be92, with unchanged upstream b2111cf. Imported-law resolution,

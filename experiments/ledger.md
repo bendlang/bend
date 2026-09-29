@@ -951,3 +951,17 @@ The [corrected report](../implementation/phase14/conformance_and_dispatch.md) an
 retain the exact breakdown. Total improvement, compiler, timings and validation
 results are unchanged. The original capsule preserves the pre-correction wording
 and all raw evidence; it has not been rewritten.
+
+
+## Phase15 parser conformance and checking speed started — 2026-09-29
+
+The user authorizes all recommended next steps. The prospective
+[design](../design/phase15/parser_conformance_and_speed.md) binds Phase14 API9136be92
+and unchanged upstream b2111cf. Independent owners inspect10parser/load behavior
+gaps,66parser-caret fixtures and a fresh profile before one bounded source-speed
+experiment. Root retains strict full-corpus delta/acceptance, exact histories,
+backend and installed/relocated release gates. The
+[report](../implementation/phase15/parser_conformance_and_speed.md) will separate
+exact attribution, measured costs, remaining failures and promotion. No new
+performance or conformance result is claimed at this checkpoint. All75unrelated
+Phase6 files remain unchanged and unstaged.
