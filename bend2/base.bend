@@ -271,30 +271,16 @@ def IO.within(-A: Type, ms: U32, act: IO(A)) -> IO(Maybe<&1, A>):
   IO.bind(Chan(Maybe<&1, A>), Maybe<&1, A>, both, c => IO.join(Maybe<&1, A>, c))
 
 # Runs act until it answers or would wait. Where act would wait before
-# starting an effect (a channel full or empty, a socket not ready, a
-# sleep), IO.poll waits up to ms for it to be ready, then answers
-# Wait{rest}: rest is act from there on, that effect not started, so a
-# dropped rest never sends its value nor takes one. IO.poll(0, act) never
-# waits: such an effect answers Wait at once, with no timer (a deadline
-# past 0 waits on the loop's clock). IO.resume(rest) runs rest as act
-# would have, IO.poll(ms, IO.resume(rest)) polls it again, and
-# IO.cancel(rest) answers the effect cancelled and goes on: a send False,
-# a recv None, a sleep at once, a socket's effect (socket,
-# Fail{ECANCELED}). An effect that already started (a send half written,
-# a connect, work on the IO threads), that declares no wait (see
-# effs/io_poll.c), or that a rest resumed inside act runs with more of act
-# after it runs to its end, past ms: IO.poll answers once it does (poll
-# such a rest on its own, IO.poll(ms, IO.resume(rest))).
-#
-# A loop that polls keeps the pending action, an IO, as its state, not the
-# Step: each turn it polls that action; on Ready{x} it uses x and polls a
-# fresh action next, and on Wait{rest} it polls IO.resume(rest) next. A
-# loop that drains what is ready and then blocks hands Ready's value and
-# the value of IO.resume(rest) to one handler (tests/io/io_poll_writer).
-# Such a loop runs once per tick of its own, or ends each drain in a
-# blocking IO.resume; one that only re-polls with 0 ms spins. To wait for
-# whichever of several comes first, spawn one computation per source,
-# each sending to one channel, and recv from it.
+# starting an effect, IO.poll waits up to ms for it (0: not at all, with
+# no timer), then answers Wait{rest}: act from there on, that effect not
+# started, so a dropped rest sends and takes nothing. IO.resume(rest) runs
+# it, IO.poll(ms, IO.resume(rest)) polls it again, and IO.cancel(rest)
+# answers the effect cancelled: a send False, a recv None, a sleep at
+# once, a socket's effect (socket, Fail{ECANCELED}). An effect that
+# started, that IO.poll cannot hold (see guide/EFFECTS.md), or that a rest
+# resumed inside act runs with more of act after it, runs to its end past
+# ms. A loop that polls keeps the pending IO, not the Step, as its state,
+# and needs a tick of its own or a blocking IO.resume, or it spins.
 def IO.poll(-A: Type, ms: U32, act: IO(A)) -> IO(IO.Step<A>):
   import "./effs/io_poll.c"
   import "./effs/io_poll.js"
