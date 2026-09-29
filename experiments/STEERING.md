@@ -1,89 +1,64 @@
 # Current compiler experiment strategy
 
-Phase16 is active under the [design](../design/phase16/full_conformance.md).
-The user authorizes continued exact conformance work with speed and simplicity
-constraints, including project evidence pushes. Baseline verification and the
-controlled unchanged-release matrix pass; current source remains Phase15.
-The accepted wave9 full gate reduces exact differences **459→2**, with
-457 new exact matches and no losses. All 2,996 primitive outcomes stay exact.
-Contextual module parsing adds fourteen matches over wave8. The remaining two
-corpus rows concern one do-block's parser checkpoint order; independent controls
-retain additional semantic and chronology gaps, so this is not full conformance.
-Alias resolution now respects lexical bindings, with paired positive witnesses.
-The strengthened gate protects every exact match from the preceding accepted
-checkpoint; all rejected integrations remain preserved.
-The first wave4 ordinary same-source measurement costs 11.88% more than Phase15.
-No Phase16 image is installed. Scan/copy/ASCII changes show no measured recovery;
-template membership indexing is flat and unselected. Diagnostic stage timing
-points toward loading and host range validation, with substantial baseline
-variation. The exact Base-prefix law passes, but removes only 1.32% of whole-source
-freshening visits; defer the cache change. Literal builders account for roughly
-2M of the 2.17M elaborated terms. The controlled compact-literal integration pilot
-now measures **30.8339→10.7300 s**, 2.87× faster, versus TS2.9962 s: a **3.58×**
-gap in that window. Peak RSS falls65.20%. This prototype still needs canonical
-memo identity/size boundaries and final release gates; it is not installed.
-The maintained backend selection is 41/41 exact on wave9; changed images need
-their own final gates. Qualified pattern eligibility passes separate controls.
-Program completion timing is flat (+0.38%) in its isolated same-source matrix.
-Contextual module parsing is integrated in wave9. Its initial compact-literal
-union preserves that full vector and all 176 literal observations; memo identity
-and size boundaries remain open. Preserve all 75 unrelated Phase6 files; no older
-timed campaign is renewed.
-
-Phase15 is complete under its [design](../design/phase15/parser_conformance_and_speed.md).
-The [report](../implementation/phase15/parser_conformance_and_speed.md) selects
-combined-02, API `b8d658c5`, against unchanged upstream `b2111cf`. Parser/import
-corrections, shared source snippets and two lookup workers are installed. All 75
-unrelated Phase6 files remain unchanged and unstaged. No older multi-hour budget
-is renewed.
+Phase16's [consolidated compiler](../implementation/phase16/consolidation.md) is
+installed under the [frozen integration plan](../design/phase16/compact-final-gates.md).
+The user authorizes continued conformance, speed and simplicity work, including
+pushes; publication is currently blocked by an earlier automatic approval review.
+No older multi-hour budget is renewed. Preserve all 75 unrelated Phase6 files.
 
 ## Released frontier
 
-Controlled identical-final-source checking takes **25.08→24.10 s**, **3.89% less
-process time** than Phase14. Pinned TypeScript takes **2.89 s**, leaving an **8.35×**
-gap (Phase14 is 8.69× in this same matrix). Each image has two serial fresh-process
-samples, CPU0, 4 MiB stack/4 GiB heap. Other intentional compiler/archive jobs were
-closed. The entire import-discovery host patch is explicitly reviewed and hashed;
-remaining hosts, Base and runtime agree. The identical-host lookup pilot saves
-3.49%. Do not multiply ratios or mix different-source historical measurements.
-No generated-program runtime speedup is claimed.
+Installed API `35044ae6`, genuine checked parent `83113283`, unchanged upstream
+`b2111cf`. The maintained version5 derivative and runtime are unchanged. Compact
+literals, explicit lambda quantity presence, canonical specialization keys,
+precise source ranges and contextual module parsing are installed together.
 
-All 2,996 frontend observations finish with 1,001 positive accepts, 482 validation
-refusals and 11 exact trust refusals. Exact differences fall **603→459**: 122 parse,
-337 check and 337 unique fixtures. Strict checks are 1,157 pass/341 fail. There are
-144 new exact matches and zero lost matches: 132 parser carets, ten missing-import
-contexts and two binder-plus-caret fixes. All measured behavior/output axes agree
-on this corpus; the remaining 459 differences include diagnostics. Another 66
-observations add carets but retain old gaps; eight illegal-path observations
-restore behavior while retaining observed-token text differences.
+The final exclusive identical-source matrix measures **30.5837→12.3570 s**,
+**2.475× faster /59.60% less process time** than Phase15. TypeScript takes 3.6108 s:
+the same-window gap falls **8.47×→3.42×**. Maximum RSS falls 1,745,756→651,156 KiB
+(**62.70%**). TS/B/C/C/B/TS fresh processes use CPU0, stack 4 MiB / heap 4 GiB; all
+intentional compiler/archive jobs are closed. Host changes are reviewed in full.
+Bend uses separately validated Base caches; TS checks Base. Emission is excluded.
+The earlier prototype 2.87×/3.58× result uses different source/window and is not
+the final release result. No generated-program runtime speedup is measured.
 
-The installed compiler passes 36 focused cases, 41 backend rows (three known
-exact differences), 16 helper groups, five authentic replays and 42 ordinary/
-relocated CLI checks. The standalone 25-module loader shares diagnostic model/
-rendering but has no checker or diagnostic tracing dependency. Both fresh strings
-and all 226 paired observations in the exact 53/60 histories agree. Cycle controls
-add 16 exact observations; no universal semantic or stack-safety claim follows.
+The final full frontend preserves all 2,996 primitive outcomes and reduces exact
+differences **459→2**, 457new matches/0lost. All 1,001 positive accepts, 482 validation
+refusals and 11 trust refusals agree. Strict checks 1,493 pass / 5 fail include four
+later-emission expectations and the do-block diagnostic oracle. Both remaining
+exact rows concern `check/monad_do_destructure.bend`.
 
-Source is **15,288 physical / 13,059 nonblank lines**, 503,048 bytes in 59 modules,
-1,499 definitions/790 laws/63 types: +24 lines, +1,992 bytes, +4 definitions and
-−3 laws. Shared parser formatting removes 35 lines; necessary import validation
-and lookup workers add 59. Host orchestration adds 12 lines/939 bytes. Maintained
-JS helper v5 and runtime remain unchanged. The 50%/75% source-reduction targets
-remain open.
+Broader controls remain explicit: integration 197/198 exact, marked-pattern 71/114
+exact (raw oracle `pass:false`; separate unchanged-outcome audit passes), and one
+known decorator/import wording gap in each contextual 39/host 43 selection.
+These are overlapping sets, not a count of unique missing language features.
+Final backend 41, literal 176, literal execution 20, instance 29, growth 2, key 61,
+helper 16 groups / replays 5, standalone 25-module loader and CLI 42 gates pass their
+recorded contracts. Original53/60 histories preserve 226 complete paired results
+under a reviewed common final host, with original inputs/order/resources.
+
+Source is **16,345 physical /13,947 nonblank lines**, 581,177 bytes in 59 modules,
+1,656 definitions / 775 laws / 66 types. Versus Phase15:  +1,057 physical lines (+6.91%),
++157 definitions, −15 laws, +3 types. Allocation improvement is not a source-size
+reduction. The prior 50%/75% reduction goals remain unmet.
 
 ## Next priorities
 
-1. Target another shared diagnostic cause with cheap paired witnesses. The current
-   census has 166 legacy/unstructured and 153 snippet-only observations. Seven
-   inherited checker spans and eight direct parser-control gaps remain. Preserve
-   exact paths and diagnostics; classification must not weaken the oracle.
-2. Profile this exact installed image before more speed changes. The current
-   source-worker gain is modest. Larger gains need measured reductions in hot
-   representation/allocation work, with demand/order controls and original
-   request-history gates. Profile shares are not recoverable-gain forecasts.
-3. Keep the focused checked workflow fast. Full frontend/backend, release and
-   evidence gates belong to integration checkpoints. Use fixture-only validation
-   against a frozen attempt when compiler source has not changed.
+1. Close explicit parser checkpoint semantics with cheap paired witnesses before
+   another full gate. The [group-boundary investigation](../design/phase16/group_checkpoint_boundary.md)
+   proves that flattening erases relevant grouping information. A bounded group
+   wrapper is a proposed prerequisite for a general chronology solution, not yet
+   a fix for the do-block or same-body live-instance cases. Avoid source-text or
+   offset heuristics and do not thread new context through 104 parser functions
+   without evidence that smaller ownership changes cannot work.
+2. Profile the exact installed compact image before another speed change. The
+   old allocation profile describes an eliminated representation cost; do not
+   reuse its percentages as current opportunity estimates. Preserve semantic
+   identities, lazy demand and original request histories in any new shortcut.
+3. Keep focused checked builds and frozen-attempt fixture validation as the edit
+   loop. Broad frontend/backend, timing, installation and evidence recovery are
+   integration gates. Prefer shared ownership and removing duplicate work; any
+   line-count benefit must be measured independently of execution speed.
 
 ## Retained experiments and operating rules
 

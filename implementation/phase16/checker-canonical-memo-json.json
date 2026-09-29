@@ -1,0 +1,166 @@
+{
+  "kind": "phase16-canonical-template-memo-json",
+  "complete": true,
+  "ownedScopedGatesPass": true,
+  "installed": false,
+  "design": {
+    "file": "/home/ai/bend2/build/publish/bend/design/phase16/checker-canonical-memo-json.md",
+    "sha256": "9ff0134c98e04ec3cee7d1a123b831b2185cf73dfc65e298cc5b6b808ff15fbd",
+    "bytes": 4566
+  },
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-key-json-report-failure-01/report.json",
+      "sha256": "fe54355752966d94a902cf4cce5d9fc17f6b6410966bd54d6aea075365ebd72f",
+      "bytes": 502
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-key-json-source-01/manifest.json",
+      "sha256": "4ef3bdbe76503edd78082a4b31e406199f8b203ca6d6418bb5a1b059bd46d76c",
+      "bytes": 1346
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-key-json-build-01/attempt.json",
+      "sha256": "81865fb7f25da30616a759da00d539ca3096d9d7833f66bb27c4e15ff6bd5fff",
+      "bytes": 224572
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-key-json-direct-01/report.json",
+      "sha256": "826e2c8091e445360fb95593494a4030da7ceb7ce9c4ddaa7df6f3e33ae41d0f",
+      "bytes": 14605
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-key-json-instances-01/report.json",
+      "sha256": "34ee11e2161fb4743832f9f1328bb3a7bd5694c92671b9a46481583bd92bc758",
+      "bytes": 21166
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-key-json-source-02/manifest.json",
+      "sha256": "ecf985a207d1839ab5f05f0a80a3f579f266bebbc2a2f6c0f86f0b6421bb2d17",
+      "bytes": 1346
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-key-json-build-02/attempt.json",
+      "sha256": "d3e43fca5df007eb10ffd9351cf3966dd19686a8ddd525806919d14242bd2e90",
+      "bytes": 224572
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-key-json-direct-02/report.json",
+      "sha256": "b6cfafd4ff371798f36d554744fe3edc92cf203563466c7019631d93298bb8f1",
+      "bytes": 14605
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-key-json-instances-02/report.json",
+      "sha256": "0dd394d0a55c72f706e762370e9d935866b5b4e9eb015ba84cc1472619735c4a",
+      "bytes": 21143
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-key-json-growth-01/report.json",
+      "sha256": "e570796ac5c9cf98afa7f15397a2b613c2bc0f6d01c3b687cd32f24c90af8abc",
+      "bytes": 9086
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-key-json-growth-01/selected/paired.json",
+      "sha256": "e23b803c7056e8d2516a5278c86f7ddbf4bc9c09c3ba030c73d5028da6f7f291",
+      "bytes": 9564
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-key-json-handoff-01/manifest.json",
+      "sha256": "75d742534df6068a963220beec525e278c375f63efb559abd9afaf503f33c6e0",
+      "bytes": 71273
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-key-json-handoff-01/memo.patch",
+      "sha256": "b3005efa6515e5d86bd98e4000f5c57cb41a24e6132c1a875171cf1414f39835",
+      "bytes": 9215
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-key-json-handoff-01/combined.patch",
+      "sha256": "9d2db50f64b5f0d9fded957877b63e667b09a7b726d8942bde56a3d399cc7173",
+      "bytes": 48911
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-key-json-controls-01/direct.json",
+      "sha256": "1ce4737b3b69a47ae5fe32d414767fd593512d821c90f2b50b229081b74e1ef0",
+      "bytes": 7397
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-key-json-growth-controls-01/selection.json",
+      "sha256": "8b889ba35f47c09d94e0f87623cac96876b7b7170451c497a5444b72aa24abca",
+      "bytes": 211
+    }
+  ],
+  "implementation": {
+    "module": "src/check/specialize.bend",
+    "encoding": "Exact pinned term_key(term_lower(argument)) JSON bytes for parsed-source semantic terms; same string defines memo identity and32768 UTF16 growth guard.",
+    "newRuntimeTypes": 0,
+    "newCacheFormats": 0,
+    "representationDependency": "Metadata owner KLambda explicit quantity presence and compiler_term_abi1/cache6; final handoff includes source04 demand semantics.",
+    "memoSourceSha256": "41872293edf48dbbb1985b343afe0fb05a60107a21f0cdb696d98c0b9500c8cc"
+  },
+  "gates": {
+    "checkedBuild": "checker-key-json-build-02 genuine checked B1 and equality derivative; maintained36 pass,2 inherited exact diagnostic differences",
+    "directExact": {
+      "passed": 61,
+      "sizeBoundariesIncluded": 20
+    },
+    "parsedInstancesExact": {
+      "passed": 29
+    },
+    "growthExact": [
+      {
+        "id": "comptime/err_grow_double.bend",
+        "location": "grow~9",
+        "exact": true
+      },
+      {
+        "id": "comptime/err_grow.bend",
+        "location": "grow~63",
+        "exact": true
+      }
+    ]
+  },
+  "preservedAttempt01": {
+    "checked": true,
+    "directExact": 61,
+    "parsedExact": 28,
+    "parsedTotal": 29,
+    "failure": "Absent-versus-explicit Lambda collided because f_scope_lambda_var reconstructed presence as true. Metadata source03 fixes this; source02 encoder gates all pass."
+  },
+  "sourceCost": {
+    "before": {
+      "physicalLines": 945,
+      "nonblankLines": 796,
+      "bytes": 25504,
+      "definitions": 88,
+      "laws": 55
+    },
+    "after": {
+      "physicalLines": 1047,
+      "nonblankLines": 883,
+      "bytes": 32561,
+      "definitions": 104,
+      "laws": 54
+    },
+    "delta": {
+      "physicalLines": 102,
+      "nonblankLines": 87,
+      "bytes": 7057,
+      "definitions": 16,
+      "laws": -1
+    },
+    "probeOnlyHostLineRemovedInHandoff": true
+  },
+  "operationCost": "One canonical JSON serialization per closed template argument plus a tail-safe UTF16 length walk over the joined key. No second approximate encoding/count, no new whole-book pass. No isolated timing claim.",
+  "handoff": {
+    "directory": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-key-json-handoff-01",
+    "productionHost": "Metadata source04 host unchanged; four probe exports absent",
+    "unionBuildPendingRoot": true
+  },
+  "limitations": [
+    "Scoped gates do not infer full-corpus or backend conformance; root owns final union checks and controlled timing.",
+    "Term-level specialization chronology is unchanged; the existing same-body priority gap is separate.",
+    "Explicit Ref.b=false exists in the raw TypeScript factory but no pinned parsed-source producer constructs it; current core supports source-reachable absent/true flags.",
+    "Malformed internal-only terms have a distinct defensive JSON shape, outside parsed-source memo equivalence."
+  ]
+}

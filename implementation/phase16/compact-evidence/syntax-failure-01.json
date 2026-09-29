@@ -1,0 +1,8 @@
+{
+  "complete": false,
+  "stage": "source-only AST syntax check; recovery tool never executed",
+  "tool": "selfhost/tools/performance/phase16/compact-recover-preflight-syntax-failure-01.py",
+  "sha256": "7512b622c8909c9a005139a26b65d6e4255bb01545d0c54e11d010a18cf9a6d9",
+  "error": "SyntaxError: keyword pass cannot be used as report.update keyword argument",
+  "correction": "Use dict update without altering extraction or recovery policy"
+}

@@ -1,5 +1,11 @@
 # Phase16 implementation report
 
+**Current outcome:** Phase16 is installed. The [consolidation report](consolidation.md)
+records the final2.48× improvement,3.42× TS gap, two remaining corpus diagnostic
+observations, broader control gaps,42 CLI checks and exact release identities.
+The chronological sections below retain the status of each earlier experiment.
+
+
 Work follows the [prospective design](../../design/phase16/full_conformance.md).
 Baseline is the installed Phase15 compiler `b8d658c5` at upstream `b2111cf`.
 The Phase15 evidence commit `2ab7b14` is now pushed following explicit user
@@ -394,3 +400,17 @@ substantial runtime cost without reducing source LOC. Known memo identity and
 growth-boundary gaps still prevent promotion; explicit Lambda presence and a
 single exact JSON key are the next independently validated stage. Production
 remains Phase15 and all final combined-image gates remain required.
+
+
+## Final consolidated compiler
+
+`compact-final-build-01` combines the complete literal/context handoff with
+explicit lambda quantity presence, exact canonical memo JSON and ordinary/marked
+empty-call patterns. Its API is
+`35044ae6f6cd9bb63690536588c11761695c66cbf524db8bcd3baa6453ed5315`.
+The final frontend retains two differences and zero lost matches; broader gates
+and their explicit exceptions are in the [consolidation report](consolidation.md).
+Promotion03 installs39 source/host files and preserves the old release lineage;
+42 ordinary/relocated CLI checks pass. Exclusive final-source process time is
+30.5837→12.3570s, with TS 3.6108 s. Source is 16,345 physical lines in 59 modules.
+The earlier prototypes and failed preparations remain separate evidence.

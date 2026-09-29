@@ -1,229 +1,249 @@
-# Additive source provenance consumes the actual loader trace and final
-# freshened core, preserving origins through qualification and substitutions.
-# Only Ref/ADT/Ctr nodes retaining an actual lexer position receive an origin;
-# generated nodes and variable occurrences whose positions were erased do not.
+# Parser-owned ranges are resolved through immutable source intervals. An
+# unlocated legacy trace is explicitly replayed; no term/text matching remains.
 type FProvenance is Data:
   FProvenance{+result: FResult, +origins: List<&2,DOrigin>}
 
-type FPSource is Data:
-  FPSource{+source: String, +tokens: List<&2,FToken>}
+type FPSourceSet is Data:
+  FPSourceSet{+sources: List<&2,FSource>, +error: String}
 
-law fp_ctors:
-  for +ctors: List<&2,KDef>
-  for +definition: String
-  for +source: FPSource
-  for +index: U32
-  List<&2,DOrigin>
-law fp_term:
-  for +t: KTerm
-  for +definition: String
-  for +source: FPSource
-  for +route: List<&2,U32>
-  List<&2,DOrigin>
-law fp_children:
-  for +terms: List<&2,KTerm>
-  for +definition: String
-  for +source: FPSource
-  for +route: List<&2,U32>
-  for +index: U32
-  List<&2,DOrigin>
-law fp_origin:
-  for +t: KTerm
-  for +definition: String
-  for +source: FPSource
-  for +route: List<&2,U32>
-  List<&2,DOrigin>
-law fp_find_token:
-  for +tokens: List<&2,FToken>
-  for +line: U32
-  for +column: U32
-  List<&2,FToken>
-law fp_at_token:
-  for +t: KTerm
-  for +definition: String
+law fp_units:
   for +text: String
-  for +tokens: List<&2,FToken>
-  for +route: List<&2,U32>
-  List<&2,DOrigin>
-law fp_token_origin:
-  for +t: KTerm
-  for +definition: String
-  for +text: String
-  for +token: FToken
-  for +route: List<&2,U32>
-  List<&2,DOrigin>
-law fp_utf16:
-  for +text: String
-  U32
-law fp_offset:
-  for +text: String
-  for +line: U32
-  for +column: U32
-  for +targetLine: U32
-  for +targetColumn: U32
-  for +offset: U32
-  U32
-
-@unsafe
-def f_load_origins(
-  +main: String,
-  +sources: List<&2,FSource>,
-) -> FProvenance:
-  fp_loaded_origins(f_load_graph_trace(main, sources), True{}, "")
-@unsafe
-def fp_def(
-  +d: KDef,
-  +source: FPSource,
-) -> List<&2,DOrigin>:
-  List.append(&2,DOrigin, fp_term(dt(d), dn(d), source, [0]), List.append(&2,DOrigin, fp_term(dv(d), dn(d), source, [1]), fp_ctors(dc(d), dn(d), source, 0)))
-@unsafe
-def fp_ctors(ctors, definition, source, index):
-  match ctors:
-    case Nil{}:
-      Nil{}
-    case Con{ctor, rest}:
-      List.append(&2,DOrigin, fp_term(dt(ctor), definition, source, [2,index,0]), fp_ctors(rest, definition, source, U32.add(index, 1)))
-@unsafe
-def fp_term(t, definition, source, route):
-  List.append(&2,DOrigin, fp_origin(t, definition, source, route), fp_children(ks(t), definition, source, route, 0))
-@unsafe
-def fp_children(terms, definition, source, route, index):
-  match terms:
-    case Nil{}:
-      Nil{}
-    case Con{term, rest}:
-      List.append(&2,DOrigin, fp_term(term, definition, source, List.append(&2,U32, route, [index])), fp_children(rest, definition, source, route, U32.add(index, 1)))
-@unsafe
-def fp_origin(t, definition, source, route):
-  match source:
-    case FPSource{text, tokens}:
-      f_choose(List<&2,DOrigin>, (String.eq(tg(t), "Ref") || String.eq(tg(t), "ADT") || String.eq(tg(t), "Ctr")) && U32.is_ge(ix(t), 65536), u => fp_at_token(t, definition, text, fp_find_token(tokens, U32.div(ix(t), 65536), U32.mod(ix(t), 65536)), route), u => Nil{})
-@unsafe
-def fp_find_token(tokens, line, column):
-  match tokens:
-    case Nil{}:
-      Nil{}
-    case Con{token, rest}:
-      f_choose(List<&2,FToken>, U32.is_eq(f_line(tokens), line) && U32.is_eq(f_col(tokens), column), u => tokens, u => fp_find_token(rest, line, column))
-@unsafe
-def fp_at_token(t, definition, text, tokens, route):
-  match tokens:
-    case Nil{}:
-      Nil{}
-    case Con{token, rest}:
-      fp_token_origin(t, definition, text, token, route)
-@unsafe
-def fp_token_origin(t, definition, text, token, route):
-  match token:
-    case FToken{word, line, column, kind}:
-      +begin = fp_offset(text, 1, 0, line, column, 0)
-      [DOrigin{definition, t, text, begin, U32.add(begin, fp_utf16(word)), route}]
-@unsafe
-def fp_utf16(text):
-  f_choose(U32, String.is_empty(text), u => 0, u => U32.add(f_choose(U32, U32.is_gt(Char.to_u32(f_head(text)), 65535), u => 2, u => 1), fp_utf16(f_tail(text))))
-@unsafe
-def fp_offset(text, line, column, targetLine, targetColumn, offset):
-  f_choose(U32, String.is_empty(text) || (U32.is_eq(line, targetLine) && U32.is_eq(column, targetColumn)), u => offset, u => fp_offset(f_tail(text), f_choose(U32, Char.is_eq(f_head(text), '\n'), u => U32.add(line, 1), u => line), f_choose(U32, Char.is_eq(f_head(text), '\n'), u => 0, u => U32.add(column, 1)), targetLine, targetColumn, U32.add(offset, f_choose(U32, U32.is_gt(Char.to_u32(f_head(text)), 65535), u => 2, u => 1))))
-
-# Rejection-only lookup limits expensive source mapping to the definition named
-# by the structured checker event. No diagnostic text is parsed or interpreted.
-@unsafe
-def f_load_origins_for(
-  +main: String,
-  +sources: List<&2,FSource>,
-  +definition: String,
-) -> FProvenance:
-  f_loaded_origins_for(f_load_graph_trace(main, sources), definition)
-
-# One trace owns module order and declaration counts for both origin APIs.
-# Filtered lookup lexes only matching modules; source is never reparsed here.
-law f_loaded_origins_for:
-  for +trace: FLoadTrace
-  for +definition: String
-  FProvenance
-law fp_loaded_origins:
-  for +trace: FLoadTrace
-  for +all: Bool
-  for +definition: String
-  FProvenance
-law fp_loaded_take:
-  for +book: List<&2,KDef>
   for +count: U32
-  List<&2,KDef>
-law fp_loaded_drop:
-  for +book: List<&2,KDef>
-  for +count: U32
-  List<&2,KDef>
-law fp_loaded_module:
-  for +book: List<&2,KDef>
+  U32
+law fp_source_validate:
   for +source: FSource
-  for +all: Bool
-  for +definition: String
+  for +seen: List<&2,FSource>
+  String
+law fp_source_pairs:
+  for +source: FSource
+  for +seen: List<&2,FSource>
+  String
+law fp_source_inputs:
+  for +sources: List<&2,FSource>
+  for +seen: List<&2,FSource>
+  String
+law fp_source_limit:
+  for +sources: List<&2,FSource>
+  for +limit: U32
+  U32
+law fp_source_prior:
+  for +path: String
+  for +sources: List<&2,FSource>
+  FSource
+law fp_index_sources:
+  for +sources: List<&2,FSource>
+  for +seen: List<&2,FSource>
+  for +next: U32
+  FPSourceSet
+law fp_index_one:
+  for +source: FSource
+  for +rest: List<&2,FSource>
+  for +seen: List<&2,FSource>
+  for +next: U32
+  for +prior: FSource
+  FPSourceSet
+law fp_index_fresh:
+  for +source: FSource
+  for +rest: List<&2,FSource>
+  for +seen: List<&2,FSource>
+  for +next: U32
+  for +size: U32
+  FPSourceSet
+law fp_origins:
+  for +sources: List<&2,FSource>
   List<&2,DOrigin>
-law fp_loaded_defs:
-  for +book: List<&2,KDef>
-  for +source: FPSource
-  for +all: Bool
-  for +definition: String
-  List<&2,DOrigin>
+law fp_located:
+  for +sources: List<&2,FSource>
+  Bool
+law fp_load_indexed:
+  for +main: String
+  for +inputs: FPSourceSet
+  FProvenance
+law fp_trace_ready:
+  for +trace: FLoadTrace
+  FProvenance
 
 @unsafe
-def f_loaded_origins_for(trace, definition):
-  fp_loaded_origins(trace, False{}, definition)
+def fp_units(text, count):
+  match text:
+    case SNil{}: count
+    case SCon{head, rest}: fp_units(rest, U32.add(count, dg_units(head)))
+
 @unsafe
-def fp_loaded_origins(trace, all, definition):
+def fp_source_validate(source, seen):
+  match source:
+    case FSource{name, path, text}: fp_source_pairs(source, seen)
+    case FParsedSource{name, path, text, parsed}: fp_source_pairs(source, seen)
+    case FLocatedSource{inner, begin, end}:
+      match inner:
+        case FLocatedSource{nested, a, b}: "nested source location wrapper"
+        case FSource{name, path, text}:
+          f_choose(String, U32.is_gt(begin, 0) && U32.is_gt(end, begin) && U32.is_eq(U32.sub(end, begin), U32.add(fp_units(text, 0), 1)), u => fp_source_pairs(source, seen), u => "invalid source interval")
+        case FParsedSource{name, path, text, parsed}:
+          f_choose(String, U32.is_gt(begin, 0) && U32.is_gt(end, begin) && U32.is_eq(U32.sub(end, begin), U32.add(fp_units(text, 0), 1)), u => fp_source_pairs(source, seen), u => "invalid source interval")
+
+@unsafe
+def fp_source_pairs(source, seen):
+  match seen:
+    case Nil{}: ""
+    case Con{old, rest}:
+      f_choose(String, String.eq(f_source_path(source), f_source_path(old)),
+        u => f_choose(String, f_seed_text_equal(f_source_text(source), f_source_text(old)) && U32.is_eq(f_source_begin(source), f_source_begin(old)) && U32.is_eq(f_source_end(source), f_source_end(old)), u => fp_source_pairs(source, rest), u => "source alias ownership changed"),
+        u => f_choose(String, U32.is_gt(f_source_begin(source), 0) && U32.is_gt(f_source_begin(old), 0) && U32.is_lt(f_source_begin(source), f_source_end(old)) && U32.is_lt(f_source_begin(old), f_source_end(source)), u => "overlapping source intervals", u => fp_source_pairs(source, rest)))
+
+@unsafe
+def fp_source_inputs(sources, seen):
+  match sources:
+    case Nil{}: ""
+    case Con{head, rest}:
+      +error = fp_source_validate(head, seen)
+      f_choose(String, String.is_empty(error), u => fp_source_inputs(rest, Con{head, seen}), u => error)
+
+@unsafe
+def fp_source_limit(sources, limit):
+  match sources:
+    case Nil{}: limit
+    case Con{head, rest}: fp_source_limit(rest, norm_max(limit, f_source_end(head)))
+
+@unsafe
+def fp_source_prior(path, sources):
+  match sources:
+    case Nil{}: FSource{"", "", ""}
+    case Con{head, rest}: f_choose(FSource, String.eq(path, f_source_path(head)), u => head, u => fp_source_prior(path, rest))
+
+@unsafe
+def fp_index_sources(sources, seen, next):
+  match sources:
+    case Nil{}: FPSourceSet{List.reverse(&2,FSource,seen), ""}
+    case Con{head, rest}:
+      f_choose(FPSourceSet, U32.is_gt(f_source_begin(head), 0), u => fp_index_sources(rest, Con{head, seen}, next), u => fp_index_one(head, rest, seen, next, fp_source_prior(f_source_path(head), seen)))
+
+@unsafe
+def fp_index_one(source, rest, seen, next, prior):
+  f_choose(FPSourceSet, U32.is_gt(f_source_begin(prior), 0),
+    u => fp_index_sources(rest, Con{FLocatedSource{FSource{f_source_name(source), f_source_path(source), f_source_text(source)}, f_source_begin(prior), f_source_end(prior)}, seen}, next),
+    u => fp_index_fresh(source, rest, seen, next, fp_units(f_source_text(source), 0)))
+
+@unsafe
+def fp_index_fresh(source, rest, seen, next, size):
+  f_choose(FPSourceSet, U32.is_lt(size, U32.sub(4294967295, next)),
+    u => fp_index_sources(rest, Con{FLocatedSource{FSource{f_source_name(source), f_source_path(source), f_source_text(source)}, next, U32.add(next, U32.add(size, 1))}, seen}, U32.add(next, U32.add(size, 1))),
+    u => FPSourceSet{Nil{}, "source interval overflow"})
+
+@unsafe
+def fp_origins(sources):
+  match sources:
+    case Nil{}: Nil{}
+    case Con{head, rest}: Con{DSourceOrigin{f_source_text(head), f_source_begin(head), f_source_end(head)}, fp_origins(rest)}
+
+@unsafe
+def fp_located(sources):
+  match sources:
+    case Nil{}: True{}
+    case Con{head, rest}: U32.is_gt(f_source_begin(head), 0) && fp_located(rest)
+
+@unsafe
+def f_load_origins(+main: String, +sources: List<&2,FSource>) -> FProvenance:
+  f_load_origins_for(main, sources, "")
+
+@unsafe
+def f_load_origins_for(+main: String, +sources: List<&2,FSource>, +definition: String) -> FProvenance:
+  +error = fp_source_inputs(sources, Nil{})
+  f_choose(FProvenance, String.is_empty(error), u => fp_load_indexed(main, fp_index_sources(sources, Nil{}, fp_source_limit(sources, 1))), u => FProvenance{FResult{Nil{}, error, Nil{}}, Nil{}})
+
+@unsafe
+def fp_load_indexed(main, inputs):
+  match inputs:
+    case FPSourceSet{sources, error}:
+      f_choose(FProvenance, String.is_empty(error), u => fp_trace_ready(f_load_graph_trace(main, sources)), u => FProvenance{FResult{Nil{}, error, Nil{}}, Nil{}})
+
+@unsafe
+def fp_trace_ready(trace):
   match trace:
-    case FLoadTrace{+result, done, sources}:
-      fp_loaded_result(result, done, sources, all, definition)
+    case FLoadTrace{result, done, sources}:
+      match result:
+        case FResult{book, error, imports}:
+          f_choose(FProvenance, Bool.not(String.is_empty(error)) || fp_defs_ranges(book, sources), u => FProvenance{result, fp_origins(sources)}, u => FProvenance{FResult{Nil{}, "invalid term source interval", Nil{}}, Nil{}})
+
+# Rechecking result.book is required after the explicitly unlocated replay path.
 @unsafe
-def fp_loaded_modules(
-  +done: List<&2,KTerm>,
-  +book: List<&2,KDef>,
-  +sources: List<&2,FSource>,
-  +all: Bool,
-  +definition: String,
-) -> List<&2,DOrigin>:
+def f_loaded_origins_for(+trace: FLoadTrace, +definition: String) -> FProvenance:
+  match trace:
+    case FLoadTrace{result, done, sources}:
+      match result:
+        case FResult{book, error, imports}:
+          f_choose(FProvenance, Bool.not(String.is_empty(error)), u => FProvenance{result, Nil{}},
+            u => f_choose(FProvenance, fp_located(sources),
+              u => f_choose(FProvenance, String.is_empty(fp_source_inputs(sources, Nil{})), u => fp_trace_ready(trace), u => FProvenance{FResult{Nil{}, "invalid located trace source ownership", Nil{}}, Nil{}}),
+              u => f_choose(FProvenance, List.is_empty(&2,KTerm,done), u => FProvenance{result, Nil{}}, u => f_load_origins_for(nm(terms_at(done, 0)), sources, definition))))
+
+# Low-level loader inputs remain trusted ASTs. This source-aware boundary checks
+# all ranges before it exposes origins; valid synthesized nodes are exactly 0/0.
+law fp_range_owned:
+  for +begin: U32
+  for +end: U32
+  for +sources: List<&2,FSource>
+  Bool
+law fp_terms_ranges:
+  for +terms: List<&2,KTerm>
+  for +sources: List<&2,FSource>
+  Bool
+law fp_defs_ranges:
+  for +defs: List<&2,KDef>
+  for +sources: List<&2,FSource>
+  Bool
+
+@unsafe
+def fp_range_owned(begin, end, sources):
+  match sources:
+    case Nil{}: False{}
+    case Con{head, rest}:
+      f_choose(Bool, U32.is_gt(f_source_begin(head), 0) && U32.is_ge(begin, f_source_begin(head)) && U32.is_ge(end, begin) && U32.is_lt(end, f_source_end(head)), u => True{}, u => fp_range_owned(begin, end, rest))
+
+@unsafe
+def fp_terms_ranges(terms, sources):
+  match terms:
+    case Nil{}: True{}
+    case Con{head, rest}:
+      f_choose(Bool, f_choose(Bool, U32.is_eq(kb(head), 0), u => U32.is_eq(ke(head), 0), u => fp_range_owned(kb(head), ke(head), sources)), u => fp_terms_ranges(norm_join(ks(head), rest), sources), u => False{})
+
+@unsafe
+def fp_defs_ranges(defs, sources):
+  match defs:
+    case Nil{}: True{}
+    case Con{head, rest}:
+      f_choose(Bool, fp_terms_ranges([dt(head), dv(head)], sources), u => fp_defs_ranges(norm_defs_join(dc(head), rest), sources), u => False{})
+
+# The first owned numeric range chooses the same file as diagnostic_locate.
+@unsafe
+def fp_module_env(+done: List<&2,KTerm>, +path: String) -> List<&2,KPName>:
   match done:
     case Nil{}: Nil{}
-    case Con{+entry, rest}:
-      List.append(&2, DOrigin, fp_loaded_module(fp_loaded_take(book, ix(entry)), f_graph_source(nm(entry), sources), all, definition), fp_loaded_modules(rest, fp_loaded_drop(book, ix(entry)), sources, all, definition))
-@unsafe
-def fp_loaded_take(book, count):
-  match book:
-    case Nil{}: Nil{}
-    case Con{head, tail}: f_choose(List<&2,KDef>, U32.is_eq(count, 0), u => Nil{}, u => Con{head, fp_loaded_take(tail, U32.sub(count, 1))})
-@unsafe
-def fp_loaded_drop(book, count):
-  match book:
-    case Nil{}: Nil{}
-    case Con{head, tail}: f_choose(List<&2,KDef>, U32.is_eq(count, 0), u => book, u => fp_loaded_drop(tail, U32.sub(count, 1)))
-@unsafe
-def fp_loaded_has(
-  +book: List<&2,KDef>,
-  +definition: String,
-) -> Bool:
-  match book:
-    case Nil{}: False{}
-    case Con{head, tail}: f_choose(Bool, String.eq(dn(head), definition), u => True{}, u => fp_loaded_has(tail, definition))
-@unsafe
-def fp_loaded_module(book, source, all, definition):
-  f_choose(List<&2,DOrigin>, f_choose(Bool, all, u => True{}, u => fp_loaded_has(book, definition)), u => fp_loaded_defs(book, FPSource{f_source_text(source), f_lex(f_source_text(source), 1, 0, 0, Nil{})}, all, definition), u => Nil{})
-@unsafe
-def fp_loaded_defs(book, source, all, definition):
-  match book:
-    case Nil{}: Nil{}
-    case Con{head, tail}:
-      List.append(&2, DOrigin, f_choose(List<&2,DOrigin>, all || String.eq(dn(head), definition), u => fp_def(head, source), u => Nil{}), fp_loaded_defs(tail, source, all, definition))
+    case Con{head, rest}:
+      kc(List<&2,KPName>, String.eq(nm(head), path), u => [KPFile{nm(kid(head, 0)), terms_tail(ks(head))}], u => fp_module_env(rest, path))
 
-law fp_loaded_result:
-  for +result: FResult
-  for +done: List<&2,KTerm>
-  for +sources: List<&2,FSource>
-  for +all: Bool
-  for +definition: String
-  FProvenance
 @unsafe
-def fp_loaded_result(result, done, sources, all, definition):
-  match result:
-    case FResult{book, error, imports}:
-      FProvenance{result, f_choose(List<&2,DOrigin>, String.is_empty(error), u => fp_loaded_modules(List.reverse(&2,KTerm,done), book, sources, all, definition), u => Nil{})}
+def fp_span_matches(+span: DSpan, +source: FSource, +begin: U32, +end: U32) -> Bool:
+  match span:
+    case DNoSpan{}: False{}
+    case DSpan{text, left, right}: U32.is_eq(left, U32.sub(begin, f_source_begin(source))) && U32.is_eq(right, U32.sub(end, f_source_begin(source))) && String.eq(text, f_source_text(source))
+
+@unsafe
+def fp_range_env(+sources: List<&2,FSource>, +done: List<&2,KTerm>, +begin: U32, +end: U32, +span: DSpan) -> List<&2,KPName>:
+  match sources:
+    case Nil{}: Nil{}
+    case Con{head, rest}:
+      kc(List<&2,KPName>, U32.is_gt(f_source_begin(head), 0) && U32.is_ge(begin, f_source_begin(head)) && U32.is_ge(end, begin) && U32.is_lt(end, f_source_end(head)), u => kc(List<&2,KPName>, fp_span_matches(span, head, begin, end), u => fp_module_env(done, f_source_path(head)), u => Nil{}), u => fp_range_env(rest, done, begin, end, span))
+
+@unsafe
+def fp_diagnostic_env(+trail: List<&2,KTerm>, +sources: List<&2,FSource>, +done: List<&2,KTerm>, +span: DSpan) -> List<&2,KPName>:
+  match trail:
+    case Nil{}: Nil{}
+    case Con{head, rest}:
+      kc(List<&2,KPName>, U32.is_gt(kb(head), 0) && fp_range_owned(kb(head), ke(head), sources), u => fp_range_env(sources, done, kb(head), ke(head), span), u => fp_diagnostic_env(rest, sources, done, span))
+
+@unsafe
+def diagnostic_render_loaded(+result: DResult, +trace: FLoadTrace) -> String:
+  match result trace:
+    case DResult{error, book, DDiagnostic{expected, observed, has_observed, context, definition, span, note, trail}} FLoadTrace{loaded, done, sources}:
+      kc(String, String.is_empty(error), u => "", u => kc(String, List.is_empty(&2,KTerm,trail), u => "Error: " ++ error, u => dg_render_parts_in(book, expected, observed, has_observed, List.reverse(&2,KTerm,context), definition, span, note, fp_diagnostic_env(trail, sources, done, span))))

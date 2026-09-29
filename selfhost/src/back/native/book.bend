@@ -55,7 +55,7 @@ def nc_foreign_tel(+book: List<&2, KDef>, +ty: KTerm, +name: String, +args: List
   nt_choose(KTerm, String.eq(tg(tel), "All"),
     u => nt_choose(KTerm, U32.is_eq(qt(tel), 0),
       u => nc_foreign_tel(book, subst(kid(tel, 1), ix(tel), atom("Typ")), name, args, U32.inc(n)),
-      u => kt("Lam", "", nc_id(n), 1, [nc_foreign_tel(book, subst(kid(tel, 1), ix(tel), var("", nc_id(n))), name, List.append(&2, KTerm, args, [var("", nc_id(n))]), U32.inc(n))])),
+      u => k_lam("", nc_id(n), 1, [nc_foreign_tel(book, subst(kid(tel, 1), ix(tel), var("", nc_id(n))), name, List.append(&2, KTerm, args, [var("", nc_id(n))]), U32.inc(n))], 0, 0, False{})),
     u => kt("NCtr", name, 0, 0, args))
 
 @unsafe

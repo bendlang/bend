@@ -2,6 +2,7 @@
 # Precedence is encoded as upstream precedence + 1; zero is a top-level body.
 type KPName is Data:
   KPName{name: String, id: U32, depth: U32}
+  KPFile{+namespace: String, +aliases: List<&2,KTerm>}
 
 type KPChain is Data:
   KPChain{items: List<&2, KTerm>, tail: KTerm}
@@ -170,6 +171,22 @@ def kp_par(
 ) -> String:
   kc(String, yes, u => "(" ++ s ++ ")", u => s)
 
+# File context is separate from lexical binders and never changes their depth.
+@unsafe
+def kp_alias_name(+aliases: List<&2,KTerm>, +name: String) -> String:
+  match aliases:
+    case Nil{}: name
+    case Con{im, rest}:
+      kc(String, Bool.not(List.is_empty(&2,KTerm,ks(im))) && String.starts_with(name, nm(im) ++ "."), u => nm(kid(im, 0)) ++ String.drop(name, String.length(nm(im))), u => kp_alias_name(rest, name))
+
+@unsafe
+def kp_name(+env: List<&2,KPName>, +name: String) -> String:
+  match env:
+    case Nil{}: name
+    case Con{KPName{n, id, depth}, rest}: kp_name(rest, name)
+    case Con{KPFile{ns, aliases}, rest}:
+      kc(String, Bool.not(String.is_empty(ns)) && String.starts_with(name, ns ++ "."), u => String.drop(name, String.length(ns ++ ".")), u => kp_alias_name(aliases, name))
+
 @unsafe
 def kp_show(
   +t: KTerm,
@@ -184,6 +201,7 @@ def kp_scope(
 ) -> String:
   match env:
     case Nil{}: name ++ "^" ++ U32.show(id)
+    case Con{KPFile{ns, aliases}, tail}: kp_scope(tail, id, name)
     case Con{KPName{+n, +i, +depth}, +tail}:
       kc(String, kp_eq(n, name), u => kc(String, U32.is_eq(i, id), u => name, u => name ++ "^" ++ U32.show(kp_index(tail, id))), u => kp_scope(tail, id, name))
 
@@ -191,6 +209,7 @@ def kp_scope(
 def kp_index(env, id):
   match env:
     case Nil{}: id
+    case Con{KPFile{ns, aliases}, tail}: kp_index(tail, id)
     case Con{KPName{n, +i, +depth}, +tail}:
       kc(U32, U32.is_eq(i, id), u => depth, u => kp_index(tail, id))
 
@@ -200,7 +219,8 @@ def kp_depth(
 ) -> U32:
   match env:
     case Nil{}: 0
-    case Con{h, t}: U32.add(1, kp_depth(t))
+    case Con{KPFile{ns, aliases}, t}: kp_depth(t)
+    case Con{KPName{n, i, depth}, t}: U32.add(1, kp_depth(t))
 
 @unsafe
 def kp_bound(
@@ -209,6 +229,7 @@ def kp_bound(
 ) -> Bool:
   match env:
     case Nil{}: False{}
+    case Con{KPFile{ns, aliases}, t}: kp_bound(t, name)
     case Con{KPName{n, i, depth}, t}: kp_eq(n, name) || kp_bound(t, name)
 
 @unsafe
@@ -258,10 +279,11 @@ def kp_application(
 @unsafe
 def kp_removed(
   xs: List<&2, String>,
+  +env: List<&2, KPName>,
 ) -> String:
   match xs:
     case Nil{}: ""
-    case Con{h, t}: " - " ++ h ++ "{}" ++ kp_removed(t)
+    case Con{h, t}: " - " ++ kp_name(env, h) ++ "{}" ++ kp_removed(t, env)
 
 @unsafe
 def kp_adt(
@@ -269,7 +291,7 @@ def kp_adt(
   +p: U32,
   +env: List<&2, KPName>,
 ) -> String:
-  kp_par(nm(t) ++ kc(String, U32.is_eq(terms_len(ks(t)), 0) && Bool.not(kp_has_removed(rm(t))), u => "", u => "<" ++ kp_join(kp_each(ks(t), 1, env), ", ") ++ ">") ++ kp_removed(rm(t)), kp_has_removed(rm(t)) && U32.is_gt(p, 2))
+  kp_par(kp_name(env, nm(t)) ++ kc(String, U32.is_eq(terms_len(ks(t)), 0) && Bool.not(kp_has_removed(rm(t))), u => "", u => "<" ++ kp_join(kp_each(ks(t), 1, env), ", ") ++ ">") ++ kp_removed(rm(t), env), kp_has_removed(rm(t)) && U32.is_gt(p, 2))
 
 @unsafe
 def kp_has_removed(xs):
@@ -293,7 +315,7 @@ def kp_word(
 def kp_number(
   +t: KTerm,
 ) -> Maybe<&2, U32>:
-  kc(Maybe<&2, U32>, (kp_is(t, "Ctr", "U32") || kp_is(t, "Ctr", "F32")) && U32.is_eq(terms_len(ks(t)), 1), u => kp_word(kid(t, 0), 1, 32, 0), u => None{})
+  kc(Maybe<&2, U32>, core_literal(t) && (String.eq(nm(t), "U32") || String.eq(nm(t), "F32")), u => Some{kl_number(t)}, u => kc(Maybe<&2, U32>, (kp_is(t, "Ctr", "U32") || kp_is(t, "Ctr", "F32")) && U32.is_eq(terms_len(ks(t)), 1), u => kp_word(kid(t, 0), 1, 32, 0), u => None{}))
 
 @unsafe
 def kp_float(
@@ -352,8 +374,8 @@ def kp_char_num(n, quote):
 def kp_string(
   +t: KTerm,
 ) -> Maybe<&2, String>:
-  kc(Maybe<&2, String>, kp_is(t, "Ctr", "SNil"), u => Some{""},
-    u => kc(Maybe<&2, String>, kp_is(t, "Ctr", "SCon") && U32.is_eq(terms_len(ks(t)), 2), u => kp_append(kp_char(kid(t, 0), 34), kp_string(kid(t, 1))), u => None{}))
+  kc(Maybe<&2, String>, core_literal(t) && String.eq(nm(t), "String"), u => kp_string(core_literal_step(t)), u => kc(Maybe<&2, String>, kp_is(t, "Ctr", "SNil"), u => Some{""},
+    u => kc(Maybe<&2, String>, kp_is(t, "Ctr", "SCon") && U32.is_eq(terms_len(ks(t)), 2), u => kp_append(kp_char(kid(t, 0), 34), kp_string(kid(t, 1))), u => None{})))
 
 @unsafe
 def kp_append(a, b):
@@ -387,7 +409,7 @@ def kp_nat(
   +p: U32,
   +env: List<&2, KPName>,
 ) -> String:
-  kc(String, core_nat(t), u => kc(String, Nat.is_le(n, U32.to_nat(U32.sub(4294967295, qt(t)))), u => Nat.show(Nat.add(n, U32.to_nat(qt(t)))) ++ "n", u => kp_par(Nat.show(n) ++ "n+" ++ U32.show(qt(t)) ++ "n", U32.is_gt(p, 2))), u =>
+  kc(String, core_nat(t), u => kc(String, Nat.is_le(n, U32.to_nat(U32.sub(4294967295, kl_number(t)))), u => Nat.show(Nat.add(n, U32.to_nat(kl_number(t)))) ++ "n", u => kp_par(Nat.show(n) ++ "n+" ++ U32.show(kl_number(t)) ++ "n", U32.is_gt(p, 2))), u =>
   kc(String, kp_is(t, "Ctr", "Zero"), u => Nat.show(n) ++ "n",
     u => kc(String, kp_is(t, "Ctr", "Succ") && U32.is_eq(terms_len(ks(t)), 1), u => kp_nat(kid(t, 0), Nat.add(n, 1n), p, env),
       u => kp_par(Nat.show(n) ++ "n+" ++ kp_go(t, 2, env), U32.is_gt(p, 2)))))
@@ -442,19 +464,19 @@ def kp_ctor_string(s, t, p, env):
 def kp_ctor_array(a, t, env):
   match a:
     case Some{xs}: "[" ++ kp_join(kp_each(xs, 1, env), ", ") ++ "]"
-    case None{}: nm(t) ++ "{" ++ kp_join(kp_each(ks(t), 1, env), ", ") ++ "}"
+    case None{}: kp_name(env, nm(t)) ++ "{" ++ kp_join(kp_each(ks(t), 1, env), ", ") ++ "}"
 
 @unsafe
 def kp_matches(
   +t: KTerm,
   +env: List<&2, KPName>,
 ) -> String:
-  kc(String, kp_eq(tg(t), "Mat"), u => nm(t) ++ ": " ++ kp_go(kid(t, 0), 2, env) ++ kc(String, kp_eq(tg(kid(t, 1)), "Efq"), u => "", u => "; " ++ kp_matches(kid(t, 1), env)), u => kp_go(t, 2, env))
+  kc(String, kp_eq(tg(t), "Mat"), u => kp_name(env, nm(t)) ++ ": " ++ kp_go(kid(t, 0), 2, env) ++ kc(String, kp_eq(tg(kid(t, 1)), "Efq"), u => "", u => "; " ++ kp_matches(kid(t, 1), env)), u => kp_go(t, 2, env))
 
 @unsafe
 def kp_go(t, p, env):
   kc(String, kp_eq(tg(t), "Var"), u => kp_scope(env, ix(t), nm(t)),
-    u => kc(String, kp_eq(tg(t), "Ref"), u => nm(t) ++ kc(String, kp_bound(env, nm(t)), u => "^", u => "") ++ kc(String, U32.is_eq(qt(t), 3), u => "!", u => ""),
+    u => kc(String, kp_eq(tg(t), "Ref"), u => kp_name(env, nm(t)) ++ kc(String, kp_bound(env, kp_name(env, nm(t))), u => "^", u => "") ++ kc(String, U32.is_eq(qt(t), 3), u => "!", u => ""),
     u => kc(String, kp_eq(tg(t), "Typ"), u => kc(String, kp_eq(tg(kid(t, 0)), "Qua") && U32.is_eq(qt(kid(t, 0)), 1), u => "Type", u => kc(String, kp_eq(tg(kid(t, 0)), "Qua") && U32.is_eq(qt(kid(t, 0)), 2), u => "Data", u => "Kind(" ++ kp_go(kid(t, 0), 1, env) ++ ")")),
     u => kc(String, kp_eq(tg(t), "Qnt"), u => "Quant",
     u => kc(String, kp_eq(tg(t), "Qua"), u => "&" ++ U32.show(qt(t)),
@@ -465,7 +487,7 @@ def kp_go(t, p, env):
 
 @unsafe
 def kp_go_tail(t, p, env):
-  kc(String, core_nat(t), u => U32.show(qt(t)) ++ "n", u =>
+  kc(String, core_literal(t), u => kc(String, core_nat(t), u => U32.show(kl_number(t)) ++ "n", u => kp_ctor(core_literal_step(t), p, env)), u =>
   kc(String, kp_eq(tg(t), "App"), u => kp_application(kp_spine(t, Nil{}), p, env),
     u => kc(String, kp_eq(tg(t), "ADT"), u => kp_adt(t, p, env),
     u => kc(String, kp_eq(tg(t), "Ctr"), u => kp_ctor(t, p, env),

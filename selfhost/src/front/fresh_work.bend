@@ -7,6 +7,7 @@ type FFFrame is Data:
   FFKids{+term: KTerm, +env: List<&2,KTerm>, +pending: List<&2,KTerm>, +built: List<&2,KTerm>}
   FFLetValue{+env: List<&2,KTerm>, +bodyenv: List<&2,KTerm>, +id: U32, +binding: KTerm, +pending: List<&2,KTerm>, +built: List<&2,KTerm>}
   FFLetBody{+built: List<&2,KTerm>}
+  FFOrigin{begin: U32, end: U32}
 
 law ffw_walk:
   for +term: KTerm
@@ -60,12 +61,13 @@ def f_fresh_stack(
   ffw_walk(term, env, next, Nil{})
 @unsafe
 def ffw_walk(term, env, next, stack):
-  f_choose(FFresh, String.eq(tg(term), "FUnboundVar"), u => ffw_done(kt("Var", nm(term), next, 1, Nil{}), U32.add(next, 1), stack),
+  f_choose(FFresh, String.eq(tg(term), "FGlobal"), u => ffw_done(kt_span("Ref", nm(term), 0, 1, Nil{}, kb(term), ke(term)), next, stack),
+    u => f_choose(FFresh, String.eq(tg(term), "FUnboundVar"), u => ffw_done(term, next, stack),
     u => f_choose(FFresh, String.eq(tg(term), "Var"), u => ffw_done(f_rename_var(term, env), next, stack),
     u => f_choose(FFresh, String.eq(tg(term), "All"), u => ffw_walk(kid(term, 0), env, U32.add(next, 1), Con{FFAllA{term, env, next}, stack}),
     u => f_choose(FFresh, String.eq(tg(term), "Lam"), u => ffw_walk(kid(term, 0), Con{kt("Map", "", ix(term), 0, [var(nm(term), next)]), env}, U32.add(next, 1), Con{FFLambda{term, next}, stack}),
-    u => f_choose(FFresh, String.eq(tg(term), "Let"), u => ffw_let(env, env, ks(term), Nil{}, next, stack),
-    u => ffw_kids(term, env, ks(term), Nil{}, next, stack))))))
+    u => f_choose(FFresh, String.eq(tg(term), "Let"), u => ffw_let(env, env, ks(term), Nil{}, next, Con{FFOrigin{kb(term), ke(term)}, stack}),
+    u => ffw_kids(term, env, ks(term), Nil{}, next, stack)))))))
 @unsafe
 def ffw_done(term, next, stack):
   match stack:
@@ -79,20 +81,22 @@ def ffw_frame(frame, value, next, stack):
     case FFAllA{+term, +env, +id}:
       ffw_walk(kid(term, 1), Con{kt("Map", "", ix(term), 0, [var(nm(term), id)]), env}, next, Con{FFAllB{term, id, value}, stack})
     case FFAllB{+term, id, typ}:
-      ffw_done(kt("All", nm(term), id, qt(term), [typ, value]), next, stack)
+      ffw_done(kt_span("All", nm(term), id, qt(term), [typ, value], kb(term), ke(term)), next, stack)
     case FFLambda{+term, id}:
-      ffw_done(kt("Lam", nm(term), id, qt(term), [value]), next, stack)
+      ffw_done(k_lam(nm(term), id, qt(term), [value], kb(term), ke(term), k_quantity_present(term)), next, stack)
     case FFKids{term, env, pending, built}:
       ffw_kids(term, env, pending, Con{value, built}, next, stack)
     case FFLetValue{env, bodyenv, +id, +binding, pending, built}:
-      ffw_let(env, Con{kt("Map", "", ix(binding), 0, [var(nm(binding), id)]), bodyenv}, pending, Con{kt("Bind", nm(binding), id, qt(binding), [value]), built}, next, stack)
+      ffw_let(env, Con{kt("Map", "", ix(binding), 0, [var(nm(binding), id)]), bodyenv}, pending, Con{kt_span("Bind", nm(binding), id, qt(binding), [value], kb(binding), ke(binding)), built}, next, stack)
+    case FFOrigin{begin, end}:
+      ffw_done(k_with_span(value, begin, end), next, stack)
     case FFLetBody{built}:
       ffw_done(kt("Let", "", 0, 1, ffw_reverse_onto(built, [value])), next, stack)
 @unsafe
 def ffw_kids(term, env, pending, built, next, stack):
   match pending:
     case Nil{}:
-      ffw_done(KTerm{tg(term), nm(term), ix(term), qt(term), List.reverse(&2,KTerm,built), rm(term)}, next, stack)
+      ffw_done(k_with_children(term, List.reverse(&2,KTerm,built)), next, stack)
     case Con{head, rest}:
       ffw_walk(head, env, next, Con{FFKids{term, env, rest, built}, stack})
 @unsafe

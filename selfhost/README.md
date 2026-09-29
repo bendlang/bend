@@ -1,13 +1,13 @@
 # Bend2 compiler port in Bend2
 
 Use the [compiler guide](../docs/BEND-IN-BEND.md) and
-[Phase15 release report](../implementation/phase15/parser_conformance_and_speed.md).
-The current release corrects parser/import behavior and cycle error order, shares
-the diagnostic formatter and uses two small source lookup workers. Same-source
-checking takes 24.10 s versus 25.08 s for Phase14 and 2.89 s for pinned TypeScript.
-Exact frontend differences fall 603→459 with no lost matches. All measured
-behavior/output axes now agree on that corpus; remaining exact gaps are diagnostic.
-The larger Phase13 rewriter remains a preserved, uninstalled experiment.
+[Phase16 release report](../implementation/phase16/consolidation.md).
+The installed compiler uses compact literals, precise source diagnostics and
+contextual module parsing. Same-source checking takes **12.36 s**, versus
+**30.58 s** for Phase15 and **3.61 s** for pinned TypeScript: **2.48× faster**,
+with a **3.42×** remaining gap. Exact frontend differences fall **459→2** with
+no lost matches; independent controls retain additional semantic/diagnostic gaps.
+All 41 selected backend observations and 42 installed/relocated CLI checks pass.
 
 The current target is upstream
 [`b2111cf43244e65f76ddc278ee695e669f720cbf`](https://github.com/bendlang/bend/tree/b2111cf43244e65f76ddc278ee695e669f720cbf),
@@ -20,7 +20,7 @@ node cli.mjs tests/conformance/typed-smoke/base-u32.bend --run
 npm run build
 ```
 
-The compiler contains 15,288 physical /13,059 nonblank Bend lines in 59 modules.
+The compiler contains 16,345 physical /13,947 nonblank Bend lines in 59 modules.
 It retains the validated S4 simplifications while adding current declaration,
 namespace, typing and effect semantics. The [release manifest](dist/release.json)
 binds the exact source, genuine checked parent, equality/choice-derived API, Base,
@@ -141,7 +141,7 @@ remain in `dist/selfhost/`; the [preservation index](../experiments/PRESERVATION
 and [experiment ledger](../experiments/ledger.md) identify their exact scope.
 They are not alternate defaults. The current release can run after relocation
 without an upstream checkout, as verified by its
-[Phase15 installed/relocated CLI checks](../implementation/phase15/release-validation.md).
+[Phase16 installed/relocated CLI checks](../implementation/phase16/consolidation.md).
 The earlier [Phase5 clean-package evidence](../implementation/phase5/relocated-cli-evidence/README.md)
 applies to that historical artifact.
 

@@ -1,69 +1,77 @@
 # Compiler validation
 
 The target remains upstream `b2111cf43244e65f76ddc278ee695e669f720cbf`, Bend2
-2.0.32 era. The [Phase15 report](../implementation/phase15/parser_conformance_and_speed.md)
-and [evidence](../implementation/phase15/evidence/README.md) bind the exact checked
-parent, selected derivative, controls, full vectors, timing and preserved failures.
+2.0.32 era. The [Phase16 release report](../implementation/phase16/consolidation.md)
+binds the final checked artifact, controls, exact vectors, timing and preserved
+failures. The [release manifest](dist/release.json) identifies the installed
+guarded version5 derivative, genuine checked B1, source, Base, runtime and host.
+`npm run verify:release` checks integrity and lineage after relocation; it does
+not rerun conformance or establish a new self-hosted fixed point. Independent
+proof-kernel validation and `--verdict` remain unsupported.
 
-The [release manifest](dist/release.json) identifies the installed guarded
-version5 derivative, genuine checked B1, source, Base, runtime and host.
-`npm run verify:release` checks integrity/lineage after relocation; it does not
-rerun conformance or establish a new self-hosted fixed point. There is no proof
-kernel validation, and `--verdict` remains unsupported.
+The full inventory has **1,498 fixtures**: 1,001 positive expectations,
+482 validation negatives, 11 declaration-only trust refusals and four
+later-emission errors. Eleven additional Bend files supply imports without
+independent oracles. The final run completes all **2,996 parse/check observations**.
+All 1,001 positives accept types; all 482 validation negatives reject, with no
+observed invalid acceptance, timeout or unresolved observation. All 11 trust
+cases type-check and reach the intended refusal, exactly matching TypeScript.
 
-The full inventory has 1,498 fixtures: 1,001 positive expectations, 482 validation
-negatives, 11 declaration-only trust refusals and four later-emission errors.
-Eleven additional Bend files supply imports without independent oracles.
-The final run completes all 2,996 parse/check observations. All 1,001 positives
-accept types; all 482 validation negatives reject, with no observed invalid
-acceptance, timeout or unresolved observation. All 11 trust cases type-check
-and reach the intended proof-trust refusal, exactly matching TypeScript.
+Exact reference differences fall **459→2**, with **457 new matches and zero lost
+matches** versus Phase15. The remaining rows are parse and check for
+`check/monad_do_destructure.bend`: rejection agrees, but the first diagnostic
+differs because of an earlier do-block parsing checkpoint. All measured primitive
+status, phase, type/trust, unsafe-list, exit and output axes agree on this corpus.
+This finite result does not establish all intended typing rules or features.
 
-Exact reference differences fall from 603 to **459**: 122 parse and 337 check,
-across 337 unique fixtures. There are 144 new matches and zero lost matches:
-132 parser-caret observations, ten contextual missing-import observations and
-two malformed-binder observations that also need the shared caret renderer.
-Another 66 observations add carets while retaining old gaps; eight illegal-path
-observations restore behavior while retaining observed-token wording differences.
-The [per-observation audit](../implementation/phase15/exact-differences.md) confirms
-all measured status/phase/checking/type/trust/unsafe-list/exit/output axes agree
-with the reference. All 459 remaining exact differences include diagnostic text.
-This corpus result does not prove every intended typing rule or language feature.
+Strict check results are **1,493 passes / 5 failures**. Four failures are expected
+later-emission errors accepted by both frontends; the fifth is the do-block
+oracle above. Exact reference comparison and strict fixture verdicts are separate.
+Neither classification nor an integration no-regression gate weakens the oracle.
 
-Strict check results are **1,157 passes / 341 failures**. These differ from exact
-comparison: four expected later-emission failures are accepted by both frontends.
-The remaining diagnostic groups are 166 legacy/unstructured, 153 snippet-only,
-55 expectation/detail, 43 other formatting, 26 computed-match legacy, nine
-location/span and seven caret-width/position observations. Classification never
-normalizes the strict oracle or turns a difference into a pass.
+Broader controls retain known gaps outside that inventory:
 
-Both final build variants pass 36 maintained focused cases, retaining 11 exact
-diagnostic gaps. Four new local witnesses have explicit refusal-at-parse oracles;
-the original upstream cases remain strict. The isolated parser-caret family is
-132/132 exact, and all 16 expanded cycle/alias/diamond observations match the pin.
-The standalone 25-module loader component builds without checker dependencies.
-The release passes 16 unchanged derivation groups and five authentic version1–5
-byte replays. Its 41-row paired backend selection passes with three known exact
-differences, including an imported-law fill returning `5n` in the interpreter,
-JavaScript and actual Clang16/native execution. All 42 installed/relocated CLI checks pass without a copied upstream checkout;
-[release validation](../implementation/phase15/release-validation.md) binds their artifacts.
-These scoped execution results do not establish full backend conformance.
+- The 198-observation integration selection has **197 exact matches** and one
+  same-body live-instance error-order difference.
+- The 114-observation marked-pattern selection has **71 exact matches and 43
+  known differences**. Its raw oracle report is `pass:false`, including the
+  known do-block check failure. A separate audit establishes 114 unchanged
+  candidate outcomes and zero regressions against its accepted predecessor;
+  it does not establish full selected conformance. Six direct demand controls pass.
+- The supplied-source 39 and ordered-host 43 controls each retain one known
+  wording difference for `@unsafe` followed by an import. Namespace eight,
+  term/cache 39 and whole-program host ten controls pass without exceptions.
 
-The fresh 6,000-character string and exact 53/60-request histories pass at the
-original 4 MiB stack / 4 GiB heap limits. Conformance-only and combined candidates
-agree on every paired result and predecessor. The old 21-case prefix can overflow
-even Phase11; the maintained selection keeps the string first. Rejected seed and
-broader branch transformations remain excluded. Finite histories do not establish
-general stack safety.
+On the exact final production API, the maintained 36 cases pass their selected
+contract with two inherited exact differences. All **41 paired backend rows**,
+**20 literal JS/native executions**, **176 literal observations**, **29 instance
+controls** and **two specialization growth controls** match the pin. The direct
+canonical-key probe passes **61 controls**, including 20 size boundaries; its
+four-wrapper extension has a distinct recorded identity while retaining the
+entire production API as an unchanged prefix. These are selected tests, not full
+backend or proof-checker equivalence.
 
-Known limits include diagnostic spans/text, general intended-rule coverage, hub/
-package fetching, unsupported proof-kernel validation and separate backend/platform
-gaps. Seven earlier checker span-origin failures remain; the direct parser controls
-retain eight inherited diagnostic differences. Native Process requires a libc
-symbol unavailable on this host, also blocking upstream. GPU and interactive
-devices are unvalidated. Source Nat payloads remain U32-sized; wider runtime values
-use dynamic representations. Historical control sets overlap and must not be
-summed into a claimed total of unique conformance programs.
+The standalone 25-module loader builds without checker or diagnostic-tracing
+dependencies. All 16 unchanged derivation groups and five authentic version1–5
+byte replays pass. All **42 installed/relocated CLI checks** pass without a copied
+upstream checkout. [Interface validation](../implementation/phase16/release-validation.md)
+and [final checker gates](../implementation/phase16/checker-compact-final-gates.md)
+record the boundaries and individual artifacts.
+
+Fresh long strings and the original 53/60-request histories preserve all
+**226 paired complete results**, with original ordering and 4 MiB stack / 4 GiB
+heap limits. The wave9 and final APIs run under the same reviewed final compatible
+host; historical host differences remain explicit. The old 21-case prefix can
+overflow even Phase11, so the maintained selection keeps the string first.
+Finite histories do not establish general stack safety.
+
+Other limits include hub/package fetching, independent proof-kernel validation,
+backend/platform coverage and source Nat payloads restricted to U32 size (wider
+runtime values have a separate representation). Native Process requires a libc
+symbol unavailable on this host, also blocking upstream. GPU execution and
+interactive devices are unvalidated. These control sets overlap and must not be
+summed into a count of unique conformance programs. Earlier span/control counts
+refer to their historical compiler images, not automatically to this release.
 
 ## Historical evidence
 

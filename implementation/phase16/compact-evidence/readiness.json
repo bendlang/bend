@@ -1,0 +1,48 @@
+{
+  "kind": "phase16-preservation-readiness",
+  "complete": true,
+  "independentReview": {
+    "reviewer": "/root/phase15_behavior",
+    "method": "Read-only review of capture/recovery tools and plan; no tests or edits by reviewer.",
+    "blockers": [],
+    "checks": [
+      "canonical member paths and complete archive/inventory coverage",
+      "regular bytes/modes and selected relative link targets",
+      "no symlink ancestors, deferred links inside fresh root",
+      "fixed committed-source reconstruction without working-tree source",
+      "bounded scope with older evidence external or excluded"
+    ]
+  },
+  "policyControls": {
+    "pass": true,
+    "accepted": 1,
+    "rejected": 8
+  },
+  "inputs": [
+    {
+      "path": "selfhost/tools/performance/phase16/compact-preserve.py",
+      "sha256": "ad19dfb435c5e5fc78430f552cf89f3b4a7554467152bdc97128e45d59c4eb96"
+    },
+    {
+      "path": "selfhost/tools/performance/phase16/compact-recover.py",
+      "sha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234"
+    },
+    {
+      "path": "selfhost/tools/performance/phase16/compact-recovery-controls.py",
+      "sha256": "0d687d2354b3b7e2fbb0e6ea920315a56a6e64f3d73ed12579ce3c031673d7f9"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/PLAN.md",
+      "sha256": "64c97bb45a2ce40eb0db14c38155211d7c84a624109204344f496dd3e6909dec"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/selection-proposal.json",
+      "sha256": "cd99966d9670edf8ab9c7d5163fa4a43e3842d653c946a650df6fce02b641f3d"
+    },
+    {
+      "path": "selfhost/build/phase16/compact-final-evidence-policy-01/report.json",
+      "sha256": "860c35725b340c8b7f3b10aa03418d4ace3d74965249da686dfff152c546e8af"
+    }
+  ],
+  "captureStarted": false
+}

@@ -119,7 +119,7 @@ def descend(
 
 @unsafe
 def descend_go(a, p):
-  kc(U32, core_nat(a) && String.eq(tg(p), "Ctr"), u => descend_go(core_nat_step(a), p), u =>
+  kc(U32, core_literal(a) && String.eq(tg(p), "Ctr"), u => descend_go(core_literal_step(a), p), u =>
   kc(U32, String.eq(tg(p), "Var"),
     u => kc(U32, String.eq(tg(a), "Var") && U32.is_eq(ix(a), ix(p)), u => 1, u => 2),
     u => kc(U32, String.eq(tg(p), "Ctr"),

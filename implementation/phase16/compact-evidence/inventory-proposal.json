@@ -1,0 +1,1810 @@
+{
+  "prospective": true,
+  "capturePerformed": false,
+  "scope": "Top-level selected topic families only; documentation/tools/dependency additions and final still-open promotion/smoke not counted. Size stats are not frozen identities.",
+  "topics": {
+    "final": {
+      "roots": 33,
+      "files": 3917,
+      "links": 1,
+      "bytes": 138904797,
+      "largest": [
+        [
+          6133055,
+          "selfhost/build/phase16/literal-context-frontend-01/candidate.json"
+        ],
+        [
+          6127026,
+          "selfhost/build/phase16/compact-final-frontend-01/candidate.json"
+        ],
+        [
+          4678891,
+          "selfhost/build/phase16/compact-final-history-01/baseline/project/build/typed/cache/base-d0d51f88d88f9d124bda5478844a346cc1e2f9983d6fd9c60d7b70b37dfbe0a4-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json"
+        ],
+        [
+          3512881,
+          "selfhost/build/phase16/compact-final-history-01/candidate/project/build/typed/cache/base-35044ae6f6cd9bb63690536588c11761695c66cbf524db8bcd3baa6453ed5315-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json"
+        ],
+        [
+          3512881,
+          "selfhost/build/phase16/compact-final-build-01/snapshot/build/typed/cache/base-35044ae6f6cd9bb63690536588c11761695c66cbf524db8bcd3baa6453ed5315-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json"
+        ]
+      ],
+      "minimum64MBParts": 3
+    },
+    "literal": {
+      "roots": 47,
+      "files": 3950,
+      "links": 0,
+      "bytes": 133023097,
+      "largest": [
+        [
+          4678891,
+          "selfhost/build/phase16/checker-literal-build-01/snapshot/build/typed/cache/base-1cbd59008349bba63d7ecd5a1182974bbdc55e1896b09793177ee0352741747a-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json"
+        ],
+        [
+          3653821,
+          "selfhost/build/phase16/checker-key-probe-build-06/snapshot/build/typed/cache/base-ebd4466ae42d31d6b804dc48aa646a71bdce6f5b70550fb1ed99c863ccb603e4-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json"
+        ],
+        [
+          3653821,
+          "selfhost/build/phase16/checker-key-probe-build-05/snapshot/build/typed/cache/base-13673809f40d7afeb8ff68c7253b064e649ffbeca124ca6d9bb14f10886762c2-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json"
+        ],
+        [
+          3486384,
+          "selfhost/build/phase16/checker-literal-build-05/snapshot/build/typed/cache/base-742df03e9aef1aa2e7303bab44afa79c22b8da0659ae1d6a3f1cd25df69c3e7e-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json"
+        ],
+        [
+          3486384,
+          "selfhost/build/phase16/checker-literal-build-03/snapshot/build/typed/cache/base-eafdc6e6f35ec3393a8365df30828e2d452792f6955f975d401c5301066a6bea-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json"
+        ]
+      ],
+      "minimum64MBParts": 3
+    },
+    "lambda-memo": {
+      "roots": 36,
+      "files": 3324,
+      "links": 0,
+      "bytes": 94366183,
+      "largest": [
+        [
+          3512881,
+          "selfhost/build/phase16/spans-lambda-build-03/snapshot/build/typed/cache/base-c757cf3a47a2013f1635ec7c9173c0fc4762501fff396dccecacc0f5f08cba94-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json"
+        ],
+        [
+          3512881,
+          "selfhost/build/phase16/spans-lambda-build-02/snapshot/build/typed/cache/base-4c29898c1f11fcff4bc36df6b9008955653e2123d348bd3b20b55e9918962b3f-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json"
+        ],
+        [
+          3512881,
+          "selfhost/build/phase16/checker-key-json-build-02/snapshot/build/typed/cache/base-82622f6cf1d6adb2f8043bb2aae647c7f70e6dd1073d0d3645ceef0e6d42f221-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json"
+        ],
+        [
+          3512875,
+          "selfhost/build/phase16/spans-lambda-build-01/snapshot/build/typed/cache/base-1ebabc01de5e1178d6e5c558969cdf8e4544613b9fe80b87c3f53bdc65f6c85a-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json"
+        ],
+        [
+          3512875,
+          "selfhost/build/phase16/checker-key-json-build-01/snapshot/build/typed/cache/base-134e229c5dd76a80665c0aecbe0e9b1f1a6d033b89738828b0e7849b14593fb4-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json"
+        ]
+      ],
+      "minimum64MBParts": 2
+    },
+    "context": {
+      "roots": 58,
+      "files": 5822,
+      "links": 4,
+      "bytes": 242962886,
+      "largest": [
+        [
+          6102389,
+          "selfhost/build/phase16/wave9-frontend-01/candidate.json"
+        ],
+        [
+          6092925,
+          "selfhost/build/phase16/wave8-frontend-01/candidate.json"
+        ],
+        [
+          4678891,
+          "selfhost/build/phase16/wave9-build-01/snapshot/build/typed/cache/base-d0d51f88d88f9d124bda5478844a346cc1e2f9983d6fd9c60d7b70b37dfbe0a4-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json"
+        ],
+        [
+          4678891,
+          "selfhost/build/phase16/wave8-build-01/snapshot/build/typed/cache/base-f2f67a611488b39c830f61973f6705f7e2ea8bb9711850df0fe5b721f5a725a5-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json"
+        ],
+        [
+          4678891,
+          "selfhost/build/phase16/spans-context-namespace-build-01/snapshot/build/typed/cache/base-6948763ffbd62ca00620509e7c557ca0653e999e92cab6668bae3aed8f61532d-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json"
+        ]
+      ],
+      "minimum64MBParts": 4
+    },
+    "patterns": {
+      "roots": 23,
+      "files": 1867,
+      "links": 0,
+      "bytes": 85581944,
+      "largest": [
+        [
+          4678891,
+          "selfhost/build/phase16/marked-pattern-checked-01/snapshot/build/typed/cache/base-faa44fb20cc10e228ea37539f472c3ac43f1fbcb6963e213d88a60b18b0cb246-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json"
+        ],
+        [
+          4678891,
+          "selfhost/build/phase16/empty-call-pattern-checked-01/snapshot/build/typed/cache/base-ac42e15af4dd999502a040a3083843163f7ce663c8b464dc6cef0a043a810ec7-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json"
+        ],
+        [
+          2161034,
+          "selfhost/build/phase16/marked-pattern-baseline-02/selected/candidate.json"
+        ],
+        [
+          2159891,
+          "selfhost/build/phase16/marked-pattern-baseline-01/selected/candidate.json"
+        ],
+        [
+          2150739,
+          "selfhost/build/phase16/marked-pattern-validation-01/selected/candidate.json"
+        ]
+      ],
+      "minimum64MBParts": 2
+    }
+  },
+  "excludedPhase16Roots": [
+    {
+      "path": "selfhost/build/phase16/alias-binding-audit-04.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-binding-baseline-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-binding-checked-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-binding-checked-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-binding-checked-04",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-binding-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-binding-demand-04",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-binding-direct-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-binding-direct-04",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-binding-lambda-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-binding-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-binding-source-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-binding-source-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-binding-source-04",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-binding-source-04-handoff",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-binding-validation-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-binding-validation-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-binding-validation-04",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-binding-witness-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-pattern-audit-02.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-pattern-baseline-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-pattern-baseline-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-pattern-checked-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-pattern-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-pattern-controls-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-pattern-demand-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-pattern-direct-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-pattern-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-pattern-source-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/alias-pattern-validation-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/ascii-width-build-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/ascii-width-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/ascii-width-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/bare-family-baseline-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/bare-family-build-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/bare-family-checks-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/bare-family-fixtures-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/bare-family-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/baseline-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/baseline-gate-audit-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/baseline-host-review-02.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/baseline-host-review.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/baseline-host.patch",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/baseline-matrix-01-launch-failure.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/baseline-matrix-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/baseline-matrix-config-02.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/baseline-matrix-config.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/baseline-summary.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/canonical-build-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/canonical-build-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/canonical-checks-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/canonical-checks-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/canonical-checks-baseline-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/canonical-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/canonical-fixtures-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/canonical-fixtures-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/canonical-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/canonical-source-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-all-04",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-all-05",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-all-06",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-architecture-census-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-audit-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-audit-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-audit-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-audit-04",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-audit-05",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-base-prefix-build-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-base-prefix-build-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-base-prefix-build-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-base-prefix-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-base-prefix-controls-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-base-prefix-controls-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-base-prefix-proof-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-base-prefix-proof-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-base-prefix-proof-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-base-prefix-proof-04",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-base-prefix-serial-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-base-prefix-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-base-prefix-source-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-base-prefix-source-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-boundaries-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-boundaries-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-build-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-build-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-build-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-build-04",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-build-05",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-build-06",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-compact-final-backend-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-compact-final-execution-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-compact-final-freeze-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-compact-final-growth-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-compact-final-instances-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-compact-final-key-direct-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-compact-final-key-freeze-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-compact-final-key-probe-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-compact-final-literals-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-focused-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-focused-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-focused-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-host-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-local-baseline-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-local-candidate-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-local-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-name-baseline-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-name-candidate-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-name-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-name-direct-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-name-direct-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-name-direct-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-note-baseline-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-note-build-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-note-controls-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-note-focus-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-note-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-order-baseline-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-order-candidate-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-order-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-source-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-source-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-source-04",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-source-05",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-source-06",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-term-order-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-trace-baseline-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-trace-baseline-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-trace-baseline-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-trace-build-07",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-trace-build-08",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-trace-build-09",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-trace-checks-08",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-trace-checks-09",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-trace-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-trace-controls-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-trace-source-07",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-trace-source-08",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/checker-trace-source-09",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/kind-origin-baseline-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/kind-origin-build-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/kind-origin-checks-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/kind-origin-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/local-law-baseline-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/local-law-build-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/local-law-checks-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/local-law-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/module-names-baseline-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/module-names-build-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/module-names-build-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/module-names-checks-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/module-names-checks-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/module-names-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/module-names-direct-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/module-names-direct-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/module-names-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/module-names-source-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-body-range-controls-10",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-census-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-census-audit-01.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-census-audit-02.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-census-audit-03.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-census-audit-05.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-census-validation-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-census-validation-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-census-validation-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-census-validation-05",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-checked-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-checked-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-checked-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-checked-05",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-checkpoint-audit-03.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-checkpoint-baseline-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-checkpoint-baseline-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-checkpoint-baseline-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-checkpoint-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-checkpoint-controls-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-checkpoint-controls-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-chronology-census-01.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-controls-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-controls-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-controls-05",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-controls-05b",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-controls-05c",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-controls-input-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-controls-input-04",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-cursor-controls-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-cursor-controls-02b",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-cursor-controls-05",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-cursor-controls-07",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-cursor-controls-10",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-declaration-audit-01.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-declaration-checked-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-declaration-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-declaration-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-declaration-source-01-handoff",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-declaration-validation-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-error-origin-controls-07",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-literal-books-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-literal-checked-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-literal-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-literal-target-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-range-controls-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-range-controls-04",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-range-controls-05",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-range-validation-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-semantic-audit-05.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-semantic-census-05",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-semantic-census-audit-05.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-semantic-checked-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-semantic-checked-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-semantic-checked-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-semantic-checked-04",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-semantic-checked-05",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-semantic-focus-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-semantic-positive-05",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-semantic-selection-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-semantic-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-semantic-source-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-semantic-source-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-semantic-source-04",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-semantic-source-05",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-semantic-source-05-handoff",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-semantic-validation-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-semantic-validation-05",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-semantic-wave3-audit-05.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-source-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-source-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-source-04",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-source-05",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-source-05-handoff.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-span-checked-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-span-checked-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-span-checked-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-span-checked-04",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-span-checked-05",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-span-checked-07",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-span-checked-09",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-span-checked-10",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-span-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-span-source-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-span-source-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-span-source-04",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-span-source-05",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-span-source-05-handoff",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-span-source-06",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-span-source-07",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-span-source-08",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-span-source-09",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-span-source-10",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-span-source-10-handoff",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-token-checked-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-token-positive-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-token-positive-selection-01.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-token-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/parser-token-target-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/phase15-matched-profile-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/populated-span-callers-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/populated-span-host-review-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/populated-span-matrix-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/populated-span-matrix-config-01.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/populated-span-profile-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/populated-span-source-counts-01.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/populated-span-timing-coordination-01.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/profile-delta-01.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/quiet-todo-baseline-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/quiet-todo-baseline-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/quiet-todo-baseline-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/quiet-todo-build-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/quiet-todo-checks-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/quiet-todo-controls-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/quiet-todo-selection-02.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/quiet-todo-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/range-cost-recovery-build-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/range-cost-recovery-host-review-01.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/range-cost-recovery-matrix-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/range-cost-recovery-matrix-config-01.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/range-cost-recovery-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/range-cost-recovery-timing-coordination-01.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/range-cost-recursion-checks-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/rejected-stage-baseline-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/rejected-stage-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/rejected-stage-direct-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/rejected-stage-group-census-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/rejected-stage-owner-audit-01.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/shared-integration-config-01.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/shared-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-allocation-build-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-allocation-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-allocation-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-boundaries-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-boundaries-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-boundary-fixtures-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-boundary-fixtures-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-build-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-controls-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-controls-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-controls-04",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-controls-05",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-controls-06",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-display-build-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-display-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-display-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-family-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-family-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-family-selection-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-host-review.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-host-reviewed.patch",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-import-build-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-import-build-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-import-build-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-import-build-04",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-import-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-import-controls-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-import-controls-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-import-controls-04",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-import-direct-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-import-direct-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-import-fixtures-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-import-fixtures-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-import-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-import-source-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-import-source-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-import-source-04",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-import-source-04-handoff",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-integration-build-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-integration-build-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-integration-build-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-integration-build-04",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-integration-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-integration-source-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-integration-source-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-integration-source-04",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-matrix-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-matrix-config.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-origin-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-origin-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-origin-source-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-origin-source-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-prepare-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-prepare-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-prepare-03",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-rebuild-build-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-rebuild-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-rebuild-controls-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-rebuild-prepare-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/spans-shared-migration-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/stage-matrix-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/start-state.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/template-index-baseline-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/template-index-baseline-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/template-index-books-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/template-index-build-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/template-index-candidate-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/template-index-host-review-01.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/template-index-matrix-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/template-index-matrix-config-01.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/template-index-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/template-index-timing-coordination-01.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/unbound-marker-baseline-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/unbound-marker-build-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/unbound-marker-build-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/unbound-marker-checks-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/unbound-marker-checks-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/unbound-marker-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/unbound-marker-source-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/unsafe-scan-baseline-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/unsafe-scan-baseline-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/unsafe-scan-build-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/unsafe-scan-candidate-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/unsafe-scan-focus-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/unsafe-scan-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave1-build-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave1-build-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave1-composition-correction.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave1-frontend-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave1-integration-config-02.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave1-integration-config.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave1-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave1-source-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave2-frontend-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave3-frontend-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave4-adjacent-audit-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave4-bare-family-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave4-build-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave4-build-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave4-frontend-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave4-frontend-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave4-host-review-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave4-matrix-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave4-matrix-config-01.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave4-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave4-source-02",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave4-source-counts-01.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave4-timing-coordination-01.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave5-frontend-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave6-backend-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave6-backend-environment-01.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave6-build-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave6-checks-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave6-controls-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave6-frontend-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave6-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave6-source-counts-01.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave7-alias-direct-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave7-build-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave7-checks-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave7-frontend-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave7-source-01",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    },
+    {
+      "path": "selfhost/build/phase16/wave7-source-counts-01.json",
+      "reason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim."
+    }
+  ]
+}

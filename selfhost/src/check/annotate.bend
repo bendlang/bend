@@ -170,7 +170,7 @@ def annotate(e, ctx, t, ty):
 
 @unsafe
 def ka_node(e, ctx, t, ty):
-  kc(KTerm, core_nat(t), u => kc(KTerm, core_nat_type(cb(e), ty), u => t, u => ka_node(e, ctx, core_nat_step(t), ty)), u =>
+  kc(KTerm, core_literal(t), u => kc(KTerm, core_literal_type(cb(e), t, ty), u => t, u => ka_node(e, ctx, core_literal_step(t), ty)), u =>
   kc(KTerm, String.eq(tg(t), "Ann"), u => ka_node(e, ctx, kid(t, 0), wnf(cb(e), kid(t, 1))),
    u => kc(KTerm, String.eq(tg(t), "Lam"), u => ka_lam(e, ctx, t, ty),
    u => kc(KTerm, String.eq(tg(t), "App"), u => kc(KTerm, ka_spine_eligible(t), u => ka_app_spine(e, ctx, t), u => ka_app(e, ctx, t, wnf(cb(e), ka_type(e, ctx, kid(t, 0))))),
@@ -202,7 +202,7 @@ def ka_type_app(e, t, fty):
 
 @unsafe
 def ka_lam(e, ctx, t, ty):
-  kt("Lam", nm(t), ix(t), kc(U32, U32.is_eq(qt(t), 2) && U32.is_eq(qt(ty), 1), u => 2, u => qt(ty)), Con{annotate(e, ctx_bind(ctx, ix(t), qt(ty), nm(t), kid(ty, 0)), kid(t, 0), subst(kid(ty, 1), ix(ty), var(nm(t), ix(t)))), Nil{}})
+  k_lam(nm(t), ix(t), kc(U32, k_quantity_present(t) && U32.is_eq(qt(t), 2) && U32.is_eq(qt(ty), 1), u => 2, u => qt(ty)), Con{annotate(e, ctx_bind(ctx, ix(t), qt(ty), nm(t), kid(ty, 0)), kid(t, 0), subst(kid(ty, 1), ix(ty), var(nm(t), ix(t)))), Nil{}}, 0, 0, False{})
 
 @unsafe
 def ka_app(e, ctx, t, fty):
@@ -231,7 +231,7 @@ def ka_mat(e, ctx, t, ty, a):
 
 @unsafe
 def ka_mat_ctr(e, ctx, t, ty, a, c):
-  kt("Mat", nm(t), ix(t), qt(t), Con{annotate(e, ctx, kid(t, 0), mat_goal(cb(e), ty, tele_fill(cb(e), dt(c), ks(a)), da(c), nm(t), Nil{})), Con{annotate(e, ctx, mat_rest(cb(e), t, a), all(qt(ty), nm(ty), ix(ty), KTerm{tg(a), nm(a), ix(a), qt(a), ks(a), Con{nm(t), rm(a)}}, kid(ty, 1))), Nil{}}})
+  kt("Mat", nm(t), ix(t), qt(t), Con{annotate(e, ctx, kid(t, 0), mat_goal(cb(e), ty, tele_fill(cb(e), dt(c), ks(a)), da(c), nm(t), Nil{})), Con{annotate(e, ctx, mat_rest(cb(e), t, a), all(qt(ty), nm(ty), ix(ty), KTerm{tg(a), nm(a), ix(a), qt(a), ks(a), Con{nm(t), rm(a)}, kb(a), ke(a)}, kid(ty, 1))), Nil{}}})
 
 @unsafe
 def ka_let(e, outer, ctx, xs, ty):

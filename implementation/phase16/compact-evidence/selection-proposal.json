@@ -1,0 +1,89 @@
+{
+  "kind": "phase16-compact-evidence-proposal",
+  "status": "prospective-not-captured",
+  "baselineCommit": "a383163b821e38510967849fdb791ff914031b62",
+  "finalSource": "selfhost/build/phase16/compact-final-source-01/project",
+  "finalAttempt": "selfhost/build/phase16/compact-final-build-01",
+  "finalApiSha256": "35044ae6f6cd9bb63690536588c11761695c66cbf524db8bcd3baa6453ed5315",
+  "phaseRoot": "selfhost/build/phase16",
+  "topics": {
+    "final": [
+      "compact-final-",
+      "compact-literal-",
+      "literal-context-",
+      "promotion-",
+      "checker-compact-final-"
+    ],
+    "literal": [
+      "checker-literal-",
+      "checker-key-baseline-",
+      "checker-key-candidate-",
+      "checker-key-controls-",
+      "checker-key-direct-",
+      "checker-key-length-",
+      "checker-key-probe-",
+      "checker-key-shape-"
+    ],
+    "lambda-memo": [
+      "spans-lam",
+      "checker-key-json-"
+    ],
+    "context": [
+      "spans-context-",
+      "program-completion-",
+      "wave8-",
+      "wave9-"
+    ],
+    "patterns": [
+      "empty-call-pattern-",
+      "marked-pattern-"
+    ]
+  },
+  "extraTrees": {
+    "final": [
+      "selfhost/tools/performance/phase16"
+    ]
+  },
+  "extraFiles": {
+    "final": [
+      "selfhost/build/phase15/frontend-01/candidate.json",
+      "selfhost/build/phase8/reference-frontend-01/reference.json",
+      "implementation/phase16/compact-evidence/syntax-failure-01.json"
+    ]
+  },
+  "closedDocumentationDirectories": [
+    "design/phase16",
+    "experiments/phase16",
+    "implementation/phase16"
+  ],
+  "excludedTopLevelReason": "Outside the final compact/compiler topic scope; may be tracked in wave7/prior capsules or remain local. No complete Phase16 archival claim.",
+  "maxPartPayloadBytes": 64000000,
+  "maxArchiveBytes": 99000000,
+  "externalPrerequisites": [
+    {
+      "kind": "committed-source",
+      "commit": "a383163b821e38510967849fdb791ff914031b62",
+      "scope": "Exact committed Phase15 files for independent final project reconstruction."
+    },
+    {
+      "kind": "historical-capsules",
+      "path": "implementation/phase15/evidence/RECOVERY.md",
+      "scope": "Phase15 and its eleven preceding capsule prerequisites for historical identities referenced by final timing/helper/history records."
+    },
+    {
+      "kind": "prior-checkpoint",
+      "path": "implementation/phase16/wave7-evidence/manifest.json",
+      "scope": "Accepted wave7 checkpoint; older Phase16 experiments remain outside this bounded capsule."
+    },
+    {
+      "kind": "upstream-checkout",
+      "path": "selfhost/.bootstrap/upstream-phase8",
+      "commit": "b2111cf43244e65f76ddc278ee695e669f720cbf",
+      "scope": "Pinned TypeScript oracle, prelude and upstream fixtures."
+    },
+    {
+      "kind": "external-toolchain",
+      "scope": "Node and Clang executable versions/identities are recorded in captured run manifests; executables are not vendored."
+    }
+  ]
+}

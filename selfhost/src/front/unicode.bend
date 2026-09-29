@@ -56,9 +56,7 @@ def f_decode_unicode(s, code, count):
 
 @unsafe
 def f_string_decoded(d):
-  match d:
-    case FDecoded{code, rest, +err}:
-      f_choose(KTerm, String.is_empty(err), u => kt("Ctr", "SCon", 0, 1, [kt("Ctr", "Chr", 0, 1, [f_u32(code)]), f_string(rest)]), u => kt("Error", err, 0, 0, Nil{}))
+  f_string_decoded_at(d, atom("Absent"))
 
 @unsafe
 def f_char_literal(s):
@@ -74,5 +72,36 @@ def f_char_decoded(d):
 def f_float_bits(
   +bits: U32,
 ) -> KTerm:
-  f_choose(KTerm, U32.is_eq(U32.and(bits, 2139095040), 2139095040), u => kt("Error", "float literal must be finite", 0, 0, Nil{}), u => kt("Ctr", "F32", 0, 1, [f_word(bits, 32)]))
+  f_choose(KTerm, U32.is_eq(U32.and(bits, 2139095040), 2139095040), u => kt("Error", "float literal must be finite", 0, 0, Nil{}), u => kl_make("F32", bits, ""))
 
+
+@unsafe
+def f_string_decoded_at(+d: FDecoded, +origin: KTerm) -> KTerm:
+  match d:
+    case FDecoded{code, rest, err}:
+      f_choose(KTerm, String.is_empty(err), u => f_string_cons(code, f_string_at(rest, origin)),
+        u => f_choose(KTerm, U32.is_gt(kb(origin), 0), u => f_escape_seek(origin, f_tail(nm(origin)), err), u => kt("Error", err, 0, 0, Nil{})))
+
+@unsafe
+def f_escape_seek(+origin: KTerm, +rest: String, +legacy: String) -> KTerm:
+  f_choose(KTerm, String.is_empty(rest) || Char.is_eq(f_head(rest), '"'), u => kt("Error", legacy, 0, 0, Nil{}),
+    u => f_escape_decoded(origin, rest, legacy, f_decode_char(rest)))
+
+@unsafe
+def f_escape_decoded(+origin: KTerm, +rest: String, +legacy: String, +decoded: FDecoded) -> KTerm:
+  match decoded:
+    case FDecoded{code, tail, error}:
+      f_choose(KTerm, String.is_empty(error), u => f_escape_seek(origin, tail, legacy),
+        u => fpe_expected_at(k_with_span(origin, U32.add(U32.sub(ke(origin), dg_width(rest)), 2), U32.add(U32.sub(ke(origin), dg_width(rest)), 2)), legacy, "an escape (\\n \\t \\r \\0 \\\\ \\\' \\\" \\u{1F600})", "'" ++ SCon{f_head(f_tail(f_tail(rest))), ""} ++ "'"))
+
+# Invalid scalar escapes keep the reference constructor-chain representation.
+@unsafe
+def f_string_cons(+code: U32, +tail: KTerm) -> KTerm:
+  f_choose(KTerm, U32.is_le(code, 1114111) && (U32.is_lt(code, 55296) || U32.is_gt(code, 57343)),
+    u => f_choose(KTerm, core_literal(tail) && String.eq(nm(tail), "String"), u => kl_make("String", 0, SCon{Char.from_u32(code), kl_text(tail)}), u => kt("Ctr", "SCon", 0, 1, [kt("Ctr", "Chr", 0, 1, [f_u32(code)]), tail])),
+    u => kt("Ctr", "SCon", 0, 1, [kt("Ctr", "Chr", 0, 1, [f_u32(code)]), f_string_expand(tail)]))
+
+@unsafe
+def f_string_expand(+t: KTerm) -> KTerm:
+  f_choose(KTerm, core_literal(t) && String.eq(nm(t), "String"), u => f_string_expand(core_literal_step(t)),
+    u => f_choose(KTerm, String.eq(tg(t), "Ctr") && String.eq(nm(t), "SCon"), u => k_with_children(t, [kid(t, 0), f_string_expand(kid(t, 1))]), u => t))

@@ -1,0 +1,9 @@
+from pathlib import Path
+import json, hashlib
+root=Path.cwd();phase=root/'selfhost/build/phase16';p=phase/'checker-compact-final-key-direct-01/report.json';r=json.loads(p.read_text());assert r['complete'] and r['pass'] and len(r['rows'])==61
+sha=lambda b:hashlib.sha256(b).hexdigest()
+def identity(p):return {'file':str(p),'sha256':sha(p.read_bytes()),'bytes':p.stat().st_size}
+old=root/'selfhost/tools/performance/phase16/checker-key-json-direct.mjs';new=root/'selfhost/tools/performance/phase16/checker-compact-final-key-direct.mjs';old_body=old.read_text().split('const nil=',1)[1];new_body=new.read_text().split('const nil=',1)[1];assert old_body==new_body
+m=r['probeExtension'];original=Path(m['productionAPI']['file']).read_bytes();extended=Path(m['probeAPI']['file']).read_bytes();assert extended[:len(original)]==original and extended[len(original):].decode()==m['appendedSuffix'];assert sha(original)==r['productionAPI']['sha256']
+report={'kind':'phase16-final-key-probe-addendum','complete':True,'pass':True,'exact':61,'includedSizeBoundaries':20,'productionAPI':r['productionAPI'],'probeAPI':m['probeAPI'],'probeManifest':identity(phase/'checker-compact-final-key-probe-01/manifest.json'),'rawResult':identity(p),'originalPrefixBytes':len(original),'exactOriginalPrefix':True,'testBodyUnchangedFrom':identity(old),'testBodySha256':sha(old_body.encode()),'newTool':identity(new),'scope':'Four unchanged run_lib wrapper lines from checked encoder02 appended as a named probe export over final compiled helper bodies. No rebuild, body edits, production API mutation, or claim that probe hash is production hash.'}
+(root/'implementation/phase16/checker-compact-final-key-probe.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps({'pass':True,'exact':61,'prefixBytes':len(original)}))

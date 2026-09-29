@@ -137,7 +137,7 @@ law norm_ref:
 
 @unsafe
 def norm_ref(book, t, args, d):
-  kc(KTerm, String.eq(dk(d), "ADT"), u => kc(KTerm, U32.is_eq(da(d), 0), u => norm_apply(kt("ADT", nm(t), 0, 0, Nil{}), args), u => norm_apply(t, args)), u => kc(KTerm, Bool.and(Bool.not(String.eq(tg(dv(d)), "Absent") || String.eq(tg(dv(d)), "Foreign")), U32.is_le(da(d), terms_len(args))), u => norm_eval(book, dv(d), args, da(d), norm_apply(t, args)), u => norm_apply(t, args)))
+  kc(KTerm, String.eq(dk(d), "ADT"), u => kc(KTerm, U32.is_eq(da(d), 0), u => norm_apply(kt_span("ADT", nm(t), 0, 0, Nil{}, kb(t), ke(t)), args), u => norm_apply(t, args)), u => kc(KTerm, Bool.and(Bool.not(String.eq(tg(dv(d)), "Absent") || String.eq(tg(dv(d)), "Foreign")), U32.is_le(da(d), terms_len(args))), u => norm_eval(book, dv(d), args, da(d), norm_apply(t, args)), u => norm_apply(t, args)))
 law norm_args:
   for +book: List<&2, KDef>
   for +t: KTerm
@@ -173,7 +173,7 @@ law norm_match:
 
 @unsafe
 def norm_match(book, arm, original, raw, x, args, left, fallback):
-  kc(KTerm, core_nat(x), u => norm_match(book, arm, original, raw, core_nat_step(x), args, left, fallback), u =>
+  kc(KTerm, core_literal(x), u => norm_match(book, arm, original, raw, core_literal_step(x), args, left, fallback), u =>
   kc(KTerm, String.eq(tg(x), "Ctr"), u => kc(KTerm, String.eq(tg(arm), "Ann"), u => norm_match(book, kid(arm, 0), original, raw, x, args, left, fallback), u => kc(KTerm, String.eq(tg(arm), "Mat"), u => kc(KTerm, String.eq(nm(arm), nm(x)), u => kc(KTerm, U32.is_eq(left, 0), u => norm_eval(book, kid(arm, 0), norm_join(ks(x), args), 0, fallback), u => norm_eval(book, kid(arm, 0), norm_join(ks(x), args), U32.add(norm_dec(left), terms_len(ks(x))), fallback)), u => norm_match(book, kid(arm, 1), original, raw, x, args, left, fallback)), u => kc(KTerm, String.eq(tg(arm), "Efq"), u => norm_stuck(original, raw, args, left, fallback), u => norm_eval(book, arm, Con{x, args}, left, fallback)))), u => norm_stuck(original, raw, args, left, fallback)))
 law norm_stuck:
   for +t: KTerm
@@ -398,7 +398,7 @@ def norm_rebind(
   +t: KTerm,
   +fresh: U32,
 ) -> KTerm:
-  KTerm{tg(t), nm(t), fresh, qt(t), kc(List<&2, KTerm>, String.eq(tg(t), "Lam"), u => Con{subst(kid(t, 0), ix(t), var(nm(t), fresh)), Nil{}}, u => Con{kid(t, 0), Con{subst(kid(t, 1), ix(t), var(nm(t), fresh)), Nil{}}}), rm(t)}
+  k_rebuild(t, nm(t), fresh, qt(t), kc(List<&2, KTerm>, String.eq(tg(t), "Lam"), u => Con{subst(kid(t, 0), ix(t), var(nm(t), fresh)), Nil{}}, u => Con{kid(t, 0), Con{subst(kid(t, 1), ix(t), var(nm(t), fresh)), Nil{}}}), rm(t), kb(t), ke(t))
 
 # Syntactic reflexivity precedes evaluation, as pointer reflexivity does in
 # upstream. Cell contents are included; different stored values never match.
@@ -438,7 +438,7 @@ def norm_exact_lists(as, bs):
 
 @unsafe
 def norm_exact_head(a, b):
-  String.eq(tg(a), tg(b)) && String.eq(nm(a), nm(b)) && U32.is_eq(ix(a), ix(b)) && U32.is_eq(qt(a), qt(b)) && U32.is_eq(terms_len(ks(a)), terms_len(ks(b))) && norm_exact_names(rm(a), rm(b))
+  String.eq(tg(a), tg(b)) && kc(Bool, core_literal(a), u => core_literal_same(a, b), u => True{}) && String.eq(nm(a), nm(b)) && U32.is_eq(ix(a), ix(b)) && U32.is_eq(qt(a), qt(b)) && U32.is_eq(terms_len(ks(a)), terms_len(ks(b))) && norm_exact_names(rm(a), rm(b))
 
 @unsafe
 def norm_exact_names(as, bs):
@@ -561,8 +561,8 @@ def norm_cmp_test(
 def norm_cmp_heads(book, a, b, le, fresh, rest, alts):
   kc(Bool, String.eq(tg(a), "Lam") || String.eq(tg(b), "Lam"),
    u => norm_cmp_loop(book, Con{KNormCmp{app(a, var("_", fresh)), app(b, var("_", fresh)), le, U32.add(fresh, 1)}, rest}, alts),
-   u => kc(Bool, core_nat(a) && String.eq(tg(b), "Ctr"), u => norm_cmp_heads(book, core_nat_step(a), b, le, fresh, rest, alts),
-   u => kc(Bool, core_nat(b) && String.eq(tg(a), "Ctr"), u => norm_cmp_heads(book, a, core_nat_step(b), le, fresh, rest, alts),
+   u => kc(Bool, core_literal(a) && String.eq(tg(b), "Ctr"), u => norm_cmp_heads(book, core_literal_step(a), b, le, fresh, rest, alts),
+   u => kc(Bool, core_literal(b) && String.eq(tg(a), "Ctr"), u => norm_cmp_heads(book, a, core_literal_step(b), le, fresh, rest, alts),
    u => kc(Bool, String.eq(tg(a), tg(b)), u => norm_cmp_same(book, a, b, le, fresh, rest, alts), u => norm_cmp_fail(book, alts)))))
 
 @unsafe
@@ -577,7 +577,7 @@ def norm_cmp_same(book, a, b, le, fresh, rest, alts):
 
 @unsafe
 def norm_cmp_plain(book, a, b, le, fresh, rest, alts):
-  kc(Bool, core_nat(a) && core_nat(b), u => norm_cmp_test(book, U32.is_eq(qt(a), qt(b)), rest, alts), u =>
+  kc(Bool, core_literal(a) && core_literal(b), u => norm_cmp_test(book, core_literal_same(a, b), rest, alts), u =>
   kc(Bool, String.eq(tg(a), "Ref"), u => kc(Bool, String.eq(nm(a), nm(b)), u => norm_cmp_loop(book, rest, alts), u => norm_cmp_ref(book, a, b, le, norm_max(da(lookup(book, nm(a))), da(lookup(book, nm(b)))), fresh, rest, alts)),
    u => kc(Bool, String.eq(tg(a), "Hol"), u => norm_cmp_test(book, String.eq(nm(a), nm(b)), rest, alts),
    u => kc(Bool, String.eq(tg(a), "Ctr") || String.eq(tg(a), "Mat"), u => kc(Bool, String.eq(nm(a), nm(b)), u => norm_cmp_fields(book, ks(a), ks(b), fresh, rest, alts), u => norm_cmp_fail(book, alts)),

@@ -21,7 +21,7 @@ law j_literal_node:
 
 @unsafe
 def j_literal_node(t):
-  kc(String, core_nat(t), u => U32.show(qt(t)) ++ "n", u =>
+  kc(String, core_literal(t), u => kc(String, core_nat(t), u => U32.show(kl_number(t)) ++ "n", u => kc(String, String.eq(nm(t), "String"), u => j_quote(kl_text(t)), u => j_word_text(Some{kl_number(t)}, String.eq(nm(t), "F32")))), u =>
   kc(String, String.eq(tg(t), "Ctr"), u => j_literal_ctor(t), u => ""))
 
 law j_literal_ctor:
@@ -46,7 +46,7 @@ law j_u32_node:
 
 @unsafe
 def j_u32_node(t):
-  kc(Maybe<&2, U32>, String.eq(tg(t), "Ctr") && String.eq(nm(t), "U32"), u => j_word(j_strip(kid(t, 0)), 0, 0), u => None{})
+  kc(Maybe<&2,U32>, core_literal(t) && String.eq(nm(t), "U32"), u => Some{kl_number(t)}, u => kc(Maybe<&2, U32>, String.eq(tg(t), "Ctr") && String.eq(nm(t), "U32"), u => j_word(j_strip(kid(t, 0)), 0, 0), u => None{}))
 
 law j_word:
   for +t: KTerm
@@ -101,7 +101,7 @@ law j_nat:
 
 @unsafe
 def j_nat(t, acc):
-  kc(Maybe<&2, Nat>, core_nat(t), u => Some{Nat.add(acc, U32.to_nat(qt(t)))}, u =>
+  kc(Maybe<&2, Nat>, core_nat(t), u => Some{Nat.add(acc, U32.to_nat(kl_number(t)))}, u =>
   kc(Maybe<&2, Nat>, String.eq(tg(t), "Ctr"), u => kc(Maybe<&2, Nat>, String.eq(nm(t), "Zero"), u => Some{acc}, u => kc(Maybe<&2, Nat>, String.eq(nm(t), "Succ"), u => j_nat(j_strip(kid(t, 0)), Nat.add(acc, 1n)), u => None{})), u => None{}))
 
 law j_nat_text:
@@ -123,7 +123,7 @@ law j_string:
 
 @unsafe
 def j_string(t, acc):
-  kc(Maybe<&2, String>, String.eq(tg(t), "Ctr"), u => kc(Maybe<&2, String>, String.eq(nm(t), "SNil"), u => Some{String.reverse(acc)}, u => kc(Maybe<&2, String>, String.eq(nm(t), "SCon"), u => j_string_head(j_strip(kid(t, 0)), j_strip(kid(t, 1)), acc), u => None{})), u => None{})
+  kc(Maybe<&2,String>, core_literal(t) && String.eq(nm(t), "String"), u => Some{String.reverse(acc) ++ kl_text(t)}, u => kc(Maybe<&2, String>, String.eq(tg(t), "Ctr"), u => kc(Maybe<&2, String>, String.eq(nm(t), "SNil"), u => Some{String.reverse(acc)}, u => kc(Maybe<&2, String>, String.eq(nm(t), "SCon"), u => j_string_head(j_strip(kid(t, 0)), j_strip(kid(t, 1)), acc), u => None{})), u => None{}))
 
 law j_string_head:
   for +head: KTerm

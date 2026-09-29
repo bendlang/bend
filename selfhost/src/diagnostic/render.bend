@@ -180,7 +180,7 @@ def dg_location(
   +name: String,
   +span: DSpan,
 ) -> String:
-  dg_location_text(name, dg_snippet(span))
+  dg_location_text(name, dg_module_snippet(span))
 
 @unsafe
 def dg_location_text(name, snippet):
@@ -196,8 +196,16 @@ def dg_render(
       dg_render_parts(book, expected, observed, has_observed, List.reverse(&2, KTerm, context), definition, span, note)
 
 @unsafe
+def dg_render_parts_in(
+  +book: List<&2,KDef>, +expected: DExpr, +observed: DExpr,
+  +has_observed: Bool, +ctx: List<&2,KTerm>, +name: String,
+  +span: DSpan, +note: String, +env: List<&2,KPName>,
+) -> String:
+  "Error:" ++ kc(String, has_observed, u => "\n- expected : " ++ dg_expr(book, expected, dg_scope(ctx, env)) ++ "\n- observed : " ++ dg_expr(book, observed, dg_scope(ctx, env)), u => "\n- message  : " ++ dg_expr(book, expected, dg_scope(ctx, env))) ++ kc(String, U32.is_eq(terms_len(ctx), 0), u => "", u => "\nContext:" ++ dg_context(book, ctx, env, dg_context_width(ctx))) ++ dg_location(kp_name(env, name), span) ++ kc(String, String.eq(note, ""), u => "", u => "\n" ++ note)
+
+@unsafe
 def dg_render_parts(book, expected, observed, has_observed, ctx, name, span, note):
-  "Error:" ++ kc(String, has_observed, u => "\n- expected : " ++ dg_expr(book, expected, dg_scope(ctx, Nil{})) ++ "\n- observed : " ++ dg_expr(book, observed, dg_scope(ctx, Nil{})), u => "\n- message  : " ++ dg_expr(book, expected, dg_scope(ctx, Nil{}))) ++ kc(String, U32.is_eq(terms_len(ctx), 0), u => "", u => "\nContext:" ++ dg_context(book, ctx, Nil{}, dg_context_width(ctx))) ++ dg_location(name, span) ++ kc(String, String.eq(note, ""), u => "", u => "\n" ++ note)
+  dg_render_parts_in(book, expected, observed, has_observed, ctx, name, span, note, Nil{})
 
 @unsafe
 def diagnostic_render(
@@ -212,3 +220,29 @@ def dg_render_checked(book, diagnostic, error):
     case DDiagnostic{expected, observed, has_observed, context, definition, span, note, trail}:
       kc(String, U32.is_eq(terms_len(trail), 0), u => "Error: " ++ error, u => dg_render(book, diagnostic))
 
+
+# book_load blanks leading imports while retaining their newlines. Coordinates
+# still use the immutable raw source; only the displayed lines differ.
+@unsafe
+def dg_module_snippet(+span: DSpan) -> String:
+  match span:
+    case DNoSpan{}: ""
+    case DSpan{source, begin, end}:
+      dg_snippet_at(dg_module_lines(String.lines(source)), dg_line_at(source, begin, 1), dg_marker_left(source, begin, ""), kc(U32, U32.is_gt(end, begin), u => U32.sub(end, begin), u => 0))
+
+@unsafe
+def dg_module_lines(+lines: List<&2,String>) -> List<&2,String>:
+  match lines:
+    case Nil{}: Nil{}
+    case Con{head, rest}:
+      +line = String.trim_start(head)
+      kc(List<&2,String>, String.is_empty(line) || String.starts_with(line, "#"),
+        u => Con{head, dg_module_lines(rest)},
+        u => kc(List<&2,String>, String.starts_with(line, "import") && dg_import_tail(String.drop(line, 6n)),
+          u => Con{"", dg_module_lines(rest)}, u => lines))
+
+@unsafe
+def dg_import_tail(+text: String) -> Bool:
+  match text:
+    case SNil{}: True{}
+    case SCon{head, rest}: Char.is_space(head)

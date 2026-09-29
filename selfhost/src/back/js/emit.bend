@@ -235,7 +235,7 @@ law j_expr_on:
 
 @unsafe
 def j_expr_on(book, env, t, ty, tail, key):
-  kc(String, String.eq(key, "Var"), u => j_local(ix(t)), u => kc(String, String.eq(key, "Ref"), u => "get(G," ++ j_quote(nm(t)) ++ ")", u => kc(String, String.eq(key, "App"), u => j_apply(book, env, t, tail, wnf(book, j_type(book, env, kid(t, 0)))), u => kc(String, String.eq(key, "Ctr") || core_nat(t), u => j_constructor_mode(book, env, t, ty, tail), u => kc(String, String.eq(key, "Ann"), u => j_expr(book, env, kid(t, 0), kid(t, 1), tail), u => kc(String, String.eq(key, "Lam"), u => j_lambda(book, env, t, wnf(book, ty)), u => kc(String, String.eq(key, "Mat"), u => j_match(book, env, t, wnf(book, ty)), u => kc(String, String.eq(key, "Let"), u => j_let(book, env, ks(t), ty, tail), u => kc(String, String.eq(key, "Rwt"), u => j_expr(book, env, kid(t, 2), ty, tail), u => kc(String, String.eq(key, "Efq"), u => "fn(1,()=>bad(\"an absurd elimination\"))", u => kc(String, String.eq(key, "Hol"), u => "bad(\"cannot compile a hole\")", u => kc(String, String.eq(key, "ADT"), u => "({typeName:" ++ j_quote(nm(t)) ++ ",typeArgs:[" ++ j_exprs(book, env, ks(t)) ++ "]})", u => kc(String, String.eq(key, "Qua"), u => "({typeName:" ++ j_quote("&" ++ U32.show(qt(t))) ++ "})", u => kc(String, String.eq(key, "Typ"), u => "({typeName:\"Type\"})", u => kc(String, String.eq(key, "Rfl"), u => "({proof:true})", u => "null")))))))))))))))
+  kc(String, String.eq(key, "Var"), u => j_local(ix(t)), u => kc(String, String.eq(key, "Ref"), u => "get(G," ++ j_quote(nm(t)) ++ ")", u => kc(String, String.eq(key, "App"), u => j_apply(book, env, t, tail, wnf(book, j_type(book, env, kid(t, 0)))), u => kc(String, String.eq(key, "Ctr") || core_literal(t), u => j_constructor_mode(book, env, t, ty, tail), u => kc(String, String.eq(key, "Ann"), u => j_expr(book, env, kid(t, 0), kid(t, 1), tail), u => kc(String, String.eq(key, "Lam"), u => j_lambda(book, env, t, wnf(book, ty)), u => kc(String, String.eq(key, "Mat"), u => j_match(book, env, t, wnf(book, ty)), u => kc(String, String.eq(key, "Let"), u => j_let(book, env, ks(t), ty, tail), u => kc(String, String.eq(key, "Rwt"), u => j_expr(book, env, kid(t, 2), ty, tail), u => kc(String, String.eq(key, "Efq"), u => "fn(1,()=>bad(\"an absurd elimination\"))", u => kc(String, String.eq(key, "Hol"), u => "bad(\"cannot compile a hole\")", u => kc(String, String.eq(key, "ADT"), u => "({typeName:" ++ j_quote(nm(t)) ++ ",typeArgs:[" ++ j_exprs(book, env, ks(t)) ++ "]})", u => kc(String, String.eq(key, "Qua"), u => "({typeName:" ++ j_quote("&" ++ U32.show(qt(t))) ++ "})", u => kc(String, String.eq(key, "Typ"), u => "({typeName:\"Type\"})", u => kc(String, String.eq(key, "Rfl"), u => "({proof:true})", u => "null")))))))))))))))
 
 law j_lambda:
   for +book: List<&2, KDef>
@@ -872,11 +872,11 @@ def j_l_mark(
   +path: String,
   +depth: U32,
 ) -> KTerm:
-  kc(KTerm, String.eq(tg(t), "Ann"), u => KTerm{tg(t), nm(t), ix(t), qt(t), [j_l_mark(kid(t, 0), path, depth), kid(t, 1)], rm(t)}, u =>
+  kc(KTerm, String.eq(tg(t), "Ann"), u => k_with_children(t, [j_l_mark(kid(t, 0), path, depth), kid(t, 1)]), u =>
   kc(KTerm, String.eq(tg(t), "Var") || String.eq(tg(t), "Ref"), u => t, u =>
   kc(KTerm, String.eq(tg(t), "Lam") || String.eq(tg(t), "Mat"), u =>
-    kc(KTerm, U32.is_ge(depth, 32), u => KTerm{tg(t), nm(t), ix(t), qt(t), j_l_marks(ks(t), path, 0, 0), ["$js." ++ path]}, u => KTerm{tg(t), nm(t), ix(t), qt(t), j_l_marks(ks(t), path, U32.inc(depth), 0), rm(t)}), u =>
-    KTerm{tg(t), nm(t), ix(t), qt(t), j_l_marks(ks(t), path, depth, 0), rm(t)})))
+    kc(KTerm, U32.is_ge(depth, 32), u => k_rebuild(t, nm(t), ix(t), qt(t), j_l_marks(ks(t), path, 0, 0), ["$js." ++ path], kb(t), ke(t)), u => k_with_children(t, j_l_marks(ks(t), path, U32.inc(depth), 0))), u =>
+    k_with_children(t, j_l_marks(ks(t), path, depth, 0)))))
 
 @unsafe
 def j_l_marks(ts, path, depth, at):

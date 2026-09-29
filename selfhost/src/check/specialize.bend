@@ -3,13 +3,13 @@ import Base
 # Materialize live template applications after source checking. Source templates
 # stay available for conversion; their erased parameters never enter the ABI.
 type KSpecialized is Data:
-  KSpecialized{+book: List<&2, KDef>, +error: String}
+  KSpecialized{+book: List<&2, KDef>, +error: KChecked}
 
 type KSpecMemo is Data:
   KSpecMemo{+template: String, +key: String, +name: String, +active: Bool}
 
 type KSpecState is Data:
-  KSpecState{+book: List<&2, KDef>, +memo: List<&2, KSpecMemo>, +serial: U32, +fresh: U32, +error: String, +templates: List<&2, KDef>}
+  KSpecState{+book: List<&2, KDef>, +memo: List<&2, KSpecMemo>, +fresh: U32, +error: KChecked, +templates: List<&2, KDef>}
 
 type KSpecTerm is Data:
   KSpecTerm{+state: KSpecState, +term: KTerm}
@@ -40,10 +40,6 @@ law sp_definition_done:
 
 law sp_keys:
   for +ts: List<&2, KTerm>
-  String
-
-law sp_name_keys:
-  for +ns: List<&2, String>
   String
 
 law sp_take_next:
@@ -181,6 +177,7 @@ law sp_apply_result:
 
 law sp_template:
   for +st: KSpecState
+  for +head: KTerm
   for +d: KDef
   for +xs: List<&2, KTerm>
   for +ctx: List<&2, KTerm>
@@ -190,6 +187,7 @@ law sp_template:
 
 law sp_template_args:
   for +st: KSpecState
+  for +head: KTerm
   for +d: KDef
   for +closed: List<&2, KTerm>
   for +rest: List<&2, KTerm>
@@ -200,6 +198,7 @@ law sp_template_args:
 
 law sp_template_checked:
   for +st: KSpecState
+  for +head: KTerm
   for +d: KDef
   for +closed: List<&2, KTerm>
   for +rest: List<&2, KTerm>
@@ -211,6 +210,7 @@ law sp_template_checked:
 
 law sp_template_key:
   for +st: KSpecState
+  for +head: KTerm
   for +d: KDef
   for +closed: List<&2, KTerm>
   for +rest: List<&2, KTerm>
@@ -230,6 +230,8 @@ law sp_template_inst:
 
 law sp_instance:
   for +st: KSpecState
+  for +head: KTerm
+  for +ctx: List<&2, KTerm>
   for +d: KDef
   for +xs: List<&2, KTerm>
   for +owner: String
@@ -278,7 +280,7 @@ law sp_validate:
 law sp_validate_done:
   for +st: KSpecState
   for +d: KDef
-  for +error: String
+  for +error: KChecked
   KSpecTerm
 
 law sp_match:
@@ -406,14 +408,19 @@ def specialized_error(
 ) -> String:
   match r:
     case KSpecialized{book, error}:
-      error
+      ce(error)
+
+@unsafe
+def specialized_diagnostic(+r: KSpecialized) -> DResult:
+  match r:
+    case KSpecialized{book, error}: DResult{ce(error), book, dg_report(error, "")}
 
 @unsafe
 def sp_book(
   +st: KSpecState,
 ) -> List<&2, KDef>:
   match st:
-    case KSpecState{book, memo, serial, fresh, error, templates}:
+    case KSpecState{book, memo, fresh, error, templates}:
       book
 
 @unsafe
@@ -421,32 +428,27 @@ def sp_memo(
   +st: KSpecState,
 ) -> List<&2, KSpecMemo>:
   match st:
-    case KSpecState{book, memo, serial, fresh, error, templates}:
+    case KSpecState{book, memo, fresh, error, templates}:
       memo
-
-@unsafe
-def sp_serial(
-  +st: KSpecState,
-) -> U32:
-  match st:
-    case KSpecState{book, memo, serial, fresh, error, templates}:
-      serial
 
 @unsafe
 def sp_fresh(
   +st: KSpecState,
 ) -> U32:
   match st:
-    case KSpecState{book, memo, serial, fresh, error, templates}:
+    case KSpecState{book, memo, fresh, error, templates}:
       fresh
 
 @unsafe
 def sp_error(
   +st: KSpecState,
 ) -> String:
+  ce(sp_checked(st))
+
+@unsafe
+def sp_checked(+st: KSpecState) -> KChecked:
   match st:
-    case KSpecState{book, memo, serial, fresh, error, templates}:
-      error
+    case KSpecState{book, memo, fresh, error, templates}: error
 
 @unsafe
 def sp_state(
@@ -517,14 +519,22 @@ def sp_fail(
   +st: KSpecState,
   +err: String,
 ) -> KSpecState:
-  KSpecState{sp_book(st), sp_memo(st), sp_serial(st), sp_fresh(st), kc(String, String.eq(sp_error(st), ""), u => err, u => sp_error(st)), sp_templates(st)}
+  sp_failed(st, bad(err))
+
+@unsafe
+def sp_failed(+st: KSpecState, +error: KChecked) -> KSpecState:
+  kc(KSpecState, good(sp_checked(st)), u => KSpecState{sp_book(st), sp_memo(st), sp_fresh(st), error, sp_templates(st)}, u => st)
+
+@unsafe
+def sp_template_error(+st: KSpecState, +ctx: List<&2, KTerm>, +owner: String, +head: KTerm, +message: String, +expected: String) -> KSpecState:
+  sp_failed(st, dg_trace(KEnv{sp_book(st), owner, ref(owner), 0, Nil{}, du(lookup(sp_book(st), owner))}, ctx, head, atom("Absent"), dg_bad_detail(message, dg_text(expected), head)))
 
 @unsafe
 def sp_put(
   +st: KSpecState,
   +d: KDef,
 ) -> KSpecState:
-  KSpecState{Con{d, index_remove(sp_book(st), dn(d))}, sp_memo(st), sp_serial(st), sp_fresh(st), sp_error(st), sp_templates(st)}
+  KSpecState{Con{d, index_remove(sp_book(st), dn(d))}, sp_memo(st), sp_fresh(st), sp_checked(st), sp_templates(st)}
 
 @unsafe
 def sp_canonical(
@@ -541,7 +551,7 @@ def specialize_book(
 
 @unsafe
 def sp_finish(st):
-  KSpecialized{index_remove(sp_book(st), "$kernel.max-id"), sp_error(st)}
+  KSpecialized{index_remove(sp_book(st), "$kernel.max-id"), sp_checked(st)}
 
 @unsafe
 def sp_definitions(todo, st):
@@ -558,45 +568,151 @@ def sp_definition_next(rest, st, d):
 # Instance checks see the same declarations and earlier bodies as the caller.
 @unsafe
 def sp_definition_install(+rest: List<&2,KDef>, +st: KSpecState, +d: KDef) -> KSpecState:
-  sp_definitions(rest, KSpecState{check_event_install(sp_book(st), d, rest), sp_memo(st), sp_serial(st), sp_fresh(st), sp_error(st), sp_templates(st)})
+  sp_definitions(rest, KSpecState{check_event_install(sp_book(st), d, rest), sp_memo(st), sp_fresh(st), sp_checked(st), sp_templates(st)})
 
 @unsafe
 def sp_definition_done(rest, d, r):
   sp_definition_install(rest, sp_state(r), KDef{dn(d), dk(d), da(d), dx(d), dt(d), sp_value(r), dc(d), db(d), du(d)})
 
+# Canonical pinned term_lower JSON, shared by memo identity and its size guard.
 @unsafe
-def sp_len(
-  +s: String,
-) -> U32:
-  U32.from_nat(String.length(s))
+def sp_len(+s: String) -> U32:
+  sk_width(s, 0)
 
 @unsafe
-def sp_key_string(
-  +s: String,
-) -> String:
-  U32.show(sp_len(s)) ++ ":" ++ s
+def sk_width(+s: String, +n: U32) -> U32:
+  match s:
+    case SNil{}: n
+    case SCon{c, rest}: sk_width(rest, U32.add(n, dg_units(c)))
 
 @unsafe
-def term_key(
-  +t: KTerm,
-) -> String:
-  sp_key_string(tg(t)) ++ sp_key_string(nm(t)) ++ U32.show(ix(t)) ++ ":" ++ U32.show(qt(t)) ++ "[" ++ sp_keys(ks(t)) ++ "][" ++ sp_name_keys(rm(t)) ++ "]"
+def sk_quote(+s: String) -> String:
+  "\"" ++ String.reverse(sk_escape(s, "")) ++ "\""
+
+@unsafe
+def sk_escape(+s: String, +acc: String) -> String:
+  match s:
+    case SNil{}: acc
+    case SCon{c, rest}: sk_escape(rest, String.reverse(sk_char(c, Char.to_u32(c))) ++ acc)
+
+@unsafe
+def sk_char(+c: Char, +n: U32) -> String:
+  match n:
+    case 34: "\\\""
+    case 92: "\\\\"
+    case 8: "\\b"
+    case 9: "\\t"
+    case 10: "\\n"
+    case 12: "\\f"
+    case 13: "\\r"
+    case other:
+      kc(String, U32.is_lt(n, 32), u => "\\u00" ++ kc(String, U32.is_lt(n, 16), u => "0", u => "") ++ kp_hex(n),
+        u => kc(String, U32.is_ge(n, 55296) && U32.is_le(n, 57343), u => "\\u" ++ kp_hex(n), u => Char.show(c)))
+
+@unsafe
+def sk_quant(+q: U32) -> String:
+  "{\"$\":\"" ++ kc(String, U32.is_eq(q, 0), u => "None", u => kc(String, U32.is_eq(q, 2), u => "Many", u => "Lone")) ++ "\"}"
+
+@unsafe
+def term_key(+t: KTerm) -> String:
+  sk_term(t, Nil{}, 0)
 
 @unsafe
 def sp_keys(ts):
   match ts:
-    case Nil{}:
-      ""
-    case Con{h, rest}:
-      term_key(h) ++ sp_keys(rest)
+    case Nil{}: ""
+    case Con{head, rest}: term_key(head) ++ kc(String, List.is_empty(&2, KTerm, rest), u => "", u => "\n" ++ sp_keys(rest))
 
 @unsafe
-def sp_name_keys(ns):
-  match ns:
-    case Nil{}:
-      ""
-    case Con{h, rest}:
-      sp_key_string(h) ++ sp_name_keys(rest)
+def sk_names(+names: List<&2,String>) -> String:
+  match names:
+    case Nil{}: ""
+    case Con{head, rest}: sk_quote(head) ++ kc(String, List.is_empty(&2, String, rest), u => "", u => "," ++ sk_names(rest))
+
+@unsafe
+def sk_terms(+ts: List<&2,KTerm>, +env: List<&2,KPName>, +depth: U32) -> String:
+  match ts:
+    case Nil{}: ""
+    case Con{head, rest}: sk_term(head, env, depth) ++ kc(String, List.is_empty(&2, KTerm, rest), u => "", u => "," ++ sk_terms(rest, env, depth))
+
+@unsafe
+def sk_var(+t: KTerm, +env: List<&2,KPName>) -> String:
+  match env:
+    case Nil{}: sk_variable(nm(t), ix(t))
+    case Con{KPFile{ns, aliases}, rest}: sk_var(t, rest)
+    case Con{KPName{name, id, depth}, rest}:
+      kc(String, U32.is_eq(ix(t), id), u => sk_variable(name, depth), u => sk_var(t, rest))
+
+@unsafe
+def sk_variable(+name: String, +id: U32) -> String:
+  "{\"$\":\"Var\",\"k\":" ++ sk_quote(name) ++ ",\"i\":" ++ kc(String, U32.is_eq(id, 4294967295), u => "-1", u => U32.show(id)) ++ "}"
+
+@unsafe
+def sk_term(+t: KTerm, +env: List<&2,KPName>, +depth: U32) -> String:
+  kc(String, String.eq(tg(t), "Var"), u => kc(String, List.is_empty(&2, KTerm, ks(t)), u => sk_var(t, env), u => sk_term(kid(t, 0), env, depth)),
+  u => kc(String, String.eq(tg(t), "Sub"), u => sk_term(subst(kid(t, 1), ix(t), kid(t, 0)), env, depth),
+  u => sk_node(t, env, depth)))
+
+@unsafe
+def sk_node(+t: KTerm, +env: List<&2,KPName>, +depth: U32) -> String:
+  kc(String, String.eq(tg(t), "Ref"), u => "{\"$\":\"Ref\",\"k\":" ++ sk_quote(nm(t)) ++ kc(String, U32.is_eq(qt(t), 3), u => ",\"b\":true", u => "") ++ "}",
+  u => kc(String, core_literal(t), u => "{\"$\":\"Lit\",\"k\":" ++ sk_quote(nm(t)) ++ ",\"v\":" ++ kc(String, String.eq(nm(t), "String"), u => sk_quote(kl_text(t)), u => U32.show(kl_number(t))) ++ "}",
+  u => kc(String, String.eq(tg(t), "Lam"), u => "{\"$\":\"Lam\",\"k\":" ++ sk_quote(nm(t)) ++ ",\"i\":" ++ U32.show(depth) ++ ",\"f\":" ++ sk_term(kid(t, 0), Con{KPName{nm(t), ix(t), depth}, env}, U32.inc(depth)) ++ kc(String, k_quantity_present(t), u => ",\"q\":" ++ sk_quant(qt(t)), u => "") ++ "}",
+  u => kc(String, String.eq(tg(t), "All"), u => "{\"$\":\"All\",\"q\":" ++ sk_quant(qt(t)) ++ ",\"k\":" ++ sk_quote(nm(t)) ++ ",\"i\":" ++ U32.show(depth) ++ ",\"A\":" ++ sk_term(kid(t, 0), env, depth) ++ ",\"B\":" ++ sk_term(kid(t, 1), Con{KPName{nm(t), ix(t), depth}, env}, U32.inc(depth)) ++ "}",
+  u => kc(String, String.eq(tg(t), "Let"), u => sk_let(ks(t), env, depth),
+  u => kc(String, String.eq(tg(t), "ADT") || String.eq(tg(t), "Ctr"), u => "{\"$\":" ++ sk_quote(tg(t)) ++ ",\"k\":" ++ sk_quote(nm(t)) ++ ",\"x\":[" ++ sk_terms(ks(t), env, depth) ++ "]" ++ kc(String, String.eq(tg(t), "ADT"), u => ",\"r\":[" ++ sk_names(rm(t)) ++ "]", u => "") ++ "}",
+  u => sk_other(t, env, depth)))))))
+
+@unsafe
+def sk_other(+t: KTerm, +env: List<&2,KPName>, +depth: U32) -> String:
+  kc(String, String.eq(tg(t), "App"), u => sk_pair("App", "f", "x", t, env, depth),
+  u => kc(String, String.eq(tg(t), "Min"), u => sk_pair("Min", "a", "b", t, env, depth),
+  u => kc(String, String.eq(tg(t), "Ann"), u => sk_pair("Ann", "x", "T", t, env, depth),
+  u => kc(String, String.eq(tg(t), "Typ"), u => "{\"$\":\"Typ\",\"g\":" ++ sk_term(kid(t, 0), env, depth) ++ "}",
+  u => kc(String, String.eq(tg(t), "Qua"), u => "{\"$\":\"Qua\",\"q\":" ++ sk_quant(qt(t)) ++ "}",
+  u => kc(String, String.eq(tg(t), "Mat"), u => "{\"$\":\"Mat\",\"k\":" ++ sk_quote(nm(t)) ++ ",\"h\":" ++ sk_term(kid(t, 0), env, depth) ++ ",\"m\":" ++ sk_term(kid(t, 1), env, depth) ++ "}",
+  u => kc(String, String.eq(tg(t), "Eql"), u => sk_triple("Eql", "a", "b", "T", t, env, depth),
+  u => kc(String, String.eq(tg(t), "Rwt"), u => sk_triple("Rwt", "e", "p", "f", t, env, depth),
+  u => kc(String, String.eq(tg(t), "Hol"), u => "{\"$\":\"Hol\",\"k\":" ++ sk_quote(nm(t)) ++ "}",
+  u => kc(String, String.eq(tg(t), "Qnt") || String.eq(tg(t), "Efq") || String.eq(tg(t), "Rfl"), u => "{\"$\":" ++ sk_quote(tg(t)) ++ "}",
+  u => sk_internal(t, env, depth)))))))))))
+
+# Internal-only tags cannot pass the authoritative closed-argument check. Keep
+# their complete shape distinct for direct API totality; never alias their kids.
+@unsafe
+def sk_internal(+t: KTerm, +env: List<&2,KPName>, +depth: U32) -> String:
+  "{\"$\":\"Internal\",\"tag\":" ++ sk_quote(tg(t)) ++ ",\"name\":" ++ sk_quote(nm(t)) ++ ",\"id\":" ++ U32.show(ix(t)) ++ ",\"quant\":" ++ U32.show(qt(t)) ++ ",\"kids\":[" ++ sk_terms(ks(t), env, depth) ++ "],\"removed\":[" ++ sk_names(rm(t)) ++ "]}"
+
+@unsafe
+def sk_pair(+tag: String, +a: String, +b: String, +t: KTerm, +env: List<&2,KPName>, +depth: U32) -> String:
+  "{\"$\":" ++ sk_quote(tag) ++ "," ++ sk_quote(a) ++ ":" ++ sk_term(kid(t, 0), env, depth) ++ "," ++ sk_quote(b) ++ ":" ++ sk_term(kid(t, 1), env, depth) ++ "}"
+
+@unsafe
+def sk_triple(+tag: String, +a: String, +b: String, +c: String, +t: KTerm, +env: List<&2,KPName>, +depth: U32) -> String:
+  "{\"$\":" ++ sk_quote(tag) ++ "," ++ sk_quote(a) ++ ":" ++ sk_term(kid(t, 0), env, depth) ++ "," ++ sk_quote(b) ++ ":" ++ sk_term(kid(t, 1), env, depth) ++ "," ++ sk_quote(c) ++ ":" ++ sk_term(kid(t, 2), env, depth) ++ "}"
+
+@unsafe
+def sk_let(+xs: List<&2,KTerm>, +env: List<&2,KPName>, +depth: U32) -> String:
+  "{\"$\":\"Let\",\"k\":[" ++ sk_let_field(xs, 0, env, depth, depth) ++ "],\"i\":[" ++ sk_let_field(xs, 1, env, depth, depth) ++ "],\"q\":[" ++ sk_let_field(xs, 2, env, depth, depth) ++ "],\"v\":[" ++ sk_let_field(xs, 3, env, depth, depth) ++ "],\"f\":" ++ sk_let_body(xs, env, depth) ++ "}"
+
+@unsafe
+def sk_let_field(+xs: List<&2,KTerm>, +field: U32, +env: List<&2,KPName>, +depth: U32, +id: U32) -> String:
+  match xs:
+    case Nil{}: ""
+    case Con{head, rest}:
+      kc(String, String.eq(tg(head), "Bind"),
+        u => kc(String, U32.is_eq(field, 0), u => sk_quote(nm(head)),
+          u => kc(String, U32.is_eq(field, 1), u => U32.show(id),
+          u => kc(String, U32.is_eq(field, 2), u => sk_quant(qt(head)), u => sk_term(kid(head, 0), env, depth))))
+          ++ kc(String, String.eq(tg(terms_at(rest, 0)), "Bind"), u => "," ++ sk_let_field(rest, field, env, depth, U32.inc(id)), u => ""),
+        u => "")
+
+@unsafe
+def sk_let_body(+xs: List<&2,KTerm>, +env: List<&2,KPName>, +depth: U32) -> String:
+  match xs:
+    case Nil{}: "null"
+    case Con{head, rest}:
+      kc(String, String.eq(tg(head), "Bind"), u => sk_let_body(rest, Con{KPName{nm(head), ix(head), depth}, env}, U32.inc(depth)), u => sk_term(head, env, depth))
 
 @unsafe
 def sp_find(
@@ -609,6 +725,15 @@ def sp_find(
       KSpecMemo{"", "", "", False{}}
     case Con{h, rest}:
       kc(KSpecMemo, String.eq(sp_mtemplate(h), name) && String.eq(sp_mkey(h), key), u => h, u => sp_find(rest, name, key))
+
+@unsafe
+def sp_ordinal(
+  +ms: List<&2, KSpecMemo>,
+  +name: String,
+) -> U32:
+  match ms:
+    case Nil{}: 0
+    case Con{h, rest}: U32.add(kc(U32, String.eq(sp_mtemplate(h), name), u => 1, u => 0), sp_ordinal(rest, name))
 
 @unsafe
 def sp_done_memo(
@@ -656,7 +781,8 @@ def sp_shift(
   +t: KTerm,
   +offset: U32,
 ) -> KTerm:
-  KTerm{tg(t), nm(t), kc(U32, String.eq(tg(t), "Var") || String.eq(tg(t), "All") || String.eq(tg(t), "Lam") || String.eq(tg(t), "Bind") || String.eq(tg(t), "Sub"), u => U32.add(ix(t), offset), u => ix(t)), qt(t), sp_shifts(ks(t), offset), rm(t)}
+  kc(KTerm, core_literal(t), u => t, u =>
+    k_rebuild(t, nm(t), kc(U32, String.eq(tg(t), "Var") || String.eq(tg(t), "All") || String.eq(tg(t), "Lam") || String.eq(tg(t), "Bind") || String.eq(tg(t), "Sub"), u => U32.add(ix(t), offset), u => ix(t)), qt(t), sp_shifts(ks(t), offset), rm(t), kb(t), ke(t)))
 
 @unsafe
 def sp_shifts(ts, offset):
@@ -689,7 +815,7 @@ def sp_term(st, t, ctx, goal, owner, depth):
 
 @unsafe
 def sp_annotation(t, r):
-  KSpecTerm{sp_state(r), KTerm{tg(t), nm(t), ix(t), qt(t), Con{sp_value(r), Con{kid(t, 1), Nil{}}}, rm(t)}}
+  KSpecTerm{sp_state(r), k_with_children(t, Con{sp_value(r), Con{kid(t, 1), Nil{}}})}
 
 @unsafe
 def sp_lambda(st, t, ctx, goal, owner, depth):
@@ -697,7 +823,7 @@ def sp_lambda(st, t, ctx, goal, owner, depth):
 
 @unsafe
 def sp_single(t, r):
-  KSpecTerm{sp_state(r), KTerm{tg(t), nm(t), ix(t), qt(t), Con{sp_value(r), Nil{}}, rm(t)}}
+  KSpecTerm{sp_state(r), k_with_children(t, Con{sp_value(r), Nil{}})}
 
 @unsafe
 def sp_constructor(st, t, ctx, goal, owner, depth):
@@ -705,7 +831,7 @@ def sp_constructor(st, t, ctx, goal, owner, depth):
 
 @unsafe
 def sp_ctor_done(t, r):
-  KSpecTerm{sp_states(r), KTerm{tg(t), nm(t), ix(t), qt(t), sp_values(r), rm(t)}}
+  KSpecTerm{sp_states(r), k_with_children(t, sp_values(r))}
 
 @unsafe
 def sp_args(st, xs, ctx, ty, owner, depth):
@@ -733,7 +859,7 @@ def sp_spine(st, t, xs, ctx, owner, depth):
 
 @unsafe
 def sp_head(st, head, xs, ctx, owner, depth, d):
-  kc(KSpecTerm, String.eq(tg(strip(head)), "Ref") && U32.is_gt(dx(d), 0), u => sp_template(st, d, xs, ctx, owner, depth), u => sp_regular_head(st, head, xs, ctx, owner, depth))
+  kc(KSpecTerm, String.eq(tg(strip(head)), "Ref") && U32.is_gt(dx(d), 0), u => sp_template(st, head, d, xs, ctx, owner, depth), u => sp_regular_head(st, head, xs, ctx, owner, depth))
 
 @unsafe
 def sp_regular_head(st, head, xs, ctx, owner, depth):
@@ -748,30 +874,30 @@ def sp_apply_result(head, r):
   KSpecTerm{sp_states(r), norm_apply(head, sp_values(r))}
 
 @unsafe
-def sp_template(st, d, xs, ctx, owner, depth):
-  kc(KSpecTerm, U32.is_lt(terms_len(xs), dx(d)), u => KSpecTerm{sp_fail(st, "template requires all closed comptime arguments"), norm_apply(ref(dn(d)), xs)}, u => sp_template_args(st, d, sp_take(xs, dx(d)), sp_drop(xs, dx(d)), ctx, owner, depth))
+def sp_template(st, head, d, xs, ctx, owner, depth):
+  kc(KSpecTerm, U32.is_lt(terms_len(xs), dx(d)), u => KSpecTerm{sp_template_error(st, ctx, owner, head, "template requires all closed comptime arguments", "a template applied to closed ~ arguments (a def parameter is not comptime)"), norm_apply(ref(dn(d)), xs)}, u => sp_template_args(st, head, d, sp_take(xs, dx(d)), sp_drop(xs, dx(d)), ctx, owner, depth))
 
 @unsafe
-def sp_template_args(st, d, closed, rest, ctx, owner, depth):
-  sp_template_checked(st, d, closed, rest, ctx, owner, depth, template_args(KEnv{sp_book(st), owner, ref(owner), 0, Nil{}, du(d)}, dt(d), closed, dx(d)))
+def sp_template_args(st, head, d, closed, rest, ctx, owner, depth):
+  sp_template_checked(st, head, d, closed, rest, ctx, owner, depth, template_args(KEnv{sp_book(st), owner, ref(owner), 0, Nil{}, du(d)}, dt(d), closed, dx(d)))
 
 @unsafe
-def sp_template_checked(st, d, closed, rest, ctx, owner, depth, checked):
-  kc(KSpecTerm, good(checked), u => sp_template_key(st, d, closed, rest, ctx, owner, depth, sp_keys(closed)), u => KSpecTerm{sp_fail(st, ce(checked)), norm_apply(ref(dn(d)), norm_join(closed, rest))})
+def sp_template_checked(st, head, d, closed, rest, ctx, owner, depth, checked):
+  kc(KSpecTerm, good(checked), u => sp_template_key(st, head, d, closed, rest, ctx, owner, depth, sp_keys(closed)), u => KSpecTerm{sp_failed(st, dg_template_result(KEnv{sp_book(st), owner, ref(owner), 0, Nil{}, du(d)}, ctx, head, checked)), norm_apply(ref(dn(d)), norm_join(closed, rest))})
 
 @unsafe
-def sp_template_key(st, d, closed, rest, ctx, owner, depth, key):
-  kc(KSpecTerm, U32.is_gt(sp_len(key), 32768), u => KSpecTerm{sp_fail(st, "a comptime argument must stop growing"), ref(dn(d))}, u => sp_template_inst(rest, ctx, owner, depth, sp_instance(st, d, closed, owner, depth, key, sp_find(sp_memo(st), dn(d), key))))
+def sp_template_key(st, head, d, closed, rest, ctx, owner, depth, key):
+  kc(KSpecTerm, U32.is_gt(sp_len(key), 32768), u => KSpecTerm{sp_template_error(st, ctx, owner, head, "a comptime argument must stop growing", "a ~ argument that stops growing"), ref(dn(d))}, u => sp_template_inst(rest, ctx, owner, depth, sp_instance(st, head, ctx, d, closed, owner, depth, key, sp_find(sp_memo(st), dn(d), key))))
 
 @unsafe
 def sp_template_inst(rest, ctx, owner, depth, r):
   sp_apply_result(sp_value(r), sp_args(sp_state(r), rest, ctx, dt(lookup(sp_book(sp_state(r)), nm(sp_value(r)))), owner, depth))
 
 @unsafe
-def sp_instance(st, d, xs, owner, depth, key, memo):
+def sp_instance(st, head, ctx, d, xs, owner, depth, key, memo):
   kc(KSpecTerm, Bool.not(String.eq(sp_mname(memo), "")),
-   u => kc(KSpecTerm, sp_active(memo) && Bool.not(String.eq(sp_mname(memo), owner)), u => KSpecTerm{sp_fail(st, "nondecreasing cross-instance template recursion"), ref(sp_mname(memo))}, u => KSpecTerm{st, ref(sp_mname(memo))}),
-   u => kc(KSpecTerm, U32.is_ge(depth, 64), u => KSpecTerm{sp_fail(st, "template instantiation exceeds 64 levels"), ref(dn(d))}, u => sp_mint(st, d, xs, U32.add(depth, 1), key, dn(d) ++ "~" ++ U32.show(sp_serial(st)))))
+   u => kc(KSpecTerm, sp_active(memo) && Bool.not(String.eq(sp_mname(memo), owner)), u => KSpecTerm{sp_template_error(st, ctx, owner, head, "nondecreasing cross-instance template recursion", "a decreasing self-call (arguments are read left to right: each passed unchanged until one shrinks)"), ref(sp_mname(memo))}, u => KSpecTerm{st, ref(sp_mname(memo))}),
+   u => kc(KSpecTerm, U32.is_ge(depth, 64), u => KSpecTerm{sp_template_error(st, ctx, owner, head, "template instantiation exceeds 64 levels", "a template that stops instantiating itself (64 levels at most)"), ref(dn(d))}, u => sp_mint(st, d, xs, U32.add(depth, 1), key, dn(d) ++ "~" ++ U32.show(sp_ordinal(sp_memo(st), dn(d))))))
 
 @unsafe
 def sp_mint(st, d, xs, depth, key, name):
@@ -787,7 +913,7 @@ def sp_apply_template(body, xs):
 
 @unsafe
 def sp_mint_type(st, d, xs, depth, key, name, ty, body):
-  sp_mint_body(d, name, ty, sp_term(KSpecState{Con{KDef{name, "Def", U32.sub(da(d), dx(d)), 0, ty, atom("Absent"), Nil{}, False{}, du(d)}, sp_stamp(sp_book(st), U32.add(sp_fresh(st), norm_max(norm_max_term(dt(d)), norm_max_term(dv(d)))))}, Con{KSpecMemo{dn(d), key, name, True{}}, sp_memo(st)}, U32.add(sp_serial(st), 1), U32.add(U32.add(sp_fresh(st), norm_max(norm_max_term(dt(d)), norm_max_term(dv(d)))), 1), sp_error(st), sp_templates(st)}, body, Nil{}, ty, name, depth))
+  sp_mint_body(d, name, ty, sp_term(KSpecState{Con{KDef{name, "Def", U32.sub(da(d), dx(d)), 0, ty, atom("Absent"), Nil{}, False{}, du(d)}, sp_stamp(sp_book(st), U32.add(sp_fresh(st), norm_max(norm_max_term(dt(d)), norm_max_term(dv(d)))))}, Con{KSpecMemo{dn(d), key, name, True{}}, sp_memo(st)}, U32.add(U32.add(sp_fresh(st), norm_max(norm_max_term(dt(d)), norm_max_term(dv(d)))), 1), sp_checked(st), sp_templates(st)}, body, Nil{}, ty, name, depth))
 
 @unsafe
 def sp_mint_body(d, name, ty, r):
@@ -795,11 +921,11 @@ def sp_mint_body(d, name, ty, r):
 
 @unsafe
 def sp_validate(st, d):
-  kc(KSpecTerm, String.eq(sp_error(st), ""), u => sp_validate_done(st, d, check_definition(sp_book(st), d)), u => KSpecTerm{st, ref(dn(d))})
+  kc(KSpecTerm, String.eq(sp_error(st), ""), u => sp_validate_done(st, d, check_definition_result(sp_book(st), d)), u => KSpecTerm{st, ref(dn(d))})
 
 @unsafe
 def sp_validate_done(st, d, error):
-  kc(KSpecTerm, String.eq(error, ""), u => KSpecTerm{KSpecState{Con{d, index_remove(sp_book(st), dn(d))}, sp_done_memo(sp_memo(st), dn(d)), sp_serial(st), sp_fresh(st), sp_error(st), sp_templates(st)}, ref(dn(d))}, u => KSpecTerm{sp_fail(st, dn(d) ++ ": " ++ error), ref(dn(d))})
+  kc(KSpecTerm, good(error), u => KSpecTerm{KSpecState{Con{d, index_remove(sp_book(st), dn(d))}, sp_done_memo(sp_memo(st), dn(d)), sp_fresh(st), sp_checked(st), sp_templates(st)}, ref(dn(d))}, u => KSpecTerm{sp_failed(st, KChecked{ct(error), cy(error), cs(error), dn(d) ++ ": " ++ ce(error)}), ref(dn(d))})
 
 @unsafe
 def sp_match(st, t, ctx, goal, owner, depth):
@@ -815,11 +941,11 @@ def sp_match_ctor(st, t, ctx, goal, owner, depth, a, ctr):
 
 @unsafe
 def sp_match_hit(t, ctx, goal, owner, depth, a, r):
-  sp_pair(t, sp_value(r), sp_term(sp_state(r), kid(t, 1), ctx, all(qt(goal), nm(goal), ix(goal), KTerm{tg(a), nm(a), ix(a), qt(a), ks(a), Con{nm(t), rm(a)}}, kid(goal, 1)), owner, depth))
+  sp_pair(t, sp_value(r), sp_term(sp_state(r), kid(t, 1), ctx, all(qt(goal), nm(goal), ix(goal), KTerm{tg(a), nm(a), ix(a), qt(a), ks(a), Con{nm(t), rm(a)}, kb(a), ke(a)}, kid(goal, 1)), owner, depth))
 
 @unsafe
 def sp_pair(t, h, r):
-  KSpecTerm{sp_state(r), KTerm{tg(t), nm(t), ix(t), qt(t), Con{h, Con{sp_value(r), Nil{}}}, rm(t)}}
+  KSpecTerm{sp_state(r), k_with_children(t, Con{h, Con{sp_value(r), Nil{}}})}
 
 @unsafe
 def sp_let(st, xs, outer, ctx, goal, owner, depth):
@@ -835,7 +961,7 @@ def sp_let_binding(st, h, rest, outer, ctx, goal, owner, depth, ty):
 
 @unsafe
 def sp_let_bound(h, rest, outer, ctx, goal, owner, depth, ty, r):
-  sp_cons(KTerm{tg(h), nm(h), ix(h), qt(h), Con{sp_value(r), Nil{}}, rm(h)}, sp_let(sp_state(r), rest, outer, ctx_bind(ctx, ix(h), qt(h), nm(h), ty), goal, owner, depth))
+  sp_cons(k_with_children(h, Con{sp_value(r), Nil{}}), sp_let(sp_state(r), rest, outer, ctx_bind(ctx, ix(h), qt(h), nm(h), ty), goal, owner, depth))
 
 @unsafe
 def sp_let_body(r):
@@ -855,7 +981,7 @@ def sp_rewrite_type(st, t, ctx, owner, depth, eq):
 
 @unsafe
 def sp_rewrite_done(t, r):
-  KSpecTerm{sp_state(r), KTerm{tg(t), nm(t), ix(t), qt(t), Con{kid(t, 0), Con{kid(t, 1), Con{sp_value(r), Nil{}}}}, rm(t)}}
+  KSpecTerm{sp_state(r), k_with_children(t, Con{kid(t, 0), Con{kid(t, 1), Con{sp_value(r), Nil{}}}})}
 
 
 law sp_initial:
@@ -880,7 +1006,7 @@ law sp_neededs:
 
 @unsafe
 def sp_initial(book, bound):
-  KSpecState{sp_stamp(check_declarations(book, Nil{}), bound), Nil{}, 0, U32.add(bound, 1), "", sp_template_book(book)}
+  KSpecState{sp_stamp(check_declarations(book, Nil{}), bound), Nil{}, U32.add(bound, 1), bad(""), sp_template_book(book)}
 
 @unsafe
 def sp_stamp(book, bound):
@@ -909,7 +1035,7 @@ law sp_template_book:
 @unsafe
 def sp_templates(st):
   match st:
-    case KSpecState{book, memo, serial, fresh, error, templates}:
+    case KSpecState{book, memo, fresh, error, templates}:
       templates
 
 @unsafe

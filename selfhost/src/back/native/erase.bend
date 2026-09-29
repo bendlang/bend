@@ -71,13 +71,13 @@ def nc_erase_list(book, ts):
 @unsafe
 def nc_erase_app(+book: List<&2, KDef>, +t: KTerm) -> KTerm:
   nt_choose(KTerm, String.eq(tg(kid(t, 0)), "Ann"),
-    u => nt_choose(KTerm, U32.is_eq(qt(wnf(book, kid(kid(t, 0), 1))), 0), u => nc_erase(book, kid(t, 0)), u => kt(tg(t), nm(t), ix(t), qt(t), nc_erase_list(book, ks(t)))),
-    u => kt(tg(t), nm(t), ix(t), qt(t), nc_erase_list(book, ks(t))))
+    u => nt_choose(KTerm, U32.is_eq(qt(wnf(book, kid(kid(t, 0), 1))), 0), u => nc_erase(book, kid(t, 0)), u => k_rebuild(t, nm(t), ix(t), qt(t), nc_erase_list(book, ks(t)), Nil{}, 0, 0)),
+    u => k_rebuild(t, nm(t), ix(t), qt(t), nc_erase_list(book, ks(t)), Nil{}, 0, 0))
 
 @unsafe
 def nc_erase(book, t):
-  nt_choose(KTerm, String.eq(tg(t), "Var"), u => var(nm(t), ix(t)), u =>
+  kc(KTerm, core_literal(t), u => t, u => nt_choose(KTerm, String.eq(tg(t), "Var"), u => var(nm(t), ix(t)), u =>
   nt_choose(KTerm, String.eq(tg(t), "Ann"), u => nc_erase_annotated(book, kid(t, 0), wnf(book, kid(t, 1))), u =>
   nt_choose(KTerm, String.eq(tg(t), "Lam") && U32.is_eq(qt(t), 0), u => nc_erase(book, kid(t, 0)), u =>
   nt_choose(KTerm, String.eq(tg(t), "App"), u => nc_erase_app(book, t), u =>
-    kt(tg(t), nt_choose(String, String.eq(tg(t), "Ctr") || String.eq(tg(t), "Mat"), u => nc_ctor_identity(book, nm(t)), u => nm(t)), ix(t), qt(t), nc_erase_list(book, ks(t)))))))
+    k_rebuild(t, nt_choose(String, String.eq(tg(t), "Ctr") || String.eq(tg(t), "Mat"), u => nc_ctor_identity(book, nm(t)), u => nm(t)), ix(t), qt(t), nc_erase_list(book, ks(t)), Nil{}, 0, 0))))))

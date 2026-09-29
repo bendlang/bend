@@ -58,7 +58,8 @@ export function validatedCache(directory, api, base) {
   const apiSha=identity(api).sha256,baseSha=identity(base).sha256,canonical=fs.realpathSync(base);
   const file=path.join(directory,`base-${apiSha}-${baseSha}-${digest(canonical)}.json`);
   const c=json(file);
-  if(c.version!==2||c.compilerSha256!==apiSha||c.baseSha256!==baseSha||c.sourcePath!==canonical||c.validatedBy!=='check_book'||c.bookSha256!==digest(JSON.stringify(c.book)))
+  const sourceSpan=(c.version===4||(c.version===6&&c.termAbi===1))&&c.spanAbi===3&&c.sourceBegin===1&&c.sourceEnd===fs.readFileSync(base,'utf8').length+2;
+  if((c.version!==2&&!sourceSpan)||c.compilerSha256!==apiSha||c.baseSha256!==baseSha||c.sourcePath!==canonical||c.validatedBy!=='check_book'||c.bookSha256!==digest(JSON.stringify(c.book)))
     throw Error('Invalid API-specific checked Base cache: '+file);
   return identity(file);
 }

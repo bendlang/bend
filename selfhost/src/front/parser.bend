@@ -87,6 +87,8 @@ law f_brace_left:
 law f_equation:
   for +a: KTerm
   for +neg: Bool
+  for +opBegin: U32
+  for +opEnd: U32
   for +p: FParsed
   FParsed
 
@@ -94,6 +96,8 @@ law f_equation_type:
   for +a: KTerm
   for +b: KTerm
   for +neg: Bool
+  for +opBegin: U32
+  for +opEnd: U32
   for +p: FParsed
   FParsed
 
@@ -112,6 +116,8 @@ law f_grow_args:
 law f_binary:
   for +a: KTerm
   for +op: String
+  for +opBegin: U32
+  for +opEnd: U32
   for +min: U32
   for +p: FParsed
   FParsed
@@ -175,7 +181,7 @@ def f_expect(
 ) -> FParsed:
   match p:
     case FParsed{+n, +ts}:
-      f_choose(FParsed, f_eq(tg(n), "Error") || f_eq(f_tx(ts), s), u => FParsed{n, f_tl(ts)}, u => f_choose(FParsed, f_eq(s, ")") || f_eq(s, "}") || f_eq(s, "]"), u => fpe_error(ts, "expected " ++ s, "'" ++ s ++ "'"), u => f_err(ts, "expected " ++ s)))
+      f_choose(FParsed, f_eq(tg(n), "Error"), u => FParsed{n, ts}, u => f_choose(FParsed, f_eq(f_tx(ts), s), u => FParsed{n, f_tl(ts)}, u => fpe_error(ts, "expected " ++ s, "'" ++ s ++ "'")))
 
 @unsafe
 def f_app(
@@ -195,7 +201,7 @@ def f_args_base(
   +acc: List<&2, KTerm>,
 ) -> FParsed:
   +spaced = f_space(ts)
-  f_choose(FParsed, f_eq(f_tx(spaced), ";"), u => fpe_error(spaced, f_choose(String, f_eq(end, "]"), u => "expected term; a list does not use semicolon separators", u => "expected term; arguments do not use semicolon separators"), "a term"), u => f_choose(FParsed, f_eq(f_tx(spaced), end), u => FParsed{kt("Args", "", 0, 1, List.reverse(&2, KTerm, acc)), f_tl(spaced)}, u => f_arg_next(f_expr(spaced, 0), end, acc)))
+  f_choose(FParsed, f_eq(f_tx(spaced), ";"), u => fpe_error(spaced, f_choose(String, f_eq(end, "]"), u => "expected term; a list does not use semicolon separators", u => "expected term; arguments do not use semicolon separators"), "a term"), u => f_choose(FParsed, f_eq(f_tx(spaced), end), u => FParsed{kt("Args", "", 0, 1, List.reverse(&2, KTerm, acc)), f_tl(spaced)}, u => f_arg_next(f_choose(FParsed, f_eq(end, ")") && f_eq(f_tx(spaced), "~"), u => f_locate(f_template_expr(f_expr(f_tl(spaced), 0)), f_begin(spaced), False{}, False{}, False{}), u => f_expr(spaced, 0)), end, acc)))
 
 @unsafe
 def f_arg_next(p, end, acc):
@@ -211,7 +217,7 @@ def f_expr(ts, min):
 def f_atom_base(
   +ts: List<&2, FToken>,
 ) -> FParsed:
-  f_choose(FParsed, f_eq(f_tx(ts), "++"), u => f_atom_base(Con{FToken{"+", f_line(ts), f_col(ts), 0}, Con{FToken{"+", f_line(ts), U32.add(f_col(ts), 1), 0}, f_tl(ts)}}),
+  f_choose(FParsed, f_eq(f_tx(ts), "++"), u => f_atom_base(Con{FToken{"+", f_line(ts), f_col(ts), 0, f_begin(ts), f_cursor_add(f_begin(ts), 1), f_previous_end(ts)}, Con{FToken{"+", f_line(ts), U32.add(f_col(ts), 1), 0, f_cursor_add(f_begin(ts), 1), f_end(ts), f_cursor_add(f_begin(ts), 1)}, f_tl(ts)}}),
     u => f_choose(FParsed, f_eq(f_tx(ts), "("), u => f_group(f_body(f_tl(ts))),
     u => f_choose(FParsed, f_eq(f_tx(ts), "{"), u => f_brace(f_tl(ts)),
     u => f_choose(FParsed, f_eq(f_tx(ts), "["), u => f_array(f_tl(ts)),
@@ -219,13 +225,13 @@ def f_atom_base(
     u => f_choose(FParsed, f_eq(f_tx(ts), "&"), u => f_grade(f_tl(ts)),
     u => f_choose(FParsed, f_eq(f_tx(ts), "+") || f_eq(f_tx(ts), "+bind"), u => f_mark(f_expr(f_tl(ts), 12), 2),
     u => f_choose(FParsed, f_eq(f_tx(ts), "?"), u => FParsed{kt("Hol", f_tx(f_tl(ts)), 0, 0, Nil{}), f_tl(f_tl(ts))},
-    u => f_choose(FParsed, f_eq(f_tx(ts), "\\"), u => f_matcher(f_tl(f_tl(ts))),
+    u => f_choose(FParsed, f_eq(f_tx(ts), "\\"), u => f_choose(FParsed, f_eq(f_tx(f_tl(ts)), "{"), u => f_matcher(f_tl(f_tl(ts))), u => fpe_error(f_tl(ts), "expected {", "'{'")),
     u => f_choose(FParsed, f_eq(f_tx(ts), "Type") || f_eq(f_tx(ts), "Data"), u => FParsed{kt("Typ", "", 0, 0, [kt("Qua", "", 0, f_choose(U32, f_eq(f_tx(ts), "Data"), u => 2, u => 1), Nil{})]), f_tl(ts)},
     u => f_choose(FParsed, f_eq(f_tx(ts), "Quant"), u => FParsed{kt("Qnt", "", 0, 0, Nil{}), f_tl(ts)},
     u => f_choose(FParsed, f_eq(f_tx(ts), "Kind"), u => f_kind_wrap(f_expect(f_expr(f_tl(f_tl(ts)), 0), ")")),
     u => f_choose(FParsed, U32.is_eq(f_kind_token(ts), 2), u => FParsed{kt("Literal", f_tx(ts), 0, 1, Nil{}), f_tl(ts)},
-    u => f_choose(FParsed, U32.is_eq(f_kind_token(ts), 1) && Bool.not(f_reserved(f_tx(ts))), u => f_atom_name(ts),
-    u => f_choose(FParsed, f_reserved(f_tx(ts)), u => f_err(ts, "expected term"), u => fpe_error(ts, "expected term", "a term"))))))))))))))))
+    u => f_choose(FParsed, U32.is_eq(f_kind_token(ts), 1) && Bool.not(f_reserved(f_tx(ts))), u => f_choose(FParsed, f_ascii_alpha(f_head(f_tx(ts))) || f_ascii_digit(f_head(f_tx(ts))) || Char.is_eq(f_head(f_tx(ts)), '_'), u => f_atom_name(ts), u => fpe_error(ts, "expected term", "a term")),
+    u => f_choose(FParsed, f_reserved(f_tx(ts)), u => f_choose(FParsed, f_eq(f_tx(ts), "return"), u => fpe_word(ts, "return outside do", "a do-block heading this return"), u => fpe_error(ts, "expected term", "a term")), u => fpe_error(ts, "expected term", "a term"))))))))))))))))
 
 # A constructor brace belongs to the raw name only when lexically adjacent.
 # General term growth must not absorb the next independent braced value.
@@ -292,7 +298,7 @@ def f_mark(p, q):
   match p:
     case FParsed{+n, ts}:
       f_choose(FParsed, f_eq(tg(n), "Error"), u => FParsed{n, ts},
-        u => f_choose(FParsed, (f_eq(tg(n), "Ref") && Bool.not(U32.is_eq(qt(n), 3))) || f_eq(tg(n), "ADT") || (f_eq(tg(n), "Call") && U32.is_eq(terms_len(ks(n)), 1)), u => FParsed{KTerm{tg(n), nm(n), ix(n), q, ks(n), rm(n)}, ts},
+        u => f_choose(FParsed, (f_eq(tg(n), "Ref") && Bool.not(U32.is_eq(qt(n), 3))) || f_eq(tg(n), "ADT") || (f_eq(tg(n), "Call") && U32.is_eq(terms_len(ks(n)), 1)), u => FParsed{KTerm{tg(n), nm(n), ix(n), q, ks(n), rm(n), kb(n), ke(n)}, ts},
         u => fpe_error(f_space(ts), "+ requires a binder or quantified datatype", "a quantified datatype after + (+D<..> sets D's leading quantities to &2)")))
 
 @unsafe
@@ -313,19 +319,19 @@ def f_unmark(
 
 @unsafe
 def f_all(ts, exi):
-  f_choose(FParsed, f_eq(f_tx(ts), "~"), u => f_err(ts, "~ is only allowed on leading def or law template parameters"), u => f_all_domain(f_tx(f_unmark(ts)), f_atid(ts), f_quant(ts), exi, f_expect(f_expr(f_tl(f_tl(f_unmark(ts))), 1), "->")))
+  f_choose(FParsed, Bool.not(f_valid_name(f_tx(f_unmark(ts)))) || f_eq(f_tx(ts), "~"), u => fpe_name_error(f_choose(List<&2,FToken>, f_eq(f_tx(ts), "~"), u => ts, u => f_unmark(ts))), u => f_all_domain(f_tx(f_unmark(ts)), f_atid(ts), f_quant(ts), exi, f_expect(f_expr_after(f_expect(FParsed{atom("Absent"), f_tl(f_unmark(ts))}, ":"), 1), "->")))
 
 @unsafe
 def f_all_domain(name, id, q, exi, p):
   match p:
     case FParsed{a, ts}:
-      f_all_body(name, id, q, exi, a, f_expr(ts, 0))
+      f_choose(FParsed, f_eq(tg(a), "Error"), u => FParsed{a, ts}, u => f_all_body(name, id, q, exi, a, f_expr(ts, 0)))
 
 @unsafe
 def f_all_body(name, id, q, exi, a, p):
   match p:
     case FParsed{b, ts}:
-      FParsed{f_choose(KTerm, exi, u => f_app(kt("Ref", "Exists", 0, 1, Nil{}), [a, kt("Lam", name, id, q, [b])]), u => kt("All", name, id, q, [a, b])), ts}
+      FParsed{f_choose(KTerm, exi, u => f_app(kt("Ref", "Exists", 0, 1, Nil{}), [a, k_lam(name, id, q, [b], 0, 0, False{})]), u => kt("All", name, id, q, [a, b])), ts}
 
 @unsafe
 def f_group(p):
@@ -340,7 +346,7 @@ def f_group_ann(
 ) -> FParsed:
   match p:
     case FParsed{ty, ts}:
-      FParsed{kt("Ann", "", 0, 1, [n, ty]), ts}
+      FParsed{f_choose(KTerm, f_eq(tg(n), "Error"), u => n, u => f_choose(KTerm, f_eq(tg(ty), "Error"), u => ty, u => kt("Ann", "", 0, 1, [n, ty]))), ts}
 
 @unsafe
 def f_tuple(n, p):
@@ -372,19 +378,19 @@ def f_brace(ts):
 def f_brace_left(p):
   match p:
     case FParsed{+a, +ts}:
-      f_choose(FParsed, f_eq(f_tx(ts), "==") || f_eq(f_tx(ts), "!="), u => f_equation(a, f_eq(f_tx(ts), "!="), f_expect(f_expr(f_tl(ts), 0), ":")), u => f_group_ann(a, f_expect(f_expr(f_pr(f_expect(FParsed{a, ts}, ":")), 0), "}")))
+      f_choose(FParsed, f_eq(f_tx(ts), "==") || f_eq(f_tx(ts), "!="), u => f_equation(a, f_eq(f_tx(ts), "!="), f_begin(ts), f_end(ts), f_expect(f_expr(f_tl(ts), 0), ":")), u => f_group_ann(a, f_expect(f_expr_after(f_expect(FParsed{a, ts}, ":"), 0), "}")))
 
 @unsafe
-def f_equation(a, neg, p):
+def f_equation(a, neg, opBegin, opEnd, p):
   match p:
     case FParsed{b, ts}:
-      f_equation_type(a, b, neg, f_expect(f_expr(ts, 0), "}"))
+      f_choose(FParsed, f_eq(tg(b), "Error"), u => FParsed{b, ts}, u => f_equation_type(a, b, neg, opBegin, opEnd, f_expect(f_expr(ts, 0), "}")))
 
 @unsafe
-def f_equation_type(a, b, neg, p):
+def f_equation_type(a, b, neg, opBegin, opEnd, p):
   match p:
     case FParsed{ty, ts}:
-      FParsed{f_choose(KTerm, neg, u => kt("All", "_", 0, 1, [kt("Eql", "", 0, 1, [a, b, ty]), kt("Ref", "Empty", 0, 1, Nil{})]), u => kt("Eql", "", 0, 1, [a, b, ty])), ts}
+      FParsed{f_choose(KTerm, neg, u => kt("All", "_", 0, 1, [kt("Eql", "", 0, 1, [a, b, ty]), kt_span("FGlobal", "Empty", 0, 1, Nil{}, opBegin, opEnd)]), u => kt("Eql", "", 0, 1, [a, b, ty])), ts}
 
 @unsafe
 def f_prec(
@@ -414,7 +420,7 @@ def f_grow_base(
         u => f_choose(FParsed, f_eq(f_tx(ts), "(") || (f_eq(f_tx(ts), "<") && Char.is_upper(f_head(nm(n)))),
           u => f_grow_args(n, f_tx(ts), min, f_choose(FParsed, f_eq(f_tx(ts), "("), u => f_args(f_tl(ts), ")", Nil{}), u => f_family_first(f_space(f_tl(ts))))),
         u => f_choose(FParsed, U32.is_gt(f_prec(f_tx(ts)), min) && Bool.not((f_eq(f_tx(ts), "%") || f_eq(f_tx(ts), "-")) && U32.is_eq(f_col(f_tl(ts)), U32.add(f_col(ts), 1)) && Char.is_alpha(f_head(f_tx(f_tl(ts))))) && Bool.not(f_eq(f_tx(ts), ">")) && Bool.not(f_eq(f_tx(ts), ">>") && (f_eq(f_tx(f_tl(ts)), ")") || f_eq(f_tx(f_tl(ts)), "}") || f_eq(f_tx(f_tl(ts)), ",") || f_eq(f_tx(f_tl(ts)), ":") || f_eq(f_tx(f_tl(ts)), ">") || f_eq(f_tx(f_tl(ts)), "\n") || f_eq(f_tx(f_tl(ts)), "->") || f_eq(f_tx(f_tl(ts)), "<eof>") || f_eq(f_tx(f_tl(ts)), "]"))),
-          u => f_binary(n, f_tx(ts), min, f_rhs(f_tl(ts), f_tx(ts), f_choose(U32, f_eq(f_tx(ts), "=>") || f_eq(f_tx(ts), "->") || f_eq(f_tx(ts), "<>") || f_eq(f_tx(ts), "&") || f_eq(f_tx(ts), "|"), u => U32.sub(f_prec(f_tx(ts)), 1), u => f_prec(f_tx(ts))))),
+          u => f_binary(n, f_tx(ts), f_begin(ts), f_end(ts), min, f_rhs(f_tl(ts), f_tx(ts), f_choose(U32, f_eq(f_tx(ts), "=>") || f_eq(f_tx(ts), "->") || f_eq(f_tx(ts), "<>") || f_eq(f_tx(ts), "&") || f_eq(f_tx(ts), "|"), u => U32.sub(f_prec(f_tx(ts)), 1), u => f_prec(f_tx(ts))))),
           u => FParsed{n, ts})))
 
 # The first angle argument is parsed at comparison precedence. Compound type
@@ -430,27 +436,27 @@ def f_family_first_done(+p: FParsed) -> FParsed:
       f_choose(FParsed, f_eq(tg(n), "Error"), u => FParsed{n, ts},
         u => f_choose(FParsed, f_eq(f_tx(f_space(ts)), "&") || f_eq(f_tx(f_space(ts)), "|") || f_eq(f_tx(f_space(ts)), "->"),
           u => fpe_error(f_space(ts), "a compound type argument takes parentheses", "'>' or ',' (a compound type argument takes parens: F<(A & B)>)"),
-          u => f_arg_next(FParsed{n, ts}, ">", Nil{})))
+          u => f_family_range(f_arg_next(FParsed{n, ts}, ">", Nil{}), f_begin(f_space(ts)))))
 
 @unsafe
 def f_grow_args(n, op, min, p):
   match p:
     case FParsed{+args, ts}:
-      f_choose(FParsed, f_eq(tg(args), "Error"), u => FParsed{args, ts}, u => f_grow(FParsed{f_choose(KTerm, f_eq(op, "("), u => kt("Call", "", 0, 1, Con{n, ks(args)}), u => kt("ADT", nm(n), ix(n), qt(n), ks(args))), ts}, min))
+      f_choose(FParsed, f_eq(tg(args), "Error"), u => FParsed{args, ts}, u => f_grow(FParsed{f_choose(KTerm, f_eq(op, "("), u => kt_span("Call", "", 0, 1, Con{n, ks(args)}, kb(n), f_previous_end(ts)), u => kt_span("ADT", nm(n), ix(n), qt(n), ks(args), kb(n), f_choose(U32, U32.is_gt(ke(args), 0), u => ke(args), u => f_previous_end(ts)))), ts}, min))
 
 @unsafe
-def f_binary(a, op, min, p):
+def f_binary(a, op, opBegin, opEnd, min, p):
   match p:
     case FParsed{b, ts}:
-      f_grow(FParsed{f_binary_plain(a, op, b), ts}, min)
+      f_choose(FParsed, f_choose(Bool, f_eq(tg(b), "Error"), u => f_choose(Bool, f_eq(op, "=>"), u => Bool.not(String.contains(nm(a), ".") || Bool.not(f_eq(tg(a), "Ref") && f_valid_name(nm(a)))), u => True{}), u => False{}), u => FParsed{b, ts}, u => f_grow(FParsed{f_binary_plain(a, op, b, opBegin, opEnd, kb(a), f_begin(f_space(ts))), ts}, min))
 
 @unsafe
-def f_binary_plain(a, op, b):
-  f_choose(KTerm, f_eq(op, "=>"), u => f_lambda_valid(a, b),
-    u => f_choose(KTerm, f_eq(op, "->"), u => kt("All", "_", ix(a), 1, [a, b]),
-    u => f_choose(KTerm, f_eq(op, "<>"), u => kt("Ctr", "Con", 0, 1, [a, b]),
-    u => f_choose(KTerm, f_eq(op, "<&>"), u => kt("Min", "", 0, 1, [a, b]),
-    u => f_app(kt("Ref", f_operator(op), 0, 1, Nil{}), [a, b])))))
+def f_binary_plain(a, op, b, opBegin, opEnd, begin, end):
+  f_choose(KTerm, f_eq(op, "=>"), u => f_lambda_valid(a, b, opEnd),
+    u => f_choose(KTerm, f_eq(op, "->"), u => kt_span("All", "_", ix(a), 1, [a, b], begin, end),
+    u => f_choose(KTerm, f_eq(op, "<>"), u => kt_span("Ctr", "Con", 0, 1, [a, b], begin, end),
+    u => f_choose(KTerm, f_eq(op, "<&>"), u => kt_span("Min", "", 0, 1, [a, b], begin, end),
+    u => f_app_span(kt_span("Ref", f_operator(op), 0, 1, Nil{}, f_choose(U32, f_eq(op, "&") || f_eq(op, "|"), u => begin, u => opBegin), f_choose(U32, f_eq(op, "&") || f_eq(op, "|"), u => end, u => opEnd)), [a, b], begin, end)))))
 
 @unsafe
 def f_operator(s):
@@ -480,23 +486,27 @@ def f_matcher_tail(name, n, p):
 
 
 @unsafe
-def f_atom(ts):
-  f_choose(FParsed, f_eq(f_tx(ts), "~"), u => f_template_expr(f_expr(f_tl(ts), 0)), u => f_choose(FParsed, f_eq(f_tx(ts), "do"), u => f_do_start(f_tl(ts)), u => f_choose(FParsed, f_eq(f_tx(ts), "%"), u => f_rewrite(f_tl(ts)), u => f_atom_base(ts))))
+def f_atom_raw(+ts: List<&2,FToken>) -> FParsed:
+  f_choose(FParsed, f_eq(f_tx(ts), "do"), u => f_do_start(f_tl(ts), f_begin(ts)), u => f_choose(FParsed, f_eq(f_tx(ts), "%"), u => f_rewrite(f_tl(ts)), u => f_atom_base(ts)))
 
 @unsafe
 def f_args(ts, end, acc):
-  f_choose(FParsed, f_eq(end, ">") && f_eq(f_tx(ts), ">>"), u => FParsed{kt("Args", "", 0, 1, List.reverse(&2, KTerm, acc)), Con{FToken{">", f_line(ts), U32.add(f_col(ts), 1), 0}, f_tl(ts)}}, u => f_args_base(ts, end, acc))
+  f_choose(FParsed, f_eq(end, ">") && f_eq(f_tx(ts), ">>"), u => FParsed{kt("Args", "", 0, 1, List.reverse(&2, KTerm, acc)), Con{FToken{">", f_line(ts), U32.add(f_col(ts), 1), 0, f_cursor_add(f_begin(ts), 1), f_end(ts), f_cursor_add(f_begin(ts), 1)}, f_tl(ts)}}, u => f_args_base(ts, end, acc))
 
 @unsafe
 def f_grow(p, min):
   match p:
     case FParsed{n, +ts}:
-      f_choose(FParsed, f_eq(f_tx(ts), "\n") && U32.is_gt(f_prec(f_tx(f_skip(ts))), 0) && Bool.not((f_eq(f_tx(f_skip(ts)), "%") || f_eq(f_tx(f_skip(ts)), "-")) && U32.is_eq(f_col(f_tl(f_skip(ts))), U32.add(f_col(f_skip(ts)), 1))), u => f_grow_base(FParsed{n, f_skip(ts)}, min), u => f_choose(FParsed, f_eq(f_tx(ts), "!"), u => f_bang(n, ts, min), u => f_choose(FParsed, f_eq(f_tx(ts), "["), u => f_index(n, f_expect(f_expr(f_tl(ts), 0), "]"), min), u => f_grow_base(FParsed{n, ts}, min))))
+      f_choose(FParsed, f_eq(f_tx(ts), "\n") && U32.is_gt(f_prec(f_tx(f_skip(ts))), 0) && Bool.not((f_eq(f_tx(f_skip(ts)), "%") || f_eq(f_tx(f_skip(ts)), "-")) && U32.is_eq(f_col(f_tl(f_skip(ts))), U32.add(f_col(f_skip(ts)), 1))), u => f_grow_base(FParsed{n, f_skip(ts)}, min), u => f_choose(FParsed, f_eq(f_tx(ts), "!") && f_eq(f_tx(f_tl(ts)), "(") && U32.is_eq(f_line(ts), f_line(f_tl(ts))) && U32.is_eq(f_col(f_tl(ts)), U32.add(f_col(ts), 1)), u => f_bang(n, ts, min), u => f_choose(FParsed, f_eq(f_tx(ts), "["), u => f_index(n, f_expect(f_expr(f_tl(ts), 0), "]"), min), u => f_grow_base(FParsed{n, ts}, min))))
 
 law f_binary_plain:
   for +a: KTerm
   for +op: String
   for +b: KTerm
+  for +opBegin: U32
+  for +opEnd: U32
+  for +begin: U32
+  for +end: U32
   KTerm
 
 law f_rhs:
@@ -537,6 +547,7 @@ law fpe_here:
 law fpe_message:
   for +source: String
   for +offset: U32
+  for +end: U32
   for +error: KTerm
   for +observed: String
   String
@@ -566,7 +577,7 @@ def fpe_finish(
 
 @unsafe
 def fpe_render(source, error):
-  f_choose(String, String.eq(tg(error), "Absent"), u => "", u => f_choose(String, String.eq(tg(error), "Error") && String.eq(tg(kid(error, 0)), "ParseExpected") && String.eq(tg(kid(error, 1)), "ParseToken") && U32.is_gt(ix(error), 0), u => fpe_seek(source, source, 1, 0, 0, error), u => nm(error)))
+  f_choose(String, String.eq(tg(error), "Absent"), u => "", u => f_choose(String, String.eq(tg(error), "Error") && String.eq(tg(kid(error, 0)), "ParseExpected") && String.eq(tg(kid(error, 1)), "ParseToken"), u => f_choose(String, U32.is_gt(ix(error), 0), u => fpe_seek(source, source, 1, 0, 0, error), u => f_choose(String, f_eq(nm(kid(error, 1)), "<eof>"), u => fpe_eof(source, source, 0, error), u => nm(error))), u => nm(error)))
 
 @unsafe
 def fpe_seek(source, rest, line, column, offset, error):
@@ -574,18 +585,161 @@ def fpe_seek(source, rest, line, column, offset, error):
 
 @unsafe
 def fpe_here(source, rest, offset, error):
-  f_choose(String, String.is_empty(rest), u => f_choose(String, String.eq(nm(kid(error, 1)), "<eof>"), u => fpe_message(source, offset, error, "end of input"), u => nm(error)), u => f_choose(String, Bool.not(U32.is_eq(Char.to_u32(f_head(rest)), Char.to_u32(f_head(nm(kid(error, 1)))))) || U32.is_gt(Char.to_u32(f_head(rest)), 65535) || (U32.is_ge(Char.to_u32(f_head(rest)), 55296) && U32.is_le(Char.to_u32(f_head(rest)), 57343)), u => nm(error), u => fpe_message(source, offset, error, "'" ++ SCon{f_head(rest), ""} ++ "'")))
+  f_choose(String, String.is_empty(rest), u => f_choose(String, String.eq(nm(kid(error, 1)), "<eof>"), u => fpe_observe(source, rest, offset, error, "end of input"), u => nm(error)), u => f_choose(String, Bool.not(U32.is_eq(Char.to_u32(f_head(rest)), Char.to_u32(f_head(nm(kid(error, 1)))))) || U32.is_gt(Char.to_u32(f_head(rest)), 65535) || (U32.is_ge(Char.to_u32(f_head(rest)), 55296) && U32.is_le(Char.to_u32(f_head(rest)), 57343)), u => nm(error), u => fpe_observe(source, rest, offset, error, "'" ++ SCon{f_head(rest), ""} ++ "'")))
 
 @unsafe
-def fpe_message(source, offset, error, observed):
-  "Error:\n- expected : " ++ nm(kid(error, 0)) ++ "\n- observed : " ++ observed ++ "\nLocation:" ++ dg_snippet(DSpan{source, offset, offset})
+def fpe_message(source, offset, end, error, observed):
+  "Error:\n- expected : " ++ nm(kid(error, 0)) ++ "\n- observed : " ++ observed ++ "\nLocation:" ++ fpe_snippet(source, offset, end, error)
 
-# The pinned parser tests constructor freshness immediately after its name.
-# A next-token position is equivalent only when the name and brace are adjacent.
+# A range is explicit producer data; point diagnostics retain their old path.
 @unsafe
-def fpe_fresh(
-  +ts: List<&2,FToken>,
-  +legacy: String,
-  +expected: String,
-) -> FParsed:
-  f_choose(FParsed, U32.is_eq(f_line(ts), f_line(f_tl(ts))) && U32.is_eq(f_col(f_tl(ts)), U32.add(f_col(ts), U32.from_nat(String.length(f_tx(ts))))), u => fpe_error(f_tl(ts), legacy, expected), u => f_err(f_tl(ts), legacy))
+def fpe_span(+start: List<&2,FToken>, +end: List<&2,FToken>, +legacy: String, +expected: String, +observed: String) -> FParsed:
+  FParsed{kt("Error", nm(f_pn(f_err(start, legacy))), f_line(start), f_col(start), [kt("ParseExpected", expected, 0, 0, Nil{}), kt("ParseToken", f_tx(start), 0, 0, Nil{}), kt("ParseRange", observed, f_line(end), f_col(end), Nil{})]), Nil{}}
+
+@unsafe
+def fpe_word(+ts: List<&2,FToken>, +legacy: String, +expected: String) -> FParsed:
+  fpe_span(ts, [FToken{"", f_line(ts), U32.add(f_col(ts), U32.from_nat(String.length(f_tx(ts)))), 0, f_end(ts), f_end(ts), f_end(ts)}], legacy, expected, "")
+
+@unsafe
+def fpe_observe(+source: String, +rest: String, +offset: U32, +error: KTerm, +observed: String) -> String:
+  f_choose(String, f_eq(tg(kid(error, 2)), "ParseLine"), u => fpe_message(source, offset, offset, error, "'" ++ fpe_line_text(String.lines(source), ix(error)) ++ "'"), u => f_choose(String, f_eq(tg(kid(error, 2)), "ParseRange"), u => fpe_range(source, rest, ix(error), qt(error), offset, offset, error, ""), u => fpe_message(source, offset, offset, error, observed)))
+
+@unsafe
+def fpe_range(+source: String, +rest: String, +line: U32, +column: U32, +offset: U32, +start: U32, +error: KTerm, +acc: String) -> String:
+  f_choose(String, U32.is_eq(line, ix(kid(error, 2))) && U32.is_eq(column, qt(kid(error, 2))),
+    u => fpe_message(source, start, offset, error, f_choose(String, String.is_empty(nm(kid(error, 2))), u => "'" ++ String.reverse(acc) ++ "'", u => nm(kid(error, 2)))),
+    u => f_choose(String, String.is_empty(rest), u => nm(error), u => fpe_range(source, f_tail(rest), f_choose(U32, Char.is_eq(f_head(rest), '\n'), u => U32.add(line, 1), u => line), f_choose(U32, Char.is_eq(f_head(rest), '\n'), u => 0, u => U32.add(column, 1)), U32.add(offset, dg_units(f_head(rest))), start, error, SCon{f_head(rest), acc})))
+
+@unsafe
+def f_expr_after(+p: FParsed, +min: U32) -> FParsed:
+  match p:
+    case FParsed{n, ts}: f_choose(FParsed, f_eq(tg(n), "Error"), u => FParsed{n, ts}, u => f_expr(ts, min))
+
+@unsafe
+def f_body_after(+p: FParsed) -> FParsed:
+  match p:
+    case FParsed{n, ts}: f_choose(FParsed, f_eq(tg(n), "Error"), u => FParsed{n, ts}, u => f_body(ts))
+
+@unsafe
+def fpe_eof(+source: String, +rest: String, +offset: U32, +error: KTerm) -> String:
+  f_choose(String, String.is_empty(rest), u => fpe_message(source, offset, offset, error, "end of input"), u => fpe_eof(source, f_tail(rest), U32.add(offset, dg_units(f_head(rest))), error))
+
+
+@unsafe
+def fpe_name_error(+ts: List<&2,FToken>) -> FParsed:
+  f_choose(FParsed, f_ascii_alpha(f_head(f_tx(ts))) || Char.is_eq(f_head(f_tx(ts)), '_'),
+    u => fpe_word(ts, "invalid name", f_choose(String, f_reserved(f_tx(ts)), u => "a name (got the keyword '" ++ f_tx(ts) ++ "')", u => "a name (words joined by dots, got '" ++ f_tx(ts) ++ "')")),
+    u => fpe_error(ts, "expected a name", "a name"))
+
+@unsafe
+def f_atom(ts):
+  f_locate(f_atom_raw(ts), f_begin(ts), f_eq(f_tx(ts), "+") || f_eq(f_tx(ts), "+bind") || f_eq(f_tx(ts), "++"), f_eq(f_tx(ts), "@") || (f_eq(f_tx(ts), "&") && Bool.not(f_eq(f_tx(f_tl(ts)), "0") || f_eq(f_tx(f_tl(ts)), "1") || f_eq(f_tx(f_tl(ts)), "2"))) || f_eq(f_tx(ts), "+") || f_eq(f_tx(ts), "+bind") || (String.ends_with(f_tx(ts), "n") && f_eq(f_tx(f_tl(ts)), "+")), f_eq(f_tx(ts), "[") || f_eq(f_tx(ts), "(") || f_eq(f_tx(ts), "&") || f_eq(f_tx(ts), "\\"))
+
+@unsafe
+def f_locate(+p: FParsed, +begin: U32, +force: Bool, +spaced: Bool, +created: Bool) -> FParsed:
+  match p:
+    case FParsed{n, ts}:
+      +end = f_choose(U32, spaced, u => f_begin(f_space(ts)), u => f_previous_end(ts))
+      FParsed{f_choose(KTerm, U32.is_eq(begin, 0) || U32.is_lt(end, begin) || f_eq(tg(n), "Error") || (U32.is_gt(kb(n), 0) && Bool.not(force)), u => n, u => f_located_term(n, begin, end, created)), ts}
+
+@unsafe
+def f_family_range(+p: FParsed, +end: U32) -> FParsed:
+  match p:
+    case FParsed{n, ts}: FParsed{f_choose(KTerm, f_eq(tg(n), "Error"), u => n, u => k_with_span(n, end, end)), ts}
+
+# Only explicitly desugared list/tuple/existential/matcher trees use this walk.
+# Existing child origins are boundaries, so parsed subtrees are never revisited.
+@unsafe
+def f_located_term(+t: KTerm, +begin: U32, +end: U32, +created: Bool) -> KTerm:
+  f_choose(KTerm, created, u => f_span_created(t, begin, end), u => k_with_span(t, begin, end))
+
+@unsafe
+def f_span_created(+t: KTerm, +begin: U32, +end: U32) -> KTerm:
+  match t:
+    case KTerm{tag, name, id, quant, kids, removed, oldBegin, oldEnd}:
+      f_choose(KTerm, U32.is_eq(begin, 0) || U32.is_gt(oldBegin, 0), u => t,
+        u => KTerm{tag, name, id, quant, f_spans_created(kids, begin, end), removed, begin, end})
+    case KLambda{name, id, quant, kids, removed, oldBegin, oldEnd, present}:
+      f_choose(KTerm, U32.is_eq(begin, 0) || U32.is_gt(oldBegin, 0), u => t,
+        u => KLambda{name, id, quant, f_spans_created(kids, begin, end), removed, begin, end, present})
+    case KLiteral{kind, number, text, literalBegin, literalEnd}:
+      f_choose(KTerm, U32.is_eq(begin, 0) || U32.is_gt(literalBegin, 0), u => t, u => k_with_span(t, begin, end))
+
+@unsafe
+def f_spans_created(+terms: List<&2,KTerm>, +begin: U32, +end: U32) -> List<&2,KTerm>:
+  match terms:
+    case Nil{}: Nil{}
+    case Con{term, rest}: Con{f_span_created(term, begin, end), f_spans_created(rest, begin, end)}
+
+@unsafe
+def f_app_span(+f: KTerm, +xs: List<&2,KTerm>, +begin: U32, +end: U32) -> KTerm:
+  match xs:
+    case Nil{}: f
+    case Con{x, rest}: f_app_span(kt_span("App", "", 0, 1, [f, x], begin, end), rest, begin, end)
+
+# Semantic parser errors carry explicit producer data and an actual term range.
+# Their historical fallback remains available to deliberately unlocated callers.
+@unsafe
+def fpe_message_at(+term: KTerm, +legacy: String, +message: String) -> KTerm:
+  kt_span("Error", legacy, 0, 0, [kt("ParseMessage", message, 0, 0, Nil{})], kb(term), ke(term))
+
+@unsafe
+def fpe_expected_at(+term: KTerm, +legacy: String, +expected: String, +observed: String) -> KTerm:
+  kt_span("Error", legacy, 0, 0, [kt("ParseExpected", expected, 0, 0, Nil{}), kt("ParseObserved", observed, 0, 0, Nil{})], kb(term), ke(term))
+
+@unsafe
+def fpe_origin_render(+source: String, +start: U32, +error: KTerm) -> String:
+  f_choose(String, U32.is_eq(kb(error), 0), u => fpe_render(source, error),
+    u => f_choose(String, U32.is_gt(start, 0) && U32.is_ge(kb(error), start) && U32.is_ge(ke(error), kb(error)) && U32.is_le(U32.sub(ke(error), start), dg_width(source)),
+    u => f_choose(String, f_eq(tg(kid(error, 0)), "ParseMessage"),
+      u => "Error:\n- message  : " ++ nm(kid(error, 0)) ++ "\nLocation:" ++ fpe_snippet(source, U32.sub(kb(error), start), U32.sub(ke(error), start), error) ++ f_choose(String, f_eq(tg(kid(error, 1)), "ParseNote"), u => "\nNote: " ++ nm(kid(error, 1)), u => ""),
+      u => f_choose(String, f_eq(tg(kid(error, 0)), "ParseExpected") && (f_eq(tg(kid(error, 1)), "ParseObserved") || f_eq(tg(kid(error, 1)), "ParseObservedPoint")),
+        u => fpe_point_message(source, U32.sub(kb(error), start), U32.sub(ke(error), start), error, f_choose(String, f_eq(tg(kid(error, 1)), "ParseObservedPoint"), u => fpe_point_observed(source, U32.sub(kb(error), start)), u => nm(kid(error, 1)))), u => fpe_render(source, error))),
+    u => fpe_render(source, error)))
+
+@unsafe
+def fpe_finish_indexed(+start: U32, +source: String, +raw: FRawResult) -> FResult:
+  match raw:
+    case FRawResult{book, error, imports}: FResult{book, fpe_origin_render(source, start, error), imports}
+
+@unsafe
+def fpe_message_note_at(+term: KTerm, +legacy: String, +message: String, +note: String) -> KTerm:
+  kt_span("Error", legacy, 0, 0, [kt("ParseMessage", message, 0, 0, Nil{}), kt("ParseNote", note, 0, 0, Nil{})], kb(term), ke(term))
+
+
+# Failure payloads request an original line or exact UTF16 cursor observation.
+@unsafe
+def fpe_line(+ts: List<&2,FToken>, +legacy: String, +expected: String) -> KTerm:
+  kt("Error", legacy, f_line(ts), f_col(ts), [kt("ParseExpected", expected, 0, 0, Nil{}), kt("ParseToken", f_tx(ts), 0, 0, Nil{}), atom("ParseLine")])
+
+@unsafe
+def fpe_line_text(+lines: List<&2,String>, +line: U32) -> String:
+  match lines:
+    case Nil{}: ""
+    case Con{text, rest}: f_choose(String, U32.is_le(line, 1), u => String.trim(text), u => fpe_line_text(rest, U32.sub(line, 1)))
+
+@unsafe
+def fpe_point_at(+term: KTerm, +legacy: String, +expected: String) -> KTerm:
+  kt_span("Error", legacy, 0, 0, [kt("ParseExpected", expected, 0, 0, Nil{}), atom("ParseObservedPoint")], kb(term), ke(term))
+
+@unsafe
+def fpe_point_observed(+source: String, +offset: U32) -> String:
+  match source:
+    case SNil{}: "end of input"
+    case SCon{c, rest}:
+      f_choose(String, U32.is_lt(offset, dg_units(c)),
+        u => f_choose(String, U32.is_le(Char.to_u32(c), 65535), u => "'" ++ SCon{c, ""} ++ "'", u => ""),
+        u => fpe_point_observed(rest, U32.sub(offset, dg_units(c))))
+
+@unsafe
+def fpe_snippet(+source: String, +begin: U32, +end: U32, +error: KTerm) -> String:
+  f_choose(String, f_eq(tg(kid(error, 2)), "ParseLine") || f_eq(tg(kid(error, 3)), "ParseRaw"),
+    u => dg_snippet(DSpan{source, begin, end}),
+    u => dg_module_snippet(DSpan{source, begin, end}))
+
+# UTF16 surrogate halves cannot be manufactured as Bend Unicode scalar chars.
+# Keep the producer's legacy diagnostic on that boundary instead of crashing.
+@unsafe
+def fpe_point_message(+source: String, +begin: U32, +end: U32, +error: KTerm, +observed: String) -> String:
+  f_choose(String, f_eq(tg(kid(error, 1)), "ParseObservedPoint") && String.is_empty(observed),
+    u => nm(error), u => fpe_message(source, begin, end, error, observed))

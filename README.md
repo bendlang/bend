@@ -17,43 +17,33 @@ This fork develops the compiler in [`selfhost/`](selfhost/README.md), on branch
 from `selfhost/`, run `npm run verify:release`, then `node cli.mjs FILE --run`.
 `npm run build` checks and rebuilds the default with pinned upstream.
 
-The [Phase15 release report](implementation/phase15/parser_conformance_and_speed.md)
-records parser/import corrections, shared diagnostic rendering and direct lookup
-workers against upstream **b2111cf, Bend 2.0.32 era**. The compiler has **15,288
-Bend lines in 59 modules**, 24 more than Phase14. Sharing the parser formatter
-removes 35 lines; the earlier 50% and 75% reduction targets remain unachieved.
+The [Phase16 release report](implementation/phase16/consolidation.md) records
+compact literal terms, precise source diagnostics and contextual module parsing
+against upstream **b2111cf, Bend 2.0.32 era**. On identical compiler source,
+checking takes **30.58 → 12.36 s**, **2.48× faster** than Phase15. Pinned
+TypeScript takes **3.61 s**, leaving a **3.42×** process-time gap. Peak RSS falls
+**62.7%**. This measures checking and trust reporting, excluding emission.
 
-Controlled same-source checking takes **25.08 → 24.10 s**, **3.9% less time** than
-the previous release. Pinned TypeScript takes **2.89 s**, leaving an **8.35×**
-process-time gap. This measures checking and trust reporting, excluding emission;
-it is not a generated-program runtime speedup.
+Exact frontend differences fall **459 → 2** across 2,996 observations, with no
+lost matches. All **1,001 positive programs** type-check, all **482 validation
+negatives** reject, and all **11 proof-trust refusals** match TypeScript. The two
+remaining observations concern one do-block's error order. Independent controls
+retain additional gaps; [conformance](selfhost/CONFORMANCE.md) states their scope.
+All 41 selected backend observations and 42 installed/relocated CLI checks pass.
 
-All **1,001 positive programs** type-check and all **482 validation negatives**
-reject, with no observed invalid acceptance or timeout. All **11 proof-trust
-refusals** match TypeScript. Exact frontend differences fall **603 → 459**,
-with no lost matches. Remaining differences are diagnostic text on this corpus;
-measured behavior/output axes agree. [Conformance](selfhost/CONFORMANCE.md)
-separates these results from backend, platform and proof-kernel gaps.
-
-Ongoing [Phase16 conformance work](implementation/phase16/full_conformance.md)
-has an isolated two-difference checkpoint. A [compact-literal prototype](implementation/phase16/compact-literal-cost.md)
-checks the same compiler source 2.87× faster, reducing the measured TypeScript gap
-to 3.58×. Memo correctness and final release gates are still open; the commands
-below continue to use the Phase15 release.
+The compiler has **16,345 Bend lines in 59 modules**, 1,057 more than Phase15.
+Compact terms eliminate much allocation, but total source size grew as semantic
+coverage improved. The earlier 50% and 75% line-reduction targets remain open.
 
 The [development workflow](docs/PHASE5_DEVELOPMENT.md) builds a genuine checked
-compiler and runs 36 short paired controls. The installed release preserves its
-checked parent and guarded version5 derivative; ordinary compilation runs the
+compiler and runs 36 short paired controls. The release preserves its checked
+parent and unchanged guarded version5 derivative; ordinary compilation runs the
 Bend implementation without a TypeScript fallback. Independent BendTT `--verdict`
-validation is not implemented. All 42 installed/relocated CLI checks pass.
+validation is not implemented, and this is not a new self-hosted fixed point.
 
-S4's shared loader/provenance/checker simplifications remain. The larger
-[Phase13 rewriter prototype](implementation/phase13/structured_rewriter.md) stays
-deferred. This release adds two small Bend lookup workers without extending the
-maintained JavaScript transformation. Designs, failures and exact evidence remain
-linked from the [ledger](experiments/ledger.md) and
-[current strategy](experiments/STEERING.md). Historical fixed points and speed
-ratios apply only to their recorded artifacts.
+Designs, failures and exact evidence remain linked from the
+[ledger](experiments/ledger.md) and [current strategy](experiments/STEERING.md).
+Historical fixed points and speed ratios apply only to their recorded artifacts.
 
 ## Bend runs FAST
 

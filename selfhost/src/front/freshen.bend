@@ -32,7 +32,7 @@ def f_rename_var(t, env):
     case Nil{}:
       t
     case Con{+m, ms}:
-      f_choose(KTerm, U32.is_eq(ix(t), ix(m)), u => kt("Var", nm(t), ix(kid(m, 0)), qt(t), Nil{}), u => f_rename_var(t, ms))
+      f_choose(KTerm, U32.is_eq(ix(t), ix(m)), u => kt_span("Var", nm(t), ix(kid(m, 0)), qt(t), Nil{}, kb(t), ke(t)), u => f_rename_var(t, ms))
 
 @unsafe
 def f_fresh_defs(

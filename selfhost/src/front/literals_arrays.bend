@@ -56,6 +56,7 @@ law f_index:
 law f_index_value:
   for +n: KTerm
   for +idx: KTerm
+  for +end: U32
   for +p: FParsed
   for +min: U32
   FParsed
@@ -111,7 +112,7 @@ def f_array_size(n, ty, count, p):
 
 @unsafe
 def f_array_depth(size):
-  f_choose(KTerm, f_eq(tg(size), "Literal"), u => f_power_depth(nm(size), 0), u => kt("Error", "array count must be a literal power of two", 0, 0, Nil{}))
+  f_array_depth_at(size, f_choose(KTerm, f_eq(tg(size), "Literal"), u => f_power_depth(nm(size), 0), u => kt("Error", "array count must be a literal power of two", 0, 0, Nil{})))
 
 @unsafe
 def f_power_depth(s, n):
@@ -125,13 +126,13 @@ def f_power_bits(n, d):
 def f_index(n, p, min):
   match p:
     case FParsed{idx, +ts}:
-      f_choose(FParsed, f_eq(f_tx(ts), "<-"), u => f_index_value(n, idx, f_expr(f_tl(ts), 2), min), u => f_grow(FParsed{f_app(ref("Array.get"), [ref("U32"), n, f_namespace(idx, ref("U32"))]), ts}, min))
+      f_choose(FParsed, f_eq(f_tx(ts), "<-"), u => f_index_value(n, idx, f_previous_end(ts), f_expr(f_tl(ts), 2), min), u => f_grow(FParsed{f_app_span(k_with_span(ref("Array.get"), kb(n), f_previous_end(ts)), [k_with_span(ref("U32"), kb(n), f_previous_end(ts)), n, f_namespace(idx, ref("U32"))], kb(n), f_previous_end(ts)), ts}, min))
 
 @unsafe
-def f_index_value(n, idx, p, min):
+def f_index_value(n, idx, end, p, min):
   match p:
     case FParsed{v, ts}:
-      f_grow(FParsed{f_choose(KTerm, f_eq(tg(n), "Ref"), u => kt("Write", nm(n), ix(n), 1, [f_app(ref("Array.set"), [ref("U32"), n, f_namespace(idx, ref("U32")), v])]), u => f_app(ref("Array.set"), [ref("U32"), n, f_namespace(idx, ref("U32")), v])), ts}, min)
+      f_grow(FParsed{f_choose(KTerm, f_eq(tg(n), "Ref"), u => kt_span("Write", nm(n), ix(n), 1, [f_app_span(k_with_span(ref("Array.set"), kb(n), end), [k_with_span(ref("U32"), kb(n), end), n, f_namespace(idx, ref("U32")), v], kb(n), end)], kb(n), end), u => f_app_span(k_with_span(ref("Array.set"), kb(n), end), [k_with_span(ref("U32"), kb(n), end), n, f_namespace(idx, ref("U32")), v], kb(n), end)), ts}, min)
 
 @unsafe
 def f_nat_extend(a, b):
@@ -139,8 +140,8 @@ def f_nat_extend(a, b):
 
 @unsafe
 def f_nat_extend_value(+a: KTerm, +b: KTerm, +value: KTerm) -> KTerm:
-  f_choose(KTerm, core_nat(a) && core_nat(value) && U32.is_le(qt(value), U32.sub(4294967295, qt(a))), u => kt("Literal", U32.show(U32.add(qt(a), qt(value))) ++ "n", 0, 1, Nil{}),
-    u => f_choose(KTerm, core_nat(a) && U32.is_le(qt(a), 256), u => f_nat_prefix(qt(a), b), u => f_app(ref("Nat.add"), [a, b])))
+  f_choose(KTerm, core_nat(a) && core_nat(value) && U32.is_le(kl_number(value), U32.sub(4294967295, kl_number(a))), u => kt("Literal", U32.show(U32.add(kl_number(a), kl_number(value))) ++ "n", 0, 1, Nil{}),
+    u => f_choose(KTerm, core_nat(a) && U32.is_le(kl_number(a), 256), u => f_nat_prefix(kl_number(a), b), u => f_app(ref("Nat.add"), [a, b])))
 
 @unsafe
 def f_nat_prefix(+n: U32, +b: KTerm) -> KTerm:
@@ -148,7 +149,7 @@ def f_nat_prefix(+n: U32, +b: KTerm) -> KTerm:
 
 @unsafe
 def f_namespace(t, ty):
-  f_choose(KTerm, f_eq(tg(t), "Local") || f_eq(tg(t), "Parallel"), u => kt(tg(t), nm(t), ix(t), qt(t), [kid(t, 0), kid(t, 1), f_namespace(kid(t, 2), ty)]), u => f_choose(KTerm, f_eq(tg(t), "Ref") && Char.is_eq(f_head(nm(t)), '.'), u => ref(nm(f_namespace_head(ty)) ++ nm(t)), u => f_choose(KTerm, (f_eq(tg(t), "App") || f_eq(tg(t), "Call")) && f_namespace_operator(f_namespace_head(t)), u => KTerm{tg(t), nm(t), ix(t), qt(t), f_namespace_terms(ks(t), ty), rm(t)}, u => t)))
+  f_choose(KTerm, f_eq(tg(t), "Local") || f_eq(tg(t), "Parallel"), u => kt(tg(t), nm(t), ix(t), qt(t), [kid(t, 0), kid(t, 1), f_namespace(kid(t, 2), ty)]), u => f_choose(KTerm, f_eq(tg(t), "Ref") && Char.is_eq(f_head(nm(t)), '.'), u => ref(nm(f_namespace_head(ty)) ++ nm(t)), u => f_choose(KTerm, (f_eq(tg(t), "App") || f_eq(tg(t), "Call")) && f_namespace_operator(f_namespace_head(t)), u => k_with_children(t, f_namespace_terms(ks(t), ty)), u => t)))
 
 
 law f_pattern_literal:
@@ -166,7 +167,7 @@ law f_nat_pattern:
 
 @unsafe
 def f_pattern_literal(s):
-  f_choose(KTerm, String.ends_with(s, "n"), u => f_nat_pattern(f_pattern_number(s, 0)), u => f_literal(s))
+  f_choose(KTerm, String.ends_with(s, "n"), u => f_nat_pattern(f_pattern_number(s, 0)), u => f_literal_pattern(f_literal(s)))
 
 @unsafe
 def f_pattern_number(s, n):
@@ -205,3 +206,17 @@ def f_namespace_terms(terms, ty):
       Nil{}
     case Con{term, rest}:
       Con{f_namespace(term, ty), f_namespace_terms(rest, ty)}
+
+@unsafe
+def f_array_depth_at(+size: KTerm, +value: KTerm) -> KTerm:
+  f_choose(KTerm, f_eq(tg(value), "Error"), u => fpe_message_at(size, nm(value), "a power of two count (^d takes a depth)"), u => k_with_span(value, kb(size), ke(size)))
+
+@unsafe
+def f_literal_pattern(+t: KTerm) -> KTerm:
+  f_choose(KTerm, core_literal(t), u => f_literal_pattern(core_literal_step(t)), u => k_with_children(t, f_literal_patterns(ks(t))))
+
+@unsafe
+def f_literal_patterns(+ts: List<&2,KTerm>) -> List<&2,KTerm>:
+  match ts:
+    case Nil{}: Nil{}
+    case Con{head, rest}: Con{f_literal_pattern(head), f_literal_patterns(rest)}

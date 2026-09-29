@@ -1,0 +1,95 @@
+{
+  "kind": "phase16-final-compact-same-image-gates",
+  "complete": true,
+  "pass": true,
+  "apiSha256": "35044ae6f6cd9bb63690536588c11761695c66cbf524db8bcd3baa6453ed5315",
+  "attempt": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/compact-final-build-01/attempt.json",
+    "sha256": "a43f83e21dbe0048805e19ead61bddde173e0d2cf1718c0930e8bf207386a94e",
+    "bytes": 221542
+  },
+  "cpu": 1,
+  "gates": [
+    {
+      "gate": "checker-compact-final-backend-01",
+      "observations": 41,
+      "exact": 41,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-compact-final-backend-01/report.json",
+        "sha256": "c570ac862030364f061182d3a42a7d3b3964b70680d7a2197a9b845886260f6b",
+        "bytes": 8596
+      },
+      "paired": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-compact-final-backend-01/selected/paired.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-compact-final-backend-01/selected/paired.json",
+        "sha256": "cdeb0c368f31bc7b37117e1af768ea352f76de1a522e91c438d7455f69a03199"
+      }
+    },
+    {
+      "gate": "checker-compact-final-execution-01",
+      "observations": 20,
+      "exact": 20,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-compact-final-execution-01/report.json",
+        "sha256": "5c27727492b61be396ef26ee8da57f02205115bc9a869c9296f3ba36bdeeec1e",
+        "bytes": 8766
+      },
+      "paired": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-compact-final-execution-01/selected/paired.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-compact-final-execution-01/selected/paired.json",
+        "sha256": "85d61c41aece18e1da6194696a73ca6a077aaeecebabfc7b03290d165a856f9f"
+      }
+    },
+    {
+      "gate": "checker-compact-final-growth-01",
+      "observations": 2,
+      "exact": 2,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-compact-final-growth-01/report.json",
+        "sha256": "db46bc97c1a9d43751da23db2aef2c36a70ee40ef6237ca6e5bf18748133540e",
+        "bytes": 8506
+      },
+      "paired": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-compact-final-growth-01/selected/paired.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-compact-final-growth-01/selected/paired.json",
+        "sha256": "329f74fbecd4e89341acdd89f78c8652d2aa99e8a3165ae4886a46fc85c2b362"
+      }
+    },
+    {
+      "gate": "checker-compact-final-literals-01",
+      "observations": 176,
+      "exact": 176,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-compact-final-literals-01/report.json",
+        "sha256": "ec0f2222a15bb158f0f7174dbd0e2dd0516fb438f4d3d2f7141f5fe8e46aae39",
+        "bytes": 9338
+      },
+      "paired": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-compact-final-literals-01/selected/paired.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-compact-final-literals-01/selected/paired.json",
+        "sha256": "b8c228007585c76ffbe14f059156d2291b1fa86f89cc2a966211280791020af6"
+      }
+    },
+    {
+      "gate": "checker-compact-final-instances-01",
+      "observations": 29,
+      "exact": 29,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-compact-final-instances-01/report.json",
+        "sha256": "7a32647840b0ebed01b2d32eafe12c3f06dc4d3784264e73aecf6283c87cffff",
+        "bytes": 21125
+      }
+    }
+  ],
+  "nativeEnvironment": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/wave6-backend-environment-01.json",
+    "sha256": "db973a862955df917132ee67dd7d7c79efbba6d3732e808ee300ef1f6f925e23",
+    "bytes": 2121
+  },
+  "runner": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase16/checker-compact-final-backend.mjs",
+    "sha256": "3cf0c628f7e04a317198b530656566c4492dae003399c43bfdeb7fae549be775",
+    "bytes": 4292
+  },
+  "scope": "Backend41, literal JS/native20, parsed memo instances29, saved growth refusals2, and literal frontend176 on the same checked final image. No source changes, no compiler rebuild, no speed or full-corpus conformance inference. Root owns final full frontend, histories and controlled timing."
+}

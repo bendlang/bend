@@ -75,6 +75,8 @@ law f_graph_finish:
   for +book: List<&2,KDef>
   for +imports: List<&2, KTerm>
   for +g: FGraph
+  for +sources: List<&2,FSource>
+  for +fallback: String
   FGraph
 
 law f_graph_finish_alias:
@@ -85,6 +87,8 @@ law f_graph_finish_alias:
   for +prior: List<&2,KDef>
   for +err: String
   for +done: List<&2, KTerm>
+  for +sources: List<&2,FSource>
+  for +fallback: String
   FGraph
 
 @unsafe
@@ -186,13 +190,21 @@ def f_graph_aliases(imports, source, sources, root):
 # Alias ambiguity uses the loaded declaration scope before rewriting names.
 @unsafe
 def f_alias_term(+t: KTerm, +imports: List<&2,KTerm>, +scope: List<&2,KDef>) -> KTerm:
-  f_alias_named(t, imports, scope, f_choose(String, f_eq(tg(t), "Ref") || f_eq(tg(t), "ADT") || f_eq(tg(t), "Ctr") || f_eq(tg(t), "Mat"), u => f_alias(nm(t), imports), u => nm(t)))
+  f_alias_deferred(t, imports, scope, f_choose(String, f_eq(tg(t), "Ref") || f_eq(tg(t), "ADT") || f_eq(tg(t), "Ctr") || f_eq(tg(t), "Mat"), u => f_alias(nm(t), imports), u => nm(t)))
+
+# An import alias is an alternative until the lexical scope has its say.
+@unsafe
+def f_alias_deferred(+t: KTerm, +imports: List<&2,KTerm>, +scope: List<&2,KDef>, +name: String) -> KTerm:
+  f_choose(KTerm, f_eq(tg(t), "Ref") && Bool.not(String.eq(name, nm(t))),
+    u => kt_span("FAliasRef", nm(t), ix(t), qt(t), [f_alias_named(t, imports, scope, name)], kb(t), ke(t)),
+    u => f_alias_named(t, imports, scope, name))
 
 @unsafe
 def f_alias_named(+t: KTerm, +imports: List<&2,KTerm>, +scope: List<&2,KDef>, +name: String) -> KTerm:
-  f_choose(KTerm, f_choose(Bool, Bool.not(String.eq(name, nm(t))), u => f_declared(name, scope) && f_declared(nm(t), scope), u => False{}),
-    u => kt("Error", "expected an unambiguous name (an import alias shadows " ++ nm(t) ++ ")", 0, 0, Nil{}),
-    u => KTerm{tg(t), name, ix(t), qt(t), f_alias_terms(ks(t), imports, scope), rm(t)})
+  kc(KTerm, core_literal(t), u => t, u =>
+    f_choose(KTerm, f_choose(Bool, Bool.not(String.eq(name, nm(t))), u => f_declared(name, scope) && f_declared(nm(t), scope), u => False{}),
+    u => fpe_point_at(k_with_span(t, ke(t), ke(t)), "expected an unambiguous name (an import alias shadows " ++ nm(t) ++ ")", "an unambiguous name (the alias " ++ f_import_alias_head(nm(t)) ++ " shadows " ++ nm(t) ++ ")"),
+    u => k_rebuild(t, name, ix(t), qt(t), f_alias_terms(ks(t), imports, scope), rm(t), kb(t), ke(t))))
 
 @unsafe
 def f_alias_terms(ts, imports, scope):
@@ -208,16 +220,25 @@ def f_alias_defs(+ds: List<&2,KDef>, +imports: List<&2,KTerm>, +scope: List<&2,K
       Con{f_graph_fill_alias(KDef{dn(d), dk(d), da(d), dx(d), f_alias_term(dt(d), imports, scope), f_alias_term(dv(d), imports, scope), f_alias_defs(dc(d), imports, scope), db(d), du(d)}, imports, scope), f_alias_defs(rest, imports, scope)}
 
 @unsafe
-def f_graph_finish(s, ns, book, imports, g):
+def f_graph_finish(s, ns, book, imports, g, sources, fallback):
   match g:
     case FGraph{prior, +err, done}:
       # Reuse the ordinary freshness rule before module qualification can hide
       # a collision with Base or another declaration in the root namespace.
-      f_graph_finish_alias(s, ns, f_alias_defs(book, imports, prior), imports, prior, f_choose(String, String.is_empty(err), u => f_graph_fresh_names(book, index_build(List.reverse(&2,KDef,prior))), u => err), done)
+      f_graph_finish_alias(s, ns, f_alias_defs(book, imports, prior), imports, prior, f_choose(String, String.is_empty(err) && String.is_empty(fallback), u => f_graph_fresh_names(book, index_build(List.reverse(&2,KDef,prior))), u => err), done, sources, fallback)
 
 @unsafe
-def f_graph_finish_alias(s, ns, book, imports, prior, err, done):
-  FGraph{norm_defs_join(prior, f_path_defs(f_module_defs(book, book, f_family_book(prior), ns, imports), f_path_dir(f_source_path(s)), f_eq(f_source_name(s), "Base"))), err, Con{kt("Loaded", f_source_path(s), f_graph_count_defs(book, 0), 0, [ref(ns)]), done}}
+def f_graph_finish_alias(s, ns, book, imports, prior, err, done, sources, fallback):
+  f_graph_finish_module(s, prior, err, Con{kt("Loaded", f_source_path(s), f_graph_count_defs(book, 0), 0, Con{ref(ns), imports}), done}, f_path_defs(f_module_defs(book, book, f_family_book(prior), ns, imports), f_path_dir(f_source_path(s)), f_eq(f_source_name(s), "Base")), sources, fallback)
+
+# Dependency completion checks only its new fragment, never cached prior terms.
+@unsafe
+def f_graph_finish_module(+source: FSource, +prior: List<&2,KDef>, +error: String, +done: List<&2,KTerm>, +book: List<&2,KDef>, +sources: List<&2,FSource>, +fallback: String) -> FGraph:
+  FGraph{norm_defs_join(prior, book), f_choose(String, String.is_empty(error), u => f_graph_module_error(source, fpe_defs(book), sources, fallback), u => error), done}
+
+@unsafe
+def f_graph_module_error(+source: FSource, +error: KTerm, +sources: List<&2,FSource>, +fallback: String) -> String:
+  f_choose(String, f_eq(tg(error), "Absent"), u => fallback, u => fpe_source_render(nm(error), error, f_choose(KTerm, U32.is_gt(kb(error), 0), u => fpe_located_source(error, sources), u => kt("ParseSource", f_source_text(source), 0, 0, Nil{}))))
 
 
 law f_module_defs:
@@ -457,7 +478,7 @@ def fpe_find_next(error, rest, index):
   f_choose(KTerm, f_eq(tg(error), "Absent"), u => fpe_find(rest, U32.add(index, 1)), u => kt("ParseOwner", "", index, 0, [error]))
 @unsafe
 def fpe_selected(legacy, owner, done, sources):
-  f_choose(String, f_eq(tg(owner), "ParseOwner") && String.eq(nm(kid(owner, 0)), legacy), u => fpe_source_render(legacy, kid(owner, 0), fpe_unique_source(fpe_owner_path(List.reverse(&2, KTerm, done), ix(owner)), sources, atom("Absent"))), u => legacy)
+  f_choose(String, f_eq(tg(owner), "ParseOwner") && String.eq(nm(kid(owner, 0)), legacy), u => fpe_source_render(legacy, kid(owner, 0), f_choose(KTerm, U32.is_gt(kb(kid(owner, 0)), 0), u => fpe_located_source(kid(owner, 0), sources), u => fpe_unique_source(fpe_owner_path(List.reverse(&2, KTerm, done), ix(owner)), sources, atom("Absent")))), u => legacy)
 @unsafe
 def fpe_owner_path(done, index):
   match done:
@@ -472,7 +493,7 @@ def fpe_unique_source(path, sources, found):
       f_choose(KTerm, String.eq(path, f_source_path(head)), u => f_choose(KTerm, f_eq(tg(found), "Absent"), u => fpe_unique_source(path, tail, kt("ParseSource", f_source_text(head), 0, 0, Nil{})), u => atom("Ambiguous")), u => fpe_unique_source(path, tail, found))
 @unsafe
 def fpe_source_render(legacy, error, source):
-  f_choose(String, f_eq(tg(source), "ParseSource"), u => fpe_render(nm(source), error), u => legacy)
+  f_choose(String, f_eq(tg(source), "ParseSource"), u => f_choose(String, U32.is_gt(kb(source), 0), u => fpe_origin_render(nm(source), kb(source), error), u => fpe_render(nm(source), error)), u => legacy)
 
 # Canonical module namespaces are relative to the entry's real directory.
 # Reaching a file through another spelling therefore cannot create another name.
@@ -517,3 +538,14 @@ def f_graph_fill(+d: KDef, +old: KDef) -> KDef:
   f_choose(KDef, f_eq(dk(old), "Def") && f_eq(tg(dv(old)), "Absent") && Bool.not(db(old)) && f_bare_params(ks(dt(d))) && U32.is_ge(da(d), dx(old)) && (Bool.not(f_eq(tg(dv(d)), "Foreign")) || U32.is_eq(dx(old), 0)),
     u => KDef{dn(old), "ImportFill", da(d), dx(old), dt(old), f_choose(KTerm, f_eq(tg(dv(d)), "Body"), u => kt("Body", "", fc_start(ks(dt(d)), dt(old), kid(dv(d), 1), True{}), 0, ks(dv(d))), u => dv(d)), Nil{}, False{}, du(old) || du(d)},
     u => KDef{dn(d), "Def", da(d), dx(d), kt("Error", "an imported definition must uniquely fill a non-native law with plain parameter names", 0, 0, Nil{}), dv(d), dc(d), db(d), du(d)})
+
+# The first selected frontend Error keeps its existing traversal order. Located
+# errors resolve directly through source ownership, including imported aliases.
+@unsafe
+def fpe_located_source(+error: KTerm, +sources: List<&2,FSource>) -> KTerm:
+  match sources:
+    case Nil{}: atom("Absent")
+    case Con{head, rest}:
+      f_choose(KTerm, U32.is_gt(f_source_begin(head), 0) && U32.is_ge(kb(error), f_source_begin(head)) && U32.is_ge(ke(error), kb(error)) && U32.is_lt(ke(error), f_source_end(head)),
+        u => kt_span("ParseSource", f_source_text(head), 0, 0, Nil{}, f_source_begin(head), f_source_end(head)),
+        u => fpe_located_source(error, rest))

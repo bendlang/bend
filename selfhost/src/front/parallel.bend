@@ -43,7 +43,7 @@ law f_scope_parallel_valid:
   for +pats: List<&2, KTerm>
   for +env: List<&2, KTerm>
   for +book: List<&2, KDef>
-  for +err: String
+  for +err: Maybe<&2,KTerm>
   KTerm
 
 law f_parallel_binds:
@@ -76,7 +76,7 @@ def f_parallel(
   +ts: List<&2, FToken>,
   +pats: List<&2, KTerm>,
 ) -> FParsed:
-  f_choose(FParsed, f_eq(f_tx(ts), "="), u => f_parallel_values(f_tl(ts), List.reverse(&2, KTerm, pats), terms_len(pats), Nil{}), u => f_parallel_pat(f_expr(ts, 0), pats))
+  f_choose(FParsed, f_eq(f_tx(ts), "="), u => f_parallel_values(f_tl(ts), List.reverse(&2, KTerm, pats), terms_len(pats), Nil{}), u => f_choose(FParsed, f_binding_head(ts), u => f_parallel_pat(f_expr(ts, 0), pats), u => fpe_error(ts, "expected =", "'='")))
 
 @unsafe
 def f_parallel_pat(p, pats):
@@ -102,7 +102,7 @@ def f_parallel_body(pats, vals, p):
 
 @unsafe
 def f_scope_parallel(t, env, book):
-  f_scope_parallel_pats(t, f_patterns(ks(kid(t, 0))), env, book)
+  f_scope_parallel_pats(t, f_patterns(ks(kid(t, 0)), env, book), env, book)
 
 @unsafe
 def f_scope_parallel_pats(t, pats, env, book):
@@ -110,9 +110,9 @@ def f_scope_parallel_pats(t, pats, env, book):
 
 @unsafe
 def f_scope_parallel_valid(t, pats, env, book, err):
-  f_choose(KTerm, String.is_empty(err),
-    u => kt("Parallel", "", 0, 1, [kt("Patterns", "", 0, 1, pats), kt("Values", "", 0, 1, f_scope_terms(ks(kid(t, 1)), env, book)), f_scope_body(kid(t, 2), f_pattern_env(pats, env), book)]),
-    u => kt("Error", err, 0, 0, Nil{}))
+  match err:
+    case None{}: kt_span("Parallel", "", 0, 1, [kt("Patterns", "", 0, 1, pats), kt("Values", "", 0, 1, f_scope_terms(ks(kid(t, 1)), env, book)), f_scope_body(kid(t, 2), f_pattern_env(pats, env), book)], kb(t), ke(t))
+    case Some{error}: error
 
 @unsafe
 def f_parallel_binds(pats, vals):
@@ -120,7 +120,7 @@ def f_parallel_binds(pats, vals):
     case Nil{}:
       Nil{}
     case Con{+p, ps}:
-      Con{kt("Bind", nm(p), ix(p), qt(p), [terms_at(vals, 0)]), f_parallel_binds(ps, f_tail_terms(vals))}
+      Con{kt_span("Bind", nm(p), ix(p), qt(p), [terms_at(vals, 0)], kb(p), ke(p)), f_parallel_binds(ps, f_tail_terms(vals))}
 
 @unsafe
 def f_unlamb(body, n):
@@ -128,16 +128,20 @@ def f_unlamb(body, n):
 
 @unsafe
 def f_flat_parallel(t, vars):
-  f_lbind(vars, kt("Let", "", 0, 1, norm_join(f_parallel_binds(ks(kid(t, 0)), ks(kid(t, 1))), [f_unlamb(f_flat(kid(t, 2), ks(kid(t, 0))), terms_len(ks(kid(t, 0))))])))
+  f_lbind(vars, kt_span("Let", "", 0, 1, norm_join(f_parallel_binds(ks(kid(t, 0)), ks(kid(t, 1))), [f_unlamb(f_flat(kid(t, 2), ks(kid(t, 0))), terms_len(ks(kid(t, 0))))]), kb(t), ke(t)))
 
 @unsafe
 def f_statement_more(p):
   match p:
     case FParsed{+n, +ts}:
-      f_choose(FParsed, f_eq(tg(n), "Write"), u => f_write_statement(n, ts), u => f_choose(FParsed, U32.is_eq(f_kind(ts), 1) || f_eq(f_tx(ts), "+bind"), u => f_parallel(ts, [n]), u => FParsed{n, ts}))
+      f_choose(FParsed, f_eq(tg(n), "Write"), u => f_write_statement(n, ts), u => f_choose(FParsed, f_binding_head(ts), u => f_parallel(ts, [n]), u => FParsed{n, ts}))
 
 @unsafe
 def f_typed_let_try(n, old, p):
   match p:
     case FParsed{ty, +ts}:
-      f_choose(FParsed, f_eq(f_tx(ts), "="), u => f_choose(FParsed, f_eq(tg(n), "Ref"), u => f_let_value(n, f_let_ann(ty, f_expr(f_tl(ts), 0))), u => f_err(ts, "a name (a parallel or typed let binds names; destructure in its body)")), u => FParsed{n, old})
+      f_choose(FParsed, f_eq(tg(ty), "Error"), u => FParsed{ty, ts}, u => f_choose(FParsed, f_eq(f_tx(ts), "="), u => f_choose(FParsed, f_eq(tg(n), "Ref"), u => f_let_value(n, f_let_ann(ty, f_expr(f_tl(ts), 0))), u => FParsed{fpe_message_at(n, nm(f_pn(f_err(ts, "a name (a parallel or typed let binds names; destructure in its body)"))), "a name (a parallel or typed let binds names; destructure in its body)"), Nil{}}), u => FParsed{n, old}))
+
+@unsafe
+def f_binding_head(+ts: List<&2,FToken>) -> Bool:
+  (f_ascii_alpha(f_head(f_tx(ts))) || Char.is_eq(f_head(f_tx(ts)), '_') || f_eq(f_tx(ts), "+bind")) && Bool.not(f_reserved(f_tx(ts)))

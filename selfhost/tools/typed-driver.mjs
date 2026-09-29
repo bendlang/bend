@@ -84,9 +84,12 @@ export function bootstrap({upstream=process.env.BEND_UPSTREAM||path.resolve(proj
     files.splice(at<0?files.length:at,0,...nativeModules);
   }
   const exports=[...roots];
+  if(fs.readFileSync(path.join(project,'src/core/term.bend'),'utf8').includes('def compiler_term_abi('))exports.push('compiler_term_abi');
+  if(fs.readFileSync(path.join(project,'src/core/term.bend'),'utf8').includes('def compiler_span_abi('))exports.push('compiler_span_abi');
   if(fs.existsSync(path.join(project,'src/check/specialize.bend'))) {
     if(!files.includes('src/check/specialize.bend'))files.push('src/check/specialize.bend');
     exports.push('specialize_book','specialized_book','specialized_error');
+    if(fs.readFileSync(path.join(project,'src/check/specialize.bend'),'utf8').includes('def specialized_diagnostic('))exports.push('specialized_diagnostic');
   }
   if(files.includes('src/back/native/book.bend')) {
     exports.push('nc_compile','nc_foreign_paths');
@@ -95,13 +98,15 @@ export function bootstrap({upstream=process.env.BEND_UPSTREAM||path.resolve(proj
   if(files.includes('src/back/native/foreign.bend'))exports.push('nc_foreign_source','nc_foreign_scope');
   if(files.includes('src/check/prefix.bend'))exports.push('check_from_exact_prefix','exact_prefix');
   if(files.includes('src/load/graph.bend'))exports.push('f_load_graph','f_main_names','f_load_graph_trace');
-  if(files.includes('src/load/modules.bend'))exports.push('f_source_parsed');
+  if(files.includes('src/load/modules.bend')){exports.push('f_source_parsed','f_source_located');if(fs.readFileSync(path.join(project,'src/load/modules.bend'),'utf8').includes('def compiler_load_abi('))exports.push('compiler_load_abi','f_source_header','f_complete_source','f_complete_seed','f_import_namespace_at','f_graph_trace');}
+  if(fs.readFileSync(path.join(project,'src/front/declarations.bend'),'utf8').includes('def f_parse_indexed('))exports.push('f_parse_indexed');
   if(files.includes('src/load/imports.bend')&&fs.readFileSync(path.join(project,'src/load/imports.bend'),'utf8').includes('def f_import_failure('))exports.push('f_import_failure');
   if(files.includes('src/core/index.bend'))exports.push('book_context','book_cached');
   if(files.includes('src/load/seed.bend'))exports.push('f_load_graph_seed','f_load_graph_seed_trace');
   if(files.includes('src/driver/report.bend'))exports.push('driver_report','driver_bad_names');
   if(files.includes('src/diagnostic/produce.bend'))exports.push('compiler_check_result_abi','check_book_diagnostic','check_book_diagnostic_from_exact_prefix','diagnostic_render','diagnostic_result_locate');
-  if(files.includes('src/diagnostic/frontend.bend'))exports.push('f_load_origins_for','f_loaded_origins_for');
+  if(files.includes('src/driver/api.bend')&&fs.readFileSync(path.join(project,'src/driver/api.bend'),'utf8').includes('def check_program_diagnostic('))exports.push('check_program_diagnostic');
+  if(files.includes('src/diagnostic/frontend.bend')){exports.push('f_load_origins_for','f_loaded_origins_for');if(fs.readFileSync(path.join(project,'src/diagnostic/frontend.bend'),'utf8').includes('def diagnostic_render_loaded('))exports.push('diagnostic_render_loaded');}
   if(files.includes('src/back/js/validate.bend')) {
     exports.push('j_compile_error');
     if(fs.readFileSync(path.join(project,'src/back/js/validate.bend'),'utf8').includes('law j_layout_error:'))exports.push('j_layout_error');
@@ -178,26 +183,82 @@ async function loadApiForIdentity(identity=null) {
   const url=pathToFileURL(identity?.canonicalPath??apiPath);
   if(identity)url.searchParams.set('bendApiSha256',identity.sha256);
   const module=await import(url);
+  const termAbi=module.default.compiler_term_abi?.();
+  if(module.default.compiler_term_abi!==undefined&&termAbi!==1)throw Error('Unknown compiler term ABI: '+termAbi);
+  const spanAbi=module.default.compiler_span_abi?.();
+  if(module.default.compiler_span_abi!==undefined&&spanAbi!==3)throw Error('Unknown compiler span ABI: '+spanAbi);
+  const loadAbi=module.default.compiler_load_abi?.();
+  if(module.default.compiler_load_abi!==undefined&&loadAbi!==1)throw Error('Unknown compiler load ABI: '+loadAbi);
+  if(termAbi===1&&spanAbi!==3)throw Error('Term ABI requires source-range ABI3');
   if(!module.G) return module.default;
   // The bootstrap compiler marshals ADTs with named fields. The self-hosted
   // runtime uses positional fields. This is an ABI conversion, not elaboration.
-  const fields={Nil:[],Con:['head','tail'],FSource:['name','path','text'],FParsedSource:['name','path','text','parsed'],FResult:['book','error','imports'],FLoadTrace:['result','done','sources'],
-    KTerm:['tag','name','id','quant','kids','removed'],KDef:['name','kind','arity','templates','typ','value','ctors','native','unsafe'],
+  const fields={Nil:[],Con:['head','tail'],FSource:['name','path','text'],FParsedSource:['name','path','text','parsed'],FLocatedSource:['source','begin','end'],FHeader:['imports','error','body','line','offset'],FCompletion:['graph','parsed'],FGraph:['book','error','done'],FResult:['book','error','imports'],FLoadTrace:['result','done','sources'],
+    KTerm:spanAbi===3?['tag','name','id','quant','kids','removed','originBegin','originEnd']:['tag','name','id','quant','kids','removed'],KDef:['name','kind','arity','templates','typ','value','ctors','native','unsafe'],
+    ...(termAbi===1?{KLiteral:['kind','number','text','originBegin','originEnd'],KLambda:['name','id','quant','kids','removed','originBegin','originEnd','quantityPresent']}:{}),
     KSpecialized:['book','error'],NC_Result:['source','error'],KF_Source:['parts','error'],
     DText:['text'],DTerm:['term'],DNoSpan:[],DSpan:['source','begin','end'],
-    DOrigin:['definition','term','source','begin','end','path'],
+    DOrigin:['definition','term','source','begin','end','path'],DSourceOrigin:['source','begin','end'],
     DDiagnostic:['expected','observed','has_observed','context','definition','span','note','trail'],
     DResult:['error','book','diagnostic'],FProvenance:['result','origins']};
   return createCompilerAbi({fields,ctor:module.ctor,
     onPhase:process.env.BEND_TYPED_TRACE?event=>trace(`ABI ${event.name} ${event.phase} ${JSON.stringify(event.stats)}`):undefined}).wrap(module.default);
 }
 
+// Source coordinates belong to one request. Base always owns interval one, so
+// a checked Base cache cannot silently introduce stale or overlapping positions.
+const SPAN_ABI=3,SPAN_CACHE=4,TERM_CACHE=6,U32_MAX=0xffffffff;
+function interval(begin,text) {
+  const end=begin+text.length+1;
+  if(!Number.isSafeInteger(begin)||begin<1||!Number.isSafeInteger(end)||end>U32_MAX)throw Error('Source interval overflow');
+  return {begin,end};
+}
+export function validateSpanBook(book,ranges,termAbi=0) {
+  const pending=[book],seen=new WeakSet();
+  while(pending.length) {
+    const value=pending.pop();
+    if(value===null||typeof value!=='object'||seen.has(value))continue;
+    seen.add(value);
+    if(value.$==='KLiteral') {
+      if(termAbi!==1||!['Nat','U32','F32','String'].includes(value.kind)||!Number.isSafeInteger(value.number)||value.number<0||value.number>U32_MAX||typeof value.text!=='string'||(value.kind==='String'?(value.number!==0||Array.from(value.text).some(c=>{const n=c.codePointAt(0);return n>=0xd800&&n<=0xdfff;})):value.text!==''))throw Error('Invalid compiler literal payload');
+    }
+    if(value.$==='KLambda'&&(termAbi!==1||typeof value.quantityPresent!=='boolean'))throw Error('Invalid compiler Lambda payload');
+    if(value.$==='KTerm'||value.$==='KLiteral'||value.$==='KLambda') {
+      const a=value.originBegin,b=value.originEnd;
+      if(!Number.isSafeInteger(a)||!Number.isSafeInteger(b)||a<0||b<0||a>U32_MAX||b>U32_MAX||
+        !((a===0&&b===0)||(a>0&&b>=a&&ranges.some(r=>a>=r.begin&&b<r.end))))
+        throw Error('Invalid compiler source range');
+    }
+    for(const child of Object.values(value))if(child!==null&&typeof child==='object')pending.push(child);
+  }
+  return true;
+}
+export function validateSpanCache(c,{compilerSha256,baseSha256,sourcePath,sourceText,termAbi=0}) {
+  const range=interval(1,sourceText);
+  if(c.version!==(termAbi===1?TERM_CACHE:SPAN_CACHE)||(c.termAbi??0)!==termAbi||c.spanAbi!==SPAN_ABI||c.compilerSha256!==compilerSha256||c.baseSha256!==baseSha256||
+    c.sourcePath!==sourcePath||c.sourceBegin!==range.begin||c.sourceEnd!==range.end||c.validatedBy!=='check_book'||
+    c.bookSha256!==crypto.createHash('sha256').update(JSON.stringify(c.book)).digest('hex'))throw Error('Invalid source-aware Base cache');
+  validateSpanBook(c.book,[range],termAbi);return true;
+}
+
 export function discoverSources(api,input,{seed=null}={}) {
   const sources=[],seen=new Map(),physical=new Map(),foreign=new Map(),active=new Set();
+  const loadAbi=api.compiler_load_abi?.(),contextual=loadAbi===1;
+  if(api.compiler_load_abi!==undefined&&!contextual)throw Error('Unknown compiler load ABI: '+loadAbi);
+  if(contextual)for(const name of ['f_source_header','f_complete_source','f_complete_seed','f_import_namespace_at','f_graph_trace'])
+    if(typeof api[name]!=='function')throw Error('Missing contextual compiler source API: '+name);
+  const located=api.compiler_span_abi?.()===SPAN_ABI;
+  if(located&&(!api.f_parse_indexed||!api.f_source_located))throw Error('Missing indexed compiler source API');
+  const baseCanonical=located?fs.realpathSync(basePath):null;
+  const baseText=located?fs.readFileSync(baseCanonical,'utf8'):null;
+  const baseRange=located?interval(1,baseText):null;
+  let next=baseRange?.end??0,root=null,completed={$:'FGraph',book:list([]),error:'',done:list([])};
   const graphMode=typeof api.f_load_graph==='function';
-  const visit=(name,file)=>{
+  const wrap=(source,range)=>located?api.f_source_located(source,range.begin,range.end):source;
+  const visit=(name,file,edge=null)=>{
     const absolute=fs.realpathSync(file);
-    // Stop an active canonical IO traversal before later imports or body errors.
+    if(root===null)root=path.dirname(absolute);
+    // Finish each dependency before requesting a later sibling file.
     if(active.has(absolute)&&api.f_import_failure)
       throw Object.assign(Error('Import traversal reentry'),{code:'BEND_IMPORT_CYCLE',importPath:absolute});
     if(seen.has(name)) {
@@ -205,15 +266,39 @@ export function discoverSources(api,input,{seed=null}={}) {
       return;
     }
     seen.set(name,absolute);
-    const source=fs.readFileSync(absolute,'utf8');
-    const prior=physical.get(absolute);
+    const source=fs.readFileSync(absolute,'utf8'),prior=physical.get(absolute);
     trace('parse '+absolute);
     const seeded=name==='Base'&&seed&&seed.sourcePath===absolute&&seed.sourceText===source;
-    const parsed=prior||(seeded?{book:list([]),imports:list([]),error:''}:api.f_parse(source));
-    sources.push(api.f_source_parsed&&!seeded?api.f_source_parsed(name,absolute,source,parsed):{$:'FSource',name,path:absolute,text:source});
-    if(prior)return;
-    physical.set(absolute,parsed);
-    active.add(absolute);
+    if(prior&&prior.source!==source)throw Object.assign(Error('Source alias bytes changed'),{phase:'load'});
+    if(located&&absolute===baseCanonical&&source!==baseText)throw Object.assign(Error('Base source bytes changed'),{phase:'load'});
+    const range=located?(prior?.range??(absolute===baseCanonical?baseRange:interval(next,source))):null;
+    if(located&&!prior&&absolute!==baseCanonical)next=range.end;
+    if(seeded&&located&&(seed.spanAbi!==SPAN_ABI||seed.sourceBegin!==range.begin||seed.sourceEnd!==range.end))throw Error('Stale Base source interval');
+    let parsed=prior?.parsed||(seeded?{book:list([]),imports:list([]),error:''}:contextual?null:located?api.f_parse_indexed(range.begin,source):api.f_parse(source));
+    const raw=wrap({$:'FSource',name,path:absolute,text:source},range),slot=sources.length;
+    sources.push(raw);
+    const retain=()=>{if(parsed&&api.f_source_parsed&&!seeded)sources[slot]=wrap(api.f_source_parsed(name,absolute,source,parsed),range);};
+    if(prior){retain();return;}
+    const record={parsed,source,range};physical.set(absolute,record);active.add(absolute);
+    const header=contextual&&!seeded?api.f_source_header(raw):null;
+    const imports=header?.imports??parsed.imports;
+    if(located&&!contextual&&!seeded&&!parsed.error)validateSpanBook(parsed.book,[range],api.compiler_term_abi?.()??0);
+    for(const item of array(imports)) {
+      const imported=item.name,importedFile=imported==='Base'?basePath:path.resolve(path.dirname(absolute),imported);
+      try {visit(graphMode&&imported!=='Base'?importedFile:imported,importedFile,{item,source:raw});}
+      catch(error) {
+        if(!error.phase&&api.f_import_failure&&(error.code==='ENOENT'||error.code==='BEND_IMPORT_CYCLE'))
+          throw Object.assign(Error(api.f_import_failure(source,item,error.code==='BEND_IMPORT_CYCLE'?error.importPath:importedFile,error.code==='BEND_IMPORT_CYCLE')),{phase:'parse',sourceFile:absolute});
+        throw error;
+      }
+    }
+    if(contextual) {
+      const supplied=list(sources),ns=edge?api.f_import_namespace_at(edge.item,edge.source,supplied,root):'';
+      const result=seeded?api.f_complete_seed(raw,completed,seed.sourcePath,seed.sourceText,seed.book):api.f_complete_source(raw,ns,header,supplied,completed,root);
+      parsed=result.parsed;completed=result.graph;record.parsed=parsed;
+      if(located&&!seeded&&!parsed.error)validateSpanBook(parsed.book,[...physical.values()].map(x=>x.range),api.compiler_term_abi?.()??0);
+    }
+    retain();
     if(name!=='Base'&&api.f_path_join) for(const definition of array(parsed.book)) {
       if(definition.value.tag!=='Foreign')continue;
       for(const imported of array(definition.value.kids)) {
@@ -221,33 +306,26 @@ export function discoverSources(api,input,{seed=null}={}) {
         foreign.set(qualified,{name:qualified,path:qualified});
       }
     }
-    for(const item of array(parsed.imports)) {
-      const imported=item.name;
-      const importedFile=imported==='Base'?basePath:path.resolve(path.dirname(absolute),imported);
-      try { visit(graphMode&&imported!=='Base'?importedFile:imported,importedFile); }
-      catch(error) {
-        if(!error.phase&&api.f_import_failure&&(error.code==='ENOENT'||error.code==='BEND_IMPORT_CYCLE'))
-          throw Object.assign(Error(api.f_import_failure(source,item,error.code==='BEND_IMPORT_CYCLE'?error.importPath:importedFile,error.code==='BEND_IMPORT_CYCLE')),{phase:'parse',sourceFile:absolute});
-        throw error;
-      }
-    }
     active.delete(absolute);
-    // Upstream loads earlier imports before it parses this module's body.
-    if(parsed.error) throw Object.assign(Error(parsed.error),{phase:'parse',sourceFile:absolute});
+    const error=contextual?completed.error:parsed.error;
+    if(error)throw Object.assign(Error(error),{phase:'parse',sourceFile:absolute});
   };
   const main=graphMode?path.resolve(input):'__main__';
   visit(main,path.resolve(input));
-  return {main,sources:list(sources),files:[...physical.keys()],foreign:[...foreign.values()],hasBase:seen.has('Base')};
+  const supplied=list(sources);
+  return {main,sources:supplied,files:[...physical.keys()],foreign:[...foreign.values()],hasBase:seen.has('Base'),
+    ...(contextual?{loadTrace:api.f_graph_trace(completed,supplied)}:{})};
 }
 
 function baseCacheInfo(api) {
   const compilerSha256=hash(apiPath),baseSha256=hash(basePath);
   const sourcePath=fs.realpathSync(basePath),sourceText=fs.readFileSync(basePath,'utf8');
-  const version=api.f_load_graph_seed?2:1;
+  const termAbi=api.compiler_term_abi?.()??0;
+  const version=termAbi===1?TERM_CACHE:api.compiler_span_abi?.()===SPAN_ABI?SPAN_CACHE:api.f_load_graph_seed?2:1;
   const directory=path.join(project,'build/typed/cache');
   const location=crypto.createHash('sha256').update(sourcePath).digest('hex');
-  const file=path.join(directory,`base-${compilerSha256}-${baseSha256}${version===2?'-'+location:''}.json`);
-  return {version,compilerSha256,baseSha256,sourcePath,sourceText,directory,file};
+  const file=path.join(directory,`base-${compilerSha256}-${baseSha256}${version>=2?'-'+location:''}.json`);
+  return {version,termAbi,compilerSha256,baseSha256,sourcePath,sourceText,directory,file};
 }
 // Only persistent inspectors own this bounded memo. Re-read and hash the exact
 // bytes on every request; cached metadata and filesystem timestamps are not proof.
@@ -273,6 +351,7 @@ function readBaseCache(info,memo=null) {
       return {...previous.cached,sourcePath:info.sourcePath,sourceText:info.sourceText};
     }
     const cached=JSON.parse(bytes.toString('utf8'));
+    if(info.version>=SPAN_CACHE)validateSpanCache(cached,info);
     if(cached.version!==info.version||cached.compilerSha256!==info.compilerSha256||cached.baseSha256!==info.baseSha256||cached.validatedBy!=='check_book')return null;
     if(info.version===2&&(cached.sourcePath!==info.sourcePath||cached.bookSha256!==crypto.createHash('sha256').update(JSON.stringify(cached.book)).digest('hex')))return null;
     if(memo) {
@@ -287,14 +366,18 @@ export async function prepareBase(api) {
   api??=await loadApi();
   const info=baseCacheInfo(api),prior=readBaseCache(info);
   if(prior)return prior;
-  const source={$:'FSource',name:'Base',path:info.sourcePath,text:info.sourceText};
+  const raw={$:'FSource',name:'Base',path:info.sourcePath,text:info.sourceText};
+  const range=info.version>=SPAN_CACHE?interval(1,info.sourceText):null;
+  const source=range?api.f_source_located(raw,range.begin,range.end):raw;
   const loaded=(api.f_load_graph||api.f_load)('Base',list([source]));
   if(loaded.error)throw Object.assign(Error(loaded.error),{phase:'parse'});
   const error=api.check_book(loaded.book);
   if(error)throw Object.assign(Error(error),{phase:'check'});
   const {version,compilerSha256,baseSha256,sourcePath,directory,file}=info;
-  const cached={version,compilerSha256,baseSha256,sourcePath,validatedBy:'check_book',generated:new Date().toISOString(),
-    bookSha256:crypto.createHash('sha256').update(JSON.stringify(loaded.book)).digest('hex'),book:loaded.book};
+  const cached={version,...(info.termAbi?{termAbi:info.termAbi}:{}),compilerSha256,baseSha256,sourcePath,validatedBy:'check_book',generated:new Date().toISOString(),
+    bookSha256:crypto.createHash('sha256').update(JSON.stringify(loaded.book)).digest('hex'),book:loaded.book,
+    ...(range?{spanAbi:SPAN_ABI,sourceBegin:range.begin,sourceEnd:range.end}:{})};
+  if(range)validateSpanCache(cached,info);
   fs.mkdirSync(directory,{recursive:true});
   const staged=file+'.tmp-'+process.pid;
   try {fs.writeFileSync(staged,JSON.stringify(cached));fs.renameSync(staged,file);} finally {fs.rmSync(staged,{force:true});}
@@ -302,12 +385,12 @@ export async function prepareBase(api) {
 }
 
 function foreignSources(graph,extension,required=null,api=null,book=null,scope=book) {
-  const term=(tag,name,kids=[])=>({$:'KTerm',tag,name,id:0,quant:0,kids:list(kids),removed:list([])});
+  const term=(tag,name,kids=[])=>({$:'KTerm',tag,name,id:0,quant:0,kids:list(kids),removed:list([]),originBegin:0,originEnd:0});
   const files=required===null?graph.foreign.filter(f=>path.extname(f.path)===extension):[...new Set(required)].map(file=>({name:file,path:file}));
   return list(files.map(file=>{const source=fs.readFileSync(file.path,'utf8');
     if(!api?.kf_source)return term('Source',file.name,[term('Text',source)]);
     const parsed=api.kf_source(book,scope,file.name,source);if(parsed.error)throw Object.assign(Error(parsed.error),{phase:'compile'});
-    return {$:'KTerm',tag:'Source',name:file.name,id:0,quant:0,kids:parsed.parts,removed:list([])};
+    return {$:'KTerm',tag:'Source',name:file.name,id:0,quant:0,kids:parsed.parts,removed:list([]),originBegin:0,originEnd:0};
   }));
 }
 
@@ -337,6 +420,20 @@ function observation(result) {
     ...(validation&&result.status==='error'&&result.diagnostic&&!result.diagnostic.startsWith('SOME PROOFS FAIL\n')?{diagnostic:'SOME PROOFS FAIL\n'+result.diagnostic}:{})};
 }
 
+// Both checker stages carry the original result into the same rejection renderer.
+function renderDiagnostic(api,detailed,diagnostic,loadTrace,graph) {
+  if(detailed?.error!==diagnostic)return 'Error: '+diagnostic;
+  try {
+    if(api.f_load_origins_for&&api.diagnostic_result_locate) {
+      const provenance=loadTrace&&api.f_loaded_origins_for?
+        api.f_loaded_origins_for(loadTrace,detailed.diagnostic.definition):
+        api.f_load_origins_for(graph.main,graph.sources,detailed.diagnostic.definition);
+      if(!provenance.result.error){detailed=api.diagnostic_result_locate(detailed,provenance.origins);if(loadTrace&&api.diagnostic_render_loaded)return api.diagnostic_render_loaded(detailed,loadTrace);}
+    }
+    return api.diagnostic_render(detailed);
+  } catch(error) {trace('diagnostic rendering unavailable: '+error.message);return 'Error: '+diagnostic;}
+}
+
 async function inspectWithMemo(input,{mode='check',api,args=[],timeoutMs=5000,combinedOutput=false,withReport=false,proofOnly=false}={},memo=null) {
   api??=await loadApi();
   let phase='load';
@@ -352,8 +449,8 @@ async function inspectWithMemo(input,{mode='check',api,args=[],timeoutMs=5000,co
     phase='parse';
     trace('load and elaborate graph');
     // Traces belong to this request and retain the exact parsed/source snapshots.
-    const loadTrace=seed&&api.f_load_graph_seed_trace?api.f_load_graph_seed_trace(graph.main,graph.sources,seed.sourcePath,seed.sourceText,seed.book):
-      !seed&&api.f_load_graph_trace?api.f_load_graph_trace(graph.main,graph.sources):null;
+    const loadTrace=graph.loadTrace??(seed&&api.f_load_graph_seed_trace?api.f_load_graph_seed_trace(graph.main,graph.sources,seed.sourcePath,seed.sourceText,seed.book):
+      !seed&&api.f_load_graph_trace?api.f_load_graph_trace(graph.main,graph.sources):null);
     const loaded=loadTrace?loadTrace.result:seed?api.f_load_graph_seed(graph.main,graph.sources,seed.sourcePath,seed.sourceText,seed.book):
       (api.f_load_graph||api.f_load)(graph.main,graph.sources);
     if(loaded.error) return {status:'error',phase,diagnostic:loaded.error.startsWith('Error:')?loaded.error:'Error: '+loaded.error,exitCode:1,checked:false};
@@ -361,12 +458,15 @@ async function inspectWithMemo(input,{mode='check',api,args=[],timeoutMs=5000,co
     phase='check';
     trace('check book');
     const cached=graph.hasBase&&api.check_from_exact_prefix?(seed||await prepareBase(api)):null;
-    const checkedResult=api.compiler_check_result_abi?.()===1?
+    const checkAbi=typeof api.compiler_check_result_abi==='function'?api.compiler_check_result_abi():0;
+    if(![0,1,2].includes(checkAbi))throw Error(`Unsupported compiler checker-result ABI: ${checkAbi}`);
+    if(checkAbi===2&&typeof api.check_program_diagnostic!=='function')throw Error('Compiler checker-result ABI 2 requires check_program_diagnostic');
+    const checkedResult=checkAbi===2?api.check_program_diagnostic(loaded.book,cached?cached.book:list([]),list([])):checkAbi===1?
       (cached?api.check_book_diagnostic_from_exact_prefix(loaded.book,cached.book,list([])):api.check_book_diagnostic(loaded.book,list([]))):null;
     const diagnostic=checkedResult?checkedResult.error:(cached?api.check_from_exact_prefix(loaded.book,cached.book):api.check_book(loaded.book));
     if(diagnostic) {
       let rendered='Error: '+diagnostic;
-      if(api.check_book_diagnostic&&api.diagnostic_render) {
+      if((checkedResult||api.check_book_diagnostic)&&api.diagnostic_render) {
         try {
           trace('render checker diagnostic');
           let detailed=checkedResult||(cached&&api.check_book_diagnostic_from_exact_prefix?
@@ -374,29 +474,21 @@ async function inspectWithMemo(input,{mode='check',api,args=[],timeoutMs=5000,co
             api.check_book_diagnostic(loaded.book,list([])));
           if(!checkedResult&&cached&&detailed.error!==diagnostic&&api.check_book_diagnostic_from_exact_prefix)
             detailed=api.check_book_diagnostic(loaded.book,list([]));
-          // New APIs return the original authoritative result. Legacy replay can
-          // improve presentation only when its error matches the old verdict.
-          if(detailed.error===diagnostic) {
-            if(api.f_load_origins_for&&api.diagnostic_result_locate&&detailed.diagnostic.definition) {
-              const provenance=loadTrace&&api.f_loaded_origins_for?
-                api.f_loaded_origins_for(loadTrace,detailed.diagnostic.definition):
-                api.f_load_origins_for(graph.main,graph.sources,detailed.diagnostic.definition);
-              if(!provenance.result.error)detailed=api.diagnostic_result_locate(detailed,provenance.origins);
-            }
-            rendered=api.diagnostic_render(detailed);
-          }
+          rendered=renderDiagnostic(api,detailed,diagnostic,loadTrace,graph);
         } catch(error) {trace('diagnostic replay unavailable: '+error.message);}
       }
       return {status:'error',phase,diagnostic:rendered,exitCode:1,checked:true};
     }
-    const todos=api.driver_todos(loaded.book);
-    if(todos) return {status:'error',phase,diagnostic:`Error: ${todos} TODO${todos===1?'':'s'} found.\nThe code is incomplete, and not a valid proof yet.`,exitCode:1,checked:true};
-    let book=loaded.book;
-    if(api.specialize_book) {
-      trace('specialize book');
-      const specialized=api.specialize_book(book),error=api.specialized_error(specialized);
-      if(error) return {status:'error',phase,diagnostic:'Error: '+error,exitCode:1,checked:true};
-      book=api.specialized_book(specialized);
+    let book=checkAbi===2?checkedResult.book:loaded.book;
+    if(checkAbi!==2) {
+      const todos=api.driver_todos(loaded.book);
+      if(todos) return {status:'error',phase,diagnostic:`Error: ${todos} TODO${todos===1?'':'s'} found.\nThe code is incomplete, and not a valid proof yet.`,exitCode:1,checked:true};
+      if(api.specialize_book) {
+        trace('specialize book');
+        const specialized=api.specialize_book(book),error=api.specialized_error(specialized);
+        if(error) return {status:'error',phase,diagnostic:renderDiagnostic(api,api.specialized_diagnostic?.(specialized),error,loadTrace,graph),exitCode:1,checked:true};
+        book=api.specialized_book(specialized);
+      }
     }
     const needReport=mode==='check'||(mode==='interpreter'&&!api.driver_has_main(book))||withReport;
     if(needReport)trace('report declarations');

@@ -93,3 +93,25 @@ def driver_owned_name(book, name):
     case Nil{}: False{}
     case Con{d, rest}:
       (String.eq(dn(d), name) && Bool.not(db(d))) || driver_owned_name(rest, name)
+
+# Program completion follows ordinary and live-instance validation. Legacy
+# diagnostic APIs retain their own open-law completion contract.
+@unsafe
+def check_program_diagnostic(+book: List<&2,KDef>, +validated: List<&2,KDef>, +origins: List<&2,DOrigin>) -> DResult:
+  driver_program_checked(book, origins, dg_seed_books(book, kc(List<&2,KDef>, exact_prefix(book, validated), u => validated, u => Nil{}), origins, book_cached(Nil{}, norm_max_book(book)), False{}))
+
+@unsafe
+def driver_program_checked(+original: List<&2,KDef>, +origins: List<&2,DOrigin>, +checked: DResult) -> DResult:
+  match checked:
+    case DResult{error, book, diagnostic}:
+      kc(DResult, String.eq(error, ""), u => driver_program_specialized(original, origins, specialize_book(book)), u => checked)
+
+@unsafe
+def driver_program_specialized(+original: List<&2,KDef>, +origins: List<&2,DOrigin>, +specialized: KSpecialized) -> DResult:
+  kc(DResult, String.eq(specialized_error(specialized), ""),
+    u => driver_program_complete(specialized_book(specialized), origins, check_open_message(driver_todos(original))),
+    u => diagnostic_result_locate(specialized_diagnostic(specialized), origins))
+
+@unsafe
+def driver_program_complete(+book: List<&2,KDef>, +origins: List<&2,DOrigin>, +error: String) -> DResult:
+  dg_finish(error, book, dg_no_report("", error), origins)

@@ -51,15 +51,14 @@ law fs_parsed:
   for +sources: List<&2, FSource>
   for +g: FGraph
   for +stack: List<&2, String>
-  for +r: FResult
+  for +r: FHeader
   for +seed: FSeed
   FGraph
 
 law fs_imports:
   for +s: FSource
   for +ns: String
-  for +book: List<&2, KDef>
-  for +allimports: List<&2, KTerm>
+  for +header: FHeader
   for +imports: List<&2, KTerm>
   for +sources: List<&2, FSource>
   for +g: FGraph
@@ -109,7 +108,7 @@ def fs_source(s, ns, sources, g, stack, seed):
 
 @unsafe
 def fs_cached(s, ns, sources, g, stack, entry, seed):
-  f_choose(FGraph, f_eq(tg(entry), "Absent"), u => f_choose(FGraph, String.is_empty(ns) && f_eq(f_source_name(s), "Base") && f_eq(f_source_path(s), fs_path(seed)), u => fs_inject(g, seed), u => fs_parsed(s, ns, sources, g, Con{f_source_path(s), stack}, f_parse_source(s), seed)), u => g)
+  f_choose(FGraph, f_eq(tg(entry), "Absent"), u => f_choose(FGraph, String.is_empty(ns) && f_eq(f_source_name(s), "Base") && f_eq(f_source_path(s), fs_path(seed)), u => fs_inject(g, seed), u => fs_parsed(s, ns, sources, g, Con{f_source_path(s), stack}, f_source_header(s), seed)), u => g)
 
 @unsafe
 def fs_inject(g, seed):
@@ -119,17 +118,15 @@ def fs_inject(g, seed):
 
 @unsafe
 def fs_parsed(s, ns, sources, g, stack, r, seed):
-  match r:
-    case FResult{book, +err, imports}:
-      f_choose(FGraph, String.is_empty(err), u => fs_imports(s, ns, book, imports, imports, sources, g, stack, seed), u => f_graph_error(g, err))
+  fs_imports(s, ns, r, f_header_imports(r), sources, g, stack, seed)
 
 @unsafe
-def fs_imports(s, ns, book, allimports, imports, sources, g, stack, seed):
+def fs_imports(s, ns, header, imports, sources, g, stack, seed):
   match imports:
     case Nil{}:
-      f_graph_finish(s, ns, book, f_graph_aliases(allimports, s, sources, fs_root(seed)), g)
-    case Con{+im, rest}:
-      fs_imports(s, ns, book, allimports, rest, sources, fs_load(f_import_pathname(im, s, sources), f_import_namespace_at(im, s, sources, fs_root(seed)), sources, g, stack, seed), stack, seed)
+      f_completion_graph(f_complete_source(s, ns, header, sources, g, fs_root(seed)))
+    case Con{im, rest}:
+      fs_imports(s, ns, header, rest, sources, fs_load(f_import_pathname(im, s, sources), f_import_namespace_at(im, s, sources, fs_root(seed)), sources, g, stack, seed), stack, seed)
 
 
 # Base is larger than the call-stack limit of the library's recursive compare.

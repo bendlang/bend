@@ -25,14 +25,51 @@ available as a historical regression baseline.
 These components are implemented. Their measured compatibility is recorded
 separately in the conformance report.
 
+## Core representation
+
+`KTerm` is a first-order datatype with three variants. Ordinary `KTerm` nodes
+carry a tag, name, binder ID, quantity, children, removed-constructor names and
+an optional source interval. `KLiteral` carries an explicit kind (`Nat`, `U32`,
+`F32` or `String`), an unsigned numeric payload, decoded text and its interval.
+Numeric kinds use empty text; String uses numeric zero and scalar text. F32 stores
+its 32-bit representation, including the sign of zero. Character syntax uses a
+`Chr` constructor around a compact U32 value. Literal values are never encoded
+in a binder ID or quantity field.
+
+`KLambda` carries the ordinary Lambda fields plus `quantityPresent`, replacing
+the redundant tag field. This distinguishes an omitted quantity from an explicit
+one. Structural rebuilding, freshening and substitution preserve it; strong
+normalization and annotation's rebuilt Lambda output deliberately clear it.
+Checking uses the flag when deciding whether a written reusable binder requests
+promotion. Legacy ordinary `KTerm`/`Lam` values count as explicit quantities.
+Semantic equality ignores this syntax fact, but template memo identity retains it.
+
+Template keys use the pinned lowered-term JSON shape, including binder names,
+lexical indices, literal syntax identity and optional Lambda quantity. Source
+ranges and incidental reference token IDs are excluded. The same JSON string
+supplies memo identity and the 32768 UTF16-unit growth guard, with newline-separated
+arguments; the independent instantiation-depth limit remains 64. This is not an
+extra normalizer or checker. See the [canonical-key report](../../implementation/phase16/checker-canonical-memo-json.md).
+
 ## Compilation flow
 
-The loader parses the source graph, resolves imports and aliases, elaborates
-surface syntax, and gives binders distinct IDs. The checker validates declaration
-types, quantities and recursive calls with all signatures and ADTs visible;
-validated bodies become available in declaration order. Specialization uses the
-same declaration environment when creating live template instances. The normalizer also supplies definitional equality and the
-interpreter's result.
+The ordinary host discovers canonical files while Bend owns import syntax,
+namespace resolution and contextual parsing. Load ABI1 separates each module's
+leading import header from its body. The host completes dependencies in source
+order, then asks Bend to parse and elaborate the body against those completed
+declarations and its file aliases. A dependency failure therefore stops traversal
+before a later sibling is opened or the importing body is completed. Parsed
+results and the completed graph are reused within that request.
+
+The checker validates declaration types, quantities and recursive calls with all
+signatures and ADTs visible; validated bodies become available in declaration
+order. Live template instances use the same checker. Program completion validates
+ordinary declarations, materializes and checks live instances, then reports final
+TODO/open-law incompleteness. Its result contains the materialized book, so the
+host does not specialize it again. This does not fully interleave instantiation
+with every checking step inside a body; remaining error-order differences are
+tracked as conformance gaps. The normalizer supplies definitional equality and
+the interpreter's result.
 
 Strong normalization uses explicit work frames and a persistent heap of lazy
 cells. Repeated uses of an argument share its evaluation; materialization returns
@@ -95,11 +132,21 @@ and materialization still use their existing books. Template trust is assessed
 from source declarations, matching the pinned upstream controls; specialization
 must not accidentally make an unsafe source declaration appear trusted.
 
-Checker diagnostics render existing source spans with a caret row. Offsets use
-UTF-16 code units, tabs retain their alignment, and a multiline span is clipped
-to its first displayed line. Empty/reversed spans still receive one caret.
-Rendering does not repair an incorrect originating span: those remaining exact
-differences are recorded separately. Phase15 parser diagnostics share this renderer: token lookup retains code-point columns and separately accumulates UTF-16 offsets for zero-width caret spans. Conservative legacy fallbacks remain.
+Parser-owned source intervals follow term and binder occurrences through
+elaboration, freshening and specialization. Coordinates are UTF16 code units in
+disjoint request-local module intervals; zero/zero means absent. Each interval
+reserves its EOF position, Base starts at one, and canonical physical aliases
+share an interval. Source ownership comes from these ranges and immutable module
+snapshots rather than searching for matching term text or synthesized names.
+
+Checker and parser diagnostics share caret rendering. Tabs retain their alignment,
+and a multiline span is clipped to its first displayed line. Empty spans receive
+one caret. Checker snippets blank leading import lines for upstream's module
+view while keeping raw coordinates; parser/import errors retain raw source text.
+Rendered names use the owning file's namespace and aliases without renaming the
+semantic book or replacing text inside literal strings. Legacy unlocated traces
+retain guarded diagnostic replay. Formatting cannot repair a different checking
+or parsing decision, and remaining exact differences stay explicit.
 
 Checking keeps two independent persistent books: one supplies all declared
 signatures and chronological bodies, while the other records only prior events
@@ -114,18 +161,21 @@ rechecks a domain's kind only for the quantity promotion that requires it; publi
 book checking validates signatures first. Termination descent remembers its first
 failed field comparison and skips that already-tested child during subterm search.
 
-Source Nat literals have a compact `LitNat` core form. Its quantity field holds
-a U32 payload; its binder ID is zero and other fields are canonical and empty.
-Matching, conversion and descent expose one Zero/Succ layer when needed. Native
-Base Nat checking and annotation retain the compact form; custom Nat definitions
-use ordinary constructor checking. Both emitters and readback handle the form.
-Overflow keeps dynamic construction instead of wrapping the value. The compact
-source payload is fixed-width; this does not restrict wider runtime Nat values.
-Strings still expand into ordinary core constructors. The retained long-string
-case passes the final Phase12 full frontend run with a 4MiB stack; this is a
-bounded fixture result, not support for arbitrarily long strings. The
-[Phase9 report](../../implementation/phase9/checker_speed.md)
-records the source, semantic controls and measured costs of these changes.
+Compact literals remain leaves through parsing, scoping, freshening and normal
+checking. Matching, conversion and descent expose constructor structure only when
+needed: one Zero/Succ layer for Nat, one SNil/SCon layer for String, or a bounded
+32-bit Word for U32/F32. Literal patterns expand where constructor-pattern
+compilation requires them. The compact checking/annotation fast path requires the
+matching, unremoved native Base datatype; custom definitions retain ordinary
+constructor checking. Both emitters, pretty-printing and readback understand the
+compact form. Invalid scalar string encodings retain the constructor fallback.
+
+The source numeric payload is U32; this does not restrict wider runtime Nat
+values. Overflowing Nat construction retains its dynamic path. The previous
+`LitNat` quantity-field encoding and eager ordinary String trees are superseded
+by `KLiteral`. The [compact-literal report](../../implementation/phase16/checker-compact-literals.md)
+records the demand boundaries, retained failed experiments and scoped correctness
+evidence; it does not establish support for arbitrarily large inputs.
 
 ## Avoiding repeated work
 
@@ -220,14 +270,13 @@ explicit expectation metadata can produce a diagnostic; the public
 `FResult{book,error:String,imports}` and loader boundary remain unchanged. This
 transport preserves the parser's existing first-error choice. Explicit syntax
 expectations and adjacent constructor-freshness failures render once on rejection;
-unknown or inconsistent positions and unsupported Unicode cursors retain their
-legacy text. Successful parsing does not scan source text to render diagnostics.
+unknown or inconsistent positions retain their legacy text. Successful parsing does not scan source text to render diagnostics.
 The frontend shares the diagnostic model and renderer while remaining independent
 of the checker and diagnostic trace/producer modules.
-One confirmed location limitation remains: a physical newline inside a quoted
-string can leave the lexer's next-token cursor on the wrong line, and a matching
-character there can pass the formatter's guard. The [retained counterexample](../../implementation/phase5/static-counterexample.md)
-records unchanged rejection behavior but an incorrect highlighted excerpt.
+The older [Phase5 newline-in-string counterexample](../../implementation/phase5/static-counterexample.md)
+is retained as historical evidence of why token cursors and source intervals
+must agree. Current source cursors and actual ranges are validated separately;
+legacy fallback text is not evidence of exact diagnostic agreement.
 
 An embedded parser Error can survive inside a declaration until graph validation.
 Only after that validation rejects, the loader can recover the same Error in the
@@ -262,6 +311,25 @@ back to another compiler phase. This preserves graph sharing between phases
 without copying entire compiler books. Newly supplied host values are encoded
 iteratively. See [the ABI adapter and validation](COMPILER-ABI.md).
 
+The installed capabilities are `compiler_term_abi() == 1` for the three core
+variants, `compiler_span_abi() == 3` for source intervals,
+`compiler_load_abi() == 1` for contextual source completion, and
+`compiler_check_result_abi() == 2` for program completion. Term ABI1 requires span
+ABI3. The host validates literal payloads, scalar String text, Lambda presence
+booleans and ownership/range bounds on source-aware discovery results and caches.
+Advertised unknown capabilities or missing required entry points are errors.
+Historical APIs without these capabilities retain their guarded legacy routes.
+Direct low-level AST entry points retain their trusted-input contract.
+
+The current checked Base cache is version6 with `termAbi:1` and `spanAbi:3`. Its
+identity binds compiler and Base content hashes, the canonical Base path, exact
+source interval, serialized-book hash and `validatedBy:check_book`. Persistent
+reuse also binds the API path and exact cache bytes. The development workflow
+checks cache identities and understands versions2,4 and6; the ordinary host also
+selects and validates the expected layout from the compiler capabilities. Older
+span-only version4 and ordinary version2 routes support matching historical
+artifacts. Prototype literal-only version5 caches are not the installed contract.
+
 ## Trust boundary
 
 A successful parse is not a successful type check. The driver must reject a
@@ -286,17 +354,25 @@ import resolution, binder freshening or checking.
 The trace-aware loader returns `FLoadTrace` with actual module order and
 per-module declaration-event counts. All public provenance routes use this same
 alignment; they do not reparse source to reconstruct ownership. Rejection
-reporting reuses the request's trace and lexes only the defining module.
+reporting reuses that trace and resolves stored occurrence ranges against the
+request's immutable source intervals. Historical unlocated inputs retain their
+explicit compatibility path.
 
 One chronological event checker returns the verdict and original structured
 failure together. `check_book` and `check_from_exact_prefix` remain String APIs
-by projecting its error. The detailed APIs expose the same result without replay.
-An exact validated-prefix comparison still precedes suffix checking, including
-open laws; any mismatch falls back to the full checker. The host consumes one
-result only when `compiler_check_result_abi()` returns numeric `1`. Historical
-artifacts keep guarded replay, whose error must match the old authoritative
-verdict. Source lookup and rendering cannot accept a rejected term. The trace
-belongs to one request and is not a stored verdict or replacement for checking.
+by projecting its error; their detailed compatibility APIs retain the same
+open-law completion contract. An exact validated-prefix comparison precedes
+suffix checking, including open laws; any mismatch falls back to full checking.
+The cache never permits a generic arbitrary prefix to skip validation.
+
+For checker-result ABI2, `check_program_diagnostic` uses that checker, the existing
+specializer and final source TODO count, returning the already-materialized book
+in `DResult`. The host consumes one verdict and skips its legacy TODO/specialization
+sequence. ABI1 still supplies a structured ordinary-check result; artifacts
+without a result capability retain guarded replay, whose error must match the
+original authoritative verdict. Source lookup and rendering cannot accept a
+rejected term. The trace belongs to one request and is not a stored verdict or
+replacement for checking.
 
 Final-definition selection for TODO reporting, interpretation and specialization
 retains the last declaration of each name in reverse event order. Short lists
@@ -410,7 +486,8 @@ rejected experiments and remaining validation limits.
 ## Parser diagnostics and session-local Base decoding
 
 Parser rejection sites can carry structured expected-token information and a
-source position through private `FRawResult`/`KTermError` values. The public
+source position through private `FRawResult` values containing an `Error`-tagged
+core term. The public
 frontend result shape stays unchanged. After an error is selected, the loader
 can locate that same embedded error and its unique source owner to render a
 location once. Existing graph-error priority and definition traversal order

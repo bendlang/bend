@@ -1169,3 +1169,41 @@ Six serial fresh-process rows are healthy and other compiler/archive jobs stayed
 closed. Known memo-key and size-boundary gaps still block promotion; final
 Lambda/JSON-key integration and release gates remain open. Source grows104 lines
 over wave9. No generated-program runtime speedup is claimed.
+
+
+## Phase16 consolidated release — 2026-09-29
+
+The [final report](../implementation/phase16/consolidation.md) installs
+`compact-final-build-01`, API `35044ae6`, with genuine parent `83113283` and
+unchanged maintained version5 transformation. All42 installed/relocated CLI checks
+pass. The previous Phase15 API and lineage are retained in release history.
+
+On identical final source, the exclusive TS/B/C/C/B/TS matrix measures Phase15
+30.5837s, final12.3570s and TS3.6108s: **2.475× faster**, same-window TS gap
+**8.47×→3.42×**, peakRSS**−62.70%**. The complete two-file host delta is reviewed;
+this is checking/trust reporting with validated Bend Base caches and TS checking
+Base. The prototype2.87× result remains historical, not a final release ratio.
+
+Main frontend459→2 exact differences,457new/0lost; all2,996 primitive outcomes
+agree. Full inventory1498 fixtures retains1001positive accepts/482validation
+refusals/11trust refusals. Broader gaps stay visible: integration197/198exact;
+marked-pattern71/114exact/rawpassfalse with a separate114-outcome preservation
+audit; contextual/host controls retain a decorator/import wording gap. Backend41,
+literal176/execution20, instance29/growth2, canonical-key61, loader/helper/history
+and CLI gates bind the final image. No full-conformance, new fixed-point, kernel
+or GPU claim is made.
+
+Source grows to16,345lines(+1,057 vs Phase15),59modules,1,656definitions,775laws,
+66types. Compact terms remove allocation, not source complexity. Promotion01/02
+fail before copying anything; promotion03 corrects identity-schema handling and
+explicitly records the known marked-pattern oracle failure. Original reports
+and tools remain preserved. No test oracle is changed to manufacture a pass.
+
+### Updated frontier
+
+Finish durable topic-capsule recovery and commit the usable release. Then isolate
+parser chronology and profile the installed compact compiler. A small raw-body
+group wrapper preserves information needed by a future general checkpoint
+solution; it does not itself fix the remaining monad/instance cases. Pushes
+remain blocked by the earlier automatic approval review despite standing user
+authorization; no publication success is claimed.

@@ -1,13 +1,6 @@
 import Base
 
 # The chronological checker returns its verdict and original diagnostic together.
-law dg_span_fields:
-  for +s: String
-  for +b0: U32
-  for +e0: U32
-  for +b: DSpan
-  Bool
-
 law dg_origin_found:
   for +origins: List<&2, DOrigin>
   for +name: String
@@ -44,39 +37,21 @@ law dg_adt_error:
   KChecked
 
 @unsafe
-def dg_span_same(
-  +a: DSpan,
-  +b: DSpan,
-) -> Bool:
-  match a:
-    case DNoSpan{}: False{}
-    case DSpan{s, b0, e0}: dg_span_fields(s, b0, e0, b)
-
-@unsafe
-def dg_span_fields(s, b0, e0, b):
-  match b:
-    case DNoSpan{}: False{}
-    case DSpan{t, b1, e1}: String.eq(s, t) && U32.is_eq(b0, b1) && U32.is_eq(e0, e1)
-
-@unsafe
-def dg_has_span(
-  +s: DSpan,
-) -> Bool:
+def dg_has_span(+s: DSpan) -> Bool:
   match s:
     case DNoSpan{}: False{}
     case DSpan{source, begin, end}: True{}
 
+# Positive ranges resolve by their owning immutable source interval, not by
+# definition names or structural term equality. EOF is the reserved last point.
 @unsafe
-def dg_origin_scan(
-  +origins: List<&2, DOrigin>,
-  +name: String,
-  +t: KTerm,
-  +found: DSpan,
-) -> DSpan:
+def dg_origin_span(+origins: List<&2,DOrigin>, +begin: U32, +end: U32) -> DSpan:
   match origins:
-    case Nil{}: found
-    case Con{DOrigin{definition, term, source, begin, end, path}, rest}:
-      kc(DSpan, String.eq(name, definition) && norm_exact(t, term), u => kc(DSpan, Bool.not(dg_has_span(found)) || dg_span_same(found, DSpan{source, begin, end}), u => dg_origin_scan(rest, name, t, DSpan{source, begin, end}), u => DNoSpan{}), u => dg_origin_scan(rest, name, t, found))
+    case Nil{}: DNoSpan{}
+    case Con{DSourceOrigin{source, first, limit}, rest}:
+      kc(DSpan, U32.is_gt(first, 0) && U32.is_gt(limit, first) && U32.is_ge(begin, first) && U32.is_ge(end, begin) && U32.is_lt(end, limit),
+        u => DSpan{source, U32.sub(begin, first), U32.sub(end, first)},
+        u => dg_origin_span(rest, begin, end))
 
 @unsafe
 def dg_origin_trail(
@@ -86,7 +61,7 @@ def dg_origin_trail(
 ) -> DSpan:
   match trail:
     case Nil{}: DNoSpan{}
-    case Con{h, rest}: dg_origin_found(origins, name, rest, dg_origin_scan(origins, name, h, DNoSpan{}))
+    case Con{h, rest}: dg_origin_found(origins, name, rest, dg_origin_span(origins, kb(h), ke(h)))
 
 @unsafe
 def dg_origin_found(origins, name, rest, found):
@@ -120,19 +95,20 @@ def dg_finish(
 
 @unsafe
 def check_book_diagnostic(book, origins):
-  dg_seed_books(book, Nil{}, origins, book_cached(Nil{}, norm_max_book(book)))
+  dg_seed_books(book, Nil{}, origins, book_cached(Nil{}, norm_max_book(book)), True{})
 
 law dg_seed_books:
   for +book: List<&2, KDef>
   for +validated: List<&2, KDef>
   for +origins: List<&2, DOrigin>
   for +seed: List<&2, KDef>
+  for +complete: Bool
   DResult
 
 # The immutable empty cache seeds independent declaration and event indexes.
 @unsafe
-def dg_seed_books(book, validated, origins, seed):
-  dg_prefix_seed(book, validated, check_declarations(book, seed), seed, book, origins)
+def dg_seed_books(book, validated, origins, seed, complete):
+  dg_prefix_seed(book, validated, check_declarations(book, seed), seed, book, origins, complete)
 
 @unsafe
 def dg_quant_error(message, name, allowed, used):
@@ -163,6 +139,7 @@ law dg_prefix_seed:
   for +seen: List<&2,KDef>
   for +original: List<&2,KDef>
   for +origins: List<&2,DOrigin>
+  for +complete: Bool
   DResult
 law dg_suffix_events:
   for +todo: List<&2,KDef>
@@ -170,6 +147,7 @@ law dg_suffix_events:
   for +seen: List<&2,KDef>
   for +original: List<&2,KDef>
   for +origins: List<&2,DOrigin>
+  for +complete: Bool
   DResult
 law dg_suffix_guard:
   for +rest: List<&2,KDef>
@@ -179,6 +157,7 @@ law dg_suffix_guard:
   for +original: List<&2,KDef>
   for +origins: List<&2,DOrigin>
   for +guard: String
+  for +complete: Bool
   DResult
 law dg_suffix_check:
   for +rest: List<&2,KDef>
@@ -188,6 +167,7 @@ law dg_suffix_check:
   for +original: List<&2,KDef>
   for +origins: List<&2,DOrigin>
   for +checked: KChecked
+  for +complete: Bool
   DResult
 law dg_suffix_finish:
   for +done: List<&2,KDef>
@@ -199,24 +179,24 @@ law dg_suffix_finish:
 
 @unsafe
 def check_book_diagnostic_from_exact_prefix(book, validated, origins):
-  kc(DResult, exact_prefix(book, validated), u => dg_seed_books(book, validated, origins, book_cached(Nil{}, norm_max_book(book))), u => check_book_diagnostic(book, origins))
+  kc(DResult, exact_prefix(book, validated), u => dg_seed_books(book, validated, origins, book_cached(Nil{}, norm_max_book(book)), True{}), u => check_book_diagnostic(book, origins))
 @unsafe
-def dg_prefix_seed(todo, validated, done, seen, original, origins):
+def dg_prefix_seed(todo, validated, done, seen, original, origins, complete):
   match validated:
-    case Nil{}: dg_suffix_events(todo, done, seen, original, origins)
+    case Nil{}: dg_suffix_events(todo, done, seen, original, origins, complete)
     case Con{head, tail}:
-      dg_prefix_step(todo, head, tail, done, seen, original, origins)
+      dg_prefix_step(todo, head, tail, done, seen, original, origins, complete)
 @unsafe
-def dg_suffix_events(todo, done, seen, original, origins):
+def dg_suffix_events(todo, done, seen, original, origins, complete):
   match todo:
-    case Nil{}: dg_suffix_finish(done, seen, original, origins, check_open(done))
-    case Con{d, rest}: dg_suffix_guard(rest, done, d, seen, original, origins, event_error(seen, d, lookup(seen, dn(d))))
+    case Nil{}: dg_suffix_finish(done, seen, original, origins, kc(String, complete, u => check_open(done), u => ""))
+    case Con{d, rest}: dg_suffix_guard(rest, done, d, seen, original, origins, event_error(seen, d, lookup(seen, dn(d))), complete)
 @unsafe
-def dg_suffix_guard(rest, done, d, seen, original, origins, guard):
-  kc(DResult, String.eq(guard, ""), u => dg_suffix_check(rest, done, d, seen, original, origins, check_definition_result(done, signature_mode(d, rest))), u => dg_finish(dn(d) ++ ": " ++ guard, done, dg_no_report(dn(d), guard), origins))
+def dg_suffix_guard(rest, done, d, seen, original, origins, guard, complete):
+  kc(DResult, String.eq(guard, ""), u => dg_suffix_check(rest, done, d, seen, original, origins, check_definition_result(done, signature_mode(d, rest)), complete), u => dg_finish(dn(d) ++ ": " ++ guard, done, dg_no_report(dn(d), guard), origins))
 @unsafe
-def dg_suffix_check(rest, done, d, seen, original, origins, checked):
-  kc(DResult, good(checked), u => dg_suffix_events(rest, check_event_install(done, d, rest), book_put(seen, d), original, origins), u => dg_finish(dn(d) ++ ": " ++ ce(checked), book_put(done, declared(d)), dg_report(checked, dn(d)), origins))
+def dg_suffix_check(rest, done, d, seen, original, origins, checked, complete):
+  kc(DResult, good(checked), u => dg_suffix_events(rest, check_event_install(done, d, rest), book_put(seen, d), original, origins, complete), u => dg_finish(dn(d) ++ ": " ++ ce(checked), book_put(done, declared(d)), dg_report(checked, dn(d)), origins))
 @unsafe
 def dg_suffix_finish(done, seen, original, origins, error):
   kc(DResult, String.eq(error, ""), u => DResult{"", original, dg_no_report("", "")}, u => dg_finish(error, done, dg_no_report("", error), origins))
@@ -229,12 +209,13 @@ law dg_prefix_step:
   for +seen: List<&2,KDef>
   for +original: List<&2,KDef>
   for +origins: List<&2,DOrigin>
+  for +complete: Bool
   DResult
 @unsafe
-def dg_prefix_step(todo, head, tail, done, seen, original, origins):
+def dg_prefix_step(todo, head, tail, done, seen, original, origins, complete):
   match todo:
-    case Nil{}: check_book_diagnostic(original, origins)
-    case Con{event, rest}: dg_prefix_seed(rest, tail, check_event_install(done, head, rest), book_put(seen, head), original, origins)
+    case Nil{}: dg_seed_books(original, Nil{}, origins, book_cached(Nil{}, norm_max_book(original)), complete)
+    case Con{event, rest}: dg_prefix_seed(rest, tail, check_event_install(done, head, rest), book_put(seen, head), original, origins, complete)
 
 # The checker verdict stays unchanged; only rejection metadata differs.
 @unsafe
@@ -251,4 +232,4 @@ def dg_result_error(result):
     case DResult{error, book, diagnostic}: error
 @unsafe
 def compiler_check_result_abi() -> U32:
-  1
+  2

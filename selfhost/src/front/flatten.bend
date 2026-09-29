@@ -30,6 +30,7 @@ law ff_match:
   for +rows: List<&2, KTerm>
   for +vars: List<&2, KTerm>
   for +next: U32
+  for +origin: KTerm
   FFlatten
 
 law ff_column:
@@ -38,6 +39,7 @@ law ff_column:
   for +rows: List<&2, KTerm>
   for +vars: List<&2, KTerm>
   for +next: U32
+  for +origin: KTerm
   FFlatten
 
 law ff_lam:
@@ -53,6 +55,7 @@ law ff_split:
   for +vs: List<&2, KTerm>
   for +c: KTerm
   for +next: U32
+  for +origin: KTerm
   FFlatten
 
 law ff_fields:
@@ -74,6 +77,7 @@ law ff_fields_done:
   for +vs: List<&2, KTerm>
   for +c: KTerm
   for +r: FFields
+  for +origin: KTerm
   FFlatten
 
 law ff_hit_done:
@@ -84,12 +88,14 @@ law ff_hit_done:
   for +vs: List<&2, KTerm>
   for +c: KTerm
   for +r: FFlatten
+  for +origin: KTerm
   FFlatten
 
 law ff_miss_done:
   for +c: KTerm
   for +hit: KTerm
   for +r: FFlatten
+  for +origin: KTerm
   FFlatten
 
 law fc_term:
@@ -123,49 +129,49 @@ def ff_flat(
   +vars: List<&2, KTerm>,
   +next: U32,
 ) -> FFlatten:
-  f_choose(FFlatten, f_eq(tg(t), "Match"), u => ff_match(ks(kid(t, 0)), f_tail_terms(ks(t)), vars, next), u => f_choose(FFlatten, f_eq(tg(t), "Local"), u => ff_local(t, vars, next), u => f_choose(FFlatten, f_eq(tg(t), "Parallel"), u => ff_parallel(t, vars, ff_flat(kid(t, 2), ks(kid(t, 0)), next)), u => FFlatten{f_lbind(vars, t), next})))
+  f_choose(FFlatten, f_eq(tg(t), "Match"), u => ff_match(ks(kid(t, 0)), f_tail_terms(ks(t)), vars, next, t), u => f_choose(FFlatten, f_eq(tg(t), "Local"), u => ff_local(t, vars, next), u => f_choose(FFlatten, f_eq(tg(t), "Parallel"), u => ff_parallel(t, vars, ff_flat(kid(t, 2), ks(kid(t, 0)), next)), u => FFlatten{f_lbind(vars, t), next})))
 
 @unsafe
 def ff_local(t, vars, next):
-  f_choose(FFlatten, f_eq(tg(kid(t, 0)), "Ctr"), u => ff_match([kid(t, 1)], [kt("Row", "", 0, 1, [kt("Patterns", "", 0, 1, [kid(t, 0)]), kid(t, 2)])], vars, next), u => ff_let(t, vars, ff_flat(kid(t, 2), [kid(t, 0)], next)))
+  f_choose(FFlatten, f_eq(tg(kid(t, 0)), "Ctr"), u => ff_match([kid(t, 1)], [kt("Row", "", 0, 1, [kt("Patterns", "", 0, 1, [kid(t, 0)]), kid(t, 2)])], vars, next, kid(t, 1)), u => ff_let(t, vars, ff_flat(kid(t, 2), [kid(t, 0)], next)))
 
 @unsafe
 def ff_let(t, vars, r):
   match r:
     case FFlatten{+body, next}:
-      FFlatten{f_choose(KTerm, f_eq(tg(body), "Lam"), u => f_lbind(vars, kt("Let", "", 0, 1, [kt("Bind", nm(kid(t, 0)), ix(kid(t, 0)), qt(kid(t, 0)), [kid(t, 1)]), kid(body, 0)])), u => kt("Error", "a match cannot scrutinize a local binding", 0, 0, Nil{})), next}
+      FFlatten{f_choose(KTerm, f_eq(tg(body), "Lam"), u => f_lbind(vars, kt_span("Let", "", 0, 1, [kt_span("Bind", nm(kid(t, 0)), ix(kid(t, 0)), qt(kid(t, 0)), [kid(t, 1)], kb(kid(t, 0)), ke(kid(t, 0))), kid(body, 0)], kb(t), ke(t))), u => fpe_message_at(kid(t, 0), "a match cannot scrutinize a local binding", "a parameter or field scrutinee (a match cannot scrutinize a local binder: give it its own def)")), next}
 
 @unsafe
 def ff_parallel(t, vars, r):
   match r:
     case FFlatten{body, next}:
-      FFlatten{f_lbind(vars, kt("Let", "", 0, 1, norm_join(f_parallel_binds(ks(kid(t, 0)), ks(kid(t, 1))), [f_unlamb(body, terms_len(ks(kid(t, 0))))]))), next}
+      FFlatten{f_lbind(vars, kt_span("Let", "", 0, 1, norm_join(f_parallel_binds(ks(kid(t, 0)), ks(kid(t, 1))), [f_unlamb(body, terms_len(ks(kid(t, 0))))]), kb(t), ke(t))), next}
 
 @unsafe
-def ff_match(heads, rows, vars, next):
+def ff_match(heads, rows, vars, next, origin):
   match heads:
     case Nil{}:
-      f_choose(FFlatten, U32.is_eq(terms_len(rows), 0), u => FFlatten{atom("Efq"), next}, u => ff_flat(kid(terms_at(rows, 0), 1), vars, next))
+      f_choose(FFlatten, U32.is_eq(terms_len(rows), 0), u => FFlatten{kt_span("Efq", "", 0, 0, Nil{}, kb(origin), ke(origin)), next}, u => ff_flat(kid(terms_at(rows, 0), 1), vars, next))
     case Con{+h, hs}:
-      f_choose(FFlatten, f_eq(tg(f_first_ctor(rows)), "Absent") && U32.is_gt(terms_len(rows), 0) && f_has_id(vars, ix(h)), u => ff_match(hs, f_var_rows(rows, h), f_mark_vars(vars, ix(h), f_mark_rows(rows, qt(h))), next), u => ff_column(h, hs, rows, vars, next))
+      f_choose(FFlatten, f_eq(tg(f_first_ctor(rows)), "Absent") && U32.is_gt(terms_len(rows), 0) && f_has_id(vars, ix(h)), u => ff_match(hs, f_var_rows(rows, h), f_mark_vars(vars, ix(h), f_mark_rows(rows, qt(h))), next, origin), u => ff_column(h, hs, rows, vars, next, origin))
 
 @unsafe
-def ff_column(h, hs, rows, vars, next):
+def ff_column(h, hs, rows, vars, next, origin):
   match vars:
     case Nil{}:
-      FFlatten{kt("Error", "match requires an unconsumed parameter or constructor field", 0, 0, Nil{}), next}
+      FFlatten{f_match_error(h, origin), next}
     case Con{+v, vs}:
-      f_choose(FFlatten, U32.is_eq(ix(h), ix(v)), u => ff_split(h, hs, rows, v, vs, f_first_ctor(rows), next), u => ff_lam(v, ff_match(Con{h, hs}, rows, vs, next)))
+      f_choose(FFlatten, U32.is_eq(ix(h), ix(v)), u => ff_split(h, hs, rows, v, vs, f_first_ctor(rows), next, origin), u => ff_lam(v, ff_match(Con{h, hs}, rows, vs, next, origin)))
 
 @unsafe
 def ff_lam(v, r):
   match r:
     case FFlatten{body, next}:
-      FFlatten{kt("Lam", nm(v), ix(v), qt(v), [body]), next}
+      FFlatten{k_lam(nm(v), ix(v), qt(v), [body], kb(v), ke(v), True{}), next}
 
 @unsafe
-def ff_split(h, hs, rows, v, vs, c, next):
-  f_choose(FFlatten, f_eq(tg(c), "Absent"), u => FFlatten{atom("Efq"), next}, u => ff_fields_done(h, hs, rows, v, vs, c, ff_fields(ks(c), f_mark_rows(rows, qt(v)), next)))
+def ff_split(h, hs, rows, v, vs, c, next, origin):
+  f_choose(FFlatten, f_eq(tg(c), "Absent"), u => FFlatten{kt_span("Efq", "", 0, 0, Nil{}, kb(origin), ke(origin)), next}, u => ff_fields_done(h, hs, rows, v, vs, c, ff_fields(ks(c), f_mark_rows(rows, qt(v)), next), origin))
 
 @unsafe
 def ff_fields(ps, q, next):
@@ -173,7 +179,7 @@ def ff_fields(ps, q, next):
     case Nil{}:
       FFields{Nil{}, next}
     case Con{+p, rest}:
-      f_choose(FFields, f_eq(tg(p), "Var"), u => ff_field_cons(kt("Var", nm(p), ix(p), f_choose(U32, U32.is_eq(q, 2), u => 2, u => qt(p)), Nil{}), ff_fields(rest, q, next)), u => ff_field_cons(kt("Var", "_" ++ U32.show(next), U32.add(2147483648, next), q, Nil{}), ff_fields(rest, q, U32.add(next, 1))))
+      f_choose(FFields, f_eq(tg(p), "Var"), u => ff_field_cons(kt_span("Var", nm(p), ix(p), f_choose(U32, U32.is_eq(q, 2), u => 2, u => qt(p)), Nil{}, kb(p), ke(p)), ff_fields(rest, q, next)), u => ff_field_cons(kt_span("Var", "_" ++ U32.show(next), U32.add(2147483648, next), q, Nil{}, kb(p), ke(p)), ff_fields(rest, q, U32.add(next, 1))))
 
 @unsafe
 def ff_field_cons(p, r):
@@ -182,22 +188,22 @@ def ff_field_cons(p, r):
       FFields{Con{p, fields}, next}
 
 @unsafe
-def ff_fields_done(h, hs, rows, v, vs, c, r):
+def ff_fields_done(h, hs, rows, v, vs, c, r, origin):
   match r:
     case FFields{+fields, next}:
-      ff_hit_done(h, hs, rows, v, vs, c, ff_match(norm_join(fields, hs), f_hit_rows(rows, c, fields, v), norm_join(fields, vs), next))
+      ff_hit_done(h, hs, rows, v, vs, c, ff_match(norm_join(fields, hs), f_hit_rows(rows, c, fields, v), norm_join(fields, vs), next, origin), origin)
 
 @unsafe
-def ff_hit_done(h, hs, rows, v, vs, c, r):
+def ff_hit_done(h, hs, rows, v, vs, c, r, origin):
   match r:
     case FFlatten{hit, next}:
-      ff_miss_done(c, hit, ff_match(Con{h, hs}, f_miss_rows(rows, nm(c)), Con{v, vs}, next))
+      ff_miss_done(c, hit, ff_match(Con{h, hs}, f_miss_rows(rows, nm(c)), Con{v, vs}, next, origin), origin)
 
 @unsafe
-def ff_miss_done(c, hit, r):
+def ff_miss_done(c, hit, r, origin):
   match r:
     case FFlatten{miss, next}:
-      FFlatten{kt("Mat", nm(c), 0, 1, [hit, miss]), next}
+      FFlatten{kt_span("Mat", nm(c), 0, 1, [hit, miss], kb(c), ke(c)), next}
 
 @unsafe
 def fc_ref(

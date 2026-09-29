@@ -10,7 +10,7 @@ type DSpan is Data:
   DSpan{+source: String, begin: U32, end: U32}
 
 type DOrigin is Data:
-  DOrigin{+definition: String, +term: KTerm, +source: String, begin: U32, end: U32, +path: List<&2, U32>}
+  DSourceOrigin{+source: String, begin: U32, end: U32}
 
 type DDiagnostic is Data:
   DDiagnostic{+expected: DExpr, +observed: DExpr, has_observed: Bool, +context: List<&2, KTerm>, +definition: String, +span: DSpan, +note: String, +trail: List<&2, KTerm>}

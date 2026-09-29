@@ -1,0 +1,41 @@
+{
+  "kind": "phase16-final-key-probe-addendum",
+  "complete": true,
+  "pass": true,
+  "exact": 61,
+  "includedSizeBoundaries": 20,
+  "productionAPI": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/compact-final-build-01/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/compact-final-build-01/equality/api.mjs",
+    "sha256": "35044ae6f6cd9bb63690536588c11761695c66cbf524db8bcd3baa6453ed5315"
+  },
+  "probeAPI": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-compact-final-key-probe-01/probe-api.mjs",
+    "sha256": "e14a70ec5212e23bdede00e63c351db502f633ca9b9aabb80d0d4cc5802fb545",
+    "bytes": 916215
+  },
+  "probeManifest": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-compact-final-key-probe-01/manifest.json",
+    "sha256": "83a8eadf0abcbbbcf2d5b9126dee81943b99c71fd024c6033371c1a695a17fb2",
+    "bytes": 2863
+  },
+  "rawResult": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-compact-final-key-direct-01/report.json",
+    "sha256": "1090ef8ebc6e523839679bfbbd457ef3e5279ea199b85a694ce2f5c24063378a",
+    "bytes": 19824
+  },
+  "originalPrefixBytes": 915713,
+  "exactOriginalPrefix": true,
+  "testBodyUnchangedFrom": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase16/checker-key-json-direct.mjs",
+    "sha256": "b1dee3e5408b8417737f58956daaec10c263468fccff29bf0bf27aafc5c63208",
+    "bytes": 5934
+  },
+  "testBodySha256": "411e4a95d2e74407901496fa1147014325bf496203460cffd8bd7542fed999a1",
+  "newTool": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase16/checker-compact-final-key-direct.mjs",
+    "sha256": "3aba44ffe06800a6770e153d5a8468536bcd1427a9fd97cf41c3440b8989a7ef",
+    "bytes": 7421
+  },
+  "scope": "Four unchanged run_lib wrapper lines from checked encoder02 appended as a named probe export over final compiled helper bodies. No rebuild, body edits, production API mutation, or claim that probe hash is production hash."
+}

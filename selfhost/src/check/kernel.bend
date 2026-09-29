@@ -23,6 +23,7 @@ law infer_var:
 
 law infer_ref:
   for +e: KEnv
+  for +ctx: List<&2, KTerm>
   for +t: KTerm
   for +dem: U32
   for +sp: List<&2, KTerm>
@@ -192,6 +193,8 @@ law let_cells:
   KTerm
 
 law check_let_done:
+  for +e: KEnv
+  for +ctx: List<&2,KTerm>
   for +r: KChecked
   for +bs: List<&2, KTerm>
   for +us: List<&2, KTerm>
@@ -320,7 +323,7 @@ law check_definition_type:
 law check_foreign:
   for +book: List<&2, KDef>
   for +d: KDef
-  String
+  KChecked
 
 law tele_tip_head:
   for +book: List<&2, KDef>
@@ -330,22 +333,22 @@ law tele_tip_head:
 law check_adt_declaration:
   for +e: KEnv
   for +d: KDef
-  String
+  KChecked
 
 law check_ctors:
   for +e: KEnv
   for +d: KDef
   for +ctrs: List<&2, KDef>
   for +kind: KTerm
-  String
+  KChecked
 
 law check_ctors_next:
   for +e: KEnv
   for +d: KDef
   for +rest: List<&2, KDef>
   for +kind: KTerm
-  for +err: String
-  String
+  for +err: KChecked
+  KChecked
 
 law check_ctor_tel:
   for +e: KEnv
@@ -356,7 +359,7 @@ law check_ctor_tel:
   for +fields: U32
   for +ctx: List<&2, KTerm>
   for +args: List<&2, KTerm>
-  String
+  KChecked
 
 law check_ctor_head:
   for +e: KEnv
@@ -367,7 +370,7 @@ law check_ctor_head:
   for +fields: U32
   for +ctx: List<&2, KTerm>
   for +args: List<&2, KTerm>
-  String
+  KChecked
 
 law check_ctor_domain:
   for +e: KEnv
@@ -379,10 +382,11 @@ law check_ctor_domain:
   for +ctx: List<&2, KTerm>
   for +args: List<&2, KTerm>
   for +r: KChecked
-  String
+  KChecked
 
 law infer_template:
   for +e: KEnv
+  for +ctx: List<&2, KTerm>
   for +t: KTerm
   for +dem: U32
   for +sp: List<&2, KTerm>
@@ -625,17 +629,17 @@ def infer(
 @unsafe
 def infer_node(e, ctx, t, dem, sp):
   kc(KChecked, String.eq(tg(t), "Var"), u => infer_var(ctx, t, dem),
-   u => kc(KChecked, String.eq(tg(t), "Ref"), u => infer_ref(e, t, dem, sp, lookup(cb(e), nm(t))),
+   u => kc(KChecked, String.eq(tg(t), "Ref"), u => infer_ref(e, ctx, t, dem, sp, lookup(cb(e), nm(t))),
    u => kc(KChecked, String.eq(tg(t), "Typ"), u => checked(check(e, ctx, kid(t, 0), 0, atom("Qnt")), t, typ(1)),
    u => kc(KChecked, String.eq(tg(t), "Qnt"), u => ok(t, typ(1), Nil{}),
    u => kc(KChecked, String.eq(tg(t), "Qua"), u => ok(t, atom("Qnt"), Nil{}),
    u => kc(KChecked, String.eq(tg(t), "Min"), u => both(check(e, ctx, kid(t, 0), dem, atom("Qnt")), check(e, ctx, kid(t, 1), dem, atom("Qnt")), t, atom("Qnt"), False{}),
-   u => kc(KChecked, String.eq(tg(t), "All"), u => both(check(e, ctx, kid(t, 0), 0, typ(kindq(e, qt(t)))), check(e, ctx_bind(ctx, ix(t), qt(t), nm(t), kid(t, 0)), kid(t, 1), 0, typ(1)), t, typ(1), False{}),
+   u => kc(KChecked, String.eq(tg(t), "All"), u => both(dg_kind_check(e, ctx, kid(t, 0), qt(t), nm(t)), check(e, ctx_bind(ctx, ix(t), qt(t), nm(t), kid(t, 0)), kid(t, 1), 0, typ(1)), t, typ(1), False{}),
    u => kc(KChecked, String.eq(tg(t), "App"), u => infer_app(e, ctx, t, dem, infer(e, ctx, kid(t, 0), dem, Con{kid(t, 1), sp})),
    u => kc(KChecked, String.eq(tg(t), "ADT"), u => infer_adt(e, ctx, t, dem, lookup(cb(e), nm(t))),
    u => kc(KChecked, String.eq(tg(t), "Eql"), u => both(check(e, ctx, kid(t, 2), 0, typ(1)), both(check(e, ctx, kid(t, 0), 0, kid(t, 2)), check(e, ctx, kid(t, 1), 0, kid(t, 2)), t, typ(2), False{}), t, typ(2), False{}),
    u => kc(KChecked, String.eq(tg(t), "Ann"), u => both(check(e, ctx, kid(t, 1), 0, typ(1)), check(e, ctx, kid(t, 0), dem, kid(t, 1)), kid(t, 0), kid(t, 1), False{}),
-   u => kc(KChecked, core_nat(t), u => infer(e, ctx, core_nat_step(t), dem, sp), u => bad("cannot infer: annotation required")))))))))))))
+   u => kc(KChecked, core_literal(t), u => bad("cannot infer: annotation required"), u => bad(kc(String, String.eq(tg(t), "FUnboundVar"), u => "unbound variable", u => "cannot infer: annotation required"))))))))))))))
 
 @unsafe
 def infer_var(ctx, t, dem):
@@ -643,13 +647,13 @@ def infer_var(ctx, t, dem):
   kc(KChecked, String.eq(tg(bound), "Absent"), u => bad("unbound variable"), u => ok(t, kid(bound, 0), Con{kt("Use", "", ix(t), dem, Nil{}), Nil{}}))
 
 @unsafe
-def infer_ref(e, t, dem, sp, d):
+def infer_ref(e, ctx, t, dem, sp, d):
   kc(KChecked, String.eq(dk(d), "Absent"), u => bad("undefined name"),
    u => kc(KChecked, String.eq(dk(d), "ADT") && U32.is_gt(da(d), 0), u => bad("a family requires angle-bracket parameters"),
    u => kc(KChecked, U32.is_eq(dem, 0), u => ok(t, dt(d), Nil{}),
    u => kc(KChecked, String.eq(nm(t), cn(e)) && Bool.not(cu(e)) && Bool.not(descend_spine(cq(e), sp, unargs(cl(e), Nil{}))), u => bad("nondecreasing self-call"),
    u => kc(KChecked, String.eq(dk(d), "Def") && String.eq(tg(dv(d)), "Absent") && Bool.not(db(d)) && Bool.not(cu(e)) && Bool.not(String.eq(nm(t), cn(e))), u => bad("live use of an unfilled law"),
-   u => infer_template(e, t, dem, sp, d))))))
+   u => infer_template(e, ctx, t, dem, sp, d))))))
 
 @unsafe
 def infer_app(e, ctx, t, dem, r):
@@ -712,12 +716,12 @@ def check(e, ctx, t, dem, ty):
 
 @unsafe
 def check_node(e, ctx, t, dem, ty):
-  kc(KChecked, core_nat(t), u => kc(KChecked, core_nat_type(cb(e), wnf(cb(e), ty)), u => ok(t, ty, Nil{}), u => check(e, ctx, core_nat_step(t), dem, ty)), u =>
+  kc(KChecked, core_literal(t), u => kc(KChecked, core_literal_type(cb(e), t, wnf(cb(e), ty)), u => ok(t, ty, Nil{}), u => check(e, ctx, core_literal_step(t), dem, ty)), u =>
   kc(KChecked, String.eq(tg(t), "Lam"), u => check_lam(e, ctx, t, dem, wnf(cb(e), ty)),
    u => kc(KChecked, String.eq(tg(t), "Ctr"), u => check_ctr(e, ctx, t, dem, wnf(cb(e), ty)),
    u => kc(KChecked, String.eq(tg(t), "Mat") || String.eq(tg(t), "Efq"), u => check_mat(e, ctx, t, dem, wnf(cb(e), ty)),
    u => kc(KChecked, String.eq(tg(t), "Rfl"), u => check_rfl(e, t, wnf(cb(e), ty)),
-   u => kc(KChecked, String.eq(tg(t), "Hol"), u => bad("unresolved hole"),
+   u => kc(KChecked, String.eq(tg(t), "Hol"), u => kc(KChecked, String.eq(nm(t), "TODO"), u => ok(t, ty, Nil{}), u => bad("unresolved hole")),
    u => kc(KChecked, String.eq(tg(t), "Let"), u => check_let(e, ctx, ctx, ks(t), dem, ty, Nil{}, Nil{}),
    u => kc(KChecked, String.eq(tg(t), "Rwt"), u => check_rwt(e, ctx, t, dem, ty, infer(e, ctx, kid(t, 0), dem, Nil{})),
    u => check_fits(e, infer(e, ctx, t, dem, Nil{}), ty)))))))))
@@ -728,11 +732,11 @@ def check_fits(e, r, ty):
 
 @unsafe
 def check_lam(e, ctx, t, dem, ty):
-  kc(KChecked, String.eq(tg(ty), "All"), u => check_lam_q(e, ctx, t, dem, ty, kc(U32, U32.is_eq(qt(t), 2) && U32.is_eq(qt(ty), 1), u => 2, u => qt(ty))), u => bad("lambda requires a function type"))
+  kc(KChecked, String.eq(tg(ty), "All"), u => check_lam_q(e, ctx, t, dem, ty, kc(U32, k_quantity_present(t) && U32.is_eq(qt(t), 2) && U32.is_eq(qt(ty), 1), u => 2, u => qt(ty))), u => bad("lambda requires a function type"))
 
 @unsafe
 def check_lam_q(e, ctx, t, dem, ty, q):
-  check_lam_done(t, ty, q, both(kc(KChecked, U32.is_eq(qt(t), 2) && U32.is_eq(qt(ty), 1), u => check(e, ctx, kid(ty, 0), 0, typ(kindq(e, q))), u => ok(t, ty, Nil{})), check(lhs_step(e, var(nm(t), ix(t))), ctx_bind(ctx, ix(t), q, nm(t), kid(ty, 0)), kid(t, 0), dem, subst(kid(ty, 1), ix(ty), var(nm(t), ix(t)))), t, ty, False{}))
+  check_lam_done(t, ty, q, both(kc(KChecked, k_quantity_present(t) && U32.is_eq(qt(t), 2) && U32.is_eq(qt(ty), 1), u => dg_kind_check(e, ctx, kid(ty, 0), q, nm(t)), u => ok(t, ty, Nil{})), check(lhs_step(e, var(nm(t), ix(t))), ctx_bind(ctx, ix(t), q, nm(t), kid(ty, 0)), kid(t, 0), dem, subst(kid(ty, 1), ix(ty), var(nm(t), ix(t)))), t, ty, False{}))
 
 @unsafe
 def check_lam_done(t, ty, q, r):
@@ -756,11 +760,11 @@ def check_let(e, outer, ctx, xs, dem, ty, bindings, us):
     case Nil{}:
       bad("let has no body")
     case Con{h, rest}:
-      kc(KChecked, String.eq(tg(h), "Bind"), u => check_let_value(e, outer, ctx, h, rest, dem, ty, bindings, us, infer(e, outer, kid(h, 0), qdem(qt(h), dem), Nil{})), u => check_let_done(check(e, ctx, let_cells(h, bindings), dem, ty), bindings, us))
+      kc(KChecked, String.eq(tg(h), "Bind"), u => check_let_value(e, outer, ctx, h, rest, dem, ty, bindings, us, infer(e, outer, kid(h, 0), qdem(qt(h), dem), Nil{})), u => check_let_done(e, outer, check(e, ctx, let_cells(h, bindings), dem, ty), bindings, us))
 
 @unsafe
 def check_let_value(e, outer, ctx, h, rest, dem, ty, bindings, us, r):
-  kc(KChecked, good(r), u => check_let_kind(e, outer, ctx, h, rest, dem, ty, bindings, us, r, check(e, outer, cy(r), 0, typ(kindq(e, qt(h))))), u => r)
+  kc(KChecked, good(r), u => check_let_kind(e, outer, ctx, h, rest, dem, ty, bindings, us, r, dg_kind_at(e, outer, cy(r), qt(h), nm(h), h)), u => r)
 
 @unsafe
 def check_let_kind(e, outer, ctx, h, rest, dem, ty, bindings, us, r, k):
@@ -775,12 +779,12 @@ def let_cells(body, bs):
       let_cells(subst(body, ix(h), kt("Var", nm(h), ix(h), 0, Con{kid(h, 0), Nil{}})), t)
 
 @unsafe
-def check_let_done(r, bs, us):
+def check_let_done(e, ctx, r, bs, us):
   match bs:
     case Nil{}:
       kc(KChecked, good(r), u => ok(ct(r), cy(r), uses_merge(us, cs(r), False{})), u => r)
     case Con{h, t}:
-      kc(KChecked, U32.is_gt(uses_get(cs(r), ix(h)), qt(h)), u => dg_quant_error("let binder consumed more than allowed", nm(h), qt(h), uses_get(cs(r), ix(h))), u => kc(KChecked, good(r), u => check_let_done(ok(ct(r), cy(r), uses_del(cs(r), ix(h))), t, us), u => r))
+      kc(KChecked, U32.is_gt(uses_get(cs(r), ix(h)), qt(h)), u => dg_trace(e, ctx, h, cy(r), dg_quant_error("let binder consumed more than allowed", nm(h), qt(h), uses_get(cs(r), ix(h)))), u => kc(KChecked, good(r), u => check_let_done(e, ctx, ok(ct(r), cy(r), uses_del(cs(r), ix(h))), t, us), u => r))
 
 @unsafe
 def remaining(
@@ -865,7 +869,7 @@ def lhs_ext(
   +xs: List<&2, KTerm>,
   +fresh: U32,
 ) -> KTerm:
-  kc(KTerm, U32.is_eq(n, 0), u => kapply(lhs, kt("Ctr", name, 0, 0, xs)), u => kt("Lam", nm(tel), fresh, qt(tel), Con{lhs_ext(lhs, name, kid(tel, 1), U32.sub(n, 1), norm_join(xs, Con{var(nm(tel), fresh), Nil{}}), U32.add(fresh, 1)), Nil{}}))
+  kc(KTerm, U32.is_eq(n, 0), u => kapply(lhs, kt("Ctr", name, 0, 0, xs)), u => k_lam(nm(tel), fresh, qt(tel), Con{lhs_ext(lhs, name, kid(tel, 1), U32.sub(n, 1), norm_join(xs, Con{var(nm(tel), fresh), Nil{}}), U32.add(fresh, 1)), Nil{}}, 0, 0, False{}))
 
 @unsafe
 def mat_lhs(e, name, tel, n, avoid):
@@ -880,13 +884,14 @@ def check_rwt(e, ctx, t, dem, ty, r):
 
 @unsafe
 def check_rwt_type(e, ctx, t, dem, ty, r, eq):
-  kc(KChecked, String.eq(tg(eq), "Eql"), u => check_rwt_goal(e, ctx, t, dem, ty, r, eq, U32.add(norm_book_bound(cb(e)), U32.add(norm_max_term(t), 1))), u => dg_bad_detail("rewrite requires equality evidence", dg_text("an equation {a == b : T}"), cy(r)))
+  kc(KChecked, String.eq(tg(eq), "Eql"), u => check_rwt_goal(e, ctx, t, dem, ty, r, eq, U32.add(norm_book_bound(cb(e)), U32.add(norm_max_term(t), 1))), u => dg_trace(e, ctx, kid(t, 0), ty, dg_bad_detail("rewrite requires equality evidence", dg_text("an equation {a == b : T}"), cy(r))))
 
 @unsafe
 def check_rwt_goal(e, ctx, t, dem, ty, r, eq, fresh):
-  kc(KChecked, compare(cb(e), kapply(kapply(kid(t, 1), kid(eq, 1)), kid(t, 0)), ty, True{}),
-   u => both(r, both(check(e, ctx, kid(t, 1), 0, all(1, "_", fresh, kid(eq, 2), all(1, "e", U32.add(fresh, 1), kt("Eql", "", 0, 0, Con{kid(eq, 0), Con{var("_", fresh), Con{kid(eq, 2), Nil{}}}}), typ(1)))), check(e, ctx, kid(t, 2), dem, kapply(kapply(kid(t, 1), kid(eq, 0)), atom("Rfl"))), t, ty, False{}), t, ty, False{}),
-   u => dg_bad_detail("rewrite motive does not fit goal", ty, kapply(kapply(kid(t, 1), kid(eq, 1)), kid(t, 0))))
+  +motive = check(e, ctx, kid(t, 1), 0, all(1, "_", fresh, kid(eq, 2), all(1, "e", U32.add(fresh, 1), kt("Eql", "", 0, 0, Con{kid(eq, 0), Con{var("_", fresh), Con{kid(eq, 2), Nil{}}}}), typ(1))))
+  kc(KChecked, good(motive), u => kc(KChecked, compare(cb(e), kapply(kapply(kid(t, 1), kid(eq, 1)), kid(t, 0)), ty, True{}),
+   u => both(r, both(motive, check(e, ctx, kid(t, 2), dem, kapply(kapply(kid(t, 1), kid(eq, 0)), atom("Rfl"))), t, ty, False{}), t, ty, False{}),
+   u => dg_bad_detail("rewrite motive does not fit goal", ty, kapply(kapply(kid(t, 1), kid(eq, 1)), kid(t, 0)))), u => motive)
 
 @unsafe
 def tele_quantities(
@@ -1006,9 +1011,8 @@ def check_definition_result(book, d):
 
 @unsafe
 def check_definition_type(book, d, e, r):
-  # Legacy ADT/foreign checks use empty ce as success; good(bad("")) is True.
-  kc(KChecked, good(r), u => kc(KChecked, String.eq(dk(d), "ADT"), u => bad(check_adt_declaration(e, d)),
-   u => kc(KChecked, String.eq(tg(dv(d)), "Absent"), u => r, u => kc(KChecked, String.eq(tg(dv(d)), "Foreign"), u => bad(check_foreign(book, d)), u => check_template_definition(book, d, dt(d), dv(d), ref(dn(d)), dx(d))))), u => r)
+  kc(KChecked, good(r), u => kc(KChecked, String.eq(dk(d), "ADT"), u => check_adt_declaration(e, d),
+   u => kc(KChecked, String.eq(tg(dv(d)), "Absent"), u => r, u => kc(KChecked, String.eq(tg(dv(d)), "Foreign"), u => check_foreign(book, d), u => check_template_definition(book, d, dt(d), dv(d), ref(dn(d)), dx(d))))), u => r)
 
 @unsafe
 def foreign_tip(
@@ -1024,7 +1028,7 @@ def foreign_head(
 
 @unsafe
 def check_foreign(book, d):
-  kc(String, U32.is_eq(dx(d), 0) && String.eq(tg(foreign_head(foreign_tip(dt(d)))), "Ref") && String.eq(nm(foreign_head(foreign_tip(dt(d)))), "IO") && String.eq(dk(lookup(book, "IO")), "Def") && db(lookup(book, "IO")), u => "", u => "foreign definition must return base IO directly")
+  kc(KChecked, U32.is_eq(dx(d), 0) && String.eq(tg(foreign_head(foreign_tip(dt(d)))), "Ref") && String.eq(nm(foreign_head(foreign_tip(dt(d)))), "IO") && String.eq(dk(lookup(book, "IO")), "Def") && db(lookup(book, "IO")), u => bad(""), u => dg_trace(KEnv{book, dn(d), ref(dn(d)), 0, Nil{}, du(d)}, Nil{}, foreign_tip(dt(d)), atom("Absent"), dg_bad_detail("foreign definition must return base IO directly", dg_text("a foreign definition returning base IO(...) directly (return type aliases are not unfolded)"), dg_text(dn(d)))))
 
 @unsafe
 def tele_tip(
@@ -1039,35 +1043,43 @@ def tele_tip_head(book, t):
 
 @unsafe
 def check_adt_declaration(e, d):
-  kc(String, String.eq(tg(tele_tip(cb(e), dt(d))), "Typ"), u => check_ctors(e, d, dc(d), dt(d)), u => "datatype declaration must return a kind")
+  kc(KChecked, String.eq(tg(tele_tip(cb(e), dt(d))), "Typ"), u => check_ctors(e, d, dc(d), dt(d)), u => check_adt_kind(e, d, dt(d), Nil{}))
+
+@unsafe
+def check_adt_kind(+e: KEnv, +d: KDef, +tel: KTerm, +ctx: List<&2, KTerm>) -> KChecked:
+  dg_trace(e, ctx, tel, atom("Absent"), check_adt_kind_head(e, d, wnf(cb(e), tel), ctx))
+
+@unsafe
+def check_adt_kind_head(+e: KEnv, +d: KDef, +tel: KTerm, +ctx: List<&2, KTerm>) -> KChecked:
+  kc(KChecked, String.eq(tg(tel), "All"), u => check_adt_kind(e, d, kid(tel, 1), ctx_bind(ctx, ix(tel), qt(tel), nm(tel), kid(tel, 0))), u => kc(KChecked, String.eq(tg(tel), "Typ"), u => check_ctors(e, d, dc(d), dt(d)), u => dg_trace(e, ctx, tel, atom("Absent"), dg_bad_detail("datatype declaration must return a kind", dg_text("a kind (type " ++ dn(d) ++ "<..> is Kind(g))"), tel))))
 
 @unsafe
 def check_ctors(e, d, ctrs, kind):
   match ctrs:
     case Nil{}:
-      ""
+      bad("")
     case Con{h, t}:
-      check_ctors_next(e, d, t, kind, check_ctor_tel(e, d, dt(h), kind, da(d), da(h), Nil{}, Nil{}))
+      check_ctors_next(e, d, t, kind, check_ctor_tel(KEnv{cb(e), dn(h), ref(dn(h)), 0, Nil{}, cu(e)}, d, dt(h), kind, da(d), da(h), Nil{}, Nil{}))
 
 @unsafe
 def check_ctors_next(e, d, rest, kind, err):
-  kc(String, String.eq(err, ""), u => check_ctors(e, d, rest, kind), u => err)
+  kc(KChecked, good(err), u => check_ctors(e, d, rest, kind), u => err)
 
 @unsafe
 def check_ctor_tel(e, d, tel, kind, params, fields, ctx, args):
-  kc(String, U32.is_eq(U32.add(params, fields), 0), u => kc(String, compare(cb(e), tel, kt("ADT", dn(d), 0, 0, args), False{}), u => "", u => "constructor result must apply family to its parameters"), u => check_ctor_head(e, d, wnf(cb(e), tel), kind, params, fields, ctx, args))
+  kc(KChecked, U32.is_eq(U32.add(params, fields), 0), u => kc(KChecked, compare(cb(e), tel, kt("ADT", dn(d), 0, 0, args), False{}), u => bad(""), u => dg_trace(e, ctx, tel, atom("Absent"), dg_bad_detail("constructor result must apply family to its parameters", dg_text("a telescope tipped at " ++ dn(d) ++ " applied to its own parameters"), tel))), u => check_ctor_head(e, d, wnf(cb(e), tel), kind, params, fields, ctx, args))
 
 @unsafe
 def check_ctor_head(e, d, tel, kind, params, fields, ctx, args):
-  kc(String, String.eq(tg(tel), "All"), u => check_ctor_domain(e, d, tel, kind, params, fields, ctx, args, check(e, ctx, kid(tel, 0), 0, kc(KTerm, U32.is_eq(params, 0) && U32.is_eq(qt(tel), 1), u => kind, u => typ(qt(tel))))), u => "constructor telescope missing a binder")
+  kc(KChecked, String.eq(tg(tel), "All"), u => check_ctor_domain(e, d, tel, kind, params, fields, ctx, args, check(e, ctx, kid(tel, 0), 0, kc(KTerm, U32.is_eq(params, 0) && U32.is_eq(qt(tel), 1), u => kind, u => typ(qt(tel))))), u => bad("constructor telescope missing a binder"))
 
 @unsafe
 def check_ctor_domain(e, d, tel, kind, params, fields, ctx, args, r):
-  kc(String, good(r), u => check_ctor_tel(e, d, kid(tel, 1), kc(KTerm, U32.is_eq(params, 0), u => kind, u => subst(kid(wnf(cb(e), kind), 1), ix(wnf(cb(e), kind)), var(nm(tel), ix(tel)))), kc(U32, U32.is_eq(params, 0), u => 0, u => U32.sub(params, 1)), kc(U32, U32.is_eq(params, 0), u => U32.sub(fields, 1), u => fields), ctx_bind(ctx, ix(tel), qt(tel), nm(tel), kid(tel, 0)), kc(List<&2, KTerm>, U32.is_eq(params, 0), u => args, u => norm_join(args, Con{var(nm(tel), ix(tel)), Nil{}}))), u => ce(r))
+  kc(KChecked, good(r), u => check_ctor_tel(e, d, kid(tel, 1), kc(KTerm, U32.is_eq(params, 0), u => kind, u => subst(kid(wnf(cb(e), kind), 1), ix(wnf(cb(e), kind)), var(nm(tel), ix(tel)))), kc(U32, U32.is_eq(params, 0), u => 0, u => U32.sub(params, 1)), kc(U32, U32.is_eq(params, 0), u => U32.sub(fields, 1), u => fields), ctx_bind(ctx, ix(tel), qt(tel), nm(tel), kid(tel, 0)), kc(List<&2, KTerm>, U32.is_eq(params, 0), u => args, u => norm_join(args, Con{var(nm(tel), ix(tel)), Nil{}}))), u => r)
 
 @unsafe
-def infer_template(e, t, dem, sp, d):
-  kc(KChecked, U32.is_eq(dx(d), 0) || U32.is_gt(dx(lookup(cb(e), cn(e))), 0), u => ok(t, dt(d), Nil{}), u => checked(template_args(e, dt(d), sp, dx(d)), t, dt(d)))
+def infer_template(e, ctx, t, dem, sp, d):
+  kc(KChecked, U32.is_eq(dx(d), 0) || U32.is_gt(dx(lookup(cb(e), cn(e))), 0), u => ok(t, dt(d), Nil{}), u => checked(dg_template_result(e, ctx, t, template_args(e, dt(d), sp, dx(d))), t, dt(d)))
 
 @unsafe
 def template_args(e, ty, sp, n):
@@ -1083,14 +1095,14 @@ def template_arg_head(e, ty, sp, n):
 
 @unsafe
 def template_arg_done(e, ty, h, rest, n, r):
-  kc(KChecked, good(r), u => template_args(e, subst(kid(ty, 1), ix(ty), h), rest, U32.sub(n, 1)), u => bad("template argument is open or ill-typed"))
+  kc(KChecked, good(r), u => template_args(e, subst(kid(ty, 1), ix(ty), h), rest, U32.sub(n, 1)), u => r)
 
 @unsafe
 def self_pending(
   +d: KDef,
   +body: KTerm,
 ) -> U32:
-  kc(U32, Bool.not(du(d)) && contains_self(Con{body, Nil{}}, dn(d)), u => U32.sub(da(d), dx(d)), u => 0)
+  kc(U32, du(d), u => 0, u => kc(U32, contains_self(Con{body, Nil{}}, dn(d)), u => U32.sub(da(d), dx(d)), u => 0))
 
 @unsafe
 def contains_self(todo, name):
@@ -1106,11 +1118,11 @@ def check_template_definition(book, d, ty, body, lhs, n):
 
 @unsafe
 def check_template_binder(book, d, ty, body, lhs, n):
-  kc(KChecked, String.eq(tg(ty), "All"), u => check_template_open(book, d, ty, body, lhs, n, dn(d) ++ "~" ++ nm(ty) ++ U32.show(ix(ty))), u => bad("template telescope is too short"))
+  kc(KChecked, String.eq(tg(ty), "All"), u => check_template_open(book, d, ty, body, lhs, n, dn(d) ++ "~" ++ nm(ty)), u => bad("template telescope is too short"))
 
 @unsafe
 def check_template_open(book, d, ty, body, lhs, n, name):
-  check_template_definition(book_put(book, KDef{name, "Def", 0, 0, kid(ty, 0), atom("Absent"), Nil{}, True{}, False{}}), d, subst(kid(ty, 1), ix(ty), ref(name)), kapply(body, ref(name)), app(lhs, ref(name)), U32.sub(n, 1))
+  kc(KChecked, String.eq(dk(lookup(book, name)), "Absent"), u => check_template_definition(book_put(book, KDef{name, "Def", 0, 0, kid(ty, 0), atom("Absent"), Nil{}, True{}, False{}}), d, subst(kid(ty, 1), ix(ty), ref(name)), kapply(body, ref(name)), app(lhs, ref(name)), U32.sub(n, 1)), u => dg_trace(KEnv{book, "", ref(dn(d)), 0, Nil{}, du(d)}, Nil{}, ty, atom("Absent"), dg_bad_detail("duplicate comptime binder", dg_text("a fresh ~ binder name"), dg_text(nm(ty)))))
 
 
 law tele_check_cached_head:
@@ -1200,4 +1212,4 @@ def check_mat_filled(
   +tel: KTerm,
 ) -> KChecked:
   both(check(mat_lhs(e, nm(t), tel, da(ctr), Con{t, Con{ty, ctx}}), ctx, kid(t, 0), dem, mat_goal(cb(e), ty, tel, da(ctr), nm(t), Nil{})),
-   check(e, ctx, mat_rest(cb(e), t, a), dem, all(qt(ty), nm(ty), ix(ty), KTerm{tg(a), nm(a), ix(a), qt(a), ks(a), Con{nm(t), rm(a)}}, kid(ty, 1))), t, ty, True{})
+   check(e, ctx, mat_rest(cb(e), t, a), dem, all(qt(ty), nm(ty), ix(ty), KTerm{tg(a), nm(a), ix(a), qt(a), ks(a), Con{nm(t), rm(a)}, kb(a), ke(a)}, kid(ty, 1))), t, ty, True{})

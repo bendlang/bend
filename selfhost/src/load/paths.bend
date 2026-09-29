@@ -49,7 +49,8 @@ def f_path_term(
   +t: KTerm,
   +dir: String,
 ) -> KTerm:
-  KTerm{tg(t), f_choose(String, f_eq(tg(t), "Path"), u => f_path_join(dir, nm(t)), u => nm(t)), ix(t), qt(t), f_path_terms(ks(t), dir), rm(t)}
+  kc(KTerm, core_literal(t), u => t, u =>
+    k_rebuild(t, f_choose(String, f_eq(tg(t), "Path"), u => f_path_join(dir, nm(t)), u => nm(t)), ix(t), qt(t), f_path_terms(ks(t), dir), rm(t), kb(t), ke(t)))
 
 @unsafe
 def f_path_terms(ts, dir):

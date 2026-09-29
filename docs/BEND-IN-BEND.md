@@ -9,14 +9,16 @@ does not invoke the TypeScript compiler.
 
 The active target is upstream
 [`b2111cf43244e65f76ddc278ee695e669f720cbf`](https://github.com/bendlang/bend/tree/b2111cf43244e65f76ddc278ee695e669f720cbf)
-(Bend 2.0.32 era). The [Phase15 report](../implementation/phase15/parser_conformance_and_speed.md)
+(Bend 2.0.32 era). The [Phase16 report](../implementation/phase16/consolidation.md)
 records checked artifact identities, current conformance, measured cost and
 remaining gaps. This experimental port does not establish independent proof
 validity; `--verdict` is explicitly unsupported.
 
-[Phase16](../implementation/phase16/full_conformance.md) is ongoing in isolated
-checked snapshots. Its current exact-conformance gains, performance deficit and
-remaining semantic controls are documented separately; it is not installed.
+Phase16 is installed. It combines compact literals, explicit lambda quantity
+presence, exact specialization keys, source ranges and contextual module parsing.
+The [development history](../implementation/phase16/full_conformance.md) retains
+its separate prototypes and failures. Two main-corpus diagnostic observations
+and additional independent-control gaps remain.
 
 The current source retains S4's shared loader, provenance, structured checking
 result and list operations. It adds upfront datatype/signature visibility while
@@ -88,7 +90,7 @@ npm run build -- /absolute/release-config.json /absolute/new-attempt
 Config fields and selection semantics are documented in the
 [maintained workflow guide](PHASE5_DEVELOPMENT.md). Broad conformance and checked
 self-reproduction are release/integration gates, not every small edit's build.
-The [Phase15 report](../implementation/phase15/parser_conformance_and_speed.md) records
+The [Phase16 report](../implementation/phase16/consolidation.md) records
 the current artifact's evidence and remaining failures.
 
 ## Work on the current source
@@ -110,7 +112,7 @@ unforced message identity is outside this contract. Historical versions1/2/3/4
 retain exact byte replay. The normalizer seed change and broader branch
 transformation failed stack controls and are excluded.
 
-The [Phase15 report](../implementation/phase15/parser_conformance_and_speed.md) gives the
+The [Phase16 report](../implementation/phase16/consolidation.md) gives the
 current source and artifact identities. Keep experiments isolated by selecting a
 frozen attempt explicitly:
 
@@ -169,7 +171,7 @@ BEND_TYPED_API="$PWD/build/candidate-api.mjs" \
 
 This writes a checked API plus the assembled source and provenance in
 `build/typed/`. Keep source, API, runtime and host snapshots immutable during
-validation. Full self-reproduction has not been rerun for Phase15. The advanced
+validation. Full self-reproduction has not been rerun for Phase16. The advanced
 runner, separate from the checked release build, is:
 
 ```sh
@@ -205,27 +207,33 @@ canonical Base path when comparing output bytes across native and JS hosts.
 
 ## Internal boundaries and performance
 
-The [Phase15 controlled comparison](../implementation/phase15/parser_conformance_and_speed.md)
-checks identical final source in **24.10 s**, versus **25.08 s** for the previous
-release and **2.89 s** for pinned TypeScript: **3.9% less time**, with an **8.35×**
-remaining process-time gap. It excludes emission and binds the complete reviewed
-import-discovery host patch. Two fresh processes per image use the same CPU and
-resource limits. This does not establish a general generated-program runtime
-speedup; older Nat300 JS/native measurements remain tied to Phase12.
+The [Phase16 controlled comparison](../implementation/phase16/consolidation.md)
+checks identical final source in **12.36 s**, versus **30.58 s** for Phase15 and
+**3.61 s** for pinned TypeScript: **2.48× faster**, with a **3.42×** remaining
+process-time gap. Peak RSS falls from 1,745,756 to 651,156 KiB (**62.7%**).
+Two fresh processes per image run serially on the same CPU with the same resource
+limits. The complete host delta is reviewed; Bend uses validated Base caches,
+while TypeScript checks Base. Emission is excluded. This is not a measured
+speedup of generated user programs.
 
-Parser diagnostics now share the checker snippet renderer. Local path validation,
-malformed erased binders, contextual missing-file errors and cyclic-import error
-order are corrected. All 11 trust-refusal cases remain exact. Frontend differences
-fall 603→459, while all 1,001 positive accepts and 482 validation-negative refusals
-remain. Measured behavior/output axes agree on every corpus observation; remaining
-exact differences are diagnostic text. The [conformance notes](../selfhost/CONFORMANCE.md)
-retain scope and limitations.
+Compact `KLiteral` nodes keep Nat, U32, F32 bits and string payloads intact until
+a constructor view is needed. A separate, earlier-source census found **92.97%
+fewer freshened terms**. Explicit lambda quantity presence and canonical JSON
+specialization keys preserve distinctions that a compact representation must
+not erase. The [architecture](../selfhost/docs/ARCHITECTURE.md) describes these
+contracts, source ranges, capability negotiation and Base cache version6.
 
-The [Phase13 investigation](../implementation/phase13/structured_rewriter.md)
-keeps its larger selector prototype uninstalled. Phase14's six normalizer workers
-remain; Phase15 adds two ordinary-list lookup workers emitted as a mutual-tail
-loop. No new maintained JS rewrite is needed. Version5 remains the guarded
-release profile, and saved stack histories remain gates.
+Frontend differences fall **459→2** across 2,996 observations, preserving all
+1,001 positive accepts, 482 validation refusals and 11 exact trust refusals.
+The remaining two observations concern the same do-block's error order.
+Independent controls expose further gaps; read the
+[conformance notes](../selfhost/CONFORMANCE.md) before interpreting the counts.
+
+The compiler contains **16,345 physical / 13,947 nonblank lines** in 59 Bend
+modules, an increase of 1,057 physical lines over Phase15. Runtime allocation
+fell sharply, but source complexity did not. No larger JavaScript rewrite was
+added: the guarded version5 profile and runtime bytes remain unchanged, and the
+original request histories remain release gates.
 
 Routine development uses checked B1 and 36 focused controls; reuse a frozen
 attempt for fixture-only edits. The long string stays first. The selection adds

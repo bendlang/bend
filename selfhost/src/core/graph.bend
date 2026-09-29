@@ -312,7 +312,7 @@ def g_share_head(
 
 @unsafe
 def g_shared_head(t, r):
-  GResult{g_states(r), KTerm{tg(t), nm(t), ix(t), qt(t), g_terms(r), rm(t)}}
+  GResult{g_states(r), k_with_children(t, g_terms(r))}
 
 @unsafe
 def g_cache(
@@ -398,7 +398,7 @@ def g_min_left(book, st, a, b, args, stack):
 
 @unsafe
 def g_match(book, st, arm, original, raw, x, args, pending, fallback, stack):
-  kc(GResult, core_nat(x), u => g_match(book, st, arm, original, raw, core_nat_step(x), args, pending, fallback, stack), u =>
+  kc(GResult, core_literal(x), u => g_match(book, st, arm, original, raw, core_literal_step(x), args, pending, fallback, stack), u =>
   kc(GResult, Bool.not(String.eq(tg(x), "Ctr")), u => g_return(book, st, norm_stuck(original, raw, args, pending, fallback), stack),
    u => kc(GResult, String.eq(tg(arm), "Ann"), u => g_match(book, st, kid(arm, 0), original, raw, x, args, pending, fallback, stack),
    u => kc(GResult, String.eq(tg(arm), "Mat"), u => kc(GResult, String.eq(nm(arm), nm(x)),
@@ -452,7 +452,7 @@ def g_snf_open(book, st, t, stack, fresh):
 def g_snf_children(book, st, parent, done, todo, stack, fresh):
   match todo:
     case Nil{}:
-      g_snf_return(book, st, KTerm{tg(parent), nm(parent), ix(parent), qt(parent), List.reverse(&2, KTerm, done), rm(parent)}, stack, fresh)
+      g_snf_return(book, st, k_snf_children(parent, List.reverse(&2, KTerm, done)), stack, fresh)
     case Con{h, rest}:
       g_snf_go(book, st, h, Con{KNormFrame{parent, done, rest}, stack}, fresh)
 
