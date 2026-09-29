@@ -34,5 +34,44 @@ The three known backend differences are also diagnostics: two missing natural-
 number snippets and one constructor-pattern arity message. Their exact frozen
 witnesses are included in the relevant source/parser investigations.
 
-Independent owners have prospective family plans and isolated preparations.
-No Phase16 source is installed and no conformance improvement is claimed yet.
+## First combined full-corpus checkpoint
+
+`wave1-build-02` combines parser source03 and checker source02. Its complete
+2,996-observation gate reduces exact differences **459→364**, with **95 new exact
+matches, zero lost matches and zero unexpected changes**. Attribution is 82
+parser observations and 13 checker observations. All primitive behavior axes still
+agree with the reference; the 1,001 positive accepts, 482 validation refusals and
+11 exact trust refusals remain. Strict check results are 1,211 pass / 287 fail.
+This is scoped progress, not full conformance and not an installed compiler.
+
+The first composition `wave1-build-01` accidentally omitted the parser's changed
+parallel module. Its successful focused build is retained but unselected. The v2
+preparation tool now requires each owner's declared file set to equal its complete
+actual source/tool delta. The corrected source and full gate are
+`wave1-source-02/manifest.json` and `wave1-frontend-01/report.json`.
+
+## Source-range cost experiment
+
+The metadata-only eight-field KTerm candidate keeps every origin at zero. Its
+independent controls preserve all 36 focused outcomes, raw parse projections and
+all 28,780 Base terms. The Base JSON grows 3,653,389→4,516,789 bytes (+23.63%).
+In the exclusive matched-source ABBA matrix, Phase15 takes **24.2841 s** and the
+candidate **24.5297 s**, a **1.01% process-time increase** (1.07% request time).
+Maximum RSS rises 1,384,712→1,508,412 KiB (+8.93%). TypeScript takes 2.8936 s in
+this window. There are two samples per Bend image; these figures neither prove
+zero overhead nor measure populated source ranges. The host ABI patch is reviewed
+explicitly. Records: `spans-matrix-01/report.json`, `spans-host-review.json`.
+
+A separate common-child rebuild helper replaces 105 repeated field projections
+at 15 sites with 15 helper calls, reducing source bytes by 275 while adding seven
+physical lines and one definition. Its checked build and 22 control groups pass;
+its speed is unmeasured. These results justify instrumenting actual occurrence
+ranges, then measuring the final combined cost before promotion.
+
+## Work in progress
+
+Later isolated parser and checker corrections are being combined with source
+ranges. New controls also expose behavior gaps outside the inherited corpus;
+those are retained as semantic failures, not reclassified as diagnostic issues.
+The installed production compiler remains Phase15. No Phase16 candidate has yet
+passed the final performance, full backend, history and release gates.

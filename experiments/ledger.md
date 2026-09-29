@@ -1011,3 +1011,17 @@ The fresh same-image baseline averages 24.5512 s Bend and 2.6651 s TS (9.2122×)
 Independent owners inspect parser errors, checker errors and missing source
 origins. Numeric full-range provenance requires an isolated cost/ABI gate before
 instrumentation. Outcomes go in the [report](../implementation/phase16/full_conformance.md).
+
+
+## Phase16 first complete conformance wave — 2026-09-29
+
+The isolated wave1-build-02 full gate reduces 459→364 exact differences, with
+95 new matches (82 parser / 13 checker), zero lost exacts and unchanged primitive
+behavior on all 2,996 observations. The installed compiler remains Phase15.
+The metadata-only numeric-span experiment costs 1.01% process time and 8.93%
+peak RSS in the same-source exclusive matrix; populated spans remain unmeasured.
+The common rebuild helper removes 90 repeated projections and 275 source bytes
+with its 22-group gate passing; its speed is unmeasured. The [report](../implementation/phase16/full_conformance.md)
+preserves scoped results, the omitted-file first composition and the corrected
+complete-owner preparation guard. Continue semantic controls and explicit source
+provenance before final integration/promotion.
