@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
-const upstream=process.env.BEND_UPSTREAM||path.resolve(import.meta.dirname,'../.bootstrap/upstream-phase8');
+const upstream=process.env.BEND_UPSTREAM||path.resolve(import.meta.dirname,'../.bootstrap/upstream-phase23');
 const B=await import(pathToFileURL(path.join(upstream,'bend2/bend.ts')));
 const C=await import(pathToFileURL(path.join(upstream,'bend2/comp.ts')));
 try{

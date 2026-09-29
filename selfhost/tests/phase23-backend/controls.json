@@ -1,0 +1,36 @@
+{
+  "cases": [
+    {
+      "id": "tcp_zero_idle",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tests/phase23-backend/fixtures/tcp_zero_idle.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    },
+    {
+      "id": "atomic_operations",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tests/phase23-backend/fixtures/atomic_operations.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    },
+    {
+      "id": "parallel_rows",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tests/phase23-backend/fixtures/parallel_rows.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    },
+    {
+      "id": "shared_array_ownership",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tests/phase23-backend/fixtures/shared_array_ownership.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    }
+  ]
+}

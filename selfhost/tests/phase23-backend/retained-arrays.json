@@ -1,0 +1,67 @@
+{
+  "cases": [
+    {
+      "id": "run/array_fork.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    },
+    {
+      "id": "run/array_fork_unshare.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    },
+    {
+      "id": "run/array_atomic_fadd.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    },
+    {
+      "id": "run/array_split_join.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    },
+    {
+      "id": "run/array_boxed_get.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    },
+    {
+      "id": "run/array_struct_swap.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    },
+    {
+      "id": "run/array_wrap_index.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    },
+    {
+      "id": "compile/array_dynamic_closure.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    },
+    {
+      "id": "compile/fork_array_capture.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    }
+  ]
+}

@@ -32,7 +32,7 @@ export function configuration(value, directory=process.cwd()) {
   const known=new Set(['project','upstream','selection','profile','fullFrontend','strictExact','jobs','cpu','timeoutMs','phaseTimeoutMs','fullTimeoutMs','heapMb','recycleAfter']);
   for(const key of Object.keys(value))if(!known.has(key))throw Error('Unknown configuration key: '+key);
   const resolve=file=>fs.realpathSync(path.resolve(directory,file));
-  const root=resolve(value.project??project),upstream=resolve(value.upstream??path.join(root,'.bootstrap/upstream-phase8'));
+  const root=resolve(value.project??project),upstream=resolve(value.upstream??path.join(root,'.bootstrap/upstream-phase23'));
   const profile=value.profile??'checked';if(!['checked','equality'].includes(profile))throw Error('Unknown development profile');
   if(value.fullFrontend!==undefined&&typeof value.fullFrontend!=='boolean')throw Error('fullFrontend must be boolean');
   if(value.strictExact!==undefined&&typeof value.strictExact!=='boolean')throw Error('strictExact must be boolean');

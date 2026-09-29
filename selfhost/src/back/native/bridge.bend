@@ -267,7 +267,7 @@ def nc_field_word(+name: String, +word: String, +i: U32) -> String:
   nt_choose(String, String.eq(name, "Succ"), u => "(" ++ word ++ " - 1)", u =>
   nt_choose(String, String.eq(name, "Chr"), u => word, u =>
   nt_choose(String, String.eq(name, "U32") || String.eq(name, "F32"), u => "native_word(e, (u32)" ++ word ++ ")", u =>
-  nt_choose(String, String.eq(name, "ALeaf"), u => "blk_read(e.mem, 1, term_loc(" ++ word ++ "), 0)", u =>
+  nt_choose(String, String.eq(name, "ALeaf"), u => "blk_leaf(e, " ++ word ++ ")", u =>
   nt_choose(String, String.eq(name, "ANode"), u => "blk_half(e, " ++ word ++ ", " ++ U32.show(i) ++ ")", u =>
     "e.mem[term_peek(e, " ++ word ++ ") + " ++ U32.show(i) ++ "]")))))
 
@@ -339,9 +339,10 @@ def nc_ref_name(+book: List<&2, KDef>, +name: String) -> String:
 @unsafe
 def nc_primitive_arity(+k: String) -> U32:
   +fmt = ni_find(k, ni_templates())
-  nt_choose(U32, String.eq(k, "array_set") || String.eq(k, "array_swap"), u => 3, u =>
+  nt_choose(U32, String.eq(k, "array_atomic_cas"), u => 4, u =>
+  nt_choose(U32, U32.is_ne(nc_atomic(k), 0) || String.eq(k, "array_set") || String.eq(k, "array_swap"), u => 3, u =>
   nt_choose(U32, String.eq(k, "array_new") || String.eq(k, "array_get") || String.eq(k, "nat_divmod"), u => 2, u =>
-  nt_choose(U32, String.eq(fmt, nt_replace(fmt, "$1", "?")), u => 1, u => 2)))
+  nt_choose(U32, String.eq(fmt, nt_replace(fmt, "$1", "?")), u => 1, u => 2))))
 
 @unsafe
 def nc_prim_args(+n: U32, +i: U32) -> List<&2, KTerm>:

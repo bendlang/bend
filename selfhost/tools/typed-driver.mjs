@@ -71,7 +71,7 @@ export function verifyBootstrapProvenance(provenance) {
   return true;
 }
 
-export function bootstrap({upstream=process.env.BEND_UPSTREAM||path.resolve(project,'.bootstrap/upstream-phase8'),timeoutMs=120000,nativeSnapshot=process.env.BEND_TYPED_NATIVE_SNAPSHOT,nativeModules}={}) {
+export function bootstrap({upstream=process.env.BEND_UPSTREAM||path.resolve(project,'.bootstrap/upstream-phase23'),timeoutMs=120000,nativeSnapshot=process.env.BEND_TYPED_NATIVE_SNAPSHOT,nativeModules}={}) {
   const provenance=captureBootstrapProvenance(upstream),revision=provenance.upstream.revision;
   const manifest=path.join(project,'src/compiler.json');
   if(!fs.existsSync(manifest))throw Error('Compiler module manifest is missing: '+manifest);

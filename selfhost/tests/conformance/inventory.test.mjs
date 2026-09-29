@@ -7,7 +7,7 @@ import {syncBuiltinESMExports} from 'node:module';
 import test from 'node:test';
 import {inventory,probes,PIN} from '../../tools/conformance/inventory.mjs';
 const project=path.resolve(import.meta.dirname,'../..');
-const upstream=process.env.BEND_UPSTREAM||path.join(project,'.bootstrap/upstream-phase8');
+const upstream=process.env.BEND_UPSTREAM||path.join(project,'.bootstrap/upstream-phase23');
 const available=fs.existsSync(path.join(upstream,'tests'));
 test('successful git status never masks a subprocess capture error',context=>{
   const mocked=context.mock.method(childProcess,'spawnSync',()=>({status:0,signal:null,error:new Error('spawnSync git EPERM')}));
@@ -17,13 +17,13 @@ test('successful git status never masks a subprocess capture error',context=>{
 });
 test('pinned corpus is exhaustive and includes every negative namespace',{skip:!available},()=>{
   const inv=inventory(upstream);
-  assert.equal(PIN,'b2111cf43244e65f76ddc278ee695e669f720cbf');
+  assert.equal(PIN,'018751270e800bc222a93dad7f257083ee53a5f7');
   assert.equal(inv.revision,PIN);
-  assert.equal(inv.total,1498);
-  assert.equal(inv.bendSourceCount,1509);
+  assert.equal(inv.total,1513);
+  assert.equal(inv.bendSourceCount,1524);
   assert.equal(inv.supportSources.length,11);
   assert.ok(inv.supportSources.every(t=>!t.hasExpectation));
-  assert.equal(inv.tests.filter(t=>!t.negative).length,1001);
+  assert.equal(inv.tests.filter(t=>!t.negative).length,1016);
   assert.equal(Object.keys(inv.namespaces).length,24);
   assert.equal(inv.tests.filter(t=>t.negative).length,497);
   assert.equal(inv.tests.filter(t=>!t.hasExpectation).length,0);
@@ -49,7 +49,7 @@ test('infinite compiler probe is killed and filtered run cannot claim completene
     assert.equal(child.status,1,child.stderr);
     const report=JSON.parse(fs.readFileSync(output,'utf8'));
     assert.equal(report.complete,false);
-    assert.equal(report.summary.excludedTests,1497);
+    assert.equal(report.summary.excludedTests,1512);
     assert.equal(report.results[0].status,'timeout');
   } finally {fs.rmSync(temporary,{recursive:true,force:true});}
 });

@@ -216,9 +216,37 @@ def kf_token(+book: List<&2, KDef>, +ns: String, +source: String, +text: String,
       u => kf_scan(book, ns, String.drop(rest, 1n), False{}, "", Con{kt(prefix, resolved, 0, 0, Nil{}), Con{kt("Text", String.reverse(text), 0, 0, Nil{}), parts}})),
     u => kf_char(book, ns, source, text, parts))
 
+# Match upstream's lexical shields, including its unterminated-region behavior.
+# mode: 0 quoted string, 1 line comment, 2 block comment. A zero span means
+# no complete shield; the ordinary scanner then sees the original bytes.
+@unsafe
+def kf_region(source: String, +quote: Char, +mode: U32, +n: Nat) -> Nat:
+  match source:
+    case SNil{}: kc(Nat, U32.is_eq(mode, 1), u => n, u => 0n)
+    case SCon{+h, +rest}:
+      kc(Nat, (U32.is_eq(mode, 0) && Char.is_eq(h, quote)) || (U32.is_eq(mode, 2) && String.starts_with(source, "*/")),
+        u => Nat.add(n, kc(Nat, U32.is_eq(mode, 2), u => 2n, u => 1n)),
+        u => kc(Nat, (U32.is_eq(mode, 1) && (Char.is_eq(h, '\n') || Char.is_eq(h, '\r') || U32.is_eq(Char.to_u32(h), 8232) || U32.is_eq(Char.to_u32(h), 8233))) || (U32.is_eq(mode, 0) && Bool.not(Char.is_eq(quote, '`')) && Char.is_eq(h, '\n')),
+          u => kc(Nat, U32.is_eq(mode, 1), u => n, u => 0n),
+          u => kc(Nat, (U32.is_eq(mode, 0) && Char.is_eq(h, '\\') && Bool.not(String.is_empty(rest))) || (U32.is_eq(mode, 1) && String.starts_with(source, "\\\n")),
+            u => kf_region(String.drop(rest, 1n), quote, mode, Nat.add(n, 2n)),
+            u => kf_region(rest, quote, mode, 1n+n))))
+
+@unsafe
+def kf_shield(+source: String) -> Nat:
+  match source:
+    case SNil{}: 0n
+    case SCon{+h, +rest}:
+      kc(Nat, String.starts_with(source, "//"), u => kf_region(String.drop(rest, 1n), h, 1, 2n), u =>
+      kc(Nat, String.starts_with(source, "/*"), u => kf_region(String.drop(rest, 1n), h, 2, 2n), u =>
+      kc(Nat, Char.is_eq(h, '"') || U32.is_eq(Char.to_u32(h), 39) || Char.is_eq(h, '`'), u => kf_region(rest, h, 0, 1n), u => 0n)))
+
 @unsafe
 def kf_scan(book, ns, source, word, text, parts):
-  kc(KF_Source, Bool.not(word) && (String.starts_with(source, "CID(") || String.starts_with(source, "FID(")), u => kf_token(book, ns, source, text, parts), u => kf_char(book, ns, source, text, parts))
+  +n = kf_shield(source)
+  kc(KF_Source, Nat.is_eq(n, 0n),
+    u => kc(KF_Source, Bool.not(word) && (String.starts_with(source, "CID(") || String.starts_with(source, "FID(")), u => kf_token(book, ns, source, text, parts), u => kf_char(book, ns, source, text, parts)),
+    u => kf_scan(book, ns, String.drop(source, n), False{}, String.reverse(String.take(source, n)) ++ text, parts))
 
 @unsafe
 def kf_source(+book: List<&2, KDef>, scope: List<&2, KDef>, path: String, source: String) -> KF_Source:

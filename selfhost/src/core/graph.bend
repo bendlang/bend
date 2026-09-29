@@ -308,7 +308,8 @@ def g_share_head(
   +st: GState,
   +t: KTerm,
 ) -> GResult:
-  kc(GResult, String.eq(tg(t), "Ctr") || String.eq(tg(t), "ADT") || String.eq(tg(t), "Mat") || String.eq(tg(t), "Eql") || String.eq(tg(t), "Min") || String.eq(tg(t), "Typ"), u => g_shared_head(t, g_share_terms(st, ks(t), Nil{})), u => GResult{st, t})
+  kc(GResult, String.eq(tg(t), "All"), u => g_shared_domain(t, g_share(st, kid(t, 0))),
+    u => kc(GResult, String.eq(tg(t), "Ctr") || String.eq(tg(t), "ADT") || String.eq(tg(t), "Mat") || String.eq(tg(t), "Eql") || String.eq(tg(t), "Min") || String.eq(tg(t), "Typ"), u => g_shared_head(t, g_share_terms(st, ks(t), Nil{})), u => GResult{st, t}))
 
 @unsafe
 def g_shared_head(t, r):
@@ -474,3 +475,11 @@ law g_start:
 @unsafe
 def g_start(book, t, bound):
   g_snf_go(book_cached(book, bound), GState{GEmpty{}, 1}, t, Nil{}, U32.add(bound, 1))
+
+# A telescope domain is independent of its own binder; its deferred codomain
+# stays outside the cell so opening that binder still substitutes the body.
+@unsafe
+def g_shared_domain(+t: KTerm, +r: GResult) -> GResult:
+  match r:
+    case GResult{state, term}:
+      GResult{state, k_with_children(t, Con{term, Con{kid(t, 1), Nil{}}})}

@@ -42,25 +42,36 @@ export const createPersistentInspector=()=>{throw Error('artifact fixture must n
     fs.rmSync(directory,{recursive:true,force:true});
   }
 });
-test('only the exact structured-checker capability replaces the legacy verdict',async()=>{
+test('supported checker capabilities own verdicts and unknown values fail closed',async()=>{
   const directory=fs.mkdtempSync(path.join(os.tmpdir(),'bend-checker-capability-')),file=path.join(directory,'main.bend');
   fs.writeFileSync(file,'# host protocol fixture\n');
   const nil={$:'Nil'},loaded={$:'FResult',book:nil,error:'',imports:nil};
   try{
-    for(const version of [undefined,0,2,'1',1]){
-      let stringChecks=0,renders=0;
-      const authoritative=version===1;
-      const api={f_parse:()=>loaded,f_load_graph:()=>loaded,
+    for(const version of [undefined,0,1,2,'1',3]){
+      let stringChecks=0,structuredChecks=0,programChecks=0,renders=0;
+      const authoritative=version===1||version===2,unsupported=version==='1'||version===3;
+      const api={compiler_load_abi:()=>2,f_load_graph:()=>loaded,
+        f_source_header:()=>({imports:nil,error:'',body:'',line:1,offset:0}),
+        f_complete_source:()=>({parsed:loaded,graph:{$:'FGraph',book:nil,error:'',done:nil}}),
+        f_complete_seed:()=>assert.fail('fixture has no seeded Base import'),
+        f_import_namespace_at:()=>assert.fail('fixture has no imported namespace'),
+        f_graph_trace:()=>({result:loaded,done:nil,sources:nil}),
+        f_source_located:(source,begin,end)=>({$:'FLocatedSource',source,begin,end}),
+        f_source_completed:(name,path,text,parsed)=>({$:'FCompletedSource',name,path,text,parsed}),
         check_book:()=>{stringChecks++;assert.ok(!authoritative,'advertised structured checker must own the verdict');return 'legacy rejection';},
         // A legacy presentation result saying success must never erase rejection.
-        check_book_diagnostic:()=>({error:authoritative?'structured rejection':'',book:nil,diagnostic:{definition:''}}),
+        check_book_diagnostic:()=>{structuredChecks++;return {error:version===1?'structured rejection':'',book:nil,diagnostic:{definition:''}};},
+        check_program_diagnostic:()=>{programChecks++;return {error:'program rejection',book:nil,diagnostic:{definition:''}};},
         diagnostic_render:result=>{renders++;return 'Error: '+result.error;}};
       if(version!==undefined)api.compiler_check_result_abi=()=>version;
       const result=await inspect(file,{api,mode:'check'});
       assert.deepEqual({status:result.status,phase:result.phase,checked:result.checked,exitCode:result.exitCode},
         {status:'error',phase:'check',checked:true,exitCode:1},String(version));
-      assert.equal(result.diagnostic,authoritative?'SOME PROOFS FAIL\nError: structured rejection':'SOME PROOFS FAIL\nError: legacy rejection',String(version));
-      assert.equal(stringChecks,authoritative?0:1);assert.equal(renders,authoritative?1:0);
+      const message=unsupported?'Unsupported compiler checker-result ABI: '+version:version===2?'program rejection':version===1?'structured rejection':'legacy rejection';
+      assert.equal(result.diagnostic,'SOME PROOFS FAIL\nError: '+message,String(version));
+      assert.equal(stringChecks,authoritative||unsupported?0:1);
+      assert.equal(structuredChecks,unsupported||version===2?0:1);
+      assert.equal(programChecks,version===2?1:0);assert.equal(renders,authoritative?1:0);
     }
   }finally{fs.rmSync(directory,{recursive:true,force:true});}
 });

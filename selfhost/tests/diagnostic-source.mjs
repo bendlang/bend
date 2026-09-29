@@ -15,8 +15,8 @@ const cases=[
  ['unknown constructor',prefix+'def main() -> Flag:\n  Never{}\n',true],
  ['constructor field arity',prefix+'type Box is Data:\n  Mk{value: Flag}\n\ndef main() -> Box:\n  Mk{}\n',true],
  ['decreasing-call diagnostic',prefix+'def loop(x: Flag) -> Flag:\n  loop(x)\n',true],
- ['dependent context mismatch',prefix+'def wrong(x: Flag) -> Type:\n  x\n',false],
- ['affine diagnostic',prefix+'type Pair is Data:\n  Pair{first: Flag, second: Flag}\n\ndef dup(x: Flag) -> Pair:\n  Pair{x, x}\n',false],
+ ['dependent context mismatch',prefix+'def wrong(x: Flag) -> Type:\n  x\n',true],
+ ['affine diagnostic',prefix+'type Pair is Data:\n  Pair{first: Flag, second: Flag}\n\ndef dup(x: Flag) -> Pair:\n  Pair{x, x}\n',true],
 ];
 const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'bend-diag-'));
 let exact=0,structured=0;const mismatches=[];

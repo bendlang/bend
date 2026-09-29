@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import {spawnFileSync as spawnSync} from '../helpers/spawn-file-sync.mjs';
 import test from 'node:test';
-const root=path.resolve(import.meta.dirname,'../..'),upstream=process.env.BEND_UPSTREAM||path.join(root,'.bootstrap/upstream'),available=fs.existsSync(path.join(upstream,'tests'));
+const root=path.resolve(import.meta.dirname,'../..'),upstream=process.env.BEND_UPSTREAM||path.join(root,'.bootstrap/upstream-phase23'),available=fs.existsSync(path.join(upstream,'tests'));
 const directory=fs.mkdtempSync(path.join(os.tmpdir(),'bend-targeted-test-'));let serial=0;
 process.on('exit',()=>fs.rmSync(directory,{recursive:true,force:true}));
 function run(body,{timeout=3000}={}){

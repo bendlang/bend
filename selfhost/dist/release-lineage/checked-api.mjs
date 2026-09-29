@@ -753,7 +753,7 @@ function $Bool$and$(_a_0, _b_0) {
 }
 
 function $String$eq$(_a_0, _b_0) {
-  return $String$eq$fin$(($String$cmp$(_a_0, _b_0)));
+  return $Cmp$is_eq$(($String$order$(_a_0, _b_0)));
 }
 
 function $tg$(_t_0) {
@@ -1986,7 +1986,7 @@ function $j_library_roots$(_book_0) {
 
 function $j_intrinsic$(_name_0) {
   const _x_0 = (_name_0 + "|");
-  return $String$contains$("|U32.add|U32.sub|U32.and|U32.or|U32.xor|U32.is_eq|U32.is_ne|U32.is_lt|U32.is_le|U32.is_gt|U32.is_ge|U32.mul|U32.div|U32.mod|U32.inc|U32.shl|U32.shr|U32.shln|U32.shrn|U32.not|U32.is_zero|U32.cmp|U32.to_f32|U32.to_nat|U32.from_nat|F32.add|F32.sub|F32.mul|F32.div|F32.neg|F32.is_eq|F32.is_ne|F32.is_lt|F32.is_le|F32.is_gt|F32.is_ge|F32.sqrt|F32.exp|F32.log|F32.log2|F32.log10|F32.sin|F32.cos|F32.tan|F32.asin|F32.acos|F32.atan|F32.sinh|F32.cosh|F32.tanh|F32.floor|F32.ceil|F32.trunc|F32.abs|F32.pow|F32.atan2|F32.mod|F32.to_u32|F32.bits|F32.show|F32.read|Nat.add|Nat.sub|Nat.mul|Nat.double|Nat.cmp|Nat.is_lt|Nat.divmod|Array.new|Array.set|Array.get|Array.swap|Array.size|Array.clone|IO.pure|IO.bind|IO.try|IO.pass|IO.die|IO.args|IO.print|IO.write|IO.print_err|IO.get_env|IO.now|IO.sleep|IO.random_u32|IO.spawn|IO.fork|IO.join|String.append|String.length|String.eq|String.contains|String.starts_with|String.reverse|String.is_empty|Bool.or|Bool.xor|", ("|" + _x_0));
+  return $String$contains$("|U32.add|U32.sub|U32.and|U32.or|U32.xor|U32.is_eq|U32.is_ne|U32.is_lt|U32.is_le|U32.is_gt|U32.is_ge|U32.mul|U32.div|U32.mod|U32.inc|U32.shl|U32.shr|U32.shln|U32.shrn|U32.not|U32.is_zero|U32.cmp|U32.to_f32|U32.to_nat|U32.from_nat|F32.add|F32.sub|F32.mul|F32.div|F32.neg|F32.is_eq|F32.is_ne|F32.is_lt|F32.is_le|F32.is_gt|F32.is_ge|F32.sqrt|F32.exp|F32.log|F32.log2|F32.log10|F32.sin|F32.cos|F32.tan|F32.asin|F32.acos|F32.atan|F32.sinh|F32.cosh|F32.tanh|F32.floor|F32.ceil|F32.trunc|F32.abs|F32.pow|F32.atan2|F32.mod|F32.to_u32|F32.bits|F32.show|F32.read|Nat.add|Nat.sub|Nat.mul|Nat.double|Nat.cmp|Nat.is_lt|Nat.divmod|Array.new|Array.set|Array.get|Array.swap|Array.size|Array.clone|Array.atomic.add|Array.atomic.min|Array.atomic.max|Array.atomic.and|Array.atomic.or|Array.atomic.xor|Array.atomic.exch|Array.atomic.cas|Array.atomic.fadd|IO.pure|IO.bind|IO.try|IO.pass|IO.die|IO.args|IO.print|IO.write|IO.print_err|IO.get_env|IO.now|IO.sleep|IO.random_u32|IO.spawn|IO.fork|IO.join|String.append|String.length|String.eq|String.contains|String.starts_with|String.reverse|String.is_empty|Bool.or|Bool.xor|", ("|" + _x_0));
 }
 
 function $ka_defs_except$(_book_0, _ds_0, _stops_0) {
@@ -2008,12 +2008,18 @@ function $kf_namespace$(_book_0, _path_0) {
 }
 
 function $kf_scan$(_book_0, _ns_0, _source_0, _word_0, _text_0, _parts_0) {
-  const _x_0 = ($String$starts_with$(_source_0, "CID("));
-  const _x_1 = ($String$starts_with$(_source_0, "FID("));
-  return $kc$(($Bool$and$(($Bool$not$(_word_0)), (_x_0 || _x_1))), run_clo((_x_2) => {
+  const _n_0 = run_loop($kf_shield$(_source_0));
+  return $kc$(($Nat$is_eq$(_n_0, 0)), run_clo((_x_0) => {
+  const _x_1 = ($String$starts_with$(_source_0, "CID("));
+  const _x_2 = ($String$starts_with$(_source_0, "FID("));
+  return $kc$(($Bool$and$(($Bool$not$(_word_0)), (_x_1 || _x_2))), run_clo((_x_3) => {
   return $kf_token$(_book_0, _ns_0, _source_0, _text_0, _parts_0);
-}), run_clo((_x_3) => {
+}), run_clo((_x_4) => {
   return $kf_char$(_book_0, _ns_0, _source_0, _text_0, _parts_0);
+}));
+}), run_clo((_x_5) => {
+  const _x_6 = ($String$reverse$(($String$take$(_source_0, _n_0))));
+  return $kf_scan$(_book_0, _ns_0, ($String$drop$(_source_0, _n_0)), false, (_x_6 + _text_0), _parts_0);
 }));
 }
 
@@ -2096,32 +2102,16 @@ function $ka_def$(_book_0, _d_0) {
 }))), "ctors": ($dc$(_d_0)), "native": ($db$(_d_0)), "unsafe": ($du$(_d_0))};
 }
 
-function $String$eq$fin$(_r_0) {
-  const _t_0 = _r_0["fst"];
-  const _c_0 = _r_0["snd"];
-  return $Cmp$is_eq$(_c_0);
+function $Cmp$is_eq$(_c_0) {
+  if (_c_0.$ === "EQ") {
+    return true;
+  } else {
+    return false;
+  }
 }
 
-function $String$cmp$(_a_0, _b_0) {
-  if (_a_0 === "") {
-    if (_b_0 === "") {
-      return {$: "Tuple", "fst": {$: "Tuple", "fst": "", "snd": ""}, "snd": {$: "EQ"}};
-    } else {
-      const _h_0 = (_b_0.codePointAt(0) > 0xFFFF ? _b_0.slice(0, 2) : _b_0[0]);
-      const _t_0 = (_b_0.codePointAt(0) > 0xFFFF ? _b_0.slice(2) : _b_0.slice(1));
-      return {$: "Tuple", "fst": {$: "Tuple", "fst": "", "snd": (_h_0 + _t_0)}, "snd": {$: "LT"}};
-    }
-  } else {
-    const _h_1 = (_a_0.codePointAt(0) > 0xFFFF ? _a_0.slice(0, 2) : _a_0[0]);
-    const _t_1 = (_a_0.codePointAt(0) > 0xFFFF ? _a_0.slice(2) : _a_0.slice(1));
-    if (_b_0 === "") {
-      return {$: "Tuple", "fst": {$: "Tuple", "fst": (_h_1 + _t_1), "snd": ""}, "snd": {$: "GT"}};
-    } else {
-      const _h2_0 = (_b_0.codePointAt(0) > 0xFFFF ? _b_0.slice(0, 2) : _b_0[0]);
-      const _t2_0 = (_b_0.codePointAt(0) > 0xFFFF ? _b_0.slice(2) : _b_0.slice(1));
-      return $String$cmp$fin$(_t_1, _t2_0, ($Char$cmp$(_h_1, _h2_0)));
-    }
-  }
+function $String$order$(_a_0, _b_0) {
+  return $Pair$snd$(($String$cmp$(_a_0, _b_0)));
 }
 
 function $j_l_names$(_names_0) {
@@ -2739,21 +2729,24 @@ function $ni_find$(_k_0, _ops_0) {
 }
 
 function $ni_templates$() {
-  return {$: "Con", "head": {$: "ni_Op", "name": "u32_add", "template": "U32_BIN($0, +, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_sub", "template": "U32_BIN($0, -, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_and", "template": "U32_BIN($0, &, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_or", "template": "U32_BIN($0, |, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_xor", "template": "U32_BIN($0, ^, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_mul", "template": "U32_BIN($0, *, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_is_eq", "template": "U32_BIN($0, ==, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_is_ne", "template": "U32_BIN($0, !=, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_is_lt", "template": "U32_BIN($0, <, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_is_le", "template": "U32_BIN($0, <=, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_is_gt", "template": "U32_BIN($0, >, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_is_ge", "template": "U32_BIN($0, >=, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_inc", "template": "U32_BIN($0, +, 1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_shl", "template": "U32_BIN($0, <<, 1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_shr", "template": "U32_BIN($0, >>, 1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_shln", "template": "($1 >= 32 ? 0 : U32_BIN($0, <<, $1))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_shrn", "template": "($1 >= 32 ? 0 : U32_BIN($0, >>, $1))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_div", "template": "((u32)($1) == 0 ? 0 : (u64)U32_QUO((u32)($0), (u32)($1)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_mod", "template": "((u32)($1) == 0 ? $0 : U32_BIN($0, -, U32_QUO((u32)($0), (u32)($1)) * $1))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_not", "template": "((u64)~(u32)($0))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_is_zero", "template": "U32_BIN($0, ==, 0)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_cmp", "template": "(U32_BIN($0, >, $1) + U32_BIN($0, >=, $1))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_to_f32", "template": "f32_rewrap((f32)(u32)($0))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_to_nat", "template": "$0"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_from_nat", "template": "((u64)(u32)($0))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_add", "template": "f32_rewrap(f32_unbox($0) + f32_unbox($1))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_sub", "template": "f32_rewrap(f32_unbox($0) - f32_unbox($1))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_mul", "template": "f32_rewrap(f32_unbox($0) * f32_unbox($1))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_div", "template": "f32_rewrap(f32_unbox($0) / f32_unbox($1))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_is_eq", "template": "((u64)(f32_unbox($0) == f32_unbox($1)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_is_ne", "template": "((u64)(f32_unbox($0) != f32_unbox($1)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_is_lt", "template": "((u64)(f32_unbox($0) < f32_unbox($1)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_is_le", "template": "((u64)(f32_unbox($0) <= f32_unbox($1)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_is_gt", "template": "((u64)(f32_unbox($0) > f32_unbox($1)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_is_ge", "template": "((u64)(f32_unbox($0) >= f32_unbox($1)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_sqrt", "template": "f32_rewrap((f32)sqrt(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_exp", "template": "f32_rewrap((f32)exp(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_log", "template": "f32_rewrap((f32)log(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_log2", "template": "f32_rewrap((f32)log2(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_log10", "template": "f32_rewrap((f32)log10(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_sin", "template": "f32_rewrap((f32)sin(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_cos", "template": "f32_rewrap((f32)cos(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_tan", "template": "f32_rewrap((f32)tan(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_asin", "template": "f32_rewrap((f32)asin(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_acos", "template": "f32_rewrap((f32)acos(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_atan", "template": "f32_rewrap((f32)atan(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_sinh", "template": "f32_rewrap((f32)sinh(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_cosh", "template": "f32_rewrap((f32)cosh(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_tanh", "template": "f32_rewrap((f32)tanh(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_floor", "template": "f32_rewrap((f32)floor(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_ceil", "template": "f32_rewrap((f32)ceil(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_trunc", "template": "f32_rewrap((f32)trunc(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_abs", "template": "f32_rewrap((f32)fabs(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_pow", "template": "f32_rewrap((f32)pow(f32_unbox($0), f32_unbox($1)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_atan2", "template": "f32_rewrap((f32)atan2(f32_unbox($0), f32_unbox($1)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_mod", "template": "f32_rewrap((f32)fmod(f32_unbox($0), f32_unbox($1)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_neg", "template": "f32_rewrap(-f32_unbox($0))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_to_u32", "template": "f32_to_u32($0)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_bits", "template": "$0"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_show", "template": "f32_show(e, $0)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_read", "template": "f32_read(e, $0)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "nat_add", "template": "nat_chk(e, $0 + $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "nat_sub", "template": "($0 < $1 ? 0 : $0 - $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "nat_mul", "template": "nat_mul(e, $0, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "nat_double", "template": "nat_chk(e, $0 + $0)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "nat_cmp", "template": "(($0 > $1) + ($0 >= $1))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "nat_is_lt", "template": "($0 < $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "bool_or", "template": "(native_bool($0) | native_bool($1))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "bool_xor", "template": "(native_bool($0) ^ native_bool($1))"}, "tail": {$: "Nil"}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}};
+  return {$: "Con", "head": {$: "ni_Op", "name": "u32_add", "template": "U32_BIN($0, +, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_sub", "template": "U32_BIN($0, -, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_and", "template": "U32_BIN($0, &, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_or", "template": "U32_BIN($0, |, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_xor", "template": "U32_BIN($0, ^, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_mul", "template": "U32_BIN($0, *, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_is_eq", "template": "U32_BIN($0, ==, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_is_ne", "template": "U32_BIN($0, !=, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_is_lt", "template": "U32_BIN($0, <, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_is_le", "template": "U32_BIN($0, <=, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_is_gt", "template": "U32_BIN($0, >, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_is_ge", "template": "U32_BIN($0, >=, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_inc", "template": "U32_BIN($0, +, 1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_shl", "template": "U32_BIN($0, <<, 1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_shr", "template": "U32_BIN($0, >>, 1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_shln", "template": "($1 >= 32 ? 0 : U32_BIN($0, <<, $1))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_shrn", "template": "($1 >= 32 ? 0 : U32_BIN($0, >>, $1))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_div", "template": "((u32)($1) == 0 ? 0 : (u64)U32_QUO((u32)($0), (u32)($1)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_mod", "template": "((u32)($1) == 0 ? $0 : U32_BIN($0, -, U32_QUO((u32)($0), (u32)($1)) * $1))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_not", "template": "((u64)~(u32)($0))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_is_zero", "template": "U32_BIN($0, ==, 0)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_cmp", "template": "(U32_BIN($0, >, $1) + U32_BIN($0, >=, $1))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_to_f32", "template": "f32_rewrap((f32)(u32)($0))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_to_nat", "template": "((u64)$0)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "u32_from_nat", "template": "((u64)(u32)($0))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_add", "template": "f32_rewrap(f32_unbox($0) + f32_unbox($1))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_sub", "template": "f32_rewrap(f32_unbox($0) - f32_unbox($1))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_mul", "template": "f32_rewrap(f32_unbox($0) * f32_unbox($1))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_div", "template": "f32_rewrap(f32_unbox($0) / f32_unbox($1))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_is_eq", "template": "((u64)(f32_unbox($0) == f32_unbox($1)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_is_ne", "template": "((u64)(f32_unbox($0) != f32_unbox($1)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_is_lt", "template": "((u64)(f32_unbox($0) < f32_unbox($1)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_is_le", "template": "((u64)(f32_unbox($0) <= f32_unbox($1)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_is_gt", "template": "((u64)(f32_unbox($0) > f32_unbox($1)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_is_ge", "template": "((u64)(f32_unbox($0) >= f32_unbox($1)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_sqrt", "template": "f32_rewrap((f32)sqrt(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_exp", "template": "f32_rewrap((f32)exp(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_log", "template": "f32_rewrap((f32)log(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_log2", "template": "f32_rewrap((f32)log2(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_log10", "template": "f32_rewrap((f32)log10(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_sin", "template": "f32_rewrap((f32)sin(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_cos", "template": "f32_rewrap((f32)cos(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_tan", "template": "f32_rewrap((f32)tan(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_asin", "template": "f32_rewrap((f32)asin(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_acos", "template": "f32_rewrap((f32)acos(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_atan", "template": "f32_rewrap((f32)atan(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_sinh", "template": "f32_rewrap((f32)sinh(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_cosh", "template": "f32_rewrap((f32)cosh(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_tanh", "template": "f32_rewrap((f32)tanh(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_floor", "template": "f32_rewrap((f32)floor(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_ceil", "template": "f32_rewrap((f32)ceil(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_trunc", "template": "f32_rewrap((f32)trunc(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_abs", "template": "f32_rewrap((f32)fabs(f32_unbox($0)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_pow", "template": "f32_rewrap((f32)pow(f32_unbox($0), f32_unbox($1)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_atan2", "template": "f32_rewrap((f32)atan2(f32_unbox($0), f32_unbox($1)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_mod", "template": "f32_rewrap((f32)fmod(f32_unbox($0), f32_unbox($1)))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_neg", "template": "f32_rewrap(-f32_unbox($0))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_to_u32", "template": "f32_to_u32($0)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_bits", "template": "$0"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_show", "template": "f32_show(e, $0)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "f32_read", "template": "f32_read(e, $0)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "nat_add", "template": "nat_chk(e, $0 + $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "nat_sub", "template": "($0 < $1 ? 0 : $0 - $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "nat_mul", "template": "nat_mul(e, $0, $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "nat_double", "template": "nat_chk(e, $0 + $0)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "nat_cmp", "template": "(($0 > $1) + ($0 >= $1))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "nat_is_lt", "template": "($0 < $1)"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "bool_or", "template": "(native_bool($0) | native_bool($1))"}, "tail": {$: "Con", "head": {$: "ni_Op", "name": "bool_xor", "template": "(native_bool($0) ^ native_bool($1))"}, "tail": {$: "Nil"}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}};
 }
 
 function $nc_array_known$(_k_0) {
-  const _x_0 = ($String$eq$(_k_0, "array_new"));
-  const _x_1 = ($String$eq$(_k_0, "array_get"));
-  const _x_2 = (_x_0 || _x_1);
-  const _x_3 = ($String$eq$(_k_0, "array_set"));
-  const _x_4 = (_x_2 || _x_3);
-  const _x_5 = ($String$eq$(_k_0, "array_swap"));
-  const _x_6 = (_x_4 || _x_5);
-  const _x_7 = ($String$eq$(_k_0, "array_size"));
-  const _x_8 = (_x_6 || _x_7);
-  const _x_9 = ($String$eq$(_k_0, "array_clone"));
-  return (_x_8 || _x_9);
+  const _x_0 = run_loop($nc_atomic$(_k_0));
+  const _x_1 = (_x_0 !== 0);
+  const _x_2 = ($String$eq$(_k_0, "array_new"));
+  const _x_3 = (_x_1 || _x_2);
+  const _x_4 = ($String$eq$(_k_0, "array_get"));
+  const _x_5 = (_x_3 || _x_4);
+  const _x_6 = ($String$eq$(_k_0, "array_set"));
+  const _x_7 = (_x_5 || _x_6);
+  const _x_8 = ($String$eq$(_k_0, "array_swap"));
+  const _x_9 = (_x_7 || _x_8);
+  const _x_10 = ($String$eq$(_k_0, "array_size"));
+  const _x_11 = (_x_9 || _x_10);
+  const _x_12 = ($String$eq$(_k_0, "array_clone"));
+  return (_x_11 || _x_12);
 }
 
 function $nc_context_pick$(_original_0, _annotated_0) {
@@ -3877,6 +3870,37 @@ function $kf_namespaces$(_ds_0, _path_0, _ns_0, _seen_0) {
   }
 }
 
+function $kf_shield$(_source_0) {
+  if (_source_0 === "") {
+    return 0;
+  } else {
+    const _h_0 = (_source_0.codePointAt(0) > 0xFFFF ? _source_0.slice(0, 2) : _source_0[0]);
+    const _rest_0 = (_source_0.codePointAt(0) > 0xFFFF ? _source_0.slice(2) : _source_0.slice(1));
+    return $kc$(($String$starts_with$((_h_0 + _rest_0), "//")), run_clo((_x_0) => {
+  return $kf_region$(($String$drop$(_rest_0, 1)), _h_0, 1, 2);
+}), run_clo((_x_1) => {
+  return $kc$(($String$starts_with$((_h_0 + _rest_0), "/*")), run_clo((_x_2) => {
+  return $kf_region$(($String$drop$(_rest_0, 1)), _h_0, 2, 2);
+}), run_clo((_x_3) => {
+  const _x_4 = ($Char$to_u32$(_h_0));
+  const _x_5 = ($Char$is_eq$(_h_0, "\""));
+  const _x_6 = (_x_4 === 39);
+  const _x_7 = (_x_5 || _x_6);
+  const _x_8 = ($Char$is_eq$(_h_0, "`"));
+  return $kc$((_x_7 || _x_8), run_clo((_x_9) => {
+  return $kf_region$(_rest_0, _h_0, 0, 1);
+}), run_clo((_x_10) => {
+  return 0;
+}));
+}));
+}));
+  }
+}
+
+function $Nat$is_eq$(_a_0, _b_0) {
+  return $Cmp$is_eq$(cmp_new(_a_0, _b_0));
+}
+
 function $String$starts_with$($0, $1, $2) {
   let $pc = 0;
   for (;;) switch ($pc) {
@@ -3948,6 +3972,29 @@ function $kf_char$(_book_0, _ns_0, _source_0, _text_0, _parts_0) {
   }
 }
 
+function $String$drop$($0, $1) {
+  for (;;) {
+    {
+      const _s_0 = $0;
+      const _n_0 = $1;
+      if (_s_0 === "") {
+        return "";
+      } else {
+        const _h_0 = (_s_0.codePointAt(0) > 0xFFFF ? _s_0.slice(0, 2) : _s_0[0]);
+        const _t_0 = (_s_0.codePointAt(0) > 0xFFFF ? _s_0.slice(2) : _s_0.slice(1));
+        if (_n_0 === 0) {
+          return (_h_0 + _t_0);
+        } else {
+          const _p_0 = (_n_0 - 1);
+          $0 = _t_0;
+          $1 = _p_0;
+          continue;
+        }
+      }
+    }
+  }
+}
+
 function $j_ctor_metadata$(_defs_0) {
   if (_defs_0.$ === "Nil") {
     return "";
@@ -4005,34 +4052,31 @@ function $kw_initial$(_book_0) {
   return {$: "KWorld", "book": _book_0, "memo": {$: "Nil"}, "fresh": {$: "KFreshDeferred", "roots": {$: "Nil"}}, "checked": {$: "Nil"}};
 }
 
-function $Cmp$is_eq$(_c_0) {
-  if (_c_0.$ === "LT") {
-    return false;
-  } else if (_c_0.$ === "EQ") {
-    return true;
-  } else {
-    return false;
-  }
+function $Pair$snd$(_p_0) {
+  const _b_0 = _p_0["snd"];
+  return _b_0;
 }
 
-function $String$cmp$fin$(_t1_0, _t2_0, _hc_0) {
-  const _t_0 = _hc_0["fst"];
-  const _h1b_0 = _t_0["fst"];
-  const _h2b_0 = _t_0["snd"];
-  const _t_1 = _hc_0["snd"];
-  if (_t_1.$ === "LT") {
-    return {$: "Tuple", "fst": {$: "Tuple", "fst": (_h1b_0 + _t1_0), "snd": (_h2b_0 + _t2_0)}, "snd": {$: "LT"}};
-  } else if (_t_1.$ === "EQ") {
-    return $String$cmp$rec$(_h1b_0, _h2b_0, ($String$cmp$(_t1_0, _t2_0)));
+function $String$cmp$(_a_0, _b_0) {
+  if (_a_0 === "") {
+    if (_b_0 === "") {
+      return {$: "Tuple", "fst": {$: "Tuple", "fst": "", "snd": ""}, "snd": {$: "EQ"}};
+    } else {
+      const _h_0 = (_b_0.codePointAt(0) > 0xFFFF ? _b_0.slice(0, 2) : _b_0[0]);
+      const _t_0 = (_b_0.codePointAt(0) > 0xFFFF ? _b_0.slice(2) : _b_0.slice(1));
+      return {$: "Tuple", "fst": {$: "Tuple", "fst": "", "snd": (_h_0 + _t_0)}, "snd": {$: "LT"}};
+    }
   } else {
-    return {$: "Tuple", "fst": {$: "Tuple", "fst": (_h1b_0 + _t1_0), "snd": (_h2b_0 + _t2_0)}, "snd": {$: "GT"}};
+    const _h_1 = (_a_0.codePointAt(0) > 0xFFFF ? _a_0.slice(0, 2) : _a_0[0]);
+    const _t_1 = (_a_0.codePointAt(0) > 0xFFFF ? _a_0.slice(2) : _a_0.slice(1));
+    if (_b_0 === "") {
+      return {$: "Tuple", "fst": {$: "Tuple", "fst": (_h_1 + _t_1), "snd": ""}, "snd": {$: "GT"}};
+    } else {
+      const _h2_0 = (_b_0.codePointAt(0) > 0xFFFF ? _b_0.slice(0, 2) : _b_0[0]);
+      const _t2_0 = (_b_0.codePointAt(0) > 0xFFFF ? _b_0.slice(2) : _b_0.slice(1));
+      return $String$cmp$fin$(_t_1, _t2_0, ($Char$cmp$(_h_1, _h2_0)));
+    }
   }
-}
-
-function $Char$cmp$(_a_0, _b_0) {
-  const _x_0 = _a_0.codePointAt(0);
-  const _x_1 = _b_0.codePointAt(0);
-  return {$: "Tuple", "fst": {$: "Tuple", "fst": _a_0, "snd": _b_0}, "snd": cmp_new(_x_0, _x_1)};
 }
 
 function $j_escape_char$(_c_0) {
@@ -4971,6 +5015,46 @@ function $nt_clean$(_s_0) {
   }
 }
 
+function $nc_atomic$(_k_0) {
+  return $nt_choose$(($String$eq$(_k_0, "array_atomic_add")), run_clo((_x_0) => {
+  return 1;
+}), run_clo((_x_1) => {
+  return $nt_choose$(($String$eq$(_k_0, "array_atomic_min")), run_clo((_x_2) => {
+  return 2;
+}), run_clo((_x_3) => {
+  return $nt_choose$(($String$eq$(_k_0, "array_atomic_max")), run_clo((_x_4) => {
+  return 3;
+}), run_clo((_x_5) => {
+  return $nt_choose$(($String$eq$(_k_0, "array_atomic_and")), run_clo((_x_6) => {
+  return 4;
+}), run_clo((_x_7) => {
+  return $nt_choose$(($String$eq$(_k_0, "array_atomic_or")), run_clo((_x_8) => {
+  return 5;
+}), run_clo((_x_9) => {
+  return $nt_choose$(($String$eq$(_k_0, "array_atomic_xor")), run_clo((_x_10) => {
+  return 6;
+}), run_clo((_x_11) => {
+  return $nt_choose$(($String$eq$(_k_0, "array_atomic_exch")), run_clo((_x_12) => {
+  return 7;
+}), run_clo((_x_13) => {
+  return $nt_choose$(($String$eq$(_k_0, "array_atomic_cas")), run_clo((_x_14) => {
+  return 8;
+}), run_clo((_x_15) => {
+  return $nt_choose$(($String$eq$(_k_0, "array_atomic_fadd")), run_clo((_x_16) => {
+  return 9;
+}), run_clo((_x_17) => {
+  return 0;
+}));
+}));
+}));
+}));
+}));
+}));
+}));
+}));
+}));
+}
+
 function $String$to_upper$(_s_0) {
   if (_s_0 === "") {
     return "";
@@ -5010,29 +5094,6 @@ function $nc_ctor_display$(_name_0) {
 }), run_clo((_x_1) => {
   return _name_0;
 }));
-}
-
-function $String$drop$($0, $1) {
-  for (;;) {
-    {
-      const _s_0 = $0;
-      const _n_0 = $1;
-      if (_s_0 === "") {
-        return "";
-      } else {
-        const _h_0 = (_s_0.codePointAt(0) > 0xFFFF ? _s_0.slice(0, 2) : _s_0[0]);
-        const _t_0 = (_s_0.codePointAt(0) > 0xFFFF ? _s_0.slice(2) : _s_0.slice(1));
-        if (_n_0 === 0) {
-          return (_h_0 + _t_0);
-        } else {
-          const _p_0 = (_n_0 - 1);
-          $0 = _t_0;
-          $1 = _p_0;
-          continue;
-        }
-      }
-    }
-  }
 }
 
 function $nc_live_count$(_book_0, _tel_0, _left_0) {
@@ -5794,6 +5855,55 @@ function $kf_namespace_step$(_rest_0, _path_0, _ns_0, _seen_0, _prefix_0) {
 }));
 }
 
+function $kf_region$(_source_0, _quote_0, _mode_0, _n_0) {
+  if (_source_0 === "") {
+    return $kc$((_mode_0 === 1), run_clo((_x_0) => {
+  return _n_0;
+}), run_clo((_x_1) => {
+  return 0;
+}));
+  } else {
+    const _h_0 = (_source_0.codePointAt(0) > 0xFFFF ? _source_0.slice(0, 2) : _source_0[0]);
+    const _rest_0 = (_source_0.codePointAt(0) > 0xFFFF ? _source_0.slice(2) : _source_0.slice(1));
+    const _x_2 = ($Bool$and$((_mode_0 === 0), ($Char$is_eq$(_h_0, _quote_0))));
+    const _x_3 = ($Bool$and$((_mode_0 === 2), ($String$starts_with$((_h_0 + _rest_0), "*/"))));
+    return $kc$((_x_2 || _x_3), run_clo((_x_4) => {
+  const _x_7 = run_loop($kc$((_mode_0 === 2), run_clo((_x_5) => {
+  return 2;
+}), run_clo((_x_6) => {
+  return 1;
+})));
+  return nat_chk(_n_0 + _x_7);
+}), run_clo((_x_8) => {
+  const _x_9 = ($Char$is_eq$(_h_0, "\n"));
+  const _x_10 = ($Char$is_eq$(_h_0, "\r"));
+  const _x_11 = ($Char$to_u32$(_h_0));
+  const _x_12 = (_x_9 || _x_10);
+  const _x_13 = (_x_11 === 8232);
+  const _x_14 = ($Char$to_u32$(_h_0));
+  const _x_15 = (_x_12 || _x_13);
+  const _x_16 = (_x_14 === 8233);
+  const _x_17 = ($Bool$and$((_mode_0 === 1), (_x_15 || _x_16)));
+  const _x_18 = ($Bool$and$(($Bool$and$((_mode_0 === 0), ($Bool$not$(($Char$is_eq$(_quote_0, "`")))))), ($Char$is_eq$(_h_0, "\n"))));
+  return $kc$((_x_17 || _x_18), run_clo((_x_19) => {
+  return $kc$((_mode_0 === 1), run_clo((_x_20) => {
+  return _n_0;
+}), run_clo((_x_21) => {
+  return 0;
+}));
+}), run_clo((_x_22) => {
+  const _x_23 = ($Bool$and$(($Bool$and$((_mode_0 === 0), ($Char$is_eq$(_h_0, "\\")))), ($Bool$not$(($String$is_empty$(_rest_0))))));
+  const _x_24 = ($Bool$and$((_mode_0 === 1), ($String$starts_with$((_h_0 + _rest_0), "\\\n"))));
+  return $kc$((_x_23 || _x_24), run_clo((_x_25) => {
+  return $kf_region$(($String$drop$(_rest_0, 1)), _quote_0, _mode_0, nat_chk(_n_0 + 2));
+}), run_clo((_x_26) => {
+  return $kf_region$(_rest_0, _quote_0, _mode_0, nat_chk(_n_0 + 1));
+}));
+}));
+}));
+  }
+}
+
 function $String$starts_with$if$($0, $1, $2) {
   let $pc = 1;
   for (;;) switch ($pc) {
@@ -6016,12 +6126,24 @@ function $cb$(_e_0) {
   return $kw_book$(_world_0);
 }
 
-function $String$cmp$rec$(_h1b_0, _h2b_0, _rr_0) {
-  const _t_0 = _rr_0["fst"];
-  const _t1b_0 = _t_0["fst"];
-  const _t2b_0 = _t_0["snd"];
-  const _r_0 = _rr_0["snd"];
-  return {$: "Tuple", "fst": {$: "Tuple", "fst": (_h1b_0 + _t1b_0), "snd": (_h2b_0 + _t2b_0)}, "snd": _r_0};
+function $String$cmp$fin$(_t1_0, _t2_0, _hc_0) {
+  const _t_0 = _hc_0["fst"];
+  const _h1b_0 = _t_0["fst"];
+  const _h2b_0 = _t_0["snd"];
+  const _t_1 = _hc_0["snd"];
+  if (_t_1.$ === "LT") {
+    return {$: "Tuple", "fst": {$: "Tuple", "fst": (_h1b_0 + _t1_0), "snd": (_h2b_0 + _t2_0)}, "snd": {$: "LT"}};
+  } else if (_t_1.$ === "EQ") {
+    return $String$cmp$rec$(_h1b_0, _h2b_0, ($String$cmp$(_t1_0, _t2_0)));
+  } else {
+    return {$: "Tuple", "fst": {$: "Tuple", "fst": (_h1b_0 + _t1_0), "snd": (_h2b_0 + _t2_0)}, "snd": {$: "GT"}};
+  }
+}
+
+function $Char$cmp$(_a_0, _b_0) {
+  const _x_0 = _a_0.codePointAt(0);
+  const _x_1 = _b_0.codePointAt(0);
+  return {$: "Tuple", "fst": {$: "Tuple", "fst": _a_0, "snd": _b_0}, "snd": cmp_new(_x_0, _x_1)};
 }
 
 function $j_escape_char_on$(_c_0, _key_0) {
@@ -7102,22 +7224,29 @@ function $nc_prim_lambdas$(_k_0, _n_0, _i_0) {
 
 function $nc_primitive_arity$(_k_0) {
   const _fmt_0 = run_loop($ni_find$(_k_0, ($ni_templates$())));
-  const _x_0 = ($String$eq$(_k_0, "array_set"));
-  const _x_1 = ($String$eq$(_k_0, "array_swap"));
-  return $nt_choose$((_x_0 || _x_1), run_clo((_x_2) => {
+  return $nt_choose$(($String$eq$(_k_0, "array_atomic_cas")), run_clo((_x_0) => {
+  return 4;
+}), run_clo((_x_1) => {
+  const _x_2 = run_loop($nc_atomic$(_k_0));
+  const _x_3 = (_x_2 !== 0);
+  const _x_4 = ($String$eq$(_k_0, "array_set"));
+  const _x_5 = (_x_3 || _x_4);
+  const _x_6 = ($String$eq$(_k_0, "array_swap"));
+  return $nt_choose$((_x_5 || _x_6), run_clo((_x_7) => {
   return 3;
-}), run_clo((_x_3) => {
-  const _x_4 = ($String$eq$(_k_0, "array_new"));
-  const _x_5 = ($String$eq$(_k_0, "array_get"));
-  const _x_6 = (_x_4 || _x_5);
-  const _x_7 = ($String$eq$(_k_0, "nat_divmod"));
-  return $nt_choose$((_x_6 || _x_7), run_clo((_x_8) => {
+}), run_clo((_x_8) => {
+  const _x_9 = ($String$eq$(_k_0, "array_new"));
+  const _x_10 = ($String$eq$(_k_0, "array_get"));
+  const _x_11 = (_x_9 || _x_10);
+  const _x_12 = ($String$eq$(_k_0, "nat_divmod"));
+  return $nt_choose$((_x_11 || _x_12), run_clo((_x_13) => {
   return 2;
-}), run_clo((_x_9) => {
-  return $nt_choose$(($String$eq$(_fmt_0, run_loop($nt_replace$(_fmt_0, "$1", "?")))), run_clo((_x_10) => {
+}), run_clo((_x_14) => {
+  return $nt_choose$(($String$eq$(_fmt_0, run_loop($nt_replace$(_fmt_0, "$1", "?")))), run_clo((_x_15) => {
   return 1;
-}), run_clo((_x_11) => {
+}), run_clo((_x_16) => {
   return 2;
+}));
 }));
 }));
 }));
@@ -8025,6 +8154,14 @@ function $core_apply_span$(_f_0, _x_0, _begin_0, _end_0) {
 }));
 }
 
+function $String$cmp$rec$(_h1b_0, _h2b_0, _rr_0) {
+  const _t_0 = _rr_0["fst"];
+  const _t1b_0 = _t_0["fst"];
+  const _t2b_0 = _t_0["snd"];
+  const _r_0 = _rr_0["snd"];
+  return {$: "Tuple", "fst": {$: "Tuple", "fst": (_h1b_0 + _t1b_0), "snd": (_h2b_0 + _t2b_0)}, "snd": _r_0};
+}
+
 function $Char$from_u32$(_x_0) {
   return char_new(_x_0);
 }
@@ -8428,7 +8565,7 @@ function $compare$(_book_0, _a_0, _b_0, _le_0) {
   return true;
 }), run_clo((_x_1) => {
   const _x_2 = run_loop($norm_max$(run_loop($norm_book_bound$(_book_0)), run_loop($norm_max$(($norm_max_term$(_a_0)), ($norm_max_term$(_b_0))))));
-  return $norm_cmp_loop$(_book_0, {$: "Con", "head": {$: "KNormCmp", "a": _a_0, "b": _b_0, "le": _le_0, "fresh": ((1 + _x_2) >>> 0)}, "tail": {$: "Nil"}}, {$: "Nil"});
+  return $norm_convert$(_book_0, _a_0, _b_0, _le_0, ((1 + _x_2) >>> 0));
 }));
 }
 
@@ -10434,22 +10571,12 @@ function $norm_exact$(_a_0, _b_0) {
   return $norm_exact_lists$({$: "Con", "head": _a_0, "tail": {$: "Nil"}}, {$: "Con", "head": _b_0, "tail": {$: "Nil"}});
 }
 
-function $norm_cmp_loop$(_book_0, _todo_0, _alts_0) {
-  if (_todo_0.$ === "Nil") {
-    return true;
-  } else {
-    const _t_0 = _todo_0["head"];
-    const _a_0 = _t_0["a"];
-    const _b_0 = _t_0["b"];
-    const _le_0 = _t_0["le"];
-    const _fresh_0 = _t_0["fresh"];
-    const _rest_0 = _todo_0["tail"];
-    return $kc$(run_loop($norm_cmp_quick$(_a_0, _b_0)), run_clo((_x_0) => {
-  return $norm_cmp_loop$(_book_0, _rest_0, _alts_0);
+function $norm_convert$(_book_0, _a_0, _b_0, _le_0, _fresh_0) {
+  return $kc$(run_loop($norm_cmp_loop$({$: "Nil"}, {$: "GState", "heap": {$: "GEmpty"}, "next": 1}, {$: "Con", "head": {$: "KNormCmp", "a": _a_0, "b": _b_0, "le": _le_0, "fresh": _fresh_0}, "tail": {$: "Nil"}}, {$: "Nil"})), run_clo((_x_0) => {
+  return true;
 }), run_clo((_x_1) => {
-  return $norm_cmp_heads$(_book_0, run_loop($wnf$(_book_0, _a_0)), run_loop($wnf$(_book_0, _b_0)), _le_0, _fresh_0, _rest_0, _alts_0);
+  return $norm_cmp_loop$(_book_0, {$: "GState", "heap": {$: "GEmpty"}, "next": 1}, {$: "Con", "head": {$: "KNormCmp", "a": _a_0, "b": _b_0, "le": _le_0, "fresh": _fresh_0}, "tail": {$: "Nil"}}, {$: "Nil"});
 }));
-  }
 }
 
 function $nv_id$(_name_0) {
@@ -11141,52 +11268,72 @@ function $nc_array$(_k_0, _ws_0, _n_0) {
   const _a_0 = ($nc_head$(_ws_0));
   const _i_0 = ($nc_head$(($nc_tail$(_ws_0))));
   const _v_0 = ($nc_head$(($nc_tail$(($nc_tail$(_ws_0))))));
-  return $nt_choose$(($String$eq$(_k_0, "array_new")), run_clo((_x_0) => {
-  const _x_1 = (_a_0 + ", 0, 1, init)");
-  const _x_2 = ($ne_ret$({$: "Con", "head": ("blk_new(e, 1, " + _x_1), "tail": {$: "Nil"}}));
-  const _x_3 = (" };\n" + _x_2);
-  const _x_4 = (_i_0 + _x_3);
-  return {$: "NC_Code", "body": ("Term init[1] = { " + _x_4), "segments": {$: "Nil"}, "fresh": _n_0, "error": ""};
-}), run_clo((_x_5) => {
-  return $nt_choose$(($String$eq$(_k_0, "array_size")), run_clo((_x_6) => {
-  const _x_7 = (_a_0 + "))");
-  return $nc_array_pair$("", _a_0, ("(1ull << blk_cls(" + _x_7), _n_0);
-}), run_clo((_x_8) => {
-  return $nt_choose$(($String$eq$(_k_0, "array_clone")), run_clo((_x_9) => {
-  const _x_10 = (_a_0 + ")");
-  return $nc_array_pair$("", ("blk_copy(e, " + _x_10), _a_0, _n_0);
-}), run_clo((_x_11) => {
-  return $nt_choose$(($String$eq$(_k_0, "array_get")), run_clo((_x_12) => {
-  const _x_13 = (_i_0 + ", 0);\n");
-  const _x_14 = (", " + _x_13);
-  const _x_15 = (_a_0 + _x_14);
-  const _x_16 = (_a_0 + ") + at)");
-  return $nc_array_pair$(("u32 at = blk_at(" + _x_15), _a_0, ("blk_keep(e, term_loc(" + _x_16), _n_0);
-}), run_clo((_x_17) => {
-  return $nt_choose$(($String$eq$(_k_0, "array_swap")), run_clo((_x_18) => {
-  const _x_19 = (_v_0 + "));\n");
-  const _x_20 = ("), at, rfc_seal(e, " + _x_19);
-  const _x_21 = (_a_0 + _x_20);
-  const _x_22 = ("), at);\nblk_write(e.mem, 1, term_loc(" + _x_21);
-  const _x_23 = (_a_0 + _x_22);
-  const _x_24 = (", 0);\nTerm old = blk_read(e.mem, 1, term_loc(" + _x_23);
-  const _x_25 = (_i_0 + _x_24);
-  const _x_26 = (", " + _x_25);
-  const _x_27 = (_a_0 + _x_26);
-  return $nc_array_pair$(("u32 at = blk_at(" + _x_27), _a_0, "old", _n_0);
-}), run_clo((_x_28) => {
-  const _x_29 = ($ne_ret$({$: "Con", "head": _a_0, "tail": {$: "Nil"}}));
-  const _x_30 = ("));\n" + _x_29);
-  const _x_31 = (_v_0 + _x_30);
-  const _x_32 = ("), at, rfc_seal(e, " + _x_31);
-  const _x_33 = (_a_0 + _x_32);
-  const _x_34 = ("), at));\nblk_write(e.mem, 1, term_loc(" + _x_33);
-  const _x_35 = (_a_0 + _x_34);
-  const _x_36 = (", 0);\nterm_sink(e, blk_read(e.mem, 1, term_loc(" + _x_35);
-  const _x_37 = (_i_0 + _x_36);
-  const _x_38 = (", " + _x_37);
+  const _x_0 = run_loop($nc_atomic$(_k_0));
+  return $nt_choose$((_x_0 !== 0), run_clo((_x_1) => {
+  const _x_4 = ($U32$show$(run_loop($nc_atomic$(_k_0))));
+  const _x_5 = (_x_4 + ")");
+  const _x_6 = run_loop($nt_choose$(($String$eq$(_k_0, "array_atomic_cas")), run_clo((_x_2) => {
+  return $nc_head$(($nc_tail$(($nc_tail$(($nc_tail$(_ws_0)))))));
+}), run_clo((_x_3) => {
+  return "0";
+})));
+  const _x_7 = (", " + _x_5);
+  const _x_8 = (_x_6 + _x_7);
+  const _x_9 = (", " + _x_8);
+  const _x_10 = (_v_0 + _x_9);
+  const _x_11 = (", " + _x_10);
+  const _x_12 = (_i_0 + _x_11);
+  const _x_13 = (", " + _x_12);
+  const _x_14 = (_a_0 + _x_13);
+  return $nc_array_pair$("", _a_0, ("array_atomic(e, " + _x_14), _n_0);
+}), run_clo((_x_15) => {
+  return $nt_choose$(($String$eq$(_k_0, "array_new")), run_clo((_x_16) => {
+  const _x_17 = (_a_0 + ", 0, 1, init)");
+  const _x_18 = ($ne_ret$({$: "Con", "head": ("blk_new(e, 1, " + _x_17), "tail": {$: "Nil"}}));
+  const _x_19 = (" };\n" + _x_18);
+  const _x_20 = (_i_0 + _x_19);
+  return {$: "NC_Code", "body": ("Term init[1] = { " + _x_20), "segments": {$: "Nil"}, "fresh": _n_0, "error": ""};
+}), run_clo((_x_21) => {
+  return $nt_choose$(($String$eq$(_k_0, "array_size")), run_clo((_x_22) => {
+  const _x_23 = (_a_0 + "))");
+  return $nc_array_pair$("", _a_0, ("(1ull << blk_cls(" + _x_23), _n_0);
+}), run_clo((_x_24) => {
+  return $nt_choose$(($String$eq$(_k_0, "array_clone")), run_clo((_x_25) => {
+  const _x_26 = (_a_0 + ")");
+  return $nc_array_pair$("", _a_0, ("blk_copy(e, " + _x_26), _n_0);
+}), run_clo((_x_27) => {
+  return $nt_choose$(($String$eq$(_k_0, "array_get")), run_clo((_x_28) => {
+  const _x_29 = (_i_0 + ", 0);\n");
+  const _x_30 = (", " + _x_29);
+  const _x_31 = (_a_0 + _x_30);
+  const _x_32 = (_a_0 + ") + at)");
+  return $nc_array_pair$(("u32 at = blk_at(" + _x_31), _a_0, ("blk_keep(e, term_peek(e, " + _x_32), _n_0);
+}), run_clo((_x_33) => {
+  return $nt_choose$(($String$eq$(_k_0, "array_swap")), run_clo((_x_34) => {
+  const _x_35 = (_v_0 + "));\n");
+  const _x_36 = ("), at, rfc_seal(e, " + _x_35);
+  const _x_37 = (_a_0 + _x_36);
+  const _x_38 = ("), at);\nblk_write(e.mem, 1, term_peek(e, " + _x_37);
   const _x_39 = (_a_0 + _x_38);
-  return {$: "NC_Code", "body": ("u32 at = blk_at(" + _x_39), "segments": {$: "Nil"}, "fresh": _n_0, "error": ""};
+  const _x_40 = (", 0);\nTerm old = blk_read(e.mem, 1, term_peek(e, " + _x_39);
+  const _x_41 = (_i_0 + _x_40);
+  const _x_42 = (", " + _x_41);
+  const _x_43 = (_a_0 + _x_42);
+  return $nc_array_pair$(("u32 at = blk_at(" + _x_43), _a_0, "old", _n_0);
+}), run_clo((_x_44) => {
+  const _x_45 = ($ne_ret$({$: "Con", "head": _a_0, "tail": {$: "Nil"}}));
+  const _x_46 = ("));\n" + _x_45);
+  const _x_47 = (_v_0 + _x_46);
+  const _x_48 = ("), at, rfc_seal(e, " + _x_47);
+  const _x_49 = (_a_0 + _x_48);
+  const _x_50 = ("), at));\nblk_write(e.mem, 1, term_peek(e, " + _x_49);
+  const _x_51 = (_a_0 + _x_50);
+  const _x_52 = (", 0);\nterm_sink(e, blk_read(e.mem, 1, term_peek(e, " + _x_51);
+  const _x_53 = (_i_0 + _x_52);
+  const _x_54 = (", " + _x_53);
+  const _x_55 = (_a_0 + _x_54);
+  return {$: "NC_Code", "body": ("u32 at = blk_at(" + _x_55), "segments": {$: "Nil"}, "fresh": _n_0, "error": ""};
+}));
 }));
 }));
 }));
@@ -12409,38 +12556,45 @@ function $norm_exact_lists$(_as_0, _bs_0) {
   }
 }
 
-function $norm_cmp_quick$(_a_0, _b_0) {
-  const _x_0 = ($String$eq$(($tg$(_a_0)), "App"));
-  const _x_1 = ($String$eq$(($tg$(_a_0)), "Ref"));
-  const _x_2 = (_x_0 || _x_1);
-  const _x_3 = ($String$eq$(($tg$(_a_0)), "Var"));
-  return $kc$((_x_2 || _x_3), run_clo((_x_4) => {
-  return $norm_exact$(_a_0, _b_0);
-}), run_clo((_x_5) => {
-  return false;
-}));
-}
-
-function $norm_cmp_heads$(_book_0, _a_0, _b_0, _le_0, _fresh_0, _rest_0, _alts_0) {
-  const _x_0 = ($String$eq$(($tg$(_a_0)), "Lam"));
-  const _x_1 = ($String$eq$(($tg$(_b_0)), "Lam"));
-  return $kc$((_x_0 || _x_1), run_clo((_x_2) => {
-  return $norm_cmp_loop$(_book_0, {$: "Con", "head": {$: "KNormCmp", "a": ($app$(_a_0, ($var$("_", _fresh_0)))), "b": ($app$(_b_0, ($var$("_", _fresh_0)))), "le": _le_0, "fresh": ((_fresh_0 + 1) >>> 0)}, "tail": _rest_0}, _alts_0);
+function $norm_cmp_loop$($0, $1, $2, $3) {
+  for (;;) {
+    {
+      const _book_0 = $0;
+      const _st_0 = $1;
+      const _todo_0 = $2;
+      const _alts_0 = $3;
+      if (_todo_0.$ === "Nil") {
+        return true;
+      } else {
+        const _t_0 = _todo_0["head"];
+        if (_t_0.$ === "KNormShare") {
+          const _left_0 = _t_0["left"];
+          const _right_0 = _t_0["right"];
+          const _rest_0 = _todo_0["tail"];
+          $0 = _book_0;
+          $1 = {$: "GState", "heap": run_loop($g_put$(($g_heap$(_st_0)), _right_0, run_loop($g_get$(($g_heap$(_st_0)), _left_0)))), "next": ($g_next$(_st_0))};
+          $2 = _rest_0;
+          $3 = _alts_0;
+          continue;
+        } else {
+          const _a_0 = _t_0["a"];
+          const _b_0 = _t_0["b"];
+          const _le_0 = _t_0["le"];
+          const _fresh_0 = _t_0["fresh"];
+          const _rest_1 = _todo_0["tail"];
+          return $kc$(run_loop($norm_cmp_quick$(_a_0, _b_0)), run_clo((_x_0) => {
+  return $norm_cmp_loop$(_book_0, _st_0, _rest_1, _alts_0);
+}), run_clo((_x_1) => {
+  return $norm_cmp_left$(_book_0, _b_0, _le_0, _fresh_0, run_loop($kc$(($Bool$and$(($Bool$and$(($Bool$not$(_le_0)), ($String$eq$(($tg$(_a_0)), "GCell")))), ($String$eq$(($tg$(_b_0)), "GCell")))), run_clo((_x_2) => {
+  return {$: "Con", "head": {$: "KNormShare", "left": ($ix$(_a_0)), "right": ($ix$(_b_0))}, "tail": _rest_1};
 }), run_clo((_x_3) => {
-  return $kc$(($Bool$and$(($core_literal$(_a_0)), ($String$eq$(($tg$(_b_0)), "Ctr")))), run_clo((_x_4) => {
-  return $norm_cmp_heads$(_book_0, run_loop($core_literal_step$(_a_0)), _b_0, _le_0, _fresh_0, _rest_0, _alts_0);
-}), run_clo((_x_5) => {
-  return $kc$(($Bool$and$(($core_literal$(_b_0)), ($String$eq$(($tg$(_a_0)), "Ctr")))), run_clo((_x_6) => {
-  return $norm_cmp_heads$(_book_0, _a_0, run_loop($core_literal_step$(_b_0)), _le_0, _fresh_0, _rest_0, _alts_0);
-}), run_clo((_x_7) => {
-  return $kc$(($String$eq$(($tg$(_a_0)), ($tg$(_b_0)))), run_clo((_x_8) => {
-  return $norm_cmp_same$(_book_0, _a_0, _b_0, _le_0, _fresh_0, _rest_0, _alts_0);
-}), run_clo((_x_9) => {
-  return $norm_cmp_fail$(_book_0, _alts_0);
+  return _rest_1;
+}))), _alts_0, run_loop($g_wnf$(_book_0, _st_0, _a_0)));
 }));
-}));
-}));
-}));
+        }
+      }
+    }
+  }
 }
 
 function $nt_replace_step$(_s_0, _key_0, _value_0, _acc_0) {
@@ -12562,7 +12716,7 @@ function $norm_compare$(_book_0, _a_0, _b_0, _le_0, _fresh_0) {
   return $kc$(run_loop($norm_exact$(_a_0, _b_0)), run_clo((_x_0) => {
   return true;
 }), run_clo((_x_1) => {
-  return $norm_cmp_loop$(_book_0, {$: "Con", "head": {$: "KNormCmp", "a": _a_0, "b": _b_0, "le": _le_0, "fresh": _fresh_0}, "tail": {$: "Nil"}}, {$: "Nil"});
+  return $norm_convert$(_book_0, _a_0, _b_0, _le_0, _fresh_0);
 }));
 }
 
@@ -14310,57 +14464,24 @@ function $norm_exact_head$(_a_0, _b_0) {
 }))))), ($String$eq$(($nm$(_a_0)), ($nm$(_b_0)))))), (_x_2 === _x_3))), (_x_4 === _x_5))), (_x_6 === _x_7))), run_loop($norm_exact_names$(($rm$(_a_0)), ($rm$(_b_0)))));
 }
 
-function $norm_cmp_same$(_book_0, _a_0, _b_0, _le_0, _fresh_0, _rest_0, _alts_0) {
-  return $kc$(($String$eq$(($tg$(_a_0)), "Var")), run_clo((_x_0) => {
-  const _x_1 = ($ix$(_a_0));
-  const _x_2 = ($ix$(_b_0));
-  return $norm_cmp_test$(_book_0, (_x_1 === _x_2), _rest_0, _alts_0);
-}), run_clo((_x_3) => {
-  return $kc$(($String$eq$(($tg$(_a_0)), "Typ")), run_clo((_x_4) => {
-  return $kc$(_le_0, run_clo((_x_5) => {
-  return $norm_cmp_kind$(_book_0, _a_0, _b_0, run_loop($wnf$(_book_0, run_loop($kid$(_a_0, 0)))), run_loop($wnf$(_book_0, run_loop($kid$(_b_0, 0)))), _fresh_0, _rest_0, _alts_0);
-}), run_clo((_x_6) => {
-  return $norm_cmp_loop$(_book_0, {$: "Con", "head": {$: "KNormCmp", "a": run_loop($kid$(_a_0, 0)), "b": run_loop($kid$(_b_0, 0)), "le": false, "fresh": _fresh_0}, "tail": _rest_0}, _alts_0);
-}));
+function $norm_cmp_quick$(_a_0, _b_0) {
+  const _x_0 = ($String$eq$(($tg$(_a_0)), "App"));
+  const _x_1 = ($String$eq$(($tg$(_a_0)), "Ref"));
+  const _x_2 = (_x_0 || _x_1);
+  const _x_3 = ($String$eq$(($tg$(_a_0)), "Var"));
+  const _x_4 = (_x_2 || _x_3);
+  const _x_5 = ($String$eq$(($tg$(_a_0)), "GCell"));
+  return $kc$((_x_4 || _x_5), run_clo((_x_6) => {
+  return $norm_exact$(_a_0, _b_0);
 }), run_clo((_x_7) => {
-  return $kc$(($String$eq$(($tg$(_a_0)), "All")), run_clo((_x_8) => {
-  const _x_9 = ($qt$(_a_0));
-  const _x_10 = ($qt$(_b_0));
-  return $kc$((_x_9 === _x_10), run_clo((_x_11) => {
-  return $norm_cmp_loop$(_book_0, {$: "Con", "head": {$: "KNormCmp", "a": run_loop($kid$(_b_0, 0)), "b": run_loop($kid$(_a_0, 0)), "le": _le_0, "fresh": _fresh_0}, "tail": {$: "Con", "head": {$: "KNormCmp", "a": run_loop($subst$(run_loop($kid$(_a_0, 1)), ($ix$(_a_0)), ($var$("_", _fresh_0)))), "b": run_loop($subst$(run_loop($kid$(_b_0, 1)), ($ix$(_b_0)), ($var$("_", _fresh_0)))), "le": _le_0, "fresh": ((_fresh_0 + 1) >>> 0)}, "tail": _rest_0}}, _alts_0);
-}), run_clo((_x_12) => {
-  return $norm_cmp_fail$(_book_0, _alts_0);
-}));
-}), run_clo((_x_13) => {
-  return $kc$(($String$eq$(($tg$(_a_0)), "ADT")), run_clo((_x_14) => {
-  return $kc$(($Bool$and$(($String$eq$(($nm$(_a_0)), ($nm$(_b_0)))), run_loop($norm_removed$(($rm$(_a_0)), ($rm$(_b_0)), _le_0)))), run_clo((_x_15) => {
-  return $norm_cmp_fields$(_book_0, ($ks$(_a_0)), ($ks$(_b_0)), _fresh_0, _rest_0, _alts_0);
-}), run_clo((_x_16) => {
-  return $norm_cmp_fail$(_book_0, _alts_0);
-}));
-}), run_clo((_x_17) => {
-  return $kc$(($String$eq$(($tg$(_a_0)), "Qua")), run_clo((_x_18) => {
-  const _x_19 = ($qt$(_a_0));
-  const _x_20 = ($qt$(_b_0));
-  return $norm_cmp_test$(_book_0, (_x_19 === _x_20), _rest_0, _alts_0);
-}), run_clo((_x_21) => {
-  return $norm_cmp_plain$(_book_0, _a_0, _b_0, _le_0, _fresh_0, _rest_0, _alts_0);
-}));
-}));
-}));
-}));
+  return false;
 }));
 }
 
-function $norm_cmp_fail$(_book_0, _alts_0) {
-  if (_alts_0.$ === "Nil") {
-    return false;
-  } else {
-    const _t_0 = _alts_0["head"];
-    const _todo_0 = _t_0["todo"];
-    const _rest_0 = _alts_0["tail"];
-    return $norm_cmp_loop$(_book_0, _todo_0, _rest_0);
-  }
+function $norm_cmp_left$(_book_0, _b_0, _le_0, _fresh_0, _rest_0, _alts_0, _r_0) {
+  const _st_0 = _r_0["state"];
+  const _a_0 = _r_0["term"];
+  return $norm_cmp_right$(_book_0, _a_0, _le_0, _fresh_0, _rest_0, _alts_0, run_loop($g_wnf$(_book_0, _st_0, _b_0)));
 }
 
 function $nb_max$(_a_0, _b_0) {
@@ -15317,12 +15438,10 @@ function $norm_node_rwt$(_book_0, _t_0, _args_0, _left_0, _fallback_0, _selected
 }
 
 function $Cmp$is_le$(_c_0) {
-  if (_c_0.$ === "LT") {
-    return true;
-  } else if (_c_0.$ === "EQ") {
-    return true;
-  } else {
+  if (_c_0.$ === "GT") {
     return false;
+  } else {
+    return true;
   }
 }
 
@@ -15855,104 +15974,10 @@ function $norm_exact_names$(_as_0, _bs_0) {
   }
 }
 
-function $norm_cmp_test$(_book_0, _yes_0, _rest_0, _alts_0) {
-  return $kc$(_yes_0, run_clo((_x_0) => {
-  return $norm_cmp_loop$(_book_0, _rest_0, _alts_0);
-}), run_clo((_x_1) => {
-  return $norm_cmp_fail$(_book_0, _alts_0);
-}));
-}
-
-function $norm_cmp_kind$(_book_0, _a_0, _b_0, _g_0, _h_0, _fresh_0, _rest_0, _alts_0) {
-  const _x_0 = ($qt$(_g_0));
-  const _x_1 = ($qt$(_h_0));
-  const _x_2 = ($Bool$and$(($String$eq$(($tg$(_g_0)), "Qua")), (_x_0 === 2)));
-  const _x_3 = ($Bool$and$(($String$eq$(($tg$(_h_0)), "Qua")), ($Bool$not$((_x_1 === 2)))));
-  return $kc$((_x_2 || _x_3), run_clo((_x_4) => {
-  return $norm_cmp_loop$(_book_0, _rest_0, _alts_0);
-}), run_clo((_x_5) => {
-  return $kc$(($String$eq$(($tg$(_g_0)), "Min")), run_clo((_x_6) => {
-  return $norm_cmp_loop$(_book_0, {$: "Con", "head": {$: "KNormCmp", "a": ($kt$("Typ", "", 0, 0, {$: "Con", "head": run_loop($kid$(_g_0, 0)), "tail": {$: "Nil"}})), "b": _b_0, "le": true, "fresh": _fresh_0}, "tail": {$: "Con", "head": {$: "KNormCmp", "a": ($kt$("Typ", "", 0, 0, {$: "Con", "head": run_loop($kid$(_g_0, 1)), "tail": {$: "Nil"}})), "b": _b_0, "le": true, "fresh": _fresh_0}, "tail": _rest_0}}, _alts_0);
-}), run_clo((_x_7) => {
-  return $kc$(($String$eq$(($tg$(_h_0)), "Min")), run_clo((_x_8) => {
-  return $norm_cmp_loop$(_book_0, {$: "Con", "head": {$: "KNormCmp", "a": _a_0, "b": ($kt$("Typ", "", 0, 0, {$: "Con", "head": run_loop($kid$(_h_0, 0)), "tail": {$: "Nil"}})), "le": true, "fresh": _fresh_0}, "tail": _rest_0}, {$: "Con", "head": {$: "KNormAlt", "todo": {$: "Con", "head": {$: "KNormCmp", "a": _a_0, "b": ($kt$("Typ", "", 0, 0, {$: "Con", "head": run_loop($kid$(_h_0, 1)), "tail": {$: "Nil"}})), "le": true, "fresh": _fresh_0}, "tail": _rest_0}}, "tail": _alts_0});
-}), run_clo((_x_9) => {
-  return $norm_cmp_loop$(_book_0, {$: "Con", "head": {$: "KNormCmp", "a": _g_0, "b": _h_0, "le": true, "fresh": _fresh_0}, "tail": _rest_0}, _alts_0);
-}));
-}));
-}));
-}
-
-function $norm_removed$(_as_0, _bs_0, _le_0) {
-  return $kc$(_le_0, run_clo((_x_0) => {
-  return $norm_subset$(_as_0, _bs_0);
-}), run_clo((_x_1) => {
-  const _x_2 = ($norm_names_len$(_as_0));
-  const _x_3 = ($norm_names_len$(_bs_0));
-  return $Bool$and$((_x_2 === _x_3), ($norm_subset$(_as_0, _bs_0)));
-}));
-}
-
-function $norm_cmp_fields$(_book_0, _as_0, _bs_0, _fresh_0, _rest_0, _alts_0) {
-  const _x_0 = ($terms_len$(_as_0));
-  const _x_1 = ($terms_len$(_bs_0));
-  return $kc$((_x_0 === _x_1), run_clo((_x_2) => {
-  return $norm_cmp_loop$(_book_0, ($norm_cmp_zip$(_as_0, _bs_0, _fresh_0, _rest_0)), _alts_0);
-}), run_clo((_x_3) => {
-  return $norm_cmp_fail$(_book_0, _alts_0);
-}));
-}
-
-function $norm_cmp_plain$(_book_0, _a_0, _b_0, _le_0, _fresh_0, _rest_0, _alts_0) {
-  return $kc$(($Bool$and$(($core_literal$(_a_0)), ($core_literal$(_b_0)))), run_clo((_x_0) => {
-  return $norm_cmp_test$(_book_0, ($core_literal_same$(_a_0, _b_0)), _rest_0, _alts_0);
-}), run_clo((_x_1) => {
-  return $kc$(($String$eq$(($tg$(_a_0)), "Ref")), run_clo((_x_2) => {
-  return $kc$(($String$eq$(($nm$(_a_0)), ($nm$(_b_0)))), run_clo((_x_3) => {
-  return $norm_cmp_loop$(_book_0, _rest_0, _alts_0);
-}), run_clo((_x_4) => {
-  return $norm_cmp_ref$(_book_0, _a_0, _b_0, _le_0, run_loop($norm_max$(($da$(run_loop($lookup$(_book_0, ($nm$(_a_0)))))), ($da$(run_loop($lookup$(_book_0, ($nm$(_b_0)))))))), _fresh_0, _rest_0, _alts_0);
-}));
-}), run_clo((_x_5) => {
-  return $kc$(($String$eq$(($tg$(_a_0)), "Hol")), run_clo((_x_6) => {
-  return $norm_cmp_test$(_book_0, ($String$eq$(($nm$(_a_0)), ($nm$(_b_0)))), _rest_0, _alts_0);
-}), run_clo((_x_7) => {
-  const _x_8 = ($String$eq$(($tg$(_a_0)), "Ctr"));
-  const _x_9 = ($String$eq$(($tg$(_a_0)), "Mat"));
-  return $kc$((_x_8 || _x_9), run_clo((_x_10) => {
-  return $kc$(($String$eq$(($nm$(_a_0)), ($nm$(_b_0)))), run_clo((_x_11) => {
-  return $norm_cmp_fields$(_book_0, ($ks$(_a_0)), ($ks$(_b_0)), _fresh_0, _rest_0, _alts_0);
-}), run_clo((_x_12) => {
-  return $norm_cmp_fail$(_book_0, _alts_0);
-}));
-}), run_clo((_x_13) => {
-  return $kc$(($Bool$and$(($Bool$and$(($String$eq$(($tg$(_a_0)), "App")), ($String$eq$(($tg$(run_loop($kid$(_a_0, 0)))), "Ref")))), ($String$eq$(($tg$(run_loop($kid$(_b_0, 0)))), "Ref")))), run_clo((_x_14) => {
-  return $kc$(($String$eq$(($nm$(run_loop($kid$(_a_0, 0)))), ($nm$(run_loop($kid$(_b_0, 0)))))), run_clo((_x_15) => {
-  return $norm_cmp_loop$(_book_0, {$: "Con", "head": {$: "KNormCmp", "a": run_loop($kid$(_a_0, 1)), "b": run_loop($kid$(_b_0, 1)), "le": false, "fresh": _fresh_0}, "tail": _rest_0}, _alts_0);
-}), run_clo((_x_16) => {
-  return $norm_cmp_fail$(_book_0, _alts_0);
-}));
-}), run_clo((_x_17) => {
-  const _x_18 = ($String$eq$(($tg$(_a_0)), "App"));
-  const _x_19 = ($String$eq$(($tg$(_a_0)), "Min"));
-  const _x_20 = (_x_18 || _x_19);
-  const _x_21 = ($String$eq$(($tg$(_a_0)), "Eql"));
-  const _x_22 = (_x_20 || _x_21);
-  const _x_23 = ($String$eq$(($tg$(_a_0)), "Rwt"));
-  return $kc$((_x_22 || _x_23), run_clo((_x_24) => {
-  return $norm_cmp_fields$(_book_0, ($ks$(_a_0)), ($ks$(_b_0)), _fresh_0, _rest_0, _alts_0);
-}), run_clo((_x_25) => {
-  const _x_26 = ($String$eq$(($tg$(_a_0)), "Qnt"));
-  const _x_27 = ($String$eq$(($tg$(_a_0)), "Rfl"));
-  const _x_28 = (_x_26 || _x_27);
-  const _x_29 = ($String$eq$(($tg$(_a_0)), "Efq"));
-  return $norm_cmp_test$(_book_0, (_x_28 || _x_29), _rest_0, _alts_0);
-}));
-}));
-}));
-}));
-}));
-}));
+function $norm_cmp_right$(_book_0, _a_0, _le_0, _fresh_0, _rest_0, _alts_0, _r_0) {
+  const _st_0 = _r_0["state"];
+  const _b_0 = _r_0["term"];
+  return $norm_cmp_heads$(_book_0, _st_0, _a_0, _b_0, _le_0, _fresh_0, _rest_0, _alts_0);
 }
 
 function $nl_c_type$(_k_0) {
@@ -16068,8 +16093,8 @@ function $nc_field_word$(_name_0, _word_0, _i_0) {
   return ("native_word(e, (u32)" + _x_8);
 }), run_clo((_x_9) => {
   return $nt_choose$(($String$eq$(_name_0, "ALeaf")), run_clo((_x_10) => {
-  const _x_11 = (_word_0 + "), 0)");
-  return ("blk_read(e.mem, 1, term_loc(" + _x_11);
+  const _x_11 = (_word_0 + ")");
+  return ("blk_leaf(e, " + _x_11);
 }), run_clo((_x_12) => {
   return $nt_choose$(($String$eq$(_name_0, "ANode")), run_clo((_x_13) => {
   const _x_14 = ($U32$show$(_i_0));
@@ -16507,20 +16532,24 @@ function $g_filled$(_book_0, _id_0, _args_0, _pending_0, _fallback_0, _stack_0, 
 }
 
 function $g_share_head$(_st_0, _t_0) {
-  const _x_0 = ($String$eq$(($tg$(_t_0)), "Ctr"));
-  const _x_1 = ($String$eq$(($tg$(_t_0)), "ADT"));
-  const _x_2 = (_x_0 || _x_1);
-  const _x_3 = ($String$eq$(($tg$(_t_0)), "Mat"));
+  return $kc$(($String$eq$(($tg$(_t_0)), "All")), run_clo((_x_0) => {
+  return $g_shared_domain$(_t_0, run_loop($g_share$(_st_0, run_loop($kid$(_t_0, 0)))));
+}), run_clo((_x_1) => {
+  const _x_2 = ($String$eq$(($tg$(_t_0)), "Ctr"));
+  const _x_3 = ($String$eq$(($tg$(_t_0)), "ADT"));
   const _x_4 = (_x_2 || _x_3);
-  const _x_5 = ($String$eq$(($tg$(_t_0)), "Eql"));
+  const _x_5 = ($String$eq$(($tg$(_t_0)), "Mat"));
   const _x_6 = (_x_4 || _x_5);
-  const _x_7 = ($String$eq$(($tg$(_t_0)), "Min"));
+  const _x_7 = ($String$eq$(($tg$(_t_0)), "Eql"));
   const _x_8 = (_x_6 || _x_7);
-  const _x_9 = ($String$eq$(($tg$(_t_0)), "Typ"));
-  return $kc$((_x_8 || _x_9), run_clo((_x_10) => {
+  const _x_9 = ($String$eq$(($tg$(_t_0)), "Min"));
+  const _x_10 = (_x_8 || _x_9);
+  const _x_11 = ($String$eq$(($tg$(_t_0)), "Typ"));
+  return $kc$((_x_10 || _x_11), run_clo((_x_12) => {
   return $g_shared_head$(_t_0, ($g_share_terms$(_st_0, ($ks$(_t_0)), {$: "Nil"})));
-}), run_clo((_x_11) => {
+}), run_clo((_x_13) => {
   return {$: "GResult", "state": _st_0, "term": _t_0};
+}));
 }));
 }
 
@@ -16916,50 +16945,24 @@ function $ki_ann$(_e_0, _ctx_0, _t_0, _dem_0, _a_0) {
 }));
 }
 
-function $norm_subset$(_as_0, _bs_0) {
-  if (_bs_0.$ === "Nil") {
-    return true;
-  } else {
-    const _h_0 = _bs_0["head"];
-    const _t_0 = _bs_0["tail"];
-    return $Bool$and$(run_loop($has_name$(_as_0, _h_0)), ($norm_subset$(_as_0, _t_0)));
-  }
-}
-
-function $norm_names_len$(_names_0) {
-  if (_names_0.$ === "Nil") {
-    return 0;
-  } else {
-    const _rest_0 = _names_0["tail"];
-    const _x_0 = ($norm_names_len$(_rest_0));
-    return ((1 + _x_0) >>> 0);
-  }
-}
-
-function $norm_cmp_zip$(_as_0, _bs_0, _fresh_0, _rest_0) {
-  if (_as_0.$ === "Con") {
-    const _a_0 = _as_0["head"];
-    const _ar_0 = _as_0["tail"];
-    if (_bs_0.$ === "Con") {
-      const _b_0 = _bs_0["head"];
-      const _br_0 = _bs_0["tail"];
-      return {$: "Con", "head": {$: "KNormCmp", "a": _a_0, "b": _b_0, "le": false, "fresh": _fresh_0}, "tail": ($norm_cmp_zip$(_ar_0, _br_0, _fresh_0, _rest_0))};
-    } else {
-      return _rest_0;
-    }
-  } else {
-    return _rest_0;
-  }
-}
-
-function $norm_cmp_ref$(_book_0, _a_0, _b_0, _le_0, _n_0, _fresh_0, _rest_0, _alts_0) {
-  return $kc$((_n_0 === 0), run_clo((_x_0) => {
-  return $norm_cmp_fail$(_book_0, _alts_0);
-}), run_clo((_x_1) => {
-  return $kc$((_n_0 === 1), run_clo((_x_2) => {
-  return $norm_cmp_loop$(_book_0, {$: "Con", "head": {$: "KNormCmp", "a": ($app$(_a_0, ($var$("_", _fresh_0)))), "b": ($app$(_b_0, ($var$("_", _fresh_0)))), "le": _le_0, "fresh": ((_fresh_0 + 1) >>> 0)}, "tail": _rest_0}, _alts_0);
+function $norm_cmp_heads$(_book_0, _st_0, _a_0, _b_0, _le_0, _fresh_0, _rest_0, _alts_0) {
+  const _x_0 = ($String$eq$(($tg$(_a_0)), "Lam"));
+  const _x_1 = ($String$eq$(($tg$(_b_0)), "Lam"));
+  return $kc$((_x_0 || _x_1), run_clo((_x_2) => {
+  return $norm_cmp_loop$(_book_0, _st_0, {$: "Con", "head": {$: "KNormCmp", "a": ($app$(_a_0, ($var$("_", _fresh_0)))), "b": ($app$(_b_0, ($var$("_", _fresh_0)))), "le": _le_0, "fresh": ((_fresh_0 + 1) >>> 0)}, "tail": _rest_0}, _alts_0);
 }), run_clo((_x_3) => {
-  return $norm_cmp_ref$(_book_0, ($app$(_a_0, ($var$("_", _fresh_0)))), ($app$(_b_0, ($var$("_", _fresh_0)))), _le_0, ((_n_0 - 1) >>> 0), ((_fresh_0 + 1) >>> 0), _rest_0, _alts_0);
+  return $kc$(($Bool$and$(($core_literal$(_a_0)), ($String$eq$(($tg$(_b_0)), "Ctr")))), run_clo((_x_4) => {
+  return $norm_cmp_heads$(_book_0, _st_0, run_loop($core_literal_step$(_a_0)), _b_0, _le_0, _fresh_0, _rest_0, _alts_0);
+}), run_clo((_x_5) => {
+  return $kc$(($Bool$and$(($core_literal$(_b_0)), ($String$eq$(($tg$(_a_0)), "Ctr")))), run_clo((_x_6) => {
+  return $norm_cmp_heads$(_book_0, _st_0, _a_0, run_loop($core_literal_step$(_b_0)), _le_0, _fresh_0, _rest_0, _alts_0);
+}), run_clo((_x_7) => {
+  return $kc$(($String$eq$(($tg$(_a_0)), ($tg$(_b_0)))), run_clo((_x_8) => {
+  return $norm_cmp_same$(_book_0, _st_0, _a_0, _b_0, _le_0, _fresh_0, _rest_0, _alts_0);
+}), run_clo((_x_9) => {
+  return $norm_cmp_fail$(_book_0, _st_0, _alts_0);
+}));
+}));
 }));
 }));
 }
@@ -17294,6 +17297,12 @@ function $g_cache$(_st_0, _id_0, _t_0) {
   return {$: "GState", "heap": run_loop($g_put$(($g_heap$(_st_0)), _id_0, ($kt$("GValue", "", 0, 0, {$: "Con", "head": _t_0, "tail": {$: "Nil"}})))), "next": ($g_next$(_st_0))};
 }
 
+function $g_shared_domain$(_t_0, _r_0) {
+  const _state_0 = _r_0["state"];
+  const _term_0 = _r_0["term"];
+  return {$: "GResult", "state": _state_0, "term": ($k_with_children$(_t_0, {$: "Con", "head": _term_0, "tail": {$: "Con", "head": run_loop($kid$(_t_0, 1)), "tail": {$: "Nil"}}}))};
+}
+
 function $g_shared_head$(_t_0, _r_0) {
   return {$: "GResult", "state": ($g_states$(_r_0)), "term": ($k_with_children$(_t_0, ($g_terms$(_r_0))))};
 }
@@ -17529,6 +17538,59 @@ function $ki_eql_left$(_e_0, _ctx_0, _t_0, _a_0, _b_0) {
 
 function $ki_ann_done$(_t_0, _a_0, _b_0) {
   return $both$(_a_0, _b_0, ($k_with_children$(_t_0, {$: "Con", "head": ($ct$(_b_0)), "tail": {$: "Con", "head": run_loop($kid$(_t_0, 1)), "tail": {$: "Nil"}}})), run_loop($kid$(_t_0, 1)), false);
+}
+
+function $norm_cmp_same$(_book_0, _st_0, _a_0, _b_0, _le_0, _fresh_0, _rest_0, _alts_0) {
+  return $kc$(($String$eq$(($tg$(_a_0)), "Var")), run_clo((_x_0) => {
+  const _x_1 = ($ix$(_a_0));
+  const _x_2 = ($ix$(_b_0));
+  return $norm_cmp_test$(_book_0, _st_0, (_x_1 === _x_2), _rest_0, _alts_0);
+}), run_clo((_x_3) => {
+  return $kc$(($String$eq$(($tg$(_a_0)), "Typ")), run_clo((_x_4) => {
+  return $kc$(_le_0, run_clo((_x_5) => {
+  return $norm_cmp_kind_left$(_book_0, _a_0, _b_0, _fresh_0, _rest_0, _alts_0, run_loop($g_wnf$(_book_0, _st_0, run_loop($kid$(_a_0, 0)))));
+}), run_clo((_x_6) => {
+  return $norm_cmp_loop$(_book_0, _st_0, {$: "Con", "head": {$: "KNormCmp", "a": run_loop($kid$(_a_0, 0)), "b": run_loop($kid$(_b_0, 0)), "le": false, "fresh": _fresh_0}, "tail": _rest_0}, _alts_0);
+}));
+}), run_clo((_x_7) => {
+  return $kc$(($String$eq$(($tg$(_a_0)), "All")), run_clo((_x_8) => {
+  const _x_9 = ($qt$(_a_0));
+  const _x_10 = ($qt$(_b_0));
+  return $kc$((_x_9 === _x_10), run_clo((_x_11) => {
+  return $norm_cmp_loop$(_book_0, _st_0, {$: "Con", "head": {$: "KNormCmp", "a": run_loop($kid$(_b_0, 0)), "b": run_loop($kid$(_a_0, 0)), "le": _le_0, "fresh": _fresh_0}, "tail": {$: "Con", "head": {$: "KNormCmp", "a": run_loop($subst$(run_loop($kid$(_a_0, 1)), ($ix$(_a_0)), ($var$("_", _fresh_0)))), "b": run_loop($subst$(run_loop($kid$(_b_0, 1)), ($ix$(_b_0)), ($var$("_", _fresh_0)))), "le": _le_0, "fresh": ((_fresh_0 + 1) >>> 0)}, "tail": _rest_0}}, _alts_0);
+}), run_clo((_x_12) => {
+  return $norm_cmp_fail$(_book_0, _st_0, _alts_0);
+}));
+}), run_clo((_x_13) => {
+  return $kc$(($String$eq$(($tg$(_a_0)), "ADT")), run_clo((_x_14) => {
+  return $kc$(($Bool$and$(($String$eq$(($nm$(_a_0)), ($nm$(_b_0)))), run_loop($norm_removed$(($rm$(_a_0)), ($rm$(_b_0)), _le_0)))), run_clo((_x_15) => {
+  return $norm_cmp_fields$(_book_0, _st_0, ($ks$(_a_0)), ($ks$(_b_0)), _fresh_0, _rest_0, _alts_0);
+}), run_clo((_x_16) => {
+  return $norm_cmp_fail$(_book_0, _st_0, _alts_0);
+}));
+}), run_clo((_x_17) => {
+  return $kc$(($String$eq$(($tg$(_a_0)), "Qua")), run_clo((_x_18) => {
+  const _x_19 = ($qt$(_a_0));
+  const _x_20 = ($qt$(_b_0));
+  return $norm_cmp_test$(_book_0, _st_0, (_x_19 === _x_20), _rest_0, _alts_0);
+}), run_clo((_x_21) => {
+  return $norm_cmp_plain$(_book_0, _st_0, _a_0, _b_0, _le_0, _fresh_0, _rest_0, _alts_0);
+}));
+}));
+}));
+}));
+}));
+}
+
+function $norm_cmp_fail$(_book_0, _st_0, _alts_0) {
+  if (_alts_0.$ === "Nil") {
+    return false;
+  } else {
+    const _t_0 = _alts_0["head"];
+    const _todo_0 = _t_0["todo"];
+    const _rest_0 = _alts_0["tail"];
+    return $norm_cmp_loop$(_book_0, _st_0, _todo_0, _rest_0);
+  }
 }
 
 function $ffw_done$($0, $1, $2, $3, $4, $5) {
@@ -18437,6 +18499,92 @@ function $ki_eql_done$(_t_0, _a_0, _b_0, _c_0) {
   return $both$(_a_0, run_loop($both$(_b_0, _c_0, _t_0, ($typ$(2)), false)), ($k_with_children$(_t_0, {$: "Con", "head": ($ct$(_b_0)), "tail": {$: "Con", "head": ($ct$(_c_0)), "tail": {$: "Con", "head": ($ct$(_a_0)), "tail": {$: "Nil"}}}})), ($typ$(2)), false);
 }
 
+function $norm_cmp_test$(_book_0, _st_0, _yes_0, _rest_0, _alts_0) {
+  return $kc$(_yes_0, run_clo((_x_0) => {
+  return $norm_cmp_loop$(_book_0, _st_0, _rest_0, _alts_0);
+}), run_clo((_x_1) => {
+  return $norm_cmp_fail$(_book_0, _st_0, _alts_0);
+}));
+}
+
+function $norm_cmp_kind_left$(_book_0, _a_0, _b_0, _fresh_0, _rest_0, _alts_0, _r_0) {
+  const _st_0 = _r_0["state"];
+  const _g_0 = _r_0["term"];
+  return $norm_cmp_kind_right$(_book_0, _a_0, _b_0, _g_0, _fresh_0, _rest_0, _alts_0, run_loop($g_wnf$(_book_0, _st_0, run_loop($kid$(_b_0, 0)))));
+}
+
+function $norm_removed$(_as_0, _bs_0, _le_0) {
+  return $kc$(_le_0, run_clo((_x_0) => {
+  return $norm_subset$(_as_0, _bs_0);
+}), run_clo((_x_1) => {
+  const _x_2 = ($norm_names_len$(_as_0));
+  const _x_3 = ($norm_names_len$(_bs_0));
+  return $Bool$and$((_x_2 === _x_3), ($norm_subset$(_as_0, _bs_0)));
+}));
+}
+
+function $norm_cmp_fields$(_book_0, _st_0, _as_0, _bs_0, _fresh_0, _rest_0, _alts_0) {
+  const _x_0 = ($terms_len$(_as_0));
+  const _x_1 = ($terms_len$(_bs_0));
+  return $kc$((_x_0 === _x_1), run_clo((_x_2) => {
+  return $norm_cmp_loop$(_book_0, _st_0, ($norm_cmp_zip$(_as_0, _bs_0, _fresh_0, _rest_0)), _alts_0);
+}), run_clo((_x_3) => {
+  return $norm_cmp_fail$(_book_0, _st_0, _alts_0);
+}));
+}
+
+function $norm_cmp_plain$(_book_0, _st_0, _a_0, _b_0, _le_0, _fresh_0, _rest_0, _alts_0) {
+  return $kc$(($Bool$and$(($core_literal$(_a_0)), ($core_literal$(_b_0)))), run_clo((_x_0) => {
+  return $norm_cmp_test$(_book_0, _st_0, ($core_literal_same$(_a_0, _b_0)), _rest_0, _alts_0);
+}), run_clo((_x_1) => {
+  return $kc$(($String$eq$(($tg$(_a_0)), "Ref")), run_clo((_x_2) => {
+  return $kc$(($String$eq$(($nm$(_a_0)), ($nm$(_b_0)))), run_clo((_x_3) => {
+  return $norm_cmp_loop$(_book_0, _st_0, _rest_0, _alts_0);
+}), run_clo((_x_4) => {
+  return $norm_cmp_ref$(_book_0, _st_0, _a_0, _b_0, _le_0, run_loop($norm_max$(($da$(run_loop($lookup$(_book_0, ($nm$(_a_0)))))), ($da$(run_loop($lookup$(_book_0, ($nm$(_b_0)))))))), _fresh_0, _rest_0, _alts_0);
+}));
+}), run_clo((_x_5) => {
+  return $kc$(($String$eq$(($tg$(_a_0)), "Hol")), run_clo((_x_6) => {
+  return $norm_cmp_test$(_book_0, _st_0, ($String$eq$(($nm$(_a_0)), ($nm$(_b_0)))), _rest_0, _alts_0);
+}), run_clo((_x_7) => {
+  const _x_8 = ($String$eq$(($tg$(_a_0)), "Ctr"));
+  const _x_9 = ($String$eq$(($tg$(_a_0)), "Mat"));
+  return $kc$((_x_8 || _x_9), run_clo((_x_10) => {
+  return $kc$(($String$eq$(($nm$(_a_0)), ($nm$(_b_0)))), run_clo((_x_11) => {
+  return $norm_cmp_fields$(_book_0, _st_0, ($ks$(_a_0)), ($ks$(_b_0)), _fresh_0, _rest_0, _alts_0);
+}), run_clo((_x_12) => {
+  return $norm_cmp_fail$(_book_0, _st_0, _alts_0);
+}));
+}), run_clo((_x_13) => {
+  return $kc$(($Bool$and$(($Bool$and$(($String$eq$(($tg$(_a_0)), "App")), ($String$eq$(($tg$(run_loop($kid$(_a_0, 0)))), "Ref")))), ($String$eq$(($tg$(run_loop($kid$(_b_0, 0)))), "Ref")))), run_clo((_x_14) => {
+  return $kc$(($String$eq$(($nm$(run_loop($kid$(_a_0, 0)))), ($nm$(run_loop($kid$(_b_0, 0)))))), run_clo((_x_15) => {
+  return $norm_cmp_loop$(_book_0, _st_0, {$: "Con", "head": {$: "KNormCmp", "a": run_loop($kid$(_a_0, 1)), "b": run_loop($kid$(_b_0, 1)), "le": false, "fresh": _fresh_0}, "tail": _rest_0}, _alts_0);
+}), run_clo((_x_16) => {
+  return $norm_cmp_fail$(_book_0, _st_0, _alts_0);
+}));
+}), run_clo((_x_17) => {
+  const _x_18 = ($String$eq$(($tg$(_a_0)), "App"));
+  const _x_19 = ($String$eq$(($tg$(_a_0)), "Min"));
+  const _x_20 = (_x_18 || _x_19);
+  const _x_21 = ($String$eq$(($tg$(_a_0)), "Eql"));
+  const _x_22 = (_x_20 || _x_21);
+  const _x_23 = ($String$eq$(($tg$(_a_0)), "Rwt"));
+  return $kc$((_x_22 || _x_23), run_clo((_x_24) => {
+  return $norm_cmp_fields$(_book_0, _st_0, ($ks$(_a_0)), ($ks$(_b_0)), _fresh_0, _rest_0, _alts_0);
+}), run_clo((_x_25) => {
+  const _x_26 = ($String$eq$(($tg$(_a_0)), "Qnt"));
+  const _x_27 = ($String$eq$(($tg$(_a_0)), "Rfl"));
+  const _x_28 = (_x_26 || _x_27);
+  const _x_29 = ($String$eq$(($tg$(_a_0)), "Efq"));
+  return $norm_cmp_test$(_book_0, _st_0, (_x_28 || _x_29), _rest_0, _alts_0);
+}));
+}));
+}));
+}));
+}));
+}));
+}
+
 function $ffw_frame$($0, $1, $2, $3, $4, $5) {
   let $pc = 1;
   for (;;) switch ($pc) {
@@ -18930,6 +19078,60 @@ function $template_arg_head$(_e_0, _ty_0, _sp_0, _n_0) {
   }
 }
 
+function $norm_cmp_kind_right$(_book_0, _a_0, _b_0, _g_0, _fresh_0, _rest_0, _alts_0, _r_0) {
+  const _st_0 = _r_0["state"];
+  const _h_0 = _r_0["term"];
+  return $norm_cmp_kind$(_book_0, _st_0, _a_0, _b_0, _g_0, _h_0, _fresh_0, _rest_0, _alts_0);
+}
+
+function $norm_subset$(_as_0, _bs_0) {
+  if (_bs_0.$ === "Nil") {
+    return true;
+  } else {
+    const _h_0 = _bs_0["head"];
+    const _t_0 = _bs_0["tail"];
+    return $Bool$and$(run_loop($has_name$(_as_0, _h_0)), ($norm_subset$(_as_0, _t_0)));
+  }
+}
+
+function $norm_names_len$(_names_0) {
+  if (_names_0.$ === "Nil") {
+    return 0;
+  } else {
+    const _rest_0 = _names_0["tail"];
+    const _x_0 = ($norm_names_len$(_rest_0));
+    return ((1 + _x_0) >>> 0);
+  }
+}
+
+function $norm_cmp_zip$(_as_0, _bs_0, _fresh_0, _rest_0) {
+  if (_as_0.$ === "Con") {
+    const _a_0 = _as_0["head"];
+    const _ar_0 = _as_0["tail"];
+    if (_bs_0.$ === "Con") {
+      const _b_0 = _bs_0["head"];
+      const _br_0 = _bs_0["tail"];
+      return {$: "Con", "head": {$: "KNormCmp", "a": _a_0, "b": _b_0, "le": false, "fresh": _fresh_0}, "tail": ($norm_cmp_zip$(_ar_0, _br_0, _fresh_0, _rest_0))};
+    } else {
+      return _rest_0;
+    }
+  } else {
+    return _rest_0;
+  }
+}
+
+function $norm_cmp_ref$(_book_0, _st_0, _a_0, _b_0, _le_0, _n_0, _fresh_0, _rest_0, _alts_0) {
+  return $kc$((_n_0 === 0), run_clo((_x_0) => {
+  return $norm_cmp_fail$(_book_0, _st_0, _alts_0);
+}), run_clo((_x_1) => {
+  return $kc$((_n_0 === 1), run_clo((_x_2) => {
+  return $norm_cmp_loop$(_book_0, _st_0, {$: "Con", "head": {$: "KNormCmp", "a": ($app$(_a_0, ($var$("_", _fresh_0)))), "b": ($app$(_b_0, ($var$("_", _fresh_0)))), "le": _le_0, "fresh": ((_fresh_0 + 1) >>> 0)}, "tail": _rest_0}, _alts_0);
+}), run_clo((_x_3) => {
+  return $norm_cmp_ref$(_book_0, _st_0, ($app$(_a_0, ($var$("_", _fresh_0)))), ($app$(_b_0, ($var$("_", _fresh_0)))), _le_0, ((_n_0 - 1) >>> 0), ((_fresh_0 + 1) >>> 0), _rest_0, _alts_0);
+}));
+}));
+}
+
 function $ffw_reverse_onto$($0, $1) {
   for (;;) {
     {
@@ -19216,6 +19418,26 @@ function $template_arg_done$(_e_0, _ty_0, _h_0, _rest_0, _n_0, _r_0) {
   return $template_args$(($ke_world$(_e_0, ($rw$(_r_0)))), run_loop($subst$(run_loop($kid$(_ty_0, 1)), ($ix$(_ty_0)), _h_0)), _rest_0, ((_n_0 - 1) >>> 0));
 }), run_clo((_x_1) => {
   return _r_0;
+}));
+}
+
+function $norm_cmp_kind$(_book_0, _st_0, _a_0, _b_0, _g_0, _h_0, _fresh_0, _rest_0, _alts_0) {
+  const _x_0 = ($qt$(_g_0));
+  const _x_1 = ($qt$(_h_0));
+  const _x_2 = ($Bool$and$(($String$eq$(($tg$(_g_0)), "Qua")), (_x_0 === 2)));
+  const _x_3 = ($Bool$and$(($String$eq$(($tg$(_h_0)), "Qua")), ($Bool$not$((_x_1 === 2)))));
+  return $kc$((_x_2 || _x_3), run_clo((_x_4) => {
+  return $norm_cmp_loop$(_book_0, _st_0, _rest_0, _alts_0);
+}), run_clo((_x_5) => {
+  return $kc$(($String$eq$(($tg$(_g_0)), "Min")), run_clo((_x_6) => {
+  return $norm_cmp_loop$(_book_0, _st_0, {$: "Con", "head": {$: "KNormCmp", "a": ($kt$("Typ", "", 0, 0, {$: "Con", "head": run_loop($kid$(_g_0, 0)), "tail": {$: "Nil"}})), "b": _b_0, "le": true, "fresh": _fresh_0}, "tail": {$: "Con", "head": {$: "KNormCmp", "a": ($kt$("Typ", "", 0, 0, {$: "Con", "head": run_loop($kid$(_g_0, 1)), "tail": {$: "Nil"}})), "b": _b_0, "le": true, "fresh": _fresh_0}, "tail": _rest_0}}, _alts_0);
+}), run_clo((_x_7) => {
+  return $kc$(($String$eq$(($tg$(_h_0)), "Min")), run_clo((_x_8) => {
+  return $norm_cmp_loop$(_book_0, _st_0, {$: "Con", "head": {$: "KNormCmp", "a": _a_0, "b": ($kt$("Typ", "", 0, 0, {$: "Con", "head": run_loop($kid$(_h_0, 0)), "tail": {$: "Nil"}})), "le": true, "fresh": _fresh_0}, "tail": _rest_0}, {$: "Con", "head": {$: "KNormAlt", "todo": {$: "Con", "head": {$: "KNormCmp", "a": _a_0, "b": ($kt$("Typ", "", 0, 0, {$: "Con", "head": run_loop($kid$(_h_0, 1)), "tail": {$: "Nil"}})), "le": true, "fresh": _fresh_0}, "tail": _rest_0}}, "tail": _alts_0});
+}), run_clo((_x_9) => {
+  return $norm_cmp_loop$(_book_0, _st_0, {$: "Con", "head": {$: "KNormCmp", "a": _g_0, "b": _h_0, "le": true, "fresh": _fresh_0}, "tail": _rest_0}, _alts_0);
+}));
+}));
 }));
 }
 

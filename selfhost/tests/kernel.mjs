@@ -6,7 +6,7 @@ const t=(tag,name='',id=0,quant=0,kids=[],removed=[])=>({$:'KTerm',tag,name,id,q
 const qua=q=>t('Qua','',0,q),typ=q=>t('Typ','',0,0,[qua(q)]),v=(id)=>t('Var','x',id),all=(id,q,a,b)=>t('All','x',id,q,[a,b]),lam=(id,body,q=1)=>t('Lam','x',id,q,[body]),ref=n=>t('Ref',n),app=(f,x)=>t('App','',0,0,[f,x]),ctr=(n,...xs)=>t('Ctr',n,0,0,xs),adt=n=>t('ADT',n);
 const d=(name,typ,value=t('Absent'),arity=0,kind='Def',ctors=[],native=false)=>({$:'KDef',name,kind,arity,templates:0,typ,value,ctors:list(ctors),native,unsafe:false});
 const bool=d('Bool',typ(2),t('Absent'),0,'ADT',[d('True',adt('Bool'),t('Absent'),0,'Ctr'),d('False',adt('Bool'),t('Absent'),0,'Ctr')]);
-const env=(book=[],name='',lhs=t('Absent'),pending=0,quantities=[])=>({$:'KEnv',book:list(book),name,lhs,pending,quantities:list(quantities),unsafe:false});
+const env=(book=[],name='',lhs=t('Absent'),pending=0,quantities=[])=>({$:'KEnv',world:{$:'KWorld',book:list(book),memo:nil,fresh:{$:'KFreshDeferred',roots:nil},checked:nil},name,lhs,pending,quantities:list(quantities),unsafe:false,depth:0});
 let total=0;function check(name,actual,expected){assert.equal(actual,expected,name);console.log('PASS',name);total++}
 check('Bool declaration',K.check_book(list([bool])), '');
 check('identity',K.check_book(list([bool,d('id',all(1,1,adt('Bool'),adt('Bool')),lam(2,v(2)),1)])), '');
@@ -41,7 +41,7 @@ check('J equality elimination',K.check(env([bool]),nil,rewrite,1,adt('Bool')).er
 const template=d('choose',all(130,0,adt('Bool'),adt('Bool')),lam(131,v(131)),1);template.templates=1;
 check('template opaque value usage',K.check_book(list([bool,template])), '');
 check('template closed call',K.check(env([bool,template]),nil,app(ref('choose'),ctr('True')),1,adt('Bool')).error,'');
-check('template open call',K.check(env([bool,template]),list([t('Bind','x',132,1,[adt('Bool')])]),app(ref('choose'),v(132)),1,adt('Bool')).error,'template argument is open or ill-typed');
+check('template open call',K.check(env([bool,template]),list([t('Bind','x',132,1,[adt('Bool')])]),app(ref('choose'),v(132)),1,adt('Bool')).error,'unbound variable');
 check('template bare reference',K.check(env([bool,template]),nil,ref('choose'),1,template.typ).error,'template requires all closed comptime arguments');
 check('duplicate definition',K.check_book(list([bool,d('same',adt('Bool'),ctr('True')),d('same',adt('Bool'),ctr('False'))])), 'same: duplicate declaration');
 check('law signature mismatch',K.check_book(list([bool,d('claim',adt('Bool')),d('claim',typ(1),adt('Bool'))])), 'claim: definition does not match prior law signature');

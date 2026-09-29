@@ -5,7 +5,7 @@ import path from 'node:path';
 import test from 'node:test';
 import {capabilities,declarationReport,probeWithModules} from '../../tools/conformance/adapters/upstream.mjs';
 
-const root=path.resolve(process.env.BEND_UPSTREAM||path.join(import.meta.dirname,'../../.bootstrap/upstream-phase8'));
+const root=path.resolve(process.env.BEND_UPSTREAM||path.join(import.meta.dirname,'../../.bootstrap/upstream-phase23'));
 const directory=fs.mkdtempSync(path.join(os.tmpdir(),'bend-phase8-reference-'));
 process.on('exit',()=>fs.rmSync(directory,{recursive:true,force:true}));
 const term={$:'Typ'},def=(extra={})=>({$:'Def',T:term,v:term,e:term,...extra});

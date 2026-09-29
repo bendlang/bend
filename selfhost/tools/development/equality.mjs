@@ -79,7 +79,38 @@ const currentFastProfile=Object.freeze({...currentProfile,version:3,
 const currentChoiceProfile=Object.freeze({...currentFastProfile,version:4});
 // Version5 adds native choices and guarded leaf-only return blocks; versions1–4 replay unchanged.
 const currentTailProfile=Object.freeze({...currentChoiceProfile,version:5});
-const profiles=Object.freeze([legacyProfile,currentTailProfile,currentChoiceProfile,currentFastProfile,currentProfile]);
+// Version6 reviews the simplified Base equality family at the Phase23 pin.
+// Its library runtime is byte-identical; the String.eq body distinguishes emitters.
+const upstreamGraphProfile=Object.freeze({
+  "version": 6,
+  "pin": "018751270e800bc222a93dad7f257083ee53a5f7",
+  "runtimeHash": "241696c207b257ba28e159699e08e749c1625542a92d901a663ac3f04dfd20fd",
+  "bodyHashes": {
+    "$String$eq$": "9879c7a2170260e74e4db58931ccf0dfac67a5d8246d6614372e6f95d22a695b",
+    "$Cmp$is_eq$": "a5beb3094febc3f38ee02c0ea51ce09cafefe1c8a897a25dbb603b21f58bbf0c",
+    "$String$cmp$": "3b9cc1202ef9b17b946b18ba7b8f599c6c76e1c8fdb8cde809f40bdce21246cb",
+    "$Char$cmp$": "a4e9dd89bbabd5fde4d39e3de2642955203ac11782e78809cc11d9d7a2b7053a",
+    "$String$cmp$fin$": "11504d8a211c258eddd5f88ac1d2967c593b447eca5c94c6c50b1b1dd7eed231",
+    "$String$cmp$rec$": "b36b6180e994b0edfe4ea7686690e7cd69d8f8462221ce07342d47e78f453aa0",
+    "run_loop": "b1f937dcb68edc1033b01d5a6055938ec2e34103bacd41b68c36f2ea66bd1c8f",
+    "run_lib": "c1cbbf9ec05ef6f9a72bf0950a221e1c4e58c496ad8e44ddd8f16dd849d51822",
+    "char_new": "7a9fbfa94b70aae2289d3de7c044ae5ac902151b5a4648d9f5f60444d2573081",
+    "cmp_new": "8fac78c9271fde4683b81923d57f2f58107f0ed4e8cf69efb8294c381d575e2c",
+    "$String$order$": "604c605abc07f9e0008c07e610bf673521f30c7af03a71b3c518781494e4245c",
+    "$Pair$snd$": "376b59c9bd7ac22c3ef43aee1f1ce49e7382247a8448522bdbc4da7dfd48af47"
+  },
+  "upstreamHashes": {
+    "bend.ts": "de2b39db2fcbd2f9115053e85e34d791693e1297bfeb6874da1013ff7b44b7dd",
+    "comp.ts": "3bd7ed49d33f1c61334d75a905e38c0345fb15a10b45d85884b77f49833dc5ee",
+    "base.bend": "c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661"
+  },
+  "recipeHashes": {
+    "stage0-library.mjs": "d2ab90c2f7b0133a6452d0f827f899cc872bdd1c18516dc3182e881d34850359",
+    "assemble.mjs": "f7c8feff7a0b8f8b4a302c2ca8b99b363a8d7c4c9c48bc6b7a9463aa23c58b75"
+  },
+  "guard": "  if (typeof _a_0 === \"string\" && typeof _b_0 === \"string\") return _a_0 === _b_0;\n"
+});
+const profiles=Object.freeze([upstreamGraphProfile,legacyProfile,currentTailProfile,currentChoiceProfile,currentFastProfile,currentProfile]);
 
 // The current compiler roots have identity public marshaling, emitted exactly
 // in this shape. Refuse any new ABI shape until separately reviewed.
@@ -167,7 +198,8 @@ function transformTailChoices(source){
 
 export function transformEquality(source,version) {
   const start=source.indexOf(prefixEnd)+prefixEnd.length;
-  const profile=profiles.find(p=>p.runtimeHash===sha(source.slice(0,start))&&(version===undefined||p.version===version));
+  const equalityBody=source.slice(start).match(/^function \$String\$eq\$\([^\n]*\) \{\n[\s\S]*?^\}/m)?.[0];
+  const profile=profiles.find(p=>p.runtimeHash===sha(source.slice(0,start))&&(version===undefined?p.bodyHashes['$String$eq$']===sha(equalityBody??''):p.version===version));
   requireThat(start>=prefixEnd.length&&profile,'Unsupported generated runtime');
   const {runtimeHash,bodyHashes,guard}=profile;
   const ts=tokens(source,start),functions=new Map();let i=0;
@@ -214,7 +246,7 @@ export function transformEquality(source,version) {
   const stats={version:profile.version,replacements:1,runtimeHash,bodyHashes,exports,functions:functions.size};
   if(profile.version>=4){
     const choice=transformChoices(equalitySource,profile.version>=5);
-    if(profile.version===5){
+    if(profile.version>=5){
       const tail=transformTailChoices(choice.source);
       return {source:tail.source,stats:{...stats,choices:choice.report,tailChoices:tail.report}};
     }

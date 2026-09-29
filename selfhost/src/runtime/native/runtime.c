@@ -787,8 +787,14 @@ INLINE Cls blk_span(Term t) {
   return term_tag(t) == TAG_ARR ? c : buf_wcls(c);
 }
 
+FAR void term_drop(Env e, Term t);
+
 INLINE void blk_free(Env e, Term t) {
-  heap_free(e, blk_span(t), term_loc(t));
+  if (term_rfc(t)) {
+    term_drop(e, t);
+  } else {
+    heap_free(e, blk_span(t), term_loc(t));
+  }
 }
 
 FAR void term_drop(Env e, Term t) {
@@ -938,8 +944,9 @@ INLINE Term term_word(Env e, Term w) {
 // half allocated in its class and copied, the source freed shallow by
 // the high call (its elements moved; the emitter binds the low half
 // first). ANode{l, r} is blk_node: the merged class, l and r copied
-// and freed shallow. Array.clone is blk_copy: a BUF raw, an ARR's
-// elements retained through blk_keep. A match to the leaves copies
+// and freed shallow. Shared handles instead retain copied ARR elements and
+// decrement their RFC; Array.clone keeps the original first and a fresh copy
+// second. A match to the leaves copies
 // O(n log n) words where a view copied none; get, set, swap, size and
 // new open no half.
 
@@ -981,11 +988,42 @@ INLINE Term blk_keep(Env e, Loc at) {
   return v;
 }
 
+// A shared leaf gives its caller a retained element before dropping the handle.
+INLINE Term blk_leaf(Env e, Term a) {
+  Loc at = term_peek(e, a);
+  return term_rfc(a) ? blk_keep(e, at) : e.mem[at];
+}
+
+// Uniform arrays keep U32/F32 payloads in the low half of each 64-bit slot.
+// Existing a32 operations provide a single atomic update for every backend.
+INLINE u64 array_atomic(Env e, Term a, u32 i, u32 v, u32 x, u32 op) {
+  DEV u32* p = a32_at(e.mem, term_peek(e, a) + blk_at(a, i, 0));
+  u32 old = a32_load(p);
+  for (;;) {
+    u32 next = v;
+    switch (op) {
+      case 1: next = old + v; break;
+      case 2: next = old < v ? old : v; break;
+      case 3: next = old > v ? old : v; break;
+      case 4: next = old & v; break;
+      case 5: next = old | v; break;
+      case 6: next = old ^ v; break;
+      case 8: next = old == v ? x : old; break;
+      case 9: next = (u32)f32_rewrap(f32_unbox(old) + f32_unbox(v)); break;
+    }
+    u32 expected = old;
+    if (a32_cas(p, &expected, next)) {
+      return old;
+    }
+    old = expected;
+  }
+}
+
 OUTLINE Term blk_copy(Env e, Term a) {
   Corpus H = e.mem;
   bool arr = term_tag(a) == TAG_ARR;
   Cls cls = blk_span(a);
-  Loc src = term_loc(a);
+  Loc src = term_peek(e, a);
   BLK_ALLOC(dst, cls)
   for (u64 j = 0; j < (1ull << cls); j += 1) {
     H[dst + j] = arr ? blk_keep(e, src + j) : H[src + j];
@@ -1001,16 +1039,16 @@ INLINE Term blk_node(Env e, Term l, Term r) {
     err_post(H, ERR_TAGS);
     return l;
   }
-  Loc pl = term_loc(l);
-  Loc pr = term_loc(r);
+  Loc pl = term_peek(e, l);
+  Loc pr = term_peek(e, r);
   BLK_ALLOC(n, arr ? c + 1 : c)
   if (!arr && c == 0) {
     H[n] = (u64)*blk_ptr(H, pl, 0) | ((u64)*blk_ptr(H, pr, 0) << 32);
   } else {
     u64 cw = 1ull << blk_span(l);
     for (u64 w = 0; w < cw; w += 1) {
-      H[n + w]      = H[pl + w];
-      H[n + cw + w] = H[pr + w];
+      H[n + w]      = arr && term_rfc(l) ? blk_keep(e, pl + w) : H[pl + w];
+      H[n + cw + w] = arr && term_rfc(r) ? blk_keep(e, pr + w) : H[pr + w];
     }
   }
   blk_free(e, l);
@@ -1030,11 +1068,11 @@ INLINE Term blk_half(Env e, Term a, u32 hi) {
   Cls cw = arr ? c : buf_wcls(c);
   BLK_ALLOC(n, cw)
   if (!arr && c == 0) {
-    H[n] = (u64)*blk_ptr(H, term_loc(a), hi);
+    H[n] = (u64)*blk_ptr(H, term_peek(e, a), hi);
   } else {
-    Loc src = term_loc(a) + ((u64)hi << cw);
+    Loc src = term_peek(e, a) + ((u64)hi << cw);
     for (u64 w = 0; w < (1ull << cw); w += 1) {
-      H[n + w] = H[src + w];
+      H[n + w] = arr && term_rfc(a) ? blk_keep(e, src + w) : H[src + w];
     }
   }
   if (hi) {
@@ -1969,11 +2007,9 @@ static void cube_run(Corpus H, bool gpu) {
     if (gpu) {
       gpu_pass(f);
     } else {
-      // Under a unit (CUBE_T / LINE a row) per thread, the column grows to
-      // the rows that give one; no more: each touches a page of every plane.
-      if (f * (CUBE_T / LINE) < pool_size) {
-        row_grow((Env){ H, ALC[0] }, io_stk, 0, CUBE_G,
-          (pool_size + CUBE_T / LINE - 1) / (CUBE_T / LINE));
+      // Each worker needs a row; a row has CUBE_T / LINE units.
+      if (f < pool_size) {
+        row_grow((Env){ H, ALC[0] }, io_stk, 0, CUBE_G, pool_size);
       }
       if (f < CUBE) {
         pool_turn(true);

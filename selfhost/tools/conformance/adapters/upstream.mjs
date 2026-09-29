@@ -6,7 +6,7 @@ import {spawnSync} from 'node:child_process';
 import {pathToFileURL} from 'node:url';
 import {buildNative} from '../../native-build.mjs';
 import {nodeResourceArgs} from '../../node-resource-args.mjs';
-const root=path.resolve(process.env.BEND_UPSTREAM||path.join(import.meta.dirname,'../../../.bootstrap/upstream-phase8'));
+const root=path.resolve(process.env.BEND_UPSTREAM||path.join(import.meta.dirname,'../../../.bootstrap/upstream-phase23'));
 export const name='pinned-typescript-reference';
 export const capabilities={parse:true,check:true,interpreter:true,js:true,native:true,metal:false,cuda:false,modules:true,foreign:true,dependentTypes:true,affine:true,termination:true,proofs:true,proofKernel:false,checkOracle:'validation-plus-declaration-verdict'};
 export const artifacts=Object.fromEntries(['bend.ts','comp.ts','base.bend','main.ts','safe.ts','bendtt.lean'].map(file=>[file,path.join(root,'bend2',file)]));

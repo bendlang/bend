@@ -247,7 +247,7 @@ def compare(
   +b: KTerm,
   +le: Bool,
 ) -> Bool:
-  kc(Bool, norm_exact(a, b), u => True{}, u => norm_cmp_loop(book, Con{KNormCmp{a, b, le, U32.add(1, norm_max(norm_book_bound(book), norm_max(norm_max_term(a), norm_max_term(b))))}, Nil{}}, Nil{}))
+  kc(Bool, norm_exact(a, b), u => True{}, u => norm_convert(book, a, b, le, U32.add(1, norm_max(norm_book_bound(book), norm_max(norm_max_term(a), norm_max_term(b))))))
 
 law norm_compare:
   for +book: List<&2, KDef>
@@ -259,7 +259,7 @@ law norm_compare:
 
 @unsafe
 def norm_compare(book, a, b, le, fresh):
-  kc(Bool, norm_exact(a, b), u => True{}, u => norm_cmp_loop(book, Con{KNormCmp{a, b, le, fresh}, Nil{}}, Nil{}))
+  kc(Bool, norm_exact(a, b), u => True{}, u => norm_convert(book, a, b, le, fresh))
 
 @unsafe
 def norm_subset(
@@ -452,13 +452,34 @@ def norm_exact_names(as, bs):
 
 # Comparison is a worklist of conjunctions with explicit alternatives for
 # the right-hand kind meet. Deep constructor equality does not grow the host stack.
+# The empty-book pass proves symbolic copies before unfolding definitions.
+# Each policy owns its heap. A failed rigid comparison cannot cache an opaque
+# head in the full-book pass, or share cells across independent conversions.
+law norm_convert:
+  for +book: List<&2, KDef>
+  for +a: KTerm
+  for +b: KTerm
+  for +le: Bool
+  for +fresh: U32
+  Bool
+
+@unsafe
+def norm_convert(book, a, b, le, fresh):
+  kc(Bool, norm_cmp_loop(Nil{}, GState{GEmpty{}, 1}, Con{KNormCmp{a, b, le, fresh}, Nil{}}, Nil{}),
+    u => True{}, u => norm_cmp_loop(book, GState{GEmpty{}, 1}, Con{KNormCmp{a, b, le, fresh}, Nil{}}, Nil{}))
+
+# A sharing item runs only after its EQ obligations succeed. It copies a forced
+# value, never an unproved pair or a directional LE result. Alternative worklists
+# retain their own continuation, while proven equality and evaluation may persist.
 type KNormCmp is Data:
   KNormCmp{+a: KTerm, +b: KTerm, +le: Bool, +fresh: U32}
+  KNormShare{+left: U32, +right: U32}
 
 type KNormAlt is Data:
   KNormAlt{+todo: List<&2, KNormCmp>}
 law norm_cmp_loop:
   for +book: List<&2, KDef>
+  for +st: GState
   for +todo: List<&2, KNormCmp>
   for +alts: List<&2, KNormAlt>
   Bool
@@ -470,6 +491,7 @@ law norm_cmp_quick:
 
 law norm_cmp_heads:
   for +book: List<&2, KDef>
+  for +st: GState
   for +a: KTerm
   for +b: KTerm
   for +le: Bool
@@ -480,6 +502,7 @@ law norm_cmp_heads:
 
 law norm_cmp_same:
   for +book: List<&2, KDef>
+  for +st: GState
   for +a: KTerm
   for +b: KTerm
   for +le: Bool
@@ -490,6 +513,7 @@ law norm_cmp_same:
 
 law norm_cmp_plain:
   for +book: List<&2, KDef>
+  for +st: GState
   for +a: KTerm
   for +b: KTerm
   for +le: Bool
@@ -500,6 +524,7 @@ law norm_cmp_plain:
 
 law norm_cmp_fields:
   for +book: List<&2, KDef>
+  for +st: GState
   for +as: List<&2, KTerm>
   for +bs: List<&2, KTerm>
   for +fresh: U32
@@ -516,6 +541,7 @@ law norm_cmp_zip:
 
 law norm_cmp_kind:
   for +book: List<&2, KDef>
+  for +st: GState
   for +a: KTerm
   for +b: KTerm
   for +g: KTerm
@@ -526,70 +552,80 @@ law norm_cmp_kind:
   Bool
 
 @unsafe
-def norm_cmp_loop(book, todo, alts):
+def norm_cmp_loop(book, st, todo, alts):
   match todo:
     case Nil{}:
       True{}
+    case Con{KNormShare{left, right}, rest}:
+      norm_cmp_loop(book, GState{g_put(g_heap(st), right, g_get(g_heap(st), left)), g_next(st)}, rest, alts)
     case Con{KNormCmp{a, b, le, fresh}, rest}:
-      kc(Bool, norm_cmp_quick(a, b), u => norm_cmp_loop(book, rest, alts), u => norm_cmp_heads(book, wnf(book, a), wnf(book, b), le, fresh, rest, alts))
+      kc(Bool, norm_cmp_quick(a, b), u => norm_cmp_loop(book, st, rest, alts),
+        u => norm_cmp_left(book, b, le, fresh,
+          kc(List<&2, KNormCmp>, Bool.not(le) && String.eq(tg(a), "GCell") && String.eq(tg(b), "GCell"),
+            u => Con{KNormShare{ix(a), ix(b)}, rest}, u => rest), alts, g_wnf(book, st, a)))
 
 @unsafe
 def norm_cmp_quick(a, b):
-  kc(Bool, String.eq(tg(a), "App") || String.eq(tg(a), "Ref") || String.eq(tg(a), "Var"), u => norm_exact(a, b), u => False{})
+  kc(Bool, String.eq(tg(a), "App") || String.eq(tg(a), "Ref") || String.eq(tg(a), "Var") || String.eq(tg(a), "GCell"), u => norm_exact(a, b), u => False{})
 
 @unsafe
 def norm_cmp_fail(
   +book: List<&2, KDef>,
+  +st: GState,
   +alts: List<&2, KNormAlt>,
 ) -> Bool:
   match alts:
     case Nil{}:
       False{}
     case Con{KNormAlt{todo}, rest}:
-      norm_cmp_loop(book, todo, rest)
+      norm_cmp_loop(book, st, todo, rest)
 
 @unsafe
 def norm_cmp_test(
   +book: List<&2, KDef>,
+  +st: GState,
   +yes: Bool,
   +rest: List<&2, KNormCmp>,
   +alts: List<&2, KNormAlt>,
 ) -> Bool:
-  kc(Bool, yes, u => norm_cmp_loop(book, rest, alts), u => norm_cmp_fail(book, alts))
+  kc(Bool, yes, u => norm_cmp_loop(book, st, rest, alts), u => norm_cmp_fail(book, st, alts))
 
 @unsafe
-def norm_cmp_heads(book, a, b, le, fresh, rest, alts):
+def norm_cmp_heads(book, st, a, b, le, fresh, rest, alts):
   kc(Bool, String.eq(tg(a), "Lam") || String.eq(tg(b), "Lam"),
-   u => norm_cmp_loop(book, Con{KNormCmp{app(a, var("_", fresh)), app(b, var("_", fresh)), le, U32.add(fresh, 1)}, rest}, alts),
-   u => kc(Bool, core_literal(a) && String.eq(tg(b), "Ctr"), u => norm_cmp_heads(book, core_literal_step(a), b, le, fresh, rest, alts),
-   u => kc(Bool, core_literal(b) && String.eq(tg(a), "Ctr"), u => norm_cmp_heads(book, a, core_literal_step(b), le, fresh, rest, alts),
-   u => kc(Bool, String.eq(tg(a), tg(b)), u => norm_cmp_same(book, a, b, le, fresh, rest, alts), u => norm_cmp_fail(book, alts)))))
+   u => norm_cmp_loop(book, st, Con{KNormCmp{app(a, var("_", fresh)), app(b, var("_", fresh)), le, U32.add(fresh, 1)}, rest}, alts),
+   u => kc(Bool, core_literal(a) && String.eq(tg(b), "Ctr"), u => norm_cmp_heads(book, st, core_literal_step(a), b, le, fresh, rest, alts),
+   u => kc(Bool, core_literal(b) && String.eq(tg(a), "Ctr"), u => norm_cmp_heads(book, st, a, core_literal_step(b), le, fresh, rest, alts),
+   u => kc(Bool, String.eq(tg(a), tg(b)), u => norm_cmp_same(book, st, a, b, le, fresh, rest, alts), u => norm_cmp_fail(book, st, alts)))))
 
 @unsafe
-def norm_cmp_same(book, a, b, le, fresh, rest, alts):
-  kc(Bool, String.eq(tg(a), "Var"), u => norm_cmp_test(book, U32.is_eq(ix(a), ix(b)), rest, alts),
-   u => kc(Bool, String.eq(tg(a), "Typ"), u => kc(Bool, le, u => norm_cmp_kind(book, a, b, wnf(book, kid(a, 0)), wnf(book, kid(b, 0)), fresh, rest, alts), u => norm_cmp_loop(book, Con{KNormCmp{kid(a, 0), kid(b, 0), False{}, fresh}, rest}, alts)),
+def norm_cmp_same(book, st, a, b, le, fresh, rest, alts):
+  kc(Bool, String.eq(tg(a), "Var"), u => norm_cmp_test(book, st, U32.is_eq(ix(a), ix(b)), rest, alts),
+   u => kc(Bool, String.eq(tg(a), "Typ"), u => kc(Bool, le,
+     u => norm_cmp_kind_left(book, a, b, fresh, rest, alts, g_wnf(book, st, kid(a, 0))),
+     u => norm_cmp_loop(book, st, Con{KNormCmp{kid(a, 0), kid(b, 0), False{}, fresh}, rest}, alts)),
    u => kc(Bool, String.eq(tg(a), "All"), u => kc(Bool, U32.is_eq(qt(a), qt(b)),
-     u => norm_cmp_loop(book, Con{KNormCmp{kid(b, 0), kid(a, 0), le, fresh}, Con{KNormCmp{subst(kid(a, 1), ix(a), var("_", fresh)), subst(kid(b, 1), ix(b), var("_", fresh)), le, U32.add(fresh, 1)}, rest}}, alts), u => norm_cmp_fail(book, alts)),
-   u => kc(Bool, String.eq(tg(a), "ADT"), u => kc(Bool, String.eq(nm(a), nm(b)) && norm_removed(rm(a), rm(b), le), u => norm_cmp_fields(book, ks(a), ks(b), fresh, rest, alts), u => norm_cmp_fail(book, alts)),
-   u => kc(Bool, String.eq(tg(a), "Qua"), u => norm_cmp_test(book, U32.is_eq(qt(a), qt(b)), rest, alts),
-   u => norm_cmp_plain(book, a, b, le, fresh, rest, alts))))))
+     u => norm_cmp_loop(book, st, Con{KNormCmp{kid(b, 0), kid(a, 0), le, fresh}, Con{KNormCmp{subst(kid(a, 1), ix(a), var("_", fresh)), subst(kid(b, 1), ix(b), var("_", fresh)), le, U32.add(fresh, 1)}, rest}}, alts), u => norm_cmp_fail(book, st, alts)),
+   u => kc(Bool, String.eq(tg(a), "ADT"), u => kc(Bool, String.eq(nm(a), nm(b)) && norm_removed(rm(a), rm(b), le), u => norm_cmp_fields(book, st, ks(a), ks(b), fresh, rest, alts), u => norm_cmp_fail(book, st, alts)),
+   u => kc(Bool, String.eq(tg(a), "Qua"), u => norm_cmp_test(book, st, U32.is_eq(qt(a), qt(b)), rest, alts),
+   u => norm_cmp_plain(book, st, a, b, le, fresh, rest, alts))))))
 
 @unsafe
-def norm_cmp_plain(book, a, b, le, fresh, rest, alts):
-  kc(Bool, core_literal(a) && core_literal(b), u => norm_cmp_test(book, core_literal_same(a, b), rest, alts), u =>
-  kc(Bool, String.eq(tg(a), "Ref"), u => kc(Bool, String.eq(nm(a), nm(b)), u => norm_cmp_loop(book, rest, alts), u => norm_cmp_ref(book, a, b, le, norm_max(da(lookup(book, nm(a))), da(lookup(book, nm(b)))), fresh, rest, alts)),
-   u => kc(Bool, String.eq(tg(a), "Hol"), u => norm_cmp_test(book, String.eq(nm(a), nm(b)), rest, alts),
-   u => kc(Bool, String.eq(tg(a), "Ctr") || String.eq(tg(a), "Mat"), u => kc(Bool, String.eq(nm(a), nm(b)), u => norm_cmp_fields(book, ks(a), ks(b), fresh, rest, alts), u => norm_cmp_fail(book, alts)),
-   u => kc(Bool, String.eq(tg(a), "App") && String.eq(tg(kid(a, 0)), "Ref") && String.eq(tg(kid(b, 0)), "Ref"), u => kc(Bool, String.eq(nm(kid(a, 0)), nm(kid(b, 0))), u => norm_cmp_loop(book, Con{KNormCmp{kid(a, 1), kid(b, 1), False{}, fresh}, rest}, alts), u => norm_cmp_fail(book, alts)),
-   u => kc(Bool, String.eq(tg(a), "App") || String.eq(tg(a), "Min") || String.eq(tg(a), "Eql") || String.eq(tg(a), "Rwt"), u => norm_cmp_fields(book, ks(a), ks(b), fresh, rest, alts),
-   u => norm_cmp_test(book, String.eq(tg(a), "Qnt") || String.eq(tg(a), "Rfl") || String.eq(tg(a), "Efq"), rest, alts)))))))
+def norm_cmp_plain(book, st, a, b, le, fresh, rest, alts):
+  kc(Bool, core_literal(a) && core_literal(b), u => norm_cmp_test(book, st, core_literal_same(a, b), rest, alts), u =>
+  kc(Bool, String.eq(tg(a), "Ref"), u => kc(Bool, String.eq(nm(a), nm(b)), u => norm_cmp_loop(book, st, rest, alts), u => norm_cmp_ref(book, st, a, b, le, norm_max(da(lookup(book, nm(a))), da(lookup(book, nm(b)))), fresh, rest, alts)),
+   u => kc(Bool, String.eq(tg(a), "Hol"), u => norm_cmp_test(book, st, String.eq(nm(a), nm(b)), rest, alts),
+   u => kc(Bool, String.eq(tg(a), "Ctr") || String.eq(tg(a), "Mat"), u => kc(Bool, String.eq(nm(a), nm(b)), u => norm_cmp_fields(book, st, ks(a), ks(b), fresh, rest, alts), u => norm_cmp_fail(book, st, alts)),
+   u => kc(Bool, String.eq(tg(a), "App") && String.eq(tg(kid(a, 0)), "Ref") && String.eq(tg(kid(b, 0)), "Ref"), u => kc(Bool, String.eq(nm(kid(a, 0)), nm(kid(b, 0))), u => norm_cmp_loop(book, st, Con{KNormCmp{kid(a, 1), kid(b, 1), False{}, fresh}, rest}, alts), u => norm_cmp_fail(book, st, alts)),
+   u => kc(Bool, String.eq(tg(a), "App") || String.eq(tg(a), "Min") || String.eq(tg(a), "Eql") || String.eq(tg(a), "Rwt"), u => norm_cmp_fields(book, st, ks(a), ks(b), fresh, rest, alts),
+   u => norm_cmp_test(book, st, String.eq(tg(a), "Qnt") || String.eq(tg(a), "Rfl") || String.eq(tg(a), "Efq"), rest, alts)))))))
 
 # Only bare, under-applied definitions compare extensionally. Stuck App heads
 # above stay nominal, avoiding repeated eta expansion of an opaque application.
 @unsafe
 def norm_cmp_ref(
   +book: List<&2, KDef>,
+  +st: GState,
   +a: KTerm,
   +b: KTerm,
   +le: Bool,
@@ -598,14 +634,14 @@ def norm_cmp_ref(
   +rest: List<&2, KNormCmp>,
   +alts: List<&2, KNormAlt>,
 ) -> Bool:
-  kc(Bool, U32.is_eq(n, 0), u => norm_cmp_fail(book, alts),
+  kc(Bool, U32.is_eq(n, 0), u => norm_cmp_fail(book, st, alts),
    u => kc(Bool, U32.is_eq(n, 1),
-     u => norm_cmp_loop(book, Con{KNormCmp{app(a, var("_", fresh)), app(b, var("_", fresh)), le, U32.add(fresh, 1)}, rest}, alts),
-     u => norm_cmp_ref(book, app(a, var("_", fresh)), app(b, var("_", fresh)), le, U32.sub(n, 1), U32.add(fresh, 1), rest, alts)))
+     u => norm_cmp_loop(book, st, Con{KNormCmp{app(a, var("_", fresh)), app(b, var("_", fresh)), le, U32.add(fresh, 1)}, rest}, alts),
+     u => norm_cmp_ref(book, st, app(a, var("_", fresh)), app(b, var("_", fresh)), le, U32.sub(n, 1), U32.add(fresh, 1), rest, alts)))
 
 @unsafe
-def norm_cmp_fields(book, as, bs, fresh, rest, alts):
-  kc(Bool, U32.is_eq(terms_len(as), terms_len(bs)), u => norm_cmp_loop(book, norm_cmp_zip(as, bs, fresh, rest), alts), u => norm_cmp_fail(book, alts))
+def norm_cmp_fields(book, st, as, bs, fresh, rest, alts):
+  kc(Bool, U32.is_eq(terms_len(as), terms_len(bs)), u => norm_cmp_loop(book, st, norm_cmp_zip(as, bs, fresh, rest), alts), u => norm_cmp_fail(book, st, alts))
 
 @unsafe
 def norm_cmp_zip(as, bs, fresh, rest):
@@ -616,11 +652,68 @@ def norm_cmp_zip(as, bs, fresh, rest):
       rest
 
 @unsafe
-def norm_cmp_kind(book, a, b, g, h, fresh, rest, alts):
-  kc(Bool, (String.eq(tg(g), "Qua") && U32.is_eq(qt(g), 2)) || (String.eq(tg(h), "Qua") && Bool.not(U32.is_eq(qt(h), 2))), u => norm_cmp_loop(book, rest, alts),
+def norm_cmp_kind(book, st, a, b, g, h, fresh, rest, alts):
+  kc(Bool, (String.eq(tg(g), "Qua") && U32.is_eq(qt(g), 2)) || (String.eq(tg(h), "Qua") && Bool.not(U32.is_eq(qt(h), 2))), u => norm_cmp_loop(book, st, rest, alts),
    u => kc(Bool, String.eq(tg(g), "Min"),
-     u => norm_cmp_loop(book, Con{KNormCmp{kt("Typ", "", 0, 0, Con{kid(g, 0), Nil{}}), b, True{}, fresh}, Con{KNormCmp{kt("Typ", "", 0, 0, Con{kid(g, 1), Nil{}}), b, True{}, fresh}, rest}}, alts),
+     u => norm_cmp_loop(book, st, Con{KNormCmp{kt("Typ", "", 0, 0, Con{kid(g, 0), Nil{}}), b, True{}, fresh}, Con{KNormCmp{kt("Typ", "", 0, 0, Con{kid(g, 1), Nil{}}), b, True{}, fresh}, rest}}, alts),
    u => kc(Bool, String.eq(tg(h), "Min"),
-     u => norm_cmp_loop(book, Con{KNormCmp{a, kt("Typ", "", 0, 0, Con{kid(h, 0), Nil{}}), True{}, fresh}, rest}, Con{KNormAlt{Con{KNormCmp{a, kt("Typ", "", 0, 0, Con{kid(h, 1), Nil{}}), True{}, fresh}, rest}}, alts}),
-     u => norm_cmp_loop(book, Con{KNormCmp{g, h, True{}, fresh}, rest}, alts))))
+     u => norm_cmp_loop(book, st, Con{KNormCmp{a, kt("Typ", "", 0, 0, Con{kid(h, 0), Nil{}}), True{}, fresh}, rest}, Con{KNormAlt{Con{KNormCmp{a, kt("Typ", "", 0, 0, Con{kid(h, 1), Nil{}}), True{}, fresh}, rest}}, alts}),
+     u => norm_cmp_loop(book, st, Con{KNormCmp{g, h, True{}, fresh}, rest}, alts))))
 
+
+@unsafe
+def norm_cmp_left(
+  +book: List<&2, KDef>,
+  +b: KTerm,
+  +le: Bool,
+  +fresh: U32,
+  +rest: List<&2, KNormCmp>,
+  +alts: List<&2, KNormAlt>,
+  +r: GResult,
+) -> Bool:
+  match r:
+    case GResult{st, a}:
+      norm_cmp_right(book, a, le, fresh, rest, alts, g_wnf(book, st, b))
+
+@unsafe
+def norm_cmp_right(
+  +book: List<&2, KDef>,
+  +a: KTerm,
+  +le: Bool,
+  +fresh: U32,
+  +rest: List<&2, KNormCmp>,
+  +alts: List<&2, KNormAlt>,
+  +r: GResult,
+) -> Bool:
+  match r:
+    case GResult{st, b}:
+      norm_cmp_heads(book, st, a, b, le, fresh, rest, alts)
+
+@unsafe
+def norm_cmp_kind_left(
+  +book: List<&2, KDef>,
+  +a: KTerm,
+  +b: KTerm,
+  +fresh: U32,
+  +rest: List<&2, KNormCmp>,
+  +alts: List<&2, KNormAlt>,
+  +r: GResult,
+) -> Bool:
+  match r:
+    case GResult{st, g}:
+      norm_cmp_kind_right(book, a, b, g, fresh, rest, alts, g_wnf(book, st, kid(b, 0)))
+
+@unsafe
+def norm_cmp_kind_right(
+  +book: List<&2, KDef>,
+  +a: KTerm,
+  +b: KTerm,
+  +g: KTerm,
+  +fresh: U32,
+  +rest: List<&2, KNormCmp>,
+  +alts: List<&2, KNormAlt>,
+  +r: GResult,
+) -> Bool:
+  match r:
+    case GResult{st, h}:
+      norm_cmp_kind(book, st, a, b, g, h, fresh, rest, alts)

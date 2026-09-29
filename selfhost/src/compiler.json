@@ -1,5 +1,5 @@
 {
-  "upstream": "b2111cf43244e65f76ddc278ee695e669f720cbf",
+  "upstream": "018751270e800bc222a93dad7f257083ee53a5f7",
   "modules": [
     "src/core/term.bend",
     "src/core/index.bend",
@@ -62,5 +62,5 @@
     "src/driver/report.bend",
     "src/driver/api.bend"
   ],
-  "targetVersion": "2.0.32"
+  "targetVersion": "2.0.34"
 }

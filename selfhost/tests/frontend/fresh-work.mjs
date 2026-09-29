@@ -6,7 +6,7 @@ import {pathToFileURL} from 'node:url';
 const project=path.resolve(import.meta.dirname,'../..');
 const {default:api}=await import(pathToFileURL(process.env.BEND_FRONT_API||path.join(project,'build/fresh-work.mjs')));
 const nil={$:'Nil'},list=a=>a.reduceRight((tail,head)=>({$:'Con',head,tail}),nil);
-const term=(tag,name='',id=0,quant=1,kids=[],removed=[])=>({$:'KTerm',tag,name,id,quant,kids:list(kids),removed:list(removed)});
+const term=(tag,name='',id=0,quant=1,kids=[],removed=[])=>(tag==='Lam'?{$:'KLambda',name,id,quant,kids:list(kids),removed:list(removed),originBegin:0,originEnd:0,quantityPresent:true}:{$:'KTerm',tag,name,id,quant,kids:list(kids),removed:list(removed),originBegin:0,originEnd:0});
 const v=id=>term('Var','v',id), app=(f,x)=>term('App','',0,1,[f,x]);
 const array=x=>{const out=[];for(;x.$==='Con';x=x.tail)out.push(x.head);return out;};
 const fresh=api.f_fresh_term||api.f_fresh_stack;
@@ -18,7 +18,7 @@ function reference(root, first) {
     const kids=array(t.kids);
     if(t.tag==='Var')return env.has(t.id)?term('Var',t.name,env.get(t.id),t.quant):t;
     if(t.tag==='All') {const id=next++,a=walk(kids[0],env),inner=new Map(env);inner.set(t.id,id);return term('All',t.name,id,t.quant,[a,walk(kids[1],inner)]);}
-    if(t.tag==='Lam') {const id=next++,inner=new Map(env);inner.set(t.id,id);return term('Lam',t.name,id,t.quant,[walk(kids[0],inner)]);}
+    if(t.$==='KLambda') {const id=next++,inner=new Map(env);inner.set(t.id,id);return term('Lam',t.name,id,t.quant,[walk(kids[0],inner)]);}
     if(t.tag==='Let') {if(!kids.length)return term('Error','empty core let',0,0);const inner=new Map(env),out=[];for(const binding of kids.slice(0,-1)){const id=next++;out.push(term('Bind',binding.name,id,binding.quant,[walk(binding.kids.head,env)]));inner.set(binding.id,id)}return term('Let','',0,1,[...out,walk(kids.at(-1),inner)]);}
     return {...t,kids:list(kids.map(k=>walk(k,env)))};
   }

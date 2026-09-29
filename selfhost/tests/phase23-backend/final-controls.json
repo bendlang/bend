@@ -1,0 +1,36 @@
+{
+  "cases": [
+    {
+      "id": "atomic_operations_v3",
+      "file": "fixtures/atomic_operations_v3.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    },
+    {
+      "id": "shared_array_ownership_v2",
+      "file": "fixtures/shared_array_ownership_v2.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    },
+    {
+      "id": "tcp_zero_idle",
+      "file": "fixtures/tcp_zero_idle.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    },
+    {
+      "id": "parallel_rows",
+      "file": "fixtures/parallel_rows.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    }
+  ]
+}

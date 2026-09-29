@@ -161,7 +161,7 @@ test('a reused runner directory preserves prior session and queue identity',asyn
 });
 
 const project=path.resolve(import.meta.dirname,'../..');
-const upstream=process.env.BEND_UPSTREAM||path.join(project,'.bootstrap/upstream');
+const upstream=process.env.BEND_UPSTREAM||path.join(project,'.bootstrap/upstream-phase23');
 test('CLI retained failure replays its deleted successful prefix and rejects tampering',{skip:!fs.existsSync(path.join(upstream,'tests'))},t=>{
   const directory=fs.mkdtempSync(path.join(os.tmpdir(),'bend-persistent-cli-'));t.after(()=>fs.rmSync(directory,{recursive:true,force:true}));
   const adapter=path.join(directory,'adapter.mjs'),selection=path.join(directory,'selection.json'),output=path.join(directory,'result.json');

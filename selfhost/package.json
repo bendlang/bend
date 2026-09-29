@@ -14,7 +14,7 @@
     "check-fixtures": "node tools/check-fixtures.mjs",
     "bootstrap:typed": "node tools/typed-driver.mjs --bootstrap",
     "assemble": "node tools/assemble.mjs",
-    "verify": "node tools/verify.mjs",
+    "verify": "node --stack-size=4096 --max-old-space-size=4096 tools/verify.mjs",
     "test:runtime": "node src/runtime/js/test.mjs",
     "test:abi": "node tools/test-compiler-abi.mjs",
     "test:harness": "node --test tests/conformance/*.test.mjs tests/native-build.test.mjs",

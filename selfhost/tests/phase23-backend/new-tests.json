@@ -1,0 +1,60 @@
+{
+  "cases": [
+    {
+      "id": "compile/u32_to_nat_widen.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    },
+    {
+      "id": "io/effect_cid_in_comment.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    },
+    {
+      "id": "io/tcp_recv_max_zero.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    },
+    {
+      "id": "reg/show_array_layout.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    },
+    {
+      "id": "reg/show_array_layout_reverse.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    },
+    {
+      "id": "reg/show_array_layout_sum.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    },
+    {
+      "id": "reg/spin_array_hold.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    },
+    {
+      "id": "run/array_redirect_race.bend",
+      "lanes": [
+        "js",
+        "native"
+      ]
+    }
+  ]
+}

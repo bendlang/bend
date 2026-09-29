@@ -2,40 +2,40 @@
   "kind": "bend-default-equality-release",
   "version": 1,
   "newBootstrap": false,
-  "installed": "2026-09-29T17:19:55.845Z",
+  "installed": "2026-09-29T19:37:01.679Z",
   "artifact": "equality-derived-b1",
-  "sourceSha256": "9a4174043e87dd148b152bdb5240c013846dc4e7cfd2a005c701eca5e60b9495",
-  "runtimeSha256": "1766d6d674f5c64eb481a647fe1d7bf751529d6861d4d4f4697999f005e772f0",
+  "sourceSha256": "77da4991d6673b88a0a30183810ae3221c5b37e2aa4372c8844f20a22dfb85b0",
+  "runtimeSha256": "76d2d8647dc81f025c53c063aa0fb71ce24dd42965402c6e0078cc79a457d0c8",
   "files": [
     {
       "path": "dist/typed-api.mjs",
-      "sha256": "ade8ef020e439b81ecb53057b33a473c34a3cbd993b98a044121ecc3c2b8c9c3",
-      "bytes": 927305
+      "sha256": "5596f914fd245a5085a614b81099360aeaf601ed61f16357fc491c85106c1102",
+      "bytes": 936288
     },
     {
       "path": "dist/base.bend",
-      "sha256": "00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94",
-      "bytes": 72371
+      "sha256": "c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661",
+      "bytes": 71530
     },
     {
       "path": "dist/release-lineage/checked-api.mjs",
-      "sha256": "9cf01096f395817470ef0515e0ee98da85a53eb1b05823c88c9f2d5531e6072a",
-      "bytes": 917527
+      "sha256": "5f539f81bace8e5783a7cdd8c82606e106fe85813638d7725bff84a943d57c8a",
+      "bytes": 926382
     },
     {
       "path": "dist/release-lineage/checked-bootstrap.json",
-      "sha256": "235435437f30cc014c34935590b247739b7b99cf45ede4b510b19d012df5b594",
-      "bytes": 49929
+      "sha256": "36a4d67b4bd127facca897e6b360627d568c96c5254bc03774313d6b5c76f8f5",
+      "bytes": 50075
     },
     {
       "path": "dist/release-lineage/derivation.json",
-      "sha256": "6f63575f5ff49586df8ffcedb64e68fcc6e78182129d8693e64f0f090b3d3808",
-      "bytes": 198619
+      "sha256": "a9048c97225bcaaf08f99fafaa5319c279d10df6d0cf5554c14fd252a5145ee1",
+      "bytes": 201001
     },
     {
       "path": "dist/release-lineage/equality.mjs",
-      "sha256": "84a065f61b9c6c6c1ebd8cdfe10dca1a8017f40d19302a84515e1c3a2cc356d9",
-      "bytes": 27345
+      "sha256": "4260f1d04020326b3e8896cb44851c84ea2b2f6b950744ed22538cff9a7911c5",
+      "bytes": 29534
     }
   ],
   "checkout": [
@@ -51,18 +51,18 @@
     },
     {
       "path": "src/core/normalize.bend",
-      "sha256": "d4d8f4eea15aa8a1dfe188fb1689cb6a7e38071b6baf132bb88f388e235cdfb1",
-      "bytes": 19597
+      "sha256": "4845ff63f3c228abc9a432410ddc8b7e20bfce27e54d6d49412b06608f7ce702",
+      "bytes": 22263
     },
     {
       "path": "src/core/graph.bend",
-      "sha256": "51a4afb648eb064d78b50badd8fb264fc55c182f9c22299d72ce637a891bed89",
-      "bytes": 14315
+      "sha256": "85625049b316ede08eeffd7ff509483183624f1197c582c9d1bb2cd8bebf4802",
+      "bytes": 14746
     },
     {
       "path": "src/core/reach.bend",
-      "sha256": "b7ead8697a4da7e57a9b047635217786aa5bb4644b5c35298698b71ad35a45d3",
-      "bytes": 8060
+      "sha256": "086092c688e6cb774da94333826f51b1fdeddc8e85aeaac5be6b15c143b0df27",
+      "bytes": 9901
     },
     {
       "path": "src/core/pretty.bend",
@@ -241,8 +241,8 @@
     },
     {
       "path": "src/back/js/emit.bend",
-      "sha256": "c30903559f29d3c8bbd22f48026b4a19a1644a2278ed371c4f423691dd26943f",
-      "bytes": 29073
+      "sha256": "18c6bc0ed2cd5d97b95fbf0d314473ed881de69686e914128d4bd863f36138b5",
+      "bytes": 29227
     },
     {
       "path": "src/back/native/ir.bend",
@@ -266,8 +266,8 @@
     },
     {
       "path": "src/back/native/intrinsic.bend",
-      "sha256": "8acf8c4e083b55cc33ef323552963b254ac310c22e7d8b5e3b82253776892ab0",
-      "bytes": 4905
+      "sha256": "5b921ebfecb307eddae880edee86ce459751684ecf74543f54c60e2a6f252195",
+      "bytes": 4912
     },
     {
       "path": "src/back/native/tables.bend",
@@ -286,8 +286,8 @@
     },
     {
       "path": "src/back/native/bridge.bend",
-      "sha256": "361565a6d77450760786d36bf8afa863f47796f31f8cce493b4defe632af811a",
-      "bytes": 23252
+      "sha256": "4767f940940660635ec4c80978f8e4abb11c398b4b8f8bccabf05879c59f2a49",
+      "bytes": 23327
     },
     {
       "path": "src/back/native/direct.bend",
@@ -311,8 +311,8 @@
     },
     {
       "path": "src/back/native/array.bend",
-      "sha256": "4e1d5c9d282ba746ac1e98df470411d477bf1449b5621c3ad413f01e883d9149",
-      "bytes": 1814
+      "sha256": "c00f0592299047df582ac0435e1a0423ea62fb48f7c87dda83bf18161b263bd7",
+      "bytes": 2813
     },
     {
       "path": "src/back/native/validate.bend",
@@ -341,8 +341,8 @@
     },
     {
       "path": "tools/typed-driver.mjs",
-      "sha256": "03798aeb710bd7707b68e624f045518d5fb6dd289209c5ed748c990863cf9e42",
-      "bytes": 48272
+      "sha256": "43c4df618476ba6ae6057d468d7147af0a85be0cd4f84e18f5f124f58d7f47c3",
+      "bytes": 48273
     },
     {
       "path": "tools/compiler-abi.mjs",
@@ -366,13 +366,13 @@
     },
     {
       "path": "src/compiler.json",
-      "sha256": "3f119430ca47086e8a362eea41837a990616fbd609aab20665006b5d6d342ac6",
+      "sha256": "ab196d008363b3bb403fe3c5b43fb5cf17605e614eb23e7f807408c05b358814",
       "bytes": 2018
     },
     {
       "path": "src/runtime.mjs",
-      "sha256": "1766d6d674f5c64eb481a647fe1d7bf751529d6861d4d4f4697999f005e772f0",
-      "bytes": 42401
+      "sha256": "76d2d8647dc81f025c53c063aa0fb71ce24dd42965402c6e0078cc79a457d0c8",
+      "bytes": 42878
     },
     {
       "path": "src/runtime/native/LICENSE",
@@ -541,13 +541,13 @@
     },
     {
       "path": "src/runtime/native/effs/tcp_poll.c",
-      "sha256": "9f4adfe0f4b8e025783b07fa4ba9fec619a5938135dc5f4bb8c9cf7079e82b37",
-      "bytes": 1301
+      "sha256": "feb6fa3f7c04b3143c71593e2c17088394d11474bd87ca791fb71fbf9f9a8f82",
+      "bytes": 1386
     },
     {
       "path": "src/runtime/native/effs/tcp_recv.c",
-      "sha256": "68d3467889475566a257c5e04e0502604c4bb11635a26c25cb7ea62c6bdc2482",
-      "bytes": 1768
+      "sha256": "de6cfd9490f867c26056d1897e8d37ff657189788943f36151749101c7c9f0f6",
+      "bytes": 1835
     },
     {
       "path": "src/runtime/native/effs/tcp_send.c",
@@ -611,8 +611,8 @@
     },
     {
       "path": "src/runtime/native/runtime.c",
-      "sha256": "59d293db627c735c32411a40e952e3f2958a9176048d540273486fb21d1b44e7",
-      "bytes": 77695
+      "sha256": "cbfb8933d007c10a0173f280888d6c94d5d77543548b25808596cd2d21f764f0",
+      "bytes": 78893
     },
     {
       "path": "cli.mjs",
@@ -621,9 +621,9 @@
     }
   ],
   "lineage": {
-    "checkedParentSha256": "9cf01096f395817470ef0515e0ee98da85a53eb1b05823c88c9f2d5531e6072a",
-    "derivationSha256": "6f63575f5ff49586df8ffcedb64e68fcc6e78182129d8693e64f0f090b3d3808",
-    "upstreamRevision": "b2111cf43244e65f76ddc278ee695e669f720cbf"
+    "checkedParentSha256": "5f539f81bace8e5783a7cdd8c82606e106fe85813638d7725bff84a943d57c8a",
+    "derivationSha256": "a9048c97225bcaaf08f99fafaa5319c279d10df6d0cf5554c14fd252a5145ee1",
+    "upstreamRevision": "018751270e800bc222a93dad7f257083ee53a5f7"
   },
   "provenanceScope": "Original checked bootstrap and derivation reports are preserved byte-for-byte with historical paths. Local verification checks relative installed/checkout identities and exact transformation replay; it does not create or relocate bootstrap provenance.",
   "validationScope": "Installation verifies the completed checked attempt and any explicit derivation. Release build additionally requires maintained focused validation; broad conformance and self-reproduction are separate evidence."

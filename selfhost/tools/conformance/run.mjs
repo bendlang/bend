@@ -11,7 +11,7 @@ import {createPersistentRunner} from './persistent-probe.mjs';
 import {judge} from './judge.mjs';
 
 const project=path.resolve(import.meta.dirname,'../..');
-const options={upstream:process.env.BEND_UPSTREAM||path.join(project,'.bootstrap/upstream-phase8'),
+const options={upstream:process.env.BEND_UPSTREAM||path.join(project,'.bootstrap/upstream-phase23'),
   adapter:path.join(import.meta.dirname,'adapters/prototype.mjs'),output:path.join(project,'tests/conformance/latest.json'),
   jobs:8,timeout:5000,'worker-mode':'isolated','recycle-after':'64','rss-limit-mb':'1024',lanes:'parse,check,interpreter,js,native,metal,cuda',filter:'',gpu:'','stack-kb':0,'heap-mb':0,selection:'',rerun:'',retain:'none','selected-exit':'0'};
 for(let i=2;i<process.argv.length;i++) {
