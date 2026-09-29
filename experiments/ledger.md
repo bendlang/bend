@@ -1240,3 +1240,34 @@ both ordinary-vs-instance and nested-instance ordering gaps;22 observations have
 shared-world/result representation-cost ablation before semantic migration.
 Neither research direction is a current production conformance improvement.
 Publication remains blocked by the earlier automatic approval review.
+
+
+## Phase18 representation screens — 2026-09-29
+
+The [checkpoint report](../implementation/phase18/representation-checkpoint.md)
+keeps the installed Phase17 release unchanged. Two independent prototypes clear
+the prospective5% process-overhead screen: checker-world source03 is essentially
+flat (11.7103→11.6839 s), while inert parser cursor source02 costs0.93%
+(11.6339→11.7416 s). These use separate identical-source TS/B/C/C/B/TS windows;
+their percentages are not combined. Cursor construction counts are generated
+expressions executed, not measured physical V8 heap objects.
+
+World source06 restores historical raw KSpecialized/KChecked output after a
+review found the internal-state leak. Its maintained36, chronology22, direct42,
+memo8 and public18 scoped gates pass; both known TS chronology gaps remain.
+The final adapter is not timed. Cursor direct194 and all196 saved outcomes pass
+their preservation contracts; the raw suite retains68 strict differences.
+Source costs are+107lines/+16definitions/+3types for world06 and+77lines/
++13definitions/+2types for cursor02, each against the same installed parent.
+No source reduction, conformance improvement or new release is claimed.
+
+### Updated frontier
+
+Investigate two private Phase19 semantic slices: authoritative live-instance
+checking and contextual parser checkpoints. Keep source and checked output,
+private scopes, first-failure worlds and public parser stages explicit. A narrow
+stopped-body alternative still needs substantial propagation machinery without
+removing a semantic owner. The measured cursor cost makes testing the coherent
+contextual route reasonable. Phase17 recovery is committed as`b34f8cd`; Phase18
+failures and corrected artifacts are being preserved separately from Phase19.
+Remote publication remains blocked by the earlier automatic approval review.

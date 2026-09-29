@@ -1,0 +1,60 @@
+{
+  "kind": "phase18-root-producer-freeze",
+  "authorized": true,
+  "allProducersClosed": true,
+  "anchorStatus": "uninstalled-reconstruction-anchor",
+  "time": "2026-09-29T08:21:19.171168+00:00",
+  "head": "b34f8cd543ab20406f83751cd9d9a0224530a675",
+  "finalSource": "selfhost/build/phase18/cursor-source-02/project",
+  "finalAttempt": "selfhost/build/phase18/cursor-build-01",
+  "finalApiSha256": "5d19edf596e9ade0bc5d43e5fbcd75bd0cf263d624de6e046a0966627ad9dd18",
+  "scope": "Closed Phase18 world and cursor representation experiments only; neither installed. All active Phase19 paths excluded.",
+  "owners": {
+    "behavior": "world06 checked36/paired22/direct42/memo8/public18 closed; source03 timing separate; ownerfreeze859b47b6",
+    "speed": "cursor02 checked36/paired196/direct194/allocation4 closed; ownerreceiptfdf56692",
+    "carets": "independent reviews/preservation preparation complete; no producers",
+    "root": "Both matrices and cost reports closed; no active compiler jobs; selected current strategy frozen"
+  },
+  "inputs": [
+    {
+      "path": "experiments/STEERING.md",
+      "sha256": "1276d7d346b4610d7964249d32dce486c912282d75cdaf6e1cb8764a1b449fa1"
+    },
+    {
+      "path": "experiments/ledger.md",
+      "sha256": "4d7e1d4171335fe6042e7f95ec55904b625730ef555b3e892a5ad89891a6369d"
+    },
+    {
+      "path": "implementation/phase18/representation-checkpoint.md",
+      "sha256": "7652f1102a24516c3b6c03007e75f0c666b9695927850df593a5d54e650474c1"
+    },
+    {
+      "path": "implementation/phase18/instance-world-cost.md",
+      "sha256": "a8be1f7c3db54debb3d56ae384e0a4f2971c659707427e9d0627b1c5a76b371c"
+    },
+    {
+      "path": "implementation/phase18/instance-world-cost.json",
+      "sha256": "1ca9d1d1277e23f007b9063bdc2ffc4bad53777ebe6879f8436222687932ecf3"
+    },
+    {
+      "path": "implementation/phase18/cursor-cost.md",
+      "sha256": "c58bb2d331a7c1fed1ce25707194cf250997fa411ebd72e50dcb516461b2dc08"
+    },
+    {
+      "path": "implementation/phase18/cursor-cost.json",
+      "sha256": "05eddb6688240d8b10e93132ec4baf78400814f9356b167351da0aa60a79f585"
+    },
+    {
+      "path": "selfhost/build/phase18/instance-world-freeze-01/manifest.json",
+      "sha256": "859b47b6a810ca8d8ac0e46786750550f006faab72516ce74a1e3b34fad7a1f8"
+    },
+    {
+      "path": "selfhost/build/phase18/cursor-owner-receipt-01.json",
+      "sha256": "fdf56692544e23e1bcfda659a50fcc887e3824ce0ef3d61b257b49cf981f09c5"
+    }
+  ],
+  "additionalFiles": [
+    "experiments/STEERING.md",
+    "experiments/ledger.md"
+  ]
+}

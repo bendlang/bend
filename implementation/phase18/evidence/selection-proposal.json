@@ -1,0 +1,71 @@
+{
+  "kind": "phase18-preservation-proposal",
+  "status": "prospective-not-inventoried-not-captured",
+  "anchorStatus": "uninstalled-reconstruction-anchor",
+  "baselineCommit": "fddfc84b3f48aecc77c2424ddc8227cd7f63251f",
+  "finalSource": "selfhost/build/phase18/cursor-source-02/project",
+  "finalAttempt": "selfhost/build/phase18/cursor-build-01",
+  "finalApiSha256": "5d19edf596e9ade0bc5d43e5fbcd75bd0cf263d624de6e046a0966627ad9dd18",
+  "phaseRoot": "selfhost/build/phase18",
+  "topics": {
+    "final": [],
+    "cursor": [
+      "cursor-"
+    ],
+    "world": [
+      "instance-world-"
+    ]
+  },
+  "extraTrees": {
+    "final": [
+      "selfhost/tools/performance/phase18"
+    ]
+  },
+  "extraFiles": {
+    "final": [
+      "selfhost/tools/performance/phase16/compact-recover.py",
+      "selfhost/build/phase16/compact-final-evidence-policy-01/report.json",
+      "implementation/phase17/evidence/preservation.json",
+      "implementation/phase17/evidence/capsule-02/manifest.json",
+      "implementation/phase18/evidence/adaptation.json",
+      "implementation/phase18/evidence/collector-adaptation.patch"
+    ]
+  },
+  "closedDocumentationDirectories": [
+    "design/phase18",
+    "implementation/phase18"
+  ],
+  "excludedTrees": [
+    "selfhost/build/phase19",
+    "selfhost/tools/performance/phase19",
+    "design/phase19",
+    "experiments/phase19",
+    "implementation/phase19"
+  ],
+  "excludedTopLevelReason": "Outside the exact closed cursor-* and instance-world-* Phase18 topics. No preservation claim for omitted or active experiments. Phase19 is excluded entirely.",
+  "maxPartPayloadBytes": 64000000,
+  "maxArchiveBytes": 99000000,
+  "externalPrerequisites": [
+    {
+      "kind": "committed-source",
+      "commit": "fddfc84b3f48aecc77c2424ddc8227cd7f63251f",
+      "scope": "Exact committed installed Phase17 source for independent reconstruction of the uninstalled cursor anchor; this is not a Phase18 release."
+    },
+    {
+      "kind": "previous-phase-capsule",
+      "path": "implementation/phase17/evidence/preservation.json",
+      "manifest": "implementation/phase17/evidence/capsule-02/manifest.json",
+      "scope": "Phase17 baseline API/source and saved grouping/instance experiments, plus their declared Phase16/older capsule prerequisites; earlier recorded exclusions remain in force."
+    },
+    {
+      "kind": "upstream-checkout",
+      "path": "selfhost/.bootstrap/upstream-phase8",
+      "commit": "b2111cf43244e65f76ddc278ee695e669f720cbf",
+      "scope": "Pinned TypeScript oracle, Base and upstream fixtures."
+    },
+    {
+      "kind": "external-toolchain",
+      "scope": "Recorded Node and Clang executables are not vendored."
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "kind": "phase18-preservation-adaptation",
+  "status": "prepared-not-run",
+  "parent": {
+    "path": "selfhost/tools/performance/phase17/preserve.py",
+    "sha256": "80911e66129a0995f9b3af2fcb3b7c8871a430497fbbc295722901ca5ee01c3f"
+  },
+  "collector": {
+    "path": "selfhost/tools/performance/phase18/preserve.py",
+    "sha256": "3a655ab3c8d0fe262eab84fb1a3c008ce05ae710271a14d102bcc5bc0a861722"
+  },
+  "patch": {
+    "path": "implementation/phase18/evidence/collector-adaptation.patch",
+    "sha256": "0939a16acb8a313a5835b61ab28b2d246e3c7af03bd02a69fa05c2cdaaa08720"
+  },
+  "unchangedRecoverer": {
+    "path": "selfhost/tools/performance/phase16/compact-recover.py",
+    "sha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234"
+  },
+  "syntax": "Python ast.parse passed; collector modes not invoked",
+  "changes": [
+    "Phase18 config and output labels",
+    "Fixed Phase17-to-anchor patch filename",
+    "Explicit uninstalled anchor metadata and root freeze guard"
+  ],
+  "unchanged": [
+    "Member selection and exact fixture dependency rules",
+    "Archive encoding and splitting",
+    "Hash/type/mode/link validation",
+    "Fixed-commit source reconstruction",
+    "Independent recovery path policy"
+  ]
+}

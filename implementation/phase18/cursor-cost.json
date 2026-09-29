@@ -1,0 +1,105 @@
+{
+  "kind": "phase18-inert-cursor-cost-decision",
+  "complete": true,
+  "pass": true,
+  "decision": "Pass representation-cost screening; proceed to an explicitly private contextual parser experiment. No promotion or semantic gain.",
+  "screeningThresholdProcessOverhead": 0.05,
+  "statistics": {
+    "typescript": {
+      "samples": 2,
+      "meanRequestMs": 2355.500262,
+      "meanProcessWallMs": 3423.8707000000004,
+      "maxRssKiB": 477744
+    },
+    "baseline": {
+      "samples": 2,
+      "meanRequestMs": 10529.588548,
+      "meanProcessWallMs": 11633.902469499997,
+      "maxRssKiB": 653412
+    },
+    "candidate": {
+      "samples": 2,
+      "meanRequestMs": 10641.3997095,
+      "meanProcessWallMs": 11741.6290555,
+      "maxRssKiB": 658248
+    }
+  },
+  "ratios": {
+    "baselineToTs": 3.39788020309879,
+    "candidateToTs": 3.4293435951012983,
+    "baselineToCandidate": 0.9908252436275407,
+    "candidateProcessReduction": -0.009259711973899076,
+    "candidateRequestReduction": -0.01061875884231367
+  },
+  "rssIncrease": 0.007401149657490169,
+  "source": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/cursor-build-01/snapshot/build/typed/snapshots/aad5fdf931abce5d08bc38218c61c383beed42c7ff31c4d0f2ed19442a3b5e7a/compiler.bend",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/cursor-build-01/snapshot/build/typed/snapshots/aad5fdf931abce5d08bc38218c61c383beed42c7ff31c4d0f2ed19442a3b5e7a/compiler.bend",
+    "sha256": "6ac781b59fa89d4ed8ccd92b6fdd2f8c681d6b8333da2a688f1dce6640d12a7c"
+  },
+  "variants": {
+    "baseline": {
+      "attempt": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-worker-build-01/attempt.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-worker-build-01/attempt.json",
+        "sha256": "be48563157abfceb570ceeb3798125b0ebb8f862a26faba05d249e26fb4414ba"
+      },
+      "api": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-worker-build-01/equality/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-worker-build-01/equality/api.mjs",
+        "sha256": "9b20de5032e306a0b7ee2686a1cc79452f81fcb282ff6419a0d1ad5c4b5716b6"
+      },
+      "artifactKind": "derived-b1",
+      "cache": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-worker-build-01/snapshot/build/typed/cache/base-9b20de5032e306a0b7ee2686a1cc79452f81fcb282ff6419a0d1ad5c4b5716b6-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-worker-build-01/snapshot/build/typed/cache/base-9b20de5032e306a0b7ee2686a1cc79452f81fcb282ff6419a0d1ad5c4b5716b6-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json",
+        "sha256": "07002005b5f1380c604a4db4d0e3cc7cff2c7e8a34e864c487dae20d1360ceb4"
+      }
+    },
+    "candidate": {
+      "attempt": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/cursor-build-01/attempt.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/cursor-build-01/attempt.json",
+        "sha256": "e7553ab04bdf1c3e72333c6bf75e7851c41d7389c856adea948ac41670a13e8f"
+      },
+      "api": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/cursor-build-01/equality/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/cursor-build-01/equality/api.mjs",
+        "sha256": "5d19edf596e9ade0bc5d43e5fbcd75bd0cf263d624de6e046a0966627ad9dd18"
+      },
+      "artifactKind": "derived-b1",
+      "cache": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/cursor-build-01/snapshot/build/typed/cache/base-5d19edf596e9ade0bc5d43e5fbcd75bd0cf263d624de6e046a0966627ad9dd18-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/cursor-build-01/snapshot/build/typed/cache/base-5d19edf596e9ade0bc5d43e5fbcd75bd0cf263d624de6e046a0966627ad9dd18-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json",
+        "sha256": "8f97e2866f599bc3cd984a26ce6d473c03becd50cbdec206c0a1a1af11ee6500"
+      }
+    }
+  },
+  "scope": "Same-source checking/trust reporting using each release workflow, with an explicit reviewed host delta if present, no emission. Fresh processes; separately validated Bend Base caches; TypeScript checks Base; OS caches not flushed.",
+  "identities": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase18/representation_cost.md",
+      "sha256": "214686c6248b8f1b3ca4e9ce1b8270a9b16fd34cc0cf8c1839867dffdddc93f6"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase18/cursor-cost.md",
+      "sha256": "c58bb2d331a7c1fed1ce25707194cf250997fa411ebd72e50dcb516461b2dc08"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/cursor-matrix-01/report.json",
+      "sha256": "b1ea3f83367dd1b53a844a26a3c4f0e8e528e52084f2b1042961cb172dfab8c4"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/cursor-matrix-inputs-01/readiness.json",
+      "sha256": "e4ba32fd8ba0ba209187365438bbe83601023ad9233cf467232ed228bf067730"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/cursor-matrix-inputs-01/matrix.json",
+      "sha256": "fc9d76250cc6a732e696d41f119749c16abbd28971a4bdc52b3dcfa9d53d63c3"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/cursor-matrix-inputs-01/host-review.json",
+      "sha256": "b7d0a33f40823398ae3de155ffdca362873b9f093f7ed3881bb315797ab26a50"
+    }
+  ]
+}

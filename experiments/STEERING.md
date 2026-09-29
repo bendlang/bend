@@ -38,18 +38,22 @@ The worker adds 8 lines / +145 bytes / +1 definition. No source-size reduction c
 ## Next priorities
 
 1. **Checker ownership:** the [instance investigation](../implementation/phase17/instance-chronology.md)
-   confirms two distinct order gaps among 22 paired observations; eight memo/name
-   controls are exact. Moving the existing specializer earlier preserves the
-   nested bug. Phase18 starts an isolated world/result representation-cost ablation
-   before changing instantiation order. Preserve the authoritative source book,
-   real failing world and deferred fresh-bound demand. No speed or net LOC gain
-   is assumed; reject unexplained demand or cost regressions before migration.
+   confirms two distinct order gaps among 22 paired observations. Moving the
+   existing specializer earlier preserves the nested bug. The
+   [Phase18 transport screen](../implementation/phase18/representation-checkpoint.md)
+   is essentially cost-neutral on source03. Source06 restores the stable public
+   payload and passes its scoped 36/22/42/8/18 gates; it is not separately timed.
+   Phase19 will sequence the existing checker and instantiate at first live use.
+   Preserve source bodies, real failing worlds, memo/fresh state, prefix semantics
+   and global effects when leaving private generic scopes. Nothing is installed.
 2. **Parser simplicity:** the [FGroup trial](../implementation/phase17/group-boundary.md)
    passes 92 structural controls and preserves 196 outcomes, with zero conformance
-   gain. It remains uninstalled. A proposed rejection-only checkpoint resolver
-   costs 250–400 lines; compare it with explicit parser input/context ownership and
-   removal of deferred scope duplication before implementing another error
-   interpreter. Keep monad, grouped boundary and prior-row order witnesses strict.
+   gain. Phase18's inert cursor also preserves those 196 outcomes and passes194
+   direct controls. Its controlled cost is +0.93% process/+0.74% peak RSS, within
+   the5% screen. Prefer a private contextual parser slice to another stopped-body
+   or replay layer. Keep unbound-name fallback, lexical checkpoints and public
+   raw/scoped stage contracts explicit. Preserve monad, grouped-boundary and
+   prior-row witnesses. Added semantic-state cost and actual deletion remain open.
 3. **Measured cost:** the [compact profile](../implementation/phase17/compact-profile.md)
    motivated the installed worker. Shared dispatch and list reconstruction remain
    hypotheses, not additive gain estimates. Reprofile after major checker changes;
@@ -58,8 +62,8 @@ The worker adds 8 lines / +145 bytes / +1 definition. No source-size reduction c
 Keep checked focused builds and frozen-attempt fixture validation as the edit
 loop. Broad gates, exclusive timing, installation and evidence recovery belong
 to integration checkpoints. Designs, failures and source/host memberships must
-remain exact. Phase16's recovered capsules are committed; Phase17 preservation
-is being finalized independently of active Phase18 source work.
+remain exact. Phase16 and Phase17 capsules are recovered and committed. Phase18
+preservation is separate from active Phase19 designs and future semantic source.
 
 ## Retained experiments and operating rules
 

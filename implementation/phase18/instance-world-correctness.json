@@ -1,0 +1,178 @@
+{
+  "kind": "phase18-world-representation-correctness",
+  "complete": true,
+  "pass": true,
+  "installed": false,
+  "semanticInstantiation": false,
+  "sourceParent": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-worker-source-01/project",
+  "sourceProject": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-source-03/project",
+  "candidateAPI": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-build-03/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-build-03/equality/api.mjs",
+    "sha256": "dc884368665186eff97094201f5b5fa1bc5a8f2a10ac00fb017a35bef20b008d"
+  },
+  "sourceDelta": {
+    "physicalLines": 87,
+    "nonblankLines": 72,
+    "bytes": 3594,
+    "definitions": 13,
+    "laws": 0,
+    "types": 2
+  },
+  "changedFiles": [
+    "src/check/annotate.bend",
+    "src/check/kernel.bend",
+    "src/check/specialize.bend",
+    "src/diagnostic/produce.bend",
+    "src/diagnostic/trace.bend"
+  ],
+  "newConcepts": [
+    "checker world retaining source book/memo/fresh state",
+    "explicit known/deferred fresh-state availability",
+    "returned world and consumed-count transport; no count consumption yet"
+  ],
+  "retainedConcepts": [
+    "existing postcheck specializer and its state/visitor",
+    "existing source and program event order",
+    "existing diagnostic renderer and public ABIs"
+  ],
+  "gates": {
+    "checkedB1": "build03 genuine checked + maintained v5 + default36 pass; two inherited strict differences",
+    "pairedWholeOutcomeEquivalence": 22,
+    "strictTSDifferencesUnchanged": 2,
+    "directTransportAndDemand": 42,
+    "publicMemoNames": 8,
+    "wholeProgramAndAnnotation": 8,
+    "wholeProgramNote": "The eight whole-program/annotation rows are included in the 37 direct rows; counts overlap."
+  },
+  "attempts": [
+    {
+      "attempt": "build01",
+      "result": "checked bootstrap refused: KEnv local constructor binding needed explicit annotation"
+    },
+    {
+      "attempt": "build02",
+      "result": "checked/v5/default36 pass; independent review found nonzero metadata transport misses before direct controls"
+    },
+    {
+      "attempt": "build03",
+      "result": "42 direct,22 parent equivalence,8 memo checks pass"
+    }
+  ],
+  "timing": {
+    "status": "not run by this owner",
+    "decision": "pending root-coordinated matrix; correctness does not establish acceptable cost"
+  },
+  "evidence": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase18/instance-world-report.py",
+      "bytes": 3663,
+      "sha256": "3e65b9089cfb482b49a8a111367226a22ba2161dc47cbb69c4d13d877b7c3de6"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase18/instance-world-representation.md",
+      "bytes": 8141,
+      "sha256": "f9b84a0da36e73e8d24a8eccc949a99e4ebcb9e70f357348afb3ab9bfd0f772d"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase18/representation_cost.md",
+      "bytes": 3433,
+      "sha256": "214686c6248b8f1b3ca4e9ce1b8270a9b16fd34cc0cf8c1839867dffdddc93f6"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-source-03/manifest.json",
+      "bytes": 75977,
+      "sha256": "a18283e18ce88e19b45efd6007602f142709a70a53822f99f7c4c2b6a68c096e"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-source-03/source.patch",
+      "bytes": 50233,
+      "sha256": "51c675bad19cbb205f900d4bd2ea338b98c63c6ed647a8f89f08770514b73510"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-build-01/build.json",
+      "bytes": 3969,
+      "sha256": "315f83deb0001f488cac3978fdeeda467dfe21053d0cfd8f4100b8a5a01588e1"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-build-01/bootstrap/stderr",
+      "bytes": 548,
+      "sha256": "9a4ab9da42407c612b86bcb15f5a086303d2a4cc38fbfee143c1a35cb71d62a6"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-build-02/build.json",
+      "bytes": 3767,
+      "sha256": "20ddede8166aef8116615761d16a1e5e23d595576d362d43bddc81957343e8ed"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-build-03/build.json",
+      "bytes": 3773,
+      "sha256": "44b16cfa3518da7927f19864e8751657448708f84d81c8d3ff2d042f60f48a5f"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-build-03/attempt.json",
+      "bytes": 222552,
+      "sha256": "d2bf8146a6a83de4a7dbf6581222633529cef978a870c3e586784b6c0fdfbc81"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-parent-paired-01/report.json",
+      "bytes": 20782,
+      "sha256": "3172bdbe8b152b913876cdcf5dea78a41cc687ffca64eee689b986a183fc264b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-candidate-paired-01/report.json",
+      "bytes": 20845,
+      "sha256": "d72391ec2fec062dbe47a5f32d99485c16a6c2cbc2996aec5bccf84447f7286f"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-paired-equivalence-01/report.json",
+      "bytes": 293,
+      "sha256": "9c22f353725286310c747e3f1d9f25bf680088d916adfc124f289dd71bc3cdf3"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-direct-01/report.json",
+      "bytes": 16165,
+      "sha256": "c93220fa3e2892b3fec037b9ab5ca9b2b9103723c68d8b66dc35b634fe808206"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-demand-01/report.json",
+      "bytes": 2121,
+      "sha256": "6b6f3a4543777f4fece17098bdd5338acb53198994cfa53d4564fd4db0de9326"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-memo-01/report.json",
+      "bytes": 8182,
+      "sha256": "3b70ed365c3767adf4f54bb7382c6adf9973deedaee631d89d670c8b8bc332e0"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-parent-paired-01/selected/paired.json",
+      "bytes": 37123,
+      "sha256": "b2d802687ad259946c616d2e37c63b35bc4f23a6408c2f43535c91a455503160"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-parent-paired-01/selected/candidate.json",
+      "bytes": 1958233,
+      "sha256": "4ad1c1e1186cfca1c240754ab60b754008dcf52c86bea185aa48268cfae2efba"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-parent-paired-01/selected/reference.json",
+      "bytes": 1934551,
+      "sha256": "91382f519879a5ac71e436f5f4376f24e2741920f06e44bbed1f0ef8d7b9bef5"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-candidate-paired-01/selected/paired.json",
+      "bytes": 37151,
+      "sha256": "f030c9ced911ee63cc68a09a319b81e3c359c39cbcff3897bb9f6a3056f134b2"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-candidate-paired-01/selected/candidate.json",
+      "bytes": 1958500,
+      "sha256": "5b4ac1c52b7bed8beb7e9a6b67c8bb5c5bf1dc9076dd699b42fa95f4651ad70a"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-candidate-paired-01/selected/reference.json",
+      "bytes": 1934662,
+      "sha256": "6a8519911429c84ae0be8d273dc2e3c96184eb0bdc92f582dd6f383fe2d8c576"
+    }
+  ]
+}
