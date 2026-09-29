@@ -1,0 +1,144 @@
+{
+  "kind": "phase19-prefix-root-freeze",
+  "authorized": true,
+  "allProducersClosed": true,
+  "scope": "Selected installed prefix release, exact/proof controls, and named dependencies only. Active checker/parser work is excluded and may continue.",
+  "anchorStatus": "installed-prefix-release",
+  "finalAttempt": "selfhost/build/phase19/prefix-build-01",
+  "finalApiSha256": "66d6ce45c0c6ea8947190ff210274f1e6f0c7bf85f7ad3f215076f8820acd7c7",
+  "inputs": [
+    {
+      "path": "README.md",
+      "sha256": "7b0759fc026e50b542ba1dea7260ee2bf3bc2278540f0d17de44a9be761ccf9f"
+    },
+    {
+      "path": "design/phase19/exact-prefix-identity.md",
+      "sha256": "61a16073b41778fbc1a244fe6b26ee5ae18093a6894d961282967f997722179b"
+    },
+    {
+      "path": "docs/BEND-IN-BEND.md",
+      "sha256": "6883b4bd95c819092796ae4e2ba8299e3a75776634f613e231bccc3ac9558458"
+    },
+    {
+      "path": "experiments/STEERING.md",
+      "sha256": "35e5353626a9fb0496f2415d436e0475148de39a6351208c22a8e729f9140403"
+    },
+    {
+      "path": "experiments/ledger.md",
+      "sha256": "a66cc91197b4d13c95a431725f75a58a291263ac9d6d297bdf49e45808976cf9"
+    },
+    {
+      "path": "implementation/phase19/instance-boundary.json",
+      "sha256": "15f67e761c39442f44e4a3f1dcc7a32befc7f2e03df40f2177d73b252cc0339e"
+    },
+    {
+      "path": "implementation/phase19/instance-boundary.md",
+      "sha256": "18d85aaa3c30fdcb9d73312cd1ad431ffe430d93b853469c4c8fe274b1a732a6"
+    },
+    {
+      "path": "implementation/phase19/prefix-evidence/PLAN.md",
+      "sha256": "e892288699099658506a63d748953ef398e1172533e0d5cef3c2c03e4884499e"
+    },
+    {
+      "path": "implementation/phase19/prefix-evidence/adaptation.json",
+      "sha256": "e4c5a02a3e2da1e5f8068e9abe2a0af101ee43e94d02766373e23a393736dcaa"
+    },
+    {
+      "path": "implementation/phase19/prefix-evidence/collector-adaptation.patch",
+      "sha256": "2c0a8d5e2cb04d5259725ae8cedf04b92bfdb90da07bbfdf11fbe3f76d62d9f0"
+    },
+    {
+      "path": "implementation/phase19/prefix-evidence/selection-proposal.json",
+      "sha256": "77d0031fe86a081f853df4cf041f83465f3782e1f3e4c254c2452e94450c5df3"
+    },
+    {
+      "path": "implementation/phase19/prefix-identity.json",
+      "sha256": "62b7ab2a614917a47daf2220c65123492bc660efe18b32a92cdf1cfeed7a5076"
+    },
+    {
+      "path": "implementation/phase19/prefix-identity.md",
+      "sha256": "4ba9d60b47fcb4a362d21b05948c74c0b0b9389749ea757c6fdd714378d03e37"
+    },
+    {
+      "path": "selfhost/CONFORMANCE.md",
+      "sha256": "6c080677de288338de9c51d074acaddf91f591d49dead8bf3de9ca80a5319ce4"
+    },
+    {
+      "path": "selfhost/README.md",
+      "sha256": "27daa9f965635e8eeb4510984e087f6a674806f350c246694d7b7864787845ad"
+    },
+    {
+      "path": "selfhost/build/phase19/prefix-build-01/attempt.json",
+      "sha256": "33d3b7ce0c42e85c8f86c85c2494dbfdb417c633770436b16e015830f6ad1103"
+    },
+    {
+      "path": "selfhost/build/phase19/prefix-build-01/equality/api.mjs",
+      "sha256": "66d6ce45c0c6ea8947190ff210274f1e6f0c7bf85f7ad3f215076f8820acd7c7"
+    },
+    {
+      "path": "selfhost/build/phase19/prefix-promotion-01/report.json",
+      "sha256": "edb2b4564fd1a61b6190affcd18098306f29091a9aa6f72f8f6d72e513739fe0"
+    },
+    {
+      "path": "selfhost/build/phase19/prefix-smoke-01/launcher.json",
+      "sha256": "0c18cc02144d9b97100ee9f7aa0986cbcacd42f67ffe694a666ea860a38b4258"
+    },
+    {
+      "path": "selfhost/build/phase19/prefix-source-01/manifest.json",
+      "sha256": "9ec1d910574cee67e8d945b4558a635efbb9235f2735c7b041d7fd686eb966df"
+    },
+    {
+      "path": "selfhost/dist/release.json",
+      "sha256": "2617345bbc5d0a3e60d47afefd84feb4be2196ce2d794a50dda852a748ee0d39"
+    },
+    {
+      "path": "selfhost/docs/ARCHITECTURE.md",
+      "sha256": "1c0a8de1000504519f0fc7ac5319594ea34a07b207c4fd42a11a0e1523706014"
+    },
+    {
+      "path": "selfhost/src/check/prefix.bend",
+      "sha256": "ceabf77fb49b58910d83fa896899061643c4c105f29e70bd87d3f73be873783d"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-boundary-controls.mjs",
+      "sha256": "45cdecdbbd11f8148d0c3e2f8e49f545c2a0dd7f73faf646e82cb38d96ae5227"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-boundary-oracle.mjs",
+      "sha256": "b958aafac8ea2e8a2546c9d1b110fec79089c6a6e7067b372ebee49ea0013653"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-boundary-prepare.py",
+      "sha256": "f66545b16ccb957a7f5d95168efa12b0f97d84c5c6bab2a2c732da8f011e1b4c"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-boundary-proof-prepare.py",
+      "sha256": "bfaec3c2308c94389755c8a30c1080860d3c7ce198f3b99e4077a0bf7bf255e7"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-boundary-proof-run.mjs",
+      "sha256": "0b7aa29f806e869fe01559d870c2fe2326be071afd763734f7c1de91243bc789"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-boundary-proof.mjs",
+      "sha256": "c0c633708abd705cdac60e7e9c61eddcd34c37edde8bf2e76fd288a0d619421f"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-boundary-report.py",
+      "sha256": "f6f5513006af39453a8b9ac6979db33e50daedf6256ead36e2c151b4e5207455"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-boundary-run.mjs",
+      "sha256": "194245a9b70943dd20d7cd7edd89a594705a6d6cef758d8c6c358fdc72d7f2c7"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/prefix-preserve.py",
+      "sha256": "c0a0d5c53485ed30385cbbcc233472b90f79534a843cb2b98e694feb5d90b6f4"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/prefix-promote.mjs",
+      "sha256": "3031772b021c8ea0f439e5357d915df1909c4f7d271323704898f5ae338b8393"
+    }
+  ],
+  "additionalFiles": []
+}
