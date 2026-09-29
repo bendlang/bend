@@ -4,17 +4,19 @@ Phase16 is active under the [design](../design/phase16/full_conformance.md).
 The user authorizes continued exact conformance work with speed and simplicity
 constraints, including project evidence pushes. Baseline verification and the
 controlled unchanged-release matrix pass; current source remains Phase15.
-The accepted wave5 full gate reduces exact differences **459→48**, with
-411 new exact matches and no losses. All 2,996 primitive outcomes stay exact.
-It adds three matches over wave4: invalid-binder identity and a normalized kind's
-source fallback. The strengthened gate also protects every exact match from the
+The accepted wave6 full gate reduces exact differences **459→24**, with
+435 new exact matches and no losses. All 2,996 primitive outcomes stay exact.
+It adds 24 matches over wave5: local declaration eligibility, import diagnostics
+and module-name rendering. The strengthened gate also protects every exact match from the
 preceding accepted checkpoint; all rejected integrations remain preserved.
 The first wave4 ordinary same-source measurement costs 11.88% more than Phase15.
 No Phase16 image is installed. Scan/copy/ASCII changes show no measured recovery;
 template membership indexing is flat and unselected. Diagnostic stage timing
 points toward loading and host range validation, with substantial baseline
-variation. A finite Base-prefix freshening law/operation probe is in progress.
-Parser declaration, import and module-name candidates are being integrated next.
+variation. The exact Base-prefix law passes, but removes only 1.32% of whole-source
+freshening visits; defer the cache change. The next investigation attributes
+expansion from roughly 105k alias-walk nodes to 2.17M elaborated terms.
+The maintained backend selection is now 41/41 exact.
 Boundary controls exposed an alias/local-binder resolution bug; it remains a
 separate semantic task. Delegated agents are available again. Preserve all
 75 unrelated Phase6 files; no older timed campaign is renewed.

@@ -1087,3 +1087,20 @@ The next integration keeps parser/import ownership explicit. New module-name
 controls expose the semantic alias/local-binder precedence gap; retain it and
 its positive witness. No Phase16 compiler is installed and no full-conformance,
 new fixed-point or generated-runtime speed claim is made.
+
+
+## Phase16 sixth full wave — 2026-09-29
+
+Wave6 passes the adjacent full gate at **24 exact differences**, 24 newly exact
+and none lost since wave5; 435 newly exact versus Phase15. All 2,996 primitive
+outcomes agree with pinned TypeScript. The unchanged maintained backend selection
+is now **41/41 exact**, clearing its three historical diagnostic differences.
+[The report](../implementation/phase16/full_conformance.md) distinguishes these
+scoped results from full conformance and an installed release. Source is 15,759
+lines, +471 versus Phase15; no net source reduction is claimed.
+
+The Base-prefix law passes, but operation counts bound its opportunity to 1.32%
+of actual-source freshening visits, so its cache change is deferred. The stronger
+lead is elaboration from roughly 105k parsed/alias nodes to 2.17M terms. Attribute
+literal expansion before changing representation. Keep exact memo/literal and
+same-history counterexamples as mandatory boundaries. Production stays Phase15.

@@ -223,3 +223,38 @@ Its boundary controls expose a preexisting alias/local-binder resolution error;
 that semantic gap remains explicit and under separate investigation. None of
 these isolated checkpoints is installed. Final backend, histories, standalone,
 CLI, performance and durable evidence recovery gates remain required.
+
+
+## Sixth wave: 24 differences and all maintained backend rows exact
+
+`wave6-build-01`, API `9fda62d7a29434b0bc3abe61a768189e68a9e571cfd41f7ad8aeda56bcf6cf24`,
+passes `wave6-frontend-01`: **459→24** exact differences, 435 new exact matches and
+none lost versus Phase15; **48→24**, 24 new and none lost versus wave5. All 2,996
+primitive outcomes remain exact. The remaining 24 are 22 parser-origin rows
+(11 fixtures in both lanes) and two checker-only rows. This is not full conformance.
+
+The [declaration](parser_declarations.md), [import](import-diagnostics.md) and
+[module-display](module-diagnostic-names.md) changes compose through an explicit
+ownership merge. The integrated 93-observation control selection has 90 exact
+matches, with only the retained alias-binding and annotated imported-law gaps.
+`wave6-backend-01` passes **41/41 exact** with the unchanged pinned Clang16 setup
+and previous selection. The three historical backend diagnostic differences are
+cleared. This finite selection is not universal backend equivalence.
+
+Maintained source is **15,759 physical / 13,436 nonblank lines / 544,617 bytes** in
+59 modules, with 1,585 definitions, 776 laws and 63 types. Versus Phase15 that is
++471 physical lines (+3.08%), +86 definitions and −14 laws. One existing printer
+environment type gains a separate file-context constructor. Source ownership and
+error paths are more explicit, but total source has grown; there is no LOC
+reduction claim. Counts are frozen in `wave6-source-counts-01.json`.
+
+The [Base-prefix law experiment](checker-base-prefix.md) proves its scoped reuse
+law but removes only 28,752 of 2,170,908 freshening visits on actual compiler
+source (1.3244%). Its cache-ABI optimization is deferred. More useful evidence is
+that ordinary elaboration grows about 105k alias-walk nodes into 2.17M terms.
+Literal expansion and repeated pattern substitution are now under investigation;
+no new complete-workflow speedup follows from these operation counts.
+
+The installed compiler remains Phase15. Local-law parameter diagnostics, dotted
+alias/local binding, imported declaration context, literal identity and checker
+chronology remain active, along with final history/performance/release gates.

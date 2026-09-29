@@ -1,0 +1,204 @@
+{
+  "kind": "phase16-base-prefix-proof-conclusion",
+  "complete": true,
+  "pass": true,
+  "installationEligible": false,
+  "decision": "Defer Base-prefix cache optimization: law holds, but only1.3244% of whole-source freshening visits are removable and no controlled time benefit exists.",
+  "productionChanges": 0,
+  "cacheAbiChanges": 0,
+  "sourceBodyChanges": 0,
+  "finiteControls": 11,
+  "finiteEligibleExactGraphs": 7,
+  "finiteIneligibleFallbackGraphs": 2,
+  "preGraphRejections": 2,
+  "countedFiniteOutputs": 19,
+  "base": {
+    "idempotent": true,
+    "next": 3413,
+    "census": {
+      "objects": 115649,
+      "KTerm": 28780,
+      "KDef": 528,
+      "binders": 3412,
+      "locatedTerms": 20617
+    },
+    "beforeSha256": "9b45d3e322d675963ec26ba9de6fe7507bb6ea9a1e99013dd705738f23bff61b",
+    "afterSha256": "9b45d3e322d675963ec26ba9de6fe7507bb6ea9a1e99013dd705738f23bff61b"
+  },
+  "wholeSource": {
+    "output": {
+      "sha256": "53a70dffabc420ae52bbe3ba7ad569d7db5239993d08c42896eda92cc7eb7071",
+      "bytes": 337202666,
+      "definitions": 2894
+    },
+    "next": 20906,
+    "removedFreshVisits": 28752,
+    "fullFreshVisits": 2170908,
+    "fractionRemoved": 0.013244227760918473
+  },
+  "operations": {
+    "full": {
+      "graphCounts": {
+        "norm_join": 45486,
+        "norm_join_copies": 21193,
+        "f_alias_term": 105542,
+        "f_scope": 86588,
+        "f_pattern_sub": 1464231,
+        "f_pattern_value": 4891
+      },
+      "freshCounts": {
+        "ffw_walk": 2170908
+      },
+      "rawCensus": {
+        "objects": 8646973,
+        "terms": 2171037,
+        "definitions": 3015,
+        "binders": 20905,
+        "locatedTerms": 150863
+      },
+      "outputCensus": {
+        "objects": 8648663,
+        "terms": 2171045,
+        "definitions": 3015,
+        "binders": 20905,
+        "locatedTerms": 150871
+      },
+      "maxRssKiB": 2505512
+    },
+    "split": {
+      "graphCounts": {
+        "norm_join": 45486,
+        "norm_join_copies": 21193,
+        "f_alias_term": 105542,
+        "f_scope": 86588,
+        "f_pattern_sub": 1464231,
+        "f_pattern_value": 4891
+      },
+      "freshCounts": {
+        "ffw_walk": 2142156
+      },
+      "rawCensus": {
+        "objects": 8646973,
+        "terms": 2171037,
+        "definitions": 3015,
+        "binders": 20905,
+        "locatedTerms": 150863
+      },
+      "outputCensus": {
+        "objects": 8648663,
+        "terms": 2171045,
+        "definitions": 3015,
+        "binders": 20905,
+        "locatedTerms": 150871
+      },
+      "maxRssKiB": 2562072
+    }
+  },
+  "artifacts": [
+    {
+      "file": "design/phase16/checker-base-prefix-proof.md",
+      "sha256": "3fce59fd3289b48e7773a355d776975b2c39bb374f5d0fe8a813c5dec5f3e262",
+      "bytes": 4632
+    },
+    {
+      "file": "design/phase16/checker-base-prefix-serial.md",
+      "sha256": "611e2c4920fac6900cdc4abdcd916888c2b64de88af2b9fd4b95d3920d2c3da8",
+      "bytes": 1686
+    },
+    {
+      "file": "selfhost/build/phase16/checker-base-prefix-source-03/manifest.json",
+      "sha256": "9451906c80c1b50d7c281010d4e9b182c437795107f0134fd68dac474a2f59f9",
+      "bytes": 9212
+    },
+    {
+      "file": "selfhost/build/phase16/checker-base-prefix-build-03/build.json",
+      "sha256": "2589dfb40f0dd48db60c507772e049159c45ec6dccf3135681dc9b8a53ec8990",
+      "bytes": 4145
+    },
+    {
+      "file": "selfhost/build/phase16/checker-base-prefix-build-03/validation-001/report.json",
+      "sha256": "4782be357544f1cce85ac6e2a05258531841c0106adc7575e2e056ad204108d2",
+      "bytes": 9548
+    },
+    {
+      "file": "selfhost/build/phase16/checker-base-prefix-proof-03/report.json",
+      "sha256": "453ae958eb254a04abf1e5ecdea2758ba6b637d8fd751f4c4a93336d3fdbccbb",
+      "bytes": 27825
+    },
+    {
+      "file": "selfhost/build/phase16/checker-base-prefix-serial-01/report.json",
+      "sha256": "e111ad66951177c35fd5243d02aa489e0de68ea8a5b0f5fd3bcf2a2c09780365",
+      "bytes": 23715
+    },
+    {
+      "file": "selfhost/build/phase16/checker-base-prefix-proof-04/termination.json",
+      "sha256": "71ebc4b99532bba9b364285c461455ed4615b1d0aaa57e6ae1f22348b650acf8",
+      "bytes": 819
+    },
+    {
+      "file": "implementation/phase12/normalizer.md",
+      "sha256": "aaaaf4429bb4fadc187ea431dafe9def3373aedcd05da614c9a478f24e4967c4",
+      "bytes": 18592
+    },
+    {
+      "file": "selfhost/build/phase12/normalizer-prefix-replay-01/report.json",
+      "sha256": "1037f61a2abd652607bd8c908ebade8f3be7a32c7718087d911ca22641433324",
+      "bytes": 743171
+    },
+    {
+      "file": "selfhost/build/phase16/checker-base-prefix-proof-01/prospective-plan.md",
+      "sha256": "b78b1a429e2e174bd0d0999fef5c24d466dde7b003c8d6b2dee8379043b23b04",
+      "bytes": 3603
+    },
+    {
+      "file": "selfhost/build/phase16/checker-base-prefix-proof-01/plan-history.json",
+      "sha256": "7fc78a200ad2a97e9e3208dbc0a59861f474eebf3535adecb4656d10b41a5cc0",
+      "bytes": 711
+    },
+    {
+      "file": "selfhost/build/phase16/checker-base-prefix-proof-02/prospective-plan.md",
+      "sha256": "b78b1a429e2e174bd0d0999fef5c24d466dde7b003c8d6b2dee8379043b23b04",
+      "bytes": 3603
+    },
+    {
+      "file": "selfhost/build/phase16/checker-base-prefix-proof-02/plan-history.json",
+      "sha256": "b5630286af97979e6495e293e26ad3b57454579991214928f48141b8188d8c29",
+      "bytes": 711
+    },
+    {
+      "file": "selfhost/build/phase16/checker-base-prefix-proof-03/prospective-plan.md",
+      "sha256": "702eaa6910676095ba69176c4b6c677ca6be489623d31d87d7b3e927bdca75ca",
+      "bytes": 4203
+    },
+    {
+      "file": "selfhost/build/phase16/checker-base-prefix-proof-03/plan-history.json",
+      "sha256": "a58f7fc9d9d5d492309a712aba0bc11664dcbedfbf83b307204e271c2db2b1d4",
+      "bytes": 711
+    }
+  ],
+  "retainedFailures": [
+    {
+      "attempt": "checker-base-prefix-build-01",
+      "reason": "Duplicate existing f_path_dir export."
+    },
+    {
+      "attempt": "checker-base-prefix-proof-01",
+      "reason": "Probe used FFreshDefs.book rather than defs."
+    },
+    {
+      "attempt": "checker-base-prefix-proof-02",
+      "reason": "Indented JSON of deep linked lists exceeded string limit; duplicate-def rejected before graph."
+    },
+    {
+      "attempt": "checker-base-prefix-proof-04",
+      "reason": "Simultaneously retaining multiple whole compiler books approached4GiB; terminated143 and superseded with serial workers."
+    }
+  ],
+  "limits": [
+    "Complete finite/whole-source data equality is not a proof over all programs.",
+    "No normalizer fallback or production code changed. Phase12 matched-history resource boundary remains required before any future source optimization.",
+    "Operation counts are retained named-function entries, not complete allocation counts or speed measurements.",
+    "Alias/elaboration node expansion suggests compact literals and shared substitution; exact tag-level attribution has not yet been measured.",
+    "Earlier consumed plan preimages are explicitly retained under each attempt; the top-level design gained prospective addenda."
+  ]
+}
