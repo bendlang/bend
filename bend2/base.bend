@@ -273,13 +273,16 @@ def IO.within(-A: Type, ms: U32, act: IO(A)) -> IO(Maybe<&1, A>):
 # Runs act until it answers or would wait. Where act would wait before
 # starting an effect (a channel full or empty, a socket not ready, a
 # sleep), IO.poll waits up to ms for it to be ready, then answers
-# Wait{rest}: rest is act from there on, that effect not started.
-# IO.resume(rest) runs it as act would have, IO.poll(ms, IO.resume(rest))
-# polls it again, and IO.cancel(rest) answers the effect cancelled and goes
-# on: a send False, a recv None, a sleep at once, a socket's effect
-# (socket, Fail{ECANCELED}). An effect that already started (a send half
-# written, a connect, work on the IO threads) runs to its end, as does one
-# that declares no wait (see effs/io_poll.c).
+# Wait{rest}: rest is act from there on, that effect not started, so a
+# dropped rest never sends its value nor takes one. IO.poll(0, act) never
+# waits: such an effect answers Wait at once, with no timer (a deadline
+# past 0 waits on the loop's clock). IO.resume(rest) runs rest as act
+# would have, IO.poll(ms, IO.resume(rest)) polls it again, and
+# IO.cancel(rest) answers the effect cancelled and goes on: a send False,
+# a recv None, a sleep at once, a socket's effect (socket,
+# Fail{ECANCELED}). An effect that already started (a send half written,
+# a connect, work on the IO threads) or that declares no wait (see
+# effs/io_poll.c) runs to its end, past ms: IO.poll answers once it does.
 def IO.poll(-A: Type, ms: U32, act: IO(A)) -> IO(IO.Step<A>):
   IO.bind(Or(A, IO.Rest(A)), IO.Step<A>, IO.poll.run(A, ms, act),
     IO.poll.step(A))
