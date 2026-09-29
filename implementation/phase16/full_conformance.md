@@ -258,3 +258,37 @@ no new complete-workflow speedup follows from these operation counts.
 The installed compiler remains Phase15. Local-law parameter diagnostics, dotted
 alias/local binding, imported declaration context, literal identity and checker
 chronology remain active, along with final history/performance/release gates.
+
+
+## Seventh wave: lexical resolution and local law order
+
+`wave7-build-01`, API `fa08f98caf401f717ab69a71199f22bd7c4295c73d2a4694d4540b24da71bb0f`,
+passes `wave7-frontend-01`: **459→18** exact differences, 441 new exact matches
+and no losses versus Phase15; **24→18**, six new and none lost versus wave6.
+All 2,996 primitive outcomes remain exact. The remaining 18 are 16 parser-origin
+rows (eight fixtures in both lanes) and two checker-only rows. The local law
+parameter fixes close four rows, and lambda binder diagnostics close two.
+
+The [lexical alias correction](alias_lexical_bindings.md) also fixes valid programs
+outside the main corpus: lexical bindings take precedence over imported aliases.
+The integrated 159-observation selection has 157 exact matches; only the two
+annotated imported-law wording differences remain. All16 direct lexical/alias
+controls pass on the integrated image. The separate [qualified-pattern fix](qualified_pattern_bindings.md)
+closes six erroneous acceptances in its focused60-observation suite; it is not
+part of wave7 yet. The [integration plan](../../design/phase16/wave7-integration.md)
+and immutable source manifest record complete ownership and overlap checks.
+
+Source is **15,807 physical / 13,479 nonblank lines / 547,961 bytes** in59 modules,
+1,590 definitions,776 laws and63 types. Wave7 adds48 physical lines to wave6,
+and519 versus Phase15. No net reduction or new timing result is claimed.
+Counts are in `wave7-source-counts-01.json`.
+
+The [literal census](checker-compact-literal-census.md) now attributes the loader
+expansion: string construction alone creates1,856,151 terms; strings, U32 and
+character literals account for roughly2M raw terms before copying. A compact
+literal representation is a much larger structural opportunity than Base-prefix
+reuse, but correctness and complete-workflow speed remain unmeasured. The
+[completion design](../../design/phase16/program-completion.md) addresses deferred
+TODO reporting separately from full live-instance chronology. Contextual module
+parsing, remaining first-error cases and all final promotion gates remain open.
+Production stays Phase15.

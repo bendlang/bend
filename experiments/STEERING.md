@@ -4,21 +4,23 @@ Phase16 is active under the [design](../design/phase16/full_conformance.md).
 The user authorizes continued exact conformance work with speed and simplicity
 constraints, including project evidence pushes. Baseline verification and the
 controlled unchanged-release matrix pass; current source remains Phase15.
-The accepted wave6 full gate reduces exact differences **459→24**, with
-435 new exact matches and no losses. All 2,996 primitive outcomes stay exact.
-It adds 24 matches over wave5: local declaration eligibility, import diagnostics
-and module-name rendering. The strengthened gate also protects every exact match from the
-preceding accepted checkpoint; all rejected integrations remain preserved.
+The accepted wave7 full gate reduces exact differences **459→18**, with
+441 new exact matches and no losses. All 2,996 primitive outcomes stay exact.
+It adds six matches over wave6: local law parameter order and lambda diagnostics.
+Alias resolution now respects lexical bindings, with paired positive witnesses.
+The strengthened gate protects every exact match from the preceding accepted
+checkpoint; all rejected integrations remain preserved.
 The first wave4 ordinary same-source measurement costs 11.88% more than Phase15.
 No Phase16 image is installed. Scan/copy/ASCII changes show no measured recovery;
 template membership indexing is flat and unselected. Diagnostic stage timing
 points toward loading and host range validation, with substantial baseline
 variation. The exact Base-prefix law passes, but removes only 1.32% of whole-source
-freshening visits; defer the cache change. The next investigation attributes
-expansion from roughly 105k alias-walk nodes to 2.17M elaborated terms.
-The maintained backend selection is now 41/41 exact.
-Boundary controls exposed an alias/local-binder resolution bug; it remains a
-separate semantic task. Delegated agents are available again. Preserve all
+freshening visits; defer the cache change. Literal builders account for roughly
+2M of the 2.17M elaborated terms. Compact literal representation is under staged
+implementation; no end-to-end speed gain has been measured for it.
+The maintained backend selection is 41/41 exact on wave6; changed images need
+their own final gates. Qualified pattern eligibility passes separate controls.
+Contextual module parsing and final completeness order are active. Preserve all
 75 unrelated Phase6 files; no older timed campaign is renewed.
 
 Phase15 is complete under its [design](../design/phase15/parser_conformance_and_speed.md).

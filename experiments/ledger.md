@@ -1104,3 +1104,20 @@ of actual-source freshening visits, so its cache change is deferred. The stronge
 lead is elaboration from roughly 105k parsed/alias nodes to 2.17M terms. Attribute
 literal expansion before changing representation. Keep exact memo/literal and
 same-history counterexamples as mandatory boundaries. Production stays Phase15.
+
+
+## Phase16 seventh full wave — 2026-09-29
+
+Wave7 passes the adjacent full gate at **18 exact differences**, six newly exact
+and none lost since wave6;441 newly exact versus Phase15. All2,996 primitive
+outcomes still agree. Lexical alias handling fixes a separately measured invalid
+rejection. Integrated controls are157/159 exact, with only the two known imported
+law wording gaps;16 direct alias controls pass. See the [report](../implementation/phase16/full_conformance.md).
+The separately checked qualified-pattern fix closes six erroneous acceptances
+and awaits integration. Production remains Phase15.
+
+The [literal census](../implementation/phase16/checker-compact-literal-census.md)
+finds about2M literal-construction terms within the2.17M raw source graph.
+Compact literal representation is now the principal performance experiment;
+operation counts do not establish an end-to-end speedup. Contextual module
+parsing and final program-completeness ordering proceed in isolated snapshots.
