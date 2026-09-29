@@ -1,0 +1,61 @@
+{
+  "kind": "phase15-evidence-preflight01-gate-failure",
+  "complete": true,
+  "pass": false,
+  "collectorExitCode": 0,
+  "captureAuthorizedByThisResult": false,
+  "reason": "One referenced historical derived Base cache was not an initial selection input, so the collector could not record its omission identity.",
+  "unresolvedGroupedReferences": [
+    {
+      "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase14/combined-01/snapshot/build/typed/cache/base-9136be92928eda4b3b8e9c99e4e35d62504a825b458ff237c514d4e99f21206b-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json",
+      "sha256": "5e9acce010e5bf3b13d49b646c88c10a47f13c7a2158c82c871aab44b4344720",
+      "status": "unresolved-repository-reference",
+      "observedIn": {
+        "selfhost/build/phase15/check-matrix-01/0-typescript.request.json": [
+          "/inputs/11/file",
+          "/inputs/11/canonicalPath"
+        ],
+        "selfhost/build/phase15/check-matrix-01/1-baseline.request.json": [
+          "/inputs/11/file",
+          "/inputs/11/canonicalPath"
+        ],
+        "selfhost/build/phase15/check-matrix-01/2-candidate.request.json": [
+          "/inputs/11/file",
+          "/inputs/11/canonicalPath"
+        ],
+        "selfhost/build/phase15/check-matrix-01/3-candidate.request.json": [
+          "/inputs/11/file",
+          "/inputs/11/canonicalPath"
+        ],
+        "selfhost/build/phase15/check-matrix-01/4-baseline.request.json": [
+          "/inputs/11/file",
+          "/inputs/11/canonicalPath"
+        ],
+        "selfhost/build/phase15/check-matrix-01/5-typescript.request.json": [
+          "/inputs/11/file",
+          "/inputs/11/canonicalPath"
+        ],
+        "selfhost/build/phase15/check-matrix-01/report.json": [
+          "/variants/baseline/cache/file",
+          "/variants/baseline/cache/canonicalPath",
+          "/inputs/11/file",
+          "/inputs/11/canonicalPath"
+        ],
+        "selfhost/build/phase15/speed-history-01/report.json": [
+          "/inputs/2383/file",
+          "/inputs/2383/canonicalPath"
+        ],
+        "selfhost/build/phase15/speed-profile-01/report.json": [
+          "/inputs/8/file",
+          "/inputs/8/canonicalPath"
+        ],
+        "selfhost/build/phase15/speed-profile-01/request.json": [
+          "/inputs/8/file",
+          "/inputs/8/canonicalPath"
+        ]
+      }
+    }
+  ],
+  "correction": "Add only this exact existing cache path to the initial selection under the unchanged identity-only derived-cache policy. Preserve original preflight manifest/logs/selection/collector; rerun with a fresh destination.",
+  "preflightFile": "implementation/phase15/evidence/preflight-01.json"
+}

@@ -1,0 +1,545 @@
+{
+  "kind": "phase15-evidence-publication",
+  "complete": true,
+  "pass": true,
+  "scope": "Original capsule capture and verification plus exact-manifest reviewed recovery and independent complete byte/mode check; no recapture or compiler validation claim.",
+  "freeze": {
+    "file": "implementation/phase15/evidence/root-freeze.json",
+    "sha256": "2276d56ba7feb731a225824a7f7c465a2f47407b028604e01efb521cbcba39a4",
+    "bytes": 3481
+  },
+  "initialFailedPublication": {
+    "file": "implementation/phase15/evidence/publication-01.json",
+    "sha256": "cfcc034b1ee03f23e9952100e303c41e10bed8bfe7283b648536ab95b33e7541",
+    "bytes": 3850
+  },
+  "initialFailurePreserved": "The initial materializer conservatively refused four in-tree parent-relative fixture symlinks before creating its destination; its report and logs remain unchanged.",
+  "capture": {
+    "pass": true,
+    "files": 17179,
+    "objects": 3715,
+    "externalCapsules": 11,
+    "archiveSha256": "0f9e37ef2f6a2116086757f4cfcc2d2d4300bd110461584eebdbb44565c52a80",
+    "archiveBytes": 24925020,
+    "scope": "Archive byte identity only; recorded failed experiments remain failures."
+  },
+  "verification": {
+    "pass": true,
+    "files": 17179,
+    "objects": 3715,
+    "externalCapsules": 11,
+    "archiveSha256": "0f9e37ef2f6a2116086757f4cfcc2d2d4300bd110461584eebdbb44565c52a80",
+    "archiveBytes": 24925020,
+    "scope": "Archive byte identity only; recorded failed experiments remain failures."
+  },
+  "materialization": {
+    "pass": true,
+    "recoveredFiles": 17179,
+    "destination": "/tmp/phase15-recovery-a383163b-02",
+    "links": [
+      {
+        "file": "selfhost/build/phase15/behavior-cycles-01/fixtures/alias-same-physical/sub/link.bend",
+        "target": "../leaf.bend",
+        "sha256": "c2d034805de52aedf5565c81b1ff6f98cff7d6487f6abb38af784a46bb7bb6c2",
+        "normalizedTarget": "selfhost/build/phase15/behavior-cycles-01/fixtures/alias-same-physical/leaf.bend",
+        "targetSha256": "9e57103ae5fcceb7dde0dd0dccb6f5ebbbfaf2536e49935d21c1375c4935b11b",
+        "reviewedParentRelative": true
+      },
+      {
+        "file": "selfhost/build/phase15/behavior-cycles-02/fixtures/alias-same-physical/sub/link.bend",
+        "target": "../leaf.bend",
+        "sha256": "c2d034805de52aedf5565c81b1ff6f98cff7d6487f6abb38af784a46bb7bb6c2",
+        "normalizedTarget": "selfhost/build/phase15/behavior-cycles-02/fixtures/alias-same-physical/leaf.bend",
+        "targetSha256": "9e57103ae5fcceb7dde0dd0dccb6f5ebbbfaf2536e49935d21c1375c4935b11b",
+        "reviewedParentRelative": true
+      },
+      {
+        "file": "selfhost/build/phase15/behavior-cycles-02/fixtures/cycle-canonical/sub/link.bend",
+        "target": "../a.bend",
+        "sha256": "3b1f6cb9c325816f81340c03aff55494a70c021f5eebdee82a22116f1b51d52d",
+        "normalizedTarget": "selfhost/build/phase15/behavior-cycles-02/fixtures/cycle-canonical/a.bend",
+        "targetSha256": "323c0c33a992694754236f4cc81ef68d60eead2d8137091b45acd25f3d0de7ed",
+        "reviewedParentRelative": true
+      },
+      {
+        "file": "selfhost/build/phase15/behavior-cycles-02/fixtures/diamond/sub/link.bend",
+        "target": "../leaf.bend",
+        "sha256": "c2d034805de52aedf5565c81b1ff6f98cff7d6487f6abb38af784a46bb7bb6c2",
+        "normalizedTarget": "selfhost/build/phase15/behavior-cycles-02/fixtures/diamond/leaf.bend",
+        "targetSha256": "9e57103ae5fcceb7dde0dd0dccb6f5ebbbfaf2536e49935d21c1375c4935b11b",
+        "reviewedParentRelative": true
+      },
+      {
+        "file": "selfhost/build/phase15/behavior-host-03/leaf-link.bend",
+        "target": "leaf.bend",
+        "sha256": "f6f2cc66faf81e05accbc9b08a7defe2371aaacd8a4a84ff6344cc9df84393f1",
+        "normalizedTarget": "selfhost/build/phase15/behavior-host-03/leaf.bend",
+        "targetSha256": "9f91161f43433e49a6de6db680d79f60159f2e4ac9172621a12846428158440b",
+        "reviewedParentRelative": false
+      }
+    ]
+  },
+  "capsule": {
+    "directory": "implementation/phase15/evidence/capsule-01",
+    "manifest": {
+      "file": "implementation/phase15/evidence/capsule-01/manifest.json",
+      "sha256": "70b99f29a3e7adc5d5c31f2e324a79d9e93ed7a9e1e1d288220a82ecad384c26",
+      "bytes": 32106951
+    },
+    "archive": {
+      "file": "implementation/phase15/evidence/capsule-01/raw.tar.gz",
+      "sha256": "0f9e37ef2f6a2116086757f4cfcc2d2d4300bd110461584eebdbb44565c52a80",
+      "bytes": 24925020
+    },
+    "summary": {
+      "files": 17179,
+      "objects": 7105,
+      "logicalBytes": 432013747,
+      "uniqueBytes": 350695358,
+      "newArchiveObjects": 3715,
+      "newArchiveBytesBeforeCompression": 240985634,
+      "externalPrerequisites": 25,
+      "omittedFiles": 238,
+      "omittedBytes": 203516054,
+      "referenceStatuses": {
+        "captured-external-object": 163633,
+        "captured-object": 7952,
+        "external-prerequisite": 109,
+        "external-toolchain-identity": 206,
+        "omitted-derived-input": 432
+      },
+      "embeddedSourceReferences": 61
+    }
+  },
+  "reviewedRecovery": {
+    "file": "implementation/phase15/evidence/reviewed-recovery-02.json",
+    "sha256": "dc1c959347d6a350920de166ae2a5eb816e9d8d0872c7f65cca031459d383b8f",
+    "bytes": 4204
+  },
+  "recoveryCheck": {
+    "file": "implementation/phase15/evidence/recovery-02.json",
+    "sha256": "1933537410752fcb2d796dfc4ad80af574dc85a2f08483f72dd2e21896158fec",
+    "bytes": 802
+  },
+  "policyControls": [
+    {
+      "name": "exact reviewed links and ordinary fifth link",
+      "pass": true
+    },
+    {
+      "name": "absolute target",
+      "pass": true
+    },
+    {
+      "name": "escaping target",
+      "pass": true
+    },
+    {
+      "name": "changed allowlisted target",
+      "pass": true
+    },
+    {
+      "name": "unreviewed parent-relative link",
+      "pass": true
+    },
+    {
+      "name": "uncaptured target",
+      "pass": true
+    },
+    {
+      "name": "non-regular target",
+      "pass": true
+    },
+    {
+      "name": "selected symlink ancestor",
+      "pass": true
+    }
+  ],
+  "recoveryCompanion": {
+    "file": "implementation/phase15/evidence/recover-reviewed-symlinks.py",
+    "sha256": "a8c735156a2fd7d1b9b2cbe883d055a631b00dfe2e84362b983f7348a9e8c43a",
+    "bytes": 7499
+  },
+  "independentRecoveryTool": {
+    "file": "implementation/phase15/evidence/recovery-check.py",
+    "sha256": "082d9d58bcccd853947bf929115755e3e6939ad8ce3b9bd33a9b97f20a2fff0b",
+    "bytes": 1802
+  },
+  "payloadReview": {
+    "file": "implementation/phase15/evidence/payload-review.json",
+    "sha256": "f2cf45588a194c4fdb3cbd12d55abefffd85ec8568e603a4b85a00c5900b8703",
+    "bytes": 6276
+  },
+  "recoveryLogs": [
+    {
+      "file": "implementation/phase15/evidence/reviewed-recovery-02.stdout",
+      "sha256": "9f943e194e0890fc8aabf0c3b939b36aace8a04f4f706f4b2182b0ccacce8086",
+      "bytes": 58
+    },
+    {
+      "file": "implementation/phase15/evidence/reviewed-recovery-02.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "implementation/phase15/evidence/recovery-02.stdout",
+      "sha256": "9f943e194e0890fc8aabf0c3b939b36aace8a04f4f706f4b2182b0ccacce8086",
+      "bytes": 58
+    },
+    {
+      "file": "implementation/phase15/evidence/recovery-02.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "externalCapsules": [
+    {
+      "manifest": "implementation/phase8/conformance-harness-evidence/manifest.json",
+      "manifestSha256": "7f366a89d10282ad80ae13b6c7ae863909f9d0cc384286957caf20082198e5e1",
+      "archive": "implementation/phase8/conformance-harness-evidence/raw.tar.gz",
+      "archiveSha256": "b011854d9869ee6db4262668c0523a36ab84d253c13b901b57a39bc53ba42422",
+      "archiveBytes": 2258668,
+      "objects": 227
+    },
+    {
+      "manifest": "implementation/phase8/selected-js-evidence/manifest.json",
+      "manifestSha256": "7c07e21aeefa3b6b7f11c90c9a31782f599b60db4c3686ab711b4df84fb9cbeb",
+      "archive": "implementation/phase8/selected-js-evidence/raw.tar.gz",
+      "archiveSha256": "979c49ea277715353669c4ceb5da0373c97990ea6e071a54669958ae8bf243cb",
+      "archiveBytes": 6315169,
+      "objects": 1685
+    },
+    {
+      "manifest": "implementation/phase8/selected-js-evidence/release07-manifest.json",
+      "manifestSha256": "84fa6fa420a2c57f0a8e1dd0e27d226ac5b1f0aa54d032f59962d3caf7bce3d2",
+      "archive": "implementation/phase8/selected-js-evidence/release07.tar.gz",
+      "archiveSha256": "edb92c370acecb8a4d5bec53f9ddc39679f74917b596530fc2d0f418b9fe02df",
+      "archiveBytes": 852682,
+      "objects": 187
+    },
+    {
+      "manifest": "implementation/phase8/migration-evidence/capsule-01/manifest.json",
+      "manifestSha256": "ae41fbe1f173b1e01815c146cb874dfbd9a813e6986b42aed1ab34f8732ac886",
+      "archive": "implementation/phase8/migration-evidence/capsule-01/raw.tar.gz",
+      "archiveSha256": "7b4c8b7d3841b42508b4283446ec3858ea9b8ef29b26f19e19d66b7f2487713c",
+      "archiveBytes": 21314537,
+      "objects": 10470
+    },
+    {
+      "manifest": "implementation/phase8/migration-evidence/capsule-02/manifest.json",
+      "manifestSha256": "d69330ece69432a9385fbafee431e5bac44df751ed28f242d6e35746403d9725",
+      "archive": "implementation/phase8/migration-evidence/capsule-02/raw.tar.gz",
+      "archiveSha256": "acec1dfe5b20b49451c086e880da70ab0fcc88bf8a9ff908cc4aa4e98b201551",
+      "archiveBytes": 32836,
+      "objects": 16
+    },
+    {
+      "manifest": "implementation/phase9/checker-evidence/capsule-01/manifest.json",
+      "manifestSha256": "8350c3d730182bafb4fecf98e562b32b548f43c6de4da616b61c5d69bb135731",
+      "archive": "implementation/phase9/checker-evidence/capsule-01/raw.tar.gz",
+      "archiveSha256": "1fe756502ba33038b436c124946066393dd617fc9b6f78bd028507fab1899d76",
+      "archiveBytes": 51300565,
+      "objects": 4572
+    },
+    {
+      "manifest": "implementation/phase10/evidence/capsule-01/manifest.json",
+      "manifestSha256": "d92eef03e88e1ebecd7d1096296aad5f468d7ccdc61374798dd1068b5d179c82",
+      "archive": "implementation/phase10/evidence/capsule-01/raw.tar.gz",
+      "archiveSha256": "07befeada237b14e25911bde00710c02a4691f797d9ac12349f35c756222fd00",
+      "archiveBytes": 19252898,
+      "objects": 2171
+    },
+    {
+      "manifest": "implementation/phase11/evidence/capsule-01/manifest.json",
+      "manifestSha256": "6daea31338b89451a0e3ead48d44179301d46f1ce6e2f954c3012dba9d14f86c",
+      "archive": "implementation/phase11/evidence/capsule-01/raw.tar.gz",
+      "archiveSha256": "d2759a82bb13cf5a38b819acce9769fe529ce6cf57e4b81668a5ab6f2de1e099",
+      "archiveBytes": 23289650,
+      "objects": 2223
+    },
+    {
+      "manifest": "implementation/phase12/evidence/capsule-01/manifest.json",
+      "manifestSha256": "a62927bd40dfad4fb55c1c676baa7cddac091e6ed0905738e0c4e3d339688fb4",
+      "archive": "implementation/phase12/evidence/capsule-01/raw.tar.gz",
+      "archiveSha256": "7220c8dbc6a95eb0b5cf46a9cd6a0057f9fc79871eaed2826b2b58d4b5cf8cf7",
+      "archiveBytes": 40915372,
+      "objects": 9638
+    },
+    {
+      "manifest": "implementation/phase13/evidence/capsule-01/manifest.json",
+      "manifestSha256": "12f04435e3f17609a9ee0325b741ee9ab66314826527b2c6577e0518e21dca0d",
+      "archive": "implementation/phase13/evidence/capsule-01/raw.tar.gz",
+      "archiveSha256": "3c35cbc4013156f8b3644d1d778a81e3d85adf8f1b612fd112d63af77ba09248",
+      "archiveBytes": 29644657,
+      "objects": 2842
+    },
+    {
+      "manifest": "implementation/phase14/evidence/capsule-01/manifest.json",
+      "manifestSha256": "1d8292ac064d564167ff5ca3bc032f06c20eeef385898e8007c27d718203d030",
+      "archive": "implementation/phase14/evidence/capsule-01/raw.tar.gz",
+      "archiveSha256": "aab8a2f6ae556a8a5131db3e5c4870dff889e7ea5c42cb78f03ee478909768ad",
+      "archiveBytes": 24815975,
+      "objects": 3984
+    }
+  ],
+  "unresolvedRepositoryReferences": [],
+  "remainingHistoricalExternalReferences": [
+    {
+      "path": "/workspace/scratch/4de8c3a3f107/bend2-selfhost/build/typed/lexical-selfhost/bootstrap-api.mjs",
+      "sha256": "0e3c00f419b7e9fc4565ca52e3b14864121f48351ffe8dc7108a93a43a3d2115",
+      "status": "external-prerequisite",
+      "observedIn": {
+        "implementation/phase15/evidence/preflight-01.json": [
+          "/references/2209/path"
+        ],
+        "selfhost/build/phase15/behavior-build-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase15/behavior-build-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase15/behavior-build-03/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase15/behavior-build-03/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase15/behavior-source-01/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase15/behavior-source-01/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase15/behavior-source-02/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase15/behavior-source-02/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase15/behavior-source-03/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase15/behavior-source-03/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase15/carets-build-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase15/carets-build-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase15/carets-prepare-01/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase15/carets-prepare-01/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase15/combined-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase15/combined-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase15/combined-02/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase15/combined-02/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase15/conformance-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase15/conformance-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase15/conformance-02/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase15/conformance-02/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase15/integration-history-01/baseline/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase15/integration-history-01/baseline/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase15/integration-history-01/candidate/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase15/integration-history-01/candidate/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase15/integration-source-01/combined/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase15/integration-source-01/combined/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase15/integration-source-01/conformance/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase15/integration-source-01/conformance/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase15/integration-source-02/combined/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase15/integration-source-02/combined/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase15/integration-source-02/conformance/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase15/integration-source-02/conformance/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase15/integration-source-03/combined/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase15/integration-source-03/combined/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase15/integration-source-03/conformance/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase15/integration-source-03/conformance/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase15/speed-checked-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase15/speed-checked-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase15/speed-history-01/baseline/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase15/speed-history-01/baseline/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase15/speed-history-01/candidate/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase15/speed-history-01/candidate/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase15/speed-source-01/project/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase15/speed-source-01/project/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase12/integrated-03/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase12/integrated-03/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase14/combined-01/snapshot/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase14/combined-01/snapshot/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ],
+        "selfhost/build/phase14/integration-source-01/combined/src/back/js/experiments/constructor-provenance.json": [
+          "/baseSmoke/0/apiPath",
+          "/baseSmoke/1/apiPath",
+          "/baseSmoke/2/apiPath"
+        ],
+        "selfhost/build/phase14/integration-source-01/combined/src/back/js/experiments/deep-closures-report.json": [
+          "/actualSource/0/apiPath"
+        ]
+      }
+    }
+  ],
+  "postCaptureEvidenceOnlyAmendment": {
+    "originalReadme": {
+      "file": "implementation/phase15/evidence/README-captured.md",
+      "sha256": "08de8e3b06c00096535c7e02e61cf099fed358adae38a5d1c4ba88c4718d07c1",
+      "bytes": 7447
+    },
+    "liveReadme": {
+      "file": "implementation/phase15/evidence/README.md",
+      "sha256": "4d776bc1c3e4860b205c79ec7810a1ed5249e8ea25150ad49d4259d87f4c13bf",
+      "bytes": 7898
+    },
+    "recoveryInstructions": {
+      "file": "implementation/phase15/evidence/RECOVERY.md",
+      "sha256": "3496273e152488d3a1ff7e24f6d49241015b1d78024c13daa8d33399d942738b",
+      "bytes": 3468
+    },
+    "note": "The capsule retains original README wording. Only a live README header and separately published recovery tools/records were added after capture; compiler producer files remain frozen."
+  },
+  "frozenProducerInputsVerified": true,
+  "limitations": [
+    "All eleven exact prerequisite capsules and separately tracked Phase9 profile gzip remain required.",
+    "Node, Clang, headers and host libraries remain external prerequisites; historical replay paths need adaptation.",
+    "Derived Base caches and unrelated Phase6 workspace/source-copy bytes are omitted with identities/reasons.",
+    "The unavailable historical lexical-selfhost API is context only, not a Phase15 consumed compiler.",
+    "Recovery requires the separately published exact-capsule companion; the inherited generic materializer deliberately refuses the four reviewed parent-relative links."
+  ],
+  "completionTool": {
+    "file": "implementation/phase15/evidence/complete-publication.py",
+    "sha256": "06087f1d6829399f4fb67388c07479429c0ef360f9bf63d6290b86a8807f00dc",
+    "bytes": 6077
+  }
+}

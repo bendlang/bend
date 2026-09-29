@@ -1,0 +1,73 @@
+{
+  "kind": "phase15-root-publication-freeze",
+  "rootExplicitFreeze": true,
+  "captureAuthorized": true,
+  "frozenAt": "2026-09-29T00:42:00.184362+00:00",
+  "head": "a383163b821e38510967849fdb791ff914031b62",
+  "selectedAttempt": "selfhost/build/phase15/combined-02",
+  "selectedApiSha256": "b8d658c564226a52764a435df86059aa3cea6b0c428bbde5341a62c2253c2e2d",
+  "installedRelease": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/release.json",
+    "sha256": "b1cd62f616fde85183fdf3504e038e368d9e4d041fdf2cb842f7675903c01b65",
+    "bytes": 20907
+  },
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase15/final-owned-state-audit.json",
+      "sha256": "861187aff87c1ea250daf7fa21d66153ea2f9753af6c51ed6399eaf70e460c77",
+      "bytes": 14892
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase15/parser_conformance_and_speed.md",
+      "sha256": "2fc6a849ebcf27b04e29d173c911ff3f1e1be2f2ae6040c7f1f28c8f57a9e0cf",
+      "bytes": 13354
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase15/parser-load.md",
+      "sha256": "76e306b598fc3f90542b50f2c9b43f47aa97a74cc1bb78b2ad7d648c0733055e",
+      "bytes": 10053
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase15/parser-carets.md",
+      "sha256": "761d86cf0e585d79efcdc5bca839f7a0ae114202d2102ed46428c29c9222bbf6",
+      "bytes": 6597
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase15/checker-speed.md",
+      "sha256": "ed3a96d541e97d474b67368e939f01aed6631e65881120823ec8d2dadf9adb04",
+      "bytes": 10161
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase15/exact-differences.md",
+      "sha256": "92285e01373d2cb2e88e883b551dfea5168eca8a8b2e8545fa4d4798d466c8ca",
+      "bytes": 3585
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase15/exact-differences.json",
+      "sha256": "a916f3748b854a0e1939bc326c9faaa9b6544877572dadf54319b83ca037bb91",
+      "bytes": 184629
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase15/integration-review.md",
+      "sha256": "d1f74b9bcb104272252cebf2ccb6a656c706b3d8833294d577cb9bc2f492a52f",
+      "bytes": 5055
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase15/integration-validation.md",
+      "sha256": "878c01f2bdaf070743ccfe6af3b6d73e53069715987507f8d3fc93b25d54930f",
+      "bytes": 5700
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase15/release-validation.md",
+      "sha256": "31071ff53535b7a3aee3b8b8c18ff264dcacd5324eed1d5aea10389107b108fb",
+      "bytes": 4493
+    }
+  ],
+  "producerClosure": {
+    "root": "All builds, full frontend, final timing, promotion, verification and documentation finished.",
+    "phase15_behavior": "All behavior/cycle/attribution tools and reports frozen; no jobs.",
+    "phase15_speed": "All speed/history/backend tools and reports frozen; final review done; no jobs.",
+    "phase15_carets": "All caret/component/helper/release smoke jobs closed; reports frozen. Only evidence preparation/publication may continue."
+  },
+  "scope": "Freeze compiler source, tests, reports and all experimental producers. Evidence preparation, exact preflight corrections, archive verification/recovery, payload review, git publication and read-only audits remain authorized. No captured producer file may change."
+}

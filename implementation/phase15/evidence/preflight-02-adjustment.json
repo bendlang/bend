@@ -1,0 +1,11 @@
+{
+  "kind": "phase15-valid-preflight-payload-efficiency-adjustment",
+  "complete": true,
+  "pass": true,
+  "preflight": "implementation/phase15/evidence/preflight-02.json",
+  "unresolvedReferences": 0,
+  "status": "Valid preflight retained unchanged; superseded only to avoid duplicating the already required separate54.8MBprofilegzip.",
+  "rootAuthorizedExactExclusion": "implementation/phase9/profile-evidence/baseline-01/checking.cpuprofile.gz",
+  "externalPrerequisiteRetained": true,
+  "reason": "The failedpreflight01 JSON itself contains externalPrerequisites identities; the inherited reference walker consequently discovered the external profile as a repository file and embedded it. An exact reviewed omission retains its identity and separately tracked dependency."
+}

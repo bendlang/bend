@@ -1,0 +1,130 @@
+{
+  "kind": "phase15-evidence-publication-payload-review",
+  "complete": true,
+  "pass": true,
+  "reviewedAt": "2026-09-29T00:54:05.073233+00:00",
+  "archive": {
+    "file": "implementation/phase15/evidence/capsule-01/raw.tar.gz",
+    "bytes": 24925020,
+    "sha256": "0f9e37ef2f6a2116086757f4cfcc2d2d4300bd110461584eebdbb44565c52a80"
+  },
+  "manifest": {
+    "file": "implementation/phase15/evidence/capsule-01/manifest.json",
+    "bytes": 32106951,
+    "sha256": "70b99f29a3e7adc5d5c31f2e324a79d9e93ed7a9e1e1d288220a82ecad384c26"
+  },
+  "authorizedDestination": {
+    "repository": "https://github.com/rom1504/bend",
+    "branch": "selfhost/bootstrap"
+  },
+  "scope": "Read-only review of the closed Phase15 evidence archive, every new archive object, and complete manifest logical paths. No captured file, archive, compiler or experiment was modified. Review outputs are explicitly outside capture selection.",
+  "payload": {
+    "logicalFiles": 17179,
+    "newLogicalFiles": 4275,
+    "newObjects": 3715,
+    "newObjectBytes": 240985634,
+    "projectRelativePathsOnly": true,
+    "unexpectedArchiveMembers": 0,
+    "unsafeOrPrivateLogicalPaths": [],
+    "credentialLikeFilenames": [],
+    "expectedContent": "Compiler/source snapshots, pinned fixtures, checked/generated artifacts, experiment tools, profiles, command logs, validation observations and project documentation; prior published capsules remain separate dependencies."
+  },
+  "unrelatedPhase6": {
+    "sourceIdentity": {
+      "file": "selfhost/build/phase15/start-state.json",
+      "bytes": 36659,
+      "sha256": "71c618b6f657424e7787b6f6ac609f1c5d9ac275e2b0e7d2312696d477ddd9d4"
+    },
+    "protectedFiles": 75,
+    "protectedPathsInPayload": [],
+    "all75RecordedAsOmittedIdentities": true,
+    "protectedByteHashesInNewObjects": [],
+    "incidentalCopyPrefixesOmitted": {
+      "selfhost/build/phase15/behavior-source-01/project/tools/performance/phase6/": 33,
+      "selfhost/build/phase15/behavior-source-02/project/tools/performance/phase6/": 33,
+      "selfhost/build/phase15/behavior-source-03/project/tools/performance/phase6/": 33
+    }
+  },
+  "symlinks": {
+    "count": 5,
+    "allBoundToCapturedRegularFiles": true,
+    "rows": [
+      {
+        "file": "selfhost/build/phase15/behavior-cycles-01/fixtures/alias-same-physical/sub/link.bend",
+        "target": "../leaf.bend",
+        "resolvedFile": "selfhost/build/phase15/behavior-cycles-01/fixtures/alias-same-physical/leaf.bend",
+        "resolvedSha256": "9e57103ae5fcceb7dde0dd0dccb6f5ebbbfaf2536e49935d21c1375c4935b11b",
+        "withinRepository": true,
+        "targetIsCapturedRegularFile": true
+      },
+      {
+        "file": "selfhost/build/phase15/behavior-cycles-02/fixtures/alias-same-physical/sub/link.bend",
+        "target": "../leaf.bend",
+        "resolvedFile": "selfhost/build/phase15/behavior-cycles-02/fixtures/alias-same-physical/leaf.bend",
+        "resolvedSha256": "9e57103ae5fcceb7dde0dd0dccb6f5ebbbfaf2536e49935d21c1375c4935b11b",
+        "withinRepository": true,
+        "targetIsCapturedRegularFile": true
+      },
+      {
+        "file": "selfhost/build/phase15/behavior-cycles-02/fixtures/cycle-canonical/sub/link.bend",
+        "target": "../a.bend",
+        "resolvedFile": "selfhost/build/phase15/behavior-cycles-02/fixtures/cycle-canonical/a.bend",
+        "resolvedSha256": "323c0c33a992694754236f4cc81ef68d60eead2d8137091b45acd25f3d0de7ed",
+        "withinRepository": true,
+        "targetIsCapturedRegularFile": true
+      },
+      {
+        "file": "selfhost/build/phase15/behavior-cycles-02/fixtures/diamond/sub/link.bend",
+        "target": "../leaf.bend",
+        "resolvedFile": "selfhost/build/phase15/behavior-cycles-02/fixtures/diamond/leaf.bend",
+        "resolvedSha256": "9e57103ae5fcceb7dde0dd0dccb6f5ebbbfaf2536e49935d21c1375c4935b11b",
+        "withinRepository": true,
+        "targetIsCapturedRegularFile": true
+      },
+      {
+        "file": "selfhost/build/phase15/behavior-host-03/leaf-link.bend",
+        "target": "leaf.bend",
+        "resolvedFile": "selfhost/build/phase15/behavior-host-03/leaf.bend",
+        "resolvedSha256": "9f91161f43433e49a6de6db680d79f60159f2e4ac9172621a12846428158440b",
+        "withinRepository": true,
+        "targetIsCapturedRegularFile": true
+      }
+    ],
+    "note": "Four safe fixture targets contain a parent component. Lexical normalization stays inside the repository and points directly to a manifest-bound regular file. The historical recovery guard rejects parent components generically; an exact reviewed recovery path is required, without changing this archive."
+  },
+  "separateHistoricalProfile": {
+    "file": "implementation/phase9/profile-evidence/baseline-01/checking.cpuprofile.gz",
+    "bytes": 54791942,
+    "sha256": "89963a067d05c57e2100262e34aaa704f55ee688ba7aa4c23f6d2d11ed490038",
+    "externalPrerequisiteBound": true,
+    "liveBytesMatchBoundIdentity": true,
+    "notDuplicatedInArchive": true,
+    "phase15ProfilesRemainCaptured": [
+      "selfhost/build/phase15/speed-profile-01/checking.cpuprofile"
+    ]
+  },
+  "heuristicContentScan": {
+    "scannedNewObjects": 3715,
+    "patterns": [
+      "private-key-pem",
+      "github-personal-token",
+      "aws-access-key",
+      "google-api-key",
+      "slack-token",
+      "openai-style-key",
+      "credential-home-reference"
+    ],
+    "findings": [],
+    "matchingSecretBytesDisclosed": false,
+    "manifestMetadataScanned": true,
+    "manifestMetadataBytes": 32106951,
+    "manifestFindings": []
+  },
+  "recoveryStatusAtReview": "Capsule capture/verification closed; full materialization requires the separately reviewed safe fixture-symlink companion. This payload review does not mark incomplete recovery as passed.",
+  "limitations": [
+    "Pattern scanning is not a proof that arbitrary encoded or unknown secrets are absent.",
+    "Previously published prerequisite archive payloads were not rescanned; their bound identities and logical references remain in the manifest.",
+    "Absolute repository, temporary-work and external Node/Clang/toolchain paths appear in expected provenance; no private home file is included as a payload entry.",
+    "Publication/recovery verification and compiler correctness are separate from this payload-scope review."
+  ]
+}

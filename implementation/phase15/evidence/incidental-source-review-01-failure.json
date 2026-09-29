@@ -1,0 +1,11 @@
+{
+  "kind": "phase15-incidental-source-read-failure",
+  "complete": false,
+  "pass": false,
+  "operation": "Read-only recursive pathlib.rglob of Phase15 JSON reports during active full frontend probes; source project file counts and absence of snapshot Phase6 directories were read first.",
+  "error": "FileNotFoundError: [Errno 2] No such file or directory: 'selfhost/build/phase15/frontend-01/candidate.json.artifacts/2396'",
+  "cause": "The live conformance harness removed a transient fixture artifact directory during the recursive read.",
+  "mutationBeforeFailure": false,
+  "compilerOrArchiveWork": false,
+  "correction": "The retained incidental-source-review.py uses stable os.walk input and prunes project trees, transient .artifacts trees and derived caches; the resulting scoped audit is incidental-source-review.json. Root freeze/preflight remains required."
+}

@@ -1,0 +1,19 @@
+{
+  "files": 17178,
+  "objects": 7104,
+  "logicalBytes": 486762836,
+  "uniqueBytes": 405444447,
+  "newArchiveObjects": 3714,
+  "newArchiveBytesBeforeCompression": 295734723,
+  "externalPrerequisites": 25,
+  "omittedFiles": 237,
+  "omittedBytes": 148724112,
+  "referenceStatuses": {
+    "captured-external-object": 163633,
+    "captured-object": 7954,
+    "external-prerequisite": 109,
+    "external-toolchain-identity": 204,
+    "omitted-derived-input": 432
+  },
+  "embeddedSourceReferences": 61
+}

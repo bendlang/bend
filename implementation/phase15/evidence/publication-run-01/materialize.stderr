@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/home/ai/bend2/build/publish/bend/implementation/phase15/evidence/collect.py", line 96, in <module>
+    legacy.main()
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 402, in main
+    result = materialize(args.input.resolve(), args.destination.resolve(), args.root.resolve())
+  File "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/collect.py", line 349, in materialize
+    raise ValueError('Unsafe recovery symlink; inspect its manifest entry manually: ' + row['file'])
+ValueError: Unsafe recovery symlink; inspect its manifest entry manually: selfhost/build/phase15/behavior-cycles-01/fixtures/alias-same-physical/sub/link.bend

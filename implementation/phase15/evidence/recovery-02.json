@@ -1,0 +1,22 @@
+{
+  "kind": "phase15-independent-recovery-check",
+  "complete": true,
+  "pass": true,
+  "scope": "Recovered byte identity, type, size, mode and symlink target; no compiler execution.",
+  "recoveredFiles": 17179,
+  "recoveredDirectory": "/tmp/phase15-recovery-a383163b-02",
+  "capsuleManifest": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase15/evidence/capsule-01/manifest.json",
+    "type": "file",
+    "bytes": 32106951,
+    "sha256": "70b99f29a3e7adc5d5c31f2e324a79d9e93ed7a9e1e1d288220a82ecad384c26",
+    "mode": 420
+  },
+  "tool": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase15/evidence/recovery-check.py",
+    "type": "file",
+    "bytes": 1802,
+    "sha256": "082d9d58bcccd853947bf929115755e3e6939ad8ce3b9bd33a9b97f20a2fff0b",
+    "mode": 420
+  }
+}

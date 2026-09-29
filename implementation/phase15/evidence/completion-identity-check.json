@@ -1,0 +1,14 @@
+{
+  "kind": "phase15-final-publication-binding-check",
+  "complete": true,
+  "pass": true,
+  "publication": {
+    "file": "implementation/phase15/evidence/publication.json",
+    "sha256": "9e23ecbaf4361e52e317ec9608c202b80dd795b3a2cb19d8a19fab9199efaebb"
+  },
+  "checkedFileBindings": 45,
+  "externalCapsules": 11,
+  "recoveredFiles": 17179,
+  "scope": "Every file/hash binding in final publication including symlink-target bytes, all prerequisite manifest/archive identities, and final publication bytes checked. No compiler execution or archive mutation.",
+  "initialReadOnlyAuditCorrection": "The first ad-hoc binding check followed symlinks and consequently compared target-file content with a link-target-string hash; it failed before writing a report. This corrected check hashes os.readlink bytes, matching the independently verified archive identity contract. No input or publication changed."
+}
