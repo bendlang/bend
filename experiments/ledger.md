@@ -1332,3 +1332,39 @@ Profile the newly installed checker before more speed changes; removing another
 semantic owner matters more than renaming helpers. Preserve this release separately
 from active parser work. Earlier automatic approval review still blocks remote
 pushes; commits are local, without a publication claim.
+
+
+## Phase20 declaration checkpoints — 2026-09-29
+
+The [usable release](../implementation/phase20/declaration-checkpoints-release.md)
+installs API `40c8f7f3`, genuine checked parent `2270973c`, on unchanged pin `b2111cf`.
+One declaration module adds17 lines/one function and corrects constructor admission,
+name/alias/duplicate/brace order, datatype whitespace, decorator diagnostics and
+first-element match grammar. No host, runtime, cache, semantic state or profile
+change. Independent review caught intermediate semicolon false acceptance; all
+original source02/03 evidence remains and source04 is the sole promoted candidate.
+
+Maintained36 is now36/36 exact; decorator24, constructor50, first-element54,
+whitespace44 and original supplied39/ordered-host43 are exact. New program12 and
+CLI42 pass. The entire main2996 vector is unchanged, still two do-block diagnostic
+differences. Broader196 improves128→136 exact with eight gains/zero lost, retaining
+60 strict differences and three failed verdicts. Its raw failure remains explicit.
+Source totals15,897 physical /13,543 nonblank lines,577,003 bytes,59 modules,
+1,660 definitions,719 laws and67 types. Overlapping suite counts are not summed.
+
+Exclusive six-row identical-source timing is neutral: preceding10.9727s,
+candidate10.9412s,TS3.4463s; same-window gap3.1839→3.1748×,process−0.29%,RSS+0.44%.
+The observed checked build+36-control loop took34.68s, a single concurrent run,
+not a controlled loop-speed measurement. No emission, kernel/GPU or fixedpoint claim.
+Two audit-schema mistakes and two promotion-schema mistakes are retained; neither
+promotion failure copied source. No compiler fixture or oracle was rewritten.
+
+### Updated frontier
+
+The [private Stage4 report](../implementation/phase19/saved-row-group-frontier.md)
+retains the actual-state, row/group and alpha-binding evidence; it is uninstalled.
+The unexecuted [Phase21 plan](../design/phase21/group-boundaries.md) isolates a small
+first-binder range hypothesis for three observations. Grouped-comma correctness
+needs preserved completed-group/error order; do not substitute a raw tag guard.
+Complete durable preservation and keep remaining60/main2 visible. Publication is
+still blocked by the earlier automatic approval review; local commits are not pushes.

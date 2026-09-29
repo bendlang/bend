@@ -1,15 +1,16 @@
 # Bend2 compiler port in Bend2
 
 Use the [compiler guide](../docs/BEND-IN-BEND.md) and
-[Phase19 release report](../implementation/phase19/live-checker-release.md).
-Ordinary checking now also validates and produces live template instances,
-removing the separate specialization walk. All 22 saved instance-order and six
-let-binding observations match pinned TypeScript. The exact-prefix proof repair
-is retained. Controlled same-source checking averages **11.06 s** versus
-**3.48 s** for TypeScript, a **3.17×** gap; the prior installed compiler takes
-11.57 s in that window. All 2,996 frontend results remain unchanged, including
-two diagnostic differences. Selected backend41, literal execution20 and all42
-installed/relocated CLI checks pass. Broader tests expose additional gaps.
+[Phase20 release report](../implementation/phase20/declaration-checkpoints-release.md).
+Constructor declarations now follow the pinned name/brace/whitespace boundaries;
+match heads and rows require a first term, and pending decorators report the
+correct import diagnostic. The shared live checker and exact-prefix repair remain.
+
+All2,996 main frontend results are unchanged, including two diagnostic differences.
+The broader parser selection improves128→136/196 exact, with zero lost matches
+and60 remaining differences. New program12 and all42 installed/relocated CLI checks
+pass. Controlled checking is **10.94 s** versus **3.45 s** for TypeScript (**3.17×**);
+the preceding compiler takes10.97 s in the same window, a neutral cost screen.
 
 The current target is upstream
 [`b2111cf43244e65f76ddc278ee695e669f720cbf`](https://github.com/bendlang/bend/tree/b2111cf43244e65f76ddc278ee695e669f720cbf),
@@ -22,7 +23,7 @@ node cli.mjs tests/conformance/typed-smoke/base-u32.bend --run
 npm run build
 ```
 
-The compiler contains 15,880 physical /13,527 nonblank Bend lines in 59 modules.
+The compiler contains 15,897 physical /13,543 nonblank Bend lines in 59 modules.
 It retains the validated S4 simplifications while adding current declaration,
 namespace, typing and effect semantics. The [release manifest](dist/release.json)
 binds the exact source, genuine checked parent, equality/choice-derived API, Base,
@@ -143,7 +144,7 @@ remain in `dist/selfhost/`; the [preservation index](../experiments/PRESERVATION
 and [experiment ledger](../experiments/ledger.md) identify their exact scope.
 They are not alternate defaults. The current release can run after relocation
 without an upstream checkout, as verified by its
-[Phase19 installed/relocated CLI checks](../implementation/phase19/live-checker-release.md).
+[Phase20 installed/relocated CLI checks](../implementation/phase20/declaration-checkpoints-release.md).
 The earlier [Phase5 clean-package evidence](../implementation/phase5/relocated-cli-evidence/README.md)
 applies to that historical artifact.
 

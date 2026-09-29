@@ -1,67 +1,64 @@
 # Current compiler experiment strategy
 
-The [Phase19 live checker](../implementation/phase19/live-checker-release.md) is
-installed. The user authorizes continued conformance, speed and simplicity work,
+The [Phase20 release](../implementation/phase20/declaration-checkpoints-release.md)
+is installed. The user authorizes continued conformance, speed and simplicity work,
 including pushes; publication remains blocked by an earlier automatic approval
-review. No old multi-hour budget is renewed. Preserve all 75 unrelated Phase6 files.
+review. No old multi-hour budget is renewed. Preserve all75 unrelated Phase6 paths.
 
 ## Released frontier
 
-Installed API `a15d150a`, genuine checked parent `d4e57543`, unchanged upstream
-`b2111cf`. One source-event checker now validates ordinary bodies and live template
-instances and constructs checked output. The separate specialization visitor is
-removed. Original source bodies remain authoritative; completed output is data.
-Both saved instance-order counterexamples and three let-close diagnostic cases
-now match the pin. The previous exact-prefix changed-proof repair remains.
+Installed API `40c8f7f3`, genuine checked parent `2270973c`, unchanged upstream
+`b2111cf`. One declaration module corrects decorator errors, constructor name/brace
+and whitespace order, and first match heads/patterns. It adds17 lines/one function,
+no semantic state or host change. Phase19's single live checker and exact-prefix
+proof repair remain. Source totals15,897 physical /13,543 nonblank lines,
+577,003 bytes,59 modules,1,660 definitions,719 laws,67 types.
 
-Maintained36, complete unchanged frontend2996, chronology22, let6, memo8, parsed29,
-canonical61, direct40 and recursion4 pass their scopes. Independent boundary104,
-actual backend41/literal20, complete histories226, helper16/replay5 and all42
-installed/relocated CLI checks pass. Historical public18 retains six intentional
-output/checking-boundary differences; all9 stable payload/demand rows pass. Its
-raw report remains failed; the independent pinned boundary suite validates the
-new semantics without claiming full checked-term equivalence.
+Maintained36, decorator24, constructor50, first-element54, whitespace44,
+supplied39 and ordered-host43 are strictly exact. New positive-program12 and
+all42 installed/relocated CLI checks pass. Main2996 complete result payloads are
+unchanged, retaining two do-block diagnostics. Broader196 improves128→136 exact,
+with eight gains/zero lost;60 differences remain. Its raw runner is still false,
+with three failed verdicts. Acquisition/regression audits do not waive them.
+Suites overlap; do not sum observations as distinct programs.
 
-Exclusive TS/B/C/C/B/TS measures predecessor11.5706→candidate11.0570s process,
-request10.4700→9.9567s, TS3.4829s; same-window gap3.3221→3.1746×. The small favorable
-cost screen is4.44% less process/4.90% less request with0.38% higher peakRSS. All35
-host files/Base/runtime/v5 and limits agree; freshCPU0 processes, stack4MiB/heap4GiB,
-separate validated Bend Base caches; TypeScript checks Base. No emission or general
-speedup claim. Prefix APIs replay source checking to rebuild memo/output state.
+Exclusive TS/B/C/C/B/TS on identical final source measures preceding10.9727s,
+candidate10.9412s and TS3.4463s: gap3.1839→3.1748×. Process−0.29%,request−0.22%,
+RSS+0.44% is a neutral cost screen, not a speedup. All35 host files/Base/runtime/v5
+and limits agree; freshCPU0,stack4MiB/heap4GiB, separate validated Bend Base caches;
+TS checks Base. No emission or generated-code speed claim. One observed genuine
+build+36-control loop took34.68s; this is not a controlled loop benchmark.
 
-Source:15,880physical /13,527nonblank lines,575,893bytes,59modules,
-1,659definitions /719laws /67types. Versus the previous installed prefix release,
-475fewerlines/56fewerlaws but2moredefs/1moretype. Removing a semantic traversal
-is meaningful simplification, well short of the50%/75% whole-compiler goals.
+Independent review caught source02's semicolon false acceptances before promotion;
+source04 fixes both the brace and datatype-loop boundaries with existing f_space.
+All superseded sources and report-tool failures remain. Root promotion03 copies
+one file; promotion01/02 copied none because of metadata-schema handling errors.
 
 ## Next priorities
 
-1. **Actual parser checkpoints.** Main frontend still has the two original
-   do-block diagnostic observations, and wider group/pattern/namespace gaps remain.
-   The private contextual route has one cursor/grammar and explicit stage results.
-   Names/state27, actual names/calls46 and ordinary Body40 now pass their strict
-   supported scopes plus explicit Unsupported boundaries. Final Stage3 also passes
-   materialization13, raw194 and maintained36. None is production Core/loader
-   conformance. Stage4 must reach the original saved16 fixtures, using actual header
-   IDs, sequential pattern opening, deferred row flatten and immediate grouped
-   flatten. Reuse existing semantic owners; do not introduce a replay/parser VM.
-2. **Shared error-demand semantics.** Review `ff_flat` before contextual reuse:
-   Var-tag plus binder-ID eligibility, first failing hit before a later miss, and
-   fresh-counter effects matter. Preserve the legacy raw stage while comparing
-   pinned contextual observations. Avoid materializing a context-free reference
-   view where the real grammar still needs the written Var alternative. Lambda
-   beta/Sub behavior remains explicitly unsupported until an authoritative reuse
-   strategy is justified.
-3. **Measured cost after simplification.** Profile the installed checker before
-   selecting another optimization. The removed specializer is no longer a target.
-   Prefix-state reuse is possible only with a valid memo/output/source visibility
-   contract; a source-only cache is insufficient. Keep cold process, request and
-   generated-code performance distinct. Do not add a second checker for a shortcut.
+1. **Three grouped-local ranges.** Follow the unexecuted
+   [Phase21 design](../design/phase21/group-boundaries.md). First verify independent
+   binder/RHS/nested/typed/marked controls, then test the single shared Local range
+   producer. It may close three observations without a new concept. Grouped-comma
+   false acceptance is separate: a raw tag guard would reject a valid nested tuple
+   and can replace an earlier pattern error. Preserve completion/error ordering.
+2. **Contextual parser domain.** Private Stage4 now handles saved rows/groups
+   with actual lexical state and first-error demand;35 private records/direct9,
+   prior names/body/state/materialization and raw194 pass their stated scopes.
+   Generated binder IDs compare by audited alpha-equivalence, not numeric equality.
+   It remains Body/LTerm research, not installed Core/loader conformance. Shared
+   ff_* fixes alone demonstrated no gain on the remaining60, so do not install
+   extra code without a discriminating control. Main do-block chronology remains.
+3. **Cost after semantic convergence.** Profile the installed checker before a
+   new optimization. Prefix reuse requires complete memo/output/source visibility;
+   a source-only cache is insufficient. Keep process, request and emitted-program
+   performance distinct. No second checker or unchecked fallback.
 
-Keep checked focused builds and frozen-attempt validation as the edit loop.
-Broad gates, exclusive timing, installation and evidence recovery are integration
-checkpoints. Phase16–18 and the prefix capsule are independently recovered and
-committed. Close the separate live-checker capsule with active parser work excluded.
+Keep checked focused builds as the edit loop; broad gates/timing/installation are
+integration checkpoints. Phase19 live-checker and earlier capsules are recovered
+and committed. Close separate contextual and Phase20 capsules with exact scopes;
+never let an archive change the status of a failed test. The50%/75% whole-source
+reduction targets remain open.
 
 ## Retained experiments and operating rules
 

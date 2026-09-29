@@ -1,7 +1,7 @@
 # Compiler validation
 
 The target remains upstream `b2111cf43244e65f76ddc278ee695e669f720cbf`, Bend2
-2.0.32 era. The [Phase19 release report](../implementation/phase19/live-checker-release.md)
+2.0.32 era. The [Phase20 release report](../implementation/phase20/declaration-checkpoints-release.md)
 binds the final checked artifact, controls, exact vectors, timing and preserved
 failures. The [release manifest](dist/release.json) identifies the installed
 guarded version5 derivative, genuine checked B1, source, Base, runtime and host.
@@ -18,7 +18,7 @@ observed invalid acceptance, timeout or unresolved observation. All 11 trust
 cases type-check and reach the intended refusal, exactly matching TypeScript.
 
 Phase16 reduced exact reference differences **459→2**, with **457 new matches
-and zero lost matches** versus Phase15. Phase17 and both Phase19 releases preserve every complete result. The remaining rows are parse and check for
+and zero lost matches** versus Phase15. Phase17, both Phase19 releases and Phase20 preserve every complete result. The remaining rows are parse and check for
 `check/monad_do_destructure.bend`: rejection agrees, but the first diagnostic
 differs because of an earlier do-block parsing checkpoint. All measured primitive
 status, phase, type/trust, unsafe-list, exit and output axes agree on this corpus.
@@ -56,17 +56,27 @@ boundary104 suite validates the new behavior. See the
 [live-checker implementation](../implementation/phase19/instance-live-checking.md)
 and [independent review](../implementation/phase19/instance-independent-review.md).
 
+Phase20 also reruns the maintained36 with zero strict differences, decorator24,
+constructor50, first-element54 and expanded whitespace44, all exact. Original
+supplied39 and ordered-host43 now have zero strict differences. Three new accepted
+constructor programs pass check/interpreter/JS/native comparisons (12observations),
+and all42 installed/relocated CLI checks pass. These suites overlap; do not add
+their counts as distinct programs. A rejected intermediate constructor candidate's
+semicolon false acceptances remain documented in the independent review.
+
 Phase16's broader controls recorded the following gaps outside that inventory.
-The contextual 39 / host 43 selections were rerun for Phase17. The198-observation
+The contextual39 / host43 selections now have the Phase20 results above. The198-observation
 integration selection was rerun for Phase19 and now has **198 exact matches**,
 closing its same-body live-instance difference. Its immutable runner retains
 `pass:false` for14 inherited negative parse `observed` labels; exact result
 comparison is a separate axis. Other selections below retain their stated scope:
 
-- The separate196-observation group selection was rerun for Phase19:128exact
-  and68known differences, unchanged from its Phase17 candidate. Its raw runner
-  fails the selected-completion assertion despite complete healthy acquisition;
-  a separate vector audit does not relabel strict failures as passing.
+- The separate196-observation group selection was rerun for Phase20:136exact
+  and60remaining differences, eight newly exact and none lost from Phase19.
+  Only the four saved empty-head witnesses change (parse/check); six observations
+  also correct primitive acceptance. The raw runner still fails selected completion
+  with three inherited failed verdicts, despite complete healthy acquisition.
+  The separate audit preserves that raw failure and all60 strict mismatches.
 - The 114-observation marked-pattern selection has **71 exact matches and 43
   known differences**. Its raw oracle report is `pass:false`, including the
   known do-block check failure. A separate audit establishes 114 unchanged
@@ -111,8 +121,9 @@ New independent Phase17 research keeps additional failures visible. The
 four grouped-comma/zero-head-match witnesses. The
 [instance-order investigation](../implementation/phase17/instance-chronology.md)
 has 20/22 exact observations and 8 exact memo/name controls, with two distinct
-error-order gaps. The installed Phase19 checker now matches all22 instance
-observations and memo8; the group/parser prototype remains isolated. These
+error-order gaps. The retained Phase19 checker matches all22 instance
+observations and memo8; Phase20 separately closes the eight zero-head observations.
+The contextual parser prototype remains isolated. These
 selections overlap and their counts must not be summed.
 
 Other limits include hub/package fetching, independent proof-kernel validation,

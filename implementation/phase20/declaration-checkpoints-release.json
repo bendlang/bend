@@ -1,0 +1,1968 @@
+{
+  "kind": "phase20-declaration-checkpoints-release",
+  "complete": true,
+  "pass": true,
+  "installedApi": "40c8f7f3b7cd0e96aef57d7d574ebfd85607cd4e096909d083b450b4d973362c",
+  "checkedParent": "2270973c76fb87cbcc684ad5ea4ed0222f4cba4340e0223b11932463e60eceed",
+  "sourceSha256": "90486857cbd3eb5a3e66863c23a182aff3b57b98f6e2c6095e130d1e07af7034",
+  "upstream": "b2111cf43244e65f76ddc278ee695e669f720cbf",
+  "sourceChanges": [
+    "src/front/declarations.bend"
+  ],
+  "delta": {
+    "physicalLines": 17,
+    "bytes": 1110,
+    "definitions": 1,
+    "laws": 0,
+    "types": 0
+  },
+  "census": {
+    "kind": "phase20-final-compiler-source-census",
+    "modules": 59,
+    "physicalLines": 15897,
+    "nonblankLines": 13543,
+    "bytes": 577003,
+    "definitions": 1660,
+    "laws": 719,
+    "types": 67
+  },
+  "focused": {
+    "default36": {
+      "pass": true,
+      "exact": 36,
+      "strictDifferences": 0
+    },
+    "decorator24": {
+      "baselineExact": 4,
+      "finalExact": 24
+    },
+    "constructor50": {
+      "baselineExact": 18,
+      "finalExact": 50,
+      "changes": [
+        {
+          "name": "unindented",
+          "route": "raw",
+          "acceptanceChanged": true,
+          "beforeAccept": false,
+          "afterAccept": true
+        },
+        {
+          "name": "import-after-type",
+          "route": "raw",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "import-no-constructors",
+          "route": "raw",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "indented-import",
+          "route": "raw",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "reserved-import-braces",
+          "route": "raw",
+          "acceptanceChanged": true,
+          "beforeAccept": true,
+          "afterAccept": false
+        },
+        {
+          "name": "reserved-return",
+          "route": "raw",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "reserved-return-braces",
+          "route": "raw",
+          "acceptanceChanged": true,
+          "beforeAccept": true,
+          "afterAccept": false
+        },
+        {
+          "name": "reserved-Type",
+          "route": "raw",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "reserved-for",
+          "route": "raw",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "name-no-brace",
+          "route": "raw",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "name-wrong-brace",
+          "route": "raw",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "invalid-dotted-name",
+          "route": "raw",
+          "acceptanceChanged": true,
+          "beforeAccept": true,
+          "afterAccept": false
+        },
+        {
+          "name": "comment-unindented",
+          "route": "raw",
+          "acceptanceChanged": true,
+          "beforeAccept": false,
+          "afterAccept": true
+        },
+        {
+          "name": "trailing-dot",
+          "route": "raw",
+          "acceptanceChanged": true,
+          "beforeAccept": true,
+          "afterAccept": false
+        },
+        {
+          "name": "digit-after-dot",
+          "route": "raw",
+          "acceptanceChanged": true,
+          "beforeAccept": true,
+          "afterAccept": false
+        },
+        {
+          "name": "spaced-dot",
+          "route": "raw",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "newline-before-brace",
+          "route": "raw",
+          "acceptanceChanged": true,
+          "beforeAccept": false,
+          "afterAccept": true
+        },
+        {
+          "name": "duplicate-before-brace",
+          "route": "raw",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "declaration-prefix-names",
+          "route": "raw",
+          "acceptanceChanged": true,
+          "beforeAccept": false,
+          "afterAccept": true
+        },
+        {
+          "name": "underscore-name",
+          "route": "raw",
+          "acceptanceChanged": true,
+          "beforeAccept": false,
+          "afterAccept": true
+        },
+        {
+          "name": "type-late-missing",
+          "route": "supplied",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "type-late-missing",
+          "route": "host",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "prior-valid",
+          "route": "supplied",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "prior-valid",
+          "route": "host",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "unindented-dependency",
+          "route": "supplied",
+          "acceptanceChanged": true,
+          "beforeAccept": false,
+          "afterAccept": true
+        },
+        {
+          "name": "unindented-dependency",
+          "route": "host",
+          "acceptanceChanged": true,
+          "beforeAccept": false,
+          "afterAccept": true
+        },
+        {
+          "name": "alias-before-brace",
+          "route": "supplied",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "alias-before-brace",
+          "route": "host",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "duplicate-before-brace",
+          "route": "supplied",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "duplicate-before-brace",
+          "route": "host",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "reserved-before-import",
+          "route": "supplied",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "reserved-before-import",
+          "route": "host",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        }
+      ]
+    },
+    "firstElement54": {
+      "baselineExact": 42,
+      "finalExact": 54,
+      "changes": [
+        {
+          "name": "empty-head",
+          "route": "raw",
+          "acceptanceChanged": true,
+          "beforeAccept": true,
+          "afterAccept": false
+        },
+        {
+          "name": "empty-pattern",
+          "route": "raw",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "leading-head-comma",
+          "route": "raw",
+          "acceptanceChanged": true,
+          "beforeAccept": true,
+          "afterAccept": false
+        },
+        {
+          "name": "leading-pattern-comma",
+          "route": "raw",
+          "acceptanceChanged": true,
+          "beforeAccept": true,
+          "afterAccept": false
+        },
+        {
+          "name": "empty-head",
+          "route": "supplied",
+          "acceptanceChanged": true,
+          "beforeAccept": true,
+          "afterAccept": false
+        },
+        {
+          "name": "empty-head",
+          "route": "host",
+          "acceptanceChanged": true,
+          "beforeAccept": true,
+          "afterAccept": false
+        },
+        {
+          "name": "empty-pattern",
+          "route": "supplied",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "empty-pattern",
+          "route": "host",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "leading-head-comma",
+          "route": "supplied",
+          "acceptanceChanged": true,
+          "beforeAccept": true,
+          "afterAccept": false
+        },
+        {
+          "name": "leading-head-comma",
+          "route": "host",
+          "acceptanceChanged": true,
+          "beforeAccept": true,
+          "afterAccept": false
+        },
+        {
+          "name": "leading-pattern-comma",
+          "route": "supplied",
+          "acceptanceChanged": true,
+          "beforeAccept": true,
+          "afterAccept": false
+        },
+        {
+          "name": "leading-pattern-comma",
+          "route": "host",
+          "acceptanceChanged": true,
+          "beforeAccept": true,
+          "afterAccept": false
+        }
+      ]
+    },
+    "whitespace44": {
+      "source01Exact": 6,
+      "source02Exact": 20,
+      "finalExact": 44,
+      "changesFromSource01": [
+        {
+          "name": "semicolon",
+          "route": "raw",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "double-semicolon",
+          "route": "raw",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "newline-semicolon",
+          "route": "raw",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "comment-newline",
+          "route": "raw",
+          "acceptanceChanged": true,
+          "beforeAccept": false,
+          "afterAccept": true
+        },
+        {
+          "name": "duplicate-semicolon",
+          "route": "raw",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "invalid-name-semicolon",
+          "route": "raw",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "reserved-name-semicolon",
+          "route": "raw",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "before-first-unindented",
+          "route": "raw",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "between-unindented",
+          "route": "raw",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "before-first-indented",
+          "route": "raw",
+          "acceptanceChanged": true,
+          "beforeAccept": true,
+          "afterAccept": false
+        },
+        {
+          "name": "between-indented",
+          "route": "raw",
+          "acceptanceChanged": true,
+          "beforeAccept": true,
+          "afterAccept": false
+        },
+        {
+          "name": "before-next-def",
+          "route": "raw",
+          "acceptanceChanged": true,
+          "beforeAccept": true,
+          "afterAccept": false
+        },
+        {
+          "name": "semicolon",
+          "route": "supplied",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "semicolon",
+          "route": "host",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "double-semicolon",
+          "route": "supplied",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "double-semicolon",
+          "route": "host",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "newline-semicolon",
+          "route": "supplied",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "newline-semicolon",
+          "route": "host",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "comment-newline",
+          "route": "supplied",
+          "acceptanceChanged": true,
+          "beforeAccept": false,
+          "afterAccept": true
+        },
+        {
+          "name": "comment-newline",
+          "route": "host",
+          "acceptanceChanged": true,
+          "beforeAccept": false,
+          "afterAccept": true
+        },
+        {
+          "name": "duplicate-semicolon",
+          "route": "supplied",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "duplicate-semicolon",
+          "route": "host",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "invalid-name-semicolon",
+          "route": "supplied",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "invalid-name-semicolon",
+          "route": "host",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "reserved-name-semicolon",
+          "route": "supplied",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "reserved-name-semicolon",
+          "route": "host",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "alias-semicolon",
+          "route": "supplied",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "alias-semicolon",
+          "route": "host",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "before-first-unindented",
+          "route": "supplied",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "before-first-unindented",
+          "route": "host",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "between-unindented",
+          "route": "supplied",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "between-unindented",
+          "route": "host",
+          "acceptanceChanged": false,
+          "beforeAccept": false,
+          "afterAccept": false
+        },
+        {
+          "name": "before-first-indented",
+          "route": "supplied",
+          "acceptanceChanged": true,
+          "beforeAccept": true,
+          "afterAccept": false
+        },
+        {
+          "name": "before-first-indented",
+          "route": "host",
+          "acceptanceChanged": true,
+          "beforeAccept": true,
+          "afterAccept": false
+        },
+        {
+          "name": "between-indented",
+          "route": "supplied",
+          "acceptanceChanged": true,
+          "beforeAccept": true,
+          "afterAccept": false
+        },
+        {
+          "name": "between-indented",
+          "route": "host",
+          "acceptanceChanged": true,
+          "beforeAccept": true,
+          "afterAccept": false
+        },
+        {
+          "name": "before-next-def",
+          "route": "supplied",
+          "acceptanceChanged": true,
+          "beforeAccept": true,
+          "afterAccept": false
+        },
+        {
+          "name": "before-next-def",
+          "route": "host",
+          "acceptanceChanged": true,
+          "beforeAccept": true,
+          "afterAccept": false
+        }
+      ],
+      "newSource02FalseAcceptances": [
+        {
+          "name": "semicolon",
+          "route": "raw"
+        },
+        {
+          "name": "double-semicolon",
+          "route": "raw"
+        },
+        {
+          "name": "newline-semicolon",
+          "route": "raw"
+        },
+        {
+          "name": "before-first-unindented",
+          "route": "raw"
+        },
+        {
+          "name": "between-unindented",
+          "route": "raw"
+        },
+        {
+          "name": "semicolon",
+          "route": "supplied"
+        },
+        {
+          "name": "semicolon",
+          "route": "host"
+        },
+        {
+          "name": "double-semicolon",
+          "route": "supplied"
+        },
+        {
+          "name": "double-semicolon",
+          "route": "host"
+        },
+        {
+          "name": "newline-semicolon",
+          "route": "supplied"
+        },
+        {
+          "name": "newline-semicolon",
+          "route": "host"
+        },
+        {
+          "name": "before-first-unindented",
+          "route": "supplied"
+        },
+        {
+          "name": "before-first-unindented",
+          "route": "host"
+        },
+        {
+          "name": "between-unindented",
+          "route": "supplied"
+        },
+        {
+          "name": "between-unindented",
+          "route": "host"
+        }
+      ],
+      "inheritedFalseAcceptances": [
+        {
+          "name": "before-first-indented",
+          "route": "raw"
+        },
+        {
+          "name": "between-indented",
+          "route": "raw"
+        },
+        {
+          "name": "before-next-def",
+          "route": "raw"
+        },
+        {
+          "name": "before-first-indented",
+          "route": "supplied"
+        },
+        {
+          "name": "before-first-indented",
+          "route": "host"
+        },
+        {
+          "name": "between-indented",
+          "route": "supplied"
+        },
+        {
+          "name": "between-indented",
+          "route": "host"
+        },
+        {
+          "name": "before-next-def",
+          "route": "supplied"
+        },
+        {
+          "name": "before-next-def",
+          "route": "host"
+        }
+      ]
+    },
+    "supplied39": {
+      "pass": true,
+      "strictDifferences": 0
+    },
+    "orderedHost43": {
+      "pass": true,
+      "strictDifferences": 0
+    }
+  },
+  "frontend": {
+    "observations": 2996,
+    "changes": [],
+    "oldRawComplete": false,
+    "newRawComplete": false,
+    "oldSummary": {
+      "tests": 1498,
+      "allTests": 1498,
+      "externalTests": 0,
+      "excludedTests": 0,
+      "probes": 2996,
+      "statuses": {
+        "observed": 497,
+        "pass": 2494,
+        "fail": 5
+      },
+      "lanes": {
+        "parse": {
+          "observed": 497,
+          "pass": 1001
+        },
+        "check": {
+          "pass": 1493,
+          "fail": 5
+        }
+      },
+      "namespaces": {
+        "base": {
+          "observed": 4,
+          "pass": 52
+        },
+        "check": {
+          "pass": 322,
+          "observed": 157,
+          "fail": 1
+        },
+        "compile": {
+          "pass": 234,
+          "observed": 10
+        },
+        "comptime": {
+          "pass": 78,
+          "observed": 22
+        },
+        "cost": {
+          "pass": 9,
+          "observed": 1
+        },
+        "eval": {
+          "observed": 4,
+          "pass": 74
+        },
+        "flatten": {
+          "pass": 426,
+          "observed": 54
+        },
+        "gfx": {
+          "pass": 8
+        },
+        "grade": {
+          "pass": 19,
+          "observed": 15
+        },
+        "halt": {
+          "pass": 45,
+          "observed": 27
+        },
+        "import": {
+          "observed": 30,
+          "pass": 68
+        },
+        "io": {
+          "pass": 239,
+          "observed": 20,
+          "fail": 3
+        },
+        "page": {
+          "observed": 19,
+          "pass": 27
+        },
+        "parse": {
+          "pass": 233,
+          "observed": 69
+        },
+        "printer": {
+          "pass": 22
+        },
+        "proof": {
+          "pass": 133,
+          "observed": 33
+        },
+        "reg": {
+          "pass": 188,
+          "observed": 5,
+          "fail": 1
+        },
+        "rfc": {
+          "pass": 18
+        },
+        "run": {
+          "pass": 180,
+          "observed": 6
+        },
+        "show": {
+          "pass": 16
+        },
+        "spec": {
+          "observed": 13,
+          "pass": 17
+        },
+        "state": {
+          "pass": 24,
+          "observed": 8
+        },
+        "stats": {
+          "pass": 10
+        },
+        "stuck": {
+          "pass": 52
+        }
+      },
+      "checkerRejections": 288,
+      "proofTrustRejections": 11,
+      "frontendRejections": 193,
+      "uncheckedExecutions": 0
+    },
+    "newSummary": {
+      "tests": 1498,
+      "allTests": 1498,
+      "externalTests": 0,
+      "excludedTests": 0,
+      "probes": 2996,
+      "statuses": {
+        "observed": 497,
+        "pass": 2494,
+        "fail": 5
+      },
+      "lanes": {
+        "parse": {
+          "observed": 497,
+          "pass": 1001
+        },
+        "check": {
+          "pass": 1493,
+          "fail": 5
+        }
+      },
+      "namespaces": {
+        "base": {
+          "observed": 4,
+          "pass": 52
+        },
+        "check": {
+          "pass": 322,
+          "observed": 157,
+          "fail": 1
+        },
+        "compile": {
+          "pass": 234,
+          "observed": 10
+        },
+        "comptime": {
+          "pass": 78,
+          "observed": 22
+        },
+        "cost": {
+          "pass": 9,
+          "observed": 1
+        },
+        "eval": {
+          "observed": 4,
+          "pass": 74
+        },
+        "flatten": {
+          "pass": 426,
+          "observed": 54
+        },
+        "gfx": {
+          "pass": 8
+        },
+        "grade": {
+          "pass": 19,
+          "observed": 15
+        },
+        "halt": {
+          "pass": 45,
+          "observed": 27
+        },
+        "import": {
+          "observed": 30,
+          "pass": 68
+        },
+        "io": {
+          "pass": 239,
+          "observed": 20,
+          "fail": 3
+        },
+        "page": {
+          "observed": 19,
+          "pass": 27
+        },
+        "parse": {
+          "pass": 233,
+          "observed": 69
+        },
+        "printer": {
+          "pass": 22
+        },
+        "proof": {
+          "pass": 133,
+          "observed": 33
+        },
+        "reg": {
+          "pass": 188,
+          "observed": 5,
+          "fail": 1
+        },
+        "rfc": {
+          "pass": 18
+        },
+        "run": {
+          "pass": 180,
+          "observed": 6
+        },
+        "show": {
+          "pass": 16
+        },
+        "spec": {
+          "observed": 13,
+          "pass": 17
+        },
+        "state": {
+          "pass": 24,
+          "observed": 8
+        },
+        "stats": {
+          "pass": 10
+        },
+        "stuck": {
+          "pass": 52
+        }
+      },
+      "checkerRejections": 288,
+      "proofTrustRejections": 11,
+      "frontendRejections": 193,
+      "uncheckedExecutions": 0
+    }
+  },
+  "groups": {
+    "observations": 196,
+    "beforeExact": 128,
+    "afterExact": 136,
+    "changed": [
+      {
+        "id": "group/nested-zero-head-match",
+        "lane": "parse",
+        "before": {
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "status": "ok",
+          "phase": "parse",
+          "exitCode": 0,
+          "checked": false,
+          "files": [
+            "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/nested-zero-head-match.bend",
+            "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8/bend2/base.bend"
+          ],
+          "hostProvenance": {
+            "driverSha256": "eec962ab053299ae45dfdace61e6f7c6625adc38c679847909ad3463f2f043a1",
+            "adapterSha256": "0ad9c892b45c2fb2a111817e6bea2f232c20f1197f495801a2fb4499498ba3d2"
+          }
+        },
+        "after": {
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "status": "error",
+          "phase": "parse",
+          "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ':'\nLocation:\n3 |   ((\n4>|     match:\n  |          ^\n5 |       case:",
+          "exitCode": 1,
+          "checked": false,
+          "sourceFile": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/nested-zero-head-match.bend",
+          "hostProvenance": {
+            "driverSha256": "eec962ab053299ae45dfdace61e6f7c6625adc38c679847909ad3463f2f043a1",
+            "adapterSha256": "0ad9c892b45c2fb2a111817e6bea2f232c20f1197f495801a2fb4499498ba3d2"
+          }
+        },
+        "reference": {
+          "status": "error",
+          "phase": "parse",
+          "checked": false,
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ':'\nLocation:\n3 |   ((\n4>|     match:\n  |          ^\n5 |       case:",
+          "exitCode": 1
+        },
+        "becameExact": true
+      },
+      {
+        "id": "group/nested-zero-head-match",
+        "lane": "check",
+        "before": {
+          "typeAccepted": true,
+          "proofTrust": "passed",
+          "kernelChecked": false,
+          "status": "ok",
+          "phase": "check",
+          "stdout": "ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n",
+          "exitCode": 0,
+          "checked": true,
+          "files": [
+            "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/nested-zero-head-match.bend",
+            "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8/bend2/base.bend"
+          ],
+          "unsafeDefinitions": [],
+          "hostProvenance": {
+            "driverSha256": "eec962ab053299ae45dfdace61e6f7c6625adc38c679847909ad3463f2f043a1",
+            "adapterSha256": "0ad9c892b45c2fb2a111817e6bea2f232c20f1197f495801a2fb4499498ba3d2"
+          }
+        },
+        "after": {
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "status": "error",
+          "phase": "parse",
+          "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ':'\nLocation:\n3 |   ((\n4>|     match:\n  |          ^\n5 |       case:",
+          "exitCode": 1,
+          "checked": false,
+          "sourceFile": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/nested-zero-head-match.bend",
+          "hostProvenance": {
+            "driverSha256": "eec962ab053299ae45dfdace61e6f7c6625adc38c679847909ad3463f2f043a1",
+            "adapterSha256": "0ad9c892b45c2fb2a111817e6bea2f232c20f1197f495801a2fb4499498ba3d2"
+          }
+        },
+        "reference": {
+          "status": "error",
+          "phase": "parse",
+          "checked": false,
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ':'\nLocation:\n3 |   ((\n4>|     match:\n  |          ^\n5 |       case:",
+          "exitCode": 1
+        },
+        "becameExact": true
+      },
+      {
+        "id": "group/zero-head-match",
+        "lane": "parse",
+        "before": {
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "status": "ok",
+          "phase": "parse",
+          "exitCode": 0,
+          "checked": false,
+          "files": [
+            "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/zero-head-match.bend",
+            "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8/bend2/base.bend"
+          ],
+          "hostProvenance": {
+            "driverSha256": "eec962ab053299ae45dfdace61e6f7c6625adc38c679847909ad3463f2f043a1",
+            "adapterSha256": "0ad9c892b45c2fb2a111817e6bea2f232c20f1197f495801a2fb4499498ba3d2"
+          }
+        },
+        "after": {
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "status": "error",
+          "phase": "parse",
+          "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ':'\nLocation:\n3 |   (\n4>|     match:\n  |          ^\n5 |       case:",
+          "exitCode": 1,
+          "checked": false,
+          "sourceFile": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/zero-head-match.bend",
+          "hostProvenance": {
+            "driverSha256": "eec962ab053299ae45dfdace61e6f7c6625adc38c679847909ad3463f2f043a1",
+            "adapterSha256": "0ad9c892b45c2fb2a111817e6bea2f232c20f1197f495801a2fb4499498ba3d2"
+          }
+        },
+        "reference": {
+          "status": "error",
+          "phase": "parse",
+          "checked": false,
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ':'\nLocation:\n3 |   (\n4>|     match:\n  |          ^\n5 |       case:",
+          "exitCode": 1
+        },
+        "becameExact": true
+      },
+      {
+        "id": "group/zero-head-match",
+        "lane": "check",
+        "before": {
+          "typeAccepted": true,
+          "proofTrust": "passed",
+          "kernelChecked": false,
+          "status": "ok",
+          "phase": "check",
+          "stdout": "ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n",
+          "exitCode": 0,
+          "checked": true,
+          "files": [
+            "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/zero-head-match.bend",
+            "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8/bend2/base.bend"
+          ],
+          "unsafeDefinitions": [],
+          "hostProvenance": {
+            "driverSha256": "eec962ab053299ae45dfdace61e6f7c6625adc38c679847909ad3463f2f043a1",
+            "adapterSha256": "0ad9c892b45c2fb2a111817e6bea2f232c20f1197f495801a2fb4499498ba3d2"
+          }
+        },
+        "after": {
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "status": "error",
+          "phase": "parse",
+          "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ':'\nLocation:\n3 |   (\n4>|     match:\n  |          ^\n5 |       case:",
+          "exitCode": 1,
+          "checked": false,
+          "sourceFile": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/zero-head-match.bend",
+          "hostProvenance": {
+            "driverSha256": "eec962ab053299ae45dfdace61e6f7c6625adc38c679847909ad3463f2f043a1",
+            "adapterSha256": "0ad9c892b45c2fb2a111817e6bea2f232c20f1197f495801a2fb4499498ba3d2"
+          }
+        },
+        "reference": {
+          "status": "error",
+          "phase": "parse",
+          "checked": false,
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ':'\nLocation:\n3 |   (\n4>|     match:\n  |          ^\n5 |       case:",
+          "exitCode": 1
+        },
+        "becameExact": true
+      },
+      {
+        "id": "group/zero-head-match-argument",
+        "lane": "parse",
+        "before": {
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "status": "ok",
+          "phase": "parse",
+          "exitCode": 0,
+          "checked": false,
+          "files": [
+            "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/zero-head-match-argument.bend",
+            "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8/bend2/base.bend"
+          ],
+          "hostProvenance": {
+            "driverSha256": "eec962ab053299ae45dfdace61e6f7c6625adc38c679847909ad3463f2f043a1",
+            "adapterSha256": "0ad9c892b45c2fb2a111817e6bea2f232c20f1197f495801a2fb4499498ba3d2"
+          }
+        },
+        "after": {
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "status": "error",
+          "phase": "parse",
+          "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ':'\nLocation:\n3 |   Nat.add((\n4>|     match:\n  |          ^\n5 |       case:",
+          "exitCode": 1,
+          "checked": false,
+          "sourceFile": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/zero-head-match-argument.bend",
+          "hostProvenance": {
+            "driverSha256": "eec962ab053299ae45dfdace61e6f7c6625adc38c679847909ad3463f2f043a1",
+            "adapterSha256": "0ad9c892b45c2fb2a111817e6bea2f232c20f1197f495801a2fb4499498ba3d2"
+          }
+        },
+        "reference": {
+          "status": "error",
+          "phase": "parse",
+          "checked": false,
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ':'\nLocation:\n3 |   Nat.add((\n4>|     match:\n  |          ^\n5 |       case:",
+          "exitCode": 1
+        },
+        "becameExact": true
+      },
+      {
+        "id": "group/zero-head-match-argument",
+        "lane": "check",
+        "before": {
+          "typeAccepted": true,
+          "proofTrust": "passed",
+          "kernelChecked": false,
+          "status": "ok",
+          "phase": "check",
+          "stdout": "ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n",
+          "exitCode": 0,
+          "checked": true,
+          "files": [
+            "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/zero-head-match-argument.bend",
+            "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8/bend2/base.bend"
+          ],
+          "unsafeDefinitions": [],
+          "hostProvenance": {
+            "driverSha256": "eec962ab053299ae45dfdace61e6f7c6625adc38c679847909ad3463f2f043a1",
+            "adapterSha256": "0ad9c892b45c2fb2a111817e6bea2f232c20f1197f495801a2fb4499498ba3d2"
+          }
+        },
+        "after": {
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "status": "error",
+          "phase": "parse",
+          "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ':'\nLocation:\n3 |   Nat.add((\n4>|     match:\n  |          ^\n5 |       case:",
+          "exitCode": 1,
+          "checked": false,
+          "sourceFile": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/zero-head-match-argument.bend",
+          "hostProvenance": {
+            "driverSha256": "eec962ab053299ae45dfdace61e6f7c6625adc38c679847909ad3463f2f043a1",
+            "adapterSha256": "0ad9c892b45c2fb2a111817e6bea2f232c20f1197f495801a2fb4499498ba3d2"
+          }
+        },
+        "reference": {
+          "status": "error",
+          "phase": "parse",
+          "checked": false,
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ':'\nLocation:\n3 |   Nat.add((\n4>|     match:\n  |          ^\n5 |       case:",
+          "exitCode": 1
+        },
+        "becameExact": true
+      },
+      {
+        "id": "group/zero-head-match-lambda",
+        "lane": "parse",
+        "before": {
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "status": "error",
+          "phase": "parse",
+          "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a lambda binder (one name: k => body)\n- observed : ' '\nLocation:\n6 |         x\n7>|   ) => x\n  |       ^\n8 | ",
+          "exitCode": 1,
+          "checked": false,
+          "sourceFile": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/zero-head-match-lambda.bend",
+          "hostProvenance": {
+            "driverSha256": "eec962ab053299ae45dfdace61e6f7c6625adc38c679847909ad3463f2f043a1",
+            "adapterSha256": "0ad9c892b45c2fb2a111817e6bea2f232c20f1197f495801a2fb4499498ba3d2"
+          }
+        },
+        "after": {
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "status": "error",
+          "phase": "parse",
+          "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ':'\nLocation:\n3 |   (\n4>|     match:\n  |          ^\n5 |       case:",
+          "exitCode": 1,
+          "checked": false,
+          "sourceFile": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/zero-head-match-lambda.bend",
+          "hostProvenance": {
+            "driverSha256": "eec962ab053299ae45dfdace61e6f7c6625adc38c679847909ad3463f2f043a1",
+            "adapterSha256": "0ad9c892b45c2fb2a111817e6bea2f232c20f1197f495801a2fb4499498ba3d2"
+          }
+        },
+        "reference": {
+          "status": "error",
+          "phase": "parse",
+          "checked": false,
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ':'\nLocation:\n3 |   (\n4>|     match:\n  |          ^\n5 |       case:",
+          "exitCode": 1
+        },
+        "becameExact": true
+      },
+      {
+        "id": "group/zero-head-match-lambda",
+        "lane": "check",
+        "before": {
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "status": "error",
+          "phase": "parse",
+          "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a lambda binder (one name: k => body)\n- observed : ' '\nLocation:\n6 |         x\n7>|   ) => x\n  |       ^\n8 | ",
+          "exitCode": 1,
+          "checked": false,
+          "sourceFile": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/zero-head-match-lambda.bend",
+          "hostProvenance": {
+            "driverSha256": "eec962ab053299ae45dfdace61e6f7c6625adc38c679847909ad3463f2f043a1",
+            "adapterSha256": "0ad9c892b45c2fb2a111817e6bea2f232c20f1197f495801a2fb4499498ba3d2"
+          }
+        },
+        "after": {
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "status": "error",
+          "phase": "parse",
+          "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ':'\nLocation:\n3 |   (\n4>|     match:\n  |          ^\n5 |       case:",
+          "exitCode": 1,
+          "checked": false,
+          "sourceFile": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/zero-head-match-lambda.bend",
+          "hostProvenance": {
+            "driverSha256": "eec962ab053299ae45dfdace61e6f7c6625adc38c679847909ad3463f2f043a1",
+            "adapterSha256": "0ad9c892b45c2fb2a111817e6bea2f232c20f1197f495801a2fb4499498ba3d2"
+          }
+        },
+        "reference": {
+          "status": "error",
+          "phase": "parse",
+          "checked": false,
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ':'\nLocation:\n3 |   (\n4>|     match:\n  |          ^\n5 |       case:",
+          "exitCode": 1
+        },
+        "becameExact": true
+      }
+    ],
+    "lost": [],
+    "remainingDifferences": [
+      [
+        "check/monad_do_destructure.bend",
+        "parse"
+      ],
+      [
+        "check/monad_do_destructure.bend",
+        "check"
+      ],
+      [
+        "empty-call-pattern/offload-bound",
+        "parse"
+      ],
+      [
+        "empty-call-pattern/offload-bound",
+        "check"
+      ],
+      [
+        "group/body-comma",
+        "parse"
+      ],
+      [
+        "group/body-comma",
+        "check"
+      ],
+      [
+        "group/local-bang",
+        "parse"
+      ],
+      [
+        "group/local-bang",
+        "check"
+      ],
+      [
+        "group/local-callee",
+        "check"
+      ],
+      [
+        "group/local-pattern",
+        "parse"
+      ],
+      [
+        "group/local-pattern",
+        "check"
+      ],
+      [
+        "group/match-error-before-close",
+        "parse"
+      ],
+      [
+        "group/match-error-before-close",
+        "check"
+      ],
+      [
+        "marked-pattern/alias-unbound",
+        "parse"
+      ],
+      [
+        "marked-pattern/alias-unbound",
+        "check"
+      ],
+      [
+        "marked-pattern/datatype-bare",
+        "parse"
+      ],
+      [
+        "marked-pattern/datatype-bare",
+        "check"
+      ],
+      [
+        "marked-pattern/datatype-shadow",
+        "parse"
+      ],
+      [
+        "marked-pattern/datatype-shadow",
+        "check"
+      ],
+      [
+        "marked-pattern/empty-unbound",
+        "parse"
+      ],
+      [
+        "marked-pattern/empty-unbound",
+        "check"
+      ],
+      [
+        "marked-pattern/qualified-unbound",
+        "parse"
+      ],
+      [
+        "marked-pattern/qualified-unbound",
+        "check"
+      ],
+      [
+        "marked-pattern/term-remains-unbound",
+        "check"
+      ],
+      [
+        "parser-checkpoint/alias-shadow-frame",
+        "parse"
+      ],
+      [
+        "parser-checkpoint/alias-shadow-frame",
+        "check"
+      ],
+      [
+        "parser-checkpoint/all-frame",
+        "parse"
+      ],
+      [
+        "parser-checkpoint/all-frame",
+        "check"
+      ],
+      [
+        "parser-checkpoint/computed-before-continuation",
+        "parse"
+      ],
+      [
+        "parser-checkpoint/computed-before-continuation",
+        "check"
+      ],
+      [
+        "parser-checkpoint/constructor-before-continuation",
+        "parse"
+      ],
+      [
+        "parser-checkpoint/constructor-before-continuation",
+        "check"
+      ],
+      [
+        "parser-checkpoint/do-frame",
+        "parse"
+      ],
+      [
+        "parser-checkpoint/do-frame",
+        "check"
+      ],
+      [
+        "parser-checkpoint/lambda-before-continuation",
+        "parse"
+      ],
+      [
+        "parser-checkpoint/lambda-before-continuation",
+        "check"
+      ],
+      [
+        "parser-checkpoint/lambda-frame",
+        "parse"
+      ],
+      [
+        "parser-checkpoint/lambda-frame",
+        "check"
+      ],
+      [
+        "parser-checkpoint/local-frame",
+        "parse"
+      ],
+      [
+        "parser-checkpoint/local-frame",
+        "check"
+      ],
+      [
+        "parser-checkpoint/match-frame",
+        "parse"
+      ],
+      [
+        "parser-checkpoint/match-frame",
+        "check"
+      ],
+      [
+        "parser-checkpoint/module-alias-frame",
+        "parse"
+      ],
+      [
+        "parser-checkpoint/module-alias-frame",
+        "check"
+      ],
+      [
+        "parser-checkpoint/parallel-frame",
+        "parse"
+      ],
+      [
+        "parser-checkpoint/parallel-frame",
+        "check"
+      ],
+      [
+        "parser-checkpoint/parameter-frame",
+        "parse"
+      ],
+      [
+        "parser-checkpoint/parameter-frame",
+        "check"
+      ],
+      [
+        "parser-checkpoint/qualified-before-continuation",
+        "parse"
+      ],
+      [
+        "parser-checkpoint/qualified-before-continuation",
+        "check"
+      ],
+      [
+        "parser-checkpoint/type-before-continuation",
+        "parse"
+      ],
+      [
+        "parser-checkpoint/type-before-continuation",
+        "check"
+      ],
+      [
+        "rejected-stage/body-before-later-pattern",
+        "parse"
+      ],
+      [
+        "rejected-stage/body-before-later-pattern",
+        "check"
+      ],
+      [
+        "rejected-stage/group-before-later-syntax",
+        "parse"
+      ],
+      [
+        "rejected-stage/group-before-later-syntax",
+        "check"
+      ],
+      [
+        "rejected-stage/prior-local-pattern-before-later-syntax",
+        "parse"
+      ],
+      [
+        "rejected-stage/prior-local-pattern-before-later-syntax",
+        "check"
+      ],
+      [
+        "rejected-stage/prior-row-pattern-before-body-syntax",
+        "parse"
+      ],
+      [
+        "rejected-stage/prior-row-pattern-before-body-syntax",
+        "check"
+      ]
+    ],
+    "oldSummary": {
+      "tests": 101,
+      "allTests": 1498,
+      "externalTests": 100,
+      "excludedTests": 1497,
+      "probes": 196,
+      "statuses": {
+        "observed": 1,
+        "fail": 9,
+        "pass": 186
+      },
+      "lanes": {
+        "parse": {
+          "observed": 1,
+          "pass": 93,
+          "fail": 4
+        },
+        "check": {
+          "fail": 5,
+          "pass": 93
+        },
+        "interpreter": {},
+        "js": {},
+        "native": {},
+        "metal": {},
+        "cuda": {}
+      },
+      "namespaces": {
+        "base": {},
+        "check": {
+          "observed": 1,
+          "fail": 1
+        },
+        "compile": {},
+        "comptime": {},
+        "cost": {},
+        "eval": {},
+        "flatten": {},
+        "gfx": {},
+        "grade": {},
+        "halt": {},
+        "import": {},
+        "io": {},
+        "page": {},
+        "parse": {},
+        "printer": {},
+        "proof": {},
+        "reg": {},
+        "rfc": {},
+        "run": {},
+        "show": {},
+        "spec": {},
+        "state": {},
+        "stats": {},
+        "stuck": {}
+      },
+      "checkerRejections": 3,
+      "proofTrustRejections": 0,
+      "frontendRejections": 108,
+      "uncheckedExecutions": 0
+    },
+    "newSummary": {
+      "tests": 101,
+      "allTests": 1498,
+      "externalTests": 100,
+      "excludedTests": 1497,
+      "probes": 196,
+      "statuses": {
+        "observed": 1,
+        "fail": 3,
+        "pass": 192
+      },
+      "lanes": {
+        "parse": {
+          "observed": 1,
+          "pass": 96,
+          "fail": 1
+        },
+        "check": {
+          "fail": 2,
+          "pass": 96
+        },
+        "interpreter": {},
+        "js": {},
+        "native": {},
+        "metal": {},
+        "cuda": {}
+      },
+      "namespaces": {
+        "base": {},
+        "check": {
+          "observed": 1,
+          "fail": 1
+        },
+        "compile": {},
+        "comptime": {},
+        "cost": {},
+        "eval": {},
+        "flatten": {},
+        "gfx": {},
+        "grade": {},
+        "halt": {},
+        "import": {},
+        "io": {},
+        "page": {},
+        "parse": {},
+        "printer": {},
+        "proof": {},
+        "reg": {},
+        "rfc": {},
+        "run": {},
+        "show": {},
+        "spec": {},
+        "state": {},
+        "stats": {},
+        "stuck": {}
+      },
+      "checkerRejections": 3,
+      "proofTrustRejections": 0,
+      "frontendRejections": 114,
+      "uncheckedExecutions": 0
+    },
+    "rawGate": {
+      "complete": false,
+      "pass": false,
+      "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert.ok(paired.selectedComplete&&!paired.error)\n\n    at file:///home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase19/instance-paired.mjs:12:247\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+      "selectedComplete": false,
+      "attempts": {
+        "reference": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-group196-01/selected/reference.json",
+          "argv": [
+            "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+            "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-group196-01/selected/harness/tools/conformance/run.mjs",
+            "--upstream",
+            "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8",
+            "--timeout",
+            "120000",
+            "--jobs",
+            "1",
+            "--worker-mode",
+            "persistent",
+            "--recycle-after",
+            "64",
+            "--rss-limit-mb",
+            "4096",
+            "--stack-kb",
+            "4096",
+            "--heap-mb",
+            "4096",
+            "--retain",
+            "failed",
+            "--selected-exit",
+            "1",
+            "--selection",
+            "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-group196-01/selected/selection.json",
+            "--adapter",
+            "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-group196-01/selected/harness/tools/conformance/adapters/upstream.mjs",
+            "--output",
+            "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-group196-01/selected/reference.json"
+          ],
+          "exitCode": 0,
+          "signal": null,
+          "error": null,
+          "sha256": "465f672efcec2998a5da78e37a902f5c5ccd7121e1c521710b5887930f3fa2e4"
+        },
+        "candidate": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-group196-01/selected/candidate.json",
+          "argv": [
+            "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+            "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-group196-01/selected/harness/tools/conformance/run.mjs",
+            "--upstream",
+            "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8",
+            "--timeout",
+            "120000",
+            "--jobs",
+            "1",
+            "--worker-mode",
+            "persistent",
+            "--recycle-after",
+            "64",
+            "--rss-limit-mb",
+            "4096",
+            "--stack-kb",
+            "4096",
+            "--heap-mb",
+            "4096",
+            "--retain",
+            "failed",
+            "--selected-exit",
+            "1",
+            "--selection",
+            "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-group196-01/selected/selection.json",
+            "--adapter",
+            "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/tools/conformance/adapters/typed.mjs",
+            "--output",
+            "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-group196-01/selected/candidate.json"
+          ],
+          "exitCode": 1,
+          "signal": null,
+          "error": null,
+          "sha256": "9da842dba6f6ccf1bd57c02cb10e7f2f5fd700d5c8a3a1c2a263265c7b404b1f"
+        }
+      }
+    }
+  },
+  "programExecutionObservations": 12,
+  "cliChecks": 42,
+  "statistics": {
+    "typescript": {
+      "samples": 2,
+      "meanRequestMs": 2372.3286805000002,
+      "meanProcessWallMs": 3446.3019059999997,
+      "maxRssKiB": 478512
+    },
+    "baseline": {
+      "samples": 2,
+      "meanRequestMs": 9858.5295885,
+      "meanProcessWallMs": 10972.682316000002,
+      "maxRssKiB": 655168
+    },
+    "candidate": {
+      "samples": 2,
+      "meanRequestMs": 9837.01657,
+      "meanProcessWallMs": 10941.223922500001,
+      "maxRssKiB": 658024
+    }
+  },
+  "ratios": {
+    "baselineToTs": 3.1839004867497533,
+    "candidateToTs": 3.1747723272448556,
+    "baselineToCandidate": 1.0028752170436168,
+    "candidateProcessReduction": 0.0028669738714780513,
+    "candidateRequestReduction": 0.0021821731432539737
+  },
+  "timingDecision": "Neutral cost screen; no measured slowdown or new speedup claim. Two samples perimage, not statistical evidence of a general gain.",
+  "observedEditLoop": {
+    "buildSeconds": 16.695,
+    "validation36Seconds": 16.64,
+    "elapsedBuildStartThroughValidationSeconds": 34.677,
+    "scope": "One observed checked B1/derived build and36-control edit loop, concurrent environment; not a controlled performance comparison or full self-reproduction."
+  },
+  "retainedFailures": [
+    "Source02 semicolon regression; source03 superseded with same datatype checkpoint",
+    "Audit01 raw complete/health conflation",
+    "Audit02 candidate-only provenance compared with absent TS metadata",
+    "Promotion01 canonicalPath schema mismatch;0copied",
+    "Promotion02 supplied/host API lives in inputs;0copied",
+    "Original grouped raw runner incomplete/false with60 remaining strict differences"
+  ],
+  "remaining": "Main2 do-block diagnostic observations; broader60 group/pattern/etc observations, including3 failed fixture verdicts. Suites overlap and must not be summed. No new fixedpoint, kernel, GPU or generated-program speed claim.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase20/import-diagnostic-final.json",
+      "sha256": "d8e0c211a647737fd8a193697c9031690f99c05cd5ce8c3896402f38353cdf60",
+      "bytes": 23635
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-integration-audit-03/report.json",
+      "sha256": "682d64ebf7c178a093fc38366a86dbfa613e2e9497c297e7e2c2601e7d2dce7f",
+      "bytes": 36968
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-census-01.json",
+      "sha256": "adfc350d3aee13c2223b8e28e55c2744a64f9abfc80f5c1680a9f7429a945294",
+      "bytes": 14053
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-matrix-01/report.json",
+      "sha256": "81512a498b2e2f927b08320a35fa747cc137c0b2b5ae73ea9e692d0de6418e73",
+      "bytes": 689054
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-promotion-03/report.json",
+      "sha256": "267052927857909973e6a18a8252224381d0ea92fcff90b73159acf0aa5b7077",
+      "bytes": 81180
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-smoke-01/launcher.json",
+      "sha256": "30a077f7911dfe67378a431930fc3e6d481f6d870f3f633693a8c3e8923f7c3e",
+      "bytes": 2894
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase20/declaration-checkpoints-review.json",
+      "sha256": "4e595e0838925f4875c01e188ac5e476ed8de273f52fda3b48f2df68bbb09f4d",
+      "bytes": 11887
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-programs-01/report.json",
+      "sha256": "f7967415b780331ea7811868c8c8e1e7c2ea8114460e1d58d38ee6f42f8927a8",
+      "bytes": 8937
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/release.json",
+      "sha256": "b257dd17ea7e88c4f7ed7739fa5eb8a30aeae8badfbe5f2a8245e8ff98f2b946",
+      "bytes": 20912
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/build.json",
+      "sha256": "ac7573f32630d92ec81ccfdfb202ff835248afd6be3a7dd5e5e0504cfd3a32f2",
+      "bytes": 3806
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/validation-001/report.json",
+      "sha256": "95bccc61812c46e4b8b664449f9dad69ad6069683cc1323d7060a424999a51d3",
+      "bytes": 9188
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-smoke-01/checks/report.json",
+      "sha256": "ea2aaa5f6843e42ab4b61a3eab3f9d46f441e18dae2cc3352326753ed126c7cc",
+      "bytes": 116706
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-integration-audit-01/report.json",
+      "sha256": "109224a5970a25464551edcc24a8c49a783b6aabe9663abfbae237e4d8766dbf",
+      "bytes": 1314
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-integration-audit-02/report.json",
+      "sha256": "c47bacdbd602e6caefeef98387c00975b56bb2eda39bc0b1d4deeef1be456b27",
+      "bytes": 42256
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-promotion-01/report.json",
+      "sha256": "dc513700162659311464efe0ec1f89093c3c3d1e4a8d8cd3d46e2196e07009f1",
+      "bytes": 1443
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-promotion-02/report.json",
+      "sha256": "d5b4d12f1a8d6d8697e42e28cc2d417de977837d0c381eb2972ff868c1040f67",
+      "bytes": 3543
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-matrix-inputs-01/matrix.json",
+      "sha256": "425c5cdba90e43c507328a03e788c4833c0b0f7203abd6c159a5128634e0eba6",
+      "bytes": 563
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-matrix-inputs-01/host-review.json",
+      "sha256": "bf05cec7d544ccbe88ac714e6374c2197872dff86a3680c0a7a76885feba44cb",
+      "bytes": 28209
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-matrix-inputs-01/readiness.json",
+      "sha256": "60787466d02332cdf622246d810dbf070e4e61f5d0ee0cae2552acf6fb193841",
+      "bytes": 1832
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase20/declaration-release-report.py",
+      "sha256": "2eb6c40a0212b1a28e60793253673b3491d788e91c74c56161ca92e74e82b2d1",
+      "bytes": 11503
+    }
+  ]
+}

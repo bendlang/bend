@@ -1,0 +1,200 @@
+{
+  "kind": "phase20-new-declaration-program-execution",
+  "complete": true,
+  "pass": true,
+  "candidateApi": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/equality/api.mjs",
+    "sha256": "40c8f7f3b7cd0e96aef57d7d574ebfd85607cd4e096909d083b450b4d973362c"
+  },
+  "cpu": 2,
+  "observations": 12,
+  "exactObservations": 12,
+  "programs": 3,
+  "lanes": [
+    "check",
+    "interpreter",
+    "js",
+    "native"
+  ],
+  "expectedOutputs": {
+    "unindented": "41\n",
+    "comment-brace": "42\n",
+    "combined": "43\n"
+  },
+  "rows": [
+    {
+      "id": "phase20-program/combined",
+      "lane": "check",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "exactAgreement": true
+    },
+    {
+      "id": "phase20-program/combined",
+      "lane": "interpreter",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "exactAgreement": true
+    },
+    {
+      "id": "phase20-program/combined",
+      "lane": "js",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "exactAgreement": true
+    },
+    {
+      "id": "phase20-program/combined",
+      "lane": "native",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "exactAgreement": true
+    },
+    {
+      "id": "phase20-program/comment-brace",
+      "lane": "check",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "exactAgreement": true
+    },
+    {
+      "id": "phase20-program/comment-brace",
+      "lane": "interpreter",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "exactAgreement": true
+    },
+    {
+      "id": "phase20-program/comment-brace",
+      "lane": "js",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "exactAgreement": true
+    },
+    {
+      "id": "phase20-program/comment-brace",
+      "lane": "native",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "exactAgreement": true
+    },
+    {
+      "id": "phase20-program/unindented",
+      "lane": "check",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "exactAgreement": true
+    },
+    {
+      "id": "phase20-program/unindented",
+      "lane": "interpreter",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "exactAgreement": true
+    },
+    {
+      "id": "phase20-program/unindented",
+      "lane": "js",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "exactAgreement": true
+    },
+    {
+      "id": "phase20-program/unindented",
+      "lane": "native",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "exactAgreement": true
+    }
+  ],
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase20/declaration-programs.md",
+      "sha256": "69cb27214a0504ff43eab11583048c354673e3fe3ba8ca5e9f9145d898483e89",
+      "bytes": 1270
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase20/declaration-programs.mjs",
+      "sha256": "39f1285544250f88afd7628ccf4e718a42e2e9b964cbfbe9dd1342ee5c6b0868",
+      "bytes": 4536
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-programs-inputs-01/plan.json",
+      "sha256": "246d7998c10b2310f1dfbf724b16a73a25627e8481e4f17731b271a1e462b37a",
+      "bytes": 1862
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-programs-inputs-01/selection.json",
+      "sha256": "d50bee62e60177a85a98a51015fe5b968f91ff54ff449c045e62a0096ac7be2d",
+      "bytes": 838
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-programs-inputs-01/unindented.bend",
+      "sha256": "82b24551a1cb8e8c1f12ba8912b08dfe9b2cc2d312a63ee746d7dd3455446b35",
+      "bytes": 230
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-programs-inputs-01/comment-brace.bend",
+      "sha256": "141834a5549a7ff68a013fbf5cfe7f064c0a788189a6edc73a46c67dca789e32",
+      "bytes": 282
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-programs-inputs-01/combined.bend",
+      "sha256": "3dc463035f82d92e96db1af52ac3770616a7b73fff08e38b2c6e8e5ecd3095bd",
+      "bytes": 329
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-programs-01/report.json",
+      "sha256": "f7967415b780331ea7811868c8c8e1e7c2ea8114460e1d58d38ee6f42f8927a8",
+      "bytes": 8937
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-programs-01/consumed-tool.mjs",
+      "sha256": "39f1285544250f88afd7628ccf4e718a42e2e9b964cbfbe9dd1342ee5c6b0868",
+      "bytes": 4536
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-programs-01/target.json",
+      "sha256": "7bc6bbb6336976d05270c9579e41b199be8e743a369de7a65de5915f09c761d2",
+      "bytes": 526
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-programs-01/selected/paired.json",
+      "sha256": "d96b4015ca51eb22f337b7ba0892f6d7abd06792aad160e219d75e2c8c482710",
+      "bytes": 18334
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-programs-01/selected/reference.json",
+      "sha256": "3e3d1e3947e170d3d5ee4ba0df4f2277553b8ae9b42a68c2cc5a1f2aaa6c3382",
+      "bytes": 1896770
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-programs-01/selected/candidate.json",
+      "sha256": "f02cde095a8e948b8a9735cf6dddd000b23b497257d10eff42984c7ab116a7bc",
+      "bytes": 1919632
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-programs-01/selected-command/stdout",
+      "sha256": "753a0444217036dcb2eb8a195b79c000671708f5b91cf8c45a4751a96a5189e4",
+      "bytes": 157
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/declaration-programs-01/selected-command/stderr",
+      "sha256": "595dfea903849d20c9add34f1f8dbbb8f9a3241a41d440df2f804fab7f1499d6",
+      "bytes": 38
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/attempt.json",
+      "sha256": "e267ecbf9c0def2ff499cd4d77923f77b51ea892e160676cc12292845a7a2655",
+      "bytes": 225582
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/equality/api.mjs",
+      "sha256": "40c8f7f3b7cd0e96aef57d7d574ebfd85607cd4e096909d083b450b4d973362c",
+      "bytes": 913476
+    }
+  ],
+  "scope": "Actual checked and executed full programs using newly accepted constructor grammar; not a timing or general backend-conformance claim. Existing paired target retains failed outputs by policy.",
+  "finished": "2026-09-29T10:21:17.473510+00:00"
+}

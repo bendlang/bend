@@ -529,3 +529,23 @@ calls; the original emitter lowers these to a direct loop. This removes per-miss
 trampoline allocations without changing name equality, tail demand, book
 representation or the maintained generated-code transformation. See the
 [lookup report](../../implementation/phase17/find-worker.md).
+
+## Declaration grammar checkpoints (Phase20)
+
+`front/declarations.bend` uses the existing structured error owner for a pending
+`@unsafe` that is not followed by `def`. The datatype constructor loop admits
+name heads until the pinned `def`/`type`/`law` boundary; it no longer relies on
+indentation or immediate opening-brace lookahead. One header worker preserves
+name→alias→duplicate→brace validation order, then reuses the existing telescope.
+`f_space` skips whitespace/comments at datatype boundaries, preserving semicolons
+for the correct error; the loop exits through `f_top` on its already-spaced cursor.
+The general `f_skip`/`f_tops` behavior remains separate.
+
+The two existing match workers require a first term before consuming a colon or
+comma. `List.is_empty` examines the accumulator tag in constant time. Later
+optional separators retain their prior/pinned semantics. No contextual cursor,
+new result type, semantic state or host work is introduced. The independent
+[review](../../implementation/phase20/declaration-checkpoints-review.md) retains
+the rejected intermediate semicolon behavior; the
+[release report](../../implementation/phase20/declaration-checkpoints-release.md)
+binds the installed one-file correction and its execution/CLI/cost gates.

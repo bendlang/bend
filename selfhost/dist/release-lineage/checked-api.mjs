@@ -2188,7 +2188,7 @@ function $f_top$(_ts_0, _book_0, _imports_0, _unsafe_0, _scope_0) {
   return $f_choose$(($f_eq$(($f_tx$(_ts_0)), "def")), run_clo((_x_1) => {
   return $f_top_ready$(_ts_0, _book_0, _imports_0, _unsafe_0, _scope_0);
 }), run_clo((_x_2) => {
-  return $f_result$(_book_0, ($f_pn$(($f_err$(_ts_0, "expected def after @unsafe")))), _imports_0);
+  return $f_result$(_book_0, ($f_pn$(($fpe_error$(_ts_0, "expected def after @unsafe", "'def' (@unsafe marks the def below it)")))), _imports_0);
 }));
 }), run_clo((_x_3) => {
   return $f_top_ready$(_ts_0, _book_0, _imports_0, _unsafe_0, _scope_0);
@@ -4344,17 +4344,8 @@ function $f_pn$(_p_0) {
   return _n_0;
 }
 
-function $f_err$(_ts_0, _msg_0) {
-  const _x_0 = ($f_tx$(_ts_0));
-  const _x_1 = ("; got " + _x_0);
-  const _x_2 = (_msg_0 + _x_1);
-  const _x_3 = ($U32$show$(($f_col$(_ts_0))));
-  const _x_4 = (": " + _x_2);
-  const _x_5 = (_x_3 + _x_4);
-  const _x_6 = ($U32$show$(($f_line$(_ts_0))));
-  const _x_7 = (":" + _x_5);
-  const _x_8 = (_x_6 + _x_7);
-  return {$: "FParsed", "term": ($kt$("Error", ("line " + _x_8), 0, 0, {$: "Nil"})), "rest": {$: "Nil"}};
+function $fpe_error$(_ts_0, _legacy_0, _expected_0) {
+  return $fpe_legacy$(_ts_0, ($nm$(($f_pn$(($f_err$(_ts_0, _legacy_0)))))), _expected_0);
 }
 
 function $f_tl$(_ts_0) {
@@ -6474,7 +6465,7 @@ function $fpe_message$(_source_0, _offset_0, _end_0, _error_0, _observed_0) {
 function $f_import_leading$(_ts_0, _book_0, _imports_0, _unsafe_0) {
   if (_book_0.$ === "Nil") {
     return $f_choose$(_unsafe_0, run_clo((_x_0) => {
-  return $f_result$({$: "Nil"}, ($f_pn$(($f_err$(_ts_0, "expected def after @unsafe")))), _imports_0);
+  return $f_result$({$: "Nil"}, ($f_pn$(($fpe_error$(_ts_0, "expected def after @unsafe", "'def' (@unsafe marks the def below it)")))), _imports_0);
 }), run_clo((_x_1) => {
   return $f_import$(_ts_0, {$: "Nil"}, _imports_0);
 }));
@@ -6539,28 +6530,21 @@ function $f_def_header$(_ts_0, _book_0, _imports_0, _unsafe_0, _scope_0) {
 }));
 }
 
-function $fpe_error$(_ts_0, _legacy_0, _expected_0) {
-  return $fpe_legacy$(_ts_0, ($nm$(($f_pn$(($f_err$(_ts_0, _legacy_0)))))), _expected_0);
+function $f_err$(_ts_0, _msg_0) {
+  const _x_0 = ($f_tx$(_ts_0));
+  const _x_1 = ("; got " + _x_0);
+  const _x_2 = (_msg_0 + _x_1);
+  const _x_3 = ($U32$show$(($f_col$(_ts_0))));
+  const _x_4 = (": " + _x_2);
+  const _x_5 = (_x_3 + _x_4);
+  const _x_6 = ($U32$show$(($f_line$(_ts_0))));
+  const _x_7 = (":" + _x_5);
+  const _x_8 = (_x_6 + _x_7);
+  return {$: "FParsed", "term": ($kt$("Error", ("line " + _x_8), 0, 0, {$: "Nil"})), "rest": {$: "Nil"}};
 }
 
-function $f_line$(_ts_0) {
-  if (_ts_0.$ === "Nil") {
-    return 0;
-  } else {
-    const _t_0 = _ts_0["head"];
-    const _l_0 = _t_0["f_line"];
-    return _l_0;
-  }
-}
-
-function $f_col$(_ts_0) {
-  if (_ts_0.$ === "Nil") {
-    return 0;
-  } else {
-    const _t_0 = _ts_0["head"];
-    const _c_0 = _t_0["f_col"];
-    return _c_0;
-  }
+function $fpe_legacy$(_ts_0, _legacy_0, _expected_0) {
+  return {$: "FParsed", "term": ($kt$("Error", _legacy_0, ($f_line$(_ts_0)), ($f_col$(_ts_0)), {$: "Con", "head": ($kt$("ParseExpected", _expected_0, 0, 0, {$: "Nil"})), "tail": {$: "Con", "head": ($kt$("ParseToken", ($f_tx$(_ts_0)), 0, 0, {$: "Nil"})), "tail": {$: "Nil"}}})), "rest": {$: "Nil"}};
 }
 
 function $f_ascii_space_code$(_code_0) {
@@ -6633,6 +6617,16 @@ function $f_pair_op$(_s_0) {
 
 function $f_two$(_s_0) {
   return (($f_head$(_s_0)) + (($f_head$(($f_tail$(_s_0)))) + ""));
+}
+
+function $f_col$(_ts_0) {
+  if (_ts_0.$ === "Nil") {
+    return 0;
+  } else {
+    const _t_0 = _ts_0["head"];
+    const _c_0 = _t_0["f_col"];
+    return _c_0;
+  }
 }
 
 function $f_symbol_text$(_s_0, _c_0, _acc_0) {
@@ -8543,6 +8537,16 @@ function $f_expect$(_p_0, _s_0) {
 }));
 }
 
+function $f_line$(_ts_0) {
+  if (_ts_0.$ === "Nil") {
+    return 0;
+  } else {
+    const _t_0 = _ts_0["head"];
+    const _l_0 = _t_0["f_line"];
+    return _l_0;
+  }
+}
+
 function $f_def_context_header$(_ts_0, _rest_0, _book_0, _imports_0, _unsafe_0, _old_0, _scope_0) {
   const _prior_0 = _scope_0["prior"];
   const _index_0 = _scope_0["index"];
@@ -8580,10 +8584,6 @@ function $f_decl_find$(_name_0, _book_0, _scope_0) {
 }), run_clo((_x_1) => {
   return _local_0;
 }));
-}
-
-function $fpe_legacy$(_ts_0, _legacy_0, _expected_0) {
-  return {$: "FParsed", "term": ($kt$("Error", _legacy_0, ($f_line$(_ts_0)), ($f_col$(_ts_0)), {$: "Con", "head": ($kt$("ParseExpected", _expected_0, 0, 0, {$: "Nil"})), "tail": {$: "Con", "head": ($kt$("ParseToken", ($f_tx$(_ts_0)), 0, 0, {$: "Nil"})), "tail": {$: "Nil"}}})), "rest": {$: "Nil"}};
 }
 
 function $f_ascii_alpha$(_c_0) {
@@ -14321,7 +14321,7 @@ function $f_type_kind$(_name_0, _pars_0, _p_0, _book_0, _imports_0, _scope_0) {
   return $f_choose$(($f_eq$(($tg$(_ty_0)), "Error")), run_clo((_x_0) => {
   return $f_result$(_book_0, _ty_0, _imports_0);
 }), run_clo((_x_1) => {
-  return $f_type_ctors$(_name_0, _pars_0, _ty_0, run_loop($f_skip$(_ts_0)), _book_0, _imports_0, {$: "Nil"}, _scope_0);
+  return $f_type_ctors$(_name_0, _pars_0, _ty_0, run_loop($f_space$(_ts_0)), _book_0, _imports_0, {$: "Nil"}, _scope_0);
 }));
 }
 
@@ -15837,27 +15837,16 @@ function $f_import_local$(_path_0) {
 }
 
 function $f_type_ctors$(_name_0, _pars_0, _ty_0, _ts_0, _book_0, _imports_0, _ctors_0, _scope_0) {
-  const _x_0 = ($f_col$(_ts_0));
-  return $f_choose$(($Bool$and$((_x_0 > 0), ($f_eq$(($f_tx$(($f_tl$(_ts_0)))), "{")))), run_clo((_x_1) => {
-  return $f_choose$(($Bool$not$(($f_eq$(run_loop($f_alias$(($f_tx$(_ts_0)), _imports_0)), ($f_tx$(_ts_0)))))), run_clo((_x_2) => {
-  const _x_3 = run_loop($f_import_alias_head$(($f_tx$(_ts_0))));
-  const _x_4 = (_x_3 + " is an import's alias)");
-  return $f_result$(_book_0, ($f_pn$(($fpe_word$(_ts_0, "an import alias cannot name a constructor", ("a fresh constructor name (" + _x_4))))), _imports_0);
-}), run_clo((_x_5) => {
-  const _x_6 = ($Bool$not$(($f_eq$(($dk$(($f_find$(($f_tx$(_ts_0)), _ctors_0)))), "Missing"))));
-  const _x_7 = ($f_decl_ctor_taken$(($f_tx$(_ts_0)), _book_0, _scope_0));
-  return $f_choose$((_x_6 || _x_7), run_clo((_x_8) => {
-  const _x_9 = ($f_tx$(_ts_0));
-  const _x_10 = (_x_9 + ")");
-  const _x_11 = ($f_tx$(_ts_0));
-  const _x_12 = (_x_11 + ")");
-  return $f_result$(_book_0, ($f_pn$(($fpe_word$(_ts_0, ("expected a fresh constructor name (duplicate declaration: " + _x_10), ("a fresh constructor name (duplicate declaration: " + _x_12))))), _imports_0);
-}), run_clo((_x_13) => {
-  return $f_type_ctor$(_name_0, _pars_0, _ty_0, ($f_tx$(_ts_0)), run_loop($f_tele$(($f_tl$(($f_tl$(_ts_0)))), "}", {$: "Nil"})), _book_0, _imports_0, _ctors_0, _scope_0);
-}));
-}));
-}), run_clo((_x_14) => {
-  return $f_tops$(_ts_0, {$: "Con", "head": {$: "KDef", "name": _name_0, "kind": "ADT", "arity": ($terms_len$(_pars_0)), "templates": 0, "typ": ($f_tbind$(_pars_0, _ty_0)), "value": ($atom$("Absent")), "ctors": ($List$reverse$(_ctors_0)), "native": false, "unsafe": false}, "tail": _book_0}, _imports_0, false, _scope_0);
+  const _x_0 = ($f_ascii_alpha$(($f_head$(($f_tx$(_ts_0))))));
+  const _x_1 = ($Char$is_eq$(($f_head$(($f_tx$(_ts_0)))), "_"));
+  const _x_2 = ($f_eq$(($f_tx$(_ts_0)), "def"));
+  const _x_3 = ($f_eq$(($f_tx$(_ts_0)), "type"));
+  const _x_4 = (_x_2 || _x_3);
+  const _x_5 = ($f_eq$(($f_tx$(_ts_0)), "law"));
+  return $f_choose$(($Bool$and$((_x_0 || _x_1), ($Bool$not$((_x_4 || _x_5))))), run_clo((_x_6) => {
+  return $f_type_ctor_header$(_name_0, _pars_0, _ty_0, _ts_0, _book_0, _imports_0, _ctors_0, _scope_0);
+}), run_clo((_x_7) => {
+  return $f_top$(_ts_0, {$: "Con", "head": {$: "KDef", "name": _name_0, "kind": "ADT", "arity": ($terms_len$(_pars_0)), "templates": 0, "typ": ($f_tbind$(_pars_0, _ty_0)), "value": ($atom$("Absent")), "ctors": ($List$reverse$(_ctors_0)), "native": false, "unsafe": false}, "tail": _book_0}, _imports_0, false, _scope_0);
 }));
 }
 
@@ -17598,23 +17587,31 @@ function $f_import_parents$(_path_0) {
 }));
 }
 
-function $f_decl_ctor_taken$(_name_0, _book_0, _scope_0) {
-  const _prior_0 = _scope_0["prior"];
-  const _ns_0 = _scope_0["ns"];
-  const _x_0 = ($Bool$not$(($f_eq$(($dk$(run_loop($f_ctor_lookup$(_name_0, _book_0)))), "Missing"))));
-  const _x_1 = ($Bool$not$(($f_eq$(($dk$(run_loop($f_ctor_lookup$(_name_0, _prior_0)))), "Missing"))));
-  const _x_2 = (_x_0 || _x_1);
-  const _x_3 = ($Bool$not$(($f_eq$(($dk$(run_loop($f_ctor_lookup$(run_loop($f_qual_name$(_name_0, _ns_0)), _prior_0)))), "Missing"))));
-  return (_x_2 || _x_3);
-}
-
-function $f_type_ctor$(_name_0, _pars_0, _ty_0, _ctor_0, _p_0, _book_0, _imports_0, _ctors_0, _scope_0) {
-  const _fields_0 = _p_0["term"];
-  const _ts_0 = _p_0["rest"];
-  return $f_choose$(($f_eq$(($tg$(_fields_0)), "Error")), run_clo((_x_0) => {
-  return $f_result$(_book_0, _fields_0, _imports_0);
+function $f_type_ctor_header$(_name_0, _pars_0, _ty_0, _ts_0, _book_0, _imports_0, _ctors_0, _scope_0) {
+  return $f_choose$(($Bool$not$(($f_valid_name$(($f_tx$(_ts_0)))))), run_clo((_x_0) => {
+  return $f_result$(_book_0, ($f_pn$(run_loop($fpe_name_error$(_ts_0)))), _imports_0);
 }), run_clo((_x_1) => {
-  return $f_type_ctors$(_name_0, _pars_0, _ty_0, run_loop($f_skip$(_ts_0)), _book_0, _imports_0, {$: "Con", "head": {$: "KDef", "name": _ctor_0, "kind": "Ctr", "arity": ($terms_len$(($ks$(_fields_0)))), "templates": 0, "typ": ($f_tbind$(_pars_0, ($f_tbind$(($ks$(_fields_0)), ($kt$("ADT", _name_0, 0, 1, ($f_param_refs$(_pars_0)))))))), "value": ($kt$("Absent", _ctor_0, 0, 0, {$: "Nil"})), "ctors": {$: "Nil"}, "native": false, "unsafe": false}, "tail": _ctors_0}, _scope_0);
+  return $f_choose$(($Bool$not$(($f_eq$(run_loop($f_alias$(($f_tx$(_ts_0)), _imports_0)), ($f_tx$(_ts_0)))))), run_clo((_x_2) => {
+  const _x_3 = run_loop($f_import_alias_head$(($f_tx$(_ts_0))));
+  const _x_4 = (_x_3 + " is an import's alias)");
+  return $f_result$(_book_0, ($f_pn$(($fpe_word$(_ts_0, "an import alias cannot name a constructor", ("a fresh constructor name (" + _x_4))))), _imports_0);
+}), run_clo((_x_5) => {
+  const _x_6 = ($Bool$not$(($f_eq$(($dk$(($f_find$(($f_tx$(_ts_0)), _ctors_0)))), "Missing"))));
+  const _x_7 = ($f_decl_ctor_taken$(($f_tx$(_ts_0)), _book_0, _scope_0));
+  return $f_choose$((_x_6 || _x_7), run_clo((_x_8) => {
+  const _x_9 = ($f_tx$(_ts_0));
+  const _x_10 = (_x_9 + ")");
+  const _x_11 = ($f_tx$(_ts_0));
+  const _x_12 = (_x_11 + ")");
+  return $f_result$(_book_0, ($f_pn$(($fpe_word$(_ts_0, ("expected a fresh constructor name (duplicate declaration: " + _x_10), ("a fresh constructor name (duplicate declaration: " + _x_12))))), _imports_0);
+}), run_clo((_x_13) => {
+  return $f_choose$(($f_eq$(($f_tx$(run_loop($f_space$(($f_tl$(_ts_0)))))), "{")), run_clo((_x_14) => {
+  return $f_type_ctor$(_name_0, _pars_0, _ty_0, ($f_tx$(_ts_0)), run_loop($f_tele$(($f_tl$(run_loop($f_space$(($f_tl$(_ts_0)))))), "}", {$: "Nil"})), _book_0, _imports_0, _ctors_0, _scope_0);
+}), run_clo((_x_15) => {
+  return $f_result$(_book_0, ($f_pn$(($fpe_error$(run_loop($f_space$(($f_tl$(_ts_0)))), "expected {", "'{'")))), _imports_0);
+}));
+}));
+}));
 }));
 }
 
@@ -18883,14 +18880,24 @@ function $f_contains$(_s_0, _c_0) {
 }));
 }
 
-function $f_param_refs$(_pars_0) {
-  if (_pars_0.$ === "Nil") {
-    return {$: "Nil"};
-  } else {
-    const _p_0 = _pars_0["head"];
-    const _ps_0 = _pars_0["tail"];
-    return {$: "Con", "head": ($kt_span$("Ref", ($nm$(_p_0)), ($ix$(_p_0)), ($qt$(_p_0)), {$: "Nil"}, ($kb$(_p_0)), ($ke$(_p_0)))), "tail": ($f_param_refs$(_ps_0))};
-  }
+function $f_decl_ctor_taken$(_name_0, _book_0, _scope_0) {
+  const _prior_0 = _scope_0["prior"];
+  const _ns_0 = _scope_0["ns"];
+  const _x_0 = ($Bool$not$(($f_eq$(($dk$(run_loop($f_ctor_lookup$(_name_0, _book_0)))), "Missing"))));
+  const _x_1 = ($Bool$not$(($f_eq$(($dk$(run_loop($f_ctor_lookup$(_name_0, _prior_0)))), "Missing"))));
+  const _x_2 = (_x_0 || _x_1);
+  const _x_3 = ($Bool$not$(($f_eq$(($dk$(run_loop($f_ctor_lookup$(run_loop($f_qual_name$(_name_0, _ns_0)), _prior_0)))), "Missing"))));
+  return (_x_2 || _x_3);
+}
+
+function $f_type_ctor$(_name_0, _pars_0, _ty_0, _ctor_0, _p_0, _book_0, _imports_0, _ctors_0, _scope_0) {
+  const _fields_0 = _p_0["term"];
+  const _ts_0 = _p_0["rest"];
+  return $f_choose$(($f_eq$(($tg$(_fields_0)), "Error")), run_clo((_x_0) => {
+  return $f_result$(_book_0, _fields_0, _imports_0);
+}), run_clo((_x_1) => {
+  return $f_type_ctors$(_name_0, _pars_0, _ty_0, run_loop($f_space$(_ts_0)), _book_0, _imports_0, {$: "Con", "head": {$: "KDef", "name": _ctor_0, "kind": "Ctr", "arity": ($terms_len$(($ks$(_fields_0)))), "templates": 0, "typ": ($f_tbind$(_pars_0, ($f_tbind$(($ks$(_fields_0)), ($kt$("ADT", _name_0, 0, 1, ($f_param_refs$(_pars_0)))))))), "value": ($kt$("Absent", _ctor_0, 0, 0, {$: "Nil"})), "ctors": {$: "Nil"}, "native": false, "unsafe": false}, "tail": _ctors_0}, _scope_0);
+}));
 }
 
 function $f_grow_args$(_n_0, _op_0, _min_0, _p_0) {
@@ -19660,6 +19667,16 @@ function $ki_eql_left$(_e_0, _ctx_0, _t_0, _a_0, _b_0) {
 
 function $ki_ann_done$(_t_0, _a_0, _b_0) {
   return $both$(_a_0, _b_0, ($k_with_children$(_t_0, {$: "Con", "head": ($ct$(_b_0)), "tail": {$: "Con", "head": run_loop($kid$(_t_0, 1)), "tail": {$: "Nil"}}})), run_loop($kid$(_t_0, 1)), false);
+}
+
+function $f_param_refs$(_pars_0) {
+  if (_pars_0.$ === "Nil") {
+    return {$: "Nil"};
+  } else {
+    const _p_0 = _pars_0["head"];
+    const _ps_0 = _pars_0["tail"];
+    return {$: "Con", "head": ($kt_span$("Ref", ($nm$(_p_0)), ($ix$(_p_0)), ($qt$(_p_0)), {$: "Nil"}, ($kb$(_p_0)), ($ke$(_p_0)))), "tail": ($f_param_refs$(_ps_0))};
+  }
 }
 
 function $f_args_base$(_ts_0, _end_0, _acc_0) {
@@ -21298,14 +21315,20 @@ function $f_atom_nat_plus$(_lit_0, _p_0) {
 }
 
 function $f_match_heads$(_ts_0, _indent_0, _acc_0) {
-  return $f_choose$(($f_eq$(($f_tx$(_ts_0)), ":")), run_clo((_x_0) => {
-  return $f_match_begin$(run_loop($f_skip$(($f_tl$(_ts_0)))), _indent_0, ($List$reverse$(_acc_0)));
-}), run_clo((_x_1) => {
-  return $f_match_head$(run_loop($f_expr$(run_loop($f_choose$(($f_eq$(($f_tx$(_ts_0)), ",")), run_clo((_x_2) => {
-  return $f_tl$(_ts_0);
+  const _x_0 = ($f_eq$(($f_tx$(_ts_0)), ":"));
+  const _x_1 = ($f_eq$(($f_tx$(_ts_0)), ","));
+  return $f_choose$(($Bool$and$(($List$is_empty$(_acc_0)), (_x_0 || _x_1))), run_clo((_x_2) => {
+  return $fpe_error$(_ts_0, "expected term", "a term");
 }), run_clo((_x_3) => {
+  return $f_choose$(($f_eq$(($f_tx$(_ts_0)), ":")), run_clo((_x_4) => {
+  return $f_match_begin$(run_loop($f_skip$(($f_tl$(_ts_0)))), _indent_0, ($List$reverse$(_acc_0)));
+}), run_clo((_x_5) => {
+  return $f_match_head$(run_loop($f_expr$(run_loop($f_choose$(($f_eq$(($f_tx$(_ts_0)), ",")), run_clo((_x_6) => {
+  return $f_tl$(_ts_0);
+}), run_clo((_x_7) => {
   return _ts_0;
 }))), 0)), _indent_0, _acc_0);
+}));
 }));
 }
 
@@ -22376,21 +22399,27 @@ function $f_nat_prefix$(_n_0, _b_0) {
 }
 
 function $f_case_pats$(_ts_0, _indent_0, _heads_0, _rows_0, _pats_0, _start_0) {
-  return $f_choose$(($f_eq$(($f_tx$(_ts_0)), ":")), run_clo((_x_0) => {
-  const _x_1 = ($terms_len$(_pats_0));
-  const _x_2 = ($terms_len$(_heads_0));
-  return $f_choose$((_x_1 === _x_2), run_clo((_x_3) => {
+  const _x_0 = ($f_eq$(($f_tx$(_ts_0)), ":"));
+  const _x_1 = ($f_eq$(($f_tx$(_ts_0)), ","));
+  return $f_choose$(($Bool$and$(($List$is_empty$(_pats_0)), (_x_0 || _x_1))), run_clo((_x_2) => {
+  return $fpe_error$(_ts_0, "expected term", "a term");
+}), run_clo((_x_3) => {
+  return $f_choose$(($f_eq$(($f_tx$(_ts_0)), ":")), run_clo((_x_4) => {
+  const _x_5 = ($terms_len$(_pats_0));
+  const _x_6 = ($terms_len$(_heads_0));
+  return $f_choose$((_x_5 === _x_6), run_clo((_x_7) => {
   return $f_case_body$(run_loop($f_body_context$(($f_tl$(_ts_0)), ((_indent_0 + 1) >>> 0))), _indent_0, _heads_0, _rows_0, ($List$reverse$(_pats_0)));
-}), run_clo((_x_4) => {
-  const _x_5 = ($U32$show$(($terms_len$(_heads_0))));
-  return $fpe_span$(_start_0, _ts_0, "one pattern is required per match scrutinee", (_x_5 + " patterns (one per scrutinee)"), "");
-}));
-}), run_clo((_x_6) => {
-  return $f_case_pat$(run_loop($f_expr$(run_loop($f_choose$(($f_eq$(($f_tx$(_ts_0)), ",")), run_clo((_x_7) => {
-  return $f_tl$(_ts_0);
 }), run_clo((_x_8) => {
+  const _x_9 = ($U32$show$(($terms_len$(_heads_0))));
+  return $fpe_span$(_start_0, _ts_0, "one pattern is required per match scrutinee", (_x_9 + " patterns (one per scrutinee)"), "");
+}));
+}), run_clo((_x_10) => {
+  return $f_case_pat$(run_loop($f_expr$(run_loop($f_choose$(($f_eq$(($f_tx$(_ts_0)), ",")), run_clo((_x_11) => {
+  return $f_tl$(_ts_0);
+}), run_clo((_x_12) => {
   return _ts_0;
 }))), 0)), _indent_0, _heads_0, _rows_0, _pats_0, _start_0);
+}));
 }));
 }
 
