@@ -1,0 +1,38 @@
+#!/usr/bin/env python3
+from pathlib import Path
+import json,hashlib,shutil
+r=Path(__file__).resolve().parents[4];out=r/'selfhost/build/phase19/context-body-controls-01';out.mkdir()
+sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest();shutil.copy2(r/'selfhost/build/phase19/context-controls-01/prior.bend',out/'prior.bend');cases=[]
+def add(id,text,header=')',ns='',aliases=None,supported=True):
+ cases.append(dict(id=id,text=text,header=header,namespace=ns,aliases=aliases or {},supported=supported,sourceBegin=4097,outer=0))
+add('computed-before-continuation','f(x) = y; return z')
+add('rhs-before-computed','f(x) = return z')
+add('computed-before-different-syntax','f(x) = y; )')
+add('plain-local','x = y; f(x)')
+add('shadow-local','x = x; f(x)','x: A)')
+add('two-locals','x = y; z = x; f(z)')
+add('underscore-local','_ = y; f(_)')
+add('bound-empty-pattern','x() = y; f(x)','x: A)')
+add('unbound-empty-pattern','x() = y; return z')
+add('bound-repeated-empty-pattern','x()() = y; x','x: A)')
+add('constructor-before-continuation','C = y; return z')
+add('constructor-rhs-first','C = return z')
+add('family-as-binder','Fam = y; Fam')
+add('bound-alias-pattern','M.f = x; return z','M.f: A)',aliases={'M':'mod'})
+add('bound-alias-pattern-newline','M.f = x\nreturn z','M.f: A)',aliases={'M':'mod'})
+add('bound-alias-pattern-spaces','M.f = x;   return z','M.f: A)',aliases={'M':'mod'})
+add('earlier-name-ambiguity','M.f(x) = y; return z',aliases={'M':'mod'})
+add('earlier-name-ambiguity-space','M.f (x) = y; return z',aliases={'M':'mod'})
+add('rhs-alias-before-pattern','f(x) = M.f; return z',aliases={'M':'mod'})
+add('computed-bound-argument','f(x) = y; return z','x: A)')
+add('nested-rhs','x = f(g(y)); x')
+add('newline-local','x = y\nf(x)')
+add('newline-later-error','f(x) = y\nreturn z')
+add('earlier-local-open-before-error','x = y; f(x) = z; return q')
+add('sibling-a','x = y; x','x: A)');add('sibling-b','x = y; x','y: A)');add('repeated-sibling-a','x = y; x','x: A)')
+add('bare-body','f(x)');add('empty-body','');add('missing-rhs','x =');add('missing-continuation','x = y;')
+for id,text in [('typed','x : A = y; x'),('parallel','x y = a b; x'),('match','match x:\n case y: y'),('erased','-x = y; x'),('ctor','C{} = y; y'),('lambda','x => x'),('group','(x = y; x)'),('do','do A<>: return x'),('unsupported-before-later-alias','x = (y); M.f')]:
+ add('unsupported-'+id,text,aliases={'M':'mod'},supported=False)
+data=dict(stage='private ordinary-local Body syntax',parentAttempt=str(r/'selfhost/build/phase19/context-grammar-build-02'),priorFile=str(out/'prior.bend'),cases=cases,coverageLimits=['No Core','No row/group/do implementation','Unsupported is not conformance'])
+(out/'cases.json').write_text(json.dumps(data,indent=2)+'\n');shutil.copy2(__file__,out/'consumed-prepare.py')
+files=[Path(__file__),r/'design/phase19/body-pattern-checkpoints.md',r/'design/phase19/body-pattern-stage3-interface.md',out/'cases.json',out/'prior.bend'];(out/'manifest.json').write_text(json.dumps(dict(complete=True,inputs=[dict(file=str(p),sha256=sha(p))for p in files]),indent=2)+'\n');print(out)
