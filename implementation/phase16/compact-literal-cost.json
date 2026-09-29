@@ -1,0 +1,115 @@
+{
+  "kind": "phase16-compact-literal-cost-summary",
+  "complete": true,
+  "pass": true,
+  "installationEligible": false,
+  "report": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/compact-literal-matrix-01/report.json",
+    "sha256": "758769207fba945c19bd871ecc8d5b325de0388e061ebd802195b91f4d27bc7f"
+  },
+  "plan": {
+    "file": "/home/ai/bend2/build/publish/bend/design/phase16/compact-literal-cost.md",
+    "sha256": "6199153f20613ddc73cbc93fe3af1bbdf5957b9525d8a5f9e8fb823d4ebb9c53"
+  },
+  "source": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/wave9-build-01/snapshot/build/typed/snapshots/36f8522f55ff96962e9e6ab55099496541601b24138caee76fb7e63e00ba07be/compiler.bend",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/wave9-build-01/snapshot/build/typed/snapshots/36f8522f55ff96962e9e6ab55099496541601b24138caee76fb7e63e00ba07be/compiler.bend",
+    "sha256": "c04b61d3956cfb0c3b67895c88fe185160fa4b709d1b8c26145e77f22fa31f3f"
+  },
+  "statistics": {
+    "typescript": {
+      "samples": 2,
+      "meanRequestMs": 1921.9675235,
+      "meanProcessWallMs": 2996.2357209999986,
+      "maxRssKiB": 444804
+    },
+    "baseline": {
+      "samples": 2,
+      "meanRequestMs": 29654.359142,
+      "meanProcessWallMs": 30833.895645999997,
+      "maxRssKiB": 1709868
+    },
+    "candidate": {
+      "samples": 2,
+      "meanRequestMs": 9624.843196,
+      "meanProcessWallMs": 10730.003335999998,
+      "maxRssKiB": 594960
+    }
+  },
+  "ratios": {
+    "baselineToTs": 10.290877793723498,
+    "candidateToTs": 3.581161275394862,
+    "baselineToCandidate": 2.873614730626399,
+    "candidateProcessReduction": 0.6520062382259514,
+    "candidateRequestReduction": 0.6754324330560844
+  },
+  "memoryReduction": 0.6520433156243639,
+  "rows": [
+    {
+      "variant": "typescript",
+      "processMs": 2954.0999949999996,
+      "requestMs": 1878.947796,
+      "maxRssKiB": 444804
+    },
+    {
+      "variant": "baseline",
+      "processMs": 30909.108654,
+      "requestMs": 29714.97255,
+      "maxRssKiB": 1707892
+    },
+    {
+      "variant": "candidate",
+      "processMs": 10713.431939000002,
+      "requestMs": 9609.699198,
+      "maxRssKiB": 593908
+    },
+    {
+      "variant": "candidate",
+      "processMs": 10746.574732999994,
+      "requestMs": 9639.987194,
+      "maxRssKiB": 594960
+    },
+    {
+      "variant": "baseline",
+      "processMs": 30758.682638,
+      "requestMs": 29593.745734,
+      "maxRssKiB": 1709868
+    },
+    {
+      "variant": "typescript",
+      "processMs": 3038.3714469999977,
+      "requestMs": 1964.987251,
+      "maxRssKiB": 439536
+    }
+  ],
+  "sourceCounts": {
+    "baseline": {
+      "modules": 59,
+      "physicalLines": 16038,
+      "nonblankLines": 13676,
+      "bytes": 561327,
+      "definitions": 1621,
+      "laws": 776,
+      "types": 66
+    },
+    "candidate": {
+      "modules": 59,
+      "physicalLines": 16142,
+      "nonblankLines": 13766,
+      "bytes": 567765,
+      "definitions": 1633,
+      "laws": 776,
+      "types": 66
+    }
+  },
+  "limitations": [
+    "Two serial samples per image, single machine and workload.",
+    "Candidate also contains the small constructor-scope correction.",
+    "Known memo identity/size boundaries prevent promotion.",
+    "No generated-program runtime, new fixed point or kernel claim."
+  ],
+  "tool": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase16/compact-literal-cost-report.py",
+    "sha256": "16c17f56c05471a791b02321309b45a96cadbea0c07a85e8c7dd573ebd74a162"
+  }
+}

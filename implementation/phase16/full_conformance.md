@@ -366,3 +366,31 @@ Its initial union with wave9 and constructor scope passes checked construction
 and the maintained 36 controls; full integration and canonical memo identity
 remain under validation. No Phase16 image is installed. Final same-image
 histories, CLI, performance and release gates remain required.
+
+
+## Compact literal integration and measured recovery
+
+`literal-context-build-01` composes wave9, the complete compact-literal handoff
+and constructor-scope correction. `literal-context-frontend-01` preserves all
+2,996 primitive outcomes and the same two exact differences, with zero lost
+matches. `literal-context-checks-01` has 197/198 exact observations, retaining
+the known same-body instance chronology gap; `literal-context-literals-01`
+passes all 176 observations exactly. Preparation failures01/02 are retained;
+03 resolves the two overlapping files explicitly, and04 adds the one-file
+namespace correction only after verifying the complete owner delta.
+
+The [exclusive cost matrix](compact-literal-cost.md) measures **30.8339→10.7300 s**
+on identical wave9 compiler source, **2.87× faster /65.20% less process time**.
+Pinned TS takes2.9962 s, reducing the same-window ratio10.29×→3.58×. Peak RSS
+falls1,709,868→594,960 KiB (65.20%); request time falls67.54%. All six ordinary
+type/trust checks pass with identical unsafe-definition sets. Each image has two
+fresh-process samples; all competing compiler/archive jobs stayed closed.
+
+The measured candidate contains the small constructor-scope correction as well
+as literal compaction. Its complete host delta was reviewed and hashed. The
+maintained source is16,142 physical lines (+104 over wave9),13,766 nonblank,
+567,765 bytes,1,633 definitions,776 laws and66 types in59 modules. This recovers
+substantial runtime cost without reducing source LOC. Known memo identity and
+growth-boundary gaps still prevent promotion; explicit Lambda presence and a
+single exact JSON key are the next independently validated stage. Production
+remains Phase15 and all final combined-image gates remain required.

@@ -1,0 +1,749 @@
+{
+  "kind": "phase16-compact-literal-checkpoint",
+  "status": "representation correctness supported; promotion blocked pending canonical memo keys and root integration",
+  "source": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-source-05/project",
+  "parent": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/wave6-source-01/project",
+  "handoff": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-handoff-01/manifest.json",
+    "sha256": "bff9c0a10d5fc37d3a748a139a0873b934893172d0f803ae0bae2a7ed9e04a72"
+  },
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-build-05/equality/api.mjs",
+    "sha256": "742df03e9aef1aa2e7303bab44afa79c22b8da0659ae1d6a3f1cd25df69c3e7e"
+  },
+  "sourceCost": {
+    "before": {
+      "modules": 59,
+      "physicalLines": 15759,
+      "nonblankLines": 13436,
+      "bytes": 544617,
+      "definitions": 1585,
+      "laws": 776,
+      "types": 63
+    },
+    "after": {
+      "modules": 59,
+      "physicalLines": 15853,
+      "nonblankLines": 13517,
+      "bytes": 550244,
+      "definitions": 1596,
+      "laws": 776,
+      "types": 63
+    }
+  },
+  "gates": {
+    "representation48": {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-transport-01/report.json",
+        "sha256": "a971a9cf9f4dafbaa179aeef436fa404455bb0fdaaf357371cb2f7638aed2552"
+      },
+      "complete": true,
+      "pass": true,
+      "exactDifferences": null,
+      "rows": 48
+    },
+    "maintained36": {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-build-05/validation-001/report.json",
+        "sha256": "a3e69e17ae288c5796dad3facb6f1537a1fafec50a3d170197fd5cc459716d59"
+      },
+      "complete": true,
+      "pass": true,
+      "exactDifferences": 2,
+      "rows": 36
+    },
+    "literal176": {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-focus-05/report.json",
+        "sha256": "0a6e4eb197d5ca9c54f905476ed60e2eec950fdd457a1de2365da2d5294997ca"
+      },
+      "complete": true,
+      "pass": true,
+      "exactDifferences": 0,
+      "rows": 176
+    },
+    "direct143": {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-direct-01/report.json",
+        "sha256": "230b48c78de3137238eefcf610530b4a8838da35510b96f1eef58a6bb79aef1c"
+      },
+      "complete": true,
+      "pass": true,
+      "exactDifferences": null,
+      "rows": 143
+    },
+    "host31": {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-host-01/report.json",
+        "sha256": "1ae54d0ba1a9c9e9687ac9ddd2d1ca70b0c5b4da5dd0ac47c50727f5167e217c"
+      },
+      "complete": true,
+      "pass": true,
+      "exactDifferences": null,
+      "rows": 31
+    },
+    "backend41": {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-backend-07/report.json",
+        "sha256": "bcc5c24ed8d320e5e1bfb78c51bcc7c7067f09b943c18f0ebac7bd5dc6ab789f"
+      },
+      "complete": true,
+      "pass": true,
+      "exactDifferences": 0,
+      "rows": 41
+    }
+  },
+  "sameSourceCensus": {
+    "source": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/wave4-build-02/snapshot/build/typed/snapshots/3d0d1106a0b8b0cfa2e437a99d92e9f89ed7bae7fadaa125b827d0ad8b349685/compiler.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/wave4-build-02/snapshot/build/typed/snapshots/3d0d1106a0b8b0cfa2e437a99d92e9f89ed7bae7fadaa125b827d0ad8b349685/compiler.bend",
+      "sha256": "f90cfb97987b4a0f13311ac368eb179c2f77439ae9650cec200f12df10220380"
+    },
+    "boundary": "Final freshened loaded book. Earlier serial full arm explicitly validates and freshens; new public seeded loader executes that same successful validation/freshening path. Same checked Base pin and source graph.",
+    "serialization": "Exact full named-field linked Con/Nil JSON using identical bookDigest framing; not the newline stream from compact-census01.",
+    "baseline": {
+      "objects": 8648663,
+      "terms": 2171045,
+      "definitions": 3015,
+      "binders": 20905,
+      "locatedTerms": 150871
+    },
+    "candidate": {
+      "objects": 575787,
+      "terms": 152620,
+      "ordinaryTerms": 146499,
+      "literalTerms": 6121,
+      "literalKinds": {
+        "String": 3636,
+        "U32": 2407,
+        "Nat": 76,
+        "F32": 2
+      },
+      "definitions": 3015,
+      "locatedTerms": 150871
+    },
+    "baselineSerialized": {
+      "sha256": "53a70dffabc420ae52bbe3ba7ad569d7db5239993d08c42896eda92cc7eb7071",
+      "bytes": 337202666,
+      "definitions": 2894
+    },
+    "candidateSerialized": {
+      "bytes": 25324867,
+      "definitions": 2894,
+      "sha256": "9a12c77d8f1e7912de847d5ae1d9f8254fe0c2e9367ef7f372ab7c008a39a311"
+    },
+    "termReductionFraction": 0.9297020559223784,
+    "objectReductionFraction": 0.9334247385983244,
+    "serializedByteReductionFraction": 0.9248971922422464,
+    "checked": true,
+    "timingClaim": false
+  },
+  "memo": {
+    "kind": "phase16-compact-literal-memo-boundaries",
+    "complete": true,
+    "inputs": [
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase16/checker-literal-memo-02.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase16/checker-literal-memo-02.mjs",
+        "sha256": "187dccd3c2ae95ed3f894711c1163299d20b10287a0e2add14c75694bbee32ef"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-memo-controls-03/direct.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-memo-controls-03/direct.json",
+        "sha256": "6c6487c7774240e4eecff2f2503380a55e671dc8c591cbcbde5ce139a1ca58af"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-build-05/equality/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-build-05/equality/api.mjs",
+        "sha256": "742df03e9aef1aa2e7303bab44afa79c22b8da0659ae1d6a3f1cd25df69c3e7e"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8/bend2/base.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8/bend2/base.bend",
+        "sha256": "00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-build-05/snapshot/build/typed/cache/base-742df03e9aef1aa2e7303bab44afa79c22b8da0659ae1d6a3f1cd25df69c3e7e-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-build-05/snapshot/build/typed/cache/base-742df03e9aef1aa2e7303bab44afa79c22b8da0659ae1d6a3f1cd25df69c3e7e-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json",
+        "sha256": "fa37ec69bc32b525c0609e4ddaf9b7540ba97b2ba1b02554bfb859bf3b4c2cf3"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8/bend2/bend.ts",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8/bend2/bend.ts",
+        "sha256": "924197360cefc61a9314072e9cb1ef46a9266550eb527f535c36839a3b102bcb"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-build-05/snapshot/tools/typed-driver.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-build-05/snapshot/tools/typed-driver.mjs",
+        "sha256": "740a2dc05ad7770399866e588c535c6e7b3e8043815c1c920c8991285c221a69"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-memo-controls-01/fixtures/repeated-u32.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-memo-controls-01/fixtures/repeated-u32.bend",
+        "sha256": "84e9957c71df2e7de6f7e88fcf6bae97a26ea47e634d6679084227c723536d03"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-memo-controls-01/fixtures/equivalent-string.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-memo-controls-01/fixtures/equivalent-string.bend",
+        "sha256": "f0ec0be17d93d42db7f9e509574d5fd2437bbe0d9944e292067779bb56e10431"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-memo-controls-01/fixtures/different-string.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-memo-controls-01/fixtures/different-string.bend",
+        "sha256": "fe9061e9f15605ce742f0e8be86bd27676f288a595e8d22350f7c132134e0206"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-memo-controls-03/fixtures/positive-negative-zero.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-memo-controls-03/fixtures/positive-negative-zero.bend",
+        "sha256": "dd65020efcba3a038b2b0ac3572df789be394addc89de8f890d6635114de9098"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-memo-controls-03/fixtures/repeated-negative-zero.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-memo-controls-03/fixtures/repeated-negative-zero.bend",
+        "sha256": "62f0288306c995a78ae7049be7e88b03eac18a5c37b31ed3f7b4f812359e9b25"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-memo-controls-01/fixtures/nat-constructor.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-memo-controls-01/fixtures/nat-constructor.bend",
+        "sha256": "2b084311e31e110716c163129ec3d9ac2636ee79cc6660ab104a111db98c7083"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-memo-controls-01/fixtures/string-constructor.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-memo-controls-01/fixtures/string-constructor.bend",
+        "sha256": "db37d2ee47ccd3e1b16ac589e49f85a0e2c6b2f3ed725871e6ffa32d045aa0af"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-key-controls-03/fixtures/u32-literal-vs-constructor.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-key-controls-03/fixtures/u32-literal-vs-constructor.bend",
+        "sha256": "11e7b75f170060bb0c75612bf537327ba80de060ea5c8ca5d51fcb8c90cea738"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/design/phase16/checker-literal-memo-boundary.md",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/design/phase16/checker-literal-memo-boundary.md",
+        "sha256": "a0735871ca7207a4f42c6cda9cccadc38793861daedc385d861a2960a8552c2a"
+      }
+    ],
+    "instances": [
+      {
+        "name": "repeated-u32",
+        "prospectiveCount": 1,
+        "reference": [
+          "keep~0"
+        ],
+        "candidate": [
+          "keep~0"
+        ],
+        "exact": true,
+        "referenceKeys": [
+          "{\"$\":\"Lit\",\"k\":\"U32\",\"v\":1}"
+        ]
+      },
+      {
+        "name": "equivalent-string",
+        "prospectiveCount": 1,
+        "reference": [
+          "keep~0"
+        ],
+        "candidate": [
+          "keep~0"
+        ],
+        "exact": true,
+        "referenceKeys": [
+          "{\"$\":\"Lit\",\"k\":\"String\",\"v\":\"a\"}"
+        ]
+      },
+      {
+        "name": "different-string",
+        "prospectiveCount": 2,
+        "reference": [
+          "keep~0",
+          "keep~1"
+        ],
+        "candidate": [
+          "keep~0",
+          "keep~1"
+        ],
+        "exact": true,
+        "referenceKeys": [
+          "{\"$\":\"Lit\",\"k\":\"String\",\"v\":\"a\"}",
+          "{\"$\":\"Lit\",\"k\":\"String\",\"v\":\"b\"}"
+        ]
+      },
+      {
+        "name": "positive-negative-zero",
+        "prospectiveCount": 2,
+        "reference": [
+          "keep~0",
+          "keep~1"
+        ],
+        "candidate": [
+          "keep~0",
+          "keep~1"
+        ],
+        "exact": true,
+        "referenceKeys": [
+          "{\"$\":\"Lit\",\"k\":\"F32\",\"v\":0}",
+          "{\"$\":\"App\",\"f\":{\"$\":\"Ref\",\"k\":\"F32.neg\"},\"x\":{\"$\":\"Lit\",\"k\":\"F32\",\"v\":0}}"
+        ]
+      },
+      {
+        "name": "repeated-negative-zero",
+        "prospectiveCount": 1,
+        "reference": [
+          "keep~0"
+        ],
+        "candidate": [
+          "keep~0",
+          "keep~1"
+        ],
+        "exact": false,
+        "referenceKeys": [
+          "{\"$\":\"App\",\"f\":{\"$\":\"Ref\",\"k\":\"F32.neg\"},\"x\":{\"$\":\"Lit\",\"k\":\"F32\",\"v\":0}}"
+        ]
+      },
+      {
+        "name": "nat-constructor",
+        "prospectiveCount": 2,
+        "reference": [
+          "keep~0",
+          "keep~1"
+        ],
+        "candidate": [
+          "keep~0",
+          "keep~1"
+        ],
+        "exact": true,
+        "referenceKeys": [
+          "{\"$\":\"Lit\",\"k\":\"Nat\",\"v\":1}",
+          "{\"$\":\"Ctr\",\"k\":\"Succ\",\"x\":[{\"$\":\"Ctr\",\"k\":\"Zero\",\"x\":[]}]}"
+        ]
+      },
+      {
+        "name": "string-constructor",
+        "prospectiveCount": 2,
+        "reference": [
+          "keep~0",
+          "keep~1"
+        ],
+        "candidate": [
+          "keep~0",
+          "keep~1"
+        ],
+        "exact": true,
+        "referenceKeys": [
+          "{\"$\":\"Lit\",\"k\":\"String\",\"v\":\"a\"}",
+          "{\"$\":\"Ctr\",\"k\":\"SCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"Chr\",\"x\":[{\"$\":\"Lit\",\"k\":\"U32\",\"v\":97}]},{\"$\":\"Ctr\",\"k\":\"SNil\",\"x\":[]}]}"
+        ]
+      },
+      {
+        "name": "u32-constructor",
+        "prospectiveCount": 2,
+        "reference": [
+          "lit~0",
+          "lit~1"
+        ],
+        "candidate": [
+          "lit~0",
+          "lit~1"
+        ],
+        "exact": true,
+        "referenceKeys": [
+          "{\"$\":\"Lit\",\"k\":\"U32\",\"v\":1}",
+          "{\"$\":\"Ctr\",\"k\":\"U32\",\"x\":[{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"True\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WCon\",\"x\":[{\"$\":\"Ctr\",\"k\":\"False\",\"x\":[]},{\"$\":\"Ctr\",\"k\":\"WNil\",\"x\":[]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}]}"
+        ]
+      }
+    ],
+    "lengths": [
+      {
+        "name": "ascii",
+        "scalarCount": 32736,
+        "pinnedUtf16Length": 32767,
+        "localKeyUtf16Length": 32757,
+        "localGuardLength": 32757,
+        "referenceReject": false,
+        "candidateReject": false,
+        "guardExact": true
+      },
+      {
+        "name": "ascii",
+        "scalarCount": 32737,
+        "pinnedUtf16Length": 32768,
+        "localKeyUtf16Length": 32758,
+        "localGuardLength": 32758,
+        "referenceReject": false,
+        "candidateReject": false,
+        "guardExact": true
+      },
+      {
+        "name": "ascii",
+        "scalarCount": 32738,
+        "pinnedUtf16Length": 32769,
+        "localKeyUtf16Length": 32759,
+        "localGuardLength": 32759,
+        "referenceReject": true,
+        "candidateReject": false,
+        "guardExact": false
+      },
+      {
+        "name": "ascii",
+        "scalarCount": 32739,
+        "pinnedUtf16Length": 32770,
+        "localKeyUtf16Length": 32760,
+        "localGuardLength": 32760,
+        "referenceReject": true,
+        "candidateReject": false,
+        "guardExact": false
+      },
+      {
+        "name": "quote",
+        "scalarCount": 16367,
+        "pinnedUtf16Length": 32765,
+        "localKeyUtf16Length": 16388,
+        "localGuardLength": 16388,
+        "referenceReject": false,
+        "candidateReject": false,
+        "guardExact": true
+      },
+      {
+        "name": "quote",
+        "scalarCount": 16368,
+        "pinnedUtf16Length": 32767,
+        "localKeyUtf16Length": 16389,
+        "localGuardLength": 16389,
+        "referenceReject": false,
+        "candidateReject": false,
+        "guardExact": true
+      },
+      {
+        "name": "quote",
+        "scalarCount": 16369,
+        "pinnedUtf16Length": 32769,
+        "localKeyUtf16Length": 16390,
+        "localGuardLength": 16390,
+        "referenceReject": true,
+        "candidateReject": false,
+        "guardExact": false
+      },
+      {
+        "name": "quote",
+        "scalarCount": 16370,
+        "pinnedUtf16Length": 32771,
+        "localKeyUtf16Length": 16391,
+        "localGuardLength": 16391,
+        "referenceReject": true,
+        "candidateReject": false,
+        "guardExact": false
+      },
+      {
+        "name": "backslash",
+        "scalarCount": 16367,
+        "pinnedUtf16Length": 32765,
+        "localKeyUtf16Length": 16388,
+        "localGuardLength": 16388,
+        "referenceReject": false,
+        "candidateReject": false,
+        "guardExact": true
+      },
+      {
+        "name": "backslash",
+        "scalarCount": 16368,
+        "pinnedUtf16Length": 32767,
+        "localKeyUtf16Length": 16389,
+        "localGuardLength": 16389,
+        "referenceReject": false,
+        "candidateReject": false,
+        "guardExact": true
+      },
+      {
+        "name": "backslash",
+        "scalarCount": 16369,
+        "pinnedUtf16Length": 32769,
+        "localKeyUtf16Length": 16390,
+        "localGuardLength": 16390,
+        "referenceReject": true,
+        "candidateReject": false,
+        "guardExact": false
+      },
+      {
+        "name": "backslash",
+        "scalarCount": 16370,
+        "pinnedUtf16Length": 32771,
+        "localKeyUtf16Length": 16391,
+        "localGuardLength": 16391,
+        "referenceReject": true,
+        "candidateReject": false,
+        "guardExact": false
+      },
+      {
+        "name": "control",
+        "scalarCount": 5455,
+        "pinnedUtf16Length": 32761,
+        "localKeyUtf16Length": 5475,
+        "localGuardLength": 5475,
+        "referenceReject": false,
+        "candidateReject": false,
+        "guardExact": true
+      },
+      {
+        "name": "control",
+        "scalarCount": 5456,
+        "pinnedUtf16Length": 32767,
+        "localKeyUtf16Length": 5476,
+        "localGuardLength": 5476,
+        "referenceReject": false,
+        "candidateReject": false,
+        "guardExact": true
+      },
+      {
+        "name": "control",
+        "scalarCount": 5457,
+        "pinnedUtf16Length": 32773,
+        "localKeyUtf16Length": 5477,
+        "localGuardLength": 5477,
+        "referenceReject": true,
+        "candidateReject": false,
+        "guardExact": false
+      },
+      {
+        "name": "control",
+        "scalarCount": 5458,
+        "pinnedUtf16Length": 32779,
+        "localKeyUtf16Length": 5478,
+        "localGuardLength": 5478,
+        "referenceReject": true,
+        "candidateReject": false,
+        "guardExact": false
+      },
+      {
+        "name": "astral",
+        "scalarCount": 16367,
+        "pinnedUtf16Length": 32765,
+        "localKeyUtf16Length": 32755,
+        "localGuardLength": 16388,
+        "referenceReject": false,
+        "candidateReject": false,
+        "guardExact": true
+      },
+      {
+        "name": "astral",
+        "scalarCount": 16368,
+        "pinnedUtf16Length": 32767,
+        "localKeyUtf16Length": 32757,
+        "localGuardLength": 16389,
+        "referenceReject": false,
+        "candidateReject": false,
+        "guardExact": true
+      },
+      {
+        "name": "astral",
+        "scalarCount": 16369,
+        "pinnedUtf16Length": 32769,
+        "localKeyUtf16Length": 32759,
+        "localGuardLength": 16390,
+        "referenceReject": true,
+        "candidateReject": false,
+        "guardExact": false
+      },
+      {
+        "name": "astral",
+        "scalarCount": 16370,
+        "pinnedUtf16Length": 32771,
+        "localKeyUtf16Length": 32761,
+        "localGuardLength": 16391,
+        "referenceReject": true,
+        "candidateReject": false,
+        "guardExact": false
+      }
+    ],
+    "promotable": false,
+    "0.0": {
+      "parsedKey": "{\"$\":\"Lit\",\"k\":\"F32\",\"v\":0}",
+      "loweredKey": "{\"$\":\"Lit\",\"k\":\"F32\",\"v\":0}"
+    },
+    "F32.neg(0.0)": {
+      "parsedKey": "{\"$\":\"App\",\"f\":{\"$\":\"Ref\",\"k\":\"F32.neg\"},\"x\":{\"$\":\"Lit\",\"k\":\"F32\",\"v\":0}}",
+      "loweredKey": "{\"$\":\"App\",\"f\":{\"$\":\"Ref\",\"k\":\"F32.neg\"},\"x\":{\"$\":\"Lit\",\"k\":\"F32\",\"v\":0}}"
+    },
+    "instanceDifferences": [
+      "repeated-negative-zero"
+    ],
+    "guardDifferences": [
+      {
+        "name": "ascii",
+        "scalarCount": 32738,
+        "pinnedUtf16Length": 32769,
+        "localKeyUtf16Length": 32759,
+        "localGuardLength": 32759,
+        "referenceReject": true,
+        "candidateReject": false,
+        "guardExact": false
+      },
+      {
+        "name": "ascii",
+        "scalarCount": 32739,
+        "pinnedUtf16Length": 32770,
+        "localKeyUtf16Length": 32760,
+        "localGuardLength": 32760,
+        "referenceReject": true,
+        "candidateReject": false,
+        "guardExact": false
+      },
+      {
+        "name": "quote",
+        "scalarCount": 16369,
+        "pinnedUtf16Length": 32769,
+        "localKeyUtf16Length": 16390,
+        "localGuardLength": 16390,
+        "referenceReject": true,
+        "candidateReject": false,
+        "guardExact": false
+      },
+      {
+        "name": "quote",
+        "scalarCount": 16370,
+        "pinnedUtf16Length": 32771,
+        "localKeyUtf16Length": 16391,
+        "localGuardLength": 16391,
+        "referenceReject": true,
+        "candidateReject": false,
+        "guardExact": false
+      },
+      {
+        "name": "backslash",
+        "scalarCount": 16369,
+        "pinnedUtf16Length": 32769,
+        "localKeyUtf16Length": 16390,
+        "localGuardLength": 16390,
+        "referenceReject": true,
+        "candidateReject": false,
+        "guardExact": false
+      },
+      {
+        "name": "backslash",
+        "scalarCount": 16370,
+        "pinnedUtf16Length": 32771,
+        "localKeyUtf16Length": 16391,
+        "localGuardLength": 16391,
+        "referenceReject": true,
+        "candidateReject": false,
+        "guardExact": false
+      },
+      {
+        "name": "control",
+        "scalarCount": 5457,
+        "pinnedUtf16Length": 32773,
+        "localKeyUtf16Length": 5477,
+        "localGuardLength": 5477,
+        "referenceReject": true,
+        "candidateReject": false,
+        "guardExact": false
+      },
+      {
+        "name": "control",
+        "scalarCount": 5458,
+        "pinnedUtf16Length": 32779,
+        "localKeyUtf16Length": 5478,
+        "localGuardLength": 5478,
+        "referenceReject": true,
+        "candidateReject": false,
+        "guardExact": false
+      },
+      {
+        "name": "astral",
+        "scalarCount": 16369,
+        "pinnedUtf16Length": 32769,
+        "localKeyUtf16Length": 32759,
+        "localGuardLength": 16390,
+        "referenceReject": true,
+        "candidateReject": false,
+        "guardExact": false
+      },
+      {
+        "name": "astral",
+        "scalarCount": 16370,
+        "pinnedUtf16Length": 32771,
+        "localKeyUtf16Length": 32761,
+        "localGuardLength": 16391,
+        "referenceReject": true,
+        "candidateReject": false,
+        "guardExact": false
+      }
+    ],
+    "pass": false
+  },
+  "failures": [
+    {
+      "attempt": "checker-literal-source-02",
+      "kind": "pre-build static rejection",
+      "reason": "Preparation wrapper misplaced three closing parentheses after following law declarations; preserved and corrected in03."
+    },
+    {
+      "attempt": "checker-literal-source-04",
+      "kind": "preparation assertion",
+      "reason": "Requested nonexistent g_normalize probe export; no host edit/build; corrected05."
+    },
+    {
+      "attempt": "checker-literal-backend-05",
+      "kind": "environment incomplete",
+      "reason": "12native observations unsupported in both compilers because Clang missing from default environment;29other exact. CorrectClangenv rerun07 closes41."
+    },
+    {
+      "attempt": "checker-literal-backend-06",
+      "kind": "setup metadata validation",
+      "reason": "Historical environment file records lack canonicalPath; strict full identity reader rejected unchanged Node before job. Tool02 checks supplied SHA/optional canonical path."
+    },
+    {
+      "attempt": "checker-literal-memo-01",
+      "kind": "invalid prospective fixture/tool diagnostic limitation",
+      "reason": "Pinned source has no unary(-0.0). Probe stopped after3valid rows; catch assumed Error.stack, hiding structuredBendErr. Freshcontrols03/tool02 useF32.neg and retain structured failures."
+    }
+  ],
+  "openWork": [
+    "Consolidated termABI1/cachev6 and explicit KLambda quantity presence owned by representation agent.",
+    "One exact pinned JSON key supplies memo identity and32768UTF16 guard; replaces position-sensitive shortencoding.",
+    "Production handoff removes probe exports; root must build/gate integrated union.",
+    "Exact Phase12 request-history replay, full frontend/backend integration and exclusive same-source timing."
+  ],
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-transport-01/report.json",
+      "sha256": "a971a9cf9f4dafbaa179aeef436fa404455bb0fdaaf357371cb2f7638aed2552"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-build-05/validation-001/report.json",
+      "sha256": "a3e69e17ae288c5796dad3facb6f1537a1fafec50a3d170197fd5cc459716d59"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-focus-05/report.json",
+      "sha256": "0a6e4eb197d5ca9c54f905476ed60e2eec950fdd457a1de2365da2d5294997ca"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-direct-01/report.json",
+      "sha256": "230b48c78de3137238eefcf610530b4a8838da35510b96f1eef58a6bb79aef1c"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-host-01/report.json",
+      "sha256": "1ae54d0ba1a9c9e9687ac9ddd2d1ca70b0c5b4da5dd0ac47c50727f5167e217c"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-backend-07/report.json",
+      "sha256": "bcc5c24ed8d320e5e1bfb78c51bcc7c7067f09b943c18f0ebac7bd5dc6ab789f"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-base-prefix-serial-01/report.json",
+      "sha256": "e111ad66951177c35fd5243d02aa489e0de68ea8a5b0f5fd3bcf2a2c09780365"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-compact-census-02/report.json",
+      "sha256": "6af70870f6bc8183830632b56db10e534369e0fb975d2ee3724314c73fe70807"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-memo-02/report.json",
+      "sha256": "cd1e7036c177bdc50da152938abe700c7b1ebd53f5eaf95301cfb9753f699098"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase16/checker-literal-report.py",
+      "sha256": "01e843b00a5e61b1e6dd7298baca9276efe529220de13605de1a8e315c4509e6"
+    }
+  ]
+}

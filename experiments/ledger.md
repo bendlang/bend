@@ -1156,3 +1156,16 @@ representation separately removes 92.97% of loaded terms on identical compiler
 source, with literal/backend/host controls passing. It still needs exact
 syntax-sensitive memo keys and final combined gates; no end-to-end speed claim
 or production promotion follows from the structural reduction.
+
+
+## Phase16 compact-literal timing — 2026-09-29
+
+The compact-literal/context union preserves wave9's two exact frontend gaps and
+all primitive outcomes, with no lost matches; all176 literal observations remain
+exact. The [controlled comparison](../implementation/phase16/compact-literal-cost.md)
+now measures30.8339→10.7300 s,2.87× faster, with peak RSS down65.20%. TS takes
+2.9962 s, so the gap falls10.29×→3.58× within that single measurement window.
+Six serial fresh-process rows are healthy and other compiler/archive jobs stayed
+closed. Known memo-key and size-boundary gaps still block promotion; final
+Lambda/JSON-key integration and release gates remain open. Source grows104 lines
+over wave9. No generated-program runtime speedup is claimed.

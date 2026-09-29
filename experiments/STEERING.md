@@ -18,8 +18,10 @@ template membership indexing is flat and unselected. Diagnostic stage timing
 points toward loading and host range validation, with substantial baseline
 variation. The exact Base-prefix law passes, but removes only 1.32% of whole-source
 freshening visits; defer the cache change. Literal builders account for roughly
-2M of the 2.17M elaborated terms. Compact literal representation is under staged
-implementation; no end-to-end speed gain has been measured for it.
+2M of the 2.17M elaborated terms. The controlled compact-literal integration pilot
+now measures **30.8339→10.7300 s**, 2.87× faster, versus TS2.9962 s: a **3.58×**
+gap in that window. Peak RSS falls65.20%. This prototype still needs canonical
+memo identity/size boundaries and final release gates; it is not installed.
 The maintained backend selection is 41/41 exact on wave9; changed images need
 their own final gates. Qualified pattern eligibility passes separate controls.
 Program completion timing is flat (+0.38%) in its isolated same-source matrix.

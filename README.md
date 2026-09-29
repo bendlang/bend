@@ -36,8 +36,10 @@ measured behavior/output axes agree. [Conformance](selfhost/CONFORMANCE.md)
 separates these results from backend, platform and proof-kernel gaps.
 
 Ongoing [Phase16 conformance work](implementation/phase16/full_conformance.md)
-has an isolated two-difference checkpoint. Its performance and release gates are
-still open; the commands below continue to use the Phase15 release.
+has an isolated two-difference checkpoint. A [compact-literal prototype](implementation/phase16/compact-literal-cost.md)
+checks the same compiler source 2.87× faster, reducing the measured TypeScript gap
+to 3.58×. Memo correctness and final release gates are still open; the commands
+below continue to use the Phase15 release.
 
 The [development workflow](docs/PHASE5_DEVELOPMENT.md) builds a genuine checked
 compiler and runs 36 short paired controls. The installed release preserves its

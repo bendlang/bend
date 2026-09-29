@@ -1,0 +1,12 @@
+{
+  "kind": "phase16-literal-additional-execution-addendum",
+  "source": "checker-literal-source-05",
+  "report": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-literal-execution-01/report.json",
+    "sha256": "6869ce1e9bf4457876434d3703fb9af3ed29e19113bd510151eca81e10044599"
+  },
+  "cases": 10,
+  "observations": 20,
+  "exact": 20,
+  "scope": "U32/F32 word literals, literal reads/patterns/nested patterns, string operations, Unicode strings/chars, literal sugar, F32 special arithmetic. BothJS/native; same frozenClangenv. Separate additive evidence; frozenmainliteralreport unchanged."
+}
