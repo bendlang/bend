@@ -1973,14 +1973,15 @@ function show_main(book: Bend.Book): (number | Name)[] | null {
   }
   const show: (number | Name)[] = [];
   let names = 0;
-  const ids = new Map<string, number>();
+  const lays = new Map<Lay, Map<string, number>>();
   const refuse = (): never => die("main's type " + Bend.term_show(
     Bend.term_lower(main.T)) + " cannot be printed (a function, a Type, an"
     + " erased or dependent field)");
   const node = (T: HTerm, lay: Lay): number => {
     const t = ty_wnf(book, T) as HTerm;
     const box = lay_box(lay);
-    const key = JSON.stringify(lay) + Bend.term_key(Bend.term_lower(t));
+    const key = Bend.term_key(Bend.term_lower(t));
+    const ids = memo(lays, lay, () => new Map());
     const adt = ty_adt(book, t);
     const tld = adt && book.tlds[adt.k];
     const kind = t.$ === "Eql" ? 5 : "U32 F32 Nat Char String . Array"
