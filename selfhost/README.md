@@ -1,13 +1,14 @@
 # Bend2 compiler port in Bend2
 
 Use the [compiler guide](../docs/BEND-IN-BEND.md) and
-[Phase17 release report](../implementation/phase17/find-worker.md).
-The compiler uses compact literals, precise source diagnostics and contextual
-module parsing. Its new direct lookup loop checks identical source in **11.63 s**,
-versus **12.44 s** for Phase16 and **3.40 s** for pinned TypeScript: **6.55% less
-time**, with a **3.42×** remaining gap. All 2,996 frontend results are unchanged,
-including two exact diagnostic differences. Broader tests expose additional gaps.
-All 41 selected backend observations and 42 installed/relocated CLI checks pass.
+[Phase19 release report](../implementation/phase19/prefix-identity.md).
+Exact cached-prefix comparison now includes compact literal payloads and lambda
+quantity presence, fixing acceptance of a changed equality proof through the
+public prefix API. The fix adds two lines and has neutral measured cost:
+**11.62 s** for the compiler source, versus **3.42 s** for pinned TypeScript,
+a **3.40×** gap. All 2,996 frontend results remain unchanged, including two exact
+diagnostic differences. The twelve new prefix controls and all 42
+installed/relocated CLI checks pass. Broader tests expose additional gaps.
 
 The current target is upstream
 [`b2111cf43244e65f76ddc278ee695e669f720cbf`](https://github.com/bendlang/bend/tree/b2111cf43244e65f76ddc278ee695e669f720cbf),
@@ -20,7 +21,7 @@ node cli.mjs tests/conformance/typed-smoke/base-u32.bend --run
 npm run build
 ```
 
-The compiler contains 16,353 physical /13,954 nonblank Bend lines in 59 modules.
+The compiler contains 16,355 physical /13,956 nonblank Bend lines in 59 modules.
 It retains the validated S4 simplifications while adding current declaration,
 namespace, typing and effect semantics. The [release manifest](dist/release.json)
 binds the exact source, genuine checked parent, equality/choice-derived API, Base,
@@ -141,7 +142,7 @@ remain in `dist/selfhost/`; the [preservation index](../experiments/PRESERVATION
 and [experiment ledger](../experiments/ledger.md) identify their exact scope.
 They are not alternate defaults. The current release can run after relocation
 without an upstream checkout, as verified by its
-[Phase17 installed/relocated CLI checks](../implementation/phase17/find-worker.md).
+[Phase19 installed/relocated CLI checks](../implementation/phase19/prefix-identity.md).
 The earlier [Phase5 clean-package evidence](../implementation/phase5/relocated-cli-evidence/README.md)
 applies to that historical artifact.
 

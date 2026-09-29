@@ -1271,3 +1271,29 @@ removing a semantic owner. The measured cursor cost makes testing the coherent
 contextual route reasonable. Phase17 recovery is committed as`b34f8cd`; Phase18
 failures and corrected artifacts are being preserved separately from Phase19.
 Remote publication remains blocked by the earlier automatic approval review.
+
+## P19-001: exact cached-prefix identity — 2026-09-29
+
+Promoted [the two-line correction](../implementation/phase19/prefix-identity.md)
+from Phase17 as API66d6ce45. Independent review found literal payload and lambda
+quantity presence absent from exact_term. Twelve direct controls expose five
+parent failures; the corrected image passes all twelve. A pinned proof witness
+shows a real invalid cached acceptance: old check_from_exact_prefix accepts
+`{0n == 1n : Nat}` against an old `{0n == 0n : Nat}` prefix, while its own full
+checker rejects. The candidate rejects in both paths. This concerns the public
+prefix API, without demonstrating a failure of the separately hashed host cache.
+
+Genuine checked B1/maintained36, exact unchanged frontend2996 and installed/relocated
+CLI42 pass. Controlled TS/B/C/C/B/TS is neutral: process11.6119→11.6171s,
+request10.4848→10.5106s; TS3.4176s, current gap3.3992×. Same35host files, Base,
+runtime, v5 profile and resource policy; expected trust refusal, no emission.
+Compiler delta+2lines/+186bytes, zero new defs/laws/types. Source/host214 and all75
+unrelated Phase6 states verified around installation.
+
+Updated frontier: the usable default contains only this correction. The separate
+live-checker rewrite now matches all22 saved chronology observations, but needs
+remaining first-error, recursion, output, broad regression and cost gates. The
+private parser names/calls slice has real order witnesses and explicit unsupported
+boundaries, without a complete Core/loader route. Phase18 experiments are preserved
+and independently recovered. Prefix evidence capture is the next publication
+checkpoint; an earlier automatic approval review still blocks remote pushes.

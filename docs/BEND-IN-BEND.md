@@ -9,13 +9,15 @@ does not invoke the TypeScript compiler.
 
 The active target is upstream
 [`b2111cf43244e65f76ddc278ee695e669f720cbf`](https://github.com/bendlang/bend/tree/b2111cf43244e65f76ddc278ee695e669f720cbf)
-(Bend 2.0.32 era). The [Phase17 report](../implementation/phase17/find-worker.md)
+(Bend 2.0.32 era). The [Phase19 report](../implementation/phase19/prefix-identity.md)
 records checked artifact identities, current conformance, measured cost and
 remaining gaps. This experimental port does not establish independent proof
 validity; `--verdict` is explicitly unsupported.
 
-Phase17 adds a direct frontend lookup loop to Phase16’s compact literals and lambda quantity
-presence, exact specialization keys, source ranges and contextual module parsing.
+Phase19 corrects exact cached-prefix identity for compact literal payloads and
+lambda quantity presence, preventing reuse of an old prefix for a changed proof.
+Phase17’s direct lookup loop and Phase16’s compact literals, exact specialization
+keys, source ranges and contextual module parsing remain.
 The [development history](../implementation/phase16/full_conformance.md) retains
 its separate prototypes and failures. Two main-corpus diagnostic observations
 and additional independent-control gaps remain.
@@ -90,7 +92,7 @@ npm run build -- /absolute/release-config.json /absolute/new-attempt
 Config fields and selection semantics are documented in the
 [maintained workflow guide](PHASE5_DEVELOPMENT.md). Broad conformance and checked
 self-reproduction are release/integration gates, not every small edit's build.
-The [Phase17 report](../implementation/phase17/find-worker.md) records
+The [Phase19 report](../implementation/phase19/prefix-identity.md) records
 the current artifact's evidence and remaining failures.
 
 ## Work on the current source
@@ -112,7 +114,7 @@ unforced message identity is outside this contract. Historical versions1/2/3/4
 retain exact byte replay. The normalizer seed change and broader branch
 transformation failed stack controls and are excluded.
 
-The [Phase17 report](../implementation/phase17/find-worker.md) gives the
+The [Phase19 report](../implementation/phase19/prefix-identity.md) gives the
 current source and artifact identities. Keep experiments isolated by selecting a
 frozen attempt explicitly:
 
@@ -171,7 +173,7 @@ BEND_TYPED_API="$PWD/build/candidate-api.mjs" \
 
 This writes a checked API plus the assembled source and provenance in
 `build/typed/`. Keep source, API, runtime and host snapshots immutable during
-validation. Full self-reproduction has not been rerun for Phase17. The advanced
+validation. Full self-reproduction has not been rerun for the Phase19 prefix release. The advanced
 runner, separate from the checked release build, is:
 
 ```sh
@@ -207,21 +209,19 @@ canonical Base path when comparing output bytes across native and JS hosts.
 
 ## Internal boundaries and performance
 
-The [Phase17 controlled comparison](../implementation/phase17/find-worker.md)
-checks identical final source in **11.63 s**, versus **12.44 s** for Phase16 and
-**3.40 s** for pinned TypeScript: **6.55% less process time**, with a **3.42×**
-remaining gap. The baseline gap is 3.66× in that same window. Peak RSS changes
-from 651,144 to 648,316 KiB. Two fresh processes per image run serially on CPU0
-with identical host/runtime/Base bytes and resource limits. Bend uses validated
-Base caches, while TypeScript checks Base. Emission is excluded; this is not a
-measured speedup of generated user programs.
+The [Phase19 controlled comparison](../implementation/phase19/prefix-identity.md)
+checks identical final source in **11.617 s**, versus **11.612 s** before the
+prefix repair and **3.418 s** for pinned TypeScript: neutral cost, with a **3.40×**
+remaining gap. Two fresh processes per image run serially on CPU0 with identical
+host/runtime/Base bytes and resource limits. Bend uses validated Base caches,
+while TypeScript checks Base. Emission is excluded; this does not measure
+performance of generated user programs.
 
-The lookup worker adds eight Bend lines. The original emitter turns its mutual
-tail calls into a direct loop, eliminating a dispatch object and argument array
-for each missed declaration. Exact first-match and lazy-demand controls pass.
-The earlier [Phase16 measurement](../implementation/phase16/consolidation.md)
-records its separate 2.48× gain and 62.70% RSS reduction; ratios from different
-source/windows must not be multiplied into a current result.
+The [Phase17 lookup worker](../implementation/phase17/find-worker.md) measured a
+separate 6.55% reduction by eliminating per-miss dispatch allocations. The earlier
+[Phase16 measurement](../implementation/phase16/consolidation.md) records its
+separate 2.48× gain and 62.70% RSS reduction; ratios from different sources and
+windows must not be multiplied into a current result.
 
 Compact `KLiteral` nodes keep Nat, U32, F32 bits and string payloads intact until
 a constructor view is needed. A separate, earlier-source census found **92.97%

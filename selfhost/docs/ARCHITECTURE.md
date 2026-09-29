@@ -42,7 +42,11 @@ one. Structural rebuilding, freshening and substitution preserve it; strong
 normalization and annotation's rebuilt Lambda output deliberately clear it.
 Checking uses the flag when deciding whether a written reusable binder requests
 promotion. Legacy ordinary `KTerm`/`Lam` values count as explicit quantities.
-Semantic equality ignores this syntax fact, but template memo identity retains it.
+Semantic equality ignores this syntax fact, but template memo identity retains it. Exact cached-prefix comparison also retains quantity presence and all compact
+literal payload fields. It compares syntax, so compact and equivalent expanded
+constructor terms remain different prefixes. Source intervals retain their
+separate host provenance contract. The [Phase19 correction](../../implementation/phase19/prefix-identity.md)
+closes a demonstrated changed-proof acceptance through the public prefix API.
 
 Template keys use the pinned lowered-term JSON shape, including binder names,
 lexical indices, literal syntax identity and optional Lambda quantity. Source

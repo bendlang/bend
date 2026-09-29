@@ -1,39 +1,35 @@
 # Current compiler experiment strategy
 
-The [Phase17 lookup-worker release](../implementation/phase17/find-worker.md) is
+The [Phase19 prefix correction](../implementation/phase19/prefix-identity.md) is
 installed. The user authorizes continued conformance, speed and simplicity work,
 including pushes; publication remains blocked by an earlier automatic approval
 review. No old multi-hour budget is renewed. Preserve all 75 unrelated Phase6 files.
 
 ## Released frontier
 
-Installed API `9b20de50`, genuine checked parent `59317ea5`, unchanged upstream
-`b2111cf`. Phase16's compact literals, lambda presence, exact memo keys, source
-ranges and contextual module parsing remain. One eight-line frontend worker
-eliminates per-miss trampoline allocations using the original emitter. Runtime,
-host, cache contracts and the maintained version5 transformation are unchanged.
+Installed API `66d6ce45`, genuine checked parent `45ee9449`, unchanged upstream
+`b2111cf`. Exact cached-prefix identity now includes compact literal payload and
+lambda quantity presence. This closes a reproduced invalid cached-proof acceptance:
+the prior API accepted changed `{0n == 1n : Nat}` against a validated `{0n == 0n : Nat}`
+prefix, despite full checking rejecting it. This public-API witness does not show
+a bypass of the host's separately hashed Base cache.
 
-The exclusive identical-source matrix measures **12.4407→11.6255s**,
-**6.55% less process time /7.17% less request time**. Both order pairs improve.
-Pinned TypeScript takes 3.3998 s; the same-window gap falls **3.66×→3.42×**.
-Peak RSS 651,144→648,316 KiB. TS/B/C/C/B/TS fresh processes use CPU0,
-stack 4 MiB/heap 4 GiB; competing compiler/archive jobs closed. All 35 frozen host
-files have identical membership and bytes. Bend uses validated Base caches;
-TS checks Base. Emission is excluded. Older Phase16's separate 2.48× result is
-not multiplied into a new claimed cumulative ratio.
+Direct prefix12 now passes (five parent failures); independent pinned/full/cached
+proof controls pass. Maintained36, all 2,996 frontend observations and all42
+installed/relocated CLI checks pass their stated gates. The complete frontend
+result vector remains identical, including the two known do-block diagnostics.
+Phase17's41backend/history/helper/loader controls retain their historical scope.
 
-All **2,996 complete frontend results** are unchanged, including the two known
-do-block diagnostics. Main inventory: 1,001 positive accepts, 482 validation
-refusals, 11 exact trust refusals; strict checks 1,493 pass / 5 fail include four
-later-emission expectations. Broader Phase16 control gaps remain historical
-artifact-specific evidence, not automatically new Phase17 measurements.
+The exclusive same-source matrix is cost-neutral: process11.6119→11.6171s
+(+0.0443%), request+0.2462%; TypeScript3.4176s, gap3.3992×. TS/B/C/C/B/TS uses fresh
+CPU0 processes, stack4MiB/heap4GiB, identical35host files/Base/runtime/v5 profile,
+separately validated Bend Base caches; TypeScript checks Base. No emission or
+new speed gain claimed. Prior Phase17/16 improvements remain separate windows.
 
-The current image passes maintained 36, backend 41, context 39 / host 43 (one known
-wording gap each), direct demand 23 / independent expectations 46, helper 16 groups,
-five authentic derivation replays, standalone 25-module loader, 226 complete paired
-history results and 42 installed/relocated CLI checks. Source: **16,353 physical
-/13,954 nonblank lines**, 581,322 bytes, 59 modules, 1,657 definitions / 775 laws / 66 types.
-The worker adds 8 lines / +145 bytes / +1 definition. No source-size reduction claim.
+Source:16,355physical /13,956nonblank lines,581,508bytes,59modules,
+1,657definitions /775laws /66types. The correction adds2lines/186bytes and no
+new definition/type. Runtime, host and cache contracts are unchanged. The broader
+checker and parser prototypes remain uninstalled.
 
 ## Next priorities
 
@@ -43,9 +39,11 @@ The worker adds 8 lines / +145 bytes / +1 definition. No source-size reduction c
    [Phase18 transport screen](../implementation/phase18/representation-checkpoint.md)
    is essentially cost-neutral on source03. Source06 restores the stable public
    payload and passes its scoped 36/22/42/8/18 gates; it is not separately timed.
-   Phase19 will sequence the existing checker and instantiate at first live use.
+   Phase19 source03 now passes all22 chronology observations exactly, closing
+   both saved gaps through direct checked output. A discovered let-close first-error
+   issue and recursion/output boundaries are being validated before broad gates.
    Preserve source bodies, real failing worlds, memo/fresh state, prefix semantics
-   and global effects when leaving private generic scopes. Nothing is installed.
+   and global effects when leaving private generic scopes. This larger rewrite is not installed.
 2. **Parser simplicity:** the [FGroup trial](../implementation/phase17/group-boundary.md)
    passes 92 structural controls and preserves 196 outcomes, with zero conformance
    gain. Phase18's inert cursor also preserves those 196 outcomes and passes194
@@ -53,7 +51,11 @@ The worker adds 8 lines / +145 bytes / +1 definition. No source-size reduction c
    the5% screen. Prefer a private contextual parser slice to another stopped-body
    or replay layer. Keep unbound-name fallback, lexical checkpoints and public
    raw/scoped stage contracts explicit. Preserve monad, grouped-boundary and
-   prior-row witnesses. Added semantic-state cost and actual deletion remain open.
+   prior-row witnesses. Stage1 names/state27 and raw194 pass after a retained underscore-state failure.
+   Stage2 routes actual ordinary names/calls and passes32 supported plus14 explicit
+   Unsupported observations, including alias-before-later-call-error order; it
+   returns no completed Core and does not yet fix the main-corpus do-block.
+   Added semantic-state cost and actual pass deletion remain open.
 3. **Measured cost:** the [compact profile](../implementation/phase17/compact-profile.md)
    motivated the installed worker. Shared dispatch and list reconstruction remain
    hypotheses, not additive gain estimates. Reprofile after major checker changes;
@@ -62,8 +64,8 @@ The worker adds 8 lines / +145 bytes / +1 definition. No source-size reduction c
 Keep checked focused builds and frozen-attempt fixture validation as the edit
 loop. Broad gates, exclusive timing, installation and evidence recovery belong
 to integration checkpoints. Designs, failures and source/host memberships must
-remain exact. Phase16 and Phase17 capsules are recovered and committed. Phase18
-preservation is separate from active Phase19 designs and future semantic source.
+remain exact. Phase16, Phase17 and Phase18 capsules are independently recovered and committed.
+Close a separate prefix-release capsule while active Phase19 semantic work continues.
 
 ## Retained experiments and operating rules
 

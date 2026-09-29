@@ -1,0 +1,167 @@
+{
+  "kind": "phase19-released-exact-prefix-identity",
+  "complete": true,
+  "pass": true,
+  "installed": true,
+  "apiSha256": "66d6ce45c0c6ea8947190ff210274f1e6f0c7bf85f7ad3f215076f8820acd7c7",
+  "checkedApiSha256": "45ee9449c04f5296e978f77a13a184f6dea84dae5fb23539c7ae2a60f4826edd",
+  "assembledSourceSha256": "ea515668b2e09deee39fa8014298adc2d73bd6a7b7924d7ffcc35a98c9a3e767",
+  "upstream": "b2111cf43244e65f76ddc278ee695e669f720cbf",
+  "source": {
+    "modules": 59,
+    "physicalLines": 16355,
+    "nonblankLines": 13956,
+    "bytes": 581508,
+    "definitions": 1657,
+    "laws": 775,
+    "types": 66,
+    "delta": {
+      "physicalLines": 2,
+      "nonblankLines": 2,
+      "bytes": 186,
+      "definitions": 0,
+      "laws": 0,
+      "types": 0
+    }
+  },
+  "gates": {
+    "focused": 36,
+    "exactPrefixControls": 12,
+    "parentExactPrefixFailures": 5,
+    "candidateExactPrefixFailures": 0,
+    "parentAcceptedInvalidCachedProof": true,
+    "candidateAcceptedInvalidCachedProof": false,
+    "unchangedFrontendObservations": 2996,
+    "remainingMainCorpusExactDifferences": 2,
+    "installedRelocatedCLI": 42
+  },
+  "measurement": {
+    "statistics": {
+      "typescript": {
+        "samples": 2,
+        "meanRequestMs": 2323.1878694999996,
+        "meanProcessWallMs": 3417.571998999997,
+        "maxRssKiB": 479784
+      },
+      "baseline": {
+        "samples": 2,
+        "meanRequestMs": 10484.785001,
+        "meanProcessWallMs": 11611.920342,
+        "maxRssKiB": 653508
+      },
+      "candidate": {
+        "samples": 2,
+        "meanRequestMs": 10510.5948755,
+        "meanProcessWallMs": 11617.066668500001,
+        "maxRssKiB": 647564
+      }
+    },
+    "ratios": {
+      "baselineToTs": 3.3977105223818898,
+      "candidateToTs": 3.3992163652731318,
+      "baselineToCandidate": 0.9995570029296675,
+      "candidateProcessReduction": -0.00044319340371190563,
+      "candidateRequestReduction": -0.002461650334035337
+    },
+    "decision": "Neutral screening; +0.0443% process and +0.2462% request, no speed gain claimed.",
+    "timingScope": "Same-source checking/trust reporting using each release workflow, with an explicit reviewed host delta if present, no emission. Fresh processes; separately validated Bend Base caches; TypeScript checks Base; OS caches not flushed."
+  },
+  "publication": "Committed locally by root; earlier automatic approval review still blocks push.",
+  "inputs": [
+    {
+      "path": "design/phase19/exact-prefix-identity.md",
+      "bytes": 2426,
+      "sha256": "61a16073b41778fbc1a244fe6b26ee5ae18093a6894d961282967f997722179b"
+    },
+    {
+      "path": "selfhost/build/phase19/prefix-source-01/manifest.json",
+      "bytes": 54657,
+      "sha256": "9ec1d910574cee67e8d945b4558a635efbb9235f2735c7b041d7fd686eb966df"
+    },
+    {
+      "path": "selfhost/build/phase19/prefix-source-01/change.patch",
+      "bytes": 669,
+      "sha256": "7daea38a8ed20e611c70061ac719a1a1c4bec3ee4927bdea71eed11f85a51873"
+    },
+    {
+      "path": "selfhost/build/phase19/prefix-build-01/attempt.json",
+      "bytes": 214472,
+      "sha256": "33d3b7ce0c42e85c8f86c85c2494dbfdb417c633770436b16e015830f6ad1103"
+    },
+    {
+      "path": "selfhost/build/phase19/prefix-build-01/validation-001/report.json",
+      "bytes": 8936,
+      "sha256": "679d1f586b96eb478b55bcc36e9bb5935adf71391d6eb03fe7c6184591628b4e"
+    },
+    {
+      "path": "selfhost/build/phase19/prefix-frontend-01/report.json",
+      "bytes": 85425,
+      "sha256": "90c8350c1715f4003da54f48ffa9e152588afe2799c7bab44f994044fddf9179"
+    },
+    {
+      "path": "selfhost/build/phase19/prefix-frontend-parent-comparison-01.json",
+      "bytes": 717271,
+      "sha256": "5c19f65e80b1135835ae823bcd4365a79de519244841f4003dd51137322db323"
+    },
+    {
+      "path": "implementation/phase19/instance-boundary.json",
+      "bytes": 17330,
+      "sha256": "15f67e761c39442f44e4a3f1dcc7a32befc7f2e03df40f2177d73b252cc0339e"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-boundary-exact-parent-01/report.json",
+      "bytes": 2654,
+      "sha256": "c8605080bafe7209c11587267338e4bfbe14d3a54cf610020557121bd9402cab"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-boundary-exact-candidate-01/report.json",
+      "bytes": 2646,
+      "sha256": "34fe60593c036fd1cb9f76634b4f24a3fe5babbfe11055e1637895a369229d0e"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-boundary-proof-oracle-01/report.json",
+      "bytes": 2056,
+      "sha256": "ed83de716ac1c2df55c4b5c1e2934dbb71d6086c8d132cf1706929ca0621b6ac"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-boundary-proof-parent-01/report.json",
+      "bytes": 2665,
+      "sha256": "240073b6254b8a9a221ea901069bbcfe0ca8d20bee538f94594a78cbf265b69d"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-boundary-proof-candidate-01/report.json",
+      "bytes": 2666,
+      "sha256": "ce77f6cf49c6b66e11535b0ef993e31fa5c09d9e329d37c0dee77a61da0a7942"
+    },
+    {
+      "path": "selfhost/build/phase19/prefix-matrix-inputs-01/matrix.json",
+      "bytes": 539,
+      "sha256": "25d2effb30b59e90d90d6ece7e279fe12855a718b7ec0e90d725f05b7a614432"
+    },
+    {
+      "path": "selfhost/build/phase19/prefix-matrix-inputs-01/host-review.json",
+      "bytes": 27811,
+      "sha256": "ca1a6e3360f3d366ebc0f7416eebf2cd4875679034318ce6cfef94ffc22fbe0d"
+    },
+    {
+      "path": "selfhost/build/phase19/prefix-matrix-inputs-01/readiness.json",
+      "bytes": 1726,
+      "sha256": "33b8e823d13a4c2db84d210bf4f97151c3dbdc974b3bf4cc6a2e2acf75e7099f"
+    },
+    {
+      "path": "selfhost/build/phase19/prefix-matrix-01/report.json",
+      "bytes": 683439,
+      "sha256": "8c5c4365f70b752af4f5c7ea7431ef361d698799656390b5a886efc434128a78"
+    },
+    {
+      "path": "selfhost/build/phase19/prefix-promotion-01/report.json",
+      "bytes": 71143,
+      "sha256": "edb2b4564fd1a61b6190affcd18098306f29091a9aa6f72f8f6d72e513739fe0"
+    },
+    {
+      "path": "selfhost/build/phase19/prefix-smoke-01/launcher.json",
+      "bytes": 2863,
+      "sha256": "0c18cc02144d9b97100ee9f7aa0986cbcacd42f67ffe694a666ea860a38b4258"
+    }
+  ]
+}

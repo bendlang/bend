@@ -71,7 +71,9 @@ def exact_term(
   +a: KTerm,
   +b: KTerm,
 ) -> Bool:
-  String.eq(tg(a), tg(b)) && String.eq(nm(a), nm(b)) && U32.is_eq(ix(a), ix(b)) && U32.is_eq(qt(a), qt(b)) && exact_terms(ks(a), ks(b)) && exact_names(rm(a), rm(b))
+  kc(Bool, core_literal(a),
+    u => core_literal(b) && core_literal_same(a, b),
+    u => Bool.not(core_literal(b)) && String.eq(tg(a), tg(b)) && String.eq(nm(a), nm(b)) && U32.is_eq(ix(a), ix(b)) && U32.is_eq(qt(a), qt(b)) && Bool.not(Bool.xor(k_quantity_present(a), k_quantity_present(b))) && exact_terms(ks(a), ks(b)) && exact_names(rm(a), rm(b)))
 
 @unsafe
 def exact_terms(a, b):

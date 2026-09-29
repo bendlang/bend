@@ -17,24 +17,26 @@ This fork develops the compiler in [`selfhost/`](selfhost/README.md), on branch
 from `selfhost/`, run `npm run verify:release`, then `node cli.mjs FILE --run`.
 `npm run build` checks and rebuilds the default with pinned upstream.
 
-The [Phase17 release report](implementation/phase17/find-worker.md) records the
-current compiler against upstream **b2111cf, Bend 2.0.32 era**. Identical-source
-checking takes **12.44 → 11.63 s**, **6.55% less time** than Phase16. Pinned
-TypeScript takes **3.40 s**, leaving a **3.42×** process-time gap. This measures
-checking and trust reporting, excluding emission. The earlier
-[Phase16 compact-literal change](implementation/phase16/consolidation.md) removed
-large term-tree allocations and measured a separate 2.48× improvement.
+The [Phase19 release report](implementation/phase19/prefix-identity.md) records
+an exact-prefix correction: a changed equality proof can no longer reuse an old
+validated prefix. Compact literal payloads and explicit lambda quantities are
+now included in that comparison. The upstream target remains **b2111cf, Bend
+2.0.32 era**.
 
-All **2,996 frontend results** remain unchanged: all **1,001 positive programs**
-type-check, all **482 validation negatives** reject, and all **11 proof-trust
-refusals** match TypeScript. There are **two exact diagnostic differences**, both
-from one do-block's error order. Independent controls expose additional gaps;
-[conformance](selfhost/CONFORMANCE.md) states the boundaries. All 41 selected
-backend observations and 42 installed/relocated CLI checks pass.
+Identical-source checking takes **11.62 s**, versus **3.42 s** for pinned
+TypeScript: a **3.40×** process-time gap. The two-line fix has neutral measured
+cost. This measures checking and trust reporting, excluding emission. The earlier
+[Phase17 lookup worker](implementation/phase17/find-worker.md) and
+[Phase16 compact literals](implementation/phase16/consolidation.md) retain their
+separate measured improvements.
 
-The compiler has **16,353 Bend lines in 59 modules**. The new lookup worker adds
-eight lines and removes per-miss dispatch allocations. Source size has grown as
-semantic coverage improved; the earlier 50% and 75% reduction targets remain open.
+All **2,996 frontend results** remain unchanged, with **two exact diagnostic
+differences** from one do-block. The new prefix controls close a separate invalid
+cached-proof acceptance; broader gaps remain in
+[conformance](selfhost/CONFORMANCE.md). All **42 installed/relocated CLI checks**
+pass. The compiler has **16,355 Bend lines in 59 modules**; the earlier 50% and
+75% reduction targets remain open. Larger checker and parser experiments are
+still isolated from this release.
 
 The [development workflow](docs/PHASE5_DEVELOPMENT.md) builds a genuine checked
 compiler and runs 36 short paired controls. The release preserves its checked

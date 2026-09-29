@@ -1,7 +1,7 @@
 # Compiler validation
 
 The target remains upstream `b2111cf43244e65f76ddc278ee695e669f720cbf`, Bend2
-2.0.32 era. The [Phase17 release report](../implementation/phase17/find-worker.md)
+2.0.32 era. The [Phase19 release report](../implementation/phase19/prefix-identity.md)
 binds the final checked artifact, controls, exact vectors, timing and preserved
 failures. The [release manifest](dist/release.json) identifies the installed
 guarded version5 derivative, genuine checked B1, source, Base, runtime and host.
@@ -18,7 +18,7 @@ observed invalid acceptance, timeout or unresolved observation. All 11 trust
 cases type-check and reach the intended refusal, exactly matching TypeScript.
 
 Phase16 reduced exact reference differences **459→2**, with **457 new matches
-and zero lost matches** versus Phase15. Phase17 preserves every complete result. The remaining rows are parse and check for
+and zero lost matches** versus Phase15. Phase17 and the Phase19 prefix correction preserve every complete result. The remaining rows are parse and check for
 `check/monad_do_destructure.bend`: rejection agrees, but the first diagnostic
 differs because of an earlier do-block parsing checkpoint. All measured primitive
 status, phase, type/trust, unsafe-list, exit and output axes agree on this corpus.
@@ -28,6 +28,17 @@ Strict check results are **1,493 passes / 5 failures**. Four failures are expect
 later-emission errors accepted by both frontends; the fifth is the do-block
 oracle above. Exact reference comparison and strict fixture verdicts are separate.
 Neither classification nor an integration no-regression gate weakens the oracle.
+
+The Phase19 release fixes a separate public-prefix error outside that inventory.
+The Phase17 compiler accepts a changed `{0n == 1n : Nat}` proof when reusing a
+validated `{0n == 0n : Nat}` prefix, despite rejecting the changed book in a full
+check. The corrected compiler detects the changed literal and rejects in both
+paths. All twelve identity controls pass; five failed on Phase17. This does not
+establish a bypass of the host's separately hashed Base cache. The
+[independent prefix report](../implementation/phase19/instance-boundary.md)
+retains the original failure and pinned oracle. Maintained 36, the complete
+2,996-result comparison and all 42 installed/relocated CLI checks were rerun on
+the corrected API; other named controls below retain their stated prior scope.
 
 Phase16's broader controls recorded the following gaps outside that inventory.
 The contextual 39 / host 43 selections were rerun for Phase17; the other selections
@@ -44,7 +55,7 @@ below retain their Phase16 artifact scope:
   wording difference for `@unsafe` followed by an import. Namespace eight,
   term/cache 39 and whole-program host ten controls pass without exceptions.
 
-On the current Phase17 API, the maintained 36 cases pass their selected contract
+On the historical Phase17 API, the maintained 36 cases pass their selected contract
 with two inherited exact differences. All **41 paired backend rows** match the
 pin. The direct frontend-lookup probes pass **23 paired / 46 independent expected
 outcomes**, including lazy demand, exact access order and a 100,000-definition
@@ -60,7 +71,7 @@ single lookup-worker change. All 2,996 complete compiler result objects are
 unchanged, but that does not manufacture new execution evidence for these other
 selections. See the [Phase16 gate report](../implementation/phase16/checker-compact-final-gates.md).
 
-The current standalone 25-module loader rebuilds without checker or diagnostic
+The Phase17 standalone 25-module loader rebuilds without checker or diagnostic
 tracing dependencies. All 16 unchanged derivation groups and five authentic
 version1–5 byte replays pass, as do all **42 installed/relocated CLI checks**.
 [Phase17 validation](../implementation/phase17/find-demand-gates.md) records the
