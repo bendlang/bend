@@ -1,20 +1,23 @@
 # Bend2 compiler port in Bend2
 
 Use the [compiler guide](../docs/BEND-IN-BEND.md) and
-[Phase22 release report](../implementation/phase22/contextual-conformance.md).
-One contextual frontend now owns lexical scope, aliases, patterns and completion
-order; the old raw parser and later scope replay are retired.
+[Phase23 release report](../implementation/phase23/upstream-graph-conversion.md).
+The update adds graph conversion and current backend fixes, including all nine
+shared-array atomic operations, while retaining one contextual frontend and the
+existing graph and array representations.
 
-All **2,996 main frontend observations** and the broader **196/196 parser
-observations** agree exactly with pinned TypeScript. Independent public176,
-execution36, integration198 and request-history controls pass. Counts overlap;
-raw negative-fixture statuses and unsupported features remain explicit in the
-report. Controlled checking is **10.70 s** versus **11.02 s** for Phase21 and
-**3.38 s** for TypeScript (**3.16×**), with no emission in that measurement.
+All **3,026 main frontend observations** and **196 broader parser observations**
+agree exactly with pinned TypeScript. Retained request histories, scoped backend
+execution and 42 installed/relocated CLI checks pass their documented scopes.
+Counts overlap; raw fixture statuses and reference-environment limits remain
+explicit in the report. Controlled ordinary checking is **11.01 s** versus
+**10.97 s** for Phase22 and **3.55 s** for TypeScript (**3.10×**), excluding
+emission. Two shared-term depth-32 checks that previously exhausted a 1 GiB heap
+now complete in about1.4 s within that limit.
 
 The current target is upstream
-[`b2111cf43244e65f76ddc278ee695e669f720cbf`](https://github.com/bendlang/bend/tree/b2111cf43244e65f76ddc278ee695e669f720cbf),
-after the Bend2 2.0.32 release.
+[`018751270e800bc222a93dad7f257083ee53a5f7`](https://github.com/bendlang/bend/tree/018751270e800bc222a93dad7f257083ee53a5f7),
+after the Bend2 2.0.34 release.
 
 ```sh
 # From selfhost/, with Node.js 24 or newer:
@@ -23,7 +26,8 @@ node cli.mjs tests/conformance/typed-smoke/base-u32.bend --run
 npm run build
 ```
 
-The compiler contains 15,600 physical /13,305 nonblank Bend lines in60 modules.
+The compiler contains 15,748 physical /13,442 nonblank Bend lines in60 modules,
+148 more physical lines than Phase22 (+0.95%), with unchanged module/type counts.
 It retains the validated S4 simplifications while adding current declaration,
 namespace, typing and effect semantics. The [release manifest](dist/release.json)
 binds the exact source, genuine checked parent, equality/choice-derived API, Base,
@@ -144,7 +148,7 @@ remain in `dist/selfhost/`; the [preservation index](../experiments/PRESERVATION
 and [experiment ledger](../experiments/ledger.md) identify their exact scope.
 They are not alternate defaults. The current release can run after relocation
 without an upstream checkout, as verified by its
-[Phase22 installed/relocated CLI checks](../implementation/phase22/contextual-conformance.md).
+[Phase23 installed/relocated CLI checks](../implementation/phase23/release-cli.json).
 The earlier [Phase5 clean-package evidence](../implementation/phase5/relocated-cli-evidence/README.md)
 applies to that historical artifact.
 

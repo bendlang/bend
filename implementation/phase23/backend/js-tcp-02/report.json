@@ -1,0 +1,21 @@
+{
+  "kind": "phase23-js-tcp-contract-controls",
+  "node": "v24.18.0",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime.mjs",
+      "sha256": "bc9f817a57a2d24565b5e05dd48e6f70c6003ce6a0b1628cf3bdf7a037881a72"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tests/phase23-backend/runtime-controls.mjs",
+      "sha256": "994388cd49fffddca0de02f9133cf45b3147ffa326126acf52913f664a043983"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase23/backend/js-tcp-02/runtime-controls.mjs",
+      "sha256": "d57c85991cc1c8411146db6ff4eb26b827acb71759026c49f12f3894c14d6bc9"
+    }
+  ],
+  "complete": false,
+  "pass": false,
+  "error": "TypeError: call(...).io is not a function\n    at io (file:///home/ai/bend2/build/publish/bend/implementation/phase23/backend/js-tcp-02/runtime-controls.mjs:495:50)\n    at file:///home/ai/bend2/build/publish/bend/implementation/phase23/backend/js-tcp-02/runtime-controls.mjs:499:16\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\n    at async node:internal/modules/esm/loader:643:26\n    at async file:///home/ai/bend2/build/publish/bend/selfhost/tests/phase23-backend/runtime-controls.mjs:40:18"
+}

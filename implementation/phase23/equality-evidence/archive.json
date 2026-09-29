@@ -1,0 +1,10 @@
+{
+  "complete": true,
+  "pass": true,
+  "archive": "component-controls.tar.xz",
+  "bytes": 32424,
+  "sha256": "b8d37a3d3279d409c46ecada87e66b9cd3d15d8090b0102b0387e756224be549",
+  "verifiedMembers": 14,
+  "verification": "Independently opened archive, extracted and hashed every member against manifest without writing back to live files.",
+  "restore": "From repository root, tar -xJf implementation/phase23/equality-evidence/component-controls.tar.xz restores these exact owned relative paths. Restore to an empty directory for inspection; do not overwrite active experiment results."
+}

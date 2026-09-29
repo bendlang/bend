@@ -452,3 +452,23 @@ contents within the available disk; independent codec and29 safety/refusal contr
 pass. Successful recovery is separate from the immutable capture manifest's
 historical pending flag. Neither preservation nor local commits establish remote
 publication, universal language conformance or a new self-hosted fixed point.
+
+
+## Phase23 upstream migration and graph conversion
+
+The [Phase23 preservation guide](../implementation/phase23/evidence/README.md)
+records the closed compiler/build/frontend/backend/history/cost/component producers,
+including failed attempts and consumed helper versions. Its18,532,332-byte XZ
+capsule restores66,245 members (55,119 files,382,078,181 file bytes). The
+[independent recovery receipt](../implementation/phase23/evidence/recovery-01.json)
+checks exact original and restored membership, bytes, modes and types; original
+builds and the independent recovery tree remain in place.
+
+The [final prerequisite inventory](../implementation/phase23/evidence-prerequisites-final.json)
+separates current captured inputs, immutable prior capsules, pinned Git blobs,
+external Node/Clang environments and historical metadata-only cache omissions.
+Production code and maintained fixtures are bound to commit
+`ab246cdd24e7695a14d3b725d5323b95c5f5892b`. Preservation does not manufacture new
+compiler observations, relocated timings, sanitizer passes or a fixed-point proof.
+The earlier starting disk shortage was resolved by byte-verifying and removing
+only eight redundant recovery trees; their original archives remain preserved.

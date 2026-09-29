@@ -4,11 +4,19 @@ The typed compiler uses a first-order representation shared by the frontend,
 checker, normalizer and emitters. The original single-file compiler remains
 available as a historical regression baseline.
 
-The installed Phase22 release uses one contextual frontend and load ABI2.
-The [release report](../../implementation/phase22/contextual-conformance.md)
-records its checked and derived artifact identities, complete tested frontend
-agreement, controlled cost, rejected attempts and remaining limits. Other
-components retain their existing contracts.
+The current Phase23 compiler targets upstream
+`018751270e800bc222a93dad7f257083ee53a5f7`, after Bend2 2.0.34. It retains the
+Phase22 contextual frontend and load ABI2, reuses the existing graph evaluator
+for shared-term conversion, and adds array atomics over the uniform runtime
+representation. The [Phase23 report](../../implementation/phase23/upstream-graph-conversion.md)
+records checked and derived identities, validation, controlled cost and promotion
+status. The [Phase22 report](../../implementation/phase22/contextual-conformance.md)
+retains the prior installed baseline. Kernel/device capability claims remain
+separate from the architecture and tested frontend agreement. The final candidate03
+image has3026/3026 exact main and196/196 exact broader frontend observations,
+with independently validated compiler, fixture, host and reference identities;
+see [frontend validation](../../implementation/phase23/frontend-validation.md).
+Raw fixture verdicts and backend/kernel capability claims remain separate.
 
 ## Components
 
@@ -148,9 +156,27 @@ definitional equality and the interpreter's result.
 
 Strong normalization uses explicit work frames and a persistent heap of lazy
 cells. Repeated uses of an argument share its evaluation; materialization returns
-the ordinary core term format. Weak evaluation and conversion retain the kernel's
-existing interface. Binder freshening also uses explicit frames so large generated
-terms do not depend on the host JavaScript call-stack depth.
+the ordinary core term format. Binder freshening also uses explicit frames so
+large generated terms do not depend on the host JavaScript call-stack depth.
+
+Phase23 conversion carries the same `GHeap`, `GState` and `g_wnf` evaluator
+through its existing comparison worklist. A `KNormShare` continuation copies
+the forced left cell value into the right cell only after all equality
+obligations succeed. Repeated edges then reach the same child cells instead of
+expanding a logical tree. Directional `LE` comparisons never establish symmetric
+sharing; failed alternatives discard unfinished sharing continuations. Completed
+proofs and normalization results remain valid within that pass.
+
+Conversion first compares with an empty definition book, keeping definitions
+rigid, then retries with the actual book only on failure. Each pass owns a
+separate heap. Exact comparison still precedes the fresh-identifier scan.
+Telescope domains share through heap cells; deferred codomains remain outside
+those cells until their binder is opened and substituted. This adds no global
+cache, alternate checker or new term representation. Ordinary weak-head queries
+retain their prior evaluator and public interface. The
+[graph-conversion report](../../implementation/phase23/graph-conversion.md)
+records depth64 equality/inequality, capture, failed-alternative and LE/EQ controls;
+finite controls are not a general complexity or soundness proof.
 
 Weak evaluation retains its original initial `Absent` fallback allocation.
 Reusing the input term in that otherwise unreachable slot passed finite semantic
@@ -184,6 +210,32 @@ file bytes and backend-compatible Base effects. Internal closure dispatch uses
 a separate C identifier namespace so user `Clo.apply` cannot collide. Its general
 boxed representation differs from upstream's flat-layout optimizations; runtime
 and performance equivalence are distinct validation questions.
+
+## Uniform arrays and shared ownership
+
+Native arrays retain one64-bit slot per element. `Array.fork` and `Array.join`
+use checked Base bodies and the existing reference-counted redirect handles.
+Consumers follow a handle with `term_peek`; its redirect count is read through
+the existing atomic-half `rfc_view`. A shared block is released through
+`term_drop`, while an unshared block whose children moved is freed shallowly.
+This is the existing ownership representation, not a packed-array migration.
+
+Matching a shared leaf retains its element before dropping the handle. Shared
+node construction and splitting retain each copied element before releasing the
+source handle; unshared paths move the elements. A clone returns the original
+array first and a separate copy second, preserving alias behavior when another
+forked handle still exists. Candidate02's reversed clone pair was exposed by an
+execution counterexample and corrected in candidate03; the failed result remains
+recorded in the [ownership review](../../implementation/phase23/native-ownership-review.json).
+
+The nine Base atomic operations update the low32-bit payload through a native
+CAS loop, wrap indices with the ordinary array indexing rule, and return the
+previous value. `fadd` rounds through F32. JavaScript performs one synchronous
+read/modify/write operation under its existing sequential execution model.
+Intrinsic recognition retains the existing Base-provenance checks. These rules
+do not establish safety for concurrent ordinary structural reads against atomic
+writes, nor ThreadSanitizer or GPU/device validation. The Phase23 backend gates
+record actual executions and their platform limits separately.
 
 ## Checker bounds and literals
 
@@ -529,8 +581,11 @@ and cannot turn a selected pass into a whole-suite conformance claim.
 ## Validation processes
 
 The development `equality` profile is a compatibility name for an explicit
-checked-B1 derivative. Version5 retains native string equality and literal-choice
-lowering, includes the native choice helper, and replaces eligible returned literal
+checked-B1 derivative. Version6 binds the new Base equality dependency chain,
+including guarded `String.order` and `Pair.snd` bodies. Runtime identity and the
+`String.eq` body jointly distinguish old and new profiles; unknown bodies are
+refused. It retains version5 native string equality and literal-choice lowering,
+includes the native choice helper, and replaces eligible returned literal
 branch closures with scoped blocks. Each branch must be one return without nested
 call work; a terminal generated call may have only call-free arguments. Other
 branches keep their original closure boundary. This restriction retains boundaries
@@ -541,7 +596,9 @@ remain exact; Unit bindings, argument order and bounded tail stack are preserved
 Unknown branch bodies retain the prior path, while unsupported lexical features
 and protected-name rebinding are refused. The transform is always behind the
 reviewed runtime/profile/export guards, not a standalone arbitrary-JS optimizer.
-Historical versions1/2/3/4 retain exact replay. Private unforced message shape,
+Historical versions1/2/3/4/5 retain exact replay; the
+[profile review](../../implementation/phase23/profile-review.md) records the
+new dependency guards and unchanged transformation policy. Private unforced message shape,
 reflection and mutated host prototypes are outside the contract. This host-image
 derivative does not change emitted user-JS behavior or establish a new self-emitted
 fixed point. See the [workflow](../../docs/PHASE5_DEVELOPMENT.md).

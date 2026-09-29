@@ -1,0 +1,23 @@
+[
+  {
+    "name": "conversion_def_named_like_object_key",
+    "status": 0,
+    "seconds": 0.8554192958399653,
+    "stdout": "ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n",
+    "stderr": ""
+  },
+  {
+    "name": "conversion_copy_before_unfold",
+    "status": -6,
+    "seconds": 8.30547482566908,
+    "stdout": "",
+    "stderr": "\n<--- Last few GCs --->\n\n[16:0x7059000]     7687 ms: Scavenge (interleaved) 995.8 (1005.1) -> 990.2 (1022.4) MB, pooled: 0 MB, 9.74 / 0.00 ms  (average mu = 0.268, current mu = 0.212) allocation failure; \n[16:0x7059000]     8215 ms: Mark-Compact (reduce) 990.3 (1023.4) -> 990.2 (992.9) MB, pooled: 0 MB, 514.11 / 0.00 ms  (+ 3.0 ms in 1 steps since start of marking, biggest step 3.0 ms, walltime since start of marking 519 ms) (average mu = 0.235, current mu\nFATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory\n----- Native stack trace -----\n\n 1: 0x74eae8 node::OOMErrorHandler(char const*, v8::OOMDetails const&) [/home/ai/.nvm/versions/node/v24.18.0/bin/node]\n 2: 0xc42680  [/home/ai/.nvm/versions/node/v24.18.0/bin/node]\n 3: 0xc4276f  [/home/ai/.nvm/versions/node/v24.18.0/bin/node]\n 4: 0xee5fc5  [/home/ai/.nvm/versions/node/v24.18.0/bin/node]\n 5: 0xee5ff2  [/home/ai/.nvm/versions/node/v24.18.0/bin/node]\n 6: 0xee62ea  [/home/ai/.nvm/versions/node/v24.18.0/bin/node]\n 7: 0xef6fea  [/home/ai/.nvm/versions/node/v24.18.0/bin/node]\n 8: 0xefb390  [/home/ai/.nvm/versions/node/v24.18.0/bin/node]\n 9: 0x198d931  [/home/ai/.nvm/versions/node/v24.18.0/bin/node]\n"
+  },
+  {
+    "name": "conversion_shared_cells_once",
+    "status": -6,
+    "seconds": 8.133014332968742,
+    "stdout": "",
+    "stderr": "\n<--- Last few GCs --->\n\n[24:0x428b2000]     7497 ms: Scavenge (interleaved) 999.4 (1008.4) -> 993.1 (1025.1) MB, pooled: 0 MB, 6.64 / 0.00 ms  (average mu = 0.274, current mu = 0.233) allocation failure; \n[24:0x428b2000]     8041 ms: Mark-Compact (reduce) 993.2 (1025.1) -> 993.0 (995.1) MB, pooled: 0 MB, 531.22 / 0.00 ms  (+ 1.8 ms in 1 steps since start of marking, biggest step 1.8 ms, walltime since start of marking 537 ms) (average mu = 0.242, current m\nFATAL ERROR: Ineffective mark-compacts near heap limit Allocation failed - JavaScript heap out of memory\n----- Native stack trace -----\n\n 1: 0x74eae8 node::OOMErrorHandler(char const*, v8::OOMDetails const&) [/home/ai/.nvm/versions/node/v24.18.0/bin/node]\n 2: 0xc42680  [/home/ai/.nvm/versions/node/v24.18.0/bin/node]\n 3: 0xc4276f  [/home/ai/.nvm/versions/node/v24.18.0/bin/node]\n 4: 0xee5fc5  [/home/ai/.nvm/versions/node/v24.18.0/bin/node]\n 5: 0xee5ff2  [/home/ai/.nvm/versions/node/v24.18.0/bin/node]\n 6: 0xee62ea  [/home/ai/.nvm/versions/node/v24.18.0/bin/node]\n 7: 0xef6fea  [/home/ai/.nvm/versions/node/v24.18.0/bin/node]\n 8: 0xefb390  [/home/ai/.nvm/versions/node/v24.18.0/bin/node]\n 9: 0x198d931  [/home/ai/.nvm/versions/node/v24.18.0/bin/node]\n"
+  }
+]

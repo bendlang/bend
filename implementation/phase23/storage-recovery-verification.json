@@ -1,0 +1,226 @@
+{
+  "kind": "phase23-safe-recovered-duplicate-audit",
+  "pass_": true,
+  "directories": [
+    {
+      "phase": 8,
+      "directory": "/tmp/phase8-final-recovery-01",
+      "allocatedFileBytes": 377241600,
+      "files": 27286,
+      "manifestFiles": 27286,
+      "failures": [],
+      "manifest": "implementation/phase8/migration-evidence/capsule-02/manifest.json",
+      "manifestSha256": "d69330ece69432a9385fbafee431e5bac44df751ed28f242d6e35746403d9725",
+      "publication": "implementation/phase8/migration-evidence/publication.json",
+      "publicationSha256": "b6edefd1765799fa685eb45377a7357995d4314d715c3444633aae66179a2e13",
+      "archive": {
+        "file": "raw.tar.gz",
+        "bytes": 32836,
+        "sha256": "acec1dfe5b20b49451c086e880da70ab0fcc88bf8a9ff908cc4aa4e98b201551"
+      },
+      "recovery": null
+    },
+    {
+      "phase": 9,
+      "directory": "/tmp/phase9-evidence-recovery-01",
+      "allocatedFileBytes": 830722048,
+      "files": 25194,
+      "manifestFiles": 25194,
+      "failures": [],
+      "manifest": "implementation/phase9/checker-evidence/capsule-01/manifest.json",
+      "manifestSha256": "8350c3d730182bafb4fecf98e562b32b548f43c6de4da616b61c5d69bb135731",
+      "publication": "implementation/phase9/checker-evidence/publication.json",
+      "publicationSha256": "b5ce4f6432a1bfc65410bb3b51ae3ada434e71c77101be6025445368c61c9411",
+      "archive": {
+        "file": "raw.tar.gz",
+        "bytes": 51300565,
+        "sha256": "1fe756502ba33038b436c124946066393dd617fc9b6f78bd028507fab1899d76"
+      },
+      "recovery": "implementation/phase9/checker-evidence/recovery-01.json"
+    },
+    {
+      "phase": 10,
+      "directory": "/tmp/phase10-evidence-recovery-01",
+      "allocatedFileBytes": 382832640,
+      "files": 10836,
+      "manifestFiles": 10836,
+      "failures": [],
+      "manifest": "implementation/phase10/evidence/capsule-01/manifest.json",
+      "manifestSha256": "d92eef03e88e1ebecd7d1096296aad5f468d7ccdc61374798dd1068b5d179c82",
+      "publication": "implementation/phase10/evidence/publication.json",
+      "publicationSha256": "ff1ba5d5df240b772b51d5a55d0a44010de4e86c25a6a445825e614f2afe7ef3",
+      "archive": {
+        "file": "raw.tar.gz",
+        "bytes": 19252898,
+        "sha256": "07befeada237b14e25911bde00710c02a4691f797d9ac12349f35c756222fd00"
+      },
+      "recovery": "implementation/phase10/evidence/recovery-01.json"
+    },
+    {
+      "phase": 11,
+      "directory": "/tmp/phase11-evidence-recovery-01",
+      "allocatedFileBytes": 443437056,
+      "files": 12362,
+      "manifestFiles": 12362,
+      "failures": [],
+      "manifest": "implementation/phase11/evidence/capsule-01/manifest.json",
+      "manifestSha256": "6daea31338b89451a0e3ead48d44179301d46f1ce6e2f954c3012dba9d14f86c",
+      "publication": "implementation/phase11/evidence/publication.json",
+      "publicationSha256": "5a8ef9856463f808de92c32404959cd06f51991e2859a72810cf05f6831e8a4c",
+      "archive": {
+        "file": "raw.tar.gz",
+        "bytes": 23289650,
+        "sha256": "d2759a82bb13cf5a38b819acce9769fe529ce6cf57e4b81668a5ab6f2de1e099"
+      },
+      "recovery": "implementation/phase11/evidence/recovery-01.json"
+    },
+    {
+      "phase": 12,
+      "directory": "/tmp/phase12-evidence-recovery-01",
+      "allocatedFileBytes": 630231040,
+      "files": 30182,
+      "manifestFiles": 30182,
+      "failures": [],
+      "manifest": "implementation/phase12/evidence/capsule-01/manifest.json",
+      "manifestSha256": "a62927bd40dfad4fb55c1c676baa7cddac091e6ed0905738e0c4e3d339688fb4",
+      "publication": "implementation/phase12/evidence/publication.json",
+      "publicationSha256": "2fbd1b79e6ace38c195592a52245b0f66c9a57b5a4cc52a3249e6f01c04371bd",
+      "archive": {
+        "file": "raw.tar.gz",
+        "bytes": 40915372,
+        "sha256": "7220c8dbc6a95eb0b5cf46a9cd6a0057f9fc79871eaed2826b2b58d4b5cf8cf7"
+      },
+      "recovery": "implementation/phase12/evidence/recovery-01.json"
+    },
+    {
+      "phase": 13,
+      "directory": "/tmp/bend-phase13-evidence-final-recovery-01",
+      "allocatedFileBytes": 371507200,
+      "files": 10245,
+      "manifestFiles": 10245,
+      "failures": [],
+      "manifest": "implementation/phase13/evidence/capsule-01/manifest.json",
+      "manifestSha256": "12f04435e3f17609a9ee0325b741ee9ab66314826527b2c6577e0518e21dca0d",
+      "publication": "implementation/phase13/evidence/publication.json",
+      "publicationSha256": "a2bb7324b37c5f716367f8c0fefc92ec84f9bbf3d561e914452bc717afd0657a",
+      "archive": {
+        "file": "raw.tar.gz",
+        "bytes": 29644657,
+        "sha256": "3c35cbc4013156f8b3644d1d778a81e3d85adf8f1b612fd112d63af77ba09248"
+      },
+      "recovery": "implementation/phase13/evidence/recovery-01.json"
+    },
+    {
+      "phase": 14,
+      "directory": "/tmp/phase14-evidence-recovery-01",
+      "allocatedFileBytes": 446484480,
+      "files": 17243,
+      "manifestFiles": 17243,
+      "failures": [],
+      "manifest": "implementation/phase14/evidence/capsule-01/manifest.json",
+      "manifestSha256": "1d8292ac064d564167ff5ca3bc032f06c20eeef385898e8007c27d718203d030",
+      "publication": "implementation/phase14/evidence/publication.json",
+      "publicationSha256": "25738b94eabd3e713c06a6d1dd6974f68c8234fa2c6b53dd024ecf9c1137554e",
+      "archive": {
+        "file": "raw.tar.gz",
+        "bytes": 24815975,
+        "sha256": "aab8a2f6ae556a8a5131db3e5c4870dff889e7ea5c42cb78f03ee478909768ad"
+      },
+      "recovery": "implementation/phase14/evidence/recovery-01.json"
+    },
+    {
+      "phase": 15,
+      "directory": "/tmp/phase15-recovery-a383163b-02",
+      "allocatedFileBytes": 475385856,
+      "files": 17179,
+      "manifestFiles": 17179,
+      "failures": [],
+      "manifest": "implementation/phase15/evidence/capsule-01/manifest.json",
+      "manifestSha256": "70b99f29a3e7adc5d5c31f2e324a79d9e93ed7a9e1e1d288220a82ecad384c26",
+      "publication": "implementation/phase15/evidence/publication.json",
+      "publicationSha256": "9e23ecbaf4361e52e317ec9608c202b80dd795b3a2cb19d8a19fab9199efaebb",
+      "archive": {
+        "file": "raw.tar.gz",
+        "bytes": 24925020,
+        "sha256": "0f9e37ef2f6a2116086757f4cfcc2d2d4300bd110461584eebdbb44565c52a80"
+      },
+      "recovery": "implementation/phase15/evidence/recovery-02.json"
+    }
+  ],
+  "verifiedArchiveFiles": {
+    "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/capsule-02/raw.tar.gz": {
+      "type": "file",
+      "bytes": 32836,
+      "sha256": "acec1dfe5b20b49451c086e880da70ab0fcc88bf8a9ff908cc4aa4e98b201551",
+      "mode": 420
+    },
+    "/home/ai/bend2/build/publish/bend/implementation/phase8/conformance-harness-evidence/raw.tar.gz": {
+      "type": "file",
+      "bytes": 2258668,
+      "sha256": "b011854d9869ee6db4262668c0523a36ab84d253c13b901b57a39bc53ba42422",
+      "mode": 420
+    },
+    "/home/ai/bend2/build/publish/bend/implementation/phase8/selected-js-evidence/raw.tar.gz": {
+      "type": "file",
+      "bytes": 6315169,
+      "sha256": "979c49ea277715353669c4ceb5da0373c97990ea6e071a54669958ae8bf243cb",
+      "mode": 420
+    },
+    "/home/ai/bend2/build/publish/bend/implementation/phase8/selected-js-evidence/release07.tar.gz": {
+      "type": "file",
+      "bytes": 852682,
+      "sha256": "edb92c370acecb8a4d5bec53f9ddc39679f74917b596530fc2d0f418b9fe02df",
+      "mode": 420
+    },
+    "/home/ai/bend2/build/publish/bend/implementation/phase8/migration-evidence/capsule-01/raw.tar.gz": {
+      "type": "file",
+      "bytes": 21314537,
+      "sha256": "7b4c8b7d3841b42508b4283446ec3858ea9b8ef29b26f19e19d66b7f2487713c",
+      "mode": 420
+    },
+    "/home/ai/bend2/build/publish/bend/implementation/phase9/checker-evidence/capsule-01/raw.tar.gz": {
+      "type": "file",
+      "bytes": 51300565,
+      "sha256": "1fe756502ba33038b436c124946066393dd617fc9b6f78bd028507fab1899d76",
+      "mode": 420
+    },
+    "/home/ai/bend2/build/publish/bend/implementation/phase10/evidence/capsule-01/raw.tar.gz": {
+      "type": "file",
+      "bytes": 19252898,
+      "sha256": "07befeada237b14e25911bde00710c02a4691f797d9ac12349f35c756222fd00",
+      "mode": 420
+    },
+    "/home/ai/bend2/build/publish/bend/implementation/phase11/evidence/capsule-01/raw.tar.gz": {
+      "type": "file",
+      "bytes": 23289650,
+      "sha256": "d2759a82bb13cf5a38b819acce9769fe529ce6cf57e4b81668a5ab6f2de1e099",
+      "mode": 420
+    },
+    "/home/ai/bend2/build/publish/bend/implementation/phase12/evidence/capsule-01/raw.tar.gz": {
+      "type": "file",
+      "bytes": 40915372,
+      "sha256": "7220c8dbc6a95eb0b5cf46a9cd6a0057f9fc79871eaed2826b2b58d4b5cf8cf7",
+      "mode": 420
+    },
+    "/home/ai/bend2/build/publish/bend/implementation/phase13/evidence/capsule-01/raw.tar.gz": {
+      "type": "file",
+      "bytes": 29644657,
+      "sha256": "3c35cbc4013156f8b3644d1d778a81e3d85adf8f1b612fd112d63af77ba09248",
+      "mode": 420
+    },
+    "/home/ai/bend2/build/publish/bend/implementation/phase14/evidence/capsule-01/raw.tar.gz": {
+      "type": "file",
+      "bytes": 24815975,
+      "sha256": "aab8a2f6ae556a8a5131db3e5c4870dff889e7ea5c42cb78f03ee478909768ad",
+      "mode": 420
+    },
+    "/home/ai/bend2/build/publish/bend/implementation/phase15/evidence/capsule-01/raw.tar.gz": {
+      "type": "file",
+      "bytes": 24925020,
+      "sha256": "0f9e37ef2f6a2116086757f4cfcc2d2d4300bd110461584eebdbb44565c52a80",
+      "mode": 420
+    }
+  },
+  "allocatedFileBytes": 3957841920,
+  "deletionPerformed": false
+}

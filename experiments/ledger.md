@@ -1446,3 +1446,49 @@ image before further optimization. Kernel/GPU/platform validation and generated
 program speed need separate work. The [evidence index](../implementation/phase22/context-evidence/README.md)
 records preservation independently. All75 unrelated Phase6 paths remain untouched;
 remote publication stays blocked by the recorded automatic approval review.
+
+## P23 — pinned upstream migration and graph conversion (2026-09-29)
+
+[Design](../design/phase23/upstream-graph-conversion.md),
+[P23-001](phase23/P23-001-upstream-graph-conversion.md),
+[P23-002](phase23/P23-002-uniform-array-atomics.md),
+[P23-003](phase23/P23-003-bootstrap-profile.md), and
+[report](../implementation/phase23/upstream-graph-conversion.md).
+
+Merged29 upstream commits through0187512 after2.0.34 and added15 fixtures to the
+active target. Preserved b2111cf and the old released compiler; oldTS/newTS/oldBend
+were measured before edits. New upstream alone was near-neutral on ordinary
+checking. Profile6 guards the changed Base dependency chain; oldprofiles1–5
+retain exact replay. The current image is a derivative of a genuine checked B1,
+not a new self-emitted fixed point.
+
+Conversion reuses graph evaluation with rigid-first/full-book policies and
+EQ-only post-obligation sharing. Depth32copy/shared programs formerly exhausting
+1GiB now pass in1.36/1.41s under that same cap; the failed baseline cannot supply
+a normal timing ratio. Added current widening/foreign/TCP/scheduler fixes and
+all9arrayatomics with existing uniform arrays/RFC ownership. A surviving alias
+exposed reversed native clone ordering (199versus119); final03 fixes it. Earlier
+syntax, harness, missingatomic and clone failures remain preserved.
+
+Final API5596f914 /checkedparent5f539f81: main3026 and broader196 exact, histories
+226paired+2fresh exact without exceptions, focused36 and installed/relocatedCLI42
+pass. Backendnew/scoped24 candidatepasses include22exact and2 Node/Bun reference
+limits; retainedarrays18exact and100 multicore repetitions pass. Scanner4116,
+JS TCP16 and maintainedharness114 pass. Component fixture maintenance and evidence
+closure are described in the final report. Scope exclusions remain explicit:
+independentkernel, GPU, arbitrarystructural/atomic races and universal equivalence.
+
+Final exclusive ordinary check: TS3.5518s, old10.9708s, refreshed10.9199s,
+final11.0135s;3.1008×TS. Final process+0.39%, request+0.52%vsold, within the
+prospective3%screen. PeakRSS+7.52%vsold/−0.80%vsrefreshed. Two samples perbundle,
+exact observations and unchanged identities; no generated-code performance claim.
+Canonical source+148physical(+0.95%)to15,748lines, unchanged60modules/68types,
++9definitions/+2laws. This expands compatibility while reusing representations;
+it is not a line-reduction phase.
+
+**Updated frontier:** promote the pinned, validated compiler and preserve its
+failed checkpoints. Profile the remaining ordinary-checking3.10× gap before new
+optimization. Continue independent conformance challenges within the supported
+scope, preserving exact first errors and one frontend authority. Oldmulti-hour
+budgets are not renewed by this checkpoint; future work follows current user
+scope and the maintained bounded-experiment workflow.

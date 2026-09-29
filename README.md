@@ -17,25 +17,27 @@ This fork develops the compiler in [`selfhost/`](selfhost/README.md), on branch
 from `selfhost/`, run `npm run verify:release`, then `node cli.mjs FILE --run`.
 `npm run build` checks and rebuilds the default with pinned upstream.
 
-The [Phase22 release report](implementation/phase22/contextual-conformance.md)
-records one contextual frontend, replacing parsing followed by later scope
-reconstruction. The target remains **b2111cf, Bend 2.0.32 era**.
+The [Phase23 release report](implementation/phase23/upstream-graph-conversion.md)
+records the update to **0187512, after Bend 2.0.34**, graph conversion and the
+new backend fixes, including shared-array atomics.
 
-All **2,996 main frontend observations** now agree exactly with pinned TypeScript.
-The broader parser selection is **196/196 exact**, closing its remaining57
-differences. Independent public176, execution36, integration198 and request-history
-controls also pass. These overlapping selections are finite evidence; see
-[conformance](selfhost/CONFORMANCE.md) for the raw verdicts and remaining limits.
+All **3,026 main frontend observations** and **196 broader parser observations**
+agree exactly with pinned TypeScript. Native/JavaScript regression tests,
+request histories and 42 installed/relocated CLI checks pass their documented
+scopes. These overlapping selections are finite evidence; see
+[conformance](selfhost/CONFORMANCE.md) for raw verdicts and reference-environment
+limits.
 
-Controlled identical-source checking averages **10.70 s**, versus **11.02 s**
-for Phase21 and **3.38 s** for TypeScript (**3.16×** its process time). This is a
-modest two-sample cost screen, excluding emission. The compiler has **15,600 Bend
-lines in60 modules**, down300 lines; one frontend authority replaces two routes.
-Bytes and helper counts rise slightly, so the reduction is not universal.
+Controlled ordinary checking averages **11.01 s**, versus **10.97 s** for the
+previous release and **3.55 s** for TypeScript (**3.10×**). This two-sample screen
+excludes emission. The clear gain is on shared terms: two depth-32 checks that
+previously exhausted a 1 GiB heap now finish in about **1.4 s** within that cap.
+The compiler has **15,748 Bend lines in 60 modules**, up 148 lines (+0.95%), with
+unchanged module/datatype counts and the existing graph/array representations.
 
 The [development workflow](docs/PHASE5_DEVELOPMENT.md) builds a genuine checked
 compiler and runs36 short paired controls. The release preserves its checked
-parent and guarded version5 derivative; ordinary compilation runs the Bend
+parent and guarded version6 derivative; ordinary compilation runs the Bend
 implementation without a TypeScript fallback. Independent BendTT `--verdict`
 validation is not implemented, and this is not a new self-hosted fixed point.
 

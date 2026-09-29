@@ -1,0 +1,21 @@
+{
+  "kind": "phase23-js-tcp-contract-controls",
+  "node": "v24.18.0",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime.mjs",
+      "sha256": "bc9f817a57a2d24565b5e05dd48e6f70c6003ce6a0b1628cf3bdf7a037881a72"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tests/phase23-backend/runtime-controls.mjs",
+      "sha256": "d37fa26c3e2c9c5d18a7df83a14367eee58c2473face11b1ff7ed8f0507d1dfd"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase23/backend/js-tcp-01/runtime-controls.mjs",
+      "sha256": "cf0dd40f154e5013f5a4a341c4f7553d081dc071f0a06c879198c54fd3c99277"
+    }
+  ],
+  "complete": false,
+  "pass": false,
+  "error": "SyntaxError: Identifier 'bad' has already been declared\n    at compileSourceTextModule (node:internal/modules/esm/utils:318:16)\n    at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:89:18)\n    at #translate (node:internal/modules/esm/loader:434:20)\n    at afterLoad (node:internal/modules/esm/loader:502:29)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:507:12)\n    at #getOrCreateModuleJobAfterResolve (node:internal/modules/esm/loader:560:36)\n    at afterResolve (node:internal/modules/esm/loader:607:52)\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:613:12)\n    at node:internal/modules/esm/loader:632:32\n    at TracingChannel.tracePromise (node:diagnostics_channel:362:14)"
+}

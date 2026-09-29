@@ -1,0 +1,65 @@
+{
+  "kind": "phase23-release-smoke-launch",
+  "complete": true,
+  "pass": true,
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase23/history-release-smoke-launch.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase23/history-release-smoke-launch.mjs",
+      "sha256": "1420bc497e5bc38e60f77df1d19be5602aa208000c8d2f731d2856549fcc7321"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase23/history-release-smoke.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase23/history-release-smoke.mjs",
+      "sha256": "2955c769fecbf02258bdaaab3f8d8edced864bd2a62df60f440b9fb2cc49840c"
+    },
+    {
+      "file": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "canonicalPath": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/release.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/dist/release.json",
+      "sha256": "f91af0306a4275c25b226bbd1efb4ffc706a47f0867a8de4b315c31b5e4919c3"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/typed-api.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/dist/typed-api.mjs",
+      "sha256": "5596f914fd245a5085a614b81099360aeaf601ed61f16357fc491c85106c1102"
+    }
+  ],
+  "expectedApi": "5596f914fd245a5085a614b81099360aeaf601ed61f16357fc491c85106c1102",
+  "cpu": 1,
+  "execution": {
+    "command": "taskset",
+    "args": [
+      "-c",
+      "1",
+      "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "--stack-size=4096",
+      "--max-old-space-size=4096",
+      "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase23/history-release-smoke.mjs",
+      "/home/ai/bend2/build/publish/bend/selfhost",
+      "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/release-cli-01/checks",
+      "5596f914fd245a5085a614b81099360aeaf601ed61f16357fc491c85106c1102"
+    ],
+    "stdout": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/release-cli-01/process/stdout",
+    "stderr": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/release-cli-01/process/stderr",
+    "timeoutMs": 1200000,
+    "maxBytes": 16777216,
+    "exitCode": 0,
+    "signal": null,
+    "error": null,
+    "timedOut": false,
+    "overflow": false,
+    "logBytes": 1650,
+    "wallMs": 42732.961999
+  },
+  "checks": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/release-cli-01/checks/report.json",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/release-cli-01/checks/report.json",
+    "sha256": "20aee50290317269652646d16fb170135cadd2134aa92f8417abc5db785c9b61"
+  },
+  "steps": 42
+}

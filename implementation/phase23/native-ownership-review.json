@@ -1,0 +1,84 @@
+{
+  "kind": "phase23-independent-native-ownership-review",
+  "reviewer": "phase23_storage",
+  "createdAtUtc": "2026-09-29T19:27:46.563451+00:00",
+  "scope": "Read-only source review; no reviewer-run execution, TSan or GPU claim. Executable findings are attributed to retained backend-agent evidence.",
+  "inputs": [
+    {
+      "file": "selfhost/build/phase23/combined-build-02/snapshot/src/runtime/native/runtime.c",
+      "sha256": "9485b04b8e62c1267280ebcc1c4c8945decd2619e97fbdf1a37dc3365b548b0a",
+      "bytes": 78834
+    },
+    {
+      "file": "selfhost/build/phase23/combined-build-02/snapshot/src/back/native/array.bend",
+      "sha256": "a7bc15fbe4b80b8ab871697f96107df8d79dbdde11f7132c94c5c7358364b8ce",
+      "bytes": 2813
+    },
+    {
+      "file": "selfhost/build/phase23/combined-build-02/snapshot/src/back/native/bridge.bend",
+      "sha256": "4767f940940660635ec4c80978f8e4abb11c398b4b8f8bccabf05879c59f2a49",
+      "bytes": 23327
+    },
+    {
+      "file": "selfhost/src/back/native/array.bend",
+      "sha256": "c00f0592299047df582ac0435e1a0423ea62fb48f7c87dda83bf18161b263bd7",
+      "bytes": 2813
+    },
+    {
+      "file": "bend2/comp.ts",
+      "sha256": "3bd7ed49d33f1c61334d75a905e38c0345fb15a10b45d85884b77f49833dc5ee",
+      "bytes": 185444
+    },
+    {
+      "file": "selfhost/tests/phase23-backend/fixtures/shared_array_ownership_v2.bend",
+      "sha256": "f81673941c25138c89bf945ccba2377dbe534e1a70b46ae7a385915f5e95a2c6",
+      "bytes": 1670
+    },
+    {
+      "file": "selfhost/build/phase23/backend-atomic-controls-02/selected/paired.json",
+      "sha256": "242c5a7abcb3c6fe6c72cf1726d22f368124a9129f6c5fb3d730369f81b241b5",
+      "bytes": 14118
+    }
+  ],
+  "findings": [
+    {
+      "topic": "Shared leaf ownership",
+      "assessment": "blk_leaf retains the element before emitter blk_free drops its shared array handle; count-one redirect still preserves returned child."
+    },
+    {
+      "topic": "Shared node and halves",
+      "assessment": "Each copied shared ARR element acquires an ownership reference before parent handle decrement; unshared inputs move children then shallow-free. Same-array pair handles balance through retained children and two handle drops."
+    },
+    {
+      "topic": "RFC target access",
+      "assessment": "term_peek uses existing atomic-half rfc_view; final reference release acquires before destroying target. Existing format retained."
+    },
+    {
+      "topic": "Atomic updates",
+      "assessment": "CAS loop uses low U32 slot, wraps index via blk_at, returns previous value, rounds fadd through F32. Ordinary concurrent whole-word reads against atomic low-word writes are not established race-safe by this review."
+    },
+    {
+      "topic": "Clone pair order",
+      "assessment": "Initial ownership review found no blocking ownership defect but did not detect inherited alias-order defect. Backend executable counterexample reports expected119 versus candidate02 199; current source correction returns original array first and fresh copy second, matching upstream/JS alias behavior. Correction execution is pending final candidate validation."
+    }
+  ],
+  "counterexample": {
+    "report": "selfhost/build/phase23/backend-atomic-controls-02/selected/paired.json",
+    "fixture": "selfhost/tests/phase23-backend/fixtures/shared_array_ownership_v2.bend",
+    "row": "shared_array_ownership_v2/native",
+    "referenceLastLine": "119",
+    "candidate02LastLine": "199",
+    "unchangedEarlierLines": [
+      "21",
+      "21",
+      "7",
+      "7"
+    ]
+  },
+  "blockingOwnershipDefectsFound": 0,
+  "limitations": [
+    "Source reasoning is not a memory/thread-safety proof.",
+    "Unsafe concurrent structural reads or writes outside atomics are not covered.",
+    "Current clone correction must be validated in a new frozen checked compiler."
+  ]
+}

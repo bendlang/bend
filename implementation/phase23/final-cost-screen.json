@@ -1,0 +1,45 @@
+{
+  "kind": "phase23-final-controlled-cost-screen",
+  "complete": true,
+  "pass": true,
+  "rawReport": "selfhost/build/phase23/cost-02/report.json",
+  "rawReportSha256": "eded32e322d7c4dcb7a81003b405e8dc227acd0d427daa1d2a45f3550c6a1b7f",
+  "statistics": {
+    "typescript": {
+      "samples": 2,
+      "meanProcessWallMs": 3551.7674309999993,
+      "meanRequestMs": 2358.905585,
+      "maxRssKiB": 485688
+    },
+    "released": {
+      "samples": 2,
+      "meanProcessWallMs": 10970.780344,
+      "meanRequestMs": 9742.831688,
+      "maxRssKiB": 714192
+    },
+    "refreshed": {
+      "samples": 2,
+      "meanProcessWallMs": 10919.874936999997,
+      "meanRequestMs": 9690.919785,
+      "maxRssKiB": 774140
+    },
+    "candidate": {
+      "samples": 2,
+      "meanProcessWallMs": 11013.468513999997,
+      "meanRequestMs": 9793.065579499998,
+      "maxRssKiB": 767924
+    }
+  },
+  "ratioToNewTs": 3.1008416874015756,
+  "processChangeVsReleased": 0.003891078725620778,
+  "requestChangeVsReleased": 0.005155984739207753,
+  "rssChangeVsReleased": 0.07523467078880741,
+  "processChangeVsRefreshed": 0.008570938544623319,
+  "requestChangeVsRefreshed": 0.010540361159330214,
+  "rssChangeVsRefreshed": -0.008029555377580322,
+  "withinThreePercentScreen": true,
+  "scope": "Same frozen compiler source, each usable bundle with its own pinned Base and runtime. No emission. Fresh processes, validated Bend Base cache; TypeScript checks its Base. OS caches are not flushed.",
+  "timingBoundary": "Request wraps adapter.probe including lazy API loading. Process includes startup, identity hashing and output capture.",
+  "attribution": "Cross-revision workflow comparison, not isolated algorithm or Bend-source attribution. Host provenance must match actual driver/adapter; no other result fields excluded.",
+  "exclusive": "All other compiler builds, tests, timing and archive hashing/capture were paused for the eight serial rows; only small documentation edits were allowed."
+}

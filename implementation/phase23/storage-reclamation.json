@@ -1,0 +1,851 @@
+{
+  "kind": "phase23-redundant-recovery-reclamation",
+  "scope": "Delete only exact verified historical independent recovery copies; immutable archives, original experiments and protected work remain intact.",
+  "deletions": [
+    {
+      "directory": "/tmp/phase8-final-recovery-01",
+      "approvedBy": "root agent after completed byte audit",
+      "allocatedBytesBefore": 393146368,
+      "audit": {
+        "files": 27286,
+        "manifestFiles": 27286,
+        "extraFiles": 0,
+        "missingFiles": 0,
+        "changedBytesModesLinks": 0,
+        "allArchiveAndPrerequisiteHashesVerified": true,
+        "activeReferencesBeforeDeletion": []
+      },
+      "publication": {
+        "file": "implementation/phase8/migration-evidence/publication.json",
+        "sha256": "b6edefd1765799fa685eb45377a7357995d4314d715c3444633aae66179a2e13"
+      },
+      "manifest": {
+        "file": "implementation/phase8/migration-evidence/capsule-02/manifest.json",
+        "sha256": "d69330ece69432a9385fbafee431e5bac44df751ed28f242d6e35746403d9725"
+      },
+      "archives": [
+        {
+          "file": "implementation/phase8/migration-evidence/capsule-02/raw.tar.gz",
+          "bytes": 32836,
+          "sha256": "acec1dfe5b20b49451c086e880da70ab0fcc88bf8a9ff908cc4aa4e98b201551"
+        },
+        {
+          "manifest": "implementation/phase8/conformance-harness-evidence/manifest.json",
+          "manifestSha256": "7f366a89d10282ad80ae13b6c7ae863909f9d0cc384286957caf20082198e5e1",
+          "archive": "implementation/phase8/conformance-harness-evidence/raw.tar.gz",
+          "archiveSha256": "b011854d9869ee6db4262668c0523a36ab84d253c13b901b57a39bc53ba42422",
+          "archiveBytes": 2258668,
+          "objects": 227
+        },
+        {
+          "manifest": "implementation/phase8/selected-js-evidence/manifest.json",
+          "manifestSha256": "7c07e21aeefa3b6b7f11c90c9a31782f599b60db4c3686ab711b4df84fb9cbeb",
+          "archive": "implementation/phase8/selected-js-evidence/raw.tar.gz",
+          "archiveSha256": "979c49ea277715353669c4ceb5da0373c97990ea6e071a54669958ae8bf243cb",
+          "archiveBytes": 6315169,
+          "objects": 1685
+        },
+        {
+          "manifest": "implementation/phase8/selected-js-evidence/release07-manifest.json",
+          "manifestSha256": "84fa6fa420a2c57f0a8e1dd0e27d226ac5b1f0aa54d032f59962d3caf7bce3d2",
+          "archive": "implementation/phase8/selected-js-evidence/release07.tar.gz",
+          "archiveSha256": "edb92c370acecb8a4d5bec53f9ddc39679f74917b596530fc2d0f418b9fe02df",
+          "archiveBytes": 852682,
+          "objects": 187
+        },
+        {
+          "manifest": "implementation/phase8/migration-evidence/capsule-01/manifest.json",
+          "manifestSha256": "ae41fbe1f173b1e01815c146cb874dfbd9a813e6986b42aed1ab34f8732ac886",
+          "archive": "implementation/phase8/migration-evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "7b4c8b7d3841b42508b4283446ec3858ea9b8ef29b26f19e19d66b7f2487713c",
+          "archiveBytes": 21314537,
+          "objects": 10470
+        }
+      ],
+      "recoveryCommand": [
+        "python3",
+        "implementation/phase8/migration-evidence/collect.py",
+        "materialize",
+        "implementation/phase8/migration-evidence/capsule-02",
+        "/tmp/phase8-final-recovery-NEW"
+      ],
+      "deletionCompleted": true,
+      "completedAtUtc": "2026-09-29T19:05:31.339410+00:00",
+      "freeBytesBefore": 18944000,
+      "freeBytesAfter": 412082176
+    },
+    {
+      "directory": "/tmp/phase9-evidence-recovery-01",
+      "approvedBy": "root agent after exact current audit, immutable prerequisite verification and no active references",
+      "allocatedBytesBefore": 843546624,
+      "audit": {
+        "files": 25194,
+        "manifestFiles": 25194,
+        "extraFiles": 0,
+        "missingFiles": 0,
+        "changedBytesModesLinks": 0,
+        "allArchiveAndPrerequisiteHashesVerified": true,
+        "activeReferencesBeforeDeletion": [],
+        "processesInspected": 244
+      },
+      "publication": {
+        "file": "implementation/phase9/checker-evidence/publication.json",
+        "sha256": "b5ce4f6432a1bfc65410bb3b51ae3ada434e71c77101be6025445368c61c9411"
+      },
+      "historicalSuccessfulRecovery": {
+        "file": "implementation/phase9/checker-evidence/recovery-01.json",
+        "sha256": "f27f71cdd223f69c173e6f91903172472349b9d523a34dfffe1f95b382499537"
+      },
+      "manifest": {
+        "file": "implementation/phase9/checker-evidence/capsule-01/manifest.json",
+        "sha256": "8350c3d730182bafb4fecf98e562b32b548f43c6de4da616b61c5d69bb135731"
+      },
+      "archives": [
+        {
+          "file": "implementation/phase9/checker-evidence/capsule-01/raw.tar.gz",
+          "bytes": 51300565,
+          "sha256": "1fe756502ba33038b436c124946066393dd617fc9b6f78bd028507fab1899d76"
+        },
+        {
+          "manifest": "implementation/phase8/conformance-harness-evidence/manifest.json",
+          "manifestSha256": "7f366a89d10282ad80ae13b6c7ae863909f9d0cc384286957caf20082198e5e1",
+          "archive": "implementation/phase8/conformance-harness-evidence/raw.tar.gz",
+          "archiveSha256": "b011854d9869ee6db4262668c0523a36ab84d253c13b901b57a39bc53ba42422",
+          "archiveBytes": 2258668,
+          "objects": 227
+        },
+        {
+          "manifest": "implementation/phase8/selected-js-evidence/manifest.json",
+          "manifestSha256": "7c07e21aeefa3b6b7f11c90c9a31782f599b60db4c3686ab711b4df84fb9cbeb",
+          "archive": "implementation/phase8/selected-js-evidence/raw.tar.gz",
+          "archiveSha256": "979c49ea277715353669c4ceb5da0373c97990ea6e071a54669958ae8bf243cb",
+          "archiveBytes": 6315169,
+          "objects": 1685
+        },
+        {
+          "manifest": "implementation/phase8/selected-js-evidence/release07-manifest.json",
+          "manifestSha256": "84fa6fa420a2c57f0a8e1dd0e27d226ac5b1f0aa54d032f59962d3caf7bce3d2",
+          "archive": "implementation/phase8/selected-js-evidence/release07.tar.gz",
+          "archiveSha256": "edb92c370acecb8a4d5bec53f9ddc39679f74917b596530fc2d0f418b9fe02df",
+          "archiveBytes": 852682,
+          "objects": 187
+        },
+        {
+          "manifest": "implementation/phase8/migration-evidence/capsule-01/manifest.json",
+          "manifestSha256": "ae41fbe1f173b1e01815c146cb874dfbd9a813e6986b42aed1ab34f8732ac886",
+          "archive": "implementation/phase8/migration-evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "7b4c8b7d3841b42508b4283446ec3858ea9b8ef29b26f19e19d66b7f2487713c",
+          "archiveBytes": 21314537,
+          "objects": 10470
+        },
+        {
+          "manifest": "implementation/phase8/migration-evidence/capsule-02/manifest.json",
+          "manifestSha256": "d69330ece69432a9385fbafee431e5bac44df751ed28f242d6e35746403d9725",
+          "archive": "implementation/phase8/migration-evidence/capsule-02/raw.tar.gz",
+          "archiveSha256": "acec1dfe5b20b49451c086e880da70ab0fcc88bf8a9ff908cc4aa4e98b201551",
+          "archiveBytes": 32836,
+          "objects": 16
+        }
+      ],
+      "recoveryCommand": [
+        "python3",
+        "implementation/phase8/migration-evidence/collect.py",
+        "materialize",
+        "implementation/phase9/checker-evidence/capsule-01",
+        "/tmp/phase9-evidence-recovery-01-NEW"
+      ],
+      "deletionCompleted": true,
+      "completedAtUtc": "2026-09-29T19:08:49.065147+00:00",
+      "freeBytesBefore": 338214912,
+      "freeBytesAfter": 1181732864
+    },
+    {
+      "directory": "/tmp/phase10-evidence-recovery-01",
+      "approvedBy": "root agent after exact current audit, immutable prerequisite verification and no active references",
+      "allocatedBytesBefore": 389431296,
+      "audit": {
+        "files": 10836,
+        "manifestFiles": 10836,
+        "extraFiles": 0,
+        "missingFiles": 0,
+        "changedBytesModesLinks": 0,
+        "allArchiveAndPrerequisiteHashesVerified": true,
+        "activeReferencesBeforeDeletion": [],
+        "processesInspected": 245
+      },
+      "publication": {
+        "file": "implementation/phase10/evidence/publication.json",
+        "sha256": "ff1ba5d5df240b772b51d5a55d0a44010de4e86c25a6a445825e614f2afe7ef3"
+      },
+      "historicalSuccessfulRecovery": {
+        "file": "implementation/phase10/evidence/recovery-01.json",
+        "sha256": "a93c3db24b4c5d0182bb4d1c0a37d046e3115d0ec840230055fd72476f9ef3dd"
+      },
+      "manifest": {
+        "file": "implementation/phase10/evidence/capsule-01/manifest.json",
+        "sha256": "d92eef03e88e1ebecd7d1096296aad5f468d7ccdc61374798dd1068b5d179c82"
+      },
+      "archives": [
+        {
+          "file": "implementation/phase10/evidence/capsule-01/raw.tar.gz",
+          "bytes": 19252898,
+          "sha256": "07befeada237b14e25911bde00710c02a4691f797d9ac12349f35c756222fd00"
+        },
+        {
+          "manifest": "implementation/phase8/conformance-harness-evidence/manifest.json",
+          "manifestSha256": "7f366a89d10282ad80ae13b6c7ae863909f9d0cc384286957caf20082198e5e1",
+          "archive": "implementation/phase8/conformance-harness-evidence/raw.tar.gz",
+          "archiveSha256": "b011854d9869ee6db4262668c0523a36ab84d253c13b901b57a39bc53ba42422",
+          "archiveBytes": 2258668,
+          "objects": 227
+        },
+        {
+          "manifest": "implementation/phase8/selected-js-evidence/manifest.json",
+          "manifestSha256": "7c07e21aeefa3b6b7f11c90c9a31782f599b60db4c3686ab711b4df84fb9cbeb",
+          "archive": "implementation/phase8/selected-js-evidence/raw.tar.gz",
+          "archiveSha256": "979c49ea277715353669c4ceb5da0373c97990ea6e071a54669958ae8bf243cb",
+          "archiveBytes": 6315169,
+          "objects": 1685
+        },
+        {
+          "manifest": "implementation/phase8/selected-js-evidence/release07-manifest.json",
+          "manifestSha256": "84fa6fa420a2c57f0a8e1dd0e27d226ac5b1f0aa54d032f59962d3caf7bce3d2",
+          "archive": "implementation/phase8/selected-js-evidence/release07.tar.gz",
+          "archiveSha256": "edb92c370acecb8a4d5bec53f9ddc39679f74917b596530fc2d0f418b9fe02df",
+          "archiveBytes": 852682,
+          "objects": 187
+        },
+        {
+          "manifest": "implementation/phase8/migration-evidence/capsule-01/manifest.json",
+          "manifestSha256": "ae41fbe1f173b1e01815c146cb874dfbd9a813e6986b42aed1ab34f8732ac886",
+          "archive": "implementation/phase8/migration-evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "7b4c8b7d3841b42508b4283446ec3858ea9b8ef29b26f19e19d66b7f2487713c",
+          "archiveBytes": 21314537,
+          "objects": 10470
+        },
+        {
+          "manifest": "implementation/phase8/migration-evidence/capsule-02/manifest.json",
+          "manifestSha256": "d69330ece69432a9385fbafee431e5bac44df751ed28f242d6e35746403d9725",
+          "archive": "implementation/phase8/migration-evidence/capsule-02/raw.tar.gz",
+          "archiveSha256": "acec1dfe5b20b49451c086e880da70ab0fcc88bf8a9ff908cc4aa4e98b201551",
+          "archiveBytes": 32836,
+          "objects": 16
+        },
+        {
+          "manifest": "implementation/phase9/checker-evidence/capsule-01/manifest.json",
+          "manifestSha256": "8350c3d730182bafb4fecf98e562b32b548f43c6de4da616b61c5d69bb135731",
+          "archive": "implementation/phase9/checker-evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "1fe756502ba33038b436c124946066393dd617fc9b6f78bd028507fab1899d76",
+          "archiveBytes": 51300565,
+          "objects": 4572
+        }
+      ],
+      "recoveryCommand": [
+        "python3",
+        "implementation/phase8/migration-evidence/collect.py",
+        "materialize",
+        "implementation/phase10/evidence/capsule-01",
+        "/tmp/phase10-evidence-recovery-01-NEW"
+      ],
+      "deletionCompleted": true,
+      "completedAtUtc": "2026-09-29T19:09:32.031603+00:00",
+      "freeBytesBefore": 1175691264,
+      "freeBytesAfter": 1565114368
+    },
+    {
+      "directory": "/tmp/phase11-evidence-recovery-01",
+      "approvedBy": "root agent after exact current audit, immutable prerequisite verification and no active references",
+      "allocatedBytesBefore": 450797568,
+      "audit": {
+        "files": 12362,
+        "manifestFiles": 12362,
+        "extraFiles": 0,
+        "missingFiles": 0,
+        "changedBytesModesLinks": 0,
+        "allArchiveAndPrerequisiteHashesVerified": true,
+        "activeReferencesBeforeDeletion": [],
+        "processesInspected": 227
+      },
+      "publication": {
+        "file": "implementation/phase11/evidence/publication.json",
+        "sha256": "5a8ef9856463f808de92c32404959cd06f51991e2859a72810cf05f6831e8a4c"
+      },
+      "historicalSuccessfulRecovery": {
+        "file": "implementation/phase11/evidence/recovery-01.json",
+        "sha256": "1109c6fc91f154a5dfdee2781271e8c73f871c5fd6e3fbd089819a2e7c40f335"
+      },
+      "manifest": {
+        "file": "implementation/phase11/evidence/capsule-01/manifest.json",
+        "sha256": "6daea31338b89451a0e3ead48d44179301d46f1ce6e2f954c3012dba9d14f86c"
+      },
+      "archives": [
+        {
+          "file": "implementation/phase11/evidence/capsule-01/raw.tar.gz",
+          "bytes": 23289650,
+          "sha256": "d2759a82bb13cf5a38b819acce9769fe529ce6cf57e4b81668a5ab6f2de1e099"
+        },
+        {
+          "manifest": "implementation/phase8/conformance-harness-evidence/manifest.json",
+          "manifestSha256": "7f366a89d10282ad80ae13b6c7ae863909f9d0cc384286957caf20082198e5e1",
+          "archive": "implementation/phase8/conformance-harness-evidence/raw.tar.gz",
+          "archiveSha256": "b011854d9869ee6db4262668c0523a36ab84d253c13b901b57a39bc53ba42422",
+          "archiveBytes": 2258668,
+          "objects": 227
+        },
+        {
+          "manifest": "implementation/phase8/selected-js-evidence/manifest.json",
+          "manifestSha256": "7c07e21aeefa3b6b7f11c90c9a31782f599b60db4c3686ab711b4df84fb9cbeb",
+          "archive": "implementation/phase8/selected-js-evidence/raw.tar.gz",
+          "archiveSha256": "979c49ea277715353669c4ceb5da0373c97990ea6e071a54669958ae8bf243cb",
+          "archiveBytes": 6315169,
+          "objects": 1685
+        },
+        {
+          "manifest": "implementation/phase8/selected-js-evidence/release07-manifest.json",
+          "manifestSha256": "84fa6fa420a2c57f0a8e1dd0e27d226ac5b1f0aa54d032f59962d3caf7bce3d2",
+          "archive": "implementation/phase8/selected-js-evidence/release07.tar.gz",
+          "archiveSha256": "edb92c370acecb8a4d5bec53f9ddc39679f74917b596530fc2d0f418b9fe02df",
+          "archiveBytes": 852682,
+          "objects": 187
+        },
+        {
+          "manifest": "implementation/phase8/migration-evidence/capsule-01/manifest.json",
+          "manifestSha256": "ae41fbe1f173b1e01815c146cb874dfbd9a813e6986b42aed1ab34f8732ac886",
+          "archive": "implementation/phase8/migration-evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "7b4c8b7d3841b42508b4283446ec3858ea9b8ef29b26f19e19d66b7f2487713c",
+          "archiveBytes": 21314537,
+          "objects": 10470
+        },
+        {
+          "manifest": "implementation/phase8/migration-evidence/capsule-02/manifest.json",
+          "manifestSha256": "d69330ece69432a9385fbafee431e5bac44df751ed28f242d6e35746403d9725",
+          "archive": "implementation/phase8/migration-evidence/capsule-02/raw.tar.gz",
+          "archiveSha256": "acec1dfe5b20b49451c086e880da70ab0fcc88bf8a9ff908cc4aa4e98b201551",
+          "archiveBytes": 32836,
+          "objects": 16
+        },
+        {
+          "manifest": "implementation/phase9/checker-evidence/capsule-01/manifest.json",
+          "manifestSha256": "8350c3d730182bafb4fecf98e562b32b548f43c6de4da616b61c5d69bb135731",
+          "archive": "implementation/phase9/checker-evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "1fe756502ba33038b436c124946066393dd617fc9b6f78bd028507fab1899d76",
+          "archiveBytes": 51300565,
+          "objects": 4572
+        },
+        {
+          "manifest": "implementation/phase10/evidence/capsule-01/manifest.json",
+          "manifestSha256": "d92eef03e88e1ebecd7d1096296aad5f468d7ccdc61374798dd1068b5d179c82",
+          "archive": "implementation/phase10/evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "07befeada237b14e25911bde00710c02a4691f797d9ac12349f35c756222fd00",
+          "archiveBytes": 19252898,
+          "objects": 2171
+        }
+      ],
+      "recoveryCommand": [
+        "python3",
+        "implementation/phase8/migration-evidence/collect.py",
+        "materialize",
+        "implementation/phase11/evidence/capsule-01",
+        "/tmp/phase11-evidence-recovery-01-NEW"
+      ],
+      "deletionCompleted": true,
+      "completedAtUtc": "2026-09-29T19:11:07.032438+00:00",
+      "freeBytesBefore": 1556955136,
+      "freeBytesAfter": 2007048192
+    },
+    {
+      "directory": "/tmp/phase12-evidence-recovery-01",
+      "approvedBy": "root agent after exact current audit, immutable prerequisite verification and no active references",
+      "allocatedBytesBefore": 651808768,
+      "audit": {
+        "files": 30182,
+        "manifestFiles": 30182,
+        "extraFiles": 0,
+        "missingFiles": 0,
+        "changedBytesModesLinks": 0,
+        "allArchiveAndPrerequisiteHashesVerified": true,
+        "activeReferencesBeforeDeletion": [],
+        "processesInspected": 221
+      },
+      "publication": {
+        "file": "implementation/phase12/evidence/publication.json",
+        "sha256": "2fbd1b79e6ace38c195592a52245b0f66c9a57b5a4cc52a3249e6f01c04371bd"
+      },
+      "historicalSuccessfulRecovery": {
+        "file": "implementation/phase12/evidence/recovery-01.json",
+        "sha256": "f3b43745f0a6a9fb5e006b44fd38df80ed5e16bc231331371101571d4c2645ce"
+      },
+      "manifest": {
+        "file": "implementation/phase12/evidence/capsule-01/manifest.json",
+        "sha256": "a62927bd40dfad4fb55c1c676baa7cddac091e6ed0905738e0c4e3d339688fb4"
+      },
+      "archives": [
+        {
+          "file": "implementation/phase12/evidence/capsule-01/raw.tar.gz",
+          "bytes": 40915372,
+          "sha256": "7220c8dbc6a95eb0b5cf46a9cd6a0057f9fc79871eaed2826b2b58d4b5cf8cf7"
+        },
+        {
+          "manifest": "implementation/phase8/conformance-harness-evidence/manifest.json",
+          "manifestSha256": "7f366a89d10282ad80ae13b6c7ae863909f9d0cc384286957caf20082198e5e1",
+          "archive": "implementation/phase8/conformance-harness-evidence/raw.tar.gz",
+          "archiveSha256": "b011854d9869ee6db4262668c0523a36ab84d253c13b901b57a39bc53ba42422",
+          "archiveBytes": 2258668,
+          "objects": 227
+        },
+        {
+          "manifest": "implementation/phase8/selected-js-evidence/manifest.json",
+          "manifestSha256": "7c07e21aeefa3b6b7f11c90c9a31782f599b60db4c3686ab711b4df84fb9cbeb",
+          "archive": "implementation/phase8/selected-js-evidence/raw.tar.gz",
+          "archiveSha256": "979c49ea277715353669c4ceb5da0373c97990ea6e071a54669958ae8bf243cb",
+          "archiveBytes": 6315169,
+          "objects": 1685
+        },
+        {
+          "manifest": "implementation/phase8/selected-js-evidence/release07-manifest.json",
+          "manifestSha256": "84fa6fa420a2c57f0a8e1dd0e27d226ac5b1f0aa54d032f59962d3caf7bce3d2",
+          "archive": "implementation/phase8/selected-js-evidence/release07.tar.gz",
+          "archiveSha256": "edb92c370acecb8a4d5bec53f9ddc39679f74917b596530fc2d0f418b9fe02df",
+          "archiveBytes": 852682,
+          "objects": 187
+        },
+        {
+          "manifest": "implementation/phase8/migration-evidence/capsule-01/manifest.json",
+          "manifestSha256": "ae41fbe1f173b1e01815c146cb874dfbd9a813e6986b42aed1ab34f8732ac886",
+          "archive": "implementation/phase8/migration-evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "7b4c8b7d3841b42508b4283446ec3858ea9b8ef29b26f19e19d66b7f2487713c",
+          "archiveBytes": 21314537,
+          "objects": 10470
+        },
+        {
+          "manifest": "implementation/phase8/migration-evidence/capsule-02/manifest.json",
+          "manifestSha256": "d69330ece69432a9385fbafee431e5bac44df751ed28f242d6e35746403d9725",
+          "archive": "implementation/phase8/migration-evidence/capsule-02/raw.tar.gz",
+          "archiveSha256": "acec1dfe5b20b49451c086e880da70ab0fcc88bf8a9ff908cc4aa4e98b201551",
+          "archiveBytes": 32836,
+          "objects": 16
+        },
+        {
+          "manifest": "implementation/phase9/checker-evidence/capsule-01/manifest.json",
+          "manifestSha256": "8350c3d730182bafb4fecf98e562b32b548f43c6de4da616b61c5d69bb135731",
+          "archive": "implementation/phase9/checker-evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "1fe756502ba33038b436c124946066393dd617fc9b6f78bd028507fab1899d76",
+          "archiveBytes": 51300565,
+          "objects": 4572
+        },
+        {
+          "manifest": "implementation/phase10/evidence/capsule-01/manifest.json",
+          "manifestSha256": "d92eef03e88e1ebecd7d1096296aad5f468d7ccdc61374798dd1068b5d179c82",
+          "archive": "implementation/phase10/evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "07befeada237b14e25911bde00710c02a4691f797d9ac12349f35c756222fd00",
+          "archiveBytes": 19252898,
+          "objects": 2171
+        },
+        {
+          "manifest": "implementation/phase11/evidence/capsule-01/manifest.json",
+          "manifestSha256": "6daea31338b89451a0e3ead48d44179301d46f1ce6e2f954c3012dba9d14f86c",
+          "archive": "implementation/phase11/evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "d2759a82bb13cf5a38b819acce9769fe529ce6cf57e4b81668a5ab6f2de1e099",
+          "archiveBytes": 23289650,
+          "objects": 2223
+        }
+      ],
+      "recoveryCommand": [
+        "python3",
+        "implementation/phase8/migration-evidence/collect.py",
+        "materialize",
+        "implementation/phase12/evidence/capsule-01",
+        "/tmp/phase12-evidence-recovery-01-NEW"
+      ],
+      "deletionCompleted": true,
+      "completedAtUtc": "2026-09-29T19:12:49.043382+00:00",
+      "freeBytesBefore": 1974784000,
+      "freeBytesAfter": 2626588672
+    },
+    {
+      "directory": "/tmp/bend-phase13-evidence-final-recovery-01",
+      "approvedBy": "root agent after exact current audit, immutable prerequisite verification and no active references",
+      "allocatedBytesBefore": 378294272,
+      "audit": {
+        "files": 10245,
+        "manifestFiles": 10245,
+        "extraFiles": 0,
+        "missingFiles": 0,
+        "changedBytesModesLinks": 0,
+        "allArchiveAndPrerequisiteHashesVerified": true,
+        "activeReferencesBeforeDeletion": [],
+        "processesInspected": 226
+      },
+      "publication": {
+        "file": "implementation/phase13/evidence/publication.json",
+        "sha256": "a2bb7324b37c5f716367f8c0fefc92ec84f9bbf3d561e914452bc717afd0657a"
+      },
+      "historicalSuccessfulRecovery": {
+        "file": "implementation/phase13/evidence/recovery-01.json",
+        "sha256": "d9a15181020de9687d0d810d5e83f5a84bf45671673c78248d0b74d1487b44f7"
+      },
+      "manifest": {
+        "file": "implementation/phase13/evidence/capsule-01/manifest.json",
+        "sha256": "12f04435e3f17609a9ee0325b741ee9ab66314826527b2c6577e0518e21dca0d"
+      },
+      "archives": [
+        {
+          "file": "implementation/phase13/evidence/capsule-01/raw.tar.gz",
+          "bytes": 29644657,
+          "sha256": "3c35cbc4013156f8b3644d1d778a81e3d85adf8f1b612fd112d63af77ba09248"
+        },
+        {
+          "manifest": "implementation/phase8/conformance-harness-evidence/manifest.json",
+          "manifestSha256": "7f366a89d10282ad80ae13b6c7ae863909f9d0cc384286957caf20082198e5e1",
+          "archive": "implementation/phase8/conformance-harness-evidence/raw.tar.gz",
+          "archiveSha256": "b011854d9869ee6db4262668c0523a36ab84d253c13b901b57a39bc53ba42422",
+          "archiveBytes": 2258668,
+          "objects": 227
+        },
+        {
+          "manifest": "implementation/phase8/selected-js-evidence/manifest.json",
+          "manifestSha256": "7c07e21aeefa3b6b7f11c90c9a31782f599b60db4c3686ab711b4df84fb9cbeb",
+          "archive": "implementation/phase8/selected-js-evidence/raw.tar.gz",
+          "archiveSha256": "979c49ea277715353669c4ceb5da0373c97990ea6e071a54669958ae8bf243cb",
+          "archiveBytes": 6315169,
+          "objects": 1685
+        },
+        {
+          "manifest": "implementation/phase8/selected-js-evidence/release07-manifest.json",
+          "manifestSha256": "84fa6fa420a2c57f0a8e1dd0e27d226ac5b1f0aa54d032f59962d3caf7bce3d2",
+          "archive": "implementation/phase8/selected-js-evidence/release07.tar.gz",
+          "archiveSha256": "edb92c370acecb8a4d5bec53f9ddc39679f74917b596530fc2d0f418b9fe02df",
+          "archiveBytes": 852682,
+          "objects": 187
+        },
+        {
+          "manifest": "implementation/phase8/migration-evidence/capsule-01/manifest.json",
+          "manifestSha256": "ae41fbe1f173b1e01815c146cb874dfbd9a813e6986b42aed1ab34f8732ac886",
+          "archive": "implementation/phase8/migration-evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "7b4c8b7d3841b42508b4283446ec3858ea9b8ef29b26f19e19d66b7f2487713c",
+          "archiveBytes": 21314537,
+          "objects": 10470
+        },
+        {
+          "manifest": "implementation/phase8/migration-evidence/capsule-02/manifest.json",
+          "manifestSha256": "d69330ece69432a9385fbafee431e5bac44df751ed28f242d6e35746403d9725",
+          "archive": "implementation/phase8/migration-evidence/capsule-02/raw.tar.gz",
+          "archiveSha256": "acec1dfe5b20b49451c086e880da70ab0fcc88bf8a9ff908cc4aa4e98b201551",
+          "archiveBytes": 32836,
+          "objects": 16
+        },
+        {
+          "manifest": "implementation/phase9/checker-evidence/capsule-01/manifest.json",
+          "manifestSha256": "8350c3d730182bafb4fecf98e562b32b548f43c6de4da616b61c5d69bb135731",
+          "archive": "implementation/phase9/checker-evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "1fe756502ba33038b436c124946066393dd617fc9b6f78bd028507fab1899d76",
+          "archiveBytes": 51300565,
+          "objects": 4572
+        },
+        {
+          "manifest": "implementation/phase10/evidence/capsule-01/manifest.json",
+          "manifestSha256": "d92eef03e88e1ebecd7d1096296aad5f468d7ccdc61374798dd1068b5d179c82",
+          "archive": "implementation/phase10/evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "07befeada237b14e25911bde00710c02a4691f797d9ac12349f35c756222fd00",
+          "archiveBytes": 19252898,
+          "objects": 2171
+        },
+        {
+          "manifest": "implementation/phase11/evidence/capsule-01/manifest.json",
+          "manifestSha256": "6daea31338b89451a0e3ead48d44179301d46f1ce6e2f954c3012dba9d14f86c",
+          "archive": "implementation/phase11/evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "d2759a82bb13cf5a38b819acce9769fe529ce6cf57e4b81668a5ab6f2de1e099",
+          "archiveBytes": 23289650,
+          "objects": 2223
+        },
+        {
+          "manifest": "implementation/phase12/evidence/capsule-01/manifest.json",
+          "manifestSha256": "a62927bd40dfad4fb55c1c676baa7cddac091e6ed0905738e0c4e3d339688fb4",
+          "archive": "implementation/phase12/evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "7220c8dbc6a95eb0b5cf46a9cd6a0057f9fc79871eaed2826b2b58d4b5cf8cf7",
+          "archiveBytes": 40915372,
+          "objects": 9638
+        }
+      ],
+      "recoveryCommand": [
+        "python3",
+        "implementation/phase8/migration-evidence/collect.py",
+        "materialize",
+        "implementation/phase13/evidence/capsule-01",
+        "/tmp/bend-phase13-evidence-final-recovery-01-NEW"
+      ],
+      "deletionCompleted": true,
+      "completedAtUtc": "2026-09-29T19:14:22.114020+00:00",
+      "freeBytesBefore": 2617950208,
+      "freeBytesAfter": 2996232192
+    },
+    {
+      "directory": "/tmp/phase14-evidence-recovery-01",
+      "approvedBy": "root agent after exact current audit, immutable prerequisite verification and no active references",
+      "allocatedBytesBefore": 456970240,
+      "audit": {
+        "files": 17243,
+        "manifestFiles": 17243,
+        "extraFiles": 0,
+        "missingFiles": 0,
+        "changedBytesModesLinks": 0,
+        "allArchiveAndPrerequisiteHashesVerified": true,
+        "activeReferencesBeforeDeletion": [],
+        "processesInspected": 227
+      },
+      "publication": {
+        "file": "implementation/phase14/evidence/publication.json",
+        "sha256": "25738b94eabd3e713c06a6d1dd6974f68c8234fa2c6b53dd024ecf9c1137554e"
+      },
+      "historicalSuccessfulRecovery": {
+        "file": "implementation/phase14/evidence/recovery-01.json",
+        "sha256": "c1c3c3e2c6d2bd2058ce88c8485aee552f666ee3e02e1d01701cd7dae3d77f3e"
+      },
+      "manifest": {
+        "file": "implementation/phase14/evidence/capsule-01/manifest.json",
+        "sha256": "1d8292ac064d564167ff5ca3bc032f06c20eeef385898e8007c27d718203d030"
+      },
+      "archives": [
+        {
+          "file": "implementation/phase14/evidence/capsule-01/raw.tar.gz",
+          "bytes": 24815975,
+          "sha256": "aab8a2f6ae556a8a5131db3e5c4870dff889e7ea5c42cb78f03ee478909768ad"
+        },
+        {
+          "manifest": "implementation/phase8/conformance-harness-evidence/manifest.json",
+          "manifestSha256": "7f366a89d10282ad80ae13b6c7ae863909f9d0cc384286957caf20082198e5e1",
+          "archive": "implementation/phase8/conformance-harness-evidence/raw.tar.gz",
+          "archiveSha256": "b011854d9869ee6db4262668c0523a36ab84d253c13b901b57a39bc53ba42422",
+          "archiveBytes": 2258668,
+          "objects": 227
+        },
+        {
+          "manifest": "implementation/phase8/selected-js-evidence/manifest.json",
+          "manifestSha256": "7c07e21aeefa3b6b7f11c90c9a31782f599b60db4c3686ab711b4df84fb9cbeb",
+          "archive": "implementation/phase8/selected-js-evidence/raw.tar.gz",
+          "archiveSha256": "979c49ea277715353669c4ceb5da0373c97990ea6e071a54669958ae8bf243cb",
+          "archiveBytes": 6315169,
+          "objects": 1685
+        },
+        {
+          "manifest": "implementation/phase8/selected-js-evidence/release07-manifest.json",
+          "manifestSha256": "84fa6fa420a2c57f0a8e1dd0e27d226ac5b1f0aa54d032f59962d3caf7bce3d2",
+          "archive": "implementation/phase8/selected-js-evidence/release07.tar.gz",
+          "archiveSha256": "edb92c370acecb8a4d5bec53f9ddc39679f74917b596530fc2d0f418b9fe02df",
+          "archiveBytes": 852682,
+          "objects": 187
+        },
+        {
+          "manifest": "implementation/phase8/migration-evidence/capsule-01/manifest.json",
+          "manifestSha256": "ae41fbe1f173b1e01815c146cb874dfbd9a813e6986b42aed1ab34f8732ac886",
+          "archive": "implementation/phase8/migration-evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "7b4c8b7d3841b42508b4283446ec3858ea9b8ef29b26f19e19d66b7f2487713c",
+          "archiveBytes": 21314537,
+          "objects": 10470
+        },
+        {
+          "manifest": "implementation/phase8/migration-evidence/capsule-02/manifest.json",
+          "manifestSha256": "d69330ece69432a9385fbafee431e5bac44df751ed28f242d6e35746403d9725",
+          "archive": "implementation/phase8/migration-evidence/capsule-02/raw.tar.gz",
+          "archiveSha256": "acec1dfe5b20b49451c086e880da70ab0fcc88bf8a9ff908cc4aa4e98b201551",
+          "archiveBytes": 32836,
+          "objects": 16
+        },
+        {
+          "manifest": "implementation/phase9/checker-evidence/capsule-01/manifest.json",
+          "manifestSha256": "8350c3d730182bafb4fecf98e562b32b548f43c6de4da616b61c5d69bb135731",
+          "archive": "implementation/phase9/checker-evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "1fe756502ba33038b436c124946066393dd617fc9b6f78bd028507fab1899d76",
+          "archiveBytes": 51300565,
+          "objects": 4572
+        },
+        {
+          "manifest": "implementation/phase10/evidence/capsule-01/manifest.json",
+          "manifestSha256": "d92eef03e88e1ebecd7d1096296aad5f468d7ccdc61374798dd1068b5d179c82",
+          "archive": "implementation/phase10/evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "07befeada237b14e25911bde00710c02a4691f797d9ac12349f35c756222fd00",
+          "archiveBytes": 19252898,
+          "objects": 2171
+        },
+        {
+          "manifest": "implementation/phase11/evidence/capsule-01/manifest.json",
+          "manifestSha256": "6daea31338b89451a0e3ead48d44179301d46f1ce6e2f954c3012dba9d14f86c",
+          "archive": "implementation/phase11/evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "d2759a82bb13cf5a38b819acce9769fe529ce6cf57e4b81668a5ab6f2de1e099",
+          "archiveBytes": 23289650,
+          "objects": 2223
+        },
+        {
+          "manifest": "implementation/phase12/evidence/capsule-01/manifest.json",
+          "manifestSha256": "a62927bd40dfad4fb55c1c676baa7cddac091e6ed0905738e0c4e3d339688fb4",
+          "archive": "implementation/phase12/evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "7220c8dbc6a95eb0b5cf46a9cd6a0057f9fc79871eaed2826b2b58d4b5cf8cf7",
+          "archiveBytes": 40915372,
+          "objects": 9638
+        },
+        {
+          "manifest": "implementation/phase13/evidence/capsule-01/manifest.json",
+          "manifestSha256": "12f04435e3f17609a9ee0325b741ee9ab66314826527b2c6577e0518e21dca0d",
+          "archive": "implementation/phase13/evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "3c35cbc4013156f8b3644d1d778a81e3d85adf8f1b612fd112d63af77ba09248",
+          "archiveBytes": 29644657,
+          "objects": 2842
+        }
+      ],
+      "recoveryCommand": [
+        "python3",
+        "implementation/phase8/migration-evidence/collect.py",
+        "materialize",
+        "implementation/phase14/evidence/capsule-01",
+        "/tmp/phase14-evidence-recovery-01-NEW"
+      ],
+      "deletionCompleted": true,
+      "completedAtUtc": "2026-09-29T19:14:42.760829+00:00",
+      "freeBytesBefore": 2996056064,
+      "freeBytesAfter": 3453018112
+    },
+    {
+      "directory": "/tmp/phase15-recovery-a383163b-02",
+      "approvedBy": "root agent after exact current audit, immutable prerequisite verification and no active references",
+      "allocatedBytesBefore": 485707776,
+      "audit": {
+        "files": 17179,
+        "manifestFiles": 17179,
+        "extraFiles": 0,
+        "missingFiles": 0,
+        "changedBytesModesLinks": 0,
+        "allArchiveAndPrerequisiteHashesVerified": true,
+        "activeReferencesBeforeDeletion": [],
+        "processesInspected": 237
+      },
+      "publication": {
+        "file": "implementation/phase15/evidence/publication.json",
+        "sha256": "9e23ecbaf4361e52e317ec9608c202b80dd795b3a2cb19d8a19fab9199efaebb"
+      },
+      "historicalSuccessfulRecovery": {
+        "file": "implementation/phase15/evidence/recovery-02.json",
+        "sha256": "1933537410752fcb2d796dfc4ad80af574dc85a2f08483f72dd2e21896158fec"
+      },
+      "manifest": {
+        "file": "implementation/phase15/evidence/capsule-01/manifest.json",
+        "sha256": "70b99f29a3e7adc5d5c31f2e324a79d9e93ed7a9e1e1d288220a82ecad384c26"
+      },
+      "archives": [
+        {
+          "file": "implementation/phase15/evidence/capsule-01/raw.tar.gz",
+          "bytes": 24925020,
+          "sha256": "0f9e37ef2f6a2116086757f4cfcc2d2d4300bd110461584eebdbb44565c52a80"
+        },
+        {
+          "manifest": "implementation/phase8/conformance-harness-evidence/manifest.json",
+          "manifestSha256": "7f366a89d10282ad80ae13b6c7ae863909f9d0cc384286957caf20082198e5e1",
+          "archive": "implementation/phase8/conformance-harness-evidence/raw.tar.gz",
+          "archiveSha256": "b011854d9869ee6db4262668c0523a36ab84d253c13b901b57a39bc53ba42422",
+          "archiveBytes": 2258668,
+          "objects": 227
+        },
+        {
+          "manifest": "implementation/phase8/selected-js-evidence/manifest.json",
+          "manifestSha256": "7c07e21aeefa3b6b7f11c90c9a31782f599b60db4c3686ab711b4df84fb9cbeb",
+          "archive": "implementation/phase8/selected-js-evidence/raw.tar.gz",
+          "archiveSha256": "979c49ea277715353669c4ceb5da0373c97990ea6e071a54669958ae8bf243cb",
+          "archiveBytes": 6315169,
+          "objects": 1685
+        },
+        {
+          "manifest": "implementation/phase8/selected-js-evidence/release07-manifest.json",
+          "manifestSha256": "84fa6fa420a2c57f0a8e1dd0e27d226ac5b1f0aa54d032f59962d3caf7bce3d2",
+          "archive": "implementation/phase8/selected-js-evidence/release07.tar.gz",
+          "archiveSha256": "edb92c370acecb8a4d5bec53f9ddc39679f74917b596530fc2d0f418b9fe02df",
+          "archiveBytes": 852682,
+          "objects": 187
+        },
+        {
+          "manifest": "implementation/phase8/migration-evidence/capsule-01/manifest.json",
+          "manifestSha256": "ae41fbe1f173b1e01815c146cb874dfbd9a813e6986b42aed1ab34f8732ac886",
+          "archive": "implementation/phase8/migration-evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "7b4c8b7d3841b42508b4283446ec3858ea9b8ef29b26f19e19d66b7f2487713c",
+          "archiveBytes": 21314537,
+          "objects": 10470
+        },
+        {
+          "manifest": "implementation/phase8/migration-evidence/capsule-02/manifest.json",
+          "manifestSha256": "d69330ece69432a9385fbafee431e5bac44df751ed28f242d6e35746403d9725",
+          "archive": "implementation/phase8/migration-evidence/capsule-02/raw.tar.gz",
+          "archiveSha256": "acec1dfe5b20b49451c086e880da70ab0fcc88bf8a9ff908cc4aa4e98b201551",
+          "archiveBytes": 32836,
+          "objects": 16
+        },
+        {
+          "manifest": "implementation/phase9/checker-evidence/capsule-01/manifest.json",
+          "manifestSha256": "8350c3d730182bafb4fecf98e562b32b548f43c6de4da616b61c5d69bb135731",
+          "archive": "implementation/phase9/checker-evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "1fe756502ba33038b436c124946066393dd617fc9b6f78bd028507fab1899d76",
+          "archiveBytes": 51300565,
+          "objects": 4572
+        },
+        {
+          "manifest": "implementation/phase10/evidence/capsule-01/manifest.json",
+          "manifestSha256": "d92eef03e88e1ebecd7d1096296aad5f468d7ccdc61374798dd1068b5d179c82",
+          "archive": "implementation/phase10/evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "07befeada237b14e25911bde00710c02a4691f797d9ac12349f35c756222fd00",
+          "archiveBytes": 19252898,
+          "objects": 2171
+        },
+        {
+          "manifest": "implementation/phase11/evidence/capsule-01/manifest.json",
+          "manifestSha256": "6daea31338b89451a0e3ead48d44179301d46f1ce6e2f954c3012dba9d14f86c",
+          "archive": "implementation/phase11/evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "d2759a82bb13cf5a38b819acce9769fe529ce6cf57e4b81668a5ab6f2de1e099",
+          "archiveBytes": 23289650,
+          "objects": 2223
+        },
+        {
+          "manifest": "implementation/phase12/evidence/capsule-01/manifest.json",
+          "manifestSha256": "a62927bd40dfad4fb55c1c676baa7cddac091e6ed0905738e0c4e3d339688fb4",
+          "archive": "implementation/phase12/evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "7220c8dbc6a95eb0b5cf46a9cd6a0057f9fc79871eaed2826b2b58d4b5cf8cf7",
+          "archiveBytes": 40915372,
+          "objects": 9638
+        },
+        {
+          "manifest": "implementation/phase13/evidence/capsule-01/manifest.json",
+          "manifestSha256": "12f04435e3f17609a9ee0325b741ee9ab66314826527b2c6577e0518e21dca0d",
+          "archive": "implementation/phase13/evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "3c35cbc4013156f8b3644d1d778a81e3d85adf8f1b612fd112d63af77ba09248",
+          "archiveBytes": 29644657,
+          "objects": 2842
+        },
+        {
+          "manifest": "implementation/phase14/evidence/capsule-01/manifest.json",
+          "manifestSha256": "1d8292ac064d564167ff5ca3bc032f06c20eeef385898e8007c27d718203d030",
+          "archive": "implementation/phase14/evidence/capsule-01/raw.tar.gz",
+          "archiveSha256": "aab8a2f6ae556a8a5131db3e5c4870dff889e7ea5c42cb78f03ee478909768ad",
+          "archiveBytes": 24815975,
+          "objects": 3984
+        }
+      ],
+      "recoveryCommand": [
+        "python3",
+        "implementation/phase15/evidence/recover-reviewed-symlinks.py",
+        "implementation/phase15/evidence/capsule-01",
+        "/tmp/phase15-recovery-a383163b-02-NEW",
+        "/tmp/phase15-new-recovery-report.json"
+      ],
+      "deletionCompleted": true,
+      "completedAtUtc": "2026-09-29T19:20:55.303702+00:00",
+      "freeBytesBefore": 3391193088,
+      "freeBytesAfter": 3876282368
+    }
+  ],
+  "complete": true,
+  "totalAllocatedBytesReclaimed": 4049702912,
+  "totalMembersVerified": 150527,
+  "verification": {
+    "file": "implementation/phase23/storage-recovery-verification.json",
+    "sha256": "edf956b18c0e639204fc3297765b82175bfd18093378c9fb5e3e90d8e40bb17c",
+    "note": "Read-only verification summary lists pre-deletion identities. Each tree was removed only after its own audit completed; the separate deletion entries record the action."
+  },
+  "freeBytesAfterFinalCleanup": 3862761472,
+  "completedAtUtc": "2026-09-29T19:21:07.131628+00:00"
+}

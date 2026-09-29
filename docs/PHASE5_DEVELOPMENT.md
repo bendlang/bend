@@ -16,7 +16,7 @@ From `selfhost/`, create a small configuration, with paths relative to that file
 
 ```json
 {
-  "upstream": ".bootstrap/upstream-phase8",
+  "upstream": ".bootstrap/upstream-phase23",
   "jobs": 1,
   "cpu": "3"
 }
@@ -96,6 +96,16 @@ distinct derived artifact. Unknown bodies or missing provenance are refused.
 The development workflow defaults to `"checked"`; `npm run build` defaults to
 `"equality"` after the [Phase9 current-pin validation](../implementation/phase9/checker_speed.md).
 An explicit profile overrides either default.
+
+The current pin is `018751270e800bc222a93dad7f257083ee53a5f7` (after
+Bend 2.0.34). Prepare `.bootstrap/upstream-phase23` at that exact commit;
+historical reference checkouts remain unchanged. Phase23's guarded version6
+profile recognizes the new Base chain `String.eq → Cmp.is_eq → String.order →
+Pair.snd/String.cmp`. It checks the full dependency bodies and retained runtime
+contract before applying the existing equality/choice transformation. Versions
+1–5 still replay their original bytes. An unknown body, runtime, or protected
+binding is refused. See the [migration report](../implementation/phase23/upstream-graph-conversion.md)
+for controlled costs, failed attempts and final validation.
 
 In Phase12, `equality` remains the compatibility profile name. Its version5
 includes native-choice helpers and replaces a restricted set of returned literal

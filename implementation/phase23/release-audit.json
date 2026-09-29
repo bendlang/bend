@@ -1,0 +1,13 @@
+{
+  "kind": "phase23-final-release-audit",
+  "date": "2026-09-29T20:08:10Z",
+  "productionCommit": "ab246cdd24e7695a14d3b725d5323b95c5f5892b",
+  "protectedPreexistingFiles": 103,
+  "protectedBytesUnchanged": true,
+  "installedReleaseAllFileAndCheckoutHashesMatch": true,
+  "apiSha256": "5596f914fd245a5085a614b81099360aeaf601ed61f16357fc491c85106c1102",
+  "upstreamRevision": "018751270e800bc222a93dad7f257083ee53a5f7",
+  "localDocumentationLinksValid": true,
+  "recoveryAndPrerequisiteClosurePass": true,
+  "releaseVerification": "Maintained release.mjs --verify passed after final component maintenance; no compiler, runtime or host changes followed."
+}

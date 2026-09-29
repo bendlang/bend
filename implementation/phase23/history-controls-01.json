@@ -1,0 +1,107 @@
+{
+  "kind": "phase23-initial-migrated-history-controls",
+  "complete": true,
+  "pass": true,
+  "baseline": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/bootstrap-build-02/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/bootstrap-build-02/equality/api.mjs",
+    "sha256": "7715d062a1fb4605e44e397e71e5ea8067bfae6f3f81736e8924d6d02438eac9"
+  },
+  "candidate": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/combined-build-02/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/combined-build-02/equality/api.mjs",
+    "sha256": "1ffd9d6fc4f577d27c3d6c790dd365c19722b924a6b05775f40da0c6a1bf53af"
+  },
+  "newHistoryObservations": 226,
+  "newFreshChecks": 2,
+  "exactCompletePayloadComparison": true,
+  "ignoredBehavioralFields": [],
+  "separatelyValidatedMetadata": [
+    "hostProvenance"
+  ],
+  "diagnosticExceptions": 0,
+  "workerHistories": [
+    {
+      "name": "history-53",
+      "rows": [
+        {
+          "variant": "baseline",
+          "requests": 53,
+          "complete": true,
+          "stats": {
+            "starts": 1,
+            "requests": 53,
+            "recycles": 0,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 304394240
+          },
+          "errors": []
+        },
+        {
+          "variant": "candidate",
+          "requests": 53,
+          "complete": true,
+          "stats": {
+            "starts": 1,
+            "requests": 53,
+            "recycles": 0,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 297213952
+          },
+          "errors": []
+        }
+      ]
+    },
+    {
+      "name": "history-60",
+      "rows": [
+        {
+          "variant": "baseline",
+          "requests": 60,
+          "complete": true,
+          "stats": {
+            "starts": 1,
+            "requests": 60,
+            "recycles": 0,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 317108224
+          },
+          "errors": []
+        },
+        {
+          "variant": "candidate",
+          "requests": 60,
+          "complete": true,
+          "stats": {
+            "starts": 1,
+            "requests": 60,
+            "recycles": 0,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 315699200
+          },
+          "errors": []
+        }
+      ]
+    }
+  ],
+  "report": {
+    "file": "selfhost/build/phase23/history-02/report.json",
+    "sha256": "1af27f3ee8187884a8416e71cd1bbd0d3892d16a26ad3d1b016dd5d3ac9d4901",
+    "bytes": 1838319
+  },
+  "launch": {
+    "file": "selfhost/build/phase23/history-launch-02/execution.json",
+    "sha256": "29fb0014629dc44ca80a7151e30a140a51fc1043d5d8419103365a6d23afd09e",
+    "bytes": 731
+  },
+  "retainedFailedPreparation": {
+    "file": "selfhost/build/phase23/history-01/report.json",
+    "sha256": "99cac86ccba6d0f39034b3c6ed33a79306ead9a3f0c5ec1a02459cb3fee15cf4",
+    "bytes": 1175
+  },
+  "scope": "Original Phase11/12 fixture bytes and53/60prefix orders; new upstream0187512/Base, own frozen compiler/runtime/host and exact resources explicitly substituted. Correctness only; original historical failures unchanged."
+}

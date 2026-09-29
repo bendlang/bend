@@ -1,10 +1,54 @@
 # Compiler validation
 
-The target remains upstream `b2111cf43244e65f76ddc278ee695e669f720cbf`, Bend2
+The current compiler targets upstream
+`018751270e800bc222a93dad7f257083ee53a5f7`, after Bend2 **2.0.34**. The
+[Phase23 report](../implementation/phase23/upstream-graph-conversion.md) records
+checked compiler identities, the updated Base and guarded version6 profile,
+retained failures and release decisions. The [release manifest](dist/release.json)
+identifies the installed artifact; `npm run verify:release` checks its integrity
+and lineage, without rerunning conformance or proving a self-hosted fixed point.
+
+The new inventory contains **1,513 fixtures** and **3,026 parse/check observations**.
+The final installed candidate03 agrees exactly with the new TypeScript reference
+on **3,026/3,026** main observations and **196/196** retained broader parser
+observations. This includes all15 added upstream fixtures and both depth32
+shared-equality regressions. Final candidate acquisitions use explicitly verified
+fresh-reference checkpoint results, with zero behavioral differences, worker
+failures/timeouts or changed input identities. The
+[frontend validation report](../implementation/phase23/frontend-validation.md)
+retains both initial and final compiler gates and their exact artifact identities.
+
+Raw main verdicts remain **2,525 pass /497 observed /4 fail** on both sides:
+parse1,016 pass/497 observed and check1,509 pass/4 fail. The four failures expect
+later emission errors; both frontends accept them at the earlier check stage.
+Exact reference agreement therefore coexists with the original failed fixture
+verdicts. No oracle or raw report is rewritten.
+
+Final candidate03 also retains **226 paired history observations and two fresh
+6,000-character string checks**, with complete result equality apart from
+independently validated host provenance. There is no diagnostic exception.
+The unchanged baseline114 observations were reused with verified input hashes;
+candidate03 supplied114 fresh observations. Original53/60-request order,4MiB
+stack,4GiB heap and generation1 are preserved, with no worker failure, timeout
+or recycling. The [history report](../implementation/phase23/history-controls.md)
+keeps earlier stack failures and the original acquisition boundaries explicit.
+
+Graph conversion now preserves sharing through the existing graph evaluator;
+native and JavaScript array atomics use the existing uniform array representation.
+Backend execution, aliasing/ownership controls and installed/relocated CLI checks
+have their own gates in the Phase23 report. Frontend agreement does not establish
+all backend behavior, independent proof-kernel validity or universal language
+equivalence. Independent `--verdict`, GPU/device execution, hub/package fetching
+and broader platform coverage remain unsupported or unvalidated as recorded below.
+Concurrent ordinary structural array reads against writes are not claimed safe.
+
+## Phase22 historical frontend agreement
+
+Phase22 targeted upstream `b2111cf43244e65f76ddc278ee695e669f720cbf`, Bend2
 2.0.32 era. The [Phase22 release report](../implementation/phase22/contextual-conformance.md)
 binds the final checked artifact, controls, exact vectors, timing and preserved
-failures. The [release manifest](dist/release.json) identifies the installed
-guarded version5 derivative, genuine checked B1, source, Base, runtime and host.
+failures. That release used the guarded version5 derivative, genuine checked B1, source,
+Base, runtime and host.
 `npm run verify:release` checks integrity and lineage after relocation; it does
 not rerun conformance or establish a new self-hosted fixed point. Independent
 proof-kernel validation and `--verdict` remain unsupported.

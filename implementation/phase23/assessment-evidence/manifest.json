@@ -1,0 +1,38 @@
+{
+  "kind": "phase23-preserved-prechange-assessment",
+  "sourceDirectory": "/tmp/bend-upstream-assessment-_td6hfji",
+  "compilerCommit": "fb4245719005f3c84000a4ff710ddfd180179e01",
+  "upstreamTests": "018751270e800bc222a93dad7f257083ee53a5f7",
+  "resources": {
+    "heapMiB": 1024,
+    "stackKiB": 4096,
+    "timeoutSeconds": 10
+  },
+  "command": [
+    "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+    "--stack-size=4096",
+    "--max-old-space-size=1024",
+    "/home/ai/bend2/build/publish/bend/selfhost/cli.mjs",
+    "FIXTURE",
+    "--check-only"
+  ],
+  "cwd": "/home/ai/bend2/build/publish/bend/selfhost",
+  "members": [
+    {
+      "file": "conversion_copy_before_unfold.bend",
+      "sha256": "47c260e609040efc547d94ba0f42809101024ea4f1134bd0744ff6b0ddabd9a4"
+    },
+    {
+      "file": "conversion_def_named_like_object_key.bend",
+      "sha256": "df1584904a5a09abfe16333baed6d28837cf9aff6ea667173e078aa2a5ad5244"
+    },
+    {
+      "file": "conversion_shared_cells_once.bend",
+      "sha256": "05e6d2c31354cb8417a571ea6743053157bea2030e5078007af2210febce8f28"
+    },
+    {
+      "file": "results.json",
+      "sha256": "f8c73b993e843e597242d9878f8a614b12deea0363e5e229c3d9ebf06aa9197f"
+    }
+  ]
+}

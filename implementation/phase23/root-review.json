@@ -1,0 +1,26 @@
+{
+  "kind": "phase23-independent-root-source-review",
+  "files": [
+    {
+      "path": "selfhost/src/core/normalize.bend",
+      "sha256": "4845ff63f3c228abc9a432410ddc8b7e20bfce27e54d6d49412b06608f7ce702"
+    },
+    {
+      "path": "selfhost/src/core/graph.bend",
+      "sha256": "85625049b316ede08eeffd7ff509483183624f1197c582c9d1bb2cd8bebf4802"
+    },
+    {
+      "path": "selfhost/src/runtime/native/runtime.c",
+      "sha256": "cbfb8933d007c10a0173f280888d6c94d5d77543548b25808596cd2d21f764f0"
+    }
+  ],
+  "findings": [
+    "Conversion heaps are fresh per rigid/full-book policy. No unresolved rigid result is reused after retry.",
+    "The sharing continuation is appended only for EQ between existing cells; child comparisons run before it and failures discard unfinished sharing. Proven equality can survive an alternative retry.",
+    "All domains may enter graph cells; codomains stay outside until binder substitution. Existing graph substitution retains memoized evaluation without new global state.",
+    "Native shared destructuring retains boxed fields before decrementing source handles. Clone returns original first; the observed alias counterexample is retained.",
+    "Native low-word atomics do not establish safety for concurrent plain whole-word structural reads; scope stays explicitly limited."
+  ],
+  "blockers": [],
+  "scope": "Independent source review of agent-owned changes, complemented by component, public frontend, ownership and execution tests; not a formal proof."
+}

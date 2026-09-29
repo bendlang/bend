@@ -1,0 +1,11 @@
+# Phase23 retained request histories
+
+The final `combined-build-03` agrees exactly with the unchanged Phase22 frontend rebuilt by `bootstrap-build-02` on upstream `018751270e800bc222a93dad7f257083ee53a5f7` and its Base. The complete 53- and 60-request histories retain their original fixture paths, bytes, order, 4 MiB stack, 4 GiB heap, 30-second request deadlines, recycling limit64 and worker generation1. Both final long-string requests and both fresh6,000-character checks pass. All complete result fields agree; host provenance alone is separately checked against each frozen driver and adapter. No diagnostic exception applies.
+
+There are226 paired history observations and two fresh-check observations. History02 acquired all of them using candidate02. After the native clone correction, history03 acquired candidate03's113 history requests plus one fresh check and reused the unchanged, hash-verified baseline114 observations. This is114 new observations, not another228 new executions. Every worker stays in its first generation, with zero timeouts, failures or recycling. These correctness acquisitions make no performance or universal stack-safety claim.
+
+Each compiler is verified using its own frozen workflow, source and runtime. The new upstream/Base and runtime changes are explicit substitutions from the original Phase11/12 histories. Historical outcomes and original failed observations remain unchanged. History01 failed during preparation with sandbox `spawnSync git EPERM` before any probe; history02 retains the successful execution under required child-process access.
+
+Machine receipts: [initial acquisition](history-controls-01.json), [final candidate](history-controls-final.json). Full requests, responses, worker sessions, substitutions and consumed tools remain under `selfhost/build/phase23/history-{01,02,03}` with their bounded launcher records.
+
+The prepared `selfhost/tools/performance/phase23/history-release-smoke-launch.mjs` retains the42 ordinary/relocated CLI checks, explicitly binds new pin/version2.0.34 and runs onCPU1. It accepts `PROJECT NEW_OUTPUT EXPECTED_API_SHA256` and must run after final installation; this history report does not claim those CLI checks have run.

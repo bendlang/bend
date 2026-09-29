@@ -8,8 +8,8 @@ an adapter for the compiler's public data representation. Ordinary compilation
 does not invoke the TypeScript compiler.
 
 The active target is upstream
-[`b2111cf43244e65f76ddc278ee695e669f720cbf`](https://github.com/bendlang/bend/tree/b2111cf43244e65f76ddc278ee695e669f720cbf)
-(Bend 2.0.32 era). The [Phase22 report](../implementation/phase22/contextual-conformance.md)
+[`018751270e800bc222a93dad7f257083ee53a5f7`](https://github.com/bendlang/bend/tree/018751270e800bc222a93dad7f257083ee53a5f7)
+(after Bend 2.0.34). The [Phase23 report](../implementation/phase23/upstream-graph-conversion.md)
 records checked artifact identities, current conformance, measured cost and
 remaining gaps. This experimental port does not establish independent proof
 validity; `--verdict` is explicitly unsupported.
@@ -37,7 +37,7 @@ aliases, namespace and fresh counter through parsing. It validates patterns and
 completed groups before their continuations, and resolves simultaneous RHS
 expressions before opening their binders. One higher/lower materializer preserves
 the pin's eager-child and deferred-binder demand, including first-error order.
-The installed release passes both the final conformance and cost gates.
+Phase23 retains this frontend and updates conversion and runtime compatibility.
 
 Its load ABI2 carries completed terms through the trusted internal
 `FCompletedSource` handoff. Text still enters as `FSource`; the old raw-parser and
@@ -61,6 +61,22 @@ guarded native-equality/literal-choice derivative of a genuine checked B1. Its o
 parent and exact transformation are preserved separately. This is not a new
 self-hosting fixed point. [Conformance](../selfhost/CONFORMANCE.md) distinguishes acceptance,
 proof trust, exact diagnostics, execution and unavailable platforms.
+
+Phase23 reuses the existing graph evaluator for conversion. It compares rigid
+terms before unfolding definitions, then memoizes only proved equality between
+cells. Successful subtype checks never establish symmetric cell sharing; forcing can
+still cache evaluated heads. This prevents
+repeated traversal of shared terms: two depth-32 checks that previously exhausted
+a 1 GiB heap now complete within that limit. Ordinary checking remains around
+three times the pinned TypeScript compiler; the report separates this measured
+cost from the pathological-case improvement.
+
+The backend now supports all nine `Array.atomic` operations in its existing
+uniform arrays, correct original/copy ordering for `Array.clone`, shared array
+ownership, wide U32-to-Nat conversion, comment/string-safe foreign substitutions,
+zero-length TCP refusal and the CPU scheduler row correction. This retains one
+array representation. Concurrent structural reads during atomic mutation and GPU
+execution are outside the demonstrated coverage.
 
 ## Run the compiler
 
@@ -95,8 +111,8 @@ checkout, prepare it once from `selfhost/`:
 
 ```sh
 mkdir -p .bootstrap
-git clone https://github.com/bendlang/bend.git .bootstrap/upstream-phase8
-git -C .bootstrap/upstream-phase8 checkout --detach b2111cf43244e65f76ddc278ee695e669f720cbf
+git clone https://github.com/bendlang/bend.git .bootstrap/upstream-phase23
+git -C .bootstrap/upstream-phase23 checkout --detach 018751270e800bc222a93dad7f257083ee53a5f7
 ```
 
 Then build and verify from `selfhost/`:
@@ -118,8 +134,8 @@ npm run build -- /absolute/release-config.json /absolute/new-attempt
 Config fields and selection semantics are documented in the
 [maintained workflow guide](PHASE5_DEVELOPMENT.md). Broad conformance and checked
 self-reproduction are release/integration gates, not every small edit's build.
-The [Phase22 report](../implementation/phase22/contextual-conformance.md) records
-the current artifact's evidence and remaining failures.
+The [Phase23 report](../implementation/phase23/upstream-graph-conversion.md) records
+the current artifact's evidence and remaining limits.
 
 ## Work on the current source
 
@@ -136,11 +152,11 @@ literal choices and a restricted branch transformation: one-return branches with
 call-free terminal arguments become scoped blocks, with generated tail calls
 using the existing trampoline message. Other branches keep their closure
 boundary. Runtime bytes and public forcing wrappers stay unchanged; private
-unforced message identity is outside this contract. Historical versions1/2/3/4
-retain exact byte replay. The normalizer seed change and broader branch
+unforced message identity is outside this contract. Version6 recognizes the new Base dependency chain with the same transformation
+contract. Historical versions1–5 retain exact byte replay. The normalizer seed change and broader branch
 transformation failed stack controls and are excluded.
 
-The [Phase22 report](../implementation/phase22/contextual-conformance.md) gives the
+The [Phase23 report](../implementation/phase23/upstream-graph-conversion.md) gives the
 current source and artifact identities. Keep experiments isolated by selecting a
 frozen attempt explicitly:
 
@@ -148,7 +164,7 @@ frozen attempt explicitly:
 # From selfhost/, after creating build/dev/attempt-01 with the maintained workflow.
 BEND_TYPED_API="$PWD/build/dev/attempt-01/api.mjs" \
 BEND_TYPED_RUNTIME="$PWD/build/dev/attempt-01/snapshot/src/runtime.mjs" \
-BEND_BASE="$PWD/.bootstrap/upstream-phase8/bend2/base.bend" \
+BEND_BASE="$PWD/.bootstrap/upstream-phase23/bend2/base.bend" \
   node build/dev/attempt-01/snapshot/tools/typed-driver.mjs \
   tests/conformance/typed-smoke/base-u32.bend --check-only
 ```
@@ -199,7 +215,7 @@ BEND_TYPED_API="$PWD/build/candidate-api.mjs" \
 
 This writes a checked API plus the assembled source and provenance in
 `build/typed/`. Keep source, API, runtime and host snapshots immutable during
-validation. Full self-reproduction has not been rerun for the current Phase22 release. The advanced
+validation. Full self-reproduction has not been rerun for the current Phase23 release. The advanced
 runner, separate from the checked release build, is:
 
 ```sh
@@ -217,9 +233,15 @@ memory. Canonical paths affect foreign metadata and emitted bytes; regenerate a
 local chain after relocating the checkout. A successful upstream bootstrap alone
 is not evidence of self-hosting.
 
-Run component checks with `BEND_UPSTREAM=... node tools/verify.mjs`.
-`BEND_COMPONENT_REPORT=/absolute/report.json` preserves the historical report by
-writing new results elsewhere. Backend and runtime tests are documented in
+Run component checks from `selfhost/` with a fresh output directory:
+
+```sh
+BEND_COMPONENT_DIR="$PWD/build/components/attempt-01" npm run verify
+```
+
+The runner uses the pinned reference and current completed-source handoff. A
+fresh directory preserves previous results; `BEND_COMPONENT_REPORT=/absolute/report.json`
+can choose a separate report path. Backend and runtime tests are documented in
 [`src/back/js/README.md`](../selfhost/src/back/js/README.md). Complete fixture
 runs, frozen hosts, artifact identity and GPU gates are described in the
 [conformance protocol](../selfhost/tools/conformance/README.md). For a self-emitted
@@ -235,16 +257,21 @@ canonical Base path when comparing output bytes across native and JS hosts.
 
 ## Internal boundaries and performance
 
-The [Phase22 controlled comparison](../implementation/phase22/constructor-index-cost.md)
-checks the same frozen compiler source in **10.699 s**, versus **11.017 s** for
-Phase21 and **3.383 s** for TypeScript: a **3.16×** remaining gap. Process cost
-is2.88% lower and request cost3.22% lower in this two-sample screen; peak RSS rises
-2.52%. This is a modest measured change, not a statistical or universal speedup.
-Fresh processes run serially on CPU0 with the same Base/runtime and resource
-limits. Exactly one of35 host members changes: the reviewed ABI2 driver. This
-measures usable compiler bundles, not an isolated Bend-only change. Bend uses
-validated Base caches; TypeScript checks Base. Emission and generated-program
-performance are excluded.
+The [Phase23 controlled comparison](../implementation/phase23/final-cost-screen.json)
+checks the same frozen compiler source in **11.01 s**, versus **10.97 s** for
+Phase22 and **3.55 s** for the new pinned TypeScript compiler: a **3.10×**
+remaining gap. Process/request costs rise0.39%/0.52% in this two-sample screen;
+ordinary checking remains near-neutral. Peak RSS rises7.52% against Phase22,
+but is0.80% below unchanged compiler source refreshed at the new pin/profile.
+Fresh processes run serially on CPU0 without competing compiler work. Each
+bundle has its actual host, runtime and Base; Bend uses validated Base caches
+and TypeScript checks Base. Startup and identity hashing are included in process
+time. Emission and generated-program performance are excluded.
+
+The larger gain is in shared-term conversion. Two depth-32 programs that exhausted
+a 1 GiB heap in Phase22 now complete in1.36 s and1.41 s under the same cap, with
+peak RSS across the two processes of123.4 MiB. Those are concurrent correctness
+controls, not controlled timing ratios from the earlier failed runs.
 
 The [Phase17 lookup worker](../implementation/phase17/find-worker.md) measured a
 separate 6.55% reduction by eliminating per-miss dispatch allocations. The earlier
@@ -259,19 +286,19 @@ specialization keys preserve distinctions that a compact representation must
 not erase. The [architecture](../selfhost/docs/ARCHITECTURE.md) describes these
 contracts, source ranges, capability negotiation and Base cache version6.
 
-Installed Phase22 reaches **2,996/2,996 exact frontend observations**, preserving
-all1,001 positive accepts,482 validation refusals and11 exact trust refusals.
-The broader parser suite is196/196 exact, closing57 differences. Independent
-public176, execution36 and integration198 selections also pass; their counts
-overlap. Read [conformance](../selfhost/CONFORMANCE.md) for raw negative-fixture
-verdicts, historical evidence and unsupported features.
+Phase23 targets 1,513 fixtures and 3,026 parse/check observations, including
+15 new upstream fixtures. The [current report](../implementation/phase23/upstream-graph-conversion.md)
+records the final image's exact agreement, broader 196-case parser suite,
+request histories, native/JavaScript execution and installed/relocated CLI checks.
+Counts overlap; the four raw frontend failures expect errors at later emission.
+Read [conformance](../selfhost/CONFORMANCE.md) for the precise verdicts and limits.
 
-The compiler contains **15,600 physical /13,305 nonblank lines** in60 Bend modules:
-300 fewer physical lines than Phase21. One contextual frontend replaces the old
-raw-parser/later-scope replay routes. Bytes rise3,305 and definitions rise31;
-laws fall81. This is an architectural consolidation and modest line reduction,
-not an across-the-board decrease or the historical50%/75% targets. The guarded
-version5 profile and runtime are unchanged; the host now requires load ABI2.
+The compiler contains **15,748 physical /13,442 nonblank lines** in 60 Bend
+modules: 148 more physical lines than Phase22 (+0.95%), with nine additional
+definitions and two laws. Module and datatype counts are unchanged. Conversion
+shares graph evaluation with strong normalization, and atomics reuse existing
+arrays and reference counting. These are modest extensions; the historical 50%
+and 75% source reduction goals remain unachieved. Load ABI2 remains current.
 
 Routine development uses checked B1 and 36 focused controls; reuse a frozen
 attempt for fixture-only edits. The long string stays first. The selection adds

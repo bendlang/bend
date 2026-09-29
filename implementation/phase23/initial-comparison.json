@@ -1,0 +1,27 @@
+{
+  "kind": "phase23-initial-comparison",
+  "complete": true,
+  "rawReport": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/baseline-01/report.json",
+  "rawSha256": "45623afb878fe478de83c8c62cd60822944d6297640c452274e9de0e862feb98",
+  "statistics": {
+    "old_ts": {
+      "samples": 2,
+      "meanProcessWallMs": 3496.234102999999,
+      "meanRequestMs": 2453.89288,
+      "maxRssKiB": 465976
+    },
+    "new_ts": {
+      "samples": 2,
+      "meanProcessWallMs": 3539.148330500002,
+      "meanRequestMs": 2501.6506165,
+      "maxRssKiB": 468456
+    },
+    "released": {
+      "samples": 2,
+      "meanProcessWallMs": 11645.8891935,
+      "meanRequestMs": 10594.621473,
+      "maxRssKiB": 684492
+    }
+  },
+  "scope": "Controlled initial baseline before source changes; cross-revision bundles, two samples per variant. Full ordinary observations agree. Old release remains preserved. No emission measurement."
+}

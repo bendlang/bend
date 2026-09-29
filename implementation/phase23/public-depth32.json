@@ -1,0 +1,85 @@
+{
+  "kind": "phase23-public-depth32-resource-controls",
+  "complete": true,
+  "pass": true,
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/combined-build-01/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/combined-build-01/equality/api.mjs",
+    "sha256": "ce0260b140ed0d84ab922d2b37a3ddaf4f867f286cc7bbc3f70e4930dcbfc546"
+  },
+  "heapMiB": 1024,
+  "stackKiB": 4096,
+  "deadlineSeconds": 10,
+  "rows": [
+    {
+      "name": "conversion_copy_before_unfold",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/combined-build-01/snapshot/tools/typed-driver.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/tests/check/conversion_copy_before_unfold.bend",
+        "--check-only"
+      ],
+      "seconds": 2.0947971139103174,
+      "exitCode": 0,
+      "stdout": "ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n",
+      "stderr": "",
+      "pass": true
+    },
+    {
+      "name": "conversion_shared_cells_once",
+      "command": [
+        "taskset",
+        "-c",
+        "1",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/combined-build-01/snapshot/tools/typed-driver.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/tests/check/conversion_shared_cells_once.bend",
+        "--check-only"
+      ],
+      "seconds": 2.348054531030357,
+      "exitCode": 0,
+      "stdout": "ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n",
+      "stderr": "",
+      "pass": true
+    }
+  ],
+  "childrenMaxRssKiB": 138308,
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/combined-build-01/equality/api.mjs",
+      "sha256": "ce0260b140ed0d84ab922d2b37a3ddaf4f867f286cc7bbc3f70e4930dcbfc546"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/bend2/base.bend",
+      "sha256": "c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/combined-build-01/snapshot/src/runtime.mjs",
+      "sha256": "bc9f817a57a2d24565b5e05dd48e6f70c6003ce6a0b1628cf3bdf7a037881a72"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/combined-build-01/snapshot/tools/typed-driver.mjs",
+      "sha256": "43c4df618476ba6ae6057d468d7147af0a85be0cd4f84e18f5f124f58d7f47c3"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase23/deep-public.py",
+      "sha256": "7849cecd5fd54aff90846d8d7b74fc0c7b88ef6d4264d0161aa5407f576b8172"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/tests/check/conversion_copy_before_unfold.bend",
+      "sha256": "47c260e609040efc547d94ba0f42809101024ea4f1134bd0744ff6b0ddabd9a4"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/tests/check/conversion_shared_cells_once.bend",
+      "sha256": "05e6d2c31354cb8417a571ea6743053157bea2030e5078007af2210febce8f28"
+    }
+  ],
+  "scope": "Cold public CLI controls under the same1GiB heap cap as prior OOM assessment. Concurrent correctness run, not controlled speed comparison. RSS is the maximum over both child processes."
+}

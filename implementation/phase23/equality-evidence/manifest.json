@@ -1,0 +1,77 @@
+{
+  "kind": "phase23-equality-component-evidence",
+  "complete": true,
+  "scope": "Component-only checked build and direct controls; full compiler integration tracked separately. Original rejected source included.",
+  "files": [
+    {
+      "path": "selfhost/tools/performance/phase23/equality-controls.mjs",
+      "bytes": 6644,
+      "sha256": "d84ef40b896c6ef82f55610e874e2dbf5b0376bdd6b6dd1ef45d9248253a9438"
+    },
+    {
+      "path": "selfhost/build/phase23/equality-component-01/compiler.bend",
+      "bytes": 73507,
+      "sha256": "d7bce288303b03a8d521bcdfee1b2b899838517d647aa954bfa2c71b5bcfc007"
+    },
+    {
+      "path": "selfhost/build/phase23/equality-component-01/compiler.bend.map.json",
+      "bytes": 42698,
+      "sha256": "ceabb90251f8efdca33c3b4927e9652871dbedd3085e658f6b3e6911bda9b06f"
+    },
+    {
+      "path": "selfhost/build/phase23/equality-component-02/api-reproduced.mjs",
+      "bytes": 89061,
+      "sha256": "6e394261d5dc39b5497a3a1085a338055555980300bd28432ef7062c663187ac"
+    },
+    {
+      "path": "selfhost/build/phase23/equality-component-02/api.mjs",
+      "bytes": 89061,
+      "sha256": "6e394261d5dc39b5497a3a1085a338055555980300bd28432ef7062c663187ac"
+    },
+    {
+      "path": "selfhost/build/phase23/equality-component-02/compiler.bend",
+      "bytes": 74694,
+      "sha256": "57406ca3f50c780525650a82d6ae104a550db1a55390faf68e73ac059e2c6537"
+    },
+    {
+      "path": "selfhost/build/phase23/equality-component-02/compiler.bend.map.json",
+      "bytes": 43517,
+      "sha256": "4725e366e07ae44225e92a52c2acb4d55a4d4f0a926493fc5a1687a9dfade009"
+    },
+    {
+      "path": "selfhost/build/phase23/equality-component-evidence/builds.json",
+      "bytes": 4721,
+      "sha256": "87ea1c656c97777cb75f9055255ef97361cf2f73874889cf43fb7c90374d95bc"
+    },
+    {
+      "path": "selfhost/build/phase23/equality-component-evidence/component01.stderr",
+      "bytes": 351,
+      "sha256": "9281e8ac767ae3786691082393a05d87cfc1b740d099177b73efcfa5d3ec9c8c"
+    },
+    {
+      "path": "selfhost/build/phase23/equality-component-evidence/component01.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase23/equality-component-evidence/component02.stderr",
+      "bytes": 22,
+      "sha256": "af0d5ec4c9b7fc3ce49486ffccec5b4ae28d2c9eecb6a7d0eee31da196bd511b"
+    },
+    {
+      "path": "selfhost/build/phase23/equality-component-evidence/component02.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase23/equality-controls-01/cases.json",
+      "bytes": 559245,
+      "sha256": "ccb1fe6e3a97df0dd8a4c4e805faff851f027fbdd3288f0aa594e7328eb6b861"
+    },
+    {
+      "path": "selfhost/build/phase23/equality-controls-01/report.json",
+      "bytes": 7538,
+      "sha256": "558049a34f42c04af6b3eb9e3e4d766d2ddcf1ed82d29920eed2493547f6e9bb"
+    }
+  ]
+}

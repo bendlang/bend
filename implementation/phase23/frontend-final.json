@@ -1,0 +1,434 @@
+{
+  "kind": "phase23-final-frontend-summary",
+  "complete": true,
+  "pass": true,
+  "scope": "Final combined03 candidate plus retained combined01 checkpoints. Exact behavioral frontend agreement with independent metadata/hash health audits; raw verdicts unchanged. No backend/kernel/performance claim.",
+  "gates": [
+    {
+      "gate": "frontend-main-01",
+      "report": "selfhost/build/phase23/frontend-main-01/report.json",
+      "sha256": "960cea7d5d2baaab1d9ff87e7012a48859453759e06236cc120c0ce597e979a2",
+      "complete": true,
+      "pass": true,
+      "exact": 3026,
+      "expected": 3026,
+      "api": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/combined-build-01/equality/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/combined-build-01/equality/api.mjs",
+        "sha256": "ce0260b140ed0d84ab922d2b37a3ddaf4f867f286cc7bbc3f70e4930dcbfc546"
+      },
+      "affinity": "4,5,6,7",
+      "healthPass": true,
+      "exactAgreement": true,
+      "rawReference": {
+        "observed": 497,
+        "pass": 2525,
+        "fail": 4
+      },
+      "rawCandidate": {
+        "observed": 497,
+        "pass": 2525,
+        "fail": 4
+      },
+      "referenceReuse": null,
+      "wallMs": 294419.292721,
+      "workerStats": {
+        "reference": [
+          {
+            "starts": 12,
+            "requests": 727,
+            "recycles": 11,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 320016384
+          },
+          {
+            "starts": 12,
+            "requests": 756,
+            "recycles": 11,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 317988864
+          },
+          {
+            "starts": 13,
+            "requests": 774,
+            "recycles": 12,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 338350080
+          },
+          {
+            "starts": 13,
+            "requests": 769,
+            "recycles": 12,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 328531968
+          }
+        ],
+        "candidate": [
+          {
+            "starts": 12,
+            "requests": 762,
+            "recycles": 11,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 569978880
+          },
+          {
+            "starts": 12,
+            "requests": 767,
+            "recycles": 11,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 357453824
+          },
+          {
+            "starts": 13,
+            "requests": 782,
+            "recycles": 12,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 406568960
+          },
+          {
+            "starts": 12,
+            "requests": 715,
+            "recycles": 11,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 580599808
+          }
+        ]
+      }
+    },
+    {
+      "gate": "frontend-broader-01",
+      "report": "selfhost/build/phase23/frontend-broader-01/report.json",
+      "sha256": "f34f978bd3113b352ebfcdd1a753fe34eb350e64b9549f70d3b7310edfa8784b",
+      "complete": true,
+      "pass": true,
+      "exact": 196,
+      "expected": 196,
+      "api": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/combined-build-01/equality/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/combined-build-01/equality/api.mjs",
+        "sha256": "ce0260b140ed0d84ab922d2b37a3ddaf4f867f286cc7bbc3f70e4930dcbfc546"
+      },
+      "affinity": "4,5,6,7",
+      "healthPass": true,
+      "exactAgreement": true,
+      "rawReference": {
+        "observed": 1,
+        "pass": 195
+      },
+      "rawCandidate": {
+        "observed": 1,
+        "pass": 195
+      },
+      "referenceReuse": null,
+      "wallMs": 17499.325033,
+      "workerStats": {
+        "reference": [
+          {
+            "starts": 1,
+            "requests": 49,
+            "recycles": 0,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 290095104
+          },
+          {
+            "starts": 1,
+            "requests": 45,
+            "recycles": 0,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 297127936
+          },
+          {
+            "starts": 1,
+            "requests": 49,
+            "recycles": 0,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 288878592
+          },
+          {
+            "starts": 1,
+            "requests": 53,
+            "recycles": 0,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 306864128
+          }
+        ],
+        "candidate": [
+          {
+            "starts": 1,
+            "requests": 38,
+            "recycles": 0,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 316510208
+          },
+          {
+            "starts": 1,
+            "requests": 54,
+            "recycles": 0,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 346386432
+          },
+          {
+            "starts": 1,
+            "requests": 54,
+            "recycles": 0,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 316887040
+          },
+          {
+            "starts": 1,
+            "requests": 50,
+            "recycles": 0,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 306188288
+          }
+        ]
+      }
+    },
+    {
+      "gate": "frontend-main-02",
+      "report": "selfhost/build/phase23/frontend-main-02/report.json",
+      "sha256": "857a26e03593912e434f9f0b3d7618d72cbc4a0104ff7da98ed29960e2c21f37",
+      "complete": true,
+      "pass": true,
+      "exact": 3026,
+      "expected": 3026,
+      "api": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/combined-build-03/equality/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/combined-build-03/equality/api.mjs",
+        "sha256": "5596f914fd245a5085a614b81099360aeaf601ed61f16357fc491c85106c1102"
+      },
+      "affinity": "2",
+      "healthPass": true,
+      "exactAgreement": true,
+      "rawReference": {
+        "observed": 497,
+        "pass": 2525,
+        "fail": 4
+      },
+      "rawCandidate": {
+        "observed": 497,
+        "pass": 2525,
+        "fail": 4
+      },
+      "referenceReuse": {
+        "gate": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/frontend-main-01/report.json",
+          "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/frontend-main-01/report.json",
+          "sha256": "960cea7d5d2baaab1d9ff87e7012a48859453759e06236cc120c0ce597e979a2"
+        },
+        "reference": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/frontend-main-01/selected/reference.json",
+          "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/frontend-main-01/selected/reference.json",
+          "sha256": "f702eab176442df433fa481d427ab53ee3c84f2480496d0bfbb078e57dc909c0"
+        },
+        "originalPaired": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/frontend-main-01/selected/paired.json",
+          "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/frontend-main-01/selected/paired.json",
+          "sha256": "920577f62a5d2001dd90e167277c2297abe051eeb2d3887bafb766c122e65073"
+        },
+        "policy": "Explicit reuse of a completed identity-stable reference acquisition on the same exact pin, paths, selection and oracles. All reference inputs and artifacts are rehashed after the fresh candidate run."
+      },
+      "wallMs": 670428.092386,
+      "workerStats": {
+        "reference": [
+          {
+            "starts": 12,
+            "requests": 727,
+            "recycles": 11,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 320016384
+          },
+          {
+            "starts": 12,
+            "requests": 756,
+            "recycles": 11,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 317988864
+          },
+          {
+            "starts": 13,
+            "requests": 774,
+            "recycles": 12,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 338350080
+          },
+          {
+            "starts": 13,
+            "requests": 769,
+            "recycles": 12,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 328531968
+          }
+        ],
+        "candidate": [
+          {
+            "starts": 13,
+            "requests": 791,
+            "recycles": 12,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 353603584
+          },
+          {
+            "starts": 12,
+            "requests": 738,
+            "recycles": 11,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 505262080
+          },
+          {
+            "starts": 12,
+            "requests": 737,
+            "recycles": 11,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 547225600
+          },
+          {
+            "starts": 12,
+            "requests": 760,
+            "recycles": 11,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 468004864
+          }
+        ]
+      }
+    },
+    {
+      "gate": "frontend-broader-02",
+      "report": "selfhost/build/phase23/frontend-broader-02/report.json",
+      "sha256": "203ca8a6dcd67efb53c9e7fac0b2266d228dcaf28cbd198ef8150065505ae535",
+      "complete": true,
+      "pass": true,
+      "exact": 196,
+      "expected": 196,
+      "api": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/combined-build-03/equality/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/combined-build-03/equality/api.mjs",
+        "sha256": "5596f914fd245a5085a614b81099360aeaf601ed61f16357fc491c85106c1102"
+      },
+      "affinity": "2,3,4,5",
+      "healthPass": true,
+      "exactAgreement": true,
+      "rawReference": {
+        "observed": 1,
+        "pass": 195
+      },
+      "rawCandidate": {
+        "observed": 1,
+        "pass": 195
+      },
+      "referenceReuse": {
+        "gate": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/frontend-broader-01/report.json",
+          "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/frontend-broader-01/report.json",
+          "sha256": "f34f978bd3113b352ebfcdd1a753fe34eb350e64b9549f70d3b7310edfa8784b"
+        },
+        "reference": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/frontend-broader-01/selected/reference.json",
+          "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/frontend-broader-01/selected/reference.json",
+          "sha256": "930f64da511369efd9e4aeb67284453fea9606bf7a39ee6db0914a7a1294736a"
+        },
+        "originalPaired": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/frontend-broader-01/selected/paired.json",
+          "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase23/frontend-broader-01/selected/paired.json",
+          "sha256": "8529c0281bdae1cc46b09d0b8f22aa855f234d78970ebb90354d1be081bcddda"
+        },
+        "policy": "Explicit reuse of a completed identity-stable reference acquisition on the same exact pin, paths, selection and oracles. All reference inputs and artifacts are rehashed after the fresh candidate run."
+      },
+      "wallMs": 9178.853764,
+      "workerStats": {
+        "reference": [
+          {
+            "starts": 1,
+            "requests": 49,
+            "recycles": 0,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 290095104
+          },
+          {
+            "starts": 1,
+            "requests": 45,
+            "recycles": 0,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 297127936
+          },
+          {
+            "starts": 1,
+            "requests": 49,
+            "recycles": 0,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 288878592
+          },
+          {
+            "starts": 1,
+            "requests": 53,
+            "recycles": 0,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 306864128
+          }
+        ],
+        "candidate": [
+          {
+            "starts": 1,
+            "requests": 40,
+            "recycles": 0,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 316542976
+          },
+          {
+            "starts": 1,
+            "requests": 59,
+            "recycles": 0,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 310841344
+          },
+          {
+            "starts": 1,
+            "requests": 45,
+            "recycles": 0,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 303030272
+          },
+          {
+            "starts": 1,
+            "requests": 52,
+            "recycles": 0,
+            "timeouts": 0,
+            "failures": 0,
+            "maxRssBytes": 309096448
+          }
+        ]
+      }
+    }
+  ]
+}

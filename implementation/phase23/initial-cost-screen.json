@@ -1,0 +1,35 @@
+{
+  "kind": "phase23-initial-cost-screen",
+  "complete": true,
+  "pass": true,
+  "statistics": {
+    "typescript": {
+      "samples": 2,
+      "meanProcessWallMs": 3834.9118069999986,
+      "meanRequestMs": 2578.789794,
+      "maxRssKiB": 483416
+    },
+    "released": {
+      "samples": 2,
+      "meanProcessWallMs": 11441.9199815,
+      "meanRequestMs": 10175.1064235,
+      "maxRssKiB": 706736
+    },
+    "refreshed": {
+      "samples": 2,
+      "meanProcessWallMs": 11433.475927000005,
+      "meanRequestMs": 10156.2108085,
+      "maxRssKiB": 775280
+    },
+    "candidate": {
+      "samples": 2,
+      "meanProcessWallMs": 11635.37511,
+      "meanRequestMs": 10368.146611999999,
+      "maxRssKiB": 793228
+    }
+  },
+  "ratioToNewTs": 3.034065891361972,
+  "processChangeVsReleased": 0.016907575722675094,
+  "requestChangeVsReleased": 0.018971810265705047,
+  "scope": "Eight serial alternating fresh-process rows, exact ordinary observations, CPU0/4MiB stack/4GiB heap. Two samples per bundle; neutralcost screen, not a broad throughput or emission claim. Additional variant provenance increases common worker hashing versus initial six-row run. Compare within this run."
+}
