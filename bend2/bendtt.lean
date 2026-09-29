@@ -23,11 +23,9 @@ import Std.Data.HashMap
 -- earlier defs, and may call its own def only on parameters it rebuilt,
 -- then a piece of one.
 -- A q=2 binder needs a Data domain, and Data holds no λ and no call.
--- A kind is *1 (Type), *2 (Data), or *(q) for a quantity q : <Q0, Q1,
--- Q2>, dead like every type: *2 once q is .Q2, *1 once q is another
--- label; (a <&> b) is the meet of two quantities, in dead code only. A
--- kind K fits a kind J when K is Data wherever J is, so a type of kind
--- *(q) is Data only where q reduces to .Q2. A Σ may have any kind.
+-- A kind is *1, *2 or *(q), for q : <Q0, Q1, Q2>: *2 once q is .Q2, *1
+-- once q is another label. A meet (a <&> b) is dead code only. *(g) fits
+-- *(h) when g is .Q2 wherever h is, so a *(q) type is Data only there.
 --
 -- Then live evaluation terminates by a measure that ignores types: a call
 -- is replaced by smaller calls, and all else shrinks. Subject reduction
@@ -180,12 +178,12 @@ def Term.kind (k : String) : Term :=
 def QS : List String := ["Q0", "Q1", "Q2"]
 
 def Term.meet (i j : String) : String :=
-  if i = "Q2" then j else if j = "Q2" then i else if i = "Q0" ∨ j = "Q0" then "Q0" else "Q1"
+  if i = "Q2" then j else if j = "Q2" ∨ i = "Q0" then i else j
 
 -- a kind as the quantity it names
 def Term.quan : Term → Option Term
+  | Typ Q1 => some (Lab "Q1")
   | Typ Q2 => some (Lab "Q2")
-  | Typ _  => some (Lab "Q1")
   | Kin q  => some q
   | _      => none
 
@@ -971,10 +969,9 @@ def Term.qge (ck : Lib) (cl : Bool) : Nat → Term → Term → Bool
   | 0, _, _ => false
   | n + 1, g, h =>
     match (Term.wnf ck cl n g []).1, (Term.wnf ck cl n h []).1 with
-    | Lab "Q2", _ | _, Lab "Q0" | _, Lab "Q1" => true
     | Min a b, h => Term.qge ck cl n a h && Term.qge ck cl n b h
     | g, Min a b => Term.qge ck cl n g a || Term.qge ck cl n g b
-    | g, h => (Term.conv ck cl n g h).1
+    | g, h => g == Lab "Q2" || h == Lab "Q0" || h == Lab "Q1" || (Term.conv ck cl n g h).1
 
 -- U fits T: they convert, or both are kinds and U's quantity is at least
 -- T's, or U is an enum with fewer labels
@@ -1074,7 +1071,7 @@ def Term.infer (ck : Lib) : Nat → Ctx → Term → Res Term
 -- ---------------------------------------------------------- lam
 -- Γ ⊢ λq x => f : T
 --
--- T = K, a kind   Γ ⊢ A : kindof(q, K)   Γ, A ⊢ B : K
+-- T = *(g)   Γ ⊢ A : kindof(q, *(g))   Γ, A ⊢ B : *(g)
 -- ------------------------------------------------- sig
 -- Γ ⊢ Σq x:A -> B : T
 --
@@ -1125,11 +1122,11 @@ def Term.check (ck : Lib) : Nat → Ctx → Term → Term → Res Unit
       Term.check ck n ((A, none) :: c) f B
     | T => Ctx.fail c "a function type" T
   | n + 1, c, Sig q A B, T =>
-    let K := Ctx.wnf ck c T
-    if K.quan.isSome then do
-      Term.check ck n c A (Term.kindof q K)
-      Term.check ck n ((A, none) :: c) B (Term.ren Nat.succ K)
-    else Ctx.fail c "a kind" K
+    match (Ctx.wnf ck c T).quan with
+    | some g => do
+      Term.check ck n c A (Term.kindof q (Kin g))
+      Term.check ck n ((A, none) :: c) B (Kin (Term.ren Nat.succ g))
+    | none => Ctx.fail c "a kind" T
   | n + 1, c, Tup q a b, T =>
     match Ctx.wnf ck c T with
     | Sig p A B => do
@@ -1458,16 +1455,12 @@ inductive Pars (bk : Book) : Term → Term → Prop
 def Conv (bk : Book) (a b : Term) : Prop :=
   ∃ c, Pars bk a c ∧ Pars bk b c
 
--- T is a kind: *q, or *(q)
-def Kind (bk : Book) (T : Term) : Prop :=
-  (∃ q, Conv bk T (Typ q)) ∨ ∃ q, Conv bk T (Kin q)
-
--- U fits T: they convert, or both are kinds and U is Data wherever T
--- is, or both are enums and U's labels are T's
+-- U fits T: they convert, or both are kinds, *(g) and *(h), and *(g) is
+-- Data wherever *(h) is, or both are enums and U's labels are T's
 def Fits (bk : Book) (U T : Term) : Prop :=
   Conv bk U T
-  ∨ (Kind bk U ∧ Kind bk T ∧
-      ∀ σ, Conv bk (Term.sub σ T) (Typ Q2) → Conv bk (Term.sub σ U) (Typ Q2))
+  ∨ (∃ g h, Conv bk U (Kin g) ∧ Conv bk T (Kin h) ∧
+      ∀ σ, Conv bk (Kin (Term.sub σ h)) (Typ Q2) → Conv bk (Kin (Term.sub σ g)) (Typ Q2))
   ∨ (∃ ks js, Conv bk U (Enu ks) ∧ Conv bk T (Enu js) ∧ ks ⊆ js)
 
 -- Typing
@@ -1489,8 +1482,8 @@ inductive Typed (bk : Book) : List Term → Term → Term → Prop
            Typed bk (A :: Γ) f B → Typed bk Γ (Lam q f) (All p A B)
   | app  : Typed bk Γ f (All q A B) → Typed bk Γ x A →
            Typed bk Γ (App q f x) (Term.inst B x)
-  | sig  : K.quan.isSome → Typed bk Γ A (Term.kindof q K) → Typed bk (A :: Γ) B (Term.ren Nat.succ K) →
-           Typed bk Γ (Sig q A B) K
+  | sig  : Typed bk Γ A (Term.kindof q (Kin g)) → Typed bk (A :: Γ) B (Kin (Term.ren Nat.succ g)) →
+           Typed bk Γ (Sig q A B) (Kin g)
   | tup  : Typed bk Γ a A → Typed bk Γ b (Term.inst B a) →
            Typed bk Γ (Tup q a b) (Sig q A B)
   | prj  : q.live = true →
@@ -1956,32 +1949,8 @@ theorem csym : Conv bk a b → Conv bk b a
 
 theorem enu_inj : Conv bk (Enu ks) (Enu js) → ks = js := (conv_leaf (p := Q0) (q := Q0)).2
 
-theorem kind_conv (c : Conv bk T T') : Kind bk T' → Kind bk T :=
-  Or.imp (fun ⟨q, h⟩ => ⟨q, conv_trans c h⟩) fun ⟨q, h⟩ => ⟨q, conv_trans c h⟩
-
--- a kind is no enum
-theorem kind_enu (k : Kind bk T) (c : Conv bk T (Enu ks)) : False := by
-  rcases k with ⟨_, h⟩ | ⟨_, h⟩ <;> nomatch conv_former (conv_trans (csym h) c) nofun nofun
-
-theorem fits_trans : Fits bk A B → Fits bk B C → Fits bk A C := by
-  have X := @conv_trans bk
-  rintro (h1 | ⟨k1, k1', s1⟩ | ⟨ks, js, h1, h1', s1⟩) (h2 | ⟨k2, k2', s2⟩ | ⟨ks', js', h2, h2', s2⟩)
-  · exact .inl (X h1 h2)
-  · exact .inr (.inl ⟨kind_conv h1 k2, k2', fun σ p => X (conv_sub h1) (s2 σ p)⟩)
-  · exact .inr (.inr ⟨_, _, X h1 h2, h2', s2⟩)
-  · exact .inr (.inl ⟨k1, kind_conv (csym h2) k1', fun σ p => s1 σ (X (conv_sub h2) p)⟩)
-  · exact .inr (.inl ⟨k1, k2', fun σ p => s1 σ (s2 σ p)⟩)
-  · exact (kind_enu k1' h2).elim
-  · exact .inr (.inr ⟨ks, js, h1, X (csym h2) h1', s1⟩)
-  · exact (kind_enu k2 h1').elim
-  · cases enu_inj (X (csym h1') h2)
-    exact .inr (.inr ⟨ks, js', h1, h2', fun _ m => s2 (s1 m)⟩)
-
-theorem kind_sub : Kind bk T → Kind bk (Term.sub σ T) :=
-  Or.imp (fun ⟨q, h⟩ => ⟨q, conv_sub h⟩) fun ⟨_, h⟩ => ⟨_, conv_sub h⟩
-
 theorem fits_sub : Fits bk A B → Fits bk (Term.sub σ A) (Term.sub σ B) :=
-  Or.imp conv_sub (Or.imp (fun ⟨a, b, s⟩ => ⟨kind_sub a, kind_sub b, fun τ => by simpa only [sub_sub] using s _⟩)
+  Or.imp conv_sub (Or.imp (fun ⟨_, _, a, b, s⟩ => ⟨_, _, conv_sub a, conv_sub b, fun τ => by simpa only [sub_sub] using s _⟩)
     fun ⟨k, j, a, b, s⟩ => ⟨k, j, conv_sub a, conv_sub b, s⟩)
 
 -- Evaluator
@@ -2110,19 +2079,30 @@ theorem meet22 : Term.meet i j = "Q2" ↔ i = "Q2" ∧ j = "Q2" := by
   unfold Term.meet; by_cases i = "Q2" <;> by_cases j = "Q2" <;> simp_all <;> split <;> simp_all
 
 theorem kin2 : Conv bk (Kin x) (Typ Q2) ↔ Conv bk x (Lab "Q2") := by
-  have P {t c} (h : Pars bk t c) : ∀ {x}, t = Kin x →
-      (∃ x', c = Kin x' ∧ Pars bk x x') ∨ ∃ k, Pars bk x (Lab k) ∧ c = Term.kind k := by
-    induction h with
-    | refl => exact fun e => .inl ⟨_, e, .refl⟩
-    | step s hp ih => rintro _ rfl; cases s with
-      | kin p => exact (ih rfl).imp (fun ⟨_, e, h⟩ => ⟨_, e, .step p h⟩) fun ⟨k, h, e⟩ => ⟨k, .step p h, e⟩
-      | kind => unfold Term.kind at hp ⊢; exact .inr ⟨_, .refl, typ_fix hp⟩
-  refine ⟨fun ⟨c, h1, h2⟩ => ?_, fun h => ⟨_, .step (.kin (par_refl _)) ?_, .refl⟩⟩
-  · cases typ_fix h2
-    rcases P h1 rfl with ⟨_, e, _⟩ | ⟨k, hk, e⟩
-    · cases e
-    · unfold Term.kind at e; by_cases k = "Q2" <;> simp_all; exact ⟨_, hk, .refl⟩
-  · exact pars_trans (pars_map Kin .kin (conv_lab h)) (.step .kind (by simp [Term.kind]; exact .refl))
+  have P {t c x} (h : Pars bk t c) : t = Kin x → c = Typ Q2 → Pars bk x (Lab "Q2") := by
+    induction h generalizing x with
+    | refl => rintro rfl ⟨⟩
+    | step s hp ih => rintro rfl rfl; cases s with
+      | kin p => exact .step p (ih rfl rfl)
+      | kind => unfold Term.kind at hp; split at hp <;> first | (subst_vars; exact .refl) | nomatch typ_fix hp
+  exact ⟨fun ⟨_, h1, h2⟩ => ⟨_, P h1 rfl (typ_fix h2), .refl⟩,
+    fun h => ⟨_, pars_trans (pars_map Kin .kin (conv_lab h)) (.step .kind (by simp [Term.kind]; exact .refl)), .refl⟩⟩
+
+theorem fits_trans : Fits bk A B → Fits bk B C → Fits bk A C := by
+  have X := @conv_trans bk
+  have F {a b ks} (h : Conv bk a (Kin b)) (h' : Conv bk a (Enu ks)) : False :=
+    nomatch conv_former (X (csym h) h') nofun nofun
+  rintro (h1 | ⟨g, h, k1, k1', s1⟩ | ⟨ks, js, h1, h1', s1⟩) (h2 | ⟨g', h', k2, k2', s2⟩ | ⟨ks', js', h2, h2', s2⟩)
+  · exact .inl (X h1 h2)
+  · exact .inr (.inl ⟨_, _, X h1 k2, k2', s2⟩)
+  · exact .inr (.inr ⟨_, _, X h1 h2, h2', s2⟩)
+  · exact .inr (.inl ⟨_, _, k1, X (csym h2) k1', s1⟩)
+  · exact .inr (.inl ⟨_, _, k1, k2', fun σ p => s1 σ (X (conv_sub (X (csym k1') k2) : Conv bk (Kin _) _) (s2 σ p))⟩)
+  · exact (F k1' h2).elim
+  · exact .inr (.inr ⟨ks, js, h1, X (csym h2) h1', s1⟩)
+  · exact (F k2 h1').elim
+  · cases enu_inj (X (csym h1') h2)
+    exact .inr (.inr ⟨ks, js', h1, h2', fun _ m => s2 (s1 m)⟩)
 
 theorem min2 : Conv bk (Min a b) (Lab "Q2") ↔ Conv bk a (Lab "Q2") ∧ Conv bk b (Lab "Q2") := by
   have P {t c} (h : Pars bk t c) : ∀ {a b}, t = Min a b → c = Lab "Q2" →
@@ -2149,36 +2129,31 @@ theorem qge_sound (hb : Sees ck bk) : (Term.qge ck cl n g h) = true →
   unfold Term.qge
   generalize eg : (Term.wnf ck cl n g []).1 = G; generalize eh : (Term.wnf ck cl n h []).1 = H
   have EG σ := eg ▸ W g σ; have EH σ := eh ▸ W h σ
-  have B {k} (e : H = Lab k) σ (p : Conv bk (Term.sub σ h) (Lab "Q2")) : k = "Q2" := by
-    subst e; exact (Term.Lab.inj (lab_fix (conv_lab (conv_trans (csym (EH σ)) p)))).symm
   split <;> intro hq σ p
-  · exact EG σ
-  · exact absurd (B rfl σ p) (by decide)
-  · exact absurd (B rfl σ p) (by decide)
   · have ⟨ha, hb⟩ := Bool.and_eq_true_iff.1 hq
     exact conv_trans (EG σ) (min2.2 ⟨ih ha σ (conv_trans (csym (EH σ)) p), ih hb σ (conv_trans (csym (EH σ)) p)⟩)
   · have ⟨pa, pb⟩ := min2.1 (conv_trans (csym (EH σ)) p)
     exact conv_trans (EG σ) ((Bool.or_eq_true_iff.1 hq).elim (ih · σ pa) (ih · σ pb))
-  · exact conv_trans (EG σ) (conv_trans (conv_sub (conv_sound hb hq)) (conv_trans (csym (EH σ)) p))
+  · simp only [Bool.or_eq_true, beq_iff_eq] at hq
+    rcases hq with ((rfl | rfl) | rfl) | c
+    · exact EG σ
+    all_goals first
+      | exact absurd (Term.Lab.inj (lab_fix (conv_lab (conv_trans (csym (EH σ)) p)))) (by decide)
+      | exact conv_trans (EG σ) (conv_trans (conv_sub (conv_sound hb c)) (conv_trans (csym (EH σ)) p))
 
--- a kind is Data exactly where its quantity is .Q2
-theorem quan_data (e : Term.quan K = some g) :
-    Kind bk K ∧ ∀ σ, (Conv bk (Term.sub σ K) (Typ Q2) ↔ Conv bk (Term.sub σ g) (Lab "Q2")) := by
-  have R {a : Term} : Conv bk a a := ⟨_, .refl, .refl⟩
-  unfold Term.quan at e; split at e <;> cases e
-  · exact ⟨.inl ⟨_, R⟩, fun _ => ⟨fun _ => R, fun _ => R⟩⟩
-  · refine ⟨.inl ⟨_, R⟩, fun _ => ⟨fun c => ?_, fun c => absurd (Term.Lab.inj (lab_fix (conv_lab c))) (by decide)⟩⟩
-    cases (conv_leaf (ks := []) (js := [])).1 (c : Conv bk (Typ _) _); simp_all
-  · exact ⟨.inr ⟨_, R⟩, fun _ => kin2⟩
+-- a kind converts to the *(q) its quantity names
+theorem quan_kin (e : Term.quan K = some g) : Conv bk K (Kin g) := by
+  unfold Term.quan at e; split at e <;> cases e <;> first
+    | exact ⟨_, .refl, .refl⟩
+    | exact ⟨_, .refl, .step .kind (by simp [Term.kind]; exact .refl)⟩
 
 theorem fits_sound (hb : Sees ck bk) (h : (Term.fits ck cl U T).1 = true) : Fits bk U T := by
   unfold Term.fits at h; split at h; rename_i e1; split at h; rename_i e2
   have W1 : Conv bk U _ := ⟨_, wnf_nil hb e1, .refl⟩; have W2 : Conv bk T _ := ⟨_, wnf_nil hb e2, .refl⟩
   split at h
   · rename_i hu ht
-    have ⟨ku, du⟩ := quan_data (bk := bk) hu; have ⟨kt, dt⟩ := quan_data (bk := bk) ht
-    exact .inr (.inl ⟨kind_conv W1 ku, kind_conv W2 kt, fun σ p => conv_trans (conv_sub W1)
-      ((du σ).2 (qge_sound hb h σ ((dt σ).1 (conv_trans (csym (conv_sub W2)) p))))⟩)
+    exact .inr (.inl ⟨_, _, conv_trans W1 (quan_kin hu), conv_trans W2 (quan_kin ht),
+      fun σ p => kin2.2 (qge_sound hb h σ (kin2.1 p))⟩)
   · exact .inr (.inr ⟨_, _, W1, W2, fun _ m => by simpa using List.all_eq_true.1 h _ m⟩)
   · exact .inl (conv_trans W1 (conv_trans (conv_sound hb h) (csym W2)))
 
@@ -2207,9 +2182,6 @@ theorem tup_sub : Term.sub (Subst.up (Subst.up σ)) (Term.sub (Subst.tup r) P) =
 theorem kindof_sub : Term.sub σ (Term.kindof q K) = Term.kindof q (Term.sub σ K) := by
   cases q <;> rfl
 
-theorem quan_sub (h : K.quan.isSome) : (Term.sub σ K).quan.isSome := by
-  cases K <;> (try cases ‹Quan›) <;> simp_all [Term.quan, Term.sub]
-
 -- one induction for renamings and substitutions: K types σ's
 -- variables and lifts under a binder
 theorem typed_gen (K : List Term → Subst → List Term → Prop)
@@ -2222,8 +2194,7 @@ theorem typed_gen (K : List Term → Subst → List Term → Prop)
   case rwt h _ ih1 ih2 ih3 =>
     exact .rwt (ih1 k) (by simpa only [Term.sub, Subst.up, sub_succ] using ih2 (hu _ (hu _ k)))
       (by simpa only [inst_sub, sub_succ] using fits_sub h) (ih3 k)
-  case sig =>
-    rename_i hK _ _ ih2 ih1; exact .sig (quan_sub hK) (ih1 k) (by simpa only [sub_succ] using ih2 (hu _ k))
+  case sig => rename_i ih2 ih1; exact .sig (ih1 k) (by simpa only [sub_succ] using ih2 (hu _ k))
   all_goals constructor <;> solve_by_elim [conv_sub, fits_sub]
 
 theorem typed_ren : Typed bk Γ t T → RenOk Δ r Γ →
@@ -2379,8 +2350,9 @@ theorem chk (hcl : Sees ck bk) (n : Nat) : ∀ c t T, Ctx.ok bk c →
       rename_i i _; obtain ⟨A, h1, h2⟩ := ok_bind.1 h
       rw [← pick_inst (T := T) (i := i), inst_sub]; exact .app (C _ _ h2) (I _ _ h1)
     · rename_i e; obtain ⟨h1, h2⟩ := h
-      exact .conv (.sig (quan_sub e) (by simpa only [kindof_sub] using C _ _ h1) (by simpa only [sub_succ, Ctx.decl, Ctx.drop] using B h2))
-        (wnf_fits hcl rfl).1
+      exact .conv (.sig (by simpa only [kindof_sub, Term.sub] using C _ _ h1)
+        (by simpa only [sub_succ, Ctx.decl, Ctx.drop, Term.sub] using B h2))
+        (fits_trans (.inl (conv_sub (csym (quan_kin e)))) (wnf_fits hcl rfl).1)
     · rename_i e; obtain ⟨rfl, h1, h2⟩ := h
       exact .conv (.tup (C _ _ h1) (inst_sub ▸ C _ _ h2)) (wnf_fits hcl e).1
     · rename_i e _ _ _ _ e'; obtain ⟨hq, h⟩ := h
@@ -2444,7 +2416,7 @@ theorem conv_inst : Conv bk a b → Conv bk (Term.inst P a) (Term.inst P b)
 
 theorem fits_conv (h : Fits bk U T) (h0 : U.former ≠ 0 := by simp [Term.former])
     (h1 : U.former ≠ 1 := by simp [Term.former]) (h4 : U.former ≠ 4 := by simp [Term.former]) : Conv bk U T := by
-  rcases h with h | ⟨⟨_, h⟩ | ⟨_, h⟩, _⟩ | ⟨_, _, h, _⟩
+  rcases h with h | ⟨_, _, h, _⟩ | ⟨_, _, h, _⟩
   · exact h
   all_goals exact absurd (conv_former h h0 nofun) ‹_›
 
@@ -2461,8 +2433,8 @@ def Gen (bk : Book) (Γ : List Term) : Term → Term → Prop
   | Efq, U => ∃ q P, U = All q (Enu []) P ∧ q.live
   | Lab k, U => ∃ ks, U = Enu ks ∧ k ∈ ks
   | Rfl, U => ∃ a b T, U = Eql a b T ∧ Conv bk a b
-  | Sig q A B, U => U.quan.isSome ∧ Typed bk Γ A (Term.kindof q U) ∧
-    Typed bk (A :: Γ) B (Term.ren Nat.succ U)
+  | Sig q A B, U => ∃ g, U = Kin g ∧ Typed bk Γ A (Term.kindof q U) ∧
+    Typed bk (A :: Γ) B (Kin (Term.ren Nat.succ g))
   | Typ _, U | Kin _, U | All .., U => U = Typ Q1
   | _, _ => True
 
@@ -2474,13 +2446,9 @@ def Term.tform : Term → Nat
   | Rfl => 5
   | _ => 2
 
-theorem quan_former {K : Term} (h : K.quan.isSome) : K.former = 1 := by
-  cases K <;> simp_all [Term.quan, Term.former]
-
 theorem gen (h : Typed bk Γ t T) :
     ∃ U, Gen bk Γ t U ∧ Fits bk U T ∧ (t.former ≠ 0 → U.former = t.tform) := by
   induction h
-  case sig => rename_i hK h1 h2 _ _; exact ⟨_, ⟨hK, h1, h2⟩, .inl ⟨_, .refl, .refl⟩, fun _ => quan_former hK⟩
   all_goals first
     | refine ⟨_, ?_, .inl ⟨_, .refl, .refl⟩, by simp [Term.former, Term.tform]⟩; simp only [Gen]
       repeat' first | assumption | refine ⟨_, ?_⟩ | constructor
@@ -2508,9 +2476,9 @@ theorem conv_eql (h : Conv bk (Eql a b T) (Eql a' b' T')) : Conv bk a a' ∧ Con
 
 theorem lab_in (h : Typed bk Γ (Lab j) A) (c : Conv bk A (Enu ks)) : j ∈ ks := by
   obtain ⟨_, ⟨js, rfl, hj⟩, hU, _⟩ := gen h
-  rcases hU with h | ⟨k, _⟩ | ⟨_, _, h, h', s⟩
+  rcases hU with h | ⟨_, _, h, _⟩ | ⟨_, _, h, h', s⟩
   · rwa [← enu_inj (conv_trans h c)]
-  · nomatch kind_enu k ⟨_, .refl, .refl⟩
+  · nomatch conv_former h nofun nofun
   · cases enu_inj h; cases enu_inj (conv_trans (csym h') c); exact s hj
 
 theorem split_inst : Term.inst (Term.sub (Subst.up (Subst.one a)) (Term.sub (Subst.tup r) P)) b =
@@ -2555,8 +2523,7 @@ theorem sr : Claim.sr := by
     | min pa pb => exact .min (iha _ pa) (ihb _ pb)
     | meet =>
       have R : Conv bk (Enu QS) (Enu QS) := ⟨_, .refl, .refl⟩
-      have := lab_in ha R; have := lab_in hb R
-      exact .lab (by simp only [QS, List.mem_cons, List.mem_nil_iff, or_false] at *; unfold Term.meet; split <;> (try split) <;> (try split) <;> simp_all)
+      exact .lab (by unfold Term.meet; split <;> (try split) <;> exact lab_in ‹_› R)
   case app _ hx ihf ihx => cases hp with
     | app pf px => exact .conv (.app (ihf _ pf) (ihx _ px)) (.inl (pi px))
     | beta pf px =>
@@ -2689,7 +2656,7 @@ theorem tform_ne : Term.tform t ≠ 0 := by
 
 theorem fits_former (h : Fits bk U T) (c : Conv bk T X) (hU : U.former ≠ 0) (hX : X.former ≠ 0) :
     U.former = X.former := by
-  rcases h with h | ⟨⟨_, h⟩ | ⟨_, h⟩, ⟨_, h'⟩ | ⟨_, h'⟩, _⟩ | ⟨_, _, h, h', _⟩
+  rcases h with h | ⟨_, _, h, h', _⟩ | ⟨_, _, h, h', _⟩
   · exact conv_former (conv_trans h c) hU hX
   all_goals exact (conv_former h hU nofun).trans (conv_former (conv_trans (csym c) h') hX nofun).symm
 
@@ -2736,12 +2703,10 @@ theorem canon_enu (wt : Book.WellTyped bk) (v : Value bk t) (h : Typed bk [] t T
 
 -- what fits Data is Data (the kind case at σ = Var)
 theorem fits2 (f : Fits bk U (Typ Q2)) : Conv bk U (Typ Q2) := by
-  rcases f with c | ⟨_, _, s⟩ | ⟨_, _, _, c, _⟩
+  rcases f with c | ⟨_, _, c, c', s⟩ | ⟨_, _, _, c, _⟩
   · exact c
-  · simpa only [sub_var] using s Var ⟨_, .refl, .refl⟩
+  · have := s Var (by rw [sub_var]; exact csym c'); rw [sub_var] at this; exact conv_trans c this
   · exact (conv_typ_enu c).elim
-
-theorem typ2 (f : Fits bk (Typ g) (Typ Q2)) : g = Q2 := (conv_leaf (ks := []) (js := [])).1 (fits2 f)
 
 -- a type of kind *2 is no kind and no ∀
 theorem no_kind2 (wt : Book.WellTyped bk) (hT : Typed bk [] T (Typ Q2)) (f : Fits bk U T)
@@ -2750,8 +2715,8 @@ theorem no_kind2 (wt : Book.WellTyped bk) (hT : Typed bk [] T (Typ Q2)) (f : Fit
     have ⟨Y, hY, _, eY⟩ := conv_typed wt hT c (by omega)
     have ⟨_, g, f', _⟩ := gen hY
     rw [← eY] at e
-    cases Y <;> simp [Term.former] at e <;> cases g <;> exact nomatch typ2 f'
-  rcases f with c | ⟨_, ⟨_, c⟩ | ⟨_, c⟩, _⟩ | ⟨_, _, c, _⟩
+    cases Y <;> simp [Term.former] at e <;> cases g <;> exact nomatch (conv_leaf (ks := []) (js := [])).1 (fits2 f')
+  rcases f with c | ⟨_, _, _, c, _⟩ | ⟨_, _, c, _⟩
   · exact key c e
   all_goals first
     | exact key (csym c) (.inl rfl)
@@ -2774,9 +2739,10 @@ theorem canon_data : Book.WellTyped bk → Value bk t → Typed bk [] t T →
     have ⟨Y, hY, c, eY⟩ := conv_typed wt hT (fits_conv f') nofun
     cases Y <;> cases eY
     obtain ⟨rfl, hA, hB⟩ := conv_sig c
-    obtain ⟨_, ⟨_, hA', hB'⟩, f'', _⟩ := gen hY
+    obtain ⟨_, ⟨_, rfl, hA', hB'⟩, f'', _⟩ := gen hY
     have cK := fits2 f''
-    have hb' := typed_inst hB' (.conv h1 (.inl hA)); rw [inst_succ] at hb'
+    have hb' : Typed bk [] _ (Kin (Term.inst (Term.ren Nat.succ _) _)) := typed_inst hB' (.conv h1 (.inl hA))
+    rw [inst_succ] at hb'
     exact .tup (fun l => canon_data wt (ha l) (.conv h1 (.inl hA)) (.conv hA' (.inl (kindof_live l cK))))
       (canon_data wt hb (.conv h2 (.inl (conv_sub hB))) (.conv hb' (.inl cK)))
   all_goals first | constructor | refine (no_kind2 wt hT f ?_).elim; rw [e]; first
