@@ -1,5 +1,5 @@
 # A's kind names n, so n is specialized, and so is each parameter an
-# argument of which reaches it: B's m through A1's field, A's p and B's r
+# argument of which reaches it: B's m through A1's field, C's p and D's r
 # around the two-way cycle, S's m through its own field. Each is read
 # before its answer is known (A before B, S inside S), which a one-pass
 # cache took as nothing specialized: --verdict saw a kind depending on a

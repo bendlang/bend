@@ -347,18 +347,25 @@ function tele_open(e: Safe, s: Scope, T: HTerm, cols: Cols, n: number): { s: Sco
 // whether each parameter of item k is specialized: a Quant one, a
 // template's ~ one, or one a kind in its telescope (or a constructor's)
 // depends on, through a Kind(g) or an argument at a specialized
-// parameter of another item. A least fixpoint: an item is redone when an
+// parameter of another item. Depth first, as a least fixpoint: an item in
+// progress reads as nothing specialized, and an item is redone whenever an
 // answer it read grows, so a cycle's items see what each other specialize
 function spec_of(e: Safe, k: Name): boolean[] {
-  const todo = new Set(e.spec.has(k) ? [] : [k]);
+  const todo = new Set<Name>();
   const readers = new Map<Name, Set<Name>>();
-  for (const r of todo) {
-    todo.delete(r);
+  const open = (h: Name): boolean[] => {
+    if (!e.spec.has(h)) {
+      e.spec.set(h, []);
+      redo(h);
+    }
+    return e.spec.get(h)!;
+  };
+  const redo = (r: Name): void => {
     const tld = e.book.tlds[r];
     const read = (h: Name): boolean[] => {
+      const sp = open(h);
       readers.set(h, (readers.get(h) ?? new Set()).add(r));
-      e.spec.has(h) || h === r || todo.add(h);
-      return e.spec.get(h) ?? [];
+      return sp;
     };
     const got = new Set<number>();
     const go = (t: unknown, q: boolean): void => {
@@ -378,10 +385,15 @@ function spec_of(e: Safe, k: Name): boolean[] {
     };
     [tld.T, ...(tld.$ === "ADT" ? tld.c.map((c) => c.T) : [])].forEach((T) => go(B.term_lower(T), false));
     const sp = B.tele_unbind(e.book, tld.T).doms.slice(0, tld.n).map(([, , A], j) => got.has(j) || is_qnt(e, A) || (tld.$ === "Def" && j < tld.x));
-    if (sp.some((b, j) => b && e.spec.get(r)?.[j] !== true)) {
+    if (sp.some((b, j) => b && e.spec.get(r)![j] !== true)) {
       readers.get(r)?.forEach((x) => todo.add(x));
     }
     e.spec.set(r, sp);
+  };
+  open(k);
+  for (const r of todo) {
+    todo.delete(r);
+    redo(r);
   }
   return e.spec.get(k)!;
 }
