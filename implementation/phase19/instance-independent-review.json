@@ -1,0 +1,116 @@
+{
+  "kind": "phase19-live-checker-independent-boundary-review",
+  "complete": true,
+  "publicPathBlockerIdentified": false,
+  "candidateApiSha256": "a15d150a920b89d9c0781372356424e559edabef3246ca281741069b0fe739b6",
+  "source": "selfhost/build/phase19/instance-source-04/project",
+  "attempt": "selfhost/build/phase19/instance-build-03",
+  "readOnlySourceReview": true,
+  "newCompilerEdits": false,
+  "validation": {
+    "frozenV2BoundaryRows": 104,
+    "pass": true,
+    "candidateReport": "selfhost/build/phase19/instance-boundary-candidate-03/report.json",
+    "oracle": "selfhost/build/phase19/instance-boundary-oracle-02/result/report.json",
+    "scope": "Diagnostics, failure-world/sourcebook/output/prefix/raw materialization contracts and runtime call/datatype-head inventory; not full checked-term or backend equivalence."
+  },
+  "findings": [
+    {
+      "status": "no-blocker-found",
+      "area": "recursion",
+      "detail": "Erased references bypass mint/decrease; live template calls validate closed arguments then key bound then memo. Same active instance continues to decreasing-spine check after dropping consumed template arguments; cross-active instance rejects. Depth>=64 refuses only a new mint, matching pinned 65th-level limit. Generated nonunsafe owners force pending runtime arity."
+    },
+    {
+      "status": "no-blocker-found",
+      "area": "private-world-lifetime",
+      "detail": "Public source-event checking declares owners first, so generic mode is recognized and nested instantiation is suppressed while private opaque generic constants exist. Successful generic checking restores its original book and keeps resulting memo/fresh/output state; failure retains its actual world. In this public flow generic private scope cannot mint live instances."
+    },
+    {
+      "status": "no-blocker-found",
+      "area": "publication",
+      "detail": "An active placeholder is replaced only on successful instance checking. Nested checked instances enter the output accumulator before the caller; final reverse assembly yields dependency order. Source definitions publish original semantic bodies only at their last source event; output uses checked bodies for nongeneric nonforeign definitions. Legacy success returns original source book; program/raw specialization return assembled output."
+    },
+    {
+      "status": "no-blocker-found",
+      "area": "prefix",
+      "detail": "Source-only validated prefixes are deliberately replayed through the complete event worker to recover memo/output state. Changed/full/empty/partial prefixes produce the same results in the unchanged104 controls. Exact syntax identity remains separately repaired for literal payload and lambda quantity presence."
+    },
+    {
+      "status": "private-helper-precondition",
+      "area": "unpublished-generic-owner",
+      "detail": "infer_template detects owner generic mode through lookup(book,cn).dx. A fabricated private helper call with an unpublished generic owner lacks that declaration and may instantiate its opaque constants. Current public source-event APIs always declare the owner, and check_definition_result is not emitted publicly. The unpublished nongeneric high-ID helper witness must not be described as arbitrary unpublished generic-owner support."
+    }
+  ],
+  "remainingRequirements": [
+    "Actual backend executions and ordinary full regression gates remain parent-owned; the104-row output-use projection does not establish full core equivalence.",
+    "No new same-key nondecreasing/unsafe paired fixture was run by this reviewer; existing full corpus and owner decreasing/cross-cycle controls must establish those cases.",
+    "Owner freshness/demand controls are separate and were not rerun by this reviewer."
+  ],
+  "boundFiles": [
+    {
+      "path": "selfhost/build/phase19/instance-source-04/project/src/check/kernel.bend",
+      "bytes": 49255,
+      "sha256": "da7ee29f9755f09acd9f89fcfd37465b52ab8778971200c946c70e50eb5b4132"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-source-04/project/src/check/specialize.bend",
+      "bytes": 16212,
+      "sha256": "76e0f9249ae15cc0734a8e9d2e75677794e2eb5464c7756a19daff8b8217e7ee"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-source-04/project/src/check/prefix.bend",
+      "bytes": 3037,
+      "sha256": "ceabf77fb49b58910d83fa896899061643c4c105f29e70bd87d3f73be873783d"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-source-04/project/src/check/quantity.bend",
+      "bytes": 4069,
+      "sha256": "b4a8ca1f8dff10f4f64397ea53bbbe272bb32400e993b1077d284ec1d8a70b4d"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-source-04/project/src/diagnostic/produce.bend",
+      "bytes": 8073,
+      "sha256": "9518cb01c0c7636654bfa14dd332ac49756572ba975c7789c865e9cd8cf75c80"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-source-04/project/src/driver/api.bend",
+      "bytes": 3363,
+      "sha256": "6c18e42a07628f4b54c08eb9d6d5f5912be3569775d380136f99bb8d1a0f133d"
+    },
+    {
+      "path": "selfhost/.bootstrap/upstream-phase8/bend2/bend.ts",
+      "bytes": 136690,
+      "sha256": "924197360cefc61a9314072e9cb1ef46a9266550eb527f535c36839a3b102bcb"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-build-03/attempt.json",
+      "bytes": 216492,
+      "sha256": "739e7173180cf52cb823dedb94c0c2445cd08190a69284889f7fa595239e5425"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-boundary-candidate-03/report.json",
+      "bytes": 2644,
+      "sha256": "fce02fe1627ae4a5301cc889a72ca47056063bd0bd097fcbacdd4326e6b05c24"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-boundary-candidate-03/result/report.json",
+      "bytes": 22709,
+      "sha256": "938a3a750cffc5a8d43638161359fe290c7ac88cf5d573c657b7fc51fbece181"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-boundary-oracle-02/result/report.json",
+      "bytes": 54795,
+      "sha256": "3a259a038fbeb017078259443cd705c593b48aab6de0c29bd79b4b0b8d600e6a"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-boundary-run-v2.mjs",
+      "bytes": 2406,
+      "sha256": "c1b62e18ed59c2553f765169397960ea2612e9906fb88ba928dc7d731761caa4"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-boundary-controls-v2.mjs",
+      "bytes": 8829,
+      "sha256": "ad3b3142ca62bfece6007cc14446f48dabf7bd4c2bceabb399a0998201e13035"
+    }
+  ]
+}

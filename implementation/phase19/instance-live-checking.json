@@ -1,0 +1,450 @@
+{
+  "kind": "phase19-live-instance-owned-handoff",
+  "complete": true,
+  "project": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-source-04/project",
+  "checkedAttempt": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-build-03/attempt.json",
+    "bytes": 216492,
+    "sha256": "739e7173180cf52cb823dedb94c0c2445cd08190a69284889f7fa595239e5425"
+  },
+  "productionAPI": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-build-03/equality/api.mjs",
+    "bytes": 911860,
+    "sha256": "a15d150a920b89d9c0781372356424e559edabef3246ca281741069b0fe739b6"
+  },
+  "compilerCensus": {
+    "installedPrefix": {
+      "modules": 59,
+      "physicalLines": 16355,
+      "nonblankLines": 13956,
+      "bytes": 581508,
+      "definitions": 1657,
+      "laws": 775,
+      "types": 66
+    },
+    "world06": {
+      "modules": 59,
+      "physicalLines": 16460,
+      "nonblankLines": 14042,
+      "bytes": 585764,
+      "definitions": 1673,
+      "laws": 775,
+      "types": 69
+    },
+    "candidate04": {
+      "modules": 59,
+      "physicalLines": 15880,
+      "nonblankLines": 13527,
+      "bytes": 575893,
+      "definitions": 1659,
+      "laws": 719,
+      "types": 67
+    }
+  },
+  "censusDeltas": {
+    "installedPrefix": {
+      "modules": 0,
+      "physicalLines": -475,
+      "nonblankLines": -429,
+      "bytes": -5615,
+      "definitions": 2,
+      "laws": -56,
+      "types": 1
+    },
+    "world06": {
+      "modules": 0,
+      "physicalLines": -580,
+      "nonblankLines": -515,
+      "bytes": -9871,
+      "definitions": -14,
+      "laws": -56,
+      "types": -2
+    }
+  },
+  "changedFiles": {
+    "installedPrefix": [
+      {
+        "file": "src/check/kernel.bend",
+        "before": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/src/check/kernel.bend",
+          "bytes": 37678,
+          "sha256": "bb3401fd046d95289354d5dc0d4285d809bb2a3612e265b92317db32ec8f3579"
+        },
+        "after": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-source-04/project/src/check/kernel.bend",
+          "bytes": 49255,
+          "sha256": "da7ee29f9755f09acd9f89fcfd37465b52ab8778971200c946c70e50eb5b4132"
+        },
+        "deltaPhysicalLines": 212
+      },
+      {
+        "file": "src/check/specialize.bend",
+        "before": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/src/check/specialize.bend",
+          "bytes": 32561,
+          "sha256": "41872293edf48dbbb1985b343afe0fb05a60107a21f0cdb696d98c0b9500c8cc"
+        },
+        "after": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-source-04/project/src/check/specialize.bend",
+          "bytes": 16212,
+          "sha256": "76e0f9249ae15cc0734a8e9d2e75677794e2eb5464c7756a19daff8b8217e7ee"
+        },
+        "deltaPhysicalLines": -664
+      },
+      {
+        "file": "src/check/annotate.bend",
+        "before": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/src/check/annotate.bend",
+          "bytes": 10851,
+          "sha256": "f2691278a57f4273be8e6b80369769c618c58d4ef03f5378d98582180b251621"
+        },
+        "after": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-source-04/project/src/check/annotate.bend",
+          "bytes": 10866,
+          "sha256": "1912e5d177514733e706297fbb53e730c1f7a9edc91ffb06d2b1de7e2547648c"
+        },
+        "deltaPhysicalLines": 0
+      },
+      {
+        "file": "src/diagnostic/trace.bend",
+        "before": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/src/diagnostic/trace.bend",
+          "bytes": 6502,
+          "sha256": "35d408f0eb1ea4e192469ce2cb4932cee04ab4aee7decf49b6594105f4625515"
+        },
+        "after": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-source-04/project/src/diagnostic/trace.bend",
+          "bytes": 6819,
+          "sha256": "0e03e2827415d082d295976b57564c7b0bd872f7c81229e653d7e0ddda62b10f"
+        },
+        "deltaPhysicalLines": 6
+      },
+      {
+        "file": "src/diagnostic/produce.bend",
+        "before": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/src/diagnostic/produce.bend",
+          "bytes": 8815,
+          "sha256": "97f148d18e9b1e06b512a8f7a3b20123b412014328b66e1e491b543e6b5e317d"
+        },
+        "after": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-source-04/project/src/diagnostic/produce.bend",
+          "bytes": 8073,
+          "sha256": "9518cb01c0c7636654bfa14dd332ac49756572ba975c7789c865e9cd8cf75c80"
+        },
+        "deltaPhysicalLines": -25
+      },
+      {
+        "file": "src/driver/api.bend",
+        "before": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/src/driver/api.bend",
+          "bytes": 3796,
+          "sha256": "ad0285c185a468ab541a4d28729fafd9d11c3c7c56ab308e9449ecd333bd8fee"
+        },
+        "after": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-source-04/project/src/driver/api.bend",
+          "bytes": 3363,
+          "sha256": "6c18e42a07628f4b54c08eb9d6d5f5912be3569775d380136f99bb8d1a0f133d"
+        },
+        "deltaPhysicalLines": -4
+      }
+    ],
+    "world06": [
+      {
+        "file": "src/check/kernel.bend",
+        "before": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-source-06/project/src/check/kernel.bend",
+          "bytes": 40881,
+          "sha256": "e5e31ff07eb2f1fcb5d684461989621e8f3fde033083be0cc66a03c9f5ff6213"
+        },
+        "after": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-source-04/project/src/check/kernel.bend",
+          "bytes": 49255,
+          "sha256": "da7ee29f9755f09acd9f89fcfd37465b52ab8778971200c946c70e50eb5b4132"
+        },
+        "deltaPhysicalLines": 136
+      },
+      {
+        "file": "src/check/specialize.bend",
+        "before": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-source-06/project/src/check/specialize.bend",
+          "bytes": 33397,
+          "sha256": "46f7c7972e998ba13278430958d80bc7636d30b311930d4485f0a6ab43de3754"
+        },
+        "after": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-source-04/project/src/check/specialize.bend",
+          "bytes": 16212,
+          "sha256": "76e0f9249ae15cc0734a8e9d2e75677794e2eb5464c7756a19daff8b8217e7ee"
+        },
+        "deltaPhysicalLines": -687
+      },
+      {
+        "file": "src/check/prefix.bend",
+        "before": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-source-06/project/src/check/prefix.bend",
+          "bytes": 2851,
+          "sha256": "96172741f314f801eb20c8d071c8de8c5f3b8f2a8e3312d5f9e6858c4d9a2dac"
+        },
+        "after": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-source-04/project/src/check/prefix.bend",
+          "bytes": 3037,
+          "sha256": "ceabf77fb49b58910d83fa896899061643c4c105f29e70bd87d3f73be873783d"
+        },
+        "deltaPhysicalLines": 2
+      },
+      {
+        "file": "src/diagnostic/trace.bend",
+        "before": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-source-06/project/src/diagnostic/trace.bend",
+          "bytes": 6785,
+          "sha256": "2b3f220a16fe7a0a9e30ce875c05bc7672bcdbe9c44bc09c5baf5773c1c6d87c"
+        },
+        "after": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-source-04/project/src/diagnostic/trace.bend",
+          "bytes": 6819,
+          "sha256": "0e03e2827415d082d295976b57564c7b0bd872f7c81229e653d7e0ddda62b10f"
+        },
+        "deltaPhysicalLines": 0
+      },
+      {
+        "file": "src/diagnostic/produce.bend",
+        "before": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-source-06/project/src/diagnostic/produce.bend",
+          "bytes": 8920,
+          "sha256": "fffc57a08910d1883a5034445f8f4fa5f4fd0d86983b21e6ffad19016eb73cd3"
+        },
+        "after": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-source-04/project/src/diagnostic/produce.bend",
+          "bytes": 8073,
+          "sha256": "9518cb01c0c7636654bfa14dd332ac49756572ba975c7789c865e9cd8cf75c80"
+        },
+        "deltaPhysicalLines": -27
+      },
+      {
+        "file": "src/driver/api.bend",
+        "before": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/instance-world-source-06/project/src/driver/api.bend",
+          "bytes": 3796,
+          "sha256": "ad0285c185a468ab541a4d28729fafd9d11c3c7c56ab308e9449ecd333bd8fee"
+        },
+        "after": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-source-04/project/src/driver/api.bend",
+          "bytes": 3363,
+          "sha256": "6c18e42a07628f4b54c08eb9d6d5f5912be3569775d380136f99bb8d1a0f133d"
+        },
+        "deltaPhysicalLines": -4
+      }
+    ]
+  },
+  "gates": {
+    "checkedDefault36": {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-build-03/validation-001/report.json",
+        "bytes": 8972,
+        "sha256": "8c3d845254436874951f00042cc5132603df9bd180cc8111c11bb45dea211363"
+      },
+      "complete": true,
+      "pass": true,
+      "rows": null,
+      "exactDifferences": 2,
+      "failureNames": []
+    },
+    "chronology22": {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-paired-02/report.json",
+        "bytes": 15385,
+        "sha256": "70503cf98e29783b5bc4ad0a503d734aba59f199d16abac8a7871df1a5d28222"
+      },
+      "complete": true,
+      "pass": true,
+      "rows": null,
+      "exactDifferences": 0,
+      "failureNames": []
+    },
+    "memo8": {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-memo-02/report.json",
+        "bytes": 8117,
+        "sha256": "e8c859327a76fa332d372d012485243fc7ceaeeb887b7c5e06147aaef27dcb9a"
+      },
+      "complete": true,
+      "pass": true,
+      "rows": 8,
+      "exactDifferences": null,
+      "failureNames": []
+    },
+    "let6": {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-let-paired-03/report.json",
+        "bytes": 10528,
+        "sha256": "25774240ecf79ed65b8d0d8049d2d34adce212743cda907af250ae1ada532057"
+      },
+      "complete": true,
+      "pass": true,
+      "rows": null,
+      "exactDifferences": 0,
+      "failureNames": []
+    },
+    "parsed29": {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-parsed29-01/report.json",
+        "bytes": 21095,
+        "sha256": "9cd3ed585eafc43eb26c2510c9f168ad9f8e375cd3cccc814d59b9c2eeaa3811"
+      },
+      "complete": true,
+      "pass": true,
+      "rows": 29,
+      "exactDifferences": null,
+      "failureNames": []
+    },
+    "key61": {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-key61-01/report.json",
+        "bytes": 17777,
+        "sha256": "6d87ee30464ffe8ff17e5bf336dddd4c9d30091024472a08012f1383917d7690"
+      },
+      "complete": true,
+      "pass": true,
+      "rows": 61,
+      "exactDifferences": null,
+      "failureNames": []
+    },
+    "direct40": {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-direct-02/report.json",
+        "bytes": 13018,
+        "sha256": "1c5a317d31f7f53ae4a914e3decf84062ebaee1a9089640c8fe58b215c0b8586"
+      },
+      "complete": true,
+      "pass": true,
+      "rows": 40,
+      "exactDifferences": null,
+      "failureNames": []
+    },
+    "recursion4": {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-recursion-paired-01/report.json",
+        "bytes": 9919,
+        "sha256": "c0afd47e8aa903132868b8449c3791599ae6dff51d146307b288d4d58e8d173a"
+      },
+      "complete": true,
+      "pass": true,
+      "rows": null,
+      "exactDifferences": 0,
+      "failureNames": []
+    },
+    "historicalPublic18": {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-public18-01/report.json",
+        "bytes": 103866,
+        "sha256": "4a939e77677d957c1b3c5abdff6aa7331701e119b4421e34f0a379c7d86a975c"
+      },
+      "complete": true,
+      "pass": false,
+      "rows": 18,
+      "exactDifferences": null,
+      "failureNames": [
+        "raw-first/ordinary-success",
+        "raw-repeated/ordinary-success",
+        "raw-first/instance-success",
+        "raw-repeated/instance-success",
+        "raw-first/instance-failure",
+        "raw-repeated/instance-failure"
+      ]
+    }
+  },
+  "preservedAttempts": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-build-01/build.json",
+      "bytes": 3904,
+      "sha256": "e1dcb063b9466e468abd944d4dc9b0a21694cc1d00905fea3549904c3df7eac4"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-source-02/preparation-failure.json",
+      "bytes": 477,
+      "sha256": "38606850a7f0cdc6e6a3bf88b5aed31d9f96218b9507de7e11ccb2477883c73f"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-let-paired-01/report.json",
+      "bytes": 14896,
+      "sha256": "0a4c5947345f70067674049f130074803d37ea85b83213f0f3e42156cd089946"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-let-paired-02/report.json",
+      "bytes": 18190,
+      "sha256": "555e1212bcf6424a59a57e58b7f8ca484d8a03f6c9f7d3aed5e7048977ad6550"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-let-ranges-01/report.json",
+      "bytes": 6194,
+      "sha256": "b2afc32eb26c7b1d93a56e035b853e103db14c63784a694d3758d1721ccaf09f"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-let-ranges-02/report.json",
+      "bytes": 5509,
+      "sha256": "174d614290ec8d0fdb2442352ed424bbd7c4574dae514ff4a6b18c5957bdf080"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-direct-01/setup-failure.json",
+      "bytes": 931,
+      "sha256": "d890e6104ae07a4ee28c008238ec6fa8ba5639883c8989fa22c4ae291a6eb27a"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-public18-01/report.json",
+      "bytes": 103866,
+      "sha256": "4a939e77677d957c1b3c5abdff6aa7331701e119b4421e34f0a379c7d86a975c"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-source-01/manifest.json",
+      "bytes": 76100,
+      "sha256": "9a633cd71de8517c6fb18e695031aecb9bf3a4d7eda9878a23d0fc94289bf2dc"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-source-03/manifest.json",
+      "bytes": 38598,
+      "sha256": "2b389958ae71fac04a33cd63f2d1b3b66005fcb1802f8c24851e0a5b44b152e8"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-source-04/manifest.json",
+      "bytes": 39021,
+      "sha256": "a5efcb3c4139165b1f474e9a2b426cc7d10830165f2d80808e417bd84efdbdab"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-world-edit-01/manifest.json",
+      "bytes": 1088,
+      "sha256": "e6e6b6d146e0650fcab76e8124204eeecf7f6f65f28ce92141a4a09112315c81"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-sequencing-edit-01/manifest.json",
+      "bytes": 512,
+      "sha256": "8daa36fbc27e94ab09d21610d43b7102ca042e6a39080ab001dbff269fc26e89"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-mint-edit-01/manifest.json",
+      "bytes": 10618,
+      "sha256": "9bebe5023d4384cfd65b598df1518c377b53e13553088e58f27aa3aa9be7a5c7"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-static-edit-01/manifest.json",
+      "bytes": 800,
+      "sha256": "bbee5228c967758356e3ed755c083485d4528faae9b6f603b68c79622e20b16d"
+    }
+  ],
+  "scope": "Owner correctness and source handoff only. Root owns full frontend/history/backend/timing/promotion. Public18 is not an overall pass: six raw boundary-transition differences retained; nine historical projection/demand contracts pass. Direct helpers use separately hashed named wrapper modules.",
+  "compatibilityLimitations": [
+    "Materialized book order is now chronological completion order, not old reversed output order.",
+    "Bad instances now fail check_book at first live use rather than only specialization.",
+    "Internal unpublished generic owner requires prior owner declaration; tested unpublished high-ID owner is nongeneric.",
+    "No general immutable payload claim for stateful JavaScript getter read counts."
+  ],
+  "installedByOwner": false,
+  "handoff": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-handoff-01/manifest.json",
+    "bytes": 82513,
+    "sha256": "39756f91a75faa022852f1298b1c10d71f158ac2f22eb6d030e5840b7b041f7d"
+  },
+  "report": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase19/instance-live-checking.md",
+    "bytes": 12250,
+    "sha256": "d0980073ed2797545bc80b4199b0dcfcd58d30f04a8ecd566f9c0fae0ec38a76"
+  }
+}

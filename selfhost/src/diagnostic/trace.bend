@@ -6,31 +6,33 @@ law dg_text:
   KTerm
 
 law dg_bad_detail:
+  for +world: KWorld
   for +message: String
   for +expected: KTerm
   for +observed: KTerm
-  KChecked
+  KChecking
 
 law dg_bad_message:
+  for +world: KWorld
   for +message: String
   for +expected: KTerm
-  KChecked
+  KChecking
 
 law dg_trace:
   for +e: KEnv
   for +ctx: List<&2, KTerm>
   for +t: KTerm
   for +ty: KTerm
-  for +r: KChecked
-  KChecked
+  for +r: KChecking
+  KChecking
 
 law dg_trace_detail:
   for +e: KEnv
   for +ctx: List<&2, KTerm>
   for +t: KTerm
-  for +r: KChecked
+  for +r: KChecking
   for +detail: KTerm
-  KChecked
+  KChecking
 
 law dg_reason:
   for +e: KEnv
@@ -45,12 +47,12 @@ def dg_text(s):
   kt("DText", s, 0, 0, Nil{})
 
 @unsafe
-def dg_bad_detail(message, expected, observed):
-  KChecked{kt("DDetail", "", 0, 1, [expected, observed]), atom("Error"), Nil{}, message}
+def dg_bad_detail(world, message, expected, observed):
+  KChecking{kt("DDetail", "", 0, 1, [expected, observed]), atom("Error"), Nil{}, message, world, 0}
 
 @unsafe
-def dg_bad_message(message, expected):
-  KChecked{kt("DDetail", "", 0, 0, [expected, atom("Absent")]), atom("Error"), Nil{}, message}
+def dg_bad_message(world, message, expected):
+  KChecking{kt("DDetail", "", 0, 0, [expected, atom("Absent")]), atom("Error"), Nil{}, message, world, 0}
 
 @unsafe
 def dg_pair(
@@ -70,11 +72,11 @@ def dg_family(
 
 @unsafe
 def dg_trace(e, ctx, t, ty, r):
-  kc(KChecked, good(r), u => r, u => kc(KChecked, String.eq(tg(ct(r)), "DTrace"), u => KChecked{kt("DTrace", nm(ct(r)), ix(ct(r)), qt(ct(r)), [kid(ct(r), 0), kid(ct(r), 1), kid(ct(r), 2), kid(ct(r), 3), kt("DTrail", "", 0, 0, norm_join(ks(kid(ct(r), 4)), [t])), kid(ct(r), 5)]), cy(r), cs(r), ce(r)}, u => dg_trace_detail(e, ctx, t, r, kc(KTerm, String.eq(tg(ct(r)), "DDetail"), u => ct(r), u => dg_reason(e, ctx, t, ty, ce(r))))))
+  kc(KChecking, good(r), u => r, u => kc(KChecking, String.eq(tg(ct(r)), "DTrace"), u => KChecking{kt("DTrace", nm(ct(r)), ix(ct(r)), qt(ct(r)), [kid(ct(r), 0), kid(ct(r), 1), kid(ct(r), 2), kid(ct(r), 3), kt("DTrail", "", 0, 0, norm_join(ks(kid(ct(r), 4)), [t])), kid(ct(r), 5)]), cy(r), cs(r), ce(r), rw(r), rx(r)}, u => dg_trace_detail(ke_world(e, rw(r)), ctx, t, r, kc(KTerm, String.eq(tg(ct(r)), "DDetail"), u => ct(r), u => dg_reason(ke_world(e, rw(r)), ctx, t, ty, ce(r))))))
 
 @unsafe
 def dg_trace_detail(e, ctx, t, r, detail):
-  KChecked{kt("DTrace", cn(e), 0, qt(detail), [kid(detail, 0), kid(detail, 1), kt("DCtx", "", 0, 0, ctx), t, kt("DTrail", "", 0, 0, [t]), dg_text(kc(String, String.eq(ce(r), "constructor requires a datatype goal") && String.eq(dk(lookup(cb(e), nm(t))), "ADT") && String.eq(dg_family(cb(e), nm(t)), ""), u => "Note: " ++ nm(t) ++ " is a datatype: write its arguments as <>", u => ""))]), cy(r), cs(r), ce(r)}
+  KChecking{kt("DTrace", cn(e), 0, qt(detail), [kid(detail, 0), kid(detail, 1), kt("DCtx", "", 0, 0, ctx), t, kt("DTrail", "", 0, 0, [t]), dg_text(kc(String, String.eq(ce(r), "constructor requires a datatype goal") && String.eq(dk(lookup(cb(e), nm(t))), "ADT") && String.eq(dg_family(cb(e), nm(t)), ""), u => "Note: " ++ nm(t) ++ " is a datatype: write its arguments as <>", u => ""))]), cy(r), cs(r), ce(r), rw(r), rx(r)}
 
 @unsafe
 def dg_reason(e, ctx, t, ty, code):
@@ -104,26 +106,30 @@ def dg_no_report(
 
 @unsafe
 def dg_report(
-  +r: KChecked,
+  +r: KChecking,
   +name: String,
 ) -> DDiagnostic:
-  kc(DDiagnostic, String.eq(tg(ct(r)), "DTrace"), u => DDiagnostic{dg_as_expr(kid(ct(r), 0)), dg_as_expr(kid(ct(r), 1)), U32.is_eq(qt(ct(r)), 1), ks(kid(ct(r), 2)), nm(ct(r)), DNoSpan{}, nm(kid(ct(r), 5)), ks(kid(ct(r), 4))}, u => dg_no_report(name, ce(r)))
+  dg_report_payload(ct(r), ce(r), name)
 
 
 # Keep the original closed-argument error, except an actual caller variable.
 @unsafe
-def dg_template_result(+e: KEnv, +ctx: List<&2, KTerm>, +t: KTerm, +r: KChecked) -> KChecked:
-  kc(KChecked, String.eq(ce(r), "unbound variable") && String.eq(tg(ct(r)), "DTrace") && String.eq(tg(kid(ct(r), 1)), "Var") && Bool.not(String.eq(tg(ctx_get(ctx, ix(kid(ct(r), 1)))), "Absent")), u => dg_trace(e, ctx, t, atom("Absent"), dg_bad_detail(ce(r), dg_text("a template applied to closed ~ arguments (" ++ nm(kid(ct(r), 1)) ++ " is a variable here, not comptime: pass it at run time)"), t)), u => r)
+def dg_template_result(+e: KEnv, +ctx: List<&2, KTerm>, +t: KTerm, +r: KChecking) -> KChecking:
+  kc(KChecking, String.eq(ce(r), "unbound variable") && String.eq(tg(ct(r)), "DTrace") && String.eq(tg(kid(ct(r), 1)), "Var") && Bool.not(String.eq(tg(ctx_get(ctx, ix(kid(ct(r), 1)))), "Absent")), u => dg_trace(e, ctx, t, atom("Absent"), kr_from(r, dg_bad_detail(rw(r), ce(r), dg_text("a template applied to closed ~ arguments (" ++ nm(kid(ct(r), 1)) ++ " is a variable here, not comptime: pass it at run time)"), t))), u => r)
 
 @unsafe
-def dg_kind_check(+e: KEnv, +ctx: List<&2, KTerm>, +t: KTerm, +q: U32, +name: String) -> KChecked:
+def dg_kind_check(+e: KEnv, +ctx: List<&2, KTerm>, +t: KTerm, +q: U32, +name: String) -> KChecking:
   dg_kind_at(e, ctx, t, q, name, t)
 
 @unsafe
-def dg_kind_at(+e: KEnv, +ctx: List<&2,KTerm>, +t: KTerm, +q: U32, +name: String, +site: KTerm) -> KChecked:
+def dg_kind_at(+e: KEnv, +ctx: List<&2,KTerm>, +t: KTerm, +q: U32, +name: String, +site: KTerm) -> KChecking:
   +kind = typ(kindq(e, q))
   dg_kind_result(t, q, name, site, kind, check(e, ctx, t, 0, kind))
 
 @unsafe
-def dg_kind_result(+t: KTerm, +q: U32, +name: String, +site: KTerm, +kind: KTerm, +r: KChecked) -> KChecked:
-  kc(KChecked, String.eq(ce(r), "type mismatch") && String.eq(tg(ct(r)), "DTrace") && norm_exact(kid(ct(r), 0), kind) && norm_exact(kid(ct(r), 3), t) && (U32.is_eq(kb(t), 0) || U32.is_eq(kb(kid(ct(r), 3)), 0) || (U32.is_eq(kb(t), kb(kid(ct(r), 3))) && U32.is_eq(ke(t), ke(kid(ct(r), 3))))), u => KChecked{kt("DTrace", nm(ct(r)), ix(ct(r)), qt(ct(r)), [kid(ct(r), 0), kid(ct(r), 1), kid(ct(r), 2), site, kt("DTrail", "", 0, 0, Con{site, ks(kid(ct(r), 4))}), kc(KTerm, U32.is_eq(q, 2), u => dg_text("Note: +" ++ name ++ " can be used many times, so its type must be Data."), u => kid(ct(r), 5))]), cy(r), cs(r), ce(r)}, u => r)
+def dg_kind_result(+t: KTerm, +q: U32, +name: String, +site: KTerm, +kind: KTerm, +r: KChecking) -> KChecking:
+  kc(KChecking, String.eq(ce(r), "type mismatch") && String.eq(tg(ct(r)), "DTrace") && norm_exact(kid(ct(r), 0), kind) && norm_exact(kid(ct(r), 3), t) && (U32.is_eq(kb(t), 0) || U32.is_eq(kb(kid(ct(r), 3)), 0) || (U32.is_eq(kb(t), kb(kid(ct(r), 3))) && U32.is_eq(ke(t), ke(kid(ct(r), 3))))), u => KChecking{kt("DTrace", nm(ct(r)), ix(ct(r)), qt(ct(r)), [kid(ct(r), 0), kid(ct(r), 1), kid(ct(r), 2), site, kt("DTrail", "", 0, 0, Con{site, ks(kid(ct(r), 4))}), kc(KTerm, U32.is_eq(q, 2), u => dg_text("Note: +" ++ name ++ " can be used many times, so its type must be Data."), u => kid(ct(r), 5))]), cy(r), cs(r), ce(r), rw(r), rx(r)}, u => r)
+
+@unsafe
+def dg_report_payload(+term: KTerm, +error: String, +name: String) -> DDiagnostic:
+  kc(DDiagnostic, String.eq(tg(term), "DTrace"), u => DDiagnostic{dg_as_expr(kid(term, 0)), dg_as_expr(kid(term, 1)), U32.is_eq(qt(term), 1), ks(kid(term, 2)), nm(term), DNoSpan{}, nm(kid(term, 5)), ks(kid(term, 4))}, u => dg_no_report(name, error))

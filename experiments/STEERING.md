@@ -1,71 +1,67 @@
 # Current compiler experiment strategy
 
-The [Phase19 prefix correction](../implementation/phase19/prefix-identity.md) is
+The [Phase19 live checker](../implementation/phase19/live-checker-release.md) is
 installed. The user authorizes continued conformance, speed and simplicity work,
 including pushes; publication remains blocked by an earlier automatic approval
 review. No old multi-hour budget is renewed. Preserve all 75 unrelated Phase6 files.
 
 ## Released frontier
 
-Installed API `66d6ce45`, genuine checked parent `45ee9449`, unchanged upstream
-`b2111cf`. Exact cached-prefix identity now includes compact literal payload and
-lambda quantity presence. This closes a reproduced invalid cached-proof acceptance:
-the prior API accepted changed `{0n == 1n : Nat}` against a validated `{0n == 0n : Nat}`
-prefix, despite full checking rejecting it. This public-API witness does not show
-a bypass of the host's separately hashed Base cache.
+Installed API `a15d150a`, genuine checked parent `d4e57543`, unchanged upstream
+`b2111cf`. One source-event checker now validates ordinary bodies and live template
+instances and constructs checked output. The separate specialization visitor is
+removed. Original source bodies remain authoritative; completed output is data.
+Both saved instance-order counterexamples and three let-close diagnostic cases
+now match the pin. The previous exact-prefix changed-proof repair remains.
 
-Direct prefix12 now passes (five parent failures); independent pinned/full/cached
-proof controls pass. Maintained36, all 2,996 frontend observations and all42
-installed/relocated CLI checks pass their stated gates. The complete frontend
-result vector remains identical, including the two known do-block diagnostics.
-Phase17's41backend/history/helper/loader controls retain their historical scope.
+Maintained36, complete unchanged frontend2996, chronology22, let6, memo8, parsed29,
+canonical61, direct40 and recursion4 pass their scopes. Independent boundary104,
+actual backend41/literal20, complete histories226, helper16/replay5 and all42
+installed/relocated CLI checks pass. Historical public18 retains six intentional
+output/checking-boundary differences; all9 stable payload/demand rows pass. Its
+raw report remains failed; the independent pinned boundary suite validates the
+new semantics without claiming full checked-term equivalence.
 
-The exclusive same-source matrix is cost-neutral: process11.6119→11.6171s
-(+0.0443%), request+0.2462%; TypeScript3.4176s, gap3.3992×. TS/B/C/C/B/TS uses fresh
-CPU0 processes, stack4MiB/heap4GiB, identical35host files/Base/runtime/v5 profile,
-separately validated Bend Base caches; TypeScript checks Base. No emission or
-new speed gain claimed. Prior Phase17/16 improvements remain separate windows.
+Exclusive TS/B/C/C/B/TS measures predecessor11.5706→candidate11.0570s process,
+request10.4700→9.9567s, TS3.4829s; same-window gap3.3221→3.1746×. The small favorable
+cost screen is4.44% less process/4.90% less request with0.38% higher peakRSS. All35
+host files/Base/runtime/v5 and limits agree; freshCPU0 processes, stack4MiB/heap4GiB,
+separate validated Bend Base caches; TypeScript checks Base. No emission or general
+speedup claim. Prefix APIs replay source checking to rebuild memo/output state.
 
-Source:16,355physical /13,956nonblank lines,581,508bytes,59modules,
-1,657definitions /775laws /66types. The correction adds2lines/186bytes and no
-new definition/type. Runtime, host and cache contracts are unchanged. The broader
-checker and parser prototypes remain uninstalled.
+Source:15,880physical /13,527nonblank lines,575,893bytes,59modules,
+1,659definitions /719laws /67types. Versus the previous installed prefix release,
+475fewerlines/56fewerlaws but2moredefs/1moretype. Removing a semantic traversal
+is meaningful simplification, well short of the50%/75% whole-compiler goals.
 
 ## Next priorities
 
-1. **Checker ownership:** the [instance investigation](../implementation/phase17/instance-chronology.md)
-   confirms two distinct order gaps among 22 paired observations. Moving the
-   existing specializer earlier preserves the nested bug. The
-   [Phase18 transport screen](../implementation/phase18/representation-checkpoint.md)
-   is essentially cost-neutral on source03. Source06 restores the stable public
-   payload and passes its scoped 36/22/42/8/18 gates; it is not separately timed.
-   Phase19 source03 now passes all22 chronology observations exactly, closing
-   both saved gaps through direct checked output. A discovered let-close first-error
-   issue and recursion/output boundaries are being validated before broad gates.
-   Preserve source bodies, real failing worlds, memo/fresh state, prefix semantics
-   and global effects when leaving private generic scopes. This larger rewrite is not installed.
-2. **Parser simplicity:** the [FGroup trial](../implementation/phase17/group-boundary.md)
-   passes 92 structural controls and preserves 196 outcomes, with zero conformance
-   gain. Phase18's inert cursor also preserves those 196 outcomes and passes194
-   direct controls. Its controlled cost is +0.93% process/+0.74% peak RSS, within
-   the5% screen. Prefer a private contextual parser slice to another stopped-body
-   or replay layer. Keep unbound-name fallback, lexical checkpoints and public
-   raw/scoped stage contracts explicit. Preserve monad, grouped-boundary and
-   prior-row witnesses. Stage1 names/state27 and raw194 pass after a retained underscore-state failure.
-   Stage2 routes actual ordinary names/calls and passes32 supported plus14 explicit
-   Unsupported observations, including alias-before-later-call-error order; it
-   returns no completed Core and does not yet fix the main-corpus do-block.
-   Added semantic-state cost and actual pass deletion remain open.
-3. **Measured cost:** the [compact profile](../implementation/phase17/compact-profile.md)
-   motivated the installed worker. Shared dispatch and list reconstruction remain
-   hypotheses, not additive gain estimates. Reprofile after major checker changes;
-   the eliminated literal expansion is not the current bottleneck.
+1. **Actual parser checkpoints.** Main frontend still has the two original
+   do-block diagnostic observations, and wider group/pattern/namespace gaps remain.
+   The private contextual route has one cursor/grammar and explicit stage results.
+   Names/state27, actual names/calls46 and ordinary Body40 now pass their strict
+   supported scopes plus explicit Unsupported boundaries. Final Stage3 also passes
+   materialization13, raw194 and maintained36. None is production Core/loader
+   conformance. Stage4 must reach the original saved16 fixtures, using actual header
+   IDs, sequential pattern opening, deferred row flatten and immediate grouped
+   flatten. Reuse existing semantic owners; do not introduce a replay/parser VM.
+2. **Shared error-demand semantics.** Review `ff_flat` before contextual reuse:
+   Var-tag plus binder-ID eligibility, first failing hit before a later miss, and
+   fresh-counter effects matter. Preserve the legacy raw stage while comparing
+   pinned contextual observations. Avoid materializing a context-free reference
+   view where the real grammar still needs the written Var alternative. Lambda
+   beta/Sub behavior remains explicitly unsupported until an authoritative reuse
+   strategy is justified.
+3. **Measured cost after simplification.** Profile the installed checker before
+   selecting another optimization. The removed specializer is no longer a target.
+   Prefix-state reuse is possible only with a valid memo/output/source visibility
+   contract; a source-only cache is insufficient. Keep cold process, request and
+   generated-code performance distinct. Do not add a second checker for a shortcut.
 
-Keep checked focused builds and frozen-attempt fixture validation as the edit
-loop. Broad gates, exclusive timing, installation and evidence recovery belong
-to integration checkpoints. Designs, failures and source/host memberships must
-remain exact. Phase16, Phase17 and Phase18 capsules are independently recovered and committed.
-Close a separate prefix-release capsule while active Phase19 semantic work continues.
+Keep checked focused builds and frozen-attempt validation as the edit loop.
+Broad gates, exclusive timing, installation and evidence recovery are integration
+checkpoints. Phase16–18 and the prefix capsule are independently recovered and
+committed. Close the separate live-checker capsule with active parser work excluded.
 
 ## Retained experiments and operating rules
 

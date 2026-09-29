@@ -1,0 +1,247 @@
+{
+  "kind": "phase19-installed-live-checker-release",
+  "complete": true,
+  "installed": true,
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-build-03/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-build-03/equality/api.mjs",
+    "sha256": "a15d150a920b89d9c0781372356424e559edabef3246ca281741069b0fe739b6"
+  },
+  "checkedApi": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-build-03/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-build-03/api.mjs",
+    "sha256": "d4e57543cdb0a01e93adae9839e81c27e17512b995976230ffde4502c7d518d0"
+  },
+  "previousApi": "66d6ce45c0c6ea8947190ff210274f1e6f0c7bf85f7ad3f215076f8820acd7c7",
+  "inputs": [
+    {
+      "path": "selfhost/build/phase19/instance-build-03/attempt.json",
+      "bytes": 216492,
+      "sha256": "739e7173180cf52cb823dedb94c0c2445cd08190a69284889f7fa595239e5425"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-build-03/validation-001/report.json",
+      "bytes": 8972,
+      "sha256": "8c3d845254436874951f00042cc5132603df9bd180cc8111c11bb45dea211363"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-frontend-01/report.json",
+      "bytes": 85448,
+      "sha256": "9c761685c2abba13b48e123060ba7dadabef944b7526deddeee45ca8356b76d1"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-frontend-parent-comparison-01.json",
+      "bytes": 542,
+      "sha256": "a12cd2cca9a49783713a83180d419c7de31ae7cd1fd97382420ebd1367905e75"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-backend-01/report.json",
+      "bytes": 8411,
+      "sha256": "af6f39f1fc2803c30b9903f179bceb0e0df2500123aa71a5ebab23416edddb6f"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-literal-execution-01/report.json",
+      "bytes": 8608,
+      "sha256": "fce3edabe766e1901d33c7f5608ab3badd8df1b45256168feb45388e74dba0cd"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-matrix-01/report.json",
+      "bytes": 682331,
+      "sha256": "00dddd265cd6afc13cb5fc458e91384474fecc4d54dc272db4cdbb1a736f30ec"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-matrix-inputs-01/readiness.json",
+      "bytes": 2621,
+      "sha256": "7c067c76f0b698d3acb2511b661c0e73df8c1b465d8d193bd417a4f709669523"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-matrix-inputs-01/host-review.json",
+      "bytes": 27563,
+      "sha256": "7559aaaf4ed2061760a19e84ba626258f97eff99d57697c2da35d52262752f79"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-history-01/report.json",
+      "bytes": 1804009,
+      "sha256": "efaefc7490dfdeb96ca98839e2f9ac8d6e8e424a5d841ec32c5ce34a3778d0e7"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-helper-01/report.json",
+      "bytes": 8734,
+      "sha256": "08f9dff1a444fc1cb519d1e6ae6b5063a31be54d273d3f62dbe9892d8e2abb95"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-paired-02/report.json",
+      "bytes": 15385,
+      "sha256": "70503cf98e29783b5bc4ad0a503d734aba59f199d16abac8a7871df1a5d28222"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-let-paired-03/report.json",
+      "bytes": 10528,
+      "sha256": "25774240ecf79ed65b8d0d8049d2d34adce212743cda907af250ae1ada532057"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-memo-02/report.json",
+      "bytes": 8117,
+      "sha256": "e8c859327a76fa332d372d012485243fc7ceaeeb887b7c5e06147aaef27dcb9a"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-parsed29-01/report.json",
+      "bytes": 21095,
+      "sha256": "9cd3ed585eafc43eb26c2510c9f168ad9f8e375cd3cccc814d59b9c2eeaa3811"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-key61-01/report.json",
+      "bytes": 17777,
+      "sha256": "6d87ee30464ffe8ff17e5bf336dddd4c9d30091024472a08012f1383917d7690"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-direct-02/report.json",
+      "bytes": 13018,
+      "sha256": "1c5a317d31f7f53ae4a914e3decf84062ebaee1a9089640c8fe58b215c0b8586"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-recursion-paired-01/report.json",
+      "bytes": 9919,
+      "sha256": "c0afd47e8aa903132868b8449c3791599ae6dff51d146307b288d4d58e8d173a"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-boundary-candidate-03/report.json",
+      "bytes": 2644,
+      "sha256": "fce02fe1627ae4a5301cc889a72ca47056063bd0bd097fcbacdd4326e6b05c24"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-public18-01/report.json",
+      "bytes": 103866,
+      "sha256": "4a939e77677d957c1b3c5abdff6aa7331701e119b4421e34f0a379c7d86a975c"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-promotion-01/report.json",
+      "bytes": 81767,
+      "sha256": "a73ae35fc716c383d2465b49125b410b9ae5503bedacbf9f34d4340174a70b65"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-smoke-01/launcher.json",
+      "bytes": 2873,
+      "sha256": "3ab905dc3dd134f7173ceac2659717e77551d86af5e08da4a15ce7ea01821707"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-handoff-01/manifest.json",
+      "bytes": 82513,
+      "sha256": "39756f91a75faa022852f1298b1c10d71f158ac2f22eb6d030e5840b7b041f7d"
+    },
+    {
+      "path": "design/phase19/live-checker-integration.md",
+      "bytes": 4253,
+      "sha256": "22e9a4c91af2ed0ce9354dc5ce6a6f48bcd7289ac3a3941ba2b523570acddb12"
+    },
+    {
+      "path": "implementation/phase19/instance-live-checking.json",
+      "bytes": 17611,
+      "sha256": "d962190f496cfc3159d879ec1bfb6366c99e2360b8578426c8e040afea104101"
+    },
+    {
+      "path": "implementation/phase19/instance-independent-review.json",
+      "bytes": 6416,
+      "sha256": "c27660357bf065d0573275c289abc4abde67bc278e31900f0c288507edabf9f9"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-promote.mjs",
+      "bytes": 7010,
+      "sha256": "7379c49bd6cea87dbdf6a2b813e7ac685abd8920ec2eda790e802a6f9c011df5"
+    },
+    {
+      "path": "selfhost/dist/release.json",
+      "bytes": 20912,
+      "sha256": "7b9c3919c44840a2eeddc9aeae759e636557b5163e1f25292d1ad46f1b1bfd75"
+    },
+    {
+      "path": "implementation/phase19/instance-broader-regressions.json",
+      "bytes": 87777,
+      "sha256": "ee80cb3157173e2f76eb10d7fd1b4c8f833349d529817787072025284ec42442"
+    }
+  ],
+  "statistics": {
+    "typescript": {
+      "samples": 2,
+      "meanRequestMs": 2405.2617025,
+      "meanProcessWallMs": 3482.9216530000017,
+      "maxRssKiB": 481252
+    },
+    "baseline": {
+      "samples": 2,
+      "meanRequestMs": 10470.021967,
+      "meanProcessWallMs": 11570.560173499998,
+      "maxRssKiB": 646828
+    },
+    "candidate": {
+      "samples": 2,
+      "meanRequestMs": 9956.728054,
+      "meanProcessWallMs": 11057.017689500002,
+      "maxRssKiB": 649288
+    }
+  },
+  "ratios": {
+    "baselineToTs": 3.3220845388622906,
+    "candidateToTs": 3.174638648554176,
+    "baselineToCandidate": 1.0464449364576551,
+    "candidateProcessReduction": 0.044383545506825106,
+    "candidateRequestReduction": 0.049025103731188846
+  },
+  "measurement": "Exclusive same-source TS/B/C/C/B/TS; small favorable cost screen, no general speedup or generated-code speed claim.",
+  "source": {
+    "installedPrefix": {
+      "modules": 59,
+      "physicalLines": 16355,
+      "nonblankLines": 13956,
+      "bytes": 581508,
+      "definitions": 1657,
+      "laws": 775,
+      "types": 66
+    },
+    "world06": {
+      "modules": 59,
+      "physicalLines": 16460,
+      "nonblankLines": 14042,
+      "bytes": 585764,
+      "definitions": 1673,
+      "laws": 775,
+      "types": 69
+    },
+    "candidate04": {
+      "modules": 59,
+      "physicalLines": 15880,
+      "nonblankLines": 13527,
+      "bytes": 575893,
+      "definitions": 1659,
+      "laws": 719,
+      "types": 67
+    }
+  },
+  "public18": {
+    "complete": true,
+    "pass": false,
+    "passingRows": 12,
+    "transitionDifferences": 6,
+    "stablePayloadDemandRowsPassing": 9
+  },
+  "scope": "Six source files installed; full2996 result equality; targeted chronology/let gains; selected backend41/literal20/history226/helper16/replay5/finalboundary104/CLI42. Contextual parser uninstalled.",
+  "remotePush": "blocked by earlier automatic approval review",
+  "broaderSelections": {
+    "integration198": {
+      "exactBefore": 197,
+      "exactAfter": 198,
+      "lost": 0,
+      "primitiveChanges": 0,
+      "rawRunnerPass": false,
+      "reason": "14 inherited negative parse observed labels; exact result comparison complete."
+    },
+    "group196": {
+      "exact": 128,
+      "differences": 68,
+      "candidateResultChanges": 0,
+      "inheritedAcceptanceFailures": 9,
+      "rawRunnerComplete": false,
+      "reason": "Raw runner fails selectedComplete assertion; independent full acquisition/vector audit closes separately."
+    }
+  }
+}

@@ -1,13 +1,14 @@
 # Bend2 compiler port in Bend2
 
 Use the [compiler guide](../docs/BEND-IN-BEND.md) and
-[Phase19 release report](../implementation/phase19/prefix-identity.md).
-Exact cached-prefix comparison now includes compact literal payloads and lambda
-quantity presence, fixing acceptance of a changed equality proof through the
-public prefix API. The fix adds two lines and has neutral measured cost:
-**11.62 s** for the compiler source, versus **3.42 s** for pinned TypeScript,
-a **3.40×** gap. All 2,996 frontend results remain unchanged, including two exact
-diagnostic differences. The twelve new prefix controls and all 42
+[Phase19 release report](../implementation/phase19/live-checker-release.md).
+Ordinary checking now also validates and produces live template instances,
+removing the separate specialization walk. All 22 saved instance-order and six
+let-binding observations match pinned TypeScript. The exact-prefix proof repair
+is retained. Controlled same-source checking averages **11.06 s** versus
+**3.48 s** for TypeScript, a **3.17×** gap; the prior installed compiler takes
+11.57 s in that window. All 2,996 frontend results remain unchanged, including
+two diagnostic differences. Selected backend41, literal execution20 and all42
 installed/relocated CLI checks pass. Broader tests expose additional gaps.
 
 The current target is upstream
@@ -21,7 +22,7 @@ node cli.mjs tests/conformance/typed-smoke/base-u32.bend --run
 npm run build
 ```
 
-The compiler contains 16,355 physical /13,956 nonblank Bend lines in 59 modules.
+The compiler contains 15,880 physical /13,527 nonblank Bend lines in 59 modules.
 It retains the validated S4 simplifications while adding current declaration,
 namespace, typing and effect semantics. The [release manifest](dist/release.json)
 binds the exact source, genuine checked parent, equality/choice-derived API, Base,
@@ -142,7 +143,7 @@ remain in `dist/selfhost/`; the [preservation index](../experiments/PRESERVATION
 and [experiment ledger](../experiments/ledger.md) identify their exact scope.
 They are not alternate defaults. The current release can run after relocation
 without an upstream checkout, as verified by its
-[Phase19 installed/relocated CLI checks](../implementation/phase19/prefix-identity.md).
+[Phase19 installed/relocated CLI checks](../implementation/phase19/live-checker-release.md).
 The earlier [Phase5 clean-package evidence](../implementation/phase5/relocated-cli-evidence/README.md)
 applies to that historical artifact.
 

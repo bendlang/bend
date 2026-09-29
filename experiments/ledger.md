@@ -1297,3 +1297,38 @@ private parser names/calls slice has real order witnesses and explicit unsupport
 boundaries, without a complete Core/loader route. Phase18 experiments are preserved
 and independently recovered. Prefix evidence capture is the next publication
 checkpoint; an earlier automatic approval review still blocks remote pushes.
+
+## P19-002: one checker for live instances — 2026-09-29
+
+Installed the [shared live checker](../implementation/phase19/live-checker-release.md),
+APIa15d150a from genuine checkedd4e57543. Source events and live template uses now
+share one semantic traversal. Source books remain authoritative; checked output
+is separate data, with completed nested instances before callers. Stable public
+payloads remain four-field. Prefix APIs replay source events because cache6 does
+not contain memo/output state. The earlier changed-proof prefix repair remains.
+
+All22 original chronology observations and6let controls are exact, closing two
+instance-order and three let-close differences. Original integration198 is now
+198exact (its raw runner retains pass:false for14negative observed labels). Main
+frontend2996 complete results and broader group196/68differences remain unchanged.
+Memo8/parsed29/key61/direct40/recursion4, independentboundary104, actualbackend41,
+literalexecution20, histories226, helper16/replay5 and installed/relocatedCLI42 pass
+their named scopes. Historicalpublic18 remains12pass/6intentionaltransition
+differences; all9stablepayload/demand rows pass. No fullconformance is claimed.
+
+Exclusive same-sourceTS/B/C/C/B/TS: predecessor11.5706→candidate11.0570s process
+(-4.44%), request10.4700→9.9567s(-4.90%);TS3.4829s, gap3.3221→3.1746×; peakRSS+0.38%.
+This is a small favorable cost screen, two samples/image, identical35host files,
+Base/runtime/v5/resources. No emission or generated-program speed measurement.
+Source15,880physical/13,527nonblank,59modules:475fewerlines/56fewerlaws, but2more
+definitions/1moretype versus installedprefix. Six reviewed files installed; all
+214source/host members and75unrelatedPhase6 states verified. CLI42 passes.
+
+Updated frontier: contextual parser stages1–3 have scoped names/calls/local-body
+controls but no productionCore/loader route. Stage4 targets the original saved16
+with shared pattern and flatten checkpoints, preserving real header IDs and
+first-error demand. Main do diagnostics and broader grouped-pattern gaps remain.
+Profile the newly installed checker before more speed changes; removing another
+semantic owner matters more than renaming helpers. Preserve this release separately
+from active parser work. Earlier automatic approval review still blocks remote
+pushes; commits are local, without a publication claim.

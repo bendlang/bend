@@ -1,0 +1,2136 @@
+{
+  "kind": "phase19-broader-frozen-regressions",
+  "complete": true,
+  "allStrictExact": false,
+  "selectionChanged": false,
+  "scope": "Original selection bytes and immutable instance-paired runner. Historical strict gaps remain failures; regression comparison is a separate axis. No source or frozen owner-report edits.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase19/instance-broader-report-v2.py",
+      "bytes": 7702,
+      "sha256": "9959cd095b6a7d0572554ae5a6b61a234d6a8880b489456ad79ee5db26dc8892"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase19/instance-paired.mjs",
+      "bytes": 4499,
+      "sha256": "942ba5c57dfd9f279c27a1e0994a78f6a658504d057ecf1ab0adaa49597d63e3"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase19/instance-broader-report.py",
+      "bytes": 7545,
+      "sha256": "05cc19ab15f44c8fc82f642c56668ed9430b603deddfb73378017f8b7a8546f0"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-broader-audit-01/setup-failure.json",
+      "bytes": 1016,
+      "sha256": "9fbf16949b47e23310cf7ad0b91df879bd218514e9516baf36926f0634a5be38"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/wave9-source-01/selection.json",
+      "bytes": 30740,
+      "sha256": "906832886636f9825560564bbf89b5b5c6c05cbdf8ae2891e1bc9896b164c9ce"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-integration198-01/report.json",
+      "bytes": 45152,
+      "sha256": "b3e713ccd28073776e29a5c2751eb27499566f09168ed118d70e098d108b24b3"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-integration198-01/selected/paired.json",
+      "bytes": 248968,
+      "sha256": "d66fecdb595680326e0b39a8619cff1b4c34d22ed3d9f8c93967224d12af2b99"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/compact-final-checks-01/report.json",
+      "bytes": 9586,
+      "sha256": "2a89d282606dc02f36441fc18efd694e6a5b4590875c31144b2933395d25b676"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/compact-final-checks-01/selected/paired.json",
+      "bytes": 250248,
+      "sha256": "22032914e47f7c124cc461b103184ee83c55afcf1e75926940e9559eba024b1d"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/selection.json",
+      "bytes": 29005,
+      "sha256": "16d913d229735db329be4c29c74f045ed3112515da951c9c71b0949d0a21f21f"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-group196-01/report.json",
+      "bytes": 42652,
+      "sha256": "942bb877dde1f1e6c2c4ea4742e766007aca41e4ae6da043563cbad731a2f9da"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-group196-01/selected/paired.json",
+      "bytes": 321757,
+      "sha256": "85005d33dd96ea5a9bf75cec26e06bd22fa11c5ca91082d2289ebdd76d88410e"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-baseline-03/report.json",
+      "bytes": 4875,
+      "sha256": "bd414a04fd2dcbf02a1ae462cef4e88fb1bb092b8b094937329547ee75cb20cd"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-baseline-03/selected/paired.json",
+      "bytes": 321735,
+      "sha256": "ee72f2fff4fa1c83e4eb2b5899b61a90513356512a460f630095958db75a3f76"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-validation-01/selected/paired.json",
+      "bytes": 321743,
+      "sha256": "1fbe3e915d2bfff72c2841ddb167393e309e379f95772e26d9b094d8e5bab019"
+    }
+  ],
+  "groups": [
+    {
+      "name": "integration198",
+      "observations": 198,
+      "selection": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/wave9-source-01/selection.json",
+        "bytes": 30740,
+        "sha256": "906832886636f9825560564bbf89b5b5c6c05cbdf8ae2891e1bc9896b164c9ce"
+      },
+      "currentReport": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-integration198-01/report.json",
+        "bytes": 45152,
+        "sha256": "b3e713ccd28073776e29a5c2751eb27499566f09168ed118d70e098d108b24b3"
+      },
+      "parentReport": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/compact-final-checks-01/report.json",
+        "bytes": 9586,
+        "sha256": "2a89d282606dc02f36441fc18efd694e6a5b4590875c31144b2933395d25b676"
+      },
+      "currentPaired": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-integration198-01/selected/paired.json",
+        "bytes": 248968,
+        "sha256": "d66fecdb595680326e0b39a8619cff1b4c34d22ed3d9f8c93967224d12af2b99"
+      },
+      "parentPaired": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/compact-final-checks-01/selected/paired.json",
+        "bytes": 250248,
+        "sha256": "22032914e47f7c124cc461b103184ee83c55afcf1e75926940e9559eba024b1d"
+      },
+      "strictExactBefore": 197,
+      "strictExactAfter": 198,
+      "acquisitionAuditedComplete": true,
+      "rawTargetComplete": false,
+      "rawRunnerComplete": true,
+      "rawRunnerError": null,
+      "rawSelectedComplete": true,
+      "rawRunnerPass": false,
+      "verdictCounts": {
+        "reference": {
+          "observed": 14,
+          "pass": 184
+        },
+        "candidate": {
+          "observed": 14,
+          "pass": 184
+        }
+      },
+      "newExact": [
+        {
+          "id": "program-completion/same-body-known-gap",
+          "lane": "check"
+        }
+      ],
+      "lostExact": [],
+      "referenceChanges": [],
+      "candidateChanges": [
+        {
+          "id": "program-completion/same-body-known-gap",
+          "lane": "check",
+          "before": {
+            "status": "error",
+            "phase": "check",
+            "checked": true,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : Nat\n- observed : Bool\nContext:\n- y : Nat\nLocation: main\n5 |   y = app(~(n => Nat.add(n, n)), 1n)\n6>|   True{}\n  |   ^^^^^^\n7 | ",
+            "output": null
+          },
+          "after": {
+            "status": "error",
+            "phase": "check",
+            "checked": true,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : x\n- observed : x (consumed more than once)\nLocation: app~0\n1 | \n2>| def app(~f: Nat -> Nat, x: Nat) -> Nat:\n  |                         ^\n3 |   f(x)",
+            "output": null
+          }
+        }
+      ],
+      "primitiveChanges": [],
+      "remainingStrictDifferences": [],
+      "regressionComparisonPass": true
+    },
+    {
+      "name": "group196",
+      "observations": 196,
+      "selection": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/selection.json",
+        "bytes": 29005,
+        "sha256": "16d913d229735db329be4c29c74f045ed3112515da951c9c71b0949d0a21f21f"
+      },
+      "currentReport": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-group196-01/report.json",
+        "bytes": 42652,
+        "sha256": "942bb877dde1f1e6c2c4ea4742e766007aca41e4ae6da043563cbad731a2f9da"
+      },
+      "parentReport": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-baseline-03/report.json",
+        "bytes": 4875,
+        "sha256": "bd414a04fd2dcbf02a1ae462cef4e88fb1bb092b8b094937329547ee75cb20cd"
+      },
+      "currentPaired": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-group196-01/selected/paired.json",
+        "bytes": 321757,
+        "sha256": "85005d33dd96ea5a9bf75cec26e06bd22fa11c5ca91082d2289ebdd76d88410e"
+      },
+      "parentPaired": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-baseline-03/selected/paired.json",
+        "bytes": 321735,
+        "sha256": "ee72f2fff4fa1c83e4eb2b5899b61a90513356512a460f630095958db75a3f76"
+      },
+      "strictExactBefore": 128,
+      "strictExactAfter": 128,
+      "acquisitionAuditedComplete": true,
+      "rawTargetComplete": false,
+      "rawRunnerComplete": false,
+      "rawRunnerError": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert.ok(paired.selectedComplete&&!paired.error)\n\n    at file:///home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase19/instance-paired.mjs:12:247\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+      "rawSelectedComplete": false,
+      "rawRunnerPass": false,
+      "verdictCounts": {
+        "reference": {
+          "observed": 1,
+          "pass": 195
+        },
+        "candidate": {
+          "fail": 9,
+          "observed": 1,
+          "pass": 186
+        }
+      },
+      "newExact": [],
+      "lostExact": [],
+      "referenceChanges": [],
+      "candidateChanges": [],
+      "primitiveChanges": [],
+      "remainingStrictDifferences": [
+        {
+          "id": "check/monad_do_destructure.bend",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Result.bind(&1, &1, U32, Pair(U32, U32), U32, Done{(1, 2)}, p => {(a, b) : Result<&1, &1, U32, U32>})\nLocation:\n10 |   do Result<U32, U32>:\n11>|     p : U32 & U32 <- Done{(1, 2)}\n   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n12 |     (a, b) = p",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a do-block heading this return\n- observed : 'return'\nLocation:\n12 |     (a, b) = p\n13>|     return (a + b : U32)\n   |     ^^^^^^\n14 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "check/monad_do_destructure.bend",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Result.bind(&1, &1, U32, Pair(U32, U32), U32, Done{(1, 2)}, p => {(a, b) : Result<&1, &1, U32, U32>})\nLocation:\n10 |   do Result<U32, U32>:\n11>|     p : U32 & U32 <- Done{(1, 2)}\n   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n12 |     (a, b) = p",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a do-block heading this return\n- observed : 'return'\nLocation:\n12 |     (a, b) = p\n13>|     return (a + b : U32)\n   |     ^^^^^^\n14 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "empty-call-pattern/offload-bound",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a named def before ! (only f!(..) offloads)\n- observed : '!'\nLocation:\n2 | def use(x:Nat) -> Nat:\n3>|   x!() = 0n\n  |    ^\n4 |   0n",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : x!\nLocation:\n2 | def use(x:Nat) -> Nat:\n3>|   x!() = 0n\n  |   ^^^^\n4 |   0n",
+            "output": null
+          }
+        },
+        {
+          "id": "empty-call-pattern/offload-bound",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a named def before ! (only f!(..) offloads)\n- observed : '!'\nLocation:\n2 | def use(x:Nat) -> Nat:\n3>|   x!() = 0n\n  |    ^\n4 |   0n",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : x!\nLocation:\n2 | def use(x:Nat) -> Nat:\n3>|   x!() = 0n\n  |   ^^^^\n4 |   0n",
+            "output": null
+          }
+        },
+        {
+          "id": "group/body-comma",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : ')'\n- observed : ','\nLocation:\n2 | def main() -> Nat & Nat:\n3>|   (x = {0n : Nat}; x, 1n)\n  |                     ^\n4 | ",
+            "output": null
+          },
+          "candidate": {
+            "status": "ok",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 0,
+            "diagnostic": null,
+            "output": null
+          }
+        },
+        {
+          "id": "group/body-comma",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : ')'\n- observed : ','\nLocation:\n2 | def main() -> Nat & Nat:\n3>|   (x = {0n : Nat}; x, 1n)\n  |                     ^\n4 | ",
+            "output": null
+          },
+          "candidate": {
+            "status": "ok",
+            "phase": "check",
+            "checked": true,
+            "typeAccepted": true,
+            "proofTrust": "passed",
+            "kernelChecked": false,
+            "unsafeDefinitions": [],
+            "exitCode": 0,
+            "diagnostic": null,
+            "output": "ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n"
+          }
+        },
+        {
+          "id": "group/local-bang",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a named def before ! (only f!(..) offloads)\n- observed : '!'\nLocation:\n2 | def main() -> Nat:\n3>|   (x = {0n : Nat}; x)!()\n  |                      ^\n4 | ",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : 'def', 'type' or 'law'\n- observed : '!'\nLocation:\n2 | def main() -> Nat:\n3>|   (x = {0n : Nat}; x)!()\n  |                      ^\n4 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "group/local-bang",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a named def before ! (only f!(..) offloads)\n- observed : '!'\nLocation:\n2 | def main() -> Nat:\n3>|   (x = {0n : Nat}; x)!()\n  |                      ^\n4 | ",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : 'def', 'type' or 'law'\n- observed : '!'\nLocation:\n2 | def main() -> Nat:\n3>|   (x = {0n : Nat}; x)!()\n  |                      ^\n4 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "group/local-callee",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "check",
+            "checked": true,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : an annotated term (cannot infer)\n- observed : identity\nLocation: main\n4 | def main() -> Nat:\n5>|   (f = identity; f)(0n)\n  |    ^\n6 | ",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "check",
+            "checked": true,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : an annotated term (cannot infer)\n- observed : identity\nLocation: main\n4 | def main() -> Nat:\n5>|   (f = identity; f)(0n)\n  |   ^^^^^^^^^^^^^^^^^\n6 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "group/local-pattern",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : x = {0n : Nat}; x\nLocation:\n2 | def main() -> Nat:\n3>|   (x = {0n : Nat}; x) = 0n\n  |    ^\n4 |   0n",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : x = {0n : Nat}; x\nLocation:\n2 | def main() -> Nat:\n3>|   (x = {0n : Nat}; x) = 0n\n  |   ^^^^^^^^^^^^^^^^^^^\n4 |   0n",
+            "output": null
+          }
+        },
+        {
+          "id": "group/local-pattern",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : x = {0n : Nat}; x\nLocation:\n2 | def main() -> Nat:\n3>|   (x = {0n : Nat}; x) = 0n\n  |    ^\n4 |   0n",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : x = {0n : Nat}; x\nLocation:\n2 | def main() -> Nat:\n3>|   (x = {0n : Nat}; x) = 0n\n  |   ^^^^^^^^^^^^^^^^^^^\n4 |   0n",
+            "output": null
+          }
+        },
+        {
+          "id": "group/match-error-before-close",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)\nLocation:\n5 |   (\n6>|     match global:\n  |           ^^^^^^\n7 |       case x:",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : ')'\n- observed : end of input\nLocation:\n8 |         0n\n9>| \n  | ^",
+            "output": null
+          }
+        },
+        {
+          "id": "group/match-error-before-close",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)\nLocation:\n5 |   (\n6>|     match global:\n  |           ^^^^^^\n7 |       case x:",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : ')'\n- observed : end of input\nLocation:\n8 |         0n\n9>| \n  | ^",
+            "output": null
+          }
+        },
+        {
+          "id": "group/nested-zero-head-match",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ':'\nLocation:\n3 |   ((\n4>|     match:\n  |          ^\n5 |       case:",
+            "output": null
+          },
+          "candidate": {
+            "status": "ok",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 0,
+            "diagnostic": null,
+            "output": null
+          }
+        },
+        {
+          "id": "group/nested-zero-head-match",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ':'\nLocation:\n3 |   ((\n4>|     match:\n  |          ^\n5 |       case:",
+            "output": null
+          },
+          "candidate": {
+            "status": "ok",
+            "phase": "check",
+            "checked": true,
+            "typeAccepted": true,
+            "proofTrust": "passed",
+            "kernelChecked": false,
+            "unsafeDefinitions": [],
+            "exitCode": 0,
+            "diagnostic": null,
+            "output": "ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n"
+          }
+        },
+        {
+          "id": "group/zero-head-match",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ':'\nLocation:\n3 |   (\n4>|     match:\n  |          ^\n5 |       case:",
+            "output": null
+          },
+          "candidate": {
+            "status": "ok",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 0,
+            "diagnostic": null,
+            "output": null
+          }
+        },
+        {
+          "id": "group/zero-head-match",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ':'\nLocation:\n3 |   (\n4>|     match:\n  |          ^\n5 |       case:",
+            "output": null
+          },
+          "candidate": {
+            "status": "ok",
+            "phase": "check",
+            "checked": true,
+            "typeAccepted": true,
+            "proofTrust": "passed",
+            "kernelChecked": false,
+            "unsafeDefinitions": [],
+            "exitCode": 0,
+            "diagnostic": null,
+            "output": "ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n"
+          }
+        },
+        {
+          "id": "group/zero-head-match-argument",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ':'\nLocation:\n3 |   Nat.add((\n4>|     match:\n  |          ^\n5 |       case:",
+            "output": null
+          },
+          "candidate": {
+            "status": "ok",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 0,
+            "diagnostic": null,
+            "output": null
+          }
+        },
+        {
+          "id": "group/zero-head-match-argument",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ':'\nLocation:\n3 |   Nat.add((\n4>|     match:\n  |          ^\n5 |       case:",
+            "output": null
+          },
+          "candidate": {
+            "status": "ok",
+            "phase": "check",
+            "checked": true,
+            "typeAccepted": true,
+            "proofTrust": "passed",
+            "kernelChecked": false,
+            "unsafeDefinitions": [],
+            "exitCode": 0,
+            "diagnostic": null,
+            "output": "ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n"
+          }
+        },
+        {
+          "id": "group/zero-head-match-lambda",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ':'\nLocation:\n3 |   (\n4>|     match:\n  |          ^\n5 |       case:",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a lambda binder (one name: k => body)\n- observed : ' '\nLocation:\n6 |         x\n7>|   ) => x\n  |       ^\n8 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "group/zero-head-match-lambda",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ':'\nLocation:\n3 |   (\n4>|     match:\n  |          ^\n5 |       case:",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a lambda binder (one name: k => body)\n- observed : ' '\nLocation:\n6 |         x\n7>|   ) => x\n  |       ^\n8 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "marked-pattern/alias-unbound",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a quantified datatype after + (+D<..> sets D's leading quantities to &2)\n- observed : '='\nLocation:\n3 | def main() -> Nat:\n4>|   +M.id() = {0n : Nat}\n  |           ^\n5 |   0n",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError: a quantified datatype after + (+D<..> sets D's leading quantities to &2)",
+            "output": null
+          }
+        },
+        {
+          "id": "marked-pattern/alias-unbound",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a quantified datatype after + (+D<..> sets D's leading quantities to &2)\n- observed : '='\nLocation:\n3 | def main() -> Nat:\n4>|   +M.id() = {0n : Nat}\n  |           ^\n5 |   0n",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError: a quantified datatype after + (+D<..> sets D's leading quantities to &2)",
+            "output": null
+          }
+        },
+        {
+          "id": "marked-pattern/datatype-bare",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a quantified datatype after + (+D<..> sets D's leading quantities to &2)\n- observed : '='\nLocation:\n2 | def main() -> Nat:\n3>|   +List = {0n : Nat}\n  |         ^\n4 |   0n",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError: a quantified datatype after + (+D<..> sets D's leading quantities to &2)",
+            "output": null
+          }
+        },
+        {
+          "id": "marked-pattern/datatype-bare",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a quantified datatype after + (+D<..> sets D's leading quantities to &2)\n- observed : '='\nLocation:\n2 | def main() -> Nat:\n3>|   +List = {0n : Nat}\n  |         ^\n4 |   0n",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError: a quantified datatype after + (+D<..> sets D's leading quantities to &2)",
+            "output": null
+          }
+        },
+        {
+          "id": "marked-pattern/datatype-shadow",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a quantified datatype after + (+D<..> sets D's leading quantities to &2)\n- observed : '='\nLocation:\n2 | def use(List:Nat) -> Nat:\n3>|   +List() = {0n : Nat}\n  |           ^\n4 |   0n",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError: a quantified datatype after + (+D<..> sets D's leading quantities to &2)",
+            "output": null
+          }
+        },
+        {
+          "id": "marked-pattern/datatype-shadow",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a quantified datatype after + (+D<..> sets D's leading quantities to &2)\n- observed : '='\nLocation:\n2 | def use(List:Nat) -> Nat:\n3>|   +List() = {0n : Nat}\n  |           ^\n4 |   0n",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError: a quantified datatype after + (+D<..> sets D's leading quantities to &2)",
+            "output": null
+          }
+        },
+        {
+          "id": "marked-pattern/empty-unbound",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a quantified datatype after + (+D<..> sets D's leading quantities to &2)\n- observed : '='\nLocation:\n2 | def use() -> Nat:\n3>|   +fresh() = {0n : Nat}\n  |            ^\n4 |   Nat.add(fresh, fresh)",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError: a quantified datatype after + (+D<..> sets D's leading quantities to &2)",
+            "output": null
+          }
+        },
+        {
+          "id": "marked-pattern/empty-unbound",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a quantified datatype after + (+D<..> sets D's leading quantities to &2)\n- observed : '='\nLocation:\n2 | def use() -> Nat:\n3>|   +fresh() = {0n : Nat}\n  |            ^\n4 |   Nat.add(fresh, fresh)",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError: a quantified datatype after + (+D<..> sets D's leading quantities to &2)",
+            "output": null
+          }
+        },
+        {
+          "id": "marked-pattern/qualified-unbound",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a quantified datatype after + (+D<..> sets D's leading quantities to &2)\n- observed : '='\nLocation:\n2 | def main() -> Nat:\n3>|   +Foo.bar() = {0n : Nat}\n  |              ^\n4 |   0n",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError: a quantified datatype after + (+D<..> sets D's leading quantities to &2)",
+            "output": null
+          }
+        },
+        {
+          "id": "marked-pattern/qualified-unbound",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a quantified datatype after + (+D<..> sets D's leading quantities to &2)\n- observed : '='\nLocation:\n2 | def main() -> Nat:\n3>|   +Foo.bar() = {0n : Nat}\n  |              ^\n4 |   0n",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError: a quantified datatype after + (+D<..> sets D's leading quantities to &2)",
+            "output": null
+          }
+        },
+        {
+          "id": "marked-pattern/term-remains-unbound",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "check",
+            "checked": true,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a bound variable\n- observed : x^-1\nContext:\n- x : Nat\nLocation: use\n2 | def use(x:Nat) -> Nat:\n3>|   +x()\n  |   ^^^^\n4 | ",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "check",
+            "checked": true,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a bound variable\n- observed : x^-1\nContext:\n- x : Nat\nLocation: use\n2 | def use(x:Nat) -> Nat:\n3>|   +x()\n  |    ^\n4 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/alias-shadow-frame",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : M.id(x)\nLocation:\n3 | def use(M.id:Nat -> Nat, x:Nat) -> Nat:\n4>|   M.id(x) = 0n\n  |   ^^^^^^^\n5 |   )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n4 |   M.id(x) = 0n\n5>|   )\n  |   ^\n6 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/alias-shadow-frame",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : M.id(x)\nLocation:\n3 | def use(M.id:Nat -> Nat, x:Nat) -> Nat:\n4>|   M.id(x) = 0n\n  |   ^^^^^^^\n5 |   )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n4 |   M.id(x) = 0n\n5>|   )\n  |   ^\n6 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/all-frame",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Nat.add(x, x)\nLocation:\n2 | def use() -> Type:\n3>|   @x:Nat -> (Nat.add(x, x) = 0n; )\n  |              ^^^^^^^^^^^^^\n4 | ",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n2 | def use() -> Type:\n3>|   @x:Nat -> (Nat.add(x, x) = 0n; )\n  |                                  ^\n4 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/all-frame",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Nat.add(x, x)\nLocation:\n2 | def use() -> Type:\n3>|   @x:Nat -> (Nat.add(x, x) = 0n; )\n  |              ^^^^^^^^^^^^^\n4 | ",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n2 | def use() -> Type:\n3>|   @x:Nat -> (Nat.add(x, x) = 0n; )\n  |                                  ^\n4 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/computed-before-continuation",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Nat.add(0n, 0n)\nLocation:\n2 | def main() -> Nat:\n3>|   Nat.add(0n, 0n) = 0n\n  |   ^^^^^^^^^^^^^^^\n4 |   )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n3 |   Nat.add(0n, 0n) = 0n\n4>|   )\n  |   ^\n5 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/computed-before-continuation",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Nat.add(0n, 0n)\nLocation:\n2 | def main() -> Nat:\n3>|   Nat.add(0n, 0n) = 0n\n  |   ^^^^^^^^^^^^^^^\n4 |   )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n3 |   Nat.add(0n, 0n) = 0n\n4>|   )\n  |   ^\n5 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/constructor-before-continuation",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- message  : a Succ pattern with 1 field\nLocation:\n2 | def main() -> Nat:\n3>|   Succ{} = 0n\n  |   ^^^^^^\n4 |   )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n3 |   Succ{} = 0n\n4>|   )\n  |   ^\n5 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/constructor-before-continuation",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- message  : a Succ pattern with 1 field\nLocation:\n2 | def main() -> Nat:\n3>|   Succ{} = 0n\n  |   ^^^^^^\n4 |   )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n3 |   Succ{} = 0n\n4>|   )\n  |   ^\n5 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/do-frame",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Result.bind(&1, &1, U32, U32, U32, Done{1}, value => {(left, right) : Result<&1, &1, U32, U32>})\nLocation:\n3 |   do Result<U32,U32>:\n4>|     value:U32 <- Done{1}\n  |     ^^^^^^^^^^^^^^^^^^^^\n5 |     (left,right) = value",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a do-block heading this return\n- observed : 'return'\nLocation:\n5 |     (left,right) = value\n6>|     return left\n  |     ^^^^^^\n7 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/do-frame",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Result.bind(&1, &1, U32, U32, U32, Done{1}, value => {(left, right) : Result<&1, &1, U32, U32>})\nLocation:\n3 |   do Result<U32,U32>:\n4>|     value:U32 <- Done{1}\n  |     ^^^^^^^^^^^^^^^^^^^^\n5 |     (left,right) = value",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a do-block heading this return\n- observed : 'return'\nLocation:\n5 |     (left,right) = value\n6>|     return left\n  |     ^^^^^^\n7 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/lambda-before-continuation",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : x => x\nLocation:\n2 | def main() -> Nat:\n3>|   (x => x) = 0n\n  |    ^\n4 |   )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n3 |   (x => x) = 0n\n4>|   )\n  |   ^\n5 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/lambda-before-continuation",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : x => x\nLocation:\n2 | def main() -> Nat:\n3>|   (x => x) = 0n\n  |    ^\n4 |   )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n3 |   (x => x) = 0n\n4>|   )\n  |   ^\n5 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/lambda-frame",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Nat.add(x, x)\nLocation:\n3 |   x =>\n4>|     Nat.add(x, x) = 0n\n  |     ^^^^^^^^^^^^^\n5 |     )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n4 |     Nat.add(x, x) = 0n\n5>|     )\n  |     ^\n6 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/lambda-frame",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Nat.add(x, x)\nLocation:\n3 |   x =>\n4>|     Nat.add(x, x) = 0n\n  |     ^^^^^^^^^^^^^\n5 |     )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n4 |     Nat.add(x, x) = 0n\n5>|     )\n  |     ^\n6 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/local-frame",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Nat.add(x, x)\nLocation:\n3 |   x = 0n\n4>|   Nat.add(x, x) = 0n\n  |   ^^^^^^^^^^^^^\n5 |   )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n4 |   Nat.add(x, x) = 0n\n5>|   )\n  |   ^\n6 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/local-frame",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Nat.add(x, x)\nLocation:\n3 |   x = 0n\n4>|   Nat.add(x, x) = 0n\n  |   ^^^^^^^^^^^^^\n5 |   )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n4 |   Nat.add(x, x) = 0n\n5>|   )\n  |   ^\n6 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/match-frame",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Nat.add(x, x)\nLocation:\n4 |     case Succ{x}:\n5>|       Nat.add(x, x) = 0n\n  |       ^^^^^^^^^^^^^\n6 |       )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n5 |       Nat.add(x, x) = 0n\n6>|       )\n  |       ^\n7 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/match-frame",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Nat.add(x, x)\nLocation:\n4 |     case Succ{x}:\n5>|       Nat.add(x, x) = 0n\n  |       ^^^^^^^^^^^^^\n6 |       )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n5 |       Nat.add(x, x) = 0n\n6>|       )\n  |       ^\n7 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/module-alias-frame",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : lib.id(x)\nLocation:\n3 | def use(x:Nat) -> Nat:\n4>|   M.id(x) = 0n\n  |   ^^^^^^^\n5 |   )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n4 |   M.id(x) = 0n\n5>|   )\n  |   ^\n6 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/module-alias-frame",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : lib.id(x)\nLocation:\n3 | def use(x:Nat) -> Nat:\n4>|   M.id(x) = 0n\n  |   ^^^^^^^\n5 |   )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n4 |   M.id(x) = 0n\n5>|   )\n  |   ^\n6 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/parallel-frame",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Nat.add(x, y)\nLocation:\n3 |   x y = 0n 1n\n4>|   Nat.add(x, y) = 0n\n  |   ^^^^^^^^^^^^^\n5 |   )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n4 |   Nat.add(x, y) = 0n\n5>|   )\n  |   ^\n6 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/parallel-frame",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Nat.add(x, y)\nLocation:\n3 |   x y = 0n 1n\n4>|   Nat.add(x, y) = 0n\n  |   ^^^^^^^^^^^^^\n5 |   )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n4 |   Nat.add(x, y) = 0n\n5>|   )\n  |   ^\n6 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/parameter-frame",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Nat.add(x, x)\nLocation:\n2 | def use(x:Nat) -> Nat:\n3>|   Nat.add(x, x) = 0n\n  |   ^^^^^^^^^^^^^\n4 |   )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n3 |   Nat.add(x, x) = 0n\n4>|   )\n  |   ^\n5 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/parameter-frame",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Nat.add(x, x)\nLocation:\n2 | def use(x:Nat) -> Nat:\n3>|   Nat.add(x, x) = 0n\n  |   ^^^^^^^^^^^^^\n4 |   )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n3 |   Nat.add(x, x) = 0n\n4>|   )\n  |   ^\n5 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/qualified-before-continuation",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Foo.bar\nLocation:\n2 | def main() -> Nat:\n3>|   Foo.bar = 0n\n  |   ^^^^^^^\n4 |   )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n3 |   Foo.bar = 0n\n4>|   )\n  |   ^\n5 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/qualified-before-continuation",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Foo.bar\nLocation:\n2 | def main() -> Nat:\n3>|   Foo.bar = 0n\n  |   ^^^^^^^\n4 |   )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n3 |   Foo.bar = 0n\n4>|   )\n  |   ^\n5 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/type-before-continuation",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Type\nLocation:\n2 | def main() -> Nat:\n3>|   Type = 0n\n  |   ^^^^\n4 |   )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n3 |   Type = 0n\n4>|   )\n  |   ^\n5 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "parser-checkpoint/type-before-continuation",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Type\nLocation:\n2 | def main() -> Nat:\n3>|   Type = 0n\n  |   ^^^^\n4 |   )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n3 |   Type = 0n\n4>|   )\n  |   ^\n5 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "rejected-stage/body-before-later-pattern",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Type\nLocation:\n10 |           0n\n11>|     case Type:\n   |          ^^^^\n12 |       0n",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)\nLocation:\n7 |     case Zero{}:\n8>|       match global:\n  |             ^^^^^^\n9 |         case x:",
+            "output": null
+          }
+        },
+        {
+          "id": "rejected-stage/body-before-later-pattern",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Type\nLocation:\n10 |           0n\n11>|     case Type:\n   |          ^^^^\n12 |       0n",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)\nLocation:\n7 |     case Zero{}:\n8>|       match global:\n  |             ^^^^^^\n9 |         case x:",
+            "output": null
+          }
+        },
+        {
+          "id": "rejected-stage/group-before-later-syntax",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)\nLocation:\n 8 |       (\n 9>|         match global:\n   |               ^^^^^^\n10 |           case x:",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n13 |     case Succ{k}:\n14>|       )\n   |       ^\n15 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "rejected-stage/group-before-later-syntax",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)\nLocation:\n 8 |       (\n 9>|         match global:\n   |               ^^^^^^\n10 |           case x:",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n13 |     case Succ{k}:\n14>|       )\n   |       ^\n15 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "rejected-stage/prior-local-pattern-before-later-syntax",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Type\nLocation:\n7 |     case Zero{}:\n8>|       Type = 0n\n  |       ^^^^\n9 |       0n",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n10 |     case Succ{k}:\n11>|       )\n   |       ^\n12 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "rejected-stage/prior-local-pattern-before-later-syntax",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Type\nLocation:\n7 |     case Zero{}:\n8>|       Type = 0n\n  |       ^^^^\n9 |       0n",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n10 |     case Succ{k}:\n11>|       )\n   |       ^\n12 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "rejected-stage/prior-row-pattern-before-body-syntax",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Type\nLocation:\n6 |   match n:\n7>|     case Type:\n  |          ^^^^\n8 |       )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n7 |     case Type:\n8>|       )\n  |       ^\n9 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "rejected-stage/prior-row-pattern-before-body-syntax",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Type\nLocation:\n6 |   match n:\n7>|     case Type:\n  |          ^^^^\n8 |       )",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n7 |     case Type:\n8>|       )\n  |       ^\n9 | ",
+            "output": null
+          }
+        }
+      ],
+      "regressionComparisonPass": true
+    }
+  ],
+  "groupHistoricalCandidateRecordsIdentical": true,
+  "regressionComparisonPass": true
+}

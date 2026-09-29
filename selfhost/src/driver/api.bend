@@ -98,19 +98,15 @@ def driver_owned_name(book, name):
 # diagnostic APIs retain their own open-law completion contract.
 @unsafe
 def check_program_diagnostic(+book: List<&2,KDef>, +validated: List<&2,KDef>, +origins: List<&2,DOrigin>) -> DResult:
-  driver_program_checked(book, origins, dg_seed_books(book, kc(List<&2,KDef>, exact_prefix(book, validated), u => validated, u => Nil{}), origins, book_cached(Nil{}, norm_max_book(book)), False{}))
+  driver_program_checked(book, origins, dg_check_world(book))
 
 @unsafe
-def driver_program_checked(+original: List<&2,KDef>, +origins: List<&2,DOrigin>, +checked: DResult) -> DResult:
+def driver_program_checked(+original: List<&2,KDef>, +origins: List<&2,DOrigin>, +checked: DChecking) -> DResult:
   match checked:
-    case DResult{error, book, diagnostic}:
-      kc(DResult, String.eq(error, ""), u => driver_program_specialized(original, origins, specialize_book(book)), u => checked)
-
-@unsafe
-def driver_program_specialized(+original: List<&2,KDef>, +origins: List<&2,DOrigin>, +specialized: KSpecialized) -> DResult:
-  kc(DResult, String.eq(specialized_error(specialized), ""),
-    u => driver_program_complete(specialized_book(specialized), origins, check_open_message(driver_todos(original))),
-    u => diagnostic_result_locate(specialized_diagnostic(specialized), origins))
+    case DChecking{result, diagnostic}:
+      kc(DResult, good(result),
+        u => driver_program_complete(sp_assembled(rw(result)), origins, check_open_message(driver_todos(original))),
+        u => dg_finish(ce(result), kw_book(rw(result)), diagnostic, origins))
 
 @unsafe
 def driver_program_complete(+book: List<&2,KDef>, +origins: List<&2,DOrigin>, +error: String) -> DResult:

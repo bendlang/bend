@@ -1,7 +1,7 @@
 # Compiler validation
 
 The target remains upstream `b2111cf43244e65f76ddc278ee695e669f720cbf`, Bend2
-2.0.32 era. The [Phase19 release report](../implementation/phase19/prefix-identity.md)
+2.0.32 era. The [Phase19 release report](../implementation/phase19/live-checker-release.md)
 binds the final checked artifact, controls, exact vectors, timing and preserved
 failures. The [release manifest](dist/release.json) identifies the installed
 guarded version5 derivative, genuine checked B1, source, Base, runtime and host.
@@ -18,7 +18,7 @@ observed invalid acceptance, timeout or unresolved observation. All 11 trust
 cases type-check and reach the intended refusal, exactly matching TypeScript.
 
 Phase16 reduced exact reference differences **459→2**, with **457 new matches
-and zero lost matches** versus Phase15. Phase17 and the Phase19 prefix correction preserve every complete result. The remaining rows are parse and check for
+and zero lost matches** versus Phase15. Phase17 and both Phase19 releases preserve every complete result. The remaining rows are parse and check for
 `check/monad_do_destructure.bend`: rejection agrees, but the first diagnostic
 differs because of an earlier do-block parsing checkpoint. All measured primitive
 status, phase, type/trust, unsafe-list, exit and output axes agree on this corpus.
@@ -29,7 +29,7 @@ later-emission errors accepted by both frontends; the fifth is the do-block
 oracle above. Exact reference comparison and strict fixture verdicts are separate.
 Neither classification nor an integration no-regression gate weakens the oracle.
 
-The Phase19 release fixes a separate public-prefix error outside that inventory.
+The earlier Phase19 prefix release fixes a separate public-prefix error outside that inventory.
 The Phase17 compiler accepts a changed `{0n == 1n : Nat}` proof when reusing a
 validated `{0n == 0n : Nat}` prefix, despite rejecting the changed book in a full
 check. The corrected compiler detects the changed literal and rejects in both
@@ -40,12 +40,33 @@ retains the original failure and pinned oracle. Maintained 36, the complete
 2,996-result comparison and all 42 installed/relocated CLI checks were rerun on
 the corrected API; other named controls below retain their stated prior scope.
 
-Phase16's broader controls recorded the following gaps outside that inventory.
-The contextual 39 / host 43 selections were rerun for Phase17; the other selections
-below retain their Phase16 artifact scope:
+The installed live checker additionally passes all22 saved chronology observations
+(two previous differences), all6 let-closure observations (three previous strict
+differences), memo8, parsed instances29, canonical keys61, world/freshness/demand40,
+and recursion4. Independent final-image boundary104 passes its stated contracts;
+its runtime-reference projection is not full checked-term equivalence. Actual
+backend41 and literal JS/native20 executions, helper16/authentic replay5, original
+paired histories226 and installed/relocatedCLI42 were rerun on this exact API.
 
-- The 198-observation integration selection has **197 exact matches** and one
-  same-body live-instance error-order difference.
+The frozen older public18 comparison retains six intentional differences:
+instances are checked earlier, checked output uses completion order, and failure
+results retain the actual failing world. Its overall report remains failed.
+All nine stable four-field/projection-demand rows pass. The independently pinned
+boundary104 suite validates the new behavior. See the
+[live-checker implementation](../implementation/phase19/instance-live-checking.md)
+and [independent review](../implementation/phase19/instance-independent-review.md).
+
+Phase16's broader controls recorded the following gaps outside that inventory.
+The contextual 39 / host 43 selections were rerun for Phase17. The198-observation
+integration selection was rerun for Phase19 and now has **198 exact matches**,
+closing its same-body live-instance difference. Its immutable runner retains
+`pass:false` for14 inherited negative parse `observed` labels; exact result
+comparison is a separate axis. Other selections below retain their stated scope:
+
+- The separate196-observation group selection was rerun for Phase19:128exact
+  and68known differences, unchanged from its Phase17 candidate. Its raw runner
+  fails the selected-completion assertion despite complete healthy acquisition;
+  a separate vector audit does not relabel strict failures as passing.
 - The 114-observation marked-pattern selection has **71 exact matches and 43
   known differences**. Its raw oracle report is `pass:false`, including the
   known do-block check failure. A separate audit establishes 114 unchanged
@@ -90,8 +111,9 @@ New independent Phase17 research keeps additional failures visible. The
 four grouped-comma/zero-head-match witnesses. The
 [instance-order investigation](../implementation/phase17/instance-chronology.md)
 has 20/22 exact observations and 8 exact memo/name controls, with two distinct
-error-order gaps. These experiments are not installed, overlap earlier selections
-and make no claim of a new production conformance gain.
+error-order gaps. The installed Phase19 checker now matches all22 instance
+observations and memo8; the group/parser prototype remains isolated. These
+selections overlap and their counts must not be summed.
 
 Other limits include hub/package fetching, independent proof-kernel validation,
 backend/platform coverage and source Nat payloads restricted to U32 size (wider

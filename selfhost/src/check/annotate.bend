@@ -162,7 +162,7 @@ def ka_defs(book, ds):
 
 @unsafe
 def ka_def(book, d):
-  KDef{dn(d), dk(d), da(d), dx(d), dt(d), kc(KTerm, String.eq(tg(dv(d)), "Absent") || String.eq(tg(dv(d)), "Foreign") || U32.is_gt(dx(d), 0), u => dv(d), u => annotate(KEnv{book, dn(d), ref(dn(d)), 0, Nil{}, du(d)}, Nil{}, dv(d), dt(d))), dc(d), db(d), du(d)}
+  KDef{dn(d), dk(d), da(d), dx(d), dt(d), kc(KTerm, String.eq(tg(dv(d)), "Absent") || String.eq(tg(dv(d)), "Foreign") || U32.is_gt(dx(d), 0), u => dv(d), u => annotate(KEnv{kw_initial(book), dn(d), ref(dn(d)), 0, Nil{}, du(d), 0}, Nil{}, dv(d), dt(d))), dc(d), db(d), du(d)}
 
 @unsafe
 def annotate(e, ctx, t, ty):

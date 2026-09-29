@@ -14,11 +14,12 @@ law check_book_diagnostic:
   DResult
 
 law dg_quant_error:
+  for +world: KWorld
   for +message: String
   for +name: String
   for +allowed: U32
   for +used: U32
-  KChecked
+  KChecking
 
 law dg_constructor_names:
   for +ds: List<&2, KDef>
@@ -29,12 +30,13 @@ law dg_ctor_error:
   for +t: KTerm
   for +ty: KTerm
   for +ctr: KDef
-  KChecked
+  KChecking
 
 law dg_adt_error:
+  for +world: KWorld
   for +t: KTerm
   for +d: KDef
-  KChecked
+  KChecking
 
 @unsafe
 def dg_has_span(+s: DSpan) -> Bool:
@@ -93,26 +95,85 @@ def dg_finish(
 ) -> DResult:
   DResult{error, book, diagnostic_locate(diagnostic, origins)}
 
+# One source-event checker carries semantic state and diagnostic metadata.
+type DChecking is Data:
+  DChecking{+result: KChecking, +diagnostic: DDiagnostic}
+
+@unsafe
+def dg_checking_result(+r: DChecking) -> KChecking:
+  match r:
+    case DChecking{result, diagnostic}: result
+
+@unsafe
+def dg_check_world(+book: List<&2,KDef>) -> DChecking:
+  dg_check_seed(book, norm_max_book(book))
+
+@unsafe
+def dg_check_seed(+book: List<&2,KDef>, +bound: U32) -> DChecking:
+  +seed = book_cached(Nil{}, bound)
+  dg_check_events(book, kw_seed(check_declarations(book, seed), bound), seed)
+
+law dg_check_events:
+  for +todo: List<&2,KDef>
+  for +world: KWorld
+  for +seen: List<&2,KDef>
+  DChecking
+
+@unsafe
+def dg_check_events(todo, world, seen):
+  match todo:
+    case Nil{}: DChecking{bad(world, ""), dg_no_report("", "")}
+    case Con{d, rest}:
+      dg_check_guard(rest, world, seen, d, event_error(seen, d, lookup(seen, dn(d))))
+
+@unsafe
+def dg_check_guard(+rest: List<&2,KDef>, +world: KWorld, +seen: List<&2,KDef>, +d: KDef, +guard: String) -> DChecking:
+  kc(DChecking, String.eq(guard, ""),
+    u => dg_check_next(rest, seen, d, check_definition_world(world, signature_mode(d, rest), 0)),
+    u => DChecking{bad(world, dn(d) ++ ": " ++ guard), dg_no_report(dn(d), guard)})
+
+@unsafe
+def dg_check_next(+rest: List<&2,KDef>, +seen: List<&2,KDef>, +d: KDef, +r: KChecking) -> DChecking:
+  kc(DChecking, good(r),
+    u => dg_check_events(rest, dg_event_publish(rest, d, r), book_put(seen, d)),
+    u => dg_event_failed(r, dn(d)))
+
+@unsafe
+def dg_event_failed(+r: KChecking, +fallback: String) -> DChecking:
+  +owner = kc(String, String.eq(tg(ct(r)), "DTrace"), u => nm(ct(r)), u => fallback)
+  DChecking{KChecking{ct(r), cy(r), cs(r), kc(String, String.eq(owner, ""), u => "", u => owner ++ ": ") ++ ce(r), rw(r), rx(r)}, dg_report(r, fallback)}
+
+@unsafe
+def dg_event_publish(+rest: List<&2,KDef>, +d: KDef, +r: KChecking) -> KWorld:
+  kc(KWorld, String.eq(dk(lookup(rest, dn(d))), "Absent"),
+    u => kw_put_checked(kw_with_book(rw(r), book_put(kw_book(rw(r)), d)), dg_event_output(d, ct(r))),
+    u => rw(r))
+
+@unsafe
+def dg_event_output(+d: KDef, +body: KTerm) -> KDef:
+  kc(KDef, String.eq(dk(d), "Def") && U32.is_eq(dx(d), 0) && Bool.not(String.eq(tg(dv(d)), "Absent")) && Bool.not(String.eq(tg(dv(d)), "Foreign")),
+    u => KDef{dn(d), dk(d), da(d), dx(d), dt(d), body, dc(d), db(d), du(d)},
+    u => d)
+
 @unsafe
 def check_book_diagnostic(book, origins):
-  dg_seed_books(book, Nil{}, origins, book_cached(Nil{}, norm_max_book(book)), True{})
-
-law dg_seed_books:
-  for +book: List<&2, KDef>
-  for +validated: List<&2, KDef>
-  for +origins: List<&2, DOrigin>
-  for +seed: List<&2, KDef>
-  for +complete: Bool
-  DResult
-
-# The immutable empty cache seeds independent declaration and event indexes.
-@unsafe
-def dg_seed_books(book, validated, origins, seed, complete):
-  dg_prefix_seed(book, validated, check_declarations(book, seed), seed, book, origins, complete)
+  dg_legacy_result(book, origins, dg_check_world(book))
 
 @unsafe
-def dg_quant_error(message, name, allowed, used):
-  dg_bad_detail(message, dg_text(kp_quant(allowed) ++ name), dg_text(kc(String, U32.is_eq(used, 2), u => name ++ " (consumed more than once)", u => kp_quant(used) ++ name)))
+def dg_legacy_result(+original: List<&2,KDef>, +origins: List<&2,DOrigin>, +r: DChecking) -> DResult:
+  match r:
+    case DChecking{result, diagnostic}:
+      kc(DResult, good(result),
+        u => dg_legacy_finish(original, origins, kw_book(rw(result)), check_open(kw_book(rw(result)))),
+        u => dg_finish(ce(result), kw_book(rw(result)), diagnostic, origins))
+
+@unsafe
+def dg_legacy_finish(+original: List<&2,KDef>, +origins: List<&2,DOrigin>, +book: List<&2,KDef>, +error: String) -> DResult:
+  dg_finish(error, kc(List<&2,KDef>, String.eq(error, ""), u => original, u => book), dg_no_report("", error), origins)
+
+@unsafe
+def dg_quant_error(world, message, name, allowed, used):
+  dg_bad_detail(world, message, dg_text(kp_quant(allowed) ++ name), dg_text(kc(String, U32.is_eq(used, 2), u => name ++ " (consumed more than once)", u => kp_quant(used) ++ name)))
 
 @unsafe
 def dg_constructor_names(ds):
@@ -122,105 +183,19 @@ def dg_constructor_names(ds):
 
 @unsafe
 def dg_ctor_error(e, t, ty, ctr):
-  kc(KChecked, Bool.not(String.eq(dk(ctr), "Absent")) && Bool.not(has_name(rm(ty), nm(t))), u => dg_bad_detail("constructor does not belong to goal or field count differs", dg_text(nm(t) ++ " with " ++ U32.show(da(ctr)) ++ kc(String, U32.is_eq(da(ctr), 1), u => " field", u => " fields")), t), u => kc(KChecked, String.eq(dg_family(cb(e), nm(t)), ""), u => dg_bad_detail("constructor does not belong to goal or field count differs", dg_text("a declared constructor (" ++ nm(ty) ++ " declares " ++ dg_constructor_names(dc(lookup(cb(e), nm(ty)))) ++ ")"), t), u => dg_bad_detail("constructor does not belong to goal or field count differs", ty, ref(dg_family(cb(e), nm(t))))))
+  kc(KChecking, Bool.not(String.eq(dk(ctr), "Absent")) && Bool.not(has_name(rm(ty), nm(t))), u => dg_bad_detail(cw(e), "constructor does not belong to goal or field count differs", dg_text(nm(t) ++ " with " ++ U32.show(da(ctr)) ++ kc(String, U32.is_eq(da(ctr), 1), u => " field", u => " fields")), t), u => kc(KChecking, String.eq(dg_family(cb(e), nm(t)), ""), u => dg_bad_detail(cw(e), "constructor does not belong to goal or field count differs", dg_text("a declared constructor (" ++ nm(ty) ++ " declares " ++ dg_constructor_names(dc(lookup(cb(e), nm(ty)))) ++ ")"), t), u => dg_bad_detail(cw(e), "constructor does not belong to goal or field count differs", ty, ref(dg_family(cb(e), nm(t))))))
 
 
-# The cached prefix must have passed check_book for this exact compiler and
-# source. The suffix uses the same authoritative event worker as a full check.
-law check_book_diagnostic_from_exact_prefix:
-  for +book: List<&2,KDef>
-  for +validated: List<&2,KDef>
-  for +origins: List<&2,DOrigin>
-  DResult
-law dg_prefix_seed:
-  for +todo: List<&2,KDef>
-  for +validated: List<&2,KDef>
-  for +done: List<&2,KDef>
-  for +seen: List<&2,KDef>
-  for +original: List<&2,KDef>
-  for +origins: List<&2,DOrigin>
-  for +complete: Bool
-  DResult
-law dg_suffix_events:
-  for +todo: List<&2,KDef>
-  for +done: List<&2,KDef>
-  for +seen: List<&2,KDef>
-  for +original: List<&2,KDef>
-  for +origins: List<&2,DOrigin>
-  for +complete: Bool
-  DResult
-law dg_suffix_guard:
-  for +rest: List<&2,KDef>
-  for +done: List<&2,KDef>
-  for +d: KDef
-  for +seen: List<&2,KDef>
-  for +original: List<&2,KDef>
-  for +origins: List<&2,DOrigin>
-  for +guard: String
-  for +complete: Bool
-  DResult
-law dg_suffix_check:
-  for +rest: List<&2,KDef>
-  for +done: List<&2,KDef>
-  for +d: KDef
-  for +seen: List<&2,KDef>
-  for +original: List<&2,KDef>
-  for +origins: List<&2,DOrigin>
-  for +checked: KChecked
-  for +complete: Bool
-  DResult
-law dg_suffix_finish:
-  for +done: List<&2,KDef>
-  for +seen: List<&2,KDef>
-  for +original: List<&2,KDef>
-  for +origins: List<&2,DOrigin>
-  for +error: String
-  DResult
-
+# Source-only prefix caches cannot restore live memo/output state. Recheck
+# through the same event worker until a validated state-bearing cache exists.
 @unsafe
-def check_book_diagnostic_from_exact_prefix(book, validated, origins):
-  kc(DResult, exact_prefix(book, validated), u => dg_seed_books(book, validated, origins, book_cached(Nil{}, norm_max_book(book)), True{}), u => check_book_diagnostic(book, origins))
-@unsafe
-def dg_prefix_seed(todo, validated, done, seen, original, origins, complete):
-  match validated:
-    case Nil{}: dg_suffix_events(todo, done, seen, original, origins, complete)
-    case Con{head, tail}:
-      dg_prefix_step(todo, head, tail, done, seen, original, origins, complete)
-@unsafe
-def dg_suffix_events(todo, done, seen, original, origins, complete):
-  match todo:
-    case Nil{}: dg_suffix_finish(done, seen, original, origins, kc(String, complete, u => check_open(done), u => ""))
-    case Con{d, rest}: dg_suffix_guard(rest, done, d, seen, original, origins, event_error(seen, d, lookup(seen, dn(d))), complete)
-@unsafe
-def dg_suffix_guard(rest, done, d, seen, original, origins, guard, complete):
-  kc(DResult, String.eq(guard, ""), u => dg_suffix_check(rest, done, d, seen, original, origins, check_definition_result(done, signature_mode(d, rest)), complete), u => dg_finish(dn(d) ++ ": " ++ guard, done, dg_no_report(dn(d), guard), origins))
-@unsafe
-def dg_suffix_check(rest, done, d, seen, original, origins, checked, complete):
-  kc(DResult, good(checked), u => dg_suffix_events(rest, check_event_install(done, d, rest), book_put(seen, d), original, origins, complete), u => dg_finish(dn(d) ++ ": " ++ ce(checked), book_put(done, declared(d)), dg_report(checked, dn(d)), origins))
-@unsafe
-def dg_suffix_finish(done, seen, original, origins, error):
-  kc(DResult, String.eq(error, ""), u => DResult{"", original, dg_no_report("", "")}, u => dg_finish(error, done, dg_no_report("", error), origins))
-
-law dg_prefix_step:
-  for +todo: List<&2,KDef>
-  for +head: KDef
-  for +tail: List<&2,KDef>
-  for +done: List<&2,KDef>
-  for +seen: List<&2,KDef>
-  for +original: List<&2,KDef>
-  for +origins: List<&2,DOrigin>
-  for +complete: Bool
-  DResult
-@unsafe
-def dg_prefix_step(todo, head, tail, done, seen, original, origins, complete):
-  match todo:
-    case Nil{}: dg_seed_books(original, Nil{}, origins, book_cached(Nil{}, norm_max_book(original)), complete)
-    case Con{event, rest}: dg_prefix_seed(rest, tail, check_event_install(done, head, rest), book_put(seen, head), original, origins, complete)
+def check_book_diagnostic_from_exact_prefix(+book: List<&2,KDef>, +validated: List<&2,KDef>, +origins: List<&2,DOrigin>) -> DResult:
+  check_book_diagnostic(book, origins)
 
 # The checker verdict stays unchanged; only rejection metadata differs.
 @unsafe
-def dg_adt_error(t, d):
-  kc(KChecked, String.eq(dk(d), "ADT"), u => dg_bad_detail("unknown family or wrong parameter count", dg_text(nm(t) ++ " with " ++ U32.show(da(d)) ++ kc(String, U32.is_eq(da(d), 1), u => " parameter", u => " parameters")), t), u => dg_bad_message("unknown family or wrong parameter count", dg_text("a declared datatype (unknown: " ++ nm(t) ++ ")")))
+def dg_adt_error(world, t, d):
+  kc(KChecking, String.eq(dk(d), "ADT"), u => dg_bad_detail(world, "unknown family or wrong parameter count", dg_text(nm(t) ++ " with " ++ U32.show(da(d)) ++ kc(String, U32.is_eq(da(d), 1), u => " parameter", u => " parameters")), t), u => dg_bad_message(world, "unknown family or wrong parameter count", dg_text("a declared datatype (unknown: " ++ nm(t) ++ ")")))
 
 # Compatibility projections and explicit capability for hosts using one verdict.
 law dg_result_error:

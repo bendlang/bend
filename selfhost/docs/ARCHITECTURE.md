@@ -66,14 +66,28 @@ before a later sibling is opened or the importing body is completed. Parsed
 results and the completed graph are reused within that request.
 
 The checker validates declaration types, quantities and recursive calls with all
-signatures and ADTs visible; validated bodies become available in declaration
-order. Live template instances use the same checker. Program completion validates
-ordinary declarations, materializes and checks live instances, then reports final
-TODO/open-law incompleteness. Its result contains the materialized book, so the
-host does not specialize it again. This does not fully interleave instantiation
-with every checking step inside a body; remaining error-order differences are
-tracked as conformance gaps. The normalizer supplies definitional equality and
-the interpreter's result.
+signatures and ADTs visible; bodies become available at their final source event.
+`KWorld` carries the authoritative source book, instance memo, fresh-ID state and
+checked output. A live template use checks closed arguments, reserves its memo
+entry, then checks the instance immediately through the same ordinary checker.
+Subsequent children receive the returned world, and successful terms are rebuilt
+from checked children. Original source bodies remain available for conversion.
+
+The old recursive specialization visitor is removed. Completed instances publish
+before their callers in the checked-output list; output assembly reverses this
+accumulator without checking terms again. Generic success restores the private
+source-book view while retaining memo, freshness and completed output; failure
+keeps the actual failing world. The stable public `KChecked` payload retains four
+fields, while internal `KChecking` carries the world and consumed-argument count.
+
+Program completion reports TODO/open-law incompleteness after actual checking.
+The result already contains materialized output. Prefix APIs replay source events
+because the existing source-only cache cannot restore the memo and checked output;
+the host/cache ABI is unchanged. Deferred fresh-ID initialization includes the
+entire saved owner body at its first mint, including later siblings not yet
+visited. The [live-checker report](../../implementation/phase19/instance-live-checking.md)
+records the order, recursion, scope and demand controls. The normalizer supplies
+definitional equality and the interpreter's result.
 
 Strong normalization uses explicit work frames and a persistent heap of lazy
 cells. Repeated uses of an argument share its evaluation; materialization returns
