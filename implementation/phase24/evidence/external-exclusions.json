@@ -1,0 +1,52 @@
+{
+  "prefixes": [
+    "selfhost/build/phase24/backend-environment-01/bun-linux-x64-baseline/bun",
+    "selfhost/build/phase24/backend-environment-01/libclang-rt-16-dev_16.0.6-15~deb11u2_amd64.deb",
+    "selfhost/build/phase24/backend-tsan-capability-01/runtime/usr/lib/llvm-16/lib/clang/16/lib/linux/libclang_rt.tsan-x86_64.a",
+    "selfhost/build/phase24/backend-tsan-capability-01/runtime/usr/lib/llvm-16/lib/clang/16/lib/linux/libclang_rt.tsan-x86_64.a.syms",
+    "selfhost/build/phase24/backend-tsan-capability-01/runtime/usr/lib/llvm-16/lib/clang/16/lib/linux/libclang_rt.tsan_cxx-x86_64.a",
+    "selfhost/build/phase24/backend-tsan-capability-01/runtime/usr/lib/llvm-16/lib/clang/16/lib/linux/libclang_rt.tsan_cxx-x86_64.a.syms"
+  ],
+  "reason": "Downloaded external Bun executable, Debian package and four selectively extracted Clang16 TSan archive/symbol-list files. Exact official URLs/hashes/member extraction recipes are recorded; exclude only these bytes, retaining every command, failure, control source, output, generated sanitizer executable and result. Do not exclude whole environment/probe directories.",
+  "prerequisitesReport": "implementation/phase24/backend-environment.md",
+  "identityInventory": "implementation/phase24/backend-environment-evidence.json",
+  "excludedFiles": [
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/bun-linux-x64-baseline/bun",
+      "bytes": 103661840,
+      "sha256": "c01b9916c9632dff543b8c99a0a9bdc043e263853f05b6ed91ac9060a2fc08d2",
+      "preservation": "external-pinned-toolchain"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/libclang-rt-16-dev_16.0.6-15~deb11u2_amd64.deb",
+      "bytes": 3243916,
+      "sha256": "3316ea4250dc2e8aa083b8f865f6cb70473ceb395983619960f55680dc01b183",
+      "preservation": "external-pinned-toolchain"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tsan-capability-01/runtime/usr/lib/llvm-16/lib/clang/16/lib/linux/libclang_rt.tsan-x86_64.a",
+      "bytes": 3148206,
+      "sha256": "770de8a272aa22f7345712f21ff08ad5b781991d5aef781fd7390896724280bb",
+      "preservation": "external-pinned-toolchain"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tsan-capability-01/runtime/usr/lib/llvm-16/lib/clang/16/lib/linux/libclang_rt.tsan-x86_64.a.syms",
+      "bytes": 54106,
+      "sha256": "c3055d0140becade4fefa9b0d06f43d668c211fbfb62ae6d143c9591fbe937dd",
+      "preservation": "external-pinned-toolchain"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tsan-capability-01/runtime/usr/lib/llvm-16/lib/clang/16/lib/linux/libclang_rt.tsan_cxx-x86_64.a",
+      "bytes": 38840,
+      "sha256": "dcd7e3d17d38fd3136c3a566ae39765ba023e1bb432c18e97f69d438047a6044",
+      "preservation": "external-pinned-toolchain"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tsan-capability-01/runtime/usr/lib/llvm-16/lib/clang/16/lib/linux/libclang_rt.tsan_cxx-x86_64.a.syms",
+      "bytes": 1181,
+      "sha256": "fda2434e08f1ed5165c0757cb5e406dbfdfbe0a4e8130f05ec49539a598a6a54",
+      "preservation": "external-pinned-toolchain"
+    }
+  ],
+  "excludedBytes": 110148089
+}

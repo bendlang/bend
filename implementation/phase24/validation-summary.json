@@ -1,0 +1,69 @@
+{
+  "complete": true,
+  "gates": [
+    {
+      "gate": "frontend-main-01",
+      "report": "selfhost/build/phase24/frontend-main-01/report.json",
+      "sha256": "8cd843f5c45aff13965eefd19133f3ca97b2e8a7a4e7dde5066ea1e636460d21",
+      "complete": true,
+      "pass": true,
+      "api": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase24/combined-build-02/equality/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase24/combined-build-02/equality/api.mjs",
+        "sha256": "7b523bdffc0acde702dda1005a5e8201f7b65b2e432d1be95b07f2cfcc0346fa"
+      },
+      "expected": 3026,
+      "pairedObservations": null
+    },
+    {
+      "gate": "frontend-broader-01",
+      "report": "selfhost/build/phase24/frontend-broader-01/report.json",
+      "sha256": "ddf05e16b62e01f24cef3d1d2d9a0c3628adf4534fde6ee7d405d9923bb3ac59",
+      "complete": true,
+      "pass": true,
+      "api": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase24/combined-build-02/equality/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase24/combined-build-02/equality/api.mjs",
+        "sha256": "7b523bdffc0acde702dda1005a5e8201f7b65b2e432d1be95b07f2cfcc0346fa"
+      },
+      "expected": 196,
+      "pairedObservations": null
+    },
+    {
+      "gate": "history-02",
+      "report": "selfhost/build/phase24/history-02/report.json",
+      "sha256": "93c677e38640a5446c6f08fc8d9626fb3f53e2871b40292083a0daf1f1a89226",
+      "complete": true,
+      "pass": true,
+      "api": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase24/combined-build-02/equality/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase24/combined-build-02/equality/api.mjs",
+        "sha256": "7b523bdffc0acde702dda1005a5e8201f7b65b2e432d1be95b07f2cfcc0346fa"
+      },
+      "expected": null,
+      "pairedObservations": 226
+    },
+    {
+      "gate": "combined-build-02/validation-001",
+      "report": "selfhost/build/phase24/combined-build-02/validation-001/report.json",
+      "sha256": "5cb3ec3e36c8bb47cfc6697e2a7f9e697eb61eef3033b87214da9c0cefcee155",
+      "complete": true,
+      "pass": true,
+      "api": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase24/combined-build-02/equality/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase24/combined-build-02/equality/api.mjs",
+        "sha256": "7b523bdffc0acde702dda1005a5e8201f7b65b2e432d1be95b07f2cfcc0346fa"
+      },
+      "expected": null,
+      "pairedObservations": null
+    }
+  ],
+  "scope": "Current candidate acquisition; main/broader explicitly reuse stable pinned reference observations under Phase23 frontend-gate-v2. Fresh paired histories. Counts overlap and are not additive proof of full conformance.",
+  "releaseSmoke": {
+    "report": "selfhost/build/phase24/release-smoke-02/launcher.json",
+    "sha256": "06361e3fe064ba70041a2ece1da028fcbf3a376134d1018e554eb529f3fa00c9",
+    "complete": true,
+    "pass": true,
+    "steps": 42
+  }
+}

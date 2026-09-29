@@ -10,7 +10,7 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../../..')
 const out=path.join(root,'build/native-tests');fs.mkdirSync(out,{recursive:true});
 const mods=fs.readFileSync(path.join(root,'src/back/native/manifest.txt'),'utf8').trim().split('\n').map(n=>'src/back/native/'+n);
 const source=path.join(out,'compiler.bend'),apiFile=path.join(out,'api.mjs');
-assemble(['src/core/term.bend','src/core/index.bend','src/core/normalize.bend','src/core/graph.bend',...mods],source,{root});
+assemble(['src/core/term.bend','src/core/index.bend','src/core/normalize.bend','src/core/graph.bend','src/core/reach.bend',...mods],source,{root});
 const boot=spawnSync(process.env.BEND_BOOTSTRAP||process.execPath,[path.join(root,'tools/stage0-library.mjs'),source,apiFile,'nc_compile','nc_foreign_paths','nc_foreign_source','np_collect','np_can_match'],{cwd:root,encoding:'utf8',timeout:120000});
 assert.equal(boot.status,0,boot.stderr||boot.error?.message);
 const {default:api}=await import(pathToFileURL(apiFile));
@@ -37,7 +37,8 @@ const ary=ctr('ANode',ctr('ALeaf',nat(1)),ctr('ALeaf',nat(2)));
 const snd=lam(1,app(t('Mat','Tuple',[lam(2,lam(3,vr(3))),t('Efq')],3),vr(1)));
 const baseCtor=(name,arity,typ)=>({...def(name,t('Absent'),typ),kind:'Ctr',arity});
 const baseADT=(name,ctors)=>({...def(name,t('Absent'),t('Typ')),kind:'ADT',ctors:list(ctors),native:true});
-const baseParents=[baseADT('Nat',[baseCtor('Zero',0,nty),baseCtor('Succ',1,all(80,nty,nty))]),baseADT('Array',[baseCtor('ALeaf',1,all(81,nty,aty)),baseCtor('ANode',2,all(82,aty,all(83,aty,aty)))]),baseADT('Sigma',[baseCtor('Tuple',2,all(84,nty,all(85,nty,t('ADT','Sigma'))))])];
+const lty=t('ADT','List',[t('ADT','U32')]);
+const baseParents=[baseADT('List',[baseCtor('Nil',0,lty),baseCtor('Con',2,all(78,t('ADT','U32'),all(79,lty,lty)))]),baseADT('Nat',[baseCtor('Zero',0,nty),baseCtor('Succ',1,all(80,nty,nty))]),baseADT('Array',[baseCtor('ALeaf',1,all(81,nty,aty)),baseCtor('ANode',2,all(82,aty,all(83,aty,aty)))]),baseADT('Sigma',[baseCtor('Tuple',2,all(84,nty,all(85,nty,t('ADT','Sigma'))))])];
 const fooTy=t('ADT','Foo');
 const foo={...baseADT('Foo',[baseCtor('True',1,all(86,nty,fooTy)),baseCtor('False',1,all(87,nty,fooTy))]),native:false};
 const matched=t('Mat','Zero',[lam(101,lam(102,add(vr(101),vr(102)))),t('Mat','Succ',[lam(103,lam(104,lam(105,apply('matched',vr(103),vr(104),vr(105))))),t('Efq')])]);
@@ -63,6 +64,7 @@ const cases=[
  ['array_clone',[def('main',app(snd,apply('Array.clone',ary)),aty),def('Array.clone',t('Absent'))],'[1n, 2n]'],
  ['array_swap',[def('main',app(snd,apply('Array.swap',ary,nat(0),nat(9)))),def('Array.swap',t('Absent'))],'1n'],
  ['bang_cpu',[def('main',app(app(t('Ref','Nat.add',[],0,3),nat(2)),nat(3))),prim],'5n'],
+ ['function_names_apart',[def('main',add(add(ref('a.b'),ref('a_b')),add(ref('A.b'),ref('IO_EMIT')))),def('a.b',nat(1)),def('a_b',nat(2)),def('A.b',nat(4)),def('IO_EMIT',nat(8)),prim],'15n'],
 ];
 const runtime=fs.readFileSync(path.join(root,'src/runtime/native/runtime.c'),'utf8');
 for(const [name,book,expected] of cases){
@@ -82,21 +84,19 @@ assert.equal(api.nc_compile(list([def('main',t('Foreign'),ref('Effect')),alias,i
 console.log('PASS aliased IO foreign-main diagnostic');
 assert.match(api.nc_compile(list([def('main',nat(1)),def('Bool',t('Typ'))]),runtime,'').error,/Bool is a name the compiler encodes itself/);
 console.log('PASS reserved runtime type diagnostic');
-assert.match(api.nc_compile(list([def('main',add(ref('a.b'),ref('a_b'))),def('a.b',nat(1)),def('a_b',nat(2)),prim,...baseParents]),runtime,'').error,/native identifier collision: FID_A_B/);
-console.log('PASS normalized identifier collision diagnostic');
 // Even Base provenance cannot replace a Foreign declaration with an intrinsic.
 // The IO type is the actual erased-result/continuation encoding used by Base.
 const unit=t('ADT','Unit'),op=t('ADT','IO.OP'),ioTy=app(ref('IO'),unit);
 const effectIO={...def('IO',t('Lam','',[t('All','',[t('Typ'),all(93,all(94,unit,op),op)],92,0)],91,0),t('All','',[t('Typ'),t('Typ')],91,0)),native:true};
 const effect={...def('U32.add',t('Foreign','U32.add'),ioTy),native:true};
-const foreignBook=list([def('main',ref('U32.add'),ioTy),effect,effectIO]);
+const foreignBook=list([def('main',ref('U32.add'),ioTy),effect,effectIO,...baseParents]);
 const requests='Term custom_add_run(Env e, Term* f, IoWork* w) { puts("foreign"); return term_pak(CID_UNIT, 0); }\nstatic void __attribute__((constructor)) custom_add_use(void) { io_eff(CID_U32_ADD, custom_add_run, 0); }';
 const foreign=api.nc_compile(foreignBook,runtime,requests);assert.equal(foreign.error,'');
 const foreignSource=path.join(out,'foreign_intrinsic.c'),foreignBinary=path.join(out,'foreign_intrinsic');fs.writeFileSync(foreignSource,foreign.source);
 const foreignCC=spawnSync(process.env.CC||'clang',['-O1','-pthread',foreignSource,'-lm','-o',foreignBinary],{encoding:'utf8',timeout:30000});assert.equal(foreignCC.status,0,foreignCC.stderr);
 const foreignRun=spawnSync(foreignBinary,[],{encoding:'utf8',timeout:10000});assert.equal(foreignRun.status,0,foreignRun.stderr);assert.equal(foreignRun.stdout,'foreign\n');
 console.log('PASS foreign intrinsic-name C effect dispatch');
-console.log(`${cases.length+6} native regression cases passed`);
+console.log(`${cases.length+5} native regression cases passed`);
 
 // Compare the native Nat row collector with independent tree interpretation.
 const array=xs=>{const out=[];for(;xs.$==='Con';xs=xs.tail)out.push(xs.head);return out;};

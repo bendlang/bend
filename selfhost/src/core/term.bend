@@ -299,7 +299,13 @@ def has_name(
     case Nil{}:
       False{}
     case Con{h, t}:
-      kc(Bool, String.eq(h, name), u => True{}, u => has_name(t, name))
+      has_name_next(t, name, String.eq(h, name))
+
+@unsafe
+def has_name_next(+rest: List<&2,String>, +name: String, +same: Bool) -> Bool:
+  match same:
+    case True{}: True{}
+    case False{}: has_name(rest, name)
 
 law subst_terms:
   for +ts: List<&2, KTerm>

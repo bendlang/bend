@@ -65,6 +65,7 @@ law f_def_signature:
   for +pars: List<&2, KTerm>
   for +ty: KTerm
   for +book: List<&2, KDef>
+  for +scope: FParseScope
   KTerm
 
 law f_def_body:
@@ -380,13 +381,13 @@ def f_def_base(
 ) -> FRawResult:
   match p:
     case FParsed{+pars, +ts}:
-      f_choose(FRawResult, f_eq(tg(pars), "Error"), u => f_result(book, pars, imports), u => f_choose(FRawResult, f_eq(f_tx(ts), "->"), u => f_def_type(name, ks(pars), f_expr(f_tl(ts), 0), book, imports, unsafe, scope), u => f_def_type(name, ks(pars), FParsed{f_choose(KTerm, f_eq(dk(f_find(name, book)), "Missing") && (Bool.not(f_eq(f_alias(name, imports), name)) || f_def_fillable(f_decl_find(name, book, scope))), u => kt("ImportLaw", name, 0, 0, ks(pars)), u => dt(f_find(name, book))), ts}, book, imports, unsafe, scope)))
+      f_choose(FRawResult, f_eq(tg(pars), "Error"), u => f_result(book, pars, imports), u => f_choose(FRawResult, f_eq(f_tx(ts), "->"), u => f_def_type(name, ks(pars), f_expr(f_tl(ts), 0), book, imports, unsafe, scope), u => f_def_type(name, ks(pars), FParsed{f_choose(KTerm, f_eq(dk(f_decl_local(name, book, scope)), "Missing") && (Bool.not(f_eq(f_alias(name, imports), name)) || f_def_fillable(f_decl_find(name, book, scope))), u => kt("ImportLaw", name, 0, 0, ks(pars)), u => dt(f_decl_local(name, book, scope))), ts}, book, imports, unsafe, scope)))
 
 @unsafe
 def f_def_type(name, pars, p, book, imports, unsafe, scope):
   match p:
     case FParsed{ty, ts}:
-      +signature = f_context_signature(f_def_signature(name, pars, ty, book), ts)
+      +signature = f_context_signature(f_def_signature(name, pars, ty, book, scope), ts)
       f_choose(FRawResult, f_context_stop(ty), u => f_result(book, ty, imports),
         u => f_choose(FRawResult, f_context_stop(signature), u => f_result(book, signature, imports),
         u => f_choose(FRawResult, f_eq(tg(ty), "Absent"), u => f_result(book, f_pn(fpe_error(ts, "definition without return type needs a law: " ++ name, "'->' (a def with no return type fills a law; no law named " ++ name ++ " is in scope)")), imports),
@@ -394,14 +395,14 @@ def f_def_type(name, pars, p, book, imports, unsafe, scope):
           u => f_def_body(name, pars, signature, f_context_definition(name, pars, signature, f_expect(FParsed{ty, ts}, ":"), scope), book, imports, unsafe, scope)))))
 
 @unsafe
-def f_def_signature(name, pars, ty, book):
-  f_choose(KTerm, f_eq(dk(f_find(name, book)), "Missing") && Bool.not(f_eq(tg(ty), "ImportLaw")), u => f_tbind(pars, ty), u => ty)
+def f_def_signature(name, pars, ty, book, scope):
+  f_choose(KTerm, f_eq(dk(f_decl_local(name, book, scope)), "Missing") && Bool.not(f_eq(tg(ty), "ImportLaw")), u => f_tbind(pars, ty), u => ty)
 
 @unsafe
 def f_def_body(name, pars, ty, p, book, imports, unsafe, scope):
   match p:
     case FParsed{body, ts}:
-      f_choose(FRawResult, f_context_stop(body), u => f_result(book, body, imports), u => f_context_publish(ts, KDef{name, "Def", terms_len(pars), f_choose(U32, f_eq(dk(f_find(name, book)), "Missing"), u => f_templates(pars), u => dx(f_find(name, book))), ty, body, Nil{}, False{}, unsafe}, book, imports, scope, True{}))
+      f_choose(FRawResult, f_context_stop(body), u => f_result(book, body, imports), u => f_context_publish(ts, KDef{name, "Def", terms_len(pars), f_choose(U32, f_eq(dk(f_decl_local(name, book, scope)), "Missing"), u => f_templates(pars), u => dx(f_decl_local(name, book, scope))), ty, body, Nil{}, False{}, unsafe}, book, imports, scope, True{}))
 
 @unsafe
 def f_foreign(name, pars, ty, ts, book, imports, unsafe, paths, scope):
@@ -642,11 +643,11 @@ def f_law_arity(clauses):
 
 @unsafe
 def f_law(name, ts, book, imports, clauses, scope):
-  f_choose(FRawResult, f_valid_name(name) && f_eq(dk(f_find(name, book)), "Missing"), u => f_law_base(name, ts, book, imports, clauses, scope), u => f_result(book, kt("Error", "invalid or reserved law name: " ++ name, 0, 0, Nil{}), imports))
+  f_choose(FRawResult, f_valid_name(name) && f_eq(dk(f_decl_local(name, book, scope)), "Missing"), u => f_law_base(name, ts, book, imports, clauses, scope), u => f_result(book, kt("Error", "invalid or reserved law name: " ++ name, 0, 0, Nil{}), imports))
 
 @unsafe
 def f_type(name, ts, book, imports, scope):
-  f_choose(FRawResult, f_valid_name(name) && f_eq(dk(f_find(name, book)), "Missing"), u => f_type_named(name, ts, book, imports, scope), u => f_result(book, kt("Error", "invalid or reserved datatype name: " ++ name, 0, 0, Nil{}), imports))
+  f_choose(FRawResult, f_valid_name(name) && f_eq(dk(f_decl_local(name, book, scope)), "Missing"), u => f_type_named(name, ts, book, imports, scope), u => f_result(book, kt("Error", "invalid or reserved datatype name: " ++ name, 0, 0, Nil{}), imports))
 
 # The wrong-extension cursor follows the closing quote; keep that case legacy.
 law fpe_foreign:
@@ -690,14 +691,14 @@ def f_decl_prior(+name: String, +scope: FParseScope) -> KDef:
 
 @unsafe
 def f_decl_find(+name: String, +book: List<&2,KDef>, +scope: FParseScope) -> KDef:
-  +local = f_find(name, book)
+  +local = f_decl_local(name, book, scope)
   f_choose(KDef, f_eq(dk(local), "Missing"), u => f_decl_local_ctor(name, book, scope, f_decl_prior(name, scope)), u => local)
 
 @unsafe
 def f_decl_taken(+name: String, +book: List<&2,KDef>, +scope: FParseScope) -> Bool:
   match scope:
     case FParseScope{prior, index, ctorIndex, ns, aliases}:
-      Bool.not(f_eq(dk(f_find(name, book)), "Missing")) || Bool.not(f_eq(dk(index_find(index, name, index_hash(name, 2166136261), 32)), "Absent")) || Bool.not(f_eq(dk(index_find(index, f_qual_name(name, ns), index_hash(f_qual_name(name, ns), 2166136261), 32)), "Absent"))
+      Bool.not(f_eq(dk(f_decl_local(name, book, scope)), "Missing")) || Bool.not(f_eq(dk(index_find(index, name, index_hash(name, 2166136261), 32)), "Absent")) || Bool.not(f_eq(dk(index_find(index, f_qual_name(name, ns), index_hash(f_qual_name(name, ns), 2166136261), 32)), "Absent"))
 
 @unsafe
 def f_decl_ctor_taken(+name: String, +book: List<&2,KDef>, +scope: FParseScope) -> Bool:
@@ -728,3 +729,13 @@ def f_decl_local_ctor(+name: String, +book: List<&2,KDef>, +scope: FParseScope, 
       f_choose(KDef, f_def_fillable(old),
         u => f_choose(KDef, f_eq(f_alias(name, aliases), name) && Bool.not(f_eq(dk(f_ctor_lookup(name, book)), "Missing")), u => f_find(name, Nil{}), u => old),
         u => old)
+
+# Every local declaration also publishes its mapped header in scope.index.
+# A miss proves local absence; hits retain the original first-event scan.
+@unsafe
+def f_decl_local(+name: String, +book: List<&2,KDef>, +scope: FParseScope) -> KDef:
+  match scope:
+    case FParseScope{prior, index, ctorIndex, ns, aliases}:
+      +alias = f_alias(name, aliases)
+      +key = f_choose(String, f_eq(alias, name), u => f_qual_name(name, ns), u => alias)
+      f_find(name, f_choose(List<&2,KDef>, f_eq(dk(index_find(index, key, index_hash(key, 2166136261), 32)), "Absent"), u => Nil{}, u => book))

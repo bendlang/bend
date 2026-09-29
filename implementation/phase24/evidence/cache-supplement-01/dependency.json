@@ -1,0 +1,62 @@
+{
+  "kind": "phase24-installed-cli-cache-dependency",
+  "script": {
+    "file": "implementation/phase24/evidence/cache-supplement.py",
+    "bytes": 3992,
+    "sha256": "20bbbc52a166e99f5e43202a5d1b7f3fe737a34f72adc0da6326ca10d14e5d23"
+  },
+  "originalCache": {
+    "file": "selfhost/build/typed/cache/base-7b523bdffc0acde702dda1005a5e8201f7b65b2e432d1be95b07f2cfcc0346fa-c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661-8efa1a80d8575e6c9792781053a2e4c2121bb02cdaa722b8b53ea6665a2ad10b.json",
+    "bytes": 3468122,
+    "sha256": "8169c5aab3e3fc9e50fd2e8a0d6c3f0c18d1f09043e612c17afeaf73e9a0aa11"
+  },
+  "cacheMetadata": {
+    "version": 6,
+    "termAbi": 1,
+    "compilerSha256": "7b523bdffc0acde702dda1005a5e8201f7b65b2e432d1be95b07f2cfcc0346fa",
+    "baseSha256": "c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661",
+    "sourcePath": "/home/ai/bend2/build/publish/bend/selfhost/dist/base.bend",
+    "validatedBy": "check_book",
+    "generated": "2026-09-29T20:49:52.112Z",
+    "bookSha256": "183140f65aa737a4d06c321b1ffee8d32bac3e1f5cb453c52fc3574b3151acc6",
+    "spanAbi": 3,
+    "sourceBegin": 1,
+    "sourceEnd": 71532
+  },
+  "sourceInputs": [
+    {
+      "file": "selfhost/dist/typed-api.mjs",
+      "bytes": 939158,
+      "sha256": "7b523bdffc0acde702dda1005a5e8201f7b65b2e432d1be95b07f2cfcc0346fa"
+    },
+    {
+      "file": "selfhost/dist/base.bend",
+      "bytes": 71530,
+      "sha256": "c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661"
+    },
+    {
+      "file": "selfhost/tools/typed-driver.mjs",
+      "bytes": 48273,
+      "sha256": "43c4df618476ba6ae6057d468d7147af0a85be0cd4f84e18f5f124f58d7f47c3"
+    },
+    {
+      "file": "selfhost/build/phase24/release-smoke-02/checks/report.json",
+      "bytes": 116440,
+      "sha256": "ca7f45dbdeb67eb4013ffd1d83563983749b8d8a7ed5e6cc2cc99702ba435f33"
+    }
+  ],
+  "validation": {
+    "command": [
+      "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "-e",
+      "const fs=require(\"fs\"),c=require(\"crypto\"),x=JSON.parse(fs.readFileSync(process.argv[1]));const h=c.createHash(\"sha256\").update(JSON.stringify(x.book)).digest(\"hex\");if(h!==x.bookSha256)throw Error(\"book hash mismatch\");console.log(JSON.stringify({bookSha256:h,version:x.version,validatedBy:x.validatedBy}));",
+      "/home/ai/bend2/build/publish/bend/selfhost/build/typed/cache/base-7b523bdffc0acde702dda1005a5e8201f7b65b2e432d1be95b07f2cfcc0346fa-c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661-8efa1a80d8575e6c9792781053a2e4c2121bb02cdaa722b8b53ea6665a2ad10b.json"
+    ],
+    "exitCode": 0,
+    "stdout": "{\"bookSha256\":\"183140f65aa737a4d06c321b1ffee8d32bac3e1f5cb453c52fc3574b3151acc6\",\"version\":6,\"validatedBy\":\"check_book\"}\n",
+    "stderr": ""
+  },
+  "historicalAttribution": "The recorded ordinary CLI commands use this installed project with ambient Bend overrides removed. typed-driver baseCacheInfo derives this exact path; its generated timestamp is within the first CLI invocation and it validates against the unchanged installed API/Base. The cache was not individually hashed in the original CLI report, so this supplement binds current exact bytes and does not retroactively claim an at-run byte measurement.",
+  "regeneration": "With the recorded installed release/Node at these canonical paths, node selfhost/tools/typed-driver.mjs --prepare-base checks and regenerates an absent cache. A fresh generated timestamp changes exact cache bytes; retain this supplement for exact restoration.",
+  "primaryArchiveUnchanged": true
+}

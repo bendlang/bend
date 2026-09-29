@@ -17,23 +17,22 @@ This fork develops the compiler in [`selfhost/`](selfhost/README.md), on branch
 from `selfhost/`, run `npm run verify:release`, then `node cli.mjs FILE --run`.
 `npm run build` checks and rebuilds the default with pinned upstream.
 
-The [Phase23 release report](implementation/phase23/upstream-graph-conversion.md)
-records the update to **0187512, after Bend 2.0.34**, graph conversion and the
-new backend fixes, including shared-array atomics.
+The [Phase24 release report](implementation/phase24/profile-and-coverage.md)
+records further profiling and two execution fixes on **0187512, after Bend 2.0.34**:
+foreign/constructor-name collisions are rejected at emission, and native function
+names remain distinct across case and punctuation.
 
 All **3,026 main frontend observations** and **196 broader parser observations**
-agree exactly with pinned TypeScript. Native/JavaScript regression tests,
-request histories and 42 installed/relocated CLI checks pass their documented
-scopes. These overlapping selections are finite evidence; see
-[conformance](selfhost/CONFORMANCE.md) for raw verdicts and reference-environment
-limits.
+agree exactly with pinned TypeScript. The bounded backend pilot is **81/81 exact**;
+the report distinguishes its scope from the full execution inventory. Request
+histories pass without exceptions. See [conformance](selfhost/CONFORMANCE.md) for
+raw verdicts, remaining coverage and the supported-host TCP/sanitizer evidence.
 
-Controlled ordinary checking averages **11.01 s**, versus **10.97 s** for the
-previous release and **3.55 s** for TypeScript (**3.10×**). This two-sample screen
-excludes emission. The clear gain is on shared terms: two depth-32 checks that
-previously exhausted a 1 GiB heap now finish in about **1.4 s** within that cap.
-The compiler has **15,748 Bend lines in 60 modules**, up 148 lines (+0.95%), with
-unchanged module/datatype counts and the existing graph/array representations.
+Controlled ordinary checking averages **11.16s**, versus **11.73s** for the previous
+release and **3.74s** for TypeScript: **4.9% faster**, still about **3× TypeScript**.
+This three-sample screen excludes emission. Peak memory is essentially unchanged.
+The compiler has **15,776 Bend lines in 60 modules**, adding 28 lines(+0.18%) with
+unchanged datatype/module counts. The prior shared-term conversion fixes remain.
 
 The [development workflow](docs/PHASE5_DEVELOPMENT.md) builds a genuine checked
 compiler and runs36 short paired controls. The release preserves its checked

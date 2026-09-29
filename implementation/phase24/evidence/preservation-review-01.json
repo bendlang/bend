@@ -1,0 +1,110 @@
+{
+  "kind": "phase24-independent-preservation-review",
+  "pass": true,
+  "scope": "Independent primary/supplement restoration, exact exclusion audit and bounded review of external prerequisite identities; no compiler reexecution or hermetic environment claim.",
+  "primaryRecovery": {
+    "file": "implementation/phase24/evidence/recovery-01.json",
+    "bytes": 1776,
+    "sha256": "41d4f99b9def9b1403464bdeadedd71b1833f279ba4f3ce110aa8137b3ec7288"
+  },
+  "supplementRecovery": {
+    "file": "implementation/phase24/evidence/cache-supplement-recovery-01.json",
+    "bytes": 1784,
+    "sha256": "a62cc2717d6e40bb408da76021373c650377b9f7d66759a55c773a00f6c2ba07"
+  },
+  "manifest": {
+    "file": "implementation/phase24/evidence/manifest.json",
+    "bytes": 5870593,
+    "sha256": "9bd3abd4dfb36e19cce434bcbae523de09aed026329d5e263a39a9f707690885"
+  },
+  "externalExclusions": {
+    "file": "implementation/phase24/evidence/external-exclusions.json",
+    "bytes": 3135,
+    "sha256": "b281be8dc9f066d49548c832a268f1e6efe4929131ba2f9215a48bff902a9e0b"
+  },
+  "exactExcludedFileCount": 6,
+  "exactExcludedBytes": 110148089,
+  "exclusionsMatchOriginalEnvironmentInventory": true,
+  "excludedCurrentBytesVerified": true,
+  "primaryOriginalAndRestoredMembershipBytesModesTypesExact": true,
+  "originalProducersUnmodifiedByReviewer": true,
+  "supplement": {
+    "manifest": {
+      "file": "implementation/phase24/evidence/cache-supplement-01/manifest.json",
+      "bytes": 1209,
+      "sha256": "0abb770bd69d35acb297b47d9b290bc14a0bc38c93c074b00527f4f18e9d10ee"
+    },
+    "dependency": {
+      "file": "implementation/phase24/evidence/cache-supplement-01/dependency.json",
+      "bytes": 3559,
+      "sha256": "76f08b27d04cf250cf22b66d2158683fd803e47ccd4c861450b0469730d04c80"
+    },
+    "archiveBytes": 113556,
+    "currentBytesCaptured": true,
+    "originalAtRunCacheHashRecorded": false
+  },
+  "prerequisiteReview": {
+    "reportsScanned": 271,
+    "externalIdentityCount": 4187,
+    "initialRoutes": {
+      "phase24-byte-alias": 724,
+      "phase23-prerequisite": 3417,
+      "phase23-member": 42,
+      "review-required": 4
+    },
+    "method": "Recursively examine Phase24 JSON identity objects and absolute path/hash maps, excluding snapshots/projects/runtime/cache/harness/bootstrap/equality trees and per-request/session JSON. Match exact SHA256 aliases against recovered Phase24 manifest, exact original-path/hash pairs against Phase23 manifest and its closed prerequisite inventory. Review the four remaining references against actual Git blobs or the pending final documentation commit. This bounded identity-shaped scan does not claim to discover every unhashed path in argv or prose.",
+    "phase23Manifest": {
+      "file": "implementation/phase23/evidence/manifest.json",
+      "bytes": 16137556,
+      "sha256": "62c7b3134fe055dfa95ad689126cde7954e9a50e452fe5786c85efece36e1363"
+    },
+    "phase23PrerequisiteInventory": {
+      "file": "implementation/phase23/evidence-prerequisites-closed.json",
+      "bytes": 5984448,
+      "sha256": "7feeccce65f24bd2016365fab61a5a8c2ee30446564e2deeb188100d30ce66d4"
+    },
+    "phase23ClosureReceipt": {
+      "file": "implementation/phase23/evidence/prerequisite-closure-01.json",
+      "bytes": 57691,
+      "sha256": "01043498c62a912ee376943d754d2a6ca14ad87bc9a38044a7dc5e14e6eb15e0"
+    },
+    "additionalVerifiedGitInputs": [
+      {
+        "file": "implementation/phase23/evidence/manifest.json",
+        "bytes": 16137556,
+        "sha256": "62c7b3134fe055dfa95ad689126cde7954e9a50e452fe5786c85efece36e1363",
+        "commit": "8eb2cc01145041ce7c0dce199daaf7087038e962",
+        "blobHashVerified": true
+      },
+      {
+        "file": "selfhost/tools/performance/phase4/cpu-profile.mjs",
+        "bytes": 7126,
+        "sha256": "105b05f04d8c858349f81025ae4549dedd6fd51c100f81cc038e8b407e09bce1",
+        "commit": "6b3529e5659ee6074353f2f1e7e4a11509db2e2c",
+        "blobHashVerified": true
+      }
+    ],
+    "finalCommitRequiredInputs": [
+      {
+        "file": "design/phase24/backend-census.md",
+        "bytes": 5149,
+        "sha256": "f2de54be9c6147325d956f335acb973fcb55504089db74b8c88f8cf84522fe25",
+        "route": "Final Phase24 documentation commit; root explicitly includes both exact plans."
+      },
+      {
+        "file": "design/phase24/backend-environment.md",
+        "bytes": 3171,
+        "sha256": "2eb8f4f6494645b190fbf20831ddf9243ecee16a8caf6640a9c45ce2af0a6fa7",
+        "route": "Final Phase24 documentation commit; root explicitly includes both exact plans."
+      }
+    ],
+    "historicalDependencies": "Phase23 combined-build03 and reference/emission artifacts are exact members; its closed prerequisite inventory supplies the Phase21 compiler workload, Phase12 histories, pinned upstream and toolchain routes.",
+    "unresolvedExperimentalPayloadWithinReviewedScope": []
+  },
+  "limits": [
+    "External Node/Clang/Bun/runtime/header/system prerequisites remain external and explicitly reproducible by the recorded identities/recipes.",
+    "Nested backend batch archives are restored exactly as archive bytes and retain their prior verified inventories; this review did not redo every nested extraction.",
+    "The installed cache supplement preserves current exact bytes, without inventing a cache hash that was not measured in the original CLI smoke.",
+    "Final commit/push and inclusion of the two documentation plans are owned by root; this review does not establish publication."
+  ]
+}

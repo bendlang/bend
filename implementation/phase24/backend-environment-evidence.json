@@ -1,0 +1,398 @@
+{
+  "kind": "phase24-environment-evidence-selection",
+  "closed": true,
+  "script": {
+    "file": "implementation/phase24/backend-environment-inventory.py",
+    "bytes": 2209,
+    "sha256": "0feee01201658117f883abf1ff60c133a62b3f469368b4c98f52e25750367135"
+  },
+  "roots": [
+    "selfhost/build/phase24/backend-environment-01",
+    "selfhost/build/phase24/backend-tcp-bun-01",
+    "selfhost/build/phase24/backend-tcp-supported-01",
+    "selfhost/build/phase24/backend-tsan-capability-01",
+    "selfhost/build/phase24/backend-tsan-programs-01",
+    "selfhost/build/phase24/backend-tsan-shared-01",
+    "selfhost/build/phase24/backend-tsan-parallel-01"
+  ],
+  "files": [
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/SHASUMS256.txt",
+      "bytes": 2075,
+      "sha256": "dedbbcb86ff7ae44566296d5b86844d3af2a4833b95bd4285046b819120582b7",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/bun-baseline-download.json",
+      "bytes": 506,
+      "sha256": "632f22c48c23ca11f99ab0c00760025cb13680fb0d1f543c406e7d85aa3eaf66",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/bun-baseline-extraction.json",
+      "bytes": 1331,
+      "sha256": "cf0a4f9db5ddd3c7670107d4c76440fd7c56915d0b4d4dc23f3d34794a3896b6",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/bun-default-disposal.json",
+      "bytes": 864,
+      "sha256": "37deb6a8c099b31a7c84808b97f519acf31cf65d3a1aa6f5b56f88bc442466d9",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/bun-downloads.json",
+      "bytes": 1055,
+      "sha256": "5e3a139cf410e7e42c81ca008c8e39ea51c643bcadfb8cce1eeb433c3f6cc1cc",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/bun-extraction-01.json",
+      "bytes": 447,
+      "sha256": "517a23dd02f499fdfa6768d2e566cc9085726295d610c66bfc794b09c1a84c5f",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/bun-extraction-02.json",
+      "bytes": 1306,
+      "sha256": "0161686f5d4df2f14ac3e52ea698e9b10cfe4345869f49b6bc182abb823414a3",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/bun-linux-x64-baseline/bun",
+      "bytes": 103661840,
+      "sha256": "c01b9916c9632dff543b8c99a0a9bdc043e263853f05b6ed91ac9060a2fc08d2",
+      "preservation": "external-pinned-toolchain"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/bun-metadata-download.json",
+      "bytes": 336,
+      "sha256": "a814a36f20e8342ee08abcf803e975398766daef7684f73f76adf2bb2905eb20",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/bun-release.json",
+      "bytes": 48056,
+      "sha256": "f15d582eef0908734bf6cf72e6a2a6c2527c18a6ae1d38496daea19e5262930a",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/debian-packages.html",
+      "bytes": 123315,
+      "sha256": "9940ecab024213b525859a651fa101752881ae4d41c538b26eab0906a28716cb",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/inventory-00.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/inventory-00.stdout",
+      "bytes": 114,
+      "sha256": "ffb14b9da045508a0e8675426848dca9186e02554a2b8fa8e4d6f91d1ee05a29",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/inventory-01.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/inventory-01.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/inventory-02.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/inventory-02.stdout",
+      "bytes": 35,
+      "sha256": "03f4b80b4db89d4c75c47c012a3607478b581755a25fe67904a9afa978a638ab",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/inventory-03.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/inventory-03.stdout",
+      "bytes": 11,
+      "sha256": "34612da5134bf684319aab5a37c81e61d66f7bb1564a77a6a31b774af3e12616",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/inventory.json",
+      "bytes": 1714,
+      "sha256": "96592078f1191bee4592cfa8a8ebb06f396f05b44b23b88ece060893de26ba6a",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/libclang-rt-16-dev_16.0.6-15~deb11u2_amd64.deb",
+      "bytes": 3243916,
+      "sha256": "3316ea4250dc2e8aa083b8f865f6cb70473ceb395983619960f55680dc01b183",
+      "preservation": "external-pinned-toolchain"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/runtime-metadata.json",
+      "bytes": 4736,
+      "sha256": "04446cc31c0e4f894744e0c8c09002f6f75c4558f2a2a3c17635ceb6999b3927",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/sanitizer-package-discovery.json",
+      "bytes": 817,
+      "sha256": "fffe891ee91c9fb0f3c48b1b89273226711c77e01889563a136ad40f9542325f",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/tsan-package-contents.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/tsan-package-contents.txt",
+      "bytes": 15804,
+      "sha256": "c7489cfdcf80d556507939671443fb0e15e22d9bc2a2feb6f10be012701aa6df",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-environment-01/tsan-package-download.json",
+      "bytes": 543,
+      "sha256": "5582e797b3b1b7db8baa76dd2aca6ac65f5009f846487ea288b365344de9cacb",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tcp-bun-01/report.json",
+      "bytes": 11641,
+      "sha256": "8b564ff98399245d77553466ad5fba2c5b2895a195f1b497d580142a439db00a",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tcp-bun-01/tcp_recv_max_zero-candidate.stderr",
+      "bytes": 294,
+      "sha256": "28158203173d74bbe9eb3bf439f3cda655d1683b83677d083ebeea75f9959827",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tcp-bun-01/tcp_recv_max_zero-candidate.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tcp-bun-01/tcp_recv_max_zero-reference.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tcp-bun-01/tcp_recv_max_zero-reference.stdout",
+      "bytes": 110,
+      "sha256": "93fe23699d992f242ff1db9498938f3542c73a1dc1679a507c203d9b4befea7e",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tcp-bun-01/tcp_zero_idle-candidate.stderr",
+      "bytes": 294,
+      "sha256": "28158203173d74bbe9eb3bf439f3cda655d1683b83677d083ebeea75f9959827",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tcp-bun-01/tcp_zero_idle-candidate.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tcp-bun-01/tcp_zero_idle-reference.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tcp-bun-01/tcp_zero_idle-reference.stdout",
+      "bytes": 110,
+      "sha256": "93fe23699d992f242ff1db9498938f3542c73a1dc1679a507c203d9b4befea7e",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tcp-supported-01/report.json",
+      "bytes": 11831,
+      "sha256": "3eff463cb6f1fb9937e95d153bc108e476d3414474666ba7de91d9a4d00c3735",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tcp-supported-01/tcp_recv_max_zero-candidate.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tcp-supported-01/tcp_recv_max_zero-candidate.stdout",
+      "bytes": 110,
+      "sha256": "93fe23699d992f242ff1db9498938f3542c73a1dc1679a507c203d9b4befea7e",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tcp-supported-01/tcp_recv_max_zero-reference.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tcp-supported-01/tcp_recv_max_zero-reference.stdout",
+      "bytes": 110,
+      "sha256": "93fe23699d992f242ff1db9498938f3542c73a1dc1679a507c203d9b4befea7e",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tcp-supported-01/tcp_zero_idle-candidate.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tcp-supported-01/tcp_zero_idle-candidate.stdout",
+      "bytes": 110,
+      "sha256": "93fe23699d992f242ff1db9498938f3542c73a1dc1679a507c203d9b4befea7e",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tcp-supported-01/tcp_zero_idle-reference.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tcp-supported-01/tcp_zero_idle-reference.stdout",
+      "bytes": 110,
+      "sha256": "93fe23699d992f242ff1db9498938f3542c73a1dc1679a507c203d9b4befea7e",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tsan-capability-01/clean",
+      "bytes": 1389720,
+      "sha256": "7c853939c91a1415d64f107ec4067c167321da3da1dbd08f8185a9e6a6882f78",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tsan-capability-01/control.c",
+      "bytes": 402,
+      "sha256": "782d0ec57f0baaedf994a0441e3da7ba88ee965f9df34e486e28c350f3bb1b1f",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tsan-capability-01/external-installer-disposal.json",
+      "bytes": 421,
+      "sha256": "d2848ffea469c6041e87786f51ae42e9d33c0d554cbe908d5625c4cbf3a062b2",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tsan-capability-01/racy",
+      "bytes": 1389720,
+      "sha256": "31fe17d83fdc95351a7f801577daec301772566b077865ec98429a1ab5e0f3ea",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tsan-capability-01/report.json",
+      "bytes": 7392,
+      "sha256": "73ee35bb9522b1edc70273bf1dbaa7be70ad33eabb7384bc3547faa6bebc2cc4",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tsan-capability-01/runtime/usr/lib/llvm-16/lib/clang/16/lib/linux/libclang_rt.tsan-x86_64.a",
+      "bytes": 3148206,
+      "sha256": "770de8a272aa22f7345712f21ff08ad5b781991d5aef781fd7390896724280bb",
+      "preservation": "external-pinned-toolchain"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tsan-capability-01/runtime/usr/lib/llvm-16/lib/clang/16/lib/linux/libclang_rt.tsan-x86_64.a.syms",
+      "bytes": 54106,
+      "sha256": "c3055d0140becade4fefa9b0d06f43d668c211fbfb62ae6d143c9591fbe937dd",
+      "preservation": "external-pinned-toolchain"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tsan-capability-01/runtime/usr/lib/llvm-16/lib/clang/16/lib/linux/libclang_rt.tsan_cxx-x86_64.a",
+      "bytes": 38840,
+      "sha256": "dcd7e3d17d38fd3136c3a566ae39765ba023e1bb432c18e97f69d438047a6044",
+      "preservation": "external-pinned-toolchain"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tsan-capability-01/runtime/usr/lib/llvm-16/lib/clang/16/lib/linux/libclang_rt.tsan_cxx-x86_64.a.syms",
+      "bytes": 1181,
+      "sha256": "fda2434e08f1ed5165c0757cb5e406dbfdfbe0a4e8130f05ec49539a598a6a54",
+      "preservation": "external-pinned-toolchain"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tsan-programs-01/atomic_operations_v3-candidate",
+      "bytes": 3266952,
+      "sha256": "3d52150e58a4ecf666624ae1a7d6a91ca47a3a78f8d847734b8f5eca922aa867",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tsan-programs-01/atomic_operations_v3-reference",
+      "bytes": 2660680,
+      "sha256": "eeea39996c705ee7ba0fecc7ffb824dfdeca7cd9c6a167519af8173c5ad77031",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tsan-programs-01/report.json",
+      "bytes": 15939,
+      "sha256": "1cdd5f90a32fc547271c7d31f1f955d9188da61875756472e83dabad314d8e50",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tsan-programs-01/shared_array_ownership_v2-candidate",
+      "bytes": 3189552,
+      "sha256": "3dc2f765d77355971bf5626fa5bc949250fb82638be206cc8d890126febc1da5",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tsan-programs-01/shared_array_ownership_v2-reference",
+      "bytes": 2602288,
+      "sha256": "69778efb173f95902bb1702538f50e804c6ffc9135102c1001c3a0af7ba5b6aa",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tsan-shared-01/array_atomic_fadd-candidate",
+      "bytes": 3181920,
+      "sha256": "f9d58919e4baffb86800e77b512100f068fcccaabc4c550093c6ee0f699163e3",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tsan-shared-01/array_atomic_fadd-reference",
+      "bytes": 2566544,
+      "sha256": "acf999e3faa54636d967f6e4d2db9247a323aa41ac8cbdf26277aa330ea120f9",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tsan-shared-01/report.json",
+      "bytes": 8746,
+      "sha256": "3c52e65eea273e496500906cae3ffd664078df4a55227d2bf144b864f30476b9",
+      "preservation": "capture-new-evidence"
+    },
+    {
+      "file": "selfhost/build/phase24/backend-tsan-parallel-01/report.json",
+      "bytes": 3697,
+      "sha256": "7ba3520dcb6247a741e1c5d245c0289e3932607f0482c28fefc196778c09d651",
+      "preservation": "capture-new-evidence"
+    }
+  ],
+  "fileBytes": 130659847,
+  "captureBytes": 20511758,
+  "externalBytes": 110148089,
+  "externalRecipe": "backend-environment.md documents exact official Bun/Debian URLs and SHA256; extraction members and compiler resource paths are in captured records. Prior Phase23 compiler/fixture/C/JS artifacts use its existing immutable capsule and pinned Git checkout. Do not nest old archives or external toolchain payloads.",
+  "sourceTools": "selfhost/tools/performance/phase24/environment-*.py and design/phase24/backend-environment*.md, backend-tsan*.md are owned tracked sources. Python __pycache__ is reproducible and excluded.",
+  "archiveCreatedByThisInventory": false
+}

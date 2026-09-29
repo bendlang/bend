@@ -681,3 +681,28 @@ new result type, semantic state or host work is introduced. The independent
 the rejected intermediate semicolon behavior; the
 [release report](../../implementation/phase20/declaration-checkpoints-release.md)
 binds the installed one-file correction and its execution/CLI/cost gates.
+
+
+## Phase24 lookup and emission invariants
+
+The parser's existing contextual index can prove a local declaration absent.
+`f_decl_local` maps the queried name through exactly the current alias/namespace
+mapping used to publish local headers. A miss returns the original named Missing
+sentinel; a hit runs the original first-event local scan. The index's prior-event
+winner is not substituted for that scan, because duplicate prior headers can
+select a different full definition. Temporary self/type headers only add possible
+hits. No extra index, cache or scope field is introduced.
+
+`has_name` passes each head comparison to a Boolean worker. The bootstrap's
+existing tail-cycle lowering compiles this pair to a loop, preserving first-hit
+short circuit while removing per-miss branch closures. It uses the same String.eq
+contract and does not inspect a matched tail.
+
+The shared emission ownership check rejects foreign definitions whose exact name
+also names a constructor, after the existing reserved-name check and before
+reachability. Constructor lookup is demanded only for foreign definitions. Native
+function IDs reuse the existing Unicode-scalar encoding used for constructor
+identity; MAIN_FID goes through that same function. This prevents punctuation and
+case normalization from merging distinct functions. Runtime-reserved IDs retain
+their existing names. See the [Phase24 report](../../implementation/phase24/profile-and-coverage.md)
+for finite validation scope and unchanged representation counts.

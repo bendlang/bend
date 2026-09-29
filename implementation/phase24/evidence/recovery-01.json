@@ -1,0 +1,49 @@
+{
+  "kind": "phase24-independent-capsule-recovery",
+  "complete": true,
+  "pass": true,
+  "started": "2026-09-29T20:55:57Z",
+  "script": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase24/evidence/recover.py",
+    "bytes": 9004,
+    "sha256": "6e3a0632da9d90a081e7d18b12a15c62bf1eb70208be48868fb1cb2fa1dc3099"
+  },
+  "destination": "/tmp/phase24-independent-recovery-01",
+  "externalPrerequisitesRecovered": false,
+  "compilerExperimentsReexecuted": false,
+  "scope": "Every archive member restored and audited independently for names, bytes, mode and type; no new compiler result or external closure claim.",
+  "manifest": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase24/evidence/manifest.json",
+    "bytes": 5870593,
+    "sha256": "9bd3abd4dfb36e19cce434bcbae523de09aed026329d5e263a39a9f707690885"
+  },
+  "archive": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase24/evidence/phase24-evidence.tar.xz",
+    "bytes": 37539248,
+    "sha256": "acd3f41227ac55368cd1a771827b2a9664b053a1901b0ad22803ed17ac69a1da"
+  },
+  "originalProducerClosure": {
+    "root": "/home/ai/bend2/build/publish/bend",
+    "members": 24601,
+    "membershipExact": true,
+    "allBytesModesTypesExact": true
+  },
+  "members": 24601,
+  "files": 20503,
+  "directories": 4098,
+  "symlinks": 0,
+  "fileBytes": 392226124,
+  "requiredAncestorDirectories": [
+    "selfhost",
+    "selfhost/build",
+    "selfhost/tests",
+    "selfhost/tools",
+    "selfhost/tools/performance"
+  ],
+  "restoredInventorySha256": "2b4ad0e1f16dce989913c84bf036fbcc7f7cd1df363fbeb953b6587ce1e263c2",
+  "archiveMembersExact": true,
+  "restoredMembersExact": true,
+  "allBytesModesTypesExact": true,
+  "restoredTreeRetained": true,
+  "finished": "2026-09-29T20:56:21Z"
+}

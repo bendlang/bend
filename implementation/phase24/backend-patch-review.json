@@ -1,0 +1,114 @@
+{
+  "kind": "phase24-independent-backend-source-review",
+  "scope": "Bounded read-only review; reviewer did not execute the new checked candidate or mutate compiler/runtime sources. Actual candidate gates remain separate.",
+  "reviewedInputs": [
+    {
+      "file": "selfhost/src/driver/api.bend",
+      "bytes": 3919,
+      "sha256": "5cae856aa306f52042cbead5bf72136da317649a0a09b7d73f8da1be3530d9d3"
+    },
+    {
+      "file": "selfhost/src/back/native/text.bend",
+      "bytes": 2533,
+      "sha256": "31c1ff5973df46d17ad395070fbefa1d2dc58398b3d12af80c62ed6c5548ff9d"
+    },
+    {
+      "file": "selfhost/src/back/native/tables.bend",
+      "bytes": 8602,
+      "sha256": "6b8f36fa9063f35105889d8977aa2345fb01eeceb117e6f641151430d084bbaa"
+    },
+    {
+      "file": "selfhost/src/back/native/identity.bend",
+      "bytes": 2476,
+      "sha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a"
+    },
+    {
+      "file": "selfhost/src/back/native/foreign.bend",
+      "bytes": 4010,
+      "sha256": "ed7a06662072e73d45d10b1898599936b106dc22956a4fceea8d04ac22fb6d3c"
+    },
+    {
+      "file": "selfhost/src/back/native/bridge.bend",
+      "bytes": 23327,
+      "sha256": "4767f940940660635ec4c80978f8e4abb11c398b4b8f8bccabf05879c59f2a49"
+    },
+    {
+      "file": "selfhost/src/back/native/validate.bend",
+      "bytes": 2859,
+      "sha256": "d0c1e75c5dbda3d2e65ea227667191252c49f71b63f0765c358c2041a0f484bb"
+    },
+    {
+      "file": "selfhost/src/back/js/emit.bend",
+      "bytes": 29227,
+      "sha256": "18c6bc0ed2cd5d97b95fbf0d314473ed881de69686e914128d4bd863f36138b5"
+    },
+    {
+      "file": "selfhost/src/back/js/literals.bend",
+      "bytes": 5544,
+      "sha256": "2c4488a4f37010253a54e3745317c685ec77067475d471e577687acfa9a16776"
+    },
+    {
+      "file": "selfhost/tools/typed-driver.mjs",
+      "bytes": 48273,
+      "sha256": "43c4df618476ba6ae6057d468d7147af0a85be0cd4f84e18f5f124f58d7f47c3"
+    },
+    {
+      "file": "selfhost/tests/phase24-backend/ownership-controls.mjs",
+      "bytes": 2675,
+      "sha256": "ba7ae398d02d2d19ba4e4fb19a2b3577a9c5f6c8cbe2ab0417909338667602c4"
+    },
+    {
+      "file": "selfhost/tests/phase24-backend/fixtures/foreign_fid.c",
+      "bytes": 178,
+      "sha256": "d45183aef2708865543f3a0456c89483ed34c02b6c23e5dd322a5d07445e94d9"
+    },
+    {
+      "file": "selfhost/tests/phase24-backend/fixtures/foreign_fid.bend",
+      "bytes": 229,
+      "sha256": "df833c7f1f022e0c16555cc7031c655685830e7c53d76893d0033d031167ca48"
+    },
+    {
+      "file": "selfhost/tests/phase24-backend/fixtures/function_names.bend",
+      "bytes": 269,
+      "sha256": "fe144b0e41d3bc2ea53674b785e205b39ff1f67f5d72172e3b5f4602e414b684"
+    },
+    {
+      "file": "selfhost/.bootstrap/upstream-phase23/bend2/comp.ts",
+      "bytes": 185444,
+      "sha256": "3bd7ed49d33f1c61334d75a905e38c0345fb15a10b45d85884b77f49833dc5ee"
+    }
+  ],
+  "reviewedDiffSha256": "fff2832f9c11d31878c46f73046fa49c88722c25654120fc42b888cea7dd3998",
+  "verdict": "No blocking defect found in the reviewed source changes; promotion remains contingent on checked candidate controls and full relevant gates.",
+  "findings": [
+    {
+      "area": "Full-book emission ownership",
+      "assessment": "driver_emit_owned executes after checked completion but before JS reachability pruning, native generation or library emission. Check-only and pure interpreter paths return earlier. Existing OWNED-name diagnostics retain priority; only an empty reserved-name result reaches the foreign/constructor scan."
+    },
+    {
+      "area": "Exact foreign/constructor identity and first error",
+      "assessment": "Scan preserves the current full-book definition order, tests only Def entries with annotation-stripped Foreign bodies, and resolves exact qualified constructor names through the existing j_find_ctor. Base provenance does not exempt a collision, matching upstream def_foreign/book_owned. The first matching foreign definition wins; qualified/case-distinct names remain separate."
+    },
+    {
+      "area": "Injective native function IDs",
+      "assessment": "nc_ctor_codes emits the decimal value of each character with an underscore delimiter. The resulting sequence preserves source character boundaries, case and punctuation; empty name also has a distinct representation. Prefix FID_ makes valid C identifiers. Numeric/underscore encoded suffixes cannot equal fixed alphabetic runtime FIDs."
+    },
+    {
+      "area": "All generated FID use sites",
+      "assessment": "Segment definitions, closure/task references, continuations, dispatch, arity validation and foreign symbolic FID(name) all pass through nt_fid. MAIN_FID now uses nt_fid(main). Numeric segment ordering and arity/result tables do not change. Runtime FID_IO_EMIT/FID_EXIT/FID_ENTER and BEND_CLO_APPLY remain fixed."
+    },
+    {
+      "area": "Foreign substitution contract",
+      "assessment": "nc_foreign_parts resolves FID names via existing nc_ref_name then applies the new nt_fid, including native-wrapper names. Constructor IDs and scoped CID aliasing are unchanged. Bounded scan found no literal source-function FID token dependency in maintained runtime/effect C; uppercase FID spellings in pinned Bend tests are explanatory comments. Raw private generated identifier spellings are not asserted as an external stable ABI."
+    },
+    {
+      "area": "Controls inspected",
+      "assessment": "Direct ownership fixture covers reserved-name priority, two colliding foreign definitions in deliberate order, unused scope behavior via execution controls, exact qualified/case distinctions and Base foreign collision. Source controls include dotted/underscored/case variants, reserved-looking function names and actual C FID(a.b)/FID(a_b) translation. These are reviewed test intentions, not reviewer-acquired pass results."
+    }
+  ],
+  "tradeoffs": [
+    "Encoded names are longer and can increase emitted C bytes, compiler input parsing and diagnostics size; no generated-program speedup or unchanged Clang compile cost follows.",
+    "Foreign-name validation scans the whole book and reuses a linear constructor lookup for each foreign definition. This is emission-stage work only; check-only ordinary performance bypasses it.",
+    "Static reasoning is not proof of every loader ordering or external foreign-program contract; checked multi-error/import/foreign execution controls remain the validation boundary."
+  ]
+}

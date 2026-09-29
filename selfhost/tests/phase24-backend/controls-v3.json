@@ -1,0 +1,56 @@
+{
+  "focused": [
+    {
+      "name": "foreign-fid-v3-check",
+      "cases": [
+        {
+          "id": "phase24/foreign_fid_v3",
+          "file": "fixtures/foreign_fid_v3.bend",
+          "lanes": [
+            "check"
+          ]
+        }
+      ],
+      "retain": "all"
+    },
+    {
+      "name": "foreign-fid-v3-interpreter",
+      "cases": [
+        {
+          "id": "phase24/foreign_fid_v3",
+          "file": "fixtures/foreign_fid_v3.bend",
+          "lanes": [
+            "interpreter"
+          ]
+        }
+      ],
+      "retain": "all"
+    },
+    {
+      "name": "foreign-fid-v3-js",
+      "cases": [
+        {
+          "id": "phase24/foreign_fid_v3",
+          "file": "fixtures/foreign_fid_v3.bend",
+          "lanes": [
+            "js"
+          ]
+        }
+      ],
+      "retain": "all"
+    },
+    {
+      "name": "foreign-fid-v3-native",
+      "cases": [
+        {
+          "id": "phase24/foreign_fid_v3",
+          "file": "fixtures/foreign_fid_v3.bend",
+          "lanes": [
+            "native"
+          ]
+        }
+      ],
+      "retain": "all"
+    }
+  ]
+}

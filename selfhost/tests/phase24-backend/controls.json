@@ -1,0 +1,224 @@
+{
+  "focused": [
+    {
+      "name": "focused-check",
+      "cases": [
+        {
+          "id": "phase24/effect_collision",
+          "file": "fixtures/effect_collision.bend",
+          "lanes": [
+            "check"
+          ]
+        },
+        {
+          "id": "phase24/effect_unused",
+          "file": "fixtures/effect_unused.bend",
+          "lanes": [
+            "check"
+          ]
+        },
+        {
+          "id": "phase24/effect_qualified",
+          "file": "fixtures/effect_qualified.bend",
+          "lanes": [
+            "check"
+          ]
+        },
+        {
+          "id": "phase24/effect_renamed",
+          "file": "fixtures/effect_renamed.bend",
+          "lanes": [
+            "check"
+          ]
+        },
+        {
+          "id": "phase24/effect_qualified_apart",
+          "file": "fixtures/effect_qualified_apart.bend",
+          "lanes": [
+            "check"
+          ]
+        },
+        {
+          "id": "phase24/function_names",
+          "file": "fixtures/function_names.bend",
+          "lanes": [
+            "check"
+          ]
+        },
+        {
+          "id": "phase24/foreign_fid",
+          "file": "fixtures/foreign_fid.bend",
+          "lanes": [
+            "check"
+          ]
+        }
+      ],
+      "retain": "all"
+    },
+    {
+      "name": "focused-interpreter",
+      "cases": [
+        {
+          "id": "phase24/effect_collision",
+          "file": "fixtures/effect_collision.bend",
+          "lanes": [
+            "interpreter"
+          ]
+        },
+        {
+          "id": "phase24/effect_unused",
+          "file": "fixtures/effect_unused.bend",
+          "lanes": [
+            "interpreter"
+          ]
+        },
+        {
+          "id": "phase24/effect_qualified",
+          "file": "fixtures/effect_qualified.bend",
+          "lanes": [
+            "interpreter"
+          ]
+        },
+        {
+          "id": "phase24/effect_renamed",
+          "file": "fixtures/effect_renamed.bend",
+          "lanes": [
+            "interpreter"
+          ]
+        },
+        {
+          "id": "phase24/effect_qualified_apart",
+          "file": "fixtures/effect_qualified_apart.bend",
+          "lanes": [
+            "interpreter"
+          ]
+        },
+        {
+          "id": "phase24/function_names",
+          "file": "fixtures/function_names.bend",
+          "lanes": [
+            "interpreter"
+          ]
+        },
+        {
+          "id": "phase24/foreign_fid",
+          "file": "fixtures/foreign_fid.bend",
+          "lanes": [
+            "interpreter"
+          ]
+        }
+      ],
+      "retain": "all"
+    },
+    {
+      "name": "focused-js",
+      "cases": [
+        {
+          "id": "phase24/effect_collision",
+          "file": "fixtures/effect_collision.bend",
+          "lanes": [
+            "js"
+          ]
+        },
+        {
+          "id": "phase24/effect_unused",
+          "file": "fixtures/effect_unused.bend",
+          "lanes": [
+            "js"
+          ]
+        },
+        {
+          "id": "phase24/effect_qualified",
+          "file": "fixtures/effect_qualified.bend",
+          "lanes": [
+            "js"
+          ]
+        },
+        {
+          "id": "phase24/effect_renamed",
+          "file": "fixtures/effect_renamed.bend",
+          "lanes": [
+            "js"
+          ]
+        },
+        {
+          "id": "phase24/effect_qualified_apart",
+          "file": "fixtures/effect_qualified_apart.bend",
+          "lanes": [
+            "js"
+          ]
+        },
+        {
+          "id": "phase24/function_names",
+          "file": "fixtures/function_names.bend",
+          "lanes": [
+            "js"
+          ]
+        },
+        {
+          "id": "phase24/foreign_fid",
+          "file": "fixtures/foreign_fid.bend",
+          "lanes": [
+            "js"
+          ]
+        }
+      ],
+      "retain": "all"
+    },
+    {
+      "name": "focused-native",
+      "cases": [
+        {
+          "id": "phase24/effect_collision",
+          "file": "fixtures/effect_collision.bend",
+          "lanes": [
+            "native"
+          ]
+        },
+        {
+          "id": "phase24/effect_unused",
+          "file": "fixtures/effect_unused.bend",
+          "lanes": [
+            "native"
+          ]
+        },
+        {
+          "id": "phase24/effect_qualified",
+          "file": "fixtures/effect_qualified.bend",
+          "lanes": [
+            "native"
+          ]
+        },
+        {
+          "id": "phase24/effect_renamed",
+          "file": "fixtures/effect_renamed.bend",
+          "lanes": [
+            "native"
+          ]
+        },
+        {
+          "id": "phase24/effect_qualified_apart",
+          "file": "fixtures/effect_qualified_apart.bend",
+          "lanes": [
+            "native"
+          ]
+        },
+        {
+          "id": "phase24/function_names",
+          "file": "fixtures/function_names.bend",
+          "lanes": [
+            "native"
+          ]
+        },
+        {
+          "id": "phase24/foreign_fid",
+          "file": "fixtures/foreign_fid.bend",
+          "lanes": [
+            "native"
+          ]
+        }
+      ],
+      "retain": "all"
+    }
+  ]
+}

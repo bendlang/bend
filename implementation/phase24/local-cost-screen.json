@@ -1,0 +1,48 @@
+{
+  "complete": true,
+  "source": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/compiler.bend",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/compiler.bend",
+    "sha256": "fac061286a2683914244178eb1f9b4dc2fbc2d393560739663e8bd08bbc12996"
+  },
+  "order": [
+    "typescript",
+    "released",
+    "local",
+    "local",
+    "released",
+    "typescript",
+    "released",
+    "typescript",
+    "local"
+  ],
+  "statistics": {
+    "typescript": {
+      "samples": 3,
+      "meanProcessWallMs": 3535.7031123333363,
+      "meanRequestMs": 2441.045261333333,
+      "maxRssKiB": 476892
+    },
+    "released": {
+      "samples": 3,
+      "meanProcessWallMs": 11433.955344666669,
+      "meanRequestMs": 10315.899926666667,
+      "maxRssKiB": 711812
+    },
+    "local": {
+      "samples": 3,
+      "meanProcessWallMs": 11262.760480333332,
+      "meanRequestMs": 10153.336901333334,
+      "maxRssKiB": 701352
+    }
+  },
+  "localVsReleased": {
+    "meanProcessWallMs": -1.4972497195661072,
+    "meanRequestMs": -1.5758491890087711,
+    "maxRssKiB": -1.46948913477154
+  },
+  "localToTypeScriptProcess": 3.185437273012619,
+  "scope": "Same frozen compiler source, each usable bundle with its own pinned Base and runtime. No emission. Fresh processes, validated Bend Base cache; TypeScript checks its Base. OS caches are not flushed.",
+  "timingBoundary": "Request wraps adapter.probe including lazy API loading. Process includes startup, identity hashing and output capture.",
+  "raw": "selfhost/build/phase24/cost-01/report.json"
+}

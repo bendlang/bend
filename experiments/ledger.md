@@ -1492,3 +1492,49 @@ optimization. Continue independent conformance challenges within the supported
 scope, preserving exact first errors and one frontend authority. Oldmulti-hour
 budgets are not renewed by this checkpoint; future work follows current user
 scope and the maintained bounded-experiment workflow.
+
+
+## P24 — ordinary profiles and execution boundaries (2026-09-29)
+
+[Design](../design/phase24/profile-and-coverage.md),
+[report](../implementation/phase24/profile-and-coverage.md),
+[measurement review](../implementation/phase24/measurement-review.md),
+[backend inventory](../implementation/phase24/backend-census.md).
+Hypotheses: [profile](phase24/P24-001-ordinary-profile.md),
+[local absence](phase24/P24-002-local-absence.md),
+[foreign collisions](phase24/P24-003-effect-collision.md),
+[membership](phase24/P24-004-membership-branch.md), and [native identity](phase24/P24-005-native-identifiers.md).
+
+Fresh diagnostics identify source completion and repeated declaration scans,
+with membership branch allocation a separate small opportunity. A negative lookup
+in the existing scope index proves local absence; hits retain the original scan.
+A Boolean worker removes membership closures via existing loop lowering. Direct
+local-match syntax fails checked bootstrap and remains preserved. There is no new
+index, cache, datatype or parser field.
+
+The bounded execution pilot exposes two gaps despite matching frontend verdicts.
+Shared emission now rejects foreign/constructor collisions before reachability;
+native function IDs reuse existing scalar encoding to keep case/punctuation
+identities apart. Backend81/81exact after repair; raw4check boundary failures remain
+matching expected-later-error observations. Focused controls, invalid fixture
+attempts and maintained native test maintenance are recorded separately.
+
+Final API7b523bdf/checkedparente8d99da3: focused36exact, frontend3026+196exact,
+histories226paired+2fresh exact. Broad reference reuse is explicitly attested,
+with fresh candidate acquisitions and unchanged identities. TCP2supported-host
+comparisons and8saved-program TSan executions close earlier environment gaps;
+finite probes are not universal platform/race-safety claims.
+
+Serial15samples(3/image): TS3.7370s, old11.7300s, local11.2990s,
+membership11.0856s, final11.1565s. Final−4.89%process/−5.58%request with flatRSS,
+2.985×TS process in this window. Final integration costs0.64%overmembership.
+Native emitted identifiers grow; nat_ops C source+22.27%, no emitted runtime-speed
+claim. Canonical source+28physical lines to15,776, +3helpers; modules/types/laws
+unchanged. Historical large line-reduction goals remain unmet.
+
+**Updated frontier:** keep the usable checked compiler and approximately28-second
+focused loop. Expand bounded backend coverage; the inventory counts2,654execution
+opportunities but only a small subset is observed here. Investigate materialization,
+book walks/updates and dispatch with producer/consumer invariants before a broad
+rewrite. Preserve all failed attempts and the103 unrelated starting paths; the
+new evidence capsule reuses Phase23 prerequisites and records exact recovery.

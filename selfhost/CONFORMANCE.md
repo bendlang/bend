@@ -242,3 +242,27 @@ The typed compiler independently passed its complete checked self-rebuild on
 2026-09-21: seed and output bytes match exactly. The recorded comparison uses
 the same source and Base path layout; relocated checkouts need a local seed.
 Passing positive programs does not establish full diagnostic or proof-checker equivalence.
+
+
+## Phase24 execution inventory
+
+The active pin has999 positive main programs:999 eligible interpreter lanes,
+833 JavaScript lanes and812 native lanes (2,644 total). These are a coverage
+inventory, not2,644 newly passed observations. The bounded current-image pilot
+and its uncovered rows are recorded in the [Phase24 backend report](../implementation/phase24/backend-census.md).
+
+That pilot found two additional emission gaps despite exact frontend agreement:
+constructor/foreign-name collisions were incorrectly accepted, and native
+function-name normalization rejected distinct import names. Phase24 adds the
+shared emission check and injective function identifiers. The four fixtures with
+later-emission errors still retain their matching raw frontend oracle failures;
+the execution tests validate the actual refusal boundary separately.
+
+[Environment results](../implementation/phase24/backend-environment.md) acquire
+the two previously blocked TCP comparisons using unchanged upstream emissions
+under Bun1.2.22 and unchanged candidate emissions under Node24. This is a supported
+host comparison, not Node support for upstream's bun:ffi or general Bun support
+for our runtime. Matching Clang16 TSan runs eight saved emitted-program executions
+without sanitizer diagnostics, including a two-core shared atomic witness; these
+are finite controls on Phase23 emissions, not a universal race-safety guarantee.
+Independent kernel, GPU/device and complete execution-corpus coverage remain open.

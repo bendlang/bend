@@ -1,0 +1,1398 @@
+{
+  "kind": "phase24-backend-census-summary",
+  "baselineApi": "5596f914fd245a5085a614b81099360aeaf601ed61f16357fc491c85106c1102",
+  "candidateApi": "7b523bdffc0acde702dda1005a5e8201f7b65b2e432d1be95b07f2cfcc0346fa",
+  "upstream": "018751270e800bc222a93dad7f257083ee53a5f7",
+  "positiveExecutionEligibility": 2644,
+  "boundaryExecutions": 10,
+  "boundaryChecks": 4,
+  "groups": {
+    "pilotBefore": {
+      "exact": 78,
+      "rows": 81,
+      "attempts": [
+        {
+          "report": "selfhost/build/phase24/backend-pilot-01/report.json",
+          "sha256": "a80baee2e63f973d60443908b5730a4d3404a691727e1652dc55ca0a3251ce59",
+          "complete": true,
+          "exact": 4,
+          "rows": 4,
+          "pass": false,
+          "changedInputs": [],
+          "differences": [],
+          "rawCheckFailures": [
+            {
+              "id": "io/cid_unknown.bend",
+              "referenceVerdict": "fail",
+              "candidateVerdict": "fail"
+            },
+            {
+              "id": "io/effect_ctr_name.bend",
+              "referenceVerdict": "fail",
+              "candidateVerdict": "fail"
+            },
+            {
+              "id": "io/main_foreign.bend",
+              "referenceVerdict": "fail",
+              "candidateVerdict": "fail"
+            },
+            {
+              "id": "reg/array_open_element.bend",
+              "referenceVerdict": "fail",
+              "candidateVerdict": "fail"
+            }
+          ]
+        },
+        {
+          "report": "selfhost/build/phase24/backend-pilot-02/report.json",
+          "sha256": "30a06416955ccc423d1569a592ce469ce93838e728231e3a18ffa7f825fb2f91",
+          "complete": true,
+          "exact": 3,
+          "rows": 4,
+          "pass": false,
+          "changedInputs": [],
+          "differences": [
+            {
+              "id": "io/effect_ctr_name.bend",
+              "lane": "interpreter",
+              "referenceVerdict": "pass",
+              "candidateVerdict": "fail",
+              "reference": {
+                "status": "error",
+                "phase": "compile",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 1,
+                "diagnostic": "Error: Tick names both a constructor and a foreign def: name one apart",
+                "output": null
+              },
+              "candidate": {
+                "status": "ok",
+                "phase": "runtime",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 0,
+                "diagnostic": null,
+                "output": "7\n"
+              },
+              "exactAgreement": false,
+              "semanticAgreement": false,
+              "referenceEvidence": "compile-rejection",
+              "candidateEvidence": null
+            }
+          ],
+          "rawCheckFailures": []
+        },
+        {
+          "report": "selfhost/build/phase24/backend-pilot-03/report.json",
+          "sha256": "fcaac06f64776311b2e04333a3bc1fb2d133abcc3f2600bebe819b418cf89216",
+          "complete": true,
+          "exact": 3,
+          "rows": 4,
+          "pass": false,
+          "changedInputs": [],
+          "differences": [
+            {
+              "id": "io/effect_ctr_name.bend",
+              "lane": "js",
+              "referenceVerdict": "pass",
+              "candidateVerdict": "fail",
+              "reference": {
+                "status": "error",
+                "phase": "compile",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 1,
+                "diagnostic": "Error: Tick names both a constructor and a foreign def: name one apart",
+                "output": null
+              },
+              "candidate": {
+                "status": "ok",
+                "phase": "runtime",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 0,
+                "diagnostic": null,
+                "output": "7\n"
+              },
+              "exactAgreement": false,
+              "semanticAgreement": false,
+              "referenceEvidence": "compile-rejection",
+              "candidateEvidence": null
+            }
+          ],
+          "rawCheckFailures": []
+        },
+        {
+          "report": "selfhost/build/phase24/backend-pilot-04/report.json",
+          "sha256": "c417f0c5288ba3a61a4646b86bf088359eaa2a0f926b0f65d010298eb1816ab5",
+          "complete": true,
+          "exact": 2,
+          "rows": 2,
+          "pass": true,
+          "changedInputs": [],
+          "differences": [],
+          "rawCheckFailures": []
+        },
+        {
+          "report": "selfhost/build/phase24/backend-pilot-05/report.json",
+          "sha256": "f799de3ca385c81d8692fda019404d655702167b4553c0843363993cd4f0a20d",
+          "complete": true,
+          "exact": 24,
+          "rows": 24,
+          "pass": true,
+          "changedInputs": [],
+          "differences": [],
+          "rawCheckFailures": []
+        },
+        {
+          "report": "selfhost/build/phase24/backend-pilot-06/report.json",
+          "sha256": "2a4d33481ffd699701d687343b507231643b595148ee4018c06d486120bdd2ee",
+          "complete": true,
+          "exact": 22,
+          "rows": 22,
+          "pass": true,
+          "changedInputs": [],
+          "differences": [],
+          "rawCheckFailures": []
+        },
+        {
+          "report": "selfhost/build/phase24/backend-pilot-07/report.json",
+          "sha256": "a4582da847931b568a3d8969fe964199b33e72c996f1713fcd5eb15a6e691218",
+          "complete": true,
+          "exact": 20,
+          "rows": 21,
+          "pass": false,
+          "changedInputs": [],
+          "differences": [
+            {
+              "id": "import/js_names_apart.bend",
+              "lane": "native",
+              "referenceVerdict": "pass",
+              "candidateVerdict": "fail",
+              "reference": {
+                "status": "ok",
+                "phase": "runtime",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 0,
+                "diagnostic": null,
+                "output": "22\n"
+              },
+              "candidate": {
+                "status": "error",
+                "phase": "compile",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 1,
+                "diagnostic": "Error: native identifier collision: FID_HAS_HYPHEN_LIB_TWO",
+                "output": null
+              },
+              "exactAgreement": false,
+              "semanticAgreement": false,
+              "referenceEvidence": "checked-execution",
+              "candidateEvidence": null
+            }
+          ],
+          "rawCheckFailures": []
+        }
+      ]
+    },
+    "pilotAfter": {
+      "exact": 81,
+      "rows": 81,
+      "attempts": [
+        {
+          "report": "selfhost/build/phase24/backend-candidate-pilot-01/report.json",
+          "sha256": "d0f9ff7343659155413c5d09d6a6646cf8c538aa25cbe395009ae2cc8b9dcce3",
+          "complete": true,
+          "exact": 4,
+          "rows": 4,
+          "pass": false,
+          "changedInputs": [],
+          "differences": [],
+          "rawCheckFailures": [
+            {
+              "id": "io/cid_unknown.bend",
+              "referenceVerdict": "fail",
+              "candidateVerdict": "fail"
+            },
+            {
+              "id": "io/effect_ctr_name.bend",
+              "referenceVerdict": "fail",
+              "candidateVerdict": "fail"
+            },
+            {
+              "id": "io/main_foreign.bend",
+              "referenceVerdict": "fail",
+              "candidateVerdict": "fail"
+            },
+            {
+              "id": "reg/array_open_element.bend",
+              "referenceVerdict": "fail",
+              "candidateVerdict": "fail"
+            }
+          ]
+        },
+        {
+          "report": "selfhost/build/phase24/backend-candidate-pilot-02/report.json",
+          "sha256": "77571d23619620ecad8997a0722cc0a3b241fe3c361081efc7046ccc2bc889f6",
+          "complete": true,
+          "exact": 4,
+          "rows": 4,
+          "pass": true,
+          "changedInputs": [],
+          "differences": [],
+          "rawCheckFailures": []
+        },
+        {
+          "report": "selfhost/build/phase24/backend-candidate-pilot-03/report.json",
+          "sha256": "1b8536afdfdd6b3f5c7584c9bf35c4d8f38a6b21e388f9b60ce335ed59767871",
+          "complete": true,
+          "exact": 4,
+          "rows": 4,
+          "pass": true,
+          "changedInputs": [],
+          "differences": [],
+          "rawCheckFailures": []
+        },
+        {
+          "report": "selfhost/build/phase24/backend-candidate-pilot-04/report.json",
+          "sha256": "f10ec594835209e57f5d7fc8e9b468a8c5e561a7ecbff531935fd5cc625014e3",
+          "complete": true,
+          "exact": 2,
+          "rows": 2,
+          "pass": true,
+          "changedInputs": [],
+          "differences": [],
+          "rawCheckFailures": []
+        },
+        {
+          "report": "selfhost/build/phase24/backend-candidate-pilot-05/report.json",
+          "sha256": "69f81cdeec2531b66be612c603941ebc1bebb5e25c7a49adbba009e9440f5357",
+          "complete": true,
+          "exact": 24,
+          "rows": 24,
+          "pass": true,
+          "changedInputs": [],
+          "differences": [],
+          "rawCheckFailures": []
+        },
+        {
+          "report": "selfhost/build/phase24/backend-candidate-pilot-06/report.json",
+          "sha256": "60301d77377eb71dd51e845f4999da621ab315396c5f63b51b0b3302ecec78f7",
+          "complete": true,
+          "exact": 22,
+          "rows": 22,
+          "pass": true,
+          "changedInputs": [],
+          "differences": [],
+          "rawCheckFailures": []
+        },
+        {
+          "report": "selfhost/build/phase24/backend-candidate-pilot-07/report.json",
+          "sha256": "56a2f3bd7e6ecdb2fa31d5555c78a55f26c5f60a68129f2f4d070136a7ab23f8",
+          "complete": true,
+          "exact": 21,
+          "rows": 21,
+          "pass": true,
+          "changedInputs": [],
+          "differences": [],
+          "rawCheckFailures": []
+        }
+      ]
+    },
+    "focusedBefore": {
+      "exact": 17,
+      "rows": 28,
+      "attempts": [
+        {
+          "report": "selfhost/build/phase24/backend-focused-run-01/report.json",
+          "sha256": "5a11d56dcf8f7b739485aca29da04a60ec0e1255733f0c8d58d88ecfb653602d",
+          "complete": true,
+          "exact": 7,
+          "rows": 7,
+          "pass": false,
+          "changedInputs": [],
+          "differences": [],
+          "rawCheckFailures": [
+            {
+              "id": "phase24/effect_collision",
+              "referenceVerdict": "fail",
+              "candidateVerdict": "fail"
+            },
+            {
+              "id": "phase24/effect_qualified",
+              "referenceVerdict": "fail",
+              "candidateVerdict": "fail"
+            },
+            {
+              "id": "phase24/effect_unused",
+              "referenceVerdict": "fail",
+              "candidateVerdict": "fail"
+            }
+          ]
+        },
+        {
+          "report": "selfhost/build/phase24/backend-focused-run-02/report.json",
+          "sha256": "2ee1c83af53b74f966d3f16a14bd02c3b21ad4cef18aa4be149a3684897cc59d",
+          "complete": true,
+          "exact": 4,
+          "rows": 7,
+          "pass": false,
+          "changedInputs": [],
+          "differences": [
+            {
+              "id": "phase24/effect_collision",
+              "lane": "interpreter",
+              "referenceVerdict": "pass",
+              "candidateVerdict": "fail",
+              "reference": {
+                "status": "error",
+                "phase": "compile",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 1,
+                "diagnostic": "Error: Tick names both a constructor and a foreign def: name one apart",
+                "output": null
+              },
+              "candidate": {
+                "status": "ok",
+                "phase": "runtime",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 0,
+                "diagnostic": null,
+                "output": "7\n"
+              },
+              "exactAgreement": false,
+              "semanticAgreement": false,
+              "referenceEvidence": "compile-rejection",
+              "candidateEvidence": null
+            },
+            {
+              "id": "phase24/effect_qualified",
+              "lane": "interpreter",
+              "referenceVerdict": "pass",
+              "candidateVerdict": "fail",
+              "reference": {
+                "status": "error",
+                "phase": "compile",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 1,
+                "diagnostic": "Error: Scope.Tick names both a constructor and a foreign def: name one apart",
+                "output": null
+              },
+              "candidate": {
+                "status": "ok",
+                "phase": "runtime",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 0,
+                "diagnostic": null,
+                "output": "7\n"
+              },
+              "exactAgreement": false,
+              "semanticAgreement": false,
+              "referenceEvidence": "compile-rejection",
+              "candidateEvidence": null
+            },
+            {
+              "id": "phase24/effect_unused",
+              "lane": "interpreter",
+              "referenceVerdict": "pass",
+              "candidateVerdict": "fail",
+              "reference": {
+                "status": "error",
+                "phase": "compile",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 1,
+                "diagnostic": "Error: Tick names both a constructor and a foreign def: name one apart",
+                "output": null
+              },
+              "candidate": {
+                "status": "ok",
+                "phase": "runtime",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 0,
+                "diagnostic": null,
+                "output": "unused\n"
+              },
+              "exactAgreement": false,
+              "semanticAgreement": false,
+              "referenceEvidence": "compile-rejection",
+              "candidateEvidence": null
+            }
+          ],
+          "rawCheckFailures": []
+        },
+        {
+          "report": "selfhost/build/phase24/backend-focused-run-03/report.json",
+          "sha256": "3362ef007a5f737107b39660c881a64106b1192f5b4ba39905176e5c84531f8a",
+          "complete": true,
+          "exact": 4,
+          "rows": 7,
+          "pass": false,
+          "changedInputs": [],
+          "differences": [
+            {
+              "id": "phase24/effect_collision",
+              "lane": "js",
+              "referenceVerdict": "pass",
+              "candidateVerdict": "fail",
+              "reference": {
+                "status": "error",
+                "phase": "compile",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 1,
+                "diagnostic": "Error: Tick names both a constructor and a foreign def: name one apart",
+                "output": null
+              },
+              "candidate": {
+                "status": "ok",
+                "phase": "runtime",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 0,
+                "diagnostic": null,
+                "output": "7\n"
+              },
+              "exactAgreement": false,
+              "semanticAgreement": false,
+              "referenceEvidence": "compile-rejection",
+              "candidateEvidence": null
+            },
+            {
+              "id": "phase24/effect_qualified",
+              "lane": "js",
+              "referenceVerdict": "pass",
+              "candidateVerdict": "fail",
+              "reference": {
+                "status": "error",
+                "phase": "compile",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 1,
+                "diagnostic": "Error: Scope.Tick names both a constructor and a foreign def: name one apart",
+                "output": null
+              },
+              "candidate": {
+                "status": "ok",
+                "phase": "runtime",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 0,
+                "diagnostic": null,
+                "output": "7\n"
+              },
+              "exactAgreement": false,
+              "semanticAgreement": false,
+              "referenceEvidence": "compile-rejection",
+              "candidateEvidence": null
+            },
+            {
+              "id": "phase24/effect_unused",
+              "lane": "js",
+              "referenceVerdict": "pass",
+              "candidateVerdict": "fail",
+              "reference": {
+                "status": "error",
+                "phase": "compile",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 1,
+                "diagnostic": "Error: Tick names both a constructor and a foreign def: name one apart",
+                "output": null
+              },
+              "candidate": {
+                "status": "ok",
+                "phase": "runtime",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 0,
+                "diagnostic": null,
+                "output": "unused\n"
+              },
+              "exactAgreement": false,
+              "semanticAgreement": false,
+              "referenceEvidence": "compile-rejection",
+              "candidateEvidence": null
+            }
+          ],
+          "rawCheckFailures": []
+        },
+        {
+          "report": "selfhost/build/phase24/backend-focused-run-04/report.json",
+          "sha256": "393e347987e4f05cbc301889e0e4fcc90b2d516d3d4e19e0ec5eff4a73372efa",
+          "complete": true,
+          "exact": 2,
+          "rows": 7,
+          "pass": false,
+          "changedInputs": [],
+          "differences": [
+            {
+              "id": "phase24/effect_collision",
+              "lane": "native",
+              "referenceVerdict": "pass",
+              "candidateVerdict": "fail",
+              "reference": {
+                "status": "error",
+                "phase": "compile",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 1,
+                "diagnostic": "Error: Tick names both a constructor and a foreign def: name one apart",
+                "output": null
+              },
+              "candidate": {
+                "status": "error",
+                "phase": "runtime",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 1,
+                "diagnostic": null,
+                "output": "bend: an alien request\n"
+              },
+              "exactAgreement": false,
+              "semanticAgreement": false,
+              "referenceEvidence": "compile-rejection",
+              "candidateEvidence": null
+            },
+            {
+              "id": "phase24/effect_qualified",
+              "lane": "native",
+              "referenceVerdict": "pass",
+              "candidateVerdict": "fail",
+              "reference": {
+                "status": "error",
+                "phase": "compile",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 1,
+                "diagnostic": "Error: Scope.Tick names both a constructor and a foreign def: name one apart",
+                "output": null
+              },
+              "candidate": {
+                "status": "error",
+                "phase": "runtime",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 1,
+                "diagnostic": null,
+                "output": "bend: an alien request\n"
+              },
+              "exactAgreement": false,
+              "semanticAgreement": false,
+              "referenceEvidence": "compile-rejection",
+              "candidateEvidence": null
+            },
+            {
+              "id": "phase24/effect_unused",
+              "lane": "native",
+              "referenceVerdict": "pass",
+              "candidateVerdict": "fail",
+              "reference": {
+                "status": "error",
+                "phase": "compile",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 1,
+                "diagnostic": "Error: Tick names both a constructor and a foreign def: name one apart",
+                "output": null
+              },
+              "candidate": {
+                "status": "ok",
+                "phase": "runtime",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 0,
+                "diagnostic": null,
+                "output": "unused\n"
+              },
+              "exactAgreement": false,
+              "semanticAgreement": false,
+              "referenceEvidence": "compile-rejection",
+              "candidateEvidence": null
+            },
+            {
+              "id": "phase24/foreign_fid",
+              "lane": "native",
+              "referenceVerdict": "fail",
+              "candidateVerdict": "fail",
+              "reference": {
+                "status": "error",
+                "phase": "compile",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 1,
+                "diagnostic": "/home/ai/bend2/build/publish/bend/selfhost/build/phase24/backend-focused-run-04/selected/reference.json.artifacts/6/foreign_fid.c:3012:54: error: use of undeclared identifier 'FID_A_B'\nTerm inspect_run(Env e, Term* f, IoWork* w) { return FID_A_B != FID_A_B_1; }\n                                                     ^\n/home/ai/bend2/build/publish/bend/selfhost/build/phase24/backend-focused-run-04/selected/reference.json.artifacts/6/foreign_fid.c:3012:65: error: use of undeclared identifier 'FID_A_B_1'\nTerm inspect_run(Env e, Term* f, IoWork* w) { return FID_A_B != FID_A_B_1; }\n                                                                ^\n2 errors generated.\n",
+                "output": null
+              },
+              "candidate": {
+                "status": "error",
+                "phase": "compile",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 1,
+                "diagnostic": "/home/ai/bend2/build/publish/bend/selfhost/build/phase24/backend-focused-run-04/selected/candidate.json.artifacts/6/foreign_fid.c:6165:54: error: use of undeclared identifier 'FID_A_B'\nTerm inspect_run(Env e, Term* f, IoWork* w) { return FID_A_B != FID_A_B; }\n                                                     ^\n/home/ai/bend2/build/publish/bend/selfhost/build/phase24/backend-focused-run-04/selected/candidate.json.artifacts/6/foreign_fid.c:6165:65: error: use of undeclared identifier 'FID_A_B'\nTerm inspect_run(Env e, Term* f, IoWork* w) { return FID_A_B != FID_A_B; }\n                                                                ^\n2 errors generated.\n",
+                "output": null
+              },
+              "exactAgreement": false,
+              "semanticAgreement": true,
+              "referenceEvidence": null,
+              "candidateEvidence": null
+            },
+            {
+              "id": "phase24/function_names",
+              "lane": "native",
+              "referenceVerdict": "pass",
+              "candidateVerdict": "fail",
+              "reference": {
+                "status": "ok",
+                "phase": "runtime",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 0,
+                "diagnostic": null,
+                "output": "63n\n"
+              },
+              "candidate": {
+                "status": "error",
+                "phase": "compile",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 1,
+                "diagnostic": "Error: native identifier collision: FID_A_B",
+                "output": null
+              },
+              "exactAgreement": false,
+              "semanticAgreement": false,
+              "referenceEvidence": "checked-execution",
+              "candidateEvidence": null
+            }
+          ],
+          "rawCheckFailures": []
+        }
+      ]
+    },
+    "focusedInitialAfter": {
+      "exact": 27,
+      "rows": 28,
+      "attempts": [
+        {
+          "report": "selfhost/build/phase24/backend-focused-candidate-01/report.json",
+          "sha256": "f221f6c5f9c49b645b9fcecf6663307cf55eb9873db7e1b66059b28cc5153d06",
+          "complete": true,
+          "exact": 7,
+          "rows": 7,
+          "pass": false,
+          "changedInputs": [],
+          "differences": [],
+          "rawCheckFailures": [
+            {
+              "id": "phase24/effect_collision",
+              "referenceVerdict": "fail",
+              "candidateVerdict": "fail"
+            },
+            {
+              "id": "phase24/effect_qualified",
+              "referenceVerdict": "fail",
+              "candidateVerdict": "fail"
+            },
+            {
+              "id": "phase24/effect_unused",
+              "referenceVerdict": "fail",
+              "candidateVerdict": "fail"
+            }
+          ]
+        },
+        {
+          "report": "selfhost/build/phase24/backend-focused-candidate-02/report.json",
+          "sha256": "73880cf4fe08cb6833bd158fefe56e6f807ba46c9ea94f3e3c19d38274c4d241",
+          "complete": true,
+          "exact": 7,
+          "rows": 7,
+          "pass": true,
+          "changedInputs": [],
+          "differences": [],
+          "rawCheckFailures": []
+        },
+        {
+          "report": "selfhost/build/phase24/backend-focused-candidate-03/report.json",
+          "sha256": "49a5b10a14212db42df3996d2fdc038ee90da8056a5c17d03a68d682de9a7bad",
+          "complete": true,
+          "exact": 7,
+          "rows": 7,
+          "pass": true,
+          "changedInputs": [],
+          "differences": [],
+          "rawCheckFailures": []
+        },
+        {
+          "report": "selfhost/build/phase24/backend-focused-candidate-04/report.json",
+          "sha256": "4248ffdf857616e3b24368d9f23ecc047428b81473474cb761c64819397ba44e",
+          "complete": true,
+          "exact": 6,
+          "rows": 7,
+          "pass": false,
+          "changedInputs": [],
+          "differences": [
+            {
+              "id": "phase24/foreign_fid",
+              "lane": "native",
+              "referenceVerdict": "fail",
+              "candidateVerdict": "fail",
+              "reference": {
+                "status": "error",
+                "phase": "compile",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 1,
+                "diagnostic": "/home/ai/bend2/build/publish/bend/selfhost/build/phase24/backend-focused-candidate-04/selected/reference.json.artifacts/6/foreign_fid.c:3012:54: error: use of undeclared identifier 'FID_A_B'\nTerm inspect_run(Env e, Term* f, IoWork* w) { return FID_A_B != FID_A_B_1; }\n                                                     ^\n/home/ai/bend2/build/publish/bend/selfhost/build/phase24/backend-focused-candidate-04/selected/reference.json.artifacts/6/foreign_fid.c:3012:65: error: use of undeclared identifier 'FID_A_B_1'\nTerm inspect_run(Env e, Term* f, IoWork* w) { return FID_A_B != FID_A_B_1; }\n                                                                ^\n2 errors generated.\n",
+                "output": null
+              },
+              "candidate": {
+                "status": "error",
+                "phase": "compile",
+                "checked": true,
+                "typeAccepted": true,
+                "proofTrust": "not-assessed",
+                "kernelChecked": false,
+                "unsafeDefinitions": null,
+                "exitCode": 1,
+                "diagnostic": "/home/ai/bend2/build/publish/bend/selfhost/build/phase24/backend-focused-candidate-04/selected/candidate.json.artifacts/6/foreign_fid.c:6165:54: error: use of undeclared identifier 'FID_97_46_98_'\nTerm inspect_run(Env e, Term* f, IoWork* w) { return FID_97_46_98_ != FID_97_95_98_; }\n                                                     ^\n/home/ai/bend2/build/publish/bend/selfhost/build/phase24/backend-focused-candidate-04/selected/candidate.json.artifacts/6/foreign_fid.c:6165:71: error: use of undeclared identifier 'FID_97_95_98_'\nTerm inspect_run(Env e, Term* f, IoWork* w) { return FID_97_46_98_ != FID_97_95_98_; }\n                                                                      ^\n2 errors generated.\n",
+                "output": null
+              },
+              "exactAgreement": false,
+              "semanticAgreement": true,
+              "referenceEvidence": null,
+              "candidateEvidence": null
+            }
+          ],
+          "rawCheckFailures": []
+        }
+      ]
+    }
+  },
+  "ownership": {
+    "kind": "phase24-emission-ownership-controls",
+    "api": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase24/combined-build-02/equality/api.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase24/combined-build-02/equality/api.mjs",
+      "sha256": "7b523bdffc0acde702dda1005a5e8201f7b65b2e432d1be95b07f2cfcc0346fa"
+    },
+    "inputs": [
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/tests/phase24-backend/ownership-controls.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tests/phase24-backend/ownership-controls.mjs",
+        "sha256": "ba7ae398d02d2d19ba4e4fb19a2b3577a9c5f6c8cbe2ab0417909338667602c4"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase24/combined-build-02/attempt.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase24/combined-build-02/attempt.json",
+        "sha256": "1258a7d4607fdebdc4947d262b2c89303779a372f06b87b7f7aea7755762b096"
+      }
+    ],
+    "rows": [
+      {
+        "name": "empty",
+        "actual": "",
+        "expected": "",
+        "pass": true
+      },
+      {
+        "name": "foreign-only",
+        "actual": "",
+        "expected": "",
+        "pass": true
+      },
+      {
+        "name": "constructor-only",
+        "actual": "",
+        "expected": "",
+        "pass": true
+      },
+      {
+        "name": "collision",
+        "actual": "Tick names both a constructor and a foreign def: name one apart",
+        "expected": "Tick names both a constructor and a foreign def: name one apart",
+        "pass": true
+      },
+      {
+        "name": "foreign-before-type",
+        "actual": "Tick names both a constructor and a foreign def: name one apart",
+        "expected": "Tick names both a constructor and a foreign def: name one apart",
+        "pass": true
+      },
+      {
+        "name": "qualified-distinct",
+        "actual": "",
+        "expected": "",
+        "pass": true
+      },
+      {
+        "name": "case-distinct",
+        "actual": "",
+        "expected": "",
+        "pass": true
+      },
+      {
+        "name": "ordinary-definition",
+        "actual": "",
+        "expected": "",
+        "pass": true
+      },
+      {
+        "name": "reserved-name-first",
+        "actual": "IO is a name the compiler encodes itself: name yours apart",
+        "expected": "IO is a name the compiler encodes itself: name yours apart",
+        "pass": true
+      },
+      {
+        "name": "first-foreign-error",
+        "actual": "Second names both a constructor and a foreign def: name one apart",
+        "expected": "Second names both a constructor and a foreign def: name one apart",
+        "pass": true
+      },
+      {
+        "name": "base-foreign-collision",
+        "actual": "Tick names both a constructor and a foreign def: name one apart",
+        "expected": "Tick names both a constructor and a foreign def: name one apart",
+        "pass": true
+      }
+    ],
+    "pass": true
+  },
+  "pending": [],
+  "performanceClaim": false,
+  "foreignFidV2Rejected": [
+    {
+      "report": {
+        "file": "selfhost/build/phase24/backend-focused-v2-01/report.json",
+        "sha256": "626e9ef6a11e340be94984c569be35863db4467489c0e0774eeb4c03ba69400b"
+      },
+      "complete": true,
+      "exact": 1,
+      "pass": false,
+      "rows": [
+        {
+          "id": "phase24/foreign_fid_v2",
+          "lane": "check",
+          "referenceVerdict": "fail",
+          "candidateVerdict": "fail",
+          "reference": {
+            "status": "error",
+            "phase": "check",
+            "checked": true,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : n\n- observed : n (consumed more than once)\nLocation: main\n15 |   do IO<Unit>:\n16>|     n : U32 <- inspect()\n   |     ^^^^^^^^^^^^^^^^^^^^\n17 |     IO.print(Nat.show(Nat.add(a.b(U32.to_nat(n)), a_b(U32.to_nat(n)))))",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "check",
+            "checked": true,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : n\n- observed : n (consumed more than once)\nLocation: main\n15 |   do IO<Unit>:\n16>|     n : U32 <- inspect()\n   |     ^^^^^^^^^^^^^^^^^^^^\n17 |     IO.print(Nat.show(Nat.add(a.b(U32.to_nat(n)), a_b(U32.to_nat(n)))))",
+            "output": null
+          },
+          "exactAgreement": true,
+          "semanticAgreement": true,
+          "referenceEvidence": null,
+          "candidateEvidence": null
+        }
+      ],
+      "changedInputs": []
+    },
+    {
+      "report": {
+        "file": "selfhost/build/phase24/backend-focused-v2-02/report.json",
+        "sha256": "09efd7d0d38926f8d6ac222d1237b19165baefce67296f279b7dd304f5fd44e1"
+      },
+      "complete": true,
+      "exact": 1,
+      "pass": false,
+      "rows": [
+        {
+          "id": "phase24/foreign_fid_v2",
+          "lane": "interpreter",
+          "referenceVerdict": "fail",
+          "candidateVerdict": "fail",
+          "reference": {
+            "status": "error",
+            "phase": "check",
+            "checked": true,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : n\n- observed : n (consumed more than once)\nLocation: main\n15 |   do IO<Unit>:\n16>|     n : U32 <- inspect()\n   |     ^^^^^^^^^^^^^^^^^^^^\n17 |     IO.print(Nat.show(Nat.add(a.b(U32.to_nat(n)), a_b(U32.to_nat(n)))))",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "check",
+            "checked": true,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : n\n- observed : n (consumed more than once)\nLocation: main\n15 |   do IO<Unit>:\n16>|     n : U32 <- inspect()\n   |     ^^^^^^^^^^^^^^^^^^^^\n17 |     IO.print(Nat.show(Nat.add(a.b(U32.to_nat(n)), a_b(U32.to_nat(n)))))",
+            "output": null
+          },
+          "exactAgreement": true,
+          "semanticAgreement": true,
+          "referenceEvidence": null,
+          "candidateEvidence": null
+        }
+      ],
+      "changedInputs": []
+    },
+    {
+      "report": {
+        "file": "selfhost/build/phase24/backend-focused-v2-03/report.json",
+        "sha256": "bfe6d60da160d36cb67e632534d9359f81b33d14247f9df1009a49bf48c79527"
+      },
+      "complete": true,
+      "exact": 1,
+      "pass": false,
+      "rows": [
+        {
+          "id": "phase24/foreign_fid_v2",
+          "lane": "js",
+          "referenceVerdict": "fail",
+          "candidateVerdict": "fail",
+          "reference": {
+            "status": "error",
+            "phase": "check",
+            "checked": true,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : n\n- observed : n (consumed more than once)\nLocation: main\n15 |   do IO<Unit>:\n16>|     n : U32 <- inspect()\n   |     ^^^^^^^^^^^^^^^^^^^^\n17 |     IO.print(Nat.show(Nat.add(a.b(U32.to_nat(n)), a_b(U32.to_nat(n)))))",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "check",
+            "checked": true,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : n\n- observed : n (consumed more than once)\nLocation: main\n15 |   do IO<Unit>:\n16>|     n : U32 <- inspect()\n   |     ^^^^^^^^^^^^^^^^^^^^\n17 |     IO.print(Nat.show(Nat.add(a.b(U32.to_nat(n)), a_b(U32.to_nat(n)))))",
+            "output": null
+          },
+          "exactAgreement": true,
+          "semanticAgreement": true,
+          "referenceEvidence": null,
+          "candidateEvidence": null
+        }
+      ],
+      "changedInputs": []
+    },
+    {
+      "report": {
+        "file": "selfhost/build/phase24/backend-focused-v2-04/report.json",
+        "sha256": "3312ad979c10e3e1e0a83e89fcd45a26a882bc44e0e52d17653c0873528b7ed0"
+      },
+      "complete": true,
+      "exact": 1,
+      "pass": false,
+      "rows": [
+        {
+          "id": "phase24/foreign_fid_v2",
+          "lane": "native",
+          "referenceVerdict": "fail",
+          "candidateVerdict": "fail",
+          "reference": {
+            "status": "error",
+            "phase": "check",
+            "checked": true,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : n\n- observed : n (consumed more than once)\nLocation: main\n15 |   do IO<Unit>:\n16>|     n : U32 <- inspect()\n   |     ^^^^^^^^^^^^^^^^^^^^\n17 |     IO.print(Nat.show(Nat.add(a.b(U32.to_nat(n)), a_b(U32.to_nat(n)))))",
+            "output": null
+          },
+          "candidate": {
+            "status": "error",
+            "phase": "check",
+            "checked": true,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : n\n- observed : n (consumed more than once)\nLocation: main\n15 |   do IO<Unit>:\n16>|     n : U32 <- inspect()\n   |     ^^^^^^^^^^^^^^^^^^^^\n17 |     IO.print(Nat.show(Nat.add(a.b(U32.to_nat(n)), a_b(U32.to_nat(n)))))",
+            "output": null
+          },
+          "exactAgreement": true,
+          "semanticAgreement": true,
+          "referenceEvidence": null,
+          "candidateEvidence": null
+        }
+      ],
+      "changedInputs": []
+    }
+  ],
+  "foreignFidV3Final": [
+    {
+      "report": {
+        "file": "selfhost/build/phase24/backend-focused-v3-01/report.json",
+        "sha256": "7c6d534ed4faf5c78e24b9830266e219f4880cab37d10c712bc122244a090a8c"
+      },
+      "complete": true,
+      "exact": 1,
+      "pass": true,
+      "rows": [
+        {
+          "id": "phase24/foreign_fid_v3",
+          "lane": "check",
+          "referenceVerdict": "pass",
+          "candidateVerdict": "pass",
+          "reference": {
+            "status": "ok",
+            "phase": "check",
+            "checked": true,
+            "typeAccepted": true,
+            "proofTrust": "failed",
+            "kernelChecked": false,
+            "unsafeDefinitions": [
+              "inspect",
+              "main"
+            ],
+            "exitCode": 0,
+            "diagnostic": null,
+            "output": "SOME PROOFS FAIL\nError: 2 defs rely on unsafe or foreign code:\n- inspect\n- main\n"
+          },
+          "candidate": {
+            "status": "ok",
+            "phase": "check",
+            "checked": true,
+            "typeAccepted": true,
+            "proofTrust": "failed",
+            "kernelChecked": false,
+            "unsafeDefinitions": [
+              "inspect",
+              "main"
+            ],
+            "exitCode": 0,
+            "diagnostic": null,
+            "output": "SOME PROOFS FAIL\nError: 2 defs rely on unsafe or foreign code:\n- inspect\n- main\n"
+          },
+          "exactAgreement": true,
+          "semanticAgreement": true,
+          "referenceEvidence": "checker-acceptance",
+          "candidateEvidence": "checker-acceptance"
+        }
+      ],
+      "changedInputs": []
+    },
+    {
+      "report": {
+        "file": "selfhost/build/phase24/backend-focused-v3-02/report.json",
+        "sha256": "a98e21fcb746d4552890e8dc925af49781bb7673508070edc4619ee35f45ef11"
+      },
+      "complete": true,
+      "exact": 1,
+      "pass": true,
+      "rows": [
+        {
+          "id": "phase24/foreign_fid_v3",
+          "lane": "interpreter",
+          "referenceVerdict": "pass",
+          "candidateVerdict": "pass",
+          "reference": {
+            "status": "ok",
+            "phase": "runtime",
+            "checked": true,
+            "typeAccepted": true,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 0,
+            "diagnostic": null,
+            "output": "2\n"
+          },
+          "candidate": {
+            "status": "ok",
+            "phase": "runtime",
+            "checked": true,
+            "typeAccepted": true,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 0,
+            "diagnostic": null,
+            "output": "2\n"
+          },
+          "exactAgreement": true,
+          "semanticAgreement": true,
+          "referenceEvidence": "checked-execution",
+          "candidateEvidence": "checked-execution"
+        }
+      ],
+      "changedInputs": []
+    },
+    {
+      "report": {
+        "file": "selfhost/build/phase24/backend-focused-v3-03/report.json",
+        "sha256": "0a86cd3010141f758449036ee70e3f95eda08900110553c53d96f83a75a013ad"
+      },
+      "complete": true,
+      "exact": 1,
+      "pass": true,
+      "rows": [
+        {
+          "id": "phase24/foreign_fid_v3",
+          "lane": "js",
+          "referenceVerdict": "pass",
+          "candidateVerdict": "pass",
+          "reference": {
+            "status": "ok",
+            "phase": "runtime",
+            "checked": true,
+            "typeAccepted": true,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 0,
+            "diagnostic": null,
+            "output": "2\n"
+          },
+          "candidate": {
+            "status": "ok",
+            "phase": "runtime",
+            "checked": true,
+            "typeAccepted": true,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 0,
+            "diagnostic": null,
+            "output": "2\n"
+          },
+          "exactAgreement": true,
+          "semanticAgreement": true,
+          "referenceEvidence": "checked-execution",
+          "candidateEvidence": "checked-execution"
+        }
+      ],
+      "changedInputs": []
+    },
+    {
+      "report": {
+        "file": "selfhost/build/phase24/backend-focused-v3-04/report.json",
+        "sha256": "5014540679b410b26959e925c99a36a0299d0ba88ee434c349f88f347c2940f5"
+      },
+      "complete": true,
+      "exact": 1,
+      "pass": true,
+      "rows": [
+        {
+          "id": "phase24/foreign_fid_v3",
+          "lane": "native",
+          "referenceVerdict": "pass",
+          "candidateVerdict": "pass",
+          "reference": {
+            "status": "ok",
+            "phase": "runtime",
+            "checked": true,
+            "typeAccepted": true,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 0,
+            "diagnostic": null,
+            "output": "2\n"
+          },
+          "candidate": {
+            "status": "ok",
+            "phase": "runtime",
+            "checked": true,
+            "typeAccepted": true,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 0,
+            "diagnostic": null,
+            "output": "2\n"
+          },
+          "exactAgreement": true,
+          "semanticAgreement": true,
+          "referenceEvidence": "checked-execution",
+          "candidateEvidence": "checked-execution"
+        }
+      ],
+      "changedInputs": []
+    }
+  ],
+  "nativeUnit": [
+    {
+      "report": {
+        "file": "selfhost/build/phase24/backend-native-unit-01/report.json",
+        "sha256": "cdf68d538d9c6c7bb3351fcfcd8030b650d08339ffb8ada7c96538977118da2a"
+      },
+      "pass": false,
+      "exitCode": 1,
+      "passLines": 0,
+      "error": null,
+      "wallSeconds": 0.8203068636357784,
+      "stderr": "node:internal/modules/run_main:107\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: Error:\n- message  : a declared constructor (unknown: KF_Source)\nLocation:\n4977 |   match parsed:\n4978>|     case KF_Source{+parts, +error}:\n     |          ^^^^^^^^^^^^^^^^^^^^^^^^^\n4979 |       nt_choose(String, String.eq(error, \"\"),\n\n\n1 !== 0\n\n    at file:///home/ai/bend2/build/publish/bend/selfhost/build/phase24/backend-native-unit-01/project/src/back/native/tests.mjs:15:8\n    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)\n    at async node:internal/modules/esm/loader:643:26\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: 1,\n  expected: 0,\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n\nNode.js v24.18.0\n",
+      "stdout": ""
+    },
+    {
+      "report": {
+        "file": "selfhost/build/phase24/backend-native-unit-02/report.json",
+        "sha256": "486fd952ecc24efbbcf638b9da55abc88961c17b208d865a8a6619bf332a8ca3"
+      },
+      "pass": false,
+      "exitCode": 1,
+      "passLines": 0,
+      "error": null,
+      "wallSeconds": 2.6239544143900275,
+      "stderr": "node:internal/modules/run_main:107\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: user_scalar_ctor: /home/ai/bend2/build/publish/bend/selfhost/build/phase24/backend-native-unit-02/project/build/native-tests/user_scalar_ctor.c:2495:22: error: use of undeclared identifier 'CID_NIL'\n  Term xs = term_pak(CID_NIL, 0);\n                     ^\n/home/ai/bend2/build/publish/bend/selfhost/build/phase24/backend-native-unit-02/project/build/native-tests/user_scalar_ctor.c:2497:21: error: use of undeclared identifier 'CID_CON'\n    xs = io_node(e, CID_CON, (uint8_t)p[i - 1], xs);\n                    ^\n2 errors generated.\n\n\n1 !== 0\n\n    at file:///home/ai/bend2/build/publish/bend/selfhost/build/phase24/backend-native-unit-02/project/src/back/native/tests.mjs:72:156 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: 1,\n  expected: 0,\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n\nNode.js v24.18.0\n",
+      "stdout": ""
+    },
+    {
+      "report": {
+        "file": "selfhost/build/phase24/backend-native-unit-03/report.json",
+        "sha256": "2df9a3a21b9b8d138ed786e7063b4c0880cb4b1ee684650dcbdcd3ed2870485a"
+      },
+      "pass": true,
+      "exitCode": 0,
+      "passLines": 27,
+      "error": null,
+      "wallSeconds": 14.753350471146405,
+      "stderr": "",
+      "stdout": "PASS user_scalar_ctor\nPASS user_scalar_match\nPASS matcher_partial_application\nPASS nat\nPASS closure\nPASS add\nPASS override_add\nPASS let\nPASS match\nPASS shared_box\nPASS drop_box\nPASS show_box\nPASS shared_tree\nPASS show_tree\nPASS parallel\nPASS array_new\nPASS array_set\nPASS array_get\nPASS array_clone\nPASS array_swap\nPASS bang_cpu\nPASS function_names_apart\nPASS unbound variable diagnostic\nPASS missing main diagnostic\nPASS aliased IO foreign-main diagnostic\nPASS reserved runtime type diagnostic\nPASS foreign intrinsic-name C effect dispatch\n28 native regression cases passed\n6006 Nat decision-chain evaluations agree with direct tree interpretation\n"
+    }
+  ],
+  "postRunDisplayOnlyCorrection": {
+    "tested": {
+      "file": "selfhost/build/phase24/backend-native-unit-03/project/src/back/native/tests.mjs",
+      "sha256": "192ecbf344698da894c97c8b57471299ff4337543ab8323cf3d9bc32539ed8f5"
+    },
+    "current": {
+      "file": "selfhost/src/back/native/tests.mjs",
+      "sha256": "a37ca0de6f344e2f5a45ab27cb2ecc6c64879b648169a02b745bb405fa2650f6"
+    },
+    "exactOnlyDifference": "cases.length+6 -> cases.length+5 in printed summary;27 actual PASS rows unchanged",
+    "asserted": true
+  },
+  "finalFocusedScope": {
+    "rows": 28,
+    "exact": 28,
+    "executionPasses": 21,
+    "checkRows": 7,
+    "rawCheckFailures": 3,
+    "composition": "Original focused final acquisition excluding all4 foreign_fid rows, plus4 passing foreign_fid_v3 rows. This is explicitly assembled coverage, not a claim that the original28-row acquisition passed."
+  }
+}

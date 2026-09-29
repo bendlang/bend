@@ -254,7 +254,14 @@ function $driver_todos$(_book_0) {
 }
 
 function $driver_emit_owned$(_book_0) {
-  return $driver_owned_names$(_book_0, {$: "Con", "head": "IO", "tail": {$: "Con", "head": "Sigma", "tail": {$: "Con", "head": "String", "tail": {$: "Con", "head": "Word.Con", "tail": {$: "Con", "head": "IO.OP", "tail": {$: "Con", "head": "Result", "tail": {$: "Con", "head": "Maybe", "tail": {$: "Con", "head": "Bool", "tail": {$: "Con", "head": "Unit", "tail": {$: "Con", "head": "Nat", "tail": {$: "Con", "head": "U32", "tail": {$: "Con", "head": "F32", "tail": {$: "Con", "head": "Char", "tail": {$: "Con", "head": "Array", "tail": {$: "Nil"}}}}}}}}}}}}}}});
+  const _error_0 = run_loop($driver_owned_names$(_book_0, {$: "Con", "head": "IO", "tail": {$: "Con", "head": "Sigma", "tail": {$: "Con", "head": "String", "tail": {$: "Con", "head": "Word.Con", "tail": {$: "Con", "head": "IO.OP", "tail": {$: "Con", "head": "Result", "tail": {$: "Con", "head": "Maybe", "tail": {$: "Con", "head": "Bool", "tail": {$: "Con", "head": "Unit", "tail": {$: "Con", "head": "Nat", "tail": {$: "Con", "head": "U32", "tail": {$: "Con", "head": "F32", "tail": {$: "Con", "head": "Char", "tail": {$: "Con", "head": "Array", "tail": {$: "Nil"}}}}}}}}}}}}}}}));
+  if ((($String$eq$(_error_0, "")))) {
+const _x_0 = {$: "Unit"};
+return {$: "$JMP", f: $driver_foreign_names$, x: [_book_0, _book_0]};
+} else {
+const _x_1 = {$: "Unit"};
+return _error_0;
+}
 }
 
 function $compiler_term_abi$() {
@@ -802,7 +809,7 @@ function $j_l_capture$(_env_0, _seen_0) {
   } else {
     const _h_0 = _env_0["head"];
     const _rest_0 = _env_0["tail"];
-    return run_tail((run_loop($has_name$(_seen_0, ($j_local$(($ix$(_h_0))))))) ? ((_x_0) => {
+    return run_tail((($has_name$(_seen_0, ($j_local$(($ix$(_h_0))))))) ? ((_x_0) => {
   return $j_l_capture$(_rest_0, _seen_0);
 }) : ((_x_1) => {
   const _x_2 = run_loop($j_l_capture$(_rest_0, {$: "Con", "head": ($j_local$(($ix$(_h_0)))), "tail": _seen_0}));
@@ -1101,6 +1108,25 @@ return {$: "$JMP", f: $driver_owned_names$, x: [_book_0, _rest_0]};
   }
 }
 
+function $driver_foreign_names$(_book_0, _defs_0) {
+  if (_defs_0.$ === "Nil") {
+    return "";
+  } else {
+    const _d_0 = _defs_0["head"];
+    const _rest_0 = _defs_0["tail"];
+    return run_tail((run_loop(run_tail((($Bool$and$(($String$eq$(($dk$(_d_0)), "Def")), ($String$eq$(($tg$(run_loop($j_strip$(($dv$(_d_0)))))), "Foreign"))))) ? ((_x_0) => {
+  return $Bool$not$(($String$eq$(($dk$(run_loop($j_find_ctor$(_book_0, ($dn$(_d_0)))))), "Absent")));
+}) : ((_x_1) => {
+  return false;
+}), {$: "Unit"}))) ? ((_x_2) => {
+  const _x_3 = ($dn$(_d_0));
+  return (_x_3 + " names both a constructor and a foreign def: name one apart");
+}) : ((_x_4) => {
+  return $driver_foreign_names$(_book_0, _rest_0);
+}), {$: "Unit"});
+  }
+}
+
 function $sp_public$(_r_0) {
   return {$: "KSpecialized", "book": run_loop(run_tail((($good$(_r_0))) ? ((_x_0) => {
   return $sp_assembled$(($rw$(_r_0)));
@@ -1384,7 +1410,7 @@ function $kr_filter$(_book_0, _live_0) {
   } else {
     const _d_0 = _book_0["head"];
     const _rest_0 = _book_0["tail"];
-    return run_tail((run_loop($has_name$(_live_0, ($dn$(_d_0))))) ? ((_x_0) => {
+    return run_tail((($has_name$(_live_0, ($dn$(_d_0))))) ? ((_x_0) => {
   return {$: "Con", "head": _d_0, "tail": run_loop($kr_filter$(_rest_0, _live_0))};
 }) : ((_x_1) => {
   return $kr_filter$(_rest_0, _live_0);
@@ -1717,7 +1743,7 @@ function $dr_own_names$(_book_0, _seen_0) {
     const _d_0 = _book_0["head"];
     const _rest_0 = _book_0["tail"];
     const _x_0 = ($db$(_d_0));
-    const _x_1 = run_loop($has_name$(_seen_0, ($dn$(_d_0))));
+    const _x_1 = ($has_name$(_seen_0, ($dn$(_d_0))));
     return run_tail(((_x_0 || _x_1)) ? ((_x_2) => {
   return $dr_own_names$(_rest_0, _seen_0);
 }) : ((_x_3) => {
@@ -1975,8 +2001,8 @@ function $j_layout_visit$(_book_0, _defs_0, _todo_0, _seen_0, _stops_0) {
     return run_tail((($String$eq$(_h_0, "$layout.open-array"))) ? ((_x_0) => {
   return true;
 }) : ((_x_1) => {
-  const _x_2 = run_loop($has_name$(_seen_0, _h_0));
-  const _x_3 = run_loop($has_name$(_stops_0, _h_0));
+  const _x_2 = ($has_name$(_seen_0, _h_0));
+  const _x_3 = ($has_name$(_stops_0, _h_0));
   return run_tail(((_x_2 || _x_3)) ? ((_x_4) => {
   return $j_layout_visit$(_book_0, _defs_0, _rest_0, _seen_0, _stops_0);
 }) : ((_x_5) => {
@@ -1992,7 +2018,7 @@ function $kr_visit$(_book_0, _todo_0, _seen_0, _stops_0) {
   } else {
     const _name_0 = _todo_0["head"];
     const _rest_0 = _todo_0["tail"];
-    return run_tail((run_loop($has_name$(_seen_0, _name_0))) ? ((_x_0) => {
+    return run_tail((($has_name$(_seen_0, _name_0))) ? ((_x_0) => {
   return $kr_visit$(_book_0, _rest_0, _seen_0, _stops_0);
 }) : ((_x_1) => {
   return $kr_visit_def$(_book_0, _rest_0, {$: "Con", "head": _name_0, "tail": _seen_0}, _stops_0, run_loop($kr_resolve$(_book_0, _name_0)));
@@ -2028,7 +2054,7 @@ function $ka_defs_except$(_book_0, _ds_0, _stops_0) {
   } else {
     const _d_0 = _ds_0["head"];
     const _rest_0 = _ds_0["tail"];
-    return {$: "Con", "head": run_loop(run_tail((run_loop($has_name$(_stops_0, ($dn$(_d_0))))) ? ((_x_0) => {
+    return {$: "Con", "head": run_loop(run_tail((($has_name$(_stops_0, ($dn$(_d_0))))) ? ((_x_0) => {
   return _d_0;
 }) : ((_x_1) => {
   return $ka_def$(_book_0, _d_0);
@@ -2190,19 +2216,35 @@ function $j_escape$(_s_0) {
   }
 }
 
-function $has_name$(_ns_0, _name_0) {
-  if (_ns_0.$ === "Nil") {
-    return false;
-  } else {
-    const _h_0 = _ns_0["head"];
-    const _t_0 = _ns_0["tail"];
-    if ((($String$eq$(_h_0, _name_0)))) {
-const _x_0 = {$: "Unit"};
-return true;
-} else {
-const _x_1 = {$: "Unit"};
-return {$: "$JMP", f: $has_name$, x: [_t_0, _name_0]};
-}
+function $has_name$($0, $1, $2) {
+  let $pc = 0;
+  for (;;) switch ($pc) {
+    case 0: {
+      const _ns_0 = $0;
+      const _name_0 = $1;
+      if (_ns_0.$ === "Nil") {
+        return false;
+      } else {
+        const _h_0 = _ns_0["head"];
+        const _t_0 = _ns_0["tail"];
+        $0 = _t_0;
+        $1 = _name_0;
+        $2 = ($String$eq$(_h_0, _name_0));
+        $pc = 1; continue;
+      }
+    }
+    case 1: {
+      const _rest_0 = $0;
+      const _name_0 = $1;
+      const _same_0 = $2;
+      if (_same_0) {
+        return true;
+      } else {
+        $0 = _rest_0;
+        $1 = _name_0;
+        $pc = 0; continue;
+      }
+    }
   }
 }
 
@@ -2496,6 +2538,16 @@ function $driver_owned_name$(_book_0, _name_0) {
     const _x_0 = ($Bool$and$(($String$eq$(($dn$(_d_0)), _name_0)), ($Bool$not$(($db$(_d_0))))));
     const _x_1 = ($driver_owned_name$(_rest_0, _name_0));
     return (_x_0 || _x_1);
+  }
+}
+
+function $j_find_ctor$(_book_0, _name_0) {
+  if (_book_0.$ === "Nil") {
+    return $missing$();
+  } else {
+    const _d_0 = _book_0["head"];
+    const _rest_0 = _book_0["tail"];
+    return $j_found_ctor$(run_loop($lookup$(($dc$(_d_0)), _name_0)), _rest_0, _name_0);
   }
 }
 
@@ -2831,7 +2883,7 @@ function $nc_foreign_has$(_paths_0, _path_0) {
 }
 
 function $nt_fid$(_k_0) {
-  const _x_0 = ($String$to_upper$(($nt_clean$(_k_0))));
+  const _x_0 = ($nc_ctor_codes$(_k_0));
   return ("FID_" + _x_0);
 }
 
@@ -3355,7 +3407,7 @@ function $fs_source$(_s_0, _ns_0, _sources_0, _g_0, _stack_0, _seed_0) {
   return run_tail((($String$is_empty$(($f_source_path$(_s_0))))) ? ((_x_2) => {
   return {$: "FGraph", "book": _book_0, "error": "module source was not supplied", "done": _done_0};
 }) : ((_x_3) => {
-  return run_tail((run_loop($has_name$(_stack_0, ($f_source_path$(_s_0))))) ? ((_x_4) => {
+  return run_tail((($has_name$(_stack_0, ($f_source_path$(_s_0))))) ? ((_x_4) => {
   const _x_5 = ($f_source_path$(_s_0));
   return {$: "FGraph", "book": _book_0, "error": ("cyclic import through " + _x_5), "done": _done_0};
 }) : ((_x_6) => {
@@ -3394,7 +3446,7 @@ function $dr_relies$(_book_0, _todo_0, _seen_0) {
   } else {
     const _name_0 = _todo_0["head"];
     const _rest_0 = _todo_0["tail"];
-    return run_tail((run_loop($has_name$(_seen_0, _name_0))) ? ((_x_0) => {
+    return run_tail((($has_name$(_seen_0, _name_0))) ? ((_x_0) => {
   return $dr_relies$(_book_0, _rest_0, _seen_0);
 }) : ((_x_1) => {
   return $dr_relies_def$(_book_0, _rest_0, {$: "Con", "head": _name_0, "tail": _seen_0}, run_loop($kr_resolve$(_book_0, _name_0)));
@@ -4156,6 +4208,38 @@ function $j_escape_char$(_c_0) {
   return $j_escape_char_on$(_c_0, ($Char$to_u32$(_c_0)));
 }
 
+function $has_name_next$($0, $1, $2) {
+  let $pc = 1;
+  for (;;) switch ($pc) {
+    case 0: {
+      const _ns_0 = $0;
+      const _name_0 = $1;
+      if (_ns_0.$ === "Nil") {
+        return false;
+      } else {
+        const _h_0 = _ns_0["head"];
+        const _t_0 = _ns_0["tail"];
+        $0 = _t_0;
+        $1 = _name_0;
+        $2 = ($String$eq$(_h_0, _name_0));
+        $pc = 1; continue;
+      }
+    }
+    case 1: {
+      const _rest_0 = $0;
+      const _name_0 = $1;
+      const _same_0 = $2;
+      if (_same_0) {
+        return true;
+      } else {
+        $0 = _rest_0;
+        $1 = _name_0;
+        $pc = 0; continue;
+      }
+    }
+  }
+}
+
 function $j_apply_spine$(_book_0, _env_0, _t_0, _tail_0, _fty_0, _spine_0) {
   if ((run_loop($j_choice_call$(_book_0, _spine_0)))) {
 const _x_0 = {$: "Unit"};
@@ -4743,6 +4827,16 @@ function $driver_holes_terms$(_ts_0) {
   }
 }
 
+function $j_found_ctor$(_found_0, _rest_0, _name_0) {
+  if ((($String$eq$(($dk$(_found_0)), "Absent")))) {
+const _x_0 = {$: "Unit"};
+return {$: "$JMP", f: $j_find_ctor$, x: [_rest_0, _name_0]};
+} else {
+const _x_1 = {$: "Unit"};
+return _found_0;
+}
+}
+
 function $kw_checked$(_world_0) {
   const _checked_0 = _world_0["checked"];
   return _checked_0;
@@ -5138,6 +5232,19 @@ return 0;
 }), {$: "Unit"});
 }), {$: "Unit"});
 }), {$: "Unit"});
+}
+
+function $nc_ctor_codes$(_name_0) {
+  if (_name_0 === "") {
+    return "";
+  } else {
+    const _h_0 = (_name_0.codePointAt(0) > 0xFFFF ? _name_0.slice(0, 2) : _name_0[0]);
+    const _rest_0 = (_name_0.codePointAt(0) > 0xFFFF ? _name_0.slice(2) : _name_0.slice(1));
+    const _x_0 = ($nc_ctor_codes$(_rest_0));
+    const _x_1 = ($U32$show$(($Char$to_u32$(_h_0))));
+    const _x_2 = ("_" + _x_0);
+    return (_x_1 + _x_2);
+  }
 }
 
 function $String$to_upper$(_s_0) {
@@ -5883,7 +5990,7 @@ function $j_layout_term$(_book_0, _env_0, _t_0, _ty_0, _todo_0) {
 }
 
 function $kr_dependencies$(_d_0, _stops_0, _todo_0) {
-  return $List$append$(($kr_refs$(($dt$(_d_0)), ($kr_ctor_refs$(($dc$(_d_0)), run_loop(run_tail((run_loop($has_name$(_stops_0, ($dn$(_d_0))))) ? ((_x_0) => {
+  return $List$append$(($kr_refs$(($dt$(_d_0)), ($kr_ctor_refs$(($dc$(_d_0)), run_loop(run_tail((($has_name$(_stops_0, ($dn$(_d_0))))) ? ((_x_0) => {
   return {$: "Nil"};
 }) : ((_x_1) => {
   return $kr_refs$(($dv$(_d_0)), {$: "Nil"});
@@ -6372,16 +6479,6 @@ return _literal_0;
 }
 }
 
-function $j_find_ctor$(_book_0, _name_0) {
-  if (_book_0.$ === "Nil") {
-    return $missing$();
-  } else {
-    const _d_0 = _book_0["head"];
-    const _rest_0 = _book_0["tail"];
-    return $j_found_ctor$(run_loop($lookup$(($dc$(_d_0)), _name_0)), _rest_0, _name_0);
-  }
-}
-
 function $j_ctor_args$(_book_0, _env_0, _args_0, _tel_0) {
   if (_args_0.$ === "Nil") {
     return "";
@@ -6424,7 +6521,7 @@ function $j_count_constructors$(_ctors_0, _removed_0) {
   } else {
     const _d_0 = _ctors_0["head"];
     const _rest_0 = _ctors_0["tail"];
-    const _x_2 = run_loop(run_tail((run_loop($has_name$(_removed_0, ($dn$(_d_0))))) ? ((_x_0) => {
+    const _x_2 = run_loop(run_tail((($has_name$(_removed_0, ($dn$(_d_0))))) ? ((_x_0) => {
   return 0;
 }) : ((_x_1) => {
   return 1;
@@ -6933,39 +7030,42 @@ function $ne_fill$(_src_0, _mark_0, _text_0) {
 function $nb_emit$(_ss_0, _cs_0, _image_size_0, _pure_0) {
   const _x_0 = ($U32$show$(($nt_bool$(_pure_0))));
   const _x_1 = (_x_0 + "\n");
-  const _x_2 = ($nb_dispatch$(_ss_0));
-  const _x_3 = ("\n#define MAIN_FID FID_MAIN\n#define MAIN_PURE " + _x_1);
+  const _x_2 = ($nt_fid$("main"));
+  const _x_3 = ("\n#define MAIN_PURE " + _x_1);
   const _x_4 = (_x_2 + _x_3);
-  const _x_5 = ($U32$show$(_image_size_0));
-  const _x_6 = ("\n#define WL_TABLE " + _x_4);
+  const _x_5 = ($nb_dispatch$(_ss_0));
+  const _x_6 = ("\n#define MAIN_FID " + _x_4);
   const _x_7 = (_x_5 + _x_6);
-  const _x_8 = ("#define STAT_LEN " + _x_7);
-  const _x_9 = ($nb_ctr_hot$(_cs_0));
-  const _x_10 = (" };\n" + _x_8);
-  const _x_11 = (_x_9 + _x_10);
-  const _x_12 = ("CONSTV u8 CID_HOT_T[] = { " + _x_11);
-  const _x_13 = ($nb_ctr_arity$(_cs_0));
-  const _x_14 = (" };\n" + _x_12);
-  const _x_15 = (_x_13 + _x_14);
-  const _x_16 = ("CONSTV u8 CID_ARITY_T[] = { " + _x_15);
-  const _x_17 = ($nb_result_words$(_ss_0));
-  const _x_18 = (" };\n" + _x_16);
-  const _x_19 = (_x_17 + _x_18);
-  const _x_20 = ("CONSTV u8 FID_RESW_T[] = { " + _x_19);
-  const _x_21 = ($nb_flags$(_ss_0, run_loop($nb_fork_close$(_ss_0, ($nb_fork_roots$(_ss_0)), ($nt_count$(_ss_0))))));
-  const _x_22 = (" };\n" + _x_20);
-  const _x_23 = (_x_21 + _x_22);
-  const _x_24 = ("CONSTV u8 FID_FLAG_T[] = { " + _x_23);
-  const _x_25 = ($nb_arities$(_ss_0));
-  const _x_26 = (" };\n" + _x_24);
-  const _x_27 = (_x_25 + _x_26);
-  const _x_28 = ($nb_bank$(_ss_0));
-  const _x_29 = ("CONSTV u8 FID_ARITY_T[] = { " + _x_27);
-  const _x_30 = ($nb_ctr_ids$(_cs_0, 0));
-  const _x_31 = (_x_28 + _x_29);
-  const _x_32 = ($nb_seg_ids$(_ss_0, 0));
-  const _x_33 = (_x_30 + _x_31);
-  return (_x_32 + _x_33);
+  const _x_8 = ($U32$show$(_image_size_0));
+  const _x_9 = ("\n#define WL_TABLE " + _x_7);
+  const _x_10 = (_x_8 + _x_9);
+  const _x_11 = ("#define STAT_LEN " + _x_10);
+  const _x_12 = ($nb_ctr_hot$(_cs_0));
+  const _x_13 = (" };\n" + _x_11);
+  const _x_14 = (_x_12 + _x_13);
+  const _x_15 = ("CONSTV u8 CID_HOT_T[] = { " + _x_14);
+  const _x_16 = ($nb_ctr_arity$(_cs_0));
+  const _x_17 = (" };\n" + _x_15);
+  const _x_18 = (_x_16 + _x_17);
+  const _x_19 = ("CONSTV u8 CID_ARITY_T[] = { " + _x_18);
+  const _x_20 = ($nb_result_words$(_ss_0));
+  const _x_21 = (" };\n" + _x_19);
+  const _x_22 = (_x_20 + _x_21);
+  const _x_23 = ("CONSTV u8 FID_RESW_T[] = { " + _x_22);
+  const _x_24 = ($nb_flags$(_ss_0, run_loop($nb_fork_close$(_ss_0, ($nb_fork_roots$(_ss_0)), ($nt_count$(_ss_0))))));
+  const _x_25 = (" };\n" + _x_23);
+  const _x_26 = (_x_24 + _x_25);
+  const _x_27 = ("CONSTV u8 FID_FLAG_T[] = { " + _x_26);
+  const _x_28 = ($nb_arities$(_ss_0));
+  const _x_29 = (" };\n" + _x_27);
+  const _x_30 = (_x_28 + _x_29);
+  const _x_31 = ($nb_bank$(_ss_0));
+  const _x_32 = ("CONSTV u8 FID_ARITY_T[] = { " + _x_30);
+  const _x_33 = ($nb_ctr_ids$(_cs_0, 0));
+  const _x_34 = (_x_31 + _x_32);
+  const _x_35 = ($nb_seg_ids$(_ss_0, 0));
+  const _x_36 = (_x_33 + _x_34);
+  return (_x_35 + _x_36);
 }
 
 function $ne_segments$(_ss_0) {
@@ -7472,19 +7572,6 @@ function $Char$to_upper$(_c_0) {
   const _x_1 = _c_0.codePointAt(0);
   const _x_2 = (Math.imul(_x_0, 32) >>> 0);
   return char_new(((_x_1 - _x_2) >>> 0));
-}
-
-function $nc_ctor_codes$(_name_0) {
-  if (_name_0 === "") {
-    return "";
-  } else {
-    const _h_0 = (_name_0.codePointAt(0) > 0xFFFF ? _name_0.slice(0, 2) : _name_0[0]);
-    const _rest_0 = (_name_0.codePointAt(0) > 0xFFFF ? _name_0.slice(2) : _name_0.slice(1));
-    const _x_0 = ($nc_ctor_codes$(_rest_0));
-    const _x_1 = ($U32$show$(($Char$to_u32$(_h_0))));
-    const _x_2 = ("_" + _x_0);
-    return (_x_1 + _x_2);
-  }
 }
 
 function $nc_ctor_decode$(_rest_0, _acc_0, _digits_0, _out_0, _original_0) {
@@ -8022,7 +8109,7 @@ function $j_printable_adt$(_book_0, _ty_0, _seen_0, _fuel_0) {
   const _x_0 = ($nm$(_ty_0));
   const _x_1 = (_x_0 + "|");
   const _x_2 = ($String$contains$("|U32|F32|Nat|Char|String|", ("|" + _x_1)));
-  const _x_3 = run_loop($has_name$(_seen_0, run_loop($kp_show$(_ty_0))));
+  const _x_3 = ($has_name$(_seen_0, run_loop($kp_show$(_ty_0))));
   return run_tail(((_x_2 || _x_3)) ? ((_x_4) => {
   return true;
 }) : ((_x_5) => {
@@ -8382,16 +8469,6 @@ return "";
 }), {$: "Unit"});
 }
 
-function $j_found_ctor$(_found_0, _rest_0, _name_0) {
-  if ((($String$eq$(($dk$(_found_0)), "Absent")))) {
-const _x_0 = {$: "Unit"};
-return {$: "$JMP", f: $j_find_ctor$, x: [_rest_0, _name_0]};
-} else {
-const _x_1 = {$: "Unit"};
-return _found_0;
-}
-}
-
 function $all$(_q_0, _name_0, _id_0, _a_0, _b_0) {
   return $kt$("All", _name_0, _id_0, _q_0, {$: "Con", "head": _a_0, "tail": {$: "Con", "head": _b_0, "tail": {$: "Nil"}}});
 }
@@ -8705,7 +8782,7 @@ function $constructor_names$(_done_0, _ctrs_0, _names_0) {
   } else {
     const _h_0 = _ctrs_0["head"];
     const _rest_0 = _ctrs_0["tail"];
-    const _x_0 = run_loop($has_name$(_names_0, ($dn$(_h_0))));
+    const _x_0 = ($has_name$(_names_0, ($dn$(_h_0))));
     const _x_1 = ($constructor_exists$(_done_0, ($dn$(_h_0))));
     return run_tail(((_x_0 || _x_1)) ? ((_x_2) => {
   return "duplicate constructor name";
@@ -10149,7 +10226,7 @@ function $kr_refs_list$($0, $1) {
 }
 
 function $kr_push$(_name_0, _names_0) {
-  if ((run_loop($has_name$(_names_0, _name_0)))) {
+  if ((($has_name$(_names_0, _name_0)))) {
 const _x_0 = {$: "Unit"};
 return _names_0;
 } else {
@@ -13629,9 +13706,12 @@ function $f_import_alias_head$(_name_0) {
 }
 
 function $f_decl_taken$(_name_0, _book_0, _scope_0) {
+  const _prior_0 = _scope_0["prior"];
   const _index_0 = _scope_0["index"];
+  const _ctorIndex_0 = _scope_0["ctors"];
   const _ns_0 = _scope_0["ns"];
-  const _x_0 = ($Bool$not$(($f_eq$(($dk$(($f_find$(_name_0, _book_0)))), "Missing"))));
+  const _aliases_0 = _scope_0["aliases"];
+  const _x_0 = ($Bool$not$(($f_eq$(($dk$(($f_decl_local$(_name_0, _book_0, {$: "FParseScope", "prior": _prior_0, "index": _index_0, "ctors": _ctorIndex_0, "ns": _ns_0, "aliases": _aliases_0})))), "Missing"))));
   const _x_1 = ($Bool$not$(($f_eq$(($dk$(run_loop($index_find$(_index_0, _name_0, ($index_hash$(_name_0, 2166136261)), 32)))), "Absent"))));
   const _x_2 = (_x_0 || _x_1);
   const _x_3 = ($Bool$not$(($f_eq$(($dk$(run_loop($index_find$(_index_0, run_loop($f_qual_name$(_name_0, _ns_0)), ($index_hash$(run_loop($f_qual_name$(_name_0, _ns_0)), 2166136261)), 32)))), "Absent"))));
@@ -13639,7 +13719,7 @@ function $f_decl_taken$(_name_0, _book_0, _scope_0) {
 }
 
 function $f_type$(_name_0, _ts_0, _book_0, _imports_0, _scope_0) {
-  return run_tail((($Bool$and$(($f_valid_name$(_name_0)), ($f_eq$(($dk$(($f_find$(_name_0, _book_0)))), "Missing"))))) ? ((_x_0) => {
+  return run_tail((($Bool$and$(($f_valid_name$(_name_0)), ($f_eq$(($dk$(($f_decl_local$(_name_0, _book_0, _scope_0)))), "Missing"))))) ? ((_x_0) => {
   return $f_type_named$(_name_0, _ts_0, _book_0, _imports_0, _scope_0);
 }) : ((_x_1) => {
   return $f_result$(_book_0, ($kt$("Error", ("invalid or reserved datatype name: " + _name_0), 0, 0, {$: "Nil"})), _imports_0);
@@ -13738,7 +13818,7 @@ function $f_def_context_header$(_ts_0, _rest_0, _book_0, _imports_0, _unsafe_0, 
 }
 
 function $f_decl_find$(_name_0, _book_0, _scope_0) {
-  const _local_0 = ($f_find$(_name_0, _book_0));
+  const _local_0 = ($f_decl_local$(_name_0, _book_0, _scope_0));
   return run_tail((($f_eq$(($dk$(_local_0)), "Missing"))) ? ((_x_0) => {
   return $f_decl_local_ctor$(_name_0, _book_0, _scope_0, run_loop($f_decl_prior$(_name_0, _scope_0)));
 }) : ((_x_1) => {
@@ -13996,7 +14076,7 @@ function $remaining$(_cs_0, _removed_0) {
   } else {
     const _h_0 = _cs_0["head"];
     const _t_0 = _cs_0["tail"];
-    return run_tail((run_loop($has_name$(_removed_0, ($dn$(_h_0))))) ? ((_x_0) => {
+    return run_tail((($has_name$(_removed_0, ($dn$(_h_0))))) ? ((_x_0) => {
   return $remaining$(_t_0, _removed_0);
 }) : ((_x_1) => {
   return {$: "Con", "head": _h_0, "tail": run_loop($remaining$(_t_0, _removed_0))};
@@ -15303,6 +15383,23 @@ function $f_end$(_input_0) {
   return $f_raw_end$(_tokens_0);
 }
 
+function $f_decl_local$(_name_0, _book_0, _scope_0) {
+  const _index_0 = _scope_0["index"];
+  const _ns_0 = _scope_0["ns"];
+  const _aliases_0 = _scope_0["aliases"];
+  const _alias_0 = run_loop($f_alias$(_name_0, _aliases_0));
+  const _key_0 = run_loop(run_tail((($f_eq$(_alias_0, _name_0))) ? ((_x_0) => {
+  return $f_qual_name$(_name_0, _ns_0);
+}) : ((_x_1) => {
+  return _alias_0;
+}), {$: "Unit"}));
+  return $f_find$(_name_0, run_loop(run_tail((($f_eq$(($dk$(run_loop($index_find$(_index_0, _key_0, ($index_hash$(_key_0, 2166136261)), 32)))), "Absent"))) ? ((_x_2) => {
+  return {$: "Nil"};
+}) : ((_x_3) => {
+  return _book_0;
+}), {$: "Unit"})));
+}
+
 function $f_type_named$(_name_0, _ts_0, _book_0, _imports_0, _scope_0) {
   return run_tail((($f_eq$(($f_tx$(_ts_0)), "<>"))) ? ((_x_0) => {
   return $f_type_params$(_name_0, {$: "FParsed", "term": ($kt$("Tele", "", 0, 0, {$: "Nil"})), "rest": ($f_tl$(_ts_0))}, _book_0, _imports_0, _scope_0);
@@ -15312,7 +15409,7 @@ function $f_type_named$(_name_0, _ts_0, _book_0, _imports_0, _scope_0) {
 }
 
 function $f_law$(_name_0, _ts_0, _book_0, _imports_0, _clauses_0, _scope_0) {
-  return run_tail((($Bool$and$(($f_valid_name$(_name_0)), ($f_eq$(($dk$(($f_find$(_name_0, _book_0)))), "Missing"))))) ? ((_x_0) => {
+  return run_tail((($Bool$and$(($f_valid_name$(_name_0)), ($f_eq$(($dk$(($f_decl_local$(_name_0, _book_0, _scope_0)))), "Missing"))))) ? ((_x_0) => {
   return $f_law_base$(_name_0, _ts_0, _book_0, _imports_0, _clauses_0, _scope_0);
 }) : ((_x_1) => {
   return $f_result$(_book_0, ($kt$("Error", ("invalid or reserved law name: " + _name_0), 0, 0, {$: "Nil"})), _imports_0);
@@ -16003,7 +16100,7 @@ function $check_lam_q$(_e_0, _ctx_0, _t_0, _dem_0, _ty_0, _q_0) {
 function $check_ctr_found$(_e_0, _ctx_0, _t_0, _dem_0, _ty_0, _ctr_0) {
   const _x_0 = ($da$(_ctr_0));
   const _x_1 = ($terms_len$(($ks$(_t_0))));
-  return run_tail((($Bool$and$(($Bool$and$(($Bool$not$(($String$eq$(($dk$(_ctr_0)), "Absent")))), ($Bool$not$(run_loop($has_name$(($rm$(_ty_0)), ($nm$(_t_0)))))))), (_x_0 === _x_1)))) ? ((_x_2) => {
+  return run_tail((($Bool$and$(($Bool$and$(($Bool$not$(($String$eq$(($dk$(_ctr_0)), "Absent")))), ($Bool$not$(($has_name$(($rm$(_ty_0)), ($nm$(_t_0)))))))), (_x_0 === _x_1)))) ? ((_x_2) => {
   return $ki_args$(_t_0, _ty_0, run_loop($tele_check$(_e_0, _ctx_0, run_loop($tele_fill$(($cb$(_e_0)), ($dt$(_ctr_0)), ($ks$(_ty_0)))), ($ks$(_t_0)), _dem_0)));
 }) : ((_x_3) => {
   return $dg_ctor_error$(_e_0, _t_0, _ty_0, _ctr_0);
@@ -16951,7 +17048,7 @@ function $tele_check$(_e_0, _ctx_0, _tel_0, _args_0, _dem_0) {
 }
 
 function $dg_ctor_error$(_e_0, _t_0, _ty_0, _ctr_0) {
-  return run_tail((($Bool$and$(($Bool$not$(($String$eq$(($dk$(_ctr_0)), "Absent")))), ($Bool$not$(run_loop($has_name$(($rm$(_ty_0)), ($nm$(_t_0))))))))) ? ((_x_0) => {
+  return run_tail((($Bool$and$(($Bool$not$(($String$eq$(($dk$(_ctr_0)), "Absent")))), ($Bool$not$(($has_name$(($rm$(_ty_0)), ($nm$(_t_0))))))))) ? ((_x_0) => {
   const _x_1 = ($da$(_ctr_0));
   const _x_4 = ($U32$show$(($da$(_ctr_0))));
   const _x_5 = run_loop(run_tail(((_x_1 === 1)) ? ((_x_2) => {
@@ -17401,10 +17498,10 @@ function $f_def_base$(_name_0, _p_0, _book_0, _imports_0, _unsafe_0, _scope_0) {
 }) : ((_x_3) => {
   const _x_4 = ($Bool$not$(($f_eq$(run_loop($f_alias$(_name_0, _imports_0)), _name_0))));
   const _x_5 = ($f_def_fillable$(run_loop($f_decl_find$(_name_0, _book_0, _scope_0))));
-  return $f_def_type$(_name_0, ($ks$(_pars_0)), {$: "FParsed", "term": run_loop(run_tail((($Bool$and$(($f_eq$(($dk$(($f_find$(_name_0, _book_0)))), "Missing")), (_x_4 || _x_5)))) ? ((_x_6) => {
+  return $f_def_type$(_name_0, ($ks$(_pars_0)), {$: "FParsed", "term": run_loop(run_tail((($Bool$and$(($f_eq$(($dk$(($f_decl_local$(_name_0, _book_0, _scope_0)))), "Missing")), (_x_4 || _x_5)))) ? ((_x_6) => {
   return $kt$("ImportLaw", _name_0, 0, 0, ($ks$(_pars_0)));
 }) : ((_x_7) => {
-  return $dt$(($f_find$(_name_0, _book_0)));
+  return $dt$(($f_decl_local$(_name_0, _book_0, _scope_0)));
 }), {$: "Unit"})), "rest": _ts_0}, _book_0, _imports_0, _unsafe_0, _scope_0);
 }), {$: "Unit"});
 }), {$: "Unit"});
@@ -18423,7 +18520,7 @@ function $f_atom$(_ts_0) {
 function $f_def_type$(_name_0, _pars_0, _p_0, _book_0, _imports_0, _unsafe_0, _scope_0) {
   const _ty_0 = _p_0["term"];
   const _ts_0 = _p_0["rest"];
-  const _signature_0 = run_loop($f_context_signature$(run_loop($f_def_signature$(_name_0, _pars_0, _ty_0, _book_0)), _ts_0));
+  const _signature_0 = run_loop($f_context_signature$(run_loop($f_def_signature$(_name_0, _pars_0, _ty_0, _book_0, _scope_0)), _ts_0));
   return run_tail((($f_context_stop$(_ty_0))) ? ((_x_0) => {
   return $f_result$(_book_0, _ty_0, _imports_0);
 }) : ((_x_1) => {
@@ -19168,8 +19265,8 @@ function $f_atom_existing$(_ts_0) {
   return $f_locate$(run_loop($f_atom_raw$(_ts_0)), ($f_begin$(_ts_0)), (_x_2 || _x_3), (_x_14 || _x_15), (_x_20 || _x_21));
 }
 
-function $f_def_signature$(_name_0, _pars_0, _ty_0, _book_0) {
-  if ((($Bool$and$(($f_eq$(($dk$(($f_find$(_name_0, _book_0)))), "Missing")), ($Bool$not$(($f_eq$(($tg$(_ty_0)), "ImportLaw")))))))) {
+function $f_def_signature$(_name_0, _pars_0, _ty_0, _book_0, _scope_0) {
+  if ((($Bool$and$(($f_eq$(($dk$(($f_decl_local$(_name_0, _book_0, _scope_0)))), "Missing")), ($Bool$not$(($f_eq$(($tg$(_ty_0)), "ImportLaw")))))))) {
 const _x_0 = {$: "Unit"};
 return {$: "$JMP", f: $f_tbind$, x: [_pars_0, _ty_0]};
 } else {
@@ -19196,10 +19293,10 @@ function $f_def_body$(_name_0, _pars_0, _ty_0, _p_0, _book_0, _imports_0, _unsaf
   return run_tail((($f_context_stop$(_body_0))) ? ((_x_0) => {
   return $f_result$(_book_0, _body_0, _imports_0);
 }) : ((_x_1) => {
-  return $f_context_publish$(_ts_0, {$: "KDef", "name": _name_0, "kind": "Def", "arity": ($terms_len$(_pars_0)), "templates": run_loop(run_tail((($f_eq$(($dk$(($f_find$(_name_0, _book_0)))), "Missing"))) ? ((_x_2) => {
+  return $f_context_publish$(_ts_0, {$: "KDef", "name": _name_0, "kind": "Def", "arity": ($terms_len$(_pars_0)), "templates": run_loop(run_tail((($f_eq$(($dk$(($f_decl_local$(_name_0, _book_0, _scope_0)))), "Missing"))) ? ((_x_2) => {
   return $f_templates$(_pars_0);
 }) : ((_x_3) => {
-  return $dx$(($f_find$(_name_0, _book_0)));
+  return $dx$(($f_decl_local$(_name_0, _book_0, _scope_0)));
 }), {$: "Unit"})), "typ": _ty_0, "value": _body_0, "ctors": {$: "Nil"}, "native": false, "unsafe": _unsafe_0}, _book_0, _imports_0, _scope_0, true);
 }), {$: "Unit"});
 }
@@ -19385,7 +19482,7 @@ function $norm_subset$(_as_0, _bs_0) {
   } else {
     const _h_0 = _bs_0["head"];
     const _t_0 = _bs_0["tail"];
-    return $Bool$and$(run_loop($has_name$(_as_0, _h_0)), ($norm_subset$(_as_0, _t_0)));
+    return $Bool$and$(($has_name$(_as_0, _h_0)), ($norm_subset$(_as_0, _t_0)));
   }
 }
 

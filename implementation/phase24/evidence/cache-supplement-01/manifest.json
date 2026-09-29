@@ -1,0 +1,25 @@
+{
+  "kind": "phase24-closed-evidence-capsule",
+  "roots": [
+    "selfhost/build/typed/cache/base-7b523bdffc0acde702dda1005a5e8201f7b65b2e432d1be95b07f2cfcc0346fa-c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661-8efa1a80d8575e6c9792781053a2e4c2121bb02cdaa722b8b53ea6665a2ad10b.json"
+  ],
+  "externalExclusions": {
+    "prefixes": []
+  },
+  "created": "2026-09-29T20:59:59Z",
+  "archive": {
+    "file": "phase24-cli-cache.tar.xz",
+    "bytes": 113556,
+    "sha256": "8bc80d2b7eecc9de71897a3cf7fb357e564d2ca2ec03d5972e5f6001c9104f3b"
+  },
+  "members": [
+    {
+      "path": "selfhost/build/typed/cache/base-7b523bdffc0acde702dda1005a5e8201f7b65b2e432d1be95b07f2cfcc0346fa-c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661-8efa1a80d8575e6c9792781053a2e4c2121bb02cdaa722b8b53ea6665a2ad10b.json",
+      "kind": "file",
+      "mode": 420,
+      "bytes": 3468122,
+      "sha256": "8169c5aab3e3fc9e50fd2e8a0d6c3f0c18d1f09043e612c17afeaf73e9a0aa11"
+    }
+  ],
+  "scope": "Supplement to immutable primary Phase24 capsule: current exact installed CLI Base-cache bytes, captured after identifying the dynamic dependency. Does not rewrite old input reports or establish a new compilation."
+}

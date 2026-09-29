@@ -43,7 +43,7 @@ def nt_clean(s: String) -> String:
 
 @unsafe
 def nt_fid(k: String) -> String:
-  "FID_" ++ String.to_upper(nt_clean(k))
+  "FID_" ++ nc_ctor_codes(k)
 
 @unsafe
 def nt_cid(k: String) -> String:

@@ -1,0 +1,73 @@
+{
+  "complete": true,
+  "source": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/compiler.bend",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/compiler.bend",
+    "sha256": "fac061286a2683914244178eb1f9b4dc2fbc2d393560739663e8bd08bbc12996"
+  },
+  "order": [
+    "typescript",
+    "released",
+    "local",
+    "membership",
+    "final",
+    "final",
+    "membership",
+    "local",
+    "released",
+    "typescript",
+    "released",
+    "local",
+    "typescript",
+    "final",
+    "membership"
+  ],
+  "statistics": {
+    "typescript": {
+      "samples": 3,
+      "meanProcessWallMs": 3737.0016686666627,
+      "meanRequestMs": 2429.0411626666664,
+      "maxRssKiB": 498780
+    },
+    "released": {
+      "samples": 3,
+      "meanProcessWallMs": 11730.024555000002,
+      "meanRequestMs": 10400.363540333334,
+      "maxRssKiB": 730352
+    },
+    "local": {
+      "samples": 3,
+      "meanProcessWallMs": 11299.032897000003,
+      "meanRequestMs": 9971.786484999999,
+      "maxRssKiB": 727948
+    },
+    "membership": {
+      "samples": 3,
+      "meanProcessWallMs": 11085.633748999995,
+      "meanRequestMs": 9755.974112,
+      "maxRssKiB": 730492
+    },
+    "final": {
+      "samples": 3,
+      "meanProcessWallMs": 11156.46929433333,
+      "meanRequestMs": 9820.527538666667,
+      "maxRssKiB": 730132
+    }
+  },
+  "finalVsReleased": {
+    "meanProcessWallMs": -4.889633930239212,
+    "meanRequestMs": -5.5751512859913195,
+    "maxRssKiB": -0.030122461498016673
+  },
+  "membershipVsLocal": -1.8886496742271386,
+  "finalVsMembership": 0.6389850768768746,
+  "finalToTypeScriptProcess": 2.9854065594554267,
+  "releasedToTypeScriptProcess": 3.138886624898189,
+  "finalToTypeScriptRequest": 4.042964643664345,
+  "scope": "Same frozen compiler source, each usable bundle with its own pinned Base and runtime. No emission. Fresh processes, validated Bend Base cache; TypeScript checks its Base. OS caches are not flushed.",
+  "timingBoundary": "Request wraps adapter.probe including lazy API loading. Process includes startup, identity hashing and output capture.",
+  "raw": {
+    "file": "selfhost/build/phase24/cost-02/report.json",
+    "sha256": "4a5d977b35e7f32e9f1cf018a8f10384bc43188d3597daad61146cfa01c243d5"
+  }
+}

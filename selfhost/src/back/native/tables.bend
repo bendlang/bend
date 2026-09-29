@@ -218,4 +218,4 @@ def nb_emit(+ss: List<&2, N_Segment>, +cs: List<&2, N_Constructor>, +image_size:
     ++ "CONSTV u8 CID_ARITY_T[] = { " ++ nb_ctr_arity(cs) ++ " };\n"
     ++ "CONSTV u8 CID_HOT_T[] = { " ++ nb_ctr_hot(cs) ++ " };\n"
     ++ "#define STAT_LEN " ++ U32.show(image_size) ++ "\n#define WL_TABLE " ++ nb_dispatch(ss)
-    ++ "\n#define MAIN_FID FID_MAIN\n#define MAIN_PURE " ++ U32.show(nt_bool(pure)) ++ "\n"
+    ++ "\n#define MAIN_FID " ++ nt_fid("main") ++ "\n#define MAIN_PURE " ++ U32.show(nt_bool(pure)) ++ "\n"

@@ -11,7 +11,10 @@ The active target is upstream
 [`018751270e800bc222a93dad7f257083ee53a5f7`](https://github.com/bendlang/bend/tree/018751270e800bc222a93dad7f257083ee53a5f7)
 (after Bend 2.0.34). The [Phase23 report](../implementation/phase23/upstream-graph-conversion.md)
 records checked artifact identities, current conformance, measured cost and
-remaining gaps. This experimental port does not establish independent proof
+remaining gaps. The [Phase24 report](../implementation/phase24/profile-and-coverage.md)
+continues with profiled local-name and membership improvements, emission collision
+checks, injective native function names and a current backend coverage inventory.
+This experimental port does not establish independent proof
 validity; `--verdict` is explicitly unsupported.
 
 Phase19 checks and produces live template instances inside the ordinary checker,
