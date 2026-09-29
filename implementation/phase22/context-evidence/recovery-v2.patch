@@ -1,0 +1,97 @@
+--- selfhost/tools/performance/phase22/context-recover.py
++++ selfhost/tools/performance/phase22/context-recover-v2.py
+@@ -4,6 +4,9 @@
+ import hashlib, json, os, posixpath, shutil, stat, subprocess, sys, tarfile, tempfile
+ 
+ ROOT = Path(__file__).resolve().parents[4]
++MAX_PART_BYTES = 38_000_000
++MAX_ARCHIVE_BYTES = 40_000_000
++MAX_RETAINED_BYTES = 8_000_000
+ 
+ def need(ok, message):
+     if not ok: raise ValueError(message)
+@@ -24,16 +27,20 @@
+     need(s.st_size == row['bytes'] and sha(file) == row['sha256'] and stat.S_IMODE(s.st_mode) == row['mode'], 'Restored bytes/mode mismatch: '+str(file))
+ 
+ directory, report_arg = sys.argv[1:]; capsule = Path(directory).resolve(); report_file = Path(report_arg).resolve()
+-report = {'kind':'phase22-independent-bounded-recovery','complete':False,'pass':False,'toolSha256':sha(__file__)}
++need(not Path(report_arg).absolute().is_relative_to(capsule) and not report_file.is_relative_to(capsule), 'Recovery report must be outside capsule')
++report = {'kind':'phase22-independent-bounded-recovery-v2','complete':False,'pass':False,'toolSha256':sha(__file__)}
+ need(not report_file.exists(), 'Recovery report already exists')
+ try:
+     manifest_file = capsule/'manifest.json'; raw = manifest_file.read_bytes(); m = json.loads(raw)
+     need(m['complete'] and m['captured'], 'Incomplete capture')
+     safe(m['inventory']['path']); inventory_file = capsule/m['inventory']['path']; need(sha(inventory_file) == m['inventory']['sha256'], 'Inventory changed')
+     inv = json.loads(inventory_file.read_text()); rows = inv['members']; indexed = {r['path']:r for r in rows}
++    need(type(inv['maxPartPayloadBytes']) is int and 0 < inv['maxPartPayloadBytes'] <= MAX_PART_BYTES, 'Invalid part payload bound')
++    need(type(inv['maxArchiveBytes']) is int and 0 < inv['maxArchiveBytes'] <= MAX_ARCHIVE_BYTES, 'Invalid compressed archive bound')
+     need(len(indexed) == len(rows), 'Duplicate inventory path')
+     links = {r['path'] for r in rows if r['type'] == 'symlink'}
+     for row in rows:
++        need(type(row['bytes']) is int and row['bytes'] >= 0, 'Invalid inventory byte count')
+         need(row['type'] in ['file','symlink'], 'Unsupported inventory member')
+         need(not any(str(p) in links for p in safe(row['path']).parents), 'Symlink ancestor')
+         if row['type'] == 'symlink':
+@@ -46,6 +53,7 @@
+     covered = []
+     for archive in m['archives']:
+         safe(archive['path']); p = capsule/archive['path']
++        need(type(archive['bytes']) is int and 0 <= archive['bytes'] < inv['maxArchiveBytes'], 'Compressed archive exceeds bound')
+         need(p.stat().st_size == archive['bytes'] and sha(p) == archive['sha256'], 'Archive changed')
+         need(all(name in indexed for name in archive['members']), 'Unknown declared archive member')
+         need(sum(indexed[name]['bytes'] for name in archive['members'] if indexed[name]['type'] == 'file') <= inv['maxPartPayloadBytes'], 'Declared part payload exceeds bound')
+@@ -61,6 +69,7 @@
+     need(all(name in indexed and indexed[name]['type'] == 'file' for name in artifacts), 'Missing final artifact lineage')
+     keep = {r['resolvedTarget'] for r in rows if r['type'] == 'symlink'} | set(artifacts)
+     kept_bytes = sum(indexed[name]['bytes'] for name in keep)
++    need(kept_bytes <= MAX_RETAINED_BYTES, 'Retained payload exceeds bound')
+     largest_part = 0; regular_count = 0; extracted_bytes = 0; part_receipts = []
+     with tempfile.TemporaryDirectory(prefix='phase22-bounded-recovery-',dir='/tmp') as tmp:
+         recovered = Path(tmp); retained = recovered/'retained'; seen = set()
+@@ -105,11 +114,13 @@
+         need(derived['sha256'] == inv['finalApiSha256'] == actual_attempt['api']['sha256'], 'Derived API lineage mismatch')
+         need(checked['sha256'] == actual_attempt['checkedApi']['sha256'], 'Checked API lineage mismatch')
+         report['artifacts'] = {'kind':'derived-b1','checkedApiSha256':checked['sha256'],'derivedApiSha256':derived['sha256'],'derivedApiIsCheckedApiByteIdentityClaim':False,'allRetainedArtifactsVerified':True}
+-        report['extraction'] = {'files':len(seen),'regularFiles':regular_count,'symlinks':len(links),'bytes':extracted_bytes+sum(r['bytes'] for r in rows if r['type']=='symlink'),'allBytesAndModesVerified':True,'strategy':'Actual extraction one part at a time; only this invocation scratch removed after validation. Cross-part link targets and final artifact lineage retained until verified.','largestExtractedPartRegularBytes':largest_part,'retainedRegularBytes':kept_bytes,'peakRegularPayloadBound':largest_part+kept_bytes,'parts':part_receipts}
++        report['extraction'] = {'files':len(seen),'regularFiles':regular_count,'symlinks':len(links),'bytes':extracted_bytes+sum(r['bytes'] for r in rows if r['type']=='symlink'),'allBytesAndModesVerified':True,'strategy':'Actual extraction one part at a time; only this invocation scratch removed after validation. Cross-part link targets and final artifact lineage retained until verified.','largestExtractedPartRegularBytes':largest_part,'retainedRegularBytes':kept_bytes,'retainedRegularByteLimit':MAX_RETAINED_BYTES,'maxPartPayloadBytes':inv['maxPartPayloadBytes'],'maxCompressedArchiveBytes':inv['maxArchiveBytes'],'peakRegularPayloadBound':largest_part+kept_bytes,'parts':part_receipts}
+         need(report['extraction']['bytes'] == sum(r['bytes'] for r in rows), 'Regenerated extraction byte count mismatch')
+     safe(inv['patch']['path']); patch = capsule/inv['patch']['path']; need(sha(patch) == inv['patch']['sha256'], 'Source patch changed')
+     prefix = inv['finalSource']+'/'; source_rows = [r for r in rows if r['path'].startswith(prefix)]
++    need(all(r['type'] == 'file' for r in source_rows), 'Source inventory must contain regular files only')
+     base_rows = {r['path']:r for r in inv['sourceBaseline']}
++    need(len(base_rows) == len(inv['sourceBaseline']), 'Duplicate source baseline path')
+     need(set(base_rows) == {r['path'][len(prefix):] for r in source_rows}, 'Source membership mismatch')
+     with tempfile.TemporaryDirectory(prefix='phase22-source-recovery-',dir='/tmp') as tmp:
+         restored = Path(tmp)
+@@ -120,10 +131,28 @@
+                 need(hashlib.sha256(data).hexdigest() == base['sha256'], 'Committed baseline bytes mismatch')
+                 target = restored/name; target.parent.mkdir(parents=True,exist_ok=True); target.write_bytes(data)
+         for args in [['--check'],[]]: subprocess.run(['git','apply',*args,str(patch)],cwd=restored,check=True)
++        # Validate the complete patch result, including broken links and all
++        # ancestors, before changing any mode. is_file() would follow links.
++        expected = set(base_rows)
++        expected_dirs = {str(parent) for name in expected for parent in safe(name).parents if str(parent) != '.'}
++        actual = set()
++        for directory, dirs, names in os.walk(restored, followlinks=False):
++            for name in dirs + names:
++                target = Path(directory)/name; relative = target.relative_to(restored).as_posix()
++                mode = target.lstat().st_mode
++                need(not stat.S_ISLNK(mode), 'Reconstructed source symlink: '+relative)
++                if stat.S_ISDIR(mode):
++                    need(relative in expected_dirs, 'Unexpected reconstructed source directory: '+relative)
++                else:
++                    need(stat.S_ISREG(mode), 'Reconstructed source is not regular: '+relative)
++                    need(relative in expected, 'Unexpected reconstructed source member: '+relative)
++                    actual.add(relative)
++        need(actual == expected, 'Unexpected reconstructed source membership')
+         for row in source_rows:
+-            target = restored/row['path'][len(prefix):]; target.chmod(row['mode']); regular(target,row)
+-        actual = {p.relative_to(restored).as_posix() for p in restored.rglob('*') if p.is_file()}
+-        need(actual == set(base_rows), 'Unexpected reconstructed source membership')
++            target = restored/row['path'][len(prefix):]
++            need(target.resolve() == target and target.is_relative_to(restored), 'Reconstructed source escapes')
++            need(stat.S_ISREG(target.lstat().st_mode), 'Reconstructed source is not regular')
++            target.chmod(row['mode']); regular(target,row)
+         report['sourceReconstruction'] = {'baselineCommit':inv['baselineCommit'],'files':len(source_rows),'allBytesAndModesVerified':True,'usesWorkingTreeSource':False,'patchSha256':sha(patch)}
+     for archive in m['archives']:
+         need(sha(capsule/archive['path']) == archive['sha256'], 'Archive changed during recovery')

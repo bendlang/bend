@@ -1,0 +1,576 @@
+{
+  "kind": "phase22-installed-contextual-evidence-preservation",
+  "complete": true,
+  "pass": true,
+  "finished": "2026-09-29T17:55:35.814532+00:00",
+  "releaseCommit": "1e640798c7b74c32a1d3f3335727d7be918795b9",
+  "anchorStatus": "installed-contextual-parser-release",
+  "source": "selfhost/build/phase22/context-source-17/project",
+  "attempt": "selfhost/build/phase22/context-build-16",
+  "apiSha256": "ade8ef020e439b81ecb53057b33a473c34a3cbd993b98a044121ecc3c2b8c9c3",
+  "checkedApiSha256": "9cf01096f395817470ef0515e0ee98da85a53eb1b05823c88c9f2d5531e6072a",
+  "artifactKind": "derived-b1",
+  "newFixedPointClaim": false,
+  "selectedCapsule": "implementation/phase22/context-evidence/capsule-01",
+  "archiveFormat": {
+    "container": "tar",
+    "compression": "xz",
+    "preset": 9,
+    "dictionaryBytes": 67108864,
+    "check": "CRC64"
+  },
+  "capture": {
+    "members": 24804,
+    "uncompressedBytes": 1249820320,
+    "archives": 36,
+    "compressedBytes": 23647460,
+    "largestArchiveBytes": 1405372,
+    "symlinks": 1,
+    "manifestSha256": "5073b24f8561feb2c67cb8d3c38813fa89e8b9d4bf2eb1bcac469ae84e01eeca",
+    "inventorySha256": "624ec44ab13ed5ac33c5787d20993e7de67a082cbc4940e7766f8f18ef889a99"
+  },
+  "independentRecovery": {
+    "kind": "phase22-independent-bounded-recovery-v3",
+    "complete": true,
+    "pass": true,
+    "toolSha256": "fb22d600e947cad290c470a79daf6b759166138cef7e0c02363409f152ab5f07",
+    "artifacts": {
+      "kind": "derived-b1",
+      "checkedApiSha256": "9cf01096f395817470ef0515e0ee98da85a53eb1b05823c88c9f2d5531e6072a",
+      "derivedApiSha256": "ade8ef020e439b81ecb53057b33a473c34a3cbd993b98a044121ecc3c2b8c9c3",
+      "derivedApiIsCheckedApiByteIdentityClaim": false,
+      "allRetainedArtifactsVerified": true
+    },
+    "extraction": {
+      "files": 24804,
+      "regularFiles": 24803,
+      "symlinks": 1,
+      "bytes": 1249820320,
+      "allBytesAndModesVerified": true,
+      "strategy": "Actual extraction one part at a time; only this invocation scratch removed after validation. Cross-part link targets and final artifact lineage retained until verified.",
+      "largestExtractedPartRegularBytes": 37618428,
+      "retainedRegularBytes": 2074285,
+      "retainedRegularByteLimit": 8000000,
+      "maxPartPayloadBytes": 38000000,
+      "maxCompressedArchiveBytes": 40000000,
+      "peakRegularPayloadBound": 39692713,
+      "parts": [
+        {
+          "archive": "experiments-01.tar.xz",
+          "members": 1771,
+          "regularBytes": 33250410,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-02.tar.xz",
+          "members": 905,
+          "regularBytes": 35073816,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-03.tar.xz",
+          "members": 933,
+          "regularBytes": 35723721,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-04.tar.xz",
+          "members": 784,
+          "regularBytes": 36170011,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-05.tar.xz",
+          "members": 587,
+          "regularBytes": 36642843,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-06.tar.xz",
+          "members": 938,
+          "regularBytes": 35771750,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-07.tar.xz",
+          "members": 692,
+          "regularBytes": 36027378,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-08.tar.xz",
+          "members": 669,
+          "regularBytes": 35004975,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-09.tar.xz",
+          "members": 451,
+          "regularBytes": 36371556,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-10.tar.xz",
+          "members": 357,
+          "regularBytes": 37116928,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-11.tar.xz",
+          "members": 330,
+          "regularBytes": 35392749,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-12.tar.xz",
+          "members": 238,
+          "regularBytes": 35743743,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-13.tar.xz",
+          "members": 2322,
+          "regularBytes": 32112928,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-14.tar.xz",
+          "members": 2409,
+          "regularBytes": 31908140,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-15.tar.xz",
+          "members": 247,
+          "regularBytes": 36736107,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-16.tar.xz",
+          "members": 244,
+          "regularBytes": 37195581,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-17.tar.xz",
+          "members": 280,
+          "regularBytes": 36312394,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-18.tar.xz",
+          "members": 287,
+          "regularBytes": 36269924,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-19.tar.xz",
+          "members": 231,
+          "regularBytes": 35838492,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-20.tar.xz",
+          "members": 282,
+          "regularBytes": 37299617,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-21.tar.xz",
+          "members": 410,
+          "regularBytes": 36549897,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-22.tar.xz",
+          "members": 224,
+          "regularBytes": 37038292,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-23.tar.xz",
+          "members": 491,
+          "regularBytes": 33920092,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-24.tar.xz",
+          "members": 977,
+          "regularBytes": 34290701,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-25.tar.xz",
+          "members": 149,
+          "regularBytes": 37618428,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-26.tar.xz",
+          "members": 172,
+          "regularBytes": 37294721,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-27.tar.xz",
+          "members": 134,
+          "regularBytes": 36618519,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-28.tar.xz",
+          "members": 140,
+          "regularBytes": 37608692,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-29.tar.xz",
+          "members": 413,
+          "regularBytes": 36731910,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-30.tar.xz",
+          "members": 651,
+          "regularBytes": 36533018,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-31.tar.xz",
+          "members": 3413,
+          "regularBytes": 30061994,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-32.tar.xz",
+          "members": 743,
+          "regularBytes": 36007964,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-33.tar.xz",
+          "members": 368,
+          "regularBytes": 36553738,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-34.tar.xz",
+          "members": 255,
+          "regularBytes": 11372741,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "experiments-35.tar.xz",
+          "members": 267,
+          "regularBytes": 33235809,
+          "allBytesAndModesVerified": true
+        },
+        {
+          "archive": "final-01.tar.xz",
+          "members": 1040,
+          "regularBytes": 26420732,
+          "allBytesAndModesVerified": true
+        }
+      ]
+    },
+    "sourceReconstruction": {
+      "baselineCommit": "a784e0e1a0de1ee085cc188ca0f1f19038679bdb",
+      "files": 215,
+      "allBytesAndModesVerified": true,
+      "usesWorkingTreeSource": false,
+      "patchSha256": "b28d62e58999034cb9039f0ea6b65d879ab8676ab51f0da700879b3a59e3b16e"
+    },
+    "archiveFormat": {
+      "container": "tar",
+      "compression": "xz",
+      "preset": 9,
+      "dictionaryBytes": 67108864,
+      "check": "CRC64"
+    },
+    "manifestSha256": "5073b24f8561feb2c67cb8d3c38813fa89e8b9d4bf2eb1bcac469ae84e01eeca",
+    "inventorySha256": "624ec44ab13ed5ac33c5787d20993e7de67a082cbc4940e7766f8f18ef889a99"
+  },
+  "independentRecoveryProcess": {
+    "path": "implementation/phase22/context-evidence/recovery-process-final-01.json",
+    "sha256": "6a03a68919330e37f86d99d4d8fb08be6f4e36c4f9df14510d4544e28c3a8433"
+  },
+  "protectedPhase6": {
+    "files": 75,
+    "hashesAndStatusesUnchanged": true,
+    "payloadExcluded": true
+  },
+  "preexistingHistory": {
+    "files": 28,
+    "hashesAndStatusesUnchanged": true,
+    "payloadExcluded": true
+  },
+  "newOwnedHistoryMembersCaptured": 7,
+  "rootFrozenInputs": 602,
+  "allRootFrozenInputsCapturedUnchanged": true,
+  "sourceReconstructionMembers": 215,
+  "sourceReconstructionBytes": 1325428,
+  "historicalDependencyException": {
+    "path": "selfhost/build/phase16/unbound-marker-source-02",
+    "members": 220,
+    "bytes": 1284975,
+    "historicalProjectMembers": 214,
+    "rootExplicitlyApproved": true
+  },
+  "fixtureDependencyTrees": 20,
+  "rawFailuresRetained": true,
+  "frozenInputsUnchangedAfterCapture": true,
+  "captureManifestHistoricalRecoveryPendingUnchanged": true,
+  "processesClosed": true,
+  "compilerWorkPerformedDuringPreservation": false,
+  "existingEvidenceDeletionPerformed": false,
+  "ownerCommitsOrNetworkUploadsPerformed": false,
+  "scope": [
+    "All named closed Phase22 experiments and failures remain logical regular members despite storage hardlink sharing.",
+    "XZ changes only compression; prior gzip proposals/tools, v1/v2 safety evidence and both codec refusal controls remain preserved.",
+    "All members were actually extracted in bounded parts and checked for bytes/modes/links. Source reconstruction uses fixed Git baseline plus captured patch, independently of live source.",
+    "Final report/index/process/review outcomes remain outside captured inputs; the immutable capture manifest retains its historical recoveryPending field.",
+    "Counts are storage membership, not unique compiler test counts or universal conformance proof."
+  ],
+  "boundFiles": [
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/manifest.json",
+      "sha256": "5073b24f8561feb2c67cb8d3c38813fa89e8b9d4bf2eb1bcac469ae84e01eeca",
+      "bytes": 2580389
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/inventory.json",
+      "sha256": "624ec44ab13ed5ac33c5787d20993e7de67a082cbc4940e7766f8f18ef889a99",
+      "bytes": 7450568
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/phase21-to-anchor.patch",
+      "sha256": "b28d62e58999034cb9039f0ea6b65d879ab8676ab51f0da700879b3a59e3b16e",
+      "bytes": 217337
+    },
+    {
+      "path": "implementation/phase22/context-evidence/root-freeze.json",
+      "sha256": "ff66e86f01cda021707c5368786abd11c32094f751c1ec1fb4faced4d81cccf2",
+      "bytes": 123997
+    },
+    {
+      "path": "implementation/phase22/context-evidence/selection-proposal.json",
+      "sha256": "c6ed5d252bad2627ea0d1b0106c73f6106d08e0f85630f0c421f6b47abd35a89",
+      "bytes": 59963
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capture-process-final-01.json",
+      "sha256": "fe5bd1d55329e392dd28e64dfa24c3a9a3987c8bf07af4e2e705c20c1fa0aaed",
+      "bytes": 1526
+    },
+    {
+      "path": "implementation/phase22/context-evidence/recovery-final-01.json",
+      "sha256": "06258c20df50511e7f7942fa7b61e5ef10591ccce85462a488ea9d2aba7d1749",
+      "bytes": 7471
+    },
+    {
+      "path": "implementation/phase22/context-evidence/recovery-process-final-01.json",
+      "sha256": "6a03a68919330e37f86d99d4d8fb08be6f4e36c4f9df14510d4544e28c3a8433",
+      "bytes": 2395
+    },
+    {
+      "path": "implementation/phase22/context-evidence/selection-review-final-01.json",
+      "sha256": "2e8da4b622447e208207dc73f3474cc737f248b90dd57a25e6bf00721865f936",
+      "bytes": 8680
+    },
+    {
+      "path": "implementation/phase22/context-evidence/inventory-review-final-01.json",
+      "sha256": "7d719c3e0bb2ab0a8aff0cdc4770807ad78a25ed0c786bdb70ff98a985975896",
+      "bytes": 6506
+    },
+    {
+      "path": "implementation/phase22/context-evidence/codec-xz-independent-review.json",
+      "sha256": "a0b8647b06f09b7ac79e99bc36480e77a4fee85ec89547217796e871d076ef8e",
+      "bytes": 7088
+    },
+    {
+      "path": "implementation/phase22/context-evidence/owner-outcome-files-final-01.json",
+      "sha256": "7b40e604ae7829e2f77e816da75c2511f54ca32a6e55a76e17f20e73c851fe48",
+      "bytes": 8668
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-01.tar.xz",
+      "sha256": "57d7b7de1f43be1675fe9d86ecabbf5713c815f11940a6c63064c777405af98d",
+      "bytes": 637984
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-02.tar.xz",
+      "sha256": "8fa8bd60cd2f07b2d38930657338e57d13e95c035cc9107756a89269ff9cf32e",
+      "bytes": 786516
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-03.tar.xz",
+      "sha256": "70ab6a524c240419917db1eafb6f0b2b24ea2ffafc073e5ac1869341669057c6",
+      "bytes": 904456
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-04.tar.xz",
+      "sha256": "bfa54182ecd597454856499f59ce7a51ff59a753d18be8190f268591860c5aaf",
+      "bytes": 860204
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-05.tar.xz",
+      "sha256": "3e0bab1c25044af326b1c6e8e0a34147a45d3e211d554465fdf1e0f1589577b9",
+      "bytes": 861224
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-06.tar.xz",
+      "sha256": "280f39c950915b60692f8353466fcf408bfedf62390caccfe742891cea49b855",
+      "bytes": 788552
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-07.tar.xz",
+      "sha256": "4beab4b4304e7937752fea812f54abcf3842081f92db46d2439efe374b043f6a",
+      "bytes": 786208
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-08.tar.xz",
+      "sha256": "174a19b0ba80bd7ba991a57b7ee0a4f40fc7ea5829b0ae17fc0dd145f417b945",
+      "bytes": 776024
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-09.tar.xz",
+      "sha256": "b8eb485c71b99b46b01b7e237f9b9158bada3ed2708d27c6f525046bd7d19b60",
+      "bytes": 726200
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-10.tar.xz",
+      "sha256": "9a69cdf7f44c52068de1efbf3d1d9212b1ee5d8f1fa9cf68714ec37d10fdb93f",
+      "bytes": 495556
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-11.tar.xz",
+      "sha256": "7a1dbd24f950b69c3e5d02646215dc1ba06528936c28e4b40add6be171aee554",
+      "bytes": 243344
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-12.tar.xz",
+      "sha256": "fac5668521d10f8971f114a1e2ff38b39c36bfce4f47da18f6b9d6c10e9a6f7d",
+      "bytes": 237016
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-13.tar.xz",
+      "sha256": "5f07f825cc254e9a5d059dcbe37e1a2f4c4ebd7791e0e036d6dee03c3009ed41",
+      "bytes": 761468
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-14.tar.xz",
+      "sha256": "694637f7dbf2006cd9fa5fc563dabd2b9ff28c105cc64917939bcfbc02ed5829",
+      "bytes": 761692
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-15.tar.xz",
+      "sha256": "7cf12f894780c39c7fbcc929ed6dfc1be77720c89afd5fc745e64b83a8f0d4a2",
+      "bytes": 538592
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-16.tar.xz",
+      "sha256": "2929ecbee63bb370fe7b3c323f5c39510b7df9038caff45cdc6e57aedc43ad06",
+      "bytes": 224828
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-17.tar.xz",
+      "sha256": "2e7157a49419bbc510ca5ad4a59dff95db88e6dae9bed900448c50849f50dd64",
+      "bytes": 238276
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-18.tar.xz",
+      "sha256": "627fe03406bd36d4dd14a3b386706452a5df7b1939651092e2437b92f26a3e85",
+      "bytes": 242340
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-19.tar.xz",
+      "sha256": "75951ff7897f1c71cf0c91bd58c6ff651e49606f22a44f1a8dcf9fc31182466c",
+      "bytes": 233692
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-20.tar.xz",
+      "sha256": "9c3a6a0d62a18dda0ec6f6eaa24cb874c8b7a749ec7fdf05bb2a1a448a6b277d",
+      "bytes": 224936
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-21.tar.xz",
+      "sha256": "98f0b01d4ca80365c703e4c5003de61e347c84739a2f0de31461a09a9768cc25",
+      "bytes": 294468
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-22.tar.xz",
+      "sha256": "b4068aea8dfff77c6302283aff0a4854b9d67bc7bd4153c29f301c04bf68b0bb",
+      "bytes": 218292
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-23.tar.xz",
+      "sha256": "94513c72def5e4829f88fca3d8effb3465e4242be5f90843b4fda75be46cc5e7",
+      "bytes": 838316
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-24.tar.xz",
+      "sha256": "beddd0fbd9ba01c86b80f9623f42194d14428f86b5ed741d76a062fd88f88321",
+      "bytes": 1242072
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-25.tar.xz",
+      "sha256": "e87644e49961c2ab31b0597c27a39f6a68c97fa61093ac898bf8daa85d5d2aa7",
+      "bytes": 909808
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-26.tar.xz",
+      "sha256": "e8320d2b9fe0969b0b3625f1ad700a7301effacfbc8a1a2b86234de4cff9aff5",
+      "bytes": 1123372
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-27.tar.xz",
+      "sha256": "bad62b4e7483f2a5f1e4007b3d7e8ceaa6cb1c6181e3fd6f64a0c6d3763ba3a7",
+      "bytes": 929876
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-28.tar.xz",
+      "sha256": "cce00dc8c93f4180f02809b9f0d766d87b6872f61c2b4c8ba80edb8e47b45993",
+      "bytes": 519248
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-29.tar.xz",
+      "sha256": "c8952980d3810c085d1697a154bf8e18a2f4b5cd02f473064b1e1e0192ce194e",
+      "bytes": 387648
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-30.tar.xz",
+      "sha256": "450b3108ff5b485f528d3b128d0d41fa7fed9cd14230c9358596079a2c86f7ac",
+      "bytes": 304004
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-31.tar.xz",
+      "sha256": "6abc3865aad0a48c542e579364ddcb9a26fda64498c2fc88b0cc114e35808dc5",
+      "bytes": 633000
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-32.tar.xz",
+      "sha256": "521555707928f356498179d82d72fc5aaa7da8477e9efb9d0714ec4121825b22",
+      "bytes": 1078508
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-33.tar.xz",
+      "sha256": "ccfc16b13cbe63faf9eea58ab0ee52226b2a8f3c3224ea5fd84628f6e22dc05f",
+      "bytes": 1405372
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-34.tar.xz",
+      "sha256": "a7b39a0677c657092483778cba821ae5467789b368ecd3125d5e9bae3b3098da",
+      "bytes": 331304
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/experiments-35.tar.xz",
+      "sha256": "37d00606b6b5bbc60b7436bbb104b997a396d5a739947e94a130de46f85824a2",
+      "bytes": 961712
+    },
+    {
+      "path": "implementation/phase22/context-evidence/capsule-01/final-01.tar.xz",
+      "sha256": "67e3d153113edb269d242262c99dbb9c985fb90ac454c5f1abadada47c651cd7",
+      "bytes": 1141352
+    }
+  ]
+}

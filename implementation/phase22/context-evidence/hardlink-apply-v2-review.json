@@ -1,0 +1,52 @@
+{
+  "kind": "phase22-independent-hardlink-v2-review",
+  "complete": true,
+  "pass": true,
+  "scope": "Read-only review of exact journal-only adaptation and nine-root plan. No links or compiler files changed by reviewer.",
+  "approvedRoots": [
+    "selfhost/build/phase22/context-frontend-01",
+    "selfhost/build/phase22/context-frontend-02",
+    "selfhost/build/phase22/context-frontend-03",
+    "selfhost/build/phase22/context-frontend-04",
+    "selfhost/build/phase22/context-controls-history-01",
+    "selfhost/build/phase22/context-controls-history-02",
+    "selfhost/build/phase22/checkup-controls-01",
+    "selfhost/build/phase22/checkup-controls-02",
+    "selfhost/build/phase22/checkup-controls-03"
+  ],
+  "groups": 465,
+  "logicalRegularFiles": 4389,
+  "estimatedReplacedFiles": 1609,
+  "estimatedFreedAllocatedBytes": 41537536,
+  "findings": [
+    "Only per-replacement full-report save becomes append-only JSONL; group-end and final/failure reports remain.",
+    "Root plan and frozen read-only estimate agree exactly; current frontend05/checkup04 and all other roots excluded.",
+    "Preflight verifies every selected group member single-linked regular inode/device/size/mode/SHA before any replacement; selected names reject escapes/symlink ancestors.",
+    "Atomic temporary hardlink replacement preserves each target path and verified bytes/mode; postgroup verifies all hashes and sharedinode.",
+    "Future edits to these closed files are forbidden; new candidate copies must use new inodes. Inode/linkcount/ctime/donor mtime are expressly outside evidence identity.",
+    "No archive hardlinks are introduced; logical member collector/recovery remains unchanged.",
+    "If interrupted, retain incomplete report and replacement journal; do not claim completion or blindly rerun initial-inode assumptions."
+  ],
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-hardlink-apply.py",
+      "sha256": "5f852d234a903c242770b8b089107567c3ada1a75505f309f2ce962065eb63fe",
+      "bytes": 5416
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-hardlink-apply-v2.py",
+      "sha256": "87d0a770d69961df5aed64bee7a2bf2c78e6919a6c2dd8608c2ec3f47d57d63e",
+      "bytes": 5616
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-evidence/hardlink-apply-plan-02.json",
+      "sha256": "b36e6f1d15a57ea68dfb88f39de73148f4874fdffdaa2af321a240f5c5db3ad4",
+      "bytes": 1475
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/hardlink-estimate-02/report.json",
+      "sha256": "283065ce5c170311f4afb3d7a8ba6df9a6fa6f94c074e72ec52c87b7296ff329",
+      "bytes": 2168955
+    }
+  ]
+}

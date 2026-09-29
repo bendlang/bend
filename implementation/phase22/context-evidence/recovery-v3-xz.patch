@@ -1,0 +1,54 @@
+--- selfhost/tools/performance/phase22/context-recover-v2.py
++++ selfhost/tools/performance/phase22/context-recover-v3.py
+@@ -7,6 +7,7 @@
+ MAX_PART_BYTES = 38_000_000
+ MAX_ARCHIVE_BYTES = 40_000_000
+ MAX_RETAINED_BYTES = 8_000_000
++ARCHIVE_FORMAT = {'container':'tar','compression':'xz','preset':9,'dictionaryBytes':67108864,'check':'CRC64'}
+ 
+ def need(ok, message):
+     if not ok: raise ValueError(message)
+@@ -28,13 +29,15 @@
+ 
+ directory, report_arg = sys.argv[1:]; capsule = Path(directory).resolve(); report_file = Path(report_arg).resolve()
+ need(not Path(report_arg).absolute().is_relative_to(capsule) and not report_file.is_relative_to(capsule), 'Recovery report must be outside capsule')
+-report = {'kind':'phase22-independent-bounded-recovery-v2','complete':False,'pass':False,'toolSha256':sha(__file__)}
++report = {'kind':'phase22-independent-bounded-recovery-v3','complete':False,'pass':False,'toolSha256':sha(__file__)}
+ need(not report_file.exists(), 'Recovery report already exists')
+ try:
+     manifest_file = capsule/'manifest.json'; raw = manifest_file.read_bytes(); m = json.loads(raw)
+     need(m['complete'] and m['captured'], 'Incomplete capture')
++    need(m.get('archiveFormat') == ARCHIVE_FORMAT, 'Unsupported archive format')
+     safe(m['inventory']['path']); inventory_file = capsule/m['inventory']['path']; need(sha(inventory_file) == m['inventory']['sha256'], 'Inventory changed')
+     inv = json.loads(inventory_file.read_text()); rows = inv['members']; indexed = {r['path']:r for r in rows}
++    need(inv.get('archiveFormat') == ARCHIVE_FORMAT, 'Unsupported inventory archive format')
+     need(type(inv['maxPartPayloadBytes']) is int and 0 < inv['maxPartPayloadBytes'] <= MAX_PART_BYTES, 'Invalid part payload bound')
+     need(type(inv['maxArchiveBytes']) is int and 0 < inv['maxArchiveBytes'] <= MAX_ARCHIVE_BYTES, 'Invalid compressed archive bound')
+     need(len(indexed) == len(rows), 'Duplicate inventory path')
+@@ -52,7 +55,7 @@
+             data = os.fsencode(row['target']); need(len(data) == row['bytes'] and hashlib.sha256(data).hexdigest() == row['sha256'], 'Link literal identity mismatch')
+     covered = []
+     for archive in m['archives']:
+-        safe(archive['path']); p = capsule/archive['path']
++        safe(archive['path']); need(archive['path'].endswith('.tar.xz'), 'Unexpected archive suffix'); p = capsule/archive['path']
+         need(type(archive['bytes']) is int and 0 <= archive['bytes'] < inv['maxArchiveBytes'], 'Compressed archive exceeds bound')
+         need(p.stat().st_size == archive['bytes'] and sha(p) == archive['sha256'], 'Archive changed')
+         need(all(name in indexed for name in archive['members']), 'Unknown declared archive member')
+@@ -76,7 +79,7 @@
+         for archive in m['archives']:
+             with tempfile.TemporaryDirectory(prefix='part-',dir=recovered) as part_tmp:
+                 part = Path(part_tmp); part_bytes = 0; names = []
+-                with tarfile.open(capsule/archive['path'],'r:gz') as tar:
++                with tarfile.open(capsule/archive['path'],'r:xz') as tar:
+                     declared_members = set(archive['members'])
+                     for member in tar:
+                         name = member.name; safe(name); need(name in indexed and name not in seen, 'Unknown/duplicate tar member')
+@@ -157,7 +160,7 @@
+     for archive in m['archives']:
+         need(sha(capsule/archive['path']) == archive['sha256'], 'Archive changed during recovery')
+     need(manifest_file.read_bytes() == raw and sha(inventory_file) == m['inventory']['sha256'], 'Metadata changed during recovery')
+-    report.update({'complete':True,'pass':True,'manifestSha256':hashlib.sha256(raw).hexdigest(),'inventorySha256':sha(inventory_file)})
++    report.update({'archiveFormat':ARCHIVE_FORMAT,'complete':True,'pass':True,'manifestSha256':hashlib.sha256(raw).hexdigest(),'inventorySha256':sha(inventory_file)})
+ except Exception as e:
+     report['error'] = repr(e)
+ finally:

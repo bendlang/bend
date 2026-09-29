@@ -1,0 +1,17 @@
+{
+  "kind": "phase22-review-receipt-preparation-failure",
+  "complete": true,
+  "pass": false,
+  "failure": {
+    "attempt": 1,
+    "stage": "Receipt preparation after successful complete byte/membership audit",
+    "pass": false,
+    "error": "AssertionError: implementation/phase22/context-evidence/prepare-final-01.log",
+    "filesWrittenBeforeFailure": 0,
+    "correction": "The review initially accepted only individually listed outsideImmutableInputs. FINAL-CAPTURE-PLAN also explicitly places collector prepare/capture logs outside inputs. The corrected receipt check names those two actual logs; no selection, inventory or compiler input was changed.",
+    "rawToolExitCode": 1
+  },
+  "retainedOutsideCapturedInputs": true,
+  "inventoryAuditRemainedPass": true,
+  "rootDisposition": "Root approved recording this bookkeeping failure outside inputs; prepare/capture logs and review outcomes are explicitly excluded by FINAL-CAPTURE-PLAN. No capture stop or frozen-input change."
+}

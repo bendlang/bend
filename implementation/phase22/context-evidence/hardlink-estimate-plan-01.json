@@ -1,0 +1,40 @@
+{
+  "kind": "phase22-authorized-readonly-hardlink-estimate-plan",
+  "readOnlyEstimateAuthorized": true,
+  "allListedProducersClosed": true,
+  "authorization": "Root explicitly authorized existing context-source01..15 and context-build01..14 only after matrix03 closed. No mutation is authorized.",
+  "roots": [
+    "selfhost/build/phase22/context-source-01",
+    "selfhost/build/phase22/context-source-02",
+    "selfhost/build/phase22/context-source-03",
+    "selfhost/build/phase22/context-source-04",
+    "selfhost/build/phase22/context-source-05",
+    "selfhost/build/phase22/context-source-06",
+    "selfhost/build/phase22/context-source-07",
+    "selfhost/build/phase22/context-source-08",
+    "selfhost/build/phase22/context-source-09",
+    "selfhost/build/phase22/context-source-10",
+    "selfhost/build/phase22/context-source-11",
+    "selfhost/build/phase22/context-source-12",
+    "selfhost/build/phase22/context-source-13",
+    "selfhost/build/phase22/context-source-14",
+    "selfhost/build/phase22/context-source-15",
+    "selfhost/build/phase22/context-build-01",
+    "selfhost/build/phase22/context-build-02",
+    "selfhost/build/phase22/context-build-03",
+    "selfhost/build/phase22/context-build-04",
+    "selfhost/build/phase22/context-build-05",
+    "selfhost/build/phase22/context-build-06",
+    "selfhost/build/phase22/context-build-07",
+    "selfhost/build/phase22/context-build-08",
+    "selfhost/build/phase22/context-build-09",
+    "selfhost/build/phase22/context-build-10",
+    "selfhost/build/phase22/context-build-11",
+    "selfhost/build/phase22/context-build-12",
+    "selfhost/build/phase22/context-build-14"
+  ],
+  "nonexistentRequestedRoots": [
+    "selfhost/build/phase22/context-build-13"
+  ],
+  "excluded": "source16/build15 and every other root, symlink/multi-link files, external/protected/live paths"
+}

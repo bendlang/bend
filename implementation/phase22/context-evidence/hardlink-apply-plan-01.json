@@ -1,0 +1,41 @@
+{
+  "mutationAuthorized": true,
+  "allListedProducersClosed": true,
+  "estimate": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/hardlink-estimate-01/report.json",
+    "sha256": "065f3a5222b33444ea41dbd4a2b8f348b5afcd57ad71712ef19374cfc8703a01"
+  },
+  "roots": [
+    "selfhost/build/phase22/context-source-01",
+    "selfhost/build/phase22/context-source-02",
+    "selfhost/build/phase22/context-source-03",
+    "selfhost/build/phase22/context-source-04",
+    "selfhost/build/phase22/context-source-05",
+    "selfhost/build/phase22/context-source-06",
+    "selfhost/build/phase22/context-source-07",
+    "selfhost/build/phase22/context-source-08",
+    "selfhost/build/phase22/context-source-09",
+    "selfhost/build/phase22/context-source-10",
+    "selfhost/build/phase22/context-source-11",
+    "selfhost/build/phase22/context-source-12",
+    "selfhost/build/phase22/context-source-13",
+    "selfhost/build/phase22/context-source-14",
+    "selfhost/build/phase22/context-source-15",
+    "selfhost/build/phase22/context-build-01",
+    "selfhost/build/phase22/context-build-02",
+    "selfhost/build/phase22/context-build-03",
+    "selfhost/build/phase22/context-build-04",
+    "selfhost/build/phase22/context-build-05",
+    "selfhost/build/phase22/context-build-06",
+    "selfhost/build/phase22/context-build-07",
+    "selfhost/build/phase22/context-build-08",
+    "selfhost/build/phase22/context-build-09",
+    "selfhost/build/phase22/context-build-10",
+    "selfhost/build/phase22/context-build-11",
+    "selfhost/build/phase22/context-build-12",
+    "selfhost/build/phase22/context-build-14"
+  ],
+  "authorization": "Root authorizes exact byte-identical coalescing of already-closed Phase22 scratch files only; this does not delete evidence, change bytes or modes, or touch current/live/final candidate inputs. Independent review required before launch.",
+  "identityContract": "Captured bytes, paths and modes are binding. Inode/link-count/ctime/mtime are not bound by workflow or capsule identity. All selected experiment files remain immutable; new candidates copy into fresh paths.",
+  "capture": "Collector manually creates regular TarInfo records and writes all logical payloads. No archive hardlink or external target is introduced."
+}

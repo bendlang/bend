@@ -1,0 +1,26 @@
+{
+  "kind": "phase22-inventory-preparation-process",
+  "complete": true,
+  "exitCode": 0,
+  "captureRun": false,
+  "inventorySha256": "624ec44ab13ed5ac33c5787d20993e7de67a082cbc4940e7766f8f18ef889a99",
+  "inventoryBytes": 7450568,
+  "rootFreezeSha256": "ff66e86f01cda021707c5368786abd11c32094f751c1ec1fb4faced4d81cccf2",
+  "selectionSha256": "c6ed5d252bad2627ea0d1b0106c73f6106d08e0f85630f0c421f6b47abd35a89",
+  "members": 24804,
+  "logicalBytes": 1249820320,
+  "maxMember": {
+    "path": "selfhost/build/phase22/installed-profile-01/checking.cpuprofile",
+    "topic": "experiments",
+    "mode": 384,
+    "type": "file",
+    "bytes": 30807408,
+    "sha256": "1c85e9194a09fa9d374b298fcb35af216c52931f72f79e3d3401100c03d978e6"
+  },
+  "sourceFiles": 215,
+  "sourceBytes": 1325428,
+  "retainedBytes": 2074285,
+  "symlinks": 1,
+  "fixtureDependencies": 20,
+  "freeBytes": 100708352
+}

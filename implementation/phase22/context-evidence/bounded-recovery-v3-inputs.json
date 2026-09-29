@@ -1,0 +1,54 @@
+{
+  "kind": "phase22-xz-codec-prospective-inputs",
+  "productionCaptureAuthorized": false,
+  "inputs": [
+    {
+      "path": "selfhost/tools/performance/phase22/context-preserve.py",
+      "sha256": "5dec7844795e5ddf68b881f14f7d36cab858223c0c61f6067179d78894ee9208"
+    },
+    {
+      "path": "selfhost/tools/performance/phase22/context-preserve-v2.py",
+      "sha256": "171d907175569338cc866e62318caa06c1060e33e8c835fcad152a80cc20b076"
+    },
+    {
+      "path": "implementation/phase22/context-evidence/collector-v2-xz.patch",
+      "sha256": "9e10af26f017476ffc7898dba5b088125ab01afd2f37eb03da1794c2e1eb94fc"
+    },
+    {
+      "path": "selfhost/tools/performance/phase22/context-recover-v2.py",
+      "sha256": "cd4a55a6e2ac502ab621fa8066582a9f2218312922ef738d9e29471c74c73667"
+    },
+    {
+      "path": "selfhost/tools/performance/phase22/context-recover-v3.py",
+      "sha256": "fb22d600e947cad290c470a79daf6b759166138cef7e0c02363409f152ab5f07"
+    },
+    {
+      "path": "implementation/phase22/context-evidence/recovery-v3-xz.patch",
+      "sha256": "9ac09ecfd547d9edc1fe918bc9e290f5ee9bc8fedc12064665ad3a73807f5933"
+    },
+    {
+      "path": "selfhost/tools/performance/phase22/context-recovery-controls-v2.py",
+      "sha256": "e7e0366e8f60b82f9b78bec3160248f064c2838bd13994dc47320207c0cb6a2d"
+    },
+    {
+      "path": "selfhost/tools/performance/phase22/context-recovery-controls-v3.py",
+      "sha256": "a3180c2edd0ff60a92840a7ff3ebf84192a2a3142fc39c85cd69af82a29946f9"
+    },
+    {
+      "path": "implementation/phase22/context-evidence/recovery-controls-v3-xz.patch",
+      "sha256": "1bd4bd64a821625ce5c6a948a341f149cc3e1a27ecd418b1f4e58eb848d184de"
+    },
+    {
+      "path": "implementation/phase22/context-evidence/RECOVERY-V3-XZ-PLAN.md",
+      "sha256": "250e3e5e8a47f2d0e9a79209baee963cb8120bdb5bc8b9c17a002b5ad16c63c6"
+    },
+    {
+      "path": "implementation/phase22/context-evidence/compression-estimate-01.json",
+      "sha256": "f41039b4b49ee2691c3a077f7219605ac18d16724a55263594d6ccf5fa927b56"
+    },
+    {
+      "path": "implementation/phase22/context-evidence/compression-estimate-xz-01.json",
+      "sha256": "d05b8875952588ab4b97913ed232c2466d234cbfcf28682e3d329cf067c17b91"
+    }
+  ]
+}

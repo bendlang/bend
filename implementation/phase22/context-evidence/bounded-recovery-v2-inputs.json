@@ -1,0 +1,18 @@
+{
+  "kind": "phase22-recovery-v2-prospective-inputs",
+  "inputs": [
+    {
+      "path": "selfhost/tools/performance/phase22/context-recover-v2.py",
+      "sha256": "cd4a55a6e2ac502ab621fa8066582a9f2218312922ef738d9e29471c74c73667"
+    },
+    {
+      "path": "selfhost/tools/performance/phase22/context-recovery-controls-v2.py",
+      "sha256": "e7e0366e8f60b82f9b78bec3160248f064c2838bd13994dc47320207c0cb6a2d"
+    },
+    {
+      "path": "implementation/phase22/context-evidence/RECOVERY-V2-PLAN.md",
+      "sha256": "48a1791b4eabb549785618e22f7a099161a19dec510f407055f08969381a586f"
+    }
+  ],
+  "productionRecoveryAuthorized": false
+}

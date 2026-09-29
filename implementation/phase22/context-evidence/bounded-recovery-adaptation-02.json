@@ -1,0 +1,32 @@
+{
+  "kind": "phase22-bounded-recovery-adaptation",
+  "parent": {
+    "path": "selfhost/tools/performance/phase16/compact-recover.py",
+    "sha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234",
+    "bytes": 7326
+  },
+  "tool": {
+    "path": "selfhost/tools/performance/phase22/context-recover.py",
+    "sha256": "954a22650744ad6c77c3259ce4478b5c74384f6d1fbc81c87f24ea54b723952b",
+    "bytes": 11177
+  },
+  "patch": {
+    "path": "implementation/phase22/context-evidence/recovery-adaptation-02.patch",
+    "sha256": "bc5b3659211d3fa7caef95317d3d887dd2798626db5c4d441523f3cc95a0f7bb",
+    "bytes": 10980
+  },
+  "syntheticControls": {
+    "path": "selfhost/build/phase22/bounded-recovery-policy-01/report.json",
+    "sha256": "f8afbbe15f7829a0807520cefa6ef9f83210219a31f54da0b209c23c0e743a24",
+    "bytes": 4224
+  },
+  "priorUnconsumedDraft": {
+    "path": "selfhost/build/phase22/bounded-recovery-preparation-02/prior-draft.json",
+    "sha256": "abc9522f1c05335110534d4d451b67b00e88a9cd4ce12f7c5e118ef8a74bf16e",
+    "bytes": 1459
+  },
+  "scope": "Archive format unchanged; bounded actual part extraction verifies all members. Declared regular payload preflight and actual archive ownership/cumulative budget checks precede writes. Independent full source reconstruction uses fixed Git+patch. No existing tree deletion.",
+  "notExecuted": false,
+  "productionCaptureOrRecoveryExecuted": false,
+  "frozenAfterSyntheticControls": true
+}

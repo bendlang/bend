@@ -1,0 +1,53 @@
+{
+  "kind": "phase22-independent-production-recovery-process",
+  "complete": true,
+  "pass": true,
+  "started": "2026-09-29T17:52:10.807373+00:00",
+  "cpu": 2,
+  "command": [
+    "taskset",
+    "-c",
+    "2",
+    "/usr/bin/python3",
+    "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-recover-v3.py",
+    "/home/ai/bend2/build/publish/bend/implementation/phase22/context-evidence/capsule-01",
+    "/home/ai/bend2/build/publish/bend/implementation/phase22/context-evidence/recovery-final-01.json"
+  ],
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-recover-v3.py",
+      "sha256": "fb22d600e947cad290c470a79daf6b759166138cef7e0c02363409f152ab5f07",
+      "bytes": 13908
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-evidence/capsule-01/manifest.json",
+      "sha256": "5073b24f8561feb2c67cb8d3c38813fa89e8b9d4bf2eb1bcac469ae84e01eeca",
+      "bytes": 2580389
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-evidence/capsule-01/inventory.json",
+      "sha256": "624ec44ab13ed5ac33c5787d20993e7de67a082cbc4940e7766f8f18ef889a99",
+      "bytes": 7450568
+    }
+  ],
+  "diskFreeBefore": 71942144,
+  "log": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-evidence/recovery-final-01.log",
+  "report": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-evidence/recovery-final-01.json",
+  "scope": "Independent actual one-part extraction and fixed-Git-plus-patch source reconstruction. No live compiler source read, no compiler execution and no git write. Output files remain outside captured inputs.",
+  "exitCode": 0,
+  "wallSeconds": 18.601738166995347,
+  "recoveryReport": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-evidence/recovery-final-01.json",
+    "sha256": "06258c20df50511e7f7942fa7b61e5ef10591ccce85462a488ea9d2aba7d1749",
+    "bytes": 7471
+  },
+  "logIdentity": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-evidence/recovery-final-01.log",
+    "sha256": "342ef6539e3008e3aa461ed983d3d1852a062c4f2b349422336c832cbd7a8c24",
+    "bytes": 5979
+  },
+  "inputIdentitiesUnchanged": true,
+  "diskFreeAfter": 71880704,
+  "scratchRemovedByRecoverer": true,
+  "finished": "2026-09-29T17:52:29.476498+00:00"
+}

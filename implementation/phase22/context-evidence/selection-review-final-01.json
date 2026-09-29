@@ -1,0 +1,177 @@
+{
+  "kind": "phase22-independent-final-selection-review",
+  "complete": true,
+  "pass": true,
+  "created": "2026-09-29T17:50:24.278049+00:00",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-evidence/selection-proposal.json",
+      "sha256": "c6ed5d252bad2627ea0d1b0106c73f6106d08e0f85630f0c421f6b47abd35a89",
+      "bytes": 59963
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-evidence/root-freeze.json",
+      "sha256": "ff66e86f01cda021707c5368786abd11c32094f751c1ec1fb4faced4d81cccf2",
+      "bytes": 123997
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-evidence/capsule-01/inventory.json",
+      "sha256": "624ec44ab13ed5ac33c5787d20993e7de67a082cbc4940e7766f8f18ef889a99",
+      "bytes": 7450568
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-evidence/capsule-01/phase21-to-anchor.patch",
+      "sha256": "b28d62e58999034cb9039f0ea6b65d879ab8676ab51f0da700879b3a59e3b16e",
+      "bytes": 217337
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-evidence/FINAL-CAPTURE-PLAN.md",
+      "sha256": "1df19c002af7984fd5d0edd0881144be491850da99f72c711b4b31317c93572f",
+      "bytes": 3457
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-evidence/FINAL-SELECTION-PROPOSAL.md",
+      "sha256": "e6eb92661f5cd24dbc16c359120a7291bbc540c2a600eee6687525a24390731b",
+      "bytes": 3082
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-evidence/codec-xz-independent-review.json",
+      "sha256": "a0b8647b06f09b7ac79e99bc36480e77a4fee85ec89547217796e871d076ef8e",
+      "bytes": 7088
+    }
+  ],
+  "releaseCommit": "1e640798c7b74c32a1d3f3335727d7be918795b9",
+  "baselineCommit": "a784e0e1a0de1ee085cc188ca0f1f19038679bdb",
+  "scopeChecks": {
+    "namedClosedPhase22BuildEntries": 294,
+    "allCurrentBuildEntriesIncluded": true,
+    "additionalNamedFiles": 576,
+    "rootFrozenInputs": 602,
+    "allCurrentTopLevelToolsDesignsReportsIncluded": true,
+    "checkpointChangedMembers": 314,
+    "allCheckpointCurrentBytesAndModesMatchGitBlobs": true,
+    "rootDocuments": [
+      "README.md",
+      "docs/BEND-IN-BEND.md",
+      "experiments/STEERING.md",
+      "experiments/ledger.md",
+      "selfhost/CONFORMANCE.md",
+      "selfhost/README.md",
+      "selfhost/docs/ARCHITECTURE.md"
+    ],
+    "priorCustomDependencyTrees": 20,
+    "privatePhase19ProjectPayloadAbsent": true,
+    "allFailureAndSuccessRootsKeptWithoutPassFilter": true
+  },
+  "explicitHistoricalScope": {
+    "tree": "selfhost/build/phase16/unbound-marker-source-02",
+    "members": 220,
+    "bytes": 1284975,
+    "historicalProjectMembers": 214,
+    "rootAcceptance": "Root explicitly accepted this exact tree after reviewer called out its sibling project; already disclosed in FINAL-SELECTION-PROPOSAL.md. No inventory change.",
+    "distinctFromFinal215Source": true
+  },
+  "externalPrerequisites": [
+    {
+      "path": "implementation/phase16/compact-evidence/preservation.json",
+      "sha256": "38ad3de96a5666b733091b26d9e51bb403b696a8f0c7fac19efd3d8d4de77762",
+      "scope": "Prior frozen capsule dependency; follow its original manifest/receipt and declared prerequisite chain."
+    },
+    {
+      "path": "implementation/phase17/evidence/preservation.json",
+      "sha256": "e77af70e357abbb45718d1981909006186d221e48b6871137df126ea64fd537d",
+      "scope": "Prior frozen capsule dependency; follow its original manifest/receipt and declared prerequisite chain."
+    },
+    {
+      "path": "implementation/phase18/evidence/preservation.json",
+      "sha256": "ce77611f75699b2d09637da3a083594e8d95a77c78d77c595a0f9fead852ad84",
+      "scope": "Prior frozen capsule dependency; follow its original manifest/receipt and declared prerequisite chain."
+    },
+    {
+      "path": "implementation/phase19/context-evidence/preservation.json",
+      "sha256": "cf630a509047609e6b9ea61eda4ce7a4ed5c913a61e171a2c2178013334e5e82",
+      "scope": "Prior frozen capsule dependency; follow its original manifest/receipt and declared prerequisite chain."
+    },
+    {
+      "path": "implementation/phase19/instance-evidence/preservation.json",
+      "sha256": "af435757f2a8fbbc52d4a83b59263a9013be1057f499dd8568bcd4a9967361dc",
+      "scope": "Prior frozen capsule dependency; follow its original manifest/receipt and declared prerequisite chain."
+    },
+    {
+      "path": "implementation/phase19/prefix-evidence/preservation.json",
+      "sha256": "bcde6955e56a479f5d984cc72f0b09aaef7ea1cbaceb79c5bbbb7292233fabf9",
+      "scope": "Prior frozen capsule dependency; follow its original manifest/receipt and declared prerequisite chain."
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/preservation.json",
+      "sha256": "0b3c89991bd261d066afdd7878f98dbc8a55dd8be7165a0768e7b02f2afc7bbd",
+      "scope": "Prior frozen capsule dependency; follow its original manifest/receipt and declared prerequisite chain."
+    },
+    {
+      "path": "implementation/phase21/group-evidence/preservation.json",
+      "sha256": "797b0757ad0c875b9225039fa04dfaf1b7d65ad0f65e964dce76ef1badc35cb9",
+      "scope": "Prior frozen capsule dependency; follow its original manifest/receipt and declared prerequisite chain."
+    },
+    {
+      "kind": "committed-source",
+      "commit": "a784e0e1a0de1ee085cc188ca0f1f19038679bdb"
+    },
+    {
+      "kind": "pinned-upstream",
+      "path": "selfhost/.bootstrap/upstream-phase8",
+      "commit": "b2111cf43244e65f76ddc278ee695e669f720cbf"
+    },
+    {
+      "kind": "recorded-toolchain",
+      "scope": "Node/Clang and header/library toolchain external, never home configuration."
+    }
+  ],
+  "exclusions": {
+    "trees": [
+      "experiments/phase6",
+      "implementation/phase6",
+      "selfhost/tools/performance/phase6",
+      "selfhost/dist/selfcheck",
+      "selfhost/dist/selfhost",
+      "selfhost/dist/release-history/40c8f7f3b7cd0e96aef57d7d574ebfd85607cd4e096909d083b450b4d973362c",
+      "selfhost/dist/release-history/66d6ce45c0c6ea8947190ff210274f1e6f0c7bf85f7ad3f215076f8820acd7c7",
+      "selfhost/dist/release-history/9b20de5032e306a0b7ee2686a1cc79452f81fcb282ff6419a0d1ad5c4b5716b6",
+      "selfhost/dist/release-history/a15d150a920b89d9c0781372356424e559edabef3246ca281741069b0fe739b6"
+    ],
+    "protectedPhase6PayloadsAbsent": 75,
+    "preexistingReleaseHistoryPayloadsAbsent": 28,
+    "protectedHashesAndGitStatusesVerifiedUnchanged": true,
+    "newCommitted44094HistoryFilesIncluded": 7,
+    "futureOutputs": [
+      "implementation/phase22/context-evidence/README.md",
+      "implementation/phase22/context-evidence/preservation.json",
+      "implementation/phase22/context-evidence/preservation.md",
+      "implementation/phase22/context-evidence/recovery-final-01.json",
+      "implementation/phase22/context-evidence/recovery-process-final-01.json",
+      "implementation/phase22/context-evidence/recovery-receipt-final-01.json",
+      "implementation/phase22/context-evidence/capture-process-final-01.json",
+      "implementation/phase22/context-evidence/prepare-process-final-01.json",
+      "implementation/phase22/context-evidence/selection-review-final-01.json",
+      "implementation/phase22/context-evidence/inventory-review-final-01.json",
+      "experiments/PRESERVATION.md"
+    ],
+    "collectorLogsOutsideInputsByFinalCapturePlan": [
+      "implementation/phase22/context-evidence/prepare-final-01.log",
+      "implementation/phase22/context-evidence/capture-final-01.log"
+    ],
+    "note": "Prior-capsule identity records/receipts/manifests remain selected as explicit prerequisites; unrelated payload is not copied."
+  },
+  "receiptPreparationFailures": [
+    {
+      "attempt": 1,
+      "stage": "Receipt preparation after successful complete byte/membership audit",
+      "pass": false,
+      "error": "AssertionError: implementation/phase22/context-evidence/prepare-final-01.log",
+      "filesWrittenBeforeFailure": 0,
+      "correction": "The review initially accepted only individually listed outsideImmutableInputs. FINAL-CAPTURE-PLAN also explicitly places collector prepare/capture logs outside inputs. The corrected receipt check names those two actual logs; no selection, inventory or compiler input was changed.",
+      "rawToolExitCode": 1
+    }
+  ],
+  "verdict": "Prepared exact selection approved. Root separately granted production capture after receiving the passing inventory audit; independent recovery remains required before preservation completion.",
+  "reviewerCapturedOrRecovered": false
+}

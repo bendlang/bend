@@ -427,3 +427,28 @@ source snapshots and consumed tools are retained. World source03 was timed;
 source06's later compatibility adapter was not. Phase19 is excluded, and all
 75 protected Phase6 hashes/statuses remain unchanged. Preservation establishes
 local recoverability, not a conformance gain or remote publication.
+
+
+## Phase22 contextual frontend release — 2026-09-29
+
+The [complete Phase22 capsule](../implementation/phase22/context-evidence/README.md)
+preserves24,804 members (one fixture link),1,249,820,320 logical bytes, in36
+explicit tar/XZ parts totaling23,647,460 compressed bytes. Independent bounded
+recovery verifies all bytes/modes/links and reconstructs all215 final source/host
+files from fixed Phase21 commit `a784e0e` plus the captured patch without reading
+live source. Compiler checkpoint `1e640798` installs guarded API `ade8ef02`;
+genuine checked B1 `9cf01096` remains distinct.
+
+Failed parser candidates, rejected cost screens, original control verdicts,
+profiles, consumed tools, all final gates, promotion, CLI evidence and codec/safety
+recovery trials are retained. Exact selected historical dependencies and external
+prerequisites remain explicit, including one reviewed220-member Phase16 fixture
+parent containing a historical project. All75 unrelated Phase6 payloads and28
+preexisting history files are excluded and untouched. New44094 history files
+belong to the committed compiler checkpoint and are intentionally included.
+
+The initial gzip size estimate did not fit. XZ preserves the same logical tar
+contents within the available disk; independent codec and29 safety/refusal controls
+pass. Successful recovery is separate from the immutable capture manifest's
+historical pending flag. Neither preservation nor local commits establish remote
+publication, universal language conformance or a new self-hosted fixed point.

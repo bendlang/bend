@@ -1,0 +1,31 @@
+{
+  "kind": "phase22-scoped-collector-adaptation",
+  "collector": {
+    "path": "selfhost/tools/performance/phase22/context-preserve.py",
+    "sha256": "5dec7844795e5ddf68b881f14f7d36cab858223c0c61f6067179d78894ee9208",
+    "bytes": 12782
+  },
+  "parentCollector": {
+    "path": "selfhost/tools/performance/phase21/group-preserve.py",
+    "sha256": "f34f9466aeb016718a82966d9f9807b9bf6e39d92c1a97c72293c94f0f190ca0",
+    "bytes": 12723
+  },
+  "recoveryTool": {
+    "path": "selfhost/tools/performance/phase16/compact-recover.py",
+    "sha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234",
+    "bytes": 7326
+  },
+  "adaptation": "Literal path/status/scope/kind/patch-filename substitutions only. No archive/extraction algorithm changes.",
+  "replacements": {
+    "implementation/phase21/group-evidence": "implementation/phase22/context-evidence",
+    "installed-group-range-release": "installed-contextual-parser-release",
+    "Explicit installed group range release freeze required": "Explicit installed contextual parser release freeze required",
+    "phase20-to-anchor.patch": "phase21-to-anchor.patch",
+    "phase21-group-scoped-inventory": "phase22-context-scoped-inventory",
+    "phase21-group-scoped-capture": "phase22-context-scoped-capture",
+    "Closed Phase21 group range release and separate comma research, including withheld source01, corrected source02 and retained raw oracle/audit failures; prior release and private contextual payloads are external.": "Closed Phase22 contextual production parser, index worker, diagnostics, loader ABI2 and release evidence, retaining failed preparations, superseded candidates and raw comparison failures; prior-phase payloads remain explicit external prerequisites.",
+    "excludedPhase21Roots": "excludedPhase22Roots",
+    "Usage: group-preserve.py": "Usage: context-preserve.py"
+  },
+  "notExecuted": true
+}

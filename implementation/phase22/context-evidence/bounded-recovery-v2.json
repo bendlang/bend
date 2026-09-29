@@ -1,0 +1,46 @@
+{
+  "kind": "phase22-bounded-recovery-v2-policy-closure",
+  "complete": true,
+  "pass": true,
+  "syntheticControls": 27,
+  "positiveRecoveries": 1,
+  "expectedRefusals": 26,
+  "allCapsulesUnchanged": true,
+  "allOutsideSentinelsBytesAndModesUnchanged": true,
+  "productionCaptureRun": false,
+  "productionRecoveryRun": false,
+  "priorConsumedRecovererUnchanged": true,
+  "partPayloadLimit": 38000000,
+  "retainedPayloadLimit": 8000000,
+  "compressedArchiveLimitExclusive": 40000000,
+  "inputs": [
+    {
+      "path": "selfhost/tools/performance/phase22/context-recover.py",
+      "sha256": "954a22650744ad6c77c3259ce4478b5c74384f6d1fbc81c87f24ea54b723952b"
+    },
+    {
+      "path": "selfhost/tools/performance/phase22/context-recover-v2.py",
+      "sha256": "cd4a55a6e2ac502ab621fa8066582a9f2218312922ef738d9e29471c74c73667"
+    },
+    {
+      "path": "selfhost/tools/performance/phase22/context-recovery-controls-v2.py",
+      "sha256": "e7e0366e8f60b82f9b78bec3160248f064c2838bd13994dc47320207c0cb6a2d"
+    },
+    {
+      "path": "selfhost/build/phase22/bounded-recovery-policy-02/report.json",
+      "sha256": "956fa1d261e4c3269d1795af2fb43a9c9588090ef93c61cb43409f7709cdb100"
+    },
+    {
+      "path": "implementation/phase22/context-evidence/RECOVERY-V2-PLAN.md",
+      "sha256": "48a1791b4eabb549785618e22f7a099161a19dec510f407055f08969381a586f"
+    },
+    {
+      "path": "implementation/phase22/context-evidence/bounded-recovery-v2-inputs.json",
+      "sha256": "a6db042e9132ee4df733a6ad02a27b7ded03f0002c5e2b4d5e4a4c7097954405"
+    },
+    {
+      "path": "implementation/phase22/context-evidence/recovery-v2.patch",
+      "sha256": "03c4e9a1a5fe560df9eb321858e4a4b45e1cef7a93776462678f12789d1be5d8"
+    }
+  ]
+}

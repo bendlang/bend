@@ -1,0 +1,203 @@
+{
+  "kind": "phase22-independent-bounded-recovery-v2-review",
+  "complete": true,
+  "pass": true,
+  "readOnlyScopeApproved": true,
+  "created": "2026-09-29T17:24:14.857651+00:00",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-evidence/bounded-recovery-v2-inputs.json",
+      "sha256": "a6db042e9132ee4df733a6ad02a27b7ded03f0002c5e2b4d5e4a4c7097954405",
+      "bytes": 637
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-recover-v2.py",
+      "sha256": "cd4a55a6e2ac502ab621fa8066582a9f2218312922ef738d9e29471c74c73667",
+      "bytes": 13521
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-recovery-controls-v2.py",
+      "sha256": "e7e0366e8f60b82f9b78bec3160248f064c2838bd13994dc47320207c0cb6a2d",
+      "bytes": 10734
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-evidence/RECOVERY-V2-PLAN.md",
+      "sha256": "48a1791b4eabb549785618e22f7a099161a19dec510f407055f08969381a586f",
+      "bytes": 2226
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/report.json",
+      "sha256": "956fa1d261e4c3269d1795af2fb43a9c9588090ef93c61cb43409f7709cdb100",
+      "bytes": 8440
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-recover.py",
+      "sha256": "954a22650744ad6c77c3259ce4478b5c74384f6d1fbc81c87f24ea54b723952b",
+      "bytes": 11177
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-recovery-controls.py",
+      "sha256": "10adac90752f81b8d4bd405d4fa86c7472cfd0c152e8cc5ca0fc965524d13942",
+      "bytes": 6421
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-01/report.json",
+      "sha256": "f8afbbe15f7829a0807520cefa6ef9f83210219a31f54da0b209c23c0e743a24",
+      "bytes": 4224
+    }
+  ],
+  "rawRecoveryReports": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/valid-cross-part-link/recovery.json",
+      "sha256": "327cc2b86d17d8dc6acb3a38c0902d6781c4f392cbb62a07848d395a96487d46",
+      "bytes": 1833
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/absolute-member/recovery.json",
+      "sha256": "9e81c06045e75470b3f2959c5b9082ae93baa208978fd3cab7ef1f609035f3d5",
+      "bytes": 236
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/escaping-link/recovery.json",
+      "sha256": "2daa94ffa9cb29138ce88513173371d97c5434f08b9bab6cc5150b0d568e4247",
+      "bytes": 229
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/absolute-link/recovery.json",
+      "sha256": "36a70c73d09ae8533eb6e36aad57caffa3f575c3c2b01425501af54800d10b77",
+      "bytes": 220
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/unselected-target/recovery.json",
+      "sha256": "c68d325d972d11e5a0715152589ef8d0576782ef6bb5329b8b2c9d3cab910084",
+      "bytes": 229
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/symlink-ancestor/recovery.json",
+      "sha256": "21c303952f511cd32306688c66e458c4e13dcd054159700d36e501aba6a52515",
+      "bytes": 223
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/file-ancestor/recovery.json",
+      "sha256": "a15ec4ad795b4bee39c524794827f2b59d37e6507e65beb24902c7d2d88547bc",
+      "bytes": 246
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/hardlink/recovery.json",
+      "sha256": "4e96508b95f9644da59f35e3d0ab9e9558044138a1396994e2a3689458859fe4",
+      "bytes": 237
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/changed-archive/recovery.json",
+      "sha256": "6f91254ba03cf9c5ef66169f70367a9c949de8a700bb22483341e6debc285f21",
+      "bytes": 222
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/wrong-mode/recovery.json",
+      "sha256": "c41ba7652a104486f537dd66dcf297b84d6ebea8adea2bc357c82eb07336d489",
+      "bytes": 224
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/wrong-content/recovery.json",
+      "sha256": "4603356c6418ea4567e0ce02b03eb1daced5149e20601a90c5d51510444ccbe0",
+      "bytes": 308
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/duplicate-member/recovery.json",
+      "sha256": "209adbe591d2bc1883ddddb371260027d131c88e7fb9c4c4ccf66aa456b49533",
+      "bytes": 232
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/missing-member/recovery.json",
+      "sha256": "77befb9b4e22f55f8d135fc585e698f7bd0fb05463713e4e1dd087e67a288b59",
+      "bytes": 236
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/derived-lineage/recovery.json",
+      "sha256": "662e3f7ac26463f9f62941a639432f7cfd5f05e992ba80079bd792dea1b061b0",
+      "bytes": 235
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/checked-lineage/recovery.json",
+      "sha256": "84c72315fe7cacacff02eb02c0256617c3f7f095b28042c429b3fdfdd3dbdd7c",
+      "bytes": 235
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/oversized-member/recovery.json",
+      "sha256": "25bb1d9e627a50afe5564cf86eea95b8c304d750066f82ba6b598673a08d55e5",
+      "bytes": 223
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/part-bound/recovery.json",
+      "sha256": "7ece55ba6ed30544fa43ba4093937f72890d9d25d9d53eee2616d340e56d7781",
+      "bytes": 242
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/wrong-part-member/recovery.json",
+      "sha256": "ac980442b0946bfb7a693264d6acc210eb91591e7bf7e5a454186f5ef5e15a90",
+      "bytes": 244
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/changed-source-patch/recovery.json",
+      "sha256": "cc972e5fe9c70307d650ce4af397fbdc5b59c1e7f6d1bbb2222180ae025e4791",
+      "bytes": 1432
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/compressed-bound/recovery.json",
+      "sha256": "42043a0e43a5266a416426f27857768e618db83071f26a54f5f0cdd161f6372c",
+      "bytes": 239
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/retained-bound/recovery.json",
+      "sha256": "1eee21928ff7ba3ed929a6083c8b4ec910efd059dea8b3f3563fac4d794c0f4f",
+      "bytes": 237
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/source-symlink-patch/recovery.json",
+      "sha256": "110a5cc56d2072a2e22a9241f125abd211a568663b6295fae2def9ca8fac4b39",
+      "bytes": 1460
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/unexpected-broken-symlink/recovery.json",
+      "sha256": "3a890a0ab615a95c00674c74f827c2c7e7c475bc0d4bbeeccb299146baf618d1",
+      "bytes": 1457
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/source-inventory-symlink/recovery.json",
+      "sha256": "a70ff2efeaba80f8f5737bcbf93f1f860713e80e87c6f105e56c408f5e8c9e7e",
+      "bytes": 1452
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/negative-inventory-bytes/recovery.json",
+      "sha256": "1acb227641c18ca8286ecec674636eae11339f12eb7917a6c2f09b73d2622830",
+      "bytes": 235
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bounded-recovery-policy-02/boolean-inventory-bytes/recovery.json",
+      "sha256": "1acb227641c18ca8286ecec674636eae11339f12eb7917a6c2f09b73d2622830",
+      "bytes": 235
+    }
+  ],
+  "syntheticControls": {
+    "cases": 27,
+    "acceptedValidCapsules": 1,
+    "expectedRefusals": 26,
+    "allRawOutcomesRetained": true,
+    "allCurrentOutsideSentinelBytesAndModesIndependentlyChecked": true,
+    "capsuleNonmutationAssertionsReviewed": true,
+    "reviewerReranControls": false
+  },
+  "review": [
+    "Full Git-plus-patch output is lstat-walked without following links before any reconstructed-source chmod. Every file and directory belongs to exact expected membership; special files and broken symlinks are rejected. Per-file containment and regular checks immediately precede chmod.",
+    "Fresh part/retained scratch creates only regular files before delayed symlink restoration. Inventory rejects unsafe paths, link/file ancestors, external targets and unsupported types. Existing actual archive ownership, cumulative-before-open and coverage checks remain.",
+    "Every inventory byte count must be an exact nonnegative integer before any sum. Hard caps are retained8,000,000 bytes, part38,000,000 bytes and compressed archive40,000,000 bytes; retained cap precedes scratch creation.",
+    "Report path must be outside the capsule both lexically and after resolution; refusal happens before report creation. The inside-capsule synthetic case has no recovery report and preserves its raw stderr.",
+    "The source-link-to-outside-sentinel and unexpected-broken-link controls independently isolate the prior permission and membership hazards. Negative/boolean sizes, retained cap, part cap, compressed cap, wrong-part ownership, lineage, modes and source identities each have retained controls.",
+    "Original recoverer and19-case control artifacts remain immutable. Source reconstruction continues to use committed baseline plus exact patch, with complete bytes/modes verified separately from working-tree source."
+  ],
+  "limits": [
+    "No real capsule was captured or recovered by reviewer. Final root release freeze, exact inventory/selection review and disk preflight are still required.",
+    "Caps are regular payload limits, not measured filesystem allocation or a guarantee against a concurrent hostile process. Source reconstruction runs after part scratch closes; final source membership/size must be bound by the selection.",
+    "Synthetic outcome review and current sentinel checks are independent; the27 controls were executed by the owner and were not redundantly rerun."
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "kind": "phase22-closed-xz-capture-process",
+  "complete": true,
+  "pass": true,
+  "exitCode": 0,
+  "finished": "2026-09-29T17:52:05.078373+00:00",
+  "command": [
+    "taskset",
+    "-c",
+    "3",
+    "python3",
+    "selfhost/tools/performance/phase22/context-preserve-v2.py",
+    "capture",
+    "implementation/phase22/context-evidence/capsule-01"
+  ],
+  "authorization": "Root explicitly granted production capture after independent full inventory review; all frozen inputs unchanged. Independent recovery remains pending.",
+  "manifest": {
+    "path": "implementation/phase22/context-evidence/capsule-01/manifest.json",
+    "sha256": "5073b24f8561feb2c67cb8d3c38813fa89e8b9d4bf2eb1bcac469ae84e01eeca"
+  },
+  "inventory": {
+    "path": "implementation/phase22/context-evidence/capsule-01/inventory.json",
+    "sha256": "624ec44ab13ed5ac33c5787d20993e7de67a082cbc4940e7766f8f18ef889a99"
+  },
+  "archiveCount": 36,
+  "compressedBytes": 23647460,
+  "maxArchiveBytes": 1405372,
+  "allArchiveHashesAndSizesRechecked": true,
+  "members": 24804,
+  "logicalBytes": 1249820320,
+  "freeBytes": 71991296,
+  "independentReviews": [
+    {
+      "path": "implementation/phase22/context-evidence/selection-review-final-01.json",
+      "sha256": "2e8da4b622447e208207dc73f3474cc737f248b90dd57a25e6bf00721865f936"
+    },
+    {
+      "path": "implementation/phase22/context-evidence/inventory-review-final-01.json",
+      "sha256": "7d719c3e0bb2ab0a8aff0cdc4770807ad78a25ed0c786bdb70ff98a985975896"
+    }
+  ],
+  "recoveryPending": true
+}

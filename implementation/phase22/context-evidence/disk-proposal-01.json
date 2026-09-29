@@ -1,0 +1,19 @@
+{
+  "kind": "phase22-prospective-full-capture-disk-budget",
+  "captureAuthorized": false,
+  "estimateFile": "implementation/phase22/context-evidence/compression-estimate-01.json",
+  "compressedArchiveEstimateBytes": 150088149,
+  "capsuleWithMetadataPlanningBytes": 160000000,
+  "partPayloadBound": 38000000,
+  "retainedPayloadBound": 8000000,
+  "sourceReconstructionSeparatePhase": {
+    "files": 215,
+    "bytes": 1325428
+  },
+  "gitObjectAdditionalPlanningBytes": 150000000,
+  "combinedHeadroomPlanningBytes": 360000000,
+  "freeBytesObserved": 121536512,
+  "planningDeficitBytes": 238463488,
+  "regenerablePayloadOmissions": [],
+  "existingTreeDeletionsProposed": false
+}

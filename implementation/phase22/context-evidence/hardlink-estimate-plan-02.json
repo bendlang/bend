@@ -1,0 +1,18 @@
+{
+  "kind": "phase22-authorized-readonly-hardlink-estimate-plan",
+  "readOnlyEstimateAuthorized": true,
+  "allListedProducersClosed": true,
+  "authorization": "Root explicitly authorized additional completed frontend01..04, history01..02 and checkup01..03 roots only. No mutation authorized. All raw failures retained.",
+  "roots": [
+    "selfhost/build/phase22/context-frontend-01",
+    "selfhost/build/phase22/context-frontend-02",
+    "selfhost/build/phase22/context-frontend-03",
+    "selfhost/build/phase22/context-frontend-04",
+    "selfhost/build/phase22/context-controls-history-01",
+    "selfhost/build/phase22/context-controls-history-02",
+    "selfhost/build/phase22/checkup-controls-01",
+    "selfhost/build/phase22/checkup-controls-02",
+    "selfhost/build/phase22/checkup-controls-03"
+  ],
+  "excluded": "Every other root including sources/builds/current candidates, active controls, capture/recovery, symlinks and prior multi-links"
+}

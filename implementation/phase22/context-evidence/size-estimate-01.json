@@ -1,0 +1,1572 @@
+{
+  "kind": "phase22-live-stat-only-estimate",
+  "frozen": false,
+  "files": 11381,
+  "bytes": 706563347,
+  "roots": [
+    {
+      "root": "selfhost/build/phase22/bundle-matrix-inputs-01",
+      "files": 4,
+      "bytes": 50466,
+      "largest": {
+        "path": "selfhost/build/phase22/bundle-matrix-inputs-01/host-review.json",
+        "bytes": 31713
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/checkup-controls-01",
+      "files": 244,
+      "bytes": 4959693,
+      "largest": {
+        "path": "selfhost/build/phase22/checkup-controls-01/candidate/build/typed/cache/base-eac3b89d561287b9a51b411ab6353ea275e90c571de7d7c8e733c99eb0755a94-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json",
+        "bytes": 3486205
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/checkup-controls-02",
+      "files": 237,
+      "bytes": 4951966,
+      "largest": {
+        "path": "selfhost/build/phase22/checkup-controls-02/candidate/build/typed/cache/base-eac3b89d561287b9a51b411ab6353ea275e90c571de7d7c8e733c99eb0755a94-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json",
+        "bytes": 3486205
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/completion-beta-contract-freeze-01.json",
+      "files": 1,
+      "bytes": 498,
+      "largest": {
+        "path": "selfhost/build/phase22/completion-beta-contract-freeze-01.json",
+        "bytes": 498
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/completion-beta-controls-01",
+      "files": 4,
+      "bytes": 1062831,
+      "largest": {
+        "path": "selfhost/build/phase22/completion-beta-controls-01/private-extension.mjs",
+        "bytes": 1002422
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/completion-beta-controls-02",
+      "files": 4,
+      "bytes": 981907,
+      "largest": {
+        "path": "selfhost/build/phase22/completion-beta-controls-02/private-extension.mjs",
+        "bytes": 921958
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/completion-beta-controls-03",
+      "files": 4,
+      "bytes": 980966,
+      "largest": {
+        "path": "selfhost/build/phase22/completion-beta-controls-03/private-extension.mjs",
+        "bytes": 922032
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/completion-beta-inputs-01",
+      "files": 2,
+      "bytes": 15387,
+      "largest": {
+        "path": "selfhost/build/phase22/completion-beta-inputs-01/cases.json",
+        "bytes": 14707
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/completion-beta-owner-freeze-01.json",
+      "files": 1,
+      "bytes": 1740,
+      "largest": {
+        "path": "selfhost/build/phase22/completion-beta-owner-freeze-01.json",
+        "bytes": 1740
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/completion-beta-owner-freeze-02.json",
+      "files": 1,
+      "bytes": 1055,
+      "largest": {
+        "path": "selfhost/build/phase22/completion-beta-owner-freeze-02.json",
+        "bytes": 1055
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/completion-beta-owner-freeze-03.json",
+      "files": 1,
+      "bytes": 1109,
+      "largest": {
+        "path": "selfhost/build/phase22/completion-beta-owner-freeze-03.json",
+        "bytes": 1109
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-build-01",
+      "files": 333,
+      "bytes": 15519420,
+      "largest": {
+        "path": "selfhost/build/phase22/context-build-01/snapshot/build/typed/cache/base-b75d99bfca680198f1504342a307e634cd0077042c5f482f10406224ee559810-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json",
+        "bytes": 3513063
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-build-01.log",
+      "files": 1,
+      "bytes": 98,
+      "largest": {
+        "path": "selfhost/build/phase22/context-build-01.log",
+        "bytes": 98
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-build-02",
+      "files": 283,
+      "bytes": 3154117,
+      "largest": {
+        "path": "selfhost/build/phase22/context-build-02/snapshot/build/typed/snapshots/daf218245eb415dedb85f4ab4bcc03fc1136cfb0717fdeac270b53aec533b14e/compiler.bend",
+        "bytes": 714406
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-build-02.log",
+      "files": 1,
+      "bytes": 573,
+      "largest": {
+        "path": "selfhost/build/phase22/context-build-02.log",
+        "bytes": 573
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-build-03",
+      "files": 298,
+      "bytes": 6459458,
+      "largest": {
+        "path": "selfhost/build/phase22/context-build-03/equality/api.mjs",
+        "bytes": 991922
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-build-03.log",
+      "files": 1,
+      "bytes": 752,
+      "largest": {
+        "path": "selfhost/build/phase22/context-build-03.log",
+        "bytes": 752
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-build-04",
+      "files": 333,
+      "bytes": 18849911,
+      "largest": {
+        "path": "selfhost/build/phase22/context-build-04/snapshot/build/typed/cache/base-7d1bc9d854f3a32f5cbcf07a93da3f63e8d07522a1c428ff453bd0211837ff9a-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json",
+        "bytes": 3486205
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-build-04.log",
+      "files": 1,
+      "bytes": 98,
+      "largest": {
+        "path": "selfhost/build/phase22/context-build-04.log",
+        "bytes": 98
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-build-05",
+      "files": 333,
+      "bytes": 15789902,
+      "largest": {
+        "path": "selfhost/build/phase22/context-build-05/snapshot/build/typed/cache/base-341ae8d3dc49c828bf4f452b8359217cff1ab577d051b89c624aacbca1a9c116-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json",
+        "bytes": 3479608
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-build-05.log",
+      "files": 1,
+      "bytes": 98,
+      "largest": {
+        "path": "selfhost/build/phase22/context-build-05.log",
+        "bytes": 98
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-build-06",
+      "files": 333,
+      "bytes": 19006365,
+      "largest": {
+        "path": "selfhost/build/phase22/context-build-06/snapshot/build/typed/cache/base-106e4cd49357bac4cf259bd20f40e785fe84c757632c962a1a1cfb42f7eafe25-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json",
+        "bytes": 3486205
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-build-06.log",
+      "files": 1,
+      "bytes": 98,
+      "largest": {
+        "path": "selfhost/build/phase22/context-build-06.log",
+        "bytes": 98
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-build-07",
+      "files": 333,
+      "bytes": 18587741,
+      "largest": {
+        "path": "selfhost/build/phase22/context-build-07/snapshot/build/typed/cache/base-dcf9aadd60b1bebfe7f938f631d93412171d321b98fea2e68c9bf53070d5c6eb-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json",
+        "bytes": 3486205
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-build-07.log",
+      "files": 1,
+      "bytes": 98,
+      "largest": {
+        "path": "selfhost/build/phase22/context-build-07.log",
+        "bytes": 98
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-build-08",
+      "files": 333,
+      "bytes": 17423332,
+      "largest": {
+        "path": "selfhost/build/phase22/context-build-08/snapshot/build/typed/cache/base-eac3b89d561287b9a51b411ab6353ea275e90c571de7d7c8e733c99eb0755a94-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json",
+        "bytes": 3486205
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-build-08.log",
+      "files": 1,
+      "bytes": 98,
+      "largest": {
+        "path": "selfhost/build/phase22/context-build-08.log",
+        "bytes": 98
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-build-09",
+      "files": 333,
+      "bytes": 15341697,
+      "largest": {
+        "path": "selfhost/build/phase22/context-build-09/snapshot/build/typed/cache/base-eac3b89d561287b9a51b411ab6353ea275e90c571de7d7c8e733c99eb0755a94-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json",
+        "bytes": 3486205
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-baseline-01",
+      "files": 94,
+      "bytes": 6279956,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-baseline-01/selected/candidate.json",
+        "bytes": 2070604
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-census-01",
+      "files": 1,
+      "bytes": 85487,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-census-01/report.json",
+        "bytes": 85487
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-do-baseline-01",
+      "files": 51,
+      "bytes": 5533759,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-do-baseline-01/selected/candidate.json",
+        "bytes": 1956042
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-do-direct-01",
+      "files": 3,
+      "bytes": 966086,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-do-direct-01/private-extension.mjs",
+        "bytes": 954118
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-do-direct-02",
+      "files": 5,
+      "bytes": 4634106,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-do-direct-02/prior-book.json",
+        "bytes": 3512566
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-do-direct-02-command.log",
+      "files": 1,
+      "bytes": 87,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-do-direct-02-command.log",
+        "bytes": 87
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-do-header-baseline-01",
+      "files": 45,
+      "bytes": 5307806,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-do-header-baseline-01/selected/candidate.json",
+        "bytes": 1916388
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-do-header-inputs-01",
+      "files": 6,
+      "bytes": 2900,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-do-header-inputs-01/plan.json",
+        "bytes": 1445
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-do-inputs-01",
+      "files": 12,
+      "bytes": 11746,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-do-inputs-01/selection.json",
+        "bytes": 5515
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-do-raw-candidate-01",
+      "files": 40,
+      "bytes": 5527994,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-do-raw-candidate-01/selected/candidate.json",
+        "bytes": 1955560
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-execution-sweep-03",
+      "files": 2,
+      "bytes": 5086,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-execution-sweep-03/report.json",
+        "bytes": 2987
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-execution-sweep-04",
+      "files": 2,
+      "bytes": 5086,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-execution-sweep-04/report.json",
+        "bytes": 2987
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-execution-sweep-05",
+      "files": 2,
+      "bytes": 5086,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-execution-sweep-05/report.json",
+        "bytes": 2987
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-feature-alias-baseline-01",
+      "files": 36,
+      "bytes": 5296097,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-feature-alias-baseline-01/selected/candidate.json",
+        "bytes": 1914329
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-feature-alias-inputs-01",
+      "files": 5,
+      "bytes": 2670,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-feature-alias-inputs-01/plan.json",
+        "bytes": 1256
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-feature-baseline-01",
+      "files": 84,
+      "bytes": 5871784,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-feature-baseline-01/selected/candidate.json",
+        "bytes": 2008731
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-feature-group-baseline-01",
+      "files": 36,
+      "bytes": 5297544,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-feature-group-baseline-01/selected/candidate.json",
+        "bytes": 1914800
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-feature-group-inputs-01",
+      "files": 5,
+      "bytes": 2751,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-feature-group-inputs-01/selection.json",
+        "bytes": 1352
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-feature-inputs-01",
+      "files": 16,
+      "bytes": 21592,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-feature-inputs-01/selection.json",
+        "bytes": 11521
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-feature-program-baseline-01",
+      "files": 48,
+      "bytes": 5321976,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-feature-program-baseline-01/selected/candidate.json",
+        "bytes": 1927197
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-finalization-baseline-01",
+      "files": 35,
+      "bytes": 5640445,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-finalization-baseline-01/selected/candidate.json",
+        "bytes": 1974140
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-finalization-inputs-01",
+      "files": 9,
+      "bytes": 13916,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-finalization-inputs-01/selection.json",
+        "bytes": 7508
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-header-demand-baseline-01",
+      "files": 35,
+      "bytes": 5273819,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-header-demand-baseline-01/selected/candidate.json",
+        "bytes": 1912224
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-header-demand-inputs-01",
+      "files": 3,
+      "bytes": 1635,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-header-demand-inputs-01/plan.json",
+        "bytes": 944
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-history-inputs-01",
+      "files": 4,
+      "bytes": 19715,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-history-inputs-01/context-controls-history-run.mjs.patch",
+        "bytes": 8419
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-inputs-01",
+      "files": 8,
+      "bytes": 43493,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-inputs-01/plan.json",
+        "bytes": 32272
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-materialization-baseline-01",
+      "files": 35,
+      "bytes": 5496485,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-materialization-baseline-01/selected/candidate.json",
+        "bytes": 1949103
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-materialization-inputs-01",
+      "files": 10,
+      "bytes": 9531,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-materialization-inputs-01/selection.json",
+        "bytes": 5208
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-materialization-sweep-04",
+      "files": 2,
+      "bytes": 8859,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-materialization-sweep-04/report.json",
+        "bytes": 6527
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-materialization-sweep-05",
+      "files": 2,
+      "bytes": 8859,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-materialization-sweep-05/report.json",
+        "bytes": 6527
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-namespace-direct-01",
+      "files": 4,
+      "bytes": 973945,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-namespace-direct-01/private-extension.mjs",
+        "bytes": 964102
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-namespace-direct-01-command.log",
+      "files": 1,
+      "bytes": 207,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-namespace-direct-01-command.log",
+        "bytes": 207
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-alias-01",
+      "files": 36,
+      "bytes": 5297742,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-alias-01/selected/candidate.json",
+        "bytes": 1914471
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-alias-03",
+      "files": 36,
+      "bytes": 5292771,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-alias-03/selected/candidate.json",
+        "bytes": 1914483
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-alias-04",
+      "files": 36,
+      "bytes": 5292762,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-alias-04/selected/candidate.json",
+        "bytes": 1914482
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-alias-05",
+      "files": 36,
+      "bytes": 5292771,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-alias-05/selected/candidate.json",
+        "bytes": 1914483
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-do-01",
+      "files": 45,
+      "bytes": 5532049,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-do-01/selected/candidate.json",
+        "bytes": 1955870
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-do-03",
+      "files": 36,
+      "bytes": 5520867,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-do-03/selected/candidate.json",
+        "bytes": 1954931
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-do-04",
+      "files": 34,
+      "bytes": 5520432,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-do-04/selected/candidate.json",
+        "bytes": 1954932
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-do-05",
+      "files": 35,
+      "bytes": 5520653,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-do-05/selected/candidate.json",
+        "bytes": 1954930
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-do-header-02",
+      "files": 36,
+      "bytes": 5295708,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-do-header-02/selected/candidate.json",
+        "bytes": 1915124
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-do-header-04",
+      "files": 35,
+      "bytes": 5295482,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-do-header-04/selected/candidate.json",
+        "bytes": 1915124
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-do-header-05",
+      "files": 36,
+      "bytes": 5295708,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-do-header-05/selected/candidate.json",
+        "bytes": 1915124
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-feature-01",
+      "files": 56,
+      "bytes": 5839496,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-feature-01/selected/candidate.json",
+        "bytes": 2005369
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-feature-03",
+      "files": 56,
+      "bytes": 5837384,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-feature-03/selected/candidate.json",
+        "bytes": 2005470
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-feature-04",
+      "files": 56,
+      "bytes": 5837404,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-feature-04/selected/candidate.json",
+        "bytes": 2005471
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-feature-05",
+      "files": 56,
+      "bytes": 5837388,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-feature-05/selected/candidate.json",
+        "bytes": 2005470
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-feature-program-03",
+      "files": 32,
+      "bytes": 5304065,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-feature-program-03/selected/candidate.json",
+        "bytes": 1924622
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-feature-program-04",
+      "files": 32,
+      "bytes": 5304065,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-feature-program-04/selected/candidate.json",
+        "bytes": 1924622
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-feature-program-05",
+      "files": 32,
+      "bytes": 5304070,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-feature-program-05/selected/candidate.json",
+        "bytes": 1924622
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-finalization-03",
+      "files": 36,
+      "bytes": 5638349,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-finalization-03/selected/candidate.json",
+        "bytes": 1973539
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-finalization-04",
+      "files": 35,
+      "bytes": 5638122,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-finalization-04/selected/candidate.json",
+        "bytes": 1973539
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-finalization-05",
+      "files": 35,
+      "bytes": 5638122,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-finalization-05/selected/candidate.json",
+        "bytes": 1973538
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-group-03",
+      "files": 36,
+      "bytes": 5293416,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-group-03/selected/candidate.json",
+        "bytes": 1914678
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-group-04",
+      "files": 36,
+      "bytes": 5293416,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-group-04/selected/candidate.json",
+        "bytes": 1914678
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-group-05",
+      "files": 36,
+      "bytes": 5293434,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-group-05/selected/candidate.json",
+        "bytes": 1914680
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-header-demand-02",
+      "files": 35,
+      "bytes": 5272826,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-header-demand-02/selected/candidate.json",
+        "bytes": 1911803
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-header-demand-04",
+      "files": 36,
+      "bytes": 5273042,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-header-demand-04/selected/candidate.json",
+        "bytes": 1911802
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-header-demand-05",
+      "files": 36,
+      "bytes": 5273042,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-header-demand-05/selected/candidate.json",
+        "bytes": 1911803
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-main-01",
+      "files": 105,
+      "bytes": 6280455,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-main-01/selected/candidate.json",
+        "bytes": 2074315
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-main-03",
+      "files": 76,
+      "bytes": 6247998,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-main-03/selected/candidate.json",
+        "bytes": 2071164
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-main-04",
+      "files": 76,
+      "bytes": 6248001,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-main-04/selected/candidate.json",
+        "bytes": 2071158
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-main-05",
+      "files": 75,
+      "bytes": 6247764,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-main-05/selected/candidate.json",
+        "bytes": 2071156
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-materialization-02",
+      "files": 35,
+      "bytes": 5494760,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-materialization-02/selected/candidate.json",
+        "bytes": 1948988
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-materialization-04",
+      "files": 35,
+      "bytes": 5491908,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-materialization-04/selected/candidate.json",
+        "bytes": 1948967
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-materialization-05",
+      "files": 36,
+      "bytes": 5492132,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-materialization-05/selected/candidate.json",
+        "bytes": 1948967
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-ordinary-program-03",
+      "files": 32,
+      "bytes": 5339031,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-ordinary-program-03/selected/candidate.json",
+        "bytes": 1934972
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-ordinary-program-04",
+      "files": 32,
+      "bytes": 5339031,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-ordinary-program-04/selected/candidate.json",
+        "bytes": 1934972
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-ordinary-program-05",
+      "files": 32,
+      "bytes": 5339037,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-ordinary-program-05/selected/candidate.json",
+        "bytes": 1934972
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-sweep-03",
+      "files": 2,
+      "bytes": 17487,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-sweep-03/report.json",
+        "bytes": 15063
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-sweep-04",
+      "files": 2,
+      "bytes": 17487,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-sweep-04/report.json",
+        "bytes": 15063
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-production-sweep-05",
+      "files": 2,
+      "bytes": 17487,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-production-sweep-05/report.json",
+        "bytes": 15063
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-controls-program-baseline-01",
+      "files": 32,
+      "bytes": 5337571,
+      "largest": {
+        "path": "selfhost/build/phase22/context-controls-program-baseline-01/selected/candidate.json",
+        "bytes": 1935082
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-do-build-01",
+      "files": 333,
+      "bytes": 15583705,
+      "largest": {
+        "path": "selfhost/build/phase22/context-do-build-01/snapshot/build/typed/cache/base-5631e1072dadd4c1cd7548b5475803f578f8ac6ef1714b3683206057faca2f4a-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json",
+        "bytes": 3513055
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-do-build-02",
+      "files": 332,
+      "bytes": 15617199,
+      "largest": {
+        "path": "selfhost/build/phase22/context-do-build-02/snapshot/build/typed/cache/base-f7dd372d1841bc6343bcb7c9077959e07148becb1a5c4bca38fb8cba73535690-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json",
+        "bytes": 3513055
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-do-source-01",
+      "files": 218,
+      "bytes": 1408029,
+      "largest": {
+        "path": "selfhost/build/phase22/context-do-source-01/project/src/runtime/native/runtime.c",
+        "bytes": 77695
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-do-source-02",
+      "files": 219,
+      "bytes": 1428000,
+      "largest": {
+        "path": "selfhost/build/phase22/context-do-source-02/project/src/runtime/native/runtime.c",
+        "bytes": 77695
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-do-work",
+      "files": 9,
+      "bytes": 65192,
+      "largest": {
+        "path": "selfhost/build/phase22/context-do-work/do-header-sugar-draft.bend",
+        "bytes": 15851
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-frontend-01",
+      "files": 210,
+      "bytes": 18195186,
+      "largest": {
+        "path": "selfhost/build/phase22/context-frontend-01/candidate.json",
+        "bytes": 6119593
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-frontend-01-raw-triage.json",
+      "files": 1,
+      "bytes": 31578,
+      "largest": {
+        "path": "selfhost/build/phase22/context-frontend-01-raw-triage.json",
+        "bytes": 31578
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-frontend-02",
+      "files": 117,
+      "bytes": 29772858,
+      "largest": {
+        "path": "selfhost/build/phase22/context-frontend-02/candidate.json",
+        "bytes": 6145090
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-frontend-03",
+      "files": 115,
+      "bytes": 29772607,
+      "largest": {
+        "path": "selfhost/build/phase22/context-frontend-03/candidate.json",
+        "bytes": 6145154
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-frontend-04",
+      "files": 65,
+      "bytes": 7499886,
+      "largest": {
+        "path": "selfhost/build/phase22/context-frontend-04/acquisition/candidate.progress.jsonl",
+        "bytes": 1759215
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-frontend-gate-01",
+      "files": 19,
+      "bytes": 11693721,
+      "largest": {
+        "path": "selfhost/build/phase22/context-frontend-gate-01/candidate.json",
+        "bytes": 6119593
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-frontend-reaudit-01",
+      "files": 2,
+      "bytes": 7344,
+      "largest": {
+        "path": "selfhost/build/phase22/context-frontend-reaudit-01/consumed-tool.mjs",
+        "bytes": 6597
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-frontend-reaudit-02",
+      "files": 8,
+      "bytes": 2786571,
+      "largest": {
+        "path": "selfhost/build/phase22/context-frontend-reaudit-02/baseline-comparison.json",
+        "bytes": 1238249
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-group196-01",
+      "files": 59,
+      "bytes": 7911340,
+      "largest": {
+        "path": "selfhost/build/phase22/context-group196-01/selected/candidate.json",
+        "bytes": 2324172
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-group196-01.log",
+      "files": 1,
+      "bytes": 71,
+      "largest": {
+        "path": "selfhost/build/phase22/context-group196-01.log",
+        "bytes": 71
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-group196-02",
+      "files": 49,
+      "bytes": 7867475,
+      "largest": {
+        "path": "selfhost/build/phase22/context-group196-02/selected/candidate.json",
+        "bytes": 2323199
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-group196-02.log",
+      "files": 1,
+      "bytes": 71,
+      "largest": {
+        "path": "selfhost/build/phase22/context-group196-02.log",
+        "bytes": 71
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-group196-03",
+      "files": 49,
+      "bytes": 7867486,
+      "largest": {
+        "path": "selfhost/build/phase22/context-group196-03/selected/candidate.json",
+        "bytes": 2323198
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-group196-03.log",
+      "files": 1,
+      "bytes": 71,
+      "largest": {
+        "path": "selfhost/build/phase22/context-group196-03.log",
+        "bytes": 71
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-group196-04",
+      "files": 49,
+      "bytes": 7867485,
+      "largest": {
+        "path": "selfhost/build/phase22/context-group196-04/selected/candidate.json",
+        "bytes": 2323203
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-group196-04.log",
+      "files": 1,
+      "bytes": 71,
+      "largest": {
+        "path": "selfhost/build/phase22/context-group196-04.log",
+        "bytes": 71
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-header-candidate-01",
+      "files": 107,
+      "bytes": 5466523,
+      "largest": {
+        "path": "selfhost/build/phase22/context-header-candidate-01/selected/candidate.json",
+        "bytes": 1931908
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-header-candidate-01.log",
+      "files": 1,
+      "bytes": 70,
+      "largest": {
+        "path": "selfhost/build/phase22/context-header-candidate-01.log",
+        "bytes": 70
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-header-candidate-02",
+      "files": 106,
+      "bytes": 5460382,
+      "largest": {
+        "path": "selfhost/build/phase22/context-header-candidate-02/selected/candidate.json",
+        "bytes": 1931910
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-header-candidate-02.log",
+      "files": 1,
+      "bytes": 70,
+      "largest": {
+        "path": "selfhost/build/phase22/context-header-candidate-02.log",
+        "bytes": 70
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-header-candidate-03",
+      "files": 107,
+      "bytes": 5466524,
+      "largest": {
+        "path": "selfhost/build/phase22/context-header-candidate-03/selected/candidate.json",
+        "bytes": 1931908
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-header-candidate-03.log",
+      "files": 1,
+      "bytes": 70,
+      "largest": {
+        "path": "selfhost/build/phase22/context-header-candidate-03.log",
+        "bytes": 70
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-header-controls-01",
+      "files": 8,
+      "bytes": 3773,
+      "largest": {
+        "path": "selfhost/build/phase22/context-header-controls-01/manifest.json",
+        "bytes": 1790
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-header-parent-01",
+      "files": 116,
+      "bytes": 5478881,
+      "largest": {
+        "path": "selfhost/build/phase22/context-header-parent-01/selected/candidate.json",
+        "bytes": 1932355
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-header-parent-01.log",
+      "files": 1,
+      "bytes": 70,
+      "largest": {
+        "path": "selfhost/build/phase22/context-header-parent-01.log",
+        "bytes": 70
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-normalization-candidate-01",
+      "files": 56,
+      "bytes": 5412806,
+      "largest": {
+        "path": "selfhost/build/phase22/context-normalization-candidate-01/selected/candidate.json",
+        "bytes": 1930772
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-normalization-candidate-01.log",
+      "files": 1,
+      "bytes": 70,
+      "largest": {
+        "path": "selfhost/build/phase22/context-normalization-candidate-01.log",
+        "bytes": 70
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-normalization-candidate-02",
+      "files": 57,
+      "bytes": 5413039,
+      "largest": {
+        "path": "selfhost/build/phase22/context-normalization-candidate-02/selected/candidate.json",
+        "bytes": 1930773
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-normalization-candidate-02.log",
+      "files": 1,
+      "bytes": 70,
+      "largest": {
+        "path": "selfhost/build/phase22/context-normalization-candidate-02.log",
+        "bytes": 70
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-normalization-controls-01",
+      "files": 8,
+      "bytes": 3998,
+      "largest": {
+        "path": "selfhost/build/phase22/context-normalization-controls-01/manifest.json",
+        "bytes": 1944
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-normalization-parent-01",
+      "files": 56,
+      "bytes": 5408821,
+      "largest": {
+        "path": "selfhost/build/phase22/context-normalization-parent-01/selected/candidate.json",
+        "bytes": 1930293
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-normalization-parent-01.log",
+      "files": 1,
+      "bytes": 70,
+      "largest": {
+        "path": "selfhost/build/phase22/context-normalization-parent-01.log",
+        "bytes": 70
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-owner-freeze-01.json",
+      "files": 1,
+      "bytes": 14575,
+      "largest": {
+        "path": "selfhost/build/phase22/context-owner-freeze-01.json",
+        "bytes": 14575
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-owner-preparations-01",
+      "files": 9,
+      "bytes": 43574,
+      "largest": {
+        "path": "selfhost/build/phase22/context-owner-preparations-01/p22-own-edit.py",
+        "bytes": 7576
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-source-01",
+      "files": 216,
+      "bytes": 1342881,
+      "largest": {
+        "path": "selfhost/build/phase22/context-source-01/project/src/runtime/native/runtime.c",
+        "bytes": 77695
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-source-02",
+      "files": 234,
+      "bytes": 1562319,
+      "largest": {
+        "path": "selfhost/build/phase22/context-source-02/manifest.json",
+        "bytes": 133588
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-source-03",
+      "files": 234,
+      "bytes": 1639177,
+      "largest": {
+        "path": "selfhost/build/phase22/context-source-03/manifest.json",
+        "bytes": 132578
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-source-04",
+      "files": 234,
+      "bytes": 1638552,
+      "largest": {
+        "path": "selfhost/build/phase22/context-source-04/manifest.json",
+        "bytes": 132578
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-source-05",
+      "files": 234,
+      "bytes": 1639386,
+      "largest": {
+        "path": "selfhost/build/phase22/context-source-05/manifest.json",
+        "bytes": 132578
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-source-06",
+      "files": 234,
+      "bytes": 1654657,
+      "largest": {
+        "path": "selfhost/build/phase22/context-source-06/manifest.json",
+        "bytes": 132581
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-source-07",
+      "files": 234,
+      "bytes": 1654493,
+      "largest": {
+        "path": "selfhost/build/phase22/context-source-07/manifest.json",
+        "bytes": 132581
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-source-08",
+      "files": 242,
+      "bytes": 1686663,
+      "largest": {
+        "path": "selfhost/build/phase22/context-source-08/manifest.json",
+        "bytes": 133155
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-source-09",
+      "files": 239,
+      "bytes": 1671921,
+      "largest": {
+        "path": "selfhost/build/phase22/context-source-09/manifest.json",
+        "bytes": 133155
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/context-source-10",
+      "files": 219,
+      "bytes": 1357023,
+      "largest": {
+        "path": "selfhost/build/phase22/context-source-10/project/src/runtime/native/runtime.c",
+        "bytes": 77695
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/frontend-layout-controls-01",
+      "files": 7,
+      "bytes": 3096,
+      "largest": {
+        "path": "selfhost/build/phase22/frontend-layout-controls-01/report.json",
+        "bytes": 2554
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/frontend-layout-inputs-01",
+      "files": 2,
+      "bytes": 5352,
+      "largest": {
+        "path": "selfhost/build/phase22/frontend-layout-inputs-01/migration.json",
+        "bytes": 4532
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/frontend-layout-owner-freeze-01.json",
+      "files": 1,
+      "bytes": 2709,
+      "largest": {
+        "path": "selfhost/build/phase22/frontend-layout-owner-freeze-01.json",
+        "bytes": 2709
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/index-remove-build-01",
+      "files": 331,
+      "bytes": 15526498,
+      "largest": {
+        "path": "selfhost/build/phase22/index-remove-build-01/snapshot/build/typed/cache/base-c6d94a6795e98695e9e45893c34332181ff50039cbb09121fbf789ca515a2f12-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json",
+        "bytes": 3513063
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/index-remove-census-01",
+      "files": 7,
+      "bytes": 1234358,
+      "largest": {
+        "path": "selfhost/build/phase22/index-remove-census-01/instrumented-api.mjs",
+        "bytes": 914562
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/index-remove-census-02",
+      "files": 9,
+      "bytes": 1281725,
+      "largest": {
+        "path": "selfhost/build/phase22/index-remove-census-02/instrumented-api.mjs",
+        "bytes": 914562
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/index-remove-controls-01",
+      "files": 12,
+      "bytes": 10908859,
+      "largest": {
+        "path": "selfhost/build/phase22/index-remove-controls-01/report.json",
+        "bytes": 5239071
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/index-remove-fullcheck-01",
+      "files": 6,
+      "bytes": 303758,
+      "largest": {
+        "path": "selfhost/build/phase22/index-remove-fullcheck-01/report.json",
+        "bytes": 119797
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/index-remove-matrix-01",
+      "files": 26,
+      "bytes": 2486488,
+      "largest": {
+        "path": "selfhost/build/phase22/index-remove-matrix-01/report.json",
+        "bytes": 687940
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/index-remove-matrix-inputs-01",
+      "files": 3,
+      "bytes": 35095,
+      "largest": {
+        "path": "selfhost/build/phase22/index-remove-matrix-inputs-01/host-review.json",
+        "bytes": 30317
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/index-remove-owner-freeze-01.json",
+      "files": 1,
+      "bytes": 6078,
+      "largest": {
+        "path": "selfhost/build/phase22/index-remove-owner-freeze-01.json",
+        "bytes": 6078
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/index-remove-source-01",
+      "files": 217,
+      "bytes": 1388689,
+      "largest": {
+        "path": "selfhost/build/phase22/index-remove-source-01/project/src/runtime/native/runtime.c",
+        "bytes": 77695
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/installed-profile-01",
+      "files": 10,
+      "bytes": 31314804,
+      "largest": {
+        "path": "selfhost/build/phase22/installed-profile-01/checking.cpuprofile",
+        "bytes": 30807408
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/installed-profile-callers-01",
+      "files": 2,
+      "bytes": 104850,
+      "largest": {
+        "path": "selfhost/build/phase22/installed-profile-callers-01/report.json",
+        "bytes": 101423
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/installed-profile-hash-callers-01",
+      "files": 2,
+      "bytes": 69416,
+      "largest": {
+        "path": "selfhost/build/phase22/installed-profile-hash-callers-01/report.json",
+        "bytes": 66092
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/installed-profile-plan-01.json",
+      "files": 1,
+      "bytes": 4247,
+      "largest": {
+        "path": "selfhost/build/phase22/installed-profile-plan-01.json",
+        "bytes": 4247
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/loader-host-controls-01",
+      "files": 17,
+      "bytes": 21412,
+      "largest": {
+        "path": "selfhost/build/phase22/loader-host-controls-01/report.json",
+        "bytes": 7617
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/loader-host-owner-freeze-01.json",
+      "files": 1,
+      "bytes": 2509,
+      "largest": {
+        "path": "selfhost/build/phase22/loader-host-owner-freeze-01.json",
+        "bytes": 2509
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/loader-host-source-01",
+      "files": 217,
+      "bytes": 1501474,
+      "largest": {
+        "path": "selfhost/build/phase22/loader-host-source-01/manifest.json",
+        "bytes": 166087
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/loader-retirement-01",
+      "files": 6,
+      "bytes": 92414,
+      "largest": {
+        "path": "selfhost/build/phase22/loader-retirement-01/project/tools/typed-driver.mjs",
+        "bytes": 48017
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/loader-retirement-02",
+      "files": 6,
+      "bytes": 91661,
+      "largest": {
+        "path": "selfhost/build/phase22/loader-retirement-02/project/tools/typed-driver.mjs",
+        "bytes": 48017
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/loader-retirement-review-freeze-01.json",
+      "files": 1,
+      "bytes": 1514,
+      "largest": {
+        "path": "selfhost/build/phase22/loader-retirement-review-freeze-01.json",
+        "bytes": 1514
+      }
+    },
+    {
+      "root": "selfhost/build/phase22/start-state-01.json",
+      "files": 1,
+      "bytes": 23220,
+      "largest": {
+        "path": "selfhost/build/phase22/start-state-01.json",
+        "bytes": 23220
+      }
+    }
+  ],
+  "symlinks": [
+    {
+      "path": "selfhost/build/phase22/loader-host-controls-01/fixtures/leaf-link.bend",
+      "target": "leaf.bend"
+    }
+  ],
+  "scope": "No file contents hashed; active producer bytes may change. Not an approved inventory or capture input list."
+}

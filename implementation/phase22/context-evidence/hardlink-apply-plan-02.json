@@ -1,0 +1,22 @@
+{
+  "mutationAuthorized": true,
+  "allListedProducersClosed": true,
+  "estimate": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/hardlink-estimate-02/report.json",
+    "sha256": "283065ce5c170311f4afb3d7a8ba6df9a6fa6f94c074e72ec52c87b7296ff329"
+  },
+  "roots": [
+    "selfhost/build/phase22/context-frontend-01",
+    "selfhost/build/phase22/context-frontend-02",
+    "selfhost/build/phase22/context-frontend-03",
+    "selfhost/build/phase22/context-frontend-04",
+    "selfhost/build/phase22/context-controls-history-01",
+    "selfhost/build/phase22/context-controls-history-02",
+    "selfhost/build/phase22/checkup-controls-01",
+    "selfhost/build/phase22/checkup-controls-02",
+    "selfhost/build/phase22/checkup-controls-03"
+  ],
+  "authorization": "Root authorizes exact byte-identical coalescing of these nine already-closed Phase22 frontend, history and checkup roots only; preserve every logical file, byte and mode. v2 uses a per-replacement append journal to avoid repeatedly serializing all previous groups. Independent review required before launch.",
+  "identityContract": "Captured bytes, paths and modes are binding. Inode/link-count/ctime/mtime are not bound by workflow or capsule identity. All selected experiment files remain immutable; new candidates copy into fresh paths.",
+  "capture": "Collector manually creates regular TarInfo records and writes all logical payloads. No archive hardlink or external target is introduced."
+}

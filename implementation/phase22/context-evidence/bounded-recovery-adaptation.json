@@ -1,0 +1,15 @@
+{
+  "kind": "phase22-bounded-recovery-adaptation",
+  "parent": {
+    "path": "selfhost/tools/performance/phase16/compact-recover.py",
+    "sha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234",
+    "bytes": 7326
+  },
+  "tool": {
+    "path": "selfhost/tools/performance/phase22/context-recover.py",
+    "sha256": "c5150e40b054012d851c6322ee7880573eaad4def6ff34b1fb81a418a49e661b",
+    "bytes": 10619
+  },
+  "scope": "Archive inventory format unchanged. Independently extract/verify each part, keep only cross-part link targets and final API lineage, reconstruct full source from fixed Git baseline plus captured patch. No existing workspace tree deletion.",
+  "notExecuted": true
+}
