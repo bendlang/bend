@@ -1,0 +1,135 @@
+{
+  "kind": "phase20-shared-decorator-diagnostic-handoff",
+  "complete": true,
+  "pass": true,
+  "source": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-source-01/project",
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-01/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-01/equality/api.mjs",
+    "sha256": "23c891e30fcd02e373e5257e74d3c9fc3bba4fdd5b2ad60807648d06eb3a9fd4"
+  },
+  "parentInstalledCommit": "fd9e8b2",
+  "parentSource": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-source-04/project",
+  "changedFiles": [
+    "src/front/declarations.bend"
+  ],
+  "physicalLines": 0,
+  "bytes": 92,
+  "newDefinitions": 0,
+  "newLaws": 0,
+  "newTypes": 0,
+  "hostOrABIChange": false,
+  "installed": false,
+  "default36": {
+    "pass": true,
+    "parentStrictDifferences": [
+      {
+        "id": "import-after-decorator",
+        "lane": "check"
+      },
+      {
+        "id": "import-after-type",
+        "lane": "check"
+      }
+    ],
+    "strictDifferences": [
+      {
+        "id": "import-after-type",
+        "lane": "check"
+      }
+    ]
+  },
+  "focused24": {
+    "baselineExact": 4,
+    "candidateExact": 24,
+    "newExact": 20,
+    "lostExact": 0
+  },
+  "originalSupplied39": {
+    "pass": true,
+    "strictDifferences": 0
+  },
+  "originalOrderedHost43": {
+    "pass": true,
+    "strictDifferences": 0
+  },
+  "fullVectorPolicy": {
+    "parentObservations": 2996,
+    "matchingLegacyDiagnostics": 0,
+    "expected": "No primitive or diagnostic changes; root owns the full gate."
+  },
+  "limitations": [
+    "No full conformance or performance claim. No timing was run.",
+    "The datatype/import checkpoint is a separately investigated existing gap, not changed by source01.",
+    "The astral-comment control covers an astral character before the ASCII error cursor. Existing astral/surrogate-at-cursor fallback is unchanged.",
+    "Unknown-decorator and decorator whitespace grammar remain outside this candidate."
+  ],
+  "attemptFailures": [],
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-source-01/manifest.json",
+      "sha256": "b3ecaae1dd418dc70abb450c2c0dcb903481646677fe6fca1d26e8b17c500f36",
+      "bytes": 38618
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-01/build.json",
+      "sha256": "4be74a44d0cfc863e20f799fcfb7800ceda9bfbc9f677485952962206605fed3",
+      "bytes": 3806
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-01/validation-001/report.json",
+      "sha256": "0d191b8d36a0a48bf7b0fe8bb7dacef0c9d3f7739492853c6794f328c7dd0485",
+      "bytes": 9195
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-01/validation-001/selected/paired.json",
+      "sha256": "7783aa3ba7425f6284ffdde193018164fd7f4e0472745e72325dbf678e964097",
+      "bytes": 52119
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-baseline-01/report.json",
+      "sha256": "221f30bcb8b4937b43c1395b21dee5b48c083093bede8fc62e9651555dbcbb7d",
+      "bytes": 17196
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-focused-01/report.json",
+      "sha256": "1a36d4655f2a57e90a77a19ba14b48b34dca4be8316b93df7c0bb837ac246a11",
+      "bytes": 19405
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-supplied-01/report.json",
+      "sha256": "3729e98b55723e7f3efbec2759aa5457edaeef5b7f6a446ad6564e02cd658c74",
+      "bytes": 24601
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-host-01/report.json",
+      "sha256": "bdb4c68b40f78cd23d7bd118a73ca5d9c1ae1020262ecc2afc6ed6bd8f25caa7",
+      "bytes": 34197
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-build-03/validation-001/selected/paired.json",
+      "sha256": "79929165d70540087f860ab128a76f71f41b378191702e5739393bb0b153242c",
+      "bytes": 53095
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-frontend-01/candidate.json",
+      "sha256": "3511b8384e92359d93b7504a28fe1f9b6e862306eca4895b307d70a959f0be58",
+      "bytes": 6111524
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase20/import-diagnostic-report.py",
+      "sha256": "0fd8b9a928b14a933c5f0686c76c9016a2370d6af01ef5517e04bccccc13c6e5",
+      "bytes": 7553
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase20/import-diagnostic-checkpoint.md",
+      "sha256": "5bec2a083c2bd653477e291f2dbe382628144bbf8b87fb902ab157d7d55bf5a9",
+      "bytes": 2865
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-source-01/declarations.patch",
+      "sha256": "56a914c46da465055d8e5064ecf61bf08b064351a438ef10c0639d5094cc19f6",
+      "bytes": 1279
+    }
+  ]
+}

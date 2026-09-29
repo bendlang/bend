@@ -1,0 +1,366 @@
+{
+  "kind": "phase20-type-constructor-checkpoint-handoff",
+  "complete": true,
+  "pass": true,
+  "source": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-source-02/project",
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-02/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-02/equality/api.mjs",
+    "sha256": "f97bfe39445b188c692b6f4634f46cc7d77fcd687fefa47556ab128e60875380"
+  },
+  "changedFiles": [
+    "src/front/declarations.bend"
+  ],
+  "deltaParent01": {
+    "physicalLines": 17,
+    "bytes": 713,
+    "definitions": 1,
+    "laws": 0,
+    "types": 0
+  },
+  "deltaPhase19": {
+    "physicalLines": 17,
+    "bytes": 805,
+    "definitions": 1,
+    "laws": 0,
+    "types": 0
+  },
+  "sameABI": true,
+  "hostChanges": false,
+  "installed": false,
+  "timing": null,
+  "raw30": {
+    "baselineExact": 10,
+    "candidateExact": 30
+  },
+  "loaded20": {
+    "baselineExact": 8,
+    "candidateExact": 20
+  },
+  "changedObservations": [
+    {
+      "name": "unindented",
+      "route": "raw",
+      "acceptanceChanged": true,
+      "beforeAccept": false,
+      "afterAccept": true
+    },
+    {
+      "name": "import-after-type",
+      "route": "raw",
+      "acceptanceChanged": false,
+      "beforeAccept": false,
+      "afterAccept": false
+    },
+    {
+      "name": "import-no-constructors",
+      "route": "raw",
+      "acceptanceChanged": false,
+      "beforeAccept": false,
+      "afterAccept": false
+    },
+    {
+      "name": "indented-import",
+      "route": "raw",
+      "acceptanceChanged": false,
+      "beforeAccept": false,
+      "afterAccept": false
+    },
+    {
+      "name": "reserved-import-braces",
+      "route": "raw",
+      "acceptanceChanged": true,
+      "beforeAccept": true,
+      "afterAccept": false
+    },
+    {
+      "name": "reserved-return",
+      "route": "raw",
+      "acceptanceChanged": false,
+      "beforeAccept": false,
+      "afterAccept": false
+    },
+    {
+      "name": "reserved-return-braces",
+      "route": "raw",
+      "acceptanceChanged": true,
+      "beforeAccept": true,
+      "afterAccept": false
+    },
+    {
+      "name": "reserved-Type",
+      "route": "raw",
+      "acceptanceChanged": false,
+      "beforeAccept": false,
+      "afterAccept": false
+    },
+    {
+      "name": "reserved-for",
+      "route": "raw",
+      "acceptanceChanged": false,
+      "beforeAccept": false,
+      "afterAccept": false
+    },
+    {
+      "name": "name-no-brace",
+      "route": "raw",
+      "acceptanceChanged": false,
+      "beforeAccept": false,
+      "afterAccept": false
+    },
+    {
+      "name": "name-wrong-brace",
+      "route": "raw",
+      "acceptanceChanged": false,
+      "beforeAccept": false,
+      "afterAccept": false
+    },
+    {
+      "name": "invalid-dotted-name",
+      "route": "raw",
+      "acceptanceChanged": true,
+      "beforeAccept": true,
+      "afterAccept": false
+    },
+    {
+      "name": "comment-unindented",
+      "route": "raw",
+      "acceptanceChanged": true,
+      "beforeAccept": false,
+      "afterAccept": true
+    },
+    {
+      "name": "trailing-dot",
+      "route": "raw",
+      "acceptanceChanged": true,
+      "beforeAccept": true,
+      "afterAccept": false
+    },
+    {
+      "name": "digit-after-dot",
+      "route": "raw",
+      "acceptanceChanged": true,
+      "beforeAccept": true,
+      "afterAccept": false
+    },
+    {
+      "name": "spaced-dot",
+      "route": "raw",
+      "acceptanceChanged": false,
+      "beforeAccept": false,
+      "afterAccept": false
+    },
+    {
+      "name": "newline-before-brace",
+      "route": "raw",
+      "acceptanceChanged": true,
+      "beforeAccept": false,
+      "afterAccept": true
+    },
+    {
+      "name": "duplicate-before-brace",
+      "route": "raw",
+      "acceptanceChanged": false,
+      "beforeAccept": false,
+      "afterAccept": false
+    },
+    {
+      "name": "declaration-prefix-names",
+      "route": "raw",
+      "acceptanceChanged": true,
+      "beforeAccept": false,
+      "afterAccept": true
+    },
+    {
+      "name": "underscore-name",
+      "route": "raw",
+      "acceptanceChanged": true,
+      "beforeAccept": false,
+      "afterAccept": true
+    },
+    {
+      "name": "type-late-missing",
+      "route": "supplied",
+      "acceptanceChanged": false,
+      "beforeAccept": false,
+      "afterAccept": false
+    },
+    {
+      "name": "type-late-missing",
+      "route": "host",
+      "acceptanceChanged": false,
+      "beforeAccept": false,
+      "afterAccept": false
+    },
+    {
+      "name": "prior-valid",
+      "route": "supplied",
+      "acceptanceChanged": false,
+      "beforeAccept": false,
+      "afterAccept": false
+    },
+    {
+      "name": "prior-valid",
+      "route": "host",
+      "acceptanceChanged": false,
+      "beforeAccept": false,
+      "afterAccept": false
+    },
+    {
+      "name": "unindented-dependency",
+      "route": "supplied",
+      "acceptanceChanged": true,
+      "beforeAccept": false,
+      "afterAccept": true
+    },
+    {
+      "name": "unindented-dependency",
+      "route": "host",
+      "acceptanceChanged": true,
+      "beforeAccept": false,
+      "afterAccept": true
+    },
+    {
+      "name": "alias-before-brace",
+      "route": "supplied",
+      "acceptanceChanged": false,
+      "beforeAccept": false,
+      "afterAccept": false
+    },
+    {
+      "name": "alias-before-brace",
+      "route": "host",
+      "acceptanceChanged": false,
+      "beforeAccept": false,
+      "afterAccept": false
+    },
+    {
+      "name": "duplicate-before-brace",
+      "route": "supplied",
+      "acceptanceChanged": false,
+      "beforeAccept": false,
+      "afterAccept": false
+    },
+    {
+      "name": "duplicate-before-brace",
+      "route": "host",
+      "acceptanceChanged": false,
+      "beforeAccept": false,
+      "afterAccept": false
+    },
+    {
+      "name": "reserved-before-import",
+      "route": "supplied",
+      "acceptanceChanged": false,
+      "beforeAccept": false,
+      "afterAccept": false
+    },
+    {
+      "name": "reserved-before-import",
+      "route": "host",
+      "acceptanceChanged": false,
+      "beforeAccept": false,
+      "afterAccept": false
+    }
+  ],
+  "newExact": 32,
+  "lostExact": 0,
+  "acceptanceCorrections": 12,
+  "diagnosticOnlyCorrections": 20,
+  "default36": {
+    "pass": true,
+    "exact": 36,
+    "strictDifferences": 0
+  },
+  "decorator24": {
+    "pass": true,
+    "exact": 24
+  },
+  "originalSupplied39": {
+    "pass": true,
+    "strictDifferences": 0
+  },
+  "originalOrderedHost43": {
+    "pass": true,
+    "strictDifferences": 0
+  },
+  "scope": [
+    "Raw parser full diagnostics and successful constructor name/arity inventories.",
+    "Supplied and actual ordered-host load diagnostics, reference acceptance, and exact read order.",
+    "Root owns combined broad frontend/groups, timing, promotion and preservation."
+  ],
+  "fullVectorPolicy": "No unreviewed primitive or diagnostic regression. Intended custom acceptance corrections are listed explicitly; no corpus change is waived by these controls.",
+  "attemptFailures": [],
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-source-02/manifest.json",
+      "sha256": "c2b8a66e6b70600ab11142865986138f8d677a6c17b0978e9d4c4154d644664c",
+      "bytes": 38791
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-02/build.json",
+      "sha256": "aa0b7dd2e9fd42b3406c3aa0b8fdf31fb7f73b0357967cc88ae2d899b1fbe783",
+      "bytes": 3805
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-02/validation-001/report.json",
+      "sha256": "3e308c704920f2d4ca964227d5920e57fcad65115517ba6f6df9c650cab8a8a8",
+      "bytes": 9201
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-02/validation-001/selected/paired.json",
+      "sha256": "df7dcec829f1724270c4863b03f4b1c3319fb962b56b79e331008bf1be4ad45f",
+      "bytes": 50884
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-type-baseline-02/report.json",
+      "sha256": "aba4c2df5d6b7a85235f16f3586bc4fa93537eef9ce3fe3ae747964f96576851",
+      "bytes": 32693
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-type-focused-02/report.json",
+      "sha256": "0b87bdb013e381037b488e30244c8e512147c0b06c48a3aedb25a495cbae6861",
+      "bytes": 33535
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-focused-02/report.json",
+      "sha256": "d41906fcda43bd8e1ed65cac3669a17aa40921e781c1363c57380d4e465a26e5",
+      "bytes": 19405
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-supplied-02/report.json",
+      "sha256": "e370fc4e4bf126c7d6f59c337fd59d69a59bbe8dd0c4be46eb7dcfafbae99090",
+      "bytes": 24601
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-host-02/report.json",
+      "sha256": "94cf1670863f11e09e4202d98e58ee8abf84b1c147e66ff8102e55f9bee3c417",
+      "bytes": 34197
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-type-census-01/report.json",
+      "sha256": "4069e2521ba7c55ff30ef8d8966463192afb2725fff1c34b3a3214a4d264a1ad",
+      "bytes": 39108
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase20/import-diagnostic-type-report.py",
+      "sha256": "256ef7d83d41cdef0de6bbeacfd90fb2838d496a21a896978e5ecd6d619752f2",
+      "bytes": 8354
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase20/import-diagnostic-type-correction.md",
+      "sha256": "13bbe593fcf22007718676b566323bc150206ee36054eada740b9f953a28efd3",
+      "bytes": 2547
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-source-02/declarations-parent01.patch",
+      "sha256": "06a5d2599f81709f88aec28a9b1ce73ec9ff476076d5fc33314e9a773d6a0ee6",
+      "bytes": 2915
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-source-02/declarations-phase19.patch",
+      "sha256": "ad3d9f876034b1a4430ad2ad8a58b2cdba12ffdce684cb1820a808b4081ddceb",
+      "bytes": 4112
+    }
+  ]
+}

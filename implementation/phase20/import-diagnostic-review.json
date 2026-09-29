@@ -1,0 +1,140 @@
+{
+  "kind": "phase20-import-diagnostic-independent-review",
+  "complete": true,
+  "pass": true,
+  "reviewMode": "read-only source/generated-code and existing frozen evidence; no new probes",
+  "candidateAttempt": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-01",
+  "candidateApi": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-01/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-01/equality/api.mjs",
+    "sha256": "23c891e30fcd02e373e5257e74d3c9fc3bba4fdd5b2ad60807648d06eb3a9fd4"
+  },
+  "scope": "Exactly source01 two pending-unsafe failure-expression replacements; excludes later import-after-type candidate",
+  "decision": "No promotion blocker within this scope",
+  "sourceDelta": {
+    "changedFiles": 1,
+    "physicalLines": 0,
+    "bytes": 92,
+    "newDefinitions": 0,
+    "newLaws": 0,
+    "newTypes": 0
+  },
+  "evidence": {
+    "focusedObservations": 24,
+    "focusedExact": 24,
+    "baselineExact": 4,
+    "suppliedControls": 39,
+    "hostControls": 43,
+    "suppliedStrictDifferences": [],
+    "hostStrictDifferences": []
+  },
+  "findings": [
+    "The existing skipped token cursor matches pinned parse_word failure order for the selected cases.",
+    "EOF uses the shared source-end renderer; source traversal converts token codepoint columns to UTF16 offsets.",
+    "Actual generated error constructors remain inside selected failure closures; successful parser branches add no work.",
+    "Host read logs retain dependency-first ordering and do not open later imports after the decorator."
+  ],
+  "limitations": [
+    "f_import_leading unsafe fallback is coverage by source/generated inspection, not a distinct exercised public route.",
+    "Astral comment coverage does not establish astral/surrogate offending-character exactness; the existing fpe_here legacy fallback remains.",
+    "No timing or general parser conformance claim."
+  ],
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase20/import-diagnostic-checkpoint.md",
+      "sha256": "5bec2a083c2bd653477e291f2dbe382628144bbf8b87fb902ab157d7d55bf5a9",
+      "bytes": 2865
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-source-01/declarations.patch",
+      "sha256": "56a914c46da465055d8e5064ecf61bf08b064351a438ef10c0639d5094cc19f6",
+      "bytes": 1279
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-source-01/manifest.json",
+      "sha256": "b3ecaae1dd418dc70abb450c2c0dcb903481646677fe6fca1d26e8b17c500f36",
+      "bytes": 38618
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-source-01/project/src/front/declarations.bend",
+      "sha256": "049e75cf396f6144ef162e55188586c85d18a6a73312a63b4bc7e914ebf4f018",
+      "bytes": 30540
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-source-01/project/src/front/parser.bend",
+      "sha256": "226ba437e7193fc4b6a62a5f80dc680bd43240e4f45ef1ed3c29f607671bd90e",
+      "bytes": 33209
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-source-01/project/src/front/lexer.bend",
+      "sha256": "485778949ab65562c173ae406668531f96ba193a1cc050341fc6bb48a57d8b8f",
+      "bytes": 11648
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-source-01/project/src/load/graph.bend",
+      "sha256": "e82313297977412338a49b102494b3e1db425d53dbc9a6263eff5b7aef5a6796",
+      "bytes": 20531
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-01/attempt.json",
+      "sha256": "3089d35f6d39b0bbcd0c8e2236a597c7bfaf3483871828c1b2412df822084af4",
+      "bytes": 225582
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-01/build.json",
+      "sha256": "4be74a44d0cfc863e20f799fcfb7800ceda9bfbc9f677485952962206605fed3",
+      "bytes": 3806
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-01/api.mjs",
+      "sha256": "e2413ae804f03e6dfc651ff6bb42bbc2a7ac867cce87ff8c1c85755e3375c5ea",
+      "bytes": 902230
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-01/api.mjs.bootstrap.json",
+      "sha256": "3b54505590e052247788fb1dade49c7239925e0ff77b53b0de832793740bbfa4",
+      "bytes": 50643
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-01/equality/api.mjs",
+      "sha256": "23c891e30fcd02e373e5257e74d3c9fc3bba4fdd5b2ad60807648d06eb3a9fd4",
+      "bytes": 911952
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-controls-01/plan.json",
+      "sha256": "a1e4c81077bac67463a19e2b338771118e14972acdcf2026c4b32d3c022f3f92",
+      "bytes": 11591
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-baseline-01/report.json",
+      "sha256": "221f30bcb8b4937b43c1395b21dee5b48c083093bede8fc62e9651555dbcbb7d",
+      "bytes": 17196
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-focused-01/report.json",
+      "sha256": "1a36d4655f2a57e90a77a19ba14b48b34dca4be8316b93df7c0bb837ac246a11",
+      "bytes": 19405
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-supplied-01/report.json",
+      "sha256": "3729e98b55723e7f3efbec2759aa5457edaeef5b7f6a446ad6564e02cd658c74",
+      "bytes": 24601
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-host-01/report.json",
+      "sha256": "bdb4c68b40f78cd23d7bd118a73ca5d9c1ae1020262ecc2afc6ed6bd8f25caa7",
+      "bytes": 34197
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase20/import-diagnostic-probe.mjs",
+      "sha256": "d90be415a0f60a727c73a8a3cca1f98192bea69cb1619843d775b8c9f97fbe8a",
+      "bytes": 4472
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8/bend2/bend.ts",
+      "sha256": "924197360cefc61a9314072e9cb1ef46a9266550eb527f535c36839a3b102bcb",
+      "bytes": 136690
+    }
+  ],
+  "finished": "2026-09-29T09:49:26.327017+00:00"
+}
