@@ -1,0 +1,105 @@
+{
+  "kind": "phase21-independent-source01-review",
+  "complete": true,
+  "reviewedAt": "2026-09-29T11:11:04.144643+00:00",
+  "selectionApproved": false,
+  "verdict": "WITHHOLD source01: generated typed Ann loses source origin. Preserve this candidate and evaluate explicit producer repair separately.",
+  "source": {
+    "exactMembers": 214,
+    "projectEqualsCheckedSnapshot": true,
+    "modesEqualParent": true,
+    "changedFiles": [
+      "src/front/declarations.bend"
+    ],
+    "delta": {
+      "physicalLines": 0,
+      "nonblankLines": 0,
+      "bytes": 23,
+      "definitions": 0,
+      "laws": 0,
+      "types": 0
+    },
+    "frozenInputsChecked": 8,
+    "parentApi": "40c8f7f3b7cd0e96aef57d7d574ebfd85607cd4e096909d083b450b4d973362c",
+    "candidateApi": "ab48c7c6fc12c657b9f02b613326de47fd22fbe383074524cdee7d21d471fd42"
+  },
+  "checkedBuild": {
+    "complete": true,
+    "normalProcessClosure": true,
+    "maintainedStrictExact": 36
+  },
+  "independentControls": {
+    "observations": 68,
+    "beforeExact": 44,
+    "afterExact": 60,
+    "gainedExact": 16,
+    "lostExact": 0,
+    "changedCandidatePrimitive": 0
+  },
+  "structure": {
+    "observations": 102,
+    "structuralContractPass": true,
+    "selectionApproved": false,
+    "nonrangeDifferences": 0,
+    "acceptanceChanges": 0,
+    "legacyObservations": 46,
+    "legacyAllAbsent": true,
+    "scope": "23 no-Base fixtures at four raw/lowered indexed/legacy entries, Base raw/lowered, four representative Base fixtures raw/lowered. Full books compared in memory; full-field stream digests include all ranges. No complete compiler-workload graph claim.",
+    "blockingFinding": "Grouped typed Ann loses its existing whole-group origin to0/0. Pinned Ann has an explicit binder-through-RHS cursor span. Repair its sole producer before selection; no annotation range should be guessed from child term range."
+  },
+  "failurePreservation": [
+    "The original six primary acceptance assumptions and four supplemental constructor expectations remain failed in their unchanged selections.",
+    "The original saved196 launcher report remains incomplete/pass:false because it asserted selectedComplete on a known-failing selection. Collection health and no-regression results require a separate raw-vector audit.",
+    "Full-graph structural pass permits range differences and does not approve their correctness. Repeated Base paths are not unique source occurrences."
+  ],
+  "boundaries": {
+    "compilerProbesLaunchedByReviewer": 0,
+    "productionEdits": 0,
+    "performanceClaim": false,
+    "wholeCompilerGraphClaim": false,
+    "fullConformanceClaim": false,
+    "source02ReviewedSeparately": true
+  },
+  "inputs": [
+    {
+      "file": "selfhost/build/phase21/group-range-source-01/manifest.json",
+      "sha256": "56de83451b6e2e9c3eb4ed3aae5f32cb9d82f0883364c10af64328f2fc7840a3",
+      "bytes": 65195
+    },
+    {
+      "file": "selfhost/build/phase21/group-range-source-01/candidate.patch",
+      "sha256": "1cc71852dadbab254fbdc1def8f496ce630a2b6447dd1c4bbb4a94b836f7b4a7",
+      "bytes": 452
+    },
+    {
+      "file": "selfhost/build/phase21/group-range-build-01/attempt.json",
+      "sha256": "198ba6db239bcbe8d7bab757509cc82e889afd36ea101eb4eea54e69a6e9398d",
+      "bytes": 219521
+    },
+    {
+      "file": "selfhost/build/phase21/group-range-build-01/build.json",
+      "sha256": "3f0911cdfab5eed75732a7047c3f18b046a69848ad8eb7128d03927a8ef26dac",
+      "bytes": 3728
+    },
+    {
+      "file": "selfhost/build/phase21/group-range-build-01/validation-001/report.json",
+      "sha256": "404b343ca5065e7ac8b52a5212d17c4ce00c3de31ad8cb4a4bef7b9674858d47",
+      "bytes": 9056
+    },
+    {
+      "file": "implementation/phase21/group-range-controls.json",
+      "sha256": "623c7d4e3715e9b68df4facfd03dafe7085d9b2c85951f1abe3c062e4bca3b77",
+      "bytes": 28218
+    },
+    {
+      "file": "implementation/phase21/group-range-structure-source01.json",
+      "sha256": "fdb6990fd66a32b4a13559631b4700f0144cdbe61970d0c656f08ca882ca5313",
+      "bytes": 54730
+    },
+    {
+      "file": "selfhost/build/phase21/group-range-group196-01/report.json",
+      "sha256": "e17403eb2623dcbde2eeb4f4f5c46d629d6bcacc1c790647d136504faf7a529a",
+      "bytes": 42707
+    }
+  ]
+}

@@ -1,0 +1,352 @@
+{
+  "kind": "phase21-group-range-baseline-freeze",
+  "complete": true,
+  "pass": true,
+  "passMeaning": "Complete healthy baseline acquisition, not strict conformance. All original fixture oracles and failures retained.",
+  "parentApi": "40c8f7f3b7cd0e96aef57d7d574ebfd85607cd4e096909d083b450b4d973362c",
+  "cohorts": [
+    {
+      "number": 1,
+      "observations": 60,
+      "exact": 44,
+      "strictDifferences": 16,
+      "primitiveDifferences": [],
+      "referenceOracleFailures": [
+        "group-range/constructor-nested/check",
+        "group-range/constructor-nested/parse",
+        "group-range/constructor-ordinary/check",
+        "group-range/constructor-ordinary/parse",
+        "group-range/typed-callee/check",
+        "group-range/ungrouped-callee/check"
+      ],
+      "rawSelectedComplete": false,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-baseline-01/report.json",
+        "sha256": "d7055e702d63b72978aa41d3ddbb9d6a271df7b52af7799f38df7adf1af26eff",
+        "bytes": 26648
+      }
+    },
+    {
+      "number": 2,
+      "observations": 4,
+      "exact": 0,
+      "strictDifferences": 4,
+      "primitiveDifferences": [
+        "group-range-positive/constructor-nested-parameter",
+        "group-range-positive/constructor-nested-parameter-check",
+        "group-range-positive/constructor-parameter",
+        "group-range-positive/constructor-parameter-check"
+      ],
+      "referenceOracleFailures": [
+        "group-range-positive/constructor-nested-parameter",
+        "group-range-positive/constructor-nested-parameter-check",
+        "group-range-positive/constructor-parameter",
+        "group-range-positive/constructor-parameter-check"
+      ],
+      "rawSelectedComplete": false,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-baseline-02/report.json",
+        "sha256": "be37b04d91d1ea948d7940c55a0cf254067c37471e13a7bf174083256e2e1b1d",
+        "bytes": 13160
+      }
+    },
+    {
+      "number": 3,
+      "observations": 4,
+      "exact": 0,
+      "strictDifferences": 4,
+      "primitiveDifferences": [],
+      "referenceOracleFailures": [],
+      "rawSelectedComplete": true,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-baseline-03/report.json",
+        "sha256": "b38204067a6d0ffd7dbc1d082b52b833c9dd4b9b388e1b753cb2200cadfc04a7",
+        "bytes": 9872
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-baseline-01/report.json",
+      "sha256": "d7055e702d63b72978aa41d3ddbb9d6a271df7b52af7799f38df7adf1af26eff",
+      "bytes": 26648
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-baseline-01/selected/paired.json",
+      "sha256": "6eae6570de97e7b9278c43cbecf5f450c41b09b03e85e5ac25ff443fb3e1518a",
+      "bytes": 108047
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-baseline-01/selected/reference.json",
+      "sha256": "d3cfc19b1308f141a06aa7d5e94d57ac06aad8120dd1ff78a27bd4212c51e2c1",
+      "bytes": 2018265
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-baseline-01/selected/candidate.json",
+      "sha256": "449f7a7eeb48ebe910c171707cc403d3a878bbd8c75c25188a0cb5ef844809a2",
+      "bytes": 2062019
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/selection.json",
+      "sha256": "1f7d2374c17058fc843d2340646162f2f979927a865660eb91d06ae84934e325",
+      "bytes": 16570
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/plan.json",
+      "sha256": "a4a97cab1df9e3ca502f1df8537184da80c993fca67f2479beafad8aaf01c962",
+      "bytes": 9753
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/annotation-type.bend",
+      "sha256": "da6ff6106c4b6abb9cd3db841f3241bd06c4a24f73489bb91e1cf9fe82dc840f",
+      "bytes": 62
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/annotation-value.bend",
+      "sha256": "7a48b73938cb3c7919facdc01252fbdb33e5dcef43c6bdcdf48b370426a0cf05",
+      "bytes": 69
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/argument.bend",
+      "sha256": "7dbe4479f1dd40f615d32ab7cd88304c9f6b03397d5dc204ec71fcaeb12a9ca3",
+      "bytes": 74
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/astral-comment-outer-pattern.bend",
+      "sha256": "38aebba8eca45822ae020796a42b82845785b96d6852a16648d5226a68c776b3",
+      "bytes": 112
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/callee.bend",
+      "sha256": "c2d955439e40fa7fd17a0ee7660233e4096f593df5d03d0947fab1d13b7e4868",
+      "bytes": 101
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/constructor-nested.bend",
+      "sha256": "44ba85610e571a0d21266090988da42b9486ac9a0778c7727a4c83ad1744201d",
+      "bytes": 153
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/constructor-ordinary.bend",
+      "sha256": "ca262b3f97fbfb83e817d79db8db5b19454c359e4fd528356e0a41c1e7364bfc",
+      "bytes": 102
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/constructor-outer-pattern.bend",
+      "sha256": "3b863d5309b9386d1e850f43b8bbe4a14720be1e105d81144713eee4c4042490",
+      "bytes": 110
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/empty-call-bound.bend",
+      "sha256": "a635a5d199273b4fbcb8be78311288dd819bde9736f1737840f84eb993eec68f",
+      "bytes": 59
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/empty-call-unbound.bend",
+      "sha256": "cdc38fba0a6a99cc28dcce8fa49b282cde51bc5aa00de41b21d28c7b51e0c58c",
+      "bytes": 60
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/erased-ordinary.bend",
+      "sha256": "c66c5e21727a57f73bb70547826bbd831e8e92f68e718a48dc79d8ef20153e94",
+      "bytes": 63
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/erased-outer-pattern.bend",
+      "sha256": "3831a0572e32e37d6a6521060612fde69175137c82cc1f8c29f3e11050fbad6d",
+      "bytes": 73
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/inner-pattern-first.bend",
+      "sha256": "f4b8ef146b5695639b8ca94c422c00b3fb16be7340dea413866adef20ca85ad5",
+      "bytes": 54
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/marked-ordinary.bend",
+      "sha256": "5ceef2d583f0ef81d7127ebfaf674c9aeb752a41441db3b813068644993d2afc",
+      "bytes": 78
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/marked-outer-pattern.bend",
+      "sha256": "d0af3d5c799fbb91d16cbb105d0fa625b958dad32f03a24c9162811123feca9b",
+      "bytes": 72
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/missing-close.bend",
+      "sha256": "071f7b9e9df056d0c90a76ebd4577c74829aebd0d93651e771921dc095bad924",
+      "bytes": 60
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/namespace-value.bend",
+      "sha256": "f7abac914b1102c36b803c1de777079b9247d17cf9b762017692e803d7596278",
+      "bytes": 70
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/nested-same-name-outer-pattern.bend",
+      "sha256": "2c06759f81e1dcb6d5017bf008112094b21d7a58ad73f5711002f56966a403c1",
+      "bytes": 95
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/nested-same-name.bend",
+      "sha256": "a6f275f95d02c49f8cc0c26b53a2f2d3e83f9705128ad6f9622aab7067d040be",
+      "bytes": 83
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/nested-tuple-neighbor.bend",
+      "sha256": "d0aacc6965acb614fa81758e7ed3fb54a9cf8ec19a64695ff3e457429b0ddc17",
+      "bytes": 73
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/ordinary.bend",
+      "sha256": "1529395ce9fb2a2cd7729bed5fe8aec218599d74293d64a09f8eb4c004904c60",
+      "bytes": 61
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/outer-pattern.bend",
+      "sha256": "60e5497cd06fee5077a2bf289b6d60dc947dd9f4118ab03142d0e448387117f3",
+      "bytes": 71
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/parallel-outer-pattern.bend",
+      "sha256": "b16f68a6a48f9bd317d5800fbef5a8ca047cbb09534821dfdeedfa5dd1333ffe",
+      "bytes": 106
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/parallel.bend",
+      "sha256": "33ae6ccc4e4171fe00dd05e258242281984c5d43ed48306385cc807f9b48d2da",
+      "bytes": 96
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/rhs-syntax-first.bend",
+      "sha256": "e896076dc95c2a9d7d9968147ae76ef3d4ed8afa9bf2e698c96140de3edcbefe",
+      "bytes": 52
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/type.bend",
+      "sha256": "09c4fed2bd7af4a9449230f3b0f0b494cb9b4d20688435a9d81225e12ff2f909",
+      "bytes": 56
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/typed-callee.bend",
+      "sha256": "6938f0da7a8ff98fe56318ae9422f023a91ac43d61018e7d86aa05392450511c",
+      "bytes": 113
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/typed-ordinary.bend",
+      "sha256": "fbf974842bbc987155702303bb4d857b83efcc87bb37688bf8ab0c5066e450f7",
+      "bytes": 58
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/typed-outer-pattern.bend",
+      "sha256": "27dedc73cf07db77ab05768a9cb02a4a07edb9ac5a3a2f756642f2c5f2716352",
+      "bytes": 68
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-01/fixtures/ungrouped-callee.bend",
+      "sha256": "e80347468a68df53ccd77614695dd9580e9ce8d9c6d009deff0cd08207481bc8",
+      "bytes": 100
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-baseline-02/report.json",
+      "sha256": "be37b04d91d1ea948d7940c55a0cf254067c37471e13a7bf174083256e2e1b1d",
+      "bytes": 13160
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-baseline-02/selected/paired.json",
+      "sha256": "b2c60f9435041b0971dfb952e788d95e8003b9476403d7e3ab6b6a95e62c7edf",
+      "bytes": 16681
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-baseline-02/selected/reference.json",
+      "sha256": "6e5423fd7a113a695d952b30da924cf36d2ce33bfaae5dd8c811e36ee85c80eb",
+      "bytes": 1897271
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-baseline-02/selected/candidate.json",
+      "sha256": "fcf81c3960e1f32c973dac3746ad7e96dd10b4c0ec85b2314243ac72b3b77afa",
+      "bytes": 1914079
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-02/selection.json",
+      "sha256": "2c77c1757ba504544ea93d564afb55a62fc5ca937bbc685e62857be30b724e1c",
+      "bytes": 1160
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-02/plan.json",
+      "sha256": "3cefa72b1490e1c9eea6bd14defd2f78b5838c7b00728e8aef84c173296b2713",
+      "bytes": 805
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-02/fixtures/constructor-nested-parameter.bend",
+      "sha256": "d6c609d08c2961c0bda9825ac521ef94c558a99dab6f1b773e9e6d78fac7a3b2",
+      "bytes": 150
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-02/fixtures/constructor-parameter.bend",
+      "sha256": "a19544b20d57b01aeeaf6c388c70e27d365646c5d061de9fd488981e1e91b81d",
+      "bytes": 98
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-baseline-03/report.json",
+      "sha256": "b38204067a6d0ffd7dbc1d082b52b833c9dd4b9b388e1b753cb2200cadfc04a7",
+      "bytes": 9872
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-baseline-03/selected/paired.json",
+      "sha256": "9a5ad1709b125af83f448f77edc9e24baf097d983b4390f33a4260fee85f0391",
+      "bytes": 18074
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-baseline-03/selected/reference.json",
+      "sha256": "c025e7c9145a64d63a04074bb344a313c394aa0b0d3230919fe02dbc1472b551",
+      "bytes": 1894867
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-baseline-03/selected/candidate.json",
+      "sha256": "7a36e1f4c84db6e367c0ba539211a128427017e4dc5bffc5e2245543028e5a1a",
+      "bytes": 1914254
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-03/selection.json",
+      "sha256": "14afef981918d9b7bd4cdd38cd1bd44d24b32baf532a7f90af113a541f3d2013",
+      "bytes": 1248
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-03/plan.json",
+      "sha256": "fb68c86fa7010826246b18394445cd8f5aeb68a3cccee4394b9329fe69641259",
+      "bytes": 816
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-03/fixtures/astral-hash-comment.bend",
+      "sha256": "1a12d107280f72b7313a7c27120afbc30191c65b83d75be8a9335edfdd30c9ed",
+      "bytes": 115
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-03/fixtures/typed-astral-prefix.bend",
+      "sha256": "72d778217cd3ade6a3e09d1af7198e476349268fa44317afdaa58f58e03bd6fd",
+      "bytes": 100
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-controls.mjs",
+      "sha256": "a203db5b0896cdcf478749d32d98c786a5f14fafb70099225353cbc6e63dbf4d",
+      "bytes": 6547
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-controls-positive.mjs",
+      "sha256": "8896a1291d005d4b75ced733231a9e63f9de8e74250bb3ec0d3fa3898c52d7b4",
+      "bytes": 6543
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase21/group-boundaries.md",
+      "sha256": "f38df065eb0ce76da5ba948c6c27e7a354ba0a229649151d1c66502b85926d81",
+      "bytes": 13189
+    }
+  ],
+  "limitations": [
+    "Cohort01 has six incorrect prospective acceptance assumptions; pinned results are authoritative and unchanged.",
+    "Cohort02 unexpectedly has four existing primitive acceptance differences; it remains labeled by its intended positive purpose without claiming positive reference acceptance.",
+    "Original // astral fixture was a syntax-order control; real # comment and astral source offsets are covered separately by cohort03.",
+    "Cohort03 frozen after root candidate build but before candidate consumption; cohorts01/02 frozen before candidate preparation.",
+    "No execution/backend or complete raw/lowered AST-range equivalence claim. Root structural controls own exact raw/lowered metadata."
+  ]
+}

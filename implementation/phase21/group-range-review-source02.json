@@ -1,0 +1,170 @@
+{
+  "kind": "phase21-independent-source02-review",
+  "complete": true,
+  "reviewedAt": "2026-09-29T11:16:18.969503+00:00",
+  "boundedGateApproved": true,
+  "promotionDecisionOwnedByRoot": true,
+  "verdict": "Source02 repairs the typed Ann origin loss at the existing producer. No blocker found for wider integration gates; source01 remains withheld.",
+  "source": {
+    "exactMembers": 214,
+    "projectEqualsCheckedSnapshot": true,
+    "modesEqualParent": true,
+    "changedFiles": [
+      "src/front/declarations.bend",
+      "src/front/parallel.bend",
+      "src/front/sugar.bend"
+    ],
+    "delta": {
+      "physicalLines": 3,
+      "bytes": 156,
+      "definitions": 0,
+      "laws": 0,
+      "types": 0
+    },
+    "existingWorkerParametersAdded": 3,
+    "newWorkers": 0,
+    "newTypes": 0,
+    "frozenInputsChecked": 6,
+    "parentApi": "40c8f7f3b7cd0e96aef57d7d574ebfd85607cd4e096909d083b450b4d973362c",
+    "candidateApi": "44094e58cb0ef033e2c08c2827565e859c3594b3136868d4f821262145aea7f0"
+  },
+  "sourceReasoning": [
+    "Pinned parse_body records beg before parsing the first pattern, including the opening parenthesis and erased marker. f_body_at/f_erased_local now preserve that same explicit cursor through existing calls.",
+    "f_let_ann reads the returned RHS token cursor after f_space, matching parse_term_ops whitespace/comment handling; neither endpoint is inferred from child semantic ranges.",
+    "Successful Local still uses the first pattern origin; child-error selection and all grammar branch conditions are unchanged. No scoping or flattening owner is added.",
+    "Error RHS may transiently give Ann an absent end, but the existing failed continuation discards that wrapper. Additional frozen EOF/malformed-token probes retain original errors, with no host range-validation failure."
+  ],
+  "checkedBuild": {
+    "normalProcessClosure": true,
+    "maintainedStrictExact": 36
+  },
+  "independentControls": {
+    "observations": 68,
+    "beforeExact": 44,
+    "afterExact": 60,
+    "gainedExact": 16,
+    "lostExact": 0,
+    "changedCandidatePrimitive": 0
+  },
+  "typedErrorControls": {
+    "observations": 4,
+    "parentExact": 2,
+    "candidateExact": 2,
+    "fullCandidateProtocolUnchanged": true,
+    "remainingStrict": [
+      "group-range-typed-error/typed-rhs-syntax/check",
+      "group-range-typed-error/typed-rhs-syntax/parse"
+    ]
+  },
+  "structure": {
+    "observations": 172,
+    "nonrangeBookDifferences": 0,
+    "acceptanceChanges": 0,
+    "legacyObservations": 80,
+    "legacyAllAbsent": true,
+    "savedWholeResultEnvelopesUnchanged": 164,
+    "exactPinnedAnnObservations": 30,
+    "negativeAnnFixturesRetained": 2
+  },
+  "programObservationReview": {
+    "observations": 12,
+    "exactCompilerAgreement": 12,
+    "rawCheckVerdictsPassed": 3,
+    "rawRuntimeVerdictsFailed": 9,
+    "rawDiscrepancyRows": 9,
+    "rawLauncherPass": false,
+    "rawLauncherComplete": false,
+    "healthyObservationCollection": true,
+    "actualOutputs": {
+      "ordinary": "41n\n",
+      "nested-typed": "42n\n",
+      "nested-value": "43n\n"
+    },
+    "cause": "Original #| expectations omit Nat suffix n. Interpreter, JS and native agree exactly with the pin and actual program values; expectations and raw failed verdicts stay unchanged.",
+    "reviewPreparationFailure": "Initial read-only assertion assumed paired.discrepancies empty. It failed because this list includes the nine identical oracle failures. Corrected review explicitly checked all nine; no compiler/test rerun or fixture change."
+  },
+  "limitations": [
+    "This is a bounded source/correctness review, not full conformance, performance or promotion approval.",
+    "172 structural observations include Base graphs and representative programs, not a full compiler-workload graph.",
+    "30 exact Ann observations cover15 successful fixtures at two entrypoints; negative neighbors are not counted as exact coordinates.",
+    "Original known constructor/group checkpoint and malformed typed-RHS wording differences remain visible.",
+    "No false aggregate is relabeled as a raw test pass."
+  ],
+  "inputs": [
+    {
+      "file": "design/phase21/typed-annotation-origin.md",
+      "sha256": "756e5a3e21f29217dfee2fe5bef59fdd0edf1bb2757622431aa6b9a0dc9c053b",
+      "bytes": 2897
+    },
+    {
+      "file": "selfhost/build/phase21/group-range-source-02/manifest.json",
+      "sha256": "d1cec791d95ab6d2486a60a32eed1b328a9a1a2f76a990e79ab49b98f80440b7",
+      "bytes": 66585
+    },
+    {
+      "file": "selfhost/build/phase21/group-range-source-02/candidate.patch",
+      "sha256": "8e249bfae12b1e5f899363bd64dc4b6780eeb34d8f21fa49b4334c784d4c0bbc",
+      "bytes": 4079
+    },
+    {
+      "file": "selfhost/build/phase21/group-range-build-02/attempt.json",
+      "sha256": "b9cee3947b6a7ecfed0758c4b6296db693d45a69d420785318fc7bdfcc164b15",
+      "bytes": 219521
+    },
+    {
+      "file": "selfhost/build/phase21/group-range-build-02/build.json",
+      "sha256": "4d7cad2d7cede55ae6aba2e5e3b7877e492c9725f0065fecc47d6194183a79f3",
+      "bytes": 3728
+    },
+    {
+      "file": "selfhost/build/phase21/group-range-build-02/validation-001/report.json",
+      "sha256": "a0631c22b27c1149ddb1c4b33694612dc0e8f17f13e8fa87fb598115418f9753",
+      "bytes": 9049
+    },
+    {
+      "file": "implementation/phase21/group-range-review-source01.json",
+      "sha256": "549ee96b6147e7f67496f7d0206589d01fed32b67bc4ea70320f4e95e9613d6e",
+      "bytes": 4234
+    },
+    {
+      "file": "implementation/phase21/group-range-controls-source02.json",
+      "sha256": "78e6eacd29245a0ce7a390faf69af67d24e319d238a73f31f50f7f2dc07ba6f4",
+      "bytes": 29078
+    },
+    {
+      "file": "implementation/phase21/group-range-controls-typed-error.json",
+      "sha256": "8f2d00a8838fe6fbf365e66566784324ac3872cb2dd3040e537082655e29ae63",
+      "bytes": 2820
+    },
+    {
+      "file": "implementation/phase21/group-range-structure.json",
+      "sha256": "a3027ec2dca599c1b49e2fce9571221740349ddd2395b6d859fbf0d6578211ad",
+      "bytes": 7309
+    },
+    {
+      "file": "selfhost/build/phase21/group-range-structure-ann-audit-02/report.json",
+      "sha256": "50df18779a2f3969d1d114c30d0e65bd5314da1f8e268217ca3264c77fe76a2a",
+      "bytes": 38075
+    },
+    {
+      "file": "selfhost/build/phase21/group-range-programs-01/report.json",
+      "sha256": "0984e5b56378dff6b23dcb7a1b2a6249960c8d830302b34e2e86a8fab7e78b0c",
+      "bytes": 6473
+    },
+    {
+      "file": "selfhost/build/phase21/group-range-programs-01/selected/paired.json",
+      "sha256": "c9809c7ba08fcdc9301626020e6fa5ba8932986c63ff97a96fca2d34ae8ab5b3",
+      "bytes": 26389
+    },
+    {
+      "file": "selfhost/build/phase21/group-range-programs-01/selected/reference.json",
+      "sha256": "cf0855aab21320e6b14b8a35b3a33191ccd40796945113f0bae53807d307f53b",
+      "bytes": 1901511
+    },
+    {
+      "file": "selfhost/build/phase21/group-range-programs-01/selected/candidate.json",
+      "sha256": "411e6a76b28c61d17223c680fe047b16da446abf72276c9d8e2652a0d1409dd4",
+      "bytes": 1924036
+    }
+  ]
+}

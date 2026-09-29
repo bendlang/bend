@@ -1,16 +1,17 @@
 # Bend2 compiler port in Bend2
 
 Use the [compiler guide](../docs/BEND-IN-BEND.md) and
-[Phase20 release report](../implementation/phase20/declaration-checkpoints-release.md).
-Constructor declarations now follow the pinned name/brace/whitespace boundaries;
-match heads and rows require a first term, and pending decorators report the
-correct import diagnostic. The shared live checker and exact-prefix repair remain.
+[Phase21 release report](../implementation/phase21/group-range-release.md).
+Grouped locals now retain binder locations, and typed annotations receive exact
+parser-cursor locations. Prior grammar, live-checker and exact-prefix fixes remain.
 
 All2,996 main frontend results are unchanged, including two diagnostic differences.
-The broader parser selection improves128→136/196 exact, with zero lost matches
-and60 remaining differences. New program12 and all42 installed/relocated CLI checks
-pass. Controlled checking is **10.94 s** versus **3.45 s** for TypeScript (**3.17×**);
-the preceding compiler takes10.97 s in the same window, a neutral cost screen.
+The broader parser selection improves136→139/196 exact, with zero lost matches
+and57 remaining differences. Independent controls gain16 exact observations;
+all42 installed/relocated CLI checks pass. Controlled checking is **10.95 s**
+versus **3.44 s** for TypeScript (**3.19×**); the preceding compiler takes11.01 s
+in that same window, a neutral cost screen. Original failed output expectations
+and known independent-control gaps remain visible in the report.
 
 The current target is upstream
 [`b2111cf43244e65f76ddc278ee695e669f720cbf`](https://github.com/bendlang/bend/tree/b2111cf43244e65f76ddc278ee695e669f720cbf),
@@ -23,7 +24,7 @@ node cli.mjs tests/conformance/typed-smoke/base-u32.bend --run
 npm run build
 ```
 
-The compiler contains 15,897 physical /13,543 nonblank Bend lines in 59 modules.
+The compiler contains 15,900 physical /13,546 nonblank Bend lines in 59 modules.
 It retains the validated S4 simplifications while adding current declaration,
 namespace, typing and effect semantics. The [release manifest](dist/release.json)
 binds the exact source, genuine checked parent, equality/choice-derived API, Base,

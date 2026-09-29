@@ -17,24 +17,24 @@ This fork develops the compiler in [`selfhost/`](selfhost/README.md), on branch
 from `selfhost/`, run `npm run verify:release`, then `node cli.mjs FILE --run`.
 `npm run build` checks and rebuilds the default with pinned upstream.
 
-The [Phase20 release report](implementation/phase20/declaration-checkpoints-release.md)
-records constructor and match grammar corrections, exact import diagnostics,
-and the retained [shared live checker](implementation/phase19/live-checker-release.md).
-The upstream target remains **b2111cf, Bend 2.0.32 era**.
+The [Phase21 release report](implementation/phase21/group-range-release.md)
+records correct grouped-local and typed-annotation source locations, retaining
+Phase20's grammar fixes and Phase19's shared live checker. The upstream target
+remains **b2111cf, Bend 2.0.32 era**.
 
-Identical-source checking averages **10.94 s**, versus **3.45 s** for pinned
-TypeScript: a **3.17×** process-time gap. The preceding compiler averages10.97 s
-in the same controlled window. This is a neutral cost screen for the conformance
-fixes, measuring checking/trust reporting without emission or generated-program speed.
+Identical-source checking averages **10.95 s**, versus **3.44 s** for pinned
+TypeScript: a **3.19×** process-time gap. The preceding compiler averages11.01 s
+in the same window. This is a neutral cost screen without emission.
 
-All **2,996 frontend results** remain unchanged, including **two diagnostic
-differences** from one do-block. The broader parser selection improves from
-**128 to136 exact observations out of196**, with none lost;60 differences remain.
-Maintained36, constructor50, first-element54, whitespace44, decorator24,
-supplied39 and ordered-host43 all match their strict scopes. New program12 and
-all **42 installed/relocated CLI checks** pass. See [conformance](selfhost/CONFORMANCE.md).
-The compiler has **15,897 Bend lines in59 modules**,17 more than Phase19;
-50%/75% source-reduction targets remain open. Contextual parser experiments stay isolated.
+All **2,996 frontend results** remain unchanged, including two diagnostic
+differences. The broader parser suite improves **136→139 exact out of196**, with
+zero lost matches;57 differences remain. Independent controls gain16 exact
+observations; complete-graph and annotation-coordinate checks pass their scopes.
+All **42 installed/relocated CLI checks** pass. Actual execution agrees with
+TypeScript, with original mistaken output expectations retained in the report.
+See [conformance](selfhost/CONFORMANCE.md).
+The compiler has **15,900 Bend lines in59 modules**, three more than Phase20,
+with no new function or type. Full conformance and50%/75% reduction targets remain open.
 
 The [development workflow](docs/PHASE5_DEVELOPMENT.md) builds a genuine checked
 compiler and runs 36 short paired controls. The release preserves its checked

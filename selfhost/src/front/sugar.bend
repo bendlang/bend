@@ -192,7 +192,7 @@ def f_law_where(name, binder, ty, p, book, imports, clauses, scope):
 
 @unsafe
 def f_erased_local(ts, begin):
-  f_choose(FParsed, f_valid_name(f_tx(ts)), u => f_statement(FParsed{kt_span("Ref", f_tx(ts), f_atid(ts), 0, Nil{}, begin, f_end(ts)), f_tl(ts)}), u => fpe_error(ts, "expected a name", "a name"))
+  f_choose(FParsed, f_valid_name(f_tx(ts)), u => f_statement(FParsed{kt_span("Ref", f_tx(ts), f_atid(ts), 0, Nil{}, begin, f_end(ts)), f_tl(ts)}, begin), u => fpe_error(ts, "expected a name", "a name"))
 
 @unsafe
 def f_write_statement(

@@ -3,11 +3,11 @@
   "version": 1,
   "complete": true,
   "newBootstrap": false,
-  "started": "2026-09-29T10:13:35.039Z",
+  "started": "2026-09-29T11:09:01.858Z",
   "scope": "Compiler-host data with standard unmodified JavaScript built-ins; not arbitrary reflective/proxy/monkeypatched-host equivalence.",
   "tool": {
-    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/tools/development/equality.mjs",
-    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/tools/development/equality.mjs",
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/tools/development/equality.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/tools/development/equality.mjs",
     "sha256": "84a065f61b9c6c6c1ebd8cdfe10dca1a8017f40d19302a84515e1c3a2cc356d9"
   },
   "node": {
@@ -17,19 +17,19 @@
   },
   "original": {
     "api": {
-      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/api.mjs",
-      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/api.mjs",
-      "sha256": "2270973c76fb87cbcc684ad5ea4ed0222f4cba4340e0223b11932463e60eceed"
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/api.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/api.mjs",
+      "sha256": "b9fe5820a60cdde9f6479f2c57d0d3bb374e3ce668edac8c3148ff252703f1c9"
     },
     "bootstrapReport": {
-      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/api.mjs.bootstrap.json",
-      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/api.mjs.bootstrap.json",
-      "sha256": "d6efb94e8d810dcea3ae6cf2a053b8b5e5a77ec020d0f0ab685f71139e65ee83"
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/api.mjs.bootstrap.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/api.mjs.bootstrap.json",
+      "sha256": "5706d93d58395001ed87172da96468cdd7829dd3851cacc06b25602eaa99b897"
     },
     "source": {
-      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/compiler.bend",
-      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/compiler.bend",
-      "sha256": "90486857cbd3eb5a3e66863c23a182aff3b57b98f6e2c6095e130d1e07af7034"
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/compiler.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/compiler.bend",
+      "sha256": "fac061286a2683914244178eb1f9b4dc2fbc2d393560739663e8bd08bbc12996"
     },
     "inputs": [
       {
@@ -48,338 +48,338 @@
         "sha256": "00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/tools/typed-driver.mjs",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/tools/typed-driver.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/tools/typed-driver.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/tools/typed-driver.mjs",
         "sha256": "eec962ab053299ae45dfdace61e6f7c6625adc38c679847909ad3463f2f043a1"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/tools/stage0-library.mjs",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/tools/stage0-library.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/tools/stage0-library.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/tools/stage0-library.mjs",
         "sha256": "9f1ce29e0a41fa44211ad8f84196c2d5f3fa207f676000018734bd49e131c401"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/tools/assemble.mjs",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/tools/assemble.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/tools/assemble.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/tools/assemble.mjs",
         "sha256": "f7c8feff7a0b8f8b4a302c2ca8b99b363a8d7c4c9c48bc6b7a9463aa23c58b75"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/tools/compiler-abi.mjs",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/tools/compiler-abi.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/tools/compiler-abi.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/tools/compiler-abi.mjs",
         "sha256": "0bcbcaf022108877600baab1b15356db6d9917f5c4d668af936279680c126454"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/tools/node-resource-args.mjs",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/tools/node-resource-args.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/tools/node-resource-args.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/tools/node-resource-args.mjs",
         "sha256": "6aefb3aee9b69b0c25d68edbf0ada6a57ba93e277d3adb8d232dfa6dff01d758"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/tools/native-build.mjs",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/tools/native-build.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/tools/native-build.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/tools/native-build.mjs",
         "sha256": "a76f2c027459f7ffdb9fc16dc450ee33e0f39c74568df4c74d03309e662c9117"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/src/compiler.json",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/src/compiler.json",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/src/compiler.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/src/compiler.json",
         "sha256": "ab7eea752c873a2f3948c2343087016888725248dfaab4d42689d9291ea58ddc"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/compiler.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/compiler.bend",
-        "sha256": "90486857cbd3eb5a3e66863c23a182aff3b57b98f6e2c6095e130d1e07af7034"
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/compiler.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/compiler.bend",
+        "sha256": "fac061286a2683914244178eb1f9b4dc2fbc2d393560739663e8bd08bbc12996"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/core/term.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/core/term.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/core/term.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/core/term.bend",
         "sha256": "5965089581fbff229fa5395c865bfc1539dd43e730d5f9f563b010638637234b"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/core/index.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/core/index.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/core/index.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/core/index.bend",
         "sha256": "d6a80b85b6006f7750545dffe49aa0caf181fd0f555ac251be56b6c886677223"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/core/normalize.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/core/normalize.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/core/normalize.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/core/normalize.bend",
         "sha256": "d4d8f4eea15aa8a1dfe188fb1689cb6a7e38071b6baf132bb88f388e235cdfb1"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/core/graph.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/core/graph.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/core/graph.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/core/graph.bend",
         "sha256": "51a4afb648eb064d78b50badd8fb264fc55c182f9c22299d72ce637a891bed89"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/core/reach.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/core/reach.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/core/reach.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/core/reach.bend",
         "sha256": "b7ead8697a4da7e57a9b047635217786aa5bb4644b5c35298698b71ad35a45d3"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/core/pretty.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/core/pretty.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/core/pretty.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/core/pretty.bend",
         "sha256": "40b4e6ca55bf11009881b893c7959dd52cc64bbc6cb2dbb607e94dbab69fdedc"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/check/quantity.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/check/quantity.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/check/quantity.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/check/quantity.bend",
         "sha256": "b4a8ca1f8dff10f4f64397ea53bbbe272bb32400e993b1077d284ec1d8a70b4d"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/check/kernel.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/check/kernel.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/check/kernel.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/check/kernel.bend",
         "sha256": "da7ee29f9755f09acd9f89fcfd37465b52ab8778971200c946c70e50eb5b4132"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/check/specialize.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/check/specialize.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/check/specialize.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/check/specialize.bend",
         "sha256": "76e0f9249ae15cc0734a8e9d2e75677794e2eb5464c7756a19daff8b8217e7ee"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/check/prefix.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/check/prefix.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/check/prefix.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/check/prefix.bend",
         "sha256": "ceabf77fb49b58910d83fa896899061643c4c105f29e70bd87d3f73be873783d"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/check/annotate.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/check/annotate.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/check/annotate.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/check/annotate.bend",
         "sha256": "1912e5d177514733e706297fbb53e730c1f7a9edc91ffb06d2b1de7e2547648c"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/lexer.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/lexer.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/lexer.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/lexer.bend",
         "sha256": "485778949ab65562c173ae406668531f96ba193a1cc050341fc6bb48a57d8b8f"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/parser.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/parser.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/parser.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/parser.bend",
         "sha256": "226ba437e7193fc4b6a62a5f80dc680bd43240e4f45ef1ed3c29f607671bd90e"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/declarations.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/declarations.bend",
-        "sha256": "98197a8fd1681015cb2a96c81554876ffdd3eae9c729fd7bd132c75064b9185d"
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/declarations.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/declarations.bend",
+        "sha256": "104557f70d797d22b56fe23b5c4f542d11d5d80ab39e90855e305bfacb14355b"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/flatten.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/flatten.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/flatten.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/flatten.bend",
         "sha256": "c696c0a79a5f47eb0574d481a1016fcb42d5f35fcdf6cbcaf6b7372ee832ab76"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/elaborate.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/elaborate.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/elaborate.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/elaborate.bend",
         "sha256": "1a09499f062c5924873749dbb6ec40379c357bb86e973e3135e3c86508e3992c"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/sugar.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/sugar.bend",
-        "sha256": "7a66610ab96f9541befb374ea4805ec56b694a25effa579c2ee739465a60743d"
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/sugar.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/sugar.bend",
+        "sha256": "fe3b1e6f01d87c839321941e35229a46627e5aba2b67a581edc83b2ebfd0388f"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/unicode.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/unicode.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/unicode.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/unicode.bend",
         "sha256": "ec396d509487efd85116c6931419de71824d046be72340e456f7c19d6aa95fca"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/literals_arrays.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/literals_arrays.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/literals_arrays.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/literals_arrays.bend",
         "sha256": "33245ae678904c5f59c47e7ac6214e4a94d74e4bca0bc28d768fb56441ac537d"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/parallel.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/parallel.bend",
-        "sha256": "3f1bfb736d4d611c970a47b95c7b7183288a050118c27936ce9a2a673fe28c63"
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/parallel.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/parallel.bend",
+        "sha256": "261a86de0da276830b485a53005d219b0bffce921e94214faf18def5ad0fe117"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/fresh_work.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/fresh_work.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/fresh_work.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/fresh_work.bend",
         "sha256": "769054fd4874c6e884c4106cbe5c021f508e1d46e90330646d864a92a94e75f1"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/freshen.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/freshen.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/freshen.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/freshen.bend",
         "sha256": "a36e390702577bcfd2e3f1d5e97c9d1d5524354eaffca1fdf895ccfa388b017f"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/load/paths.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/load/paths.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/load/paths.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/load/paths.bend",
         "sha256": "a9fc17a8af04c1958d1f11e8c1c5b7c2d3eb925dd9075e6c77de4bdb3521f2a2"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/families.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/families.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/families.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/families.bend",
         "sha256": "717347c88e836f426a0e52d478bfc5fd909c63a99207f9a58351cded1bb74226"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/validate.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/front/validate.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/validate.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/front/validate.bend",
         "sha256": "678980d566eada7ab1ee72d2c166373abb4fa74b17e142e5c8eba4ab09d1790f"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/load/imports.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/load/imports.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/load/imports.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/load/imports.bend",
         "sha256": "1984fa4d79f387c3e538f0980d963b5838e248df57c78f18ac54ba9fbb417238"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/load/graph.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/load/graph.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/load/graph.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/load/graph.bend",
         "sha256": "e82313297977412338a49b102494b3e1db425d53dbc9a6263eff5b7aef5a6796"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/load/seed.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/load/seed.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/load/seed.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/load/seed.bend",
         "sha256": "ca4cb677af632c47c13792ede10d4e791c85b5cc6c756aacf230861d7bfa4c21"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/load/modules.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/load/modules.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/load/modules.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/load/modules.bend",
         "sha256": "1e0b6ee547c02d76aaeedbe317efb74eab18a0f227aa96ad0729ed79f6593308"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/diagnostic/model.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/diagnostic/model.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/diagnostic/model.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/diagnostic/model.bend",
         "sha256": "3c699ec70ef36700520658555bc5df025880691c44633cabb9e5719b60fc9c1c"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/diagnostic/render.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/diagnostic/render.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/diagnostic/render.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/diagnostic/render.bend",
         "sha256": "695f41ace13e08756273c317659a419deee5fc79d413bd58e8711f124370276c"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/diagnostic/trace.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/diagnostic/trace.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/diagnostic/trace.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/diagnostic/trace.bend",
         "sha256": "0e03e2827415d082d295976b57564c7b0bd872f7c81229e653d7e0ddda62b10f"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/diagnostic/produce.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/diagnostic/produce.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/diagnostic/produce.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/diagnostic/produce.bend",
         "sha256": "9518cb01c0c7636654bfa14dd332ac49756572ba975c7789c865e9cd8cf75c80"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/diagnostic/frontend.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/diagnostic/frontend.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/diagnostic/frontend.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/diagnostic/frontend.bend",
         "sha256": "493baf9ae6a68a7cab2d65b3bb9ccb3af7de7834ffca6687db3c106b7b911475"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/js/foreign.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/js/foreign.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/js/foreign.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/js/foreign.bend",
         "sha256": "0f397f84a989c6fc9a52eaf962742e673cdba243864c0bbe7c16ce4ffd8eb065"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/js/literals.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/js/literals.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/js/literals.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/js/literals.bend",
         "sha256": "2c4488a4f37010253a54e3745317c685ec77067475d471e577687acfa9a16776"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/js/validate.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/js/validate.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/js/validate.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/js/validate.bend",
         "sha256": "f8fc315bf80dabbf8afd1b6ced8e7c322b8ef96d73859d47e01c4b317afb72a0"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/js/choice.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/js/choice.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/js/choice.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/js/choice.bend",
         "sha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/js/projection.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/js/projection.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/js/projection.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/js/projection.bend",
         "sha256": "f534d7c74f396527a9d3e3a06bececebcf0b68d92400ccf46b8125e82735ef09"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/js/emit.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/js/emit.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/js/emit.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/js/emit.bend",
         "sha256": "c30903559f29d3c8bbd22f48026b4a19a1644a2278ed371c4f423691dd26943f"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/ir.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/ir.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/ir.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/ir.bend",
         "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/text.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/text.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/text.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/text.bend",
         "sha256": "20ca7aa5627b698771340d4a2e944caef9b1d100d0f2478a75a622b43a4d647b"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/identity.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/identity.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/identity.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/identity.bend",
         "sha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/layout.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/layout.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/layout.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/layout.bend",
         "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/intrinsic.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/intrinsic.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/intrinsic.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/intrinsic.bend",
         "sha256": "8acf8c4e083b55cc33ef323552963b254ac310c22e7d8b5e3b82253776892ab0"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/tables.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/tables.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/tables.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/tables.bend",
         "sha256": "edd92590e285d2a6158cbd9d9a465d8bd55cbbab9ee4cbcbb018ece1cccc506a"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/emit.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/emit.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/emit.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/emit.bend",
         "sha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/erase.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/erase.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/erase.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/erase.bend",
         "sha256": "8f536cdfbca91b26bf426b3c8c5f42106fc0e18af7bfd2550ba73e7dab5530ec"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/bridge.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/bridge.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/bridge.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/bridge.bend",
         "sha256": "361565a6d77450760786d36bf8afa863f47796f31f8cce493b4defe632af811a"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/direct.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/direct.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/direct.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/direct.bend",
         "sha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/pattern.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/pattern.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/pattern.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/pattern.bend",
         "sha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/show.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/show.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/show.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/show.bend",
         "sha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/parallel.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/parallel.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/parallel.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/parallel.bend",
         "sha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/array.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/array.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/array.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/array.bend",
         "sha256": "4e1d5c9d282ba746ac1e98df470411d477bf1449b5621c3ad413f01e883d9149"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/validate.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/validate.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/validate.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/validate.bend",
         "sha256": "d0c1e75c5dbda3d2e65ea227667191252c49f71b63f0765c358c2041a0f484bb"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/foreign.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/foreign.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/foreign.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/foreign.bend",
         "sha256": "ed7a06662072e73d45d10b1898599936b106dc22956a4fceea8d04ac22fb6d3c"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/book.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/back/native/book.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/book.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/back/native/book.bend",
         "sha256": "180ee53af86a59df8efcc131d4f22b0ca6f5f9980dd222259f2941fbef1e11a2"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/driver/report.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/driver/report.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/driver/report.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/driver/report.bend",
         "sha256": "15f0985da866b948252490ec2f1b90aed9d36fb24b93eab24826648cc36e6df8"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/driver/api.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/snapshot/build/typed/snapshots/5778657b6dfab843db0a3be4dbc441e4b8e9fa4ca92010cffbb9681bb312fb39/src/driver/api.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/driver/api.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/build/typed/snapshots/eca8c909908b1757a7c28f9321e677b8a0ca00b65d6b515a6d89b09118e15d31/src/driver/api.bend",
         "sha256": "6c18e42a07628f4b54c08eb9d6d5f5912be3569775d380136f99bb8d1a0f133d"
       }
     ],
@@ -459,9 +459,9 @@
     "revision": "b2111cf43244e65f76ddc278ee695e669f720cbf"
   },
   "output": {
-    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/equality/api.mjs",
-    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/equality/api.mjs",
-    "sha256": "40c8f7f3b7cd0e96aef57d7d574ebfd85607cd4e096909d083b450b4d973362c"
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+    "sha256": "44094e58cb0ef033e2c08c2827565e859c3594b3136868d4f821262145aea7f0"
   },
   "transform": {
     "version": 5,
@@ -558,8 +558,8 @@
       "kind": "literal-choice-tail-derivative",
       "version": 1,
       "runtimeSha256": "241696c207b257ba28e159699e08e749c1625542a92d901a663ac3f04dfd20fd",
-      "inputSha256": "b1e1f8f22a92e7048f3709894962afc9bb9cd5634bc97e921883c87a2deff8af",
-      "outputSha256": "84cec53cbc28a9f84fcbe498bb2f9bdecef95a7f44ed7757e5024897e839e729",
+      "inputSha256": "d1dff04b542c37f6666c4cbbf568f308f4d12f2fe179567d73b3f742dee26505",
+      "outputSha256": "be482064ed2097c052a3329fb9569111c4bd4bced97732df23fafca63e610e75",
       "sites": 1680,
       "skipped": [],
       "protectedBodies": [
@@ -5009,227 +5009,223 @@
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 824091,
+          "at": 824111,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 824285,
+          "at": 824305,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 824812,
+          "at": 824832,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 825521,
+          "at": 825541,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 825776,
+          "at": 825796,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 830281,
+          "at": 830301,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 831977,
+          "at": 831997,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 832380,
+          "at": 832400,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 832758,
+          "at": 832778,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 833099,
+          "at": 833119,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 833853,
+          "at": 833873,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 834349,
+          "at": 834369,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 834686,
+          "at": 834706,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 835109,
+          "at": 835129,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 835787,
+          "at": 835807,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 836319,
+          "at": 836339,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 836511,
+          "at": 836531,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 836818,
+          "at": 836838,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 837528,
+          "at": 837548,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 838650,
+          "at": 838670,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 838954,
+          "at": 838974,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 840366,
+          "at": 840386,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 842316,
+          "at": 842336,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 843118,
+          "at": 843138,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 843546,
+          "at": 843586,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 843700,
+          "at": 843740,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 844003,
+          "at": 844053,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 844262,
+          "at": 844312,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 845553,
+          "at": 845603,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 846196,
+          "at": 846246,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 846501,
+          "at": 846551,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 846623,
+          "at": 846673,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 846688,
+          "at": 846738,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 846919,
+          "at": 846969,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 847510,
+          "at": 847560,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 850103,
+          "at": 850153,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 850520,
+          "at": 850570,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 851411,
+          "at": 851461,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 851501,
+          "at": 851551,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 852008,
+          "at": 852058,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 853291,
+          "at": 853341,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 854086,
+          "at": 854136,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 854448,
+          "at": 854498,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 854856,
+          "at": 854906,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 855383,
+          "at": 855433,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 855716,
+          "at": 855776,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 855857,
+          "at": 855917,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 855923,
+          "at": 855983,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 856584,
+          "at": 856654,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 857465,
+          "at": 857535,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 858796,
+          "at": 858866,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 859192,
+          "at": 859262,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 860206,
+          "at": 860276,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 860656,
+          "at": 860726,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 862236,
-          "reason": "Branch is not one return with call-free terminal arguments"
-        },
-        {
-          "at": 863564,
+          "at": 862306,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
@@ -5237,212 +5233,216 @@
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 863852,
+          "at": 863704,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 864883,
+          "at": 863922,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 865153,
+          "at": 864953,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 865554,
+          "at": 865223,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 866366,
+          "at": 865624,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 866758,
+          "at": 866436,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 866860,
+          "at": 866828,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 867311,
+          "at": 866930,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 867716,
+          "at": 867381,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 867882,
+          "at": 867786,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 868027,
+          "at": 867952,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 869667,
+          "at": 868097,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 870433,
+          "at": 869840,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 870627,
+          "at": 870606,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 872101,
+          "at": 870800,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 874454,
+          "at": 872274,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 874853,
+          "at": 874627,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 875329,
+          "at": 875026,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 876156,
+          "at": 875502,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 877009,
+          "at": 876329,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 877254,
+          "at": 877182,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 878268,
+          "at": 877427,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 878504,
+          "at": 878441,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 879337,
+          "at": 878677,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 879926,
+          "at": 879510,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 880812,
+          "at": 880099,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 881477,
+          "at": 880985,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 885007,
+          "at": 881650,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 885156,
+          "at": 885180,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 885305,
+          "at": 885329,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 885454,
+          "at": 885478,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 885694,
+          "at": 885627,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 885903,
+          "at": 885867,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 886414,
+          "at": 886076,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 886572,
+          "at": 886587,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 886730,
+          "at": 886745,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 887129,
+          "at": 886903,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 890620,
+          "at": 887302,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 890818,
+          "at": 890793,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 890916,
+          "at": 890991,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 891695,
+          "at": 891089,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 894745,
+          "at": 891868,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 895582,
+          "at": 894918,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 896386,
+          "at": 895755,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 897389,
+          "at": 896559,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 898186,
+          "at": 897562,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 899193,
+          "at": 898359,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 899910,
+          "at": 899366,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 900625,
+          "at": 900083,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 900798,
           "reason": "Branch is not one return with call-free terminal arguments"
         }
       ],
       "runtimeSha256": "241696c207b257ba28e159699e08e749c1625542a92d901a663ac3f04dfd20fd",
-      "inputSha256": "84cec53cbc28a9f84fcbe498bb2f9bdecef95a7f44ed7757e5024897e839e729",
-      "outputSha256": "40c8f7f3b7cd0e96aef57d7d574ebfd85607cd4e096909d083b450b4d973362c",
+      "inputSha256": "be482064ed2097c052a3329fb9569111c4bd4bced97732df23fafca63e610e75",
+      "outputSha256": "44094e58cb0ef033e2c08c2827565e859c3594b3136868d4f821262145aea7f0",
       "scope": "Only returned literal Unit choices with one-return branches, no declarations and no calls except terminal direct generated calls with call-free arguments. Unit bindings and original boundaries around all non-tail call work remain. Runtime/public exports stay exact; private unforced tail-message representation is not an invariant."
     }
   },
   "toolSnapshot": {
-    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/equality/equality.mjs",
-    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase20/import-diagnostic-build-04/equality/equality.mjs",
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/equality.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/equality.mjs",
     "sha256": "84a065f61b9c6c6c1ebd8cdfe10dca1a8017f40d19302a84515e1c3a2cc356d9"
   },
-  "finished": "2026-09-29T10:13:36.462Z"
+  "finished": "2026-09-29T11:09:03.197Z"
 }

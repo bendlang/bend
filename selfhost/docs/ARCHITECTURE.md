@@ -55,6 +55,21 @@ supplies memo identity and the 32768 UTF16-unit growth guard, with newline-separ
 arguments; the independent instantiation-depth limit remains 64. This is not an
 extra normalizer or checker. See the [canonical-key report](../../implementation/phase16/checker-canonical-memo-json.md).
 
+## Local and annotation source locations
+
+A raw `Local` owns its first binder's range. A typed local's generated `Ann`
+owns the interval from the original body cursor to the returned, spaced RHS
+cursor. These differ from the child term ranges when a binder or RHS is grouped,
+or comments follow the RHS. Three existing parser workers forward the body
+start to the sole annotation producer. Unindexed input keeps0/0.
+
+`f_locate` preserves an already located term without recursively filling its
+children. Generated children must therefore receive their own origin at their
+producer. The [Phase21 report](../../implementation/phase21/group-range-release.md)
+records the caught intermediate annotation-range loss and exact cursor controls.
+Source ranges do not encode whether a group has completed; that remaining parser
+checkpoint requires a separate semantic contract.
+
 ## Compilation flow
 
 The ordinary host discovers canonical files while Bend owns import syntax,

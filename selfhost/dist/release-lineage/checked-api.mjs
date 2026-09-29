@@ -21339,7 +21339,7 @@ function $f_body_at$(_ts_0) {
   return $f_choose$(($f_eq$(($f_tx$(_ts_0)), "match")), run_clo((_x_2) => {
   return $f_locate$(run_loop($f_match_heads$(($f_tl$(_ts_0)), ($f_col$(_ts_0)), {$: "Nil"})), ($f_begin$(_ts_0)), false, true, false);
 }), run_clo((_x_3) => {
-  return $f_statement$(run_loop($f_expr$(_ts_0, 0)));
+  return $f_statement$(run_loop($f_expr$(_ts_0, 0)), ($f_begin$(_ts_0)));
 }));
 }));
 }
@@ -21812,20 +21812,20 @@ function $f_match_head$(_p_0, _indent_0, _acc_0) {
 
 function $f_erased_local$(_ts_0, _begin_0) {
   return $f_choose$(($f_valid_name$(($f_tx$(_ts_0)))), run_clo((_x_0) => {
-  return $f_statement$({$: "FParsed", "term": ($kt_span$("Ref", ($f_tx$(_ts_0)), ($f_atid$(_ts_0)), 0, {$: "Nil"}, _begin_0, ($f_end$(_ts_0)))), "rest": ($f_tl$(_ts_0))});
+  return $f_statement$({$: "FParsed", "term": ($kt_span$("Ref", ($f_tx$(_ts_0)), ($f_atid$(_ts_0)), 0, {$: "Nil"}, _begin_0, ($f_end$(_ts_0)))), "rest": ($f_tl$(_ts_0))}, _begin_0);
 }), run_clo((_x_1) => {
   return $fpe_error$(_ts_0, "expected a name", "a name");
 }));
 }
 
-function $f_statement$(_p_0) {
+function $f_statement$(_p_0, _begin_0) {
   const _n_0 = _p_0["term"];
   const _ts_0 = _p_0["rest"];
   return $f_choose$(($f_eq$(($f_tx$(_ts_0)), "=")), run_clo((_x_0) => {
   return $f_let_value$(_n_0, run_loop($f_expr$(($f_tl$(_ts_0)), 0)));
 }), run_clo((_x_1) => {
   return $f_choose$(($f_eq$(($f_tx$(_ts_0)), ":")), run_clo((_x_2) => {
-  return $f_typed_let_try$(_n_0, _ts_0, run_loop($f_expr$(($f_tl$(_ts_0)), 0)));
+  return $f_typed_let_try$(_n_0, _ts_0, run_loop($f_expr$(($f_tl$(_ts_0)), 0)), _begin_0);
 }), run_clo((_x_3) => {
   return $f_statement_more$({$: "FParsed", "term": _n_0, "rest": _ts_0});
 }));
@@ -22109,7 +22109,7 @@ function $f_let_value$(_pat_0, _p_0) {
 }));
 }
 
-function $f_typed_let_try$(_n_0, _old_0, _p_0) {
+function $f_typed_let_try$(_n_0, _old_0, _p_0, _begin_0) {
   const _ty_0 = _p_0["term"];
   const _ts_0 = _p_0["rest"];
   return $f_choose$(($f_eq$(($tg$(_ty_0)), "Error")), run_clo((_x_0) => {
@@ -22117,7 +22117,7 @@ function $f_typed_let_try$(_n_0, _old_0, _p_0) {
 }), run_clo((_x_1) => {
   return $f_choose$(($f_eq$(($f_tx$(_ts_0)), "=")), run_clo((_x_2) => {
   return $f_choose$(($f_eq$(($tg$(_n_0)), "Ref")), run_clo((_x_3) => {
-  return $f_let_value$(_n_0, ($f_let_ann$(_ty_0, run_loop($f_expr$(($f_tl$(_ts_0)), 0)))));
+  return $f_let_value$(_n_0, ($f_let_ann$(_ty_0, run_loop($f_expr$(($f_tl$(_ts_0)), 0)), _begin_0)));
 }), run_clo((_x_4) => {
   return {$: "FParsed", "term": ($fpe_message_at$(_n_0, ($nm$(($f_pn$(($f_err$(_ts_0, "a name (a parallel or typed let binds names; destructure in its body)")))))), "a name (a parallel or typed let binds names; destructure in its body)")), "rest": {$: "Nil"}};
 }));
@@ -22429,14 +22429,14 @@ function $f_let_body$(_pat_0, _v_0, _p_0) {
   return {$: "FParsed", "term": run_loop($f_choose$(($f_eq$(($tg$(_b_0)), "Error")), run_clo((_x_0) => {
   return _b_0;
 }), run_clo((_x_1) => {
-  return $kt$("Local", "", 0, 1, {$: "Con", "head": _pat_0, "tail": {$: "Con", "head": _v_0, "tail": {$: "Con", "head": _b_0, "tail": {$: "Nil"}}}});
+  return $kt_span$("Local", "", 0, 1, {$: "Con", "head": _pat_0, "tail": {$: "Con", "head": _v_0, "tail": {$: "Con", "head": _b_0, "tail": {$: "Nil"}}}}, ($kb$(_pat_0)), ($ke$(_pat_0)));
 }))), "rest": _ts_0};
 }
 
-function $f_let_ann$(_ty_0, _p_0) {
+function $f_let_ann$(_ty_0, _p_0, _begin_0) {
   const _v_0 = _p_0["term"];
   const _ts_0 = _p_0["rest"];
-  return {$: "FParsed", "term": ($kt$("Ann", "", 0, 1, {$: "Con", "head": _v_0, "tail": {$: "Con", "head": _ty_0, "tail": {$: "Nil"}}})), "rest": _ts_0};
+  return {$: "FParsed", "term": ($kt_span$("Ann", "", 0, 1, {$: "Con", "head": _v_0, "tail": {$: "Con", "head": _ty_0, "tail": {$: "Nil"}}}, _begin_0, ($f_begin$(run_loop($f_space$(_ts_0)))))), "rest": _ts_0};
 }
 
 function $f_write_statement$(_n_0, _ts_0) {

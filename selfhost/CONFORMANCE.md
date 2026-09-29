@@ -1,7 +1,7 @@
 # Compiler validation
 
 The target remains upstream `b2111cf43244e65f76ddc278ee695e669f720cbf`, Bend2
-2.0.32 era. The [Phase20 release report](../implementation/phase20/declaration-checkpoints-release.md)
+2.0.32 era. The [Phase21 release report](../implementation/phase21/group-range-release.md)
 binds the final checked artifact, controls, exact vectors, timing and preserved
 failures. The [release manifest](dist/release.json) identifies the installed
 guarded version5 derivative, genuine checked B1, source, Base, runtime and host.
@@ -18,7 +18,7 @@ observed invalid acceptance, timeout or unresolved observation. All 11 trust
 cases type-check and reach the intended refusal, exactly matching TypeScript.
 
 Phase16 reduced exact reference differences **459→2**, with **457 new matches
-and zero lost matches** versus Phase15. Phase17, both Phase19 releases and Phase20 preserve every complete result. The remaining rows are parse and check for
+and zero lost matches** versus Phase15. Phase17, both Phase19 releases, Phase20 and Phase21 preserve every complete result. The remaining rows are parse and check for
 `check/monad_do_destructure.bend`: rejection agrees, but the first diagnostic
 differs because of an earlier do-block parsing checkpoint. All measured primitive
 status, phase, type/trust, unsafe-list, exit and output axes agree on this corpus.
@@ -40,13 +40,13 @@ retains the original failure and pinned oracle. Maintained 36, the complete
 2,996-result comparison and all 42 installed/relocated CLI checks were rerun on
 the corrected API; other named controls below retain their stated prior scope.
 
-The installed live checker additionally passes all22 saved chronology observations
+The Phase19 live-checker image additionally passed all22 saved chronology observations
 (two previous differences), all6 let-closure observations (three previous strict
 differences), memo8, parsed instances29, canonical keys61, world/freshness/demand40,
 and recursion4. Independent final-image boundary104 passes its stated contracts;
 its runtime-reference projection is not full checked-term equivalence. Actual
 backend41 and literal JS/native20 executions, helper16/authentic replay5, original
-paired histories226 and installed/relocatedCLI42 were rerun on this exact API.
+paired histories226 and installed/relocatedCLI42 were rerun on that Phase19 API.
 
 The frozen older public18 comparison retains six intentional differences:
 instances are checked earlier, checked output uses completion order, and failure
@@ -71,12 +71,18 @@ closing its same-body live-instance difference. Its immutable runner retains
 `pass:false` for14 inherited negative parse `observed` labels; exact result
 comparison is a separate axis. Other selections below retain their stated scope:
 
-- The separate196-observation group selection was rerun for Phase20:136exact
-  and60remaining differences, eight newly exact and none lost from Phase19.
-  Only the four saved empty-head witnesses change (parse/check); six observations
-  also correct primitive acceptance. The raw runner still fails selected completion
-  with three inherited failed verdicts, despite complete healthy acquisition.
-  The separate audit preserves that raw failure and all60 strict mismatches.
+- The separate196-observation group selection was rerun for Phase21:139exact
+  and57remaining differences, three newly exact and none lost from Phase20.
+  Only local-pattern parse/check and local-callee check change. The raw runner
+  still fails selected completion with three inherited failed verdicts; the
+  separate acquisition/no-regression audit preserves this raw failure.
+- Phase21's independent68 improves44→60exact with16gains and no primitive or
+  exact-match regressions. Typed-RHS4 adds two exact/two unchanged diagnostics.
+  Complete-graph172 and positive annotation-coordinate30 gates pass; inherited
+  grouped-constructor false acceptances stay visible. Program12 has exact healthy
+  observations, including nine successful actual executions, but the original
+  output-oracle verdicts remain failed because their comments omitted Nat's `n`.
+  Maintained36 is strict exact and installed/relocatedCLI42 passes.
 - The 114-observation marked-pattern selection has **71 exact matches and 43
   known differences**. Its raw oracle report is `pass:false`, including the
   known do-block check failure. A separate audit establishes 114 unchanged

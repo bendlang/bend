@@ -1,64 +1,59 @@
 # Current compiler experiment strategy
 
-The [Phase20 release](../implementation/phase20/declaration-checkpoints-release.md)
-is installed. The user authorizes continued conformance, speed and simplicity work,
-including pushes; publication remains blocked by an earlier automatic approval
-review. No old multi-hour budget is renewed. Preserve all75 unrelated Phase6 paths.
+The [Phase21 release](../implementation/phase21/group-range-release.md) is installed.
+User authorization covers continued conformance, speed, simplicity and pushes;
+publication remains blocked by the earlier automatic approval review. No old
+multi-hour budget is renewed. Preserve all75 unrelated Phase6 paths.
 
 ## Released frontier
 
-Installed API `40c8f7f3`, genuine checked parent `2270973c`, unchanged upstream
-`b2111cf`. One declaration module corrects decorator errors, constructor name/brace
-and whitespace order, and first match heads/patterns. It adds17 lines/one function,
-no semantic state or host change. Phase19's single live checker and exact-prefix
-proof repair remain. Source totals15,897 physical /13,543 nonblank lines,
-577,003 bytes,59 modules,1,660 definitions,719 laws,67 types.
+Installed API44094e58, unchanged pinb2111cf. Three existing parser files preserve
+Local binder origins and typed-annotation body/returned-cursor ranges. Source
+adds3lines/156bytes, no defs/laws/types, host, traversal or semantic-state change.
+Maintained source:15,900physical/13,546nonblank,577,159bytes,59modules,
+1,660definitions/719laws/67types. Phase20 grammar and Phase19 live-checker/prefix
+corrections remain. Source01 was withheld for lost synthetic Ann origin; source02
+fixes that producer with explicit original cursors, not child-range inference.
 
-Maintained36, decorator24, constructor50, first-element54, whitespace44,
-supplied39 and ordered-host43 are strictly exact. New positive-program12 and
-all42 installed/relocated CLI checks pass. Main2996 complete result payloads are
-unchanged, retaining two do-block diagnostics. Broader196 improves128→136 exact,
-with eight gains/zero lost;60 differences remain. Its raw runner is still false,
-with three failed verdicts. Acquisition/regression audits do not waive them.
-Suites overlap; do not sum observations as distinct programs.
+Main2996 complete result payloads remain unchanged, including two do diagnostics.
+Broader196 improves136→139exact, threegains/zero losses;57differences remain.
+Independent68 gains16exact/zero primitive changes; typed-error4 adds twoexact and
+two unchanged diagnostics. Structural172/positiveAnn30 pass; legacy80 keeps0/0.
+Maintained36strict and installed/relocatedCLI42 pass. Actualprogram12 agrees
+exactly, but original nine per-side #| output-oracle failures (missing Nat n)
+remain false; no fixture rewrite. Known grouped-constructor false acceptances
+remain in independent controls. Suites overlap; do not sum as distinct programs.
 
-Exclusive TS/B/C/C/B/TS on identical final source measures preceding10.9727s,
-candidate10.9412s and TS3.4463s: gap3.1839→3.1748×. Process−0.29%,request−0.22%,
-RSS+0.44% is a neutral cost screen, not a speedup. All35 host files/Base/runtime/v5
-and limits agree; freshCPU0,stack4MiB/heap4GiB, separate validated Bend Base caches;
-TS checks Base. No emission or generated-code speed claim. One observed genuine
-build+36-control loop took34.68s; this is not a controlled loop benchmark.
-
-Independent review caught source02's semicolon false acceptances before promotion;
-source04 fixes both the brace and datatype-loop boundaries with existing f_space.
-All superseded sources and report-tool failures remain. Root promotion03 copies
-one file; promotion01/02 copied none because of metadata-schema handling errors.
+Exclusive same-sourceTS/B/C/C/B/TS: parent11.0060s, final10.9547s, TS3.4364s,
+gap3.2028→3.1879×. Process−0.47%, request−0.44%, RSS−0.11% is neutralcost, two
+samples/image. All35host members/Base/runtime/v5/resources agree; freshCPU0,
+stack4MiB/heap4GiB, validated Bend Base caches; TS checks Base. No emission.
+Observed checkedbuild+36 loop35.17s is not a controlled loop benchmark.
 
 ## Next priorities
 
-1. **Three grouped-local ranges.** Follow the unexecuted
-   [Phase21 design](../design/phase21/group-boundaries.md). First verify independent
-   binder/RHS/nested/typed/marked controls, then test the single shared Local range
-   producer. It may close three observations without a new concept. Grouped-comma
-   false acceptance is separate: a raw tag guard would reject a valid nested tuple
-   and can replace an earlier pattern error. Preserve completion/error ordering.
-2. **Contextual parser domain.** Private Stage4 now handles saved rows/groups
-   with actual lexical state and first-error demand;35 private records/direct9,
-   prior names/body/state/materialization and raw194 pass their stated scopes.
-   Generated binder IDs compare by audited alpha-equivalence, not numeric equality.
-   It remains Body/LTerm research, not installed Core/loader conformance. Shared
-   ff_* fixes alone demonstrated no gain on the remaining60, so do not install
-   extra code without a discriminating control. Main do-block chronology remains.
-3. **Cost after semantic convergence.** Profile the installed checker before a
-   new optimization. Prefix reuse requires complete memo/output/source visibility;
-   a source-only cache is insufficient. Keep process, request and emitted-program
-   performance distinct. No second checker or unchecked fallback.
+1. **Preserve group completion and first-error order.** The separate C1 controls
+   have60healthy observations,39exact/21differences. A rawtag comma guard rejects
+   valid completed inner groups and can mask earlier pattern errors. Grouped
+   Parallel also misses a lowering route, but adding its dispatch alone risks
+   a new false checked acceptance for raw-parallel-comma. Design completion and
+   failure transport with actual lexical context before either change. No second
+   pattern checker, empty-environment scoping or range-based completion guesses.
+2. **Reuse contextual research selectively.** Private Phase19 stages1–4 preserve
+   useful actual-state/row/group/order evidence and audited alpha-binding checks;
+   they remain uninstalled partial Body/LTerm research. Shared ff_* corrections
+   alone showed no further remaining57 gain. Production must have one authority
+   for scope/pattern/flatten order; main do-block chronology remains unresolved.
+3. **Profile before optimizing further.** The current cost gap is3.19× on the
+   stated workload. Source-only prefix reuse cannot restore memo/checked output.
+   Keep process, request and generated-program timing separate. No second checker
+   or unchecked fallback. The50%/75% whole-source reduction targets stay open.
 
-Keep checked focused builds as the edit loop; broad gates/timing/installation are
-integration checkpoints. Phase19 live-checker and earlier capsules are recovered
-and committed. Close separate contextual and Phase20 capsules with exact scopes;
-never let an archive change the status of a failed test. The50%/75% whole-source
-reduction targets remain open.
+Phase19 contextual and Phase20 release capsules are recovered and committed.
+Close Phase21 preservation with immutable failures and independent byte recovery;
+its receipt/index records completion separately from compiler gate decisions.
+Use checked focused builds for the edit loop; broad gates and exclusive timing
+belong at integration checkpoints.
 
 ## Retained experiments and operating rules
 

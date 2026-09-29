@@ -191,6 +191,7 @@ law f_body:
 
 law f_statement:
   for +p: FParsed
+  for +begin: U32
   FParsed
 
 law f_let_value:
@@ -524,22 +525,23 @@ def f_body(ts):
 def f_body_at(
   +ts: List<&2, FToken>,
 ) -> FParsed:
-  f_choose(FParsed, f_eq(f_tx(ts), "-"), u => f_erased_local(f_tl(ts), f_begin(ts)), u => f_choose(FParsed, f_eq(f_tx(ts), "match"), u => f_locate(f_match_heads(f_tl(ts), f_col(ts), Nil{}), f_begin(ts), False{}, True{}, False{}), u => f_statement(f_expr(ts, 0))))
+  f_choose(FParsed, f_eq(f_tx(ts), "-"), u => f_erased_local(f_tl(ts), f_begin(ts)), u => f_choose(FParsed, f_eq(f_tx(ts), "match"), u => f_locate(f_match_heads(f_tl(ts), f_col(ts), Nil{}), f_begin(ts), False{}, True{}, False{}), u => f_statement(f_expr(ts, 0), f_begin(ts))))
 
 @unsafe
-def f_statement(p):
+def f_statement(p, begin):
   match p:
     case FParsed{+n, +ts}:
-      f_choose(FParsed, f_eq(f_tx(ts), "="), u => f_let_value(n, f_expr(f_tl(ts), 0)), u => f_choose(FParsed, f_eq(f_tx(ts), ":"), u => f_typed_let_try(n, ts, f_expr(f_tl(ts), 0)), u => f_statement_more(FParsed{n, ts})))
+      f_choose(FParsed, f_eq(f_tx(ts), "="), u => f_let_value(n, f_expr(f_tl(ts), 0)), u => f_choose(FParsed, f_eq(f_tx(ts), ":"), u => f_typed_let_try(n, ts, f_expr(f_tl(ts), 0), begin), u => f_statement_more(FParsed{n, ts})))
 
 @unsafe
 def f_let_ann(
   +ty: KTerm,
   +p: FParsed,
+  +begin: U32,
 ) -> FParsed:
   match p:
     case FParsed{v, ts}:
-      FParsed{kt("Ann", "", 0, 1, [v, ty]), ts}
+      FParsed{kt_span("Ann", "", 0, 1, [v, ty], begin, f_begin(f_space(ts))), ts}
 
 @unsafe
 def f_let_value(pat, p):
@@ -551,7 +553,7 @@ def f_let_value(pat, p):
 def f_let_body(pat, v, p):
   match p:
     case FParsed{b, ts}:
-      FParsed{f_choose(KTerm, f_eq(tg(b), "Error"), u => b, u => kt("Local", "", 0, 1, [pat, v, b])), ts}
+      FParsed{f_choose(KTerm, f_eq(tg(b), "Error"), u => b, u => kt_span("Local", "", 0, 1, [pat, v, b], kb(pat), ke(pat))), ts}
 
 @unsafe
 def f_match_heads(ts, indent, acc):

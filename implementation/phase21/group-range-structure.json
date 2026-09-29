@@ -1,0 +1,170 @@
+{
+  "kind": "phase21-independent-source02-structure-review",
+  "complete": true,
+  "boundedStructureGatePass": true,
+  "compilerSourceEdited": false,
+  "promotionDecisionOwnedByRoot": true,
+  "observations": 172,
+  "legacyAllAbsent": true,
+  "legacyObservations": 80,
+  "nonrangeBookDifferences": 0,
+  "acceptanceChanges": 0,
+  "savedWholeResultEnvelopesUnchanged": 164,
+  "exactPinnedAnnObservations": 30,
+  "negativeAnnFixturesRetained": 2,
+  "runs": [
+    {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-structure-candidate-02/report.json",
+        "sha256": "9077f2f7d6afa00200fd1c6ac65678f20df1da16508aabfa4b7fd8cb3bdce5b9",
+        "bytes": 537767
+      },
+      "observations": 102,
+      "changedRows": 45,
+      "rangePaths": 253,
+      "rangeTags": {
+        "Local": 104,
+        "Let": 137,
+        "Ann": 5,
+        "Call": 2,
+        "App": 2,
+        "Error": 3
+      },
+      "legacyObservations": 46
+    },
+    {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-structure-ann-candidate-02/report.json",
+        "sha256": "7258b429c998f542bb455e8079864a05e1c15c41480d0a0f8e31f354799e111f",
+        "bytes": 306015
+      },
+      "observations": 70,
+      "changedRows": 32,
+      "rangePaths": 163,
+      "rangeTags": {
+        "Local": 93,
+        "Ann": 30,
+        "Let": 40
+      },
+      "legacyObservations": 34
+    }
+  ],
+  "annotationAudit": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-structure-ann-audit-02/report.json",
+    "sha256": "50df18779a2f3969d1d114c30d0e65bd5314da1f8e268217ca3264c77fe76a2a",
+    "bytes": 38075
+  },
+  "source": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-source-02/manifest.json",
+    "sha256": "d1cec791d95ab6d2486a60a32eed1b328a9a1a2f76a990e79ab49b98f80440b7",
+    "bytes": 66585
+  },
+  "attempt": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/attempt.json",
+    "sha256": "b9cee3947b6a7ecfed0758c4b6296db693d45a69d420785318fc7bdfcc164b15",
+    "bytes": 219521
+  },
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+    "sha256": "44094e58cb0ef033e2c08c2827565e859c3594b3136868d4f821262145aea7f0",
+    "bytes": 913649
+  },
+  "evidenceRoots": [
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-structure-controls-01",
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-structure-parent-01",
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-structure-candidate-01",
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-structure-ann-controls-01",
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-structure-ann-parent-01",
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-structure-candidate-02",
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-structure-ann-candidate-02",
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-structure-ann-audit-02"
+  ],
+  "limitations": [
+    "No complete compiler-workload graph serialization/comparison.",
+    "Range-path counts include repeated Base terms across independent observations.",
+    "Pin constructor-group acceptance/checkpoint gaps are inherited and are not fixed by this candidate.",
+    "Exact annotation claim is15successful fixtures at raw/lowered boundaries; rejected neighbors are not counted as annotation coordinates."
+  ],
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase21/group-range-structure.md",
+      "sha256": "c99ade11dcf5498b8f3a1ddffa6b7cb47cfe9682825a966cd3ef69a70882f21f",
+      "bytes": 2711
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase21/group-range-structure-ann.md",
+      "sha256": "cccb6b0bd9a87303dd9889d7c5aff0ee469cc9abf22e6c9fe8e9d2fc3dac100c",
+      "bytes": 1318
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-structure-source01.md",
+      "sha256": "f37d9c16355dc93830fad0c6d9676838ca4553b00c15fb4578974d61f6ae7526",
+      "bytes": 2571
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-structure-source01.json",
+      "sha256": "fdb6990fd66a32b4a13559631b4700f0144cdbe61970d0c656f08ca882ca5313",
+      "bytes": 54730
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-structure.md",
+      "sha256": "e90cf6f9ddde5a48a3be614ea76898f3c3d7c3c2fb1e1272a9c7fec1c2695bd3",
+      "bytes": 3371
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-structure-ann-audit.mjs",
+      "sha256": "845fcfccf3810db3072f36c2789b9be1b46f760a50b0cadde78b72257865da8a",
+      "bytes": 2977
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-structure-ann-prepare.py",
+      "sha256": "e35d07ca7ffe6e49d6b46668b85126d33b4b1d76176de562870eff9c25619b10",
+      "bytes": 1899
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-structure-finalize.py",
+      "sha256": "1a1f0f23ede6963e792524eb3e801cb77058f43f64fc24ecca20d76ee8455262",
+      "bytes": 4107
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-structure-prepare.py",
+      "sha256": "8527123d60ed0f4f93d3dec98b0747140229e2b101f2e69b233778cb68eb434c",
+      "bytes": 2783
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-structure-review.py",
+      "sha256": "451449e4850a7c3c957a144f72428f47b690575f699f7f63d7e0e06e93cfcef1",
+      "bytes": 3075
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-structure-run.mjs",
+      "sha256": "786c01d1f0551545dcc06ba101e7d21d33b7cb73ebbdface1580ab39515f7401",
+      "bytes": 7758
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-structure-parent-01.log",
+      "sha256": "a4a5edafba09e883034f180e276f0bbb8bddc9ae9e009b9760bdc0c52f4e5915",
+      "bytes": 42
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-structure-candidate-01.log",
+      "sha256": "a4a5edafba09e883034f180e276f0bbb8bddc9ae9e009b9760bdc0c52f4e5915",
+      "bytes": 42
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-structure-ann-parent-01.log",
+      "sha256": "c3874e0d2d3821cd5c09b1ea6bfbad5083bde0a3e87b646a76ff83477cbead1c",
+      "bytes": 41
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-structure-candidate-02.log",
+      "sha256": "a4a5edafba09e883034f180e276f0bbb8bddc9ae9e009b9760bdc0c52f4e5915",
+      "bytes": 42
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-structure-ann-candidate-02.log",
+      "sha256": "c3874e0d2d3821cd5c09b1ea6bfbad5083bde0a3e87b646a76ff83477cbead1c",
+      "bytes": 41
+    }
+  ]
+}

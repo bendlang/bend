@@ -1,0 +1,1757 @@
+{
+  "kind": "phase21-independent-r1-source01-structure-review",
+  "complete": true,
+  "structuralContractPass": true,
+  "selectionApproved": false,
+  "observations": 102,
+  "changedRows": 45,
+  "changedRangePaths": 251,
+  "rangeTags": {
+    "Local": 104,
+    "Let": 137,
+    "Ann": 3,
+    "Call": 2,
+    "App": 2,
+    "Error": 3
+  },
+  "nonrangeDifferences": 0,
+  "acceptanceChanges": 0,
+  "changedDiagnostics": 3,
+  "legacyObservations": 46,
+  "legacyAllAbsent": true,
+  "scope": "23 no-Base fixtures at four raw/lowered indexed/legacy entries, Base raw/lowered, four representative Base fixtures raw/lowered. Full books compared in memory; full-field stream digests include all ranges. No complete compiler-workload graph claim.",
+  "blockingFinding": "Grouped typed Ann loses its existing whole-group origin to0/0. Pinned Ann has an explicit binder-through-RHS cursor span. Repair its sole producer before selection; no annotation range should be guessed from child term range.",
+  "nonblockingFindings": [
+    "Call/App start changes from opening parenthesis to local binder, matching pinned parse_term_ops use of the inner Let span.",
+    "Constructor destructuring lowered graphs are byte-identical; both flatteners explicitly retain RHS origin.",
+    "Grouped constructor destructuring under an outer parameter has inherited parent/candidate acceptance divergence from pin. Constructor group-as-pattern remains an inherited wrong checkpoint and changed caret does not close it.",
+    "251 range paths count repeated Base contents across four seeded books; they are not251 distinct source occurrences."
+  ],
+  "findings": [
+    {
+      "name": "typed-ann",
+      "reference": {
+        "error": "",
+        "book": {
+          "main": {
+            "$": "Def",
+            "n": 0,
+            "x": 0,
+            "T": {
+              "$": "Typ",
+              "g": {
+                "$": "Qua",
+                "q": {
+                  "$": "Lone"
+                }
+              },
+              "s": {
+                "file": {
+                  "representation": "source-file-handle",
+                  "source": "def main() -> Type:\n  (x: Type = Type; x)\n",
+                  "sha256": "bf8e8dddecf295c6ff4def91fac99d131dc84c568fde89c49fa6e2a90888df74"
+                },
+                "beg": 14,
+                "end": 18
+              }
+            },
+            "v": {
+              "$": "Let",
+              "k": [
+                "x"
+              ],
+              "i": [
+                0
+              ],
+              "q": [
+                {
+                  "$": "Lone"
+                }
+              ],
+              "v": [
+                {
+                  "$": "Ann",
+                  "x": {
+                    "$": "Typ",
+                    "g": {
+                      "$": "Qua",
+                      "q": {
+                        "$": "Lone"
+                      }
+                    },
+                    "s": {
+                      "file": {
+                        "representation": "source-file-handle",
+                        "source": "def main() -> Type:\n  (x: Type = Type; x)\n",
+                        "sha256": "bf8e8dddecf295c6ff4def91fac99d131dc84c568fde89c49fa6e2a90888df74"
+                      },
+                      "beg": 33,
+                      "end": 37
+                    }
+                  },
+                  "T": {
+                    "$": "Typ",
+                    "g": {
+                      "$": "Qua",
+                      "q": {
+                        "$": "Lone"
+                      }
+                    },
+                    "s": {
+                      "file": {
+                        "representation": "source-file-handle",
+                        "source": "def main() -> Type:\n  (x: Type = Type; x)\n",
+                        "sha256": "bf8e8dddecf295c6ff4def91fac99d131dc84c568fde89c49fa6e2a90888df74"
+                      },
+                      "beg": 26,
+                      "end": 30
+                    }
+                  },
+                  "s": {
+                    "file": {
+                      "representation": "source-file-handle",
+                      "source": "def main() -> Type:\n  (x: Type = Type; x)\n",
+                      "sha256": "bf8e8dddecf295c6ff4def91fac99d131dc84c568fde89c49fa6e2a90888df74"
+                    },
+                    "beg": 23,
+                    "end": 37
+                  }
+                }
+              ],
+              "f": {
+                "$": "Var",
+                "k": "x",
+                "i": 0,
+                "s": {
+                  "file": {
+                    "representation": "source-file-handle",
+                    "source": "def main() -> Type:\n  (x: Type = Type; x)\n",
+                    "sha256": "bf8e8dddecf295c6ff4def91fac99d131dc84c568fde89c49fa6e2a90888df74"
+                  },
+                  "beg": 39,
+                  "end": 40
+                }
+              },
+              "s": {
+                "file": {
+                  "representation": "source-file-handle",
+                  "source": "def main() -> Type:\n  (x: Type = Type; x)\n",
+                  "sha256": "bf8e8dddecf295c6ff4def91fac99d131dc84c568fde89c49fa6e2a90888df74"
+                },
+                "beg": 23,
+                "end": 24
+              }
+            },
+            "m": "",
+            "u": false
+          }
+        }
+      },
+      "rows": [
+        {
+          "name": "typed-ann",
+          "mode": "raw-indexed",
+          "images": [
+            {
+              "error": "",
+              "book": {
+                "sha256": "7f3c53cc758bc8163048e111df6b51915d64b397851526f0aa37cc895095de6b",
+                "nodes": 50,
+                "ranges": {
+                  "zero": 5,
+                  "nonzero": 7
+                },
+                "tags": {
+                  "Typ": 3,
+                  "Qua": 3,
+                  "Body": 1,
+                  "Params": 1,
+                  "Local": 1,
+                  "Ref": 2,
+                  "Ann": 1
+                }
+              }
+            },
+            {
+              "error": "",
+              "book": {
+                "sha256": "fc6f2f7888f47ca6ac75141710ef9b700c09dd3755c1cb462f789b00b541acbe",
+                "nodes": 50,
+                "ranges": {
+                  "zero": 6,
+                  "nonzero": 6
+                },
+                "tags": {
+                  "Typ": 3,
+                  "Qua": 3,
+                  "Body": 1,
+                  "Params": 1,
+                  "Local": 1,
+                  "Ref": 2,
+                  "Ann": 1
+                }
+              }
+            }
+          ],
+          "acceptanceSame": true,
+          "diagnosticSame": true,
+          "differences": {
+            "ranges": [
+              {
+                "path": "$.head.value.kids.tail.head",
+                "tag": "Local",
+                "name": "",
+                "parent": [
+                  4119,
+                  4138
+                ],
+                "candidate": [
+                  4120,
+                  4121
+                ]
+              },
+              {
+                "path": "$.head.value.kids.tail.head.kids.tail.head",
+                "tag": "Ann",
+                "name": "",
+                "parent": [
+                  4119,
+                  4138
+                ],
+                "candidate": [
+                  0,
+                  0
+                ]
+              }
+            ],
+            "nonrange": []
+          },
+          "pass": true
+        },
+        {
+          "name": "typed-ann",
+          "mode": "lowered-indexed",
+          "images": [
+            {
+              "error": "",
+              "book": {
+                "sha256": "2f22d7d078187df71b525bd7ead319e172b2e7cff7e3c62796fa7f974e1b6e2c",
+                "nodes": 42,
+                "ranges": {
+                  "zero": 3,
+                  "nonzero": 7
+                },
+                "tags": {
+                  "Typ": 3,
+                  "Qua": 3,
+                  "Let": 1,
+                  "Bind": 1,
+                  "Ann": 1,
+                  "Var": 1
+                }
+              }
+            },
+            {
+              "error": "",
+              "book": {
+                "sha256": "552583fe82860396f3ecb9b4f57e81ca8a2a98079333f103c36c8abe8f3406c9",
+                "nodes": 42,
+                "ranges": {
+                  "zero": 4,
+                  "nonzero": 6
+                },
+                "tags": {
+                  "Typ": 3,
+                  "Qua": 3,
+                  "Let": 1,
+                  "Bind": 1,
+                  "Ann": 1,
+                  "Var": 1
+                }
+              }
+            }
+          ],
+          "acceptanceSame": true,
+          "diagnosticSame": true,
+          "differences": {
+            "ranges": [
+              {
+                "path": "$.head.value",
+                "tag": "Let",
+                "name": "",
+                "parent": [
+                  4119,
+                  4138
+                ],
+                "candidate": [
+                  4120,
+                  4121
+                ]
+              },
+              {
+                "path": "$.head.value.kids.head.kids.head",
+                "tag": "Ann",
+                "name": "",
+                "parent": [
+                  4119,
+                  4138
+                ],
+                "candidate": [
+                  0,
+                  0
+                ]
+              }
+            ],
+            "nonrange": []
+          },
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "typed-outer-pattern",
+      "reference": {
+        "error": "Error:\n- expected : a pattern (a binder or a constructor)\n- observed : x = {Type : Type}; x\nLocation:\n1 | def main() -> Type:\n2>|   (x: Type = Type; x) = Type\n  |    ^\n3 |   Type"
+      },
+      "rows": [
+        {
+          "name": "typed-outer-pattern",
+          "mode": "raw-indexed",
+          "images": [
+            {
+              "error": "",
+              "book": {
+                "sha256": "1e2df3110cda27284d656cbab97472ace62eb43abaa3e91d778ddbcc23203c32",
+                "nodes": 70,
+                "ranges": {
+                  "zero": 8,
+                  "nonzero": 9
+                },
+                "tags": {
+                  "Typ": 5,
+                  "Qua": 5,
+                  "Body": 1,
+                  "Params": 1,
+                  "Local": 2,
+                  "Ref": 2,
+                  "Ann": 1
+                }
+              }
+            },
+            {
+              "error": "",
+              "book": {
+                "sha256": "088d44123fff6bdf84d2191d0943f5c2f4cec5caff9e2c4be6c682af4241bda3",
+                "nodes": 70,
+                "ranges": {
+                  "zero": 8,
+                  "nonzero": 9
+                },
+                "tags": {
+                  "Typ": 5,
+                  "Qua": 5,
+                  "Body": 1,
+                  "Params": 1,
+                  "Local": 2,
+                  "Ref": 2,
+                  "Ann": 1
+                }
+              }
+            }
+          ],
+          "acceptanceSame": true,
+          "diagnosticSame": true,
+          "differences": {
+            "ranges": [
+              {
+                "path": "$.head.value.kids.tail.head",
+                "tag": "Local",
+                "name": "",
+                "parent": [
+                  0,
+                  0
+                ],
+                "candidate": [
+                  4120,
+                  4121
+                ]
+              },
+              {
+                "path": "$.head.value.kids.tail.head.kids.head",
+                "tag": "Local",
+                "name": "",
+                "parent": [
+                  4119,
+                  4138
+                ],
+                "candidate": [
+                  4120,
+                  4121
+                ]
+              },
+              {
+                "path": "$.head.value.kids.tail.head.kids.head.kids.tail.head",
+                "tag": "Ann",
+                "name": "",
+                "parent": [
+                  4119,
+                  4138
+                ],
+                "candidate": [
+                  0,
+                  0
+                ]
+              }
+            ],
+            "nonrange": []
+          },
+          "pass": true
+        },
+        {
+          "name": "typed-outer-pattern",
+          "mode": "lowered-indexed",
+          "images": [
+            {
+              "error": "Error:\n- expected : a pattern (a binder or a constructor)\n- observed : x = {Type : Type}; x\nLocation:\n1 | def main() -> Type:\n2>|   (x: Type = Type; x) = Type\n  |   ^^^^^^^^^^^^^^^^^^^\n3 |   Type",
+              "book": {
+                "sha256": "45b47a8afa7dc66275f0563ec8eb83b1825d11d2d8a81cb151344a4f12c26efc",
+                "nodes": 22,
+                "ranges": {
+                  "zero": 3,
+                  "nonzero": 2
+                },
+                "tags": {
+                  "Typ": 1,
+                  "Qua": 1,
+                  "Error": 1,
+                  "ParseExpected": 1,
+                  "ParseObserved": 1
+                }
+              }
+            },
+            {
+              "error": "Error:\n- expected : a pattern (a binder or a constructor)\n- observed : x = {Type : Type}; x\nLocation:\n1 | def main() -> Type:\n2>|   (x: Type = Type; x) = Type\n  |    ^\n3 |   Type",
+              "book": {
+                "sha256": "c513e046869f7a81eca57bbca86e5c3e279f8ea96209ed60b1e28571f4c5daf8",
+                "nodes": 22,
+                "ranges": {
+                  "zero": 3,
+                  "nonzero": 2
+                },
+                "tags": {
+                  "Typ": 1,
+                  "Qua": 1,
+                  "Error": 1,
+                  "ParseExpected": 1,
+                  "ParseObserved": 1
+                }
+              }
+            }
+          ],
+          "acceptanceSame": true,
+          "diagnosticSame": false,
+          "differences": {
+            "ranges": [
+              {
+                "path": "$.head.value",
+                "tag": "Error",
+                "name": "expected a binder or constructor pattern",
+                "parent": [
+                  4119,
+                  4138
+                ],
+                "candidate": [
+                  4120,
+                  4121
+                ]
+              }
+            ],
+            "nonrange": []
+          },
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "callee",
+      "reference": {
+        "error": "",
+        "book": {
+          "identity": {
+            "$": "Def",
+            "n": 1,
+            "x": 0,
+            "T": {
+              "$": "All",
+              "q": {
+                "$": "Lone"
+              },
+              "k": "x",
+              "i": 0,
+              "A": {
+                "$": "Typ",
+                "g": {
+                  "$": "Qua",
+                  "q": {
+                    "$": "Lone"
+                  }
+                },
+                "s": {
+                  "file": {
+                    "representation": "source-file-handle",
+                    "source": "def identity(x: Type) -> Type: x\ndef main() -> Type:\n  (f = identity; f)(Type)\n",
+                    "sha256": "40cdb6fbdc0f28c15513c52f0f59b8930083d93974b3231a648425f4e9378b2d"
+                  },
+                  "beg": 16,
+                  "end": 20
+                }
+              },
+              "B": {
+                "$": "Typ",
+                "g": {
+                  "$": "Qua",
+                  "q": {
+                    "$": "Lone"
+                  }
+                },
+                "s": {
+                  "file": {
+                    "representation": "source-file-handle",
+                    "source": "def identity(x: Type) -> Type: x\ndef main() -> Type:\n  (f = identity; f)(Type)\n",
+                    "sha256": "40cdb6fbdc0f28c15513c52f0f59b8930083d93974b3231a648425f4e9378b2d"
+                  },
+                  "beg": 25,
+                  "end": 29
+                }
+              },
+              "s": {
+                "file": {
+                  "representation": "source-file-handle",
+                  "source": "def identity(x: Type) -> Type: x\ndef main() -> Type:\n  (f = identity; f)(Type)\n",
+                  "sha256": "40cdb6fbdc0f28c15513c52f0f59b8930083d93974b3231a648425f4e9378b2d"
+                },
+                "beg": 13,
+                "end": 14
+              }
+            },
+            "v": {
+              "$": "Lam",
+              "k": "x",
+              "i": 0,
+              "f": {
+                "$": "Var",
+                "k": "x",
+                "i": 0,
+                "s": {
+                  "file": {
+                    "representation": "source-file-handle",
+                    "source": "def identity(x: Type) -> Type: x\ndef main() -> Type:\n  (f = identity; f)(Type)\n",
+                    "sha256": "40cdb6fbdc0f28c15513c52f0f59b8930083d93974b3231a648425f4e9378b2d"
+                  },
+                  "beg": 31,
+                  "end": 32
+                }
+              },
+              "s": {
+                "file": {
+                  "representation": "source-file-handle",
+                  "source": "def identity(x: Type) -> Type: x\ndef main() -> Type:\n  (f = identity; f)(Type)\n",
+                  "sha256": "40cdb6fbdc0f28c15513c52f0f59b8930083d93974b3231a648425f4e9378b2d"
+                },
+                "beg": 13,
+                "end": 14
+              },
+              "q": {
+                "$": "Lone"
+              }
+            },
+            "m": "",
+            "u": false
+          },
+          "main": {
+            "$": "Def",
+            "n": 0,
+            "x": 0,
+            "T": {
+              "$": "Typ",
+              "g": {
+                "$": "Qua",
+                "q": {
+                  "$": "Lone"
+                }
+              },
+              "s": {
+                "file": {
+                  "representation": "source-file-handle",
+                  "source": "def identity(x: Type) -> Type: x\ndef main() -> Type:\n  (f = identity; f)(Type)\n",
+                  "sha256": "40cdb6fbdc0f28c15513c52f0f59b8930083d93974b3231a648425f4e9378b2d"
+                },
+                "beg": 47,
+                "end": 51
+              }
+            },
+            "v": {
+              "$": "App",
+              "f": {
+                "$": "Let",
+                "k": [
+                  "f"
+                ],
+                "i": [
+                  0
+                ],
+                "q": [
+                  {
+                    "$": "Lone"
+                  }
+                ],
+                "v": [
+                  {
+                    "$": "Ref",
+                    "k": "identity",
+                    "s": {
+                      "file": {
+                        "representation": "source-file-handle",
+                        "source": "def identity(x: Type) -> Type: x\ndef main() -> Type:\n  (f = identity; f)(Type)\n",
+                        "sha256": "40cdb6fbdc0f28c15513c52f0f59b8930083d93974b3231a648425f4e9378b2d"
+                      },
+                      "beg": 60,
+                      "end": 68
+                    }
+                  }
+                ],
+                "f": {
+                  "$": "Var",
+                  "k": "f",
+                  "i": 0,
+                  "s": {
+                    "file": {
+                      "representation": "source-file-handle",
+                      "source": "def identity(x: Type) -> Type: x\ndef main() -> Type:\n  (f = identity; f)(Type)\n",
+                      "sha256": "40cdb6fbdc0f28c15513c52f0f59b8930083d93974b3231a648425f4e9378b2d"
+                    },
+                    "beg": 70,
+                    "end": 71
+                  }
+                },
+                "s": {
+                  "file": {
+                    "representation": "source-file-handle",
+                    "source": "def identity(x: Type) -> Type: x\ndef main() -> Type:\n  (f = identity; f)(Type)\n",
+                    "sha256": "40cdb6fbdc0f28c15513c52f0f59b8930083d93974b3231a648425f4e9378b2d"
+                  },
+                  "beg": 56,
+                  "end": 57
+                }
+              },
+              "x": {
+                "$": "Typ",
+                "g": {
+                  "$": "Qua",
+                  "q": {
+                    "$": "Lone"
+                  }
+                },
+                "s": {
+                  "file": {
+                    "representation": "source-file-handle",
+                    "source": "def identity(x: Type) -> Type: x\ndef main() -> Type:\n  (f = identity; f)(Type)\n",
+                    "sha256": "40cdb6fbdc0f28c15513c52f0f59b8930083d93974b3231a648425f4e9378b2d"
+                  },
+                  "beg": 73,
+                  "end": 77
+                }
+              },
+              "s": {
+                "file": {
+                  "representation": "source-file-handle",
+                  "source": "def identity(x: Type) -> Type: x\ndef main() -> Type:\n  (f = identity; f)(Type)\n",
+                  "sha256": "40cdb6fbdc0f28c15513c52f0f59b8930083d93974b3231a648425f4e9378b2d"
+                },
+                "beg": 56,
+                "end": 78
+              }
+            },
+            "m": "",
+            "u": false
+          }
+        }
+      },
+      "rows": [
+        {
+          "name": "callee",
+          "mode": "raw-indexed",
+          "images": [
+            {
+              "error": "",
+              "book": {
+                "sha256": "f282ec4cc0491386fc576f87a5747378a6249502c309fcebb70a3612bde5fc45",
+                "nodes": 91,
+                "ranges": {
+                  "zero": 9,
+                  "nonzero": 13
+                },
+                "tags": {
+                  "All": 1,
+                  "Typ": 5,
+                  "Qua": 5,
+                  "Body": 2,
+                  "Params": 2,
+                  "Bind": 1,
+                  "Ref": 4,
+                  "Call": 1,
+                  "Local": 1
+                }
+              }
+            },
+            {
+              "error": "",
+              "book": {
+                "sha256": "342ac7372734e314ef3d0d4d8c0d393fc8a649ef4b34dacb7cd5ff03d154fa98",
+                "nodes": 91,
+                "ranges": {
+                  "zero": 9,
+                  "nonzero": 13
+                },
+                "tags": {
+                  "All": 1,
+                  "Typ": 5,
+                  "Qua": 5,
+                  "Body": 2,
+                  "Params": 2,
+                  "Bind": 1,
+                  "Ref": 4,
+                  "Call": 1,
+                  "Local": 1
+                }
+              }
+            }
+          ],
+          "acceptanceSame": true,
+          "diagnosticSame": true,
+          "differences": {
+            "ranges": [
+              {
+                "path": "$.tail.head.value.kids.tail.head",
+                "tag": "Call",
+                "name": "",
+                "parent": [
+                  4152,
+                  4175
+                ],
+                "candidate": [
+                  4153,
+                  4175
+                ]
+              },
+              {
+                "path": "$.tail.head.value.kids.tail.head.kids.head",
+                "tag": "Local",
+                "name": "",
+                "parent": [
+                  4152,
+                  4169
+                ],
+                "candidate": [
+                  4153,
+                  4154
+                ]
+              }
+            ],
+            "nonrange": []
+          },
+          "pass": true
+        },
+        {
+          "name": "callee",
+          "mode": "lowered-indexed",
+          "images": [
+            {
+              "error": "",
+              "book": {
+                "sha256": "950aa0ba468e54efa33c5ee142bd6f481ce9d1cc7d6da6e649b5490aff507396",
+                "nodes": 67,
+                "ranges": {
+                  "zero": 4,
+                  "nonzero": 12
+                },
+                "tags": {
+                  "All": 1,
+                  "Typ": 4,
+                  "Qua": 4,
+                  "KLambda": 1,
+                  "Var": 2,
+                  "App": 1,
+                  "Let": 1,
+                  "Bind": 1,
+                  "Ref": 1
+                }
+              }
+            },
+            {
+              "error": "",
+              "book": {
+                "sha256": "565e81b79f3d6cb79f390686f06349ca955db3315320d892740a4fce61bc5d8d",
+                "nodes": 67,
+                "ranges": {
+                  "zero": 4,
+                  "nonzero": 12
+                },
+                "tags": {
+                  "All": 1,
+                  "Typ": 4,
+                  "Qua": 4,
+                  "KLambda": 1,
+                  "Var": 2,
+                  "App": 1,
+                  "Let": 1,
+                  "Bind": 1,
+                  "Ref": 1
+                }
+              }
+            }
+          ],
+          "acceptanceSame": true,
+          "diagnosticSame": true,
+          "differences": {
+            "ranges": [
+              {
+                "path": "$.tail.head.value",
+                "tag": "App",
+                "name": "",
+                "parent": [
+                  4152,
+                  4175
+                ],
+                "candidate": [
+                  4153,
+                  4175
+                ]
+              },
+              {
+                "path": "$.tail.head.value.kids.head",
+                "tag": "Let",
+                "name": "",
+                "parent": [
+                  4152,
+                  4169
+                ],
+                "candidate": [
+                  4153,
+                  4154
+                ]
+              }
+            ],
+            "nonrange": []
+          },
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "outer-pattern",
+      "reference": {
+        "error": "Error:\n- expected : a pattern (a binder or a constructor)\n- observed : x = Type; x\nLocation:\n1 | def main() -> Type:\n2>|   (x = Type; x) = Type\n  |    ^\n3 |   Type"
+      },
+      "rows": [
+        {
+          "name": "outer-pattern",
+          "mode": "raw-indexed",
+          "images": [
+            {
+              "error": "",
+              "book": {
+                "sha256": "2fbe8ba992565bb8a6efa6db78b5a2b7ebf9c68944d48adb9858b3a9b420135f",
+                "nodes": 58,
+                "ranges": {
+                  "zero": 7,
+                  "nonzero": 7
+                },
+                "tags": {
+                  "Typ": 4,
+                  "Qua": 4,
+                  "Body": 1,
+                  "Params": 1,
+                  "Local": 2,
+                  "Ref": 2
+                }
+              }
+            },
+            {
+              "error": "",
+              "book": {
+                "sha256": "db6ed1ca0180bbf5a96c9f435297ec1c2bde3938c61b6d5e43fa4013a29a3a3a",
+                "nodes": 58,
+                "ranges": {
+                  "zero": 6,
+                  "nonzero": 8
+                },
+                "tags": {
+                  "Typ": 4,
+                  "Qua": 4,
+                  "Body": 1,
+                  "Params": 1,
+                  "Local": 2,
+                  "Ref": 2
+                }
+              }
+            }
+          ],
+          "acceptanceSame": true,
+          "diagnosticSame": true,
+          "differences": {
+            "ranges": [
+              {
+                "path": "$.head.value.kids.tail.head",
+                "tag": "Local",
+                "name": "",
+                "parent": [
+                  0,
+                  0
+                ],
+                "candidate": [
+                  4120,
+                  4121
+                ]
+              },
+              {
+                "path": "$.head.value.kids.tail.head.kids.head",
+                "tag": "Local",
+                "name": "",
+                "parent": [
+                  4119,
+                  4132
+                ],
+                "candidate": [
+                  4120,
+                  4121
+                ]
+              }
+            ],
+            "nonrange": []
+          },
+          "pass": true
+        },
+        {
+          "name": "outer-pattern",
+          "mode": "lowered-indexed",
+          "images": [
+            {
+              "error": "Error:\n- expected : a pattern (a binder or a constructor)\n- observed : x = Type; x\nLocation:\n1 | def main() -> Type:\n2>|   (x = Type; x) = Type\n  |   ^^^^^^^^^^^^^\n3 |   Type",
+              "book": {
+                "sha256": "1437f6ca65dcfedfa9a384a80a6db1add166cd10687172c1e7843b74386fb0a1",
+                "nodes": 22,
+                "ranges": {
+                  "zero": 3,
+                  "nonzero": 2
+                },
+                "tags": {
+                  "Typ": 1,
+                  "Qua": 1,
+                  "Error": 1,
+                  "ParseExpected": 1,
+                  "ParseObserved": 1
+                }
+              }
+            },
+            {
+              "error": "Error:\n- expected : a pattern (a binder or a constructor)\n- observed : x = Type; x\nLocation:\n1 | def main() -> Type:\n2>|   (x = Type; x) = Type\n  |    ^\n3 |   Type",
+              "book": {
+                "sha256": "035c8546a9c3ac4a18620d84d9a49a12e782b28e109b3029d8fb825a93b31fca",
+                "nodes": 22,
+                "ranges": {
+                  "zero": 3,
+                  "nonzero": 2
+                },
+                "tags": {
+                  "Typ": 1,
+                  "Qua": 1,
+                  "Error": 1,
+                  "ParseExpected": 1,
+                  "ParseObserved": 1
+                }
+              }
+            }
+          ],
+          "acceptanceSame": true,
+          "diagnosticSame": false,
+          "differences": {
+            "ranges": [
+              {
+                "path": "$.head.value",
+                "tag": "Error",
+                "name": "expected a binder or constructor pattern",
+                "parent": [
+                  4119,
+                  4132
+                ],
+                "candidate": [
+                  4120,
+                  4121
+                ]
+              }
+            ],
+            "nonrange": []
+          },
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "constructor-plain",
+      "reference": {
+        "error": "",
+        "book": {
+          "Box": {
+            "$": "ADT",
+            "n": 0,
+            "g": 0,
+            "T": {
+              "$": "Typ",
+              "g": {
+                "$": "Qua",
+                "q": {
+                  "$": "Many"
+                }
+              },
+              "s": {
+                "file": {
+                  "representation": "source-file-handle",
+                  "source": "type Box is Data:\n  Mk{value: Type}\ndef main(box: Box) -> Type:\n  Mk{x} = box\n  x\n",
+                  "sha256": "f5b47f8076b3cb5dda05dfb7bbaa90b1b0e596cecf6f5ca5c3daf1112ce362c9"
+                },
+                "beg": 12,
+                "end": 16
+              }
+            },
+            "c": [
+              {
+                "k": "Mk",
+                "n": 1,
+                "T": {
+                  "$": "All",
+                  "q": {
+                    "$": "Lone"
+                  },
+                  "k": "value",
+                  "i": 0,
+                  "A": {
+                    "$": "Typ",
+                    "g": {
+                      "$": "Qua",
+                      "q": {
+                        "$": "Lone"
+                      }
+                    },
+                    "s": {
+                      "file": {
+                        "representation": "source-file-handle",
+                        "source": "type Box is Data:\n  Mk{value: Type}\ndef main(box: Box) -> Type:\n  Mk{x} = box\n  x\n",
+                        "sha256": "f5b47f8076b3cb5dda05dfb7bbaa90b1b0e596cecf6f5ca5c3daf1112ce362c9"
+                      },
+                      "beg": 30,
+                      "end": 34
+                    }
+                  },
+                  "s": {
+                    "file": {
+                      "representation": "source-file-handle",
+                      "source": "type Box is Data:\n  Mk{value: Type}\ndef main(box: Box) -> Type:\n  Mk{x} = box\n  x\n",
+                      "sha256": "f5b47f8076b3cb5dda05dfb7bbaa90b1b0e596cecf6f5ca5c3daf1112ce362c9"
+                    },
+                    "beg": 23,
+                    "end": 28
+                  }
+                }
+              }
+            ]
+          },
+          "main": {
+            "$": "Def",
+            "n": 1,
+            "x": 0,
+            "T": {
+              "$": "All",
+              "q": {
+                "$": "Lone"
+              },
+              "k": "box",
+              "i": 0,
+              "A": {
+                "$": "Ref",
+                "k": "Box",
+                "s": {
+                  "file": {
+                    "representation": "source-file-handle",
+                    "source": "type Box is Data:\n  Mk{value: Type}\ndef main(box: Box) -> Type:\n  Mk{x} = box\n  x\n",
+                    "sha256": "f5b47f8076b3cb5dda05dfb7bbaa90b1b0e596cecf6f5ca5c3daf1112ce362c9"
+                  },
+                  "beg": 50,
+                  "end": 53
+                }
+              },
+              "B": {
+                "$": "Typ",
+                "g": {
+                  "$": "Qua",
+                  "q": {
+                    "$": "Lone"
+                  }
+                },
+                "s": {
+                  "file": {
+                    "representation": "source-file-handle",
+                    "source": "type Box is Data:\n  Mk{value: Type}\ndef main(box: Box) -> Type:\n  Mk{x} = box\n  x\n",
+                    "sha256": "f5b47f8076b3cb5dda05dfb7bbaa90b1b0e596cecf6f5ca5c3daf1112ce362c9"
+                  },
+                  "beg": 58,
+                  "end": 62
+                }
+              },
+              "s": {
+                "file": {
+                  "representation": "source-file-handle",
+                  "source": "type Box is Data:\n  Mk{value: Type}\ndef main(box: Box) -> Type:\n  Mk{x} = box\n  x\n",
+                  "sha256": "f5b47f8076b3cb5dda05dfb7bbaa90b1b0e596cecf6f5ca5c3daf1112ce362c9"
+                },
+                "beg": 45,
+                "end": 48
+              }
+            },
+            "v": {
+              "$": "Mat",
+              "k": "Mk",
+              "h": {
+                "$": "Lam",
+                "k": "x",
+                "i": 0,
+                "f": {
+                  "$": "Var",
+                  "k": "x",
+                  "i": 0,
+                  "s": {
+                    "file": {
+                      "representation": "source-file-handle",
+                      "source": "type Box is Data:\n  Mk{value: Type}\ndef main(box: Box) -> Type:\n  Mk{x} = box\n  x\n",
+                      "sha256": "f5b47f8076b3cb5dda05dfb7bbaa90b1b0e596cecf6f5ca5c3daf1112ce362c9"
+                    },
+                    "beg": 80,
+                    "end": 81
+                  }
+                },
+                "s": {
+                  "file": {
+                    "representation": "source-file-handle",
+                    "source": "type Box is Data:\n  Mk{value: Type}\ndef main(box: Box) -> Type:\n  Mk{x} = box\n  x\n",
+                    "sha256": "f5b47f8076b3cb5dda05dfb7bbaa90b1b0e596cecf6f5ca5c3daf1112ce362c9"
+                  },
+                  "beg": 69,
+                  "end": 70
+                },
+                "q": {
+                  "$": "Lone"
+                }
+              },
+              "m": {
+                "$": "Efq",
+                "s": {
+                  "file": {
+                    "representation": "source-file-handle",
+                    "source": "type Box is Data:\n  Mk{value: Type}\ndef main(box: Box) -> Type:\n  Mk{x} = box\n  x\n",
+                    "sha256": "f5b47f8076b3cb5dda05dfb7bbaa90b1b0e596cecf6f5ca5c3daf1112ce362c9"
+                  },
+                  "beg": 74,
+                  "end": 77
+                }
+              },
+              "s": {
+                "file": {
+                  "representation": "source-file-handle",
+                  "source": "type Box is Data:\n  Mk{value: Type}\ndef main(box: Box) -> Type:\n  Mk{x} = box\n  x\n",
+                  "sha256": "f5b47f8076b3cb5dda05dfb7bbaa90b1b0e596cecf6f5ca5c3daf1112ce362c9"
+                },
+                "beg": 66,
+                "end": 71
+              }
+            },
+            "m": "",
+            "u": false
+          }
+        }
+      },
+      "rows": [
+        {
+          "name": "constructor-plain",
+          "mode": "raw-indexed",
+          "images": [
+            {
+              "error": "",
+              "book": {
+                "sha256": "e4c641a33e659aba169c258f65009ae2a7b97dd36520854786502c8eae3d98cf",
+                "nodes": 88,
+                "ranges": {
+                  "zero": 9,
+                  "nonzero": 12
+                },
+                "tags": {
+                  "Typ": 3,
+                  "Qua": 3,
+                  "Absent": 2,
+                  "All": 2,
+                  "ADT": 1,
+                  "Ref": 5,
+                  "Body": 1,
+                  "Params": 1,
+                  "Bind": 1,
+                  "Local": 1,
+                  "Ctr": 1
+                }
+              }
+            },
+            {
+              "error": "",
+              "book": {
+                "sha256": "ec1a17ff62ceaff0a0a1cfa15d15f3846c8a2a90197f5b6961d533ade5097fd3",
+                "nodes": 88,
+                "ranges": {
+                  "zero": 8,
+                  "nonzero": 13
+                },
+                "tags": {
+                  "Typ": 3,
+                  "Qua": 3,
+                  "Absent": 2,
+                  "All": 2,
+                  "ADT": 1,
+                  "Ref": 5,
+                  "Body": 1,
+                  "Params": 1,
+                  "Bind": 1,
+                  "Local": 1,
+                  "Ctr": 1
+                }
+              }
+            }
+          ],
+          "acceptanceSame": true,
+          "diagnosticSame": true,
+          "differences": {
+            "ranges": [
+              {
+                "path": "$.tail.head.value.kids.tail.head",
+                "tag": "Local",
+                "name": "",
+                "parent": [
+                  0,
+                  0
+                ],
+                "candidate": [
+                  4163,
+                  4168
+                ]
+              }
+            ],
+            "nonrange": []
+          },
+          "pass": true
+        },
+        {
+          "name": "constructor-plain",
+          "mode": "lowered-indexed",
+          "images": [
+            {
+              "error": "",
+              "book": {
+                "sha256": "6650309a1d312be9c91aa036ab4767f84edfaacf63c2cc4242199887f586256b",
+                "nodes": 68,
+                "ranges": {
+                  "zero": 6,
+                  "nonzero": 10
+                },
+                "tags": {
+                  "Typ": 3,
+                  "Qua": 3,
+                  "Absent": 2,
+                  "All": 2,
+                  "ADT": 2,
+                  "Mat": 1,
+                  "KLambda": 1,
+                  "Var": 1,
+                  "Efq": 1
+                }
+              }
+            },
+            {
+              "error": "",
+              "book": {
+                "sha256": "6650309a1d312be9c91aa036ab4767f84edfaacf63c2cc4242199887f586256b",
+                "nodes": 68,
+                "ranges": {
+                  "zero": 6,
+                  "nonzero": 10
+                },
+                "tags": {
+                  "Typ": 3,
+                  "Qua": 3,
+                  "Absent": 2,
+                  "All": 2,
+                  "ADT": 2,
+                  "Mat": 1,
+                  "KLambda": 1,
+                  "Var": 1,
+                  "Efq": 1
+                }
+              }
+            }
+          ],
+          "acceptanceSame": true,
+          "diagnosticSame": true,
+          "differences": {
+            "ranges": [],
+            "nonrange": []
+          },
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "constructor-group",
+      "reference": {
+        "error": "Error:\n- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)\nLocation:\n3 | def main(box: Box) -> Type:\n4>|   (Mk{x} = box; x)\n  |            ^^^\n5 | "
+      },
+      "rows": [
+        {
+          "name": "constructor-group",
+          "mode": "raw-indexed",
+          "images": [
+            {
+              "error": "",
+              "book": {
+                "sha256": "3c9716ee81ed14a4f2f28b449e2d9efa86129df883e8a5a29fffa02a52adac48",
+                "nodes": 88,
+                "ranges": {
+                  "zero": 8,
+                  "nonzero": 13
+                },
+                "tags": {
+                  "Typ": 3,
+                  "Qua": 3,
+                  "Absent": 2,
+                  "All": 2,
+                  "ADT": 1,
+                  "Ref": 5,
+                  "Body": 1,
+                  "Params": 1,
+                  "Bind": 1,
+                  "Local": 1,
+                  "Ctr": 1
+                }
+              }
+            },
+            {
+              "error": "",
+              "book": {
+                "sha256": "e5cbdf1564928e0447b00d8393e608f03425150816c3efd624e9759751f44aea",
+                "nodes": 88,
+                "ranges": {
+                  "zero": 8,
+                  "nonzero": 13
+                },
+                "tags": {
+                  "Typ": 3,
+                  "Qua": 3,
+                  "Absent": 2,
+                  "All": 2,
+                  "ADT": 1,
+                  "Ref": 5,
+                  "Body": 1,
+                  "Params": 1,
+                  "Bind": 1,
+                  "Local": 1,
+                  "Ctr": 1
+                }
+              }
+            }
+          ],
+          "acceptanceSame": true,
+          "diagnosticSame": true,
+          "differences": {
+            "ranges": [
+              {
+                "path": "$.tail.head.value.kids.tail.head",
+                "tag": "Local",
+                "name": "",
+                "parent": [
+                  4163,
+                  4179
+                ],
+                "candidate": [
+                  4164,
+                  4169
+                ]
+              }
+            ],
+            "nonrange": []
+          },
+          "pass": true
+        },
+        {
+          "name": "constructor-group",
+          "mode": "lowered-indexed",
+          "images": [
+            {
+              "error": "",
+              "book": {
+                "sha256": "36c054dd9e9dc98190e3405c1e9812c3e7f68f1755a0c670b7f133b82a4ac846",
+                "nodes": 68,
+                "ranges": {
+                  "zero": 6,
+                  "nonzero": 10
+                },
+                "tags": {
+                  "Typ": 3,
+                  "Qua": 3,
+                  "Absent": 2,
+                  "All": 2,
+                  "ADT": 2,
+                  "Mat": 1,
+                  "KLambda": 1,
+                  "Var": 1,
+                  "Efq": 1
+                }
+              }
+            },
+            {
+              "error": "",
+              "book": {
+                "sha256": "36c054dd9e9dc98190e3405c1e9812c3e7f68f1755a0c670b7f133b82a4ac846",
+                "nodes": 68,
+                "ranges": {
+                  "zero": 6,
+                  "nonzero": 10
+                },
+                "tags": {
+                  "Typ": 3,
+                  "Qua": 3,
+                  "Absent": 2,
+                  "All": 2,
+                  "ADT": 2,
+                  "Mat": 1,
+                  "KLambda": 1,
+                  "Var": 1,
+                  "Efq": 1
+                }
+              }
+            }
+          ],
+          "acceptanceSame": true,
+          "diagnosticSame": true,
+          "differences": {
+            "ranges": [],
+            "nonrange": []
+          },
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "constructor-group-pattern",
+      "reference": {
+        "error": "Error:\n- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)\nLocation:\n3 | def main(box: Box) -> Type:\n4>|   (Mk{x} = box; x) = Type\n  |            ^^^\n5 |   Type"
+      },
+      "rows": [
+        {
+          "name": "constructor-group-pattern",
+          "mode": "raw-indexed",
+          "images": [
+            {
+              "error": "",
+              "book": {
+                "sha256": "4a2543e3861891fe44a17db7584fcb637eaee0a630508858c414e35b1ea57b50",
+                "nodes": 108,
+                "ranges": {
+                  "zero": 11,
+                  "nonzero": 15
+                },
+                "tags": {
+                  "Typ": 5,
+                  "Qua": 5,
+                  "Absent": 2,
+                  "All": 2,
+                  "ADT": 1,
+                  "Ref": 5,
+                  "Body": 1,
+                  "Params": 1,
+                  "Bind": 1,
+                  "Local": 2,
+                  "Ctr": 1
+                }
+              }
+            },
+            {
+              "error": "",
+              "book": {
+                "sha256": "0165e95a689715ab77861c90c6efcb3e0b8880a51081f51edf6efcaaa70f1869",
+                "nodes": 108,
+                "ranges": {
+                  "zero": 10,
+                  "nonzero": 16
+                },
+                "tags": {
+                  "Typ": 5,
+                  "Qua": 5,
+                  "Absent": 2,
+                  "All": 2,
+                  "ADT": 1,
+                  "Ref": 5,
+                  "Body": 1,
+                  "Params": 1,
+                  "Bind": 1,
+                  "Local": 2,
+                  "Ctr": 1
+                }
+              }
+            }
+          ],
+          "acceptanceSame": true,
+          "diagnosticSame": true,
+          "differences": {
+            "ranges": [
+              {
+                "path": "$.tail.head.value.kids.tail.head",
+                "tag": "Local",
+                "name": "",
+                "parent": [
+                  0,
+                  0
+                ],
+                "candidate": [
+                  4164,
+                  4169
+                ]
+              },
+              {
+                "path": "$.tail.head.value.kids.tail.head.kids.head",
+                "tag": "Local",
+                "name": "",
+                "parent": [
+                  4163,
+                  4179
+                ],
+                "candidate": [
+                  4164,
+                  4169
+                ]
+              }
+            ],
+            "nonrange": []
+          },
+          "pass": true
+        },
+        {
+          "name": "constructor-group-pattern",
+          "mode": "lowered-indexed",
+          "images": [
+            {
+              "error": "Error:\n- expected : a pattern (a binder or a constructor)\n- observed : <Error:match requires an unconsumed parameter or constructor field>\nLocation:\n3 | def main(box: Box) -> Type:\n4>|   (Mk{x} = box; x) = Type\n  |   ^^^^^^^^^^^^^^^^\n5 |   Type",
+              "book": {
+                "sha256": "38102597d2147caba3ef85c909f31c38cf70af7f586740a2ffdf38006e2363b9",
+                "nodes": 68,
+                "ranges": {
+                  "zero": 8,
+                  "nonzero": 8
+                },
+                "tags": {
+                  "Typ": 3,
+                  "Qua": 3,
+                  "Absent": 2,
+                  "All": 2,
+                  "ADT": 2,
+                  "KLambda": 1,
+                  "Error": 1,
+                  "ParseExpected": 1,
+                  "ParseObserved": 1
+                }
+              }
+            },
+            {
+              "error": "Error:\n- expected : a pattern (a binder or a constructor)\n- observed : <Error:match requires an unconsumed parameter or constructor field>\nLocation:\n3 | def main(box: Box) -> Type:\n4>|   (Mk{x} = box; x) = Type\n  |    ^^^^^\n5 |   Type",
+              "book": {
+                "sha256": "e59f13d2bb1334bf1b7f60047c94b5722877155ca3a27106a8a9df7466281d5c",
+                "nodes": 68,
+                "ranges": {
+                  "zero": 8,
+                  "nonzero": 8
+                },
+                "tags": {
+                  "Typ": 3,
+                  "Qua": 3,
+                  "Absent": 2,
+                  "All": 2,
+                  "ADT": 2,
+                  "KLambda": 1,
+                  "Error": 1,
+                  "ParseExpected": 1,
+                  "ParseObserved": 1
+                }
+              }
+            }
+          ],
+          "acceptanceSame": true,
+          "diagnosticSame": false,
+          "differences": {
+            "ranges": [
+              {
+                "path": "$.tail.head.value.kids.head",
+                "tag": "Error",
+                "name": "expected a binder or constructor pattern",
+                "parent": [
+                  4163,
+                  4179
+                ],
+                "candidate": [
+                  4164,
+                  4169
+                ]
+              }
+            ],
+            "nonrange": []
+          },
+          "pass": true
+        }
+      ]
+    },
+    {
+      "name": "typed-constructor",
+      "reference": {
+        "error": "Error:\n- message  : a name (a parallel or typed let binds names; destructure in its body)\nLocation:\n3 | def main(box: Box) -> Type:\n4>|   (Mk{x}: Box = box; x)\n  |    ^^^^^\n5 | "
+      },
+      "rows": [
+        {
+          "name": "typed-constructor",
+          "mode": "raw-indexed",
+          "images": [
+            {
+              "error": "Error:\n- message  : a name (a parallel or typed let binds names; destructure in its body)\nLocation:\n3 | def main(box: Box) -> Type:\n4>|   (Mk{x}: Box = box; x)\n  |    ^^^^^\n5 | ",
+              "book": {
+                "sha256": "c3027c2d87e511ee08dc17afc6feddee3e8aca55d670fb97ae36ab9ab708b7f8",
+                "nodes": 35,
+                "ranges": {
+                  "zero": 5,
+                  "nonzero": 3
+                },
+                "tags": {
+                  "Typ": 2,
+                  "Qua": 2,
+                  "Absent": 2,
+                  "All": 1,
+                  "ADT": 1
+                }
+              }
+            },
+            {
+              "error": "Error:\n- message  : a name (a parallel or typed let binds names; destructure in its body)\nLocation:\n3 | def main(box: Box) -> Type:\n4>|   (Mk{x}: Box = box; x)\n  |    ^^^^^\n5 | ",
+              "book": {
+                "sha256": "c3027c2d87e511ee08dc17afc6feddee3e8aca55d670fb97ae36ab9ab708b7f8",
+                "nodes": 35,
+                "ranges": {
+                  "zero": 5,
+                  "nonzero": 3
+                },
+                "tags": {
+                  "Typ": 2,
+                  "Qua": 2,
+                  "Absent": 2,
+                  "All": 1,
+                  "ADT": 1
+                }
+              }
+            }
+          ],
+          "acceptanceSame": true,
+          "diagnosticSame": true,
+          "differences": {
+            "ranges": [],
+            "nonrange": []
+          },
+          "pass": true
+        },
+        {
+          "name": "typed-constructor",
+          "mode": "lowered-indexed",
+          "images": [
+            {
+              "error": "Error:\n- message  : a name (a parallel or typed let binds names; destructure in its body)\nLocation:\n3 | def main(box: Box) -> Type:\n4>|   (Mk{x}: Box = box; x)\n  |    ^^^^^\n5 | ",
+              "book": {
+                "sha256": "3c4406446d914b3302811125a00fcf64b26625cbb3d883192b364ca867d7fc70",
+                "nodes": 35,
+                "ranges": {
+                  "zero": 5,
+                  "nonzero": 3
+                },
+                "tags": {
+                  "Typ": 2,
+                  "Qua": 2,
+                  "Absent": 2,
+                  "All": 1,
+                  "ADT": 1
+                }
+              }
+            },
+            {
+              "error": "Error:\n- message  : a name (a parallel or typed let binds names; destructure in its body)\nLocation:\n3 | def main(box: Box) -> Type:\n4>|   (Mk{x}: Box = box; x)\n  |    ^^^^^\n5 | ",
+              "book": {
+                "sha256": "3c4406446d914b3302811125a00fcf64b26625cbb3d883192b364ca867d7fc70",
+                "nodes": 35,
+                "ranges": {
+                  "zero": 5,
+                  "nonzero": 3
+                },
+                "tags": {
+                  "Typ": 2,
+                  "Qua": 2,
+                  "Absent": 2,
+                  "All": 1,
+                  "ADT": 1
+                }
+              }
+            }
+          ],
+          "acceptanceSame": true,
+          "diagnosticSame": true,
+          "differences": {
+            "ranges": [],
+            "nonrange": []
+          },
+          "pass": true
+        }
+      ]
+    }
+  ],
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-structure-review.py",
+      "sha256": "451449e4850a7c3c957a144f72428f47b690575f699f7f63d7e0e06e93cfcef1"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-structure-candidate-01/report.json",
+      "sha256": "6af98e8f138e8ce83175a59b6780ec9c455f63b044b520dd2c20e6b92610cce0"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-structure-parent-01/report.json",
+      "sha256": "26d967d6fe89bfd90cd19f97c1ea60707c69717c8d487d3932b85c803f28b9dc"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase21/group-range-structure.md",
+      "sha256": "c99ade11dcf5498b8f3a1ddffa6b7cb47cfe9682825a966cd3ef69a70882f21f"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-structure-controls-01/plan.json",
+      "sha256": "cc30e863d69739c55c043186e096eef560f47f485ebbb995865f412c534665be"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-structure-run.mjs",
+      "sha256": "786c01d1f0551545dcc06ba101e7d21d33b7cb73ebbdface1580ab39515f7401"
+    }
+  ]
+}

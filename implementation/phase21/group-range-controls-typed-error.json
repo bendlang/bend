@@ -1,0 +1,64 @@
+{
+  "kind": "phase21-group-range-typed-rhs-error-boundary",
+  "complete": true,
+  "pass": true,
+  "candidateApiSha256": "44094e58cb0ef033e2c08c2827565e859c3594b3136868d4f821262145aea7f0",
+  "observations": 4,
+  "parentExact": 2,
+  "candidateExact": 2,
+  "lostExact": 0,
+  "newExact": 0,
+  "fullCandidateProtocolUnchanged": true,
+  "scope": "Additional typed RHS syntax-error/EOF parser refusal checks; no host source-range error. Original parent syntax diagnostic mismatch retained.",
+  "remainingStrict": [
+    "group-range-typed-error/typed-rhs-syntax/check",
+    "group-range-typed-error/typed-rhs-syntax/parse"
+  ],
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-controls-typed-error-report.py",
+      "sha256": "6ae3fb405d4e0f326c3628cf2d53b7d56295feac451c55e7ff487e7bb23d6a0e",
+      "bytes": 2136
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-baseline-04/report.json",
+      "sha256": "52d3760ec30427f82b1b4bb1c0536717e682025d90a9a3e4853467940bc9cf52",
+      "bytes": 9982
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-candidate-07/report.json",
+      "sha256": "86a5e81799a942e198cb010cdc513154447085b1c7bb56486af7d7d2d6d0d002",
+      "bytes": 11073
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-baseline-04/selected/paired.json",
+      "sha256": "3351a99953450f3af21610573083f148efddd6378e4022774572b3d3b8724ac6",
+      "bytes": 14349
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-candidate-07/selected/paired.json",
+      "sha256": "cc5cdf50d5cc1962a3aa49f435f4a742efa7bd4b205de4e83081dcb18ad8910b",
+      "bytes": 14347
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-04/plan.json",
+      "sha256": "9d9a682ac86e67ba1fb138a2a910b7d6a59f9c308364fb4831ec9521258d8292",
+      "bytes": 1166
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-04/selection.json",
+      "sha256": "05d566e1f8e7df4d0885b2a3f025f9474413e82c64251345bfb9b53e1533f53c",
+      "bytes": 1228
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-04/fixtures/typed-rhs-eof.bend",
+      "sha256": "c1155e26b7b6fe2bccc27ad23f51d6eb2dda3e96c28a07b2a5f8024a81b7dea3",
+      "bytes": 46
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-04/fixtures/typed-rhs-syntax.bend",
+      "sha256": "9c9e2e3f85beba5a739b235065ddee714376daf270b0180c15408225c9473cb1",
+      "bytes": 57
+    }
+  ]
+}

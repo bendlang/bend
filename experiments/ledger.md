@@ -1368,3 +1368,41 @@ first-binder range hypothesis for three observations. Grouped-comma correctness
 needs preserved completed-group/error order; do not substitute a raw tag guard.
 Complete durable preservation and keep remaining60/main2 visible. Publication is
 still blocked by the earlier automatic approval review; local commits are not pushes.
+
+
+## Phase21 local and typed-annotation origins — 2026-09-29
+
+The [usable release](../implementation/phase21/group-range-release.md) installs
+API44094e58 from genuine checkedB1 on unchanged pinb2111cf. Three existing parser
+workers carry the original body cursor to the sole typed-Ann producer; Local
+retains its first binder origin. Source02 adds3lines/156bytes across3files,
+no definitions/laws/types, traversal, host or semantic-state change. Source01
+passed narrow controls but was withheld because locating Local stopped synthetic
+Ann origin attachment; complete graph review caught this and the pin30 cursor
+controls validate the repair.
+
+Broader196 improves136→139exact with3gains/0lost;57differences remain and its raw
+runner stays false. Main2996 entire result payloads remain unchanged, including
+two do-block diagnostics. Independent68 gains16exact, no primitive changes;
+additional typederror4 preserves two exact/two inherited diagnostic differences.
+Structural172 and positiveAnn30 pass;80legacy origins remain absent. Checked36
+strict and installed/relocatedCLI42 pass. Program12 has exact healthy compiler
+observations, but nine original per-side expected-output verdicts remain false:
+#| comments omitted Nat's n suffix. No fixture/oracle rewrite or redundant rerun.
+Original fixture-assumption errors and the isolated-worker audit01 failure remain.
+
+Controlled same-sourceTS/B/C/C/B/TS: parent11.0060s→final10.9547s, TS3.4364s,
+gap3.2028→3.1879×. Process−0.47%, request−0.44%, RSS−0.11% is a neutralcost screen,
+not a new speedup. The observed checkedbuild+36 loop took35.17s. Source totals
+15,900physical/13,546nonblank,577,159bytes,59modules/1660defs/719laws/67types.
+
+### Updated frontier
+
+[Comma controls](../implementation/phase21/group-comma.md) establish that a rawtag
+guard loses valid nested tuples and earlier pattern errors. Adding missing
+Parallel lowering alone risks false checked acceptance of raw-comma syntax.
+The next semantic change needs preserved completion/failure order with actual
+lexical scope. Private contextual research remains uninstalled; no second pattern
+checker or location-based syntax inference. Remaining57/main2 and independent
+constructor gaps stay visible. Preservation closes separately; publication remains
+blocked by the earlier automatic approval review, so commits are local.

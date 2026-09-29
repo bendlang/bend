@@ -9,7 +9,7 @@ does not invoke the TypeScript compiler.
 
 The active target is upstream
 [`b2111cf43244e65f76ddc278ee695e669f720cbf`](https://github.com/bendlang/bend/tree/b2111cf43244e65f76ddc278ee695e669f720cbf)
-(Bend 2.0.32 era). The [Phase20 report](../implementation/phase20/declaration-checkpoints-release.md)
+(Bend 2.0.32 era). The [Phase21 report](../implementation/phase21/group-range-release.md)
 records checked artifact identities, current conformance, measured cost and
 remaining gaps. This experimental port does not establish independent proof
 validity; `--verdict` is explicitly unsupported.
@@ -22,7 +22,9 @@ Phase20 corrects constructor admission and whitespace, decorator diagnostics,
 and empty match heads/patterns through existing parser workers. Constructor names
 are validated before alias/duplicate checks and the opening brace. Comments and
 newlines can precede the brace; semicolons cannot replace it. Optional match
-separators retain the pinned behavior.
+separators retain the pinned behavior. Phase21 gives grouped locals the first
+binder's origin and constructs typed-local annotations from their original body
+and returned RHS cursors. These changes reuse existing producers and workers.
 Phase17’s direct lookup loop and Phase16’s compact literals, exact specialization
 keys, source ranges and contextual module parsing remain.
 The [development history](../implementation/phase16/full_conformance.md) retains
@@ -99,7 +101,7 @@ npm run build -- /absolute/release-config.json /absolute/new-attempt
 Config fields and selection semantics are documented in the
 [maintained workflow guide](PHASE5_DEVELOPMENT.md). Broad conformance and checked
 self-reproduction are release/integration gates, not every small edit's build.
-The [Phase20 report](../implementation/phase20/declaration-checkpoints-release.md) records
+The [Phase21 report](../implementation/phase21/group-range-release.md) records
 the current artifact's evidence and remaining failures.
 
 ## Work on the current source
@@ -121,7 +123,7 @@ unforced message identity is outside this contract. Historical versions1/2/3/4
 retain exact byte replay. The normalizer seed change and broader branch
 transformation failed stack controls and are excluded.
 
-The [Phase20 report](../implementation/phase20/declaration-checkpoints-release.md) gives the
+The [Phase21 report](../implementation/phase21/group-range-release.md) gives the
 current source and artifact identities. Keep experiments isolated by selecting a
 frozen attempt explicitly:
 
@@ -180,7 +182,7 @@ BEND_TYPED_API="$PWD/build/candidate-api.mjs" \
 
 This writes a checked API plus the assembled source and provenance in
 `build/typed/`. Keep source, API, runtime and host snapshots immutable during
-validation. Full self-reproduction has not been rerun for the current Phase20 release. The advanced
+validation. Full self-reproduction has not been rerun for the current Phase21 release. The advanced
 runner, separate from the checked release build, is:
 
 ```sh
@@ -216,10 +218,10 @@ canonical Base path when comparing output bytes across native and JS hosts.
 
 ## Internal boundaries and performance
 
-The [Phase20 controlled comparison](../implementation/phase20/declaration-checkpoints-release.md)
-checks identical final source in **10.941 s**, versus **10.973 s** for Phase19
-and **3.446 s** for pinned TypeScript: a **3.17×** remaining gap. The0.29% process
-and0.22% request differences are neutral, not a new speedup claim; two samples
+The [Phase21 controlled comparison](../implementation/phase21/group-range-release.md)
+checks identical final source in **10.955 s**, versus **11.006 s** for Phase20
+and **3.436 s** for pinned TypeScript: a **3.19×** remaining gap. The0.47% process
+and0.44% request differences are neutral, not a new speedup claim; two samples
 per image do not establish a general improvement. Fresh processes run serially
 on CPU0 with identical host/runtime/Base bytes and resource limits. Bend uses
 validated Base caches for loading; source-only prefixes replay checking to
@@ -245,17 +247,17 @@ The remaining two observations concern the same do-block's error order.
 Independent controls expose further gaps; read the
 [conformance notes](../selfhost/CONFORMANCE.md) before interpreting the counts.
 
-The compiler contains **15,897 physical /13,543 nonblank lines** in59 Bend
-modules,17 more than Phase19, with one additional function and no new type or
-semantic state. Phase19 removed the separate specialization traversal; Phase20
-corrects existing grammar boundaries. The guarded version5 profile, host and
-runtime are unchanged.
+The compiler contains **15,900 physical /13,546 nonblank lines** in59 Bend
+modules, three more than Phase20, with no new function, type or semantic state.
+Phase19 removed the separate specialization traversal; Phase20 corrected grammar
+boundaries and Phase21 corrects existing source-origin producers. The guarded
+version5 profile, host and runtime are unchanged.
 
 Routine development uses checked B1 and 36 focused controls; reuse a frozen
 attempt for fixture-only edits. The long string stays first. The selection adds
 six exact upstream checks and four separate illegal-path witnesses with explicit
 refusal-at-parse oracles; full diagnostics remain under the strict corpus gate.
-The final Phase20 checked build plus these36 controls took34.68 seconds in one
+The final Phase21 checked build plus these36 controls took35.17 seconds in one
 observed run; this is not a controlled loop-speed benchmark.
 Keep full-source and broad frontend/backend gates for integration.
 
