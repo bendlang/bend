@@ -175,8 +175,13 @@ def Term.kindof : Quan → Term → Term
 -- the labels of a quantity, and the meet of two
 def QS : List String := ["Q0", "Q1", "Q2"]
 
-def Term.meet (i j : String) : String :=
-  if i = "Q2" then j else if j = "Q2" ∨ i = "Q0" then i else j
+-- the meet of two quantities, as far as they are known: .Q2 is its
+-- identity and .Q0 absorbs it, on either side, as bend2's
+def Term.qmin : Term → Term → Term
+  | Lab "Q2", b | b, Lab "Q2" => b
+  | Lab "Q0", _ | _, Lab "Q0" => Lab "Q0"
+  | Lab "Q1", Lab "Q1" => Lab "Q1"
+  | a, b => Min a b
 
 -- a q binder allows n live uses
 def Quan.allows : Quan → Nat → Bool
@@ -830,9 +835,8 @@ def Term.wnf (ck : Lib) (cl : Bool) : Nat → Term → List Arg → Term × Nat
     | (Rfl, m) => Term.wnf ck cl (min m n) f xs
     | (e, m)   => (Term.spine (Rwt e P f) xs, m)
   | n + 1, Min a b, xs =>
-    match Term.wnf ck cl n a [], Term.wnf ck cl n b [] with
-    | (Lab i, m), (Lab j, _) => (Term.spine (Lab (Term.meet i j)) xs, m)
-    | (a, m), (b, _)         => (Term.spine (Min a b) xs, m)
+    let (a, m) := Term.wnf ck cl n a []
+    (Term.spine (Term.qmin a (Term.wnf ck cl n b []).1) xs, m)
   | n + 1, Ref k, xs =>
     match ck[k]? with
     | some ⟨_, _, v, false⟩ =>
@@ -1424,7 +1428,7 @@ inductive Par (bk : Book) : Term → Term → Prop
   | miss  : j ≠ k → Par bk m m' →
             Par bk (App q (Mat k h m) (Lab j)) (App q m' (Lab j))
   | cast  : Par bk f f' → Par bk (Rwt Rfl P f) f'
-  | meet  : Par bk (Min (Lab i) (Lab j)) (Lab (Term.meet i j))
+  | meet  : Par bk a a' → Par bk b b' → Par bk (Min a b) (Term.qmin a' b')
 
 inductive Pars (bk : Book) : Term → Term → Prop
   | refl : Pars bk t t
@@ -1579,7 +1583,7 @@ inductive Eval (bk : Book) : Term → Term → Prop
   | cast  : Eval bk (Rwt Rfl P f) f
   | min_a : Eval bk a a' → Eval bk (Min a b) (Min a' b)
   | min_b : Value bk a → Eval bk b b' → Eval bk (Min a b) (Min a b')
-  | meet  : Eval bk (Min (Lab i) (Lab j)) (Lab (Term.meet i j))
+  | meet  : Eval bk (Min (Lab i) (Lab j)) (Term.qmin (Lab i) (Lab j))
 
 -- Claims
 -- ------
@@ -1762,8 +1766,7 @@ noncomputable def Term.dev (bk : Book) : Term → Term
   | Mat k h m => Mat k (Term.dev bk h) (Term.dev bk m)
   | Eql a b T => Eql (Term.dev bk a) (Term.dev bk b) (Term.dev bk T)
   | Typ q => Typ (Term.dev bk q)
-  | Min (Lab i) (Lab j) => Lab (Term.meet i j)
-  | Min a b => Min (Term.dev bk a) (Term.dev bk b)
+  | Min a b => Term.qmin (Term.dev bk a) (Term.dev bk b)
   | Rwt Rfl _ f => Term.dev bk f
   | Rwt e P f => Rwt (Term.dev bk e) (Term.dev bk P) (Term.dev bk f)
   | t => t
@@ -1795,9 +1798,28 @@ theorem ren_inst : Term.ren r (Term.inst f v) =
     Term.inst (Term.ren (Ren.up r) f) (Term.ren r v) := by
   simp [ren_as_sub, inst_sub, ← up_sub_ren, up_var]
 
+-- qmin forces .Q2 and .Q0 on either side; else it is the meet itself
+theorem qmin_eq : Term.qmin (Lab "Q2") x = x ∧ Term.qmin x (Lab "Q2") = x ∧
+    Term.qmin (Lab "Q0") x = Lab "Q0" ∧ Term.qmin x (Lab "Q0") = Lab "Q0" := by
+  refine ⟨?_, ?_, ?_, ?_⟩ <;> unfold Term.qmin <;> split <;> simp_all
+
+theorem qmin_view (a b : Term) : Term.qmin a b = Min a b ∨ (a = Lab "Q2" ∧ Term.qmin a b = b) ∨
+    (b = Lab "Q2" ∧ Term.qmin a b = a) ∨ ((a = Lab "Q0" ∨ b = Lab "Q0") ∧ Term.qmin a b = Lab "Q0") ∨
+    (a = Lab "Q1" ∧ b = Lab "Q1" ∧ Term.qmin a b = Lab "Q1") := by
+  unfold Term.qmin; split <;> simp_all
+
+-- a map that keeps labels and meets keeps a forced meet
+theorem qmin_map (f : Term → Term) (hl : ∀ k, f (Lab k) = Lab k) :
+    Term.qmin a b = Min a b ∨ f (Term.qmin a b) = Term.qmin (f a) (f b) := by
+  rcases qmin_view a b with e | ⟨rfl, e⟩ | ⟨rfl, e⟩ | ⟨rfl | rfl, e⟩ | ⟨rfl, rfl, e⟩ <;> simp [e, hl, qmin_eq]
+
 theorem par_ren : Par bk t u → Par bk (Term.ren r t) (Term.ren r u) := by
   intro h; induction h generalizing r <;> simp [Term.ren, ren_inst]
   case delta hk hc => rw [ren_as_sub, hc]; exact .delta hk hc
+  case meet ih1 ih2 =>
+    rcases qmin_map (Term.ren r) (fun _ => rfl) with e | e <;> rw [e]
+    · exact .min ih1 ih2
+    · exact .meet ih1 ih2
   all_goals first | apply Par.split | apply Par.miss | constructor
   all_goals first | assumption | apply_assumption
 
@@ -1807,12 +1829,23 @@ theorem par_sub : Par bk t u → (∀ i, Par bk (σ i) (τ i)) →
     | 0 => .var | _ + 1 => par_ren (h _)
   intro h hs; induction h generalizing σ τ <;> simp [Term.sub, inst_sub]
   case delta hk hc => rw [hc]; exact .delta hk hc
+  case meet ih1 ih2 =>
+    rcases qmin_map (Term.sub τ) (fun _ => rfl) with e | e <;> rw [e]
+    · exact .min (ih1 hs) (ih2 hs)
+    · exact .meet (ih1 hs) (ih2 hs)
   all_goals first | exact hs _ | apply Par.split | apply Par.miss | constructor
   all_goals first | assumption | (apply_assumption; (repeat apply U); exact hs)
 
 theorem par_inst (hf : Par bk f f') (hv : Par bk v v') :
     Par bk (Term.inst f v) (Term.inst f' v') :=
   par_sub hf fun | 0 => hv | _ + 1 => .var
+
+theorem qmin_par (ha : Par bk a A) (hb : Par bk b B) : Par bk (Term.qmin a b) (Term.qmin A B) := by
+  have L {k c} (h : Par bk (Lab k) c) : c = Lab k := by cases h; rfl
+  rcases qmin_view a b with e | ⟨rfl, e⟩ | ⟨rfl, e⟩ | ⟨rfl | rfl, e⟩ | ⟨rfl, rfl, e⟩ <;> rw [e]
+  · exact .meet ha hb
+  all_goals (try cases L ha) <;> (try cases L hb) <;> (try simp only [qmin_eq]) <;> first
+    | assumption | exact .lab | exact e ▸ .lab
 
 -- Takahashi: dev t is a Par reduct of every Par reduct of t
 theorem triangle : Par bk t u → Par bk u (Term.dev bk t) := by
@@ -1832,9 +1865,8 @@ theorem triangle : Par bk t u → Par bk u (Term.dev bk t) := by
   case split ih1 ih2 ih3 => exact .app (.app ih1 ih2) ih3
   case hit => show Par _ _ (ite ..); simpa
   case miss hne _ ih => show Par _ _ (ite ..); simp only [hne]; exact .app ih .lab
-  case min h1 h2 ih1 ih2 =>
-    cases h1 <;> first | exact .min ih1 ih2 | (cases h2 <;> first | exact .min ih1 ih2 | exact .meet)
-  case meet => exact par_refl _
+  case min ih1 ih2 => exact .meet ih1 ih2
+  case meet ih1 ih2 => exact qmin_par ih1 ih2
   all_goals first | assumption | (first | constructor | apply par_inst) <;> assumption
 
 -- the strip lemma, from the triangle
@@ -1976,8 +2008,7 @@ theorem wnf_pars (hb : Sees ck bk) :
     · exact W .refl
     · exact W (S xs (pars3 Rwt .rwt (V ‹_›) .refl .refl) (.cast (par_refl _)))
     · exact S xs (pars3 Rwt .rwt (V ‹_›) .refl .refl) (par_refl _)
-    · rename_i ha hb; exact S xs (pars2 Min .min (V ha) (V hb)) .meet
-    · rename_i ha hb; exact S xs (pars2 Min .min (V ha) (V hb)) (par_refl _)
+    · exact S xs (pars2 Min .min (V ‹_›) (ih _ (by omega) (t := _) (xs := [])).1) (.meet (par_refl _) (par_refl _))
     · rename_i _ _ _ hd _ _ _ hr; have ⟨_, hd, hc⟩ := hb _ _ hd
       have := R1 (by rw [hr]); rw [env_nil, sub_var] at this
       exact W (.step (par_spine (.delta hd hc)) this)
@@ -2048,9 +2079,6 @@ theorem lab_fix : Pars bk (Lab k) c → c = Lab k := pars_fix fun _ s => by case
 theorem conv_lab (h : Conv bk t (Lab k)) : Pars bk t (Lab k) :=
   have ⟨_, h1, h2⟩ := h; lab_fix h2 ▸ h1
 
-theorem meet22 : Term.meet i j = "Q2" ↔ i = "Q2" ∧ j = "Q2" := by
-  unfold Term.meet; by_cases i = "Q2" <;> by_cases j = "Q2" <;> simp_all <;> split <;> simp_all
-
 theorem fits_trans : Fits bk A B → Fits bk B C → Fits bk A C := by
   have X := @conv_trans bk
   have F {a b ks} (h : Conv bk a (Typ b)) (h' : Conv bk a (Enu ks)) : False :=
@@ -2074,8 +2102,14 @@ theorem min2 : Conv bk (Min a b) (Lab "Q2") ↔ Conv bk a (Lab "Q2") ∧ Conv bk
     | refl => rintro _ _ rfl e; cases e
     | step s hp ih => rintro _ _ rfl rfl; cases s with
       | min p1 p2 => have ⟨h1, h2⟩ := ih rfl rfl; exact ⟨.step p1 h1, .step p2 h2⟩
-      | meet => have ⟨hi, hj⟩ := meet22.1 (Term.Lab.inj (lab_fix hp)).symm; subst hi hj; exact ⟨.refl, .refl⟩
-  refine ⟨fun h => ?_, fun ⟨ha, hb⟩ => ⟨_, pars_trans (pars2 Min .min (conv_lab ha) (conv_lab hb)) (.step .meet .refl), .refl⟩⟩
+      | @meet _ a' _ b' p1 p2 =>
+        rcases qmin_view a' b' with e | ⟨rfl, e⟩ | ⟨rfl, e⟩ | ⟨rfl | rfl, e⟩ | ⟨rfl, rfl, e⟩ <;> rw [e] at hp ih
+        · have ⟨h1, h2⟩ := ih rfl rfl; exact ⟨.step p1 h1, .step p2 h2⟩
+        · exact ⟨.step p1 .refl, .step p2 hp⟩
+        · exact ⟨.step p1 hp, .step p2 .refl⟩
+        all_goals exact absurd (Term.Lab.inj (lab_fix hp)) (by decide)
+  refine ⟨fun h => ?_, fun ⟨ha, hb⟩ => ⟨_, pars_trans (pars2 Min .min (conv_lab ha) (conv_lab hb))
+    (.step (.meet .lab .lab) (by rw [qmin_eq.1]; exact .refl)), .refl⟩⟩
   have ⟨h1, h2⟩ := P (conv_lab h) rfl rfl; exact ⟨⟨_, h1, .refl⟩, ⟨_, h2, .refl⟩⟩
 
 theorem pars_sub : Pars bk a b → Pars bk (Term.sub σ a) (Term.sub σ b) :=
@@ -2472,9 +2506,10 @@ theorem sr : Claim.sr := by
   case min =>
     rename_i ha hb iha ihb; cases hp with
     | min pa pb => exact .min (iha _ pa) (ihb _ pb)
-    | meet =>
-      have R : Conv bk (Enu QS) (Enu QS) := ⟨_, .refl, .refl⟩
-      exact .lab (by unfold Term.meet; split <;> (try split) <;> exact lab_in ‹_› R)
+    | meet pa pb =>
+      have ha := iha _ pa; have hb := ihb _ pb
+      rcases qmin_view _ _ with e | ⟨_, e⟩ | ⟨_, e⟩ | ⟨_, e⟩ | ⟨_, _, e⟩ <;> rw [e] <;> first
+        | exact .min ha hb | assumption | exact .lab (by decide)
   case app _ hx ihf ihx => cases hp with
     | app pf px => exact .conv (.app (ihf _ pf) (ihx _ px)) (.inl (pi px))
     | beta pf px =>
@@ -3162,6 +3197,8 @@ macro "cl" t:term : tactic => `(tactic| simpa [closed_iff, Term.ren] using $t)
 -- Par keeps the terms that a renaming fixes, so Pars keeps Closed
 theorem par_fix (h : Par bk t u) : Term.ren r t = t → Term.ren r u = u := by
   induction h generalizing r <;> simp_all [Term.ren, ren_inst, closed_ren]
+  case meet ih1 ih2 =>
+    intro h1 h2; rcases qmin_map (Term.ren r) (fun _ => rfl) with e | e <;> rw [e] <;> simp [Term.ren, ih1 h1, ih2 h2]
 
 theorem pars_closed (p : Pars bk t u) (c : Term.Closed t) : Term.Closed u := by
   induction p with

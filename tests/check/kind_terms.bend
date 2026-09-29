@@ -3,7 +3,11 @@
 # list read by recursion (elem_q), a quantity picked at run time (pick),
 # and a datatype's kind may be a meet (Duo). Each def goes out once, as
 # written, and a branch may rely on its kind (dup copies x only where A
-# is Data). The law checks main's value in the emitted book
+# is Data), and a meet reduces next to a stuck side (x <&> &2 is x). A
+# family of Data types fits where one of Types is expected, and a function
+# over any type where one over Data types is: they go out eta-long, so the
+# kernel fits them at the leaves (fam, poly). The law checks main's value
+# in the emitted book
 import Base
 
 type Box is Type:
@@ -67,6 +71,27 @@ def dup(m: Mode, -A: Kind(mode_q(m)), x: A, d: A) -> (A & A):
     case Owned{}:
       (x, d)
 
+def same_kind(-x: Quant) -> {Kind(x <&> &2) == Kind(x) : Type}:
+  {==}
+
+def F(n: Nat) -> Data:
+  Nat
+
+def at0(-G: Nat -> Type, x: G(0n)) -> G(0n):
+  x
+
+def fam() -> Nat:
+  at0(F, 3n)
+
+def pick_any(-A: Type, x: A) -> A:
+  x
+
+def twice(f: @-A: Data -> A -> A) -> Nat:
+  f(Nat, 1n)
+
+def poly() -> Nat:
+  twice(pick_any)
+
 def add(p: Nat & Nat) -> Nat:
   match p:
     case (a, b): Nat.add(a, b)
@@ -74,12 +99,12 @@ def add(p: Nat & Nat) -> Nat:
 def main() -> Nat:
   Nat.add(Nat.add(Nat.add(run3(Mk{(y: Nat) => 1n}, Nat, 0n), run(Con{Owned{}, Con{Shared{}, Nil{}}}, Nat, 2n)),
     Nat.add(use(True{}, 3n), first(&2, &1, Nat, Nat -> Nat, MkDuo{4n, (z: Nat) => z}))),
-    add(dup(Shared{}, Nat, 5n, 9n)))
+    Nat.add(add(dup(Shared{}, Nat, 5n, 9n)), Nat.add(Nat.add(fam(), poly()), 2n)))
 
-law main_is_20:
-  {main() == 20n : Nat}
+law main_is_26:
+  {main() == 26n : Nat}
 
-def main_is_20():
+def main_is_26():
   {==}
 
-#|20n
+#|26n
