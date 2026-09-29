@@ -38,8 +38,9 @@ function io_poll_waits(d, args) {
 // answers (its entry's cancel, or (handle, Fail{ECANCELED}) on a handle).
 function io_poll_cancel(p, d, op) {
   p.late = true;
-  return op.kont(d.cancel !== undefined ? d.cancel(...op.args)
-    : io_tup(op.args[0], io_fail(io_sys().mac ? 89 : 125)));
+  const x = d.cancel !== undefined ? d.cancel(...op.args)
+    : io_tup(op.args[0], io_fail(io_sys().mac ? 89 : 125));
+  return op.kont === io_poll_emit ? io_poll_pop(x) : op.kont(x);
 }
 
 // Pops the top frame, answering x: the op to go on with.
@@ -60,7 +61,7 @@ function io_poll_step(op) {
   const p = io.poll;
   const d = io_poll_desc(op);
   if (d !== undefined && io_poll_waits(d, op.args)) {
-    const now = performance.now();
+    const now = p.until === 0 ? 0 : performance.now();
     if (now >= p.until) {
       return io_poll_cancel(p, d, op);
     }

@@ -175,9 +175,12 @@ static u32 io_poll_step(Env e, IoWork* w) {
   u32     ask = io_eff_rows[c].ask;
   bool    can = io_poll_can(c, ask);
   if (can && io_poll_waits(c, ask, x)) {
-    u64 now = io_tick();
+    u64 now = p->until == 0 ? 0 : io_tick();
     if (now >= p->until) {
       w->item = io_poll_cancel(e, w);
+      if (w->cont == io_emit()) {
+        io_poll_pop(e, w, w->item);
+      }
       return 1;
     }
     if (ask & IO_TIME) {
