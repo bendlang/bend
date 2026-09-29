@@ -285,6 +285,16 @@ def IO.within(-A: Type, ms: U32, act: IO(A)) -> IO(Maybe<&1, A>):
 # effs/io_poll.c), or that a rest resumed inside act runs with more of act
 # after it runs to its end, past ms: IO.poll answers once it does (poll
 # such a rest on its own, IO.poll(ms, IO.resume(rest))).
+#
+# A loop that polls keeps the pending action, an IO, as its state, not the
+# Step: each turn it polls that action; on Ready{x} it uses x and polls a
+# fresh action next, and on Wait{rest} it polls IO.resume(rest) next. A
+# loop that drains what is ready and then blocks hands Ready's value and
+# the value of IO.resume(rest) to one handler (tests/io/io_poll_writer).
+# Such a loop runs once per tick of its own, or ends each drain in a
+# blocking IO.resume; one that only re-polls with 0 ms spins. To wait for
+# whichever of several comes first, spawn one computation per source,
+# each sending to one channel, and recv from it.
 def IO.poll(-A: Type, ms: U32, act: IO(A)) -> IO(IO.Step<A>):
   import "./effs/io_poll.c"
   import "./effs/io_poll.js"
