@@ -7,19 +7,15 @@
 // A polled act runs with io_emit as its continuation, so the Emit that ends
 // it pops the top frame: a poll's answers Ready{x}, a raw one x; a request
 // whose continuation is that end answers the frame itself, with no Emit.
-// Under a poll's frame, io_poll_step takes a request that IO.cancel can
-// answer (a
-// channel step, a sleep, or an effect that asks IO_HAND and waits on its
-// handle) and that would wait: past the poll's until, it answers the poll
-// Wait{rest}, rest being the untouched request and the frames above the
-// poll's, all terms; before, the request waits for its handle or until,
-// whichever comes first, a sleep ends in time or is held at until, and a
-// channel step parks on its row as usual, with a timer that takes it back
-// out at until. A rest is the request alone, or a node of IO.poll's three
-// fields: the request, the frames' continuations (the same nodes, the
-// nearest the poll first, down to 0), and 0. io_poll_step answers io_step
-// 1 to go on with w's cont and item, 2 to stop (w waits), 0 to run the
-// request as usual. Frames are recycled (io_poll_idle).
+// When the top frame is a poll's, io_poll_step takes a request that
+// IO.cancel can answer (a channel step, a sleep, or an effect that asks
+// IO_HAND and waits on its handle) and that would wait: past the poll's
+// until, it answers the poll Wait{rest}, rest being the untouched request;
+// before, the request waits for its handle or until, whichever comes
+// first, a sleep ends in time or is held at until, and a channel step
+// parks on its row as usual, with a timer that takes it back out at until.
+// io_poll_step answers io_step 1 to go on with w's cont and item, 2 to
+// stop (w waits), 0 to run the request as usual. Frames are recycled.
 
 #ifdef CID(IO.poll)
 
@@ -66,26 +62,10 @@ static void io_poll_pop(Env e, IoWork* w, Term x) {
   io_poll_idle = f;
 }
 
-static IoPoll* io_poll_of(IoWork* w) {
-  IoPoll* p = w->poll;
-  while (p != NULL && p->raw) {
-    p = p->up;
-  }
-  return p;
-}
-
-// Answers p Wait{rest} for w's request, the frames above p going with it.
-static Term io_poll_hold(Env e, IoWork* w, IoPoll* p) {
-  Term fr = 0;
-  while (w->poll != p) {
-    IoPoll* f = w->poll;
-    w->poll = f->up;
-    fr = io_poll_ctr(e, CID(IO.poll), 3, (Term[]){ f->k, fr, 0 });
-    f->up        = io_poll_idle;
-    io_poll_idle = f;
-  }
-  Term rest = fr == 0 ? w->cont
-    : io_poll_ctr(e, CID(IO.poll), 3, (Term[]){ w->cont, fr, 0 });
+// Answers the top frame, a poll's, Wait{rest} for w's request.
+static Term io_poll_hold(Env e, IoWork* w) {
+  IoPoll* p    = w->poll;
+  Term    rest = w->cont;
   w->cont      = p->k;
   w->poll      = p->up;
   p->up        = io_poll_idle;
@@ -93,17 +73,14 @@ static Term io_poll_hold(Env e, IoWork* w, IoPoll* p) {
   return io_box(e, CID(Wait), rest);
 }
 
-static Term io_poll_late(Env e, IoWork* w) {
-  return io_poll_hold(e, w, io_poll_of(w));
-}
-
-static bool io_poll_ready(IoWork* w) {
-  struct pollfd p = { (int)w->word, w->evts, 0 };
+static bool io_poll_fd(int fd, short evts) {
+  struct pollfd p = { fd, evts, 0 };
   return poll(&p, 1, 0) > 0;
 }
 
 static Term io_poll_wake(Env e, IoWork* w) {
-  return io_poll_ready(w) ? io_exec(e, w) : io_poll_late(e, w);
+  return io_poll_fd((int)w->word, w->evts) ? io_exec(e, w)
+    : io_poll_hold(e, w);
 }
 
 #ifdef CID(Chan.new)
@@ -132,7 +109,7 @@ static Term io_poll_expire(Env e, IoWork* t) {
         (Term[]){ h, w->item, w->cont });
     }
 #endif
-    w->item   = io_poll_late(e, w);
+    w->item   = io_poll_hold(e, w);
     io_push(&io_runs, w);
   }
   free(t);
@@ -176,9 +153,7 @@ static bool io_poll_waits(u32 c, u32 ask, Term* x) {
   if (ask & IO_TIME) {
     return (u32)x[0] > 0;
   }
-  IoWork w = { .word = (u32)io_hand_v(x[0]),
-    .evts = ask & IO_OUT ? POLLOUT : POLLIN };
-  return !io_poll_ready(&w);
+  return !io_poll_fd((int)io_hand_v(x[0]), ask & IO_OUT ? POLLOUT : POLLIN);
 }
 
 static u32 io_poll_step(Env e, IoWork* w) {
@@ -191,20 +166,20 @@ static u32 io_poll_step(Env e, IoWork* w) {
     io_poll_pop(e, w, v);
     return 1;
   }
-  IoPoll* p   = io_poll_of(w);
+  IoPoll* p   = w->poll;
   u32     ask = io_eff_rows[c].ask;
-  bool    can = p != NULL && io_poll_can(c, ask);
+  bool    can = !p->raw && io_poll_can(c, ask);
   if (can && io_poll_waits(c, ask, x)) {
     u64 now = io_tick();
     if (now >= p->until) {
-      w->item = io_poll_hold(e, w, p);
+      w->item = io_poll_hold(e, w);
       return 1;
     }
     if (ask & IO_TIME) {
       if (now + (u64)(u32)x[0] * 1000000ull <= p->until) {
         return 0;
       }
-      io_wait_on(w, 0, 0, p->until, io_poll_late);
+      io_wait_on(w, 0, 0, p->until, io_poll_hold);
       return 2;
     }
 #ifdef CID(Chan.new)
@@ -255,24 +230,11 @@ static void __attribute__((constructor)) io_poll_run_use(void) {
   io_polled = io_poll_step;
 }
 
-// Puts rest's frames back, over a raw frame for w's continuation unless it
-// is a polled act's end, and answers rest's request.
-static Term io_poll_back(Env e, Term rest, IoWork* w) {
+// Puts a raw frame for w's continuation, unless it is a polled act's end.
+static void io_poll_back(IoWork* w) {
   if (w->cont != io_emit()) {
     io_poll_push(w, w->cont, 0, 1);
   }
-  if (term_tag(rest) != TAG_CTR || term_aux(rest) != CID(IO.poll)) {
-    return rest;
-  }
-  Term fs[3];
-  io_poll_take(e, rest, 3, fs);
-  for (Term l = fs[1]; l != 0;) {
-    Term c[3];
-    io_poll_take(e, l, 3, c);
-    io_poll_push(w, c[0], 0, 1);
-    l = c[1];
-  }
-  return fs[0];
 }
 
 #endif
@@ -282,9 +244,9 @@ static Term io_poll_back(Env e, Term rest, IoWork* w) {
 // The request goes back to the loop: io_step takes an item with no cont as
 // the request itself.
 Term io_resume_run(Env e, Term* f, IoWork* w) {
-  Term req = io_poll_back(e, f[0], w);
-  w->cont  = 0;
-  return req;
+  io_poll_back(w);
+  w->cont = 0;
+  return f[0];
 }
 
 static void __attribute__((constructor)) io_resume_use(void) {
@@ -299,7 +261,8 @@ static void __attribute__((constructor)) io_resume_use(void) {
 // dropped), a recv None, a sleep Unit, a handle's effect (handle,
 // Fail{ECANCELED}).
 Term io_cancel_run(Env e, Term* f, IoWork* w) {
-  Term req = io_poll_back(e, f[0], w);
+  io_poll_back(w);
+  Term req = f[0];
   u32  c   = (u32)term_aux(req);
   u32  n   = cid_arity(c);
   Term fs[16];

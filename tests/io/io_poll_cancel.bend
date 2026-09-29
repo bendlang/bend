@@ -1,8 +1,8 @@
 # io (io_poll_cancel): IO.cancel on a socket's effect answers (handle,
 # Fail{ECANCELED}), so the handle comes back to be closed: an accept with
-# no peer and a recv with nothing sent. A rest composed with more work,
-# IO.poll(IO.resume(rest) then f), holds f too: resumed, f runs once the
-# value comes; cancelled, f runs on the cancelled answer.
+# no peer and a recv with nothing sent. A rest resumed inside a poll's act
+# with more work after it, IO.poll(IO.resume(rest) then f), runs to its end
+# and f with it; a cancelled rest goes on to f with the cancelled answer.
 import Base
 
 def fail_code(-A: Type, r: Result<&1, &1, U32 & String, A>) -> String:
@@ -98,28 +98,31 @@ def more(-A: Type, s: IO.Step<Maybe<&1, U32>>, f: Maybe<&1, U32> -> IO(A)) ->
     case Wait{rest}:
       IO.poll(A, 0, IO.bind(Maybe<&1, U32>, A, IO.resume(Maybe<&1, U32>, rest), f))
 
-def finish(s: IO.Step<String>, cancel: Bool) -> IO(String):
+def value(s: IO.Step<String>) -> IO(String):
   match s:
     case Ready{value}:
       IO.pure(String, value)
     case Wait{rest}:
-      match cancel:
-        case True{}:
-          IO.cancel(String, rest)
-        case False{}:
-          IO.resume(String, rest)
+      IO.resume(String, rest)
+
+def give_up(-A: Type, s: IO.Step<Maybe<&1, U32>>, f: Maybe<&1, U32> -> IO(A)) ->
+  IO(A):
+  match s:
+    case Ready{value}:
+      f(value)
+    case Wait{rest}:
+      IO.bind(Maybe<&1, U32>, A, IO.cancel(Maybe<&1, U32>, rest), f)
 
 def composed(c: Chan(U32)) -> IO(Unit):
   +ch = c
   do IO<Unit>:
     r1 : IO.Step<Maybe<&1, U32>> <- IO.poll(Maybe<&1, U32>, 0, Chan.recv(U32, ch))
-    r2 : IO.Step<String> <- more(String, r1, then)
     Unit <- IO.spawn(Bool, Chan.send(U32, ch, 4))
-    x : String <- finish(r2, False{})
+    r2 : IO.Step<String> <- more(String, r1, then)
+    x : String <- value(r2)
     Unit <- IO.print(String.append("resumed: ", x))
     s1 : IO.Step<Maybe<&1, U32>> <- IO.poll(Maybe<&1, U32>, 0, Chan.recv(U32, ch))
-    s2 : IO.Step<String> <- more(String, s1, then)
-    y : String <- finish(s2, True{})
+    y : String <- give_up(String, s1, then)
     Unit <- IO.print(String.append("cancelled: ", y))
     return Unit{}
 

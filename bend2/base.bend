@@ -281,8 +281,10 @@ def IO.within(-A: Type, ms: U32, act: IO(A)) -> IO(Maybe<&1, A>):
 # IO.cancel(rest) answers the effect cancelled and goes on: a send False,
 # a recv None, a sleep at once, a socket's effect (socket,
 # Fail{ECANCELED}). An effect that already started (a send half written,
-# a connect, work on the IO threads) or that declares no wait (see
-# effs/io_poll.c) runs to its end, past ms: IO.poll answers once it does.
+# a connect, work on the IO threads), that declares no wait (see
+# effs/io_poll.c), or that a rest resumed inside act runs with more of act
+# after it runs to its end, past ms: IO.poll answers once it does (poll
+# such a rest on its own, IO.poll(ms, IO.resume(rest))).
 def IO.poll(-A: Type, ms: U32, act: IO(A)) -> IO(IO.Step<A>):
   import "./effs/io_poll.c"
   import "./effs/io_poll.js"
@@ -402,7 +404,7 @@ def TCP.poll.got(-A: Type, s: IO.Step<(Socket & Result<&1, &1, U32 & String, A>)
       IO.bind(Socket & Result<&1, &1, U32 & String, A>,
         Socket & Result<&1, &1, U32 & String, Maybe<&1, A>>,
         IO.cancel(Socket & Result<&1, &1, U32 & String, A>, rest),
-        m => TCP.poll.none(A, m))
+        TCP.poll.none(A))
 
 def TCP.poll.none(-A: Type, m: Socket & Result<&1, &1, U32 & String, A>) ->
   IO(Socket & Result<&1, &1, U32 & String, Maybe<&1, A>>):
