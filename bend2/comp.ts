@@ -5538,8 +5538,8 @@ static IoWork* io_pop(IoWork** q) {
 
 #define io_emit() term_clo(FID(IO~emit), 0)
 
-// Set by io_poll.c: takes a polled request that would wait, or its end.
-static bool (*io_polled)(Env e, IoWork* a);
+// See io_poll.c: 1 goes on, 2 stops.
+static u32 (*io_polled)(Env e, IoWork* a);
 
 static void io_spawn(Term m) {
   IoWork* a = io_mem(calloc(1, sizeof(IoWork)));
@@ -5988,8 +5988,12 @@ static void io_step(Env e, IoWork* a) {
     u32 c   = (u32)term_aux(req);
     u64 at  = term_peek(e.mem, req);
     a->cont = req;
-    if (a->poll != NULL && io_polled(e, a)) {
+    u32 poll = a->poll != NULL ? io_polled(e, a) : 0;
+    if (poll == 2) {
       return;
+    }
+    if (poll == 1) {
+      continue;
     }
     if (c == CID(Emit)) {
       term_drop(e, req);
@@ -6423,10 +6427,9 @@ function io_wake(w) {
 }
 
 function io_park_on(fd, out, k, more, at) {
-  const io = globalThis.BEND_IO;
-  const i = io.waits.findLastIndex((w) =>
-    (w.at ?? Infinity) <= (at ?? Infinity));
-  io.waits.splice(i + 1, 0, { fd, out, k, more, at, poll: io.poll });
+  const ws = globalThis.BEND_IO.waits;
+  const i = ws.findLastIndex((w) => (w.at ?? Infinity) <= (at ?? Infinity));
+  ws.splice(i + 1, 0, { fd, out, k, more, at, poll: globalThis.BEND_IO.poll });
 }
 
 function io_run(m) {
@@ -6450,8 +6453,10 @@ function io_run(m) {
       io.poll = s.poll ?? null;
       let op = s.fun(s.arg);
       while (op !== undefined) {
-        if (io.poll !== null && io.polled(op)) {
-          break;
+        const next = io.poll === null ? op : io.polled(op);
+        if (next !== op) {
+          op = next;
+          continue;
         }
         if (op.$ === "Emit") {
           io.live -= 1;

@@ -5,19 +5,23 @@
 // innermost first: a poll's (k, until), or a raw one (k), which IO.resume
 // and IO.cancel push under a continuation that is not a polled act's end.
 // A polled act runs with io_emit as its continuation, so the Emit that ends
-// it pops the top frame: a poll's answers Inl{x}, a raw one x. Under a
-// poll's frame, io_poll_step takes a request that IO.cancel can answer (a
+// it pops the top frame: a poll's answers Ready{x}, a raw one x; a request
+// whose continuation is that end answers the frame itself, with no Emit.
+// Under a poll's frame, io_poll_step takes a request that IO.cancel can
+// answer (a
 // channel step, a sleep, or an effect that asks IO_HAND and waits on its
 // handle) and that would wait: past the poll's until, it answers the poll
-// Inr{rest}, rest being the untouched request and the frames above the
+// Wait{rest}, rest being the untouched request and the frames above the
 // poll's, all terms; before, the request waits for its handle or until,
 // whichever comes first, a sleep ends in time or is held at until, and a
 // channel step parks on its row as usual, with a timer that takes it back
-// out at until. A rest is the request alone, or a node of IO.poll.run's
-// three fields: the request, the frames' continuations (the same nodes,
-// the nearest the poll first, down to 0), and 0.
+// out at until. A rest is the request alone, or a node of IO.poll's three
+// fields: the request, the frames' continuations (the same nodes, the
+// nearest the poll first, down to 0), and 0. io_poll_step answers io_step
+// 1 to go on with w's cont and item, 2 to stop (w waits), 0 to run the
+// request as usual. Frames are recycled (io_poll_idle).
 
-#ifdef CID(IO.poll.run)
+#ifdef CID(IO.poll)
 
 typedef struct IoPoll {
   Term           k;
@@ -26,7 +30,8 @@ typedef struct IoPoll {
   struct IoPoll* up;
 } IoPoll;
 
-static u32 io_poll_serial;
+static u32     io_poll_serial;
+static IoPoll* io_poll_idle;
 
 static Term io_poll_ctr(Env e, u32 cid, u32 n, Term* fs) {
   u64 l = heap_alloc(e, cls_fit(n));
@@ -41,9 +46,24 @@ static void io_poll_take(Env e, Term t, u32 n, Term* fs) {
 }
 
 static void io_poll_push(IoWork* w, Term k, u64 until, u32 raw) {
-  IoPoll* p = io_mem(malloc(sizeof(IoPoll)));
+  IoPoll* p = io_poll_idle;
+  if (p != NULL) {
+    io_poll_idle = p->up;
+  } else {
+    p = io_mem(malloc(sizeof(IoPoll)));
+  }
   *p      = (IoPoll){ k, until, raw, w->poll };
   w->poll = p;
+}
+
+// Pops w's top frame and goes on with its continuation, answering x.
+static void io_poll_pop(Env e, IoWork* w, Term x) {
+  IoPoll* f    = w->poll;
+  w->poll      = f->up;
+  w->cont      = f->k;
+  w->item      = f->raw ? x : io_box(e, CID(Ready), x);
+  f->up        = io_poll_idle;
+  io_poll_idle = f;
 }
 
 static IoPoll* io_poll_of(IoWork* w) {
@@ -54,21 +74,23 @@ static IoPoll* io_poll_of(IoWork* w) {
   return p;
 }
 
-// Answers p Inr{rest} for w's request, the frames above p going with it.
+// Answers p Wait{rest} for w's request, the frames above p going with it.
 static Term io_poll_hold(Env e, IoWork* w, IoPoll* p) {
   Term fr = 0;
   while (w->poll != p) {
     IoPoll* f = w->poll;
     w->poll = f->up;
-    fr = io_poll_ctr(e, CID(IO.poll.run), 3, (Term[]){ f->k, fr, 0 });
-    free(f);
+    fr = io_poll_ctr(e, CID(IO.poll), 3, (Term[]){ f->k, fr, 0 });
+    f->up        = io_poll_idle;
+    io_poll_idle = f;
   }
   Term rest = fr == 0 ? w->cont
-    : io_poll_ctr(e, CID(IO.poll.run), 3, (Term[]){ w->cont, fr, 0 });
-  w->cont = p->k;
-  w->poll = p->up;
-  free(p);
-  return io_box(e, CID(Inr), rest);
+    : io_poll_ctr(e, CID(IO.poll), 3, (Term[]){ w->cont, fr, 0 });
+  w->cont      = p->k;
+  w->poll      = p->up;
+  p->up        = io_poll_idle;
+  io_poll_idle = p;
+  return io_box(e, CID(Wait), rest);
 }
 
 static Term io_poll_late(Env e, IoWork* w) {
@@ -159,54 +181,66 @@ static bool io_poll_waits(u32 c, u32 ask, Term* x) {
   return !io_poll_ready(&w);
 }
 
-static bool io_poll_step(Env e, IoWork* w) {
+static u32 io_poll_step(Env e, IoWork* w) {
   Term  req = w->cont;
   u32   c   = (u32)term_aux(req);
   Term* x   = e.mem + term_peek(e.mem, req);
   if (c == CID(Emit)) {
-    IoPoll* f = w->poll;
-    Term    v;
+    Term v;
     io_poll_take(e, req, 1, &v);
-    w->poll = f->up;
-    w->cont = f->k;
-    w->item = f->raw ? v : io_box(e, CID(Inl), v);
-    free(f);
-    io_push(&io_runs, w);
-    return true;
+    io_poll_pop(e, w, v);
+    return 1;
   }
   IoPoll* p   = io_poll_of(w);
   u32     ask = io_eff_rows[c].ask;
-  if (p == NULL || !io_poll_can(c, ask) || !io_poll_waits(c, ask, x)) {
-    return false;
-  }
-  u64 now = io_tick();
-  if (now >= p->until) {
-    w->item = io_poll_hold(e, w, p);
-    io_push(&io_runs, w);
-    return true;
-  }
-  if (ask & IO_TIME) {
-    if (now + (u64)(u32)x[0] * 1000000ull <= p->until) {
-      return false;
+  bool    can = p != NULL && io_poll_can(c, ask);
+  if (can && io_poll_waits(c, ask, x)) {
+    u64 now = io_tick();
+    if (now >= p->until) {
+      w->item = io_poll_hold(e, w, p);
+      return 1;
     }
-    io_wait_on(w, 0, 0, p->until, io_poll_late);
-    return true;
-  }
+    if (ask & IO_TIME) {
+      if (now + (u64)(u32)x[0] * 1000000ull <= p->until) {
+        return 0;
+      }
+      io_wait_on(w, 0, 0, p->until, io_poll_late);
+      return 2;
+    }
 #ifdef CID(Chan.new)
-  if (!(ask & IO_HAND)) {
-    IoWork* t = io_mem(calloc(1, sizeof(IoWork)));
-    t->hand   = (intptr_t)w;
-    t->made   = (intptr_t)io_hand_v(x[0]);
-    t->word   = w->word = ++io_poll_serial;
-    t->time   = p->until;
-    t->pack   = io_poll_expire;
-    io_park_add(t);
-    return false;
-  }
+    if (!(ask & IO_HAND)) {
+      IoWork* t = io_mem(calloc(1, sizeof(IoWork)));
+      t->hand   = (intptr_t)w;
+      t->made   = (intptr_t)io_hand_v(x[0]);
+      t->word   = w->word = ++io_poll_serial;
+      t->time   = p->until;
+      t->pack   = io_poll_expire;
+      io_park_add(t);
+      return 0;
+    }
 #endif
-  io_wait_on(w, (int)io_hand_v(x[0]), ask & IO_OUT ? POLLOUT : POLLIN,
-    p->until, io_poll_wake);
-  return true;
+    io_wait_on(w, (int)io_hand_v(x[0]), ask & IO_OUT ? POLLOUT : POLLIN,
+      p->until, io_poll_wake);
+    return 2;
+  }
+  // a polled act's last request (its continuation the act's end) that
+  // needs no wait from the loop answers the top frame itself, unless it
+  // set another continuation (IO.poll, IO.resume, IO.cancel)
+  u32 n = cid_arity(c);
+  if (io_eff_rows[c].run == NULL || x[n - 1] != io_emit()
+    || ((ask & (IO_READ | IO_TIME)) && !can)) {
+    return 0;
+  }
+  Term v = io_exec(e, w);
+  if (v == IO_PARK) {
+    return 2;
+  }
+  if (w->cont != io_emit()) {
+    w->item = v;
+    return 1;
+  }
+  io_poll_pop(e, w, v);
+  return 1;
 }
 
 Term io_poll_run(Env e, Term* f, IoWork* w) {
@@ -217,7 +251,7 @@ Term io_poll_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) io_poll_run_use(void) {
-  io_eff(CID(IO.poll.run), io_poll_run, 0);
+  io_eff(CID(IO.poll), io_poll_run, 0);
   io_polled = io_poll_step;
 }
 
@@ -227,7 +261,7 @@ static Term io_poll_back(Env e, Term rest, IoWork* w) {
   if (w->cont != io_emit()) {
     io_poll_push(w, w->cont, 0, 1);
   }
-  if (term_tag(rest) != TAG_CTR || term_aux(rest) != CID(IO.poll.run)) {
+  if (term_tag(rest) != TAG_CTR || term_aux(rest) != CID(IO.poll)) {
     return rest;
   }
   Term fs[3];

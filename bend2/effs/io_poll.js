@@ -35,7 +35,8 @@ function io_poll_waits(d, args) {
     : d.time ? Number(args[0]) > 0 : !io_poll_ready(args[0], d.fd === "out");
 }
 
-// Answers p Inr{rest} for op, the frames above p going with it.
+// Answers p Wait{rest} for op, the frames above p going with it: the op to
+// go on with.
 function io_poll_hold(p, op) {
   const io = globalThis.BEND_IO;
   const top = [];
@@ -43,55 +44,67 @@ function io_poll_hold(p, op) {
     top.push(f);
   }
   io.poll = p.up;
-  io_push(p.k, { $: CID(Inr), value: { op, top } }, false, io.poll);
+  return p.k({ $: CID(Wait), rest: { op, top } });
 }
 
+// Pops the top frame, answering x: the op to go on with.
+function io_poll_pop(x) {
+  const io = globalThis.BEND_IO;
+  const f = io.poll;
+  io.poll = f.up;
+  return f.k(f.raw ? x : { $: CID(Ready), value: x });
+}
+
+// Answers io_run the op to go on with: op itself to run it as usual,
+// another, or undefined to stop (it waits).
 function io_poll_step(op) {
   const io = globalThis.BEND_IO;
   if (op.$ === CID(Emit)) {
-    const f = io.poll;
-    io.poll = f.up;
-    io_push(f.k, f.raw ? op.value : { $: CID(Inl), value: op.value }, false,
-      io.poll);
-    return true;
+    return io_poll_pop(op.value);
   }
   let p = io.poll;
   while (p !== null && p.raw) {
     p = p.up;
   }
   const d = p === null ? undefined : io_poll_desc(op);
-  if (d === undefined || !io_poll_waits(d, op.args)) {
-    return false;
-  }
-  const now = performance.now();
-  const late = () => {
-    io_poll_hold(p, op);
-    return undefined;
-  };
-  if (now >= p.until) {
-    io_poll_hold(p, op);
-    return true;
-  }
-  if (d.time) {
-    if (now + Number(op.args[0]) <= p.until) {
-      return false;
+  if (d !== undefined && io_poll_waits(d, op.args)) {
+    const now = performance.now();
+    if (now >= p.until) {
+      return io_poll_hold(p, op);
     }
-    io_park_on(undefined, false, undefined, late, p.until);
-  } else if (d.list !== undefined) {
-    // parks on its row as usual; at until, if it still waits there, it
-    // leaves the row and its poll holds it
-    const ws = d.list(op.args[0]);
-    op.run(...op.args, op.kont);
-    io_park_on(undefined, false, undefined, () => {
-      const i = ws.findIndex((w) => w.cont === op.kont);
-      return i < 0 ? undefined : (ws.splice(i, 1), late());
-    }, p.until);
-  } else {
-    const [fd, out] = [op.args[0], d.fd === "out"];
-    io_park_on(fd, out, op.kont, () => io_poll_ready(fd, out)
-      ? op.run(...op.args, op.kont) : late(), p.until);
+    const late = () => {
+      io_push((o) => o, io_poll_hold(p, op), false, io.poll);
+      return undefined;
+    };
+    if (d.time) {
+      if (now + Number(op.args[0]) <= p.until) {
+        return op;
+      }
+      io_park_on(undefined, false, undefined, late, p.until);
+    } else if (d.list !== undefined) {
+      // parks on its row as usual; at until, if it still waits there, it
+      // leaves the row and its poll holds it
+      const ws = d.list(op.args[0]);
+      op.run(...op.args, op.kont);
+      io_park_on(undefined, false, undefined, () => {
+        const i = ws.findIndex((w) => w.cont === op.kont);
+        return i < 0 ? undefined : (ws.splice(i, 1), late());
+      }, p.until);
+    } else {
+      const [fd, out] = [op.args[0], d.fd === "out"];
+      io_park_on(fd, out, op.kont, () => io_poll_ready(fd, out)
+        ? op.run(...op.args, op.kont) : late(), p.until);
+    }
+    return undefined;
   }
-  return true;
+  // a polled act's last request (its continuation the act's end) that
+  // needs no wait from the loop answers the top frame itself
+  if (op.$ !== "$FFI" || op.kont !== io_poll_emit
+    || (op.need !== undefined && d === undefined)) {
+    return op;
+  }
+  const x = op.run(...op.args, op.kont);
+  return x === undefined ? undefined : io_poll_pop(x);
 }
 
 function io_poll_run(ms, act, k) {
@@ -135,6 +148,6 @@ function io_cancel(rest, k) {
   return undefined;
 }
 
-io_eff(CID(IO.poll.run), io_poll_run);
+io_eff(CID(IO.poll), io_poll_run);
 io_eff(CID(IO.resume), io_resume);
 io_eff(CID(IO.cancel), io_cancel);

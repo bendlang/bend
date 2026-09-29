@@ -284,17 +284,6 @@ def IO.within(-A: Type, ms: U32, act: IO(A)) -> IO(Maybe<&1, A>):
 # a connect, work on the IO threads) or that declares no wait (see
 # effs/io_poll.c) runs to its end, past ms: IO.poll answers once it does.
 def IO.poll(-A: Type, ms: U32, act: IO(A)) -> IO(IO.Step<A>):
-  IO.bind(Or(A, IO.Rest(A)), IO.Step<A>, IO.poll.run(A, ms, act),
-    IO.poll.step(A))
-
-def IO.poll.step(-A: Type, r: Or(A, IO.Rest(A))) -> IO(IO.Step<A>):
-  match r:
-    case Inl{value}:
-      IO.pure(IO.Step<A>, Ready{value})
-    case Inr{value}:
-      IO.pure(IO.Step<A>, Wait{value})
-
-def IO.poll.run(-A: Type, ms: U32, act: IO(A)) -> IO(Or(A, IO.Rest(A))):
   import "./effs/io_poll.c"
   import "./effs/io_poll.js"
 
