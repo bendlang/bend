@@ -2,13 +2,12 @@
 // ==
 
 // IO.poll (see base.bend and io_poll.c, which this follows). io.poll is the
-// running computation's frames, innermost first: a poll's (k, until), or a
-// raw one (k). A polled act runs with io_poll_emit as its continuation, so
-// the Emit that ends it pops the top frame. When the top frame is a
-// poll's, io_poll_step takes a request whose effect gave io_eff a poll
-// entry (fd "in" or "out" for its handle, time for a sleep, or wait,
-// cancel and list for a channel step) and that would wait. A rest is the
-// untouched request.
+// running computation's poll frames, innermost first: (k, until, late). A
+// polled act runs with io_poll_emit as its continuation, so the Emit that
+// ends it pops the top frame. Under a frame, io_poll_step takes a request
+// whose effect gave io_eff a poll entry (fd "in" or "out" for its handle,
+// time for a sleep, or wait, cancel and list for a channel step) and that
+// would wait, and answers it cancelled at the frame's until.
 
 const io_poll_emit = (x) => ({ $: CID(Emit), value: x });
 
@@ -35,12 +34,12 @@ function io_poll_waits(d, args) {
     : d.time ? Number(args[0]) > 0 : !io_poll_ready(args[0], d.fd === "out");
 }
 
-// Answers the top frame, a poll's, Wait{rest} for op: the op to go on with.
-function io_poll_hold(op) {
-  const io = globalThis.BEND_IO;
-  const p = io.poll;
-  io.poll = p.up;
-  return p.k({ $: CID(Wait), rest: op });
+// op cancelled, unrun, its frame p turned late: what op's continuation
+// answers (its entry's cancel, or (handle, Fail{ECANCELED}) on a handle).
+function io_poll_cancel(p, d, op) {
+  p.late = true;
+  return op.kont(d.cancel !== undefined ? d.cancel(...op.args)
+    : io_tup(op.args[0], io_fail(io_sys().mac ? 89 : 125)));
 }
 
 // Pops the top frame, answering x: the op to go on with.
@@ -48,7 +47,7 @@ function io_poll_pop(x) {
   const io = globalThis.BEND_IO;
   const f = io.poll;
   io.poll = f.up;
-  return f.k(f.raw ? x : { $: CID(Ready), value: x });
+  return f.k({ $: f.late ? CID(Late) : CID(Ready), value: x });
 }
 
 // Answers io_run the op to go on with: op itself to run it as usual,
@@ -59,14 +58,14 @@ function io_poll_step(op) {
     return io_poll_pop(op.value);
   }
   const p = io.poll;
-  const d = p.raw ? undefined : io_poll_desc(op);
+  const d = io_poll_desc(op);
   if (d !== undefined && io_poll_waits(d, op.args)) {
     const now = performance.now();
     if (now >= p.until) {
-      return io_poll_hold(op);
+      return io_poll_cancel(p, d, op);
     }
     const late = () => {
-      io_push((o) => o, io_poll_hold(op), false, io.poll);
+      io_push((o) => o, io_poll_cancel(p, d, op), false, io.poll);
       return undefined;
     };
     if (d.time) {
@@ -76,7 +75,7 @@ function io_poll_step(op) {
       io_park_on(undefined, false, undefined, late, p.until);
     } else if (d.list !== undefined) {
       // parks on its row as usual; at until, if it still waits there, it
-      // leaves the row and its poll holds it
+      // leaves the row and answers cancelled
       const ws = d.list(op.args[0]);
       op.run(...op.args, op.kont);
       io_park_on(undefined, false, undefined, () => {
@@ -91,7 +90,7 @@ function io_poll_step(op) {
     return undefined;
   }
   // a polled act's last request (its continuation the act's end) that
-  // needs no wait from the loop answers the top frame itself
+  // needs no wait from the loop answers the frame itself
   if (op.$ !== "$FFI" || op.kont !== io_poll_emit
     || (op.need !== undefined && d === undefined)) {
     return op;
@@ -104,36 +103,9 @@ function io_poll_run(ms, act, k) {
   const io = globalThis.BEND_IO;
   io.polled = io_poll_step;
   io.poll = { k, until: Number(ms) > 0 ? performance.now() + Number(ms) : 0,
-    raw: false, up: io.poll };
+    late: false, up: io.poll };
   io_push(act, io_poll_emit, false, io.poll);
   return undefined;
 }
 
-// Puts a raw frame for k, unless it is a polled act's end.
-function io_poll_back(k) {
-  const io = globalThis.BEND_IO;
-  if (k !== io_poll_emit) {
-    io.poll = { k, until: 0, raw: true, up: io.poll };
-  }
-}
-
-function io_resume(op, k) {
-  io_poll_back(k);
-  io_push((o) => o, op, false, globalThis.BEND_IO.poll);
-  return undefined;
-}
-
-// Answers the request cancelled, not run: its entry's cancel, or (handle,
-// Fail{ECANCELED}) for an effect on a handle.
-function io_cancel(op, k) {
-  io_poll_back(k);
-  const d = io_poll_desc(op);
-  const x = d.cancel !== undefined ? d.cancel(...op.args)
-    : io_tup(op.args[0], io_fail(io_sys().mac ? 89 : 125));
-  io_push(op.kont, x, false, globalThis.BEND_IO.poll);
-  return undefined;
-}
-
 io_eff(CID(IO.poll), io_poll_run);
-io_eff(CID(IO.resume), io_resume);
-io_eff(CID(IO.cancel), io_cancel);

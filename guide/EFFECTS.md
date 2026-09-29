@@ -44,7 +44,7 @@ same way. `f` holds the def's arguments in order: a `U32` is the word
 argument of `io_eff` is the need: `0` runs the effect at once; `IO_READ`
 parks it until the handle in `f[0]` is readable; `IO_TIME` parks it for
 `f[0]` milliseconds. Then the loop calls the effect. The need also says
-whether `IO.poll` can hold the effect; see "A pollable effect" below.
+whether `IO.poll` can cancel the effect; see "A pollable effect" below.
 
 The effect returns a Term: a `U32` is `(Term)n`, `Unit` is
 `term_pak(CID(Unit), 0)`, a `String` is `io_str(e, p, n)`, a two-field
@@ -93,25 +93,26 @@ argument to also wake on time. `io_sys()` is `libc` through `bun:ffi`
 
 ## A pollable effect
 
-`IO.poll` (see `bend2/base.bend`) holds an effect only before it starts:
-the loop checks whether it would wait before calling it, and if so keeps
-the untouched request, which `IO.resume` later runs as new and `IO.cancel`
-answers without running. Declaring nothing is always safe: `IO.poll` then
-waits for the effect. Declare an effect pollable only if its first wait is
-on the handle in its first argument, a ready handle means it can start
-(parking again after that is fine: a started effect runs to its end), and
-it answers `(handle, Result<&1, &1, U32 & String, X>)`, since `IO.cancel`
-answers `(handle, Fail{ECANCELED})` in its place. In C, add `IO_HAND` to
-the need with `IO_IN` or `IO_OUT` (checked only under `IO.poll`: the
-effect still runs at once) or with `IO_READ`. In JS, pass `{ fd: "in" }`
-or `{ fd: "out" }` as `io_eff`'s fourth argument (its other fields are
-Base's). Declare both lanes alike; `tcp_recv.c` and `tcp_recv.js` are the
-reference, `tests/io/io_poll_foreign` a small example.
+`IO.poll` (see `bend2/base.bend`) cancels an effect only before it
+starts: the loop checks whether it would wait before calling it, and if
+it would wait too long answers it cancelled without calling it at all.
+Declaring nothing is always safe: `IO.poll` then waits for the effect.
+Declare an effect pollable only if its first wait is on the handle in its
+first argument, a ready handle means it can start (parking again after
+that is fine: a started effect runs to its end), and it answers
+`(handle, Result<&1, &1, U32 & String, X>)`, since a cancelled one
+answers `(handle, Fail{ECANCELED})`, built by the runtime. In C, add
+`IO_HAND` to the need with `IO_IN` or `IO_OUT` (checked only under
+`IO.poll`: the effect still runs at once) or with `IO_READ`. In JS, pass
+`{ fd: "in" }` or `{ fd: "out" }` as `io_eff`'s fourth argument (its other
+fields are Base's). Declare both lanes alike; `tcp_recv.c` and
+`tcp_recv.js` are the reference, `tests/io/io_poll_foreign` a small
+example.
 
 Nothing checks the declaration against the def's type yet. `IO_HAND` on
 an effect that answers another shape makes a cancel answer a wrong value,
 and the program crashes where it matches it. A handle that is not first,
-or a first wait on something else, makes the loop hold a request that
+or a first wait on something else, makes the loop cancel a request that
 could run, or wait past `ms`.
 
 ## A complete example

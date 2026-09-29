@@ -5978,16 +5978,13 @@ static void show_val(Env e, u32 d, const Term* w, char chain) {
 
 static void io_step(Env e, IoWork* a) {
   for (;;) {
-    Term req = a->item;
-    if (a->cont != 0) {
-      u64 ap = task_node(e, FID(Clo~apply), TERM_HOLE, 0, 0);
-      e.mem[ap]     = a->cont;
-      e.mem[ap + 1] = a->item;
-      req = corpus_eval(e.mem, term_tsk(FID(Clo~apply), ap));
-    }
-    u32 c   = (u32)term_aux(req);
-    u64 at  = term_peek(e.mem, req);
-    a->cont = req;
+    u64  ap  = task_node(e, FID(Clo~apply), TERM_HOLE, 0, 0);
+    e.mem[ap]     = a->cont;
+    e.mem[ap + 1] = a->item;
+    Term req = corpus_eval(e.mem, term_tsk(FID(Clo~apply), ap));
+    u32  c   = (u32)term_aux(req);
+    u64  at  = term_peek(e.mem, req);
+    a->cont  = req;
     u32 poll = a->poll != NULL ? io_polled(e, a) : 0;
     if (poll == 2) {
       return;

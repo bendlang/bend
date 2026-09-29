@@ -113,18 +113,14 @@ law Chan:
   for -A: Type
   Data
 
-# The rest of a polled act, held where it would wait (IO.poll).
-law IO.Rest:
-  for -A: Type
-  Type
-
 type IO.OP<-R: Type> is Type:
   Emit{value: R}
   Halt{code: U32, message: String}
 
-type IO.Step<-A: Type> is Type:
+# IO.poll's answer: act's value, Late if an effect in act was cancelled.
+type IO.Poll<-A: Type> is Type:
   Ready{value: A}
-  Wait{rest: IO.Rest(A)}
+  Late{value: A}
 
 type App<-S: Type> is Type:
   App{view: S -> Pair(S, Image), tick: List<Event> -> S -> IO(Maybe<S>)}
@@ -270,26 +266,17 @@ def IO.within(-A: Type, ms: U32, act: IO(A)) -> IO(Maybe<&1, A>):
     IO.fork.go(Maybe<&1, A>, late))
   IO.bind(Chan(Maybe<&1, A>), Maybe<&1, A>, both, c => IO.join(Maybe<&1, A>, c))
 
-# Runs act until it answers or would wait. Where act would wait before
-# starting an effect, IO.poll waits up to ms for it (0: not at all, with
-# no timer), then answers Wait{rest}: act from there on, that effect not
-# started, so a dropped rest sends and takes nothing. IO.resume(rest) runs
-# it, IO.poll(ms, IO.resume(rest)) polls it again, and IO.cancel(rest)
-# answers the effect cancelled: a send False, a recv None, a sleep at
-# once, a socket's effect (socket, Fail{ECANCELED}). An effect that
-# started, that IO.poll cannot hold (see guide/EFFECTS.md), or that a rest
-# resumed inside act runs with more of act after it, runs to its end past
-# ms. A loop that polls keeps the pending IO, not the Step, as its state,
-# and needs a tick of its own or a blocking IO.resume, or it spins.
-def IO.poll(-A: Type, ms: U32, act: IO(A)) -> IO(IO.Step<A>):
-  import "./effs/io_poll.c"
-  import "./effs/io_poll.js"
-
-def IO.resume(-A: Type, rest: IO.Rest(A)) -> IO(A):
-  import "./effs/io_poll.c"
-  import "./effs/io_poll.js"
-
-def IO.cancel(-A: Type, rest: IO.Rest(A)) -> IO(A):
+# Runs act, but an effect in act that would wait more than ms (0: at all)
+# before it starts is cancelled instead: it answers at once, without
+# running, and act goes on with that answer. A send answers False, a recv
+# None, a sleep at once, an effect on a socket (socket, Fail{ECANCELED}),
+# so a cancelled step takes and delivers nothing and hands its socket
+# back. IO.poll answers Ready{x} if act answered x with nothing cancelled,
+# else Late{x}. An effect that already started (a send half written, a
+# connect, work on the IO threads) or that IO.poll cannot cancel (see
+# guide/EFFECTS.md) runs to its end, past ms. IO.poll(0, act) sets no
+# timer.
+def IO.poll(-A: Type, ms: U32, act: IO(A)) -> IO(IO.Poll<A>):
   import "./effs/io_poll.c"
   import "./effs/io_poll.js"
 
@@ -384,28 +371,22 @@ def TCP.poll.go(sock: Socket, max: U32, ms: U32, zero: Bool) ->
         Socket & Result<&1, &1, U32 & String, Maybe<&1, String>>,
         TCP.recv(sock, max), m => TCP.poll.got(String, Ready{m}))
     case False{}:
-      IO.bind(IO.Step<(Socket & Result<&1, &1, U32 & String, String>)>,
+      IO.bind(IO.Poll<(Socket & Result<&1, &1, U32 & String, String>)>,
         Socket & Result<&1, &1, U32 & String, Maybe<&1, String>>,
         IO.poll(Socket & Result<&1, &1, U32 & String, String>, ms,
           TCP.recv(sock, max)),
         TCP.poll.got(String))
 
-def TCP.poll.got(-A: Type, s: IO.Step<(Socket & Result<&1, &1, U32 & String, A>)>) ->
+# a polled recv's answer: its data, or None if it was cancelled
+def TCP.poll.got(-A: Type, p: IO.Poll<(Socket & Result<&1, &1, U32 & String, A>)>) ->
   IO(Socket & Result<&1, &1, U32 & String, Maybe<&1, A>>):
-  match s:
+  match p:
     case Ready{(so, r)}:
       IO.pure(Socket & Result<&1, &1, U32 & String, Maybe<&1, A>>,
         (so, Result.map(&1, &1, U32 & String, A, Maybe<&1, A>, x => Some{x}, r)))
-    case Wait{rest}:
-      IO.bind(Socket & Result<&1, &1, U32 & String, A>,
-        Socket & Result<&1, &1, U32 & String, Maybe<&1, A>>,
-        IO.cancel(Socket & Result<&1, &1, U32 & String, A>, rest),
-        TCP.poll.none(A))
-
-def TCP.poll.none(-A: Type, m: Socket & Result<&1, &1, U32 & String, A>) ->
-  IO(Socket & Result<&1, &1, U32 & String, Maybe<&1, A>>):
-  (so, r) = m
-  IO.pure(Socket & Result<&1, &1, U32 & String, Maybe<&1, A>>, (so, Done{None{}}))
+    case Late{(so, r)}:
+      IO.pure(Socket & Result<&1, &1, U32 & String, Maybe<&1, A>>,
+        (so, Done{None{}}))
 
 def UDP.bind(host: String, port: U32) -> IO(Result<&1, &1, U32 & String, Socket>):
   import "./effs/udp_bind.c"
@@ -425,7 +406,7 @@ def UDP.recv_from(sock: Socket, max: U32) ->
 # nothing waits.
 def UDP.poll(sock: Socket, max: U32) ->
   IO(Socket & Result<&1, &1, U32 & String, Maybe<&1, String & U32 & String>>):
-  IO.bind(IO.Step<(Socket & Result<&1, &1, U32 & String, String & U32 & String>)>,
+  IO.bind(IO.Poll<(Socket & Result<&1, &1, U32 & String, String & U32 & String>)>,
     Socket & Result<&1, &1, U32 & String, Maybe<&1, String & U32 & String>>,
     IO.poll(Socket & Result<&1, &1, U32 & String, String & U32 & String>, 0,
       UDP.recv_from(sock, max)),

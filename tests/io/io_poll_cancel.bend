@@ -1,8 +1,8 @@
-# io (io_poll_cancel): IO.cancel on a socket's effect answers (handle,
+# io (io_poll_cancel): a cancelled effect on a socket answers (handle,
 # Fail{ECANCELED}), so the handle comes back to be closed: an accept with
-# no peer and a recv with nothing sent. A rest resumed inside a poll's act
-# with more work after it, IO.poll(IO.resume(rest) then f), runs to its end
-# and f with it; a cancelled rest goes on to f with the cancelled answer.
+# no peer and a recv with nothing sent. A composite act goes on after a
+# cancel with the cancelled answer: a recv then f answers Ready with f run
+# on the value that came in time, or Late with f run on None.
 import Base
 
 def fail_code(-A: Type, r: Result<&1, &1, U32 & String, A>) -> String:
@@ -10,43 +10,35 @@ def fail_code(-A: Type, r: Result<&1, &1, U32 & String, A>) -> String:
     case Done{x}:
       "done"
     case Fail{(code, message)}:
-      String.append("fail: ", message)
+      "fail: " ++ message
+
+def value(-A: Type, p: IO.Poll<A>) -> IO(A):
+  match p:
+    case Ready{value}:
+      IO.pure(A, value)
+    case Late{value}:
+      IO.pure(A, value)
 
 def gone_s(m: Socket & Result<&1, &1, U32 & String, String>) -> IO(Unit):
   (s, r) = m
   do IO<Unit>:
-    Unit <- IO.print(String.append("recv cancelled: ", fail_code(String, r)))
+    Unit <- IO.print("recv cancelled: " ++ fail_code(String, r))
     Socket.close(s)
 
 def gone_l(m: Listener & Result<&1, &1, U32 & String, Socket>) -> IO(Listener):
   (l, r) = m
   do IO<Listener>:
-    Unit <- IO.print(String.append("accept cancelled: ", fail_code(Socket, r)))
+    Unit <- IO.print("accept cancelled: " ++ fail_code(Socket, r))
     return l
-
-def recv_or_cancel(s: IO.Step<(Socket & Result<&1, &1, U32 & String, String>)>) ->
-  IO(Socket & Result<&1, &1, U32 & String, String>):
-  match s:
-    case Ready{value}:
-      IO.pure(Socket & Result<&1, &1, U32 & String, String>, value)
-    case Wait{rest}:
-      IO.cancel(Socket & Result<&1, &1, U32 & String, String>, rest)
-
-def accept_or_cancel(s: IO.Step<(Listener & Result<&1, &1, U32 & String, Socket>)>) ->
-  IO(Listener & Result<&1, &1, U32 & String, Socket>):
-  match s:
-    case Ready{value}:
-      IO.pure(Listener & Result<&1, &1, U32 & String, Socket>, value)
-    case Wait{rest}:
-      IO.cancel(Listener & Result<&1, &1, U32 & String, Socket>, rest)
 
 def talk(c: Socket, p: Listener & Result<&1, &1, U32 & String, Socket>) -> IO(Unit):
   (l, ar) = p
   do IO<Unit>:
     a : Socket <- IO.pass(Socket, ar)
-    r : IO.Step<(Socket & Result<&1, &1, U32 & String, String>)> <-
+    r : IO.Poll<(Socket & Result<&1, &1, U32 & String, String>)> <-
       IO.poll(Socket & Result<&1, &1, U32 & String, String>, 20, TCP.recv(a, 16))
-    m : Socket & Result<&1, &1, U32 & String, String> <- recv_or_cancel(r)
+    m : Socket & Result<&1, &1, U32 & String, String> <-
+      value(Socket & Result<&1, &1, U32 & String, String>, r)
     Unit <- gone_s(m)
     Unit <- Socket.close(c)
     Listener.close(l)
@@ -54,9 +46,10 @@ def talk(c: Socket, p: Listener & Result<&1, &1, U32 & String, Socket>) -> IO(Un
 def sockets(b: Listener & U32) -> IO(Unit):
   (l, port) = b
   do IO<Unit>:
-    p0 : IO.Step<(Listener & Result<&1, &1, U32 & String, Socket>)> <-
+    p0 : IO.Poll<(Listener & Result<&1, &1, U32 & String, Socket>)> <-
       IO.poll(Listener & Result<&1, &1, U32 & String, Socket>, 0, TCP.accept(l))
-    q0 : Listener & Result<&1, &1, U32 & String, Socket> <- accept_or_cancel(p0)
+    q0 : Listener & Result<&1, &1, U32 & String, Socket> <-
+      value(Listener & Result<&1, &1, U32 & String, Socket>, p0)
     l1 : Listener <- gone_l(q0)
     c : Socket <- IO.try(Socket, TCP.connect("127.0.0.1", port))
     p : Listener & Result<&1, &1, U32 & String, Socket> <- TCP.accept(l1)
@@ -79,7 +72,6 @@ def tcp_listen_any(tries: Nat, +port: U32) -> IO(Listener & U32):
       do IO<Listener & U32>:
         r : Result<&1, &1, U32 & String, Listener> <- TCP.listen("127.0.0.1", port)
         tcp_retry(port, r, rest)
-
 def got(m: Maybe<&1, U32>) -> String:
   match m:
     case None{}:
@@ -90,41 +82,26 @@ def got(m: Maybe<&1, U32>) -> String:
 def then(m: Maybe<&1, U32>) -> IO(String):
   IO.bind(Unit, String, IO.print("  then ran"), u => IO.pure(String, got(m)))
 
-def more(-A: Type, s: IO.Step<Maybe<&1, U32>>, f: Maybe<&1, U32> -> IO(A)) ->
-  IO(IO.Step<A>):
-  match s:
+def tell(name: String, p: IO.Poll<String>) -> IO(Unit):
+  match p:
     case Ready{value}:
-      IO.bind(A, IO.Step<A>, f(value), x => IO.pure(IO.Step<A>, Ready{x}))
-    case Wait{rest}:
-      IO.poll(A, 0, IO.bind(Maybe<&1, U32>, A, IO.resume(Maybe<&1, U32>, rest), f))
+      IO.print(name ++ ": ready " ++ value)
+    case Late{value}:
+      IO.print(name ++ ": late " ++ value)
 
-def value(s: IO.Step<String>) -> IO(String):
-  match s:
-    case Ready{value}:
-      IO.pure(String, value)
-    case Wait{rest}:
-      IO.resume(String, rest)
-
-def give_up(-A: Type, s: IO.Step<Maybe<&1, U32>>, f: Maybe<&1, U32> -> IO(A)) ->
-  IO(A):
-  match s:
-    case Ready{value}:
-      f(value)
-    case Wait{rest}:
-      IO.bind(Maybe<&1, U32>, A, IO.cancel(Maybe<&1, U32>, rest), f)
+def later(ch: Chan(U32)) -> IO(Bool):
+  IO.bind(Unit, Bool, IO.sleep(20), u => Chan.send(U32, ch, 4))
 
 def composed(c: Chan(U32)) -> IO(Unit):
   +ch = c
   do IO<Unit>:
-    r1 : IO.Step<Maybe<&1, U32>> <- IO.poll(Maybe<&1, U32>, 0, Chan.recv(U32, ch))
-    Unit <- IO.spawn(Bool, Chan.send(U32, ch, 4))
-    r2 : IO.Step<String> <- more(String, r1, then)
-    x : String <- value(r2)
-    Unit <- IO.print(String.append("resumed: ", x))
-    s1 : IO.Step<Maybe<&1, U32>> <- IO.poll(Maybe<&1, U32>, 0, Chan.recv(U32, ch))
-    y : String <- give_up(String, s1, then)
-    Unit <- IO.print(String.append("cancelled: ", y))
-    return Unit{}
+    Unit <- IO.spawn(Bool, later(ch))
+    p1 : IO.Poll<String> <- IO.poll(String, 1000,
+      IO.bind(Maybe<&1, U32>, String, Chan.recv(U32, ch), then))
+    Unit <- tell("recv then f, sent in time", p1)
+    p2 : IO.Poll<String> <- IO.poll(String, 0,
+      IO.bind(Maybe<&1, U32>, String, Chan.recv(U32, ch), then))
+    tell("recv then f, nothing sent", p2)
 
 def main() -> IO(Unit):
   do IO<Unit>:
@@ -134,8 +111,8 @@ def main() -> IO(Unit):
     sockets(b)
 
 #|  then ran
-#|resumed: 4
+#|recv then f, sent in time: ready 4
 #|  then ran
-#|cancelled: none
+#|recv then f, nothing sent: late none
 #|accept cancelled: fail: Operation canceled
 #|recv cancelled: fail: Operation canceled

@@ -1,29 +1,30 @@
 # io (io_poll_tcp): IO.poll over a socket. An accept with no peer and a
-# recv with nothing sent answer Wait; polled again once the peer connects
-# or sends, the rest answers Ready with what arrived.
+# recv with nothing sent answer Late, cancelled with their handle back;
+# polled again once the peer connects or sends, they answer Ready with
+# what arrived.
 import Base
 
-def tell(-A: Type, name: String, s: IO.Step<A>) -> IO(IO.Step<A>):
-  match s:
+# says whether p is ready or late, and gives its value
+def note(-A: Type, name: String, p: IO.Poll<A>) -> IO(A):
+  match p:
     case Ready{value}:
-      IO.bind(Unit, IO.Step<A>, IO.print(String.append(name, ": ready")),
-        u => IO.pure(IO.Step<A>, Ready{value}))
-    case Wait{rest}:
-      IO.bind(Unit, IO.Step<A>, IO.print(String.append(name, ": wait")),
-        u => IO.pure(IO.Step<A>, Wait{rest}))
+      IO.bind(Unit, A, IO.print(name ++ ": ready"), u => IO.pure(A, value))
+    case Late{value}:
+      IO.bind(Unit, A, IO.print(name ++ ": late"), u => IO.pure(A, value))
 
-def get(-A: Type, s: IO.Step<A>) -> IO(A):
-  match s:
-    case Ready{value}:
-      IO.pure(A, value)
-    case Wait{rest}:
-      IO.resume(A, rest)
+def listener(m: Listener & Result<&1, &1, U32 & String, Socket>) -> IO(Listener):
+  (l, r) = m
+  IO.pure(Listener, l)
+
+def socket(m: Socket & Result<&1, &1, U32 & String, String>) -> IO(Socket):
+  (s, r) = m
+  IO.pure(Socket, s)
 
 def recv_go(m: Socket & Result<&1, &1, U32 & String, String>) -> IO(Socket):
   (s, r) = m
   do IO<Socket>:
     t : String <- IO.pass(String, r)
-    u : Unit <- IO.print(String.append("got ", t))
+    u : Unit <- IO.print("got " ++ t)
     return s
 
 def send_go(m: Socket & Result<&1, &1, U32 & String, Unit>) -> IO(Socket):
@@ -36,21 +37,18 @@ def talk(c: Socket, p: Listener & Result<&1, &1, U32 & String, Socket>) -> IO(Un
   (l2, ar) = p
   do IO<Unit>:
     a  : Socket <- IO.pass(Socket, ar)
-    p1 : IO.Step<(Socket & Result<&1, &1, U32 & String, String>)> <-
+    p1 : IO.Poll<(Socket & Result<&1, &1, U32 & String, String>)> <-
       IO.poll(Socket & Result<&1, &1, U32 & String, String>, 0, TCP.recv(a, 16))
-    q1 : IO.Step<(Socket & Result<&1, &1, U32 & String, String>)> <-
-      tell(Socket & Result<&1, &1, U32 & String, String>, "recv, nothing sent", p1)
+    q1 : Socket & Result<&1, &1, U32 & String, String> <-
+      note(Socket & Result<&1, &1, U32 & String, String>, "recv, nothing sent", p1)
+    a1 : Socket <- socket(q1)
     s1 : Socket & Result<&1, &1, U32 & String, Unit> <- TCP.send(c, "hi")
     c1 : Socket <- send_go(s1)
-    Unit <- IO.sleep(50)
-    p2 : IO.Step<(Socket & Result<&1, &1, U32 & String, String>)> <-
-      IO.poll(Socket & Result<&1, &1, U32 & String, String>, 0,
-        get(Socket & Result<&1, &1, U32 & String, String>, q1))
-    q2 : IO.Step<(Socket & Result<&1, &1, U32 & String, String>)> <-
-      tell(Socket & Result<&1, &1, U32 & String, String>, "rest, once sent", p2)
-    m  : Socket & Result<&1, &1, U32 & String, String> <-
-      get(Socket & Result<&1, &1, U32 & String, String>, q2)
-    a2 : Socket <- recv_go(m)
+    p2 : IO.Poll<(Socket & Result<&1, &1, U32 & String, String>)> <-
+      IO.poll(Socket & Result<&1, &1, U32 & String, String>, 1000, TCP.recv(a1, 16))
+    q2 : Socket & Result<&1, &1, U32 & String, String> <-
+      note(Socket & Result<&1, &1, U32 & String, String>, "recv, once sent", p2)
+    a2 : Socket <- recv_go(q2)
     x  : Unit <- Socket.close(a2)
     y  : Unit <- Socket.close(c1)
     Listener.close(l2)
@@ -58,19 +56,16 @@ def talk(c: Socket, p: Listener & Result<&1, &1, U32 & String, Socket>) -> IO(Un
 def main_go(b: Listener & U32) -> IO(Unit):
   (l, port) = b
   do IO<Unit>:
-    p0 : IO.Step<(Listener & Result<&1, &1, U32 & String, Socket>)> <-
+    p0 : IO.Poll<(Listener & Result<&1, &1, U32 & String, Socket>)> <-
       IO.poll(Listener & Result<&1, &1, U32 & String, Socket>, 0, TCP.accept(l))
-    q0 : IO.Step<(Listener & Result<&1, &1, U32 & String, Socket>)> <-
-      tell(Listener & Result<&1, &1, U32 & String, Socket>, "accept, no peer", p0)
+    q0 : Listener & Result<&1, &1, U32 & String, Socket> <-
+      note(Listener & Result<&1, &1, U32 & String, Socket>, "accept, no peer", p0)
+    l1 : Listener <- listener(q0)
     c : Socket <- IO.try(Socket, TCP.connect("127.0.0.1", port))
-    Unit <- IO.sleep(50)
-    p1 : IO.Step<(Listener & Result<&1, &1, U32 & String, Socket>)> <-
-      IO.poll(Listener & Result<&1, &1, U32 & String, Socket>, 0,
-        get(Listener & Result<&1, &1, U32 & String, Socket>, q0))
-    q1 : IO.Step<(Listener & Result<&1, &1, U32 & String, Socket>)> <-
-      tell(Listener & Result<&1, &1, U32 & String, Socket>, "rest, once connected", p1)
+    p1 : IO.Poll<(Listener & Result<&1, &1, U32 & String, Socket>)> <-
+      IO.poll(Listener & Result<&1, &1, U32 & String, Socket>, 1000, TCP.accept(l1))
     p : Listener & Result<&1, &1, U32 & String, Socket> <-
-      get(Listener & Result<&1, &1, U32 & String, Socket>, q1)
+      note(Listener & Result<&1, &1, U32 & String, Socket>, "accept, once connected", p1)
     talk(c, p)
 
 def tcp_retry(port: U32, r: Result<&1, &1, U32 & String, Listener>, rest: IO(Listener & U32)) ->
@@ -96,8 +91,8 @@ def main() -> IO(Unit):
     b : Listener & U32 <- tcp_listen_any(32n, 19957)
     main_go(b)
 
-#|accept, no peer: wait
-#|rest, once connected: ready
-#|recv, nothing sent: wait
-#|rest, once sent: ready
+#|accept, no peer: late
+#|accept, once connected: ready
+#|recv, nothing sent: late
+#|recv, once sent: ready
 #|got hi

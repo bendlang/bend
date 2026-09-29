@@ -56,11 +56,9 @@ static ChanRow* chan_at(Term t) {
 }
 
 // Parks the effect's activation on row with item: a sent value, or
-// TERM_HOLE for a receiver; hand keeps the channel (IO.poll's deadline
-// rebuilds the request from it).
-static Term chan_park(ChanRow* row, IoWork* w, Term chan, Term item) {
+// TERM_HOLE for a receiver.
+static Term chan_park(ChanRow* row, IoWork* w, Term item) {
   w->item = item;
-  w->hand = (intptr_t)io_hand_v(chan);
   io_push(&row->wait, w);
   return IO_PARK;
 }
@@ -133,7 +131,7 @@ Term chan_send_run(Env e, Term* f, IoWork* w) {
     row->size += 1;
     return chan_bool(true);
   }
-  return chan_park(row, w, f[0], f[1]);
+  return chan_park(row, w, f[1]);
 }
 
 static void __attribute__((constructor)) chan_send_use(void) {
@@ -163,7 +161,7 @@ Term chan_recv_run(Env e, Term* f, IoWork* w) {
     chan_free(row);
     return term_pak(CID(None), 0);
   }
-  return chan_park(row, w, f[0], TERM_HOLE);
+  return chan_park(row, w, TERM_HOLE);
 }
 
 static void __attribute__((constructor)) chan_recv_use(void) {

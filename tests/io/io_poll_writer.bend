@@ -1,9 +1,8 @@
 # io (io_poll_writer): a writer that drains what is queued into one
 # commit, then blocks for the next value: it polls recv with 0 ms until
-# Wait{rest}, commits, then resumes rest, so the recv that blocks is the
-# one held in rest and nothing is taken between the drain and the wait. A
-# polled value and a resumed one go to the same handler, got, so the loop
-# never rebuilds a Step. From #1162's case, by @aldeni.
+# Late, commits, then recvs; the cancelled recv took nothing, so no value
+# is lost between the drain and the wait. A polled value and a received
+# one go to the same handler, got. From #1162's case, by @aldeni.
 import Base
 
 def producer(+c: Chan(U32)) -> IO(Unit):
@@ -25,15 +24,15 @@ def got(batch: String, m: Maybe<&1, U32>, more: String -> IO(Unit)) -> IO(Unit):
       IO.print("commit" ++ batch ++ ", closed")
 
 # a poll's answer: a value now, or commit and block for the next one
-def polled(batch: String, s: IO.Step<Maybe<&1, U32>>, more: String -> IO(Unit)) ->
-  IO(Unit):
-  match s:
+def polled(batch: String, p: IO.Poll<Maybe<&1, U32>>, next: IO(Maybe<&1, U32>),
+  more: String -> IO(Unit)) -> IO(Unit):
+  match p:
     case Ready{value}:
       got(batch, value, more)
-    case Wait{rest}:
+    case Late{value}:
       do IO<Unit>:
         Unit <- IO.print("commit" ++ batch)
-        m : Maybe<&1, U32> <- IO.resume(Maybe<&1, U32>, rest)
+        m : Maybe<&1, U32> <- next
         got("", m, more)
 
 def drain(fuel: Nat, +c: Chan(U32), batch: String) -> IO(Unit):
@@ -41,9 +40,9 @@ def drain(fuel: Nat, +c: Chan(U32), batch: String) -> IO(Unit):
     case 0n:
       IO.print("out of fuel")
     case 1n+p:
-      IO.bind(IO.Step<Maybe<&1, U32>>, Unit,
+      IO.bind(IO.Poll<Maybe<&1, U32>>, Unit,
         IO.poll(Maybe<&1, U32>, 0, Chan.recv(U32, c)),
-        s => polled(batch, s, b => drain(p, c, b)))
+        s => polled(batch, s, Chan.recv(U32, c), b => drain(p, c, b)))
 
 def run(c: Chan(U32)) -> IO(Unit):
   +ch = c

@@ -1,26 +1,16 @@
 # io (io_poll_deadline): IO.poll(ms, act) waits up to ms for a channel
 # step. A recv whose value comes in time answers Ready; one that does not
-# answers Wait, and IO.cancel answers it None without taking the late value,
-# which a plain recv then gets. A send on a full channel that a reader
-# drains in time answers Ready.
+# answers Late{None} without taking the late value, which a plain recv
+# then gets. A send on a full channel that a reader drains in time answers
+# Ready.
 import Base
 
-def tell(-A: Type, name: String, s: IO.Step<A>) -> IO(IO.Step<A>):
-  match s:
+def tell(-A: Type, name: String, p: IO.Poll<A>, show: A -> String) -> IO(Unit):
+  match p:
     case Ready{value}:
-      IO.bind(Unit, IO.Step<A>, IO.print(String.append(name, ": ready")),
-        u => IO.pure(IO.Step<A>, Ready{value}))
-    case Wait{rest}:
-      IO.bind(Unit, IO.Step<A>, IO.print(String.append(name, ": wait")),
-        u => IO.pure(IO.Step<A>, Wait{rest}))
-
-# the value, cancelling rest if it is not ready
-def give_up(-A: Type, s: IO.Step<A>) -> IO(A):
-  match s:
-    case Ready{value}:
-      IO.pure(A, value)
-    case Wait{rest}:
-      IO.cancel(A, rest)
+      IO.print(name ++ ": ready " ++ show(value))
+    case Late{value}:
+      IO.print(name ++ ": late " ++ show(value))
 
 def got(m: Maybe<&1, U32>) -> String:
   match m:
@@ -39,17 +29,13 @@ def recvs(c: Chan(U32)) -> IO(U32):
   +ch = c
   do IO<U32>:
     Unit <- IO.spawn(Bool, later(20, ch, 1))
-    r1 : IO.Step<Maybe<&1, U32>> <- IO.poll(Maybe<&1, U32>, 1000, Chan.recv(U32, ch))
-    t1 : IO.Step<Maybe<&1, U32>> <- tell(Maybe<&1, U32>, "recv, sent in time", r1)
-    m1 : Maybe<&1, U32> <- give_up(Maybe<&1, U32>, t1)
-    Unit <- IO.print(String.append("  got ", got(m1)))
+    r1 : IO.Poll<Maybe<&1, U32>> <- IO.poll(Maybe<&1, U32>, 1000, Chan.recv(U32, ch))
+    Unit <- tell(Maybe<&1, U32>, "recv, sent in time", r1, got)
     Unit <- IO.spawn(Bool, later(150, ch, 2))
-    r2 : IO.Step<Maybe<&1, U32>> <- IO.poll(Maybe<&1, U32>, 30, Chan.recv(U32, ch))
-    t2 : IO.Step<Maybe<&1, U32>> <- tell(Maybe<&1, U32>, "recv, sent late", r2)
-    m2 : Maybe<&1, U32> <- give_up(Maybe<&1, U32>, t2)
-    Unit <- IO.print(String.append("  cancelled: ", got(m2)))
+    r2 : IO.Poll<Maybe<&1, U32>> <- IO.poll(Maybe<&1, U32>, 30, Chan.recv(U32, ch))
+    Unit <- tell(Maybe<&1, U32>, "recv, sent late", r2, got)
     m3 : Maybe<&1, U32> <- Chan.recv(U32, ch)
-    Unit <- IO.print(String.append("then a recv gets the late one: ", got(m3)))
+    Unit <- IO.print("then a recv gets the late one: " ++ got(m3))
     return 0
 
 def sends(d: Chan(U32)) -> IO(U32):
@@ -57,12 +43,10 @@ def sends(d: Chan(U32)) -> IO(U32):
   do IO<U32>:
     Bool <- Chan.send(U32, ch, 5)
     Unit <- IO.spawn(Maybe<&1, U32>, drain(20, ch))
-    s : IO.Step<Bool> <- IO.poll(Bool, 1000, Chan.send(U32, ch, 6))
-    t : IO.Step<Bool> <- tell(Bool, "send on a full channel, drained in time", s)
-    ok : Bool <- give_up(Bool, t)
-    Unit <- IO.print(String.append("  sent: ", Bool.show(ok)))
+    s : IO.Poll<Bool> <- IO.poll(Bool, 1000, Chan.send(U32, ch, 6))
+    Unit <- tell(Bool, "send on a full channel, drained in time", s, Bool.show)
     m : Maybe<&1, U32> <- Chan.recv(U32, ch)
-    Unit <- IO.print(String.append("  and it is there: ", got(m)))
+    Unit <- IO.print("  and it is there: " ++ got(m))
     return 0
 
 def main() -> IO(U32):
@@ -72,11 +56,8 @@ def main() -> IO(U32):
     d : Chan(U32) <- Chan.new(U32, 1)
     sends(d)
 
-#|recv, sent in time: ready
-#|  got 1
-#|recv, sent late: wait
-#|  cancelled: none
+#|recv, sent in time: ready 1
+#|recv, sent late: late none
 #|then a recv gets the late one: 2
-#|send on a full channel, drained in time: ready
-#|  sent: True
+#|send on a full channel, drained in time: ready True
 #|  and it is there: 6
