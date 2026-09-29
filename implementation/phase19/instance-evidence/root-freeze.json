@@ -1,0 +1,274 @@
+{
+  "kind": "phase19-live-checker-root-freeze",
+  "authorized": true,
+  "allProducersClosed": true,
+  "scope": "Closed installed live-checker release, retained preparations/failures and exact named gates only. Active contextual parser and new Phase20 import-diagnostic experiments are excluded and may continue.",
+  "anchorStatus": "installed-live-checker-release",
+  "releaseCommit": "fd9e8b2",
+  "finalAttempt": "selfhost/build/phase19/instance-build-03",
+  "finalApiSha256": "a15d150a920b89d9c0781372356424e559edabef3246ca281741069b0fe739b6",
+  "allReleasedPathsEqualCommittedBytes": true,
+  "inputs": [
+    {
+      "path": "README.md",
+      "sha256": "36ca5a4bfe450b5bee45f8bbc67fe87f7ea22c1223f65ea8b91859df2d93460f"
+    },
+    {
+      "path": "design/phase19/instance-direct-boundaries.md",
+      "sha256": "86b05f01a2235a565517d2d5eddffb1ab064348415948a54106240ec38657e74"
+    },
+    {
+      "path": "design/phase19/instance-first-corrections.md",
+      "sha256": "c4bb81ecd8960d5066dfb7e66e68bf40691843300de1644ef3b2fbe59af5cb52"
+    },
+    {
+      "path": "design/phase19/instance-interfaces.md",
+      "sha256": "479c275bdebde9ed079e7ac9d4f2aad976d720a3e447525e45a7ad657edd2e6f"
+    },
+    {
+      "path": "design/phase19/instance-let-closure.md",
+      "sha256": "45b788963dbf08e2fd01790f2b235bdd9941c2398280a8eb3d416dfb64b6c7c1"
+    },
+    {
+      "path": "design/phase19/instance-let-observations.md",
+      "sha256": "b4a49d646eb017b4fe139b254fbf721c1c6ef3eb93ea4db3be9920a14125d4de"
+    },
+    {
+      "path": "design/phase19/instance-output-order.md",
+      "sha256": "239c677a5d619bdf06a9297acf4bdbf0f5228f75819d685115284225f80ceb33"
+    },
+    {
+      "path": "design/phase19/instance-recursion-boundaries.md",
+      "sha256": "5ce8e826818b531faad8bab586df4c45497af62c5d0abef84378819d8876a92b"
+    },
+    {
+      "path": "design/phase19/live-checker-integration.md",
+      "sha256": "22e9a4c91af2ed0ce9354dc5ce6a6f48bcd7289ac3a3941ba2b523570acddb12"
+    },
+    {
+      "path": "design/phase19/live-instance-checking.md",
+      "sha256": "363fb63c81cf56329513eb762c74e1c51486ed423ff2cf87e26e73f9042da59d"
+    },
+    {
+      "path": "docs/BEND-IN-BEND.md",
+      "sha256": "840512dbed21cf7abd50cd82ff66851d4919281da4c686a81475e35ca4a97d70"
+    },
+    {
+      "path": "experiments/STEERING.md",
+      "sha256": "afb1c8f3dbaefe61555d95a31ace4de603f6869f473059ecfd0b6816d4c4b77c"
+    },
+    {
+      "path": "experiments/ledger.md",
+      "sha256": "6b149c7a28295e7621e243b8ca31d51294687e1648c250e8388df67bd28f7493"
+    },
+    {
+      "path": "implementation/phase19/instance-broader-regressions.json",
+      "sha256": "ee80cb3157173e2f76eb10d7fd1b4c8f833349d529817787072025284ec42442"
+    },
+    {
+      "path": "implementation/phase19/instance-broader-regressions.md",
+      "sha256": "e1697a9c047a25893df670e570017a01724b048df0ef331aa9523875555df8f8"
+    },
+    {
+      "path": "implementation/phase19/instance-evidence/selection-proposal.json",
+      "sha256": "159220c901ce44a1cb01eaf3abb7baa3c83f11d4f9fcf0bcf8ab46af9b27ea0a"
+    },
+    {
+      "path": "implementation/phase19/instance-independent-review.json",
+      "sha256": "c27660357bf065d0573275c289abc4abde67bc278e31900f0c288507edabf9f9"
+    },
+    {
+      "path": "implementation/phase19/instance-independent-review.md",
+      "sha256": "d4b4c768e589dd3821d2c03b2039c61b7ed30ff76e7bb06a321d662050209634"
+    },
+    {
+      "path": "implementation/phase19/instance-live-checking.json",
+      "sha256": "d962190f496cfc3159d879ec1bfb6366c99e2360b8578426c8e040afea104101"
+    },
+    {
+      "path": "implementation/phase19/instance-live-checking.md",
+      "sha256": "d0980073ed2797545bc80b4199b0dcfcd58d30f04a8ecd566f9c0fae0ec38a76"
+    },
+    {
+      "path": "implementation/phase19/live-checker-release.json",
+      "sha256": "b9f676fdbf65129208f0287da8eca2d72cced386ef2d4272fb5210235112bd5d"
+    },
+    {
+      "path": "implementation/phase19/live-checker-release.md",
+      "sha256": "c371d84f8c244f97b130c2bd0530c28f0b4729d2f504615e7811e8d7e3a8ce77"
+    },
+    {
+      "path": "selfhost/CONFORMANCE.md",
+      "sha256": "c3c69fd840cb0e1345702b9a3a146acfdbfed538ef68159aa038773978b3c960"
+    },
+    {
+      "path": "selfhost/README.md",
+      "sha256": "c176365e284d267abff9eeff3b6a7125891e92ffd47c8535157992010545bbd1"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-broader-audit-01/supplement-freeze.json",
+      "sha256": "1bec7df8b996ed0760f27967ec506cd1cda8ee52cf1c2a3fb7e192f81dd037c2"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-build-03/attempt.json",
+      "sha256": "739e7173180cf52cb823dedb94c0c2445cd08190a69284889f7fa595239e5425"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-handoff-01/owner-freeze.json",
+      "sha256": "7b440daf69d51cc5dbdfd2367ff0dd218d7f65623481095c1e88118811e3da6e"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-promotion-01/report.json",
+      "sha256": "a73ae35fc716c383d2465b49125b410b9ae5503bedacbf9f34d4340174a70b65"
+    },
+    {
+      "path": "selfhost/build/phase19/instance-smoke-01/launcher.json",
+      "sha256": "3ab905dc3dd134f7173ceac2659717e77551d86af5e08da4a15ce7ea01821707"
+    },
+    {
+      "path": "selfhost/dist/release-lineage/checked-api.mjs",
+      "sha256": "d4e57543cdb0a01e93adae9839e81c27e17512b995976230ffde4502c7d518d0"
+    },
+    {
+      "path": "selfhost/dist/release-lineage/checked-bootstrap.json",
+      "sha256": "7e1d93e0f6b02d00478f20edf69af4232a3c81366d09678201872897c529f07c"
+    },
+    {
+      "path": "selfhost/dist/release-lineage/derivation.json",
+      "sha256": "8ddca83857aa90f2844f289698aaef27fadaf751980d9ceb812bd80177b4cd4f"
+    },
+    {
+      "path": "selfhost/dist/release.json",
+      "sha256": "7b9c3919c44840a2eeddc9aeae759e636557b5163e1f25292d1ad46f1b1bfd75"
+    },
+    {
+      "path": "selfhost/dist/typed-api.mjs",
+      "sha256": "a15d150a920b89d9c0781372356424e559edabef3246ca281741069b0fe739b6"
+    },
+    {
+      "path": "selfhost/docs/ARCHITECTURE.md",
+      "sha256": "d49d9a38880c6483fd78e1afce4a010f6576b2f95926978eb1e4e4e01abfcdfe"
+    },
+    {
+      "path": "selfhost/src/check/annotate.bend",
+      "sha256": "1912e5d177514733e706297fbb53e730c1f7a9edc91ffb06d2b1de7e2547648c"
+    },
+    {
+      "path": "selfhost/src/check/kernel.bend",
+      "sha256": "da7ee29f9755f09acd9f89fcfd37465b52ab8778971200c946c70e50eb5b4132"
+    },
+    {
+      "path": "selfhost/src/check/specialize.bend",
+      "sha256": "76e0f9249ae15cc0734a8e9d2e75677794e2eb5464c7756a19daff8b8217e7ee"
+    },
+    {
+      "path": "selfhost/src/diagnostic/produce.bend",
+      "sha256": "9518cb01c0c7636654bfa14dd332ac49756572ba975c7789c865e9cd8cf75c80"
+    },
+    {
+      "path": "selfhost/src/diagnostic/trace.bend",
+      "sha256": "0e03e2827415d082d295976b57564c7b0bd872f7c81229e653d7e0ddda62b10f"
+    },
+    {
+      "path": "selfhost/src/driver/api.bend",
+      "sha256": "6c18e42a07628f4b54c08eb9d6d5f5912be3569775d380136f99bb8d1a0f133d"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-broader-report-v2.py",
+      "sha256": "9959cd095b6a7d0572554ae5a6b61a234d6a8880b489456ad79ee5db26dc8892"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-broader-report.py",
+      "sha256": "05cc19ab15f44c8fc82f642c56668ed9430b603deddfb73378017f8b7a8546f0"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-close-01.py",
+      "sha256": "07495aefd1ce5e729f7e654c04a051cf9681ceae5357859b858c4351ea6f02e7"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-correct-02.py",
+      "sha256": "4c0f420b017546e6cdbc7c9ee124b2eb0737bef4b195a9c1e1691aabc21d1446"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-correct-03.py",
+      "sha256": "c495b6a4498cd8179114bfd89ab638318a39acc3fc37f7f934e9faeaf4718976"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-correct-04.py",
+      "sha256": "e0c47f14501058221581bf6a88ebd7e14294a44d14f17b3caecac549d1bb97a7"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-direct-v2.mjs",
+      "sha256": "1f9db5109053d62a06094b4e601dfbbaca3529003287ad2ec0bb49eede6650c5"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-direct.mjs",
+      "sha256": "e40632b89df835de3443fb04e0c17330035f0013df9c77a1106f20cdf4564b3c"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-key61.mjs",
+      "sha256": "dad530ae845671c5f86533134d0682f7ee4e4cf84c24b3f922464adb327dfcec"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-let-prepare-v2.py",
+      "sha256": "09313303de98c3536c3801f643f1579ec7fd0f20459c8351b847fe26abef6746"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-let-prepare.py",
+      "sha256": "a017fd2690b57e594b2dbba25568add42f5310a0dc12f7d5056cbbdc5ea2325b"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-let-ranges-v2.mjs",
+      "sha256": "402260ecc5c513f01ddf6ac55e10063e337f0268b0f9d080ac8be1108c7430bb"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-let-ranges.mjs",
+      "sha256": "920976bb4dba09a6fd91b07830e3130345feedf9a74dc6c33e69ec94cee29533"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-memo.mjs",
+      "sha256": "ecc43e9e97bcc12c44173e31edc81ce2c271a6a51dc016f27d2fcc5d25aa1ec4"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-mint-01.py",
+      "sha256": "0374e47869adfdaf3aa381a9381824e46a7ed67d5eb4e17b60711d6079400f6d"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-paired.mjs",
+      "sha256": "942ba5c57dfd9f279c27a1e0994a78f6a658504d057ecf1ab0adaa49597d63e3"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-prepare.py",
+      "sha256": "f60fe0fb59068331e5552b0bf2ce462900b274992e9ef988c4c76f67209269f0"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-probe-library.mjs",
+      "sha256": "5964460848cc37a3d3aa65dde6f3bd33da34fb99e0c9dc849e88a45d9cc06656"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-promote.mjs",
+      "sha256": "7379c49bd6cea87dbdf6a2b813e7ac685abd8920ec2eda790e802a6f9c011df5"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-recursion-prepare.py",
+      "sha256": "0452de7f217221c0b1bfd3a36d5cf2f598a5322dc70db20088dddd616622e062"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-report.py",
+      "sha256": "6a03473fc665ff2cc05da991dc0dc735c59d1fb45f835df15a37b431a1b3a379"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-sequencing-01.py",
+      "sha256": "463237fe4a96ddf561635b00ba17d84b138437fecbfd36251d7829242f25ca2b"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-static-correct-01.py",
+      "sha256": "c409a2c5f240c20ddbf2945fafbef43a2e1341ab4de13983961b0715399dfccd"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-world-01.py",
+      "sha256": "01131e28ab09d85d3e2afec2df090db921f24dcd9bd73469d368bd382c6d979c"
+    }
+  ],
+  "additionalFiles": []
+}

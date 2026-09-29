@@ -1,0 +1,51 @@
+--- a/selfhost/tools/performance/phase19/prefix-preserve.py
++++ b/selfhost/tools/performance/phase19/instance-preserve.py
+@@ -4,8 +4,8 @@
+ import difflib, gzip, hashlib, json, os, posixpath, stat, subprocess, sys, tarfile
+ 
+ ROOT = Path(__file__).resolve().parents[4]
+-PLAN = ROOT/'implementation/phase19/prefix-evidence/selection-proposal.json'
+-FREEZE = ROOT/'implementation/phase19/prefix-evidence/root-freeze.json'
++PLAN = ROOT/'implementation/phase19/instance-evidence/selection-proposal.json'
++FREEZE = ROOT/'implementation/phase19/instance-evidence/root-freeze.json'
+ 
+ def need(ok, message):
+     if not ok: raise ValueError(message)
+@@ -28,7 +28,7 @@
+     p = json.loads(PLAN.read_text()); f = json.loads(FREEZE.read_text())
+     need(f.get('authorized') is True and f.get('allProducersClosed') is True, 'Root producer freeze required')
+     need(f['finalAttempt'] == p['finalAttempt'] and f['finalApiSha256'] == p['finalApiSha256'], 'Freeze/plan identity mismatch')
+-    need(p['anchorStatus'] == 'installed-prefix-release' and f.get('anchorStatus') == p['anchorStatus'], 'Explicit installed prefix release freeze required')
++    need(p['anchorStatus'] == 'installed-live-checker-release' and f.get('anchorStatus') == p['anchorStatus'], 'Explicit installed live checker release freeze required')
+     a = json.loads((ROOT/p['finalAttempt']/'attempt.json').read_text())
+     need(a['api']['sha256'] == p['finalApiSha256'] and sha(a['api']['file']) == p['finalApiSha256'], 'Final API mismatch')
+     for row in f['inputs']:
+@@ -129,8 +129,8 @@
+         after = (ROOT/row['path']).read_bytes(); baseline.append({'path': name, 'exists': existed, 'sha256': hashlib.sha256(before).hexdigest()})
+         if before != after:
+             patch.extend(difflib.unified_diff(before.decode().splitlines(True), after.decode().splitlines(True), fromfile='a/'+name if existed else '/dev/null', tofile='b/'+name))
+-    patch_file = out/'phase17-to-anchor.patch'; patch_file.write_text(''.join(patch))
+-    inventory = {'kind':'phase19-prefix-scoped-inventory','scope':'Selected closed Phase19 installed prefix release and its exact/proof controls only; active checker/parser experiments and excluded entries are not claimed preserved.',
++    patch_file = out/'prefix-to-anchor.patch'; patch_file.write_text(''.join(patch))
++    inventory = {'kind':'phase19-instance-scoped-inventory','scope':'Selected closed Phase19 live checker release and its checker experiments/gates only; active contextual parser work and previously preserved prefix originals remain outside this capsule.',
+       'planSha256':sha(PLAN),'freezeSha256':sha(FREEZE),'baselineCommit':p['baselineCommit'],'finalSource':p['finalSource'],'finalAttempt':p['finalAttempt'],
+       'finalApiSha256':p['finalApiSha256'],'anchorStatus':p['anchorStatus'],'selectedRoots':selected,'fixtureDependencies':dependencies,'externalPrerequisites':p['externalPrerequisites'],'excludedPhase19Roots':excluded,'members':rows,'sourceBaseline':baseline,
+       'patch':{'path':patch_file.name,'bytes':patch_file.stat().st_size,'sha256':sha(patch_file)},'maxPartPayloadBytes':p['maxPartPayloadBytes'],'maxArchiveBytes':p['maxArchiveBytes']}
+@@ -166,7 +166,7 @@
+             need(archive.stat().st_size < inv['maxArchiveBytes'], 'Archive exceeds reviewed GitHub bound')
+             archives.append({'path':archive.name,'bytes':archive.stat().st_size,'sha256':sha(archive),'members':[r['path'] for r in rows]})
+     for row in inv['members']: current(row)
+-    write(out/'manifest.json', {'kind':'phase19-prefix-scoped-capture','complete':True,'captured':True,'recoveryPending':True,
++    write(out/'manifest.json', {'kind':'phase19-instance-scoped-capture','complete':True,'captured':True,'recoveryPending':True,
+       'tool':{'path':str(Path(__file__).relative_to(ROOT)),'sha256':sha(__file__)},'inventory':{'path':invfile.name,'sha256':sha(invfile)},'archives':archives,
+       'files':len(inv['members']),'bytes':sum(r['bytes'] for r in inv['members']),'scope':inv['scope']})
+     print(json.dumps({'captured':True,'archives':len(archives),'compressedBytes':sum(r['bytes'] for r in archives),'recoveryPending':True}))
+@@ -176,7 +176,7 @@
+     try:
+         if mode == 'prepare': prepare(out)
+         elif mode == 'capture': capture(out)
+-        else: raise ValueError('Usage: prefix-preserve.py prepare|capture NEW_EVIDENCE_DIRECTORY')
++        else: raise ValueError('Usage: instance-preserve.py prepare|capture NEW_EVIDENCE_DIRECTORY')
+     except Exception as e:
+         if out.exists(): write(out/(mode+'-failure.json'), {'complete':False,'error':repr(e),'toolSha256':sha(__file__)})
+         raise

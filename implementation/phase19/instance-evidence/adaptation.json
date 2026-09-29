@@ -1,0 +1,33 @@
+{
+  "kind": "phase19-live-checker-preservation-adaptation",
+  "status": "prepared-not-run",
+  "parent": {
+    "path": "selfhost/tools/performance/phase19/prefix-preserve.py",
+    "sha256": "c0a0d5c53485ed30385cbbcc233472b90f79534a843cb2b98e694feb5d90b6f4"
+  },
+  "collector": {
+    "path": "selfhost/tools/performance/phase19/instance-preserve.py",
+    "sha256": "5ab406b346997394c6d7c3e7dd289efd79c6927eaa65a2f5a855230349d1558f"
+  },
+  "patch": {
+    "path": "implementation/phase19/instance-evidence/collector-adaptation.patch",
+    "sha256": "bac616075d72f72603bf3367cf527f51e6cb3a148148316232c92db45ef4116f"
+  },
+  "unchangedRecoverer": {
+    "path": "selfhost/tools/performance/phase16/compact-recover.py",
+    "sha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234"
+  },
+  "syntax": "Python ast.parse passed; no inventory/capture/recovery mode invoked",
+  "changes": [
+    "Live checker evidence paths/output labels",
+    "Explicit installed-live-checker-release anchor freeze guard",
+    "Prefix-baseline source patch filename"
+  ],
+  "unchanged": [
+    "Member selection and exact fixture dependency rules",
+    "Archive encoding and splitting",
+    "Hash/type/mode/link validation",
+    "Fixed-commit source reconstruction",
+    "Independent recovery path policy"
+  ]
+}

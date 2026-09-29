@@ -1,5 +1,21 @@
 # Compiler evidence preservation index
 
+## Phase19 shared live checker — 2026-09-29
+
+The [release report](../implementation/phase19/live-checker-release.md) and
+[live-checker capsule](../implementation/phase19/instance-evidence/README.md)
+retain the installed source/API lineage, removed-specializer experiment, failed
+preparations and controls, exact frontend/backend/history observations, controlled
+cost comparison and relocated CLI checks. Independent recovery verifies all5,016
+regular members and reconstructs214source files from fixed prefix commit506f5ca
+plus the six-file patch. Five archives total21,102,971bytes. The
+[receipt](../implementation/phase19/instance-evidence/preservation.json) binds
+all65frozen inputs and unchanged75protected Phase6 states. Pre-promotion live-path
+identities retain explicit historical mappings; original boundary/public18 and
+broader strict failures remain failed. Active contextual parser and Phase20 work
+are excluded. Prefix/Phase18 capsules and their prerequisites remain required.
+
+
 ## Phase19 installed prefix identity correction — 2026-09-29
 
 The [prefix release capsule](../implementation/phase19/prefix-evidence/README.md)

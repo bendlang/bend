@@ -1,0 +1,866 @@
+{
+  "kind": "phase19-live-checker-selection-review",
+  "complete": true,
+  "pass": true,
+  "inventory": {
+    "path": "implementation/phase19/instance-evidence/capsule-01/inventory.json",
+    "sha256": "cbc818b8c2eb1c12b4147e8067c4cf822fe9c8cb83745609721000419c9a8c21"
+  },
+  "members": 5016,
+  "bytes": 162789405,
+  "symlinks": 0,
+  "topics": {
+    "final": 875,
+    "checker": 3973,
+    "boundary": 168
+  },
+  "sourceMembers": 214,
+  "checks": {
+    "all59ReleasePathsSelected": true,
+    "all65FrozenInputsSelected": true,
+    "allHistoricalPrefixComparisonsRecoverable": true,
+    "exactlySixChangedSourceFiles": true,
+    "noForbiddenPayload": true,
+    "complete214SourceMembers": true
+  },
+  "fixtureExpansions": [
+    {
+      "path": "selfhost/build/phase11/pattern-fixtures-01",
+      "members": 11,
+      "bytes": 6349
+    },
+    {
+      "path": "selfhost/build/phase14/laws-controls-04/fixtures",
+      "members": 23,
+      "bytes": 1764
+    },
+    {
+      "path": "selfhost/build/phase16/alias-binding-controls-01/fixtures",
+      "members": 13,
+      "bytes": 1365
+    },
+    {
+      "path": "selfhost/build/phase16/alias-binding-lambda-controls-01/fixtures",
+      "members": 12,
+      "bytes": 1010
+    },
+    {
+      "path": "selfhost/build/phase16/alias-pattern-controls-02/fixtures",
+      "members": 8,
+      "bytes": 910
+    },
+    {
+      "path": "selfhost/build/phase16/empty-call-pattern-controls-02/fixtures",
+      "members": 17,
+      "bytes": 1178
+    },
+    {
+      "path": "selfhost/build/phase16/kind-origin-source-01/fixtures",
+      "members": 5,
+      "bytes": 347
+    },
+    {
+      "path": "selfhost/build/phase16/local-law-source-01/fixtures",
+      "members": 8,
+      "bytes": 473
+    },
+    {
+      "path": "selfhost/build/phase16/marked-pattern-controls-02/fixtures",
+      "members": 17,
+      "bytes": 1233
+    },
+    {
+      "path": "selfhost/build/phase16/module-names-controls-01/fixtures",
+      "members": 11,
+      "bytes": 908
+    },
+    {
+      "path": "selfhost/build/phase16/parser-checkpoint-controls-03/fixtures",
+      "members": 25,
+      "bytes": 1685
+    },
+    {
+      "path": "selfhost/build/phase16/program-completion-controls-02",
+      "members": 11,
+      "bytes": 11583
+    },
+    {
+      "path": "selfhost/build/phase16/quiet-todo-controls-03",
+      "members": 2,
+      "bytes": 3550
+    },
+    {
+      "path": "selfhost/build/phase16/quiet-todo-source-01/fixtures",
+      "members": 12,
+      "bytes": 638
+    },
+    {
+      "path": "selfhost/build/phase16/rejected-stage-controls-01/fixtures",
+      "members": 8,
+      "bytes": 1291
+    },
+    {
+      "path": "selfhost/build/phase16/spans-import-fixtures-01",
+      "members": 19,
+      "bytes": 11735
+    },
+    {
+      "path": "selfhost/build/phase16/spans-import-fixtures-02",
+      "members": 9,
+      "bytes": 8925
+    },
+    {
+      "path": "selfhost/build/phase16/unbound-marker-source-01/fixtures",
+      "members": 9,
+      "bytes": 548
+    },
+    {
+      "path": "selfhost/build/phase16/unbound-marker-source-02",
+      "members": 220,
+      "bytes": 1284975
+    },
+    {
+      "path": "selfhost/build/phase17/group-controls-03/fixtures",
+      "members": 33,
+      "bytes": 2117
+    },
+    {
+      "path": "selfhost/build/phase17/instance-controls-02/fixtures",
+      "members": 15,
+      "bytes": 2912
+    },
+    {
+      "path": "selfhost/build/phase17/instance-nested-01/fixtures",
+      "members": 4,
+      "bytes": 845
+    },
+    {
+      "path": "selfhost/tests/phase9-literals/fixtures",
+      "members": 31,
+      "bytes": 9034
+    }
+  ],
+  "excludedRootCount": 62,
+  "forbiddenMembers": [],
+  "sourcePatchFiles": [
+    "src/check/annotate.bend",
+    "src/check/kernel.bend",
+    "src/check/specialize.bend",
+    "src/diagnostic/produce.bend",
+    "src/diagnostic/trace.bend",
+    "src/driver/api.bend"
+  ],
+  "historicalPrefixIdentityScope": "Only original handoff comparisonSourceIdentities.installedPrefix; pre-promotion live paths bind prior committed/capsule bytes, never rewritten to current released bytes.",
+  "historicalPrefixIdentities": [
+    {
+      "historicalLivePath": "selfhost/src/core/term.bend",
+      "expectedSha256": "5965089581fbff229fa5395c865bfc1539dd43e730d5f9f563b010638637234b",
+      "expectedBytes": 18143,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "5965089581fbff229fa5395c865bfc1539dd43e730d5f9f563b010638637234b",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/core/term.bend",
+      "prefixCapsuleSha256": "5965089581fbff229fa5395c865bfc1539dd43e730d5f9f563b010638637234b",
+      "currentLiveSha256": "5965089581fbff229fa5395c865bfc1539dd43e730d5f9f563b010638637234b",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/core/index.bend",
+      "expectedSha256": "d6a80b85b6006f7750545dffe49aa0caf181fd0f555ac251be56b6c886677223",
+      "expectedBytes": 10030,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "d6a80b85b6006f7750545dffe49aa0caf181fd0f555ac251be56b6c886677223",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/core/index.bend",
+      "prefixCapsuleSha256": "d6a80b85b6006f7750545dffe49aa0caf181fd0f555ac251be56b6c886677223",
+      "currentLiveSha256": "d6a80b85b6006f7750545dffe49aa0caf181fd0f555ac251be56b6c886677223",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/core/normalize.bend",
+      "expectedSha256": "d4d8f4eea15aa8a1dfe188fb1689cb6a7e38071b6baf132bb88f388e235cdfb1",
+      "expectedBytes": 19597,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "d4d8f4eea15aa8a1dfe188fb1689cb6a7e38071b6baf132bb88f388e235cdfb1",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/core/normalize.bend",
+      "prefixCapsuleSha256": "d4d8f4eea15aa8a1dfe188fb1689cb6a7e38071b6baf132bb88f388e235cdfb1",
+      "currentLiveSha256": "d4d8f4eea15aa8a1dfe188fb1689cb6a7e38071b6baf132bb88f388e235cdfb1",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/core/graph.bend",
+      "expectedSha256": "51a4afb648eb064d78b50badd8fb264fc55c182f9c22299d72ce637a891bed89",
+      "expectedBytes": 14315,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "51a4afb648eb064d78b50badd8fb264fc55c182f9c22299d72ce637a891bed89",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/core/graph.bend",
+      "prefixCapsuleSha256": "51a4afb648eb064d78b50badd8fb264fc55c182f9c22299d72ce637a891bed89",
+      "currentLiveSha256": "51a4afb648eb064d78b50badd8fb264fc55c182f9c22299d72ce637a891bed89",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/core/reach.bend",
+      "expectedSha256": "b7ead8697a4da7e57a9b047635217786aa5bb4644b5c35298698b71ad35a45d3",
+      "expectedBytes": 8060,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "b7ead8697a4da7e57a9b047635217786aa5bb4644b5c35298698b71ad35a45d3",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/core/reach.bend",
+      "prefixCapsuleSha256": "b7ead8697a4da7e57a9b047635217786aa5bb4644b5c35298698b71ad35a45d3",
+      "currentLiveSha256": "b7ead8697a4da7e57a9b047635217786aa5bb4644b5c35298698b71ad35a45d3",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/core/pretty.bend",
+      "expectedSha256": "40b4e6ca55bf11009881b893c7959dd52cc64bbc6cb2dbb607e94dbab69fdedc",
+      "expectedBytes": 16800,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "40b4e6ca55bf11009881b893c7959dd52cc64bbc6cb2dbb607e94dbab69fdedc",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/core/pretty.bend",
+      "prefixCapsuleSha256": "40b4e6ca55bf11009881b893c7959dd52cc64bbc6cb2dbb607e94dbab69fdedc",
+      "currentLiveSha256": "40b4e6ca55bf11009881b893c7959dd52cc64bbc6cb2dbb607e94dbab69fdedc",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/check/quantity.bend",
+      "expectedSha256": "b4a8ca1f8dff10f4f64397ea53bbbe272bb32400e993b1077d284ec1d8a70b4d",
+      "expectedBytes": 4069,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "b4a8ca1f8dff10f4f64397ea53bbbe272bb32400e993b1077d284ec1d8a70b4d",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/check/quantity.bend",
+      "prefixCapsuleSha256": "b4a8ca1f8dff10f4f64397ea53bbbe272bb32400e993b1077d284ec1d8a70b4d",
+      "currentLiveSha256": "b4a8ca1f8dff10f4f64397ea53bbbe272bb32400e993b1077d284ec1d8a70b4d",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/check/kernel.bend",
+      "expectedSha256": "bb3401fd046d95289354d5dc0d4285d809bb2a3612e265b92317db32ec8f3579",
+      "expectedBytes": 37678,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "bb3401fd046d95289354d5dc0d4285d809bb2a3612e265b92317db32ec8f3579",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/check/kernel.bend",
+      "prefixCapsuleSha256": "bb3401fd046d95289354d5dc0d4285d809bb2a3612e265b92317db32ec8f3579",
+      "currentLiveSha256": "da7ee29f9755f09acd9f89fcfd37465b52ab8778971200c946c70e50eb5b4132",
+      "currentDiffers": true,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/check/specialize.bend",
+      "expectedSha256": "41872293edf48dbbb1985b343afe0fb05a60107a21f0cdb696d98c0b9500c8cc",
+      "expectedBytes": 32561,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "41872293edf48dbbb1985b343afe0fb05a60107a21f0cdb696d98c0b9500c8cc",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/check/specialize.bend",
+      "prefixCapsuleSha256": "41872293edf48dbbb1985b343afe0fb05a60107a21f0cdb696d98c0b9500c8cc",
+      "currentLiveSha256": "76e0f9249ae15cc0734a8e9d2e75677794e2eb5464c7756a19daff8b8217e7ee",
+      "currentDiffers": true,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/check/prefix.bend",
+      "expectedSha256": "ceabf77fb49b58910d83fa896899061643c4c105f29e70bd87d3f73be873783d",
+      "expectedBytes": 3037,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "ceabf77fb49b58910d83fa896899061643c4c105f29e70bd87d3f73be873783d",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/check/prefix.bend",
+      "prefixCapsuleSha256": "ceabf77fb49b58910d83fa896899061643c4c105f29e70bd87d3f73be873783d",
+      "currentLiveSha256": "ceabf77fb49b58910d83fa896899061643c4c105f29e70bd87d3f73be873783d",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/check/annotate.bend",
+      "expectedSha256": "f2691278a57f4273be8e6b80369769c618c58d4ef03f5378d98582180b251621",
+      "expectedBytes": 10851,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "f2691278a57f4273be8e6b80369769c618c58d4ef03f5378d98582180b251621",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/check/annotate.bend",
+      "prefixCapsuleSha256": "f2691278a57f4273be8e6b80369769c618c58d4ef03f5378d98582180b251621",
+      "currentLiveSha256": "1912e5d177514733e706297fbb53e730c1f7a9edc91ffb06d2b1de7e2547648c",
+      "currentDiffers": true,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/front/lexer.bend",
+      "expectedSha256": "485778949ab65562c173ae406668531f96ba193a1cc050341fc6bb48a57d8b8f",
+      "expectedBytes": 11648,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "485778949ab65562c173ae406668531f96ba193a1cc050341fc6bb48a57d8b8f",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/front/lexer.bend",
+      "prefixCapsuleSha256": "485778949ab65562c173ae406668531f96ba193a1cc050341fc6bb48a57d8b8f",
+      "currentLiveSha256": "485778949ab65562c173ae406668531f96ba193a1cc050341fc6bb48a57d8b8f",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/front/parser.bend",
+      "expectedSha256": "226ba437e7193fc4b6a62a5f80dc680bd43240e4f45ef1ed3c29f607671bd90e",
+      "expectedBytes": 33209,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "226ba437e7193fc4b6a62a5f80dc680bd43240e4f45ef1ed3c29f607671bd90e",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/front/parser.bend",
+      "prefixCapsuleSha256": "226ba437e7193fc4b6a62a5f80dc680bd43240e4f45ef1ed3c29f607671bd90e",
+      "currentLiveSha256": "226ba437e7193fc4b6a62a5f80dc680bd43240e4f45ef1ed3c29f607671bd90e",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/front/declarations.bend",
+      "expectedSha256": "d21a9d7f372fac4d4f78d570dff10ac049bf6918c49d26adf2fd5eece8f2f5e5",
+      "expectedBytes": 30448,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "d21a9d7f372fac4d4f78d570dff10ac049bf6918c49d26adf2fd5eece8f2f5e5",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/front/declarations.bend",
+      "prefixCapsuleSha256": "d21a9d7f372fac4d4f78d570dff10ac049bf6918c49d26adf2fd5eece8f2f5e5",
+      "currentLiveSha256": "d21a9d7f372fac4d4f78d570dff10ac049bf6918c49d26adf2fd5eece8f2f5e5",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/front/flatten.bend",
+      "expectedSha256": "c696c0a79a5f47eb0574d481a1016fcb42d5f35fcdf6cbcaf6b7372ee832ab76",
+      "expectedBytes": 8896,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "c696c0a79a5f47eb0574d481a1016fcb42d5f35fcdf6cbcaf6b7372ee832ab76",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/front/flatten.bend",
+      "prefixCapsuleSha256": "c696c0a79a5f47eb0574d481a1016fcb42d5f35fcdf6cbcaf6b7372ee832ab76",
+      "currentLiveSha256": "c696c0a79a5f47eb0574d481a1016fcb42d5f35fcdf6cbcaf6b7372ee832ab76",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/front/elaborate.bend",
+      "expectedSha256": "1a09499f062c5924873749dbb6ec40379c357bb86e973e3135e3c86508e3992c",
+      "expectedBytes": 20008,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "1a09499f062c5924873749dbb6ec40379c357bb86e973e3135e3c86508e3992c",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/front/elaborate.bend",
+      "prefixCapsuleSha256": "1a09499f062c5924873749dbb6ec40379c357bb86e973e3135e3c86508e3992c",
+      "currentLiveSha256": "1a09499f062c5924873749dbb6ec40379c357bb86e973e3135e3c86508e3992c",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/front/sugar.bend",
+      "expectedSha256": "7a66610ab96f9541befb374ea4805ec56b694a25effa579c2ee739465a60743d",
+      "expectedBytes": 8439,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "7a66610ab96f9541befb374ea4805ec56b694a25effa579c2ee739465a60743d",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/front/sugar.bend",
+      "prefixCapsuleSha256": "7a66610ab96f9541befb374ea4805ec56b694a25effa579c2ee739465a60743d",
+      "currentLiveSha256": "7a66610ab96f9541befb374ea4805ec56b694a25effa579c2ee739465a60743d",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/front/unicode.bend",
+      "expectedSha256": "ec396d509487efd85116c6931419de71824d046be72340e456f7c19d6aa95fca",
+      "expectedBytes": 4606,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "ec396d509487efd85116c6931419de71824d046be72340e456f7c19d6aa95fca",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/front/unicode.bend",
+      "prefixCapsuleSha256": "ec396d509487efd85116c6931419de71824d046be72340e456f7c19d6aa95fca",
+      "currentLiveSha256": "ec396d509487efd85116c6931419de71824d046be72340e456f7c19d6aa95fca",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/front/literals_arrays.bend",
+      "expectedSha256": "33245ae678904c5f59c47e7ac6214e4a94d74e4bca0bc28d768fb56441ac537d",
+      "expectedBytes": 7559,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "33245ae678904c5f59c47e7ac6214e4a94d74e4bca0bc28d768fb56441ac537d",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/front/literals_arrays.bend",
+      "prefixCapsuleSha256": "33245ae678904c5f59c47e7ac6214e4a94d74e4bca0bc28d768fb56441ac537d",
+      "currentLiveSha256": "33245ae678904c5f59c47e7ac6214e4a94d74e4bca0bc28d768fb56441ac537d",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/front/parallel.bend",
+      "expectedSha256": "3f1bfb736d4d611c970a47b95c7b7183288a050118c27936ce9a2a673fe28c63",
+      "expectedBytes": 4706,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "3f1bfb736d4d611c970a47b95c7b7183288a050118c27936ce9a2a673fe28c63",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/front/parallel.bend",
+      "prefixCapsuleSha256": "3f1bfb736d4d611c970a47b95c7b7183288a050118c27936ce9a2a673fe28c63",
+      "currentLiveSha256": "3f1bfb736d4d611c970a47b95c7b7183288a050118c27936ce9a2a673fe28c63",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/front/fresh_work.bend",
+      "expectedSha256": "769054fd4874c6e884c4106cbe5c021f508e1d46e90330646d864a92a94e75f1",
+      "expectedBytes": 7444,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "769054fd4874c6e884c4106cbe5c021f508e1d46e90330646d864a92a94e75f1",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/front/fresh_work.bend",
+      "prefixCapsuleSha256": "769054fd4874c6e884c4106cbe5c021f508e1d46e90330646d864a92a94e75f1",
+      "currentLiveSha256": "769054fd4874c6e884c4106cbe5c021f508e1d46e90330646d864a92a94e75f1",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/front/freshen.bend",
+      "expectedSha256": "a36e390702577bcfd2e3f1d5e97c9d1d5524354eaffca1fdf895ccfa388b017f",
+      "expectedBytes": 1187,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "a36e390702577bcfd2e3f1d5e97c9d1d5524354eaffca1fdf895ccfa388b017f",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/front/freshen.bend",
+      "prefixCapsuleSha256": "a36e390702577bcfd2e3f1d5e97c9d1d5524354eaffca1fdf895ccfa388b017f",
+      "currentLiveSha256": "a36e390702577bcfd2e3f1d5e97c9d1d5524354eaffca1fdf895ccfa388b017f",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/load/paths.bend",
+      "expectedSha256": "a9fc17a8af04c1958d1f11e8c1c5b7c2d3eb925dd9075e6c77de4bdb3521f2a2",
+      "expectedBytes": 2186,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "a9fc17a8af04c1958d1f11e8c1c5b7c2d3eb925dd9075e6c77de4bdb3521f2a2",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/load/paths.bend",
+      "prefixCapsuleSha256": "a9fc17a8af04c1958d1f11e8c1c5b7c2d3eb925dd9075e6c77de4bdb3521f2a2",
+      "currentLiveSha256": "a9fc17a8af04c1958d1f11e8c1c5b7c2d3eb925dd9075e6c77de4bdb3521f2a2",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/front/families.bend",
+      "expectedSha256": "717347c88e836f426a0e52d478bfc5fd909c63a99207f9a58351cded1bb74226",
+      "expectedBytes": 12189,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "717347c88e836f426a0e52d478bfc5fd909c63a99207f9a58351cded1bb74226",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/front/families.bend",
+      "prefixCapsuleSha256": "717347c88e836f426a0e52d478bfc5fd909c63a99207f9a58351cded1bb74226",
+      "currentLiveSha256": "717347c88e836f426a0e52d478bfc5fd909c63a99207f9a58351cded1bb74226",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/front/validate.bend",
+      "expectedSha256": "678980d566eada7ab1ee72d2c166373abb4fa74b17e142e5c8eba4ab09d1790f",
+      "expectedBytes": 13774,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "678980d566eada7ab1ee72d2c166373abb4fa74b17e142e5c8eba4ab09d1790f",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/front/validate.bend",
+      "prefixCapsuleSha256": "678980d566eada7ab1ee72d2c166373abb4fa74b17e142e5c8eba4ab09d1790f",
+      "currentLiveSha256": "678980d566eada7ab1ee72d2c166373abb4fa74b17e142e5c8eba4ab09d1790f",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/load/imports.bend",
+      "expectedSha256": "1984fa4d79f387c3e538f0980d963b5838e248df57c78f18ac54ba9fbb417238",
+      "expectedBytes": 4267,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "1984fa4d79f387c3e538f0980d963b5838e248df57c78f18ac54ba9fbb417238",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/load/imports.bend",
+      "prefixCapsuleSha256": "1984fa4d79f387c3e538f0980d963b5838e248df57c78f18ac54ba9fbb417238",
+      "currentLiveSha256": "1984fa4d79f387c3e538f0980d963b5838e248df57c78f18ac54ba9fbb417238",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/load/graph.bend",
+      "expectedSha256": "e82313297977412338a49b102494b3e1db425d53dbc9a6263eff5b7aef5a6796",
+      "expectedBytes": 20531,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "e82313297977412338a49b102494b3e1db425d53dbc9a6263eff5b7aef5a6796",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/load/graph.bend",
+      "prefixCapsuleSha256": "e82313297977412338a49b102494b3e1db425d53dbc9a6263eff5b7aef5a6796",
+      "currentLiveSha256": "e82313297977412338a49b102494b3e1db425d53dbc9a6263eff5b7aef5a6796",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/load/seed.bend",
+      "expectedSha256": "ca4cb677af632c47c13792ede10d4e791c85b5cc6c756aacf230861d7bfa4c21",
+      "expectedBytes": 5224,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "ca4cb677af632c47c13792ede10d4e791c85b5cc6c756aacf230861d7bfa4c21",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/load/seed.bend",
+      "prefixCapsuleSha256": "ca4cb677af632c47c13792ede10d4e791c85b5cc6c756aacf230861d7bfa4c21",
+      "currentLiveSha256": "ca4cb677af632c47c13792ede10d4e791c85b5cc6c756aacf230861d7bfa4c21",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/load/modules.bend",
+      "expectedSha256": "1e0b6ee547c02d76aaeedbe317efb74eab18a0f227aa96ad0729ed79f6593308",
+      "expectedBytes": 15796,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "1e0b6ee547c02d76aaeedbe317efb74eab18a0f227aa96ad0729ed79f6593308",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/load/modules.bend",
+      "prefixCapsuleSha256": "1e0b6ee547c02d76aaeedbe317efb74eab18a0f227aa96ad0729ed79f6593308",
+      "currentLiveSha256": "1e0b6ee547c02d76aaeedbe317efb74eab18a0f227aa96ad0729ed79f6593308",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/diagnostic/model.bend",
+      "expectedSha256": "3c699ec70ef36700520658555bc5df025880691c44633cabb9e5719b60fc9c1c",
+      "expectedBytes": 754,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "3c699ec70ef36700520658555bc5df025880691c44633cabb9e5719b60fc9c1c",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/diagnostic/model.bend",
+      "prefixCapsuleSha256": "3c699ec70ef36700520658555bc5df025880691c44633cabb9e5719b60fc9c1c",
+      "currentLiveSha256": "3c699ec70ef36700520658555bc5df025880691c44633cabb9e5719b60fc9c1c",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/diagnostic/render.bend",
+      "expectedSha256": "695f41ace13e08756273c317659a419deee5fc79d413bd58e8711f124370276c",
+      "expectedBytes": 7804,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "695f41ace13e08756273c317659a419deee5fc79d413bd58e8711f124370276c",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/diagnostic/render.bend",
+      "prefixCapsuleSha256": "695f41ace13e08756273c317659a419deee5fc79d413bd58e8711f124370276c",
+      "currentLiveSha256": "695f41ace13e08756273c317659a419deee5fc79d413bd58e8711f124370276c",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/diagnostic/trace.bend",
+      "expectedSha256": "35d408f0eb1ea4e192469ce2cb4932cee04ab4aee7decf49b6594105f4625515",
+      "expectedBytes": 6502,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "35d408f0eb1ea4e192469ce2cb4932cee04ab4aee7decf49b6594105f4625515",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/diagnostic/trace.bend",
+      "prefixCapsuleSha256": "35d408f0eb1ea4e192469ce2cb4932cee04ab4aee7decf49b6594105f4625515",
+      "currentLiveSha256": "0e03e2827415d082d295976b57564c7b0bd872f7c81229e653d7e0ddda62b10f",
+      "currentDiffers": true,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/diagnostic/produce.bend",
+      "expectedSha256": "97f148d18e9b1e06b512a8f7a3b20123b412014328b66e1e491b543e6b5e317d",
+      "expectedBytes": 8815,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "97f148d18e9b1e06b512a8f7a3b20123b412014328b66e1e491b543e6b5e317d",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/diagnostic/produce.bend",
+      "prefixCapsuleSha256": "97f148d18e9b1e06b512a8f7a3b20123b412014328b66e1e491b543e6b5e317d",
+      "currentLiveSha256": "9518cb01c0c7636654bfa14dd332ac49756572ba975c7789c865e9cd8cf75c80",
+      "currentDiffers": true,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/diagnostic/frontend.bend",
+      "expectedSha256": "493baf9ae6a68a7cab2d65b3bb9ccb3af7de7834ffca6687db3c106b7b911475",
+      "expectedBytes": 10904,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "493baf9ae6a68a7cab2d65b3bb9ccb3af7de7834ffca6687db3c106b7b911475",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/diagnostic/frontend.bend",
+      "prefixCapsuleSha256": "493baf9ae6a68a7cab2d65b3bb9ccb3af7de7834ffca6687db3c106b7b911475",
+      "currentLiveSha256": "493baf9ae6a68a7cab2d65b3bb9ccb3af7de7834ffca6687db3c106b7b911475",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/back/js/foreign.bend",
+      "expectedSha256": "0f397f84a989c6fc9a52eaf962742e673cdba243864c0bbe7c16ce4ffd8eb065",
+      "expectedBytes": 5794,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "0f397f84a989c6fc9a52eaf962742e673cdba243864c0bbe7c16ce4ffd8eb065",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/back/js/foreign.bend",
+      "prefixCapsuleSha256": "0f397f84a989c6fc9a52eaf962742e673cdba243864c0bbe7c16ce4ffd8eb065",
+      "currentLiveSha256": "0f397f84a989c6fc9a52eaf962742e673cdba243864c0bbe7c16ce4ffd8eb065",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/back/js/literals.bend",
+      "expectedSha256": "2c4488a4f37010253a54e3745317c685ec77067475d471e577687acfa9a16776",
+      "expectedBytes": 5544,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "2c4488a4f37010253a54e3745317c685ec77067475d471e577687acfa9a16776",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/back/js/literals.bend",
+      "prefixCapsuleSha256": "2c4488a4f37010253a54e3745317c685ec77067475d471e577687acfa9a16776",
+      "currentLiveSha256": "2c4488a4f37010253a54e3745317c685ec77067475d471e577687acfa9a16776",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/back/js/validate.bend",
+      "expectedSha256": "f8fc315bf80dabbf8afd1b6ced8e7c322b8ef96d73859d47e01c4b317afb72a0",
+      "expectedBytes": 11066,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "f8fc315bf80dabbf8afd1b6ced8e7c322b8ef96d73859d47e01c4b317afb72a0",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/back/js/validate.bend",
+      "prefixCapsuleSha256": "f8fc315bf80dabbf8afd1b6ced8e7c322b8ef96d73859d47e01c4b317afb72a0",
+      "currentLiveSha256": "f8fc315bf80dabbf8afd1b6ced8e7c322b8ef96d73859d47e01c4b317afb72a0",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/back/js/choice.bend",
+      "expectedSha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3",
+      "expectedBytes": 3583,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/back/js/choice.bend",
+      "prefixCapsuleSha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3",
+      "currentLiveSha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/back/js/projection.bend",
+      "expectedSha256": "f534d7c74f396527a9d3e3a06bececebcf0b68d92400ccf46b8125e82735ef09",
+      "expectedBytes": 2355,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "f534d7c74f396527a9d3e3a06bececebcf0b68d92400ccf46b8125e82735ef09",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/back/js/projection.bend",
+      "prefixCapsuleSha256": "f534d7c74f396527a9d3e3a06bececebcf0b68d92400ccf46b8125e82735ef09",
+      "currentLiveSha256": "f534d7c74f396527a9d3e3a06bececebcf0b68d92400ccf46b8125e82735ef09",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/back/js/emit.bend",
+      "expectedSha256": "c30903559f29d3c8bbd22f48026b4a19a1644a2278ed371c4f423691dd26943f",
+      "expectedBytes": 29073,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "c30903559f29d3c8bbd22f48026b4a19a1644a2278ed371c4f423691dd26943f",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/back/js/emit.bend",
+      "prefixCapsuleSha256": "c30903559f29d3c8bbd22f48026b4a19a1644a2278ed371c4f423691dd26943f",
+      "currentLiveSha256": "c30903559f29d3c8bbd22f48026b4a19a1644a2278ed371c4f423691dd26943f",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/back/native/ir.bend",
+      "expectedSha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b",
+      "expectedBytes": 929,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/back/native/ir.bend",
+      "prefixCapsuleSha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b",
+      "currentLiveSha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/back/native/text.bend",
+      "expectedSha256": "20ca7aa5627b698771340d4a2e944caef9b1d100d0f2478a75a622b43a4d647b",
+      "expectedBytes": 2545,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "20ca7aa5627b698771340d4a2e944caef9b1d100d0f2478a75a622b43a4d647b",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/back/native/text.bend",
+      "prefixCapsuleSha256": "20ca7aa5627b698771340d4a2e944caef9b1d100d0f2478a75a622b43a4d647b",
+      "currentLiveSha256": "20ca7aa5627b698771340d4a2e944caef9b1d100d0f2478a75a622b43a4d647b",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/back/native/identity.bend",
+      "expectedSha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a",
+      "expectedBytes": 2476,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/back/native/identity.bend",
+      "prefixCapsuleSha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a",
+      "currentLiveSha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/back/native/layout.bend",
+      "expectedSha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b",
+      "expectedBytes": 135,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/back/native/layout.bend",
+      "prefixCapsuleSha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b",
+      "currentLiveSha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/back/native/intrinsic.bend",
+      "expectedSha256": "8acf8c4e083b55cc33ef323552963b254ac310c22e7d8b5e3b82253776892ab0",
+      "expectedBytes": 4905,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "8acf8c4e083b55cc33ef323552963b254ac310c22e7d8b5e3b82253776892ab0",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/back/native/intrinsic.bend",
+      "prefixCapsuleSha256": "8acf8c4e083b55cc33ef323552963b254ac310c22e7d8b5e3b82253776892ab0",
+      "currentLiveSha256": "8acf8c4e083b55cc33ef323552963b254ac310c22e7d8b5e3b82253776892ab0",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/back/native/tables.bend",
+      "expectedSha256": "edd92590e285d2a6158cbd9d9a465d8bd55cbbab9ee4cbcbb018ece1cccc506a",
+      "expectedBytes": 8586,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "edd92590e285d2a6158cbd9d9a465d8bd55cbbab9ee4cbcbb018ece1cccc506a",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/back/native/tables.bend",
+      "prefixCapsuleSha256": "edd92590e285d2a6158cbd9d9a465d8bd55cbbab9ee4cbcbb018ece1cccc506a",
+      "currentLiveSha256": "edd92590e285d2a6158cbd9d9a465d8bd55cbbab9ee4cbcbb018ece1cccc506a",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/back/native/emit.bend",
+      "expectedSha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a",
+      "expectedBytes": 5084,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/back/native/emit.bend",
+      "prefixCapsuleSha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a",
+      "currentLiveSha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/back/native/erase.bend",
+      "expectedSha256": "8f536cdfbca91b26bf426b3c8c5f42106fc0e18af7bfd2550ba73e7dab5530ec",
+      "expectedBytes": 3528,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "8f536cdfbca91b26bf426b3c8c5f42106fc0e18af7bfd2550ba73e7dab5530ec",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/back/native/erase.bend",
+      "prefixCapsuleSha256": "8f536cdfbca91b26bf426b3c8c5f42106fc0e18af7bfd2550ba73e7dab5530ec",
+      "currentLiveSha256": "8f536cdfbca91b26bf426b3c8c5f42106fc0e18af7bfd2550ba73e7dab5530ec",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/back/native/bridge.bend",
+      "expectedSha256": "361565a6d77450760786d36bf8afa863f47796f31f8cce493b4defe632af811a",
+      "expectedBytes": 23252,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "361565a6d77450760786d36bf8afa863f47796f31f8cce493b4defe632af811a",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/back/native/bridge.bend",
+      "prefixCapsuleSha256": "361565a6d77450760786d36bf8afa863f47796f31f8cce493b4defe632af811a",
+      "currentLiveSha256": "361565a6d77450760786d36bf8afa863f47796f31f8cce493b4defe632af811a",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/back/native/direct.bend",
+      "expectedSha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5",
+      "expectedBytes": 4200,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/back/native/direct.bend",
+      "prefixCapsuleSha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5",
+      "currentLiveSha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/back/native/pattern.bend",
+      "expectedSha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4",
+      "expectedBytes": 5324,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/back/native/pattern.bend",
+      "prefixCapsuleSha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4",
+      "currentLiveSha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/back/native/show.bend",
+      "expectedSha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d",
+      "expectedBytes": 6723,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/back/native/show.bend",
+      "prefixCapsuleSha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d",
+      "currentLiveSha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/back/native/parallel.bend",
+      "expectedSha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722",
+      "expectedBytes": 5003,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/back/native/parallel.bend",
+      "prefixCapsuleSha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722",
+      "currentLiveSha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/back/native/array.bend",
+      "expectedSha256": "4e1d5c9d282ba746ac1e98df470411d477bf1449b5621c3ad413f01e883d9149",
+      "expectedBytes": 1814,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "4e1d5c9d282ba746ac1e98df470411d477bf1449b5621c3ad413f01e883d9149",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/back/native/array.bend",
+      "prefixCapsuleSha256": "4e1d5c9d282ba746ac1e98df470411d477bf1449b5621c3ad413f01e883d9149",
+      "currentLiveSha256": "4e1d5c9d282ba746ac1e98df470411d477bf1449b5621c3ad413f01e883d9149",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/back/native/validate.bend",
+      "expectedSha256": "d0c1e75c5dbda3d2e65ea227667191252c49f71b63f0765c358c2041a0f484bb",
+      "expectedBytes": 2859,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "d0c1e75c5dbda3d2e65ea227667191252c49f71b63f0765c358c2041a0f484bb",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/back/native/validate.bend",
+      "prefixCapsuleSha256": "d0c1e75c5dbda3d2e65ea227667191252c49f71b63f0765c358c2041a0f484bb",
+      "currentLiveSha256": "d0c1e75c5dbda3d2e65ea227667191252c49f71b63f0765c358c2041a0f484bb",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/back/native/foreign.bend",
+      "expectedSha256": "ed7a06662072e73d45d10b1898599936b106dc22956a4fceea8d04ac22fb6d3c",
+      "expectedBytes": 4010,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "ed7a06662072e73d45d10b1898599936b106dc22956a4fceea8d04ac22fb6d3c",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/back/native/foreign.bend",
+      "prefixCapsuleSha256": "ed7a06662072e73d45d10b1898599936b106dc22956a4fceea8d04ac22fb6d3c",
+      "currentLiveSha256": "ed7a06662072e73d45d10b1898599936b106dc22956a4fceea8d04ac22fb6d3c",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/back/native/book.bend",
+      "expectedSha256": "180ee53af86a59df8efcc131d4f22b0ca6f5f9980dd222259f2941fbef1e11a2",
+      "expectedBytes": 14294,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "180ee53af86a59df8efcc131d4f22b0ca6f5f9980dd222259f2941fbef1e11a2",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/back/native/book.bend",
+      "prefixCapsuleSha256": "180ee53af86a59df8efcc131d4f22b0ca6f5f9980dd222259f2941fbef1e11a2",
+      "currentLiveSha256": "180ee53af86a59df8efcc131d4f22b0ca6f5f9980dd222259f2941fbef1e11a2",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/driver/report.bend",
+      "expectedSha256": "15f0985da866b948252490ec2f1b90aed9d36fb24b93eab24826648cc36e6df8",
+      "expectedBytes": 2593,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "15f0985da866b948252490ec2f1b90aed9d36fb24b93eab24826648cc36e6df8",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/driver/report.bend",
+      "prefixCapsuleSha256": "15f0985da866b948252490ec2f1b90aed9d36fb24b93eab24826648cc36e6df8",
+      "currentLiveSha256": "15f0985da866b948252490ec2f1b90aed9d36fb24b93eab24826648cc36e6df8",
+      "currentDiffers": false,
+      "pass": true
+    },
+    {
+      "historicalLivePath": "selfhost/src/driver/api.bend",
+      "expectedSha256": "ad0285c185a468ab541a4d28729fafd9d11c3c7c56ab308e9449ecd333bd8fee",
+      "expectedBytes": 3796,
+      "baselineCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+      "committedSha256": "ad0285c185a468ab541a4d28729fafd9d11c3c7c56ab308e9449ecd333bd8fee",
+      "prefixCapsulePath": "selfhost/build/phase19/prefix-source-01/project/src/driver/api.bend",
+      "prefixCapsuleSha256": "ad0285c185a468ab541a4d28729fafd9d11c3c7c56ab308e9449ecd333bd8fee",
+      "currentLiveSha256": "6c18e42a07628f4b54c08eb9d6d5f5912be3569775d380136f99bb8d1a0f133d",
+      "currentDiffers": true,
+      "pass": true
+    }
+  ],
+  "originalInputRecordsUnchanged": true,
+  "scope": "Selected closed live-checker release only; prior prefix/oracle and earlier capsule chain remain external. Active contextual parser and Phase20 remain excluded."
+}
