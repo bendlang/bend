@@ -1,0 +1,83 @@
+--- a/src/front/declarations.bend
++++ b/src/front/declarations.bend
+@@ -191,6 +191,7 @@
+ 
+ law f_statement:
+   for +p: FParsed
++  for +begin: U32
+   FParsed
+ 
+ law f_let_value:
+@@ -524,22 +525,23 @@
+ def f_body_at(
+   +ts: List<&2, FToken>,
+ ) -> FParsed:
+-  f_choose(FParsed, f_eq(f_tx(ts), "-"), u => f_erased_local(f_tl(ts), f_begin(ts)), u => f_choose(FParsed, f_eq(f_tx(ts), "match"), u => f_locate(f_match_heads(f_tl(ts), f_col(ts), Nil{}), f_begin(ts), False{}, True{}, False{}), u => f_statement(f_expr(ts, 0))))
+-
+-@unsafe
+-def f_statement(p):
++  f_choose(FParsed, f_eq(f_tx(ts), "-"), u => f_erased_local(f_tl(ts), f_begin(ts)), u => f_choose(FParsed, f_eq(f_tx(ts), "match"), u => f_locate(f_match_heads(f_tl(ts), f_col(ts), Nil{}), f_begin(ts), False{}, True{}, False{}), u => f_statement(f_expr(ts, 0), f_begin(ts))))
++
++@unsafe
++def f_statement(p, begin):
+   match p:
+     case FParsed{+n, +ts}:
+-      f_choose(FParsed, f_eq(f_tx(ts), "="), u => f_let_value(n, f_expr(f_tl(ts), 0)), u => f_choose(FParsed, f_eq(f_tx(ts), ":"), u => f_typed_let_try(n, ts, f_expr(f_tl(ts), 0)), u => f_statement_more(FParsed{n, ts})))
++      f_choose(FParsed, f_eq(f_tx(ts), "="), u => f_let_value(n, f_expr(f_tl(ts), 0)), u => f_choose(FParsed, f_eq(f_tx(ts), ":"), u => f_typed_let_try(n, ts, f_expr(f_tl(ts), 0), begin), u => f_statement_more(FParsed{n, ts})))
+ 
+ @unsafe
+ def f_let_ann(
+   +ty: KTerm,
+   +p: FParsed,
++  +begin: U32,
+ ) -> FParsed:
+   match p:
+     case FParsed{v, ts}:
+-      FParsed{kt("Ann", "", 0, 1, [v, ty]), ts}
++      FParsed{kt_span("Ann", "", 0, 1, [v, ty], begin, f_begin(f_space(ts))), ts}
+ 
+ @unsafe
+ def f_let_value(pat, p):
+@@ -551,7 +553,7 @@
+ def f_let_body(pat, v, p):
+   match p:
+     case FParsed{b, ts}:
+-      FParsed{f_choose(KTerm, f_eq(tg(b), "Error"), u => b, u => kt("Local", "", 0, 1, [pat, v, b])), ts}
++      FParsed{f_choose(KTerm, f_eq(tg(b), "Error"), u => b, u => kt_span("Local", "", 0, 1, [pat, v, b], kb(pat), ke(pat))), ts}
+ 
+ @unsafe
+ def f_match_heads(ts, indent, acc):
+--- a/src/front/parallel.bend
++++ b/src/front/parallel.bend
+@@ -69,6 +69,7 @@
+   for +n: KTerm
+   for +old: List<&2, FToken>
+   for +p: FParsed
++  for +begin: U32
+   FParsed
+ 
+ @unsafe
+@@ -137,10 +138,10 @@
+       f_choose(FParsed, f_eq(tg(n), "Write"), u => f_write_statement(n, ts), u => f_choose(FParsed, f_binding_head(ts), u => f_parallel(ts, [n]), u => FParsed{n, ts}))
+ 
+ @unsafe
+-def f_typed_let_try(n, old, p):
++def f_typed_let_try(n, old, p, begin):
+   match p:
+     case FParsed{ty, +ts}:
+-      f_choose(FParsed, f_eq(tg(ty), "Error"), u => FParsed{ty, ts}, u => f_choose(FParsed, f_eq(f_tx(ts), "="), u => f_choose(FParsed, f_eq(tg(n), "Ref"), u => f_let_value(n, f_let_ann(ty, f_expr(f_tl(ts), 0))), u => FParsed{fpe_message_at(n, nm(f_pn(f_err(ts, "a name (a parallel or typed let binds names; destructure in its body)"))), "a name (a parallel or typed let binds names; destructure in its body)"), Nil{}}), u => FParsed{n, old}))
++      f_choose(FParsed, f_eq(tg(ty), "Error"), u => FParsed{ty, ts}, u => f_choose(FParsed, f_eq(f_tx(ts), "="), u => f_choose(FParsed, f_eq(tg(n), "Ref"), u => f_let_value(n, f_let_ann(ty, f_expr(f_tl(ts), 0), begin)), u => FParsed{fpe_message_at(n, nm(f_pn(f_err(ts, "a name (a parallel or typed let binds names; destructure in its body)"))), "a name (a parallel or typed let binds names; destructure in its body)"), Nil{}}), u => FParsed{n, old}))
+ 
+ @unsafe
+ def f_binding_head(+ts: List<&2,FToken>) -> Bool:
+--- a/src/front/sugar.bend
++++ b/src/front/sugar.bend
+@@ -192,7 +192,7 @@
+ 
+ @unsafe
+ def f_erased_local(ts, begin):
+-  f_choose(FParsed, f_valid_name(f_tx(ts)), u => f_statement(FParsed{kt_span("Ref", f_tx(ts), f_atid(ts), 0, Nil{}, begin, f_end(ts)), f_tl(ts)}), u => fpe_error(ts, "expected a name", "a name"))
++  f_choose(FParsed, f_valid_name(f_tx(ts)), u => f_statement(FParsed{kt_span("Ref", f_tx(ts), f_atid(ts), 0, Nil{}, begin, f_end(ts)), f_tl(ts)}, begin), u => fpe_error(ts, "expected a name", "a name"))
+ 
+ @unsafe
+ def f_write_statement(

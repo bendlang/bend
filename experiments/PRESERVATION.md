@@ -1,5 +1,26 @@
 # Compiler evidence preservation index
 
+## Phase21 local and typed-annotation origins — 2026-09-29
+
+The [release capsule](../implementation/phase21/group-evidence/README.md) preserves
+installed commit `df94915`, API `44094e58`, genuine checked lineage, the withheld
+source01 and corrected source02, all focused/structural/broad/execution/cost
+observations, promotion and installed/relocated CLI checks. Three archives total
+20,806,458 bytes. Unchanged independent recovery verifies all3,303 regular files
+(168,021,476 uncompressed bytes, no links) and reconstructs all214 source members
+from fixed Phase20 commit `c385d39` plus the exact three-file patch.
+
+The [receipt](../implementation/phase21/group-evidence/preservation.json) binds
+all53 closed roots,62 committed release paths and77 unique frozen release files
+and inputs. Independent selection review verifies modes, five exact fixture
+expansions and unchanged protected75 states. Source01 remains withheld; both
+broader196 raw failures, original fixture assumptions, nine per-side program
+output-oracle failures and the isolated-worker audit error stay preserved.
+Final139/196 exact with57 differences and the neutral3.19× cost screen keep their
+original scopes. Private contextual payloads and unrelated Phase6 work are excluded;
+pinned upstream/toolchains and the prior release capsule remain explicit prerequisites.
+No remote publication is claimed.
+
 ## Phase20 declaration release — 2026-09-29
 
 The [release capsule](../implementation/phase20/declaration-evidence/README.md)

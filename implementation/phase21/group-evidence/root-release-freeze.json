@@ -1,0 +1,583 @@
+{
+  "kind": "phase21-closed-installed-release-freeze",
+  "allProducersClosed": true,
+  "anchorStatus": "installed-group-range-release",
+  "releaseCommit": "df94915c7369a1bed0aa943d8267b4e178401c8e",
+  "finalAttempt": "selfhost/build/phase21/group-range-build-02",
+  "finalSource": "selfhost/build/phase21/group-range-source-02/project",
+  "finalApiSha256": "44094e58cb0ef033e2c08c2827565e859c3594b3136868d4f821262145aea7f0",
+  "files": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/README.md",
+      "sha256": "69907866def290a6920e790d6ae354ed3cc5e4feae9083277f372aa4ad66591b",
+      "bytes": 12776
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/docs/BEND-IN-BEND.md",
+      "sha256": "f714cbb59bbcb9a6f2cdc88af7c9dfd462378c6c76d0204002e1eb86bb13b8e7",
+      "bytes": 17602
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/README.md",
+      "sha256": "82bf94c7156767e431947ee840a8f74beefc5808c1dd736ce38f3c2f8f1105e7",
+      "bytes": 8817
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/CONFORMANCE.md",
+      "sha256": "ee7b35ea3c1735740d167daed72adcb5b4db973294b20efeb28a86f651a0a06f",
+      "bytes": 12840
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/docs/ARCHITECTURE.md",
+      "sha256": "161d3d73fbb25cb81861b4b4ed05770f281815e2717ea08bfa52a548a93002c5",
+      "bytes": 36868
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/experiments/STEERING.md",
+      "sha256": "1a242a84fdee15ee81b822aa3602707bf8cb933e885e55adb548245229da62ca",
+      "bytes": 5284
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/experiments/ledger.md",
+      "sha256": "d351c6a659c850c7a36fee093abc64484a916b389505629322fb20915e3e2831",
+      "bytes": 88639
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/front/declarations.bend",
+      "sha256": "104557f70d797d22b56fe23b5c4f542d11d5d80ab39e90855e305bfacb14355b",
+      "bytes": 31675
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/front/parallel.bend",
+      "sha256": "261a86de0da276830b485a53005d219b0bffce921e94214faf18def5ad0fe117",
+      "bytes": 4738
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/front/sugar.bend",
+      "sha256": "fe3b1e6f01d87c839321941e35229a46627e5aba2b67a581edc83b2ebfd0388f",
+      "bytes": 8446
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase21/group-comma-controls.md",
+      "sha256": "ac49b73dc66e50ce140a15f801934be798449014664403d4875087a38dad4cda",
+      "bytes": 3060
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase21/group-range-structure-ann.md",
+      "sha256": "cccb6b0bd9a87303dd9889d7c5aff0ee469cc9abf22e6c9fe8e9d2fc3dac100c",
+      "bytes": 1318
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase21/group-range-structure.md",
+      "sha256": "c99ade11dcf5498b8f3a1ddffa6b7cb47cfe9682825a966cd3ef69a70882f21f",
+      "bytes": 2711
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase21/range-execution.md",
+      "sha256": "1a04c406590242eea62c9df0416a8ce4485cff5cb867f9b4b45dd2e1130d6083",
+      "bytes": 3045
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase21/typed-annotation-origin.md",
+      "sha256": "756e5a3e21f29217dfee2fe5bef59fdd0edf1bb2757622431aa6b9a0dc9c053b",
+      "bytes": 2897
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-comma.json",
+      "sha256": "a80c7fb6bbedce6506b7514501763201070da4acf3ed87606b5fe9264b520055",
+      "bytes": 78707
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-comma.md",
+      "sha256": "99dd7ace9f2411aa977ae5d8135f69126516971966f1be1b99c9040bc92b3b5f",
+      "bytes": 6165
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-controls-baseline.json",
+      "sha256": "59720afb7766b87340ee12266e41fb56c1da5fdb0c02cb834ebc7a818666da6c",
+      "bytes": 16871
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-controls-baseline.md",
+      "sha256": "bbaeddf284a0c6bfb718e2085f2cda28f418368fe31d63a1dd4c51484efdc4d6",
+      "bytes": 1815
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-controls-source02.json",
+      "sha256": "78e6eacd29245a0ce7a390faf69af67d24e319d238a73f31f50f7f2dc07ba6f4",
+      "bytes": 29078
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-controls-source02.md",
+      "sha256": "fc7a81262d792b8b09bcad6c3036c9727a537133a6993816fe74d05f85b9024e",
+      "bytes": 2444
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-controls-typed-error.json",
+      "sha256": "8f2d00a8838fe6fbf365e66566784324ac3872cb2dd3040e537082655e29ae63",
+      "bytes": 2820
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-controls.json",
+      "sha256": "623c7d4e3715e9b68df4facfd03dafe7085d9b2c85951f1abe3c062e4bca3b77",
+      "bytes": 28218
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-controls.md",
+      "sha256": "12bc050742489ed0ef4810004ac3cd42ce4097ba7af29973b17728b758faa3fe",
+      "bytes": 3062
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-release.json",
+      "sha256": "1a17256272eee5c310f3c0df94f1ddf1b86680d2cc8aaee2792d4b8dea7f7712",
+      "bytes": 10101
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-release.md",
+      "sha256": "390c9cf55cd2ac724a3642e3469af0985d324d0f836456ecf873bcbda2a1abf0",
+      "bytes": 8302
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-review-source01.json",
+      "sha256": "549ee96b6147e7f67496f7d0206589d01fed32b67bc4ea70320f4e95e9613d6e",
+      "bytes": 4234
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-review-source01.md",
+      "sha256": "7dfac678a9c80c77304c226fe89bfac2925f5cac9647c51fe07e7bf36f81fac1",
+      "bytes": 2044
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-review-source02.json",
+      "sha256": "bf223c8eca1ecd4051ecdfabb66d05e11c4b0bc9c6fa8c6e00cec8d5b58e76c6",
+      "bytes": 7045
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-review-source02.md",
+      "sha256": "10297eded6604809120463d1cb40b3782eb89797931ad36b21f04b4c71bdac1d",
+      "bytes": 2547
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-structure-source01.json",
+      "sha256": "fdb6990fd66a32b4a13559631b4700f0144cdbe61970d0c656f08ca882ca5313",
+      "bytes": 54730
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-structure-source01.md",
+      "sha256": "f37d9c16355dc93830fad0c6d9676838ca4553b00c15fb4578974d61f6ae7526",
+      "bytes": 2571
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-structure.json",
+      "sha256": "a3027ec2dca599c1b49e2fce9571221740349ddd2395b6d859fbf0d6578211ad",
+      "bytes": 7309
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-structure.md",
+      "sha256": "e90cf6f9ddde5a48a3be614ea76898f3c3d7c3c2fb1e1272a9c7fec1c2695bd3",
+      "bytes": 3371
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-comma-prepare.py",
+      "sha256": "596a1d0b5db7a09f17e95b8c4cbdbd28ebaa626ee401779959bbab266c45d234",
+      "bytes": 4060
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-comma-report.py",
+      "sha256": "5eaeb84f57b77f599dd106d4d732a2d299f7324231c808db141787882c06f8e1",
+      "bytes": 11359
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-annotation-source.py",
+      "sha256": "7e359cc4d7f68a26961c1a660b46308c04a7d3ee57b96e50a596a534f93cb829",
+      "bytes": 4518
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-controls-positive.mjs",
+      "sha256": "8896a1291d005d4b75ced733231a9e63f9de8e74250bb3ec0d3fa3898c52d7b4",
+      "bytes": 6543
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-controls-report-v2.py",
+      "sha256": "1cc197b581e8a36e8c6a578ce62e0f7b8be67ad752f8214bccbe17a1580065ee",
+      "bytes": 3034
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-controls-report-v3.py",
+      "sha256": "bbdff65284459319be577d064379fb83ae32338c73187b5b7e28a0612991be04",
+      "bytes": 3911
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-controls-report.py",
+      "sha256": "4c8d42af15570932c6136a3e2a0805fdb0e1f5e0edbd40ac05725812e28143b8",
+      "bytes": 3028
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-controls-typed-error-report.py",
+      "sha256": "6ae3fb405d4e0f326c3628cf2d53b7d56295feac451c55e7ff487e7bb23d6a0e",
+      "bytes": 2136
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-controls.mjs",
+      "sha256": "a203db5b0896cdcf478749d32d98c786a5f14fafb70099225353cbc6e63dbf4d",
+      "bytes": 6547
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-integration-audit.py",
+      "sha256": "d326a3619d94bb2ed807d2b9f57f7231dc96f22eceb1e2788697f615c1afde1c",
+      "bytes": 6268
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-paired.mjs",
+      "sha256": "5b60676b216ab82e02ff3fa56e3b33dbb8f3214b7559006c85b3adca5b8a6117",
+      "bytes": 4472
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-program-audit-v2.py",
+      "sha256": "9e1a4733397ba048b2726e8a38a70dca136b2e9cbdbd8fb5e520164a456c3d24",
+      "bytes": 4037
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-program-audit.py",
+      "sha256": "3953f0e58cf9b8493e084787f1977a79671b78b0bbf8329e6fcf6b9f551b8df0",
+      "bytes": 3519
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-programs.mjs",
+      "sha256": "8cecdad8a40ea0cd6a08fc89ec65dbcc2c158775403cd7a34cf121ceba844077",
+      "bytes": 4536
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-promote.mjs",
+      "sha256": "96e37da372a2d76c3a29c27f5c0ce2edfece4b284d520b9f0960ac6dc75ee5c8",
+      "bytes": 5733
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-release-report.py",
+      "sha256": "2ed24e06e14af45ea8d906e479cc93c248425122673596d3e5aa8c034daac92e",
+      "bytes": 5343
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-source.py",
+      "sha256": "02f2f6315013609d6093fe77996b6e71cbbeb6fb497794dd13bce18b743da3a0",
+      "bytes": 3529
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-structure-ann-audit.mjs",
+      "sha256": "845fcfccf3810db3072f36c2789b9be1b46f760a50b0cadde78b72257865da8a",
+      "bytes": 2977
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-structure-ann-prepare.py",
+      "sha256": "e35d07ca7ffe6e49d6b46668b85126d33b4b1d76176de562870eff9c25619b10",
+      "bytes": 1899
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-structure-finalize.py",
+      "sha256": "1a1f0f23ede6963e792524eb3e801cb77058f43f64fc24ecca20d76ee8455262",
+      "bytes": 4107
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-structure-prepare.py",
+      "sha256": "8527123d60ed0f4f93d3dec98b0747140229e2b101f2e69b233778cb68eb434c",
+      "bytes": 2783
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-structure-review.py",
+      "sha256": "451449e4850a7c3c957a144f72428f47b690575f699f7f63d7e0e06e93cfcef1",
+      "bytes": 3075
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-structure-run.mjs",
+      "sha256": "786c01d1f0551545dcc06ba101e7d21d33b7cb73ebbdface1580ab39515f7401",
+      "bytes": 7758
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/release-lineage/checked-api.mjs",
+      "sha256": "b9fe5820a60cdde9f6479f2c57d0d3bb374e3ce668edac8c3148ff252703f1c9",
+      "bytes": 903923
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/release-lineage/checked-bootstrap.json",
+      "sha256": "5706d93d58395001ed87172da96468cdd7829dd3851cacc06b25602eaa99b897",
+      "bytes": 49827
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/release-lineage/derivation.json",
+      "sha256": "814a111f492ca37d26a3c0ca66206cf0aa2c589b18fa871dfb851a15ed653399",
+      "bytes": 198430
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/release.json",
+      "sha256": "55dbbc8c763a1a9e0562eab60af479372bcc8ec0bf67f921960fc274192b94dd",
+      "bytes": 20912
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/typed-api.mjs",
+      "sha256": "44094e58cb0ef033e2c08c2827565e859c3594b3136868d4f821262145aea7f0",
+      "bytes": 913649
+    }
+  ],
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-range-release-report.py",
+      "sha256": "2ed24e06e14af45ea8d906e479cc93c248425122673596d3e5aa8c034daac92e",
+      "bytes": 5343
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/attempt.json",
+      "sha256": "b9cee3947b6a7ecfed0758c4b6296db693d45a69d420785318fc7bdfcc164b15",
+      "bytes": 219521
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-source-02/manifest.json",
+      "sha256": "d1cec791d95ab6d2486a60a32eed1b328a9a1a2f76a990e79ab49b98f80440b7",
+      "bytes": 66585
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-integration-audit-01/report.json",
+      "sha256": "8fafc080659f4a0a220c7e10b25aabd668d7afdeaa02382ac933ebad0f10f26d",
+      "bytes": 25405
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-matrix-01/report.json",
+      "sha256": "6703c5c1919852716739f2d804ec6e768b6efb4ab3235eee7dd1895a7823aa50",
+      "bytes": 690731
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-promotion-01/report.json",
+      "sha256": "78157e18effb9f91e50268a21d30206308fd094bfafd44bf1ce4973f5f75e248",
+      "bytes": 74927
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-smoke-01/launcher.json",
+      "sha256": "f879b056a3dbd48f0de7f60bb7b8ea61e9cb9a56241fcd293b83773590d7bfb4",
+      "bytes": 2894
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/release.json",
+      "sha256": "55dbbc8c763a1a9e0562eab60af479372bcc8ec0bf67f921960fc274192b94dd",
+      "bytes": 20912
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-census-02.json",
+      "sha256": "c968125507c2b78581b5d95ab3fe741f127e18225528760f2f80ab633f1f2b3a",
+      "bytes": 14976
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/build.json",
+      "sha256": "4d7cad2d7cede55ae6aba2e5e3b7877e492c9725f0065fecc47d6194183a79f3",
+      "bytes": 3728
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/validation-001/report.json",
+      "sha256": "a0631c22b27c1149ddb1c4b33694612dc0e8f17f13e8fa87fb598115418f9753",
+      "bytes": 9049
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-controls-source02.json",
+      "sha256": "78e6eacd29245a0ce7a390faf69af67d24e319d238a73f31f50f7f2dc07ba6f4",
+      "bytes": 29078
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-controls-typed-error.json",
+      "sha256": "8f2d00a8838fe6fbf365e66566784324ac3872cb2dd3040e537082655e29ae63",
+      "bytes": 2820
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-structure.json",
+      "sha256": "a3027ec2dca599c1b49e2fce9571221740349ddd2395b6d859fbf0d6578211ad",
+      "bytes": 7309
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-review-source02.json",
+      "sha256": "bf223c8eca1ecd4051ecdfabb66d05e11c4b0bc9c6fa8c6e00cec8d5b58e76c6",
+      "bytes": 7045
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-program-audit-02/report.json",
+      "sha256": "0a059cc83d5f379c3dab61185b005b57e03b50266ccb3979b91af36e904d7342",
+      "bytes": 14047
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-comma.json",
+      "sha256": "a80c7fb6bbedce6506b7514501763201070da4acf3ed87606b5fe9264b520055",
+      "bytes": 78707
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-review-source01.json",
+      "sha256": "549ee96b6147e7f67496f7d0206589d01fed32b67bc4ea70320f4e95e9613d6e",
+      "bytes": 4234
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-structure-source01.json",
+      "sha256": "fdb6990fd66a32b4a13559631b4700f0144cdbe61970d0c656f08ca882ca5313",
+      "bytes": 54730
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-controls-baseline.json",
+      "sha256": "59720afb7766b87340ee12266e41fb56c1da5fdb0c02cb834ebc7a818666da6c",
+      "bytes": 16871
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-programs-01/report.json",
+      "sha256": "0984e5b56378dff6b23dcb7a1b2a6249960c8d830302b34e2e86a8fab7e78b0c",
+      "bytes": 6473
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-program-audit-01/report.json",
+      "sha256": "dd79a78e671f977f2f06af7df472dc8a06758017f7e71a14a30d7fc7a08efa88",
+      "bytes": 2228
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-group196-01/report.json",
+      "sha256": "e17403eb2623dcbde2eeb4f4f5c46d629d6bcacc1c790647d136504faf7a529a",
+      "bytes": 42707
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-group196-02/report.json",
+      "sha256": "e9dd5b513eace38e70d41e9878267de5aefae9416f258456967802943fb9c65c",
+      "bytes": 42701
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase21/range-execution.md",
+      "sha256": "1a04c406590242eea62c9df0416a8ce4485cff5cb867f9b4b45dd2e1130d6083",
+      "bytes": 3045
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase21/typed-annotation-origin.md",
+      "sha256": "756e5a3e21f29217dfee2fe5bef59fdd0edf1bb2757622431aa6b9a0dc9c053b",
+      "bytes": 2897
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase21/group-boundaries.md",
+      "sha256": "f38df065eb0ce76da5ba948c6c27e7a354ba0a229649151d1c66502b85926d81",
+      "bytes": 13189
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-range-release.md",
+      "sha256": "390c9cf55cd2ac724a3642e3469af0985d324d0f836456ecf873bcbda2a1abf0",
+      "bytes": 8302
+    }
+  ],
+  "releasePaths": [
+    "README.md",
+    "docs/BEND-IN-BEND.md",
+    "selfhost/README.md",
+    "selfhost/CONFORMANCE.md",
+    "selfhost/docs/ARCHITECTURE.md",
+    "experiments/STEERING.md",
+    "experiments/ledger.md",
+    "selfhost/src/front/declarations.bend",
+    "selfhost/src/front/parallel.bend",
+    "selfhost/src/front/sugar.bend",
+    "design/phase21/group-comma-controls.md",
+    "design/phase21/group-range-structure-ann.md",
+    "design/phase21/group-range-structure.md",
+    "design/phase21/range-execution.md",
+    "design/phase21/typed-annotation-origin.md",
+    "implementation/phase21/group-comma.json",
+    "implementation/phase21/group-comma.md",
+    "implementation/phase21/group-range-controls-baseline.json",
+    "implementation/phase21/group-range-controls-baseline.md",
+    "implementation/phase21/group-range-controls-source02.json",
+    "implementation/phase21/group-range-controls-source02.md",
+    "implementation/phase21/group-range-controls-typed-error.json",
+    "implementation/phase21/group-range-controls.json",
+    "implementation/phase21/group-range-controls.md",
+    "implementation/phase21/group-range-release.json",
+    "implementation/phase21/group-range-release.md",
+    "implementation/phase21/group-range-review-source01.json",
+    "implementation/phase21/group-range-review-source01.md",
+    "implementation/phase21/group-range-review-source02.json",
+    "implementation/phase21/group-range-review-source02.md",
+    "implementation/phase21/group-range-structure-source01.json",
+    "implementation/phase21/group-range-structure-source01.md",
+    "implementation/phase21/group-range-structure.json",
+    "implementation/phase21/group-range-structure.md",
+    "selfhost/tools/performance/phase21/group-comma-prepare.py",
+    "selfhost/tools/performance/phase21/group-comma-report.py",
+    "selfhost/tools/performance/phase21/group-range-annotation-source.py",
+    "selfhost/tools/performance/phase21/group-range-controls-positive.mjs",
+    "selfhost/tools/performance/phase21/group-range-controls-report-v2.py",
+    "selfhost/tools/performance/phase21/group-range-controls-report-v3.py",
+    "selfhost/tools/performance/phase21/group-range-controls-report.py",
+    "selfhost/tools/performance/phase21/group-range-controls-typed-error-report.py",
+    "selfhost/tools/performance/phase21/group-range-controls.mjs",
+    "selfhost/tools/performance/phase21/group-range-integration-audit.py",
+    "selfhost/tools/performance/phase21/group-range-paired.mjs",
+    "selfhost/tools/performance/phase21/group-range-program-audit-v2.py",
+    "selfhost/tools/performance/phase21/group-range-program-audit.py",
+    "selfhost/tools/performance/phase21/group-range-programs.mjs",
+    "selfhost/tools/performance/phase21/group-range-promote.mjs",
+    "selfhost/tools/performance/phase21/group-range-release-report.py",
+    "selfhost/tools/performance/phase21/group-range-source.py",
+    "selfhost/tools/performance/phase21/group-range-structure-ann-audit.mjs",
+    "selfhost/tools/performance/phase21/group-range-structure-ann-prepare.py",
+    "selfhost/tools/performance/phase21/group-range-structure-finalize.py",
+    "selfhost/tools/performance/phase21/group-range-structure-prepare.py",
+    "selfhost/tools/performance/phase21/group-range-structure-review.py",
+    "selfhost/tools/performance/phase21/group-range-structure-run.mjs",
+    "selfhost/dist/release-lineage/checked-api.mjs",
+    "selfhost/dist/release-lineage/checked-bootstrap.json",
+    "selfhost/dist/release-lineage/derivation.json",
+    "selfhost/dist/release.json",
+    "selfhost/dist/typed-api.mjs"
+  ],
+  "closedRoots": [
+    "selfhost/build/phase21/group-comma-baseline-01",
+    "selfhost/build/phase21/group-comma-controls-01",
+    "selfhost/build/phase21/group-range-build-01",
+    "selfhost/build/phase21/group-range-build-02",
+    "selfhost/build/phase21/group-range-census-01.json",
+    "selfhost/build/phase21/group-range-census-02.json",
+    "selfhost/build/phase21/group-range-controls-baseline-01",
+    "selfhost/build/phase21/group-range-controls-baseline-02",
+    "selfhost/build/phase21/group-range-controls-baseline-03",
+    "selfhost/build/phase21/group-range-controls-baseline-04",
+    "selfhost/build/phase21/group-range-controls-candidate-01",
+    "selfhost/build/phase21/group-range-controls-candidate-02",
+    "selfhost/build/phase21/group-range-controls-candidate-03",
+    "selfhost/build/phase21/group-range-controls-candidate-04",
+    "selfhost/build/phase21/group-range-controls-candidate-05",
+    "selfhost/build/phase21/group-range-controls-candidate-06",
+    "selfhost/build/phase21/group-range-controls-candidate-07",
+    "selfhost/build/phase21/group-range-controls-inputs-01",
+    "selfhost/build/phase21/group-range-controls-inputs-02",
+    "selfhost/build/phase21/group-range-controls-inputs-03",
+    "selfhost/build/phase21/group-range-controls-inputs-04",
+    "selfhost/build/phase21/group-range-controls-report-preparation-01.json",
+    "selfhost/build/phase21/group-range-frontend-01",
+    "selfhost/build/phase21/group-range-group196-01",
+    "selfhost/build/phase21/group-range-group196-02",
+    "selfhost/build/phase21/group-range-integration-audit-01",
+    "selfhost/build/phase21/group-range-matrix-01",
+    "selfhost/build/phase21/group-range-matrix-inputs-01",
+    "selfhost/build/phase21/group-range-program-audit-01",
+    "selfhost/build/phase21/group-range-program-audit-02",
+    "selfhost/build/phase21/group-range-program-inputs-01",
+    "selfhost/build/phase21/group-range-programs-01",
+    "selfhost/build/phase21/group-range-promotion-01",
+    "selfhost/build/phase21/group-range-promotion-inputs-01",
+    "selfhost/build/phase21/group-range-release-freeze-01.json",
+    "selfhost/build/phase21/group-range-smoke-01",
+    "selfhost/build/phase21/group-range-source-01",
+    "selfhost/build/phase21/group-range-source-02",
+    "selfhost/build/phase21/group-range-structure-ann-audit-02",
+    "selfhost/build/phase21/group-range-structure-ann-candidate-02",
+    "selfhost/build/phase21/group-range-structure-ann-candidate-02.log",
+    "selfhost/build/phase21/group-range-structure-ann-controls-01",
+    "selfhost/build/phase21/group-range-structure-ann-parent-01",
+    "selfhost/build/phase21/group-range-structure-ann-parent-01.log",
+    "selfhost/build/phase21/group-range-structure-candidate-01",
+    "selfhost/build/phase21/group-range-structure-candidate-01.log",
+    "selfhost/build/phase21/group-range-structure-candidate-02",
+    "selfhost/build/phase21/group-range-structure-candidate-02.log",
+    "selfhost/build/phase21/group-range-structure-controls-01",
+    "selfhost/build/phase21/group-range-structure-owner-freeze-01.json",
+    "selfhost/build/phase21/group-range-structure-parent-01",
+    "selfhost/build/phase21/group-range-structure-parent-01.log",
+    "selfhost/build/phase21/group-start-state-01.json"
+  ],
+  "scope": "All existing Phase21 group-* source/build/probe/report roots are closed; preservation tools and capsule metadata are a separate active follow-up. Every release file is exact committed df94915 bytes."
+}

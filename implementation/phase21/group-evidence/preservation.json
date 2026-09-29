@@ -1,0 +1,266 @@
+{
+  "kind": "phase21-installed-group-range-evidence-preservation",
+  "complete": true,
+  "pass": true,
+  "releaseCommit": "df94915c7369a1bed0aa943d8267b4e178401c8e",
+  "anchorStatus": "installed-group-range-release",
+  "source": "selfhost/build/phase21/group-range-source-02/project",
+  "attempt": "selfhost/build/phase21/group-range-build-02",
+  "apiSha256": "44094e58cb0ef033e2c08c2827565e859c3594b3136868d4f821262145aea7f0",
+  "selectedCapsule": "implementation/phase21/group-evidence/capsule-01",
+  "capture": {
+    "members": 3303,
+    "uncompressedBytes": 168021476,
+    "archives": 3,
+    "compressedBytes": 20806458,
+    "largestArchiveBytes": 7939935,
+    "symlinks": 0,
+    "manifestSha256": "2a533fd08cd17a368dec8d3d4ab3740471302871ae9c933013d245ce7ce76228",
+    "inventorySha256": "8cd07073bd49d1cf0f6dc7d26c1799c755d6607305b4cf76f4a09a34a86152ba"
+  },
+  "independentRecovery": {
+    "kind": "phase16-independent-compact-recovery",
+    "complete": true,
+    "pass": true,
+    "toolSha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234",
+    "extraction": {
+      "files": 3303,
+      "symlinks": 0,
+      "bytes": 168021476,
+      "allBytesAndModesVerified": true
+    },
+    "sourceReconstruction": {
+      "baselineCommit": "c385d3913e9f10c6c4d9c5cfef3f34bc0682d351",
+      "files": 214,
+      "allBytesAndModesVerified": true,
+      "usesWorkingTreeSource": false,
+      "patchSha256": "675909431be30620540654edaa9eb02b642c20a97fc2331a0fed4c83f5058a8c"
+    },
+    "manifestSha256": "2a533fd08cd17a368dec8d3d4ab3740471302871ae9c933013d245ce7ce76228",
+    "inventorySha256": "8cd07073bd49d1cf0f6dc7d26c1799c755d6607305b4cf76f4a09a34a86152ba"
+  },
+  "protectedPhase6": {
+    "count": 75,
+    "hashesAndStatusesUnchanged": true,
+    "payloadExcluded": true
+  },
+  "allRootFrozenInputsCapturedUnchanged": true,
+  "rootFrozenInputs": 77,
+  "historicalComparisonIdentities": [
+    {
+      "path": "selfhost/build/phase20/declaration-frontend-01/candidate.json",
+      "sha256": "28c25d28323cb8b6348246ae0ae5784fd08f19fd1bb9e68bc234ed06020ed82d",
+      "externalPriorCapsuleMatch": true
+    },
+    {
+      "path": "selfhost/build/phase20/declaration-group196-01/selected/candidate.json",
+      "sha256": "9da842dba6f6ccf1bd57c02cb10e7f2f5fd700d5c8a3a1c2a263265c7b404b1f",
+      "externalPriorCapsuleMatch": true
+    },
+    {
+      "path": "selfhost/build/phase20/declaration-group196-01/selected/paired.json",
+      "sha256": "7deaebd99def566183752bf44aa6fda8f2e1e94f8a56ce938ebe8c31de5c6717",
+      "externalPriorCapsuleMatch": true
+    },
+    {
+      "path": "selfhost/build/phase20/declaration-group196-01/selected/reference.json",
+      "sha256": "465f672efcec2998a5da78e37a902f5c5ccd7121e1c521710b5887930f3fa2e4",
+      "externalPriorCapsuleMatch": true
+    },
+    {
+      "path": "selfhost/build/phase20/import-diagnostic-build-04/attempt.json",
+      "sha256": "e267ecbf9c0def2ff499cd4d77923f77b51ea892e160676cc12292845a7a2655",
+      "externalPriorCapsuleMatch": true
+    },
+    {
+      "path": "selfhost/build/phase20/import-diagnostic-build-04/equality/api.mjs",
+      "sha256": "40c8f7f3b7cd0e96aef57d7d574ebfd85607cd4e096909d083b450b4d973362c",
+      "externalPriorCapsuleMatch": true
+    }
+  ],
+  "changedFiles": [
+    "src/front/declarations.bend",
+    "src/front/parallel.bend",
+    "src/front/sugar.bend"
+  ],
+  "privateContextualPayloadExcluded": true,
+  "frozenInputsUnchangedAfterCapture": true,
+  "rawFailuresRetained": [
+    "withheld source01 typed Ann origin",
+    "both saved196 rawfalse suites",
+    "program nine #| oracle failures",
+    "program audit01 isolated-worker schema failure",
+    "original and supplemental fixture assumptions",
+    "carets report-generator syntax failure",
+    "C1 comma/Parallel diagnostics",
+    "preparation orchestration SyntaxError before writes"
+  ],
+  "processesClosed": {
+    "captureExit": 0,
+    "recoveryExit": 0,
+    "postAuditExit": 0,
+    "captureStderrEmpty": true,
+    "recoveryStderrEmpty": true,
+    "activeOwnedJobs": 0
+  },
+  "compilerWorkPerformed": false,
+  "commitsOrNetworkUploadsPerformed": false,
+  "scope": "Bounded exact-byte preservation and source reconstruction, not renewed conformance or performance evidence.",
+  "boundFiles": [
+    {
+      "path": "implementation/phase21/group-evidence/CAPTURE-PLAN.md",
+      "sha256": "c36af808ebdfa091c823c2c0b26de72fcb69fbac59f97cc53599685b46454ac6",
+      "bytes": 2283
+    },
+    {
+      "path": "implementation/phase21/group-evidence/PLAN.md",
+      "sha256": "1e23a33c516b0d44d6ce817859924161234f02d46246e338d4593cc223119358",
+      "bytes": 5233
+    },
+    {
+      "path": "implementation/phase21/group-evidence/README.md",
+      "sha256": "239a7497c0590bda940de46ab41ce31dc6a8930c83fe25c5df53de0720a275b9",
+      "bytes": 3379
+    },
+    {
+      "path": "implementation/phase21/group-evidence/adaptation.json",
+      "sha256": "3721cfabc4e744681ee43b6cdedf1b9a680ba7699f00880efb56e381059938b1",
+      "bytes": 1745
+    },
+    {
+      "path": "implementation/phase21/group-evidence/capsule-01/experiments-01.tar.gz",
+      "sha256": "504c8a3c2a61856f24c0d6d290f7f1a14ddaa823c8f12cf6f531b926b5cb2b29",
+      "bytes": 7939935
+    },
+    {
+      "path": "implementation/phase21/group-evidence/capsule-01/experiments-02.tar.gz",
+      "sha256": "503144dab23725d1933e7323cb02381940ede69ee6f0ed922d9cc66446199ad2",
+      "bytes": 6324484
+    },
+    {
+      "path": "implementation/phase21/group-evidence/capsule-01/final-01.tar.gz",
+      "sha256": "4c883d3158578d6a19e3850c7259f9747f316eec348048fefe58e017342d4740",
+      "bytes": 6542039
+    },
+    {
+      "path": "implementation/phase21/group-evidence/capsule-01/inventory.json",
+      "sha256": "8cd07073bd49d1cf0f6dc7d26c1799c755d6607305b4cf76f4a09a34a86152ba",
+      "bytes": 1019596
+    },
+    {
+      "path": "implementation/phase21/group-evidence/capsule-01/manifest.json",
+      "sha256": "2a533fd08cd17a368dec8d3d4ab3740471302871ae9c933013d245ce7ce76228",
+      "bytes": 340307
+    },
+    {
+      "path": "implementation/phase21/group-evidence/capsule-01/phase20-to-anchor.patch",
+      "sha256": "675909431be30620540654edaa9eb02b642c20a97fc2331a0fed4c83f5058a8c",
+      "bytes": 4040
+    },
+    {
+      "path": "implementation/phase21/group-evidence/capture-01.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "implementation/phase21/group-evidence/capture-01.stdout",
+      "sha256": "3eee79dc796283776f2bc454a36aeb398c1b96dfffd02ccb455429cef9e02c07",
+      "bytes": 88
+    },
+    {
+      "path": "implementation/phase21/group-evidence/collector-adaptation.patch",
+      "sha256": "cd96df41632e89f8cf09461e08b29bc7456258af9e6a150fb139074f6b1baa0b",
+      "bytes": 5221
+    },
+    {
+      "path": "implementation/phase21/group-evidence/execution.json",
+      "sha256": "5b99f43a0bbdcc69849136fac1fdcd3442621389800f86f4ead9940edcbf56a4",
+      "bytes": 1833
+    },
+    {
+      "path": "implementation/phase21/group-evidence/owned-paths.json",
+      "sha256": "30592d6ef7dd99b2c0290f494b0607f0de235ffc2c26b45485786416b9d9bf26",
+      "bytes": 2310
+    },
+    {
+      "path": "implementation/phase21/group-evidence/phase6-start-state.json",
+      "sha256": "ca6bc27c6ab8d7766d33bc02887b9263dc3e38c952f5977c837b3416756cf0e3",
+      "bytes": 14531
+    },
+    {
+      "path": "implementation/phase21/group-evidence/post-capture-audit.json",
+      "sha256": "faff96471637345d37fde2b622edc57035251eaa08fe9cf552362bf71513a5df",
+      "bytes": 3173
+    },
+    {
+      "path": "implementation/phase21/group-evidence/post-capture-audit.py",
+      "sha256": "6fae47bdb6e54e27a4bb030e7907c483995c1c7e200b604fe0b3116c1da9288f",
+      "bytes": 4870
+    },
+    {
+      "path": "implementation/phase21/group-evidence/preparation-notes.json",
+      "sha256": "68ce1eaf4862613ee3056bff73bf4066348984bd33f149b77a7e112cf64da97a",
+      "bytes": 418
+    },
+    {
+      "path": "implementation/phase21/group-evidence/recovery-01.json",
+      "sha256": "130efd0090c8a95d780a303675283bcbdb17eca8343ac9594911b707bb16b6df",
+      "bytes": 749
+    },
+    {
+      "path": "implementation/phase21/group-evidence/recovery-01.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "implementation/phase21/group-evidence/recovery-01.stdout",
+      "sha256": "d007e480e1366d864ad34945b59df015e604a67c26c1bb6f90213c56af73bff3",
+      "bytes": 687
+    },
+    {
+      "path": "implementation/phase21/group-evidence/root-freeze-contract.md",
+      "sha256": "6771217542614c997c6418ab6ba27066471301d0b254d54e94f7c95b075ea26d",
+      "bytes": 1643
+    },
+    {
+      "path": "implementation/phase21/group-evidence/root-freeze.json",
+      "sha256": "822c3807e3a65718ad498f426c972e7a656d6cfc8fcac73f79368a7c6394eb07",
+      "bytes": 18676
+    },
+    {
+      "path": "implementation/phase21/group-evidence/root-release-freeze.json",
+      "sha256": "efa76abab7cb3e98a60af66015d6beb1d76b95b988ec42271d8f229bb7d23a68",
+      "bytes": 27379
+    },
+    {
+      "path": "implementation/phase21/group-evidence/selection-proposal.json",
+      "sha256": "d484217ba5c688260ac878bc004bbeed7afbcf4a02e430e56af63242102d5e42",
+      "bytes": 12760
+    },
+    {
+      "path": "implementation/phase21/group-evidence/selection-review.json",
+      "sha256": "e4b3712e08769fad6c4b1f03485cd3bd2e781a3c2f4904a90df9034b96868b5f",
+      "bytes": 7419
+    },
+    {
+      "path": "implementation/phase21/group-evidence/selection-review.md",
+      "sha256": "b08bffc9631cf5c0abafd694cee0e20471f8f54d3e4698015b54619670cdd3a9",
+      "bytes": 2935
+    },
+    {
+      "path": "implementation/phase21/group-evidence/source-delta.json",
+      "sha256": "25e8dffd1d563ccb092340c0a932404ba2512a3e542bff0619f301d391fa8e61",
+      "bytes": 23673
+    },
+    {
+      "path": "selfhost/tools/performance/phase21/group-evidence-prepare.py",
+      "sha256": "52c89cf3888e4c59e9e8ccb54ea6436290adc6b70d28876b902a6f869f5b57b5",
+      "bytes": 8588
+    },
+    {
+      "path": "selfhost/tools/performance/phase21/group-preserve.py",
+      "sha256": "f34f9466aeb016718a82966d9f9807b9bf6e39d92c1a97c72293c94f0f190ca0",
+      "bytes": 12723
+    }
+  ]
+}

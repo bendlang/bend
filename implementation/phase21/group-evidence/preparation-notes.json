@@ -1,0 +1,8 @@
+{
+  "kind": "phase21-preservation-preparation-notes",
+  "collectorExecuted": false,
+  "recoveryExecuted": false,
+  "sourceEdits": false,
+  "preparerSyntax": "pass",
+  "retainedOrchestrationFailure": "Initial functions.exec scaffolding call was rejected with JavaScript SyntaxError: Unexpected token before execution; it created no files. The preparer was then written with apply_patch and parsed without executing."
+}

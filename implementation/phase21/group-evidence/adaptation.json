@@ -1,0 +1,30 @@
+{
+  "kind": "phase21-literal-only-collector-adaptation",
+  "parent": {
+    "path": "selfhost/tools/performance/phase20/declaration-preserve.py",
+    "sha256": "e768cec548b2827c3c36fe4fa7960ee8fb92943e74fa8a2fe94c513d9f10b25f",
+    "bytes": 12759
+  },
+  "collector": {
+    "path": "selfhost/tools/performance/phase21/group-preserve.py",
+    "sha256": "f34f9466aeb016718a82966d9f9807b9bf6e39d92c1a97c72293c94f0f190ca0",
+    "bytes": 12723
+  },
+  "unchangedRecovery": {
+    "path": "selfhost/tools/performance/phase16/compact-recover.py",
+    "sha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234",
+    "bytes": 7326
+  },
+  "replacements": {
+    "implementation/phase20/declaration-evidence": "implementation/phase21/group-evidence",
+    "installed-declaration-checkpoint-release": "installed-group-range-release",
+    "Explicit installed declaration checkpoint release freeze required": "Explicit installed group range release freeze required",
+    "phase20-declaration-scoped-inventory": "phase21-group-scoped-inventory",
+    "Closed Phase20 declaration checkpoint release, retained source01-04 preparations and scoped/broad/execution/cost gates; private contextual parser payloads and prior release originals are external.": "Closed Phase21 group range release and separate comma research, including withheld source01, corrected source02 and retained raw oracle/audit failures; prior release and private contextual payloads are external.",
+    "excludedPhase20Roots": "excludedPhase21Roots",
+    "phase20-declaration-scoped-capture": "phase21-group-scoped-capture",
+    "prefix-to-anchor.patch": "phase20-to-anchor.patch",
+    "Usage: declaration-preserve.py": "Usage: group-preserve.py"
+  },
+  "algorithmChanges": false
+}

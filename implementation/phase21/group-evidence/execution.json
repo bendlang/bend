@@ -1,0 +1,57 @@
+{
+  "kind": "phase21-preservation-command-closures",
+  "complete": true,
+  "pass": true,
+  "cpu": 3,
+  "capture": {
+    "command": "taskset -c 3 python3 selfhost/tools/performance/phase21/group-preserve.py capture implementation/phase21/group-evidence/capsule-01",
+    "started": {
+      "current_time": "2026-09-29 11:31:21 UTC"
+    },
+    "finished": {
+      "current_time": "2026-09-29 11:31:35 UTC"
+    },
+    "initialResult": {
+      "chunk_id": "05a2c2",
+      "wall_time_seconds": 1.00178254,
+      "session_id": 12581,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "closure": {
+      "chunk_id": "983fdb",
+      "wall_time_seconds": 0.0000016,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "stdout": "implementation/phase21/group-evidence/capture-01.stdout",
+    "stderr": "implementation/phase21/group-evidence/capture-01.stderr"
+  },
+  "recovery": {
+    "command": "taskset -c 3 python3 selfhost/tools/performance/phase16/compact-recover.py implementation/phase21/group-evidence/capsule-01 implementation/phase21/group-evidence/recovery-01.json",
+    "started": {
+      "current_time": "2026-09-29 11:31:35 UTC"
+    },
+    "finished": {
+      "current_time": "2026-09-29 11:31:46 UTC"
+    },
+    "initialResult": {
+      "chunk_id": "c012fd",
+      "wall_time_seconds": 1.000897758,
+      "session_id": 80483,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "closure": {
+      "chunk_id": "f54fde",
+      "wall_time_seconds": 0.00000209,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    },
+    "stdout": "implementation/phase21/group-evidence/recovery-01.stdout",
+    "stderr": "implementation/phase21/group-evidence/recovery-01.stderr"
+  },
+  "scope": "Observed command closures, not compiler performance measurements."
+}

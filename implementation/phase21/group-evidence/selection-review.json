@@ -1,0 +1,176 @@
+{
+  "kind": "phase21-independent-preservation-selection-review",
+  "complete": true,
+  "pass": true,
+  "captureApproved": true,
+  "reviewScope": "Read-only inventory/selection/policy and current-byte review, before archive creation; no capture or recovery performed by reviewer.",
+  "anchorStatus": "installed-group-range-release",
+  "releaseCommit": "df94915c7369a1bed0aa943d8267b4e178401c8e",
+  "baselineCommit": "c385d3913e9f10c6c4d9c5cfef3f34bc0682d351",
+  "finalApiSha256": "44094e58cb0ef033e2c08c2827565e859c3594b3136868d4f821262145aea7f0",
+  "counts": {
+    "members": 3303,
+    "regularFiles": 3303,
+    "symlinks": 0,
+    "bytes": 168021476,
+    "closedRoots": 53,
+    "releaseFiles": 62,
+    "protectedPhase6": 75,
+    "sourceMembers": 214,
+    "sourceChangedFiles": 3,
+    "fixtureDependencyTrees": 5,
+    "frozenInputs": 110
+  },
+  "sourceChangedFiles": [
+    "src/front/declarations.bend",
+    "src/front/parallel.bend",
+    "src/front/sugar.bend"
+  ],
+  "sourceDelta": {
+    "physicalLines": 3,
+    "bytes": 156
+  },
+  "sourcePatch": {
+    "path": "phase20-to-anchor.patch",
+    "bytes": 4040,
+    "sha256": "675909431be30620540654edaa9eb02b642c20a97fc2331a0fed4c83f5058a8c"
+  },
+  "maxMember": {
+    "path": "selfhost/build/phase21/group-range-frontend-01/candidate.json",
+    "topic": "final",
+    "mode": 420,
+    "type": "file",
+    "bytes": 6120722,
+    "sha256": "f137d8870d58b93d7211c0c0dae8e227a33110372ffe1d6a5ffae284b66a8c85"
+  },
+  "diskFreeAtReview": 1465475072,
+  "policy": {
+    "collectorLiteralChangesOnly": true,
+    "recoveryUnchanged": true,
+    "uncompressedMemberAndPartBound": 64000000,
+    "compressedArchiveBound": 99000000,
+    "newPolicyTestsRequired": false,
+    "archiveCapturePending": true,
+    "independentRecoveryPending": true
+  },
+  "preservedFailures": [
+    "selfhost/build/phase21/group-range-source-01",
+    "selfhost/build/phase21/group-range-build-01",
+    "selfhost/build/phase21/group-range-programs-01",
+    "selfhost/build/phase21/group-range-program-audit-01",
+    "selfhost/build/phase21/group-range-program-audit-02",
+    "selfhost/build/phase21/group-range-controls-report-preparation-01.json",
+    "selfhost/build/phase21/group-comma-baseline-01"
+  ],
+  "fixtureDependencies": [
+    {
+      "selection": "selfhost/build/phase21/group-range-group196-01/selection.json",
+      "fixture": "selfhost/build/phase17/group-controls-03/fixtures/local-then-match.bend",
+      "tree": "selfhost/build/phase17/group-controls-03/fixtures"
+    },
+    {
+      "selection": "selfhost/build/phase21/group-range-group196-01/selection.json",
+      "fixture": "selfhost/build/phase16/marked-pattern-controls-02/fixtures/ordinary-affine-control.bend",
+      "tree": "selfhost/build/phase16/marked-pattern-controls-02/fixtures"
+    },
+    {
+      "selection": "selfhost/build/phase21/group-range-group196-01/selection.json",
+      "fixture": "selfhost/build/phase16/empty-call-pattern-controls-02/fixtures/offload-bound.bend",
+      "tree": "selfhost/build/phase16/empty-call-pattern-controls-02/fixtures"
+    },
+    {
+      "selection": "selfhost/build/phase21/group-range-group196-01/selection.json",
+      "fixture": "selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/do-frame.bend",
+      "tree": "selfhost/build/phase16/parser-checkpoint-controls-03/fixtures"
+    },
+    {
+      "selection": "selfhost/build/phase21/group-range-group196-01/selection.json",
+      "fixture": "selfhost/build/phase16/rejected-stage-controls-01/fixtures/prior-row-pattern-before-body-syntax.bend",
+      "tree": "selfhost/build/phase16/rejected-stage-controls-01/fixtures"
+    }
+  ],
+  "excluded": {
+    "protectedPhase6Payloads": true,
+    "privateContextualProjectPayloads": true,
+    "unrelatedActiveRoots": true,
+    "reviewOutputs": true
+  },
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-evidence/capsule-01/inventory.json",
+      "sha256": "8cd07073bd49d1cf0f6dc7d26c1799c755d6607305b4cf76f4a09a34a86152ba",
+      "bytes": 1019596
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-evidence/PLAN.md",
+      "sha256": "1e23a33c516b0d44d6ce817859924161234f02d46246e338d4593cc223119358",
+      "bytes": 5233
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-evidence/CAPTURE-PLAN.md",
+      "sha256": "c36af808ebdfa091c823c2c0b26de72fcb69fbac59f97cc53599685b46454ac6",
+      "bytes": 2283
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-evidence/selection-proposal.json",
+      "sha256": "d484217ba5c688260ac878bc004bbeed7afbcf4a02e430e56af63242102d5e42",
+      "bytes": 12760
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-evidence/root-freeze.json",
+      "sha256": "822c3807e3a65718ad498f426c972e7a656d6cfc8fcac73f79368a7c6394eb07",
+      "bytes": 18676
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-evidence/root-release-freeze.json",
+      "sha256": "efa76abab7cb3e98a60af66015d6beb1d76b95b988ec42271d8f229bb7d23a68",
+      "bytes": 27379
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-evidence/source-delta.json",
+      "sha256": "25e8dffd1d563ccb092340c0a932404ba2512a3e542bff0619f301d391fa8e61",
+      "bytes": 23673
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-evidence/phase6-start-state.json",
+      "sha256": "ca6bc27c6ab8d7766d33bc02887b9263dc3e38c952f5977c837b3416756cf0e3",
+      "bytes": 14531
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-evidence/adaptation.json",
+      "sha256": "3721cfabc4e744681ee43b6cdedf1b9a680ba7699f00880efb56e381059938b1",
+      "bytes": 1745
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-evidence/collector-adaptation.patch",
+      "sha256": "cd96df41632e89f8cf09461e08b29bc7456258af9e6a150fb139074f6b1baa0b",
+      "bytes": 5221
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase21/group-evidence/capsule-01/phase20-to-anchor.patch",
+      "sha256": "675909431be30620540654edaa9eb02b642c20a97fc2331a0fed4c83f5058a8c",
+      "bytes": 4040
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-evidence-prepare.py",
+      "sha256": "52c89cf3888e4c59e9e8ccb54ea6436290adc6b70d28876b902a6f869f5b57b5",
+      "bytes": 8588
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase21/group-preserve.py",
+      "sha256": "f34f9466aeb016718a82966d9f9807b9bf6e39d92c1a97c72293c94f0f190ca0",
+      "bytes": 12723
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase20/declaration-preserve.py",
+      "sha256": "e768cec548b2827c3c36fe4fa7960ee8fb92943e74fa8a2fe94c513d9f10b25f",
+      "bytes": 12759
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase16/compact-recover.py",
+      "sha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234",
+      "bytes": 7326
+    }
+  ],
+  "approval": "Approved for existing root-authorized capture, followed by unchanged independent full recovery, source reconstruction and protected/frozen-input audit. No additional permission needed."
+}
