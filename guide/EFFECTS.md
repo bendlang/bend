@@ -87,7 +87,7 @@ blocking effect takes one more argument, `k`, and parks with
 `more()` when `fd` is ready; `more` answers the value, or `undefined` to
 park again. Add an absolute `performance.now()` deadline as a fifth
 argument to also wake on time. `io_sys()` is `libc` through `bun:ffi`
-(`read`, `recv`, `select`, `errno`); `tcp_recv.js` shows the full shape.
+(`read`, `recv`, `select`, `errno`); `tcp_accept.js` shows the full shape.
 
 ## A complete example
 

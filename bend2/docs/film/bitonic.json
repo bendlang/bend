@@ -1,0 +1,1174 @@
+{
+ "n": 16,
+ "input": [
+  9,
+  2,
+  14,
+  5,
+  0,
+  11,
+  7,
+  12,
+  3,
+  15,
+  6,
+  1,
+  10,
+  4,
+  13,
+  8
+ ],
+ "output": [
+  0,
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15
+ ],
+ "note": "stage = (level, step): level k merges runs of 2^k (the bsort call of depth k), step t compares leaves 2^(k-t) apart; dir 0 puts the min at i, dir 1 the max. Level-k blocks alternate: the left child of each bsort sorts asc, the right desc; the root is asc.",
+ "stages": [
+  {
+   "name": "merge 2 / step 1 (distance 1)",
+   "level": 1,
+   "step": 1,
+   "nodes": [
+    "TLLL",
+    "TLLR",
+    "TLRL",
+    "TLRR",
+    "TRLL",
+    "TRLR",
+    "TRRL",
+    "TRRR"
+   ],
+   "pairs": [
+    [
+     0,
+     1,
+     0,
+     true
+    ],
+    [
+     2,
+     3,
+     1,
+     false
+    ],
+    [
+     4,
+     5,
+     0,
+     false
+    ],
+    [
+     6,
+     7,
+     1,
+     true
+    ],
+    [
+     8,
+     9,
+     0,
+     false
+    ],
+    [
+     10,
+     11,
+     1,
+     false
+    ],
+    [
+     12,
+     13,
+     0,
+     true
+    ],
+    [
+     14,
+     15,
+     1,
+     false
+    ]
+   ],
+   "after": [
+    2,
+    9,
+    14,
+    5,
+    0,
+    11,
+    12,
+    7,
+    3,
+    15,
+    6,
+    1,
+    4,
+    10,
+    13,
+    8
+   ]
+  },
+  {
+   "name": "merge 4 / step 1 (distance 2)",
+   "level": 2,
+   "step": 1,
+   "nodes": [
+    "TLL",
+    "TLR",
+    "TRL",
+    "TRR"
+   ],
+   "pairs": [
+    [
+     0,
+     2,
+     0,
+     false
+    ],
+    [
+     1,
+     3,
+     0,
+     true
+    ],
+    [
+     4,
+     6,
+     1,
+     true
+    ],
+    [
+     5,
+     7,
+     1,
+     false
+    ],
+    [
+     8,
+     10,
+     0,
+     false
+    ],
+    [
+     9,
+     11,
+     0,
+     true
+    ],
+    [
+     12,
+     14,
+     1,
+     true
+    ],
+    [
+     13,
+     15,
+     1,
+     false
+    ]
+   ],
+   "after": [
+    2,
+    5,
+    14,
+    9,
+    12,
+    11,
+    0,
+    7,
+    3,
+    1,
+    6,
+    15,
+    13,
+    10,
+    4,
+    8
+   ]
+  },
+  {
+   "name": "merge 4 / step 2 (distance 1)",
+   "level": 2,
+   "step": 2,
+   "nodes": [
+    "TLL",
+    "TLR",
+    "TRL",
+    "TRR"
+   ],
+   "pairs": [
+    [
+     0,
+     1,
+     0,
+     false
+    ],
+    [
+     2,
+     3,
+     0,
+     true
+    ],
+    [
+     4,
+     5,
+     1,
+     false
+    ],
+    [
+     6,
+     7,
+     1,
+     true
+    ],
+    [
+     8,
+     9,
+     0,
+     true
+    ],
+    [
+     10,
+     11,
+     0,
+     false
+    ],
+    [
+     12,
+     13,
+     1,
+     false
+    ],
+    [
+     14,
+     15,
+     1,
+     true
+    ]
+   ],
+   "after": [
+    2,
+    5,
+    9,
+    14,
+    12,
+    11,
+    7,
+    0,
+    1,
+    3,
+    6,
+    15,
+    13,
+    10,
+    8,
+    4
+   ]
+  },
+  {
+   "name": "merge 8 / step 1 (distance 4)",
+   "level": 3,
+   "step": 1,
+   "nodes": [
+    "TL",
+    "TR"
+   ],
+   "pairs": [
+    [
+     0,
+     4,
+     0,
+     false
+    ],
+    [
+     1,
+     5,
+     0,
+     false
+    ],
+    [
+     2,
+     6,
+     0,
+     true
+    ],
+    [
+     3,
+     7,
+     0,
+     true
+    ],
+    [
+     8,
+     12,
+     1,
+     true
+    ],
+    [
+     9,
+     13,
+     1,
+     true
+    ],
+    [
+     10,
+     14,
+     1,
+     true
+    ],
+    [
+     11,
+     15,
+     1,
+     false
+    ]
+   ],
+   "after": [
+    2,
+    5,
+    7,
+    0,
+    12,
+    11,
+    9,
+    14,
+    13,
+    10,
+    8,
+    15,
+    1,
+    3,
+    6,
+    4
+   ]
+  },
+  {
+   "name": "merge 8 / step 2 (distance 2)",
+   "level": 3,
+   "step": 2,
+   "nodes": [
+    "TL",
+    "TR"
+   ],
+   "pairs": [
+    [
+     0,
+     2,
+     0,
+     false
+    ],
+    [
+     1,
+     3,
+     0,
+     true
+    ],
+    [
+     4,
+     6,
+     0,
+     true
+    ],
+    [
+     5,
+     7,
+     0,
+     false
+    ],
+    [
+     8,
+     10,
+     1,
+     false
+    ],
+    [
+     9,
+     11,
+     1,
+     true
+    ],
+    [
+     12,
+     14,
+     1,
+     true
+    ],
+    [
+     13,
+     15,
+     1,
+     true
+    ]
+   ],
+   "after": [
+    2,
+    0,
+    7,
+    5,
+    9,
+    11,
+    12,
+    14,
+    13,
+    15,
+    8,
+    10,
+    6,
+    4,
+    1,
+    3
+   ]
+  },
+  {
+   "name": "merge 8 / step 3 (distance 1)",
+   "level": 3,
+   "step": 3,
+   "nodes": [
+    "TL",
+    "TR"
+   ],
+   "pairs": [
+    [
+     0,
+     1,
+     0,
+     true
+    ],
+    [
+     2,
+     3,
+     0,
+     true
+    ],
+    [
+     4,
+     5,
+     0,
+     false
+    ],
+    [
+     6,
+     7,
+     0,
+     false
+    ],
+    [
+     8,
+     9,
+     1,
+     true
+    ],
+    [
+     10,
+     11,
+     1,
+     true
+    ],
+    [
+     12,
+     13,
+     1,
+     false
+    ],
+    [
+     14,
+     15,
+     1,
+     true
+    ]
+   ],
+   "after": [
+    0,
+    2,
+    5,
+    7,
+    9,
+    11,
+    12,
+    14,
+    15,
+    13,
+    10,
+    8,
+    6,
+    4,
+    3,
+    1
+   ]
+  },
+  {
+   "name": "merge 16 / step 1 (distance 8)",
+   "level": 4,
+   "step": 1,
+   "nodes": [
+    "T"
+   ],
+   "pairs": [
+    [
+     0,
+     8,
+     0,
+     false
+    ],
+    [
+     1,
+     9,
+     0,
+     false
+    ],
+    [
+     2,
+     10,
+     0,
+     false
+    ],
+    [
+     3,
+     11,
+     0,
+     false
+    ],
+    [
+     4,
+     12,
+     0,
+     true
+    ],
+    [
+     5,
+     13,
+     0,
+     true
+    ],
+    [
+     6,
+     14,
+     0,
+     true
+    ],
+    [
+     7,
+     15,
+     0,
+     true
+    ]
+   ],
+   "after": [
+    0,
+    2,
+    5,
+    7,
+    6,
+    4,
+    3,
+    1,
+    15,
+    13,
+    10,
+    8,
+    9,
+    11,
+    12,
+    14
+   ]
+  },
+  {
+   "name": "merge 16 / step 2 (distance 4)",
+   "level": 4,
+   "step": 2,
+   "nodes": [
+    "T"
+   ],
+   "pairs": [
+    [
+     0,
+     4,
+     0,
+     false
+    ],
+    [
+     1,
+     5,
+     0,
+     false
+    ],
+    [
+     2,
+     6,
+     0,
+     true
+    ],
+    [
+     3,
+     7,
+     0,
+     true
+    ],
+    [
+     8,
+     12,
+     0,
+     true
+    ],
+    [
+     9,
+     13,
+     0,
+     true
+    ],
+    [
+     10,
+     14,
+     0,
+     false
+    ],
+    [
+     11,
+     15,
+     0,
+     false
+    ]
+   ],
+   "after": [
+    0,
+    2,
+    3,
+    1,
+    6,
+    4,
+    5,
+    7,
+    9,
+    11,
+    10,
+    8,
+    15,
+    13,
+    12,
+    14
+   ]
+  },
+  {
+   "name": "merge 16 / step 3 (distance 2)",
+   "level": 4,
+   "step": 3,
+   "nodes": [
+    "T"
+   ],
+   "pairs": [
+    [
+     0,
+     2,
+     0,
+     false
+    ],
+    [
+     1,
+     3,
+     0,
+     true
+    ],
+    [
+     4,
+     6,
+     0,
+     true
+    ],
+    [
+     5,
+     7,
+     0,
+     false
+    ],
+    [
+     8,
+     10,
+     0,
+     false
+    ],
+    [
+     9,
+     11,
+     0,
+     true
+    ],
+    [
+     12,
+     14,
+     0,
+     true
+    ],
+    [
+     13,
+     15,
+     0,
+     false
+    ]
+   ],
+   "after": [
+    0,
+    1,
+    3,
+    2,
+    5,
+    4,
+    6,
+    7,
+    9,
+    8,
+    10,
+    11,
+    12,
+    13,
+    15,
+    14
+   ]
+  },
+  {
+   "name": "merge 16 / step 4 (distance 1)",
+   "level": 4,
+   "step": 4,
+   "nodes": [
+    "T"
+   ],
+   "pairs": [
+    [
+     0,
+     1,
+     0,
+     false
+    ],
+    [
+     2,
+     3,
+     0,
+     true
+    ],
+    [
+     4,
+     5,
+     0,
+     true
+    ],
+    [
+     6,
+     7,
+     0,
+     false
+    ],
+    [
+     8,
+     9,
+     0,
+     true
+    ],
+    [
+     10,
+     11,
+     0,
+     false
+    ],
+    [
+     12,
+     13,
+     0,
+     false
+    ],
+    [
+     14,
+     15,
+     0,
+     true
+    ]
+   ],
+   "after": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+   ]
+  }
+ ],
+ "tree": {
+  "id": "T",
+  "depth": 4,
+  "dir": "asc",
+  "x": 0,
+  "leaves": [
+   0,
+   16
+  ],
+  "kids": [
+   {
+    "id": "TL",
+    "depth": 3,
+    "dir": "asc",
+    "x": 1,
+    "leaves": [
+     0,
+     8
+    ],
+    "kids": [
+     {
+      "id": "TLL",
+      "depth": 2,
+      "dir": "asc",
+      "x": 3,
+      "leaves": [
+       0,
+       4
+      ],
+      "kids": [
+       {
+        "id": "TLLL",
+        "depth": 1,
+        "dir": "asc",
+        "x": 7,
+        "leaves": [
+         0,
+         2
+        ],
+        "kids": [
+         {
+          "id": "TLLLL",
+          "depth": 0,
+          "dir": "asc",
+          "x": 15,
+          "leaves": [
+           0,
+           1
+          ],
+          "kids": []
+         },
+         {
+          "id": "TLLLR",
+          "depth": 0,
+          "dir": "desc",
+          "x": 14,
+          "leaves": [
+           1,
+           2
+          ],
+          "kids": []
+         }
+        ]
+       },
+       {
+        "id": "TLLR",
+        "depth": 1,
+        "dir": "desc",
+        "x": 6,
+        "leaves": [
+         2,
+         4
+        ],
+        "kids": [
+         {
+          "id": "TLLRL",
+          "depth": 0,
+          "dir": "asc",
+          "x": 13,
+          "leaves": [
+           2,
+           3
+          ],
+          "kids": []
+         },
+         {
+          "id": "TLLRR",
+          "depth": 0,
+          "dir": "desc",
+          "x": 12,
+          "leaves": [
+           3,
+           4
+          ],
+          "kids": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "TLR",
+      "depth": 2,
+      "dir": "desc",
+      "x": 2,
+      "leaves": [
+       4,
+       8
+      ],
+      "kids": [
+       {
+        "id": "TLRL",
+        "depth": 1,
+        "dir": "asc",
+        "x": 5,
+        "leaves": [
+         4,
+         6
+        ],
+        "kids": [
+         {
+          "id": "TLRLL",
+          "depth": 0,
+          "dir": "asc",
+          "x": 11,
+          "leaves": [
+           4,
+           5
+          ],
+          "kids": []
+         },
+         {
+          "id": "TLRLR",
+          "depth": 0,
+          "dir": "desc",
+          "x": 10,
+          "leaves": [
+           5,
+           6
+          ],
+          "kids": []
+         }
+        ]
+       },
+       {
+        "id": "TLRR",
+        "depth": 1,
+        "dir": "desc",
+        "x": 4,
+        "leaves": [
+         6,
+         8
+        ],
+        "kids": [
+         {
+          "id": "TLRRL",
+          "depth": 0,
+          "dir": "asc",
+          "x": 9,
+          "leaves": [
+           6,
+           7
+          ],
+          "kids": []
+         },
+         {
+          "id": "TLRRR",
+          "depth": 0,
+          "dir": "desc",
+          "x": 8,
+          "leaves": [
+           7,
+           8
+          ],
+          "kids": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "TR",
+    "depth": 3,
+    "dir": "desc",
+    "x": 0,
+    "leaves": [
+     8,
+     16
+    ],
+    "kids": [
+     {
+      "id": "TRL",
+      "depth": 2,
+      "dir": "asc",
+      "x": 1,
+      "leaves": [
+       8,
+       12
+      ],
+      "kids": [
+       {
+        "id": "TRLL",
+        "depth": 1,
+        "dir": "asc",
+        "x": 3,
+        "leaves": [
+         8,
+         10
+        ],
+        "kids": [
+         {
+          "id": "TRLLL",
+          "depth": 0,
+          "dir": "asc",
+          "x": 7,
+          "leaves": [
+           8,
+           9
+          ],
+          "kids": []
+         },
+         {
+          "id": "TRLLR",
+          "depth": 0,
+          "dir": "desc",
+          "x": 6,
+          "leaves": [
+           9,
+           10
+          ],
+          "kids": []
+         }
+        ]
+       },
+       {
+        "id": "TRLR",
+        "depth": 1,
+        "dir": "desc",
+        "x": 2,
+        "leaves": [
+         10,
+         12
+        ],
+        "kids": [
+         {
+          "id": "TRLRL",
+          "depth": 0,
+          "dir": "asc",
+          "x": 5,
+          "leaves": [
+           10,
+           11
+          ],
+          "kids": []
+         },
+         {
+          "id": "TRLRR",
+          "depth": 0,
+          "dir": "desc",
+          "x": 4,
+          "leaves": [
+           11,
+           12
+          ],
+          "kids": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "TRR",
+      "depth": 2,
+      "dir": "desc",
+      "x": 0,
+      "leaves": [
+       12,
+       16
+      ],
+      "kids": [
+       {
+        "id": "TRRL",
+        "depth": 1,
+        "dir": "asc",
+        "x": 1,
+        "leaves": [
+         12,
+         14
+        ],
+        "kids": [
+         {
+          "id": "TRRLL",
+          "depth": 0,
+          "dir": "asc",
+          "x": 3,
+          "leaves": [
+           12,
+           13
+          ],
+          "kids": []
+         },
+         {
+          "id": "TRRLR",
+          "depth": 0,
+          "dir": "desc",
+          "x": 2,
+          "leaves": [
+           13,
+           14
+          ],
+          "kids": []
+         }
+        ]
+       },
+       {
+        "id": "TRRR",
+        "depth": 1,
+        "dir": "desc",
+        "x": 0,
+        "leaves": [
+         14,
+         16
+        ],
+        "kids": [
+         {
+          "id": "TRRRL",
+          "depth": 0,
+          "dir": "asc",
+          "x": 1,
+          "leaves": [
+           14,
+           15
+          ],
+          "kids": []
+         },
+         {
+          "id": "TRRRR",
+          "depth": 0,
+          "dir": "desc",
+          "x": 0,
+          "leaves": [
+           15,
+           16
+          ],
+          "kids": []
+         }
+        ]
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ }
+}

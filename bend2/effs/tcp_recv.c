@@ -1,9 +1,9 @@
 // TCP
 // ===
 
-// The loop parked the request until the socket was readable; a recv that
-// still finds nothing (the socket is non-blocking) parks again on more.
-// What it finds, read makes a String (io_str) or a List of bytes (io_list).
+// A recv that finds nothing (the socket is non-blocking) parks on more
+// until the socket is readable. What it finds, read makes a String (io_str)
+// or a List of bytes (io_list).
 static Term tcp_recv_with(Env e, IoWork* w, IoPack more,
   Term (*read)(Env, const char*, u64)) {
   int fd  = (int)w->hand;
@@ -11,16 +11,18 @@ static Term tcp_recv_with(Env e, IoWork* w, IoPack more,
   if (w->code == EAGAIN) {
     return io_wait_on(w, fd, POLLIN, 0, more);
   }
-  Term r = w->code ? io_fail(e, w->code, NULL)
-    : io_done(e, read(e, w->data, w->size));
+  Term r = io_res(e, w, read(e, w->data, w->size));
   free(w->data);
   return io_tup(e, io_hand(w->hand), r);
 }
 
 static Term tcp_recv_start(Env e, Term* f, IoWork* w, IoPack more) {
   w->hand = (intptr_t)io_hand_v(f[0]);
+  if (f[1] == 0) {
+    return io_tup(e, io_hand(w->hand), io_fail(e, EINVAL, NULL));
+  }
   w->made = f[1] < INT32_MAX ? (intptr_t)f[1] : INT32_MAX;
-  w->data = io_mem(malloc((size_t)w->made + 1));
+  w->data = io_mem(malloc((size_t)w->made));
   return more(e, w);
 }
 
@@ -35,7 +37,7 @@ Term tcp_recv_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) tcp_recv_use(void) {
-  io_eff(CID(TCP.recv), tcp_recv_run, IO_READ);
+  io_eff(CID(TCP.recv), tcp_recv_run, 0);
 }
 
 #endif
@@ -51,7 +53,7 @@ Term tcp_recv_bytes_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) tcp_recv_bytes_use(void) {
-  io_eff(CID(TCP.recv_bytes), tcp_recv_bytes_run, IO_READ);
+  io_eff(CID(TCP.recv_bytes), tcp_recv_bytes_run, 0);
 }
 
 #endif

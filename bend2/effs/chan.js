@@ -33,8 +33,7 @@ function chan_new(room) {
   return { room: Number(room), ring: [], wait: [], shut: false };
 }
 
-function chan_send(handle, value, k) {
-  const row = handle;
+function chan_send(row, value, k) {
   if (row.shut) {
     return false;
   }
@@ -50,8 +49,7 @@ function chan_send(handle, value, k) {
   return;
 }
 
-function chan_recv(handle, k) {
-  const row = handle;
+function chan_recv(row, k) {
   if (row.ring.length > 0) {
     return { $: CID(Some), value: chan_take(row) };
   }
@@ -65,8 +63,7 @@ function chan_recv(handle, k) {
   return;
 }
 
-function chan_close(handle) {
-  const row = handle;
+function chan_close(row) {
   if (!row.shut) {
     chan_shut(row);
   }

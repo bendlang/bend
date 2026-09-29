@@ -3,9 +3,12 @@
 // `bend f.bend --verdict` checks f.bend twice: bend2 checks it, then
 // safe_book elaborates the checked book to BendTT (bend2/bendtt.lean,
 // the minimal kernel with a proof) and the kernel's CLI checks the text.
-// The elaborator reads bend2's checked terms (Def.e: every node wrapped
-// in its type), so it needs no inference of its own; the kernel trusts
-// none of it. A book bend2 rejects never reaches the kernel. bend2
+// The elaborator reads bend2's checked terms (Def.e: every node of a
+// def's body wrapped in its type), so it needs no inference of its own;
+// the kernel trusts none of it. A term inside a type stays bare, so the
+// elaborator carries the type bend2 checked it at down to it: a λ's body
+// at the codomain, a match arm at its constructor's fields. A book bend2
+// rejects never reaches the kernel. bend2
 // converts functions up to η; the kernel does not, and unfolds a def
 // only when applied. So a term of a function type goes out η-long: an
 // equation bend2 closes by η has λs on both sides, which the kernel
@@ -73,7 +76,8 @@ type O =
   | { $: "Rwt"; e: O; l: number; P: O; f: O };
 
 // a bend2 variable: the kernel term it stands for, its bend2 type, and
-// the argument a specialized one stands for
+// the argument a specialized one stands for (which goes out at each use,
+// at its type, so its o is unused)
 type Bind = { o: O; T: HTerm | null; v?: HTerm };
 
 // the argument of each parameter of an item, or of each column of a
@@ -592,7 +596,7 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
   // binder), a match goes to the arm it takes, whose fields it binds so
   const v = top === undefined ? s.cols[0] ?? null : null;
   if (v !== null && x.$ === "Lam") {
-    const s2 = scope_bind({ ...s, cols: s.cols.slice(1) }, term(e, s, v, false), all?.A ?? null, false, v);
+    const s2 = scope_bind({ ...s, cols: s.cols.slice(1) }, { $: "Efq" }, all?.A ?? null, false, v);
     return tree(e, s2, x.f(B.Var(x.k, s.d)), fs);
   }
   if (v !== null && (x.$ === "Mat" || x.$ === "Efq")) {
@@ -622,7 +626,8 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
     if (q > 0 && all !== null && no_ctr(e, all.A)) {
       s2 = { ...s2, empty: [...s2.empty, { $: "App", q: 1, f: { $: "Prj", h: { $: "Efq" } }, x: { $: "Var", l } }] };
     }
-    const f = tree(e, s2, x.f(B.Var(x.k, s.d)), fs2);
+    const y: HTerm = B.Var(x.k, s.d);
+    const f = tree(e, s2, typed(x.f(y), all?.B(y)), fs2);
     if (q === 1 && uses(f, l) > 1) {
       // bend2 checks a ~ argument dead, so its λ may use a linear variable
       // twice: it matches the variable once and rebuilds it at each use
@@ -684,8 +689,9 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
       if (ctr === undefined) {
         oos("an unknown constructor " + x.k);
       }
-      const h = tree(e, s, x.h, [...fs, { n: ctr.n, cv }]);
-      const m = swi(e, s, x.m, null, fs, cv);
+      const [hT, mT] = goals(e, all, ctr);
+      const h = tree(e, s, typed(x.h, hT), [...fs, { n: ctr.n, cv }]);
+      const m = swi(e, s, x.m, mT, fs, cv);
       return { $: "Mat", k: name_tt(x.k), h, m };
     }
     default: {
@@ -701,11 +707,31 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
       const s2e = no_ctr(e, all.A) ? { ...s2, empty: [...s2.empty,
         { $: "App", q: 1, f: { $: "Efq" }, x: { $: "Var", l: lt } } as O] } : s2;
       const s3 = scope_kq(scope_kq({ ...s2e, tags: [...s2e.tags, lt] }, lt, q), la, q);
-      const body = convoy_bind(e, scope_bind(s3, pair, all.A, false), cv, f.f(B.Var(f.k, s.d)), fs);
+      const y: HTerm = B.Var(f.k, s.d);
+      const body = convoy_bind(e, scope_bind(s3, pair, all.A, false), cv, typed(f.f(y), all.B(y)), fs);
       const r2: Q = uses(body, lt) > 1 || uses(body, la) > 1 ? 2 : q;
       return { $: "Lam", q: r2, l: lt, f: { $: "Lam", q: r2, l: la, f: body } };
     }
   }
+}
+
+// the goals of a bare match of type all: c's arm at c's fields, then
+// all's codomain at c{fields}; the other arms at the datatype less c
+function goals(e: Safe, all: Extract<HTerm, { $: "All" }> | null, c: B.Ctr): [HTerm | null, HTerm | null] {
+  const A = all === null ? null : B.term_wnf(e.book, all.A);
+  if (all === null || A?.$ !== "ADT") {
+    return [null, null];
+  }
+  const go = (U: HTerm, xs: HTerm[]): HTerm => {
+    const F = B.term_wnf(e.book, U);
+    return F.$ === "All" ? B.All(F.q, F.k, F.i, F.A, (x: HTerm) => go(F.B(x), [...xs, x])) : all.B(B.Ctr(c.k, xs));
+  };
+  return [go(B.tele_fill(e.book, c.T, A.x, B.ctx_nil()), []), { ...all, A: { ...A, r: [...A.r, c.k] } }];
+}
+
+// t at T, when bend2 left it bare
+function typed(t: HTerm, T?: HTerm | null): HTerm {
+  return T == null || open(t)[1] !== null ? t : B.Ann(t, T);
 }
 
 // the arm of the λ-match t that the closed constructor v takes, and
@@ -804,7 +830,7 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
       if (b === undefined) {
         oos("a free variable " + x.k);
       }
-      return b.o;
+      return b.v !== undefined ? term(e, s0, typed(b.v, b.T), live) : b.o;
     }
     case "Ref":
     case "App": {
@@ -880,12 +906,10 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
 function spine(e: Safe, s: Scope, t: HTerm, live: boolean): O {
   const [h, xs] = unapply(t);
   const [f, T] = open(h);
-  if (f.$ === "Var") {
-    const o = term(e, s, h, live);
-    return args(e, s, o, s.c[f.i].T, xs, live);
-  }
   if (f.$ !== "Ref") {
-    return args(e, s, { $: "Ann", x: term(e, s, h, live), T: term(e, s, T ?? oos("an application with no known head type"), false) }, T, xs, live);
+    const U = f.$ === "Var" ? s.c[f.i]?.T ?? null : T;
+    const o = term(e, s, h, live);
+    return args(e, s, inferable(o) ? o : { $: "Ann", x: o, T: term(e, s, U ?? oos("an application with no known head type"), false) }, U, xs, live);
   }
   // bend2's instance of a template is the template at its ~ arguments
   const g = e.inst.get(f.k);
@@ -1064,7 +1088,7 @@ function arm(e: Safe, s: Scope, k: Name, cols: Cols, vs: Array<[Q, O]>): O {
       break;
     }
     si = { ...si, cols: si.cols.slice(1) };
-    si = v !== null ? scope_bind(si, term(e, si, v, false), F.A, false, v) : scope_bind(si, vs[j++][1], F.A, false);
+    si = v !== null ? scope_bind(si, { $: "Efq" }, F.A, false, v) : scope_bind(si, vs[j++][1], F.A, false);
     t = x.f(B.Var(x.k, si.d - 1));
   }
   return vs.slice(j).reduce<O>((f, [q, x]) => ({ $: "App", q, f, x }), tree(e, si, t, []));

@@ -26,8 +26,10 @@
 // uname is refused in one line; a 2.0.0-2.0.7 launcher's ping and its
 // latest.json fallback name the version, no sha256 and the move notice; the
 // formula carries the sum; --publish ships LICENSE files, names the license
-// as the hub does, refuses a License/ directory, and every request carries
-// User-Agent: bend/<ver>. SKIP when the site repo is not at lib.SITE.
+// as the hub does, sends no leading byte order mark (a package published
+// from a file with one imports), refuses a License/ directory, and every
+// request carries User-Agent: bend/<ver>. SKIP when the site repo is not at
+// lib.SITE.
 
 import * as child from "node:child_process";
 import * as crypto from "node:crypto";
@@ -323,6 +325,17 @@ try {
     && none.err.includes(TERMS + "License: MIT-0, the default (no LICENSE"
     + " file): https://bend-lang.com/bender/terms#s18.4\nwarning: no file is"
     + " named exactly LICENSE"));
+  const bom  = { "lic_bom.bend": use("two.bend"), "two.bend": two,
+    "LICENSE": "SPDX-License-Identifier: MIT\n" };
+  const mark = await publish("bom",
+    { ...bom, "LICENSE": "\uFEFF" + bom.LICENSE });
+  fs.writeFileSync(path.join(TMP, "bom.bend"), "import Base\nimport "
+    + pkg_hash(bom) + "/two.bend as T\ndef main() -> Nat:\n  T.two\n");
+  const imp  = await bend([path.join(TMP, "bom.bend")], { BEND_HUB: ORIGIN });
+  check("a LICENSE opening with a byte order mark goes without it, so the"
+    + " package imports: " + mark.err + imp.err, mark.code === 0
+    && mark.out.startsWith(pkg_hash(bom) + "\n") && imp.code === 0
+    && imp.out === "2n\n");
   const posts = seen.filter((s) => s.startsWith("POST / ")).length;
   const dir  = await publish("dir", { "lic_dir.bend": use("License/two.bend"),
     "License/two.bend": two });

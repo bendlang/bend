@@ -319,6 +319,7 @@ def TCP.send(sock: Socket, data: String) ->
   import "./effs/tcp_send.c"
   import "./effs/tcp_send.js"
 
+# A max of 0 fails with EINVAL, as do TCP.recv_bytes and TCP.poll.
 def TCP.recv(sock: Socket, max: U32) ->
   IO(Socket & Result<&1, &1, U32 & String, String>):
   import "./effs/tcp_recv.c"
@@ -493,24 +494,12 @@ def Bool.cmp(a: Bool, b: Bool) -> Cmp:
     case True{} True{}:
       EQ{}
 
-def Bool.full_add(a: Bool, b: Bool, c: Bool) -> Bool & Bool:
-  match a b c:
-    case False{} False{} False{}:
-      (False{}, False{})
-    case False{} False{} True{}:
-      (True{}, False{})
-    case False{} True{} False{}:
-      (True{}, False{})
-    case False{} True{} True{}:
-      (False{}, True{})
-    case True{} False{} False{}:
-      (True{}, False{})
-    case True{} False{} True{}:
-      (False{}, True{})
-    case True{} True{} False{}:
-      (False{}, True{})
-    case True{} True{} True{}:
-      (True{}, True{})
+def Bool.full_add(a: Bool, +b: Bool, +c: Bool) -> Bool & Bool:
+  match a:
+    case False{}:
+      (Bool.xor(b, c), Bool.and(b, c))
+    case True{}:
+      (Bool.not(Bool.xor(b, c)), Bool.or(b, c))
 
 def Bool.pick(-A: Type, c: Bool, a: A, b: A) -> A:
   match c:
@@ -533,45 +522,35 @@ def Cmp.is_lt(c: Cmp) -> Bool:
   match c:
     case LT{}:
       True{}
-    case EQ{}:
-      False{}
-    case GT{}:
+    case o:
       False{}
 
 def Cmp.is_eq(c: Cmp) -> Bool:
   match c:
-    case LT{}:
-      False{}
     case EQ{}:
       True{}
-    case GT{}:
+    case o:
       False{}
 
 def Cmp.is_gt(c: Cmp) -> Bool:
   match c:
-    case LT{}:
-      False{}
-    case EQ{}:
-      False{}
     case GT{}:
       True{}
+    case o:
+      False{}
 
 def Cmp.is_le(c: Cmp) -> Bool:
   match c:
-    case LT{}:
-      True{}
-    case EQ{}:
-      True{}
     case GT{}:
       False{}
+    case o:
+      True{}
 
 def Cmp.is_ge(c: Cmp) -> Bool:
   match c:
     case LT{}:
       False{}
-    case EQ{}:
-      True{}
-    case GT{}:
+    case o:
       True{}
 
 # Nat
@@ -593,9 +572,7 @@ def Nat.add(a: Nat, b: Nat) -> Nat:
 
 def Nat.sub(a: Nat, b: Nat) -> Nat:
   match a b:
-    case 0n 0n:
-      0n
-    case 0n 1n+bp:
+    case 0n _:
       0n
     case 1n+ap 0n:
       1n+ap
@@ -715,19 +692,11 @@ def Nat.max_ge_r(a, b):
     case 1n+ap 1n+bp:
       Nat.max_ge_r(ap, bp)
 
-def Nat.div.fin(qr: Nat & Nat) -> Nat:
-  (q, r) = qr
-  q
-
 def Nat.div(a: Nat, b: Nat) -> Nat:
-  Nat.div.fin(Nat.divmod(a, b))
-
-def Nat.mod.fin(qr: Nat & Nat) -> Nat:
-  (q, r) = qr
-  r
+  Pair.fst(Nat, Nat, Nat.divmod(a, b))
 
 def Nat.mod(a: Nat, b: Nat) -> Nat:
-  Nat.mod.fin(Nat.divmod(a, b))
+  Pair.snd(Nat, Nat, Nat.divmod(a, b))
 
 def Nat.pow(+a: Nat, b: Nat) -> Nat:
   match b:
@@ -1479,16 +1448,17 @@ def U32.from_nat(n: Nat) -> U32:
     case 1n+p:
       U32.inc(U32.from_nat(p))
 
-def U32.log2.go(+k: Nat, +n: U32, +d: Nat) -> Nat:
+def U32.log2.go(+k: Nat, +n: U32, b: Nat) -> Nat:
   match k:
     case 0n:
-      d
+      b
     case 1n+p:
-      U32.log2.go(p, U32.shr(n),
-        Nat.add(d, U32.to_nat(Bool.to_u32(U32.is_lt(1, n)))))
+      +s = U32.to_nat(U32.shln(1, p))
+      +t = Nat.mul(s, U32.to_nat(Bool.to_u32(U32.is_ne(U32.shrn(n, s), 0))))
+      U32.log2.go(p, U32.shrn(n, t), Nat.add(b, t))
 
-def U32.log2(+n: U32) -> Nat:
-  U32.log2.go(32n, n, 0n)
+def U32.log2(n: U32) -> Nat:
+  U32.log2.go(5n, n, 0n)
 
 def U32.divmod.go.fin(-p: Nat, q: Word(p), s: U32, b: U32, g: Bool) ->
   Word(1n+p) & U32:
@@ -1872,12 +1842,8 @@ def String.cmp(a, b):
     case SCon{h1, t1} SCon{h2, t2}:
       String.cmp.fin(t1, t2, Char.cmp(h1, h2))
 
-def String.eq.fin(r: (String & String) & Cmp) -> Bool:
-  ((a2, b2), c) = r
-  Cmp.is_eq(c)
-
 def String.eq(a: String, b: String) -> Bool:
-  String.eq.fin(String.cmp(a, b))
+  Cmp.is_eq(String.order(a, b))
 
 def String.length(s: String) -> Nat:
   match s:
@@ -1903,12 +1869,8 @@ def String.reverse.go(s: String, acc: String) -> String:
 def String.reverse(s: String) -> String:
   String.reverse.go(s, SNil{})
 
-def String.order.fin(r: (String & String) & Cmp) -> Cmp:
-  (ab, c) = r
-  c
-
 def String.order(a: String, b: String) -> Cmp:
-  String.order.fin(String.cmp(a, b))
+  Pair.snd(String & String, Cmp, String.cmp(a, b))
 
 def String.is_lt(a: String, b: String) -> Bool:
   Cmp.is_lt(String.order(a, b))
@@ -2556,9 +2518,7 @@ def Map.diff.fin(xt: String, yt: String, rc: Nat & Bool) -> Nat:
 
 def Map.diff(a, b):
   match a b:
-    case SNil{} SNil{}:
-      0n
-    case SNil{} SCon{h, t}:
+    case SNil{} _:
       0n
     case SCon{h, t} SNil{}:
       0n
@@ -2691,11 +2651,9 @@ def Map.set.fin.go(
 ) -> Map<a, V>:
   ((keyb2, k2), c) = r
   match c:
-    case LT{}:
-      Map.ins(a, V, m, key, x, Map.diff(keyb2, k2))
     case EQ{}:
       Map.put(a, V, m, key, x)
-    case GT{}:
+    case o:
       Map.ins(a, V, m, key, x, Map.diff(keyb2, k2))
 
 def Map.set.fin(
@@ -2753,11 +2711,9 @@ def Map.get.leaf(-V: Data, d: V, +v: V, r: (String & String) & Cmp) ->
   Map<&2, V> & V:
   ((key2, k2), c) = r
   match c:
-    case LT{}:
-      (MLeaf{k2, v}, d)
     case EQ{}:
       (MLeaf{k2, v}, v)
-    case GT{}:
+    case o:
       (MLeaf{k2, v}, d)
 
 def Map.get.go(-V: Data, node: Map<&2, V>, d: V, kb: String & Bool) -> Map<&2, V> & V:
@@ -2810,11 +2766,9 @@ def Map.pop.leaf(a, -V: Kind(a), v: V, r: (String & String) & Cmp) ->
   Map<a, V> & Maybe<a, V>:
   ((key2, k2), c) = r
   match c:
-    case LT{}:
-      (MLeaf{k2, v}, None{})
     case EQ{}:
       (MTip{}, Some{v})
-    case GT{}:
+    case o:
       (MLeaf{k2, v}, None{})
 
 def Map.pop.go(-a: Quant, -V: Kind(a), node: Map<a, V>, kb: String & Bool) ->

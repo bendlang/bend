@@ -40,11 +40,11 @@ static void process_free(ProcessCall* p) {
   free(p);
 }
 
-static bool process_append(ProcessCall* p, bool error, const char* data,
+static void process_append(ProcessCall* p, bool error, const char* data,
   u64 size) {
   if (size > (u64)p->max - p->out_len - p->err_len) {
     p->code = EFBIG;
-    return false;
+    return;
   }
   char** buf = error ? &p->err : &p->out;
   u64* len  = error ? &p->err_len : &p->out_len;
@@ -63,7 +63,6 @@ static bool process_append(ProcessCall* p, bool error, const char* data,
   }
   memcpy(*buf + *len, data, size);
   *len = need;
-  return true;
 }
 
 static void process_drain(ProcessCall* p, int fd, bool error) {

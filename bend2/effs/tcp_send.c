@@ -12,8 +12,7 @@ static Term tcp_send_more(Env e, IoWork* w) {
     }
     w->made += io_sys_end(w, n);
   }
-  Term r = w->code != 0 ? io_fail(e, w->code, NULL)
-    : io_done(e, term_pak(CID(Unit), 0));
+  Term r = io_res(e, w, term_pak(CID(Unit), 0));
   free(w->data);
   return io_tup(e, io_hand(w->hand), r);
 }

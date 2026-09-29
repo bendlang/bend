@@ -18,14 +18,17 @@ static Term tcp_poll_more(Env e, IoWork* w) {
     return io_tick() < at ? io_wait_on(w, fd, POLLIN, at, tcp_poll_more)
       : tcp_poll_end(e, w, io_done(e, term_pak(CID(None), 0)));
   }
-  return tcp_poll_end(e, w, w->code ? io_fail(e, w->code, NULL) : io_done(e,
-    io_box(e, CID(Some), io_str(e, w->data, w->size))));
+  return tcp_poll_end(e, w,
+    io_res(e, w, io_box(e, CID(Some), io_str(e, w->data, w->size))));
 }
 
 Term tcp_poll_run(Env e, Term* f, IoWork* w) {
   w->hand = (intptr_t)io_hand_v(f[0]);
+  if (f[1] == 0) {
+    return io_tup(e, io_hand(w->hand), io_fail(e, EINVAL, NULL));
+  }
   w->made = f[1] < INT32_MAX ? (intptr_t)f[1] : INT32_MAX;
-  w->data = io_mem(malloc((size_t)w->made + 1));
+  w->data = io_mem(malloc((size_t)w->made));
   return io_wait_on(w, (int)w->hand, POLLIN,
     io_tick() + (u64)f[2] * 1000000ull, tcp_poll_more);
 }

@@ -3046,7 +3046,15 @@ export function term_snf(book: Book, term: HTerm): HTerm {
 // same walk, kinds exact, no swap (a swap under EQ is harmless, so
 // the All case swaps unconditionally).
 
+const RIGID: Book = book_nil();
+
+// two copies of one term are equal: a conversion first compares both
+// sides with every def rigid (the empty book unfolds none), then as usual
 export function term_compare(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: number = 0): boolean {
+  return compare_go(mode, RIGID, lhs, rhs, dep) || compare_go(mode, book, lhs, rhs, dep);
+}
+
+function compare_go(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTerm, dep: number): boolean {
   if (lhs === rhs) {
     return true;
   }
@@ -3055,9 +3063,18 @@ export function term_compare(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTe
   if (a === b) {
     return true;
   }
+  // two share cells found equal become one: rhs points at lhs, so a
+  // shared graph is compared once, not walked as a tree
+  if (mode === "EQ" && lhs.$ === "Var" && lhs.i === -2 && rhs.$ === "Var" && rhs.i === -2) {
+    const same = compare_go(mode, book, a, b, dep);
+    if (same) {
+      rhs.v = lhs.v;
+    }
+    return same;
+  }
   if (a.$ === "Lam" || b.$ === "Lam") {
     const x: HTerm = Var("_", dep);
-    return term_compare(mode, book, term_apply(a, x), term_apply(b, x), dep + 1);
+    return compare_go(mode, book, term_apply(a, x), term_apply(b, x), dep + 1);
   }
   if (a.$ === "Lit" && b.$ === "Ctr") {
     a = lit_step(a);
@@ -3080,14 +3097,14 @@ export function term_compare(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTe
       for (let j = 0; j < n; j++) {
         [f, g] = [App(f, Var("_", dep + j)), App(g, Var("_", dep + j))];
       }
-      return n > 0 && term_compare(mode, book, f, g, dep + n);
+      return n > 0 && compare_go(mode, book, f, g, dep + n);
     }
     case "Typ": {
       if (b.$ !== "Typ") {
         return false;
       }
       if (mode === "EQ") {
-        return term_compare("EQ", book, a.g, b.g, dep);
+        return compare_go("EQ", book, a.g, b.g, dep);
       }
       const g = term_wnf(book, a.g);
       const h = term_wnf(book, b.g);
@@ -3095,16 +3112,16 @@ export function term_compare(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTe
         return true;
       }
       if (g.$ === "Min") {
-        const fa = term_compare("LE", book, Typ(g.a), b, dep);
-        const fb = term_compare("LE", book, Typ(g.b), b, dep);
+        const fa = compare_go("LE", book, Typ(g.a), b, dep);
+        const fb = compare_go("LE", book, Typ(g.b), b, dep);
         return fa && fb;
       }
       if (h.$ === "Min") {
-        const fa = term_compare("LE", book, a, Typ(h.a), dep);
-        const fb = term_compare("LE", book, a, Typ(h.b), dep);
+        const fa = compare_go("LE", book, a, Typ(h.a), dep);
+        const fb = compare_go("LE", book, a, Typ(h.b), dep);
         return fa || fb;
       }
-      return term_compare("LE", book, g, h, dep);
+      return compare_go("LE", book, g, h, dep);
     }
     case "Qnt":
     case "Efq":
@@ -3116,14 +3133,14 @@ export function term_compare(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTe
     }
     case "Min": {
       return b.$ === "Min"
-          && term_compare("EQ", book, a.a, b.a, dep)
-          && term_compare("EQ", book, a.b, b.b, dep);
+          && compare_go("EQ", book, a.a, b.a, dep)
+          && compare_go("EQ", book, a.b, b.b, dep);
     }
     case "All": {
       const x: HTerm = Var(a.k, dep);
       return b.$ === "All" && a.q.$ === b.q.$
-          && term_compare(mode, book, b.A, a.A, dep)
-          && term_compare(mode, book, a.B(x), b.B(x), dep + 1);
+          && compare_go(mode, book, b.A, a.A, dep)
+          && compare_go(mode, book, a.B(x), b.B(x), dep + 1);
     }
     // a stuck call is canonical: its head def compares by name, not by eta
     case "App": {
@@ -3131,8 +3148,8 @@ export function term_compare(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTe
         return false;
       }
       const head = a.f.$ === "Ref" && b.f.$ === "Ref" ? a.f.k === b.f.k
-        : term_compare("EQ", book, a.f, b.f, dep);
-      return head && term_compare("EQ", book, a.x, b.x, dep);
+        : compare_go("EQ", book, a.f, b.f, dep);
+      return head && compare_go("EQ", book, a.x, b.x, dep);
     }
     case "ADT": {
       if (b.$ !== "ADT" || a.k !== b.k || a.x.length !== b.x.length) {
@@ -3142,34 +3159,34 @@ export function term_compare(mode: "EQ" | "LE", book: Book, lhs: HTerm, rhs: HTe
         return false;
       }
       return b.r.every((c) => a.r.includes(c))
-          && a.x.every((x, j) => term_compare("EQ", book, x, b.x[j], dep));
+          && a.x.every((x, j) => compare_go("EQ", book, x, b.x[j], dep));
     }
     case "Ctr": {
       return b.$ === "Ctr" && a.k === b.k && a.x.length === b.x.length
-          && a.x.every((x, j) => term_compare("EQ", book, x, b.x[j], dep));
+          && a.x.every((x, j) => compare_go("EQ", book, x, b.x[j], dep));
     }
     case "Lit": {
       return b.$ === "Lit" && a.k === b.k && a.v === b.v;
     }
     case "Mat": {
       return b.$ === "Mat" && a.k === b.k
-          && term_compare("EQ", book, a.h, b.h, dep)
-          && term_compare("EQ", book, a.m, b.m, dep);
+          && compare_go("EQ", book, a.h, b.h, dep)
+          && compare_go("EQ", book, a.m, b.m, dep);
     }
     case "Eql": {
       return b.$ === "Eql"
-          && term_compare("EQ", book, a.a, b.a, dep)
-          && term_compare("EQ", book, a.b, b.b, dep)
-          && term_compare("EQ", book, a.T, b.T, dep);
+          && compare_go("EQ", book, a.a, b.a, dep)
+          && compare_go("EQ", book, a.b, b.b, dep)
+          && compare_go("EQ", book, a.T, b.T, dep);
     }
     case "Hol": {
       return b.$ === "Hol" && a.k === b.k;
     }
     case "Rwt": {
       return b.$ === "Rwt"
-          && term_compare("EQ", book, a.e, b.e, dep)
-          && term_compare("EQ", book, a.p, b.p, dep)
-          && term_compare("EQ", book, a.f, b.f, dep);
+          && compare_go("EQ", book, a.e, b.e, dep)
+          && compare_go("EQ", book, a.p, b.p, dep)
+          && compare_go("EQ", book, a.f, b.f, dep);
     }
     default: {
       return false;
