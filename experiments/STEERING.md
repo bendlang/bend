@@ -4,9 +4,9 @@ Phase16 is active under the [design](../design/phase16/full_conformance.md).
 The user authorizes continued exact conformance work with speed and simplicity
 constraints, including project evidence pushes. Baseline verification and the
 controlled unchanged-release matrix pass; current source remains Phase15.
-The accepted wave7 full gate reduces exact differences **459→18**, with
-441 new exact matches and no losses. All 2,996 primitive outcomes stay exact.
-It adds six matches over wave6: local law parameter order and lambda diagnostics.
+The accepted wave8 full gate reduces exact differences **459→16**, with
+443 new exact matches and no losses. All 2,996 primitive outcomes stay exact.
+It adds two matches over wave7: final completeness order and constructor notes.
 Alias resolution now respects lexical bindings, with paired positive witnesses.
 The strengthened gate protects every exact match from the preceding accepted
 checkpoint; all rejected integrations remain preserved.
@@ -18,9 +18,11 @@ variation. The exact Base-prefix law passes, but removes only 1.32% of whole-sou
 freshening visits; defer the cache change. Literal builders account for roughly
 2M of the 2.17M elaborated terms. Compact literal representation is under staged
 implementation; no end-to-end speed gain has been measured for it.
-The maintained backend selection is 41/41 exact on wave6; changed images need
+The maintained backend selection is 41/41 exact on wave8; changed images need
 their own final gates. Qualified pattern eligibility passes separate controls.
-Contextual module parsing and final completeness order are active. Preserve all
+Program completion timing is flat (+0.38%) in its isolated same-source matrix.
+Contextual module parsing awaits integration; literal memo boundaries remain open.
+Preserve all
 75 unrelated Phase6 files; no older timed campaign is renewed.
 
 Phase15 is complete under its [design](../design/phase15/parser_conformance_and_speed.md).

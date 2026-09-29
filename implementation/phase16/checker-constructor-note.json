@@ -1,0 +1,256 @@
+{
+  "kind": "phase16-constructor-note-fix",
+  "source": "selfhost/build/phase16/checker-note-source-01/project",
+  "manifest": {
+    "parent": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/wave7-source-01/project",
+    "file": "src/diagnostic/trace.bend",
+    "beforeSha256": "55caed4541fdb021c06554badba62d872d1588c12b8ee4cc16883420d0016e70",
+    "afterSha256": "abd88519ba3bfcf06f78d26565ffe69ceda89d3838b64dcf3149bf24a3e885b6",
+    "toolSha256": "7077a9d5ed127db99e64f2a1aa53d128771f82c381058216ac98562f181259b4",
+    "plan": "/home/ai/bend2/build/publish/bend/design/phase16/checker-constructor-note.md"
+  },
+  "apiSha256": "1a11d34079ede9bbefc25f2dd158399aa6b4b6a8a7133085bd870c3a7b0aad8c",
+  "maintained36": {
+    "file": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-note-build-01/validation-001/selected/paired.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-note-build-01/validation-001/selected/paired.json",
+      "sha256": "b380edc85291bc7a90582468e1d3dc479d6075fce09a3e7b3a59ea89303783b7"
+    },
+    "selectedComplete": true,
+    "exactDifferences": 2,
+    "discrepancies": 2,
+    "reference": {
+      "tests": 36,
+      "allTests": 1498,
+      "externalTests": 25,
+      "excludedTests": 1487,
+      "probes": 36,
+      "statuses": {
+        "pass": 36
+      },
+      "lanes": {
+        "parse": {},
+        "check": {
+          "pass": 36
+        },
+        "interpreter": {},
+        "js": {},
+        "native": {},
+        "metal": {},
+        "cuda": {}
+      },
+      "namespaces": {
+        "base": {},
+        "check": {
+          "pass": 1
+        },
+        "compile": {},
+        "comptime": {},
+        "cost": {},
+        "eval": {},
+        "flatten": {},
+        "gfx": {},
+        "grade": {},
+        "halt": {},
+        "import": {
+          "pass": 9
+        },
+        "io": {},
+        "page": {},
+        "parse": {
+          "pass": 1
+        },
+        "printer": {},
+        "proof": {},
+        "reg": {},
+        "rfc": {},
+        "run": {},
+        "show": {},
+        "spec": {},
+        "state": {},
+        "stats": {},
+        "stuck": {}
+      },
+      "checkerRejections": 0,
+      "proofTrustRejections": 4,
+      "frontendRejections": 22,
+      "uncheckedExecutions": 0
+    },
+    "candidate": {
+      "tests": 36,
+      "allTests": 1498,
+      "externalTests": 25,
+      "excludedTests": 1487,
+      "probes": 36,
+      "statuses": {
+        "pass": 36
+      },
+      "lanes": {
+        "parse": {},
+        "check": {
+          "pass": 36
+        },
+        "interpreter": {},
+        "js": {},
+        "native": {},
+        "metal": {},
+        "cuda": {}
+      },
+      "namespaces": {
+        "base": {},
+        "check": {
+          "pass": 1
+        },
+        "compile": {},
+        "comptime": {},
+        "cost": {},
+        "eval": {},
+        "flatten": {},
+        "gfx": {},
+        "grade": {},
+        "halt": {},
+        "import": {
+          "pass": 9
+        },
+        "io": {},
+        "page": {},
+        "parse": {
+          "pass": 1
+        },
+        "printer": {},
+        "proof": {},
+        "reg": {},
+        "rfc": {},
+        "run": {},
+        "show": {},
+        "spec": {},
+        "state": {},
+        "stats": {},
+        "stuck": {}
+      },
+      "checkerRejections": 0,
+      "proofTrustRejections": 4,
+      "frontendRejections": 22,
+      "uncheckedExecutions": 0
+    }
+  },
+  "focus": {
+    "file": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-note-focus-01/selected/paired.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/checker-note-focus-01/selected/paired.json",
+      "sha256": "12f54d571739379b562f5889b304798f31cedcd493b4cc96c1816133a395a229"
+    },
+    "selectedComplete": true,
+    "exactDifferences": 0,
+    "discrepancies": 0,
+    "reference": {
+      "tests": 2,
+      "allTests": 1498,
+      "externalTests": 0,
+      "excludedTests": 1496,
+      "probes": 2,
+      "statuses": {
+        "pass": 2
+      },
+      "lanes": {
+        "parse": {},
+        "check": {
+          "pass": 2
+        },
+        "interpreter": {},
+        "js": {},
+        "native": {},
+        "metal": {},
+        "cuda": {}
+      },
+      "namespaces": {
+        "base": {},
+        "check": {
+          "pass": 2
+        },
+        "compile": {},
+        "comptime": {},
+        "cost": {},
+        "eval": {},
+        "flatten": {},
+        "gfx": {},
+        "grade": {},
+        "halt": {},
+        "import": {},
+        "io": {},
+        "page": {},
+        "parse": {},
+        "printer": {},
+        "proof": {},
+        "reg": {},
+        "rfc": {},
+        "run": {},
+        "show": {},
+        "spec": {},
+        "state": {},
+        "stats": {},
+        "stuck": {}
+      },
+      "checkerRejections": 2,
+      "proofTrustRejections": 0,
+      "frontendRejections": 0,
+      "uncheckedExecutions": 0
+    },
+    "candidate": {
+      "tests": 2,
+      "allTests": 1498,
+      "externalTests": 0,
+      "excludedTests": 1496,
+      "probes": 2,
+      "statuses": {
+        "pass": 2
+      },
+      "lanes": {
+        "parse": {},
+        "check": {
+          "pass": 2
+        },
+        "interpreter": {},
+        "js": {},
+        "native": {},
+        "metal": {},
+        "cuda": {}
+      },
+      "namespaces": {
+        "base": {},
+        "check": {
+          "pass": 2
+        },
+        "compile": {},
+        "comptime": {},
+        "cost": {},
+        "eval": {},
+        "flatten": {},
+        "gfx": {},
+        "grade": {},
+        "halt": {},
+        "import": {},
+        "io": {},
+        "page": {},
+        "parse": {},
+        "printer": {},
+        "proof": {},
+        "reg": {},
+        "rfc": {},
+        "run": {},
+        "show": {},
+        "spec": {},
+        "state": {},
+        "stats": {},
+        "stuck": {}
+      },
+      "checkerRejections": 2,
+      "proofTrustRejections": 0,
+      "frontendRejections": 0,
+      "uncheckedExecutions": 0
+    }
+  },
+  "physicalLineDelta": 0,
+  "byteDelta": 42,
+  "decision": "eligible independent correction; root full integration required"
+}

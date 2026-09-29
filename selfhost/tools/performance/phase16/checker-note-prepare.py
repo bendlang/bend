@@ -1,0 +1,7 @@
+from pathlib import Path
+import shutil,json,hashlib,difflib
+root=Path.cwd();base=root/'selfhost';old=base/'build/phase16/wave7-source-01/project';out=base/'build/phase16/checker-note-source-01';out.mkdir();shutil.copytree(old,out/'project');p=out/'project/src/diagnostic/trace.bend';before=p.read_text();needle='String.eq(ce(r), "constructor requires a datatype goal") && String.eq(dk(lookup(cb(e), nm(t))), "ADT")';assert before.count(needle)==1;s=before.replace(needle,needle+' && String.eq(dg_family(cb(e), nm(t)), "")');p.write_text(s)
+(out/'trace.patch').write_text(''.join(difflib.unified_diff(before.splitlines(True),s.splitlines(True),fromfile='src/diagnostic/trace.bend',tofile='src/diagnostic/trace.bend')))
+(out/'manifest.json').write_text(json.dumps({'parent':str(old),'file':'src/diagnostic/trace.bend','beforeSha256':hashlib.sha256(before.encode()).hexdigest(),'afterSha256':hashlib.sha256(s.encode()).hexdigest(),'toolSha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),'plan':str(root/'design/phase16/checker-constructor-note.md')},indent=2)+'\n')
+(out/'config.json').write_text(json.dumps({'project':str(out/'project'),'upstream':str(base/'.bootstrap/upstream-phase8'),'profile':'equality','cpu':'1','jobs':1},indent=2)+'\n')
+selection=[{'id':x,'lanes':['check']} for x in ['check/switch_miss_guard.bend','check/ctr_of_datatype.bend']];(out/'selection.json').write_text(json.dumps(selection,indent=2)+'\n')

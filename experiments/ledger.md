@@ -1121,3 +1121,21 @@ finds about2M literal-construction terms within the2.17M raw source graph.
 Compact literal representation is now the principal performance experiment;
 operation counts do not establish an end-to-end speedup. Contextual module
 parsing and final program-completeness ordering proceed in isolated snapshots.
+
+
+## Phase16 eighth full wave — 2026-09-29
+
+Wave8 reaches **16 exact frontend differences**, two new and none lost against
+wave7; all2,996 primitive outcomes remain exact. The unchanged maintained backend
+selection remains41/41 exact. Final completeness ordering and constructor-note
+eligibility close the two remaining checker-only corpus rows. Qualified pattern
+controls also close six erroneous acceptances outside that corpus. See the
+[report](../implementation/phase16/full_conformance.md).
+
+A controlled isolated completion comparison is flat at29.2656→29.3768s (+0.38%),
+TS2.9708s, with unchanged memory. Keep the semantic correction; claim no speedup.
+The accepted [wave7 capsule](../implementation/phase16/wave7-evidence/README.md)
+now preserves917 files, with independent byte recovery and214-source-file
+reconstruction from committed Phase15 plus the patch. Earlier/later experiment
+preservation remains separate. Contextual completion and compact literal gates
+continue; no Phase16 image is installed.

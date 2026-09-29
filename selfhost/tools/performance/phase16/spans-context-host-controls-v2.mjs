@@ -1,0 +1,47 @@
+#!/usr/bin/env node
+import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import{pathToFileURL}from'node:url';import{createHash}from'node:crypto';
+const[aa,cc,oo]=process.argv.slice(2),attempt=path.resolve(aa),casesFile=path.resolve(cc),out=path.resolve(oo);fs.mkdirSync(out);fs.copyFileSync(import.meta.filename,path.join(out,'consumed-tool.mjs'));
+const sha=x=>createHash('sha256').update(x).digest('hex'),id=file=>({file:path.resolve(file),sha256:sha(fs.readFileSync(file))}),report={kind:'phase16-contextual-host-controls',complete:false,pass:false,inputs:[id(import.meta.filename),id(casesFile),id(path.join(attempt,'attempt.json'))],controls:[],strictDifferences:[]};
+const save=()=>fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n');save();const test=async(name,fn)=>{try{report.controls.push({name,pass:true,evidence:await fn()});}catch(e){report.controls.push({name,pass:false,error:String(e.stack??e)});}save();};
+const list=xs=>xs.reduceRight((tail,head)=>({$:'Con',head,tail}),{$:'Nil'}),array=xs=>{const result=[];while(xs.$==='Con'){result.push(xs.head);xs=xs.tail;}assert.equal(xs.$,'Nil');return result;};
+const framedFile=path.resolve('selfhost/.bootstrap/upstream-phase8/tests/reg/framed_cell_capture.bend');report.inputs.push(id(framedFile));
+const cases=[...JSON.parse(fs.readFileSync(casesFile)),
+ ['completed-bad-before-syntax',{'main.bend':'def bad() -> Type:\n  match Type:\n    case x: x\ndef later( !!!\n'}],
+ ['completed-good-before-syntax',{'main.bend':'def good() -> Type:\n  Type\ndef later( !!!\n'}],
+ ['syntax-before-later-bad',{'main.bend':'def first( !!!\ndef bad() -> Type:\n  match Type:\n    case x: x\n'}],
+ ['framed-cell-capture',{'main.bend':fs.readFileSync(framedFile,'utf8')}],
+ ['dependency-syntax-before-missing',{'main.bend':'import ./dep.bend as D\nimport ./absent.bend as M\n','dep.bend':'def bad( !!!\n'}],
+ ['dependency-syntax-before-cycle',{'main.bend':'import ./dep.bend as D\nimport ./main.bend as M\n','dep.bend':'def bad( !!!\n'}],
+ ['dependency-lowering-before-missing',{'main.bend':'import ./dep.bend as D\nimport ./absent.bend as M\n','dep.bend':'def bad() -> Type:\n  match Type:\n    case x: x\n'}],
+ ['dependency-lowering-before-cycle',{'main.bend':'import ./dep.bend as D\nimport ./main.bend as M\n','dep.bend':'def bad() -> Type:\n  match Type:\n    case x: x\n'}],
+ ['missing-before-main-error',{'main.bend':'import ./absent.bend as M\ndef bad( !!!\n'}],
+ ['cycle-before-main-error',{'main.bend':'import ./main.bend as M\ndef bad( !!!\n'}],
+ ['header-error-before-body',{'main.bend':'import wrong\ndef bad( !!!\n'}],
+ ['foreign-path-retention',{'main.bend':'import ./dep.bend as D\n','dep.bend':'def f() -> Type:\n  import "native.js"\n'}],
+ ['root-law-fill-in-dependency',{'main.bend':'import Base\nimport ./dep.bend as D\n','dep.bend':'def IO.bind():\n  Type\n'}],
+];
+fs.writeFileSync(path.join(out,'frozen-cases.json'),JSON.stringify(cases,null,2)+'\n');report.inputs.push(id(path.join(out,'frozen-cases.json')));
+try{
+ const a=JSON.parse(fs.readFileSync(path.join(attempt,'attempt.json'))),W=await import(pathToFileURL(path.join(a.snapshot.root,'tools/development/workflow.mjs')));await W.verifyAttempt(attempt);
+ process.env.BEND_TYPED_API=a.api.file;process.env.BEND_BASE=a.base.file;const H=await import(pathToFileURL(path.join(a.snapshot.root,'tools/typed-driver.mjs'))),K=await H.loadApi();
+ const U=await import(pathToFileURL(path.resolve('selfhost/.bootstrap/upstream-phase8/bend2/bend.ts'))),baseText=fs.readFileSync(a.base.file,'utf8'),base={$:'FLocatedSource',source:{$:'FSource',name:'Base',path:a.base.file,text:baseText},begin:1,end:baseText.length+2},loadedBase=K.f_load_graph('Base',list([base]));assert.equal(loadedBase.error,'');
+ const seed={book:loadedBase.book,sourcePath:a.base.file,sourceText:baseText,spanAbi:3,sourceBegin:1,sourceEnd:baseText.length+2};report.inputs.push(id(a.api.file),id(a.base.file),id(path.resolve('selfhost/.bootstrap/upstream-phase8/bend2/bend.ts')));
+ for(const[name,files]of cases){const dir=path.join(out,'fixtures',name);fs.mkdirSync(dir,{recursive:true});for(const[file,text]of Object.entries(files)){fs.writeFileSync(path.join(dir,file),text);report.inputs.push(id(path.join(dir,file)));}
+  await test('ordered IO '+name,async()=>{let expected='';try{await U.book_load(U.book_nil(),path.join(dir,'main.bend'),'',new Map());}catch(e){assert.equal(e.$,'Err',String(e.stack??e));expected=U.err_show(e);}
+   let actual='',graph;try{graph=H.discoverSources(K,path.join(dir,'main.bend'),{seed});actual=graph.loadTrace.result.error;}catch(e){assert.equal(e.phase,'parse',String(e.stack??e));actual=e.message;}
+   if(name==='unsafe-import'&&actual!==expected){assert.match(actual,/expected def after @unsafe/);assert(expected);report.strictDifferences.push({name,expected,actual});}else assert.equal(actual,expected);
+   if(graph){assert(graph.loadTrace);const again=K.f_load_graph_seed_trace(graph.main,graph.sources,seed.sourcePath,seed.sourceText,seed.book);assert.deepEqual(graph.loadTrace,again);if(name==='foreign-path-retention')assert.deepEqual(graph.foreign,[{name:path.join(dir,'native.js'),path:path.join(dir,'native.js')}]);}
+   return{expected,actual,files:graph?.files,foreign:graph?.foreign};});
+ }
+ const dir=path.join(out,'counter-fixtures');fs.mkdirSync(dir);for(const[name,text]of Object.entries({'main.bend':'import Base\nimport ./a.bend as A\nimport ./b.bend as B\nimport ./link.bend as C\ndef main() -> U32:\n  0\n','a.bend':'law a:\n  Type\n','b.bend':'def b() -> Type:\n  Type\n'})){fs.writeFileSync(path.join(dir,name),text);report.inputs.push(id(path.join(dir,name)));}fs.symlinkSync('a.bend',path.join(dir,'link.bend'));
+ let code=fs.readFileSync(a.checkedApi.file,'utf8');report.inputs.push(id(a.checkedApi.file));const names=['f_body_header','f_graph_finish_alias','f_graph_trace','f_complete_seed'];
+ for(const name of names){const re=new RegExp('function \\$'+name+'\\$\\([^\\n]*\\) \\{');assert.equal([...code.matchAll(new RegExp(re.source,'g'))].length,1);code=code.replace(re,m=>m+'\n  __counts.'+name+'++;');}
+ const instrumented=path.join(out,'counter-api.mjs');fs.writeFileSync(instrumented,'const __counts={'+names.map(x=>x+':0').join(',')+'};\n'+code+'\nexport {__counts};\n');report.inputs.push(id(instrumented));const D=await import(pathToFileURL(instrumented));
+ for(const cached of[false,true])await test('exact normal lifecycle counts '+(cached?'seeded':'cold'),()=>{for(const name of names)D.__counts[name]=0;const graph=H.discoverSources(D.default,path.join(dir,'main.bend'),{seed:cached?seed:null}),expected=H.discoverSources(K,path.join(dir,'main.bend'),{seed:cached?seed:null});assert.deepEqual(graph,expected);assert.equal(graph.loadTrace.result.error,'');const counts={...D.__counts};assert.deepEqual(counts,{f_body_header:cached?3:4,f_graph_finish_alias:cached?3:4,f_graph_trace:1,f_complete_seed:cached?1:0});assert.equal(graph.files.length,4);assert.equal(array(graph.sources).length,5);return counts;});
+ await test('unknown load ABI rejected',()=>{assert.throws(()=>H.discoverSources({...K,compiler_load_abi:()=>77},path.join(dir,'main.bend')),/Unknown compiler load ABI/);return{rejected:true};});
+ await test('missing contextual capability rejected',()=>{assert.throws(()=>H.discoverSources({...K,f_complete_source:undefined},path.join(dir,'main.bend')),/Missing contextual compiler source API/);return{rejected:true};});
+ await test('stale Base interval rejected',()=>{assert.throws(()=>H.discoverSources(K,path.join(dir,'main.bend'),{seed:{...seed,sourceBegin:2}}),/Stale Base source interval/);return{rejected:true};});
+ for(const key of['sourcePath','sourceText'])await test('Bend seed rejects mismatched '+key,()=>{const bad={...seed,[key]:seed[key]+'x'},c=K.f_complete_seed(base,{$:'FGraph',book:list([]),error:'',done:list([])},bad.sourcePath,bad.sourceText,bad.book);assert.equal(c.graph.error,'Base seed source mismatch');assert.equal(array(c.graph.book).length,0);return{error:c.graph.error};});
+ await test('corrupt returned raw-book endpoints rejected',()=>{const fake={...K,f_complete_source(...args){const c=K.f_complete_source(...args);if(c.parsed.book.$==='Con'){c.parsed.book.head.typ={...c.parsed.book.head.typ,originBegin:0,originEnd:99};}return c;}};assert.throws(()=>H.discoverSources(fake,path.join(dir,'main.bend'),{seed}),/Invalid compiler source range/);return{rejected:true};});
+ await W.verifyAttempt(attempt);for(const input of report.inputs)assert.equal(id(input.file).sha256,input.sha256);report.complete=true;report.pass=report.controls.every(x=>x.pass);
+}catch(e){report.error=String(e.stack??e);}report.finished=new Date().toISOString();save();console.log(JSON.stringify({complete:report.complete,pass:report.pass,controls:report.controls.length,failed:report.controls.filter(x=>!x.pass).map(x=>x.name),strictDifferences:report.strictDifferences.length,error:report.error}));if(!report.pass)process.exitCode=1;

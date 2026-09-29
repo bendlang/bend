@@ -292,3 +292,35 @@ reuse, but correctness and complete-workflow speed remain unmeasured. The
 TODO reporting separately from full live-instance chronology. Contextual module
 parsing, remaining first-error cases and all final promotion gates remain open.
 Production stays Phase15.
+
+
+## Eighth wave: final completeness and qualified pattern eligibility
+
+`wave8-build-01`, API `f2f67a611488b39c830f61973f6705f7e2ea8bb9711850df0fe5b721f5a725a5`,
+passes `wave8-frontend-01`: **459→16** exact differences,443 new exact matches
+and no losses versus Phase15; **18→16**, two new and none lost versus wave7.
+All2,996 primitive outcomes remain exact. All remaining main-suite differences
+originate in parsing: eight fixtures in both lanes. `wave8-backend-01` again
+passes the unchanged41 paired backend rows exactly with pinned Clang16.
+
+The [program-completion entry](program_completion.md) checks live instances before
+final source incompleteness and returns the materialized book through ABI2. The
+[qualified-pattern fix](qualified_pattern_bindings.md) closes six erroneous
+acceptances outside the main corpus. The independent [constructor-note guard](checker-constructor-note.md)
+removes the false F32 suggestion while preserving the real datatype suggestion.
+The integrated198-observation controls have195 exact matches; the two imported
+law wording differences and one same-body instance chronology gap remain.
+Integrated host10 and direct result/prefix/operation8 controls also pass.
+
+Source is **15,842 physical / 13,509 nonblank lines / 549,933 bytes** in59 modules,
+1,595 definitions,776 laws and63 types. This adds35 Bend lines to wave7. The first
+wave8 preparation stopped because one valid selection used array format; the
+failed source01/tool are preserved, source02 accepts both supported formats,
+and only source02 was built. Counts are in `wave8-source-counts-01.json`.
+
+The [isolated completion cost matrix](program-completion-cost.md) is flat:
+wave7 takes29.2656s and program-completion01 takes29.3768s (+0.38%), with unchanged
+memory; TS takes2.9708s. This is a semantic correction without a demonstrated
+speedup. It does not replace final combined-image timing. Contextual module
+completion and compact literals remain separately checked candidates; production
+stays Phase15 and final history/release gates remain open.
