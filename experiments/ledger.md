@@ -997,3 +997,17 @@ All 75 unrelated Phase6 files are unchanged and unstaged.
 profile for any larger representation/allocation experiment. The source-worker
 pattern still pays but does not close the 8.35× gap. Keep routine edits on the
 36-case checked workflow; no old multi-hour campaign is renewed.
+
+
+## Phase16 exact conformance started — 2026-09-29
+
+The user authorizes continued work toward full conformance with low checking cost
+and simple implementation, and explicitly approves project evidence archives to
+`rom1504/bend` / `selfhost/bootstrap`. Phase15 evidence commit `2ab7b14` is pushed.
+The [design](../design/phase16/full_conformance.md) freezes unchanged upstream,
+459 exact differences, successful behavior axes and 75 unrelated-file identities.
+The fresh same-image baseline averages 24.5512 s Bend and 2.6651 s TS (9.2122×);
+1.82% variation between identical Bend groups is not an optimization result.
+Independent owners inspect parser errors, checker errors and missing source
+origins. Numeric full-range provenance requires an isolated cost/ABI gate before
+instrumentation. Outcomes go in the [report](../implementation/phase16/full_conformance.md).

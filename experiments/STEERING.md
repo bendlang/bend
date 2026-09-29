@@ -1,5 +1,14 @@
 # Current compiler experiment strategy
 
+Phase16 is active under the [design](../design/phase16/full_conformance.md).
+The user authorizes continued exact conformance work with speed and simplicity
+constraints, including project evidence pushes. Baseline verification and the
+controlled unchanged-release matrix pass; current source remains Phase15.
+Three isolated owners target parser error information, checker error information,
+and lossless source spans. Explicit numeric provenance gets a metadata-only
+cost experiment before broad instrumentation. Preserve strict oracles and all
+75 unrelated Phase6 files; no older timed campaign is renewed.
+
 Phase15 is complete under its [design](../design/phase15/parser_conformance_and_speed.md).
 The [report](../implementation/phase15/parser_conformance_and_speed.md) selects
 combined-02, API `b8d658c5`, against unchanged upstream `b2111cf`. Parser/import
