@@ -272,10 +272,12 @@ def IO.within(-A: Type, ms: U32, act: IO(A)) -> IO(Maybe<&1, A>):
 # None, a sleep at once, an effect on a socket (socket, Fail{ECANCELED}),
 # so a cancelled step takes and delivers nothing and hands its socket
 # back. IO.poll answers Ready{x} if act answered x with nothing cancelled,
-# else Late{x}. An effect that already started (a send half written, a
-# connect, work on the IO threads) or that IO.poll cannot cancel (see
-# guide/EFFECTS.md) runs to its end, past ms. IO.poll(0, act) sets no
-# timer.
+# else Late{x}; a poll inside act waits no longer than this one. An
+# effect that already started (a send half written, a connect, work on
+# the IO threads, a read the OS called ready and then found empty) or
+# that IO.poll cannot cancel (see guide/EFFECTS.md) runs to its end, past
+# ms. IO.poll(0, act) sets no timer, and a cancel yields to the other
+# computations, as a wait would.
 def IO.poll(-A: Type, ms: U32, act: IO(A)) -> IO(IO.Poll<A>):
   import "./effs/io_poll.c"
   import "./effs/io_poll.js"
@@ -363,22 +365,25 @@ def TCP.poll(sock: Socket, +max: U32, ms: U32) ->
   IO(Socket & Result<&1, &1, U32 & String, Maybe<&1, String>>):
   TCP.poll.go(sock, max, ms, U32.is_eq(max, 0))
 
+# max 0 fails at once: IO.poll would check the socket before TCP.recv
+# checks max
 def TCP.poll.go(sock: Socket, max: U32, ms: U32, zero: Bool) ->
   IO(Socket & Result<&1, &1, U32 & String, Maybe<&1, String>>):
   match zero:
     case True{}:
       IO.bind(Socket & Result<&1, &1, U32 & String, String>,
         Socket & Result<&1, &1, U32 & String, Maybe<&1, String>>,
-        TCP.recv(sock, max), m => TCP.poll.got(String, Ready{m}))
+        TCP.recv(sock, max), m => Socket.polled(String, Ready{m}))
     case False{}:
       IO.bind(IO.Poll<(Socket & Result<&1, &1, U32 & String, String>)>,
         Socket & Result<&1, &1, U32 & String, Maybe<&1, String>>,
         IO.poll(Socket & Result<&1, &1, U32 & String, String>, ms,
           TCP.recv(sock, max)),
-        TCP.poll.got(String))
+        Socket.polled(String))
 
-# a polled recv's answer: its data, or None if it was cancelled
-def TCP.poll.got(-A: Type, p: IO.Poll<(Socket & Result<&1, &1, U32 & String, A>)>) ->
+# a polled socket effect's answer: its value in Some, or None if it was
+# cancelled
+def Socket.polled(-A: Type, p: IO.Poll<(Socket & Result<&1, &1, U32 & String, A>)>) ->
   IO(Socket & Result<&1, &1, U32 & String, Maybe<&1, A>>):
   match p:
     case Ready{(so, r)}:
@@ -410,7 +415,7 @@ def UDP.poll(sock: Socket, max: U32) ->
     Socket & Result<&1, &1, U32 & String, Maybe<&1, String & U32 & String>>,
     IO.poll(Socket & Result<&1, &1, U32 & String, String & U32 & String>, 0,
       UDP.recv_from(sock, max)),
-    TCP.poll.got(String & U32 & String))
+    Socket.polled(String & U32 & String))
 
 def Socket.close(socket: Socket) -> IO(Unit):
   import "./effs/socket_close.c"

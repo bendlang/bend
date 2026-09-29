@@ -2,19 +2,22 @@
 // ==
 
 // IO.poll (see base.bend). A request's poll is its computation's poll
-// frames, innermost first: (k, until, late). A polled act runs with io_emit
-// as its continuation, so the Emit that ends it pops the top frame, which
-// answers Ready{x}, or Late{x} once an effect in the act was cancelled; a
-// request whose continuation is that end answers the frame itself, with no
-// Emit. Under a frame, io_poll_step takes a request that can be cancelled
-// (a channel step, a sleep, or an effect that asks IO_IN or IO_OUT: its
-// handle first, (handle, Result) back) and that would wait: past the
-// frame's until, it answers the request cancelled, unrun; before, the
-// request waits for its handle or until, whichever comes first, a sleep
-// ends in time or is cancelled at until, and a channel step parks on its
-// row as usual, with a timer that takes it back out at until.
-// io_poll_step answers io_step 1 to go on with w's cont and item, 2 to
-// stop (w waits), 0 to run the request as usual. Frames are recycled.
+// frames, innermost first: (k, until, late, own), until clipped to the
+// enclosing frame's, own the frame whose deadline it is. A polled act runs
+// with io_emit as its continuation, so the Emit that ends it pops the top
+// frame, which answers Ready{x}, or Late{x} once an effect in the act was
+// cancelled; a request whose continuation is that end answers the frame
+// itself, with no Emit. Under a frame, io_poll_step takes a request that
+// can be cancelled (a channel step, a sleep, or an effect that asks IO_IN
+// or IO_OUT: its handle first, (handle, Result) back) and that would wait:
+// past the frame's until, it answers the request cancelled, unrun, and
+// yields to the other computations, as a wait would; before, the request
+// waits for its handle or until, whichever comes first, a sleep ends in
+// time or is cancelled at until, and a channel step parks on its row with
+// a timer the waiter owns (in made): waking the waiter disarms it
+// (chan_disarm), and at until it takes the waiter back out. io_poll_step
+// answers io_step 1 to go on with w's cont and item, 2 to stop (w waits
+// or was requeued), 0 to run the request as usual. Frames are recycled.
 
 #ifdef CID(IO.poll)
 
@@ -22,11 +25,22 @@ typedef struct IoPoll {
   Term           k;
   u64            until;
   u32            late;
+  struct IoPoll* own;
   struct IoPoll* up;
 } IoPoll;
 
-static u32     io_poll_serial;
 static IoPoll* io_poll_idle;
+
+// A cancel under p: p and the frames up to the one whose deadline it was
+// turn late.
+static void io_poll_late(IoPoll* p) {
+  for (;; p = p->up) {
+    p->late = 1;
+    if (p == p->own) {
+      return;
+    }
+  }
+}
 
 // Pops w's top frame and goes on with its continuation, answering x.
 static void io_poll_pop(Env e, IoWork* w, Term x) {
@@ -60,10 +74,10 @@ static Term io_poll_chan(bool send) {
 static Term io_poll_cancel(Env e, IoWork* w) {
   u32  c = (u32)term_aux(w->cont);
   u32  n = cid_arity(c);
-  Term fs[16];
+  Term fs[256];
   spare_free(e, cls_fit(n), ctr_take(e, w->cont, n, fs));
-  w->cont       = fs[n - 1];
-  w->poll->late = 1;
+  w->cont = fs[n - 1];
+  io_poll_late(w->poll);
   for (u32 i = 1; i + 1 < n; i += 1) {
     term_drop(e, fs[i]);
   }
@@ -85,9 +99,21 @@ static Term io_poll_cancel(Env e, IoWork* w) {
   return io_tup(e, fs[0], io_fail(e, ECANCELED, NULL));
 }
 
+// Whether fd is ready now, by select as io_wait asks (macOS poll misses a
+// FIFO's EOF).
 static bool io_poll_fd(int fd, short evts) {
-  struct pollfd p = { fd, evts, 0 };
-  return poll(&p, 1, 0) > 0;
+  u64 len = (u64)fd / 64 * 8 + 8;
+  u8  small[128];
+  u8* set = len <= sizeof small ? small : io_mem(malloc(len));
+  memset(set, 0, len);
+  io_bit(set, fd, true);
+  struct timeval tv = { 0, 0 };
+  int n = select(fd + 1, evts == POLLIN ? (fd_set*)set : NULL,
+    evts == POLLIN ? NULL : (fd_set*)set, NULL, &tv);
+  if (set != small) {
+    free(set);
+  }
+  return n > 0;
 }
 
 static Term io_poll_wake(Env e, IoWork* w) {
@@ -97,20 +123,21 @@ static Term io_poll_wake(Env e, IoWork* w) {
 
 #ifdef CID(Chan.new)
 
-// The deadline of a channel step parked on its row: if it still waits
-// there (the same serial), it leaves the row and answers cancelled.
+// A channel step's deadline, unless chan_wake disarmed it (hand 0): its
+// waiter, still parked on its row, leaves the row and answers cancelled.
 static Term io_poll_expire(Env e, IoWork* t) {
-  IoWork*  w   = (IoWork*)t->hand;
-  ChanRow* row = chan_at(io_hand(t->made));
-  IoWork*  q   = row != NULL ? row->wait : NULL;
-  while (q != NULL && (q->next != w || w->word != t->word)) {
-    q = q->next != row->wait ? q->next : NULL;
-  }
-  if (q != NULL) {
-    bool send     = w->item != TERM_HOLE;
-    q->next       = w->next;
-    row->wait     = row->wait != w ? row->wait : q != w ? q : NULL;
-    w->poll->late = 1;
+  IoWork* w = (IoWork*)t->hand;
+  if (w != NULL) {
+    ChanRow* row = chan_at(io_hand(t->made));
+    IoWork*  q   = row->wait;
+    while (q->next != w) {
+      q = q->next;
+    }
+    bool send = w->item != TERM_HOLE;
+    q->next   = w->next;
+    row->wait = row->wait != w ? row->wait : q != w ? q : NULL;
+    w->made   = 0;
+    io_poll_late(w->poll);
     if (send) {
       term_drop(e, w->item);
     }
@@ -139,71 +166,88 @@ static bool io_poll_can(u32 c, u32 ask) {
 }
 
 static bool io_poll_waits(u32 c, u32 ask, Term* x) {
-#ifdef CID(Chan.new)
-  ChanRow* row = chan_at(x[0]);
-  bool     rcv = row != NULL && row->wait != NULL
-    && row->wait->next->item == TERM_HOLE;
-#endif
-#ifdef CID(Chan.send)
-  if (c == CID(Chan.send)) {
-    return row != NULL && !row->shut && !rcv && row->size >= row->room;
+  if (ask & (IO_IN | IO_OUT)) {
+    return !io_poll_fd((int)io_hand_v(x[0]), ask & IO_OUT ? POLLOUT : POLLIN);
   }
-#endif
-#ifdef CID(Chan.recv)
-  if (c == CID(Chan.recv)) {
-    return row != NULL && !row->shut && row->size == 0
-      && (row->wait == NULL || rcv);
-  }
-#endif
   if (ask & IO_TIME) {
     return (u32)x[0] > 0;
   }
-  return !io_poll_fd((int)io_hand_v(x[0]), ask & IO_OUT ? POLLOUT : POLLIN);
+#ifdef CID(Chan.new)
+  ChanRow* row = chan_at(x[0]);
+  if (row == NULL || row->shut) {
+    return false;
+  }
+  bool rcv = row->wait != NULL && row->wait->next->item == TERM_HOLE;
+#ifdef CID(Chan.send)
+  if (c == CID(Chan.send)) {
+    return !rcv && row->size >= row->room;
+  }
+#endif
+  return row->size == 0 && (row->wait == NULL || rcv);
+#else
+  return false;
+#endif
 }
 
+#ifdef CID(Chan.new)
+
+// A channel step that would wait parks on its row now, with a timer for
+// until that the waiter owns.
+static u32 io_poll_park(Env e, IoWork* w, u64 until) {
+  Term chan = e.mem[term_peek(e.mem, w->cont)];
+  Term v    = io_exec(e, w);
+  if (v != IO_PARK) {
+    w->item = v;
+    return 1;
+  }
+  IoWork* t = io_mem(calloc(1, sizeof(IoWork)));
+  t->hand   = (intptr_t)w;
+  t->made   = (intptr_t)io_hand_v(chan);
+  t->time   = until;
+  t->pack   = io_poll_expire;
+  w->made   = (intptr_t)t;
+  io_park_add(t);
+  return 2;
+}
+
+#endif
+
 static u32 io_poll_step(Env e, IoWork* w) {
-  Term  req = w->cont;
-  u32   c   = (u32)term_aux(req);
-  Term* x   = e.mem + term_peek(e.mem, req);
+  u32   c = (u32)term_aux(w->cont);
+  Term* x = e.mem + term_peek(e.mem, w->cont);
   if (c == CID(Emit)) {
     Term v;
-    spare_free(e, cls_fit(1), ctr_take(e, req, 1, &v));
+    spare_free(e, cls_fit(1), ctr_take(e, w->cont, 1, &v));
     io_poll_pop(e, w, v);
     return 1;
   }
-  IoPoll* p   = w->poll;
-  u32     ask = io_eff_rows[c].ask;
-  bool    can = io_poll_can(c, ask);
+  u32  ask = io_eff_rows[c].ask;
+  bool can = io_poll_can(c, ask);
   if (can && io_poll_waits(c, ask, x)) {
-    u64 now = p->until == 0 ? 0 : io_tick();
-    if (now >= p->until) {
+    u64 until = w->poll->until;
+    u64 now   = until == 0 ? 0 : io_tick();
+    if (now >= until) {
       w->item = io_poll_cancel(e, w);
       if (w->cont == io_emit()) {
         io_poll_pop(e, w, w->item);
       }
-      return 1;
+      io_push(&io_runs, w);
+      return 2;
     }
     if (ask & IO_TIME) {
-      if (now + (u64)(u32)x[0] * 1000000ull <= p->until) {
+      if (now + (u64)(u32)x[0] * 1000000ull <= until) {
         return 0;
       }
-      io_wait_on(w, 0, 0, p->until, io_poll_cancel);
+      io_wait_on(w, 0, 0, until, io_poll_cancel);
       return 2;
     }
 #ifdef CID(Chan.new)
     if (!(ask & (IO_IN | IO_OUT))) {
-      IoWork* t = io_mem(calloc(1, sizeof(IoWork)));
-      t->hand   = (intptr_t)w;
-      t->made   = (intptr_t)io_hand_v(x[0]);
-      t->word   = w->word = ++io_poll_serial;
-      t->time   = p->until;
-      t->pack   = io_poll_expire;
-      io_park_add(t);
-      return 0;
+      return io_poll_park(e, w, until);
     }
 #endif
     io_wait_on(w, (int)io_hand_v(x[0]), ask & IO_OUT ? POLLOUT : POLLIN,
-      p->until, io_poll_wake);
+      until, io_poll_wake);
     return 2;
   }
   // a polled act's last request (its continuation the act's end) that
@@ -227,16 +271,20 @@ static u32 io_poll_step(Env e, IoWork* w) {
 }
 
 Term io_poll_run(Env e, Term* f, IoWork* w) {
-  IoPoll* p = io_poll_idle;
+  IoPoll* up = w->poll;
+  IoPoll* p  = io_poll_idle;
   if (p != NULL) {
     io_poll_idle = p->up;
   } else {
     p = io_mem(malloc(sizeof(IoPoll)));
   }
-  *p      = (IoPoll){ w->cont,
-    f[0] == 0 ? 0 : io_tick() + (u64)(u32)f[0] * 1000000ull, 0, w->poll };
-  w->poll = p;
-  w->cont = f[1];
+  u64  ms    = (u32)f[0];
+  u64  until = ms == 0 ? 0 : io_tick() + ms * 1000000ull;
+  bool clip  = up != NULL && up->until <= until;
+  *p         = (IoPoll){ w->cont, clip ? up->until : until, 0,
+    clip ? up->own : p, up };
+  w->poll    = p;
+  w->cont    = f[1];
   return io_emit();
 }
 

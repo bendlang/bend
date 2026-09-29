@@ -7,8 +7,17 @@
 // program can make neither. A sent value may be null (an erased proof).
 const CHAN_RECV = Symbol();
 
+// A waiter IO.poll armed a deadline for (timer, io_poll.js) takes it out
+// of the loop's waits when it wakes first.
 function chan_wake(row, x) {
   const w = row.wait.shift();
+  if (w.timer !== undefined) {
+    const ws = globalThis.BEND_IO.waits;
+    const i = ws.indexOf(w.timer);
+    if (i >= 0) {
+      ws.splice(i, 1);
+    }
+  }
   io_push(w.cont, x, false, w.poll);
   return w.item;
 }

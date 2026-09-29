@@ -56,16 +56,37 @@ static ChanRow* chan_at(Term t) {
 }
 
 // Parks the effect's activation on row with item: a sent value, or
-// TERM_HOLE for a receiver.
+// TERM_HOLE for a receiver. made is 0 unless IO.poll arms a deadline timer
+// for the waiter (io_poll.c), which waking it disarms.
 static Term chan_park(ChanRow* row, IoWork* w, Term item) {
   w->item = item;
+  w->made = 0;
   io_push(&row->wait, w);
   return IO_PARK;
+}
+
+// Takes an armed timer out of io_park, or, while the loop holds it (it
+// is not in io_park then), marks it dead.
+static void chan_disarm(IoWork* t) {
+  for (IoWork* q = io_park; q != NULL;
+    q = q->next != io_park ? q->next : NULL) {
+    if (q->next == t) {
+      q->next = t->next;
+      io_park = io_park != t ? io_park : q != t ? q : NULL;
+      free(t);
+      return;
+    }
+  }
+  t->hand = 0;
 }
 
 static Term chan_wake(ChanRow* row, Term x) {
   IoWork* a = io_pop(&row->wait);
   Term item = a->item;
+  if (a->made != 0) {
+    chan_disarm((IoWork*)a->made);
+    a->made = 0;
+  }
   a->item   = x;
   io_push(&io_runs, a);
   return item;
