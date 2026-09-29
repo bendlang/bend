@@ -5537,7 +5537,6 @@ static IoWork* io_pop(IoWork** q) {
 
 #define io_emit() term_clo(FID(IO~emit), 0)
 
-// See io_poll.c: 1 goes on, 2 stops.
 static u32 (*io_polled)(Env e, IoWork* a);
 
 static void io_spawn(Term m) {
@@ -5787,7 +5786,7 @@ static bool io_bit(u8* set, int fd, bool put) {
   return *at >> fd % 8 & 1;
 }
 
-static void io_wait(Env e) {
+static void io_wait(Env e, bool peek) {
   int top  = io_wake_fd[0];
   u64 soon = io_park != NULL ? io_park->next->time : 0;
   for (IoWork* a = io_park; a != NULL;
@@ -5807,11 +5806,11 @@ static void io_wait(Env e) {
     }
   }
   u64 tick = io_tick();
-  u64 ms = soon > tick ? (soon - tick) / 1000000 + 1 : 0;
+  u64 ms = soon > tick && !peek ? (soon - tick) / 1000000 + 1 : 0;
   struct timeval tv = { ms / 1000, ms % 1000 * 1000 };
   io_sync();
   if (select(top + 1, (fd_set*)set[0], (fd_set*)set[1], NULL,
-    soon == 0 ? NULL : &tv) < 0) {
+    soon == 0 && !peek ? NULL : &tv) < 0) {
     if (errno != EINTR) {
       err_fail("the poller failed");
     }
@@ -6043,7 +6042,7 @@ OUTLINE void io_loop(u64* H) {
         io_sync();
         err_fail("deadlock: every computation waits on a channel");
       }
-      io_wait(e);
+      io_wait(e, false);
       continue;
     }
     if ((n & 63) == 0 && io_busy != 0) {
@@ -6384,9 +6383,9 @@ function io_push(fun, arg, fresh, poll) {
   io.live += fresh ? 1 : 0;
 }
 
-function io_wait(io) {
+function io_wait(io, peek) {
   const soon = io.waits[0]?.at ?? Infinity;
-  const ms = soon === Infinity ? -1
+  const ms = peek ? 0 : soon === Infinity ? -1
     : Math.max(0, Math.ceil(soon - performance.now()));
   const fds = io.waits.filter((w) => w.fd !== undefined);
   const top = fds.reduce((m, w) => Math.max(m, w.fd), 0);
@@ -6473,7 +6472,7 @@ function io_run(m) {
         if (x === undefined) {
           break;
         }
-        op = op.kont(x);
+        op = x?.$ === "$GO" ? x.op : op.kont(x);
       }
     }
   } catch (req) {

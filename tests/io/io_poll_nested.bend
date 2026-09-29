@@ -1,6 +1,8 @@
 # io (io_poll_nested): a poll inside another's act waits no longer than the
 # outer one: an inner poll of 2000 ms under an outer one of 20 ms is
-# cancelled at 20 ms, and both answer Late.
+# cancelled at 20 ms, and both answer Late. A cancel under an inner poll
+# with the same deadline is the inner's own: a 0 ms poll inside a 0 ms
+# poll answers Late, and the outer, whose act handled it, Ready.
 import Base
 
 def later(ms: U32, ch: Chan(U32), x: U32) -> IO(Bool):
@@ -26,6 +28,20 @@ def inner(ch: Chan(U32)) -> IO(Maybe<&1, U32>):
       IO.bind(Unit, Maybe<&1, U32>, IO.print("inner: " ++ step(p)),
         u => IO.pure(Maybe<&1, U32>, None{})))
 
+def handled(ch: Chan(U32)) -> IO(String):
+  IO.bind(IO.Poll<Maybe<&1, U32>>, String,
+    IO.poll(Maybe<&1, U32>, 0, Chan.recv(U32, ch)), p => IO.pure(String, step(p)))
+
+def tie.show(p: IO.Poll<String>) -> IO(Unit):
+  match p:
+    case Ready{value}:
+      IO.print("0 ms in 0 ms: inner " ++ value ++ ", outer ready")
+    case Late{value}:
+      IO.print("0 ms in 0 ms: inner " ++ value ++ ", outer late")
+
+def tie(ch: Chan(U32)) -> IO(Unit):
+  IO.bind(IO.Poll<String>, Unit, IO.poll(String, 0, handled(ch)), p => tie.show(p))
+
 def run(c: Chan(U32)) -> IO(Unit):
   +ch = c
   do IO<Unit>:
@@ -33,7 +49,8 @@ def run(c: Chan(U32)) -> IO(Unit):
     r : IO.Poll<Maybe<&1, U32>> <- IO.poll(Maybe<&1, U32>, 20, inner(ch))
     Unit <- IO.print("outer: " ++ step(r))
     m : Maybe<&1, U32> <- Chan.recv(U32, ch)
-    IO.print("the value stays: " ++ got(m))
+    Unit <- IO.print("the value stays: " ++ got(m))
+    tie(ch)
 
 def main() -> IO(Unit):
   IO.bind(Chan(U32), Unit, Chan.new(U32, 0), run)
@@ -41,3 +58,4 @@ def main() -> IO(Unit):
 #|inner: late none
 #|outer: late none
 #|the value stays: 9
+#|0 ms in 0 ms: inner late none, outer ready

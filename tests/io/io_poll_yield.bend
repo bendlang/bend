@@ -1,6 +1,7 @@
 # io (io_poll_yield): a cancel yields to the other computations, as a wait
 # would, so a loop of IO.poll(0, recv) lets a spawned sender run and gets
-# its value (on C it used to spin and starve the sender).
+# its value (on C it used to spin and starve the sender); and the loop still
+# sees its timers, so a sender that sleeps first wakes and sends too.
 import Base
 
 def later(ms: U32, ch: Chan(U32), x: U32) -> IO(Bool):
@@ -37,9 +38,13 @@ def run(c: Chan(U32)) -> IO(Unit):
   do IO<Unit>:
     Unit <- IO.spawn(Bool, Chan.send(U32, ch, 7))
     p : IO.Poll<Maybe<&1, U32>> <- IO.poll(Maybe<&1, U32>, 0, Chan.recv(U32, ch))
-    spin(1000n, ch, p)
+    Unit <- spin(1000n, ch, p)
+    Unit <- IO.spawn(Bool, later(5, ch, 8))
+    q : IO.Poll<Maybe<&1, U32>> <- IO.poll(Maybe<&1, U32>, 0, Chan.recv(U32, ch))
+    spin(10000000n, ch, q)
 
 def main() -> IO(Unit):
   IO.bind(Chan(U32), Unit, Chan.new(U32, 0), run)
 
 #|got 7
+#|got 8

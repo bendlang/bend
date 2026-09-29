@@ -8,13 +8,15 @@
 // frame. Under a frame, io_poll_step takes a request whose effect gave
 // io_eff a poll entry (fd "in" or "out" for its handle, time for a sleep,
 // or wait, cancel and list for a channel step) and that would wait, and
-// answers it cancelled at the frame's until, yielding as a wait would. A
+// answers it cancelled at the frame's until, yielding as a wait would
+// (and every 64 cancels letting the loop see its timers and sockets). A
 // channel step's waiter owns its deadline (timer): chan_wake takes it out
 // of the loop's waits.
 
 const io_poll_emit = (x) => ({ $: CID(Emit), value: x });
 
 let io_poll_descs = null;
+let io_poll_spins = 0;
 
 function io_poll_desc(op) {
   if (io_poll_descs === null) {
@@ -84,7 +86,11 @@ function io_poll_step(op) {
       return undefined;
     };
     if (now >= p.until) {
-      return late();
+      late();
+      if ((++io_poll_spins & 63) === 0) {
+        io_wait(io, true);
+      }
+      return undefined;
     }
     if (d.time) {
       if (now + Number(op.args[0]) <= p.until) {
@@ -104,9 +110,13 @@ function io_poll_step(op) {
       io_park_on(undefined, false, undefined, more, p.until);
       entry.timer = io.waits.find((w) => w.more === more);
     } else {
+      // woken: it runs if its handle is ready, waits again if the deadline
+      // is still ahead, else is cancelled
       const [fd, out] = [op.args[0], d.fd === "out"];
-      io_park_on(fd, out, op.kont, () => io_poll_ready(fd, out)
-        ? op.run(...op.args, op.kont) : late(), p.until);
+      const more = () => io_poll_ready(fd, out) ? op.run(...op.args, op.kont)
+        : performance.now() < p.until
+          ? io_park_on(fd, out, op.kont, more, p.until) : late();
+      io_park_on(fd, out, op.kont, more, p.until);
     }
     return undefined;
   }
@@ -124,13 +134,12 @@ function io_poll_run(ms, act, k) {
   const io = globalThis.BEND_IO;
   const up = io.poll;
   const until = Number(ms) > 0 ? performance.now() + Number(ms) : 0;
-  const clip = up !== null && up.until <= until;
+  const clip = up !== null && up.until < until;
   const p = { k, until: clip ? up.until : until, late: false, own: null, up };
   p.own = clip ? up.own : p;
   io.polled = io_poll_step;
   io.poll = p;
-  io_push(act, io_poll_emit, false, p);
-  return undefined;
+  return { $: "$GO", op: act(io_poll_emit) };
 }
 
 io_eff(CID(IO.poll), io_poll_run);

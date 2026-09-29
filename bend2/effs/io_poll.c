@@ -11,7 +11,9 @@
 // can be cancelled (a channel step, a sleep, or an effect that asks IO_IN
 // or IO_OUT: its handle first, (handle, Result) back) and that would wait:
 // past the frame's until, it answers the request cancelled, unrun, and
-// yields to the other computations, as a wait would; before, the request
+// yields to the other computations, as a wait would (and every 64 cancels
+// lets the loop see its timers and sockets, which it otherwise does only
+// once nothing can run); before, the request
 // waits for its handle or until, whichever comes first, a sleep ends in
 // time or is cancelled at until, and a channel step parks on its row with
 // a timer the waiter owns (in made): waking the waiter disarms it
@@ -30,6 +32,7 @@ typedef struct IoPoll {
 } IoPoll;
 
 static IoPoll* io_poll_idle;
+static u32     io_poll_spins;
 
 // A cancel under p: p and the frames up to the one whose deadline it was
 // turn late.
@@ -67,10 +70,11 @@ static Term io_poll_chan(bool send) {
   return 0;
 }
 
-// w's request cancelled, unrun: its continuation goes on with what it
-// answers cancelled, its other fields dropped (a send's value too), and
-// its frame turns late. A channel step answers io_poll_chan, a sleep Unit,
-// an effect on a handle (handle, Fail{ECANCELED}).
+// w's request cancelled, unrun: taken apart as io_exec takes it, its
+// continuation goes on with what it answers cancelled, its other fields
+// dropped (a send's value too), and its frame turns late. A channel step
+// answers io_poll_chan, a sleep Unit, an effect on a handle (handle,
+// Fail{ECANCELED}).
 static Term io_poll_cancel(Env e, IoWork* w) {
   u32  c = (u32)term_aux(w->cont);
   u32  n = cid_arity(c);
@@ -116,9 +120,16 @@ static bool io_poll_fd(int fd, short evts) {
   return n > 0;
 }
 
+// A request woken by its handle or its deadline: it runs if its handle is
+// ready, waits again if the deadline is still ahead, else is cancelled.
 static Term io_poll_wake(Env e, IoWork* w) {
-  return io_poll_fd((int)w->word, w->evts) ? io_exec(e, w)
-    : io_poll_cancel(e, w);
+  if (io_poll_fd((int)w->word, w->evts)) {
+    return io_exec(e, w);
+  }
+  if (io_tick() < w->time) {
+    return io_wait_on(w, (int)w->word, w->evts, w->time, io_poll_wake);
+  }
+  return io_poll_cancel(e, w);
 }
 
 #ifdef CID(Chan.new)
@@ -232,6 +243,9 @@ static u32 io_poll_step(Env e, IoWork* w) {
         io_poll_pop(e, w, w->item);
       }
       io_push(&io_runs, w);
+      if ((++io_poll_spins & 63) == 0) {
+        io_wait(e, true);
+      }
       return 2;
     }
     if (ask & IO_TIME) {
@@ -280,7 +294,7 @@ Term io_poll_run(Env e, Term* f, IoWork* w) {
   }
   u64  ms    = (u32)f[0];
   u64  until = ms == 0 ? 0 : io_tick() + ms * 1000000ull;
-  bool clip  = up != NULL && up->until <= until;
+  bool clip  = up != NULL && up->until < until;
   *p         = (IoPoll){ w->cont, clip ? up->until : until, 0,
     clip ? up->own : p, up };
   w->poll    = p;
