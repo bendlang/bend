@@ -1025,3 +1025,26 @@ with its 22-group gate passing; its speed is unmeasured. The [report](../impleme
 preserves scoped results, the omitted-file first composition and the corrected
 complete-owner preparation guard. Continue semantic controls and explicit source
 provenance before final integration/promotion.
+
+## Phase16 populated origins and second complete wave — 2026-09-29
+
+Integration04 passes the full gate with **459→145** differences: **314 new exact,
+zero lost**, all 2,996 primitive observations still agree with pinned TypeScript.
+The range group is 160/169 exact. Two bounded semantic controls also expose and
+fix canonical negation-name capture and implicit bare-family instantiation; their
+tiny changes are integrated and documented separately. The failed integration02
+partial-parser ranges and every first attempt remain preserved.
+
+The first populated-span same-source comparison costs **10.17% process time**:
+25.5882→28.1905 s, TS 2.8902 s. This exceeds the prospective threshold. No Phase16
+compiler is installed. Diagnostic profiles motivate a guarded unsafe recursion
+scan and one-copy range construction; operation counts and 32 range controls
+pass, and their composition passes focused36 plus twelve exact recursion checks.
+Exclusive recovery timing is pending. Read the [conformance report](../implementation/phase16/full_conformance.md)
+and [cost investigation](../implementation/phase16/range-cost-recovery.md).
+
+The next parser candidate makes another 62 targeted observations exact with
+16/16 positive controls and no loss in its 244-observation family census; final
+composition is pending. A proposed scoped memo-key correction is explicitly
+rejected after growth-limit and literal-versus-constructor counterexamples.
+Correctness includes first-error order and syntax-sensitive memo identity.

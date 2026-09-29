@@ -4,12 +4,15 @@ Phase16 is active under the [design](../design/phase16/full_conformance.md).
 The user authorizes continued exact conformance work with speed and simplicity
 constraints, including project evidence pushes. Baseline verification and the
 controlled unchanged-release matrix pass; current source remains Phase15.
-The first complete combined candidate reduces exact differences 459→364, with
-95 new exact matches and zero losses. All measured behavior axes stay unchanged.
-The metadata-only provenance comparison costs 1.01% process time and 8.93% peak
-RSS; actual occurrence instrumentation is now in progress and still needs timing.
-Three isolated owners target parser error information, checker error ordering,
-and lossless source spans; root integrates and checks canonical name capture. Preserve strict oracles and all
+The healthy integration04 full gate reduces exact differences 459→145, with
+314 new exact matches and zero losses. All 2,996 measured behavior axes stay
+unchanged. A subsequent isolated parser wave adds 62 targeted exact matches;
+its final composition still needs the complete integration gate.
+Actual occurrence instrumentation costs 10.17% process time in the first
+matched-source comparison, above the investigation threshold; it is not selected.
+Private counters and source/range controls validate two bounded cost reductions,
+now under exclusive measurement. Checker trace/order and parser token/import
+families continue in isolation. Preserve strict oracles and all
 75 unrelated Phase6 files; no older timed campaign is renewed.
 
 Phase15 is complete under its [design](../design/phase15/parser_conformance_and_speed.md).

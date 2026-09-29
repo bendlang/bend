@@ -1,0 +1,15 @@
+from pathlib import Path
+import json,hashlib
+root=Path.cwd();base=root/'selfhost/build/phase16';out=base/'checker-audit-02';out.mkdir();inputs=[]
+def read(p):return json.loads(p.read_text())
+def ident(p):return {'file':str(p.resolve()),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()}
+def run(name,n):
+ p=base/name;w=read(p/'report.json');assert w['complete'];r=read(p/'selected/paired.json');assert len(r['rows'])==n and not r['missing'];inputs.append(ident(p/'selected/paired.json'))
+ for side in ['reference','candidate']:
+  f=p/'selected'/f'{side}.json';x=read(f);inputs.append(ident(f));assert x['finished'] and len(x['results'])==n and not x['changedInputs'] and not x['identity']['adapterChangedDuringRun'] and not x['identity']['changedArtifacts'];assert all(not y['errors'] and not y['stats']['timeouts'] and not y['stats']['failures'] for y in x['workers'])
+ assert all(x['semanticAgreement'] for x in r['rows']);return {x['id']:x for x in r['rows']}
+a=run('checker-focused-02',55);b=run('checker-focused-03',55);expected={'check/template_inst_cycle.bend','comptime/dup_lone.bend','comptime/err_grow.bend','comptime/err_grow_double.bend','comptime/later_def.bend'};assert {id for id in b if a[id]['candidate']!=b[id]['candidate']}==expected;assert sum(x['exactAgreement'] for x in b.values())==13;assert all(not a[id]['exactAgreement'] or b[id]['exactAgreement'] for id in b)
+u=run('checker-order-baseline-01',12);v=run('checker-order-candidate-01',12);assert {id for id in v if u[id]['candidate']!=v[id]['candidate']}==expected;assert all(u[id]['reference']==v[id]['reference'] for id in v);assert sum(x['exactAgreement'] for x in v.values())==3
+c=run('checker-boundaries-01',12);d=run('checker-boundaries-02',12);assert c==d
+h=read(base/'checker-host-controls-01/report.json');assert h['complete'] and h['pass'] and len(h['controls'])==10
+report={'kind':'phase16-specialization-transport-audit','complete':True,'pass':True,'inputs':inputs+[ident(base/'checker-host-controls-01/report.json'),ident(base/'checker-source-03/manifest.json'),ident(Path(__file__))],'focused':{'observations':55,'exact':13,'strictDifferences':42,'lostExact':0,'changedDiagnostics':sorted(expected),'behaviorAgreement':55},'ordering':{'observations':12,'exact':3,'strictDifferences':9,'changed':5,'customChanges':0,'behaviorAgreement':12},'priorBoundaries':{'observations':12,'identicalToSource02':True,'exact':6,'strictDifferences':6},'hostMocks':10,'remaining':['Four structured specialization diagnostics now need source spans only.','Cycle content/context fixed but instance name bounce~1 differs from per-template bounce~0.','Earlier/later invalid definition and TODO/live-law precedence inherited unchanged; not fixed by transport.'],'scope':'No full-conformance or speed claim. Strict mismatches remain failures. Source03 candidate is frozen for independent integration and metadata migration.'};(out/'report.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps({k:report[k] for k in ['complete','pass','focused','ordering','hostMocks']}))

@@ -1,0 +1,15 @@
+import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import{pathToFileURL}from'node:url';import{createHash}from'node:crypto';
+const [aa,oo]=process.argv.slice(2),attempt=path.resolve(aa),out=path.resolve(oo);fs.mkdirSync(out);fs.copyFileSync(import.meta.filename,path.join(out,'consumed-tool.mjs'));const a=JSON.parse(fs.readFileSync(path.join(attempt,'attempt.json'))),id=file=>({file,sha256:createHash('sha256').update(fs.readFileSync(file)).digest('hex')});process.env.BEND_TYPED_API=a.api.file;process.env.BEND_BASE=a.base.file;const report={kind:'phase16-module-display-controls',complete:false,pass:false,inputs:[id(import.meta.filename),id(path.join(attempt,'attempt.json'))],rows:[]};const save=()=>fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n');save();
+try{const W=await import(pathToFileURL(path.join(a.snapshot.root,'tools/development/workflow.mjs')));await W.verifyAttempt(attempt);const H=await import(pathToFileURL(path.join(a.snapshot.root,'tools/typed-driver.mjs'))),K=await H.loadApi(),U=await import(pathToFileURL(path.join(a.config.upstream,'bend2/bend.ts')));report.inputs.push(id(path.join(a.config.upstream,'bend2/bend.ts')));const nil={$:'Nil'},term={$:'KTerm',tag:'Absent',name:'',id:0,quant:0,kids:nil,removed:nil,originBegin:0,originEnd:0};
+ const cases=[
+ ['plain','def x(): bad\n','def x(): bad\n','bad'],
+ ['one-import','import Base\ndef x(): bad\n','\ndef x(): bad\n','bad'],
+ ['comments',' # comment\nimport Base # trailing\n\n# keep\nimport ./a.bend as A\ndef x(): bad\n',' # comment\n\n\n# keep\n\ndef x(): bad\n','bad'],
+ ['tabs','\timport\tBase\ndef x():\n\tbad\n','\ndef x():\n\tbad\n','bad'],
+ ['crlf','import Base\r\ndef x(): bad\r\n','\ndef x(): bad\r\n','bad'],
+ ['astral','import Base\n# 😀\ndef x(): bad\n','\n# 😀\ndef x(): bad\n','bad'],
+ ['foreign-body','import Base\ndef x():\n  import "./bad.js"\n','\ndef x():\n  import "./bad.js"\n','bad'],
+ ['stop-non-import','importantly\nimport Base\ndef x(): bad','importantly\nimport Base\ndef x(): bad','bad']];
+ for(const[name,raw,view,token]of cases){const begin=raw.indexOf(token),end=begin+token.length,eb=view.indexOf(token);const diagnostic={$:'DDiagnostic',expected:{$:'DText',text:'wanted'},observed:{$:'DText',text:'got'},has_observed:{$:'True'},context:nil,definition:'x',span:{$:'DSpan',source:raw,begin,end},note:'',trail:{$:'Con',head:term,tail:nil}},actual=K.diagnostic_render({$:'DResult',error:'test refusal',book:nil,diagnostic}),expected=U.err_show(U.Err(U.book_nil(),U.ctx_nil(),'wanted','got',{file:{str:view,ns:'',al:{}},beg:eb,end:eb+token.length},'x'));const exact=actual===expected;report.rows.push({name,exact,actual,expected});save();}
+ await W.verifyAttempt(attempt);report.complete=true;report.pass=report.rows.every(x=>x.exact);
+}catch(e){report.error=e.stack;}save();console.log(JSON.stringify({complete:report.complete,pass:report.pass,rows:report.rows.length,error:report.error}));if(!report.pass)process.exitCode=1;

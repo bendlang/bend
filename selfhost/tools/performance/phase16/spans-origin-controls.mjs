@@ -1,0 +1,56 @@
+#!/usr/bin/env node
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {pathToFileURL} from 'node:url';
+import {spawnSync} from 'node:child_process';
+const [attemptArg,outArg]=process.argv.slice(2),attempt=path.resolve(attemptArg),out=path.resolve(outArg);
+fs.mkdirSync(out);fs.copyFileSync(import.meta.filename,path.join(out,'consumed-tool.mjs'));
+const identity=file=>({file:path.resolve(file),sha256:createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
+const a=JSON.parse(fs.readFileSync(path.join(attempt,'attempt.json')));
+const report={kind:'phase16-source-origin-boundary-controls',complete:false,pass:false,inputs:[identity(import.meta.filename),identity(path.join(attempt,'attempt.json'))],controls:[]};
+const save=()=>fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n');save();
+const control=(name,fn)=>{try{const evidence=fn();report.controls.push({name,pass:true,evidence});}catch(e){report.controls.push({name,pass:false,error:e.stack});}save();};
+const list=xs=>xs.reduceRight((tail,head)=>({$:'Con',head,tail}),{$:'Nil'}),empty=list([]);
+const values=xs=>{const out=[];for(;xs.$==='Con';xs=xs.tail)out.push(xs.head);assert.equal(xs.$,'Nil');return out;};
+const terms=root=>{const seen=new WeakSet(),todo=[root],out=[];while(todo.length){const v=todo.pop();if(!v||typeof v!=='object'||seen.has(v))continue;seen.add(v);if(v.$==='KTerm')out.push(v);for(const x of Object.values(v))if(x&&typeof x==='object')todo.push(x);}return out;};
+try {
+  process.env.BEND_TYPED_API=a.api.file;process.env.BEND_BASE=a.base.file;
+  const workflow=await import(pathToFileURL(path.join(a.snapshot.root,'tools/development/workflow.mjs')));await workflow.verifyAttempt(attempt);
+  const host=await import(pathToFileURL(path.join(a.snapshot.root,'tools/typed-driver.mjs'))),api=await host.loadApi();
+  assert.equal(api.compiler_span_abi(),3);assert.equal(typeof api.f_parse_indexed,'function');
+  const source='type T is Data:\n  A{}\nlaw main:\n  T\ndef main(): Type\n';
+  const raw={$:'FSource',name:'main',path:'/virtual/main.bend',text:source};
+  const start=101,end=start+source.length+1,located=api.f_source_located(raw,start,end);
+  control('legacy parsing retains canonical absent ranges',()=>{const r=api.f_parse(source);assert.equal(r.error,'');assert(terms(r).every(t=>t.originBegin===0&&t.originEnd===0));return {terms:terms(r).length};});
+  control('indexed parsing yields valid owned ranges',()=>{const r=api.f_parse_indexed(start,source);assert.equal(r.error,'');host.validateSpanBook(r.book,[{begin:start,end}]);assert(terms(r).some(t=>t.originBegin>0));return {terms:terms(r).length,located:terms(r).filter(t=>t.originBegin>0).length};});
+  const locatedTrace=api.f_load_graph_trace('main',list([located]));assert.equal(locatedTrace.result.error,'');
+  control('located trace preserves semantic book and adds interval origins',()=>{const p=api.f_loaded_origins_for(locatedTrace,'main');assert.equal(p.result.error,'');assert.deepEqual(p.result.book,locatedTrace.result.book);assert.equal(values(p.origins).length,1);return {interval:values(p.origins)[0]};});
+  const legacyTrace=api.f_load_graph_trace('main',list([raw]));assert.equal(legacyTrace.result.error,'');
+  control('unlocated trace explicitly replays to located book',()=>{const p=api.f_loaded_origins_for(legacyTrace,'main');assert.equal(p.result.error,'');assert(terms(legacyTrace.result.book).every(t=>t.originBegin===0));assert(terms(p.result.book).some(t=>t.originBegin>0));const diagnostic=api.check_book_diagnostic(p.result.book,p.origins);assert(diagnostic.error);assert.match(api.diagnostic_render(diagnostic),/\^/);return {diagnostic:api.diagnostic_render(diagnostic)};});
+  control('raw convenience loader indexes before checking',()=>{const p=api.f_load_origins_for('main',list([raw]),'main');assert.equal(p.result.error,'');const d=api.check_book_diagnostic(p.result.book,p.origins);assert(d.error);assert.match(api.diagnostic_render(d),/\^/);return {diagnostic:api.diagnostic_render(d)};});
+  control('parsed source wrapper reuses exact indexed parse',()=>{const parsed=api.f_parse_indexed(start,source),wrapped=api.f_source_located(api.f_source_parsed('main',raw.path,source,parsed),start,end),p=api.f_load_origins_for('main',list([wrapped]),'main');assert.equal(p.result.error,'');assert.deepEqual(p.result.book,locatedTrace.result.book);});
+  const badCases=[['zero interval',api.f_source_located(raw,0,source.length+1)],['wrong length',api.f_source_located(raw,start,end+1)],['nested wrapper',api.f_source_located(located,start,end)]];
+  for(const [name,value] of badCases)control('refuse '+name,()=>{const p=api.f_load_origins_for('main',list([value]),'main');assert(p.result.error);assert.equal(p.origins.$,'Nil');return {error:p.result.error};});
+  control('refuse overlapping independent source intervals',()=>{const other=api.f_source_located({...raw,name:'other',path:'/virtual/other.bend'},start+1,end+1);const p=api.f_load_origins_for('main',list([located,other]),'main');assert.match(p.result.error,/overlapping/);});
+  control('same physical alias keeps exact interval',()=>{const alias=api.f_source_located({...raw,name:'alias'},start,end);const p=api.f_load_origins_for('main',list([located,alias]),'main');assert.equal(p.result.error,'');});
+  control('refuse same physical alias with changed bytes',()=>{const alias=api.f_source_located({...raw,name:'alias',text:source.replace('main','maim')},start,end);const p=api.f_load_origins_for('main',list([located,alias]),'main');assert.match(p.result.error,/ownership/);});
+  control('refuse same physical alias with changed interval',()=>{const alias=api.f_source_located({...raw,name:'alias'},start+1000,end+1000);const p=api.f_load_origins_for('main',list([located,alias]),'main');assert.match(p.result.error,/ownership/);});
+  control('preserve original failed load without replay',()=>{const bad=api.f_load_graph_trace('missing',list([raw])),p=api.f_loaded_origins_for(bad,'main');assert(bad.result.error);assert.deepEqual(p.result,bad.result);assert.equal(p.origins.$,'Nil');});
+  for(const [begin,finish] of [[0,1],[1,0],[-1,0],[101,100],[101,end],[end,end],[101.5,102],[Number.NaN,102],[0x100000000,0x100000000]])control('host refuses corrupt range '+String(begin)+'/'+finish,()=>{const term={$:'KTerm',tag:'Ref',name:'x',id:0,quant:0,kids:empty,removed:empty,originBegin:begin,originEnd:finish};assert.throws(()=>host.validateSpanBook(term,[{begin:start,end}]),/Invalid compiler source range/);});
+  control('positive EOF point remains valid; gap crossing fails',()=>{const term={$:'KTerm',tag:'Ref',name:'x',id:0,quant:0,kids:empty,removed:empty,originBegin:end-1,originEnd:end-1};assert(host.validateSpanBook(term,[{begin:start,end}]));term.originEnd=end+10;assert.throws(()=>host.validateSpanBook(term,[{begin:start,end},{begin:end+10,end:end+20}]));});
+  control('provenance refuses malformed term endpoint before lookup',()=>{const trace=structuredClone(locatedTrace);terms(trace.result.book)[0].originBegin=0;terms(trace.result.book)[0].originEnd=1;const p=api.f_loaded_origins_for(trace,'main');assert.match(p.result.error,/term source interval/);assert.equal(p.origins.$,'Nil');});
+  const cache=await host.prepareBase(api),baseSource=fs.readFileSync(a.base.file,'utf8'),cacheInfo={compilerSha256:a.api.sha256,baseSha256:a.base.sha256,sourcePath:fs.realpathSync(a.base.file),sourceText:baseSource};
+  control('cache binds ABI/compiler/source/range/book identity',()=>{assert.equal(cache.version,4);assert(host.validateSpanCache(cache,cacheInfo));for(const [field,value] of [['version',2],['spanAbi',99],['sourceBegin',2],['sourceEnd',cache.sourceEnd+1],['sourcePath','/other'],['compilerSha256','0'.repeat(64)],['bookSha256','0'.repeat(64)]])assert.throws(()=>host.validateSpanCache({...cache,[field]:value},cacheInfo));return {version:cache.version,spanAbi:cache.spanAbi,terms:terms(cache.book).length,range:[cache.sourceBegin,cache.sourceEnd]};});
+  const fixture=path.join(out,'seed-main.bend');fs.writeFileSync(fixture,'import Base\ndef main() -> U32:\n  0\n');
+  control('cold and seeded graph loaders retain exact source intervals',()=>{const cold=host.discoverSources(api,fixture),seeded=host.discoverSources(api,fixture,{seed:cache});assert.deepEqual(values(cold.sources).map(x=>[x.begin,x.end]),values(seeded.sources).map(x=>[x.begin,x.end]));const a=api.f_load_graph_trace(cold.main,cold.sources),b=api.f_load_graph_seed_trace(seeded.main,seeded.sources,cache.sourcePath,cache.sourceText,cache.book);assert.equal(a.result.error,'');assert.equal(b.result.error,'');const digest=x=>createHash('sha256').update(JSON.stringify(x)).digest('hex');assert.equal(digest(a.result.book),digest(b.result.book));assert.equal(api.check_book(b.result.book),'');return {coldBookSha256:digest(a.result.book),sourceCount:values(cold.sources).length};});
+  control('explicit unknown span ABI is refused',()=>{
+    const stub=path.join(out,'unknown-span-api.mjs');fs.writeFileSync(stub,'export default {compiler_span_abi(){return 99;}};\n');
+    const program='const host=await import('+JSON.stringify(pathToFileURL(path.join(a.snapshot.root,'tools/typed-driver.mjs')).href)+');try{await host.loadApi();process.exitCode=2;}catch(e){if(!e.message.startsWith("Unknown compiler span ABI:"))throw e;console.log(e.message);}';
+    const child=spawnSync(process.execPath,['--input-type=module','-e',program],{env:{...process.env,BEND_TYPED_API:stub},encoding:'utf8',timeout:10000});
+    fs.writeFileSync(path.join(out,'unknown-abi-child.json'),JSON.stringify({status:child.status,signal:child.signal,error:child.error?String(child.error):null,stdout:child.stdout,stderr:child.stderr},null,2)+'\n');assert.equal(child.error,undefined);assert.equal(child.signal,null);assert.equal(child.status,0);assert.match(child.stdout,/Unknown compiler span ABI: 99/);
+  });
+  await workflow.verifyAttempt(attempt);report.complete=true;report.pass=report.controls.every(c=>c.pass);
+}catch(error){report.error=error.stack;}
+report.finished=new Date().toISOString();save();console.log(JSON.stringify({complete:report.complete,pass:report.pass,controls:report.controls.length,failed:report.controls.filter(c=>!c.pass).map(c=>c.name),error:report.error}));if(!report.pass)process.exitCode=1;

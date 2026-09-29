@@ -1,0 +1,4 @@
+#!/usr/bin/env python3
+from pathlib import Path
+import re,json,hashlib,shutil
+ROOT=Path(__file__).resolve().parents[4];BASE=ROOT/'selfhost/build/phase16/parser-span-source-09';OUT=ROOT/'selfhost/build/phase16/parser-span-source-10';OUT.mkdir();shutil.copytree(BASE/'project',OUT/'project');p=OUT/'project/src/front/sugar.bend';s=p.read_text();s,n=re.subn(r'law f_do:\n(?:  [^\n]*\n)+\n','',s);assert n==1;p.write_text(s);config=json.loads((BASE/'workflow.json').read_text());config['project']=str(OUT/'project');(OUT/'workflow.json').write_text(json.dumps(config,indent=2)+'\n');shutil.copy2(__file__,OUT/Path(__file__).name);(OUT/'manifest.json').write_text(json.dumps({'complete':True,'parent':str(BASE),'correction':'Remove stale f_do law; typed worker replaces separate monad/types arguments. Failed source09 checked attempt retained.','sourceSha256':hashlib.sha256(p.read_bytes()).hexdigest()},indent=2)+'\n');print(OUT)

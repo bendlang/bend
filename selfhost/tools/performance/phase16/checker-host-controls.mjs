@@ -1,0 +1,30 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import assert from 'node:assert/strict';
+import {identity,verifyIdentity} from '../../development/workflow.mjs';
+const root=path.resolve(import.meta.dirname,'../../../..');
+const source=path.join(root,'selfhost/build/phase16/checker-source-03/project/tools/typed-driver.mjs');
+const out=path.resolve(process.argv[2]);fs.mkdirSync(out);
+const inputs=[import.meta.filename,source,process.execPath].map(identity);
+const s=fs.readFileSync(source,'utf8'),start=s.indexOf('function renderDiagnostic('),end=s.indexOf('\nasync function inspectWithMemo(',start);
+assert.ok(start>=0&&end>start);
+const logs=[],render=new Function('trace','return ('+s.slice(start,end).trim()+');')(message=>logs.push(message));
+const report={kind:'phase16-specialization-host-boundaries',complete:false,inputs,controls:[]};
+const test=(name,fn)=>{fn();report.controls.push({name,pass:true});};
+try {
+ const detailed={error:'failure',diagnostic:{definition:'main'}},graph={main:'unit',sources:'sources'},trace={result:'load'};
+ test('absent detailed legacy fallback',()=>assert.equal(render({},undefined,'failure',trace,graph),'Error: failure'));
+ test('mismatched verdict never rendered',()=>assert.equal(render({diagnostic_render(){throw Error('must not run');}},{error:'different'},'failure',trace,graph),'Error: failure'));
+ test('shared renderer without origins',()=>assert.equal(render({diagnostic_render(d){assert.equal(d,detailed);return 'structured';}},detailed,'failure',trace,graph),'structured'));
+ test('original load trace locates once',()=>{let n=0;const api={f_load_origins_for(){throw Error('legacy path must not run');},f_loaded_origins_for(t,name){assert.equal(t,trace);assert.equal(name,'main');return {result:{error:''},origins:'origins'};},diagnostic_result_locate(d,o){assert.equal(d,detailed);assert.equal(o,'origins');n++;return {...d,located:true};},diagnostic_render(d){assert.equal(d.located,true);return 'located';}};assert.equal(render(api,detailed,'failure',trace,graph),'located');assert.equal(n,1);});
+ test('legacy origin API retains graph identity',()=>{const api={f_load_origins_for(name,sources,def){assert.equal(name,'unit');assert.equal(sources,'sources');assert.equal(def,'main');return {result:{error:''},origins:[]};},diagnostic_result_locate(d){return d;},diagnostic_render(){return 'legacy located';}};assert.equal(render(api,detailed,'failure',null,graph),'legacy located');});
+ test('failed provenance does not replace rejection',()=>{const api={f_load_origins_for(){return {result:{error:'source changed'},origins:[]};},diagnostic_result_locate(){throw Error('must not locate');},diagnostic_render(d){assert.equal(d,detailed);return 'original';}};assert.equal(render(api,detailed,'failure',null,graph),'original');});
+ test('renderer exception preserves original legacy error',()=>assert.equal(render({diagnostic_render(){throw Error('renderer unavailable');}},detailed,'failure',trace,graph),'Error: failure'));
+ test('unnamed diagnostic does not probe origins',()=>{const d={error:'failure',diagnostic:{definition:''}};assert.equal(render({f_load_origins_for(){throw Error('must not run');},diagnostic_result_locate(){throw Error('must not run');},diagnostic_render(x){assert.equal(x,d);return 'unnamed';}},d,'failure',trace,graph),'unnamed');});
+ const line=s.split('\n').find(l=>l.includes("includes('def specialized_diagnostic(')"));assert.ok(line);
+ const detect=new Function('fs','path','project','exports',line);
+ test('historical specialization omits optional export',()=>{const exports=[];detect({readFileSync(){return 'def specialize_book('; }},path,'root',exports);assert.deepEqual(exports,[]);});
+ test('new specialization exports existing DResult projection',()=>{const exports=[];detect({readFileSync(){return 'def specialized_diagnostic('; }},path,'root',exports);assert.deepEqual(exports,['specialized_diagnostic']);});
+ inputs.forEach(verifyIdentity);report.complete=true;report.pass=true;
+} catch(error){report.error=error.stack;process.exitCode=1;}
+fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify({complete:report.complete,pass:report.pass,controls:report.controls.length,error:report.error}));

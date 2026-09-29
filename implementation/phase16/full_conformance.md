@@ -75,3 +75,71 @@ ranges. New controls also expose behavior gaps outside the inherited corpus;
 those are retained as semantic failures, not reclassified as diagnostic issues.
 The installed production compiler remains Phase15. No Phase16 candidate has yet
 passed the final performance, full backend, history and release gates.
+
+
+## First populated-range full sweep: retained regression
+
+The isolated `spans-integration-build-02` passes its genuine checked build,
+unchanged v5 derivation, 36 focused cases and 28 source/cache ownership controls.
+Its targeted 169-observation checker-span group makes 141 newly exact with no
+primitive changes; 28 strict differences remain in specific lowering/trace spans.
+
+The broader `wave2-frontend-01` correctly **fails**: although 283 observations
+become exact and the total difference count is 182, six formerly exact rows are
+lost and 14 rows change from parse refusal to load refusal. All seven affected
+fixtures have rejected partial parse books containing malformed ranges; host
+validation replaces the original parse diagnostic. No other exact rows are lost.
+The candidate remains unselected. `behavior-differences.json` and
+`lost-exact-differences.json` retain every regression beside the raw full vector.
+The next candidate must repair the producer/failed-result ownership boundary,
+retain original parse error priority and rerun the complete gate. These totals
+are diagnostic evidence, not an accepted improvement over the 364-difference
+checkpoint.
+
+
+## Populated-range performance gate
+
+The first exclusive matched-source measurement of actual origins is slower:
+**25.5882→28.1905 s** (+10.17% process / +10.61% request) versus Phase15.
+TypeScript takes **2.8902 s**, so this candidate is 9.75× TS in this window
+(Phase15 is 8.85× on the same final source). Peak RSS is 1,452,500→1,478,180 KiB
+(+1.77%). Every timed row passes ordinary type/trust checks; this does not erase
+the candidate's separate known full-corpus failures. All intentional competing
+compiler/profile/archive jobs were closed for the six serial ABBA rows.
+
+This exceeds the 3% investigation threshold and is **not approved for promotion**.
+The [range-cost experiment](../../experiments/phase16/P16-range-cost.md) starts
+matched-source CPU profiling and a bounded allocation/lexer investigation before
+a confirming exclusive comparison. The matrix uses each frozen snapshot's cache
+verifier, supporting its genuine cache2 or cache4 contract; every host delta is
+reviewed explicitly. Records: `populated-span-matrix-01/report.json` and
+`populated-span-host-review-01/review.json`.
+
+Current integrated source is **15,580 lines / 13,283 nonblank / 527,431 bytes**,
+1,550 definitions / 789 laws / 63 types in the same 59 maintained modules. That
+is +292 lines (+1.91%), +51 definitions, −1 law and no net new types versus Phase15.
+The direct range model removes structural/text matching, but the phase does not
+yet reduce total source size; later work must count its helpers honestly.
+
+
+## Corrected populated-range full sweep
+
+`spans-integration-build-04` now passes the complete no-regression gate in
+`wave3-frontend-01/report.json`: **459→145 exact differences**, **314 new exact
+matches**, **zero lost matches**, and unchanged primitive behavior on every one
+of the **2,996 observations**. The original 1,001 positive accepts, 482 validation
+refusals and 11 exact trust refusals remain. All fourteen observations from the
+seven failed partial-parse cases are exact again. The fix repairs the producer's
+missing endpoint; the host does not interpret embedded Error tags.
+
+The remaining 145 differences are 64 parse and 81 check: 128 parser-origin rows
+(64 fixtures in both lanes) and 17 checker-only rows. The assigned 169-row span
+group is now 160 exact / nine strict differences. Both targeted backend natural
+literal snippets are exact. These are healthy correctness checkpoints; the
+complete backend/history/release gates and performance recovery are outstanding.
+
+CPU profiles on the same assembled source retain complete raw trees and streamed
+summaries under `populated-span-profile-01` and `phase15-matched-profile-01`.
+They show additional GC/front-end/host validation work; sampling is diagnostic,
+not an alternate speed comparison. A bounded common-constructor allocation
+experiment and an independently verified eager recursion-scan guard are underway.

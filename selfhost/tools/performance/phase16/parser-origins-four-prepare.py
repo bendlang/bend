@@ -1,0 +1,4 @@
+#!/usr/bin/env python3
+from pathlib import Path
+import json,hashlib,shutil
+ROOT=Path(__file__).resolve().parents[4];BASE=ROOT/'selfhost/build/phase16/parser-span-source-03';OUT=ROOT/'selfhost/build/phase16/parser-span-source-04';OUT.mkdir();shutil.copytree(BASE/'project',OUT/'project');p=OUT/'project/src/front/parser.bend';s=p.read_text();a='f_previous_end(ts)), created))), ts}';b='f_previous_end(ts)), created)), ts}';assert s.count(a)==1;p.write_text(s.replace(a,b));config=json.loads((BASE/'workflow.json').read_text());config['project']=str(OUT/'project');(OUT/'workflow.json').write_text(json.dumps(config,indent=2)+'\n');shutil.copy2(__file__,OUT/Path(__file__).name);(OUT/'manifest.json').write_text(json.dumps({'complete':True,'parent':str(BASE),'correction':'Remove extra closing parenthesis in f_locate found by checked upstream parser. Source03 and failed attempt retained.','sourceSha256':hashlib.sha256(p.read_bytes()).hexdigest()},indent=2)+'\n');print(OUT)

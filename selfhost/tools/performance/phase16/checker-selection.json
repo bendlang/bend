@@ -1,0 +1,332 @@
+[
+  {
+    "id": "check/axiom_runtime_capture.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "check/cop_adt_param_000.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "check/cop_ctr_field_000.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "check/cop_field_formation.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "check/cop_foreign_fill_000.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "check/cop_forged_lock_000.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "check/cop_forged_lock_001.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "check/cop_let_formation.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "check/cop_plain_domain_000.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "check/cop_sugar_struct_000.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "check/ctr_of_datatype.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "check/data_self_ref.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "check/default_arm_family.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "check/error_window_rewrite_proof.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "check/error_window_stuck_app_kind.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "check/family_head_bare.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "check/field_type_bound.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "check/hole_todo.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "check/kind_none_lone_binder.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "check/neq_qualified_capture.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "check/neq_reflexivity.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "check/nested_field_bound.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "check/plus_binder_note.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "check/template_dup_binder.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "check/template_inst_cycle.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "comptime/dup_lone.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "comptime/err_arg_type.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "comptime/err_capture.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "comptime/err_generic.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "comptime/err_grow.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "comptime/err_grow_double.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "comptime/err_leak.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "comptime/err_let_arg.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "comptime/err_match_arg.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "comptime/err_param_arg.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "comptime/err_plus_term.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "comptime/later_def.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "comptime/wrong_type.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "grade/reject_closure.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "grade/reject_copy_paradox.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "grade/reject_fn_field.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "grade/reject_kind_tip.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "grade/reject_leak.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "grade/reject_local_grade.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "grade/reject_negative.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "grade/reject_plus_field.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "grade/reject_resource.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "grade/reject_witness.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "import/goal_alias.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "import/goal_own.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "parse/plus_binder_term.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "proof/no_funext_000.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "spec/comp_any_term.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "spec/comp_capture_linear.bend",
+    "lanes": [
+      "check"
+    ]
+  },
+  {
+    "id": "spec/comp_capture_share.bend",
+    "lanes": [
+      "check"
+    ]
+  }
+]
