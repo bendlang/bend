@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+from pathlib import Path
+import json,hashlib,shutil
+r=Path(__file__).resolve().parents[4];base=r/'selfhost/build/phase19';out=base/'context-row-owner-receipt-01.json';assert not out.exists();sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+tracked=[r/'design/phase19/saved-row-group-frontier.md',r/'design/phase19/shared-flatten-checkpoints.md',r/'design/phase19/scoped-block-equivalence.md',r/'implementation/phase19/saved-row-group-frontier.md']
+for pat in ['context-row-*','context-flatten-*','context-body-row-*','context-grammar-row-*','context-frontier-census*']:
+ tracked.extend((r/'selfhost/tools/performance/phase19').glob(pat))
+tracked=sorted(set(tracked));closed=sorted([p for pat in ['context-row-*','context-flatten-*','context-frontier-census-*']for p in base.glob(pat)if p.is_dir()]);audit=base/'context-row-audit-02/report.json';a=json.loads(audit.read_text());assert a['complete']and a['pass'];record=dict(complete=True,allProducersClosed=True,audit=dict(file=str(audit),sha256=sha(audit)),closedTrackedFiles=[dict(file=str(p.relative_to(r)),sha256=sha(p))for p in tracked],closedRoots=[str(p.relative_to(r))for p in closed],finalProject='selfhost/build/phase19/context-row-source-05/project',finalAttempt='selfhost/build/phase19/context-row-build-05',guardOnlyPatch='selfhost/build/phase19/context-row-source-05/first-element-only.patch',genuineApiSha256='caf20ce299ca5a390935dec1be355e8929e3b424047cfbe8bf3137ceda572e87',selectedApiSha256='681bf1bcc748a2a184cd9fa4d53ff78292809711d529ff36bd46c53922f379cf',publicRawPass=False,publicNoRegressionAuditPass=True,publicExactBefore=128,publicExactAfter=136,publicDifferences=60,privateContextualPromotionRequested=False,sourceAddedBendLines=130,sourceAddedBendBytes=7688,newResultTypes=0)
+out.write_text(json.dumps(record,indent=2)+'\n');print(json.dumps(dict(receipt=str(out),sha256=sha(out),trackedFiles=len(tracked),closedRoots=len(closed))))
