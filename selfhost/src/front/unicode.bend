@@ -20,10 +20,6 @@ law f_decode_unicode:
   for +count: U32
   FDecoded
 
-law f_string_decoded:
-  for +d: FDecoded
-  KTerm
-
 law f_char_literal:
   for +s: String
   KTerm
@@ -53,10 +49,6 @@ def f_hex(
 @unsafe
 def f_decode_unicode(s, code, count):
   f_choose(FDecoded, Char.is_eq(f_head(s), '}') && U32.is_gt(count, 0), u => FDecoded{code, f_tail(s), ""}, u => f_choose(FDecoded, U32.is_lt(f_hex(f_head(s)), 16) && U32.is_lt(count, 6), u => f_decode_unicode(f_tail(s), U32.add(U32.mul(code, 16), f_hex(f_head(s))), U32.add(count, 1)), u => FDecoded{0, s, "invalid Unicode escape"}))
-
-@unsafe
-def f_string_decoded(d):
-  f_string_decoded_at(d, atom("Absent"))
 
 @unsafe
 def f_char_literal(s):

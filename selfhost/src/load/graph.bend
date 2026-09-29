@@ -63,12 +63,6 @@ law f_graph_aliases:
   for +root: String
   List<&2, KTerm>
 
-law f_alias_terms:
-  for +ts: List<&2, KTerm>
-  for +imports: List<&2, KTerm>
-  for +scope: List<&2,KDef>
-  List<&2, KTerm>
-
 law f_graph_finish:
   for +s: FSource
   for +ns: String
@@ -189,35 +183,11 @@ def f_graph_aliases(imports, source, sources, root):
 
 # Alias ambiguity uses the loaded declaration scope before rewriting names.
 @unsafe
-def f_alias_term(+t: KTerm, +imports: List<&2,KTerm>, +scope: List<&2,KDef>) -> KTerm:
-  f_alias_deferred(t, imports, scope, f_choose(String, f_eq(tg(t), "Ref") || f_eq(tg(t), "ADT") || f_eq(tg(t), "Ctr") || f_eq(tg(t), "Mat"), u => f_alias(nm(t), imports), u => nm(t)))
-
-# An import alias is an alternative until the lexical scope has its say.
-@unsafe
-def f_alias_deferred(+t: KTerm, +imports: List<&2,KTerm>, +scope: List<&2,KDef>, +name: String) -> KTerm:
-  f_choose(KTerm, f_eq(tg(t), "Ref") && Bool.not(String.eq(name, nm(t))),
-    u => kt_span("FAliasRef", nm(t), ix(t), qt(t), [f_alias_named(t, imports, scope, name)], kb(t), ke(t)),
-    u => f_alias_named(t, imports, scope, name))
-
-@unsafe
 def f_alias_named(+t: KTerm, +imports: List<&2,KTerm>, +scope: List<&2,KDef>, +name: String) -> KTerm:
   kc(KTerm, core_literal(t), u => t, u =>
     f_choose(KTerm, f_choose(Bool, Bool.not(String.eq(name, nm(t))), u => f_declared(name, scope) && f_declared(nm(t), scope), u => False{}),
     u => fpe_point_at(k_with_span(t, ke(t), ke(t)), "expected an unambiguous name (an import alias shadows " ++ nm(t) ++ ")", "an unambiguous name (the alias " ++ f_import_alias_head(nm(t)) ++ " shadows " ++ nm(t) ++ ")"),
-    u => k_rebuild(t, name, ix(t), qt(t), f_alias_terms(ks(t), imports, scope), rm(t), kb(t), ke(t))))
-
-@unsafe
-def f_alias_terms(ts, imports, scope):
-  match ts:
-    case Nil{}: Nil{}
-    case Con{t, rest}: Con{f_alias_term(t, imports, scope), f_alias_terms(rest, imports, scope)}
-
-@unsafe
-def f_alias_defs(+ds: List<&2,KDef>, +imports: List<&2,KTerm>, +scope: List<&2,KDef>) -> List<&2,KDef>:
-  match ds:
-    case Nil{}: Nil{}
-    case Con{+d, rest}:
-      Con{f_graph_fill_alias(KDef{dn(d), dk(d), da(d), dx(d), f_alias_term(dt(d), imports, scope), f_alias_term(dv(d), imports, scope), f_alias_defs(dc(d), imports, scope), db(d), du(d)}, imports, scope), f_alias_defs(rest, imports, scope)}
+    u => k_rebuild(t, name, ix(t), qt(t), ks(t), rm(t), kb(t), ke(t))))
 
 @unsafe
 def f_graph_finish(s, ns, book, imports, g, sources, fallback):
@@ -225,11 +195,11 @@ def f_graph_finish(s, ns, book, imports, g, sources, fallback):
     case FGraph{prior, +err, done}:
       # Reuse the ordinary freshness rule before module qualification can hide
       # a collision with Base or another declaration in the root namespace.
-      f_graph_finish_alias(s, ns, f_alias_defs(book, imports, prior), imports, prior, f_choose(String, String.is_empty(err) && String.is_empty(fallback), u => f_graph_fresh_names(book, index_build(List.reverse(&2,KDef,prior))), u => err), done, sources, fallback)
+      f_graph_finish_alias(s, ns, f_graph_fill_defs(book, imports, prior), imports, prior, f_choose(String, String.is_empty(err) && String.is_empty(fallback), u => f_graph_fresh_names(book, index_build(List.reverse(&2,KDef,prior))), u => err), done, sources, fallback)
 
 @unsafe
 def f_graph_finish_alias(s, ns, book, imports, prior, err, done, sources, fallback):
-  f_graph_finish_module(s, prior, err, Con{kt("Loaded", f_source_path(s), f_graph_count_defs(book, 0), 0, Con{ref(ns), imports}), done}, f_path_defs(f_module_defs(book, book, f_family_book(prior), ns, imports), f_path_dir(f_source_path(s)), f_eq(f_source_name(s), "Base")), sources, fallback)
+  f_graph_finish_module(s, prior, err, Con{kt("Loaded", f_source_path(s), f_graph_count_defs(book, 0), 0, Con{ref(ns), imports}), done}, f_path_defs(f_context_modules(book, ns), f_path_dir(f_source_path(s)), f_eq(f_source_name(s), "Base")), sources, fallback)
 
 # Dependency completion checks only its new fragment, never cached prior terms.
 @unsafe
@@ -240,72 +210,6 @@ def f_graph_finish_module(+source: FSource, +prior: List<&2,KDef>, +error: Strin
 def f_graph_module_error(+source: FSource, +error: KTerm, +sources: List<&2,FSource>, +fallback: String) -> String:
   f_choose(String, f_eq(tg(error), "Absent"), u => fallback, u => fpe_source_render(nm(error), error, f_choose(KTerm, U32.is_gt(kb(error), 0), u => fpe_located_source(error, sources), u => kt("ParseSource", f_source_text(source), 0, 0, Nil{}))))
 
-
-law f_module_defs:
-  for +todo: List<&2, KDef>
-  for +visible: List<&2, KDef>
-  for +scope: List<&2, KDef>
-  for +ns: String
-  for +imports: List<&2, KTerm>
-  List<&2, KDef>
-
-law f_module_def:
-  for +d: KDef
-  for +rest: List<&2, KDef>
-  for +visible: List<&2, KDef>
-  for +scope: List<&2, KDef>
-  for +ns: String
-  for +imports: List<&2, KTerm>
-  List<&2, KDef>
-
-@unsafe
-def f_module_defs(todo, visible, scope, ns, imports):
-  match todo:
-    case Nil{}:
-      Nil{}
-    case Con{+d, rest}:
-      # Qualification sees the whole module. Parser sugar sees only prior
-      # families/templates; checker declaration visibility is a separate rule.
-      f_module_def(d, rest, visible, f_choose(List<&2,KDef>, f_eq(dk(d), "ADT") || U32.is_gt(dx(d), 0), u => Con{d, scope}, u => scope), ns, imports)
-
-@unsafe
-def f_module_def(d, rest, visible, scope, ns, imports):
-  Con{f_choose(KDef, f_eq(dk(d), "ImportFill"), u => KDef{dn(d), "Def", da(d), dx(d), dt(d), f_qual_term(f_scope(dv(d), Nil{}, scope), visible, ns, imports), Nil{}, db(d), du(d)}, u => f_choose(KDef, String.is_empty(ns), u => f_elab_def(d, scope), u => f_qual_def(f_elab_def(d, scope), visible, ns, imports))), f_module_defs(rest, visible, scope, ns, imports)}
-
-# Reporting uses the main module's declaration events, excluding dependencies.
-# Upstream appends to book.order only for def/type/law declarations; constructors
-# remain nested and lowering introduces terms rather than declaration events.
-# Thus this source selection exactly recovers order.slice(n0), without rerunning
-# imported modules or changing FResult's stable ABI. Call after a successful load.
-law f_main_result_names:
-  for +r: FResult
-  List<&2,String>
-
-law f_main_order:
-  for +book: List<&2,KDef>
-  for +seen: List<&2,String>
-  List<&2,String>
-
-@unsafe
-def f_main_names(
-  +main: String,
-  +sources: List<&2,FSource>,
-) -> List<&2,String>:
-  f_main_result_names(f_parse_source(f_graph_source(main, sources)))
-
-@unsafe
-def f_main_result_names(r):
-  match r:
-    case FResult{book, error, imports}:
-      f_choose(List<&2,String>, String.is_empty(error), u => f_main_order(book, Nil{}), u => Nil{})
-
-@unsafe
-def f_main_order(book, seen):
-  match book:
-    case Nil{}:
-      Nil{}
-    case Con{+d, rest}:
-      f_choose(List<&2,String>, has_name(seen, dn(d)), u => f_main_order(rest, seen), u => Con{dn(d), f_main_order(rest, Con{dn(d), seen})})
 
 # Request-local trace of the exact graph that produced the freshened core.
 # Loaded.id records declaration-event count, including separate law/fill events.
@@ -526,9 +430,16 @@ def f_path_nonempty(parts: List<&2,String>) -> List<&2,String>:
     case Con{+part, +rest}:
       f_choose(List<&2,String>, String.is_empty(part), u => f_path_nonempty(rest), u => Con{part, f_path_nonempty(rest)})
 
-# Imported fills retain their raw telescope until dependencies have loaded.
-# The temporary kind protects the already-canonical law type and name from
-# module qualification; f_module_def eliminates it before checker entry.
+# Imported fills retain telescope metadata until dependencies have loaded.
+# The temporary kind protects the canonical law type/name from qualification;
+# contextual module completion eliminates it before checker entry.
+@unsafe
+def f_graph_fill_defs(+defs: List<&2,KDef>, +imports: List<&2,KTerm>, +scope: List<&2,KDef>) -> List<&2,KDef>:
+  match defs:
+    case Nil{}: Nil{}
+    case Con{d, rest}:
+      Con{f_graph_fill_alias(KDef{dn(d), dk(d), da(d), dx(d), dt(d), dv(d), f_graph_fill_defs(dc(d), imports, scope), db(d), du(d)}, imports, scope), f_graph_fill_defs(rest, imports, scope)}
+
 @unsafe
 def f_graph_fill_alias(+d: KDef, +imports: List<&2,KTerm>, +scope: List<&2,KDef>) -> KDef:
   f_choose(KDef, f_eq(tg(dt(d)), "ImportLaw"), u => f_graph_fill(d, f_find(f_alias(dn(d), imports), List.reverse(&2, KDef, scope))), u => d)
@@ -536,7 +447,7 @@ def f_graph_fill_alias(+d: KDef, +imports: List<&2,KTerm>, +scope: List<&2,KDef>
 @unsafe
 def f_graph_fill(+d: KDef, +old: KDef) -> KDef:
   f_choose(KDef, f_eq(dk(old), "Def") && f_eq(tg(dv(old)), "Absent") && Bool.not(db(old)) && f_bare_params(ks(dt(d))) && U32.is_ge(da(d), dx(old)) && (Bool.not(f_eq(tg(dv(d)), "Foreign")) || U32.is_eq(dx(old), 0)),
-    u => KDef{dn(old), "ImportFill", da(d), dx(old), dt(old), f_choose(KTerm, f_eq(tg(dv(d)), "Body"), u => kt("Body", "", fc_start(ks(dt(d)), dt(old), kid(dv(d), 1), True{}), 0, ks(dv(d))), u => dv(d)), Nil{}, False{}, du(old) || du(d)},
+    u => KDef{dn(old), "ImportFill", da(d), dx(old), dt(old), dv(d), Nil{}, False{}, du(old) || du(d)},
     u => KDef{dn(d), "Def", da(d), dx(d), kt("Error", "an imported definition must uniquely fill a non-native law with plain parameter names", 0, 0, Nil{}), dv(d), dc(d), db(d), du(d)})
 
 # The first selected frontend Error keeps its existing traversal order. Located

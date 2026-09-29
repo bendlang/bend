@@ -1,0 +1,7 @@
+# Constructor predicate as a direct worker
+
+Source14 changes only validate.bend: +6physical/+5nonblank lines and one definition. Its parent is source13/build12; checked constructor-bool-build01/API4c81ab11 passes B1 and36strict checks. The exact original eager kind/name predicate becomes a Bool argument; True returns the original definition and False enters the already validated child lookup. No state, cache, type or semantic precedence changes.
+
+Inspection confirms the maintained v5 compiler emits a three-state loop for lookup, Bool decision and empty-child continuation. It avoids the prior closure pair at every examined definition while preserving the existing nonempty child recursion. Independent frozen34 controls all match exact outcomes, getter order and read counts against build12; scoped33 also pass, and no duplicate-read allowance is used. Wide100000/deep512/history controls are finite coverage, not a universal stack proof.
+
+The direct launcher required a fresh version solely to bind build12 as parent; its older baseline-bound version, all fixtures and policies remain unchanged. No isolated performance claim: the prior source13 bundle still fails its3%speed gate at+6.48%. Root will combine independently reviewed changes and run the controlled bundle comparison. Exact memberships, source delta, emitted loop, checked reports and independent controls are bound in the JSON receipt.

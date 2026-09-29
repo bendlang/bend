@@ -1,0 +1,91 @@
+{
+  "kind": "phase22-constructor-bool-worker-ablation",
+  "complete": true,
+  "pass": true,
+  "passMeaning": "Genuine checked B1+36strict, independent34 exact direct controls and inspected generated loop; no isolated cost or full-corpus claim.",
+  "installed": false,
+  "parentApi": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-12/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-12/equality/api.mjs",
+    "sha256": "a80737cd74e8b3e78b07006580ed3aded060c530b3d67af032db81a17fa3f404"
+  },
+  "candidateApi": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/constructor-bool-build-01/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/constructor-bool-build-01/equality/api.mjs",
+    "sha256": "4c81ab1174cecd656ddde43b589fdb23540706b005ae8aa821722151e5a82490"
+  },
+  "changedFiles": [
+    "src/front/validate.bend"
+  ],
+  "members": 215,
+  "delta": {
+    "physicalLines": 6,
+    "nonblankLines": 5,
+    "bytes": 145,
+    "definitions": 1,
+    "laws": 0,
+    "types": 0
+  },
+  "focused": {
+    "pass": true,
+    "strictExact": true,
+    "exactDifferences": 0
+  },
+  "direct": {
+    "pass": true,
+    "rawExactPass": true,
+    "count": 34,
+    "scopedCount": 33,
+    "unusedDuplicateReadAllowance": true
+  },
+  "emittedLookup": "function $f_ctor_lookup$($0, $1, $2, $3) {\n  let $pc = 0;\n  for (;;) switch ($pc) {\n    case 0: {\n      const _name_0 = $0;\n      const _book_0 = $1;\n      if (_book_0.$ === \"Nil\") {\n        return $f_find$(_name_0, {$: \"Nil\"});\n      } else {\n        const _d_0 = _book_0[\"head\"];\n        const _ds_0 = _book_0[\"tail\"];\n        $0 = _name_0;\n        $1 = _d_0;\n        $2 = _ds_0;\n        $3 = ($Bool$and$(($f_eq$(($dk$(_d_0)), \"Ctr\")), ($f_eq$(($dn$(_d_0)), _name_0))));\n        $pc = 1; continue;\n      }\n    }\n    case 1: {\n      const _name_0 = $0;\n      const _d_0 = $1;\n      const _rest_0 = $2;\n      const _same_0 = $3;\n      if (_same_0) {\n        return _d_0;\n      } else {\n        $0 = _name_0;\n        $1 = ($dc$(_d_0));\n        $2 = _rest_0;\n        $pc = 2; continue;\n      }\n    }\n    case 2: {\n      const _name_0 = $0;\n      const _children_0 = $1;\n      const _rest_0 = $2;\n      if (_children_0.$ === \"Nil\") {\n        $0 = _name_0;\n        $1 = _rest_0;\n        $pc = 0; continue;\n      } else {\n        const _child_0 = _children_0[\"head\"];\n        const _tail_0 = _children_0[\"tail\"];\n        return $f_ctor_more$(_name_0, run_loop($f_ctor_lookup$(_name_0, {$: \"Con\", \"head\": _child_0, \"tail\": _tail_0})), _rest_0);\n      }\n    }\n  }\n}\n",
+  "inspection": "Maintained v5 emits a three-state direct loop. The original eager kind/name predicate is evaluated before entering the Bool state. Child-first recursion remains at the existing nonempty branch; no closure pair on each leaf.",
+  "speedGate": "Previous source13 matrix02 failed at+6.48%; source14 has not been timed. Root owns candidate15 combination/final bundle gate.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase22/constructor-bool-worker.md",
+      "sha256": "5116a31b0866d6137484ef5ef0475d0a541b90a517dcd9d4a3f0493ed99b64a5",
+      "bytes": 1729
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/constructor-bool-source.py",
+      "sha256": "351c18d17f59319105314cbed225fd0cd22978b6f44a8d102385c2b24514f98b",
+      "bytes": 3632
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-14/manifest.json",
+      "sha256": "d18d7241d6cbb109b8b91681ffcbb88196d134fa90474deca68b3aa54626ec94",
+      "bytes": 64030
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-14/candidate.patch",
+      "sha256": "3e27284d7b99ea10ee6adc2dfdd1bb8abcb09f463d149ef9daea52269823e5c4",
+      "bytes": 634
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/constructor-bool-build-01/attempt.json",
+      "sha256": "bcce6000dc072f237fe95098e39a8773501eb7ec48cced3378c6961c39a84c48",
+      "bytes": 222069
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/constructor-bool-build-01/build.json",
+      "sha256": "b6b0a96f9dc900f1fd1fefab65a4daa061e4bde06803cd2a1de99fa49b6fa963",
+      "bytes": 4015
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/constructor-bool-build-01/validation-001/report.json",
+      "sha256": "36b70d1f8982b3051e44d700e4f142576809689592858272a010745ef1e762de",
+      "bytes": 9416
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-demand-02/report.json",
+      "sha256": "019a923beb7bc55b8d39808cd9d5a4a6e95ab715068055c6c724f1a0fc4abd0e",
+      "bytes": 3483813
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-ctor-demand-02.json",
+      "sha256": "dd3459e1b74608866e75b1195d0c44b1bda436ddd8ccc37fc4990644a969f2d8",
+      "bytes": 7765
+    }
+  ]
+}

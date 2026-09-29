@@ -1,0 +1,201 @@
+{
+  "kind": "phase22-contextual-do-independent-review",
+  "complete": true,
+  "pass": true,
+  "promotionReady": false,
+  "passMeaning": "Bounded isolated-owner review and specified controls passed; whole contextual grammar and marked-quantity integration remain pending.",
+  "pin": "b2111cf43244e65f76ddc278ee695e669f720cbf",
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-do-build-01/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-do-build-01/equality/api.mjs",
+    "sha256": "5631e1072dadd4c1cd7548b5475803f578f8ac6ef1714b3683206057faca2f4a"
+  },
+  "publicControls": {
+    "observations": 20,
+    "parentExact": 17,
+    "candidateExact": 19,
+    "gainedExact": [
+      "context-do/rhs-error-before-return/check@check",
+      "context-do/rhs-error-before-return/parse@parse"
+    ],
+    "lostExact": [],
+    "rawSelectedComplete": false,
+    "remaining": "Actual imported Box.Id header check; parse is exact."
+  },
+  "privateControls": {
+    "rows": 6,
+    "semanticMatches": 5,
+    "explicitUnsupported": 1,
+    "rowsSummary": [
+      {
+        "id": "return-literal",
+        "pass": true,
+        "unsupported": false,
+        "notConformance": false
+      },
+      {
+        "id": "terminal-constructor",
+        "pass": true,
+        "unsupported": false,
+        "notConformance": false
+      },
+      {
+        "id": "typed-bind-through-grammar",
+        "pass": true,
+        "unsupported": true,
+        "notConformance": true
+      },
+      {
+        "id": "typed-bind-owner",
+        "pass": true,
+        "unsupported": false,
+        "notConformance": false
+      },
+      {
+        "id": "typed-assignment-owner",
+        "pass": true,
+        "unsupported": false,
+        "notConformance": false
+      },
+      {
+        "id": "anonymous-bind-owner",
+        "pass": true,
+        "unsupported": false,
+        "notConformance": false
+      }
+    ],
+    "unchangedApiPrefix": true,
+    "setupFailurePreserved": true
+  },
+  "findings": [
+    {
+      "id": "ordering",
+      "status": "pass-by-inspection-and-controls",
+      "detail": "The do owner parses a RHS before opening its binder, stops on a shallow Error/Unsupported result, opens the binder for its continuation only, restores the outer lexical environment, then resolves the generated .bind/.pure call. The first returned failure is preserved."
+    },
+    {
+      "id": "header",
+      "status": "pass-by-inspection",
+      "detail": "The header resolves against the supplied declaration scope, fills leading datatype quantity arguments through the existing f_adt owner before the colon, and retains the written monad name for separately resolved generated calls. Terminal values retain their own range and ADT-versus-call annotation distinction."
+    },
+    {
+      "id": "locations",
+      "status": "pass-bounded",
+      "detail": "Five private helper controls compare canonical terms including source begin/end coordinates, final fresh counters and restored environments against pinned parse_term. Typed assignment/bind controls call the real f_do_value owner with pinned parsed prefix terms and a real FContextual seed; they do not claim that the unfinished full grammar route works."
+    },
+    {
+      "id": "raw-api",
+      "status": "pass-bounded",
+      "detail": "The unchanged public do20 selection improves 17 to 19 exact observations without loss. Both malformed-RHS observations now preserve the pinned parser error instead of failing host range validation. The old imported Box.Id check failure remains. Raw selectedComplete remains false."
+    },
+    {
+      "id": "unported-contextual-grammar",
+      "status": "integration-required",
+      "detail": "The frozen ablation retains the old contextual admission barriers, including <- in f_context_grow. One direct control records this as Unsupported, not a semantic match. The private wrapper is an append-only derivative of the checked API and is not a public API."
+    },
+    {
+      "id": "marked-binder-quantity",
+      "status": "integration-required",
+      "detail": "Pinned parse_bind gives marked names Many. Frozen f_context_open returns quantity1, so enabling marked do syntax requires the shared opening owner to preserve quantity. Root reports that behavior has made that correction in mutable shared source03; this review neither rebinds the frozen ablation nor validates that later source."
+    },
+    {
+      "id": "setup-failure",
+      "status": "preserved",
+      "detail": "Private attempt01 failed before rows because the probe supplied FLocatedSource.inner instead of the actual generated field source. Fresh v2 fixes that field and the unconsumed f_do_value wrapper arity from8 to7. Original tool, extension and failure report remain unchanged."
+    }
+  ],
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-do-review.py",
+      "sha256": "15d9611f5b4f65043c8b933930f9ea67e3d385f7006172f3b86941310f3b0358",
+      "bytes": 9243
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase22/contextual-do.md",
+      "sha256": "26b93d2deec80c80fde8631fe4532506417600b5eac3dd27d2334cb418bafa1e",
+      "bytes": 1963
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-do-source-01/manifest.json",
+      "sha256": "518187adb30e6aa173dfb078bf572289dcb92947be756bf4dc0cd3eae2b1e9ac",
+      "bytes": 50487
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-do-source-01/project/src/front/sugar.bend",
+      "sha256": "b81f27d9c154d3cdc0d435d9071313ae0adc8f2dc13b7194efb0c19fc2e4798f",
+      "bytes": 12794
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-do-source-01/project/src/front/contextual.bend",
+      "sha256": "ffabec0b81bacea4c63c8b9990a2e9291657551028bb3b76b560a66fccf5ac45",
+      "bytes": 14392
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-do-build-01/attempt.json",
+      "sha256": "c7f6d8edb6e59357e368745177b0f226495deec215f77090d43702aec454689f",
+      "bytes": 219852
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-do-build-01/equality/api.mjs",
+      "sha256": "5631e1072dadd4c1cd7548b5475803f578f8ac6ef1714b3683206057faca2f4a",
+      "bytes": 953757
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8/bend2/bend.ts",
+      "sha256": "924197360cefc61a9314072e9cb1ef46a9266550eb527f535c36839a3b102bcb",
+      "bytes": 136690
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-do-direct.mjs",
+      "sha256": "db23821808865c94b1b58ad16796bd36227ce6c97d734b0822f18161cdce78e1",
+      "bytes": 8479
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-do-direct-v2.mjs",
+      "sha256": "dd7b5f2d0e76da5af2c960cc99cb2a5d3f788f1f3e120643994b6634a6f6d57e",
+      "bytes": 8480
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-direct-01/report.json",
+      "sha256": "40fe3e3182c3f2fd4a5adb50f715a9d89e5142d445368c48ae123b273245a041",
+      "bytes": 3489
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-direct-02/report.json",
+      "sha256": "e67a92ff70512aa5b47271d3ec65f877e55a4c65e3faae561cdf0426ecc1b930",
+      "bytes": 158231
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-direct-02/frozen-cases.json",
+      "sha256": "eae10d62d2fdc6b39897fa500cb0da5389f6c215643857dff696442ec53733c1",
+      "bytes": 711
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-inputs-01/selection.json",
+      "sha256": "0fc7e3e472e18eb705c9eb9c18766e44a0f5fa2d3f7b7299d540ccc79dfb9c49",
+      "bytes": 5515
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-baseline-01/report.json",
+      "sha256": "aba032995d5f222302692a1ec3853d3347d46e288c2d7a2987009ad33da20b63",
+      "bytes": 14611
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-raw-candidate-01/report.json",
+      "sha256": "65528d77f8a747e032aba69eaec3d1bf5ad382f19bc0f1eab7374551d9cff3bb",
+      "bytes": 15978
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-raw-candidate-01/selected/paired.json",
+      "sha256": "957d8f85d5bc76f608b50346fead7985129c0aeb7777add40f59d1d93e246a22",
+      "bytes": 29533
+    }
+  ],
+  "jobsClosed": true,
+  "sourceEdits": false,
+  "limitations": [
+    "Public do20 uses the retained raw production route and does not establish contextual parser conformance.",
+    "Three private owner cases seed their already-parsed prefix from pinned parsing to isolate the actual continuation/open/close owner.",
+    "No new backend executions, full main corpus, aliases in direct contextual mode, or marked-quantity integration were performed here."
+  ]
+}

@@ -1,0 +1,239 @@
+{
+  "kind": "phase22-index-remove-owner-receipt",
+  "complete": true,
+  "boundedCorrectnessPass": true,
+  "costScreenPass": true,
+  "installed": false,
+  "sourceDelta": {
+    "physicalLines": 8,
+    "nonblankLines": 7,
+    "bytes": 167,
+    "definitions": 1,
+    "laws": 0,
+    "types": 0
+  },
+  "sourceMembership": 214,
+  "changedFiles": [
+    "src/core/index.bend"
+  ],
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/index-remove-build-01/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/index-remove-build-01/equality/api.mjs",
+    "sha256": "c6d94a6795e98695e9e45893c34332181ff50039cbb09121fbf789ca515a2f12"
+  },
+  "controls": {
+    "paired": 51,
+    "allExact": true,
+    "longMaximum": 20000,
+    "stackKiB": 4096,
+    "publicFocused": 36,
+    "fullSourceObservationExact": true
+  },
+  "statistics": {
+    "typescript": {
+      "samples": 2,
+      "meanRequestMs": 2376.2206429999997,
+      "meanProcessWallMs": 3442.5295394999966,
+      "maxRssKiB": 489660
+    },
+    "baseline": {
+      "samples": 2,
+      "meanRequestMs": 10108.2490125,
+      "meanProcessWallMs": 11212.359841000001,
+      "maxRssKiB": 657432
+    },
+    "candidate": {
+      "samples": 2,
+      "meanRequestMs": 9357.3694775,
+      "meanProcessWallMs": 10466.473795500002,
+      "maxRssKiB": 647004
+    }
+  },
+  "ratios": {
+    "baselineToTs": 3.2570119478563773,
+    "candidateToTs": 3.0403439318113112,
+    "baselineToCandidate": 1.0712643111781055,
+    "candidateProcessReduction": 0.06652355579710645,
+    "candidateRequestReduction": 0.0742838382860822
+  },
+  "rssReduction": 0.015861716496915257,
+  "timingWindow": {
+    "started": "2026-09-29T14:59:54.773Z",
+    "finished": "2026-09-29T15:00:53.576Z",
+    "otherOwnersIdleConfirmed": true,
+    "order": [
+      "typescript",
+      "baseline",
+      "candidate",
+      "candidate",
+      "baseline",
+      "typescript"
+    ]
+  },
+  "limits": [
+    "Two timing samples per image and one fixed checking workload; no emission or edit-loop speed claim.",
+    "Finite direct raw-object/stack coverage; broader integration and promotion remain root-owned.",
+    "Constructor-site counts are not physical V8 allocations; no allocation reduction measured."
+  ],
+  "failedAttempts": [
+    "index-remove-census-01: wrong ES namespace injection, preserved; corrected v2 passes."
+  ],
+  "ownedFiles": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase22/installed-compiler-profile.md",
+      "sha256": "f77a74f34342af107efcf268e83116cb125f574a4786079fcffb429f664d4bc6",
+      "bytes": 2227
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase22/index-remove-census.md",
+      "sha256": "d68746923f95dbca51504d8c7d45563762a2b3df7b336cfe50ecea2e9cfb1d0d",
+      "bytes": 2327
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase22/index-remove-census-correction.md",
+      "sha256": "8723e710acc695c0e927d5447ec788a61fa3d652327a9fd674e9ca8264bfc130",
+      "bytes": 739
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase22/index-remove-worker.md",
+      "sha256": "43370b5b412347e8bf832793e86000bb68fc1422f2b2799a9d9cea29425a294c",
+      "bytes": 2631
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/installed-profile.md",
+      "sha256": "9c318eaa9c1eb17ccb2fc22f7bd306de47d175ccf0ab1e30f2ae494ebeefa968",
+      "bytes": 3411
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/installed-profile.json",
+      "sha256": "0841fea8af1931744db53d52b5b3cd210a44d7168201968afbb24bd6873d053b",
+      "bytes": 28967
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/index-remove-worker.md",
+      "sha256": "19c31acfdc1d5261ffe1606137e405269aebf8ed22c96e439bf757b7d9976afb",
+      "bytes": 3094
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/profile-owners.py",
+      "sha256": "32afa252792fcdf7e39f05ee202873a760f39c14a030430fb635df321ba0be66",
+      "bytes": 3427
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/profile-hash-callers.py",
+      "sha256": "7cc8e792fd0b03cc1904b32dfd15e71a6472e1e4af20cf78b0583fafc9917054",
+      "bytes": 3324
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/index-remove-census.mjs",
+      "sha256": "4b1b85280dfc4b2bfb07b4d40e1f856d2cc27d0270eac4d9b291d32cbb4a4fe5",
+      "bytes": 5216
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/index-remove-census-v2.mjs",
+      "sha256": "d43b7cd8814802448b2323147719b99ee0cac45c20f7dd05efe6adaec9f7f078",
+      "bytes": 5219
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/index-remove-count-worker.mjs",
+      "sha256": "bea5de10860096075b3678fd9814988aea3524694bc5aaf842f06df1f290097c",
+      "bytes": 1709
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/index-remove-count-worker-v2.mjs",
+      "sha256": "c4d63ce464124d8dddb01c250084799fdfdcdbdd95b6c041bf17ec5cf1173970",
+      "bytes": 1830
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/index-remove-source.py",
+      "sha256": "fceb3c37e88e78a0381511aec59b7b6b3005c0181413410816f85701cab5f7a4",
+      "bytes": 3590
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/index-remove-controls-cases.json",
+      "sha256": "bfe400bd107b70c82b02de42bc98254058ad330c8cf3814ec7adbd74a7e6536b",
+      "bytes": 2843
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/index-remove-controls.mjs",
+      "sha256": "571174ac7316e0b73a98b2965511d16c978eb3976e5f546f85cedd6c548b9d3b",
+      "bytes": 3748
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/index-remove-controls-worker.mjs",
+      "sha256": "d8ec9011af145a409667a217b915ec4d0d7cf4b9077e1e38829403fa50f55359",
+      "bytes": 7009
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/index-remove-fullcheck.mjs",
+      "sha256": "a51050069dab667bb098f563386d7e4ed1b7ed94d75877699277b34434168064",
+      "bytes": 3103
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/index-remove-matrix-prepare.py",
+      "sha256": "14dbb1da5ec9a021b1f4023a8dfff90523a2831460fc3eb3137b38dd17a253ef",
+      "bytes": 2827
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/index-remove-report.py",
+      "sha256": "3edbc1caa8ca5e2b119e9061a63fde156f2d16d8cbd7741e0980f6ccac1be260",
+      "bytes": 4373
+    }
+  ],
+  "evidence": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/index-remove-source-01/manifest.json",
+      "sha256": "f5549954258606509ca05c6b9cebb5831b3f04d4c7c9a21a667928c5bd1c024a",
+      "bytes": 64830
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/index-remove-source-01/candidate.patch",
+      "sha256": "4ddbcadd45ce4b27550b57b7176cce93800eded8f91a9f5f37459e9d8d7d75e0",
+      "bytes": 582
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/index-remove-build-01/attempt.json",
+      "sha256": "f7fe02dbafb2168b37418308aa3490978aa9edc2c87ea999ee3f9732ac8565c7",
+      "bytes": 220531
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/index-remove-build-01/validation-001/report.json",
+      "sha256": "5f2dcb57c2b483197d6be7afa4e2fd66b08870111688c56d374fdd7d9dd88ba5",
+      "bytes": 9343
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/index-remove-controls-01/report.json",
+      "sha256": "f39a544f0226e90d2d69c05493f53f6f6d6c14ecf9b0157b143e547037cc93c2",
+      "bytes": 5239071
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/index-remove-fullcheck-01/report.json",
+      "sha256": "40dea50bc9751846482aa28f4edd91a49f0b0566ece59ba449dc324a8e88dcd4",
+      "bytes": 119797
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/index-remove-matrix-inputs-01/freeze.json",
+      "sha256": "a06baf1f0bbb6bc425d34c610114c8d54218539480ec2e1fd98fb02201a2db0e",
+      "bytes": 4222
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/index-remove-matrix-01/report.json",
+      "sha256": "d7037d2c8b377c5379a5189c5c0b7674623697dba80691ba0956f4b801470200",
+      "bytes": 687940
+    }
+  ],
+  "closedRoots": [
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/installed-profile-plan-01.json",
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/installed-profile-01",
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/installed-profile-callers-01",
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/installed-profile-hash-callers-01",
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/index-remove-census-01",
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/index-remove-census-02",
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/index-remove-source-01",
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/index-remove-build-01",
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/index-remove-controls-01",
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/index-remove-fullcheck-01",
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/index-remove-matrix-inputs-01",
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/index-remove-matrix-01"
+  ]
+}

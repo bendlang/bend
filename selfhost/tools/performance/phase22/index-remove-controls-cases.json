@@ -1,0 +1,174 @@
+{
+  "version": 1,
+  "scope": "Independent original-helper list-filter, caller and demand controls; original raw values preserved.",
+  "filters": [
+    {
+      "name": "empty",
+      "names": [],
+      "query": "x"
+    },
+    {
+      "name": "single-hit",
+      "names": [
+        "x"
+      ],
+      "query": "x"
+    },
+    {
+      "name": "single-miss",
+      "names": [
+        "a"
+      ],
+      "query": "x"
+    },
+    {
+      "name": "first",
+      "names": [
+        "x",
+        "a",
+        "b"
+      ],
+      "query": "x"
+    },
+    {
+      "name": "middle",
+      "names": [
+        "a",
+        "x",
+        "b"
+      ],
+      "query": "x"
+    },
+    {
+      "name": "last",
+      "names": [
+        "a",
+        "b",
+        "x"
+      ],
+      "query": "x"
+    },
+    {
+      "name": "missing",
+      "names": [
+        "a",
+        "b",
+        "c"
+      ],
+      "query": "x"
+    },
+    {
+      "name": "duplicates",
+      "names": [
+        "x",
+        "a",
+        "x",
+        "b",
+        "x"
+      ],
+      "query": "x"
+    },
+    {
+      "name": "all",
+      "names": [
+        "x",
+        "x",
+        "x"
+      ],
+      "query": "x"
+    },
+    {
+      "name": "empty-name",
+      "names": [
+        "",
+        "a",
+        "",
+        "b"
+      ],
+      "query": ""
+    },
+    {
+      "name": "collision-a",
+      "names": [
+        "costarring",
+        "liquid",
+        "costarring"
+      ],
+      "query": "costarring"
+    },
+    {
+      "name": "collision-b",
+      "names": [
+        "costarring",
+        "liquid"
+      ],
+      "query": "liquid"
+    },
+    {
+      "name": "unicode",
+      "names": [
+        "\u03b1",
+        "\ud83e\udd80",
+        "x",
+        "\ud83e\udd80"
+      ],
+      "query": "\ud83e\udd80"
+    },
+    {
+      "name": "surrogate",
+      "names": [
+        "\ud800",
+        "x",
+        "\ud800"
+      ],
+      "query": "\ud800"
+    },
+    {
+      "name": "object-key",
+      "names": [
+        "__proto__",
+        "constructor",
+        "__proto__"
+      ],
+      "query": "__proto__"
+    },
+    {
+      "name": "nul",
+      "names": [
+        "a\u0000b",
+        "a",
+        "a\u0000b"
+      ],
+      "query": "a\u0000b"
+    }
+  ],
+  "longLengths": [
+    1000,
+    3000,
+    10000,
+    20000
+  ],
+  "demand": [
+    "projection-order",
+    "first-name-throws",
+    "later-name-throws-after-hit",
+    "tail-demand-after-hit",
+    "tail-projection-precedes-name",
+    "head-projection-precedes-tail",
+    "non-name-payload-unused",
+    "malformed-name-null",
+    "malformed-name-object",
+    "malformed-list-tag",
+    "null-list",
+    "null-definition"
+  ],
+  "callers": [
+    "raw-duplicate-replacement",
+    "cached-duplicate-replacement",
+    "cached-empty-name",
+    "cached-hash-collision",
+    "nested-cache-sentinel",
+    "legacy-final-duplicates"
+  ],
+  "historyRounds": 3
+}

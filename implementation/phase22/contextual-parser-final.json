@@ -1,0 +1,240 @@
+{
+  "kind": "phase22-final-owned-contextual-parser-correctness",
+  "complete": true,
+  "ownedCorrectnessPass": true,
+  "source": "selfhost/build/phase22/context-source-17/project",
+  "attempt": "selfhost/build/phase22/context-build-16",
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/equality/api.mjs",
+    "sha256": "ade8ef020e439b81ecb53057b33a473c34a3cbd993b98a044121ecc3c2b8c9c3"
+  },
+  "checkedApi": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/api.mjs",
+    "sha256": "9cf01096f395817470ef0515e0ee98da85a53eb1b05823c88c9f2d5531e6072a"
+  },
+  "artifactKind": "derived-b1",
+  "newFixedPointClaim": false,
+  "ownedGates": {
+    "context-group196-05": {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-group196-05/report.json",
+        "sha256": "6fc2eaac93a8c3e712e02946603a3ee76a9b98d125ecaacadab85e2d7a23f6e5"
+      },
+      "paired": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-group196-05/selected/paired.json",
+        "sha256": "284e341a26a76b29e9394307d2ec50b52c13b8f12df24f054b1c277ee6526a86"
+      },
+      "observations": 196,
+      "exact": 196,
+      "rawPass": false,
+      "rawSelectedComplete": true,
+      "referenceStatuses": {
+        "observed": 1,
+        "pass": 195
+      },
+      "candidateStatuses": {
+        "observed": 1,
+        "pass": 195
+      }
+    },
+    "context-header-candidate-04": {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-header-candidate-04/report.json",
+        "sha256": "442bf94fc69924568d24e0a8af49984e709671327bc17f3163ddb19cb61c959b"
+      },
+      "paired": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-header-candidate-04/selected/paired.json",
+        "sha256": "ce57bd7da51c1e9bb4d842b0c26d6dc2ab0215a038448e0f71ff0deeb5a54827"
+      },
+      "observations": 12,
+      "exact": 12,
+      "rawPass": false,
+      "rawSelectedComplete": false,
+      "referenceStatuses": {
+        "fail": 7,
+        "pass": 5
+      },
+      "candidateStatuses": {
+        "fail": 7,
+        "pass": 5
+      }
+    },
+    "context-normalization-candidate-03": {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-normalization-candidate-03/report.json",
+        "sha256": "5ae4e0189b8f69021213833722ea795899dc565a92ee4a338735a48e56dfc076"
+      },
+      "paired": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-normalization-candidate-03/selected/paired.json",
+        "sha256": "0dec951550911440345bb5cb31fa7aebd2846f6ebb78f84d1d65d5bd52c7c868"
+      },
+      "observations": 12,
+      "exact": 12,
+      "rawPass": false,
+      "rawSelectedComplete": false,
+      "referenceStatuses": {
+        "pass": 10,
+        "fail": 2
+      },
+      "candidateStatuses": {
+        "pass": 10,
+        "fail": 2
+      }
+    }
+  },
+  "completion17": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/completion-beta-controls-04/report.json",
+    "sha256": "5f6cbf15fe1fa2b8ea0a5856da0db6503151b61f7f1cbfdd53bc0929bac30c77"
+  },
+  "marked114Subset": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-marked-subset-final.json",
+    "sha256": "0040ccce2bcad736e72361223c86c7c7f4a22357f907f785687f8bc7fac2670d"
+  },
+  "original196Delta": {
+    "parentExact": 139,
+    "candidateExact": 196,
+    "gained": 57,
+    "lost": 0,
+    "primitiveChanged": [
+      {
+        "id": "group/body-comma@parse",
+        "matchesReference": true,
+        "before": {
+          "status": "ok",
+          "phase": "parse",
+          "checked": false,
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "unsafeDefinitions": null,
+          "exitCode": 0
+        },
+        "after": {
+          "status": "error",
+          "phase": "parse",
+          "checked": false,
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "unsafeDefinitions": null,
+          "exitCode": 1
+        }
+      },
+      {
+        "id": "group/body-comma@check",
+        "matchesReference": true,
+        "before": {
+          "status": "ok",
+          "phase": "check",
+          "checked": true,
+          "typeAccepted": true,
+          "proofTrust": "passed",
+          "kernelChecked": false,
+          "unsafeDefinitions": [],
+          "exitCode": 0
+        },
+        "after": {
+          "status": "error",
+          "phase": "parse",
+          "checked": false,
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "unsafeDefinitions": null,
+          "exitCode": 1
+        }
+      }
+    ]
+  },
+  "census": {
+    "sourceFiles": 1,
+    "compilerModules": 1,
+    "moduleLines": -300,
+    "moduleBytes": 3305,
+    "defs": 31,
+    "laws": -81,
+    "types": 1
+  },
+  "nonblankDelta": {
+    "physicalLines": -300,
+    "nonblankLines": -241
+  },
+  "totalChangedPhysicalLines": -293,
+  "retiredFrontendWorkers": 98,
+  "retiredFrontendDefLawBlockLines": 977,
+  "scope": [
+    "Exact final-image owned controls only; root full frontend, independent cohorts, histories, CLI, cost and promotion remain separate receipts.",
+    "Original196 and marked114 overlap; marked114 is a selection/fixture/oracle/full-reference-result subset audit, not a separate acquisition.",
+    "All historical expected labels and raw pass:false/selectedComplete flags remain unchanged. Healthy complete acquisition and strict paired equality are audited separately.",
+    "Derived equality-v5 API is not byte-identical to the upstream-checked bootstrap API and is not a new fixed-point claim.",
+    "All failed preparations, parser controls and rejected cost images remain preserved. No fixture-specific branch or comparator relaxation."
+  ],
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-final-report.py",
+      "sha256": "85f385497e0df1a74a21152245a88e4315597ab816ebf5dd3eae5427a190b4b3"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-17/manifest.json",
+      "sha256": "507c752d4f1f0f825f2fb724d6f0e5f415ee1d48e7a2ca17e5247fff9d32f193"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-17/parent.json",
+      "sha256": "2b63b7214984faab4f5091fb9c846e12583306caf358d87bc74ead2936677c79"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/attempt.json",
+      "sha256": "d5255fa8868cf4c00540e814647b3645c004f35dfbd06b9f4bb6a4e71946772b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/build.json",
+      "sha256": "cd462dfb8e89f4ebd52b7f57654c90c8fc57615f994d39151d9d69261f278000"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/validation-001/report.json",
+      "sha256": "bb60523285ec1656611656b33e905e696fcf814fb38694fd95ca1f63a1a957e4"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/equality/api.mjs",
+      "sha256": "ade8ef020e439b81ecb53057b33a473c34a3cbd993b98a044121ecc3c2b8c9c3"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-group196-05/delta.json",
+      "sha256": "4880e260318a3fca94db19293cfde4f5bd3ab07b355e0105a8fbd886abfa3d55"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/completion-beta-controls-04/report.json",
+      "sha256": "5f6cbf15fe1fa2b8ea0a5856da0db6503151b61f7f1cbfdd53bc0929bac30c77"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-marked-subset-final.json",
+      "sha256": "0040ccce2bcad736e72361223c86c7c7f4a22357f907f785687f8bc7fac2670d"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-source-census-cost17.json",
+      "sha256": "8a3668112d31f6d1fad0858d5763abf189906a1027c82113aac6ae639d3ab5f1"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-source-nonblank-final.json",
+      "sha256": "7045c7a08a0eed2554f47bed529cf37a65c83256e38b3753e61633cfbca39357"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-constructor-index.json",
+      "sha256": "80a4a0ca8610f30ba21fb46b9503702ef2b421527f8ac704b3772c39d11e915a"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-template-index.json",
+      "sha256": "081ec010033dcbaf51df9d09c9420baad61e22c03f30470086ee4f831403758f"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-header-cost.json",
+      "sha256": "b2fa55ad3e4293f3cdaf33079de571ea4483970508ea05df5d7df9a4a1b69c4d"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-08/frontend-retirement-closure.json",
+      "sha256": "a84c6500c8139cbffa6d344cb5e3ffcba36747ab19255d06c2721b0e5a09fe51"
+    }
+  ]
+}

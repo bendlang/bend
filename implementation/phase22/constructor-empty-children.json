@@ -1,0 +1,101 @@
+{
+  "kind": "phase22-constructor-empty-child-ablation",
+  "complete": true,
+  "pass": true,
+  "passMeaning": "Isolated genuine checked B1, strict maintained36, and independent paired34 constructor controls; not a speed or broad-conformance claim.",
+  "installed": false,
+  "parentApi": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-09/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-09/equality/api.mjs",
+    "sha256": "eac3b89d561287b9a51b411ab6353ea275e90c571de7d7c8e733c99eb0755a94"
+  },
+  "candidateApi": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/constructor-build-01/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/constructor-build-01/equality/api.mjs",
+    "sha256": "4cfd3c3cdea983e7720ba44c56cad6ef8ce7e07ecb011b3d8478dc7aa7bdbe5f"
+  },
+  "sourceMembership": 215,
+  "changedFiles": [
+    "src/front/validate.bend"
+  ],
+  "delta": {
+    "physicalLines": 6,
+    "nonblankLines": 5,
+    "bytes": 226,
+    "definitions": 1,
+    "laws": 0,
+    "types": 0
+  },
+  "checkedB1": true,
+  "artifactKind": "derived-b1",
+  "focused": {
+    "pass": true,
+    "strictExact": true,
+    "exactDifferences": 0
+  },
+  "direct": {
+    "pass": true,
+    "rawExactPass": true,
+    "comparisons": 34,
+    "report": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-demand-01/report.json",
+      "sha256": "18df2b2025be4ec4c991f505f3247dd58c7522eb55158cacc39058bb1bccd2bd",
+      "bytes": 3483778
+    }
+  },
+  "generatedHelper": "function $f_ctor_children$(_name_0, _children_0, _rest_0) {\n  if (_children_0.$ === \"Nil\") {\n    return $f_ctor_lookup$(_name_0, _rest_0);\n  } else {\n    const _child_0 = _children_0[\"head\"];\n    const _tail_0 = _children_0[\"tail\"];\n    return $f_ctor_more$(_name_0, run_loop($f_ctor_lookup$(_name_0, {$: \"Con\", \"head\": _child_0, \"tail\": _tail_0})), _rest_0);\n  }\n}\n",
+  "generatedInterpretation": "Nil directly searches sibling. Con projects original head/tail once, reconstructs one immutable Con and delegates to existing child-first search. The generated reconstruction means original getters are not reread; all34 exact raw controls passed, including second-read poison.",
+  "timing": "Not run for isolated helper. Root owns union with guarded header and exclusive bundle screen.",
+  "limits": [
+    "Finite100000-wide/deep512/history controls do not prove arbitrary stack bounds.",
+    "No constructor cache/index/uniqueness assumption or lookup precedence change.",
+    "Initial source-inspection Python command incorrectly expected attempt.build and raised KeyError; no compiler or report state was affected; checked build.json and validation report are authoritative."
+  ],
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase22/constructor-empty-children.md",
+      "sha256": "1e0e10f3df44f47b43899d6eff82f1b10c6b9dc4fffed48694b2a753e588706c",
+      "bytes": 2460
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase22/constructor-immutable-demand.md",
+      "sha256": "20b22ccf457f265323cb7b6fbee4ebd6ee4bacfb2a41e2731a0fa1bc56828268",
+      "bytes": 1254
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/constructor-source.py",
+      "sha256": "9cd1ca03a059eecc3b405a21e386a918d55baf6d5ecbe8306d726e2135749f19",
+      "bytes": 3616
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/constructor-source-01/manifest.json",
+      "sha256": "ab21f6f394916997b338311f643f3e02997aa191f9c00b1b4254c5be345d2623",
+      "bytes": 64906
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/constructor-source-01/candidate.patch",
+      "sha256": "fd1de00eca23353a196b3dfff9bf2e2e0d8e7576a52efb754fa4182e12691b92",
+      "bytes": 693
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/constructor-build-01/attempt.json",
+      "sha256": "decdd05fcfb278020b1c0371795c4ea57b0b363c0f3e51739972f9398f6e39f0",
+      "bytes": 220868
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/constructor-build-01/build.json",
+      "sha256": "a79f317a8f5d36677ca268c8900045790953046bc52d85daa30fb8a125584a2e",
+      "bytes": 3998
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/constructor-build-01/validation-001/report.json",
+      "sha256": "3654f643719e13a44d6612fbae1adf3a31966b357a2a874124af0aac7412c32e",
+      "bytes": 9319
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-demand-01/report.json",
+      "sha256": "18df2b2025be4ec4c991f505f3247dd58c7522eb55158cacc39058bb1bccd2bd",
+      "bytes": 3483778
+    }
+  ]
+}

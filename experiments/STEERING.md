@@ -1,59 +1,56 @@
 # Current compiler experiment strategy
 
-The [Phase21 release](../implementation/phase21/group-range-release.md) is installed.
+The [Phase22 release](../implementation/phase22/contextual-conformance.md) is installed.
 User authorization covers continued conformance, speed, simplicity and pushes;
 publication remains blocked by the earlier automatic approval review. No old
 multi-hour budget is renewed. Preserve all75 unrelated Phase6 paths.
 
 ## Released frontier
 
-Installed API44094e58, unchanged pinb2111cf. Three existing parser files preserve
-Local binder origins and typed-annotation body/returned-cursor ranges. Source
-adds3lines/156bytes, no defs/laws/types, host, traversal or semantic-state change.
-Maintained source:15,900physical/13,546nonblank,577,159bytes,59modules,
-1,660definitions/719laws/67types. Phase20 grammar and Phase19 live-checker/prefix
-corrections remain. Source01 was withheld for lost synthetic Ann origin; source02
-fixes that producer with explicit original cursors, not child-range inference.
+Installed APIade8ef02, genuine checked parent9cf01096, unchanged pinb2111cf.
+One contextual frontend owns real lexical scope, aliases, patterns, group
+completion and first-error demand. Old raw-parser/later-scope replay routes and98
+unreachable workers are retired. Load ABI2 uses the trusted FCompletedSource
+handoff; text-source loading remains supported. `--checkup` matches pinned import
+order and missing-file continuation. There is no TypeScript fallback.
 
-Main2996 complete result payloads remain unchanged, including two do diagnostics.
-Broader196 improves136→139exact, threegains/zero losses;57differences remain.
-Independent68 gains16exact/zero primitive changes; typed-error4 adds twoexact and
-two unchanged diagnostics. Structural172/positiveAnn30 pass; legacy80 keeps0/0.
-Maintained36strict and installed/relocatedCLI42 pass. Actualprogram12 agrees
-exactly, but original nine per-side #| output-oracle failures (missing Nat n)
-remain false; no fixture rewrite. Known grouped-constructor false acceptances
-remain in independent controls. Suites overlap; do not sum as distinct programs.
+Main2996 and broader196 are fully exact, with zero lost matches and the remaining
+2/main and57/broader differences closed. Marked114 is an audited exact subset,
+closing43 historical gaps. Final public176, execution36, integration198, header12,
+normalization12, completion17, checkup4, maintained36 and installed/relocatedCLI42
+pass their scopes. Original histories226+fresh2 preserve every result except one
+prospectively pinned do diagnostic. Unchanged standalone frontend26 rebuilds
+without checker/tracing dependencies. Counts overlap. Raw check1494pass/4fail and
+parse1001pass/497observed remain; the four failures expect later-emission errors.
 
-Exclusive same-sourceTS/B/C/C/B/TS: parent11.0060s, final10.9547s, TS3.4364s,
-gap3.2028→3.1879×. Process−0.47%, request−0.44%, RSS−0.11% is neutralcost, two
-samples/image. All35host members/Base/runtime/v5/resources agree; freshCPU0,
-stack4MiB/heap4GiB, validated Bend Base caches; TS checks Base. No emission.
-Observed checkedbuild+36 loop35.17s is not a controlled loop benchmark.
+Exclusive same-source TS/B/C/C/B/TS: Phase21 11.0168s, final10.6991s, TS3.3833s;
+gap3.2563→3.1623×, process−2.88%, request−3.22%, peakRSS+2.52%. Two samples/image:
+a modest cost screen, not a universal or generated-code speedup. The one changed
+host among35 is independently reviewed; Base/runtime/v5/resources agree. Earlier
+contextual candidates'32.77%,6.48%,5.38% slowdowns remain preserved. Profile-guided
+header guards and constructor indexing recover the conformance cost.
+
+Maintained source:15,600physical/13,305nonblank,580,464bytes,60modules,
+1,691definitions/638laws/68types. Relative toPhase21:−300physical/−241nonblank,
+but+3,305bytes/+31defs/+1type/module. Simplicity improves by retiring an authority,
+not by every numerical metric or reaching historical50%/75% targets.
 
 ## Next priorities
 
-1. **Preserve group completion and first-error order.** The separate C1 controls
-   have60healthy observations,39exact/21differences. A rawtag comma guard rejects
-   valid completed inner groups and can mask earlier pattern errors. Grouped
-   Parallel also misses a lowering route, but adding its dispatch alone risks
-   a new false checked acceptance for raw-parallel-comma. Design completion and
-   failure transport with actual lexical context before either change. No second
-   pattern checker, empty-environment scoping or range-based completion guesses.
-2. **Reuse contextual research selectively.** Private Phase19 stages1–4 preserve
-   useful actual-state/row/group/order evidence and audited alpha-binding checks;
-   they remain uninstalled partial Body/LTerm research. Shared ff_* corrections
-   alone showed no further remaining57 gain. Production must have one authority
-   for scope/pattern/flatten order; main do-block chronology remains unresolved.
-3. **Profile before optimizing further.** The current cost gap is3.19× on the
-   stated workload. Source-only prefix reuse cannot restore memo/checked output.
-   Keep process, request and generated-program timing separate. No second checker
-   or unchecked fallback. The50%/75% whole-source reduction targets stay open.
-
-Phase19 contextual and Phase20 release capsules are recovered and committed.
-Close Phase21 preservation with immutable failures and independent byte recovery;
-its receipt/index records completion separately from compiler gate decisions.
-Use checked focused builds for the edit loop; broad gates and exclusive timing
-belong at integration checkpoints.
+1. Preserve this usable release, failed candidates and independent byte recovery.
+   The evidence index closes separately from compiler promotion. Local commits
+   do not imply a successful push.
+2. Challenge the now-exact frontend with new independent generated/metamorphic
+   programs and richer imports, scopes and first-error boundaries. Do not weaken
+   frozen oracles. Universal language equivalence, independent proof-kernel
+   validation, GPU/device/platform coverage and a new fixed point remain open.
+3. Profile the installed compiler before the next speed change. Constructor scans
+   from the initial slow contextual image are no longer the current workload's
+   measured bottleneck. Keep process/request/generated-execution timing separate.
+4. Keep one frontend authority and existing core representations. Prioritize
+   deleting duplicated responsibilities over renaming helpers or line compression.
+   Routine checked build+36 loops were observed around33–35seconds; reserve broad
+   gates and exclusive timing for integration checkpoints.
 
 ## Retained experiments and operating rules
 

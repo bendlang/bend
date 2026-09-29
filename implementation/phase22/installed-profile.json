@@ -1,0 +1,956 @@
+{
+  "kind": "phase22-installed-profile-and-list-census",
+  "complete": true,
+  "pass": true,
+  "installedSourceChanged": false,
+  "measurement": "Diagnostic concurrent CPU sampling and separately modified-artifact constructor counters; no controlled speed or physical heap allocation claim.",
+  "parentApi": "44094e58cb0ef033e2c08c2827565e859c3594b3136868d4f821262145aea7f0",
+  "sampleUs": 11552139,
+  "negativeDeltas": {
+    "count": 1,
+    "sumUs": -10
+  },
+  "topOwners": [
+    {
+      "owner": "run_loop",
+      "samples": 924,
+      "selfUs": 1585463,
+      "percentOfProfile": 13.724410691387975
+    },
+    {
+      "owner": "(garbage collector)",
+      "samples": 463,
+      "selfUs": 1093863,
+      "percentOfProfile": 9.468921729560213
+    },
+    {
+      "owner": "update",
+      "samples": 719,
+      "selfUs": 759078,
+      "percentOfProfile": 6.57088700196561
+    },
+    {
+      "owner": "validateSpanBook",
+      "samples": 305,
+      "selfUs": 341754,
+      "percentOfProfile": 2.9583612177796685
+    },
+    {
+      "owner": "$f_eq$",
+      "samples": 309,
+      "selfUs": 340888,
+      "percentOfProfile": 2.9508647705849107
+    },
+    {
+      "owner": "$index_remove$",
+      "samples": 308,
+      "selfUs": 333773,
+      "percentOfProfile": 2.8892744451914925
+    },
+    {
+      "owner": "$dn$",
+      "samples": 231,
+      "selfUs": 250871,
+      "percentOfProfile": 2.1716411133903426
+    },
+    {
+      "owner": "$f_find$",
+      "samples": 221,
+      "selfUs": 241101,
+      "percentOfProfile": 2.0870680312970613
+    },
+    {
+      "owner": "$f_lex_cursor$",
+      "samples": 159,
+      "selfUs": 217973,
+      "percentOfProfile": 1.88686268404492
+    },
+    {
+      "owner": "$lookup$",
+      "samples": 165,
+      "selfUs": 186150,
+      "percentOfProfile": 1.6113898906514197
+    },
+    {
+      "owner": "$f_ctor_lookup$",
+      "samples": 152,
+      "selfUs": 171327,
+      "percentOfProfile": 1.4830759913813365
+    },
+    {
+      "owner": "$f_lex_symbol$",
+      "samples": 107,
+      "selfUs": 170494,
+      "percentOfProfile": 1.475865205569289
+    },
+    {
+      "owner": "$String$eq$",
+      "samples": 131,
+      "selfUs": 143835,
+      "percentOfProfile": 1.2450940903671606
+    },
+    {
+      "owner": "$ffw_walk$",
+      "samples": 73,
+      "selfUs": 139415,
+      "percentOfProfile": 1.206832777895072
+    },
+    {
+      "owner": "$f_pattern_sub$",
+      "samples": 114,
+      "selfUs": 131371,
+      "percentOfProfile": 1.1372006517580857
+    },
+    {
+      "owner": "$has_name$",
+      "samples": 122,
+      "selfUs": 128990,
+      "percentOfProfile": 1.1165897501752706
+    }
+  ],
+  "indexRemoveCallers": [
+    {
+      "target": "$index_remove$",
+      "caller": "<unattributed>",
+      "samples": 280,
+      "selfUs": 304812,
+      "percentOfProfile": 2.6385762844439458,
+      "witness": [
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        }
+      ]
+    },
+    {
+      "target": "$index_remove$",
+      "caller": "$book_put$",
+      "samples": 28,
+      "selfUs": 28961,
+      "percentOfProfile": 0.2506981607475464,
+      "witness": [
+        {
+          "frame": [
+            "run_loop",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            136,
+            18
+          ],
+          "owner": "run_loop"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "run_loop",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            136,
+            18
+          ],
+          "owner": "run_loop"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "run_loop",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            136,
+            18
+          ],
+          "owner": "run_loop"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "run_loop",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            136,
+            18
+          ],
+          "owner": "run_loop"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "run_loop",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            136,
+            18
+          ],
+          "owner": "run_loop"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "run_loop",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            136,
+            18
+          ],
+          "owner": "run_loop"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "run_loop",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            136,
+            18
+          ],
+          "owner": "run_loop"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "run_loop",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            136,
+            18
+          ],
+          "owner": "run_loop"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "run_loop",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            136,
+            18
+          ],
+          "owner": "run_loop"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "run_loop",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            136,
+            18
+          ],
+          "owner": "run_loop"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "run_loop",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            136,
+            18
+          ],
+          "owner": "run_loop"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "run_loop",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            136,
+            18
+          ],
+          "owner": "run_loop"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "run_loop",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            136,
+            18
+          ],
+          "owner": "run_loop"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "run_loop",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            136,
+            18
+          ],
+          "owner": "run_loop"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        },
+        {
+          "frame": [
+            "run_loop",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            136,
+            18
+          ],
+          "owner": "run_loop"
+        },
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/equality/api.mjs",
+            5317,
+            7
+          ],
+          "owner": "$index_remove$"
+        }
+      ]
+    }
+  ],
+  "hashCallers": [
+    {
+      "target": "update",
+      "caller": "identity",
+      "samples": 705,
+      "selfUs": 744321,
+      "percentOfProfile": 6.443144425460947,
+      "witness": [
+        {
+          "frame": [
+            "identity",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase22/installed-profile-01/worker.mjs",
+            9,
+            16
+          ],
+          "owner": "identity"
+        }
+      ]
+    },
+    {
+      "target": "update",
+      "caller": "validateSpanCache",
+      "samples": 10,
+      "selfUs": 10564,
+      "percentOfProfile": 0.09144626808939886,
+      "witness": [
+        {
+          "frame": [
+            "validateSpanCache",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/tools/typed-driver.mjs",
+            236,
+            34
+          ],
+          "owner": "validateSpanCache"
+        }
+      ]
+    },
+    {
+      "target": "update",
+      "caller": "hash",
+      "samples": 2,
+      "selfUs": 2101,
+      "percentOfProfile": 0.018187108032547045,
+      "witness": [
+        {
+          "frame": [
+            "hash",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/tools/typed-driver.mjs",
+            31,
+            12
+          ],
+          "owner": "hash"
+        }
+      ]
+    },
+    {
+      "target": "update",
+      "caller": "evaluate",
+      "samples": 2,
+      "selfUs": 2092,
+      "percentOfProfile": 0.018109200382717003,
+      "witness": [
+        {
+          "frame": [
+            "",
+            "file:///home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/snapshot/tools/conformance/adapters/typed.mjs",
+            1,
+            1
+          ],
+          "owner": "<anonymous>"
+        },
+        {
+          "frame": [
+            "evaluate",
+            "",
+            0,
+            0
+          ],
+          "owner": "evaluate"
+        }
+      ]
+    }
+  ],
+  "counters": {
+    "index-leaf": {
+      "roots": 25451,
+      "completed": 25451,
+      "visited": 5175,
+      "removed": 5175,
+      "kept": 0,
+      "keptAfterFirst": 0,
+      "maxVisited": 1,
+      "missRoots": 20276,
+      "singleRoots": 5175,
+      "duplicateRoots": 0
+    },
+    "book-put-cached": {
+      "roots": 3674,
+      "completed": 3674,
+      "visited": 7276076,
+      "removed": 3674,
+      "kept": 7272402,
+      "keptAfterFirst": 780500,
+      "maxVisited": 2194,
+      "missRoots": 0,
+      "singleRoots": 3674,
+      "duplicateRoots": 0
+    }
+  },
+  "zeroCallRoutes": [
+    "book-put-uncached",
+    "book-final-legacy"
+  ],
+  "keptSuffixFraction": 0.1073235500457758,
+  "failedAttempts": [
+    "index-remove-census-01: incorrect module namespace injection; no valid counters"
+  ],
+  "recommendation": "Try one explicit Bool worker preserving the complete index_remove filter and demand order. Do not use unproven uniqueness or attribute dispatch/GC wholesale to this worker.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase22/installed-compiler-profile.md",
+      "sha256": "f77a74f34342af107efcf268e83116cb125f574a4786079fcffb429f664d4bc6",
+      "bytes": 2227
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase22/index-remove-census.md",
+      "sha256": "d68746923f95dbca51504d8c7d45563762a2b3df7b336cfe50ecea2e9cfb1d0d",
+      "bytes": 2327
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase22/index-remove-census-correction.md",
+      "sha256": "8723e710acc695c0e927d5447ec788a61fa3d652327a9fd674e9ca8264bfc130",
+      "bytes": 739
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/index-remove-census.mjs",
+      "sha256": "4b1b85280dfc4b2bfb07b4d40e1f856d2cc27d0270eac4d9b291d32cbb4a4fe5",
+      "bytes": 5216
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/index-remove-census-v2.mjs",
+      "sha256": "d43b7cd8814802448b2323147719b99ee0cac45c20f7dd05efe6adaec9f7f078",
+      "bytes": 5219
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/index-remove-count-worker.mjs",
+      "sha256": "bea5de10860096075b3678fd9814988aea3524694bc5aaf842f06df1f290097c",
+      "bytes": 1709
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-run.mjs",
+      "sha256": "6ce61c11726701e78afdfb80dacf2f95cb769f41b0e0113a26684947096b7473",
+      "bytes": 6884
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-run-v2.mjs",
+      "sha256": "d2ea335684053adafb70d4ccf7b21769cdb9cbdda11285024bf9fde7ebbfa14f",
+      "bytes": 6887
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/index-remove-count-worker-v2.mjs",
+      "sha256": "c4d63ce464124d8dddb01c250084799fdfdcdbdd95b6c041bf17ec5cf1173970",
+      "bytes": 1830
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/profile-hash-callers.py",
+      "sha256": "7cc8e792fd0b03cc1904b32dfd15e71a6472e1e4af20cf78b0583fafc9917054",
+      "bytes": 3324
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-prepare.py",
+      "sha256": "1b49db6bff595890e4c83c5fa4868dbae4fbe329e24fb9deb487f65a036a98b9",
+      "bytes": 5151
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/profile-owners.py",
+      "sha256": "32afa252792fcdf7e39f05ee202873a760f39c14a030430fb635df321ba0be66",
+      "bytes": 3427
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-do-report.py",
+      "sha256": "ab665a296e7cb02270f30e3e51e03bda418ad58ad9b43a46f4d07d6fff58649b",
+      "bytes": 3047
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-rebase-finish-v2.py",
+      "sha256": "ac49e564a5f6261d732cf732746df7b4637049d22a0915e3f8097e906f6dda96",
+      "bytes": 4211
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-census.py",
+      "sha256": "b5ee4941c4bf2d03a457777dd0cdad69f24ac07ab014b8bbd023683127cd1be4",
+      "bytes": 3205
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-prepare.py",
+      "sha256": "2d94a150512c718ec066148049f50bec2b976203c0c1eed7896385011e668477",
+      "bytes": 1583
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-baseline-report.py",
+      "sha256": "96be65c0430f295a37ad7371a7eefded390abab80fe8cdb7468e69ce27841565",
+      "bytes": 4094
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-rebase-finish-v3.py",
+      "sha256": "ff76258cf6468970132538d08da7f004b1324c75dffc41e76ba2aac64aa02b8c",
+      "bytes": 4220
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-do-prepare.py",
+      "sha256": "6b28ebfc6e19ab008c88ac8d0447d8e23f5b6c262ff7a6fe5d5880d69e830b84",
+      "bytes": 4030
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-prepare-v2.py",
+      "sha256": "23b95333e479d534b5486e88964fa84d6918b67e56d4879a713aa31af7371551",
+      "bytes": 1601
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-rebase-finish.py",
+      "sha256": "81b3c7d4aa4b8af45b2bccff49a806abafb0bff478fac46ff5e56db85b9af762",
+      "bytes": 4210
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/installed-profile-plan-01.json",
+      "sha256": "01de70837d62ff4e1bb90b520547835ceb892a53135ed44e6e903b85de45081b",
+      "bytes": 4247
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/installed-profile-01/report.json",
+      "sha256": "63b1db107d0131a25183a8cfa24aeeb7ee521dbe872918872a56d51d1c834216",
+      "bytes": 120357
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/installed-profile-01/result.json",
+      "sha256": "0242eca137f30c1995cde9dde2641c784982e9bb51653fab1523b199283c8498",
+      "bytes": 63360
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/installed-profile-01/checking.cpuprofile",
+      "sha256": "1c85e9194a09fa9d374b298fcb35af216c52931f72f79e3d3401100c03d978e6",
+      "bytes": 30807408
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/installed-profile-callers-01/report.json",
+      "sha256": "35029b07124a9a8b83fdfe0f68fd342116b682ab3cf6c8c5fca4815077ab96f8",
+      "bytes": 101423
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/installed-profile-hash-callers-01/report.json",
+      "sha256": "8bd314227431146c66affed530dad7262019663a162535114ae0c4b02d01d68b",
+      "bytes": 66092
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/index-remove-census-01/report.json",
+      "sha256": "010375633b32ec047356251c8c7b67f95ec82236872672e38be7931a17248ae3",
+      "bytes": 120564
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/index-remove-census-01/edits.json",
+      "sha256": "e1446ffd7bcb3374322a0ea4184ed4a7d12960394040686cc2bbf61e872103af",
+      "bytes": 2871
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/index-remove-census-01/process/stderr",
+      "sha256": "fa134139b208f4b15efe8d1f9068a450b118b7d5bd68790470836d15c356e963",
+      "bytes": 75275
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/index-remove-census-02/report.json",
+      "sha256": "632d0ff59eb5653625a5a110f1efe688753376df5575986404a080ffa068a2e9",
+      "bytes": 120420
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/index-remove-census-02/result.json",
+      "sha256": "816e2ec3f1ac497729eb15c520526c2f5f3f4abffd717a51474e04a0e4c3c60f",
+      "bytes": 63464
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/index-remove-census-02/edits.json",
+      "sha256": "3a43b0d924966f95832c64eecb9205f4d783c2fbae5d3c7abdab0f5a75cbd6e8",
+      "bytes": 2871
+    }
+  ]
+}

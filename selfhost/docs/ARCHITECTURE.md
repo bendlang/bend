@@ -4,6 +4,12 @@ The typed compiler uses a first-order representation shared by the frontend,
 checker, normalizer and emitters. The original single-file compiler remains
 available as a historical regression baseline.
 
+The installed Phase22 release uses one contextual frontend and load ABI2.
+The [release report](../../implementation/phase22/contextual-conformance.md)
+records its checked and derived artifact identities, complete tested frontend
+agreement, controlled cost, rejected attempts and remaining limits. Other
+components retain their existing contracts.
+
 ## Components
 
 | Component | Responsibility | Source |
@@ -13,7 +19,7 @@ available as a historical regression baseline.
 | Normalizer | Weak evaluation, memoized strong normalization, definitional equality | `src/core/normalize.bend`, `src/core/graph.bend` |
 | Quantities | Affine-use accounting, erased/reusable demand | `src/check/quantity.bend` |
 | Kernel | Dependent bidirectional checking and termination | `src/check/kernel.bend` |
-| Frontend | Lexing, syntax, desugaring, pattern compilation | `src/front/` |
+| Frontend | Contextual parsing, lexical binding, desugaring, pattern compilation | `src/front/` |
 | Loader | Canonical namespaces, import graph, foreign paths | `src/load/` |
 | Diagnostics | Failed terms, expected/observed types, local context and available source spans | `src/diagnostic/` |
 | JavaScript backend | Checked-term lowering, code emission, readback descriptors | `src/back/js/` |
@@ -67,18 +73,53 @@ start to the sole annotation producer. Unindexed input keeps0/0.
 children. Generated children must therefore receive their own origin at their
 producer. The [Phase21 report](../../implementation/phase21/group-range-release.md)
 records the caught intermediate annotation-range loss and exact cursor controls.
-Source ranges do not encode whether a group has completed; that remaining parser
-checkpoint requires a separate semantic contract.
+Source ranges do not encode whether a group has completed. The contextual parser
+carries that distinction explicitly: a completed body cannot re-enter the tuple
+or continuation grammar merely because its outer syntax was parenthesized.
 
 ## Compilation flow
 
 The ordinary host discovers canonical files while Bend owns import syntax,
-namespace resolution and contextual parsing. Load ABI1 separates each module's
+namespace resolution and contextual parsing. Load ABI2 separates each module's
 leading import header from its body. The host completes dependencies in source
-order, then asks Bend to parse and elaborate the body against those completed
-declarations and its file aliases. A dependency failure therefore stops traversal
-before a later sibling is opened or the importing body is completed. Parsed
-results and the completed graph are reused within that request.
+order, then passes their declarations, the canonical namespace and the file's
+aliases to the Bend body parser. A dependency failure stops traversal before a
+later sibling is opened or the importing body is completed. Completed results
+and the graph are reused within that request.
+
+One contextual frontend owns lexical binding and semantic completion. Its cursor
+carries the real environment and declaration-local fresh counter alongside the
+module scope. Header parameters open in telescope order; a nested scope restores
+the outer environment while retaining allocated IDs. Simultaneous local RHS
+expressions resolve before their binders open. Where grammar needs both meanings,
+a name retains its written variable shape and resolved value. Pattern validity
+and group completion are decided before parsing the continuation that follows
+them. There is no later scope pass with an empty environment to reconstruct those
+choices.
+
+The parser scope holds a constructor-only index using the existing book index
+structure. Building it preserves the original first depth-first winner: earlier
+definitions and constructor heads take precedence over later entries and children.
+Ordinary same-name definitions never occupy constructor entries. Empty/partial
+headers reuse the prior index; qualified complete datatypes publish their children
+at the existing declaration boundary. Named misses retain the original payload.
+Raw/local constructor-book consumers retain the recursive lookup.
+
+Completion follows the pinned higher/lower demand stages. Higher visits eager
+children and performs beta reduction, while lambda bodies, dependent codomains
+and let tails remain deferred. Lower forces those deferred parts at the required
+completion boundary. Headers and complete bodies have different forcing points;
+an error in an earlier completed body must precede later declaration syntax.
+Do blocks, rewrite motives, arrays and namespace operators use this same lexical
+state and error order. Substitution preserves a located argument's origin; an
+unlocated argument inherits the variable occurrence's origin except for the
+negative-ID unbound-variable representation.
+
+The host's `--checkup` command has a separate, pinned textual import scan. It
+prepares Base once, visits matching import lines in textual order and checks each
+module independently, continuing after errors. Each import is read before module
+inspection so a missing file keeps the pinned IO diagnostic. This command's
+continue-on-error behavior does not change ordinary dependency traversal.
 
 The checker validates declaration types, quantities and recursive calls with all
 signatures and ADTs visible; bodies become available at their final source event.
@@ -98,7 +139,8 @@ fields, while internal `KChecking` carries the world and consumed-argument count
 Program completion reports TODO/open-law incompleteness after actual checking.
 The result already contains materialized output. Prefix APIs replay source events
 because the existing source-only cache cannot restore the memo and checked output;
-the host/cache ABI is unchanged. Deferred fresh-ID initialization includes the
+that Phase19 checker change did not alter the host/cache ABI. The Phase22 loader
+ABI change is separate. Deferred fresh-ID initialization includes the
 entire saved owner body at its first mint, including later siblings not yet
 visited. The [live-checker report](../../implementation/phase19/instance-live-checking.md)
 records the order, recursion, scope and demand controls. The normalizer supplies
@@ -151,11 +193,11 @@ with the original parameter telescope. The existing graph alias traversal looks
 up the latest canonical declaration and requires an unfilled, non-native law,
 plain binder names and a compatible template count. The fill retains that law's
 type, name and unsafe flag. A temporary `ImportFill` definition kind protects its
-canonical signature while the ordinary module pass elaborates/qualifies its body;
-the pass eliminates the marker before returning the checked loader input. Raw,
-cached parsed-source and seeded graph paths share this behavior. The older
-name-based loader explicitly refuses a remaining marker because it lacks the
-canonical dependency context.
+canonical signature while module completion qualifies declaration names;
+the pass eliminates the marker before returning the checker input. This remains
+a dependency-aware graph operation after contextual body parsing. ABI2 does not
+move law-fill authorization into the host or let a supplied completed result
+establish that authorization by itself.
 
 An import alias is not a namespace for fresh annotated definitions. Such a
 declaration is a parse error. Loaded declaration events also supply proof-report
@@ -177,17 +219,18 @@ and a multiline span is clipped to its first displayed line. Empty spans receive
 one caret. Checker snippets blank leading import lines for upstream's module
 view while keeping raw coordinates; parser/import errors retain raw source text.
 Rendered names use the owning file's namespace and aliases without renaming the
-semantic book or replacing text inside literal strings. Legacy unlocated traces
-retain guarded diagnostic replay. Formatting cannot repair a different checking
-or parsing decision, and remaining exact differences stay explicit.
+semantic book or replacing text inside literal strings. Rejection rendering uses
+the selected error and recorded source ownership; it does not rerun a separate
+raw parser to recover scope. Unknown provenance retains fallback text. Exact
+formatting and first-error agreement are separate conformance obligations.
 
 Checking keeps two independent persistent books: one supplies all declared
 signatures and chronological bodies, while the other records only prior events
 for duplicate and law-fill checks. Both start from an immutable empty index with
 the maximum binder ID of the complete input. This shares a bound, not declaration
 visibility. Each subsequent index update remains independent. Constructor-name
-search skips internal BookCache metadata. Exact validated-prefix checks retain
-the same fallback to ordinary checking.
+search skips internal BookCache metadata. Prefix checking replays full source
+events; `exact_prefix` remains a separate syntax-identity helper.
 
 Conversion tries exact equality before finding fresh binder IDs. Lambda checking
 rechecks a domain's kind only for the quantity promotion that requires it; public
@@ -292,18 +335,22 @@ and regression baseline, clearly separate from the typed compiler.
 The frontend and loader form a standalone component with the core term, index,
 normalization, graph and pretty-printing modules plus diagnostic model/rendering.
 They share source snippets with checker diagnostics, but require no checker,
-trace, producer or diagnostic-frontend module. Shared book operations belong in core: `index_remove` supplies the
-same order-preserving name filter to final-definition selection and checker
-specialization. `tests/frontend/trace-component.mjs` assembles and checks this
-smaller component, then compares the ordinary, traced and seeded loader APIs.
+trace, producer or diagnostic-frontend module. Shared book operations belong in
+core: `index_remove` supplies the same order-preserving name filter to final
+definition selection and checker specialization. The unchanged
+`tests/frontend/trace-component.mjs` rebuilds26 modules on Phase22 and validates
+the retained ordinary, traced and seeded text-source routes. Its independently
+checked component API is distinct from the release API. Completed-source and
+actual-host controls are linked from the Phase22 report.
 
-Raw declaration and import parsing uses private `FRawResult`, whose error field
-retains the selected Error term. At `f_parse(source)`, the original source and
-explicit expectation metadata can produce a diagnostic; the public
-`FResult{book,error:String,imports}` and loader boundary remain unchanged. This
-transport preserves the parser's existing first-error choice. Explicit syntax
-expectations and adjacent constructor-freshness failures render once on rejection;
-unknown or inconsistent positions retain their legacy text. Successful parsing does not scan source text to render diagnostics.
+Private `FRawResult` retains the selected Error term while declarations and
+imports are parsed. Completion renders explicit expectation metadata against the
+original source into `FResult{book,error:String,imports}`. Under ABI2 its successful
+book contains contextually completed terms; it is not the old raw parser stage
+despite retaining the result's field names. Standalone raw `f_parse` entry points
+and the old raw-loader replay route are retired. Syntax expectations and
+constructor-freshness failures render once on rejection; unknown positions keep
+fallback text. Successful parsing does not scan source to render diagnostics.
 The frontend shares the diagnostic model and renderer while remaining independent
 of the checker and diagnostic trace/producer modules.
 The older [Phase5 newline-in-string counterexample](../../implementation/phase5/static-counterexample.md)
@@ -344,15 +391,17 @@ back to another compiler phase. This preserves graph sharing between phases
 without copying entire compiler books. Newly supplied host values are encoded
 iteratively. See [the ABI adapter and validation](COMPILER-ABI.md).
 
-The installed capabilities are `compiler_term_abi() == 1` for the three core
+The Phase22 compiler advertises `compiler_term_abi() == 1` for the three core
 variants, `compiler_span_abi() == 3` for source intervals,
-`compiler_load_abi() == 1` for contextual source completion, and
-`compiler_check_result_abi() == 2` for program completion. Term ABI1 requires span
-ABI3. The host validates literal payloads, scalar String text, Lambda presence
-booleans and ownership/range bounds on source-aware discovery results and caches.
-Advertised unknown capabilities or missing required entry points are errors.
-Historical APIs without these capabilities retain their guarded legacy routes.
-Direct low-level AST entry points retain their trusted-input contract.
+`compiler_load_abi() == 2` for completed-source loading, and
+`compiler_check_result_abi() == 2` for program completion. Historical Phase21
+uses load ABI1. Term ABI1 requires span ABI3. The host validates literal payloads,
+scalar String text, Lambda presence booleans and ownership/range bounds on
+source-aware discovery results and caches. The host requires load ABI2
+and its complete entry-point set; it has no fallback to the retired raw route.
+Unknown capabilities or missing required entry points are errors. Historical
+artifacts retain their matching frozen hosts. Direct low-level AST entry points
+and completed-source handoffs retain their trusted-input contract.
 
 The current checked Base cache is version6 with `termAbi:1` and `spanAbi:3`. Its
 identity binds compiler and Base content hashes, the canonical Base path, exact
@@ -377,34 +426,43 @@ be reported as untested capabilities, not passing GPU tests.
 
 ## Invocation work reuse
 
-Source discovery can construct `FParsedSource` through the Bend
-`f_source_parsed` factory. The graph loader, seed fallback and main-name query
-consume that immutable `FResult` through `f_parse_source`; raw `FSource` callers
-remain supported. This avoids reparsing the same physical text during one
-request. It does not change the persistent Base-cache trust boundary or bypass
-import resolution, binder freshening or checking.
+Source discovery constructs `FCompletedSource` through `f_source_completed` after
+contextual completion. Its historically named `parsed` field holds that completed
+`FResult`; `FCompletion.parsed` has the same stage contract. The graph loader and
+seed paths consume it without repeating body parsing or reconstructing lexical
+scope. `FSource` still supplies text to this contextual route. It does not select
+a second raw parser, and `FParsedSource`/`f_source_parsed` are retired.
+
+This is an immutable, trusted handoff inside one request, not a persistent
+unchecked AST cache or authentication of arbitrary host-supplied IR. Dependency
+resolution, canonical imported-law eligibility, module qualification and ordinary
+checking retain their owners. The persistent Base-cache trust boundary remains
+separate.
 
 The trace-aware loader returns `FLoadTrace` with actual module order and
 per-module declaration-event counts. All public provenance routes use this same
 alignment; they do not reparse source to reconstruct ownership. Rejection
 reporting reuses that trace and resolves stored occurrence ranges against the
-request's immutable source intervals. Historical unlocated inputs retain their
-explicit compatibility path.
+request's immutable source intervals. Historical unlocated-input replay controls
+remain evidence for their frozen APIs, not a reason to reintroduce raw parsing
+into ABI2.
 
 One chronological event checker returns the verdict and original structured
 failure together. `check_book` and `check_from_exact_prefix` remain String APIs
 by projecting its error; their detailed compatibility APIs retain the same
-open-law completion contract. An exact validated-prefix comparison precedes
-suffix checking, including open laws; any mismatch falls back to full checking.
-The cache never permits a generic arbitrary prefix to skip validation.
+open-law completion contract. Current prefix entry points replay the full source
+events through that checker because source alone cannot restore its live memo,
+freshness and checked output. `exact_prefix` remains a separately callable syntax
+identity helper; it does not authorize suffix-only checking in the current API.
+The host's validated Base cache is a separate boundary.
 
-For checker-result ABI2, `check_program_diagnostic` uses that checker, the existing
-specializer and final source TODO count, returning the already-materialized book
-in `DResult`. The host consumes one verdict and skips its legacy TODO/specialization
-sequence. ABI1 still supplies a structured ordinary-check result; artifacts
-without a result capability retain guarded replay, whose error must match the
-original authoritative verdict. Source lookup and rendering cannot accept a
-rejected term. The trace belongs to one request and is not a stored verdict or
+For checker-result ABI2, `check_program_diagnostic` uses the live checker and
+final source TODO count, returning the already-materialized book in `DResult`.
+The host consumes one verdict and does not run a second specialization traversal.
+Historical checker-result ABI1 supplied a structured ordinary-check result;
+older artifacts used guarded replay whose error had to match the original
+verdict. Those contracts are separate from the new loader ABI. Source lookup and
+rendering cannot accept a rejected term. The trace belongs to one request and is not a stored verdict or
 replacement for checking.
 
 Final-definition selection for TODO reporting, interpretation and specialization
@@ -521,12 +579,14 @@ rejected experiments and remaining validation limits.
 Parser rejection sites can carry structured expected-token information and a
 source position through private `FRawResult` values containing an `Error`-tagged
 core term. The public
-frontend result shape stays unchanged. After an error is selected, the loader
+frontend result retains its fields, with the completed-stage meaning declared by
+load ABI2. After an error is selected, the loader
 can locate that same embedded error and its unique source owner to render a
 location once. Existing graph-error priority and definition traversal order
 remain authoritative. Accepted books do not incur this error-only traversal.
-Faithful formatting does not repair a different parse decision; residual
-diagnostic and phase differences remain explicit conformance failures.
+Faithful formatting does not repair a different parse decision. The release's
+zero differences on the frozen frontend corpus and selected adversarial controls
+are finite evidence; new diagnostic or phase differences remain failures.
 
 A persistent inspector owns one trusted API and one immutable decoded Base
 entry. Before reuse it binds the canonical API path and content digest, reads

@@ -1406,3 +1406,43 @@ lexical scope. Private contextual research remains uninstalled; no second patter
 checker or location-based syntax inference. Remaining57/main2 and independent
 constructor gaps stay visible. Preservation closes separately; publication remains
 blocked by the earlier automatic approval review, so commits are local.
+
+
+## Phase22 contextual frontend consolidation — 2026-09-29
+
+[P22-001](phase22/P22-001-contextual-conformance.md) installs one contextual
+frontend with actual scope, aliases, group completion and staged materialization.
+The [release report](../implementation/phase22/contextual-conformance.md) binds
+source17/build16, checkedB1 9cf01096 and guardedv5 APIade8ef02 on pinb2111cf.
+Raw parsing/later-scope replay, per-term completion wrappers and98 unreachable
+workers are retired. The host requires loadABI2 and corrects checkup chronology.
+
+Final main2996 and broader196 are entirely exact, closing2 and57 differences
+with zero lost matches. Audited marked114 closes43 historical differences.
+Independent public176/execution36/integration198, header12/normalization12,
+completion17/checkup4, strictmaintained36 and CLI42 pass. Histories226+fresh2
+preserve all results except one exact prospectively pinned diagnostic correction;
+unchanged standalonefrontend26 is genuinely checked independently. Counts overlap;
+original raw negative statuses and failed assumptions remain visible.
+
+The initial contextual bundle was32.77% slower. Fresh attribution led to guarded
+declaration scans, direct constructor workers, a proved template-arity projection
+and a constructor-only scope index preserving first-DFS winners. Two subsequent
+failed cost screens (+6.48%,+5.38%) remain. The final exclusive six-row screen is
+Phase21 11.0168s/final10.6991s/TS3.3833s:3.1623× TS time, process−2.88%,
+request−3.22%,RSS+2.52%, exact complete observations. Only one reviewed host file
+changes; this is usable-bundle checking cost, not emission or an isolated Bend
+attribution. Two samples do not establish a universal speedup.
+
+Source totals15,600physical/13,305nonblank,580,464bytes,60modules,
+1691defs/638laws/68types. Physical lines fall300; bytes and helpers rise slightly.
+This consolidates semantic authority without claiming the50%/75% targets.
+
+### Updated frontier
+
+Maintain the exact tested frontend and fast focused edit loop. Challenge new
+semantic neighborhoods before another architecture change; profile the installed
+image before further optimization. Kernel/GPU/platform validation and generated
+program speed need separate work. The [evidence index](../implementation/phase22/context-evidence/README.md)
+records preservation independently. All75 unrelated Phase6 paths remain untouched;
+remote publication stays blocked by the recorded automatic approval review.

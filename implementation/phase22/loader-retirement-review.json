@@ -1,0 +1,109 @@
+{
+  "kind": "phase22-loader-retirement-independent-source-review",
+  "complete": true,
+  "readOnlyScopeApproved": true,
+  "compilerTestPassClaimed": false,
+  "reviewed": [
+    {
+      "relative": "src/load/modules.bend",
+      "before": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-07/project/src/load/modules.bend",
+        "sha256": "d500cf4d5cbc9617c13f47f7ada11a8654b1e33b3a4f9c0d470279d67e4064de",
+        "bytes": 15832
+      },
+      "after": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-08/project/src/load/modules.bend",
+        "sha256": "a21635913621f8b6ea3c109b9c9cc94addc8889e952fc3e7af7887f700ccd33a",
+        "bytes": 10031
+      },
+      "physicalLineDelta": -201,
+      "byteDelta": -5801
+    },
+    {
+      "relative": "src/load/graph.bend",
+      "before": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-07/project/src/load/graph.bend",
+        "sha256": "fccdb52f65899dc3b5c30bea3fde4580e6ed2155e4e06659790691e593dd4789",
+        "bytes": 20721
+      },
+      "after": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-08/project/src/load/graph.bend",
+        "sha256": "9317e9fe5224c447c50e5339469a244dd7036c00801d9750687f8dfe1de5fdb3",
+        "bytes": 16909
+      },
+      "physicalLineDelta": -89,
+      "byteDelta": -3812
+    },
+    {
+      "relative": "src/diagnostic/frontend.bend",
+      "before": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-07/project/src/diagnostic/frontend.bend",
+        "sha256": "493baf9ae6a68a7cab2d65b3bb9ccb3af7de7834ffca6687db3c106b7b911475",
+        "bytes": 10904
+      },
+      "after": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-08/project/src/diagnostic/frontend.bend",
+        "sha256": "fdd07e6e3df5f999f2d162a4d3186cd8ae13102c8351710edab5291a2f80489f",
+        "bytes": 10910
+      },
+      "physicalLineDelta": 0,
+      "byteDelta": 6
+    },
+    {
+      "relative": "tools/typed-driver.mjs",
+      "before": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-07/project/tools/typed-driver.mjs",
+        "sha256": "eec962ab053299ae45dfdace61e6f7c6625adc38c679847909ad3463f2f043a1",
+        "bytes": 49023
+      },
+      "after": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-08/project/tools/typed-driver.mjs",
+        "sha256": "56dc0d9c44a18be5727f3c90762db8c8b7d762a8be39dc0de5152019f241d7e9",
+        "bytes": 48017
+      },
+      "physicalLineDelta": 0,
+      "byteDelta": -1006
+    }
+  ],
+  "unchangedSeed": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-08/project/src/load/seed.bend",
+    "sha256": "ca4cb677af632c47c13792ede10d4e791c85b5cc6c756aacf230861d7bfa4c21",
+    "bytes": 5224
+  },
+  "plan": {
+    "file": "/home/ai/bend2/build/publish/bend/design/phase22/loader-retirement.md",
+    "sha256": "5353c72004f56747858b916b962b1bf00aa7349ba9aaa5aa9c393d916955f68d",
+    "bytes": 2984
+  },
+  "preparer": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/retire-loader-v2.py",
+    "sha256": "b9e55a5db85acf52ff1b0b20f927d9996471a404f936c13f2dffc6209bfda2d0",
+    "bytes": 4609
+  },
+  "initialPreparationFailure": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/loader-retirement-01/report.json",
+    "sha256": "f88d44840227ebbee25a7aac633262657f8d04d929f0aa6ccb487843cb43df40",
+    "bytes": 1223
+  },
+  "correctedPreparation": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/loader-retirement-02/report.json",
+    "sha256": "aeb696f9d7ced2f4f78406286efd5a4499cb6fba991f361078a0736cbe8f1b4d",
+    "bytes": 1185
+  },
+  "blockers": [],
+  "findings": [
+    "Initial block-deletion bug left multiline signature tails; caught before compilation and corrected in retained v2 preparation.",
+    "Removed raw loader names/tags have no remaining references in current Bend source; maintained host callers use ABI2 contextual roots.",
+    "f_alias_named has only the contextual resolver caller; child names are already resolved, permitting shallow ambiguity handling.",
+    "Graph law-fill validation retains constructor recursion, nonnative/unfilled/plain-parameter/template rules and canonical ImportFill name exemption.",
+    "Canonical graph traversal, active/canonical cycle checks, source intervals, exact Base seed validation and final freshness remain.",
+    "Host is the tested ABI2 patch plus removal of unused f_main_names export; ordinary driver_report remains.",
+    "No per-term FCompleted wrapper required; contextual module worker passes direct type/body terms and qualifies declaration names only."
+  ],
+  "trustBoundary": "FCompletedSource is an invocation-local trusted handoff contract, not a runtime proof against arbitrary caller-forged FResult values. Host preserves actual completion object identity.",
+  "remainingGates": [
+    "Checked integrated B1/Base/36 and parser vectors",
+    "Actual CLI/native/emitted compiler routes including checkup, aliases, law fills, and source-aware cache histories",
+    "Exclusive bundle cost screen; host mocks and source review do not establish performance or full compiler equivalence"
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "kind": "phase22-alias-header-guard-ablation",
+  "complete": true,
+  "selected": false,
+  "source": "selfhost/build/phase22/context-source-11",
+  "attempt": "selfhost/build/phase22/context-build-10",
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-10/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-10/equality/api.mjs",
+    "sha256": "cdbfc5b81f334460e76949c8422aa624c66dacdcea1d01a176f0614447bde219"
+  },
+  "change": "Guard both f_declared scans behind an actual changed alias spelling in f_def_context_header.",
+  "netDeltaFromParent": {
+    "files": 1,
+    "lines": 0,
+    "definitions": 0,
+    "types": 0
+  },
+  "correctness": {
+    "checkedBuild": true,
+    "artifactKind": "derived-b1",
+    "maintained36StrictExact": true,
+    "header58StrictExact": true,
+    "newBroader196Run": false,
+    "scope": "Broad final union gates remain required; unchanged production semantics inferred only within the tested and reviewed guard contract."
+  },
+  "cost": {
+    "mode": "preflight",
+    "rows": [
+      {
+        "variant": "typescript",
+        "processMs": 3429.6941540000003,
+        "requestMs": 2352.134059,
+        "maxRssKiB": 482056
+      },
+      {
+        "variant": "candidate",
+        "processMs": 13495.943665999997,
+        "requestMs": 12388.687466000001,
+        "maxRssKiB": 731516
+      }
+    ],
+    "fullResultEquality": true,
+    "unsafeSetsAgree": true,
+    "sameWindowBaseline": false,
+    "scope": "One TS and one candidate observation; direction only relative to the separate prior matrix, no robust final ratio or promotion claim."
+  },
+  "demandScope": "Reduced prior-book demand on unchanged alias spelling is intentional; arbitrary poisoned or stateful JavaScript getters are not an equivalence claim.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-header-cost-report.py",
+      "sha256": "cb7ce0c1944980fe12503b8267528c9cfbff2a2fef396426a5b6bfdce04d1fee"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase22/context-header-cost.md",
+      "sha256": "4fc03740f571ed210ce3bd2a8f5e8ca9501f9b68a3dd08b504d8f21df86574e6"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-header-cost-prepare.py",
+      "sha256": "bb2d0a9bfa12e364cf348cd1498647e0516fd9536aefca3df61fd220f1050bdf"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-11/manifest.json",
+      "sha256": "c52b8b94ee3bf8f3816b74e058fd70a3766b3942b521cb0576fec9df64fc6b3d"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-11/parent.json",
+      "sha256": "d985eb23e4e979f2f500ebb9f4ff20ecd742b4d8bf319cf7155eef26755fcc76"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-10/attempt.json",
+      "sha256": "6522b1eb1c318e93669666b29795c5d47274536962ae46e80532caac87394d8d"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-10/validation-001/report.json",
+      "sha256": "d60e831fb80f5d33225db6fba8d5fc09e0fab7022dde8dd6b54fb75356136611"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-header-screen-01/report.json",
+      "sha256": "7a486230b61e773bf21e2b52cff06120bff20df47ae250a8c199735507606c2c"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bundle-header-preflight-01/report.json",
+      "sha256": "83878d3c8f954487267c1cfff09079819d7f114932339f9f900f8e00137288a6"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bundle-matrix-inputs-03/preflight-freeze.json",
+      "sha256": "184d77f1f1c742126acc16ed760b9b1aaef26fae93b19f23807ae7ded969d0d4"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bundle-matrix-inputs-03/preflight.json",
+      "sha256": "68875015dd82b3c6762829ab69e9093a20f1719809108f7944b922b9cc3858e2"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bundle-matrix-01/report.json",
+      "sha256": "3163995eeb1ec8364ffcbc6427918176a3666eaba9badea9d722dff30f359991"
+    }
+  ]
+}

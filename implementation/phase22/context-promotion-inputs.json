@@ -1,0 +1,105 @@
+{
+  "kind": "phase22-context-promotion-inputs",
+  "attempt": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16",
+  "expectedApi": "ade8ef020e439b81ecb53057b33a473c34a3cbd993b98a044121ecc3c2b8c9c3",
+  "changedPaths": [
+    "src/compiler.json",
+    "src/core/index.bend",
+    "src/diagnostic/frontend.bend",
+    "src/front/contextual.bend",
+    "src/front/declarations.bend",
+    "src/front/elaborate.bend",
+    "src/front/families.bend",
+    "src/front/flatten.bend",
+    "src/front/fresh_work.bend",
+    "src/front/freshen.bend",
+    "src/front/lexer.bend",
+    "src/front/literals_arrays.bend",
+    "src/front/parallel.bend",
+    "src/front/parser.bend",
+    "src/front/sugar.bend",
+    "src/front/unicode.bend",
+    "src/front/validate.bend",
+    "src/load/graph.bend",
+    "src/load/imports.bend",
+    "src/load/modules.bend",
+    "tools/typed-driver.mjs"
+  ],
+  "hostReview": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/bundle-host-review-v2.json",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase22/bundle-host-review-v2.json",
+    "sha256": "903a45f06057144d6514a8cba39994c586acd17b702cbe81e8f623828230df9d"
+  },
+  "frontend": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-frontend-05/report.json",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-frontend-05/report.json",
+    "sha256": "026777e42a28adcdae374a9d68bb64edf589381383e44681a5e78dd0df4f45db"
+  },
+  "parser": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/contextual-parser-final.json",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase22/contextual-parser-final.json",
+    "sha256": "1dd4be4288075134b3f680e03c8ed49c2770ad4f70554c2e25707c959eca62fd"
+  },
+  "publicControls": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-release.json",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-release.json",
+    "sha256": "f85dda49fdba3f9479c111d6ac4375c4376da802a5d36e816c8b6bde5a5669b1"
+  },
+  "supplemental": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-release-supplemental.json",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-release-supplemental.json",
+    "sha256": "83c2b9ca4c7b0750318b42f74e7e816d16478412e4c5fadcbc5aaea6b97b4a34"
+  },
+  "completion": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/completion-beta-controls-04/report.json",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/completion-beta-controls-04/report.json",
+    "sha256": "5f6cbf15fe1fa2b8ea0a5856da0db6503151b61f7f1cbfdd53bc0929bac30c77"
+  },
+  "checkup": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/checkup-controls-04/report.json",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/checkup-controls-04/report.json",
+    "sha256": "6a13c12bbd25a04b129540eb55c7fbb728f50b13668e5d1bb302f8b13da9a3f5"
+  },
+  "validation": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/validation-001/report.json",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/validation-001/report.json",
+    "sha256": "bb60523285ec1656611656b33e905e696fcf814fb38694fd95ca1f63a1a957e4"
+  },
+  "matrix": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bundle-matrix-04/report.json",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bundle-matrix-04/report.json",
+    "sha256": "76822c83e5fa46a757a6d48c3e55e1cf23ca7b834130f223f59edd0cd9f1c4c2"
+  },
+  "additionalGates": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-release.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-release.json",
+      "sha256": "f85dda49fdba3f9479c111d6ac4375c4376da802a5d36e816c8b6bde5a5669b1",
+      "candidateApiPath": [
+        "api",
+        "sha256"
+      ]
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-marked-subset-final.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-marked-subset-final.json",
+      "sha256": "0040ccce2bcad736e72361223c86c7c7f4a22357f907f785687f8bc7fac2670d",
+      "candidateApiPath": [
+        "api",
+        "sha256"
+      ]
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-constructor-index.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-constructor-index.json",
+      "sha256": "b7068908e48cf4a00f5fd1356336fa5a58d454ddc364772b295b1625af2ae392",
+      "candidateApiPath": [
+        "public",
+        1,
+        "api",
+        "sha256"
+      ]
+    }
+  ],
+  "scope": "Install the final frozen source and derived B1 only after complete measured frontend conformance and bounded cost; no new fixed point or universal language/kernel/GPU claim."
+}

@@ -5,14 +5,6 @@ type FToken is Data:
 type FScanned is Data:
   FScanned{+word: String, +rest: String, size: U32}
 
-law f_lex:
-  for +s: String
-  for +l: U32
-  for +c: U32
-  for +d: U32
-  for +acc: List<&2, FToken>
-  List<&2, FToken>
-
 law f_three:
   for +s: String
   String
@@ -73,7 +65,7 @@ def f_eq(
   String.eq(a, b)
 
 @unsafe
-def f_tx(
+def f_raw_tx(
   +ts: List<&2, FToken>,
 ) -> String:
   match ts:
@@ -83,7 +75,7 @@ def f_tx(
       t
 
 @unsafe
-def f_tl(
+def f_raw_tl(
   +ts: List<&2, FToken>,
 ) -> List<&2, FToken>:
   match ts:
@@ -93,7 +85,7 @@ def f_tl(
       rest
 
 @unsafe
-def f_line(
+def f_raw_line(
   +ts: List<&2, FToken>,
 ) -> U32:
   match ts:
@@ -103,7 +95,7 @@ def f_line(
       l
 
 @unsafe
-def f_col(
+def f_raw_col(
   +ts: List<&2, FToken>,
 ) -> U32:
   match ts:
@@ -113,7 +105,7 @@ def f_col(
       c
 
 @unsafe
-def f_kind(
+def f_raw_kind(
   +ts: List<&2, FToken>,
 ) -> U32:
   match ts:
@@ -123,11 +115,11 @@ def f_kind(
       k
 
 @unsafe
-def f_skip(
+def f_raw_skip(
   +ts: List<&2, FToken>,
 ) -> List<&2, FToken>:
-  f_choose(List<&2, FToken>, Bool.or(f_eq(f_tx(ts), "\n"), f_eq(f_tx(ts), ";")),
-    u => f_skip(f_tl(ts)), u => ts)
+  f_choose(List<&2, FToken>, Bool.or(f_eq(f_raw_tx(ts), "\n"), f_eq(f_raw_tx(ts), ";")),
+    u => f_raw_skip(f_raw_tl(ts)), u => ts)
 
 @unsafe
 def f_head(
@@ -166,13 +158,6 @@ def f_scan_word(
     u => FScanned{String.reverse(acc), s, n})
 
 @unsafe
-def f_scan_comment(
-  +s: String,
-) -> String:
-  f_choose(String, String.is_empty(s) || f_ascii_char_eq(f_head(s), '\n'),
-    u => s, u => f_scan_comment(f_tail(s)))
-
-@unsafe
 def f_scan_quote(
   +s: String,
   +quote: Char,
@@ -205,19 +190,19 @@ def f_cursor_add(+offset: U32, +size: U32) -> U32:
   f_choose(U32, U32.is_eq(offset, 0), u => 0, u => U32.add(offset, size))
 
 @unsafe
-def f_begin(+ts: List<&2,FToken>) -> U32:
+def f_raw_begin(+ts: List<&2,FToken>) -> U32:
   match ts:
     case Nil{}: 0
     case Con{FToken{text, line, column, kind, begin, end, previousEnd}, rest}: begin
 
 @unsafe
-def f_end(+ts: List<&2,FToken>) -> U32:
+def f_raw_end(+ts: List<&2,FToken>) -> U32:
   match ts:
     case Nil{}: 0
     case Con{FToken{text, line, column, kind, begin, end, previousEnd}, rest}: end
 
 @unsafe
-def f_previous_end(+ts: List<&2,FToken>) -> U32:
+def f_raw_previous_end(+ts: List<&2,FToken>) -> U32:
   match ts:
     case Nil{}: 0
     case Con{FToken{text, line, column, kind, begin, end, previousEnd}, rest}: previousEnd
@@ -251,23 +236,14 @@ def f_lex_symbol(
   +s: String, +l: U32, +c: U32, +d: U32,
   +acc: List<&2,FToken>, +offset: U32, +previous: U32,
 ) -> List<&2,FToken>:
-  f_choose(List<&2,FToken>, f_pair_op(f_two(s)) && Bool.not(f_eq(f_two(s), "++") && String.ends_with(f_tx(acc), "n") && U32.is_eq(c, U32.add(f_col(acc), U32.from_nat(String.length(f_tx(acc)))))),
-    u => f_lex_cursor(f_tail(f_tail(s)), l, U32.add(c, 2), d, Con{FToken{f_choose(String, f_eq(f_two(s), ">>") && U32.is_gt(c, U32.add(f_col(acc), U32.from_nat(String.length(f_tx(acc))))), u => ">>op", u => f_two(s)), l, c, 0, offset, f_cursor_add(offset, 2), previous}, acc}, f_cursor_add(offset, 2), f_cursor_add(offset, 2)),
+  f_choose(List<&2,FToken>, f_pair_op(f_two(s)) && Bool.not(f_eq(f_two(s), "++") && String.ends_with(f_raw_tx(acc), "n") && U32.is_eq(c, U32.add(f_raw_col(acc), U32.from_nat(String.length(f_raw_tx(acc)))))),
+    u => f_lex_cursor(f_tail(f_tail(s)), l, U32.add(c, 2), d, Con{FToken{f_choose(String, f_eq(f_two(s), ">>") && U32.is_gt(c, U32.add(f_raw_col(acc), U32.from_nat(String.length(f_raw_tx(acc))))), u => ">>op", u => f_two(s)), l, c, 0, offset, f_cursor_add(offset, 2), previous}, acc}, f_cursor_add(offset, 2), f_cursor_add(offset, 2)),
     u => f_lex_cursor(f_tail(s), l, U32.add(c, 1),
       f_choose(U32, f_ascii_char_eq(f_head(s), '(') || f_ascii_char_eq(f_head(s), '[') || f_ascii_char_eq(f_head(s), '{'),
         u => U32.add(d, 1),
         u => f_choose(U32, f_ascii_char_eq(f_head(s), ')') || f_ascii_char_eq(f_head(s), ']') || f_ascii_char_eq(f_head(s), '}'), u => U32.sub(d, 1), u => d)),
       Con{FToken{f_symbol_text(s, c, acc), l, c, 0, offset, f_cursor_add(offset, dg_units(f_head(s))), previous}, acc}, f_cursor_add(offset, dg_units(f_head(s))), f_cursor_add(offset, dg_units(f_head(s)))))
 
-@unsafe
-def f_lex(s, l, c, d, acc):
-  f_lex_cursor(s, l, c, d, acc, 0, 0)
-
-@unsafe
-def f_lex_indexed(+start: U32, +source: String) -> List<&2,FToken>:
-  f_lex_cursor(source, 1, 0, 0, Nil{}, start, start)
-
-# A comment advances source position but retains historical token columns.
 @unsafe
 def f_lex_comment(+s: String, +l: U32, +c: U32, +d: U32, +acc: List<&2,FToken>, +offset: U32, +previous: U32) -> List<&2,FToken>:
   f_choose(List<&2,FToken>, String.is_empty(s) || f_ascii_char_eq(f_head(s), '\n'),
@@ -304,8 +280,8 @@ def f_triple_op(s):
 
 @unsafe
 def f_symbol_text(s, c, acc):
-  f_choose(String, f_ascii_char_eq(f_head(s), '+') && f_ascii_alpha(f_head(f_tail(s))) && Bool.not(String.ends_with(f_tx(acc), "n") && U32.is_eq(U32.add(f_col(acc), U32.from_nat(String.length(f_tx(acc)))), c)),
-    u => "+bind", u => f_choose(String, f_ascii_char_eq(f_head(s), '>') && U32.is_gt(c, U32.add(f_col(acc), U32.from_nat(String.length(f_tx(acc))))), u => ">op", u => SCon{f_head(s), ""}))
+  f_choose(String, f_ascii_char_eq(f_head(s), '+') && f_ascii_alpha(f_head(f_tail(s))) && Bool.not(String.ends_with(f_raw_tx(acc), "n") && U32.is_eq(U32.add(f_raw_col(acc), U32.from_nat(String.length(f_raw_tx(acc)))), c)),
+    u => "+bind", u => f_choose(String, f_ascii_char_eq(f_head(s), '>') && U32.is_gt(c, U32.add(f_raw_col(acc), U32.from_nat(String.length(f_raw_tx(acc))))), u => ">op", u => SCon{f_head(s), ""}))
 
 
 # Compiler-local ASCII classification. Unsigned subtraction tests a bounded
@@ -338,7 +314,84 @@ def f_ascii_space_code(code):
 
 # Header and argument whitespace preserves statement semicolons.
 @unsafe
-def f_space(
+def f_raw_space(
   +ts: List<&2,FToken>,
 ) -> List<&2,FToken>:
-  f_choose(List<&2,FToken>, f_eq(f_tx(ts), "\n"), u => f_space(f_tl(ts)), u => ts)
+  f_choose(List<&2,FToken>, f_eq(f_raw_tx(ts), "\n"), u => f_raw_space(f_raw_tl(ts)), u => ts)
+
+# Stage18 representation ablation: the shared context is inert.
+type FParseContext is Data:
+  FParseContext{+scope: FParseScope, +env: List<&2,KTerm>, next: U32}
+type FInput is Data:
+  FInput{+tokens: List<&2,FToken>, +context: FParseContext}
+
+@unsafe
+def f_input(+tokens: List<&2,FToken>) -> FInput:
+  FInput{tokens, FParseContext{f_parse_scope_empty(), Nil{}, 0}}
+
+@unsafe
+def f_empty(+input: FInput) -> FInput:
+  match input:
+    case FInput{tokens, context}: FInput{Nil{}, context}
+
+@unsafe
+def f_prepend(+token: FToken, +input: FInput) -> FInput:
+  match input:
+    case FInput{tokens, context}: FInput{Con{token, tokens}, context}
+
+@unsafe
+def f_tx(+input: FInput) -> String:
+  match input:
+    case FInput{tokens, context}: f_raw_tx(tokens)
+
+@unsafe
+def f_line(+input: FInput) -> U32:
+  match input:
+    case FInput{tokens, context}: f_raw_line(tokens)
+
+@unsafe
+def f_col(+input: FInput) -> U32:
+  match input:
+    case FInput{tokens, context}: f_raw_col(tokens)
+
+@unsafe
+def f_kind(+input: FInput) -> U32:
+  match input:
+    case FInput{tokens, context}: f_raw_kind(tokens)
+
+@unsafe
+def f_begin(+input: FInput) -> U32:
+  match input:
+    case FInput{tokens, context}: f_raw_begin(tokens)
+
+@unsafe
+def f_end(+input: FInput) -> U32:
+  match input:
+    case FInput{tokens, context}: f_raw_end(tokens)
+
+@unsafe
+def f_previous_end(+input: FInput) -> U32:
+  match input:
+    case FInput{tokens, context}: f_raw_previous_end(tokens)
+
+@unsafe
+def f_tl(+input: FInput) -> FInput:
+  match input:
+    case FInput{tokens, context}:
+      match tokens:
+        case Nil{}: input
+        case Con{token, rest}: FInput{rest, context}
+
+@unsafe
+def f_skip(+input: FInput) -> FInput:
+  match input:
+    case FInput{tokens, context}:
+      f_choose(FInput, f_eq(f_raw_tx(tokens), "\n") || f_eq(f_raw_tx(tokens), ";"),
+        u => FInput{f_raw_skip(tokens), context}, u => input)
+
+@unsafe
+def f_space(+input: FInput) -> FInput:
+  match input:
+    case FInput{tokens, context}:
+      f_choose(FInput, f_eq(f_raw_tx(tokens), "\n"),
+        u => FInput{f_raw_space(tokens), context}, u => input)

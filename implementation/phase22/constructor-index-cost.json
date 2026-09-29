@@ -1,0 +1,98 @@
+{
+  "kind": "phase22-constructor-index-bundle-cost",
+  "complete": true,
+  "measurementHealthy": true,
+  "pass": true,
+  "speedGatePassed": true,
+  "speedGateMaximumRegression": {
+    "process": 0.03,
+    "request": 0.03
+  },
+  "promotionApproved": false,
+  "remaining": "Root final broad conformance/backend/history/CLI/source gates required before promotion.",
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/equality/api.mjs",
+    "sha256": "ade8ef020e439b81ecb53057b33a473c34a3cbd993b98a044121ecc3c2b8c9c3"
+  },
+  "checkedB1": true,
+  "focusedStrictPass": true,
+  "statistics": {
+    "typescript": {
+      "samples": 2,
+      "meanRequestMs": 2319.626816,
+      "meanProcessWallMs": 3383.2721905000008,
+      "maxRssKiB": 479860
+    },
+    "baseline": {
+      "samples": 2,
+      "meanRequestMs": 9916.487323,
+      "meanProcessWallMs": 11016.7989425,
+      "maxRssKiB": 657568
+    },
+    "candidate": {
+      "samples": 2,
+      "meanRequestMs": 9596.793035,
+      "meanProcessWallMs": 10699.073442,
+      "maxRssKiB": 674148
+    }
+  },
+  "ratios": {
+    "baselineToTs": 3.2562555780863347,
+    "candidateToTs": 3.1623448660271185,
+    "baselineToCandidate": 1.0296965435579444,
+    "candidateProcessReduction": 0.028840092494952896,
+    "candidateRequestReduction": 0.03223866250083429
+  },
+  "rssIncrease": 0.025214122341719714,
+  "ordinaryOutputsExact": true,
+  "rawReport": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bundle-matrix-04/report.json",
+    "sha256": "76822c83e5fa46a757a6d48c3e55e1cf23ca7b834130f223f59edd0cd9f1c4c2",
+    "bytes": 751022
+  },
+  "conclusion": "Both speed gates pass. Process2.884%lower/request3.224%lower on this small screen, peakRSS2.521%higher; modest same-workload result, not a broad throughput claim.",
+  "limits": "Two samples/image on one fixed source; usable compiler bundles with one reviewed host delta. No Bend-only causation, complete edit-loop or emitted-program claim. Earlier failed speed gates retained.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bundle-matrix-inputs-06/freeze.json",
+      "sha256": "b851431d4c0daaa5787ccb087631995d775248ad272269475bf4cda1c00d2e6f",
+      "bytes": 5378
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bundle-matrix-preflight-04.json",
+      "sha256": "4ab71cbea2bad60fcf88251642f2b47ae4cf6be519cd4829fe1a1a3984ba730b",
+      "bytes": 505
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase22/bundle-cost-acceptance.md",
+      "sha256": "42302d16dad56ead7d8e5ca6e1c26c430b3994ceb4ab7e44e5c8fe14f2feffd1",
+      "bytes": 875
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/attempt.json",
+      "sha256": "d5255fa8868cf4c00540e814647b3645c004f35dfbd06b9f4bb6a4e71946772b",
+      "bytes": 216804
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/build.json",
+      "sha256": "cd462dfb8e89f4ebd52b7f57654c90c8fc57615f994d39151d9d69261f278000",
+      "bytes": 3676
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/validation-001/report.json",
+      "sha256": "bb60523285ec1656611656b33e905e696fcf814fb38694fd95ca1f63a1a957e4",
+      "bytes": 8960
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/constructor-index-source-review.json",
+      "sha256": "71ede2c798dff8c79c05f811cae1637da7c4ac267d37a2a8f009f4e6e5c9e10b",
+      "bytes": 5113
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-constructor-index.json",
+      "sha256": "b7068908e48cf4a00f5fd1356336fa5a58d454ddc364772b295b1625af2ae392",
+      "bytes": 36301
+    }
+  ]
+}

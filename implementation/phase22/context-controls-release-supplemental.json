@@ -1,0 +1,369 @@
+{
+  "kind": "phase22-final-release-supplemental-controls",
+  "complete": true,
+  "pass": true,
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/equality/api.mjs",
+    "sha256": "ade8ef020e439b81ecb53057b33a473c34a3cbd993b98a044121ecc3c2b8c9c3"
+  },
+  "candidateExact": 22,
+  "observations": 22,
+  "parts": [
+    {
+      "name": "materialization",
+      "observations": 16,
+      "exact": 16,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-materialization-06/report.json",
+        "sha256": "e0e0998a17eb577e29429a18f15c31201264227e8b1fada12e6cbcd8d675f72c"
+      },
+      "rawSelectedComplete": true,
+      "rawReferenceSummary": {
+        "tests": 16,
+        "allTests": 1498,
+        "externalTests": 16,
+        "excludedTests": 1498,
+        "probes": 16,
+        "statuses": {
+          "pass": 16
+        },
+        "lanes": {
+          "parse": {
+            "pass": 8
+          },
+          "check": {
+            "pass": 8
+          },
+          "interpreter": {},
+          "js": {},
+          "native": {},
+          "metal": {},
+          "cuda": {}
+        },
+        "namespaces": {
+          "base": {},
+          "check": {},
+          "compile": {},
+          "comptime": {},
+          "cost": {},
+          "eval": {},
+          "flatten": {},
+          "gfx": {},
+          "grade": {},
+          "halt": {},
+          "import": {},
+          "io": {},
+          "page": {},
+          "parse": {},
+          "printer": {},
+          "proof": {},
+          "reg": {},
+          "rfc": {},
+          "run": {},
+          "show": {},
+          "spec": {},
+          "state": {},
+          "stats": {},
+          "stuck": {}
+        },
+        "checkerRejections": 0,
+        "proofTrustRejections": 0,
+        "frontendRejections": 12,
+        "uncheckedExecutions": 0
+      },
+      "rawCandidateSummary": {
+        "tests": 16,
+        "allTests": 1498,
+        "externalTests": 16,
+        "excludedTests": 1498,
+        "probes": 16,
+        "statuses": {
+          "pass": 16
+        },
+        "lanes": {
+          "parse": {
+            "pass": 8
+          },
+          "check": {
+            "pass": 8
+          },
+          "interpreter": {},
+          "js": {},
+          "native": {},
+          "metal": {},
+          "cuda": {}
+        },
+        "namespaces": {
+          "base": {},
+          "check": {},
+          "compile": {},
+          "comptime": {},
+          "cost": {},
+          "eval": {},
+          "flatten": {},
+          "gfx": {},
+          "grade": {},
+          "halt": {},
+          "import": {},
+          "io": {},
+          "page": {},
+          "parse": {},
+          "printer": {},
+          "proof": {},
+          "reg": {},
+          "rfc": {},
+          "run": {},
+          "show": {},
+          "spec": {},
+          "state": {},
+          "stats": {},
+          "stuck": {}
+        },
+        "checkerRejections": 0,
+        "proofTrustRejections": 0,
+        "frontendRejections": 12,
+        "uncheckedExecutions": 0
+      },
+      "rawReferenceOracleFailures": 0
+    },
+    {
+      "name": "do-header",
+      "observations": 4,
+      "exact": 4,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-do-header-06/report.json",
+        "sha256": "5faf2f026dd15283d25bbdc8c2ba593b7f295525961bb1b7438f8dfdb3eedf51"
+      },
+      "rawSelectedComplete": true,
+      "rawReferenceSummary": {
+        "tests": 4,
+        "allTests": 1498,
+        "externalTests": 4,
+        "excludedTests": 1498,
+        "probes": 4,
+        "statuses": {
+          "pass": 4
+        },
+        "lanes": {
+          "parse": {
+            "pass": 2
+          },
+          "check": {
+            "pass": 2
+          },
+          "interpreter": {},
+          "js": {},
+          "native": {},
+          "metal": {},
+          "cuda": {}
+        },
+        "namespaces": {
+          "base": {},
+          "check": {},
+          "compile": {},
+          "comptime": {},
+          "cost": {},
+          "eval": {},
+          "flatten": {},
+          "gfx": {},
+          "grade": {},
+          "halt": {},
+          "import": {},
+          "io": {},
+          "page": {},
+          "parse": {},
+          "printer": {},
+          "proof": {},
+          "reg": {},
+          "rfc": {},
+          "run": {},
+          "show": {},
+          "spec": {},
+          "state": {},
+          "stats": {},
+          "stuck": {}
+        },
+        "checkerRejections": 0,
+        "proofTrustRejections": 0,
+        "frontendRejections": 4,
+        "uncheckedExecutions": 0
+      },
+      "rawCandidateSummary": {
+        "tests": 4,
+        "allTests": 1498,
+        "externalTests": 4,
+        "excludedTests": 1498,
+        "probes": 4,
+        "statuses": {
+          "pass": 4
+        },
+        "lanes": {
+          "parse": {
+            "pass": 2
+          },
+          "check": {
+            "pass": 2
+          },
+          "interpreter": {},
+          "js": {},
+          "native": {},
+          "metal": {},
+          "cuda": {}
+        },
+        "namespaces": {
+          "base": {},
+          "check": {},
+          "compile": {},
+          "comptime": {},
+          "cost": {},
+          "eval": {},
+          "flatten": {},
+          "gfx": {},
+          "grade": {},
+          "halt": {},
+          "import": {},
+          "io": {},
+          "page": {},
+          "parse": {},
+          "printer": {},
+          "proof": {},
+          "reg": {},
+          "rfc": {},
+          "run": {},
+          "show": {},
+          "spec": {},
+          "state": {},
+          "stats": {},
+          "stuck": {}
+        },
+        "checkerRejections": 0,
+        "proofTrustRejections": 0,
+        "frontendRejections": 4,
+        "uncheckedExecutions": 0
+      },
+      "rawReferenceOracleFailures": 0
+    },
+    {
+      "name": "header-demand",
+      "observations": 2,
+      "exact": 2,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-header-demand-06/report.json",
+        "sha256": "eec3cde8d1b9f729e47293a45d5521fdaee567738a7513cc17e6c9768f5f43a7"
+      },
+      "rawSelectedComplete": true,
+      "rawReferenceSummary": {
+        "tests": 2,
+        "allTests": 1498,
+        "externalTests": 2,
+        "excludedTests": 1498,
+        "probes": 2,
+        "statuses": {
+          "pass": 2
+        },
+        "lanes": {
+          "parse": {
+            "pass": 2
+          },
+          "check": {},
+          "interpreter": {},
+          "js": {},
+          "native": {},
+          "metal": {},
+          "cuda": {}
+        },
+        "namespaces": {
+          "base": {},
+          "check": {},
+          "compile": {},
+          "comptime": {},
+          "cost": {},
+          "eval": {},
+          "flatten": {},
+          "gfx": {},
+          "grade": {},
+          "halt": {},
+          "import": {},
+          "io": {},
+          "page": {},
+          "parse": {},
+          "printer": {},
+          "proof": {},
+          "reg": {},
+          "rfc": {},
+          "run": {},
+          "show": {},
+          "spec": {},
+          "state": {},
+          "stats": {},
+          "stuck": {}
+        },
+        "checkerRejections": 0,
+        "proofTrustRejections": 0,
+        "frontendRejections": 2,
+        "uncheckedExecutions": 0
+      },
+      "rawCandidateSummary": {
+        "tests": 2,
+        "allTests": 1498,
+        "externalTests": 2,
+        "excludedTests": 1498,
+        "probes": 2,
+        "statuses": {
+          "pass": 2
+        },
+        "lanes": {
+          "parse": {
+            "pass": 2
+          },
+          "check": {},
+          "interpreter": {},
+          "js": {},
+          "native": {},
+          "metal": {},
+          "cuda": {}
+        },
+        "namespaces": {
+          "base": {},
+          "check": {},
+          "compile": {},
+          "comptime": {},
+          "cost": {},
+          "eval": {},
+          "flatten": {},
+          "gfx": {},
+          "grade": {},
+          "halt": {},
+          "import": {},
+          "io": {},
+          "page": {},
+          "parse": {},
+          "printer": {},
+          "proof": {},
+          "reg": {},
+          "rfc": {},
+          "run": {},
+          "show": {},
+          "spec": {},
+          "state": {},
+          "stats": {},
+          "stuck": {}
+        },
+        "checkerRejections": 0,
+        "proofTrustRejections": 0,
+        "frontendRejections": 2,
+        "uncheckedExecutions": 0
+      },
+      "rawReferenceOracleFailures": 0
+    }
+  ],
+  "scope": "Final source17 supplemental materialization16,do-header4,header-demand2, all exact. Companion to the complete final release receipt.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-release.json",
+      "sha256": "f85dda49fdba3f9479c111d6ac4375c4376da802a5d36e816c8b6bde5a5669b1",
+      "bytes": 1113611
+    }
+  ]
+}

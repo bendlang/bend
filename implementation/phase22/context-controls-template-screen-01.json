@@ -1,0 +1,611 @@
+{
+  "kind": "phase22-dx-index-public-screen",
+  "complete": true,
+  "pass": true,
+  "observationsPerImage": 24,
+  "pairedAcquisitions": 48,
+  "parts": [
+    {
+      "name": "parent",
+      "api": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-12/equality/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-12/equality/api.mjs",
+        "sha256": "a80737cd74e8b3e78b07006580ed3aded060c530b3d67af032db81a17fa3f404"
+      },
+      "observations": 24,
+      "exact": 24,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-template-parent-01/report.json",
+        "sha256": "9ba2cb0d9150fb2c498e08ef198ea464dee1543515fb38cc4fec9f5ef3d0b4fe",
+        "bytes": 14898
+      },
+      "rawReferenceSummary": {
+        "tests": 12,
+        "allTests": 1498,
+        "externalTests": 9,
+        "excludedTests": 1495,
+        "probes": 24,
+        "statuses": {
+          "pass": 21,
+          "observed": 3
+        },
+        "lanes": {
+          "parse": {
+            "pass": 9,
+            "observed": 3
+          },
+          "check": {
+            "pass": 12
+          },
+          "interpreter": {},
+          "js": {},
+          "native": {},
+          "metal": {},
+          "cuda": {}
+        },
+        "namespaces": {
+          "base": {
+            "observed": 1,
+            "pass": 1
+          },
+          "check": {},
+          "compile": {},
+          "comptime": {
+            "observed": 2,
+            "pass": 2
+          },
+          "cost": {},
+          "eval": {},
+          "flatten": {},
+          "gfx": {},
+          "grade": {},
+          "halt": {},
+          "import": {},
+          "io": {},
+          "page": {},
+          "parse": {},
+          "printer": {},
+          "proof": {},
+          "reg": {},
+          "rfc": {},
+          "run": {},
+          "show": {},
+          "spec": {},
+          "state": {},
+          "stats": {},
+          "stuck": {}
+        },
+        "checkerRejections": 2,
+        "proofTrustRejections": 0,
+        "frontendRejections": 3,
+        "uncheckedExecutions": 0
+      },
+      "rawCandidateSummary": {
+        "tests": 12,
+        "allTests": 1498,
+        "externalTests": 9,
+        "excludedTests": 1495,
+        "probes": 24,
+        "statuses": {
+          "pass": 21,
+          "observed": 3
+        },
+        "lanes": {
+          "parse": {
+            "pass": 9,
+            "observed": 3
+          },
+          "check": {
+            "pass": 12
+          },
+          "interpreter": {},
+          "js": {},
+          "native": {},
+          "metal": {},
+          "cuda": {}
+        },
+        "namespaces": {
+          "base": {
+            "observed": 1,
+            "pass": 1
+          },
+          "check": {},
+          "compile": {},
+          "comptime": {
+            "observed": 2,
+            "pass": 2
+          },
+          "cost": {},
+          "eval": {},
+          "flatten": {},
+          "gfx": {},
+          "grade": {},
+          "halt": {},
+          "import": {},
+          "io": {},
+          "page": {},
+          "parse": {},
+          "printer": {},
+          "proof": {},
+          "reg": {},
+          "rfc": {},
+          "run": {},
+          "show": {},
+          "spec": {},
+          "state": {},
+          "stats": {},
+          "stuck": {}
+        },
+        "checkerRejections": 2,
+        "proofTrustRejections": 0,
+        "frontendRejections": 3,
+        "uncheckedExecutions": 0
+      },
+      "prospectiveOracleFailures": [
+        {
+          "id": "base/bytes_ops.bend",
+          "lane": "parse",
+          "reference": {
+            "status": "ok",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 0,
+            "diagnostic": null,
+            "output": null
+          }
+        },
+        {
+          "id": "comptime/err_arg_type.bend",
+          "lane": "parse",
+          "reference": {
+            "status": "ok",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 0,
+            "diagnostic": null,
+            "output": null
+          }
+        },
+        {
+          "id": "comptime/err_fill_short.bend",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a name for each ~ clause of the law (2)\n- observed : ':'\nLocation:\n13 | \n14>| def F(f):\n   |         ^\n15 |   f",
+            "output": null
+          }
+        }
+      ]
+    },
+    {
+      "name": "candidate",
+      "api": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-14/equality/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-14/equality/api.mjs",
+        "sha256": "9a3b9e09095caca347c2aea7b653048df274c3ec693883ccf5938b7b0e439c5a"
+      },
+      "observations": 24,
+      "exact": 24,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-template-candidate-01/report.json",
+        "sha256": "d695a805619c8b762b2565c6cd4534535657965948132e8a990fc77c25042df1",
+        "bytes": 16173
+      },
+      "rawReferenceSummary": {
+        "tests": 12,
+        "allTests": 1498,
+        "externalTests": 9,
+        "excludedTests": 1495,
+        "probes": 24,
+        "statuses": {
+          "pass": 21,
+          "observed": 3
+        },
+        "lanes": {
+          "parse": {
+            "pass": 9,
+            "observed": 3
+          },
+          "check": {
+            "pass": 12
+          },
+          "interpreter": {},
+          "js": {},
+          "native": {},
+          "metal": {},
+          "cuda": {}
+        },
+        "namespaces": {
+          "base": {
+            "observed": 1,
+            "pass": 1
+          },
+          "check": {},
+          "compile": {},
+          "comptime": {
+            "observed": 2,
+            "pass": 2
+          },
+          "cost": {},
+          "eval": {},
+          "flatten": {},
+          "gfx": {},
+          "grade": {},
+          "halt": {},
+          "import": {},
+          "io": {},
+          "page": {},
+          "parse": {},
+          "printer": {},
+          "proof": {},
+          "reg": {},
+          "rfc": {},
+          "run": {},
+          "show": {},
+          "spec": {},
+          "state": {},
+          "stats": {},
+          "stuck": {}
+        },
+        "checkerRejections": 2,
+        "proofTrustRejections": 0,
+        "frontendRejections": 3,
+        "uncheckedExecutions": 0
+      },
+      "rawCandidateSummary": {
+        "tests": 12,
+        "allTests": 1498,
+        "externalTests": 9,
+        "excludedTests": 1495,
+        "probes": 24,
+        "statuses": {
+          "pass": 21,
+          "observed": 3
+        },
+        "lanes": {
+          "parse": {
+            "pass": 9,
+            "observed": 3
+          },
+          "check": {
+            "pass": 12
+          },
+          "interpreter": {},
+          "js": {},
+          "native": {},
+          "metal": {},
+          "cuda": {}
+        },
+        "namespaces": {
+          "base": {
+            "observed": 1,
+            "pass": 1
+          },
+          "check": {},
+          "compile": {},
+          "comptime": {
+            "observed": 2,
+            "pass": 2
+          },
+          "cost": {},
+          "eval": {},
+          "flatten": {},
+          "gfx": {},
+          "grade": {},
+          "halt": {},
+          "import": {},
+          "io": {},
+          "page": {},
+          "parse": {},
+          "printer": {},
+          "proof": {},
+          "reg": {},
+          "rfc": {},
+          "run": {},
+          "show": {},
+          "spec": {},
+          "state": {},
+          "stats": {},
+          "stuck": {}
+        },
+        "checkerRejections": 2,
+        "proofTrustRejections": 0,
+        "frontendRejections": 3,
+        "uncheckedExecutions": 0
+      },
+      "prospectiveOracleFailures": [
+        {
+          "id": "base/bytes_ops.bend",
+          "lane": "parse",
+          "reference": {
+            "status": "ok",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 0,
+            "diagnostic": null,
+            "output": null
+          }
+        },
+        {
+          "id": "comptime/err_arg_type.bend",
+          "lane": "parse",
+          "reference": {
+            "status": "ok",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 0,
+            "diagnostic": null,
+            "output": null
+          }
+        },
+        {
+          "id": "comptime/err_fill_short.bend",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a name for each ~ clause of the law (2)\n- observed : ':'\nLocation:\n13 | \n14>| def F(f):\n   |         ^\n15 |   f",
+            "output": null
+          }
+        }
+      ]
+    }
+  ],
+  "scope": "Frozen existing fixture24 public parse/check observations for dx-only contextual call lookup. Exact pinned reference and complete parent outcomes retained. No fixture or oracle changes. Internal duplicate-index invariant is proved separately by the implementation owner; this screen does not authorize index substitution for family/marked/name consumers. No speed/promotion claim.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-template-close.py",
+      "sha256": "98440f10fc4f0dbf40ac71da4c167aabd5d657b205861f28019ab18ffd625b61",
+      "bytes": 2950
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-template-parent-01/report.json",
+      "sha256": "9ba2cb0d9150fb2c498e08ef198ea464dee1543515fb38cc4fec9f5ef3d0b4fe",
+      "bytes": 14898
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-template-parent-01/selected/paired.json",
+      "sha256": "c0925e2056327cc4b44a8706c8da926d9a7ec68de62ada4ba74d8f8fc08ee6f3",
+      "bytes": 32049
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-run-v7.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-run-v7.mjs",
+      "sha256": "55ad08bda86ecc426e9856ab4677e65b4f378f817ab640017920021f4e5121be"
+    },
+    {
+      "file": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "canonicalPath": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-12/snapshot/tools/development/workflow.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-12/snapshot/tools/development/workflow.mjs",
+      "sha256": "d8a8a0ed29b59d58eae45dfccae9ca5530e597ae0e4203067365a19f0ab3cf32"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-12/snapshot/tools/development/process.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-12/snapshot/tools/development/process.mjs",
+      "sha256": "fe6afbc8964f695e3b7bfe8c636b6da6295fd7265fcdebbf58839f3eafce4989"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-template-inputs-01/selection.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-template-inputs-01/selection.json",
+      "sha256": "74f92bc74b7701b260b2474f3bc333631eeaf1e8bb829b9d2041a1b5702956f9"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-template-inputs-01/plan.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-template-inputs-01/plan.json",
+      "sha256": "3c91de23580c3aef59b9e10cfa3561f4369fc5b2647c03c3fbe3f52725ebef8b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/wave6-backend-environment-01.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/wave6-backend-environment-01.json",
+      "sha256": "db973a862955df917132ee67dd7d7c79efbba6d3732e808ee300ef1f6f925e23"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/spans-import-fixtures-01/ordinary-fill.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/spans-import-fixtures-01/ordinary-fill.bend",
+      "sha256": "c9ecbd1e8c9abd4c2f95a678d64ee1ee07080d1817677e057d7ce33079a5c850"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/spans-import-fixtures-01/annotated-fill.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/spans-import-fixtures-01/annotated-fill.bend",
+      "sha256": "f2aadb0986d13cbd8074cc3fd8773b8c12fc66865c95bf4823e9540c21ed579f"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/alias-binding-controls-01/fixtures/family-and-template.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/alias-binding-controls-01/fixtures/family-and-template.bend",
+      "sha256": "b2cb15ccaa816f9fd9623f6520e9ae4aee0a4617708d6a8cb21c7a2acba47468"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/alias-binding-controls-01/fixtures/template-shadow.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/alias-binding-controls-01/fixtures/template-shadow.bend",
+      "sha256": "0d9e030c79017b18d8a2db999ea488cde8f9a7070db155699ebac7bc6dbad3d6"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/alias-binding-controls-01/fixtures/applied.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/alias-binding-controls-01/fixtures/applied.bend",
+      "sha256": "723c84a11fbe37ba0b34aae1d5c04200c0e1806d06b1b07718a4be2823b4434f"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/local-law-source-01/fixtures/correct.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/local-law-source-01/fixtures/correct.bend",
+      "sha256": "24b887ce6f719ab6e0d201b2b4e6f0cef8cc7c163677a607357ec625ba9267f6"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/local-law-source-01/fixtures/ordinary-template.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/local-law-source-01/fixtures/ordinary-template.bend",
+      "sha256": "1ac829da9534c195de2c50b4ec93e1eb483f61b7f6652b5ab84dc0cd58c84777"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-header-controls-01/fixtures/law-self.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-header-controls-01/fixtures/law-self.bend",
+      "sha256": "f1a63ccee9d348e7025235cfe067db3909ce9c35714450b434e5db2c4fe95780"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-header-controls-01/fixtures/template-self.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-header-controls-01/fixtures/template-self.bend",
+      "sha256": "06cf1388a3fc7a832bec0867bb6eb6c2bfdc337b8d11f7e417b8ccffc4235f87"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-12/attempt.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-12/attempt.json",
+      "sha256": "a779b86704e8ff4b604b5a5a45d86422055e1ef442705ff6be93d2e493b7e8ef"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-12/snapshot/tools/conformance/target.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-12/snapshot/tools/conformance/target.mjs",
+      "sha256": "e2ac5403100458239cc65cbc5da77605fbfb108a54d6ae337190dd467e0e0f50"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-template-candidate-01/report.json",
+      "sha256": "d695a805619c8b762b2565c6cd4534535657965948132e8a990fc77c25042df1",
+      "bytes": 16173
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-template-candidate-01/selected/paired.json",
+      "sha256": "c37df0223b6839edd1caf21c58239f11f7386d8cb3f06c9d584be4b512e16359",
+      "bytes": 32079
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-run-v7.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-run-v7.mjs",
+      "sha256": "55ad08bda86ecc426e9856ab4677e65b4f378f817ab640017920021f4e5121be"
+    },
+    {
+      "file": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "canonicalPath": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-14/snapshot/tools/development/workflow.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-14/snapshot/tools/development/workflow.mjs",
+      "sha256": "d8a8a0ed29b59d58eae45dfccae9ca5530e597ae0e4203067365a19f0ab3cf32"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-14/snapshot/tools/development/process.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-14/snapshot/tools/development/process.mjs",
+      "sha256": "fe6afbc8964f695e3b7bfe8c636b6da6295fd7265fcdebbf58839f3eafce4989"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-template-inputs-01/selection.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-template-inputs-01/selection.json",
+      "sha256": "74f92bc74b7701b260b2474f3bc333631eeaf1e8bb829b9d2041a1b5702956f9"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-template-inputs-01/plan.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-template-inputs-01/plan.json",
+      "sha256": "3c91de23580c3aef59b9e10cfa3561f4369fc5b2647c03c3fbe3f52725ebef8b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/wave6-backend-environment-01.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/wave6-backend-environment-01.json",
+      "sha256": "db973a862955df917132ee67dd7d7c79efbba6d3732e808ee300ef1f6f925e23"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/spans-import-fixtures-01/ordinary-fill.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/spans-import-fixtures-01/ordinary-fill.bend",
+      "sha256": "c9ecbd1e8c9abd4c2f95a678d64ee1ee07080d1817677e057d7ce33079a5c850"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/spans-import-fixtures-01/annotated-fill.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/spans-import-fixtures-01/annotated-fill.bend",
+      "sha256": "f2aadb0986d13cbd8074cc3fd8773b8c12fc66865c95bf4823e9540c21ed579f"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/alias-binding-controls-01/fixtures/family-and-template.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/alias-binding-controls-01/fixtures/family-and-template.bend",
+      "sha256": "b2cb15ccaa816f9fd9623f6520e9ae4aee0a4617708d6a8cb21c7a2acba47468"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/alias-binding-controls-01/fixtures/template-shadow.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/alias-binding-controls-01/fixtures/template-shadow.bend",
+      "sha256": "0d9e030c79017b18d8a2db999ea488cde8f9a7070db155699ebac7bc6dbad3d6"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/alias-binding-controls-01/fixtures/applied.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/alias-binding-controls-01/fixtures/applied.bend",
+      "sha256": "723c84a11fbe37ba0b34aae1d5c04200c0e1806d06b1b07718a4be2823b4434f"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/local-law-source-01/fixtures/correct.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/local-law-source-01/fixtures/correct.bend",
+      "sha256": "24b887ce6f719ab6e0d201b2b4e6f0cef8cc7c163677a607357ec625ba9267f6"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/local-law-source-01/fixtures/ordinary-template.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/local-law-source-01/fixtures/ordinary-template.bend",
+      "sha256": "1ac829da9534c195de2c50b4ec93e1eb483f61b7f6652b5ab84dc0cd58c84777"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-header-controls-01/fixtures/law-self.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-header-controls-01/fixtures/law-self.bend",
+      "sha256": "f1a63ccee9d348e7025235cfe067db3909ce9c35714450b434e5db2c4fe95780"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-header-controls-01/fixtures/template-self.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-header-controls-01/fixtures/template-self.bend",
+      "sha256": "06cf1388a3fc7a832bec0867bb6eb6c2bfdc337b8d11f7e417b8ccffc4235f87"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-template-parent-01/report.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-template-parent-01/report.json",
+      "sha256": "9ba2cb0d9150fb2c498e08ef198ea464dee1543515fb38cc4fec9f5ef3d0b4fe"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-template-parent-01/selected/paired.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-template-parent-01/selected/paired.json",
+      "sha256": "c0925e2056327cc4b44a8706c8da926d9a7ec68de62ada4ba74d8f8fc08ee6f3"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-14/attempt.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-14/attempt.json",
+      "sha256": "90d0f788cbc3523958a14e20cd99db27618760d7446662c7834d1346bdf5d7b2"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-14/snapshot/tools/conformance/target.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-14/snapshot/tools/conformance/target.mjs",
+      "sha256": "e2ac5403100458239cc65cbc5da77605fbfb108a54d6ae337190dd467e0e0f50"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-template-inputs-01/plan.json",
+      "sha256": "3c91de23580c3aef59b9e10cfa3561f4369fc5b2647c03c3fbe3f52725ebef8b",
+      "bytes": 4616
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-template-inputs-01/selection.json",
+      "sha256": "74f92bc74b7701b260b2474f3bc333631eeaf1e8bb829b9d2041a1b5702956f9",
+      "bytes": 2711
+    }
+  ]
+}

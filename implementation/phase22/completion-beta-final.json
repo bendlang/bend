@@ -1,0 +1,32 @@
+{
+  "kind": "phase22-direct-completion-final-review",
+  "complete": true,
+  "pass": true,
+  "matched": 17,
+  "cases": 17,
+  "rawReport": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/completion-beta-controls-03/report.json",
+    "sha256": "93a0a5bc8a30bc5d517fae5887f7393e3497d834c0a62ce0bb7c0bbf6470c0b1",
+    "bytes": 36638
+  },
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-08/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-08/equality/api.mjs",
+    "sha256": "eac3b89d561287b9a51b411ab6353ea275e90c571de7d7c8e733c99eb0755a94"
+  },
+  "inputsUnchanged": true,
+  "previousFailuresRetained": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/completion-beta-controls-01/report.json",
+      "sha256": "6f5726121d0a1afad8a0d9937ffe553cff95c3842f026b8e2db58eee8ea3b6d6",
+      "bytes": 38099
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/completion-beta-controls-02/report.json",
+      "sha256": "927c092666ea5ed6eca27d4957b067c770e7bfeef11ec06322fa976f0570156c",
+      "bytes": 37653
+    }
+  ],
+  "scope": "Trusted direct IR; actual compiled completion worker versus pinned higher/lower. Private appended probe is not a checked B1. Bound IDs compared by alpha-equivalence, free IDs fixed; raw candidate graphs retained. No public-source reachability or conformance claim.",
+  "interpretation": "Both the absent-origin substitution and extra discarded-lambda tag-demand controls now match the pin; all previous matches retained. No public-source coverage or performance claim."
+}

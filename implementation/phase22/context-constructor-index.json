@@ -1,0 +1,90 @@
+{
+  "kind": "phase22-constructor-scope-index-implementation",
+  "complete": true,
+  "selected": false,
+  "source": "selfhost/build/phase22/context-source-17",
+  "attempt": "selfhost/build/phase22/context-build-16",
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/equality/api.mjs",
+    "sha256": "ade8ef020e439b81ecb53057b33a473c34a3cbd993b98a044121ecc3c2b8c9c3"
+  },
+  "change": {
+    "scopeField": "ctors: KDef",
+    "newHelpers": [
+      "f_ctor_index",
+      "f_ctor_index_def",
+      "f_ctor_index_find"
+    ],
+    "parentRelativeLines": 17,
+    "changedScopedLookupExpressions": 5,
+    "retainedRawLookup": true,
+    "newTermFields": 0,
+    "cacheOrPublicAbiChange": false
+  },
+  "correctness": {
+    "artifactKind": "derived-b1",
+    "checkedBuild": true,
+    "maintained36StrictExact": true,
+    "independentDirectControls": 42,
+    "independentPublicParentAndCandidateExact": 24,
+    "sourceReview": {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/constructor-index-source-review.json",
+      "sha256": "71ede2c798dff8c79c05f811cae1637da7c4ac267d37a2a8f009f4e6e5c9e10b"
+    }
+  },
+  "netCompilerDeltaFromPhase21": {
+    "sourceFiles": 1,
+    "compilerModules": 1,
+    "moduleLines": -300,
+    "moduleBytes": 3305,
+    "defs": 31,
+    "laws": -81,
+    "types": 1
+  },
+  "totalChangedSnapshotLines": -293,
+  "cost": "Separate root-owned same-source gate; this report makes no measured gain or promotion claim.",
+  "demandScope": "Factory eagerly visits finite declaration/child metadata once without term-type/body traversal. It does not preserve raw early exit on arbitrary poisoned metadata tails; unchanged raw lookup retains that contract. Actual factory/update/lookup payload controls passed.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-constructor-index-report.py",
+      "sha256": "019f20a34c5385254263465bd10c145524eb8013fe19bf4a43a3c96a9d4fd241"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase22/context-constructor-index.md",
+      "sha256": "97ae3b59d0d9dd5b54e48737d59102d9ba0662d038155c9f3c805947404ff488"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-constructor-index-prepare.py",
+      "sha256": "c3c6dfe6ea8fc57e671397064f1d76716ed86f48e338676427b8107aee9b5fef"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-17/manifest.json",
+      "sha256": "507c752d4f1f0f825f2fb724d6f0e5f415ee1d48e7a2ca17e5247fff9d32f193"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-17/parent.json",
+      "sha256": "2b63b7214984faab4f5091fb9c846e12583306caf358d87bc74ead2936677c79"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/attempt.json",
+      "sha256": "d5255fa8868cf4c00540e814647b3645c004f35dfbd06b9f4bb6a4e71946772b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/validation-001/report.json",
+      "sha256": "bb60523285ec1656611656b33e905e696fcf814fb38694fd95ca1f63a1a957e4"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-constructor-index.json",
+      "sha256": "b7068908e48cf4a00f5fd1356336fa5a58d454ddc364772b295b1625af2ae392"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/constructor-index-source-review.json",
+      "sha256": "71ede2c798dff8c79c05f811cae1637da7c4ac267d37a2a8f009f4e6e5c9e10b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-source-census-cost17.json",
+      "sha256": "8a3668112d31f6d1fad0858d5763abf189906a1027c82113aac6ae639d3ab5f1"
+    }
+  ]
+}

@@ -13,6 +13,7 @@
     "src/check/prefix.bend",
     "src/check/annotate.bend",
     "src/front/lexer.bend",
+    "src/front/contextual.bend",
     "src/front/parser.bend",
     "src/front/declarations.bend",
     "src/front/flatten.bend",

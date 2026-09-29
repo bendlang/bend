@@ -1,0 +1,11 @@
+{
+  "kind": "phase22-immutable-constructor-demand-policy",
+  "frozenBeforeExecution": true,
+  "rawVerdict": "Exact entire result, independent expected outcome, getter event sequence and read count; any difference remains raw failure.",
+  "semanticContract": "Immutable KDef/List data. Same values and exceptions and no new field/subtree demand. Only additional reads of a previously read identical list tag may be ignored; every other event stays in exact order.",
+  "effectfulOutOfContractCases": [
+    "nonempty-child-tag-second-read-poison"
+  ],
+  "exclusionScope": "Only the explicit tag-changing-on-second-read witness is outside immutable semantic gate; retain its complete raw failure.",
+  "largeCases": "Wide100000 does not log events and must preserve exact read count; deep512 does log events for precise extra-tag classification."
+}

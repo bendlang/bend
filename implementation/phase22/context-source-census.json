@@ -1,0 +1,1788 @@
+{
+  "kind": "phase22-context-production-census",
+  "complete": true,
+  "parent": {
+    "sourceFiles": 152,
+    "compilerModules": 59,
+    "moduleLines": 15900,
+    "moduleBytes": 577159,
+    "defs": 1660,
+    "laws": 719,
+    "types": 67,
+    "sourceMembership": [
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/README.md",
+        "sha256": "bd9fdb3506be1271d18712d05872b1aa04962bd7486c606a4d0df4958492f3bb",
+        "bytes": 7954
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/benchmark-build-parser.mjs",
+        "sha256": "8c4c285c66e8f92163b9b26d2d116d64bfa3238540f2cf8ddddd24d06e7511bf",
+        "bytes": 1624
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/benchmark-parser.mjs",
+        "sha256": "f53eb33edebb061e4fee9740c47c796bd217066b1adec2410aba9636b4cdbccb",
+        "bytes": 2190
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/choice.bend",
+        "sha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3",
+        "bytes": 3583
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/emit.bend",
+        "sha256": "c30903559f29d3c8bbd22f48026b4a19a1644a2278ed371c4f423691dd26943f",
+        "bytes": 29073
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/experiments/README.md",
+        "sha256": "23d422e1031753179859b172741acb2a3b3b34ae03b5cccb04a705b9f0ed3575",
+        "bytes": 1362
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/experiments/allocation-performance.json",
+        "sha256": "74bc44755908cfcfec076a5aef4a007fe9d840095e10e4345fc0fe3cb7d71374",
+        "bytes": 4868
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/experiments/constructor-provenance.json",
+        "sha256": "247396a86c58b5c58305896f7e4be9122d930fdca8bd6aaf0b927da8a99eff11",
+        "bytes": 4116
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/experiments/deep-closures-report.json",
+        "sha256": "2e2db323f64ab6a31ad36f2c1b57019ebb4557d173b1e60f07804080f33401a8",
+        "bytes": 1272
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/experiments/deep-closures.patch",
+        "sha256": "1824a23a67d4114e79bb7c4074983a94cff8a46ca7c21d8415fceec0f90811ba",
+        "bytes": 7733
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/experiments/full-js-summary.json",
+        "sha256": "be70707873221a8b40531d9da4aeed354210ef10e09a5eab7b39c8684f1d3ba7",
+        "bytes": 815
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/experiments/leading-lambda-cache.patch",
+        "sha256": "225af951d9f5d479c23f5a27fe9e085450ada7930b7211cf468ad8f299de3679",
+        "bytes": 1485
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/experiments/lexical-benchmark.json",
+        "sha256": "662459ab0252971ec8f639bf12bd10e615132dc9a81709f3c470efd24a28f377",
+        "bytes": 1522
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/experiments/lexical.patch",
+        "sha256": "e8f9dc190a8e413dcbea167e7b85d3bc318e0e263e9c384df0cc31bc0a5af6b5",
+        "bytes": 9204
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/experiments/runtime-fast.patch",
+        "sha256": "c376c9b9cd54c03e375382a0385c60ff03ce57d6aef849c9b6b707708972b9cf",
+        "bytes": 1753
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/experiments/runtime-hosts.json",
+        "sha256": "7b0b718b42ee54ac20d152fd5f54da09a46d76850073a46236180a824525458b",
+        "bytes": 4640
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/foreign.bend",
+        "sha256": "0f397f84a989c6fc9a52eaf962742e673cdba243864c0bbe7c16ce4ffd8eb065",
+        "bytes": 5794
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/literals.bend",
+        "sha256": "2c4488a4f37010253a54e3745317c685ec77067475d471e577687acfa9a16776",
+        "bytes": 5544
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/projection.bend",
+        "sha256": "f534d7c74f396527a9d3e3a06bececebcf0b68d92400ccf46b8125e82735ef09",
+        "bytes": 2355
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/survey.mjs",
+        "sha256": "3a428111c0cd236a1382103e5f0e7cc9eb5d1a28f8a75cd74b2c1cb2b3156a24",
+        "bytes": 2193
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/test-choice.mjs",
+        "sha256": "93d1ed44f2cba80367fbbce182158641435940e8b8f591360a802d1428e70d26",
+        "bytes": 4109
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/test-foreign.mjs",
+        "sha256": "9eef0426b565d4b827d488e9e2f48e39a1e46fca4bf999e472f55327977f65cc",
+        "bytes": 4531
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/test-global-initializers.mjs",
+        "sha256": "9c7609e7ef63c1eae585786252e4057338cae57e6439bb58fa0dd90e23c07d25",
+        "bytes": 3337
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/test-layout.mjs",
+        "sha256": "da8581e621afa20a5562686646236d0b1d82afcf2462661fd01af163e79f7067",
+        "bytes": 2976
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/test-projection.mjs",
+        "sha256": "40a3b4fb806dccb1b8a367eadad9f5cdae99dca0bb55bd391f4c4aa32c7d6400",
+        "bytes": 3542
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/test-provenance.mjs",
+        "sha256": "520a69fd6b1fcb06258bd3f248f3087454e93830041fecd01f22bb41b65becc4",
+        "bytes": 1655
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/test-string-eq.mjs",
+        "sha256": "e3300bb78770907b2aeba25bc6f04405d772a0897be658e8a0d9a4b068623839",
+        "bytes": 1766
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/test-string-primitives.mjs",
+        "sha256": "1e3dd2f63233456f68f8754299b5a57ce4327923e5eb0a7da8306a6d40df49ce",
+        "bytes": 2721
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/test-validation.mjs",
+        "sha256": "d6a99b64a880c8f329759878bf23d47df9fcd0071be77605ee6a6f7ecaa4ee55",
+        "bytes": 2142
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/test.mjs",
+        "sha256": "129cce560b5c7a4795d62d1aceb5ac3a0b8faef1166c0215d82823a548485b06",
+        "bytes": 5257
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/js/validate.bend",
+        "sha256": "f8fc315bf80dabbf8afd1b6ced8e7c322b8ef96d73859d47e01c4b317afb72a0",
+        "bytes": 11066
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/native/README.md",
+        "sha256": "715e13e19f9d7b4d08a5c142eb1c87b6a71b9977245bd4ff59209816de36d9e4",
+        "bytes": 4349
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/native/array.bend",
+        "sha256": "4e1d5c9d282ba746ac1e98df470411d477bf1449b5621c3ad413f01e883d9149",
+        "bytes": 1814
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/native/book.bend",
+        "sha256": "180ee53af86a59df8efcc131d4f22b0ca6f5f9980dd222259f2941fbef1e11a2",
+        "bytes": 14294
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/native/bridge.bend",
+        "sha256": "361565a6d77450760786d36bf8afa863f47796f31f8cce493b4defe632af811a",
+        "bytes": 23252
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/native/direct.bend",
+        "sha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5",
+        "bytes": 4200
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/native/emit.bend",
+        "sha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a",
+        "bytes": 5084
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/native/erase.bend",
+        "sha256": "8f536cdfbca91b26bf426b3c8c5f42106fc0e18af7bfd2550ba73e7dab5530ec",
+        "bytes": 3528
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/native/fixtures/override_add.bend",
+        "sha256": "a3b434fd37f3f349d08eded47348b7c0f536c30bc66d65d7acd560d29a634e22",
+        "bytes": 221
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/native/fixtures.mjs",
+        "sha256": "54c0f615bdbd6d2b8976a157012b6c38c597d578820787937e331f91c3772d31",
+        "bytes": 5112
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/native/foreign.bend",
+        "sha256": "ed7a06662072e73d45d10b1898599936b106dc22956a4fceea8d04ac22fb6d3c",
+        "bytes": 4010
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/native/identity.bend",
+        "sha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a",
+        "bytes": 2476
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/native/intrinsic.bend",
+        "sha256": "8acf8c4e083b55cc33ef323552963b254ac310c22e7d8b5e3b82253776892ab0",
+        "bytes": 4905
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/native/ir.bend",
+        "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b",
+        "bytes": 929
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/native/layout.bend",
+        "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b",
+        "bytes": 135
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/native/manifest.txt",
+        "sha256": "6b80b0ecbaa914e3fd6763be9f30434c4224920afd31e6b6a500c5070a358f33",
+        "bytes": 201
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/native/parallel.bend",
+        "sha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722",
+        "bytes": 5003
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/native/pattern.bend",
+        "sha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4",
+        "bytes": 5324
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/native/show.bend",
+        "sha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d",
+        "bytes": 6723
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/native/tables.bend",
+        "sha256": "edd92590e285d2a6158cbd9d9a465d8bd55cbbab9ee4cbcbb018ece1cccc506a",
+        "bytes": 8586
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/native/tests.mjs",
+        "sha256": "0623bfc95123e8b11bf345cc7171f7582c9dad2fa4db27fce8265cc7b5c1ab86",
+        "bytes": 11184
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/native/text.bend",
+        "sha256": "20ca7aa5627b698771340d4a2e944caef9b1d100d0f2478a75a622b43a4d647b",
+        "bytes": 2545
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/back/native/validate.bend",
+        "sha256": "d0c1e75c5dbda3d2e65ea227667191252c49f71b63f0765c358c2041a0f484bb",
+        "bytes": 2859
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/check/annotate.bend",
+        "sha256": "1912e5d177514733e706297fbb53e730c1f7a9edc91ffb06d2b1de7e2547648c",
+        "bytes": 10866
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/check/kernel.bend",
+        "sha256": "da7ee29f9755f09acd9f89fcfd37465b52ab8778971200c946c70e50eb5b4132",
+        "bytes": 49255
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/check/prefix.bend",
+        "sha256": "ceabf77fb49b58910d83fa896899061643c4c105f29e70bd87d3f73be873783d",
+        "bytes": 3037
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/check/quantity.bend",
+        "sha256": "b4a8ca1f8dff10f4f64397ea53bbbe272bb32400e993b1077d284ec1d8a70b4d",
+        "bytes": 4069
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/check/specialize.bend",
+        "sha256": "76e0f9249ae15cc0734a8e9d2e75677794e2eb5464c7756a19daff8b8217e7ee",
+        "bytes": 16212
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/compiler.bend",
+        "sha256": "a7f64505c53a6af2cd4beeb363cb650971487254f758612a446cf44c2903733d",
+        "bytes": 40040
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/compiler.json",
+        "sha256": "ab7eea752c873a2f3948c2343087016888725248dfaab4d42689d9291ea58ddc",
+        "bytes": 1985
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/core/graph.bend",
+        "sha256": "51a4afb648eb064d78b50badd8fb264fc55c182f9c22299d72ce637a891bed89",
+        "bytes": 14315
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/core/index.bend",
+        "sha256": "d6a80b85b6006f7750545dffe49aa0caf181fd0f555ac251be56b6c886677223",
+        "bytes": 10030
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/core/normalize.bend",
+        "sha256": "d4d8f4eea15aa8a1dfe188fb1689cb6a7e38071b6baf132bb88f388e235cdfb1",
+        "bytes": 19597
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/core/pretty.bend",
+        "sha256": "40b4e6ca55bf11009881b893c7959dd52cc64bbc6cb2dbb607e94dbab69fdedc",
+        "bytes": 16800
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/core/reach.bend",
+        "sha256": "b7ead8697a4da7e57a9b047635217786aa5bb4644b5c35298698b71ad35a45d3",
+        "bytes": 8060
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/core/term.bend",
+        "sha256": "5965089581fbff229fa5395c865bfc1539dd43e730d5f9f563b010638637234b",
+        "bytes": 18143
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/diagnostic/README.md",
+        "sha256": "c911467a770fdb3835c812f2bbacaaed7cbb4767da8cc49bcc00169010a0d7f1",
+        "bytes": 5260
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/diagnostic/frontend.bend",
+        "sha256": "493baf9ae6a68a7cab2d65b3bb9ccb3af7de7834ffca6687db3c106b7b911475",
+        "bytes": 10904
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/diagnostic/kernel-instrumentation.patch",
+        "sha256": "273a3e1d126ad4591aafd2a2f5d20c41fcac5fae69b17fdabe75b5686cafd698",
+        "bytes": 7844
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/diagnostic/model.bend",
+        "sha256": "3c699ec70ef36700520658555bc5df025880691c44633cabb9e5719b60fc9c1c",
+        "bytes": 754
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/diagnostic/produce.bend",
+        "sha256": "9518cb01c0c7636654bfa14dd332ac49756572ba975c7789c865e9cd8cf75c80",
+        "bytes": 8073
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/diagnostic/render.bend",
+        "sha256": "695f41ace13e08756273c317659a419deee5fc79d413bd58e8711f124370276c",
+        "bytes": 7804
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/diagnostic/trace.bend",
+        "sha256": "0e03e2827415d082d295976b57564c7b0bd872f7c81229e653d7e0ddda62b10f",
+        "bytes": 6819
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/driver/api.bend",
+        "sha256": "6c18e42a07628f4b54c08eb9d6d5f5912be3569775d380136f99bb8d1a0f133d",
+        "bytes": 3363
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/driver/report.bend",
+        "sha256": "15f0985da866b948252490ec2f1b90aed9d36fb24b93eab24826648cc36e6df8",
+        "bytes": 2593
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/front/declarations.bend",
+        "sha256": "104557f70d797d22b56fe23b5c4f542d11d5d80ab39e90855e305bfacb14355b",
+        "bytes": 31675
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/front/elaborate.bend",
+        "sha256": "1a09499f062c5924873749dbb6ec40379c357bb86e973e3135e3c86508e3992c",
+        "bytes": 20008
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/front/families.bend",
+        "sha256": "717347c88e836f426a0e52d478bfc5fd909c63a99207f9a58351cded1bb74226",
+        "bytes": 12189
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/front/flatten.bend",
+        "sha256": "c696c0a79a5f47eb0574d481a1016fcb42d5f35fcdf6cbcaf6b7372ee832ab76",
+        "bytes": 8896
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/front/fresh_work.bend",
+        "sha256": "769054fd4874c6e884c4106cbe5c021f508e1d46e90330646d864a92a94e75f1",
+        "bytes": 7444
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/front/freshen.bend",
+        "sha256": "a36e390702577bcfd2e3f1d5e97c9d1d5524354eaffca1fdf895ccfa388b017f",
+        "bytes": 1187
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/front/lexer.bend",
+        "sha256": "485778949ab65562c173ae406668531f96ba193a1cc050341fc6bb48a57d8b8f",
+        "bytes": 11648
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/front/literals_arrays.bend",
+        "sha256": "33245ae678904c5f59c47e7ac6214e4a94d74e4bca0bc28d768fb56441ac537d",
+        "bytes": 7559
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/front/parallel.bend",
+        "sha256": "261a86de0da276830b485a53005d219b0bffce921e94214faf18def5ad0fe117",
+        "bytes": 4738
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/front/parser.bend",
+        "sha256": "226ba437e7193fc4b6a62a5f80dc680bd43240e4f45ef1ed3c29f607671bd90e",
+        "bytes": 33209
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/front/sugar.bend",
+        "sha256": "fe3b1e6f01d87c839321941e35229a46627e5aba2b67a581edc83b2ebfd0388f",
+        "bytes": 8446
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/front/unicode.bend",
+        "sha256": "ec396d509487efd85116c6931419de71824d046be72340e456f7c19d6aa95fca",
+        "bytes": 4606
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/front/validate.bend",
+        "sha256": "678980d566eada7ab1ee72d2c166373abb4fa74b17e142e5c8eba4ab09d1790f",
+        "bytes": 13774
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/load/graph.bend",
+        "sha256": "e82313297977412338a49b102494b3e1db425d53dbc9a6263eff5b7aef5a6796",
+        "bytes": 20531
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/load/imports.bend",
+        "sha256": "1984fa4d79f387c3e538f0980d963b5838e248df57c78f18ac54ba9fbb417238",
+        "bytes": 4267
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/load/modules.bend",
+        "sha256": "1e0b6ee547c02d76aaeedbe317efb74eab18a0f227aa96ad0729ed79f6593308",
+        "bytes": 15796
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/load/paths.bend",
+        "sha256": "a9fc17a8af04c1958d1f11e8c1c5b7c2d3eb925dd9075e6c77de4bdb3521f2a2",
+        "bytes": 2186
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/load/seed.bend",
+        "sha256": "ca4cb677af632c47c13792ede10d4e791c85b5cc6c756aacf230861d7bfa4c21",
+        "bytes": 5224
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/js/README.md",
+        "sha256": "83e65be8ce5db054999d6bd70adbbb83b2c11cf77fed19f905349716b48db713",
+        "bytes": 1133
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/js/base.mjs",
+        "sha256": "9ccfa9c8db7abd1a08520f0df27feb2b3163fd9d2929bf4db8dcbe5de9015eb3",
+        "bytes": 15851
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/js/build.mjs",
+        "sha256": "4be85d590521e9453f0e7eb46f7b7d9d35bfd803510089c23db192c09d2b2a12",
+        "bytes": 474
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/js/core.mjs",
+        "sha256": "9d3757f008f6751373e8ac9b4868a8bfef5a58e2ef1d20fdb2a55b1df858ef9e",
+        "bytes": 8338
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/js/effects.mjs",
+        "sha256": "f313addb82d317d85a5012d443e630b3166ce4619f9cabb5c27e1fea1d20cfa4",
+        "bytes": 10766
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/js/foreign.mjs",
+        "sha256": "024d917ed34e44d44e889f19576ea05c7db17529dc81e683e8653f8a1ea9ea15",
+        "bytes": 4864
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/js/readback.mjs",
+        "sha256": "de7b7930f6e4167b7e44aaef6621b31d53b6d10e23f6e1a93366a214118dee69",
+        "bytes": 2516
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/js/test-apply.mjs",
+        "sha256": "ca8e877deb0db259f9c22bb5dc17bb774a413c1018796d08f63800ca834c82c1",
+        "bytes": 1930
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/js/test-phase8.mjs",
+        "sha256": "e6992665eeb60357ae27351b9bd5dc76c07b83619090e0bfcf2f9d1b45b1b0a5",
+        "bytes": 5798
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/js/test.mjs",
+        "sha256": "abbb1a4a34b8c0a9764966dd47e56bbeddf06d5e19bc626eb91fa3f94a80a440",
+        "bytes": 3660
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/LICENSE",
+        "sha256": "0beb288abd3d067e231f3fbe7df1f8ee37344061fc67f22018150a19e4b26c35",
+        "bytes": 11344
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/ORIGIN.md",
+        "sha256": "cc7d2b0e50253e3ccc3f88ed5c92134b3faba5a8c6eb86ae7aa9c7b5e7dd7073",
+        "bytes": 843
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/args.c",
+        "sha256": "7209a5fa11396fa8b0667a6738c913c40f554797e442c847a25e13a5f69676e0",
+        "bytes": 351
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/audio.c",
+        "sha256": "049ac826d50def604c18cd4211d67573c4e27f4bc2600ce6c22e0dbe60c3783f",
+        "bytes": 6832
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/audio_close.c",
+        "sha256": "c67f807f7400065f20045392d87ef7e73af209f1aa0ee34a1eb35d568d94feb5",
+        "bytes": 5368
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/audio_open.c",
+        "sha256": "65df9665a396a7976b4fdfa556a73ec187e3b5e669e47888615cb0c63a42ce41",
+        "bytes": 5606
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/audio_write.c",
+        "sha256": "0eaaef9f111e40224f4adc4c8978b9e35f08613996381ac9b72641e2aeb608c4",
+        "bytes": 5898
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/chan.c",
+        "sha256": "0c29532170ec3e400c9419b1e94474b769f7b8df262a7010b3b0f64f592683ac",
+        "bytes": 2051
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/chan_close.c",
+        "sha256": "d88e91ca179bfcdbf8580e75f1dbea4c5f240d3fbdb980a2ee24d1e662ff478a",
+        "bytes": 306
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/chan_new.c",
+        "sha256": "41d722added898f3a9eae186be969a7ca7f01bc3235331663b13319d14fb7ff2",
+        "bytes": 203
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/chan_recv.c",
+        "sha256": "7baa193d4adb09865a9397e84d41ec4fe7097cdd46150ed44513c76da126d0d1",
+        "bytes": 665
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/chan_send.c",
+        "sha256": "f12ade43cc52af51e13d35a93221b129db11fbfa7470f38557b1c0c9ef22caa4",
+        "bytes": 616
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/file_close.c",
+        "sha256": "befd465a31b88936d772222d26b1019ea7330e59e6327d8ba90584c85e8b2fb3",
+        "bytes": 243
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/file_open.c",
+        "sha256": "f42a8bcc142b9003c7f6ca99287ca09c14f9efcbe15dea929c90c2fa062746e7",
+        "bytes": 1113
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/file_read.c",
+        "sha256": "6af44266ca83ab55b2dd3bf20c17eea6bfb7a7a678908cfbf3579adef31fb678",
+        "bytes": 2130
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/file_read_at.c",
+        "sha256": "689499b396a634a3ebb21ad2cc3846f1979b8f2747c07c15a38ee2f07c904b1c",
+        "bytes": 1009
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/file_read_bytes.c",
+        "sha256": "810e08bfe4439e71dc4bae03eeae680689af8092e144b53faacd75df198ef93d",
+        "bytes": 987
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/file_size.c",
+        "sha256": "09906f3839f0f0fba1eea944c948e35f8e03627dc2b78e8debb43e0556f5d5d8",
+        "bytes": 771
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/file_write.c",
+        "sha256": "565dff20204e1e535e188b983cda6d6001d0e5dc37cfdf981960c07a9e154ee2",
+        "bytes": 1423
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/file_write_bytes.c",
+        "sha256": "80784b7308c00f74ffae50ec0d8278227250edb8edd71a9e33c701482438f097",
+        "bytes": 1320
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/get_env.c",
+        "sha256": "62255e46c7e0c43baea62366830c4a5badb11cba517c0aa17f952f432f46d4a3",
+        "bytes": 646
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/listener_close.c",
+        "sha256": "11247352a8311b066fff27ed85958598214ece80f23a7ac59ee981ea569351ec",
+        "bytes": 267
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/now.c",
+        "sha256": "da5fde65701c4fadc7560625c9615b4d60b2eefbd7b6bbe1aedda61887b825b9",
+        "bytes": 198
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/print.c",
+        "sha256": "709500d2ace6e2eaeec0f5f1e4373d4ec5e402b3c1e289bd70dfef7e2a635b26",
+        "bytes": 397
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/print_err.c",
+        "sha256": "72781d2adc88a4791d5530c9deff20824c38d5aa1ba43fb05aaa6a697e19f4b6",
+        "bytes": 236
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/process_run.c",
+        "sha256": "c12e5a182de9fdc5ef83d65f9f7c2c5746865d1049e5f3700438f8ac317b17c3",
+        "bytes": 9149
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/random_u32.c",
+        "sha256": "10ef9045dcd539bc0ff609e61c77d585fb998ceb48656944d62727716263ee2d",
+        "bytes": 741
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/sleep.c",
+        "sha256": "77e212d3baeec0b3dc0a9c7f630b43094986e433c049049d354a9681719e2ecd",
+        "bytes": 206
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/socket_close.c",
+        "sha256": "6e2fd1717a2fab133813af88fc0f5b5a8ce44c23bf411f269e71aac38671562e",
+        "bytes": 255
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/spawn.c",
+        "sha256": "fb3dac6efa993c51f9d7a668cf8da2cac1148380b72cc18a558cba9ba70c01f3",
+        "bytes": 218
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/tcp_accept.c",
+        "sha256": "e0f0cf4199c278aec722e3c9b81ff879fcec31ec96ebaf66a954db673cf535f8",
+        "bytes": 909
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/tcp_connect.c",
+        "sha256": "ae1515d0ff57215b03888e76cfe4ee485750ec226c28eed05d56e417f0f84f58",
+        "bytes": 1294
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/tcp_listen.c",
+        "sha256": "6212a0bc400e960e8b486f85a091cd4964f92b0546475481271c0f369a234d8c",
+        "bytes": 1013
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/tcp_poll.c",
+        "sha256": "9f4adfe0f4b8e025783b07fa4ba9fec619a5938135dc5f4bb8c9cf7079e82b37",
+        "bytes": 1301
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/tcp_recv.c",
+        "sha256": "68d3467889475566a257c5e04e0502604c4bb11635a26c25cb7ea62c6bdc2482",
+        "bytes": 1768
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/tcp_send.c",
+        "sha256": "503c8cdc1f885420057c46e6d9ed4ede6953805a13f8894e069f1b944f630c81",
+        "bytes": 1558
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/thread_count.c",
+        "sha256": "39515c611a2b42687fb670179f3d9032af1878727356754959061125d40fa7e7",
+        "bytes": 481
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/udp_bind.c",
+        "sha256": "b30150927ffde3162d62012b67d43d95c79754f9539279628d2ad5bc9c040408",
+        "bytes": 882
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/udp_poll.c",
+        "sha256": "66504dbbc09ab346e04cca7a22c60aacc8866555ac143088603cb4b568a64f71",
+        "bytes": 913
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/udp_recv_from.c",
+        "sha256": "140a281bca2348566030e092f3c27591893b5d945e57e2965863d02c2e6c0a65",
+        "bytes": 1165
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/udp_send_to.c",
+        "sha256": "8704fe7e5770af7e4dcbe24f0fecf4cfbfe61a0a69a77b129df9965e306fae8f",
+        "bytes": 1214
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/window.c",
+        "sha256": "7bda00a55917f11ff1fa532b1406ec5c1a8a7eef6f6ba2a933dd958256e0a409",
+        "bytes": 23879
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/window_close.c",
+        "sha256": "655afbdf8a5f7fa80963bad64b43c8dfe7ec1f80896db381792d0d6933f3be2d",
+        "bytes": 916
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/window_frame.c",
+        "sha256": "01dc840b2145efb8c91b4ffe7360e3520753f59c42e122703c3a6190c50e1aa4",
+        "bytes": 11055
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/window_open.c",
+        "sha256": "1be9c669b47a44716b9cef1aafaafa1ed2a2268730fab475efa762cf368fc21d",
+        "bytes": 6927
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/window_set_title.c",
+        "sha256": "cd60a39ca4084794f3e7aef939de8c7e02ef0ae2158bf52a69f93c21a59ebba5",
+        "bytes": 1141
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/effs/write.c",
+        "sha256": "c1bcd80d50c4901027c801cdd8d7464ea3029361115ac47044c992ce2235a8ac",
+        "bytes": 370
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime/native/runtime.c",
+        "sha256": "59d293db627c735c32411a40e952e3f2958a9176048d540273486fb21d1b44e7",
+        "bytes": 77695
+      },
+      {
+        "file": "selfhost/build/phase21/group-range-source-02/project/src/runtime.mjs",
+        "sha256": "1766d6d674f5c64eb481a647fe1d7bf751529d6861d4d4f4697999f005e772f0",
+        "bytes": 42401
+      }
+    ]
+  },
+  "candidate": {
+    "sourceFiles": 153,
+    "compilerModules": 60,
+    "moduleLines": 15569,
+    "moduleBytes": 578911,
+    "defs": 1686,
+    "laws": 638,
+    "types": 68,
+    "sourceMembership": [
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/README.md",
+        "sha256": "bd9fdb3506be1271d18712d05872b1aa04962bd7486c606a4d0df4958492f3bb",
+        "bytes": 7954
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/benchmark-build-parser.mjs",
+        "sha256": "8c4c285c66e8f92163b9b26d2d116d64bfa3238540f2cf8ddddd24d06e7511bf",
+        "bytes": 1624
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/benchmark-parser.mjs",
+        "sha256": "f53eb33edebb061e4fee9740c47c796bd217066b1adec2410aba9636b4cdbccb",
+        "bytes": 2190
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/choice.bend",
+        "sha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3",
+        "bytes": 3583
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/emit.bend",
+        "sha256": "c30903559f29d3c8bbd22f48026b4a19a1644a2278ed371c4f423691dd26943f",
+        "bytes": 29073
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/experiments/README.md",
+        "sha256": "23d422e1031753179859b172741acb2a3b3b34ae03b5cccb04a705b9f0ed3575",
+        "bytes": 1362
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/experiments/allocation-performance.json",
+        "sha256": "74bc44755908cfcfec076a5aef4a007fe9d840095e10e4345fc0fe3cb7d71374",
+        "bytes": 4868
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/experiments/constructor-provenance.json",
+        "sha256": "247396a86c58b5c58305896f7e4be9122d930fdca8bd6aaf0b927da8a99eff11",
+        "bytes": 4116
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/experiments/deep-closures-report.json",
+        "sha256": "2e2db323f64ab6a31ad36f2c1b57019ebb4557d173b1e60f07804080f33401a8",
+        "bytes": 1272
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/experiments/deep-closures.patch",
+        "sha256": "1824a23a67d4114e79bb7c4074983a94cff8a46ca7c21d8415fceec0f90811ba",
+        "bytes": 7733
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/experiments/full-js-summary.json",
+        "sha256": "be70707873221a8b40531d9da4aeed354210ef10e09a5eab7b39c8684f1d3ba7",
+        "bytes": 815
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/experiments/leading-lambda-cache.patch",
+        "sha256": "225af951d9f5d479c23f5a27fe9e085450ada7930b7211cf468ad8f299de3679",
+        "bytes": 1485
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/experiments/lexical-benchmark.json",
+        "sha256": "662459ab0252971ec8f639bf12bd10e615132dc9a81709f3c470efd24a28f377",
+        "bytes": 1522
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/experiments/lexical.patch",
+        "sha256": "e8f9dc190a8e413dcbea167e7b85d3bc318e0e263e9c384df0cc31bc0a5af6b5",
+        "bytes": 9204
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/experiments/runtime-fast.patch",
+        "sha256": "c376c9b9cd54c03e375382a0385c60ff03ce57d6aef849c9b6b707708972b9cf",
+        "bytes": 1753
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/experiments/runtime-hosts.json",
+        "sha256": "7b0b718b42ee54ac20d152fd5f54da09a46d76850073a46236180a824525458b",
+        "bytes": 4640
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/foreign.bend",
+        "sha256": "0f397f84a989c6fc9a52eaf962742e673cdba243864c0bbe7c16ce4ffd8eb065",
+        "bytes": 5794
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/literals.bend",
+        "sha256": "2c4488a4f37010253a54e3745317c685ec77067475d471e577687acfa9a16776",
+        "bytes": 5544
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/projection.bend",
+        "sha256": "f534d7c74f396527a9d3e3a06bececebcf0b68d92400ccf46b8125e82735ef09",
+        "bytes": 2355
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/survey.mjs",
+        "sha256": "3a428111c0cd236a1382103e5f0e7cc9eb5d1a28f8a75cd74b2c1cb2b3156a24",
+        "bytes": 2193
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/test-choice.mjs",
+        "sha256": "93d1ed44f2cba80367fbbce182158641435940e8b8f591360a802d1428e70d26",
+        "bytes": 4109
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/test-foreign.mjs",
+        "sha256": "9eef0426b565d4b827d488e9e2f48e39a1e46fca4bf999e472f55327977f65cc",
+        "bytes": 4531
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/test-global-initializers.mjs",
+        "sha256": "9c7609e7ef63c1eae585786252e4057338cae57e6439bb58fa0dd90e23c07d25",
+        "bytes": 3337
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/test-layout.mjs",
+        "sha256": "da8581e621afa20a5562686646236d0b1d82afcf2462661fd01af163e79f7067",
+        "bytes": 2976
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/test-projection.mjs",
+        "sha256": "40a3b4fb806dccb1b8a367eadad9f5cdae99dca0bb55bd391f4c4aa32c7d6400",
+        "bytes": 3542
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/test-provenance.mjs",
+        "sha256": "520a69fd6b1fcb06258bd3f248f3087454e93830041fecd01f22bb41b65becc4",
+        "bytes": 1655
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/test-string-eq.mjs",
+        "sha256": "e3300bb78770907b2aeba25bc6f04405d772a0897be658e8a0d9a4b068623839",
+        "bytes": 1766
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/test-string-primitives.mjs",
+        "sha256": "1e3dd2f63233456f68f8754299b5a57ce4327923e5eb0a7da8306a6d40df49ce",
+        "bytes": 2721
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/test-validation.mjs",
+        "sha256": "d6a99b64a880c8f329759878bf23d47df9fcd0071be77605ee6a6f7ecaa4ee55",
+        "bytes": 2142
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/test.mjs",
+        "sha256": "129cce560b5c7a4795d62d1aceb5ac3a0b8faef1166c0215d82823a548485b06",
+        "bytes": 5257
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/js/validate.bend",
+        "sha256": "f8fc315bf80dabbf8afd1b6ced8e7c322b8ef96d73859d47e01c4b317afb72a0",
+        "bytes": 11066
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/native/README.md",
+        "sha256": "715e13e19f9d7b4d08a5c142eb1c87b6a71b9977245bd4ff59209816de36d9e4",
+        "bytes": 4349
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/native/array.bend",
+        "sha256": "4e1d5c9d282ba746ac1e98df470411d477bf1449b5621c3ad413f01e883d9149",
+        "bytes": 1814
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/native/book.bend",
+        "sha256": "180ee53af86a59df8efcc131d4f22b0ca6f5f9980dd222259f2941fbef1e11a2",
+        "bytes": 14294
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/native/bridge.bend",
+        "sha256": "361565a6d77450760786d36bf8afa863f47796f31f8cce493b4defe632af811a",
+        "bytes": 23252
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/native/direct.bend",
+        "sha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5",
+        "bytes": 4200
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/native/emit.bend",
+        "sha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a",
+        "bytes": 5084
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/native/erase.bend",
+        "sha256": "8f536cdfbca91b26bf426b3c8c5f42106fc0e18af7bfd2550ba73e7dab5530ec",
+        "bytes": 3528
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/native/fixtures/override_add.bend",
+        "sha256": "a3b434fd37f3f349d08eded47348b7c0f536c30bc66d65d7acd560d29a634e22",
+        "bytes": 221
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/native/fixtures.mjs",
+        "sha256": "54c0f615bdbd6d2b8976a157012b6c38c597d578820787937e331f91c3772d31",
+        "bytes": 5112
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/native/foreign.bend",
+        "sha256": "ed7a06662072e73d45d10b1898599936b106dc22956a4fceea8d04ac22fb6d3c",
+        "bytes": 4010
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/native/identity.bend",
+        "sha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a",
+        "bytes": 2476
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/native/intrinsic.bend",
+        "sha256": "8acf8c4e083b55cc33ef323552963b254ac310c22e7d8b5e3b82253776892ab0",
+        "bytes": 4905
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/native/ir.bend",
+        "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b",
+        "bytes": 929
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/native/layout.bend",
+        "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b",
+        "bytes": 135
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/native/manifest.txt",
+        "sha256": "6b80b0ecbaa914e3fd6763be9f30434c4224920afd31e6b6a500c5070a358f33",
+        "bytes": 201
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/native/parallel.bend",
+        "sha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722",
+        "bytes": 5003
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/native/pattern.bend",
+        "sha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4",
+        "bytes": 5324
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/native/show.bend",
+        "sha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d",
+        "bytes": 6723
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/native/tables.bend",
+        "sha256": "edd92590e285d2a6158cbd9d9a465d8bd55cbbab9ee4cbcbb018ece1cccc506a",
+        "bytes": 8586
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/native/tests.mjs",
+        "sha256": "0623bfc95123e8b11bf345cc7171f7582c9dad2fa4db27fce8265cc7b5c1ab86",
+        "bytes": 11184
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/native/text.bend",
+        "sha256": "20ca7aa5627b698771340d4a2e944caef9b1d100d0f2478a75a622b43a4d647b",
+        "bytes": 2545
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/back/native/validate.bend",
+        "sha256": "d0c1e75c5dbda3d2e65ea227667191252c49f71b63f0765c358c2041a0f484bb",
+        "bytes": 2859
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/check/annotate.bend",
+        "sha256": "1912e5d177514733e706297fbb53e730c1f7a9edc91ffb06d2b1de7e2547648c",
+        "bytes": 10866
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/check/kernel.bend",
+        "sha256": "da7ee29f9755f09acd9f89fcfd37465b52ab8778971200c946c70e50eb5b4132",
+        "bytes": 49255
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/check/prefix.bend",
+        "sha256": "ceabf77fb49b58910d83fa896899061643c4c105f29e70bd87d3f73be873783d",
+        "bytes": 3037
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/check/quantity.bend",
+        "sha256": "b4a8ca1f8dff10f4f64397ea53bbbe272bb32400e993b1077d284ec1d8a70b4d",
+        "bytes": 4069
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/check/specialize.bend",
+        "sha256": "76e0f9249ae15cc0734a8e9d2e75677794e2eb5464c7756a19daff8b8217e7ee",
+        "bytes": 16212
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/compiler.bend",
+        "sha256": "a7f64505c53a6af2cd4beeb363cb650971487254f758612a446cf44c2903733d",
+        "bytes": 40040
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/compiler.json",
+        "sha256": "3f119430ca47086e8a362eea41837a990616fbd609aab20665006b5d6d342ac6",
+        "bytes": 2018
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/core/graph.bend",
+        "sha256": "51a4afb648eb064d78b50badd8fb264fc55c182f9c22299d72ce637a891bed89",
+        "bytes": 14315
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/core/index.bend",
+        "sha256": "32a4f2772c865f9ed9743f1ece27d5fafd1898724d5f268186590c938b038ea2",
+        "bytes": 10197
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/core/normalize.bend",
+        "sha256": "d4d8f4eea15aa8a1dfe188fb1689cb6a7e38071b6baf132bb88f388e235cdfb1",
+        "bytes": 19597
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/core/pretty.bend",
+        "sha256": "40b4e6ca55bf11009881b893c7959dd52cc64bbc6cb2dbb607e94dbab69fdedc",
+        "bytes": 16800
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/core/reach.bend",
+        "sha256": "b7ead8697a4da7e57a9b047635217786aa5bb4644b5c35298698b71ad35a45d3",
+        "bytes": 8060
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/core/term.bend",
+        "sha256": "5965089581fbff229fa5395c865bfc1539dd43e730d5f9f563b010638637234b",
+        "bytes": 18143
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/diagnostic/README.md",
+        "sha256": "c911467a770fdb3835c812f2bbacaaed7cbb4767da8cc49bcc00169010a0d7f1",
+        "bytes": 5260
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/diagnostic/frontend.bend",
+        "sha256": "fdd07e6e3df5f999f2d162a4d3186cd8ae13102c8351710edab5291a2f80489f",
+        "bytes": 10910
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/diagnostic/kernel-instrumentation.patch",
+        "sha256": "273a3e1d126ad4591aafd2a2f5d20c41fcac5fae69b17fdabe75b5686cafd698",
+        "bytes": 7844
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/diagnostic/model.bend",
+        "sha256": "3c699ec70ef36700520658555bc5df025880691c44633cabb9e5719b60fc9c1c",
+        "bytes": 754
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/diagnostic/produce.bend",
+        "sha256": "9518cb01c0c7636654bfa14dd332ac49756572ba975c7789c865e9cd8cf75c80",
+        "bytes": 8073
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/diagnostic/render.bend",
+        "sha256": "695f41ace13e08756273c317659a419deee5fc79d413bd58e8711f124370276c",
+        "bytes": 7804
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/diagnostic/trace.bend",
+        "sha256": "0e03e2827415d082d295976b57564c7b0bd872f7c81229e653d7e0ddda62b10f",
+        "bytes": 6819
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/driver/api.bend",
+        "sha256": "6c18e42a07628f4b54c08eb9d6d5f5912be3569775d380136f99bb8d1a0f133d",
+        "bytes": 3363
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/driver/report.bend",
+        "sha256": "15f0985da866b948252490ec2f1b90aed9d36fb24b93eab24826648cc36e6df8",
+        "bytes": 2593
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/front/contextual.bend",
+        "sha256": "fe50911e010c977f50e84233b1569e8042a18d076595b1bb151da56df5020146",
+        "bytes": 29156
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/front/declarations.bend",
+        "sha256": "902f6aec346b9d5ef5d8df64266c77c7dfcb345a40197ee463ba155ddc1b7b8c",
+        "bytes": 30720
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/front/elaborate.bend",
+        "sha256": "8537f483259d48fa1d710915d6e8e09916faa540560379ee550a7077f391dc1e",
+        "bytes": 7941
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/front/families.bend",
+        "sha256": "22b6e9b1ca132ed2d6f2cf91507e221f09cdda1aeab5931e8cf099e934bc9d2f",
+        "bytes": 3849
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/front/flatten.bend",
+        "sha256": "d3ba8687f7dcd303dee847a90e3fa92b9a234d97cdcd3893de8242c6d2aa69cf",
+        "bytes": 6450
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/front/fresh_work.bend",
+        "sha256": "043d3b737cef4b932b7de8ef161dc88ba867ba6a8056e3662edfdcf4a2d797ed",
+        "bytes": 7736
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/front/freshen.bend",
+        "sha256": "d0fed135fe878987770786ef0c50dd09efe2cce390beb7a911bcfc8468d5607d",
+        "bytes": 1285
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/front/lexer.bend",
+        "sha256": "aa9d726b6b284deba84dbccc77a01a8143dd89dab70cf487e1ddc8d589380440",
+        "bytes": 13265
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/front/literals_arrays.bend",
+        "sha256": "61c35313447d82f01107765c84b203a0e1ea80fd633452a306164e527ae9dd2e",
+        "bytes": 11862
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/front/parallel.bend",
+        "sha256": "b7c38f74d9f339f21fa00c5194078a0bfc41a948d1adaa907d00df64045c2f1c",
+        "bytes": 3238
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/front/parser.bend",
+        "sha256": "c1790685aea7c71430873d65c2d91996778f443aee0098e54c656fe10177ba28",
+        "bytes": 32003
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/front/sugar.bend",
+        "sha256": "934b07ac5fe7f82508c26fb3371528afeda5c2a59f5d76ab88479ee4f9aa341d",
+        "bytes": 14120
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/front/unicode.bend",
+        "sha256": "bfd4407aa83614ae8398c9ce451f729cbcba457f2ef64774fea99f1824b5dd96",
+        "bytes": 4481
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/front/validate.bend",
+        "sha256": "acd106c36eabfd71e9549bb569a82b4b1d86330fdc3b173126049aa6e08f6cb0",
+        "bytes": 10295
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/load/graph.bend",
+        "sha256": "9317e9fe5224c447c50e5339469a244dd7036c00801d9750687f8dfe1de5fdb3",
+        "bytes": 16909
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/load/imports.bend",
+        "sha256": "b878da5169a4a39d35a236ff5128dc42735fea0707195cf621ae651c1f13e9b1",
+        "bytes": 4211
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/load/modules.bend",
+        "sha256": "a21635913621f8b6ea3c109b9c9cc94addc8889e952fc3e7af7887f700ccd33a",
+        "bytes": 10031
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/load/paths.bend",
+        "sha256": "a9fc17a8af04c1958d1f11e8c1c5b7c2d3eb925dd9075e6c77de4bdb3521f2a2",
+        "bytes": 2186
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/load/seed.bend",
+        "sha256": "ca4cb677af632c47c13792ede10d4e791c85b5cc6c756aacf230861d7bfa4c21",
+        "bytes": 5224
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/js/README.md",
+        "sha256": "83e65be8ce5db054999d6bd70adbbb83b2c11cf77fed19f905349716b48db713",
+        "bytes": 1133
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/js/base.mjs",
+        "sha256": "9ccfa9c8db7abd1a08520f0df27feb2b3163fd9d2929bf4db8dcbe5de9015eb3",
+        "bytes": 15851
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/js/build.mjs",
+        "sha256": "4be85d590521e9453f0e7eb46f7b7d9d35bfd803510089c23db192c09d2b2a12",
+        "bytes": 474
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/js/core.mjs",
+        "sha256": "9d3757f008f6751373e8ac9b4868a8bfef5a58e2ef1d20fdb2a55b1df858ef9e",
+        "bytes": 8338
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/js/effects.mjs",
+        "sha256": "f313addb82d317d85a5012d443e630b3166ce4619f9cabb5c27e1fea1d20cfa4",
+        "bytes": 10766
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/js/foreign.mjs",
+        "sha256": "024d917ed34e44d44e889f19576ea05c7db17529dc81e683e8653f8a1ea9ea15",
+        "bytes": 4864
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/js/readback.mjs",
+        "sha256": "de7b7930f6e4167b7e44aaef6621b31d53b6d10e23f6e1a93366a214118dee69",
+        "bytes": 2516
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/js/test-apply.mjs",
+        "sha256": "ca8e877deb0db259f9c22bb5dc17bb774a413c1018796d08f63800ca834c82c1",
+        "bytes": 1930
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/js/test-phase8.mjs",
+        "sha256": "e6992665eeb60357ae27351b9bd5dc76c07b83619090e0bfcf2f9d1b45b1b0a5",
+        "bytes": 5798
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/js/test.mjs",
+        "sha256": "abbb1a4a34b8c0a9764966dd47e56bbeddf06d5e19bc626eb91fa3f94a80a440",
+        "bytes": 3660
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/LICENSE",
+        "sha256": "0beb288abd3d067e231f3fbe7df1f8ee37344061fc67f22018150a19e4b26c35",
+        "bytes": 11344
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/ORIGIN.md",
+        "sha256": "cc7d2b0e50253e3ccc3f88ed5c92134b3faba5a8c6eb86ae7aa9c7b5e7dd7073",
+        "bytes": 843
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/args.c",
+        "sha256": "7209a5fa11396fa8b0667a6738c913c40f554797e442c847a25e13a5f69676e0",
+        "bytes": 351
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/audio.c",
+        "sha256": "049ac826d50def604c18cd4211d67573c4e27f4bc2600ce6c22e0dbe60c3783f",
+        "bytes": 6832
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/audio_close.c",
+        "sha256": "c67f807f7400065f20045392d87ef7e73af209f1aa0ee34a1eb35d568d94feb5",
+        "bytes": 5368
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/audio_open.c",
+        "sha256": "65df9665a396a7976b4fdfa556a73ec187e3b5e669e47888615cb0c63a42ce41",
+        "bytes": 5606
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/audio_write.c",
+        "sha256": "0eaaef9f111e40224f4adc4c8978b9e35f08613996381ac9b72641e2aeb608c4",
+        "bytes": 5898
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/chan.c",
+        "sha256": "0c29532170ec3e400c9419b1e94474b769f7b8df262a7010b3b0f64f592683ac",
+        "bytes": 2051
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/chan_close.c",
+        "sha256": "d88e91ca179bfcdbf8580e75f1dbea4c5f240d3fbdb980a2ee24d1e662ff478a",
+        "bytes": 306
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/chan_new.c",
+        "sha256": "41d722added898f3a9eae186be969a7ca7f01bc3235331663b13319d14fb7ff2",
+        "bytes": 203
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/chan_recv.c",
+        "sha256": "7baa193d4adb09865a9397e84d41ec4fe7097cdd46150ed44513c76da126d0d1",
+        "bytes": 665
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/chan_send.c",
+        "sha256": "f12ade43cc52af51e13d35a93221b129db11fbfa7470f38557b1c0c9ef22caa4",
+        "bytes": 616
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/file_close.c",
+        "sha256": "befd465a31b88936d772222d26b1019ea7330e59e6327d8ba90584c85e8b2fb3",
+        "bytes": 243
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/file_open.c",
+        "sha256": "f42a8bcc142b9003c7f6ca99287ca09c14f9efcbe15dea929c90c2fa062746e7",
+        "bytes": 1113
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/file_read.c",
+        "sha256": "6af44266ca83ab55b2dd3bf20c17eea6bfb7a7a678908cfbf3579adef31fb678",
+        "bytes": 2130
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/file_read_at.c",
+        "sha256": "689499b396a634a3ebb21ad2cc3846f1979b8f2747c07c15a38ee2f07c904b1c",
+        "bytes": 1009
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/file_read_bytes.c",
+        "sha256": "810e08bfe4439e71dc4bae03eeae680689af8092e144b53faacd75df198ef93d",
+        "bytes": 987
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/file_size.c",
+        "sha256": "09906f3839f0f0fba1eea944c948e35f8e03627dc2b78e8debb43e0556f5d5d8",
+        "bytes": 771
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/file_write.c",
+        "sha256": "565dff20204e1e535e188b983cda6d6001d0e5dc37cfdf981960c07a9e154ee2",
+        "bytes": 1423
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/file_write_bytes.c",
+        "sha256": "80784b7308c00f74ffae50ec0d8278227250edb8edd71a9e33c701482438f097",
+        "bytes": 1320
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/get_env.c",
+        "sha256": "62255e46c7e0c43baea62366830c4a5badb11cba517c0aa17f952f432f46d4a3",
+        "bytes": 646
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/listener_close.c",
+        "sha256": "11247352a8311b066fff27ed85958598214ece80f23a7ac59ee981ea569351ec",
+        "bytes": 267
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/now.c",
+        "sha256": "da5fde65701c4fadc7560625c9615b4d60b2eefbd7b6bbe1aedda61887b825b9",
+        "bytes": 198
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/print.c",
+        "sha256": "709500d2ace6e2eaeec0f5f1e4373d4ec5e402b3c1e289bd70dfef7e2a635b26",
+        "bytes": 397
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/print_err.c",
+        "sha256": "72781d2adc88a4791d5530c9deff20824c38d5aa1ba43fb05aaa6a697e19f4b6",
+        "bytes": 236
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/process_run.c",
+        "sha256": "c12e5a182de9fdc5ef83d65f9f7c2c5746865d1049e5f3700438f8ac317b17c3",
+        "bytes": 9149
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/random_u32.c",
+        "sha256": "10ef9045dcd539bc0ff609e61c77d585fb998ceb48656944d62727716263ee2d",
+        "bytes": 741
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/sleep.c",
+        "sha256": "77e212d3baeec0b3dc0a9c7f630b43094986e433c049049d354a9681719e2ecd",
+        "bytes": 206
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/socket_close.c",
+        "sha256": "6e2fd1717a2fab133813af88fc0f5b5a8ce44c23bf411f269e71aac38671562e",
+        "bytes": 255
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/spawn.c",
+        "sha256": "fb3dac6efa993c51f9d7a668cf8da2cac1148380b72cc18a558cba9ba70c01f3",
+        "bytes": 218
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/tcp_accept.c",
+        "sha256": "e0f0cf4199c278aec722e3c9b81ff879fcec31ec96ebaf66a954db673cf535f8",
+        "bytes": 909
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/tcp_connect.c",
+        "sha256": "ae1515d0ff57215b03888e76cfe4ee485750ec226c28eed05d56e417f0f84f58",
+        "bytes": 1294
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/tcp_listen.c",
+        "sha256": "6212a0bc400e960e8b486f85a091cd4964f92b0546475481271c0f369a234d8c",
+        "bytes": 1013
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/tcp_poll.c",
+        "sha256": "9f4adfe0f4b8e025783b07fa4ba9fec619a5938135dc5f4bb8c9cf7079e82b37",
+        "bytes": 1301
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/tcp_recv.c",
+        "sha256": "68d3467889475566a257c5e04e0502604c4bb11635a26c25cb7ea62c6bdc2482",
+        "bytes": 1768
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/tcp_send.c",
+        "sha256": "503c8cdc1f885420057c46e6d9ed4ede6953805a13f8894e069f1b944f630c81",
+        "bytes": 1558
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/thread_count.c",
+        "sha256": "39515c611a2b42687fb670179f3d9032af1878727356754959061125d40fa7e7",
+        "bytes": 481
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/udp_bind.c",
+        "sha256": "b30150927ffde3162d62012b67d43d95c79754f9539279628d2ad5bc9c040408",
+        "bytes": 882
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/udp_poll.c",
+        "sha256": "66504dbbc09ab346e04cca7a22c60aacc8866555ac143088603cb4b568a64f71",
+        "bytes": 913
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/udp_recv_from.c",
+        "sha256": "140a281bca2348566030e092f3c27591893b5d945e57e2965863d02c2e6c0a65",
+        "bytes": 1165
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/udp_send_to.c",
+        "sha256": "8704fe7e5770af7e4dcbe24f0fecf4cfbfe61a0a69a77b129df9965e306fae8f",
+        "bytes": 1214
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/window.c",
+        "sha256": "7bda00a55917f11ff1fa532b1406ec5c1a8a7eef6f6ba2a933dd958256e0a409",
+        "bytes": 23879
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/window_close.c",
+        "sha256": "655afbdf8a5f7fa80963bad64b43c8dfe7ec1f80896db381792d0d6933f3be2d",
+        "bytes": 916
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/window_frame.c",
+        "sha256": "01dc840b2145efb8c91b4ffe7360e3520753f59c42e122703c3a6190c50e1aa4",
+        "bytes": 11055
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/window_open.c",
+        "sha256": "1be9c669b47a44716b9cef1aafaafa1ed2a2268730fab475efa762cf368fc21d",
+        "bytes": 6927
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/window_set_title.c",
+        "sha256": "cd60a39ca4084794f3e7aef939de8c7e02ef0ae2158bf52a69f93c21a59ebba5",
+        "bytes": 1141
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/effs/write.c",
+        "sha256": "c1bcd80d50c4901027c801cdd8d7464ea3029361115ac47044c992ce2235a8ac",
+        "bytes": 370
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime/native/runtime.c",
+        "sha256": "59d293db627c735c32411a40e952e3f2958a9176048d540273486fb21d1b44e7",
+        "bytes": 77695
+      },
+      {
+        "file": "selfhost/build/phase22/context-source-08/project/src/runtime.mjs",
+        "sha256": "1766d6d674f5c64eb481a647fe1d7bf751529d6861d4d4f4697999f005e772f0",
+        "bytes": 42401
+      }
+    ]
+  },
+  "delta": {
+    "sourceFiles": 1,
+    "compilerModules": 1,
+    "moduleLines": -331,
+    "moduleBytes": 1752,
+    "defs": 26,
+    "laws": -81,
+    "types": 1
+  },
+  "manifestChanges": [
+    {
+      "path": "src/compiler.json",
+      "physicalLineDelta": 1,
+      "byteDelta": 33
+    },
+    {
+      "path": "src/core/index.bend",
+      "physicalLineDelta": 8,
+      "byteDelta": 167
+    },
+    {
+      "path": "src/diagnostic/frontend.bend",
+      "physicalLineDelta": 0,
+      "byteDelta": 6
+    },
+    {
+      "path": "src/front/contextual.bend",
+      "physicalLineDelta": 555,
+      "byteDelta": 29156
+    },
+    {
+      "path": "src/front/declarations.bend",
+      "physicalLineDelta": -23,
+      "byteDelta": -955
+    },
+    {
+      "path": "src/front/elaborate.bend",
+      "physicalLineDelta": -318,
+      "byteDelta": -12067
+    },
+    {
+      "path": "src/front/families.bend",
+      "physicalLineDelta": -170,
+      "byteDelta": -8340
+    },
+    {
+      "path": "src/front/flatten.bend",
+      "physicalLineDelta": -87,
+      "byteDelta": -2446
+    },
+    {
+      "path": "src/front/fresh_work.bend",
+      "physicalLineDelta": 3,
+      "byteDelta": 292
+    },
+    {
+      "path": "src/front/freshen.bend",
+      "physicalLineDelta": 0,
+      "byteDelta": 98
+    },
+    {
+      "path": "src/front/lexer.bend",
+      "physicalLineDelta": 53,
+      "byteDelta": 1617
+    },
+    {
+      "path": "src/front/literals_arrays.bend",
+      "physicalLineDelta": 46,
+      "byteDelta": 4303
+    },
+    {
+      "path": "src/front/parallel.bend",
+      "physicalLineDelta": -42,
+      "byteDelta": -1500
+    },
+    {
+      "path": "src/front/parser.bend",
+      "physicalLineDelta": -15,
+      "byteDelta": -1206
+    },
+    {
+      "path": "src/front/sugar.bend",
+      "physicalLineDelta": 74,
+      "byteDelta": 5674
+    },
+    {
+      "path": "src/front/unicode.bend",
+      "physicalLineDelta": -8,
+      "byteDelta": -125
+    },
+    {
+      "path": "src/front/validate.bend",
+      "physicalLineDelta": -117,
+      "byteDelta": -3479
+    },
+    {
+      "path": "src/load/graph.bend",
+      "physicalLineDelta": -89,
+      "byteDelta": -3622
+    },
+    {
+      "path": "src/load/imports.bend",
+      "physicalLineDelta": 0,
+      "byteDelta": -56
+    },
+    {
+      "path": "src/load/modules.bend",
+      "physicalLineDelta": -201,
+      "byteDelta": -5765
+    },
+    {
+      "path": "tools/typed-driver.mjs",
+      "physicalLineDelta": 0,
+      "byteDelta": -1006
+    }
+  ],
+  "totalChangedPhysicalLines": -330,
+  "removedUnreachableFrontendWorkers": 98,
+  "removedFrontendDefLawBlockLines": 977,
+  "removedFrontendWorkers": [
+    "f_array_depth",
+    "f_binary",
+    "f_body_after",
+    "f_contains_var",
+    "f_contains_var_terms",
+    "f_context_unsupported",
+    "f_context_value",
+    "f_elab_def",
+    "f_elab_defs",
+    "f_elaborate",
+    "f_family_book",
+    "f_flat",
+    "f_flat_base",
+    "f_flat_column",
+    "f_flat_fields",
+    "f_flat_let",
+    "f_flat_local",
+    "f_flat_match",
+    "f_flat_parallel",
+    "f_flat_split",
+    "f_fresh_fields",
+    "f_let_body",
+    "f_lex",
+    "f_lex_indexed",
+    "f_literal_pattern",
+    "f_literal_patterns",
+    "f_mark_fields",
+    "f_mark_raw",
+    "f_namespace",
+    "f_namespace_terms",
+    "f_nat_pattern",
+    "f_param_refs",
+    "f_pattern_empty_call",
+    "f_pattern_env",
+    "f_pattern_literal",
+    "f_pattern_marked",
+    "f_pattern_number",
+    "f_pattern_reference",
+    "f_patterns",
+    "f_penv",
+    "f_power_depth",
+    "f_put",
+    "f_rewrite_body",
+    "f_rewrite_motive",
+    "f_scan_comment",
+    "f_scope",
+    "f_scope_alias",
+    "f_scope_alias_selected",
+    "f_scope_app",
+    "f_scope_apply_many",
+    "f_scope_base",
+    "f_scope_body",
+    "f_scope_body_base",
+    "f_scope_call",
+    "f_scope_call_args",
+    "f_scope_call_head",
+    "f_scope_do",
+    "f_scope_do_args",
+    "f_scope_lambda",
+    "f_scope_lambda_eligible",
+    "f_scope_lambda_refused",
+    "f_scope_lambda_var",
+    "f_scope_local",
+    "f_scope_local_valid",
+    "f_scope_lower",
+    "f_scope_marked",
+    "f_scope_marked_call",
+    "f_scope_parallel",
+    "f_scope_parallel_pats",
+    "f_scope_parallel_valid",
+    "f_scope_ref",
+    "f_scope_reference",
+    "f_scope_row",
+    "f_scope_row_valid",
+    "f_scope_rows",
+    "f_scope_terms",
+    "f_scoped_row",
+    "f_string_decoded",
+    "f_template_expr",
+    "f_templates_error",
+    "f_templates_valid",
+    "f_valid_binding_pattern",
+    "f_valid_ctor_fields",
+    "f_valid_ctor_pattern",
+    "f_valid_pattern",
+    "f_valid_patterns",
+    "f_valid_patterns_mode",
+    "f_valid_patterns_mode_next",
+    "fc_bind",
+    "fc_bind_count",
+    "fc_binders",
+    "fc_ref",
+    "fc_rows",
+    "fc_start",
+    "fc_term",
+    "fc_terms",
+    "ff_term",
+    "fpe_finish"
+  ],
+  "inputs": [
+    {
+      "file": "selfhost/tools/performance/phase22/context-census.py",
+      "sha256": "839417827f33aceb54bc051dd4f32b02c3aa90430ba450d1013a0f756f95a037",
+      "bytes": 2310
+    },
+    {
+      "file": "selfhost/build/phase22/context-source-08/manifest.json",
+      "sha256": "425ac52a7482ecc1793aed71aea33235d773f09634807b4406c41dbdb4dfd3a8",
+      "bytes": 133155
+    },
+    {
+      "file": "selfhost/build/phase22/context-source-08/frontend-retirement-closure.json",
+      "sha256": "a84c6500c8139cbffa6d344cb5e3ffcba36747ab19255d06c2721b0e5a09fe51",
+      "bytes": 10187
+    }
+  ],
+  "scope": "Net production snapshot delta includes the independently controlled index-remove worker (+8 lines) and ABI2 host routing. Worker closure records removed old implementations, not a runtime timing claim. Module counts exclude retained noncompiler files under src."
+}

@@ -1,0 +1,838 @@
+{
+  "kind": "phase22-independent-do-baseline",
+  "complete": true,
+  "pass": true,
+  "passMeaning": "Healthy complete baseline acquisition;17 exact and3 existing primitive differences retained. No migration candidate consumed.",
+  "parentApiSha256": "44094e58cb0ef033e2c08c2827565e859c3594b3136868d4f821262145aea7f0",
+  "observations": 20,
+  "exact": 17,
+  "strictDifferences": 3,
+  "primitiveDifferences": 3,
+  "rawSelectedComplete": false,
+  "referenceVerdicts": {
+    "pass": 19,
+    "observed": 1
+  },
+  "candidateVerdicts": {
+    "fail": 3,
+    "pass": 16,
+    "observed": 1
+  },
+  "findings": [
+    {
+      "kind": "imported-monad-alias",
+      "observations": 1,
+      "actual": "Pinned check accepts; installed check refuses undefined Box.Id.bind. Both parse accept.",
+      "implication": "Generated bind/pure names must follow the actual header alias-resolution contract."
+    },
+    {
+      "kind": "malformed-rhs-failure-transport",
+      "observations": 2,
+      "actual": "Pinned parse/check lanes select expected term/observed closing paren; installed reports load-phase Invalid compiler source range.",
+      "implication": "A failed typed-bind RHS must preserve the selected parser error without leaking malformed intermediate ranges to host validation."
+    }
+  ],
+  "rows": [
+    {
+      "id": "context-do/alias-typed-assign-bind/check",
+      "lane": "check",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "fail",
+      "reference": {
+        "status": "ok",
+        "phase": "check",
+        "checked": true,
+        "typeAccepted": true,
+        "proofTrust": "passed",
+        "kernelChecked": false,
+        "unsafeDefinitions": [],
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": "ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n"
+      },
+      "candidate": {
+        "status": "error",
+        "phase": "check",
+        "checked": true,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a defined name\n- observed : Box.Id.bind\nContext:\n- first : U32\nLocation: run\n5 |     first:U32 = 4\n6>|     next:U32 <- Box.MkId{5}\n  |     ^^^^^^^^^^^^^^^^^^^^^^^\n7 |     return U32.add(first, next)",
+        "output": null
+      },
+      "exactAgreement": false,
+      "semanticAgreement": false,
+      "referenceEvidence": "checker-acceptance",
+      "candidateEvidence": null
+    },
+    {
+      "id": "context-do/alias-typed-assign-bind/parse",
+      "lane": "parse",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "reference": {
+        "status": "ok",
+        "phase": "parse",
+        "checked": false,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": null
+      },
+      "candidate": {
+        "status": "ok",
+        "phase": "parse",
+        "checked": false,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": null
+      },
+      "exactAgreement": true,
+      "semanticAgreement": true,
+      "referenceEvidence": "frontend-acceptance",
+      "candidateEvidence": "frontend-acceptance"
+    },
+    {
+      "id": "context-do/implicit-leading-quantities/check",
+      "lane": "check",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "reference": {
+        "status": "error",
+        "phase": "check",
+        "checked": true,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : Type\n- observed : Quant\nLocation: r\n16 | def r() -> M<&1, U32>:\n17>|   do M<U32>:\n   |   ^^^^^^^^^\n18 |     x : U32 <- W{1}",
+        "output": null
+      },
+      "candidate": {
+        "status": "error",
+        "phase": "check",
+        "checked": true,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : Type\n- observed : Quant\nLocation: r\n16 | def r() -> M<&1, U32>:\n17>|   do M<U32>:\n   |   ^^^^^^^^^\n18 |     x : U32 <- W{1}",
+        "output": null
+      },
+      "exactAgreement": true,
+      "semanticAgreement": true,
+      "referenceEvidence": "checker-rejection",
+      "candidateEvidence": "checker-rejection"
+    },
+    {
+      "id": "context-do/implicit-leading-quantities/parse",
+      "lane": "parse",
+      "referenceVerdict": "observed",
+      "candidateVerdict": "observed",
+      "reference": {
+        "status": "ok",
+        "phase": "parse",
+        "checked": false,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": null
+      },
+      "candidate": {
+        "status": "ok",
+        "phase": "parse",
+        "checked": false,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": null
+      },
+      "exactAgreement": true,
+      "semanticAgreement": true,
+      "referenceEvidence": null,
+      "candidateEvidence": null
+    },
+    {
+      "id": "context-do/implicit-unit-steps/check",
+      "lane": "check",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "reference": {
+        "status": "ok",
+        "phase": "check",
+        "checked": true,
+        "typeAccepted": true,
+        "proofTrust": "passed",
+        "kernelChecked": false,
+        "unsafeDefinitions": [],
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": "ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n"
+      },
+      "candidate": {
+        "status": "ok",
+        "phase": "check",
+        "checked": true,
+        "typeAccepted": true,
+        "proofTrust": "passed",
+        "kernelChecked": false,
+        "unsafeDefinitions": [],
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": "ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n"
+      },
+      "exactAgreement": true,
+      "semanticAgreement": true,
+      "referenceEvidence": "checker-acceptance",
+      "candidateEvidence": "checker-acceptance"
+    },
+    {
+      "id": "context-do/implicit-unit-steps/parse",
+      "lane": "parse",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "reference": {
+        "status": "ok",
+        "phase": "parse",
+        "checked": false,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": null
+      },
+      "candidate": {
+        "status": "ok",
+        "phase": "parse",
+        "checked": false,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": null
+      },
+      "exactAgreement": true,
+      "semanticAgreement": true,
+      "referenceEvidence": "frontend-acceptance",
+      "candidateEvidence": "frontend-acceptance"
+    },
+    {
+      "id": "context-do/parenthesized-binder-comment/check",
+      "lane": "check",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "reference": {
+        "status": "ok",
+        "phase": "check",
+        "checked": true,
+        "typeAccepted": true,
+        "proofTrust": "passed",
+        "kernelChecked": false,
+        "unsafeDefinitions": [],
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": "ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n"
+      },
+      "candidate": {
+        "status": "ok",
+        "phase": "check",
+        "checked": true,
+        "typeAccepted": true,
+        "proofTrust": "passed",
+        "kernelChecked": false,
+        "unsafeDefinitions": [],
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": "ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n"
+      },
+      "exactAgreement": true,
+      "semanticAgreement": true,
+      "referenceEvidence": "checker-acceptance",
+      "candidateEvidence": "checker-acceptance"
+    },
+    {
+      "id": "context-do/parenthesized-binder-comment/parse",
+      "lane": "parse",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "reference": {
+        "status": "ok",
+        "phase": "parse",
+        "checked": false,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": null
+      },
+      "candidate": {
+        "status": "ok",
+        "phase": "parse",
+        "checked": false,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": null
+      },
+      "exactAgreement": true,
+      "semanticAgreement": true,
+      "referenceEvidence": "frontend-acceptance",
+      "candidateEvidence": "frontend-acceptance"
+    },
+    {
+      "id": "context-do/repeated-underscore/check",
+      "lane": "check",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "reference": {
+        "status": "ok",
+        "phase": "check",
+        "checked": true,
+        "typeAccepted": true,
+        "proofTrust": "passed",
+        "kernelChecked": false,
+        "unsafeDefinitions": [],
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": "ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n"
+      },
+      "candidate": {
+        "status": "ok",
+        "phase": "check",
+        "checked": true,
+        "typeAccepted": true,
+        "proofTrust": "passed",
+        "kernelChecked": false,
+        "unsafeDefinitions": [],
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": "ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n"
+      },
+      "exactAgreement": true,
+      "semanticAgreement": true,
+      "referenceEvidence": "checker-acceptance",
+      "candidateEvidence": "checker-acceptance"
+    },
+    {
+      "id": "context-do/repeated-underscore/parse",
+      "lane": "parse",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "reference": {
+        "status": "ok",
+        "phase": "parse",
+        "checked": false,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": null
+      },
+      "candidate": {
+        "status": "ok",
+        "phase": "parse",
+        "checked": false,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": null
+      },
+      "exactAgreement": true,
+      "semanticAgreement": true,
+      "referenceEvidence": "frontend-acceptance",
+      "candidateEvidence": "frontend-acceptance"
+    },
+    {
+      "id": "context-do/return-body-error/check",
+      "lane": "check",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "reference": {
+        "status": "error",
+        "phase": "parse",
+        "checked": false,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n4 |     value:U32 = 1\n5>|     return )\n  |            ^\n6 | ",
+        "output": null
+      },
+      "candidate": {
+        "status": "error",
+        "phase": "parse",
+        "checked": false,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n4 |     value:U32 = 1\n5>|     return )\n  |            ^\n6 | ",
+        "output": null
+      },
+      "exactAgreement": true,
+      "semanticAgreement": true,
+      "referenceEvidence": "frontend-rejection",
+      "candidateEvidence": "frontend-rejection"
+    },
+    {
+      "id": "context-do/return-body-error/parse",
+      "lane": "parse",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "reference": {
+        "status": "error",
+        "phase": "parse",
+        "checked": false,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n4 |     value:U32 = 1\n5>|     return )\n  |            ^\n6 | ",
+        "output": null
+      },
+      "candidate": {
+        "status": "error",
+        "phase": "parse",
+        "checked": false,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n4 |     value:U32 = 1\n5>|     return )\n  |            ^\n6 | ",
+        "output": null
+      },
+      "exactAgreement": true,
+      "semanticAgreement": true,
+      "referenceEvidence": "frontend-rejection",
+      "candidateEvidence": "frontend-rejection"
+    },
+    {
+      "id": "context-do/rhs-error-before-return/check",
+      "lane": "check",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "fail",
+      "reference": {
+        "status": "error",
+        "phase": "parse",
+        "checked": false,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n3 |   do Result<U32,U32>:\n4>|     value:U32 <- )\n  |                  ^\n5 |     return missing",
+        "output": null
+      },
+      "candidate": {
+        "status": "error",
+        "phase": "load",
+        "checked": false,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError: Invalid compiler source range",
+        "output": null
+      },
+      "exactAgreement": false,
+      "semanticAgreement": false,
+      "referenceEvidence": "frontend-rejection",
+      "candidateEvidence": null
+    },
+    {
+      "id": "context-do/rhs-error-before-return/parse",
+      "lane": "parse",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "fail",
+      "reference": {
+        "status": "error",
+        "phase": "parse",
+        "checked": false,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : a term\n- observed : ')'\nLocation:\n3 |   do Result<U32,U32>:\n4>|     value:U32 <- )\n  |                  ^\n5 |     return missing",
+        "output": null
+      },
+      "candidate": {
+        "status": "error",
+        "phase": "load",
+        "checked": false,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError: Invalid compiler source range",
+        "output": null
+      },
+      "exactAgreement": false,
+      "semanticAgreement": false,
+      "referenceEvidence": "frontend-rejection",
+      "candidateEvidence": null
+    },
+    {
+      "id": "context-do/shadow-capture/check",
+      "lane": "check",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "reference": {
+        "status": "ok",
+        "phase": "check",
+        "checked": true,
+        "typeAccepted": true,
+        "proofTrust": "passed",
+        "kernelChecked": false,
+        "unsafeDefinitions": [],
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": "ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n"
+      },
+      "candidate": {
+        "status": "ok",
+        "phase": "check",
+        "checked": true,
+        "typeAccepted": true,
+        "proofTrust": "passed",
+        "kernelChecked": false,
+        "unsafeDefinitions": [],
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": "ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n"
+      },
+      "exactAgreement": true,
+      "semanticAgreement": true,
+      "referenceEvidence": "checker-acceptance",
+      "candidateEvidence": "checker-acceptance"
+    },
+    {
+      "id": "context-do/shadow-capture/parse",
+      "lane": "parse",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "reference": {
+        "status": "ok",
+        "phase": "parse",
+        "checked": false,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": null
+      },
+      "candidate": {
+        "status": "ok",
+        "phase": "parse",
+        "checked": false,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": null
+      },
+      "exactAgreement": true,
+      "semanticAgreement": true,
+      "referenceEvidence": "frontend-acceptance",
+      "candidateEvidence": "frontend-acceptance"
+    },
+    {
+      "id": "context-do/terminal-value/check",
+      "lane": "check",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "reference": {
+        "status": "ok",
+        "phase": "check",
+        "checked": true,
+        "typeAccepted": true,
+        "proofTrust": "passed",
+        "kernelChecked": false,
+        "unsafeDefinitions": [],
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": "ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n"
+      },
+      "candidate": {
+        "status": "ok",
+        "phase": "check",
+        "checked": true,
+        "typeAccepted": true,
+        "proofTrust": "passed",
+        "kernelChecked": false,
+        "unsafeDefinitions": [],
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": "ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n"
+      },
+      "exactAgreement": true,
+      "semanticAgreement": true,
+      "referenceEvidence": "checker-acceptance",
+      "candidateEvidence": "checker-acceptance"
+    },
+    {
+      "id": "context-do/terminal-value/parse",
+      "lane": "parse",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "reference": {
+        "status": "ok",
+        "phase": "parse",
+        "checked": false,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": null
+      },
+      "candidate": {
+        "status": "ok",
+        "phase": "parse",
+        "checked": false,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": null
+      },
+      "exactAgreement": true,
+      "semanticAgreement": true,
+      "referenceEvidence": "frontend-acceptance",
+      "candidateEvidence": "frontend-acceptance"
+    },
+    {
+      "id": "context-do/untyped-discard-bind/check",
+      "lane": "check",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "reference": {
+        "status": "ok",
+        "phase": "check",
+        "checked": true,
+        "typeAccepted": true,
+        "proofTrust": "passed",
+        "kernelChecked": false,
+        "unsafeDefinitions": [],
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": "ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n"
+      },
+      "candidate": {
+        "status": "ok",
+        "phase": "check",
+        "checked": true,
+        "typeAccepted": true,
+        "proofTrust": "passed",
+        "kernelChecked": false,
+        "unsafeDefinitions": [],
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": "ALL PROOFS CHECK\nUse --verdict for mathematical validity.\n"
+      },
+      "exactAgreement": true,
+      "semanticAgreement": true,
+      "referenceEvidence": "checker-acceptance",
+      "candidateEvidence": "checker-acceptance"
+    },
+    {
+      "id": "context-do/untyped-discard-bind/parse",
+      "lane": "parse",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "reference": {
+        "status": "ok",
+        "phase": "parse",
+        "checked": false,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": null
+      },
+      "candidate": {
+        "status": "ok",
+        "phase": "parse",
+        "checked": false,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 0,
+        "diagnostic": null,
+        "output": null
+      },
+      "exactAgreement": true,
+      "semanticAgreement": true,
+      "referenceEvidence": "frontend-acceptance",
+      "candidateEvidence": "frontend-acceptance"
+    }
+  ],
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-do-report.py",
+      "sha256": "ab665a296e7cb02270f30e3e51e03bda418ad58ad9b43a46f4d07d6fff58649b",
+      "bytes": 3047
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-inputs-01/plan.json",
+      "sha256": "df7cc7d0a0652c51eecaa59e0d12211354ac6e185b10169e6288db45a42b8bc6",
+      "bytes": 4913
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-inputs-01/selection.json",
+      "sha256": "0fc7e3e472e18eb705c9eb9c18766e44a0f5fa2d3f7b7299d540ccc79dfb9c49",
+      "bytes": 5515
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-baseline-01/report.json",
+      "sha256": "aba032995d5f222302692a1ec3853d3347d46e288c2d7a2987009ad33da20b63",
+      "bytes": 14611
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-baseline-01/selected/paired.json",
+      "sha256": "573931eba64132f2c05070abb15e5091f5e65cb94a8af538ec55a96ad60007bf",
+      "bytes": 31549
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-baseline-01/selected/reference.json",
+      "sha256": "3016df8841eb063e3140080059e2f7dff9d7b9ba527a4b83a4077029b3a11248",
+      "bytes": 1928218
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-baseline-01/selected/candidate.json",
+      "sha256": "3ddc217a2d6d7ba5dc8c3f36804dcc84f4c9a111c4f9d3136ec4c1e8782864d2",
+      "bytes": 1956042
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-do-prepare.py",
+      "sha256": "6b28ebfc6e19ab008c88ac8d0447d8e23f5b6c262ff7a6fe5d5880d69e830b84",
+      "bytes": 4030
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-inputs-01/fixtures/box.bend",
+      "sha256": "ab2746c22815f881f8ec9b260e5725265117ae7d229be785a3c8041b6b6f9241",
+      "bytes": 233
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8/tests/check/do_header_quantity_span.bend",
+      "sha256": "7a4e64d41b2106094de21bf6f0cd7fd0b757e0951d5380952b270e7e510cf14e",
+      "bytes": 659
+    },
+    {
+      "id": "alias-typed-assign-bind",
+      "purpose": "Real imported alias on monad head; typed assignment followed by typed bind.",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-inputs-01/fixtures/alias-typed-assign-bind.bend",
+      "sha256": "a43d99da4eea450dcdff5a0bfafaca681d3059c843532fb5fc4f78d8e660a42e",
+      "bytes": 159
+    },
+    {
+      "id": "untyped-discard-bind",
+      "purpose": "Untyped <- treats lhs as per-line result type, with an anonymous binder.",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-inputs-01/fixtures/untyped-discard-bind.bend",
+      "sha256": "cb5f008ca9a23dc79fca6a65a0fa0a30fb679c02e448654783a3c677fd430ccc",
+      "bytes": 96
+    },
+    {
+      "id": "implicit-unit-steps",
+      "purpose": "Newline and semicolon implicit steps infer Unit before final return.",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-inputs-01/fixtures/implicit-unit-steps.bend",
+      "sha256": "2c2a38135a8decaff25b61127a96e290b250bf088610d248a4fabdbe42bcef4c",
+      "bytes": 108
+    },
+    {
+      "id": "shadow-capture",
+      "purpose": "Assignment RHS sees outer value before the new same-name binder opens.",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-inputs-01/fixtures/shadow-capture.bend",
+      "sha256": "3494e13243e889e6629290f2b5edcffa870812a81085ec99f8dc6f9bf0334c45",
+      "bytes": 151
+    },
+    {
+      "id": "repeated-underscore",
+      "purpose": "Repeated underscore binders must not become a usable shared binding.",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-inputs-01/fixtures/repeated-underscore.bend",
+      "sha256": "1b5fabae7e9be4da1dd7f04f0d7d09d2ff050bf3c3e20e79674a84fcaa28c001",
+      "bytes": 119
+    },
+    {
+      "id": "terminal-value",
+      "purpose": "A final constructor is checked against the header annotation, not dropped.",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-inputs-01/fixtures/terminal-value.bend",
+      "sha256": "21532d5ea26174dfbdb1d1d636f35fcb905599b938d10a6e5ff26dc70eb31a29",
+      "bytes": 76
+    },
+    {
+      "id": "rhs-error-before-return",
+      "purpose": "Earlier invalid RHS must win before later return/name interpretation.",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-inputs-01/fixtures/rhs-error-before-return.bend",
+      "sha256": "7a4e332ea55074bf2e9d76a3d9b0521ef8cd269eae3034a715d92cb4cda633e6",
+      "bytes": 102
+    },
+    {
+      "id": "return-body-error",
+      "purpose": "Valid assignment must preserve a later return expression syntax error.",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-inputs-01/fixtures/return-body-error.bend",
+      "sha256": "5d86fa22b42ebcfd97c15e9d52a862ca55fc8019b6711e817b729c2214275333",
+      "bytes": 95
+    },
+    {
+      "id": "parenthesized-binder-comment",
+      "purpose": "Parenthesized single binder and UTF16/comment cursor preservation.",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-inputs-01/fixtures/parenthesized-binder-comment.bend",
+      "sha256": "ce585b8009b26fc0294b1fbf1caf3f3cbbde527e00a64a16aacc8fd53fe0af7d",
+      "bytes": 179
+    }
+  ],
+  "jobsClosed": true,
+  "limitations": [
+    "These are pre-existing installed-parent defects and additional observed scope beyond the broader196 census; no candidate correction is claimed.",
+    "Original pin fixture negative parse lane is observed, not an oracle failure. No oracle or source fixture was edited.",
+    "Comments/parenthesized binder acceptance is public behavior evidence; structural source-span endpoints remain the implementation owner\u2019s separate gate."
+  ]
+}

@@ -1,0 +1,269 @@
+{
+  "kind": "phase22-independent-promotion-manifest-review",
+  "complete": true,
+  "pass": true,
+  "readOnlyScopeApproved": true,
+  "created": "2026-09-29T17:20:05.140151+00:00",
+  "candidateApiSha256": "ade8ef020e439b81ecb53057b33a473c34a3cbd993b98a044121ecc3c2b8c9c3",
+  "candidateAttempt": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-promotion-inputs.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-promotion-inputs.json",
+      "sha256": "ce2592911296946b34213c0d0ae7db278fba900ed2a71fc763d5cebad9de7948"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-promote.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-promote.mjs",
+      "sha256": "3882a6d7f2e06569fe0af70063d9f953fe50a6ddc91c8d753ab11146ccc7e066"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/bundle-host-review-v2.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase22/bundle-host-review-v2.json",
+      "sha256": "903a45f06057144d6514a8cba39994c586acd17b702cbe81e8f623828230df9d"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-frontend-05/report.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-frontend-05/report.json",
+      "sha256": "026777e42a28adcdae374a9d68bb64edf589381383e44681a5e78dd0df4f45db"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/contextual-parser-final.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase22/contextual-parser-final.json",
+      "sha256": "1dd4be4288075134b3f680e03c8ed49c2770ad4f70554c2e25707c959eca62fd"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-release.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-release.json",
+      "sha256": "f85dda49fdba3f9479c111d6ac4375c4376da802a5d36e816c8b6bde5a5669b1"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-release-supplemental.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-release-supplemental.json",
+      "sha256": "83c2b9ca4c7b0750318b42f74e7e816d16478412e4c5fadcbc5aaea6b97b4a34"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/completion-beta-controls-04/report.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/completion-beta-controls-04/report.json",
+      "sha256": "5f6cbf15fe1fa2b8ea0a5856da0db6503151b61f7f1cbfdd53bc0929bac30c77"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/checkup-controls-04/report.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/checkup-controls-04/report.json",
+      "sha256": "6a13c12bbd25a04b129540eb55c7fbb728f50b13668e5d1bb302f8b13da9a3f5"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/validation-001/report.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/validation-001/report.json",
+      "sha256": "bb60523285ec1656611656b33e905e696fcf814fb38694fd95ca1f63a1a957e4"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bundle-matrix-04/report.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bundle-matrix-04/report.json",
+      "sha256": "76822c83e5fa46a757a6d48c3e55e1cf23ca7b834130f223f59edd0cd9f1c4c2"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-release.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-release.json",
+      "sha256": "f85dda49fdba3f9479c111d6ac4375c4376da802a5d36e816c8b6bde5a5669b1"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-marked-subset-final.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-marked-subset-final.json",
+      "sha256": "0040ccce2bcad736e72361223c86c7c7f4a22357f907f785687f8bc7fac2670d"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-constructor-index.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-constructor-index.json",
+      "sha256": "b7068908e48cf4a00f5fd1356336fa5a58d454ddc364772b295b1625af2ae392"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/attempt.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-build-02/attempt.json",
+      "sha256": "b9cee3947b6a7ecfed0758c4b6296db693d45a69d420785318fc7bdfcc164b15"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/attempt.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/attempt.json",
+      "sha256": "d5255fa8868cf4c00540e814647b3645c004f35dfbd06b9f4bb6a4e71946772b"
+    }
+  ],
+  "gates": [
+    {
+      "role": "hostReview",
+      "identity": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/bundle-host-review-v2.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase22/bundle-host-review-v2.json",
+        "sha256": "903a45f06057144d6514a8cba39994c586acd17b702cbe81e8f623828230df9d"
+      },
+      "candidateApiPath": null,
+      "acceptedField": "readOnlyScopeApproved"
+    },
+    {
+      "role": "frontend",
+      "identity": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-frontend-05/report.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-frontend-05/report.json",
+        "sha256": "026777e42a28adcdae374a9d68bb64edf589381383e44681a5e78dd0df4f45db"
+      },
+      "candidateApiPath": null,
+      "acceptedField": "pass"
+    },
+    {
+      "role": "parser",
+      "identity": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/contextual-parser-final.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase22/contextual-parser-final.json",
+        "sha256": "1dd4be4288075134b3f680e03c8ed49c2770ad4f70554c2e25707c959eca62fd"
+      },
+      "candidateApiPath": null,
+      "acceptedField": "ownedCorrectnessPass"
+    },
+    {
+      "role": "publicControls",
+      "identity": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-release.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-release.json",
+        "sha256": "f85dda49fdba3f9479c111d6ac4375c4376da802a5d36e816c8b6bde5a5669b1"
+      },
+      "candidateApiPath": null,
+      "acceptedField": "pass"
+    },
+    {
+      "role": "supplemental",
+      "identity": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-release-supplemental.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-release-supplemental.json",
+        "sha256": "83c2b9ca4c7b0750318b42f74e7e816d16478412e4c5fadcbc5aaea6b97b4a34"
+      },
+      "candidateApiPath": null,
+      "acceptedField": "pass"
+    },
+    {
+      "role": "completion",
+      "identity": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/completion-beta-controls-04/report.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/completion-beta-controls-04/report.json",
+        "sha256": "5f6cbf15fe1fa2b8ea0a5856da0db6503151b61f7f1cbfdd53bc0929bac30c77"
+      },
+      "candidateApiPath": null,
+      "acceptedField": "pass"
+    },
+    {
+      "role": "checkup",
+      "identity": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/checkup-controls-04/report.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/checkup-controls-04/report.json",
+        "sha256": "6a13c12bbd25a04b129540eb55c7fbb728f50b13668e5d1bb302f8b13da9a3f5"
+      },
+      "candidateApiPath": null,
+      "acceptedField": "pass"
+    },
+    {
+      "role": "validation",
+      "identity": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/validation-001/report.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/validation-001/report.json",
+        "sha256": "bb60523285ec1656611656b33e905e696fcf814fb38694fd95ca1f63a1a957e4"
+      },
+      "candidateApiPath": null,
+      "acceptedField": "pass"
+    },
+    {
+      "role": "matrix",
+      "identity": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bundle-matrix-04/report.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bundle-matrix-04/report.json",
+        "sha256": "76822c83e5fa46a757a6d48c3e55e1cf23ca7b834130f223f59edd0cd9f1c4c2"
+      },
+      "candidateApiPath": null,
+      "acceptedField": "complete+sixHealthyRows+twoCostBounds"
+    },
+    {
+      "role": "additional/0",
+      "identity": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-release.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-release.json",
+        "sha256": "f85dda49fdba3f9479c111d6ac4375c4376da802a5d36e816c8b6bde5a5669b1"
+      },
+      "candidateApiPath": [
+        "api",
+        "sha256"
+      ],
+      "acceptedField": "pass"
+    },
+    {
+      "role": "additional/1",
+      "identity": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-marked-subset-final.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-marked-subset-final.json",
+        "sha256": "0040ccce2bcad736e72361223c86c7c7f4a22357f907f785687f8bc7fac2670d"
+      },
+      "candidateApiPath": [
+        "api",
+        "sha256"
+      ],
+      "acceptedField": "pass"
+    },
+    {
+      "role": "additional/2",
+      "identity": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-constructor-index.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-constructor-index.json",
+        "sha256": "b7068908e48cf4a00f5fd1356336fa5a58d454ddc364772b295b1625af2ae392"
+      },
+      "candidateApiPath": [
+        "public",
+        1,
+        "api",
+        "sha256"
+      ],
+      "acceptedField": "pass"
+    }
+  ],
+  "sourceMembership": {
+    "prior": 214,
+    "candidate": 215,
+    "allCurrentBytesVerified": true,
+    "changedPaths": [
+      "src/compiler.json",
+      "src/core/index.bend",
+      "src/diagnostic/frontend.bend",
+      "src/front/contextual.bend",
+      "src/front/declarations.bend",
+      "src/front/elaborate.bend",
+      "src/front/families.bend",
+      "src/front/flatten.bend",
+      "src/front/fresh_work.bend",
+      "src/front/freshen.bend",
+      "src/front/lexer.bend",
+      "src/front/literals_arrays.bend",
+      "src/front/parallel.bend",
+      "src/front/parser.bend",
+      "src/front/sugar.bend",
+      "src/front/unicode.bend",
+      "src/front/validate.bend",
+      "src/load/graph.bend",
+      "src/load/imports.bend",
+      "src/load/modules.bend",
+      "tools/typed-driver.mjs"
+    ],
+    "soleAddition": "src/front/contextual.bend",
+    "hostMembers": 35,
+    "hostChanges": [
+      "tools/typed-driver.mjs"
+    ]
+  },
+  "findings": [
+    "All direct gate identities and explicit candidate-role paths bind the final candidate. Constructor-index public[1] is labeled candidate; its parent entry is not mistaken for candidate.",
+    "Public summary binds integration198, history226 with precisely one prospectively declared pinned monad-diagnostic correction, and a separately checked standalone component.",
+    "Raw group/header/normalization expectation statuses remain explicit failures or observed outcomes; accepted owner scope is healthy strict paired equality. Marked114 is a subset audit, not an independent acquisition.",
+    "Matrix04 has six healthy rows and both prospective process/request regression bounds pass. The reviewed promoter also checks protected75 and installed/source identity before writes.",
+    "The exact 21-file source delta and 35-host membership were recomputed from all current snapshot bytes."
+  ],
+  "limits": [
+    "Read-only review; reviewer did not install, mutate the candidate, rerun compiler gates, or perform capsule recovery.",
+    "Approval is for this exact manifest with the reviewed promoter; no universal conformance, new fixed point, or broad performance claim.",
+    "Promoter remains responsible for its immediate pre-write and post-write protected/source/release checks."
+  ]
+}

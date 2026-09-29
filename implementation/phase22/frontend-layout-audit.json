@@ -1,0 +1,41 @@
+{
+  "kind": "phase22-frontend-layout-audit-handoff",
+  "complete": true,
+  "auditToolControlsPass": true,
+  "compilerCandidateSelected": false,
+  "controls": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/frontend-layout-controls-01/report.json",
+    "sha256": "5f70f5a261a4c8ffb5dc06d79e6a844096ab70034049a7277951cbcc1c8a9332",
+    "bytes": 2554
+  },
+  "gate": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-frontend-gate-01/report.json",
+    "sha256": "81f31ade03a30cf296c90cbcce26611753046aeac3bb2909dc5ee103112ffe8d",
+    "bytes": 29423
+  },
+  "originalFailedGate": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-frontend-01/report.json",
+    "sha256": "a2f513bfd765ef623f7b64fa00042139df0984cfcc08ff64d4f6fd1e9face829",
+    "bytes": 7342
+  },
+  "exact": {
+    "phase15": 459,
+    "preceding": 2,
+    "after": 30,
+    "newExact": 2,
+    "lostExact": 30
+  },
+  "primitiveDifferences": 25,
+  "failuresRetained": [
+    "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-frontend-reaudit-01/report.json"
+  ],
+  "scope": "Comparison identity policy validated; candidate source05 fails actual compiler observations. Existing full vector reused without rerunning fixtures or changing oracles.",
+  "comparisonPolicy": "Exact module hashes and ordered lists explicitly bound; every nonmodules manifest field and report schema equal; old strict paths, fixture inventory, oracles and observations preserved.",
+  "reusableEntry": "selfhost/tools/performance/phase22/frontend-gate.mjs ATTEMPT NEW_OUT PREVIOUS_ACCEPTED_GATE MODULE_LAYOUT.json [REUSE_ACQUISITION]",
+  "mainPassRequires": "healthy complete vector, identity/layout, zero primitive regressions, no lost prior exact matches, and zero exact differences",
+  "maintainedComparatorUnchanged": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/conformance/compare-artifacts.mjs",
+    "sha256": "8a96dd74c912cc5f2eeaef094540097e74578ed2a359bdd5e0fc341ade0a9849",
+    "bytes": 5377
+  }
+}

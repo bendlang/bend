@@ -1,0 +1,63 @@
+{
+  "kind": "phase22-historical-integration198-closure",
+  "complete": true,
+  "pass": true,
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-09/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-09/equality/api.mjs",
+    "sha256": "eac3b89d561287b9a51b411ab6353ea275e90c571de7d7c8e733c99eb0755a94"
+  },
+  "observations": 198,
+  "exact": 198,
+  "gains": 0,
+  "losses": 0,
+  "prior": "selfhost/build/phase19/instance-integration198-01",
+  "rawSelectedComplete": true,
+  "rawReferenceStatuses": {
+    "pass": 184,
+    "observed": 14
+  },
+  "rawCandidateStatuses": {
+    "pass": 184,
+    "observed": 14
+  },
+  "scope": "Actual genuine final source10 host rerun of unchanged frozen selection, paths, oracles and pin observations. Exact198 preserves prior198. Covers imports, aliases/lambdas, qualified patterns, local-law fills, module names, quiet TODO and program completion. No performance or promotion claim.",
+  "previousFinalReceipt": "context-controls-final.json remains immutable; this closes its explicitly pending integration198 task.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-integration-close.py",
+      "sha256": "35accaafcb8ea2d7eb4cf56a17c8dc14f4135ed3e489dcc7b6d6ff7d2ae1c5eb",
+      "bytes": 2957
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-integration198-01/report.json",
+      "sha256": "6bce7551c4d58e48ab2f45ee5bf42e278f4d054a3c441dcabf70cc714d72b9f2",
+      "bytes": 63918
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-integration198-01/selected/paired.json",
+      "sha256": "2f95f57b36ee4340cb27b02213f4abe5da4c20f1497ed22d6c43b2d9c69e686e",
+      "bytes": 249045
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-integration-plan.md",
+      "sha256": "7cc646576618df238071dbeea9d7da7127e00322db4b7385122a66ec4306bb87",
+      "bytes": 1195
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/wave9-source-01/selection.json",
+      "sha256": "906832886636f9825560564bbf89b5b5c6c05cbdf8ae2891e1bc9896b164c9ce",
+      "bytes": 30740
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase19/instance-integration198-01/report.json",
+      "sha256": "b3e713ccd28073776e29a5c2751eb27499566f09168ed118d70e098d108b24b3",
+      "bytes": 45152
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-final.json",
+      "sha256": "d48d46023faa543c639b82f51241cdfb2ea3d9a754db29508fb770927ba7d5be",
+      "bytes": 5858
+    }
+  ]
+}

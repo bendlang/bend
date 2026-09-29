@@ -1,0 +1,191 @@
+{
+  "kind": "phase22-first-production-control-closure",
+  "complete": true,
+  "pass": false,
+  "acquisitionComplete": true,
+  "candidateSelected": false,
+  "passMeaning": "All124 frozen observations and exact reference/parent comparisons are captured; selection fails because the unchanged comparison guards found regressions. Failed component reports remain unchanged.",
+  "apiSha256": "7d1bc9d854f3a32f5cbcf07a93da3f63e8d07522a1c428ff453bd0211837ff9a",
+  "attempt": "selfhost/build/phase22/context-build-04",
+  "source": "selfhost/build/phase22/context-source-05/project",
+  "observations": 124,
+  "baselineExact": 73,
+  "candidateExact": 108,
+  "gainedExact": 36,
+  "lostExact": 1,
+  "parts": {
+    "main": {
+      "observations": 60,
+      "baselineExact": 27,
+      "candidateExact": 52,
+      "originalReportComplete": false,
+      "originalReportPass": false,
+      "rawSelectedComplete": false,
+      "gainedExact": [
+        "check/monad_do_destructure.bend@parse",
+        "check/monad_do_destructure.bend@check",
+        "group-comma/completed-parallel-tuple@check",
+        "group-range-positive/constructor-nested-parameter@parse",
+        "group-range-positive/constructor-nested-parameter-check@check",
+        "group-range-positive/constructor-parameter@parse",
+        "group-range-positive/constructor-parameter-check@check",
+        "marked-pattern/empty-unbound@parse",
+        "marked-pattern/empty-unbound@check",
+        "parser-checkpoint/alias-shadow-frame@parse",
+        "parser-checkpoint/alias-shadow-frame@check",
+        "parser-checkpoint/all-frame@parse",
+        "parser-checkpoint/all-frame@check",
+        "parser-checkpoint/do-frame@parse",
+        "parser-checkpoint/do-frame@check",
+        "parser-checkpoint/lambda-frame@parse",
+        "parser-checkpoint/lambda-frame@check",
+        "parser-checkpoint/module-alias-frame@parse",
+        "parser-checkpoint/module-alias-frame@check",
+        "parser-checkpoint/parallel-frame@parse",
+        "parser-checkpoint/parallel-frame@check",
+        "rejected-stage/body-before-later-pattern@parse",
+        "rejected-stage/body-before-later-pattern@check",
+        "rejected-stage/group-before-later-syntax@parse",
+        "rejected-stage/group-before-later-syntax@check"
+      ],
+      "lostExact": [],
+      "newPrimitiveMismatch": [
+        "group-comma/raw-parallel-comma@check"
+      ],
+      "strictDifferences": [
+        "group-comma/raw-parallel-comma@parse",
+        "group-comma/raw-parallel-comma@check",
+        "group-comma/raw-typed-local-comma@parse",
+        "group-comma/raw-typed-local-comma@check",
+        "group/body-comma@parse",
+        "group/body-comma@check",
+        "group/local-bang@parse",
+        "group/local-bang@check"
+      ]
+    },
+    "do": {
+      "observations": 20,
+      "baselineExact": 17,
+      "candidateExact": 18,
+      "originalReportComplete": false,
+      "originalReportPass": false,
+      "rawSelectedComplete": false,
+      "gainedExact": [
+        "context-do/rhs-error-before-return/check@check",
+        "context-do/rhs-error-before-return/parse@parse"
+      ],
+      "lostExact": [
+        "context-do/alias-typed-assign-bind/parse@parse"
+      ],
+      "newPrimitiveMismatch": [
+        "context-do/alias-typed-assign-bind/check@check",
+        "context-do/alias-typed-assign-bind/parse@parse"
+      ],
+      "strictDifferences": [
+        "context-do/alias-typed-assign-bind/check@check",
+        "context-do/alias-typed-assign-bind/parse@parse"
+      ]
+    },
+    "feature": {
+      "observations": 40,
+      "baselineExact": 29,
+      "candidateExact": 38,
+      "originalReportComplete": true,
+      "originalReportPass": true,
+      "rawSelectedComplete": false,
+      "gainedExact": [
+        "context-feature/array-explicit-succ/check@check",
+        "context-feature/array-explicit-succ/parse@parse",
+        "context-feature/array-namespace-before-count/check@check",
+        "context-feature/array-namespace-before-count/parse@parse",
+        "context-feature/array-set-written/check@check",
+        "context-feature/array-set-written/parse@parse",
+        "context-feature/array-u32-count/check@check",
+        "context-feature/array-u32-count/parse@parse",
+        "context-feature/index-alias-before-good-rhs/check@check"
+      ],
+      "lostExact": [],
+      "newPrimitiveMismatch": [],
+      "strictDifferences": [
+        "context-feature/array-set-nonvar/check@check",
+        "context-feature/array-set-nonvar/parse@parse"
+      ]
+    },
+    "alias": {
+      "observations": 4,
+      "baselineExact": 0,
+      "candidateExact": 0,
+      "originalReportComplete": true,
+      "originalReportPass": true,
+      "rawSelectedComplete": true,
+      "gainedExact": [],
+      "lostExact": [],
+      "newPrimitiveMismatch": [],
+      "strictDifferences": [
+        "context-feature-alias/bad-rhs/check@check",
+        "context-feature-alias/bad-rhs/parse@parse",
+        "context-feature-alias/good-rhs/check@check",
+        "context-feature-alias/good-rhs/parse@parse"
+      ]
+    }
+  },
+  "findings": [
+    "Main monad_destructure both lanes and do-frame now exact; unfinished grouped body comma forms still accepted, with one newly changed check outcome violating the pin.",
+    "Do alias fixture regresses at return type Box.Id<U32>, before its do body: expected colon at final greater-than token. Both parse/check now fail parse.",
+    "All rewrite controls exact; Nat/U32/Succ and namespace-before-count fixed; written Array.set positive now parses/checks.",
+    "Nonvariable Array.set statement keeps inherited error cursor gap: semicolon consumed before reporting next-line0.",
+    "Real alias ambiguity now has structured exact expected/observed fields but retains wrong caret, at operator rather than completed delimiter checkpoint."
+  ],
+  "executionsHeld": "Unchanged24/12 execution controls are frozen with baselines but not run on this image because production acceptance boundaries and imported header regression remain unresolved.",
+  "postAcquisitionIdentityAudit": {
+    "pass": true,
+    "uniqueInputIdentities": 85
+  },
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-production-close.py",
+      "sha256": "e5eaaa58ebfde840fd2054d64a3a433fbac72c7daa910fb405f743d401f3a53d",
+      "bytes": 5583
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-main-01/report.json",
+      "sha256": "2aaf815c3758483a7c0ce81f5f282f02a4afe17a78479e0e7a914dd0ba238f21",
+      "bytes": 29679
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-main-01/selected/paired.json",
+      "sha256": "abef8cee43fcbc17f744e1e10393dc9598522f87a17682c2434d0be7b192f3dd",
+      "bytes": 95621
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-do-01/report.json",
+      "sha256": "acac90df9d2f137831de50d405a181fd2dad44d66ee2dc1a1caa7a4a113b7614",
+      "bytes": 16397
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-do-01/selected/paired.json",
+      "sha256": "078f5b0b14c5fb36a75933f74f50073c6932062d82b0b1bc7e15b480c8986e10",
+      "bytes": 30579
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-feature-01/report.json",
+      "sha256": "852753aa5e46c97b5f8cd9e80deb2100fc9ceaa5caf86f0c6a2a925ff2acd0fd",
+      "bytes": 23782
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-feature-01/selected/paired.json",
+      "sha256": "a02aa2d4265034c893739a9376fa624c731a5eab0426cad0837e0f1346b1f6cd",
+      "bytes": 57515
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-alias-01/report.json",
+      "sha256": "77fc04825a86de5d806dc006e702c5e79cb943d3d4342ea8bc9a7b3f4b1955c7",
+      "bytes": 11064
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-alias-01/selected/paired.json",
+      "sha256": "e829dfe1d6f6bf8b5e9ab5ad12332a5962b51672382208ca2e86cb97df524218",
+      "bytes": 17730
+    }
+  ]
+}

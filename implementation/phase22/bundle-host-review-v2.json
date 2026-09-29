@@ -1,0 +1,53 @@
+{
+  "kind": "phase22-final-bundle-host-review-v2",
+  "complete": true,
+  "readOnlyScopeApproved": true,
+  "reviewed": [
+    {
+      "relative": "tools/typed-driver.mjs",
+      "before": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-07/project/tools/typed-driver.mjs",
+        "sha256": "eec962ab053299ae45dfdace61e6f7c6625adc38c679847909ad3463f2f043a1",
+        "bytes": 49023
+      },
+      "after": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-09/snapshot/tools/typed-driver.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-09/snapshot/tools/typed-driver.mjs",
+        "sha256": "03798aeb710bd7707b68e624f045518d5fb6dd289209c5ed748c990863cf9e42"
+      },
+      "latestDeltaBefore": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-08/snapshot/tools/typed-driver.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-08/snapshot/tools/typed-driver.mjs",
+        "sha256": "56dc0d9c44a18be5727f3c90762db8c8b7d762a8be39dc0de5152019f241d7e9"
+      },
+      "latestPatch": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-10/typed-driver.patch",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-10/typed-driver.patch",
+        "sha256": "2a87a99454f736c342009a67bb12a66af6ac0cac9c36aa25dfa117b0ea564dc3"
+      }
+    }
+  ],
+  "previousApprovedReview": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/loader-retirement-review.json",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/implementation/phase22/loader-retirement-review.json",
+    "sha256": "3f36a1f79d1f698f939acdbd570ca583d90ddbd4dddf3214cc5aac65f11e6788"
+  },
+  "sourceMembersCompared": 215,
+  "latestChangedMembers": [
+    "tools/typed-driver.mjs"
+  ],
+  "candidateApi": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-09/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-09/equality/api.mjs",
+    "sha256": "eac3b89d561287b9a51b411ab6353ea275e90c571de7d7c8e733c99eb0755a94"
+  },
+  "sameCompiledApi": true,
+  "plan": {
+    "file": "/home/ai/bend2/build/publish/bend/design/phase22/final-bundle-cost-checkup.md",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/design/phase22/final-bundle-cost-checkup.md",
+    "sha256": "15778a25b6614d4cf2ab8361afac2312df56785f3e5f54ee5b0d6fd0a234314f"
+  },
+  "interpretation": "Single host-file ABI2 delta plus exact checkup preread/catch correction. Check mode compilation and all Bend source/API bytes unchanged. Existing mock claims unaffected; actual missing-import checkup branch is separately root-gated.",
+  "compilerTestsRunByReviewer": false,
+  "timingAuthorized": false
+}

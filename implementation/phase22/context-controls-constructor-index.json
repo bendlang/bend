@@ -1,0 +1,906 @@
+{
+  "kind": "phase22-independent-constructor-index-closure",
+  "complete": true,
+  "pass": true,
+  "direct": {
+    "cases": 42,
+    "counts": {
+      "initial": 26,
+      "publication": 6,
+      "pattern": 8,
+      "demand": 2
+    },
+    "report": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-01/report.json",
+      "sha256": "bbb7857c9ef360483645025280282ed07e28cd82835ce0d5ec6a8e7325c22e2e",
+      "bytes": 10108
+    },
+    "preservedOriginalReferenceIdentity": true,
+    "exactMissingPayload": true,
+    "scopedDemand": "Initial index construction intentionally traverses the finite immutable metadata forest once. Two demand controls establish no type/value payload reads and no later old-list traversal; no arbitrary effectful-getter or raw early-exit equivalence claim."
+  },
+  "public": [
+    {
+      "label": "parent",
+      "api": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-15/equality/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-15/equality/api.mjs",
+        "sha256": "5e124b374b4a8b185b7da6eb7be22fabd3983205c71468c6f48f79389ef25fb9"
+      },
+      "observations": 24,
+      "exact": 24,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-public-parent-01/report.json",
+        "sha256": "60c3454ec888e9f229562046425f1294374629386cf1d7740e9d63afa9427da8",
+        "bytes": 19074
+      },
+      "rawReferenceSummary": {
+        "tests": 15,
+        "allTests": 1498,
+        "externalTests": 12,
+        "excludedTests": 1495,
+        "probes": 24,
+        "statuses": {
+          "pass": 17,
+          "observed": 3,
+          "fail": 4
+        },
+        "lanes": {
+          "parse": {
+            "pass": 6,
+            "observed": 3,
+            "fail": 2
+          },
+          "check": {
+            "pass": 11,
+            "fail": 2
+          },
+          "interpreter": {},
+          "js": {},
+          "native": {},
+          "metal": {},
+          "cuda": {}
+        },
+        "namespaces": {
+          "base": {},
+          "check": {
+            "observed": 2,
+            "pass": 2
+          },
+          "compile": {},
+          "comptime": {},
+          "cost": {},
+          "eval": {},
+          "flatten": {},
+          "gfx": {},
+          "grade": {},
+          "halt": {},
+          "import": {},
+          "io": {},
+          "page": {
+            "observed": 1,
+            "pass": 1
+          },
+          "parse": {},
+          "printer": {},
+          "proof": {},
+          "reg": {},
+          "rfc": {},
+          "run": {},
+          "show": {},
+          "spec": {},
+          "state": {},
+          "stats": {},
+          "stuck": {}
+        },
+        "checkerRejections": 2,
+        "proofTrustRejections": 0,
+        "frontendRejections": 9,
+        "uncheckedExecutions": 0
+      },
+      "rawCandidateSummary": {
+        "tests": 15,
+        "allTests": 1498,
+        "externalTests": 12,
+        "excludedTests": 1495,
+        "probes": 24,
+        "statuses": {
+          "pass": 17,
+          "observed": 3,
+          "fail": 4
+        },
+        "lanes": {
+          "parse": {
+            "pass": 6,
+            "observed": 3,
+            "fail": 2
+          },
+          "check": {
+            "pass": 11,
+            "fail": 2
+          },
+          "interpreter": {},
+          "js": {},
+          "native": {},
+          "metal": {},
+          "cuda": {}
+        },
+        "namespaces": {
+          "base": {},
+          "check": {
+            "observed": 2,
+            "pass": 2
+          },
+          "compile": {},
+          "comptime": {},
+          "cost": {},
+          "eval": {},
+          "flatten": {},
+          "gfx": {},
+          "grade": {},
+          "halt": {},
+          "import": {},
+          "io": {},
+          "page": {
+            "observed": 1,
+            "pass": 1
+          },
+          "parse": {},
+          "printer": {},
+          "proof": {},
+          "reg": {},
+          "rfc": {},
+          "run": {},
+          "show": {},
+          "spec": {},
+          "state": {},
+          "stats": {},
+          "stuck": {}
+        },
+        "checkerRejections": 2,
+        "proofTrustRejections": 0,
+        "frontendRejections": 9,
+        "uncheckedExecutions": 0
+      },
+      "referenceOracleFailures": [
+        {
+          "id": "check/nat_literal_pattern_arity.bend",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- message  : a Zero pattern with 1 field\nLocation:\n13 |   match b:\n14>|     case 257n:\n   |          ^^^^\n15 |       Un{}",
+            "output": null
+          }
+        },
+        {
+          "id": "check/nat_literal_pattern_empty.bend",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- message  : a Zero pattern with 1 field\nLocation:\n15 |   match b:\n16>|     case 0n:\n   |          ^^\n17 |       {\\{K: q => w => f(q)} : D -> U -> Empty}(K{Zero{Un{}}})",
+            "output": null
+          }
+        },
+        {
+          "id": "group-range-positive/constructor-nested-parameter",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)\nLocation:\n6 | def use(wrapped:Wrap) -> U32:\n7>|   (Outer{Mk{field}} = wrapped; field)\n  |                       ^^^^^^^\n8 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "group-range-positive/constructor-nested-parameter-check",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)\nLocation:\n6 | def use(wrapped:Wrap) -> U32:\n7>|   (Outer{Mk{field}} = wrapped; field)\n  |                       ^^^^^^^\n8 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "group-range-positive/constructor-parameter",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)\nLocation:\n4 | def use(box:Box) -> U32:\n5>|   (Mk{field} = box; field)\n  |                ^^^\n6 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "group-range-positive/constructor-parameter-check",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)\nLocation:\n4 | def use(box:Box) -> U32:\n5>|   (Mk{field} = box; field)\n  |                ^^^\n6 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "page/ctor_list_mismatch_001.bend",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- message  : a declared constructor (unknown: Tr)\nLocation:\n12 |   match b:\n13>|     case Tr{}:\n   |          ^^^^\n14 |       F{}",
+            "output": null
+          }
+        }
+      ]
+    },
+    {
+      "label": "candidate",
+      "api": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/equality/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/equality/api.mjs",
+        "sha256": "ade8ef020e439b81ecb53057b33a473c34a3cbd993b98a044121ecc3c2b8c9c3"
+      },
+      "observations": 24,
+      "exact": 24,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-public-candidate-01/report.json",
+        "sha256": "b77f6ae0c76b8f08da071fa7a460be97da50b83d671364bdb21ddac985939ed7",
+        "bytes": 20403
+      },
+      "rawReferenceSummary": {
+        "tests": 15,
+        "allTests": 1498,
+        "externalTests": 12,
+        "excludedTests": 1495,
+        "probes": 24,
+        "statuses": {
+          "pass": 17,
+          "observed": 3,
+          "fail": 4
+        },
+        "lanes": {
+          "parse": {
+            "pass": 6,
+            "observed": 3,
+            "fail": 2
+          },
+          "check": {
+            "pass": 11,
+            "fail": 2
+          },
+          "interpreter": {},
+          "js": {},
+          "native": {},
+          "metal": {},
+          "cuda": {}
+        },
+        "namespaces": {
+          "base": {},
+          "check": {
+            "observed": 2,
+            "pass": 2
+          },
+          "compile": {},
+          "comptime": {},
+          "cost": {},
+          "eval": {},
+          "flatten": {},
+          "gfx": {},
+          "grade": {},
+          "halt": {},
+          "import": {},
+          "io": {},
+          "page": {
+            "observed": 1,
+            "pass": 1
+          },
+          "parse": {},
+          "printer": {},
+          "proof": {},
+          "reg": {},
+          "rfc": {},
+          "run": {},
+          "show": {},
+          "spec": {},
+          "state": {},
+          "stats": {},
+          "stuck": {}
+        },
+        "checkerRejections": 2,
+        "proofTrustRejections": 0,
+        "frontendRejections": 9,
+        "uncheckedExecutions": 0
+      },
+      "rawCandidateSummary": {
+        "tests": 15,
+        "allTests": 1498,
+        "externalTests": 12,
+        "excludedTests": 1495,
+        "probes": 24,
+        "statuses": {
+          "pass": 17,
+          "observed": 3,
+          "fail": 4
+        },
+        "lanes": {
+          "parse": {
+            "pass": 6,
+            "observed": 3,
+            "fail": 2
+          },
+          "check": {
+            "pass": 11,
+            "fail": 2
+          },
+          "interpreter": {},
+          "js": {},
+          "native": {},
+          "metal": {},
+          "cuda": {}
+        },
+        "namespaces": {
+          "base": {},
+          "check": {
+            "observed": 2,
+            "pass": 2
+          },
+          "compile": {},
+          "comptime": {},
+          "cost": {},
+          "eval": {},
+          "flatten": {},
+          "gfx": {},
+          "grade": {},
+          "halt": {},
+          "import": {},
+          "io": {},
+          "page": {
+            "observed": 1,
+            "pass": 1
+          },
+          "parse": {},
+          "printer": {},
+          "proof": {},
+          "reg": {},
+          "rfc": {},
+          "run": {},
+          "show": {},
+          "spec": {},
+          "state": {},
+          "stats": {},
+          "stuck": {}
+        },
+        "checkerRejections": 2,
+        "proofTrustRejections": 0,
+        "frontendRejections": 9,
+        "uncheckedExecutions": 0
+      },
+      "referenceOracleFailures": [
+        {
+          "id": "check/nat_literal_pattern_arity.bend",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- message  : a Zero pattern with 1 field\nLocation:\n13 |   match b:\n14>|     case 257n:\n   |          ^^^^\n15 |       Un{}",
+            "output": null
+          }
+        },
+        {
+          "id": "check/nat_literal_pattern_empty.bend",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- message  : a Zero pattern with 1 field\nLocation:\n15 |   match b:\n16>|     case 0n:\n   |          ^^\n17 |       {\\{K: q => w => f(q)} : D -> U -> Empty}(K{Zero{Un{}}})",
+            "output": null
+          }
+        },
+        {
+          "id": "group-range-positive/constructor-nested-parameter",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)\nLocation:\n6 | def use(wrapped:Wrap) -> U32:\n7>|   (Outer{Mk{field}} = wrapped; field)\n  |                       ^^^^^^^\n8 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "group-range-positive/constructor-nested-parameter-check",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)\nLocation:\n6 | def use(wrapped:Wrap) -> U32:\n7>|   (Outer{Mk{field}} = wrapped; field)\n  |                       ^^^^^^^\n8 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "group-range-positive/constructor-parameter",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)\nLocation:\n4 | def use(box:Box) -> U32:\n5>|   (Mk{field} = box; field)\n  |                ^^^\n6 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "group-range-positive/constructor-parameter-check",
+          "lane": "check",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)\nLocation:\n4 | def use(box:Box) -> U32:\n5>|   (Mk{field} = box; field)\n  |                ^^^\n6 | ",
+            "output": null
+          }
+        },
+        {
+          "id": "page/ctor_list_mismatch_001.bend",
+          "lane": "parse",
+          "reference": {
+            "status": "error",
+            "phase": "parse",
+            "checked": false,
+            "typeAccepted": false,
+            "proofTrust": "not-assessed",
+            "kernelChecked": false,
+            "unsafeDefinitions": null,
+            "exitCode": 1,
+            "diagnostic": "SOME PROOFS FAIL\nError:\n- message  : a declared constructor (unknown: Tr)\nLocation:\n12 |   match b:\n13>|     case Tr{}:\n   |          ^^^^\n14 |       F{}",
+            "output": null
+          }
+        }
+      ]
+    }
+  ],
+  "scope": "New constructor-only scope index factory/lookup and actual declaration publication, compared with source16 original recursive helpers and unchanged pinned public fixtures. Pure arbitrary nested KDef books preserve first-DFS constructor semantics. Incremental qualification/alias and partial/complete headers preserve old scopes. No proof-authentication, general index-consumer or performance claim.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-ctor-index-close.py",
+      "sha256": "eb66f392781c1bf4d23de2b726bad3a3ee934871cd3a7c7c09ffabadb887dae2",
+      "bytes": 4456
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-01/report.json",
+      "sha256": "bbb7857c9ef360483645025280282ed07e28cd82835ce0d5ec6a8e7325c22e2e",
+      "bytes": 10108
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-01/results.json",
+      "sha256": "81d712e03e81bdc0769a16b39449931a1b5b2e8828c53d0c1d68df9d746445d0",
+      "bytes": 126316
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-ctor-index-run.mjs",
+      "sha256": "2ff2e1a2627fc8e96f9747a0748786b101ce71ac1da68c76987d384440e591df",
+      "bytes": 5155
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-01/consumed/context-controls-ctor-index-run.mjs",
+      "sha256": "2ff2e1a2627fc8e96f9747a0748786b101ce71ac1da68c76987d384440e591df",
+      "bytes": 5155
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-ctor-index-runner.mjs",
+      "sha256": "601e07d3d3003d37f26de663ddaccbda2e8b18c6aa4dcc0c4a789b66b9da0652",
+      "bytes": 7437
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-01/consumed/context-controls-ctor-index-runner.mjs",
+      "sha256": "601e07d3d3003d37f26de663ddaccbda2e8b18c6aa4dcc0c4a789b66b9da0652",
+      "bytes": 7437
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-inputs-01/cases.json",
+      "sha256": "29fa892478b1da0dea0a5ba2ec9e9fdd8a1be06c1cf1d9f3d775f35e6b522ce9",
+      "bytes": 20139
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-01/consumed/cases.json",
+      "sha256": "29fa892478b1da0dea0a5ba2ec9e9fdd8a1be06c1cf1d9f3d775f35e6b522ce9",
+      "bytes": 20139
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-inputs-01/publication-expectations.json",
+      "sha256": "07f81d3f3f9b52972d9c6bebad5d4a7900fc266e35f78d00cd067dd391381196",
+      "bytes": 599
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-01/consumed/publication-expectations.json",
+      "sha256": "07f81d3f3f9b52972d9c6bebad5d4a7900fc266e35f78d00cd067dd391381196",
+      "bytes": 599
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-inputs-01/plan.json",
+      "sha256": "7b780c663ab22a82baedec62b8a1a1d79c8797222d2a54a8d8e603127b9164d6",
+      "bytes": 1096
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-01/consumed/plan.json",
+      "sha256": "7b780c663ab22a82baedec62b8a1a1d79c8797222d2a54a8d8e603127b9164d6",
+      "bytes": 1096
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-constructor-index-plan.md",
+      "sha256": "d58b6acd982c0c1c22b72b777f0658faaa354116ca90f639cf3b88530be1d5bd",
+      "bytes": 4112
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-01/consumed/context-controls-constructor-index-plan.md",
+      "sha256": "d58b6acd982c0c1c22b72b777f0658faaa354116ca90f639cf3b88530be1d5bd",
+      "bytes": 4112
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-15/attempt.json",
+      "sha256": "fc22c4035f5c620b0ffeec771896ed2d76fa579f60f4c269ecb970957ce01086",
+      "bytes": 216804
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-15/equality/api.mjs",
+      "sha256": "5e124b374b4a8b185b7da6eb7be22fabd3983205c71468c6f48f79389ef25fb9",
+      "bytes": 925488
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-15/snapshot/tools/development/workflow.mjs",
+      "sha256": "d8a8a0ed29b59d58eae45dfccae9ca5530e597ae0e4203067365a19f0ab3cf32",
+      "bytes": 18123
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-01/parent-probe.mjs",
+      "sha256": "8dd5fe280f79e556bb6805b8263330c34332c32f3b905994d988f396834cf776",
+      "bytes": 925921
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/attempt.json",
+      "sha256": "d5255fa8868cf4c00540e814647b3645c004f35dfbd06b9f4bb6a4e71946772b",
+      "bytes": 216804
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/equality/api.mjs",
+      "sha256": "ade8ef020e439b81ecb53057b33a473c34a3cbd993b98a044121ecc3c2b8c9c3",
+      "bytes": 927305
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/snapshot/tools/development/workflow.mjs",
+      "sha256": "d8a8a0ed29b59d58eae45dfccae9ca5530e597ae0e4203067365a19f0ab3cf32",
+      "bytes": 18123
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-01/candidate-probe.mjs",
+      "sha256": "e8c62deace94d5d29676850ebafee2b17b8cf9e1495774886fc08ec1f211a033",
+      "bytes": 927864
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-run-v7.mjs",
+      "sha256": "55ad08bda86ecc426e9856ab4677e65b4f378f817ab640017920021f4e5121be",
+      "bytes": 6903
+    },
+    {
+      "file": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+      "bytes": 123655872
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-15/snapshot/tools/development/workflow.mjs",
+      "sha256": "d8a8a0ed29b59d58eae45dfccae9ca5530e597ae0e4203067365a19f0ab3cf32",
+      "bytes": 18123
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-15/snapshot/tools/development/process.mjs",
+      "sha256": "fe6afbc8964f695e3b7bfe8c636b6da6295fd7265fcdebbf58839f3eafce4989",
+      "bytes": 3013
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-public-inputs-01/selection.json",
+      "sha256": "6ac9ded883a0f966a20490d7f297184bd3482bd27975242ce6c4f3997b018fc3",
+      "bytes": 3800
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-public-inputs-01/plan.json",
+      "sha256": "63054fe670358763c95dc4a20ec41c731429705fa037b31bbaedd2396249a115",
+      "bytes": 5084
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/wave6-backend-environment-01.json",
+      "sha256": "db973a862955df917132ee67dd7d7c79efbba6d3732e808ee300ef1f6f925e23",
+      "bytes": 2121
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/alias-binding-controls-01/fixtures/bound-pattern.bend",
+      "sha256": "d6f2e101becf331ad3797ca1a785566e8d86095255eda90adbcaa7e987e19ccc",
+      "bytes": 120
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/alias-binding-controls-01/fixtures/unbound-pattern.bend",
+      "sha256": "c85f0b5663ce25c04d4f7b2a2bfa636181578911ecec09f3e89845bcc8d4c609",
+      "bytes": 99
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/alias-binding-controls-01/fixtures/constructor-pattern.bend",
+      "sha256": "4d067cd8bdd37e21b214c4f2b16f0243aac843264fa6500668fafc0c8392dff8",
+      "bytes": 104
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/alias-pattern-controls-02/fixtures/fresh.bend",
+      "sha256": "a2ddcbf3d0af284c2a4eadda521f4ce44907d90c5eb32df9fa3033a64a173ab0",
+      "bytes": 74
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/alias-pattern-controls-02/fixtures/canonical-reference.bend",
+      "sha256": "44eb7900d5f1c7ff7b6e6d75991bc7feb53397639ec6e8a975d321c42040c7a9",
+      "bytes": 100
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/alias-pattern-controls-02/fixtures/canonical-bound.bend",
+      "sha256": "54bb08efd62275add3ea6e39b40634ab492b45efb53b1c267abb6259f4e2e653",
+      "bytes": 123
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/module-names-controls-01/fixtures/aliased-datatype.bend",
+      "sha256": "593c3cfda64b668ac40a2d1e32e5576cd128901d21ec654eae3488cf51f85491",
+      "bytes": 66
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/module-names-controls-01/fixtures/aliased-constructor.bend",
+      "sha256": "b1bea533479ec8dbec2effc460408958ffd38925ee5ecde74d2465d641acc1b6",
+      "bytes": 67
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-02/fixtures/constructor-parameter.bend",
+      "sha256": "a19544b20d57b01aeeaf6c388c70e27d365646c5d061de9fd488981e1e91b81d",
+      "bytes": 98
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-02/fixtures/constructor-nested-parameter.bend",
+      "sha256": "d6c609d08c2961c0bda9825ac521ef94c558a99dab6f1b773e9e6d78fac7a3b2",
+      "bytes": 150
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-15/attempt.json",
+      "sha256": "fc22c4035f5c620b0ffeec771896ed2d76fa579f60f4c269ecb970957ce01086",
+      "bytes": 216804
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-15/snapshot/tools/conformance/target.mjs",
+      "sha256": "e2ac5403100458239cc65cbc5da77605fbfb108a54d6ae337190dd467e0e0f50",
+      "bytes": 10610
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-15/equality/api.mjs",
+      "sha256": "5e124b374b4a8b185b7da6eb7be22fabd3983205c71468c6f48f79389ef25fb9",
+      "bytes": 925488
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-15/attempt.json",
+      "sha256": "fc22c4035f5c620b0ffeec771896ed2d76fa579f60f4c269ecb970957ce01086",
+      "bytes": 216804
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-15/snapshot/build/typed/cache/base-5e124b374b4a8b185b7da6eb7be22fabd3983205c71468c6f48f79389ef25fb9-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json",
+      "sha256": "7e399653f7ffbd0be68373d258ae1ae7f3d0fcc1d015cb6fac784c6c4d85277b",
+      "bytes": 3486205
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-public-parent-01/report.json",
+      "sha256": "60c3454ec888e9f229562046425f1294374629386cf1d7740e9d63afa9427da8",
+      "bytes": 19074
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-public-parent-01/selected/paired.json",
+      "sha256": "5652d55e0dbe5dedd2d302b30fa26f9297090e017000a187f70218bfd189905f",
+      "bytes": 42573
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-run-v7.mjs",
+      "sha256": "55ad08bda86ecc426e9856ab4677e65b4f378f817ab640017920021f4e5121be",
+      "bytes": 6903
+    },
+    {
+      "file": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+      "bytes": 123655872
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/snapshot/tools/development/workflow.mjs",
+      "sha256": "d8a8a0ed29b59d58eae45dfccae9ca5530e597ae0e4203067365a19f0ab3cf32",
+      "bytes": 18123
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/snapshot/tools/development/process.mjs",
+      "sha256": "fe6afbc8964f695e3b7bfe8c636b6da6295fd7265fcdebbf58839f3eafce4989",
+      "bytes": 3013
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-public-inputs-01/selection.json",
+      "sha256": "6ac9ded883a0f966a20490d7f297184bd3482bd27975242ce6c4f3997b018fc3",
+      "bytes": 3800
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-public-inputs-01/plan.json",
+      "sha256": "63054fe670358763c95dc4a20ec41c731429705fa037b31bbaedd2396249a115",
+      "bytes": 5084
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/wave6-backend-environment-01.json",
+      "sha256": "db973a862955df917132ee67dd7d7c79efbba6d3732e808ee300ef1f6f925e23",
+      "bytes": 2121
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/alias-binding-controls-01/fixtures/bound-pattern.bend",
+      "sha256": "d6f2e101becf331ad3797ca1a785566e8d86095255eda90adbcaa7e987e19ccc",
+      "bytes": 120
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/alias-binding-controls-01/fixtures/unbound-pattern.bend",
+      "sha256": "c85f0b5663ce25c04d4f7b2a2bfa636181578911ecec09f3e89845bcc8d4c609",
+      "bytes": 99
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/alias-binding-controls-01/fixtures/constructor-pattern.bend",
+      "sha256": "4d067cd8bdd37e21b214c4f2b16f0243aac843264fa6500668fafc0c8392dff8",
+      "bytes": 104
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/alias-pattern-controls-02/fixtures/fresh.bend",
+      "sha256": "a2ddcbf3d0af284c2a4eadda521f4ce44907d90c5eb32df9fa3033a64a173ab0",
+      "bytes": 74
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/alias-pattern-controls-02/fixtures/canonical-reference.bend",
+      "sha256": "44eb7900d5f1c7ff7b6e6d75991bc7feb53397639ec6e8a975d321c42040c7a9",
+      "bytes": 100
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/alias-pattern-controls-02/fixtures/canonical-bound.bend",
+      "sha256": "54bb08efd62275add3ea6e39b40634ab492b45efb53b1c267abb6259f4e2e653",
+      "bytes": 123
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/module-names-controls-01/fixtures/aliased-datatype.bend",
+      "sha256": "593c3cfda64b668ac40a2d1e32e5576cd128901d21ec654eae3488cf51f85491",
+      "bytes": 66
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/module-names-controls-01/fixtures/aliased-constructor.bend",
+      "sha256": "b1bea533479ec8dbec2effc460408958ffd38925ee5ecde74d2465d641acc1b6",
+      "bytes": 67
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-02/fixtures/constructor-parameter.bend",
+      "sha256": "a19544b20d57b01aeeaf6c388c70e27d365646c5d061de9fd488981e1e91b81d",
+      "bytes": 98
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-02/fixtures/constructor-nested-parameter.bend",
+      "sha256": "d6c609d08c2961c0bda9825ac521ef94c558a99dab6f1b773e9e6d78fac7a3b2",
+      "bytes": 150
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-public-parent-01/report.json",
+      "sha256": "60c3454ec888e9f229562046425f1294374629386cf1d7740e9d63afa9427da8",
+      "bytes": 19074
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-public-parent-01/selected/paired.json",
+      "sha256": "5652d55e0dbe5dedd2d302b30fa26f9297090e017000a187f70218bfd189905f",
+      "bytes": 42573
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/attempt.json",
+      "sha256": "d5255fa8868cf4c00540e814647b3645c004f35dfbd06b9f4bb6a4e71946772b",
+      "bytes": 216804
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/snapshot/tools/conformance/target.mjs",
+      "sha256": "e2ac5403100458239cc65cbc5da77605fbfb108a54d6ae337190dd467e0e0f50",
+      "bytes": 10610
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/equality/api.mjs",
+      "sha256": "ade8ef020e439b81ecb53057b33a473c34a3cbd993b98a044121ecc3c2b8c9c3",
+      "bytes": 927305
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/attempt.json",
+      "sha256": "d5255fa8868cf4c00540e814647b3645c004f35dfbd06b9f4bb6a4e71946772b",
+      "bytes": 216804
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/snapshot/build/typed/cache/base-ade8ef020e439b81ecb53057b33a473c34a3cbd993b98a044121ecc3c2b8c9c3-00c751b6cd045361a80f214c9c36bd4ec637e9ec86109b194e55cd57ca63ab94-70b98bae5a1be3f0c7fa41554bfd60209edfa1678cfa14a0e2ab17b03c577ebd.json",
+      "sha256": "068a1735f26037466676535890a3200c904ee6e1209ea74f326ad8565a6fb6fd",
+      "bytes": 3486205
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-public-candidate-01/report.json",
+      "sha256": "b77f6ae0c76b8f08da071fa7a460be97da50b83d671364bdb21ddac985939ed7",
+      "bytes": 20403
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-index-public-candidate-01/selected/paired.json",
+      "sha256": "d969cd00db12bcf957894c87ba94483ed6cba63c28a577dc946e25a28597c886",
+      "bytes": 42603
+    }
+  ]
+}

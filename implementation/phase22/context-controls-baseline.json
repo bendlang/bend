@@ -1,0 +1,823 @@
+{
+  "kind": "phase22-independent-context-baseline",
+  "complete": true,
+  "pass": true,
+  "passMeaning": "Healthy frozen baseline acquisition plus exact ordinary execution. Frontend strict false and all known mismatches remain. No migration candidate has been consumed.",
+  "parentApiSha256": "44094e58cb0ef033e2c08c2827565e859c3594b3136868d4f821262145aea7f0",
+  "parentAttempt": "selfhost/build/phase21/group-range-build-02",
+  "pin": "b2111cf43244e65f76ddc278ee695e669f720cbf",
+  "suites": [
+    {
+      "attempt": "context-controls-baseline-01",
+      "observations": 60,
+      "exact": 27,
+      "strictDifferences": 33,
+      "primitiveDifferences": [
+        {
+          "id": "group-comma/completed-parallel-tuple",
+          "lane": "check"
+        },
+        {
+          "id": "group-comma/raw-parallel-comma",
+          "lane": "parse"
+        },
+        {
+          "id": "group-comma/raw-parallel-comma",
+          "lane": "check"
+        },
+        {
+          "id": "group-comma/raw-typed-local-comma",
+          "lane": "parse"
+        },
+        {
+          "id": "group-comma/raw-typed-local-comma",
+          "lane": "check"
+        },
+        {
+          "id": "group-range-positive/constructor-nested-parameter",
+          "lane": "parse"
+        },
+        {
+          "id": "group-range-positive/constructor-nested-parameter-check",
+          "lane": "check"
+        },
+        {
+          "id": "group-range-positive/constructor-parameter",
+          "lane": "parse"
+        },
+        {
+          "id": "group-range-positive/constructor-parameter-check",
+          "lane": "check"
+        },
+        {
+          "id": "group/body-comma",
+          "lane": "parse"
+        },
+        {
+          "id": "group/body-comma",
+          "lane": "check"
+        }
+      ],
+      "referenceOracleFailures": [
+        {
+          "id": "group-range-positive/constructor-nested-parameter",
+          "lane": "parse"
+        },
+        {
+          "id": "group-range-positive/constructor-nested-parameter-check",
+          "lane": "check"
+        },
+        {
+          "id": "group-range-positive/constructor-parameter",
+          "lane": "parse"
+        },
+        {
+          "id": "group-range-positive/constructor-parameter-check",
+          "lane": "check"
+        }
+      ],
+      "referenceObservedNotPass": [
+        {
+          "id": "check/monad_do_destructure.bend",
+          "lane": "parse"
+        }
+      ],
+      "rawSelectedComplete": false,
+      "referenceVerdicts": {
+        "observed": 1,
+        "pass": 55,
+        "fail": 4
+      },
+      "candidateVerdicts": {
+        "observed": 1,
+        "fail": 8,
+        "pass": 51
+      }
+    },
+    {
+      "attempt": "context-controls-program-baseline-01",
+      "observations": 24,
+      "exact": 24,
+      "strictDifferences": 0,
+      "primitiveDifferences": [],
+      "referenceOracleFailures": [],
+      "referenceObservedNotPass": [],
+      "rawSelectedComplete": true,
+      "referenceVerdicts": {
+        "pass": 24
+      },
+      "candidateVerdicts": {
+        "pass": 24
+      }
+    }
+  ],
+  "scope": "24 reused adversarial boundary fixtures plus five new ordinary programs and one pinned do program. Frontend and execution suites overlap in six check observations and must not be summed as independent programs.",
+  "newProgramExpectations": [
+    {
+      "id": "parallel-outer-scope",
+      "purpose": "second RHS must see outer x=5, not new x=3",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-inputs-01/fixtures/parallel-outer-scope.bend",
+      "sha256": "0e44b091c57a153f64d913f9762a7bbd9645fdaf91702a0ef4ee51a104bc7c11",
+      "bytes": 111
+    },
+    {
+      "id": "parallel-global-shadow",
+      "purpose": "second RHS resolves prior global value before simultaneous binders open",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-inputs-01/fixtures/parallel-global-shadow.bend",
+      "sha256": "d910e6009cce2d1c4b0c8463511484b616fc1247807d2e4fdc218fee34f8cbb5",
+      "bytes": 127
+    },
+    {
+      "id": "nested-lambda-capture",
+      "purpose": "closure captures outer x and survives same-name nested binder",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-inputs-01/fixtures/nested-lambda-capture.bend",
+      "sha256": "4ca310f95a97c52328bcad7e55d90f2b2fb1a57f7e981a6cbd6549f4f5bac673",
+      "bytes": 119
+    },
+    {
+      "id": "erased-marked-local",
+      "purpose": "erased local and explicit unrestricted binder retain their quantities",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-inputs-01/fixtures/erased-marked-local.bend",
+      "sha256": "072b3842f1b2b0b47342599438ce96b00cbf54eed5b0bb9b400384d6cccf8d48",
+      "bytes": 107
+    },
+    {
+      "id": "annotation-group-type",
+      "purpose": "completed groups in both annotation value and type retain stage and scope",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-inputs-01/fixtures/annotation-group-type.bend",
+      "sha256": "2646abf54e71acb87057ca440bb35064a3e6559bd0fa0211daacd0291cab5597",
+      "bytes": 92
+    }
+  ],
+  "preservedAssumptions": "Four reused constructor acceptance expectations remain wrong against pinned parser; no oracle rewritten. The upstream monad negative parse verdict is observed, not failed. Legacy wrapper referenceOracleFailures field lists all non-pass rows, so its observed entry is separated here.",
+  "comparisonPolicy": "Full pinned observation protocol must remain equal between runs. Preserve every prior exact match. Any primitive behavior change must become exactly the pinned primitive outcome; no new semantic mismatch is allowed. Report raw false suites separately from healthy collection.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-baseline-report.py",
+      "sha256": "96be65c0430f295a37ad7371a7eefded390abab80fe8cdb7468e69ce27841565",
+      "bytes": 4094
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-inputs-01/plan.json",
+      "sha256": "327340f9c4393f8936cee429054ca19e861041bbf330849c1bb92ef97f5a50ae",
+      "bytes": 32272
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-inputs-01/selection.json",
+      "sha256": "a95ced13a1653237a8640ffb2d5d33200ed99de4048edeff1f4859d8eaf509ea",
+      "bytes": 9001
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-inputs-01/program-selection.json",
+      "sha256": "fbaced5e6220ce2c14b66c688c42814458dfa80cdccdc92e2f97505ecda4d65d",
+      "bytes": 1664
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-census.json",
+      "sha256": "fd789a79f0be48ca3aab623981ee867203de39fa992debe2eff7ceb739bfb82c",
+      "bytes": 85487
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-prepare.py",
+      "sha256": "1b49db6bff595890e4c83c5fa4868dbae4fbe329e24fb9deb487f65a036a98b9",
+      "bytes": 5151
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase18/cursor-controls-01/selection.json",
+      "sha256": "16d913d229735db329be4c29c74f045ed3112515da951c9c71b0949d0a21f21f",
+      "bytes": 29005
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-comma-controls-01/selection.json",
+      "sha256": "9e17c3eccea065ddd51c0a6566326592e002e86921441b6fe92ee61d773b08ca",
+      "bytes": 9347
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-02/selection.json",
+      "sha256": "2c77c1757ba504544ea93d564afb55a62fc5ca937bbc685e62857be30b724e1c",
+      "bytes": 1160
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase19/saved-row-group-frontier.md",
+      "sha256": "8237e2c8d394fdeaa33fffe88342db50e135c3ece94efd54d90879df160725f0",
+      "bytes": 6024
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase21/group-boundaries.md",
+      "sha256": "f38df065eb0ce76da5ba948c6c27e7a354ba0a229649151d1c66502b85926d81",
+      "bytes": 13189
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase21/group-comma-controls.md",
+      "sha256": "ac49b73dc66e50ce140a15f801934be798449014664403d4875087a38dad4cda",
+      "bytes": 3060
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8/tests/eval/do_notation_result.bend",
+      "sha256": "d985c0b6465f10ef5aba846e0b9ab0e2ab858a4f69da5f4139db7a6256db26c3",
+      "bytes": 1000
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/marked-pattern-controls-02/fixtures/alias-bound.bend",
+      "sha256": "1e0a645eb5234760ec610fbf2be9f6f7381bf16d175517af9bcb4a9316498362",
+      "bytes": 106
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/marked-pattern-controls-02/fixtures/alias-unbound.bend",
+      "sha256": "b90d3a232e616e5abd9b8eacb15d2d70e39a66f5b71c6bc22d768a46935f9adc",
+      "bytes": 82
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/marked-pattern-controls-02/fixtures/bare-bound.bend",
+      "sha256": "f5417882aa49b146afcf266ae490d86ca3bbafc74d8f7a8498284cff8160565f",
+      "bytes": 69
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/marked-pattern-controls-02/fixtures/bare-unbound.bend",
+      "sha256": "1be24938bfd3e37b6d826796acd78d37ff1c0ee371c26a55ae7dc74263354751",
+      "bytes": 76
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/marked-pattern-controls-02/fixtures/datatype-bare.bend",
+      "sha256": "861606abdc25e92ef729804f2601623e5fbd90c13b559077d46593de69f831c6",
+      "bytes": 57
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/marked-pattern-controls-02/fixtures/datatype-explicit.bend",
+      "sha256": "75044301417b7acf33e53b0c97b039f78dc0504806b9aec4d1b5369972acee23",
+      "bytes": 62
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/marked-pattern-controls-02/fixtures/datatype-shadow.bend",
+      "sha256": "031e2ff28a0b9a61b98b33b01ae2a575d16a092a58f27ef4313163c5c4e03525",
+      "bytes": 66
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/marked-pattern-controls-02/fixtures/empty-bound.bend",
+      "sha256": "1ad5feda50e10076271ca6f0ffba134a264944d7d07bee7be6841abae1edf06b",
+      "bytes": 71
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/marked-pattern-controls-02/fixtures/empty-unbound.bend",
+      "sha256": "62fd93f4fabfad45c69d02881b5702d8ffec923f9d38661e6aea0b5fb34b6061",
+      "bytes": 78
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/marked-pattern-controls-02/fixtures/lib.bend",
+      "sha256": "ae24cb2d25738b8535df7930fad71e32cc5c323a3a21a33048ae70be9f560810",
+      "bytes": 38
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/marked-pattern-controls-02/fixtures/nested-bound.bend",
+      "sha256": "36f9e5677f800993da7911d9576037be6e366b2d83be28c2d66bd75093e9fb96",
+      "bytes": 73
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/marked-pattern-controls-02/fixtures/nonempty-bound.bend",
+      "sha256": "92cde425e9e703925b8ab5ca2d4f8ed539c05d0067d70d1a9fd729a2c6700e9f",
+      "bytes": 69
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/marked-pattern-controls-02/fixtures/ordinary-affine-control.bend",
+      "sha256": "ab9bc87fcbf785ce13e23d71e9c6d23d3bb9d211ed096dd7caebed1f8707f1c3",
+      "bytes": 93
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/marked-pattern-controls-02/fixtures/qualified-bound.bend",
+      "sha256": "015307cfdac27c8aa175a829c2c4b1c67d0d1ef8f74417360141aeafce1c9c03",
+      "bytes": 95
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/marked-pattern-controls-02/fixtures/qualified-unbound.bend",
+      "sha256": "0b8224f52e3908a6955b2cb8aa0b58e5bea3663ea5625692dde82300f374d0f4",
+      "bytes": 62
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/marked-pattern-controls-02/fixtures/quantity-requires-data.bend",
+      "sha256": "0ac431384ab8d7239c875a1f304ad42689c60777350738b993c804089b77cc3e",
+      "bytes": 94
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/marked-pattern-controls-02/fixtures/term-remains-unbound.bend",
+      "sha256": "1c56019a8ed2fb8214c0d6e491dcc0deb4b27dd75ccb93c90bc22f32d826ca7c",
+      "bytes": 42
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/alias-shadow-frame.bend",
+      "sha256": "4b84f2b1302cebf4bb26aca214103ce88dbc8aa5e1b55728b8dadbb8d05603d3",
+      "bytes": 94
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/all-frame.bend",
+      "sha256": "f072ea527fb6a9008173a07d77e3f2685c45ca7d59c2f8188a252683b30337ba",
+      "bytes": 66
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/bad-case-before-global-head.bend",
+      "sha256": "c7567efb20e8afd62fe01bd8305ac2341568be7c19ca10e3363e9c7e63a2bf21",
+      "bytes": 92
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/bound-qualified-positive.bend",
+      "sha256": "f376c816852e0284398c3eb82d0de6fc9140925376f996cd157726352405dea7",
+      "bytes": 74
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/computed-before-continuation.bend",
+      "sha256": "54c2b539d5d2f0f5928ba16da422881652efd6b3eb7157379c5873cee8e248a8",
+      "bytes": 58
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/computed-valid-continuation.bend",
+      "sha256": "0886439845008d48801a133ae218150f54f313aa730f6dd813c2440ed0615c3b",
+      "bytes": 59
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/constructor-before-continuation.bend",
+      "sha256": "f108ca22337a8f9c93fbdf9351d4b2cb3cf7be909fb0a36b84788e52c8749732",
+      "bytes": 49
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/do-frame.bend",
+      "sha256": "f49ee5cc1e53a473b01e62bfb8b5ef6f8dc17e2a1e8d4f4a6d51420a262a5fc9",
+      "bytes": 130
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/empty-call-bound.bend",
+      "sha256": "c12d71d4665cb7f090ba9715a4608f67f36eddaae5d81f1178c8b2b510473a4a",
+      "bytes": 58
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/empty-call-unbound.bend",
+      "sha256": "ebb612c508ff60df7d3fe1fa257670bbc3a618f7b4be2b7221f5cc01cf4df96b",
+      "bytes": 46
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/global-head-after-good-case.bend",
+      "sha256": "2e6062fab3e9148d9e16fdcd464370b0b83fb27fba48d2bd2e4fc253dab3d406",
+      "bytes": 93
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/inner-error-before-computed.bend",
+      "sha256": "dbc578d95dea361e8940ebc47d4e515d4039c8008ab0ab660f7a839ff0b9062a",
+      "bytes": 94
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/lambda-before-continuation.bend",
+      "sha256": "7f53e5f21237ec5d24e8fbfa7e66e3b3b6e38959191bf4af23559edc52645446",
+      "bytes": 51
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/lambda-frame.bend",
+      "sha256": "5c1b6a52e68ede0bc8356706fb5144e9cb3f2fd351f97171aa017b2f84b0d504",
+      "bytes": 73
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/lib.bend",
+      "sha256": "ae24cb2d25738b8535df7930fad71e32cc5c323a3a21a33048ae70be9f560810",
+      "bytes": 38
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/literal-before-continuation.bend",
+      "sha256": "bd2b48345f6f5472dd1b6df3370d97b5f36a4aa366d3ef760e3a788022c6e6dc",
+      "bytes": 45
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/local-frame.bend",
+      "sha256": "c529e63d992d153d78132228ac7558e030bcfcf4c8e9f5e032a08ee637b6bb50",
+      "bytes": 64
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/match-frame.bend",
+      "sha256": "098d3254d96b71dc3aecccd9e5b7e3127252af3c7ce2dbc804d269ba34a27f1d",
+      "bytes": 97
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/module-alias-frame.bend",
+      "sha256": "94aef6a4e03729e83fb5c9d375ff22f8f6877270b465cea1ad99b2563e4f6219",
+      "bytes": 77
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/parallel-frame.bend",
+      "sha256": "c886f6cacb58406d0721c0e10dd67188bbe11f9eb11fc90c8f4c71480671c33c",
+      "bytes": 69
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/parameter-frame.bend",
+      "sha256": "7ad5f22d2babea3bf66a6ffd992f93cc91a61f42f56b752c7d310ddc430687e4",
+      "bytes": 60
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/qualified-before-continuation.bend",
+      "sha256": "660dba57ba99635f43223cf055a90512608a715c3fb8c03e4bdd68e76f5458b5",
+      "bytes": 50
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/rhs-before-computed.bend",
+      "sha256": "325b13c234f117185f0401ed48bc27f58ebc5693ca5f3e2743e94d6662e8d369",
+      "bytes": 57
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/type-before-continuation.bend",
+      "sha256": "ef0affd05c102d22a2e85f318026c2fa81ecd0dd2ae6b81e1e5cbcf1149132db",
+      "bytes": 47
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/valid-binder-before-continuation.bend",
+      "sha256": "9a51b53ecc68f8d03f0607a58cad06d77c6ba10c4a2f6cf87dfc3627eda03daf",
+      "bytes": 44
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/rejected-stage-controls-01/fixtures/body-before-later-pattern.bend",
+      "sha256": "4dc5c5e7ec0ba750a5cd4f9c1f7d18a821d66fcb4b0eddd26457e18230630e5e",
+      "bytes": 163
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/rejected-stage-controls-01/fixtures/body-before-later-syntax.bend",
+      "sha256": "6d101fe382dc12c038c29941461b48d13fa6af9ce6edb5eaca3be1c5f5765376",
+      "bytes": 165
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/rejected-stage-controls-01/fixtures/completed-body-flattens.bend",
+      "sha256": "0574be5575b15866aac48520a873bd3541e7b79bc481475ba2bae9b49179a8dc",
+      "bytes": 166
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/rejected-stage-controls-01/fixtures/completed-group-flattens.bend",
+      "sha256": "343826fce3d605b4e39588b6609b25e6c8eff4a8ca1dbec7fe6500347df7a6fc",
+      "bytes": 188
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/rejected-stage-controls-01/fixtures/group-before-later-pattern.bend",
+      "sha256": "8b280e68f26788a6d218788b00b8cf87645dd48e0b42b2626c9c391ac9da509e",
+      "bytes": 185
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/rejected-stage-controls-01/fixtures/group-before-later-syntax.bend",
+      "sha256": "9ba6da5da3e06b0c21ca392dfc8299c3e6125ed88e27ad43dea6f9969546cd13",
+      "bytes": 187
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/rejected-stage-controls-01/fixtures/prior-local-pattern-before-later-syntax.bend",
+      "sha256": "f45b23fd547fe2729e71e0e9eb6ffccd890c3878d146a3266f92ca9e0054a79a",
+      "bytes": 141
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/rejected-stage-controls-01/fixtures/prior-row-pattern-before-body-syntax.bend",
+      "sha256": "9eef7a970a81ddb081a86388e54fbbfe002423a57a055582df9c8afccd6fe272",
+      "bytes": 96
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/body-comma.bend",
+      "sha256": "55b15538375ee46dbe08e4c486556741378561556e1cba69d0e0055603deeadf",
+      "bytes": 63
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/bound-marked.bend",
+      "sha256": "41cccb9c70bb176fdccfaca95a354e1a516cdfd61473b0d652e87b235b9e661c",
+      "bytes": 71
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/bound-pattern.bend",
+      "sha256": "19bb371be06a8fea178293f26fcc8defacef70016d26b4063bf510c80b3ee7b5",
+      "bytes": 58
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/family-arg.bend",
+      "sha256": "3e0557c04f6b8c507676eafb4b9c86c8a4fa325a4a8b9fe80b498e4c9580f546",
+      "bytes": 47
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/group-type.bend",
+      "sha256": "fd458a9488d04d67c19909243a0a26f2ed1ddc3b7a6104cfdbdd68902e253377",
+      "bytes": 40
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/grouped-scalar-lambda.bend",
+      "sha256": "6e53cf2e0c8675bbe2ab7ec9409dc4170db3110f884dceb376de2cc4a3a84dbb",
+      "bytes": 48
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/local-annotated.bend",
+      "sha256": "1ce6c07385388b123a500af8285f7bae4e77516fb671cd2d48d852b3deded448",
+      "bytes": 61
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/local-argument.bend",
+      "sha256": "26ef22b7c242b1092065c07ee9d400813c81b5f2fd6d27ca00280df9b4a4e62a",
+      "bytes": 66
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/local-bang.bend",
+      "sha256": "d67051eec54fb2aa9648c912ee7b4783824a7df2b2356bd6e398206ccce0e6ff",
+      "bytes": 56
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/local-callee.bend",
+      "sha256": "f6a02865386dcf67931eba9d942ffc1eecbf9e19783b786cd098bb61d45111b2",
+      "bytes": 87
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/local-lambda-binder.bend",
+      "sha256": "7e6e6b9d18809d5077509e53fe84e3f91d04c08b409c0c0ccbca143f7183e58e",
+      "bytes": 65
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/local-lambda-body.bend",
+      "sha256": "c983759bb21cf510a358f95b33dff356d810fce28eff831e9c51928e0c9e1ef2",
+      "bytes": 63
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/local-marked.bend",
+      "sha256": "545516a78cb75c7589a75a5bc7e12d2e4be6bb915cb726368acd3786b1fea4c7",
+      "bytes": 54
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/local-namespace.bend",
+      "sha256": "9fefb33341c70a9eea340d03a5d2f2ee77833ad1528b7c1c3783e2b6af3c87b0",
+      "bytes": 62
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/local-pattern.bend",
+      "sha256": "d2ca81791b2ee4b90d71ab3551c8444613234ba5342fb533113ce15704fb54d6",
+      "bytes": 63
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/local-then-match.bend",
+      "sha256": "5cb025615bc15a6fbca86933d5aa80e7bc21f5731e9a0645f64b85c002b4e85b",
+      "bytes": 131
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/local-type.bend",
+      "sha256": "09c4fed2bd7af4a9449230f3b0f0b494cb9b4d20688435a9d81225e12ff2f909",
+      "bytes": 56
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/local.bend",
+      "sha256": "9c88e265ea96f75c3a3d024c7516ab21d1aeff300f77cf3feb20bf29348f710e",
+      "bytes": 53
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/match-error-before-close.bend",
+      "sha256": "5d9063636aa949a523de7298dcea5d035bf9a8b6123d3d498f9c4ac3d0fde1d7",
+      "bytes": 104
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/missing-close.bend",
+      "sha256": "45520674ccacb013b9ffdfaa9d1e132d1d812282b7feb7806eaf7e6531d57552",
+      "bytes": 52
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/nested-local-namespace.bend",
+      "sha256": "f0b1f2abd3668a7c2ba9f65e3add3ce74f1aa7c52f3f6762380f11167ba2b6f5",
+      "bytes": 64
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/nested-local.bend",
+      "sha256": "2fdc200fcc87b0cad000014c343a04d6c110eee546624539ae7460ccfdbea222",
+      "bytes": 55
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/nested-parallel.bend",
+      "sha256": "34f06c074717633ba8de6745e848b2ef9739226fb99293cc7aa7015377439992",
+      "bytes": 80
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/nested-scalar.bend",
+      "sha256": "89a358e06fb1f473a526f86a3a10f3c6039390168308c68192d82f455a6bcecb",
+      "bytes": 42
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/nested-tuple.bend",
+      "sha256": "f1232ab36f4071571d1ef6c3dcb8fbbb1406427e7c578d88a02b17e8ed0a3e4a",
+      "bytes": 50
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/nested-zero-head-match.bend",
+      "sha256": "4aaf8d6d37c4d0355aa3abcfdac3f84d3878131e822513b14200683ad03d1f6b",
+      "bytes": 75
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/parallel.bend",
+      "sha256": "11b8d21120ce8c6909ba94e1ae1078f64a8b913eedd9965cbb85730f56f02a78",
+      "bytes": 78
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/rhs-error-before-close.bend",
+      "sha256": "518fde903fc0a6afbee47903316e967b5eab929e5796f3d4a93fdd921bd0ec69",
+      "bytes": 44
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/scalar-literal.bend",
+      "sha256": "a9531f0ffd4dd25824c167e9785f354f4c519e4f43349242224fc8aa83c9ad36",
+      "bytes": 38
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/scalar-tuple.bend",
+      "sha256": "03e4d234ced4c7af1428176e794b39d4a62b31e5133b96ad5a534a10c7f105ab",
+      "bytes": 48
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/zero-head-match-argument.bend",
+      "sha256": "b4f442b05ab8bf0d8b2ad3ac9a46e5086ffad3a15dcd1ee72a4893acfe814179",
+      "bytes": 86
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/zero-head-match-lambda.bend",
+      "sha256": "0f33020f380931bfafb544a2aeeaa2f4cfd5ed8edf647bf66d2cc8a2a657beca",
+      "bytes": 84
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/group-controls-03/fixtures/zero-head-match.bend",
+      "sha256": "cb2966b38d8a830d0949a5fc53679ae74ef70b1e159877e37c77896a015931c0",
+      "bytes": 73
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-comma-controls-01/fixtures/completed-local-tuple.bend",
+      "sha256": "d22e1d00a34b148ee6b519aa99bed70ba5f473df58a00413d9f3902b7e54ed55",
+      "bytes": 65
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-comma-controls-01/fixtures/completed-match-before-outer-comma.bend",
+      "sha256": "5a86cdc09e035783e38c2fd7184bb300808adcf8ea6ed21dfb5fe1d205272cee",
+      "bytes": 121
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-comma-controls-01/fixtures/completed-nested-local-tuple.bend",
+      "sha256": "fe85ab2cd5f027374451d6e9bbb5bdb111ab06e890caa7a97ebce87cb6984558",
+      "bytes": 67
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-comma-controls-01/fixtures/completed-parallel-tuple.bend",
+      "sha256": "e6a3b0a34c6d846ca3067a7f74427b25ba41500c0282cce81b046b32d7cd6adf",
+      "bytes": 90
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-comma-controls-01/fixtures/completed-tuple-reaches-later-syntax.bend",
+      "sha256": "c3167bae15fb45b9d333d95a94f90e5744b80b570536a7bc84f042a6a48db553",
+      "bytes": 72
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-comma-controls-01/fixtures/completed-typed-local-tuple.bend",
+      "sha256": "3c5d3beec8dbf137d07753eeb31119f0305141afb52fbb8fd91918d0a00c5149",
+      "bytes": 63
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-comma-controls-01/fixtures/invalid-constructor-pattern-comma.bend",
+      "sha256": "3d9e6acf109e3a7235eb331e0966c074111f4581fb61e4d7cdbbf99562520f1b",
+      "bytes": 61
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-comma-controls-01/fixtures/invalid-type-pattern-comma.bend",
+      "sha256": "e985e238bf7691411865fb72cbc36f433432984884d98f8c1b8244432e1a03ef",
+      "bytes": 59
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-comma-controls-01/fixtures/match-global-before-close.bend",
+      "sha256": "bc8c0fd230067f5431f9da64eae0a256fc09e8f3a2db83726f40a33ed4624f82",
+      "bytes": 109
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-comma-controls-01/fixtures/match-global-before-comma.bend",
+      "sha256": "dab0eb3f152bf0dc4a38404b0d04d91761fdeb11ae4fe7e7a94b77b3d6d34276",
+      "bytes": 119
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-comma-controls-01/fixtures/match-later-row-syntax-before-flatten.bend",
+      "sha256": "9a9c350d4248049e80c47eb74e4ed7f5f7d750f53bef8582a22e609fb7b5b184",
+      "bytes": 154
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-comma-controls-01/fixtures/match-parameter-before-comma.bend",
+      "sha256": "aae2cb270ade784ae16b2aaba40adb01774b861179bde5a7270e4689d891c69b",
+      "bytes": 91
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-comma-controls-01/fixtures/match-pattern-before-comma.bend",
+      "sha256": "53699a41d8f1b0eee752e61041008884495857fc5edce64d1adfe5ddd4bca2ba",
+      "bytes": 122
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-comma-controls-01/fixtures/nested-scalar-tuple.bend",
+      "sha256": "00bedf8886326ede20ef97b04ab1c7d5fa9bba64ade91973948e44dc0c3cc47a",
+      "bytes": 50
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-comma-controls-01/fixtures/pattern-before-continuation-comma.bend",
+      "sha256": "3f775756291568dca23f42038429e99bd639340983349ce9b3d49d718759f04a",
+      "bytes": 66
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-comma-controls-01/fixtures/raw-comma-before-later-syntax.bend",
+      "sha256": "04d2ab695263886b9d6d52226a667a38bb72daee2a0c44e6acbb2c6878f2eb9b",
+      "bytes": 70
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-comma-controls-01/fixtures/raw-parallel-comma.bend",
+      "sha256": "4bb9893be167338d3433ed048d426ff391dc1a3a488df7989796129f19be4f65",
+      "bytes": 88
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-comma-controls-01/fixtures/raw-typed-local-comma.bend",
+      "sha256": "73f35db0a2d4f643b8b29cf8782734b29173d2649acf0c527a1dc04a5da8a9c0",
+      "bytes": 61
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-comma-controls-01/fixtures/rhs-before-pattern-comma.bend",
+      "sha256": "754a9d2478c2dee51108a50be78690228ad561e547f0d862825e29fcb3f9e232",
+      "bytes": 66
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-comma-controls-01/fixtures/scalar-tuple.bend",
+      "sha256": "03e4d234ced4c7af1428176e794b39d4a62b31e5133b96ad5a534a10c7f105ab",
+      "bytes": 48
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-comma-controls-01/fixtures/ungrouped-valid-match.bend",
+      "sha256": "b422e30c1b7cad4980fdd10ff8c04d0c072629c9ec713a1ac8003c6bbea28642",
+      "bytes": 99
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-02/fixtures/constructor-nested-parameter.bend",
+      "sha256": "d6c609d08c2961c0bda9825ac521ef94c558a99dab6f1b773e9e6d78fac7a3b2",
+      "bytes": 150
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-controls-inputs-02/fixtures/constructor-parameter.bend",
+      "sha256": "a19544b20d57b01aeeaf6c388c70e27d365646c5d061de9fd488981e1e91b81d",
+      "bytes": 98
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-inputs-01/fixtures/annotation-group-type.bend",
+      "sha256": "2646abf54e71acb87057ca440bb35064a3e6559bd0fa0211daacd0291cab5597",
+      "bytes": 92
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-inputs-01/fixtures/erased-marked-local.bend",
+      "sha256": "072b3842f1b2b0b47342599438ce96b00cbf54eed5b0bb9b400384d6cccf8d48",
+      "bytes": 107
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-inputs-01/fixtures/nested-lambda-capture.bend",
+      "sha256": "4ca310f95a97c52328bcad7e55d90f2b2fb1a57f7e981a6cbd6549f4f5bac673",
+      "bytes": 119
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-inputs-01/fixtures/parallel-global-shadow.bend",
+      "sha256": "d910e6009cce2d1c4b0c8463511484b616fc1247807d2e4fdc218fee34f8cbb5",
+      "bytes": 127
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-inputs-01/fixtures/parallel-outer-scope.bend",
+      "sha256": "0e44b091c57a153f64d913f9762a7bbd9645fdaf91702a0ef4ee51a104bc7c11",
+      "bytes": 111
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-baseline-01/report.json",
+      "sha256": "7be6a4035f21e2d16af80a10720ebbd6cc277edad1f65ee0babdb0840dcd9cc2",
+      "bytes": 25893
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-baseline-01/selected/paired.json",
+      "sha256": "c688880f8b64569ed8045756c712aca02d425fee5508c70a708f3108973445b0",
+      "bytes": 120629
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-baseline-01/selected/reference.json",
+      "sha256": "f1a4163135148bbb078ebdfc4df2692f896f52496bcceb2d0f8604946a19e333",
+      "bytes": 2028500
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-baseline-01/selected/candidate.json",
+      "sha256": "fbec133fea2aa399324ebd92b98f950aaf9743aef91438fc25d3c5c9acc31485",
+      "bytes": 2070604
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-program-baseline-01/report.json",
+      "sha256": "2e322568af220e0e890a23b7d9d52c55ef7134f5633a6f494b62e3d1d9202386",
+      "bytes": 12344
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-program-baseline-01/selected/paired.json",
+      "sha256": "e905bc784d738e902bb66bb2ea92e514c0901a8d04b56c4d98b67bd2fd3dfd2c",
+      "bytes": 30248
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-program-baseline-01/selected/reference.json",
+      "sha256": "a879a64856810ac21c9ffd3e36a4f04216d42d0c8c22fdc87af70be3a149a9d6",
+      "bytes": 1907588
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-program-baseline-01/selected/candidate.json",
+      "sha256": "9418d474811bc09abffb35864ae1e35b5d0ffe91904a80dbaf5fc9559d74a30d",
+      "bytes": 1935082
+    }
+  ],
+  "jobsClosed": true,
+  "limitations": [
+    "Existing57 classification is29fixtures/eight source-based categories, not57 independent defects.",
+    "38 checkpoint-family observations still include unsupported lambda/All/header/alias contexts; this is an upper-bound family count, not an immediate narrow-patch gain estimate.",
+    "C1 and grouped-constructor acceptance controls include boundaries outside the broader196 remaining57; main do2 overlaps.",
+    "No compiled compiler image, production source, old oracle, archive, commit or push changed by this owner."
+  ]
+}

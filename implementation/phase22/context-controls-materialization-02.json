@@ -1,0 +1,141 @@
+{
+  "kind": "phase22-materialization-public-controls-closure",
+  "complete": true,
+  "pass": false,
+  "acquisitionComplete": true,
+  "attempt": "selfhost/build/phase22/context-build-05",
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-05/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-05/equality/api.mjs",
+    "sha256": "341ae8d3dc49c828bf4f452b8359217cff1ab577d051b89c624aacbca1a9c116"
+  },
+  "baselineExact": 13,
+  "candidateExact": 20,
+  "observations": 22,
+  "parts": {
+    "materialization": {
+      "observations": 16,
+      "baselineExact": 12,
+      "candidateExact": 14,
+      "originalReportComplete": false,
+      "originalReportPass": false,
+      "gainedExact": [
+        "context-materialization/eager-argument-before-callee-body/check@check",
+        "context-materialization/eager-argument-before-callee-body/parse@parse",
+        "context-materialization/eager-sibling-before-deferred-child/check@check",
+        "context-materialization/eager-sibling-before-deferred-child/parse@parse"
+      ],
+      "lostExact": [
+        "context-materialization/raw-computed-pattern/check@check",
+        "context-materialization/raw-computed-pattern/parse@parse"
+      ],
+      "newPrimitiveMismatch": []
+    },
+    "do-header": {
+      "observations": 4,
+      "baselineExact": 0,
+      "candidateExact": 4,
+      "originalReportComplete": true,
+      "originalReportPass": true,
+      "gainedExact": [
+        "context-do-header/compact-empty/check@check",
+        "context-do-header/compact-empty/parse@parse",
+        "context-do-header/malformed-arg/check@check",
+        "context-do-header/malformed-arg/parse@parse"
+      ],
+      "lostExact": [],
+      "newPrimitiveMismatch": []
+    },
+    "header-demand": {
+      "observations": 2,
+      "baselineExact": 1,
+      "candidateExact": 2,
+      "originalReportComplete": true,
+      "originalReportPass": true,
+      "gainedExact": [
+        "context-header-demand/parameter-lazy@parse"
+      ],
+      "lostExact": [],
+      "newPrimitiveMismatch": []
+    }
+  },
+  "findings": [
+    "Eager arguments and eager constructor siblings now precede deferred lambda-body errors, exactly matching pin.",
+    "Both discarded-lambda positives remain accepted; returned lambda materialization rejects the unresolved operator; applied header lambda forces its body.",
+    "Do alias resolution precedes malformed header arguments and preserves compact<> cursor; all4 exact.",
+    "Zero-parameter header immediate error and parameterized-codomain deferred error both exact.",
+    "Two lost exacts remain in raw-computed-pattern observed text: candidate correctly rejects raw App with original span but prints unreduced application; pin observed term beta-reduces to0. Primitive outcomes agree."
+  ],
+  "postAcquisitionIdentityAudit": {
+    "pass": true,
+    "uniqueInputs": 33
+  },
+  "directBetaOriginOwnership": "Our context-controls-beta-origin.mjs was prepared but never run. Root reassigned actual direct helper controls to speed; his reports are separate, avoiding duplicate probes.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-materialization-report.py",
+      "sha256": "e7d0c595bf66948a5a14691949920b2f72de8d3009c673b20b6697f763d32725",
+      "bytes": 4110
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-materialization-baseline-01/report.json",
+      "sha256": "aeca8a199985098c8226ab4691d2a3c55e001b8e8d09bb51f417fca35bdfd73b",
+      "bytes": 13254
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-materialization-baseline-01/selected/paired.json",
+      "sha256": "8c09dbbd9fb25a0a14e72ca43239fafee3f660784773554e9884fca2363ab884",
+      "bytes": 36950
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-materialization-02/report.json",
+      "sha256": "33adc8aade80de02b591d9927a4f8ca0d9387a81c83d1b2bb0166d41ac2a7b10",
+      "bytes": 15289
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-materialization-02/selected/paired.json",
+      "sha256": "74a8738aff0220f484b5e81d42e0c10822c623123bf6495563a3e6337d67feae",
+      "bytes": 32975
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-header-baseline-01/report.json",
+      "sha256": "005df84a547124d0e5c600a45b9915d0cacc7ac018083a3bc016d82753c59164",
+      "bytes": 10084
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-header-baseline-01/selected/paired.json",
+      "sha256": "e306e750c1980ee04dc778e43016df8aaebfb0b125366f928eb8979dc6ea2810",
+      "bytes": 17120
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-do-header-02/report.json",
+      "sha256": "380aebe146671015aae89a7d77308032e74d22d339a2be84b6f75de163364c1d",
+      "bytes": 11589
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-do-header-02/selected/paired.json",
+      "sha256": "e3a44bbbc120cf01473555955fad563ab7de221656012a111c91027b62d4806a",
+      "bytes": 12277
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-header-demand-baseline-01/report.json",
+      "sha256": "5ba1a6bd44ee1a3c77dde074c06d68a4a30ee51d3e21719d8e2e433371a64882",
+      "bytes": 9923
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-header-demand-baseline-01/selected/paired.json",
+      "sha256": "e944416e3398504b154a19f3fc5548a94fa3f997f58f8d722c7b8699f8afc7d5",
+      "bytes": 11418
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-header-demand-02/report.json",
+      "sha256": "61c2da56348f44016f9730a10b59fdee210b29198d575f1645b5e84f72c78195",
+      "bytes": 11276
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-header-demand-02/selected/paired.json",
+      "sha256": "f37f99228a8fd8ea42b390788caf4ee08cfc5448e635473bc5d5fe602387e0f1",
+      "bytes": 9778
+    }
+  ]
+}

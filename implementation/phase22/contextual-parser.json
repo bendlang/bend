@@ -1,0 +1,257 @@
+{
+  "kind": "phase22-contextual-production-parser",
+  "complete": true,
+  "ownedCorrectnessPass": true,
+  "source": "selfhost/build/phase22/context-source-09/project",
+  "attempt": "selfhost/build/phase22/context-build-08",
+  "api": {
+    "path": "selfhost/build/phase22/context-build-08/equality/api.mjs",
+    "sha256": "eac3b89d561287b9a51b411ab6353ea275e90c571de7d7c8e733c99eb0755a94",
+    "bytes": 921939
+  },
+  "checkedValidation": {
+    "path": "selfhost/build/phase22/context-build-08/validation-001/report.json",
+    "sha256": "6dd71426ad7ea99af5bed51ec3fc6219472f9881f2a05a2dcfa3e6302807d254",
+    "bytes": 8959
+  },
+  "ownedGates": {
+    "context-group196-04": {
+      "report": {
+        "path": "selfhost/build/phase22/context-group196-04/report.json",
+        "sha256": "87d3ed6adb8db66a4100bed237883bc8dc2ef13a65f6ee2366c98142c0f4e339",
+        "bytes": 45340
+      },
+      "observations": 196,
+      "exactDifferences": 0,
+      "rawPass": false,
+      "rawSelectedComplete": true,
+      "referenceStatuses": {
+        "observed": 1,
+        "pass": 195
+      },
+      "candidateStatuses": {
+        "observed": 1,
+        "pass": 195
+      }
+    },
+    "context-header-candidate-03": {
+      "report": {
+        "path": "selfhost/build/phase22/context-header-candidate-03/report.json",
+        "sha256": "de03482207a7f646d57637f623c9aa6a48f3bdd8b3dae4f58b12c6b7f13b9879",
+        "bytes": 20861
+      },
+      "observations": 12,
+      "exactDifferences": 0,
+      "rawPass": false,
+      "rawSelectedComplete": false,
+      "referenceStatuses": {
+        "fail": 7,
+        "pass": 5
+      },
+      "candidateStatuses": {
+        "fail": 7,
+        "pass": 5
+      }
+    },
+    "context-normalization-candidate-02": {
+      "report": {
+        "path": "selfhost/build/phase22/context-normalization-candidate-02/report.json",
+        "sha256": "fe1a01117cf9a781287868811ee6573f747493cf0604f30a9e704c91988a0631",
+        "bytes": 14299
+      },
+      "observations": 12,
+      "exactDifferences": 0,
+      "rawPass": false,
+      "rawSelectedComplete": false,
+      "referenceStatuses": {
+        "pass": 10,
+        "fail": 2
+      },
+      "candidateStatuses": {
+        "pass": 10,
+        "fail": 2
+      }
+    }
+  },
+  "original196Delta": {
+    "parentExact": 139,
+    "candidateExact": 196,
+    "gained": 57,
+    "lost": 0,
+    "primitiveChanged": [
+      {
+        "id": "group/body-comma@parse",
+        "matchesReference": true,
+        "before": {
+          "status": "ok",
+          "phase": "parse",
+          "checked": false,
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "unsafeDefinitions": null,
+          "exitCode": 0
+        },
+        "after": {
+          "status": "error",
+          "phase": "parse",
+          "checked": false,
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "unsafeDefinitions": null,
+          "exitCode": 1
+        }
+      },
+      {
+        "id": "group/body-comma@check",
+        "matchesReference": true,
+        "before": {
+          "status": "ok",
+          "phase": "check",
+          "checked": true,
+          "typeAccepted": true,
+          "proofTrust": "passed",
+          "kernelChecked": false,
+          "unsafeDefinitions": [],
+          "exitCode": 0
+        },
+        "after": {
+          "status": "error",
+          "phase": "parse",
+          "checked": false,
+          "typeAccepted": false,
+          "proofTrust": "not-assessed",
+          "kernelChecked": false,
+          "unsafeDefinitions": null,
+          "exitCode": 1
+        }
+      }
+    ]
+  },
+  "census": {
+    "sourceFiles": 1,
+    "compilerModules": 1,
+    "moduleLines": -329,
+    "moduleBytes": 1793,
+    "defs": 26,
+    "laws": -81,
+    "types": 1
+  },
+  "totalChangedPhysicalLines": -328,
+  "retiredFrontendWorkers": 98,
+  "retiredFrontendDefLawBlockLines": 977,
+  "inputs": [
+    {
+      "path": "selfhost/build/phase22/context-source-09/manifest.json",
+      "sha256": "b3c1448c9dd78af42c14f78996f655d1af7744ec17bb7024ef03b5292c22856f",
+      "bytes": 133155
+    },
+    {
+      "path": "selfhost/build/phase22/context-source-09/parent.json",
+      "sha256": "b6052c72b87c50cbadfc8e866673cfc70f304aeee65fca54faec750641aff032",
+      "bytes": 525
+    },
+    {
+      "path": "selfhost/build/phase22/context-source-08/retirement-inputs.json",
+      "sha256": "08c5e65c08c8124baed6b363e52153c02c0c5b069c8623a8958125d8a2384121",
+      "bytes": 1476
+    },
+    {
+      "path": "selfhost/build/phase22/context-source-08/frontend-retirement-closure.json",
+      "sha256": "a84c6500c8139cbffa6d344cb5e3ffcba36747ab19255d06c2721b0e5a09fe51",
+      "bytes": 10187
+    },
+    {
+      "path": "selfhost/build/phase22/context-build-08/build.json",
+      "sha256": "aee7b8e4ade1208f15449d9b93a05f3d89dd4e0133de641273b4d8ca22dbc3f2",
+      "bytes": 3676
+    },
+    {
+      "path": "selfhost/build/phase22/context-build-08/validation-001/report.json",
+      "sha256": "6dd71426ad7ea99af5bed51ec3fc6219472f9881f2a05a2dcfa3e6302807d254",
+      "bytes": 8959
+    },
+    {
+      "path": "selfhost/build/phase22/context-build-08/equality/api.mjs",
+      "sha256": "eac3b89d561287b9a51b411ab6353ea275e90c571de7d7c8e733c99eb0755a94",
+      "bytes": 921939
+    },
+    {
+      "path": "implementation/phase22/context-source-census-final.json",
+      "sha256": "e017a3f172a6ebc45bef5958e36a800438003feade3a5e5d7633800016cd4611",
+      "bytes": 74952
+    },
+    {
+      "path": "design/phase22/context-production-boundary.md",
+      "sha256": "cdc2e148917f9216a382e64f1e78b77bd60402355820540ba4b91266eafce9c7",
+      "bytes": 2575
+    },
+    {
+      "path": "design/phase22/context-raw-retirement.md",
+      "sha256": "1fb2ab49611b17f08a40a0727bfec423f803d7d1048df1b11e81393846a637d2",
+      "bytes": 2002
+    },
+    {
+      "path": "design/phase22/loader-host-abi2.md",
+      "sha256": "9324b91ed6f2f2f6995cf1fa10ff7aaa0d9716115b16baab03bbd931eb5bb405",
+      "bytes": 2980
+    }
+  ],
+  "mechanism": [
+    "A single contextual grammar owns lexical binding and parse checkpoints; scoped flattening remains the existing ff worker.",
+    "Invalid raw pattern eligibility is decided before higher conversion supplies its observed display.",
+    "Higher/lower materialization preserves eager versus deferred error order and uses existing beta substitution.",
+    "Loader ABI2 carries the actual completed FResult using FCompletedSource, with direct term types and bodies.",
+    "Old raw parser entrypoints, dual-route wrappers, replay/scope walkers and duplicate flatten implementation are removed."
+  ],
+  "failuresRetained": [
+    {
+      "source": "context-source-01",
+      "status": "failed preparation: merge-file exit assumption; retained before corrected staging02"
+    },
+    {
+      "source": "context-source-03",
+      "build": "context-build-02",
+      "status": "bootstrap rejected consumed match order in f_context_enter"
+    },
+    {
+      "source": "context-source-04",
+      "build": "context-build-03",
+      "status": "Base validation rejected Equal.cong because wrapped Absent changed law filling"
+    },
+    {
+      "source": "context-source-05",
+      "build": "context-build-04",
+      "status": "checked success but broader196 had8 strict differences; main2996 had30 new differences; raw acquisitions retained"
+    },
+    {
+      "source": "context-source-06",
+      "build": "context-build-05",
+      "status": "checked success, invalid computed-pattern display and completion projection origin flaws; retained"
+    },
+    {
+      "source": "context-source-07",
+      "build": "context-build-06",
+      "status": "main2996/original196 exact; old raw route still present, superseded by the ABI2 simplification; computed-pattern display remained outside those cohorts"
+    },
+    {
+      "source": "context-source-08",
+      "build": "context-build-07",
+      "status": "ABI2 and raw retirement checked; direct17 exposed unnecessary deferred child tag lookup in material_done; final09 corrects only this helper"
+    }
+  ],
+  "scope": [
+    "The reference commit remains b2111cf43244e65f76ddc278ee695e669f720cbf. No fixture-specific compiler branches or weakened exact comparator.",
+    "Cohorts are reported separately and may overlap; their counts are not summed as unique newly fixed defects.",
+    "Raw runner pass/complete label failures remain where historical expected labels are observed or disproved; complete acquisition and exact paired result equality are independently audited.",
+    "Root-owned full frontend, host histories, backend, controlled timing, installation and publication gates are separate evidence. This owner report makes no speed claim.",
+    "The source census includes the independently controlled +8-line index-remove worker in the shared candidate. Byte count and helper/type counts are explicit; fewer lines alone do not prove simpler behavior.",
+    "Internal raw parse/IR entrypoints are intentionally retired under loader ABI2; no claim of raw intermediate-representation compatibility."
+  ],
+  "script": {
+    "path": "selfhost/tools/performance/phase22/context-production-report.py",
+    "sha256": "ce65426931c2b3bf00e3b843155eb232d9f3048ceb2b01cd2f6bf9f5f5bdbfec",
+    "bytes": 8096
+  }
+}

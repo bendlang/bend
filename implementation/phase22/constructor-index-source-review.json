@@ -1,0 +1,101 @@
+{
+  "kind": "phase22-constructor-index-independent-source-review",
+  "complete": true,
+  "sourceScopeApproved": true,
+  "selectionApproved": false,
+  "sourceMembers": 215,
+  "changes": [
+    "src/front/contextual.bend",
+    "src/front/declarations.bend",
+    "src/front/sugar.bend",
+    "src/front/validate.bend",
+    "src/load/modules.bend"
+  ],
+  "delta": {
+    "physicalLines": 17,
+    "bytes": 1033,
+    "definitions": 3,
+    "scopeFields": 1,
+    "types": 0
+  },
+  "rawLookupByteIdentical": true,
+  "findings": [
+    "Initial constructor index traverses original prior order; general declaration index remains reversed unchanged.",
+    "Tail-first, then all children, then Ctr-head insertion gives existing first depth-first winner for each exact name, including duplicate child/head/sibling cases.",
+    "Non-Ctr nodes do not occupy constructor entries but their children remain traversed.",
+    "Miss adapter returns historical f_find(name,Nil), preserving Missing tag and query spelling.",
+    "f_context_declared receives qualified header; incremental index update agrees with prepending that header. Ordinary/partialADT nodes without children return identical ctor tree.",
+    "Constructor accumulation remains local until existing final ADT publication; partial constructors gain no early visibility.",
+    "Five scoped lookup expressions changed; all local/raw lookups remain unchanged.",
+    "Builder traverses completed declaration and child metadata once, never term types or bodies. It intentionally does not promise raw early-exit poison-tail behavior during index construction.",
+    "Existing raw34 is retained but cannot alone validate new index. Separate factory/find/incremental/persistence/collision controls and public affected tests are required before cost/promotion."
+  ],
+  "limits": "Source review only. Finite index controls, checked build, broad integration and performance decisions remain separate. No compiler edits or profile/probe jobs performed by reviewer.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase22/context-constructor-index.md",
+      "sha256": "97ae3b59d0d9dd5b54e48737d59102d9ba0662d038155c9f3c805947404ff488",
+      "bytes": 3697
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-17/parent.json",
+      "sha256": "2b63b7214984faab4f5091fb9c846e12583306caf358d87bc74ead2936677c79",
+      "bytes": 3189
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-17/manifest.json",
+      "sha256": "507c752d4f1f0f825f2fb724d6f0e5f415ee1d48e7a2ca17e5247fff9d32f193",
+      "bytes": 133153
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-17/parent-src_front_validate.bend.patch",
+      "sha256": "1e6808ae961752e63abcca152f4140b69804d5404cab6a0a54a3b8539ecaa112",
+      "bytes": 997
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-17/parent-src_front_sugar.bend.patch",
+      "sha256": "12f5f16343d9e5a8bea700cc0dc6475c29e89e18c74b55c2134f805fef38a027",
+      "bytes": 917
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-17/parent-src_load_modules.bend.patch",
+      "sha256": "e4aa80073efe14dfdd43095ed3b23f2ce9929012b12667aba87f05a9c826eee9",
+      "bytes": 734
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-17/parent-src_front_declarations.bend.patch",
+      "sha256": "c83d0656b1ae2a9f1118f7de319017984814267ebc1a70552ee7e9e40dca6328",
+      "bytes": 3700
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-17/parent-src_front_contextual.bend.patch",
+      "sha256": "d3d95aa67a7a748d9343c35e8b22058a42b89ea477fbd6dfed417b122558a083",
+      "bytes": 5621
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-17/project/src/front/contextual.bend",
+      "sha256": "18a1eabd78b224927ebe72c4aa7a295300cc641e20d03d2bc062fdcfd96f62f6",
+      "bytes": 29385
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-17/project/src/front/declarations.bend",
+      "sha256": "d03671bbc8fe80ad6bb40f141c1efe588e11228a9e1cc3cfbd4e077fae9c8b2e",
+      "bytes": 30890
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-17/project/src/front/sugar.bend",
+      "sha256": "d3e3cf5addf0498e8401b9988678eb6ac8ff81571a014b18a1b6fed0a76fb22a",
+      "bytes": 14142
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-17/project/src/front/validate.bend",
+      "sha256": "62d530ce7ebb6d2abf69f34d37b5b21eed8711c7bdee3bf868aa2c94d699ec5d",
+      "bytes": 11354
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-17/project/src/load/modules.bend",
+      "sha256": "fed5593033f957a61118a2eff9c2e09bd51af8810cff1db12e655523b82188ea",
+      "bytes": 10063
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "kind": "phase22-actual-constructor-lookup-closure",
+  "complete": true,
+  "pass": true,
+  "baselineApi": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-12/equality/api.mjs",
+    "sha256": "a80737cd74e8b3e78b07006580ed3aded060c530b3d67af032db81a17fa3f404",
+    "bytes": 922439
+  },
+  "candidateApi": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/constructor-bool-build-01/equality/api.mjs",
+    "sha256": "4c81ab1174cecd656ddde43b589fdb23540706b005ae8aa821722151e5a82490",
+    "bytes": 925427
+  },
+  "rawExactPass": true,
+  "pairedCases": 34,
+  "independentExpectedOutcomes": 68,
+  "scopedImmutableCases": 33,
+  "prospectiveEffectfulWitnesses": 1,
+  "effectfulWitnessActualOutcome": "Also passes exact raw comparison; no exclusion or duplicate-read allowance needed to obtain the actual result.",
+  "allowedAdditionalTagReadsUsed": 0,
+  "scope": "Actual internal f_ctor_lookup via append-only derived probe; genuine API prefix unchanged and distinct probe hashes retained. Not a public run_lib ABI or performance claim.",
+  "coverage": [
+    "Preorder constructor-only selection and duplicate reference identity",
+    "Child-before-sibling traversal and eager kind/name demand",
+    "Exact raw return descriptors and original thrown objects",
+    "Unused field/subtree avoidance and first-error order",
+    "Repeated lookup history,100000-wide miss,512-deep hit/miss under4MiB stack/4GiB heap"
+  ],
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-ctor-close-v2.py",
+      "sha256": "eb8bc492bfbbe7ca85ea8422949fef3c197933543e08ffa365698eae57a2f465",
+      "bytes": 3487
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-demand-02/report.json",
+      "sha256": "019a923beb7bc55b8d39808cd9d5a4a6e95ab715068055c6c724f1a0fc4abd0e",
+      "bytes": 3483813
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-ctor-controls-v3.mjs",
+      "sha256": "f986c9244244019099519c6bf1b2505b19af41e0e719f9521757b01594efec65",
+      "bytes": 6586
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-demand-02/consumed/context-controls-ctor-controls-v3.mjs",
+      "sha256": "f986c9244244019099519c6bf1b2505b19af41e0e719f9521757b01594efec65",
+      "bytes": 6586
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-ctor-runner-v2.mjs",
+      "sha256": "0667022735682576cb090bfb116c4d5b2c70ab8bd130cd93a324e8fc5367be2c",
+      "bytes": 4601
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-demand-02/consumed/context-controls-ctor-runner-v2.mjs",
+      "sha256": "0667022735682576cb090bfb116c4d5b2c70ab8bd130cd93a324e8fc5367be2c",
+      "bytes": 4601
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-ctor-cases.json",
+      "sha256": "8c13830f2ce8f3c9f9431641fa8a8faddc0fa94640dedb6d3c7c9a0a1746e0b6",
+      "bytes": 14386
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-demand-02/consumed/context-controls-ctor-cases.json",
+      "sha256": "8c13830f2ce8f3c9f9431641fa8a8faddc0fa94640dedb6d3c7c9a0a1746e0b6",
+      "bytes": 14386
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-ctor-policy.json",
+      "sha256": "b3e187649c5c117e9e4eea421c48f4d7a37459f1e8f77f7a266ef0ce9c5522c2",
+      "bytes": 844
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-demand-02/consumed/context-controls-ctor-policy.json",
+      "sha256": "b3e187649c5c117e9e4eea421c48f4d7a37459f1e8f77f7a266ef0ce9c5522c2",
+      "bytes": 844
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase22/constructor-immutable-demand.md",
+      "sha256": "20b22ccf457f265323cb7b6fbee4ebd6ee4bacfb2a41e2731a0fa1bc56828268",
+      "bytes": 1254
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-demand-02/consumed/constructor-immutable-demand.md",
+      "sha256": "20b22ccf457f265323cb7b6fbee4ebd6ee4bacfb2a41e2731a0fa1bc56828268",
+      "bytes": 1254
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-12/attempt.json",
+      "sha256": "a779b86704e8ff4b604b5a5a45d86422055e1ef442705ff6be93d2e493b7e8ef",
+      "bytes": 216804
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-12/equality/api.mjs",
+      "sha256": "a80737cd74e8b3e78b07006580ed3aded060c530b3d67af032db81a17fa3f404",
+      "bytes": 922439
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-demand-02/baseline-probe.mjs",
+      "sha256": "25515c8283aa230d68450039a065bbca18c1dc50e055a22f13873b00f040515d",
+      "bytes": 922592
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-demand-02/baseline-result.json",
+      "sha256": "829dec6c1e06808c5c2ce3d7ffe88a02932f09f380e04ba45a0ed443af5f2389",
+      "bytes": 1475588
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-12/snapshot/tools/development/workflow.mjs",
+      "sha256": "d8a8a0ed29b59d58eae45dfccae9ca5530e597ae0e4203067365a19f0ab3cf32",
+      "bytes": 18123
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/constructor-bool-build-01/attempt.json",
+      "sha256": "bcce6000dc072f237fe95098e39a8773501eb7ec48cced3378c6961c39a84c48",
+      "bytes": 222069
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/constructor-bool-build-01/equality/api.mjs",
+      "sha256": "4c81ab1174cecd656ddde43b589fdb23540706b005ae8aa821722151e5a82490",
+      "bytes": 925427
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-demand-02/candidate-probe.mjs",
+      "sha256": "f288f59cff8cd4b87bd7ee06589f77303e4f86c55909d770b11e37e1fe4e2598",
+      "bytes": 925580
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-ctor-demand-02/candidate-result.json",
+      "sha256": "829dec6c1e06808c5c2ce3d7ffe88a02932f09f380e04ba45a0ed443af5f2389",
+      "bytes": 1475588
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/constructor-bool-build-01/snapshot/tools/development/workflow.mjs",
+      "sha256": "d8a8a0ed29b59d58eae45dfccae9ca5530e597ae0e4203067365a19f0ab3cf32",
+      "bytes": 18123
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-ctor-plan.md",
+      "sha256": "92ae5864204e62e2e2cac81f8ef521c54604899815e98cf420794ad1c54376d3",
+      "bytes": 1374
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-ctor-policy-addendum.md",
+      "sha256": "1cbce5bfda622979167aa27ed7e0de9070634618b3798c2aaea9b7709d888ad5",
+      "bytes": 1327
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase22/constructor-immutable-demand.md",
+      "sha256": "20b22ccf457f265323cb7b6fbee4ebd6ee4bacfb2a41e2731a0fa1bc56828268",
+      "bytes": 1254
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-ctor-bool-plan.md",
+      "sha256": "54074f73763ba5e14b409d16d47ad87b9fa79d6fd39048f87e375f0127716eb7",
+      "bytes": 975
+    }
+  ]
+}

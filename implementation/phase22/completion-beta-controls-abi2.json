@@ -1,0 +1,21 @@
+{
+  "kind": "phase22-direct-completion-abi2-review",
+  "complete": true,
+  "pass": false,
+  "matched": 16,
+  "cases": 17,
+  "lostPriorMatches": 0,
+  "rawReport": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/completion-beta-controls-02/report.json",
+    "sha256": "927c092666ea5ed6eca27d4957b067c770e7bfeef11ec06322fa976f0570156c",
+    "bytes": 37653
+  },
+  "previousReport": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/completion-beta-controls-01/report.json",
+    "sha256": "6f5726121d0a1afad8a0d9937ffe553cff95c3842f026b8e2db58eee8ea3b6d6",
+    "bytes": 38099
+  },
+  "fixed": "Absent-origin beta substitution now adopts the occurrence range exactly.",
+  "remaining": "The discarded lambda poison is now demanded in f_context_material_done: eager boolean conjunction inspects first child tag even when current term is not App. Prior deferred-child transport correction worked.",
+  "scope": "Same frozen direct IR fixtures and comparison policy; worker export rename is the sole probe-tool change. Poison result remains a direct demand witness, not a demonstrated public program regression."
+}

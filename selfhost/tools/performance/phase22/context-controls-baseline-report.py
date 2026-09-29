@@ -1,0 +1,20 @@
+#!/usr/bin/env python3
+from pathlib import Path
+import json,hashlib,collections
+R=Path(__file__).resolve().parents[4]
+def identity(p):
+ p=Path(p).resolve();b=p.read_bytes();return dict(file=str(p),sha256=hashlib.sha256(b).hexdigest(),bytes=len(b))
+def load(p):return json.loads(Path(p).read_text())
+I=R/'selfhost/build/phase22/context-controls-inputs-01';plan=load(I/'plan.json')
+inputs=[identity(__file__),identity(I/'plan.json'),identity(I/'selection.json'),identity(I/'program-selection.json'),identity(R/'implementation/phase22/context-controls-census.json')]
+for rec in plan['inputs']:assert identity(rec['file'])['sha256']==rec['sha256'],rec['file']
+inputs+=plan['inputs'];suites=[]
+for name,count in [('context-controls-baseline-01',60),('context-controls-program-baseline-01',24)]:
+ p=R/'selfhost/build/phase22'/name;r=load(p/'report.json');d=load(p/'selected/paired.json');assert r['complete'] and r['pass'];assert len(d['rows'])==count
+ assert r['api']['sha256']==plan['parentApi']
+ for rec in r['inputs']:assert identity(rec['file'])['sha256']==rec['sha256'],rec['file']
+ inputs.extend(identity(p/x) for x in ['report.json','selected/paired.json','selected/reference.json','selected/candidate.json'])
+ suites.append({'attempt':name,'observations':count,'exact':sum(x['exactAgreement'] for x in d['rows']),'strictDifferences':sum(not x['exactAgreement'] for x in d['rows']),'primitiveDifferences':[{'id':x['id'],'lane':x['lane']} for x in d['rows'] if not x['semanticAgreement']],'referenceOracleFailures':[{'id':x['id'],'lane':x['lane']} for x in d['rows'] if x['referenceVerdict']=='fail'],'referenceObservedNotPass':[{'id':x['id'],'lane':x['lane']} for x in d['rows'] if x['referenceVerdict']=='observed'],'rawSelectedComplete':d['selectedComplete'],'referenceVerdicts':dict(collections.Counter(x['referenceVerdict'] for x in d['rows'])),'candidateVerdicts':dict(collections.Counter(x['candidateVerdict'] for x in d['rows']))})
+assert suites[0]['exact']==27 and len(suites[0]['primitiveDifferences'])==11;assert suites[1]['exact']==24 and not suites[1]['referenceOracleFailures'];assert suites[1]['rawSelectedComplete'] is True
+out={'kind':'phase22-independent-context-baseline','complete':True,'pass':True,'passMeaning':'Healthy frozen baseline acquisition plus exact ordinary execution. Frontend strict false and all known mismatches remain. No migration candidate has been consumed.','parentApiSha256':plan['parentApi'],'parentAttempt':plan['parentAttempt'],'pin':plan['pin'],'suites':suites,'scope':'24 reused adversarial boundary fixtures plus five new ordinary programs and one pinned do program. Frontend and execution suites overlap in six check observations and must not be summed as independent programs.','newProgramExpectations':plan['newPrograms'],'preservedAssumptions':'Four reused constructor acceptance expectations remain wrong against pinned parser; no oracle rewritten. The upstream monad negative parse verdict is observed, not failed. Legacy wrapper referenceOracleFailures field lists all non-pass rows, so its observed entry is separated here.','comparisonPolicy':plan['comparison'],'inputs':inputs,'jobsClosed':True,'limitations':['Existing57 classification is29fixtures/eight source-based categories, not57 independent defects.','38 checkpoint-family observations still include unsupported lambda/All/header/alias contexts; this is an upper-bound family count, not an immediate narrow-patch gain estimate.','C1 and grouped-constructor acceptance controls include boundaries outside the broader196 remaining57; main do2 overlaps.','No compiled compiler image, production source, old oracle, archive, commit or push changed by this owner.']}
+p=R/'implementation/phase22/context-controls-baseline.json';assert not p.exists();p.write_text(json.dumps(out,indent=2)+'\n');print(json.dumps({'complete':True,'pass':True,'frontendExact':27,'frontendRows':60,'programExact':24,'programRows':24,'referenceActualFailures':len(suites[0]['referenceOracleFailures']),'referenceObserved':len(suites[0]['referenceObservedNotPass']),'reportSha256':identity(p)['sha256']}))

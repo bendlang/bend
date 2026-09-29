@@ -1,0 +1,113 @@
+{
+  "kind": "phase22-reviewed-lookup-union-cost",
+  "complete": true,
+  "measurementHealthy": true,
+  "pass": false,
+  "speedGatePassed": false,
+  "speedGateMaximumRegression": 0.03,
+  "promotionBlocked": true,
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-15/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-15/equality/api.mjs",
+    "sha256": "5e124b374b4a8b185b7da6eb7be22fabd3983205c71468c6f48f79389ef25fb9"
+  },
+  "sourceMembers": 215,
+  "sourceDeltaFromCommon13": [
+    {
+      "path": "src/front/contextual.bend",
+      "physicalLineDelta": 0,
+      "byteDelta": 42,
+      "patch": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-16/src_front_contextual.bend.patch",
+        "sha256": "5175db42b8bb3bf583a4d61ba23f343ec6bc2979a03b7d5b97786a05b1259211",
+        "bytes": 592
+      }
+    },
+    {
+      "path": "src/front/validate.bend",
+      "physicalLineDelta": 6,
+      "byteDelta": 145,
+      "patch": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-16/src_front_validate.bend.patch",
+        "sha256": "3e27284d7b99ea10ee6adc2dfdd1bb8abcb09f463d149ef9daea52269823e5c4",
+        "bytes": 634
+      }
+    }
+  ],
+  "checkedB1": true,
+  "focusedStrictPass": true,
+  "focusedExactDifferences": 0,
+  "statistics": {
+    "typescript": {
+      "samples": 2,
+      "meanRequestMs": 2351.8372200000003,
+      "meanProcessWallMs": 3418.0479244999997,
+      "maxRssKiB": 477084
+    },
+    "baseline": {
+      "samples": 2,
+      "meanRequestMs": 9892.089185,
+      "meanProcessWallMs": 11006.026649999996,
+      "maxRssKiB": 658672
+    },
+    "candidate": {
+      "samples": 2,
+      "meanRequestMs": 10492.3553245,
+      "meanProcessWallMs": 11598.572139,
+      "maxRssKiB": 695872
+    }
+  },
+  "ratios": {
+    "baselineToTs": 3.219974351766874,
+    "candidateToTs": 3.39333221628151,
+    "baselineToCandidate": 0.9489122038558885,
+    "candidateProcessReduction": -0.053838274960019694,
+    "candidateRequestReduction": -0.06068143223073852
+  },
+  "rssIncrease": 0.056477275487647915,
+  "ordinaryOutputsExact": true,
+  "rawReport": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bundle-matrix-03/report.json",
+    "sha256": "4a1d1a50401288a3f9afb044e897b42dedd28f1ce28622f9cc9c7a98853922e2",
+    "bytes": 751014
+  },
+  "limits": "Six serial fresh CPU0 rows, two samples per image; usable bundle comparison with reviewed one-driver difference. Not Bend-only attribution, emission or complete developer-loop timing. Prior failed windows cannot isolate contribution of each change.",
+  "conclusion": "Still5.384%slower than current installed compiler, beyond3%gate. No promotion or additional candidate change belongs to this measurement.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase22/guarded-lookup-union.md",
+      "sha256": "f4a6f7b7ddbc0f99976977a89f42e1ad560bb0932faf8119e558a776ce049df4",
+      "bytes": 2089
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/lookup-union-source.py",
+      "sha256": "78de2b7be8254f534e5d2c6d5d1af60afd7b0c6627f3f33906953507d1c7af32",
+      "bytes": 4298
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-16/manifest.json",
+      "sha256": "bc0b0dd7dfa0cec56aaf38cc93de63fde89979599012f385a898219865ba31d9",
+      "bytes": 135377
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-15/attempt.json",
+      "sha256": "fc22c4035f5c620b0ffeec771896ed2d76fa579f60f4c269ecb970957ce01086",
+      "bytes": 216804
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-15/build.json",
+      "sha256": "be74dd423d782fe20fe989b79d1e729aec26b5171ee8b902d7c3ac35cfd94da3",
+      "bytes": 3922
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-15/validation-001/report.json",
+      "sha256": "60dd2a3a75bff6d145f26c3cc7a6e5a09f40412449c4c7a17849145b8ad87d47",
+      "bytes": 9200
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bundle-matrix-inputs-05/freeze.json",
+      "sha256": "80c32a55c8c0f5c9aa8116c46e49cca79550f3b851b2b5cf372a319fcd98e972",
+      "bytes": 5378
+    }
+  ]
+}

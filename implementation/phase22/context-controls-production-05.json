@@ -1,0 +1,454 @@
+{
+  "kind": "phase22-public-context-controls-closure",
+  "complete": true,
+  "pass": true,
+  "passMeaning": "These frozen paired cohorts exactly match the pin; this does not select or promote the candidate.",
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-08/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-08/equality/api.mjs",
+    "sha256": "eac3b89d561287b9a51b411ab6353ea275e90c571de7d7c8e733c99eb0755a94"
+  },
+  "totals": {
+    "parseCheck": {
+      "observations": 154,
+      "baselineExact": 97,
+      "candidateExact": 154
+    },
+    "execution": {
+      "observations": 36,
+      "baselineExact": 32,
+      "candidateExact": 36
+    }
+  },
+  "parts": {
+    "parseCheck": [
+      {
+        "name": "main",
+        "report": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-main-05/report.json",
+          "sha256": "25eeacffc66eb2dd42e30d59b6fa2dc1799abf3f4737900bf0f195e27714cead",
+          "bytes": 29825
+        },
+        "observations": 60,
+        "baselineExact": 27,
+        "candidateExact": 60,
+        "gainedExact": [
+          "check/monad_do_destructure.bend@parse",
+          "check/monad_do_destructure.bend@check",
+          "group-comma/completed-parallel-tuple@check",
+          "group-comma/raw-parallel-comma@parse",
+          "group-comma/raw-parallel-comma@check",
+          "group-comma/raw-typed-local-comma@parse",
+          "group-comma/raw-typed-local-comma@check",
+          "group-range-positive/constructor-nested-parameter@parse",
+          "group-range-positive/constructor-nested-parameter-check@check",
+          "group-range-positive/constructor-parameter@parse",
+          "group-range-positive/constructor-parameter-check@check",
+          "group/body-comma@parse",
+          "group/body-comma@check",
+          "group/local-bang@parse",
+          "group/local-bang@check",
+          "marked-pattern/empty-unbound@parse",
+          "marked-pattern/empty-unbound@check",
+          "parser-checkpoint/alias-shadow-frame@parse",
+          "parser-checkpoint/alias-shadow-frame@check",
+          "parser-checkpoint/all-frame@parse",
+          "parser-checkpoint/all-frame@check",
+          "parser-checkpoint/do-frame@parse",
+          "parser-checkpoint/do-frame@check",
+          "parser-checkpoint/lambda-frame@parse",
+          "parser-checkpoint/lambda-frame@check",
+          "parser-checkpoint/module-alias-frame@parse",
+          "parser-checkpoint/module-alias-frame@check",
+          "parser-checkpoint/parallel-frame@parse",
+          "parser-checkpoint/parallel-frame@check",
+          "rejected-stage/body-before-later-pattern@parse",
+          "rejected-stage/body-before-later-pattern@check",
+          "rejected-stage/group-before-later-syntax@parse",
+          "rejected-stage/group-before-later-syntax@check"
+        ],
+        "lostExact": [],
+        "rawSelectedComplete": false,
+        "rawReferenceStatuses": {
+          "observed": 1,
+          "pass": 55,
+          "fail": 4
+        },
+        "rawCandidateStatuses": {
+          "observed": 1,
+          "pass": 55,
+          "fail": 4
+        }
+      },
+      {
+        "name": "do",
+        "report": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-do-05/report.json",
+          "sha256": "f210fdf77474477859fa2eb9020b5b8c690d77c78025113f331ac2d0c60920e5",
+          "bytes": 15946
+        },
+        "observations": 20,
+        "baselineExact": 17,
+        "candidateExact": 20,
+        "gainedExact": [
+          "context-do/alias-typed-assign-bind/check@check",
+          "context-do/rhs-error-before-return/check@check",
+          "context-do/rhs-error-before-return/parse@parse"
+        ],
+        "lostExact": [],
+        "rawSelectedComplete": true,
+        "rawReferenceStatuses": {
+          "pass": 19,
+          "observed": 1
+        },
+        "rawCandidateStatuses": {
+          "pass": 19,
+          "observed": 1
+        }
+      },
+      {
+        "name": "feature",
+        "report": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-feature-05/report.json",
+          "sha256": "419636075507d19e40acfd2ad11f80627560aa27768668bfe14bcfdded3ad94d",
+          "bytes": 24004
+        },
+        "observations": 40,
+        "baselineExact": 29,
+        "candidateExact": 40,
+        "gainedExact": [
+          "context-feature/array-explicit-succ/check@check",
+          "context-feature/array-explicit-succ/parse@parse",
+          "context-feature/array-namespace-before-count/check@check",
+          "context-feature/array-namespace-before-count/parse@parse",
+          "context-feature/array-set-nonvar/check@check",
+          "context-feature/array-set-nonvar/parse@parse",
+          "context-feature/array-set-written/check@check",
+          "context-feature/array-set-written/parse@parse",
+          "context-feature/array-u32-count/check@check",
+          "context-feature/array-u32-count/parse@parse",
+          "context-feature/index-alias-before-good-rhs/check@check"
+        ],
+        "lostExact": [],
+        "rawSelectedComplete": false,
+        "rawReferenceStatuses": {
+          "pass": 35,
+          "observed": 3,
+          "fail": 2
+        },
+        "rawCandidateStatuses": {
+          "pass": 35,
+          "observed": 3,
+          "fail": 2
+        }
+      },
+      {
+        "name": "alias",
+        "report": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-alias-05/report.json",
+          "sha256": "cab6a14200922323a7c20b4bb58321f7fd3a6eb1865cfbce7670d7a851e7c8c2",
+          "bytes": 11484
+        },
+        "observations": 4,
+        "baselineExact": 0,
+        "candidateExact": 4,
+        "gainedExact": [
+          "context-feature-alias/bad-rhs/check@check",
+          "context-feature-alias/bad-rhs/parse@parse",
+          "context-feature-alias/good-rhs/check@check",
+          "context-feature-alias/good-rhs/parse@parse"
+        ],
+        "lostExact": [],
+        "rawSelectedComplete": true,
+        "rawReferenceStatuses": {
+          "pass": 4
+        },
+        "rawCandidateStatuses": {
+          "pass": 4
+        }
+      },
+      {
+        "name": "group",
+        "report": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-group-05/report.json",
+          "sha256": "7db034529747ae620b6c8a5785b74495984e392ee02ce3ebf5e61970f7d9dfdc",
+          "bytes": 11706
+        },
+        "observations": 4,
+        "baselineExact": 0,
+        "candidateExact": 4,
+        "gainedExact": [
+          "context-feature-group/alias-before-bad-close/check@check",
+          "context-feature-group/alias-before-bad-close/parse@parse",
+          "context-feature-group/namespace-before-missing-close/check@check",
+          "context-feature-group/namespace-before-missing-close/parse@parse"
+        ],
+        "lostExact": [],
+        "rawSelectedComplete": true,
+        "rawReferenceStatuses": {
+          "pass": 4
+        },
+        "rawCandidateStatuses": {
+          "pass": 4
+        }
+      },
+      {
+        "name": "finalization",
+        "report": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-finalization-05/report.json",
+          "sha256": "39e88dde063fc3891d0847202d434f1c862d70b1fd5677f34b0407ae2f237535",
+          "bytes": 20975
+        },
+        "observations": 26,
+        "baselineExact": 24,
+        "candidateExact": 26,
+        "gainedExact": [
+          "context-finalization/header-lazy-before-later-syntax/check@check",
+          "context-finalization/header-lazy-before-later-syntax/parse@parse"
+        ],
+        "lostExact": [],
+        "rawSelectedComplete": true,
+        "rawReferenceStatuses": {
+          "pass": 20,
+          "observed": 6
+        },
+        "rawCandidateStatuses": {
+          "pass": 20,
+          "observed": 6
+        }
+      }
+    ],
+    "execution": [
+      {
+        "name": "ordinary",
+        "report": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-ordinary-program-05/report.json",
+          "sha256": "8f8d213b6d1824bd316aba1ec1cfd5966ed9fce26329d29a83d9a56042462a14",
+          "bytes": 13619
+        },
+        "observations": 24,
+        "baselineExact": 24,
+        "candidateExact": 24,
+        "gainedExact": [],
+        "lostExact": [],
+        "rawSelectedComplete": true,
+        "rawReferenceStatuses": {
+          "pass": 24
+        },
+        "rawCandidateStatuses": {
+          "pass": 24
+        }
+      },
+      {
+        "name": "feature",
+        "report": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-feature-program-05/report.json",
+          "sha256": "832fcd71600cfccad8b9f4bfe67bea01f573a5043f444a4e4963a2c2b0ab99d2",
+          "bytes": 12769
+        },
+        "observations": 12,
+        "baselineExact": 8,
+        "candidateExact": 12,
+        "gainedExact": [
+          "context-feature-program/array-set-written@check",
+          "context-feature-program/array-set-written@interpreter",
+          "context-feature-program/array-set-written@js",
+          "context-feature-program/array-set-written@native"
+        ],
+        "lostExact": [],
+        "rawSelectedComplete": true,
+        "rawReferenceStatuses": {
+          "pass": 12
+        },
+        "rawCandidateStatuses": {
+          "pass": 12
+        }
+      }
+    ]
+  },
+  "overlap": "The 36 execution observations cover nine programs in check/interpreter/JavaScript/native lanes. Their nine check observations also appear in parseCheck; do not count 190 distinct observations.",
+  "rawOracleStatus": "Prospective fixture assumptions disproved by the pin remain unchanged. Main and feature raw suite failures are retained even though actual paired behavior now agrees exactly.",
+  "scope": "Original60, do20, feature40, alias4, group4 and finalization26; ordinary24 and feature12 execution. Separate materialization16/do-header4/header-demand2 and private beta controls are not included.",
+  "programBehavior": "Parallel RHSs see the outer scope, nested lambda capture and erased/marked locals retain behavior, group/type annotations execute, do notation returns105n, rewrite shadowing returns7, written Array.set returns9 and wildcard array update returns34.",
+  "identityAudit": {
+    "pass": true,
+    "uniqueConsumedInputs": 114
+  },
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-production-report.py",
+      "sha256": "85ff859c8fd80323fac49a0bdb0d73a2fe89672ea57e1f974afed08d9d7e0f85",
+      "bytes": 6013
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-sweep-05/report.json",
+      "sha256": "9437e8426d2ac2eeffdf1318ef92558ca76bf9bc29f906e9df7852b4931b9298",
+      "bytes": 15063
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-main-05/report.json",
+      "sha256": "25eeacffc66eb2dd42e30d59b6fa2dc1799abf3f4737900bf0f195e27714cead",
+      "bytes": 29825
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-main-05/selected/paired.json",
+      "sha256": "3f4b7a17b9bb52a11fd5564620320b56beca5af7bd2994885b8a57ff2a2b1771",
+      "bytes": 87301
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-baseline-01/report.json",
+      "sha256": "7be6a4035f21e2d16af80a10720ebbd6cc277edad1f65ee0babdb0840dcd9cc2",
+      "bytes": 25893
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-baseline-01/selected/paired.json",
+      "sha256": "c688880f8b64569ed8045756c712aca02d425fee5508c70a708f3108973445b0",
+      "bytes": 120629
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-do-05/report.json",
+      "sha256": "f210fdf77474477859fa2eb9020b5b8c690d77c78025113f331ac2d0c60920e5",
+      "bytes": 15946
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-do-05/selected/paired.json",
+      "sha256": "f2427e45beb7b358d2fa2b65a4bfe8a1ea9f3051d4a15d68e9e69d4894aac4fb",
+      "bytes": 28079
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-baseline-01/report.json",
+      "sha256": "aba032995d5f222302692a1ec3853d3347d46e288c2d7a2987009ad33da20b63",
+      "bytes": 14611
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-baseline-01/selected/paired.json",
+      "sha256": "573931eba64132f2c05070abb15e5091f5e65cb94a8af538ec55a96ad60007bf",
+      "bytes": 31549
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-feature-05/report.json",
+      "sha256": "419636075507d19e40acfd2ad11f80627560aa27768668bfe14bcfdded3ad94d",
+      "bytes": 24004
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-feature-05/selected/paired.json",
+      "sha256": "973002a8fce9e0a32165600db2797a53b55ae64924e0c8438e27c75e21edcbf4",
+      "bytes": 54977
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-feature-baseline-01/report.json",
+      "sha256": "e22e966cdecea05240082a6ddf736002e8dd4cda4b3aa48af9532cc55fb7cc0b",
+      "bytes": 21818
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-feature-baseline-01/selected/paired.json",
+      "sha256": "2584a0f3084f6c6109f421feae8f9762f213d9d8aca78229a247ab796c928395",
+      "bytes": 67633
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-alias-05/report.json",
+      "sha256": "cab6a14200922323a7c20b4bb58321f7fd3a6eb1865cfbce7670d7a851e7c8c2",
+      "bytes": 11484
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-alias-05/selected/paired.json",
+      "sha256": "7cf01d3636763bd48f9bd1ff030a4990d1d9600d1d0bd1c62d1d24c570c2ac6e",
+      "bytes": 12307
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-feature-alias-baseline-01/report.json",
+      "sha256": "f6ec987ac2b2bd3b04d61f9651e7f57309cc7ae7965121ac581ea6d9ffcadeb8",
+      "bytes": 9867
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-feature-alias-baseline-01/selected/paired.json",
+      "sha256": "442044f0cc198db5b47f7c676502b86a2529e3bb3800cf70f624b42727e02875",
+      "bytes": 16879
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-group-05/report.json",
+      "sha256": "7db034529747ae620b6c8a5785b74495984e392ee02ce3ebf5e61970f7d9dfdc",
+      "bytes": 11706
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-group-05/selected/paired.json",
+      "sha256": "61a1876329d6d36f0341398d994bffee9eb1311fe55cf3dc8889052f12788353",
+      "bytes": 12160
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-feature-group-baseline-01/report.json",
+      "sha256": "e853303abc69932c7e5a797fd37aaa170ec20ee0b37ee22d63bb7d56972088c4",
+      "bytes": 9934
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-feature-group-baseline-01/selected/paired.json",
+      "sha256": "50679f65d72cf65d70e81070d13ea913c664fd083ced55710bfff8a52fb45393",
+      "bytes": 17123
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-finalization-05/report.json",
+      "sha256": "39e88dde063fc3891d0847202d434f1c862d70b1fd5677f34b0407ae2f237535",
+      "bytes": 20975
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-finalization-05/selected/paired.json",
+      "sha256": "7ee50ae01a4995fed3b25d24f962709ff0333f18ab12ee8b0f23f9b4c5dd9fca",
+      "bytes": 40846
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-finalization-baseline-01/report.json",
+      "sha256": "8a1dfddd349135ffc1fb9d3fe20b3528338252a74f89e47fa73b9fc581e2ce82",
+      "bytes": 19435
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-finalization-baseline-01/selected/paired.json",
+      "sha256": "57792b968a70768999cd22b159e4193b6267315ecfe338752fc47491b6393821",
+      "bytes": 44179
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-execution-sweep-05/report.json",
+      "sha256": "1d8b9aa5a87c25d02996b873a5750973101de92c26f04afe3d875bd2ee057579",
+      "bytes": 2987
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-ordinary-program-05/report.json",
+      "sha256": "8f8d213b6d1824bd316aba1ec1cfd5966ed9fce26329d29a83d9a56042462a14",
+      "bytes": 13619
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-ordinary-program-05/selected/paired.json",
+      "sha256": "ca4d33846159f217ccb9718373412999deaa26821d1be4ff81987e99eb08fdb2",
+      "bytes": 30350
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-program-baseline-01/report.json",
+      "sha256": "2e322568af220e0e890a23b7d9d52c55ef7134f5633a6f494b62e3d1d9202386",
+      "bytes": 12344
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-program-baseline-01/selected/paired.json",
+      "sha256": "e905bc784d738e902bb66bb2ea92e514c0901a8d04b56c4d98b67bd2fd3dfd2c",
+      "bytes": 30248
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-feature-program-05/report.json",
+      "sha256": "832fcd71600cfccad8b9f4bfe67bea01f573a5043f444a4e4963a2c2b0ab99d2",
+      "bytes": 12769
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-feature-program-05/selected/paired.json",
+      "sha256": "b91f02550028efe0c414c451b8e2ccbe85aa09baf32c7039f4afe57a6d5f4981",
+      "bytes": 18699
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-feature-program-baseline-01/report.json",
+      "sha256": "bac90fe78cdf1a1b77561178276b779926c32a92a6ec88e5d115a1ca3fd4083e",
+      "bytes": 11319
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-feature-program-baseline-01/selected/paired.json",
+      "sha256": "2c6a231188fd7785cb6ea1d9b1c26d2266c513f2dd12cbc1d48e404e6f315b9c",
+      "bytes": 23836
+    }
+  ]
+}

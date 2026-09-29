@@ -20,7 +20,7 @@ export const apiPath=path.resolve(process.env.BEND_TYPED_API||path.join(project,
 export const runtimePath=path.resolve(process.env.BEND_TYPED_RUNTIME||path.join(project,'src/runtime.mjs'));
 const bundledBasePath=path.join(project,'dist/base.bend');
 export const basePath=path.resolve(process.env.BEND_BASE||bundledBasePath);
-const roots=['f_parse','f_load','f_path_join','f_path_dir','check_book','annotate_book','j_program','j_library','j_expr','j_descriptor','j_io_type','j_modules','driver_has_main','driver_is_io','driver_interpret','driver_todos','driver_emit_owned'];
+const roots=['f_path_join','f_path_dir','check_book','annotate_book','j_program','j_library','j_expr','j_descriptor','j_io_type','j_modules','driver_has_main','driver_is_io','driver_interpret','driver_todos','driver_emit_owned'];
 const list=values=>values.reduceRight((tail,head)=>({$: 'Con',head,tail}),{$:'Nil'});
 function array(value) {
   const values=[];
@@ -97,9 +97,8 @@ export function bootstrap({upstream=process.env.BEND_UPSTREAM||path.resolve(proj
   }
   if(files.includes('src/back/native/foreign.bend'))exports.push('nc_foreign_source','nc_foreign_scope');
   if(files.includes('src/check/prefix.bend'))exports.push('check_from_exact_prefix','exact_prefix');
-  if(files.includes('src/load/graph.bend'))exports.push('f_load_graph','f_main_names','f_load_graph_trace');
-  if(files.includes('src/load/modules.bend')){exports.push('f_source_parsed','f_source_located');if(fs.readFileSync(path.join(project,'src/load/modules.bend'),'utf8').includes('def compiler_load_abi('))exports.push('compiler_load_abi','f_source_header','f_complete_source','f_complete_seed','f_import_namespace_at','f_graph_trace');}
-  if(fs.readFileSync(path.join(project,'src/front/declarations.bend'),'utf8').includes('def f_parse_indexed('))exports.push('f_parse_indexed');
+  if(files.includes('src/load/graph.bend'))exports.push('f_load_graph','f_load_graph_trace');
+  if(files.includes('src/load/modules.bend')){exports.push('f_source_completed','f_source_located');if(fs.readFileSync(path.join(project,'src/load/modules.bend'),'utf8').includes('def compiler_load_abi('))exports.push('compiler_load_abi','f_source_header','f_complete_source','f_complete_seed','f_import_namespace_at','f_graph_trace');}
   if(files.includes('src/load/imports.bend')&&fs.readFileSync(path.join(project,'src/load/imports.bend'),'utf8').includes('def f_import_failure('))exports.push('f_import_failure');
   if(files.includes('src/core/index.bend'))exports.push('book_context','book_cached');
   if(files.includes('src/load/seed.bend'))exports.push('f_load_graph_seed','f_load_graph_seed_trace');
@@ -173,6 +172,13 @@ export function convertCompilerAbi(value,encode,fields,ctor) {
   return root;
 }
 
+const loaderEntries=['f_source_header','f_complete_source','f_complete_seed','f_import_namespace_at','f_graph_trace','f_load_graph','f_source_located','f_source_completed'];
+function requireLoaderApi(api) {
+  const version=typeof api.compiler_load_abi==='function'?api.compiler_load_abi():undefined;
+  if(version!==2)throw Error('Unsupported compiler load ABI: '+String(version));
+  for(const name of loaderEntries)if(typeof api[name]!=='function')throw Error('Missing contextual compiler source API: '+name);
+}
+
 export async function loadApi() {
   return loadApiForIdentity();
 }
@@ -187,13 +193,12 @@ async function loadApiForIdentity(identity=null) {
   if(module.default.compiler_term_abi!==undefined&&termAbi!==1)throw Error('Unknown compiler term ABI: '+termAbi);
   const spanAbi=module.default.compiler_span_abi?.();
   if(module.default.compiler_span_abi!==undefined&&spanAbi!==3)throw Error('Unknown compiler span ABI: '+spanAbi);
-  const loadAbi=module.default.compiler_load_abi?.();
-  if(module.default.compiler_load_abi!==undefined&&loadAbi!==1)throw Error('Unknown compiler load ABI: '+loadAbi);
+  requireLoaderApi(module.default);
   if(termAbi===1&&spanAbi!==3)throw Error('Term ABI requires source-range ABI3');
   if(!module.G) return module.default;
   // The bootstrap compiler marshals ADTs with named fields. The self-hosted
   // runtime uses positional fields. This is an ABI conversion, not elaboration.
-  const fields={Nil:[],Con:['head','tail'],FSource:['name','path','text'],FParsedSource:['name','path','text','parsed'],FLocatedSource:['source','begin','end'],FHeader:['imports','error','body','line','offset'],FCompletion:['graph','parsed'],FGraph:['book','error','done'],FResult:['book','error','imports'],FLoadTrace:['result','done','sources'],
+  const fields={Nil:[],Con:['head','tail'],FSource:['name','path','text'],FCompletedSource:['name','path','text','parsed'],FLocatedSource:['source','begin','end'],FHeader:['imports','error','body','line','offset'],FCompletion:['graph','parsed'],FGraph:['book','error','done'],FResult:['book','error','imports'],FLoadTrace:['result','done','sources'],
     KTerm:spanAbi===3?['tag','name','id','quant','kids','removed','originBegin','originEnd']:['tag','name','id','quant','kids','removed'],KDef:['name','kind','arity','templates','typ','value','ctors','native','unsafe'],
     ...(termAbi===1?{KLiteral:['kind','number','text','originBegin','originEnd'],KLambda:['name','id','quant','kids','removed','originBegin','originEnd','quantityPresent']}:{}),
     KSpecialized:['book','error'],NC_Result:['source','error'],KF_Source:['parts','error'],
@@ -243,17 +248,12 @@ export function validateSpanCache(c,{compilerSha256,baseSha256,sourcePath,source
 
 export function discoverSources(api,input,{seed=null}={}) {
   const sources=[],seen=new Map(),physical=new Map(),foreign=new Map(),active=new Set();
-  const loadAbi=api.compiler_load_abi?.(),contextual=loadAbi===1;
-  if(api.compiler_load_abi!==undefined&&!contextual)throw Error('Unknown compiler load ABI: '+loadAbi);
-  if(contextual)for(const name of ['f_source_header','f_complete_source','f_complete_seed','f_import_namespace_at','f_graph_trace'])
-    if(typeof api[name]!=='function')throw Error('Missing contextual compiler source API: '+name);
+  requireLoaderApi(api);
   const located=api.compiler_span_abi?.()===SPAN_ABI;
-  if(located&&(!api.f_parse_indexed||!api.f_source_located))throw Error('Missing indexed compiler source API');
   const baseCanonical=located?fs.realpathSync(basePath):null;
   const baseText=located?fs.readFileSync(baseCanonical,'utf8'):null;
   const baseRange=located?interval(1,baseText):null;
   let next=baseRange?.end??0,root=null,completed={$:'FGraph',book:list([]),error:'',done:list([])};
-  const graphMode=typeof api.f_load_graph==='function';
   const wrap=(source,range)=>located?api.f_source_located(source,range.begin,range.end):source;
   const visit=(name,file,edge=null)=>{
     const absolute=fs.realpathSync(file);
@@ -274,25 +274,24 @@ export function discoverSources(api,input,{seed=null}={}) {
     const range=located?(prior?.range??(absolute===baseCanonical?baseRange:interval(next,source))):null;
     if(located&&!prior&&absolute!==baseCanonical)next=range.end;
     if(seeded&&located&&(seed.spanAbi!==SPAN_ABI||seed.sourceBegin!==range.begin||seed.sourceEnd!==range.end))throw Error('Stale Base source interval');
-    let parsed=prior?.parsed||(seeded?{book:list([]),imports:list([]),error:''}:contextual?null:located?api.f_parse_indexed(range.begin,source):api.f_parse(source));
+    let parsed=prior?.parsed??(seeded?{book:list([]),imports:list([]),error:''}:null);
     const raw=wrap({$:'FSource',name,path:absolute,text:source},range),slot=sources.length;
     sources.push(raw);
-    const retain=()=>{if(parsed&&api.f_source_parsed&&!seeded)sources[slot]=wrap(api.f_source_parsed(name,absolute,source,parsed),range);};
+    const retain=()=>{if(parsed&&!seeded)sources[slot]=wrap(api.f_source_completed(name,absolute,source,parsed),range);};
     if(prior){retain();return;}
     const record={parsed,source,range};physical.set(absolute,record);active.add(absolute);
-    const header=contextual&&!seeded?api.f_source_header(raw):null;
+    const header=!seeded?api.f_source_header(raw):null;
     const imports=header?.imports??parsed.imports;
-    if(located&&!contextual&&!seeded&&!parsed.error)validateSpanBook(parsed.book,[range],api.compiler_term_abi?.()??0);
     for(const item of array(imports)) {
       const imported=item.name,importedFile=imported==='Base'?basePath:path.resolve(path.dirname(absolute),imported);
-      try {visit(graphMode&&imported!=='Base'?importedFile:imported,importedFile,{item,source:raw});}
+      try {visit(imported!=='Base'?importedFile:imported,importedFile,{item,source:raw});}
       catch(error) {
         if(!error.phase&&api.f_import_failure&&(error.code==='ENOENT'||error.code==='BEND_IMPORT_CYCLE'))
           throw Object.assign(Error(api.f_import_failure(source,item,error.code==='BEND_IMPORT_CYCLE'?error.importPath:importedFile,error.code==='BEND_IMPORT_CYCLE')),{phase:'parse',sourceFile:absolute});
         throw error;
       }
     }
-    if(contextual) {
+    {
       const supplied=list(sources),ns=edge?api.f_import_namespace_at(edge.item,edge.source,supplied,root):'';
       const result=seeded?api.f_complete_seed(raw,completed,seed.sourcePath,seed.sourceText,seed.book):api.f_complete_source(raw,ns,header,supplied,completed,root);
       parsed=result.parsed;completed=result.graph;record.parsed=parsed;
@@ -307,14 +306,14 @@ export function discoverSources(api,input,{seed=null}={}) {
       }
     }
     active.delete(absolute);
-    const error=contextual?completed.error:parsed.error;
+    const error=completed.error;
     if(error)throw Object.assign(Error(error),{phase:'parse',sourceFile:absolute});
   };
-  const main=graphMode?path.resolve(input):'__main__';
+  const main=path.resolve(input);
   visit(main,path.resolve(input));
   const supplied=list(sources);
   return {main,sources:supplied,files:[...physical.keys()],foreign:[...foreign.values()],hasBase:seen.has('Base'),
-    ...(contextual?{loadTrace:api.f_graph_trace(completed,supplied)}:{})};
+    loadTrace:api.f_graph_trace(completed,supplied)};
 }
 
 function baseCacheInfo(api) {
@@ -364,12 +363,13 @@ function readBaseCache(info,memo=null) {
 }
 export async function prepareBase(api) {
   api??=await loadApi();
+  requireLoaderApi(api);
   const info=baseCacheInfo(api),prior=readBaseCache(info);
   if(prior)return prior;
   const raw={$:'FSource',name:'Base',path:info.sourcePath,text:info.sourceText};
   const range=info.version>=SPAN_CACHE?interval(1,info.sourceText):null;
   const source=range?api.f_source_located(raw,range.begin,range.end):raw;
-  const loaded=(api.f_load_graph||api.f_load)('Base',list([source]));
+  const loaded=api.f_load_graph('Base',list([source]));
   if(loaded.error)throw Object.assign(Error(loaded.error),{phase:'parse'});
   const error=api.check_book(loaded.book);
   if(error)throw Object.assign(Error(error),{phase:'check'});
@@ -439,7 +439,8 @@ async function inspectWithMemo(input,{mode='check',api,args=[],timeoutMs=5000,co
   let phase='load';
   try {
     trace('discover '+input);
-    const info=api.f_load_graph_seed?baseCacheInfo(api):null;
+    requireLoaderApi(api);
+    const info=baseCacheInfo(api);
     if(memo&&(fs.realpathSync(apiPath)!==memo.identity.canonicalPath||(info?.compilerSha256??hash(apiPath))!==memo.identity.sha256)) {
       memo.entry=null;
       throw Error('Compiler API changed during persistent inspection');
@@ -449,10 +450,7 @@ async function inspectWithMemo(input,{mode='check',api,args=[],timeoutMs=5000,co
     phase='parse';
     trace('load and elaborate graph');
     // Traces belong to this request and retain the exact parsed/source snapshots.
-    const loadTrace=graph.loadTrace??(seed&&api.f_load_graph_seed_trace?api.f_load_graph_seed_trace(graph.main,graph.sources,seed.sourcePath,seed.sourceText,seed.book):
-      !seed&&api.f_load_graph_trace?api.f_load_graph_trace(graph.main,graph.sources):null);
-    const loaded=loadTrace?loadTrace.result:seed?api.f_load_graph_seed(graph.main,graph.sources,seed.sourcePath,seed.sourceText,seed.book):
-      (api.f_load_graph||api.f_load)(graph.main,graph.sources);
+    const loadTrace=graph.loadTrace,loaded=loadTrace.result;
     if(loaded.error) return {status:'error',phase,diagnostic:loaded.error.startsWith('Error:')?loaded.error:'Error: '+loaded.error,exitCode:1,checked:false};
     if(mode==='parse') return {status:'ok',phase,exitCode:0,checked:false,files:graph.files};
     phase='check';
@@ -641,15 +639,23 @@ export async function main(args) {
   if(programArgs.length&&(outputs.length||mode==='check'||checkup||library))throw Error('Arguments go to a run');
   if(backend!=='js'&&library)throw Error('--library currently supports JavaScript only');
   if(checkup) {
-    const api=await loadApi(),parsed=api.f_parse(fs.readFileSync(input,'utf8'));
-    if(parsed.error)throw Error(parsed.error);
+    const api=await loadApi();
+    await prepareBase(api);
     let failed=false;
-    for(const item of array(parsed.imports)) {
-      if(item.name==='Base')continue;
-      process.stdout.write('--- '+item.name+' ---\n');
-      const result=await inspect(path.resolve(path.dirname(input),item.name),{mode:'interpreter',api,timeoutMs:120000});
-      printResult(result);
-      const code=result.exitCode??(result.status==='ok'?0:1);
+    for(const line of fs.readFileSync(input,'utf8').split('\n')) {
+      const match=/^import\s+(\S+)\s+as\s+[A-Za-z_][A-Za-z0-9_]*\s*$/.exec(line.trim());
+      if(!match)continue;
+      const name=match[1];
+      process.stdout.write('--- '+name+' ---\n');
+      const imported=path.resolve(path.dirname(input),name);
+      let code=1;
+      try {
+        // Upstream opens each import before loading it and keeps scanning on failure.
+        fs.readFileSync(imported,'utf8');
+        const result=await inspect(imported,{mode:'interpreter',api,timeoutMs:120000});
+        printResult(result);
+        code=result.exitCode??(result.status==='ok'?0:1);
+      } catch(error) {process.stderr.write(String(error)+'\n');}
       if(code){process.stdout.write('exit '+code+'\n');failed=true;}
     }
     process.exitCode=failed?1:0;return;

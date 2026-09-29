@@ -1,17 +1,16 @@
 # Bend2 compiler port in Bend2
 
 Use the [compiler guide](../docs/BEND-IN-BEND.md) and
-[Phase21 release report](../implementation/phase21/group-range-release.md).
-Grouped locals now retain binder locations, and typed annotations receive exact
-parser-cursor locations. Prior grammar, live-checker and exact-prefix fixes remain.
+[Phase22 release report](../implementation/phase22/contextual-conformance.md).
+One contextual frontend now owns lexical scope, aliases, patterns and completion
+order; the old raw parser and later scope replay are retired.
 
-All2,996 main frontend results are unchanged, including two diagnostic differences.
-The broader parser selection improves136→139/196 exact, with zero lost matches
-and57 remaining differences. Independent controls gain16 exact observations;
-all42 installed/relocated CLI checks pass. Controlled checking is **10.95 s**
-versus **3.44 s** for TypeScript (**3.19×**); the preceding compiler takes11.01 s
-in that same window, a neutral cost screen. Original failed output expectations
-and known independent-control gaps remain visible in the report.
+All **2,996 main frontend observations** and the broader **196/196 parser
+observations** agree exactly with pinned TypeScript. Independent public176,
+execution36, integration198 and request-history controls pass. Counts overlap;
+raw negative-fixture statuses and unsupported features remain explicit in the
+report. Controlled checking is **10.70 s** versus **11.02 s** for Phase21 and
+**3.38 s** for TypeScript (**3.16×**), with no emission in that measurement.
 
 The current target is upstream
 [`b2111cf43244e65f76ddc278ee695e669f720cbf`](https://github.com/bendlang/bend/tree/b2111cf43244e65f76ddc278ee695e669f720cbf),
@@ -24,7 +23,7 @@ node cli.mjs tests/conformance/typed-smoke/base-u32.bend --run
 npm run build
 ```
 
-The compiler contains 15,900 physical /13,546 nonblank Bend lines in 59 modules.
+The compiler contains 15,600 physical /13,305 nonblank Bend lines in60 modules.
 It retains the validated S4 simplifications while adding current declaration,
 namespace, typing and effect semantics. The [release manifest](dist/release.json)
 binds the exact source, genuine checked parent, equality/choice-derived API, Base,
@@ -145,7 +144,7 @@ remain in `dist/selfhost/`; the [preservation index](../experiments/PRESERVATION
 and [experiment ledger](../experiments/ledger.md) identify their exact scope.
 They are not alternate defaults. The current release can run after relocation
 without an upstream checkout, as verified by its
-[Phase20 installed/relocated CLI checks](../implementation/phase20/declaration-checkpoints-release.md).
+[Phase22 installed/relocated CLI checks](../implementation/phase22/contextual-conformance.md).
 The earlier [Phase5 clean-package evidence](../implementation/phase5/relocated-cli-evidence/README.md)
 applies to that historical artifact.
 

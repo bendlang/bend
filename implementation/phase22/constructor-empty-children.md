@@ -1,0 +1,9 @@
+# Skip empty constructor children
+
+The isolated helper passes genuine checked B1, maintained36 strict, and independent34 constructor controls. It changes only front/validate.bend: +6physical/+5nonblank lines,226bytes, one definition, no state/type/API change. Parent context-build09/APIeac3 becomes constructor-build01/API4cfd3c3c. No installed source changed and no isolated speed claim is made.
+
+For an unsuccessful declaration with no children, lookup now proceeds directly to its sibling. It avoids constructing Missing and entering the child-result continuation for every ordinary leaf. Nonempty children retain the existing preorder search and first matching constructor identity. Generated code projects the original child list once, reconstructs one Con, then delegates; the extra temporary cell is a tradeoff on nonempty nodes. It does not reread original getter tags.
+
+The independently prepared context-controls-ctor-demand01 reports34/34 exact results and exact paired getter logs, including first duplicate/nested winner identity, child/sibling poison order, empty/missing,100000wide,512deep and repeated histories. Both its raw-exact and semantic gates pass; the prospective allowance for redundant immutable tag reads was not used. Finite controls do not establish unbounded stack safety. Appended probe exports retain the original API prefix and separate identities; the direct probe is not itself B1.
+
+The current contextual CPU profile supplied the motivation (constructor lookup11.26% exclusive sample share). The root will measure the usable union with the separately checked header guard. Shared dispatch/GC cannot be assigned as additional predicted savings. Exact source membership215, one-file delta, checked build and independent results are bound in the JSON report. The original failed bundle speed gate remains preserved.

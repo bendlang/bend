@@ -1,12 +1,12 @@
 # Module header paths are token sequences, including slash and dot tokens.
 
 law f_import_path:
-  for +ts: List<&2, FToken>
-  for +start: List<&2, FToken>
+  for +ts: FInput
+  for +start: FInput
   for +path: String
   for +book: List<&2,KDef>
   for +imports: List<&2, KTerm>
-  for +header: List<&2,FToken>
+  for +header: FInput
   FRawResult
 
 @unsafe
@@ -15,13 +15,13 @@ def f_import_path(ts, start, path, book, imports, header):
     u => f_import_alias(ts, start, path, book, imports, header),
     u => f_choose(FRawResult, f_eq(f_tx(ts), "\n") || f_eq(f_tx(ts), "<eof>"),
       u => f_choose(FRawResult, f_eq(path, "Base"), u => f_tops(ts, book, Con{kt("Import", path, f_line(start), f_col(start), Nil{}), imports}, False{}, f_parse_scope_empty()),
-        u => f_result(book, f_import_header_error(f_choose(List<&2,FToken>, String.is_empty(path), u => header, u => start)), imports)),
+        u => f_result(book, f_import_header_error(f_choose(FInput, String.is_empty(path), u => header, u => start)), imports)),
       u => f_choose(FRawResult, String.is_empty(path) || U32.is_eq(f_col(ts), U32.add(f_col(start), U32.from_nat(String.length(path)))),
         u => f_import_path(f_tl(ts), start, path ++ f_import_token_text(ts), book, imports, header),
         u => f_result(book, f_import_header_error(header), imports))))
 
 @unsafe
-def f_import_header_error(+ts: List<&2,FToken>) -> KTerm:
+def f_import_header_error(+ts: FInput) -> KTerm:
   fpe_line(ts, "a module import requires as followed by an alias", "an import ('import Base', or 'import <path> as <Name>')")
 
 @unsafe
@@ -69,7 +69,7 @@ def f_import_failure(+source: String, +im: KTerm, +path: String, +cycle: Bool) -
 
 # These spellings are the explicit normalized symbol variants of f_lex_symbol.
 @unsafe
-def f_import_token_text(+ts: List<&2,FToken>) -> String:
+def f_import_token_text(+ts: FInput) -> String:
   f_choose(String, f_eq(f_tx(ts), "+bind"), u => "+",
     u => f_choose(String, f_eq(f_tx(ts), ">op"), u => ">",
       u => f_choose(String, f_eq(f_tx(ts), ">>op"), u => ">>", u => f_tx(ts))))

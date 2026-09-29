@@ -1,0 +1,21 @@
+# Phase22 final contextual bundle: independent controls
+
+This plan is prospective for source17/context-build-16. It authorizes no run during the exclusive cost window. Root must first accept the cost result and release CPU2. Earlier source09/source10 successes and all failed or unselected attempts remain immutable; final evidence uses fresh numbered output roots and receipts.
+
+The candidate is the verified selected API of context-build-16, under that attempt's own frozen host. No copied API, production source edit, new compiler build or weakened fixture expectation is part of these controls. Public requests retain the original4MiB stack/4GiB heap, CPU2 and pinned b2111cf reference.
+
+## Acquisitions
+
+1. Run the unchanged context-controls-sweep.py with suffix06: main60, do20, feature40, namespace-alias4, group4 and finalization26. Reuse each original frozen input selection and baseline; require every final observation exact. Then run unchanged context-controls-materialization-sweep.py suffix06 for materialization16, do-header4 and header-demand2. Total176 observations; retain raw runner statuses and fixture-assumption failures.
+2. Run unchanged context-controls-execution-sweep.py suffix06 for the original24 and feature12 check/interpreter/JavaScript/native observations. These36 observations represent nine programs, and their check lanes overlap the public cohort.
+3. Run unchanged context-controls-integration-run.mjs against the original Phase16 wave9-source-01/selection.json in context-controls-integration198-02, comparing complete pinned objects and exact/no-loss behavior with the acquired context-controls-integration198-01 source10 result. Require198 exact.
+4. Prepare fresh history-inputs04 binding Phase21 group-range-build-02 and final context-build-16, each under its own exact host. Reuse the unchanged history-run-v2 and inputs helper, and the exact prospective policy from history-inputs03. Acquire history53 and history60 for each image (226 requests) plus two fresh long-string checks into context-controls-history-03. Only the independently verified driver identity and exactly one predeclared diagnostic transition at history60/index40/check/monad_do_destructure.bend/parse may differ; that diagnostic must equal the already frozen pin. Every other result field, order/resource boundary and expected transition count remains exact. No new exception is authorized.
+5. Run the unchanged selfhost/tests/frontend/trace-component.mjs on the final candidate snapshot using BEND_COMPONENT_PROJECT and the pinned BEND_UPSTREAM, taskset CPU2,4MiB stack/4GiB heap, in context-controls-standalone-01. This is a new genuine checked standalone component proof, not a modification of the release API. It automatically selects frontend/load/shared modules, explicitly excludes checker and diagnostic trace/producer modules, and compares retained ordinary, traced and seeded text-source graph loading. Bind all exact tool/source identities and the compiled component image separately from the release API.
+
+The original broader196 acquisition belongs to the implementation owner. Its unchanged114 marked-pattern subset covers the historical43-difference frontier; no duplicate114 acquisition is needed. Root owns full2996 and actual checkup4. Direct completion17 and constructor34 controls belong to the other audit owner for the final API if requested. Counts across these selections overlap and must not be added as unique programs.
+
+## Closure
+
+Use fresh context-controls-release receipts after all owned jobs close. Verify all complete reports, exact cardinalities and zero exact differences, no reference drift or lost behavior, final API/attempt/host bindings, source/tool identities, history's exactly one declared transition, and standalone module exclusion. Link complete raw outputs and previous receipts without rewriting them. Report any failure before broader work; preserve incomplete setup or failed gates under their own paths. Promotion, current documentation headlines, preservation and commits remain root-owned.
+
+Root accepted matrix04 and authorized these final acquisitions on source17/context-build-16. This prospective plan was updated before any release-suite consumption; source16 was never acquired under it. Candidate API is ade8ef020e439b81ecb53057b33a473c34a3cbd993b98a044121ecc3c2b8c9c3.

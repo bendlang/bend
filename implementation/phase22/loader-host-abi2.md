@@ -1,0 +1,9 @@
+# Loader ABI2 host handoff
+
+The isolated host migration passes 24 mocked protocol controls and Node syntax checking. Only `tools/typed-driver.mjs` changes: zero net physical lines and 991 fewer bytes across the unchanged 214-member parent membership (35 host files). No Bend source was changed or compiler built; this host requires the separately coordinated ABI2 Bend factory before integration.
+
+The host now requires loader ABI2 and all eight contextual loader roots before traversal. It retains only the actual completed `FResult` through `f_source_completed`, including identity across physical aliases. Legacy raw parsing/loading fallbacks are removed. `--checkup` prepares Base once and uses the pinned upstream physical-line import regex, retaining duplicate imports and continuing after a failed child. This is an explicit internal ABI break; CLI flags and result handling are retained.
+
+Controls cover absent/0/1/3/negative/string loader versions, every missing root, completion-result identity, child-before-parent order, alias reuse, earlier-error demand, graph-only Base preparation, existing checker routing, checkup enumeration and three incompatible CLI flag combinations. All 24 passed with healthy subprocess closure. Mocked interpreter outputs are protocol evidence, not compiler conformance. Real generated runtime fields, actual CLI/backend results and cost remain integration gates.
+
+Source: `selfhost/build/phase22/loader-host-source-01/manifest.json` and `host.patch`. Raw controls: `selfhost/build/phase22/loader-host-controls-01/{report,result}.json`; complete process/syntax logs and fixtures are retained. The private project's generated mock cache must remain labeled mock evidence. Reproduction first copies the 214 parent snapshot members, then runs the frozen preparer; the preparer assumes that copy already exists.

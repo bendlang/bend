@@ -1,7 +1,7 @@
 # Compiler validation
 
 The target remains upstream `b2111cf43244e65f76ddc278ee695e669f720cbf`, Bend2
-2.0.32 era. The [Phase21 release report](../implementation/phase21/group-range-release.md)
+2.0.32 era. The [Phase22 release report](../implementation/phase22/contextual-conformance.md)
 binds the final checked artifact, controls, exact vectors, timing and preserved
 failures. The [release manifest](dist/release.json) identifies the installed
 guarded version5 derivative, genuine checked B1, source, Base, runtime and host.
@@ -17,17 +17,35 @@ All 1,001 positives accept types; all 482 validation negatives reject, with no
 observed invalid acceptance, timeout or unresolved observation. All 11 trust
 cases type-check and reach the intended refusal, exactly matching TypeScript.
 
-Phase16 reduced exact reference differences **459→2**, with **457 new matches
-and zero lost matches** versus Phase15. Phase17, both Phase19 releases, Phase20 and Phase21 preserve every complete result. The remaining rows are parse and check for
-`check/monad_do_destructure.bend`: rejection agrees, but the first diagnostic
-differs because of an earlier do-block parsing checkpoint. All measured primitive
-status, phase, type/trust, unsafe-list, exit and output axes agree on this corpus.
-This finite result does not establish all intended typing rules or features.
+Phase22 reaches **2,996/2,996 exact complete results** on this corpus, closing
+the final two do-block first-diagnostic differences with zero lost matches.
+Phase16 had reduced459 differences to2; subsequent releases retained those two
+until the contextual frontend put semantic decisions at their actual parsing
+checkpoints. All measured primitive status, phase, type/trust, unsafe-list,
+exit and output axes agree. This is full agreement on the tested frontend
+corpus, not proof of universal language equivalence.
 
-Strict check results are **1,493 passes / 5 failures**. Four failures are expected
-later-emission errors accepted by both frontends; the fifth is the do-block
-oracle above. Exact reference comparison and strict fixture verdicts are separate.
-Neither classification nor an integration no-regression gate weakens the oracle.
+Strict check results are **1,494 passes /4 failures**. Those four fixtures expect
+later-emission errors and both frontends accept them at this earlier stage.
+The parse lane retains1,001 passes and497 observed negatives. Exact reference
+comparison and original fixture verdicts are separate; no oracle was weakened.
+
+Fresh final-artifact gates also establish broader parser196/196 exact (+57,
+zero lost), independent public176/176, check/interpreter/JS/native36/36, and
+integration198/198. The marked114 selection is an audited exact subset of the
+fresh196, closing its43 historical differences. Header12, normalization12,
+completion17, constructor-index42 and actual checkup4 controls pass their stated
+contracts. Original226 paired history requests plus two fresh long-string checks
+pass with exactly one prospectively pinned diagnostic correction; all other
+complete results and the original resource/order boundaries are preserved.
+The unchanged standalone frontend test rebuilds26 modules without the checker
+or diagnostic tracing dependencies. Suites overlap and must not be summed as
+unique programs. See the Phase22 report for exact source/API/host identities.
+
+The sections below retain artifact-specific historical results and failures.
+Where Phase22 supersedes a frontier, the current result is stated explicitly.
+Independent proof-kernel validation, GPU execution and broader platform/device
+coverage remain outside the demonstrated result.
 
 The earlier Phase19 prefix release fixes a separate public-prefix error outside that inventory.
 The Phase17 compiler accepts a changed `{0n == 1n : Nat}` proof when reusing a
@@ -71,7 +89,7 @@ closing its same-body live-instance difference. Its immutable runner retains
 `pass:false` for14 inherited negative parse `observed` labels; exact result
 comparison is a separate axis. Other selections below retain their stated scope:
 
-- The separate196-observation group selection was rerun for Phase21:139exact
+- Historically, the separate196-observation group selection on Phase21 had139exact
   and57remaining differences, three newly exact and none lost from Phase20.
   Only local-pattern parse/check and local-callee check change. The raw runner
   still fails selected completion with three inherited failed verdicts; the
@@ -83,13 +101,14 @@ comparison is a separate axis. Other selections below retain their stated scope:
   observations, including nine successful actual executions, but the original
   output-oracle verdicts remain failed because their comments omitted Nat's `n`.
   Maintained36 is strict exact and installed/relocatedCLI42 passes.
-- The 114-observation marked-pattern selection has **71 exact matches and 43
-  known differences**. Its raw oracle report is `pass:false`, including the
+- Historically, the 114-observation marked-pattern selection had **71 exact
+  matches and43 known differences**; Phase22 closes all43 as described above. Its raw oracle report is `pass:false`, including the
   known do-block check failure. A separate audit establishes 114 unchanged
   candidate outcomes and zero regressions against its accepted predecessor;
   it does not establish full selected conformance. Six direct demand controls pass.
-- The supplied-source 39 and ordered-host 43 controls each retain one known
-  wording difference for `@unsafe` followed by an import. Namespace eight,
+- The historical Phase16 supplied-source39 and ordered-host43 controls each
+  retained one wording difference for `@unsafe` followed by an import; Phase20
+  closes that gap as recorded above. Historical namespace eight,
   term/cache 39 and whole-program host ten controls pass without exceptions.
 
 On the historical Phase17 API, the maintained 36 cases pass their selected contract
@@ -129,8 +148,9 @@ four grouped-comma/zero-head-match witnesses. The
 has 20/22 exact observations and 8 exact memo/name controls, with two distinct
 error-order gaps. The retained Phase19 checker matches all22 instance
 observations and memo8; Phase20 separately closes the eight zero-head observations.
-The contextual parser prototype remains isolated. These
-selections overlap and their counts must not be summed.
+The original contextual parser prototype remains an isolated historical artifact;
+Phase22 integrates a separately validated contextual implementation and closes
+its measured frontend gaps. These selections overlap and must not be summed.
 
 Other limits include hub/package fetching, independent proof-kernel validation,
 backend/platform coverage and source Nat payloads restricted to U32 size (wider

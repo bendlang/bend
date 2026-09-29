@@ -73,13 +73,13 @@ def fp_units(text, count):
 def fp_source_validate(source, seen):
   match source:
     case FSource{name, path, text}: fp_source_pairs(source, seen)
-    case FParsedSource{name, path, text, parsed}: fp_source_pairs(source, seen)
+    case FCompletedSource{name, path, text, parsed}: fp_source_pairs(source, seen)
     case FLocatedSource{inner, begin, end}:
       match inner:
         case FLocatedSource{nested, a, b}: "nested source location wrapper"
         case FSource{name, path, text}:
           f_choose(String, U32.is_gt(begin, 0) && U32.is_gt(end, begin) && U32.is_eq(U32.sub(end, begin), U32.add(fp_units(text, 0), 1)), u => fp_source_pairs(source, seen), u => "invalid source interval")
-        case FParsedSource{name, path, text, parsed}:
+        case FCompletedSource{name, path, text, parsed}:
           f_choose(String, U32.is_gt(begin, 0) && U32.is_gt(end, begin) && U32.is_eq(U32.sub(end, begin), U32.add(fp_units(text, 0), 1)), u => fp_source_pairs(source, seen), u => "invalid source interval")
 
 @unsafe

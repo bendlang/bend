@@ -1,0 +1,130 @@
+{
+  "kind": "phase22-supplemental-materialization-closure",
+  "complete": true,
+  "pass": true,
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-07/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-07/equality/api.mjs",
+    "sha256": "dcf9aadd60b1bebfe7f938f631d93412171d321b98fea2e68c9bf53070d5c6eb"
+  },
+  "observations": 22,
+  "candidateExact": 22,
+  "baselineExact": 13,
+  "parts": {
+    "materialization": {
+      "observations": 16,
+      "baselineExact": 12,
+      "candidateExact": 16,
+      "gainedExact": [
+        "context-materialization/eager-argument-before-callee-body/check@check",
+        "context-materialization/eager-argument-before-callee-body/parse@parse",
+        "context-materialization/eager-sibling-before-deferred-child/check@check",
+        "context-materialization/eager-sibling-before-deferred-child/parse@parse"
+      ],
+      "lostExact": []
+    },
+    "do-header": {
+      "observations": 4,
+      "baselineExact": 0,
+      "candidateExact": 4,
+      "gainedExact": [
+        "context-do-header/compact-empty/check@check",
+        "context-do-header/compact-empty/parse@parse",
+        "context-do-header/malformed-arg/check@check",
+        "context-do-header/malformed-arg/parse@parse"
+      ],
+      "lostExact": []
+    },
+    "header-demand": {
+      "observations": 2,
+      "baselineExact": 1,
+      "candidateExact": 2,
+      "gainedExact": [
+        "context-header-demand/parameter-lazy@parse"
+      ],
+      "lostExact": []
+    }
+  },
+  "scope": "Unchanged materialization16/do-header4/header-demand2. Parameterized header-demand parse repeats one finalization26 observation; counts describe acquired observations, not distinct fixtures. No private beta-worker claim.",
+  "findings": [
+    "Raw computed App pattern eligibility remains a refusal; its observed term now beta-reduces exactly like the pin.",
+    "Discarded lambdas remain unforced; eager arguments/siblings and returned lambda materialization retain exact error order.",
+    "Do alias ambiguity precedes malformed arguments with exact cursor; immediate and lazy header demand match."
+  ],
+  "postAcquisitionIdentityAudit": {
+    "pass": true,
+    "uniqueInputs": 33
+  },
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-materialization-close.py",
+      "sha256": "49fe453261d66f40d4989680340321e40a398f7c8e6623dee30dc9abde2c5ee6",
+      "bytes": 3703
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-materialization-sweep-04/report.json",
+      "sha256": "588a359b5b84fbcec7f9f6f10ed01ba59ca532e2e6a1974582a44a3a5e89fa06",
+      "bytes": 6527
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-materialization-baseline-01/report.json",
+      "sha256": "aeca8a199985098c8226ab4691d2a3c55e001b8e8d09bb51f417fca35bdfd73b",
+      "bytes": 13254
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-materialization-baseline-01/selected/paired.json",
+      "sha256": "8c09dbbd9fb25a0a14e72ca43239fafee3f660784773554e9884fca2363ab884",
+      "bytes": 36950
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-materialization-04/report.json",
+      "sha256": "6afe9d38d36abc09af862a46965ff21cb36eb31656bb53f19b65f11b536f5000",
+      "bytes": 15161
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-materialization-04/selected/paired.json",
+      "sha256": "9d05b6b47411c0f124926152ab6d96a4dbed367e08670bf7f2f0daca36ffea5f",
+      "bytes": 30293
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-header-baseline-01/report.json",
+      "sha256": "005df84a547124d0e5c600a45b9915d0cacc7ac018083a3bc016d82753c59164",
+      "bytes": 10084
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-header-baseline-01/selected/paired.json",
+      "sha256": "e306e750c1980ee04dc778e43016df8aaebfb0b125366f928eb8979dc6ea2810",
+      "bytes": 17120
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-do-header-04/report.json",
+      "sha256": "7f03a4b2d08cf90c3fb018dc27f8da6096e9c0d9daf2db74b58e66973234b61f",
+      "bytes": 11589
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-do-header-04/selected/paired.json",
+      "sha256": "8fdb6994505eb4a776214747ea441f9ad1a7c5811287f0348186804d4731b031",
+      "bytes": 12277
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-header-demand-baseline-01/report.json",
+      "sha256": "5ba1a6bd44ee1a3c77dde074c06d68a4a30ee51d3e21719d8e2e433371a64882",
+      "bytes": 9923
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-header-demand-baseline-01/selected/paired.json",
+      "sha256": "e944416e3398504b154a19f3fc5548a94fa3f997f58f8d722c7b8699f8afc7d5",
+      "bytes": 11418
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-header-demand-04/report.json",
+      "sha256": "0ca6ff4b81df946bce4a1267f1e395eee8f0762b0b82408f3f58669e0af375f9",
+      "bytes": 11269
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-header-demand-04/selected/paired.json",
+      "sha256": "49cea7f18a517ea2ecc425c0d43f5de61ce41ca53b37ea514e19f24e5b51f455",
+      "bytes": 9771
+    }
+  ]
+}

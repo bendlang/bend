@@ -17,29 +17,26 @@ This fork develops the compiler in [`selfhost/`](selfhost/README.md), on branch
 from `selfhost/`, run `npm run verify:release`, then `node cli.mjs FILE --run`.
 `npm run build` checks and rebuilds the default with pinned upstream.
 
-The [Phase21 release report](implementation/phase21/group-range-release.md)
-records correct grouped-local and typed-annotation source locations, retaining
-Phase20's grammar fixes and Phase19's shared live checker. The upstream target
-remains **b2111cf, Bend 2.0.32 era**.
+The [Phase22 release report](implementation/phase22/contextual-conformance.md)
+records one contextual frontend, replacing parsing followed by later scope
+reconstruction. The target remains **b2111cf, Bend 2.0.32 era**.
 
-Identical-source checking averages **10.95 s**, versus **3.44 s** for pinned
-TypeScript: a **3.19×** process-time gap. The preceding compiler averages11.01 s
-in the same window. This is a neutral cost screen without emission.
+All **2,996 main frontend observations** now agree exactly with pinned TypeScript.
+The broader parser selection is **196/196 exact**, closing its remaining57
+differences. Independent public176, execution36, integration198 and request-history
+controls also pass. These overlapping selections are finite evidence; see
+[conformance](selfhost/CONFORMANCE.md) for the raw verdicts and remaining limits.
 
-All **2,996 frontend results** remain unchanged, including two diagnostic
-differences. The broader parser suite improves **136→139 exact out of196**, with
-zero lost matches;57 differences remain. Independent controls gain16 exact
-observations; complete-graph and annotation-coordinate checks pass their scopes.
-All **42 installed/relocated CLI checks** pass. Actual execution agrees with
-TypeScript, with original mistaken output expectations retained in the report.
-See [conformance](selfhost/CONFORMANCE.md).
-The compiler has **15,900 Bend lines in59 modules**, three more than Phase20,
-with no new function or type. Full conformance and50%/75% reduction targets remain open.
+Controlled identical-source checking averages **10.70 s**, versus **11.02 s**
+for Phase21 and **3.38 s** for TypeScript (**3.16×** its process time). This is a
+modest two-sample cost screen, excluding emission. The compiler has **15,600 Bend
+lines in60 modules**, down300 lines; one frontend authority replaces two routes.
+Bytes and helper counts rise slightly, so the reduction is not universal.
 
 The [development workflow](docs/PHASE5_DEVELOPMENT.md) builds a genuine checked
-compiler and runs 36 short paired controls. The release preserves its checked
-parent and unchanged guarded version5 derivative; ordinary compilation runs the
-Bend implementation without a TypeScript fallback. Independent BendTT `--verdict`
+compiler and runs36 short paired controls. The release preserves its checked
+parent and guarded version5 derivative; ordinary compilation runs the Bend
+implementation without a TypeScript fallback. Independent BendTT `--verdict`
 validation is not implemented, and this is not a new self-hosted fixed point.
 
 Designs, failures and exact evidence remain linked from the

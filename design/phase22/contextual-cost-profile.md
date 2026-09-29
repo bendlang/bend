@@ -1,0 +1,7 @@
+# Profile the rejected final contextual bundle
+
+The frozen six-process final bundle screen shows a 32.77% process-time and 35.64% request-time regression from Phase21. Preserve that candidate and failed speed gate. Profile exact context-build-09 APIeac3 / driver03798 on the same frozen Phase21 compiler source, using unchanged Phase16 profile-check, Phase8 worker and Phase9 summary at 1ms intervals, Node24/CPU0/stack4096/heap4096. This is diagnostic attribution, not another controlled timing comparison. Other owners may analyze source; no source changes precede the evidence.
+
+Bind sampler, worker, summarizer, actual source/attempt/API/host identities before launch. Retain complete raw profile, ordinary result and process health. Attribute samples to actual generated worker bodies and inspect physical callers; tail calls/shared runtime can obscure attribution. Compare the installed-profile owner distribution descriptively, not as subtraction of independently sampled timings. Do not add shared dispatch/GC percentages to guessed owners.
+
+First discriminate contextual name/index work from cursor allocation, term materialization, freshening and host source validation. If one small source worker dominates, propose a bounded semantics-preserving change with direct demand/origin controls before a new checked candidate. No heap census or broad rewrite unless the CPU evidence justifies it; do not attribute source-level constructors to physical V8 allocations. Promotion remains blocked pending correctness and a new approved exclusive cost gate.

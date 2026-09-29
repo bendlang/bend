@@ -1,0 +1,44 @@
+{
+  "kind": "phase22-final-bundle-cost-review",
+  "complete": true,
+  "measurementHealthy": true,
+  "pass": false,
+  "speedGatePassed": false,
+  "promotionBlocked": true,
+  "rawReport": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bundle-matrix-01/report.json",
+    "sha256": "3163995eeb1ec8364ffcbc6427918176a3666eaba9badea9d722dff30f359991"
+  },
+  "statistics": {
+    "typescript": {
+      "samples": 2,
+      "meanRequestMs": 2329.5074015,
+      "meanProcessWallMs": 3395.263426000001,
+      "maxRssKiB": 479424
+    },
+    "baseline": {
+      "samples": 2,
+      "meanRequestMs": 10028.441662499998,
+      "meanProcessWallMs": 11128.2211455,
+      "maxRssKiB": 650592
+    },
+    "candidate": {
+      "samples": 2,
+      "meanRequestMs": 13602.51801,
+      "meanProcessWallMs": 14774.401832000001,
+      "maxRssKiB": 686132
+    }
+  },
+  "ratios": {
+    "baselineToTs": 3.2775722379250807,
+    "candidateToTs": 4.351474386011307,
+    "baselineToCandidate": 0.7532095899407103,
+    "candidateProcessReduction": -0.32765170990283865,
+    "candidateRequestReduction": -0.3563939909891263
+  },
+  "rssIncrease": 0.05462717033102149,
+  "ordinaryOutputsExact": true,
+  "hostProvenance": "Only excluded field; each actual value verified against its driver/adapter identity and retained.",
+  "conclusion": "Final contextual ABI2 bundle regresses process32.77%, request35.64%, peakRSS5.46%; profile before selecting a bounded correction.",
+  "limits": "Two samples/image on one source; usable bundle comparison includes host delta and cannot attribute changes solely to Bend. No emission or complete edit-loop claim."
+}

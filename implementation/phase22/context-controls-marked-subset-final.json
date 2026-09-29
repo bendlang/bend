@@ -1,0 +1,733 @@
+{
+  "kind": "phase22-marked114-exact-subset-audit",
+  "complete": true,
+  "pass": true,
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-16/equality/api.mjs",
+    "sha256": "ade8ef020e439b81ecb53057b33a473c34a3cbd993b98a044121ecc3c2b8c9c3"
+  },
+  "observations": 114,
+  "historicalExact": 71,
+  "finalExact": 114,
+  "closedHistoricalDifferences": 43,
+  "rows": [
+    {
+      "id": "check/monad_do_destructure.bend",
+      "lane": "parse",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "check/monad_do_destructure.bend",
+      "lane": "check",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/alias-bound",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/alias-bound",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/alias-unbound",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/alias-unbound",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/field-bound",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/field-bound",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/field-unbound",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/field-unbound",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/lambda-bound",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/lambda-bound",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/local-bound",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/local-bound",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/marked-bound",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/marked-bound",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/nested-bound",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/nested-bound",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/nested-unbound",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/nested-unbound",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/nonempty-bound",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/nonempty-bound",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/nonempty-unbound",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/nonempty-unbound",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/offload-bound",
+      "lane": "parse",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/offload-bound",
+      "lane": "check",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/qualified-bound",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/qualified-bound",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/qualified-unbound",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/qualified-unbound",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/row-bound",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/row-bound",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/row-unbound",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "empty-call-pattern/row-unbound",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/alias-bound",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/alias-bound",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/alias-unbound",
+      "lane": "parse",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/alias-unbound",
+      "lane": "check",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/bare-bound",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/bare-bound",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/bare-unbound",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/bare-unbound",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/datatype-bare",
+      "lane": "parse",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/datatype-bare",
+      "lane": "check",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/datatype-explicit",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/datatype-explicit",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/datatype-shadow",
+      "lane": "parse",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/datatype-shadow",
+      "lane": "check",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/empty-bound",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/empty-bound",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/empty-unbound",
+      "lane": "parse",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/empty-unbound",
+      "lane": "check",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/nested-bound",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/nested-bound",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/nonempty-bound",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/nonempty-bound",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/ordinary-affine-control",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/ordinary-affine-control",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/qualified-bound",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/qualified-bound",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/qualified-unbound",
+      "lane": "parse",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/qualified-unbound",
+      "lane": "check",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/quantity-requires-data",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/quantity-requires-data-parse",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/term-remains-unbound",
+      "lane": "check",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "marked-pattern/term-remains-unbound-parse",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/alias-shadow-frame",
+      "lane": "parse",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/alias-shadow-frame",
+      "lane": "check",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/all-frame",
+      "lane": "parse",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/all-frame",
+      "lane": "check",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/bad-case-before-global-head",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/bad-case-before-global-head",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/bound-qualified-positive",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/bound-qualified-positive",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/computed-before-continuation",
+      "lane": "parse",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/computed-before-continuation",
+      "lane": "check",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/computed-valid-continuation",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/computed-valid-continuation",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/constructor-before-continuation",
+      "lane": "parse",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/constructor-before-continuation",
+      "lane": "check",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/do-frame",
+      "lane": "parse",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/do-frame",
+      "lane": "check",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/empty-call-bound",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/empty-call-bound",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/empty-call-unbound",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/empty-call-unbound",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/global-head-after-good-case",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/global-head-after-good-case",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/inner-error-before-computed",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/inner-error-before-computed",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/lambda-before-continuation",
+      "lane": "parse",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/lambda-before-continuation",
+      "lane": "check",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/lambda-frame",
+      "lane": "parse",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/lambda-frame",
+      "lane": "check",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/literal-before-continuation",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/literal-before-continuation",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/local-frame",
+      "lane": "parse",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/local-frame",
+      "lane": "check",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/match-frame",
+      "lane": "parse",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/match-frame",
+      "lane": "check",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/module-alias-frame",
+      "lane": "parse",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/module-alias-frame",
+      "lane": "check",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/parallel-frame",
+      "lane": "parse",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/parallel-frame",
+      "lane": "check",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/parameter-frame",
+      "lane": "parse",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/parameter-frame",
+      "lane": "check",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/qualified-before-continuation",
+      "lane": "parse",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/qualified-before-continuation",
+      "lane": "check",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/rhs-before-computed",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/rhs-before-computed",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/type-before-continuation",
+      "lane": "parse",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/type-before-continuation",
+      "lane": "check",
+      "historicalExact": false,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/valid-binder-before-continuation",
+      "lane": "parse",
+      "historicalExact": true,
+      "finalExact": true
+    },
+    {
+      "id": "parser-checkpoint/valid-binder-before-continuation",
+      "lane": "check",
+      "historicalExact": true,
+      "finalExact": true
+    }
+  ],
+  "scope": "Read-only coverage audit of actual final196 results. Every original114 id/lane, fixture path/hash/oracle/main/negative field, pin revision/path and complete paired reference observation is identical. No standalone114 acquisition or rewritten oracle/status is claimed. Raw group196 pass:false remains preserved.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-marked-subset-final.py",
+      "sha256": "1e6bdd9fafa5773e2fabf1f682da8b4949f0c81b8c69ac17767bf040fb263fd2",
+      "bytes": 3022
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/marked-pattern-integrated-01/selected/paired.json",
+      "sha256": "1b918ecc4938df5f8551db671974e703a13c9006a62861fac502a846579111e3",
+      "bytes": 198107
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-group196-05/selected/paired.json",
+      "sha256": "284e341a26a76b29e9394307d2ec50b52c13b8f12df24f054b1c277ee6526a86",
+      "bytes": 240636
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/marked-pattern-integrated-01/selected/reference.json",
+      "sha256": "157229613fb7fcb7d52403c35bd5fdc83fb0197dabad1cfd8c9c8b4c57c6d4a4",
+      "bytes": 2089207
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-group196-05/selected/reference.json",
+      "sha256": "0c71ede8ba340eeeb7ff5f93ffe7afd69c71bd8e38eff34c956f62693cc7ff95",
+      "bytes": 2225267
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-group196-05/report.json",
+      "sha256": "6fc2eaac93a8c3e712e02946603a3ee76a9b98d125ecaacadab85e2d7a23f6e5",
+      "bytes": 45340
+    }
+  ]
+}

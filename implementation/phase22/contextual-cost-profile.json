@@ -1,0 +1,286 @@
+{
+  "kind": "phase22-contextual-regression-profile",
+  "complete": true,
+  "healthy": true,
+  "performanceGatePassed": false,
+  "candidateApi": "eac3b89d561287b9a51b411ab6353ea275e90c571de7d7c8e733c99eb0755a94",
+  "scope": "One fresh CPU0 profile of the failed final bundle on the identical Phase21 compiler input. Exclusive sample attribution only; not a controlled elapsed-time comparison or invocation/allocation census. Physical tail callers may be absent.",
+  "owners": [
+    {
+      "owner": "run_loop",
+      "samples": 1237,
+      "selfUs": 2065369,
+      "percentOfProfile": 12.327782107150053
+    },
+    {
+      "owner": "$f_ctor_lookup$",
+      "samples": 1722,
+      "selfUs": 1885722,
+      "percentOfProfile": 11.255504430762354
+    },
+    {
+      "owner": "(garbage collector)",
+      "samples": 711,
+      "selfUs": 1441292,
+      "percentOfProfile": 8.602789007087118
+    },
+    {
+      "owner": "update",
+      "samples": 719,
+      "selfUs": 758507,
+      "percentOfProfile": 4.527379380027523
+    },
+    {
+      "owner": "$f_declared$",
+      "samples": 652,
+      "selfUs": 718809,
+      "percentOfProfile": 4.290429811166152
+    },
+    {
+      "owner": "validateSpanBook",
+      "samples": 500,
+      "selfUs": 550246,
+      "percentOfProfile": 3.284310354871642
+    },
+    {
+      "owner": "$f_eq$",
+      "samples": 499,
+      "selfUs": 547459,
+      "percentOfProfile": 3.2676752989893143
+    },
+    {
+      "owner": "$f_find$",
+      "samples": 435,
+      "selfUs": 480086,
+      "percentOfProfile": 2.865539088024097
+    },
+    {
+      "owner": "$dn$",
+      "samples": 361,
+      "selfUs": 401008,
+      "percentOfProfile": 2.3935380298745788
+    },
+    {
+      "owner": "$index_remove$",
+      "samples": 285,
+      "selfUs": 310943,
+      "percentOfProfile": 1.8559577255897417
+    },
+    {
+      "owner": "$f_context_material_children$",
+      "samples": 192,
+      "selfUs": 243641,
+      "percentOfProfile": 1.4542452996864708
+    },
+    {
+      "owner": "$lookup$",
+      "samples": 196,
+      "selfUs": 226427,
+      "percentOfProfile": 1.3514983129773253
+    },
+    {
+      "owner": "$f_lex_cursor$",
+      "samples": 160,
+      "selfUs": 214880,
+      "percentOfProfile": 1.2825765367759483
+    },
+    {
+      "owner": "$f_context_pattern_named$",
+      "samples": 160,
+      "selfUs": 178210,
+      "percentOfProfile": 1.0637005054860469
+    },
+    {
+      "owner": "$f_lex_symbol$",
+      "samples": 109,
+      "selfUs": 162243,
+      "percentOfProfile": 0.9683966169775697
+    },
+    {
+      "owner": "$ffw_walk_existing$",
+      "samples": 70,
+      "selfUs": 159158,
+      "percentOfProfile": 0.949982857595804
+    },
+    {
+      "owner": "$check_node$",
+      "samples": 114,
+      "selfUs": 142691,
+      "percentOfProfile": 0.8516945672426324
+    },
+    {
+      "owner": "$has_name$",
+      "samples": 134,
+      "selfUs": 141164,
+      "percentOfProfile": 0.8425802040089351
+    },
+    {
+      "owner": "$index_find$",
+      "samples": 125,
+      "selfUs": 135837,
+      "percentOfProfile": 0.8107843867555589
+    },
+    {
+      "owner": "$f_pattern_sub$",
+      "samples": 109,
+      "selfUs": 125716,
+      "percentOfProfile": 0.7503741246152509
+    }
+  ],
+  "callers": [
+    {
+      "target": "$f_ctor_lookup$",
+      "caller": "$f_context_pattern_named$",
+      "samples": 984,
+      "selfUs": 1075544,
+      "percentOfProfile": 6.419710995300402
+    },
+    {
+      "target": "$f_declared$",
+      "caller": "$f_def_context_header$",
+      "samples": 650,
+      "selfUs": 716657,
+      "percentOfProfile": 4.277584945626586
+    },
+    {
+      "target": "$f_ctor_lookup$",
+      "caller": "$f_context_pattern_ctor$",
+      "samples": 651,
+      "selfUs": 710628,
+      "percentOfProfile": 4.241599028183258
+    },
+    {
+      "target": "$f_eq$",
+      "caller": "$f_find$",
+      "samples": 469,
+      "selfUs": 515088,
+      "percentOfProfile": 3.0744591547600972
+    },
+    {
+      "target": "$dn$",
+      "caller": "$f_find$",
+      "samples": 335,
+      "selfUs": 372729,
+      "percentOfProfile": 2.2247462303423418
+    },
+    {
+      "target": "$f_ctor_lookup$",
+      "caller": "$f_context_pattern$",
+      "samples": 70,
+      "selfUs": 78920,
+      "percentOfProfile": 0.4710579871665946
+    },
+    {
+      "target": "$f_ctor_lookup$",
+      "caller": "$f_decl_ctor_taken$",
+      "samples": 14,
+      "selfUs": 17452,
+      "percentOfProfile": 0.10416756198722008
+    },
+    {
+      "target": "$f_eq$",
+      "caller": "$f_grow_base$",
+      "samples": 9,
+      "selfUs": 10612,
+      "percentOfProfile": 0.06334094475179804
+    },
+    {
+      "target": "$dn$",
+      "caller": "$f_context_call_input$",
+      "samples": 9,
+      "selfUs": 9575,
+      "percentOfProfile": 0.057151295325901456
+    },
+    {
+      "target": "$dn$",
+      "caller": "<unattributed>",
+      "samples": 9,
+      "selfUs": 9490,
+      "percentOfProfile": 0.056643947012303374
+    },
+    {
+      "target": "$f_eq$",
+      "caller": "$f_atom_existing$",
+      "samples": 5,
+      "selfUs": 5288,
+      "percentOfProfile": 0.031563033909490015
+    },
+    {
+      "target": "$f_eq$",
+      "caller": "$f_context_call_input$",
+      "samples": 4,
+      "selfUs": 4241,
+      "percentOfProfile": 0.02531369644669954
+    },
+    {
+      "target": "$f_ctor_lookup$",
+      "caller": "<unattributed>",
+      "samples": 3,
+      "selfUs": 3178,
+      "percentOfProfile": 0.018968858124878835
+    },
+    {
+      "target": "$dn$",
+      "caller": "$index_build$",
+      "samples": 2,
+      "selfUs": 3149,
+      "percentOfProfile": 0.018795762817886547
+    },
+    {
+      "target": "$f_ctor_more$",
+      "caller": "$f_ctor_lookup$",
+      "samples": 3,
+      "selfUs": 2974,
+      "percentOfProfile": 0.01775122217224344
+    },
+    {
+      "target": "$f_declared$",
+      "caller": "$f_def_header$",
+      "samples": 2,
+      "selfUs": 2152,
+      "percentOfProfile": 0.012844865539565528
+    }
+  ],
+  "signedDeltas": {
+    "count": 0,
+    "sumUs": 0
+  },
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/contextual-profile-01/report.json",
+      "sha256": "7b3ca04106c85e1894082565955d221807966c572f9ad12b6a4d959de9ae2334",
+      "bytes": 119562
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/contextual-profile-callers-01/report.json",
+      "sha256": "35c4165921366f377618aa87ea4c8bf1da1c4c9fd4630da4c8cd1916c6e05757",
+      "bytes": 85008
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/final-bundle-cost.json",
+      "sha256": "5b502f1dee4c7bdf91ae04190b3153d49269ad602c04f300e182de65cbf88896",
+      "bytes": 1638
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase22/contextual-cost-profile.md",
+      "sha256": "1f8c3da028970d31b59d15c5592c7b9f1ccc5780e4359275ef686c4d1301e1d6",
+      "bytes": 1559
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/contextual-profile-plan-01.json",
+      "sha256": "99786c3cb77d13ac854b7fc9b1bb6cabdced6b796061419d7120917c1e0041ef",
+      "bytes": 3004
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-profile-owners.py",
+      "sha256": "34a1ca9cc68e179c7a462463264d234a140c1b2c3be98233c17032f22bd83b67",
+      "bytes": 3447
+    }
+  ],
+  "decisions": [
+    "Behavior owns guarded header alias membership, preserving real-alias semantics.",
+    "Speed owner tests a child-list Nil guard in f_ctor_lookup before any new constructor state/index.",
+    "No heap profile or other large CPU profile: existing attribution is decisive and disk headroom limited.",
+    "No promotion until controlled bundle cost and all required correctness gates pass."
+  ]
+}

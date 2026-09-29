@@ -61,6 +61,9 @@ def f_fresh_stack(
   ffw_walk(term, env, next, Nil{})
 @unsafe
 def ffw_walk(term, env, next, stack):
+  f_choose(FFresh, String.eq(tg(term), "FName"), u => ffw_walk(k_with_span(kid(term, 1), kb(term), ke(term)), env, next, stack), u => ffw_walk_existing(term, env, next, stack))
+@unsafe
+def ffw_walk_existing(+term: KTerm, +env: List<&2,KTerm>, +next: U32, +stack: List<&2,FFFrame>) -> FFresh:
   f_choose(FFresh, String.eq(tg(term), "FGlobal"), u => ffw_done(kt_span("Ref", nm(term), 0, 1, Nil{}, kb(term), ke(term)), next, stack),
     u => f_choose(FFresh, String.eq(tg(term), "FUnboundVar"), u => ffw_done(term, next, stack),
     u => f_choose(FFresh, String.eq(tg(term), "Var"), u => ffw_done(f_rename_var(term, env), next, stack),

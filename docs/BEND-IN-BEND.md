@@ -9,7 +9,7 @@ does not invoke the TypeScript compiler.
 
 The active target is upstream
 [`b2111cf43244e65f76ddc278ee695e669f720cbf`](https://github.com/bendlang/bend/tree/b2111cf43244e65f76ddc278ee695e669f720cbf)
-(Bend 2.0.32 era). The [Phase21 report](../implementation/phase21/group-range-release.md)
+(Bend 2.0.32 era). The [Phase22 report](../implementation/phase22/contextual-conformance.md)
 records checked artifact identities, current conformance, measured cost and
 remaining gaps. This experimental port does not establish independent proof
 validity; `--verdict` is explicitly unsupported.
@@ -28,8 +28,25 @@ and returned RHS cursors. These changes reuse existing producers and workers.
 Phase17’s direct lookup loop and Phase16’s compact literals, exact specialization
 keys, source ranges and contextual module parsing remain.
 The [development history](../implementation/phase16/full_conformance.md) retains
-its separate prototypes and failures. Two main-corpus diagnostic observations
-and additional independent-control gaps remain.
+its separate prototypes and failures. Phase22 closes the remaining measured
+frontend differences on the final main corpus and broader parser selection.
+
+The [Phase22 contextual frontend](../implementation/phase22/contextual-conformance.md)
+closes those measured gaps by carrying the actual lexical environment, module
+aliases, namespace and fresh counter through parsing. It validates patterns and
+completed groups before their continuations, and resolves simultaneous RHS
+expressions before opening their binders. One higher/lower materializer preserves
+the pin's eager-child and deferred-binder demand, including first-error order.
+The installed release passes both the final conformance and cost gates.
+
+Its load ABI2 carries completed terms through the trusted internal
+`FCompletedSource` handoff. Text still enters as `FSource`; the old raw-parser and
+`FParsedSource` replay APIs are retired rather than maintained as a second
+frontend. Dependency ordering, canonical imported-law eligibility and checking
+remain enforced at their existing boundaries. Supplied completed IR is not an
+authentication mechanism. The compiler's `--checkup` command follows the pinned
+textual import order, prepares Base once, checks each imported module independently
+and continues after errors, including a missing-file read.
 
 The current source retains S4's shared loader, provenance, structured checking
 result and list operations. It adds upfront datatype/signature visibility while
@@ -101,7 +118,7 @@ npm run build -- /absolute/release-config.json /absolute/new-attempt
 Config fields and selection semantics are documented in the
 [maintained workflow guide](PHASE5_DEVELOPMENT.md). Broad conformance and checked
 self-reproduction are release/integration gates, not every small edit's build.
-The [Phase21 report](../implementation/phase21/group-range-release.md) records
+The [Phase22 report](../implementation/phase22/contextual-conformance.md) records
 the current artifact's evidence and remaining failures.
 
 ## Work on the current source
@@ -123,7 +140,7 @@ unforced message identity is outside this contract. Historical versions1/2/3/4
 retain exact byte replay. The normalizer seed change and broader branch
 transformation failed stack controls and are excluded.
 
-The [Phase21 report](../implementation/phase21/group-range-release.md) gives the
+The [Phase22 report](../implementation/phase22/contextual-conformance.md) gives the
 current source and artifact identities. Keep experiments isolated by selecting a
 frozen attempt explicitly:
 
@@ -182,7 +199,7 @@ BEND_TYPED_API="$PWD/build/candidate-api.mjs" \
 
 This writes a checked API plus the assembled source and provenance in
 `build/typed/`. Keep source, API, runtime and host snapshots immutable during
-validation. Full self-reproduction has not been rerun for the current Phase21 release. The advanced
+validation. Full self-reproduction has not been rerun for the current Phase22 release. The advanced
 runner, separate from the checked release build, is:
 
 ```sh
@@ -218,15 +235,16 @@ canonical Base path when comparing output bytes across native and JS hosts.
 
 ## Internal boundaries and performance
 
-The [Phase21 controlled comparison](../implementation/phase21/group-range-release.md)
-checks identical final source in **10.955 s**, versus **11.006 s** for Phase20
-and **3.436 s** for pinned TypeScript: a **3.19×** remaining gap. The0.47% process
-and0.44% request differences are neutral, not a new speedup claim; two samples
-per image do not establish a general improvement. Fresh processes run serially
-on CPU0 with identical host/runtime/Base bytes and resource limits. Bend uses
-validated Base caches for loading; source-only prefixes replay checking to
-reconstruct memo/output state. TypeScript checks Base. Emission is excluded.
-This does not measure performance of generated user programs.
+The [Phase22 controlled comparison](../implementation/phase22/constructor-index-cost.md)
+checks the same frozen compiler source in **10.699 s**, versus **11.017 s** for
+Phase21 and **3.383 s** for TypeScript: a **3.16×** remaining gap. Process cost
+is2.88% lower and request cost3.22% lower in this two-sample screen; peak RSS rises
+2.52%. This is a modest measured change, not a statistical or universal speedup.
+Fresh processes run serially on CPU0 with the same Base/runtime and resource
+limits. Exactly one of35 host members changes: the reviewed ABI2 driver. This
+measures usable compiler bundles, not an isolated Bend-only change. Bend uses
+validated Base caches; TypeScript checks Base. Emission and generated-program
+performance are excluded.
 
 The [Phase17 lookup worker](../implementation/phase17/find-worker.md) measured a
 separate 6.55% reduction by eliminating per-miss dispatch allocations. The earlier
@@ -241,33 +259,36 @@ specialization keys preserve distinctions that a compact representation must
 not erase. The [architecture](../selfhost/docs/ARCHITECTURE.md) describes these
 contracts, source ranges, capability negotiation and Base cache version6.
 
-Frontend differences fall **459→2** across 2,996 observations, preserving all
-1,001 positive accepts, 482 validation refusals and 11 exact trust refusals.
-The remaining two observations concern the same do-block's error order.
-Independent controls expose further gaps; read the
-[conformance notes](../selfhost/CONFORMANCE.md) before interpreting the counts.
+Installed Phase22 reaches **2,996/2,996 exact frontend observations**, preserving
+all1,001 positive accepts,482 validation refusals and11 exact trust refusals.
+The broader parser suite is196/196 exact, closing57 differences. Independent
+public176, execution36 and integration198 selections also pass; their counts
+overlap. Read [conformance](../selfhost/CONFORMANCE.md) for raw negative-fixture
+verdicts, historical evidence and unsupported features.
 
-The compiler contains **15,900 physical /13,546 nonblank lines** in59 Bend
-modules, three more than Phase20, with no new function, type or semantic state.
-Phase19 removed the separate specialization traversal; Phase20 corrected grammar
-boundaries and Phase21 corrects existing source-origin producers. The guarded
-version5 profile, host and runtime are unchanged.
+The compiler contains **15,600 physical /13,305 nonblank lines** in60 Bend modules:
+300 fewer physical lines than Phase21. One contextual frontend replaces the old
+raw-parser/later-scope replay routes. Bytes rise3,305 and definitions rise31;
+laws fall81. This is an architectural consolidation and modest line reduction,
+not an across-the-board decrease or the historical50%/75% targets. The guarded
+version5 profile and runtime are unchanged; the host now requires load ABI2.
 
 Routine development uses checked B1 and 36 focused controls; reuse a frozen
 attempt for fixture-only edits. The long string stays first. The selection adds
 six exact upstream checks and four separate illegal-path witnesses with explicit
 refusal-at-parse oracles; full diagnostics remain under the strict corpus gate.
-The final Phase21 checked build plus these36 controls took35.17 seconds in one
-observed run; this is not a controlled loop-speed benchmark.
+Phase22 source11/12 checked builds plus these36 controls took roughly33–35
+seconds in their observed runs; this is not a controlled loop-speed benchmark.
 Keep full-source and broad frontend/backend gates for integration.
 
 The [architecture](../selfhost/docs/ARCHITECTURE.md) describes the first-order
-`KTerm`/`KDef` core and component responsibilities. The phase 1 changes retain
-those boundaries:
+`KTerm`/`KDef` core and component responsibilities. These boundaries distinguish
+the current contracts:
 
-- The host hands parsed source back to the Bend loader within one invocation.
-  `FSource` remains supported; `FParsedSource` carries an already parsed result.
-  This is an internal trusted handoff, not a persistent unchecked AST cache.
+- Phase22 reuses `FCompletedSource` results within one invocation; their terms
+  are already contextually completed. The host requires load ABI2 and its full entry-point
+  set; it does not fall back to the old raw route. This remains a trusted internal
+  handoff, separate from persistent Base-cache validation.
 - After specialization, `book_context` prepares one immutable exact-name index
   and binder bound. Annotation, layout validation and emission reuse that full
   context while independently selecting live definitions. Native compilation
@@ -296,18 +317,21 @@ supplied implementation. Historical conformance or fixed-point evidence applies
 to its recorded artifact hashes; it is never evidence for a later compiler merely
 because the source files have the same names.
 
-For a frontend loader/error refactor, the maintained cross-version boundary test
-compares complete ordered results, error precedence, cached parse payloads, seed
-selection and input immutability. Use genuinely checked named-field APIs and a
-fresh evidence directory, for example from `selfhost/`:
+For historical raw/parsed-loader refactors through ABI1, the cross-version
+boundary test compares complete ordered results, error precedence, cached parse
+payloads, seed selection and input immutability. With matching genuinely checked
+named-field APIs, its command remains, from `selfhost/`:
 
 ```sh
 node --stack-size=4096 tests/frontend/shared-operations.mjs \
   /absolute/baseline/api.mjs /absolute/candidate/api.mjs /absolute/new-results
 ```
 
-This test exposes existing checked private bodies for observation; it neither
-rewrites them nor establishes self-reproduction. S4's A02 declaration-source proof
+That test observes existing checked private bodies; it neither rewrites them nor
+establishes self-reproduction. Its raw API assumptions do not validate ABI2.
+Use the Phase22 report's completed-source, actual-host, request-history and
+execution controls for that boundary; retained older reports keep their original
+scope. S4's A02 declaration-source proof
 is a genuine checked B1→H→H fixed point. Historical S4 B02 has its own
 checked bootstrap and byte-identical B01 behavioral/performance evidence; A02's
 full-source fixed point is not relabeled as B02's.

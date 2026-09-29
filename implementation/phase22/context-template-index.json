@@ -1,0 +1,209 @@
+{
+  "kind": "phase22-template-count-index-ablation",
+  "complete": true,
+  "selected": false,
+  "source": "selfhost/build/phase22/context-source-15",
+  "attempt": "selfhost/build/phase22/context-build-14",
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-14/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-14/equality/api.mjs",
+    "sha256": "9a3b9e09095caca347c2aea7b653048df274c3ec693883ccf5938b7b0e439c5a"
+  },
+  "change": "Use the existing declaration index for the Ref call template-count projection only.",
+  "netDelta": {
+    "lines": 0,
+    "bytes": 42,
+    "definitions": 0,
+    "types": 0
+  },
+  "correctness": {
+    "artifactKind": "derived-b1",
+    "checkedBuild": true,
+    "maintained36StrictExact": true,
+    "primitiveControls": 8,
+    "independentPublicParentAndCandidateExact": 24,
+    "instrumentedProduction": [
+      {
+        "name": "template-self",
+        "counts": {
+          "calls": 854,
+          "refs": 822,
+          "templateRefs": 28,
+          "missingRefs": 3,
+          "mismatches": []
+        }
+      },
+      {
+        "name": "local-template",
+        "counts": {
+          "calls": 853,
+          "refs": 821,
+          "templateRefs": 27,
+          "missingRefs": 3,
+          "mismatches": []
+        }
+      },
+      {
+        "name": "imported-law-fill",
+        "counts": {
+          "calls": 0,
+          "refs": 0,
+          "templateRefs": 0,
+          "missingRefs": 0,
+          "mismatches": []
+        }
+      },
+      {
+        "name": "compiler-workload",
+        "counts": {
+          "calls": 15836,
+          "refs": 15798,
+          "templateRefs": 27,
+          "missingRefs": 472,
+          "mismatches": []
+        }
+      }
+    ]
+  },
+  "explicitCounterexample": {
+    "name": "negative-private-different-count-duplicates",
+    "pass": true,
+    "actual": {
+      "linear": {
+        "$": "KDef",
+        "name": "a",
+        "kind": "Def",
+        "arity": 1,
+        "templates": 1,
+        "typ": {
+          "$": "KTerm",
+          "tag": "Set",
+          "name": "",
+          "id": 0,
+          "quant": 1,
+          "kids": {
+            "$": "Nil"
+          },
+          "removed": {
+            "$": "Nil"
+          },
+          "originBegin": 0,
+          "originEnd": 0
+        },
+        "value": {
+          "$": "KTerm",
+          "tag": "Absent",
+          "name": "",
+          "id": 0,
+          "quant": 1,
+          "kids": {
+            "$": "Nil"
+          },
+          "removed": {
+            "$": "Nil"
+          },
+          "originBegin": 0,
+          "originEnd": 0
+        },
+        "ctors": {
+          "$": "Nil"
+        },
+        "native": false,
+        "unsafe": false
+      },
+      "indexed": {
+        "$": "KDef",
+        "name": "a",
+        "kind": "Def",
+        "arity": 2,
+        "templates": 2,
+        "typ": {
+          "$": "KTerm",
+          "tag": "Set",
+          "name": "",
+          "id": 0,
+          "quant": 1,
+          "kids": {
+            "$": "Nil"
+          },
+          "removed": {
+            "$": "Nil"
+          },
+          "originBegin": 0,
+          "originEnd": 0
+        },
+        "value": {
+          "$": "KTerm",
+          "tag": "Absent",
+          "name": "",
+          "id": 0,
+          "quant": 1,
+          "kids": {
+            "$": "Nil"
+          },
+          "removed": {
+            "$": "Nil"
+          },
+          "originBegin": 0,
+          "originEnd": 0
+        },
+        "ctors": {
+          "$": "Nil"
+        },
+        "native": false,
+        "unsafe": false
+      }
+    }
+  },
+  "scope": "Equality of dx under the actual contextual producer invariant, not full-definition or arbitrary prior/index equality. Instrumented probe has unchanged original API prefix but separately named modified identity. No performance or final promotion claim; constructor Bool-worker experiment is separate.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-template-index-report.py",
+      "sha256": "c49e921d6535dda4af52c5e2db94ce62592b24f3c433ee4478b03901912afb84"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase22/context-template-index.md",
+      "sha256": "424ac968ba54202e515c103562fe6f71ffc96e30a45f3e264625ed85a66cf0d0"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase22/context-template-index-proof.md",
+      "sha256": "b99a83154eb63af9693b141f8673a1ad9c6d7dad49dc3e88e46e4a18c875f7e0"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-template-index-proof.mjs",
+      "sha256": "efa7809dfa8f266afe19ed11a6c993398f8051f97db3d9bdc7e0bcaf765eefc7"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-template-index-prepare.py",
+      "sha256": "54ad5b3945ba8cd9ba4cf51021dafe1134a0d6fd348b6380815632f24eb32de8"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-15/manifest.json",
+      "sha256": "0575bfb2717e1eb85721abf5571a935c0a074b94750be0cc54af0f3b0415be4a"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-15/parent.json",
+      "sha256": "92ba743b53235168e1b96af99b0ba30d480fd4058f38922f7ba52d081be1f669"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-15/workflow-freeze.json",
+      "sha256": "331fe34d4de32a9129524dbb645687c06eed11ab44b78a8dc1759e70882c1f3b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-14/attempt.json",
+      "sha256": "90d0f788cbc3523958a14e20cd99db27618760d7446662c7834d1346bdf5d7b2"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-14/validation-001/report.json",
+      "sha256": "bfe880faeb7e6a537964c3ebbc9e1225f48f1b63a0d2c90ef5734455964f46b4"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-template-index-proof-01/report.json",
+      "sha256": "6779b8a67195ddaac117b4aa1a3b2f9d3555bcfad32fe5e0d7150596c5d6c709"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-template-screen-01.json",
+      "sha256": "b2224cb7b12fa6e5efa4f6b28206eaebcc0a6f8cd0ffba4255851986da9ce38e"
+    }
+  ]
+}

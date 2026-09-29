@@ -1,0 +1,159 @@
+{
+  "kind": "phase22-implicit-operator-checkpoint-independent-review",
+  "complete": true,
+  "pass": true,
+  "passMeaning": "Cause audit and frozen baseline acquisition closed; no corrected-production claim.",
+  "pin": "b2111cf43244e65f76ddc278ee695e669f720cbf",
+  "groups": {
+    "finalization26": {
+      "observations": 26,
+      "exact": 24,
+      "rawSelectedComplete": true,
+      "prospectiveOracleFailures": 0,
+      "strictDifferences": [
+        "context-finalization/header-lazy-before-later-syntax/check@check",
+        "context-finalization/header-lazy-before-later-syntax/parse@parse"
+      ]
+    },
+    "doHeader4": {
+      "observations": 4,
+      "exact": 0,
+      "rawSelectedComplete": false,
+      "prospectiveOracleFailures": 0,
+      "strictDifferences": [
+        "context-do-header/compact-empty/check@check",
+        "context-do-header/compact-empty/parse@parse",
+        "context-do-header/malformed-arg/check@check",
+        "context-do-header/malformed-arg/parse@parse"
+      ]
+    },
+    "signatureDemand2": {
+      "observations": 2,
+      "exact": 1,
+      "rawSelectedComplete": true,
+      "prospectiveOracleFailures": 0,
+      "strictDifferences": [
+        "context-header-demand/parameter-lazy@parse"
+      ]
+    }
+  },
+  "overlap": "SignatureDemand2 reuses the parameterized header parse fixture from Finalization26. Do not count32 as distinct programs.",
+  "cause": {
+    "implicitOperator": "Pin term_higher rejects Ref precisely when lastIndexOf(dot)==0. Source05 FCompleted bypasses f_scope_reference/f_operator_error and its common freshener has no corresponding refusal. Body parse_def explicitly higher/lower/higher materializes after flattening before advancing declarations.",
+    "relativeImport": "Source05 namespace predicate accepted every leading dot. Pin requires its last dot to be that first dot; ../lib/math.value is a canonical ordinary name and must not be prefixed by the operator type namespace.",
+    "demandBoundary": "Header term_higher forces immediate Ref/App and All domain, but leaves All codomain and Lam body deferred. App can apply a converted Lam and expose its body. A full eager header scan and a blanket skip of every Lam body both differ from the pin. Body finalization includes term_lower, which forces all binder children.",
+    "doHeader": "Pin consumes <, resolves the monad name, then parses arguments. Real loaded alias ambiguity must precede malformed arguments. Compact <> error points at the >, not after it."
+  },
+  "confirmedWitnesses": [
+    "Completed body1+2 followed by later top-level) reports operator error first.",
+    "Parameter-wrapped Unit+Unit header followed by later) reports top-level) first; installed parent has inherited two-lane discrepancy.",
+    "Zero-parameter Unit+Unit header followed by later) reports header operator first.",
+    "Legal 1+(2*3) inside outer U32 annotation stays accepted; do not refuse unresolved operators at every nested group.",
+    "Marked +x after astral comment retains negative-index diagnostic and two-character span on parent.",
+    "Relative imported M.value inside arithmetic annotation resolves normally on parent and pin.",
+    "Ambiguous Box.Id<)> and Box.Id<> report ambiguity at immediate post-< cursor, observing ) and > respectively."
+  ],
+  "limitations": [
+    "The erased-local-use fixture fails earlier literal inference in both pin and parent; it does not independently prove erased-binder usage or marker-span behavior.",
+    "Main full2996 triage is an explicitly labeled raw root triage, not a replacement for strict target-manifest audit.",
+    "No compiler source changes or builds were made by this owner; corrected candidate reruns remain pending."
+  ],
+  "jobsClosed": true,
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-finalization-report.py",
+      "sha256": "91382548819ff998591c55dad1dbf9d938e7a7b11f938977a6432d652ea1fd65",
+      "bytes": 6793
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-frontend-01-raw-triage.json",
+      "sha256": "e2897a4bf7ac69aba5f0d0e5dd9aea67220d1cfbe739676376e919d672e4f233",
+      "bytes": 31578
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8/bend2/bend.ts",
+      "sha256": "924197360cefc61a9314072e9cb1ef46a9266550eb527f535c36839a3b102bcb",
+      "bytes": 136690
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-05/project/src/front/contextual.bend",
+      "sha256": "20d22dee9f75ac30c3d26982ca1b9672969388b8e0633ee8fad3de1674245f97",
+      "bytes": 30487
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-05/project/src/front/families.bend",
+      "sha256": "717347c88e836f426a0e52d478bfc5fd909c63a99207f9a58351cded1bb74226",
+      "bytes": 12189
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-05/project/src/front/literals_arrays.bend",
+      "sha256": "ae8bb2bdcba515b43df63e9ffd3ee54a10b5136f4e6354013ad7efa21de2d25b",
+      "bytes": 11999
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-05/project/src/front/fresh_work.bend",
+      "sha256": "b3ed750b97e56e386d71d1468a17ecadc52bbb4aa1e40b51680fed6f66b2c30f",
+      "bytes": 7703
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-finalization-baseline-01/report.json",
+      "sha256": "8a1dfddd349135ffc1fb9d3fe20b3528338252a74f89e47fa73b9fc581e2ce82",
+      "bytes": 19435
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-finalization-baseline-01/selected/paired.json",
+      "sha256": "57792b968a70768999cd22b159e4193b6267315ecfe338752fc47491b6393821",
+      "bytes": 44179
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-finalization-inputs-01/plan.json",
+      "sha256": "be202266b80a0eeac5d329eaedc546792b5f1804c430b3b9b5ead14fdcdaa88e",
+      "bytes": 6015
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-finalization-inputs-01/selection.json",
+      "sha256": "3d8bdb23e5d7e21200fa43a4a1e30ec6f61e1b8c72640251c8c08004258fdeb4",
+      "bytes": 7508
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-header-baseline-01/report.json",
+      "sha256": "005df84a547124d0e5c600a45b9915d0cacc7ac018083a3bc016d82753c59164",
+      "bytes": 10084
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-header-baseline-01/selected/paired.json",
+      "sha256": "e306e750c1980ee04dc778e43016df8aaebfb0b125366f928eb8979dc6ea2810",
+      "bytes": 17120
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-header-inputs-01/plan.json",
+      "sha256": "063ad79384e76fe589cd1c6f59e384a60d860babd8376fcb3847ab5c3fa8cb24",
+      "bytes": 1445
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-do-header-inputs-01/selection.json",
+      "sha256": "7bf2197d808e1c11848f3c4d5ddb4bb4ba2ba35736eb959bff92069a5070d7df",
+      "bytes": 1216
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-header-demand-baseline-01/report.json",
+      "sha256": "5ba1a6bd44ee1a3c77dde074c06d68a4a30ee51d3e21719d8e2e433371a64882",
+      "bytes": 9923
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-header-demand-baseline-01/selected/paired.json",
+      "sha256": "e944416e3398504b154a19f3fc5548a94fa3f997f58f8d722c7b8699f8afc7d5",
+      "bytes": 11418
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-header-demand-inputs-01/plan.json",
+      "sha256": "0e7e69bfd0426e62e3571d4d73eb9ede76d2a4e5bfd6998a44e62c3853b3aa36",
+      "bytes": 944
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-header-demand-inputs-01/selection.json",
+      "sha256": "999b46ad1e7f18ac7aff8882e82ecc75d567af2faed3b35b8fed030e09678b99",
+      "bytes": 642
+    }
+  ]
+}

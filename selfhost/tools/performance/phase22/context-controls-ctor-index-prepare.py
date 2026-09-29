@@ -1,0 +1,24 @@
+#!/usr/bin/env python3
+from pathlib import Path
+import json,hashlib
+R=Path.cwd();out=R/'selfhost/build/phase22/context-controls-ctor-index-inputs-01';out.mkdir()
+def ident(p):
+ p=Path(p).resolve();b=p.read_bytes();return {'file':str(p),'sha256':hashlib.sha256(b).hexdigest(),'bytes':len(b)}
+old=R/'selfhost/tools/performance/phase22/context-controls-ctor-cases.json';prior=json.loads(old.read_text())['cases'];initial=prior[:18]+[next(x for x in prior if x['name']==n) for n in ['nested-history-no-memo','deep-hit-512','deep-miss-512']]
+initial += [dict(next(x for x in prior if x['name']=='wide-miss-100000'),name='wide-index-miss-4096',width=4096)]
+def d(i,name,kind='Ctr',children=None,arity=0):return {'id':i,'name':name,'kind':kind,'children':children or [],'arity':arity}
+initial += [
+ {'name':'full-hash-collision-both-present','forest':[d('collision-a','costarring'),d('collision-b','liquid')],'queries':[{'query':'costarring','expected':'collision-a'},{'query':'liquid','expected':'collision-b'},{'query':'absent','expected':None}],'collision':['costarring','liquid']},
+ {'name':'generic-cache-container-descendant','forest':[d('cache','cache','BookCache',[d('node','node','IndexNode',[d('nested','X')])]),d('later','X')],'query':'X','expected':'nested'},
+ {'name':'duplicate-different-complete-payload','forest':[d('first','X',arity=3),d('later','X',arity=1)],'query':'X','expected':'first'},
+ {'name':'constructor-head-before-own-grandchildren','forest':[d('head','X','Ctr',[d('ordinary','container','Def',[d('deep','X')])]),d('last','X')],'query':'X','expected':'head'}]
+publications=[
+ {'name':'empty-then-completed-adt','forest':[d('old','Old')],'ns':'','aliases':[],'declarations':[d('empty','T','ADT'),d('ordinary','f','Def'),d('complete','T','ADT',[d('new','New',arity=2),d('old-replacement','Old',arity=1)])],'queries':['Old','New','T','f','missing'],'reuse':[True,True,False]},
+ {'name':'ordinary-same-name-preserves-ctor','forest':[d('old','X',arity=2)],'ns':'','aliases':[],'declarations':[d('ordinary','X','Def')],'queries':['X','missing'],'reuse':[True]},
+ {'name':'new-header-first-dfs-wins','forest':[d('old','X',arity=3)],'ns':'','aliases':[],'declarations':[d('adt','T','ADT',[d('first-new','X',arity=1),d('second-new','X',arity=2)])],'queries':['X','missing'],'reuse':[False]},
+ {'name':'qualified-constructor-publication','forest':[d('global','C')],'ns':'Module','aliases':[],'declarations':[d('partial','T','ADT'),d('completed','T','ADT',[d('local','C',arity=2)])],'queries':['C','Module.C','Module.T','missing'],'reuse':[True,False]},
+ {'name':'aliased-constructor-publication','forest':[d('old','Package.C',arity=1)],'ns':'Module','aliases':[{'from':'L','to':'Package'}],'declarations':[d('adt','T','ADT',[d('alias','L.C',arity=2),d('local','D')])],'queries':['Package.C','L.C','Module.D','missing'],'reuse':[False]},
+ {'name':'generic-increment-retains-nested-constructors','forest':[d('old','X',arity=3)],'ns':'','aliases':[],'declarations':[d('container','Holder','Def',[d('new','X',arity=1)])],'queries':['X','Holder','missing'],'reuse':[False]}]
+patterns=[{'name':'missing-braced','tag':'Ctr','nameText':'Unknown','fields':0,'forest':[],'expected':'Some'}, {'name':'missing-bare-is-binder','tag':'Var','nameText':'Unknown','fields':0,'forest':[],'expected':'None'}, {'name':'nullary-braced','tag':'Ctr','nameText':'X','fields':0,'forest':[d('x','X')],'expected':'None'}, {'name':'nullary-bare-refused','tag':'Var','nameText':'X','fields':0,'forest':[d('x','X')],'expected':'Some'}, {'name':'arity-correct','tag':'Ctr','nameText':'X','fields':2,'forest':[d('x','X',arity=2)],'expected':'None'}, {'name':'arity-short','tag':'Ctr','nameText':'X','fields':1,'forest':[d('x','X',arity=2)],'expected':'Some'}, {'name':'arity-extra','tag':'Ctr','nameText':'X','fields':2,'forest':[d('x','X',arity=1)],'expected':'Some'}, {'name':'duplicate-arity-first','tag':'Ctr','nameText':'X','fields':2,'forest':[d('x','X',arity=2),d('y','X',arity=1)],'expected':'None'}]
+cases={'kind':'phase22-constructor-index-frozen-cases','initial':initial,'publication':publications,'patterns':patterns,'demand':['construction-does-not-read-term-payloads','indexed-lookup-does-not-rewalk-original-list-cells']}
+(out/'cases.json').write_text(json.dumps(cases,indent=2)+'\n');plan={'kind':'phase22-ctor-index-direct-inputs','complete':True,'scope':'Actual compiled index factory/lookup/declaration publication compared with recursive f_ctor_lookup. Initial construction traverses immutable input; no per-query getter-equivalence claim.','counts':{k:len(v) for k,v in cases.items() if isinstance(v,list)},'inputs':[ident(__file__),ident(old),ident(R/'implementation/phase22/context-controls-constructor-index-plan.md')]};(out/'plan.json').write_text(json.dumps(plan,indent=2)+'\n');print(json.dumps(plan['counts']))

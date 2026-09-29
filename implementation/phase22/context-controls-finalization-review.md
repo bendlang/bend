@@ -1,0 +1,11 @@
+# Implicit operator and parser checkpoint review
+
+The unresolved-operator regressions have a concrete missing owner. Pinned `term_higher` rejects a Ref exactly when its final dot is the initial dot. The new completed roots bypass the old `f_scope_reference` operator check, and the freshener does not replace it. This check belongs at materialization after applicable namespace annotations, not at every nested group: an outer annotation may still resolve a nested operator.
+
+Header and body demand differ. `parse_def` materializes a flattened body through higher/lower/higher before parsing a later declaration. A header only enters higher form, which defers All codomains and Lam bodies. Applied lambdas can be forced by higher's App branch. The frozen pair proves the practical difference: zero-parameter `Unit + Unit` fails at the header operator; the same return type behind a parameter remains deferred and a later top-level `)` wins. A full eager header scan would introduce a new error-order discrepancy. The installed parent already has that discrepancy in the parameterized witness, and it is preserved.
+
+The relative-import regression uses the same predicate distinction. A name such as `../lib/math.value` begins with a dot but its last dot is later; the pin leaves it unchanged. The source05 namespace predicate incorrectly prefixes it as an implicit operator. An independent safe relative-import program avoids the unrelated unsafe-proof status of the reused upstream witness.
+
+Do-header alias lookup is another distinct checkpoint: after consuming `<`, resolve the monad before parsing arguments. Two genuinely loaded declarations make `Box.Id` ambiguous. The pin observes `)` in the malformed-argument neighbor and `>` in compact `<>`, both immediately after `<`.
+
+All new baseline acquisitions are closed: finalization26 has 24 exact observations; do-header4 has none; signature-demand2 has one. No prospective oracle failures occurred. Signature-demand2 reuses one parse fixture from finalization26. The marked astral-comment control preserves the written `+x` range; the erased-local control fails earlier literal inference and is not claimed as an erased-use/span proof. Exact corrected-candidate reruns remain separate.

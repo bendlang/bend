@@ -1,0 +1,107 @@
+{
+  "kind": "phase22-declaration-header-optimization-screen",
+  "complete": true,
+  "pass": true,
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-10/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-10/equality/api.mjs",
+    "sha256": "cdbfc5b81f334460e76949c8422aa624c66dacdcea1d01a176f0614447bde219"
+  },
+  "observations": 58,
+  "exact": 58,
+  "parts": [
+    {
+      "name": "declarations",
+      "observations": 26,
+      "exactDifferences": 0,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-header-screen-01-declarations/report.json",
+        "sha256": "6bcfd773fb56b8fc76646b6a6c33db44727d47f990e245b6ef2d17046f46870f",
+        "bytes": 15746
+      }
+    },
+    {
+      "name": "alias",
+      "observations": 4,
+      "exactDifferences": 0,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-header-screen-01-alias/report.json",
+        "sha256": "919a4b0ffae71b0cc23a1b6f7dcce4fa12294283f90c3443b0006cb327ee8ed4",
+        "bytes": 11256
+      }
+    },
+    {
+      "name": "header-demand",
+      "observations": 2,
+      "exactDifferences": 0,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-header-screen-01-header-demand/report.json",
+        "sha256": "3cd71ff064ffba26b6a701685b80be1fdf6632feb995ba3dca10b6c3d069d8cd",
+        "bytes": 11250
+      }
+    },
+    {
+      "name": "finalization",
+      "observations": 26,
+      "exactDifferences": 0,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-header-screen-01-finalization/report.json",
+        "sha256": "0f7f4f9257635e058b63109d0c10410feb41095a6dab0687281f6ce5b8055b22",
+        "bytes": 20852
+      }
+    }
+  ],
+  "scope": "Unchanged declaration/import26, alias4, header-demand2 and finalization26. Exact references and all-exact baseline outcomes preserved. The26 baseline rows are explicitly reused from acquired integration198; no fabricated baseline run or changed fixture/oracle. Correctness screen only; full integration, timing and selection remain separate.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-header-close.py",
+      "sha256": "12be6d3a104ce625bd950a2b0aea0d4422ac5a05d23bcff82c0caed4a61e0fbb",
+      "bytes": 2447
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-header-screen-01/report.json",
+      "sha256": "7a486230b61e773bf21e2b52cff06120bff20df47ae250a8c199735507606c2c",
+      "bytes": 7602
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-header-screen-01-declarations/report.json",
+      "sha256": "6bcfd773fb56b8fc76646b6a6c33db44727d47f990e245b6ef2d17046f46870f",
+      "bytes": 15746
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-header-screen-01-declarations/selected/paired.json",
+      "sha256": "f0c69f6c6e56c078e513833f294741ad04dd88ea5402247e7f3fd9eedcef3646",
+      "bytes": 36993
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-header-screen-01-alias/report.json",
+      "sha256": "919a4b0ffae71b0cc23a1b6f7dcce4fa12294283f90c3443b0006cb327ee8ed4",
+      "bytes": 11256
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-header-screen-01-alias/selected/paired.json",
+      "sha256": "2cf048c7fcc9574d5c1d147095e2db408a9b63b0266ca7ad1f989481a904bf34",
+      "bytes": 12337
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-header-screen-01-header-demand/report.json",
+      "sha256": "3cd71ff064ffba26b6a701685b80be1fdf6632feb995ba3dca10b6c3d069d8cd",
+      "bytes": 11250
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-header-screen-01-header-demand/selected/paired.json",
+      "sha256": "08d4840069121e9d1c66c6e6c7a5897561b96e4772214b64d4df4f78cca9b95a",
+      "bytes": 9801
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-header-screen-01-finalization/report.json",
+      "sha256": "0f7f4f9257635e058b63109d0c10410feb41095a6dab0687281f6ce5b8055b22",
+      "bytes": 20852
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-header-screen-01-finalization/selected/paired.json",
+      "sha256": "22edc5d745aad4f1f5b021b210a8eed9ae1f0283de0b5ef1cd970fbac0cce37c",
+      "bytes": 40875
+    }
+  ]
+}

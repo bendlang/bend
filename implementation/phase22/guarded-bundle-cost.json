@@ -1,0 +1,45 @@
+{
+  "kind": "phase22-guarded-bundle-cost-review",
+  "complete": true,
+  "measurementHealthy": true,
+  "pass": false,
+  "speedGateMaximumRegression": 0.03,
+  "speedGatePassed": false,
+  "promotionBlocked": true,
+  "rawReport": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/bundle-matrix-02/report.json",
+    "sha256": "a1cf6ac47a2a3e71ebbff92d1dcc2ac3e0f39ecc4ca1f6aa52ea615efbe7084e"
+  },
+  "statistics": {
+    "typescript": {
+      "samples": 2,
+      "meanRequestMs": 2321.9167669999997,
+      "meanProcessWallMs": 3382.118641500001,
+      "maxRssKiB": 477588
+    },
+    "baseline": {
+      "samples": 2,
+      "meanRequestMs": 9991.4054735,
+      "meanProcessWallMs": 11092.3722865,
+      "maxRssKiB": 653648
+    },
+    "candidate": {
+      "samples": 2,
+      "meanRequestMs": 10683.811891499998,
+      "meanProcessWallMs": 11810.739596500001,
+      "maxRssKiB": 708252
+    }
+  },
+  "ratios": {
+    "baselineToTs": 3.2797111699134334,
+    "candidateToTs": 3.4921127400964944,
+    "baselineToCandidate": 0.9391767717736421,
+    "candidateProcessReduction": -0.06476227910906784,
+    "candidateRequestReduction": -0.06930020204229037
+  },
+  "rssIncrease": 0.08353731672092635,
+  "ordinaryOutputsExact": true,
+  "hostProvenance": "Only excluded field after exact identity validation; all values retained.",
+  "scope": "Fresh CPU0 TS/B/C/C/B/TS, same Phase21 source,35hostmembers with one reviewed driver delta. Two samples/image; usable bundle cost, no Bend-only or complete edit-loop claim.",
+  "conclusion": "The guarded union remains6.48%slower than installed;3%speed gate fails. Preserve this result; next candidate is separate."
+}

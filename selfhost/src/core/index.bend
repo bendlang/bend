@@ -123,7 +123,15 @@ def index_remove(
     case Nil{}:
       Nil{}
     case Con{h, rest}:
-      kc(List<&2, KDef>, String.eq(dn(h), name), u => index_remove(rest, name), u => Con{h, index_remove(rest, name)})
+      index_remove_step(h, rest, name, String.eq(dn(h), name))
+
+@unsafe
+def index_remove_step(
+  +h: KDef, +rest: List<&2, KDef>, +name: String, +same: Bool,
+) -> List<&2, KDef>:
+  match same:
+    case True{}: index_remove(rest, name)
+    case False{}: Con{h, index_remove(rest, name)}
 
 @unsafe
 def index_tip(

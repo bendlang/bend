@@ -1,0 +1,107 @@
+{
+  "kind": "phase22-independent-public-and-history-closure",
+  "complete": true,
+  "pass": true,
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-09/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-09/equality/api.mjs",
+    "sha256": "eac3b89d561287b9a51b411ab6353ea275e90c571de7d7c8e733c99eb0755a94"
+  },
+  "source10Host": {
+    "driverSha256": "03798aeb710bd7707b68e624f045518d5fb6dd289209c5ed748c990863cf9e42",
+    "adapterSha256": "0ad9c892b45c2fb2a111817e6bea2f232c20f1197f495801a2fb4499498ba3d2"
+  },
+  "publicObservations": 176,
+  "publicExact": 176,
+  "executionObservations": 36,
+  "executionExact": 36,
+  "historyRequests": 226,
+  "freshChecks": 2,
+  "historyPolicy": "Every complete result field exact except actual verified driver SHA and the one prospectively frozen history60/index40/parse monad diagnostic transition to the independently frozen pin.",
+  "intentionalTransitions": [
+    {
+      "history": "history-60",
+      "index": 40,
+      "id": "check/monad_do_destructure.bend",
+      "lane": "parse",
+      "before": "SOME PROOFS FAIL\nError:\n- expected : a do-block heading this return\n- observed : 'return'\nLocation:\n12 |     (a, b) = p\n13>|     return (a + b : U32)\n   |     ^^^^^^\n14 | ",
+      "after": "SOME PROOFS FAIL\nError:\n- expected : a pattern (a binder or a constructor)\n- observed : Result.bind(&1, &1, U32, Pair(U32, U32), U32, Done{(1, 2)}, p => {(a, b) : Result<&1, &1, U32, U32>})\nLocation:\n10 |   do Result<U32, U32>:\n11>|     p : U32 & U32 <- Done{(1, 2)}\n   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n12 |     (a, b) = p",
+      "pinnedReference": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-production-main-05/selected/reference.json",
+        "sha256": "ab7267994af1e2e77cf976cbd607c500bdb51da1f84127d08a9e2255dbae9df9",
+        "bytes": 2029109
+      }
+    }
+  ],
+  "historicalMarkedSubset": {
+    "observations": 114,
+    "exact": 114,
+    "formerDifferencesClosed": 43,
+    "newStandaloneRun": false
+  },
+  "overlaps": "Header-demand repeats one finalization26 parse observation; nine program check observations overlap public controls; marked114 is within the independently owned196 vector. Counts must not be added as distinct cases.",
+  "hostDeltaReview": "Only per-import --checkup pre-read/catch checkpoint changes; matches pinned main.ts325\u2013350. Normal inspect/worker/cache paths unchanged.",
+  "source09to10": [
+    {
+      "relative": "tools/typed-driver.mjs",
+      "before": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-08/snapshot/tools/typed-driver.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-08/snapshot/tools/typed-driver.mjs",
+        "sha256": "56dc0d9c44a18be5727f3c90762db8c8b7d762a8be39dc0de5152019f241d7e9"
+      },
+      "after": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-09/snapshot/tools/typed-driver.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-09/snapshot/tools/typed-driver.mjs",
+        "sha256": "03798aeb710bd7707b68e624f045518d5fb6dd289209c5ed748c990863cf9e42"
+      }
+    }
+  ],
+  "rawFailuresPreserved": "Prospective main/feature fixture-assumption statuses, source05 regressions, source06 computed-pattern regressions and history01 strict parent comparison failure remain unchanged. Original source09 history binding was never consumed.",
+  "identityAudit": {
+    "pass": true,
+    "uniqueConsumedInputs": 2715
+  },
+  "scope": "Independent public/parser/checker behavior, ordinary check/interpreter/JS/native programs, and exact request-history state controls. No promotion, performance, hardware/GPU, or retired raw parser API compatibility claim. Integration198 final-host rerun is a separately pending task.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-controls-final-close.py",
+      "sha256": "8c71dd1a7071a1f4ea1424e253f1e994743daf60b2cc22d8f5d48a4e82a9ff1b",
+      "bytes": 5187
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-production-05.json",
+      "sha256": "55ddaa792fc5d43c5541604c7e0050e467917f1925a4e3a0fe73e0ba3c206b24",
+      "bytes": 19306
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-materialization-05.json",
+      "sha256": "2e9a7386b652ab23f1aa4ccb15a148b4ce9c01016d3335b80c6a7fb47f038aac",
+      "bytes": 5815
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-history-02/report.json",
+      "sha256": "294ee037f2f0253a1547211e01456e1052e2ddd2c10b985962e034129c627851",
+      "bytes": 1845247
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-history-inputs-02/plan.json",
+      "sha256": "4a29219120066781f91cf5e3c7c2ae78a507acef64c80ed8ae8af5a75b7bdd52",
+      "bytes": 4023
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-history-inputs-03/plan.json",
+      "sha256": "46e1358b82ca2e5f6a3db63f95b2a71e9aae8d0b37e32ace06544e771b0ccb22",
+      "bytes": 3231
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-controls-marked-subset.json",
+      "sha256": "ca11285e7ff2213b89a643d6fc2585d1f024bc965ce9b0caf771fd59c9775ef1",
+      "bytes": 18556
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-controls-history-01/report.json",
+      "sha256": "2840dd9c8748ae32491f0ed69aa326e6819072d44ac0ed7ea02d71d55a5a91ad",
+      "bytes": 1772988
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "kind": "phase22-loader-host-abi2-handoff",
+  "complete": true,
+  "pass": true,
+  "scope": "Host preparation and mocked protocol only; no Bend build, compiler conformance, cost, or promotion claim.",
+  "source": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/loader-host-source-01/manifest.json",
+    "sha256": "5b72234c8db9c71d00c4f83ebe097308566a1ab45851cd866c991026b23fda40",
+    "bytes": 166087
+  },
+  "patch": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/loader-host-source-01/host.patch",
+    "sha256": "2b21a518585ef3086abc617068134485a1bad5bd4f309e6bf63626375900fd48",
+    "bytes": 13025
+  },
+  "host": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/loader-host-source-01/project/tools/typed-driver.mjs",
+    "sha256": "40a2f23e46922fdafba34c81a6a1df3f3c905e0e0443c846407abe67820949db",
+    "bytes": 48032
+  },
+  "controls": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/loader-host-controls-01/report.json",
+    "sha256": "5341819f7248440615cfc97334de042a2039e7d6266bd30d7309944042849b6e",
+    "bytes": 7617
+  },
+  "rawResult": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/loader-host-controls-01/result.json",
+    "sha256": "6f055873809191f6bfc6a025b3e748b87991a1674cc7b7cedbee3b480c6500fc",
+    "bytes": 5399
+  },
+  "members": 214,
+  "hostMembers": 35,
+  "changes": [
+    "tools/typed-driver.mjs"
+  ],
+  "delta": {
+    "physicalLines": 0,
+    "bytes": -991
+  },
+  "mockControls": 24,
+  "compilerBuilt": false,
+  "installed": false,
+  "knownLimits": [
+    "Parent Bend still advertises ABI1; integration requires agreed ABI2 factory/tag migration.",
+    "Mocks use named fields; real generated and self-emitted runtime adaptation remains an integration gate.",
+    "Mock Base cache beneath private project/build is mock evidence, not a validated Bend compiler cache."
+  ],
+  "reconstruction": "Copy the 214 parent snapshot members from manifest into a fresh private project, then run frozen loader-host-prepare.py; preparer does not copy parent itself.",
+  "contract": {
+    "loaderAbi": 2,
+    "completedFactory": "f_source_completed(name,path,text,parsed)",
+    "completedTag": "FCompletedSource",
+    "completedFields": [
+      "name",
+      "path",
+      "text",
+      "parsed"
+    ],
+    "oldLoaderVersionsRejected": true
+  }
+}

@@ -1,0 +1,739 @@
+{
+  "kind": "phase22-frozen-internal-constructor-controls",
+  "cases": [
+    {
+      "name": "empty-query-preserved",
+      "query": "lost",
+      "forest": [],
+      "expected": null
+    },
+    {
+      "name": "head-hit",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "X",
+          "kind": "Ctr",
+          "children": []
+        },
+        {
+          "id": "b",
+          "name": "X",
+          "kind": "Ctr",
+          "children": []
+        }
+      ],
+      "expected": "a"
+    },
+    {
+      "name": "middle-hit",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "A",
+          "kind": "Ctr",
+          "children": []
+        },
+        {
+          "id": "b",
+          "name": "X",
+          "kind": "Ctr",
+          "children": []
+        },
+        {
+          "id": "c",
+          "name": "X",
+          "kind": "Ctr",
+          "children": []
+        }
+      ],
+      "expected": "b"
+    },
+    {
+      "name": "last-hit",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "A",
+          "kind": "Ctr",
+          "children": []
+        },
+        {
+          "id": "b",
+          "name": "B",
+          "kind": "Ctr",
+          "children": []
+        },
+        {
+          "id": "c",
+          "name": "X",
+          "kind": "Ctr",
+          "children": []
+        }
+      ],
+      "expected": "c"
+    },
+    {
+      "name": "whole-miss",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "A",
+          "kind": "Ctr",
+          "children": []
+        },
+        {
+          "id": "b",
+          "name": "B",
+          "kind": "Ctr",
+          "children": []
+        }
+      ],
+      "expected": null
+    },
+    {
+      "name": "ordinary-same-name-ignored",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "X",
+          "kind": "Def",
+          "children": []
+        },
+        {
+          "id": "b",
+          "name": "X",
+          "kind": "Ctr",
+          "children": []
+        }
+      ],
+      "expected": "b"
+    },
+    {
+      "name": "ordinary-child-before-sibling",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "X",
+          "kind": "Def",
+          "children": [
+            {
+              "id": "child",
+              "name": "X",
+              "kind": "Ctr",
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "name": "X",
+          "kind": "Ctr",
+          "children": []
+        }
+      ],
+      "expected": "child"
+    },
+    {
+      "name": "child-miss-then-sibling",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "A",
+          "kind": "Def",
+          "children": [
+            {
+              "id": "child",
+              "name": "B",
+              "kind": "Ctr",
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "name": "X",
+          "kind": "Ctr",
+          "children": []
+        }
+      ],
+      "expected": "b"
+    },
+    {
+      "name": "grandchild-preorder",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "A",
+          "kind": "ADT",
+          "children": [
+            {
+              "id": "b",
+              "name": "B",
+              "kind": "Family",
+              "children": [
+                {
+                  "id": "deep",
+                  "name": "X",
+                  "kind": "Ctr",
+                  "children": []
+                }
+              ]
+            },
+            {
+              "id": "c",
+              "name": "X",
+              "kind": "Ctr",
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "last",
+          "name": "X",
+          "kind": "Ctr",
+          "children": []
+        }
+      ],
+      "expected": "deep"
+    },
+    {
+      "name": "parent-constructor-before-own-child",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "X",
+          "kind": "Ctr",
+          "children": [
+            {
+              "id": "b",
+              "name": "X",
+              "kind": "Ctr",
+              "children": []
+            }
+          ]
+        }
+      ],
+      "expected": "a"
+    },
+    {
+      "name": "duplicate-sibling-reference-first",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "X",
+          "kind": "Ctr",
+          "children": []
+        },
+        {
+          "id": "b",
+          "name": "X",
+          "kind": "Ctr",
+          "children": []
+        }
+      ],
+      "expected": "a"
+    },
+    {
+      "name": "duplicate-child-reference-first",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "A",
+          "kind": "ADT",
+          "children": [
+            {
+              "id": "b",
+              "name": "X",
+              "kind": "Ctr",
+              "children": []
+            },
+            {
+              "id": "c",
+              "name": "X",
+              "kind": "Ctr",
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "last",
+          "name": "X",
+          "kind": "Ctr",
+          "children": []
+        }
+      ],
+      "expected": "b"
+    },
+    {
+      "name": "all-nonconstructors-ignored",
+      "query": "X",
+      "forest": [
+        {
+          "id": "0",
+          "name": "X",
+          "kind": "Def",
+          "children": []
+        },
+        {
+          "id": "1",
+          "name": "X",
+          "kind": "Law",
+          "children": []
+        },
+        {
+          "id": "2",
+          "name": "X",
+          "kind": "ADT",
+          "children": []
+        },
+        {
+          "id": "3",
+          "name": "X",
+          "kind": "Family",
+          "children": []
+        },
+        {
+          "id": "4",
+          "name": "X",
+          "kind": "BookCache",
+          "children": []
+        },
+        {
+          "id": "5",
+          "name": "X",
+          "kind": "Foreign",
+          "children": []
+        },
+        {
+          "id": "6",
+          "name": "X",
+          "kind": "Missing",
+          "children": []
+        }
+      ],
+      "expected": null
+    },
+    {
+      "name": "children-of-nonconstructors-searched",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "X",
+          "kind": "Law",
+          "children": [
+            {
+              "id": "b",
+              "name": "X",
+              "kind": "Ctr",
+              "children": []
+            }
+          ]
+        }
+      ],
+      "expected": "b"
+    },
+    {
+      "name": "empty-written-name",
+      "query": "",
+      "forest": [
+        {
+          "id": "a",
+          "name": "",
+          "kind": "Ctr",
+          "children": []
+        },
+        {
+          "id": "b",
+          "name": "X",
+          "kind": "Ctr",
+          "children": []
+        }
+      ],
+      "expected": "a"
+    },
+    {
+      "name": "common-prefix-exact",
+      "query": "long.prefix.more",
+      "forest": [
+        {
+          "id": "a",
+          "name": "long.prefix",
+          "kind": "Ctr",
+          "children": []
+        },
+        {
+          "id": "b",
+          "name": "long.prefix.more",
+          "kind": "Ctr",
+          "children": []
+        }
+      ],
+      "expected": "b"
+    },
+    {
+      "name": "astral-name-exact",
+      "query": "x\ud83d\ude00y",
+      "forest": [
+        {
+          "id": "a",
+          "name": "x\ud83d\ude03y",
+          "kind": "Ctr",
+          "children": []
+        },
+        {
+          "id": "b",
+          "name": "x\ud83d\ude00y",
+          "kind": "Ctr",
+          "children": []
+        }
+      ],
+      "expected": "b"
+    },
+    {
+      "name": "combining-not-normalized",
+      "query": "e\u0301",
+      "forest": [
+        {
+          "id": "a",
+          "name": "\u00e9",
+          "kind": "Ctr",
+          "children": []
+        },
+        {
+          "id": "b",
+          "name": "e\u0301",
+          "kind": "Ctr",
+          "children": []
+        }
+      ],
+      "expected": "b"
+    },
+    {
+      "name": "hit-skips-children-and-tail-tag",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "X",
+          "kind": "Ctr",
+          "children": [],
+          "poison": [
+            "ctors"
+          ]
+        }
+      ],
+      "expected": "a",
+      "tailPoison": true
+    },
+    {
+      "name": "miss-demands-tail-tag",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "A",
+          "kind": "Ctr",
+          "children": []
+        }
+      ],
+      "expected": null,
+      "expectedThrow": "root.end.$",
+      "tailPoison": true
+    },
+    {
+      "name": "kind-poison-before-name",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "X",
+          "kind": "Ctr",
+          "children": [],
+          "poison": [
+            "kind",
+            "name",
+            "ctors"
+          ]
+        }
+      ],
+      "expected": null,
+      "expectedThrow": "a.kind"
+    },
+    {
+      "name": "nonconstructor-still-demands-name",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "X",
+          "kind": "Def",
+          "children": [],
+          "poison": [
+            "name",
+            "ctors"
+          ]
+        }
+      ],
+      "expected": null,
+      "expectedThrow": "a.name"
+    },
+    {
+      "name": "name-before-children-poison",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "A",
+          "kind": "Ctr",
+          "children": [],
+          "poison": [
+            "name",
+            "ctors"
+          ]
+        }
+      ],
+      "expected": null,
+      "expectedThrow": "a.name"
+    },
+    {
+      "name": "child-poison-before-sibling",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "A",
+          "kind": "Ctr",
+          "children": [
+            {
+              "id": "child",
+              "name": "X",
+              "kind": "Ctr",
+              "children": [],
+              "poison": [
+                "kind"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "last",
+          "name": "X",
+          "kind": "Ctr",
+          "children": [],
+          "poison": [
+            "kind"
+          ]
+        }
+      ],
+      "expected": null,
+      "expectedThrow": "child.kind"
+    },
+    {
+      "name": "children-poison-before-sibling",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "A",
+          "kind": "Ctr",
+          "children": [],
+          "poison": [
+            "ctors"
+          ]
+        },
+        {
+          "id": "last",
+          "name": "X",
+          "kind": "Ctr",
+          "children": [],
+          "poison": [
+            "kind"
+          ]
+        }
+      ],
+      "expected": null,
+      "expectedThrow": "a.ctors"
+    },
+    {
+      "name": "child-hit-skips-sibling-name",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "A",
+          "kind": "Ctr",
+          "children": [
+            {
+              "id": "child",
+              "name": "X",
+              "kind": "Ctr",
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "last",
+          "name": "X",
+          "kind": "Ctr",
+          "children": [],
+          "poison": [
+            "name"
+          ]
+        }
+      ],
+      "expected": "child"
+    },
+    {
+      "name": "unused-payload-poison-hit",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "X",
+          "kind": "Ctr",
+          "children": [],
+          "poisonPayload": true
+        }
+      ],
+      "expected": "a"
+    },
+    {
+      "name": "unused-payload-poison-miss",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "A",
+          "kind": "Ctr",
+          "children": [],
+          "poisonPayload": true
+        }
+      ],
+      "expected": null
+    },
+    {
+      "name": "nonempty-child-tag-second-read-poison",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "A",
+          "kind": "ADT",
+          "children": [
+            {
+              "id": "child",
+              "name": "X",
+              "kind": "Ctr",
+              "children": []
+            }
+          ],
+          "childrenTagAfter": 1
+        }
+      ],
+      "expected": "child"
+    },
+    {
+      "name": "nonempty-child-list-access-order",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "A",
+          "kind": "ADT",
+          "children": [
+            {
+              "id": "child",
+              "name": "X",
+              "kind": "Ctr",
+              "children": []
+            }
+          ]
+        }
+      ],
+      "expected": "child"
+    },
+    {
+      "name": "nested-history-no-memo",
+      "query": "X",
+      "forest": [
+        {
+          "id": "a",
+          "name": "A",
+          "kind": "ADT",
+          "children": [
+            {
+              "id": "child",
+              "name": "X",
+              "kind": "Ctr",
+              "children": []
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "name": "B",
+          "kind": "Ctr",
+          "children": []
+        }
+      ],
+      "expected": null,
+      "queries": [
+        {
+          "query": "absent",
+          "expected": null
+        },
+        {
+          "query": "X",
+          "expected": "child"
+        },
+        {
+          "query": "B",
+          "expected": "b"
+        },
+        {
+          "query": "X",
+          "expected": "child"
+        },
+        {
+          "query": "absent",
+          "expected": null
+        }
+      ]
+    },
+    {
+      "name": "wide-miss-100000",
+      "query": "X",
+      "forest": [],
+      "expected": null,
+      "width": 100000
+    },
+    {
+      "name": "deep-hit-512",
+      "query": "X",
+      "forest": [],
+      "expected": null,
+      "depth": 512,
+      "expectedDeep": true
+    },
+    {
+      "name": "deep-miss-512",
+      "query": "absent",
+      "forest": [],
+      "expected": null,
+      "depth": 512
+    }
+  ]
+}

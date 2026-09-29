@@ -1,0 +1,54 @@
+{
+  "kind": "phase22-direct-completion-beta-review",
+  "complete": true,
+  "pass": false,
+  "controls": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/completion-beta-controls-01/report.json",
+    "sha256": "6f5726121d0a1afad8a0d9937ffe553cff95c3842f026b8e2db58eee8ea3b6d6",
+    "bytes": 38099
+  },
+  "checkedApi": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-05/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-build-05/equality/api.mjs",
+    "sha256": "341ae8d3dc49c828bf4f452b8359217cff1ab577d051b89c624aacbca1a9c116"
+  },
+  "privateProbe": {
+    "productionPrefixBytes": 1002322,
+    "prefixUnchanged": true,
+    "probe": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/completion-beta-controls-01/private-extension.mjs",
+      "sha256": "688969274f822e823f1b3f5582ce0388b991f895bbb68df1d909c1868422ecdb"
+    }
+  },
+  "cases": 17,
+  "matched": 15,
+  "failed": [
+    "unlocated-ref-adopts-occurrence",
+    "discarded-lambda-poison"
+  ],
+  "interpretation": {
+    "unlocated-ref-adopts-occurrence": "Confirmed structured-origin mismatch against pinned term_higher/lower. Public parser reachability of an unlocated beta argument is not established.",
+    "discarded-lambda-poison": "Extra read of a deferred/discarded child tag by f_context_material_next/f_context_stop. Natural discarded implicit-operator body passes, so this is direct demand evidence, not a demonstrated public-source semantic regression."
+  },
+  "successfulCoverage": [
+    "Located replacement retains own span",
+    "Negative-variable sentinel retains absent span",
+    "Distinct-ID nested shadow and outer use",
+    "Optional and zero lambda quantities",
+    "Natural discarded lambda body",
+    "Eager argument before deferred callee error",
+    "Earlier eager constructor error prevents later poison demand",
+    "Deferred lambda/All/Let body versus eager sibling",
+    "All domain and Let RHS before deferred body",
+    "Let occurrence source range"
+  ],
+  "sourceChanged": false,
+  "compilerBuilt": false,
+  "processObservation": {
+    "command": "taskset -c 0 node --stack-size=4096 --max-old-space-size=4096 completion-beta-controls.mjs context-build-05 completion-beta-inputs-01/cases.json completion-beta-controls-01",
+    "exitCode": 1,
+    "reason": "Completed report contains two failed direct controls; no top-level harness error.",
+    "wallTimeSecondsObserved": 9.732885024
+  },
+  "limitation": "Trusted direct IR; successful terms compared by structural alpha-equivalence with original free IDs fixed. Raw graph and exact origin fields retained; no re-evaluation of candidate output through pinned semantics."
+}

@@ -1,0 +1,80 @@
+{
+  "kind": "phase22-promotion-tool-and-census-independent-review",
+  "complete": true,
+  "sourceScopeApproved": true,
+  "promotionAuthorizedByReview": false,
+  "pending": "Final release manifest and all finalAPI gate reports must be checked after producers close; no installation or synthetic promoter execution performed by reviewer.",
+  "counts": {
+    "parent": {
+      "compilerModules": 59,
+      "physicalLines": 15900,
+      "nonblankLines": 13546,
+      "bytes": 577159,
+      "defs": 1660,
+      "laws": 719,
+      "types": 67,
+      "moduleManifest": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase21/group-range-source-02/project/src/compiler.json",
+        "sha256": "ab7eea752c873a2f3948c2343087016888725248dfaab4d42689d9291ea58ddc",
+        "bytes": 1985
+      }
+    },
+    "candidate": {
+      "compilerModules": 60,
+      "physicalLines": 15600,
+      "nonblankLines": 13305,
+      "bytes": 580464,
+      "defs": 1691,
+      "laws": 638,
+      "types": 68,
+      "moduleManifest": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-17/project/src/compiler.json",
+        "sha256": "3f119430ca47086e8a362eea41837a990616fbd609aab20665006b5d6d342ac6",
+        "bytes": 2018
+      }
+    }
+  },
+  "interpretation": "300 fewer physical and241 fewer nonblank compiled Bend lines, but3305 more bytes,31 more defs, one more module/type. Architectural simplification is removal of duplicated deferred/raw semantic routes; do not claim universal complexity reduction.",
+  "promoterFindings": [
+    "Actual checked attempt/Base/runtime/pin and exact214\u2192215 source membership bound before copying.",
+    "Exactly35 host members retained and typed-driver is the only changed host member, matching reviewed driver hash.",
+    "Main2996/parser196/public154+36/supplement22/completion17/checkup4 gates require the finalAPI role, and additional gates require explicit candidateApiPath. Final manifest review must confirm those paths select actual candidate evidence.",
+    "Maintained36 gate binds exact API, strictExact, selected completeness and zero discrepancies/exact differences.",
+    "Matrix binds exact current/baseline attempt identities as well as APIs, serial order/CPU/resources, all observation/child health, and finite both-process/request3%acceptance.",
+    "All75 protected Phase6 files and statuses checked before/after; source preconditions and explicit changedPaths checked before copying, backups retained, installed release/checkout checked afterward.",
+    "Manifest identity items must include canonicalPath as produced by workflow.identity; old plain file+SHA schema would refuse safely before writes.",
+    "Partial I/O failure remains recorded; review does not promise rollback or run the installer."
+  ],
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase22/context-promote.mjs",
+      "sha256": "3882a6d7f2e06569fe0af70063d9f953fe50a6ddc91c8d753ab11146ccc7e066",
+      "bytes": 9068
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/development/workflow.mjs",
+      "sha256": "d8a8a0ed29b59d58eae45dfccae9ca5530e597ae0e4203067365a19f0ab3cf32",
+      "bytes": 18123
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/development/release.mjs",
+      "sha256": "da2c88a9cc1b641d03dddfbe2c39fc5a3ea5c724e14993c9d68fa971727809a0",
+      "bytes": 12981
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/bundle-host-review-v2.json",
+      "sha256": "903a45f06057144d6514a8cba39994c586acd17b702cbe81e8f623828230df9d",
+      "bytes": 2940
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase22/context-source-census-cost17.json",
+      "sha256": "8a3668112d31f6d1fad0858d5763abf189906a1027c82113aac6ae639d3ab5f1",
+      "bytes": 75013
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase22/context-source-17/manifest.json",
+      "sha256": "507c752d4f1f0f825f2fb724d6f0e5f415ee1d48e7a2ca17e5247fff9d32f193",
+      "bytes": 133153
+    }
+  ]
+}
