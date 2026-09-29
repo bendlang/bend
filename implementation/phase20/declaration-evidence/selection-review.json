@@ -1,0 +1,161 @@
+{
+  "kind": "phase20-declaration-independent-pre-capture-review",
+  "complete": true,
+  "pass": true,
+  "captureApproved": true,
+  "recoveryPending": true,
+  "reviewMode": "Read-only collector, metadata, release Git bytes, source patch and protected-state inspection; no archive or compiler execution",
+  "inventorySha256": "0f49cdf105cf75b5e90d3ef6a7817e7a07eda4f6a53868af3c6caf4fb0db6d70",
+  "selectedRoots": 52,
+  "members": 3303,
+  "regularFiles": 3300,
+  "symlinks": 3,
+  "bytes": 121192708,
+  "largestMemberBytes": 6121197,
+  "partBoundBytes": 64000000,
+  "archiveBoundBytes": 99000000,
+  "releaseCommit": "c385d3913e9f10c6c4d9c5cfef3f34bc0682d351",
+  "releasePathsVerifiedAgainstGit": 60,
+  "rootReleaseInputsSelected": 20,
+  "currentFrozenInputsVerified": 87,
+  "protectedPhase6HashesAndStatusesUnchanged": 75,
+  "sourceReconstruction": {
+    "members": 214,
+    "baselineCommit": "fd9e8b28c906dff13471fab9afc6975fd5574edd",
+    "changedFiles": [
+      "src/front/declarations.bend"
+    ],
+    "pendingIndependentRecovery": true
+  },
+  "collectorAlgorithmChanged": false,
+  "recoveryToolSha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234",
+  "links": [
+    {
+      "path": "selfhost/build/phase20/import-diagnostic-host-01/counter-fixtures/link.bend",
+      "target": "a.bend",
+      "resolvedTarget": "selfhost/build/phase20/import-diagnostic-host-01/counter-fixtures/a.bend",
+      "targetSha256": "5f3a5e1adf153df33d8db304cf97a1c13a58b4f8d5aca2fd575ae783cf25030e"
+    },
+    {
+      "path": "selfhost/build/phase20/import-diagnostic-host-02/counter-fixtures/link.bend",
+      "target": "a.bend",
+      "resolvedTarget": "selfhost/build/phase20/import-diagnostic-host-02/counter-fixtures/a.bend",
+      "targetSha256": "5f3a5e1adf153df33d8db304cf97a1c13a58b4f8d5aca2fd575ae783cf25030e"
+    },
+    {
+      "path": "selfhost/build/phase20/import-diagnostic-host-04/counter-fixtures/link.bend",
+      "target": "a.bend",
+      "resolvedTarget": "selfhost/build/phase20/import-diagnostic-host-04/counter-fixtures/a.bend",
+      "targetSha256": "5f3a5e1adf153df33d8db304cf97a1c13a58b4f8d5aca2fd575ae783cf25030e"
+    }
+  ],
+  "fixtureDependencies": [
+    {
+      "selection": "selfhost/build/phase20/declaration-group196-01/selection.json",
+      "fixture": "selfhost/build/phase17/group-controls-03/fixtures/local-then-match.bend",
+      "tree": "selfhost/build/phase17/group-controls-03/fixtures"
+    },
+    {
+      "selection": "selfhost/build/phase20/declaration-group196-01/selection.json",
+      "fixture": "selfhost/build/phase16/marked-pattern-controls-02/fixtures/ordinary-affine-control.bend",
+      "tree": "selfhost/build/phase16/marked-pattern-controls-02/fixtures"
+    },
+    {
+      "selection": "selfhost/build/phase20/declaration-group196-01/selection.json",
+      "fixture": "selfhost/build/phase16/empty-call-pattern-controls-02/fixtures/offload-bound.bend",
+      "tree": "selfhost/build/phase16/empty-call-pattern-controls-02/fixtures"
+    },
+    {
+      "selection": "selfhost/build/phase20/declaration-group196-01/selection.json",
+      "fixture": "selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/do-frame.bend",
+      "tree": "selfhost/build/phase16/parser-checkpoint-controls-03/fixtures"
+    },
+    {
+      "selection": "selfhost/build/phase20/declaration-group196-01/selection.json",
+      "fixture": "selfhost/build/phase16/rejected-stage-controls-01/fixtures/prior-row-pattern-before-body-syntax.bend",
+      "tree": "selfhost/build/phase16/rejected-stage-controls-01/fixtures"
+    }
+  ],
+  "retainedFailures": [
+    "import-diagnostic-source-02",
+    "import-diagnostic-source-03",
+    "declaration-integration-audit-01",
+    "declaration-integration-audit-02",
+    "declaration-promotion-01",
+    "declaration-promotion-02"
+  ],
+  "scopeNotes": [
+    "Private contextual payload is excluded except exact reviewed context-row-source-05/first-element-only.patch.",
+    "The released prospective design/phase21/group-boundaries.md is explicitly among the60 frozen release files and captured; no Phase21 build or tool payload is included.",
+    "Prior installed release and upstream/toolchain remain explicit external prerequisites.",
+    "Original failed/incomplete statuses remain unchanged; recovery success will be a separate result."
+  ],
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase20/declaration-evidence/PLAN.md",
+      "sha256": "ec0e8ad54862bbbbce53f6545a88b1c1a806c3fcbbd8398e5b9e661434dd8d26",
+      "bytes": 1786
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase20/declaration-evidence/selection-proposal.json",
+      "sha256": "7e207c2bf64dcf9fb6f93c991b69b284ffe7c271568adfa27726411e64fc3138",
+      "bytes": 12630
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase20/declaration-evidence/root-freeze.json",
+      "sha256": "94dcfe40484134a0817486de4a815696dcf9a32216c8116c037dfc2980268628",
+      "bytes": 15185
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase20/declaration-evidence/root-release-freeze.json",
+      "sha256": "128aa964100a84549c20ae91f9daf8d7b39e17f6cb294a04902436c54a8b956b",
+      "bytes": 16681
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase20/declaration-evidence/source-delta.json",
+      "sha256": "ef81aa33da409ddd285835ff4ce70b4622845343ca260b835551b81a5e70137a",
+      "bytes": 332
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase20/declaration-evidence/phase6-start-state.json",
+      "sha256": "de105de7c20b8223d35f1cb9c684bbdd696da134dc45cb3004d14896c83b7cf4",
+      "bytes": 14528
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase20/declaration-evidence/adaptation.json",
+      "sha256": "235769fc94712ea62368ba9d2d89381484a728bbb9ffecccf5ab6a64bece24a2",
+      "bytes": 1679
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase20/declaration-evidence/collector-adaptation.patch",
+      "sha256": "769e19cc8df7bb31dd42d337aa92af03d5be3f7a7a346cf72f5118a3d9530b43",
+      "bytes": 4979
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase20/declaration-evidence/capsule-01/inventory.json",
+      "sha256": "0f49cdf105cf75b5e90d3ef6a7817e7a07eda4f6a53868af3c6caf4fb0db6d70",
+      "bytes": 1033652
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase20/declaration-evidence/capsule-01/prefix-to-anchor.patch",
+      "sha256": "48ddd3e64e50198444114164b24ca33de910a9c8c3934ff44c07620b701ff583",
+      "bytes": 7353
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase20/declaration-preserve.py",
+      "sha256": "e768cec548b2827c3c36fe4fa7960ee8fb92943e74fa8a2fe94c513d9f10b25f",
+      "bytes": 12759
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase19/instance-preserve.py",
+      "sha256": "5ab406b346997394c6d7c3e7dd289efd79c6927eaa65a2f5a855230349d1558f",
+      "bytes": 12713
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase16/compact-recover.py",
+      "sha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234",
+      "bytes": 7326
+    }
+  ],
+  "finished": "2026-09-29T10:45:38.022194+00:00"
+}

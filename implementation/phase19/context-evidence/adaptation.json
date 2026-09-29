@@ -1,0 +1,27 @@
+{
+  "complete": true,
+  "original": {
+    "path": "selfhost/tools/performance/phase19/instance-preserve.py",
+    "sha256": "5ab406b346997394c6d7c3e7dd289efd79c6927eaa65a2f5a855230349d1558f"
+  },
+  "collector": {
+    "path": "selfhost/tools/performance/phase19/context-preserve.py",
+    "sha256": "004a186b79f4f76b170d2c7c0f495b065750f52c3f521372fd18f17255220a72"
+  },
+  "patch": {
+    "path": "implementation/phase19/context-evidence/collector-adaptation.patch",
+    "sha256": "963ed1faa4554c0933779357f90796e4e1cd93d2c2b133812dbb2d3fae82ecaa"
+  },
+  "unchangedRecovery": {
+    "path": "selfhost/tools/performance/phase16/compact-recover.py",
+    "sha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234"
+  },
+  "changesOnly": [
+    "metadata paths",
+    "private experiment anchor status",
+    "scope/kind labels",
+    "source patch filename",
+    "usage label"
+  ],
+  "memberArchiveFixtureAndPathPoliciesChanged": false
+}

@@ -1,0 +1,582 @@
+{
+  "authorized": true,
+  "authorization": "Root explicitly approved new384000000 uncompressed part bound for capsule02; same99000000 compressed bound and all other policies unchanged. Original preparation retained.",
+  "created": "2026-09-29T10:38:21.608818+00:00",
+  "allProducersClosed": true,
+  "closureScope": "Exactly80 named contextual experiment roots; other team work is outside this freeze.",
+  "anchorStatus": "private-contextual-stage4-experiment",
+  "finalAttempt": "selfhost/build/phase19/context-row-build-05",
+  "finalApiSha256": "681bf1bcc748a2a184cd9fa4d53ff78292809711d529ff36bd46c53922f379cf",
+  "genuineApiSha256": "caf20ce299ca5a390935dec1be355e8929e3b424047cfbe8bf3137ceda572e87",
+  "source": "selfhost/build/phase19/context-row-source-05/project",
+  "sourceMemberCount": 215,
+  "selectedRoots": [
+    "selfhost/build/phase19/context-body-audit-01",
+    "selfhost/build/phase19/context-body-build-01",
+    "selfhost/build/phase19/context-body-build-02",
+    "selfhost/build/phase19/context-body-build-03",
+    "selfhost/build/phase19/context-body-controls-01",
+    "selfhost/build/phase19/context-body-grammar-01",
+    "selfhost/build/phase19/context-body-grammar-02",
+    "selfhost/build/phase19/context-body-oracle-01",
+    "selfhost/build/phase19/context-body-probe-01",
+    "selfhost/build/phase19/context-body-probe-02",
+    "selfhost/build/phase19/context-body-raw-01",
+    "selfhost/build/phase19/context-body-raw-02",
+    "selfhost/build/phase19/context-body-source-01",
+    "selfhost/build/phase19/context-body-source-02",
+    "selfhost/build/phase19/context-body-source-03",
+    "selfhost/build/phase19/context-body-stage1-01",
+    "selfhost/build/phase19/context-body-stage1-02",
+    "selfhost/build/phase19/context-build-01",
+    "selfhost/build/phase19/context-build-02",
+    "selfhost/build/phase19/context-controls-01",
+    "selfhost/build/phase19/context-flatten-controls-01",
+    "selfhost/build/phase19/context-flatten-controls-02",
+    "selfhost/build/phase19/context-flatten-controls-03",
+    "selfhost/build/phase19/context-free-oracle-01",
+    "selfhost/build/phase19/context-free-probe-01",
+    "selfhost/build/phase19/context-free-probe-02",
+    "selfhost/build/phase19/context-frontier-census-01",
+    "selfhost/build/phase19/context-frontier-census-02",
+    "selfhost/build/phase19/context-grammar-audit-01",
+    "selfhost/build/phase19/context-grammar-build-01",
+    "selfhost/build/phase19/context-grammar-build-02",
+    "selfhost/build/phase19/context-grammar-controls-01",
+    "selfhost/build/phase19/context-grammar-oracle-01",
+    "selfhost/build/phase19/context-grammar-probe-01",
+    "selfhost/build/phase19/context-grammar-raw-01",
+    "selfhost/build/phase19/context-grammar-source-01",
+    "selfhost/build/phase19/context-grammar-source-02",
+    "selfhost/build/phase19/context-grammar-stage1-01",
+    "selfhost/build/phase19/context-oracle-01",
+    "selfhost/build/phase19/context-probe-01",
+    "selfhost/build/phase19/context-probe-02",
+    "selfhost/build/phase19/context-raw-01",
+    "selfhost/build/phase19/context-row-audit-01",
+    "selfhost/build/phase19/context-row-audit-02",
+    "selfhost/build/phase19/context-row-body-01",
+    "selfhost/build/phase19/context-row-build-01",
+    "selfhost/build/phase19/context-row-build-02",
+    "selfhost/build/phase19/context-row-build-03",
+    "selfhost/build/phase19/context-row-build-04",
+    "selfhost/build/phase19/context-row-build-05",
+    "selfhost/build/phase19/context-row-controls-01",
+    "selfhost/build/phase19/context-row-controls-02",
+    "selfhost/build/phase19/context-row-controls-03",
+    "selfhost/build/phase19/context-row-controls-04",
+    "selfhost/build/phase19/context-row-controls-05",
+    "selfhost/build/phase19/context-row-free-01",
+    "selfhost/build/phase19/context-row-grammar-01",
+    "selfhost/build/phase19/context-row-oracle-01",
+    "selfhost/build/phase19/context-row-oracle-02",
+    "selfhost/build/phase19/context-row-oracle-03",
+    "selfhost/build/phase19/context-row-oracle-04",
+    "selfhost/build/phase19/context-row-oracle-05",
+    "selfhost/build/phase19/context-row-probe-01",
+    "selfhost/build/phase19/context-row-probe-02",
+    "selfhost/build/phase19/context-row-probe-03",
+    "selfhost/build/phase19/context-row-probe-04",
+    "selfhost/build/phase19/context-row-probe-05",
+    "selfhost/build/phase19/context-row-probe-06",
+    "selfhost/build/phase19/context-row-probe-07",
+    "selfhost/build/phase19/context-row-raw-01",
+    "selfhost/build/phase19/context-row-source-01",
+    "selfhost/build/phase19/context-row-source-02",
+    "selfhost/build/phase19/context-row-source-03",
+    "selfhost/build/phase19/context-row-source-04",
+    "selfhost/build/phase19/context-row-source-05",
+    "selfhost/build/phase19/context-row-state-01",
+    "selfhost/build/phase19/context-row-validation-01",
+    "selfhost/build/phase19/context-source-01",
+    "selfhost/build/phase19/context-source-02",
+    "selfhost/build/phase19/context-stage1-audit-01"
+  ],
+  "inputs": [
+    {
+      "path": "design/phase19/body-pattern-checkpoints.md",
+      "sha256": "763a548a68c511cbb3b3a1b9cd3c11b427462ac603bfebc62b319b3e23badd8f"
+    },
+    {
+      "path": "design/phase19/body-pattern-stage3-interface.md",
+      "sha256": "3f83cebe1dbad0821b356d50e7cd820da5b3d4d6f6a454d5b38fd4f938d856c2"
+    },
+    {
+      "path": "design/phase19/context-free-reference-materialization.md",
+      "sha256": "b9176e48cc3bdd619f15aa7fcae13bdc39754d1f750e0a6705424d12eaffbde3"
+    },
+    {
+      "path": "design/phase19/contextual-parser-slice.md",
+      "sha256": "eec38db100193cb17bdc5a16b1f366cdbb5079b2425d678f3ef5eb8cbec302f3"
+    },
+    {
+      "path": "design/phase19/names-grammar-routing.md",
+      "sha256": "5934efb37b4960cfb4d53814bb952e0bf2cadb729c85a9eafd3f5c70de9d941c"
+    },
+    {
+      "path": "design/phase19/names-state-stage1.md",
+      "sha256": "3b030ef20b465e8f831ceb3a04864804c2bfa2d60e9dfc35e156942b150f71ac"
+    },
+    {
+      "path": "design/phase19/saved-row-group-frontier.md",
+      "sha256": "8237e2c8d394fdeaa33fffe88342db50e135c3ece94efd54d90879df160725f0"
+    },
+    {
+      "path": "design/phase19/scoped-block-equivalence.md",
+      "sha256": "5801c6508cbe376d832bc56baf7fe528975021ae8d24bbccc1ea2a38f325ca36"
+    },
+    {
+      "path": "design/phase19/shared-flatten-checkpoints.md",
+      "sha256": "2862ad7d11b672e7a3fa5c3cb09ff25543f804be67e6c8da27819f5fabd23ced"
+    },
+    {
+      "path": "implementation/phase17/evidence/capsule-02/manifest.json",
+      "sha256": "19b45ede4384604643f2c59a4544708a48c5c17e8e3f3c1a6f209579982d6790"
+    },
+    {
+      "path": "implementation/phase17/evidence/preservation.json",
+      "sha256": "e77af70e357abbb45718d1981909006186d221e48b6871137df126ea64fd537d"
+    },
+    {
+      "path": "implementation/phase18/evidence/capsule-01/manifest.json",
+      "sha256": "86dfb9e7a99dc37868e3861db4015a089843caa0f1069e1c7d54ded524112a80"
+    },
+    {
+      "path": "implementation/phase18/evidence/preservation.json",
+      "sha256": "ce77611f75699b2d09637da3a083594e8d95a77c78d77c595a0f9fead852ad84"
+    },
+    {
+      "path": "implementation/phase19/body-pattern-checkpoints.md",
+      "sha256": "90797647a16b486ec231fc29a91452568b9f1839c70da3eab09a1227ecc7a0c5"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/PLAN-v2.md",
+      "sha256": "27c4963befb92e2a73eb20b4f525e0dc04c16e0444da8c0a86a71da3df76bf05"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/PLAN.md",
+      "sha256": "571aec9812d1051634cf18e37c28ea64b1edf44f3f8d0f276e499eafe5bbb668"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/adaptation-v2.json",
+      "sha256": "bf694ac9fa0d997b162b0a77961608824ad8d14e94df2dc672bc15fd2388c649"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/adaptation.json",
+      "sha256": "cc87e2dbb75ca918cbfb213afad4f11e213ea600c70395cbe4a1f857e8d2701d"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/audit-selection-v2.py",
+      "sha256": "45e4250d6fddaa8fb0af5d0a78b77f8368f4761c5f24570e94be9639739a2792"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/audit-selection.py",
+      "sha256": "4ba4a32c71ba7e7c95cc9386c1ccac25648c1616c726c557535f11349b6e5e8a"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/capsule-01/inventory.json",
+      "sha256": "6528944c89f2d76feda467a62a6e772238a8a766c73745becfb4d94948f8b7d6"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/capsule-01/phase17-to-context-anchor.patch",
+      "sha256": "fc0dd49d8c7c94169efd898ecebd964420eb275c5d15ede378999ec346307e93"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/collector-adaptation-v2.patch",
+      "sha256": "f04b2d61407181694fb9e8add2fc6bc3f9805943013b803dce1a58a041b3428a"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/collector-adaptation.patch",
+      "sha256": "963ed1faa4554c0933779357f90796e4e1cd93d2c2b133812dbb2d3fae82ecaa"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/finish-preservation-v2.py",
+      "sha256": "3849955b91cda713d2956a1307d34796ef145a182869a34370f1c8157447225f"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/finish-preservation.py",
+      "sha256": "d6d4fafda4602f19ea536009e554f65d69d7c6fce0a4732f2e0d315583251059"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/phase6-start-state.json",
+      "sha256": "5c0427166fd96f873da3eafb63bacd3a79d1c9e423dd936b091b06dff3388a0b"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/preparation-01-blocker.json",
+      "sha256": "f9defa085224529cd7d91aa4efc061cd6df80a5404bab2ef1eec44f6fb1818c3"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/prepare-inputs-v2.py",
+      "sha256": "3db67b457e59c1a4dbc77c742787955bfcded824cac231a0259a7831138b766f"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/prepare-inputs.py",
+      "sha256": "ac8a42f8cd0fa14ca5f2b49380c6fda5b271ff88041deedc885afd0facc694da"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/root-freeze.json",
+      "sha256": "884f75402be6ce5291beb522416bf20601f6578b582ac0607862d8983015d4c3"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/run-preservation-v2.py",
+      "sha256": "2b75f7a155f9f58fc4725998d76767fd301836d2508b7617dcd0662a57d40e61"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/run-preservation.py",
+      "sha256": "22b77af1511a54c322a3e2b90316b9f14c141aac8fa48ae98a86dba8aa29b5cb"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/selection-proposal-v2.json",
+      "sha256": "3534279946fe2071d2c2d565a683c3d3e010c2cf317baead69573fc8288dad8b"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/selection-proposal.json",
+      "sha256": "5e12a4e03271e0a228c9626fb4a553841225a37a70b3e1640495b699687db24b"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/selection-review.json",
+      "sha256": "7c93a265d9f45ed9354570d2ddde75f81e22a91701aa5a3c9d57b3c4f2a9498d"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/source-membership.json",
+      "sha256": "38fe2abaec3d1937bd699e2b34385366830646ed97a570b1f1a7e556053c1608"
+    },
+    {
+      "path": "implementation/phase19/names-grammar-routing.md",
+      "sha256": "2913307c2371c4894b0122d3461f72a51ad1806ca95020f18b462040aecd08fb"
+    },
+    {
+      "path": "implementation/phase19/names-state-stage1.md",
+      "sha256": "66c846fe5ce7f20e7a293c62d6992d5bece1edbf9826e3c305c6b69bc06415d6"
+    },
+    {
+      "path": "implementation/phase19/saved-row-group-frontier.md",
+      "sha256": "521f84f5083ff408fcc5013669f6ae333aed975fcf31754b70ee10b81911bbd6"
+    },
+    {
+      "path": "selfhost/build/phase16/compact-final-evidence-policy-01/report.json",
+      "sha256": "860c35725b340c8b7f3b10aa03418d4ace3d74965249da686dfff152c546e8af"
+    },
+    {
+      "path": "selfhost/build/phase19/context-body-audit-01/report.json",
+      "sha256": "324a479581c074eeebf8f353d5c51fa9d419de2b80723637c18785a59ab1ba64"
+    },
+    {
+      "path": "selfhost/build/phase19/context-grammar-audit-01/report.json",
+      "sha256": "c921424013664e788797303644e01af86c1b1c6740e60462a18cd3a63c66cc6c"
+    },
+    {
+      "path": "selfhost/build/phase19/context-row-audit-02/report.json",
+      "sha256": "f4ce783e4ae5f0289523797ee9889217a4879f2ff3d71fd6fc6ad7eb669cee90"
+    },
+    {
+      "path": "selfhost/build/phase19/context-row-build-05/attempt.json",
+      "sha256": "848ce186c82f2f8cf5ce0b051e75d48d45f1cad6f6fa2ba5a7f1c27bba52f8e8"
+    },
+    {
+      "path": "selfhost/build/phase19/context-row-build-05/equality/api.mjs",
+      "sha256": "681bf1bcc748a2a184cd9fa4d53ff78292809711d529ff36bd46c53922f379cf"
+    },
+    {
+      "path": "selfhost/build/phase19/context-row-owner-receipt-01.json",
+      "sha256": "34922cd3b9c1fcadd254392eb0a75182064acba4e3991b9ee75eef9fd88b862f"
+    },
+    {
+      "path": "selfhost/build/phase19/context-row-source-05/manifest.json",
+      "sha256": "712e3cd900726da4f28a70ce2f2b1778f3f14eb14f4ab506dbe1fa4d93d02320"
+    },
+    {
+      "path": "selfhost/build/phase19/context-stage1-audit-01/report.json",
+      "sha256": "6a6b3e2f334e5962214b5532740a17b313d9ed87683c4f806a153ec920043258"
+    },
+    {
+      "path": "selfhost/tools/performance/phase16/compact-recover.py",
+      "sha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234"
+    },
+    {
+      "path": "selfhost/tools/performance/phase18/cursor-direct-controls.mjs",
+      "sha256": "819ef63b76e0bc812b9bace0ab6bda03fcca2c650d35b32d329a03a0603a3ff3"
+    },
+    {
+      "path": "selfhost/tools/performance/phase18/cursor-direct-run.mjs",
+      "sha256": "9469c9c42b7f075d3404ed3b79d3f775f2df3194bcb4b6a7776c923030f64f21"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-body-audit.py",
+      "sha256": "dd55ee9df32baf1bdc6870375dd664264a18c49cfcdf0ddaa9dd12e7cea3a805"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-body-controls-prepare.py",
+      "sha256": "c35d8ee25aee40c072056ea4eca114d850d57ae6597dff378dc49def3d5706d9"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-body-oracle-run.mjs",
+      "sha256": "6ae20f37d847308552e4b4067313a311638083a1c8bce27ca6af16ae3e06a0f6"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-body-oracle.mjs",
+      "sha256": "cdec3abc3629d2a8830712698860a643b9770d0d6aae2af70a803bae134e33bb"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-body-probe-run.mjs",
+      "sha256": "03d3e686934700fffee2bb5d9c4ed4ef38eb9b703e9ea6969302bc851d4a592e"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-body-probe.mjs",
+      "sha256": "bbeb41cb27838de4979273f3e3ee62ae9baffd93f02d2abfac4999cd7a8a3f58"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-body-row-regression-run.mjs",
+      "sha256": "8d9a30b2304d91ab5a2098a3a58d4d57f096c8c636871b1a288adeaaddb70b7d"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-body-row-regression.mjs",
+      "sha256": "4630c38269e89fb4233486d5d8d96828eb6870cdbfd39581daa655719779864d"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-body-source-prepare-v2.py",
+      "sha256": "ba645f23414160bfbd43ad7df8794174e6021fc787a86d44b22940255ec64fa9"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-body-source-prepare-v3.py",
+      "sha256": "7b85a60b4f82ed64e6c91d9ac48061dfc6161f4f136e3d04bea3368b694cae6e"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-body-source-prepare.py",
+      "sha256": "673c1252b26a4a8df6a4e98a9a5bf1a863a4ed082bf480a2d521b4b546af202a"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-controls-prepare.py",
+      "sha256": "b943546c7e7ddc4e0375a8d1d5a08baf9ec10a103b254bf26e397d95f67ad7b3"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-flatten-controls-prepare-v2.py",
+      "sha256": "35b76105adc4ed9842a760f9c35ad45f144c75b3121334ee72b1620f5880a233"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-flatten-controls-prepare-v3.py",
+      "sha256": "233f6f6b55286725149b2a1a93b16fef42cb4b28b0afbc492424aeff09674d65"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-flatten-controls-prepare.py",
+      "sha256": "b8aa9a0b39e3a284045b1c3d46754260c14bdc92b8f7b53b4e1474b03a0738a6"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-free-controls-v2.mjs",
+      "sha256": "a84a001ddbf4d471d8a8bc6deecc49914ecea7aaca3217d789662e79bae6ec4a"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-free-controls.mjs",
+      "sha256": "407310de88f65ef4a811573aaaf8c1df3c362cc68236891e6321e13fde6977c4"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-free-run-v2.mjs",
+      "sha256": "d4446e83576554bbb030af6e1b1b67ffa4667c8ae0b32dbc6c4fba808fcc58e6"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-free-run.mjs",
+      "sha256": "bf6f977984c8163034f1f188366a39ec101b3ab0f6e65a50dad398c475c07625"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-frontier-census-v2.py",
+      "sha256": "eebc1652062740d9cec8b9873f79d9125f8ef34fd9377daa861cf4fc4dd41c5c"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-frontier-census.py",
+      "sha256": "0691d44abe67163a4f912cf11bfcf1f20f8d81562267b10270b2ec1279a175b6"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-grammar-audit-v2.py",
+      "sha256": "b0f131c2c70b90e8a03cb3a547da5c6bed53cd340d2b08c4a76ec6644c49ecd4"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-grammar-audit.py",
+      "sha256": "808b8cc649933fdf6670ad25c1fe4b3724cfab6e8bbd06a69fc803f877d5c005"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-grammar-controls-prepare.py",
+      "sha256": "979cf94c3da8bec630a84fbb2980e98952faae0950462f093c969655a820effd"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-grammar-oracle-run.mjs",
+      "sha256": "41a083e7f3b4c380e104b76a73a36ef5f5361bd96e637f5d1565162659c7e2e8"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-grammar-oracle.mjs",
+      "sha256": "081318c2727452c56ddd634db87d5ee4dc20a3e9430f7c07547dc726b5678c8f"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-grammar-probe-run-v2.mjs",
+      "sha256": "07e3ec67d97b031db1805f3b121f2ac00e584007b507ecc1fefb1f4e8da92d61"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-grammar-probe-run.mjs",
+      "sha256": "e56645529c7ffaf71b624d8aa6d343fc411db4e5623f490bc5a5df2a9ac15a06"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-grammar-probe-v2.mjs",
+      "sha256": "7e98d0f1920dd845208e25b1a1cc138728983554bffd5a7b4123fc5c7469cce5"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-grammar-probe.mjs",
+      "sha256": "16434c82dc0bb172ebd2c4aa57d9afe3422fd7e3a8b8cc18cc46b64995fb10ec"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-grammar-row-regression-run.mjs",
+      "sha256": "5da34c8277523f155ae927ef8aebfe0281d46b71478294c4f80eca8e163da3e0"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-grammar-row-regression.mjs",
+      "sha256": "07eaedd0580ad63d974f42a3298b3a344133d67066ec31b6cecf5de5f8800e75"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-grammar-source-prepare-v2.py",
+      "sha256": "b0bea868b155b5af3af9b7df10a2ed7f7c6ab122da7fdee091fe26c5a739273c"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-grammar-source-prepare.py",
+      "sha256": "ee79fc8e29f691976110d79b6e732936ddfc7582ddff28fc6ec74368fc69b07a"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-oracle-run.mjs",
+      "sha256": "0641a48e62a0a4fcee282fef88ab3d6bbe670225903e664a6f3b66afdf590719"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-oracle.mjs",
+      "sha256": "73e8deba18a2a4ac60418c64b81e427aae3659fb7175236f9672b54c3e0685f2"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-preserve-v2.py",
+      "sha256": "2813e7a90ff9bfb241d907e0762f963ac4056eb2538d48443c0181ccf02f2040"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-preserve.py",
+      "sha256": "004a186b79f4f76b170d2c7c0f495b065750f52c3f521372fd18f17255220a72"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-probe-controls.mjs",
+      "sha256": "753113b0186f9445c7f4643e0f90730929c29720d67a3d9c48cb1f79451fbace"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-probe-run.mjs",
+      "sha256": "9025542c81f99b964ab7b321f6abc322de52b34a8d4180ea52bca9bd87768c0d"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-audit-v2.py",
+      "sha256": "c80b2362a1afa99713abdf93596ee7c8993d5809c4c1e796dda3497e8c526b80"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-audit.py",
+      "sha256": "69d475bda5a94eb719a3d0e57ccdcb07ec4c7e9c77666cfe6c384c8d4be76c9f"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-controls-prepare-v2.py",
+      "sha256": "547dac45d3b344fcb93251c7029cfbf5b2622c4f034e0368c79fe947fd2fb73d"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-controls-prepare-v3.py",
+      "sha256": "4d74d21982dc698e1db1270d638b6459d3ae9fab408c77273c753bc1600762dd"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-controls-prepare-v4.py",
+      "sha256": "39dffd00991743991278c88d659bfda2b1480747d0c760737d2cb2f995f0109e"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-controls-prepare-v5.py",
+      "sha256": "82970a4e30e72ffed333704ae392b773f72e104a2960f7a3df4825f6491ad9ca"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-controls-prepare.py",
+      "sha256": "598a77c887c3adffcf6b8d4c22c18881c76a19eb35387876ed4c56643a012b83"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-oracle-run-v2.mjs",
+      "sha256": "1188fa8191a584a513e335e25d7f7637af83ca2b624843872f120bca4c06fe44"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-oracle-run.mjs",
+      "sha256": "4fc8f7a91cd6c10aad7591475e2ba63c75367507ea13063458182b812e754fde"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-oracle-v2.mjs",
+      "sha256": "e0e89f5fc0db7abccf10e97ffe1bdb5dfb3d35580c44285c518987fccdf43ba2"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-oracle.mjs",
+      "sha256": "3feb6979f9da254fe4dacbaea588339bd2cd4df6557f0ae2bcb48221896ba2fc"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-probe-run-v2.mjs",
+      "sha256": "84dc6a5e5ba56866aaedf75e2a9c61fe799779e5a61e5b57bd77df258f96f080"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-probe-run-v3.mjs",
+      "sha256": "af0224944585a43fd93113d73807753b174b66f7f611d8fa1da8aa2a498b8da1"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-probe-run-v4.mjs",
+      "sha256": "86c6ec0a797e4d139e941cd45de895815fb461bf1a226e51497375959997f6a9"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-probe-run.mjs",
+      "sha256": "815b34cf780fae40e9957fee399c97c031f57b58711c7f1fc850f06eb4b22090"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-probe-v2.mjs",
+      "sha256": "c15b4292a88ac6c4eab2411e47e7aa12bee69d232fc9b1d834ffe08ee36decb1"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-probe-v3.mjs",
+      "sha256": "75835607f82ceec5cd8da17cfc9c4593f076ab4dba77407fb027661966f3b8cd"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-probe-v4.mjs",
+      "sha256": "81c9597b969b3bb0cdc92e12715cbc9224c799b5a1291e034fe1cfe9b32bd869"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-probe.mjs",
+      "sha256": "4420f6d35a8adea1e0047439d21206489fff23857a8902f8ce6f2e7c158c9229"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-receipt.py",
+      "sha256": "04c9d2d754c3f9634eefac83afca6f1205f268e785b3bb384a2abfc8e6d12137"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-source-prepare-v2.py",
+      "sha256": "f469a610205f9ee4a940057c95125441e96c199e9b2814cdb00cf35a3e8ceab6"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-source-prepare-v3.py",
+      "sha256": "f0aa079accefe14107928f219cb640fb20f14b1b85fca3cf725574637bca1b4f"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-source-prepare-v4.py",
+      "sha256": "eb95db75b215f1cae407a06e8901c7d54dd5e99ee484cf4a28c57cdd8f7c4c0b"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-source-prepare-v5.py",
+      "sha256": "72f091a0aebec972e898e656315ad15f4d730d4d8b0e6eccb9fefecf74c1d921"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-row-source-prepare.py",
+      "sha256": "1cf40a0a87a275d2b1980cab96ef008e383d0d87390a3980eb040b0705e39705"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-source-prepare-v2.py",
+      "sha256": "1fa9d0af8cfe5cc9adb37abd4a21882435b0d74980636a99d629eafbcd3c677e"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-source-prepare.py",
+      "sha256": "c56b3cc1a05ae41f2d9b123b23dccd12c409d935178f9064b7f500ac4648261c"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-stage1-audit.py",
+      "sha256": "bfc6fa8ae2641846c9de077feee7ba5ce5412ff824aee9ff6c6c5943e090b635"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/instance-preserve.py",
+      "sha256": "5ab406b346997394c6d7c3e7dd289efd79c6927eaa65a2f5a855230349d1558f"
+    }
+  ],
+  "additionalFiles": []
+}

@@ -1,5 +1,43 @@
 # Compiler evidence preservation index
 
+## Phase20 declaration release — 2026-09-29
+
+The [release capsule](../implementation/phase20/declaration-evidence/README.md)
+preserves installed commit `c385d39`, API `40c8f7f3`, its checked lineage, rejected
+semicolon candidates, complete focused/broad result vectors, actual execution,
+controlled cost screen, promotion failures and installed/relocated CLI checks.
+Three archives total 15,603,867 bytes. Independent recovery verifies all 3,303
+members, including three fixture links, and reconstructs all 214 source files
+from fixed Phase19 commit `fd9e8b2` and the one-file declaration patch.
+
+The [receipt](../implementation/phase20/declaration-evidence/preservation.json)
+binds the exact inventory, unchanged protected75 state and all76 unique frozen
+release files/inputs. Historical comparison identities match the prior capsule.
+The broader raw runner remains false with60 strict differences; the neutral
+3.17× TypeScript cost gap is unchanged by preservation. The committed, unexecuted
+Phase21 design is included as a release document; no Phase21 implementation or
+private contextual project is included. The exact reviewed first-element patch
+is the only contextual dependency. No remote publication is claimed.
+
+## Phase19 private contextual parser — 2026-09-29
+
+The [contextual experiment capsule](../implementation/phase19/context-evidence/README.md)
+preserves all four private stages and their failures: 7,327 regular files,
+610,892,723 uncompressed bytes, in three archives totaling 39,115,623 bytes.
+Independent recovery reconstructs all 215 source members from fixed Phase17
+commit `fddfc84` plus the patch, including the new experimental contextual module.
+All 75 protected Phase6 states and 121 frozen inputs remain unchanged.
+
+The [receipt](../implementation/phase19/context-evidence/preservation.json)
+retains the blocked initial 64 MB archive preparation and the reviewed 384 MB
+part bound used to preserve a 343 MB failed report verbatim. The compressed
+99 MB cap and unchanged recovery/path policies remain enforced. Scoped success
+uses audited bound-ID alpha-equivalence, not exact numeric binder equality.
+The public196 raw failure,136 exact outcomes and60 differences remain explicit;
+this candidate is private and was never installed. Live dist and Phase20/21
+payloads are excluded. Preserving evidence adds no conformance or speed claim.
+
+
 ## Phase19 shared live checker — 2026-09-29
 
 The [release report](../implementation/phase19/live-checker-release.md) and

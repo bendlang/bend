@@ -1,0 +1,217 @@
+{
+  "kind": "phase20-installed-declaration-evidence-preservation",
+  "complete": true,
+  "pass": true,
+  "releaseCommit": "c385d3913e9f10c6c4d9c5cfef3f34bc0682d351",
+  "anchorStatus": "installed-declaration-checkpoint-release",
+  "source": "selfhost/build/phase20/import-diagnostic-source-04/project",
+  "attempt": "selfhost/build/phase20/import-diagnostic-build-04",
+  "apiSha256": "40c8f7f3b7cd0e96aef57d7d574ebfd85607cd4e096909d083b450b4d973362c",
+  "selectedCapsule": "implementation/phase20/declaration-evidence/capsule-01",
+  "capture": {
+    "members": 3303,
+    "uncompressedBytes": 121192708,
+    "archives": 3,
+    "compressedBytes": 15603867,
+    "largestArchiveBytes": 7631341,
+    "symlinks": 3,
+    "manifestSha256": "0021c96daca19205e2652e855737808189a3325a161de165daf6d019891e4132",
+    "inventorySha256": "0f49cdf105cf75b5e90d3ef6a7817e7a07eda4f6a53868af3c6caf4fb0db6d70"
+  },
+  "independentRecovery": {
+    "kind": "phase16-independent-compact-recovery",
+    "complete": true,
+    "pass": true,
+    "toolSha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234",
+    "extraction": {
+      "files": 3303,
+      "symlinks": 3,
+      "bytes": 121192708,
+      "allBytesAndModesVerified": true
+    },
+    "sourceReconstruction": {
+      "baselineCommit": "fd9e8b28c906dff13471fab9afc6975fd5574edd",
+      "files": 214,
+      "allBytesAndModesVerified": true,
+      "usesWorkingTreeSource": false,
+      "patchSha256": "48ddd3e64e50198444114164b24ca33de910a9c8c3934ff44c07620b701ff583"
+    },
+    "manifestSha256": "0021c96daca19205e2652e855737808189a3325a161de165daf6d019891e4132",
+    "inventorySha256": "0f49cdf105cf75b5e90d3ef6a7817e7a07eda4f6a53868af3c6caf4fb0db6d70"
+  },
+  "protectedPhase6": {
+    "count": 75,
+    "hashesAndStatusesUnchanged": true,
+    "payloadExcluded": true
+  },
+  "allRootFrozenInputsCapturedUnchanged": true,
+  "historicalComparisonIdentities": [
+    {
+      "path": "selfhost/build/phase19/instance-build-03/attempt.json",
+      "sha256": "739e7173180cf52cb823dedb94c0c2445cd08190a69284889f7fa595239e5425",
+      "externalPriorCapsuleMatch": true
+    },
+    {
+      "path": "selfhost/build/phase19/instance-build-03/equality/api.mjs",
+      "sha256": "a15d150a920b89d9c0781372356424e559edabef3246ca281741069b0fe739b6",
+      "externalPriorCapsuleMatch": true
+    },
+    {
+      "path": "selfhost/build/phase19/instance-frontend-01/candidate.json",
+      "sha256": "3511b8384e92359d93b7504a28fe1f9b6e862306eca4895b307d70a959f0be58",
+      "externalPriorCapsuleMatch": true
+    },
+    {
+      "path": "selfhost/build/phase19/instance-group196-01/selected/candidate.json",
+      "sha256": "4a71baf132ebaa4b81124fddb406fafa501f57bf85dc840b7d38772c3e533729",
+      "externalPriorCapsuleMatch": true
+    },
+    {
+      "path": "selfhost/build/phase19/instance-group196-01/selected/paired.json",
+      "sha256": "85005d33dd96ea5a9bf75cec26e06bd22fa11c5ca91082d2289ebdd76d88410e",
+      "externalPriorCapsuleMatch": true
+    },
+    {
+      "path": "selfhost/build/phase19/instance-group196-01/selected/reference.json",
+      "sha256": "7386ed7c884d8d3729db864be402696f42e4577ccca5eedc3c9e3d9d9163cd5b",
+      "externalPriorCapsuleMatch": true
+    }
+  ],
+  "retainedFailures": [
+    "Source02 new semicolon false acceptance and superseded source03",
+    "Integration audit01/02 incomplete false outputs",
+    "Promotion01/02 failed before any copies",
+    "Grouped raw incomplete/false result with remaining strict differences"
+  ],
+  "cost": "Neutral controlled matrix preserved, no new speedup claim.",
+  "scope": "Closed Phase20 declaration checkpoint release, retained source01-04 preparations and scoped/broad/execution/cost gates; private contextual parser payloads and prior release originals are external.",
+  "remotePublication": "Not performed; root owns commits and publication.",
+  "allOwnedCompilerArchiveRecoveryProcessesClosed": true,
+  "boundFiles": [
+    {
+      "path": "implementation/phase20/declaration-evidence/PLAN.md",
+      "sha256": "ec0e8ad54862bbbbce53f6545a88b1c1a806c3fcbbd8398e5b9e661434dd8d26",
+      "bytes": 1786
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/README.md",
+      "sha256": "2a487ab2736fea578e847e67aeb2cc4b100d995da47c88a7afea1938619cf457",
+      "bytes": 2383
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/adaptation.json",
+      "sha256": "235769fc94712ea62368ba9d2d89381484a728bbb9ffecccf5ab6a64bece24a2",
+      "bytes": 1679
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/capsule-01/experiments-01.tar.gz",
+      "sha256": "27889fab025a86db494e178e1f7f0bdef8803faaf1d028914b54c9d7fac6a49c",
+      "bytes": 7631341
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/capsule-01/experiments-02.tar.gz",
+      "sha256": "d8888360a44471a27870cf347c31a66da78414f15cc60bbe750940b947bea85f",
+      "bytes": 2696311
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/capsule-01/final-01.tar.gz",
+      "sha256": "45b1f94678976525c2d7474372c4deb9f2b9425e52ef44912560757051e7fbd1",
+      "bytes": 5276215
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/capsule-01/inventory.json",
+      "sha256": "0f49cdf105cf75b5e90d3ef6a7817e7a07eda4f6a53868af3c6caf4fb0db6d70",
+      "bytes": 1033652
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/capsule-01/manifest.json",
+      "sha256": "0021c96daca19205e2652e855737808189a3325a161de165daf6d019891e4132",
+      "bytes": 353095
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/capsule-01/prefix-to-anchor.patch",
+      "sha256": "48ddd3e64e50198444114164b24ca33de910a9c8c3934ff44c07620b701ff583",
+      "bytes": 7353
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/collector-adaptation.patch",
+      "sha256": "769e19cc8df7bb31dd42d337aa92af03d5be3f7a7a346cf72f5118a3d9530b43",
+      "bytes": 4979
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/phase6-start-state.json",
+      "sha256": "de105de7c20b8223d35f1cb9c684bbdd696da134dc45cb3004d14896c83b7cf4",
+      "bytes": 14528
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/post-capture-audit.json",
+      "sha256": "9941a693f70f758ee666d4416e2387777d5cc7ea6f7d19a0be6a35a4cdae7b1c",
+      "bytes": 3097
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/post-capture-audit.py",
+      "sha256": "7aa8212624d4ef1fadfba8cdc442e085d9aa3f42f9fc16b1dc453b90486e6c2f",
+      "bytes": 3896
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/recovery-01.json",
+      "sha256": "325ae957af0a1ed02aac5faabef4088e9397dfdea91a0b4e273acca7dfa927c8",
+      "bytes": 749
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/release-paths.json",
+      "sha256": "147ce6f8d9cebb526e46b6d1457be353492f1b8cae9087df4a632056739fe320",
+      "bytes": 3471
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/root-freeze.json",
+      "sha256": "94dcfe40484134a0817486de4a815696dcf9a32216c8116c037dfc2980268628",
+      "bytes": 15185
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/root-release-freeze.json",
+      "sha256": "128aa964100a84549c20ae91f9daf8d7b39e17f6cb294a04902436c54a8b956b",
+      "bytes": 16681
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/selection-proposal.json",
+      "sha256": "7e207c2bf64dcf9fb6f93c991b69b284ffe7c271568adfa27726411e64fc3138",
+      "bytes": 12630
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/selection-review.json",
+      "sha256": "e9e0568628e04eea4cc2591e941ecb21795bbe1550b39198c5743e04c1f88bdd",
+      "bytes": 7402
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/selection-review.md",
+      "sha256": "1ac73cc46fb0af42a5384666b7c65c7fd3770f1aa9192871c83ec759bd1c0ee6",
+      "bytes": 2402
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/source-delta.json",
+      "sha256": "ef81aa33da409ddd285835ff4ce70b4622845343ca260b835551b81a5e70137a",
+      "bytes": 332
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/syntax-preflight.json",
+      "sha256": "35331e34b9a50286a1ce9080116c44876d14120c166657c98accd495c68455cc",
+      "bytes": 384
+    },
+    {
+      "path": "selfhost/tools/performance/phase20/declaration-evidence-prepare.py",
+      "sha256": "934f1b67e3c453ace2bf4e1bb15a67ae9d2acc9bdd9959c9852d6ba14a747e44",
+      "bytes": 10843
+    },
+    {
+      "path": "selfhost/tools/performance/phase20/declaration-preserve.py",
+      "sha256": "e768cec548b2827c3c36fe4fa7960ee8fb92943e74fa8a2fe94c513d9f10b25f",
+      "bytes": 12759
+    },
+    {
+      "path": "selfhost/tools/performance/phase20/declaration-evidence-close.py",
+      "sha256": "685c266919742849dfd72ebbae9f9e8e6d0b644866e7e9c7773825a7b86cec18",
+      "bytes": 5974
+    }
+  ]
+}

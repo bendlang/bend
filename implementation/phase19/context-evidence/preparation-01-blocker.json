@@ -1,0 +1,13 @@
+{
+  "complete": true,
+  "captureExecuted": false,
+  "recoveryExecuted": false,
+  "reason": "Unchanged collector refuses member bytes >= maxPartPayloadBytes; original 343793779-byte report exceeds64000000.",
+  "ownerInterpretationIncorrect": true,
+  "caughtBy": "independent read-only reviewer phase15_carets before launch",
+  "rootApprovedCorrection": "New384000000 uncompressed part bound, same99000000 compressed bound and all other policies unchanged.",
+  "inventory": {
+    "path": "implementation/phase19/context-evidence/capsule-01/inventory.json",
+    "sha256": "6528944c89f2d76feda467a62a6e772238a8a766c73745becfb4d94948f8b7d6"
+  }
+}

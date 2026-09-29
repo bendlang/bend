@@ -1,0 +1,76 @@
+--- a/src/front/declarations.bend
++++ b/src/front/declarations.bend
+@@ -282,7 +282,7 @@
+ @unsafe
+ def f_top(ts, book, imports, unsafe, scope):
+   f_choose(FRawResult, unsafe,
+-    u => f_choose(FRawResult, f_eq(f_tx(ts), "def"), u => f_top_ready(ts, book, imports, unsafe, scope), u => f_result(book, f_pn(f_err(ts, "expected def after @unsafe")), imports)),
++    u => f_choose(FRawResult, f_eq(f_tx(ts), "def"), u => f_top_ready(ts, book, imports, unsafe, scope), u => f_result(book, f_pn(fpe_error(ts, "expected def after @unsafe", "'def' (@unsafe marks the def below it)")), imports)),
+     u => f_top_ready(ts, book, imports, unsafe, scope))
+ 
+ @unsafe
+@@ -329,7 +329,7 @@
+ def f_import_leading(ts, book, imports, unsafe):
+   match book:
+     case Nil{}:
+-      f_choose(FRawResult, unsafe, u => f_result(book, f_pn(f_err(ts, "expected def after @unsafe")), imports), u => f_import(ts, book, imports))
++      f_choose(FRawResult, unsafe, u => f_result(book, f_pn(fpe_error(ts, "expected def after @unsafe", "'def' (@unsafe marks the def below it)")), imports), u => f_import(ts, book, imports))
+     case Con{d, rest}:
+       f_result(book, f_pn(fpe_error(ts, "expected def, law or type; imports must precede declarations", "'def', 'type' or 'law'")), imports)
+ 
+@@ -479,17 +479,34 @@
+ def f_type_kind(name, pars, p, book, imports, scope):
+   match p:
+     case FParsed{ty, ts}:
+-      f_choose(FRawResult, f_eq(tg(ty), "Error"), u => f_result(book, ty, imports), u => f_type_ctors(name, pars, ty, f_skip(ts), book, imports, Nil{}, scope))
++      f_choose(FRawResult, f_eq(tg(ty), "Error"), u => f_result(book, ty, imports), u => f_type_ctors(name, pars, ty, f_space(ts), book, imports, Nil{}, scope))
+ 
+ @unsafe
+ def f_type_ctors(name, pars, ty, ts, book, imports, ctors, scope):
+-  f_choose(FRawResult, U32.is_gt(f_col(ts), 0) && f_eq(f_tx(f_tl(ts)), "{"), u => f_choose(FRawResult, Bool.not(f_eq(f_alias(f_tx(ts), imports), f_tx(ts))), u => f_result(book, f_pn(fpe_word(ts, "an import alias cannot name a constructor", "a fresh constructor name (" ++ f_import_alias_head(f_tx(ts)) ++ " is an import's alias)")), imports), u => f_choose(FRawResult, Bool.not(f_eq(dk(f_find(f_tx(ts), ctors)), "Missing")) || f_decl_ctor_taken(f_tx(ts), book, scope), u => f_result(book, f_pn(fpe_word(ts, "expected a fresh constructor name (duplicate declaration: " ++ f_tx(ts) ++ ")", "a fresh constructor name (duplicate declaration: " ++ f_tx(ts) ++ ")")), imports), u => f_type_ctor(name, pars, ty, f_tx(ts), f_tele(f_tl(f_tl(ts)), "}", Nil{}), book, imports, ctors, scope))), u => f_tops(ts, Con{KDef{name, "ADT", terms_len(pars), 0, f_tbind(pars, ty), atom("Absent"), List.reverse(&2, KDef, ctors), False{}, False{}}, book}, imports, False{}, scope))
++  f_choose(FRawResult, (f_ascii_alpha(f_head(f_tx(ts))) || Char.is_eq(f_head(f_tx(ts)), '_')) && Bool.not(f_eq(f_tx(ts), "def") || f_eq(f_tx(ts), "type") || f_eq(f_tx(ts), "law")),
++    u => f_type_ctor_header(name, pars, ty, ts, book, imports, ctors, scope),
++    u => f_top(ts, Con{KDef{name, "ADT", terms_len(pars), 0, f_tbind(pars, ty), atom("Absent"), List.reverse(&2, KDef, ctors), False{}, False{}}, book}, imports, False{}, scope))
++
++@unsafe
++def f_type_ctor_header(
++  +name: String, +pars: List<&2,KTerm>, +ty: KTerm, +ts: List<&2,FToken>,
++  +book: List<&2,KDef>, +imports: List<&2,KTerm>, +ctors: List<&2,KDef>, +scope: FParseScope,
++) -> FRawResult:
++  f_choose(FRawResult, Bool.not(f_valid_name(f_tx(ts))),
++    u => f_result(book, f_pn(fpe_name_error(ts)), imports),
++    u => f_choose(FRawResult, Bool.not(f_eq(f_alias(f_tx(ts), imports), f_tx(ts))),
++      u => f_result(book, f_pn(fpe_word(ts, "an import alias cannot name a constructor", "a fresh constructor name (" ++ f_import_alias_head(f_tx(ts)) ++ " is an import's alias)")), imports),
++    u => f_choose(FRawResult, Bool.not(f_eq(dk(f_find(f_tx(ts), ctors)), "Missing")) || f_decl_ctor_taken(f_tx(ts), book, scope),
++      u => f_result(book, f_pn(fpe_word(ts, "expected a fresh constructor name (duplicate declaration: " ++ f_tx(ts) ++ ")", "a fresh constructor name (duplicate declaration: " ++ f_tx(ts) ++ ")")), imports),
++    u => f_choose(FRawResult, f_eq(f_tx(f_space(f_tl(ts))), "{"),
++      u => f_type_ctor(name, pars, ty, f_tx(ts), f_tele(f_tl(f_space(f_tl(ts))), "}", Nil{}), book, imports, ctors, scope),
++      u => f_result(book, f_pn(fpe_error(f_space(f_tl(ts)), "expected {", "'{'")), imports)))))
+ 
+ @unsafe
+ def f_type_ctor(name, pars, ty, ctor, p, book, imports, ctors, scope):
+   match p:
+     case FParsed{fields, ts}:
+-      f_choose(FRawResult, f_eq(tg(fields), "Error"), u => f_result(book, fields, imports), u => f_type_ctors(name, pars, ty, f_skip(ts), book, imports, Con{KDef{ctor, "Ctr", terms_len(ks(fields)), 0, f_tbind(pars, f_tbind(ks(fields), kt("ADT", name, 0, 1, f_param_refs(pars)))), kt("Absent", ctor, 0, 0, Nil{}), Nil{}, False{}, False{}}, ctors}, scope))
++      f_choose(FRawResult, f_eq(tg(fields), "Error"), u => f_result(book, fields, imports), u => f_type_ctors(name, pars, ty, f_space(ts), book, imports, Con{KDef{ctor, "Ctr", terms_len(ks(fields)), 0, f_tbind(pars, f_tbind(ks(fields), kt("ADT", name, 0, 1, f_param_refs(pars)))), kt("Absent", ctor, 0, 0, Nil{}), Nil{}, False{}, False{}}, ctors}, scope))
+ 
+ @unsafe
+ def f_param_refs(pars):
+@@ -538,7 +555,7 @@
+ 
+ @unsafe
+ def f_match_heads(ts, indent, acc):
+-  f_choose(FParsed, f_eq(f_tx(ts), ":"), u => f_match_begin(f_skip(f_tl(ts)), indent, List.reverse(&2, KTerm, acc)), u => f_match_head(f_expr(f_choose(List<&2, FToken>, f_eq(f_tx(ts), ","), u => f_tl(ts), u => ts), 0), indent, acc))
++  f_choose(FParsed, List.is_empty(&2, KTerm, acc) && (f_eq(f_tx(ts), ":") || f_eq(f_tx(ts), ",")), u => fpe_error(ts, "expected term", "a term"), u => f_choose(FParsed, f_eq(f_tx(ts), ":"), u => f_match_begin(f_skip(f_tl(ts)), indent, List.reverse(&2, KTerm, acc)), u => f_match_head(f_expr(f_choose(List<&2, FToken>, f_eq(f_tx(ts), ","), u => f_tl(ts), u => ts), 0), indent, acc)))
+ 
+ @unsafe
+ def f_match_head(p, indent, acc):
+@@ -557,7 +574,7 @@
+ 
+ @unsafe
+ def f_case_pats(ts, indent, heads, rows, pats, start):
+-  f_choose(FParsed, f_eq(f_tx(ts), ":"), u => f_choose(FParsed, U32.is_eq(terms_len(pats), terms_len(heads)), u => f_case_body(f_body_context(f_tl(ts), U32.add(indent, 1)), indent, heads, rows, List.reverse(&2, KTerm, pats)), u => fpe_span(start, ts, "one pattern is required per match scrutinee", U32.show(terms_len(heads)) ++ " patterns (one per scrutinee)", "")), u => f_case_pat(f_expr(f_choose(List<&2, FToken>, f_eq(f_tx(ts), ","), u => f_tl(ts), u => ts), 0), indent, heads, rows, pats, start))
++  f_choose(FParsed, List.is_empty(&2, KTerm, pats) && (f_eq(f_tx(ts), ":") || f_eq(f_tx(ts), ",")), u => fpe_error(ts, "expected term", "a term"), u => f_choose(FParsed, f_eq(f_tx(ts), ":"), u => f_choose(FParsed, U32.is_eq(terms_len(pats), terms_len(heads)), u => f_case_body(f_body_context(f_tl(ts), U32.add(indent, 1)), indent, heads, rows, List.reverse(&2, KTerm, pats)), u => fpe_span(start, ts, "one pattern is required per match scrutinee", U32.show(terms_len(heads)) ++ " patterns (one per scrutinee)", "")), u => f_case_pat(f_expr(f_choose(List<&2, FToken>, f_eq(f_tx(ts), ","), u => f_tl(ts), u => ts), 0), indent, heads, rows, pats, start)))
+ 
+ @unsafe
+ def f_case_pat(p, indent, heads, rows, pats, start):

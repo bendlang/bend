@@ -1,0 +1,59 @@
+{
+  "kind": "phase19-context-pre-capture-selection-audit",
+  "complete": true,
+  "pass": true,
+  "selectedRoots": 80,
+  "members": 7327,
+  "bytes": 610892723,
+  "sourceMembers": 215,
+  "fixtureDependencies": [
+    {
+      "selection": "selfhost/build/phase19/context-row-controls-01/cases.json",
+      "fixture": "selfhost/build/phase16/rejected-stage-controls-01/fixtures/prior-row-pattern-before-body-syntax.bend",
+      "tree": "selfhost/build/phase16/rejected-stage-controls-01/fixtures"
+    },
+    {
+      "selection": "selfhost/build/phase19/context-row-validation-01/selection.json",
+      "fixture": "selfhost/build/phase17/group-controls-03/fixtures/local-then-match.bend",
+      "tree": "selfhost/build/phase17/group-controls-03/fixtures"
+    },
+    {
+      "selection": "selfhost/build/phase19/context-row-validation-01/selection.json",
+      "fixture": "selfhost/build/phase16/marked-pattern-controls-02/fixtures/ordinary-affine-control.bend",
+      "tree": "selfhost/build/phase16/marked-pattern-controls-02/fixtures"
+    },
+    {
+      "selection": "selfhost/build/phase19/context-row-validation-01/selection.json",
+      "fixture": "selfhost/build/phase16/empty-call-pattern-controls-02/fixtures/offload-bound.bend",
+      "tree": "selfhost/build/phase16/empty-call-pattern-controls-02/fixtures"
+    },
+    {
+      "selection": "selfhost/build/phase19/context-row-validation-01/selection.json",
+      "fixture": "selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/do-frame.bend",
+      "tree": "selfhost/build/phase16/parser-checkpoint-controls-03/fixtures"
+    }
+  ],
+  "noWholeExternalExperimentSelected": true,
+  "noLiveSourceOrDistSelected": true,
+  "protectedPhase6PayloadExcluded": 75,
+  "frozenInputsVerified": 121,
+  "publicRaw196RemainsFalse": true,
+  "alphaContractUnchanged": true,
+  "symlinks": 0,
+  "oldMembersPreservedExactly": 7310,
+  "partBoundFeasible": true,
+  "retainedOversizeMember": {
+    "path": "selfhost/build/phase19/context-row-probe-01/controls/report.json",
+    "topic": "context",
+    "mode": 420,
+    "type": "file",
+    "bytes": 343793779,
+    "sha256": "f0120d01b485782baa70ee42be3710256736f6fccb7e39fa8e51f96f244ca729"
+  },
+  "tool": {
+    "path": "implementation/phase19/context-evidence/audit-selection-v2.py",
+    "sha256": "45e4250d6fddaa8fb0af5d0a78b77f8368f4761c5f24570e94be9639739a2792"
+  },
+  "inventorySha256": "d8ca456be4909a490cea0f9e831af6e1f9947161ddcbd76675f3314a22344fd1",
+  "selectionSha256": "3534279946fe2071d2c2d565a683c3d3e010c2cf317baead69573fc8288dad8b"
+}

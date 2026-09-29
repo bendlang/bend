@@ -1,0 +1,32 @@
+{
+  "kind": "phase20-preservation-owned-paths",
+  "paths": [
+    "implementation/phase20/declaration-evidence/PLAN.md",
+    "implementation/phase20/declaration-evidence/README.md",
+    "implementation/phase20/declaration-evidence/adaptation.json",
+    "implementation/phase20/declaration-evidence/capsule-01/experiments-01.tar.gz",
+    "implementation/phase20/declaration-evidence/capsule-01/experiments-02.tar.gz",
+    "implementation/phase20/declaration-evidence/capsule-01/final-01.tar.gz",
+    "implementation/phase20/declaration-evidence/capsule-01/inventory.json",
+    "implementation/phase20/declaration-evidence/capsule-01/manifest.json",
+    "implementation/phase20/declaration-evidence/capsule-01/prefix-to-anchor.patch",
+    "implementation/phase20/declaration-evidence/collector-adaptation.patch",
+    "implementation/phase20/declaration-evidence/owned-paths.json",
+    "implementation/phase20/declaration-evidence/phase6-start-state.json",
+    "implementation/phase20/declaration-evidence/post-capture-audit.json",
+    "implementation/phase20/declaration-evidence/post-capture-audit.py",
+    "implementation/phase20/declaration-evidence/preservation.json",
+    "implementation/phase20/declaration-evidence/recovery-01.json",
+    "implementation/phase20/declaration-evidence/release-paths.json",
+    "implementation/phase20/declaration-evidence/root-freeze.json",
+    "implementation/phase20/declaration-evidence/root-release-freeze.json",
+    "implementation/phase20/declaration-evidence/selection-proposal.json",
+    "implementation/phase20/declaration-evidence/selection-review.json",
+    "implementation/phase20/declaration-evidence/selection-review.md",
+    "implementation/phase20/declaration-evidence/source-delta.json",
+    "implementation/phase20/declaration-evidence/syntax-preflight.json",
+    "selfhost/tools/performance/phase20/declaration-evidence-close.py",
+    "selfhost/tools/performance/phase20/declaration-evidence-prepare.py",
+    "selfhost/tools/performance/phase20/declaration-preserve.py"
+  ]
+}

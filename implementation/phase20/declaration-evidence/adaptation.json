@@ -1,0 +1,29 @@
+{
+  "kind": "phase20-literal-only-collector-adaptation",
+  "parent": {
+    "path": "selfhost/tools/performance/phase19/instance-preserve.py",
+    "sha256": "5ab406b346997394c6d7c3e7dd289efd79c6927eaa65a2f5a855230349d1558f",
+    "bytes": 12713
+  },
+  "collector": {
+    "path": "selfhost/tools/performance/phase20/declaration-preserve.py",
+    "sha256": "e768cec548b2827c3c36fe4fa7960ee8fb92943e74fa8a2fe94c513d9f10b25f",
+    "bytes": 12759
+  },
+  "unchangedRecovery": {
+    "path": "selfhost/tools/performance/phase16/compact-recover.py",
+    "sha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234",
+    "bytes": 7326
+  },
+  "replacements": {
+    "implementation/phase19/instance-evidence": "implementation/phase20/declaration-evidence",
+    "installed-live-checker-release": "installed-declaration-checkpoint-release",
+    "Explicit installed live checker release freeze required": "Explicit installed declaration checkpoint release freeze required",
+    "phase19-instance-scoped-inventory": "phase20-declaration-scoped-inventory",
+    "Selected closed Phase19 live checker release and its checker experiments/gates only; active contextual parser work and previously preserved prefix originals remain outside this capsule.": "Closed Phase20 declaration checkpoint release, retained source01-04 preparations and scoped/broad/execution/cost gates; private contextual parser payloads and prior release originals are external.",
+    "excludedPhase19Roots": "excludedPhase20Roots",
+    "phase19-instance-scoped-capture": "phase20-declaration-scoped-capture",
+    "Usage: instance-preserve.py": "Usage: declaration-preserve.py"
+  },
+  "algorithmChanges": false
+}

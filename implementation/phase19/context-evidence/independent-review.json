@@ -1,0 +1,20 @@
+{
+  "kind": "phase19-context-independent-pre-capture-review",
+  "complete": true,
+  "pass": true,
+  "reviewer": "/root/phase15_carets",
+  "delivery": "collaboration message; recorded by capture owner",
+  "scope": "Read-only collector adaptation, exact selection/dependencies, capsule01\u219202 comparison and unchanged recovery compatibility",
+  "inventorySha256": "d8ca456be4909a490cea0f9e831af6e1f9947161ddcbd76675f3314a22344fd1",
+  "originalMembersPreservedExactly": 7310,
+  "newMembers": 17,
+  "closedRoots": 80,
+  "sourceMembers": 215,
+  "fixtureDependencyTrees": 5,
+  "largestMemberBytes": 343793779,
+  "maxPartPayloadBytes": 384000000,
+  "maxArchiveBytes": 99000000,
+  "initialBlocker": "Original64MB per-member refusal was caught before capture; original preparation remains unexecuted and retained.",
+  "finalVerdict": "No remaining pre-capture blocker. Capture under actual CPU3 affinity, retain any size/refusal result, then independent full recovery.",
+  "compilerJobsOrSourceEditsByReviewer": false
+}

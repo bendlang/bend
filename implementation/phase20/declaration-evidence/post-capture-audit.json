@@ -1,0 +1,79 @@
+{
+  "kind": "phase20-post-capture-identity-audit",
+  "complete": true,
+  "pass": true,
+  "protectedPhase6": {
+    "count": 75,
+    "hashesAndStatusesUnchanged": true,
+    "payloadExcluded": true
+  },
+  "rootFrozenInputs": 76,
+  "allRootFrozenInputsCapturedUnchanged": true,
+  "historicalComparisonIdentities": [
+    {
+      "path": "selfhost/build/phase19/instance-build-03/attempt.json",
+      "sha256": "739e7173180cf52cb823dedb94c0c2445cd08190a69284889f7fa595239e5425",
+      "externalPriorCapsuleMatch": true
+    },
+    {
+      "path": "selfhost/build/phase19/instance-build-03/equality/api.mjs",
+      "sha256": "a15d150a920b89d9c0781372356424e559edabef3246ca281741069b0fe739b6",
+      "externalPriorCapsuleMatch": true
+    },
+    {
+      "path": "selfhost/build/phase19/instance-frontend-01/candidate.json",
+      "sha256": "3511b8384e92359d93b7504a28fe1f9b6e862306eca4895b307d70a959f0be58",
+      "externalPriorCapsuleMatch": true
+    },
+    {
+      "path": "selfhost/build/phase19/instance-group196-01/selected/candidate.json",
+      "sha256": "4a71baf132ebaa4b81124fddb406fafa501f57bf85dc840b7d38772c3e533729",
+      "externalPriorCapsuleMatch": true
+    },
+    {
+      "path": "selfhost/build/phase19/instance-group196-01/selected/paired.json",
+      "sha256": "85005d33dd96ea5a9bf75cec26e06bd22fa11c5ca91082d2289ebdd76d88410e",
+      "externalPriorCapsuleMatch": true
+    },
+    {
+      "path": "selfhost/build/phase19/instance-group196-01/selected/reference.json",
+      "sha256": "7386ed7c884d8d3729db864be402696f42e4577ccca5eedc3c9e3d9d9163cd5b",
+      "externalPriorCapsuleMatch": true
+    }
+  ],
+  "onlyContextualPayload": "context-row-source-05/first-element-only.patch",
+  "sourceReconstructed": 214,
+  "oneFileDelta": [
+    "src/front/declarations.bend"
+  ],
+  "manifestSha256": "0021c96daca19205e2652e855737808189a3325a161de165daf6d019891e4132",
+  "inventorySha256": "0f49cdf105cf75b5e90d3ef6a7817e7a07eda4f6a53868af3c6caf4fb0db6d70",
+  "limitations": "Bounded identity/path audit, not a comprehensive secret scanner or rerun of compiler conformance.",
+  "inputs": [
+    {
+      "path": "implementation/phase20/declaration-evidence/post-capture-audit.py",
+      "sha256": "7aa8212624d4ef1fadfba8cdc442e085d9aa3f42f9fc16b1dc453b90486e6c2f",
+      "bytes": 3896
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/phase6-start-state.json",
+      "sha256": "de105de7c20b8223d35f1cb9c684bbdd696da134dc45cb3004d14896c83b7cf4",
+      "bytes": 14528
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/root-release-freeze.json",
+      "sha256": "128aa964100a84549c20ae91f9daf8d7b39e17f6cb294a04902436c54a8b956b",
+      "bytes": 16681
+    },
+    {
+      "path": "implementation/phase20/declaration-evidence/recovery-01.json",
+      "sha256": "325ae957af0a1ed02aac5faabef4088e9397dfdea91a0b4e273acca7dfa927c8",
+      "bytes": 749
+    },
+    {
+      "path": "implementation/phase19/instance-evidence/capsule-01/inventory.json",
+      "sha256": "cbc818b8c2eb1c12b4147e8067c4cf822fe9c8cb83745609721000419c9a8c21",
+      "bytes": 1510277
+    }
+  ]
+}

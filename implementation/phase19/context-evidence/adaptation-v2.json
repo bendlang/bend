@@ -1,0 +1,23 @@
+{
+  "complete": true,
+  "original": {
+    "path": "selfhost/tools/performance/phase19/context-preserve.py",
+    "sha256": "004a186b79f4f76b170d2c7c0f495b065750f52c3f521372fd18f17255220a72"
+  },
+  "collector": {
+    "path": "selfhost/tools/performance/phase19/context-preserve-v2.py",
+    "sha256": "2813e7a90ff9bfb241d907e0762f963ac4056eb2538d48443c0181ccf02f2040"
+  },
+  "changesOnly": [
+    "v2 plan/freeze paths",
+    "usage label"
+  ],
+  "collectorPolicyChanged": false,
+  "rootApprovedConfigChange": {
+    "maxPartPayloadBytes": {
+      "before": 64000000,
+      "after": 384000000
+    },
+    "maxArchiveBytes": 99000000
+  }
+}

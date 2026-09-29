@@ -1,0 +1,22 @@
+--- a/selfhost/tools/performance/phase19/context-preserve.py
++++ b/selfhost/tools/performance/phase19/context-preserve-v2.py
+@@ -4,8 +4,8 @@
+ import difflib, gzip, hashlib, json, os, posixpath, stat, subprocess, sys, tarfile
+ 
+ ROOT = Path(__file__).resolve().parents[4]
+-PLAN = ROOT/'implementation/phase19/context-evidence/selection-proposal.json'
+-FREEZE = ROOT/'implementation/phase19/context-evidence/root-freeze.json'
++PLAN = ROOT/'implementation/phase19/context-evidence/selection-proposal-v2.json'
++FREEZE = ROOT/'implementation/phase19/context-evidence/root-freeze-v2.json'
+ 
+ def need(ok, message):
+     if not ok: raise ValueError(message)
+@@ -176,7 +176,7 @@
+     try:
+         if mode == 'prepare': prepare(out)
+         elif mode == 'capture': capture(out)
+-        else: raise ValueError('Usage: context-preserve.py prepare|capture NEW_EVIDENCE_DIRECTORY')
++        else: raise ValueError('Usage: context-preserve-v2.py prepare|capture NEW_EVIDENCE_DIRECTORY')
+     except Exception as e:
+         if out.exists(): write(out/(mode+'-failure.json'), {'complete':False,'error':repr(e),'toolSha256':sha(__file__)})
+         raise

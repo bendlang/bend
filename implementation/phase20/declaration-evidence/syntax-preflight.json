@@ -1,0 +1,10 @@
+{
+  "pass": true,
+  "files": [
+    "selfhost/tools/performance/phase20/declaration-evidence-prepare.py",
+    "selfhost/tools/performance/phase20/declaration-preserve.py",
+    "selfhost/tools/performance/phase20/declaration-evidence-close.py",
+    "implementation/phase20/declaration-evidence/post-capture-audit.py"
+  ],
+  "mode": "ast.parse only; no archive or compiler invocation"
+}

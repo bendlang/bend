@@ -1,0 +1,15 @@
+{
+  "baselineCommit": "fd9e8b28c906dff13471fab9afc6975fd5574edd",
+  "source": "selfhost/build/phase20/import-diagnostic-source-04/project",
+  "members": 214,
+  "changedFiles": [
+    "src/front/declarations.bend"
+  ],
+  "delta": {
+    "physicalLines": 17,
+    "definitions": 1,
+    "laws": 0,
+    "types": 0,
+    "bytes": 1110
+  }
+}

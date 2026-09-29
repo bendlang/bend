@@ -1,0 +1,278 @@
+{
+  "kind": "phase19-private-contextual-experiment-preservation",
+  "complete": true,
+  "pass": true,
+  "anchorStatus": "private-contextual-stage4-experiment",
+  "baselineCommit": "fddfc84b3f48aecc77c2424ddc8227cd7f63251f",
+  "anchor": {
+    "source": "selfhost/build/phase19/context-row-source-05/project",
+    "attempt": "selfhost/build/phase19/context-row-build-05",
+    "genuineApiSha256": "caf20ce299ca5a390935dec1be355e8929e3b424047cfbe8bf3137ceda572e87",
+    "selectedApiSha256": "681bf1bcc748a2a184cd9fa4d53ff78292809711d529ff36bd46c53922f379cf"
+  },
+  "selectedCapsule": "implementation/phase19/context-evidence/capsule-02",
+  "scope": "Closed private Phase19 contextual parser stages1-4 and failed attempts only; no installed release or whole-compiler conformance claim, and excluded experiments remain outside this capsule.",
+  "capture": {
+    "members": 7327,
+    "uncompressedBytes": 610892723,
+    "archives": 3,
+    "compressedBytes": 39115623,
+    "largestArchiveBytes": 30239733,
+    "symlinks": 0,
+    "manifestSha256": "379cc37ca9037126a26bdbb8d984e652f9693e15b57774524b8a4f8ceff9ed8e",
+    "inventorySha256": "d8ca456be4909a490cea0f9e831af6e1f9947161ddcbd76675f3314a22344fd1"
+  },
+  "independentRecovery": {
+    "kind": "phase16-independent-compact-recovery",
+    "complete": true,
+    "pass": true,
+    "toolSha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234",
+    "extraction": {
+      "files": 7327,
+      "symlinks": 0,
+      "bytes": 610892723,
+      "allBytesAndModesVerified": true
+    },
+    "sourceReconstruction": {
+      "baselineCommit": "fddfc84b3f48aecc77c2424ddc8227cd7f63251f",
+      "files": 215,
+      "allBytesAndModesVerified": true,
+      "usesWorkingTreeSource": false,
+      "patchSha256": "fc0dd49d8c7c94169efd898ecebd964420eb275c5d15ede378999ec346307e93"
+    },
+    "manifestSha256": "379cc37ca9037126a26bdbb8d984e652f9693e15b57774524b8a4f8ceff9ed8e",
+    "inventorySha256": "d8ca456be4909a490cea0f9e831af6e1f9947161ddcbd76675f3314a22344fd1"
+  },
+  "protectedPhase6": {
+    "pass": true,
+    "unchangedHashAndStatusCount": 75,
+    "noProtectedPayloadSelected": true
+  },
+  "frozenInputsUnchanged": 121,
+  "sourceMembersUnchanged": 215,
+  "closedRoots": 80,
+  "consumedContextTools": 66,
+  "retainedBlockedPreparation": "capsule-01, never captured; oversized member under original64MB bound",
+  "fourOwnerReportsAndNineContextualDesignsSelected": true,
+  "fixtureDependencyTrees": 5,
+  "installedSourceDistAndPhase20Phase21Excluded": true,
+  "public196RawPass": false,
+  "publicExact": 136,
+  "publicDifferences": 60,
+  "scopedTermContract": "Binding-graph-checked alpha-equivalence; actual generated IDs and failing exact-ID attempt retained.",
+  "allOwnedArchiveRecoveryProcessesClosed": true,
+  "compilerJobsRun": false,
+  "gitCommitOrPublicationByOwner": false,
+  "boundFiles": [
+    {
+      "path": "implementation/phase19/context-evidence/PLAN-v2.md",
+      "bytes": 1895,
+      "sha256": "27c4963befb92e2a73eb20b4f525e0dc04c16e0444da8c0a86a71da3df76bf05"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/PLAN.md",
+      "bytes": 4810,
+      "sha256": "571aec9812d1051634cf18e37c28ea64b1edf44f3f8d0f276e499eafe5bbb668"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/README.md",
+      "bytes": 4452,
+      "sha256": "8ee5779a86549a205e90524880f825e1117ae27afaa3515d511797aac2ff9b8b"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/adaptation-v2.json",
+      "bytes": 632,
+      "sha256": "bf694ac9fa0d997b162b0a77961608824ad8d14e94df2dc672bc15fd2388c649"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/adaptation.json",
+      "bytes": 943,
+      "sha256": "cc87e2dbb75ca918cbfb213afad4f11e213ea600c70395cbe4a1f857e8d2701d"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/audit-selection-v2.py",
+      "bytes": 4010,
+      "sha256": "45e4250d6fddaa8fb0af5d0a78b77f8368f4761c5f24570e94be9639739a2792"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/audit-selection.py",
+      "bytes": 3667,
+      "sha256": "4ba4a32c71ba7e7c95cc9386c1ccac25648c1616c726c557535f11349b6e5e8a"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/capsule-01/inventory.json",
+      "bytes": 2211970,
+      "sha256": "6528944c89f2d76feda467a62a6e772238a8a766c73745becfb4d94948f8b7d6"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/capsule-01/phase17-to-context-anchor.patch",
+      "bytes": 83520,
+      "sha256": "fc0dd49d8c7c94169efd898ecebd964420eb275c5d15ede378999ec346307e93"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/capsule-02/context-01.tar.gz",
+      "bytes": 30239733,
+      "sha256": "a4761c440a42fbe8ab19f2c4f43d53e1aa6afdcb5e83328ea57d0273e9b53479"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/capsule-02/context-02.tar.gz",
+      "bytes": 8289855,
+      "sha256": "18092c149f30bc4e5b6124bfe19440bbd28f49c5c7f13decc244234ec31b028c"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/capsule-02/final-01.tar.gz",
+      "bytes": 586035,
+      "sha256": "057ce7acba3e162d07bafcd1aeaf2ee911bbe550ea2a407b56debf9424f35efd"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/capsule-02/inventory.json",
+      "bytes": 2216438,
+      "sha256": "d8ca456be4909a490cea0f9e831af6e1f9947161ddcbd76675f3314a22344fd1"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/capsule-02/manifest.json",
+      "bytes": 766237,
+      "sha256": "379cc37ca9037126a26bdbb8d984e652f9693e15b57774524b8a4f8ceff9ed8e"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/capsule-02/phase17-to-context-anchor.patch",
+      "bytes": 83520,
+      "sha256": "fc0dd49d8c7c94169efd898ecebd964420eb275c5d15ede378999ec346307e93"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/capture.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/capture.stdout",
+      "bytes": 88,
+      "sha256": "0a800f48aa9f198203c9c609079b47d8bf377edf6a5a1e74eae1bd1044069b3a"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/collector-adaptation-v2.patch",
+      "bytes": 1142,
+      "sha256": "f04b2d61407181694fb9e8add2fc6bc3f9805943013b803dce1a58a041b3428a"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/collector-adaptation.patch",
+      "bytes": 4706,
+      "sha256": "963ed1faa4554c0933779357f90796e4e1cd93d2c2b133812dbb2d3fae82ecaa"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/finish-preservation-v2.py",
+      "bytes": 10358,
+      "sha256": "3849955b91cda713d2956a1307d34796ef145a182869a34370f1c8157447225f"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/finish-preservation.py",
+      "bytes": 9950,
+      "sha256": "d6d4fafda4602f19ea536009e554f65d69d7c6fce0a4732f2e0d315583251059"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/independent-review.json",
+      "bytes": 1014,
+      "sha256": "2f68e77b296ad3fb1fb85b3fc21f683193aacd7f9ff1a25f3ece5a25c9a35340"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/phase6-start-state.json",
+      "bytes": 36660,
+      "sha256": "5c0427166fd96f873da3eafb63bacd3a79d1c9e423dd936b091b06dff3388a0b"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/post-capture-audit.json",
+      "bytes": 90066,
+      "sha256": "3accc7b239b2e50d939c717c6d2bbcf394a0da4294201701ad657599f718bb5b"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/preparation-01-blocker.json",
+      "bytes": 642,
+      "sha256": "f9defa085224529cd7d91aa4efc061cd6df80a5404bab2ef1eec44f6fb1818c3"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/prepare-inputs-v2.py",
+      "bytes": 6810,
+      "sha256": "3db67b457e59c1a4dbc77c742787955bfcded824cac231a0259a7831138b766f"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/prepare-inputs.py",
+      "bytes": 11432,
+      "sha256": "ac8a42f8cd0fa14ca5f2b49380c6fda5b271ff88041deedc885afd0facc694da"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/processes-02.json",
+      "bytes": 2257,
+      "sha256": "09657349949472b9bd322249905772ea95f74188817deb5f23cb2a54ec920b1d"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/recovery-02.json",
+      "bytes": 749,
+      "sha256": "7e1561f628f8a499fccca83f83a254b3fe92783de63a3bc9ad410b7485161581"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/recovery.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/recovery.stdout",
+      "bytes": 687,
+      "sha256": "01b29fe6372f466d2ce923d75b50d899f92d4291490eaab79be6cdf646235fc4"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/root-freeze-v2.json",
+      "bytes": 26080,
+      "sha256": "51f1e810886382652411cdcf354f5877cbd0faf97f1ea1cca5f83848d921d23c"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/root-freeze.json",
+      "bytes": 23042,
+      "sha256": "884f75402be6ce5291beb522416bf20601f6578b582ac0607862d8983015d4c3"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/run-preservation-v2.py",
+      "bytes": 2686,
+      "sha256": "2b75f7a155f9f58fc4725998d76767fd301836d2508b7617dcd0662a57d40e61"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/run-preservation.py",
+      "bytes": 2677,
+      "sha256": "22b77af1511a54c322a3e2b90316b9f14c141aac8fa48ae98a86dba8aa29b5cb"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/selection-proposal-v2.json",
+      "bytes": 18437,
+      "sha256": "3534279946fe2071d2c2d565a683c3d3e010c2cf317baead69573fc8288dad8b"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/selection-proposal.json",
+      "bytes": 17062,
+      "sha256": "5e12a4e03271e0a228c9626fb4a553841225a37a70b3e1640495b699687db24b"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/selection-review-v2.json",
+      "bytes": 2538,
+      "sha256": "047bd1f0227df078a8fd21abf8e815569333afcb5884c1259b2ffb0a19aca3a0"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/selection-review.json",
+      "bytes": 2468,
+      "sha256": "7c93a265d9f45ed9354570d2ddde75f81e22a91701aa5a3c9d57b3c4f2a9498d"
+    },
+    {
+      "path": "implementation/phase19/context-evidence/source-membership.json",
+      "bytes": 45122,
+      "sha256": "38fe2abaec3d1937bd699e2b34385366830646ed97a570b1f1a7e556053c1608"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-preserve-v2.py",
+      "bytes": 12734,
+      "sha256": "2813e7a90ff9bfb241d907e0762f963ac4056eb2538d48443c0181ccf02f2040"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/context-preserve.py",
+      "bytes": 12725,
+      "sha256": "004a186b79f4f76b170d2c7c0f495b065750f52c3f521372fd18f17255220a72"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "kind": "phase19-context-capture-and-recovery-processes",
+  "complete": true,
+  "pass": true,
+  "started": "2026-09-29T10:39:50.248726+00:00",
+  "toolSha256": "2b75f7a155f9f58fc4725998d76767fd301836d2508b7617dcd0662a57d40e61",
+  "affinity": [
+    3
+  ],
+  "selectionReviewSha256": "047bd1f0227df078a8fd21abf8e815569333afcb5884c1259b2ffb0a19aca3a0",
+  "processes": [
+    {
+      "name": "capture",
+      "argv": [
+        "/usr/bin/python3",
+        "selfhost/tools/performance/phase19/context-preserve-v2.py",
+        "capture",
+        "implementation/phase19/context-evidence/capsule-02"
+      ],
+      "cwd": "/home/ai/bend2/build/publish/bend",
+      "started": "2026-09-29T10:39:50.248891+00:00",
+      "finished": "2026-09-29T10:40:03.785063+00:00",
+      "wallSeconds": 13.536190635059029,
+      "exitCode": 0,
+      "signal": null,
+      "timeout": false,
+      "stdout": {
+        "file": "implementation/phase19/context-evidence/capture.stdout",
+        "sha256": "0a800f48aa9f198203c9c609079b47d8bf377edf6a5a1e74eae1bd1044069b3a"
+      },
+      "stderr": {
+        "file": "implementation/phase19/context-evidence/capture.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "recovery",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase16/compact-recover.py",
+        "implementation/phase19/context-evidence/capsule-02",
+        "implementation/phase19/context-evidence/recovery-02.json"
+      ],
+      "cwd": "/home/ai/bend2/build/publish/bend",
+      "started": "2026-09-29T10:40:03.787743+00:00",
+      "finished": "2026-09-29T10:40:12.767998+00:00",
+      "wallSeconds": 8.98027191311121,
+      "exitCode": 0,
+      "signal": null,
+      "timeout": false,
+      "stdout": {
+        "file": "implementation/phase19/context-evidence/recovery.stdout",
+        "sha256": "01b29fe6372f466d2ce923d75b50d899f92d4291490eaab79be6cdf646235fc4"
+      },
+      "stderr": {
+        "file": "implementation/phase19/context-evidence/recovery.stderr",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "finished": "2026-09-29T10:40:12.768465+00:00"
+}
