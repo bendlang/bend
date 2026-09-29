@@ -651,6 +651,9 @@ async function cli_login(): Promise<string> {
 // takes the entry's ancestor directories along, as many as the deepest climb.
 // A LICENSE beside a published file goes along; a license/ directory, in
 // any case, is refused (it clashes with LICENSE on a case-blind disk).
+// A leading byte order mark is dropped: the hub stores the text as sent,
+// and an importer's fetch drops the mark, so a file sent with one would
+// never match its hash.
 function pkg_files(file: string, book: Bend.Book,
   seen: Map<string, string | null>): Record<string, string> {
   const dir  = fs.realpathSync(path.dirname(file)) + "/";
@@ -676,10 +679,11 @@ function pkg_files(file: string, book: Bend.Book,
       throw "Error: " + real + " cannot be published: it is in a directory"
         + " named license, which clashes with a LICENSE file; rename it";
     }
-    files[p] = fs.readFileSync(real, "utf8");
+    files[p] = fs.readFileSync(real, "utf8").replace(/^\uFEFF/, "");
     if (fs.readdirSync(path.dirname(real)).includes("LICENSE")) {
       files[path.posix.join(path.posix.dirname(p), "LICENSE")] =
-        fs.readFileSync(path.join(path.dirname(real), "LICENSE"), "utf8");
+        fs.readFileSync(path.join(path.dirname(real), "LICENSE"), "utf8")
+          .replace(/^\uFEFF/, "");
     }
   }
   return files;
