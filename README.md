@@ -36,7 +36,7 @@ measured behavior/output axes agree. [Conformance](selfhost/CONFORMANCE.md)
 separates these results from backend, platform and proof-kernel gaps.
 
 Ongoing [Phase16 conformance work](implementation/phase16/full_conformance.md)
-has an isolated 16-difference checkpoint. Its performance and release gates are
+has an isolated two-difference checkpoint. Its performance and release gates are
 still open; the commands below continue to use the Phase15 release.
 
 The [development workflow](docs/PHASE5_DEVELOPMENT.md) builds a genuine checked

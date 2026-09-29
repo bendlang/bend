@@ -324,3 +324,45 @@ memory; TS takes2.9708s. This is a semantic correction without a demonstrated
 speedup. It does not replace final combined-image timing. Contextual module
 completion and compact literals remain separately checked candidates; production
 stays Phase15 and final history/release gates remain open.
+
+
+## Ninth wave: contextual module parsing
+
+`wave9-build-01`, API `d0d51f88d88f9d124bda5478844a346cc1e2f9983d6fd9c60d7b70b37dfbe0a4`,
+passes `wave9-frontend-01`: **459→2** exact differences, 457 new exact matches
+and none lost versus Phase15; **16→2**, fourteen new and none lost versus wave8.
+All 2,996 primitive outcomes remain exact, including the original 1,001 positive
+accepts, 482 validation refusals and eleven proof-trust refusals. Both remaining
+rows are `check/monad_do_destructure.bend`, parse and check. This finite corpus
+does not cover all semantic boundaries found by the independent controls.
+
+The [contextual module parser](contextual-module-parsing.md) uses completed
+imports and prior declarations when parsing each body. Header discovery retains
+ordered imports before a later header error; a completed declaration's semantic
+error takes precedence over a later top-level parse failure. It parses each
+uncached physical body once and runs one graph finalizer. Standalone APIs keep
+their existing result shapes. The integration checks complete owner deltas and
+three-way merges against their common source ancestor.
+
+`wave9-backend-01` passes all 41 maintained paired backend rows exactly with
+pinned Clang16. Integrated controls have 197/198 exact observations, retaining
+the known same-body live-instance chronology gap. The supplied-source 39 and
+host-loader 43 controls pass their declared contracts, each retaining one
+inherited decorator/import wording difference. All ten completion-host controls
+pass. These gates validate this image, not subsequent representation changes.
+
+Source is **16,038 physical / 13,676 nonblank lines / 561,327 bytes** in 59 modules,
+1,621 definitions, 776 laws and 66 types. The module context adds 196 Bend lines,
+26 definitions and three explicit records over wave8. Total growth versus Phase15
+is 750 lines (4.91%); improved ownership has not reduced total source complexity.
+Counts are frozen in `wave9-source-counts-01.json`.
+
+The separate [constructor-scope correction](contextual-constructor-scope.md)
+fixes local constructor shadowing of a far fillable law and alias-prefixed
+constructor freshness in eight exact controls. The [compact-literal candidate](checker-compact-literals.md)
+reduces the same source's freshened book from 2,171,045 to 152,620 terms while
+retaining every located term. Those are structural counts, not a speed result.
+Its initial union with wave9 and constructor scope passes checked construction
+and the maintained 36 controls; full integration and canonical memo identity
+remain under validation. No Phase16 image is installed. Final same-image
+histories, CLI, performance and release gates remain required.

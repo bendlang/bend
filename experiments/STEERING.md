@@ -4,9 +4,11 @@ Phase16 is active under the [design](../design/phase16/full_conformance.md).
 The user authorizes continued exact conformance work with speed and simplicity
 constraints, including project evidence pushes. Baseline verification and the
 controlled unchanged-release matrix pass; current source remains Phase15.
-The accepted wave8 full gate reduces exact differences **459→16**, with
-443 new exact matches and no losses. All 2,996 primitive outcomes stay exact.
-It adds two matches over wave7: final completeness order and constructor notes.
+The accepted wave9 full gate reduces exact differences **459→2**, with
+457 new exact matches and no losses. All 2,996 primitive outcomes stay exact.
+Contextual module parsing adds fourteen matches over wave8. The remaining two
+corpus rows concern one do-block's parser checkpoint order; independent controls
+retain additional semantic and chronology gaps, so this is not full conformance.
 Alias resolution now respects lexical bindings, with paired positive witnesses.
 The strengthened gate protects every exact match from the preceding accepted
 checkpoint; all rejected integrations remain preserved.
@@ -18,12 +20,13 @@ variation. The exact Base-prefix law passes, but removes only 1.32% of whole-sou
 freshening visits; defer the cache change. Literal builders account for roughly
 2M of the 2.17M elaborated terms. Compact literal representation is under staged
 implementation; no end-to-end speed gain has been measured for it.
-The maintained backend selection is 41/41 exact on wave8; changed images need
+The maintained backend selection is 41/41 exact on wave9; changed images need
 their own final gates. Qualified pattern eligibility passes separate controls.
 Program completion timing is flat (+0.38%) in its isolated same-source matrix.
-Contextual module parsing awaits integration; literal memo boundaries remain open.
-Preserve all
-75 unrelated Phase6 files; no older timed campaign is renewed.
+Contextual module parsing is integrated in wave9. Its initial compact-literal
+union preserves that full vector and all 176 literal observations; memo identity
+and size boundaries remain open. Preserve all 75 unrelated Phase6 files; no older
+timed campaign is renewed.
 
 Phase15 is complete under its [design](../design/phase15/parser_conformance_and_speed.md).
 The [report](../implementation/phase15/parser_conformance_and_speed.md) selects

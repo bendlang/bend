@@ -1,0 +1,35 @@
+#!/usr/bin/env python3
+from pathlib import Path
+import hashlib,json,shutil
+root=Path(__file__).resolve().parents[4];out=root/'selfhost/build/phase16/parser-checkpoint-controls-02';out.mkdir();f=out/'fixtures';f.mkdir();head='import Base\n';cases=[]
+def case(name,body,checkpoint,accept=False):cases.append((name,head+body,checkpoint,accept))
+def local(name,pat,rhs='0n',cont=')',accept=False):case(name,'def main() -> Nat:\n  '+pat+' = '+rhs+'\n  '+cont+'\n','RHS then pattern then continuation',accept)
+local('computed-before-continuation','Nat.add(0n, 0n)')
+local('rhs-before-computed','Nat.add(0n, 0n)',')')
+local('valid-binder-before-continuation','x')
+local('empty-call-unbound','x()',cont='x')
+case('empty-call-bound','def use(x:Nat) -> Nat:\n  x() = 0n\n  x\n','bound empty call remains Var',True)
+local('literal-before-continuation','0n')
+local('constructor-before-continuation','Succ{}')
+local('qualified-before-continuation','Foo.bar')
+local('type-before-continuation','Type')
+local('lambda-before-continuation','(x => x)')
+local('computed-valid-continuation','Nat.add(0n, 0n)',cont='0n')
+case('parameter-frame','def use(x:Nat) -> Nat:\n  Nat.add(x, x) = 0n\n  )\n','parameter scope at pattern')
+case('lambda-frame','def use() -> Nat -> Nat:\n  x =>\n    Nat.add(x, x) = 0n\n    )\n','lambda scope at pattern')
+case('local-frame','def use() -> Nat:\n  x = 0n\n  Nat.add(x, x) = 0n\n  )\n','prior local scope at pattern')
+case('parallel-frame','def use() -> Nat:\n  x y = 0n 1n\n  Nat.add(x, y) = 0n\n  )\n','prior parallel scope at pattern')
+case('match-frame','def use(n:Nat) -> Nat:\n  match n:\n    case Succ{x}:\n      Nat.add(x, x) = 0n\n      )\n','case field scope at pattern')
+case('all-frame','def use() -> Type:\n  @x:Nat -> (Nat.add(x, x) = 0n; )\n','dependent binder scope in grouped body')
+case('bad-case-before-global-head','def global() -> Nat:\n  0n\ndef use() -> Nat:\n  match global:\n    case x:\n      )\n','case syntax before match flatten')
+case('global-head-after-good-case','def global() -> Nat:\n  0n\ndef use() -> Nat:\n  match global:\n    case x:\n      0n\n','match flatten after completed parse')
+case('inner-error-before-computed','def use() -> Nat:\n  Nat.add(0n, 0n) = (\n    match 0n:\n      case x:\n        )\n  )\n','inner RHS parse before pattern')
+case('bound-qualified-positive','def use(Foo.bar:Nat) -> Nat:\n  Foo.bar = 0n\n  Foo.bar\n','bound qualified pattern',True)
+(f/'lib.bend').write_text(head+'def id(x:Nat) -> Nat:\n  x\n')
+cases.append(('module-alias-frame',head+'import ./lib.bend as M\ndef use(x:Nat) -> Nat:\n  M.id(x) = 0n\n  )\n','module aliases at pattern',False))
+cases.append(('alias-shadow-frame',head+'import ./lib.bend as M\ndef use(M.id:Nat -> Nat, x:Nat) -> Nat:\n  M.id(x) = 0n\n  )\n','lexical alias shadow at pattern',False))
+case('do-frame','def use() -> Result<U32,U32>:\n  do Result<U32,U32>:\n    value:U32 <- Done{1}\n    (left,right) = value\n    return left\n','do sugar binders at enclosing pattern')
+rows=[];inventory=[]
+for name,source,checkpoint,accept in cases:
+ p=f/(name+'.bend');p.write_text(source);rows.append({'id':'parser-checkpoint/'+name,'file':str(p),'lanes':['parse','check'],'accept':accept,**({}if accept else{'rejectPhase':'parse'})});inventory.append({'id':name,'checkpoint':checkpoint,'accept':accept,'file':str(p),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()})
+rows.append({'id':'check/monad_do_destructure.bend','lanes':['parse','check']});(out/'selection.json').write_text(json.dumps({'cases':rows},indent=2)+'\n');shutil.copy2(__file__,out/'consumed-tool.py');(out/'manifest.json').write_text(json.dumps({'plan':'experiments/phase16/P16-parser-checkpoint-oracles.md','baseline':'selfhost/build/phase16/wave8-build-01','cases':inventory,'support':{'file':str(f/'lib.bend'),'sha256':hashlib.sha256((f/'lib.bend').read_bytes()).hexdigest()}},indent=2)+'\n');print(out)

@@ -1139,3 +1139,20 @@ now preserves917 files, with independent byte recovery and214-source-file
 reconstruction from committed Phase15 plus the patch. Earlier/later experiment
 preservation remains separate. Contextual completion and compact literal gates
 continue; no Phase16 image is installed.
+
+
+## Phase16 ninth full wave — 2026-09-29
+
+Contextual module parsing brings the accepted full gate to **two exact
+differences**, fourteen new matches and none lost since wave8; 457 new versus
+Phase15. All 2,996 primitive outcomes agree and the maintained backend selection
+remains 41/41 exact. Integrated independent controls are 197/198 exact; their
+remaining same-body instance chronology gap is outside the main corpus. The two
+main rows concern one do-block's earlier pattern error. See the
+[report](../implementation/phase16/full_conformance.md).
+
+The complete source is 16,038 lines, 750 more than Phase15. Compact literal
+representation separately removes 92.97% of loaded terms on identical compiler
+source, with literal/backend/host controls passing. It still needs exact
+syntax-sensitive memo keys and final combined gates; no end-to-end speed claim
+or production promotion follows from the structural reduction.
