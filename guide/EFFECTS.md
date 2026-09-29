@@ -43,7 +43,8 @@ same way. `f` holds the def's arguments in order: a `U32` is the word
 `malloc`ed copy you free), a handle with `io_hand_v(f[0])`. The last
 argument of `io_eff` is the need: `0` runs the effect at once; `IO_READ`
 parks it until the handle in `f[0]` is readable; `IO_TIME` parks it for
-`f[0]` milliseconds. Then the loop calls the effect.
+`f[0]` milliseconds. Then the loop calls the effect. The need also says
+whether `IO.poll` can hold the effect; see "A pollable effect" below.
 
 The effect returns a Term: a `U32` is `(Term)n`, `Unit` is
 `term_pak(CID(Unit), 0)`, a `String` is `io_str(e, p, n)`, a two-field
@@ -73,9 +74,10 @@ allocate it in the run function and free it in `pack`. In `bend2/effs/`,
 ## The JS side
 
 The `.js` file is a plain script, run once in a closure of its own, that
-registers the effect: `io_eff(CID(Clock.now), clock_now, need)`, the need
-optional. The effect takes the def's arguments as JS values: a `U32` is
-a number, a `Nat` a `BigInt`, a `String` a string, a constructor
+registers the effect: `io_eff(CID(Clock.now), clock_now, need, poll)`, the
+need and the poll entry optional (see "A pollable effect" below). The
+effect takes the def's arguments as JS values: a `U32` is a number, a
+`Nat` a `BigInt`, a `String` a string, a constructor
 `{$: CID(Name), field: value}`, a handle its host value (a descriptor).
 `CID(Name)` is the constructor's tag, read as on the C side. It returns
 the answer the same way: `io_done(v)`, `io_fail(code)`,
@@ -88,6 +90,64 @@ blocking effect takes one more argument, `k`, and parks with
 park again. Add an absolute `performance.now()` deadline as a fifth
 argument to also wake on time. `io_sys()` is `libc` through `bun:ffi`
 (`read`, `recv`, `select`, `errno`); `tcp_accept.js` shows the full shape.
+
+## A pollable effect
+
+`IO.poll(ms, act)` (see `bend2/base.bend`) runs `act` until it answers or
+would wait. It can only hold an effect *before* the effect starts: the loop
+checks, before calling it, whether it would wait, and if so keeps the
+untouched request as the `rest` of `Wait{rest}`. `IO.resume(rest)` later
+runs it as if for the first time, `IO.cancel(rest)` answers it cancelled
+without running it, and a dropped `rest` is a plain term that frees itself.
+So an effect is never interrupted halfway: from `IO.poll`'s view it has
+two states, not started (holdable) or started (runs to its end).
+
+An effect declares nothing by default, and that is always safe: `IO.poll`
+runs it as usual and waits for it, past `ms`. Declare it pollable only if
+all of these hold:
+
+1. **Its first wait is on a handle, and the handle is its first argument.**
+   The loop checks `f[0]` (in JS, the first argument) for readable or
+   writable before running the effect. If the effect waits on anything
+   else first (a second descriptor, a timer, work on a helper thread),
+   declare nothing.
+2. **Ready means it can start.** When the handle is ready, the effect does
+   its work as usual. If it still has to park (a spurious wakeup, or a
+   send that fills the buffer halfway), that is fine: it has started, so
+   it runs to its end, and `IO.poll` waits for it.
+3. **It answers `(handle, Result<&1, &1, U32 & String, X>)`**, as every
+   effect on a handle in Base does. `IO.cancel` answers a held request
+   with `(handle, Fail{(ECANCELED, text)})` in its place: the runtime builds
+   that value itself, and drops the request's other arguments.
+
+Then declare it:
+
+- **C:** add `IO_HAND` to the need, with `IO_IN` (wait for readable) or
+  `IO_OUT` (writable) for an effect that tries at once, or keep `IO_READ`
+  for one the loop parks until readable:
+  `io_eff(CID(Socket.peek), socket_peek_run, IO_IN | IO_HAND)`.
+  `IO_IN` and `IO_OUT` change nothing outside `IO.poll`: the effect still
+  runs at once and parks itself with `io_wait_on`.
+- **JS:** pass the poll entry `{ fd: "in" }` or `{ fd: "out" }` as the
+  fourth argument: `io_eff(CID(Socket.peek), socket_peek, undefined,
+  { fd: "in" })`. The entry's other fields (`wait`, `cancel`, `list`,
+  `time`) are Base's own, for channels and sleep: do not use them.
+
+Declare both lanes alike, or the two builds poll differently.
+`tcp_recv.c`, `tcp_send.c`, `tcp_accept.c` and their `.js` twins are the
+reference.
+
+**What a wrong declaration breaks.** The runtime trusts the declaration;
+nothing checks it against the def's type yet.
+
+- `IO_HAND` on an effect that does not answer `(handle, Result)`: a
+  cancelled request answers a value of the wrong shape, and the program
+  crashes, or reads garbage, where it matches on it.
+- A handle that is not the first argument: the loop checks readiness on
+  the wrong descriptor, so a request is held when it could run, or runs
+  (and blocks the poll) when it should be held.
+- A wait that is not the effect's first: a request the loop thought
+  ready still waits, so `IO.poll` waits past `ms`.
 
 ## A complete example
 
