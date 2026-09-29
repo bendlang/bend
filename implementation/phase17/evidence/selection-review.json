@@ -1,0 +1,67 @@
+{
+  "kind": "phase17-exact-selection-review",
+  "complete": true,
+  "pass": true,
+  "inventorySha256": "6623de71f1be85dacecfde7af4fa370350340b184ddbc5e8b528d5e76b19f949",
+  "selectedCapsule": "capsule-02",
+  "originalPreparationRetained": "capsule-01",
+  "correction": "Added exact closed find-source-counts-01.json following root review; no producer or tool changed.",
+  "selectedMembers": 4446,
+  "explicitFixtureSiblingTrees": [
+    {
+      "selection": "selfhost/build/phase17/find-worker-backend-01/selection.json",
+      "fixture": "selfhost/build/phase14/laws-controls-04/fixtures/safe-renamed-dependent.bend",
+      "tree": "selfhost/build/phase14/laws-controls-04/fixtures"
+    },
+    {
+      "selection": "selfhost/build/phase17/find-worker-backend-01/selection.json",
+      "fixture": "selfhost/tests/phase9-literals/fixtures/nat-plus-overflow.bend",
+      "tree": "selfhost/tests/phase9-literals/fixtures"
+    },
+    {
+      "selection": "selfhost/build/phase17/find-worker-backend-01/selection.json",
+      "fixture": "selfhost/build/phase11/pattern-fixtures-01/nat_literal_pattern_arity.bend",
+      "tree": "selfhost/build/phase11/pattern-fixtures-01"
+    },
+    {
+      "selection": "selfhost/build/phase17/group-baseline-02/selected/selection.json",
+      "fixture": "selfhost/build/phase16/marked-pattern-controls-02/fixtures/ordinary-affine-control.bend",
+      "tree": "selfhost/build/phase16/marked-pattern-controls-02/fixtures"
+    },
+    {
+      "selection": "selfhost/build/phase17/group-baseline-02/selected/selection.json",
+      "fixture": "selfhost/build/phase16/empty-call-pattern-controls-02/fixtures/offload-bound.bend",
+      "tree": "selfhost/build/phase16/empty-call-pattern-controls-02/fixtures"
+    },
+    {
+      "selection": "selfhost/build/phase17/group-baseline-02/selected/selection.json",
+      "fixture": "selfhost/build/phase16/parser-checkpoint-controls-03/fixtures/do-frame.bend",
+      "tree": "selfhost/build/phase16/parser-checkpoint-controls-03/fixtures"
+    },
+    {
+      "selection": "selfhost/build/phase17/group-baseline-02/selected/selection.json",
+      "fixture": "selfhost/build/phase16/rejected-stage-controls-01/fixtures/prior-row-pattern-before-body-syntax.bend",
+      "tree": "selfhost/build/phase16/rejected-stage-controls-01/fixtures"
+    }
+  ],
+  "excludedPhase17Roots": [
+    {
+      "path": "selfhost/build/phase17/compact-profile-01",
+      "reason": "Outside this closed Phase17 topic selection. The two compact-profile roots are separately durable in implementation/phase17/profile-evidence; no recapture or completeness claim for other omitted payloads."
+    },
+    {
+      "path": "selfhost/build/phase17/compact-profile-02",
+      "reason": "Outside this closed Phase17 topic selection. The two compact-profile roots are separately durable in implementation/phase17/profile-evidence; no recapture or completeness claim for other omitted payloads."
+    }
+  ],
+  "excludedPhase18Roots": [
+    "selfhost/build/phase18",
+    "selfhost/tools/performance/phase18",
+    "design/phase18",
+    "experiments/phase18",
+    "implementation/phase18"
+  ],
+  "phase18Payloads": 0,
+  "unrelatedPhase6ToolPayloads": 0,
+  "allFrozenInputsSelected": true
+}

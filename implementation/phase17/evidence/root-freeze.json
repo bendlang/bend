@@ -1,0 +1,62 @@
+{
+  "kind": "phase17-selected-producer-freeze",
+  "authorized": true,
+  "allProducersClosed": true,
+  "closedAt": "2026-09-29T07:46:38.832161+00:00",
+  "releaseCommit": "fddfc84b3f48aecc77c2424ddc8227cd7f63251f",
+  "finalAttempt": "selfhost/build/phase17/find-worker-build-01",
+  "finalApiSha256": "9b20de5032e306a0b7ee2686a1cc79452f81fcb282ff6419a0d1ad5c4b5716b6",
+  "inputs": [
+    {
+      "path": "implementation/phase17/find-worker.md",
+      "sha256": "3274615d3e3b424d6438931b614c1f6132517e8cc0c1ac2a3e6ab5c63a5b3359"
+    },
+    {
+      "path": "implementation/phase17/find-worker.json",
+      "sha256": "93c93d112f1a171590675245510fecc30011d5d6f122ba13ca968e77565f795a"
+    },
+    {
+      "path": "implementation/phase17/group-boundary.md",
+      "sha256": "d6292dd95c26283dfe0100a244b46692e3d53507634470effca67d2d01b399a6"
+    },
+    {
+      "path": "implementation/phase17/instance-chronology.json",
+      "sha256": "ba5761d3e960bf2e1a34ba3fc5ecb1a3b255005e3f4de9186c7ff1d6a4ae4df8"
+    },
+    {
+      "path": "selfhost/build/phase17/find-worker-build-01/attempt.json",
+      "sha256": "be48563157abfceb570ceeb3798125b0ebb8f862a26faba05d249e26fb4414ba"
+    },
+    {
+      "path": "selfhost/build/phase17/find-worker-matrix-01/report.json",
+      "sha256": "151c1b23d403ce6e54dcf1b2352e2d4092c7270e9d5fb187f3e5b64f30240b59"
+    },
+    {
+      "path": "selfhost/build/phase17/find-worker-promotion-02/report.json",
+      "sha256": "08abefb655c23a2e11e01620872786981a170156de868b98285cb1ec4f62ebb8"
+    },
+    {
+      "path": "selfhost/build/phase17/find-worker-smoke-01/launcher.json",
+      "sha256": "bde7a57f04994c125bd182169b8ddd638b74988b9551615d5f09778ede088c5a"
+    },
+    {
+      "path": "selfhost/build/phase17/find-demand-gates-01/report.json",
+      "sha256": "59ff814bbee6de1577c3badce83d127b4522d15c2da3c3441195111b1822ffef"
+    },
+    {
+      "path": "selfhost/dist/release.json",
+      "sha256": "9c7838a98e96e35067e381cd85e19cfab2b8ee044e8476ffee62e3f6c4de0569"
+    }
+  ],
+  "additionalFiles": [
+    "selfhost/dist",
+    "README.md",
+    "selfhost/README.md",
+    "selfhost/CONFORMANCE.md",
+    "selfhost/docs/ARCHITECTURE.md",
+    "docs/BEND-IN-BEND.md",
+    "experiments/STEERING.md",
+    "experiments/ledger.md"
+  ],
+  "scope": "All selected Phase17 source/tool/report/CLI producers closed. Active Phase18 worlds/parser research is explicitly excluded and does not touch these inputs."
+}

@@ -1,0 +1,169 @@
+{
+  "kind": "phase17-scoped-preservation-completion",
+  "complete": true,
+  "pass": true,
+  "releaseCommit": "fddfc84b3f48aecc77c2424ddc8227cd7f63251f",
+  "apiSha256": "9b20de5032e306a0b7ee2686a1cc79452f81fcb282ff6419a0d1ad5c4b5716b6",
+  "selectedCapsule": "capsule-02",
+  "scope": "Selected closed Phase17 compiler and experiment topics only; excluded entries are not claimed preserved.",
+  "capture": {
+    "members": 4446,
+    "symlinks": 1,
+    "uncompressedBytes": 200395972,
+    "parts": 5,
+    "compressedBytes": 24624606,
+    "largestPartBytes": 7964458
+  },
+  "independentRecovery": {
+    "kind": "phase16-independent-compact-recovery",
+    "complete": true,
+    "pass": true,
+    "toolSha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234",
+    "extraction": {
+      "files": 4446,
+      "symlinks": 1,
+      "bytes": 200395972,
+      "allBytesAndModesVerified": true
+    },
+    "sourceReconstruction": {
+      "baselineCommit": "0b51d965e2638048b5526b351047daae0c61ed7c",
+      "files": 214,
+      "allBytesAndModesVerified": true,
+      "usesWorkingTreeSource": false,
+      "patchSha256": "c14e5f7f63af22fb627001f80e9a900a57f41dc0354cd42cef613b3dd5103dd9"
+    },
+    "manifestSha256": "19b45ede4384604643f2c59a4544708a48c5c17e8e3f3c1a6f209579982d6790",
+    "inventorySha256": "6623de71f1be85dacecfde7af4fa370350340b184ddbc5e8b528d5e76b19f949"
+  },
+  "protectedPhase6": {
+    "pass": true,
+    "hashesAndStatuses": 75
+  },
+  "noPhase18Payload": true,
+  "frozenInputsSelectedAndCaptureVerified": true,
+  "allOwnedCompilerArchiveRecoveryProcessesClosed": true,
+  "remotePublication": "Not asserted by local preservation.",
+  "boundFiles": [
+    {
+      "path": "implementation/phase17/evidence/README.md",
+      "bytes": 4556,
+      "sha256": "fe2d3b254d82695b75659b759cdf2e3d9cf9985d38a149df57739273a752d8b4"
+    },
+    {
+      "path": "implementation/phase17/evidence/PLAN.md",
+      "bytes": 4094,
+      "sha256": "62ffc51ae52fbb1c3f1c4aff3d2a085f1e0609f1fa352106f41244480b662032"
+    },
+    {
+      "path": "implementation/phase17/evidence/selection-proposal.json",
+      "bytes": 3211,
+      "sha256": "e766710ff590de143e460ecad2fab4753ade78aeab3d1ce261cd39fee62856ca"
+    },
+    {
+      "path": "implementation/phase17/evidence/root-freeze.json",
+      "bytes": 2414,
+      "sha256": "814c76598a8bd614b9f1543606f616a8a613e7b35d2bcede6f673bdd0058509b"
+    },
+    {
+      "path": "implementation/phase17/evidence/adaptation.json",
+      "bytes": 1119,
+      "sha256": "43a693b3e19c664121f43f8586e72fc0977d9dcea179822237f1884db4a84a68"
+    },
+    {
+      "path": "implementation/phase17/evidence/collector-adaptation.patch",
+      "bytes": 4105,
+      "sha256": "eef490428bbb20c1738d3b8db49cc0fe7d8c8fa4153975b680f9458ff35cb4b0"
+    },
+    {
+      "path": "implementation/phase17/evidence/selection-review.json",
+      "bytes": 3213,
+      "sha256": "a7a6e390e16862fb486e71961701c56be2ff48d1b5efe528630cbc82c9b17462"
+    },
+    {
+      "path": "implementation/phase17/evidence/recovery-01.json",
+      "bytes": 749,
+      "sha256": "ea64a3e0336d97c8b42cf4c49f4007706d0094af1e3076c0d9b4c0721c0f2fb9"
+    },
+    {
+      "path": "implementation/phase17/evidence/phase6-audit.json",
+      "bytes": 25276,
+      "sha256": "bb76563ac1a67f1f96b319e7c5dd5abdd96df361f198e7191771ce69db312784"
+    },
+    {
+      "path": "implementation/phase17/evidence/phase6-start-state.json",
+      "bytes": 36660,
+      "sha256": "5c0427166fd96f873da3eafb63bacd3a79d1c9e423dd936b091b06dff3388a0b"
+    },
+    {
+      "path": "implementation/phase17/evidence/capsule-01/consumed-selection-proposal.json",
+      "bytes": 3152,
+      "sha256": "7f54f8e9e41d38430fdc3fe69c7f36f1c1528034ccfd506fe06e11e00b941b6c"
+    },
+    {
+      "path": "implementation/phase17/evidence/capsule-01/prepare-review.json",
+      "bytes": 472,
+      "sha256": "b71794a12a776d87c62b6cbafa7111b6058ab60fc4ee6661b1048e1231191c2a"
+    },
+    {
+      "path": "implementation/phase17/evidence/capsule-02/manifest.json",
+      "bytes": 441265,
+      "sha256": "19b45ede4384604643f2c59a4544708a48c5c17e8e3f3c1a6f209579982d6790"
+    },
+    {
+      "path": "implementation/phase17/evidence/capsule-02/inventory.json",
+      "bytes": 1318537,
+      "sha256": "6623de71f1be85dacecfde7af4fa370350340b184ddbc5e8b528d5e76b19f949"
+    },
+    {
+      "path": "implementation/phase17/evidence/capsule-02/phase16-to-final.patch",
+      "bytes": 577,
+      "sha256": "c14e5f7f63af22fb627001f80e9a900a57f41dc0354cd42cef613b3dd5103dd9"
+    },
+    {
+      "path": "implementation/phase17/evidence/capsule-02/final-01.tar.gz",
+      "bytes": 5944835,
+      "sha256": "5e2a32dfa573412c0f2a70faa48a586774ae3c516139cc89a6e300f6b8837dcd"
+    },
+    {
+      "path": "implementation/phase17/evidence/capsule-02/final-02.tar.gz",
+      "bytes": 7964458,
+      "sha256": "c62bd06c8b5e6b7dd57b53c2d219f8e7f3a64ccdd17355cd0453b09bbdf47f8f"
+    },
+    {
+      "path": "implementation/phase17/evidence/capsule-02/final-03.tar.gz",
+      "bytes": 2951010,
+      "sha256": "cdc4a7b38164d34c7c63e849218e4996943c701d678298eed2f38778258e7ad5"
+    },
+    {
+      "path": "implementation/phase17/evidence/capsule-02/group-01.tar.gz",
+      "bytes": 6269599,
+      "sha256": "dd15696962a554671ec724f4652c78bdfc861aae93b5be7f84ed0f47923a3b36"
+    },
+    {
+      "path": "implementation/phase17/evidence/capsule-02/instance-01.tar.gz",
+      "bytes": 1494704,
+      "sha256": "538177db031771d54913696446f541899bf8d77848db1b6c4f922349446279c7"
+    },
+    {
+      "path": "selfhost/tools/performance/phase17/preserve.py",
+      "bytes": 12392,
+      "sha256": "80911e66129a0995f9b3af2fcb3b7c8871a430497fbbc295722901ca5ee01c3f"
+    },
+    {
+      "path": "selfhost/tools/performance/phase16/compact-recover.py",
+      "bytes": 7326,
+      "sha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234"
+    },
+    {
+      "path": "implementation/phase17/evidence/capsule-01/inventory.json",
+      "bytes": 1318487,
+      "sha256": "e9afc2b8449c7e1a67ec3d83a9837d3826d69581940a8bf6e022ed1863f76b79"
+    },
+    {
+      "path": "implementation/phase17/evidence/capsule-01/phase16-to-final.patch",
+      "bytes": 577,
+      "sha256": "c14e5f7f63af22fb627001f80e9a900a57f41dc0354cd42cef613b3dd5103dd9"
+    }
+  ],
+  "retainedPreparation": "capsule-01; unselected inventory plus original consumed selection and review"
+}

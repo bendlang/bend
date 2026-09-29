@@ -308,3 +308,18 @@ records. Exact exclusions and external prerequisites are in the inventory; this
 is not complete preservation of every Phase16 experiment. The successful recovery
 is a separate immutable record from the capture manifest's earlier pending state.
 Local recovery and commits do not establish successful remote publication.
+
+## Phase17 lookup release and semantic experiments — 2026-09-29
+
+The [release and experiment capsules](../implementation/phase17/evidence/README.md)
+preserve 4,446 members, including one fixture link, in five parts totaling
+24,624,606 compressed bytes. Independent recovery verifies every member and mode
+and reconstructs all 214 final project files from Phase16 commit `0b51d965` plus
+the saved patch. Release commit `fddfc84` installs API `9b20de50`.
+
+The final, group and instance topics retain selected failures, source/builds,
+all release gates, measurements and consumed tools. The initial inventory that
+omitted a source-count file remains alongside the corrected selection. The two
+profile attempts are retained in their separate profile capsule. Active Phase18
+work is excluded, and all 75 unrelated Phase6 hashes/statuses remain unchanged.
+The receipt records external prerequisites and makes no remote-publication claim.

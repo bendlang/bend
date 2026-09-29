@@ -1,0 +1,19 @@
+--- a/src/front/declarations.bend
++++ b/src/front/declarations.bend
+@@ -265,7 +265,15 @@
+     case Nil{}:
+       KDef{name, "Missing", 0, 0, atom("Absent"), atom("Absent"), Nil{}, False{}, False{}}
+     case Con{+d, ds}:
+-      f_choose(KDef, f_eq(name, dn(d)), u => d, u => f_find(name, ds))
++      f_find_next(name, d, ds, f_eq(name, dn(d)))
++
++@unsafe
++def f_find_next(
++  +name: String, +d: KDef, +ds: List<&2, KDef>, +same: Bool,
++) -> KDef:
++  match same:
++    case True{}: d
++    case False{}: f_find(name, ds)
+ 
+ @unsafe
+ def f_tops(ts0, book, imports, unsafe, scope):

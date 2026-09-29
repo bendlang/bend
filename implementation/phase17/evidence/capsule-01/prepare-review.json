@@ -1,0 +1,8 @@
+{
+  "kind": "phase17-preparation-review",
+  "captureStarted": false,
+  "selectedForCapture": false,
+  "reason": "Necessary final source-count artifact did not match initial topic prefixes. Preserve this original inventory and selection, then prepare fresh capsule02 with the exact file added.",
+  "rootApprovedAddition": "selfhost/build/phase17/find-source-counts-01.json",
+  "originalSelectionSha256": "7f54f8e9e41d38430fdc3fe69c7f36f1c1528034ccfd506fe06e11e00b941b6c"
+}
