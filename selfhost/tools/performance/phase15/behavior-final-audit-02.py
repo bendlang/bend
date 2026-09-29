@@ -1,0 +1,15 @@
+import pathlib,json,hashlib
+root=pathlib.Path.cwd();out=root/'selfhost/build/phase15/behavior-final-audit-04';out.mkdir()
+def read(p):return json.loads(p.read_text())
+def ident(p):return {'file':str(p),'sha256':hashlib.sha256(p.read_bytes()).hexdigest()}
+base=root/'selfhost/build/phase15';scoped=read(base/'behavior-audit-03/report.json');host=read(base/'behavior-host-03/report.json');old=read(base/'behavior-validation-02/selected/paired.json');new=read(base/'behavior-validation-03/selected/paired.json');cycle=read(base/'behavior-cycle-validation-03/selected/paired.json');workflow=read(base/'behavior-cycle-validation-03/report.json')
+assert scoped['complete'] and scoped['pass'] and host['complete'] and host['pass']
+assert len(old['rows'])==len(new['rows'])==58
+assert [(x['id'],x['lane'],x['candidate']) for x in old['rows']]==[(x['id'],x['lane'],x['candidate']) for x in new['rows']]
+assert workflow['complete'] and workflow['pass'] and workflow['selected']['exactDifferences']==0
+assert len(cycle['rows'])==16 and not cycle['missing'] and all(x['exactAgreement'] and x['candidateVerdict']=='pass' and x['referenceVerdict']=='pass' for x in cycle['rows'])
+for name in ['reference','candidate']:
+ p=base/f'behavior-cycle-validation-03/selected/{name}.json';r=read(p);assert len(r['results'])==16 and r['finished'] and not r['changedInputs'] and not r['identity']['changedArtifacts'] and not r['identity']['adapterChangedDuringRun'];assert all(not w['errors'] and not w['stats']['timeouts'] and not w['stats']['failures'] for w in r['workers'])
+manifest=read(base/'behavior-source-03/manifest.json');attempt=read(base/'behavior-build-03/attempt.json')
+report={'kind':'phase15-behavior-final-integration-gates','complete':True,'pass':True,'checkedAttempt':str(base/'behavior-build-03'),'api':attempt['api'],'checkedApi':attempt['checkedApi'],'sourceManifest':ident(base/'behavior-source-03/manifest.json'),'sourceChanges':manifest['changes'],'preservedBehaviorObservations':58,'exactCycleAndAliasObservations':16,'hostControls':9,'focusedCases':26,'knownStrictBehaviorDifferences':26,'intendedCorpusDeltas':scoped['intendedCorpusDeltas'],'inputs':[ident(base/p) for p in ['behavior-audit-03/report.json','behavior-host-03/report.json','behavior-validation-02/selected/paired.json','behavior-validation-03/selected/paired.json','behavior-cycle-validation-03/selected/paired.json','behavior-cycle-validation-03/report.json']]+[ident(pathlib.Path(__file__).resolve())],'limitations':['No universal cycle/stack claim.','Source01/host02 were superseded after a two-observation non-exact cyclic error precedence change; all controls and attempts remain preserved.','Raw supplied-source graph APIs retain their own cycle diagnostics; contextual discovery formatting is the IO-host path.','Four corpus illegal-path diagnostics still show the first character rather than the complete observed path.']}
+(out/'report.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps({k:report[k] for k in ['complete','pass','preservedBehaviorObservations','exactCycleAndAliasObservations','hostControls']}))

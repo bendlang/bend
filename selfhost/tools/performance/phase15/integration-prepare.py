@@ -39,6 +39,15 @@ for label, cpu in [('conformance', '1'), ('combined', '3')]:
     (project / 'dist').mkdir()
     for directory, name in changes + ([speed] if label == 'combined' else []):
         shutil.copy2(directory / name, project / name)
+    graph = project / 'src/load/graph.bend'
+    before = graph.read_text()
+    old_comment = '# The host supplies lexical paths and canonical paths; all graph and namespace\n# decisions, including namespace conflicts and cycles, are implemented here.'
+    new_comment = '# The host supplies lexical/canonical paths and guards active IO reentry.\n# Supplied-source graph validation, namespace conflicts and cycles stay here.'
+    assert before.count(old_comment) == 1
+    graph.write_text(before.replace(old_comment, new_comment))
+    report.setdefault('commentChanges', []).append({'project': label,
+        'relative': 'src/load/graph.bend', 'before': identity(base / 'src/load/graph.bend'),
+        'after': identity(graph), 'scope': 'Two comment lines only; IO traversal boundary documentation.'})
     selection = project / 'tests/frontend/phase2-rules/cases.json'
     cases = read(selection)
     assert len(cases) == 26 and cases[0]['id'] == 'check/string_literal_long.bend'
