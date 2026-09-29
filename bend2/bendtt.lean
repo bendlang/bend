@@ -266,6 +266,41 @@ def Term.node : Term → Bool
   | App _ f (Var _) => Term.takes (Term.unspine f []).1
   | t               => Term.takes t
 
+-- the live uses of variable i in t
+def Term.uses : Term → Nat → Nat
+  | Var j, i => if i == j then 1 else 0
+  | Ann x _, i => Term.uses x i
+  | Let q v f, i =>
+    let v := if Quan.live q then Term.uses v i else 0
+    let f := Term.uses f (i + 1)
+    v + f
+  | Lam _ f, i => Term.uses f (i + 1)
+  | App q f x, i =>
+    let f := Term.uses f i
+    let x := if Quan.live q then Term.uses x i else 0
+    f + x
+  | Tup q a b, i =>
+    let a := if Quan.live q then Term.uses a i else 0
+    let b := Term.uses b i
+    a + b
+  | Prj h, i => Term.uses h i
+  | Mat _ h m, i =>
+    let h := Term.uses h i
+    let m := Term.uses m i
+    h + m
+  | Rwt e _ f, i =>
+    let e := Term.uses e i
+    let f := Term.uses f i
+    e + f
+  | _, _ => 0
+
+-- whether a binder's value is worth a walk before it is bound: a closed
+-- q=2 one its body copies. One live use shares nothing, and a value
+-- bound again -- the tail a recursion over data passes itself -- would
+-- go through val once per step, so a walk of n cells would cost n².
+def Term.copies (cl : Bool) (q : Quan) (f : Term) : Bool :=
+  cl && q == Q2 && 1 < Term.uses f 0
+
 -- Subst
 -- =====
 
@@ -790,8 +825,11 @@ def Book.parse (s : String) : Res Book :=
 -- so one budget bounds all the work. A caller goes on with min m n, as
 -- Lean needs to see the fuel shrink (m ≤ n holds anyway).
 -- On a closed term (cl), a q=2 let value or argument, which is Data,
--- goes to normal form (val) before it is bound, so its copies share the
--- work. An open term stays lazy: its stuck parts can grow without end.
+-- goes to normal form (val) before it is bound when the body copies it
+-- (Term.copies), so its copies share the work. A body with one live use
+-- shares nothing by the walk, and a value bound again -- the tail a
+-- recursion over data passes itself -- would pay for it once per step.
+-- An open term stays lazy: its stuck parts can grow without end.
 
 mutual
 
@@ -799,7 +837,7 @@ def Term.wnf (ck : Lib) (cl : Bool) : Nat → Term → List Arg → Term × Nat
   | 0, t, xs => (Term.spine t xs, 0)
   | n + 1, Ann x _, xs => Term.wnf ck cl n x xs
   | n + 1, Let q v f, xs =>
-    let (v, m) := Term.val ck cl n q v
+    let (v, m) := if Term.copies cl q f then Term.val ck cl n q v else (v, n)
     Term.wnf ck cl (min m n) (Term.inst f v) xs
   | n + 1, App q f x, xs => Term.wnf ck cl n f ((q, x) :: xs)
   | n + 1, Rwt e P f, xs =>
@@ -845,7 +883,7 @@ def Term.run (ck : Lib) (cl : Bool) : Nat → Term → Env → List Arg → Opti
 -- fires a λ or a λ-match on its next argument; a λ binds it in e
 def Term.fire (ck : Lib) (cl : Bool) : Nat → Term → Env → List Arg → Option Step × Nat
   | n + 1, Lam q f, e, (_, x) :: xs =>
-    let (x, m) := Term.val ck cl n q x
+    let (x, m) := if Term.copies cl q f then Term.val ck cl n q x else (x, n)
     (some (f, x :: e, xs), m)
   | n + 1, Prj h, e, (q, x) :: xs =>
     match Term.wnf ck cl n x [] with
@@ -1137,34 +1175,6 @@ end
 -- a rebuild of itself (eq) until one gets a rebuild of a piece of itself
 -- (lt). A rebuild is a tagged variable, a hit label, or a live pair of
 -- the two pieces of one split. Dead columns are skipped.
-
--- the live uses of variable i in t
-def Term.uses : Term → Nat → Nat
-  | Var j, i => if i == j then 1 else 0
-  | Ann x _, i => Term.uses x i
-  | Let q v f, i =>
-    let v := if Quan.live q then Term.uses v i else 0
-    let f := Term.uses f (i + 1)
-    v + f
-  | Lam _ f, i => Term.uses f (i + 1)
-  | App q f x, i =>
-    let f := Term.uses f i
-    let x := if Quan.live q then Term.uses x i else 0
-    f + x
-  | Tup q a b, i =>
-    let a := if Quan.live q then Term.uses a i else 0
-    let b := Term.uses b i
-    a + b
-  | Prj h, i => Term.uses h i
-  | Mat _ h m, i =>
-    let h := Term.uses h i
-    let m := Term.uses m i
-    h + m
-  | Rwt e _ f, i =>
-    let e := Term.uses e i
-    let f := Term.uses f i
-    e + f
-  | _, _ => 0
 
 -- the paths of the pieces of column j that x rebuilds
 def Term.pos (g : Guard) (j : Nat) : Term → List (List Bool)
@@ -1943,6 +1953,11 @@ theorem wnf_pars (hb : Sees ck bk) :
     fun {_ x _ _} ex h => by have := (ih _ h (t := x) (xs := [])).1; rwa [ex] at this
   have L : ∀ {m q x v k}, Term.val ck cl m q x = (v, k) → (_ : m < n := by omega) → Pars bk x v :=
     fun ex h => (ih _ h (xs := [])).2.2.2 ex
+  have B : ∀ {m q x v k f}, (if Term.copies cl q f then Term.val ck cl m q x else (x, m)) = (v, k) →
+      (_ : m < n := by omega) → Pars bk x v := by
+    intro _ _ _ _ _ _ ex h; split at ex
+    · exact L ex h
+    · cases ex; exact .refl
   have R1 : ∀ {m t e xs u}, (Term.run ck cl m t e xs).1 = some u → (_ : m < n := by omega) →
       Pars bk (Term.spine (Term.sub (Env.sub e) t) xs) u :=
     fun h l => (ih _ l).2.1 h
@@ -1954,7 +1969,7 @@ theorem wnf_pars (hb : Sees ck bk) :
     · exact .refl
     · exact W (S xs (.unann (par_refl _)))
     · split; rename_i hv
-      exact W (P xs (pars_trans (pars_map (Let _ · _) (.lett · (par_refl _)) (L hv))
+      exact W (P xs (pars_trans (pars_map (Let _ · _) (.lett · (par_refl _)) (B hv))
         (.step (.unlet (par_refl _) (par_refl _)) .refl)))
     · exact W .refl
     · have R : ∀ {e e' P f}, Pars bk e e' → Pars bk (Rwt e P f) (Rwt e' P f) :=
@@ -1984,7 +1999,7 @@ theorem wnf_pars (hb : Sees ck bk) :
         · cases h; exact .refl
   · rw [Term.fire.eq_def] at h; split at h
     · split at h; rename_i hx; cases h; rw [env_inst]
-      exact P _ (pars_trans (A (L hx)) (.step (.beta (par_refl _) (par_refl _)) .refl))
+      exact P _ (pars_trans (A (B hx)) (.step (.beta (par_refl _) (par_refl _)) .refl))
     · split at h <;> rename_i he
       · cases h
         exact P _ (pars_trans (A (V he))
