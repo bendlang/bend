@@ -62,8 +62,7 @@ type O =
   | { $: "Ref"; k: string }
   | { $: "Ann"; x: O; T: O }
   | { $: "Let"; q: Q; l: number; v: O; f: O }
-  | { $: "Typ"; q: Q }
-  | { $: "Kin"; q: O }
+  | { $: "Typ"; q: O }
   | { $: "Min"; a: O; b: O }
   | { $: "All"; q: Q; l: number; A: O; B: O }
   | { $: "Lam"; q: Q; l: number; f: O }
@@ -916,8 +915,7 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
       return args(e, s, x.k, tld.T, x.x, live);
     }
     case "Typ": {
-      const q = term(e, s, x.g, false);
-      return q.$ === "Lab" ? { $: "Typ", q: q.k === "Q2" ? 2 : 1 } : { $: "Kin", q };
+      return { $: "Typ", q: term(e, s, x.g, false) };
     }
     case "All": {
       const l = s.D;
@@ -1375,7 +1373,7 @@ function lams(ps: Array<[Q, number, ...unknown[]]>, b: O): O {
 }
 
 function inferable(o: O): boolean {
-  return o.$ === "App" ? inferable(o.f) : ["Var", "Ref", "Ann", "Typ", "Kin", "Min", "All", "Enu", "Eql"].includes(o.$);
+  return o.$ === "App" ? inferable(o.f) : ["Var", "Ref", "Ann", "Typ", "Min", "All", "Enu", "Eql"].includes(o.$);
 }
 
 // the live uses of level l in o, as the kernel counts them
@@ -1416,8 +1414,7 @@ function o_show(o: O, p: string): string {
     case "Ref": return o.k;
     case "Ann": return "{" + o_show(o.x, p) + " : " + o_show(o.T, p) + "}";
     case "Let": return "!" + mark(o.q) + nm(o.l) + " = " + o_show(o.v, p) + "; " + o_show(o.f, p);
-    case "Typ": return "*" + String(o.q);
-    case "Kin": return "*(" + o_show(o.q, p) + ")";
+    case "Typ": return "*(" + o_show(o.q, p) + ")";
     case "Min": return "(" + o_show(o.a, p) + " <&> " + o_show(o.b, p) + ")";
     case "All": return "∀" + mark(o.q) + nm(o.l) + " : " + o_show(o.A, p) + " -> " + o_show(o.B, p);
     case "Lam": return "λ" + mark(o.q) + nm(o.l) + " => " + o_show(o.f, p);
