@@ -28,10 +28,12 @@ Then run Node 24 with a new attempt directory:
 node tools/development/workflow.mjs run development.json build/dev/attempt-01
 ```
 
-The default selection is 26 frontend acceptance/rejection-phase witnesses,
-including four imported-law trust refusals added in Phase14 and the
-6,000-character string stack regression added in Phase12. That
-witness runs first, preserving its fresh-worker comparison. Phase11 itself can
+The default selection is 36 frontend witnesses: the earlier 26 cases (including
+four imported-law trust refusals and the 6,000-character string) plus six exact
+upstream checks and four separate illegal-import-path controls from Phase15.
+Those four custom fixtures explicitly require refusal during parsing; they retain
+known wording differences and do not replace the original strict upstream cases.
+The string runs first, preserving its fresh-worker comparison. Phase11 itself can
 overflow at4MiB after the previous21-case history, and rejected Phase12 variants
 fail separate stack controls; those failures are retained in the Phase12 report. This gate does not claim general
 stack safety. It does not assert exact diagnostic agreement. Supply `"selection"`

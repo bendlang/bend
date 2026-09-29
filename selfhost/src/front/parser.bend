@@ -525,33 +525,21 @@ law fpe_seek:
   for +rest: String
   for +line: U32
   for +column: U32
+  for +offset: U32
   for +error: KTerm
   String
 law fpe_here:
   for +source: String
   for +rest: String
+  for +offset: U32
   for +error: KTerm
   String
 law fpe_message:
   for +source: String
+  for +offset: U32
   for +error: KTerm
   for +observed: String
   String
-law fpe_snippet:
-  for +lines: List<&2,String>
-  for +at: U32
-  String
-law fpe_snippet_lines:
-  for +lines: List<&2,String>
-  for +at: U32
-  for +end: U32
-  for +line: U32
-  String
-law fpe_pad:
-  for +text: String
-  for +width: U32
-  String
-
 @unsafe
 def fpe_error(ts, legacy, expected):
   fpe_legacy(ts, nm(f_pn(f_err(ts, legacy))), expected)
@@ -578,42 +566,19 @@ def fpe_finish(
 
 @unsafe
 def fpe_render(source, error):
-  f_choose(String, String.eq(tg(error), "Absent"), u => "", u => f_choose(String, String.eq(tg(error), "Error") && String.eq(tg(kid(error, 0)), "ParseExpected") && String.eq(tg(kid(error, 1)), "ParseToken") && U32.is_gt(ix(error), 0), u => fpe_seek(source, source, 1, 0, error), u => nm(error)))
+  f_choose(String, String.eq(tg(error), "Absent"), u => "", u => f_choose(String, String.eq(tg(error), "Error") && String.eq(tg(kid(error, 0)), "ParseExpected") && String.eq(tg(kid(error, 1)), "ParseToken") && U32.is_gt(ix(error), 0), u => fpe_seek(source, source, 1, 0, 0, error), u => nm(error)))
 
 @unsafe
-def fpe_seek(source, rest, line, column, error):
-  f_choose(String, U32.is_eq(line, ix(error)) && U32.is_eq(column, qt(error)), u => fpe_here(source, rest, error), u => f_choose(String, String.is_empty(rest), u => nm(error), u => f_choose(String, U32.is_eq(Char.to_u32(f_head(rest)), 10), u => fpe_seek(source, f_tail(rest), U32.add(line, 1), 0, error), u => fpe_seek(source, f_tail(rest), line, U32.add(column, 1), error))))
+def fpe_seek(source, rest, line, column, offset, error):
+  f_choose(String, U32.is_eq(line, ix(error)) && U32.is_eq(column, qt(error)), u => fpe_here(source, rest, offset, error), u => f_choose(String, String.is_empty(rest), u => nm(error), u => f_choose(String, U32.is_eq(Char.to_u32(f_head(rest)), 10), u => fpe_seek(source, f_tail(rest), U32.add(line, 1), 0, U32.add(offset, 1), error), u => fpe_seek(source, f_tail(rest), line, U32.add(column, 1), U32.add(offset, dg_units(f_head(rest))), error))))
 
 @unsafe
-def fpe_here(source, rest, error):
-  f_choose(String, String.is_empty(rest), u => f_choose(String, String.eq(nm(kid(error, 1)), "<eof>"), u => fpe_message(source, error, "end of input"), u => nm(error)), u => f_choose(String, Bool.not(U32.is_eq(Char.to_u32(f_head(rest)), Char.to_u32(f_head(nm(kid(error, 1)))))) || U32.is_gt(Char.to_u32(f_head(rest)), 65535) || (U32.is_ge(Char.to_u32(f_head(rest)), 55296) && U32.is_le(Char.to_u32(f_head(rest)), 57343)), u => nm(error), u => fpe_message(source, error, "'" ++ SCon{f_head(rest), ""} ++ "'")))
+def fpe_here(source, rest, offset, error):
+  f_choose(String, String.is_empty(rest), u => f_choose(String, String.eq(nm(kid(error, 1)), "<eof>"), u => fpe_message(source, offset, error, "end of input"), u => nm(error)), u => f_choose(String, Bool.not(U32.is_eq(Char.to_u32(f_head(rest)), Char.to_u32(f_head(nm(kid(error, 1)))))) || U32.is_gt(Char.to_u32(f_head(rest)), 65535) || (U32.is_ge(Char.to_u32(f_head(rest)), 55296) && U32.is_le(Char.to_u32(f_head(rest)), 57343)), u => nm(error), u => fpe_message(source, offset, error, "'" ++ SCon{f_head(rest), ""} ++ "'")))
 
 @unsafe
-def fpe_message(source, error, observed):
-  "Error:\n- expected : " ++ nm(kid(error, 0)) ++ "\n- observed : " ++ observed ++ "\nLocation:" ++ fpe_snippet(String.lines(source), ix(error))
-
-@unsafe
-def fpe_lines_count(
-  +lines: List<&2,String>,
-) -> U32:
-  match lines:
-    case Nil{}: 0
-    case Con{head, tail}: U32.add(1, fpe_lines_count(tail))
-
-@unsafe
-def fpe_snippet(lines, at):
-  fpe_snippet_lines(lines, at, f_choose(U32, U32.is_lt(fpe_lines_count(lines), U32.add(at, 1)), u => fpe_lines_count(lines), u => U32.add(at, 1)), 1)
-
-@unsafe
-def fpe_snippet_lines(lines, at, end, line):
-  match lines:
-    case Nil{}: ""
-    case Con{head, tail}:
-      f_choose(String, U32.is_gt(line, end), u => "", u => f_choose(String, U32.is_lt(U32.add(line, 1), at), u => "", u => "\n" ++ fpe_pad(U32.show(line), U32.from_nat(String.length(U32.show(end)))) ++ f_choose(String, U32.is_eq(line, at), u => ">| ", u => " | ") ++ head) ++ fpe_snippet_lines(tail, at, end, U32.add(line, 1)))
-
-@unsafe
-def fpe_pad(text, width):
-  f_choose(String, U32.is_lt(U32.from_nat(String.length(text)), width), u => fpe_pad(" " ++ text, width), u => text)
+def fpe_message(source, offset, error, observed):
+  "Error:\n- expected : " ++ nm(kid(error, 0)) ++ "\n- observed : " ++ observed ++ "\nLocation:" ++ dg_snippet(DSpan{source, offset, offset})
 
 # The pinned parser tests constructor freshness immediately after its name.
 # A next-token position is equivalent only when the name and brace are adjacent.

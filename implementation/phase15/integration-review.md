@@ -53,3 +53,31 @@ That candidate is not selected. P15-005 adds an active canonical IO-path guard
 and shared Bend cycle rendering before the next combined build. The valid-cycle
 and single-body-error gaps are inherited, but that does not excuse the new
 precedence change. No production/default compiler has changed.
+
+
+## Corrected integration
+
+Root and the speed owner independently reviewed final host SHA-256
+`f4753d3e826557d70c71f305f72cf0afc794306151c2be0268c9b937246fef63`.
+Active keys are canonical realpaths, checked before seen/physical reuse. The
+closing-edge catch uses its caller's source/import token and the actual cycle
+path; its parse phase prevents ancestor catches from replacing that context.
+Completed aliases remain valid. Fatal errors discard the request-local active
+set, so it cannot leak into another request. Diagnostic text and UTF-16 snippets
+remain in the single Bend helper. All 16 expanded cycle/alias/diamond observations
+are exact; nine finite host IO controls pass.
+
+Both corrected `conformance-02` and `combined-02` builds pass 36 focused cases.
+Four local scoped witnesses use distinct IDs and blank only the copied upstream
+`#|` lines; the six other new cases retain upstream strict oracles. The original
+four upstream diagnostic failures remain visible in the strict full inventory.
+The full gate passes 2,996 observations, 144 new exact matches and zero regressions.
+All saved paired histories and the 41-row backend gate pass.
+
+Root also identified the standalone loader component's outdated no-renderer
+assumption. The maintained component test now includes core pretty-printing and
+shared model/rendering modules, and forbids checker/diagnostic tracing modules.
+Its genuine 25-module checked build and raw/traced/seeded API controls pass. No
+extra Bend implementation was introduced to keep an obsolete module boundary.
+The final source preparation corrects two graph-boundary comment lines; the
+immediately previous preparation is retained as an unconsumed snapshot.

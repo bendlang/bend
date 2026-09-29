@@ -375,6 +375,20 @@ function $f_source_parsed$(_name_0, _path_0, _text_0, _parsed_0) {
   return {$: "FParsedSource", "name": _name_0, "path": _path_0, "text": _text_0, "parsed": _parsed_0};
 }
 
+function $f_import_failure$(_source_0, _im_0, _path_0, _cycle_0) {
+  const _offset_0 = run_loop($f_import_offset$(_source_0, ($ix$(_im_0)), ($qt$(_im_0)), 0));
+  const _x_2 = run_loop($dg_snippet$({$: "DSpan", "source": _source_0, "begin": _offset_0, "end": _offset_0}));
+  const _x_3 = ("\nLocation:" + _x_2);
+  const _x_4 = run_loop(run_tail((_cycle_0) ? ((_x_0) => {
+  return "an import cycle through ";
+}) : ((_x_1) => {
+  return "no such file: ";
+}), {$: "Unit"}));
+  const _x_5 = (_path_0 + _x_3);
+  const _x_6 = (_x_4 + _x_5);
+  return ("Error:\n- message  : " + _x_6);
+}
+
 function $book_context$(_book_0) {
   if (_book_0.$ === "Nil") {
     return $book_cached$({$: "Nil"}, 0);
@@ -916,23 +930,52 @@ function $dk$(_d_0) {
   return _kind_0;
 }
 
-function $lookup$(_book_0, _name_0) {
-  if (_book_0.$ === "Nil") {
-    return $missing$();
-  } else {
-    const _d_0 = _book_0["head"];
-    const _rest_0 = _book_0["tail"];
-    return run_tail((($String$eq$(($dk$(_d_0)), "BookCache"))) ? ((_x_0) => {
-  return $index_lookup$(_d_0, _name_0);
-}) : ((_x_1) => {
-  if ((($String$eq$(($dn$(_d_0)), _name_0)))) {
-const _x_2 = {$: "Unit"};
-return _d_0;
-} else {
-const _x_3 = {$: "Unit"};
-return {$: "$JMP", f: $lookup$, x: [_rest_0, _name_0]};
-}
-}), {$: "Unit"});
+function $lookup$($0, $1, $2, $3) {
+  let $pc = 0;
+  for (;;) switch ($pc) {
+    case 0: {
+      const _book_0 = $0;
+      const _name_0 = $1;
+      if (_book_0.$ === "Nil") {
+        return $missing$();
+      } else {
+        const _d_0 = _book_0["head"];
+        const _rest_0 = _book_0["tail"];
+        $0 = _d_0;
+        $1 = _rest_0;
+        $2 = _name_0;
+        $3 = ($String$eq$(($dk$(_d_0)), "BookCache"));
+        $pc = 1; continue;
+      }
+    }
+    case 1: {
+      const _d_0 = $0;
+      const _rest_0 = $1;
+      const _name_0 = $2;
+      const _cached_0 = $3;
+      if (_cached_0) {
+        return $index_lookup$(_d_0, _name_0);
+      } else {
+        $0 = _d_0;
+        $1 = _rest_0;
+        $2 = _name_0;
+        $3 = ($String$eq$(($dn$(_d_0)), _name_0));
+        $pc = 2; continue;
+      }
+    }
+    case 2: {
+      const _d_0 = $0;
+      const _rest_0 = $1;
+      const _name_0 = $2;
+      const _same_0 = $3;
+      if (_same_0) {
+        return _d_0;
+      } else {
+        $0 = _rest_0;
+        $1 = _name_0;
+        $pc = 0; continue;
+      }
+    }
   }
 }
 
@@ -1405,6 +1448,55 @@ function $f_graph_trace$(_graph_0, _sources_0) {
   return {$: "FLoadTrace", "result": run_loop($f_graph_result_at$({$: "FGraph", "book": _book_0, "error": _error_0, "done": _done_0}, _sources_0)), "done": _done_0, "sources": _sources_0};
 }
 
+function $f_import_offset$(_source_0, _line_0, _column_0, _offset_0) {
+  if (_source_0 === "") {
+    return _offset_0;
+  } else {
+    const _c_0 = (_source_0.codePointAt(0) > 0xFFFF ? _source_0.slice(0, 2) : _source_0[0]);
+    const _rest_0 = (_source_0.codePointAt(0) > 0xFFFF ? _source_0.slice(2) : _source_0.slice(1));
+    return run_tail(((_line_0 > 1)) ? ((_x_0) => {
+  const _x_3 = run_loop($dg_units$(_c_0));
+  return $f_import_offset$(_rest_0, run_loop(run_tail((($Char$is_eq$(_c_0, "\n"))) ? ((_x_1) => {
+  return ((_line_0 - 1) >>> 0);
+}) : ((_x_2) => {
+  return _line_0;
+}), {$: "Unit"})), _column_0, ((_offset_0 + _x_3) >>> 0));
+}) : ((_x_4) => {
+  return run_tail(((_column_0 === 0)) ? ((_x_5) => {
+  return _offset_0;
+}) : ((_x_6) => {
+  const _x_7 = run_loop($dg_units$(_c_0));
+  return $f_import_offset$(_rest_0, _line_0, ((_column_0 - 1) >>> 0), ((_offset_0 + _x_7) >>> 0));
+}), {$: "Unit"});
+}), {$: "Unit"});
+  }
+}
+
+function $ix$(_t_0) {
+  const _id_0 = _t_0["id"];
+  return _id_0;
+}
+
+function $qt$(_t_0) {
+  const _quant_0 = _t_0["quant"];
+  return _quant_0;
+}
+
+function $dg_snippet$(_span_0) {
+  if (_span_0.$ === "DNoSpan") {
+    return "";
+  } else {
+    const _source_0 = _span_0["source"];
+    const _begin_0 = _span_0["begin"];
+    const _end_0 = _span_0["end"];
+    return $dg_snippet_at$(($String$lines$(_source_0)), run_loop($dg_line_at$(_source_0, _begin_0, 1)), run_loop($dg_marker_left$(_source_0, _begin_0, "")), run_loop(run_tail(((_end_0 > _begin_0)) ? ((_x_0) => {
+  return ((_end_0 - _begin_0) >>> 0);
+}) : ((_x_1) => {
+  return 0;
+}), {$: "Unit"})));
+  }
+}
+
 function $atom$(_tag_0) {
   return $kt$(_tag_0, "", 0, 0, {$: "Nil"});
 }
@@ -1813,7 +1905,7 @@ function $fpe_render$(_source_0, _error_0) {
   const _x_2 = ($ix$(_error_0));
   if ((($Bool$and$(($Bool$and$(($Bool$and$(($String$eq$(($tg$(_error_0)), "Error")), ($String$eq$(($tg$(run_loop($kid$(_error_0, 0)))), "ParseExpected")))), ($String$eq$(($tg$(run_loop($kid$(_error_0, 1)))), "ParseToken")))), (_x_2 > 0))))) {
 const _x_3 = {$: "Unit"};
-return {$: "$JMP", f: $fpe_seek$, x: [_source_0, _source_0, 1, 0, _error_0]};
+return {$: "$JMP", f: $fpe_seek$, x: [_source_0, _source_0, 1, 0, 0, _error_0]};
 } else {
 const _x_4 = {$: "Unit"};
 return {$: "$JMP", f: $nm$, x: [_error_0]};
@@ -2100,11 +2192,6 @@ function $j_local$(_id_0) {
   return ("x" + _x_0);
 }
 
-function $ix$(_t_0) {
-  const _id_0 = _t_0["id"];
-  return _id_0;
-}
-
 function $j_apply$(_book_0, _env_0, _t_0, _tail_0, _fty_0) {
   return $j_apply_spine$(_book_0, _env_0, _t_0, _tail_0, _fty_0, run_loop($j_call_spine$(_t_0, {$: "Nil"})));
 }
@@ -2204,11 +2291,6 @@ function $U32$show$(_a_0) {
   return $U32$show$if$(_b_0, (_b_0 === 0));
 }
 
-function $qt$(_t_0) {
-  const _quant_0 = _t_0["quant"];
-  return _quant_0;
-}
-
 function $j_desc_head$(_book_0, _ty_0, _fuel_0) {
   return $j_desc_head_on$(_book_0, _ty_0, _fuel_0, ($nm$(_ty_0)));
 }
@@ -2225,8 +2307,53 @@ function $missing$() {
   return {$: "KDef", "name": "", "kind": "Absent", "arity": 0, "templates": 0, "typ": ($atom$("Absent")), "value": ($atom$("Absent")), "ctors": {$: "Nil"}, "native": false, "unsafe": false};
 }
 
-function $index_lookup$(_cache_0, _name_0) {
-  return $index_find$(($index_first$(($dc$(_cache_0)))), _name_0, ($index_hash$(_name_0, 2166136261)), 32);
+function $lookup_cached$($0, $1, $2, $3) {
+  let $pc = 1;
+  for (;;) switch ($pc) {
+    case 0: {
+      const _book_0 = $0;
+      const _name_0 = $1;
+      if (_book_0.$ === "Nil") {
+        return $missing$();
+      } else {
+        const _d_0 = _book_0["head"];
+        const _rest_0 = _book_0["tail"];
+        $0 = _d_0;
+        $1 = _rest_0;
+        $2 = _name_0;
+        $3 = ($String$eq$(($dk$(_d_0)), "BookCache"));
+        $pc = 1; continue;
+      }
+    }
+    case 1: {
+      const _d_0 = $0;
+      const _rest_0 = $1;
+      const _name_0 = $2;
+      const _cached_0 = $3;
+      if (_cached_0) {
+        return $index_lookup$(_d_0, _name_0);
+      } else {
+        $0 = _d_0;
+        $1 = _rest_0;
+        $2 = _name_0;
+        $3 = ($String$eq$(($dn$(_d_0)), _name_0));
+        $pc = 2; continue;
+      }
+    }
+    case 2: {
+      const _d_0 = $0;
+      const _rest_0 = $1;
+      const _name_0 = $2;
+      const _same_0 = $3;
+      if (_same_0) {
+        return _d_0;
+      } else {
+        $0 = _rest_0;
+        $1 = _name_0;
+        $pc = 0; continue;
+      }
+    }
+  }
 }
 
 function $j_io_shadow_def$(_book_0, _d_0) {
@@ -2881,6 +3008,81 @@ function $f_source_name$(_source_0) {
   }
 }
 
+function $dg_units$(_c_0) {
+  const _x_0 = ($Char$to_u32$(_c_0));
+  if (((_x_0 > 65535))) {
+const _x_1 = {$: "Unit"};
+return 2;
+} else {
+const _x_2 = {$: "Unit"};
+return 1;
+}
+}
+
+function $dg_snippet_at$(_lines_0, _at_0, _left_0, _length_0) {
+  const _x_0 = ($dg_lines_count$(_lines_0));
+  const _x_1 = ((_at_0 + 1) >>> 0);
+  return $dg_snippet_lines$(_lines_0, _at_0, run_loop(run_tail(((_x_0 < _x_1)) ? ((_x_2) => {
+  return $dg_lines_count$(_lines_0);
+}) : ((_x_3) => {
+  return ((_at_0 + 1) >>> 0);
+}), {$: "Unit"})), 1, _left_0, _length_0);
+}
+
+function $String$lines$(_s_0) {
+  return $String$split$(_s_0, "\n");
+}
+
+function $dg_line_at$(_s_0, _offset_0, _line_0) {
+  if (_s_0 === "") {
+    return _line_0;
+  } else {
+    const _c_0 = (_s_0.codePointAt(0) > 0xFFFF ? _s_0.slice(0, 2) : _s_0[0]);
+    const _rest_0 = (_s_0.codePointAt(0) > 0xFFFF ? _s_0.slice(2) : _s_0.slice(1));
+    const _x_0 = run_loop($dg_units$(_c_0));
+    return run_tail(((_offset_0 < _x_0)) ? ((_x_1) => {
+  return _line_0;
+}) : ((_x_2) => {
+  const _x_3 = run_loop($dg_units$(_c_0));
+  return $dg_line_at$(_rest_0, ((_offset_0 - _x_3) >>> 0), run_loop(run_tail((($Char$is_eq$(_c_0, "\n"))) ? ((_x_4) => {
+  return ((_line_0 + 1) >>> 0);
+}) : ((_x_5) => {
+  return _line_0;
+}), {$: "Unit"})));
+}), {$: "Unit"});
+  }
+}
+
+function $dg_marker_left$(_source_0, _offset_0, _left_0) {
+  if (_source_0 === "") {
+    return _left_0;
+  } else {
+    const _c_0 = (_source_0.codePointAt(0) > 0xFFFF ? _source_0.slice(0, 2) : _source_0[0]);
+    const _rest_0 = (_source_0.codePointAt(0) > 0xFFFF ? _source_0.slice(2) : _source_0.slice(1));
+    return run_tail(((_offset_0 === 0)) ? ((_x_0) => {
+  return _left_0;
+}) : ((_x_1) => {
+  const _x_2 = run_loop($dg_units$(_c_0));
+  return run_tail(((_offset_0 < _x_2)) ? ((_x_3) => {
+  const _x_4 = run_loop($dg_padding$(_offset_0));
+  return (_left_0 + _x_4);
+}) : ((_x_5) => {
+  const _x_6 = run_loop($dg_units$(_c_0));
+  return $dg_marker_left$(_rest_0, ((_offset_0 - _x_6) >>> 0), run_loop(run_tail((($Char$is_eq$(_c_0, "\n"))) ? ((_x_7) => {
+  return "";
+}) : ((_x_8) => {
+  const _x_11 = run_loop(run_tail((($Char$is_eq$(_c_0, "\t"))) ? ((_x_9) => {
+  return "\t";
+}) : ((_x_10) => {
+  return $dg_padding$(run_loop($dg_units$(_c_0)));
+}), {$: "Unit"}));
+  return (_left_0 + _x_11);
+}), {$: "Unit"})));
+}), {$: "Unit"});
+}), {$: "Unit"});
+  }
+}
+
 function $kt$(_tag_0, _name_0, _id_0, _quant_0, _kids_0) {
   return {$: "KTerm", "tag": _tag_0, "name": _name_0, "id": _id_0, "quant": _quant_0, "kids": _kids_0, "removed": {$: "Nil"}};
 }
@@ -3409,20 +3611,21 @@ function $String$ends_with$(_s_0, _p_0) {
   return $String$starts_with$(($String$reverse$(_s_0)), ($String$reverse$(_p_0)));
 }
 
-function $fpe_seek$(_source_0, _rest_0, _line_0, _column_0, _error_0) {
+function $fpe_seek$(_source_0, _rest_0, _line_0, _column_0, _offset_0, _error_0) {
   const _x_0 = ($ix$(_error_0));
   const _x_1 = ($qt$(_error_0));
   return run_tail((($Bool$and$((_line_0 === _x_0), (_column_0 === _x_1)))) ? ((_x_2) => {
-  return $fpe_here$(_source_0, _rest_0, _error_0);
+  return $fpe_here$(_source_0, _rest_0, _offset_0, _error_0);
 }) : ((_x_3) => {
   return run_tail((($String$is_empty$(_rest_0))) ? ((_x_4) => {
   return $nm$(_error_0);
 }) : ((_x_5) => {
   const _x_6 = ($Char$to_u32$(($f_head$(_rest_0))));
   return run_tail(((_x_6 === 10)) ? ((_x_7) => {
-  return $fpe_seek$(_source_0, ($f_tail$(_rest_0)), ((_line_0 + 1) >>> 0), 0, _error_0);
+  return $fpe_seek$(_source_0, ($f_tail$(_rest_0)), ((_line_0 + 1) >>> 0), 0, ((_offset_0 + 1) >>> 0), _error_0);
 }) : ((_x_8) => {
-  return $fpe_seek$(_source_0, ($f_tail$(_rest_0)), _line_0, ((_column_0 + 1) >>> 0), _error_0);
+  const _x_9 = run_loop($dg_units$(($f_head$(_rest_0))));
+  return $fpe_seek$(_source_0, ($f_tail$(_rest_0)), _line_0, ((_column_0 + 1) >>> 0), ((_offset_0 + _x_9) >>> 0), _error_0);
 }), {$: "Unit"});
 }), {$: "Unit"});
 }), {$: "Unit"});
@@ -4043,67 +4246,56 @@ function $norm_eval_node$(_book_0, _t_0, _args_0, _left_0, _fallback_0) {
   return $norm_node_app$(_book_0, _t_0, _args_0, _left_0, _fallback_0, ($String$eq$(($tg$(_t_0)), "App")));
 }
 
-function $index_find$($0, $1, $2, $3, $4) {
-  let $pc = 0;
+function $index_lookup$(_cache_0, _name_0) {
+  return $index_find$(($index_first$(($dc$(_cache_0)))), _name_0, ($index_hash$(_name_0, 2166136261)), 32);
+}
+
+function $lookup_named$($0, $1, $2, $3) {
+  let $pc = 2;
   for (;;) switch ($pc) {
     case 0: {
-      const _tree_0 = $0;
+      const _book_0 = $0;
       const _name_0 = $1;
-      const _hash_0 = $2;
-      const _bits_0 = $3;
-      $0 = _tree_0;
-      $1 = _name_0;
-      $2 = _hash_0;
-      $3 = _bits_0;
-      $4 = ($String$eq$(($dk$(_tree_0)), "Absent"));
-      $pc = 1; continue;
-    }
-    case 1: {
-      const _tree_0 = $0;
-      const _name_0 = $1;
-      const _hash_0 = $2;
-      const _bits_0 = $3;
-      const _absent_0 = $4;
-      if (_absent_0) {
+      if (_book_0.$ === "Nil") {
         return $missing$();
       } else {
-        const _x_0 = ($dx$(_tree_0));
-        $0 = _tree_0;
-        $1 = _name_0;
-        $2 = _hash_0;
-        $3 = _bits_0;
-        $4 = (_x_0 === 0);
+        const _d_0 = _book_0["head"];
+        const _rest_0 = _book_0["tail"];
+        $0 = _d_0;
+        $1 = _rest_0;
+        $2 = _name_0;
+        $3 = ($String$eq$(($dk$(_d_0)), "BookCache"));
+        $pc = 1; continue;
+      }
+    }
+    case 1: {
+      const _d_0 = $0;
+      const _rest_0 = $1;
+      const _name_0 = $2;
+      const _cached_0 = $3;
+      if (_cached_0) {
+        return $index_lookup$(_d_0, _name_0);
+      } else {
+        $0 = _d_0;
+        $1 = _rest_0;
+        $2 = _name_0;
+        $3 = ($String$eq$(($dn$(_d_0)), _name_0));
         $pc = 2; continue;
       }
     }
     case 2: {
-      const _tree_0 = $0;
-      const _name_0 = $1;
-      const _hash_0 = $2;
-      const _bits_0 = $3;
-      const _leaf_0 = $4;
-      if (_leaf_0) {
-        const _x_0 = ($da$(_tree_0));
-        return $index_find_hash$(_tree_0, _name_0, (_x_0 === _hash_0));
+      const _d_0 = $0;
+      const _rest_0 = $1;
+      const _name_0 = $2;
+      const _same_0 = $3;
+      if (_same_0) {
+        return _d_0;
       } else {
-        const _x_1 = ($dx$(_tree_0));
-        const _x_2 = ((_hash_0 & _x_1) >>> 0);
-        $0 = ($index_child$(_tree_0, ($Bool$not$((_x_2 === 0)))));
+        $0 = _rest_0;
         $1 = _name_0;
-        $2 = _hash_0;
-        $3 = _bits_0;
         $pc = 0; continue;
       }
     }
-  }
-}
-
-function $index_first$(_ds_0) {
-  if (_ds_0.$ === "Nil") {
-    return $missing$();
-  } else {
-    const _h_0 = _ds_0["head"];
-    return _h_0;
   }
 }
 
@@ -4381,6 +4573,15 @@ function $norm_defs_join$(_a_0, _b_0) {
     const _h_0 = _a_0["head"];
     const _rest_0 = _a_0["tail"];
     return {$: "Con", "head": _h_0, "tail": ($norm_defs_join$(_rest_0, _b_0))};
+  }
+}
+
+function $index_first$(_ds_0) {
+  if (_ds_0.$ === "Nil") {
+    return $missing$();
+  } else {
+    const _h_0 = _ds_0["head"];
+    return _h_0;
   }
 }
 
@@ -4810,6 +5011,56 @@ function $f_validate_result$(_r_0) {
 }) : ((_x_1) => {
   return _err_0;
 }), {$: "Unit"})), "imports": _imports_0};
+}
+
+function $dg_snippet_lines$(_lines_0, _at_0, _end_0, _line_0, _left_0, _length_0) {
+  if (_lines_0.$ === "Nil") {
+    return "";
+  } else {
+    const _h_0 = _lines_0["head"];
+    const _rest_0 = _lines_0["tail"];
+    return run_tail(((_line_0 > _end_0)) ? ((_x_0) => {
+  return "";
+}) : ((_x_1) => {
+  const _x_2 = ((_line_0 + 1) >>> 0);
+  const _x_13 = run_loop(run_tail(((_x_2 < _at_0)) ? ((_x_3) => {
+  return "";
+}) : ((_x_4) => {
+  const _x_10 = ($dg_lpad$(($U32$show$(_line_0)), ($dg_width$(($U32$show$(_end_0))))));
+  const _x_11 = run_loop(run_tail(((_line_0 === _at_0)) ? ((_x_5) => {
+  const _x_6 = ($dg_marker$(_h_0, ($dg_width$(($U32$show$(_end_0)))), _left_0, _length_0));
+  const _x_7 = ("\n" + _x_6);
+  const _x_8 = (_h_0 + _x_7);
+  return (">| " + _x_8);
+}) : ((_x_9) => {
+  return (" | " + _h_0);
+}), {$: "Unit"}));
+  const _x_12 = (_x_10 + _x_11);
+  return ("\n" + _x_12);
+}), {$: "Unit"}));
+  const _x_14 = run_loop($dg_snippet_lines$(_rest_0, _at_0, _end_0, ((_line_0 + 1) >>> 0), _left_0, _length_0));
+  return (_x_13 + _x_14);
+}), {$: "Unit"});
+  }
+}
+
+function $dg_lines_count$(_lines_0) {
+  if (_lines_0.$ === "Nil") {
+    return 0;
+  } else {
+    const _rest_0 = _lines_0["tail"];
+    const _x_0 = ($dg_lines_count$(_rest_0));
+    return ((1 + _x_0) >>> 0);
+  }
+}
+
+function $dg_padding$(_n_0) {
+  return run_tail(((_n_0 === 0)) ? ((_x_0) => {
+  return "";
+}) : ((_x_1) => {
+  const _x_2 = run_loop($dg_padding$(((_n_0 - 1) >>> 0)));
+  return (" " + _x_2);
+}), {$: "Unit"});
 }
 
 function $index_leaf$(_d_0, _hash_0, _ds_0) {
@@ -5358,11 +5609,11 @@ function $j_def$(_book_0, _d_0) {
 }), {$: "Unit"});
 }
 
-function $fpe_here$(_source_0, _rest_0, _error_0) {
+function $fpe_here$(_source_0, _rest_0, _offset_0, _error_0) {
   return run_tail((($String$is_empty$(_rest_0))) ? ((_x_0) => {
   if ((($String$eq$(($nm$(run_loop($kid$(_error_0, 1)))), "<eof>")))) {
 const _x_1 = {$: "Unit"};
-return {$: "$JMP", f: $fpe_message$, x: [_source_0, _error_0, "end of input"]};
+return {$: "$JMP", f: $fpe_message$, x: [_source_0, _offset_0, _error_0, "end of input"]};
 } else {
 const _x_2 = {$: "Unit"};
 return {$: "$JMP", f: $nm$, x: [_error_0]};
@@ -5382,7 +5633,7 @@ return {$: "$JMP", f: $nm$, x: [_error_0]};
 }) : ((_x_14) => {
   const _x_15 = (($f_head$(_rest_0)) + "");
   const _x_16 = (_x_15 + "'");
-  return $fpe_message$(_source_0, _error_0, ("'" + _x_16));
+  return $fpe_message$(_source_0, _offset_0, _error_0, ("'" + _x_16));
 }), {$: "Unit"});
 }), {$: "Unit"});
 }
@@ -5864,8 +6115,8 @@ function $norm_node_app$(_book_0, _t_0, _args_0, _left_0, _fallback_0, _selected
   }
 }
 
-function $index_find_absent$($0, $1, $2, $3, $4) {
-  let $pc = 1;
+function $index_find$($0, $1, $2, $3, $4) {
+  let $pc = 0;
   for (;;) switch ($pc) {
     case 0: {
       const _tree_0 = $0;
@@ -6897,6 +7148,45 @@ function $f_error_defs$(_ds_0) {
   return $nm$(run_loop($fpe_defs$(_ds_0)));
 }
 
+function $dg_lpad$(_s_0, _width_0) {
+  const _x_0 = ($dg_width$(_s_0));
+  const _x_4 = run_loop($dg_padding$(run_loop(run_tail(((_width_0 > _x_0)) ? ((_x_1) => {
+  const _x_2 = ($dg_width$(_s_0));
+  return ((_width_0 - _x_2) >>> 0);
+}) : ((_x_3) => {
+  return 0;
+}), {$: "Unit"}))));
+  return (_x_4 + _s_0);
+}
+
+function $dg_width$(_s_0) {
+  if (_s_0 === "") {
+    return 0;
+  } else {
+    const _c_0 = (_s_0.codePointAt(0) > 0xFFFF ? _s_0.slice(0, 2) : _s_0[0]);
+    const _rest_0 = (_s_0.codePointAt(0) > 0xFFFF ? _s_0.slice(2) : _s_0.slice(1));
+    const _x_0 = run_loop($dg_units$(_c_0));
+    const _x_1 = ($dg_width$(_rest_0));
+    return ((_x_0 + _x_1) >>> 0);
+  }
+}
+
+function $dg_marker$(_text_0, _width_0, _left_0, _length_0) {
+  const _x_0 = ($dg_width$(_text_0));
+  const _x_1 = ($dg_width$(_left_0));
+  const _x_6 = run_loop($dg_carets$(run_loop($norm_max$(1, ($U32$min$(_length_0, run_loop(run_tail(((_x_0 > _x_1)) ? ((_x_2) => {
+  const _x_3 = ($dg_width$(_text_0));
+  const _x_4 = ($dg_width$(_left_0));
+  return ((_x_3 - _x_4) >>> 0);
+}) : ((_x_5) => {
+  return 0;
+}), {$: "Unit"}))))))));
+  const _x_7 = (_left_0 + _x_6);
+  const _x_8 = run_loop($dg_padding$(_width_0));
+  const _x_9 = (" | " + _x_7);
+  return (_x_8 + _x_9);
+}
+
 function $index_join$(_tree_0, _d_0, _hash_0, _mask_0) {
   const _x_0 = ((_hash_0 & _mask_0) >>> 0);
   return run_tail(((_x_0 === 0)) ? ((_x_1) => {
@@ -7303,8 +7593,8 @@ function $j_l_def$(_book_0, _d_0) {
 }), {$: "Unit"});
 }
 
-function $fpe_message$(_source_0, _error_0, _observed_0) {
-  const _x_0 = run_loop($fpe_snippet$(($String$lines$(_source_0)), ($ix$(_error_0))));
+function $fpe_message$(_source_0, _offset_0, _error_0, _observed_0) {
+  const _x_0 = run_loop($dg_snippet$({$: "DSpan", "source": _source_0, "begin": _offset_0, "end": _offset_0}));
   const _x_1 = ("\nLocation:" + _x_0);
   const _x_2 = (_observed_0 + _x_1);
   const _x_3 = ($nm$(run_loop($kid$(_error_0, 0))));
@@ -7314,7 +7604,7 @@ function $fpe_message$(_source_0, _error_0, _observed_0) {
 }
 
 function $f_import$(_ts_0, _book_0, _imports_0) {
-  return $f_import_path$(_ts_0, "", _book_0, _imports_0);
+  return $f_import_path$(_ts_0, _ts_0, "", _book_0, _imports_0);
 }
 
 function $f_valid_name$(_s_0) {
@@ -7740,8 +8030,8 @@ function $norm_node_ann$(_book_0, _t_0, _args_0, _left_0, _fallback_0, _selected
   }
 }
 
-function $index_find_leaf$($0, $1, $2, $3, $4) {
-  let $pc = 2;
+function $index_find_absent$($0, $1, $2, $3, $4) {
+  let $pc = 1;
   for (;;) switch ($pc) {
     case 0: {
       const _tree_0 = $0;
@@ -8854,6 +9144,19 @@ function $fpe_defs$(_ds_0) {
   }
 }
 
+function $dg_carets$(_count_0) {
+  return run_tail(((_count_0 === 0)) ? ((_x_0) => {
+  return "";
+}) : ((_x_1) => {
+  const _x_2 = run_loop($dg_carets$(((_count_0 - 1) >>> 0)));
+  return ("^" + _x_2);
+}), {$: "Unit"});
+}
+
+function $U32$min$(_a_0, _b_0) {
+  return $Bool$pick$((_a_0 < _b_0), _a_0, _b_0);
+}
+
 function $index_child_list$(_ds_0, _right_0) {
   if (_ds_0.$ === "Nil") {
     return $missing$();
@@ -9027,18 +9330,6 @@ function $dg_rpad$(_s_0, _width_0) {
   return (_s_0 + _x_4);
 }
 
-function $dg_width$(_s_0) {
-  if (_s_0 === "") {
-    return 0;
-  } else {
-    const _c_0 = (_s_0.codePointAt(0) > 0xFFFF ? _s_0.slice(0, 2) : _s_0[0]);
-    const _rest_0 = (_s_0.codePointAt(0) > 0xFFFF ? _s_0.slice(2) : _s_0.slice(1));
-    const _x_0 = run_loop($dg_units$(_c_0));
-    const _x_1 = ($dg_width$(_rest_0));
-    return ((_x_0 + _x_1) >>> 0);
-  }
-}
-
 function $dg_location_text$(_name_0, _snippet_0) {
   return run_tail((($Bool$and$(($String$eq$(_name_0, "")), ($String$eq$(_snippet_0, ""))))) ? ((_x_0) => {
   return "";
@@ -9051,21 +9342,6 @@ function $dg_location_text$(_name_0, _snippet_0) {
   const _x_5 = (_x_4 + _snippet_0);
   return ("\nLocation:" + _x_5);
 }), {$: "Unit"});
-}
-
-function $dg_snippet$(_span_0) {
-  if (_span_0.$ === "DNoSpan") {
-    return "";
-  } else {
-    const _source_0 = _span_0["source"];
-    const _begin_0 = _span_0["begin"];
-    const _end_0 = _span_0["end"];
-    return $dg_snippet_at$(($String$lines$(_source_0)), run_loop($dg_line_at$(_source_0, _begin_0, 1)), run_loop($dg_marker_left$(_source_0, _begin_0, "")), run_loop(run_tail(((_end_0 > _begin_0)) ? ((_x_0) => {
-  return ((_end_0 - _begin_0) >>> 0);
-}) : ((_x_1) => {
-  return 0;
-}), {$: "Unit"})));
-  }
 }
 
 function $norm_exact_lists$(_as_0, _bs_0) {
@@ -9376,35 +9652,21 @@ function $j_l_global$(_book_0, _d_0, _t_0) {
   return $j_l_global_worker$(_book_0, _d_0, _t_0, run_loop($j_projection_worker$(_book_0, _t_0, ($dt$(_d_0)))));
 }
 
-function $fpe_snippet$(_lines_0, _at_0) {
-  const _x_0 = ($fpe_lines_count$(_lines_0));
-  const _x_1 = ((_at_0 + 1) >>> 0);
-  return $fpe_snippet_lines$(_lines_0, _at_0, run_loop(run_tail(((_x_0 < _x_1)) ? ((_x_2) => {
-  return $fpe_lines_count$(_lines_0);
-}) : ((_x_3) => {
-  return ((_at_0 + 1) >>> 0);
-}), {$: "Unit"})), 1);
-}
-
-function $String$lines$(_s_0) {
-  return $String$split$(_s_0, "\n");
-}
-
-function $f_import_path$(_ts_0, _path_0, _book_0, _imports_0) {
+function $f_import_path$(_ts_0, _start_0, _path_0, _book_0, _imports_0) {
   return run_tail((($f_eq$(($f_tx$(_ts_0)), "as"))) ? ((_x_0) => {
-  return $f_import_alias$(_ts_0, _path_0, _book_0, _imports_0);
+  return $f_import_alias$(_ts_0, _start_0, _path_0, _book_0, _imports_0);
 }) : ((_x_1) => {
   const _x_2 = ($f_eq$(($f_tx$(_ts_0)), "\n"));
   const _x_3 = ($f_eq$(($f_tx$(_ts_0)), "<eof>"));
   return run_tail(((_x_2 || _x_3)) ? ((_x_4) => {
   return run_tail((($f_eq$(_path_0, "Base"))) ? ((_x_5) => {
-  return $f_tops$(_ts_0, _book_0, {$: "Con", "head": ($kt$("Import", _path_0, 0, 0, {$: "Nil"})), "tail": _imports_0}, false);
+  return $f_tops$(_ts_0, _book_0, {$: "Con", "head": ($kt$("Import", _path_0, ($f_line$(_start_0)), ($f_col$(_start_0)), {$: "Nil"})), "tail": _imports_0}, false);
 }) : ((_x_6) => {
   return $f_result$(_book_0, ($kt$("Error", "a module import requires as followed by an alias", 0, 0, {$: "Nil"})), _imports_0);
 }), {$: "Unit"});
 }) : ((_x_7) => {
   const _x_8 = ($f_tx$(_ts_0));
-  return $f_import_path$(($f_tl$(_ts_0)), (_path_0 + _x_8), _book_0, _imports_0);
+  return $f_import_path$(($f_tl$(_ts_0)), _start_0, (_path_0 + _x_8), _book_0, _imports_0);
 }), {$: "Unit"});
 }), {$: "Unit"});
 }
@@ -9924,11 +10186,58 @@ function $norm_node_let$(_book_0, _t_0, _args_0, _left_0, _fallback_0, _selected
   }
 }
 
-function $index_find_hash$(_tree_0, _name_0, _same_0) {
-  if (_same_0) {
-    return $index_bucket$(($dc$(_tree_0)), _name_0);
-  } else {
-    return $missing$();
+function $index_find_leaf$($0, $1, $2, $3, $4) {
+  let $pc = 2;
+  for (;;) switch ($pc) {
+    case 0: {
+      const _tree_0 = $0;
+      const _name_0 = $1;
+      const _hash_0 = $2;
+      const _bits_0 = $3;
+      $0 = _tree_0;
+      $1 = _name_0;
+      $2 = _hash_0;
+      $3 = _bits_0;
+      $4 = ($String$eq$(($dk$(_tree_0)), "Absent"));
+      $pc = 1; continue;
+    }
+    case 1: {
+      const _tree_0 = $0;
+      const _name_0 = $1;
+      const _hash_0 = $2;
+      const _bits_0 = $3;
+      const _absent_0 = $4;
+      if (_absent_0) {
+        return $missing$();
+      } else {
+        const _x_0 = ($dx$(_tree_0));
+        $0 = _tree_0;
+        $1 = _name_0;
+        $2 = _hash_0;
+        $3 = _bits_0;
+        $4 = (_x_0 === 0);
+        $pc = 2; continue;
+      }
+    }
+    case 2: {
+      const _tree_0 = $0;
+      const _name_0 = $1;
+      const _hash_0 = $2;
+      const _bits_0 = $3;
+      const _leaf_0 = $4;
+      if (_leaf_0) {
+        const _x_0 = ($da$(_tree_0));
+        return $index_find_hash$(_tree_0, _name_0, (_x_0 === _hash_0));
+      } else {
+        const _x_1 = ($dx$(_tree_0));
+        const _x_2 = ((_hash_0 & _x_1) >>> 0);
+        $0 = ($index_child$(_tree_0, ($Bool$not$((_x_2 === 0)))));
+        $1 = _name_0;
+        $2 = _hash_0;
+        $3 = _bits_0;
+        $pc = 0; continue;
+      }
+    }
   }
 }
 
@@ -10990,6 +11299,14 @@ function $f_graph_fresh_name$(_rest_0, _done_0, _d_0, _hash_0, _old_0) {
 }), {$: "Unit"});
 }
 
+function $Bool$pick$(_c_0, _a_0, _b_0) {
+  if (!_c_0) {
+    return _b_0;
+  } else {
+    return _a_0;
+  }
+}
+
 function $f_graph_finish$(_s_0, _ns_0, _book_0, _imports_0, _g_0) {
   const _prior_0 = _g_0["book"];
   const _err_0 = _g_0["error"];
@@ -11114,86 +11431,6 @@ function $norm_cmp_loop$(_book_0, _todo_0, _alts_0) {
   return $norm_cmp_loop$(_book_0, _rest_0, _alts_0);
 }) : ((_x_1) => {
   return $norm_cmp_heads$(_book_0, run_loop($wnf$(_book_0, _a_0)), run_loop($wnf$(_book_0, _b_0)), _le_0, _fresh_0, _rest_0, _alts_0);
-}), {$: "Unit"});
-  }
-}
-
-function $dg_padding$(_n_0) {
-  return run_tail(((_n_0 === 0)) ? ((_x_0) => {
-  return "";
-}) : ((_x_1) => {
-  const _x_2 = run_loop($dg_padding$(((_n_0 - 1) >>> 0)));
-  return (" " + _x_2);
-}), {$: "Unit"});
-}
-
-function $dg_units$(_c_0) {
-  const _x_0 = ($Char$to_u32$(_c_0));
-  if (((_x_0 > 65535))) {
-const _x_1 = {$: "Unit"};
-return 2;
-} else {
-const _x_2 = {$: "Unit"};
-return 1;
-}
-}
-
-function $dg_snippet_at$(_lines_0, _at_0, _left_0, _length_0) {
-  const _x_0 = ($dg_lines_count$(_lines_0));
-  const _x_1 = ((_at_0 + 1) >>> 0);
-  return $dg_snippet_lines$(_lines_0, _at_0, run_loop(run_tail(((_x_0 < _x_1)) ? ((_x_2) => {
-  return $dg_lines_count$(_lines_0);
-}) : ((_x_3) => {
-  return ((_at_0 + 1) >>> 0);
-}), {$: "Unit"})), 1, _left_0, _length_0);
-}
-
-function $dg_line_at$(_s_0, _offset_0, _line_0) {
-  if (_s_0 === "") {
-    return _line_0;
-  } else {
-    const _c_0 = (_s_0.codePointAt(0) > 0xFFFF ? _s_0.slice(0, 2) : _s_0[0]);
-    const _rest_0 = (_s_0.codePointAt(0) > 0xFFFF ? _s_0.slice(2) : _s_0.slice(1));
-    const _x_0 = run_loop($dg_units$(_c_0));
-    return run_tail(((_offset_0 < _x_0)) ? ((_x_1) => {
-  return _line_0;
-}) : ((_x_2) => {
-  const _x_3 = run_loop($dg_units$(_c_0));
-  return $dg_line_at$(_rest_0, ((_offset_0 - _x_3) >>> 0), run_loop(run_tail((($Char$is_eq$(_c_0, "\n"))) ? ((_x_4) => {
-  return ((_line_0 + 1) >>> 0);
-}) : ((_x_5) => {
-  return _line_0;
-}), {$: "Unit"})));
-}), {$: "Unit"});
-  }
-}
-
-function $dg_marker_left$(_source_0, _offset_0, _left_0) {
-  if (_source_0 === "") {
-    return _left_0;
-  } else {
-    const _c_0 = (_source_0.codePointAt(0) > 0xFFFF ? _source_0.slice(0, 2) : _source_0[0]);
-    const _rest_0 = (_source_0.codePointAt(0) > 0xFFFF ? _source_0.slice(2) : _source_0.slice(1));
-    return run_tail(((_offset_0 === 0)) ? ((_x_0) => {
-  return _left_0;
-}) : ((_x_1) => {
-  const _x_2 = run_loop($dg_units$(_c_0));
-  return run_tail(((_offset_0 < _x_2)) ? ((_x_3) => {
-  const _x_4 = run_loop($dg_padding$(_offset_0));
-  return (_left_0 + _x_4);
-}) : ((_x_5) => {
-  const _x_6 = run_loop($dg_units$(_c_0));
-  return $dg_marker_left$(_rest_0, ((_offset_0 - _x_6) >>> 0), run_loop(run_tail((($Char$is_eq$(_c_0, "\n"))) ? ((_x_7) => {
-  return "";
-}) : ((_x_8) => {
-  const _x_11 = run_loop(run_tail((($Char$is_eq$(_c_0, "\t"))) ? ((_x_9) => {
-  return "\t";
-}) : ((_x_10) => {
-  return $dg_padding$(run_loop($dg_units$(_c_0)));
-}), {$: "Unit"}));
-  return (_left_0 + _x_11);
-}), {$: "Unit"})));
-}), {$: "Unit"});
 }), {$: "Unit"});
   }
 }
@@ -11355,57 +11592,20 @@ function $j_projection_worker$(_book_0, _t_0, _ty_0) {
 }), {$: "Unit"});
 }
 
-function $fpe_snippet_lines$(_lines_0, _at_0, _end_0, _line_0) {
-  if (_lines_0.$ === "Nil") {
-    return "";
-  } else {
-    const _head_0 = _lines_0["head"];
-    const _tail_0 = _lines_0["tail"];
-    return run_tail(((_line_0 > _end_0)) ? ((_x_0) => {
-  return "";
-}) : ((_x_1) => {
-  const _x_2 = ((_line_0 + 1) >>> 0);
-  const _x_13 = run_loop(run_tail(((_x_2 < _at_0)) ? ((_x_3) => {
-  return "";
-}) : ((_x_4) => {
-  const _x_5 = ($U32$show$(_end_0));
-  const _x_6 = [..._x_5].length;
-  const _x_9 = run_loop(run_tail(((_line_0 === _at_0)) ? ((_x_7) => {
-  return ">| ";
-}) : ((_x_8) => {
-  return " | ";
-}), {$: "Unit"}));
-  const _x_10 = run_loop($fpe_pad$(($U32$show$(_line_0)), (_x_6 >>> 0)));
-  const _x_11 = (_x_9 + _head_0);
-  const _x_12 = (_x_10 + _x_11);
-  return ("\n" + _x_12);
-}), {$: "Unit"}));
-  const _x_14 = run_loop($fpe_snippet_lines$(_tail_0, _at_0, _end_0, ((_line_0 + 1) >>> 0)));
-  return (_x_13 + _x_14);
-}), {$: "Unit"});
-  }
-}
-
-function $fpe_lines_count$(_lines_0) {
-  if (_lines_0.$ === "Nil") {
-    return 0;
-  } else {
-    const _tail_0 = _lines_0["tail"];
-    const _x_0 = ($fpe_lines_count$(_tail_0));
-    return ((1 + _x_0) >>> 0);
-  }
-}
-
-function $f_import_alias$(_ts_0, _path_0, _book_0, _imports_0) {
+function $f_import_alias$(_ts_0, _start_0, _path_0, _book_0, _imports_0) {
   return run_tail((($Bool$and$(($String$ends_with$(_path_0, ".bend")), ($f_alias_valid$(($f_tx$(($f_tl$(_ts_0))))))))) ? ((_x_0) => {
   return run_tail((($f_import_used$(($f_tx$(($f_tl$(_ts_0)))), _imports_0))) ? ((_x_1) => {
   const _x_2 = ($f_tx$(($f_tl$(_ts_0))));
   const _x_3 = (_x_2 + " names an earlier import)");
   return $f_result$(_book_0, ($kt$("Error", ("expected a fresh alias (" + _x_3), 0, 0, {$: "Nil"})), _imports_0);
 }) : ((_x_4) => {
-  return $f_tops$(($f_tl$(($f_tl$(_ts_0)))), _book_0, {$: "Con", "head": ($kt$("Import", _path_0, 0, 0, {$: "Con", "head": ($kt$("Alias", ($f_tx$(($f_tl$(_ts_0)))), 0, 0, {$: "Nil"})), "tail": {$: "Nil"}})), "tail": _imports_0}, false);
+  return run_tail((run_loop($f_import_valid$(_path_0))) ? ((_x_5) => {
+  return $f_tops$(($f_tl$(($f_tl$(_ts_0)))), _book_0, {$: "Con", "head": ($kt$("Import", _path_0, ($f_line$(_start_0)), ($f_col$(_start_0)), {$: "Con", "head": ($kt$("Alias", ($f_tx$(($f_tl$(_ts_0)))), 0, 0, {$: "Nil"})), "tail": {$: "Nil"}})), "tail": _imports_0}, false);
+}) : ((_x_6) => {
+  return $f_result$(_book_0, ($f_pn$(($fpe_error$(_start_0, "invalid import path", "an import path of plain names (letters, digits, _ and -; the hub's files import the hub's)")))), _imports_0);
 }), {$: "Unit"});
-}) : ((_x_5) => {
+}), {$: "Unit"});
+}) : ((_x_7) => {
   return $f_result$(_book_0, ($kt$("Error", "an import requires a .bend path and a valid alias", 0, 0, {$: "Nil"})), _imports_0);
 }), {$: "Unit"});
 }
@@ -12080,19 +12280,11 @@ function $norm_node_ref$(_book_0, _t_0, _args_0, _left_0, _fallback_0, _selected
   }
 }
 
-function $index_bucket$(_ds_0, _name_0) {
-  if (_ds_0.$ === "Nil") {
-    return $missing$();
+function $index_find_hash$(_tree_0, _name_0, _same_0) {
+  if (_same_0) {
+    return $index_bucket$(($dc$(_tree_0)), _name_0);
   } else {
-    const _h_0 = _ds_0["head"];
-    const _rest_0 = _ds_0["tail"];
-    if ((($String$eq$(($dn$(_h_0)), _name_0)))) {
-const _x_0 = {$: "Unit"};
-return _h_0;
-} else {
-const _x_1 = {$: "Unit"};
-return {$: "$JMP", f: $index_bucket$, x: [_rest_0, _name_0]};
-}
+    return $missing$();
   }
 }
 
@@ -13171,47 +13363,6 @@ return {$: "$JMP", f: $norm_cmp_fail$, x: [_book_0, _alts_0]};
 }), {$: "Unit"});
 }
 
-function $dg_snippet_lines$(_lines_0, _at_0, _end_0, _line_0, _left_0, _length_0) {
-  if (_lines_0.$ === "Nil") {
-    return "";
-  } else {
-    const _h_0 = _lines_0["head"];
-    const _rest_0 = _lines_0["tail"];
-    return run_tail(((_line_0 > _end_0)) ? ((_x_0) => {
-  return "";
-}) : ((_x_1) => {
-  const _x_2 = ((_line_0 + 1) >>> 0);
-  const _x_13 = run_loop(run_tail(((_x_2 < _at_0)) ? ((_x_3) => {
-  return "";
-}) : ((_x_4) => {
-  const _x_10 = ($dg_lpad$(($U32$show$(_line_0)), ($dg_width$(($U32$show$(_end_0))))));
-  const _x_11 = run_loop(run_tail(((_line_0 === _at_0)) ? ((_x_5) => {
-  const _x_6 = ($dg_marker$(_h_0, ($dg_width$(($U32$show$(_end_0)))), _left_0, _length_0));
-  const _x_7 = ("\n" + _x_6);
-  const _x_8 = (_h_0 + _x_7);
-  return (">| " + _x_8);
-}) : ((_x_9) => {
-  return (" | " + _h_0);
-}), {$: "Unit"}));
-  const _x_12 = (_x_10 + _x_11);
-  return ("\n" + _x_12);
-}), {$: "Unit"}));
-  const _x_14 = run_loop($dg_snippet_lines$(_rest_0, _at_0, _end_0, ((_line_0 + 1) >>> 0), _left_0, _length_0));
-  return (_x_13 + _x_14);
-}), {$: "Unit"});
-  }
-}
-
-function $dg_lines_count$(_lines_0) {
-  if (_lines_0.$ === "Nil") {
-    return 0;
-  } else {
-    const _rest_0 = _lines_0["tail"];
-    const _x_0 = ($dg_lines_count$(_rest_0));
-    return ((1 + _x_0) >>> 0);
-  }
-}
-
 function $norm_exact_names$(_as_0, _bs_0) {
   if (_as_0.$ === "Nil") {
     if (_bs_0.$ === "Nil") {
@@ -13296,18 +13447,6 @@ function $j_projection_match$(_book_0, _t_0, _ty_0) {
 }), {$: "Unit"});
 }
 
-function $fpe_pad$(_text_0, _width_0) {
-  const _x_0 = [..._text_0].length;
-  const _x_1 = (_x_0 >>> 0);
-  if (((_x_1 < _width_0))) {
-const _x_2 = {$: "Unit"};
-return {$: "$JMP", f: $fpe_pad$, x: [(" " + _text_0), _width_0]};
-} else {
-const _x_3 = {$: "Unit"};
-return _text_0;
-}
-}
-
 function $f_alias_valid$(_s_0) {
   const _x_0 = ($Char$is_alpha$(($f_head$(_s_0))));
   const _x_1 = ($Char$is_eq$(($f_head$(_s_0)), "_"));
@@ -13324,6 +13463,24 @@ function $f_import_used$(_name_0, _imports_0) {
     const _x_1 = ($f_import_used$(_name_0, _rest_0));
     return (_x_0 || _x_1);
   }
+}
+
+function $f_import_valid$(_path_0) {
+  const _x_0 = ($String$starts_with$(_path_0, "./"));
+  const _x_1 = ($String$starts_with$(_path_0, "../"));
+  const _x_2 = (_x_0 || _x_1);
+  const _x_3 = ($String$starts_with$(_path_0, "/"));
+  const _x_4 = ($String$starts_with$(_path_0, "0x"));
+  const _x_5 = ($String$contains$(_path_0, "@"));
+  return run_tail((($Bool$and$(($Bool$not$((_x_2 || _x_3))), (_x_4 || _x_5)))) ? ((_x_6) => {
+  return true;
+}) : ((_x_7) => {
+  return $f_import_local$(($f_strip_bend$(run_loop(run_tail((($String$starts_with$(_path_0, "./"))) ? ((_x_8) => {
+  return $f_drop_chars$(_path_0, 2);
+}) : ((_x_9) => {
+  return _path_0;
+}), {$: "Unit"})))));
+}), {$: "Unit"});
 }
 
 function $f_law_where$(_name_0, _binder_0, _ty_0, _p_0, _book_0, _imports_0, _clauses_0) {
@@ -13917,6 +14074,22 @@ function $norm_node_min$(_book_0, _t_0, _args_0, _left_0, _fallback_0, _selected
     return $norm_apply$(run_loop($norm_min$(_book_0, run_loop($kid$(_t_0, 0)), run_loop($kid$(_t_0, 1)))), _args_0);
   } else {
     return $norm_node_rwt$(_book_0, _t_0, _args_0, _left_0, _fallback_0, ($String$eq$(($tg$(_t_0)), "Rwt")));
+  }
+}
+
+function $index_bucket$(_ds_0, _name_0) {
+  if (_ds_0.$ === "Nil") {
+    return $missing$();
+  } else {
+    const _h_0 = _ds_0["head"];
+    const _rest_0 = _ds_0["tail"];
+    if ((($String$eq$(($dn$(_h_0)), _name_0)))) {
+const _x_0 = {$: "Unit"};
+return _h_0;
+} else {
+const _x_1 = {$: "Unit"};
+return {$: "$JMP", f: $index_bucket$, x: [_rest_0, _name_0]};
+}
   }
 }
 
@@ -14953,33 +15126,6 @@ function $norm_cmp_fail$(_book_0, _alts_0) {
   }
 }
 
-function $dg_lpad$(_s_0, _width_0) {
-  const _x_0 = ($dg_width$(_s_0));
-  const _x_4 = run_loop($dg_padding$(run_loop(run_tail(((_width_0 > _x_0)) ? ((_x_1) => {
-  const _x_2 = ($dg_width$(_s_0));
-  return ((_width_0 - _x_2) >>> 0);
-}) : ((_x_3) => {
-  return 0;
-}), {$: "Unit"}))));
-  return (_x_4 + _s_0);
-}
-
-function $dg_marker$(_text_0, _width_0, _left_0, _length_0) {
-  const _x_0 = ($dg_width$(_text_0));
-  const _x_1 = ($dg_width$(_left_0));
-  const _x_6 = run_loop($dg_carets$(run_loop($norm_max$(1, ($U32$min$(_length_0, run_loop(run_tail(((_x_0 > _x_1)) ? ((_x_2) => {
-  const _x_3 = ($dg_width$(_text_0));
-  const _x_4 = ($dg_width$(_left_0));
-  return ((_x_3 - _x_4) >>> 0);
-}) : ((_x_5) => {
-  return 0;
-}), {$: "Unit"}))))))));
-  const _x_7 = (_left_0 + _x_6);
-  const _x_8 = run_loop($dg_padding$(_width_0));
-  const _x_9 = (" | " + _x_7);
-  return (_x_8 + _x_9);
-}
-
 function $fp_origin$(_t_0, _definition_0, _source_0, _route_0) {
   const _text_0 = _source_0["source"];
   const _tokens_0 = _source_0["tokens"];
@@ -15109,6 +15255,14 @@ function $f_alias_chars$(_s_0) {
   const _x_4 = (_x_2 || _x_3);
   const _x_5 = ($Char$is_eq$(($f_head$(_s_0)), "_"));
   return $Bool$and$((_x_4 || _x_5), run_loop($f_alias_chars$(($f_tail$(_s_0)))));
+}), {$: "Unit"});
+}
+
+function $f_import_local$(_path_0) {
+  return run_tail((($String$starts_with$(_path_0, "/"))) ? ((_x_0) => {
+  return $f_import_segments$(($f_tail$(_path_0)), true);
+}) : ((_x_1) => {
+  return $f_import_parents$(_path_0);
 }), {$: "Unit"});
 }
 
@@ -16935,19 +17089,6 @@ function $norm_cmp_plain$(_book_0, _a_0, _b_0, _le_0, _fresh_0, _rest_0, _alts_0
 }), {$: "Unit"});
 }
 
-function $dg_carets$(_count_0) {
-  return run_tail(((_count_0 === 0)) ? ((_x_0) => {
-  return "";
-}) : ((_x_1) => {
-  const _x_2 = run_loop($dg_carets$(((_count_0 - 1) >>> 0)));
-  return ("^" + _x_2);
-}), {$: "Unit"});
-}
-
-function $U32$min$(_a_0, _b_0) {
-  return $Bool$pick$((_a_0 < _b_0), _a_0, _b_0);
-}
-
 function $fp_at_token$(_t_0, _definition_0, _text_0, _tokens_0, _route_0) {
   if (_tokens_0.$ === "Nil") {
     return {$: "Nil"};
@@ -16988,6 +17129,34 @@ function $j_projection_slot$(_id_0, _slots_0) {
   return $j_projection_slot$(_id_0, _rest_0);
 }), {$: "Unit"});
   }
+}
+
+function $f_import_segments$(_path_0, _head_0) {
+  if (_path_0 === "") {
+    return $Bool$not$(_head_0);
+  } else {
+    const _c_0 = (_path_0.codePointAt(0) > 0xFFFF ? _path_0.slice(0, 2) : _path_0[0]);
+    const _rest_0 = (_path_0.codePointAt(0) > 0xFFFF ? _path_0.slice(2) : _path_0.slice(1));
+    return run_tail((($Char$is_eq$(_c_0, "/"))) ? ((_x_0) => {
+  return $Bool$and$(($Bool$not$(_head_0)), run_loop($f_import_segments$(_rest_0, true)));
+}) : ((_x_1) => {
+  const _x_2 = ($f_ascii_alpha$(_c_0));
+  const _x_3 = ($Char$is_eq$(_c_0, "_"));
+  const _x_4 = ($Char$is_digit$(_c_0));
+  const _x_5 = ($Char$is_eq$(_c_0, "-"));
+  const _x_6 = (_x_2 || _x_3);
+  const _x_7 = ($Bool$and$(($Bool$not$(_head_0)), (_x_4 || _x_5)));
+  return $Bool$and$((_x_6 || _x_7), run_loop($f_import_segments$(_rest_0, false)));
+}), {$: "Unit"});
+  }
+}
+
+function $f_import_parents$(_path_0) {
+  return run_tail((($String$starts_with$(_path_0, "../"))) ? ((_x_0) => {
+  return $f_import_parents$(run_loop($f_drop_chars$(_path_0, 3)));
+}) : ((_x_1) => {
+  return $f_import_segments$(_path_0, true);
+}), {$: "Unit"});
 }
 
 function $f_args_base$(_ts_0, _end_0, _acc_0) {
@@ -18166,14 +18335,6 @@ function $norm_cmp_ref$(_book_0, _a_0, _b_0, _le_0, _n_0, _fresh_0, _rest_0, _al
   return $norm_cmp_ref$(_book_0, ($app$(_a_0, ($var$("_", _fresh_0)))), ($app$(_b_0, ($var$("_", _fresh_0)))), _le_0, ((_n_0 - 1) >>> 0), ((_fresh_0 + 1) >>> 0), _rest_0, _alts_0);
 }), {$: "Unit"});
 }), {$: "Unit"});
-}
-
-function $Bool$pick$(_c_0, _a_0, _b_0) {
-  if (!_c_0) {
-    return _b_0;
-  } else {
-    return _a_0;
-  }
 }
 
 function $fp_token_origin$(_t_0, _definition_0, _text_0, _token_0, _route_0) {
@@ -19620,7 +19781,11 @@ return {$: "$JMP", f: $f_match_heads$, x: [_ts_0, _indent_0, {$: "Con", "head": 
 }
 
 function $f_erased_local$(_ts_0) {
+  return run_tail((($f_valid_name$(($f_tx$(_ts_0))))) ? ((_x_0) => {
   return $f_statement$({$: "FParsed", "term": ($kt$("Ref", ($f_tx$(_ts_0)), ($f_atid$(_ts_0)), 0, {$: "Nil"})), "rest": ($f_tl$(_ts_0))});
+}) : ((_x_1) => {
+  return $fpe_error$(_ts_0, "expected a name", "a name");
+}), {$: "Unit"});
 }
 
 function $f_statement$(_p_0) {
@@ -20489,6 +20654,7 @@ export default {
   "f_main_names": run_lib((a0, a1) => { const r = (run_loop($f_main_names$((a0), (a1)))); (a0); (a1); return r; }, 2),
   "f_load_graph_trace": run_lib((a0, a1) => { const r = (run_loop($f_load_graph_trace$((a0), (a1)))); (a0); (a1); return r; }, 2),
   "f_source_parsed": run_lib((a0, a1, a2, a3) => { const r = (run_loop($f_source_parsed$((a0), (a1), (a2), (a3)))); (a0); (a1); (a2); (a3); return r; }, 4),
+  "f_import_failure": run_lib((a0, a1, a2, a3) => { const r = (run_loop($f_import_failure$((a0), (a1), (a2), (a3)))); (a0); (a1); (a2); (a3); return r; }, 4),
   "book_context": run_lib((a0) => { const r = (run_loop($book_context$((a0)))); (a0); return r; }, 1),
   "book_cached": run_lib((a0, a1) => { const r = (run_loop($book_cached$((a0), (a1)))); (a0); (a1); return r; }, 2),
   "f_load_graph_seed": run_lib((a0, a1, a2, a3, a4) => { const r = (run_loop($f_load_graph_seed$((a0), (a1), (a2), (a3), (a4)))); (a0); (a1); (a2); (a3); (a4); return r; }, 5),

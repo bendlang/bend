@@ -1,6 +1,18 @@
 # Compiler evidence preservation index
 
 
+## Phase15 parser conformance and lookup workers — 2026-09-29
+
+The [report](../implementation/phase15/parser_conformance_and_speed.md) and
+[evidence protocol](../implementation/phase15/evidence/README.md) preserve the
+fresh released-image profile, all isolated and superseded candidates, failed
+cycle/selection/audit attempts, full vectors, histories, controlled comparisons
+and installed/relocated release checks. Eleven exact prerequisite capsules share
+historical objects. Publication is complete only when its machine-readable record
+binds successful archive verification and independent byte/mode recovery. The 75
+unrelated Phase6 paths and three exact never-consumed source-project copies remain
+identity-only omissions; actual checked snapshots and consumed tools stay captured.
+
 ## Phase14 conformance and source dispatch — 2026-09-28
 
 The [report](../implementation/phase14/conformance_and_dispatch.md) and

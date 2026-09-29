@@ -3,9 +3,11 @@
 The isolated candidate fixes **all 132 target observations across 66 fixtures**
 exactly against pinned TypeScript while removing **35 physical / 30 nonblank
 Bend lines, 1,017 bytes, four definitions and three laws**. All 26 maintained
-focused controls pass. The change is ready for root integration under
-[P15-002](../../experiments/phase15/P15-002-parser-carets.md); this report does not
-claim it is installed or that the combined release gates have passed.
+focused controls pass. The change is included in the installed Phase15
+`combined-02` release under
+[P15-002](../../experiments/phase15/P15-002-parser-carets.md). This report records
+the isolated renderer evidence; final combined results are in the
+[phase report](parser_conformance_and_speed.md).
 
 ## Change and coordinate contract
 

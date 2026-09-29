@@ -96,6 +96,7 @@ export function bootstrap({upstream=process.env.BEND_UPSTREAM||path.resolve(proj
   if(files.includes('src/check/prefix.bend'))exports.push('check_from_exact_prefix','exact_prefix');
   if(files.includes('src/load/graph.bend'))exports.push('f_load_graph','f_main_names','f_load_graph_trace');
   if(files.includes('src/load/modules.bend'))exports.push('f_source_parsed');
+  if(files.includes('src/load/imports.bend')&&fs.readFileSync(path.join(project,'src/load/imports.bend'),'utf8').includes('def f_import_failure('))exports.push('f_import_failure');
   if(files.includes('src/core/index.bend'))exports.push('book_context','book_cached');
   if(files.includes('src/load/seed.bend'))exports.push('f_load_graph_seed','f_load_graph_seed_trace');
   if(files.includes('src/driver/report.bend'))exports.push('driver_report','driver_bad_names');
@@ -192,10 +193,13 @@ async function loadApiForIdentity(identity=null) {
 }
 
 export function discoverSources(api,input,{seed=null}={}) {
-  const sources=[],seen=new Map(),physical=new Map(),foreign=new Map();
+  const sources=[],seen=new Map(),physical=new Map(),foreign=new Map(),active=new Set();
   const graphMode=typeof api.f_load_graph==='function';
   const visit=(name,file)=>{
     const absolute=fs.realpathSync(file);
+    // Stop an active canonical IO traversal before later imports or body errors.
+    if(active.has(absolute)&&api.f_import_failure)
+      throw Object.assign(Error('Import traversal reentry'),{code:'BEND_IMPORT_CYCLE',importPath:absolute});
     if(seen.has(name)) {
       if(seen.get(name)!==absolute) throw Object.assign(Error('Module import path collision: '+name),{phase:'load'});
       return;
@@ -206,10 +210,10 @@ export function discoverSources(api,input,{seed=null}={}) {
     trace('parse '+absolute);
     const seeded=name==='Base'&&seed&&seed.sourcePath===absolute&&seed.sourceText===source;
     const parsed=prior||(seeded?{book:list([]),imports:list([]),error:''}:api.f_parse(source));
-    if(parsed.error) throw Object.assign(Error(parsed.error),{phase:'parse',sourceFile:absolute});
     sources.push(api.f_source_parsed&&!seeded?api.f_source_parsed(name,absolute,source,parsed):{$:'FSource',name,path:absolute,text:source});
     if(prior)return;
     physical.set(absolute,parsed);
+    active.add(absolute);
     if(name!=='Base'&&api.f_path_join) for(const definition of array(parsed.book)) {
       if(definition.value.tag!=='Foreign')continue;
       for(const imported of array(definition.value.kids)) {
@@ -220,8 +224,16 @@ export function discoverSources(api,input,{seed=null}={}) {
     for(const item of array(parsed.imports)) {
       const imported=item.name;
       const importedFile=imported==='Base'?basePath:path.resolve(path.dirname(absolute),imported);
-      visit(graphMode&&imported!=='Base'?importedFile:imported,importedFile);
+      try { visit(graphMode&&imported!=='Base'?importedFile:imported,importedFile); }
+      catch(error) {
+        if(!error.phase&&api.f_import_failure&&(error.code==='ENOENT'||error.code==='BEND_IMPORT_CYCLE'))
+          throw Object.assign(Error(api.f_import_failure(source,item,error.code==='BEND_IMPORT_CYCLE'?error.importPath:importedFile,error.code==='BEND_IMPORT_CYCLE')),{phase:'parse',sourceFile:absolute});
+        throw error;
+      }
     }
+    active.delete(absolute);
+    // Upstream loads earlier imports before it parses this module's body.
+    if(parsed.error) throw Object.assign(Error(parsed.error),{phase:'parse',sourceFile:absolute});
   };
   const main=graphMode?path.resolve(input):'__main__';
   visit(main,path.resolve(input));

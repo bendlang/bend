@@ -153,11 +153,12 @@ def f_alias_chars(s):
 @unsafe
 def f_import_alias(
   +ts: List<&2, FToken>,
+  +start: List<&2, FToken>,
   +path: String,
   +book: List<&2,KDef>,
   +imports: List<&2, KTerm>,
 ) -> FRawResult:
-  f_choose(FRawResult, String.ends_with(path, ".bend") && f_alias_valid(f_tx(f_tl(ts))), u => f_choose(FRawResult, f_import_used(f_tx(f_tl(ts)), imports), u => f_result(book, kt("Error", "expected a fresh alias (" ++ f_tx(f_tl(ts)) ++ " names an earlier import)", 0, 0, Nil{}), imports), u => f_tops(f_tl(f_tl(ts)), book, Con{kt("Import", path, 0, 0, [kt("Alias", f_tx(f_tl(ts)), 0, 0, Nil{})]), imports}, False{})), u => f_result(book, kt("Error", "an import requires a .bend path and a valid alias", 0, 0, Nil{}), imports))
+  f_choose(FRawResult, String.ends_with(path, ".bend") && f_alias_valid(f_tx(f_tl(ts))), u => f_choose(FRawResult, f_import_used(f_tx(f_tl(ts)), imports), u => f_result(book, kt("Error", "expected a fresh alias (" ++ f_tx(f_tl(ts)) ++ " names an earlier import)", 0, 0, Nil{}), imports), u => f_choose(FRawResult, f_import_valid(path), u => f_tops(f_tl(f_tl(ts)), book, Con{kt("Import", path, f_line(start), f_col(start), [kt("Alias", f_tx(f_tl(ts)), 0, 0, Nil{})]), imports}, False{}), u => f_result(book, f_pn(fpe_error(start, "invalid import path", "an import path of plain names (letters, digits, _ and -; the hub\'s files import the hub\'s)")), imports))), u => f_result(book, kt("Error", "an import requires a .bend path and a valid alias", 0, 0, Nil{}), imports))
 
 @unsafe
 def f_validate_param(ts, end, acc):

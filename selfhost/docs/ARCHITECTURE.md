@@ -99,7 +99,7 @@ Checker diagnostics render existing source spans with a caret row. Offsets use
 UTF-16 code units, tabs retain their alignment, and a multiline span is clipped
 to its first displayed line. Empty/reversed spans still receive one caret.
 Rendering does not repair an incorrect originating span: those remaining exact
-differences are recorded separately. Parser diagnostics retain their own path.
+differences are recorded separately. Phase15 parser diagnostics share this renderer: token lookup retains code-point columns and separately accumulates UTF-16 offsets for zero-width caret spans. Conservative legacy fallbacks remain.
 
 Checking keeps two independent persistent books: one supplies all declared
 signatures and chronological bodies, while the other records only prior events
@@ -207,8 +207,9 @@ surface AST lacks quantities and dependent types. It remains a bootstrap aid
 and regression baseline, clearly separate from the typed compiler.
 
 The frontend and loader form a standalone component with the core term, index,
-normalization and graph modules. They do not require the checker or diagnostic
-renderer. Shared book operations belong in core: `index_remove` supplies the
+normalization, graph and pretty-printing modules plus diagnostic model/rendering.
+They share source snippets with checker diagnostics, but require no checker,
+trace, producer or diagnostic-frontend module. Shared book operations belong in core: `index_remove` supplies the
 same order-preserving name filter to final-definition selection and checker
 specialization. `tests/frontend/trace-component.mjs` assembles and checks this
 smaller component, then compares the ordinary, traced and seeded loader APIs.
@@ -221,7 +222,8 @@ transport preserves the parser's existing first-error choice. Explicit syntax
 expectations and adjacent constructor-freshness failures render once on rejection;
 unknown or inconsistent positions and unsupported Unicode cursors retain their
 legacy text. Successful parsing does not scan source text to render diagnostics.
-This frontend formatter has no dependency on the checker diagnostic modules.
+The frontend shares the diagnostic model and renderer while remaining independent
+of the checker and diagnostic trace/producer modules.
 One confirmed location limitation remains: a physical newline inside a quoted
 string can leave the lexer's next-token cursor on the wrong line, and a matching
 character there can pass the formatter's guard. The [retained counterexample](../../implementation/phase5/static-counterexample.md)
@@ -235,6 +237,22 @@ canonical source before rendering. Accepted books are not scanned again, and
 unknown provenance retains the existing diagnostic. Formatting an existing
 parser error does not establish that its grammar or first-error choice agrees
 with the reference compiler.
+
+Phase15 import nodes retain the original path token's line and code-point
+column. Bend validates plain local path segments before IO resolution and renders
+missing-import and cycle messages with the shared UTF-16 snippet formatter. The
+ordinary host walks canonical filesystem paths, distinguishes active from completed
+visits, and stops active reentry at the closing import edge. Completed physical
+aliases remain reusable. Earlier dependency failures precede a later module-body
+error; existing compiler phases and unrelated IO failures keep their categories.
+The supplied-source Bend graph loader retains its own graph and cycle validation.
+Hub/package fetching remains outside the ordinary host's supported scope.
+
+Phase15 ordinary-list `lookup` uses two Boolean-parameter workers for cache-marker
+and name decisions. The cache marker wins before ordinary name lookup, and lists
+remain first-match-wins. Pinned upstream emits a three-state mutual-tail loop for
+each generated entry; no new lookup representation or JavaScript rewrite is added.
+The indexed lookup implementation and malformed-data demand guards are unchanged.
 
 ## Host representation boundary
 

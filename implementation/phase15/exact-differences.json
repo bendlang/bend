@@ -1,0 +1,7319 @@
+{
+  "kind": "phase15-independent-exact-difference-attribution",
+  "complete": true,
+  "pass": true,
+  "inputs": [
+    {
+      "role": "reference",
+      "file": "selfhost/build/phase8/reference-frontend-01/reference.json",
+      "sha256": "827e80c14d500f8ff77dd4e30f1e0fa4817780055ef783839741150fbf0fad31"
+    },
+    {
+      "role": "baseline",
+      "file": "selfhost/build/phase14/frontend-audit-02/candidate.json",
+      "sha256": "c79a6e29c59f0a9048e9437e6e31ccdf2cd42c186966667ddebc68319f8471b1"
+    },
+    {
+      "role": "candidate",
+      "file": "selfhost/build/phase15/frontend-01/candidate.json",
+      "sha256": "f26861eb75192e8950382bd253992dc08860189a559cb0cf3747c9e4a98dfbe7"
+    },
+    {
+      "role": "tool",
+      "file": "selfhost/tools/performance/phase15/behavior-attribution.py",
+      "sha256": "a90500bb184a224b0357ae80d668acbcf72cf5aeaa75489a319c30ad07a46d4b"
+    }
+  ],
+  "method": "Reconstruct every compared observation directly from reference, baseline and final raw vectors; preserve exact strings/paths and all comparison fields. Cross-check the resulting difference set against the maintained strict comparison only after independent construction. Marker/snippet removal is used solely to classify causes/shapes, never to decide exact conformance.",
+  "exactBefore": 603,
+  "exactAfter": 459,
+  "newExact": {
+    "observations": 144,
+    "fixtures": 72,
+    "lanes": {
+      "check": 72,
+      "parse": 72
+    },
+    "groups": {
+      "parser-caret-only": 132,
+      "missing-import-context": 10,
+      "erased-binder-plus-parser-caret": 2
+    },
+    "rows": [
+      {
+        "id": "check/array_boxed_default.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_boxed_default.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_default_distinct.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_default_distinct.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_default_linear.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_default_linear.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_element_data.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_element_data.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_get_copy.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_get_copy.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_get_neutral.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_get_neutral.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_get_word_only.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_get_word_only.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_literal_capacity.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_literal_capacity.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_literal_mismatch.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_literal_mismatch.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_never_copyable.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_never_copyable.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_not_data.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_not_data.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_set_neutral_000.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_set_neutral_000.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_set_neutral_001.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/array_set_neutral_001.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/buffer_word_range.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/buffer_word_range.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/erased_match_numeric.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/erased_match_numeric.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/list_not_array.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/list_not_array.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/undo_residual_lane.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/undo_residual_lane.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/unit_ctor_mismatch.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/unit_ctor_mismatch.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/unit_paren_sugar.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/unit_paren_sugar.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "compile/array_oob_access.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "compile/array_oob_access.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "compile/array_padding_slots.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "compile/array_padding_slots.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "compile/array_unboxed_default.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "compile/array_unboxed_default.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "compile/slab_drop_recycle.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "compile/slab_drop_recycle.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "compile/slab_lazy_alloc.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "compile/slab_lazy_alloc.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "compile/slab_sparse_default.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "compile/slab_sparse_default.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "flatten/arrow_bind_error_000.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "flatten/arrow_bind_error_000.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "flatten/arrow_bind_error_001.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "flatten/arrow_bind_error_001.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "flatten/cid_pair_repr.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "flatten/cid_pair_repr.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "flatten/generic_type_param.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "flatten/generic_type_param.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "flatten/statement_beta.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "flatten/statement_beta.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "flatten/statement_lam_absorb.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "flatten/statement_lam_absorb.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/cross_file_io.bend",
+        "lane": "check",
+        "group": "missing-import-context",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "phase",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/cross_file_io.bend",
+        "lane": "parse",
+        "group": "missing-import-context",
+        "changedAxes": [
+          "phase",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/cross_file_proof.bend",
+        "lane": "check",
+        "group": "missing-import-context",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "phase",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/cross_file_proof.bend",
+        "lane": "parse",
+        "group": "missing-import-context",
+        "changedAxes": [
+          "phase",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/cycle_terminates.bend",
+        "lane": "check",
+        "group": "missing-import-context",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "phase",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/cycle_terminates.bend",
+        "lane": "parse",
+        "group": "missing-import-context",
+        "changedAxes": [
+          "phase",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/diamond_dedup.bend",
+        "lane": "check",
+        "group": "missing-import-context",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "phase",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/diamond_dedup.bend",
+        "lane": "parse",
+        "group": "missing-import-context",
+        "changedAxes": [
+          "phase",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/path_canonical.bend",
+        "lane": "check",
+        "group": "missing-import-context",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "phase",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/path_canonical.bend",
+        "lane": "parse",
+        "group": "missing-import-context",
+        "changedAxes": [
+          "phase",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/position_independent.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/position_independent.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "io/cbody_bare_path.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "io/cbody_bare_path.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "io/cbody_dup_effect.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "io/cbody_dup_effect.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "io/cbody_effect.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "io/cbody_effect.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "io/cbody_needs_io.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "io/cbody_needs_io.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/array_key_range.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/array_key_range.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/array_length_power.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/array_length_power.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/bare_caret_dead.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/bare_caret_dead.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/bind_outside_do.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/bind_outside_do.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/ctor_indexed_target.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/ctor_indexed_target.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/ctor_result_annotation.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/ctor_result_annotation.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/ctor_result_arrow.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/ctor_result_arrow.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/do_missing_param.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/do_missing_param.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/duplicate_buffer_key.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/duplicate_buffer_key.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/duplicate_field_name.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/duplicate_field_name.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/gadt_result_annotation_000.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/gadt_result_annotation_000.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/gadt_result_annotation_001.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/gadt_result_annotation_001.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/gpu_mark_order.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/gpu_mark_order.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/legacy_bang_statement.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/legacy_bang_statement.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/legacy_brace_datatype.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/legacy_brace_datatype.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/legacy_data_annotation.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/legacy_data_annotation.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/let_arity_mismatch.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/let_arity_mismatch.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/prefix_operator_dead.bend",
+        "lane": "check",
+        "group": "erased-binder-plus-parser-caret",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "phase",
+          "checked",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/prefix_operator_dead.bend",
+        "lane": "parse",
+        "group": "erased-binder-plus-parser-caret",
+        "changedAxes": [
+          "status",
+          "exitCode",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/reserved_dollar_name.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/reserved_dollar_name.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/type_arg_parens.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/type_arg_parens.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/unclosed_char_code.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/unclosed_char_code.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/unicode_forall_dead.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/unicode_forall_dead.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/unicode_lambda_dead.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/unicode_lambda_dead.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "run/binop_probe_split.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "run/binop_probe_split.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "spec/comp_erased_args.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "spec/comp_erased_args.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "spec/comp_generic_dedupe.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "spec/comp_generic_dedupe.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "spec/comp_generic_mint.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "spec/comp_generic_mint.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "spec/comp_instantiation_error.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "spec/comp_instantiation_error.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "spec/comp_late_param.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "spec/comp_late_param.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "spec/comp_let_split.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "spec/comp_let_split.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "spec/mint_count.bend",
+        "lane": "check",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "spec/mint_count.bend",
+        "lane": "parse",
+        "group": "parser-caret-only",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      }
+    ]
+  },
+  "lostExact": [],
+  "changedStillNonexact": {
+    "observations": 74,
+    "fixtures": 37,
+    "lanes": {
+      "check": 37,
+      "parse": 37
+    },
+    "groups": {
+      "parser-caret-added-existing-gap": 66,
+      "illegal-local-path-correct-phase": 8
+    },
+    "rows": [
+      {
+        "id": "check/book_prefix_arity.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/book_prefix_arity.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/chained_switch_conflation_000.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/chained_switch_conflation_000.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/chained_switch_conflation_001.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/chained_switch_conflation_001.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/ctor_shared_tag.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/ctor_shared_tag.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/dec_switch_respell_000.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/dec_switch_respell_000.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/dec_switch_respell_001.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/dec_switch_respell_001.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/dependent_switch_induction.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/dependent_switch_induction.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/float_no_mod.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/float_no_mod.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/fuel_inline_dep_match.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/fuel_inline_dep_match.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/match_as_specialize.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "check/match_as_specialize.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "compile/ctor_tag_dispatch_000.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "compile/ctor_tag_dispatch_000.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "compile/ctor_tag_dispatch_001.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "compile/ctor_tag_dispatch_001.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "cost/array_fill_readback.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "cost/array_fill_readback.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "flatten/arity_mismatch_000.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "flatten/arity_mismatch_000.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "flatten/arity_mismatch_001.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "flatten/arity_mismatch_001.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "flatten/as_pattern_error.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "flatten/as_pattern_error.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "flatten/kplus_missing_case.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "flatten/kplus_missing_case.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/dotted_path.bend",
+        "lane": "check",
+        "group": "illegal-local-path-correct-phase",
+        "changedAxes": [
+          "phase",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/dotted_path.bend",
+        "lane": "parse",
+        "group": "illegal-local-path-correct-phase",
+        "changedAxes": [
+          "phase",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/hub_head_local.bend",
+        "lane": "check",
+        "group": "illegal-local-path-correct-phase",
+        "changedAxes": [
+          "phase",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/hub_head_local.bend",
+        "lane": "parse",
+        "group": "illegal-local-path-correct-phase",
+        "changedAxes": [
+          "phase",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/hub_head_path.bend",
+        "lane": "check",
+        "group": "illegal-local-path-correct-phase",
+        "changedAxes": [
+          "phase",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/hub_head_path.bend",
+        "lane": "parse",
+        "group": "illegal-local-path-correct-phase",
+        "changedAxes": [
+          "phase",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/tilde_path.bend",
+        "lane": "check",
+        "group": "illegal-local-path-correct-phase",
+        "changedAxes": [
+          "phase",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "import/tilde_path.bend",
+        "lane": "parse",
+        "group": "illegal-local-path-correct-phase",
+        "changedAxes": [
+          "phase",
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "page/ambiguous_ctor_error.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "page/ambiguous_ctor_error.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/dead_lambda_syntax.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/dead_lambda_syntax.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/decl_name_words.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/decl_name_words.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/duplicate_ctor_name.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/duplicate_ctor_name.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/float_dotted_family_dead_000.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/float_dotted_family_dead_000.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/if_no_else.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/if_no_else.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/reserved_def_name_001.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/reserved_def_name_001.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/reserved_def_name_002.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "parse/reserved_def_name_002.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "proof/match_as_binding.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "proof/match_as_binding.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "reg/framed_cell_capture.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "reg/framed_cell_capture.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "run/array_bounds_000.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "run/array_bounds_000.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "run/array_bounds_001.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "run/array_bounds_001.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "run/array_slab.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "run/array_slab.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "run/array_struct_swap.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "run/array_struct_swap.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "spec/comp_mint_dedupe.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "spec/comp_mint_dedupe.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "spec/hypothesis_retype.bend",
+        "lane": "check",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      },
+      {
+        "id": "spec/hypothesis_retype.bend",
+        "lane": "parse",
+        "group": "parser-caret-added-existing-gap",
+        "changedAxes": [
+          "diagnostic"
+        ]
+      }
+    ]
+  },
+  "remaining": {
+    "observations": 459,
+    "fixtures": 337,
+    "lanes": {
+      "check": 337,
+      "parse": 122
+    },
+    "groups": [
+      {
+        "group": "caret-width-or-position-only",
+        "observations": 7,
+        "fixtures": 7,
+        "lanes": {
+          "check": 7
+        }
+      },
+      {
+        "group": "computed-match-legacy-message",
+        "observations": 26,
+        "fixtures": 13,
+        "lanes": {
+          "check": 13,
+          "parse": 13
+        }
+      },
+      {
+        "group": "legacy-unstructured-error",
+        "observations": 166,
+        "fixtures": 94,
+        "lanes": {
+          "check": 94,
+          "parse": 72
+        }
+      },
+      {
+        "group": "location-or-span-difference",
+        "observations": 9,
+        "fixtures": 9,
+        "lanes": {
+          "check": 9
+        }
+      },
+      {
+        "group": "other-diagnostic-shape",
+        "observations": 43,
+        "fixtures": 30,
+        "lanes": {
+          "check": 30,
+          "parse": 13
+        }
+      },
+      {
+        "group": "same-expectation-other-observation-or-detail",
+        "observations": 55,
+        "fixtures": 31,
+        "lanes": {
+          "check": 31,
+          "parse": 24
+        }
+      },
+      {
+        "group": "source-snippet-only",
+        "observations": 153,
+        "fixtures": 153,
+        "lanes": {
+          "check": 153
+        }
+      }
+    ],
+    "differingAxisCounts": {
+      "verdict": 337,
+      "evidence": 337,
+      "diagnostic": 459
+    },
+    "nonDiagnosticResultDifferences": 0,
+    "rows": [
+      {
+        "id": "check/axiom_runtime_capture.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/beta_ann_lambda.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/binder_name_capture.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/book_prefix_arity.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/book_prefix_arity.bend",
+        "lane": "parse",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/bool_one_way.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/bool_word_bridge.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/canonical_ref_conversion.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/capture_soundness.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/chained_switch_conflation_000.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/chained_switch_conflation_000.bend",
+        "lane": "parse",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/chained_switch_conflation_001.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/chained_switch_conflation_001.bend",
+        "lane": "parse",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/comp_splice_tuple_goal.bend",
+        "lane": "check",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/comp_splice_tuple_goal.bend",
+        "lane": "parse",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/computed_match_split.bend",
+        "lane": "check",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/computed_match_split.bend",
+        "lane": "parse",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/cons_tail_mismatch.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/cop_adt_param_000.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/cop_ctr_field_000.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/cop_dead_hypothesis_000.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/cop_field_formation.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/cop_foreign_fill_000.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/cop_forged_lock_000.bend",
+        "lane": "check",
+        "group": "location-or-span-difference",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/cop_forged_lock_001.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/cop_inline_witness_002.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/cop_let_formation.bend",
+        "lane": "check",
+        "group": "location-or-span-difference",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/cop_plain_domain_000.bend",
+        "lane": "check",
+        "group": "location-or-span-difference",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/cop_sugar_struct_000.bend",
+        "lane": "check",
+        "group": "location-or-span-difference",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/ctor_arity.bend",
+        "lane": "check",
+        "group": "caret-width-or-position-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/ctor_shared_tag.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/ctor_shared_tag.bend",
+        "lane": "parse",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/ctr_of_datatype.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/data_cycle_poison.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/data_self_ref.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/data_table_checked_000.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/data_table_checked_000.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/data_table_checked_001.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/dec_switch_respell_000.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/dec_switch_respell_000.bend",
+        "lane": "parse",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/dec_switch_respell_001.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/dec_switch_respell_001.bend",
+        "lane": "parse",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/default_arm_family.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/dependent_switch_induction.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/dependent_switch_induction.bend",
+        "lane": "parse",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/do_header_quantity_span.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/do_header_typed.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/do_missing_bind.bend",
+        "lane": "check",
+        "group": "caret-width-or-position-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/efq_erased_binder_000.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/either_data_wall.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/erased_binder_use.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/erased_field_conversion.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/erased_local_live_use.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/erased_local_match_000.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/erased_local_match_000.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/erased_match_ctor.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/erased_match_empty.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/error_window_assert_exists.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/error_window_filled_param_use.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/error_window_inline_exists.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/error_window_match_missing.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/error_window_match_repeated.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/error_window_param_use.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/error_window_rewrite_proof.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/error_window_stuck_app_kind.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/f32_literal_own_f32.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/family_head_bare.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/field_type_bound.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/fits_app_invariant.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/fits_rfl_kind.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/float_builtin_arg.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/float_literal_type.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/float_match_scrutinee.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/float_no_mod.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/float_no_mod.bend",
+        "lane": "parse",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/forward_data_table.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/fuel_inline_dep_match.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/fuel_inline_dep_match.bend",
+        "lane": "parse",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/hoas_alpha_capture.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/hole_named.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/hole_todo.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/hurkens_paradox.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/kind_none_lone_binder.bend",
+        "lane": "check",
+        "group": "location-or-span-difference",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/lambda_single_use.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/let_lambda_twice.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/list_map_conversion.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/list_map_conversion.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/match_as_specialize.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/match_as_specialize.bend",
+        "lane": "parse",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/meet_charges_its_operands.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/meet_stuck_pending_ref.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/missing_ih_rewrite.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/monad_do_destructure.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/monad_do_destructure.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/motive_suffix_join.bend",
+        "lane": "check",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/motive_suffix_join.bend",
+        "lane": "parse",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/nat_literal_import.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/nat_literal_own_nat.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/nat_literal_own_succ.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/nat_literal_pattern_arity.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/nat_literal_pattern_arity.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/nat_literal_pattern_empty.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/nat_literal_pattern_empty.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/negative_data_field_000.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/negative_data_reuse.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/neq_not_convertible.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/neq_qualified_capture.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/neq_reflexivity.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/nested_datatype_closure.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/nested_field_bound.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/op_bare_refused.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/op_bare_refused.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/op_brace_refused.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/op_brace_refused.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/op_ns_call_arg.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/op_ns_call_arg.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/operator_chain_linear.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/pair_data_wall.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/plus_binder_note.bend",
+        "lane": "check",
+        "group": "location-or-span-difference",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/quant_tag_conversion_000.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/quant_tag_conversion_001.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/relation_install_lock.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/string_literal_own_scon.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/string_literal_own_string.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/switch_miss_guard.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/template_dup_binder.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/template_inst_cycle.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/template_ns_late.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/template_ns_late.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "check/tuple_import_required.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/typed_let_mismatch.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/u32_literal_own_u32.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/usage_counts_source.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "check/wrap_not_successor.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "compile/ctor_tag_dispatch_000.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "compile/ctor_tag_dispatch_000.bend",
+        "lane": "parse",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "compile/ctor_tag_dispatch_001.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "compile/ctor_tag_dispatch_001.bend",
+        "lane": "parse",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "compile/erasure_dead_param.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "comptime/dup_lone.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "comptime/err_arg_type.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "comptime/err_capture.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "comptime/err_dup.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "comptime/err_dup.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "comptime/err_extra.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "comptime/err_extra.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "comptime/err_fill_short.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "comptime/err_fill_short.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "comptime/err_generic.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "comptime/err_grow.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "comptime/err_grow_double.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "comptime/err_head.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "comptime/err_head.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "comptime/err_late_tilde.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "comptime/err_late_tilde.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "comptime/err_later.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "comptime/err_later.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "comptime/err_law.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "comptime/err_law.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "comptime/err_leak.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "comptime/err_let_arg.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "comptime/err_match_arg.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "comptime/err_param_arg.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "comptime/err_plus_term.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "comptime/err_runtime.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "comptime/err_runtime.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "comptime/err_untyped.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "comptime/err_untyped.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "comptime/later_def.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "comptime/wrong_type.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "cost/array_fill_readback.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "cost/array_fill_readback.bend",
+        "lane": "parse",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "eval/array_packed_default.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/annotated_computed_scrutinee_001.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/arity_mismatch_000.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/arity_mismatch_000.bend",
+        "lane": "parse",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/arity_mismatch_001.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/arity_mismatch_001.bend",
+        "lane": "parse",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/as_pattern_error.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/as_pattern_error.bend",
+        "lane": "parse",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/consumed_column_error_001.bend",
+        "lane": "check",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/consumed_column_error_001.bend",
+        "lane": "parse",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/dead_residue_elision_003.bend",
+        "lane": "check",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/dead_residue_elision_003.bend",
+        "lane": "parse",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/dependent_goal_000.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/dependent_goal_001.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/destructure_annotation_error.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/destructure_let_001.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/destructure_let_001.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/dup_guard_000.bend",
+        "lane": "check",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/dup_guard_000.bend",
+        "lane": "parse",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/dup_guard_001.bend",
+        "lane": "check",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/dup_guard_001.bend",
+        "lane": "parse",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/empty_match.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/error_window_matched_scrutinee.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/error_window_substituted_scrutinee.bend",
+        "lane": "check",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/error_window_substituted_scrutinee.bend",
+        "lane": "parse",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/forward_reference.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/forward_reference.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/inline_block_error.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/inline_block_error.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/kplus_missing_case.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/kplus_missing_case.bend",
+        "lane": "parse",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/lambda_match_literal_000.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/lambda_match_literal_001.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/lambda_match_literal_002.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/mark_computed_optout.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/mark_computed_optout.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/match_app_scrutinee_000.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/match_app_scrutinee_001.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/match_as_term.bend",
+        "lane": "check",
+        "group": "caret-width-or-position-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/named_column_alias.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/named_column_alias.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/noninfer_error_000.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/noninfer_error_002.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/nontotal_error_000.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/nontotal_error_001.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/nontotal_error_002.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/nontotal_error_003.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/nontotal_multi_missing.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/nontotal_multi_scrutinee_000.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/nontotal_multi_scrutinee_001.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/nontotal_multi_scrutinee_002.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/nontotal_multi_scrutinee_003.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/nontotal_multi_scrutinee_004.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/order_ban_000.bend",
+        "lane": "check",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/order_ban_000.bend",
+        "lane": "parse",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/order_ban_001.bend",
+        "lane": "check",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/order_ban_001.bend",
+        "lane": "parse",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/order_ban_002.bend",
+        "lane": "check",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/order_ban_002.bend",
+        "lane": "parse",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/order_ban_003.bend",
+        "lane": "check",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/order_ban_003.bend",
+        "lane": "parse",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/pattern_shape_mismatch.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "flatten/share_binder_syntax.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/share_binder_syntax.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/shared_param_computed_001.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/shared_param_computed_001.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/unsupported_pattern.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "flatten/unsupported_pattern.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "grade/reject_cast.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "grade/reject_closure.bend",
+        "lane": "check",
+        "group": "location-or-span-difference",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "grade/reject_copy_paradox.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "grade/reject_fn_field.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "grade/reject_kind_tip.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "grade/reject_leak.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "grade/reject_local_grade.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "grade/reject_negative.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "grade/reject_plus_field.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "grade/reject_refill.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "grade/reject_refill.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "grade/reject_resource.bend",
+        "lane": "check",
+        "group": "location-or-span-difference",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "grade/reject_rewrite.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "grade/reject_upcast.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "grade/reject_witness.bend",
+        "lane": "check",
+        "group": "location-or-span-difference",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "halt/column_order_search.bend",
+        "lane": "check",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "halt/column_order_search.bend",
+        "lane": "parse",
+        "group": "computed-match-legacy-message",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "halt/contraction_growth.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "import/alias_decl.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/alias_decl.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/alias_shadow.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/alias_shadow.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/alias_twice.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/alias_twice.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/c_suffix_module.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/c_suffix_module.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/dotted_path.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/dotted_path.bend",
+        "lane": "parse",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/duplicate_name.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/duplicate_name.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/empty_neq.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "import/goal_alias.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "import/goal_own.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "import/hub_head_local.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/hub_head_local.bend",
+        "lane": "parse",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/hub_head_path.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/hub_head_path.bend",
+        "lane": "parse",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/list_sugar.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "import/parent_segments.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/parent_segments.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/shadow_base.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/shadow_base.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/shadow_lib.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/shadow_lib.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/suffix_refused.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/suffix_refused.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/tilde_path.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "import/tilde_path.bend",
+        "lane": "parse",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "io/channel_send_recv.bend",
+        "lane": "check",
+        "group": "caret-width-or-position-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "io/reuse_across_effect.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "page/ambiguous_ctor_error.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "page/ambiguous_ctor_error.bend",
+        "lane": "parse",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "page/arm_leaf_context.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "page/bool_wrap_scope.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "page/comp_arrow_position.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "page/comp_arrow_position.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "page/comp_param_match.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "page/concat_type_infer.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "page/context_dedup_shadow.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "page/ctor_list_mismatch_000.bend",
+        "lane": "check",
+        "group": "caret-width-or-position-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "page/ctor_list_mismatch_001.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "page/ctor_list_mismatch_001.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "page/deep_list_walk.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "page/empty_match_datatype.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "page/match_missing_ctors.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "page/match_missing_default.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "page/match_not_datatype.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "page/missing_cons_ctor.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "page/overapply_hint.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "page/rewrite_non_equation.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "page/unknown_constructor.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "page/usage_plain_words.bend",
+        "lane": "check",
+        "group": "caret-width-or-position-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "parse/array_count_odd.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/array_count_odd.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/array_count_sum.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/array_count_sum.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/builtin_arity_mismatch_000.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "parse/chain_old_spellings_000.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/chain_old_spellings_000.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/chain_old_spellings_001.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/chain_old_spellings_001.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/comp_arrow_position.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/comp_arrow_position.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/computed_mark_nonname.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/computed_mark_nonname.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/datatype_no_is.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/datatype_no_is.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/dead_lambda_syntax.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/dead_lambda_syntax.bend",
+        "lane": "parse",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/dead_motive_syntax.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/dead_motive_syntax.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/decl_name_words.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/decl_name_words.bend",
+        "lane": "parse",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/def_untyped_refused.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/def_untyped_refused.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/do_bind_continuation.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/do_bind_continuation.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/duplicate_ctor_name.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/duplicate_ctor_name.bend",
+        "lane": "parse",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/duplicate_declaration.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/duplicate_declaration.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/expected_float_literal.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/expected_float_literal.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/float_dotted_family_dead_000.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/float_dotted_family_dead_000.bend",
+        "lane": "parse",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/foreign_refill.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/foreign_refill.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/hex_no_digits.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/hex_no_digits.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/if_no_else.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/if_no_else.bend",
+        "lane": "parse",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/if_statement_only.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "parse/invalid_assign_target.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/invalid_assign_target.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/invalid_string_escape.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/invalid_string_escape.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/keyword_reserved.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/keyword_reserved.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/law_fill_arrow.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/law_fill_arrow.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/nat_plus_u32.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "parse/plus_binder_term.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "parse/qualified_constructor.bend",
+        "lane": "check",
+        "group": "caret-width-or-position-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "parse/reserved_assert_name.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/reserved_assert_name.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/reserved_ctor_field_000.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/reserved_ctor_field_000.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/reserved_ctor_field_001.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/reserved_ctor_field_001.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/reserved_def_name_000.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/reserved_def_name_000.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/reserved_def_name_001.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/reserved_def_name_001.bend",
+        "lane": "parse",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/reserved_def_name_002.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/reserved_def_name_002.bend",
+        "lane": "parse",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/reserved_lambda_binder.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/reserved_lambda_binder.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/reserved_let_binder_001.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/reserved_let_binder_001.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/reserved_pattern_binder.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/reserved_pattern_binder.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/reserved_pi_binder.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/reserved_pi_binder.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/reserved_type_name.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/reserved_type_name.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/reserved_type_param.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/reserved_type_param.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/rewrite_ctor_brace.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "parse/rewrite_non_equation.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "parse/typed_let_pattern.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/typed_let_pattern.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/word_overflow_literal.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "parse/word_overflow_literal.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "proof/goal_ladder_state_000.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_001.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_002.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_003.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_004.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_005.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_006.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_007.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_008.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_009.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_010.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_011.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_012.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_013.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_014.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_015.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_016.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_017.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_018.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_019.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_020.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_021.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_022.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_023.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_024.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_025.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_026.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_027.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_028.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_029.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/goal_ladder_state_030.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "proof/match_as_binding.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "proof/match_as_binding.bend",
+        "lane": "parse",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "proof/no_funext_000.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "reg/body_local_match.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "reg/body_local_match.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "reg/erased_local_match.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "reg/erased_local_match.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "reg/framed_cell_capture.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "reg/framed_cell_capture.bend",
+        "lane": "parse",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "reg/import_head.bend",
+        "lane": "check",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "reg/import_head.bend",
+        "lane": "parse",
+        "group": "legacy-unstructured-error",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "run/array_bounds_000.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "run/array_bounds_000.bend",
+        "lane": "parse",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "run/array_bounds_001.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "run/array_bounds_001.bend",
+        "lane": "parse",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "run/array_slab.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "run/array_slab.bend",
+        "lane": "parse",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "run/array_struct_swap.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "run/array_struct_swap.bend",
+        "lane": "parse",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "spec/comp_any_term.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "spec/comp_capture_linear.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "spec/comp_capture_share.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "spec/comp_curried_lambda.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "spec/comp_mint_dedupe.bend",
+        "lane": "check",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "spec/comp_mint_dedupe.bend",
+        "lane": "parse",
+        "group": "other-diagnostic-shape",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "spec/hypothesis_retype.bend",
+        "lane": "check",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "spec/hypothesis_retype.bend",
+        "lane": "parse",
+        "group": "same-expectation-other-observation-or-detail",
+        "changedAxes": [
+          "diagnostic"
+        ],
+        "referencePhase": "parse",
+        "candidatePhase": "parse"
+      },
+      {
+        "id": "state/ctor_stuck_goal.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "state/generic_args_goal.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "state/nested_call_goal_000.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "state/nested_call_goal_001.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "state/operator_goal.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "state/plain_goal.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "state/rewrite_goal.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      },
+      {
+        "id": "state/type_family_goal.bend",
+        "lane": "check",
+        "group": "source-snippet-only",
+        "changedAxes": [
+          "verdict",
+          "evidence",
+          "diagnostic"
+        ],
+        "referencePhase": "check",
+        "candidatePhase": "check"
+      }
+    ]
+  },
+  "scope": [
+    "All2996 measured frontend observations agree on status, phase, checked/type-acceptance/trust/kernel metadata, unsafe-definition list, exit and output.",
+    "Diagnostic text and diagnostic-dependent harness verdict/evidence remain different; this does not prove identical rejection causes or universal language semantics.",
+    "The2 malformed-binder rows require both the binder fix and the independent caret renderer to become exact.",
+    "Cycle fixes are separately established by16 dedicated observations; no pinned-corpus cycle result is credited here.",
+    "No frontend gain is attributed to the lookup speed patch."
+  ]
+}

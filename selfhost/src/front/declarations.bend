@@ -301,7 +301,7 @@ def f_import(
   +book: List<&2, KDef>,
   +imports: List<&2, KTerm>,
 ) -> FRawResult:
-  f_import_path(ts, "", book, imports)
+  f_import_path(ts, ts, "", book, imports)
 
 # The declaration book starts empty and grows on every law, def, or type.
 # Imports leave it empty; a decorator also closes the leading-import region.

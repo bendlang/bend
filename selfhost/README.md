@@ -1,11 +1,13 @@
 # Bend2 compiler port in Bend2
 
 Use the [compiler guide](../docs/BEND-IN-BEND.md) and
-[Phase14 release report](../implementation/phase14/conformance_and_dispatch.md).
-The current release fixes imported-law fills, renders checker carets and uses
-source-level normalizer workers. Same-source checking takes 24.98s versus 27.40s
-for Phase12 and 2.81s for pinned TypeScript. Exact frontend differences fall
-730→603. The larger Phase13 rewriter remains a preserved, uninstalled experiment.
+[Phase15 release report](../implementation/phase15/parser_conformance_and_speed.md).
+The current release corrects parser/import behavior and cycle error order, shares
+the diagnostic formatter and uses two small source lookup workers. Same-source
+checking takes 24.10 s versus 25.08 s for Phase14 and 2.89 s for pinned TypeScript.
+Exact frontend differences fall 603→459 with no lost matches. All measured
+behavior/output axes now agree on that corpus; remaining exact gaps are diagnostic.
+The larger Phase13 rewriter remains a preserved, uninstalled experiment.
 
 The current target is upstream
 [`b2111cf43244e65f76ddc278ee695e669f720cbf`](https://github.com/bendlang/bend/tree/b2111cf43244e65f76ddc278ee695e669f720cbf),
@@ -18,7 +20,7 @@ node cli.mjs tests/conformance/typed-smoke/base-u32.bend --run
 npm run build
 ```
 
-The compiler contains 15,264 physical /13,038 nonblank Bend lines in 59 modules.
+The compiler contains 15,288 physical /13,059 nonblank Bend lines in 59 modules.
 It retains the validated S4 simplifications while adding current declaration,
 namespace, typing and effect semantics. The [release manifest](dist/release.json)
 binds the exact source, genuine checked parent, equality/choice-derived API, Base,
@@ -139,7 +141,7 @@ remain in `dist/selfhost/`; the [preservation index](../experiments/PRESERVATION
 and [experiment ledger](../experiments/ledger.md) identify their exact scope.
 They are not alternate defaults. The current release can run after relocation
 without an upstream checkout, as verified by its
-[Phase14 installed/relocated CLI checks](../implementation/phase14/release-validation.md).
+[Phase15 installed/relocated CLI checks](../implementation/phase15/release-validation.md).
 The earlier [Phase5 clean-package evidence](../implementation/phase5/relocated-cli-evidence/README.md)
 applies to that historical artifact.
 

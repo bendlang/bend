@@ -230,7 +230,29 @@ def lookup(
     case Nil{}:
       missing()
     case Con{d, rest}:
-      kc(KDef, String.eq(dk(d), "BookCache"), u => index_lookup(d, name), u => kc(KDef, String.eq(dn(d), name), u => d, u => lookup(rest, name)))
+      lookup_cached(d, rest, name, String.eq(dk(d), "BookCache"))
+
+@unsafe
+def lookup_cached(
+  +d: KDef,
+  +rest: List<&2, KDef>,
+  +name: String,
+  +cached: Bool,
+) -> KDef:
+  match cached:
+    case True{}: index_lookup(d, name)
+    case False{}: lookup_named(d, rest, name, String.eq(dn(d), name))
+
+@unsafe
+def lookup_named(
+  +d: KDef,
+  +rest: List<&2, KDef>,
+  +name: String,
+  +same: Bool,
+) -> KDef:
+  match same:
+    case True{}: d
+    case False{}: lookup(rest, name)
 
 @unsafe
 def terms_len(

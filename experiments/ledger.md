@@ -965,3 +965,35 @@ backend and installed/relocated release gates. The
 exact attribution, measured costs, remaining failures and promotion. No new
 performance or conformance result is claimed at this checkpoint. All75unrelated
 Phase6 files remain unchanged and unstaged.
+
+
+## Phase15 completed — 2026-09-29
+
+**Installed:** combined-02 API `b8d658c5`, genuine checked parent `32ec77a3`, unchanged
+upstream `b2111cf`. The [report](../implementation/phase15/parser_conformance_and_speed.md)
+and [per-observation attribution](../implementation/phase15/exact-differences.md)
+record parser/import/cycle fixes, shared caret rendering and two source lookup
+workers. Exact differences fall 603→459 with 144 new matches and none lost:
+132 parser carets, ten missing-file contexts, two binder-plus-caret observations.
+All measured behavior/output axes agree across 2,996 observations; remaining
+exact differences are diagnostic. All 1,001 positives, 482 validation refusals
+and 11 exact trust refusals retain their required results.
+
+Controlled identical-source checking takes 25.0780→24.1023 s (3.89% less process,
+3.92% less request time); TypeScript takes 2.8858 s, leaving an 8.3520× gap. The
+host patch is explicit and all other hosts/Base/runtime agree. The isolated lookup
+pilot separately gains 3.49%; ratios are not multiplied. Source is 15,288 lines,
++24 overall: formatter −35, behavior +37, lookup +22. No new maintained JS rewrite.
+
+Both corrected builds pass 36 focused cases. The standalone component, 226 paired
+history observations, 41 backend rows, 16 helper groups, five authentic replays and
+42 installed/relocated CLI checks pass. Three known backend exact differences
+remain. The initial cycle precedence regression and both first 32/36 integration
+failures stay rejected; corrected scoped witnesses do not weaken upstream oracles.
+All superseded tools/failed audits remain in [preserved evidence](../implementation/phase15/evidence/README.md).
+All 75 unrelated Phase6 files are unchanged and unstaged.
+
+**Updated frontier:** another shared diagnostic cause, then a fresh installed-image
+profile for any larger representation/allocation experiment. The source-worker
+pattern still pays but does not close the 8.35× gap. Keep routine edits on the
+36-case checked workflow; no old multi-hour campaign is renewed.

@@ -9,7 +9,7 @@ does not invoke the TypeScript compiler.
 
 The active target is upstream
 [`b2111cf43244e65f76ddc278ee695e669f720cbf`](https://github.com/bendlang/bend/tree/b2111cf43244e65f76ddc278ee695e669f720cbf)
-(Bend 2.0.32 era). The [Phase14 report](../implementation/phase14/conformance_and_dispatch.md)
+(Bend 2.0.32 era). The [Phase15 report](../implementation/phase15/parser_conformance_and_speed.md)
 records checked artifact identities, current conformance, measured cost and
 remaining gaps. This experimental port does not establish independent proof
 validity; `--verdict` is explicitly unsupported.
@@ -84,7 +84,7 @@ npm run build -- /absolute/release-config.json /absolute/new-attempt
 Config fields and selection semantics are documented in the
 [maintained workflow guide](PHASE5_DEVELOPMENT.md). Broad conformance and checked
 self-reproduction are release/integration gates, not every small edit's build.
-The [Phase14 report](../implementation/phase14/conformance_and_dispatch.md) records
+The [Phase15 report](../implementation/phase15/parser_conformance_and_speed.md) records
 the current artifact's evidence and remaining failures.
 
 ## Work on the current source
@@ -106,7 +106,7 @@ unforced message identity is outside this contract. Historical versions1/2/3/4
 retain exact byte replay. The normalizer seed change and broader branch
 transformation failed stack controls and are excluded.
 
-The [Phase14 report](../implementation/phase14/conformance_and_dispatch.md) gives the
+The [Phase15 report](../implementation/phase15/parser_conformance_and_speed.md) gives the
 current source and artifact identities. Keep experiments isolated by selecting a
 frozen attempt explicitly:
 
@@ -165,7 +165,7 @@ BEND_TYPED_API="$PWD/build/candidate-api.mjs" \
 
 This writes a checked API plus the assembled source and provenance in
 `build/typed/`. Keep source, API, runtime and host snapshots immutable during
-validation. Full self-reproduction has not been rerun for Phase14. The advanced
+validation. Full self-reproduction has not been rerun for Phase15. The advanced
 runner, separate from the checked release build, is:
 
 ```sh
@@ -201,29 +201,33 @@ canonical Base path when comparing output bytes across native and JS hosts.
 
 ## Internal boundaries and performance
 
-The [Phase14 controlled comparison](../implementation/phase14/conformance_and_dispatch.md)
-checks identical final source in **24.98s**, versus **27.40s** for the previous
-release and **2.81s** for pinned TypeScript: **8.8% less time**, with an **8.88×**
-remaining process-time gap. It excludes emission and binds the two reviewed host
-trust-report edits. It does not establish a general generated-program runtime
-speedup. The older Nat300 JS/native measurements remain tied to Phase12.
+The [Phase15 controlled comparison](../implementation/phase15/parser_conformance_and_speed.md)
+checks identical final source in **24.10 s**, versus **25.08 s** for the previous
+release and **2.89 s** for pinned TypeScript: **3.9% less time**, with an **8.35×**
+remaining process-time gap. It excludes emission and binds the complete reviewed
+import-discovery host patch. Two fresh processes per image use the same CPU and
+resource limits. This does not establish a general generated-program runtime
+speedup; older Nat300 JS/native measurements remain tied to Phase12.
 
-The compiler now resolves imported-law fills after dependency loading, preserves
-source declaration order for trust reporting, and renders existing checker spans
-with carets. All 11 trust-refusal cases match TypeScript. Exact frontend differences
-fall 730→603, while all 1,001 positive accepts and 482 validation-negative refusals
-remain. The [conformance notes](../selfhost/CONFORMANCE.md) retain exact gaps.
+Parser diagnostics now share the checker snippet renderer. Local path validation,
+malformed erased binders, contextual missing-file errors and cyclic-import error
+order are corrected. All 11 trust-refusal cases remain exact. Frontend differences
+fall 603→459, while all 1,001 positive accepts and 482 validation-negative refusals
+remain. Measured behavior/output axes agree on every corpus observation; remaining
+exact differences are diagnostic text. The [conformance notes](../selfhost/CONFORMANCE.md)
+retain scope and limitations.
 
 The [Phase13 investigation](../implementation/phase13/structured_rewriter.md)
-keeps its larger selector prototype uninstalled. Phase14 uses six source-level
-normalizer workers instead: the pinned bootstrap emits direct branches/calls,
-removing intermediate choices without a new JavaScript transformation. Version5
-remains the guarded release profile, and saved stack histories remain gates.
+keeps its larger selector prototype uninstalled. Phase14's six normalizer workers
+remain; Phase15 adds two ordinary-list lookup workers emitted as a mutual-tail
+loop. No new maintained JS rewrite is needed. Version5 remains the guarded
+release profile, and saved stack histories remain gates.
 
-Routine development uses checked B1 and 26 focused controls; reuse a frozen
-attempt for fixture-only edits. The long string runs first and the four repaired
-imported-law trust cases follow the earlier 22 witnesses. The two Phase14 builds
-ran concurrently, so their elapsed times are not a controlled loop comparison.
+Routine development uses checked B1 and 36 focused controls; reuse a frozen
+attempt for fixture-only edits. The long string stays first. The selection adds
+six exact upstream checks and four separate illegal-path witnesses with explicit
+refusal-at-parse oracles; full diagnostics remain under the strict corpus gate.
+Concurrent integration-build times are not a controlled loop-speed measurement.
 Keep full-source and broad frontend/backend gates for integration.
 
 The [architecture](../selfhost/docs/ARCHITECTURE.md) describes the first-order

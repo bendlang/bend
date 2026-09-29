@@ -1,6 +1,6 @@
 # Canonical file identity is separate from each importing module's aliases.
-# The host supplies lexical paths and canonical paths; all graph and namespace
-# decisions, including namespace conflicts and cycles, are implemented here.
+# The host supplies lexical/canonical paths and guards active IO reentry.
+# Supplied-source graph validation, namespace conflicts and cycles stay here.
 type FGraph is Data:
   FGraph{+book: List<&2, KDef>, +error: String, +done: List<&2, KTerm>}
 

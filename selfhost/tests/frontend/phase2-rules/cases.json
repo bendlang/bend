@@ -163,5 +163,89 @@
     ],
     "accept": false,
     "rejectPhase": "verdict"
+  },
+  {
+    "id": "import/cross_file_io.bend",
+    "lanes": [
+      "check"
+    ],
+    "accept": false,
+    "rejectPhase": "parse"
+  },
+  {
+    "id": "import/cross_file_proof.bend",
+    "lanes": [
+      "check"
+    ],
+    "accept": false,
+    "rejectPhase": "parse"
+  },
+  {
+    "id": "import/cycle_terminates.bend",
+    "lanes": [
+      "check"
+    ],
+    "accept": false,
+    "rejectPhase": "parse"
+  },
+  {
+    "id": "import/diamond_dedup.bend",
+    "lanes": [
+      "check"
+    ],
+    "accept": false,
+    "rejectPhase": "parse"
+  },
+  {
+    "id": "phase15-dotted_path",
+    "lanes": [
+      "check"
+    ],
+    "accept": false,
+    "rejectPhase": "parse",
+    "file": "phase15-dotted_path.bend"
+  },
+  {
+    "id": "phase15-hub_head_local",
+    "lanes": [
+      "check"
+    ],
+    "accept": false,
+    "rejectPhase": "parse",
+    "file": "phase15-hub_head_local.bend"
+  },
+  {
+    "id": "phase15-hub_head_path",
+    "lanes": [
+      "check"
+    ],
+    "accept": false,
+    "rejectPhase": "parse",
+    "file": "phase15-hub_head_path.bend"
+  },
+  {
+    "id": "import/path_canonical.bend",
+    "lanes": [
+      "check"
+    ],
+    "accept": false,
+    "rejectPhase": "parse"
+  },
+  {
+    "id": "phase15-tilde_path",
+    "lanes": [
+      "check"
+    ],
+    "accept": false,
+    "rejectPhase": "parse",
+    "file": "phase15-tilde_path.bend"
+  },
+  {
+    "id": "parse/prefix_operator_dead.bend",
+    "lanes": [
+      "check"
+    ],
+    "accept": false,
+    "rejectPhase": "parse"
   }
 ]

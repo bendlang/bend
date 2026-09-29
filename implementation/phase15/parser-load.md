@@ -1,6 +1,6 @@
 # Phase15 parser and local-import behavior
 
-The final isolated candidate03 fixes the status/phase/checking metadata of all **20 remaining non-diagnostic observations across10 upstream fixtures**. The five missing-file fixtures now match pinned TypeScript exactly (10 observations). Four illegal local-path spellings and the malformed erased binder reach the correct parse refusal; their existing presentation differences remain visible. This is an isolated result awaiting root integration, broad conformance and release gates.
+The final isolated candidate03 fixes the status/phase/checking metadata of all **20 remaining non-diagnostic observations across10 upstream fixtures**. The five missing-file fixtures now match pinned TypeScript exactly (10 observations). Four illegal local-path spellings and the malformed erased binder reach the correct parse refusal; their existing presentation differences remain visible. This isolated result was integrated into the released `combined-02`; the [final phase report](parser_conformance_and_speed.md) records its full conformance and release gates.
 
 ## Cause and implementation
 

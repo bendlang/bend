@@ -170,3 +170,14 @@ TypeScript comparison and installed release checks remain separate. Those are no
 pilot. All owned jobs have closed; source snapshots and consumed tools are
 frozen for preservation. No production/default source edit, commit or push was
 performed by this owner.
+
+
+## Combined validation follow-through
+
+The [integration validation report](integration-validation.md) now completes
+the conformance-only versus combined history ablation and41-row backend gate
+for conformance-02/APIc4c90831 andcombined-02/APIb8d658c5. All226paired saved
+history observations and both fresh strings pass; all41backend rows pass with
+three retained exact diagnostic differences and no lost exact matches. This
+owner performs no additional optimization or performance run. Root's final
+frontend, TypeScript matrix and installed release checks remain separate.
