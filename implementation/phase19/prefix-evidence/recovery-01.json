@@ -1,0 +1,21 @@
+{
+  "kind": "phase16-independent-compact-recovery",
+  "complete": true,
+  "pass": true,
+  "toolSha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234",
+  "extraction": {
+    "files": 1028,
+    "symlinks": 0,
+    "bytes": 54540178,
+    "allBytesAndModesVerified": true
+  },
+  "sourceReconstruction": {
+    "baselineCommit": "fddfc84b3f48aecc77c2424ddc8227cd7f63251f",
+    "files": 214,
+    "allBytesAndModesVerified": true,
+    "usesWorkingTreeSource": false,
+    "patchSha256": "7daea38a8ed20e611c70061ac719a1a1c4bec3ee4927bdea71eed11f85a51873"
+  },
+  "manifestSha256": "ac58ad4ef1747afeb481350829a5e123230518f6e340af206656812582bd16c6",
+  "inventorySha256": "8d7d7c5820058c61ff17c549deb39c3cb900a30e623b6a721406b4d70644e4b9"
+}

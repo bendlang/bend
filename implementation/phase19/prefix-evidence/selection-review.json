@@ -1,0 +1,83 @@
+{
+  "kind": "phase19-prefix-selection-review",
+  "complete": true,
+  "pass": true,
+  "inventory": {
+    "path": "implementation/phase19/prefix-evidence/capsule-01/inventory.json",
+    "sha256": "8d7d7c5820058c61ff17c549deb39c3cb900a30e623b6a721406b4d70644e4b9"
+  },
+  "members": 1028,
+  "bytes": 54540178,
+  "topics": {
+    "final": 974,
+    "boundary": 54
+  },
+  "symlinks": 0,
+  "sourceMembers": 214,
+  "rootReleaseFiles": 22,
+  "allRootReleaseFilesIncluded": true,
+  "exactBoundaryTrees": [
+    {
+      "path": "selfhost/build/phase19/instance-boundary-inputs-01",
+      "files": 11,
+      "complete": true
+    },
+    {
+      "path": "selfhost/build/phase19/instance-boundary-oracle-01",
+      "files": 6,
+      "complete": true
+    },
+    {
+      "path": "selfhost/build/phase19/instance-boundary-exact-parent-01",
+      "files": 6,
+      "complete": true
+    },
+    {
+      "path": "selfhost/build/phase19/instance-boundary-exact-candidate-01",
+      "files": 6,
+      "complete": true
+    },
+    {
+      "path": "selfhost/build/phase19/instance-boundary-proof-inputs-01",
+      "files": 3,
+      "complete": true
+    },
+    {
+      "path": "selfhost/build/phase19/instance-boundary-proof-oracle-01",
+      "files": 6,
+      "complete": true
+    },
+    {
+      "path": "selfhost/build/phase19/instance-boundary-proof-parent-01",
+      "files": 8,
+      "complete": true
+    },
+    {
+      "path": "selfhost/build/phase19/instance-boundary-proof-candidate-01",
+      "files": 8,
+      "complete": true
+    }
+  ],
+  "automaticFixtureExpansions": [],
+  "excludedRootCount": 45,
+  "forbiddenMembers": [],
+  "externalPriorCapsuleIdentityCoverage": [
+    {
+      "phase": 17,
+      "inventory": "implementation/phase17/evidence/capsule-02/inventory.json",
+      "inventorySha256": "6623de71f1be85dacecfde7af4fa370350340b184ddbc5e8b528d5e76b19f949",
+      "identityReferences": 282,
+      "matching": 282,
+      "unmatched": []
+    },
+    {
+      "phase": 18,
+      "inventory": "implementation/phase18/evidence/capsule-01/inventory.json",
+      "inventorySha256": "5561eb614a2f3921b45f024c3feccdb809f7470e65e1c2d913dd9e8ea140e75f",
+      "identityReferences": 0,
+      "matching": 0,
+      "unmatched": []
+    }
+  ],
+  "scope": "Explicit installed prefix checkpoint only. Phase17/18 exact identity references checked against their durable inventories; upstream, committed host/runtime and older prerequisite chain remain as declared."
+}

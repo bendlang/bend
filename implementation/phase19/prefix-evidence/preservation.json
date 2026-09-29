@@ -1,0 +1,158 @@
+{
+  "kind": "phase19-installed-prefix-release-preservation",
+  "complete": true,
+  "pass": true,
+  "anchorStatus": "installed-prefix-release",
+  "releaseCommit": "506f5ca01139d0878c4fef840bbb6f30c1cc9ee4",
+  "anchor": {
+    "source": "selfhost/build/phase19/prefix-source-01/project",
+    "attempt": "selfhost/build/phase19/prefix-build-01",
+    "apiSha256": "66d6ce45c0c6ea8947190ff210274f1e6f0c7bf85f7ad3f215076f8820acd7c7"
+  },
+  "selectedCapsule": "implementation/phase19/prefix-evidence/capsule-01",
+  "scope": "Selected closed Phase19 installed prefix release and its exact/proof controls only; active checker/parser experiments and excluded entries are not claimed preserved.",
+  "capture": {
+    "members": 1028,
+    "uncompressedBytes": 54540178,
+    "archives": 2,
+    "compressedBytes": 6216151,
+    "largestArchiveBytes": 6199148,
+    "symlinks": 0,
+    "manifestSha256": "ac58ad4ef1747afeb481350829a5e123230518f6e340af206656812582bd16c6",
+    "inventorySha256": "8d7d7c5820058c61ff17c549deb39c3cb900a30e623b6a721406b4d70644e4b9"
+  },
+  "independentRecovery": {
+    "kind": "phase16-independent-compact-recovery",
+    "complete": true,
+    "pass": true,
+    "toolSha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234",
+    "extraction": {
+      "files": 1028,
+      "symlinks": 0,
+      "bytes": 54540178,
+      "allBytesAndModesVerified": true
+    },
+    "sourceReconstruction": {
+      "baselineCommit": "fddfc84b3f48aecc77c2424ddc8227cd7f63251f",
+      "files": 214,
+      "allBytesAndModesVerified": true,
+      "usesWorkingTreeSource": false,
+      "patchSha256": "7daea38a8ed20e611c70061ac719a1a1c4bec3ee4927bdea71eed11f85a51873"
+    },
+    "manifestSha256": "ac58ad4ef1747afeb481350829a5e123230518f6e340af206656812582bd16c6",
+    "inventorySha256": "8d7d7c5820058c61ff17c549deb39c3cb900a30e623b6a721406b4d70644e4b9"
+  },
+  "protectedPhase6": {
+    "pass": true,
+    "unchangedHashAndStatusCount": 75,
+    "noProtectedPayloadSelected": true
+  },
+  "activePhase19ExperimentsExcluded": true,
+  "excludedRootCount": 45,
+  "frozenInputsSelectedAndCaptureVerified": true,
+  "unchangedFrozenInputs": 33,
+  "allOwnedCompilerArchiveRecoveryProcessesClosed": true,
+  "remotePublication": "Not performed by this owner; root owns commit/publication.",
+  "boundFiles": [
+    {
+      "path": "implementation/phase19/prefix-evidence/PLAN.md",
+      "bytes": 5711,
+      "sha256": "e892288699099658506a63d748953ef398e1172533e0d5cef3c2c03e4884499e"
+    },
+    {
+      "path": "implementation/phase19/prefix-evidence/README.md",
+      "bytes": 3100,
+      "sha256": "d95e086588cbc695a17d453d6bd0421c9e689b0694e0c734aac10fe72d2a7492"
+    },
+    {
+      "path": "implementation/phase19/prefix-evidence/adaptation.json",
+      "bytes": 1248,
+      "sha256": "e4c5a02a3e2da1e5f8068e9abe2a0af101ee43e94d02766373e23a393736dcaa"
+    },
+    {
+      "path": "implementation/phase19/prefix-evidence/capsule-01/boundary-01.tar.gz",
+      "bytes": 17003,
+      "sha256": "0593949dfb449185ec85361c56e27eafb92b2905d5cedba5565b2673fc0b22c5"
+    },
+    {
+      "path": "implementation/phase19/prefix-evidence/capsule-01/final-01.tar.gz",
+      "bytes": 6199148,
+      "sha256": "7925bc79431159e4dcc2c49667c8b4809b61cbb66c5199913d5ceabeb57c5c99"
+    },
+    {
+      "path": "implementation/phase19/prefix-evidence/capsule-01/inventory.json",
+      "bytes": 342099,
+      "sha256": "8d7d7c5820058c61ff17c549deb39c3cb900a30e623b6a721406b4d70644e4b9"
+    },
+    {
+      "path": "implementation/phase19/prefix-evidence/capsule-01/manifest.json",
+      "bytes": 97628,
+      "sha256": "ac58ad4ef1747afeb481350829a5e123230518f6e340af206656812582bd16c6"
+    },
+    {
+      "path": "implementation/phase19/prefix-evidence/capsule-01/phase17-to-anchor.patch",
+      "bytes": 669,
+      "sha256": "7daea38a8ed20e611c70061ac719a1a1c4bec3ee4927bdea71eed11f85a51873"
+    },
+    {
+      "path": "implementation/phase19/prefix-evidence/collector-adaptation.patch",
+      "bytes": 4805,
+      "sha256": "2c0a8d5e2cb04d5259725ae8cedf04b92bfdb90da07bbfdf11fbe3f76d62d9f0"
+    },
+    {
+      "path": "implementation/phase19/prefix-evidence/phase6-start-state.json",
+      "bytes": 36660,
+      "sha256": "5c0427166fd96f873da3eafb63bacd3a79d1c9e423dd936b091b06dff3388a0b"
+    },
+    {
+      "path": "implementation/phase19/prefix-evidence/post-capture-audit.json",
+      "bytes": 46407,
+      "sha256": "e05e668be2e296f6de3aee8ad336c9637e93689801619c8049f9d4322ec58f19"
+    },
+    {
+      "path": "implementation/phase19/prefix-evidence/post-capture-audit.py",
+      "bytes": 2628,
+      "sha256": "6b803b228c483667569bd6b5095660777555a4fb8cee0253eb8cfb7c5ae9ec4e"
+    },
+    {
+      "path": "implementation/phase19/prefix-evidence/recovery-01.json",
+      "bytes": 748,
+      "sha256": "e4ec5df242ef3654c67859e660252ae166e65b18de044e8f696e68813cd35081"
+    },
+    {
+      "path": "implementation/phase19/prefix-evidence/release-paths.json",
+      "bytes": 1082,
+      "sha256": "72e1b3f5b550e149f2778e1fea36262870ee75428c97c35ce4a401ff716875f5"
+    },
+    {
+      "path": "implementation/phase19/prefix-evidence/root-freeze.json",
+      "bytes": 5769,
+      "sha256": "29ee87a284ed27eb772d03962cfbda6c0104faf61dc8508a6075ec2f10e00c94"
+    },
+    {
+      "path": "implementation/phase19/prefix-evidence/selection-proposal.json",
+      "bytes": 8879,
+      "sha256": "77d0031fe86a081f853df4cf041f83465f3782e1f3e4c254c2452e94450c5df3"
+    },
+    {
+      "path": "implementation/phase19/prefix-evidence/selection-review.json",
+      "bytes": 2436,
+      "sha256": "59d1812eae1feca0137de10735b64ce0551ac3d139c79614c962a987104f95cb"
+    },
+    {
+      "path": "selfhost/tools/performance/phase19/prefix-preserve.py",
+      "bytes": 12672,
+      "sha256": "c0a0d5c53485ed30385cbbcc233472b90f79534a843cb2b98e694feb5d90b6f4"
+    },
+    {
+      "path": "selfhost/tools/performance/phase16/compact-recover.py",
+      "bytes": 7326,
+      "sha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234"
+    },
+    {
+      "path": "selfhost/build/phase16/compact-final-evidence-policy-01/report.json",
+      "bytes": 2050,
+      "sha256": "860c35725b340c8b7f3b10aa03418d4ace3d74965249da686dfff152c546e8af"
+    }
+  ]
+}

@@ -1,5 +1,19 @@
 # Compiler evidence preservation index
 
+## Phase19 installed prefix identity correction — 2026-09-29
+
+The [prefix release capsule](../implementation/phase19/prefix-evidence/README.md)
+preserves the installed two-line correction, original failed identity/proof
+controls, checked source/API lineage, full frontend vector, controlled comparison
+and installed/relocated CLI checks. Independent recovery verifies all 1,028
+members and reconstructs all 214 source files from committed Phase17 plus the
+669-byte patch. Two archives total 6,216,151 bytes. The
+[receipt](../implementation/phase19/prefix-evidence/preservation.json) binds the
+exact inventory, recovery and unchanged 75 protected Phase6 states. Active
+checker/parser experiments are explicitly excluded. Recovery establishes byte
+preservation, without extending the release's conformance or timing claims.
+
+
 
 ## Phase15 parser conformance and lookup workers — 2026-09-29
 
