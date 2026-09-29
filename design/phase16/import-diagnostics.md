@@ -49,3 +49,39 @@ fills, forbidden annotated fills, alias-qualified declarations and ambiguities,
 with first-error ordering preserved. Check numeric source ranges and raw parser
 APIs. No speed conclusion comes from concurrent correctness runs; root owns the
 exclusive timing windows and final full frontend gate.
+
+## Second candidate after boundary evidence
+
+The first candidate is unselected: all14 original observations improved, but12
+of the30 independent boundary observations remain nonexact, including four
+primitive phase disagreements for alias-qualified law/type declarations. Keep its
+checked artifact and all raw vectors unchanged.
+
+The second candidate starts from accepted wave4-source-02. Header path assembly
+must use the lexer's physical token spelling (`+bind` means `+`, `>op` means `>`,
+and `>>op` means `>>`). These are explicit lexer token variants, not source guesses.
+Using normalized token text inflated the accumulated physical column and wrongly
+turned extension/duplicate errors into malformed-header errors. Preserve the
+pinned order: header syntax, extension, repeated alias, then path grammar.
+
+Law/type declaration freshness is independent of imported declaration contents:
+a dotted name beginning with an import alias is always refused. Check it before
+ordinary duplicate-name handling, retain the actual name tokens and use the same
+word-range renderer. Definition fills remain a separate dependency-sensitive
+case; do not infer that an imported target is a law while parsing its header.
+
+Shared failure display uses an explicit ParseRaw marker for original import-path
+errors; ParseLine already implies original header display. All ordinary lexical
+and semantic parser errors use the module body view through the shared snippet
+helper. This preserves coordinates and blanks only leading import display lines.
+The ParseNote branch must remain intact. Direct raw/indexed controls cover both
+views and normalized token spellings. The annotated imported-law boundary remains
+strict until its dependency-stage diagnostic can be selected causally.
+
+The direct point control exposed that Bend Char represents Unicode scalar values,
+whereas the TypeScript error may observe a lone UTF16 surrogate. Do not manufacture
+that surrogate through Char.from_u32 or relax runtime validity. An unrepresentable
+point observation must preserve the existing legacy diagnostic without throwing;
+record its strict difference separately. Existing scalar and EOF observations
+remain exact. The direct policy now verifies both the exact supported behavior
+and explicit conservative fallback before integration.

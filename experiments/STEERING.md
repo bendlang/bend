@@ -4,15 +4,19 @@ Phase16 is active under the [design](../design/phase16/full_conformance.md).
 The user authorizes continued exact conformance work with speed and simplicity
 constraints, including project evidence pushes. Baseline verification and the
 controlled unchanged-release matrix pass; current source remains Phase15.
-The healthy integration04 full gate reduces exact differences 459→145, with
-314 new exact matches and zero losses. All 2,996 measured behavior axes stay
-unchanged. A subsequent isolated parser wave adds 62 targeted exact matches;
-its final composition still needs the complete integration gate.
-Actual occurrence instrumentation costs 10.17% process time in the first
-matched-source comparison, above the investigation threshold; it is not selected.
-Private counters and source/range controls validate two bounded cost reductions,
-now under exclusive measurement. Checker trace/order and parser token/import
-families continue in isolation. Preserve strict oracles and all
+The accepted wave5 full gate reduces exact differences **459→48**, with
+411 new exact matches and no losses. All 2,996 primitive outcomes stay exact.
+It adds three matches over wave4: invalid-binder identity and a normalized kind's
+source fallback. The strengthened gate also protects every exact match from the
+preceding accepted checkpoint; all rejected integrations remain preserved.
+The first wave4 ordinary same-source measurement costs 11.88% more than Phase15.
+No Phase16 image is installed. Scan/copy/ASCII changes show no measured recovery;
+template membership indexing is flat and unselected. Diagnostic stage timing
+points toward loading and host range validation, with substantial baseline
+variation. A finite Base-prefix freshening law/operation probe is in progress.
+Parser declaration, import and module-name candidates are being integrated next.
+Boundary controls exposed an alias/local-binder resolution bug; it remains a
+separate semantic task. Delegated agents are available again. Preserve all
 75 unrelated Phase6 files; no older timed campaign is renewed.
 
 Phase15 is complete under its [design](../design/phase15/parser_conformance_and_speed.md).

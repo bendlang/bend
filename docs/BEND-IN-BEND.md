@@ -14,6 +14,10 @@ records checked artifact identities, current conformance, measured cost and
 remaining gaps. This experimental port does not establish independent proof
 validity; `--verdict` is explicitly unsupported.
 
+[Phase16](../implementation/phase16/full_conformance.md) is ongoing in isolated
+checked snapshots. Its current exact-conformance gains, performance deficit and
+remaining semantic controls are documented separately; it is not installed.
+
 The current source retains S4's shared loader, provenance, structured checking
 result and list operations. It adds upfront datatype/signature visibility while
 keeping definition bodies chronological. The [architecture](../selfhost/docs/ARCHITECTURE.md)

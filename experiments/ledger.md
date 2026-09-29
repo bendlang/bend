@@ -1048,3 +1048,42 @@ The next parser candidate makes another 62 targeted observations exact with
 composition is pending. A proposed scoped memo-key correction is explicitly
 rejected after growth-limit and literal-versus-constructor counterexamples.
 Correctness includes first-error order and syntax-sensitive memo identity.
+
+## Phase16 corrected fourth wave — 2026-09-29
+
+`wave4-build-02` / `wave4-frontend-02` reaches **51 exact differences**:
+408 new matches against Phase15 and94 against integration04, with no losses
+under either comparison. Primitive outcomes remain exact on all2,996 observations.
+The first wave4 accidentally reverted the bare-family predicate; the new adjacent
+gate detects and preserves that failure, and the corrected candidate reruns the
+whole corpus plus all eight family boundaries. Current source is15,616 lines
+in59 maintained modules (+328 versus Phase15), not a net LOC reduction.
+
+The first wave4 cost matrix is **25.9805→29.0659 s**, TS2.9332 s: +11.88% process
+cost and a9.91× TS ratio for that unselected image. The small scan/copy changes
+did not demonstrate recovery. An existing-index template-membership experiment
+passes27 operation controls and24 complete-program comparisons; timing is pending.
+All remaining semantic, platform, history and release limitations stay explicit
+in the [Phase16 report](../implementation/phase16/full_conformance.md).
+
+
+## Phase16 fifth full wave and cost attribution — 2026-09-29
+
+The accepted wave5 gate reaches **48 exact differences**, three fewer than wave4,
+with zero lost matches and all 2,996 primitive outcomes unchanged. See the
+[report](../implementation/phase16/full_conformance.md),
+[invalid-binder controls](../implementation/phase16/unbound-binder-marker.md) and
+[kind-origin controls](../implementation/phase16/kind-origin-fallback.md).
+
+The [template membership index](../implementation/phase16/template-membership-index.md)
+is correct on its controls but flat at 28.8561→28.8768 s; leave it unselected.
+[Stage attribution](../implementation/phase16/stage-cost-attribution.md) directs
+investigation toward loader allocation and host source validation. It is an
+instrumented diagnostic with variable baseline stages, not a replacement for the
+ordinary +11.88% cost result. Base-prefix reuse needs an exact law/operation probe
+and original request-history gates before any change can be selected.
+
+The next integration keeps parser/import ownership explicit. New module-name
+controls expose the semantic alias/local-binder precedence gap; retain it and
+its positive witness. No Phase16 compiler is installed and no full-conformance,
+new fixed-point or generated-runtime speed claim is made.

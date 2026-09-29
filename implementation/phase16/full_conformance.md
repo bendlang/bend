@@ -143,3 +143,83 @@ summaries under `populated-span-profile-01` and `phase15-matched-profile-01`.
 They show additional GC/front-end/host validation work; sampling is diagnostic,
 not an alternate speed comparison. A bounded common-constructor allocation
 experiment and an independently verified eager recursion-scan guard are underway.
+
+## Corrected fourth wave: 51 exact differences remain
+
+The healthy checkpoint is now `wave4-build-02` (API `833139041d474d1072365089e3b57951716ca38ee50e3653887fd2783822b35e`).
+`wave4-frontend-02` passes the strengthened gate with **459→51 differences**,
+**408 new exact matches**, no Phase15 losses, and **94 new matches / zero losses
+relative to integration04**. All 2,996 primitive outcomes still agree with pinned
+TypeScript. The remainder is 22 parse and29 check observations: 44 parser-origin
+rows and seven checker-only rows. This is not full conformance or a release.
+
+The integrated increments are parser semantic62, token-context14, literal8,
+checker trace8, quiet TODO1 and template-local numbering1. The literal candidate
+also preserves all32 complete-book/Base/loader/provenance controls. The token
+candidate preserves all20 positive controls. Quiet TODO has one explicitly
+retained mixed source-hole/open-law count gap outside the corpus.
+
+An integration error was found and retained. The first wave4 vector has52
+differences and passes the older Phase15-only gate, but loses the newly exact
+bare-family observation from integration04. Its semantic-parser owner patch
+accidentally removed the independently validated arity-zero predicate. The new
+`frontend-gate-v2.mjs` requires an accepted previous checkpoint and forbids losing
+any of its exact matches. Reaudit of the old vector correctly fails in
+`wave4-adjacent-audit-01`; source02 restores the predicate and reruns the full
+corpus. All eight bare-family semantic controls are exact again. The original
+52-difference result is not selected or presented as monotonic progress.
+
+The maintained59-module source is **15,616 physical lines /13,313 nonblank /
+535,980 bytes**, with1,566 definitions,777 laws and63 types. Versus Phase15 this
+is **+328 lines (+2.15%)**, +67 definitions, −13 laws and no net new types. The
+explicit range/error model simplifies ownership but has not reduced total LOC.
+
+## Fourth-wave performance remains a deficit
+
+`wave4-matrix-01` compares Phase15 against the first wave4 image on identical
+final wave4 source: **25.9805→29.0659 s (+11.88% process /+12.36% request)**.
+TypeScript averages **2.9332 s**; ratios are8.86× and9.91× respectively. Peak RSS
+is1,568,160→1,676,856 KiB (+6.93%). All six workload rows pass type/trust checks,
+all intentional competing compiler jobs were closed, and the exact host delta
+reuses byte-identical previously reviewed changes. This timing does not waive
+that image's separate lost-family-match failure. The corrected source has not
+yet received its final release comparison.
+
+The earlier scan/copy composition shows only0.47% improvement, within variation,
+and higher peak memory; it is not recovery. ASCII-width reuse removes proven
+rescans (Base50,102→1,985 width calls) but likewise does not establish whole-host
+recovery. The next bounded experiment reuses the existing immutable book index
+for template membership; it adds no helper/type/pass. Its operation controls and
+24 complete specialized-book comparisons pass; exclusive timing is pending.
+
+Delegated agents stopped on an account usage limit after saving their checked
+token/import candidates. Root completed the token/literal/trace work locally.
+The import candidate makes its original14 rows exact but exposes12 remaining
+boundary differences, including alias-law/type freshness; it is unselected.
+Invalid-marker identity is under separate paired validation. Release/backend/
+history/replay/CLI gates, final simplification and evidence recovery remain open.
+
+
+## Fifth wave and measured null optimization
+
+`kind-origin-build-01` passes `wave5-frontend-01`: **459→48 exact differences**,
+411 newly exact and zero lost versus Phase15; **51→48**, three new and zero lost
+versus wave4. All 2,996 primitive outcomes remain exact. The
+[invalid-binder correction](unbound-binder-marker.md) preserves an existing invalid
+marker until checking; the [kind-origin correction](kind-origin-fallback.md)
+retains the original expression as a location fallback. Neither adds a helper,
+type or valid term variant.
+
+The [template index experiment](template-membership-index.md) is closed and
+unselected: 28.8561→28.8768 seconds, effectively flat despite improved operation
+counts. The [stage attribution](stage-cost-attribution.md) identifies loading
+and host source validation as useful next investigations, but baseline stage
+variation prevents assigning a precise causal delta or claiming recovery.
+Delegated agents became available again during this continuation.
+
+The next bounded [integration](../../design/phase16/wave6-integration.md) combines
+local declaration eligibility, import diagnostics and source-module name display.
+Its boundary controls expose a preexisting alias/local-binder resolution error;
+that semantic gap remains explicit and under separate investigation. None of
+these isolated checkpoints is installed. Final backend, histories, standalone,
+CLI, performance and durable evidence recovery gates remain required.

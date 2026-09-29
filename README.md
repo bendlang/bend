@@ -35,6 +35,10 @@ with no lost matches. Remaining differences are diagnostic text on this corpus;
 measured behavior/output axes agree. [Conformance](selfhost/CONFORMANCE.md)
 separates these results from backend, platform and proof-kernel gaps.
 
+Ongoing [Phase16 conformance work](implementation/phase16/full_conformance.md)
+has an isolated 48-difference checkpoint. Its performance and release gates are
+still open; the commands below continue to use the Phase15 release.
+
 The [development workflow](docs/PHASE5_DEVELOPMENT.md) builds a genuine checked
 compiler and runs 36 short paired controls. The installed release preserves its
 checked parent and guarded version5 derivative; ordinary compilation runs the
