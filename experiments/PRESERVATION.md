@@ -323,3 +323,18 @@ omitted a source-count file remains alongside the corrected selection. The two
 profile attempts are retained in their separate profile capsule. Active Phase18
 work is excluded, and all 75 unrelated Phase6 hashes/statuses remain unchanged.
 The receipt records external prerequisites and makes no remote-publication claim.
+
+## Phase18 representation experiments — 2026-09-29
+
+The [experiment capsules](../implementation/phase18/evidence/README.md) preserve
+4,546 files in four archives totaling 20,882,557 compressed bytes. Independent
+recovery verified every file and mode and reconstructed all 214 cursor-anchor
+source files from committed Phase17 plus the saved patch. All 20 receipt
+identities were independently rechecked before this checkpoint.
+
+Both checker-world and parser-cursor candidates remain uninstalled. Their
+controlled cost screens, public-result compatibility repair, failed attempts,
+source snapshots and consumed tools are retained. World source03 was timed;
+source06's later compatibility adapter was not. Phase19 is excluded, and all
+75 protected Phase6 hashes/statuses remain unchanged. Preservation establishes
+local recoverability, not a conformance gain or remote publication.

@@ -1,0 +1,38 @@
+{
+  "kind": "phase18-inventory-review",
+  "pass": true,
+  "inventorySha256": "5561eb614a2f3921b45f024c3feccdb809f7470e65e1c2d913dd9e8ea140e75f",
+  "members": 4546,
+  "bytes": 141621511,
+  "sourceMembers": 214,
+  "anchorStatus": "uninstalled-reconstruction-anchor",
+  "topicCounts": {
+    "final": 173,
+    "cursor": 1022,
+    "world": 3351
+  },
+  "ownerIdentityCoverage": [
+    {
+      "ownerReceipt": "selfhost/build/phase18/cursor-owner-receipt-01.json",
+      "matchedSelectedIdentities": 1004,
+      "mismatches": []
+    },
+    {
+      "ownerReceipt": "selfhost/build/phase18/instance-world-freeze-01/manifest.json",
+      "matchedSelectedIdentities": 34,
+      "mismatches": []
+    }
+  ],
+  "fixtureTrees": [
+    "selfhost/build/phase16/empty-call-pattern-controls-02/fixtures",
+    "selfhost/build/phase16/marked-pattern-controls-02/fixtures",
+    "selfhost/build/phase16/parser-checkpoint-controls-03/fixtures",
+    "selfhost/build/phase16/rejected-stage-controls-01/fixtures",
+    "selfhost/build/phase17/group-controls-03/fixtures",
+    "selfhost/build/phase17/instance-controls-02/fixtures",
+    "selfhost/build/phase17/instance-nested-01/fixtures"
+  ],
+  "excludedPhase18Roots": [],
+  "forbiddenPhase19OrPhase6Payloads": false,
+  "scope": "Both uninstalled transport experiments and all closed Phase18 topic attempts; prior capsules/pinned oracle are explicit external prerequisites."
+}

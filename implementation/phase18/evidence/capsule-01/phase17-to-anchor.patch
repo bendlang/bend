@@ -1,0 +1,1040 @@
+--- a/src/front/declarations.bend
++++ b/src/front/declarations.bend
+@@ -12,7 +12,7 @@
+   List<&2, KDef>
+ 
+ law f_tops:
+-  for +ts0: List<&2, FToken>
++  for +ts0: FInput
+   for +book: List<&2, KDef>
+   for +imports: List<&2, KTerm>
+   for +unsafe: Bool
+@@ -20,7 +20,7 @@
+   FRawResult
+ 
+ law f_top:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   for +book: List<&2, KDef>
+   for +imports: List<&2, KTerm>
+   for +unsafe: Bool
+@@ -28,7 +28,7 @@
+   FRawResult
+ 
+ law f_top_ready:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   for +book: List<&2, KDef>
+   for +imports: List<&2, KTerm>
+   for +unsafe: Bool
+@@ -36,13 +36,13 @@
+   FRawResult
+ 
+ law f_tele:
+-  for +ts0: List<&2, FToken>
++  for +ts0: FInput
+   for +end: String
+   for +acc: List<&2, KTerm>
+   FParsed
+ 
+ law f_tele_at:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   for +end: String
+   for +acc: List<&2, KTerm>
+   FParsed
+@@ -87,7 +87,7 @@
+   for +name: String
+   for +pars: List<&2, KTerm>
+   for +ty: KTerm
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   for +book: List<&2, KDef>
+   for +imports: List<&2, KTerm>
+   for +unsafe: Bool
+@@ -97,7 +97,7 @@
+ 
+ law f_law:
+   for +name: String
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   for +book: List<&2, KDef>
+   for +imports: List<&2, KTerm>
+   for +clauses: List<&2, KTerm>
+@@ -107,7 +107,7 @@
+ law f_law_clause:
+   for +name: String
+   for +exi: Bool
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   for +book: List<&2, KDef>
+   for +imports: List<&2, KTerm>
+   for +clauses: List<&2, KTerm>
+@@ -135,7 +135,7 @@
+ 
+ law f_type:
+   for +name: String
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   for +book: List<&2, KDef>
+   for +imports: List<&2, KTerm>
+   for +scope: FParseScope
+@@ -162,7 +162,7 @@
+   for +name: String
+   for +pars: List<&2, KTerm>
+   for +ty: KTerm
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   for +book: List<&2, KDef>
+   for +imports: List<&2, KTerm>
+   for +ctors: List<&2, KDef>
+@@ -186,7 +186,7 @@
+   List<&2, KTerm>
+ 
+ law f_body:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   FParsed
+ 
+ law f_statement:
+@@ -205,7 +205,7 @@
+   FParsed
+ 
+ law f_match_heads:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   for +indent: U32
+   for +acc: List<&2, KTerm>
+   FParsed
+@@ -217,12 +217,12 @@
+   FParsed
+ 
+ law f_case_pats:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   for +indent: U32
+   for +heads: List<&2, KTerm>
+   for +rows: List<&2, KTerm>
+   for +pats: List<&2, KTerm>
+-  for +start: List<&2,FToken>
++  for +start: FInput
+   FParsed
+ 
+ law f_case_pat:
+@@ -231,7 +231,7 @@
+   for +heads: List<&2, KTerm>
+   for +rows: List<&2, KTerm>
+   for +pats: List<&2, KTerm>
+-  for +start: List<&2,FToken>
++  for +start: FInput
+   FParsed
+ 
+ law f_case_body:
+@@ -246,7 +246,7 @@
+ def f_parse(
+   +source: String,
+ ) -> FResult:
+-  fpe_finish(source, f_tops(f_lex(source, 1, 0, 0, Nil{}), Nil{}, Nil{}, False{}, f_parse_scope_empty()))
++  fpe_finish(source, f_tops(f_input(f_lex(source, 1, 0, 0, Nil{})), Nil{}, Nil{}, False{}, f_parse_scope_empty()))
+ 
+ @unsafe
+ def f_result(
+@@ -297,20 +297,20 @@
+ 
+ @unsafe
+ def f_def_header(
+-  +ts: List<&2,FToken>,
++  +ts: FInput,
+   +book: List<&2,KDef>,
+   +imports: List<&2,KTerm>,
+   +unsafe: Bool, +scope: FParseScope
+ ) -> FRawResult:
+   +suffix = f_eq(f_tx(f_tl(ts)), "?") && U32.is_eq(f_line(ts), f_line(f_tl(ts))) && U32.is_eq(f_col(f_tl(ts)), U32.add(f_col(ts), U32.from_nat(String.length(f_tx(ts)))))
+-  +rest = f_space(f_choose(List<&2,FToken>, suffix, u => f_tl(f_tl(ts)), u => f_tl(ts)))
++  +rest = f_space(f_choose(FInput, suffix, u => f_tl(f_tl(ts)), u => f_tl(ts)))
+   f_choose(FRawResult, Bool.not(f_valid_name(f_tx(ts))),
+     u => f_result(book, f_pn(fpe_name_error(ts)), imports),
+     u => f_def_context_header(ts, rest, book, imports, unsafe || suffix, f_decl_find(f_tx(ts), book, scope), scope))
+ 
+ @unsafe
+ def f_import(
+-  +ts: List<&2, FToken>,
++  +ts: FInput,
+   +book: List<&2, KDef>,
+   +imports: List<&2, KTerm>,
+ ) -> FRawResult:
+@@ -319,7 +319,7 @@
+ # The declaration book starts empty and grows on every law, def, or type.
+ # Imports leave it empty; a decorator also closes the leading-import region.
+ law f_import_leading:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   for +book: List<&2, KDef>
+   for +imports: List<&2, KTerm>
+   for +unsafe: Bool
+@@ -345,7 +345,7 @@
+ def f_tele_binder(
+   +binder: KTerm,
+   +temp: Bool,
+-  +ts: List<&2, FToken>,
++  +ts: FInput,
+   +end: String,
+   +acc: List<&2, KTerm>,
+ ) -> FParsed:
+@@ -355,7 +355,7 @@
+ def f_tele_type(binder, temp, p, end, acc):
+   match p:
+     case FParsed{+ty, +ts}:
+-      f_choose(FParsed, f_eq(tg(ty), "Error"), u => FParsed{ty, ts}, u => f_tele(f_choose(List<&2, FToken>, f_eq(f_tx(ts), ","), u => f_tl(ts), u => ts), end, Con{kt_span(f_choose(String, temp, u => "Template", u => "Bind"), nm(binder), ix(binder), qt(binder), [ty], kb(binder), ke(binder)), acc}))
++      f_choose(FParsed, f_eq(tg(ty), "Error"), u => FParsed{ty, ts}, u => f_tele(f_choose(FInput, f_eq(f_tx(ts), ","), u => f_tl(ts), u => ts), end, Con{kt_span(f_choose(String, temp, u => "Template", u => "Bind"), nm(binder), ix(binder), qt(binder), [ty], kb(binder), ke(binder)), acc}))
+ 
+ @unsafe
+ def f_tbind(
+@@ -424,7 +424,7 @@
+ @unsafe
+ def f_law_base(
+   +name: String,
+-  +ts: List<&2, FToken>,
++  +ts: FInput,
+   +book: List<&2, KDef>,
+   +imports: List<&2, KTerm>,
+   +clauses: List<&2, KTerm>, +scope: FParseScope
+@@ -463,11 +463,11 @@
+ @unsafe
+ def f_type_base(
+   +name: String,
+-  +ts: List<&2, FToken>,
++  +ts: FInput,
+   +book: List<&2, KDef>,
+   +imports: List<&2, KTerm>, +scope: FParseScope
+ ) -> FRawResult:
+-  f_choose(FRawResult, f_eq(f_tx(ts), "<") || f_eq(f_tx(ts), "<-"), u => f_type_params(name, f_tele(f_choose(List<&2, FToken>, f_eq(f_tx(ts), "<-"), u => Con{FToken{"-", f_line(ts), U32.add(f_col(ts), 1), 0, f_cursor_add(f_begin(ts), 1), f_end(ts), f_cursor_add(f_begin(ts), 1)}, f_tl(ts)}, u => f_tl(ts)), ">", Nil{}), book, imports, scope), u => f_type_params(name, FParsed{kt("Tele", "", 0, 0, Nil{}), ts}, book, imports, scope))
++  f_choose(FRawResult, f_eq(f_tx(ts), "<") || f_eq(f_tx(ts), "<-"), u => f_type_params(name, f_tele(f_choose(FInput, f_eq(f_tx(ts), "<-"), u => f_prepend(FToken{"-", f_line(ts), U32.add(f_col(ts), 1), 0, f_cursor_add(f_begin(ts), 1), f_end(ts), f_cursor_add(f_begin(ts), 1)}, f_tl(ts)), u => f_tl(ts)), ">", Nil{}), book, imports, scope), u => f_type_params(name, FParsed{kt("Tele", "", 0, 0, Nil{}), ts}, book, imports, scope))
+ 
+ @unsafe
+ def f_type_params(name, p, book, imports, scope):
+@@ -505,7 +505,7 @@
+ 
+ @unsafe
+ def f_body_at(
+-  +ts: List<&2, FToken>,
++  +ts: FInput,
+ ) -> FParsed:
+   f_choose(FParsed, f_eq(f_tx(ts), "-"), u => f_erased_local(f_tl(ts), f_begin(ts)), u => f_choose(FParsed, f_eq(f_tx(ts), "match"), u => f_locate(f_match_heads(f_tl(ts), f_col(ts), Nil{}), f_begin(ts), False{}, True{}, False{}), u => f_statement(f_expr(ts, 0))))
+ 
+@@ -538,7 +538,7 @@
+ 
+ @unsafe
+ def f_match_heads(ts, indent, acc):
+-  f_choose(FParsed, f_eq(f_tx(ts), ":"), u => f_match_begin(f_skip(f_tl(ts)), indent, List.reverse(&2, KTerm, acc)), u => f_match_head(f_expr(f_choose(List<&2, FToken>, f_eq(f_tx(ts), ","), u => f_tl(ts), u => ts), 0), indent, acc))
++  f_choose(FParsed, f_eq(f_tx(ts), ":"), u => f_match_begin(f_skip(f_tl(ts)), indent, List.reverse(&2, KTerm, acc)), u => f_match_head(f_expr(f_choose(FInput, f_eq(f_tx(ts), ","), u => f_tl(ts), u => ts), 0), indent, acc))
+ 
+ @unsafe
+ def f_match_head(p, indent, acc):
+@@ -548,7 +548,7 @@
+ 
+ @unsafe
+ def f_match_cases(
+-  +ts: List<&2, FToken>,
++  +ts: FInput,
+   +indent: U32,
+   +heads: List<&2, KTerm>,
+   +rows: List<&2, KTerm>,
+@@ -557,7 +557,7 @@
+ 
+ @unsafe
+ def f_case_pats(ts, indent, heads, rows, pats, start):
+-  f_choose(FParsed, f_eq(f_tx(ts), ":"), u => f_choose(FParsed, U32.is_eq(terms_len(pats), terms_len(heads)), u => f_case_body(f_body_context(f_tl(ts), U32.add(indent, 1)), indent, heads, rows, List.reverse(&2, KTerm, pats)), u => fpe_span(start, ts, "one pattern is required per match scrutinee", U32.show(terms_len(heads)) ++ " patterns (one per scrutinee)", "")), u => f_case_pat(f_expr(f_choose(List<&2, FToken>, f_eq(f_tx(ts), ","), u => f_tl(ts), u => ts), 0), indent, heads, rows, pats, start))
++  f_choose(FParsed, f_eq(f_tx(ts), ":"), u => f_choose(FParsed, U32.is_eq(terms_len(pats), terms_len(heads)), u => f_case_body(f_body_context(f_tl(ts), U32.add(indent, 1)), indent, heads, rows, List.reverse(&2, KTerm, pats)), u => fpe_span(start, ts, "one pattern is required per match scrutinee", U32.show(terms_len(heads)) ++ " patterns (one per scrutinee)", "")), u => f_case_pat(f_expr(f_choose(FInput, f_eq(f_tx(ts), ","), u => f_tl(ts), u => ts), 0), indent, heads, rows, pats, start))
+ 
+ @unsafe
+ def f_case_pat(p, indent, heads, rows, pats, start):
+@@ -579,14 +579,14 @@
+ @unsafe
+ def f_type_named(
+   +name: String,
+-  +ts: List<&2, FToken>,
++  +ts: FInput,
+   +book: List<&2, KDef>,
+   +imports: List<&2, KTerm>, +scope: FParseScope
+ ) -> FRawResult:
+   f_choose(FRawResult, f_eq(f_tx(ts), "<>"), u => f_type_params(name, FParsed{kt("Tele", "", 0, 0, Nil{}), f_tl(ts)}, book, imports, scope), u => f_type_base(name, ts, book, imports, scope))
+ 
+ @unsafe
+-def f_def_header_prior(+nameTokens: List<&2,FToken>, +rest: List<&2,FToken>, +book: List<&2,KDef>, +imports: List<&2,KTerm>, +unsafe: Bool, +old: KDef, +scope: FParseScope) -> FRawResult:
++def f_def_header_prior(+nameTokens: FInput, +rest: FInput, +book: List<&2,KDef>, +imports: List<&2,KTerm>, +unsafe: Bool, +old: KDef, +scope: FParseScope) -> FRawResult:
+   f_choose(FRawResult, f_eq(dk(old), "Missing") || f_def_fillable(old),
+     u => f_choose(FRawResult, f_eq(f_tx(rest), "("),
+       u => f_choose(FRawResult, f_def_fillable(old) && f_eq(f_tx(f_skip(f_tl(rest))), "~"),
+@@ -600,17 +600,17 @@
+   f_eq(dk(old), "Def") && f_eq(tg(dv(old)), "Absent") && Bool.not(db(old))
+ 
+ law f_body_context:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   for +outer: U32
+   FParsed
+ 
+ law f_body_context_at:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   for +outer: U32
+   FParsed
+ 
+ law f_match_begin:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   for +outer: U32
+   for +heads: List<&2, KTerm>
+   FParsed
+@@ -649,7 +649,7 @@
+ 
+ # The wrong-extension cursor follows the closing quote; keep that case legacy.
+ law fpe_foreign:
+-  for +ts: List<&2,FToken>
++  for +ts: FInput
+   KTerm
+ 
+ @unsafe
+@@ -657,7 +657,7 @@
+   f_choose(KTerm, Char.is_eq(f_head(f_tx(ts)), '"'), u => kt("Error", "foreign import requires a quoted .c or .js path", 0, 0, Nil{}), u => f_pn(fpe_legacy(ts, "foreign import requires a quoted .c or .js path", "'\"'")))
+ 
+ @unsafe
+-def f_named_top(+ts: List<&2,FToken>, +book: List<&2,KDef>, +imports: List<&2,KTerm>, +datatype: Bool, +scope: FParseScope) -> FRawResult:
++def f_named_top(+ts: FInput, +book: List<&2,KDef>, +imports: List<&2,KTerm>, +datatype: Bool, +scope: FParseScope) -> FRawResult:
+   f_choose(FRawResult, Bool.not(f_valid_name(f_tx(ts))), u => f_result(book, f_pn(fpe_name_error(ts)), imports),
+     u => f_choose(FRawResult, Bool.not(f_eq(f_alias(f_tx(ts), imports), f_tx(ts))), u => f_result(book, f_pn(fpe_word(ts, "an import alias cannot name a new declaration", "a fresh name (" ++ f_import_alias_head(f_tx(ts)) ++ " is an import's alias)")), imports),
+     u => f_choose(FRawResult, f_decl_taken(f_tx(ts), book, scope), u => f_result(book, f_pn(fpe_word(ts, "duplicate declaration", "a fresh name (duplicate declaration: " ++ f_tx(ts) ++ ")")), imports),
+@@ -670,7 +670,7 @@
+ 
+ @unsafe
+ def f_parse_indexed(+start: U32, +source: String) -> FResult:
+-  fpe_finish_indexed(start, source, f_tops(f_lex_indexed(start, source), Nil{}, Nil{}, False{}, f_parse_scope_empty()))
++  fpe_finish_indexed(start, source, f_tops(f_input(f_lex_indexed(start, source)), Nil{}, Nil{}, False{}, f_parse_scope_empty()))
+ 
+ # A module body sees completed dependencies; legacy parsers supply an empty scope.
+ type FParseScope is Data:
+@@ -710,7 +710,7 @@
+       Bool.not(f_eq(dk(f_ctor_lookup(name, book)), "Missing")) || Bool.not(f_eq(dk(f_ctor_lookup(name, prior)), "Missing")) || Bool.not(f_eq(dk(f_ctor_lookup(f_qual_name(name, ns), prior)), "Missing"))
+ 
+ @unsafe
+-def f_def_context_header(+ts: List<&2,FToken>, +rest: List<&2,FToken>, +book: List<&2,KDef>, +imports: List<&2,KTerm>, +unsafe: Bool, +old: KDef, +scope: FParseScope) -> FRawResult:
++def f_def_context_header(+ts: FInput, +rest: FInput, +book: List<&2,KDef>, +imports: List<&2,KTerm>, +unsafe: Bool, +old: KDef, +scope: FParseScope) -> FRawResult:
+   match scope:
+     case FParseScope{prior, index, ns, aliases, enabled}:
+       +name = f_tx(ts)
+--- a/src/front/lexer.bend
++++ b/src/front/lexer.bend
+@@ -73,7 +73,7 @@
+   String.eq(a, b)
+ 
+ @unsafe
+-def f_tx(
++def f_raw_tx(
+   +ts: List<&2, FToken>,
+ ) -> String:
+   match ts:
+@@ -83,7 +83,7 @@
+       t
+ 
+ @unsafe
+-def f_tl(
++def f_raw_tl(
+   +ts: List<&2, FToken>,
+ ) -> List<&2, FToken>:
+   match ts:
+@@ -93,7 +93,7 @@
+       rest
+ 
+ @unsafe
+-def f_line(
++def f_raw_line(
+   +ts: List<&2, FToken>,
+ ) -> U32:
+   match ts:
+@@ -103,7 +103,7 @@
+       l
+ 
+ @unsafe
+-def f_col(
++def f_raw_col(
+   +ts: List<&2, FToken>,
+ ) -> U32:
+   match ts:
+@@ -113,7 +113,7 @@
+       c
+ 
+ @unsafe
+-def f_kind(
++def f_raw_kind(
+   +ts: List<&2, FToken>,
+ ) -> U32:
+   match ts:
+@@ -123,11 +123,11 @@
+       k
+ 
+ @unsafe
+-def f_skip(
++def f_raw_skip(
+   +ts: List<&2, FToken>,
+ ) -> List<&2, FToken>:
+-  f_choose(List<&2, FToken>, Bool.or(f_eq(f_tx(ts), "\n"), f_eq(f_tx(ts), ";")),
+-    u => f_skip(f_tl(ts)), u => ts)
++  f_choose(List<&2, FToken>, Bool.or(f_eq(f_raw_tx(ts), "\n"), f_eq(f_raw_tx(ts), ";")),
++    u => f_raw_skip(f_raw_tl(ts)), u => ts)
+ 
+ @unsafe
+ def f_head(
+@@ -205,19 +205,19 @@
+   f_choose(U32, U32.is_eq(offset, 0), u => 0, u => U32.add(offset, size))
+ 
+ @unsafe
+-def f_begin(+ts: List<&2,FToken>) -> U32:
++def f_raw_begin(+ts: List<&2,FToken>) -> U32:
+   match ts:
+     case Nil{}: 0
+     case Con{FToken{text, line, column, kind, begin, end, previousEnd}, rest}: begin
+ 
+ @unsafe
+-def f_end(+ts: List<&2,FToken>) -> U32:
++def f_raw_end(+ts: List<&2,FToken>) -> U32:
+   match ts:
+     case Nil{}: 0
+     case Con{FToken{text, line, column, kind, begin, end, previousEnd}, rest}: end
+ 
+ @unsafe
+-def f_previous_end(+ts: List<&2,FToken>) -> U32:
++def f_raw_previous_end(+ts: List<&2,FToken>) -> U32:
+   match ts:
+     case Nil{}: 0
+     case Con{FToken{text, line, column, kind, begin, end, previousEnd}, rest}: previousEnd
+@@ -251,8 +251,8 @@
+   +s: String, +l: U32, +c: U32, +d: U32,
+   +acc: List<&2,FToken>, +offset: U32, +previous: U32,
+ ) -> List<&2,FToken>:
+-  f_choose(List<&2,FToken>, f_pair_op(f_two(s)) && Bool.not(f_eq(f_two(s), "++") && String.ends_with(f_tx(acc), "n") && U32.is_eq(c, U32.add(f_col(acc), U32.from_nat(String.length(f_tx(acc)))))),
+-    u => f_lex_cursor(f_tail(f_tail(s)), l, U32.add(c, 2), d, Con{FToken{f_choose(String, f_eq(f_two(s), ">>") && U32.is_gt(c, U32.add(f_col(acc), U32.from_nat(String.length(f_tx(acc))))), u => ">>op", u => f_two(s)), l, c, 0, offset, f_cursor_add(offset, 2), previous}, acc}, f_cursor_add(offset, 2), f_cursor_add(offset, 2)),
++  f_choose(List<&2,FToken>, f_pair_op(f_two(s)) && Bool.not(f_eq(f_two(s), "++") && String.ends_with(f_raw_tx(acc), "n") && U32.is_eq(c, U32.add(f_raw_col(acc), U32.from_nat(String.length(f_raw_tx(acc)))))),
++    u => f_lex_cursor(f_tail(f_tail(s)), l, U32.add(c, 2), d, Con{FToken{f_choose(String, f_eq(f_two(s), ">>") && U32.is_gt(c, U32.add(f_raw_col(acc), U32.from_nat(String.length(f_raw_tx(acc))))), u => ">>op", u => f_two(s)), l, c, 0, offset, f_cursor_add(offset, 2), previous}, acc}, f_cursor_add(offset, 2), f_cursor_add(offset, 2)),
+     u => f_lex_cursor(f_tail(s), l, U32.add(c, 1),
+       f_choose(U32, f_ascii_char_eq(f_head(s), '(') || f_ascii_char_eq(f_head(s), '[') || f_ascii_char_eq(f_head(s), '{'),
+         u => U32.add(d, 1),
+@@ -304,8 +304,8 @@
+ 
+ @unsafe
+ def f_symbol_text(s, c, acc):
+-  f_choose(String, f_ascii_char_eq(f_head(s), '+') && f_ascii_alpha(f_head(f_tail(s))) && Bool.not(String.ends_with(f_tx(acc), "n") && U32.is_eq(U32.add(f_col(acc), U32.from_nat(String.length(f_tx(acc)))), c)),
+-    u => "+bind", u => f_choose(String, f_ascii_char_eq(f_head(s), '>') && U32.is_gt(c, U32.add(f_col(acc), U32.from_nat(String.length(f_tx(acc))))), u => ">op", u => SCon{f_head(s), ""}))
++  f_choose(String, f_ascii_char_eq(f_head(s), '+') && f_ascii_alpha(f_head(f_tail(s))) && Bool.not(String.ends_with(f_raw_tx(acc), "n") && U32.is_eq(U32.add(f_raw_col(acc), U32.from_nat(String.length(f_raw_tx(acc)))), c)),
++    u => "+bind", u => f_choose(String, f_ascii_char_eq(f_head(s), '>') && U32.is_gt(c, U32.add(f_raw_col(acc), U32.from_nat(String.length(f_raw_tx(acc))))), u => ">op", u => SCon{f_head(s), ""}))
+ 
+ 
+ # Compiler-local ASCII classification. Unsigned subtraction tests a bounded
+@@ -338,7 +338,84 @@
+ 
+ # Header and argument whitespace preserves statement semicolons.
+ @unsafe
+-def f_space(
++def f_raw_space(
+   +ts: List<&2,FToken>,
+ ) -> List<&2,FToken>:
+-  f_choose(List<&2,FToken>, f_eq(f_tx(ts), "\n"), u => f_space(f_tl(ts)), u => ts)
++  f_choose(List<&2,FToken>, f_eq(f_raw_tx(ts), "\n"), u => f_raw_space(f_raw_tl(ts)), u => ts)
++
++# Stage18 representation ablation: the shared context is inert.
++type FCursorContext is Data:
++  FCursorContext{serial: U32}
++type FInput is Data:
++  FInput{+tokens: List<&2,FToken>, +context: FCursorContext}
++
++@unsafe
++def f_input(+tokens: List<&2,FToken>) -> FInput:
++  FInput{tokens, FCursorContext{0}}
++
++@unsafe
++def f_empty(+input: FInput) -> FInput:
++  match input:
++    case FInput{tokens, context}: FInput{Nil{}, context}
++
++@unsafe
++def f_prepend(+token: FToken, +input: FInput) -> FInput:
++  match input:
++    case FInput{tokens, context}: FInput{Con{token, tokens}, context}
++
++@unsafe
++def f_tx(+input: FInput) -> String:
++  match input:
++    case FInput{tokens, context}: f_raw_tx(tokens)
++
++@unsafe
++def f_line(+input: FInput) -> U32:
++  match input:
++    case FInput{tokens, context}: f_raw_line(tokens)
++
++@unsafe
++def f_col(+input: FInput) -> U32:
++  match input:
++    case FInput{tokens, context}: f_raw_col(tokens)
++
++@unsafe
++def f_kind(+input: FInput) -> U32:
++  match input:
++    case FInput{tokens, context}: f_raw_kind(tokens)
++
++@unsafe
++def f_begin(+input: FInput) -> U32:
++  match input:
++    case FInput{tokens, context}: f_raw_begin(tokens)
++
++@unsafe
++def f_end(+input: FInput) -> U32:
++  match input:
++    case FInput{tokens, context}: f_raw_end(tokens)
++
++@unsafe
++def f_previous_end(+input: FInput) -> U32:
++  match input:
++    case FInput{tokens, context}: f_raw_previous_end(tokens)
++
++@unsafe
++def f_tl(+input: FInput) -> FInput:
++  match input:
++    case FInput{tokens, context}:
++      match tokens:
++        case Nil{}: input
++        case Con{token, rest}: FInput{rest, context}
++
++@unsafe
++def f_skip(+input: FInput) -> FInput:
++  match input:
++    case FInput{tokens, context}:
++      f_choose(FInput, f_eq(f_raw_tx(tokens), "\n") || f_eq(f_raw_tx(tokens), ";"),
++        u => FInput{f_raw_skip(tokens), context}, u => input)
++
++@unsafe
++def f_space(+input: FInput) -> FInput:
++  match input:
++    case FInput{tokens, context}:
++      f_choose(FInput, f_eq(f_raw_tx(tokens), "\n"),
++        u => FInput{f_raw_space(tokens), context}, u => input)
+--- a/src/front/literals_arrays.bend
++++ b/src/front/literals_arrays.bend
+@@ -14,7 +14,7 @@
+   KTerm
+ 
+ law f_array:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   FParsed
+ 
+ law f_array_first:
+@@ -95,7 +95,7 @@
+ def f_array_first(p):
+   match p:
+     case FParsed{+n, +ts}:
+-      f_choose(FParsed, f_eq(tg(n), "Error"), u => FParsed{n, ts}, u => f_choose(FParsed, f_eq(f_tx(ts), ":"), u => f_array_type(n, f_expr(f_tl(ts), 12)), u => f_list(f_args(f_choose(List<&2, FToken>, f_eq(f_tx(ts), ","), u => f_tl(ts), u => ts), "]", [n]))))
++      f_choose(FParsed, f_eq(tg(n), "Error"), u => FParsed{n, ts}, u => f_choose(FParsed, f_eq(f_tx(ts), ":"), u => f_array_type(n, f_expr(f_tl(ts), 12)), u => f_list(f_args(f_choose(FInput, f_eq(f_tx(ts), ","), u => f_tl(ts), u => ts), "]", [n]))))
+ 
+ @unsafe
+ def f_array_type(n, p):
+--- a/src/front/parallel.bend
++++ b/src/front/parallel.bend
+@@ -6,7 +6,7 @@
+   FParsed
+ 
+ law f_parallel_values:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   for +pats: List<&2, KTerm>
+   for +left: U32
+   for +vals: List<&2, KTerm>
+@@ -67,13 +67,13 @@
+ 
+ law f_typed_let_try:
+   for +n: KTerm
+-  for +old: List<&2, FToken>
++  for +old: FInput
+   for +p: FParsed
+   FParsed
+ 
+ @unsafe
+ def f_parallel(
+-  +ts: List<&2, FToken>,
++  +ts: FInput,
+   +pats: List<&2, KTerm>,
+ ) -> FParsed:
+   f_choose(FParsed, f_eq(f_tx(ts), "="), u => f_parallel_values(f_tl(ts), List.reverse(&2, KTerm, pats), terms_len(pats), Nil{}), u => f_choose(FParsed, f_binding_head(ts), u => f_parallel_pat(f_expr(ts, 0), pats), u => fpe_error(ts, "expected =", "'='")))
+@@ -140,8 +140,8 @@
+ def f_typed_let_try(n, old, p):
+   match p:
+     case FParsed{ty, +ts}:
+-      f_choose(FParsed, f_eq(tg(ty), "Error"), u => FParsed{ty, ts}, u => f_choose(FParsed, f_eq(f_tx(ts), "="), u => f_choose(FParsed, f_eq(tg(n), "Ref"), u => f_let_value(n, f_let_ann(ty, f_expr(f_tl(ts), 0))), u => FParsed{fpe_message_at(n, nm(f_pn(f_err(ts, "a name (a parallel or typed let binds names; destructure in its body)"))), "a name (a parallel or typed let binds names; destructure in its body)"), Nil{}}), u => FParsed{n, old}))
++      f_choose(FParsed, f_eq(tg(ty), "Error"), u => FParsed{ty, ts}, u => f_choose(FParsed, f_eq(f_tx(ts), "="), u => f_choose(FParsed, f_eq(tg(n), "Ref"), u => f_let_value(n, f_let_ann(ty, f_expr(f_tl(ts), 0))), u => FParsed{fpe_message_at(n, nm(f_pn(f_err(ts, "a name (a parallel or typed let binds names; destructure in its body)"))), "a name (a parallel or typed let binds names; destructure in its body)"), f_empty(old)}), u => FParsed{n, old}))
+ 
+ @unsafe
+-def f_binding_head(+ts: List<&2,FToken>) -> Bool:
++def f_binding_head(+ts: FInput) -> Bool:
+   (f_ascii_alpha(f_head(f_tx(ts))) || Char.is_eq(f_head(f_tx(ts)), '_') || f_eq(f_tx(ts), "+bind")) && Bool.not(f_reserved(f_tx(ts)))
+--- a/src/front/parser.bend
++++ b/src/front/parser.bend
+@@ -1,10 +1,10 @@
+ # Surface expressions preserve proof terms, quantities, and annotations.
+ # Internal Literal nodes are expanded before checking; Error is never accepted.
+ type FParsed is Data:
+-  FParsed{+term: KTerm, +rest: List<&2, FToken>}
++  FParsed{+term: KTerm, +rest: FInput}
+ 
+ law f_args:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   for +end: String
+   for +acc: List<&2, KTerm>
+   FParsed
+@@ -16,16 +16,16 @@
+   FParsed
+ 
+ law f_expr:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   for +min: U32
+   FParsed
+ 
+ law f_atom:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   FParsed
+ 
+ law f_kind_token:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   U32
+ 
+ law f_kind_wrap:
+@@ -38,11 +38,11 @@
+   FParsed
+ 
+ law f_grade:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   FParsed
+ 
+ law f_all:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   for +exi: Bool
+   FParsed
+ 
+@@ -77,7 +77,7 @@
+   KTerm
+ 
+ law f_brace:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   FParsed
+ 
+ law f_brace_left:
+@@ -127,7 +127,7 @@
+   String
+ 
+ law f_matcher:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   FParsed
+ 
+ law f_matcher_head:
+@@ -156,23 +156,23 @@
+ @unsafe
+ def f_pr(
+   +p: FParsed,
+-) -> List<&2, FToken>:
++) -> FInput:
+   match p:
+     case FParsed{n, ts}:
+       ts
+ 
+ @unsafe
+ def f_atid(
+-  +ts: List<&2, FToken>,
++  +ts: FInput,
+ ) -> U32:
+   U32.add(U32.mul(f_line(ts), 65536), f_col(ts))
+ 
+ @unsafe
+ def f_err(
+-  +ts: List<&2, FToken>,
++  +ts: FInput,
+   +msg: String,
+ ) -> FParsed:
+-  FParsed{kt("Error", "line " ++ U32.show(f_line(ts)) ++ ":" ++ U32.show(f_col(ts)) ++ ": " ++ msg ++ "; got " ++ f_tx(ts), 0, 0, Nil{}), Nil{}}
++  FParsed{kt("Error", "line " ++ U32.show(f_line(ts)) ++ ":" ++ U32.show(f_col(ts)) ++ ": " ++ msg ++ "; got " ++ f_tx(ts), 0, 0, Nil{}), f_empty(ts)}
+ 
+ @unsafe
+ def f_expect(
+@@ -196,7 +196,7 @@
+ 
+ @unsafe
+ def f_args_base(
+-  +ts: List<&2, FToken>,
++  +ts: FInput,
+   +end: String,
+   +acc: List<&2, KTerm>,
+ ) -> FParsed:
+@@ -207,7 +207,7 @@
+ def f_arg_next(p, end, acc):
+   match p:
+     case FParsed{+n, +ts}:
+-      f_choose(FParsed, f_eq(tg(n), "Error"), u => FParsed{n, ts}, u => f_args(f_choose(List<&2, FToken>, f_eq(f_tx(ts), ","), u => f_tl(ts), u => ts), end, Con{n, acc}))
++      f_choose(FParsed, f_eq(tg(n), "Error"), u => FParsed{n, ts}, u => f_args(f_choose(FInput, f_eq(f_tx(ts), ","), u => f_tl(ts), u => ts), end, Con{n, acc}))
+ 
+ @unsafe
+ def f_expr(ts, min):
+@@ -215,9 +215,9 @@
+ 
+ @unsafe
+ def f_atom_base(
+-  +ts: List<&2, FToken>,
++  +ts: FInput,
+ ) -> FParsed:
+-  f_choose(FParsed, f_eq(f_tx(ts), "++"), u => f_atom_base(Con{FToken{"+", f_line(ts), f_col(ts), 0, f_begin(ts), f_cursor_add(f_begin(ts), 1), f_previous_end(ts)}, Con{FToken{"+", f_line(ts), U32.add(f_col(ts), 1), 0, f_cursor_add(f_begin(ts), 1), f_end(ts), f_cursor_add(f_begin(ts), 1)}, f_tl(ts)}}),
++  f_choose(FParsed, f_eq(f_tx(ts), "++"), u => f_atom_base(f_prepend(FToken{"+", f_line(ts), f_col(ts), 0, f_begin(ts), f_cursor_add(f_begin(ts), 1), f_previous_end(ts)}, f_prepend(FToken{"+", f_line(ts), U32.add(f_col(ts), 1), 0, f_cursor_add(f_begin(ts), 1), f_end(ts), f_cursor_add(f_begin(ts), 1)}, f_tl(ts)))),
+     u => f_choose(FParsed, f_eq(f_tx(ts), "("), u => f_group(f_body(f_tl(ts))),
+     u => f_choose(FParsed, f_eq(f_tx(ts), "{"), u => f_brace(f_tl(ts)),
+     u => f_choose(FParsed, f_eq(f_tx(ts), "["), u => f_array(f_tl(ts)),
+@@ -236,7 +236,7 @@
+ # A constructor brace belongs to the raw name only when lexically adjacent.
+ # General term growth must not absorb the next independent braced value.
+ law f_atom_name:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   FParsed
+ 
+ @unsafe
+@@ -253,7 +253,7 @@
+ 
+ # Immediate n+ is part of the numeric atom, at every surrounding precedence.
+ law f_atom_nat_start:
+-  for +ts: List<&2,FToken>
++  for +ts: FInput
+   for +lit: KTerm
+   FParsed
+ law f_atom_nat_plus:
+@@ -263,7 +263,7 @@
+ 
+ @unsafe
+ def f_atom_nat_start(ts, lit):
+-  f_choose(FParsed, f_eq(tg(lit), "Error"), u => FParsed{lit, Nil{}}, u => f_atom_nat_plus(lit, f_expr(f_tl(f_tl(ts)), 0)))
++  f_choose(FParsed, f_eq(tg(lit), "Error"), u => FParsed{lit, f_empty(ts)}, u => f_atom_nat_plus(lit, f_expr(f_tl(f_tl(ts)), 0)))
+ 
+ @unsafe
+ def f_atom_nat_plus(lit, p):
+@@ -307,19 +307,19 @@
+ 
+ @unsafe
+ def f_quant(
+-  +ts: List<&2, FToken>,
++  +ts: FInput,
+ ) -> U32:
+   f_choose(U32, f_eq(f_tx(ts), "-") || f_eq(f_tx(ts), "~"), u => 0, u => f_choose(U32, f_eq(f_tx(ts), "+") || f_eq(f_tx(ts), "+bind"), u => 2, u => 1))
+ 
+ @unsafe
+ def f_unmark(
+-  +ts: List<&2, FToken>,
+-) -> List<&2, FToken>:
+-  f_choose(List<&2, FToken>, U32.is_eq(f_quant(ts), 1), u => ts, u => f_tl(ts))
++  +ts: FInput,
++) -> FInput:
++  f_choose(FInput, U32.is_eq(f_quant(ts), 1), u => ts, u => f_tl(ts))
+ 
+ @unsafe
+ def f_all(ts, exi):
+-  f_choose(FParsed, Bool.not(f_valid_name(f_tx(f_unmark(ts)))) || f_eq(f_tx(ts), "~"), u => fpe_name_error(f_choose(List<&2,FToken>, f_eq(f_tx(ts), "~"), u => ts, u => f_unmark(ts))), u => f_all_domain(f_tx(f_unmark(ts)), f_atid(ts), f_quant(ts), exi, f_expect(f_expr_after(f_expect(FParsed{atom("Absent"), f_tl(f_unmark(ts))}, ":"), 1), "->")))
++  f_choose(FParsed, Bool.not(f_valid_name(f_tx(f_unmark(ts)))) || f_eq(f_tx(ts), "~"), u => fpe_name_error(f_choose(FInput, f_eq(f_tx(ts), "~"), u => ts, u => f_unmark(ts))), u => f_all_domain(f_tx(f_unmark(ts)), f_atid(ts), f_quant(ts), exi, f_expect(f_expr_after(f_expect(FParsed{atom("Absent"), f_tl(f_unmark(ts))}, ":"), 1), "->")))
+ 
+ @unsafe
+ def f_all_domain(name, id, q, exi, p):
+@@ -426,7 +426,7 @@
+ # The first angle argument is parsed at comparison precedence. Compound type
+ # operators need explicit parentheses; later comma arguments retain full terms.
+ @unsafe
+-def f_family_first(+ts: List<&2,FToken>) -> FParsed:
++def f_family_first(+ts: FInput) -> FParsed:
+   f_choose(FParsed, f_eq(f_tx(ts), ">") || f_eq(f_tx(ts), ">>"), u => f_args(ts, ">", Nil{}), u => f_family_first_done(f_expr(ts, 5)))
+ 
+ @unsafe
+@@ -486,12 +486,12 @@
+ 
+ 
+ @unsafe
+-def f_atom_raw(+ts: List<&2,FToken>) -> FParsed:
++def f_atom_raw(+ts: FInput) -> FParsed:
+   f_choose(FParsed, f_eq(f_tx(ts), "do"), u => f_do_start(f_tl(ts), f_begin(ts)), u => f_choose(FParsed, f_eq(f_tx(ts), "%"), u => f_rewrite(f_tl(ts)), u => f_atom_base(ts)))
+ 
+ @unsafe
+ def f_args(ts, end, acc):
+-  f_choose(FParsed, f_eq(end, ">") && f_eq(f_tx(ts), ">>"), u => FParsed{kt("Args", "", 0, 1, List.reverse(&2, KTerm, acc)), Con{FToken{">", f_line(ts), U32.add(f_col(ts), 1), 0, f_cursor_add(f_begin(ts), 1), f_end(ts), f_cursor_add(f_begin(ts), 1)}, f_tl(ts)}}, u => f_args_base(ts, end, acc))
++  f_choose(FParsed, f_eq(end, ">") && f_eq(f_tx(ts), ">>"), u => FParsed{kt("Args", "", 0, 1, List.reverse(&2, KTerm, acc)), f_prepend(FToken{">", f_line(ts), U32.add(f_col(ts), 1), 0, f_cursor_add(f_begin(ts), 1), f_end(ts), f_cursor_add(f_begin(ts), 1)}, f_tl(ts))}, u => f_args_base(ts, end, acc))
+ 
+ @unsafe
+ def f_grow(p, min):
+@@ -510,7 +510,7 @@
+   KTerm
+ 
+ law f_rhs:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   for +op: String
+   for +min: U32
+   FParsed
+@@ -522,7 +522,7 @@
+ 
+ # P5-011 rejection-only rendering; raw errors retain their legacy text for fallback.
+ law fpe_error:
+-  for +ts: List<&2,FToken>
++  for +ts: FInput
+   for +legacy: String
+   for +expected: String
+   FParsed
+@@ -557,14 +557,14 @@
+ 
+ # Keep an already formatted fallback unchanged; expectation is explicit input.
+ law fpe_legacy:
+-  for +ts: List<&2,FToken>
++  for +ts: FInput
+   for +legacy: String
+   for +expected: String
+   FParsed
+ 
+ @unsafe
+ def fpe_legacy(ts, legacy, expected):
+-  FParsed{kt("Error", legacy, f_line(ts), f_col(ts), [kt("ParseExpected", expected, 0, 0, Nil{}), kt("ParseToken", f_tx(ts), 0, 0, Nil{})]), Nil{}}
++  FParsed{kt("Error", legacy, f_line(ts), f_col(ts), [kt("ParseExpected", expected, 0, 0, Nil{}), kt("ParseToken", f_tx(ts), 0, 0, Nil{})]), f_empty(ts)}
+ 
+ @unsafe
+ def fpe_finish(
+@@ -593,12 +593,12 @@
+ 
+ # A range is explicit producer data; point diagnostics retain their old path.
+ @unsafe
+-def fpe_span(+start: List<&2,FToken>, +end: List<&2,FToken>, +legacy: String, +expected: String, +observed: String) -> FParsed:
+-  FParsed{kt("Error", nm(f_pn(f_err(start, legacy))), f_line(start), f_col(start), [kt("ParseExpected", expected, 0, 0, Nil{}), kt("ParseToken", f_tx(start), 0, 0, Nil{}), kt("ParseRange", observed, f_line(end), f_col(end), Nil{})]), Nil{}}
+-
+-@unsafe
+-def fpe_word(+ts: List<&2,FToken>, +legacy: String, +expected: String) -> FParsed:
+-  fpe_span(ts, [FToken{"", f_line(ts), U32.add(f_col(ts), U32.from_nat(String.length(f_tx(ts)))), 0, f_end(ts), f_end(ts), f_end(ts)}], legacy, expected, "")
++def fpe_span(+start: FInput, +end: FInput, +legacy: String, +expected: String, +observed: String) -> FParsed:
++  FParsed{kt("Error", nm(f_pn(f_err(start, legacy))), f_line(start), f_col(start), [kt("ParseExpected", expected, 0, 0, Nil{}), kt("ParseToken", f_tx(start), 0, 0, Nil{}), kt("ParseRange", observed, f_line(end), f_col(end), Nil{})]), f_empty(start)}
++
++@unsafe
++def fpe_word(+ts: FInput, +legacy: String, +expected: String) -> FParsed:
++  fpe_span(ts, f_prepend(FToken{"", f_line(ts), U32.add(f_col(ts), U32.from_nat(String.length(f_tx(ts)))), 0, f_end(ts), f_end(ts), f_end(ts)}, f_empty(ts)), legacy, expected, "")
+ 
+ @unsafe
+ def fpe_observe(+source: String, +rest: String, +offset: U32, +error: KTerm, +observed: String) -> String:
+@@ -626,7 +626,7 @@
+ 
+ 
+ @unsafe
+-def fpe_name_error(+ts: List<&2,FToken>) -> FParsed:
++def fpe_name_error(+ts: FInput) -> FParsed:
+   f_choose(FParsed, f_ascii_alpha(f_head(f_tx(ts))) || Char.is_eq(f_head(f_tx(ts)), '_'),
+     u => fpe_word(ts, "invalid name", f_choose(String, f_reserved(f_tx(ts)), u => "a name (got the keyword '" ++ f_tx(ts) ++ "')", u => "a name (words joined by dots, got '" ++ f_tx(ts) ++ "')")),
+     u => fpe_error(ts, "expected a name", "a name"))
+@@ -709,7 +709,7 @@
+ 
+ # Failure payloads request an original line or exact UTF16 cursor observation.
+ @unsafe
+-def fpe_line(+ts: List<&2,FToken>, +legacy: String, +expected: String) -> KTerm:
++def fpe_line(+ts: FInput, +legacy: String, +expected: String) -> KTerm:
+   kt("Error", legacy, f_line(ts), f_col(ts), [kt("ParseExpected", expected, 0, 0, Nil{}), kt("ParseToken", f_tx(ts), 0, 0, Nil{}), atom("ParseLine")])
+ 
+ @unsafe
+--- a/src/front/sugar.bend
++++ b/src/front/sugar.bend
+@@ -5,7 +5,7 @@
+   FResult
+ 
+ law f_rewrite:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   FParsed
+ 
+ law f_rewrite_head:
+@@ -53,19 +53,19 @@
+ 
+ # A single located monad term carries both the header name and type arguments.
+ @unsafe
+-def f_do_start(+ts: List<&2,FToken>, +begin: U32) -> FParsed:
++def f_do_start(+ts: FInput, +begin: U32) -> FParsed:
+   f_do_named(f_space(ts), begin)
+ 
+ @unsafe
+-def f_do_named(+ts: List<&2,FToken>, +begin: U32) -> FParsed:
++def f_do_named(+ts: FInput, +begin: U32) -> FParsed:
+   f_choose(FParsed, f_valid_name(f_tx(ts)), u => f_do_parameters(f_tx(ts), f_space(f_tl(ts)), begin), u => fpe_name_error(ts))
+ 
+ @unsafe
+-def f_do_parameters(+name: String, +ts: List<&2,FToken>, +begin: U32) -> FParsed:
++def f_do_parameters(+name: String, +ts: FInput, +begin: U32) -> FParsed:
+   f_choose(FParsed, f_eq(f_tx(ts), "<>"), u => f_do_types(name, FParsed{kt("Args", "", 0, 1, Nil{}), f_tl(ts)}, begin), u => f_choose(FParsed, f_eq(f_tx(ts), "<"), u => f_do_parameters_open(name, f_space(f_tl(ts)), begin), u => fpe_error(ts, "expected <", "'<'")))
+ 
+ @unsafe
+-def f_do_parameters_open(+name: String, +ts: List<&2,FToken>, +begin: U32) -> FParsed:
++def f_do_parameters_open(+name: String, +ts: FInput, +begin: U32) -> FParsed:
+   f_choose(FParsed, f_eq(f_tx(ts), ";"), u => fpe_error(ts, "expected term", "a term"), u => f_choose(FParsed, f_eq(f_tx(ts), ">") || f_eq(f_tx(ts), ">op"), u => f_do_types(name, FParsed{kt("Args", "", 0, 1, Nil{}), f_tl(ts)}, begin), u => f_do_types(name, f_args(ts, ">", Nil{}), begin)))
+ 
+ @unsafe
+@@ -81,11 +81,11 @@
+       f_choose(FParsed, f_eq(tg(types), "Error"), u => FParsed{types, ts}, u => f_do_types_at(kt_span("ADT", name, 0, 1, ks(types), begin, f_previous_end(ts)), f_space(ts)))
+ 
+ @unsafe
+-def f_do_types_at(+monad: KTerm, +ts: List<&2,FToken>) -> FParsed:
++def f_do_types_at(+monad: KTerm, +ts: FInput) -> FParsed:
+   f_choose(FParsed, f_eq(f_tx(ts), ":"), u => f_do(monad, f_skip(f_tl(ts)), f_col(f_skip(f_tl(ts)))), u => f_err(ts, "expected :"))
+ 
+ @unsafe
+-def f_do(+monad: KTerm, +ts: List<&2,FToken>, +indent: U32) -> FParsed:
++def f_do(+monad: KTerm, +ts: FInput, +indent: U32) -> FParsed:
+   f_choose(FParsed, f_eq(f_tx(ts), "return"), u => f_do_return(monad, f_atid(ts), f_begin(ts), f_expr(f_tl(ts), 0)), u => f_do_statement(monad, f_expr(ts, 0), indent))
+ 
+ @unsafe
+@@ -180,7 +180,7 @@
+   FRawResult
+ 
+ law f_erased_local:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   for +begin: U32
+   FParsed
+ 
+@@ -197,7 +197,7 @@
+ @unsafe
+ def f_write_statement(
+   +n: KTerm,
+-  +ts: List<&2, FToken>,
++  +ts: FInput,
+ ) -> FParsed:
+   f_choose(FParsed, (f_eq(f_tx(ts), ";") || U32.is_eq(f_col(f_skip(ts)), U32.and(ix(n), 65535))) && Bool.not(f_eq(f_tx(f_skip(ts)), "<eof>")), u => f_let_value(kt("Ref", nm(n), ix(n), 1, Nil{}), FParsed{kid(n, 0), ts}), u => FParsed{kid(n, 0), ts})
+ 
+--- a/src/front/validate.bend
++++ b/src/front/validate.bend
+@@ -143,7 +143,7 @@
+   Bool
+ 
+ law f_validate_param:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   for +end: String
+   for +acc: List<&2, KTerm>
+   FParsed
+@@ -158,12 +158,12 @@
+ 
+ @unsafe
+ def f_import_alias(
+-  +ts: List<&2, FToken>,
+-  +start: List<&2, FToken>,
++  +ts: FInput,
++  +start: FInput,
+   +path: String,
+   +book: List<&2,KDef>,
+   +imports: List<&2,KTerm>,
+-  +header: List<&2,FToken>,
++  +header: FInput,
+ ) -> FRawResult:
+   +alias = f_tx(f_tl(ts))
+   +rest = f_tl(f_tl(ts))
+@@ -179,7 +179,7 @@
+ 
+ @unsafe
+ def f_validate_param(ts, end, acc):
+-  f_choose(FParsed, f_eq(f_tx(ts), "~") && Bool.not(f_eq(end, ")")), u => fpe_name_error(ts), u => f_choose(FParsed, Bool.not(f_valid_name(f_tx(f_unmark(ts)))), u => fpe_name_error(f_choose(List<&2,FToken>, f_eq(f_tx(ts), "->"), u => Con{FToken{">", f_line(ts), U32.add(f_col(ts), 1), 0, f_cursor_add(f_begin(ts), 1), f_end(ts), f_cursor_add(f_begin(ts), 1)}, f_tl(ts)}, u => f_unmark(ts))), u => f_choose(FParsed, f_eq(end, "}") && f_named_field(f_tx(f_unmark(ts)), acc), u => fpe_word(f_unmark(ts), "duplicate constructor field", "a fresh field name (duplicate declaration: " ++ f_tx(f_unmark(ts)) ++ ")"), u => f_choose(FParsed, f_eq(f_tx(ts), "~") && U32.is_lt(f_templates(acc), terms_len(acc)), u => fpe_error(ts, "only leading parameters may use ~", "a plain binder (only leading binders take ~)"), u => f_tele_binder(kt_span("Bind", f_tx(f_unmark(ts)), f_atid(ts), f_quant(ts), Nil{}, f_begin(f_unmark(ts)), f_end(f_unmark(ts))), f_eq(f_tx(ts), "~"), f_tl(f_unmark(ts)), end, acc)))))
++  f_choose(FParsed, f_eq(f_tx(ts), "~") && Bool.not(f_eq(end, ")")), u => fpe_name_error(ts), u => f_choose(FParsed, Bool.not(f_valid_name(f_tx(f_unmark(ts)))), u => fpe_name_error(f_choose(FInput, f_eq(f_tx(ts), "->"), u => f_prepend(FToken{">", f_line(ts), U32.add(f_col(ts), 1), 0, f_cursor_add(f_begin(ts), 1), f_end(ts), f_cursor_add(f_begin(ts), 1)}, f_tl(ts)), u => f_unmark(ts))), u => f_choose(FParsed, f_eq(end, "}") && f_named_field(f_tx(f_unmark(ts)), acc), u => fpe_word(f_unmark(ts), "duplicate constructor field", "a fresh field name (duplicate declaration: " ++ f_tx(f_unmark(ts)) ++ ")"), u => f_choose(FParsed, f_eq(f_tx(ts), "~") && U32.is_lt(f_templates(acc), terms_len(acc)), u => fpe_error(ts, "only leading parameters may use ~", "a plain binder (only leading binders take ~)"), u => f_tele_binder(kt_span("Bind", f_tx(f_unmark(ts)), f_atid(ts), f_quant(ts), Nil{}, f_begin(f_unmark(ts)), f_end(f_unmark(ts))), f_eq(f_tx(ts), "~"), f_tl(f_unmark(ts)), end, acc)))))
+ 
+ @unsafe
+ def f_named_field(+name: String, +fields: List<&2,KTerm>) -> Bool:
+@@ -211,7 +211,7 @@
+   for +imports: List<&2, KTerm>
+   for +unsafe: Bool
+   for +old: KDef
+-  for +nameTokens: List<&2,FToken>
++  for +nameTokens: FInput
+   for +scope: FParseScope
+   FRawResult
+ 
+@@ -256,12 +256,12 @@
+ 
+ law f_bang:
+   for +n: KTerm
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   for +min: U32
+   FParsed
+ 
+ law f_foreign_path_valid:
+-  for +ts: List<&2, FToken>
++  for +ts: FInput
+   Bool
+ 
+ @unsafe
+--- a/src/load/imports.bend
++++ b/src/load/imports.bend
+@@ -1,12 +1,12 @@
+ # Module header paths are token sequences, including slash and dot tokens.
+ 
+ law f_import_path:
+-  for +ts: List<&2, FToken>
+-  for +start: List<&2, FToken>
++  for +ts: FInput
++  for +start: FInput
+   for +path: String
+   for +book: List<&2,KDef>
+   for +imports: List<&2, KTerm>
+-  for +header: List<&2,FToken>
++  for +header: FInput
+   FRawResult
+ 
+ @unsafe
+@@ -15,13 +15,13 @@
+     u => f_import_alias(ts, start, path, book, imports, header),
+     u => f_choose(FRawResult, f_eq(f_tx(ts), "\n") || f_eq(f_tx(ts), "<eof>"),
+       u => f_choose(FRawResult, f_eq(path, "Base"), u => f_tops(ts, book, Con{kt("Import", path, f_line(start), f_col(start), Nil{}), imports}, False{}, f_parse_scope_empty()),
+-        u => f_result(book, f_import_header_error(f_choose(List<&2,FToken>, String.is_empty(path), u => header, u => start)), imports)),
++        u => f_result(book, f_import_header_error(f_choose(FInput, String.is_empty(path), u => header, u => start)), imports)),
+       u => f_choose(FRawResult, String.is_empty(path) || U32.is_eq(f_col(ts), U32.add(f_col(start), U32.from_nat(String.length(path)))),
+         u => f_import_path(f_tl(ts), start, path ++ f_import_token_text(ts), book, imports, header),
+         u => f_result(book, f_import_header_error(header), imports))))
+ 
+ @unsafe
+-def f_import_header_error(+ts: List<&2,FToken>) -> KTerm:
++def f_import_header_error(+ts: FInput) -> KTerm:
+   fpe_line(ts, "a module import requires as followed by an alias", "an import ('import Base', or 'import <path> as <Name>')")
+ 
+ @unsafe
+@@ -69,7 +69,7 @@
+ 
+ # These spellings are the explicit normalized symbol variants of f_lex_symbol.
+ @unsafe
+-def f_import_token_text(+ts: List<&2,FToken>) -> String:
++def f_import_token_text(+ts: FInput) -> String:
+   f_choose(String, f_eq(f_tx(ts), "+bind"), u => "+",
+     u => f_choose(String, f_eq(f_tx(ts), ">op"), u => ">",
+       u => f_choose(String, f_eq(f_tx(ts), ">>op"), u => ">>", u => f_tx(ts))))
+--- a/src/load/modules.bend
++++ b/src/load/modules.bend
+@@ -377,7 +377,7 @@
+     case FScanned{word, rest, size}:
+       f_choose(FHeader, Bool.not(String.is_empty(source)) && f_header_prefix(word),
+         u => f_header_scan(rest, full, start, U32.add(line, 1), U32.add(offset, size), prefix ++ word),
+-        u => f_header_result(fpe_finish_indexed(start, full, f_tops(f_lex_cursor(prefix, 1, 0, 0, Nil{}, start, start), Nil{}, Nil{}, False{}, f_parse_scope_empty())), source, line, offset))
++        u => f_header_result(fpe_finish_indexed(start, full, f_tops(f_input(f_lex_cursor(prefix, 1, 0, 0, Nil{}, start, start)), Nil{}, Nil{}, False{}, f_parse_scope_empty())), source, line, offset))
+ 
+ @unsafe
+ def f_header_result(+parsed: FResult, +body: String, +line: U32, +offset: U32) -> FHeader:
+@@ -420,7 +420,7 @@
+   match header:
+     case FHeader{imports, error, body, line, offset}:
+       f_choose(FResult, String.is_empty(error),
+-        u => fpe_finish_indexed(start, source, f_tops(f_lex_cursor(body, line, 0, 0, Nil{}, f_cursor_add(start, offset), f_cursor_add(start, offset)), Nil{}, List.reverse(&2,KTerm,imports), False{}, scope)),
++        u => fpe_finish_indexed(start, source, f_tops(f_input(f_lex_cursor(body, line, 0, 0, Nil{}, f_cursor_add(start, offset), f_cursor_add(start, offset))), Nil{}, List.reverse(&2,KTerm,imports), False{}, scope)),
+         u => FResult{Nil{}, error, imports})
+ 
+ @unsafe

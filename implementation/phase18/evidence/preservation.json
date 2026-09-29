@@ -1,0 +1,195 @@
+{
+  "kind": "phase18-uninstalled-experiment-preservation",
+  "complete": true,
+  "pass": true,
+  "anchorStatus": "uninstalled-reconstruction-anchor",
+  "installedReleaseUnchanged": {
+    "phase": 17,
+    "commit": "fddfc84b3f48aecc77c2424ddc8227cd7f63251f",
+    "apiSha256": "9b20de5032e306a0b7ee2686a1cc79452f81fcb282ff6419a0d1ad5c4b5716b6"
+  },
+  "anchor": {
+    "source": "selfhost/build/phase18/cursor-source-02/project",
+    "attempt": "selfhost/build/phase18/cursor-build-01",
+    "apiSha256": "5d19edf596e9ade0bc5d43e5fbcd75bd0cf263d624de6e046a0966627ad9dd18"
+  },
+  "worldFinal": {
+    "source": "selfhost/build/phase18/instance-world-source-06/project",
+    "attempt": "selfhost/build/phase18/instance-world-build-06",
+    "apiSha256": "9f9648cbfc53912cd38fa78758b3409fea431f93dd285a0e911cbd373e5579ae",
+    "installed": false,
+    "timingScope": "Earlier source03 representation matrix; source06 ABI boundary repair not remeasured."
+  },
+  "selectedCapsule": "implementation/phase18/evidence/capsule-01",
+  "scope": "Selected closed Phase18 uninstalled transport experiments only; the reconstruction anchor is not a release and excluded entries are not claimed preserved.",
+  "capture": {
+    "members": 4546,
+    "uncompressedBytes": 141621511,
+    "archives": 4,
+    "compressedBytes": 20882557,
+    "largestArchiveBytes": 8340867,
+    "symlinks": 0,
+    "manifestSha256": "86dfb9e7a99dc37868e3861db4015a089843caa0f1069e1c7d54ded524112a80",
+    "inventorySha256": "5561eb614a2f3921b45f024c3feccdb809f7470e65e1c2d913dd9e8ea140e75f"
+  },
+  "independentRecovery": {
+    "kind": "phase16-independent-compact-recovery",
+    "complete": true,
+    "pass": true,
+    "toolSha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234",
+    "extraction": {
+      "files": 4546,
+      "symlinks": 0,
+      "bytes": 141621511,
+      "allBytesAndModesVerified": true
+    },
+    "sourceReconstruction": {
+      "baselineCommit": "fddfc84b3f48aecc77c2424ddc8227cd7f63251f",
+      "files": 214,
+      "allBytesAndModesVerified": true,
+      "usesWorkingTreeSource": false,
+      "patchSha256": "bb4d5f120cbb3938a3a6b5e916a70e8849fdab192162e8d9de3708d809c487b3"
+    },
+    "manifestSha256": "86dfb9e7a99dc37868e3861db4015a089843caa0f1069e1c7d54ded524112a80",
+    "inventorySha256": "5561eb614a2f3921b45f024c3feccdb809f7470e65e1c2d913dd9e8ea140e75f"
+  },
+  "protectedPhase6": {
+    "pass": true,
+    "unchangedHashAndStatusCount": 75,
+    "noProtectedPayloadSelected": true
+  },
+  "noPhase19Payload": true,
+  "frozenInputsSelectedAndCaptureVerified": true,
+  "allOwnedCompilerArchiveRecoveryProcessesClosed": true,
+  "remotePublication": "Not performed by this owner; root owns commit/publication.",
+  "boundFiles": [
+    {
+      "path": "implementation/phase18/evidence/PLAN.md",
+      "bytes": 6001,
+      "sha256": "407a8dfb53e2b69b19f6b35d82123beb5a18830a7259408fa30ab8a46e5f0c1e"
+    },
+    {
+      "path": "implementation/phase18/evidence/selection-proposal.json",
+      "bytes": 2675,
+      "sha256": "fd52229fe11b796df002492434c4623a8ed46342e36aa44da75d5738ed8274a8"
+    },
+    {
+      "path": "implementation/phase18/evidence/collector-adaptation.patch",
+      "bytes": 4207,
+      "sha256": "0939a16acb8a313a5835b61ab28b2d246e3c7af03bd02a69fa05c2cdaaa08720"
+    },
+    {
+      "path": "implementation/phase18/evidence/adaptation.json",
+      "bytes": 1238,
+      "sha256": "473779296206600a5df077114ea40e834c781da457e9a8cedf28c134be873d43"
+    },
+    {
+      "path": "implementation/phase18/evidence/root-freeze.json",
+      "bytes": 2542,
+      "sha256": "eb7c541abdf10ed5bd75ac10ee6ed7135479de056aa858589d358c9585f82d1e"
+    },
+    {
+      "path": "implementation/phase18/evidence/selection-review.json",
+      "bytes": 1398,
+      "sha256": "3dac5dc4a9f6fc65bbee94cf676dab47d1be866d01b098597a722f43dddf3312"
+    },
+    {
+      "path": "implementation/phase18/evidence/recovery-01.json",
+      "bytes": 749,
+      "sha256": "f71287eee81f6b9ef18177ee34b7daaa0f34cf032d5e634df3feb632c0d3668b"
+    },
+    {
+      "path": "implementation/phase18/evidence/post-capture-audit.py",
+      "bytes": 2621,
+      "sha256": "79543a970030d0785d0df3470dd46d9e758c7e26fd5d2525d8fc1806740c3015"
+    },
+    {
+      "path": "implementation/phase18/evidence/post-capture-audit.json",
+      "bytes": 39675,
+      "sha256": "bb59a6d197e8c4280f5e34b309b7157dcfcd68fe1adb74d1b7d9a5960336de9b"
+    },
+    {
+      "path": "implementation/phase18/evidence/phase6-start-state.json",
+      "bytes": 36660,
+      "sha256": "5c0427166fd96f873da3eafb63bacd3a79d1c9e423dd936b091b06dff3388a0b"
+    },
+    {
+      "path": "implementation/phase18/evidence/README.md",
+      "bytes": 2781,
+      "sha256": "4026d28e0d7e0adf0a56f873846c73de5e42f7a86adafa36b43500ab6c69df27"
+    },
+    {
+      "path": "implementation/phase18/evidence/capsule-01/inventory.json",
+      "bytes": 1379932,
+      "sha256": "5561eb614a2f3921b45f024c3feccdb809f7470e65e1c2d913dd9e8ea140e75f"
+    },
+    {
+      "path": "implementation/phase18/evidence/capsule-01/manifest.json",
+      "bytes": 481945,
+      "sha256": "86dfb9e7a99dc37868e3861db4015a089843caa0f1069e1c7d54ded524112a80"
+    },
+    {
+      "path": "implementation/phase18/evidence/capsule-01/phase17-to-anchor.patch",
+      "bytes": 41965,
+      "sha256": "bb4d5f120cbb3938a3a6b5e916a70e8849fdab192162e8d9de3708d809c487b3"
+    },
+    {
+      "path": "implementation/phase18/evidence/capsule-01/final-01.tar.gz",
+      "bytes": 147672,
+      "sha256": "0974f76d4b548caf94548b1b66b8d7992c3fc69e365e165a6f08c273126538f6"
+    },
+    {
+      "path": "implementation/phase18/evidence/capsule-01/cursor-01.tar.gz",
+      "bytes": 5690074,
+      "sha256": "bb1cdb2904fedff1a22dd933787261c1d2f8ced5cfdcfd73f88137debffbe840"
+    },
+    {
+      "path": "implementation/phase18/evidence/capsule-01/world-01.tar.gz",
+      "bytes": 8340867,
+      "sha256": "39ea6e19701f0766acfb6528604749064ba1b6cd8cd04e8d0d095fb00fcb1bda"
+    },
+    {
+      "path": "implementation/phase18/evidence/capsule-01/world-02.tar.gz",
+      "bytes": 6703944,
+      "sha256": "5a9c22afb747ba557c6bb27c4b8fa7f89d4f25db4ee950a0fc2a98a74cee5cc8"
+    },
+    {
+      "path": "selfhost/tools/performance/phase18/preserve.py",
+      "bytes": 12637,
+      "sha256": "3a655ab3c8d0fe262eab84fb1a3c008ce05ae710271a14d102bcc5bc0a861722"
+    },
+    {
+      "path": "selfhost/tools/performance/phase16/compact-recover.py",
+      "bytes": 7326,
+      "sha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234"
+    }
+  ],
+  "retainedPreparation": {
+    "attempts": 1,
+    "selectionCorrections": 0,
+    "preservationFailures": 0
+  },
+  "externalPrerequisites": [
+    {
+      "kind": "committed-source",
+      "commit": "fddfc84b3f48aecc77c2424ddc8227cd7f63251f",
+      "scope": "Exact committed installed Phase17 source for independent reconstruction of the uninstalled cursor anchor; this is not a Phase18 release."
+    },
+    {
+      "kind": "previous-phase-capsule",
+      "path": "implementation/phase17/evidence/preservation.json",
+      "manifest": "implementation/phase17/evidence/capsule-02/manifest.json",
+      "scope": "Phase17 baseline API/source and saved grouping/instance experiments, plus their declared Phase16/older capsule prerequisites; earlier recorded exclusions remain in force."
+    },
+    {
+      "kind": "upstream-checkout",
+      "path": "selfhost/.bootstrap/upstream-phase8",
+      "commit": "b2111cf43244e65f76ddc278ee695e669f720cbf",
+      "scope": "Pinned TypeScript oracle, Base and upstream fixtures."
+    },
+    {
+      "kind": "external-toolchain",
+      "scope": "Recorded Node and Clang executables are not vendored."
+    }
+  ]
+}
