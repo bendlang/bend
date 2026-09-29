@@ -275,7 +275,7 @@ async function cli_file(args: string[]): Promise<void> {
     }
     return cli_bundle(file, outs[0]);
   }
-  if (publish && (outs.length !== 0 || only || checkup)) {
+  if (publish && (outs.length !== 0 || only || verdict || checkup)) {
     cli_fail("--publish takes no other option");
   }
   if ((only || verdict) && (outs.length !== 0 || checkup || (only && verdict))) {
