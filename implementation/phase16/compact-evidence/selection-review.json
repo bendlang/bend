@@ -1,0 +1,19 @@
+{
+  "kind": "phase16-final-selection-review",
+  "complete": true,
+  "pass": true,
+  "inventorySha256": "9812dea05d81248a1062271cd2d9b128d630174639657a6e6f91e62cdf0d88c1",
+  "members": 20344,
+  "fixtureSiblingTrees": 17,
+  "prefixExcludedRoots": 405,
+  "rootsWithSelectedFixtureDescendants": 14,
+  "reviewedExpansion": {
+    "tree": "selfhost/build/phase16/unbound-marker-source-02",
+    "files": 220,
+    "authorization": "Root explicitly approved retaining this exact complete sibling tree before capture.",
+    "clarification": "This entire dependency tree is selected even though its name did not match a topic prefix. Exact member rows override the generic excluded-root explanatory label."
+  },
+  "allRootFreezeInputsSelected": true,
+  "unrelatedPhase6Payloads": 0,
+  "scope": "Final compact compiler topics and explicit custom fixture dependencies only. This is not all Phase16 evidence; older omitted ignored payloads may remain local."
+}

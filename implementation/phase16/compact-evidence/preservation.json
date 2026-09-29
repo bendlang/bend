@@ -1,0 +1,209 @@
+{
+  "kind": "phase16-scoped-compact-preservation-completion",
+  "complete": true,
+  "pass": true,
+  "releaseCommit": "0b51d965e2638048b5526b351047daae0c61ed7c",
+  "installedApiSha256": "35044ae6f6cd9bb63690536588c11761695c66cbf524db8bcd3baa6453ed5315",
+  "scope": "Selected compact compiler topics only; excluded Phase16 entries are not claimed preserved.",
+  "remotePublication": "Not asserted by this local preservation record.",
+  "capture": {
+    "parts": 16,
+    "compressedBytes": 100549967,
+    "largestPartBytes": 8460810,
+    "allPartsBelow99000000": true,
+    "members": 20344,
+    "uncompressedBytes": 778699976
+  },
+  "recovery": {
+    "kind": "phase16-independent-compact-recovery",
+    "complete": true,
+    "pass": true,
+    "toolSha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234",
+    "extraction": {
+      "files": 20344,
+      "symlinks": 5,
+      "bytes": 778699976,
+      "allBytesAndModesVerified": true
+    },
+    "sourceReconstruction": {
+      "baselineCommit": "a383163b821e38510967849fdb791ff914031b62",
+      "files": 214,
+      "allBytesAndModesVerified": true,
+      "usesWorkingTreeSource": false,
+      "patchSha256": "08cc96e93990c57a9a89277cfa6c53d8885a00402b52bc6428376cc4b95b665e"
+    },
+    "manifestSha256": "89217a396c68de564b3a0b8874680907b4467d2ad7670bd6c4e2201c699a2ce8",
+    "inventorySha256": "9812dea05d81248a1062271cd2d9b128d630174639657a6e6f91e62cdf0d88c1"
+  },
+  "policyControls": {
+    "pass": true,
+    "cases": 9,
+    "accepted": 1,
+    "rejected": 8
+  },
+  "frozenInputsUnchanged": true,
+  "allOwnedCaptureRecoveryProcessesClosed": true,
+  "outcomeMetadataExcludedFromCapture": true,
+  "boundFiles": [
+    {
+      "path": "implementation/phase16/compact-evidence/README.md",
+      "bytes": 4576,
+      "sha256": "7ab60cb6a2db8b141ab25e306d6881098464d1f59a8bbb52527b8826e96d65a5"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/PLAN.md",
+      "bytes": 4810,
+      "sha256": "64c97bb45a2ce40eb0db14c38155211d7c84a624109204344f496dd3e6909dec"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/selection-proposal.json",
+      "bytes": 2928,
+      "sha256": "cd99966d9670edf8ab9c7d5163fa4a43e3842d653c946a650df6fce02b641f3d"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/root-freeze.json",
+      "bytes": 2360,
+      "sha256": "b00e0cce9bd8a513f22451ad7ef65ff43f792b227b64e1f25b90fe771cbf8dc4"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/readiness.json",
+      "bytes": 1778,
+      "sha256": "8e6f2aaa166702399ba2370631647f12fc4cf35d2ced58c7f39bcec73a232f9d"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/selection-review.json",
+      "bytes": 946,
+      "sha256": "1af625b02880c9f5e71d4c55660371b87379ef33a8c86f2e22fa6c0b933d4d55"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/recovery-01.json",
+      "bytes": 750,
+      "sha256": "451cedfdc03f82d902a3e0975c8982b42b507660a9774dfcbffa9fb8ea633524"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/syntax-failure-01.json",
+      "bytes": 443,
+      "sha256": "6d798ef3a6a691187bc8c8ff67d3f3f7e93b25157753cafc27d94fc000176d37"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/capsule-01/manifest.json",
+      "bytes": 2148526,
+      "sha256": "89217a396c68de564b3a0b8874680907b4467d2ad7670bd6c4e2201c699a2ce8"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/capsule-01/inventory.json",
+      "bytes": 6171265,
+      "sha256": "9812dea05d81248a1062271cd2d9b128d630174639657a6e6f91e62cdf0d88c1"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/capsule-01/phase15-to-final.patch",
+      "bytes": 335700,
+      "sha256": "08cc96e93990c57a9a89277cfa6c53d8885a00402b52bc6428376cc4b95b665e"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/capsule-01/final-01.tar.gz",
+      "bytes": 7291665,
+      "sha256": "687312b631ae79973da51e202c0c1049c7cd72aa57d373a07e85d33e3d69b739"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/capsule-01/final-02.tar.gz",
+      "bytes": 6668582,
+      "sha256": "4fb67f0dffeefd7b212e0ef19220bb3733a0a74f3bfee2fe0e94025a309cb754"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/capsule-01/final-03.tar.gz",
+      "bytes": 6965933,
+      "sha256": "bc731c4554560224795fb5167c260893c3688d36f96fbb86fb2d6eef04cd28e5"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/capsule-01/final-04.tar.gz",
+      "bytes": 6252353,
+      "sha256": "1b8ce31dfddb9f26e4d48deb851a99b07fa907dca59c159751daeb4f9dc8725c"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/capsule-01/literal-01.tar.gz",
+      "bytes": 8460810,
+      "sha256": "99e91ff3502412a7a52d6838cd9108506f6b6a16e07ffff0a5e44fce9ea93e20"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/capsule-01/literal-02.tar.gz",
+      "bytes": 7862112,
+      "sha256": "f2d6a6048558e212ddace231da0370b0f6f2cf37177479ce680e1f882cd0b61d"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/capsule-01/literal-03.tar.gz",
+      "bytes": 2403627,
+      "sha256": "1c941c3bf9e55dea0cfc44bccded80e89225b16189432b66d5c8033464791e34"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/capsule-01/lambda-memo-01.tar.gz",
+      "bytes": 8291609,
+      "sha256": "f7048b1c7ef5fa87af3abfc334cfb78bc5ec8c6836904724e00128e377dc452f"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/capsule-01/lambda-memo-02.tar.gz",
+      "bytes": 5531987,
+      "sha256": "40f3ab0e0488f683da082912def188faf4be109b2b90fab6dfffbf9169a630ff"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/capsule-01/context-01.tar.gz",
+      "bytes": 7761292,
+      "sha256": "912529447c65c5ac6f9b05ee271e990eba55959765caa577ab7ac3d9a4982995"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/capsule-01/context-02.tar.gz",
+      "bytes": 7380477,
+      "sha256": "4f618e23cb040e5f7474764f2b639c8ed6079dfb633df47fa10b301f6b2d949b"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/capsule-01/context-03.tar.gz",
+      "bytes": 7486083,
+      "sha256": "fb5dfd882869acdcaf823a6c044aceb1afd4941efaae05911cb356b87db60709"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/capsule-01/context-04.tar.gz",
+      "bytes": 6711846,
+      "sha256": "465da30ed12ee91a94bf2fd81ea51a30ae61ff3eb62b7b04871ce93124861687"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/capsule-01/context-05.tar.gz",
+      "bytes": 514422,
+      "sha256": "43a1bad2dcdedf1bea70ed5f00c3545c509856efb1998132e286218382919636"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/capsule-01/patterns-01.tar.gz",
+      "bytes": 7480275,
+      "sha256": "f2672ecdf322dd49037ddef35b33a3b3ebe3352e4d069a7ff423fc270285f669"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/capsule-01/patterns-02.tar.gz",
+      "bytes": 3486894,
+      "sha256": "577c8eb2c4fb89fea4e612894dd96eb7a7fecc02b4f27cf5455c0787420ea7cf"
+    },
+    {
+      "path": "selfhost/tools/performance/phase16/compact-preserve.py",
+      "bytes": 12258,
+      "sha256": "ad19dfb435c5e5fc78430f552cf89f3b4a7554467152bdc97128e45d59c4eb96"
+    },
+    {
+      "path": "selfhost/tools/performance/phase16/compact-recover.py",
+      "bytes": 7326,
+      "sha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234"
+    },
+    {
+      "path": "selfhost/tools/performance/phase16/compact-recovery-controls.py",
+      "bytes": 4013,
+      "sha256": "0d687d2354b3b7e2fbb0e6ea920315a56a6e64f3d73ed12579ce3c031673d7f9"
+    },
+    {
+      "path": "selfhost/tools/performance/phase16/compact-recover-preflight-syntax-failure-01.py",
+      "bytes": 7223,
+      "sha256": "7512b622c8909c9a005139a26b65d6e4255bb01545d0c54e11d010a18cf9a6d9"
+    },
+    {
+      "path": "selfhost/build/phase16/compact-final-evidence-policy-01/report.json",
+      "bytes": 2050,
+      "sha256": "860c35725b340c8b7f3b10aa03418d4ace3d74965249da686dfff152c546e8af"
+    }
+  ]
+}

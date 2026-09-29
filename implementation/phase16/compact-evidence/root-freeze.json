@@ -1,0 +1,59 @@
+{
+  "kind": "phase16-final-producer-freeze",
+  "authorized": true,
+  "allProducersClosed": true,
+  "closedAt": "2026-09-29T07:10:09.844270+00:00",
+  "releaseCommit": "0b51d965e2638048b5526b351047daae0c61ed7c",
+  "finalAttempt": "selfhost/build/phase16/compact-final-build-01",
+  "finalApiSha256": "35044ae6f6cd9bb63690536588c11761695c66cbf524db8bcd3baa6453ed5315",
+  "inputs": [
+    {
+      "path": "selfhost/build/phase16/compact-final-build-01/attempt.json",
+      "sha256": "a43f83e21dbe0048805e19ead61bddde173e0d2cf1718c0930e8bf207386a94e"
+    },
+    {
+      "path": "selfhost/build/phase16/compact-final-matrix-01/report.json",
+      "sha256": "d685e00211c584d22cf55c5aa2714bf9d49379e105c81b8132e93a121b50e44a"
+    },
+    {
+      "path": "selfhost/build/phase16/promotion-03/report.json",
+      "sha256": "e992db3643ee2639d294e487e997762c925af0d99dbecf241ca70d3606ad0211"
+    },
+    {
+      "path": "selfhost/build/phase16/compact-final-smoke-01/launcher.json",
+      "sha256": "1b2ce35914e6b1a3e5063de14362a1c3743a9383ff90cf2be1745a75bede2f48"
+    },
+    {
+      "path": "selfhost/build/phase16/compact-final-frontend-01/report.json",
+      "sha256": "1caa68863a19d4844b4aadb766a08882f180de525555d2a2419696420da67e7c"
+    },
+    {
+      "path": "selfhost/build/phase16/compact-final-source-counts-01.json",
+      "sha256": "b354ace37e05509a2ee5c2bd451f60baf8cdf4abe510dc751e94f18994e1c0d1"
+    },
+    {
+      "path": "implementation/phase16/consolidation.md",
+      "sha256": "33e3418b42185735d472f7ef7cbbc55270cc432153b3309d60fe6342d611152e"
+    },
+    {
+      "path": "selfhost/dist/release.json",
+      "sha256": "5099e0af7de93bc3b37515090e07e07693dbf77e719c51d33bc3a640e4c4b2cc"
+    },
+    {
+      "path": "implementation/phase16/compact-evidence/readiness.json",
+      "sha256": "8e6f2aaa166702399ba2370631647f12fc4cf35d2ced58c7f39bcec73a232f9d"
+    }
+  ],
+  "additionalFiles": [
+    "selfhost/dist",
+    "README.md",
+    "selfhost/README.md",
+    "selfhost/CONFORMANCE.md",
+    "selfhost/docs/ARCHITECTURE.md",
+    "docs/BEND-IN-BEND.md",
+    "experiments/STEERING.md",
+    "experiments/ledger.md",
+    "implementation/phase16/compact-evidence/readiness.json"
+  ],
+  "scope": "All selected Phase16 producers and current documentation are closed. Independent future Phase17 roots are outside this frozen capture; selected inputs must not change."
+}

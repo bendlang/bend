@@ -291,3 +291,20 @@ seven A02 attempts, both candidate05 demand suites and the final candidate07
 residual probes; every timing worker; baseline identities; and research source.
 The final All-domain demand regression remains a failure, the codomain probe
 remains inconclusive, and archive verification promotes none of the candidates.
+
+
+## Phase16 compact release — 2026-09-29
+
+The [scoped topic capsules](../implementation/phase16/compact-evidence/README.md)
+preserve 20,344 members (five fixture links), 778,699,976 uncompressed bytes in
+16 archive parts totaling 100,549,967 compressed bytes. Independent extraction
+verified every member and mode; source reconstruction recovered all 214 final
+project files from committed Phase15 plus the saved patch. Release commit
+`0b51d965e2638048b5526b351047daae0c61ed7c` installs API `35044ae6`.
+
+The final, literal, lambda/memo, contextual-loading and pattern topics include
+selected failures, consumed tools, final gates, timing, installation and CLI
+records. Exact exclusions and external prerequisites are in the inventory; this
+is not complete preservation of every Phase16 experiment. The successful recovery
+is a separate immutable record from the capture manifest's earlier pending state.
+Local recovery and commits do not establish successful remote publication.
