@@ -7,14 +7,14 @@
 // answers Ready{x}, or Late{x} once an effect in the act was cancelled; a
 // request whose continuation is that end answers the frame itself, with no
 // Emit. Under a frame, io_poll_step takes a request that can be cancelled
-// (a channel step, a sleep, or an effect that asks IO_HAND and waits on its
-// handle) and that would wait: past the frame's until, it answers the
-// request cancelled, unrun; before, the request waits for its handle or
-// until, whichever comes first, a sleep ends in time or is cancelled at
-// until, and a channel step parks on its row as usual, with a timer that
-// takes it back out at until. io_poll_step answers io_step 1 to go on with
-// w's cont and item, 2 to stop (w waits), 0 to run the request as usual.
-// Frames are recycled.
+// (a channel step, a sleep, or an effect that asks IO_IN or IO_OUT: its
+// handle first, (handle, Result) back) and that would wait: past the
+// frame's until, it answers the request cancelled, unrun; before, the
+// request waits for its handle or until, whichever comes first, a sleep
+// ends in time or is cancelled at until, and a channel step parks on its
+// row as usual, with a timer that takes it back out at until.
+// io_poll_step answers io_step 1 to go on with w's cont and item, 2 to
+// stop (w waits), 0 to run the request as usual. Frames are recycled.
 
 #ifdef CID(IO.poll)
 
@@ -125,7 +125,7 @@ static Term io_poll_expire(Env e, IoWork* t) {
 
 // Whether request c can be cancelled, and whether it would wait now.
 static bool io_poll_can(u32 c, u32 ask) {
-  bool ok = (ask & IO_HAND) && (ask & (IO_READ | IO_IN | IO_OUT));
+  bool ok = (ask & (IO_IN | IO_OUT)) != 0;
 #ifdef CID(IO.sleep)
   ok = ok || c == CID(IO.sleep);
 #endif
@@ -188,7 +188,7 @@ static u32 io_poll_step(Env e, IoWork* w) {
       return 2;
     }
 #ifdef CID(Chan.new)
-    if (!(ask & IO_HAND)) {
+    if (!(ask & (IO_IN | IO_OUT))) {
       IoWork* t = io_mem(calloc(1, sizeof(IoWork)));
       t->hand   = (intptr_t)w;
       t->made   = (intptr_t)io_hand_v(x[0]);

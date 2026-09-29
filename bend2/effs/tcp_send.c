@@ -28,7 +28,7 @@ Term tcp_send_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) tcp_send_use(void) {
-  io_eff(CID(TCP.send), tcp_send_run, IO_OUT | IO_HAND);
+  io_eff(CID(TCP.send), tcp_send_run, IO_OUT);
 }
 
 #endif
@@ -45,7 +45,7 @@ Term tcp_send_bytes_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) tcp_send_bytes_use(void) {
-  io_eff(CID(TCP.send_bytes), tcp_send_bytes_run, IO_OUT | IO_HAND);
+  io_eff(CID(TCP.send_bytes), tcp_send_bytes_run, IO_OUT);
 }
 
 #endif

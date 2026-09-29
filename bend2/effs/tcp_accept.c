@@ -24,5 +24,5 @@ Term tcp_accept_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) tcp_accept_use(void) {
-  io_eff(CID(TCP.accept), tcp_accept_run, IO_READ | IO_HAND);
+  io_eff(CID(TCP.accept), tcp_accept_run, IO_READ | IO_IN);
 }

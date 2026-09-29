@@ -1,5 +1,5 @@
 // A foreign effect written as guide/EFFECTS.md's "A pollable effect" says:
-// its handle first, (handle, Result) back, and IO_IN | IO_HAND declared.
+// its handle first, (handle, Result) back, and IO_IN declared.
 
 static Term recv1_more(Env e, IoWork* w) {
   unsigned char b;
@@ -17,5 +17,5 @@ Term recv1_run(Env e, Term* f, IoWork* w) {
 }
 
 static void __attribute__((constructor)) recv1_use(void) {
-  io_eff(CID(recv1), recv1_run, IO_IN | IO_HAND);
+  io_eff(CID(recv1), recv1_run, IO_IN);
 }

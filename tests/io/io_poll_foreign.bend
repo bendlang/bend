@@ -1,8 +1,8 @@
 # io (io_poll_foreign): a foreign effect declared pollable as
-# guide/EFFECTS.md says (its socket first, (socket, Result) back, IO_IN |
-# IO_HAND in C, { fd: "in" } in JS) is cancelled by IO.poll when nothing
-# is sent, its socket handed back (Fail{ECANCELED}) to be closed; once a
-# byte is sent, the poll answers it.
+# guide/EFFECTS.md says (its socket first, (socket, Result) back, IO_IN
+# in C, { fd: "in" } in JS) is cancelled by IO.poll when nothing is
+# sent, its socket handed back (Fail{ECANCELED}) to be closed; once a byte
+# is sent, the poll answers it.
 import Base
 
 # one byte from sock, or 256 at the peer's close

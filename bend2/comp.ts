@@ -5438,7 +5438,6 @@ OUTLINE Term corpus_eval(u64* H, Term t) {
 #define IO_TIME 2
 #define IO_IN   4
 #define IO_OUT  8
-#define IO_HAND 16
 #define IO_PARK TERM_HOLE
 
 #define io_hand(v)   term_make(TAG_PAK, (u64)(v) >> 40, (u64)(v) & LOC_MASK)

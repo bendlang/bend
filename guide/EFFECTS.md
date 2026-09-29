@@ -102,18 +102,19 @@ first argument, a ready handle means it can start (parking again after
 that is fine: a started effect runs to its end), and it answers
 `(handle, Result<&1, &1, U32 & String, X>)`, since a cancelled one
 answers `(handle, Fail{ECANCELED})`, built by the runtime. In C, add
-`IO_HAND` to the need with `IO_IN` or `IO_OUT` (checked only under
-`IO.poll`: the effect still runs at once) or with `IO_READ`. In JS, pass
-`{ fd: "in" }` or `{ fd: "out" }` as `io_eff`'s fourth argument (its other
-fields are Base's). Declare both lanes alike; `tcp_recv.c` and
+`IO_IN` (it waits for its handle to be readable) or `IO_OUT` (writable) to
+the need: outside `IO.poll` they change nothing, and the effect still runs
+at once (`IO_READ | IO_IN` for one the loop parks until readable). In JS,
+pass `{ fd: "in" }` or `{ fd: "out" }` as `io_eff`'s fourth argument (its
+other fields are Base's). Declare both lanes alike; `tcp_recv.c` and
 `tcp_recv.js` are the reference, `tests/io/io_poll_foreign` a small
 example.
 
-Nothing checks the declaration against the def's type yet. `IO_HAND` on
-an effect that answers another shape makes a cancel answer a wrong value,
-and the program crashes where it matches it. A handle that is not first,
-or a first wait on something else, makes the loop cancel a request that
-could run, or wait past `ms`.
+Nothing checks the declaration against the def's type yet. `IO_IN` or
+`IO_OUT` on an effect that answers another shape makes a cancel answer a
+wrong value, and the program crashes where it matches it. A handle that
+is not first, or a first wait on something else, makes the loop cancel a
+request that could run, or wait past `ms`.
 
 ## A complete example
 
