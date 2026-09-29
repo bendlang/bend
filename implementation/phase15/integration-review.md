@@ -33,3 +33,23 @@ identity, process-health and delta gates consistent with P15-004. Root accepted
 the recommendation to require all 20 named behavior observations to match
 reference semantic/output axes even when a row is unchanged. Existing exact
 matches cannot regress through the diagnostic or named-behavior exceptions.
+
+
+## Integration checkpoint 01
+
+Both checked builds completed, but their new 36-case validation is failed:
+32 pass and four retain the known illegal-import-path diagnostic differences.
+The selection placed acceptance/phase fields on upstream-only selectors; the
+maintained harness retains upstream exact oracles for those selectors. This is
+an experiment setup error, not a passing routine gate. The original reports and
+consumed selections remain failed. The next selection will use the documented
+custom-fixture form for the four explicit scoped oracles planned in P15-004;
+full-inventory strict diagnostics remain untouched.
+
+An additional three-way cycle boundary exposed a separate interaction. With
+syntax errors in both parent and child, the first behavior candidate changes
+which syntax error wins, while TypeScript reports the earlier import cycle.
+That candidate is not selected. P15-005 adds an active canonical IO-path guard
+and shared Bend cycle rendering before the next combined build. The valid-cycle
+and single-body-error gaps are inherited, but that does not excuse the new
+precedence change. No production/default compiler has changed.

@@ -32,7 +32,7 @@ for directory, name in changes + [speed]:
     patch.write_text(''.join(difflib.unified_diff(before.read_text().splitlines(True),
         after.read_text().splitlines(True), fromfile='a/selfhost/' + name, tofile='b/selfhost/' + name)))
     report['changes'].append({'relative': name, 'before': identity(before), 'after': identity(after), 'patch': identity(patch)})
-for label, cpu in [('conformance', '1'), ('combined', '0')]:
+for label, cpu in [('conformance', '1'), ('combined', '3')]:
     project = out / label
     for name in ['src', 'tools', 'tests']:
         shutil.copytree(base / name, project / name)
@@ -42,7 +42,24 @@ for label, cpu in [('conformance', '1'), ('combined', '0')]:
     selection = project / 'tests/frontend/phase2-rules/cases.json'
     cases = read(selection)
     assert len(cases) == 26 and cases[0]['id'] == 'check/string_literal_long.bend'
-    cases += [{'id': name, 'lanes': ['check'], 'accept': False, 'rejectPhase': 'parse'} for name in targets]
+    # Upstream selectors always retain their strict #| oracle. The four known
+    # message gaps need explicitly separate custom witnesses for the scoped gate.
+    diagnostic_gaps = {'import/dotted_path.bend', 'import/hub_head_local.bend',
+                       'import/hub_head_path.bend', 'import/tilde_path.bend'}
+    for name in targets:
+        case = {'id': name, 'lanes': ['check'], 'accept': False, 'rejectPhase': 'parse'}
+        if name in diagnostic_gaps:
+            original = root / 'selfhost/.bootstrap/upstream-phase8/tests' / name
+            filename = 'phase15-' + pathlib.Path(name).name
+            fixture = selection.parent / filename
+            # Keep all original program lines/positions; blank only its #| oracle.
+            fixture.write_text(''.join('\n' if line.startswith('#|') else line
+                                       for line in original.read_text().splitlines(True)))
+            case.update(id='phase15-' + pathlib.Path(name).stem, file=filename)
+            report.setdefault('scopedFixtures', []).append({'project': label,
+                'upstream': identity(original), 'custom': identity(fixture),
+                'scope': 'Separate refusal-at-parse witness; strict upstream diagnostic oracle remains unchanged.'})
+        cases.append(case)
     write(selection, cases)
     config = out / (label + '.json')
     write(config, {'project': str(project), 'upstream': str(root / 'selfhost/.bootstrap/upstream-phase8'),
