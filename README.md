@@ -17,23 +17,24 @@ This fork develops the compiler in [`selfhost/`](selfhost/README.md), on branch
 from `selfhost/`, run `npm run verify:release`, then `node cli.mjs FILE --run`.
 `npm run build` checks and rebuilds the default with pinned upstream.
 
-The [Phase16 release report](implementation/phase16/consolidation.md) records
-compact literal terms, precise source diagnostics and contextual module parsing
-against upstream **b2111cf, Bend 2.0.32 era**. On identical compiler source,
-checking takes **30.58 → 12.36 s**, **2.48× faster** than Phase15. Pinned
-TypeScript takes **3.61 s**, leaving a **3.42×** process-time gap. Peak RSS falls
-**62.7%**. This measures checking and trust reporting, excluding emission.
+The [Phase17 release report](implementation/phase17/find-worker.md) records the
+current compiler against upstream **b2111cf, Bend 2.0.32 era**. Identical-source
+checking takes **12.44 → 11.63 s**, **6.55% less time** than Phase16. Pinned
+TypeScript takes **3.40 s**, leaving a **3.42×** process-time gap. This measures
+checking and trust reporting, excluding emission. The earlier
+[Phase16 compact-literal change](implementation/phase16/consolidation.md) removed
+large term-tree allocations and measured a separate 2.48× improvement.
 
-Exact frontend differences fall **459 → 2** across 2,996 observations, with no
-lost matches. All **1,001 positive programs** type-check, all **482 validation
-negatives** reject, and all **11 proof-trust refusals** match TypeScript. The two
-remaining observations concern one do-block's error order. Independent controls
-retain additional gaps; [conformance](selfhost/CONFORMANCE.md) states their scope.
-All 41 selected backend observations and 42 installed/relocated CLI checks pass.
+All **2,996 frontend results** remain unchanged: all **1,001 positive programs**
+type-check, all **482 validation negatives** reject, and all **11 proof-trust
+refusals** match TypeScript. There are **two exact diagnostic differences**, both
+from one do-block's error order. Independent controls expose additional gaps;
+[conformance](selfhost/CONFORMANCE.md) states the boundaries. All 41 selected
+backend observations and 42 installed/relocated CLI checks pass.
 
-The compiler has **16,345 Bend lines in 59 modules**, 1,057 more than Phase15.
-Compact terms eliminate much allocation, but total source size grew as semantic
-coverage improved. The earlier 50% and 75% line-reduction targets remain open.
+The compiler has **16,353 Bend lines in 59 modules**. The new lookup worker adds
+eight lines and removes per-miss dispatch allocations. Source size has grown as
+semantic coverage improved; the earlier 50% and 75% reduction targets remain open.
 
 The [development workflow](docs/PHASE5_DEVELOPMENT.md) builds a genuine checked
 compiler and runs 36 short paired controls. The release preserves its checked

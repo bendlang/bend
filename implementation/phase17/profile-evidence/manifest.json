@@ -1,0 +1,103 @@
+{
+  "kind": "phase17-profile-evidence",
+  "complete": true,
+  "pass": true,
+  "files": [
+    {
+      "path": "design/phase17/remaining_cost_and_chronology.md",
+      "sha256": "dbcc441312d935d4b42c303dda21cf5489f99d75d42491719813582298a1a780",
+      "bytes": 5463,
+      "mode": 420
+    },
+    {
+      "path": "selfhost/build/phase17/compact-profile-01/launch-failure.json",
+      "sha256": "ef9d28a4902a58efd8da586accc424873cdc0ef6c1d873f25a9fc339f9035876",
+      "bytes": 908,
+      "mode": 420
+    },
+    {
+      "path": "selfhost/build/phase17/compact-profile-02/checking.cpuprofile",
+      "sha256": "d60c84471fc5d73a4076adeb8805b01fc1fa11715521cb0af27b77bea64baded",
+      "bytes": 34186931,
+      "mode": 384
+    },
+    {
+      "path": "selfhost/build/phase17/compact-profile-02/process/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "mode": 420
+    },
+    {
+      "path": "selfhost/build/phase17/compact-profile-02/process/stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "mode": 420
+    },
+    {
+      "path": "selfhost/build/phase17/compact-profile-02/report.json",
+      "sha256": "0495575ff99d5631156e16f2eb8132e051838a580c182065058b90d380c23bb6",
+      "bytes": 121435,
+      "mode": 420
+    },
+    {
+      "path": "selfhost/build/phase17/compact-profile-02/request.json",
+      "sha256": "798dad843a3c4749df9f961ab1f0a389a4ec84e1c3080fc78871c3515a65bc2b",
+      "bytes": 118814,
+      "mode": 420
+    },
+    {
+      "path": "selfhost/build/phase17/compact-profile-02/result.json",
+      "sha256": "42ae4c4a0f4952c5537e9af4860e3d2c63c1858e3b97caf9649135fa19b12f97",
+      "bytes": 63197,
+      "mode": 420
+    },
+    {
+      "path": "selfhost/build/phase17/compact-profile-02/summary-process/stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "mode": 420
+    },
+    {
+      "path": "selfhost/build/phase17/compact-profile-02/summary-process/stdout",
+      "sha256": "f1b70cbf4ef0b0503a4fa1ed963d60330bd3d0287337fa6235062634ef0f19ec",
+      "bytes": 2575,
+      "mode": 420
+    },
+    {
+      "path": "selfhost/build/phase17/compact-profile-02/summary.json",
+      "sha256": "d1e9fab91aa9dff5598183dfd11e5f06742e1ee42d5ec53261b1888ca0ca13e7",
+      "bytes": 194695,
+      "mode": 420
+    },
+    {
+      "path": "selfhost/build/phase17/compact-profile-02/worker.mjs",
+      "sha256": "fc6ad2c09b80b51951f4daf54f05df3d48372364d981599aaaec65915dd27d08",
+      "bytes": 1980,
+      "mode": 420
+    },
+    {
+      "path": "selfhost/tools/performance/phase16/profile-check.mjs",
+      "sha256": "903a810ae8e21704547fa731c9778c377e1e4fa959be86a0cb25bf890ccb38c6",
+      "bytes": 3759,
+      "mode": 420
+    },
+    {
+      "path": "selfhost/tools/performance/phase9/profile-summary.py",
+      "sha256": "155823fb09c475d999bb9dc35b747896ba21ef7eb035b75452e6998d0f9859d2",
+      "bytes": 3401,
+      "mode": 420
+    }
+  ],
+  "archive": {
+    "path": "implementation/phase17/profile-evidence/profile.tar.gz",
+    "bytes": 1092250,
+    "sha256": "b12c6957b83daa3e6a64c5847db393bd4a03b300480c2d7228a3e16c81207da9"
+  },
+  "reopenedAndVerified": true,
+  "externalPrerequisites": [
+    "Phase16 compact evidence for unchanged checked attempt/API/host/cache/source",
+    "Pinned upstream b2111cf43244e65f76ddc278ee695e669f720cbf",
+    "Recorded Node24.18.0 binary"
+  ],
+  "scope": "Closed profile and failed prelaunch only. Compiler/host/source bytes are unchanged from preserved Phase16 release."
+}

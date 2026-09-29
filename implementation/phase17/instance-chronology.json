@@ -1,0 +1,722 @@
+{
+  "kind": "phase17-live-instance-chronology-investigation",
+  "complete": true,
+  "compilerChanged": false,
+  "cpu": 1,
+  "performanceClaim": false,
+  "apiSha256": "35044ae6f6cd9bb63690536588c11761695c66cbf524db8bcd3baa6453ed5315",
+  "pinnedUpstream": "b2111cf43244e65f76ddc278ee695e669f720cbf",
+  "pairedObservations": 22,
+  "exactAgreements": 20,
+  "primitiveDifferences": 0,
+  "strictDifferences": [
+    {
+      "id": "p17-instance/instance-before-type",
+      "lane": "check",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "reference": {
+        "status": "error",
+        "phase": "check",
+        "checked": true,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : x\n- observed : x (consumed more than once)\nLocation: app~0\n1 | \n2>| def app(~f: Nat -> Nat, x: Nat) -> Nat:\n  |                         ^\n3 |   f(x)",
+        "output": null
+      },
+      "candidate": {
+        "status": "error",
+        "phase": "check",
+        "checked": true,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : Nat\n- observed : Bool\nContext:\n- y : Nat\nLocation: main\n5 |   y = app(~(n => Nat.add(n, n)), 1n)\n6>|   True{}\n  |   ^^^^^^\n7 | ",
+        "output": null
+      },
+      "exactAgreement": false,
+      "semanticAgreement": true,
+      "referenceEvidence": "checker-rejection",
+      "candidateEvidence": "checker-rejection"
+    },
+    {
+      "id": "p17-nested/local-before-instance",
+      "lane": "check",
+      "referenceVerdict": "pass",
+      "candidateVerdict": "pass",
+      "reference": {
+        "status": "error",
+        "phase": "check",
+        "checked": true,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : n\n- observed : n (consumed more than once)\nContext:\n- x : Nat\nLocation: outer~0\n4 | def outer(~f: Nat -> Nat, x: Nat) -> Nat:\n5>|   g: Nat -> Nat = n => f(n)\n  |                   ^\n6 |   app(~(n => Nat.add(n, n)), x)",
+        "output": null
+      },
+      "candidate": {
+        "status": "error",
+        "phase": "check",
+        "checked": true,
+        "typeAccepted": false,
+        "proofTrust": "not-assessed",
+        "kernelChecked": false,
+        "unsafeDefinitions": null,
+        "exitCode": 1,
+        "diagnostic": "SOME PROOFS FAIL\nError:\n- expected : x\n- observed : x (consumed more than once)\nLocation: app~0\n1 | \n2>| def app(~f: Nat -> Nat, x: Nat) -> Nat:\n  |                         ^\n3 |   f(x)",
+        "output": null
+      },
+      "exactAgreement": false,
+      "semanticAgreement": true,
+      "referenceEvidence": "checker-rejection",
+      "candidateEvidence": "checker-rejection"
+    }
+  ],
+  "memoControls": {
+    "count": 8,
+    "allExact": true,
+    "rows": [
+      {
+        "name": "repeat-key",
+        "expected": [
+          "first~0",
+          "first~1"
+        ],
+        "reference": [
+          "first~0",
+          "first~1"
+        ],
+        "candidate": [
+          "first~0",
+          "first~1"
+        ],
+        "exact": true
+      },
+      {
+        "name": "interleaved-keys",
+        "expected": [
+          "first~0",
+          "first~1",
+          "second~0",
+          "second~1"
+        ],
+        "reference": [
+          "first~0",
+          "first~1",
+          "second~0",
+          "second~1"
+        ],
+        "candidate": [
+          "first~0",
+          "first~1",
+          "second~0",
+          "second~1"
+        ],
+        "exact": true
+      },
+      {
+        "name": "nested-templates",
+        "expected": [
+          "first~0",
+          "outer~0"
+        ],
+        "reference": [
+          "first~0",
+          "outer~0"
+        ],
+        "candidate": [
+          "first~0",
+          "outer~0"
+        ],
+        "exact": true
+      },
+      {
+        "name": "decreasing-reuse",
+        "expected": [
+          "loop~0"
+        ],
+        "reference": [
+          "loop~0"
+        ],
+        "candidate": [
+          "loop~0"
+        ],
+        "exact": true
+      },
+      {
+        "name": "erased-call",
+        "expected": [],
+        "reference": [],
+        "candidate": [],
+        "exact": true
+      },
+      {
+        "name": "same-lambda",
+        "expected": [
+          "apply~0"
+        ],
+        "reference": [
+          "apply~0"
+        ],
+        "candidate": [
+          "apply~0"
+        ],
+        "exact": true
+      },
+      {
+        "name": "renamed-lambda",
+        "expected": [
+          "apply~0",
+          "apply~1"
+        ],
+        "reference": [
+          "apply~0",
+          "apply~1"
+        ],
+        "candidate": [
+          "apply~0",
+          "apply~1"
+        ],
+        "exact": true
+      },
+      {
+        "name": "lambda-quantities",
+        "expected": [
+          "apply~0",
+          "apply~1"
+        ],
+        "reference": [
+          "apply~0",
+          "apply~1"
+        ],
+        "candidate": [
+          "apply~0",
+          "apply~1"
+        ],
+        "exact": true
+      }
+    ]
+  },
+  "falsifiedHypothesis": "The first nested witness fails outer x usage only at lambda exit; both compilers correctly reach its nested app first. The corrected local-lambda witness demonstrates the prewalk-order failure.",
+  "setupFailure": "Preparation01 guessed an absent pinned path; failure and partial fixtures retained. Corrected preparation02 precedes all compiler observations.",
+  "sourceCensus": {
+    "kind": "phase17-instance-source-census",
+    "scope": "Lexical counts on installed source; removable visitor family is a proposal, excludes unsafe markers and every replacement cost.",
+    "tool": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase17/instance-source-census.py",
+      "bytes": 3211,
+      "sha256": "aa081d9a0107d6b7b43ff4c2d3c16acbfdbce4604591dbb2f2f976e0020f2cba"
+    },
+    "source": {
+      "selfhost/src/check/kernel.bend": {
+        "identity": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/src/check/kernel.bend",
+          "bytes": 37678,
+          "sha256": "bb3401fd046d95289354d5dc0d4285d809bb2a3612e265b92317db32ec8f3579"
+        },
+        "physicalLines": 1215,
+        "definitions": 108,
+        "laws": 60
+      },
+      "selfhost/src/check/specialize.bend": {
+        "identity": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/src/check/specialize.bend",
+          "bytes": 32561,
+          "sha256": "41872293edf48dbbb1985b343afe0fb05a60107a21f0cdb696d98c0b9500c8cc"
+        },
+        "physicalLines": 1047,
+        "definitions": 104,
+        "laws": 54
+      }
+    },
+    "kernelOnlyReachInferTemplate": [
+      "check",
+      "check_adt_declaration",
+      "check_adt_kind",
+      "check_adt_kind_head",
+      "check_ctor_domain",
+      "check_ctor_head",
+      "check_ctor_tel",
+      "check_ctors",
+      "check_ctors_next",
+      "check_ctr",
+      "check_ctr_found",
+      "check_definition",
+      "check_definition_result",
+      "check_definition_type",
+      "check_lam",
+      "check_lam_q",
+      "check_let",
+      "check_let_kind",
+      "check_let_value",
+      "check_mat",
+      "check_mat_ctr",
+      "check_mat_filled",
+      "check_mat_type",
+      "check_node",
+      "check_rwt",
+      "check_rwt_goal",
+      "check_rwt_type",
+      "check_template_binder",
+      "check_template_definition",
+      "check_template_open",
+      "infer",
+      "infer_adt",
+      "infer_app",
+      "infer_app_type",
+      "infer_node",
+      "infer_ref",
+      "infer_template",
+      "tele_check",
+      "tele_check_after_head",
+      "tele_check_cached_head",
+      "tele_check_head",
+      "tele_check_legacy",
+      "tele_check_legacy_head",
+      "tele_check_static",
+      "template_arg_done",
+      "template_arg_head",
+      "template_args"
+    ],
+    "kernelOnlyReachCount": 47,
+    "constructorPatternAndDeclarationOccurrences": {
+      "KChecked": {
+        "selfhost/src/diagnostic/trace.bend": 5,
+        "selfhost/src/check/specialize.bend": 1,
+        "selfhost/src/check/kernel.bend": 7
+      },
+      "KEnv": {
+        "selfhost/src/check/annotate.bend": 1,
+        "selfhost/src/check/specialize.bend": 4,
+        "selfhost/src/check/kernel.bend": 15
+      },
+      "KSpecState": {
+        "selfhost/src/check/specialize.bend": 12
+      }
+    },
+    "proposedVisitorRetirement": {
+      "definitions": [
+        {
+          "line": 796,
+          "lines": 7,
+          "name": "sp_type"
+        },
+        {
+          "line": 805,
+          "lines": 10,
+          "name": "sp_term"
+        },
+        {
+          "line": 817,
+          "lines": 2,
+          "name": "sp_annotation"
+        },
+        {
+          "line": 821,
+          "lines": 2,
+          "name": "sp_lambda"
+        },
+        {
+          "line": 825,
+          "lines": 2,
+          "name": "sp_single"
+        },
+        {
+          "line": 829,
+          "lines": 2,
+          "name": "sp_constructor"
+        },
+        {
+          "line": 833,
+          "lines": 2,
+          "name": "sp_ctor_done"
+        },
+        {
+          "line": 837,
+          "lines": 6,
+          "name": "sp_args"
+        },
+        {
+          "line": 845,
+          "lines": 2,
+          "name": "sp_arg_head"
+        },
+        {
+          "line": 849,
+          "lines": 2,
+          "name": "sp_arg_done"
+        },
+        {
+          "line": 853,
+          "lines": 2,
+          "name": "sp_cons"
+        },
+        {
+          "line": 857,
+          "lines": 2,
+          "name": "sp_spine"
+        },
+        {
+          "line": 861,
+          "lines": 2,
+          "name": "sp_head"
+        },
+        {
+          "line": 865,
+          "lines": 2,
+          "name": "sp_regular_head"
+        },
+        {
+          "line": 869,
+          "lines": 2,
+          "name": "sp_regular_done"
+        },
+        {
+          "line": 873,
+          "lines": 2,
+          "name": "sp_apply_result"
+        },
+        {
+          "line": 931,
+          "lines": 2,
+          "name": "sp_match"
+        },
+        {
+          "line": 935,
+          "lines": 2,
+          "name": "sp_match_type"
+        },
+        {
+          "line": 939,
+          "lines": 2,
+          "name": "sp_match_ctor"
+        },
+        {
+          "line": 943,
+          "lines": 2,
+          "name": "sp_match_hit"
+        },
+        {
+          "line": 947,
+          "lines": 2,
+          "name": "sp_pair"
+        },
+        {
+          "line": 951,
+          "lines": 6,
+          "name": "sp_let"
+        },
+        {
+          "line": 959,
+          "lines": 2,
+          "name": "sp_let_binding"
+        },
+        {
+          "line": 963,
+          "lines": 2,
+          "name": "sp_let_bound"
+        },
+        {
+          "line": 967,
+          "lines": 2,
+          "name": "sp_let_body"
+        },
+        {
+          "line": 971,
+          "lines": 2,
+          "name": "sp_let_result"
+        },
+        {
+          "line": 975,
+          "lines": 2,
+          "name": "sp_rewrite"
+        },
+        {
+          "line": 979,
+          "lines": 2,
+          "name": "sp_rewrite_type"
+        },
+        {
+          "line": 983,
+          "lines": 2,
+          "name": "sp_rewrite_done"
+        }
+      ],
+      "laws": [
+        {
+          "line": 60,
+          "lines": 8,
+          "name": "sp_term"
+        },
+        {
+          "line": 69,
+          "lines": 4,
+          "name": "sp_annotation"
+        },
+        {
+          "line": 74,
+          "lines": 8,
+          "name": "sp_lambda"
+        },
+        {
+          "line": 83,
+          "lines": 4,
+          "name": "sp_single"
+        },
+        {
+          "line": 88,
+          "lines": 8,
+          "name": "sp_constructor"
+        },
+        {
+          "line": 97,
+          "lines": 4,
+          "name": "sp_ctor_done"
+        },
+        {
+          "line": 102,
+          "lines": 8,
+          "name": "sp_args"
+        },
+        {
+          "line": 111,
+          "lines": 9,
+          "name": "sp_arg_head"
+        },
+        {
+          "line": 121,
+          "lines": 9,
+          "name": "sp_arg_done"
+        },
+        {
+          "line": 131,
+          "lines": 4,
+          "name": "sp_cons"
+        },
+        {
+          "line": 136,
+          "lines": 8,
+          "name": "sp_spine"
+        },
+        {
+          "line": 145,
+          "lines": 9,
+          "name": "sp_head"
+        },
+        {
+          "line": 155,
+          "lines": 8,
+          "name": "sp_regular_head"
+        },
+        {
+          "line": 164,
+          "lines": 8,
+          "name": "sp_regular_done"
+        },
+        {
+          "line": 173,
+          "lines": 4,
+          "name": "sp_apply_result"
+        },
+        {
+          "line": 286,
+          "lines": 8,
+          "name": "sp_match"
+        },
+        {
+          "line": 295,
+          "lines": 9,
+          "name": "sp_match_type"
+        },
+        {
+          "line": 305,
+          "lines": 10,
+          "name": "sp_match_ctor"
+        },
+        {
+          "line": 316,
+          "lines": 9,
+          "name": "sp_match_hit"
+        },
+        {
+          "line": 326,
+          "lines": 5,
+          "name": "sp_pair"
+        },
+        {
+          "line": 332,
+          "lines": 9,
+          "name": "sp_let"
+        },
+        {
+          "line": 342,
+          "lines": 11,
+          "name": "sp_let_binding"
+        },
+        {
+          "line": 354,
+          "lines": 11,
+          "name": "sp_let_bound"
+        },
+        {
+          "line": 366,
+          "lines": 3,
+          "name": "sp_let_body"
+        },
+        {
+          "line": 370,
+          "lines": 4,
+          "name": "sp_let_result"
+        },
+        {
+          "line": 375,
+          "lines": 7,
+          "name": "sp_rewrite"
+        },
+        {
+          "line": 383,
+          "lines": 8,
+          "name": "sp_rewrite_type"
+        },
+        {
+          "line": 392,
+          "lines": 4,
+          "name": "sp_rewrite_done"
+        }
+      ]
+    },
+    "proposedVisitorBlockLines": 280
+  },
+  "sourceIdentities": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/check/kernel.bend",
+      "bytes": 37678,
+      "sha256": "bb3401fd046d95289354d5dc0d4285d809bb2a3612e265b92317db32ec8f3579"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/check/specialize.bend",
+      "bytes": 32561,
+      "sha256": "41872293edf48dbbb1985b343afe0fb05a60107a21f0cdb696d98c0b9500c8cc"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/diagnostic/trace.bend",
+      "bytes": 6502,
+      "sha256": "35d408f0eb1ea4e192469ce2cb4932cee04ab4aee7decf49b6594105f4625515"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/diagnostic/produce.bend",
+      "bytes": 8815,
+      "sha256": "97f148d18e9b1e06b512a8f7a3b20123b412014328b66e1e491b543e6b5e317d"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/driver/api.bend",
+      "bytes": 3796,
+      "sha256": "ad0285c185a468ab541a4d28729fafd9d11c3c7c56ab308e9449ecd333bd8fee"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/check/annotate.bend",
+      "bytes": 10851,
+      "sha256": "f2691278a57f4273be8e6b80369769c618c58d4ef03f5378d98582180b251621"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase8/bend2/bend.ts",
+      "bytes": 136690,
+      "sha256": "924197360cefc61a9314072e9cb1ef46a9266550eb527f535c36839a3b102bcb"
+    }
+  ],
+  "evidence": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase17/instance-chronology.md",
+      "bytes": 5240,
+      "sha256": "67ea069d3e017fe0c94134a8a003f46f1f43008c3cb93e512bcfef656a5fc98a"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase17/instance-nested-witness.md",
+      "bytes": 1507,
+      "sha256": "98b6cd4b724c83d7eb03ad73bf04bed0f8071a0511c5d4ca4334180dde426f4f"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase17/instance-shared-checker.md",
+      "bytes": 8763,
+      "sha256": "d6506414f0028ae7b7beb0e51acf3f57de18d49d301417b9cf0777f883cd2f24"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/instance-controls-01/preparation-failure.json",
+      "bytes": 353,
+      "sha256": "4d8aa8447182d123c9d212885a2c746795be67f5cdee0e7aab6103be2190a6e9"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/instance-controls-02/manifest.json",
+      "bytes": 3735,
+      "sha256": "f0c07a6e1556e7634759b3d2690427be68d37023c0a9cee7fbdd76c376b01133"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/instance-nested-01/manifest.json",
+      "bytes": 1381,
+      "sha256": "5d5bfc0f51a4a7dbdf96a2b8ed9d27c2257a0bf304be0c08cca7d1f51203bc9b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/instance-memo-01/report.json",
+      "bytes": 8155,
+      "sha256": "8a153fad761443375925d77dde7bf60732f34048362b97d665609c80ae419493"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/instance-source-census-01/report.json",
+      "bytes": 7827,
+      "sha256": "850f564ddb0efa08f37fc37a094f4814ee947cf8ea708e9cc646906042e2e982"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/instance-paired-01/report.json",
+      "bytes": 16504,
+      "sha256": "38ff5a1fb0b489d1d7f20179d978b34e3363b62fc88cc5eb50e0425a4af57f11"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/instance-paired-01/selected/paired.json",
+      "bytes": 30076,
+      "sha256": "80b31d2399a348d12abeb16d46852bff030afe04ed77dbdbb7b99aaeb9684e37"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/instance-paired-01/selected/reference.json",
+      "bytes": 1924159,
+      "sha256": "e26968c614d138b065e8e7faebe826568df6c6282b9bff4d64b590066363ac3f"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/instance-paired-01/selected/candidate.json",
+      "bytes": 1947150,
+      "sha256": "c9ca8d3f062667433b5bfbea6db3b85a860eb980d46903f06574c576d33b3e58"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/instance-nested-paired-01/report.json",
+      "bytes": 12627,
+      "sha256": "b24bfd40bcad55edabb5173a65df8713ac21547ea72b28ae7ae00eb275224612"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/instance-nested-paired-01/selected/paired.json",
+      "bytes": 13693,
+      "sha256": "996a37191ab81d1519b260c33d5c9cb8ed0db536c1aa41509cfa774730339a14"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/instance-nested-paired-01/selected/reference.json",
+      "bytes": 1895363,
+      "sha256": "7ae32abe2073a5745ef433526b21adb37cfcd851b6d70d491fd524b9de83f81f"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/instance-nested-paired-01/selected/candidate.json",
+      "bytes": 1913905,
+      "sha256": "16b914b3c9b2a133471a384fc94ad61a3a67971aab744ec7efe82b53b9d6dc55"
+    }
+  ],
+  "tool": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase17/instance-report.py",
+    "bytes": 3279,
+    "sha256": "d0579d2522bc200b302c96cfe14be338e469f7e679e2971182f501be89718e85"
+  },
+  "decision": "Proposal only: one authoritative checker with shared world and immediate instance checking, retaining source bodies and exact memo contract. No compiler implementation before root review."
+}

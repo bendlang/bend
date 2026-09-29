@@ -1207,3 +1207,36 @@ group wrapper preserves information needed by a future general checkpoint
 solution; it does not itself fix the remaining monad/instance cases. Pushes
 remain blocked by the earlier automatic approval review despite standing user
 authorization; no publication success is claimed.
+
+
+## Phase17 direct frontend lookup — 2026-09-29
+
+The [eight-line worker](../implementation/phase17/find-worker.md) is installed as
+API `9b20de50`, genuine checked parent `59317ea5`. The original emitter lowers
+its mutual tail calls to a direct loop, removing a dispatch record/argument array
+on each missed declaration. No host/runtime/cache/transformation change is needed.
+
+The exclusive final-source matrix measures12.4407→11.6255s, **6.55% less process
+time**, versus TS3.3998s: same-window gap3.66×→3.42×. Both order pairs improve;
+request time falls7.17%, RSS0.43%. The older Phase16 TS ratio also rounded3.42×
+in a different window; cross-window values are not mixed or multiplied.
+
+All2,996 full frontend results, including existing diagnostics, are unchanged.
+Demand23/expected46, selected backend41, context39/host43, original histories226,
+helper16/replay5, standalone25-module loader and installed/relocatedCLI42 pass
+their explicit contracts. The first promotion preparation misread paired
+provenance and copied no source; its successor verifies both identities and
+installs one file. Source is16,353 physical lines in59 modules (+8), not smaller.
+
+### Updated frontier
+
+The separate [group trial](../implementation/phase17/group-boundary.md) preserves
+196 outcomes and passes92 structural controls without a conformance gain. It
+remains uninstalled. Its further checkpoint proposal needs comparison with a
+single parser/context authority to justify250–400 extra lines. The
+[instance investigation](../implementation/phase17/instance-chronology.md) proves
+both ordinary-vs-instance and nested-instance ordering gaps;22 observations have
+20 exact results and all8 memo/name controls are exact. Phase18 begins only the
+shared-world/result representation-cost ablation before semantic migration.
+Neither research direction is a current production conformance improvement.
+Publication remains blocked by the earlier automatic approval review.

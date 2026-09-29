@@ -1,7 +1,7 @@
 # Compiler validation
 
 The target remains upstream `b2111cf43244e65f76ddc278ee695e669f720cbf`, Bend2
-2.0.32 era. The [Phase16 release report](../implementation/phase16/consolidation.md)
+2.0.32 era. The [Phase17 release report](../implementation/phase17/find-worker.md)
 binds the final checked artifact, controls, exact vectors, timing and preserved
 failures. The [release manifest](dist/release.json) identifies the installed
 guarded version5 derivative, genuine checked B1, source, Base, runtime and host.
@@ -17,8 +17,8 @@ All 1,001 positives accept types; all 482 validation negatives reject, with no
 observed invalid acceptance, timeout or unresolved observation. All 11 trust
 cases type-check and reach the intended refusal, exactly matching TypeScript.
 
-Exact reference differences fall **459→2**, with **457 new matches and zero lost
-matches** versus Phase15. The remaining rows are parse and check for
+Phase16 reduced exact reference differences **459→2**, with **457 new matches
+and zero lost matches** versus Phase15. Phase17 preserves every complete result. The remaining rows are parse and check for
 `check/monad_do_destructure.bend`: rejection agrees, but the first diagnostic
 differs because of an earlier do-block parsing checkpoint. All measured primitive
 status, phase, type/trust, unsafe-list, exit and output axes agree on this corpus.
@@ -29,7 +29,9 @@ later-emission errors accepted by both frontends; the fifth is the do-block
 oracle above. Exact reference comparison and strict fixture verdicts are separate.
 Neither classification nor an integration no-regression gate weakens the oracle.
 
-Broader controls retain known gaps outside that inventory:
+Phase16's broader controls recorded the following gaps outside that inventory.
+The contextual 39 / host 43 selections were rerun for Phase17; the other selections
+below retain their Phase16 artifact scope:
 
 - The 198-observation integration selection has **197 exact matches** and one
   same-body live-instance error-order difference.
@@ -42,28 +44,43 @@ Broader controls retain known gaps outside that inventory:
   wording difference for `@unsafe` followed by an import. Namespace eight,
   term/cache 39 and whole-program host ten controls pass without exceptions.
 
-On the exact final production API, the maintained 36 cases pass their selected
-contract with two inherited exact differences. All **41 paired backend rows**,
-**20 literal JS/native executions**, **176 literal observations**, **29 instance
-controls** and **two specialization growth controls** match the pin. The direct
-canonical-key probe passes **61 controls**, including 20 size boundaries; its
-four-wrapper extension has a distinct recorded identity while retaining the
-entire production API as an unchanged prefix. These are selected tests, not full
-backend or proof-checker equivalence.
+On the current Phase17 API, the maintained 36 cases pass their selected contract
+with two inherited exact differences. All **41 paired backend rows** match the
+pin. The direct frontend-lookup probes pass **23 paired / 46 independent expected
+outcomes**, including lazy demand, exact access order and a 100,000-definition
+miss. Each probe preserves the entire production API prefix and adds one named
+internal wrapper with a distinct identity. The supplied-source 39 and host 43
+controls rerun on this API with the same known wording gap.
 
-The standalone 25-module loader builds without checker or diagnostic-tracing
-dependencies. All 16 unchanged derivation groups and five authentic version1–5
-byte replays pass. All **42 installed/relocated CLI checks** pass without a copied
-upstream checkout. [Interface validation](../implementation/phase16/release-validation.md)
-and [final checker gates](../implementation/phase16/checker-compact-final-gates.md)
-record the boundaries and individual artifacts.
+Phase16's additional **20 literal JS/native executions**, **176 literal
+observations**, **29 instance controls**, **two specialization growth controls**,
+**61 canonical-key controls**, namespace 8, term/cache 39 and program-host 10 remain
+artifact-specific historical evidence. They were not all rerun for Phase17's
+single lookup-worker change. All 2,996 complete compiler result objects are
+unchanged, but that does not manufacture new execution evidence for these other
+selections. See the [Phase16 gate report](../implementation/phase16/checker-compact-final-gates.md).
+
+The current standalone 25-module loader rebuilds without checker or diagnostic
+tracing dependencies. All 16 unchanged derivation groups and five authentic
+version1–5 byte replays pass, as do all **42 installed/relocated CLI checks**.
+[Phase17 validation](../implementation/phase17/find-demand-gates.md) records the
+exact images, complete-vector comparison and gate boundaries.
 
 Fresh long strings and the original 53/60-request histories preserve all
 **226 paired complete results**, with original ordering and 4 MiB stack / 4 GiB
-heap limits. The wave9 and final APIs run under the same reviewed final compatible
-host; historical host differences remain explicit. The old 21-case prefix can
+heap limits. The Phase16 and Phase17 APIs run under the same byte-identical compatible
+host; original historical inputs and host differences remain explicit. The old 21-case prefix can
 overflow even Phase11, so the maintained selection keeps the string first.
 Finite histories do not establish general stack safety.
+
+New independent Phase17 research keeps additional failures visible. The
+[group-boundary trial](../implementation/phase17/group-boundary.md) retains
+128/196 exact observations, including eight existing semantic mismatches in
+four grouped-comma/zero-head-match witnesses. The
+[instance-order investigation](../implementation/phase17/instance-chronology.md)
+has 20/22 exact observations and 8 exact memo/name controls, with two distinct
+error-order gaps. These experiments are not installed, overlap earlier selections
+and make no claim of a new production conformance gain.
 
 Other limits include hub/package fetching, independent proof-kernel validation,
 backend/platform coverage and source Nat payloads restricted to U32 size (wider

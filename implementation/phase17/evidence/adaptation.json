@@ -1,0 +1,27 @@
+{
+  "kind": "phase17-preservation-adaptation",
+  "captureSource": {
+    "path": "selfhost/tools/performance/phase16/compact-preserve.py",
+    "sha256": "ad19dfb435c5e5fc78430f552cf89f3b4a7554467152bdc97128e45d59c4eb96"
+  },
+  "captureAdaptation": {
+    "path": "selfhost/tools/performance/phase17/preserve.py",
+    "sha256": "80911e66129a0995f9b3af2fcb3b7c8871a430497fbbc295722901ca5ee01c3f"
+  },
+  "recoveryUnchanged": {
+    "path": "selfhost/tools/performance/phase16/compact-recover.py",
+    "sha256": "654bcf4435c7b02d329299aa3f4a71aed46c122b556ecd06bfbccece15972234"
+  },
+  "changes": [
+    "Phase17 config paths and inventory/capture kind labels.",
+    "Source patch filename identifies fixed Phase16 baseline.",
+    "Phase17 excluded-root field label.",
+    "Reject every explicitly excluded Phase18 tree during selection, including fixture-dependency expansion."
+  ],
+  "unchanged": [
+    "tar/gzip, splitting, file/link safety and identity verification",
+    "source membership and fixed-commit patch generation",
+    "independent recoverer and its9 already-passing policy controls"
+  ],
+  "captured": false
+}

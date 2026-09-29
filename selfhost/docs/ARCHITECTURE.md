@@ -503,3 +503,11 @@ normal validation. The same buffer is hashed and decoded on a miss, and the
 validated graph is frozen iteratively. Each request still builds its own source
 graph. The public single-request inspector and execution lanes do not share this
 private memo. See [the implementation and adversarial gates](../../implementation/phase5/persistent-base-decoding.md).
+
+
+Phase17's frontend `f_find` retains its separate named-`Missing` and first-match
+contract. A single Boolean-parameter worker expresses misses as mutual tail
+calls; the original emitter lowers these to a direct loop. This removes per-miss
+trampoline allocations without changing name equality, tail demand, book
+representation or the maintained generated-code transformation. See the
+[lookup report](../../implementation/phase17/find-worker.md).

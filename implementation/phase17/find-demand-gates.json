@@ -1,0 +1,70 @@
+{
+  "kind": "phase17-lookup-owned-gates-index",
+  "complete": true,
+  "pass": true,
+  "receipt": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-demand-gates-01/report.json",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-demand-gates-01/report.json",
+    "bytes": 15870,
+    "sha256": "59ff814bbee6de1577c3badce83d127b4522d15c2da3c3441195111b1822ffef"
+  },
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-worker-build-01/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-worker-build-01/equality/api.mjs",
+    "sha256": "9b20de5032e306a0b7ee2686a1cc79452f81fcb282ff6419a0d1ad5c4b5716b6"
+  },
+  "results": {
+    "frontend": {
+      "observations": 2996,
+      "beforeExactDifferences": 2,
+      "afterExactDifferences": 2,
+      "newMatches": 0,
+      "lostMatches": 0,
+      "fullFrontendConformance": false,
+      "positiveAccepted": 1001,
+      "validationRefused": 482,
+      "trustRefusedExact": 11,
+      "completeResultChangesFromInstalled": 0
+    },
+    "contextSupplied": {
+      "pass": 39,
+      "knownStrictDifferences": [
+        {
+          "name": "unsafe-import",
+          "expected": "Error:\n- expected : 'def' (@unsafe marks the def below it)\n- observed : 'i'\nLocation:\n1 | @unsafe\n2>| import ./dep.bend as D\n  | ^\n3 | ",
+          "actual": "line 2:0: expected def after @unsafe; got import",
+          "baseline": "line 2:0: expected def after @unsafe; got import"
+        }
+      ]
+    },
+    "contextHost": {
+      "pass": 43,
+      "knownStrictDifferences": [
+        {
+          "name": "unsafe-import",
+          "expected": "Error:\n- expected : 'def' (@unsafe marks the def below it)\n- observed : 'i'\nLocation:\n1 | @unsafe\n2>| import ./dep.bend as D\n  | ^\n3 | ",
+          "actual": "line 2:0: expected def after @unsafe; got import"
+        }
+      ]
+    },
+    "helper": {
+      "groups": 16,
+      "authenticReplayVersions": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    "standalone": {
+      "modules": 25,
+      "scope": "Unchanged maintained raw/traced/seeded loader controls with exact frozen candidate source."
+    },
+    "demand": {
+      "pairedPass": 23,
+      "independentExpectedPass": 46
+    }
+  },
+  "allOwnedProcessesClosed": true
+}

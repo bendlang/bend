@@ -1,12 +1,12 @@
 # Bend2 compiler port in Bend2
 
 Use the [compiler guide](../docs/BEND-IN-BEND.md) and
-[Phase16 release report](../implementation/phase16/consolidation.md).
-The installed compiler uses compact literals, precise source diagnostics and
-contextual module parsing. Same-source checking takes **12.36 s**, versus
-**30.58 s** for Phase15 and **3.61 s** for pinned TypeScript: **2.48× faster**,
-with a **3.42×** remaining gap. Exact frontend differences fall **459→2** with
-no lost matches; independent controls retain additional semantic/diagnostic gaps.
+[Phase17 release report](../implementation/phase17/find-worker.md).
+The compiler uses compact literals, precise source diagnostics and contextual
+module parsing. Its new direct lookup loop checks identical source in **11.63 s**,
+versus **12.44 s** for Phase16 and **3.40 s** for pinned TypeScript: **6.55% less
+time**, with a **3.42×** remaining gap. All 2,996 frontend results are unchanged,
+including two exact diagnostic differences. Broader tests expose additional gaps.
 All 41 selected backend observations and 42 installed/relocated CLI checks pass.
 
 The current target is upstream
@@ -20,7 +20,7 @@ node cli.mjs tests/conformance/typed-smoke/base-u32.bend --run
 npm run build
 ```
 
-The compiler contains 16,345 physical /13,947 nonblank Bend lines in 59 modules.
+The compiler contains 16,353 physical /13,954 nonblank Bend lines in 59 modules.
 It retains the validated S4 simplifications while adding current declaration,
 namespace, typing and effect semantics. The [release manifest](dist/release.json)
 binds the exact source, genuine checked parent, equality/choice-derived API, Base,
@@ -141,7 +141,7 @@ remain in `dist/selfhost/`; the [preservation index](../experiments/PRESERVATION
 and [experiment ledger](../experiments/ledger.md) identify their exact scope.
 They are not alternate defaults. The current release can run after relocation
 without an upstream checkout, as verified by its
-[Phase16 installed/relocated CLI checks](../implementation/phase16/consolidation.md).
+[Phase17 installed/relocated CLI checks](../implementation/phase17/find-worker.md).
 The earlier [Phase5 clean-package evidence](../implementation/phase5/relocated-cli-evidence/README.md)
 applies to that historical artifact.
 

@@ -1,0 +1,30 @@
+{
+  "kind": "phase17-frozen-internal-find-controls",
+  "stackKb": 4096,
+  "heapMb": 4096,
+  "cases": [
+    {"name":"empty-book-preserves-query","query":"missing-name","names":[],"expectedIndex":null},
+    {"name":"head-match","query":"a","names":["a","b","c"],"expectedIndex":0},
+    {"name":"middle-match","query":"b","names":["a","b","c"],"expectedIndex":1},
+    {"name":"last-match","query":"c","names":["a","b","c"],"expectedIndex":2},
+    {"name":"all-miss","query":"x","names":["a","b","c"],"expectedIndex":null},
+    {"name":"duplicate-law-before-definition","query":"same","names":["same","same"],"kinds":["Law","Def"],"expectedIndex":0},
+    {"name":"duplicate-definition-before-law","query":"same","names":["same","same"],"kinds":["Def","Law"],"expectedIndex":0},
+    {"name":"head-does-not-inspect-tail-tag","query":"a","names":["a"],"poisonTail":true,"expectedIndex":0},
+    {"name":"middle-does-not-inspect-tail-tag","query":"b","names":["a","b"],"poisonTail":true,"expectedIndex":1},
+    {"name":"head-does-not-inspect-unused-payload","query":"a","names":["a","b"],"poisonPayload":true,"expectedIndex":0},
+    {"name":"miss-does-not-inspect-unused-payload","query":"x","names":["a","b"],"poisonPayload":true,"expectedIndex":null},
+    {"name":"head-does-not-inspect-later-name","query":"a","names":["a","b"],"throwNameAt":1,"expectedIndex":0},
+    {"name":"first-name-throws-before-tail","query":"x","names":["a"],"throwNameAt":0,"poisonTail":true,"expectedThrow":"name","throwIndex":0},
+    {"name":"later-name-raw-string-throw","query":"x","names":["a","b"],"throwNameAt":1,"expectedThrow":"name","throwIndex":1},
+    {"name":"miss-demands-tail-raw-object-throw","query":"x","names":["a"],"poisonTail":true,"expectedThrow":"tail"},
+    {"name":"first-head-throws-before-tail-read","query":"x","names":["a"],"throwHeadAt":0,"expectedThrow":"head","throwIndex":0},
+    {"name":"later-head-raw-object-throw","query":"x","names":["a","b"],"throwHeadAt":1,"expectedThrow":"head","throwIndex":1},
+    {"name":"empty-string-name","query":"","names":["prefix",""],"expectedIndex":1},
+    {"name":"common-prefix-exact-match","query":"prefix.common.long.value","names":["prefix.common.long","prefix.common.long.value.more","prefix.common.long.value"],"expectedIndex":2},
+    {"name":"astral-name-exact-match","query":"x😀y","names":["x😃y","x😀y"],"expectedIndex":1},
+    {"name":"combining-name-not-normalized","query":"é","names":["é","é"],"expectedIndex":1},
+    {"name":"book-cache-kind-is-ordinary-definition","query":"cache-name","names":["cache-name","other"],"kinds":["BookCache","Def"],"poisonPayload":true,"expectedIndex":0},
+    {"name":"long-miss-100000","query":"never-present","count":100000,"expectedIndex":null}
+  ]
+}

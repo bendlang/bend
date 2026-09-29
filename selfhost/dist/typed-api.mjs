@@ -8984,7 +8984,7 @@ function $f_import_alias_head$(_name_0) {
 function $f_decl_taken$(_name_0, _book_0, _scope_0) {
   const _index_0 = _scope_0["index"];
   const _ns_0 = _scope_0["ns"];
-  const _x_0 = ($Bool$not$(($f_eq$(($dk$(run_loop($f_find$(_name_0, _book_0)))), "Missing"))));
+  const _x_0 = ($Bool$not$(($f_eq$(($dk$(($f_find$(_name_0, _book_0)))), "Missing"))));
   const _x_1 = ($Bool$not$(($f_eq$(($dk$(run_loop($index_find$(_index_0, _name_0, ($index_hash$(_name_0, 2166136261)), 32)))), "Absent"))));
   const _x_2 = (_x_0 || _x_1);
   const _x_3 = ($Bool$not$(($f_eq$(($dk$(run_loop($index_find$(_index_0, run_loop($f_qual_name$(_name_0, _ns_0)), ($index_hash$(run_loop($f_qual_name$(_name_0, _ns_0)), 2166136261)), 32)))), "Absent"))));
@@ -8992,7 +8992,7 @@ function $f_decl_taken$(_name_0, _book_0, _scope_0) {
 }
 
 function $f_type$(_name_0, _ts_0, _book_0, _imports_0, _scope_0) {
-  return run_tail((($Bool$and$(($f_valid_name$(_name_0)), ($f_eq$(($dk$(run_loop($f_find$(_name_0, _book_0)))), "Missing"))))) ? ((_x_0) => {
+  return run_tail((($Bool$and$(($f_valid_name$(_name_0)), ($f_eq$(($dk$(($f_find$(_name_0, _book_0)))), "Missing"))))) ? ((_x_0) => {
   return $f_type_named$(_name_0, _ts_0, _book_0, _imports_0, _scope_0);
 }) : ((_x_1) => {
   return $f_result$(_book_0, ($kt$("Error", ("invalid or reserved datatype name: " + _name_0), 0, 0, {$: "Nil"})), _imports_0);
@@ -9055,7 +9055,7 @@ function $f_def_context_header$(_ts_0, _rest_0, _book_0, _imports_0, _unsafe_0, 
 }
 
 function $f_decl_find$(_name_0, _book_0, _scope_0) {
-  const _local_0 = run_loop($f_find$(_name_0, _book_0));
+  const _local_0 = ($f_find$(_name_0, _book_0));
   return run_tail((($f_eq$(($dk$(_local_0)), "Missing"))) ? ((_x_0) => {
   return $f_decl_local_ctor$(_name_0, _book_0, _scope_0, run_loop($f_decl_prior$(_name_0, _scope_0)));
 }) : ((_x_1) => {
@@ -10691,7 +10691,7 @@ function $f_module_defs$(_todo_0, _visible_0, _scope_0, _ns_0, _imports_0) {
 
 function $f_graph_fill_alias$(_d_0, _imports_0, _scope_0) {
   return run_tail((($f_eq$(($tg$(($dt$(_d_0)))), "ImportLaw"))) ? ((_x_0) => {
-  return $f_graph_fill$(_d_0, run_loop($f_find$(run_loop($f_alias$(($dn$(_d_0)), _imports_0)), ($List$reverse$(_scope_0)))));
+  return $f_graph_fill$(_d_0, ($f_find$(run_loop($f_alias$(($dn$(_d_0)), _imports_0)), ($List$reverse$(_scope_0)))));
 }) : ((_x_1) => {
   return _d_0;
 }), {$: "Unit"});
@@ -11272,19 +11272,37 @@ function $f_end$(_ts_0) {
   }
 }
 
-function $f_find$(_name_0, _book_0) {
-  if (_book_0.$ === "Nil") {
-    return {$: "KDef", "name": _name_0, "kind": "Missing", "arity": 0, "templates": 0, "typ": ($atom$("Absent")), "value": ($atom$("Absent")), "ctors": {$: "Nil"}, "native": false, "unsafe": false};
-  } else {
-    const _d_0 = _book_0["head"];
-    const _ds_0 = _book_0["tail"];
-    if ((($f_eq$(_name_0, ($dn$(_d_0)))))) {
-const _x_0 = {$: "Unit"};
-return _d_0;
-} else {
-const _x_1 = {$: "Unit"};
-return {$: "$JMP", f: $f_find$, x: [_name_0, _ds_0]};
-}
+function $f_find$($0, $1, $2, $3) {
+  let $pc = 0;
+  for (;;) switch ($pc) {
+    case 0: {
+      const _name_0 = $0;
+      const _book_0 = $1;
+      if (_book_0.$ === "Nil") {
+        return {$: "KDef", "name": _name_0, "kind": "Missing", "arity": 0, "templates": 0, "typ": ($atom$("Absent")), "value": ($atom$("Absent")), "ctors": {$: "Nil"}, "native": false, "unsafe": false};
+      } else {
+        const _d_0 = _book_0["head"];
+        const _ds_0 = _book_0["tail"];
+        $0 = _name_0;
+        $1 = _d_0;
+        $2 = _ds_0;
+        $3 = ($f_eq$(_name_0, ($dn$(_d_0))));
+        $pc = 1; continue;
+      }
+    }
+    case 1: {
+      const _name_0 = $0;
+      const _d_0 = $1;
+      const _ds_0 = $2;
+      const _same_0 = $3;
+      if (_same_0) {
+        return _d_0;
+      } else {
+        $0 = _name_0;
+        $1 = _ds_0;
+        $pc = 0; continue;
+      }
+    }
   }
 }
 
@@ -11306,7 +11324,7 @@ function $f_type_named$(_name_0, _ts_0, _book_0, _imports_0, _scope_0) {
 }
 
 function $f_law$(_name_0, _ts_0, _book_0, _imports_0, _clauses_0, _scope_0) {
-  return run_tail((($Bool$and$(($f_valid_name$(_name_0)), ($f_eq$(($dk$(run_loop($f_find$(_name_0, _book_0)))), "Missing"))))) ? ((_x_0) => {
+  return run_tail((($Bool$and$(($f_valid_name$(_name_0)), ($f_eq$(($dk$(($f_find$(_name_0, _book_0)))), "Missing"))))) ? ((_x_0) => {
   return $f_law_base$(_name_0, _ts_0, _book_0, _imports_0, _clauses_0, _scope_0);
 }) : ((_x_1) => {
   return $f_result$(_book_0, ($kt$("Error", ("invalid or reserved law name: " + _name_0), 0, 0, {$: "Nil"})), _imports_0);
@@ -13324,6 +13342,40 @@ return {$: "$JMP", f: $f_tx$, x: [_ts_0]};
 }), {$: "Unit"});
 }
 
+function $f_find_next$($0, $1, $2, $3) {
+  let $pc = 1;
+  for (;;) switch ($pc) {
+    case 0: {
+      const _name_0 = $0;
+      const _book_0 = $1;
+      if (_book_0.$ === "Nil") {
+        return {$: "KDef", "name": _name_0, "kind": "Missing", "arity": 0, "templates": 0, "typ": ($atom$("Absent")), "value": ($atom$("Absent")), "ctors": {$: "Nil"}, "native": false, "unsafe": false};
+      } else {
+        const _d_0 = _book_0["head"];
+        const _ds_0 = _book_0["tail"];
+        $0 = _name_0;
+        $1 = _d_0;
+        $2 = _ds_0;
+        $3 = ($f_eq$(_name_0, ($dn$(_d_0))));
+        $pc = 1; continue;
+      }
+    }
+    case 1: {
+      const _name_0 = $0;
+      const _d_0 = $1;
+      const _ds_0 = $2;
+      const _same_0 = $3;
+      if (_same_0) {
+        return _d_0;
+      } else {
+        $0 = _name_0;
+        $1 = _ds_0;
+        $pc = 0; continue;
+      }
+    }
+  }
+}
+
 function $f_type_params$(_name_0, _p_0, _book_0, _imports_0, _scope_0) {
   const _pars_0 = _p_0["term"];
   const _ts_0 = _p_0["rest"];
@@ -15118,10 +15170,10 @@ function $f_def_base$(_name_0, _p_0, _book_0, _imports_0, _unsafe_0, _scope_0) {
 }) : ((_x_3) => {
   const _x_4 = ($Bool$not$(($f_eq$(run_loop($f_alias$(_name_0, _imports_0)), _name_0))));
   const _x_5 = ($f_def_fillable$(run_loop($f_decl_find$(_name_0, _book_0, _scope_0))));
-  return $f_def_type$(_name_0, ($ks$(_pars_0)), {$: "FParsed", "term": run_loop(run_tail((($Bool$and$(($f_eq$(($dk$(run_loop($f_find$(_name_0, _book_0)))), "Missing")), (_x_4 || _x_5)))) ? ((_x_6) => {
+  return $f_def_type$(_name_0, ($ks$(_pars_0)), {$: "FParsed", "term": run_loop(run_tail((($Bool$and$(($f_eq$(($dk$(($f_find$(_name_0, _book_0)))), "Missing")), (_x_4 || _x_5)))) ? ((_x_6) => {
   return $kt$("ImportLaw", _name_0, 0, 0, ($ks$(_pars_0)));
 }) : ((_x_7) => {
-  return $dt$(run_loop($f_find$(_name_0, _book_0)));
+  return $dt$(($f_find$(_name_0, _book_0)));
 }), {$: "Unit"})), "rest": _ts_0}, _book_0, _imports_0, _unsafe_0, _scope_0);
 }), {$: "Unit"});
 }), {$: "Unit"});
@@ -15182,8 +15234,8 @@ function $f_scope_alias$(_t_0, _bound_0, _book_0, _called_0) {
 }
 
 function $f_scope_do$(_t_0, _env_0, _book_0) {
-  return $f_scope_do_args$(_t_0, _env_0, _book_0, ($f_scope_terms$(($ks$(run_loop(run_tail((($f_eq$(($dk$(run_loop($f_find$(($nm$(_t_0)), _book_0)))), "ADT"))) ? ((_x_0) => {
-  return $f_adt$(run_loop($kid$(_t_0, 0)), ($ks$(run_loop($kid$(_t_0, 0)))), run_loop($f_find$(($nm$(_t_0)), _book_0)));
+  return $f_scope_do_args$(_t_0, _env_0, _book_0, ($f_scope_terms$(($ks$(run_loop(run_tail((($f_eq$(($dk$(($f_find$(($nm$(_t_0)), _book_0)))), "ADT"))) ? ((_x_0) => {
+  return $f_adt$(run_loop($kid$(_t_0, 0)), ($ks$(run_loop($kid$(_t_0, 0)))), ($f_find$(($nm$(_t_0)), _book_0)));
 }) : ((_x_1) => {
   return $kid$(_t_0, 0);
 }), {$: "Unit"})))), _env_0, _book_0)));
@@ -15203,7 +15255,7 @@ function $f_scope_lower$(_t_0, _env_0, _book_0) {
   return $f_scope$(run_loop($kid$(_t_0, 0)), _env_0, _book_0);
 }) : ((_x_1) => {
   return run_tail((($f_eq$(($tg$(_t_0)), "ADT"))) ? ((_x_2) => {
-  return $f_adt$(_t_0, ($f_scope_terms$(($ks$(_t_0)), _env_0, _book_0)), run_loop($f_find$(($nm$(_t_0)), _book_0)));
+  return $f_adt$(_t_0, ($f_scope_terms$(($ks$(_t_0)), _env_0, _book_0)), ($f_find$(($nm$(_t_0)), _book_0)));
 }) : ((_x_3) => {
   return run_tail((($f_eq$(($tg$(_t_0)), "App"))) ? ((_x_4) => {
   return $f_scope_app_span$(run_loop($f_scope$(run_loop($kid$(_t_0, 0)), _env_0, _book_0)), run_loop($f_scope$(run_loop($kid$(_t_0, 1)), _env_0, _book_0)), ($kb$(_t_0)), ($ke$(_t_0)));
@@ -16648,7 +16700,7 @@ function $f_type_ctors$(_name_0, _pars_0, _ty_0, _ts_0, _book_0, _imports_0, _ct
   const _x_4 = (_x_3 + " is an import's alias)");
   return $f_result$(_book_0, ($f_pn$(($fpe_word$(_ts_0, "an import alias cannot name a constructor", ("a fresh constructor name (" + _x_4))))), _imports_0);
 }) : ((_x_5) => {
-  const _x_6 = ($Bool$not$(($f_eq$(($dk$(run_loop($f_find$(($f_tx$(_ts_0)), _ctors_0)))), "Missing"))));
+  const _x_6 = ($Bool$not$(($f_eq$(($dk$(($f_find$(($f_tx$(_ts_0)), _ctors_0)))), "Missing"))));
   const _x_7 = ($f_decl_ctor_taken$(($f_tx$(_ts_0)), _book_0, _scope_0));
   return run_tail(((_x_6 || _x_7)) ? ((_x_8) => {
   const _x_9 = ($f_tx$(_ts_0));
@@ -17256,7 +17308,7 @@ function $f_scope_alias_selected$(_t_0, _bound_0, _book_0, _called_0) {
   return _t_0;
 }) : ((_x_1) => {
   return run_tail((_called_0) ? ((_x_2) => {
-  return $f_scope_marked$(_t_0, _bound_0, run_loop($f_find$(($nm$(_t_0)), _book_0)), true);
+  return $f_scope_marked$(_t_0, _bound_0, ($f_find$(($nm$(_t_0)), _book_0)), true);
 }) : ((_x_3) => {
   return $f_scope_reference$(_t_0, _bound_0, _book_0);
 }), {$: "Unit"});
@@ -17266,7 +17318,7 @@ function $f_scope_alias_selected$(_t_0, _bound_0, _book_0, _called_0) {
 function $f_scope_do_args$(_t_0, _env_0, _book_0, _types_0) {
   const _x_0 = ($qt$(_t_0));
   return run_tail(((_x_0 === 0)) ? ((_x_1) => {
-  return $kt_span$("Ann", "", ($ix$(_t_0)), 1, {$: "Con", "head": run_loop($f_scope$(run_loop($kid$(_t_0, 1)), _env_0, _book_0)), "tail": {$: "Con", "head": run_loop(run_tail((($f_eq$(($dk$(run_loop($f_find$(($nm$(_t_0)), _book_0)))), "ADT"))) ? ((_x_2) => {
+  return $kt_span$("Ann", "", ($ix$(_t_0)), 1, {$: "Con", "head": run_loop($f_scope$(run_loop($kid$(_t_0, 1)), _env_0, _book_0)), "tail": {$: "Con", "head": run_loop(run_tail((($f_eq$(($dk$(($f_find$(($nm$(_t_0)), _book_0)))), "ADT"))) ? ((_x_2) => {
   return $kt_span$("ADT", ($nm$(_t_0)), ($ix$(_t_0)), 1, _types_0, ($kb$(_t_0)), ($ke$(_t_0)));
 }) : ((_x_3) => {
   return $f_scope_apply_span$(($kt_span$("Ref", ($nm$(_t_0)), 0, 0, {$: "Nil"}, ($kb$(_t_0)), ($ke$(_t_0)))), _types_0, ($kb$(_t_0)), ($ke$(_t_0)));
@@ -17320,10 +17372,10 @@ function $f_scope_marked_call$(_t_0, _env_0, _book_0) {
 }) : ((_x_5) => {
   const _x_6 = ($qt$(_t_0));
   return run_tail((($Bool$and$(($f_eq$(($tg$(_t_0)), "Ref")), ($Bool$not$((_x_6 === 3)))))) ? ((_x_7) => {
-  return $f_scope_marked$(_t_0, run_loop($f_env$(($nm$(_t_0)), _env_0)), run_loop($f_find$(($nm$(_t_0)), _book_0)), true);
+  return $f_scope_marked$(_t_0, run_loop($f_env$(($nm$(_t_0)), _env_0)), ($f_find$(($nm$(_t_0)), _book_0)), true);
 }) : ((_x_8) => {
   return run_tail((($f_eq$(($tg$(_t_0)), "ADT"))) ? ((_x_9) => {
-  return $f_adt$({$: "KTerm", "tag": ($tg$(_t_0)), "name": ($nm$(_t_0)), "id": ($ix$(_t_0)), "quant": 2, "kids": ($ks$(_t_0)), "removed": ($rm$(_t_0)), "originBegin": ($kb$(_t_0)), "originEnd": ($ke$(_t_0))}, ($f_scope_terms$(($ks$(_t_0)), _env_0, _book_0)), run_loop($f_find$(($nm$(_t_0)), _book_0)));
+  return $f_adt$({$: "KTerm", "tag": ($tg$(_t_0)), "name": ($nm$(_t_0)), "id": ($ix$(_t_0)), "quant": 2, "kids": ($ks$(_t_0)), "removed": ($rm$(_t_0)), "originBegin": ($kb$(_t_0)), "originEnd": ($ke$(_t_0))}, ($f_scope_terms$(($ks$(_t_0)), _env_0, _book_0)), ($f_find$(($nm$(_t_0)), _book_0)));
 }) : ((_x_10) => {
   return $kt$("Error", "a quantified datatype after + (+D<..> sets D's leading quantities to &2)", ($ix$(_t_0)), 0, {$: "Nil"});
 }), {$: "Unit"});
@@ -17336,7 +17388,7 @@ function $f_scope_call_head$(_t_0, _env_0, _book_0, _head_0) {
   const _x_0 = ($f_eq$(($tg$(run_loop($kid$(_t_0, 0)))), "Ref"));
   const _x_1 = ($f_eq$(($tg$(run_loop($kid$(_t_0, 0)))), "FAliasRef"));
   return run_tail((run_loop($f_templates_valid$(($f_tail_terms$(($ks$(_t_0)))), run_loop(run_tail((($Bool$and$(($f_eq$(($tg$(_head_0)), "Ref")), (_x_0 || _x_1)))) ? ((_x_2) => {
-  return $dx$(run_loop($f_find$(($nm$(_head_0)), _book_0)));
+  return $dx$(($f_find$(($nm$(_head_0)), _book_0)));
 }) : ((_x_3) => {
   return 0;
 }), {$: "Unit"})), false))) ? ((_x_4) => {
@@ -17345,7 +17397,7 @@ function $f_scope_call_head$(_t_0, _env_0, _book_0, _head_0) {
   const _x_6 = ($f_eq$(($tg$(run_loop($kid$(_t_0, 0)))), "Ref"));
   const _x_7 = ($f_eq$(($tg$(run_loop($kid$(_t_0, 0)))), "FAliasRef"));
   return $f_templates_error$(($f_tail_terms$(($ks$(_t_0)))), run_loop(run_tail((($Bool$and$(($f_eq$(($tg$(_head_0)), "Ref")), (_x_6 || _x_7)))) ? ((_x_8) => {
-  return $dx$(run_loop($f_find$(($nm$(_head_0)), _book_0)));
+  return $dx$(($f_find$(($nm$(_head_0)), _book_0)));
 }) : ((_x_9) => {
   return 0;
 }), {$: "Unit"})), 0, false, ($nm$(_head_0)));
@@ -18746,7 +18798,7 @@ function $f_foreign$(_name_0, _pars_0, _ty_0, _ts_0, _book_0, _imports_0, _unsaf
 }
 
 function $f_def_signature$(_name_0, _pars_0, _ty_0, _book_0) {
-  if ((($Bool$and$(($f_eq$(($dk$(run_loop($f_find$(_name_0, _book_0)))), "Missing")), ($Bool$not$(($f_eq$(($tg$(_ty_0)), "ImportLaw")))))))) {
+  if ((($Bool$and$(($f_eq$(($dk$(($f_find$(_name_0, _book_0)))), "Missing")), ($Bool$not$(($f_eq$(($tg$(_ty_0)), "ImportLaw")))))))) {
 const _x_0 = {$: "Unit"};
 return {$: "$JMP", f: $f_tbind$, x: [_pars_0, _ty_0]};
 } else {
@@ -18761,11 +18813,11 @@ function $f_def_body$(_name_0, _pars_0, _ty_0, _p_0, _book_0, _imports_0, _unsaf
   return run_tail((($f_eq$(($tg$(_body_0)), "Error"))) ? ((_x_0) => {
   return $f_result$(_book_0, _body_0, _imports_0);
 }) : ((_x_1) => {
-  return $f_tops$(_ts_0, ($f_put$({$: "KDef", "name": _name_0, "kind": "Def", "arity": ($terms_len$(_pars_0)), "templates": run_loop(run_tail((($f_eq$(($dk$(run_loop($f_find$(_name_0, _book_0)))), "Missing"))) ? ((_x_2) => {
+  return $f_tops$(_ts_0, ($f_put$({$: "KDef", "name": _name_0, "kind": "Def", "arity": ($terms_len$(_pars_0)), "templates": run_loop(run_tail((($f_eq$(($dk$(($f_find$(_name_0, _book_0)))), "Missing"))) ? ((_x_2) => {
   return $f_templates$(_pars_0);
 }) : ((_x_3) => {
-  return $dx$(run_loop($f_find$(_name_0, _book_0)));
-}), {$: "Unit"})), "typ": _ty_0, "value": ($kt$("Body", "", ($fc_start$(_pars_0, _ty_0, _body_0, ($Bool$not$(($f_eq$(($dk$(run_loop($f_find$(_name_0, _book_0)))), "Missing")))))), 0, {$: "Con", "head": ($kt$("Params", "", 0, 0, _pars_0)), "tail": {$: "Con", "head": _body_0, "tail": {$: "Nil"}}})), "ctors": {$: "Nil"}, "native": false, "unsafe": _unsafe_0}, _book_0)), _imports_0, false, _scope_0);
+  return $dx$(($f_find$(_name_0, _book_0)));
+}), {$: "Unit"})), "typ": _ty_0, "value": ($kt$("Body", "", ($fc_start$(_pars_0, _ty_0, _body_0, ($Bool$not$(($f_eq$(($dk$(($f_find$(_name_0, _book_0)))), "Missing")))))), 0, {$: "Con", "head": ($kt$("Params", "", 0, 0, _pars_0)), "tail": {$: "Con", "head": _body_0, "tail": {$: "Nil"}}})), "ctors": {$: "Nil"}, "native": false, "unsafe": _unsafe_0}, _book_0)), _imports_0, false, _scope_0);
 }), {$: "Unit"});
 }
 
@@ -18957,14 +19009,14 @@ function $f_scope_marked$(_t_0, _bound_0, _definition_0, _called_0) {
 function $f_scope_reference$(_t_0, _bound_0, _book_0) {
   const _x_0 = ($qt$(_t_0));
   return run_tail(((_x_0 === 2)) ? ((_x_1) => {
-  return $f_scope_marked$(_t_0, _bound_0, run_loop($f_find$(($nm$(_t_0)), _book_0)), false);
+  return $f_scope_marked$(_t_0, _bound_0, ($f_find$(($nm$(_t_0)), _book_0)), false);
 }) : ((_x_2) => {
   const _x_3 = ($qt$(_t_0));
   return run_tail((run_loop(run_tail(((_x_3 === 3)) ? ((_x_4) => {
   return run_tail((($Bool$not$(($f_eq$(($tg$(_bound_0)), "Absent"))))) ? ((_x_5) => {
   return true;
 }) : ((_x_6) => {
-  return $f_eq$(($dk$(run_loop($f_find$(($nm$(_t_0)), _book_0)))), "ADT");
+  return $f_eq$(($dk$(($f_find$(($nm$(_t_0)), _book_0)))), "ADT");
 }), {$: "Unit"});
 }) : ((_x_7) => {
   return false;
@@ -18974,9 +19026,9 @@ function $f_scope_reference$(_t_0, _bound_0, _book_0) {
   return run_tail((($Bool$not$(($f_eq$(($tg$(_bound_0)), "Absent"))))) ? ((_x_10) => {
   return $kt_span$("Var", ($nm$(_bound_0)), ($ix$(_bound_0)), ($qt$(_bound_0)), {$: "Nil"}, ($kb$(_t_0)), ($ke$(_t_0)));
 }) : ((_x_11) => {
-  const _x_12 = ($da$(run_loop($f_find$(($nm$(_t_0)), _book_0))));
-  return run_tail((($Bool$and$(($f_eq$(($dk$(run_loop($f_find$(($nm$(_t_0)), _book_0)))), "ADT")), (_x_12 === 0)))) ? ((_x_13) => {
-  return $f_adt$(_t_0, {$: "Nil"}, run_loop($f_find$(($nm$(_t_0)), _book_0)));
+  const _x_12 = ($da$(($f_find$(($nm$(_t_0)), _book_0))));
+  return run_tail((($Bool$and$(($f_eq$(($dk$(($f_find$(($nm$(_t_0)), _book_0)))), "ADT")), (_x_12 === 0)))) ? ((_x_13) => {
+  return $f_adt$(_t_0, {$: "Nil"}, ($f_find$(($nm$(_t_0)), _book_0)));
 }) : ((_x_14) => {
   if ((($Bool$and$(($Char$is_eq$(($f_head$(($nm$(_t_0)))), ".")), ($Bool$not$(($Char$is_eq$(($f_head$(($f_tail$(($nm$(_t_0)))))), ".")))))))) {
 const _x_15 = {$: "Unit"};

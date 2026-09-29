@@ -1,0 +1,96 @@
+{
+  "kind": "phase17-lookup-worker-release-summary",
+  "complete": true,
+  "installed": true,
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-worker-build-01/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-worker-build-01/equality/api.mjs",
+    "sha256": "9b20de5032e306a0b7ee2686a1cc79452f81fcb282ff6419a0d1ad5c4b5716b6"
+  },
+  "checkedApi": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-worker-build-01/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-worker-build-01/api.mjs",
+    "sha256": "59317ea5f8ec47b98e55a5e4d72718ffa9e59fec780cae0819a45e4eafe3f451"
+  },
+  "inputs": [
+    {
+      "path": "selfhost/build/phase17/find-worker-build-01/attempt.json",
+      "sha256": "be48563157abfceb570ceeb3798125b0ebb8f862a26faba05d249e26fb4414ba"
+    },
+    {
+      "path": "selfhost/build/phase17/find-worker-matrix-01/report.json",
+      "sha256": "151c1b23d403ce6e54dcf1b2352e2d4092c7270e9d5fb187f3e5b64f30240b59"
+    },
+    {
+      "path": "selfhost/build/phase17/find-worker-frontend-01/report.json",
+      "sha256": "9b20d29774565a3f20496b658df86061afe2b1184e1cf001ebc9b1a902c819b5"
+    },
+    {
+      "path": "selfhost/build/phase17/find-worker-history-01/report.json",
+      "sha256": "821defe59999b6865817a9d6aea3e4d818a62f133858ca79db61d045c44ccdb4"
+    },
+    {
+      "path": "selfhost/build/phase17/find-worker-backend-01/report.json",
+      "sha256": "f4ec2f1a90f8770253e6cf73470cdf0f51ff990c45678b97f4a4044f9c0f57cb"
+    },
+    {
+      "path": "selfhost/build/phase17/find-worker-promotion-01/report.json",
+      "sha256": "de7371d33b798c49ee4d538ccd2cdc46a73d4b00b26d57983568be25712ce472"
+    },
+    {
+      "path": "selfhost/build/phase17/find-worker-promotion-02/report.json",
+      "sha256": "08abefb655c23a2e11e01620872786981a170156de868b98285cb1ec4f62ebb8"
+    },
+    {
+      "path": "selfhost/build/phase17/find-worker-smoke-01/launcher.json",
+      "sha256": "bde7a57f04994c125bd182169b8ddd638b74988b9551615d5f09778ede088c5a"
+    },
+    {
+      "path": "selfhost/build/phase17/find-source-counts-01.json",
+      "sha256": "fed3cd8d1b911e7743e1f988150191e84810d7279710e816ac6fe29abf043df3"
+    },
+    {
+      "path": "selfhost/build/phase17/find-demand-gates-01/report.json",
+      "sha256": "59ff814bbee6de1577c3badce83d127b4522d15c2da3c3441195111b1822ffef"
+    }
+  ],
+  "statistics": {
+    "typescript": {
+      "samples": 2,
+      "meanRequestMs": 2331.3121855,
+      "meanProcessWallMs": 3399.7580034999983,
+      "maxRssKiB": 476456
+    },
+    "baseline": {
+      "samples": 2,
+      "meanRequestMs": 11343.9115935,
+      "meanProcessWallMs": 12440.671896,
+      "maxRssKiB": 651144
+    },
+    "candidate": {
+      "samples": 2,
+      "meanRequestMs": 10530.724923,
+      "meanProcessWallMs": 11625.527537499998,
+      "maxRssKiB": 648316
+    }
+  },
+  "ratios": {
+    "baselineToTs": 3.6592815968644006,
+    "candidateToTs": 3.4195161907205445,
+    "baselineToCandidate": 1.0701167629486596,
+    "candidateProcessReduction": 0.06552253490119708,
+    "candidateRequestReduction": 0.07168485612722442
+  },
+  "source": {
+    "modules": 59,
+    "physicalLines": 16353,
+    "nonblankLines": 13954,
+    "bytes": 581322,
+    "definitions": 1657,
+    "laws": 775,
+    "types": 66,
+    "scope": "Ordered src/compiler.json modules; excludes legacy compiler.bend and supplementary off-manifest Bend files."
+  },
+  "scope": "One-file direct frontend lookup; all2996 complete frontend results unchanged, selected backend41, demand23, helper/loader/context/history and installedCLI42 pass. Known conformance gaps remain. Separate group/instance experiments are uninstalled.",
+  "remotePush": "blocked by earlier automatic approval review"
+}

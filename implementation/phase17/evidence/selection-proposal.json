@@ -1,0 +1,82 @@
+{
+  "kind": "phase17-preservation-proposal",
+  "status": "prospective-not-captured",
+  "baselineCommit": "0b51d965e2638048b5526b351047daae0c61ed7c",
+  "finalSource": "selfhost/build/phase17/find-worker-source-01/project",
+  "finalAttempt": "selfhost/build/phase17/find-worker-build-01",
+  "finalApiSha256": "9b20de5032e306a0b7ee2686a1cc79452f81fcb282ff6419a0d1ad5c4b5716b6",
+  "phaseRoot": "selfhost/build/phase17",
+  "topics": {
+    "final": [
+      "find-worker-",
+      "find-demand-"
+    ],
+    "group": [
+      "group-"
+    ],
+    "instance": [
+      "instance-"
+    ]
+  },
+  "extraTrees": {
+    "final": [
+      "selfhost/tools/performance/phase17"
+    ]
+  },
+  "extraFiles": {
+    "final": [
+      "selfhost/build/phase16/compact-final-frontend-01/candidate.json",
+      "selfhost/build/phase15/frontend-01/candidate.json",
+      "selfhost/build/phase8/reference-frontend-01/reference.json",
+      "selfhost/tools/performance/phase16/compact-recover.py",
+      "implementation/phase16/compact-evidence/readiness.json",
+      "selfhost/build/phase16/compact-final-evidence-policy-01/report.json",
+      "implementation/phase17/profile-evidence/manifest.json",
+      "implementation/phase17/evidence/adaptation.json",
+      "implementation/phase17/evidence/collector-adaptation.patch"
+    ]
+  },
+  "closedDocumentationDirectories": [
+    "design/phase17",
+    "implementation/phase17"
+  ],
+  "excludedTrees": [
+    "selfhost/build/phase18",
+    "selfhost/tools/performance/phase18",
+    "design/phase18",
+    "experiments/phase18",
+    "implementation/phase18"
+  ],
+  "excludedTopLevelReason": "Outside this closed Phase17 topic selection. The two compact-profile roots are separately durable in implementation/phase17/profile-evidence; no recapture or completeness claim for other omitted payloads.",
+  "maxPartPayloadBytes": 64000000,
+  "maxArchiveBytes": 99000000,
+  "externalPrerequisites": [
+    {
+      "kind": "committed-source",
+      "commit": "0b51d965e2638048b5526b351047daae0c61ed7c",
+      "scope": "Exact committed Phase16 source for independent reconstruction of all214 final project members."
+    },
+    {
+      "kind": "previous-compact-capsule",
+      "path": "implementation/phase16/compact-evidence/preservation.json",
+      "scope": "Phase16 compact compiler and its declared older capsule/toolchain prerequisites; those original exclusions remain in force."
+    },
+    {
+      "kind": "durable-profile",
+      "path": "implementation/phase17/profile-evidence/manifest.json",
+      "archive": "implementation/phase17/profile-evidence/profile.tar.gz",
+      "archiveSha256": "b12c6957b83daa3e6a64c5847db393bd4a03b300480c2d7228a3e16c81207da9",
+      "scope": "Closed actual compact profile plus failed initial launch, already archived and independently reopened."
+    },
+    {
+      "kind": "upstream-checkout",
+      "path": "selfhost/.bootstrap/upstream-phase8",
+      "commit": "b2111cf43244e65f76ddc278ee695e669f720cbf",
+      "scope": "Pinned TypeScript oracle, Base and upstream fixtures."
+    },
+    {
+      "kind": "external-toolchain",
+      "scope": "Recorded Node and Clang executables are not vendored."
+    }
+  ]
+}

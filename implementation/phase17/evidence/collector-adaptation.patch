@@ -1,0 +1,44 @@
+--- selfhost/tools/performance/phase16/compact-preserve.py
++++ selfhost/tools/performance/phase17/preserve.py
+@@ -4,8 +4,8 @@
+ import difflib, gzip, hashlib, json, os, posixpath, stat, subprocess, sys, tarfile
+ 
+ ROOT = Path(__file__).resolve().parents[4]
+-PLAN = ROOT/'implementation/phase16/compact-evidence/selection-proposal.json'
+-FREEZE = ROOT/'implementation/phase16/compact-evidence/root-freeze.json'
++PLAN = ROOT/'implementation/phase17/evidence/selection-proposal.json'
++FREEZE = ROOT/'implementation/phase17/evidence/root-freeze.json'
+ 
+ def need(ok, message):
+     if not ok: raise ValueError(message)
+@@ -38,6 +38,7 @@
+     p, f = freeze(); out.mkdir(); files = {}; selected = []; excluded = []
+     def add(file, topic):
+         relative = file.relative_to(ROOT).as_posix(); safe(relative)
++        need(not any(relative == name or relative.startswith(name+'/') for name in p.get('excludedTrees', [])), 'Explicitly excluded input: '+relative)
+         need('.git' not in file.relative_to(ROOT).parts, 'Refuse git metadata')
+         need('/tools/performance/phase6/' not in '/'+relative+'/', 'Unreviewed Phase6 source payload')
+         if relative in files: need(files[relative] == topic, 'Overlapping topics: '+relative)
+@@ -127,10 +128,10 @@
+         after = (ROOT/row['path']).read_bytes(); baseline.append({'path': name, 'exists': existed, 'sha256': hashlib.sha256(before).hexdigest()})
+         if before != after:
+             patch.extend(difflib.unified_diff(before.decode().splitlines(True), after.decode().splitlines(True), fromfile='a/'+name if existed else '/dev/null', tofile='b/'+name))
+-    patch_file = out/'phase15-to-final.patch'; patch_file.write_text(''.join(patch))
+-    inventory = {'kind':'phase16-scoped-compact-inventory','scope':'Selected compact compiler topics only; excluded Phase16 entries are not claimed preserved.',
++    patch_file = out/'phase16-to-final.patch'; patch_file.write_text(''.join(patch))
++    inventory = {'kind':'phase17-scoped-inventory','scope':'Selected closed Phase17 compiler and experiment topics only; excluded entries are not claimed preserved.',
+       'planSha256':sha(PLAN),'freezeSha256':sha(FREEZE),'baselineCommit':p['baselineCommit'],'finalSource':p['finalSource'],'finalAttempt':p['finalAttempt'],
+-      'finalApiSha256':p['finalApiSha256'],'selectedRoots':selected,'fixtureDependencies':dependencies,'externalPrerequisites':p['externalPrerequisites'],'excludedPhase16Roots':excluded,'members':rows,'sourceBaseline':baseline,
++      'finalApiSha256':p['finalApiSha256'],'selectedRoots':selected,'fixtureDependencies':dependencies,'externalPrerequisites':p['externalPrerequisites'],'excludedPhase17Roots':excluded,'members':rows,'sourceBaseline':baseline,
+       'patch':{'path':patch_file.name,'bytes':patch_file.stat().st_size,'sha256':sha(patch_file)},'maxPartPayloadBytes':p['maxPartPayloadBytes'],'maxArchiveBytes':p['maxArchiveBytes']}
+     write(out/'inventory.json', inventory)
+     print(json.dumps({'prepared':True,'files':len(rows),'bytes':sum(r['bytes'] for r in rows),'excludedRoots':len(excluded),'inventory':str(out/'inventory.json')}))
+@@ -164,7 +165,7 @@
+             need(archive.stat().st_size < inv['maxArchiveBytes'], 'Archive exceeds reviewed GitHub bound')
+             archives.append({'path':archive.name,'bytes':archive.stat().st_size,'sha256':sha(archive),'members':[r['path'] for r in rows]})
+     for row in inv['members']: current(row)
+-    write(out/'manifest.json', {'kind':'phase16-scoped-compact-capture','complete':True,'captured':True,'recoveryPending':True,
++    write(out/'manifest.json', {'kind':'phase17-scoped-capture','complete':True,'captured':True,'recoveryPending':True,
+       'tool':{'path':str(Path(__file__).relative_to(ROOT)),'sha256':sha(__file__)},'inventory':{'path':invfile.name,'sha256':sha(invfile)},'archives':archives,
+       'files':len(inv['members']),'bytes':sum(r['bytes'] for r in inv['members']),'scope':inv['scope']})
+     print(json.dumps({'captured':True,'archives':len(archives),'compressedBytes':sum(r['bytes'] for r in archives),'recoveryPending':True}))

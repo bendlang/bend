@@ -1,0 +1,274 @@
+{
+  "kind": "phase17-actual-find-demand-summary",
+  "complete": true,
+  "pass": true,
+  "controls": 23,
+  "independentExpectedPasses": 46,
+  "pairedExactPasses": 23,
+  "scope": "Internal raw-data helper controls; not public run_lib ABI or language conformance.",
+  "resources": {
+    "cpu": "2",
+    "stackKb": 4096,
+    "heapMb": 4096,
+    "timeoutMs": 120000
+  },
+  "report": "selfhost/build/phase17/find-demand-01/report.json",
+  "frozenHarness": "selfhost/build/phase17/find-demand-01/frozen-harness.json",
+  "inputs": [
+    {
+      "original": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase17/find-demand-controls.mjs",
+        "sha256": "95e500c13e730821e003577aa82546f1e21caeed7d55b628908547cb40057865",
+        "bytes": 4889
+      },
+      "consumed": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-demand-01/consumed/find-demand-controls.mjs",
+        "sha256": "95e500c13e730821e003577aa82546f1e21caeed7d55b628908547cb40057865",
+        "bytes": 4889
+      }
+    },
+    {
+      "original": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase17/find-demand-runner.mjs",
+        "sha256": "17e16e23495142f6b45b35fd566d5a7f3c7da8c126ac857e3da5fda83f578c6c",
+        "bytes": 4629
+      },
+      "consumed": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-demand-01/consumed/find-demand-runner.mjs",
+        "sha256": "17e16e23495142f6b45b35fd566d5a7f3c7da8c126ac857e3da5fda83f578c6c",
+        "bytes": 4629
+      }
+    },
+    {
+      "original": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase17/find-demand-cases.json",
+        "sha256": "485d851553b31f0573e7b32d4bba2f62212a1f4b0633ee4c9ffdeb026663c4d2",
+        "bytes": 2751
+      },
+      "consumed": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-demand-01/consumed/find-demand-cases.json",
+        "sha256": "485d851553b31f0573e7b32d4bba2f62212a1f4b0633ee4c9ffdeb026663c4d2",
+        "bytes": 2751
+      }
+    }
+  ],
+  "extension": "\n// Internal demand probe; original generated API prefix is unchanged.\nexport const __findDemandProbe = (...args) => run_loop($f_find$(...args));\n",
+  "extensionSha256": "7e2c08dac53b40583173a5b82cb1da25a82f3355f7a6421b368762b702200794",
+  "artifacts": [
+    {
+      "label": "baseline",
+      "attempt": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/compact-final-build-01/attempt.json",
+        "sha256": "a43f83e21dbe0048805e19ead61bddde173e0d2cf1718c0930e8bf207386a94e",
+        "bytes": 221542
+      },
+      "api": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/compact-final-build-01/equality/api.mjs",
+        "sha256": "35044ae6f6cd9bb63690536588c11761695c66cbf524db8bcd3baa6453ed5315",
+        "bytes": 915713
+      },
+      "checkedApi": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/compact-final-build-01/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/compact-final-build-01/api.mjs",
+        "sha256": "83113283980375efc9cbb3911c4b3df03d18f4cb8066133ea14597df20b98458"
+      },
+      "derivation": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/compact-final-build-01/equality/api.mjs.derivation.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/compact-final-build-01/equality/api.mjs.derivation.json",
+        "sha256": "a705e3b794dd8fddc7cfad2cdc083779f1f03da212d7c5f4da0dbf521999a6a3"
+      },
+      "verifier": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase16/compact-final-build-01/snapshot/tools/development/workflow.mjs",
+        "sha256": "d8a8a0ed29b59d58eae45dfccae9ca5530e597ae0e4203067365a19f0ab3cf32",
+        "bytes": 18123
+      },
+      "probe": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-demand-01/baseline-probe.mjs",
+        "sha256": "fcf49f8ca7d647e681e409b8658f136c40a1559d5c2ff01da1ba49a186395b30",
+        "bytes": 915859
+      },
+      "originalPrefixBytes": 915713,
+      "unchangedPrefix": true,
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "2",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-demand-01/consumed/find-demand-runner.mjs",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-demand-01/baseline-probe.mjs",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-demand-01/consumed/find-demand-cases.json",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-demand-01/baseline-result.json"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-demand-01/baseline-result.json",
+        "sha256": "21f96c6037fa731609880099f96aaf4a8661e28a19f5b8e3659ebed642679933",
+        "bytes": 321837
+      }
+    },
+    {
+      "label": "candidate",
+      "attempt": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-worker-build-01/attempt.json",
+        "sha256": "be48563157abfceb570ceeb3798125b0ebb8f862a26faba05d249e26fb4414ba",
+        "bytes": 219522
+      },
+      "api": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-worker-build-01/equality/api.mjs",
+        "sha256": "9b20de5032e306a0b7ee2686a1cc79452f81fcb282ff6419a0d1ad5c4b5716b6",
+        "bytes": 916740
+      },
+      "checkedApi": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-worker-build-01/api.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-worker-build-01/api.mjs",
+        "sha256": "59317ea5f8ec47b98e55a5e4d72718ffa9e59fec780cae0819a45e4eafe3f451"
+      },
+      "derivation": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-worker-build-01/equality/api.mjs.derivation.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-worker-build-01/equality/api.mjs.derivation.json",
+        "sha256": "ceaa3c91e12a1b9e1bab138718726c5b16cfe898310d386056dc055e2a17dd92"
+      },
+      "verifier": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-worker-build-01/snapshot/tools/development/workflow.mjs",
+        "sha256": "d8a8a0ed29b59d58eae45dfccae9ca5530e597ae0e4203067365a19f0ab3cf32",
+        "bytes": 18123
+      },
+      "probe": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-demand-01/candidate-probe.mjs",
+        "sha256": "13441154ebd63243934090cc2d1657421eb14a5b614548704481dd5555c9820a",
+        "bytes": 916886
+      },
+      "originalPrefixBytes": 916740,
+      "unchangedPrefix": true,
+      "execution": {
+        "command": "taskset",
+        "args": [
+          "-c",
+          "2",
+          "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+          "--stack-size=4096",
+          "--max-old-space-size=4096",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-demand-01/consumed/find-demand-runner.mjs",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-demand-01/candidate-probe.mjs",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-demand-01/consumed/find-demand-cases.json",
+          "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-demand-01/candidate-result.json"
+        ],
+        "exitCode": 0,
+        "signal": null,
+        "error": null
+      },
+      "result": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase17/find-demand-01/candidate-result.json",
+        "sha256": "21f96c6037fa731609880099f96aaf4a8661e28a19f5b8e3659ebed642679933",
+        "bytes": 321837
+      }
+    }
+  ],
+  "cases": [
+    {
+      "name": "empty-book-preserves-query",
+      "pass": true
+    },
+    {
+      "name": "head-match",
+      "pass": true
+    },
+    {
+      "name": "middle-match",
+      "pass": true
+    },
+    {
+      "name": "last-match",
+      "pass": true
+    },
+    {
+      "name": "all-miss",
+      "pass": true
+    },
+    {
+      "name": "duplicate-law-before-definition",
+      "pass": true
+    },
+    {
+      "name": "duplicate-definition-before-law",
+      "pass": true
+    },
+    {
+      "name": "head-does-not-inspect-tail-tag",
+      "pass": true
+    },
+    {
+      "name": "middle-does-not-inspect-tail-tag",
+      "pass": true
+    },
+    {
+      "name": "head-does-not-inspect-unused-payload",
+      "pass": true
+    },
+    {
+      "name": "miss-does-not-inspect-unused-payload",
+      "pass": true
+    },
+    {
+      "name": "head-does-not-inspect-later-name",
+      "pass": true
+    },
+    {
+      "name": "first-name-throws-before-tail",
+      "pass": true
+    },
+    {
+      "name": "later-name-raw-string-throw",
+      "pass": true
+    },
+    {
+      "name": "miss-demands-tail-raw-object-throw",
+      "pass": true
+    },
+    {
+      "name": "first-head-throws-before-tail-read",
+      "pass": true
+    },
+    {
+      "name": "later-head-raw-object-throw",
+      "pass": true
+    },
+    {
+      "name": "empty-string-name",
+      "pass": true
+    },
+    {
+      "name": "common-prefix-exact-match",
+      "pass": true
+    },
+    {
+      "name": "astral-name-exact-match",
+      "pass": true
+    },
+    {
+      "name": "combining-name-not-normalized",
+      "pass": true
+    },
+    {
+      "name": "book-cache-kind-is-ordinary-definition",
+      "pass": true
+    },
+    {
+      "name": "long-miss-100000",
+      "pass": true
+    }
+  ],
+  "limitations": [
+    "Internal generated-helper controls only; no public run_lib calling convention claim.",
+    "Getter sentinels deliberately represent raw JavaScript demand boundaries outside ordinary parsed books.",
+    "No language conformance, runtime performance, timing gain or promotion claim.",
+    "Original API bytes are unchanged; each append-only probe has a distinct hash."
+  ],
+  "allProcessesClosed": true
+}
