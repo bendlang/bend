@@ -1779,3 +1779,25 @@ freezes compiler admission, snapshot guards, private expression nodes, unchanged
 fallback and validation before implementation. Prefer existing KTerm/JS emission
 over retargeting C-specific NIR. Independent reviewers cover purity, metadata,
 forward references and type-preserving private lowering. Phase29 stays installed.
+
+### Phase30 semantic correction and rejected micro-optimizations
+
+Attempt03 passes its selected checks against Phase29, but comparison with the
+pre-worker emitter finds five inherited scheduling/self-binding failures.
+The corrected design admits only pure graphs, guards the recursive owner,
+requires exact runtime entry and retains the original generic fallback. It
+does not inherit the old loop as fallback. The exact-arm extension is withdrawn:
+three enclosing-application counterexamples outweigh its small measured gain.
+
+Long-window array-call ablation rejects per-call guards (33.7% slower on the old
+row and43.2% slower after private helper lowering). Immutable native bypass saves
+only about6–7%; it is not a public-ABI-preserving production candidate. A private
+Number countdown gives only1.052× over BigInt with slightly overlapping ranges
+and residual BigInt warmup drift; defer that representation rule.
+
+The bootstrap error formatter previously made one source error look like a
+120-second compiler timeout. A bounded structural diagnostic returns in1.836s;
+eight initial and four follow-up controls pass. Successful output is byte-identical
+on the checked control. Attempt04 successfully bootstraps current source, then
+the provenance gate correctly refuses the changed recipe hash. Review that exact
+recipe separately and preserve historical replay. No new release is installed.

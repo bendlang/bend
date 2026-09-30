@@ -93,9 +93,55 @@ def j_nat_loop_checked(+book: List<&2,KDef>, +d: KDef, +zero: KTerm, +succ: KTer
 
 @unsafe
 def j_nat_loop_public(+book: List<&2,KDef>, +d: KDef, +zero: KTerm, +succ: KTerm, +total: U32) -> String:
+  j_nat_loop_region(book, d, zero, succ, total, j_region_plan(book, d, zero, succ, total))
+
+@unsafe
+def j_nat_loop_region(+book: List<&2,KDef>, +d: KDef, +zero: KTerm, +succ: KTerm, +total: U32, +plan: Maybe<&2,JRegion>) -> String:
+  match plan:
+    case None{}:
+      ""
+    case Some{region}:
+      match region:
+        case JRegion{fastZero, fastSucc, helpers}:
+          +fast: KDef = KDef{dn(d), dk(d), da(d), dx(d), dt(d), k_with_children(j_strip(dv(d)), [fastZero, kid(j_strip(dv(d)), 1)]), dc(d), db(d), du(d)}
+          "scalarCapture(" ++ j_quote(dn(d)) ++ ",(()=>{" ++ j_region_declarations(book, helpers) ++ "const $guards=[" ++ j_quote(dn(d)) ++ "," ++ j_region_names(helpers) ++ "];return " ++
+          j_nat_loop_wrapper(book, d, zero, total,
+            "if($entered&&" ++ j_nat_loop_inputs(book, j_arm_type(book, wnf(book, dt(d)), "Succ"), 0, total) ++ "&&scalarGuard($guards)){/* private scalar region */" ++
+            j_nat_loop_body(book, fast, fastSucc, total) ++ "}" ++
+            j_nat_loop_generic(book, Nil{}, succ, j_arm_type(book, wnf(book, dt(d)), "Succ"), 0)) ++ ";})())"
+
+@unsafe
+def j_nat_loop_wrapper(+book: List<&2,KDef>, +d: KDef, +zero: KTerm, +total: U32, +body: String) -> String:
   "matcher(\"Zero\",()=>" ++ j_expr(book, Nil{}, zero, j_arm_type(book, wnf(book, dt(d)), "Zero"), False{}) ++ ",()=>" ++
-  j_arm_code("Succ", 1, total, "/* private Nat loop */" ++ j_nat_loop_slots(total, 0) ++ "for(;;){" ++
-    j_nat_loop_enter(book, Nil{}, succ, j_arm_type(book, wnf(book, dt(d)), "Succ"), d, 0, total) ++ "}") ++ ")"
+  "matcher1p(\"Succ\",1," ++ U32.show(total) ++ ",()=>exactCode(function(a,$entered){/* private Nat loop */" ++ j_nat_loop_slots(total, 0) ++ body ++ "})))"
+
+# The fallback has the original generic self call and delayed result. Reuse the
+# slots read at entry, including observable getters, without entering a loop.
+@unsafe
+def j_nat_loop_generic(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +at: U32) -> String:
+  +body = j_strip(t)
+  +head = wnf(book, ty)
+  kc(String, String.eq(tg(body), "Lam"), u =>
+    "const " ++ j_local(ix(body)) ++ "=$s" ++ U32.show(at) ++ ";" ++
+    j_nat_loop_generic(book, Con{kt("Env", "", ix(body), 0, [kid(head, 0)]), env}, kid(body, 0), subst(kid(head, 1), ix(head), var(nm(body), ix(body))), U32.inc(at)),
+    u => "return " ++ j_expr(book, env, body, head, True{}) ++ ";")
+
+@unsafe
+def j_nat_loop_body(+book: List<&2,KDef>, +d: KDef, +succ: KTerm, +total: U32) -> String:
+  "for(;;){" ++ j_nat_loop_enter(book, Nil{}, succ, j_arm_type(book, wnf(book, dt(d)), "Succ"), d, 0, total) ++ "}"
+
+@unsafe
+def j_nat_loop_inputs(+book: List<&2,KDef>, +ty: KTerm, +at: U32, +total: U32) -> String:
+  kc(String, U32.is_eq(at, total), u => "true", u =>
+    j_nat_loop_input(nm(wnf(book, kid(wnf(book, ty), 0))), "$s" ++ U32.show(at), at) ++ "&&" ++
+    j_nat_loop_inputs(book, kid(wnf(book, ty), 1), U32.inc(at), total))
+
+@unsafe
+def j_nat_loop_input(+kind: String, +slot: String, +at: U32) -> String:
+  kc(String, String.eq(kind, "U32"), u => "(typeof " ++ slot ++ "===\"number\"&&Number.isInteger(" ++ slot ++ ")&&" ++ slot ++ ">=0&&" ++ slot ++ "<=4294967295)", u =>
+  kc(String, String.eq(kind, "Bool"), u => "(typeof " ++ slot ++ "===\"boolean\")", u =>
+  kc(String, String.eq(kind, "Nat"), u => "(typeof " ++ slot ++ "===\"bigint\"&&" ++ slot ++ ">=0n&&" ++ slot ++ kc(String, U32.is_eq(at, 0), u => "<", u => "<=") ++ "281474976710655n)", u =>
+  kc(String, String.eq(kind, "F32"), u => "(typeof " ++ slot ++ "===\"number\"&&(Math.fround(" ++ slot ++ ")===" ++ slot ++ "||Number.isNaN(" ++ slot ++ ")))", u => "false"))))
 
 @unsafe
 def j_nat_loop_slots(+total: U32, +at: U32) -> String:

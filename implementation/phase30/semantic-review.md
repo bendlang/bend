@@ -176,3 +176,28 @@ No blocker was found for this prototype under its documented native-scalar,
 closed-helper and standard-intrinsic/prototype scope. It remains a generated-JS
 experiment. A compiler rule still needs conservative admission and direct-path
 coverage beyond this one observed program.
+
+## Non-tail native Array.get prototype
+
+Independent review of the guarded array prototype found no blocker within its
+frozen standard-intrinsic, non-tail-only scope. The guard inspects known original
+ordinary descriptors; replacement targets decline by identity before any
+replacement metadata is read. The original G lookup still precedes argument
+evaluation, and the already captured target remains authoritative if an argument
+replaces its G binding. Native arrayget and the surrounding force are unchanged.
+
+`review-native-array-01/report.json` passes 28 additional observations across
+the unchanged and corrected private baselines. These cover metadata accessors
+that mutate other metadata, own code.call getters, replacing the G entry while
+evaluating an argument, changing code before entry, backing getters and proxies
+that change future calls, reentrant backing/index callbacks, coercion mutations,
+and coercion exceptions. Each scenario also makes a subsequent call to expose
+the changed binding, and checks complete effect/error order. Consumed tool and
+module hashes are retained. These are generated-JavaScript controls, not a
+compiler admission or timing result.
+
+The earlier proposed direct tail path remains excluded. Computing array access
+immediately would move effects before the caller's post-body copied-vector
+length checks or before a retained bounce is forced. The amendment and retained
+tail witness document that distinction; passing non-tail controls does not
+justify restoring the tail transformation.

@@ -16,6 +16,38 @@ const bad=m=>{throw Error(m)};
 const fn=(arity,code,env=null,bound=[])=>({arity,code,env,bound});
 const jump=(f,args)=>({bounce:true,f,args});
 const build=(name,fields)=>({build:true,name,fields});
+// Only apply's exact-saturation branch may grant an eager callback entry.
+// Consume permission before reading any argument: a getter can reenter code
+// with the same vector, but cannot reuse this token or forge one with extra args.
+const exactCodes=new WeakSet(), exactPrototype=Function.prototype;
+const exactCall=Function.prototype.call;
+let exactEntry=null;
+function enterExact(code,inner,a){
+  const entry=exactEntry;
+  const entered=entry!==null&&entry.code===code&&entry.args===a&&!entry.used;
+  if(entered)entry.used=true;
+  return inner(a,entered);
+}
+function exactCode(inner,arrow=false){
+  const code=arrow?(0,(a)=>enterExact(code,inner,a)):
+    (0,function(a){return enterExact(code,inner,a)});
+  exactCodes.add(code);
+  return code;
+}
+function invokeExact(f,all){
+  const code=f.code;
+  if(!exactCodes.has(code)||Object.getPrototypeOf(code)!==exactPrototype||
+      Object.getOwnPropertyDescriptor(code,'call'))return code.call(f.env,all);
+  const callProperty=Object.getOwnPropertyDescriptor(exactPrototype,'call');
+  if(!callProperty||!Object.hasOwn(callProperty,'value')||callProperty.value!==exactCall)
+    return code.call(f.env,all);
+  // Resolve .call before env, as the original invocation does. Environment
+  // getters may reenter; permission is installed only after they have returned.
+  const invoke=code.call,env=f.env,previous=exactEntry;
+  exactEntry={code,args:all,used:false};
+  try{return Reflect.apply(code,env,[all]);}
+  finally{exactEntry=previous;}
+}
 function force(x){
   let pending;
   for(;;){
@@ -37,7 +69,7 @@ function apply(f,args,owned=false){
   if(f?.typeName)return {typeName:f.typeName,typeArgs:[...(f.typeArgs||[]),...args]};
   if(!f?.code){if(!args.length)return f;bad('attempt to call non-function '+String(f));}
   const all=f.bound.length?f.bound.concat(args):owned?args:args.slice();
-  if(all.length===f.arity)return f.code.call(f.env,all);
+  if(all.length===f.arity)return invokeExact(f,all);
   if(all.length<f.arity)return fn(f.arity,f.code,f.env,all);
   let r=f.code.call(f.env,all.slice(0,f.arity));
   if(all.length>f.arity)r=jump(force(r),all.slice(f.arity));
@@ -47,6 +79,48 @@ const call=(f,args)=>force(apply(f,args));
 // Only emitted non-tail calls pass a fresh, unshared literal argument vector.
 // Public calls, matcher field vectors and reusable tail messages still copy.
 const callOwned=(f,args)=>force(apply(f,args,true));
+// Scalar regions capture only newly constructed compiler wrappers. Snapshots
+// stay private; replacement/accessor metadata is inspected without invoking it.
+const scalarSnapshots=Object.create(null), scalarObjectPrototype=Object.prototype;
+const scalarFunctionPrototype=Function.prototype, scalarFunctionCall=Function.prototype.call;
+const scalarPrimitivePrototypes=[Boolean.prototype,Number.prototype,BigInt.prototype];
+function scalarCapture(name,f){
+  const a=Object.getOwnPropertyDescriptor(f,'arity'),c=Object.getOwnPropertyDescriptor(f,'code');
+  const e=Object.getOwnPropertyDescriptor(f,'env'),b=Object.getOwnPropertyDescriptor(f,'bound');
+  if(a&&c&&e&&b&&[a,c,e,b].every(d=>Object.hasOwn(d,'value'))&&
+      Number.isInteger(a.value)&&a.value>0&&typeof c.value==='function'&&e.value===null&&
+      Array.isArray(b.value)&&Object.getOwnPropertyDescriptor(b.value,'length').value===0){
+    scalarSnapshots[name]={original:f,arity:a.value,code:c.value,bound:b.value};
+  }else delete scalarSnapshots[name];
+  return f;
+}
+function scalarGuard(names){
+  // Generic forcing/matching observes these hooks even on primitive values.
+  if(Object.getPrototypeOf(scalarObjectPrototype)!==null||
+      Object.getPrototypeOf(scalarFunctionPrototype)!==scalarObjectPrototype)return false;
+  for(const p of [scalarObjectPrototype,...scalarPrimitivePrototypes]){
+    if(p!==scalarObjectPrototype&&Object.getPrototypeOf(p)!==scalarObjectPrototype)return false;
+    for(const k of ['request','bounce','build','code'])if(Object.getOwnPropertyDescriptor(p,k))return false;
+  }
+  for(const k of ['io','typeName'])if(Object.getOwnPropertyDescriptor(scalarObjectPrototype,k))return false;
+  const invoke=Object.getOwnPropertyDescriptor(scalarFunctionPrototype,'call');
+  if(!invoke||!Object.hasOwn(invoke,'value')||invoke.value!==scalarFunctionCall)return false;
+  for(const name of names){
+    const s=scalarSnapshots[name],g=Object.getOwnPropertyDescriptor(G,name);
+    if(!s||!g||!Object.hasOwn(g,'value')||g.value!==s.original)return false;
+    const f=s.original;
+    if(Object.getPrototypeOf(f)!==scalarObjectPrototype||
+        Object.getPrototypeOf(s.code)!==scalarFunctionPrototype||
+        Object.getOwnPropertyDescriptor(s.code,'call'))return false;
+    for(const k of ['io','typeName'])if(Object.getOwnPropertyDescriptor(f,k))return false;
+    const a=Object.getOwnPropertyDescriptor(f,'arity'),c=Object.getOwnPropertyDescriptor(f,'code');
+    const e=Object.getOwnPropertyDescriptor(f,'env'),b=Object.getOwnPropertyDescriptor(f,'bound');
+    if(!a||!c||!e||!b||![a,c,e,b].every(d=>Object.hasOwn(d,'value'))||
+        a.value!==s.arity||c.value!==s.code||e.value!==null||b.value!==s.bound||
+        Object.getOwnPropertyDescriptor(s.bound,'length').value!==0)return false;
+  }
+  return true;
+}
 const native=(name,n,f)=>G[name]=fn(n,a=>f(...a));
 function get(v,k){if(k in v){const x=v[k];return x?.code&&x.arity===0?call(x,[]):x;}bad('unbound name: '+k)}
 function ctor(k,a){
@@ -96,8 +170,9 @@ function project(k,x){
 }
 function matcher1(name,arm){return fn(1,([x])=>{const a=project(name,x);return a.length?jump(arm(),a):arm()})}
 // Prebind a selected literal arm while preserving apply's field-copy behavior.
-function matcher1p(name,count,arity,make){return fn(1,([x])=>{
+function matcher1p(name,count,arity,make){return fn(1,exactCode(([x],entered)=>{
   const p=project(name,x),n=p.length,c=make();
+  if(!entered)return n?jump(fn(arity,c),p):fn(arity,c);
   if(n!==count)return n?jump(fn(arity,c),p):fn(arity,c);
   const b=p.slice();
   if(b.length===arity)return c.call(null,b);
@@ -105,7 +180,7 @@ function matcher1p(name,count,arity,make){return fn(1,([x])=>{
   let r=c.call(null,b.slice(0,arity));
   if(b.length>arity)r=jump(force(r),b.slice(arity));
   return r;
-})}
+},true))}
 function literal(s){
   if(s==='null')return null;
   if(s[0]==='"')return decodeString(s.slice(1,-1));

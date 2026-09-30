@@ -44,6 +44,7 @@
     "src/back/js/u32.bend",
     "src/back/js/arm.bend",
     "src/back/js/primitive.bend",
+    "src/back/js/region.bend",
     "src/back/js/worker.bend",
     "src/back/js/emit.bend",
     "src/back/native/ir.bend",

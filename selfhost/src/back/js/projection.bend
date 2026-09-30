@@ -61,5 +61,9 @@ def j_l_global_worker(
   +t: KTerm,
   +worker: String,
 ) -> String:
-  "G[" ++ j_quote(dn(d)) ++ "]=" ++ kc(String, Bool.not(String.eq(worker, "")), u => worker,
-    u => kc(String, (String.eq(tg(j_strip(t)), "Lam") || String.eq(tg(j_strip(t)), "Mat")), u => j_expr(book, Nil{}, t, dt(d), False{}), u => "fn(0,function(){return " ++ j_expr(book, Nil{}, t, dt(d), True{}) ++ ";})")) ++ ";\n"
+  "G[" ++ j_quote(dn(d)) ++ "]=" ++ j_l_capture_scalar(book, d, kc(String, Bool.not(String.eq(worker, "")), u => worker,
+    u => kc(String, (String.eq(tg(j_strip(t)), "Lam") || String.eq(tg(j_strip(t)), "Mat")), u => j_expr(book, Nil{}, t, dt(d), False{}), u => "fn(0,function(){return " ++ j_expr(book, Nil{}, t, dt(d), True{}) ++ ";})"))) ++ ";\n"
+
+@unsafe
+def j_l_capture_scalar(+book: List<&2,KDef>, +d: KDef, +code: String) -> String:
+  kc(String, j_region_capture_eligible(book, d), u => "scalarCapture(" ++ j_quote(dn(d)) ++ "," ++ code ++ ")", u => code)

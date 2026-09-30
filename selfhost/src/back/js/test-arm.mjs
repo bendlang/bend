@@ -9,6 +9,8 @@ import {pathToFileURL} from 'node:url';
 const [configFile,outArgument]=process.argv.slice(2);
 assert.ok(configFile&&outArgument,'usage: test-arm.mjs CONFIG NEW_OUT');
 const config=JSON.parse(fs.readFileSync(configFile)),candidate=config.candidate??config,out=path.resolve(outArgument);
+const expectExactArms=config.expectExactArms??false;
+assert.equal(typeof expectExactArms,'boolean');
 fs.mkdirSync(out);
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const identity=file=>({file:fs.realpathSync(file),sha256:sha(fs.readFileSync(file))});
@@ -41,12 +43,17 @@ try{
     def('captured',lam(90,mat('ArmRec',arm(ctr('ArmCap',[90,1,2,3,4].map(variable))))),all(90,nat,all(80,record,all(81,nat,all(82,nat,out5))))),
     def('lateEffect',mat('ArmRec',arm(app(ref('tick'),variable(4)))),all(80,record,all(81,nat,all(82,nat,nat)))),
     def('tick',t('Absent'),all(900,nat,nat)),
+    def('functionIdentity',t('Absent'),all(902,fnType,fnType)),
     def('factory',t('Absent'),all(901,nat,armType)),
     def('effectfulArm',mat('ArmRec',app(ref('factory'),ctr('Zero',[]))),directType),
     def('erased',mat('ArmEr',arm()),all(80,erasedRecord,all(81,nat,all(82,nat,out4)))),
     def('etaShort',mat('ArmFun',lam(1,variable(1))),all(80,recordFn,nat)),
     def('functionResult',mat('ArmFun',lam(1,lam(2,lam(3,variable(1))))),all(80,recordFn,all(81,nat,fnType))),
     def('equalArity',mat('ArmRec',lam(1,lam(2,ctr('ArmPairOut',[variable(1),variable(2)])))),all(80,record,out2)),
+    def('equalAnnotated',mat('ArmRec',t('Ann','',[lam(1,lam(2,ctr('ArmPairOut',[variable(1),variable(2)]))),telescope([1,2],[nat,nat],out2)])),all(80,record,out2)),
+    def('equalCaptured',lam(90,mat('ArmRec',lam(1,lam(2,ctr('ArmPairOut',[variable(90),variable(2)]))))),all(90,nat,all(80,record,out2))),
+    def('equalFunction',mat('ArmFun',lam(1,lam(2,app(ref('functionIdentity'),variable(1))))),all(80,recordFn,fnType)),
+    def('equalEffect',mat('ArmRec',lam(1,lam(2,app(ref('tick'),variable(2))))),all(80,record,nat)),
     def('zeroFields',mat('ArmZ',lam(3,lam(4,ctr('ArmPairOut',[variable(3),variable(4)])))),all(80,zeroRecord,all(81,nat,all(82,nat,out2)))),
   ];
   const liftIds=Array.from({length:35},(_,i)=>200+i),liftBody=liftIds.reduceRight((rest,id)=>lam(id,rest),variable(200));
@@ -61,7 +68,7 @@ try{
   const note=(name,value)=>report.observations.push({name,value});
   const equal=(name,actual,expected)=>{assert.deepEqual(actual,expected,name);note(name,actual);};
   const expectError=(name,run,message)=>{let error;try{run();}catch(e){error=e;}assert.ok(error,name+' must throw');if(message)assert.equal(error.message,message);const value={name:error.name,message:error.message};note(name,value);return value;};
-  for(const name of ['direct','annotated','captured','lateEffect','effectfulArm','erased','etaShort','functionResult','equalArity','zeroFields','lifted']){
+  for(const name of ['direct','annotated','captured','lateEffect','effectfulArm','erased','etaShort','functionResult','equalArity','equalAnnotated','equalCaptured','equalFunction','equalEffect','zeroFields','lifted']){
     assert.equal(G[name].arity,1,name+' preserves public matcher/leading-lambda arity');
     const statement=program.split('\n').find(line=>line.startsWith('G['+JSON.stringify(name)+']='));
     assert.ok(statement,name+' emitted assignment');
@@ -131,11 +138,53 @@ try{
     const vector={length:2,slice(){return copied}};
     equal('changing-copied-length-result',a.direct(recordValue(vector)),output([353n,359n,367n,373n]));equal('changing-copied-length-trace',trace,[['length',3],['length',4],['length',4],['length',1]]);
   }
+  // Keep the historical transcript stable; fresh runs compare these additional
+  // exact-saturation observations separately when their baseline contains them.
+  report.exactObservations=[];
+  const exact=(name,actual,expected)=>{assert.deepEqual(actual,expected,name);report.exactObservations.push({name,value:actual});};
+  const pair=values=>({$:'ArmPairOut',a:values});
+  exact('annotated-exact',a.equalAnnotated(recordValue([379n,383n])),pair([379n,383n]));
+  const capturedExact=a.equalCaptured(389n);
+  exact('captured-exact',call(capturedExact,[recordValue([397n,401n])]),pair([389n,401n]));
+  const functionCalls=[],exactFunction=host(1,([x])=>{functionCalls.push(x);return x+1n;});
+  G.functionIdentity=host(1,([f])=>f);
+  assert.equal(a.equalFunction({$:'ArmFun',a:[exactFunction,409n]}),exactFunction);
+  exact('function-return-not-forced',functionCalls,[]);
+  exact('function-result-overapply',a.equalFunction({$:'ArmFun',a:[exactFunction,419n,421n]}),422n);
+  exact('function-result-called-once',functionCalls,[421n]);
+  for(const count of [0,1,2]){
+    const values=Array.from({length:count},(_,i)=>BigInt(431+i));
+    const got=a.equalArity(recordValue(values));
+    if(count<2){exact('exact-short-'+count+'-arity',got.arity,2);exact('exact-short-'+count+'-bound',got.bound,values);exact('exact-short-'+count+'-completion',call(got,Array(2-count).fill(439n)),pair([...values,...Array(2-count).fill(439n)]));}
+    else exact('exact-two-fields',got,pair(values));
+  }
+  for(const count of [0,1,2]){
+    const trace=[],values=Array.from({length:count},(_,i)=>BigInt(443+i));
+    const supplied={get length(){trace.push('length');return 2},slice(){trace.push('slice');return values;}};
+    const got=a.equalArity(recordValue(supplied));
+    if(count<2){assert.equal(got.bound,values);exact('exact-copy-'+count+'-completion',call(got,Array(2-count).fill(449n)),pair([...values,...Array(2-count).fill(449n)]));}
+    else exact('exact-copy-two',got,pair(values));
+    exact('exact-copy-'+count+'-trace',trace,['length','slice']);
+  }
+  {
+    const trace=[];G.tick=host(1,([x])=>{trace.push(['tick',x]);return x;});
+    const lengths=[3,2,2,1];
+    const copied=new Proxy([457n,461n],{get(target,key,receiver){if(key==='length'){const n=lengths.shift()??2;trace.push(['length',n]);return n}return Reflect.get(target,key,receiver)}});
+    const supplied={length:2,slice(){trace.push('slice');return copied;}};
+    exact('exact-changing-copy-result',a.equalEffect(recordValue(supplied)),461n);
+    exact('exact-changing-copy-order',trace,['slice',['length',3],['length',2],['length',2],['length',1],['tick',461n]]);
+  }
+  {
+    const trace=[],fields=[];Object.defineProperty(fields,0,{get(){trace.push(0);return 463n}});Object.defineProperty(fields,1,{get(){trace.push(1);throw Error('exact-field-sentinel')}});
+    let message;try{a.equalArity(recordValue(fields));}catch(e){message=e.message;}
+    exact('exact-field-error',message,'exact-field-sentinel');exact('exact-field-read-order',trace,[0,1]);
+  }
   if(config.expectPrebinding!==undefined){
     for(const name of ['direct','annotated','captured','lateEffect','functionResult'])assert.equal(report.emission.find(x=>x.name===name).prebound,config.expectPrebinding,name+' lowering expectation');
-    for(const name of ['effectfulArm','erased','etaShort','equalArity','zeroFields','lifted'])assert.equal(report.emission.find(x=>x.name===name).prebound,false,name+' must use fallback');
+    for(const name of ['effectfulArm','erased','etaShort','zeroFields','lifted'])assert.equal(report.emission.find(x=>x.name===name).prebound,false,name+' must use fallback');
   }
-  if(config.baseline){const old=JSON.parse(fs.readFileSync(config.baseline));assert.ok(old.complete&&old.pass);assert.deepEqual(JSON.parse(json(report.observations)),old.observations,'Baseline descriptor/output/effect/read transcript');report.baseline=identity(config.baseline);}
+  for(const name of ['equalArity','equalAnnotated','equalCaptured','equalFunction','equalEffect'])assert.equal(report.emission.find(x=>x.name===name).prebound,expectExactArms,name+' exact lowering expectation');
+  if(config.baseline){const old=JSON.parse(fs.readFileSync(config.baseline));assert.ok(old.complete&&old.pass);assert.deepEqual(JSON.parse(json(report.observations)),old.observations,'Baseline descriptor/output/effect/read transcript');if(old.exactObservations)assert.deepEqual(JSON.parse(json(report.exactObservations)),old.exactObservations,'Baseline exact-arm transcript');report.baseline=identity(config.baseline);}
   report.changedInputs=report.inputs.filter(x=>identity(x.file).sha256!==x.sha256);assert.deepEqual(report.changedInputs,[]);report.complete=true;report.pass=true;
 }catch(error){report.error=error.stack??String(error);process.exitCode=1;}
 save(path.join(out,'report.json'),report);console.log(json({complete:report.complete,pass:report.pass,observations:report.observations.length,emission:report.emission,error:report.error}));

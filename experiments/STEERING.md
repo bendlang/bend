@@ -13,6 +13,15 @@ private direct calls on a small edit-distance row, independently challenge
 semantics, then generalize only measured wins. Coordinate all clean CPU3 timings
 through the lead. Phase29 remains installed until a reviewed candidate passes.
 
+Attempt07 now passes focused gates and independent region/entry/ABI controls;
+it includes owned argument vectors, pure scalar regions, literal native shifts,
+and corrections to inherited loop/prebinding scheduling. Actual output timing
+and broad integration are next. Exact-arm widening is rejected; per-call array
+guards regress; Number counters are deferred. The literal-shift prototype wins
+4.024× over the same private region, which is not yet an installed compiler claim.
+See [checkpoint](../implementation/phase30/compiler-checkpoint.md). Next bounded
+investigation is terminal scalar-record results plus nested pure Nat helpers.
+
 ## Released frontier
 
 API 10510efd, genuine checked parent 37218b8a, guarded profile 6, source 191df20c;

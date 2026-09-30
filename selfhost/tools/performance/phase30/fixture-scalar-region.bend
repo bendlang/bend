@@ -1,15 +1,6 @@
 import Base
-# A different, forward-declared scalar closure. Boolean matching precedes live
+# A different scalar closure. Boolean matching precedes live
 # branch-specific lambda binders; private-call let results must retain types.
-def countdown(n: Nat, +x: U32, +flag: Bool) -> U32:
-  match n:
-    case 0n:
-      U32.add(x, boolword(flag))
-    case 1n+p:
-      +y = choose(flag, x, U32.xor(x, 2654435761))
-      +z = advance(y)
-      countdown(p, z, U32.is_lt(y, z))
-
 def choose(flag: Bool, +a: U32, +b: U32) -> U32:
   match flag:
     case True{}:
@@ -28,7 +19,16 @@ def boolword(flag: Bool) -> U32:
     case False{}:
       19
 
-def bench(n: U32, seed: U32) -> U32:
+def countdown(n: Nat, +x: U32, +flag: Bool) -> U32:
+  match n:
+    case 0n:
+      U32.add(x, boolword(flag))
+    case 1n+p:
+      +y = choose(flag, x, U32.xor(x, 2654435761))
+      +z = advance(y)
+      countdown(p, z, U32.is_lt(y, z))
+
+def bench(n: U32, +seed: U32) -> U32:
   countdown(U32.to_nat(n), seed, U32.is_zero(U32.and(seed, 1)))
 
 # Scalar result alone is not purity: the call graph below is cyclic and must

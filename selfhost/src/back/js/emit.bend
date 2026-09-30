@@ -222,7 +222,16 @@ law j_expr:
 
 @unsafe
 def j_expr(book, env, t, ty, tail):
-  kc(String, (String.eq(tg(t), "Lam") || String.eq(tg(t), "Mat")) && Bool.not(String.eq(j_l_name(t), "")), u => "F[" ++ j_quote(j_l_name(t)) ++ "](" ++ j_l_capture(env, Nil{}) ++ ")", u => j_expr_on(book, env, t, ty, tail, tg(t)))
+  kc(String, (String.eq(tg(t), "Lam") || String.eq(tg(t), "Mat")) && Bool.not(String.eq(j_l_name(t), "")), u => "F[" ++ j_quote(j_l_name(t)) ++ "](" ++ j_l_capture(env, Nil{}) ++ ")", u => j_expr_private(book, env, t, ty, tail))
+
+# Private nodes are created only by the bounded scalar-region plan. Ordinary
+# types, arithmetic, arguments and parallel lets retain their shared emitter.
+@unsafe
+def j_expr_private(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +tail: Bool) -> String:
+  kc(String, String.eq(tg(t), "JSlot"), u => "$p" ++ U32.show(ix(t)), u =>
+  kc(String, String.eq(tg(t), "JCall"), u => "$R[" ++ j_quote(nm(t)) ++ "](" ++ j_apply_args(book, env, ks(t), dt(lookup(book, nm(t)))) ++ ")", u =>
+  kc(String, String.eq(tg(t), "JIf"), u => "(" ++ j_expr(book, env, kid(t, 0), kt("ADT", "Bool", 0, 0, Nil{}), False{}) ++ "?" ++
+    j_expr(book, env, kid(t, 1), ty, tail) ++ ":" ++ j_expr(book, env, kid(t, 2), ty, tail) ++ ")", u => j_expr_on(book, env, t, ty, tail, tg(t)))))
 
 law j_expr_on:
   for +book: List<&2, KDef>
