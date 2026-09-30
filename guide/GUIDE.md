@@ -330,7 +330,6 @@ that has a proof in Lean: it prints ALL PROOFS CHECK only when every def outside
 Base is a valid proof, which bend2 and the kernel both accept, and which relies
 on no `@unsafe` or foreign code. `-o PROOF.bendtt` writes the translation the
 kernel reads; the translation has no proof, so read it to confirm a law.
-Kernel labels distinguish source names from literal escape spellings.
 
 Bend has no tactics: a proposition is a type, and a proof is a def of that type.
 `{a == b : T}` is an equality; `{==}` proves it when both sides compute to the
@@ -525,6 +524,7 @@ characters: `U32.show` needs no module. A module's path is plain names
 (letters, digits, `_` and `-`): `math.bend` is a module, `math.extra.bend` is
 refused. A law left open in one file may be filled in another as
 `def M.name(..)`, so a proof can ship separately from its claim.
+Kernel labels distinguish source names from literal escape spellings.
 `import 0x<hash>/main.bend as P` imports a package by content hash, fetched
 from the hub and checked against it; `bend main.bend --publish` uploads a file
 with everything it imports and prints that line.
