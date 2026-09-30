@@ -169,11 +169,6 @@ function project(k,x){
   return (constructors[k]??[]).map(name=>x[name]);
 }
 function matcher1(name,arm){return fn(1,([x])=>{const a=project(name,x);return a.length?jump(arm(),a):arm()})}
-// Preserve delayed field application for selected literal arms.
-function matcher1p(name,count,arity,make){return fn(1,([x])=>{
-  const p=project(name,x),n=p.length,c=make();
-  return n?jump(fn(arity,c),p):fn(arity,c);
-})}
 function literal(s){
   if(s==='null')return null;
   if(s[0]==='"')return decodeString(s.slice(1,-1));

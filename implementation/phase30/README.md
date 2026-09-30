@@ -4,8 +4,8 @@ Agent-generated ongoing campaign, started2026-09-30 07:28 UTC. The user requeste
 at least seven hours of work. This is an in-progress evidence index, not a claim
 of a completed optimization or released compiler.
 
-The frozen measurement candidate is checked attempt14, committed through
-[b783a53](https://github.com/rom1504/bend/commit/b783a53). The
+The selected candidate is checked attempt16, following the held14 matrix and
+the checked15 runtime repair at[4e5b7fe](https://github.com/rom1504/bend/commit/4e5b7fe). The
 [consolidated report](generated-program-performance.md) records its source,
 mechanisms and current release status; the [decision table](decisions.md)
 separates promoted, deferred and rejected experiments.
@@ -13,23 +13,32 @@ separates promoted, deferred and rejected experiments.
 It adds owned fresh argument vectors, exact private entry, constant scalar
 shifts, lexical scalar regions, terminal records, ordinary roots, a bounded
 private scalar tree, reused traversal frames and private-helper Let statements.
-Phase29 remains installed. **Release14 is on hold:** the broader matrix finds
-roughly20–25% regressions on several generic workloads, despite the large scalar
-gain. Runtime ablations are isolating that shared cost before release.
+**14 was held:** the broader matrix found roughly20–25% regressions on several
+generic workloads despite the large scalar gain. The seven-way confirmation
+isolated constructor-matcher overhead: delayed application cuts row time26.29%
+and recovers Phase29 speed. Checked16 also removes64 implementation lines,
+eight functions and the obsolete arm-prebinding module. The distribution API
+still contains Phase29; the consolidated default awaits installation and CLI
+validation after the remaining16 gates.
 
 The actual13→14 longer-warm comparison on original small Mandelbrot confirms
 **0.246549→0.215416 ms, 1.1445× faster**, with all timed halves within0.91%.
 Pinned TypeScript is **0.0456132 ms**, leaving **4.723×** in that same window.
 Earlier incremental gains and their different scopes remain in the reports;
-they must not be multiplied. The final ten-program comparison is running.
+they must not be multiplied. Held14's complete matrix remains preserved;
+the renewed16 timing plans are frozen and await the clean measurement slot.
 
-All ten original libraries compile and produce their checked results. Fresh14
+All ten original libraries compile and produce their checked results. Fresh16
 also passes the focused, selected upstream, primitive/worker,23-library,
 compiler-component and HVM integration scopes. Whole frontend renewal,
-compiler-cost measurements and installation are pending.
+renewed16 timings, bounded self-emission and installation are in progress or
+pending; no installed16 release is claimed yet.
 
 - [Actual helper measurements](checked-helper-timing.md)
 - [Original-program and compiler-cost integration measurements](final-timing.md)
+- [Renewed16 measurements](final-timing-16.md)
+- [Independent retirement of arm prebinding](retired-arm-independent-review.md)
+- [Held14 comparison figures and exact plotted data](held14-figures/report.md)
 - [Generic matcher registration investigation](partial-prebinding-registration.md)
 - [Private-helper Let statements in the checked compiler](private-let-compiler.md)
 - [Broader Let statements: deferred](general-tail-let-statements.md)

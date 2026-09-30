@@ -123,7 +123,7 @@ def j_nat_loop_region(+book: List<&2,KDef>, +d: KDef, +zero: KTerm, +succ: KTerm
 @unsafe
 def j_nat_loop_wrapper(+book: List<&2,KDef>, +d: KDef, +zero: KTerm, +total: U32, +body: String) -> String:
   "matcher(\"Zero\",()=>" ++ j_expr(book, Nil{}, zero, j_arm_type(book, wnf(book, dt(d)), "Zero"), False{}) ++ ",()=>" ++
-  "matcher1p(\"Succ\",1," ++ U32.show(total) ++ ",()=>exactCode(function(a,$entered){/* private Nat loop */" ++ j_nat_loop_slots(total, 0) ++ body ++ "})))"
+  "matcher1(\"Succ\",()=>fn(" ++ U32.show(total) ++ ",exactCode(function(a,$entered){/* private Nat loop */" ++ j_nat_loop_slots(total, 0) ++ body ++ "}))))"
 
 # The fallback has the original generic self call and delayed result. Reuse the
 # slots read at entry, including observable getters, without entering a loop.

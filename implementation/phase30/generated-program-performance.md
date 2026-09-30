@@ -92,42 +92,61 @@ of a genuine checked B1; this campaign makes no new self-hosted fixed-point clai
    This is a methodological lesson from the held candidate, not yet a causal
    attribution to one dispatch operation.
 
-## Frozen candidate and complexity
+## Candidate history and complexity
 
-**Release hold:** the ten-program integration measurement found a common
-roughly20–25% regression on several generic workloads. Checked attempt14 remains
-the frozen measurement candidate, not an approved release. Phase29 remains the
-installed default. Separate runtime ablations are investigating ordinary exact
-dispatch and registered constructor matchers before any installation decision.
+**Held14:** the ten-program integration measurement found a common roughly20–25%
+regression on several generic workloads. Checked attempt14 was not released.
 Its final source change is committed
 at [b783a53](https://github.com/rom1504/bend/commit/b783a53), after the preceding
 owned-vector, scalar-region, terminal-record, ordinary-root, tree and frame
 checkpoints. The broader generic Let and fixed-list guard experiments did not
 meet their promotion conditions. They remain reproducible experiments.
 
+The seven-way row confirmation then isolated the constructor-matcher cost.
+Restoring delayed arm application reduces14's0.606265 ms to0.446850 ms,26.29%
+less time, overlapping Phase29's0.450682 ms range. Merely fusing the wrapper gives
+2.32%; removing reflected method checks gives9.68%; moving ordinary dispatch
+back into apply gives no established gain. These are independent interventions,
+not additive factors. The [attribution report](generic-runtime-row-diagnosis.md)
+retains all samples and the preceding unstable short screen.
+
+Checked15 integrates only the winning runtime change at
+[4e5b7fe](https://github.com/rom1504/bend/commit/4e5b7fe), with exact emitted-module
+correspondence to the experiment apart from one explanatory comment. Checked16
+then removes the redundant arm-prebinding recognizer and runtime bridge:64
+implementation lines, eight Bend functions and one module. Independent complete
+generated-AST comparisons, public callable/registration checks and retained arm
+semantics pass. This simplification does not add another admission policy.
+
+Attempt16 is the selected candidate for renewed measurements and release gates.
+The table below identifies16; held14 keeps its own immutable records and figures.
+The distribution API still contains Phase29 while the working source/runtime are
+under development. A verified consolidated default is not claimed until the
+final installation and CLI checks complete.
+
 | Identity | SHA256 |
 | --- | --- |
-| Selected API | `ade96ba48b05ba116430f57e433d8fbdbd76646b61f5e9d53cf34a4c4a9da76d` |
-| Genuine checked parent | `cb2a5555e8ad6afc51e3bc778242e26334f11c40b720028650b8b4c0525f2deb` |
-| Assembled compiler source | `223331981f58cc412f5c4bbc120dd3e8322bac1cfa2b3047536317ad15e43f55` |
-| JS runtime | `a3547a8854b45c65fd804f106868dc28540118b611d85fe99ba0e3d199c66ef0` |
+| Selected API | `33545640e25beffb61639b27f4815aaeb345fda14758e1d63418cd1d0ccc0637` |
+| Genuine checked parent | `60aa968ffcedb7a02a220b58a51396dd036d0d8b1f39f1b3def3f6b4248d6469` |
+| Assembled compiler source | `678bafd61cff715c3ee2012ef3840ddfe99a2aeb1d81b5345fb3c6e6bfc1757e` |
+| JS runtime | `fab241aefeb2ad1626d7079a3b798eb163207cd38b3e0d80318941a01f8255f1` |
 | Pinned Base | `c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661` |
-| Guarded profile6 derivation | `3af1a57e86cb1813638dc615dbca69dbcab7c0efc807ca70046a8ecef705e1fa` |
 
 Canonical source counts come from the explicit `src/compiler.json` module list,
 not a recursive glob that includes unused/generated source files.
 
-| Bend compiler source | Phase29 start | Attempt14 | Change |
-| --- | ---: | ---: | ---: |
-| Physical lines | 16,207 | 16,836 | +629 (+3.88%) |
-| Nonblank lines | 13,839 | 14,377 | +538 |
-| Bytes | 612,128 | 649,526 | +37,398 |
-| Definitions | 1,762 | 1,852 | +90 |
-| Laws | 640 | 640 | 0 |
-| Types | 68 | 70 | +2 |
-| Manifest modules | 64 | 66 | +2 |
+| Bend compiler source | Phase29 start | Held14 | Candidate16 | Net change |
+| --- | ---: | ---: | ---: | ---: |
+| Physical lines | 16,207 | 16,836 | 16,778 | +571 (+3.52%) |
+| Nonblank lines | 13,839 | 14,377 | 14,327 | +488 |
+| Bytes | 612,128 | 649,526 | 646,310 | +34,182 |
+| Definitions | 1,762 | 1,852 | 1,844 | +82 |
+| Laws | 640 | 640 | 640 | 0 |
+| Types | 68 | 70 | 70 | +2 |
+| Manifest modules | 64 | 66 | 65 | +1 |
 
-The two new analysis records and two modules contain the region and tree rules.
+The two new analysis records and two modules contain the region and tree rules;
+removing the old arm module leaves one net added module.
 Three emitter-only KTerm labels express private slots, calls and branches; they
 are not parser/checker constructs. The runtime adds fresh-vector entry, exact
 invocation permission and live scalar dependency guards. Public records, arrays
@@ -135,22 +154,24 @@ and numbers keep one representation. Tools, reports, tests and the generated
 runtime bundle are separate from the canonical Bend count. This is a performance
 phase with a source-size increase, not a line-reduction result.
 
-Outside that Bend count, maintained `runtime/js/core.mjs` grows from167 to245
-physical lines (+78); the generated concatenated runtime is not counted again.
+Outside that Bend count, maintained `runtime/js/core.mjs` grows from167 to233
+physical lines (+66), after reaching245 in held14. The generated concatenated
+runtime is not counted again.
 The bounded bootstrap diagnostic wrapper grows from29 to58 lines, and the
 checked-derivation tool from328 to338 lines. Experimental tools and evidence
 are retained for reproduction rather than included in the compiler-size total.
 
-Fresh final14 integration passes the 36 build controls, 15 selected upstream JS
+Fresh16 integration passes the 36 build controls, 15 selected upstream JS
 probes, maintained primitive/worker suites, 23 libraries / 127 points, 22 compiler
 component observations and the complete HVM stdout. All ten original outputs
-pass; nine emitted modules are byte-identical to13, while Mandelbrot contains
-only the independently reconstructed private-helper changes. These scopes
+pass. The row, scalar helper and original Mandelbrot also have independent15→16
+complete generated-AST correspondence after only the specified matcher rewrite,
+with final private-worker registration retained. These scopes
 overlap and are not a sum of distinct conformance tests.
 
 ## Release and evidence status
 
-The in-progress transfer window already establishes that the scalar result is
+The completed held14 transfer window establishes that the scalar result is
 not representative of all generated code. Original Mandelbrot measures
 21.473750 ms with Phase29 versus0.220591 ms with14, a97.35-fold improvement;
 pinned TypeScript measures0.045687 ms, leaving4.83-fold overhead. In the same

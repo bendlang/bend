@@ -1,6 +1,62 @@
-# Final candidate14 selected integration
+# Final candidate16 selected integration
 
-The final maintained candidate is checked **attempt14**. It passes a fresh
+Checked **attempt16** is the selected compiler after the runtime regression
+repair and removal of unused constructor-arm prebinding. It passes fresh final
+integration gates. Earlier14 and12 results remain historical below; they are not
+reused as fresh16 execution evidence. The [independent cleanup review](retired-arm-independent-review.md)
+records the complete emitted-AST proof, public/entry controls and64-line reduction.
+The [runtime investigation](partial-prebinding-registration.md) retains the seven-way
+regression comparison and original-matcher semantic reference.
+
+| Selected artifact | SHA-256 |
+| --- | --- |
+| Attempt16 manifest | `4560e31fb1dd3afc7b38656fb890ea6f0b63928d0663dbae285df1642623c74e` |
+| Equality-derived checked API | `33545640e25beffb61639b27f4815aaeb345fda14758e1d63418cd1d0ccc0637` |
+| Frozen runtime | `fab241aefeb2ad1626d7079a3b798eb163207cd38b3e0d80318941a01f8255f1` |
+| Pinned Base | `c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661` |
+| Immutable integration plan | `c5b145f281604a61b6bafc9bcd672f0bb0b727043d54044e8e3b256bc567a48b` |
+
+Fresh receipts are under `selfhost/build/phase30/final-integration-plan-16/`.
+The independent reviewer executed the15 selected upstream JS probes onCPU4,
+then released their shared fixture paths before the frontend renewal started.
+The remaining seven gates ran serially onCPU1, concurrently with disjoint
+frontend correctness work onCPU4–7. The CPU rebinding is retained at
+`final-cpu1-tools16/derive.json`; tests, expected results and deadlines are
+unchanged. Both `gate-launch-cpu4/report.json` and
+`gate-launch-cpu1/report.json` are complete/pass, and all frozen plan inputs
+were reverified after their runs.
+
+| Fresh final16 gate | Result | Receipt directory |
+| --- | --- | --- |
+| Selected upstream JS execution |15/15 pass on both sides; zero exact differences |`upstream` |
+| Scalar primitive oracle |56,205 scalar checks;58 additional observation rows pass |`primitive/comparison` |
+| Native worker oracle |3,759 scalar checks and14 observation rows pass |`worker/comparison` |
+| Nested-worker oracle |144 checks pass |`nested/comparison` |
+| Primitive admission/refusal |1,129 guards and25 execution observations pass |`primitive-guards/comparison` |
+| Worker admission/refusal |40 guards and2 execution observations pass |`worker-admission` |
+| Checked library corpus |23 libraries and127 complete points pass |`corpus` |
+| Real compiler membership component |22 complete observations pass |`component` |
+| Whole HVM5 program |Exact complete stdout and empty stderr |`hvm` |
+
+HVM stdout remains exactly:
+
+```text
+&S{#0{()},#1{()}}
+- Itrs: 79 interactions
+```
+
+The selected-JS gate took40.399 seconds outer. The remaining seven steps took
+242.721 seconds combined, including192.346 seconds for the corpus and14.194
+seconds for component/HVM. These are descriptive validation costs under
+concurrent correctness activity, not compiler-throughput or generated-runtime
+comparisons. The prototype owner separately acquired all ten original programs
+on16; their controlled timing, broader frontend/backend renewal, bounded B1→H
+experiment and installation are reported separately. Passing these selected
+gates does not imply full backend conformance or self-reproduction.
+
+## Historical candidate14 acquisition
+
+At this earlier checkpoint, the selected candidate was checked **attempt14**. It passes a fresh
 complete rerun of the selected integration gates below. Candidate12's earlier
 acquisition remains recorded separately later in this file and is not relabeled
 as candidate14 evidence. The guard fixed-list and general tail-Let experiments

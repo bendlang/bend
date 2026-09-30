@@ -40,8 +40,8 @@ The bootstrap-only integration tests use `build/js-backend.mjs`, built with
 `src/core/normalize.bend`, `src/core/pretty.bend`, `src/back/js/foreign.bend`,
 `src/back/js/literals.bend`, `src/back/js/validate.bend`,
 `src/back/js/choice.bend`, `src/back/js/projection.bend`,
-`src/back/js/u32.bend`, `src/back/js/arm.bend`, `src/back/js/primitive.bend`,
-`src/back/js/worker.bend`, and `src/back/js/emit.bend`, then
+`src/back/js/u32.bend`, `src/back/js/primitive.bend`, `src/back/js/region.bend`,
+`src/back/js/worker.bend`, `src/back/js/tree.bend`, and `src/back/js/emit.bend`, then
 `tools/stage0-library.mjs` exporting `j_program j_expr j_descriptor j_library
 j_modules j_compile_error j_io_type book_cached j_layout_error`. Run `node src/back/js/test.mjs`,
 `node src/back/js/test-foreign.mjs`, and `node src/back/js/test-validation.mjs`
@@ -156,14 +156,15 @@ matcher still completes before evaluating later curried arguments.
 `test-global-initializers.mjs` and `test.mjs` cover deferred arms, live global
 references, computed matcher effects and intermediate-error ordering.
 
-`arm.bend` recognizes a single remaining constructor whose literal, unlifted
-lambda arm has more leading slots than live fields. `matcher1p` prebinds those
-fields into the original partial descriptor, avoiding one intermediate function
-record, generic application and bounce. Outer arity, code body/name, captures,
-null environment, field-copy schedule and later-argument demand are unchanged.
-Unknown, erased, zero-field, lifted, eta-short and exact-saturation cases retain
-`matcher1`. The runtime preserves generic mismatch and post-slice saturation
-branches, including trusted foreign getters/custom slice results.
+Single-constructor matches use `matcher1` and an ordinary delayed arm factory.
+Projection and the first field-length read precede arm construction; generic
+application owns field copying, partial descriptors, saturation and later demand.
+Nat loop/tree wrappers use the same matcher and retain exact-entry permission
+only for the final private worker callback. Phase30 retired the separate arm
+prebinding recognizer and runtime helper after entry-registration overhead
+regressed generic workloads. The generic path also restores original observable
+application hooks. See the [retirement design](../../../../design/phase30/retire-arm-prebinding.md)
+and [runtime attribution](../../../../implementation/phase30/generic-runtime-row-diagnosis.md).
 
 `test-arm.mjs` checks72 matching descriptor/effect/output observations against a
 baseline through actual `j_library` emission. It uses synthetic KDefs; ordinary
