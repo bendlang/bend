@@ -1,4 +1,12 @@
-# Current compiler experiment strategy
+# Phase32 current work
+
+User authorizes design, experiments, implementation, report and commit/push.
+[Current design](../design/phase32/representation-and-reuse.md), [report](../implementation/phase32/README.md).
+Four independent investigations are active; root owns production emitter and release.
+Clean timing windows are serialized. No PR comment is authorized.
+Starting103 unrelated files remain unchanged and unstaged.
+
+# Preserved Phase31 baseline
 
 Phase31 is consolidated on2026-09-30. User authorization covers compiler
 research, experiments, implementation, design/report and commit/push to

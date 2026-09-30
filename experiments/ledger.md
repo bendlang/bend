@@ -2142,3 +2142,8 @@ No PR comment was posted. Next: isolate statement unpacking, then private
 producer/consumer tuple fusion; their gains are unmeasured. H17 profiling rules
 out another ABI cache as the leading target for its measured request, while
 Zig research motivates measured representation and reuse boundaries.
+
+
+## Phase32 — representation and reuse
+
+User authorizes all four next investigations. [Design](../design/phase32/representation-and-reuse.md) freezes scope and correctness boundaries before code changes. Baseline is installed Phase31 checked07 at5f3015d. P32-001 through004 separately investigate local temporaries, structured checker calls, semantic reuse and compact analysis. No timing or promotion yet.
