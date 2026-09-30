@@ -1,6 +1,6 @@
-# a λ that copies its variable goes to BendTT as a λ+, and converts with
-# the plain λ of the η-long abstract f it is compared with, under a call
-# stuck on m: the kernel compares λs by liveness, not by quantity
+# a copying λ (a λ+) converts with the plain λ of the η-long abstract f
+# it instantiates, under a call stuck on m; a λ that uses its variable
+# once is a plain λ already
 import Base
 
 def apply(m: Maybe<&2, Nat>, f: Nat -> Nat) -> Nat:

@@ -163,8 +163,7 @@ def Quan.kind : Quan → Quan → Quan
   | Q1, g => g
   | Q2, _ => Q2
 
--- a λ's quantity in conversion: a λ+ copies its argument, which is how
--- it runs, not what it is, so it converts as a λ
+-- the quantity a λ converts at: q=2 only says how it runs (it copies)
 def Quan.lin : Quan → Quan
   | Q2 => Q1
   | q  => q
@@ -1345,7 +1344,7 @@ def Book.Closed (bk : Book) : Prop :=
   ∀ k d, Book.get bk k = some d → Term.Closed d.v
 
 -- δ unfolds only a closed body, so Par commutes with substitution; a
--- λ+ reduces to a λ (Quan.lin), never back, so reduction keeps types
+-- λ+ steps to a λ and never back, so a step keeps types
 inductive Par (bk : Book) : Term → Term → Prop
   | var   : Par bk (Var i) (Var i)
   | ref   : Par bk (Ref k) (Ref k)
@@ -1714,11 +1713,12 @@ noncomputable def Term.dev (bk : Book) : Term → Term
   | Rwt e P f => Rwt (Term.dev bk e) (Term.dev bk P) (Term.dev bk f)
   | t => t
 
--- a λ+ reduces to a λ: its binder keeps its liveness and needs no Data
+-- a λ+ stepped to a λ keeps its liveness and needs no Data
 theorem lin_live : (Quan.lin q).live = q.live := by cases q <;> rfl
 
 theorem lin_ne : Quan.lin q ≠ Q2 := by cases q <;> nofun
 
+-- the triangle, on a λ's quantity
 theorem lin_step {p q : Quan} : p = q ∨ p = q.lin → q.lin = p ∨ q.lin = p.lin := by
   cases p <;> cases q <;> simp [Quan.lin]
 
@@ -1968,7 +1968,7 @@ theorem fold_true {g : Nat → Term → Term → Bool × Nat} : ∀ {s},
     · exact ⟨‹_›, fun x m => (List.mem_cons.1 m).elim (· ▸ ⟨_, h1⟩) (h2 x)⟩
     · contradiction
 
--- λs whose bodies convert convert, when they convert as the same λ
+-- λs at one lin quantity convert when their bodies do
 theorem conv_lam (e : q.lin = p.lin) : Conv bk f g → Conv bk (Lam q f) (Lam p g)
   | ⟨_, h1, h2⟩ =>
     have L {q f c} (h : Pars bk f c) : Pars bk (Lam q f) (Lam q.lin c) :=
