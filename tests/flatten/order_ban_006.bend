@@ -30,7 +30,7 @@ def main():
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- message  : a match in binder order (a can't be matched after a match on a later binder or after a local statement: match a earlier, or give the value its own def)
+#|- message  : 'a' can't be matched in this position (either a match on a later binder or a local statement closed it, it was already matched, or it is a def)
 #|Location:
 #|18 |       t = Zw{}
 #|19>|       match a:

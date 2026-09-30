@@ -32,7 +32,7 @@ def main(x, y):
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- message  : a match in binder order (x can't be matched after a match on a later binder or after a local statement: match x earlier, or give the value its own def)
+#|- message  : 'x' can't be matched in this position (either a match on a later binder or a local statement closed it, it was already matched, or it is a def)
 #|Location:
 #|24 |     case T{}:
 #|25>|       match x:

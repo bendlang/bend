@@ -24,7 +24,7 @@ def main():
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- message  : a match in binder order (y can't be matched after a match on a later binder or after a local statement: match y earlier, or give the value its own def)
+#|- message  : 'y' can't be matched in this position (either a match on a later binder or a local statement closed it, it was already matched, or it is a def)
 #|Location:
 #|15 |   z = Zw{}
 #|16>|   Sw{p} = y
