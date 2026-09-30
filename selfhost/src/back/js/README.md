@@ -27,6 +27,9 @@ Prepend `src/runtime.mjs` to the output. Erased arguments/fields are null ABI
 slots and their expressions are not evaluated. Function and constructor
 metadata comes from annotations and constructor telescopes. Applications in
 tail position and returned constructor fields use the runtime trampoline.
+Non-tail applications pass their fresh literal argument vectors to internal
+`callOwned`, avoiding a redundant copy. Partial-prefix concatenation, public
+`call`, matcher fields and tail-message vectors retain their existing copying.
 Foreign JavaScript uses named
 constructor fields and curried functions; runtime marshalling converts layouts
 iteratively and preserves trusted inbound values, including opaque fields on

@@ -19,3 +19,8 @@ are checked by `src/back/js/test-foreign.mjs`.
 
 The JavaScript lane executes on one host thread. Window.open reports the same
 headless failure as upstream JavaScript; Audio uses its timed silent queue.
+
+The emitter's internal `callOwned` consumes a fresh non-tail argument vector.
+Public `call`, matcher vectors and tail messages retain copying; bound prefixes
+and oversaturation retain their existing isolation. Only compiler-created array
+literals qualify. See the [Phase30 ownership report](../../../../implementation/phase30/owned-arguments.md).

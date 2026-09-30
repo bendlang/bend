@@ -1753,3 +1753,13 @@ edits or new timings. Start at77aecb2; preserve103 unrelated files. Three agents
 independently prepare a private-call prototype, semantic counterexamples and
 paired generated-code inspection. Root owns the general implementation and
 measurement coordination. No performance result or promotion yet.
+
+### Phase30 first mechanism checkpoint
+
+Private edit-row prototype confirms1.379×; live-replacement guard version1.287×,
+with an explicitly narrower immutable-descriptor contract. Retain firstcold-path
+ordering failure and short-window drift. Owned non-tail argument vectors confirm
+1.1367× on the prior scalarfixture. Implement the latter in checkedattempt01;
+36focused/120oracle/22independent ABI observations pass. Installedrelease stays
+Phase29 pendingintegration. Separate exact-arm and once-per-scalar-loop dependency
+guard experiments are prospective. No wholecompiler or native speed claim.

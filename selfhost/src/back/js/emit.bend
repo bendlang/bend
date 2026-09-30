@@ -300,7 +300,7 @@ def j_apply_one(
   +tail: Bool,
   +fty: KTerm,
 ) -> String:
-  kc(String, tail, u => "jump(", u => "call(") ++ j_expr(book, env, kid(t, 0), fty, False{}) ++ ",[" ++ kc(String, String.eq(tg(fty), "All") && U32.is_eq(qt(fty), 0), u => "null", u => j_expr(book, env, kid(t, 1), kid(fty, 0), False{})) ++ "])"
+  kc(String, tail, u => "jump(", u => "callOwned(") ++ j_expr(book, env, kid(t, 0), fty, False{}) ++ ",[" ++ kc(String, String.eq(tg(fty), "All") && U32.is_eq(qt(fty), 0), u => "null", u => j_expr(book, env, kid(t, 1), kid(fty, 0), False{})) ++ "])"
 
 law j_call_spine:
   for +t: KTerm
@@ -335,7 +335,7 @@ law j_apply_regular:
 
 @unsafe
 def j_apply_regular(book, env, t, tail, fty, spine):
-  kc(String, String.eq(tg(spine), "Call") && U32.is_gt(terms_len(ks(spine)), 1) && U32.is_le(terms_len(ks(spine)), j_call_arity(lookup(book, nm(spine)))), u => kc(String, tail, u => "jump(", u => "call(") ++ "get(G," ++ j_quote(nm(spine)) ++ "),[" ++ j_apply_args(book, env, ks(spine), dt(lookup(book, nm(spine)))) ++ "])", u => j_apply_one(book, env, t, tail, fty))
+  kc(String, String.eq(tg(spine), "Call") && U32.is_gt(terms_len(ks(spine)), 1) && U32.is_le(terms_len(ks(spine)), j_call_arity(lookup(book, nm(spine)))), u => kc(String, tail, u => "jump(", u => "callOwned(") ++ "get(G," ++ j_quote(nm(spine)) ++ "),[" ++ j_apply_args(book, env, ks(spine), dt(lookup(book, nm(spine)))) ++ "])", u => j_apply_one(book, env, t, tail, fty))
 
 law j_call_arity:
   for +d: KDef

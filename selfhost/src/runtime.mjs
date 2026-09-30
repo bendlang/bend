@@ -30,13 +30,13 @@ function force(x){
     else{pending.pop();x=ctor(frame.node.name,frame.values)}
   }
 }
-function apply(f,args){
+function apply(f,args,owned=false){
   if(f===null)return null;
   if(f?.io&&args.length===0)return f;
   if(f?.io)return apply(fn(2,a=>Object.hasOwn(f,'pureValue')?call(a[1],[f.pureValue]):{request:true,action:f,k:a[1]}),args);
   if(f?.typeName)return {typeName:f.typeName,typeArgs:[...(f.typeArgs||[]),...args]};
   if(!f?.code){if(!args.length)return f;bad('attempt to call non-function '+String(f));}
-  const all=f.bound.length?f.bound.concat(args):args.slice();
+  const all=f.bound.length?f.bound.concat(args):owned?args:args.slice();
   if(all.length===f.arity)return f.code.call(f.env,all);
   if(all.length<f.arity)return fn(f.arity,f.code,f.env,all);
   let r=f.code.call(f.env,all.slice(0,f.arity));
@@ -44,6 +44,9 @@ function apply(f,args){
   return r;
 }
 const call=(f,args)=>force(apply(f,args));
+// Only emitted non-tail calls pass a fresh, unshared literal argument vector.
+// Public calls, matcher field vectors and reusable tail messages still copy.
+const callOwned=(f,args)=>force(apply(f,args,true));
 const native=(name,n,f)=>G[name]=fn(n,a=>f(...a));
 function get(v,k){if(k in v){const x=v[k];return x?.code&&x.arity===0?call(x,[]):x;}bad('unbound name: '+k)}
 function ctor(k,a){
