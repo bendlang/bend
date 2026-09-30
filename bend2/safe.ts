@@ -275,7 +275,7 @@ function item_ref(e: Safe, k: Name, cols: Cols, live: boolean): string {
 
 function item_emit(e: Safe, k: Name, cols: Cols, n: string): void {
   if (k[0] === "\t") {
-    return group_emit(e, group_of(e, k.slice(1)) as Group, cols, n);
+    return group_emit(e, group_new(e, k.slice(1)) as Group, cols, n);
   }
   const tld = e.book.tlds[k];
   if (tld === undefined) {
@@ -971,7 +971,20 @@ function later(e: Safe, k: Name): Name[] {
 function group_of(e: Safe, k: Name): Group | null {
   if (!e.groups.has(k)) {
     const tld = e.book.tlds[k];
-    e.groups.set(k, tld?.$ !== "Def" || tld.e === undefined ? null : group_new(e, later(e, k)[0] ?? k));
+    let g: Group | null = null;
+    if (tld?.$ === "Def" && tld.e !== undefined) {
+      g = group_new(e, k);
+      if (g === null) {
+        for (const lead of later(e, k)) {
+          const candidate = group_new(e, lead);
+          if (candidate?.ms.includes(k)) {
+            g = candidate;
+            break;
+          }
+        }
+      }
+    }
+    e.groups.set(k, g);
   }
   return e.groups.get(k) ?? null;
 }
