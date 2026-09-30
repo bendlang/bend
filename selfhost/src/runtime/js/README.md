@@ -24,3 +24,15 @@ The emitter's internal `callOwned` consumes a fresh non-tail argument vector.
 Public `call`, matcher vectors and tail messages retain copying; bound prefixes
 and oversaturation retain their existing isolation. Only compiler-created array
 literals qualify. See the [Phase30 ownership report](../../../../implementation/phase30/owned-arguments.md).
+
+Phase31 adds `localGuard` for closed private regions. In addition to the existing
+scalar descriptor/prototype checks, it verifies the Array prototype and its
+request/bounce/build/code markers. Canonical Sigma also uses array storage, so
+this guard applies even when a graph has no Array-native calls. `native` captures
+the Array.new/get/set descriptors for the existing dependency guard. Public
+functions and unsupported inputs retain ordinary execution. See the
+[local-data report](../../../../implementation/phase31/closed-local-regions.md).
+
+After editing these fragments, regenerate the embedded bundle before building a
+checked compiler. Phase31 retains an otherwise successful focused build whose
+generated program failed because its bundle did not contain the new helper.

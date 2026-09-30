@@ -1,0 +1,162 @@
+{
+  "kind": "phase31-final07-conformance-summary",
+  "complete": true,
+  "pass": true,
+  "attempt": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/attempt-07/attempt.json",
+    "sha256": "7f650b0d8aade0cef64481f5331bb11ec6c63e41d2612c4a8ce8432cf190e81d",
+    "bytes": 204679
+  },
+  "gates": [
+    {
+      "name": "frontend-main",
+      "accepted": true,
+      "exact": 3026,
+      "statuses": {
+        "observed": 497,
+        "pass": 2525,
+        "fail": 4
+      },
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/final-plan-07/frontend-main/report.json",
+        "sha256": "3be0a3dc128e37be9a3768d20d34534d37be2d678d85c2d3147c58124ceadf9d",
+        "bytes": 20722
+      }
+    },
+    {
+      "name": "frontend-broader",
+      "accepted": true,
+      "exact": 196,
+      "statuses": {
+        "observed": 1,
+        "pass": 195
+      },
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/final-plan-07/frontend-broader/report.json",
+        "sha256": "0bfd125e4b2f98d64af52e27f33d3c617dab2da1d42ccc5ab8e12f8a0b787656",
+        "bytes": 12639
+      }
+    },
+    {
+      "name": "backend-pilot",
+      "accepted": true,
+      "exact": 81,
+      "counts": {
+        "pass": 69,
+        "not-applicable": 8,
+        "fail": 4
+      },
+      "retainedRows": 60,
+      "retriedRows": 21,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/final-backend-closure-07/report.json",
+        "sha256": "623af3e81770b686196a738f36c6ea1f3c4eca54fc242c66ea8c35c0e3db0351",
+        "bytes": 240181
+      },
+      "failedDefaultCampaign": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/final-plan-07/backend/pilot/report.json",
+        "sha256": "c85520cc07fb517e7f5e05449feb095e7635422574fb2f991842722d69adfb2e",
+        "bytes": 202892
+      }
+    },
+    {
+      "name": "primitive",
+      "accepted": true,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/final-plan-07/primitive/report.json",
+        "sha256": "8d453c5a18f2b49b3e661cf0b4f35fe47e3067a406c633281d407765f02257ed",
+        "bytes": 15517
+      },
+      "scalarChecks": 56205,
+      "observations": 58
+    },
+    {
+      "name": "worker",
+      "accepted": true,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/final-plan-07/worker/report.json",
+        "sha256": "e740dd465ab8b209701fb8c76f41adf2f5d11cdd0030b7196d5cb97bfc8961ae",
+        "bytes": 9480
+      },
+      "scalarChecks": 3759,
+      "observations": 14
+    },
+    {
+      "name": "nested",
+      "accepted": true,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/final-plan-07/nested/report.json",
+        "sha256": "84abc5eaec074056481796563cacf357ac5482a4f8ee13c20f593674b3372ff8",
+        "bytes": 6693
+      },
+      "checks": 144
+    },
+    {
+      "name": "primitive-guards",
+      "accepted": true,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/final-plan-07/primitive-guards/report.json",
+        "sha256": "81d2ba78d6bd37ac4aad63000c69bebed9313931cd2b41a26224885e99bee6f4",
+        "bytes": 132671
+      },
+      "guards": 1129,
+      "observations": 25
+    },
+    {
+      "name": "upstream",
+      "accepted": true,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/final-plan-07/upstream/report.json",
+        "sha256": "a624495ed32bf5c4ed086761707ff97f0380b903fecc45a4a93f97867246c826",
+        "bytes": 8634
+      },
+      "tests": 15,
+      "exactDifferences": 0
+    },
+    {
+      "name": "corpus",
+      "accepted": true,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/final-plan-07/corpus/report.json",
+        "sha256": "c126ecc88f13e171b8a2b129b9604b43bb8f07e33a5606161ed7fa5717e9c3eb",
+        "bytes": 221859
+      },
+      "libraries": 23,
+      "points": 127
+    },
+    {
+      "name": "worker-admission",
+      "accepted": true,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/final-additional-07/worker-admission/report.json",
+        "sha256": "62abdcad2c9741ff8bd21948d64edfa286925cc9b254c72a9a637257c50a4853",
+        "bytes": 6012
+      },
+      "guards": 40,
+      "executionWitnesses": 2
+    },
+    {
+      "name": "component",
+      "accepted": true,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/final-additional-07/component/report.json",
+        "sha256": "73a18089aaa2a02492c8b5502390cafd227d45535d7dbd28cf8c57f6a49dfdcf",
+        "bytes": 13672
+      },
+      "observations": 22
+    },
+    {
+      "name": "hvm",
+      "accepted": true,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/final-additional-07/hvm/report.json",
+        "sha256": "76ddc2902ca5a232ea0e6ada237e73bbb63ded1b61d92761fa1df4edf7ce4b72",
+        "bytes": 7580
+      },
+      "exactStdout": true,
+      "emptyStderr": true,
+      "stdoutBytes": 42
+    }
+  ],
+  "scope": "Final07 correctness observations; shared raw failures and failed default native context retained. Counts overlap; no unique total or universal backend claim."
+}

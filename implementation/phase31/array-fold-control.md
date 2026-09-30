@@ -32,3 +32,22 @@ module disagreement occurred in those harness corrections.
 The maintained source is `selfhost/tools/performance/phase31/local-data-fold.bend`.
 The maintained oracle accepts additional actual compiler modules without changing
 its expected results. Actual candidate promotion and timing remain separate.
+
+Fresh checked04 emission and `local-data-fold-actual04-controls-01` also pass
+all 40 oracle points and both distinguishing delayed-write witnesses. This is
+a structurally different admitted local-array computation, not an edit-distance
+helper rename. No fold timing is inferred from its acquisition/control duration.
+
+Checked05, checked06 and checked07 subsequently emit the unchanged source and
+pass the same 40-point oracle and delayed-write witnesses. The larger timing
+point n4096/seed17 is checked independently against the same BigInt semantics
+on installed17, all four actual compiler versions and pinned TypeScript, with
+result **2339999928** (`local-data-fold4096-controls-01`).
+
+The [actual compiler ablation](local-data-ablation.md) measures checked07 at
+0.67510ms versus installed17 at 11.93035ms and TypeScript at 0.039891ms for that
+larger point: 17.67× faster than installed17, still 16.92× slower than TypeScript.
+Those fresh-process measurements retain about 9% within-sample warming for
+checked07, so they describe the frozen transfer protocol rather than a settled
+steady-state limit. The full sample ranges, ablations and separate regression
+canaries are retained in that report.

@@ -1,31 +1,34 @@
 # Bend2 compiler port in Bend2
 
 Use the [compiler guide](../docs/BEND-IN-BEND.md) and
-[Phase30 report](../implementation/phase30/generated-program-performance.md).
-The installed checked17 compiler emits bounded private scalar regions, direct
-lexical helper calls, countdown loops and scalar tree traversal. Public values
-retain their representation; unsupported shapes use the ordinary emitter.
-The full performance comparison is complete. Release verification and all
-42 ordinary/relocated CLI checks pass; see the [release report](../implementation/phase30/release-17.md).
+[Phase31 report](../implementation/phase31/closed-local-regions.md). The installed
+checked07 compiler extends bounded private regions to closed local records and
+arrays. It completes private returns at proved demand points and reads known
+fields directly. Public representations and unsupported fallback remain intact.
+Release verification and all42 ordinary/relocated CLI checks pass; the [release record](../implementation/phase31/release-07.md)
+tracks ordinary/relocated CLI closure and exact artifact identities.
 
-The [performance guide](../docs/BEND-IN-BEND-PERFORMANCE.md) separates small
-saved-JavaScript experiments, checked compiler iterations and broad integration.
-A checked build plus 36 focused controls took roughly 35–40 seconds during this
-campaign, with fixture emission around five seconds. These are acquisition
-durations, not a controlled compiler-throughput comparison.
+The original four-pair edit-distance program improves 26.83× over Phase30, with
+a 14.28× TypeScript gap. A distinct array fold improves 17.67×. These are emitted
+JavaScript execution results, not a universal speed ratio. The
+[comparison report](../implementation/phase31/final-measurements.md) separately
+records 6.90% slower edit-distance compilation and small entry/generic-row costs.
+The [performance guide](../docs/BEND-IN-BEND-PERFORMANCE.md) explains the fast loop:
+saved-JavaScript experiments, checked compiler builds (about 38 seconds with 36
+focused observations), then broad integration. Acquisition durations are not
+controlled compiler-throughput claims.
 
-The selected API agrees with pinned TypeScript on **3,026 main and 196 broader
-frontend observations**. It also passes selected upstream JS execution,
-23 libraries / 127 points, ten original libraries, the HVM application,
-22 compiler-component observations and independent runtime/emitter controls.
-The frontend observations are reused under a strict unchanged-input audit;
-the affected generated-JS suites are freshly renewed on17.
-Counts overlap; [conformance](CONFORMANCE.md) keeps exact agreement, shared
-fixture failures, backend coverage and self-emission scopes distinct.
+Fresh frontend execution agrees exactly with pinned TypeScript on **3,026 main
+and 196 broader observations**. Selected upstream JS, 23 libraries/127 points,
+worker/primitive controls, 22 compiler components and the HVM application pass.
+The backend pilot preserves **69 passes, 8 not-applicable cases and 4 shared
+failures** across 81 observations; its failed restricted Clang run and successful
+context retry are both retained. Counts overlap. [Conformance](CONFORMANCE.md)
+keeps raw fixture verdicts, agreement, backend coverage and self-emission separate.
 
-The current target is upstream
+The target remains upstream
 [`018751270e800bc222a93dad7f257083ee53a5f7`](https://github.com/bendlang/bend/tree/018751270e800bc222a93dad7f257083ee53a5f7),
-after the Bend2 2.0.34 release.
+after Bend2.0.34.
 
 ```sh
 # From selfhost/, with Node.js 24 or newer:
@@ -34,29 +37,23 @@ node cli.mjs tests/conformance/typed-smoke/base-u32.bend --run
 npm run build
 ```
 
-The compiler contains **16,778 physical / 14,327 nonblank Bend lines in 65 modules**.
-This is 571 physical lines (+3.52%) above Phase29, with two additional analysis
-records and one net additional module. The final cleanup removes 64 implementation
-lines and eight obsolete functions. Public runtime representations are unchanged.
-The [release manifest](dist/release.json)
-binds the exact source, genuine checked parent, equality/choice-derived API, Base,
-runtime and host. Verification
-works after relocation. Compiler edits use the
-[checked development workflow](../docs/PHASE5_DEVELOPMENT.md); ordinary compilation
-has no upstream TypeScript fallback.
+The compiler has **17,014 physical / 14,529 nonblank Bend lines in 66 modules**:
+236 more physical lines (+1.41%) than Phase30, 34 additional definitions and no
+new datatype declarations. Generated artifacts and experiment tools are separate.
+The [release manifest](dist/release.json) binds source, genuine checked parent,
+guarded derived API, Base, runtime and host. Compiler changes use the
+[checked workflow](../docs/PHASE5_DEVELOPMENT.md); ordinary compilation has no
+upstream TypeScript fallback.
 
-This is an experimental compatibility port. Read [CONFORMANCE.md](CONFORMANCE.md)
-for current measured results and remaining semantic/diagnostic gaps. Type checking,
-proof trust, backend execution and independent proof validation are separate.
-`--verdict` is unsupported; successful fixtures do not establish proof validity.
-The previous1378-fixture results,6.03× full-compilation comparison and self-hosted
-fixed points are historical, not measurements of this release.
+This is an experimental compatibility port. Checking, proof trust, backend
+execution and independent proof validation are distinct. `--verdict` remains
+unsupported. Historical self-hosted fixed points and older compilation ratios
+are not measurements of this release; no new H image or fixed point is claimed.
 
-The [experiment ledger](../experiments/ledger.md), [current strategy](../experiments/STEERING.md)
-and [preservation index](../experiments/PRESERVATION.md) retain historical artifacts,
-failed experiments and promotion decisions. The generic binder/evaluator
-[architectural trials](../implementation/phase7/architecture-report.md) remain
-research artifacts; their larger/slower implementations were not promoted.
+The [ledger](../experiments/ledger.md), [strategy](../experiments/STEERING.md) and
+[preservation index](../experiments/PRESERVATION.md) retain failures and decisions.
+The earlier [architectural trials](../implementation/phase7/architecture-report.md)
+remain research artifacts; their larger/slower alternatives were not promoted.
 
 ## Use the typed compiler
 

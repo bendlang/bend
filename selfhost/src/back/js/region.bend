@@ -401,13 +401,14 @@ def j_region_definitions(+book: List<&2,KDef>, +helpers: List<&2,KDef>) -> Strin
         kc(String, String.eq(tg(dv(d)), "Mat"), u => j_region_nested_body(book, d),
           u => j_region_return(book, Nil{}, dv(d), kid(dv(d), 1))) ++ "}") ++ j_region_definitions(book, rest)
 
-# Preserve parallel RHS scope, then introduce immutable aliases in a fresh block.
+# Private callers already demand the result before the next source operation.
+# Complete fields in order here; preserve parallel RHS scope and fresh aliases.
 @unsafe
 def j_region_return(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm) -> String:
   kc(String, String.eq(tg(t), "Ann"), u => j_region_return(book, env, kid(t, 0), kid(t, 1)), u =>
   kc(String, String.eq(tg(t), "Let"), u => "{" ++ j_nat_loop_values(book, env, ks(t), 0) ++ "{" ++
     j_nat_loop_names(ks(t), 0) ++ j_region_return(book, j_context(book, env, ks(t)), j_body(ks(t)), ty) ++ "}}", u =>
-    "return " ++ j_expr(book, env, t, ty, True{}) ++ ";"))
+    "return " ++ j_expr(book, env, t, ty, False{}) ++ ";"))
 
 @unsafe
 def j_region_nested_body(+book: List<&2,KDef>, +d: KDef) -> String:
@@ -446,8 +447,8 @@ def j_region_unpack(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: 
   kc(JRegionBuild, String.eq(dk(c), "Ctr") && String.eq(nm(t), dn(c)) && U32.is_eq(terms_len(ks(t)), 2) &&
     String.eq(tg(j_strip(kid(t, 1))), "Efq") && U32.is_eq(terms_len(ks(j_strip(kid(t, 1)))), 0) &&
     j_nat_loop_lambdas(book, kid(t, 0), j_arm_type(book, ty, nm(t)), da(c)), u =>
-    j_region_unpack_done(nm(t), at, da(c), j_region_prefix(book, env, kid(t, 0), j_arm_type(book, ty, nm(t)), U32.inc(at), da(c), False{}, "", active, depth, s)), u => j_region_fail(s))
+    j_region_unpack_done(nm(t), arg, at, da(c), j_region_prefix(book, env, kid(t, 0), j_arm_type(book, ty, nm(t)), U32.inc(at), da(c), False{}, "", active, depth, s)), u => j_region_fail(s))
 
 @unsafe
-def j_region_unpack_done(+name: String, +at: U32, +fields: U32, +s: JRegionBuild) -> JRegionBuild:
-  j_region_result(s, j_region_annotate(kt("JUnpack", name, at, fields, [j_region_term(s)]), kid(j_region_term(s), 1)))
+def j_region_unpack_done(+name: String, +arg: KTerm, +at: U32, +fields: U32, +s: JRegionBuild) -> JRegionBuild:
+  j_region_result(s, j_region_annotate(kt("JUnpack", name, at, fields, [j_region_term(s), arg]), kid(j_region_term(s), 1)))

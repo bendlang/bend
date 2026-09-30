@@ -229,10 +229,10 @@ def j_expr(book, env, t, ty, tail):
 @unsafe
 def j_expr_private(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +tail: Bool) -> String:
   kc(String, String.eq(tg(t), "JSlot"), u => "$p" ++ U32.show(ix(t)), u =>
-  kc(String, String.eq(tg(t), "JCall"), u => j_region_demand(book, ty, tail, j_region_name(nm(t)) ++ "(" ++ j_apply_args(book, env, ks(t), dt(lookup(book, nm(t)))) ++ ")"), u =>
+  kc(String, String.eq(tg(t), "JCall"), u => j_region_name(nm(t)) ++ "(" ++ j_apply_args(book, env, ks(t), dt(lookup(book, nm(t)))) ++ ")", u =>
   kc(String, String.eq(tg(t), "JNative"), u => j_region_native_emit(book, env, t), u =>
   kc(String, String.eq(tg(t), "JUnpack"), u => "((" ++ j_region_parameters(U32.inc(ix(t)), U32.inc(U32.add(ix(t), qt(t)))) ++ ")=>" ++
-    j_expr(book, env, kid(t, 0), ty, tail) ++ ")(...project(" ++ j_quote(nm(t)) ++ ",$p" ++ U32.show(ix(t)) ++ ").slice())", u =>
+    j_expr(book, env, kid(t, 0), ty, tail) ++ ")(" ++ j_region_field_reads("$p" ++ U32.show(ix(t)) ++ kc(String, j_region_local_sigma(book, kid(t, 1)), u => "", u => ".a"), 0, qt(t)) ++ ")", u =>
   kc(String, String.eq(tg(t), "JIf"), u => "(" ++ j_expr(book, env, kid(t, 0), kt("ADT", "Bool", 0, 0, Nil{}), False{}) ++ "?" ++
     j_expr(book, env, kid(t, 1), ty, tail) ++ ":" ++ j_expr(book, env, kid(t, 2), ty, tail) ++ ")", u => j_expr_on(book, env, t, ty, tail, tg(t)))))))
 
@@ -955,14 +955,15 @@ law j_l_global:
 def j_l_global(book, d, t):
   j_l_global_worker(book, d, t, j_projection_worker(book, t, dt(d)))
 
-# Only private calls may bypass apply. A demanded container result still runs
-# the unchanged trampoline before the following source argument or binding.
-@unsafe
-def j_region_demand(+book: List<&2,KDef>, +ty: KTerm, +tail: Bool, +code: String) -> String:
-  kc(String, tail || j_region_scalar(book, ty), u => code, u => "force(" ++ code ++ ")")
-
 @unsafe
 def j_region_native_emit(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm) -> String:
   +args = j_apply_args(book, env, ks(t), dt(lookup(book, nm(t))))
   kc(String, String.eq(nm(t), "Array.new"), u => "((_t,d,v)=>arrayfill(v,d,'^'))(" ++ args ++ ")", u =>
     kc(String, String.eq(nm(t), "Array.get"), u => "((_t,a,i)=>arrayget(a,i))(" ++ args ++ ")", u => "((_t,a,i,v)=>arrayset(a,i,v))(" ++ args ++ ")"))
+
+# The plan retains the proved input type. Immutable private field vectors cannot
+# escape; argument evaluation snapshots every field before the arm's effects.
+@unsafe
+def j_region_field_reads(+base: String, +at: U32, +total: U32) -> String:
+  kc(String, U32.is_eq(at, total), u => "", u => base ++ "[" ++ U32.show(at) ++ "]" ++
+    kc(String, U32.is_eq(U32.inc(at), total), u => "", u => "," ++ j_region_field_reads(base, U32.inc(at), total)))

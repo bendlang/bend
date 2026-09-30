@@ -1,7 +1,7 @@
 # Generated-program performance and the fast development loop
 
 Use the [compiler guide](BEND-IN-BEND.md) for normal compilation and the
-[Phase30 report index](../implementation/phase30/README.md) for exact results,
+[Phase31 report index](../implementation/phase31/README.md) for exact results,
 artifact identities, failed experiments and current promotion status. The target
 remains upstream `018751270e800bc222a93dad7f257083ee53a5f7`. The comparison is
 between JavaScript emitted from the same Bend source by the two compilers.
@@ -50,6 +50,29 @@ field closures. It does not introduce a second public record or array format.
 Private tree combinations initially see only their two child results; parent
 captures and more general recursion are refused by this rule.
 
+Phase31 extends the same analysis to **closed local data**. Public roots retain
+scalar inputs/results and the existing inert terminal-record exception. Inside
+the region, helpers may pass canonical `Array<U32>`, nonrecursive records and
+specialized canonical Sigma tuples. A shared 256-step type budget, cycle checks
+and complete constructor telescopes bound admission. Native allocation/read/write
+calls require the actual canonical definitions and exact saturation. Arrays
+must originate inside the region; foreign containers, callbacks and function
+fields are refused.
+
+Three further rules remove administration inside that boundary. Private helper
+returns finish their fields at the demand point already required by their
+callers. Consequently, private calls need no additional trampoline force.
+Matches read the proved layout directly: tuple indices or an ordinary record's
+field vector. Reads still snapshot every field in order before the arm executes.
+Public constructors, array storage and the generic fallback keep their existing
+representations. This is selective specialization and demand analysis; it does
+not require a new ownership system or a second intermediate representation.
+
+Read [the demand proof](../design/phase31/fully-demanded-private-results.md) and
+[field-layout proof](../design/phase31/direct-private-field-reads.md) before
+extending these rules. Eager writes in arbitrary returned fields are unsafe;
+the admitted closed graph supplies the narrower invariant used here.
+
 ## Why entry and fallback matter
 
 Before entering a private region, generated code checks primitive input
@@ -65,6 +88,14 @@ operations. The public global table and partial descriptors remain usable.
 Standard host intrinsics are part of the runtime contract; the finite tests do
 not establish equivalence under arbitrary replacement of JavaScript builtins.
 
+`localGuard` also checks Array-prototype marker assumptions, including for
+graphs with no Array-native calls: canonical Sigma uses a JavaScript array.
+Native Array descriptors are captured at registration and checked with the other
+helper dependencies. The independent negative control demonstrates why checking
+only explicit array operations is insufficient. Runtime fragment edits must be
+followed by `node src/runtime/js/build.mjs` from `selfhost/`; generated programs
+embed the assembled `src/runtime.mjs` file.
+
 Before any private worker has registered, a monotone runtime flag skips the
 empty WeakSet lookup in ordinary calls. The code getter runs before reading the
 flag, so a getter that registers a worker still receives the normal registered
@@ -72,10 +103,19 @@ checks. After the first registration, the complete exact-entry path remains.
 The isolated experiment improves RLE and a complete generic row by about5–6%;
 it does not remove generic descriptor, matching or record-construction costs.
 
+Phase31 extends eligibility, so previously generic-only modules can now register
+workers. Their remaining generic calls pay the existing registry lookup. The
+controlled [registration diagnostic](../implementation/phase31/generic-registration-diagnostic.md)
+explains the measured roughly5% generic-row regression; the scalar zero-work
+entry separately pays about0.18µs for stronger prototype checks. Both costs are
+explicitly disclosed in the [admission amendment](../design/phase31/admission-tradeoff.md),
+rather than classified as no-regression passes.
+
 The analysis is deliberately bounded: at most 32 completed helpers, dependency
 depth 16, one shared 32,768-unit budget, bounded source/expressions/bindings, and
 an active-name set that rejects unsupported cycles. Failed analysis uses the
-ordinary emitter. The internal `JSlot`, `JCall` and `JIf` terms belong to emission;
+ordinary emitter. The internal `JSlot`, `JCall`, `JIf`, `JNative` and `JUnpack`
+terms belong to emission;
 they are not fed back into checking or evaluation. See
 [region.bend](../selfhost/src/back/js/region.bend),
 [worker.bend](../selfhost/src/back/js/worker.bend), and
@@ -151,8 +191,12 @@ screen cannot establish that an application/runtime change is broadly cheap.
 
 ## What remains expensive
 
-The current region grammar primarily benefits scalar code. Record/tuple matcher
-chains, region-local mutable arrays, higher-order calls and unsupported recursion
+Closed local records and arrays now qualify, but their ordinary storage still
+allocates tuples on native reads and record shells for loop state. Removing a
+generic projection does not remove its producer's allocation. Possible next
+experiments are return-position field bindings and worker/wrapper scalar
+replacement, with full native-event and alias controls. Their gains are unmeasured.
+Externally supplied data, higher-order calls and unsupported recursion still
 retain generic dispatch. A floating-point helper can be too small to pay for a
 guard: Phase30's acyclic F32 entry experiment regressed both hit and miss paths.
 Extending coverage requires proving ownership/aliasing and delayed-field demand,

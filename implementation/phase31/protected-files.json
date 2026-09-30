@@ -1,0 +1,8 @@
+{
+  "complete": true,
+  "scope": "Exact bytes and absence from index for the103 preexisting unrelated files.",
+  "startSha256": "bad5adffc7b23c289fb7a7c57e1ed9f23177eb52c4c7fcc96336764d620cc02e",
+  "checked": 103,
+  "changed": [],
+  "protectedStaged": []
+}

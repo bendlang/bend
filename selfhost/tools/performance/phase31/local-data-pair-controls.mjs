@@ -25,12 +25,11 @@ function oracle(index){
 }
 function instrument(text){
  function edit(a,b){assert.equal(text.split(a).length-1,1,a);text=text.replace(a,b)}
- const intro='let $Pair_last,$Pair_ids=new WeakMap(),$Pair_next=0,$Pair_events=[];function $Pair_event(x){$Pair_events.push(x)}\n';
- edit("return {array:Array(size).fill(v)}}","const a={array:Array(size).fill(v)};$Pair_ids.set(a,++$Pair_next);$Pair_event(['new',$Pair_next,size,v]);return a}");
+ const intro='let $Pair_arrays=[],$Pair_ids=new WeakMap(),$Pair_next=0,$Pair_events=[];function $Pair_event(x){$Pair_events.push(x)}\n';
+ edit("return {array:Array(size).fill(v)}}","const a={array:Array(size).fill(v)};$Pair_ids.set(a,++$Pair_next);$Pair_arrays.push(a);$Pair_event(['new',$Pair_next,size,v]);return a}");
  edit('function arrayget(a,i){const xs=arraydata(a);return [a,xs[Number(i)%xs.length]]}',"function arrayget(a,i){const xs=arraydata(a),v=xs[Number(i)%xs.length];$Pair_event(['get',$Pair_ids.get(a),Number(i),v]);return [a,v]}");
  edit('function arrayset(a,i,v){const xs=arraydata(a);xs[Number(i)%xs.length]=v;return a}',"function arrayset(a,i,v){const xs=arraydata(a);xs[Number(i)%xs.length]=v;$Pair_event(['set',$Pair_ids.get(a),Number(i),v]);return a}");
- edit('function project(k,x){','function project(k,x){if(k==="Dp")$Pair_last=x;');
- return intro+text+'\nexport function pairDiagnostic(){return {arrays:$Pair_last.a.map(x=>x.array),events:$Pair_events};}\n';
+ return intro+text+'\nexport function pairDiagnostic(){return {arrays:$Pair_arrays.map(x=>x.array),events:$Pair_events};}\n';
 }
 function normalize(v){if(v===undefined)return'[undefined]';if(typeof v==='bigint')return String(v)+'n';return v}
 try{

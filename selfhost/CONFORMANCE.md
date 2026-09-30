@@ -1,8 +1,42 @@
 # Compiler validation
 
-## Phase30 checked17 validation
+## Phase31 installed07 validation
 
-The installed checked17 API is
+The installed API is
+`d8f609c99b3acef932f90040d0c6152c96605493bef926e46f25559ac125029b`.
+The [release report](../implementation/phase31/release-07.md) records final
+admission and installed status.
+
+Fresh candidate observations agree exactly with pinned TypeScript on **3,026
+main and196 broader frontend observations**, with zero behavioral or additional
+field differences. Main raw outcomes remain2,525 pass /497 observed /4 shared
+failures; broader outcomes remain195 pass /1 observed. Shared failures are not
+rewritten as passes. The unchanged comparison gate uses an independently audited
+60→65→66 module migration; only `src/back/js/local.bend` is added relative to17.
+All other manifest fields and prior module ordering remain exact.
+
+Independent final07 controls cover complete physical arrays and328,966 ordered
+native operations, nested records/Sigma, empty records, aliases, public raw and
+partial entries, descriptor mutation and prototype markers. A distinct one-array
+fold and negative delayed-write witnesses also pass. The final runtime is
+byte-identical to the55-case runtime control acquisition; its reuse is explicitly
+bound by [the independent review](../implementation/phase31/actual-local-data-review.md),
+not described as a fresh execution. These finite scopes overlap and are not a
+sum of unique conformance tests.
+
+Fresh final07 passes the15 selected upstream JS cases,23 libraries/127 points,
+primitive/worker/nested/refusal controls,40+2 additional worker checks,22 compiler
+components and full HVM output. The backend pilot preserves81 historical outcomes
+(69 pass /8 not applicable /4 shared failures), combining60 unaffected original
+rows and21 native retries in the approved Clang execution context. The original
+17 paired EPERM failures remain recorded. Release verification and all42 ordinary/
+relocated CLI checks pass. See [final conformance](../implementation/phase31/final-conformance.md)
+and the release report for exact scopes. No new H, full backend, GPU, fixed-point or independent
+proof-kernel claim follows. The optional811 additional JS cases remain deferred.
+
+## Historical Phase30 checked17 validation
+
+The historical checked17 API is
 `33545640e25beffb61639b27f4815aaeb345fda14758e1d63418cd1d0ccc0637`.
 Its [report](../implementation/phase30/generated-program-performance.md) and
 [release manifest](dist/release.json) bind the selected checked artifact.

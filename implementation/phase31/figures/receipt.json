@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "inputs": [
+    {
+      "path": "selfhost/build/phase31/local-data-ablation-transfer-01/report.json",
+      "bytes": 262862,
+      "sha256": "a0204f55c25782be44d22bcbee8ad68bcef968150b90717a227e31afcd6b05fe"
+    },
+    {
+      "path": "selfhost/tools/performance/phase31/figures.py",
+      "bytes": 2685,
+      "sha256": "b8b629875e13b16e3d1339865f6968b37d49a7b4a5cf9c478918ebaec0f8795b"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "implementation/phase31/figures/local-data-ablation.png",
+      "bytes": 131048,
+      "sha256": "66ebecc4601c64d95f296d5a652666e3ee801bc1d9b6ba1da6926ff7ad6d0e8c"
+    },
+    {
+      "path": "implementation/phase31/figures/local-data-ablation.svg",
+      "bytes": 98167,
+      "sha256": "e5c8ddabf99c6baa349fac4e07dd52aeae44cc276bb970fbc1e1a9611207019f"
+    }
+  ],
+  "scope": "Rendering of existing reported medians/ranges; no new timing."
+}

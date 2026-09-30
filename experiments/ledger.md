@@ -2101,3 +2101,44 @@ and127points.04's smallest-entry screen shows~5% overhead with ongoing warming;
 longer canary confirmation is deferred to the final candidate. Attempts01–03
 retain guard/embedded-runtime packaging failures; no installed release changed.
 [P31-003](phase31/P31-003-private-demand.md) next tests a bounded demand proof.
+
+
+## Phase31 — close local data, then remove private administration
+
+[P31-002](phase31/P31-002-checked-local-regions.md) extends the existing bounded
+region proof to internally allocated arrays, nonrecursive records and canonical
+Sigma. [P31-003](phase31/P31-003-private-demand.md) proves fully demanded private
+returns and removes redundant forcing. [P31-004](phase31/P31-004-direct-private-fields.md)
+retains proved input layouts for direct field snapshots. All public representations
+and unsupported fallback remain intact.
+
+The [same-window ablation](../implementation/phase31/local-data-ablation.md)
+measures29.09× improvement on a complete pair and17.67× on a distinct fold.
+The force-removal increment overlaps; direct fields remove62.50%/49.46% of06
+time. The fold still warms. [Original transfer](../implementation/phase31/final-measurements.md)
+reduces four-pair edit distance1900.375→70.817ms (26.83×), still14.28×TS.
+Mandelbrot and RLE retain prior warmed performance; no universal speed claim.
+
+The original no-material-regression criterion remains **failed**: scalar-zero
++4.01% and generic row +5.04%. [P31-005](phase31/P31-005-registration-cost.md)
+reproduces96.97% of same-window row excess with one unused exact-worker
+registration. [Explicit admission](../design/phase31/admission-tradeoff.md) accepts
+that cost, the separate stronger-guard cost and107.77ms (+6.90%) more normal
+edit-distance compilation. This is a generated-program improvement with known
+tradeoffs, not a compiler-throughput speedup.
+
+**Updated frontier:** selected07 is installed and verified; all42 ordinary/
+relocated CLI checks pass. Fresh3026+196 frontend observations agree exactly.
+The81-row backend pilot preserves69 pass /8 N/A /4 shared failures through an
+explicit60+21 native-context retry;17 initial paired EPERM failures remain.
+All required inherited and added worker/component/HVM gates pass. Independent
+review verifies measurements, provenance and scoped admission. Source adds236
+lines (+1.41%),34 definitions and one module, with no new type declarations.
+
+The [release](../implementation/phase31/release-07.md) and
+[capsule](../implementation/phase31/evidence/README.md) retain exact artifacts,
+failed attempts and consumed tools. All103 unrelated files remain protected.
+No PR comment was posted. Next: isolate statement unpacking, then private
+producer/consumer tuple fusion; their gains are unmeasured. H17 profiling rules
+out another ABI cache as the leading target for its measured request, while
+Zig research motivates measured representation and reuse boundaries.

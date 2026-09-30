@@ -1,7 +1,7 @@
 # JavaScript backend
 
 `emit.bend`, `choice.bend`, `projection.bend`, `u32.bend`, `region.bend`,
-`primitive.bend`, `worker.bend`, `tree.bend`, `foreign.bend`, `literals.bend`, and
+`local.bend`, `primitive.bend`, `worker.bend`, `tree.bend`, `foreign.bend`, `literals.bend`, and
 `validate.bend` are Bend2 source. Their input is the checked,
 specialized, annotated `KTerm`/`KDef` core. They emit JavaScript; they do not
 invoke another compiler.
@@ -40,7 +40,7 @@ The bootstrap-only integration tests use `build/js-backend.mjs`, built with
 `src/core/normalize.bend`, `src/core/pretty.bend`, `src/back/js/foreign.bend`,
 `src/back/js/literals.bend`, `src/back/js/validate.bend`,
 `src/back/js/choice.bend`, `src/back/js/projection.bend`,
-`src/back/js/u32.bend`, `src/back/js/primitive.bend`, `src/back/js/region.bend`,
+`src/back/js/u32.bend`, `src/back/js/primitive.bend`, `src/back/js/local.bend`, `src/back/js/region.bend`,
 `src/back/js/worker.bend`, `src/back/js/tree.bend`, and `src/back/js/emit.bend`, then
 `tools/stage0-library.mjs` exporting `j_program j_expr j_descriptor j_library
 j_modules j_compile_error j_io_type book_cached j_layout_error`. Run `node src/back/js/test.mjs`,
@@ -85,6 +85,19 @@ and erased RHSs remain unevaluated. Eligibility is limited to 2–32 slots,
 8,192 core nodes, no deep closure factories, and native Nat/U32/F32/Bool scalar
 parameters and results. All other definitions keep the existing emitter.
 These rules add no runtime helpers, datatype representation or public arity.
+
+The later private-region path in `region.bend` can include closed local data.
+`local.bend` proves bounded nonrecursive record/Sigma layouts and canonical
+`Array<U32>` native signatures. Public roots keep the scalar entry restriction;
+private helpers may pass locally created containers. `JNative` emits the existing
+array operations. `JUnpack` records the full field telescope and proved input
+type, so `emit.bend` can read tuple indices or ordinary `.a` fields in order.
+Private helper results complete at their already-required demand point; their
+direct callers therefore need no force. The original public callbacks and value
+representations remain available when admission or the entry guard fails.
+See the [Phase31 design](../../../../design/phase31/checked-local-regions.md),
+[private demand proof](../../../../design/phase31/fully-demanded-private-results.md)
+and [field-read proof](../../../../design/phase31/direct-private-field-reads.md).
 
 For parser performance comparisons, build both outputs from the same checked
 book with `benchmark-build-parser.mjs CANDIDATE_API.mjs`, then run

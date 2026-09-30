@@ -540,3 +540,16 @@ archive was removed only after exact transport verification. Earlier capsules
 and all103 protected starting files remain unchanged. Explicit historical
 capsules, pinned upstream Git, Node24.18 and the native Clang16 environment keep
 the prerequisite boundaries documented in the preservation README.
+
+
+## Phase31 closed local-data campaign
+
+The [Phase31 capsule](../implementation/phase31/evidence/README.md) preserves the
+complete closed raw acquisition tree, including failed source/runtime attempts,
+all checked outputs, timing and diagnostic tools, exact profiles/event streams,
+frontend/backend gates and installed CLI receipts. Its member-by-member capture
+receipt records exact names, sizes, hashes and modes. Prior dependency capsules
+remain prerequisites, not silently duplicated or discarded.103 unrelated starting
+files remain separately protected. See the [release report](../implementation/phase31/release-07.md)
+and [independent review](../implementation/phase31/independent-release-review.md)
+for measured tradeoffs, native-context retry and final scope.

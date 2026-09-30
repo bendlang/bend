@@ -16,3 +16,7 @@ and inert terminal records preserve their existing scheduling. Require identical
 complete-state and native-event schedules on the original pair, nested records,
 Array-free Sigma guards and the distinct first-field-write fold. Keep negative
 witnesses. A frozen same-window timing determines promotion, not counts alone.
+
+## Outcome
+
+Checked05's eager private returns save25.76% on the pair and30.42% on the distinct fold versus04, with disjoint ranges. Checked06's force deletion has only1.58%/2.61% apparent gain with overlapping ranges: no independently established extra speedup. Retain that deletion for the simpler completed-value invariant and smaller emitter helper surface. Full physical handles, ordered native events, independent fixtures and negative controls pass through final07. [Results](../../implementation/phase31/local-data-ablation.md).

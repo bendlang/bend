@@ -4,11 +4,12 @@ The typed compiler uses a first-order representation shared by the frontend,
 checker, normalizer and emitters. The original single-file compiler remains
 available as a historical regression baseline.
 
-The current Phase30 compiler targets upstream
-`018751270e800bc222a93dad7f257083ee53a5f7`, after Bend2 2.0.34. Its installed17
-compiler adds bounded private JavaScript regions and a measured generic
-dispatch repair. The [current report](../../implementation/phase30/generated-program-performance.md)
-and [conformance record](../CONFORMANCE.md) distinguish final release status,
+The Phase31 compiler targets upstream
+`018751270e800bc222a93dad7f257083ee53a5f7`, after Bend2 2.0.34. It extends
+bounded private JavaScript regions to proved closed local records and arrays.
+The [current report](../../implementation/phase31/closed-local-regions.md),
+[release record](../../implementation/phase31/release-07.md) and
+[conformance record](../CONFORMANCE.md) distinguish selection, installation,
 fresh execution and unchanged-input reuse. It retains the
 Phase22 contextual frontend and load ABI2, reuses the existing graph evaluator
 for shared-term conversion, and adds array atomics over the uniform runtime
@@ -45,11 +46,11 @@ separately in the conformance report.
 
 ## Private JavaScript regions
 
-The Phase30 backend shares one bounded scalar-region analysis between native
+The backend shares one bounded region analysis between native
 Nat countdowns, ordinary scalar roots with a nested countdown, and strict
 two-child native Nat trees. It reuses checked KTerms and the ordinary primitive
-emitter. Only emitter-local `JSlot`, `JCall` and `JIf` tags are added; the checker
-and evaluator never consume them. `JRegionBuild` carries a completed-helper
+emitter. Emitter-local `JSlot`, `JCall`, `JIf`, `JNative` and `JUnpack` tags describe
+private code; the checker and evaluator never consume them. `JRegionBuild` carries a completed-helper
 cache, one shared work budget and validity. Active dependency names reject
 unsupported cycles before a helper is published.
 
@@ -59,20 +60,33 @@ stack, preserving child and combination order without host tree recursion.
 Terminal flat records retain the existing delayed constructor fields. Public
 representations, descriptor arities and partial entry stay on the ordinary ABI.
 
+Phase31 keeps public roots scalar but permits nonrecursive records, canonical
+Sigma and internally allocated `Array<U32>` inside the closed graph. The
+additional bounded type/native proof lives in `local.bend`, with shared residual
+type fuel and no additional datatype declarations. Private helpers complete
+returned fields at their required demand point, so their calls need no extra
+force. Complete constructor matches read their proved private layout directly,
+retaining ordered field snapshots before the arm. No storage format changes.
+`JUnpack` retains the proved input type, avoiding a layout decision based only
+on the constructor spelling.
+
 A genuine exact-call entry and a live owner/helper snapshot guard delimit each
 region. Raw or hooked entry, invalid scalar representations and failed analysis
 use the original generic callback. No unknown foreign call or external container
-can occur inside the admitted pure graph. Standard host intrinsics remain the
+can occur inside the admitted closed graph. Standard host intrinsics remain the
 runtime contract. The [performance guide](../../docs/BEND-IN-BEND-PERFORMANCE.md)
 describes the grammar, limits, fallback and measured development workflow;
-the [Phase30 reports](../../implementation/phase30/README.md) distinguish checked
+the [Phase31 reports](../../implementation/phase31/README.md) distinguish checked
 candidates, disposable prototypes and the installed release.
 
 A private monotone Boolean records whether any exact worker has registered.
 Before the first registration, generic calls skip the empty registry lookup.
 The code getter runs first, so reentrant registration still selects the correct
 path. Once true, the flag stays true; it adds no second public representation
-or alternative compiler analysis.
+or alternative compiler analysis. Registering optimized roots consequently
+makes other generic calls in that module pay the registry lookup. Phase31
+measures this tradeoff explicitly. `localGuard` additionally covers Array
+prototype markers, including array-free Sigma graphs.
 
 ## Core representation
 

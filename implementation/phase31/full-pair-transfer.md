@@ -78,4 +78,37 @@ The six-way frozen performance plan is
 `local-data-pair-plan-actual04-01/transfer.json`. It uses the unchanged maintained
 original-program protocol (five fresh samples, at least three warm calls and
 one second, 300 ms timed target, rotating serial CPU3). This avoids 100 warm
-calls per half-second generic pair. No timed result is claimed yet.
+calls per half-second generic pair. The exclusive comparison subsequently completed; results follow below.
+
+## Controlled actual04 performance
+
+`local-data-pair-actual04-transfer-01` passes all outputs in a 68.25-second clean
+window. The result is a complete canonical 256 x 256 pair, including setup and
+checksum, rather than an isolated cell or the setup-heavy one-row fixture.
+
+| Variant | Median ms | Sample range ms |
+| --- | ---: | ---: |
+| Generic17 | 489.297967 | 483.589955–492.200922 |
+| Prototype complete private graph | 77.325733 | 76.917620–78.969379 |
+| Plus private setup | 73.639898 | 73.321742–80.060097 |
+| Plus Dp shell elimination | 63.583895 | 63.102239–65.421727 |
+| Actual checked04 | 61.980056 | 60.829511–62.998845 |
+| Pinned TypeScript | 1.235826 | 1.229442–1.257708 |
+
+**Actual04 is 7.89x faster than generic17 and remains 50.15x slower than
+TypeScript** on this complete computation. Actual04's measured second halves
+change between -0.21% and +1.60%. The generic sample has one call, so it has no
+within-sample half comparison. These are sample extrema, not confidence intervals.
+
+Setup alone saves an apparent 4.77% here, much less than its 3.44–3.99x advantage
+in the setup-heavy row probe. Its ranges overlap and one half slows 15.67%, so
+that small incremental gain is unsettled. The Dp-shell step saves 13.65% against
+setup with disjoint ranges. The actual general compiler slightly outperforms
+this handwritten ladder without adopting its private Dp representation.
+
+The subsequent 16.35-second canary screen passes outputs but is not a clean
+regression clearance: scalar zero-work entry is 4.97% slower with disjoint short
+ranges and about 6% ongoing warming; scalar8192 is 1.37% slower; generic-row
+ranges overlap while both sides warm by roughly 47–52%. The coordinator defers
+longer canary confirmation to the final candidate. Do not claim no regression
+from this screen or merge it with the full-pair window.

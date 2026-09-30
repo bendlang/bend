@@ -9,13 +9,19 @@ does not invoke the TypeScript compiler.
 
 The active target is upstream
 [`018751270e800bc222a93dad7f257083ee53a5f7`](https://github.com/bendlang/bend/tree/018751270e800bc222a93dad7f257083ee53a5f7)
-(after Bend 2.0.34). The [Phase30 report](../implementation/phase30/generated-program-performance.md)
-records the installed compiler, renewed validation and controlled performance
-comparison. Its private scalar regions make the selected original Mandelbrot
-program 100.47× faster than Phase29 and leaves 4.63× TypeScript overhead in
-the final comparison. Generic record/array programs still have large gaps, and
-compiler checking is a separate 4.22× TypeScript measurement. Read the
-report's release section for the exact installed status and artifact identity.
+(after Bend 2.0.34). The [Phase31 report](../implementation/phase31/closed-local-regions.md)
+records closed local records/arrays, private demand and direct field reads.
+The original four-pair edit-distance program is **26.83× faster** than Phase30
+and still takes **14.28×** the pinned TypeScript output's time. Original
+Mandelbrot and RLE retain their prior warmed performance; large gaps remain
+on generic workloads. These are JavaScript execution measurements, not compiler
+throughput.
+
+Normal edit-distance compilation is 6.90% slower; a mixed generic-row canary is
+about 5% slower and zero-work scalar entry adds about 0.18µs. The
+[explicit tradeoff](../design/phase31/admission-tradeoff.md) keeps these costs
+visible. Read the [release record](../implementation/phase31/release-07.md)
+for installation status, exact artifact identities and validation scopes.
 
 The historical [Phase23 report](../implementation/phase23/upstream-graph-conversion.md)
 records the upstream update and its checked artifacts. The [Phase24 report](../implementation/phase24/profile-and-coverage.md)
@@ -37,8 +43,8 @@ validity; `--verdict` is explicitly unsupported.
 ## Analyzing emitted-program performance
 
 The [generated-program performance guide](BEND-IN-BEND-PERFORMANCE.md) explains
-the Phase30 private region machinery, bounded admission, exact public entry and
-fast validation loop. Its [campaign reports](../implementation/phase30/README.md)
+the Phase31 private region machinery, bounded admission, exact public entry and
+fast validation loop. Its [campaign reports](../implementation/phase31/README.md)
 identify the current installed checked compiler and retain
 negative experiments as well as measured wins.
 
@@ -64,8 +70,8 @@ ratios, warmup sensitivity and a distinct whole-process measurement. All 11 sele
 outputs agree. The six algorithm gaps are 111–1,391× in the original warmed JS
 window; the HVM process costs201 ms versus 69 ms. This historically established a substantial
 generated-code gap beyond diagnostic kernels, without defining a production
-average. Phases29 and30 subsequently change the emitter; use the Phase30 report
-for the current measured candidate. See Phase28's
+average. Phases29–31 subsequently change the emitter; use the Phase31 report
+for freshly measured workloads and its explicit inherited scopes. See Phase28's
 [reproduction guide](../implementation/phase28/README.md) for inputs and controls.
 
 The [Phase25 study](../implementation/phase25/generated-code-analysis.md) compares

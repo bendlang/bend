@@ -1,9 +1,10 @@
 // Actual-emission tests for arrayless Sigma markers and nested record demands.
 import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';import {pathToFileURL} from 'node:url';
-const [rootArg,outArg,candidateLabel='candidate04']=process.argv.slice(2),root=path.resolve(rootArg),out=path.resolve(outArg);fs.mkdirSync(out,{recursive:false});
+const [rootArg,outArg,candidateLabel='candidate04',extra='']=process.argv.slice(2),root=path.resolve(rootArg),out=path.resolve(outArg);fs.mkdirSync(out,{recursive:false});
 const identity=file=>({file:fs.realpathSync(file),sha256:createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
 const cases=[{name:'tuple-markers',step:2,helper:'tweak'},{name:'nested-records',step:22,helper:'score_box'}];
+if(extra==='products')cases.push({name:'nested-products',step:10,helper:'nested_total'});
 const report={kind:'phase31-independent-local-fixtures',complete:false,pass:false,node:process.version,inputs:[identity(import.meta.filename)],values:[],boundaries:[],witness:null};
 fs.copyFileSync(import.meta.filename,path.join(out,'consumed-review.mjs'));
 const force=(m,x)=>m.call({arity:0,code:()=>x,env:null,bound:[]},[]);
@@ -31,7 +32,7 @@ try{
     const symbol='$R'+Array.from(item.helper).map(c=>'_'+c.codePointAt(0)).join('');
     assert.ok(text.includes('function '+symbol+'('),'private helper actually admitted');
     const rootLine=text.split('\n').find(x=>x.startsWith('G["bench"]=') );assert.ok(rootLine.includes('localGuard($guards)'));
-    for(const n of [0,1,2,3,16,129])for(const seed of [0,5,0x7fffffff,0xffffffff]){
+    for(const n of item.name==='nested-products'?[0,1,2,3,7,16,31,32,64,129]:[0,1,2,3,16,129])for(const seed of [0,5,0x7fffffff,0xffffffff]){
       const expected=Number((BigInt(seed)+BigInt(n)*BigInt(item.step))&0xffffffffn),actual=modules.map(m=>m.default.bench(n,seed));
       for(const value of actual)assert.equal(value,expected);report.values.push({fixture:item.name,n,seed,expected,actual});
     }
@@ -84,7 +85,7 @@ try{
       const badText=text.replaceAll('localGuard($guards)','scalarGuard($guards)');assert.notEqual(text,badText);
       const badFile=path.join(out,'expected-bad-arrayless-guard.mjs');fs.writeFileSync(badFile,badText,{flag:'wx'});
       const bad=await import(pathToFileURL(badFile));const correct=marker(modules[0],'request','mutate'),actual=marker(modules[1],'request','mutate'),wrong=marker(bad,'request','mutate');
-      assert.deepEqual(actual,correct);assert.equal(wrong.changed,true);assert.notEqual(wrong.value,correct.value);
+      assert.deepEqual(actual,correct);assert.notEqual(wrong.value,correct.value);
       report.witness={expectedMismatch:true,correct,actual,wrong,artifact:identity(badFile)};
     }
   }

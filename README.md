@@ -15,43 +15,45 @@ That's Bend - and nothing else.
 This fork develops the compiler in [`selfhost/`](selfhost/README.md), on branch
 `selfhost/bootstrap`. Start with the [compiler guide](docs/BEND-IN-BEND.md).
 Ordinary compilation runs the Bend implementation without a TypeScript fallback;
-the target is pinned to **0187512, after Bend 2.0.34**.
+the target remains pinned to **0187512, after Bend 2.0.34**.
 
-The [Phase30 report](implementation/phase30/generated-program-performance.md)
-compares corresponding generated JavaScript, tests individual mechanisms on
-small fixtures, and implements bounded private scalar regions, direct helper
-calls, loops and tree traversal. The [performance guide](docs/BEND-IN-BEND-PERFORMANCE.md)
-explains the rules, fallback boundaries and fast development loop. The selected checked17 compiler is installed and passes release verification
-and all 42 ordinary/relocated CLI checks. Its [release report](implementation/phase30/release-17.md)
-binds the installed artifact and exact validation scopes.
+The [Phase31 report](implementation/phase31/closed-local-regions.md) implements
+closed local records/arrays, fully demanded private returns and direct field
+reads. The original four-pair edit-distance program is **26.83× faster** than
+Phase30 and still takes **14.28× TypeScript time**. A separate array fold improves
+17.67×. The [measured comparisons](implementation/phase31/final-measurements.md)
+keep program execution and compilation cost separate: edit-distance compilation
+adds 6.90%, and small entry/generic-row canaries have disclosed regressions.
 
-The selected compiler API agrees with pinned TypeScript on **3,026 main and
-196 broader frontend observations**. Raw shared failures remain visible;
-frontend agreement does not establish full backend or independent proof-kernel
-conformance. See [conformance](selfhost/CONFORMANCE.md) for the exact scopes.
+Checked07 is installed and passes release verification and all **42 ordinary/
+relocated CLI checks**. The
+[release report](implementation/phase31/release-07.md) binds its exact artifact,
+ordinary/relocated CLI status, fresh validation and accepted tradeoffs. The
+[performance guide](docs/BEND-IN-BEND-PERFORMANCE.md) explains the proofs, limits,
+fallback paths and fast iteration loop.
 
-The current source contains **16,778 Bend lines in 65 modules**, up **3.52%** from
-Phase29. Two new analysis records describe bounded regions and scalar trees.
-Public values keep their existing representation. The final cleanup removes
-64 implementation lines, eight functions and obsolete constructor-arm prebinding.
-These counts exclude generated images, experiment tools and evidence.
+Fresh frontend observations agree with pinned TypeScript on **3,026 main and
+196 broader cases**. The selected backend pilot preserves all 81 historical
+outcomes: **69 pass, 8 not applicable, 4 shared failures**. These scopes do not
+establish full backend or independent proof-kernel conformance; see
+[conformance](selfhost/CONFORMANCE.md).
 
-The [development workflow](docs/PHASE5_DEVELOPMENT.md) builds a genuine checked
-compiler and runs 36 short paired controls. The release preserves its checked
-parent and guarded version6 derivative. From `selfhost/`, run
-`npm run verify:release`, then `node cli.mjs FILE --run`.
-`npm run build` checks and rebuilds the default with pinned upstream.
-Independent BendTT `--verdict` is not implemented; this phase does not establish
-a new self-hosted fixed point.
+The source contains **17,014 Bend lines in 66 modules**, up **1.41%** from Phase30.
+The change reuses the existing analysis and public value representations, adding
+no new datatype declarations. Counts exclude generated images and experiment
+tooling. The [checked workflow](docs/PHASE5_DEVELOPMENT.md) builds a genuine
+checked compiler and runs 36 short paired controls; recent acquisitions took
+about 38 seconds. The release preserves its checked parent and guarded version6
+derivative. From `selfhost/`, run `npm run verify:release`, then
+`node cli.mjs FILE --run`. `npm run build` rebuilds with pinned upstream.
+Independent BendTT `--verdict` is not implemented; no new fixed point is claimed.
 
-Designs, failed experiments, measurements and promotion decisions remain linked
-from the [Phase30 index](implementation/phase30/README.md),
+Designs, failed experiments, comparisons, a [Zig history study](design/phase31/zig-lessons.md)
+and promotion decisions are linked from the [Phase31 index](implementation/phase31/README.md),
 [ledger](experiments/ledger.md) and [current strategy](experiments/STEERING.md).
-Earlier [Phase29](implementation/phase29/generated-program-fast-loop.md),
-[Phase28](implementation/phase28/broader-program-comparison.md) and
-[Phase25](implementation/phase25/generated-code-analysis.md) reports retain
-their own baselines and timing protocols. Generated-program speed, compiler
-throughput and experiment turnaround are reported separately.
+Earlier [Phase30](implementation/phase30/README.md) and
+[Phase28](implementation/phase28/broader-program-comparison.md) measurements
+retain their own baselines and scopes.
 
 ## Bend runs FAST
 
