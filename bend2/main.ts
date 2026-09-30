@@ -748,8 +748,11 @@ function book_promises(book: Bend.Book): string[] {
     if (t !== undefined && !seen.has(k)) {
       seen.add(k);
       const rs = new Set<string>();
-      for (const c of t.$ === "ADT" ? t.c : [t]) {
-        term_refs(Bend.term_lower(c.T), rs);
+      term_refs(Bend.term_lower(t.T), rs);
+      if (t.$ === "ADT") {
+        for (const c of t.c) {
+          term_refs(Bend.term_lower(c.T), rs);
+        }
       }
       term_refs(t.$ === "Def" ? t.e : undefined, rs);
       for (const r of rs) {
