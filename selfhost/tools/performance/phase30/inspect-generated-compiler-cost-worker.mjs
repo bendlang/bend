@@ -33,8 +33,11 @@ try{
   if(r.mode==='prepare'){
    report.observation=observation;const output=path.join(path.dirname(resultFile),'prepared.mjs');fs.writeFileSync(output,code,{flag:'wx'});report.output=identity(output);
    const runner=path.join(path.dirname(resultFile),'execute.mjs');fs.writeFileSync(runner,'import target from '+JSON.stringify(pathToFileURL(output).href)+';import assert from "node:assert/strict";const result=target.main();assert.equal(result,8);console.log(JSON.stringify({result}));\n',{flag:'wx'});
-   const child=spawnSync(process.execPath,['--stack-size=4096','--max-old-space-size=1024',runner],{encoding:'utf8',timeout:10000,maxBuffer:1048576});
-   report.program={status:child.status,signal:child.signal,error:child.error?String(child.error):null,stdout:child.stdout,stderr:child.stderr};assert.equal(child.status,0);assert.equal(child.error,undefined);assert.equal(child.stderr,'');assert.equal(JSON.parse(child.stdout).result,p.expectedResult);
+   const stdoutFile=path.join(path.dirname(resultFile),'program.stdout'),stderrFile=path.join(path.dirname(resultFile),'program.stderr');
+   const stdout=fs.openSync(stdoutFile,'wx'),stderr=fs.openSync(stderrFile,'wx');let child;
+   try{child=spawnSync(process.execPath,['--stack-size=4096','--max-old-space-size=1024',runner],{timeout:10000,stdio:['ignore',stdout,stderr]})}finally{fs.closeSync(stdout);fs.closeSync(stderr)}
+   const stdoutText=fs.readFileSync(stdoutFile,'utf8'),stderrText=fs.readFileSync(stderrFile,'utf8');
+   report.program={status:child.status,signal:child.signal,error:child.error?String(child.error):null,stdout:identity(stdoutFile),stderr:identity(stderrFile)};assert.equal(child.status,0);assert.equal(child.error,undefined);assert.equal(stderrText,'');assert.equal(JSON.parse(stdoutText).result,p.expectedResult);
   }
   save();
  }

@@ -1,6 +1,50 @@
 # Compiler validation
 
-The [Phase29 installed release](../implementation/phase29/generated-program-fast-loop.md)
+## Fresh Phase30 checked16 validation
+
+The selected checked16 API is
+`33545640e25beffb61639b27f4815aaeb345fda14758e1d63418cd1d0ccc0637`.
+Its [report](../implementation/phase30/generated-program-performance.md) and
+[release manifest](dist/release.json) distinguish candidate validation from the
+installed distribution. Final installation and CLI checks are still pending.
+
+[Frontend renewal](../implementation/phase30/frontend-renewal.md) agrees exactly
+with pinned TypeScript on **3,026 main observations and 196 broader observations**.
+The main raw outcomes remain **2,525 pass / 497 observed / 4 fail** on both sides;
+the broader set is **195 pass / 1 observed**. The four shared failures expect
+later emission errors. No fixture verdict was changed to make agreement pass.
+An independently audited module-layout migration admits the five added JS modules
+relative to the historical frontend reference, with all other input metadata,
+fixture paths, expected results and behavioral fields unchanged. The original
+strict manifest-comparison failure remains preserved.
+
+Fresh [integration gates](../implementation/phase30/final-integration.md) pass
+36 focused observations, 15 selected upstream JS executions, 23 libraries with
+127 points, all ten selected original library outputs, 22 compiler component
+observations and the complete HVM output. The primitive/worker suites again pass
+56,205 primitive executions, 3,759 worker executions, 144 nested-Nat observations,
+1,129 primitive guards and 40 worker guards, with their separate ordered/effect
+witnesses. New region, tree, terminal-record, exact-entry, public-callback and
+full-array controls are linked from the report. These overlapping scopes are
+not a sum of distinct conformance tests.
+
+The [renewed backend pilot](../implementation/phase30/backend-pilot-renewal.md)
+matches all 81 historical observations: 69 paired fixture passes, eight expected
+compile refusals and four shared check failures. Seventeen native cases first
+reported a shared Clang EPERM in the sandbox. The unchanged native selection
+passes in an approved execution environment outside that sandbox; both failed
+receipts remain. This is selected native CPU validation, not full backend or GPU
+coverage. An additional 811-case JavaScript campaign is designed but unexecuted.
+
+[Bounded self-emission](../implementation/phase30/bounded-self-emission.md)
+produces a new H compiler module. H prepares Base under its own API hash and
+matches the parent on one positive and one negative small compilation, including
+byte-identical positive JavaScript and result8. H is not installed. This is not
+full H conformance, an H-to-H fixed point, or independent proof validation.
+
+## Historical Phase29 validation
+
+The [Phase29 release](../implementation/phase29/generated-program-fast-loop.md)
 adds guarded native scalar inlining and a private Nat countdown loop. Fresh gates
 pass36 strict focused observations, 15 checked upstream JS fixtures, 23 libraries
 with 127 scalar points, all ten original Phase28 libraries plus the HVM program,

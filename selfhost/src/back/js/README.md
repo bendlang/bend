@@ -1,7 +1,7 @@
 # JavaScript backend
 
-`emit.bend`, `choice.bend`, `projection.bend`, `u32.bend`, `arm.bend`,
-`primitive.bend`, `worker.bend`, `foreign.bend`, `literals.bend`, and
+`emit.bend`, `choice.bend`, `projection.bend`, `u32.bend`, `region.bend`,
+`primitive.bend`, `worker.bend`, `tree.bend`, `foreign.bend`, `literals.bend`, and
 `validate.bend` are Bend2 source. Their input is the checked,
 specialized, annotated `KTerm`/`KDef` core. They emit JavaScript; they do not
 invoke another compiler.
@@ -171,5 +171,6 @@ baseline through actual `j_library` emission. It uses synthetic KDefs; ordinary
 checked corpus controls cover frontend admission separately. The
 [Phase27 report](../../../../implementation/phase27/constructor-arm-prebinding.md)
 retains the rejected inline variant, both warmup protocols and the shared helper's
-modest measured benefit. Keep the helper and generic `apply` in sync; reduced
-generic partial/copy counters do not mean the final descriptor/copy disappeared.
+modest measured benefit. Phase30 retires that helper after the later exact-entry
+runtime changed its cost. The retained test still checks ordinary descriptor and
+effect behavior; it does not require prebinding to be selected.

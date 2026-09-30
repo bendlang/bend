@@ -1,140 +1,112 @@
 # Current compiler experiment strategy
 
-The [Phase 29 compiler](../implementation/phase29/generated-program-fast-loop.md)
-targets upstream 018751270e800bc222a93dad7f257083ee53a5f7, after 2.0.34.
-Authorization covers continued compiler work and pushes to rom1504/bend
-selfhost/bootstrap. No new PR comments without an explicit request. The user now requests at least seven hours beginning2026-09-30 07:28 UTC,
-through14:28 UTC; see the Phase30 design. Preserve the103 unrelated starting paths.
+Authorization covers compiler work and pushes to `rom1504/bend` on
+`selfhost/bootstrap`. No new PR comments without an explicit request. Phase30
+began2026-09-30 07:28:01 UTC with a seven-hour minimum, through14:28:01 UTC.
+Finish the concrete release/evidence after that minimum if needed. Preserve the
+103 unrelated starting paths in `implementation/phase30/start-state.json`.
 
-## Active Phase30 campaign
+## Active Phase30 consolidation
 
-[Design](../design/phase30/direct-generated-code.md): compare saved JS, isolate
-private direct calls on a small edit-distance row, independently challenge
-semantics, then generalize only measured wins. Coordinate all clean CPU3 timings
-through the lead. Phase29 remains installed until a reviewed candidate passes.
+[Design](../design/phase30/direct-generated-code.md),
+[report](../implementation/phase30/generated-program-performance.md),
+[decisions](../implementation/phase30/decisions.md), and
+[release sequence](../design/phase30/consolidated-release.md).
+The target remains upstream `018751270e800bc222a93dad7f257083ee53a5f7`, after2.0.34.
+Checked16 is selected: API33545640, genuine parent60aa968f, source678bafd6,
+runtimefab241ae, Basec742fae9, guarded profile6. Source checkpoint73912c3;
+validation checkpoint9d89045. The default distribution API still contains29 while
+development source/runtime are16: do not claim a verified consolidated default
+before installation and CLI checks.
 
-Checked14 implements lexical scalar regions, terminal records, ordinary roots,
-bounded private binary trees, frame reuse and private-helper Let statements.
-Source is committed through b783a53; reports through44a3608. All selected fresh
-integration gates pass. **Release14 is held** after the complete ten-program
-matrix: Mandelbrot improves97.35× over29 (4.83×TS), but editdist/lexer/raytrace
-regress roughly20–24%. The27m11s batch is complete and immutable. Do not install14.
+The emitter now supports fresh argument ownership, private lexical scalar
+regions, constant native shifts, flat terminal records, nested countdowns,
+ordinary scalar roots containing loops, bounded two-child scalar trees, reused
+frames and private-helper Let statements. Unsupported shapes retain generic
+execution. Entry permission is single-use; guards retain live descriptor and
+public callback semantics. Five inherited Nat-loop scheduling/self-binding
+counterexamples are repaired. No second public value representation is added.
 
-The complete-state row now compares29/14 plus isolated ordinary dispatch,
-generic matcher restoration, fused matcher and actual-method entry variants.
-All seven variants pass196 numeric observations; independent ABI/reentry and
-alias/boundary gates pass. Generic matcher restoration also reproduces original
-io/typeName prototype observations elided by prebinding. CPU3 screening is
-parent-owned. Preserve each intervention separately before combining winners.
+Held14 is not released. Its full original-program matrix found roughly20–25%
+generic regressions despite a97× Mandelbrot gain. Seven isolated row variants
+attribute that regression to constructor-arm prebinding, not a proven V8-specific
+allocation/inlining cause. The winning delayed matcher restores generic speed;
+fused wrappers/ordinary-dispatch changes do not. Checked16 then deletes64
+implementation lines, eight functions and the obsolete arm-prebinding module.
+The cleanup has no independently established incremental speed gain.
 
-Scalar14 scaling reaches190.74× over29 and1.343×TS at8192iterations, but zero
-work regresses from guard overhead. Compiler checking is separately4.09×TS
-request time and3.14×process time. Do not infer throughput from helper speed.
-Canonical Bend source is16,836lines (+629); no simplification gain is claimed.
+Actual16 small confirmation: complete row0.444585ms, overlapping29/15 ranges;
+scalar1280.006975ms,56.83× faster than29 and4.096× TypeScript. Final ten-program,
+ordinary-check, library-generation and scaling comparisons are running in one
+exclusive slot. Original Mandelbrot so far is0.214181ms versus29's21.416666ms
+and TypeScript's0.045452ms, about100× improvement and4.71× residual overhead.
+Edit distance recovers29 speed but remains408.69× TypeScript. Do not extrapolate
+these selected cases or multiply historical incremental factors.
 
-Defer general Let emission, hoisting, guard-list cleanup, Number counters and
-owned-array prototypes; reject per-call guards and tiny F32 regions. Decisions
-and failed attempts are in the Phase30 reports. Preserve symreg's corrected
-loop refusal, all103 unrelated paths, and the distinction between B1 and H.
+Canonical Bend source:16,778 physical /14,327 nonblank lines,65 modules,
+1,844 definitions,640 laws,70 types. Net571 lines (+3.52%),82 definitions and
+two analysis records above29. Maintained runtime core233 lines, up66. This is
+a performance phase with a modest source increase, not a50% simplification.
 
-## Released frontier
+## Current correctness and self-emission scopes
 
-API 10510efd, genuine checked parent 37218b8a, guarded profile 6, source 191df20c;
-runtime 40823818 and Base c742fae9 unchanged. The compiler emits 54 identified,
-saturated native U32/F32 operations as JS expressions and turns supported scalar
-Nat countdowns into private local-slot loops. Public matchers, partial descriptors,
-argument demand and runtime representations remain. Unknown shapes fall back.
+Fresh16 frontend:3026/3026 main and196/196 broader exact observations, with an
+independently audited five-module layout migration. Original strict manifest
+failure retained. Main raw2525 pass/497 observed/4 shared fail; broader195/1.
+Shared failures expect later emission errors and are not rewritten as passes.
 
-The real Mandelbrot helper fixture improves 3.65× with longer warmup, from 1.455
-to 0.399 ms; it still costs about 234× TypeScript output. A short window suggests
-6.66× but intersects substantial warmup drift; retain both. The paired screen
-costs 4.706 s end to end, the checked build plus 36 focused gates cost 33.341 s,
-fixture emission 4.825 s and its 120-point check 0.165 s: about 43 s before
-additional feature controls.
-Acquisition durations are descriptive, not comparative compiler throughput.
+Fresh selected gates pass36 focused observations,15 upstream JS cases,
+23 libraries/127 points, ten original library outputs,22 compiler components
+and full HVM output. Primitive/worker/entry/tree/terminal/alias controls are linked
+from the report; their overlapping counts are not unique conformance totals.
 
-The report preserves all original-program results, first calls and warmup regimes.
-A 27.4% short-window regression on the evening mixed test triggers a prospective
-longer-warm follow-up: the same bytes improve1.167× there with stable timed
-halves and comparable first calls. Keep both windows. HVM whole-process cost is
-flat (196.86→198.39ms, overlapping ranges), still2.895× TypeScript. Broad integration is run
-once per surviving candidate, not on every edit. Algorithms are selected small
-inputs, not a production average, and HVM remains a whole-process measurement.
+Backend pilot has attempted all81 rows.64 match complete historical outcomes;
+17 native rows report the same Clang EPERM on both paths. Retained binaries show
+this may be the environment's pipe-capture issue; raw spawn status is unavailable.
+Keep failures and retry native only under an explicitly recorded environment
+change after timing. Historical81 itself means69 paired passes,8 paired
+unprintable-main not-applicable outcomes and4 shared check failures, not81 passes.
+The811 further JS rows are new coverage, not historically executed observations.
 
-Separate counters on compiler-produced fixture output show generic applications
-70,540 → 26,970, bound descriptors 7,730 → 60 and copied slots 142,430 → 46,390 over ten
-calls. These are named-site counts, not total heap allocation or instrumented speed.
-Canonical source: 16,207 physical / 13,839 nonblank lines, 64 modules, 1,762
-definitions, 640 laws and 68 types. The phase adds 263 lines, 36 definitions and
-two guarded emitter concepts; no new IR, datatype, cache, runtime helper or representation.
+B1 emits H in30.841 seconds in one bounded acquisition; H builds its own actual-
+hash Base cache and matches positive/negative small compilation, exact emitted
+bytes and result8. Acquisition overlapped correctness work: no historical speed
+ratio. H is not installed; no H-to-H or full H-conformance claim. The separate
+warmed-once H versus genuine TS-produced parent request comparison is prepared;
+this is not comparison with the hand-written upstream TypeScript compiler.
 
-Fresh gates pass: 36 focused exact checks, 15 upstream JS executions,
-23 libraries / 127 points, ten original libraries plus HVM, 22 actual-component
-oracles and independent scalar/ABI controls.
-Primitive controls: 56,205 scalar executions, 1,129 guards, 25 order/error observations.
-Worker controls: 3,759 scalar executions, 14 transcripts, 40 guards, two let witnesses,
-144 nested-Nat regression observations. Counts overlap and include multiple emitters.
-These scopes do not establish complete backend conformance or a new fixed point.
+## Next decisions
 
-The runtime and native emitter are unchanged. Earlier Phase 26 direct U32 decisions
-and Phase 27 selected constructor-arm prebinding remain, with their historical
-measurements separate. No whole-compiler throughput improvement is inferred.
+1. Close final clean timings before further execution, profiles, plots or
+   compression. Only root grants the measurement slot. Report every original
+   workload, sample ranges/drift and compiler costs separately.
+2. Resolve native host-process evidence, install the exact16 attempt, verify
+   its manifest and run42 ordinary/relocated CLI checks. Preserve29 in release
+   history. Optional811 new JS coverage needs its own explicit raw-outcome policy.
+3. Close all producers, verify protected paths, capture and independently reopen
+   the Phase30 capsule, update documentation/figures and push. Preserve unsuccessful
+   attempts; hashes alone and ignored files are not durable evidence.
+4. For the next optimization, isolate generic setup and record administration in
+   the retained closed-array row. That prototype still costs40.6× TypeScript;
+   its general locality/delayed-demand proof is unfinished. Tiny F32 roots and
+   per-call guards already lost. See the [remaining hypotheses](../implementation/phase30/remaining-hypotheses.md).
+5. Keep two cheap canaries in every runtime screen: scalar work and a complete
+   generic row. Build only surviving rules, then run broad transfer once stable.
+   Checked builds plus36 focused checks took35–40 seconds, fixture emission~5s;
+   these acquisition durations are not compiler-throughput comparisons.
 
-## Historical wider coverage and ordinary checking cost
+## Operating boundaries
 
-The Phase 24 release has 3,026/3,026 main frontend and 196/196 broader exact reference
-observations, plus 226 paired request histories and two fresh string checks.
-Raw main statuses remain 2,525 pass / 497 observed / 4 fail because later-emission oracles
-are observed at an earlier frontend stage. Backend pilot 81/81 exact covers 77
-execution rows, not all 2,654 eligible positive/expected-error opportunities.
+Read `experiments/README.md`. Freeze mechanisms, identities and limits before
+probes. Keep genuine checked B1, guarded derivative and generated H distinct.
+Bend `&&` is eager: use explicit `kc` fences before bounded recursive analysis.
+Preserve argument-demand ordering, parallel-Let scope, escaped aliases and
+native identities. Unsupported shapes fall back rather than weaken semantics.
 
-Supported-host TCP comparisons and Clang 16 TSan controls remain separately scoped
-historical evidence. They do not establish universal race freedom, platform
-compatibility, a new sanitizer compilation or current complete backend coverage.
-Independent BendTT --verdict, GPU/device execution and package fetching remain
-unsupported or unvalidated as documented in selfhost/CONFORMANCE.md.
-
-Last ordinary checking screen: TS 3.7370 s versus final 11.1565 s, process 2.985× and
-request 4.043× TypeScript. It used three samples/image, includes startup and manifest
-hashing, and excludes emission. It was not renewed by generated-program timing.
-No TypeScript fallback occurs in ordinary compilation. The contextual frontend,
-graph evaluator, persistent index and uniform arrays remain unchanged.
-
-## Next priorities
-
-1. Use the [fast loop](../implementation/phase29/README.md): immutable checked
-   outputs, one mechanism per ablation, independent expected results, public ABI
-   controls, clean paired screens and longer-warm confirmation. Keep failed cases
-   and both lifecycle windows; a short-window win is not convergence evidence.
-2. Resolve the shared-runtime regression before release, then build a checked
-   candidate and renew affected original programs, frontend/backend scopes and
-   installed/relocated CLI checks. Retain both scalar and generic row cases in
-   the short loop. Archive all closed producers and publish the honest matrix.
-3. Preserve sequential argument-demand boundaries, parallel-let scope, escaping
-   closure aliases, native identities and deep stack behavior. Explicit kc gates
-   are required before guarded recursion: Bend && is eager. Removing those gates
-   for fewer lines recreates the retained stack-overflow failure.
-4. Continue backend acquisition in deterministic bounded batches. Frontend
-   equality alone missed earlier backend defects. Separate candidate differences,
-   shared upstream failures, expected refusals and environment limitations.
-5. Ordinary compiler cost still includes contextual materialization, repeated
-   book traversal, dispatch and source-range validation. Use boundary witnesses
-   before another index or broad rewrite. Existing scope-index winners cannot
-   replace full definitions without a consumer-specific proof.
-6. Prefer eliminating duplicated responsibility over compressing source. Historical
-   50%/75% line-reduction targets remain unachieved. No new self-hosted fixed point,
-   independent kernel or native/device speed claim follows from this phase.
-
-## Operating rules and retained failures
-
-Read experiments/README.md. Freeze hypotheses before probes, preserve exact
-attempts and resource limits, and distinguish genuine checked B1, guarded derivative
-and self-emitted H. Unknown identities/profiles fail closed. Capsules preserve
-bytes independently; ignored paths or hashes alone are not preservation.
-
-Phase 29 keeps rejected source syntax in 02 and recognizer overflows in 03. The
-small regression fails on 03 and passes on 04; all eight previously successful
-original outputs remain byte-identical after the guard repair. Earlier rejected
-inline-arm startup regression, generic architectural trials and Phase 24 failures
-remain in linked historical reports and capsules. Do not silently recycle them
-as evidence for a new image.
+Independent BendTT `--verdict`, GPU/device execution and package fetching remain
+unsupported or unvalidated. Frontend agreement and finite backend controls are
+not proof-kernel validation or universal equivalence. Native/device speed and
+full compiler throughput are not inferred from emitted scalar helper speed.
+Historical source reductions, fixed points and speed ratios apply only to their
+recorded artifacts and protocols. No PR publication beyond the authorized fork
+push is part of this campaign.

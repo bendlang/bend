@@ -178,6 +178,15 @@ All behavioral fields and the other input identities remain exact. Raw fixture
 verdicts still include the four shared later-emission expectations; agreement
 does not turn them into successful frontend checks.
 
+The [81-row backend pilot](backend-pilot-renewal.md) also matches its complete
+historical observations: 69 paired fixture passes, eight expected compile
+refusals and four shared check failures. Seventeen native rows initially
+reported a shared Clang EPERM under the tool sandbox. The unchanged native
+selection succeeds in an approved environment outside it. Both failed attempts
+remain; the result identifies an environment boundary without proving the
+low-level cause of the rendered error. The optional additional811 JS fixtures
+remain unexecuted, so this pilot is not full backend conformance.
+
 The selected compiler also [emits its own complete source](bounded-self-emission.md)
 in a bounded acquisition: 30.841 seconds for emission, producing a 2,446,321-byte
 H module. That module passes syntax, builds its own actual-hash Base cache, and
@@ -186,24 +195,63 @@ generated JavaScript is byte-identical and returns 8. This is a new usable
 self-emission observation, not an H-to-H fixed point, full H conformance, or a
 controlled speed comparison with a historical compiler.
 
+## Renewed controlled results
+
+The complete checked16 matrix passes all13 jobs in25 minutes58 seconds.
+The [full timing report](final-timing-16.md) retains every sample, range, drift,
+input identity and output check. Median milliseconds per original program call:
+
+| Program | TypeScript | Phase29 | Checked16 | Checked16 / TS |
+| --- | ---: | ---: | ---: | ---: |
+| Mandelbrot | 0.045452 | 21.416666 | 0.214181 | 4.71× |
+| Edit distance | 4.957825 | 2034.066101 | 2026.226551 | 408.69× |
+| Tree bitonic | 0.273253 | 26.047441 | 26.938268 | 98.58× |
+| Lexer | 1.919549 | 176.054721 | 176.159110 | 91.77× |
+| Symbolic regression | 1.106572 | 106.987871 | 109.779127 | 99.21× |
+| Morning | 0.003723 | 0.227457 | 0.222019 | 59.63× |
+| Evening | 0.003152 | 0.286586 | 0.271041 | 85.98× |
+| RLE | 0.000593 | 0.044767 | 0.049376 | 83.23× |
+| Map/set | 0.023200 | 2.328559 | 2.110699 | 90.98× |
+| Raytrace | 34.225803 | 10609.546586 | 10789.490798 | 315.24× |
+
+Original Mandelbrot improves approximately100× against Phase29 in this same
+window. A separate15-second-warmup comparison measures checked16 at0.209363 ms
+and TypeScript at0.045581 ms, leaving4.59× overhead. Checked15 and16 ranges
+overlap: source cleanup preserves the win but has no established extra speedup.
+The scalar helper's8192-iteration point improves192.96× over Phase29 and costs
+1.34× TypeScript time. Its zero-work point instead costs2.73× Phase29 time:
+private-region admission has a fixed entry cost that larger work amortizes.
+
+The generic repair removes held14's large regressions: edit distance, lexer and
+raytrace now overlap Phase29 sample ranges. Their large absolute TypeScript gaps
+remain. RLE is10.30% slower than Phase29 with disjoint ranges, and symbolic
+regression is2.61% slower. Tree bitonic retains a4.15% slowdown and93.47× TS gap
+in a separate15-second-warmup window. The ordinary short-window morning,
+evening and map/set measurements have substantial within-sample drift; their
+median changes do not establish settled performance gains. No geometric mean
+is used to hide those limits or regressions.
+
+Compiler throughput is separate. Ordinary checking of the frozen compiler
+source takes10.240 seconds versus9.860 for Phase29 and2.485 for TypeScript:
+3.86% more request time than Phase29,4.12× TS. Checked library generation takes
+1.746 seconds for Mandelbrot and1.536 for edit distance, versus0.339 and0.307
+for TypeScript. The former costs5.93% more than Phase29, while edit-distance
+compilation overlaps its preceding range. Faster generated scalar programs do
+not imply faster compilation.
+
+The [small generated-compiler experiment](warmed-generated-compiler-cost.md)
+compares H with the genuine TypeScript-produced parent for the **same Bend
+compiler source**. Median warmed-once trial means are7.609 versus1.461 seconds,
+a5.21× gap, with all18 checked outputs identical. This is a code-generation
+comparison, not H against the handwritten upstream compiler. The two timed
+requests still drift in opposite directions, so it does not establish converged
+steady-state throughput. It does provide a bounded request-sized target for
+future generated-compiler profiling without requiring full self-emission.
+
 ## Release and evidence status
 
-The completed held14 transfer window establishes that the scalar result is
-not representative of all generated code. Original Mandelbrot measures
-21.473750 ms with Phase29 versus0.220591 ms with14, a97.35-fold improvement;
-pinned TypeScript measures0.045687 ms, leaving4.83-fold overhead. In the same
-transfer protocol, edit distance goes2029.575→2435.481 ms, lexer
-175.07393→210.84747 ms and tree-bitonic26.097304→31.865055 ms. These regressions
-are release blockers, not averaged away by Mandelbrot's gain. Bitonic's Phase29
-samples still show material half-window drift, so its exact ratio is provisional.
-The complete batch and diagnostic controls are retained in
-[final-timing.md](final-timing.md). Later repaired candidates will have their own
-identities and measurements; these observations will not be relabelled.
-Ray tracing independently completes at10527.867→13027.830 ms,23.75% slower;
-its one-call timed samples do not provide a useful half-window drift statistic.
-
-Final measured tables, installed-image identity, renewed frontend/backend scopes,
-source/runtime complexity, relocation checks and durable capsule references will
-be attached here when their runs close. Intermediate observations remain in the
-[campaign index](README.md); the initial pin, branch and 103 protected unrelated
-paths are frozen in [start-state.json](start-state.json).
+Installation remains pending while the final registration-free runtime
+experiment and native-environment renewal close. The
+[campaign index](README.md) links intermediate outcomes, including the retained
+[held14 matrix](final-timing.md). The initial pin, branch and103 protected
+unrelated paths are frozen in [start-state.json](start-state.json).

@@ -1,24 +1,24 @@
 # Bend2 compiler port in Bend2
 
 Use the [compiler guide](../docs/BEND-IN-BEND.md) and
-[Phase29 release report](../implementation/phase29/generated-program-fast-loop.md).
-The compiler now emits saturated native arithmetic directly and uses a private
-loop for supported Nat countdown functions. Public matchers, partial descriptors,
-argument order and runtime representations remain unchanged.
+[Phase30 report](../implementation/phase30/generated-program-performance.md).
+The selected checked16 candidate emits bounded private scalar regions, direct
+lexical helper calls, countdown loops and scalar tree traversal. Public values
+retain their representation; unsupported shapes use the ordinary emitter.
+Final performance comparison, installation and relocated CLI checks are pending.
 
-The real Mandelbrot helper fixture improves **3.65×** with longer warmup.
-The [fast-loop guide](../implementation/phase29/README.md) documents a **4.7-second**
-old/new screen and separate checked-build and integration gates. The broader
-original-program results, remaining TypeScript gaps, first calls and warmup
-sensitivity are in the report. These are generated-JavaScript measurements;
-ordinary compiler throughput was not remeasured.
+The [performance guide](../docs/BEND-IN-BEND-PERFORMANCE.md) separates small
+saved-JavaScript experiments, checked compiler iterations and broad integration.
+A checked build plus 36 focused controls took roughly 35–40 seconds during this
+campaign, with fixture emission around five seconds. These are acquisition
+durations, not a controlled compiler-throughput comparison.
 
-Fresh scoped validation includes 36 focused observations, 15 upstream JS fixtures,
-23 libraries / 127 points, all 11 selected original program outputs, 22 actual compiler
-component oracles and independent arithmetic/worker controls. Counts overlap; see
-[conformance](CONFORMANCE.md). The wider Phase24 frontend **3,026+196** and backend
-**81/81** results remain historical. Its last ordinary checking screen was
-**11.16s versus 3.74s TypeScript**, about **3×**, excluding emission.
+Fresh validation agrees with pinned TypeScript on **3,026 main and 196 broader
+frontend observations**. It also passes selected upstream JS execution,
+23 libraries / 127 points, ten original libraries, the HVM application,
+22 compiler-component observations and independent runtime/emitter controls.
+Counts overlap; [conformance](CONFORMANCE.md) keeps exact agreement, shared
+fixture failures, backend coverage and self-emission scopes distinct.
 
 The current target is upstream
 [`018751270e800bc222a93dad7f257083ee53a5f7`](https://github.com/bendlang/bend/tree/018751270e800bc222a93dad7f257083ee53a5f7),
@@ -31,9 +31,10 @@ node cli.mjs tests/conformance/typed-smoke/base-u32.bend --run
 npm run build
 ```
 
-The compiler contains 16,207 physical / 13,839 nonblank Bend lines in 64 modules.
-Phase29 adds 263 physical lines (+1.65%), 36 definitions and two guarded emitter
-mechanisms. Datatypes, IR and runtime representation are unchanged.
+The compiler contains **16,778 physical / 14,327 nonblank Bend lines in 65 modules**.
+This is 571 physical lines (+3.52%) above Phase29, with two additional analysis
+records and one net additional module. The final cleanup removes 64 implementation
+lines and eight obsolete functions. Public runtime representations are unchanged.
 The [release manifest](dist/release.json)
 binds the exact source, genuine checked parent, equality/choice-derived API, Base,
 runtime and host. Verification

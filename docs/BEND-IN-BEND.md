@@ -96,22 +96,16 @@ selected numeric workloads; the real String-returning escape helper is unchanged
 The remaining generic call/loop cost is the next target. Ordinary compiler
 throughput was not remeasured, and no new H image was built.
 
-Phase27 recognizes selected constructor arms whose explicit leading lambdas
-outnumber their live constructor fields. It directly creates the same partial
-function descriptor using `matcher1p`; outer arity, code/capture behavior and
-later-argument demand remain unchanged. Zero-field, erased, lifted, eta-short,
-unknown and exactly saturated arms keep the previous matcher. The helper
-preserves field-vector copying and unusual slice/length behavior. It is bundled
-with the runtime; use the emitter and runtime identities paired by the release.
-
-The first inline implementation passed correctness but regressed short-window
-substitution20%. The selected shared implementation removes that measured
-regression. Real compiler membership improves1.026×/1.059× under short/long
-warmup; warmed Boolean traversal improves1.042×. These modest gains add58 Bend
-lines and11 runtime lines. [Reproduction](../implementation/phase27/README.md)
-retains both timing protocols, all360 samples and the rejected candidate. The
-shared code still duplicates a small part of generic apply; keep the detailed
-`test-arm.mjs` descriptor/order controls when modifying either path.
+Phase27 introduced selected constructor-arm prebinding, with modest gains under
+its historical runtime. Its [report](../implementation/phase27/README.md) retains
+both timing protocols, all 360 samples and a rejected inline implementation.
+Phase30's exact-entry runtime made prebinding costly on generic workloads.
+An isolated comparison recovered the previous speed by restoring ordinary
+delayed matcher application. The candidate therefore removes the redundant
+recognizer and `matcher1p` bridge: 64 implementation lines and eight Bend
+functions. `test-arm.mjs` retains the descriptor/order controls. The
+[attribution report](../implementation/phase30/generic-runtime-row-diagnosis.md)
+separates that measured recovery from the subsequent source cleanup.
 
 ## Current frontend and release architecture
 

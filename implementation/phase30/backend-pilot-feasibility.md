@@ -67,3 +67,29 @@ verifies every regular-file hash by reading it back, and only then removes its
 new duplicate tree. Preserve the final reports, logs, full vectors and archives.
 Do not extract or modify old archives merely to rerun the sample. A refreshed
 81-row result remains bounded backend evidence, not full backend conformance.
+
+## Correction discovered by the fresh16 acquisition
+
+The earlier estimate incorrectly called all77 execution rows passes. Direct
+inspection of all seven historical raw reports shows **69 paired passes, eight
+paired not-applicable compile refusals and four shared raw check failures**.
+The eight refusals are the same four fixtures in JS and native lanes. Fresh16's
+first60 rows exactly reproduce every complete historical observation, including
+the four JS refusals; the overly strict campaign wrapper stopped before the21
+remaining native rows. The original failed receipt is preserved. The explicit
+[repair plan](../../design/phase30/backend-pilot-classification-repair.md)
+reanalyzes those60 without changing verdicts and acquires only the remaining21.
+This correction supersedes the77-pass prose above;81 exact observations never
+meant81 fixture passes. Execution results belong in the separate renewal report.
+
+## Final acquisition outcome
+
+The checked16 pilot is now complete in the approved execution environment:
+backend-pilot-recovered-16c/report.json preserves81 exact historical observations,
+classified69 paired fixture passes,8 not-applicable compile refusals and4 shared
+check failures. It reused60 verified rows and acquired only the remaining21
+native rows in33.931 seconds. The initial classification failure and two
+EPERM-bearing default-environment native acquisitions remain immutable. Minimal
+pipe/file native probes passed in both environments, so no particular low-level
+failure mechanism is established. This result is bounded81-row evidence and
+does not include the optional811 new JS selection or release smoke.

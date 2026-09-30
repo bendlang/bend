@@ -52,3 +52,8 @@ supervisor retains every child's raw stdout/stderr and resource accounting.
 The plan binds the reviewed supervisor/oracle, exact source/attempt artifacts,
 original emitter and frozen driver/helper closure. The earlier14 plan remains
 unexecuted and is not relabelled as this16 run.
+
+A later, separately granted [warmed small-request comparison](warmed-generated-compiler-cost.md)
+finds H5.2089× the genuine parent's request time under its fixed one-warm/two-
+timed protocol. That controlled result is distinct from the acquisition durations
+above and retains substantial within-trial change on both implementations.

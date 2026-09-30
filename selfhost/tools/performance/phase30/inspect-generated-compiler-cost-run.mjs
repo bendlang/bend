@@ -12,7 +12,7 @@ let prepared;
 if(mode==='measure'){prepared=JSON.parse(fs.readFileSync(preparedFile));assert.equal(prepared.complete,true);assert.equal(prepared.pass,true);assert.equal(prepared.mode,'prepare');assert.equal(prepared.plan.sha256,identity(planFile).sha256);inputs.push(identity(preparedFile));for(const row of prepared.rows)inputs.push(row.resultIdentity,row.observation.cache.after)}
 const report={kind:'phase30-warmed-generated-compiler-cost',complete:false,pass:false,mode,plan:identity(planFile),inputs,rows:[],scope:p.scope,
  boundaries:{request:'D.inspect library with one already loaded API; normal source/check/emission/cache processing and real ABI conversion included.',excluded:'Imports, API/ABI validation, Base preparation, output verification/persistence; warm request separately reported.',sampling:'Three alternating fresh-process trials per side, one warm and two timed requests. No steady-state claim.'}};
-const save=()=>fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n');save();fs.copyFileSync(import.meta.filename,path.join(out,'consumed-runner.mjs'));
+const save=()=>fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n');save();fs.copyFileSync(import.meta.filename,path.join(out,'consumed-runner.mjs'));fs.copyFileSync(p.worker.file,path.join(out,'consumed-worker.mjs'));
 const env={...process.env};for(const key of Object.keys(env))if(key.startsWith('BEND_')||['NODE_OPTIONS','NODE_PATH'].includes(key))delete env[key];
 try{
  verify();assert.equal(identity(process.execPath).sha256,p.node.sha256);

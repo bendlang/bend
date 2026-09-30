@@ -1970,6 +1970,21 @@ Full medians, ranges, costs and limitations are in
 [the batch report](../implementation/phase30/final-timing.md); the prior release
 frontier is superseded by this observed regression and hold.
 
+**Separately frozen checked16 renewal:** P30-026 now also records all 13 renewed
+jobs passing in 1557.58 seconds, preserving the entire held14 comparison above.
+The generic 20–24% regressions are recovered on edit distance, lexer and raytrace
+within overlapping 29/16 ranges; original Mandelbrot retains about 100× Phase29
+throughput. The registered helper at 8192 iterations is about 193× faster than 29
+and 1.34× TypeScript, a scoped scaling result. RLE remains 10.30% slower, the
+ordinary compiler request 3.86% slower, and several short points retain warmup
+ambiguity. The [checked16 report](../implementation/phase30/final-timing-16.md)
+is the canonical full table. Release remains on hold pending P30-030 and native
+backend gates; this renewal is neither pooled with 14 nor an installation claim.
+The separately frozen 15-second tree-bitonic follow-up retains a 4.15% regression
+with disjoint ranges; the apparent transfer difference is not dismissed as
+warmup alone. The separate long Mandelbrot check preserves scalar speed with
+overlapping repaired15/cleaned16 ranges and no additional cleanup speed claim.
+
 
 ## Phase 30 — exact row identifies generic constructor dispatch
 
@@ -2007,3 +2022,29 @@ structural/public evidence. Fresh five-way confirmation now passes: row16
 also overlap, preserving the earlier private-worker benefit. Do not infer
 complete backend conformance, full transfer recovery or installation. The held14
 comparison and all intermediate failures remain in the record.
+
+
+## Phase 30 — one bounded generated compiler passes its small oracle
+
+[P30-029](phase30/P30-029-bounded-generated-compiler.md) performs one exact16
+B1→H acquisition under the separately reviewed1200-second budget. It completes
+checked emission in30.841 seconds and the full preflight/ABI/Base/small-oracle
+supervisor in78.530 seconds. H creates a genuinely checked cache under its own
+hash, reproduces the positive8 and negative-check observations, and emits the
+same small-program JavaScript bytes as B1. This overlapped correctness work:
+there is no controlled historical speedup, fixed point or full H-conformance claim.
+
+A separately frozen small comparison of warmed H with its genuine TS-produced
+parent is being prepared. It retains one warm/two timed requests per trial,
+actual API-specific caches and real adapter costs; no timing or H installation
+is inferred from the functional acquisition. The first preparation's pipe-capture
+failure and consumed worker remain preserved. Exact phase/resource/artifact
+receipts and remaining scope are in the linked record.
+
+The separately granted warmed comparison is now complete: genuine parent median
+two-call mean1460.836ms, H7609.354ms, or5.2089× for the fixed small request. All18
+warm/timed output hashes pass. Parent's second timed request still improves
+11.11–11.51%; H's slows4.39–5.92%, so this is not converged throughput. The
+reference is the TS-produced implementation of the same Bend compiler, not the
+upstream TypeScript compiler itself. Full trial/range/cache/ABI evidence is in
+[the distinct cost report](../implementation/phase30/warmed-generated-compiler-cost.md).

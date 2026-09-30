@@ -13,73 +13,45 @@ That's Bend - and nothing else.
 ## Compiler written in Bend
 
 This fork develops the compiler in [`selfhost/`](selfhost/README.md), on branch
-`selfhost/bootstrap`. Start with the [compiler guide](docs/BEND-IN-BEND.md):
-from `selfhost/`, run `npm run verify:release`, then `node cli.mjs FILE --run`.
-`npm run build` checks and rebuilds the default with pinned upstream.
+`selfhost/bootstrap`. Start with the [compiler guide](docs/BEND-IN-BEND.md).
+Ordinary compilation runs the Bend implementation without a TypeScript fallback;
+the target is pinned to **0187512, after Bend 2.0.34**.
 
-The [generated-program performance guide](docs/BEND-IN-BEND-PERFORMANCE.md)
-explains private scalar regions, their fallback contract and the fast experiment,
-checked compiler and integration loops. The [Phase30 investigation](implementation/phase30/README.md)
-retains its current candidate, measurements and promotion status.
+The [Phase30 report](implementation/phase30/generated-program-performance.md)
+compares corresponding generated JavaScript, tests individual mechanisms on
+small fixtures, and implements bounded private scalar regions, direct helper
+calls, loops and tree traversal. The [performance guide](docs/BEND-IN-BEND-PERFORMANCE.md)
+explains the rules, fallback boundaries and fast development loop. Checked
+candidate16 is undergoing final performance and release validation; the report
+keeps its identity separate from the installed distribution.
 
-The [Phase29 release report](implementation/phase29/generated-program-fast-loop.md)
-adds guarded native arithmetic inlining and private Nat countdown loops to generated
-JavaScript. The real Mandelbrot helper fixture runs **3.65× faster** with longer
-warmup. A focused old/new screen takes **4.7 seconds end to end**; a checked compiler
-build plus 36 focused checks takes 33 seconds. The report gives original-program
-results, TypeScript gaps and separate first-call/warmup measurements.
+Fresh candidate16 validation agrees with pinned TypeScript on **3,026 main and
+196 broader frontend observations**. Raw shared failures remain visible;
+frontend agreement does not establish full backend or independent proof-kernel
+conformance. See [conformance](selfhost/CONFORMANCE.md) for the exact scopes.
 
-On original programs, Mandelbrot improves **2.70×** with longer warmup, ray tracing
-**1.67×**, and the lexer **1.52×**. Large TypeScript gaps remain. The report also
-retains a short-window regression that reverses with longer warmup and an unchanged
-small-interpreter process cost.
-
-The [reproduction guide](implementation/phase29/README.md) explains the fast
-experiment, checked compiler and broader integration loops. Public partial calls,
-argument order and numeric boundaries retain independent controls. A recognizer
-stack overflow discovered by the broad corpus is fixed and preserved as a regression.
-The [Phase28 comparison](implementation/phase28/broader-program-comparison.md)
-and [Phase27 report](implementation/phase27/constructor-arm-prebinding.md) remain
-historical baselines; generated-program speed and compiler throughput are separate.
-
-The [Phase26 release report](implementation/phase26/direct-u32-decisions.md)
-adds direct native U32 decisions to generated JavaScript: **11.8× faster** on the
-dense-table workload, **3.7×** on wide-key loops and **50×** on direct numeric
-decisions. These are generated-program gains, not whole-compiler speedups.
-New scoped execution/identity controls pass; the runtime and calling ABI are unchanged.
-
-The [Phase24 release report](implementation/phase24/profile-and-coverage.md)
-records further profiling and two execution fixes on **0187512, after Bend 2.0.34**:
-foreign/constructor-name collisions are rejected at emission, and native function
-names remain distinct across case and punctuation.
-
-In Phase24, all **3,026 main frontend observations** and **196 broader parser observations**
-agree exactly with pinned TypeScript. The bounded backend pilot is **81/81 exact**;
-the report distinguishes its scope from the full execution inventory. Request
-histories pass without exceptions. See [conformance](selfhost/CONFORMANCE.md) for
-raw verdicts, remaining coverage and the supported-host TCP/sanitizer evidence.
-
-Phase24 controlled ordinary checking averages **11.16s**, versus **11.73s** for the previous
-release and **3.74s** for TypeScript: **4.9% faster**, still about **3× TypeScript**.
-This three-sample screen excludes emission. Peak memory is essentially unchanged.
-The current compiler has **16,207 Bend lines in 64 modules**. Phase29 adds 263
-lines and two guarded emitter rules, with no new datatype, runtime helper or
-representation. Phase26 previously cut targeted generated numeric decision
-definitions by about87%.
+The current source contains **16,778 Bend lines in 65 modules**, up **3.52%** from
+Phase29. Two new analysis records describe bounded regions and scalar trees.
+Public values keep their existing representation. The final cleanup removes
+64 implementation lines, eight functions and obsolete constructor-arm prebinding.
+These counts exclude generated images, experiment tools and evidence.
 
 The [development workflow](docs/PHASE5_DEVELOPMENT.md) builds a genuine checked
-compiler and runs36 short paired controls. The release preserves its checked
-parent and guarded version6 derivative; ordinary compilation runs the Bend
-implementation without a TypeScript fallback. Independent BendTT `--verdict`
-validation is not implemented, and this is not a new self-hosted fixed point.
+compiler and runs 36 short paired controls. The release preserves its checked
+parent and guarded version6 derivative. From `selfhost/`, run
+`npm run verify:release`, then `node cli.mjs FILE --run`.
+`npm run build` checks and rebuilds the default with pinned upstream.
+Independent BendTT `--verdict` is not implemented; this phase does not establish
+a new self-hosted fixed point.
 
-Designs, failures and exact evidence remain linked from the
+Designs, failed experiments, measurements and promotion decisions remain linked
+from the [Phase30 index](implementation/phase30/README.md),
 [ledger](experiments/ledger.md) and [current strategy](experiments/STEERING.md).
-Historical fixed points and speed ratios apply only to their recorded artifacts.
-
-The [Phase25 generated-code study](implementation/phase25/generated-code-analysis.md)
-adds a seconds-scale paired execution loop, diagrams and measured backend
-optimization targets. Its microkernel ratios are separate from compiler throughput.
+Earlier [Phase29](implementation/phase29/generated-program-fast-loop.md),
+[Phase28](implementation/phase28/broader-program-comparison.md) and
+[Phase25](implementation/phase25/generated-code-analysis.md) reports retain
+their own baselines and timing protocols. Generated-program speed, compiler
+throughput and experiment turnaround are reported separately.
 
 ## Bend runs FAST
 
