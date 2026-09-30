@@ -88,6 +88,7 @@ function uses(t: T, i: number): number {
     case "Prj": return uses(t.h, i);
     case "Mat": return uses(t.h, i) + uses(t.m, i);
     case "Rwt": return uses(t.e, i) + uses(t.f, i);
+    case "Min": return uses(t.a, i) + uses(t.b, i);
     default: return 0;
   }
 }
@@ -141,6 +142,7 @@ function lv(g: G, top: boolean, t: T): boolean {
     case "Prj": return lv(g, true, t.h);
     case "Mat": { const h = lv(g, true, t.h); const m = lv(g, true, t.m); return h && m; }
     case "Rwt": { const e = lv(g, true, t.e); const f = lv(g, true, t.f); return e && f; }
+    case "Min": { const a = lv(g, true, t.a); const b = lv(g, true, t.b); return a && b; }
     default: return true;
   }
 }
