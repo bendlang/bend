@@ -10,3 +10,9 @@ The owner must freeze the exact derivative and measurement plan before timing.
 Failures and neutral outcomes remain evidence; no gain is presumed.
 
 Results will be linked from [the Phase32 report](../../implementation/phase32/README.md).
+
+Update: checked03 passes all focused controls and long local confirmations.
+Original four-pair edit distance improves 3.54× against checked07 in the same
+window; the remaining TypeScript ratio is 4.09×. Three independent checked
+increments improve the complete pair and fold. Source grows 57 Bend lines.
+Broad release integration is pending. [Results](../../implementation/phase32/local-representation.md).

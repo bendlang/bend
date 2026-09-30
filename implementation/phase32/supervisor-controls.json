@@ -1,0 +1,95 @@
+{
+  "kind": "phase32-independent-supervisor-expected-stops",
+  "complete": true,
+  "pass": true,
+  "scope": "Direct child RSS-limit and deadline controls; not a universal descendant-escape or OOM-prevention proof.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase32/review-supervisor-controls.py",
+      "bytes": 4029,
+      "sha256": "9e6e97490b107465b1b42af6730024e1eedbbf51406e4c8460897cedad701f9a"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase32/bounded-run.py",
+      "bytes": 4339,
+      "sha256": "860b59bce0b8c38e2e548368b14c51825bd62d8da1da200e2049737f1e0e383d"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase32/review-supervisor-child.py",
+      "bytes": 1002,
+      "sha256": "387429608fadc3edd8f1bbcf437d348dbffdf8af2d22e1001ac9ba3642fcfb37"
+    }
+  ],
+  "cases": [
+    {
+      "mode": "memory",
+      "command": [
+        "/usr/bin/python3",
+        "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase32/bounded-run.py",
+        "--seconds",
+        "5",
+        "--rss-mib",
+        "128",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/supervisor-controls-01/memory",
+        "--",
+        "/usr/bin/python3",
+        "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase32/review-supervisor-child.py",
+        "memory",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/supervisor-controls-01/memory-child.json"
+      ],
+      "expectedStoppedFor": "tree-rss-limit",
+      "pass": true,
+      "supervisorExitCode": 1,
+      "supervisorReceipt": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/supervisor-controls-01/memory/run.json",
+        "bytes": 1432,
+        "sha256": "995f5639dddfc1e463873240fda5608d69f9b87982c9df7d8854fe0f4d3a9054"
+      },
+      "childReceipt": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/supervisor-controls-01/memory-child.json",
+        "bytes": 100,
+        "sha256": "a3cd49d11b399008b356621ad23d5f63c106e67f755e4ace74083fab0796a4dc"
+      },
+      "childAbsent": true,
+      "pidObservation": null,
+      "peakTreeRssBytes": 179589120,
+      "wallSeconds": 0.10533607699926506,
+      "stoppedFor": "tree-rss-limit"
+    },
+    {
+      "mode": "deadline",
+      "command": [
+        "/usr/bin/python3",
+        "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase32/bounded-run.py",
+        "--seconds",
+        "1",
+        "--rss-mib",
+        "128",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/supervisor-controls-01/deadline",
+        "--",
+        "/usr/bin/python3",
+        "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase32/review-supervisor-child.py",
+        "deadline",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/supervisor-controls-01/deadline-child.json"
+      ],
+      "expectedStoppedFor": "deadline",
+      "pass": true,
+      "supervisorExitCode": 1,
+      "supervisorReceipt": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/supervisor-controls-01/deadline/run.json",
+        "bytes": 1430,
+        "sha256": "a034cc80e9a048e5e1adf7efad73ffc1093f9c8f9eb31fea8416a8d4e022062d"
+      },
+      "childReceipt": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/supervisor-controls-01/deadline-child.json",
+        "bytes": 102,
+        "sha256": "00a37ba338bd6fb4f6befdf71aa53cbe2c6e042116cd3b4f07deeb0d73acc957"
+      },
+      "childAbsent": true,
+      "pidObservation": null,
+      "peakTreeRssBytes": 11776000,
+      "wallSeconds": 1.011371818999578,
+      "stoppedFor": "deadline"
+    }
+  ]
+}

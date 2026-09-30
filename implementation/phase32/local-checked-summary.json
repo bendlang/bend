@@ -1,0 +1,2393 @@
+{
+  "kind": "phase32-checked-local-ladder-summary",
+  "complete": true,
+  "pass": true,
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/report.json",
+      "sha256": "48dec0cbcbc5eb8e5e04ec3e23d23df5d056036cf8550ddc55c1527ff90fe9f7",
+      "bytes": 226660
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase32/local-timing-summary.py",
+      "sha256": "7a13a6f292e07fb4bf4c7910e5ad0f1608ad27c7adbc24a8dd1347852bf10539",
+      "bytes": 6820
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-03/pair/baseline.mjs",
+      "sha256": "128d658cc174c35f05d092d1f63809c59b683a3a0c4b1f35f584dcd3cdad8845",
+      "bytes": 95697
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/0-baseline/stdout.log",
+      "sha256": "0dcf02e083969c4c67d6c7f5fa702c951adb9765c007676b5880ef50da916fbd",
+      "bytes": 966
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/0-baseline/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/0-baseline/launch.json",
+      "sha256": "8a88630faf185958518ab422d33d789c94304357a231c6737dff6ed3e62d40bc",
+      "bytes": 1906
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/1-baseline/stdout.log",
+      "sha256": "79d6795947eea534fa25502346c5ee611256d5e6d2a2ca5b160b594238818693",
+      "bytes": 943
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/1-baseline/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/1-baseline/launch.json",
+      "sha256": "d81aac0b16938a70ab9ef2d78e98ff0934b13126c14bfd1c268ab21faed86638",
+      "bytes": 1883
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/2-baseline/stdout.log",
+      "sha256": "1c54e0e5f1d8b3c37aca064024a33872c92a11b793022399b65c4d39f682d3af",
+      "bytes": 957
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/2-baseline/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/2-baseline/launch.json",
+      "sha256": "761237b14668bd484fa98dc68a701322d3d1aa2122a3eb2abb166d77793e18a6",
+      "bytes": 1897
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/3-baseline/stdout.log",
+      "sha256": "f252dfbbd69cc9b5ee07b75f8aecd6280ce26fadc24ad99bbb7ed82fdc56d562",
+      "bytes": 949
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/3-baseline/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/3-baseline/launch.json",
+      "sha256": "456811cb1cb489790a9cbe5d83dcf3be21182c4ad805f480c45e0147d2a15aa4",
+      "bytes": 1889
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/4-baseline/stdout.log",
+      "sha256": "7b118c14073ad498271fefd1d8cb750c7022422febc1e83638e726c62d62a3e0",
+      "bytes": 958
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/4-baseline/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/4-baseline/launch.json",
+      "sha256": "24b1c8c91d7513d0a66bc4875077997ae182da37ba54f88687ba304055cde9f2",
+      "bytes": 1898
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-03/pair/statements.mjs",
+      "sha256": "f8fe544d6b81064a2c55d50a9d7d7557fbf9ba00e40ed8cb63f1876a6df8932e",
+      "bytes": 96661
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/0-statements/stdout.log",
+      "sha256": "80957c089d9f1dd319bd805ea965f2abbb341038a32f45d02a16f86f1d58ab01",
+      "bytes": 953
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/0-statements/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/0-statements/launch.json",
+      "sha256": "884aae6643490dc1cff40282e2d14df0b6b5d59ed49a685a3ec1205f25fb4086",
+      "bytes": 1898
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/1-statements/stdout.log",
+      "sha256": "041057566f0378dc40d6558f0bb2551d762a9436e5678d2726997684025828fb",
+      "bytes": 953
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/1-statements/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/1-statements/launch.json",
+      "sha256": "5ef97c38b2ff9e96f0af82f13be1751756a95dc7f9ce50ede1004ad7509ba7d2",
+      "bytes": 1897
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/2-statements/stdout.log",
+      "sha256": "bc7c64c54d307cee0fa43efb3efdf257216cd57970aa4b866b1fe6dbf8ca9160",
+      "bytes": 946
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/2-statements/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/2-statements/launch.json",
+      "sha256": "5f5a04186511453572fc32d9c9145f244d033f47a3d05c2c250888518c94a9cf",
+      "bytes": 1890
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/3-statements/stdout.log",
+      "sha256": "378450ea8b2643516abac97beedee71ec0560011a0694528d4563f4ba8982da0",
+      "bytes": 960
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/3-statements/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/3-statements/launch.json",
+      "sha256": "c529f592c4095bd191b7b6ae747aaf61ad16942352a11e64ab8047820836722e",
+      "bytes": 1904
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/4-statements/stdout.log",
+      "sha256": "71e7bd50be36e787b74d14e3a361dc8048d94878037bd3e51ec33ee0e5a3dada",
+      "bytes": 960
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/4-statements/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/4-statements/launch.json",
+      "sha256": "a0b649170f4fa84d522dc204144f7c3a26550bcb0f5c2c63e06950d54cc6db24",
+      "bytes": 1904
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-03/pair/read_fusion.mjs",
+      "sha256": "50fb08a167f65c25cb62004211233ade9112e29bbe35469fc35038a5ae0ffffa",
+      "bytes": 99897
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/0-read_fusion/stdout.log",
+      "sha256": "0e0a2692ecb17ad9640f5707e1453850d17624217851aa2f7ef779c0b9bbe384",
+      "bytes": 957
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/0-read_fusion/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/0-read_fusion/launch.json",
+      "sha256": "f4915a4b349745414aad750d48ae6afccb8b704dcc43dc2e67e6bceba81fe9a6",
+      "bytes": 1904
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/1-read_fusion/stdout.log",
+      "sha256": "f0a928396c19b2932e6339aa8bf29c55cc9b5139d6d65c30a8b54c5fae91ecec",
+      "bytes": 953
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/1-read_fusion/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/1-read_fusion/launch.json",
+      "sha256": "b32c39540ff6248b10562c7e1798e930d12553426058cd1a5fa8a7786cffe201",
+      "bytes": 1899
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/2-read_fusion/stdout.log",
+      "sha256": "b7b9265b8998710a8cd102ee9e93d488db9c13f1bedb6680cacf9706ddf5f0a4",
+      "bytes": 970
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/2-read_fusion/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/2-read_fusion/launch.json",
+      "sha256": "b1815616a43b65b88bb9ce228aa7a1b79e6562d679610fbc67f824a331452b3d",
+      "bytes": 1917
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/3-read_fusion/stdout.log",
+      "sha256": "6204d1cfd0d7ba2cd27bc5b75e5a163198426a7c28c6bcd35b4052e3abd758ab",
+      "bytes": 961
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/3-read_fusion/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/3-read_fusion/launch.json",
+      "sha256": "49ad9fd398c08eba3f75ac4a16b3dfe259f79d512a18dbd57a333ef2d3cbe5a8",
+      "bytes": 1907
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/4-read_fusion/stdout.log",
+      "sha256": "627e77d28657b269650d2a5e70b5ac49025468c9c8398572172e9030eec5bc10",
+      "bytes": 954
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/4-read_fusion/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/4-read_fusion/launch.json",
+      "sha256": "dd86036619f9f82daec3b2075c33bb1eb1e943d6c3e0ce1a23a7509dbdce13a7",
+      "bytes": 1900
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-03/pair/record_vectors.mjs",
+      "sha256": "8a4e06b66e961589388fd316bad6127ec47ebf7cea87b040c182442df0f934d3",
+      "bytes": 99723
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/0-record_vectors/stdout.log",
+      "sha256": "67e8f60e940cc77ac70606a881b28059fd656efd35a4332e5a7c96a4f972bbc7",
+      "bytes": 949
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/0-record_vectors/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/0-record_vectors/launch.json",
+      "sha256": "0d6050b71555703f110ff169d804d15197c6a23f27adcdd23e67788fa1acb996",
+      "bytes": 1900
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/1-record_vectors/stdout.log",
+      "sha256": "e2961f83db655b4648c86f108e0e3ffd7247b0af24de381bfd9b46df1e32cb5b",
+      "bytes": 957
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/1-record_vectors/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/1-record_vectors/launch.json",
+      "sha256": "d3ab0066d3f3de850e0924e6fef4f1e8fc10a9093dd71b6b3ae56941c5907cf0",
+      "bytes": 1909
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/2-record_vectors/stdout.log",
+      "sha256": "0b8fa19941f3e190e68dd5f14b0022f39abf054a38b4bc38382fa5fa1fb6ad74",
+      "bytes": 956
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/2-record_vectors/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/2-record_vectors/launch.json",
+      "sha256": "102a86dc628e957b4be6dcd4d31f0c8638c935e6e7675159c66a24c382803c4d",
+      "bytes": 1908
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/3-record_vectors/stdout.log",
+      "sha256": "db2f1aa021da71b756bd9b6ca7ca09139d7851cebf45748a3c7fbd4bd0d6810d",
+      "bytes": 966
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/3-record_vectors/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/3-record_vectors/launch.json",
+      "sha256": "9d8615131f9b47a08eb9ce2ecdcc996b2858775a781e1d57e13b109a5353f284",
+      "bytes": 1919
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/4-record_vectors/stdout.log",
+      "sha256": "a6fdc8671401db806aa2d5f688848d0726f396e04d62d5f7020921f4252b824b",
+      "bytes": 965
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/4-record_vectors/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/4-record_vectors/launch.json",
+      "sha256": "6242e966fb62378cfe0ce6c5b0da163e1d803cb413b67180082b16c09d911bd7",
+      "bytes": 1918
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-03/pair/typescript.mjs",
+      "sha256": "2c9ab26e68843711fa765a7199d9eaa7efeb6ebc63ad196d0f4ebaa17398e092",
+      "bytes": 12537
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/0-typescript/stdout.log",
+      "sha256": "07b950c28cdf796505b21edbc1cd8a9dc814038a16c3b9581d22e6ac997609d5",
+      "bytes": 966
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/0-typescript/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/0-typescript/launch.json",
+      "sha256": "54b40ea49f689b8344f69a6ffa3ba73ba49e533bf132d302c694b713427b727a",
+      "bytes": 1911
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/1-typescript/stdout.log",
+      "sha256": "a9affe112a0f46120281e242cc3e1ac9df9605bacaa33cbbb6b3cddb947944ef",
+      "bytes": 968
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/1-typescript/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/1-typescript/launch.json",
+      "sha256": "81ed85ce9a4ce436b02593a2f5d42fce1ee58cdd9892766e114681e91c8ca672",
+      "bytes": 1913
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/2-typescript/stdout.log",
+      "sha256": "c8a41594230ecbeb30ea572ea79f2dbdd1e1ccc62ad29541ccb16964f2b7c951",
+      "bytes": 967
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/2-typescript/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/2-typescript/launch.json",
+      "sha256": "91c83b9dc399ad22d73ebbb362143dcc7159aaa92c2d77033943662aa6fd1aea",
+      "bytes": 1911
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/3-typescript/stdout.log",
+      "sha256": "c55d0854eb5d842bb702d3d240919fae388c8294bca6473c80e32b4eb2ebe21c",
+      "bytes": 968
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/3-typescript/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/3-typescript/launch.json",
+      "sha256": "5557f8ecb37249bf368d4c99a715ec4fbb0313ceead71a7aee7950793abcb86e",
+      "bytes": 1913
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/4-typescript/stdout.log",
+      "sha256": "896b6d6f1ff6225b85cd3b8bc8d1aa92d7c9bd42f56cddf34ccf0bc1e69a5a5d",
+      "bytes": 969
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/4-typescript/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-pair/4-typescript/launch.json",
+      "sha256": "172f9a92745afd06e032e30dbf946709f05833ecfd98f388b554ec88995e55de",
+      "bytes": 1914
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-03/fold/baseline.mjs",
+      "sha256": "48fdb504d11bc870cccb9c9fea5bfb9d7088230ace39779589ccf249db91217c",
+      "bytes": 76606
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/0-baseline/stdout.log",
+      "sha256": "7eee422a15c0d195d1335665e8838d74e0f1bce33d7c20da1d67f5e62dc50e3d",
+      "bytes": 980
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/0-baseline/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/0-baseline/launch.json",
+      "sha256": "9e668bdb027a51c87db300d88fdc579a1ad0fd3da1bba948b8d7789530028893",
+      "bytes": 1930
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/1-baseline/stdout.log",
+      "sha256": "412b654009bf11ee3915798a8fda9666d8b548bfb5bd1744daac523065579aed",
+      "bytes": 948
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/1-baseline/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/1-baseline/launch.json",
+      "sha256": "f18440bff9d8e2186f6ea306f11a2de36520773b7dd335ff7b21b7682b26beb8",
+      "bytes": 1897
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/2-baseline/stdout.log",
+      "sha256": "508884167cd7822b414fe4e2fd69d41a751dce61d6645133106dfce7dd6199e2",
+      "bytes": 979
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/2-baseline/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/2-baseline/launch.json",
+      "sha256": "cd9395a5c1ea28da9e74830f232d7792f6341a721252cc025a73a153e3ab76c5",
+      "bytes": 1928
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/3-baseline/stdout.log",
+      "sha256": "099da5cb744f0f21700f2dce7339e137eef6eeb5094960c2314a46dce9068afe",
+      "bytes": 964
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/3-baseline/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/3-baseline/launch.json",
+      "sha256": "5b222a69bc37485903fae3ac67d66b64bdba3ae0726df80c00025655e1c5639c",
+      "bytes": 1914
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/4-baseline/stdout.log",
+      "sha256": "4044cc0162b6b5e4b71a6a4c6f2545431c276802dddc068bb261eab9edb44e62",
+      "bytes": 968
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/4-baseline/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/4-baseline/launch.json",
+      "sha256": "6f77024bac6405f3ce500dbb99aed317874af03bfdf8c3483f84cc95a98276ed",
+      "bytes": 1917
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-03/fold/statements.mjs",
+      "sha256": "5905ddf711f2c739f785a5495afd7e40711486f8bc8e824fdcce428f3b77b37e",
+      "bytes": 76730
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/0-statements/stdout.log",
+      "sha256": "0f88a12bc4fefe5b76e8e09565d820d6548367a1d67ee9bf448854e3a8a324d3",
+      "bytes": 965
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/0-statements/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/0-statements/launch.json",
+      "sha256": "708c50c876001851745f3ef7924361258dc889660f0a261e106a4520d39b4030",
+      "bytes": 1919
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/1-statements/stdout.log",
+      "sha256": "03a96cb05cb40f1170d2aa8a940987b48335a814e568cfe4a63c89fcd2c40002",
+      "bytes": 978
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/1-statements/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/1-statements/launch.json",
+      "sha256": "9e030e238531c9dcfd7397be27049d67b652ea414a380c73f881ead423e2e03f",
+      "bytes": 1931
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/2-statements/stdout.log",
+      "sha256": "2ca691fb54c44c2f824801b37b0f5a88a614028ef1080eb3bbbe6ee788fd3d11",
+      "bytes": 963
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/2-statements/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/2-statements/launch.json",
+      "sha256": "a81a3f6529695141f6123f5a3d44c48b94f2a35b368eaf42b9f503bd2ea3c7a8",
+      "bytes": 1916
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/3-statements/stdout.log",
+      "sha256": "2cc18a8e8c4f7dc243f9530ac2e8e41bead58761acf2ea20d25298b3e2734ee1",
+      "bytes": 964
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/3-statements/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/3-statements/launch.json",
+      "sha256": "eb3e17b2d7b5601bac0caa8a473b13b4e94517d50acf59c4593dfda7ccbc6db9",
+      "bytes": 1917
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/4-statements/stdout.log",
+      "sha256": "484506522b545333178918520dc525c84ad2cc0a7fbb4477b5a75f11f58ce48d",
+      "bytes": 974
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/4-statements/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/4-statements/launch.json",
+      "sha256": "8f092f5b004e0dd95ac6d1dbe65ee164174d6a43d4dfca52a2832dcc2260776a",
+      "bytes": 1927
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-03/fold/read_fusion.mjs",
+      "sha256": "8c8805c4294bf8beed372a3316b02daa72385792714a1d73d116080c1ea845a3",
+      "bytes": 77475
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/0-read_fusion/stdout.log",
+      "sha256": "45a06b51c6036ae83e37452f5d902c12db5e47185f11de2616cd6f060ef82dc9",
+      "bytes": 979
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/0-read_fusion/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/0-read_fusion/launch.json",
+      "sha256": "4cd5abffca991cfe4dcda13a5202ec2d29d5fe378de798578d59f396a3fa0ac7",
+      "bytes": 1933
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/1-read_fusion/stdout.log",
+      "sha256": "8d2c48a21a646faa78b49b8b6428ed1b1a31d8f2f513a31554ee41fcb3865091",
+      "bytes": 965
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/1-read_fusion/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/1-read_fusion/launch.json",
+      "sha256": "e85d948253293dbff7043cf7c186004a4d512cf7883d4673a65c10754f6dbd5a",
+      "bytes": 1920
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/2-read_fusion/stdout.log",
+      "sha256": "cd5a31b80fe675ef352ce5b92a5ea5536288921b24fad95d05358bce12695fc3",
+      "bytes": 979
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/2-read_fusion/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/2-read_fusion/launch.json",
+      "sha256": "a089a2f138645e08737bf138de55da6b720e9cea4220537d8b90f1627a683833",
+      "bytes": 1935
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/3-read_fusion/stdout.log",
+      "sha256": "9afbd06790837d71b0b9a9b722ccff1672b81a6e65f365e5aea36126ae9d7a7a",
+      "bytes": 962
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/3-read_fusion/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/3-read_fusion/launch.json",
+      "sha256": "e3ab1a5adc1684a05f3fa0fa4a49e9a3fe9c802de842870ab709e3b610196fc6",
+      "bytes": 1916
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/4-read_fusion/stdout.log",
+      "sha256": "63c81753bc91ce69835d7252787af4be126b505374f4cbeab458ca56e5ecfd66",
+      "bytes": 979
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/4-read_fusion/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/4-read_fusion/launch.json",
+      "sha256": "1a615fe7ee0ca007e3590bed6b7e8db44f7b3216db41252400455d1f82e54ee9",
+      "bytes": 1935
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-03/fold/record_vectors.mjs",
+      "sha256": "a5c4c167eb3bae95be39c23438533b44f7923da457eaac2ed88159b6665f476b",
+      "bytes": 77433
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/0-record_vectors/stdout.log",
+      "sha256": "1ba20eae9275739f662be71e4bacd35dcd384fd5658b3680e93ac6433089c5f3",
+      "bytes": 977
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/0-record_vectors/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/0-record_vectors/launch.json",
+      "sha256": "31423ffceef2de4bf54d1023d0d56017bf4e182d7d425ac02bd9b18877d9805c",
+      "bytes": 1939
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/1-record_vectors/stdout.log",
+      "sha256": "ea0b243a3516dbb3251f8a8c40d864d8495f5dc6c3561157102aec736d1e1fad",
+      "bytes": 977
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/1-record_vectors/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/1-record_vectors/launch.json",
+      "sha256": "5a324c822e220948292c42ce906b713aacc0af74c83e8fc7f66cc12d611451e7",
+      "bytes": 1938
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/2-record_vectors/stdout.log",
+      "sha256": "c75d574ad82eeba365aca62ef468d8abf9c0239ceccbad9bbd8cfd25dde66b0f",
+      "bytes": 968
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/2-record_vectors/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/2-record_vectors/launch.json",
+      "sha256": "f020d770f4d0a3194bf1f4e76b8b792c3316ecc7f26ed87a6dcfb65b4f6f67ec",
+      "bytes": 1930
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/3-record_vectors/stdout.log",
+      "sha256": "85e19e349e0a2eb1f5e97b18683b3f71ac1528c808117c89ba29b0a637711057",
+      "bytes": 977
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/3-record_vectors/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/3-record_vectors/launch.json",
+      "sha256": "da8d6fe7c429c37a6282f54e974b6b40a1ed68bac539fc52bed462e9d839f2d7",
+      "bytes": 1938
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/4-record_vectors/stdout.log",
+      "sha256": "f7be706336a30feb90fb9881b5d592c391e961af6244a2a744baef0ddffeeb86",
+      "bytes": 977
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/4-record_vectors/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/4-record_vectors/launch.json",
+      "sha256": "2e4a1f67df8fa05677761e3fb4c34865a6b2ab66441f3b9a426afdcdcae8e3c9",
+      "bytes": 1939
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-03/fold/typescript.mjs",
+      "sha256": "591c3e3a895f4092a80eac58fef2ea4ecd15f59c01433fc69ce09143055e2444",
+      "bytes": 5191
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/0-typescript/stdout.log",
+      "sha256": "aa71a337294e9b4aaef4ac4d496720f86e4eba1b6fe2e17d846630fa2993cfc5",
+      "bytes": 985
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/0-typescript/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/0-typescript/launch.json",
+      "sha256": "e3b63fe3bdc294178f517add3db1945abf8e8d7a3f083a07a65d005ebe49a0eb",
+      "bytes": 1938
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/1-typescript/stdout.log",
+      "sha256": "e86bc91c9127de53f9871cee93ead530f5a57c13bb7b1bd8aa46bab79070b631",
+      "bytes": 978
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/1-typescript/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/1-typescript/launch.json",
+      "sha256": "362bd41ca1cc1660217d5d33c4de1e243e819aa31195aaa7400c44383b6f461c",
+      "bytes": 1931
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/2-typescript/stdout.log",
+      "sha256": "69e61a75b7c5e7726a4edb43ccffc885da10c85d25ba61ee4ec2d897e076b2b0",
+      "bytes": 970
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/2-typescript/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/2-typescript/launch.json",
+      "sha256": "eeb80f4611a3570bfbde83a0f89a6573fdf52648f4358a3dc980ffaee9ce1a4c",
+      "bytes": 1923
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/3-typescript/stdout.log",
+      "sha256": "4a4b840b8e21153ea6ad250307077a51d2670c3af6a39a47a1b72511a2618af3",
+      "bytes": 969
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/3-typescript/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/3-typescript/launch.json",
+      "sha256": "0816ef356f4634d64f591127c14d6c1c160a5b74a7924c83606f70a660a506e5",
+      "bytes": 1922
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/4-typescript/stdout.log",
+      "sha256": "b007d1a689284c6a6244dd4f58bbe54aae02d88491625ffb4388982f28570f7b",
+      "bytes": 969
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/4-typescript/stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-confirm-03/local-fold/4-typescript/launch.json",
+      "sha256": "7634b98b1c3bd6db9927c8ed0202b0872577383bb2d92f1c0a425ff92d4f8ec6",
+      "bytes": 1921
+    }
+  ],
+  "protocol": {
+    "samples": 5,
+    "warmupCalls": 100,
+    "warmupMs": 3000,
+    "calibrationMs": 50,
+    "targetMs": 300,
+    "timeout": 120
+  },
+  "timedProcesses": 50,
+  "wallSeconds": 210.63178870299998,
+  "node": "v24.18.0",
+  "nodeArgs": [
+    "--stack-size=4096",
+    "--max-old-space-size=1024"
+  ],
+  "executionToolSha256": "5f0bd03daa7b256543c679099441bc7b559a6e6b1bef1315f2f250a102ab67fe",
+  "cases": {
+    "local-pair": {
+      "point": {
+        "args": [
+          0
+        ],
+        "expected": 1866542166,
+        "warmupCalls": 100,
+        "warmupMs": 3000,
+        "calibrationMs": 50,
+        "exportName": "bench"
+      },
+      "variants": {
+        "baseline": {
+          "timeMs": {
+            "median": 18.534792374999995,
+            "min": 17.26691012500001,
+            "max": 18.839951125,
+            "samples": [
+              18.534792374999995,
+              18.839951125,
+              17.372621437499987,
+              17.26691012500001,
+              18.556375000000003
+            ]
+          },
+          "firstCallMs": {
+            "median": 54.441131999999996,
+            "min": 48.77284299999998,
+            "max": 55.68597099999998,
+            "samples": [
+              51.847086000000004,
+              54.441131999999996,
+              55.68597099999998,
+              48.77284299999998,
+              55.26998599999999
+            ]
+          },
+          "importMs": {
+            "median": 20.656948999999997,
+            "min": 20.367485000000002,
+            "max": 22.061899999999994,
+            "samples": [
+              21.531336000000003,
+              22.061899999999994,
+              20.656948999999997,
+              20.469791,
+              20.367485000000002
+            ]
+          },
+          "peakRssKiB": 83844,
+          "processPeakRssKiB": [
+            83308,
+            83440,
+            83296,
+            83844,
+            83372
+          ],
+          "halfDriftPercent": {
+            "median": 1.2918037206324229,
+            "min": 0.002726128049657106,
+            "max": 5.358247572088337,
+            "samples": [
+              5.358247572088337,
+              1.2918037206324229,
+              0.7838994566103263,
+              0.002726128049657106,
+              1.926871472252123
+            ]
+          },
+          "observations": [
+            {
+              "trial": 0,
+              "repetitions": 16,
+              "warmCalls": 166,
+              "warmMs": 3008.0707469999998,
+              "halves": [
+                {
+                  "calls": 8,
+                  "ms": 144.38437000000022
+                },
+                {
+                  "calls": 8,
+                  "ms": 152.12084200000027
+                }
+              ],
+              "halfDriftPercent": 5.358247572088337
+            },
+            {
+              "trial": 1,
+              "repetitions": 16,
+              "warmCalls": 162,
+              "warmMs": 3013.1922569999997,
+              "halves": [
+                {
+                  "calls": 8,
+                  "ms": 149.725997
+                },
+                {
+                  "calls": 8,
+                  "ms": 151.660163
+                }
+              ],
+              "halfDriftPercent": 1.2918037206324229
+            },
+            {
+              "trial": 2,
+              "repetitions": 16,
+              "warmCalls": 162,
+              "warmMs": 3009.859467,
+              "halves": [
+                {
+                  "calls": 8,
+                  "ms": 138.4125210000002
+                },
+                {
+                  "calls": 8,
+                  "ms": 139.49753599999985
+                }
+              ],
+              "halfDriftPercent": 0.7838994566103263
+            },
+            {
+              "trial": 3,
+              "repetitions": 16,
+              "warmCalls": 175,
+              "warmMs": 3008.76344,
+              "halves": [
+                {
+                  "calls": 8,
+                  "ms": 138.10796600000003
+                },
+                {
+                  "calls": 8,
+                  "ms": 138.11173099999996
+                }
+              ],
+              "halfDriftPercent": 0.002726128049657106
+            },
+            {
+              "trial": 4,
+              "repetitions": 16,
+              "warmCalls": 162,
+              "warmMs": 3016.515329,
+              "halves": [
+                {
+                  "calls": 8,
+                  "ms": 147.0079370000003
+                },
+                {
+                  "calls": 8,
+                  "ms": 149.84059099999968
+                }
+              ],
+              "halfDriftPercent": 1.926871472252123
+            }
+          ],
+          "sameWindowTimesTypeScript": 14.234619367674851
+        },
+        "statements": {
+          "timeMs": {
+            "median": 8.879799705882359,
+            "min": 8.400308205882352,
+            "max": 9.174923264705873,
+            "samples": [
+              8.91542832352942,
+              8.879799705882359,
+              8.400308205882352,
+              8.507521264705876,
+              9.174923264705873
+            ]
+          },
+          "firstCallMs": {
+            "median": 33.84864,
+            "min": 32.893964,
+            "max": 34.367896,
+            "samples": [
+              34.367896,
+              34.23147399999999,
+              32.893964,
+              33.02675099999999,
+              33.84864
+            ]
+          },
+          "importMs": {
+            "median": 21.524375,
+            "min": 20.934626999999992,
+            "max": 23.610147999999995,
+            "samples": [
+              21.633179999999996,
+              21.524375,
+              21.091296,
+              20.934626999999992,
+              23.610147999999995
+            ]
+          },
+          "peakRssKiB": 86376,
+          "processPeakRssKiB": [
+            86092,
+            86376,
+            86096,
+            84484,
+            86280
+          ],
+          "halfDriftPercent": {
+            "median": 0.6661864490196789,
+            "min": -5.934374028349332,
+            "max": 4.459070911762009,
+            "samples": [
+              0.6661864490196789,
+              -5.934374028349332,
+              0.7985010682060922,
+              -0.8238566773923095,
+              4.459070911762009
+            ]
+          },
+          "observations": [
+            {
+              "trial": 0,
+              "repetitions": 34,
+              "warmCalls": 323,
+              "warmMs": 3001.441782,
+              "halves": [
+                {
+                  "calls": 17,
+                  "ms": 151.0342939999996
+                },
+                {
+                  "calls": 17,
+                  "ms": 152.04046400000016
+                }
+              ],
+              "halfDriftPercent": 0.6661864490196789
+            },
+            {
+              "trial": 1,
+              "repetitions": 34,
+              "warmCalls": 330,
+              "warmMs": 3001.379593,
+              "halves": [
+                {
+                  "calls": 17,
+                  "ms": 155.54393700000037
+                },
+                {
+                  "calls": 17,
+                  "ms": 146.31337800000028
+                }
+              ],
+              "halfDriftPercent": -5.934374028349332
+            },
+            {
+              "trial": 2,
+              "repetitions": 34,
+              "warmCalls": 347,
+              "warmMs": 3000.460809,
+              "halves": [
+                {
+                  "calls": 17,
+                  "ms": 142.21220800000037
+                },
+                {
+                  "calls": 17,
+                  "ms": 143.34777399999984
+                }
+              ],
+              "halfDriftPercent": 0.7985010682060922
+            },
+            {
+              "trial": 3,
+              "repetitions": 34,
+              "warmCalls": 344,
+              "warmMs": 3003.0394,
+              "halves": [
+                {
+                  "calls": 17,
+                  "ms": 145.20171200000004
+                },
+                {
+                  "calls": 17,
+                  "ms": 144.0054580000001
+                }
+              ],
+              "halfDriftPercent": -0.8238566773923095
+            },
+            {
+              "trial": 4,
+              "repetitions": 34,
+              "warmCalls": 313,
+              "warmMs": 3001.3015219999997,
+              "halves": [
+                {
+                  "calls": 17,
+                  "ms": 152.54309999999987
+                },
+                {
+                  "calls": 17,
+                  "ms": 159.34510499999988
+                }
+              ],
+              "halfDriftPercent": 4.459070911762009
+            }
+          ],
+          "sameWindowTimesTypeScript": 6.819637701737488
+        },
+        "read_fusion": {
+          "timeMs": {
+            "median": 6.5403757173913,
+            "min": 6.505981456521745,
+            "max": 7.2593594565217385,
+            "samples": [
+              7.1875125,
+              6.5403757173913,
+              7.2593594565217385,
+              6.505981456521745,
+              6.531964673913051
+            ]
+          },
+          "firstCallMs": {
+            "median": 25.753127000000006,
+            "min": 24.566087999999993,
+            "max": 28.549094999999994,
+            "samples": [
+              25.753127000000006,
+              25.670303000000004,
+              28.075007999999997,
+              24.566087999999993,
+              28.549094999999994
+            ]
+          },
+          "importMs": {
+            "median": 21.848109,
+            "min": 20.690387,
+            "max": 24.643994000000006,
+            "samples": [
+              21.379932999999994,
+              21.848109,
+              24.643994000000006,
+              20.690387,
+              22.584227
+            ]
+          },
+          "peakRssKiB": 89352,
+          "processPeakRssKiB": [
+            89352,
+            83152,
+            82872,
+            82780,
+            82996
+          ],
+          "halfDriftPercent": {
+            "median": 0.39816536127887936,
+            "min": -1.3554511240054357,
+            "max": 2.890801135559151,
+            "samples": [
+              2.890801135559151,
+              1.6662781610430777,
+              -0.6666063267940503,
+              0.39816536127887936,
+              -1.3554511240054357
+            ]
+          },
+          "observations": [
+            {
+              "trial": 0,
+              "repetitions": 46,
+              "warmCalls": 418,
+              "warmMs": 3001.032979,
+              "halves": [
+                {
+                  "calls": 23,
+                  "ms": 162.92981699999973
+                },
+                {
+                  "calls": 23,
+                  "ms": 167.63979400000017
+                }
+              ],
+              "halfDriftPercent": 2.890801135559151
+            },
+            {
+              "trial": 1,
+              "repetitions": 46,
+              "warmCalls": 446,
+              "warmMs": 3003.9955160000004,
+              "halves": [
+                {
+                  "calls": 23,
+                  "ms": 149.16129
+                },
+                {
+                  "calls": 23,
+                  "ms": 151.64673200000016
+                }
+              ],
+              "halfDriftPercent": 1.6662781610430777
+            },
+            {
+              "trial": 2,
+              "repetitions": 46,
+              "warmCalls": 404,
+              "warmMs": 3007.6070480000003,
+              "halves": [
+                {
+                  "calls": 23,
+                  "ms": 167.4846090000001
+                },
+                {
+                  "calls": 23,
+                  "ms": 166.3681459999998
+                }
+              ],
+              "halfDriftPercent": -0.6666063267940503
+            },
+            {
+              "trial": 3,
+              "repetitions": 46,
+              "warmCalls": 449,
+              "warmMs": 3000.7416869999997,
+              "halves": [
+                {
+                  "calls": 23,
+                  "ms": 149.31484699999965
+                },
+                {
+                  "calls": 23,
+                  "ms": 149.9093670000002
+                }
+              ],
+              "halfDriftPercent": 0.39816536127887936
+            },
+            {
+              "trial": 4,
+              "repetitions": 46,
+              "warmCalls": 451,
+              "warmMs": 3005.001509,
+              "halves": [
+                {
+                  "calls": 23,
+                  "ms": 151.2354790000004
+                },
+                {
+                  "calls": 23,
+                  "ms": 149.1855559999999
+                }
+              ],
+              "halfDriftPercent": -1.3554511240054357
+            }
+          ],
+          "sameWindowTimesTypeScript": 5.022972848847385
+        },
+        "record_vectors": {
+          "timeMs": {
+            "median": 4.925421333333331,
+            "min": 4.885708133333333,
+            "max": 5.432316999999997,
+            "samples": [
+              4.996501216666661,
+              4.925421333333331,
+              5.432316999999997,
+              4.887691600000001,
+              4.885708133333333
+            ]
+          },
+          "firstCallMs": {
+            "median": 21.273520000000005,
+            "min": 21.233828000000003,
+            "max": 22.128591,
+            "samples": [
+              22.128591,
+              21.233828000000003,
+              21.267014000000003,
+              21.509177000000008,
+              21.273520000000005
+            ]
+          },
+          "importMs": {
+            "median": 20.951457999999995,
+            "min": 20.816159,
+            "max": 24.444615,
+            "samples": [
+              21.568737,
+              20.816159,
+              24.444615,
+              20.951457999999995,
+              20.90293100000001
+            ]
+          },
+          "peakRssKiB": 83472,
+          "processPeakRssKiB": [
+            81704,
+            81728,
+            83472,
+            81744,
+            81620
+          ],
+          "halfDriftPercent": {
+            "median": 0.1945776935942778,
+            "min": -1.8292171946439395,
+            "max": 1.4389990896924498,
+            "samples": [
+              1.4389990896924498,
+              -1.8292171946439395,
+              0.5542557250250546,
+              -0.2525385937376723,
+              0.1945776935942778
+            ]
+          },
+          "observations": [
+            {
+              "trial": 0,
+              "repetitions": 60,
+              "warmCalls": 567,
+              "warmMs": 3004.181992,
+              "halves": [
+                {
+                  "calls": 30,
+                  "ms": 148.80134499999986
+                },
+                {
+                  "calls": 30,
+                  "ms": 150.94259499999998
+                }
+              ],
+              "halfDriftPercent": 1.4389990896924498
+            },
+            {
+              "trial": 1,
+              "repetitions": 60,
+              "warmCalls": 595,
+              "warmMs": 3004.490624,
+              "halves": [
+                {
+                  "calls": 30,
+                  "ms": 149.1036170000002
+                },
+                {
+                  "calls": 30,
+                  "ms": 146.37618800000018
+                }
+              ],
+              "halfDriftPercent": -1.8292171946439395
+            },
+            {
+              "trial": 2,
+              "repetitions": 60,
+              "warmCalls": 548,
+              "warmMs": 3003.580553,
+              "halves": [
+                {
+                  "calls": 30,
+                  "ms": 162.4934049999997
+                },
+                {
+                  "calls": 30,
+                  "ms": 163.39403400000037
+                }
+              ],
+              "halfDriftPercent": 0.5542557250250546
+            },
+            {
+              "trial": 3,
+              "repetitions": 60,
+              "warmCalls": 601,
+              "warmMs": 3001.969839,
+              "halves": [
+                {
+                  "calls": 30,
+                  "ms": 146.78825700000016
+                },
+                {
+                  "calls": 30,
+                  "ms": 146.41756000000032
+                }
+              ],
+              "halfDriftPercent": -0.2525385937376723
+            },
+            {
+              "trial": 4,
+              "repetitions": 60,
+              "warmCalls": 603,
+              "warmMs": 3002.337275,
+              "halves": [
+                {
+                  "calls": 30,
+                  "ms": 146.4068129999996
+                },
+                {
+                  "calls": 30,
+                  "ms": 146.69168799999989
+                }
+              ],
+              "halfDriftPercent": 0.1945776935942778
+            }
+          ],
+          "sameWindowTimesTypeScript": 3.782696697481918
+        },
+        "typescript": {
+          "timeMs": {
+            "median": 1.3020925882352943,
+            "min": 1.2333679705882352,
+            "max": 1.3728884831932762,
+            "samples": [
+              1.2509949495798316,
+              1.3728884831932762,
+              1.3326726806722686,
+              1.2333679705882352,
+              1.3020925882352943
+            ]
+          },
+          "firstCallMs": {
+            "median": 17.672030000000007,
+            "min": 17.592226999999994,
+            "max": 23.722849000000004,
+            "samples": [
+              23.722849000000004,
+              17.608431000000003,
+              17.592226999999994,
+              18.144288999999993,
+              17.672030000000007
+            ]
+          },
+          "importMs": {
+            "median": 1.0859660000000062,
+            "min": 1.0754260000000002,
+            "max": 1.974263999999998,
+            "samples": [
+              1.974263999999998,
+              1.0802480000000045,
+              1.0859660000000062,
+              1.099967999999997,
+              1.0754260000000002
+            ]
+          },
+          "peakRssKiB": 97448,
+          "processPeakRssKiB": [
+            94832,
+            97448,
+            96848,
+            96756,
+            96932
+          ],
+          "halfDriftPercent": {
+            "median": 0.06528642119736361,
+            "min": -10.604285995675145,
+            "max": 0.9301216779840749,
+            "samples": [
+              0.06528642119736361,
+              -0.9565660241346197,
+              0.9301216779840749,
+              0.6456262768080645,
+              -10.604285995675145
+            ]
+          },
+          "observations": [
+            {
+              "trial": 0,
+              "repetitions": 238,
+              "warmCalls": 2305,
+              "warmMs": 3000.509113,
+              "halves": [
+                {
+                  "calls": 119,
+                  "ms": 148.79817000000003
+                },
+                {
+                  "calls": 119,
+                  "ms": 148.8953150000002
+                }
+              ],
+              "halfDriftPercent": 0.06528642119736361
+            },
+            {
+              "trial": 1,
+              "repetitions": 238,
+              "warmCalls": 2378,
+              "warmMs": 3000.785639,
+              "halves": [
+                {
+                  "calls": 119,
+                  "ms": 164.13054199999988
+                },
+                {
+                  "calls": 119,
+                  "ms": 162.56052499999987
+                }
+              ],
+              "halfDriftPercent": -0.9565660241346197
+            },
+            {
+              "trial": 2,
+              "repetitions": 238,
+              "warmCalls": 2176,
+              "warmMs": 3000.690858,
+              "halves": [
+                {
+                  "calls": 119,
+                  "ms": 157.82386700000006
+                },
+                {
+                  "calls": 119,
+                  "ms": 159.2918209999998
+                }
+              ],
+              "halfDriftPercent": 0.9301216779840749
+            },
+            {
+              "trial": 3,
+              "repetitions": 238,
+              "warmCalls": 2384,
+              "warmMs": 3001.299629,
+              "halves": [
+                {
+                  "calls": 119,
+                  "ms": 146.27688399999988
+                },
+                {
+                  "calls": 119,
+                  "ms": 147.22128599999996
+                }
+              ],
+              "halfDriftPercent": 0.6456262768080645
+            },
+            {
+              "trial": 4,
+              "repetitions": 238,
+              "warmCalls": 2352,
+              "warmMs": 3001.752835,
+              "halves": [
+                {
+                  "calls": 119,
+                  "ms": 163.60142499999984
+                },
+                {
+                  "calls": 119,
+                  "ms": 146.25266199999987
+                }
+              ],
+              "halfDriftPercent": -10.604285995675145
+            }
+          ],
+          "sameWindowTimesTypeScript": 1.0
+        }
+      },
+      "comparisons": {
+        "statementBindings": {
+          "before": "baseline",
+          "after": "statements",
+          "speedup": 2.087298473942127,
+          "timeSavedPercent": 52.09118329342839,
+          "newRangeEntirelyFaster": true,
+          "rangesOverlap": false
+        },
+        "arrayReadTupleFusion": {
+          "before": "statements",
+          "after": "read_fusion",
+          "speedup": 1.3576895410259646,
+          "timeSavedPercent": 26.345458974050107,
+          "newRangeEntirelyFaster": true,
+          "rangesOverlap": false
+        },
+        "privateRecordVectorsAndDirectSigma": {
+          "before": "read_fusion",
+          "after": "record_vectors",
+          "speedup": 1.3278814693737138,
+          "timeSavedPercent": 24.692073572527296,
+          "newRangeEntirelyFaster": true,
+          "rangesOverlap": false
+        },
+        "combinedVsBaseline": {
+          "before": "baseline",
+          "after": "record_vectors",
+          "speedup": 3.7630876874560455,
+          "timeSavedPercent": 73.42607765071698,
+          "newRangeEntirelyFaster": true,
+          "rangesOverlap": false
+        }
+      }
+    },
+    "local-fold": {
+      "point": {
+        "args": [
+          4096,
+          17
+        ],
+        "expected": 2339999928,
+        "warmupCalls": 100,
+        "warmupMs": 3000,
+        "calibrationMs": 50,
+        "exportName": "bench"
+      },
+      "variants": {
+        "baseline": {
+          "timeMs": {
+            "median": 0.6505302215053762,
+            "min": 0.6428975569892476,
+            "max": 0.6546889053763436,
+            "samples": [
+              0.6505302215053762,
+              0.6542264989247312,
+              0.6444943784946239,
+              0.6546889053763436,
+              0.6428975569892476
+            ]
+          },
+          "firstCallMs": {
+            "median": 11.19310999999999,
+            "min": 11.049993999999998,
+            "max": 12.166272000000006,
+            "samples": [
+              12.166272000000006,
+              11.049993999999998,
+              11.966837999999996,
+              11.099542,
+              11.19310999999999
+            ]
+          },
+          "importMs": {
+            "median": 20.022881999999996,
+            "min": 19.79929,
+            "max": 22.280821000000003,
+            "samples": [
+              20.022881999999996,
+              20.493657,
+              22.280821000000003,
+              19.806880000000007,
+              19.79929
+            ]
+          },
+          "peakRssKiB": 75648,
+          "processPeakRssKiB": [
+            75648,
+            75180,
+            75192,
+            75484,
+            75532
+          ],
+          "halfDriftPercent": {
+            "median": -0.11711279857681278,
+            "min": -0.9188442247619277,
+            "max": 0.1461504721553153,
+            "samples": [
+              -0.11711279857681278,
+              -0.05443271586944576,
+              -0.9188442247619277,
+              -0.40452925485836566,
+              0.1461504721553153
+            ]
+          },
+          "observations": [
+            {
+              "trial": 0,
+              "repetitions": 465,
+              "warmCalls": 4792,
+              "warmMs": 3000.1048520000004,
+              "halves": [
+                {
+                  "calls": 232,
+                  "ms": 150.98803499999985
+                },
+                {
+                  "calls": 233,
+                  "ms": 151.46125699999993
+                }
+              ],
+              "halfDriftPercent": -0.11711279857681278
+            },
+            {
+              "trial": 1,
+              "repetitions": 465,
+              "warmCalls": 4714,
+              "warmMs": 3000.300003,
+              "halves": [
+                {
+                  "calls": 232,
+                  "ms": 151.80177400000002
+                },
+                {
+                  "calls": 233,
+                  "ms": 152.373106
+                }
+              ],
+              "halfDriftPercent": -0.05443271586944576
+            },
+            {
+              "trial": 2,
+              "repetitions": 465,
+              "warmCalls": 4640,
+              "warmMs": 3000.2461869999997,
+              "halves": [
+                {
+                  "calls": 232,
+                  "ms": 150.19309499999963
+                },
+                {
+                  "calls": 233,
+                  "ms": 149.45449000000008
+                }
+              ],
+              "halfDriftPercent": -0.9188442247619277
+            },
+            {
+              "trial": 3,
+              "repetitions": 465,
+              "warmCalls": 4710,
+              "warmMs": 3000.245582,
+              "halves": [
+                {
+                  "calls": 232,
+                  "ms": 152.17534300000034
+                },
+                {
+                  "calls": 233,
+                  "ms": 152.21302400000013
+                }
+              ],
+              "halfDriftPercent": -0.40452925485836566
+            },
+            {
+              "trial": 4,
+              "repetitions": 465,
+              "warmCalls": 4669,
+              "warmMs": 3000.2136419999997,
+              "halves": [
+                {
+                  "calls": 232,
+                  "ms": 149.02194099999997
+                },
+                {
+                  "calls": 233,
+                  "ms": 149.88301200000024
+                }
+              ],
+              "halfDriftPercent": 0.1461504721553153
+            }
+          ],
+          "sameWindowTimesTypeScript": 16.076250004760052
+        },
+        "statements": {
+          "timeMs": {
+            "median": 0.5275747475915223,
+            "min": 0.5227407071290946,
+            "max": 0.533218840077072,
+            "samples": [
+              0.5264329421965322,
+              0.5292770924855497,
+              0.5275747475915223,
+              0.5227407071290946,
+              0.533218840077072
+            ]
+          },
+          "firstCallMs": {
+            "median": 8.914231000000001,
+            "min": 8.840699999999998,
+            "max": 9.562441000000007,
+            "samples": [
+              9.562441000000007,
+              8.840699999999998,
+              8.841240999999997,
+              8.914231000000001,
+              8.917373999999995
+            ]
+          },
+          "importMs": {
+            "median": 20.086405,
+            "min": 19.818249,
+            "max": 20.293288999999994,
+            "samples": [
+              20.086405,
+              20.293288999999994,
+              19.818249,
+              20.274512,
+              19.827653000000005
+            ]
+          },
+          "peakRssKiB": 74124,
+          "processPeakRssKiB": [
+            70788,
+            71536,
+            74124,
+            71624,
+            73524
+          ],
+          "halfDriftPercent": {
+            "median": -0.2502312060080891,
+            "min": -0.6345797768403383,
+            "max": -0.11507419996357182,
+            "samples": [
+              -0.6345797768403383,
+              -0.11507419996357182,
+              -0.18717317260381616,
+              -0.3736671223567134,
+              -0.2502312060080891
+            ]
+          },
+          "observations": [
+            {
+              "trial": 0,
+              "repetitions": 519,
+              "warmCalls": 5877,
+              "warmMs": 3000.301395,
+              "halves": [
+                {
+                  "calls": 259,
+                  "ms": 136.76032199999963
+                },
+                {
+                  "calls": 260,
+                  "ms": 136.41714999999976
+                }
+              ],
+              "halfDriftPercent": -0.6345797768403383
+            },
+            {
+              "trial": 1,
+              "repetitions": 519,
+              "warmCalls": 5807,
+              "warmMs": 3000.1511440000004,
+              "halves": [
+                {
+                  "calls": 259,
+                  "ms": 137.1326100000001
+                },
+                {
+                  "calls": 260,
+                  "ms": 137.5036659999996
+                }
+              ],
+              "halfDriftPercent": -0.11507419996357182
+            },
+            {
+              "trial": 2,
+              "repetitions": 519,
+              "warmCalls": 5879,
+              "warmMs": 3000.318473,
+              "halves": [
+                {
+                  "calls": 259,
+                  "ms": 136.74914000000035
+                },
+                {
+                  "calls": 260,
+                  "ms": 137.0201830000001
+                }
+              ],
+              "halfDriftPercent": -0.18717317260381616
+            },
+            {
+              "trial": 3,
+              "repetitions": 519,
+              "warmCalls": 5795,
+              "warmMs": 3000.294679,
+              "halves": [
+                {
+                  "calls": 259,
+                  "ms": 135.61670999999978
+                },
+                {
+                  "calls": 260,
+                  "ms": 135.63161500000024
+                }
+              ],
+              "halfDriftPercent": -0.3736671223567134
+            },
+            {
+              "trial": 4,
+              "repetitions": 519,
+              "warmCalls": 5932,
+              "warmMs": 3000.225211,
+              "halves": [
+                {
+                  "calls": 259,
+                  "ms": 138.24966799999993
+                },
+                {
+                  "calls": 260,
+                  "ms": 138.43617099999983
+                }
+              ],
+              "halfDriftPercent": -0.2502312060080891
+            }
+          ],
+          "sameWindowTimesTypeScript": 13.03770871528895
+        },
+        "read_fusion": {
+          "timeMs": {
+            "median": 0.4076203554054049,
+            "min": 0.40165875810810797,
+            "max": 0.43725315000000026,
+            "samples": [
+              0.40165875810810797,
+              0.4188244067567568,
+              0.4016707783783788,
+              0.4076203554054049,
+              0.43725315000000026
+            ]
+          },
+          "firstCallMs": {
+            "median": 7.224156999999991,
+            "min": 7.12408099999999,
+            "max": 7.329092000000003,
+            "samples": [
+              7.315889999999996,
+              7.12408099999999,
+              7.329092000000003,
+              7.224156999999991,
+              7.126407999999998
+            ]
+          },
+          "importMs": {
+            "median": 19.772057000000004,
+            "min": 19.607968999999997,
+            "max": 20.092560999999996,
+            "samples": [
+              19.790902000000003,
+              20.092560999999996,
+              19.772057000000004,
+              19.758119,
+              19.607968999999997
+            ]
+          },
+          "peakRssKiB": 74480,
+          "processPeakRssKiB": [
+            72172,
+            73456,
+            74380,
+            73584,
+            74480
+          ],
+          "halfDriftPercent": {
+            "median": 0.18535926716374274,
+            "min": -0.9668313435942766,
+            "max": 2.619702020389325,
+            "samples": [
+              0.18535926716374274,
+              -0.9668313435942766,
+              -0.05649224607769954,
+              0.2607117985411245,
+              2.619702020389325
+            ]
+          },
+          "observations": [
+            {
+              "trial": 0,
+              "repetitions": 740,
+              "warmCalls": 7513,
+              "warmMs": 3000.0144960000002,
+              "halves": [
+                {
+                  "calls": 370,
+                  "ms": 148.45602499999995
+                },
+                {
+                  "calls": 370,
+                  "ms": 148.7312020000004
+                }
+              ],
+              "halfDriftPercent": 0.18535926716374274
+            },
+            {
+              "trial": 1,
+              "repetitions": 740,
+              "warmCalls": 7501,
+              "warmMs": 3000.091426,
+              "halves": [
+                {
+                  "calls": 370,
+                  "ms": 155.69313199999988
+                },
+                {
+                  "calls": 370,
+                  "ms": 154.18784200000027
+                }
+              ],
+              "halfDriftPercent": -0.9668313435942766
+            },
+            {
+              "trial": 2,
+              "repetitions": 740,
+              "warmCalls": 7491,
+              "warmMs": 3000.2650949999997,
+              "halves": [
+                {
+                  "calls": 370,
+                  "ms": 148.6398680000002
+                },
+                {
+                  "calls": 370,
+                  "ms": 148.55589800000007
+                }
+              ],
+              "halfDriftPercent": -0.05649224607769954
+            },
+            {
+              "trial": 3,
+              "repetitions": 740,
+              "warmCalls": 7393,
+              "warmMs": 3000.35722,
+              "halves": [
+                {
+                  "calls": 370,
+                  "ms": 150.6026969999998
+                },
+                {
+                  "calls": 370,
+                  "ms": 150.99533599999995
+                }
+              ],
+              "halfDriftPercent": 0.2607117985411245
+            },
+            {
+              "trial": 4,
+              "repetitions": 740,
+              "warmCalls": 7256,
+              "warmMs": 3000.5994520000004,
+              "halves": [
+                {
+                  "calls": 370,
+                  "ms": 159.6693809999997
+                },
+                {
+                  "calls": 370,
+                  "ms": 163.85224299999982
+                }
+              ],
+              "halfDriftPercent": 2.619702020389325
+            }
+          ],
+          "sameWindowTimesTypeScript": 10.073331759072287
+        },
+        "record_vectors": {
+          "timeMs": {
+            "median": 0.3291419491891896,
+            "min": 0.3232876432432435,
+            "max": 0.3938988302702701,
+            "samples": [
+              0.35471033189189205,
+              0.3938988302702701,
+              0.3283256054054053,
+              0.3232876432432435,
+              0.3291419491891896
+            ]
+          },
+          "firstCallMs": {
+            "median": 6.7832850000000064,
+            "min": 6.723169999999996,
+            "max": 6.920497999999995,
+            "samples": [
+              6.785474000000008,
+              6.723169999999996,
+              6.920497999999995,
+              6.7832850000000064,
+              6.729796999999991
+            ]
+          },
+          "importMs": {
+            "median": 19.892651,
+            "min": 19.829169000000007,
+            "max": 20.574638000000007,
+            "samples": [
+              20.574638000000007,
+              19.834531999999996,
+              19.892651,
+              19.991989000000004,
+              19.829169000000007
+            ]
+          },
+          "peakRssKiB": 73672,
+          "processPeakRssKiB": [
+            73672,
+            73148,
+            72192,
+            73384,
+            72884
+          ],
+          "halfDriftPercent": {
+            "median": -0.689779094820564,
+            "min": -27.072461750170174,
+            "max": 2.123181246310857,
+            "samples": [
+              2.123181246310857,
+              -27.072461750170174,
+              -0.689779094820564,
+              0.2724566374584292,
+              -2.5173393084549467
+            ]
+          },
+          "observations": [
+            {
+              "trial": 0,
+              "repetitions": 925,
+              "warmCalls": 8965,
+              "warmMs": 3000.206143,
+              "halves": [
+                {
+                  "calls": 462,
+                  "ms": 162.12930099999994
+                },
+                {
+                  "calls": 463,
+                  "ms": 165.9299799999999
+                }
+              ],
+              "halfDriftPercent": 2.123181246310857
+            },
+            {
+              "trial": 1,
+              "repetitions": 925,
+              "warmCalls": 9230,
+              "warmMs": 3000.28577,
+              "halves": [
+                {
+                  "calls": 462,
+                  "ms": 210.48309500000005
+                },
+                {
+                  "calls": 463,
+                  "ms": 153.83239099999992
+                }
+              ],
+              "halfDriftPercent": -27.072461750170174
+            },
+            {
+              "trial": 2,
+              "repetitions": 925,
+              "warmCalls": 9328,
+              "warmMs": 3000.170933,
+              "halves": [
+                {
+                  "calls": 462,
+                  "ms": 152.19158800000014
+                },
+                {
+                  "calls": 463,
+                  "ms": 151.46894900000007
+                }
+              ],
+              "halfDriftPercent": -0.689779094820564
+            },
+            {
+              "trial": 3,
+              "repetitions": 925,
+              "warmCalls": 9271,
+              "warmMs": 3000.027895,
+              "halves": [
+                {
+                  "calls": 462,
+                  "ms": 149.1342370000002
+                },
+                {
+                  "calls": 463,
+                  "ms": 149.86424399999987
+                }
+              ],
+              "halfDriftPercent": 0.2724566374584292
+            },
+            {
+              "trial": 4,
+              "repetitions": 925,
+              "warmCalls": 9306,
+              "warmMs": 3000.100273,
+              "halves": [
+                {
+                  "calls": 462,
+                  "ms": 153.97913000000017
+                },
+                {
+                  "calls": 463,
+                  "ms": 150.42785099999992
+                }
+              ],
+              "halfDriftPercent": -2.5173393084549467
+            }
+          ],
+          "sameWindowTimesTypeScript": 8.133931502789856
+        },
+        "typescript": {
+          "timeMs": {
+            "median": 0.040465296403872746,
+            "min": 0.039502206085753805,
+            "max": 0.04397196625172891,
+            "samples": [
+              0.04052904771784235,
+              0.039717016597510396,
+              0.04397196625172891,
+              0.040465296403872746,
+              0.039502206085753805
+            ]
+          },
+          "firstCallMs": {
+            "median": 6.586896000000003,
+            "min": 6.348840000000003,
+            "max": 7.039090999999999,
+            "samples": [
+              7.039090999999999,
+              6.586896000000003,
+              6.488419999999998,
+              6.626759999999997,
+              6.348840000000003
+            ]
+          },
+          "importMs": {
+            "median": 0.7888650000000013,
+            "min": 0.7646220000000028,
+            "max": 0.8481230000000011,
+            "samples": [
+              0.7646220000000028,
+              0.7888650000000013,
+              0.8481230000000011,
+              0.8325189999999978,
+              0.7656190000000009
+            ]
+          },
+          "peakRssKiB": 79252,
+          "processPeakRssKiB": [
+            77264,
+            79252,
+            77168,
+            79240,
+            77244
+          ],
+          "halfDriftPercent": {
+            "median": -0.9035615748115844,
+            "min": -4.727936088211004,
+            "max": 1.8532663027608365,
+            "samples": [
+              -0.8288360665446137,
+              -4.727936088211004,
+              1.8532663027608365,
+              -0.9035615748115844,
+              -3.3709910377135555
+            ]
+          },
+          "observations": [
+            {
+              "trial": 0,
+              "repetitions": 7230,
+              "warmCalls": 63938,
+              "warmMs": 3000.0292990000003,
+              "halves": [
+                {
+                  "calls": 3615,
+                  "ms": 147.10231000000022
+                },
+                {
+                  "calls": 3615,
+                  "ms": 145.88307299999997
+                }
+              ],
+              "halfDriftPercent": -0.8288360665446137
+            },
+            {
+              "trial": 1,
+              "repetitions": 7230,
+              "warmCalls": 67294,
+              "warmMs": 3000.041139,
+              "halves": [
+                {
+                  "calls": 3615,
+                  "ms": 147.03252900000007
+                },
+                {
+                  "calls": 3615,
+                  "ms": 140.08092499999975
+                }
+              ],
+              "halfDriftPercent": -4.727936088211004
+            },
+            {
+              "trial": 2,
+              "repetitions": 7230,
+              "warmCalls": 64002,
+              "warmMs": 3000.049802,
+              "halves": [
+                {
+                  "calls": 3615,
+                  "ms": 157.47898699999996
+                },
+                {
+                  "calls": 3615,
+                  "ms": 160.39749200000006
+                }
+              ],
+              "halfDriftPercent": 1.8532663027608365
+            },
+            {
+              "trial": 3,
+              "repetitions": 7230,
+              "warmCalls": 67414,
+              "warmMs": 3000.060086,
+              "halves": [
+                {
+                  "calls": 3615,
+                  "ms": 146.925792
+                },
+                {
+                  "calls": 3615,
+                  "ms": 145.5982270000004
+                }
+              ],
+              "halfDriftPercent": -0.9035615748115844
+            },
+            {
+              "trial": 4,
+              "repetitions": 7230,
+              "warmCalls": 67684,
+              "warmMs": 3000.042956,
+              "halves": [
+                {
+                  "calls": 3615,
+                  "ms": 145.22844900000018
+                },
+                {
+                  "calls": 3615,
+                  "ms": 140.33281099999977
+                }
+              ],
+              "halfDriftPercent": -3.3709910377135555
+            }
+          ],
+          "sameWindowTimesTypeScript": 1.0
+        }
+      },
+      "comparisons": {
+        "statementBindings": {
+          "before": "baseline",
+          "after": "statements",
+          "speedup": 1.2330579211290318,
+          "timeSavedPercent": 18.90080888622293,
+          "newRangeEntirelyFaster": true,
+          "rangesOverlap": false
+        },
+        "arrayReadTupleFusion": {
+          "before": "statements",
+          "after": "read_fusion",
+          "speedup": 1.2942796908825003,
+          "timeSavedPercent": 22.736947273108065,
+          "newRangeEntirelyFaster": true,
+          "rangesOverlap": false
+        },
+        "privateRecordVectorsAndDirectSigma": {
+          "before": "read_fusion",
+          "after": "record_vectors",
+          "speedup": 1.2384333155027474,
+          "timeSavedPercent": 19.252818259815175,
+          "newRangeEntirelyFaster": true,
+          "rangesOverlap": false
+        },
+        "combinedVsBaseline": {
+          "before": "baseline",
+          "after": "record_vectors",
+          "speedup": 1.9764427570168328,
+          "timeSavedPercent": 49.404049449458284,
+          "newRangeEntirelyFaster": true,
+          "rangesOverlap": false
+        }
+      }
+    }
+  },
+  "scope": "Complete pair/fold points, all frozen-role samples and child stdout audited. record_vectors combines private record storage with direct private Sigma construction; its fold gain cannot be assigned to record storage alone. Half drift and full ranges are descriptive, not convergence or statistical significance proofs. No compiler-request or original-four-pair timing claim."
+}

@@ -10,3 +10,10 @@ The owner must freeze the exact derivative and measurement plan before timing.
 Failures and neutral outcomes remain evidence; no gain is presumed.
 
 Results will be linked from [the Phase32 report](../../implementation/phase32/README.md).
+
+Completed; full-world retention is rejected for normal library requests. The
+bounded checkpoint prototype preserves 22 complete observations and can skip
+484–508 events, but equality/freezing/retention remains expensive. Two duplicate/
+order fixtures are parse refusals, not event-level checker coverage. This does
+not reject dependency reuse in a persistent inspector with shared immutable
+Base identities. [Report](../../implementation/phase32/reuse-counts.md).

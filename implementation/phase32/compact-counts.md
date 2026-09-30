@@ -65,6 +65,51 @@ correctly report no emission query statistics. The request sequence is warming
 and not a speed comparison. Evidence:
 `selfhost/build/phase32/compact-scoped-correctness-02/report.json`.
 
+The4k scoped screen completes in36.5s with all outputs equal, but **does not meet
+the prospective performance threshold**:
+
+| Warm normal request | Original07 median ms | Emission-scoped4k ms | Change |
+| --- | ---: | ---: | ---: |
+| Small source |854.169|839.971|−1.66%|
+| Mandelbrot |1289.337|1329.345|+3.10%|
+| Edit distance |1189.122|1049.701|−11.72%|
+
+Every range overlaps. In particular the edit-distance baseline spans1036.8–
+1341.4ms, while the candidate spans1042.3–1057.1ms. Its lower median is not a
+demonstrated speedup. Both larger cases still saturate the4k table. Evidence:
+`selfhost/build/phase32/compact-scoped-screen-02/report.json`; each role has two
+fresh-process timed observations after its first triad of priming requests.
+
+A final [16k-capacity ablation](../../design/phase32/compact-capacity.md) was
+frozen before these timing results were read. Only the cap changes; its complete
+candidate observation suite reuses the exact unmodified baseline oracle, then
+a fresh four-process screen tests whether the earlier bound hid a useful gain.
+This is not a repeated attempt to improve the same candidate's reported median.
+
+The16k candidate preserves all15 observations; the unchanged baseline oracle is
+explicitly reused, not freshly rerun. Its largest table has8,892 entries on
+Mandelbrot and6,737 on edit distance, so this capacity is not saturated. Candidate
+correctness peak RSS is475,864KiB. Its36.02s fresh screen gives:
+
+| Warm normal request | Original07 median ms | Emission-scoped16k ms | Change |
+| --- | ---: | ---: | ---: |
+| Small source |860.788|905.226|+5.16%|
+| Mandelbrot |1287.169|1259.040|−2.19%|
+| Edit distance |1037.094|1002.690|−3.32%|
+
+Only edit distance has disjoint ranges:1013.59–1060.60ms original against
+1002.40–1002.98ms candidate. The small-source and Mandelbrot ranges overlap.
+The frozen admission still **fails**: both larger cases needed at least3%
+median improvement and the small-source regression had to stay within5%.
+This closes the bounded query-memo campaign without promotion, a large new IR,
+or further retiming. Evidence:
+`selfhost/build/phase32/compact-cap-correctness-03/report.json` and
+`selfhost/build/phase32/compact-cap-screen-03/report.json`.
+
+The simpler follow-up found during this analysis—reusing the driver's existing
+stop list—has a more promising private screen but a concrete public-boundary
+counterexample. It is reported separately in [stop-set reuse](compact-stop-reuse.md).
+
 No production cache or speed improvement is claimed. A surviving result would
 still require an independently reviewed private entry, exact function/export
 guards, immutability and arbitrary public mutable/getter/proxy/reentrancy

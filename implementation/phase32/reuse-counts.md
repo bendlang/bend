@@ -72,3 +72,55 @@ that the session interruption was an OOM. No producer is restarted without the
 lead's serialized resource grant. If full-state comparison and snapshot
 retention erase the avoided checking work, the mechanism will be rejected
 without increasing limits or weakening its key.
+
+The bounded checkpoint investigation is now complete. All22 complete
+baseline/candidate observations, dependencies and output hashes agree. Its
+54.1s supervised acquisition uses six serial processes, with the largest child
+at593,156KiB RSS. The intended phase audit is:
+
+| Family | Observations | Actual coverage |
+| --- | ---: | --- |
+| Small edits |9|7 successful compilations; type and signature errors reach checking |
+| Original programs and edits |6|All6 compile successfully; repeated and body/restoration requests exercise reuse |
+| Laws and rejection |7|4 successful law compilations,1 checker error,2 parse refusals |
+
+The duplicate and reordered-law cases are **parse refusals**, before the event
+worker. They preserve public outcomes but do not establish event-level duplicate/
+order replay correctness. No stronger gate is claimed. The law body edit does
+exercise the future-fill schedule proof:485 of487 events are skipped, and the
+new body is checked. A failed semantic event has no completed successor
+checkpoint and is never skipped. Parse refusals do not replace the prior checked
+request's cache entry; all current-world and schedule comparisons still apply
+when checking next resumes.
+
+Compared with the rejected per-definition mechanism, event checkpoints reduce
+the number of equalities considerably:
+
+| Checkpoint request | Events skipped | Objects compared | Key interval ms | Newly frozen objects |
+| --- | ---: | ---: | ---: | ---: |
+| Unchanged small |486|95,485|212.47|4|
+| Small body edit |484|95,425|186.33|1,506|
+| Unchanged original edit distance |508|99,046|140.83|4|
+| Original edit-distance body edit |486|96,899|169.60|20,670|
+| Law body edit |485|95,390|193.52|1,862|
+
+This remains an expensive state representation. Complete misses freeze roughly
+448,000–481,000 objects; observed full-miss freezing intervals range168–467ms.
+Some intervals include pauses: one interval freezing only four new objects takes
+306ms, so interval duration cannot be attributed solely to the counted operations.
+Most error/signature/coordinate changes reuse zero events and retain this
+maintenance work. The same-length edits save checking, but these serial warming
+correctness sequences do **not** establish a clean speed ratio.
+
+**Decision:** do not promote full-world checkpoint retention. The feasibility
+result supports the dependency-complete event proof, but the measured comparison/
+retention costs and new stateful interface do not justify production integration.
+No additional timing or memory-limit increase is needed for that decision.
+Evidence is `selfhost/build/phase32/reuse-checkpoint-correctness-02/report.json`.
+
+This is not a rejection of incremental checking in general. A separate future
+experiment could use the existing private persistent parse/check inspector,
+whose immutable decoded Base identities survive between edits. These normal
+library requests decode Base afresh. Dependency tracking or stable node identities
+could avoid traversing the complete state, but neither is implemented or measured
+here. Public host mutation and precise invalidation would still need proof.

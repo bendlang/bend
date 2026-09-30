@@ -1,0 +1,111 @@
+{
+  "kind": "phase32-static-vector03-review",
+  "execution": "static file inspection only; no compiler or module imports",
+  "inputs": [
+    {
+      "file": "selfhost/src/back/js/local.bend",
+      "bytes": 9390,
+      "sha256": "f0243565fd12cd83172cde1594b8ea4b15821404dd0adde8863c42874045ef89"
+    },
+    {
+      "file": "selfhost/src/back/js/region.bend",
+      "bytes": 29750,
+      "sha256": "cdea9d36f4f8839917d00617cd654cd1f8c101a828d475123161140f706e52a1"
+    },
+    {
+      "file": "selfhost/src/back/js/emit.bend",
+      "bytes": 32134,
+      "sha256": "5d15e0ea3c907faad8fb901c3e53346d46c7847a70ce625c144882ad8a6041fb"
+    },
+    {
+      "file": "selfhost/src/back/js/worker.bend",
+      "bytes": 14007,
+      "sha256": "b7f5a57511e8ee6f12e0e5b90d66dcd9d2997b100aac64d125b31680ec82d198"
+    },
+    {
+      "file": "selfhost/tools/performance/phase32/local-pair-controls-actual02.mjs",
+      "bytes": 7850,
+      "sha256": "0854361c74ae12836f7a88e8734594abb0c952c872dab9a4c8819c8dcb286409"
+    },
+    {
+      "file": "selfhost/tools/performance/phase32/local-fold-controls-actual02.mjs",
+      "bytes": 6133,
+      "sha256": "9281eb004c0fcefcd8f7e66e84c781088ae3b1913917d7a48a6194fbf905a46f"
+    },
+    {
+      "file": "selfhost/tools/performance/phase32/local-order-controls-actual02.mjs",
+      "bytes": 6789,
+      "sha256": "052d56ca7fa8ff912eba82df01ff0c2c89f4e6e26e8b085e19b4019519844c93"
+    },
+    {
+      "file": "selfhost/tools/performance/phase32/review-local-vectors.mjs",
+      "bytes": 4371,
+      "sha256": "69b775a5f319260f9d9c510e750ba091898c0130d0005f5c1f6981fab572cd10"
+    },
+    {
+      "file": "selfhost/tools/performance/phase32/review-local-vector-types.mjs",
+      "bytes": 6798,
+      "sha256": "386259a5294538062bd745fc9af946182d5ba53b5282685054b09a25c5c09f63"
+    }
+  ],
+  "emission02": [
+    {
+      "name": "pair",
+      "module": {
+        "file": "selfhost/build/phase32/emission-02/pair.mjs",
+        "bytes": 99823,
+        "sha256": "728a8c2863fd4a51a2c6a998a9471971779edf34ef017650e4530555b8b090fe"
+      },
+      "receipt": {
+        "file": "selfhost/build/phase32/emission-02/pair.mjs.json",
+        "bytes": 2894,
+        "sha256": "9c2a23fe1b74d6c5451487aa37e5ef9dc0c379ad5ab7cc1bd85baaa8bf8be04c"
+      },
+      "bridges": 12,
+      "reads": 12,
+      "parameterLists": [
+        "$p0,$p1,$p2,$p3,$p4,$p5,$p6,_t,$array,$index",
+        "$p0,$p1,$p2,$p3,$p4,$p5,_t,$array,$index",
+        "$p0,$p1,$p2,$p3,$p4,_t,$array,$index",
+        "$p0,$p1,$p2,$p3,_t,$array,$index",
+        "_t,$array,$index"
+      ]
+    },
+    {
+      "name": "fold",
+      "module": {
+        "file": "selfhost/build/phase32/emission-02/fold.mjs",
+        "bytes": 77475,
+        "sha256": "8c8805c4294bf8beed372a3316b02daa72385792714a1d73d116080c1ea845a3"
+      },
+      "receipt": {
+        "file": "selfhost/build/phase32/emission-02/fold.mjs.json",
+        "bytes": 2924,
+        "sha256": "f45a04609326cd7bd44c0eaa11413dc9929dad4035780fb164e189471365ad63"
+      },
+      "bridges": 3,
+      "reads": 3,
+      "parameterLists": [
+        "$p0,$p1,_t,$array,$index",
+        "$p0,_t,$array,$index",
+        "_t,$array,$index"
+      ]
+    },
+    {
+      "name": "vectors",
+      "module": {
+        "file": "selfhost/build/phase32/emission-02/vectors.mjs",
+        "bytes": 77233,
+        "sha256": "f5f151d06039d35985f04360ba2d734df6c2b99e930957f8448651cab41aa61a"
+      },
+      "receipt": {
+        "file": "selfhost/build/phase32/emission-02/vectors.mjs.json",
+        "bytes": 2924,
+        "sha256": "66f26c25536d0fbb71b04cc6bce66e4e14611ced26e555232297efa81f5d0ee8"
+      },
+      "bridges": 0,
+      "reads": 0,
+      "parameterLists": []
+    }
+  ]
+}

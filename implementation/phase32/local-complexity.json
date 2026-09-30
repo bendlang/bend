@@ -1,0 +1,4030 @@
+{
+  "complete": true,
+  "scope": "Manifest Bend physical/nonblank lines and top-level def/law/type declarations. Excludes generated images, runtime and experiment infrastructure; support reported separately. No compiler, generated program or benchmark execution.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase32/local-complexity.py",
+      "bytes": 5600,
+      "sha256": "6963017678396ff5ea11305b90559441dd7f3b909aca5527d0dde8cf161e6a5e"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/attempt.json",
+      "bytes": 204679,
+      "sha256": "acb038d937c8d47cbba08ea964b223208e50eabbaec51fd6f4a8a266f68bafdb"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/attempt.json",
+      "bytes": 204679,
+      "sha256": "62cd412a60faf8f3f9b2df5635e4aa526aec843df87b16267d5c72c5462db401"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/attempt.json",
+      "bytes": 204679,
+      "sha256": "9bf0c842144cc1a1eac7993e88dcf13f31d7d854c3c977cbd4d89f435163e644"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-03/derive.json",
+      "bytes": 6694,
+      "sha256": "5e05b14ae7341e2a3d80c1ad8f9862755b6b6fc974a377d0fb4bac3224833271"
+    }
+  ],
+  "baseline": {
+    "commit": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec",
+    "manifest": {
+      "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/compiler.json",
+      "sha256": "b58e3f32e1e59f992b44fa2964e21876227299ad9658af7ed63ac9b1e476fd1e"
+    },
+    "files": [
+      {
+        "file": "selfhost/src/core/term.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/core/term.bend",
+        "sha256": "e9ab994bc3ba4fd5a281e25836911bbc29cafcf2ab0c0284dc9bc097e891fa46",
+        "counts": {
+          "physicalLines": 650,
+          "nonblankLines": 563,
+          "bytes": 18285,
+          "defs": 72,
+          "laws": 10,
+          "types": 2
+        }
+      },
+      {
+        "file": "selfhost/src/core/index.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/core/index.bend",
+        "sha256": "32a4f2772c865f9ed9743f1ece27d5fafd1898724d5f268186590c938b038ea2",
+        "counts": {
+          "physicalLines": 383,
+          "nonblankLines": 338,
+          "bytes": 10197,
+          "defs": 34,
+          "laws": 9,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/core/normalize.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/core/normalize.bend",
+        "sha256": "4845ff63f3c228abc9a432410ddc8b7e20bfce27e54d6d49412b06608f7ce702",
+        "counts": {
+          "physicalLines": 719,
+          "nonblankLines": 637,
+          "bytes": 22263,
+          "defs": 55,
+          "laws": 32,
+          "types": 3
+        }
+      },
+      {
+        "file": "selfhost/src/core/graph.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/core/graph.bend",
+        "sha256": "85625049b316ede08eeffd7ff509483183624f1197c582c9d1bb2cd8bebf4802",
+        "counts": {
+          "physicalLines": 485,
+          "nonblankLines": 420,
+          "bytes": 14746,
+          "defs": 37,
+          "laws": 22,
+          "types": 5
+        }
+      },
+      {
+        "file": "selfhost/src/core/reach.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/core/reach.bend",
+        "sha256": "086092c688e6cb774da94333826f51b1fdeddc8e85aeaac5be6b15c143b0df27",
+        "counts": {
+          "physicalLines": 254,
+          "nonblankLines": 214,
+          "bytes": 9901,
+          "defs": 27,
+          "laws": 13,
+          "types": 1
+        }
+      },
+      {
+        "file": "selfhost/src/core/pretty.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/core/pretty.bend",
+        "sha256": "40b4e6ca55bf11009881b893c7959dd52cc64bbc6cb2dbb607e94dbab69fdedc",
+        "counts": {
+          "physicalLines": 548,
+          "nonblankLines": 469,
+          "bytes": 16800,
+          "defs": 55,
+          "laws": 23,
+          "types": 2
+        }
+      },
+      {
+        "file": "selfhost/src/check/quantity.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/check/quantity.bend",
+        "sha256": "b4a8ca1f8dff10f4f64397ea53bbbe272bb32400e993b1077d284ec1d8a70b4d",
+        "counts": {
+          "physicalLines": 177,
+          "nonblankLines": 153,
+          "bytes": 4069,
+          "defs": 16,
+          "laws": 7,
+          "types": 1
+        }
+      },
+      {
+        "file": "selfhost/src/check/kernel.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/check/kernel.bend",
+        "sha256": "da7ee29f9755f09acd9f89fcfd37465b52ab8778971200c946c70e50eb5b4132",
+        "counts": {
+          "physicalLines": 1427,
+          "nonblankLines": 1208,
+          "bytes": 49255,
+          "defs": 157,
+          "laws": 60,
+          "types": 4
+        }
+      },
+      {
+        "file": "selfhost/src/check/specialize.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/check/specialize.bend",
+        "sha256": "76e0f9249ae15cc0734a8e9d2e75677794e2eb5464c7756a19daff8b8217e7ee",
+        "counts": {
+          "physicalLines": 383,
+          "nonblankLines": 322,
+          "bytes": 16212,
+          "defs": 53,
+          "laws": 5,
+          "types": 3
+        }
+      },
+      {
+        "file": "selfhost/src/check/prefix.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/check/prefix.bend",
+        "sha256": "ceabf77fb49b58910d83fa896899061643c4c105f29e70bd87d3f73be873783d",
+        "counts": {
+          "physicalLines": 142,
+          "nonblankLines": 122,
+          "bytes": 3037,
+          "defs": 12,
+          "laws": 7,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/check/annotate.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/check/annotate.bend",
+        "sha256": "1912e5d177514733e706297fbb53e730c1f7a9edc91ffb06d2b1de7e2547648c",
+        "counts": {
+          "physicalLines": 389,
+          "nonblankLines": 329,
+          "bytes": 10866,
+          "defs": 32,
+          "laws": 26,
+          "types": 1
+        }
+      },
+      {
+        "file": "selfhost/src/front/lexer.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/front/lexer.bend",
+        "sha256": "aa9d726b6b284deba84dbccc77a01a8143dd89dab70cf487e1ddc8d589380440",
+        "counts": {
+          "physicalLines": 397,
+          "nonblankLines": 338,
+          "bytes": 13265,
+          "defs": 47,
+          "laws": 9,
+          "types": 4
+        }
+      },
+      {
+        "file": "selfhost/src/front/contextual.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/front/contextual.bend",
+        "sha256": "18a1eabd78b224927ebe72c4aa7a295300cc641e20d03d2bc062fdcfd96f62f6",
+        "counts": {
+          "physicalLines": 555,
+          "nonblankLines": 472,
+          "bytes": 29385,
+          "defs": 83,
+          "laws": 0,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/front/parser.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/front/parser.bend",
+        "sha256": "c1790685aea7c71430873d65c2d91996778f443aee0098e54c656fe10177ba28",
+        "counts": {
+          "physicalLines": 730,
+          "nonblankLines": 613,
+          "bytes": 32003,
+          "defs": 82,
+          "laws": 37,
+          "types": 1
+        }
+      },
+      {
+        "file": "selfhost/src/front/declarations.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/front/declarations.bend",
+        "sha256": "9e2c8da30605c1b8ab732df5f95533da55a3ea0e6c5a0941f1340586db9d36af",
+        "counts": {
+          "physicalLines": 741,
+          "nonblankLines": 640,
+          "bytes": 31635,
+          "defs": 65,
+          "laws": 33,
+          "types": 3
+        }
+      },
+      {
+        "file": "selfhost/src/front/flatten.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/front/flatten.bend",
+        "sha256": "d3ba8687f7dcd303dee847a90e3fa92b9a234d97cdcd3893de8242c6d2aa69cf",
+        "counts": {
+          "physicalLines": 189,
+          "nonblankLines": 161,
+          "bytes": 6450,
+          "defs": 15,
+          "laws": 12,
+          "types": 2
+        }
+      },
+      {
+        "file": "selfhost/src/front/elaborate.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/front/elaborate.bend",
+        "sha256": "8537f483259d48fa1d710915d6e8e09916faa540560379ee550a7077f391dc1e",
+        "counts": {
+          "physicalLines": 242,
+          "nonblankLines": 203,
+          "bytes": 7941,
+          "defs": 26,
+          "laws": 11,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/front/sugar.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/front/sugar.bend",
+        "sha256": "d3e3cf5addf0498e8401b9988678eb6ac8ff81571a014b18a1b6fed0a76fb22a",
+        "counts": {
+          "physicalLines": 301,
+          "nonblankLines": 255,
+          "bytes": 14142,
+          "defs": 41,
+          "laws": 4,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/front/unicode.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/front/unicode.bend",
+        "sha256": "bfd4407aa83614ae8398c9ce451f729cbcba457f2ef64774fea99f1824b5dd96",
+        "counts": {
+          "physicalLines": 99,
+          "nonblankLines": 79,
+          "bytes": 4481,
+          "defs": 13,
+          "laws": 6,
+          "types": 1
+        }
+      },
+      {
+        "file": "selfhost/src/front/literals_arrays.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/front/literals_arrays.bend",
+        "sha256": "7429e8a4e16e30f74fa19911993879e60a982a510f369769e7805d6a6ac34796",
+        "counts": {
+          "physicalLines": 270,
+          "nonblankLines": 220,
+          "bytes": 11903,
+          "defs": 38,
+          "laws": 13,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/front/parallel.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/front/parallel.bend",
+        "sha256": "b7c38f74d9f339f21fa00c5194078a0bfc41a948d1adaa907d00df64045c2f1c",
+        "counts": {
+          "physicalLines": 106,
+          "nonblankLines": 88,
+          "bytes": 3238,
+          "defs": 10,
+          "laws": 8,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/front/fresh_work.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/front/fresh_work.bend",
+        "sha256": "043d3b737cef4b932b7de8ef161dc88ba867ba6a8056e3662edfdcf4a2d797ed",
+        "counts": {
+          "physicalLines": 208,
+          "nonblankLines": 201,
+          "bytes": 7736,
+          "defs": 15,
+          "laws": 12,
+          "types": 2
+        }
+      },
+      {
+        "file": "selfhost/src/front/freshen.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/front/freshen.bend",
+        "sha256": "d0fed135fe878987770786ef0c50dd09efe2cce390beb7a911bcfc8468d5607d",
+        "counts": {
+          "physicalLines": 57,
+          "nonblankLines": 47,
+          "bytes": 1285,
+          "defs": 5,
+          "laws": 3,
+          "types": 2
+        }
+      },
+      {
+        "file": "selfhost/src/load/paths.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/load/paths.bend",
+        "sha256": "a9fc17a8af04c1958d1f11e8c1c5b7c2d3eb925dd9075e6c77de4bdb3521f2a2",
+        "counts": {
+          "physicalLines": 84,
+          "nonblankLines": 70,
+          "bytes": 2186,
+          "defs": 9,
+          "laws": 4,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/front/families.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/front/families.bend",
+        "sha256": "22b6e9b1ca132ed2d6f2cf91507e221f09cdda1aeab5931e8cf099e934bc9d2f",
+        "counts": {
+          "physicalLines": 106,
+          "nonblankLines": 88,
+          "bytes": 3849,
+          "defs": 11,
+          "laws": 6,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/front/validate.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/front/validate.bend",
+        "sha256": "62d530ce7ebb6d2abf69f34d37b5b21eed8711c7bdee3bf868aa2c94d699ec5d",
+        "counts": {
+          "physicalLines": 233,
+          "nonblankLines": 193,
+          "bytes": 11354,
+          "defs": 25,
+          "laws": 12,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/load/imports.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/load/imports.bend",
+        "sha256": "b878da5169a4a39d35a236ff5128dc42735fea0707195cf621ae651c1f13e9b1",
+        "counts": {
+          "physicalLines": 79,
+          "nonblankLines": 65,
+          "bytes": 4211,
+          "defs": 11,
+          "laws": 1,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/load/graph.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/load/graph.bend",
+        "sha256": "9317e9fe5224c447c50e5339469a244dd7036c00801d9750687f8dfe1de5fdb3",
+        "counts": {
+          "physicalLines": 462,
+          "nonblankLines": 409,
+          "bytes": 16909,
+          "defs": 50,
+          "laws": 28,
+          "types": 1
+        }
+      },
+      {
+        "file": "selfhost/src/load/seed.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/load/seed.bend",
+        "sha256": "ca4cb677af632c47c13792ede10d4e791c85b5cc6c756aacf230861d7bfa4c21",
+        "counts": {
+          "physicalLines": 162,
+          "nonblankLines": 140,
+          "bytes": 5224,
+          "defs": 13,
+          "laws": 8,
+          "types": 1
+        }
+      },
+      {
+        "file": "selfhost/src/load/modules.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/load/modules.bend",
+        "sha256": "fed5593033f957a61118a2eff9c2e09bd51af8810cff1db12e655523b82188ea",
+        "counts": {
+          "physicalLines": 258,
+          "nonblankLines": 219,
+          "bytes": 10063,
+          "defs": 31,
+          "laws": 5,
+          "types": 4
+        }
+      },
+      {
+        "file": "selfhost/src/diagnostic/model.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/diagnostic/model.bend",
+        "sha256": "3c699ec70ef36700520658555bc5df025880691c44633cabb9e5719b60fc9c1c",
+        "counts": {
+          "physicalLines": 19,
+          "nonblankLines": 15,
+          "bytes": 754,
+          "defs": 0,
+          "laws": 0,
+          "types": 5
+        }
+      },
+      {
+        "file": "selfhost/src/diagnostic/render.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/diagnostic/render.bend",
+        "sha256": "695f41ace13e08756273c317659a419deee5fc79d413bd58e8711f124370276c",
+        "counts": {
+          "physicalLines": 248,
+          "nonblankLines": 215,
+          "bytes": 7804,
+          "defs": 27,
+          "laws": 5,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/diagnostic/trace.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/diagnostic/trace.bend",
+        "sha256": "0e03e2827415d082d295976b57564c7b0bd872f7c81229e653d7e0ddda62b10f",
+        "counts": {
+          "physicalLines": 135,
+          "nonblankLines": 112,
+          "bytes": 6819,
+          "defs": 16,
+          "laws": 6,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/diagnostic/produce.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/diagnostic/produce.bend",
+        "sha256": "9518cb01c0c7636654bfa14dd332ac49756572ba975c7789c865e9cd8cf75c80",
+        "counts": {
+          "physicalLines": 210,
+          "nonblankLines": 176,
+          "bytes": 8073,
+          "defs": 26,
+          "laws": 8,
+          "types": 1
+        }
+      },
+      {
+        "file": "selfhost/src/diagnostic/frontend.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/diagnostic/frontend.bend",
+        "sha256": "fdd07e6e3df5f999f2d162a4d3186cd8ae13102c8351710edab5291a2f80489f",
+        "counts": {
+          "physicalLines": 249,
+          "nonblankLines": 222,
+          "bytes": 10910,
+          "defs": 24,
+          "laws": 16,
+          "types": 2
+        }
+      },
+      {
+        "file": "selfhost/src/back/js/foreign.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/js/foreign.bend",
+        "sha256": "0f397f84a989c6fc9a52eaf962742e673cdba243864c0bbe7c16ce4ffd8eb065",
+        "counts": {
+          "physicalLines": 168,
+          "nonblankLines": 142,
+          "bytes": 5794,
+          "defs": 17,
+          "laws": 9,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/back/js/literals.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/js/literals.bend",
+        "sha256": "2c4488a4f37010253a54e3745317c685ec77067475d471e577687acfa9a16776",
+        "counts": {
+          "physicalLines": 185,
+          "nonblankLines": 150,
+          "bytes": 5544,
+          "defs": 18,
+          "laws": 16,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/back/js/validate.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/js/validate.bend",
+        "sha256": "f8fc315bf80dabbf8afd1b6ced8e7c322b8ef96d73859d47e01c4b317afb72a0",
+        "counts": {
+          "physicalLines": 305,
+          "nonblankLines": 258,
+          "bytes": 11066,
+          "defs": 26,
+          "laws": 21,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/back/js/choice.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/js/choice.bend",
+        "sha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3",
+        "counts": {
+          "physicalLines": 97,
+          "nonblankLines": 82,
+          "bytes": 3583,
+          "defs": 9,
+          "laws": 7,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/back/js/projection.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/js/projection.bend",
+        "sha256": "67cce055248e6a0034a6194a9f5cbd0821c2cf79905759d08033b141231e93ae",
+        "counts": {
+          "physicalLines": 69,
+          "nonblankLines": 59,
+          "bytes": 2597,
+          "defs": 7,
+          "laws": 4,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/back/js/u32.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/js/u32.bend",
+        "sha256": "bda743e5c6afa1324673dd6722782a2b615c75abeb5c8061c623622723cfb25c",
+        "counts": {
+          "physicalLines": 110,
+          "nonblankLines": 95,
+          "bytes": 4926,
+          "defs": 15,
+          "laws": 0,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/back/js/primitive.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/js/primitive.bend",
+        "sha256": "de137137d7cdd21f3a3a5c6d0bdca7664712fac7b74c46f177b8d3e521017b83",
+        "counts": {
+          "physicalLines": 115,
+          "nonblankLines": 101,
+          "bytes": 7332,
+          "defs": 14,
+          "laws": 0,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/back/js/local.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/js/local.bend",
+        "sha256": "81abb98ab0d63f29745c9bbd3c46a31565a166f732db500f9b38157d45c0f26b",
+        "counts": {
+          "physicalLines": 165,
+          "nonblankLines": 141,
+          "bytes": 8960,
+          "defs": 24,
+          "laws": 0,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/back/js/region.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/js/region.bend",
+        "sha256": "e9cdd8501fbfc841e351f1e9910d205107ef8a9a8cf50f3b46ad25ec2704b77b",
+        "counts": {
+          "physicalLines": 454,
+          "nonblankLines": 388,
+          "bytes": 27246,
+          "defs": 65,
+          "laws": 0,
+          "types": 2
+        }
+      },
+      {
+        "file": "selfhost/src/back/js/worker.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/js/worker.bend",
+        "sha256": "b7f5a57511e8ee6f12e0e5b90d66dcd9d2997b100aac64d125b31680ec82d198",
+        "counts": {
+          "physicalLines": 236,
+          "nonblankLines": 200,
+          "bytes": 14007,
+          "defs": 36,
+          "laws": 0,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/back/js/tree.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/js/tree.bend",
+        "sha256": "ce78017169ce6fcf53ffc46a9760c282c58e37111513b5cb970002ab0be64fd3",
+        "counts": {
+          "physicalLines": 128,
+          "nonblankLines": 111,
+          "bytes": 7576,
+          "defs": 17,
+          "laws": 0,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/back/js/emit.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/js/emit.bend",
+        "sha256": "75b83be3cb263f3ca7f6eb7d1992d42b463cbe260685afc048647bd6026c45bf",
+        "counts": {
+          "physicalLines": 969,
+          "nonblankLines": 816,
+          "bytes": 31424,
+          "defs": 87,
+          "laws": 70,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/back/native/ir.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/native/ir.bend",
+        "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b",
+        "counts": {
+          "physicalLines": 25,
+          "nonblankLines": 19,
+          "bytes": 929,
+          "defs": 0,
+          "laws": 0,
+          "types": 7
+        }
+      },
+      {
+        "file": "selfhost/src/back/native/text.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/native/text.bend",
+        "sha256": "31c1ff5973df46d17ad395070fbefa1d2dc58398b3d12af80c62ed6c5548ff9d",
+        "counts": {
+          "physicalLines": 101,
+          "nonblankLines": 83,
+          "bytes": 2533,
+          "defs": 18,
+          "laws": 1,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/back/native/identity.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/native/identity.bend",
+        "sha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a",
+        "counts": {
+          "physicalLines": 89,
+          "nonblankLines": 77,
+          "bytes": 2476,
+          "defs": 7,
+          "laws": 5,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/back/native/layout.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/native/layout.bend",
+        "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b",
+        "counts": {
+          "physicalLines": 7,
+          "nonblankLines": 6,
+          "bytes": 135,
+          "defs": 1,
+          "laws": 0,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/back/native/intrinsic.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/native/intrinsic.bend",
+        "sha256": "5b921ebfecb307eddae880edee86ce459751684ecf74543f54c60e2a6f252195",
+        "counts": {
+          "physicalLines": 29,
+          "nonblankLines": 24,
+          "bytes": 4912,
+          "defs": 5,
+          "laws": 0,
+          "types": 1
+        }
+      },
+      {
+        "file": "selfhost/src/back/native/tables.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/native/tables.bend",
+        "sha256": "6b8f36fa9063f35105889d8977aa2345fb01eeceb117e6f641151430d084bbaa",
+        "counts": {
+          "physicalLines": 221,
+          "nonblankLines": 184,
+          "bytes": 8602,
+          "defs": 37,
+          "laws": 1,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/back/native/emit.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/native/emit.bend",
+        "sha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a",
+        "counts": {
+          "physicalLines": 111,
+          "nonblankLines": 93,
+          "bytes": 5084,
+          "defs": 19,
+          "laws": 0,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/back/native/erase.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/native/erase.bend",
+        "sha256": "8f536cdfbca91b26bf426b3c8c5f42106fc0e18af7bfd2550ba73e7dab5530ec",
+        "counts": {
+          "physicalLines": 83,
+          "nonblankLines": 71,
+          "bytes": 3528,
+          "defs": 9,
+          "laws": 3,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/back/native/bridge.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/native/bridge.bend",
+        "sha256": "4767f940940660635ec4c80978f8e4abb11c398b4b8f8bccabf05879c59f2a49",
+        "counts": {
+          "physicalLines": 456,
+          "nonblankLines": 382,
+          "bytes": 23327,
+          "defs": 65,
+          "laws": 6,
+          "types": 3
+        }
+      },
+      {
+        "file": "selfhost/src/back/native/direct.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/native/direct.bend",
+        "sha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5",
+        "counts": {
+          "physicalLines": 88,
+          "nonblankLines": 74,
+          "bytes": 4200,
+          "defs": 14,
+          "laws": 1,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/back/native/pattern.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/native/pattern.bend",
+        "sha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4",
+        "counts": {
+          "physicalLines": 141,
+          "nonblankLines": 137,
+          "bytes": 5324,
+          "defs": 13,
+          "laws": 9,
+          "types": 2
+        }
+      },
+      {
+        "file": "selfhost/src/back/native/show.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/native/show.bend",
+        "sha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d",
+        "counts": {
+          "physicalLines": 152,
+          "nonblankLines": 129,
+          "bytes": 6723,
+          "defs": 19,
+          "laws": 3,
+          "types": 2
+        }
+      },
+      {
+        "file": "selfhost/src/back/native/parallel.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/native/parallel.bend",
+        "sha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722",
+        "counts": {
+          "physicalLines": 94,
+          "nonblankLines": 81,
+          "bytes": 5003,
+          "defs": 12,
+          "laws": 1,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/back/native/array.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/native/array.bend",
+        "sha256": "c00f0592299047df582ac0435e1a0423ea62fb48f7c87dda83bf18161b263bd7",
+        "counts": {
+          "physicalLines": 44,
+          "nonblankLines": 39,
+          "bytes": 2813,
+          "defs": 4,
+          "laws": 2,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/back/native/validate.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/native/validate.bend",
+        "sha256": "d0c1e75c5dbda3d2e65ea227667191252c49f71b63f0765c358c2041a0f484bb",
+        "counts": {
+          "physicalLines": 62,
+          "nonblankLines": 52,
+          "bytes": 2859,
+          "defs": 11,
+          "laws": 0,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/back/native/foreign.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/native/foreign.bend",
+        "sha256": "ed7a06662072e73d45d10b1898599936b106dc22956a4fceea8d04ac22fb6d3c",
+        "counts": {
+          "physicalLines": 73,
+          "nonblankLines": 64,
+          "bytes": 4010,
+          "defs": 10,
+          "laws": 0,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/back/native/book.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/back/native/book.bend",
+        "sha256": "180ee53af86a59df8efcc131d4f22b0ca6f5f9980dd222259f2941fbef1e11a2",
+        "counts": {
+          "physicalLines": 316,
+          "nonblankLines": 264,
+          "bytes": 14294,
+          "defs": 42,
+          "laws": 9,
+          "types": 2
+        }
+      },
+      {
+        "file": "selfhost/src/driver/report.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/driver/report.bend",
+        "sha256": "15f0985da866b948252490ec2f1b90aed9d36fb24b93eab24826648cc36e6df8",
+        "counts": {
+          "physicalLines": 100,
+          "nonblankLines": 86,
+          "bytes": 2593,
+          "defs": 9,
+          "laws": 6,
+          "types": 0
+        }
+      },
+      {
+        "file": "selfhost/src/driver/api.bend",
+        "git": "5f3015d1a84ce822d3ee1a8bcb899a517d7f8aec:selfhost/src/driver/api.bend",
+        "sha256": "5cae856aa306f52042cbead5bf72136da317649a0a09b7d73f8da1be3530d9d3",
+        "counts": {
+          "physicalLines": 124,
+          "nonblankLines": 105,
+          "bytes": 3919,
+          "defs": 15,
+          "laws": 5,
+          "types": 0
+        }
+      }
+    ],
+    "counts": {
+      "physicalLines": 17014,
+      "nonblankLines": 14529,
+      "bytes": 660570,
+      "defs": 1878,
+      "laws": 640,
+      "types": 70,
+      "modules": 66
+    }
+  },
+  "attempts": {
+    "01": {
+      "manifest": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/compiler.json",
+        "bytes": 2201,
+        "sha256": "b58e3f32e1e59f992b44fa2964e21876227299ad9658af7ed63ac9b1e476fd1e"
+      },
+      "receipt": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/attempt.json",
+        "bytes": 204679,
+        "sha256": "acb038d937c8d47cbba08ea964b223208e50eabbaec51fd6f4a8a266f68bafdb"
+      },
+      "files": [
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/core/term.bend",
+          "bytes": 18285,
+          "sha256": "e9ab994bc3ba4fd5a281e25836911bbc29cafcf2ab0c0284dc9bc097e891fa46",
+          "counts": {
+            "physicalLines": 650,
+            "nonblankLines": 563,
+            "bytes": 18285,
+            "defs": 72,
+            "laws": 10,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/core/index.bend",
+          "bytes": 10197,
+          "sha256": "32a4f2772c865f9ed9743f1ece27d5fafd1898724d5f268186590c938b038ea2",
+          "counts": {
+            "physicalLines": 383,
+            "nonblankLines": 338,
+            "bytes": 10197,
+            "defs": 34,
+            "laws": 9,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/core/normalize.bend",
+          "bytes": 22263,
+          "sha256": "4845ff63f3c228abc9a432410ddc8b7e20bfce27e54d6d49412b06608f7ce702",
+          "counts": {
+            "physicalLines": 719,
+            "nonblankLines": 637,
+            "bytes": 22263,
+            "defs": 55,
+            "laws": 32,
+            "types": 3
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/core/graph.bend",
+          "bytes": 14746,
+          "sha256": "85625049b316ede08eeffd7ff509483183624f1197c582c9d1bb2cd8bebf4802",
+          "counts": {
+            "physicalLines": 485,
+            "nonblankLines": 420,
+            "bytes": 14746,
+            "defs": 37,
+            "laws": 22,
+            "types": 5
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/core/reach.bend",
+          "bytes": 9901,
+          "sha256": "086092c688e6cb774da94333826f51b1fdeddc8e85aeaac5be6b15c143b0df27",
+          "counts": {
+            "physicalLines": 254,
+            "nonblankLines": 214,
+            "bytes": 9901,
+            "defs": 27,
+            "laws": 13,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/core/pretty.bend",
+          "bytes": 16800,
+          "sha256": "40b4e6ca55bf11009881b893c7959dd52cc64bbc6cb2dbb607e94dbab69fdedc",
+          "counts": {
+            "physicalLines": 548,
+            "nonblankLines": 469,
+            "bytes": 16800,
+            "defs": 55,
+            "laws": 23,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/check/quantity.bend",
+          "bytes": 4069,
+          "sha256": "b4a8ca1f8dff10f4f64397ea53bbbe272bb32400e993b1077d284ec1d8a70b4d",
+          "counts": {
+            "physicalLines": 177,
+            "nonblankLines": 153,
+            "bytes": 4069,
+            "defs": 16,
+            "laws": 7,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/check/kernel.bend",
+          "bytes": 49255,
+          "sha256": "da7ee29f9755f09acd9f89fcfd37465b52ab8778971200c946c70e50eb5b4132",
+          "counts": {
+            "physicalLines": 1427,
+            "nonblankLines": 1208,
+            "bytes": 49255,
+            "defs": 157,
+            "laws": 60,
+            "types": 4
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/check/specialize.bend",
+          "bytes": 16212,
+          "sha256": "76e0f9249ae15cc0734a8e9d2e75677794e2eb5464c7756a19daff8b8217e7ee",
+          "counts": {
+            "physicalLines": 383,
+            "nonblankLines": 322,
+            "bytes": 16212,
+            "defs": 53,
+            "laws": 5,
+            "types": 3
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/check/prefix.bend",
+          "bytes": 3037,
+          "sha256": "ceabf77fb49b58910d83fa896899061643c4c105f29e70bd87d3f73be873783d",
+          "counts": {
+            "physicalLines": 142,
+            "nonblankLines": 122,
+            "bytes": 3037,
+            "defs": 12,
+            "laws": 7,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/check/annotate.bend",
+          "bytes": 10866,
+          "sha256": "1912e5d177514733e706297fbb53e730c1f7a9edc91ffb06d2b1de7e2547648c",
+          "counts": {
+            "physicalLines": 389,
+            "nonblankLines": 329,
+            "bytes": 10866,
+            "defs": 32,
+            "laws": 26,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/front/lexer.bend",
+          "bytes": 13265,
+          "sha256": "aa9d726b6b284deba84dbccc77a01a8143dd89dab70cf487e1ddc8d589380440",
+          "counts": {
+            "physicalLines": 397,
+            "nonblankLines": 338,
+            "bytes": 13265,
+            "defs": 47,
+            "laws": 9,
+            "types": 4
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/front/contextual.bend",
+          "bytes": 29385,
+          "sha256": "18a1eabd78b224927ebe72c4aa7a295300cc641e20d03d2bc062fdcfd96f62f6",
+          "counts": {
+            "physicalLines": 555,
+            "nonblankLines": 472,
+            "bytes": 29385,
+            "defs": 83,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/front/parser.bend",
+          "bytes": 32003,
+          "sha256": "c1790685aea7c71430873d65c2d91996778f443aee0098e54c656fe10177ba28",
+          "counts": {
+            "physicalLines": 730,
+            "nonblankLines": 613,
+            "bytes": 32003,
+            "defs": 82,
+            "laws": 37,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/front/declarations.bend",
+          "bytes": 31635,
+          "sha256": "9e2c8da30605c1b8ab732df5f95533da55a3ea0e6c5a0941f1340586db9d36af",
+          "counts": {
+            "physicalLines": 741,
+            "nonblankLines": 640,
+            "bytes": 31635,
+            "defs": 65,
+            "laws": 33,
+            "types": 3
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/front/flatten.bend",
+          "bytes": 6450,
+          "sha256": "d3ba8687f7dcd303dee847a90e3fa92b9a234d97cdcd3893de8242c6d2aa69cf",
+          "counts": {
+            "physicalLines": 189,
+            "nonblankLines": 161,
+            "bytes": 6450,
+            "defs": 15,
+            "laws": 12,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/front/elaborate.bend",
+          "bytes": 7941,
+          "sha256": "8537f483259d48fa1d710915d6e8e09916faa540560379ee550a7077f391dc1e",
+          "counts": {
+            "physicalLines": 242,
+            "nonblankLines": 203,
+            "bytes": 7941,
+            "defs": 26,
+            "laws": 11,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/front/sugar.bend",
+          "bytes": 14142,
+          "sha256": "d3e3cf5addf0498e8401b9988678eb6ac8ff81571a014b18a1b6fed0a76fb22a",
+          "counts": {
+            "physicalLines": 301,
+            "nonblankLines": 255,
+            "bytes": 14142,
+            "defs": 41,
+            "laws": 4,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/front/unicode.bend",
+          "bytes": 4481,
+          "sha256": "bfd4407aa83614ae8398c9ce451f729cbcba457f2ef64774fea99f1824b5dd96",
+          "counts": {
+            "physicalLines": 99,
+            "nonblankLines": 79,
+            "bytes": 4481,
+            "defs": 13,
+            "laws": 6,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/front/literals_arrays.bend",
+          "bytes": 11903,
+          "sha256": "7429e8a4e16e30f74fa19911993879e60a982a510f369769e7805d6a6ac34796",
+          "counts": {
+            "physicalLines": 270,
+            "nonblankLines": 220,
+            "bytes": 11903,
+            "defs": 38,
+            "laws": 13,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/front/parallel.bend",
+          "bytes": 3238,
+          "sha256": "b7c38f74d9f339f21fa00c5194078a0bfc41a948d1adaa907d00df64045c2f1c",
+          "counts": {
+            "physicalLines": 106,
+            "nonblankLines": 88,
+            "bytes": 3238,
+            "defs": 10,
+            "laws": 8,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/front/fresh_work.bend",
+          "bytes": 7736,
+          "sha256": "043d3b737cef4b932b7de8ef161dc88ba867ba6a8056e3662edfdcf4a2d797ed",
+          "counts": {
+            "physicalLines": 208,
+            "nonblankLines": 201,
+            "bytes": 7736,
+            "defs": 15,
+            "laws": 12,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/front/freshen.bend",
+          "bytes": 1285,
+          "sha256": "d0fed135fe878987770786ef0c50dd09efe2cce390beb7a911bcfc8468d5607d",
+          "counts": {
+            "physicalLines": 57,
+            "nonblankLines": 47,
+            "bytes": 1285,
+            "defs": 5,
+            "laws": 3,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/load/paths.bend",
+          "bytes": 2186,
+          "sha256": "a9fc17a8af04c1958d1f11e8c1c5b7c2d3eb925dd9075e6c77de4bdb3521f2a2",
+          "counts": {
+            "physicalLines": 84,
+            "nonblankLines": 70,
+            "bytes": 2186,
+            "defs": 9,
+            "laws": 4,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/front/families.bend",
+          "bytes": 3849,
+          "sha256": "22b6e9b1ca132ed2d6f2cf91507e221f09cdda1aeab5931e8cf099e934bc9d2f",
+          "counts": {
+            "physicalLines": 106,
+            "nonblankLines": 88,
+            "bytes": 3849,
+            "defs": 11,
+            "laws": 6,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/front/validate.bend",
+          "bytes": 11354,
+          "sha256": "62d530ce7ebb6d2abf69f34d37b5b21eed8711c7bdee3bf868aa2c94d699ec5d",
+          "counts": {
+            "physicalLines": 233,
+            "nonblankLines": 193,
+            "bytes": 11354,
+            "defs": 25,
+            "laws": 12,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/load/imports.bend",
+          "bytes": 4211,
+          "sha256": "b878da5169a4a39d35a236ff5128dc42735fea0707195cf621ae651c1f13e9b1",
+          "counts": {
+            "physicalLines": 79,
+            "nonblankLines": 65,
+            "bytes": 4211,
+            "defs": 11,
+            "laws": 1,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/load/graph.bend",
+          "bytes": 16909,
+          "sha256": "9317e9fe5224c447c50e5339469a244dd7036c00801d9750687f8dfe1de5fdb3",
+          "counts": {
+            "physicalLines": 462,
+            "nonblankLines": 409,
+            "bytes": 16909,
+            "defs": 50,
+            "laws": 28,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/load/seed.bend",
+          "bytes": 5224,
+          "sha256": "ca4cb677af632c47c13792ede10d4e791c85b5cc6c756aacf230861d7bfa4c21",
+          "counts": {
+            "physicalLines": 162,
+            "nonblankLines": 140,
+            "bytes": 5224,
+            "defs": 13,
+            "laws": 8,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/load/modules.bend",
+          "bytes": 10063,
+          "sha256": "fed5593033f957a61118a2eff9c2e09bd51af8810cff1db12e655523b82188ea",
+          "counts": {
+            "physicalLines": 258,
+            "nonblankLines": 219,
+            "bytes": 10063,
+            "defs": 31,
+            "laws": 5,
+            "types": 4
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/diagnostic/model.bend",
+          "bytes": 754,
+          "sha256": "3c699ec70ef36700520658555bc5df025880691c44633cabb9e5719b60fc9c1c",
+          "counts": {
+            "physicalLines": 19,
+            "nonblankLines": 15,
+            "bytes": 754,
+            "defs": 0,
+            "laws": 0,
+            "types": 5
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/diagnostic/render.bend",
+          "bytes": 7804,
+          "sha256": "695f41ace13e08756273c317659a419deee5fc79d413bd58e8711f124370276c",
+          "counts": {
+            "physicalLines": 248,
+            "nonblankLines": 215,
+            "bytes": 7804,
+            "defs": 27,
+            "laws": 5,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/diagnostic/trace.bend",
+          "bytes": 6819,
+          "sha256": "0e03e2827415d082d295976b57564c7b0bd872f7c81229e653d7e0ddda62b10f",
+          "counts": {
+            "physicalLines": 135,
+            "nonblankLines": 112,
+            "bytes": 6819,
+            "defs": 16,
+            "laws": 6,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/diagnostic/produce.bend",
+          "bytes": 8073,
+          "sha256": "9518cb01c0c7636654bfa14dd332ac49756572ba975c7789c865e9cd8cf75c80",
+          "counts": {
+            "physicalLines": 210,
+            "nonblankLines": 176,
+            "bytes": 8073,
+            "defs": 26,
+            "laws": 8,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/diagnostic/frontend.bend",
+          "bytes": 10910,
+          "sha256": "fdd07e6e3df5f999f2d162a4d3186cd8ae13102c8351710edab5291a2f80489f",
+          "counts": {
+            "physicalLines": 249,
+            "nonblankLines": 222,
+            "bytes": 10910,
+            "defs": 24,
+            "laws": 16,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/js/foreign.bend",
+          "bytes": 5794,
+          "sha256": "0f397f84a989c6fc9a52eaf962742e673cdba243864c0bbe7c16ce4ffd8eb065",
+          "counts": {
+            "physicalLines": 168,
+            "nonblankLines": 142,
+            "bytes": 5794,
+            "defs": 17,
+            "laws": 9,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/js/literals.bend",
+          "bytes": 5544,
+          "sha256": "2c4488a4f37010253a54e3745317c685ec77067475d471e577687acfa9a16776",
+          "counts": {
+            "physicalLines": 185,
+            "nonblankLines": 150,
+            "bytes": 5544,
+            "defs": 18,
+            "laws": 16,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/js/validate.bend",
+          "bytes": 11066,
+          "sha256": "f8fc315bf80dabbf8afd1b6ced8e7c322b8ef96d73859d47e01c4b317afb72a0",
+          "counts": {
+            "physicalLines": 305,
+            "nonblankLines": 258,
+            "bytes": 11066,
+            "defs": 26,
+            "laws": 21,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/js/choice.bend",
+          "bytes": 3583,
+          "sha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3",
+          "counts": {
+            "physicalLines": 97,
+            "nonblankLines": 82,
+            "bytes": 3583,
+            "defs": 9,
+            "laws": 7,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/js/projection.bend",
+          "bytes": 2597,
+          "sha256": "67cce055248e6a0034a6194a9f5cbd0821c2cf79905759d08033b141231e93ae",
+          "counts": {
+            "physicalLines": 69,
+            "nonblankLines": 59,
+            "bytes": 2597,
+            "defs": 7,
+            "laws": 4,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/js/u32.bend",
+          "bytes": 4926,
+          "sha256": "bda743e5c6afa1324673dd6722782a2b615c75abeb5c8061c623622723cfb25c",
+          "counts": {
+            "physicalLines": 110,
+            "nonblankLines": 95,
+            "bytes": 4926,
+            "defs": 15,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/js/primitive.bend",
+          "bytes": 7332,
+          "sha256": "de137137d7cdd21f3a3a5c6d0bdca7664712fac7b74c46f177b8d3e521017b83",
+          "counts": {
+            "physicalLines": 115,
+            "nonblankLines": 101,
+            "bytes": 7332,
+            "defs": 14,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/js/local.bend",
+          "bytes": 8960,
+          "sha256": "81abb98ab0d63f29745c9bbd3c46a31565a166f732db500f9b38157d45c0f26b",
+          "counts": {
+            "physicalLines": 165,
+            "nonblankLines": 141,
+            "bytes": 8960,
+            "defs": 24,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/js/region.bend",
+          "bytes": 27971,
+          "sha256": "3036dca7a1233ef6ca200151cf8b0ed874f8339ebf2ba2bdec85f821f8222fda",
+          "counts": {
+            "physicalLines": 465,
+            "nonblankLines": 398,
+            "bytes": 27971,
+            "defs": 66,
+            "laws": 0,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/js/worker.bend",
+          "bytes": 14007,
+          "sha256": "b7f5a57511e8ee6f12e0e5b90d66dcd9d2997b100aac64d125b31680ec82d198",
+          "counts": {
+            "physicalLines": 236,
+            "nonblankLines": 200,
+            "bytes": 14007,
+            "defs": 36,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/js/tree.bend",
+          "bytes": 7576,
+          "sha256": "ce78017169ce6fcf53ffc46a9760c282c58e37111513b5cb970002ab0be64fd3",
+          "counts": {
+            "physicalLines": 128,
+            "nonblankLines": 111,
+            "bytes": 7576,
+            "defs": 17,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/js/emit.bend",
+          "bytes": 31424,
+          "sha256": "75b83be3cb263f3ca7f6eb7d1992d42b463cbe260685afc048647bd6026c45bf",
+          "counts": {
+            "physicalLines": 969,
+            "nonblankLines": 816,
+            "bytes": 31424,
+            "defs": 87,
+            "laws": 70,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/native/ir.bend",
+          "bytes": 929,
+          "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b",
+          "counts": {
+            "physicalLines": 25,
+            "nonblankLines": 19,
+            "bytes": 929,
+            "defs": 0,
+            "laws": 0,
+            "types": 7
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/native/text.bend",
+          "bytes": 2533,
+          "sha256": "31c1ff5973df46d17ad395070fbefa1d2dc58398b3d12af80c62ed6c5548ff9d",
+          "counts": {
+            "physicalLines": 101,
+            "nonblankLines": 83,
+            "bytes": 2533,
+            "defs": 18,
+            "laws": 1,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/native/identity.bend",
+          "bytes": 2476,
+          "sha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a",
+          "counts": {
+            "physicalLines": 89,
+            "nonblankLines": 77,
+            "bytes": 2476,
+            "defs": 7,
+            "laws": 5,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/native/layout.bend",
+          "bytes": 135,
+          "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b",
+          "counts": {
+            "physicalLines": 7,
+            "nonblankLines": 6,
+            "bytes": 135,
+            "defs": 1,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/native/intrinsic.bend",
+          "bytes": 4912,
+          "sha256": "5b921ebfecb307eddae880edee86ce459751684ecf74543f54c60e2a6f252195",
+          "counts": {
+            "physicalLines": 29,
+            "nonblankLines": 24,
+            "bytes": 4912,
+            "defs": 5,
+            "laws": 0,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/native/tables.bend",
+          "bytes": 8602,
+          "sha256": "6b8f36fa9063f35105889d8977aa2345fb01eeceb117e6f641151430d084bbaa",
+          "counts": {
+            "physicalLines": 221,
+            "nonblankLines": 184,
+            "bytes": 8602,
+            "defs": 37,
+            "laws": 1,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/native/emit.bend",
+          "bytes": 5084,
+          "sha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a",
+          "counts": {
+            "physicalLines": 111,
+            "nonblankLines": 93,
+            "bytes": 5084,
+            "defs": 19,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/native/erase.bend",
+          "bytes": 3528,
+          "sha256": "8f536cdfbca91b26bf426b3c8c5f42106fc0e18af7bfd2550ba73e7dab5530ec",
+          "counts": {
+            "physicalLines": 83,
+            "nonblankLines": 71,
+            "bytes": 3528,
+            "defs": 9,
+            "laws": 3,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/native/bridge.bend",
+          "bytes": 23327,
+          "sha256": "4767f940940660635ec4c80978f8e4abb11c398b4b8f8bccabf05879c59f2a49",
+          "counts": {
+            "physicalLines": 456,
+            "nonblankLines": 382,
+            "bytes": 23327,
+            "defs": 65,
+            "laws": 6,
+            "types": 3
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/native/direct.bend",
+          "bytes": 4200,
+          "sha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5",
+          "counts": {
+            "physicalLines": 88,
+            "nonblankLines": 74,
+            "bytes": 4200,
+            "defs": 14,
+            "laws": 1,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/native/pattern.bend",
+          "bytes": 5324,
+          "sha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4",
+          "counts": {
+            "physicalLines": 141,
+            "nonblankLines": 137,
+            "bytes": 5324,
+            "defs": 13,
+            "laws": 9,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/native/show.bend",
+          "bytes": 6723,
+          "sha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d",
+          "counts": {
+            "physicalLines": 152,
+            "nonblankLines": 129,
+            "bytes": 6723,
+            "defs": 19,
+            "laws": 3,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/native/parallel.bend",
+          "bytes": 5003,
+          "sha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722",
+          "counts": {
+            "physicalLines": 94,
+            "nonblankLines": 81,
+            "bytes": 5003,
+            "defs": 12,
+            "laws": 1,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/native/array.bend",
+          "bytes": 2813,
+          "sha256": "c00f0592299047df582ac0435e1a0423ea62fb48f7c87dda83bf18161b263bd7",
+          "counts": {
+            "physicalLines": 44,
+            "nonblankLines": 39,
+            "bytes": 2813,
+            "defs": 4,
+            "laws": 2,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/native/validate.bend",
+          "bytes": 2859,
+          "sha256": "d0c1e75c5dbda3d2e65ea227667191252c49f71b63f0765c358c2041a0f484bb",
+          "counts": {
+            "physicalLines": 62,
+            "nonblankLines": 52,
+            "bytes": 2859,
+            "defs": 11,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/native/foreign.bend",
+          "bytes": 4010,
+          "sha256": "ed7a06662072e73d45d10b1898599936b106dc22956a4fceea8d04ac22fb6d3c",
+          "counts": {
+            "physicalLines": 73,
+            "nonblankLines": 64,
+            "bytes": 4010,
+            "defs": 10,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/back/native/book.bend",
+          "bytes": 14294,
+          "sha256": "180ee53af86a59df8efcc131d4f22b0ca6f5f9980dd222259f2941fbef1e11a2",
+          "counts": {
+            "physicalLines": 316,
+            "nonblankLines": 264,
+            "bytes": 14294,
+            "defs": 42,
+            "laws": 9,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/driver/report.bend",
+          "bytes": 2593,
+          "sha256": "15f0985da866b948252490ec2f1b90aed9d36fb24b93eab24826648cc36e6df8",
+          "counts": {
+            "physicalLines": 100,
+            "nonblankLines": 86,
+            "bytes": 2593,
+            "defs": 9,
+            "laws": 6,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-01/snapshot/src/driver/api.bend",
+          "bytes": 3919,
+          "sha256": "5cae856aa306f52042cbead5bf72136da317649a0a09b7d73f8da1be3530d9d3",
+          "counts": {
+            "physicalLines": 124,
+            "nonblankLines": 105,
+            "bytes": 3919,
+            "defs": 15,
+            "laws": 5,
+            "types": 0
+          }
+        }
+      ],
+      "counts": {
+        "physicalLines": 17025,
+        "nonblankLines": 14539,
+        "bytes": 661295,
+        "defs": 1879,
+        "laws": 640,
+        "types": 70,
+        "modules": 66
+      },
+      "deltaFrom31": {
+        "physicalLines": 11,
+        "nonblankLines": 10,
+        "bytes": 725,
+        "defs": 1,
+        "laws": 0,
+        "types": 0,
+        "modules": 0
+      },
+      "sourceMatchesWorkingTree": false
+    },
+    "02": {
+      "manifest": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/compiler.json",
+        "bytes": 2201,
+        "sha256": "b58e3f32e1e59f992b44fa2964e21876227299ad9658af7ed63ac9b1e476fd1e"
+      },
+      "receipt": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/attempt.json",
+        "bytes": 204679,
+        "sha256": "62cd412a60faf8f3f9b2df5635e4aa526aec843df87b16267d5c72c5462db401"
+      },
+      "files": [
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/core/term.bend",
+          "bytes": 18285,
+          "sha256": "e9ab994bc3ba4fd5a281e25836911bbc29cafcf2ab0c0284dc9bc097e891fa46",
+          "counts": {
+            "physicalLines": 650,
+            "nonblankLines": 563,
+            "bytes": 18285,
+            "defs": 72,
+            "laws": 10,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/core/index.bend",
+          "bytes": 10197,
+          "sha256": "32a4f2772c865f9ed9743f1ece27d5fafd1898724d5f268186590c938b038ea2",
+          "counts": {
+            "physicalLines": 383,
+            "nonblankLines": 338,
+            "bytes": 10197,
+            "defs": 34,
+            "laws": 9,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/core/normalize.bend",
+          "bytes": 22263,
+          "sha256": "4845ff63f3c228abc9a432410ddc8b7e20bfce27e54d6d49412b06608f7ce702",
+          "counts": {
+            "physicalLines": 719,
+            "nonblankLines": 637,
+            "bytes": 22263,
+            "defs": 55,
+            "laws": 32,
+            "types": 3
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/core/graph.bend",
+          "bytes": 14746,
+          "sha256": "85625049b316ede08eeffd7ff509483183624f1197c582c9d1bb2cd8bebf4802",
+          "counts": {
+            "physicalLines": 485,
+            "nonblankLines": 420,
+            "bytes": 14746,
+            "defs": 37,
+            "laws": 22,
+            "types": 5
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/core/reach.bend",
+          "bytes": 9901,
+          "sha256": "086092c688e6cb774da94333826f51b1fdeddc8e85aeaac5be6b15c143b0df27",
+          "counts": {
+            "physicalLines": 254,
+            "nonblankLines": 214,
+            "bytes": 9901,
+            "defs": 27,
+            "laws": 13,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/core/pretty.bend",
+          "bytes": 16800,
+          "sha256": "40b4e6ca55bf11009881b893c7959dd52cc64bbc6cb2dbb607e94dbab69fdedc",
+          "counts": {
+            "physicalLines": 548,
+            "nonblankLines": 469,
+            "bytes": 16800,
+            "defs": 55,
+            "laws": 23,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/check/quantity.bend",
+          "bytes": 4069,
+          "sha256": "b4a8ca1f8dff10f4f64397ea53bbbe272bb32400e993b1077d284ec1d8a70b4d",
+          "counts": {
+            "physicalLines": 177,
+            "nonblankLines": 153,
+            "bytes": 4069,
+            "defs": 16,
+            "laws": 7,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/check/kernel.bend",
+          "bytes": 49255,
+          "sha256": "da7ee29f9755f09acd9f89fcfd37465b52ab8778971200c946c70e50eb5b4132",
+          "counts": {
+            "physicalLines": 1427,
+            "nonblankLines": 1208,
+            "bytes": 49255,
+            "defs": 157,
+            "laws": 60,
+            "types": 4
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/check/specialize.bend",
+          "bytes": 16212,
+          "sha256": "76e0f9249ae15cc0734a8e9d2e75677794e2eb5464c7756a19daff8b8217e7ee",
+          "counts": {
+            "physicalLines": 383,
+            "nonblankLines": 322,
+            "bytes": 16212,
+            "defs": 53,
+            "laws": 5,
+            "types": 3
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/check/prefix.bend",
+          "bytes": 3037,
+          "sha256": "ceabf77fb49b58910d83fa896899061643c4c105f29e70bd87d3f73be873783d",
+          "counts": {
+            "physicalLines": 142,
+            "nonblankLines": 122,
+            "bytes": 3037,
+            "defs": 12,
+            "laws": 7,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/check/annotate.bend",
+          "bytes": 10866,
+          "sha256": "1912e5d177514733e706297fbb53e730c1f7a9edc91ffb06d2b1de7e2547648c",
+          "counts": {
+            "physicalLines": 389,
+            "nonblankLines": 329,
+            "bytes": 10866,
+            "defs": 32,
+            "laws": 26,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/front/lexer.bend",
+          "bytes": 13265,
+          "sha256": "aa9d726b6b284deba84dbccc77a01a8143dd89dab70cf487e1ddc8d589380440",
+          "counts": {
+            "physicalLines": 397,
+            "nonblankLines": 338,
+            "bytes": 13265,
+            "defs": 47,
+            "laws": 9,
+            "types": 4
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/front/contextual.bend",
+          "bytes": 29385,
+          "sha256": "18a1eabd78b224927ebe72c4aa7a295300cc641e20d03d2bc062fdcfd96f62f6",
+          "counts": {
+            "physicalLines": 555,
+            "nonblankLines": 472,
+            "bytes": 29385,
+            "defs": 83,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/front/parser.bend",
+          "bytes": 32003,
+          "sha256": "c1790685aea7c71430873d65c2d91996778f443aee0098e54c656fe10177ba28",
+          "counts": {
+            "physicalLines": 730,
+            "nonblankLines": 613,
+            "bytes": 32003,
+            "defs": 82,
+            "laws": 37,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/front/declarations.bend",
+          "bytes": 31635,
+          "sha256": "9e2c8da30605c1b8ab732df5f95533da55a3ea0e6c5a0941f1340586db9d36af",
+          "counts": {
+            "physicalLines": 741,
+            "nonblankLines": 640,
+            "bytes": 31635,
+            "defs": 65,
+            "laws": 33,
+            "types": 3
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/front/flatten.bend",
+          "bytes": 6450,
+          "sha256": "d3ba8687f7dcd303dee847a90e3fa92b9a234d97cdcd3893de8242c6d2aa69cf",
+          "counts": {
+            "physicalLines": 189,
+            "nonblankLines": 161,
+            "bytes": 6450,
+            "defs": 15,
+            "laws": 12,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/front/elaborate.bend",
+          "bytes": 7941,
+          "sha256": "8537f483259d48fa1d710915d6e8e09916faa540560379ee550a7077f391dc1e",
+          "counts": {
+            "physicalLines": 242,
+            "nonblankLines": 203,
+            "bytes": 7941,
+            "defs": 26,
+            "laws": 11,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/front/sugar.bend",
+          "bytes": 14142,
+          "sha256": "d3e3cf5addf0498e8401b9988678eb6ac8ff81571a014b18a1b6fed0a76fb22a",
+          "counts": {
+            "physicalLines": 301,
+            "nonblankLines": 255,
+            "bytes": 14142,
+            "defs": 41,
+            "laws": 4,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/front/unicode.bend",
+          "bytes": 4481,
+          "sha256": "bfd4407aa83614ae8398c9ce451f729cbcba457f2ef64774fea99f1824b5dd96",
+          "counts": {
+            "physicalLines": 99,
+            "nonblankLines": 79,
+            "bytes": 4481,
+            "defs": 13,
+            "laws": 6,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/front/literals_arrays.bend",
+          "bytes": 11903,
+          "sha256": "7429e8a4e16e30f74fa19911993879e60a982a510f369769e7805d6a6ac34796",
+          "counts": {
+            "physicalLines": 270,
+            "nonblankLines": 220,
+            "bytes": 11903,
+            "defs": 38,
+            "laws": 13,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/front/parallel.bend",
+          "bytes": 3238,
+          "sha256": "b7c38f74d9f339f21fa00c5194078a0bfc41a948d1adaa907d00df64045c2f1c",
+          "counts": {
+            "physicalLines": 106,
+            "nonblankLines": 88,
+            "bytes": 3238,
+            "defs": 10,
+            "laws": 8,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/front/fresh_work.bend",
+          "bytes": 7736,
+          "sha256": "043d3b737cef4b932b7de8ef161dc88ba867ba6a8056e3662edfdcf4a2d797ed",
+          "counts": {
+            "physicalLines": 208,
+            "nonblankLines": 201,
+            "bytes": 7736,
+            "defs": 15,
+            "laws": 12,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/front/freshen.bend",
+          "bytes": 1285,
+          "sha256": "d0fed135fe878987770786ef0c50dd09efe2cce390beb7a911bcfc8468d5607d",
+          "counts": {
+            "physicalLines": 57,
+            "nonblankLines": 47,
+            "bytes": 1285,
+            "defs": 5,
+            "laws": 3,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/load/paths.bend",
+          "bytes": 2186,
+          "sha256": "a9fc17a8af04c1958d1f11e8c1c5b7c2d3eb925dd9075e6c77de4bdb3521f2a2",
+          "counts": {
+            "physicalLines": 84,
+            "nonblankLines": 70,
+            "bytes": 2186,
+            "defs": 9,
+            "laws": 4,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/front/families.bend",
+          "bytes": 3849,
+          "sha256": "22b6e9b1ca132ed2d6f2cf91507e221f09cdda1aeab5931e8cf099e934bc9d2f",
+          "counts": {
+            "physicalLines": 106,
+            "nonblankLines": 88,
+            "bytes": 3849,
+            "defs": 11,
+            "laws": 6,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/front/validate.bend",
+          "bytes": 11354,
+          "sha256": "62d530ce7ebb6d2abf69f34d37b5b21eed8711c7bdee3bf868aa2c94d699ec5d",
+          "counts": {
+            "physicalLines": 233,
+            "nonblankLines": 193,
+            "bytes": 11354,
+            "defs": 25,
+            "laws": 12,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/load/imports.bend",
+          "bytes": 4211,
+          "sha256": "b878da5169a4a39d35a236ff5128dc42735fea0707195cf621ae651c1f13e9b1",
+          "counts": {
+            "physicalLines": 79,
+            "nonblankLines": 65,
+            "bytes": 4211,
+            "defs": 11,
+            "laws": 1,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/load/graph.bend",
+          "bytes": 16909,
+          "sha256": "9317e9fe5224c447c50e5339469a244dd7036c00801d9750687f8dfe1de5fdb3",
+          "counts": {
+            "physicalLines": 462,
+            "nonblankLines": 409,
+            "bytes": 16909,
+            "defs": 50,
+            "laws": 28,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/load/seed.bend",
+          "bytes": 5224,
+          "sha256": "ca4cb677af632c47c13792ede10d4e791c85b5cc6c756aacf230861d7bfa4c21",
+          "counts": {
+            "physicalLines": 162,
+            "nonblankLines": 140,
+            "bytes": 5224,
+            "defs": 13,
+            "laws": 8,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/load/modules.bend",
+          "bytes": 10063,
+          "sha256": "fed5593033f957a61118a2eff9c2e09bd51af8810cff1db12e655523b82188ea",
+          "counts": {
+            "physicalLines": 258,
+            "nonblankLines": 219,
+            "bytes": 10063,
+            "defs": 31,
+            "laws": 5,
+            "types": 4
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/diagnostic/model.bend",
+          "bytes": 754,
+          "sha256": "3c699ec70ef36700520658555bc5df025880691c44633cabb9e5719b60fc9c1c",
+          "counts": {
+            "physicalLines": 19,
+            "nonblankLines": 15,
+            "bytes": 754,
+            "defs": 0,
+            "laws": 0,
+            "types": 5
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/diagnostic/render.bend",
+          "bytes": 7804,
+          "sha256": "695f41ace13e08756273c317659a419deee5fc79d413bd58e8711f124370276c",
+          "counts": {
+            "physicalLines": 248,
+            "nonblankLines": 215,
+            "bytes": 7804,
+            "defs": 27,
+            "laws": 5,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/diagnostic/trace.bend",
+          "bytes": 6819,
+          "sha256": "0e03e2827415d082d295976b57564c7b0bd872f7c81229e653d7e0ddda62b10f",
+          "counts": {
+            "physicalLines": 135,
+            "nonblankLines": 112,
+            "bytes": 6819,
+            "defs": 16,
+            "laws": 6,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/diagnostic/produce.bend",
+          "bytes": 8073,
+          "sha256": "9518cb01c0c7636654bfa14dd332ac49756572ba975c7789c865e9cd8cf75c80",
+          "counts": {
+            "physicalLines": 210,
+            "nonblankLines": 176,
+            "bytes": 8073,
+            "defs": 26,
+            "laws": 8,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/diagnostic/frontend.bend",
+          "bytes": 10910,
+          "sha256": "fdd07e6e3df5f999f2d162a4d3186cd8ae13102c8351710edab5291a2f80489f",
+          "counts": {
+            "physicalLines": 249,
+            "nonblankLines": 222,
+            "bytes": 10910,
+            "defs": 24,
+            "laws": 16,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/js/foreign.bend",
+          "bytes": 5794,
+          "sha256": "0f397f84a989c6fc9a52eaf962742e673cdba243864c0bbe7c16ce4ffd8eb065",
+          "counts": {
+            "physicalLines": 168,
+            "nonblankLines": 142,
+            "bytes": 5794,
+            "defs": 17,
+            "laws": 9,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/js/literals.bend",
+          "bytes": 5544,
+          "sha256": "2c4488a4f37010253a54e3745317c685ec77067475d471e577687acfa9a16776",
+          "counts": {
+            "physicalLines": 185,
+            "nonblankLines": 150,
+            "bytes": 5544,
+            "defs": 18,
+            "laws": 16,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/js/validate.bend",
+          "bytes": 11066,
+          "sha256": "f8fc315bf80dabbf8afd1b6ced8e7c322b8ef96d73859d47e01c4b317afb72a0",
+          "counts": {
+            "physicalLines": 305,
+            "nonblankLines": 258,
+            "bytes": 11066,
+            "defs": 26,
+            "laws": 21,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/js/choice.bend",
+          "bytes": 3583,
+          "sha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3",
+          "counts": {
+            "physicalLines": 97,
+            "nonblankLines": 82,
+            "bytes": 3583,
+            "defs": 9,
+            "laws": 7,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/js/projection.bend",
+          "bytes": 2597,
+          "sha256": "67cce055248e6a0034a6194a9f5cbd0821c2cf79905759d08033b141231e93ae",
+          "counts": {
+            "physicalLines": 69,
+            "nonblankLines": 59,
+            "bytes": 2597,
+            "defs": 7,
+            "laws": 4,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/js/u32.bend",
+          "bytes": 4926,
+          "sha256": "bda743e5c6afa1324673dd6722782a2b615c75abeb5c8061c623622723cfb25c",
+          "counts": {
+            "physicalLines": 110,
+            "nonblankLines": 95,
+            "bytes": 4926,
+            "defs": 15,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/js/primitive.bend",
+          "bytes": 7332,
+          "sha256": "de137137d7cdd21f3a3a5c6d0bdca7664712fac7b74c46f177b8d3e521017b83",
+          "counts": {
+            "physicalLines": 115,
+            "nonblankLines": 101,
+            "bytes": 7332,
+            "defs": 14,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/js/local.bend",
+          "bytes": 8960,
+          "sha256": "81abb98ab0d63f29745c9bbd3c46a31565a166f732db500f9b38157d45c0f26b",
+          "counts": {
+            "physicalLines": 165,
+            "nonblankLines": 141,
+            "bytes": 8960,
+            "defs": 24,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/js/region.bend",
+          "bytes": 29609,
+          "sha256": "6cb5ed0f6d425b9ad9c3d57bc55a752a274d1ce2cd4da6ee490cf9b24f90a9ee",
+          "counts": {
+            "physicalLines": 490,
+            "nonblankLines": 420,
+            "bytes": 29609,
+            "defs": 69,
+            "laws": 0,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/js/worker.bend",
+          "bytes": 14007,
+          "sha256": "b7f5a57511e8ee6f12e0e5b90d66dcd9d2997b100aac64d125b31680ec82d198",
+          "counts": {
+            "physicalLines": 236,
+            "nonblankLines": 200,
+            "bytes": 14007,
+            "defs": 36,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/js/tree.bend",
+          "bytes": 7576,
+          "sha256": "ce78017169ce6fcf53ffc46a9760c282c58e37111513b5cb970002ab0be64fd3",
+          "counts": {
+            "physicalLines": 128,
+            "nonblankLines": 111,
+            "bytes": 7576,
+            "defs": 17,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/js/emit.bend",
+          "bytes": 32002,
+          "sha256": "bf6411eef52f8142a1757b287a8bb176992cc98a0670b9bdd74adc5657bdc9cb",
+          "counts": {
+            "physicalLines": 979,
+            "nonblankLines": 825,
+            "bytes": 32002,
+            "defs": 88,
+            "laws": 70,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/native/ir.bend",
+          "bytes": 929,
+          "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b",
+          "counts": {
+            "physicalLines": 25,
+            "nonblankLines": 19,
+            "bytes": 929,
+            "defs": 0,
+            "laws": 0,
+            "types": 7
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/native/text.bend",
+          "bytes": 2533,
+          "sha256": "31c1ff5973df46d17ad395070fbefa1d2dc58398b3d12af80c62ed6c5548ff9d",
+          "counts": {
+            "physicalLines": 101,
+            "nonblankLines": 83,
+            "bytes": 2533,
+            "defs": 18,
+            "laws": 1,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/native/identity.bend",
+          "bytes": 2476,
+          "sha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a",
+          "counts": {
+            "physicalLines": 89,
+            "nonblankLines": 77,
+            "bytes": 2476,
+            "defs": 7,
+            "laws": 5,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/native/layout.bend",
+          "bytes": 135,
+          "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b",
+          "counts": {
+            "physicalLines": 7,
+            "nonblankLines": 6,
+            "bytes": 135,
+            "defs": 1,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/native/intrinsic.bend",
+          "bytes": 4912,
+          "sha256": "5b921ebfecb307eddae880edee86ce459751684ecf74543f54c60e2a6f252195",
+          "counts": {
+            "physicalLines": 29,
+            "nonblankLines": 24,
+            "bytes": 4912,
+            "defs": 5,
+            "laws": 0,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/native/tables.bend",
+          "bytes": 8602,
+          "sha256": "6b8f36fa9063f35105889d8977aa2345fb01eeceb117e6f641151430d084bbaa",
+          "counts": {
+            "physicalLines": 221,
+            "nonblankLines": 184,
+            "bytes": 8602,
+            "defs": 37,
+            "laws": 1,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/native/emit.bend",
+          "bytes": 5084,
+          "sha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a",
+          "counts": {
+            "physicalLines": 111,
+            "nonblankLines": 93,
+            "bytes": 5084,
+            "defs": 19,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/native/erase.bend",
+          "bytes": 3528,
+          "sha256": "8f536cdfbca91b26bf426b3c8c5f42106fc0e18af7bfd2550ba73e7dab5530ec",
+          "counts": {
+            "physicalLines": 83,
+            "nonblankLines": 71,
+            "bytes": 3528,
+            "defs": 9,
+            "laws": 3,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/native/bridge.bend",
+          "bytes": 23327,
+          "sha256": "4767f940940660635ec4c80978f8e4abb11c398b4b8f8bccabf05879c59f2a49",
+          "counts": {
+            "physicalLines": 456,
+            "nonblankLines": 382,
+            "bytes": 23327,
+            "defs": 65,
+            "laws": 6,
+            "types": 3
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/native/direct.bend",
+          "bytes": 4200,
+          "sha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5",
+          "counts": {
+            "physicalLines": 88,
+            "nonblankLines": 74,
+            "bytes": 4200,
+            "defs": 14,
+            "laws": 1,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/native/pattern.bend",
+          "bytes": 5324,
+          "sha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4",
+          "counts": {
+            "physicalLines": 141,
+            "nonblankLines": 137,
+            "bytes": 5324,
+            "defs": 13,
+            "laws": 9,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/native/show.bend",
+          "bytes": 6723,
+          "sha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d",
+          "counts": {
+            "physicalLines": 152,
+            "nonblankLines": 129,
+            "bytes": 6723,
+            "defs": 19,
+            "laws": 3,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/native/parallel.bend",
+          "bytes": 5003,
+          "sha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722",
+          "counts": {
+            "physicalLines": 94,
+            "nonblankLines": 81,
+            "bytes": 5003,
+            "defs": 12,
+            "laws": 1,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/native/array.bend",
+          "bytes": 2813,
+          "sha256": "c00f0592299047df582ac0435e1a0423ea62fb48f7c87dda83bf18161b263bd7",
+          "counts": {
+            "physicalLines": 44,
+            "nonblankLines": 39,
+            "bytes": 2813,
+            "defs": 4,
+            "laws": 2,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/native/validate.bend",
+          "bytes": 2859,
+          "sha256": "d0c1e75c5dbda3d2e65ea227667191252c49f71b63f0765c358c2041a0f484bb",
+          "counts": {
+            "physicalLines": 62,
+            "nonblankLines": 52,
+            "bytes": 2859,
+            "defs": 11,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/native/foreign.bend",
+          "bytes": 4010,
+          "sha256": "ed7a06662072e73d45d10b1898599936b106dc22956a4fceea8d04ac22fb6d3c",
+          "counts": {
+            "physicalLines": 73,
+            "nonblankLines": 64,
+            "bytes": 4010,
+            "defs": 10,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/back/native/book.bend",
+          "bytes": 14294,
+          "sha256": "180ee53af86a59df8efcc131d4f22b0ca6f5f9980dd222259f2941fbef1e11a2",
+          "counts": {
+            "physicalLines": 316,
+            "nonblankLines": 264,
+            "bytes": 14294,
+            "defs": 42,
+            "laws": 9,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/driver/report.bend",
+          "bytes": 2593,
+          "sha256": "15f0985da866b948252490ec2f1b90aed9d36fb24b93eab24826648cc36e6df8",
+          "counts": {
+            "physicalLines": 100,
+            "nonblankLines": 86,
+            "bytes": 2593,
+            "defs": 9,
+            "laws": 6,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-02/snapshot/src/driver/api.bend",
+          "bytes": 3919,
+          "sha256": "5cae856aa306f52042cbead5bf72136da317649a0a09b7d73f8da1be3530d9d3",
+          "counts": {
+            "physicalLines": 124,
+            "nonblankLines": 105,
+            "bytes": 3919,
+            "defs": 15,
+            "laws": 5,
+            "types": 0
+          }
+        }
+      ],
+      "counts": {
+        "physicalLines": 17060,
+        "nonblankLines": 14570,
+        "bytes": 663511,
+        "defs": 1883,
+        "laws": 640,
+        "types": 70,
+        "modules": 66
+      },
+      "deltaFrom31": {
+        "physicalLines": 46,
+        "nonblankLines": 41,
+        "bytes": 2941,
+        "defs": 5,
+        "laws": 0,
+        "types": 0,
+        "modules": 0
+      },
+      "sourceMatchesWorkingTree": false
+    },
+    "03": {
+      "manifest": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/compiler.json",
+        "bytes": 2201,
+        "sha256": "b58e3f32e1e59f992b44fa2964e21876227299ad9658af7ed63ac9b1e476fd1e"
+      },
+      "receipt": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/attempt.json",
+        "bytes": 204679,
+        "sha256": "9bf0c842144cc1a1eac7993e88dcf13f31d7d854c3c977cbd4d89f435163e644"
+      },
+      "files": [
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/core/term.bend",
+          "bytes": 18285,
+          "sha256": "e9ab994bc3ba4fd5a281e25836911bbc29cafcf2ab0c0284dc9bc097e891fa46",
+          "counts": {
+            "physicalLines": 650,
+            "nonblankLines": 563,
+            "bytes": 18285,
+            "defs": 72,
+            "laws": 10,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/core/index.bend",
+          "bytes": 10197,
+          "sha256": "32a4f2772c865f9ed9743f1ece27d5fafd1898724d5f268186590c938b038ea2",
+          "counts": {
+            "physicalLines": 383,
+            "nonblankLines": 338,
+            "bytes": 10197,
+            "defs": 34,
+            "laws": 9,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/core/normalize.bend",
+          "bytes": 22263,
+          "sha256": "4845ff63f3c228abc9a432410ddc8b7e20bfce27e54d6d49412b06608f7ce702",
+          "counts": {
+            "physicalLines": 719,
+            "nonblankLines": 637,
+            "bytes": 22263,
+            "defs": 55,
+            "laws": 32,
+            "types": 3
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/core/graph.bend",
+          "bytes": 14746,
+          "sha256": "85625049b316ede08eeffd7ff509483183624f1197c582c9d1bb2cd8bebf4802",
+          "counts": {
+            "physicalLines": 485,
+            "nonblankLines": 420,
+            "bytes": 14746,
+            "defs": 37,
+            "laws": 22,
+            "types": 5
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/core/reach.bend",
+          "bytes": 9901,
+          "sha256": "086092c688e6cb774da94333826f51b1fdeddc8e85aeaac5be6b15c143b0df27",
+          "counts": {
+            "physicalLines": 254,
+            "nonblankLines": 214,
+            "bytes": 9901,
+            "defs": 27,
+            "laws": 13,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/core/pretty.bend",
+          "bytes": 16800,
+          "sha256": "40b4e6ca55bf11009881b893c7959dd52cc64bbc6cb2dbb607e94dbab69fdedc",
+          "counts": {
+            "physicalLines": 548,
+            "nonblankLines": 469,
+            "bytes": 16800,
+            "defs": 55,
+            "laws": 23,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/check/quantity.bend",
+          "bytes": 4069,
+          "sha256": "b4a8ca1f8dff10f4f64397ea53bbbe272bb32400e993b1077d284ec1d8a70b4d",
+          "counts": {
+            "physicalLines": 177,
+            "nonblankLines": 153,
+            "bytes": 4069,
+            "defs": 16,
+            "laws": 7,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/check/kernel.bend",
+          "bytes": 49255,
+          "sha256": "da7ee29f9755f09acd9f89fcfd37465b52ab8778971200c946c70e50eb5b4132",
+          "counts": {
+            "physicalLines": 1427,
+            "nonblankLines": 1208,
+            "bytes": 49255,
+            "defs": 157,
+            "laws": 60,
+            "types": 4
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/check/specialize.bend",
+          "bytes": 16212,
+          "sha256": "76e0f9249ae15cc0734a8e9d2e75677794e2eb5464c7756a19daff8b8217e7ee",
+          "counts": {
+            "physicalLines": 383,
+            "nonblankLines": 322,
+            "bytes": 16212,
+            "defs": 53,
+            "laws": 5,
+            "types": 3
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/check/prefix.bend",
+          "bytes": 3037,
+          "sha256": "ceabf77fb49b58910d83fa896899061643c4c105f29e70bd87d3f73be873783d",
+          "counts": {
+            "physicalLines": 142,
+            "nonblankLines": 122,
+            "bytes": 3037,
+            "defs": 12,
+            "laws": 7,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/check/annotate.bend",
+          "bytes": 10866,
+          "sha256": "1912e5d177514733e706297fbb53e730c1f7a9edc91ffb06d2b1de7e2547648c",
+          "counts": {
+            "physicalLines": 389,
+            "nonblankLines": 329,
+            "bytes": 10866,
+            "defs": 32,
+            "laws": 26,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/front/lexer.bend",
+          "bytes": 13265,
+          "sha256": "aa9d726b6b284deba84dbccc77a01a8143dd89dab70cf487e1ddc8d589380440",
+          "counts": {
+            "physicalLines": 397,
+            "nonblankLines": 338,
+            "bytes": 13265,
+            "defs": 47,
+            "laws": 9,
+            "types": 4
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/front/contextual.bend",
+          "bytes": 29385,
+          "sha256": "18a1eabd78b224927ebe72c4aa7a295300cc641e20d03d2bc062fdcfd96f62f6",
+          "counts": {
+            "physicalLines": 555,
+            "nonblankLines": 472,
+            "bytes": 29385,
+            "defs": 83,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/front/parser.bend",
+          "bytes": 32003,
+          "sha256": "c1790685aea7c71430873d65c2d91996778f443aee0098e54c656fe10177ba28",
+          "counts": {
+            "physicalLines": 730,
+            "nonblankLines": 613,
+            "bytes": 32003,
+            "defs": 82,
+            "laws": 37,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/front/declarations.bend",
+          "bytes": 31635,
+          "sha256": "9e2c8da30605c1b8ab732df5f95533da55a3ea0e6c5a0941f1340586db9d36af",
+          "counts": {
+            "physicalLines": 741,
+            "nonblankLines": 640,
+            "bytes": 31635,
+            "defs": 65,
+            "laws": 33,
+            "types": 3
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/front/flatten.bend",
+          "bytes": 6450,
+          "sha256": "d3ba8687f7dcd303dee847a90e3fa92b9a234d97cdcd3893de8242c6d2aa69cf",
+          "counts": {
+            "physicalLines": 189,
+            "nonblankLines": 161,
+            "bytes": 6450,
+            "defs": 15,
+            "laws": 12,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/front/elaborate.bend",
+          "bytes": 7941,
+          "sha256": "8537f483259d48fa1d710915d6e8e09916faa540560379ee550a7077f391dc1e",
+          "counts": {
+            "physicalLines": 242,
+            "nonblankLines": 203,
+            "bytes": 7941,
+            "defs": 26,
+            "laws": 11,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/front/sugar.bend",
+          "bytes": 14142,
+          "sha256": "d3e3cf5addf0498e8401b9988678eb6ac8ff81571a014b18a1b6fed0a76fb22a",
+          "counts": {
+            "physicalLines": 301,
+            "nonblankLines": 255,
+            "bytes": 14142,
+            "defs": 41,
+            "laws": 4,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/front/unicode.bend",
+          "bytes": 4481,
+          "sha256": "bfd4407aa83614ae8398c9ce451f729cbcba457f2ef64774fea99f1824b5dd96",
+          "counts": {
+            "physicalLines": 99,
+            "nonblankLines": 79,
+            "bytes": 4481,
+            "defs": 13,
+            "laws": 6,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/front/literals_arrays.bend",
+          "bytes": 11903,
+          "sha256": "7429e8a4e16e30f74fa19911993879e60a982a510f369769e7805d6a6ac34796",
+          "counts": {
+            "physicalLines": 270,
+            "nonblankLines": 220,
+            "bytes": 11903,
+            "defs": 38,
+            "laws": 13,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/front/parallel.bend",
+          "bytes": 3238,
+          "sha256": "b7c38f74d9f339f21fa00c5194078a0bfc41a948d1adaa907d00df64045c2f1c",
+          "counts": {
+            "physicalLines": 106,
+            "nonblankLines": 88,
+            "bytes": 3238,
+            "defs": 10,
+            "laws": 8,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/front/fresh_work.bend",
+          "bytes": 7736,
+          "sha256": "043d3b737cef4b932b7de8ef161dc88ba867ba6a8056e3662edfdcf4a2d797ed",
+          "counts": {
+            "physicalLines": 208,
+            "nonblankLines": 201,
+            "bytes": 7736,
+            "defs": 15,
+            "laws": 12,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/front/freshen.bend",
+          "bytes": 1285,
+          "sha256": "d0fed135fe878987770786ef0c50dd09efe2cce390beb7a911bcfc8468d5607d",
+          "counts": {
+            "physicalLines": 57,
+            "nonblankLines": 47,
+            "bytes": 1285,
+            "defs": 5,
+            "laws": 3,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/load/paths.bend",
+          "bytes": 2186,
+          "sha256": "a9fc17a8af04c1958d1f11e8c1c5b7c2d3eb925dd9075e6c77de4bdb3521f2a2",
+          "counts": {
+            "physicalLines": 84,
+            "nonblankLines": 70,
+            "bytes": 2186,
+            "defs": 9,
+            "laws": 4,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/front/families.bend",
+          "bytes": 3849,
+          "sha256": "22b6e9b1ca132ed2d6f2cf91507e221f09cdda1aeab5931e8cf099e934bc9d2f",
+          "counts": {
+            "physicalLines": 106,
+            "nonblankLines": 88,
+            "bytes": 3849,
+            "defs": 11,
+            "laws": 6,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/front/validate.bend",
+          "bytes": 11354,
+          "sha256": "62d530ce7ebb6d2abf69f34d37b5b21eed8711c7bdee3bf868aa2c94d699ec5d",
+          "counts": {
+            "physicalLines": 233,
+            "nonblankLines": 193,
+            "bytes": 11354,
+            "defs": 25,
+            "laws": 12,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/load/imports.bend",
+          "bytes": 4211,
+          "sha256": "b878da5169a4a39d35a236ff5128dc42735fea0707195cf621ae651c1f13e9b1",
+          "counts": {
+            "physicalLines": 79,
+            "nonblankLines": 65,
+            "bytes": 4211,
+            "defs": 11,
+            "laws": 1,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/load/graph.bend",
+          "bytes": 16909,
+          "sha256": "9317e9fe5224c447c50e5339469a244dd7036c00801d9750687f8dfe1de5fdb3",
+          "counts": {
+            "physicalLines": 462,
+            "nonblankLines": 409,
+            "bytes": 16909,
+            "defs": 50,
+            "laws": 28,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/load/seed.bend",
+          "bytes": 5224,
+          "sha256": "ca4cb677af632c47c13792ede10d4e791c85b5cc6c756aacf230861d7bfa4c21",
+          "counts": {
+            "physicalLines": 162,
+            "nonblankLines": 140,
+            "bytes": 5224,
+            "defs": 13,
+            "laws": 8,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/load/modules.bend",
+          "bytes": 10063,
+          "sha256": "fed5593033f957a61118a2eff9c2e09bd51af8810cff1db12e655523b82188ea",
+          "counts": {
+            "physicalLines": 258,
+            "nonblankLines": 219,
+            "bytes": 10063,
+            "defs": 31,
+            "laws": 5,
+            "types": 4
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/diagnostic/model.bend",
+          "bytes": 754,
+          "sha256": "3c699ec70ef36700520658555bc5df025880691c44633cabb9e5719b60fc9c1c",
+          "counts": {
+            "physicalLines": 19,
+            "nonblankLines": 15,
+            "bytes": 754,
+            "defs": 0,
+            "laws": 0,
+            "types": 5
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/diagnostic/render.bend",
+          "bytes": 7804,
+          "sha256": "695f41ace13e08756273c317659a419deee5fc79d413bd58e8711f124370276c",
+          "counts": {
+            "physicalLines": 248,
+            "nonblankLines": 215,
+            "bytes": 7804,
+            "defs": 27,
+            "laws": 5,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/diagnostic/trace.bend",
+          "bytes": 6819,
+          "sha256": "0e03e2827415d082d295976b57564c7b0bd872f7c81229e653d7e0ddda62b10f",
+          "counts": {
+            "physicalLines": 135,
+            "nonblankLines": 112,
+            "bytes": 6819,
+            "defs": 16,
+            "laws": 6,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/diagnostic/produce.bend",
+          "bytes": 8073,
+          "sha256": "9518cb01c0c7636654bfa14dd332ac49756572ba975c7789c865e9cd8cf75c80",
+          "counts": {
+            "physicalLines": 210,
+            "nonblankLines": 176,
+            "bytes": 8073,
+            "defs": 26,
+            "laws": 8,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/diagnostic/frontend.bend",
+          "bytes": 10910,
+          "sha256": "fdd07e6e3df5f999f2d162a4d3186cd8ae13102c8351710edab5291a2f80489f",
+          "counts": {
+            "physicalLines": 249,
+            "nonblankLines": 222,
+            "bytes": 10910,
+            "defs": 24,
+            "laws": 16,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/js/foreign.bend",
+          "bytes": 5794,
+          "sha256": "0f397f84a989c6fc9a52eaf962742e673cdba243864c0bbe7c16ce4ffd8eb065",
+          "counts": {
+            "physicalLines": 168,
+            "nonblankLines": 142,
+            "bytes": 5794,
+            "defs": 17,
+            "laws": 9,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/js/literals.bend",
+          "bytes": 5544,
+          "sha256": "2c4488a4f37010253a54e3745317c685ec77067475d471e577687acfa9a16776",
+          "counts": {
+            "physicalLines": 185,
+            "nonblankLines": 150,
+            "bytes": 5544,
+            "defs": 18,
+            "laws": 16,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/js/validate.bend",
+          "bytes": 11066,
+          "sha256": "f8fc315bf80dabbf8afd1b6ced8e7c322b8ef96d73859d47e01c4b317afb72a0",
+          "counts": {
+            "physicalLines": 305,
+            "nonblankLines": 258,
+            "bytes": 11066,
+            "defs": 26,
+            "laws": 21,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/js/choice.bend",
+          "bytes": 3583,
+          "sha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3",
+          "counts": {
+            "physicalLines": 97,
+            "nonblankLines": 82,
+            "bytes": 3583,
+            "defs": 9,
+            "laws": 7,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/js/projection.bend",
+          "bytes": 2597,
+          "sha256": "67cce055248e6a0034a6194a9f5cbd0821c2cf79905759d08033b141231e93ae",
+          "counts": {
+            "physicalLines": 69,
+            "nonblankLines": 59,
+            "bytes": 2597,
+            "defs": 7,
+            "laws": 4,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/js/u32.bend",
+          "bytes": 4926,
+          "sha256": "bda743e5c6afa1324673dd6722782a2b615c75abeb5c8061c623622723cfb25c",
+          "counts": {
+            "physicalLines": 110,
+            "nonblankLines": 95,
+            "bytes": 4926,
+            "defs": 15,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/js/primitive.bend",
+          "bytes": 7332,
+          "sha256": "de137137d7cdd21f3a3a5c6d0bdca7664712fac7b74c46f177b8d3e521017b83",
+          "counts": {
+            "physicalLines": 115,
+            "nonblankLines": 101,
+            "bytes": 7332,
+            "defs": 14,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/js/local.bend",
+          "bytes": 9390,
+          "sha256": "f0243565fd12cd83172cde1594b8ea4b15821404dd0adde8863c42874045ef89",
+          "counts": {
+            "physicalLines": 173,
+            "nonblankLines": 148,
+            "bytes": 9390,
+            "defs": 25,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/js/region.bend",
+          "bytes": 29750,
+          "sha256": "cdea9d36f4f8839917d00617cd654cd1f8c101a828d475123161140f706e52a1",
+          "counts": {
+            "physicalLines": 492,
+            "nonblankLines": 422,
+            "bytes": 29750,
+            "defs": 69,
+            "laws": 0,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/js/worker.bend",
+          "bytes": 14007,
+          "sha256": "b7f5a57511e8ee6f12e0e5b90d66dcd9d2997b100aac64d125b31680ec82d198",
+          "counts": {
+            "physicalLines": 236,
+            "nonblankLines": 200,
+            "bytes": 14007,
+            "defs": 36,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/js/tree.bend",
+          "bytes": 7576,
+          "sha256": "ce78017169ce6fcf53ffc46a9760c282c58e37111513b5cb970002ab0be64fd3",
+          "counts": {
+            "physicalLines": 128,
+            "nonblankLines": 111,
+            "bytes": 7576,
+            "defs": 17,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/js/emit.bend",
+          "bytes": 32134,
+          "sha256": "5d15e0ea3c907faad8fb901c3e53346d46c7847a70ce625c144882ad8a6041fb",
+          "counts": {
+            "physicalLines": 980,
+            "nonblankLines": 826,
+            "bytes": 32134,
+            "defs": 88,
+            "laws": 70,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/native/ir.bend",
+          "bytes": 929,
+          "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b",
+          "counts": {
+            "physicalLines": 25,
+            "nonblankLines": 19,
+            "bytes": 929,
+            "defs": 0,
+            "laws": 0,
+            "types": 7
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/native/text.bend",
+          "bytes": 2533,
+          "sha256": "31c1ff5973df46d17ad395070fbefa1d2dc58398b3d12af80c62ed6c5548ff9d",
+          "counts": {
+            "physicalLines": 101,
+            "nonblankLines": 83,
+            "bytes": 2533,
+            "defs": 18,
+            "laws": 1,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/native/identity.bend",
+          "bytes": 2476,
+          "sha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a",
+          "counts": {
+            "physicalLines": 89,
+            "nonblankLines": 77,
+            "bytes": 2476,
+            "defs": 7,
+            "laws": 5,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/native/layout.bend",
+          "bytes": 135,
+          "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b",
+          "counts": {
+            "physicalLines": 7,
+            "nonblankLines": 6,
+            "bytes": 135,
+            "defs": 1,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/native/intrinsic.bend",
+          "bytes": 4912,
+          "sha256": "5b921ebfecb307eddae880edee86ce459751684ecf74543f54c60e2a6f252195",
+          "counts": {
+            "physicalLines": 29,
+            "nonblankLines": 24,
+            "bytes": 4912,
+            "defs": 5,
+            "laws": 0,
+            "types": 1
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/native/tables.bend",
+          "bytes": 8602,
+          "sha256": "6b8f36fa9063f35105889d8977aa2345fb01eeceb117e6f641151430d084bbaa",
+          "counts": {
+            "physicalLines": 221,
+            "nonblankLines": 184,
+            "bytes": 8602,
+            "defs": 37,
+            "laws": 1,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/native/emit.bend",
+          "bytes": 5084,
+          "sha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a",
+          "counts": {
+            "physicalLines": 111,
+            "nonblankLines": 93,
+            "bytes": 5084,
+            "defs": 19,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/native/erase.bend",
+          "bytes": 3528,
+          "sha256": "8f536cdfbca91b26bf426b3c8c5f42106fc0e18af7bfd2550ba73e7dab5530ec",
+          "counts": {
+            "physicalLines": 83,
+            "nonblankLines": 71,
+            "bytes": 3528,
+            "defs": 9,
+            "laws": 3,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/native/bridge.bend",
+          "bytes": 23327,
+          "sha256": "4767f940940660635ec4c80978f8e4abb11c398b4b8f8bccabf05879c59f2a49",
+          "counts": {
+            "physicalLines": 456,
+            "nonblankLines": 382,
+            "bytes": 23327,
+            "defs": 65,
+            "laws": 6,
+            "types": 3
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/native/direct.bend",
+          "bytes": 4200,
+          "sha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5",
+          "counts": {
+            "physicalLines": 88,
+            "nonblankLines": 74,
+            "bytes": 4200,
+            "defs": 14,
+            "laws": 1,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/native/pattern.bend",
+          "bytes": 5324,
+          "sha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4",
+          "counts": {
+            "physicalLines": 141,
+            "nonblankLines": 137,
+            "bytes": 5324,
+            "defs": 13,
+            "laws": 9,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/native/show.bend",
+          "bytes": 6723,
+          "sha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d",
+          "counts": {
+            "physicalLines": 152,
+            "nonblankLines": 129,
+            "bytes": 6723,
+            "defs": 19,
+            "laws": 3,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/native/parallel.bend",
+          "bytes": 5003,
+          "sha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722",
+          "counts": {
+            "physicalLines": 94,
+            "nonblankLines": 81,
+            "bytes": 5003,
+            "defs": 12,
+            "laws": 1,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/native/array.bend",
+          "bytes": 2813,
+          "sha256": "c00f0592299047df582ac0435e1a0423ea62fb48f7c87dda83bf18161b263bd7",
+          "counts": {
+            "physicalLines": 44,
+            "nonblankLines": 39,
+            "bytes": 2813,
+            "defs": 4,
+            "laws": 2,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/native/validate.bend",
+          "bytes": 2859,
+          "sha256": "d0c1e75c5dbda3d2e65ea227667191252c49f71b63f0765c358c2041a0f484bb",
+          "counts": {
+            "physicalLines": 62,
+            "nonblankLines": 52,
+            "bytes": 2859,
+            "defs": 11,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/native/foreign.bend",
+          "bytes": 4010,
+          "sha256": "ed7a06662072e73d45d10b1898599936b106dc22956a4fceea8d04ac22fb6d3c",
+          "counts": {
+            "physicalLines": 73,
+            "nonblankLines": 64,
+            "bytes": 4010,
+            "defs": 10,
+            "laws": 0,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/back/native/book.bend",
+          "bytes": 14294,
+          "sha256": "180ee53af86a59df8efcc131d4f22b0ca6f5f9980dd222259f2941fbef1e11a2",
+          "counts": {
+            "physicalLines": 316,
+            "nonblankLines": 264,
+            "bytes": 14294,
+            "defs": 42,
+            "laws": 9,
+            "types": 2
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/driver/report.bend",
+          "bytes": 2593,
+          "sha256": "15f0985da866b948252490ec2f1b90aed9d36fb24b93eab24826648cc36e6df8",
+          "counts": {
+            "physicalLines": 100,
+            "nonblankLines": 86,
+            "bytes": 2593,
+            "defs": 9,
+            "laws": 6,
+            "types": 0
+          }
+        },
+        {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/driver/api.bend",
+          "bytes": 3919,
+          "sha256": "5cae856aa306f52042cbead5bf72136da317649a0a09b7d73f8da1be3530d9d3",
+          "counts": {
+            "physicalLines": 124,
+            "nonblankLines": 105,
+            "bytes": 3919,
+            "defs": 15,
+            "laws": 5,
+            "types": 0
+          }
+        }
+      ],
+      "counts": {
+        "physicalLines": 17071,
+        "nonblankLines": 14580,
+        "bytes": 664214,
+        "defs": 1884,
+        "laws": 640,
+        "types": 70,
+        "modules": 66
+      },
+      "deltaFrom31": {
+        "physicalLines": 57,
+        "nonblankLines": 51,
+        "bytes": 3644,
+        "defs": 6,
+        "laws": 0,
+        "types": 0,
+        "modules": 0
+      },
+      "sourceMatchesWorkingTree": true
+    }
+  },
+  "emitted": {
+    "pair": {
+      "cohort": {
+        "baseline": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-03/pair/baseline.mjs",
+          "bytes": 95697,
+          "sha256": "128d658cc174c35f05d092d1f63809c59b683a3a0c4b1f35f584dcd3cdad8845"
+        },
+        "statements": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-03/pair/statements.mjs",
+          "bytes": 96661,
+          "sha256": "f8fe544d6b81064a2c55d50a9d7d7557fbf9ba00e40ed8cb63f1876a6df8932e"
+        },
+        "read_fusion": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-03/pair/read_fusion.mjs",
+          "bytes": 99897,
+          "sha256": "50fb08a167f65c25cb62004211233ade9112e29bbe35469fc35038a5ae0ffffa"
+        },
+        "record_vectors": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-03/pair/record_vectors.mjs",
+          "bytes": 99723,
+          "sha256": "8a4e06b66e961589388fd316bad6127ec47ebf7cea87b040c182442df0f934d3"
+        },
+        "typescript": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-03/pair/typescript.mjs",
+          "bytes": 12537,
+          "sha256": "2c9ab26e68843711fa765a7199d9eaa7efeb6ebc63ad196d0f4ebaa17398e092"
+        }
+      },
+      "delta03vs02": -174,
+      "delta03vs01": 3062,
+      "delta03vs07": 4026,
+      "raw": {
+        "01": {
+          "module": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/emission-01/pair.mjs",
+            "bytes": 96587,
+            "sha256": "595d54a9bee5524fc6c711a7e82d7d74d232014e8e40fab19cdd8538f336b57e"
+          },
+          "receipt": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/emission-01/pair.mjs.json",
+            "bytes": 2894,
+            "sha256": "f2789666faf83971625c18dd31e0b3aeca826d82b3451235b9a6a41656e0173d"
+          },
+          "source": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/local-data-source-01/row.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/local-data-source-01/row.bend",
+            "sha256": "3987479425f7bf0d5c9e7655bb22bae29ed0d44635fdbf50eff2bb3cd869dfb4"
+          }
+        },
+        "02": {
+          "module": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/emission-02/pair.mjs",
+            "bytes": 99823,
+            "sha256": "728a8c2863fd4a51a2c6a998a9471971779edf34ef017650e4530555b8b090fe"
+          },
+          "receipt": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/emission-02/pair.mjs.json",
+            "bytes": 2894,
+            "sha256": "9c2a23fe1b74d6c5451487aa37e5ef9dc0c379ad5ab7cc1bd85baaa8bf8be04c"
+          },
+          "source": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/local-data-source-01/row.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/local-data-source-01/row.bend",
+            "sha256": "3987479425f7bf0d5c9e7655bb22bae29ed0d44635fdbf50eff2bb3cd869dfb4"
+          }
+        },
+        "03": {
+          "module": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/emission-03/pair.mjs",
+            "bytes": 99649,
+            "sha256": "5c9512282eae197f8ed94e4d020698ee87c641bccf0049ac8fa927a160d303aa"
+          },
+          "receipt": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/emission-03/pair.mjs.json",
+            "bytes": 2894,
+            "sha256": "fb1516ade309f163e27e237380501b2f0e31d7122741ba230376fc1519dbd55a"
+          },
+          "source": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/local-data-source-01/row.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/local-data-source-01/row.bend",
+            "sha256": "3987479425f7bf0d5c9e7655bb22bae29ed0d44635fdbf50eff2bb3cd869dfb4"
+          }
+        }
+      }
+    },
+    "fold": {
+      "cohort": {
+        "baseline": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-03/fold/baseline.mjs",
+          "bytes": 76606,
+          "sha256": "48fdb504d11bc870cccb9c9fea5bfb9d7088230ace39779589ccf249db91217c"
+        },
+        "statements": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-03/fold/statements.mjs",
+          "bytes": 76730,
+          "sha256": "5905ddf711f2c739f785a5495afd7e40711486f8bc8e824fdcce428f3b77b37e"
+        },
+        "read_fusion": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-03/fold/read_fusion.mjs",
+          "bytes": 77475,
+          "sha256": "8c8805c4294bf8beed372a3316b02daa72385792714a1d73d116080c1ea845a3"
+        },
+        "record_vectors": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-03/fold/record_vectors.mjs",
+          "bytes": 77433,
+          "sha256": "a5c4c167eb3bae95be39c23438533b44f7923da457eaac2ed88159b6665f476b"
+        },
+        "typescript": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-03/fold/typescript.mjs",
+          "bytes": 5191,
+          "sha256": "591c3e3a895f4092a80eac58fef2ea4ecd15f59c01433fc69ce09143055e2444"
+        }
+      },
+      "delta03vs02": -42,
+      "delta03vs01": 703,
+      "delta03vs07": 827,
+      "raw": {
+        "01": {
+          "module": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/emission-01/fold.mjs",
+            "bytes": 76730,
+            "sha256": "5905ddf711f2c739f785a5495afd7e40711486f8bc8e824fdcce428f3b77b37e"
+          },
+          "receipt": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/emission-01/fold.mjs.json",
+            "bytes": 2918,
+            "sha256": "9bbf936a022deabb3477af4b1080b58b5a255e12c4bc041ef077ddc69901f2f3"
+          },
+          "source": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/local-data-fold-source-02/source.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/local-data-fold-source-02/source.bend",
+            "sha256": "d13b49747fbe6308aa35451ca6f1e1059f0a01bac8fce671dc7a195424b5cc3a"
+          }
+        },
+        "02": {
+          "module": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/emission-02/fold.mjs",
+            "bytes": 77475,
+            "sha256": "8c8805c4294bf8beed372a3316b02daa72385792714a1d73d116080c1ea845a3"
+          },
+          "receipt": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/emission-02/fold.mjs.json",
+            "bytes": 2924,
+            "sha256": "f45a04609326cd7bd44c0eaa11413dc9929dad4035780fb164e189471365ad63"
+          },
+          "source": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/local-data-fold-source-02/source.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/local-data-fold-source-02/source.bend",
+            "sha256": "d13b49747fbe6308aa35451ca6f1e1059f0a01bac8fce671dc7a195424b5cc3a"
+          }
+        },
+        "03": {
+          "module": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/emission-03/fold.mjs",
+            "bytes": 77433,
+            "sha256": "a5c4c167eb3bae95be39c23438533b44f7923da457eaac2ed88159b6665f476b"
+          },
+          "receipt": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/emission-03/fold.mjs.json",
+            "bytes": 2918,
+            "sha256": "48190ffef239cb6706d622c40d78d5c290c0b69397f58a9e1a953c460433057e"
+          },
+          "source": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/local-data-fold-source-02/source.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/local-data-fold-source-02/source.bend",
+            "sha256": "d13b49747fbe6308aa35451ca6f1e1059f0a01bac8fce671dc7a195424b5cc3a"
+          }
+        }
+      }
+    },
+    "scope": {
+      "raw": {
+        "02": {
+          "module": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/emission-02/scope.mjs",
+            "bytes": 73184,
+            "sha256": "5a64efa778a30d81171851d7e90bdab0979baf13a4fd86a0a925391bbb9cef97"
+          },
+          "receipt": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/emission-02/scope.mjs.json",
+            "bytes": 2893,
+            "sha256": "02ee644f5990ab33a6d0a4cbbeea5bb76ede1ede5ffd52ada6d3aa8153f4915a"
+          },
+          "source": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase32/local-scope.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase32/local-scope.bend",
+            "sha256": "6ee7e2c14e3866b12052136cd13e7dce95982f2fd837feb17fdf5edfa8f646f7"
+          }
+        },
+        "03": {
+          "module": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/emission-03/scope.mjs",
+            "bytes": 73184,
+            "sha256": "5a64efa778a30d81171851d7e90bdab0979baf13a4fd86a0a925391bbb9cef97"
+          },
+          "receipt": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/emission-03/scope.mjs.json",
+            "bytes": 2893,
+            "sha256": "d759b1d717913560252e7845cfacd7ce803aeff2f9c8ac9b18fc45b39a77b056"
+          },
+          "source": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase32/local-scope.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase32/local-scope.bend",
+            "sha256": "6ee7e2c14e3866b12052136cd13e7dce95982f2fd837feb17fdf5edfa8f646f7"
+          }
+        }
+      },
+      "delta03vs02": 0
+    },
+    "vectors": {
+      "raw": {
+        "02": {
+          "module": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/emission-02/vectors.mjs",
+            "bytes": 77233,
+            "sha256": "f5f151d06039d35985f04360ba2d734df6c2b99e930957f8448651cab41aa61a"
+          },
+          "receipt": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/emission-02/vectors.mjs.json",
+            "bytes": 2924,
+            "sha256": "66f26c25536d0fbb71b04cc6bce66e4e14611ced26e555232297efa81f5d0ee8"
+          },
+          "source": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase32/review-local-vectors.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase32/review-local-vectors.bend",
+            "sha256": "65e73e2492a47048154d0face16b936e35fe64d7fa9e7b1f2a8985fdd9a53e5f"
+          }
+        },
+        "03": {
+          "module": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/emission-03/vectors.mjs",
+            "bytes": 77203,
+            "sha256": "597c741d87859686705da9b7f60667ca85cb9b32b46e0b38b519f5e2a3f5e8ea"
+          },
+          "receipt": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/emission-03/vectors.mjs.json",
+            "bytes": 2924,
+            "sha256": "bf114a565aeaf655842e64db8af2d8f9e52d66305e001a4f3296bb12ad122812"
+          },
+          "source": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase32/review-local-vectors.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase32/review-local-vectors.bend",
+            "sha256": "65e73e2492a47048154d0face16b936e35fe64d7fa9e7b1f2a8985fdd9a53e5f"
+          }
+        }
+      },
+      "delta03vs02": -30
+    }
+  },
+  "gates": [
+    {
+      "name": "pair",
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-controls-03/pair/report.json",
+        "bytes": 97897,
+        "sha256": "01dd0427a40f70d2e74914ebe9a112ca6919a2837b91281eddd03b10f960ce94"
+      },
+      "supervisor": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-controls-03/pair-outer/run.json",
+        "bytes": 1600,
+        "sha256": "c577dd6f63277267d5676559a80d87a99773f293784bf4d27d518d8fb82be8d6"
+      },
+      "complete": true,
+      "pass": true,
+      "counts": {
+        "oracle": 6,
+        "state": 4,
+        "boundaries": 17
+      },
+      "peakTreeRssBytes": 306774016,
+      "wallSeconds": 15.477694916000473,
+      "availableFloorBytes": 2147483648,
+      "minimumAvailableBytes": 29533622272
+    },
+    {
+      "name": "fold",
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-controls-03/fold/report.json",
+        "bytes": 292101,
+        "sha256": "e823af3f3e269efd68ce31cf18d4b9e694f9d8bfbc594601a74d850792acddeb"
+      },
+      "supervisor": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-controls-03/fold-outer/run.json",
+        "bytes": 1601,
+        "sha256": "f62d437fd540ea095f754f74740933fbefbc5e3061a5ceaa652e2d60c95c1ce4"
+      },
+      "complete": true,
+      "pass": true,
+      "counts": {
+        "oracle": 41,
+        "state": 16,
+        "boundaries": 7,
+        "negative": 3
+      },
+      "peakTreeRssBytes": 71405568,
+      "wallSeconds": 0.30302296900026704,
+      "availableFloorBytes": 2147483648,
+      "minimumAvailableBytes": 29787037696
+    },
+    {
+      "name": "order",
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-controls-03/order/report.json",
+        "bytes": 13837,
+        "sha256": "8c8121d48ee016a232faae54fda594995a10f3c7a919ef88b967ca14180a784d"
+      },
+      "supervisor": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-controls-03/order-outer/run.json",
+        "bytes": 1604,
+        "sha256": "a3f5af59be15cc4bee299eb55869e71b6ba9c5962d46dee1af4c857e8ce59d2e"
+      },
+      "complete": true,
+      "pass": true,
+      "counts": {
+        "cases": 12,
+        "negative": 2,
+        "bridges": 3
+      },
+      "peakTreeRssBytes": 75710464,
+      "wallSeconds": 0.30298273300013534,
+      "availableFloorBytes": 2147483648,
+      "minimumAvailableBytes": 29782638592
+    },
+    {
+      "name": "scope",
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-controls-03/scope/report.json",
+        "bytes": 7241,
+        "sha256": "ace594bbe344a96821cbdb75daa3b9713c559591b8c85a086da5a83bd09cec86"
+      },
+      "supervisor": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-controls-03/scope-outer/run.json",
+        "bytes": 1682,
+        "sha256": "fdca2fe9ffc5383df187392e9900199be10c3775550cc4d460a333fc67132182"
+      },
+      "complete": true,
+      "pass": true,
+      "counts": {
+        "oracle": 40,
+        "boundaries": 3
+      },
+      "peakTreeRssBytes": 54104064,
+      "wallSeconds": 0.20255020199965657,
+      "availableFloorBytes": 2147483648,
+      "minimumAvailableBytes": 29796331520
+    },
+    {
+      "name": "vectors",
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-controls-03/vectors/report.json",
+        "bytes": 24588,
+        "sha256": "d5b687f8d9d7069e61a3c0b1b6fc5855a7b4cb98489f8156d7ad46f66d3edda9"
+      },
+      "supervisor": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-controls-03/vectors-outer/run.json",
+        "bytes": 1692,
+        "sha256": "adeeead79ef6b87982056565cfa858846e61fde1fb6a5ca3f61d73104e453db7"
+      },
+      "complete": true,
+      "pass": true,
+      "counts": {
+        "oracles": 40,
+        "boundaries": 14,
+        "publicResults": 40
+      },
+      "peakTreeRssBytes": 61992960,
+      "wallSeconds": 0.20248799000000872,
+      "availableFloorBytes": 2147483648,
+      "minimumAvailableBytes": 29791186944
+    },
+    {
+      "name": "types",
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-controls-03/types/report.json",
+        "bytes": 5780,
+        "sha256": "3f496debdfc0abd623f95370ea76cb952224fee3c413dd6d2e477f2f292a71b6"
+      },
+      "supervisor": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-controls-03/types-outer/run.json",
+        "bytes": 1590,
+        "sha256": "722cd48e407aafc4c5ac2aa6fda0ba016ad52d407b8118c00b76d28aa1135446"
+      },
+      "complete": true,
+      "pass": true,
+      "counts": {
+        "observations": 21
+      },
+      "peakTreeRssBytes": 194883584,
+      "wallSeconds": 2.4133062219998465,
+      "availableFloorBytes": 2147483648,
+      "minimumAvailableBytes": 29652414464
+    }
+  ],
+  "support": [
+    {
+      "name": "src/runtime/js/core.mjs",
+      "baselineSha256": "61c20228aaab7a68d77a3119cacd0afacf70d60cb1fd79b262e303995b874bac",
+      "baselineCounts": {
+        "physicalLines": 245,
+        "nonblankLines": 245,
+        "bytes": 13492,
+        "defs": 0,
+        "laws": 0,
+        "types": 0
+      },
+      "candidate": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/runtime/js/core.mjs",
+        "bytes": 13492,
+        "sha256": "61c20228aaab7a68d77a3119cacd0afacf70d60cb1fd79b262e303995b874bac"
+      },
+      "candidateCounts": {
+        "physicalLines": 245,
+        "nonblankLines": 245,
+        "bytes": 13492,
+        "defs": 0,
+        "laws": 0,
+        "types": 0
+      },
+      "identical": true
+    },
+    {
+      "name": "tools/stage0-library.mjs",
+      "baselineSha256": "c7eaf78482d64959d413ac490315d20f79c6cbd4f0ef6bb492ca7589d851f017",
+      "baselineCounts": {
+        "physicalLines": 58,
+        "nonblankLines": 58,
+        "bytes": 3551,
+        "defs": 0,
+        "laws": 0,
+        "types": 0
+      },
+      "candidate": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/tools/stage0-library.mjs",
+        "bytes": 3551,
+        "sha256": "c7eaf78482d64959d413ac490315d20f79c6cbd4f0ef6bb492ca7589d851f017"
+      },
+      "candidateCounts": {
+        "physicalLines": 58,
+        "nonblankLines": 58,
+        "bytes": 3551,
+        "defs": 0,
+        "laws": 0,
+        "types": 0
+      },
+      "identical": true
+    }
+  ]
+}

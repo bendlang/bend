@@ -1,0 +1,3457 @@
+{
+  "kind": "phase32-final-measurement-summary",
+  "complete": true,
+  "pass": true,
+  "attempt": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/attempt.json",
+    "sha256": "9bf0c842144cc1a1eac7993e88dcf13f31d7d854c3c977cbd4d89f435163e644",
+    "bytes": 204679
+  },
+  "runtime": {
+    "mandelbrot": {
+      "status": "complete",
+      "complete": true,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/original-timing-plan/mandelbrot-timing/report.json",
+        "sha256": "64bfdfc8c48d2d540181a8bc5d666f43a8e0bff6c9f90edfa614425d208407e2",
+        "bytes": 78784
+      },
+      "protocol": {
+        "samples": 5,
+        "warmupCalls": 3,
+        "warmupMs": 1000,
+        "calibrationMs": 100,
+        "targetMs": 300,
+        "timeout": 120
+      },
+      "cases": [
+        {
+          "id": "mandelbrot",
+          "point": {
+            "args": [
+              2,
+              0
+            ],
+            "expected": 887240761,
+            "exportName": "bench",
+            "warmupCalls": 3,
+            "warmupMs": 1000,
+            "calibrationMs": 100
+          },
+          "variants": {
+            "typescript": {
+              "timeMs": {
+                "median": 0.04585175398875551,
+                "min": 0.045290125968697775,
+                "max": 0.04607717368181127,
+                "samples": [
+                  0.04592377480626047,
+                  0.04585175398875551,
+                  0.04536622017930405,
+                  0.04607717368181127,
+                  0.045290125968697775
+                ]
+              },
+              "firstCallMs": {
+                "median": 5.66990400000001,
+                "min": 5.616250999999998,
+                "max": 6.000761999999995,
+                "samples": [
+                  6.000761999999995,
+                  5.66990400000001,
+                  5.616250999999998,
+                  5.769262000000005,
+                  5.648151999999996
+                ]
+              },
+              "importMs": {
+                "median": 1.1360430000000008,
+                "min": 1.1137130000000042,
+                "max": 1.160225000000004,
+                "samples": [
+                  1.1360430000000008,
+                  1.1299840000000003,
+                  1.160225000000004,
+                  1.1443489999999983,
+                  1.1137130000000042
+                ]
+              },
+              "maxRssKiB": 64828,
+              "rssSamplesKiB": [
+                62792,
+                64788,
+                62680,
+                64368,
+                64828
+              ],
+              "halfDriftPercent": {
+                "median": -0.21202445040975348,
+                "min": -1.7871344901136288,
+                "max": 1.8987046507805694,
+                "samples": [
+                  0.05099920361826271,
+                  1.8987046507805694,
+                  -0.35272760431438455,
+                  -1.7871344901136288,
+                  -0.21202445040975348
+                ]
+              },
+              "halves": [
+                {
+                  "trial": 0,
+                  "halves": [
+                    {
+                      "calls": 3290,
+                      "ms": 151.0321080000001
+                    },
+                    {
+                      "calls": 3291,
+                      "ms": 151.15506299999993
+                    }
+                  ],
+                  "halfDriftPercent": 0.05099920361826271
+                },
+                {
+                  "trial": 1,
+                  "halves": [
+                    {
+                      "calls": 3290,
+                      "ms": 149.415117
+                    },
+                    {
+                      "calls": 3291,
+                      "ms": 152.29834600000004
+                    }
+                  ],
+                  "halfDriftPercent": 1.8987046507805694
+                },
+                {
+                  "trial": 2,
+                  "halves": [
+                    {
+                      "calls": 3290,
+                      "ms": 149.50114099999996
+                    },
+                    {
+                      "calls": 3291,
+                      "ms": 149.01909
+                    }
+                  ],
+                  "halfDriftPercent": -0.35272760431438455
+                },
+                {
+                  "trial": 3,
+                  "halves": [
+                    {
+                      "calls": 3290,
+                      "ms": 152.94085700000005
+                    },
+                    {
+                      "calls": 3291,
+                      "ms": 150.2532540000002
+                    }
+                  ],
+                  "halfDriftPercent": -1.7871344901136288
+                },
+                {
+                  "trial": 4,
+                  "halves": [
+                    {
+                      "calls": 3290,
+                      "ms": 149.146565
+                    },
+                    {
+                      "calls": 3291,
+                      "ms": 148.87557500000003
+                    }
+                  ],
+                  "halfDriftPercent": -0.21202445040975348
+                }
+              ],
+              "context": [
+                "v24.18.0",
+                [
+                  "--stack-size=4096",
+                  "--max-old-space-size=1024"
+                ],
+                "Cpus_allowed_list:\t3"
+              ]
+            },
+            "baseline07": {
+              "timeMs": {
+                "median": 0.2028772953929539,
+                "min": 0.20228258333333338,
+                "max": 0.23103450067750672,
+                "samples": [
+                  0.22365050948509485,
+                  0.23103450067750672,
+                  0.20228258333333338,
+                  0.2028772953929539,
+                  0.202303135501355
+                ]
+              },
+              "firstCallMs": {
+                "median": 11.432856000000001,
+                "min": 11.258575000000008,
+                "max": 14.130368000000004,
+                "samples": [
+                  11.891569000000004,
+                  14.130368000000004,
+                  11.258575000000008,
+                  11.334964999999997,
+                  11.432856000000001
+                ]
+              },
+              "importMs": {
+                "median": 20.964614000000005,
+                "min": 20.704234000000007,
+                "max": 21.684905,
+                "samples": [
+                  20.704234000000007,
+                  21.684905,
+                  20.964614000000005,
+                  21.338268999999997,
+                  20.920538
+                ]
+              },
+              "maxRssKiB": 75940,
+              "rssSamplesKiB": [
+                73684,
+                75816,
+                75940,
+                75488,
+                73616
+              ],
+              "halfDriftPercent": {
+                "median": -0.08987925761038129,
+                "min": -9.563827895931421,
+                "max": 16.97867490287188,
+                "samples": [
+                  16.97867490287188,
+                  -9.563827895931421,
+                  -0.06763842696589917,
+                  -0.08987925761038129,
+                  -0.4155791270010756
+                ]
+              },
+              "halves": [
+                {
+                  "trial": 0,
+                  "halves": [
+                    {
+                      "calls": 738,
+                      "ms": 152.11147600000004
+                    },
+                    {
+                      "calls": 738,
+                      "ms": 177.93798900000002
+                    }
+                  ],
+                  "halfDriftPercent": 16.97867490287188
+                },
+                {
+                  "trial": 1,
+                  "halves": [
+                    {
+                      "calls": 738,
+                      "ms": 179.0446690000001
+                    },
+                    {
+                      "calls": 738,
+                      "ms": 161.92114500000002
+                    }
+                  ],
+                  "halfDriftPercent": -9.563827895931421
+                },
+                {
+                  "trial": 2,
+                  "halves": [
+                    {
+                      "calls": 738,
+                      "ms": 149.314531
+                    },
+                    {
+                      "calls": 738,
+                      "ms": 149.2135370000001
+                    }
+                  ],
+                  "halfDriftPercent": -0.06763842696589917
+                },
+                {
+                  "trial": 3,
+                  "halves": [
+                    {
+                      "calls": 738,
+                      "ms": 149.77093000000013
+                    },
+                    {
+                      "calls": 738,
+                      "ms": 149.63631699999996
+                    }
+                  ],
+                  "halfDriftPercent": -0.08987925761038129
+                },
+                {
+                  "trial": 4,
+                  "halves": [
+                    {
+                      "calls": 738,
+                      "ms": 149.589563
+                    },
+                    {
+                      "calls": 738,
+                      "ms": 148.96789999999987
+                    }
+                  ],
+                  "halfDriftPercent": -0.4155791270010756
+                }
+              ],
+              "context": [
+                "v24.18.0",
+                [
+                  "--stack-size=4096",
+                  "--max-old-space-size=1024"
+                ],
+                "Cpus_allowed_list:\t3"
+              ]
+            },
+            "candidate": {
+              "timeMs": {
+                "median": 0.20459289673913045,
+                "min": 0.20234748233695662,
+                "max": 0.23128004687499998,
+                "samples": [
+                  0.23128004687499998,
+                  0.20234748233695662,
+                  0.20459289673913045,
+                  0.20548882269021734,
+                  0.20326558899456532
+                ]
+              },
+              "firstCallMs": {
+                "median": 11.380024000000006,
+                "min": 11.230789000000001,
+                "max": 11.833907999999994,
+                "samples": [
+                  11.313325000000006,
+                  11.230789000000001,
+                  11.464770999999999,
+                  11.380024000000006,
+                  11.833907999999994
+                ]
+              },
+              "importMs": {
+                "median": 21.07317400000001,
+                "min": 20.893883000000002,
+                "max": 21.641342999999992,
+                "samples": [
+                  21.07317400000001,
+                  21.615247000000004,
+                  21.641342999999992,
+                  20.909569000000005,
+                  20.893883000000002
+                ]
+              },
+              "maxRssKiB": 81760,
+              "rssSamplesKiB": [
+                73808,
+                75592,
+                75904,
+                73592,
+                81760
+              ],
+              "halfDriftPercent": {
+                "median": 0.7799587633162242,
+                "min": -6.557542504122571,
+                "max": 1.1246967088552662,
+                "samples": [
+                  -6.557542504122571,
+                  0.7799587633162242,
+                  1.1246967088552662,
+                  0.9881286796398436,
+                  -0.22350636520227507
+                ]
+              },
+              "halves": [
+                {
+                  "trial": 0,
+                  "halves": [
+                    {
+                      "calls": 736,
+                      "ms": 175.96787200000017
+                    },
+                    {
+                      "calls": 736,
+                      "ms": 164.42870400000015
+                    }
+                  ],
+                  "halfDriftPercent": -6.557542504122571
+                },
+                {
+                  "trial": 1,
+                  "halves": [
+                    {
+                      "calls": 736,
+                      "ms": 148.32861100000014
+                    },
+                    {
+                      "calls": 736,
+                      "ms": 149.48551299999986
+                    }
+                  ],
+                  "halfDriftPercent": 0.7799587633162242
+                },
+                {
+                  "trial": 2,
+                  "halves": [
+                    {
+                      "calls": 736,
+                      "ms": 149.71876300000008
+                    },
+                    {
+                      "calls": 736,
+                      "ms": 151.4026449999999
+                    }
+                  ],
+                  "halfDriftPercent": 1.1246967088552662
+                },
+                {
+                  "trial": 3,
+                  "halves": [
+                    {
+                      "calls": 736,
+                      "ms": 150.47685899999988
+                    },
+                    {
+                      "calls": 736,
+                      "ms": 151.96376400000008
+                    }
+                  ],
+                  "halfDriftPercent": 0.9881286796398436
+                },
+                {
+                  "trial": 4,
+                  "halves": [
+                    {
+                      "calls": 736,
+                      "ms": 149.7505450000001
+                    },
+                    {
+                      "calls": 736,
+                      "ms": 149.415843
+                    }
+                  ],
+                  "halfDriftPercent": -0.22350636520227507
+                }
+              ],
+              "context": [
+                "v24.18.0",
+                [
+                  "--stack-size=4096",
+                  "--max-old-space-size=1024"
+                ],
+                "Cpus_allowed_list:\t3"
+              ]
+            }
+          },
+          "modules": {
+            "typescript": {
+              "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase28/runtime-01/mandelbrot/upstream.mjs",
+              "sha256": "037f070e948ab7701364b7413c624bca4327db0bc6171ac4523b906d2ae9e222",
+              "bytes": 15442
+            },
+            "baseline07": {
+              "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/final-plan-07/original-three/mandelbrot/candidate.mjs",
+              "sha256": "760d7f6c083cdb703839726ded1acbf8d53100711fec88f88f2260615fe8c921",
+              "bytes": 110517
+            },
+            "candidate": {
+              "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/original-three/mandelbrot/candidate.mjs",
+              "sha256": "760d7f6c083cdb703839726ded1acbf8d53100711fec88f88f2260615fe8c921",
+              "bytes": 110517
+            }
+          },
+          "baselineCandidateIdenticalBytes": true,
+          "versus07": {
+            "speedup": 0.9916145605564984,
+            "candidateTimeChangePercent": 0.8456349651416506,
+            "rangesOverlap": true,
+            "candidateEntirelyFaster": false,
+            "candidateEntirelySlower": false
+          },
+          "candidateTimesTypeScript": 4.462051697941674,
+          "baselineTimesTypeScript": 4.424635433634811
+        }
+      ],
+      "wallSeconds": 27.38949077400048
+    },
+    "editdist": {
+      "status": "complete",
+      "complete": true,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/original-timing-plan/editdist-timing/report.json",
+        "sha256": "6060fc33fb9f14e5967fa9f44b2822e803d6d297f91c39d9dde4f76a7cf1ed73",
+        "bytes": 69703
+      },
+      "protocol": {
+        "samples": 5,
+        "warmupCalls": 3,
+        "warmupMs": 1000,
+        "calibrationMs": 100,
+        "targetMs": 300,
+        "timeout": 120
+      },
+      "cases": [
+        {
+          "id": "editdist",
+          "point": {
+            "args": [
+              2,
+              0
+            ],
+            "expected": 2065873279,
+            "exportName": "bench",
+            "warmupCalls": 3,
+            "warmupMs": 1000,
+            "calibrationMs": 100
+          },
+          "variants": {
+            "typescript": {
+              "timeMs": {
+                "median": 4.987946278688521,
+                "min": 4.930971508196722,
+                "max": 5.405422688524592,
+                "samples": [
+                  4.987946278688521,
+                  5.009487131147543,
+                  4.930971508196722,
+                  4.972600524590163,
+                  5.405422688524592
+                ]
+              },
+              "firstCallMs": {
+                "median": 25.384437999999996,
+                "min": 25.112961,
+                "max": 28.76122199999999,
+                "samples": [
+                  25.646869000000002,
+                  25.384437999999996,
+                  25.277305,
+                  25.112961,
+                  28.76122199999999
+                ]
+              },
+              "importMs": {
+                "median": 1.0485819999999961,
+                "min": 1.0399750000000054,
+                "max": 1.105936000000007,
+                "samples": [
+                  1.0657470000000018,
+                  1.0451169999999976,
+                  1.0399750000000054,
+                  1.105936000000007,
+                  1.0485819999999961
+                ]
+              },
+              "maxRssKiB": 80416,
+              "rssSamplesKiB": [
+                78356,
+                78348,
+                80280,
+                80416,
+                78344
+              ],
+              "halfDriftPercent": {
+                "median": -0.01586445890339183,
+                "min": -0.9271704466507824,
+                "max": 0.25014699077912095,
+                "samples": [
+                  -0.3112007609017753,
+                  0.25014699077912095,
+                  -0.01586445890339183,
+                  0.12581802723738988,
+                  -0.9271704466507824
+                ]
+              },
+              "halves": [
+                {
+                  "trial": 0,
+                  "halves": [
+                    {
+                      "calls": 30,
+                      "ms": 149.85245099999997
+                    },
+                    {
+                      "calls": 31,
+                      "ms": 154.36564599999997
+                    }
+                  ],
+                  "halfDriftPercent": -0.3112007609017753
+                },
+                {
+                  "trial": 1,
+                  "halves": [
+                    {
+                      "calls": 30,
+                      "ms": 150.0706929999999
+                    },
+                    {
+                      "calls": 31,
+                      "ms": 155.4609600000001
+                    }
+                  ],
+                  "halfDriftPercent": 0.25014699077912095
+                },
+                {
+                  "trial": 2,
+                  "halves": [
+                    {
+                      "calls": 30,
+                      "ms": 147.9169629999999
+                    },
+                    {
+                      "calls": 31,
+                      "ms": 152.82328000000007
+                    }
+                  ],
+                  "halfDriftPercent": -0.01586445890339183
+                },
+                {
+                  "trial": 3,
+                  "halves": [
+                    {
+                      "calls": 30,
+                      "ms": 149.0548749999998
+                    },
+                    {
+                      "calls": 31,
+                      "ms": 154.21716000000015
+                    }
+                  ],
+                  "halfDriftPercent": 0.12581802723738988
+                },
+                {
+                  "trial": 4,
+                  "halves": [
+                    {
+                      "calls": 30,
+                      "ms": 162.90353699999991
+                    },
+                    {
+                      "calls": 31,
+                      "ms": 166.772915
+                    }
+                  ],
+                  "halfDriftPercent": -0.9271704466507824
+                }
+              ],
+              "context": [
+                "v24.18.0",
+                [
+                  "--stack-size=4096",
+                  "--max-old-space-size=1024"
+                ],
+                "Cpus_allowed_list:\t3"
+              ]
+            },
+            "baseline07": {
+              "timeMs": {
+                "median": 72.26612580000001,
+                "min": 71.26444079999996,
+                "max": 78.40645179999997,
+                "samples": [
+                  71.4893282,
+                  72.26612580000001,
+                  71.26444079999996,
+                  78.40645179999997,
+                  75.83945480000003
+                ]
+              },
+              "firstCallMs": {
+                "median": 109.815915,
+                "min": 108.47276400000001,
+                "max": 116.85992,
+                "samples": [
+                  108.47276400000001,
+                  109.815915,
+                  112.439589,
+                  109.04535200000001,
+                  116.85992
+                ]
+              },
+              "importMs": {
+                "median": 20.969044999999994,
+                "min": 20.518909,
+                "max": 22.189537,
+                "samples": [
+                  20.969044999999994,
+                  20.733245999999994,
+                  21.195949999999996,
+                  20.518909,
+                  22.189537
+                ]
+              },
+              "maxRssKiB": 73896,
+              "rssSamplesKiB": [
+                71832,
+                73876,
+                69744,
+                71832,
+                73896
+              ],
+              "halfDriftPercent": {
+                "median": 0.7895867518132649,
+                "min": -3.794915921254527,
+                "max": 3.11904022576055,
+                "samples": [
+                  0.7895867518132649,
+                  1.8743356708314396,
+                  -0.09924721036288497,
+                  -3.794915921254527,
+                  3.11904022576055
+                ]
+              },
+              "halves": [
+                {
+                  "trial": 0,
+                  "halves": [
+                    {
+                      "calls": 2,
+                      "ms": 142.28485100000012
+                    },
+                    {
+                      "calls": 3,
+                      "ms": 215.11247000000003
+                    }
+                  ],
+                  "halfDriftPercent": 0.7895867518132649
+                },
+                {
+                  "trial": 1,
+                  "halves": [
+                    {
+                      "calls": 2,
+                      "ms": 142.90606400000001
+                    },
+                    {
+                      "calls": 3,
+                      "ms": 218.37690499999985
+                    }
+                  ],
+                  "halfDriftPercent": 1.8743356708314396
+                },
+                {
+                  "trial": 2,
+                  "halves": [
+                    {
+                      "calls": 2,
+                      "ms": 142.59477199999992
+                    },
+                    {
+                      "calls": 3,
+                      "ms": 213.67987599999992
+                    }
+                  ],
+                  "halfDriftPercent": -0.09924721036288497
+                },
+                {
+                  "trial": 3,
+                  "halves": [
+                    {
+                      "calls": 2,
+                      "ms": 160.443581
+                    },
+                    {
+                      "calls": 3,
+                      "ms": 231.53232300000013
+                    }
+                  ],
+                  "halfDriftPercent": -3.794915921254527
+                },
+                {
+                  "trial": 4,
+                  "halves": [
+                    {
+                      "calls": 2,
+                      "ms": 148.87378799999988
+                    },
+                    {
+                      "calls": 3,
+                      "ms": 230.27583200000004
+                    }
+                  ],
+                  "halfDriftPercent": 3.11904022576055
+                }
+              ],
+              "context": [
+                "v24.18.0",
+                [
+                  "--stack-size=4096",
+                  "--max-old-space-size=1024"
+                ],
+                "Cpus_allowed_list:\t3"
+              ]
+            },
+            "candidate": {
+              "timeMs": {
+                "median": 20.39761137500001,
+                "min": 19.927379562500008,
+                "max": 22.095853312499997,
+                "samples": [
+                  19.942357687499992,
+                  19.927379562500008,
+                  20.39761137500001,
+                  21.94668374999999,
+                  22.095853312499997
+                ]
+              },
+              "firstCallMs": {
+                "median": 40.755815999999996,
+                "min": 40.507889000000006,
+                "max": 44.34186699999999,
+                "samples": [
+                  40.64980800000001,
+                  40.507889000000006,
+                  40.755815999999996,
+                  43.793779,
+                  44.34186699999999
+                ]
+              },
+              "importMs": {
+                "median": 20.915738000000005,
+                "min": 20.587362999999996,
+                "max": 21.115524999999998,
+                "samples": [
+                  20.915738000000005,
+                  20.637313,
+                  21.115524999999998,
+                  20.587362999999996,
+                  21.09491299999999
+                ]
+              },
+              "maxRssKiB": 84040,
+              "rssSamplesKiB": [
+                81792,
+                84040,
+                83940,
+                81908,
+                83896
+              ],
+              "halfDriftPercent": {
+                "median": -2.6700158351191883,
+                "min": -4.159266520277772,
+                "max": 1.0100762935027818,
+                "samples": [
+                  -2.67031355367795,
+                  -2.6700158351191883,
+                  -4.159266520277772,
+                  1.0100762935027818,
+                  -0.5168631663693191
+                ]
+              },
+              "halves": [
+                {
+                  "trial": 0,
+                  "halves": [
+                    {
+                      "calls": 8,
+                      "ms": 161.66884200000004
+                    },
+                    {
+                      "calls": 8,
+                      "ms": 157.35177699999986
+                    }
+                  ],
+                  "halfDriftPercent": -2.67031355367795
+                },
+                {
+                  "trial": 1,
+                  "halves": [
+                    {
+                      "calls": 8,
+                      "ms": 161.55293699999993
+                    },
+                    {
+                      "calls": 8,
+                      "ms": 157.2394479999998
+                    }
+                  ],
+                  "halfDriftPercent": -2.6700158351191883
+                },
+                {
+                  "trial": 2,
+                  "halves": [
+                    {
+                      "calls": 8,
+                      "ms": 166.62339299999985
+                    },
+                    {
+                      "calls": 8,
+                      "ms": 159.693082
+                    }
+                  ],
+                  "halfDriftPercent": -4.159266520277772
+                },
+                {
+                  "trial": 3,
+                  "halves": [
+                    {
+                      "calls": 8,
+                      "ms": 174.66690500000004
+                    },
+                    {
+                      "calls": 8,
+                      "ms": 176.43117400000006
+                    }
+                  ],
+                  "halfDriftPercent": 1.0100762935027818
+                },
+                {
+                  "trial": 4,
+                  "halves": [
+                    {
+                      "calls": 8,
+                      "ms": 177.202219
+                    },
+                    {
+                      "calls": 8,
+                      "ms": 176.28632599999992
+                    }
+                  ],
+                  "halfDriftPercent": -0.5168631663693191
+                }
+              ],
+              "context": [
+                "v24.18.0",
+                [
+                  "--stack-size=4096",
+                  "--max-old-space-size=1024"
+                ],
+                "Cpus_allowed_list:\t3"
+              ]
+            }
+          },
+          "modules": {
+            "typescript": {
+              "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase28/runtime-01/editdist/upstream.mjs",
+              "sha256": "33721b7770aa4e367896cf1b842cc8ec309dced3a2608e25c5709217474eabc6",
+              "bytes": 11907
+            },
+            "baseline07": {
+              "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/final-plan-07/original-three/editdist/candidate.mjs",
+              "sha256": "53938d02a1e99b51e5ff29e64ac8f86e3cbb731e05cba1ffff361cd8e28fd584",
+              "bytes": 94798
+            },
+            "candidate": {
+              "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/original-three/editdist/candidate.mjs",
+              "sha256": "c2ee728a9dc27891dfe43bbb3f3a43e0168987b98d89939f3417319039fe4a30",
+              "bytes": 98824
+            }
+          },
+          "baselineCandidateIdenticalBytes": false,
+          "versus07": {
+            "speedup": 3.5428719800285915,
+            "candidateTimeChangePercent": -71.77431175506574,
+            "rangesOverlap": false,
+            "candidateEntirelyFaster": true,
+            "candidateEntirelySlower": false
+          },
+          "candidateTimesTypeScript": 4.089380726121844,
+          "baselineTimesTypeScript": 14.488152390246055
+        }
+      ],
+      "wallSeconds": 29.119060945000456
+    },
+    "test-rle-roundtrip": {
+      "status": "complete",
+      "complete": true,
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/original-timing-plan/test-rle-roundtrip-timing/report.json",
+        "sha256": "042ab06fb1ab186de86163033ce248981ab23e4457a31655066bc777239630fd",
+        "bytes": 84062
+      },
+      "protocol": {
+        "samples": 5,
+        "warmupCalls": 3,
+        "warmupMs": 1000,
+        "calibrationMs": 100,
+        "targetMs": 300,
+        "timeout": 120
+      },
+      "cases": [
+        {
+          "id": "test-rle-roundtrip",
+          "point": {
+            "args": [],
+            "expected": 11,
+            "exportName": "main.out",
+            "warmupCalls": 3,
+            "warmupMs": 1000,
+            "calibrationMs": 100
+          },
+          "variants": {
+            "typescript": {
+              "timeMs": {
+                "median": 0.0005984680334627064,
+                "min": 0.0005965689565025036,
+                "max": 0.0006025992478934986,
+                "samples": [
+                  0.0005965689565025036,
+                  0.0005981637158887522,
+                  0.0006025992478934986,
+                  0.0006012151627888268,
+                  0.0005984680334627064
+                ]
+              },
+              "firstCallMs": {
+                "median": 0.5124909999999971,
+                "min": 0.5036899999999989,
+                "max": 0.5609820000000028,
+                "samples": [
+                  0.5036899999999989,
+                  0.5609820000000028,
+                  0.5466149999999885,
+                  0.5111499999999936,
+                  0.5124909999999971
+                ]
+              },
+              "importMs": {
+                "median": 0.9012239999999991,
+                "min": 0.8963059999999956,
+                "max": 0.9953280000000007,
+                "samples": [
+                  0.9078300000000041,
+                  0.9012239999999991,
+                  0.9005419999999944,
+                  0.9953280000000007,
+                  0.8963059999999956
+                ]
+              },
+              "maxRssKiB": 67040,
+              "rssSamplesKiB": [
+                67024,
+                67040,
+                65084,
+                65136,
+                65064
+              ],
+              "halfDriftPercent": {
+                "median": 1.1016805467585877,
+                "min": -1.080286670763142,
+                "max": 3.3375944463870377,
+                "samples": [
+                  1.1016805467585877,
+                  1.1659633514642387,
+                  -1.080286670763142,
+                  -0.10242188479752112,
+                  3.3375944463870377
+                ]
+              },
+              "halves": [
+                {
+                  "trial": 0,
+                  "halves": [
+                    {
+                      "calls": 248635,
+                      "ms": 147.491939
+                    },
+                    {
+                      "calls": 248635,
+                      "ms": 149.11682900000005
+                    }
+                  ],
+                  "halfDriftPercent": 1.1016805467585877
+                },
+                {
+                  "trial": 1,
+                  "halves": [
+                    {
+                      "calls": 248635,
+                      "ms": 147.84006699999986
+                    },
+                    {
+                      "calls": 248635,
+                      "ms": 149.56382800000006
+                    }
+                  ],
+                  "halfDriftPercent": 1.1659633514642387
+                },
+                {
+                  "trial": 2,
+                  "halves": [
+                    {
+                      "calls": 248635,
+                      "ms": 150.61724299999992
+                    },
+                    {
+                      "calls": 248635,
+                      "ms": 148.99014499999998
+                    }
+                  ],
+                  "halfDriftPercent": -1.080286670763142
+                },
+                {
+                  "trial": 3,
+                  "halves": [
+                    {
+                      "calls": 248635,
+                      "ms": 149.5373770000001
+                    },
+                    {
+                      "calls": 248635,
+                      "ms": 149.38421799999992
+                    }
+                  ],
+                  "halfDriftPercent": -0.10242188479752112
+                },
+                {
+                  "trial": 4,
+                  "halves": [
+                    {
+                      "calls": 248635,
+                      "ms": 146.3350049999999
+                    },
+                    {
+                      "calls": 248635,
+                      "ms": 151.2190740000001
+                    }
+                  ],
+                  "halfDriftPercent": 3.3375944463870377
+                }
+              ],
+              "context": [
+                "v24.18.0",
+                [
+                  "--stack-size=4096",
+                  "--max-old-space-size=1024"
+                ],
+                "Cpus_allowed_list:\t3"
+              ]
+            },
+            "baseline07": {
+              "timeMs": {
+                "median": 0.044763636517719564,
+                "min": 0.04451947026194145,
+                "max": 0.04585538012326658,
+                "samples": [
+                  0.044865674268104776,
+                  0.04585538012326658,
+                  0.044580067642526956,
+                  0.044763636517719564,
+                  0.04451947026194145
+                ]
+              },
+              "firstCallMs": {
+                "median": 3.198211999999998,
+                "min": 3.158242999999999,
+                "max": 3.7146590000000117,
+                "samples": [
+                  3.198211999999998,
+                  3.7146590000000117,
+                  3.1761450000000053,
+                  3.158242999999999,
+                  3.7014210000000105
+                ]
+              },
+              "importMs": {
+                "median": 19.644696999999994,
+                "min": 19.433481000000008,
+                "max": 22.770421999999996,
+                "samples": [
+                  19.433481000000008,
+                  22.753558000000005,
+                  19.644696999999994,
+                  19.588212,
+                  22.770421999999996
+                ]
+              },
+              "maxRssKiB": 73696,
+              "rssSamplesKiB": [
+                70828,
+                73696,
+                71344,
+                71156,
+                73240
+              ],
+              "halfDriftPercent": {
+                "median": -1.1173266050440112,
+                "min": -2.057896243397872,
+                "max": -0.46009244041967934,
+                "samples": [
+                  -1.1244709586051282,
+                  -2.057896243397872,
+                  -1.1173266050440112,
+                  -0.46009244041967934,
+                  -0.8252027767956305
+                ]
+              },
+              "halves": [
+                {
+                  "trial": 0,
+                  "halves": [
+                    {
+                      "calls": 3245,
+                      "ms": 146.393554
+                    },
+                    {
+                      "calls": 3245,
+                      "ms": 144.74740100000008
+                    }
+                  ],
+                  "halfDriftPercent": -1.1244709586051282
+                },
+                {
+                  "trial": 1,
+                  "halves": [
+                    {
+                      "calls": 3245,
+                      "ms": 150.32895900000017
+                    },
+                    {
+                      "calls": 3245,
+                      "ms": 147.23534500000005
+                    }
+                  ],
+                  "halfDriftPercent": -2.057896243397872
+                },
+                {
+                  "trial": 2,
+                  "halves": [
+                    {
+                      "calls": 3245,
+                      "ms": 145.4554999999998
+                    },
+                    {
+                      "calls": 3245,
+                      "ms": 143.830287
+                    }
+                  ],
+                  "halfDriftPercent": -1.1173266050440112
+                },
+                {
+                  "trial": 3,
+                  "halves": [
+                    {
+                      "calls": 3245,
+                      "ms": 145.56857300000001
+                    },
+                    {
+                      "calls": 3245,
+                      "ms": 144.89882300000022
+                    }
+                  ],
+                  "halfDriftPercent": -0.46009244041967934
+                },
+                {
+                  "trial": 4,
+                  "halves": [
+                    {
+                      "calls": 3245,
+                      "ms": 145.04531900000006
+                    },
+                    {
+                      "calls": 3245,
+                      "ms": 143.84840099999997
+                    }
+                  ],
+                  "halfDriftPercent": -0.8252027767956305
+                }
+              ],
+              "context": [
+                "v24.18.0",
+                [
+                  "--stack-size=4096",
+                  "--max-old-space-size=1024"
+                ],
+                "Cpus_allowed_list:\t3"
+              ]
+            },
+            "candidate": {
+              "timeMs": {
+                "median": 0.04561634184823442,
+                "min": 0.045001701728024056,
+                "max": 0.05005788474830954,
+                "samples": [
+                  0.05005788474830954,
+                  0.045001701728024056,
+                  0.04561634184823442,
+                  0.04580044492862511,
+                  0.04517114184823442
+                ]
+              },
+              "firstCallMs": {
+                "median": 3.168832000000009,
+                "min": 3.1355230000000063,
+                "max": 3.221539000000007,
+                "samples": [
+                  3.1355230000000063,
+                  3.1666560000000032,
+                  3.208045999999996,
+                  3.221539000000007,
+                  3.168832000000009
+                ]
+              },
+              "importMs": {
+                "median": 19.741093999999997,
+                "min": 19.634035000000004,
+                "max": 20.024339000000005,
+                "samples": [
+                  19.741093999999997,
+                  19.634035000000004,
+                  20.024339000000005,
+                  19.708274000000003,
+                  19.900555999999995
+                ]
+              },
+              "maxRssKiB": 74008,
+              "rssSamplesKiB": [
+                74008,
+                71420,
+                73368,
+                71656,
+                72012
+              ],
+              "halfDriftPercent": {
+                "median": -0.27590339496863514,
+                "min": -1.1769013891503977,
+                "max": 1.0357450298029702,
+                "samples": [
+                  -0.27590339496863514,
+                  -0.6119564988650072,
+                  1.0357450298029702,
+                  -0.2665391131227768,
+                  -1.1769013891503977
+                ]
+              },
+              "halves": [
+                {
+                  "trial": 0,
+                  "halves": [
+                    {
+                      "calls": 3327,
+                      "ms": 166.75407999999993
+                    },
+                    {
+                      "calls": 3328,
+                      "ms": 166.34398299999998
+                    }
+                  ],
+                  "halfDriftPercent": -0.27590339496863514
+                },
+                {
+                  "trial": 1,
+                  "halves": [
+                    {
+                      "calls": 3327,
+                      "ms": 150.16114700000003
+                    },
+                    {
+                      "calls": 3328,
+                      "ms": 149.28708399999982
+                    }
+                  ],
+                  "halfDriftPercent": -0.6119564988650072
+                },
+                {
+                  "trial": 2,
+                  "halves": [
+                    {
+                      "calls": 3327,
+                      "ms": 150.96526500000004
+                    },
+                    {
+                      "calls": 3328,
+                      "ms": 152.57472600000006
+                    }
+                  ],
+                  "halfDriftPercent": 1.0357450298029702
+                },
+                {
+                  "trial": 3,
+                  "halves": [
+                    {
+                      "calls": 3327,
+                      "ms": 152.56288799999993
+                    },
+                    {
+                      "calls": 3328,
+                      "ms": 152.20198200000004
+                    }
+                  ],
+                  "halfDriftPercent": -0.2665391131227768
+                },
+                {
+                  "trial": 4,
+                  "halves": [
+                    {
+                      "calls": 3327,
+                      "ms": 151.15446199999997
+                    },
+                    {
+                      "calls": 3328,
+                      "ms": 149.42042100000003
+                    }
+                  ],
+                  "halfDriftPercent": -1.1769013891503977
+                }
+              ],
+              "context": [
+                "v24.18.0",
+                [
+                  "--stack-size=4096",
+                  "--max-old-space-size=1024"
+                ],
+                "Cpus_allowed_list:\t3"
+              ]
+            }
+          },
+          "modules": {
+            "typescript": {
+              "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase28/applications-01/test-rle-roundtrip/upstream.mjs",
+              "sha256": "f21a8eb4239ff0db7fbfda6121f24b04b48c5478fe6de5798660ca5b417c80a8",
+              "bytes": 8728
+            },
+            "baseline07": {
+              "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/final-plan-07/original-three/test-rle-roundtrip/candidate.mjs",
+              "sha256": "d8516e0774a2583d66efae76d6e4720e9614b7f0c0aa07426f4f68aff68213e8",
+              "bytes": 75997
+            },
+            "candidate": {
+              "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/original-three/test-rle-roundtrip/candidate.mjs",
+              "sha256": "d8516e0774a2583d66efae76d6e4720e9614b7f0c0aa07426f4f68aff68213e8",
+              "bytes": 75997
+            }
+          },
+          "baselineCandidateIdenticalBytes": true,
+          "versus07": {
+            "speedup": 0.9813070207744452,
+            "candidateTimeChangePercent": 1.9049062963803598,
+            "rangesOverlap": true,
+            "candidateEntirelyFaster": false,
+            "candidateEntirelySlower": false
+          },
+          "candidateTimesTypeScript": 76.22185195807457,
+          "baselineTimesTypeScript": 74.79703846288896
+        }
+      ],
+      "wallSeconds": 27.75407854200057
+    }
+  },
+  "canaries": {
+    "status": "complete",
+    "complete": true,
+    "report": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/canary-confirm/report.json",
+      "sha256": "3b3c1bd96151d4ddaad1dc49e846d64324a9d4a9ecac81c1cd4cb9e8d990e7ae",
+      "bytes": 264179
+    },
+    "protocol": {
+      "samples": 5,
+      "warmupCalls": 100,
+      "warmupMs": 3000,
+      "calibrationMs": 50,
+      "targetMs": 300,
+      "timeout": 120
+    },
+    "cases": [
+      {
+        "id": "scalar-region-0",
+        "point": {
+          "exportName": "bench",
+          "args": [
+            0,
+            524800
+          ],
+          "expected": 0,
+          "warmupCalls": 100,
+          "warmupMs": 3000,
+          "calibrationMs": 50
+        },
+        "variants": {
+          "baseline07": {
+            "timeMs": {
+              "median": 0.004710832465747072,
+              "min": 0.004657167580592841,
+              "max": 0.0047863943372619296,
+              "samples": [
+                0.004710832465747072,
+                0.004695801541574628,
+                0.004657167580592841,
+                0.004727488098364198,
+                0.0047863943372619296
+              ]
+            },
+            "firstCallMs": {
+              "median": 0.8244760000000042,
+              "min": 0.8169800000000009,
+              "max": 0.8278320000000008,
+              "samples": [
+                0.8169800000000009,
+                0.8247199999999992,
+                0.8179439999999971,
+                0.8278320000000008,
+                0.8244760000000042
+              ]
+            },
+            "importMs": {
+              "median": 20.267880000000005,
+              "min": 19.848118999999997,
+              "max": 20.447807000000005,
+              "samples": [
+                19.848118999999997,
+                20.447807000000005,
+                19.985017999999997,
+                20.329289000000003,
+                20.267880000000005
+              ]
+            },
+            "maxRssKiB": 70004,
+            "rssSamplesKiB": [
+              68232,
+              68460,
+              70004,
+              68120,
+              68456
+            ],
+            "halfDriftPercent": {
+              "median": 1.8115122654981164,
+              "min": 1.586953557765347,
+              "max": 2.375997874349056,
+              "samples": [
+                1.586953557765347,
+                2.375997874349056,
+                1.7311386855054955,
+                2.1471494697670845,
+                1.8115122654981164
+              ]
+            },
+            "halves": [
+              {
+                "trial": 0,
+                "halves": [
+                  {
+                    "calls": 32369,
+                    "ms": 151.2621320000003
+                  },
+                  {
+                    "calls": 32370,
+                    "ms": 153.66733900000008
+                  }
+                ],
+                "halfDriftPercent": 1.586953557765347
+              },
+              {
+                "trial": 1,
+                "halves": [
+                  {
+                    "calls": 32369,
+                    "ms": 150.19158100000004
+                  },
+                  {
+                    "calls": 32370,
+                    "ms": 153.76488000000018
+                  }
+                ],
+                "halfDriftPercent": 2.375997874349056
+              },
+              {
+                "trial": 2,
+                "halves": [
+                  {
+                    "calls": 32369,
+                    "ms": 149.4324270000002
+                  },
+                  {
+                    "calls": 32370,
+                    "ms": 152.0240060000001
+                  }
+                ],
+                "halfDriftPercent": 1.7311386855054955
+              },
+              {
+                "trial": 3,
+                "halves": [
+                  {
+                    "calls": 32369,
+                    "ms": 151.37595499999998
+                  },
+                  {
+                    "calls": 32370,
+                    "ms": 154.63099999999986
+                  }
+                ],
+                "halfDriftPercent": 2.1471494697670845
+              },
+              {
+                "trial": 4,
+                "halves": [
+                  {
+                    "calls": 32369,
+                    "ms": 153.51772100000017
+                  },
+                  {
+                    "calls": 32370,
+                    "ms": 156.30354199999965
+                  }
+                ],
+                "halfDriftPercent": 1.8115122654981164
+              }
+            ],
+            "context": [
+              "v24.18.0",
+              [
+                "--stack-size=4096",
+                "--max-old-space-size=1024"
+              ],
+              "Cpus_allowed_list:\t3"
+            ]
+          },
+          "candidate": {
+            "timeMs": {
+              "median": 0.004760234737017562,
+              "min": 0.004691941160426104,
+              "max": 0.004972911702756351,
+              "samples": [
+                0.004691941160426104,
+                0.004972911702756351,
+                0.004971441410452622,
+                0.004760234737017562,
+                0.004704328959132036
+              ]
+            },
+            "firstCallMs": {
+              "median": 0.8439479999999975,
+              "min": 0.8282069999999919,
+              "max": 0.9246090000000038,
+              "samples": [
+                0.9246090000000038,
+                0.8439479999999975,
+                0.8566099999999892,
+                0.8282069999999919,
+                0.8364190000000065
+              ]
+            },
+            "importMs": {
+              "median": 20.358884999999994,
+              "min": 19.88965199999999,
+              "max": 23.962609,
+              "samples": [
+                19.985423999999995,
+                20.358884999999994,
+                19.88965199999999,
+                23.962609,
+                20.670843000000005
+              ]
+            },
+            "maxRssKiB": 70312,
+            "rssSamplesKiB": [
+              70312,
+              70244,
+              68256,
+              68136,
+              70036
+            ],
+            "halfDriftPercent": {
+              "median": 1.4202600591886272,
+              "min": 0.8034291311069142,
+              "max": 4.119823671078882,
+              "samples": [
+                1.4202600591886272,
+                4.119823671078882,
+                0.8988069895466744,
+                0.8034291311069142,
+                2.2076524097662142
+              ]
+            },
+            "halves": [
+              {
+                "trial": 0,
+                "halves": [
+                  {
+                    "calls": 32996,
+                    "ms": 153.70126400000026
+                  },
+                  {
+                    "calls": 32997,
+                    "ms": 155.88894600000003
+                  }
+                ],
+                "halfDriftPercent": 1.4202600591886272
+              },
+              {
+                "trial": 1,
+                "halves": [
+                  {
+                    "calls": 32996,
+                    "ms": 160.7558680000002
+                  },
+                  {
+                    "calls": 32997,
+                    "ms": 167.38379900000018
+                  }
+                ],
+                "halfDriftPercent": 4.119823671078882
+              },
+              {
+                "trial": 2,
+                "halves": [
+                  {
+                    "calls": 32996,
+                    "ms": 163.28099699999984
+                  },
+                  {
+                    "calls": 32997,
+                    "ms": 164.75357099999974
+                  }
+                ],
+                "halfDriftPercent": 0.8988069895466744
+              },
+              {
+                "trial": 3,
+                "halves": [
+                  {
+                    "calls": 32996,
+                    "ms": 156.41820099999995
+                  },
+                  {
+                    "calls": 32997,
+                    "ms": 157.67968900000005
+                  }
+                ],
+                "halfDriftPercent": 0.8034291311069142
+              },
+              {
+                "trial": 4,
+                "halves": [
+                  {
+                    "calls": 32996,
+                    "ms": 153.50645799999984
+                  },
+                  {
+                    "calls": 32997,
+                    "ms": 156.90010200000006
+                  }
+                ],
+                "halfDriftPercent": 2.2076524097662142
+              }
+            ],
+            "context": [
+              "v24.18.0",
+              [
+                "--stack-size=4096",
+                "--max-old-space-size=1024"
+              ],
+              "Cpus_allowed_list:\t3"
+            ]
+          },
+          "typescript": {
+            "timeMs": {
+              "median": 9.748191799999995e-05,
+              "min": 9.70113510000001e-05,
+              "max": 9.934007100000008e-05,
+              "samples": [
+                9.729502299999967e-05,
+                9.70113510000001e-05,
+                9.748191799999995e-05,
+                9.934007100000008e-05,
+                9.797785299999987e-05
+              ]
+            },
+            "firstCallMs": {
+              "median": 0.19793500000000108,
+              "min": 0.1958750000000009,
+              "max": 0.20817900000000122,
+              "samples": [
+                0.20635699999999702,
+                0.20817900000000122,
+                0.19679699999999656,
+                0.1958750000000009,
+                0.19793500000000108
+              ]
+            },
+            "importMs": {
+              "median": 0.8282060000000016,
+              "min": 0.8180200000000042,
+              "max": 0.951160999999999,
+              "samples": [
+                0.8207519999999988,
+                0.951160999999999,
+                0.8180200000000042,
+                0.8421180000000064,
+                0.8282060000000016
+              ]
+            },
+            "maxRssKiB": 64772,
+            "rssSamplesKiB": [
+              62388,
+              62584,
+              64372,
+              64772,
+              62576
+            ],
+            "halfDriftPercent": {
+              "median": 4.531084564012766,
+              "min": 3.14486756088157,
+              "max": 9.085721198456032,
+              "samples": [
+                4.531084564012766,
+                4.578237195892232,
+                3.257303217170393,
+                9.085721198456032,
+                3.14486756088157
+              ]
+            },
+            "halves": [
+              {
+                "trial": 0,
+                "halves": [
+                  {
+                    "calls": 500000,
+                    "ms": 47.54576899999984
+                  },
+                  {
+                    "calls": 500000,
+                    "ms": 49.700108
+                  }
+                ],
+                "halfDriftPercent": 4.531084564012766
+              },
+              {
+                "trial": 1,
+                "halves": [
+                  {
+                    "calls": 500000,
+                    "ms": 47.39937899999995
+                  },
+                  {
+                    "calls": 500000,
+                    "ms": 49.569434999999885
+                  }
+                ],
+                "halfDriftPercent": 4.578237195892232
+              },
+              {
+                "trial": 2,
+                "halves": [
+                  {
+                    "calls": 500000,
+                    "ms": 47.93784599999981
+                  },
+                  {
+                    "calls": 500000,
+                    "ms": 49.499326999999994
+                  }
+                ],
+                "halfDriftPercent": 3.257303217170393
+              },
+              {
+                "trial": 3,
+                "halves": [
+                  {
+                    "calls": 500000,
+                    "ms": 47.48994499999981
+                  },
+                  {
+                    "calls": 500000,
+                    "ms": 51.8047489999999
+                  }
+                ],
+                "halfDriftPercent": 9.085721198456032
+              },
+              {
+                "trial": 4,
+                "halves": [
+                  {
+                    "calls": 500000,
+                    "ms": 48.20845300000019
+                  },
+                  {
+                    "calls": 500000,
+                    "ms": 49.724545000000035
+                  }
+                ],
+                "halfDriftPercent": 3.14486756088157
+              }
+            ],
+            "context": [
+              "v24.18.0",
+              [
+                "--stack-size=4096",
+                "--max-old-space-size=1024"
+              ],
+              "Cpus_allowed_list:\t3"
+            ]
+          }
+        },
+        "modules": {
+          "baseline07": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/canary07-source/scalar.mjs",
+            "sha256": "02ee64ae5df7b41878cbda24bc5958005587e00fd8b59c9010c14465dbc72f00",
+            "bytes": 82094
+          },
+          "candidate": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/canary-source/scalar.mjs",
+            "sha256": "02ee64ae5df7b41878cbda24bc5958005587e00fd8b59c9010c14465dbc72f00",
+            "bytes": 82094
+          },
+          "typescript": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase30/scalar-scaling-plan-17/typescript.mjs",
+            "sha256": "752a5711b92b0ba8b0e146f41e70ac3934e50965f77950d009b5e738320b594a",
+            "bytes": 6552
+          }
+        },
+        "baselineCandidateIdenticalBytes": true,
+        "versus07": {
+          "speedup": 0.9896218833734569,
+          "candidateTimeChangePercent": 1.0486951431556646,
+          "rangesOverlap": true,
+          "candidateEntirelyFaster": false,
+          "candidateEntirelySlower": false
+        },
+        "candidateTimesTypeScript": 48.83197658275009,
+        "baselineTimesTypeScript": 48.32519263466969
+      },
+      {
+        "id": "scalar-region-8192",
+        "point": {
+          "exportName": "bench",
+          "args": [
+            8192,
+            524800
+          ],
+          "expected": 8192,
+          "warmupCalls": 100,
+          "warmupMs": 3000,
+          "calibrationMs": 50
+        },
+        "variants": {
+          "baseline07": {
+            "timeMs": {
+              "median": 0.13819579029957207,
+              "min": 0.1378401887779362,
+              "max": 0.15672660152163576,
+              "samples": [
+                0.13807427722301482,
+                0.1378401887779362,
+                0.14163456157869722,
+                0.13819579029957207,
+                0.15672660152163576
+              ]
+            },
+            "firstCallMs": {
+              "median": 8.328642000000002,
+              "min": 8.242615999999998,
+              "max": 10.458236999999997,
+              "samples": [
+                8.457091000000005,
+                8.312719000000001,
+                8.242615999999998,
+                8.328642000000002,
+                10.458236999999997
+              ]
+            },
+            "importMs": {
+              "median": 20.072027,
+              "min": 19.697311999999997,
+              "max": 20.982868999999994,
+              "samples": [
+                20.172366999999994,
+                20.982868999999994,
+                19.974973000000006,
+                20.072027,
+                19.697311999999997
+              ]
+            },
+            "maxRssKiB": 74300,
+            "rssSamplesKiB": [
+              72200,
+              74300,
+              73892,
+              72188,
+              68368
+            ],
+            "halfDriftPercent": {
+              "median": -1.486167657869275,
+              "min": -3.3409492260913387,
+              "max": 2.7880848815185377,
+              "samples": [
+                -2.2243011188109674,
+                -3.3409492260913387,
+                2.7880848815185377,
+                -1.486167657869275,
+                1.0961113502080844
+              ]
+            },
+            "halves": [
+              {
+                "trial": 0,
+                "halves": [
+                  {
+                    "calls": 1051,
+                    "ms": 146.72964899999988
+                  },
+                  {
+                    "calls": 1052,
+                    "ms": 143.6024440000001
+                  }
+                ],
+                "halfDriftPercent": -2.2243011188109674
+              },
+              {
+                "trial": 1,
+                "halves": [
+                  {
+                    "calls": 1051,
+                    "ms": 147.31168400000024
+                  },
+                  {
+                    "calls": 1052,
+                    "ms": 142.52555600000005
+                  }
+                ],
+                "halfDriftPercent": -3.3409492260913387
+              },
+              {
+                "trial": 2,
+                "halves": [
+                  {
+                    "calls": 1051,
+                    "ms": 146.79014499999994
+                  },
+                  {
+                    "calls": 1052,
+                    "ms": 151.0263399999999
+                  }
+                ],
+                "halfDriftPercent": 2.7880848815185377
+              },
+              {
+                "trial": 3,
+                "halves": [
+                  {
+                    "calls": 1051,
+                    "ms": 146.31132700000035
+                  },
+                  {
+                    "calls": 1052,
+                    "ms": 144.27403800000002
+                  }
+                ],
+                "halfDriftPercent": -1.486167657869275
+              },
+              {
+                "trial": 4,
+                "halves": [
+                  {
+                    "calls": 1051,
+                    "ms": 163.79117099999985
+                  },
+                  {
+                    "calls": 1052,
+                    "ms": 165.744056
+                  }
+                ],
+                "halfDriftPercent": 1.0961113502080844
+              }
+            ],
+            "context": [
+              "v24.18.0",
+              [
+                "--stack-size=4096",
+                "--max-old-space-size=1024"
+              ],
+              "Cpus_allowed_list:\t3"
+            ]
+          },
+          "candidate": {
+            "timeMs": {
+              "median": 0.1384118926738219,
+              "min": 0.13791523331777863,
+              "max": 0.14105904106392914,
+              "samples": [
+                0.13791523331777863,
+                0.13796030984601007,
+                0.14020300513299105,
+                0.1384118926738219,
+                0.14105904106392914
+              ]
+            },
+            "firstCallMs": {
+              "median": 8.417286000000004,
+              "min": 8.268462999999997,
+              "max": 8.661941999999996,
+              "samples": [
+                8.417286000000004,
+                8.268462999999997,
+                8.323183999999998,
+                8.661941999999996,
+                8.486149000000012
+              ]
+            },
+            "importMs": {
+              "median": 19.973497000000002,
+              "min": 19.730118999999995,
+              "max": 24.016475,
+              "samples": [
+                19.794954999999995,
+                20.082096,
+                24.016475,
+                19.973497000000002,
+                19.730118999999995
+              ]
+            },
+            "maxRssKiB": 74244,
+            "rssSamplesKiB": [
+              72368,
+              72168,
+              72368,
+              74244,
+              72184
+            ],
+            "halfDriftPercent": {
+              "median": -2.0131203722812296,
+              "min": -3.0568352935921195,
+              "max": 1.714677531794928,
+              "samples": [
+                -3.0568352935921195,
+                -2.0131203722812296,
+                0.48400158461963105,
+                -2.3777051780868974,
+                1.714677531794928
+              ]
+            },
+            "halves": [
+              {
+                "trial": 0,
+                "halves": [
+                  {
+                    "calls": 1071,
+                    "ms": 149.980137
+                  },
+                  {
+                    "calls": 1072,
+                    "ms": 145.53124800000023
+                  }
+                ],
+                "halfDriftPercent": -3.0568352935921195
+              },
+              {
+                "trial": 1,
+                "halves": [
+                  {
+                    "calls": 1071,
+                    "ms": 149.2383530000002
+                  },
+                  {
+                    "calls": 1072,
+                    "ms": 146.37054500000022
+                  }
+                ],
+                "halfDriftPercent": -2.0131203722812296
+              },
+              {
+                "trial": 2,
+                "halves": [
+                  {
+                    "calls": 1071,
+                    "ms": 149.7753170000001
+                  },
+                  {
+                    "calls": 1072,
+                    "ms": 150.6407549999999
+                  }
+                ],
+                "halfDriftPercent": 0.48400158461963105
+              },
+              {
+                "trial": 3,
+                "halves": [
+                  {
+                    "calls": 1071,
+                    "ms": 150.00394199999982
+                  },
+                  {
+                    "calls": 1072,
+                    "ms": 146.57402000000002
+                  }
+                ],
+                "halfDriftPercent": -2.3777051780868974
+              },
+              {
+                "trial": 4,
+                "halves": [
+                  {
+                    "calls": 1071,
+                    "ms": 149.76935699999967
+                  },
+                  {
+                    "calls": 1072,
+                    "ms": 152.47965699999986
+                  }
+                ],
+                "halfDriftPercent": 1.714677531794928
+              }
+            ],
+            "context": [
+              "v24.18.0",
+              [
+                "--stack-size=4096",
+                "--max-old-space-size=1024"
+              ],
+              "Cpus_allowed_list:\t3"
+            ]
+          },
+          "typescript": {
+            "timeMs": {
+              "median": 0.09918985253456224,
+              "min": 0.09896662343647149,
+              "max": 0.11012602666227791,
+              "samples": [
+                0.09896662343647149,
+                0.09947469815668193,
+                0.09915003949967094,
+                0.09918985253456224,
+                0.11012602666227791
+              ]
+            },
+            "firstCallMs": {
+              "median": 6.643732,
+              "min": 6.609904,
+              "max": 9.018891000000004,
+              "samples": [
+                6.648624000000005,
+                6.609904,
+                6.643732,
+                6.620740999999995,
+                9.018891000000004
+              ]
+            },
+            "importMs": {
+              "median": 0.8281800000000032,
+              "min": 0.8055899999999951,
+              "max": 0.8435599999999965,
+              "samples": [
+                0.8266440000000017,
+                0.8435599999999965,
+                0.8281800000000032,
+                0.8055899999999951,
+                0.834696000000001
+              ]
+            },
+            "maxRssKiB": 64484,
+            "rssSamplesKiB": [
+              64416,
+              62328,
+              62288,
+              62352,
+              64484
+            ],
+            "halfDriftPercent": {
+              "median": -0.16986109386553094,
+              "min": -0.6525449544621531,
+              "max": 0.003722034900710547,
+              "samples": [
+                -0.16986109386553094,
+                -0.013700585261033904,
+                0.003722034900710547,
+                -0.23612328425274276,
+                -0.6525449544621531
+              ]
+            },
+            "halves": [
+              {
+                "trial": 0,
+                "halves": [
+                  {
+                    "calls": 1519,
+                    "ms": 150.4411600000003
+                  },
+                  {
+                    "calls": 1519,
+                    "ms": 150.18561900000032
+                  }
+                ],
+                "halfDriftPercent": -0.16986109386553094
+              },
+              {
+                "trial": 1,
+                "halves": [
+                  {
+                    "calls": 1519,
+                    "ms": 151.09573499999988
+                  },
+                  {
+                    "calls": 1519,
+                    "ms": 151.07503400000041
+                  }
+                ],
+                "halfDriftPercent": -0.013700585261033904
+              },
+              {
+                "trial": 2,
+                "halves": [
+                  {
+                    "calls": 1519,
+                    "ms": 150.58966800000007
+                  },
+                  {
+                    "calls": 1519,
+                    "ms": 150.5952729999999
+                  }
+                ],
+                "halfDriftPercent": 0.003722034900710547
+              },
+              {
+                "trial": 3,
+                "halves": [
+                  {
+                    "calls": 1519,
+                    "ms": 150.8284120000003
+                  },
+                  {
+                    "calls": 1519,
+                    "ms": 150.47227099999964
+                  }
+                ],
+                "halfDriftPercent": -0.23612328425274276
+              },
+              {
+                "trial": 4,
+                "halves": [
+                  {
+                    "calls": 1519,
+                    "ms": 167.81204000000025
+                  },
+                  {
+                    "calls": 1519,
+                    "ms": 166.71699100000023
+                  }
+                ],
+                "halfDriftPercent": -0.6525449544621531
+              }
+            ],
+            "context": [
+              "v24.18.0",
+              [
+                "--stack-size=4096",
+                "--max-old-space-size=1024"
+              ],
+              "Cpus_allowed_list:\t3"
+            ]
+          }
+        },
+        "modules": {
+          "baseline07": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/canary07-source/scalar.mjs",
+            "sha256": "02ee64ae5df7b41878cbda24bc5958005587e00fd8b59c9010c14465dbc72f00",
+            "bytes": 82094
+          },
+          "candidate": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/canary-source/scalar.mjs",
+            "sha256": "02ee64ae5df7b41878cbda24bc5958005587e00fd8b59c9010c14465dbc72f00",
+            "bytes": 82094
+          },
+          "typescript": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase30/scalar-scaling-plan-17/typescript.mjs",
+            "sha256": "752a5711b92b0ba8b0e146f41e70ac3934e50965f77950d009b5e738320b594a",
+            "bytes": 6552
+          }
+        },
+        "baselineCandidateIdenticalBytes": true,
+        "versus07": {
+          "speedup": 0.9984387008220523,
+          "candidateTimeChangePercent": 0.15637406449311442,
+          "rangesOverlap": true,
+          "candidateEntirelyFaster": false,
+          "candidateEntirelySlower": false
+        },
+        "candidateTimesTypeScript": 1.395423918243985,
+        "baselineTimesTypeScript": 1.393245244027542
+      },
+      {
+        "id": "complete-generic-row32",
+        "point": {
+          "args": [
+            32,
+            17
+          ],
+          "expected": "[[0,2,1,1,0,0,0,1,1,0,0,2,3,1,3,1,0,1,0,0,2,1,0,0,0,2,0,2,1,0,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,1,2,0,1,0,1,2,0,0,0,0,2,0,0,3,0,1,2,0,1,2,0,0,1,3,3,0,0,3,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,1,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]]",
+          "warmupCalls": 100,
+          "warmupMs": 3000,
+          "calibrationMs": 50,
+          "exportName": "bench"
+        },
+        "variants": {
+          "baseline07": {
+            "timeMs": {
+              "median": 0.44364329742033376,
+              "min": 0.44304250379362725,
+              "max": 0.45775306373292834,
+              "samples": [
+                0.44914786949924174,
+                0.44347592261001534,
+                0.44364329742033376,
+                0.45775306373292834,
+                0.44304250379362725
+              ]
+            },
+            "firstCallMs": {
+              "median": 7.302983000000012,
+              "min": 7.158591000000001,
+              "max": 7.813959000000011,
+              "samples": [
+                7.813959000000011,
+                7.328120999999996,
+                7.302983000000012,
+                7.158591000000001,
+                7.208639000000005
+              ]
+            },
+            "importMs": {
+              "median": 20.772054000000004,
+              "min": 20.56640499999999,
+              "max": 21.001635,
+              "samples": [
+                20.56640499999999,
+                20.772054000000004,
+                20.724353,
+                20.863027000000002,
+                21.001635
+              ]
+            },
+            "maxRssKiB": 73484,
+            "rssSamplesKiB": [
+              71564,
+              73484,
+              73336,
+              73256,
+              71184
+            ],
+            "halfDriftPercent": {
+              "median": -0.17930824463271433,
+              "min": -0.870463083741857,
+              "max": 3.3398206196001423,
+              "samples": [
+                -0.17930824463271433,
+                -0.870463083741857,
+                1.0476011965314003,
+                3.3398206196001423,
+                -0.5729214859400811
+              ]
+            },
+            "halves": [
+              {
+                "trial": 0,
+                "halves": [
+                  {
+                    "calls": 329,
+                    "ms": 147.88137800000004
+                  },
+                  {
+                    "calls": 330,
+                    "ms": 148.06489599999986
+                  }
+                ],
+                "halfDriftPercent": -0.17930824463271433
+              },
+              {
+                "trial": 1,
+                "halves": [
+                  {
+                    "calls": 329,
+                    "ms": 146.52218399999992
+                  },
+                  {
+                    "calls": 330,
+                    "ms": 145.68824199999972
+                  }
+                ],
+                "halfDriftPercent": -0.870463083741857
+              },
+              {
+                "trial": 2,
+                "halves": [
+                  {
+                    "calls": 329,
+                    "ms": 145.17698599999994
+                  },
+                  {
+                    "calls": 330,
+                    "ms": 147.14375199999995
+                  }
+                ],
+                "halfDriftPercent": 1.0476011965314003
+              },
+              {
+                "trial": 3,
+                "halves": [
+                  {
+                    "calls": 329,
+                    "ms": 148.1036240000003
+                  },
+                  {
+                    "calls": 330,
+                    "ms": 153.51521700000012
+                  }
+                ],
+                "halfDriftPercent": 3.3398206196001423
+              },
+              {
+                "trial": 4,
+                "halves": [
+                  {
+                    "calls": 329,
+                    "ms": 146.158907
+                  },
+                  {
+                    "calls": 330,
+                    "ms": 145.763238
+                  }
+                ],
+                "halfDriftPercent": -0.5729214859400811
+              }
+            ],
+            "context": [
+              "v24.18.0",
+              [
+                "--stack-size=4096",
+                "--max-old-space-size=1024"
+              ],
+              "Cpus_allowed_list:\t3"
+            ]
+          },
+          "candidate": {
+            "timeMs": {
+              "median": 0.4442079838235292,
+              "min": 0.4421761588235293,
+              "max": 0.44534365588235286,
+              "samples": [
+                0.44534365588235286,
+                0.4442079838235292,
+                0.44486432499999984,
+                0.4421761588235293,
+                0.4427299397058819
+              ]
+            },
+            "firstCallMs": {
+              "median": 7.281574000000006,
+              "min": 7.181357999999989,
+              "max": 7.399031999999991,
+              "samples": [
+                7.399031999999991,
+                7.186988999999997,
+                7.3808500000000095,
+                7.181357999999989,
+                7.281574000000006
+              ]
+            },
+            "importMs": {
+              "median": 20.962120999999996,
+              "min": 20.899732,
+              "max": 21.218534000000005,
+              "samples": [
+                20.899732,
+                20.962120999999996,
+                21.199495999999996,
+                21.218534000000005,
+                20.957036000000002
+              ]
+            },
+            "maxRssKiB": 74020,
+            "rssSamplesKiB": [
+              74020,
+              72044,
+              73232,
+              71964,
+              73456
+            ],
+            "halfDriftPercent": {
+              "median": -0.28307087862785574,
+              "min": -1.2046407121192204,
+              "max": 0.6467826085401418,
+              "samples": [
+                0.6467826085401418,
+                -0.28307087862785574,
+                -1.109397893714259,
+                -1.2046407121192204,
+                -0.25454464426474255
+              ]
+            },
+            "halves": [
+              {
+                "trial": 0,
+                "halves": [
+                  {
+                    "calls": 340,
+                    "ms": 150.90866499999993
+                  },
+                  {
+                    "calls": 340,
+                    "ms": 151.88471600000003
+                  }
+                ],
+                "halfDriftPercent": 0.6467826085401418
+              },
+              {
+                "trial": 1,
+                "halves": [
+                  {
+                    "calls": 340,
+                    "ms": 151.22431600000027
+                  },
+                  {
+                    "calls": 340,
+                    "ms": 150.79624400000012
+                  }
+                ],
+                "halfDriftPercent": -0.28307087862785574
+              },
+              {
+                "trial": 2,
+                "halves": [
+                  {
+                    "calls": 340,
+                    "ms": 152.07708700000012
+                  },
+                  {
+                    "calls": 340,
+                    "ms": 150.38994700000012
+                  }
+                ],
+                "halfDriftPercent": -1.109397893714259
+              },
+              {
+                "trial": 3,
+                "halves": [
+                  {
+                    "calls": 340,
+                    "ms": 151.2189470000003
+                  },
+                  {
+                    "calls": 340,
+                    "ms": 149.3973020000003
+                  }
+                ],
+                "halfDriftPercent": -1.2046407121192204
+              },
+              {
+                "trial": 4,
+                "halves": [
+                  {
+                    "calls": 340,
+                    "ms": 150.69969400000036
+                  },
+                  {
+                    "calls": 340,
+                    "ms": 150.31609600000002
+                  }
+                ],
+                "halfDriftPercent": -0.25454464426474255
+              }
+            ],
+            "context": [
+              "v24.18.0",
+              [
+                "--stack-size=4096",
+                "--max-old-space-size=1024"
+              ],
+              "Cpus_allowed_list:\t3"
+            ]
+          },
+          "typescript": {
+            "timeMs": {
+              "median": 0.008460851676344914,
+              "min": 0.00840845984441766,
+              "max": 0.008654700969650488,
+              "samples": [
+                0.00841734159636244,
+                0.008464770516051285,
+                0.00840845984441766,
+                0.008460851676344914,
+                0.008654700969650488
+              ]
+            },
+            "firstCallMs": {
+              "median": 0.8875460000000004,
+              "min": 0.8743740000000031,
+              "max": 0.9313050000000018,
+              "samples": [
+                0.8875460000000004,
+                0.9313050000000018,
+                0.8743740000000031,
+                0.8914009999999948,
+                0.8757260000000002
+              ]
+            },
+            "importMs": {
+              "median": 1.0920950000000005,
+              "min": 1.0714439999999996,
+              "max": 1.1197080000000028,
+              "samples": [
+                1.0730310000000003,
+                1.1197080000000028,
+                1.0714439999999996,
+                1.1054809999999975,
+                1.0920950000000005
+              ]
+            },
+            "maxRssKiB": 66616,
+            "rssSamplesKiB": [
+              66616,
+              66272,
+              63844,
+              64292,
+              64304
+            ],
+            "halfDriftPercent": {
+              "median": 2.34005969956419,
+              "min": 1.5388569863735269,
+              "max": 7.449158051048954,
+              "samples": [
+                1.5388569863735269,
+                2.34005969956419,
+                1.6069763599569686,
+                2.6046414660098716,
+                7.449158051048954
+              ]
+            },
+            "halves": [
+              {
+                "trial": 0,
+                "halves": [
+                  {
+                    "calls": 18254,
+                    "ms": 152.45419300000003
+                  },
+                  {
+                    "calls": 18254,
+                    "ms": 154.8002449999999
+                  }
+                ],
+                "halfDriftPercent": 1.5388569863735269
+              },
+              {
+                "trial": 1,
+                "halves": [
+                  {
+                    "calls": 18254,
+                    "ms": 152.70161700000017
+                  },
+                  {
+                    "calls": 18254,
+                    "ms": 156.27492600000005
+                  }
+                ],
+                "halfDriftPercent": 2.34005969956419
+              },
+              {
+                "trial": 2,
+                "halves": [
+                  {
+                    "calls": 18254,
+                    "ms": 152.24088299999994
+                  },
+                  {
+                    "calls": 18254,
+                    "ms": 154.68735799999968
+                  }
+                ],
+                "halfDriftPercent": 1.6069763599569686
+              },
+              {
+                "trial": 3,
+                "halves": [
+                  {
+                    "calls": 18254,
+                    "ms": 152.43610499999977
+                  },
+                  {
+                    "calls": 18254,
+                    "ms": 156.40651900000012
+                  }
+                ],
+                "halfDriftPercent": 2.6046414660098716
+              },
+              {
+                "trial": 4,
+                "halves": [
+                  {
+                    "calls": 18254,
+                    "ms": 152.28827100000035
+                  },
+                  {
+                    "calls": 18254,
+                    "ms": 163.63246500000014
+                  }
+                ],
+                "halfDriftPercent": 7.449158051048954
+              }
+            ],
+            "context": [
+              "v24.18.0",
+              [
+                "--stack-size=4096",
+                "--max-old-space-size=1024"
+              ],
+              "Cpus_allowed_list:\t3"
+            ]
+          }
+        },
+        "modules": {
+          "baseline07": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/canary07-plan/generic-row.mjs",
+            "sha256": "4e63766153dbe858483f2e7e682e44fec440dc773409d7910c6b55784ed71684",
+            "bytes": 95776
+          },
+          "candidate": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/canary-plan/generic-row.mjs",
+            "sha256": "c1773c47842ced105db14abb08ccb8b0ef9fec57d8e6a3ef7e4e9bc9b7762802",
+            "bytes": 99802
+          },
+          "typescript": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/local-data-01/typescript.mjs",
+            "sha256": "34116f36cf0eb5089e5041abb10f2d0786051e8bd3f9afe350d97aad8303ae10",
+            "bytes": 12616
+          }
+        },
+        "baselineCandidateIdenticalBytes": false,
+        "versus07": {
+          "speedup": 0.9987287792571063,
+          "candidateTimeChangePercent": 0.12728388019811465,
+          "rangesOverlap": true,
+          "candidateEntirelyFaster": false,
+          "candidateEntirelySlower": false
+        },
+        "candidateTimesTypeScript": 52.50156849640307,
+        "baselineTimesTypeScript": 52.43482741349598
+      }
+    ],
+    "wallSeconds": 186.86889255999995
+  },
+  "compilerCost": {
+    "status": "complete",
+    "complete": true,
+    "report": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/compiler-cost/report.json",
+      "sha256": "4df3fb785bb03637b6ffbc37e10e8519e14f52e11f87c2c19ecdf86ddac4bcae",
+      "bytes": 441131
+    },
+    "rows": 18,
+    "cases": {
+      "mandelbrot": {
+        "variants": {
+          "typescript": {
+            "requestMs": {
+              "median": 352.48984599999994,
+              "min": 349.14973800000007,
+              "max": 358.0242119999998,
+              "samples": [
+                349.14973800000007,
+                352.48984599999994,
+                358.0242119999998
+              ]
+            },
+            "hostImportMs": {
+              "median": 267.570162,
+              "min": 266.5919590000003,
+              "max": 268.1327220000003,
+              "samples": [
+                268.1327220000003,
+                267.570162,
+                266.5919590000003
+              ]
+            },
+            "importAndRequestMs": {
+              "median": 620.0600079999999,
+              "min": 617.2824600000004,
+              "max": 624.6161710000001,
+              "samples": [
+                617.2824600000004,
+                620.0600079999999,
+                624.6161710000001
+              ]
+            },
+            "maxRssKiB": {
+              "median": 472460,
+              "min": 472084,
+              "max": 473364,
+              "samples": [
+                472460,
+                473364,
+                472084
+              ]
+            },
+            "processWallMs": {
+              "median": 4960.469979999994,
+              "min": 4938.574813,
+              "max": 4961.602720000003,
+              "samples": [
+                4938.574813,
+                4960.469979999994,
+                4961.602720000003
+              ]
+            }
+          },
+          "phase31_07": {
+            "requestMs": {
+              "median": 1921.4606559999997,
+              "min": 1913.9829690000001,
+              "max": 1930.8218249999995,
+              "samples": [
+                1913.9829690000001,
+                1921.4606559999997,
+                1930.8218249999995
+              ]
+            },
+            "hostImportMs": {
+              "median": 4.068159999999807,
+              "min": 3.98857100000032,
+              "max": 4.128190999999788,
+              "samples": [
+                4.128190999999788,
+                3.98857100000032,
+                4.068159999999807
+              ]
+            },
+            "importAndRequestMs": {
+              "median": 1925.449227,
+              "min": 1918.11116,
+              "max": 1934.8899849999993,
+              "samples": [
+                1918.11116,
+                1925.449227,
+                1934.8899849999993
+              ]
+            },
+            "maxRssKiB": {
+              "median": 522672,
+              "min": 522616,
+              "max": 522984,
+              "samples": [
+                522984,
+                522672,
+                522616
+              ]
+            },
+            "processWallMs": {
+              "median": 6533.0603180000035,
+              "min": 6509.711565000001,
+              "max": 6708.126845,
+              "samples": [
+                6708.126845,
+                6509.711565000001,
+                6533.0603180000035
+              ]
+            }
+          },
+          "candidate": {
+            "requestMs": {
+              "median": 1958.212043,
+              "min": 1940.5818520000003,
+              "max": 2060.2550750000005,
+              "samples": [
+                1958.212043,
+                1940.5818520000003,
+                2060.2550750000005
+              ]
+            },
+            "hostImportMs": {
+              "median": 4.00707599999987,
+              "min": 3.989700999999968,
+              "max": 4.0275189999997565,
+              "samples": [
+                4.0275189999997565,
+                4.00707599999987,
+                3.989700999999968
+              ]
+            },
+            "importAndRequestMs": {
+              "median": 1962.2395619999998,
+              "min": 1944.5889280000001,
+              "max": 2064.2447760000005,
+              "samples": [
+                1962.2395619999998,
+                1944.5889280000001,
+                2064.2447760000005
+              ]
+            },
+            "maxRssKiB": {
+              "median": 524704,
+              "min": 524580,
+              "max": 525212,
+              "samples": [
+                524704,
+                524580,
+                525212
+              ]
+            },
+            "processWallMs": {
+              "median": 6570.028123,
+              "min": 6541.359917999998,
+              "max": 6917.310609,
+              "samples": [
+                6570.028123,
+                6541.359917999998,
+                6917.310609
+              ]
+            }
+          }
+        },
+        "comparisons": {
+          "requestMs": {
+            "versus07": {
+              "speedup": 0.9812321719032547,
+              "candidateTimeChangePercent": 1.9126796525986256,
+              "rangesOverlap": false,
+              "candidateEntirelyFaster": false,
+              "candidateEntirelySlower": true
+            },
+            "candidateTimesTypeScript": 5.555371495722462
+          },
+          "importAndRequestMs": {
+            "versus07": {
+              "speedup": 0.9812508443349794,
+              "candidateTimeChangePercent": 1.9107403344684304,
+              "rangesOverlap": false,
+              "candidateEntirelyFaster": false,
+              "candidateEntirelySlower": true
+            },
+            "candidateTimesTypeScript": 3.164596227273538
+          },
+          "processWallMs": {
+            "versus07": {
+              "speedup": 0.9943732653334342,
+              "candidateTimeChangePercent": 0.5658573960834579,
+              "rangesOverlap": true,
+              "candidateEntirelyFaster": false,
+              "candidateEntirelySlower": false
+            },
+            "candidateTimesTypeScript": 1.3244769446220914
+          },
+          "maxRssKiB": {
+            "versus07": {
+              "speedup": 0.9961273403671403,
+              "candidateTimeChangePercent": 0.3887715431475147,
+              "rangesOverlap": false,
+              "candidateEntirelyFaster": false,
+              "candidateEntirelySlower": true
+            },
+            "candidateTimesTypeScript": 1.1105786733268426
+          }
+        }
+      },
+      "editdist": {
+        "variants": {
+          "typescript": {
+            "requestMs": {
+              "median": 366.8555110000002,
+              "min": 345.4119289999999,
+              "max": 376.675573,
+              "samples": [
+                345.4119289999999,
+                366.8555110000002,
+                376.675573
+              ]
+            },
+            "hostImportMs": {
+              "median": 287.09858399999985,
+              "min": 268.6996640000002,
+              "max": 288.4069589999999,
+              "samples": [
+                268.6996640000002,
+                288.4069589999999,
+                287.09858399999985
+              ]
+            },
+            "importAndRequestMs": {
+              "median": 655.2624700000001,
+              "min": 614.1115930000001,
+              "max": 663.7741569999998,
+              "samples": [
+                614.1115930000001,
+                655.2624700000001,
+                663.7741569999998
+              ]
+            },
+            "maxRssKiB": {
+              "median": 473452,
+              "min": 471224,
+              "max": 473768,
+              "samples": [
+                473768,
+                471224,
+                473452
+              ]
+            },
+            "processWallMs": {
+              "median": 5415.933443000002,
+              "min": 4936.302412000005,
+              "max": 5495.351668999996,
+              "samples": [
+                4936.302412000005,
+                5415.933443000002,
+                5495.351668999996
+              ]
+            }
+          },
+          "phase31_07": {
+            "requestMs": {
+              "median": 1804.004309,
+              "min": 1795.1230399999995,
+              "max": 1924.1179869999996,
+              "samples": [
+                1795.1230399999995,
+                1804.004309,
+                1924.1179869999996
+              ]
+            },
+            "hostImportMs": {
+              "median": 3.991971999999805,
+              "min": 3.979739999999765,
+              "max": 4.009764999999788,
+              "samples": [
+                4.009764999999788,
+                3.979739999999765,
+                3.991971999999805
+              ]
+            },
+            "importAndRequestMs": {
+              "median": 1807.9840489999997,
+              "min": 1799.1328049999993,
+              "max": 1928.1099589999994,
+              "samples": [
+                1799.1328049999993,
+                1807.9840489999997,
+                1928.1099589999994
+              ]
+            },
+            "maxRssKiB": {
+              "median": 522520,
+              "min": 521340,
+              "max": 523980,
+              "samples": [
+                522520,
+                521340,
+                523980
+              ]
+            },
+            "processWallMs": {
+              "median": 6420.2622640000045,
+              "min": 6386.685840999999,
+              "max": 6743.361357000002,
+              "samples": [
+                6420.2622640000045,
+                6386.685840999999,
+                6743.361357000002
+              ]
+            }
+          },
+          "candidate": {
+            "requestMs": {
+              "median": 1795.9638960000002,
+              "min": 1788.2703270000006,
+              "max": 1808.8468320000002,
+              "samples": [
+                1795.9638960000002,
+                1808.8468320000002,
+                1788.2703270000006
+              ]
+            },
+            "hostImportMs": {
+              "median": 4.0095210000004045,
+              "min": 3.974713000000065,
+              "max": 4.09288000000015,
+              "samples": [
+                4.0095210000004045,
+                4.09288000000015,
+                3.974713000000065
+              ]
+            },
+            "importAndRequestMs": {
+              "median": 1799.9734170000006,
+              "min": 1792.2450400000007,
+              "max": 1812.9397120000003,
+              "samples": [
+                1799.9734170000006,
+                1812.9397120000003,
+                1792.2450400000007
+              ]
+            },
+            "maxRssKiB": {
+              "median": 522600,
+              "min": 521860,
+              "max": 523200,
+              "samples": [
+                522600,
+                523200,
+                521860
+              ]
+            },
+            "processWallMs": {
+              "median": 6430.167239000002,
+              "min": 6406.513269000003,
+              "max": 6464.503708000004,
+              "samples": [
+                6406.513269000003,
+                6464.503708000004,
+                6430.167239000002
+              ]
+            }
+          }
+        },
+        "comparisons": {
+          "requestMs": {
+            "versus07": {
+              "speedup": 1.0044769346521427,
+              "candidateTimeChangePercent": -0.4456981039284047,
+              "rangesOverlap": true,
+              "candidateEntirelyFaster": false,
+              "candidateEntirelySlower": false
+            },
+            "candidateTimesTypeScript": 4.895561991434822
+          },
+          "importAndRequestMs": {
+            "versus07": {
+              "speedup": 1.00445041683635,
+              "candidateTimeChangePercent": -0.4430698381675313,
+              "rangesOverlap": true,
+              "candidateEntirelyFaster": false,
+              "candidateEntirelySlower": false
+            },
+            "candidateTimesTypeScript": 2.7469502671196784
+          },
+          "processWallMs": {
+            "versus07": {
+              "speedup": 0.9984596084935518,
+              "candidateTimeChangePercent": 0.15427679731305766,
+              "rangesOverlap": true,
+              "candidateEntirelyFaster": false,
+              "candidateEntirelySlower": false
+            },
+            "candidateTimesTypeScript": 1.187268511822441
+          },
+          "maxRssKiB": {
+            "versus07": {
+              "speedup": 0.9998469192499043,
+              "candidateTimeChangePercent": 0.015310418739944431,
+              "rangesOverlap": true,
+              "candidateEntirelyFaster": false,
+              "candidateEntirelySlower": false
+            },
+            "candidateTimesTypeScript": 1.1038077777683906
+          }
+        }
+      }
+    },
+    "boundaries": {
+      "request": "TS book_nil/load/valid/js_lib or Bend default inspect library; normal Base pipeline included.",
+      "hostImport": "Explicit bend.ts/comp.ts or typed-driver import, outside request. Bend API lazy loading stays in request.",
+      "importAndRequest": "Sum of compiler host import and its normal checked-library request.",
+      "processWall": "Supervised child includes Node startup, preflight, request, persisted output and postflight."
+    },
+    "wallMs": 130415.384629
+  },
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/plan.json",
+      "sha256": "587792abe082395e25964cd2a924d48837d67dd9762bacf1d39ec32f0e60e72b",
+      "bytes": 139496
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase32/final-measurement-summary.py",
+      "sha256": "4c32553ad96c390d9b09b110e38eb2d1062ed761a1a4b567ca1a6da9d49ad303",
+      "bytes": 11605
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/original-timing-plan/mandelbrot-timing/report.json",
+      "sha256": "64bfdfc8c48d2d540181a8bc5d666f43a8e0bff6c9f90edfa614425d208407e2",
+      "bytes": 78784
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase28/runtime-01/mandelbrot/upstream.mjs",
+      "sha256": "037f070e948ab7701364b7413c624bca4327db0bc6171ac4523b906d2ae9e222",
+      "bytes": 15442
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/final-plan-07/original-three/mandelbrot/candidate.mjs",
+      "sha256": "760d7f6c083cdb703839726ded1acbf8d53100711fec88f88f2260615fe8c921",
+      "bytes": 110517
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/original-three/mandelbrot/candidate.mjs",
+      "sha256": "760d7f6c083cdb703839726ded1acbf8d53100711fec88f88f2260615fe8c921",
+      "bytes": 110517
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/original-timing-plan/editdist-timing/report.json",
+      "sha256": "6060fc33fb9f14e5967fa9f44b2822e803d6d297f91c39d9dde4f76a7cf1ed73",
+      "bytes": 69703
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase28/runtime-01/editdist/upstream.mjs",
+      "sha256": "33721b7770aa4e367896cf1b842cc8ec309dced3a2608e25c5709217474eabc6",
+      "bytes": 11907
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/final-plan-07/original-three/editdist/candidate.mjs",
+      "sha256": "53938d02a1e99b51e5ff29e64ac8f86e3cbb731e05cba1ffff361cd8e28fd584",
+      "bytes": 94798
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/original-three/editdist/candidate.mjs",
+      "sha256": "c2ee728a9dc27891dfe43bbb3f3a43e0168987b98d89939f3417319039fe4a30",
+      "bytes": 98824
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/original-timing-plan/test-rle-roundtrip-timing/report.json",
+      "sha256": "042ab06fb1ab186de86163033ce248981ab23e4457a31655066bc777239630fd",
+      "bytes": 84062
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase28/applications-01/test-rle-roundtrip/upstream.mjs",
+      "sha256": "f21a8eb4239ff0db7fbfda6121f24b04b48c5478fe6de5798660ca5b417c80a8",
+      "bytes": 8728
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/final-plan-07/original-three/test-rle-roundtrip/candidate.mjs",
+      "sha256": "d8516e0774a2583d66efae76d6e4720e9614b7f0c0aa07426f4f68aff68213e8",
+      "bytes": 75997
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/original-three/test-rle-roundtrip/candidate.mjs",
+      "sha256": "d8516e0774a2583d66efae76d6e4720e9614b7f0c0aa07426f4f68aff68213e8",
+      "bytes": 75997
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/canary-confirm/report.json",
+      "sha256": "3b3c1bd96151d4ddaad1dc49e846d64324a9d4a9ecac81c1cd4cb9e8d990e7ae",
+      "bytes": 264179
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/canary07-source/scalar.mjs",
+      "sha256": "02ee64ae5df7b41878cbda24bc5958005587e00fd8b59c9010c14465dbc72f00",
+      "bytes": 82094
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/canary-source/scalar.mjs",
+      "sha256": "02ee64ae5df7b41878cbda24bc5958005587e00fd8b59c9010c14465dbc72f00",
+      "bytes": 82094
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase30/scalar-scaling-plan-17/typescript.mjs",
+      "sha256": "752a5711b92b0ba8b0e146f41e70ac3934e50965f77950d009b5e738320b594a",
+      "bytes": 6552
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/canary07-plan/generic-row.mjs",
+      "sha256": "4e63766153dbe858483f2e7e682e44fec440dc773409d7910c6b55784ed71684",
+      "bytes": 95776
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/canary-plan/generic-row.mjs",
+      "sha256": "c1773c47842ced105db14abb08ccb8b0ef9fec57d8e6a3ef7e4e9bc9b7762802",
+      "bytes": 99802
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase31/local-data-01/typescript.mjs",
+      "sha256": "34116f36cf0eb5089e5041abb10f2d0786051e8bd3f9afe350d97aad8303ae10",
+      "bytes": 12616
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/compiler-cost/report.json",
+      "sha256": "4df3fb785bb03637b6ffbc37e10e8519e14f52e11f87c2c19ecdf86ddac4bcae",
+      "bytes": 441131
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/compiler-cost/mandelbrot-0-typescript.mjs",
+      "sha256": "037f070e948ab7701364b7413c624bca4327db0bc6171ac4523b906d2ae9e222",
+      "bytes": 15442
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/compiler-cost/mandelbrot-1-typescript.mjs",
+      "sha256": "037f070e948ab7701364b7413c624bca4327db0bc6171ac4523b906d2ae9e222",
+      "bytes": 15442
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/compiler-cost/mandelbrot-2-typescript.mjs",
+      "sha256": "037f070e948ab7701364b7413c624bca4327db0bc6171ac4523b906d2ae9e222",
+      "bytes": 15442
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/compiler-cost/mandelbrot-0-phase31_07.mjs",
+      "sha256": "760d7f6c083cdb703839726ded1acbf8d53100711fec88f88f2260615fe8c921",
+      "bytes": 110517
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/compiler-cost/mandelbrot-1-phase31_07.mjs",
+      "sha256": "760d7f6c083cdb703839726ded1acbf8d53100711fec88f88f2260615fe8c921",
+      "bytes": 110517
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/compiler-cost/mandelbrot-2-phase31_07.mjs",
+      "sha256": "760d7f6c083cdb703839726ded1acbf8d53100711fec88f88f2260615fe8c921",
+      "bytes": 110517
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/compiler-cost/mandelbrot-0-candidate.mjs",
+      "sha256": "760d7f6c083cdb703839726ded1acbf8d53100711fec88f88f2260615fe8c921",
+      "bytes": 110517
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/compiler-cost/mandelbrot-1-candidate.mjs",
+      "sha256": "760d7f6c083cdb703839726ded1acbf8d53100711fec88f88f2260615fe8c921",
+      "bytes": 110517
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/compiler-cost/mandelbrot-2-candidate.mjs",
+      "sha256": "760d7f6c083cdb703839726ded1acbf8d53100711fec88f88f2260615fe8c921",
+      "bytes": 110517
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/compiler-cost/editdist-0-typescript.mjs",
+      "sha256": "33721b7770aa4e367896cf1b842cc8ec309dced3a2608e25c5709217474eabc6",
+      "bytes": 11907
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/compiler-cost/editdist-1-typescript.mjs",
+      "sha256": "33721b7770aa4e367896cf1b842cc8ec309dced3a2608e25c5709217474eabc6",
+      "bytes": 11907
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/compiler-cost/editdist-2-typescript.mjs",
+      "sha256": "33721b7770aa4e367896cf1b842cc8ec309dced3a2608e25c5709217474eabc6",
+      "bytes": 11907
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/compiler-cost/editdist-0-phase31_07.mjs",
+      "sha256": "53938d02a1e99b51e5ff29e64ac8f86e3cbb731e05cba1ffff361cd8e28fd584",
+      "bytes": 94798
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/compiler-cost/editdist-1-phase31_07.mjs",
+      "sha256": "53938d02a1e99b51e5ff29e64ac8f86e3cbb731e05cba1ffff361cd8e28fd584",
+      "bytes": 94798
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/compiler-cost/editdist-2-phase31_07.mjs",
+      "sha256": "53938d02a1e99b51e5ff29e64ac8f86e3cbb731e05cba1ffff361cd8e28fd584",
+      "bytes": 94798
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/compiler-cost/editdist-0-candidate.mjs",
+      "sha256": "c2ee728a9dc27891dfe43bbb3f3a43e0168987b98d89939f3417319039fe4a30",
+      "bytes": 98824
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/compiler-cost/editdist-1-candidate.mjs",
+      "sha256": "c2ee728a9dc27891dfe43bbb3f3a43e0168987b98d89939f3417319039fe4a30",
+      "bytes": 98824
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/compiler-cost/editdist-2-candidate.mjs",
+      "sha256": "c2ee728a9dc27891dfe43bbb3f3a43e0168987b98d89939f3417319039fe4a30",
+      "bytes": 98824
+    }
+  ],
+  "scope": "All available frozen-plan observations; absent/incomplete receipts stay explicit. Measurement completeness is not correctness or promotion admission. Byte-identical modules permit no source-transformation explanation for timing changes. Request/import/process timing boundaries and all drift remain distinct."
+}

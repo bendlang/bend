@@ -1,0 +1,19 @@
+{
+  "complete": true,
+  "scope": "Producer preparation only; archive has not run.",
+  "parent": {
+    "file": "implementation/phase31/evidence/archive.py",
+    "bytes": 2631,
+    "sha256": "50e36485135c173875f9a75404cc433ee9a90168fc2b7b2802090873401fe84a"
+  },
+  "derived": {
+    "file": "implementation/phase32/evidence/archive.py",
+    "bytes": 2631,
+    "sha256": "f6b3f23f7c45db85f6f6589880d9ccade93ca9bfedeaad80418e21f2641f33a5"
+  },
+  "transformation": {
+    "Phase31": "Phase32",
+    "phase31": "phase32"
+  },
+  "exactInverseVerified": true
+}

@@ -110,3 +110,13 @@ nonterminal records, quantity1 flat records, ordinary Tuple names, native/erased
 recursive/function/wide refusal and a concrete unnormalized-alias witness. It
 imports only one appended diagnostic compiler module, avoiding simultaneous
 original and diagnostic compiler images. Root must grant a serial execution slot.
+
+## Subsequent root execution
+
+The prepared actual-output, ordering, alias and type controls have now run in the
+root's serialized `local-checked-controls-03` acquisition and all six groups pass.
+Their exact receipts are recorded in [review-local-gates.json](review-local-gates.json);
+[the candidate03 review](review-vector03.md) and [complexity report](local-complexity.md)
+state the scope and individual counts. Earlier “not executed” entries describe
+preparation status at the time they were written. This reviewer inspected the
+completed receipts without importing compiler/generated modules or rerunning tests.

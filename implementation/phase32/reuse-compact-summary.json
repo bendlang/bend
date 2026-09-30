@@ -1,0 +1,111 @@
+{
+  "scope": "Saved checked07 derivatives; all candidates remain unpromoted. Counts overlap across suites. Warming correctness timings are not speed ratios.",
+  "queryMemo": {
+    "globalWrappers": {
+      "evidence": {
+        "file": "selfhost/build/phase32/compact-screen-results-01/report.json",
+        "sha256": "255675051e4e6c1fb98d3c908b50407b6ce4f48dfb07151c543875fd1acd9246",
+        "bytes": 5315
+      },
+      "observationsEqual": true,
+      "candidateOverBaselineRatios": {
+        "small": 1.131191595292731,
+        "mandelbrot": 1.0665116912900325,
+        "editdist": 1.0880651944638913
+      },
+      "rangesDisjoint": {
+        "small": false,
+        "mandelbrot": false,
+        "editdist": false
+      },
+      "prospectiveSpeedAdmission": false,
+      "promoted": false
+    },
+    "emissionScoped4k": {
+      "evidence": {
+        "file": "selfhost/build/phase32/compact-scoped-screen-02/report.json",
+        "sha256": "577240cc71b1284489416906f090a286466b66e59b04e5f315677c2f544316d3",
+        "bytes": 5761
+      },
+      "observationsEqual": true,
+      "candidateOverBaselineRatios": {
+        "small": 0.9833778156226287,
+        "mandelbrot": 1.0310301445698795,
+        "editdist": 0.8827523588387403
+      },
+      "rangesDisjoint": {
+        "small": false,
+        "mandelbrot": false,
+        "editdist": false
+      },
+      "prospectiveSpeedAdmission": false,
+      "promoted": false
+    },
+    "emissionScoped16k": {
+      "evidence": {
+        "file": "selfhost/build/phase32/compact-cap-screen-03/report.json",
+        "sha256": "714152165d9e4f3ba913f966ce3caded34bf276cbf6f5ff96797388e522d2b27",
+        "bytes": 5738
+      },
+      "observationsEqual": true,
+      "candidateOverBaselineRatios": {
+        "small": 1.0516247725461119,
+        "mandelbrot": 0.9781467374724264,
+        "editdist": 0.9668263746964126
+      },
+      "rangesDisjoint": {
+        "small": false,
+        "mandelbrot": false,
+        "editdist": true
+      },
+      "prospectiveSpeedAdmission": false,
+      "promoted": false
+    }
+  },
+  "stopReuse": {
+    "evidence": {
+      "file": "selfhost/build/phase32/compact-stop-screen-04/report.json",
+      "sha256": "dbd06b6669c97a9e12d8a0efa6eb593e5b6704438cc3f6d0a3520b3a1e78bd82",
+      "bytes": 5693
+    },
+    "observationsEqual": true,
+    "candidateOverBaselineRatios": {
+      "small": 0.8425655608775198,
+      "mandelbrot": 0.9869649665692186,
+      "editdist": 0.8400966062986713
+    },
+    "rangesDisjoint": {
+      "small": true,
+      "mandelbrot": false,
+      "editdist": true
+    },
+    "prospectiveSpeedAdmission": false,
+    "promoted": false,
+    "boundary": {
+      "evidence": {
+        "file": "selfhost/build/phase32/compact-stop-boundary-plan-05/report.json",
+        "sha256": "35e652c9a3f5cb906fe9e8887f4ef3c327c61742c320e31b9fccc19fba8cdb1e",
+        "bytes": 4985
+      },
+      "controls": 6,
+      "expectedOutcomesPass": true,
+      "conditionalDefaultOwnershipCounterexample": true,
+      "productionDriverChanged": false
+    }
+  },
+  "semanticCheckpoint": {
+    "evidence": {
+      "file": "selfhost/build/phase32/reuse-checkpoint-correctness-02/report.json",
+      "sha256": "9de5accbcbc51816fdd675bcae66feb82545d62d32fab0e53f329eceadf5ac79",
+      "bytes": 5912
+    },
+    "observationsEqual": true,
+    "observations": 22,
+    "successfulCompiles": 17,
+    "checkerErrors": 3,
+    "parseErrors": 2,
+    "peakChildRssKiB": 593156,
+    "promotion": "defer; costly full-world comparison/retention, no clean speed ratio",
+    "eventDuplicateOrderCoverage": false
+  }
+}

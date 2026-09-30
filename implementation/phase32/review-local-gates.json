@@ -1,0 +1,149 @@
+{
+  "complete": true,
+  "scope": "Root-executed focused correctness receipts inspected independently; no rerun. Exact raw records remain under selfhost/build/phase32/local-checked-controls-03 and must be included in final campaign capsule.",
+  "groups": [
+    {
+      "name": "pair",
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-controls-03/pair/report.json",
+        "bytes": 97897,
+        "sha256": "01dd0427a40f70d2e74914ebe9a112ca6919a2837b91281eddd03b10f960ce94"
+      },
+      "supervisor": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-controls-03/pair-outer/run.json",
+        "bytes": 1600,
+        "sha256": "c577dd6f63277267d5676559a80d87a99773f293784bf4d27d518d8fb82be8d6"
+      },
+      "complete": true,
+      "pass": true,
+      "counts": {
+        "oracle": 6,
+        "state": 4,
+        "boundaries": 17
+      },
+      "peakTreeRssBytes": 306774016,
+      "wallSeconds": 15.477694916000473,
+      "availableFloorBytes": 2147483648,
+      "minimumAvailableBytes": 29533622272
+    },
+    {
+      "name": "fold",
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-controls-03/fold/report.json",
+        "bytes": 292101,
+        "sha256": "e823af3f3e269efd68ce31cf18d4b9e694f9d8bfbc594601a74d850792acddeb"
+      },
+      "supervisor": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-controls-03/fold-outer/run.json",
+        "bytes": 1601,
+        "sha256": "f62d437fd540ea095f754f74740933fbefbc5e3061a5ceaa652e2d60c95c1ce4"
+      },
+      "complete": true,
+      "pass": true,
+      "counts": {
+        "oracle": 41,
+        "state": 16,
+        "boundaries": 7,
+        "negative": 3
+      },
+      "peakTreeRssBytes": 71405568,
+      "wallSeconds": 0.30302296900026704,
+      "availableFloorBytes": 2147483648,
+      "minimumAvailableBytes": 29787037696
+    },
+    {
+      "name": "order",
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-controls-03/order/report.json",
+        "bytes": 13837,
+        "sha256": "8c8121d48ee016a232faae54fda594995a10f3c7a919ef88b967ca14180a784d"
+      },
+      "supervisor": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-controls-03/order-outer/run.json",
+        "bytes": 1604,
+        "sha256": "a3f5af59be15cc4bee299eb55869e71b6ba9c5962d46dee1af4c857e8ce59d2e"
+      },
+      "complete": true,
+      "pass": true,
+      "counts": {
+        "cases": 12,
+        "negative": 2,
+        "bridges": 3
+      },
+      "peakTreeRssBytes": 75710464,
+      "wallSeconds": 0.30298273300013534,
+      "availableFloorBytes": 2147483648,
+      "minimumAvailableBytes": 29782638592
+    },
+    {
+      "name": "scope",
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-controls-03/scope/report.json",
+        "bytes": 7241,
+        "sha256": "ace594bbe344a96821cbdb75daa3b9713c559591b8c85a086da5a83bd09cec86"
+      },
+      "supervisor": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-controls-03/scope-outer/run.json",
+        "bytes": 1682,
+        "sha256": "fdca2fe9ffc5383df187392e9900199be10c3775550cc4d460a333fc67132182"
+      },
+      "complete": true,
+      "pass": true,
+      "counts": {
+        "oracle": 40,
+        "boundaries": 3
+      },
+      "peakTreeRssBytes": 54104064,
+      "wallSeconds": 0.20255020199965657,
+      "availableFloorBytes": 2147483648,
+      "minimumAvailableBytes": 29796331520
+    },
+    {
+      "name": "vectors",
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-controls-03/vectors/report.json",
+        "bytes": 24588,
+        "sha256": "d5b687f8d9d7069e61a3c0b1b6fc5855a7b4cb98489f8156d7ad46f66d3edda9"
+      },
+      "supervisor": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-controls-03/vectors-outer/run.json",
+        "bytes": 1692,
+        "sha256": "adeeead79ef6b87982056565cfa858846e61fde1fb6a5ca3f61d73104e453db7"
+      },
+      "complete": true,
+      "pass": true,
+      "counts": {
+        "oracles": 40,
+        "boundaries": 14,
+        "publicResults": 40
+      },
+      "peakTreeRssBytes": 61992960,
+      "wallSeconds": 0.20248799000000872,
+      "availableFloorBytes": 2147483648,
+      "minimumAvailableBytes": 29791186944
+    },
+    {
+      "name": "types",
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-controls-03/types/report.json",
+        "bytes": 5780,
+        "sha256": "3f496debdfc0abd623f95370ea76cb952224fee3c413dd6d2e477f2f292a71b6"
+      },
+      "supervisor": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/local-checked-controls-03/types-outer/run.json",
+        "bytes": 1590,
+        "sha256": "722cd48e407aafc4c5ac2aa6fda0ba016ad52d407b8118c00b76d28aa1135446"
+      },
+      "complete": true,
+      "pass": true,
+      "counts": {
+        "observations": 21
+      },
+      "peakTreeRssBytes": 194883584,
+      "wallSeconds": 2.4133062219998465,
+      "availableFloorBytes": 2147483648,
+      "minimumAvailableBytes": 29652414464
+    }
+  ],
+  "maximumPeakTreeRssBytes": 306774016
+}
