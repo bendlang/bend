@@ -20,7 +20,7 @@ def main() -> Nat:
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)
+#|- message  : a match on a parameter or field in binder order (this name is bound before one matched earlier, or is a def or a consumed binder: match it first, or give the value its own def)
 #|Location:
 #|11 |     case y, 1n+q:
 #|12>|       match y:

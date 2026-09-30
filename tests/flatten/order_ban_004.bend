@@ -1,0 +1,32 @@
+# THE ORDER BAN, reported (#1134): t is bound before mv, and the match on
+# mv closes t, so the nested match on t dies at the ban, and the message
+# names binder order as a cause, not only a def or a consumed binder
+import Base
+
+type Ty is Data:
+  TStr{}
+  TU32{}
+
+def f(t: Ty, mv: Maybe<&2, U32>) -> String:
+  match mv:
+    case None{}:
+      "none"
+    case Some{v}:
+      match t:
+        case TStr{}:
+          "str"
+        case TU32{}:
+          "u32"
+
+def main() -> IO(Unit):
+  IO.print(f(TStr{}, Some{1}))
+
+#|SOME PROOFS FAIL
+#|Error:
+#|- message  : a match on a parameter or field in binder order (this name is bound before one matched earlier, or is a def or a consumed binder: match it first, or give the value its own def)
+#|Location:
+#|14 |     case Some{v}:
+#|15>|       match t:
+#|   |             ^
+#|16 |         case TStr{}:
+#|exit 1

@@ -24,7 +24,7 @@ def main():
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- message  : a match on a parameter or field (this name is a def or a consumed binder: give the value its own def)
+#|- message  : a match on a parameter or field in binder order (this name is bound before one matched earlier, or is a def or a consumed binder: match it first, or give the value its own def)
 #|Location:
 #|15 |   z = Zw{}
 #|16>|   Sw{p} = y

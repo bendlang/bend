@@ -1,0 +1,29 @@
+# THE ORDER BAN, joint (#1134): in one match, the column on mv decides
+# first and closes t, so t's column is an order error
+import Base
+
+type Ty is Data:
+  TStr{}
+  TU32{}
+
+def f(t: Ty, mv: Maybe<&2, U32>) -> String:
+  match mv t:
+    case None{} _:
+      "none"
+    case Some{v} TStr{}:
+      "str"
+    case Some{v} TU32{}:
+      "u32"
+
+def main() -> IO(Unit):
+  IO.print(f(TStr{}, Some{1}))
+
+#|SOME PROOFS FAIL
+#|Error:
+#|- message  : a match on a parameter or field in binder order (this name is bound before one matched earlier, or is a def or a consumed binder: match it first, or give the value its own def)
+#|Location:
+#| 9 | def f(t: Ty, mv: Maybe<&2, U32>) -> String:
+#|10>|   match mv t:
+#|   |            ^
+#|11 |     case None{} _:
+#|exit 1
