@@ -1949,3 +1949,40 @@ not part of this compiler. Freeze optimization variants and finish the original
 program matrix, ordinary compiler-cost and conformance gates, evidence
 preservation and installation. The installed compiler is still Phase29 until
 those parent-owned steps complete.
+
+
+## Phase 30 — complete matrix holds checked14 release
+
+[P30-026](phase30/P30-026-complete-candidate-matrix.md) completes all 13 frozen
+jobs in 1,631.07 seconds: ten original programs, the ordinary compiler check,
+two-source checked-library costs and four scalar helper sizes. All output
+checks pass. Original Mandelbrot improves 97.35× versus Phase29, but generic
+edit-distance, lexer and ray-tracing paths regress approximately 20–24%. Several
+small transfer cases have large warmup drift and remain explicitly unsettled.
+Scalar8192 is 190.74× faster than Phase29 and 1.34× TypeScript time, while scalar0
+pays 2.68× Phase29 time. These separate results expose coverage and fixed-entry
+cost rather than supporting a universal average.
+
+**Release is on hold.** The installed compiler is not replaced by this held
+candidate. The next experiment uses newly checked Phase29/14 emissions of the
+same complete-state row fixture and independent runtime-dispatch ablations.
+Full medians, ranges, costs and limitations are in
+[the batch report](../implementation/phase30/final-timing.md); the prior release
+frontier is superseded by this observed regression and hold.
+
+
+## Phase 30 — exact row identifies generic constructor dispatch
+
+[P30-027](phase30/P30-027-generic-runtime-row.md) checks newly emitted Phase29
+and held14 against five runtime/reference variants on the same complete-state
+row. All 196 state observations and both 28/16/257 oracle/alias/boundary suites
+pass. The short screen has severe opposing warmup drift; maintained confirmation
+shows that restoring generic delayed constructor-field application reduces
+checked14 row time from 0.606265 to 0.446850 ms (26.29% less), recovering Phase29's
+0.450682 ms within overlapping ranges. Inline dispatch is null; fused prebinding
+saves 2.32%; the independent method-read expression saves 9.68%.
+
+The parent accepts the isolated generic runtime repair for checked integration.
+No compound transformation is selected. The release hold remains until actual
+emission, boundary and original-program transfer checks support the repaired
+image. The complete comparison and its regressions remain immutable.
