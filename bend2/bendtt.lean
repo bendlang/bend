@@ -1715,17 +1715,8 @@ noncomputable def Term.dev (bk : Book) : Term → Term
   | Rwt e P f => Rwt (Term.dev bk e) (Term.dev bk P) (Term.dev bk f)
   | t => t
 
--- a λ+ stepped to a λ keeps its liveness and needs no Data
-theorem lin_live : (Quan.lin q).live = q.live := by cases q <;> rfl
-
-theorem lin_ne : Quan.lin q ≠ Q2 := by cases q <;> nofun
-
 theorem lin_eq {p q : Quan} : q.live = p.live → q.lin = p.lin := by
   cases p <;> cases q <;> decide
-
--- the triangle, on a λ's quantity
-theorem lin_step {p q : Quan} : p = q ∨ p = q.lin → q.lin = p ∨ q.lin = p.lin := by
-  cases p <;> cases q <;> simp [Quan.lin]
 
 theorem par_refl (t : Term) : Par bk t t := by
   induction t <;> constructor <;> first | assumption | exact .inl rfl
@@ -1791,7 +1782,8 @@ theorem triangle : Par bk t u → Par bk u (Term.dev bk t) := by
   case split ih1 ih2 ih3 => exact .app (.app ih1 ih2) ih3
   case hit => show Par _ _ (ite ..); simpa
   case miss hne _ ih => show Par _ _ (ite ..); simp only [hne]; exact .app ih .lab
-  all_goals first | assumption | (first | constructor | apply par_inst) <;> first | assumption | exact lin_step ‹_›
+  all_goals first | assumption | (first | constructor | apply par_inst) <;>
+    first | assumption | (rcases ‹_ ∨ _› with rfl | rfl <;> simp)
 
 -- the strip lemma, from the triangle
 theorem strip : Par bk a b → Pars bk a c → ∃ d, Pars bk b d ∧ Par bk c d := by
@@ -1977,7 +1969,7 @@ theorem fold_true {g : Nat → Term → Term → Bool × Nat} : ∀ {s},
 theorem conv_lam (e : q.live = p.live) : Conv bk f g → Conv bk (Lam q f) (Lam p g)
   | ⟨_, h1, h2⟩ =>
     have L {q f c} (h : Pars bk f c) : Pars bk (Lam q f) (Lam q.lin c) :=
-      pars_trans (pars_map _ (.lam · (.inl rfl)) h) (.step (.lam (par_refl _) (.inr rfl)) .refl)
+      .step (.lam (par_refl _) (.inr rfl)) (pars_map _ (.lam · (.inl rfl)) h)
     ⟨_, L h1, lin_eq e ▸ L h2⟩
 
 -- heads whose parts convert convert
@@ -2368,10 +2360,9 @@ theorem sr : Claim.sr := by
       have ⟨ha, hb⟩ := conv_eql (fits_conv hU)
       exact .conv (ihf _ pf) (fits_trans (.inl (conv_inst (conv_trans (csym ha) (conv_trans hc hb)))) hF)
   case conv _ hf ih => exact .conv (ih _ hp) hf
-  case lam hl hq _ _ ihf => cases hp with
-    | lam pf e => rcases e with rfl | rfl
-                  · exact .lam hl hq (ihf _ pf)
-                  · exact .lam (hl.trans lin_live.symm) (absurd · lin_ne) (ihf _ pf)
+  -- a λ+ stepped to a λ keeps its liveness and needs no Data
+  case lam q _ _ _ _ _ hl hq _ _ ihf => cases hp with
+    | lam pf e => cases q <;> rcases e with rfl | rfl <;> exact .lam hl (by first | exact hq | nofun) (ihf _ pf)
   case app _ hx ihf ihx => cases hp with
     | app pf px => exact .conv (.app (ihf _ pf) (ihx _ px)) (.inl (pi px))
     | beta pf px =>
