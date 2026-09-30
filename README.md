@@ -17,6 +17,11 @@ This fork develops the compiler in [`selfhost/`](selfhost/README.md), on branch
 from `selfhost/`, run `npm run verify:release`, then `node cli.mjs FILE --run`.
 `npm run build` checks and rebuilds the default with pinned upstream.
 
+The [generated-program performance guide](docs/BEND-IN-BEND-PERFORMANCE.md)
+explains private scalar regions, their fallback contract and the fast experiment,
+checked compiler and integration loops. The [Phase30 investigation](implementation/phase30/README.md)
+retains its current candidate, measurements and promotion status.
+
 The [Phase29 release report](implementation/phase29/generated-program-fast-loop.md)
 adds guarded native arithmetic inlining and private Nat countdown loops to generated
 JavaScript. The real Mandelbrot helper fixture runs **3.65× faster** with longer

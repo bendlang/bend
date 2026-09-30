@@ -3,7 +3,9 @@
 Checked attempt12 reproduces the private binary-tree mechanism from the
 generated-output experiment. Against checked attempt11, the independent
 mathematical oracle, ordered host behavior, depth admission and explicit-stack
-checks pass. Its clean performance comparison is prepared and has not yet run.
+checks pass. A separately frozen longer-warmup comparison measures a **13.5×**
+gain on the original small Mandelbrot program over actual11, with stable measured
+halves; actual12 is **5.86× slower than pinned TypeScript** at that point.
 
 The prospective validation is
 [actual-scalar-tree-validation.md](../../design/phase30/actual-scalar-tree-validation.md).
@@ -80,5 +82,27 @@ prospective [longer-warmup diagnostic](../../design/phase30/scalar-tree-long-war
 uses three samples, 15 seconds of warmup, a three-call floor and a one-second
 measured target. The derived runner and launcher are retained alongside
 `tree-compiler-plan-12/long-warmup.json`; ordinary protocols remain unchanged.
-No precise settled throughput or speed ratio is claimed before these actual
-compiler measurements complete.
+The maintained long confirmation completed in `tree-compiler-confirm-12`
+(105.168 seconds, all outputs correct). The original-point medians were
+3.626788 ms for actual11, 0.349187 ms for actual12 and 0.045497 ms for TypeScript.
+Actual12's halves still changed sharply: four improved 31.6–35.0%, while one
+worsened 50.4%. Keep that protocol result as measured; it does not establish
+settled throughput. The separate depth-five component was stable: actual11
+0.399035 ms versus actual12 0.024952 ms, a **15.99×** gain, with all candidate
+half-window changes within 1.26%.
+
+The prospectively frozen longer-warmup comparison then completed unchanged in
+`tree-long-warmup-12`, taking 193.595 seconds end to end. Every output matched:
+
+| Original `bench(2,0)` variant | Median ms | Three-process range ms | Half-window change |
+| --- | ---: | ---: | --- |
+| Actual11 | 3.614043 | 3.591245–3.651341 | −0.16% to +0.38% |
+| Actual12 | 0.267604 | 0.265087–0.268783 | +0.32% to +1.59% |
+| Pinned TypeScript | 0.045645 | 0.045614–0.045754 | +0.35% to +0.64% |
+
+The observed **13.505×** incremental gain and **5.863×** remaining TypeScript
+ratio have disjoint sample ranges and stable measured halves in this specified
+window. This resolves the identified drift for this point under the longer
+protocol; it is not a universal generated-program estimate. The three-second
+and fifteen-second results remain distinct evidence, with all original process
+outputs and outer launcher receipts retained. No instrumented output was timed.

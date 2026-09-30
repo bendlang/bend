@@ -1856,3 +1856,96 @@ out of production. Number counters confirm only5.4% lower time and remain
 deferred to avoid another representation mode. Exact method-read cleanup has
 an encouraging row signal but unresolved baseline drift. Installed release stays
 Phase29 until the combined image, broad gates, measurement and installation.
+
+## Phase30: actual tree confirmation and residual probes
+
+Actual12 passes the combined focused, selected upstream, primitive/worker,
+23-library, real-component and HVM gates. A fresh checked-source fixture adds
+270 Bool/Nat tree points across TypeScript/actual11/actual12, 11 admission/refusal
+assertions and six ordered mutation observations. Original ten libraries compile
+and return exact results. Full frontend renewal and original timing remain pending.
+
+The separate15-second-warmup original Mandelbrot comparison confirms
+3.614043ms→0.267604ms for actual11→12, a13.505× gain; TypeScript is0.045645ms.
+Three-process ranges are disjoint and timed halves stable in that window. Earlier
+three-second drift remains retained. A tree-frame storage ablation then confirms
+0.266169ms→0.244705ms (8.06% less time), cutting255 allocation pairs to8. Its
+small production emitter patch is applied and awaits a fresh checked build.
+
+Private helper const/arrow bindings show no useful screen improvement and stay
+out of production. Replacing exact-entry objects with scalar runtime slots gives
+a3.2% scalar gain but a4% row median regression with drift; it remains deferred.
+The closed owned-row ladder passes full-state, alias and ordered host controls;
+its1.52× screen gain has substantial drift and awaits confirmation. A general
+local-container proof is documented, not implemented by recognizing this fixture.
+
+### Phase 30 — settled frame, owned-row and private-Let follow-ups
+
+The [closed owned-row ladder](phase30/P30-020-closed-owned-row.md) confirms
+1.60× on its complete row32/seed17 fixture: generic 0.588137 ms versus private
+row 0.367874 ms, with unchanged storage effects and full-state/alias/public
+controls. TypeScript 0.008413 ms leaves a 43.7× gap there. This is a disposable
+closed scalar-input experiment, not a general compiler ownership extension.
+
+[Native calls inside the same region](phase30/P30-021-owned-native-dispatch.md)
+then confirm 1.082× incrementally, 0.368370→0.340405 ms, with disjoint ranges.
+Generic setup, projections, copies and force counts remain fixed; generic apply
+falls 794→630. The full ladder is 1.759× generic but still 40.6× TypeScript on this
+fixture. Independent review retains a real Array.prototype getter that mutates
+umin inside the old standard-Array domain. The new variant rejects those hooks
+at the outer boundary and matches generic behavior. No production promotion.
+
+[Private frame reuse](phase30/P30-022-private-frame-reuse.md) is implemented in
+checked13. Fresh actual-output oracles, ordered host/depth controls and repeated
+traversals pass; complete module differences are restricted to intended push/pop.
+Fresh frame/argument pairs fall 255→8 for original Mandelbrot. Its separate
+15-second-warmup actual12→13 comparison confirms 0.263759→0.246737 ms, 6.45%
+less time, with disjoint ranges and small drift. The earlier 8.06% prototype
+window stays separate. A sandbox ENOSPC event prevented one oracle launch before
+process creation; its receipt is retained, followed by parent-verified duplicate
+temporary-file recovery and successful fresh acquisition.
+
+[Private helper Let statements](phase30/P30-023-private-let-statements.md)
+confirm 0.267175→0.237970 ms on original Mandelbrot after 15-second warmup,
+10.93% less time, with disjoint ranges and less than 1% half drift. The proposed
+maintained rule adds one small statement-return emitter reusing existing Let
+helpers. Checked14 passes its independent actual-output structural, numeric and
+public-boundary gates. The separate actual13→14 long comparison confirms
+0.246549→0.215416 ms, 12.63% less time, with stable, disjoint samples; pinned
+TypeScript is 0.045613 ms in that same window, leaving 4.723×. This is original
+Mandelbrot execution, not a generated-program average or compiler checking cost.
+The separate generic tail-Let experiment must pass its own scheduling/closure
+controls and warmed measurements.
+
+[Private helper hoisting](phase30/P30-024-hoisted-private-helpers.md) does not
+survive confirmation: baseline 0.265628 versus hoisted 0.270437 ms, overlapping
+ranges and 1.81% slower median. Its encouraging short screen remains in the
+record. Defer the 90–160-line implementation despite smaller generated modules.
+
+**Updated frontier:** prioritize the small confirmed private-Let implementation
+and its checked-image validation, then the separately scoped general tail-Let
+experiment. Keep owned local-container regions as evidence-backed research,
+not benchmark-specific compiler admission. Phase29 remains installed pending
+combined conformance, original-program timings, ordinary compiler-cost checks
+and release. Ratios from distinct inputs/windows must not be multiplied. No
+new whole-compiler throughput, full-backend conformance or fixed-point claim.
+
+### Phase 30 — freeze the release candidate after the guard decision
+
+The final bounded [complete-guard allocation trial](phase30/P30-025-guard-fixed-lists.md)
+preserves every metadata read, predicate and live snapshot, with 67 independent
+full reflection-order controls plus the retained core/helper/tree suites. Its
+confirmed helper reduction is 4.33%, and original Mandelbrot reduction is 1.80%,
+both with disjoint sample ranges. Before measuring, promotion required at least
+5% helper or 3% whole reduction with no material opposite regression. Both
+benefits fall short, so defer rather than relax the thresholds. The first
+tooling-only parser failure and all short/warmed results remain retained.
+
+**Updated frontier:** checked14's small private-Let emitter remains the release
+candidate. It confirms a same-window 4.723× TypeScript gap on original small
+Mandelbrot after substantial earlier improvements. Generic tail-Let expansion,
+helper hoisting, guard allocation changes and closed local-array prototypes are
+not part of this compiler. Freeze optimization variants and finish the original
+program matrix, ordinary compiler-cost and conformance gates, evidence
+preservation and installation. The installed compiler is still Phase29 until
+those parent-owned steps complete.

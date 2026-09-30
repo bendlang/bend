@@ -29,6 +29,12 @@ validity; `--verdict` is explicitly unsupported.
 
 ## Analyzing emitted-program performance
 
+The [generated-program performance guide](BEND-IN-BEND-PERFORMANCE.md) explains
+the Phase30 private region machinery, bounded admission, exact public entry and
+fast validation loop. Its [campaign reports](../implementation/phase30/README.md)
+distinguish the current checked candidate from the installed release and retain
+negative experiments as well as measured wins.
+
 Phase29 implements 54 native U32/F32 scalar operations as direct JavaScript at
 identified saturated call sites. Partial/unknown calls retain ordinary descriptors.
 Supported native Nat countdown matchers keep their public entry and use local slots

@@ -110,6 +110,19 @@ previously uncreated output names were acquired successfully; no failed
 compiler/control execution was hidden or overwritten.
 
 Actual-output timing configurations are frozen separately in
-`frame-compiler-plan-13/{screen,confirm,long-warmup}.json`. They have not yet run.
-The longer-warmup case uses the unchanged earlier derived runner. Installation
-and broad compiler conformance remain parent-owned work.
+`frame-compiler-plan-13/{screen,confirm,long-warmup}.json`. The longer-warmup case
+uses the unchanged earlier derived runner and was executed alone in this
+fresh actual-compiler comparison; the standard screen/confirm remain unrun.
+
+`frame-compiler-long-confirm-13` passes all outputs in 129.69 seconds:
+
+| Actual compiler | Median ms | Sample range ms | Half changes |
+| --- | ---: | ---: | --- |
+| Checked12 | 0.263759 | 0.263549–0.264933 | +0.21%, +1.30%, −0.13% |
+| Checked13 frame reuse | 0.246737 | 0.246372–0.248607 | +0.39%, +1.08%, +0.88% |
+
+The integrated change gives **1.069× throughput**, or **6.45% less time**, with
+disjoint ranges and small within-process drift. Keep this actual-compiler
+measurement distinct from the earlier 8.06% disposable-prototype result;
+independent timing windows have their own sample variation. Installation and
+broad compiler conformance remain parent-owned work.

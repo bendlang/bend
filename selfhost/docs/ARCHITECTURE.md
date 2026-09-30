@@ -39,6 +39,31 @@ Raw fixture verdicts and backend/kernel capability claims remain separate.
 These components are implemented. Their measured compatibility is recorded
 separately in the conformance report.
 
+## Private JavaScript regions
+
+The Phase30 backend shares one bounded scalar-region analysis between native
+Nat countdowns, ordinary scalar roots with a nested countdown, and strict
+two-child native Nat trees. It reuses checked KTerms and the ordinary primitive
+emitter. Only emitter-local `JSlot`, `JCall` and `JIf` tags are added; the checker
+and evaluator never consume them. `JRegionBuild` carries a completed-helper
+cache, one shared work budget and validity. Active dependency names reject
+unsupported cycles before a helper is published.
+
+Private helpers are lexical JavaScript functions with injective names. Nat
+countdowns use local slots; binary trees use a bounded explicit DFS continuation
+stack, preserving child and combination order without host tree recursion.
+Terminal flat records retain the existing delayed constructor fields. Public
+representations, descriptor arities and partial entry stay on the ordinary ABI.
+
+A genuine exact-call entry and a live owner/helper snapshot guard delimit each
+region. Raw or hooked entry, invalid scalar representations and failed analysis
+use the original generic callback. No unknown foreign call or external container
+can occur inside the admitted pure graph. Standard host intrinsics remain the
+runtime contract. The [performance guide](../../docs/BEND-IN-BEND-PERFORMANCE.md)
+describes the grammar, limits, fallback and measured development workflow;
+the [Phase30 reports](../../implementation/phase30/README.md) distinguish checked
+candidates, disposable prototypes and the installed release.
+
 ## Core representation
 
 `KTerm` is a first-order datatype with three variants. Ordinary `KTerm` nodes

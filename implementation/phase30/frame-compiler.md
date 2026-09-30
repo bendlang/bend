@@ -47,5 +47,14 @@ from Phase29 is 621 physical lines, about 3.83%; this is a speed improvement,
 not a source-length reduction. The canonical module manifest excludes generated
 bundles, unused source files and experimental tools from these counts.
 
+The fresh actual-output confirmation now passes in
+`frame-compiler-long-confirm-13`, taking 129.69 seconds end to end. Actual12 is
+0.263759 ms [0.263549–0.264933], actual13 is 0.246737 ms
+[0.246372–0.248607]: **1.0690× faster**, or **6.45% less time**. Actual12 half
+changes range from −0.13% to +1.30%; actual13 from +0.39% to +1.08%. These
+settled, disjoint three-process ranges confirm the maintained emitter under the
+frozen fifteen-second warmup. Keep its measured gain separate from the earlier
+prototype's 8.06% result.
+
 Actual13 remains a candidate until final measurements, combined release gates
 and installation. The installed release is still Phase29 at this checkpoint.

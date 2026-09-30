@@ -113,5 +113,7 @@ reads, predecessor bound, full descriptor closure and generic fallback retain
 the prior proof boundary. No static blocker was found under the declared host
 intrinsic scope. The independent actual-emission mathematical, ordered-boundary
 and admission/refusal controls remain required execution evidence; this review
-does not substitute for them. The extra admission traversal's compiler cost is
-left to the separate final ordinary-compiler measurement.
+does not substitute for them. The separate ordinary-compiler measurement checks
+types without emission, so it cannot quantify the added admission traversal.
+That backend cost would require a separate controlled emission measurement;
+acquisition durations alone do not establish its overhead.
