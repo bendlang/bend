@@ -420,19 +420,25 @@ function type_drop(e: Safe, T: HTerm, cols: Cols): HTerm {
 // Model
 // -----
 // a model of type T: λs around a model of the codomain, a datatype's
-// first constructor whose fields all have one (none for a datatype
-// already on the path), Unit for a kind, {==} for an equation bend2
+// nullary constructors before its others (none for a type already on
+// the path), Unit for a kind, {==} for an equation bend2
 // converts, else a live λ variable of type T (the codomain's own, so it
 // is used once); none for an empty type. A projection model takes that
 // variable first: a law like {a == sub(add(a, b), b)} holds of it, one
 // like {add(a, b) == add(b, a)} of a constant. It reads the model book,
 // as the kernel checks a model with every opaque def at its own
 
+// Each probe has at most 4096 visits and depth 128;
+// exhaustion means no model, never an unchecked placeholder.
 function model(e: Safe, T: HTerm): HTerm | null {
-  return model_at(e, T, 0, [], [], false) ?? model_at(e, T, 0, [], [], true);
+  return model_at(e, T, 0, [], [], false, { left: 4096 })
+    ?? model_at(e, T, 0, [], [], true, { left: 4096 });
 }
 
-function model_at(e: Safe, T: HTerm, d: number, path: string[], hs: Array<[HTerm, HTerm]>, proj: boolean): HTerm | null {
+function model_at(e: Safe, T: HTerm, d: number, path: HTerm[], hs: Array<[HTerm, HTerm]>, proj: boolean, fuel: { left: number }): HTerm | null {
+  if (path.length + d > 128 || fuel.left-- <= 0) {
+    return null;
+  }
   const F = B.term_wnf(e.mb, T);
   const hyp = (): HTerm | null => hs.find(([, A]) => B.term_compare("EQ", e.mb, A, F, d))?.[0] ?? null;
   switch (F.$) {
@@ -440,18 +446,27 @@ function model_at(e: Safe, T: HTerm, d: number, path: string[], hs: Array<[HTerm
       return B.ADT("Unit", []);
     }
     case "All": {
-      const f = (x: HTerm): HTerm | null => model_at(e, F.B(x), d + 1, path, F.q.$ === "None" ? hs : [...hs, [x, F.A]], proj);
-      return f(B.Var(F.k, d)) === null ? null : B.Ann(B.Lam(F.k, d, (x: HTerm) => f(x) as HTerm), F);
+      const x = B.Var(F.k, d);
+      const body = model_at(e, F.B(x), d + 1, path,
+        F.q.$ === "None" ? hs : [...hs, [x, F.A]], proj, fuel);
+      // Rebind the completed model, never restart a search from a closure
+      // whose shared fuel was consumed while checking its first body.
+      return body === null ? null : B.Ann(B.Lam(F.k, d, (v: HTerm) =>
+        subst(body, d + 1, (o) => o.$ === "Var"
+          ? o.i === d ? v : B.Var(o.k as Name, o.i as number)
+          : undefined)), F);
     }
     case "ADT": {
-      const key = B.term_key(B.term_lower(F, d));
       const tld = e.mb.tlds[F.k] as ADT;
       const h = proj ? hyp() : null;
-      for (const c of path.includes(key) || h !== null ? [] : tld.c.filter((c) => !F.r.includes(c.k))) {
+      const cycle = path.some((A) => B.term_compare("EQ", e.mb, A, F, d));
+      const cs = cycle || h !== null ? [] : tld.c.filter((c) => !F.r.includes(c.k));
+      cs.sort((a, b) => a.n - b.n);
+      for (const c of cs) {
         const xs: HTerm[] = [];
         let U = B.term_wnf(e.mb, B.tele_fill(e.mb, c.T, F.x, B.ctx_nil()));
         let x: HTerm | null = null;
-        while (U.$ === "All" && (x = model_at(e, U.A, d, [...path, key], [], proj)) !== null) {
+        while (U.$ === "All" && (x = model_at(e, U.A, d, [...path, F], [], proj, fuel)) !== null) {
           xs.push(x);
           U = B.term_wnf(e.mb, U.B(x));
         }
