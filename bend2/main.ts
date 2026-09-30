@@ -779,14 +779,22 @@ function term_refs(tm: unknown, out: Set<string>): void {
   }
 }
 
+// cli_say writes text to fd. A reader that has left (EPIPE) closes that fd
+// to further text, and the command runs on, so it still exits with its
+// verdict: a failure says why before it sets its status, and a check that
+// fails after the reader leaves still fails.
+const CLI_GONE = new Set<number>();
 function cli_say(fd: number, text: string): void {
+  if (CLI_GONE.has(fd)) {
+    return;
+  }
   try {
     fs.writeSync(fd, text);
   } catch (e) {
     if ((e as NodeJS.ErrnoException).code !== "EPIPE") {
       throw e;
     }
-    process.exit(0);
+    CLI_GONE.add(fd);
   }
 }
 
