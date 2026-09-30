@@ -102,9 +102,10 @@ type Chain = { n: number; cv: number[] };
 // (a word literal there stays a constructor, which the kernel compares to
 // a pattern), each kernel binder's tentative quantity, the default tags
 // (a tag's fields follow it), whether the tree is built only to count
-// its uses, and whether it is built again for a convoy
+// its uses, whether it is built again for a convoy, and whether it is a
+// λ term's (no def's case tree)
 type Scope = { c: Bind[]; d: number; D: number; cols: Cols;
-  self: string; empty: O[]; sub: boolean; kq: Q[]; tags: number[]; dry: boolean; again: boolean };
+  self: string; empty: O[]; sub: boolean; kq: Q[]; tags: number[]; dry: boolean; again: boolean; lam: boolean };
 
 // the elaboration: the book, the book models read (a root's constant at
 // its model), the defs out (an opaque one flagged), each item's kernel
@@ -514,7 +515,7 @@ function quant_eval(e: Safe, s: Scope, t: HTerm): Q {
 // =====
 
 function scope_nil(): Scope {
-  return { c: [], d: 0, D: 0, cols: [], self: "", empty: [], sub: false, kq: [], tags: [], dry: false, again: false };
+  return { c: [], d: 0, D: 0, cols: [], self: "", empty: [], sub: false, kq: [], tags: [], dry: false, again: false, lam: false };
 }
 
 // binds the next bend2 variable to o (to the argument v when
@@ -637,6 +638,13 @@ function tree(e: Safe, s: Scope, t: HTerm, fs: Chain[]): O {
       // twice: it matches the variable once and rebuilds it at each use
       if (all !== null && kind(e, s, all.A) === 1) {
         return tree(e, s, rebuild(e, s, x, all) ?? oos("a λ that uses a variable twice, of a type whose fields are not Data (a ~ argument)"), fs);
+      }
+      // a λ term copies behind a λ+ redex, λx => ({λ+y => f : A} x): bend2
+      // compares λs by η, the kernel by quantity, and an η-long function
+      // (a variable's) is a plain λ
+      if (s.lam && top === undefined && all !== null) {
+        const cp: O = { $: "Ann", x: { $: "Lam", q: 2, l: l + 1, f: o_up(f, l) }, T: term(e, scope_hide(s), all, false) };
+        return { $: "Lam", q, l, f: { $: "App", q, f: cp, x: { $: "Var", l } } };
       }
       q = 2;
     }
@@ -862,7 +870,7 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
     case "Lam":
     case "Mat":
     case "Efq": {
-      return tree(e, { ...s, cols: [] }, t, []);
+      return tree(e, { ...s, cols: [], lam: true }, t, []);
     }
     case "Let": {
       return let_term(e, s, x, live);
@@ -1083,7 +1091,7 @@ function arm(e: Safe, s: Scope, k: Name, cols: Cols, vs: Array<[Q, O]>): O {
   const ps = new Map(B.tele_unbind(e.book, tld.T).doms.slice(0, tld.x).map(([, p], j) => [k + "~" + p, cols[j]]));
   const t0 = B.term_higher(tld.e as B.LTerm);
   let t = tld.x === 0 ? t0 : subst(t0, 0, (o) => o.$ === "Ref" ? ps.get(o.k as Name) ?? undefined : undefined);
-  let si: Scope = { ...s, c: [], d: 0, cols: cols.slice(tld.x), sub: false };
+  let si: Scope = { ...s, c: [], d: 0, cols: cols.slice(tld.x), sub: false, lam: false };
   let j = 0;
   for (let [x, T] = open(t); x.$ === "Lam" && T !== null; [x, T] = open(t)) {
     const F = B.term_wnf(e.book, T);
@@ -1299,6 +1307,11 @@ function lams(ps: Array<[Q, number, ...unknown[]]>, b: O): O {
 
 function inferable(o: O): boolean {
   return o.$ === "App" ? inferable(o.f) : ["Var", "Ref", "Ann", "Typ", "All", "Enu", "Eql"].includes(o.$);
+}
+
+// o with each level from l on one deeper
+function o_up(o: O, l: number): O {
+  return Object.fromEntries(Object.entries(o).map(([k, v]) => [k, is_o(v) ? o_up(v, l) : k === "l" && (v as number) >= l ? (v as number) + 1 : v])) as O;
 }
 
 // the live uses of level l in o, as the kernel counts them
