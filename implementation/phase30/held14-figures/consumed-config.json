@@ -1,0 +1,20 @@
+{
+  "candidateManifest": "../attempt-14/attempt.json",
+  "originalReports": [
+    "../final-transfer-plan-14/mandelbrot-timing/report.json",
+    "../final-transfer-plan-14/editdist-timing/report.json",
+    "../final-transfer-plan-14/tree-bitonic-timing/report.json",
+    "../final-transfer-plan-14/lexer-timing/report.json",
+    "../final-transfer-plan-14/symreg-timing/report.json",
+    "../final-transfer-plan-14/test-morning-program-timing/report.json",
+    "../final-transfer-plan-14/test-evening-program-timing/report.json",
+    "../final-transfer-plan-14/test-rle-roundtrip-timing/report.json",
+    "../final-transfer-plan-14/test-map-set-ops-timing/report.json",
+    "../final-transfer-plan-14/raytrace-timing/report.json"
+  ],
+  "scalingReport": "../scalar-scaling-confirm-14/report.json",
+  "scalingCandidateReceipt": "../inspection-private-let-helper-14b/candidate.mjs.json",
+  "treeCounts": "../tree-compiler-counts-12/report.json",
+  "candidateLabel": "attempt14 (release held)",
+  "candidateStatus": "held after generic-path regressions; Phase29 remains installed"
+}

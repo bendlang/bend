@@ -37,7 +37,9 @@ before release.
 
 The alias/effect gate reuses `prototype-owned-controls.mjs` with exactly four
 current-runtime modules: unchanged checked14, inline-exact dispatch, generic
-constructor prebinding and their separately checked combination (if supplied).
+constructor prebinding and the independent historical method-read expression.
+If supplied and independently checked, the fused registered-prebinding variant
+gets a second retained boundary run and joins all numeric oracle observations.
 The adaptation changes only the variant list and removes the original private
 owned-region admission sentinel block, which tests a different optimization.
 All 28 full-state points, handle/alias assertions and 257 paired boundary

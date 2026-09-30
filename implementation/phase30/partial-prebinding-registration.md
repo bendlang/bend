@@ -1,8 +1,9 @@
 # Partial prebinding registration cost investigation
 
 The isolated generic and fused matcher variants pass the semantic gates below.
-A drifting initial screen favors generic application; confirmation is pending.
-Neither variant is a maintained runtime change. The final14
+The controlled row confirmation favors generic application:26.29% less time
+than current14, with overlapping Phase29 sample ranges. The lead is creating a
+separate checked runtime-repair artifact before source cleanup and installation. The final14
 original-program matrix raised a release blocker because several generic programs
 regressed against Phase29; these tests do not yet attribute that regression.
 
@@ -96,8 +97,8 @@ The first clean row screen at `runtime-row-screen-01` is encouraging for generic
 B: current14 median0.870054 ms, generic0.685677, fused0.842583 and Phase29
 0.674038. These are screen observations only. Opposing within-sample movement
 is extreme (roughly−43–45% for29/generic and+46–50% for14/fused), so this window
-cannot establish a settled gain. The lead has granted the separate seven-way
-confirmation; it is pending here.
+cannot establish a settled gain. The following seven-way confirmation resolves the screen
+ambiguity for the selected row; the screen remains retained as a drifting result.
 
 The conditional [source retirement proposal](../../design/phase30/retire-arm-prebinding.md)
 would remove58 lines/eight compiler functions, one manifest entry and the small
@@ -105,3 +106,36 @@ runtime compatibility bridge after the runtime-only release repair. It covers
 both ordinary arms and the shared scalar Nat/tree successor wrapper, keeping
 actual worker exact-entry permission. It is unimplemented and conditional on
 measured benefit, with structural emitted-AST equivalence planned separately.
+
+
+The clean five-sample confirmation is retained at
+`selfhost/build/phase30/runtime-row-confirm-01/report.json` (146.62 seconds outer).
+The same complete four-array row32/seed17 runs in fresh rotating serial CPU3
+processes, with separate import/first-call observations and the prescribed
+warmup. The prototype owner executed this batch.
+
+| Variant | Median ms | Sample range ms |
+|---|---:|---:|
+| Phase29 |0.450682 |0.447820–0.457179 |
+| Actual14 |0.606265 |0.589693–0.614176 |
+| Ordinary exact-dispatch inlining |0.610321 |0.605481–0.644570 |
+| Generic delayed matcher B |0.446850 |0.445177–0.455656 |
+| Fused registered matcher |0.592224 |0.587821–0.596139 |
+| Actual method-read entry |0.547576 |0.539989–0.549176 |
+| TypeScript output |0.008408 |0.008367–0.008457 |
+
+Generic B removes26.29% of14's row time and returns to the Phase29 range.
+Ordinary invokeExact inlining does not improve this workload; fusing only the
+matcher callback gives about2.3%, and avoiding registered metadata scans through
+the actual-method rule gives about9.7%. These isolated results support retiring
+the partial-prebinding registration package rather than adding more specialized
+entry paths. They do not decompose costs additively and must not be multiplied.
+The repaired generic row still costs roughly53.1 times the TypeScript result;
+this is a regression repair, not completion of generated-program optimization.
+
+Promotion proceeds in two independently checked artifacts: runtime-only15 keeps
+all emitted definitions unchanged; the subsequent source retirement removes the
+unused admission machinery and emits the original generic matcher directly.
+Only the final reviewed artifact is intended for installation. Fresh actual
+emission, structural, callable and public semantic gates remain necessary; this
+report does not claim that they or the final original-program matrix already ran.

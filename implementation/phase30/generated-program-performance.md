@@ -89,8 +89,8 @@ of a genuine checked B1; this campaign makes no new self-hosted fixed-point clai
    distance, lexer and ray tracing after the scalar helper had improved sharply.
    Keeping one complete-state edit-distance row in the inner loop would expose
    that class of cost without waiting for the full original-program matrix.
-   This is a methodological lesson from the held candidate, not yet a causal
-   attribution to one dispatch operation.
+   The subsequent isolated interventions attribute the regression to arm
+   prebinding; they do not establish a particular V8 allocation or inlining cause.
 
 ## Candidate history and complexity
 
@@ -168,6 +168,23 @@ pass. The row, scalar helper and original Mandelbrot also have independent15→1
 complete generated-AST correspondence after only the specified matcher rewrite,
 with final private-worker registration retained. These scopes
 overlap and are not a sum of distinct conformance tests.
+
+The [renewed frontend](frontend-renewal.md) completes all 3,026 main and 196
+broader observations with exact reference agreement. Its initial strict report
+rejected the changed compiler module manifest; that failure remains preserved.
+An explicit module-layout migration, independently audited against every probe,
+permits only the five added JS modules relative to the historical reference.
+All behavioral fields and the other input identities remain exact. Raw fixture
+verdicts still include the four shared later-emission expectations; agreement
+does not turn them into successful frontend checks.
+
+The selected compiler also [emits its own complete source](bounded-self-emission.md)
+in a bounded acquisition: 30.841 seconds for emission, producing a 2,446,321-byte
+H module. That module passes syntax, builds its own actual-hash Base cache, and
+matches its parent on a positive and a negative small compilation. The positive
+generated JavaScript is byte-identical and returns 8. This is a new usable
+self-emission observation, not an H-to-H fixed point, full H conformance, or a
+controlled speed comparison with a historical compiler.
 
 ## Release and evidence status
 

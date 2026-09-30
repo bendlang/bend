@@ -83,7 +83,10 @@ def main():
     # development module set is retained, while verifyAttempt checks its snapshot.
     for file in sorted((ROOT / 'selfhost/tools/development').glob('*.mjs')):
         retain(file)
-    for file in [Path(__file__), ROOT / 'design/phase30/bounded-self-emission.md',
+    for file in [Path(__file__), HERE / 'inspect-self-emission-run.py',
+                 HERE / 'inspect-self-emission-oracle.mjs',
+                 ROOT / 'design/phase30/self-emission-schedule-amendment.md',
+                 ROOT / 'design/phase30/bounded-self-emission.md',
                  ROOT / 'implementation/phase30/self-emission-feasibility.md']:
         retain(file)
     out.mkdir(parents=True, exist_ok=False)

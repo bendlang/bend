@@ -30,13 +30,18 @@ the renewed16 timing plans are frozen and await the clean measurement slot.
 
 All ten original libraries compile and produce their checked results. Fresh16
 also passes the focused, selected upstream, primitive/worker,23-library,
-compiler-component and HVM integration scopes. Whole frontend renewal,
-renewed16 timings, bounded self-emission and installation are in progress or
-pending; no installed16 release is claimed yet.
+compiler-component and HVM integration scopes. Whole frontend renewal passes
+3,026 main and 196 broader exact observations, with the explicit module-layout
+migration independently reviewed. Bounded self-emission succeeds and its H
+module passes small positive/negative compilation controls. Renewed full16
+timings and installation remain pending; no installed16 release is claimed yet.
 
 - [Actual helper measurements](checked-helper-timing.md)
 - [Original-program and compiler-cost integration measurements](final-timing.md)
 - [Renewed16 measurements](final-timing-16.md)
+- [Renewed frontend observations](frontend-renewal.md)
+- [Independent module-layout review](frontend-layout-independent-review.md)
+- [Bounded self-emission and its validation scope](bounded-self-emission.md)
 - [Independent retirement of arm prebinding](retired-arm-independent-review.md)
 - [Held14 comparison figures and exact plotted data](held14-figures/report.md)
 - [Generic matcher registration investigation](partial-prebinding-registration.md)

@@ -13,25 +13,29 @@ private direct calls on a small edit-distance row, independently challenge
 semantics, then generalize only measured wins. Coordinate all clean CPU3 timings
 through the lead. Phase29 remains installed until a reviewed candidate passes.
 
-Actual lexical helpers confirm39.6× over Phase29 on the selected helper,
-leaving5.86× TS. Terminal09 confirms1.79× whole small Mandelbrot and38× its
-complete histogram chunk. Ordinary11 then confirms1.375× over terminal10 on
-that original point; independent28 admission books/44 executions and92 scalar
-oracles/225 public boundaries pass. Installed release remains Phase29.
+Checked14 implements lexical scalar regions, terminal records, ordinary roots,
+bounded private binary trees, frame reuse and private-helper Let statements.
+Source is committed through b783a53; reports through44a3608. All selected fresh
+integration gates pass. **Release14 is held** after the complete ten-program
+matrix: Mandelbrot improves97.35× over29 (4.83×TS), but editdist/lexer/raytrace
+regress roughly20–24%. The27m11s batch is complete and immutable. Do not install14.
 
-The private binary-tree prototype confirms15.6× over actual10 on small original
-Mandelbrot, but its whole-point timed halves retain25–28% warmup improvement.
-Its depth5 microcase is stable and21.7× faster. Attempt12 implements the strict
-pure two-child grammar with the existing region state and an explicit bounded
-private DFS stack; focused36 gates pass. Actual independent controls are next.
-See the ordinary and tree designs/reports; do not multiply isolated ratios.
+The complete-state row now compares29/14 plus isolated ordinary dispatch,
+generic matcher restoration, fused matcher and actual-method entry variants.
+All seven variants pass196 numeric observations; independent ABI/reentry and
+alias/boundary gates pass. Generic matcher restoration also reproduces original
+io/typeName prototype observations elided by prebinding. CPU3 screening is
+parent-owned. Preserve each intervention separately before combining winners.
 
-Reject guarded F32 acyclic roots (2.9–7× slower on hit/miss), exact-arm eagerness
-(28% slower), and per-call array guards. Keep Number counters deferred despite
-a confirmed5.4% saving; they add another representation mode for little gain.
-Exact-call method-read cleanup remains deferred because its row baseline drifts.
-No PR comment or new fixed-point claim. Preserve the lost symreg.climb old loop
-as an explicit coverage issue and acquire all original programs before release.
+Scalar14 scaling reaches190.74× over29 and1.343×TS at8192iterations, but zero
+work regresses from guard overhead. Compiler checking is separately4.09×TS
+request time and3.14×process time. Do not infer throughput from helper speed.
+Canonical Bend source is16,836lines (+629); no simplification gain is claimed.
+
+Defer general Let emission, hoisting, guard-list cleanup, Number counters and
+owned-array prototypes; reject per-call guards and tiny F32 regions. Decisions
+and failed attempts are in the Phase30 reports. Preserve symreg's corrected
+loop refusal, all103 unrelated paths, and the distinction between B1 and H.
 
 ## Released frontier
 
@@ -102,11 +106,10 @@ graph evaluator, persistent index and uniform arrays remain unchanged.
    outputs, one mechanism per ablation, independent expected results, public ABI
    controls, clean paired screens and longer-warm confirmation. Keep failed cases
    and both lifecycle windows; a short-window win is not convergence evidence.
-2. The [remaining-cost inspection](../implementation/phase29/remaining-costs.md)
-   prioritizes private saturated workers across complete parameter/match chains.
-   Start with edit distance's cell/record/tuple pipeline, keeping project/build
-   and arrays unchanged. Then test record-carrying loops and trailing Boolean
-   matches. Static call counts do not quantify runtime contribution.
+2. Resolve the shared-runtime regression before release, then build a checked
+   candidate and renew affected original programs, frontend/backend scopes and
+   installed/relocated CLI checks. Retain both scalar and generic row cases in
+   the short loop. Archive all closed producers and publish the honest matrix.
 3. Preserve sequential argument-demand boundaries, parallel-let scope, escaping
    closure aliases, native identities and deep stack behavior. Explicit kc gates
    are required before guarded recursion: Bend && is eager. Removing those gates

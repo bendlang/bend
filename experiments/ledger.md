@@ -1986,3 +1986,24 @@ The parent accepts the isolated generic runtime repair for checked integration.
 No compound transformation is selected. The release hold remains until actual
 emission, boundary and original-program transfer checks support the repaired
 image. The complete comparison and its regressions remain immutable.
+
+
+## Phase 30 — retire the redundant constructor-arm mechanism
+
+[P30-028](phase30/P30-028-retired-arm-prebinding.md) separately checks the source
+simplification after the isolated generic runtime repair. Checkpoint73912c3 and
+checked16 remove64 maintained implementation lines, eight admission functions
+and the prebinding-specific bridge. Shared arm typing and registered scalar
+worker entry remain. Complete runtime/generated AST correspondence passes on
+row, helper and original Mandel emissions; fresh callable-shape, partial/entry,
+ordered public and actual-emitter arm controls pass. The selected15 upstream JS
+gate and primitive/worker/corpus/component/HVM integration are renewed on16.
+
+**Updated frontier:** the64-line reduction is established by source and checked
+structural/public evidence. Fresh five-way confirmation now passes: row16
+0.444585 ms overlaps repair15's0.448121 and29's0.448173 ranges, while held14 is
+0.601983 ms. The full repair removes26.15% of held14 time; the overlapping
+15/16 ranges provide no additional deletion-speed claim. Scalar14/15/16 ranges
+also overlap, preserving the earlier private-worker benefit. Do not infer
+complete backend conformance, full transfer recovery or installation. The held14
+comparison and all intermediate failures remain in the record.
