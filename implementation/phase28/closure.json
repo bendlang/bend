@@ -1,0 +1,12 @@
+{
+  "complete": true,
+  "baselineCommit": "9be96e417cf897d6ff74d17dd90d242ecfe17c91",
+  "compilerPathsUnchanged": [
+    "selfhost/src",
+    "selfhost/dist",
+    "bend2"
+  ],
+  "protectedFilesVerified": 103,
+  "releaseVerificationSha256": "d458d1c529163af5f322fe68be169e627c0ec14678cf666e1334d8fe6873b961",
+  "scope": "Byte preservation and installed release identity only; no new broad conformance or performance gate."
+}

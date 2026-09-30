@@ -25,6 +25,16 @@ validity; `--verdict` is explicitly unsupported.
 
 ## Analyzing emitted-program performance
 
+The [Phase28 comparison](../implementation/phase28/broader-program-comparison.md)
+broadens the corpus to six existing algorithms, four original mixed tests and
+the small HVM interpreter demo. It records absolute times, first-call and warmed
+ratios, warmup sensitivity and a distinct whole-process measurement. All 11 selected
+outputs agree. The six algorithm gaps are 111–1,391× in the original warmed JS
+window; the HVM process costs201 ms versus 69 ms. This establishes a substantial
+generated-code gap beyond diagnostic kernels, without defining a production
+average or changing the installed release. See its
+[reproduction guide](../implementation/phase28/README.md) for inputs and controls.
+
 The [Phase25 study](../implementation/phase25/generated-code-analysis.md) compares
 identical Bend programs emitted by the installed compiler and pinned TypeScript.
 It supplies23 small sources, independent scalar-result oracles, paired generated

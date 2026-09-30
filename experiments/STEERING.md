@@ -66,22 +66,24 @@ No generated-program speedup is claimed. Canonical source15,776physical/13,467no
 
 ## Next priorities
 
-1. The [Phase25 emitted-code study](../implementation/phase25/generated-code-analysis.md)
-   is complete:23sources/46libraries,127independent scalar points exact on both
-   sides,45runtime points/450samples,18healthy diagnostics. The release is unchanged.
-   Phase26 has now removed word construction for eligible closed U32-result
-   functions. Wider result/capture support is a separate hypothesis; current real
-   compiler numeric helpers return String/List. Do not infer compiler transfer
-   from tiny-kernel ratios. The six-case/three-output comparison costs44.61s.
-2. Selected-arm prebinding is now measured and installed in its shared form.
-   Next test saturated private workers or tail loops that remove several dispatch
-   boundaries together, starting with the actual membership component. Preserve
-   the public partial descriptor and match/argument evaluation order. Do not
-   merely raise arity. One removed fn/apply/bounce per match brings modest gains;
-   the wrapper still performs2580 generic applications and1543 fn creations.
-   Both short and longer warmup are required: host optimizer behavior changes
-   results despite identical helper counts. Primitive/Nat representation and
-   constructor forcing remain distinct experiments. No new full H was measured.
+1. The [Phase28 broader comparison](../implementation/phase28/broader-program-comparison.md)
+   is complete with the installed Phase27 compiler unchanged. All11 outputs agree.
+   Existing algorithms are111–1391× slower than TypeScript output in the original
+   warmed JS window; tiny mixed tests55–107×. Longer warmup on all four drift-flagged
+   cases gives1271× Mandelbrot,100× sorting,61× morning,82× Map/Set, with residual
+   drift. HVM's whole process is201ms versus69ms,2.90×; keep that startup-inclusive
+   scope separate. All150 timing samples plus56 check/calibration processes pass
+   independent audit. Neither window is a production average or guaranteed steady
+   state. Ordinary compiler throughput remains the older Phase24 evidence above.
+2. Prioritize separate generated-code ablations for saturated private workers/loops
+   across match boundaries, guarded primitive inlining and direct native constructors
+   and matches. The [inspection](../implementation/phase28/emission-findings.md)
+   observes generic dispatch/descriptor/forcing overhead but does not quantify its
+   contribution. Both outputs already use tail jumps and native JS strings.
+   Start with one real emitted helper and preserve public partial descriptors,
+   argument demand, unsigned arithmetic and deep-construction stack behavior.
+   Check both warmup windows before broad timing. Existing full ten-library timing
+   costs816s and the four-case follow-up189s; use focused replay during iteration.
 3. Continue backend acquisition in deterministic bounded batches. The inventory
    is current but largely unexecuted; frontend equality alone missed both repaired
    backend defects. Distinguish candidate semantic differences, shared upstream

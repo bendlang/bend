@@ -1,0 +1,4643 @@
+{
+  "complete": true,
+  "archive": {
+    "path": "implementation/phase28/evidence/campaign.tar.gz",
+    "bytes": 656186,
+    "sha256": "87889b725f7309f97ade2248ba798fc0689a67a1081cd3b68fa762817bced66f"
+  },
+  "members": 926,
+  "logicalBytes": 4006694,
+  "recovery": "Independent reopened gzip/tar stream; every member decompressed and compared by exact name, size and SHA256. No extraction or timings rerun.",
+  "files": [
+    {
+      "path": "selfhost/build/phase28/application-host-02/report.json",
+      "bytes": 4479,
+      "sha256": "0e7a1ce76c6b630667fa3a543987e074b6a0b9353e4f6f8dc8e2ca8d9d4e1efc"
+    },
+    {
+      "path": "selfhost/build/phase28/application-host-02/selfhost.mjs",
+      "bytes": 223754,
+      "sha256": "ca99adc418bbe09a928ffa5a68e6972d4b6aa7f42573093f45bba76d4148dcd5"
+    },
+    {
+      "path": "selfhost/build/phase28/application-host-02/selfhost.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/application-host-02/selfhost.stdout",
+      "bytes": 42,
+      "sha256": "caec63b95796755e5464d1d1c1a0ce8985c49473613de2a5b8fe48495fdda4e7"
+    },
+    {
+      "path": "selfhost/build/phase28/application-host-02/upstream.cjs",
+      "bytes": 162676,
+      "sha256": "9b9211944e6694ec2dc37bd0a010cc6989aed316fe0bf1b419606fe451a6b60b"
+    },
+    {
+      "path": "selfhost/build/phase28/application-host-02/upstream.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/application-host-02/upstream.stdout",
+      "bytes": 42,
+      "sha256": "caec63b95796755e5464d1d1c1a0ce8985c49473613de2a5b8fe48495fdda4e7"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/00-selfhost.json",
+      "bytes": 978,
+      "sha256": "851e67c28e27f5b64add317282a977b38521ebe42458de1baaafe1f2874c3477"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/00-selfhost.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/00-selfhost.stdout",
+      "bytes": 42,
+      "sha256": "caec63b95796755e5464d1d1c1a0ce8985c49473613de2a5b8fe48495fdda4e7"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/00-upstream.json",
+      "bytes": 977,
+      "sha256": "0c5b8ca373d2f523c5a18e7d1580924c6588ada2683562d21f61949bd40c65be"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/00-upstream.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/00-upstream.stdout",
+      "bytes": 42,
+      "sha256": "caec63b95796755e5464d1d1c1a0ce8985c49473613de2a5b8fe48495fdda4e7"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/01-selfhost.json",
+      "bytes": 976,
+      "sha256": "82bc5add5848b797041eb4163f025b98d273bfc04c00e0dfbe8cd465284578f3"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/01-selfhost.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/01-selfhost.stdout",
+      "bytes": 42,
+      "sha256": "caec63b95796755e5464d1d1c1a0ce8985c49473613de2a5b8fe48495fdda4e7"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/01-upstream.json",
+      "bytes": 977,
+      "sha256": "badc17510d4a4e0e62a3bd2c240f90ece7246c1765b90132ea4dc04e02902541"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/01-upstream.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/01-upstream.stdout",
+      "bytes": 42,
+      "sha256": "caec63b95796755e5464d1d1c1a0ce8985c49473613de2a5b8fe48495fdda4e7"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/02-selfhost.json",
+      "bytes": 976,
+      "sha256": "3a4736cfa70ca296028d5fff4f745917d6948d2fcd86cd51eb11e9126f354f21"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/02-selfhost.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/02-selfhost.stdout",
+      "bytes": 42,
+      "sha256": "caec63b95796755e5464d1d1c1a0ce8985c49473613de2a5b8fe48495fdda4e7"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/02-upstream.json",
+      "bytes": 977,
+      "sha256": "e91c74252220bd1df0a0e03e96db280502d5b0365b64f6d3a9db282762c3fc7f"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/02-upstream.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/02-upstream.stdout",
+      "bytes": 42,
+      "sha256": "caec63b95796755e5464d1d1c1a0ce8985c49473613de2a5b8fe48495fdda4e7"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/03-selfhost.json",
+      "bytes": 978,
+      "sha256": "d1503802bde2a190787b578f494e4658a684e28feb69bcf964aab11ccec69ac3"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/03-selfhost.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/03-selfhost.stdout",
+      "bytes": 42,
+      "sha256": "caec63b95796755e5464d1d1c1a0ce8985c49473613de2a5b8fe48495fdda4e7"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/03-upstream.json",
+      "bytes": 976,
+      "sha256": "8b94b69ef9185f54208b087ccac358597ce2be266b766041fa617f1398f4a844"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/03-upstream.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/03-upstream.stdout",
+      "bytes": 42,
+      "sha256": "caec63b95796755e5464d1d1c1a0ce8985c49473613de2a5b8fe48495fdda4e7"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/04-selfhost.json",
+      "bytes": 978,
+      "sha256": "92ac273ca3773a4831c3349bfbce005d44a5a96cc674ecc4c3d5149291665ea1"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/04-selfhost.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/04-selfhost.stdout",
+      "bytes": 42,
+      "sha256": "caec63b95796755e5464d1d1c1a0ce8985c49473613de2a5b8fe48495fdda4e7"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/04-upstream.json",
+      "bytes": 977,
+      "sha256": "64284ce05c2c76e2ebfe7b385a53808c0698acf7ae5f1aabc1edca6263ba4e2e"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/04-upstream.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/04-upstream.stdout",
+      "bytes": 42,
+      "sha256": "caec63b95796755e5464d1d1c1a0ce8985c49473613de2a5b8fe48495fdda4e7"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01/report.json",
+      "bytes": 22566,
+      "sha256": "0aed8c6bcb44a89e225480ebdbd8334e29b35af6d06df3dedea4c5d48371bfa3"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-01.log",
+      "bytes": 906,
+      "sha256": "3eca117cdd6452e968c20c2a1fddc1e377d9db15a04b36fe19a3dd8c46da19ba"
+    },
+    {
+      "path": "selfhost/build/phase28/application-timing-config.json",
+      "bytes": 5590,
+      "sha256": "28e82e4dec1063c4217ef00e8ce5c82accb56f0a5e3131534aa25e319a41333c"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/app-pure-hvm5-mini/point.json",
+      "bytes": 905,
+      "sha256": "812f8e13152fc15152a25b3f3a202d680804f7403f573a9c5bda139b5fba3d41"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/app-pure-hvm5-mini/selfhost-check.json",
+      "bytes": 1031,
+      "sha256": "7bcb043dbb3e1aa7b2cdc1b6382ffdc05c0626b013c89a11d30e0a329f625c99"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/app-pure-hvm5-mini/selfhost-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/app-pure-hvm5-mini/selfhost-check.stdout",
+      "bytes": 42,
+      "sha256": "caec63b95796755e5464d1d1c1a0ce8985c49473613de2a5b8fe48495fdda4e7"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/app-pure-hvm5-mini/selfhost-emit.json",
+      "bytes": 4432,
+      "sha256": "ec7d41fa67589088744d1dbe258ea50e1d4b82dff3b1463f2def38047ffeae05"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/app-pure-hvm5-mini/selfhost-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/app-pure-hvm5-mini/selfhost-emit.stdout",
+      "bytes": 2761,
+      "sha256": "6d2f0f01acdca09940fdee81b86e798c067203ca1aa39017b790a9b33f0a35fb"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/app-pure-hvm5-mini/selfhost.mjs",
+      "bytes": 223754,
+      "sha256": "ca99adc418bbe09a928ffa5a68e6972d4b6aa7f42573093f45bba76d4148dcd5"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/app-pure-hvm5-mini/selfhost.mjs.json",
+      "bytes": 3045,
+      "sha256": "a500a09fe7ae807ce0399859062e63c4b82f190d40c18bed6f7e260c4e62c623"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/app-pure-hvm5-mini/upstream-check.json",
+      "bytes": 990,
+      "sha256": "825175ea491ccd3a75db4ab3e3112a35dd9c0616e77f17ddd00c0f89958f5b96"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/app-pure-hvm5-mini/upstream-check.stderr",
+      "bytes": 1003,
+      "sha256": "9ee8866c5440609a9695bbd5a538ae029b0010101222e17ff8e71b66a248d9a5"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/app-pure-hvm5-mini/upstream-check.stdout",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/app-pure-hvm5-mini/upstream-emit.json",
+      "bytes": 3257,
+      "sha256": "8942b8573354baa3393454af31a019162927771cf2ebb96c12d59c33aae3d908"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/app-pure-hvm5-mini/upstream-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/app-pure-hvm5-mini/upstream-emit.stdout",
+      "bytes": 1724,
+      "sha256": "6e0efb28a5f4c980c5af6b17aceef3c65bf96d651c9764e82ff584b6a3e87923"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/app-pure-hvm5-mini/upstream.mjs",
+      "bytes": 162676,
+      "sha256": "9b9211944e6694ec2dc37bd0a010cc6989aed316fe0bf1b419606fe451a6b60b"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/app-pure-hvm5-mini/upstream.mjs.json",
+      "bytes": 1912,
+      "sha256": "b9bccb7024029f026a3fe1b026b2e5b57c8394577c85150ce546af6d502f7151"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/report.json",
+      "bytes": 78993,
+      "sha256": "f23b4fbb6b1a97568530992fd9e83b36b661d5b8fe1f5c3c9c2209547c5e9ea5"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-evening-program/point.json",
+      "bytes": 771,
+      "sha256": "a624e626a4966c40c67c88edc8ad3058f3ae4b0ae67d9b34e3a701398eea3b23"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-evening-program/selfhost-check.json",
+      "bytes": 2669,
+      "sha256": "6402f79686650a8b81fb8a677fcace98acaa079df874af8d6b4bef473c0b6c1d"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-evening-program/selfhost-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-evening-program/selfhost-check.stdout",
+      "bytes": 1212,
+      "sha256": "b934c68e06112f666e12415e67c450f374101d16850d74df99547179501f0720"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-evening-program/selfhost-emit.json",
+      "bytes": 4371,
+      "sha256": "41c73b5ce10942e89f8e4995db6252c46999e8ece7737ed91417f0fd479672e9"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-evening-program/selfhost-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-evening-program/selfhost-emit.stdout",
+      "bytes": 2727,
+      "sha256": "574df1071389e2aa4f4ac2298a2877ad70060b837581bc9383cb9d4a517bf721"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-evening-program/selfhost.mjs",
+      "bytes": 155328,
+      "sha256": "41066c388ff7c3e45dd7bebf10fb32d2def5b2849d5b759dddc1c4d72af62d20"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-evening-program/selfhost.mjs.json",
+      "bytes": 3003,
+      "sha256": "62bd2953b509e4a314edef5c1a0d81a7810e260cd89c5f200f95f40f11650f9c"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-evening-program/upstream-check.json",
+      "bytes": 2676,
+      "sha256": "44649d483d0286877566e1672c26d56a61f762086fbf87f1f1792c9f315b00cd"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-evening-program/upstream-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-evening-program/upstream-check.stdout",
+      "bytes": 1219,
+      "sha256": "93ad912e3cf502af021b319fcf0d9b04c64fce778426d0a842d41c14b9b2ecab"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-evening-program/upstream-emit.json",
+      "bytes": 1981,
+      "sha256": "0dbb7db9bf68e4ce8a675855b464d7e89731e7e11fc9351f3b8ef2f888f87778"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-evening-program/upstream-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-evening-program/upstream-emit.stdout",
+      "bytes": 675,
+      "sha256": "5c9961aba5d6115a02dd0b65c92326b3586764765fea2bc2939813e6b881b9ef"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-evening-program/upstream.mjs",
+      "bytes": 62658,
+      "sha256": "0c1d34b107501041c6e5a3bb5b896e91b8ab56b8826c3f616ea6b4e3a3e1d6d0"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-evening-program/upstream.mjs.json",
+      "bytes": 748,
+      "sha256": "24497eaa38182b1666ae3654cd95a5d171897a06aa4cbc77c6cd0c2916cafd20"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-map-set-ops/point.json",
+      "bytes": 744,
+      "sha256": "40fe5f2e335a58cadb4bb441722aa402d15ed617c2641a5444c62f4d61bd7236"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-map-set-ops/selfhost-check.json",
+      "bytes": 2621,
+      "sha256": "97f384a5a550495a36d25e2da212caf90e67bcefcf2aa22a8fc73ffd2e98d02d"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-map-set-ops/selfhost-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-map-set-ops/selfhost-check.stdout",
+      "bytes": 1181,
+      "sha256": "d1ad38e097ee0019501476a98936a183157f75d3badc9515fc5d2d69e47c60db"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-map-set-ops/selfhost-emit.json",
+      "bytes": 4330,
+      "sha256": "fb09da546a94563403edc1b2c2dca5b8f63515880fb4383546c15336c801742b"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-map-set-ops/selfhost-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-map-set-ops/selfhost-emit.stdout",
+      "bytes": 2701,
+      "sha256": "000d92214bf1a721645c59a4bc0ca3503a9a0b04edbb4673642aa26807557e6e"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-map-set-ops/selfhost.mjs",
+      "bytes": 131483,
+      "sha256": "35e59e4ef06ab0af9fd6ad3a7498a6ae21e8d1dd17e003cb7c7e9642658e271e"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-map-set-ops/selfhost.mjs.json",
+      "bytes": 2977,
+      "sha256": "122258934c7a79c0fb127a60cf18f0e664044b85333a1655c4a209bc08db344f"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-map-set-ops/upstream-check.json",
+      "bytes": 2631,
+      "sha256": "2deb6016e40498ae84f497980f56575cfad3e1dd743fa8c497a9874f136f29e6"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-map-set-ops/upstream-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-map-set-ops/upstream-check.stdout",
+      "bytes": 1190,
+      "sha256": "ee5d82bd14ebab7da89ad53ad0c861dc4ebbf22e25e84cbdb3b7eb7aed1a4c12"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-map-set-ops/upstream-emit.json",
+      "bytes": 1957,
+      "sha256": "88da55d289ef4a8c107d764d382101c905c399755cecd9d6d5f5ec4eac7c1ceb"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-map-set-ops/upstream-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-map-set-ops/upstream-emit.stdout",
+      "bytes": 667,
+      "sha256": "079de9a0da989058ed2fd00b1fd99501410496e10ccf573be9e8fd94114a5c57"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-map-set-ops/upstream.mjs",
+      "bytes": 69178,
+      "sha256": "91812e3092688bdc609a2f9f21c1280120b8392eab7cd7148586702bf551e9bf"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-map-set-ops/upstream.mjs.json",
+      "bytes": 740,
+      "sha256": "e5725351291fd97335a016020e3a47e06b562a40d2dda4966ca859e4b2dff4ff"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-morning-program/point.json",
+      "bytes": 787,
+      "sha256": "f120cb72123b00f289740fa2009bf681270ecd323126133919cc926f1fccb215"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-morning-program/selfhost-check.json",
+      "bytes": 2719,
+      "sha256": "0e8d6b31e76b79d2450e614b002117bfc96b5c9218b02c7fc893005abbc35da1"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-morning-program/selfhost-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-morning-program/selfhost-check.stdout",
+      "bytes": 1262,
+      "sha256": "a19b64eb9bf34d0c214136eda0ee26bcfdf4012983525de5e2e16f1b94851ca9"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-morning-program/selfhost-emit.json",
+      "bytes": 4365,
+      "sha256": "644cb2b69f33ee4795c6eeab423abbf5886b2c1b81cabaa0de32864fb5e1fa83"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-morning-program/selfhost-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-morning-program/selfhost-emit.stdout",
+      "bytes": 2721,
+      "sha256": "0cd215c900de7722bfdfe05812e4031cb438c74fa27c0092dcae179a943388c3"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-morning-program/selfhost.mjs",
+      "bytes": 112434,
+      "sha256": "6e93107e3225de35c1f212557afc32aee78b005da4f6fcba0039f362542ba200"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-morning-program/selfhost.mjs.json",
+      "bytes": 2997,
+      "sha256": "31edb02453767b060d2aa2a82d582260e4e4b4f05295d00e838089282e285ec8"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-morning-program/upstream-check.json",
+      "bytes": 2718,
+      "sha256": "022bcb3c92c8edc3bdc221f38e59ec1a472a53c55e2e072c39a4f4926c840c0d"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-morning-program/upstream-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-morning-program/upstream-check.stdout",
+      "bytes": 1261,
+      "sha256": "b0af0150115688067b4fbd6d6dfd17f4de7dc208d115de5cd02f1f30c4427b9f"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-morning-program/upstream-emit.json",
+      "bytes": 1981,
+      "sha256": "a5137f670831860a7c22ba0c3902f09c6ec50572235fae28c7d2aa422760236f"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-morning-program/upstream-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-morning-program/upstream-emit.stdout",
+      "bytes": 675,
+      "sha256": "7dbedbd2576faa14876ee114b3b37a36586deeb6941522830ac31b018a985414"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-morning-program/upstream.mjs",
+      "bytes": 48892,
+      "sha256": "faff88b122b84d0d18698210c66233cae52493e3cc68c92d95e0c639e20990ad"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-morning-program/upstream.mjs.json",
+      "bytes": 748,
+      "sha256": "bb950981fc981d8cbcb73b8da687bd6311ffb7fad6a5f3b39ce0779da1e8eae7"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-rle-roundtrip/point.json",
+      "bytes": 759,
+      "sha256": "b6b51678d3b5cedc0e0ae1b93a9e5520a76a3f5e8efb969bf2f8781f61d35698"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-rle-roundtrip/selfhost-check.json",
+      "bytes": 2643,
+      "sha256": "e0e7e53c81468cebed5fb701d6ac21cc750e1a3922ab362d6c6d9302ea99aa2f"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-rle-roundtrip/selfhost-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-rle-roundtrip/selfhost-check.stdout",
+      "bytes": 1194,
+      "sha256": "3f130a88e754f4d262d0c5ac4df39e56d96e68a910c93298728e0fd2cbcfb7ff"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-rle-roundtrip/selfhost-emit.json",
+      "bytes": 4355,
+      "sha256": "698be4ac67d5429890a26c24bbf1962127e0bac3568e94663c67235164e306dd"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-rle-roundtrip/selfhost-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-rle-roundtrip/selfhost-emit.stdout",
+      "bytes": 2718,
+      "sha256": "3146d14d38d21703b48132ba52317dfeec36b6379b3d7dc777aa559c13de081f"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-rle-roundtrip/selfhost.mjs",
+      "bytes": 71191,
+      "sha256": "4f6cfe6eb8d4b1ce52ab8f44cf21962b09483d326c500c5c5047286662d14d37"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-rle-roundtrip/selfhost.mjs.json",
+      "bytes": 2994,
+      "sha256": "9691deeaddf74d35ff5de885a822e49c0fda220462da04bc3d0f1c0952227fbc"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-rle-roundtrip/upstream-check.json",
+      "bytes": 2653,
+      "sha256": "0e2934eb2faf7d8b59595c471f19f1f6bae637475de6afb5aceb37553772ac43"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-rle-roundtrip/upstream-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-rle-roundtrip/upstream-check.stdout",
+      "bytes": 1204,
+      "sha256": "8e915acfc5f8d600032a9e503ee2355a25159e9c244ec276e3688531b0912658"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-rle-roundtrip/upstream-emit.json",
+      "bytes": 1968,
+      "sha256": "ef35ef28f292db0ad950c5a8bb3bd21cc2ffd13788715c22db1f70d6c6b09cd1"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-rle-roundtrip/upstream-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-rle-roundtrip/upstream-emit.stdout",
+      "bytes": 670,
+      "sha256": "b3426e2c9c97f75bd006e7c6e148277de0f93af8a37082ebae8def05ed166fe1"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-rle-roundtrip/upstream.mjs",
+      "bytes": 8728,
+      "sha256": "f21a8eb4239ff0db7fbfda6121f24b04b48c5478fe6de5798660ca5b417c80a8"
+    },
+    {
+      "path": "selfhost/build/phase28/applications-01/test-rle-roundtrip/upstream.mjs.json",
+      "bytes": 743,
+      "sha256": "b605f607c98519cb12222266d25bae8dea1435f410b8ea0a4e7c102267202169"
+    },
+    {
+      "path": "selfhost/build/phase28/closure.json",
+      "bytes": 422,
+      "sha256": "ce5353c1bdd9aa4d24fe176067dd6c52e77c1efd4136245467686dda1aa04641"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase25/campaign.py",
+      "bytes": 10296,
+      "sha256": "ef32243fdf569999e6cf4004b33588bb1d91ee67e4a835be0c9f934480c5b26f"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase25/emit.mjs",
+      "bytes": 2397,
+      "sha256": "9f5c06c39eff3b9a7052fc2538aab8fa590894df6634f6b92fddea870475fdf6"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase26/emit.mjs",
+      "bytes": 1737,
+      "sha256": "268be5fa90b176a6a655bf1af56c18088b175a7dbd5376759422d0ceb2594f22"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/acquire-applications.py",
+      "bytes": 4518,
+      "sha256": "92defa11948db451e612683a6de5d7401a110d127b70cb812f2b2edb7f3039b6"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/acquire-six.py",
+      "bytes": 3724,
+      "sha256": "65da4d3fc850e4724c823a90048ca7be4a89b292a1d3d04b03d5a1b7876a9161"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/application-cases.json",
+      "bytes": 4469,
+      "sha256": "842d5af8a27ca544645353e7f274e49926c43bb48135b918d33780f3cce3cbe1"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/check-application.mjs",
+      "bytes": 1358,
+      "sha256": "337d8a92b029bc9aa145ec352713718aa0896d2152d10759eca542787ac7b1a0"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/check-once.mjs",
+      "bytes": 1443,
+      "sha256": "879dbe227f6cd2b5a91504f773161eb2da57c08716059d943810a3d846d6674d"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/check-program-host.py",
+      "bytes": 2491,
+      "sha256": "9aa4e8f3b018a245c256df67910b93731b9a9da174433b481b1a9fa0c0eebaf9"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/close.py",
+      "bytes": 2046,
+      "sha256": "689abafa2acaf0db628680510c274ab104ec939bdfac7454c3df13c57282a5eb"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/corpus/app-pure-hvm5-mini.bend",
+      "bytes": 60774,
+      "sha256": "7e7205fd672770e522d9bc76403145203f83f7dce941e269b1370ec3caced63d"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/corpus/editdist.bend",
+      "bytes": 5874,
+      "sha256": "f9cc44d93829d8ea48148c26b8ed7e2c1785611ad0c19a3770f86227a3142e6f"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/corpus/lexer.bend",
+      "bytes": 7134,
+      "sha256": "6014af6bf7e97c8feaafa918e79f28a22d2c9c92bea836203fcd89b6d70a4fbb"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/corpus/mandelbrot.bend",
+      "bytes": 6576,
+      "sha256": "cb2b9c30aceeb0f8ed0da1f999658aa8d7fb346851877da6902d1ded4cfc0656"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/corpus/raytrace-annotated.bend",
+      "bytes": 14220,
+      "sha256": "f01b7b942d5d272beec7428deeeee85a540e1b9297ad31090ef57000571db5e1"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/corpus/raytrace-typed.bend",
+      "bytes": 14223,
+      "sha256": "4674b2580aceb5f5fe6771ce16c987b97f791b52a9e1305794c435beeebf5837"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/corpus/raytrace.bend",
+      "bytes": 14212,
+      "sha256": "8bf45706708ef0836df1b2d6fa8da58351f02f3956aa6cf6d4d547913bd0c1a1"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/corpus/symreg.bend",
+      "bytes": 5406,
+      "sha256": "c25c8fb869eaf5ac90cbf45feb30c0e8169207ed0b74cd655343048fcc82778b"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/corpus/test-evening-program.bend",
+      "bytes": 2152,
+      "sha256": "b254a68ad0208b8a5f388d72095633cd8fc119adf40d45f5621e93f37e7b4f71"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/corpus/test-map-set-ops.bend",
+      "bytes": 5266,
+      "sha256": "60966d2aa182c2aabf20eb63270f57c7d8c5f2dc56872e7fed54dab34940c8c6"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/corpus/test-morning-program.bend",
+      "bytes": 3077,
+      "sha256": "9033897714291ea49c25046426457ff2753276466092ba71a4e40c1e2b48a04a"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/corpus/test-rle-roundtrip.bend",
+      "bytes": 2743,
+      "sha256": "ce4083dab9a8022b2c8867a30802113735917229341cecb8ce18ff9ac2e33989"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/corpus/tree-bitonic.bend",
+      "bytes": 4633,
+      "sha256": "ace0242c329b1628cb9d0a0142386380e0ca4e56fa741916974938eb079b2c0d"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/emit-program.mjs",
+      "bytes": 2755,
+      "sha256": "ff3de1a944333763accaa8a3e98bba4ac66f411f1d0d104940cb0d84097da6b9"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/execute.mjs",
+      "bytes": 2720,
+      "sha256": "cdece6228cd35835e760f602efac4d2f2e6a5a0c3817cf80393e742bd4cd699d"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/measure-application.py",
+      "bytes": 3897,
+      "sha256": "b20ed4bf89dbd7d02856683fd01eb2d1030cb484fe82685aaf1ce3d50acd78d6"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/measure-long.py",
+      "bytes": 2003,
+      "sha256": "24600c4e19d64e0c50cb28419fd2a8162a3681402fcb2d1ce5a00dd066485e47"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/measure.py",
+      "bytes": 3759,
+      "sha256": "134cf43542a5709fda1e638e28d4664bcf11ff2f87d0678f788167b18cc8bbd0"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/prepare.py",
+      "bytes": 3367,
+      "sha256": "d38aeee2639c24b2e240551d1dddee4610f20c77ff12dba3b754d6ab396e02d3"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/raytrace-retry.json",
+      "bytes": 1942,
+      "sha256": "8f48271020f47c18a126a77055eb157d4decafe02a23d8e7285bfc71f190362c"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/raytrace-typed-retry.json",
+      "bytes": 1984,
+      "sha256": "399417f7b4d1059146cac9ad3d768ab08c7b4c9e4de8ad03d5095679605aa0eb"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/six-cases.json",
+      "bytes": 7267,
+      "sha256": "9c74b33adcc582c00006a4085f7baced627065f91cb9c8cf5876b72b121ca37f"
+    },
+    {
+      "path": "selfhost/build/phase28/consumed-tools/selfhost/tools/performance/phase28/summarize.py",
+      "bytes": 2552,
+      "sha256": "79a335c96d9fb9f18103aa1cc1f829d830e18804bc673bfb667489f58c692b2f"
+    },
+    {
+      "path": "selfhost/build/phase28/host.json",
+      "bytes": 485,
+      "sha256": "335b1db420ca3902d766d25d8124c4e739f21e1985fe2dc3ca31e2c61e16b646"
+    },
+    {
+      "path": "selfhost/build/phase28/library-provenance.json",
+      "bytes": 45066,
+      "sha256": "c69244324b67cc8fe52678793ec3ec52ba14d1d033adc8eb87ce51ffaffcdbaf"
+    },
+    {
+      "path": "selfhost/build/phase28/release-verification.json",
+      "bytes": 281,
+      "sha256": "d458d1c529163af5f322fe68be169e627c0ec14678cf666e1334d8fe6873b961"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/editdist/point.json",
+      "bytes": 55,
+      "sha256": "d2ebfb274eb58df20578aa54a55c59d2a9f6a505898f833e91183456d50ba3ef"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/editdist/selfhost-check.json",
+      "bytes": 1894,
+      "sha256": "6563eaf7b0c6abb3479c497a98bd1fe16d194cf400e4108d24e06d0e22f3b9ee"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/editdist/selfhost-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/editdist/selfhost-check.stdout",
+      "bytes": 595,
+      "sha256": "25e6e4230761a542d0d28181df3ba2cff20b153d9b48d45e40e7b384bb527bbc"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/editdist/selfhost-emit.json",
+      "bytes": 4262,
+      "sha256": "cfc32ca80320f6ceeab97344ff59b4debc04c644e30b1cf0bcfe54affd2b71be"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/editdist/selfhost-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/editdist/selfhost-emit.stdout",
+      "bytes": 2651,
+      "sha256": "823e4de11ea917a0f732f83dbc86aef2ff391d1c6a566dc88033b7c263881b16"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/editdist/selfhost.mjs",
+      "bytes": 77079,
+      "sha256": "d19ed89717eaade835a461b7be5681c6c1ead24d7bb8fb8ecdfaae78d197f4d4"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/editdist/selfhost.mjs.json",
+      "bytes": 2927,
+      "sha256": "5ac7f690b6b536b2addf27ef923a77cd9f3067c220949adb1a63402730e8bf74"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/editdist/upstream-check.json",
+      "bytes": 1902,
+      "sha256": "46cf8ee4c3fb52ec2d7e9f565d8ee9e206b325de9748eac5a355d8f4d5fbf4e7"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/editdist/upstream-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/editdist/upstream-check.stdout",
+      "bytes": 602,
+      "sha256": "46b728e146d743ba8f64c09b8ef1ef0db03a926b9eec628948991304b898e9e3"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/editdist/upstream-emit.json",
+      "bytes": 1926,
+      "sha256": "159d1375a35dcb67b5b9ca48f70aba7b39e4824a64c8d05febc3100690abefa2"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/editdist/upstream-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/editdist/upstream-emit.stdout",
+      "bytes": 653,
+      "sha256": "1ddc19784551db9924e4c4dd04578f183f551c22b83cbe7cfb2c440ae926c0eb"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/editdist/upstream.mjs",
+      "bytes": 11907,
+      "sha256": "33721b7770aa4e367896cf1b842cc8ec309dced3a2608e25c5709217474eabc6"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/editdist/upstream.mjs.json",
+      "bytes": 726,
+      "sha256": "ad1f573f3312fe290bd93c25177a33fdf76d7f26dda53f65b90639a7ecff64c8"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/lexer/point.json",
+      "bytes": 55,
+      "sha256": "1875ea3ed146b868d0bcd1c7ef5daa2f09260e79b02a31dba5cf6f3820930176"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/lexer/selfhost-check.json",
+      "bytes": 1877,
+      "sha256": "8ea3aec84cc983606cb6ab595512c6703dc331ce1b763ef0ba0a4a50cf8b2af6"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/lexer/selfhost-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/lexer/selfhost-check.stdout",
+      "bytes": 590,
+      "sha256": "c4df29e6f1628bdb6cd185441639a3e7e0b4ead9301e91909346decbe088bd0e"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/lexer/selfhost-emit.json",
+      "bytes": 4234,
+      "sha256": "a79b7c10ba1aebe52900f7aeb46a75844282689c48286a9f9f4deea8b6c27be3"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/lexer/selfhost-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/lexer/selfhost-emit.stdout",
+      "bytes": 2635,
+      "sha256": "014d0741db72a03f010b5e8bf2aa6b111f77ef4487e17f8c5b75d12e313f9699"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/lexer/selfhost.mjs",
+      "bytes": 80615,
+      "sha256": "854c9572e609c2133220b4d1da164fbe2b8bee7d47c38ab9748fb2f9f905d010"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/lexer/selfhost.mjs.json",
+      "bytes": 2911,
+      "sha256": "9e1fb0584d6e66ee1c4c63f22f4b5be9f8a12760cbe5d45086f0adb9ec7007df"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/lexer/upstream-check.json",
+      "bytes": 1886,
+      "sha256": "59ce2c930b49a50fefbfb207838be2a4b2b2e0083a693e2f6a0e6108d2533192"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/lexer/upstream-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/lexer/upstream-check.stdout",
+      "bytes": 598,
+      "sha256": "70c709d8d2f0937c819df70d3afdb2e5123d0b57cca36e5178a1a64de066ed31"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/lexer/upstream-emit.json",
+      "bytes": 1901,
+      "sha256": "7227f8177e65b33f078763aa82e373a6be618e0aef40b38f1c658274bed482f8"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/lexer/upstream-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/lexer/upstream-emit.stdout",
+      "bytes": 640,
+      "sha256": "ecbd3424f496788eb7adae052fc357d67e2170b368da90bf1840aa89d8c6f106"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/lexer/upstream.mjs",
+      "bytes": 14110,
+      "sha256": "2d9378dfdcacc5904f4b2ac65fd90ba1dcc4a51d9c68b00f6042c42aaeadbbba"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/lexer/upstream.mjs.json",
+      "bytes": 713,
+      "sha256": "81098ab13ab3b8578133b7c59cbb6fd8250848739ab99d38dd00ccd344f91b16"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/mandelbrot/point.json",
+      "bytes": 54,
+      "sha256": "f0870746a764be3045f93490753fa2ea3a4078692f7fb10be6aa134e208123a7"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/mandelbrot/selfhost-check.json",
+      "bytes": 1902,
+      "sha256": "b190bcb9b4e9e1d5a23af09248b4ce081eb2ea4c4aac13cd13b2af924cebd67f"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/mandelbrot/selfhost-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/mandelbrot/selfhost-check.stdout",
+      "bytes": 595,
+      "sha256": "cfc0017296fefed0313cc3ccf07c31aec5898ca400854c44d51b2178a17683bf"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/mandelbrot/selfhost-emit.json",
+      "bytes": 4280,
+      "sha256": "0c38d192dfe948c825a171dee60740ca824de5467152029df657fc9ffd07a177"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/mandelbrot/selfhost-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/mandelbrot/selfhost-emit.stdout",
+      "bytes": 2661,
+      "sha256": "c568d5ca4ec3290b8e8b295bc02abccacf1e3d04bea7eeaae0847f119553ffc2"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/mandelbrot/selfhost.mjs",
+      "bytes": 80908,
+      "sha256": "ebb9981c2f6a5a0e35ece45b2ddbec5ec508f3867b4b0623b2839fa96d8facf5"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/mandelbrot/selfhost.mjs.json",
+      "bytes": 2937,
+      "sha256": "b58441c25051d3ac5188f12b937ea725516b4142030f01ee9fdd5f4caede446b"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/mandelbrot/upstream-check.json",
+      "bytes": 1901,
+      "sha256": "87aa213ba84d7bf45a529879701cb5d57a7c3abc5eac2d048ed1e63f726c77e2"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/mandelbrot/upstream-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/mandelbrot/upstream-check.stdout",
+      "bytes": 593,
+      "sha256": "6ec20abe9099553aafff641ccb6f6507c81602f89c8ef2e42e0f156f718cdcc7"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/mandelbrot/upstream-emit.json",
+      "bytes": 1931,
+      "sha256": "f7a47f79b082a7fa5cde973c764794e4b7e21f4c955d42a1271baf2f4e70dcd3"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/mandelbrot/upstream-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/mandelbrot/upstream-emit.stdout",
+      "bytes": 650,
+      "sha256": "1101f78f538751c3ed30ffae631f9f3fd4bbdf9f093846396e529278341e974d"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/mandelbrot/upstream.mjs",
+      "bytes": 15442,
+      "sha256": "037f070e948ab7701364b7413c624bca4327db0bc6171ac4523b906d2ae9e222"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/mandelbrot/upstream.mjs.json",
+      "bytes": 723,
+      "sha256": "4411f98739434f30603d5038634b17e9efbad62774277d637c0b982e2641dbf9"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/raytrace/point.json",
+      "bytes": 52,
+      "sha256": "896f5c32920cf65fff1773b6a8ada77f57a35030de33d240ac59641faf83ba64"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/raytrace/selfhost-emit.json",
+      "bytes": 4134,
+      "sha256": "5b8d699bed38d516c2d93ef1c300c683ee84ac6e56366ec43dc3db47dbe30208"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/raytrace/selfhost-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/raytrace/selfhost-emit.stdout",
+      "bytes": 2583,
+      "sha256": "e249f59a59b3df44b5eeca2f5ca9c8132b78407ed96b0f9ca8991b46e00b94f4"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/raytrace/selfhost.mjs.json",
+      "bytes": 2813,
+      "sha256": "6a7ea40c4bf822fd737e6a8f15c6a222fd8083225bc4e1cee4ef13d3a799fcc7"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/raytrace/upstream-emit.json",
+      "bytes": 1697,
+      "sha256": "6dd2a9ce4e93953279c0cad073ce35a43becd9fc69e289162fc985aa5bc4a760"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/raytrace/upstream-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/raytrace/upstream-emit.stdout",
+      "bytes": 458,
+      "sha256": "2049458badf02032838f3024c940b55fe3e17125a93012d0330b48f1ba2cd3d9"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/raytrace/upstream.mjs.json",
+      "bytes": 506,
+      "sha256": "d9e7c8e82a0fa9b2b1081488b0832a2c242838e87f83cd1e6feafc71e3df224a"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/report.json",
+      "bytes": 74864,
+      "sha256": "74b869b2e71f2ab787331a0976b858232837a5a4dc11e6a0a3fd86ea09556ea3"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/symreg/point.json",
+      "bytes": 56,
+      "sha256": "73920d5f056d7506e42238b89a3ef780a44cff87d87b6bf69349d374d4bcb612"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/symreg/selfhost-check.json",
+      "bytes": 1884,
+      "sha256": "dca72c40eac79f87e471db4df006a2ebbd04d227b3a1522e07693ddf91fbc6e1"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/symreg/selfhost-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/symreg/selfhost-check.stdout",
+      "bytes": 593,
+      "sha256": "aa0a0211d7ab480ae3d239f5c4d848787c06ff92243e02eafbd730dcc32039ad"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/symreg/selfhost-emit.json",
+      "bytes": 4244,
+      "sha256": "45b1c57f466fa9e89578f649aec55cfbcc8783bfeefd1715e1d83cedd489b52d"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/symreg/selfhost-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/symreg/selfhost-emit.stdout",
+      "bytes": 2641,
+      "sha256": "d8379d77c48ceac1b1ac39a5dfcd2ac9b81f8a32a7a682960c19ef75015ad433"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/symreg/selfhost.mjs",
+      "bytes": 78241,
+      "sha256": "7cc8b63c530b988db89228cda5c9447dee5544150fc430c070943380a2f01a79"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/symreg/selfhost.mjs.json",
+      "bytes": 2917,
+      "sha256": "58ee9eee7fbfabfec7eb2c7769502808c0789f1096d9136401fe64b930768ac9"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/symreg/upstream-check.json",
+      "bytes": 1884,
+      "sha256": "a469247f985898433563e204beda719dc939b27c485e4854337eef9c1d71c82f"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/symreg/upstream-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/symreg/upstream-check.stdout",
+      "bytes": 592,
+      "sha256": "7586fc5764b996fc64fcfcfeeba9b13731fcb7677a3f950f0617aa69d9a70b0c"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/symreg/upstream-emit.json",
+      "bytes": 1906,
+      "sha256": "bab9e23da3cbb6715f4a95cf49d9990a52fab0440f4878a3853a69269a7a6ee5"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/symreg/upstream-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/symreg/upstream-emit.stdout",
+      "bytes": 642,
+      "sha256": "265e0ecfecd47ab1495023a6f3248fd18278c4b265a1ad925cb6264a24a49f77"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/symreg/upstream.mjs",
+      "bytes": 12815,
+      "sha256": "545d6112dbbb0cc66074407a0daf7076b148f9d311e7e9bbffff3376f8e00651"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/symreg/upstream.mjs.json",
+      "bytes": 715,
+      "sha256": "204e550707c223a76fbbdeb3e1dda19644a67e72cb746cdd576ca8e5d0702db1"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/tree-bitonic/point.json",
+      "bytes": 54,
+      "sha256": "78031f13c7766fbb9bc9d33d431a30776ec634293e8b1ce6ffce3ec43c1de201"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/tree-bitonic/selfhost-check.json",
+      "bytes": 1903,
+      "sha256": "4b9ddb78ad568edf173560b0f3be76405baf4fea64c23e4b891ed0540fe8c052"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/tree-bitonic/selfhost-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/tree-bitonic/selfhost-check.stdout",
+      "bytes": 587,
+      "sha256": "4f0b422776d61ddafdf4d91e28ac588bdf62d764632262928bd80642adb4f677"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/tree-bitonic/selfhost-emit.json",
+      "bytes": 4298,
+      "sha256": "60c82cf9e2fe90f917bc3a8186f9fcb02d29b2e055ab7172e19993e6d89cb8d8"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/tree-bitonic/selfhost-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/tree-bitonic/selfhost-emit.stdout",
+      "bytes": 2671,
+      "sha256": "815e849d66f0c5108580806385ecd54e8ca53708dfe19aa7e4c656a8d4e91c63"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/tree-bitonic/selfhost.mjs",
+      "bytes": 76009,
+      "sha256": "29d75838e8e150cfd30b83cec6edb4a8ab8436889236af7e9b86525c16e80fb0"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/tree-bitonic/selfhost.mjs.json",
+      "bytes": 2947,
+      "sha256": "10698dc3a908893bc9e425cb65bcff193c902878ece0fed8920c471f4228eafe"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/tree-bitonic/upstream-check.json",
+      "bytes": 1916,
+      "sha256": "d62b2acd54b1b1bdb0df85e2d4ffe0e82c1ac7b037b314ed0af991ebb9665c0e"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/tree-bitonic/upstream-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/tree-bitonic/upstream-check.stdout",
+      "bytes": 604,
+      "sha256": "84edef21a221c8cf701979faed561a69fb5b0d7cff56bb87e7b55637f50d5ce7"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/tree-bitonic/upstream-emit.json",
+      "bytes": 1943,
+      "sha256": "16cccc1576da2af98954eb7c14215af471ec1a51379b29d148ac412144926d68"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/tree-bitonic/upstream-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/tree-bitonic/upstream-emit.stdout",
+      "bytes": 654,
+      "sha256": "9930ab6e991046b54c18e5a5c35fcdf58b6c27adbf4827c9673e9d37f0885542"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/tree-bitonic/upstream.mjs",
+      "bytes": 10593,
+      "sha256": "c24fff66dd20c4579b7912b42450f1574e4c0b7a84e5d8b2d3d1d1345ef2b159"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-01/tree-bitonic/upstream.mjs.json",
+      "bytes": 727,
+      "sha256": "f797abd50df84309189cc34b8f33be3429fea730c001a4a66f000f05f045277a"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-02-raytrace/raytrace/point.json",
+      "bytes": 52,
+      "sha256": "896f5c32920cf65fff1773b6a8ada77f57a35030de33d240ac59641faf83ba64"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-02-raytrace/raytrace/selfhost-emit.json",
+      "bytes": 4200,
+      "sha256": "dc5fabe24c40df587bf0c1eb6276bf481406593a57f3dd2040dc1e2ec0634538"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-02-raytrace/raytrace/selfhost-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-02-raytrace/raytrace/selfhost-emit.stdout",
+      "bytes": 2612,
+      "sha256": "04350e64a5f65d4b0bf7127f876f735fcc8851295063d62b154b7d4335b367a0"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-02-raytrace/raytrace/selfhost.mjs.json",
+      "bytes": 2842,
+      "sha256": "29395974f2966ad75f8324f7c8aa51d8edf392efa424dd984cfe4ad009d85464"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-02-raytrace/raytrace/upstream-emit.json",
+      "bytes": 1744,
+      "sha256": "52405b1dae9fd04eb0f07559a47dcf05b6caff7a424d4ea289804743480e4e23"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-02-raytrace/raytrace/upstream-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-02-raytrace/raytrace/upstream-emit.stdout",
+      "bytes": 468,
+      "sha256": "118e7ff505bbff1f96b0721ad93099ed4acd8bb7dda6079eb85d5cca172dc702"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-02-raytrace/raytrace/upstream.mjs.json",
+      "bytes": 516,
+      "sha256": "607d7cf0b0ce1bef089194fddbe9374ca3690213f6a4c4c1ea8102c1c7bc9701"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-02-raytrace/report.json",
+      "bytes": 9601,
+      "sha256": "998fcac1584cd2b1f8d4a31452716a28c2bef73c7a34b5311cbeb5167f3a8420"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-03-raytrace/raytrace/point.json",
+      "bytes": 52,
+      "sha256": "896f5c32920cf65fff1773b6a8ada77f57a35030de33d240ac59641faf83ba64"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-03-raytrace/raytrace/selfhost-check.json",
+      "bytes": 1935,
+      "sha256": "013ffdbe4192d1904003ad8a8065ef775625c287e27e3f230eecd4589bf2ed06"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-03-raytrace/raytrace/selfhost-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-03-raytrace/raytrace/selfhost-check.stdout",
+      "bytes": 600,
+      "sha256": "562bb036193ea27ecc7e116e1218688ddb88cf07de876c2a68a4f8831eab2685"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-03-raytrace/raytrace/selfhost-emit.json",
+      "bytes": 4331,
+      "sha256": "6102990e64dc7248eb1f7a980497e986d29df39672e8e108c55cb86df49e04c8"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-03-raytrace/raytrace/selfhost-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-03-raytrace/raytrace/selfhost-emit.stdout",
+      "bytes": 2687,
+      "sha256": "1d00235fbda949a1f44fca419e46557724a4114ac196d45d1f203d8943be8405"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-03-raytrace/raytrace/selfhost.mjs",
+      "bytes": 93192,
+      "sha256": "cdee704357d9ee75d2b1555131d20e6be153a46e6398ab24949f67c06a4379a9"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-03-raytrace/raytrace/selfhost.mjs.json",
+      "bytes": 2963,
+      "sha256": "066a04c2c8ff6b405b2d76ad6d53f17ab08cfc1d065768acfc8b565d5e5a6591"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-03-raytrace/raytrace/upstream-check.json",
+      "bytes": 1941,
+      "sha256": "e9e2ffcd0185ee91650aef24ffb6f5e924fdffa34ed8f5bef29e59b3c3e3fd9f"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-03-raytrace/raytrace/upstream-check.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-03-raytrace/raytrace/upstream-check.stdout",
+      "bytes": 605,
+      "sha256": "b11cca0aa2839098cfa7a9e0e5dc5bed0e9d07defcd3d17572e14411a3f6f981"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-03-raytrace/raytrace/upstream-emit.json",
+      "bytes": 1974,
+      "sha256": "cc871da4ac760118bd01a299129e1d451c7b076778f0007e2d3e91d9de10ffcc"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-03-raytrace/raytrace/upstream-emit.stderr",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-03-raytrace/raytrace/upstream-emit.stdout",
+      "bytes": 668,
+      "sha256": "c7f45eb907e0dae4fbef0f78e7b0243c3827bdfa1d50abd14a785907455c001d"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-03-raytrace/raytrace/upstream.mjs",
+      "bytes": 28974,
+      "sha256": "87bd526f04705416db047a31eb4ccc186f1c90f5c911f57736a3216a7629ddd2"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-03-raytrace/raytrace/upstream.mjs.json",
+      "bytes": 741,
+      "sha256": "aff83fabff700bfe7c600de60f912c5860c6d950ce58476d821eac509fa08f77"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-03-raytrace/report.json",
+      "bytes": 15033,
+      "sha256": "f9c8a6bfb0384e78e92542afe9b9d242e39d20b38f62bd776b10614abddfdecd"
+    },
+    {
+      "path": "selfhost/build/phase28/runtime-pairs.json",
+      "bytes": 12264,
+      "sha256": "130296b70d81c918bd650cf1db4736b53ac6b49bd0518d64d76c26dcf8a3e968"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/0-selfhost/launch.json",
+      "bytes": 1731,
+      "sha256": "94bdf2f68ce4657ca546670ced7055cef6bcddc61ad8f5fd0b8800e0328e398d"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/0-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/0-selfhost/stdout.log",
+      "bytes": 858,
+      "sha256": "a3118ee050c05768e1ed954ddb05da67e7a30fa7f54eb639515514510fb4a659"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/0-upstream/launch.json",
+      "bytes": 1814,
+      "sha256": "39c0662a51cb25f4ea3a0485ad6348f286040f80f3f5b59a0fdd02a398462b2d"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/0-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/0-upstream/stdout.log",
+      "bytes": 907,
+      "sha256": "050e61ba6972be99ed581476c2d659e67d7c4efff6d3137fc5d07725feef2706"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/1-selfhost/launch.json",
+      "bytes": 1723,
+      "sha256": "5096c811d46eb98d1d714d4db574d759e1c369f6bf1515b42a00d48f425fa604"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/1-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/1-selfhost/stdout.log",
+      "bytes": 850,
+      "sha256": "bc7002ed9d86565ef384bad59b87f5f0c0794167d2e086286bb76cdd28ca59ad"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/1-upstream/launch.json",
+      "bytes": 1805,
+      "sha256": "c83f7d4b7ff8567b345ac2f398b6b4ab66191af14611d55ee2df24ab7c11857a"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/1-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/1-upstream/stdout.log",
+      "bytes": 898,
+      "sha256": "28adcb504174444df2395c24f9ebf5496951a38f445aca3ddc6fec10fcdb3119"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/2-selfhost/launch.json",
+      "bytes": 1725,
+      "sha256": "069d31e20186b6e1b40442a97ef384fe0f91d784e161048152fbd5ad2d2640f6"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/2-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/2-selfhost/stdout.log",
+      "bytes": 853,
+      "sha256": "a0890e7b74a0cef29f3d12db1bc92249da038ce310838cf572280614b04684ef"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/2-upstream/launch.json",
+      "bytes": 1814,
+      "sha256": "249d9d709f24c58e5dd310bd82e3c1f4cca2448fe6cb5c10e5dc5ef481f453fd"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/2-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/2-upstream/stdout.log",
+      "bytes": 907,
+      "sha256": "68f6a58ff5423db1c4d89c7b7a2636fbbe6219d040bbfa4d7f7540af0e979401"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/3-selfhost/launch.json",
+      "bytes": 1731,
+      "sha256": "bcd8d636d1cb2733acc85342c82bf17ad8926874370df7dea13f6bd0bbd98387"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/3-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/3-selfhost/stdout.log",
+      "bytes": 859,
+      "sha256": "877ffcf87cb458dfa2ab0c2b3f8f14da4e9703c5f9f4748aca77d5c5a997d9a2"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/3-upstream/launch.json",
+      "bytes": 1806,
+      "sha256": "6cbaa53b3a59c7ae9d3a6a6745169dfe535d9bef45683d7ea4f33af3737dbd31"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/3-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/3-upstream/stdout.log",
+      "bytes": 900,
+      "sha256": "7076c8c5b908f506b369d40b333e01d55c612e29d77fcad7527343106836eb8a"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/4-selfhost/launch.json",
+      "bytes": 1738,
+      "sha256": "6ebaf95c8330d64403b5f87e0d314856effb29dbbfd69d8e01978f983a059089"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/4-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/4-selfhost/stdout.log",
+      "bytes": 865,
+      "sha256": "6ffe80e41cfd12d29dc2a46c365666d45ae504b9e4654babebf4583feb073776"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/4-upstream/launch.json",
+      "bytes": 1796,
+      "sha256": "2af652071d19cdc64e8aa5e2fab3f2b4056bf5d027f2fb8d2a5fd44745b2c8a0"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/4-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/4-upstream/stdout.log",
+      "bytes": 889,
+      "sha256": "f0e1501660a7d0c76a657d2b12e1733b4ee150137cc5cd6e97b78ebc0c188d4d"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/point.json",
+      "bytes": 84,
+      "sha256": "191fa0ee2a3bd5bc3afee7ed8d844547409c865c93684b7300a271b4db228ba2"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/selfhost-calibrate/launch.json",
+      "bytes": 1983,
+      "sha256": "fdb42b76f5e21925d9af8913fb9525934dde9df715e16b41ded3b469e15a5df6"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/selfhost-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/selfhost-calibrate/stdout.log",
+      "bytes": 993,
+      "sha256": "4ef6cf8ae774c4c04f024222f7571d420084430bb07bf0477529e8edf03c4927"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/selfhost-check/launch.json",
+      "bytes": 1471,
+      "sha256": "1ca8eeb58ad52fe8487a9f95ade6bca69c9e30db0f65c4e2e9b67fdf29bcdda5"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/selfhost-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/selfhost-check/stdout.log",
+      "bytes": 684,
+      "sha256": "27530ab9a992d0d89bb0b2ada133c80e7e9b8b26629487f07ab376860a2e3ab0"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/selfhost.json",
+      "bytes": 104,
+      "sha256": "b252059887beaa2c1d22c7853eed9c8b9e8c6b1fb47d74d3df75b4ae7e2804c5"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/upstream-calibrate/launch.json",
+      "bytes": 3636,
+      "sha256": "1bb548618169e2bbb2e48e6e900dc66b874e59a068d7a63c4d92ce3f2aaf95a1"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/upstream-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/upstream-calibrate/stdout.log",
+      "bytes": 1797,
+      "sha256": "1308aa1224b7897d76126e7d2f69a0cf849051d38175489cedbe81b85f8be398"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/upstream-check/launch.json",
+      "bytes": 1479,
+      "sha256": "b5f94caebba9c80ca1c9a1053d2848768a176ae095874f1b596890b097c3d67c"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/upstream-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/upstream-check/stdout.log",
+      "bytes": 690,
+      "sha256": "0e19c2b5c51df674fa3eb7de70d142953297010d230a8354a52ee380d5cabf32"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/editdist/upstream.json",
+      "bytes": 105,
+      "sha256": "345296951e016f8812d6b9666de5c9a22234a8bc99c19a381607d682413d3f02"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/0-selfhost/launch.json",
+      "bytes": 1797,
+      "sha256": "56f65b04817c69761b534f1c09cc369a51fbb3696fab36487183778ca781dd27"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/0-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/0-selfhost/stdout.log",
+      "bytes": 896,
+      "sha256": "dc294f9a41084e11679fe3b1a8dcd5765f1aceb9df588b97fd3bdd6e5a16528c"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/0-upstream/launch.json",
+      "bytes": 1806,
+      "sha256": "5265dbef3d5404372401a436a475b2ab7b2bc0628e1c0ab0edf711a7bdaf9fc4"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/0-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/0-upstream/stdout.log",
+      "bytes": 906,
+      "sha256": "e4b10618b9724070ab72a9e920fdbcc414156c1713cf617099b674d9bc185926"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/1-selfhost/launch.json",
+      "bytes": 1788,
+      "sha256": "c71766d39daaa19a53068a299f6100a9b0473db22262641a59da1fcc46694cd8"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/1-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/1-selfhost/stdout.log",
+      "bytes": 889,
+      "sha256": "36375fbf49ff7879d30711bd4b7b262ccb66dfdb4393f89217b01866c38e8ec8"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/1-upstream/launch.json",
+      "bytes": 1813,
+      "sha256": "41c8f0d0ea75ee1448d3c357e20b297bab06a7b5d5df0838596e97f537a2c09c"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/1-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/1-upstream/stdout.log",
+      "bytes": 913,
+      "sha256": "360c99a7234d1f32538e833b789f2853165a8b6cebfe5f84a64cb76fae2b85a6"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/2-selfhost/launch.json",
+      "bytes": 1806,
+      "sha256": "db53182a41fcdffff8c15d551f9eae9f69a42c28f032bb6c22b680fbabd0d15b"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/2-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/2-selfhost/stdout.log",
+      "bytes": 906,
+      "sha256": "fd1df56d9ce7e0fc2c82e2d0a1f05843398fec7c14bfd647ac17dcbcd200b8ce"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/2-upstream/launch.json",
+      "bytes": 1807,
+      "sha256": "8a70d1375f315368bfec31a466818fbd079b3f1e80a167c99e5a4c87422f3632"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/2-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/2-upstream/stdout.log",
+      "bytes": 906,
+      "sha256": "783754c889a9f7d937871159dac033aec3a5b4a478e13816a7cf06d9f232285d"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/3-selfhost/launch.json",
+      "bytes": 1792,
+      "sha256": "cfadaf0da413b25251798503bc793bbc633573c1614a27ec3672d27926d258f1"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/3-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/3-selfhost/stdout.log",
+      "bytes": 891,
+      "sha256": "2ebe0f7645f1bf804b4c390c74097ee2af7cdc60cd32ff147538a6a3f6ea2f77"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/3-upstream/launch.json",
+      "bytes": 1804,
+      "sha256": "3aa9cb01ab545f9be078eee5e8b68f9b9de25ed078f7b1d21cb979304133c42a"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/3-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/3-upstream/stdout.log",
+      "bytes": 905,
+      "sha256": "8f07a6d35a3aeef1cb29801b81fac832487e9027e82458ff90405c5066e90098"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/4-selfhost/launch.json",
+      "bytes": 1790,
+      "sha256": "c795ad8480c0ef3cb8257172fc044faba6731d28c360a1361f8781b0aea3b3fa"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/4-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/4-selfhost/stdout.log",
+      "bytes": 890,
+      "sha256": "5f02e18aef44138c232693177244423ea2ecb0aeb742a1ced9537859fe72a49b"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/4-upstream/launch.json",
+      "bytes": 1806,
+      "sha256": "dff52991c6bed1f19f12fbc094f51e05a71658ad5d3da57097b305eab8e3c8e7"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/4-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/4-upstream/stdout.log",
+      "bytes": 906,
+      "sha256": "45043c0c3a28226a6bc4c6977b234ca5530720706b937099a2016407905d4e7a"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/point.json",
+      "bytes": 84,
+      "sha256": "5c15d1688229d52cf71de1ff59ecc91cd09dccf27a8b35eb2aebf22c81ca34d3"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/selfhost-calibrate/launch.json",
+      "bytes": 1972,
+      "sha256": "daced6b80d193e6af97dc396bfc76b04ff9e62a3fab9fe962344cb3fb3794bf4"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/selfhost-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/selfhost-calibrate/stdout.log",
+      "bytes": 988,
+      "sha256": "fb1566fb3272f7b80b7e2febaae82801d15e56de58d9576d2861804645c660bb"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/selfhost-check/launch.json",
+      "bytes": 1471,
+      "sha256": "8b9290e11c4d501a49ee069f0af727f5099e2cf743ff91274252fcc8de1d78f1"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/selfhost-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/selfhost-check/stdout.log",
+      "bytes": 689,
+      "sha256": "e2e26a2eea8fc284f17421e59b797231cd1a532537a92d4e7fa4be62923a31f9"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/selfhost.json",
+      "bytes": 104,
+      "sha256": "68ce7d9ccc342552efb567a1ec1182d2bb76ecdb5b86f99e9449bf2efa385ceb"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/upstream-calibrate/launch.json",
+      "bytes": 3960,
+      "sha256": "640cab189550b5b66a329364c1eec94d83b294e9512a9e5357e48ad28bb3671d"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/upstream-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/upstream-calibrate/stdout.log",
+      "bytes": 1964,
+      "sha256": "2c3975eb95fb957e28d9921b3677042908fa1b087e4179d3bed8ef5bb29f0f2a"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/upstream-check/launch.json",
+      "bytes": 1479,
+      "sha256": "6ff68b4ddb7271ee6de2e39ca6d5784429066c425abf58c064b77e1a188f5424"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/upstream-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/upstream-check/stdout.log",
+      "bytes": 696,
+      "sha256": "6ade90a790d9212f36597732c7cf99ffca883fe9ffb54fb89a7b86acd7332be5"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/lexer/upstream.json",
+      "bytes": 106,
+      "sha256": "97c649c0c6cfa3e7165fd5d5bf099f1556de510c01a902ee6a26a0eef460b377"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/0-selfhost/launch.json",
+      "bytes": 1806,
+      "sha256": "32580801108a393b5da2e444bf08754f324c6e45ac9ab111cd68a1fd7fc5ff21"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/0-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/0-selfhost/stdout.log",
+      "bytes": 895,
+      "sha256": "4482c315f5355b3550028a1495857310ebf1b373756e0d975cfa4bc966105287"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/0-upstream/launch.json",
+      "bytes": 1829,
+      "sha256": "12be37e1860e0fd0317376a1d05dc3f2f12ed65f3bb2d1bab7d83b85a823eeb8"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/0-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/0-upstream/stdout.log",
+      "bytes": 918,
+      "sha256": "dbaf61e9084ddd317091ebc4b53bb2f335bec07348314a3a62da2e3a48b74d72"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/1-selfhost/launch.json",
+      "bytes": 1797,
+      "sha256": "17662776b54ebf68e9b8f18025a8f395d2a399dddc4962d3e4a9d74533241f59"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/1-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/1-selfhost/stdout.log",
+      "bytes": 887,
+      "sha256": "513af944d6cf10200ea967479faa5fc2a4ff5e414a0bf08121f4fd140d4a806f"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/1-upstream/launch.json",
+      "bytes": 1812,
+      "sha256": "b6391e20dfd1e9f9b0b284a860e59ebddb5b22afc999f662b23f5418888557b0"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/1-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/1-upstream/stdout.log",
+      "bytes": 902,
+      "sha256": "722b49c4bc9b2500539c86407e8ea34b5657c6cbfaea7afeafcd7a2ffec7b3a8"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/2-selfhost/launch.json",
+      "bytes": 1813,
+      "sha256": "958023217c046593bfa5e359f997d2c1198ac1a485f630bcb8924d516536dd74"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/2-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/2-selfhost/stdout.log",
+      "bytes": 904,
+      "sha256": "7659e100cc2cdccbfbdc187ea82d02d8538af0d591385f541bc7394c2841ae34"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/2-upstream/launch.json",
+      "bytes": 1820,
+      "sha256": "c4bb31cc11d568cb6eb0e0fbfbd2ca40b5a8642d7a3fa63a2d46111de9d85a6e"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/2-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/2-upstream/stdout.log",
+      "bytes": 909,
+      "sha256": "bba746b9f7b2a69357d402210fb8595900af7e5c53a46f167add86ce7ead2e6d"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/3-selfhost/launch.json",
+      "bytes": 1805,
+      "sha256": "3b856b21f091531d88c49f5afa77e47934745a37f911913cb0a8f2e5013f1f89"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/3-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/3-selfhost/stdout.log",
+      "bytes": 895,
+      "sha256": "0bd3692c868b526af592824e6308577bea82763cff08c334497a1a2051c14b37"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/3-upstream/launch.json",
+      "bytes": 1822,
+      "sha256": "35b3743d85ff074c1a2b322f1919be9e2e1b3fa9b419eb45dea48881e76a7cd5"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/3-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/3-upstream/stdout.log",
+      "bytes": 911,
+      "sha256": "13462a4fc42580757ea7c26aed1e538fdae4b428ad7aa8fdb7a523cb0e44c1bf"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/4-selfhost/launch.json",
+      "bytes": 1808,
+      "sha256": "4c44143646a2cf72d14dd6a51b3ffda2ebc776791d57ebfc3e3cacbf85c1e574"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/4-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/4-selfhost/stdout.log",
+      "bytes": 900,
+      "sha256": "e86baca68638c7ca465f9a14f040605117976d99e9a2d3c592cde0406da38e9b"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/4-upstream/launch.json",
+      "bytes": 1819,
+      "sha256": "b9edbcd7baea31713f83e9cbc204b7381144700d4ac4d3c5c4be0479ebb359ab"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/4-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/4-upstream/stdout.log",
+      "bytes": 909,
+      "sha256": "d68effa9650087291b18aafd80fc8e474a2130b72378e102ffd7ceae5d7d5919"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/point.json",
+      "bytes": 83,
+      "sha256": "8886e298d62f6ac0d7d5db93b4254c1ee42153e0a8795dfbbae6ca0cd23957a9"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/selfhost-calibrate/launch.json",
+      "bytes": 2363,
+      "sha256": "cd52cfeb9e7d733236f93826b7ffd22479be3c20533506f9c5334da1251261e5"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/selfhost-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/selfhost-calibrate/stdout.log",
+      "bytes": 1172,
+      "sha256": "31ff66689fc270b6812ffaf22e0a612fbc8e31de04936d49f3e68998f00eed09"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/selfhost-check/launch.json",
+      "bytes": 1484,
+      "sha256": "8d331a708ab1546c93c3cd38e3ae09e8995adf7d05d0a2319230c43d43808b0f"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/selfhost-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/selfhost-check/stdout.log",
+      "bytes": 692,
+      "sha256": "bff664baaf13659634d5fa6d89b97074878db3b268fc0f3801d4a51befaf0446"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/selfhost.json",
+      "bytes": 103,
+      "sha256": "aa43d2d629cd77520ac3f03390f081fde3dcdcd40b8c224f81cfd1f5ea8450bf"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/upstream-calibrate/launch.json",
+      "bytes": 5930,
+      "sha256": "1afe911b93df8edb2526c1daed279c2afc77fd83923d417886771f9e244b2f07"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/upstream-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/upstream-calibrate/stdout.log",
+      "bytes": 2945,
+      "sha256": "4edfa142c5366813e198952602af72acf51278a512cbeb83e8d18269abd90a80"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/upstream-check/launch.json",
+      "bytes": 1492,
+      "sha256": "7b6a553c34dd7805312cf7eba480bf4ef2dfed5dc2908463304e8a003ba62d11"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/upstream-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/upstream-check/stdout.log",
+      "bytes": 700,
+      "sha256": "e03de0412784c559338f5296f839680dc2177b4a5644982070c24f79164443c8"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/mandelbrot/upstream.json",
+      "bytes": 106,
+      "sha256": "b4afc6d8fed7201bf54fcc1c3998a25437bcd60e6f74dadc531c03903be5ecc9"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/0-selfhost/launch.json",
+      "bytes": 1742,
+      "sha256": "26e76b1eb42bc575854f3850d0471e56bc1acfd4fe1720bda209e65951056e07"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/0-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/0-selfhost/stdout.log",
+      "bytes": 861,
+      "sha256": "dcebbab2a683fc485b18e460438cc7b2bba3373442341882b63918b888431377"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/0-upstream/launch.json",
+      "bytes": 1808,
+      "sha256": "5f431f50f0ebc7c7f0a96f47fe5d971bccd6d76665e7fd3fb0c92ce80eb0284c"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/0-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/0-upstream/stdout.log",
+      "bytes": 893,
+      "sha256": "af0e0e1ad07ca6f518ae6c870b24669d1534a39056c82537325306907a33b31a"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/1-selfhost/launch.json",
+      "bytes": 1738,
+      "sha256": "00373a45226da14dd46f12dafc5d6fa1d4b45a30a2556cc6d3d92169040dbc9a"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/1-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/1-selfhost/stdout.log",
+      "bytes": 857,
+      "sha256": "8f82e9b3a29f639857d0ca1cce4730184a19f4fcfc7885ec5b1758284ccda6a1"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/1-upstream/launch.json",
+      "bytes": 1811,
+      "sha256": "8f0e6c8de360bdd4480ddcd67da5604163cdec548dda8486ad1d2f607314a447"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/1-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/1-upstream/stdout.log",
+      "bytes": 895,
+      "sha256": "c8844f74eea25d05f746b4187749843c09da6b972986dd53d6dac981217573d4"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/2-selfhost/launch.json",
+      "bytes": 1740,
+      "sha256": "f61153f0bb7becab08d930ac6ad7946a54fa8cf7377b529ea8520c01ac4f68d9"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/2-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/2-selfhost/stdout.log",
+      "bytes": 860,
+      "sha256": "c475095ebafeb5e09e31f0a1ca79a2a0a68024fe15e6cbee1b0599c95aee6e60"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/2-upstream/launch.json",
+      "bytes": 1809,
+      "sha256": "effc73ca0d0da439a1e9e3f0d6febb32b50f0abfdd3ebe977cbd5922f3fe5399"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/2-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/2-upstream/stdout.log",
+      "bytes": 893,
+      "sha256": "52f73c0c3820db7a523d6c69464a77dc78db4784b26fee6e13a654272dcd2347"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/3-selfhost/launch.json",
+      "bytes": 1737,
+      "sha256": "9a01a17dd72ceaa903c392b43b22332a35c6b737138c841d5ae156b3c2387a6e"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/3-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/3-selfhost/stdout.log",
+      "bytes": 857,
+      "sha256": "8eb2538eda59baf2b96c1df96087ffbcab583edb798e55398dcef04a56c33a12"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/3-upstream/launch.json",
+      "bytes": 1795,
+      "sha256": "5cc5f877e5f520f7a9770db642c29a45b371a26668975b9277de597d28d6ab23"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/3-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/3-upstream/stdout.log",
+      "bytes": 879,
+      "sha256": "5360857b0b1b7ae4d1336b772dad67feea6b87c9346b957d7a7286259e709774"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/4-selfhost/launch.json",
+      "bytes": 1738,
+      "sha256": "a7dea23dd7dff8f501bb6aea6d27e7fac306e3f6d8db85fb6230ca120b6c30c8"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/4-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/4-selfhost/stdout.log",
+      "bytes": 857,
+      "sha256": "15d954dedcf95f6559a0eb2a2e92c29cd8d4f0b392be48aca659726b49f844f1"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/4-upstream/launch.json",
+      "bytes": 1809,
+      "sha256": "e2813b785b82274b627ab1bfd2a5db30b6ad303c6439cee7dccbc74947a69947"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/4-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/4-upstream/stdout.log",
+      "bytes": 893,
+      "sha256": "25ae9d235015ffcdce6dde80307d9904ddae1d65a0916132bcb17f04e1801d75"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/point.json",
+      "bytes": 81,
+      "sha256": "1ddf055402f6a98c8487c96ea764a600e81570400635a15ef68600c8c0ba3aec"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/selfhost-calibrate/launch.json",
+      "bytes": 1958,
+      "sha256": "4198b91c49234e834e192334bd1f3ff6fdcf6b216ebf20c31dcfea7b82c9dd77"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/selfhost-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/selfhost-calibrate/stdout.log",
+      "bytes": 959,
+      "sha256": "2a1194b4b35a04e3fc3a86c8b134fe8ab03ae003b79d24ad4787396c2be93ed4"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/selfhost-check/launch.json",
+      "bytes": 1494,
+      "sha256": "12599ea13862ecf719a2c9fbfaae584f092c14252468f081503c4900b9375728"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/selfhost-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/selfhost-check/stdout.log",
+      "bytes": 697,
+      "sha256": "267a50c94642b8b16e1f120c710039ff009607f5dcaa55f354c833246e533b92"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/selfhost.json",
+      "bytes": 101,
+      "sha256": "76323bbb6e9a58591c69d6e859b6e00d695e02e05d9afa57f05886bef68ea473"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/upstream-calibrate/launch.json",
+      "bytes": 2664,
+      "sha256": "9e172ec005bdc9ac899af6af7117f22fae94b231b6aefb0bccf86d6789bd7411"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/upstream-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/upstream-calibrate/stdout.log",
+      "bytes": 1305,
+      "sha256": "f71ed507e53c0ad9d9fd86760851c84671fd0a715cd87c81f49ced56040fa61e"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/upstream-check/launch.json",
+      "bytes": 1481,
+      "sha256": "c62d7bc15019798f8c28f7fc3f66299120d59f09adc06f1683c8f5801ced1667"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/upstream-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/upstream-check/stdout.log",
+      "bytes": 684,
+      "sha256": "5a3c5cb7d54b2065fd088ff4f637153014c6794386cd1c702557e5391727e57f"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/raytrace/upstream.json",
+      "bytes": 101,
+      "sha256": "9890b31e4a98470c1ae8206f6c827419cebc282bd9fd9b40196c09935fbf7740"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/report.json",
+      "bytes": 417117,
+      "sha256": "9d9cf19a266b5cd3154dc1e62f1994d9318c258c98adbc6494620b00900d7871"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/0-selfhost/launch.json",
+      "bytes": 1795,
+      "sha256": "556519112502c9f9924f2fa240edf3d937953b5db137f607bfc95ac3b619f80c"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/0-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/0-selfhost/stdout.log",
+      "bytes": 892,
+      "sha256": "665d72573c4e0e33c1c3a5bff4d29d3230c68837c181029bdc40ee0fa3625a4a"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/0-upstream/launch.json",
+      "bytes": 1819,
+      "sha256": "9123236a4917dc4da7235a0784a65c706c1e35db956fedbbf3a145b7bfd9e49d"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/0-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/0-upstream/stdout.log",
+      "bytes": 916,
+      "sha256": "efc9f6aca2e72f140f1e1da25fb32d8a26f90aa50d37fcc5e570556bf7816944"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/1-selfhost/launch.json",
+      "bytes": 1794,
+      "sha256": "63ad33aa18cbf1bc75a2c34e48d5b5363dbb491a74945fff91632b4460bfddd6"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/1-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/1-selfhost/stdout.log",
+      "bytes": 892,
+      "sha256": "c8aac31987c3c06122368ae6c46b2134d31aa078a9e9340e93faa5a07e66db27"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/1-upstream/launch.json",
+      "bytes": 1800,
+      "sha256": "b92247146e8a9a9cba1db39ee06e45288ee73a67d3f8e36d1b2e092e26fa5f4a"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/1-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/1-upstream/stdout.log",
+      "bytes": 898,
+      "sha256": "7f07dcfb2c4062be92d510db964007f17c670c2506d4454fc6e792efca430f60"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/2-selfhost/launch.json",
+      "bytes": 1801,
+      "sha256": "a0f76cf4c4a6b77792b21721bc36dc757f888f292e1af3a0dbaccd8a63ebf158"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/2-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/2-selfhost/stdout.log",
+      "bytes": 899,
+      "sha256": "5aa561b14689810dbf63744896fa350b09e80127d74f0c46f4a1f5ca462f23ec"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/2-upstream/launch.json",
+      "bytes": 1811,
+      "sha256": "eb610f9e1ae56d172975253bd2c0f97b6f09f8a43b10751333a9d0ec2f6d2d34"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/2-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/2-upstream/stdout.log",
+      "bytes": 908,
+      "sha256": "15fed81a82d58f8651bc40d39720dd8f7efa641c7ce3bec51005544911299120"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/3-selfhost/launch.json",
+      "bytes": 1783,
+      "sha256": "20c4af4121ef0655505188913ea33c1d83747d43c2c298636d3f2c8c415c81a1"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/3-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/3-selfhost/stdout.log",
+      "bytes": 881,
+      "sha256": "23cf5357aa0f840390b4bad0adbccf494dedd4c934b67fa528b336a520cc3999"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/3-upstream/launch.json",
+      "bytes": 1797,
+      "sha256": "e5fc2bad4280c38ee9be96ad195d3c1667e719baca9e7e2ecc732c3a8840d535"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/3-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/3-upstream/stdout.log",
+      "bytes": 894,
+      "sha256": "7208f2d7a71ff242f1c49e5da844f0dbeed9ae84af97a389b2df3bb4ebfb3019"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/4-selfhost/launch.json",
+      "bytes": 1801,
+      "sha256": "62699083b2228b3a9a8b69076765e77003291ea67c82f0b8390f0d675a16b536"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/4-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/4-selfhost/stdout.log",
+      "bytes": 898,
+      "sha256": "483fefacc0669c2bf9f69f7aeca82b3038ec0de563d24e849d57c069b040e26f"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/4-upstream/launch.json",
+      "bytes": 1820,
+      "sha256": "a71d1f32e96ef76f7ac1a2421506e5bbae9be1b087b32a9604313199cd31a00d"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/4-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/4-upstream/stdout.log",
+      "bytes": 917,
+      "sha256": "4e0203a4dff035aec18dfbd16fccce3022452a553c1a77e32f0c0b2aef403bef"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/point.json",
+      "bytes": 85,
+      "sha256": "35fc6214a2a3ddfcb8f6b1f8965b11ee2448335eff37d8bb0bdaafdcf250c3b1"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/selfhost-calibrate/launch.json",
+      "bytes": 1963,
+      "sha256": "cf1edbfe422896ad7cb40042c377a53d4db96cb1d5dddd8e9597eed9896d1518"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/selfhost-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/selfhost-calibrate/stdout.log",
+      "bytes": 976,
+      "sha256": "c2123e7f484e0938e4442de05a3777f73394c2d4afcdf873bd31fa1093831b31"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/selfhost-check/launch.json",
+      "bytes": 1474,
+      "sha256": "dc0a7db27b832e4b164bd76e623c13664d93e5f33a56537b7cd2b12d63068eee"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/selfhost-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/selfhost-check/stdout.log",
+      "bytes": 689,
+      "sha256": "7dca676c525838a3da9f74535bce072542bfad81790e39e794f536e8d4792346"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/selfhost.json",
+      "bytes": 105,
+      "sha256": "33e70865c05e1b4914a6fd2fec616cf97db25382843fcefd814390df2d110a67"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/upstream-calibrate/launch.json",
+      "bytes": 4262,
+      "sha256": "47ad57f4a694d21f0b0716e9c354293596642987dc97d7191ea1f1a197e7dfca"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/upstream-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/upstream-calibrate/stdout.log",
+      "bytes": 2101,
+      "sha256": "42642774fde4490e40861d5051cf9bb1c6a72a9edeb63bf8d74226fac10a3714"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/upstream-check/launch.json",
+      "bytes": 1483,
+      "sha256": "ae0ae86d081401490b0c5bb43043e1cbfbe3e7184639c8099571977a92856be9"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/upstream-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/upstream-check/stdout.log",
+      "bytes": 698,
+      "sha256": "0e1a552c8ef735c7623a12ec8f5c28969a7d107b703ee84955d141a564708ac6"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/symreg/upstream.json",
+      "bytes": 107,
+      "sha256": "28e639fc9297086088dfc49709df585bcbfcdf553c370b70fe42ddc06c90894a"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/0-selfhost/launch.json",
+      "bytes": 1811,
+      "sha256": "4f778fb8d711ac156e52c83713733aad423ed8961e741534e2ab17dc776be660"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/0-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/0-selfhost/stdout.log",
+      "bytes": 900,
+      "sha256": "3e1ca82a31bec3678e4925d71696117fc0152e58f02a8db2de2890809c1a86a8"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/0-upstream/launch.json",
+      "bytes": 1839,
+      "sha256": "5529ec168d74fe53c1f0f46ebc2b43ec6f398a70f5e8fb2e23c6250db4517149"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/0-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/0-upstream/stdout.log",
+      "bytes": 929,
+      "sha256": "6aef4122dbae9655cf512f6e889e0aff25c69bd6013835c86886f98b011cacf9"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/1-selfhost/launch.json",
+      "bytes": 1817,
+      "sha256": "c753af9624164f4046020dc9dea3a1ac43f4160cf1ccf4bc34f1f08a0a4bce4d"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/1-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/1-selfhost/stdout.log",
+      "bytes": 907,
+      "sha256": "39fb62886812f9e25e916df5e5a7450916218bdfecaafa94f82bdee27423c7c3"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/1-upstream/launch.json",
+      "bytes": 1840,
+      "sha256": "29d74144241349ba4a737099b004483f67e3d2141bf3ea31cf55f3e3d446ce51"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/1-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/1-upstream/stdout.log",
+      "bytes": 929,
+      "sha256": "0e6f949f74c213d6aebd3f7525b16d5c295017ff85049eb205ccf2cf81d30284"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/2-selfhost/launch.json",
+      "bytes": 1819,
+      "sha256": "cf78bccbf3323883b777f89ebd1950839d920008dc8bf8f02c607fe180c1ddaa"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/2-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/2-selfhost/stdout.log",
+      "bytes": 908,
+      "sha256": "94d447f11ec3f269d301ab93edbc603383ec4aad92866bed65f52080f72a277c"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/2-upstream/launch.json",
+      "bytes": 1830,
+      "sha256": "8f48072bbc92770492b049f4083e3ea532be89d9bec3bf1685f47dec4d9dd38e"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/2-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/2-upstream/stdout.log",
+      "bytes": 920,
+      "sha256": "c25276592855e7f318ffe0c5140a6f1826a7d4590aabe866845ff82ab5142d26"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/3-selfhost/launch.json",
+      "bytes": 1834,
+      "sha256": "13b47fe6ec6ba8a18a501fe85b76f3e9f2f812c11e7428ff319cb0aa5bd7dbd7"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/3-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/3-selfhost/stdout.log",
+      "bytes": 923,
+      "sha256": "cd3a4f4bb66aa2abc096c17698f771bea1fc1f0a243270873d478dbb688d2311"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/3-upstream/launch.json",
+      "bytes": 1839,
+      "sha256": "3fa7f9fcf25bfedb2aad1fb3afaea21e6445e40e82d349074c2d7c4a3a228710"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/3-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/3-upstream/stdout.log",
+      "bytes": 928,
+      "sha256": "294c87cc30982ace07e866c9292fc3991f8528159a454f8f6e1b4fb21b3c6a3d"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/4-selfhost/launch.json",
+      "bytes": 1824,
+      "sha256": "e2b2622f75a8009b99c10748d2b32443f5c13ddf2302077f4c6154a3f7e24d0c"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/4-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/4-selfhost/stdout.log",
+      "bytes": 914,
+      "sha256": "76372131268c481e415b869d930ad5059e3c97613e07af5819c50db9e1325bbe"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/4-upstream/launch.json",
+      "bytes": 1840,
+      "sha256": "a14cc0e723cd8fe0de16e8e5521a401c04017ce7d441e904afb880eeb1077406"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/4-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/4-upstream/stdout.log",
+      "bytes": 929,
+      "sha256": "5a569b1379e7389a0dd62910f31d89722ed1b7d12da43db85d0cad8eff776855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/point.json",
+      "bytes": 66,
+      "sha256": "8140c6dfe1297cc719e3eb7be998a1d49c7879a9971707a271953791357d6784"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/selfhost-calibrate/launch.json",
+      "bytes": 5232,
+      "sha256": "010bdb9fa6d9d6c52ab872de898db8826f9d8d02c6fa2abfa5b70de904bbabfa"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/selfhost-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/selfhost-calibrate/stdout.log",
+      "bytes": 2575,
+      "sha256": "d7e4c3506a5d7d78d03ddf8170f14c0a35c1f5a845aa6f37ba0bcc6d1606faf9"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/selfhost-check/launch.json",
+      "bytes": 1499,
+      "sha256": "ceb637154a9c60311435e63c4ecc57c17225bdb2c24a629470f41340fd7584b5"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/selfhost-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/selfhost-check/stdout.log",
+      "bytes": 707,
+      "sha256": "12dea60b5dbc667bcf56484851e98d21d363898cc7d9e9896955a52656172782"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/selfhost.json",
+      "bytes": 88,
+      "sha256": "c3a6c4cd9b03711ee55029f1725a4f4ec67e79f3a00b6f42fc663dcefecdfb7a"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/upstream-calibrate/launch.json",
+      "bytes": 6918,
+      "sha256": "46a92a9ecfb5a562b21437f52997e0a08b1c78d7d6263b24893ac99a92b19b28"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/upstream-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/upstream-calibrate/stdout.log",
+      "bytes": 3444,
+      "sha256": "9575602785752207aaddfe49cafd625802d5dafd0262fe08abb9c31d47a5f371"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/upstream-check/launch.json",
+      "bytes": 1498,
+      "sha256": "1e7633747ecf31f890452a2430a3f69727e7c67e3c5d04c69f255456b86c0cb2"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/upstream-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/upstream-check/stdout.log",
+      "bytes": 705,
+      "sha256": "7bd82dc15b5332ac68e3cebe642b05c703235147802919c85374941ed8cf122b"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-evening-program/upstream.json",
+      "bytes": 90,
+      "sha256": "08989c91fb265171024a16c20a747eb3b465b019deef3282d79dc48d71565e9b"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/0-selfhost/launch.json",
+      "bytes": 1813,
+      "sha256": "19c72236293220145bd5f6fb759246becdc2ed9b3c8d5b82ecc4cf7688126c32"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/0-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/0-selfhost/stdout.log",
+      "bytes": 911,
+      "sha256": "1707146ae8229e9f37d3dfba2b707fb84bc8af0157432d2d26adefa4889d45bf"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/0-upstream/launch.json",
+      "bytes": 1824,
+      "sha256": "aeaa1dd3c94de8eb8efa20e24ce3097c33f0f05206c33b303e2aca2e11ec806d"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/0-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/0-upstream/stdout.log",
+      "bytes": 922,
+      "sha256": "8ba3e3230b1ef3eb5f40606bcd67ed8595b8e528b390a0224a2de07870971c92"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/1-selfhost/launch.json",
+      "bytes": 1801,
+      "sha256": "4c7b7939e9f492c97df900548b1234770e03b373590a4858a50ae10cb778564e"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/1-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/1-selfhost/stdout.log",
+      "bytes": 899,
+      "sha256": "2d52c5e15fb5ced9e4b97cd836986dadc40a4c0ad7be9dc430552575fe170635"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/1-upstream/launch.json",
+      "bytes": 1830,
+      "sha256": "cdd271ce893c13379304df50bbd94e7f4cddd4134c86b37308f675f55f584126"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/1-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/1-upstream/stdout.log",
+      "bytes": 927,
+      "sha256": "33e27589716d609eae35b1f8e6f175eaf2121c9c98bfcdfa02daa06687fd6901"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/2-selfhost/launch.json",
+      "bytes": 1803,
+      "sha256": "15022bb302034ca93ee46f14c3fbcbd11c2411cc5f5c98c90d60e38e318d659f"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/2-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/2-selfhost/stdout.log",
+      "bytes": 900,
+      "sha256": "b5b13f3acfe47c4a2c11ec0f6aac8a533731e8f34e230ba226dee68851295d04"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/2-upstream/launch.json",
+      "bytes": 1797,
+      "sha256": "578502a2b2447b9e096e5d0676e09d3b70a6f8328505ecbdeb57c5b5b3572912"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/2-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/2-upstream/stdout.log",
+      "bytes": 895,
+      "sha256": "01493b4b020ec0361682f9122ae587641041f2ae823b38501ff7d20b9c7c2b2d"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/3-selfhost/launch.json",
+      "bytes": 1806,
+      "sha256": "bcc1c90ab2302110bb1293fad7030fed63301ff89cb54810abb15fca457bd13f"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/3-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/3-selfhost/stdout.log",
+      "bytes": 903,
+      "sha256": "9ebad89658eca52707c8a59daf2b1ec87ba06f2dc6ae5a4a6b73ab060687ced4"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/3-upstream/launch.json",
+      "bytes": 1821,
+      "sha256": "1366e8d84c245134e00a0251e2d644643edfbbff36ceeb923d24cd2ee70c73ed"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/3-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/3-upstream/stdout.log",
+      "bytes": 919,
+      "sha256": "950329a8df553c0040d6bb5c1693543b0b8209f179fa19a8580607b0b3ec8cd1"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/4-selfhost/launch.json",
+      "bytes": 1785,
+      "sha256": "c18d46fbff83b396fd80d39a212f8f3b77717f112858ffb2d4cbd0d20f014599"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/4-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/4-selfhost/stdout.log",
+      "bytes": 883,
+      "sha256": "7da2ba52fb8775a7a16648d207334086f0ce3aac2a94e43b9d9d052f30d68abc"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/4-upstream/launch.json",
+      "bytes": 1823,
+      "sha256": "23dc8f84bf265af2694c7aa63ee9e6186b2789e40d8a903899023ac1773c63c8"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/4-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/4-upstream/stdout.log",
+      "bytes": 920,
+      "sha256": "c3a859c5c29fb4e3239822c282183179beff5e01ef18768746b11acd8c4c1a7e"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/point.json",
+      "bytes": 66,
+      "sha256": "eca4878a67f80c9a06f1e89aef7c94eb31daa883b0567986749ae5809167f025"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/selfhost-calibrate/launch.json",
+      "bytes": 3911,
+      "sha256": "843dd5af8a16ccf8a120aa401c0997a8a83a1262840b82ef76b28a9e1cb920c7"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/selfhost-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/selfhost-calibrate/stdout.log",
+      "bytes": 1913,
+      "sha256": "958d77d7655408d2a3a4845d4862e7c645a581b9382b806036c7e42d39fc866e"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/selfhost-check/launch.json",
+      "bytes": 1487,
+      "sha256": "5ef164172603924aaaa94ec4d2adacadd1bc28f50284f53907fff5be4f6879b3"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/selfhost-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/selfhost-check/stdout.log",
+      "bytes": 703,
+      "sha256": "04a709acd7afe8125df5046b5776c753e0ca6543d4228383d9400628d43bd348"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/selfhost.json",
+      "bytes": 88,
+      "sha256": "07bf1def5053cfb02adad2846dbd50ee66ba51689719ff40e2d1d3a960747784"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/upstream-calibrate/launch.json",
+      "bytes": 6205,
+      "sha256": "abd405698b26c3fe20246c72f1b2720d0fdca983ef31c980f8faa87a9321ef65"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/upstream-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/upstream-calibrate/stdout.log",
+      "bytes": 3065,
+      "sha256": "d04f372725b0fb2e1edcf8e39057ac59a1d3c67322135b59881ae86c02daa33c"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/upstream-check/launch.json",
+      "bytes": 1484,
+      "sha256": "f2601074af98eabba702fb371192e4e7cb6b81b982576d7e2cbf12bd4c14e195"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/upstream-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/upstream-check/stdout.log",
+      "bytes": 699,
+      "sha256": "2a8bca214f15fdfaffe6b8bd197b8ddd5c03663668940d8141b5c05d8304f9b4"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-map-set-ops/upstream.json",
+      "bytes": 90,
+      "sha256": "d411fef8ad0fa1ba602b4e71ab7388882cfc3874316b3f17d4f57bc8d3d94c26"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/0-selfhost/launch.json",
+      "bytes": 1879,
+      "sha256": "af35c17fce7f7c3e1f1ce4c46d0918867fde7e473229a8e08bd28a299525e22c"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/0-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/0-selfhost/stdout.log",
+      "bytes": 968,
+      "sha256": "580ffc29e9e8220a018a3fd8bf720f1fc4de0e04d541cdb29af3ee0621034270"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/0-upstream/launch.json",
+      "bytes": 1889,
+      "sha256": "76fc9b3f44299613ed39cf30ca43057202d6dc8c1ec8b5481c76353226fd887e"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/0-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/0-upstream/stdout.log",
+      "bytes": 979,
+      "sha256": "386b66eeec059be648068a952f85c91469c505925820085851aca5ffec81054b"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/1-selfhost/launch.json",
+      "bytes": 1879,
+      "sha256": "8de60b11613341fe7fa6e42bfbcf183d2d3c0307866e34183e17873f6bf0776f"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/1-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/1-selfhost/stdout.log",
+      "bytes": 970,
+      "sha256": "635e44bb4c99d4e2e8003d688904f309848c3af59a692b049d09d4ff5b7cbdc5"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/1-upstream/launch.json",
+      "bytes": 1895,
+      "sha256": "ca79b8098e3de24e9b3e3d04163d6a8a7ade3f719e56d2fb0026cd96eb6891d4"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/1-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/1-upstream/stdout.log",
+      "bytes": 984,
+      "sha256": "ba9666166444efdeb47d6771bd55ca2e0af2ca40d8dbbc121145da5750d733c6"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/2-selfhost/launch.json",
+      "bytes": 1878,
+      "sha256": "55a23b0975cd54e9b40c07ca9a655d9e998631589644c61ca61e9bb087524fb1"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/2-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/2-selfhost/stdout.log",
+      "bytes": 968,
+      "sha256": "0f8c5249569f67199514a9cdac59374142f6b3d00bf1e82ec146c2734153fae2"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/2-upstream/launch.json",
+      "bytes": 1890,
+      "sha256": "614e17dc524ec026387c4d896ed403e94a997debb4aef2371cbfa81761ab2631"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/2-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/2-upstream/stdout.log",
+      "bytes": 979,
+      "sha256": "cf8721aab958db548a984726b4e17ff8aa8977dacc343b2eb8f3cabfa77a48b8"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/3-selfhost/launch.json",
+      "bytes": 1879,
+      "sha256": "d3e3f99337c89fb6442ebe5bfc9ce562a4057a07d0e16c2cd2e389f321ec4059"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/3-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/3-selfhost/stdout.log",
+      "bytes": 968,
+      "sha256": "66ba65aa4f0cbfe76f59e512ca9d74d30f4c4760f796a06b448c1030fa7a8500"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/3-upstream/launch.json",
+      "bytes": 1880,
+      "sha256": "4812d2eea6f369a5eb12a1e5471bf74957ea945d21ba9d52e5777a41d698f994"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/3-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/3-upstream/stdout.log",
+      "bytes": 969,
+      "sha256": "073b0a21aff8897a17d13193daab2149c11e24aba9aac76e4584e396577ab1ef"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/4-selfhost/launch.json",
+      "bytes": 1870,
+      "sha256": "0c68b8c4713bd85fa57505c166b0ac2d3a655d7051cc70bf02f0db804696993c"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/4-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/4-selfhost/stdout.log",
+      "bytes": 961,
+      "sha256": "2b6519b3254220a2a3049296e4763b32a34a7f0764fe2fe609aa0096e8cef66f"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/4-upstream/launch.json",
+      "bytes": 1890,
+      "sha256": "c274637dce9f5deda531abf15a5cf1b534dc46cc99fd36232e434eeef5b0c960"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/4-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/4-upstream/stdout.log",
+      "bytes": 979,
+      "sha256": "5f4d02b547815643434e974808c067a42a2e1daa855b6f378ffbbb87d670e031"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/point.json",
+      "bytes": 92,
+      "sha256": "6346b0605200e0f49ae20a331865718d296a635484bc4fb1b9ddac6a0ac03eb5"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/selfhost-calibrate/launch.json",
+      "bytes": 4931,
+      "sha256": "1ec2e7535a1407cb3d36211039bcb38a8be3e704c1cd1b33abd9b7c1e9b41400"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/selfhost-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/selfhost-calibrate/stdout.log",
+      "bytes": 2435,
+      "sha256": "2d48627eab3cd55050cd46d6b8d9394d12b0c3a8ab8b87ab8fbfeaf86595291a"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/selfhost-check/launch.json",
+      "bytes": 1552,
+      "sha256": "e78e66f57e75ae1d6581d804924bc61b8b3664184ef7c90b3435b00800f6dd85"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/selfhost-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/selfhost-check/stdout.log",
+      "bytes": 759,
+      "sha256": "1418f973ab48047593554e3a1919cbe03b25453eab479543f5cd56d1e3a05df6"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/selfhost.json",
+      "bytes": 115,
+      "sha256": "eefbb611ce12d34a3da5f70bb0d8c2d06a6da46e521b674e068020090af20ec6"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/upstream-calibrate/launch.json",
+      "bytes": 6917,
+      "sha256": "6bcf5a6f878cb55342aac396ec79480bdd2c494f998db4d76a6858349e2db160"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/upstream-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/upstream-calibrate/stdout.log",
+      "bytes": 3443,
+      "sha256": "703bd35c8b94acdb2ccff7f03fb62202b7383b0f664e58c58ae7b797871569ef"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/upstream-check/launch.json",
+      "bytes": 1550,
+      "sha256": "6e6b264e230c6ab68b0a89470c529a9e4145856f20a18ce7f16eae342ba04eee"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/upstream-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/upstream-check/stdout.log",
+      "bytes": 758,
+      "sha256": "c8aa751d15fc493e9b3b0899e662e8b7982989ad9f3c5c5c726e107b3832ff41"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-morning-program/upstream.json",
+      "bytes": 116,
+      "sha256": "4eb3300707c19bbb3344e66ef94abe7f426ead28ca064c5a7f6933311b326693"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/0-selfhost/launch.json",
+      "bytes": 1817,
+      "sha256": "ea1fdd0b15474e1bb2ed5a5a0e079a9dcfc5c2bf18ee199d399cc4d6ccd9d71d"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/0-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/0-selfhost/stdout.log",
+      "bytes": 911,
+      "sha256": "58e82168a032d5140a7f3cc9e2124e172841d4925f378e6676a2c84695595705"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/0-upstream/launch.json",
+      "bytes": 1838,
+      "sha256": "e091e0082f863c2fecbd7d8be37807d327202ddeb1eb076a2767992aedc7e27d"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/0-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/0-upstream/stdout.log",
+      "bytes": 931,
+      "sha256": "b743942c406ce60545b17f2d5f50e11a9153e572d9c5c631ae398011bfa2289b"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/1-selfhost/launch.json",
+      "bytes": 1826,
+      "sha256": "cf31c04fa3d112ec4db475c4a1383393ebf99a481e3343c8d310110dad5fdd4e"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/1-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/1-selfhost/stdout.log",
+      "bytes": 919,
+      "sha256": "123ab056092c93fb91a2afbd0af9d2f72a76393f5c0c057c004e6a29eb29ffff"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/1-upstream/launch.json",
+      "bytes": 1829,
+      "sha256": "2a2c67c38bed94ffd47a31884229b36c95b8ce1eba0c38a80907100a4e30da88"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/1-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/1-upstream/stdout.log",
+      "bytes": 924,
+      "sha256": "c4b605f5c3b9674dd034f41e4d820b8431cf13f6f21cbadce2e6b492fdfb3f5d"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/2-selfhost/launch.json",
+      "bytes": 1809,
+      "sha256": "c2dfb6a454510e60458b471f1bb95e2f2f8df370148b315c236deb02beabfb68"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/2-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/2-selfhost/stdout.log",
+      "bytes": 904,
+      "sha256": "671b15baad018fa8ffba839c3dda3657270ec3482d29994bf11850b0ddbc04d6"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/2-upstream/launch.json",
+      "bytes": 1815,
+      "sha256": "47c5fffaca5e5a1195843a99c443d3bc4dfa32b89e8572f60f3bb4baa268d789"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/2-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/2-upstream/stdout.log",
+      "bytes": 908,
+      "sha256": "fc8a26365dfdf816777ddc1d8a99a415999c2b9e097dfa5878828284323d0af8"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/3-selfhost/launch.json",
+      "bytes": 1811,
+      "sha256": "0de479c0b8263d3a8275142d917665fb5ff2360aa7c35ac47f7a9f9e26372622"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/3-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/3-selfhost/stdout.log",
+      "bytes": 904,
+      "sha256": "d6f43cd0ac1aa0721e92220dfe0f5cbe303ba7cb8aa72fbef0a4ad56d77fc508"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/3-upstream/launch.json",
+      "bytes": 1830,
+      "sha256": "75bffcdf678e3662544b99d3cf8260ac6ea9a649ee49e9c3b1a41e202e8e1309"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/3-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/3-upstream/stdout.log",
+      "bytes": 923,
+      "sha256": "28c801f796028e2ac16b65c88bb973713cf97336eef04e37b0c9f322ccc3b5c0"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/4-selfhost/launch.json",
+      "bytes": 1809,
+      "sha256": "1e7b6d097c4343da12805338f8c73484a1192641eb235e28a48a95c219569a87"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/4-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/4-selfhost/stdout.log",
+      "bytes": 903,
+      "sha256": "7e762f62f4bd34eaee557d77e21fd3e1b3e7bcb73087a4c11a84caf6df5a09b7"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/4-upstream/launch.json",
+      "bytes": 1828,
+      "sha256": "e0bb652d13d5d4bd50520e5490346446ca5702e70fed7a8cc467a9fef3bc6092"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/4-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/4-upstream/stdout.log",
+      "bytes": 924,
+      "sha256": "51dcbba4e45ec6d6518c4517ce766c280f29814911485fb8cbec9b7f2e6cc4d1"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/point.json",
+      "bytes": 63,
+      "sha256": "4a62304e2c6fb02990a55c2808959619f0d9314e0c2f37165890282a992110ca"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/selfhost-calibrate/launch.json",
+      "bytes": 5507,
+      "sha256": "51742393912738c9f70955525d6f733c2907e5010fdc329982fa33c047c48804"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/selfhost-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/selfhost-calibrate/stdout.log",
+      "bytes": 2690,
+      "sha256": "0a1663f3bdef3b2401f92c2dcabe74fe5a2cbb54f776df6de97e83e6cb9f8234"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/selfhost-check/launch.json",
+      "bytes": 1487,
+      "sha256": "eee9627b9cc60b34cd68691228d4d2eab18264e7f06807f725ff3bbc01f376ba"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/selfhost-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/selfhost-check/stdout.log",
+      "bytes": 698,
+      "sha256": "495e8c1fda92b1de59d214d40a305e6bf0aed4384ac0138fb29a3e49960f2dcb"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/selfhost.json",
+      "bytes": 86,
+      "sha256": "b6c8a6efb4d695783ea353634dc1649878a9353313da247c9bf79cffc10748bc"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/upstream-calibrate/launch.json",
+      "bytes": 7167,
+      "sha256": "559ad0e3dd778301d69daf3851d3b34213d40094226ecff1977636755465a6bd"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/upstream-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/upstream-calibrate/stdout.log",
+      "bytes": 3534,
+      "sha256": "5a36b17310db5e211d91ddb9b27b5c67ed51649cc97d76bdd1d955ea19f16677"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/upstream-check/launch.json",
+      "bytes": 1487,
+      "sha256": "764a407ec66c4cc5c60e55257f45e210b43afa28bd4799dc48e746a078d421e3"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/upstream-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/upstream-check/stdout.log",
+      "bytes": 698,
+      "sha256": "4e7f1583bfa8ad992cac92cd6e79f2fea8c31487d846cbef4cd49a44720d3448"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/test-rle-roundtrip/upstream.json",
+      "bytes": 88,
+      "sha256": "99697a64a2bd57398efefde65a41bb13cd1ae7fb8e25979098ab3f56c427b83c"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/0-selfhost/launch.json",
+      "bytes": 1821,
+      "sha256": "1666cf600cd94cbb4c2e8072c1875f5910a88cd2e7edf1f8b68f54fefc42d02a"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/0-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/0-selfhost/stdout.log",
+      "bytes": 907,
+      "sha256": "aca7950b14c7d55184d74fb4aefda0d934d8452996e5a60c3aae0db15cdbc965"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/0-upstream/launch.json",
+      "bytes": 1835,
+      "sha256": "1abae3da4b60e329cf56979c29f2035f47fa45a3bf17f9325a41b71736ab7a0e"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/0-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/0-upstream/stdout.log",
+      "bytes": 921,
+      "sha256": "ea6b6cd6610a622f30a8400620bcf8c7ffe81636de7b6d423ec585781f18aa52"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/1-selfhost/launch.json",
+      "bytes": 1823,
+      "sha256": "735c4e22d185e98d328fab20bb19637ba725ca14fb552d8f991bf335864897e6"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/1-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/1-selfhost/stdout.log",
+      "bytes": 908,
+      "sha256": "cdae8bb19b0c546f7c7af939eee35dfe374023629bc071aa02f94355515ca43f"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/1-upstream/launch.json",
+      "bytes": 1819,
+      "sha256": "cd5bb89813c232df5b83419e20e26eb8250f55ab104f3637ccf6d785e0939e25"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/1-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/1-upstream/stdout.log",
+      "bytes": 904,
+      "sha256": "f1f6d2b8c6a5e47abdd7b9d29458f4050c3d066ed8dddf2e09595a664018d446"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/2-selfhost/launch.json",
+      "bytes": 1822,
+      "sha256": "d0cc5dbf4d3931d28bc58287fb152f09dc8abd2db478d84ac0d34f08758c5703"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/2-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/2-selfhost/stdout.log",
+      "bytes": 907,
+      "sha256": "175db9fb63ab8331ac6a60181e5d8fdfc0e468c71f72d167ac2c08c625ab0ca0"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/2-upstream/launch.json",
+      "bytes": 1826,
+      "sha256": "82a56ddc6b3f9df2642e4002f91695ccfd8b922ce7618340a9c22b63876df095"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/2-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/2-upstream/stdout.log",
+      "bytes": 911,
+      "sha256": "17ae73c2fb77fdf16483c75a0321f2291dc1d5a9b583665e1565b858e3577a7b"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/3-selfhost/launch.json",
+      "bytes": 1814,
+      "sha256": "72543a6d62a64b319e2a3b0cc379c24b063e84d11b273c54cff5a6b16987e9c1"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/3-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/3-selfhost/stdout.log",
+      "bytes": 899,
+      "sha256": "b506dadd1a7200f14d20431df4b49d8e76ce177c0c41c8adf49530c3f847be96"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/3-upstream/launch.json",
+      "bytes": 1834,
+      "sha256": "f51b4e282aa4eb7f4b73223b459dfa1f281bf2c3dfb22233a81e88ba5db26e91"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/3-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/3-upstream/stdout.log",
+      "bytes": 919,
+      "sha256": "992e574af99e41eecd44fa6207d01cbb74d347e6ef8993ba0b217d9d169cff1a"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/4-selfhost/launch.json",
+      "bytes": 1811,
+      "sha256": "0779cde3454b0f4f0473dcedb4d10f55499020d3591c7e86cf5bb626581b22f6"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/4-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/4-selfhost/stdout.log",
+      "bytes": 897,
+      "sha256": "d5842b03af94a91d3bc35dc2861f84e9b8920e94284cac254912a4d0ad7b7792"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/4-upstream/launch.json",
+      "bytes": 1811,
+      "sha256": "5d71b5e2a70025293e9ab1fd6a4252e760446886b2cb0a48367af475c78834a3"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/4-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/4-upstream/stdout.log",
+      "bytes": 896,
+      "sha256": "6f3854909735c0a3d8c93c9db88792a7a77c047c89d5efb709ebcc90b120243e"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/point.json",
+      "bytes": 83,
+      "sha256": "82a33f90d18ed6559f208995335e902c82f8dd8e15c6315a45c049fc0271724b"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/selfhost-calibrate/launch.json",
+      "bytes": 2689,
+      "sha256": "d85949a126a0c5e83fca5f2bea60781ad56abb1ea04917146452f4eb39de65b8"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/selfhost-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/selfhost-calibrate/stdout.log",
+      "bytes": 1330,
+      "sha256": "af64b3eba7c3e369828a8df601e9eabf716757a95130c2b30ddd78a1923d7ce6"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/selfhost-check/launch.json",
+      "bytes": 1498,
+      "sha256": "b200d053e753a3a305939bce8701e5b45431c74550d49b852f7ac87bd544673f"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/selfhost-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/selfhost-check/stdout.log",
+      "bytes": 701,
+      "sha256": "4a3649241d68fee0b332944ee7d10ee042bb89500a2f314ec03e150ca83d54a7"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/selfhost.json",
+      "bytes": 104,
+      "sha256": "ccff487605e6f6a4f941ae18ef638075caebc778c201ab0fd76308cd5d0cad23"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/upstream-calibrate/launch.json",
+      "bytes": 4920,
+      "sha256": "ac90217ce904819f6248e6a799e72be1d77b7eb537089bdc2d4a3af4c75f10e8"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/upstream-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/upstream-calibrate/stdout.log",
+      "bytes": 2422,
+      "sha256": "1678513e849b872503056a4297aaf2efb9ce637dcd577c55007c1fbe6d6c600a"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/upstream-check/launch.json",
+      "bytes": 1498,
+      "sha256": "20bb180655193b1a8e7c6803f7d6ed288df613a189621a9344640c5be10c82c5"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/upstream-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/upstream-check/stdout.log",
+      "bytes": 701,
+      "sha256": "afd7ad086857807438cfb6884a64649f781365484d8c0eb972ca96d525594a74"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01/tree-bitonic/upstream.json",
+      "bytes": 105,
+      "sha256": "6bf074d558bb35025d44552b47dafba4711947005a73051d3f4ed8b3996f441b"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-01.log",
+      "bytes": 11515,
+      "sha256": "8c92bb79fca0a179c2f3e162eaa0325a1c3133e3160d241e40fb7064907ec2ef"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-config.json",
+      "bytes": 6458,
+      "sha256": "a37bc2d33302ce6d0c8d3318fe50d40c712438e183d4f1c1d2698e9c45531f32"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/0-selfhost/launch.json",
+      "bytes": 1805,
+      "sha256": "4c66ac5e1686b138f823637fb0892394d4cdd02dbba46543b1fdb81d6cda651f"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/0-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/0-selfhost/stdout.log",
+      "bytes": 886,
+      "sha256": "36e48723bfd27e4e1d4ddf1bb16def1a5276751ac383712e25ead46a79dd418f"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/0-upstream/launch.json",
+      "bytes": 1835,
+      "sha256": "297ea6ae289bb19a3340068779f26f6f072cd2fc94bd68ed98de3e7102d5f122"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/0-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/0-upstream/stdout.log",
+      "bytes": 917,
+      "sha256": "6294158c001273f4a59af639360601b60af1cd2362626489137193d6a739e995"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/1-selfhost/launch.json",
+      "bytes": 1814,
+      "sha256": "bc17b10501e12ac014bba2a974b57d39c42ebfa0202953f200281e41816328d0"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/1-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/1-selfhost/stdout.log",
+      "bytes": 896,
+      "sha256": "cb321e66b9ca817a1670046a028a9cf5eae41207b778059665294e57ea6577d7"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/1-upstream/launch.json",
+      "bytes": 1837,
+      "sha256": "9604be705ab7cb45a246bc280c69a0261dcb9b44d9a699dace72e1421da1acb0"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/1-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/1-upstream/stdout.log",
+      "bytes": 918,
+      "sha256": "23ab3e178bf424f7aa9bd5381bba8b1f23fca02e2adab7aeafe007de83018568"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/2-selfhost/launch.json",
+      "bytes": 1811,
+      "sha256": "559c451a59377593717b9096ecce687f0404e9b04211b1f8379e4bade6bb9623"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/2-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/2-selfhost/stdout.log",
+      "bytes": 893,
+      "sha256": "380bb24e8cf79a0334492ade952cb50161e2ab893eb71bff91a77caaa1d20893"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/2-upstream/launch.json",
+      "bytes": 1836,
+      "sha256": "6f9e264f98fed5785e0679533378188857a482684ad93baf1429cc32d1b95875"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/2-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/2-upstream/stdout.log",
+      "bytes": 917,
+      "sha256": "078bdb372d5b675a73484b1b8fde45b0281c11843dbb4b72c4e91e484401796b"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/3-selfhost/launch.json",
+      "bytes": 1822,
+      "sha256": "a973c65634a84930a82af0c822d1b8c3f9937b36d6790ddacf1e28fed24e99c9"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/3-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/3-selfhost/stdout.log",
+      "bytes": 904,
+      "sha256": "d3664f242fd33e68b33e94bbb5687e5cc8364201f1d97051e7b736d1bf60792b"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/3-upstream/launch.json",
+      "bytes": 1833,
+      "sha256": "b81bca68b2aefcbe069f84667f56c004011e3fd95f0752de0b47b10ce8781437"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/3-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/3-upstream/stdout.log",
+      "bytes": 915,
+      "sha256": "d6f9162cad615d9aa7d184282ec4a8219c019f83fcac8af54b45c426a5c523c0"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/4-selfhost/launch.json",
+      "bytes": 1820,
+      "sha256": "06866b724a5a88e2185d3a15f554d5e90bd3d1d39df5def11f7816da4a7a9ed3"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/4-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/4-selfhost/stdout.log",
+      "bytes": 904,
+      "sha256": "d0f0e4ff410b05931da7425372f109856de6fb53cf81bca750e281805739ff21"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/4-upstream/launch.json",
+      "bytes": 1837,
+      "sha256": "a296436730d3f83a17cca37b7c840fdb56271132708fa9748d1373a8a9eb7adb"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/4-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/4-upstream/stdout.log",
+      "bytes": 918,
+      "sha256": "df5f2da0e67fbd75464c857360ecc07932ab20015ef033fe2cedf475e518d5fb"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/point.json",
+      "bytes": 83,
+      "sha256": "8886e298d62f6ac0d7d5db93b4254c1ee42153e0a8795dfbbae6ca0cd23957a9"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/selfhost-calibrate/launch.json",
+      "bytes": 2357,
+      "sha256": "0570dbc970d74dd091e399036fb40320a834ed863f6779e504505e4cef0108e5"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/selfhost-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/selfhost-calibrate/stdout.log",
+      "bytes": 1158,
+      "sha256": "ca4df8bf84515824ed64e53949add4603a95e0cb0ce84f59be76ac9acf7bd27d"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/selfhost-check/launch.json",
+      "bytes": 1493,
+      "sha256": "dd02aabaff02ca162cd3bad547133d8b845997c46c7baf27ae13c50d6a359ed0"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/selfhost-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/selfhost-check/stdout.log",
+      "bytes": 692,
+      "sha256": "989d4cc35c1459681df0ebbf47ced03420905b395e236977334e22b5585dc116"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/selfhost.json",
+      "bytes": 103,
+      "sha256": "aa43d2d629cd77520ac3f03390f081fde3dcdcd40b8c224f81cfd1f5ea8450bf"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/upstream-calibrate/launch.json",
+      "bytes": 5936,
+      "sha256": "1a0cf2e9aeb1524022db4dfe5d2b90cd02ddd0f413e867e1adc6ff29e1bc25e9"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/upstream-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/upstream-calibrate/stdout.log",
+      "bytes": 2943,
+      "sha256": "b81e9669d99237202b4ff0b25b17be9cdab416224d998e553597f99589fd3a24"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/upstream-check/launch.json",
+      "bytes": 1500,
+      "sha256": "5fcdcc0324da446b8341d46ea60161d85c28e2817399abb29ab448d4474587a0"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/upstream-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/upstream-check/stdout.log",
+      "bytes": 699,
+      "sha256": "53c5535b57852c9786fb48d50ce2a5aaa0e5c4861f485b99a504e98de2a9a7a1"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/mandelbrot/upstream.json",
+      "bytes": 106,
+      "sha256": "8dc2f8e1d694e124174d21118572a7705beb18a839ca513cc84aca5776245d0e"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/report.json",
+      "bytes": 174643,
+      "sha256": "69e09fa87db9929fe7ce54835bc8a56efaecd6b0e8daa6559db773881eb1b604"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/0-selfhost/launch.json",
+      "bytes": 1820,
+      "sha256": "ca01d34a988051d652a80b6260ca5353ed369ac57f43214168d1a473582690c3"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/0-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/0-selfhost/stdout.log",
+      "bytes": 910,
+      "sha256": "41a16d5e5041ed7048aef36d0f9677c64258b8da491df6067835305ee7140b84"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/0-upstream/launch.json",
+      "bytes": 1817,
+      "sha256": "7f57c782fd0897f52bd2780152a609c342e4a00111394dec79173ef7691ababb"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/0-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/0-upstream/stdout.log",
+      "bytes": 907,
+      "sha256": "4886f0591d3854b60902c0e2f48cab6e6f3fe35dd63b054910196d5cff745b2a"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/1-selfhost/launch.json",
+      "bytes": 1826,
+      "sha256": "0689a37532ff0063b26a38d4a1400560bdcaa29eeeb15389ed41a8860bedb91c"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/1-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/1-selfhost/stdout.log",
+      "bytes": 916,
+      "sha256": "0eb3151d6ac981485118e7cd43df7ce4288a22c0e3ad47a2eae942e0e36b676b"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/1-upstream/launch.json",
+      "bytes": 1833,
+      "sha256": "b68fe573fb91f01a8b33da79ed6216e350074ab8c245cecd532ae98350642df9"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/1-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/1-upstream/stdout.log",
+      "bytes": 922,
+      "sha256": "cd52b5a41ccd4d25587e56fd3378f3c4b0d426e3ef9f698d4a6a2858bbc34c98"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/2-selfhost/launch.json",
+      "bytes": 1829,
+      "sha256": "a4a3e1395868b6b6942ac34ebfeac242d9b5baefc55ad8c9af0fe0f22c77d967"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/2-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/2-selfhost/stdout.log",
+      "bytes": 918,
+      "sha256": "cd9d8c492d136fd042bd2e32b1244c6d5af616287da62c116973984c573268c3"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/2-upstream/launch.json",
+      "bytes": 1834,
+      "sha256": "3650adae2027d2c485591d38021e2dccded7a082e91211ebed83b7f60335ee09"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/2-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/2-upstream/stdout.log",
+      "bytes": 923,
+      "sha256": "68811e89c8e3c15d7f7c0703cd78f2f34b323b27319ab70f874f3d8f3d41d4b3"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/3-selfhost/launch.json",
+      "bytes": 1810,
+      "sha256": "b2950c343f1e0f6ebdf1f2aeae9fda6b9bf9faacc866c521c318828b4cc6f3dd"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/3-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/3-selfhost/stdout.log",
+      "bytes": 900,
+      "sha256": "365bb89950f60b4860ba013da603b8e7a4ce776cbb69296f5dfe71efa469f2f2"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/3-upstream/launch.json",
+      "bytes": 1832,
+      "sha256": "27f55948965d06a8288e70109e4b5368fb675ee4c1d8ceedecf35fa1ea6ada09"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/3-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/3-upstream/stdout.log",
+      "bytes": 921,
+      "sha256": "aa14e7c98cfb05e572d5d6646130f9e62aea4e956d6520e1b9ad97cea513072b"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/4-selfhost/launch.json",
+      "bytes": 1821,
+      "sha256": "c6714311f79ebab1f910c65710efa5c20938725b7c677a2d49bfe29158f2d2bd"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/4-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/4-selfhost/stdout.log",
+      "bytes": 911,
+      "sha256": "e3bdde84fb0a46309e8bc74979da02b8e3709bcb6e1a5a151290c7cc15c21793"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/4-upstream/launch.json",
+      "bytes": 1833,
+      "sha256": "bafb67e0d71de54375fdd1fcb412570f9e373c9516d1f341b30d31358165e8c5"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/4-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/4-upstream/stdout.log",
+      "bytes": 922,
+      "sha256": "9cc4182cf2bb4705774333df06a1bb67e3521aa88a9bc0a5358249e7938ec44b"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/point.json",
+      "bytes": 66,
+      "sha256": "eca4878a67f80c9a06f1e89aef7c94eb31daa883b0567986749ae5809167f025"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/selfhost-calibrate/launch.json",
+      "bytes": 3921,
+      "sha256": "b77d6fcf133509d53de823180a48b063b15f0a2fba2c2a42fce1df4ff52a6e21"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/selfhost-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/selfhost-calibrate/stdout.log",
+      "bytes": 1914,
+      "sha256": "f0768a04bb5216bd3c640bfa6d428d0acf69b7535e0671c8d2a3a72170c11664"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/selfhost-check/launch.json",
+      "bytes": 1493,
+      "sha256": "ee6d4e7713df4ec9788183c034caf00a31fb4e01202ce1dbb78054a264f49dea"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/selfhost-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/selfhost-check/stdout.log",
+      "bytes": 701,
+      "sha256": "ce3a0764813c687f03316d0beb0662f8008603e6108040eacb192cc6df1c5036"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/selfhost.json",
+      "bytes": 88,
+      "sha256": "a15a8733fff2917297363d7abd603e0ca8e936c7cd99858c746291eb80df10e3"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/upstream-calibrate/launch.json",
+      "bytes": 6220,
+      "sha256": "d957eabe562d35d5ea697fe1f74096d23e5c57fde1cb082edbb11d75643cf02e"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/upstream-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/upstream-calibrate/stdout.log",
+      "bytes": 3073,
+      "sha256": "2db6127fa47c168c146cff0daf44f5ffb666344899ce607b5fcd6c8fa9335feb"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/upstream-check/launch.json",
+      "bytes": 1494,
+      "sha256": "c6163dd5fae26f16347f5b9fa429e9309e01e280cc89376040b66131daa34f3d"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/upstream-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/upstream-check/stdout.log",
+      "bytes": 702,
+      "sha256": "c88884d1e21da58780b8294a333962e4f4b458525ec57edda30d7e55db58c4d3"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-map-set-ops/upstream.json",
+      "bytes": 90,
+      "sha256": "ffff373f5c0787592adcbda9feba3ebd287fecaeaec226780d28892101bf3b76"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/0-selfhost/launch.json",
+      "bytes": 1886,
+      "sha256": "66a1d6d3de9abe7950a7585d49556737ae7d7715426226110d1314d119546573"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/0-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/0-selfhost/stdout.log",
+      "bytes": 968,
+      "sha256": "0ca1b6c608054d24d62be8ff5beb2b017b8efb44bae8b78fb677f963f1f9b8fc"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/0-upstream/launch.json",
+      "bytes": 1896,
+      "sha256": "daa41b9cbe341adf9f5c21ac1f587a32a1ae9dc7688a68153abe015baf162b8c"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/0-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/0-upstream/stdout.log",
+      "bytes": 977,
+      "sha256": "5095793275f46762445050e9488cab0fb2230b2eb8e4c0a28caee4038e890cba"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/1-selfhost/launch.json",
+      "bytes": 1887,
+      "sha256": "3c8b25b75ffbf581bea2d0a2048bc5bff1b3f6af24e4dc35e432897751a869fa"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/1-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/1-selfhost/stdout.log",
+      "bytes": 968,
+      "sha256": "080b1ac3f97679c033e4ea320b6749a3ea1b5df12ab96c2aca61695c700062d6"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/1-upstream/launch.json",
+      "bytes": 1902,
+      "sha256": "398633293e38e16d427ef70c6a2dc6f0175af77bdc15165b5733fde31689d170"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/1-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/1-upstream/stdout.log",
+      "bytes": 984,
+      "sha256": "f07704267980d195811ac1aa636a7e6b088c8c2e6a1d56635485a8972194c1fb"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/2-selfhost/launch.json",
+      "bytes": 1888,
+      "sha256": "5b0075bb048afd7ca1923b35ad3075c0b0b7cc49a4105903625cbe0cf2cb9af3"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/2-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/2-selfhost/stdout.log",
+      "bytes": 970,
+      "sha256": "981c0e007b8533fedfc6af0035585e26c544fe9d243f86558179a71607d0bf0d"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/2-upstream/launch.json",
+      "bytes": 1904,
+      "sha256": "b7410b47dad1d9cc5626e617c6fc06b2b75e98c4bdb74c455f4ae019af396d7a"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/2-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/2-upstream/stdout.log",
+      "bytes": 986,
+      "sha256": "6908e7392c7b1c1a5dffbe8590b943a0aff2d35b5918672ee3b6bbc3979ca3b5"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/3-selfhost/launch.json",
+      "bytes": 1887,
+      "sha256": "ee87fe102cc99befdd8a87ca4796ae4ab75e23ec3ebb04a9307f595ed580cf3f"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/3-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/3-selfhost/stdout.log",
+      "bytes": 969,
+      "sha256": "566ddb739cbf839f49c4507cb358067a33fc986853582fd7133791624835666e"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/3-upstream/launch.json",
+      "bytes": 1897,
+      "sha256": "09b955a7f71abaf7634510420d43095034c8bacecf1ddeecb3c28b7c06ab341a"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/3-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/3-upstream/stdout.log",
+      "bytes": 978,
+      "sha256": "cf1925210b6aa172104d073923f67253296fbba5eedadf1ecb7d9fc3daf47493"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/4-selfhost/launch.json",
+      "bytes": 1887,
+      "sha256": "2b22291b33dcaf1c3049ca83760bfb7e1483c19ac2541bc203a82cf72a86c849"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/4-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/4-selfhost/stdout.log",
+      "bytes": 969,
+      "sha256": "ae06b539ea126c64adcc369461743248571d2de85d913c581f70e34cdced515c"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/4-upstream/launch.json",
+      "bytes": 1903,
+      "sha256": "a56f5fa3a26194c021dee4a30154fbf2befc3951baa71fd171c04737b9e7c4f9"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/4-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/4-upstream/stdout.log",
+      "bytes": 985,
+      "sha256": "bc567b4db499a98ede6e86d749eecf9ef4c376588f1ae57b48512b0bceed85a7"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/point.json",
+      "bytes": 92,
+      "sha256": "6346b0605200e0f49ae20a331865718d296a635484bc4fb1b9ddac6a0ac03eb5"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/selfhost-calibrate/launch.json",
+      "bytes": 4946,
+      "sha256": "997d824e1e4b46c0d175dcddcd7a3bde05e55a38ad2e5330aa7f2b6f7e7eab56"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/selfhost-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/selfhost-calibrate/stdout.log",
+      "bytes": 2443,
+      "sha256": "bb1ce8f319d3d85e176b4ea046fcc2d1f36821e59b6fba530980d00ece31f3dd"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/selfhost-check/launch.json",
+      "bytes": 1559,
+      "sha256": "da8616cab39fd9fe9110ab9be892add870fece55ce3a7b11cd149877c7db640e"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/selfhost-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/selfhost-check/stdout.log",
+      "bytes": 758,
+      "sha256": "b06e658e634896778ef3503010254f5c6ef2deed7fd1bb2c53642bf7642b520c"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/selfhost.json",
+      "bytes": 115,
+      "sha256": "947067f394b23e6a5188df93e4adb1dc1ef9607307adada36d4ecdf7df51631e"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/upstream-calibrate/launch.json",
+      "bytes": 6914,
+      "sha256": "e023d964fced8a806cff8402b9fec40c9be4d57538c4d9a541f96bb9560fcdd5"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/upstream-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/upstream-calibrate/stdout.log",
+      "bytes": 3432,
+      "sha256": "b220ff23c80c7935adc36ffb6148e945c301470cb5ca9ffd27543f336b31eff2"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/upstream-check/launch.json",
+      "bytes": 1558,
+      "sha256": "5002a4f502764b4afd7ade8cf6ee18d4432e58683497a8497ee14110a8bb8ea4"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/upstream-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/upstream-check/stdout.log",
+      "bytes": 759,
+      "sha256": "ba0eb41cd7db3804478fd6338c343ccd63dc3eaa534643bf64df464315626f8f"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/test-morning-program/upstream.json",
+      "bytes": 116,
+      "sha256": "be2196f63d160d19b0ef0d1567c8f8c0810805f56e86f40423c8d3bfa81f42eb"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/0-selfhost/launch.json",
+      "bytes": 1829,
+      "sha256": "e9fd6d670f1bdfe944162a41e61203c17ed998feb72132351ba2e33ae326955c"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/0-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/0-selfhost/stdout.log",
+      "bytes": 908,
+      "sha256": "503bc95dc821ce43c4304a930c5b34fcaa055c74dc5c5442b9903e8e305886f0"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/0-upstream/launch.json",
+      "bytes": 1831,
+      "sha256": "377b0504398708bbda52cc5500e0407ed76904cf5ae1c333b495a50b7c0735c9"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/0-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/0-upstream/stdout.log",
+      "bytes": 910,
+      "sha256": "27e2ca0772d74b6a1c913beafbc169984394d5591e5ef174111db8f2c91f0e0b"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/1-selfhost/launch.json",
+      "bytes": 1837,
+      "sha256": "ada71caa84c48abd37c4cd1d57e3e36fc25fd6be9d91060ab8595717f1334151"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/1-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/1-selfhost/stdout.log",
+      "bytes": 915,
+      "sha256": "b77edec11e532a17af4fdb61283417ef9c4f493a0a4cb4b684f5976fb3795104"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/1-upstream/launch.json",
+      "bytes": 1840,
+      "sha256": "b9b7da1c133bfb281636ad060db1e9f6be0f9d48fecc020eabf2f878a9bada7e"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/1-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/1-upstream/stdout.log",
+      "bytes": 917,
+      "sha256": "5b34c7cb347e4e241ab606822442ceba6a49071cee0de995b76fa63f7e898596"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/2-selfhost/launch.json",
+      "bytes": 1819,
+      "sha256": "8676ac313297b059622dc0cd5befc5c22bd2eb647412874793a0343f78ff6e05"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/2-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/2-selfhost/stdout.log",
+      "bytes": 899,
+      "sha256": "ef9f34d013a9785a6db05bdddc403932ca338983e7c6b985289c4ebd05780acd"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/2-upstream/launch.json",
+      "bytes": 1840,
+      "sha256": "32c290c56841857713ac3fe61db6455cdce3671061c9207574548581b065ab81"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/2-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/2-upstream/stdout.log",
+      "bytes": 917,
+      "sha256": "560244f2fd840df40b0e640f1543ce5d89f25326257baf15d61a3d1c30ab6cd4"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/3-selfhost/launch.json",
+      "bytes": 1829,
+      "sha256": "43be54504d1fe7430d62febf97d1923c88fb9ed700237a49afbc4c9b453cb45b"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/3-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/3-selfhost/stdout.log",
+      "bytes": 907,
+      "sha256": "13fe2a0902f5ed57a35edd8c9900bd6f247cb3b650f833756c2db6d8e805695e"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/3-upstream/launch.json",
+      "bytes": 1847,
+      "sha256": "7735e407c1f95da88cdf171bc2a7fdee0de86c7c3518d9abe333d30b3456a8fd"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/3-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/3-upstream/stdout.log",
+      "bytes": 925,
+      "sha256": "6bd87ceca9ec3aadfe327485f9c41b92f2bfa397669b63345c0881de844fa18f"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/4-selfhost/launch.json",
+      "bytes": 1830,
+      "sha256": "b0a4704c74049b2937fdf2ca68c6e98d01aea325a9295d5b79ae6556a819997f"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/4-selfhost/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/4-selfhost/stdout.log",
+      "bytes": 908,
+      "sha256": "570be5038c3b73cba79857538574f9abb597004c1d6bc1a0323589bfef69cff1"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/4-upstream/launch.json",
+      "bytes": 1839,
+      "sha256": "afbe2e0096f107e91408f8d6fa6651b84b132be11b4eb798523d4feeaa7ccf67"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/4-upstream/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/4-upstream/stdout.log",
+      "bytes": 916,
+      "sha256": "ebc43b63308513f991f7f8f674d57bf781160746c876f38a713329000a3d833d"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/point.json",
+      "bytes": 83,
+      "sha256": "82a33f90d18ed6559f208995335e902c82f8dd8e15c6315a45c049fc0271724b"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/selfhost-calibrate/launch.json",
+      "bytes": 2688,
+      "sha256": "ce6ff6fddb516bde5bbcd12313fae11819b725960be676a619387f9371dd4523"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/selfhost-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/selfhost-calibrate/stdout.log",
+      "bytes": 1321,
+      "sha256": "822b3127bbc87380f724dcf88dcca4cbcf8d181c23e5458eac66e5a0a82cdba2"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/selfhost-check/launch.json",
+      "bytes": 1488,
+      "sha256": "153f613749e8fef0069d04566084c0c706c51e7db7f137c38d26dbeaecdc665e"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/selfhost-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/selfhost-check/stdout.log",
+      "bytes": 684,
+      "sha256": "650235ddbb0f3e792a4c7d1819bfd010493f6a065212b8313ba93cb249ec3615"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/selfhost.json",
+      "bytes": 104,
+      "sha256": "ccff487605e6f6a4f941ae18ef638075caebc778c201ab0fd76308cd5d0cad23"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/upstream-calibrate/launch.json",
+      "bytes": 4943,
+      "sha256": "8513388e64c682023a0a136161bf1adadd277bf1702f30c2659d803090c4748b"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/upstream-calibrate/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/upstream-calibrate/stdout.log",
+      "bytes": 2437,
+      "sha256": "bf15fd0d3391fdc042afeab662ce7f01bfc29b610ccf5203d6bd361fced0f2d7"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/upstream-check/launch.json",
+      "bytes": 1506,
+      "sha256": "f40b5ddc18a370aaec71970f2fc99968f2903aac5551f8b519b11d16f1889b2f"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/upstream-check/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/upstream-check/stdout.log",
+      "bytes": 701,
+      "sha256": "12adb3a45028da81d7907ee7a992c35ac78c7b760b6bb2e7ce67668a7e235ad9"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01/tree-bitonic/upstream.json",
+      "bytes": 106,
+      "sha256": "eece1581e45c1db556ec388f784ad409fc403244476ec4e7eebb5e69a998ab85"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01.derivation.json",
+      "bytes": 949,
+      "sha256": "837500d43a873804c3927c2b4872cb79609107282be97da2f8fb040136632247"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01.execute.mjs",
+      "bytes": 2722,
+      "sha256": "4547fff7b78e5e688bc3a3db888215eb632c21e3ff6016aa9ed1f786b63ed05b"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01.log",
+      "bytes": 4757,
+      "sha256": "e8111382c4854f9d70e813fc5fe78b7885c6bd9eba0866c94fdbded3494fc573"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-01.measure.py",
+      "bytes": 4098,
+      "sha256": "96a1232fe0cf9b312daa763fed877288ccafa2e3e994c4a373afebc5a0230dee"
+    },
+    {
+      "path": "selfhost/build/phase28/timing-long-config.json",
+      "bytes": 2624,
+      "sha256": "37d8afa443613f2d1647069fc03ba45bdbb3e4b3d8e581922f2c315c2e851fc8"
+    }
+  ]
+}

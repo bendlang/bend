@@ -494,3 +494,14 @@ The per-file receipt independently verifies every archived byte. Phase25/26
 capsules supply the explicitly identified baseline corpus dependencies. Prior
 API/Base/lineage stay in release history; the matching old runtime is in the
 capsule baseline and prior Git revision. The103 unrelated files are unchanged.
+
+## Phase28 broader existing programs
+
+The [Phase28 capsule](../implementation/phase28/evidence/README.md) preserves
+all emitted program bytes and acquisition receipts,150 timing samples plus56
+checks/calibrations, the original and longer-warm protocols, exact source/tool
+copies and release/closure verification. Both failed raytrace wrappers and the
+incorrect-extension HVM launch are retained. The per-file receipt independently
+reopens and verifies every archived byte. The unchanged checked compiler comes
+from the explicit Phase27 capsule prerequisite; pinned upstream Git and Node24
+remain external versioned dependencies. All103 unrelated paths remain unchanged.

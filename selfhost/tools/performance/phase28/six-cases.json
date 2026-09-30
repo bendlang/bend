@@ -1,0 +1,157 @@
+{
+  "kind": "phase28-six-pinned-runtime-fixtures",
+  "upstreamCommit": "018751270e800bc222a93dad7f257083ee53a5f7",
+  "scope": "Exact original source prefixes with appended pure scalar benchmark entry points; no original algorithm body or original main rewrite. Wrappers omit parallel annotations for sequential JavaScript library calls.",
+  "cases": [
+    {
+      "id": "mandelbrot",
+      "category": "Integer render, histogram, recolor",
+      "source": {
+        "commit": "018751270e800bc222a93dad7f257083ee53a5f7",
+        "path": "bench/runtime/mandelbrot/main.bend",
+        "gitBlob": "8effae68e308c8ae63c3ec8af66f0e4a4e59f282",
+        "sha256": "400b94705df43c5f6506ecba640db11ae91b24f74d58e39a5e5f7f56dcbabcfa",
+        "bytes": 6427
+      },
+      "fixture": {
+        "path": "selfhost/tools/performance/phase28/corpus/mandelbrot.bend",
+        "sha256": "cb2b9c30aceeb0f8ed0da1f999658aa8d7fb346851877da6902d1ded4cfc0656",
+        "bytes": 6576
+      },
+      "wrapper": "\n# Phase28: original source above is unchanged; dynamic documented-small input.\ndef bench(size: U32, seed: U32) -> U32:\n  rend(U32.to_nat(size), 7n)\n",
+      "wrapperParameters": "hd=size; iters=7; seed unused",
+      "originalMainRetained": true,
+      "point": {
+        "size": 2,
+        "seed": 0,
+        "expected": 887240761
+      },
+      "oracle": "Documented small checksum in pinned original Bend source, itself documented as verified against C."
+    },
+    {
+      "id": "raytrace",
+      "category": "F32 recursive sphere ray tracing",
+      "source": {
+        "commit": "018751270e800bc222a93dad7f257083ee53a5f7",
+        "path": "bench/runtime/raytrace/main.bend",
+        "gitBlob": "9f42fcc64fe86dabd21d4e94c69a90224f6ae0f4",
+        "sha256": "6c4918b2012696146144c2c7ccc1daad042dbb87df444ca1334cf8d51bebee5f",
+        "bytes": 13929
+      },
+      "fixture": {
+        "path": "selfhost/tools/performance/phase28/corpus/raytrace.bend",
+        "sha256": "8bf45706708ef0836df1b2d6fa8da58351f02f3956aa6cf6d4d547913bd0c1a1",
+        "bytes": 14212
+      },
+      "wrapper": "\n# Phase28: original source above is unchanged; documented small raytrace input.\ndef bench(+size: U32, seed: U32) -> U32:\n  +rr = 6n\n  hw = U32.to_f32(U32.div(size, 2))\n  hh = U32.to_f32(U32.div(U32.shln(1, rr), 2))\n  hm = U32.sub(U32.shln(1, rr), 1)\n  rowf(rr, 0, hm, size, hw, hh)\n",
+      "wrapperParameters": "rows=6; width=size; seed unused",
+      "originalMainRetained": true,
+      "point": {
+        "size": 80,
+        "seed": 0,
+        "expected": 402971
+      },
+      "oracle": "Documented small checksum in pinned original Bend source, itself documented as verified against C."
+    },
+    {
+      "id": "editdist",
+      "category": "Mutable-array Levenshtein dynamic programming",
+      "source": {
+        "commit": "018751270e800bc222a93dad7f257083ee53a5f7",
+        "path": "bench/runtime/editdist/main.bend",
+        "gitBlob": "b3bcc627dde4eccd3f1b96e659a8e1df33ef231c",
+        "sha256": "466891a27b87119b5593209eb98aa0d687ff88b6ff28cc2ca339e248907a3959",
+        "bytes": 5722
+      },
+      "fixture": {
+        "path": "selfhost/tools/performance/phase28/corpus/editdist.bend",
+        "sha256": "f9cc44d93829d8ea48148c26b8ed7e2c1785611ad0c19a3770f86227a3142e6f",
+        "bytes": 5874
+      },
+      "wrapper": "\n# Phase28: original source above is unchanged; dynamic documented-small input.\ndef bench(size: U32, seed: U32) -> U32:\n  batch(U32.to_nat(size), seed)\n",
+      "wrapperParameters": "batch depth=size (2^size pairs); first index=seed; length=256",
+      "originalMainRetained": true,
+      "point": {
+        "size": 2,
+        "seed": 0,
+        "expected": 2065873279
+      },
+      "oracle": "Documented small checksum in pinned original Bend source, itself documented as verified against C."
+    },
+    {
+      "id": "tree-bitonic",
+      "category": "Tree bitonic sort and sortedness verification",
+      "source": {
+        "commit": "018751270e800bc222a93dad7f257083ee53a5f7",
+        "path": "bench/runtime/tree-bitonic/main.bend",
+        "gitBlob": "00be9f2845778f113d6e00da7926ec33150686dd",
+        "sha256": "1d79c448bae41dff127ff05b6c6a13d010a9a0ebc5c4dcf19da7d6d4641a7d2c",
+        "bytes": 4456
+      },
+      "fixture": {
+        "path": "selfhost/tools/performance/phase28/corpus/tree-bitonic.bend",
+        "sha256": "ace0242c329b1628cb9d0a0142386380e0ca4e56fa741916974938eb079b2c0d",
+        "bytes": 4633
+      },
+      "wrapper": "\n# Phase28: original source above is unchanged; dynamic documented-small input.\ndef bench(size: U32, seed: U32) -> U32:\n  stat_out(scan(bsort(U32.to_nat(size), False{}, seed)))\n",
+      "wrapperParameters": "tree depth=size (2^size leaves); first index=seed",
+      "originalMainRetained": true,
+      "point": {
+        "size": 8,
+        "seed": 0,
+        "expected": 971629740
+      },
+      "oracle": "Documented small checksum in pinned original Bend source, itself documented as verified against C."
+    },
+    {
+      "id": "lexer",
+      "category": "Generated-string tokenizer",
+      "source": {
+        "commit": "018751270e800bc222a93dad7f257083ee53a5f7",
+        "path": "bench/runtime/lexer/main.bend",
+        "gitBlob": "a789f9eee9944492da022e6146c75920769a32d9",
+        "sha256": "5187685d61672de9434f3902e06c427af4f2fa5648723fd869a8c26ab311fcf6",
+        "bytes": 6982
+      },
+      "fixture": {
+        "path": "selfhost/tools/performance/phase28/corpus/lexer.bend",
+        "sha256": "6014af6bf7e97c8feaafa918e79f28a22d2c9c92bea836203fcd89b6d70a4fbb",
+        "bytes": 7134
+      },
+      "wrapper": "\n# Phase28: original source above is unchanged; dynamic documented-small input.\ndef bench(size: U32, seed: U32) -> U32:\n  batch(U32.to_nat(size), seed)\n",
+      "wrapperParameters": "batch depth=size (2^size lines); first index=seed",
+      "originalMainRetained": true,
+      "point": {
+        "size": 8,
+        "seed": 0,
+        "expected": 1822208108
+      },
+      "oracle": "Documented small checksum in pinned original Bend source, itself documented as verified against C."
+    },
+    {
+      "id": "symreg",
+      "category": "Expression-tree symbolic regression",
+      "source": {
+        "commit": "018751270e800bc222a93dad7f257083ee53a5f7",
+        "path": "bench/runtime/symreg/main.bend",
+        "gitBlob": "8da2a12b5d970226826e9b894559ff570e55bead",
+        "sha256": "5aafee4856cde2259dd2efac84ed02fe1d999e68ab026d975d1a3593b430fbf0",
+        "bytes": 5246
+      },
+      "fixture": {
+        "path": "selfhost/tools/performance/phase28/corpus/symreg.bend",
+        "sha256": "c25c8fb869eaf5ac90cbf45feb30c0e8169207ed0b74cd655343048fcc82778b",
+        "bytes": 5406
+      },
+      "wrapper": "\n# Phase28: original source above is unchanged; dynamic documented-small input.\ndef bench(size: U32, seed: U32) -> U32:\n  run(U32.to_nat(size), seed, 32n, 16n)\n",
+      "wrapperParameters": "population depth=size (2^size programs); initial seed=seed; rounds=32; points=16",
+      "originalMainRetained": true,
+      "point": {
+        "size": 6,
+        "seed": 42,
+        "expected": 2490246820
+      },
+      "oracle": "Documented small checksum in pinned original Bend source, itself documented as verified against C."
+    }
+  ]
+}

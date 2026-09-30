@@ -1,5 +1,12 @@
 # Bend2 compiler port in Bend2
 
+The [Phase28 comparison](../implementation/phase28/broader-program-comparison.md)
+adds measurements on existing upstream programs: six algorithms are 111–1,391×
+slower in the original warmed JavaScript window, while the small HVM demo's
+complete process is 2.90× slower (201 ms versus 69 ms). All 11 selected outputs agree.
+First calls and a longer-warmup follow-up remain separate in the report.
+This measurement phase changes no compiler source or installed release.
+
 Use the [compiler guide](../docs/BEND-IN-BEND.md) and
 [Phase27 release report](../implementation/phase27/constructor-arm-prebinding.md).
 The latest release prebinds selected constructor arms while preserving partial

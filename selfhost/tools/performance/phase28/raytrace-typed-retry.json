@@ -1,0 +1,37 @@
+{
+  "kind": "phase28-raytrace-wrapper-correction",
+  "upstreamCommit": "018751270e800bc222a93dad7f257083ee53a5f7",
+  "scope": "Exact original source prefixes with appended pure scalar benchmark entry points; no original algorithm body or original main rewrite. Wrappers omit parallel annotations for sequential JavaScript library calls.",
+  "cases": [
+    {
+      "id": "raytrace",
+      "category": "F32 recursive sphere ray tracing",
+      "source": {
+        "commit": "018751270e800bc222a93dad7f257083ee53a5f7",
+        "path": "bench/runtime/raytrace/main.bend",
+        "gitBlob": "9f42fcc64fe86dabd21d4e94c69a90224f6ae0f4",
+        "sha256": "6c4918b2012696146144c2c7ccc1daad042dbb87df444ca1334cf8d51bebee5f",
+        "bytes": 13929
+      },
+      "fixture": {
+        "path": "selfhost/tools/performance/phase28/corpus/raytrace-typed.bend",
+        "sha256": "4674b2580aceb5f5fe6771ce16c987b97f791b52a9e1305794c435beeebf5837",
+        "bytes": 14223
+      },
+      "wrapper": "\n# Phase28: original source above is unchanged; documented small raytrace input.\ndef bench(+size: U32, seed: U32) -> U32:\n  +rr = U32.to_nat(6)\n  hw = U32.to_f32(U32.div(size, 2))\n  hh = U32.to_f32(U32.div(U32.shln(1, rr), 2))\n  hm = U32.sub(U32.shln(1, rr), 1)\n  rowf(rr, 0, hm, size, hw, hh)\n",
+      "wrapperParameters": "rows=6; width=size; seed unused",
+      "originalMainRetained": true,
+      "point": {
+        "size": 80,
+        "seed": 0,
+        "expected": 402971
+      },
+      "oracle": "Documented small checksum in pinned original Bend source, itself documented as verified against C."
+    }
+  ],
+  "supersedes": {
+    "manifest": "selfhost/tools/performance/phase28/raytrace-retry.json",
+    "acquisition": "selfhost/build/phase28/runtime-02-raytrace/raytrace",
+    "reason": "Both compilers still reject parenthesized annotated local Nat literal in wrapper. Construct Nat6 with typed U32.to_nat(6) call instead; original source and algorithm parameters unchanged."
+  }
+}

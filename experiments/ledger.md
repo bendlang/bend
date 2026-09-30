@@ -1667,3 +1667,37 @@ receipts. The103 unrelated paths remain unchanged; no new PR comment is posted.
 Test a private saturated worker or loop on the actual compiler helper before a
 full H. Preserve evaluation/descriptor boundaries and measure both warmup regimes;
 identical helper-count reductions do not guarantee identical V8 performance.
+
+## P28 — broader existing generated programs (2026-09-30)
+
+[Design](../design/phase28/broader-program-comparison.md),
+[prospective warmup follow-up](../design/phase28/warmup-followup.md),
+[report](../implementation/phase28/broader-program-comparison.md),
+[reproduction](../implementation/phase28/README.md).
+
+Measured six existing runtime algorithms at documented small inputs, four unchanged
+mixed tests and the original small HVM interpreter demo. Both checked emitters
+produce matching observable outputs on all11. Compiler source and installed Phase27
+release remain unchanged; these runs do not renew the broad conformance inventory.
+
+Original five-sample warmed algorithm ratios are111.39–1391.14× slower than pinned
+TypeScript output: tree sorting111.39×, lexer139.32×, symbolic regression141.05×,
+edit distance509.53×, ray tracing523.80× and Mandelbrot1391.14×. Tiny mixed tests
+are55.35–107.32×. HVM's whole process is200.93ms versus69.21ms,2.903×. The scopes
+remain separate; no production-average, native-output or compiler-throughput claim.
+
+All four cases with repeated within-block drift receive a prospectively defined
+longer-warm follow-up using identical bytes/inputs: Mandelbrot1271.44×, tree
+sorting100.38×, morning60.60× and Map/Set82.37×. Residual drift remains in sorting,
+Map/Set and one morning sample; neither protocol proves steady-state convergence.
+All150 timed samples and56 check/calibration processes are retained and independently
+audited. Original library screen816.11s; follow-up189.32s. Both rejected Nat wrappers
+and the incorrect CommonJS filename remain in the capsule with their failures.
+
+**Updated frontier:** large emitted-program gaps persist beyond diagnostic kernels.
+Test saturated private workers across matches, primitive inlining and direct native
+constructor/match lowering as separate ablations. Static inspection observes generic
+dispatch/allocation boundaries but does not assign their shares of the slowdown.
+Both outputs already have tail-jump machinery and native strings. Preserve partial
+application, argument demand, forcing and stack behavior; validate on small focused
+cases before repeating this more expensive algorithm suite.

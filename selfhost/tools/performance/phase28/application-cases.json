@@ -1,0 +1,100 @@
+{
+  "kind": "phase28-application-sources",
+  "compilerPin": "018751270e800bc222a93dad7f257083ee53a5f7",
+  "cases": [
+    {
+      "id": "test-morning-program",
+      "category": "mixed-test",
+      "description": "mixed strings, Map, arithmetic and formatting",
+      "source": "selfhost/tools/performance/phase28/corpus/test-morning-program.bend",
+      "origin": {
+        "commit": "018751270e800bc222a93dad7f257083ee53a5f7",
+        "path": "tests/run/morning_program.bend",
+        "sha256": "9033897714291ea49c25046426457ff2753276466092ba71a4e40c1e2b48a04a"
+      },
+      "adaptation": "none; source is byte-identical to pinned upstream",
+      "mode": "library",
+      "exportName": "main.out",
+      "resultType": "string",
+      "args": [],
+      "expected": "a-bb-ccc 8 1877 42 lo hello 3",
+      "expectedSource": "upstream #| golden, full main.out value",
+      "inputScope": "original smoke-size test; repeated unchanged complete computation, no scaling claim"
+    },
+    {
+      "id": "test-evening-program",
+      "category": "mixed-test",
+      "description": "mixed float array, Map/Set, number parsing and tuple reuse",
+      "source": "selfhost/tools/performance/phase28/corpus/test-evening-program.bend",
+      "origin": {
+        "commit": "018751270e800bc222a93dad7f257083ee53a5f7",
+        "path": "tests/run/evening_program.bend",
+        "sha256": "b254a68ad0208b8a5f388d72095633cd8fc119adf40d45f5621e93f37e7b4f71"
+      },
+      "adaptation": "none; source is byte-identical to pinned upstream",
+      "mode": "library",
+      "exportName": "main.out",
+      "resultType": "u32",
+      "args": [],
+      "expected": 81111,
+      "expectedSource": "upstream #| golden, full main.out value",
+      "inputScope": "original smoke-size test; repeated unchanged complete computation, no scaling claim"
+    },
+    {
+      "id": "test-rle-roundtrip",
+      "category": "mixed-test",
+      "description": "original six-element compression and decompression test",
+      "source": "selfhost/tools/performance/phase28/corpus/test-rle-roundtrip.bend",
+      "origin": {
+        "commit": "018751270e800bc222a93dad7f257083ee53a5f7",
+        "path": "tests/run/rle_roundtrip.bend",
+        "sha256": "ce4083dab9a8022b2c8867a30802113735917229341cecb8ce18ff9ac2e33989"
+      },
+      "adaptation": "none; source is byte-identical to pinned upstream",
+      "mode": "library",
+      "exportName": "main.out",
+      "resultType": "u32",
+      "args": [],
+      "expected": 11,
+      "expectedSource": "upstream #| golden, full main.out value",
+      "inputScope": "original smoke-size test; repeated unchanged complete computation, no scaling claim"
+    },
+    {
+      "id": "test-map-set-ops",
+      "category": "mixed-test",
+      "description": "original Map/Set feature composition checks",
+      "source": "selfhost/tools/performance/phase28/corpus/test-map-set-ops.bend",
+      "origin": {
+        "commit": "018751270e800bc222a93dad7f257083ee53a5f7",
+        "path": "tests/run/map_set_ops.bend",
+        "sha256": "60966d2aa182c2aabf20eb63270f57c7d8c5f2dc56872e7fed54dab34940c8c6"
+      },
+      "adaptation": "none; source is byte-identical to pinned upstream",
+      "mode": "library",
+      "exportName": "main.out",
+      "resultType": "u32",
+      "args": [],
+      "expected": 11111,
+      "expectedSource": "upstream #| golden, full main.out value",
+      "inputScope": "original smoke-size test; repeated unchanged complete computation, no scaling claim"
+    },
+    {
+      "id": "app-pure-hvm5-mini",
+      "category": "application",
+      "description": "complete parser and interaction-calculus evaluator with original embedded program and 65536-cell environment",
+      "source": "selfhost/tools/performance/phase28/corpus/app-pure-hvm5-mini.bend",
+      "origin": {
+        "commit": "018751270e800bc222a93dad7f257083ee53a5f7",
+        "path": "demos/pure_hvm5_mini/main.bend",
+        "sha256": "7e7205fd672770e522d9bc76403145203f83f7dce941e269b1370ec3caced63d"
+      },
+      "adaptation": "none; source is byte-identical to pinned upstream Git object (sparse reference checkout omits demos)",
+      "mode": "program",
+      "resultType": "stdout",
+      "args": [],
+      "expected": null,
+      "expectedSource": "capture complete pinned TypeScript-produced program stdout then require exact candidate bytes; no preexisting golden",
+      "inputScope": "original embedded program, complete process including startup and IO"
+    }
+  ]
+}

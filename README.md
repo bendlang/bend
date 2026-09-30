@@ -17,6 +17,14 @@ This fork develops the compiler in [`selfhost/`](selfhost/README.md), on branch
 from `selfhost/`, run `npm run verify:release`, then `node cli.mjs FILE --run`.
 `npm run build` checks and rebuilds the default with pinned upstream.
 
+The [Phase28 program comparison](implementation/phase28/broader-program-comparison.md)
+measures existing upstream algorithms, mixed tests and a small interpreter.
+The six algorithms run **111–1,391× slower** in the original warmed JavaScript
+window; the small interpreter takes **201 ms versus 69 ms** for a whole process.
+The report separates first calls, two warmup protocols and process startup.
+These are generated-program costs, separate from compiler throughput. All 11
+selected outputs agree; the installed compiler is unchanged.
+
 The [Phase27 release report](implementation/phase27/constructor-arm-prebinding.md)
 reduces generated constructor-arm dispatch. The actual compiler membership helper
 runs **2.6–5.9% faster** in two separately measured warmup regimes; warmed Boolean
