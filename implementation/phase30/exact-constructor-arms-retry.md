@@ -2,7 +2,8 @@
 
 The generated-output retry repairs all three historical outer-application
 counterexamples and passes its focused field, result, entry and callback-shape
-controls. New clean timing is pending. Production admission still uses the strict
+controls. New clean timing finds a 27.88% regression, so this retry is not a
+profitable compiler change. Production admission still uses the strict
 count-less-than-total rule; the earlier rejected attempt and its measurements
 remain unchanged.
 
@@ -44,5 +45,25 @@ callback. Corrected matcher1p grants permission only on exact application; other
 entry paths return the original unsliced-field bounce. The retained witnesses
 now demonstrate that no body effect overtakes the caller's later length read.
 The old 1.023× result does not measure this registered-callback implementation and
-must not be reused. The lead will evaluate the new frozen paired timing before
-deciding whether an actual one-condition compiler trial is worthwhile.
+must not be reused.
+
+The timing owner ran the frozen complete-row `[32,17]` point under the parent's
+exclusive CPU3 grant. `exact-arm-retry-screen-01` records unchanged median
+0.392811 ms (range 0.391220–0.393309) and exact-arm median 0.536097 ms
+(0.532752–0.536846). The exact-arm halves improved 14.7–15.4%, so this short
+window was insufficient by itself. The unchanged halves differed by at most
+1.92%.
+
+`exact-arm-retry-confirm-01` records unchanged median **0.335203 ms**
+(0.330210–0.348095) and exact-arm median **0.428672 ms**
+(0.419513–0.435055), a **27.88% slowdown** with disjoint sample ranges. The
+unchanged halves still improved 6.9–12.9%; the exact variant had four half-drift
+magnitudes at most 3.83% and one 6.01%. The 42.20-second outer run is experiment
+wall time, not an invocation measurement.
+
+The independent recommendation is to close this retry without widening compiler
+admission. It demonstrates the semantic value of the entry repair, while also
+showing that a superficially smaller administrative path is not necessarily
+faster after that repair. It does not isolate the individual costs of callback
+registration, dispatch or host optimization, and does not justify adding another
+runtime fast path merely to recover the old small gain.

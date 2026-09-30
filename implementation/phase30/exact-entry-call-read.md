@@ -61,7 +61,39 @@ The gated frozen timing configurations are
 They compare unchanged07 against the actual-call candidate on the scalar helper
 `bench(128,524800)` and original edit distance `bench(2,0)`. They include the
 passing control receipts and use the maintained rotating-process CPU3 protocols.
-No timing result is claimed yet.
+The clean `exact-call-screen-01` took 199.33 seconds. The helper medians are
+0.042825 ms unchanged and 0.043907 ms with actual-call lookup, with roughly
+19–21% downward half drift: no helper win is established. Original edit distance
+measures 2415.419 ms [2408.571–2477.958] versus 2256.855 ms
+[2220.787–2307.646], a 1.070-fold improvement with disjoint ranges. Each timed
+sample is one full invocation, so within-sample half drift is unavailable. Keep
+this coarse original-program observation separate from a microbenchmark claim.
+
+The original point is too expensive for the standard confirmation's minimum
+100-call floor. The [prospective row amendment](../../design/phase30/exact-entry-call-read-row.md)
+instead attaches the previously established row32/seed17 complete-state adapter
+to the same frozen runtime pair. No row/cell/array code changes. All 28 retained
+independent full-array states and 36 ordered row ABI/live-binding observations
+pass in `inspection-exact-call-row-controls-01`. The original invocation-control
+receipts still cover the byte-identical runtime bodies. Gated cheap screen and
+confirmation configs are in `inspection-exact-call-row-plan-01`.
+
+The row screen (`exact-call-row-screen-01`, 4.67 seconds) initially measures
+0.437926 ms [0.437531–0.453030] versus 0.689208 ms [0.685411–0.734234], but the
+halves drift upward by 27–32% and 167–187%, respectively. It is not a settled
+regression claim. Retain it alongside the longer window.
+
+The replacement clean confirmation `exact-call-row-confirm-02` measures
+0.334396 ms [0.328746–0.348331] versus 0.306889 ms [0.305796–0.307459], a
+1.090-fold observed gain with disjoint ranges. Candidate half drift is at most
+1.1%; baseline halves still fall by 7.1–13.7%, so the magnitude is uncertain and
+does not establish converged throughput. Confirmation01 is retained separately
+as possibly contaminated by a transition overlap; its invalidation receipt
+identifies02 as the replacement. No inconvenient result is overwritten.
+
+A future original-program renewal should use an explicit small full-call budget
+rather than the microbenchmark floor. The coarse original 1.070-fold screen,
+unstable short row, and longer row observation are distinct evidence scopes.
 
 Stable host intrinsics remain part of the existing experiment scope, including
 WeakSet and Reflect.apply. The custom-method fallback newly uses Reflect.apply,

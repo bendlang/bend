@@ -76,6 +76,11 @@ def j_nat_loop_worker(+book: List<&2,KDef>, +d: KDef) -> String:
 
 @unsafe
 def j_nat_loop_shape(+book: List<&2,KDef>, +d: KDef) -> Bool:
+  kc(Bool, j_nat_scalar_shape(book, d), u =>
+    j_nat_loop_tail(j_nat_loop_unwrap(kid(j_strip(kid(j_strip(dv(d)), 1)), 0)), dn(d), ix(j_strip(kid(j_strip(kid(j_strip(dv(d)), 1)), 0))), da(d)), u => False{})
+
+@unsafe
+def j_nat_scalar_shape(+book: List<&2,KDef>, +d: KDef) -> Bool:
   +t = j_strip(dv(d))
   kc(Bool, String.eq(dk(d), "Def") && Bool.not(db(d)) && U32.is_eq(dx(d), 0) && String.eq(tg(t), "Mat") && String.eq(nm(t), "Zero") && U32.is_eq(terms_len(ks(t)), 2),
     u => j_nat_loop_match(book, d, t, j_strip(kid(t, 1))), u => False{})
@@ -94,7 +99,7 @@ def j_nat_loop_checked(+book: List<&2,KDef>, +d: KDef, +zero: KTerm, +succ: KTer
         kc(Bool, j_nat_loop_distinct(zero, Nil{}) && j_nat_loop_distinct(succ, Nil{}) &&
           j_nat_loop_lambdas(book, zero, j_arm_type(book, wnf(book, dt(d)), "Zero"), U32.sub(total, 1)) &&
           j_nat_loop_lambdas(book, succ, j_arm_type(book, wnf(book, dt(d)), "Succ"), total), u =>
-            j_nat_loop_tail(j_nat_loop_unwrap(succ), dn(d), ix(succ), total), u => False{}), u => False{}), u => False{}), u => False{})
+            True{}, u => False{}), u => False{}), u => False{}), u => False{})
 
 @unsafe
 def j_nat_loop_public(+book: List<&2,KDef>, +d: KDef, +zero: KTerm, +succ: KTerm, +total: U32) -> String:
@@ -111,7 +116,7 @@ def j_nat_loop_region(+book: List<&2,KDef>, +d: KDef, +zero: KTerm, +succ: KTerm
           +fast: KDef = KDef{dn(d), dk(d), da(d), dx(d), dt(d), k_with_children(j_strip(dv(d)), [fastZero, kid(j_strip(dv(d)), 1)]), dc(d), db(d), du(d)}
           "scalarCapture(" ++ j_quote(dn(d)) ++ ",(()=>{" ++ j_region_declarations(book, helpers) ++ "const $guards=[" ++ j_quote(dn(d)) ++ "," ++ j_region_names(helpers) ++ "];return " ++
           j_nat_loop_wrapper(book, d, zero, total,
-            "if($entered&&" ++ j_nat_loop_inputs(book, j_arm_type(book, wnf(book, dt(d)), "Succ"), 0, total) ++ "&&scalarGuard($guards)){/* private scalar region */" ++
+            "if($entered&&" ++ j_region_inputs(book, j_arm_type(book, wnf(book, dt(d)), "Succ"), 0, total, True{}) ++ "&&scalarGuard($guards)){/* private scalar region */" ++
             j_nat_loop_body(book, fast, fastSucc, total) ++ "}" ++
             j_nat_loop_generic(book, Nil{}, succ, j_arm_type(book, wnf(book, dt(d)), "Succ"), 0)) ++ ";})())"
 
@@ -124,22 +129,26 @@ def j_nat_loop_wrapper(+book: List<&2,KDef>, +d: KDef, +zero: KTerm, +total: U32
 # slots read at entry, including observable getters, without entering a loop.
 @unsafe
 def j_nat_loop_generic(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +at: U32) -> String:
+  j_region_body(book, env, t, ty, at, "return ", True{})
+
+@unsafe
+def j_region_body(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +at: U32, +result: String, +tail: Bool) -> String:
   +body = j_strip(t)
   +head = wnf(book, ty)
   kc(String, String.eq(tg(body), "Lam"), u =>
     "const " ++ j_local(ix(body)) ++ "=$s" ++ U32.show(at) ++ ";" ++
-    j_nat_loop_generic(book, Con{kt("Env", "", ix(body), 0, [kid(head, 0)]), env}, kid(body, 0), subst(kid(head, 1), ix(head), var(nm(body), ix(body))), U32.inc(at)),
-    u => "return " ++ j_expr(book, env, body, head, True{}) ++ ";")
+    j_region_body(book, Con{kt("Env", "", ix(body), 0, [kid(head, 0)]), env}, kid(body, 0), subst(kid(head, 1), ix(head), var(nm(body), ix(body))), U32.inc(at), result, tail),
+    u => result ++ j_expr(book, env, body, head, tail) ++ ";")
 
 @unsafe
 def j_nat_loop_body(+book: List<&2,KDef>, +d: KDef, +succ: KTerm, +total: U32) -> String:
   "for(;;){" ++ j_nat_loop_enter(book, Nil{}, succ, j_arm_type(book, wnf(book, dt(d)), "Succ"), d, 0, total) ++ "}"
 
 @unsafe
-def j_nat_loop_inputs(+book: List<&2,KDef>, +ty: KTerm, +at: U32, +total: U32) -> String:
+def j_region_inputs(+book: List<&2,KDef>, +ty: KTerm, +at: U32, +total: U32, +predecessor: Bool) -> String:
   kc(String, U32.is_eq(at, total), u => "true", u =>
-    j_nat_loop_input(nm(wnf(book, kid(wnf(book, ty), 0))), "$s" ++ U32.show(at), at) ++ "&&" ++
-    j_nat_loop_inputs(book, kid(wnf(book, ty), 1), U32.inc(at), total))
+    j_nat_loop_input(nm(wnf(book, kid(wnf(book, ty), 0))), "$s" ++ U32.show(at), kc(U32, predecessor, u => at, u => 1)) ++ "&&" ++
+    j_region_inputs(book, kid(wnf(book, ty), 1), U32.inc(at), total, predecessor))
 
 @unsafe
 def j_nat_loop_input(+kind: String, +slot: String, +at: U32) -> String:

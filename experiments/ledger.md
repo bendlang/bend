@@ -1831,3 +1831,28 @@ suggests7% but costs199s because a call lasts2.4s. Move confirmation to a row
 microcase; never apply the100-call long-warm floor to that original workload.
 Ordinary scalar root regions and F32 coverage remain separately frozen trials.
 Installed compiler stays Phase29 until the combined promotion gates finish.
+
+
+### Phase30 ordinary roots and private scalar trees
+
+The actual lexical helper confirmation measures39.6× over Phase29,5.86× TS;
+actual terminal09 measures38× on a complete chunk and1.79× on original small
+Mandelbrot. Ordinary11 confirms1.375× over terminal10 on that original point.
+Its admission, numeric and ordered public-boundary controls pass. A terminal
+counter adapter initially selected an already-optimized baseline but expected
+an old internal bounce; the unchanged failed receipt and corrected baseline run
+are both retained. No source fix was needed for that harness expectation.
+
+The strict scalar binary-tree prototype confirms15.6× over actual10 on original
+small Mandelbrot, with repeated whole-point warmup drift retained explicitly.
+The depth5 microcase is21.7× faster with mostly stable timed halves. A prospective
+production design reuses region analysis and adds one private DFS continuation
+shape, preserving public fallback and bounding its depth. Attempt12 passes all36
+focused gates; actual tree controls and independent refusal tests are pending.
+
+The F32 acyclic-root guard regresses both hit and miss microcases by2.9–7×.
+The corrected exact-arm retry passes semantics but regresses28%. Both remain
+out of production. Number counters confirm only5.4% lower time and remain
+deferred to avoid another representation mode. Exact method-read cleanup has
+an encouraging row signal but unresolved baseline drift. Installed release stays
+Phase29 until the combined image, broad gates, measurement and installation.

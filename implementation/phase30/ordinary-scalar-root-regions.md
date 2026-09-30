@@ -1,11 +1,13 @@
 # Ordinary scalar roots: generated-output experiment
 
-The generated-output experiment passes its first clean screen; long confirmation
-is pending. On the checked lexical-only attempt08, adding a guarded closed scalar region to ordinary `pix`
+The generated-output experiment confirms a 1.338× gain on the original small
+program when both ordinary roots are admitted, and a 1.869× gain on the recolor
+leaf. On the checked lexical-only attempt08, adding a guarded closed scalar region to ordinary `pix`
 and `rpix` callbacks passes 92 independent oracle points and 225 ordered boundary
 observations across all four variants. Instrumentation confirms less application
-machinery. The short screen suggests a gain, with substantial warmup drift in
-several variants. No compiler integration is claimed.
+machinery. The short screen has substantial warmup drift in several variants;
+the long confirmation establishes the scoped gain. No compiler integration is
+claimed by this report.
 
 The prospective design is
 [ordinary-scalar-root-regions.md](../../design/phase30/ordinary-scalar-root-regions.md).
@@ -114,8 +116,28 @@ The whole-program baseline range is 10.08479–10.15166 ms; both roots range
 but the other whole variants drift by roughly −8–9%, +28–32% and −14–15%.
 The leaf has even stronger warmup drift: the `pix` variant's second halves are
 about 87% slower; the `rpix` and both variants' second halves are 19–24% faster.
-These screen medians are not settled ratios. The long configuration remains
-unexecuted as of this update.
+These screen medians are not settled ratios.
+
+The unchanged long configuration subsequently passed at `lambda-confirm-01`,
+with a 190.32 s outer receipt:
+
+| Point | Baseline | `pix` only | `rpix` only | Both | TypeScript |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Original `bench(2,0)` | 9.089539 | 7.329478 | 7.621259 | 6.793730 | 0.045390 |
+| Recolor scalar leaf | 0.011516 | 0.007884 | 0.006168 | 0.006163 | — |
+
+On the original point, the baseline range is 8.96578–9.14139 ms and both roots
+range 6.76436–6.92702 ms. The 1.338× gain has disjoint sample ranges. Whole-program
+halves are mostly within 2.3%, with one baseline sample at −3.34% and one both-root
+sample at +4.78%. All leaf halves are within 2.32%; its 1.869× gain also has
+disjoint ranges. The `rpix`-only and both-root leaf ranges overlap, as expected
+when `rpix` already privately contains `pix`.
+
+This is an incremental gain on the lexical-only candidate. It is not measured
+on top of the separate terminal-record compiler extension, and the two ratios
+must not be multiplied to predict a combined result. The original program still
+performs substantial generic tree-recursion work. A larger tree region is a
+separate prospective experiment with its own proof and evidence.
 
 If a clear gain survives long confirmation, the conceptual compiler change is
 one ordinary-lambda entry into the existing region traversal. Reuse helper
@@ -129,3 +151,26 @@ The initial production profitability boundary should be conservative: require a
 proved nested Nat loop within the helper closure. Both measured roots satisfy
 that condition. Trivial ordinary scalar wrappers could lose to the new guard
 cost; acyclic F32 or other ordinary regions need a separate experiment.
+
+## Actual compiler integration
+
+The production ordinary-root rule was subsequently implemented and checked in
+attempt11 on top of the terminal-record attempt10 compiler. Its separate
+immutable plan is `ordinary-compiler-plan-11/confirm.json`; actual emissions and
+control receipts are under `ordinary-compiler-controls-11/`. The coordinator
+executed the frozen long protocol in `ordinary-compiler-confirm-11`, with the
+outer launcher receipt retained (63.935 seconds, all outputs correct).
+
+| Original `bench(2,0)` variant | Median ms | Range ms |
+| --- | ---: | ---: |
+| Checked terminal attempt10 | 4.995417 | 4.920979–5.008208 |
+| Checked ordinary-root attempt11 | 3.633858 | 3.570331–3.851380 |
+| Pinned upstream TypeScript | 0.045407 | 0.045327–0.045718 |
+
+This directly measures a **1.375×** incremental gain on the combined terminal
+compiler, with disjoint ranges. The remaining ratio is **80.03× TypeScript** for
+this original small point. Baseline half-window changes stayed within 0.83%;
+candidate changes were mostly within 0.36%, with two samples at −2.93% and
+−6.06%; TypeScript stayed within 0.46%. These measurements replace any estimate
+formed by multiplying gains from separate earlier ablations. Broader release
+integration and the proposed binary-tree extension are separate gates.

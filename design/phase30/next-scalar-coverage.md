@@ -100,7 +100,12 @@ evaluations. Enter the private loop only from the registered exact callback, wit
 scalar entry slots. Capture the root at its original lookup point; a side-effect
 free guard can identify the original owner before executing its prefix. Only a
 positive primitive Nat predecessor and the original successor selection are
-eligible. Preserve that fresh selected callback's identity. After the original
+eligible. This initial guard must include the complete relevant prototype
+boundary (for example, `scalarGuard([owner])`), immediately followed by the
+already validated primitive predecessor prefix. Otherwise a prototype getter
+could intervene and remove itself before the final guard; saving whichever
+callback was first returned would repeat a first-use capture bug. Preserve the
+proven fresh selected callback's identity. After the original
 prefixes and next arguments, inspect the final selected continuation's ordinary
 data metadata, its expected callback identity, scalar slots and prototype
 boundary. On failure return the original `jump(withBf, [pts])`. Never reconstruct

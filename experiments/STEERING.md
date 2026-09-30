@@ -13,20 +13,25 @@ private direct calls on a small edit-distance row, independently challenge
 semantics, then generalize only measured wins. Coordinate all clean CPU3 timings
 through the lead. Phase29 remains installed until a reviewed candidate passes.
 
-Attempt07 passes focused, broad selected and independent region/entry/ABI gates;
-its actual helper output confirms10.45× over Phase29, still22.13× TS on that point.
-Attempt08 replaces private dictionaries with lexical calls and passes scoped
-controls; its isolated spelling ablation confirms3.76×, actual timing pending.
-Attempt09 admits terminal flat records and nested proven Nat loops with unchanged
-runtime:200 histogram states,129 boundaries,41 admission books and88 executions
-pass. Actual chunk calls drop2242→3; clean confirmation is next. Attempt10 removes
-one redundant initialization capture. Installed release remains Phase29.
-See [terminal checkpoint](../implementation/phase30/terminal-compiler.md).
-Ordinary scalar roots, F32 coverage and private tree recursion are separate
-investigations. Preserve the lost generic symreg.climb loop as an explicit
-coverage issue. Exact-arm retry needs new witnesses under corrected entry rules.
-Per-call array guards regress; Number counters, fallback outlining and callback
-hoisting/fusion remain deferred. No PR comment or new fixed-point claim.
+Actual lexical helpers confirm39.6× over Phase29 on the selected helper,
+leaving5.86× TS. Terminal09 confirms1.79× whole small Mandelbrot and38× its
+complete histogram chunk. Ordinary11 then confirms1.375× over terminal10 on
+that original point; independent28 admission books/44 executions and92 scalar
+oracles/225 public boundaries pass. Installed release remains Phase29.
+
+The private binary-tree prototype confirms15.6× over actual10 on small original
+Mandelbrot, but its whole-point timed halves retain25–28% warmup improvement.
+Its depth5 microcase is stable and21.7× faster. Attempt12 implements the strict
+pure two-child grammar with the existing region state and an explicit bounded
+private DFS stack; focused36 gates pass. Actual independent controls are next.
+See the ordinary and tree designs/reports; do not multiply isolated ratios.
+
+Reject guarded F32 acyclic roots (2.9–7× slower on hit/miss), exact-arm eagerness
+(28% slower), and per-call array guards. Keep Number counters deferred despite
+a confirmed5.4% saving; they add another representation mode for little gain.
+Exact-call method-read cleanup remains deferred because its row baseline drifts.
+No PR comment or new fixed-point claim. Preserve the lost symreg.climb old loop
+as an explicit coverage issue and acquire all original programs before release.
 
 ## Released frontier
 

@@ -46,6 +46,7 @@
     "src/back/js/primitive.bend",
     "src/back/js/region.bend",
     "src/back/js/worker.bend",
+    "src/back/js/tree.bend",
     "src/back/js/emit.bend",
     "src/back/native/ir.bend",
     "src/back/native/text.bend",

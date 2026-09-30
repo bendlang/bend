@@ -73,3 +73,44 @@ costs 11.788s end to end; confirmation costs 126.487s. Those outer durations des
 the iteration loop, not generated-program throughput. A selected full-iteration
 Mandelbrot helper is useful for diagnosis; representative original-program
 measurements remain a separate required transfer check.
+
+## Actual lexical-helper compiler, attempt08
+
+A new frozen plan, `fixture-lexical-plan-08`, compares actual checked emissions
+of Phase29, attempt07, attempt08 and the pinned TypeScript compiler on the same
+source and `[128,524800]` point. Attempts07 and08 have the same runtime bytes;
+attempt08 changes private helper spelling from dictionary properties to lexical
+functions. This is the compiler implementation of the earlier disposable
+spelling experiment, not a modified output substituted for a compiler result.
+
+The plan verifies checked emission, API, bootstrap, scoped validation and runtime
+identities, and retains the actual08 independent admission, ABI, exact-entry and
+lexical-name receipts. Those are distinct from the earlier disposable-prototype
+controls. The maintained timing protocol and exclusive CPU3 conditions are the
+same as above.
+
+| Actual emission | Short median ms | Long median ms | Long sample range ms |
+| --- | ---: | ---: | ---: |
+| Phase29 | 0.428489 | 0.396238 | 0.394495–0.415475 |
+| Attempt07 | 0.043913 | 0.037481 | 0.037166–0.038873 |
+| Attempt08 | 0.013574 | 0.009997 | 0.009921–0.010193 |
+| Pinned TypeScript | 0.001759 | 0.001705 | 0.001699–0.001726 |
+
+Attempt08 is **3.749× faster than attempt07**, **39.635× faster than Phase29**,
+and **5.862× slower than TypeScript** at this helper point. The sample ranges
+are disjoint. Every long-run half differs by at most 1.69%. The short window has
+large opposite lifecycle drift again: attempt07 improves 19–21% within each
+process, while attempt08 slows 44–50%. Preserve the short result, but use the
+long confirmation for the scoped ratios.
+
+The finding is that lexical private functions allow much better optimized warm
+code than calls through a private dictionary, despite identical primitive
+expressions, guards and semantics. The experiment establishes the effect of
+that spelling change; it does not independently identify a particular V8 pass
+or prove that property lookup time alone explains it.
+
+Raw results are `fixture-lexical-screen-08` and `fixture-lexical-confirm-08`, with
+outer launcher costs 8.13 s and 84.72 s. The ten original libraries were also
+reacquired and checked at `transfer-08`; their performance comparison remains
+separate. The helper result must not be presented as a uniform speedup over all
+generated programs.

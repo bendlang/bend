@@ -896,7 +896,7 @@ def j_l_marks(ts, path, depth, at):
 @unsafe
 def j_l_def(book, d):
   +worker = j_nat_loop_worker(book, d)
-  kc(String, String.eq(worker, ""), u => j_u32_global(book, d, j_u32_worker(book, d)), u => "G[" ++ j_quote(dn(d)) ++ "]=" ++ worker ++ ";\n")
+  kc(String, String.eq(worker, ""), u => j_tree_global(book, d), u => "G[" ++ j_quote(dn(d)) ++ "]=" ++ worker ++ ";\n")
 
 @unsafe
 def j_l_definition(book, d, t):

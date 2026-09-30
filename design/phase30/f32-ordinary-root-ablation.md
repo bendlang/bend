@@ -70,8 +70,11 @@ not a performance gain.
 ## Measurement
 
 After controls and independent static review, prepare a cheap leaf adapter that
-invokes the unmodified public `isect5` with a deterministic scalar input and
-returns its complete scalar result. Both variants use the same adapter and input.
+invokes the unmodified public `isect5` and returns its complete scalar result.
+Freeze separate hit `(z=5, offset=0) -> 4` and miss `(z=5, offset=3) -> 1e9`
+points. The miss skips the later helpers but still pays the candidate's entire
+closure guard, so a hit-only timing could conceal a branch-dependent regression.
+Both variants use the same adapter and corresponding input.
 Use the standard paired screen and longer-warm confirmation only for this small
 point, under the parent's exclusive timing grant.
 
@@ -84,3 +87,8 @@ defer F32 production admission until a larger closed region can amortize it.
 Retain source/tool/design/output hashes, full oracle and host-boundary receipts,
 first-call and warm observations, both timing windows, and the distinction
 between generated-JS experimentation and actual checked compiler output.
+Separate instrumented leaf copies may count `apply`, descriptor/partial creation,
+`jump`, `force` and closure-guard entries for the hit and miss points. Reset after
+module initialization and snapshot each result immediately. These are named
+mechanism counts, neither total allocations nor runtime-cost percentages; never
+time the instrumented copies or repeat the full original program for counters.

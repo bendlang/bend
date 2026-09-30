@@ -4,7 +4,8 @@ The actual compiler now emits lexical private helper functions and can include
 a proved nested Nat countdown inside a scalar region whose final result is a
 flat record. Attempt08 isolates the lexical spelling change; attempt09 adds the
 terminal-record and nested-loop admission. These are checked experimental
-compilers, not yet the installed release. Actual-output timing is pending.
+compilers, not yet the installed release. Actual terminal output now passes
+longer-warm confirmation as described below.
 
 The plans are [lexical integration](../../design/phase30/lexical-helper-integration.md),
 [terminal extension](../../design/phase30/terminal-region-compiler-extension.md)
@@ -110,3 +111,29 @@ The frozen actual timing configurations are
 They compare unchanged original program inputs and the same complete chunk
 checksum used by the prototype. Installed release and broad conformance remain
 separate promotion gates.
+
+## Actual terminal timing
+
+`terminal-compiler-screen-09` retains the short screen, including its warmup
+drift. `terminal-compiler-confirm-09` uses five rotating fresh-process samples,
+at least 100 calls and three seconds of warmup, then 300 ms timed targets on
+exclusive CPU3. Its outer wall duration is 106.12 seconds. Every call checks its
+complete result; diagnostic modules are excluded.
+
+| Workload | Attempt08, ms | Attempt09, ms | Pinned TypeScript, ms |
+|---|---:|---:|---:|
+| Original small Mandelbrot | 8.99647 | 5.02145 | 0.0455015 |
+| Complete histogram chunk64 | 0.998604 | 0.0262920 | Not measured |
+
+The original program improves **1.792×**, with disjoint ranges of 8.88093–9.13034
+and 4.99750–5.03987 ms. Its remaining TypeScript ratio is **110.36×**. Timed halves
+differ by at most 1.62%. The chunk improves **37.981×**, also with disjoint ranges;
+four candidate samples have half drift at most 2.14%, while one drifts −6.79%.
+Keep that residual drift visible. The earlier screen suggested 40.7× and is not
+the settled ratio.
+
+The lexical helper spelling explains why this actual compiler chunk improves
+much more than the earlier dictionary-shaped terminal prototype. The two effects
+were first isolated, then measured in the actual implementation. The full program
+still spends most of its time outside the optimized chunk; these results do not
+claim a similar gain for other original programs or compiler throughput.

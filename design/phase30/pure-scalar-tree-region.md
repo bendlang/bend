@@ -71,7 +71,10 @@ the checked book, not from function or benchmark names:
   arguments and the final combination contain no additional owner reference,
   escaping closure, dynamic callee, effect or unproved helper.
 - The original evaluation order is two child results followed by a scalar
-  combination. Preserve annotations, parallel-let scope and immutable aliases.
+  combination. Initially the combination may use only the two child results
+  and closed primitive/literal expressions; no parent parameter is needed after
+  unwinding a right child. The parallel child arguments cannot refer to either
+  new result binder. Preserve annotations, parallel-let scope and immutable aliases.
   Refuse an owner reference in an argument, an indirect self call, a different
   counter, missing/extra arguments, a shadowed predecessor, mutual recursion
   or a helper-cycle that is not the separately proved `mit` self-tail edge.

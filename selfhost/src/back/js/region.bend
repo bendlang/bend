@@ -126,6 +126,37 @@ def j_region_def_count(+ds: List<&2,KDef>) -> U32:
     case Nil{}: 0
     case Con{h, rest}: U32.inc(j_region_def_count(rest))
 
+# Ordinary roots reuse the same analysis. Require a nested countdown so trivial
+# scalar wrappers do not pay a closure guard without measured useful work.
+@unsafe
+def j_region_root(+book: List<&2,KDef>, +d: KDef) -> String:
+  kc(String, j_region_capture_eligible(book, d) && String.eq(tg(j_strip(dv(d))), "Lam"), u =>
+    kc(String, j_u32_bounded([dv(d)], 8192) && U32.is_eq(j_nat_loop_count(dv(d), 0), da(d)), u =>
+      kc(String, j_nat_loop_distinct(dv(d), Nil{}) && Bool.not(j_l_deep(dv(d), 0)), u =>
+        j_region_root_done(book, d, j_region_prefix(book, Nil{}, dv(d), dt(d), 0, da(d), True{}, "", [dn(d)], 0,
+          JRegionBuild{atom("Absent"), Nil{}, 32768, True{}})), u => ""), u => ""), u => "")
+
+@unsafe
+def j_region_has_loop(+helpers: List<&2,KDef>) -> Bool:
+  match helpers:
+    case Nil{}: False{}
+    case Con{d, rest}: kc(Bool, String.eq(tg(dv(d)), "Mat"), u => True{}, u => j_region_has_loop(rest))
+
+@unsafe
+def j_region_root_done(+book: List<&2,KDef>, +d: KDef, +s: JRegionBuild) -> String:
+  kc(String, j_region_valid(s) && j_region_has_loop(j_region_helpers(s)), u =>
+    "(()=>{" ++ j_region_declarations(book, j_region_helpers(s)) ++ "const $guards=[" ++ j_quote(dn(d)) ++ "," ++ j_region_names(j_region_helpers(s)) ++ "];return " ++
+    "fn(" ++ U32.show(da(d)) ++ ",exactCode(function(a,$entered){/* private scalar root */" ++ j_nat_loop_slots(da(d), 0) ++
+    "if($entered&&" ++ j_region_inputs(book, dt(d), 0, da(d), False{}) ++ "&&scalarGuard($guards)){" ++
+    j_nat_loop_generic(book, Nil{}, j_region_term(s), dt(d), 0) ++ "}" ++
+    j_nat_loop_generic(book, Nil{}, dv(d), dt(d), 0) ++ "}));})()", u => "")
+
+@unsafe
+def j_region_global(+book: List<&2,KDef>, +d: KDef) -> String:
+  +worker = j_region_root(book, d)
+  kc(String, String.eq(worker, ""), u => j_u32_global(book, d, j_u32_worker(book, d)),
+    u => j_l_global_worker(book, d, dv(d), worker))
+
 @unsafe
 def j_region_plan(+book: List<&2,KDef>, +d: KDef, +zero: KTerm, +succ: KTerm, +total: U32) -> Maybe<&2,JRegion>:
   j_region_plan_zero(book, d, succ, total,
