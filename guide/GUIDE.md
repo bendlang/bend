@@ -325,11 +325,9 @@ SOME PROOFS FAIL while any law is open or false, and ALL PROOFS CHECK once every
 law holds.
 bend refuses a `PROOF.bend` that sits beside a `LAWS.bend` without importing it.
 
-`bend PROOF.bend --verdict` checks the proofs a second time, with a small kernel
-that has a proof in Lean: it prints ALL PROOFS CHECK only when every def outside
-Base is a valid proof, which bend2 and the kernel both accept, and which relies
-on no `@unsafe` or foreign code. `-o PROOF.bendtt` writes the translation the
-kernel reads; the translation has no proof, so read it to confirm a law.
+`bend PROOF.bend --verdict` prints ALL PROOFS CHECK only if bend2 and its
+Lean-proven kernel accept every non-Base def, with no unsafe or foreign dependencies.
+`-o PROOF.bendtt` exports its unproven translation; audit it to confirm the law.
 Template-model search is bounded; required models beyond its limits are out of scope.
 
 Bend has no tactics: a proposition is a type, and a proof is a def of that type.
