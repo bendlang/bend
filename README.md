@@ -17,22 +17,29 @@ This fork develops the compiler in [`selfhost/`](selfhost/README.md), on branch
 from `selfhost/`, run `npm run verify:release`, then `node cli.mjs FILE --run`.
 `npm run build` checks and rebuilds the default with pinned upstream.
 
+The [Phase26 release report](implementation/phase26/direct-u32-decisions.md)
+adds direct native U32 decisions to generated JavaScript: **11.8× faster** on the
+dense-table workload, **3.7×** on wide-key loops and **50×** on direct numeric
+decisions. These are generated-program gains, not whole-compiler speedups.
+New scoped execution/identity controls pass; the runtime and calling ABI are unchanged.
+
 The [Phase24 release report](implementation/phase24/profile-and-coverage.md)
 records further profiling and two execution fixes on **0187512, after Bend 2.0.34**:
 foreign/constructor-name collisions are rejected at emission, and native function
 names remain distinct across case and punctuation.
 
-All **3,026 main frontend observations** and **196 broader parser observations**
+In Phase24, all **3,026 main frontend observations** and **196 broader parser observations**
 agree exactly with pinned TypeScript. The bounded backend pilot is **81/81 exact**;
 the report distinguishes its scope from the full execution inventory. Request
 histories pass without exceptions. See [conformance](selfhost/CONFORMANCE.md) for
 raw verdicts, remaining coverage and the supported-host TCP/sanitizer evidence.
 
-Controlled ordinary checking averages **11.16s**, versus **11.73s** for the previous
+Phase24 controlled ordinary checking averages **11.16s**, versus **11.73s** for the previous
 release and **3.74s** for TypeScript: **4.9% faster**, still about **3× TypeScript**.
 This three-sample screen excludes emission. Peak memory is essentially unchanged.
-The compiler has **15,776 Bend lines in 60 modules**, adding 28 lines(+0.18%) with
-unchanged datatype/module counts. The prior shared-term conversion fixes remain.
+The current compiler has **15,886 Bend lines in 61 modules**. Phase26 adds110
+lines(+0.70%) and no new datatype or runtime representation, while cutting the
+targeted generated decision definitions by about87%.
 
 The [development workflow](docs/PHASE5_DEVELOPMENT.md) builds a genuine checked
 compiler and runs36 short paired controls. The release preserves its checked

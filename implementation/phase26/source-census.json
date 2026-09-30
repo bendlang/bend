@@ -1,0 +1,31 @@
+{
+  "baselineCommit": "7199b391865f79acd38e67b44c4fdf21bfa721e9",
+  "baseline": {
+    "modules": 60,
+    "bytes": 588084,
+    "physicalLines": 15776,
+    "nonblankLines": 13467,
+    "defs": 1703,
+    "laws": 640,
+    "types": 68
+  },
+  "current": {
+    "modules": 61,
+    "bytes": 592936,
+    "physicalLines": 15886,
+    "nonblankLines": 13562,
+    "defs": 1718,
+    "laws": 640,
+    "types": 68
+  },
+  "delta": {
+    "modules": 1,
+    "bytes": 4852,
+    "physicalLines": 110,
+    "nonblankLines": 95,
+    "defs": 15,
+    "laws": 0,
+    "types": 0
+  },
+  "scope": "Canonical compiler.json Bend modules only; physical lines include blanks/comments. Declaration counts are not semantic concept counts."
+}

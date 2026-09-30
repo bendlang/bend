@@ -472,3 +472,14 @@ Production code and maintained fixtures are bound to commit
 compiler observations, relocated timings, sanitizer passes or a fixed-point proof.
 The earlier starting disk shortage was resolved by byte-verifying and removing
 only eight redundant recovery trees; their original archives remain preserved.
+
+## Phase26 direct numeric decisions
+
+The [Phase26 capsule](../implementation/phase26/evidence/README.md) preserves the
+checked candidate snapshot, baseline API/runtime/Base copies, all source and guard
+pilots, paired controls, corpus emissions,90 timing samples, exact counters,
+compressed AST census and release observations. Its per-file receipt verifies
+archive bytes independently. The prior23-source baseline corpus is in the linked
+Phase25 capsule; installed/parent APIs and release lineage are also committed.
+The103 unrelated starting paths remain byte-identical. No old experiment material
+was removed or silently incorporated into the compiler checkpoint.

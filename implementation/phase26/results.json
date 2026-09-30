@@ -1,0 +1,837 @@
+{
+  "complete": true,
+  "timingRawSha256": "940df66ac8dd9d553bab6733dee75f7d4803a2734b22fa701610dc775703372f",
+  "cases": [
+    {
+      "id": "host-boundary",
+      "point": {
+        "size": 0,
+        "seed": 17,
+        "expected": 17
+      },
+      "medianUsPerCall": {
+        "upstream": 0.053700685999999984,
+        "old": 0.1346786211226827,
+        "candidate": 0.13952493061297574
+      },
+      "speedup": 0.9652656376964194,
+      "remainingRatio": 2.598196429240695,
+      "sampleRangesUsPerCall": {
+        "upstream": [
+          0.053668046000000004,
+          0.054113381999999995
+        ],
+        "old": [
+          0.13087100995967813,
+          0.14915525289365533
+        ],
+        "candidate": [
+          0.1325734225314282,
+          0.15880955434307478
+        ]
+      }
+    },
+    {
+      "id": "scalar-arithmetic",
+      "point": {
+        "size": 1024,
+        "seed": 18,
+        "expected": 22140126
+      },
+      "medianUsPerCall": {
+        "upstream": 9.655505655428664,
+        "old": 1828.5362142857145,
+        "candidate": 1840.9184819277111
+      },
+      "speedup": 0.9932738642348625,
+      "remainingRatio": 190.65997655883328,
+      "sampleRangesUsPerCall": {
+        "upstream": [
+          9.603443309108792,
+          10.025828588601716
+        ],
+        "old": [
+          1814.4602023809525,
+          1861.1283214285716
+        ],
+        "candidate": [
+          1824.5373253012049,
+          1852.6380481927706
+        ]
+      }
+    },
+    {
+      "id": "pinned-u32-table",
+      "point": {
+        "size": 256,
+        "seed": 18,
+        "expected": 24132
+      },
+      "medianUsPerCall": {
+        "upstream": 1.8931451398473012,
+        "old": 2730.2642413793105,
+        "candidate": 231.44782492113566
+      },
+      "speedup": 11.796456684393688,
+      "remainingRatio": 122.25572147088731,
+      "sampleRangesUsPerCall": {
+        "upstream": [
+          1.889911799339065,
+          1.8967504653135645
+        ],
+        "old": [
+          2686.662534482759,
+          2869.2375689655173
+        ],
+        "candidate": [
+          231.08456782334386,
+          237.17026498422717
+        ]
+      }
+    },
+    {
+      "id": "pinned-u32-wide",
+      "point": {
+        "size": 1024,
+        "seed": 18,
+        "expected": 40964
+      },
+      "medianUsPerCall": {
+        "upstream": 3.671912578910452,
+        "old": 6515.5039375000015,
+        "candidate": 1778.149965517242
+      },
+      "speedup": 3.6642038432369914,
+      "remainingRatio": 484.25716225653264,
+      "sampleRangesUsPerCall": {
+        "upstream": [
+          3.6436994856207616,
+          3.729362917933131
+        ],
+        "old": [
+          6467.3399375,
+          6542.671875000002
+        ],
+        "candidate": [
+          1771.8909080459769,
+          1804.1664367816093
+        ]
+      }
+    },
+    {
+      "id": "numeric-direct",
+      "point": {
+        "size": 2147483648,
+        "seed": 18,
+        "expected": 2142
+      },
+      "medianUsPerCall": {
+        "upstream": 0.06819684900000002,
+        "old": 44.456569560378405,
+        "candidate": 0.8846671055545248
+      },
+      "speedup": 50.252314436979376,
+      "remainingRatio": 12.972257787959155,
+      "sampleRangesUsPerCall": {
+        "upstream": [
+          0.068009285,
+          0.06868620000000002
+        ],
+        "old": [
+          43.93589287701725,
+          46.0352142459655
+        ],
+        "candidate": [
+          0.8791398177019433,
+          0.892912262327263
+        ]
+      }
+    },
+    {
+      "id": "compiler-escape",
+      "point": {
+        "size": 32,
+        "seed": 17,
+        "expected": 5129585
+      },
+      "medianUsPerCall": {
+        "upstream": 336.5949044444444,
+        "old": 17942.361285714283,
+        "candidate": 17900.571857142862
+      },
+      "speedup": 1.0023345303661204,
+      "remainingRatio": 53.181351294334235,
+      "sampleRangesUsPerCall": {
+        "upstream": [
+          335.01067777777774,
+          340.8361933333333
+        ],
+        "old": [
+          17577.660714285717,
+          18017.454285714288
+        ],
+        "candidate": [
+          17590.88814285714,
+          18105.470714285715
+        ]
+      }
+    }
+  ],
+  "wallSeconds": 44.613610460888594,
+  "countersPerBenchCall": [
+    {
+      "id": "pinned-u32-table",
+      "variant": "old",
+      "counts": {
+        "functionRecords": 5309.0,
+        "applyCalls": 6338.0,
+        "partialApplications": 241.0,
+        "overApplications": 1893.0,
+        "argumentCopyArrays": 6338.0,
+        "boundConcats": 241.0,
+        "argumentSlices": 6097.0,
+        "overApplicationSlices": 3786.0,
+        "tailMessages": 5566.0,
+        "tailArgumentSlots": 7716.0,
+        "forceCalls": 2665.0,
+        "bounceSteps": 5566.0,
+        "callCalls": 772.0,
+        "constructorCalls": 8481.0,
+        "projectCalls": 2935.0,
+        "matcherCreates": 1893.0,
+        "matcherEntries": 2150.0,
+        "matcher1Creates": 2678.0,
+        "matcher1Entries": 2935.0,
+        "buildMessages": 0.0
+      }
+    },
+    {
+      "id": "pinned-u32-table",
+      "variant": "candidate",
+      "counts": {
+        "functionRecords": 512.0,
+        "applyCalls": 1541.0,
+        "partialApplications": 0.0,
+        "overApplications": 0.0,
+        "argumentCopyArrays": 1541.0,
+        "boundConcats": 0.0,
+        "argumentSlices": 1541.0,
+        "overApplicationSlices": 0.0,
+        "tailMessages": 769.0,
+        "tailArgumentSlots": 1026.0,
+        "forceCalls": 772.0,
+        "bounceSteps": 769.0,
+        "callCalls": 772.0,
+        "constructorCalls": 0.0,
+        "projectCalls": 256.0,
+        "matcherCreates": 0.0,
+        "matcherEntries": 257.0,
+        "matcher1Creates": 256.0,
+        "matcher1Entries": 256.0,
+        "buildMessages": 0.0
+      }
+    },
+    {
+      "id": "pinned-u32-wide",
+      "variant": "old",
+      "counts": {
+        "functionRecords": 12801.0,
+        "applyCalls": 17926.0,
+        "partialApplications": 3073.0,
+        "overApplications": 3071.0,
+        "argumentCopyArrays": 17926.0,
+        "boundConcats": 3073.0,
+        "argumentSlices": 14853.0,
+        "overApplicationSlices": 6142.0,
+        "tailMessages": 11777.0,
+        "tailArgumentSlots": 14849.0,
+        "forceCalls": 9220.0,
+        "bounceSteps": 11777.0,
+        "callCalls": 6149.0,
+        "constructorCalls": 33792.0,
+        "projectCalls": 5632.0,
+        "matcherCreates": 3071.0,
+        "matcherEntries": 4096.0,
+        "matcher1Creates": 4608.0,
+        "matcher1Entries": 5632.0,
+        "buildMessages": 0.0
+      }
+    },
+    {
+      "id": "pinned-u32-wide",
+      "variant": "candidate",
+      "counts": {
+        "functionRecords": 4098.0,
+        "applyCalls": 9223.0,
+        "partialApplications": 2049.0,
+        "overApplications": 0.0,
+        "argumentCopyArrays": 9223.0,
+        "boundConcats": 2049.0,
+        "argumentSlices": 7174.0,
+        "overApplicationSlices": 0.0,
+        "tailMessages": 3074.0,
+        "tailArgumentSlots": 3075.0,
+        "forceCalls": 6149.0,
+        "bounceSteps": 3074.0,
+        "callCalls": 6149.0,
+        "constructorCalls": 0.0,
+        "projectCalls": 1024.0,
+        "matcherCreates": 0.0,
+        "matcherEntries": 1025.0,
+        "matcher1Creates": 1024.0,
+        "matcher1Entries": 1024.0,
+        "buildMessages": 0.0
+      }
+    },
+    {
+      "id": "numeric-direct",
+      "variant": "old",
+      "counts": {
+        "functionRecords": 133.0,
+        "applyCalls": 139.0,
+        "partialApplications": 1.0,
+        "overApplications": 64.0,
+        "argumentCopyArrays": 139.0,
+        "boundConcats": 1.0,
+        "argumentSlices": 138.0,
+        "overApplicationSlices": 128.0,
+        "tailMessages": 134.0,
+        "tailArgumentSlots": 199.0,
+        "forceCalls": 69.0,
+        "bounceSteps": 134.0,
+        "callCalls": 5.0,
+        "constructorCalls": 66.0,
+        "projectCalls": 69.0,
+        "matcherCreates": 64.0,
+        "matcherEntries": 64.0,
+        "matcher1Creates": 67.0,
+        "matcher1Entries": 69.0,
+        "buildMessages": 0.0
+      }
+    },
+    {
+      "id": "numeric-direct",
+      "variant": "candidate",
+      "counts": {
+        "functionRecords": 0.0,
+        "applyCalls": 6.0,
+        "partialApplications": 0.0,
+        "overApplications": 0.0,
+        "argumentCopyArrays": 6.0,
+        "boundConcats": 0.0,
+        "argumentSlices": 6.0,
+        "overApplicationSlices": 0.0,
+        "tailMessages": 1.0,
+        "tailArgumentSlots": 2.0,
+        "forceCalls": 5.0,
+        "bounceSteps": 1.0,
+        "callCalls": 5.0,
+        "constructorCalls": 0.0,
+        "projectCalls": 0.0,
+        "matcherCreates": 0.0,
+        "matcherEntries": 0.0,
+        "matcher1Creates": 0.0,
+        "matcher1Entries": 0.0,
+        "buildMessages": 0.0
+      }
+    }
+  ],
+  "structure": [
+    {
+      "id": "pinned-u32-table",
+      "variant": "upstream",
+      "moduleBytes": 4339,
+      "selectedOwners": []
+    },
+    {
+      "id": "pinned-u32-table",
+      "variant": "old",
+      "moduleBytes": 131474,
+      "selectedOwners": [
+        {
+          "owners": [
+            "pop"
+          ],
+          "bytes": 65562,
+          "metrics": {
+            "astNodes": 14229,
+            "functionDeclarations": 0,
+            "functionExpressions": 528,
+            "arrowFunctions": 1421,
+            "calls": 1471,
+            "identifierCalls": 1422,
+            "memberCalls": 49,
+            "otherCalls": 0,
+            "optionalCalls": 0,
+            "iifes": 0,
+            "newExpressions": 0,
+            "arrayLiteralSites": 0,
+            "arrayLiteralElements": 0,
+            "arrayLiteralHoles": 0,
+            "objectLiteralSites": 0,
+            "spreadSites": 0,
+            "restParameters": 0,
+            "ifStatements": 0,
+            "conditionalExpressions": 0,
+            "switchStatements": 0,
+            "switchCases": 0,
+            "forStatements": 0,
+            "whileStatements": 0,
+            "returnStatements": 528,
+            "throws": 0,
+            "tryStatements": 0,
+            "globalLookupSites": 0,
+            "matcherHelperSites": 958,
+            "projectionHelperSites": 0,
+            "trampolineHelperSites": 0,
+            "closureFactorySites": 464,
+            "constructorHelperSites": 0,
+            "taggedConstructorObjectSites": 0,
+            "bounceObjectSites": 0,
+            "argumentArraySites": 0,
+            "sliceOrConcatMethodSites": 0,
+            "explicitBoundClosureSites": 0,
+            "helperCalls": {
+              "matcher": 463,
+              "matcher1": 495,
+              "fn": 464
+            },
+            "callArgumentHistogram": {
+              "0": 48,
+              "1": 1,
+              "2": 959,
+              "3": 463
+            },
+            "constructorTags": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "pinned-u32-table",
+      "variant": "candidate",
+      "moduleBytes": 75928,
+      "selectedOwners": [
+        {
+          "owners": [
+            "pop"
+          ],
+          "bytes": 8711,
+          "metrics": {
+            "astNodes": 3262,
+            "functionDeclarations": 0,
+            "functionExpressions": 1,
+            "arrowFunctions": 0,
+            "calls": 1,
+            "identifierCalls": 1,
+            "memberCalls": 0,
+            "otherCalls": 0,
+            "optionalCalls": 0,
+            "iifes": 0,
+            "newExpressions": 0,
+            "arrayLiteralSites": 0,
+            "arrayLiteralElements": 0,
+            "arrayLiteralHoles": 0,
+            "objectLiteralSites": 0,
+            "spreadSites": 0,
+            "restParameters": 0,
+            "ifStatements": 0,
+            "conditionalExpressions": 463,
+            "switchStatements": 0,
+            "switchCases": 0,
+            "forStatements": 0,
+            "whileStatements": 0,
+            "returnStatements": 1,
+            "throws": 0,
+            "tryStatements": 0,
+            "globalLookupSites": 0,
+            "matcherHelperSites": 0,
+            "projectionHelperSites": 0,
+            "trampolineHelperSites": 0,
+            "closureFactorySites": 1,
+            "constructorHelperSites": 0,
+            "taggedConstructorObjectSites": 0,
+            "bounceObjectSites": 0,
+            "argumentArraySites": 0,
+            "sliceOrConcatMethodSites": 0,
+            "explicitBoundClosureSites": 0,
+            "helperCalls": {
+              "fn": 1
+            },
+            "callArgumentHistogram": {
+              "2": 1
+            },
+            "constructorTags": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "pinned-u32-wide",
+      "variant": "upstream",
+      "moduleBytes": 4783,
+      "selectedOwners": []
+    },
+    {
+      "id": "pinned-u32-wide",
+      "variant": "old",
+      "moduleBytes": 78941,
+      "selectedOwners": [
+        {
+          "owners": [
+            "key"
+          ],
+          "bytes": 12019,
+          "metrics": {
+            "astNodes": 2643,
+            "functionDeclarations": 0,
+            "functionExpressions": 98,
+            "arrowFunctions": 261,
+            "calls": 272,
+            "identifierCalls": 262,
+            "memberCalls": 10,
+            "otherCalls": 0,
+            "optionalCalls": 0,
+            "iifes": 0,
+            "newExpressions": 0,
+            "arrayLiteralSites": 0,
+            "arrayLiteralElements": 0,
+            "arrayLiteralHoles": 0,
+            "objectLiteralSites": 0,
+            "spreadSites": 0,
+            "restParameters": 0,
+            "ifStatements": 0,
+            "conditionalExpressions": 0,
+            "switchStatements": 0,
+            "switchCases": 0,
+            "forStatements": 0,
+            "whileStatements": 0,
+            "returnStatements": 98,
+            "throws": 0,
+            "tryStatements": 0,
+            "globalLookupSites": 0,
+            "matcherHelperSites": 176,
+            "projectionHelperSites": 0,
+            "trampolineHelperSites": 0,
+            "closureFactorySites": 86,
+            "constructorHelperSites": 0,
+            "taggedConstructorObjectSites": 0,
+            "bounceObjectSites": 0,
+            "argumentArraySites": 0,
+            "sliceOrConcatMethodSites": 0,
+            "explicitBoundClosureSites": 0,
+            "helperCalls": {
+              "matcher": 85,
+              "matcher1": 91,
+              "fn": 86
+            },
+            "callArgumentHistogram": {
+              "0": 9,
+              "1": 1,
+              "2": 177,
+              "3": 85
+            },
+            "constructorTags": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "pinned-u32-wide",
+      "variant": "candidate",
+      "moduleBytes": 69794,
+      "selectedOwners": [
+        {
+          "owners": [
+            "key"
+          ],
+          "bytes": 1567,
+          "metrics": {
+            "astNodes": 616,
+            "functionDeclarations": 0,
+            "functionExpressions": 1,
+            "arrowFunctions": 0,
+            "calls": 1,
+            "identifierCalls": 1,
+            "memberCalls": 0,
+            "otherCalls": 0,
+            "optionalCalls": 0,
+            "iifes": 0,
+            "newExpressions": 0,
+            "arrayLiteralSites": 0,
+            "arrayLiteralElements": 0,
+            "arrayLiteralHoles": 0,
+            "objectLiteralSites": 0,
+            "spreadSites": 0,
+            "restParameters": 0,
+            "ifStatements": 0,
+            "conditionalExpressions": 85,
+            "switchStatements": 0,
+            "switchCases": 0,
+            "forStatements": 0,
+            "whileStatements": 0,
+            "returnStatements": 1,
+            "throws": 0,
+            "tryStatements": 0,
+            "globalLookupSites": 0,
+            "matcherHelperSites": 0,
+            "projectionHelperSites": 0,
+            "trampolineHelperSites": 0,
+            "closureFactorySites": 1,
+            "constructorHelperSites": 0,
+            "taggedConstructorObjectSites": 0,
+            "bounceObjectSites": 0,
+            "argumentArraySites": 0,
+            "sliceOrConcatMethodSites": 0,
+            "explicitBoundClosureSites": 0,
+            "helperCalls": {
+              "fn": 1
+            },
+            "callArgumentHistogram": {
+              "2": 1
+            },
+            "constructorTags": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "numeric-direct",
+      "variant": "upstream",
+      "moduleBytes": 4941,
+      "selectedOwners": []
+    },
+    {
+      "id": "numeric-direct",
+      "variant": "old",
+      "moduleBytes": 103187,
+      "selectedOwners": [
+        {
+          "owners": [
+            "dense"
+          ],
+          "bytes": 25119,
+          "metrics": {
+            "astNodes": 5542,
+            "functionDeclarations": 0,
+            "functionExpressions": 205,
+            "arrowFunctions": 552,
+            "calls": 572,
+            "identifierCalls": 553,
+            "memberCalls": 19,
+            "otherCalls": 0,
+            "optionalCalls": 0,
+            "iifes": 0,
+            "newExpressions": 0,
+            "arrayLiteralSites": 0,
+            "arrayLiteralElements": 0,
+            "arrayLiteralHoles": 0,
+            "objectLiteralSites": 0,
+            "spreadSites": 0,
+            "restParameters": 0,
+            "ifStatements": 0,
+            "conditionalExpressions": 0,
+            "switchStatements": 0,
+            "switchCases": 0,
+            "forStatements": 0,
+            "whileStatements": 0,
+            "returnStatements": 205,
+            "throws": 0,
+            "tryStatements": 0,
+            "globalLookupSites": 0,
+            "matcherHelperSites": 372,
+            "projectionHelperSites": 0,
+            "trampolineHelperSites": 0,
+            "closureFactorySites": 181,
+            "constructorHelperSites": 0,
+            "taggedConstructorObjectSites": 0,
+            "bounceObjectSites": 0,
+            "argumentArraySites": 0,
+            "sliceOrConcatMethodSites": 0,
+            "explicitBoundClosureSites": 0,
+            "helperCalls": {
+              "matcher": 180,
+              "matcher1": 192,
+              "fn": 181
+            },
+            "callArgumentHistogram": {
+              "0": 18,
+              "1": 1,
+              "2": 373,
+              "3": 180
+            },
+            "constructorTags": {}
+          }
+        },
+        {
+          "owners": [
+            "sparse"
+          ],
+          "bytes": 14292,
+          "metrics": {
+            "astNodes": 3069,
+            "functionDeclarations": 0,
+            "functionExpressions": 112,
+            "arrowFunctions": 312,
+            "calls": 322,
+            "identifierCalls": 310,
+            "memberCalls": 12,
+            "otherCalls": 0,
+            "optionalCalls": 0,
+            "iifes": 0,
+            "newExpressions": 0,
+            "arrayLiteralSites": 0,
+            "arrayLiteralElements": 0,
+            "arrayLiteralHoles": 0,
+            "objectLiteralSites": 0,
+            "spreadSites": 0,
+            "restParameters": 0,
+            "ifStatements": 0,
+            "conditionalExpressions": 0,
+            "switchStatements": 0,
+            "switchCases": 0,
+            "forStatements": 0,
+            "whileStatements": 0,
+            "returnStatements": 112,
+            "throws": 0,
+            "tryStatements": 0,
+            "globalLookupSites": 0,
+            "matcherHelperSites": 212,
+            "projectionHelperSites": 0,
+            "trampolineHelperSites": 0,
+            "closureFactorySites": 98,
+            "constructorHelperSites": 0,
+            "taggedConstructorObjectSites": 0,
+            "bounceObjectSites": 0,
+            "argumentArraySites": 0,
+            "sliceOrConcatMethodSites": 0,
+            "explicitBoundClosureSites": 0,
+            "helperCalls": {
+              "matcher": 100,
+              "matcher1": 112,
+              "fn": 98
+            },
+            "callArgumentHistogram": {
+              "0": 11,
+              "1": 1,
+              "2": 210,
+              "3": 100
+            },
+            "constructorTags": {}
+          }
+        }
+      ]
+    },
+    {
+      "id": "numeric-direct",
+      "variant": "candidate",
+      "moduleBytes": 70171,
+      "selectedOwners": [
+        {
+          "owners": [
+            "dense"
+          ],
+          "bytes": 3250,
+          "metrics": {
+            "astNodes": 1281,
+            "functionDeclarations": 0,
+            "functionExpressions": 1,
+            "arrowFunctions": 0,
+            "calls": 1,
+            "identifierCalls": 1,
+            "memberCalls": 0,
+            "otherCalls": 0,
+            "optionalCalls": 0,
+            "iifes": 0,
+            "newExpressions": 0,
+            "arrayLiteralSites": 0,
+            "arrayLiteralElements": 0,
+            "arrayLiteralHoles": 0,
+            "objectLiteralSites": 0,
+            "spreadSites": 0,
+            "restParameters": 0,
+            "ifStatements": 0,
+            "conditionalExpressions": 180,
+            "switchStatements": 0,
+            "switchCases": 0,
+            "forStatements": 0,
+            "whileStatements": 0,
+            "returnStatements": 1,
+            "throws": 0,
+            "tryStatements": 0,
+            "globalLookupSites": 0,
+            "matcherHelperSites": 0,
+            "projectionHelperSites": 0,
+            "trampolineHelperSites": 0,
+            "closureFactorySites": 1,
+            "constructorHelperSites": 0,
+            "taggedConstructorObjectSites": 0,
+            "bounceObjectSites": 0,
+            "argumentArraySites": 0,
+            "sliceOrConcatMethodSites": 0,
+            "explicitBoundClosureSites": 0,
+            "helperCalls": {
+              "fn": 1
+            },
+            "callArgumentHistogram": {
+              "2": 1
+            },
+            "constructorTags": {}
+          }
+        },
+        {
+          "owners": [
+            "sparse"
+          ],
+          "bytes": 1840,
+          "metrics": {
+            "astNodes": 721,
+            "functionDeclarations": 0,
+            "functionExpressions": 1,
+            "arrowFunctions": 0,
+            "calls": 1,
+            "identifierCalls": 1,
+            "memberCalls": 0,
+            "otherCalls": 0,
+            "optionalCalls": 0,
+            "iifes": 0,
+            "newExpressions": 0,
+            "arrayLiteralSites": 0,
+            "arrayLiteralElements": 0,
+            "arrayLiteralHoles": 0,
+            "objectLiteralSites": 0,
+            "spreadSites": 0,
+            "restParameters": 0,
+            "ifStatements": 0,
+            "conditionalExpressions": 100,
+            "switchStatements": 0,
+            "switchCases": 0,
+            "forStatements": 0,
+            "whileStatements": 0,
+            "returnStatements": 1,
+            "throws": 0,
+            "tryStatements": 0,
+            "globalLookupSites": 0,
+            "matcherHelperSites": 0,
+            "projectionHelperSites": 0,
+            "trampolineHelperSites": 0,
+            "closureFactorySites": 1,
+            "constructorHelperSites": 0,
+            "taggedConstructorObjectSites": 0,
+            "bounceObjectSites": 0,
+            "argumentArraySites": 0,
+            "sliceOrConcatMethodSites": 0,
+            "explicitBoundClosureSites": 0,
+            "helperCalls": {
+              "fn": 1
+            },
+            "callArgumentHistogram": {
+              "2": 1
+            },
+            "constructorTags": {}
+          }
+        }
+      ]
+    }
+  ]
+}

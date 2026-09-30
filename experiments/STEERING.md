@@ -1,6 +1,6 @@
 # Current compiler experiment strategy
 
-The [Phase24 compiler](../implementation/phase24/profile-and-coverage.md) is installed
+The [Phase26 compiler](../implementation/phase26/direct-u32-decisions.md) is installed
 at upstream018751270e800bc222a93dad7f257083ee53a5f7, after2.0.34. User authorization
 covers continued speed/conformance/simplicity work and pushes to rom1504/bend
 selfhost/bootstrap. No historical multi-hour budget is renewed. Preserve the103
@@ -8,7 +8,17 @@ unrelated paths in the Phase24 starting inventory.
 
 ## Released frontier
 
-Installed API7b523bdf, genuine checked parente8d99da3, guarded profile6.
+Installed API4c67ac04, genuine checked parent818f68ca, guarded profile6.
+Phase26 adds110 Bend lines for guarded native U32-to-U32 closed decisions before
+closure lifting. Runtime/Base/frontend/native backend and public call ABI unchanged.
+Table/wide/direct-numeric emitted workloads improve11.80×/3.66×/50.25×; remaining
+TS ratios122.26×/484.26×/12.97×. Word constructor calls drop to zero. No whole-H or
+ordinary compiler-throughput gain is claimed; actual String-result escape code
+is unchanged. Fresh36focused,15upstreamJS,23library/127point,2816+468scalar controls
+per emitter and56guard/780worker checks pass their overlapping scopes.
+Source now15,886physical/13,562nonblank,61modules,1718defs,640laws,68types.
+
+The following broader conformance and ordinary-cost figures are Phase24 evidence:
 No TypeScript fallback in ordinary compilation. The same contextual frontend,
 loadABI2, graph evaluator, persistent index and uniform array representation remain.
 A negative scope-index lookup now avoids unnecessary local declaration scans;
@@ -47,12 +57,14 @@ No generated-program speedup is claimed. Canonical source15,776physical/13,467no
 1. The [Phase25 emitted-code study](../implementation/phase25/generated-code-analysis.md)
    is complete:23sources/46libraries,127independent scalar points exact on both
    sides,45runtime points/450samples,18healthy diagnostics. The release is unchanged.
-   First test direct native U32 pattern decisions: current scalar matching creates
-   33constructor values per match and expands dense decisions into large matcher
-   trees. Preserve constructor/type identity, row/default order, unsigned width
-   and demand; keep a generic fallback. Large microkernel gaps are not whole-H
-   predictions. Use the new5.37-second focused emitted comparison before integration.
-2. Test saturated private workers through matcher boundaries, then tail cycles.
+   Phase26 has now removed word construction for eligible closed U32-result
+   functions. Wider result/capture support is a separate hypothesis; current real
+   compiler numeric helpers return String/List. Do not infer compiler transfer
+   from tiny-kernel ratios. The six-case/three-output comparison costs44.61s.
+2. First test selected constructor-arm prebinding, then saturated private workers
+   through matcher boundaries and tail cycles. The [bounded proposal](../implementation/phase26/call-lowering-analysis.md)
+   preserves original partial-function descriptors; merely raising arity can move
+   later argument evaluation before a match/error and is unsafe.
    Runtime dispatch is hot in the selected analogues. A Boolean-worker source
    rewrite helps upstream output22.24× but hurts ours1.80× on the matched point,
    so source speedups on upstream-built B1 need a separate self-emitted-code gate.

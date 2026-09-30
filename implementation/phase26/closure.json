@@ -1,0 +1,10 @@
+{
+  "complete": true,
+  "protectedPreexistingCount": 103,
+  "changedProtected": [],
+  "compilerEscapeSameAfterBasePathNormalization": true,
+  "canonicalSourceMatchesCheckedSnapshot": true,
+  "canonicalFiles": 63,
+  "smokeOutput": "2496 2397\n",
+  "installedApiSha256": "4c67ac041c41d1e9ba5984ea29985a46ff7ee90963cb8eb820a7c82d91e7f664"
+}

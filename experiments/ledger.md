@@ -1584,3 +1584,48 @@ on the frozen traversal kernels. Keep primitive inlining, Nat representation and
 constructor forcing as separate ablations. Use the seconds-scale emitted-code loop
 before component/full-H integration; preserve the working Phase24 release and its
 conformance scope while these backend hypotheses are tested.
+
+## P26 — native U32 decisions without linked words (2026-09-30)
+
+[Design](../design/phase26/direct-u32-decisions.md),
+[hypothesis](phase26/P26-001-direct-u32-decisions.md),
+[report](../implementation/phase26/direct-u32-decisions.md),
+[reproduction](../implementation/phase26/README.md).
+
+Promoted a110-line Bend emitter rule for native U32-to-U32 ordered matcher trees
+with closed numeric leaves. Native owner/constructor guards, an8192-node limit
+and explicit failure preserve generic lowering outside that envelope. Recognition
+precedes deep lifting. Runtime, Base, frontend, native backend and fn/call ABI are
+unchanged; the source grows0.70% to15,886 lines/61modules, with no new datatype.
+
+Installed API4c67ac04 derives from genuine checked parent818f68ca through profile6.
+Focused36exact, selected upstream JS15exact, corpus23libraries/127points exact.
+Paired controls2816scalar outputs per emitter plus4refusals, supplemental468points
+per emitter, and independent56guard/780worker checks pass. Actual escaping
+full-text/scalar controls pass. These overlap and do not renew all broader suites.
+
+Serial CPU3/Node24 timing:90valid samples,6cases,3outputs,5fresh processes/output,
+44.61seconds total including calibration/checks. Table11.80×, wide3.66×,
+direct-numeric50.25× faster than old selfhost output. Remaining TS ratios122.26×,
+484.26×,12.97×. Arithmetic/actual escaping controls are unchanged within the
+observed window; no whole-compiler throughput or H gain is claimed.
+
+Exact constructor counts fall8481→0,33792→0,66→0 per respective benchmark call.
+Generated pop/key definitions shrink86.7%/87.0%. Generic apply/closure work remains
+large in loop workloads, explaining why eliminating one representation is not
+parity. The real compiler's four numeric-case helpers return String/List and do
+not qualify for this rule. The emitted comparison loop gives useful evidence in
+seconds without another full self-hosting build.
+
+Retained source/expectation pilots, initial missing diagnostic-export harness and
+the overly broad documentation-inclusive closure audit. Independent review finds
+no blocker for checked native scalar inputs; arbitrary raw JS object coercions
+and forged native flags remain outside that contract. Capsule recovery and the103
+protected-path audit close preservation; release verification/CLI smoke pass.
+
+**Updated frontier:** test constructor-arm prebinding as a separate call-lowering
+ablation while preserving partial-function descriptors and argument demand.
+Do not merely raise public arity. Wider numeric-result support, dense tables,
+primitive inlining and tail loops remain separate candidates; prioritize changes
+that transfer to real compiler components. Keep backend conformance acquisition
+bounded, and retain compiler-throughput/generated-program/H distinctions.

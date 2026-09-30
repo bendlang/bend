@@ -1,6 +1,6 @@
 # JavaScript backend
 
-`emit.bend`, `choice.bend`, `projection.bend`, `foreign.bend`, `literals.bend`, and `validate.bend` are Bend2 source. Their input is the checked,
+`emit.bend`, `choice.bend`, `projection.bend`, `u32.bend`, `foreign.bend`, `literals.bend`, and `validate.bend` are Bend2 source. Their input is the checked,
 specialized, annotated `KTerm`/`KDef` core. They emit JavaScript; they do not
 invoke another compiler.
 
@@ -33,7 +33,7 @@ values passed directly between foreign functions.
 The bootstrap-only integration tests use `build/js-backend.mjs`, built with
 `tools/assemble.mjs` from `src/core/term.bend`, `src/core/index.bend`,
 `src/core/normalize.bend`, `src/core/pretty.bend`, `src/back/js/emit.bend`, `src/back/js/choice.bend`, `src/back/js/projection.bend`,
-`src/back/js/foreign.bend`, `src/back/js/literals.bend`, and
+`src/back/js/u32.bend`, `src/back/js/foreign.bend`, `src/back/js/literals.bend`, and
 `src/back/js/validate.bend`, then
 `tools/stage0-library.mjs` exporting `j_program j_expr j_descriptor j_library
 j_modules j_compile_error j_io_type book_cached j_layout_error`. Run `node src/back/js/test.mjs`,
@@ -48,6 +48,12 @@ The emitter uses lexical JavaScript variables for core binder IDs. Parallel
 new bindings. Consecutive leading lambdas share one closure; application
 batching stops at the proven leading-lambda arity so intermediate computation
 still precedes later argument evaluation. Computed globals remain reevaluated thunks; leading lambdas, top-level matcher wrappers and proven record projections share one closure.
+`u32.bend` recognizes native U32-to-U32 ordered decision trees with closed literal
+leaves before deep lifting. It emits one arity1 worker with unsigned bit tests,
+with native ownership checks and an8192-node bound. Other result types, captures
+and used structural fields keep generic lowering. It adds no runtime ABI. See
+the [Phase26 report](../../../../implementation/phase26/direct-u32-decisions.md)
+and `test-u32.mjs` for provenance, budget and valid-native-input boundaries.
 `test.mjs` covers partial calls, erased arguments, effect/error evaluation order,
 parallel shadowing, and closures that outlive their defining `Let`.
 

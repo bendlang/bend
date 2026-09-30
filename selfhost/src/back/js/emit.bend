@@ -886,7 +886,7 @@ def j_l_marks(ts, path, depth, at):
 
 @unsafe
 def j_l_def(book, d):
-  kc(String, j_l_deep(dv(d), 0), u => j_l_definition(book, d, j_l_mark(dv(d), "r", 0)), u => j_l_global(book, d, dv(d)))
+  j_u32_global(book, d, j_u32_worker(book, d))
 
 @unsafe
 def j_l_definition(book, d, t):

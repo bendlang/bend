@@ -1,5 +1,16 @@
 # Compiler validation
 
+The [Phase26 installed release](../implementation/phase26/direct-u32-decisions.md)
+keeps the Phase24 frontend/runtime and pinned upstream, adding only guarded native
+U32 decision emission. Fresh gates:36 focused exact observations,15 upstream JS
+execution fixtures exact,23 corpus libraries/127 scalar points,2,816 scalar checks
+per emitter plus four refusal controls,468 ignored-bit supplement points per
+emitter,56 direct guard observations and780 synthetic worker executions. The
+actual escaping component's full-text probes also pass. These overlapping finite
+scopes do not renew every historical suite below or establish full backend conformance.
+
+## Historical frontend and broader release evidence
+
 The current compiler targets upstream
 `018751270e800bc222a93dad7f257083ee53a5f7`, after Bend2 **2.0.34**. The
 [Phase23 report](../implementation/phase23/upstream-graph-conversion.md) records

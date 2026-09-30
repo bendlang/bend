@@ -14,6 +14,9 @@ records checked artifact identities, current conformance, measured cost and
 remaining gaps. The [Phase24 report](../implementation/phase24/profile-and-coverage.md)
 continues with profiled local-name and membership improvements, emission collision
 checks, injective native function names and a current backend coverage inventory.
+The [Phase26 release](../implementation/phase26/direct-u32-decisions.md) adds
+restricted direct U32 decision lowering to JavaScript with measured generated
+program gains and explicit structural/capture fallbacks. The pin is unchanged.
 This experimental port does not establish independent proof
 validity; `--verdict` is explicitly unsupported.
 
@@ -38,10 +41,22 @@ Keep compiler throughput, module import and warmed emitted-program execution
 separate. Timing checks every result and uses serial alternating fresh processes;
 instrumented profiles/counters are diagnostic evidence only. Do not extrapolate
 these selected microkernels to complete self-hosting performance. Native C and
-device output need separate acquisitions. The first concrete targets are direct
-native U32 pattern decisions and known saturated workers through matches, with
-argument demand, partial applications, constructor identity and stack behavior
-preserved.
+device output need separate acquisitions.
+
+Phase26 implements the first numeric target. Top-level native `U32 -> U32`
+matchers with closed literal results emit unsigned bit tests, before closure
+lifting. Captures, used residual words, other result types and oversized decision
+trees use the existing emitter. Actual native owner/constructor identities are
+checked; spelling alone does not qualify. The runtime and `fn`/partial-call ABI
+stay unchanged. Raw library callers must supply valid native U32 scalar inputs;
+this rule does not promise arbitrary JS object-coercion equivalence.
+
+Its [reproduction guide](../implementation/phase26/README.md) explains checked
+candidate acquisition,2,816 scalar controls per emitter, identity/budget guards,
+and the serial three-output comparison. Measured gains are11.8×/3.7×/50× on the
+selected numeric workloads; the real String-returning escape helper is unchanged.
+The remaining generic call/loop cost is the next target. Ordinary compiler
+throughput was not remeasured, and no new H image was built.
 
 ## Current frontend and release architecture
 
