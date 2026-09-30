@@ -483,3 +483,14 @@ archive bytes independently. The prior23-source baseline corpus is in the linked
 Phase25 capsule; installed/parent APIs and release lineage are also committed.
 The103 unrelated starting paths remain byte-identical. No old experiment material
 was removed or silently incorporated into the compiler checkpoint.
+
+## Phase27 selected constructor arms
+
+The [Phase27 capsule](../implementation/phase27/evidence/README.md) keeps both
+checked candidates, the rejected inline source patch, all360 timing samples and
+72 calibration/72 check processes, detailed semantic/numeric controls, actual
+compiler component, V8 traces, guarded counters/AST analysis and release closure.
+The per-file receipt independently verifies every archived byte. Phase25/26
+capsules supply the explicitly identified baseline corpus dependencies. Prior
+API/Base/lineage stay in release history; the matching old runtime is in the
+capsule baseline and prior Git revision. The103 unrelated files are unchanged.

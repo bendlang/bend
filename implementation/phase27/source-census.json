@@ -1,0 +1,2100 @@
+{
+  "baselineCommit": "0f51c00cd040fb661d4544dc47530f2ba6cb3985",
+  "baseline": {
+    "modules": 61,
+    "bytes": 592936,
+    "physicalLines": 15886,
+    "nonblankLines": 13562,
+    "defs": 1718,
+    "laws": 640,
+    "types": 68
+  },
+  "current": {
+    "modules": 62,
+    "bytes": 596153,
+    "physicalLines": 15944,
+    "nonblankLines": 13612,
+    "defs": 1726,
+    "laws": 640,
+    "types": 68
+  },
+  "delta": {
+    "modules": 1,
+    "bytes": 3217,
+    "physicalLines": 58,
+    "nonblankLines": 50,
+    "defs": 8,
+    "laws": 0,
+    "types": 0
+  },
+  "inlineCandidate": {
+    "modules": 62,
+    "bytes": 596548,
+    "physicalLines": 15948,
+    "nonblankLines": 13616,
+    "defs": 1726,
+    "laws": 640,
+    "types": 68
+  },
+  "sharedMinusInline": {
+    "modules": 0,
+    "bytes": -395,
+    "physicalLines": -4,
+    "nonblankLines": -4,
+    "defs": 0,
+    "laws": 0,
+    "types": 0
+  },
+  "scope": "Canonical compiler.json Bend modules only; physical lines include blanks/comments. Declaration counts are not semantic concept counts. Runtime is counted separately; generated compiler.bend, JS compiler images, tests, docs, Base, TypeScript and host tools are excluded.",
+  "method": {
+    "physicalLines": "len(UTF-8-decoded bytes.splitlines())",
+    "nonblankLines": "count of split lines where line.strip() is nonempty",
+    "declarations": "Python re.MULTILINE anchored ^def\\s+, ^law\\s+, ^type\\s+",
+    "bytes": "unmodified file byte lengths",
+    "baselineReader": "git show BASE:selfhost/<module>",
+    "currentReader": "working tree modules verified byte-identical to attempt-02 snapshot",
+    "manifestSha256": {
+      "baseline": "35806e1f94e02f90c6bfc3dfa0e08826491a6b3637f960cd88dc6f8d689804ba",
+      "inline": "f290fbbf31319c2bb6f73bd0cf5c1ea5201c6c3f07d50d1dc75d5f84198b4f81",
+      "shared": "f290fbbf31319c2bb6f73bd0cf5c1ea5201c6c3f07d50d1dc75d5f84198b4f81"
+    },
+    "snapshots": {
+      "inline": "selfhost/build/phase27/attempt-01/snapshot",
+      "shared": "selfhost/build/phase27/attempt-02/snapshot"
+    }
+  },
+  "runtime": {
+    "baseline": {
+      "sha256": "76d2d8647dc81f025c53c063aa0fb71ce24dd42965402c6e0078cc79a457d0c8",
+      "bytes": 42878,
+      "physicalLines": 493,
+      "nonblankLines": 485,
+      "matcher1pDefinitions": 0
+    },
+    "inline": {
+      "sha256": "76d2d8647dc81f025c53c063aa0fb71ce24dd42965402c6e0078cc79a457d0c8",
+      "bytes": 42878,
+      "physicalLines": 493,
+      "nonblankLines": 485,
+      "matcher1pDefinitions": 0
+    },
+    "shared": {
+      "sha256": "40823818afd57a6c37e055272dc332f461955a7cd225f67d66194f0d43ec823f",
+      "bytes": 43346,
+      "physicalLines": 504,
+      "nonblankLines": 496,
+      "matcher1pDefinitions": 1
+    }
+  },
+  "runtimeDelta": {
+    "bytes": 468,
+    "physicalLines": 11,
+    "nonblankLines": 11,
+    "matcher1pDefinitions": 1
+  },
+  "modules": {
+    "baseline": [
+      {
+        "file": "src/core/term.bend",
+        "sha256": "e9ab994bc3ba4fd5a281e25836911bbc29cafcf2ab0c0284dc9bc097e891fa46",
+        "bytes": 18285,
+        "physicalLines": 650,
+        "nonblankLines": 563,
+        "defs": 72,
+        "laws": 10,
+        "types": 2
+      },
+      {
+        "file": "src/core/index.bend",
+        "sha256": "32a4f2772c865f9ed9743f1ece27d5fafd1898724d5f268186590c938b038ea2",
+        "bytes": 10197,
+        "physicalLines": 383,
+        "nonblankLines": 338,
+        "defs": 34,
+        "laws": 9,
+        "types": 0
+      },
+      {
+        "file": "src/core/normalize.bend",
+        "sha256": "4845ff63f3c228abc9a432410ddc8b7e20bfce27e54d6d49412b06608f7ce702",
+        "bytes": 22263,
+        "physicalLines": 719,
+        "nonblankLines": 637,
+        "defs": 55,
+        "laws": 32,
+        "types": 3
+      },
+      {
+        "file": "src/core/graph.bend",
+        "sha256": "85625049b316ede08eeffd7ff509483183624f1197c582c9d1bb2cd8bebf4802",
+        "bytes": 14746,
+        "physicalLines": 485,
+        "nonblankLines": 420,
+        "defs": 37,
+        "laws": 22,
+        "types": 5
+      },
+      {
+        "file": "src/core/reach.bend",
+        "sha256": "086092c688e6cb774da94333826f51b1fdeddc8e85aeaac5be6b15c143b0df27",
+        "bytes": 9901,
+        "physicalLines": 254,
+        "nonblankLines": 214,
+        "defs": 27,
+        "laws": 13,
+        "types": 1
+      },
+      {
+        "file": "src/core/pretty.bend",
+        "sha256": "40b4e6ca55bf11009881b893c7959dd52cc64bbc6cb2dbb607e94dbab69fdedc",
+        "bytes": 16800,
+        "physicalLines": 548,
+        "nonblankLines": 469,
+        "defs": 55,
+        "laws": 23,
+        "types": 2
+      },
+      {
+        "file": "src/check/quantity.bend",
+        "sha256": "b4a8ca1f8dff10f4f64397ea53bbbe272bb32400e993b1077d284ec1d8a70b4d",
+        "bytes": 4069,
+        "physicalLines": 177,
+        "nonblankLines": 153,
+        "defs": 16,
+        "laws": 7,
+        "types": 1
+      },
+      {
+        "file": "src/check/kernel.bend",
+        "sha256": "da7ee29f9755f09acd9f89fcfd37465b52ab8778971200c946c70e50eb5b4132",
+        "bytes": 49255,
+        "physicalLines": 1427,
+        "nonblankLines": 1208,
+        "defs": 157,
+        "laws": 60,
+        "types": 4
+      },
+      {
+        "file": "src/check/specialize.bend",
+        "sha256": "76e0f9249ae15cc0734a8e9d2e75677794e2eb5464c7756a19daff8b8217e7ee",
+        "bytes": 16212,
+        "physicalLines": 383,
+        "nonblankLines": 322,
+        "defs": 53,
+        "laws": 5,
+        "types": 3
+      },
+      {
+        "file": "src/check/prefix.bend",
+        "sha256": "ceabf77fb49b58910d83fa896899061643c4c105f29e70bd87d3f73be873783d",
+        "bytes": 3037,
+        "physicalLines": 142,
+        "nonblankLines": 122,
+        "defs": 12,
+        "laws": 7,
+        "types": 0
+      },
+      {
+        "file": "src/check/annotate.bend",
+        "sha256": "1912e5d177514733e706297fbb53e730c1f7a9edc91ffb06d2b1de7e2547648c",
+        "bytes": 10866,
+        "physicalLines": 389,
+        "nonblankLines": 329,
+        "defs": 32,
+        "laws": 26,
+        "types": 1
+      },
+      {
+        "file": "src/front/lexer.bend",
+        "sha256": "aa9d726b6b284deba84dbccc77a01a8143dd89dab70cf487e1ddc8d589380440",
+        "bytes": 13265,
+        "physicalLines": 397,
+        "nonblankLines": 338,
+        "defs": 47,
+        "laws": 9,
+        "types": 4
+      },
+      {
+        "file": "src/front/contextual.bend",
+        "sha256": "18a1eabd78b224927ebe72c4aa7a295300cc641e20d03d2bc062fdcfd96f62f6",
+        "bytes": 29385,
+        "physicalLines": 555,
+        "nonblankLines": 472,
+        "defs": 83,
+        "laws": 0,
+        "types": 0
+      },
+      {
+        "file": "src/front/parser.bend",
+        "sha256": "c1790685aea7c71430873d65c2d91996778f443aee0098e54c656fe10177ba28",
+        "bytes": 32003,
+        "physicalLines": 730,
+        "nonblankLines": 613,
+        "defs": 82,
+        "laws": 37,
+        "types": 1
+      },
+      {
+        "file": "src/front/declarations.bend",
+        "sha256": "9e2c8da30605c1b8ab732df5f95533da55a3ea0e6c5a0941f1340586db9d36af",
+        "bytes": 31635,
+        "physicalLines": 741,
+        "nonblankLines": 640,
+        "defs": 65,
+        "laws": 33,
+        "types": 3
+      },
+      {
+        "file": "src/front/flatten.bend",
+        "sha256": "d3ba8687f7dcd303dee847a90e3fa92b9a234d97cdcd3893de8242c6d2aa69cf",
+        "bytes": 6450,
+        "physicalLines": 189,
+        "nonblankLines": 161,
+        "defs": 15,
+        "laws": 12,
+        "types": 2
+      },
+      {
+        "file": "src/front/elaborate.bend",
+        "sha256": "8537f483259d48fa1d710915d6e8e09916faa540560379ee550a7077f391dc1e",
+        "bytes": 7941,
+        "physicalLines": 242,
+        "nonblankLines": 203,
+        "defs": 26,
+        "laws": 11,
+        "types": 0
+      },
+      {
+        "file": "src/front/sugar.bend",
+        "sha256": "d3e3cf5addf0498e8401b9988678eb6ac8ff81571a014b18a1b6fed0a76fb22a",
+        "bytes": 14142,
+        "physicalLines": 301,
+        "nonblankLines": 255,
+        "defs": 41,
+        "laws": 4,
+        "types": 0
+      },
+      {
+        "file": "src/front/unicode.bend",
+        "sha256": "bfd4407aa83614ae8398c9ce451f729cbcba457f2ef64774fea99f1824b5dd96",
+        "bytes": 4481,
+        "physicalLines": 99,
+        "nonblankLines": 79,
+        "defs": 13,
+        "laws": 6,
+        "types": 1
+      },
+      {
+        "file": "src/front/literals_arrays.bend",
+        "sha256": "7429e8a4e16e30f74fa19911993879e60a982a510f369769e7805d6a6ac34796",
+        "bytes": 11903,
+        "physicalLines": 270,
+        "nonblankLines": 220,
+        "defs": 38,
+        "laws": 13,
+        "types": 0
+      },
+      {
+        "file": "src/front/parallel.bend",
+        "sha256": "b7c38f74d9f339f21fa00c5194078a0bfc41a948d1adaa907d00df64045c2f1c",
+        "bytes": 3238,
+        "physicalLines": 106,
+        "nonblankLines": 88,
+        "defs": 10,
+        "laws": 8,
+        "types": 0
+      },
+      {
+        "file": "src/front/fresh_work.bend",
+        "sha256": "043d3b737cef4b932b7de8ef161dc88ba867ba6a8056e3662edfdcf4a2d797ed",
+        "bytes": 7736,
+        "physicalLines": 208,
+        "nonblankLines": 201,
+        "defs": 15,
+        "laws": 12,
+        "types": 2
+      },
+      {
+        "file": "src/front/freshen.bend",
+        "sha256": "d0fed135fe878987770786ef0c50dd09efe2cce390beb7a911bcfc8468d5607d",
+        "bytes": 1285,
+        "physicalLines": 57,
+        "nonblankLines": 47,
+        "defs": 5,
+        "laws": 3,
+        "types": 2
+      },
+      {
+        "file": "src/load/paths.bend",
+        "sha256": "a9fc17a8af04c1958d1f11e8c1c5b7c2d3eb925dd9075e6c77de4bdb3521f2a2",
+        "bytes": 2186,
+        "physicalLines": 84,
+        "nonblankLines": 70,
+        "defs": 9,
+        "laws": 4,
+        "types": 0
+      },
+      {
+        "file": "src/front/families.bend",
+        "sha256": "22b6e9b1ca132ed2d6f2cf91507e221f09cdda1aeab5931e8cf099e934bc9d2f",
+        "bytes": 3849,
+        "physicalLines": 106,
+        "nonblankLines": 88,
+        "defs": 11,
+        "laws": 6,
+        "types": 0
+      },
+      {
+        "file": "src/front/validate.bend",
+        "sha256": "62d530ce7ebb6d2abf69f34d37b5b21eed8711c7bdee3bf868aa2c94d699ec5d",
+        "bytes": 11354,
+        "physicalLines": 233,
+        "nonblankLines": 193,
+        "defs": 25,
+        "laws": 12,
+        "types": 0
+      },
+      {
+        "file": "src/load/imports.bend",
+        "sha256": "b878da5169a4a39d35a236ff5128dc42735fea0707195cf621ae651c1f13e9b1",
+        "bytes": 4211,
+        "physicalLines": 79,
+        "nonblankLines": 65,
+        "defs": 11,
+        "laws": 1,
+        "types": 0
+      },
+      {
+        "file": "src/load/graph.bend",
+        "sha256": "9317e9fe5224c447c50e5339469a244dd7036c00801d9750687f8dfe1de5fdb3",
+        "bytes": 16909,
+        "physicalLines": 462,
+        "nonblankLines": 409,
+        "defs": 50,
+        "laws": 28,
+        "types": 1
+      },
+      {
+        "file": "src/load/seed.bend",
+        "sha256": "ca4cb677af632c47c13792ede10d4e791c85b5cc6c756aacf230861d7bfa4c21",
+        "bytes": 5224,
+        "physicalLines": 162,
+        "nonblankLines": 140,
+        "defs": 13,
+        "laws": 8,
+        "types": 1
+      },
+      {
+        "file": "src/load/modules.bend",
+        "sha256": "fed5593033f957a61118a2eff9c2e09bd51af8810cff1db12e655523b82188ea",
+        "bytes": 10063,
+        "physicalLines": 258,
+        "nonblankLines": 219,
+        "defs": 31,
+        "laws": 5,
+        "types": 4
+      },
+      {
+        "file": "src/diagnostic/model.bend",
+        "sha256": "3c699ec70ef36700520658555bc5df025880691c44633cabb9e5719b60fc9c1c",
+        "bytes": 754,
+        "physicalLines": 19,
+        "nonblankLines": 15,
+        "defs": 0,
+        "laws": 0,
+        "types": 5
+      },
+      {
+        "file": "src/diagnostic/render.bend",
+        "sha256": "695f41ace13e08756273c317659a419deee5fc79d413bd58e8711f124370276c",
+        "bytes": 7804,
+        "physicalLines": 248,
+        "nonblankLines": 215,
+        "defs": 27,
+        "laws": 5,
+        "types": 0
+      },
+      {
+        "file": "src/diagnostic/trace.bend",
+        "sha256": "0e03e2827415d082d295976b57564c7b0bd872f7c81229e653d7e0ddda62b10f",
+        "bytes": 6819,
+        "physicalLines": 135,
+        "nonblankLines": 112,
+        "defs": 16,
+        "laws": 6,
+        "types": 0
+      },
+      {
+        "file": "src/diagnostic/produce.bend",
+        "sha256": "9518cb01c0c7636654bfa14dd332ac49756572ba975c7789c865e9cd8cf75c80",
+        "bytes": 8073,
+        "physicalLines": 210,
+        "nonblankLines": 176,
+        "defs": 26,
+        "laws": 8,
+        "types": 1
+      },
+      {
+        "file": "src/diagnostic/frontend.bend",
+        "sha256": "fdd07e6e3df5f999f2d162a4d3186cd8ae13102c8351710edab5291a2f80489f",
+        "bytes": 10910,
+        "physicalLines": 249,
+        "nonblankLines": 222,
+        "defs": 24,
+        "laws": 16,
+        "types": 2
+      },
+      {
+        "file": "src/back/js/foreign.bend",
+        "sha256": "0f397f84a989c6fc9a52eaf962742e673cdba243864c0bbe7c16ce4ffd8eb065",
+        "bytes": 5794,
+        "physicalLines": 168,
+        "nonblankLines": 142,
+        "defs": 17,
+        "laws": 9,
+        "types": 0
+      },
+      {
+        "file": "src/back/js/literals.bend",
+        "sha256": "2c4488a4f37010253a54e3745317c685ec77067475d471e577687acfa9a16776",
+        "bytes": 5544,
+        "physicalLines": 185,
+        "nonblankLines": 150,
+        "defs": 18,
+        "laws": 16,
+        "types": 0
+      },
+      {
+        "file": "src/back/js/validate.bend",
+        "sha256": "f8fc315bf80dabbf8afd1b6ced8e7c322b8ef96d73859d47e01c4b317afb72a0",
+        "bytes": 11066,
+        "physicalLines": 305,
+        "nonblankLines": 258,
+        "defs": 26,
+        "laws": 21,
+        "types": 0
+      },
+      {
+        "file": "src/back/js/choice.bend",
+        "sha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3",
+        "bytes": 3583,
+        "physicalLines": 97,
+        "nonblankLines": 82,
+        "defs": 9,
+        "laws": 7,
+        "types": 0
+      },
+      {
+        "file": "src/back/js/projection.bend",
+        "sha256": "f534d7c74f396527a9d3e3a06bececebcf0b68d92400ccf46b8125e82735ef09",
+        "bytes": 2355,
+        "physicalLines": 65,
+        "nonblankLines": 56,
+        "defs": 6,
+        "laws": 4,
+        "types": 0
+      },
+      {
+        "file": "src/back/js/u32.bend",
+        "sha256": "bda743e5c6afa1324673dd6722782a2b615c75abeb5c8061c623622723cfb25c",
+        "bytes": 4926,
+        "physicalLines": 110,
+        "nonblankLines": 95,
+        "defs": 15,
+        "laws": 0,
+        "types": 0
+      },
+      {
+        "file": "src/back/js/emit.bend",
+        "sha256": "7e99435641070295fc6510d046389edb5658435a3abdee1aed2b162c827ad2eb",
+        "bytes": 29153,
+        "physicalLines": 943,
+        "nonblankLines": 793,
+        "defs": 84,
+        "laws": 70,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/ir.bend",
+        "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b",
+        "bytes": 929,
+        "physicalLines": 25,
+        "nonblankLines": 19,
+        "defs": 0,
+        "laws": 0,
+        "types": 7
+      },
+      {
+        "file": "src/back/native/text.bend",
+        "sha256": "31c1ff5973df46d17ad395070fbefa1d2dc58398b3d12af80c62ed6c5548ff9d",
+        "bytes": 2533,
+        "physicalLines": 101,
+        "nonblankLines": 83,
+        "defs": 18,
+        "laws": 1,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/identity.bend",
+        "sha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a",
+        "bytes": 2476,
+        "physicalLines": 89,
+        "nonblankLines": 77,
+        "defs": 7,
+        "laws": 5,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/layout.bend",
+        "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b",
+        "bytes": 135,
+        "physicalLines": 7,
+        "nonblankLines": 6,
+        "defs": 1,
+        "laws": 0,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/intrinsic.bend",
+        "sha256": "5b921ebfecb307eddae880edee86ce459751684ecf74543f54c60e2a6f252195",
+        "bytes": 4912,
+        "physicalLines": 29,
+        "nonblankLines": 24,
+        "defs": 5,
+        "laws": 0,
+        "types": 1
+      },
+      {
+        "file": "src/back/native/tables.bend",
+        "sha256": "6b8f36fa9063f35105889d8977aa2345fb01eeceb117e6f641151430d084bbaa",
+        "bytes": 8602,
+        "physicalLines": 221,
+        "nonblankLines": 184,
+        "defs": 37,
+        "laws": 1,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/emit.bend",
+        "sha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a",
+        "bytes": 5084,
+        "physicalLines": 111,
+        "nonblankLines": 93,
+        "defs": 19,
+        "laws": 0,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/erase.bend",
+        "sha256": "8f536cdfbca91b26bf426b3c8c5f42106fc0e18af7bfd2550ba73e7dab5530ec",
+        "bytes": 3528,
+        "physicalLines": 83,
+        "nonblankLines": 71,
+        "defs": 9,
+        "laws": 3,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/bridge.bend",
+        "sha256": "4767f940940660635ec4c80978f8e4abb11c398b4b8f8bccabf05879c59f2a49",
+        "bytes": 23327,
+        "physicalLines": 456,
+        "nonblankLines": 382,
+        "defs": 65,
+        "laws": 6,
+        "types": 3
+      },
+      {
+        "file": "src/back/native/direct.bend",
+        "sha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5",
+        "bytes": 4200,
+        "physicalLines": 88,
+        "nonblankLines": 74,
+        "defs": 14,
+        "laws": 1,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/pattern.bend",
+        "sha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4",
+        "bytes": 5324,
+        "physicalLines": 141,
+        "nonblankLines": 137,
+        "defs": 13,
+        "laws": 9,
+        "types": 2
+      },
+      {
+        "file": "src/back/native/show.bend",
+        "sha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d",
+        "bytes": 6723,
+        "physicalLines": 152,
+        "nonblankLines": 129,
+        "defs": 19,
+        "laws": 3,
+        "types": 2
+      },
+      {
+        "file": "src/back/native/parallel.bend",
+        "sha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722",
+        "bytes": 5003,
+        "physicalLines": 94,
+        "nonblankLines": 81,
+        "defs": 12,
+        "laws": 1,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/array.bend",
+        "sha256": "c00f0592299047df582ac0435e1a0423ea62fb48f7c87dda83bf18161b263bd7",
+        "bytes": 2813,
+        "physicalLines": 44,
+        "nonblankLines": 39,
+        "defs": 4,
+        "laws": 2,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/validate.bend",
+        "sha256": "d0c1e75c5dbda3d2e65ea227667191252c49f71b63f0765c358c2041a0f484bb",
+        "bytes": 2859,
+        "physicalLines": 62,
+        "nonblankLines": 52,
+        "defs": 11,
+        "laws": 0,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/foreign.bend",
+        "sha256": "ed7a06662072e73d45d10b1898599936b106dc22956a4fceea8d04ac22fb6d3c",
+        "bytes": 4010,
+        "physicalLines": 73,
+        "nonblankLines": 64,
+        "defs": 10,
+        "laws": 0,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/book.bend",
+        "sha256": "180ee53af86a59df8efcc131d4f22b0ca6f5f9980dd222259f2941fbef1e11a2",
+        "bytes": 14294,
+        "physicalLines": 316,
+        "nonblankLines": 264,
+        "defs": 42,
+        "laws": 9,
+        "types": 2
+      },
+      {
+        "file": "src/driver/report.bend",
+        "sha256": "15f0985da866b948252490ec2f1b90aed9d36fb24b93eab24826648cc36e6df8",
+        "bytes": 2593,
+        "physicalLines": 100,
+        "nonblankLines": 86,
+        "defs": 9,
+        "laws": 6,
+        "types": 0
+      },
+      {
+        "file": "src/driver/api.bend",
+        "sha256": "5cae856aa306f52042cbead5bf72136da317649a0a09b7d73f8da1be3530d9d3",
+        "bytes": 3919,
+        "physicalLines": 124,
+        "nonblankLines": 105,
+        "defs": 15,
+        "laws": 5,
+        "types": 0
+      }
+    ],
+    "inline": [
+      {
+        "file": "src/core/term.bend",
+        "sha256": "e9ab994bc3ba4fd5a281e25836911bbc29cafcf2ab0c0284dc9bc097e891fa46",
+        "bytes": 18285,
+        "physicalLines": 650,
+        "nonblankLines": 563,
+        "defs": 72,
+        "laws": 10,
+        "types": 2
+      },
+      {
+        "file": "src/core/index.bend",
+        "sha256": "32a4f2772c865f9ed9743f1ece27d5fafd1898724d5f268186590c938b038ea2",
+        "bytes": 10197,
+        "physicalLines": 383,
+        "nonblankLines": 338,
+        "defs": 34,
+        "laws": 9,
+        "types": 0
+      },
+      {
+        "file": "src/core/normalize.bend",
+        "sha256": "4845ff63f3c228abc9a432410ddc8b7e20bfce27e54d6d49412b06608f7ce702",
+        "bytes": 22263,
+        "physicalLines": 719,
+        "nonblankLines": 637,
+        "defs": 55,
+        "laws": 32,
+        "types": 3
+      },
+      {
+        "file": "src/core/graph.bend",
+        "sha256": "85625049b316ede08eeffd7ff509483183624f1197c582c9d1bb2cd8bebf4802",
+        "bytes": 14746,
+        "physicalLines": 485,
+        "nonblankLines": 420,
+        "defs": 37,
+        "laws": 22,
+        "types": 5
+      },
+      {
+        "file": "src/core/reach.bend",
+        "sha256": "086092c688e6cb774da94333826f51b1fdeddc8e85aeaac5be6b15c143b0df27",
+        "bytes": 9901,
+        "physicalLines": 254,
+        "nonblankLines": 214,
+        "defs": 27,
+        "laws": 13,
+        "types": 1
+      },
+      {
+        "file": "src/core/pretty.bend",
+        "sha256": "40b4e6ca55bf11009881b893c7959dd52cc64bbc6cb2dbb607e94dbab69fdedc",
+        "bytes": 16800,
+        "physicalLines": 548,
+        "nonblankLines": 469,
+        "defs": 55,
+        "laws": 23,
+        "types": 2
+      },
+      {
+        "file": "src/check/quantity.bend",
+        "sha256": "b4a8ca1f8dff10f4f64397ea53bbbe272bb32400e993b1077d284ec1d8a70b4d",
+        "bytes": 4069,
+        "physicalLines": 177,
+        "nonblankLines": 153,
+        "defs": 16,
+        "laws": 7,
+        "types": 1
+      },
+      {
+        "file": "src/check/kernel.bend",
+        "sha256": "da7ee29f9755f09acd9f89fcfd37465b52ab8778971200c946c70e50eb5b4132",
+        "bytes": 49255,
+        "physicalLines": 1427,
+        "nonblankLines": 1208,
+        "defs": 157,
+        "laws": 60,
+        "types": 4
+      },
+      {
+        "file": "src/check/specialize.bend",
+        "sha256": "76e0f9249ae15cc0734a8e9d2e75677794e2eb5464c7756a19daff8b8217e7ee",
+        "bytes": 16212,
+        "physicalLines": 383,
+        "nonblankLines": 322,
+        "defs": 53,
+        "laws": 5,
+        "types": 3
+      },
+      {
+        "file": "src/check/prefix.bend",
+        "sha256": "ceabf77fb49b58910d83fa896899061643c4c105f29e70bd87d3f73be873783d",
+        "bytes": 3037,
+        "physicalLines": 142,
+        "nonblankLines": 122,
+        "defs": 12,
+        "laws": 7,
+        "types": 0
+      },
+      {
+        "file": "src/check/annotate.bend",
+        "sha256": "1912e5d177514733e706297fbb53e730c1f7a9edc91ffb06d2b1de7e2547648c",
+        "bytes": 10866,
+        "physicalLines": 389,
+        "nonblankLines": 329,
+        "defs": 32,
+        "laws": 26,
+        "types": 1
+      },
+      {
+        "file": "src/front/lexer.bend",
+        "sha256": "aa9d726b6b284deba84dbccc77a01a8143dd89dab70cf487e1ddc8d589380440",
+        "bytes": 13265,
+        "physicalLines": 397,
+        "nonblankLines": 338,
+        "defs": 47,
+        "laws": 9,
+        "types": 4
+      },
+      {
+        "file": "src/front/contextual.bend",
+        "sha256": "18a1eabd78b224927ebe72c4aa7a295300cc641e20d03d2bc062fdcfd96f62f6",
+        "bytes": 29385,
+        "physicalLines": 555,
+        "nonblankLines": 472,
+        "defs": 83,
+        "laws": 0,
+        "types": 0
+      },
+      {
+        "file": "src/front/parser.bend",
+        "sha256": "c1790685aea7c71430873d65c2d91996778f443aee0098e54c656fe10177ba28",
+        "bytes": 32003,
+        "physicalLines": 730,
+        "nonblankLines": 613,
+        "defs": 82,
+        "laws": 37,
+        "types": 1
+      },
+      {
+        "file": "src/front/declarations.bend",
+        "sha256": "9e2c8da30605c1b8ab732df5f95533da55a3ea0e6c5a0941f1340586db9d36af",
+        "bytes": 31635,
+        "physicalLines": 741,
+        "nonblankLines": 640,
+        "defs": 65,
+        "laws": 33,
+        "types": 3
+      },
+      {
+        "file": "src/front/flatten.bend",
+        "sha256": "d3ba8687f7dcd303dee847a90e3fa92b9a234d97cdcd3893de8242c6d2aa69cf",
+        "bytes": 6450,
+        "physicalLines": 189,
+        "nonblankLines": 161,
+        "defs": 15,
+        "laws": 12,
+        "types": 2
+      },
+      {
+        "file": "src/front/elaborate.bend",
+        "sha256": "8537f483259d48fa1d710915d6e8e09916faa540560379ee550a7077f391dc1e",
+        "bytes": 7941,
+        "physicalLines": 242,
+        "nonblankLines": 203,
+        "defs": 26,
+        "laws": 11,
+        "types": 0
+      },
+      {
+        "file": "src/front/sugar.bend",
+        "sha256": "d3e3cf5addf0498e8401b9988678eb6ac8ff81571a014b18a1b6fed0a76fb22a",
+        "bytes": 14142,
+        "physicalLines": 301,
+        "nonblankLines": 255,
+        "defs": 41,
+        "laws": 4,
+        "types": 0
+      },
+      {
+        "file": "src/front/unicode.bend",
+        "sha256": "bfd4407aa83614ae8398c9ce451f729cbcba457f2ef64774fea99f1824b5dd96",
+        "bytes": 4481,
+        "physicalLines": 99,
+        "nonblankLines": 79,
+        "defs": 13,
+        "laws": 6,
+        "types": 1
+      },
+      {
+        "file": "src/front/literals_arrays.bend",
+        "sha256": "7429e8a4e16e30f74fa19911993879e60a982a510f369769e7805d6a6ac34796",
+        "bytes": 11903,
+        "physicalLines": 270,
+        "nonblankLines": 220,
+        "defs": 38,
+        "laws": 13,
+        "types": 0
+      },
+      {
+        "file": "src/front/parallel.bend",
+        "sha256": "b7c38f74d9f339f21fa00c5194078a0bfc41a948d1adaa907d00df64045c2f1c",
+        "bytes": 3238,
+        "physicalLines": 106,
+        "nonblankLines": 88,
+        "defs": 10,
+        "laws": 8,
+        "types": 0
+      },
+      {
+        "file": "src/front/fresh_work.bend",
+        "sha256": "043d3b737cef4b932b7de8ef161dc88ba867ba6a8056e3662edfdcf4a2d797ed",
+        "bytes": 7736,
+        "physicalLines": 208,
+        "nonblankLines": 201,
+        "defs": 15,
+        "laws": 12,
+        "types": 2
+      },
+      {
+        "file": "src/front/freshen.bend",
+        "sha256": "d0fed135fe878987770786ef0c50dd09efe2cce390beb7a911bcfc8468d5607d",
+        "bytes": 1285,
+        "physicalLines": 57,
+        "nonblankLines": 47,
+        "defs": 5,
+        "laws": 3,
+        "types": 2
+      },
+      {
+        "file": "src/load/paths.bend",
+        "sha256": "a9fc17a8af04c1958d1f11e8c1c5b7c2d3eb925dd9075e6c77de4bdb3521f2a2",
+        "bytes": 2186,
+        "physicalLines": 84,
+        "nonblankLines": 70,
+        "defs": 9,
+        "laws": 4,
+        "types": 0
+      },
+      {
+        "file": "src/front/families.bend",
+        "sha256": "22b6e9b1ca132ed2d6f2cf91507e221f09cdda1aeab5931e8cf099e934bc9d2f",
+        "bytes": 3849,
+        "physicalLines": 106,
+        "nonblankLines": 88,
+        "defs": 11,
+        "laws": 6,
+        "types": 0
+      },
+      {
+        "file": "src/front/validate.bend",
+        "sha256": "62d530ce7ebb6d2abf69f34d37b5b21eed8711c7bdee3bf868aa2c94d699ec5d",
+        "bytes": 11354,
+        "physicalLines": 233,
+        "nonblankLines": 193,
+        "defs": 25,
+        "laws": 12,
+        "types": 0
+      },
+      {
+        "file": "src/load/imports.bend",
+        "sha256": "b878da5169a4a39d35a236ff5128dc42735fea0707195cf621ae651c1f13e9b1",
+        "bytes": 4211,
+        "physicalLines": 79,
+        "nonblankLines": 65,
+        "defs": 11,
+        "laws": 1,
+        "types": 0
+      },
+      {
+        "file": "src/load/graph.bend",
+        "sha256": "9317e9fe5224c447c50e5339469a244dd7036c00801d9750687f8dfe1de5fdb3",
+        "bytes": 16909,
+        "physicalLines": 462,
+        "nonblankLines": 409,
+        "defs": 50,
+        "laws": 28,
+        "types": 1
+      },
+      {
+        "file": "src/load/seed.bend",
+        "sha256": "ca4cb677af632c47c13792ede10d4e791c85b5cc6c756aacf230861d7bfa4c21",
+        "bytes": 5224,
+        "physicalLines": 162,
+        "nonblankLines": 140,
+        "defs": 13,
+        "laws": 8,
+        "types": 1
+      },
+      {
+        "file": "src/load/modules.bend",
+        "sha256": "fed5593033f957a61118a2eff9c2e09bd51af8810cff1db12e655523b82188ea",
+        "bytes": 10063,
+        "physicalLines": 258,
+        "nonblankLines": 219,
+        "defs": 31,
+        "laws": 5,
+        "types": 4
+      },
+      {
+        "file": "src/diagnostic/model.bend",
+        "sha256": "3c699ec70ef36700520658555bc5df025880691c44633cabb9e5719b60fc9c1c",
+        "bytes": 754,
+        "physicalLines": 19,
+        "nonblankLines": 15,
+        "defs": 0,
+        "laws": 0,
+        "types": 5
+      },
+      {
+        "file": "src/diagnostic/render.bend",
+        "sha256": "695f41ace13e08756273c317659a419deee5fc79d413bd58e8711f124370276c",
+        "bytes": 7804,
+        "physicalLines": 248,
+        "nonblankLines": 215,
+        "defs": 27,
+        "laws": 5,
+        "types": 0
+      },
+      {
+        "file": "src/diagnostic/trace.bend",
+        "sha256": "0e03e2827415d082d295976b57564c7b0bd872f7c81229e653d7e0ddda62b10f",
+        "bytes": 6819,
+        "physicalLines": 135,
+        "nonblankLines": 112,
+        "defs": 16,
+        "laws": 6,
+        "types": 0
+      },
+      {
+        "file": "src/diagnostic/produce.bend",
+        "sha256": "9518cb01c0c7636654bfa14dd332ac49756572ba975c7789c865e9cd8cf75c80",
+        "bytes": 8073,
+        "physicalLines": 210,
+        "nonblankLines": 176,
+        "defs": 26,
+        "laws": 8,
+        "types": 1
+      },
+      {
+        "file": "src/diagnostic/frontend.bend",
+        "sha256": "fdd07e6e3df5f999f2d162a4d3186cd8ae13102c8351710edab5291a2f80489f",
+        "bytes": 10910,
+        "physicalLines": 249,
+        "nonblankLines": 222,
+        "defs": 24,
+        "laws": 16,
+        "types": 2
+      },
+      {
+        "file": "src/back/js/foreign.bend",
+        "sha256": "0f397f84a989c6fc9a52eaf962742e673cdba243864c0bbe7c16ce4ffd8eb065",
+        "bytes": 5794,
+        "physicalLines": 168,
+        "nonblankLines": 142,
+        "defs": 17,
+        "laws": 9,
+        "types": 0
+      },
+      {
+        "file": "src/back/js/literals.bend",
+        "sha256": "2c4488a4f37010253a54e3745317c685ec77067475d471e577687acfa9a16776",
+        "bytes": 5544,
+        "physicalLines": 185,
+        "nonblankLines": 150,
+        "defs": 18,
+        "laws": 16,
+        "types": 0
+      },
+      {
+        "file": "src/back/js/validate.bend",
+        "sha256": "f8fc315bf80dabbf8afd1b6ced8e7c322b8ef96d73859d47e01c4b317afb72a0",
+        "bytes": 11066,
+        "physicalLines": 305,
+        "nonblankLines": 258,
+        "defs": 26,
+        "laws": 21,
+        "types": 0
+      },
+      {
+        "file": "src/back/js/choice.bend",
+        "sha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3",
+        "bytes": 3583,
+        "physicalLines": 97,
+        "nonblankLines": 82,
+        "defs": 9,
+        "laws": 7,
+        "types": 0
+      },
+      {
+        "file": "src/back/js/projection.bend",
+        "sha256": "f534d7c74f396527a9d3e3a06bececebcf0b68d92400ccf46b8125e82735ef09",
+        "bytes": 2355,
+        "physicalLines": 65,
+        "nonblankLines": 56,
+        "defs": 6,
+        "laws": 4,
+        "types": 0
+      },
+      {
+        "file": "src/back/js/u32.bend",
+        "sha256": "bda743e5c6afa1324673dd6722782a2b615c75abeb5c8061c623622723cfb25c",
+        "bytes": 4926,
+        "physicalLines": 110,
+        "nonblankLines": 95,
+        "defs": 15,
+        "laws": 0,
+        "types": 0
+      },
+      {
+        "file": "src/back/js/arm.bend",
+        "sha256": "a430148f21899c3704f4a7dacbde82aff09afa01ec8cd0a563cbcd335325f8e6",
+        "bytes": 3665,
+        "physicalLines": 62,
+        "nonblankLines": 54,
+        "defs": 8,
+        "laws": 0,
+        "types": 0
+      },
+      {
+        "file": "src/back/js/emit.bend",
+        "sha256": "b1738ba383e5a8e2b56981ace02201ad3db17511e2a5bfec015f34f8845b1557",
+        "bytes": 29100,
+        "physicalLines": 943,
+        "nonblankLines": 793,
+        "defs": 84,
+        "laws": 70,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/ir.bend",
+        "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b",
+        "bytes": 929,
+        "physicalLines": 25,
+        "nonblankLines": 19,
+        "defs": 0,
+        "laws": 0,
+        "types": 7
+      },
+      {
+        "file": "src/back/native/text.bend",
+        "sha256": "31c1ff5973df46d17ad395070fbefa1d2dc58398b3d12af80c62ed6c5548ff9d",
+        "bytes": 2533,
+        "physicalLines": 101,
+        "nonblankLines": 83,
+        "defs": 18,
+        "laws": 1,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/identity.bend",
+        "sha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a",
+        "bytes": 2476,
+        "physicalLines": 89,
+        "nonblankLines": 77,
+        "defs": 7,
+        "laws": 5,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/layout.bend",
+        "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b",
+        "bytes": 135,
+        "physicalLines": 7,
+        "nonblankLines": 6,
+        "defs": 1,
+        "laws": 0,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/intrinsic.bend",
+        "sha256": "5b921ebfecb307eddae880edee86ce459751684ecf74543f54c60e2a6f252195",
+        "bytes": 4912,
+        "physicalLines": 29,
+        "nonblankLines": 24,
+        "defs": 5,
+        "laws": 0,
+        "types": 1
+      },
+      {
+        "file": "src/back/native/tables.bend",
+        "sha256": "6b8f36fa9063f35105889d8977aa2345fb01eeceb117e6f641151430d084bbaa",
+        "bytes": 8602,
+        "physicalLines": 221,
+        "nonblankLines": 184,
+        "defs": 37,
+        "laws": 1,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/emit.bend",
+        "sha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a",
+        "bytes": 5084,
+        "physicalLines": 111,
+        "nonblankLines": 93,
+        "defs": 19,
+        "laws": 0,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/erase.bend",
+        "sha256": "8f536cdfbca91b26bf426b3c8c5f42106fc0e18af7bfd2550ba73e7dab5530ec",
+        "bytes": 3528,
+        "physicalLines": 83,
+        "nonblankLines": 71,
+        "defs": 9,
+        "laws": 3,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/bridge.bend",
+        "sha256": "4767f940940660635ec4c80978f8e4abb11c398b4b8f8bccabf05879c59f2a49",
+        "bytes": 23327,
+        "physicalLines": 456,
+        "nonblankLines": 382,
+        "defs": 65,
+        "laws": 6,
+        "types": 3
+      },
+      {
+        "file": "src/back/native/direct.bend",
+        "sha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5",
+        "bytes": 4200,
+        "physicalLines": 88,
+        "nonblankLines": 74,
+        "defs": 14,
+        "laws": 1,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/pattern.bend",
+        "sha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4",
+        "bytes": 5324,
+        "physicalLines": 141,
+        "nonblankLines": 137,
+        "defs": 13,
+        "laws": 9,
+        "types": 2
+      },
+      {
+        "file": "src/back/native/show.bend",
+        "sha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d",
+        "bytes": 6723,
+        "physicalLines": 152,
+        "nonblankLines": 129,
+        "defs": 19,
+        "laws": 3,
+        "types": 2
+      },
+      {
+        "file": "src/back/native/parallel.bend",
+        "sha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722",
+        "bytes": 5003,
+        "physicalLines": 94,
+        "nonblankLines": 81,
+        "defs": 12,
+        "laws": 1,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/array.bend",
+        "sha256": "c00f0592299047df582ac0435e1a0423ea62fb48f7c87dda83bf18161b263bd7",
+        "bytes": 2813,
+        "physicalLines": 44,
+        "nonblankLines": 39,
+        "defs": 4,
+        "laws": 2,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/validate.bend",
+        "sha256": "d0c1e75c5dbda3d2e65ea227667191252c49f71b63f0765c358c2041a0f484bb",
+        "bytes": 2859,
+        "physicalLines": 62,
+        "nonblankLines": 52,
+        "defs": 11,
+        "laws": 0,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/foreign.bend",
+        "sha256": "ed7a06662072e73d45d10b1898599936b106dc22956a4fceea8d04ac22fb6d3c",
+        "bytes": 4010,
+        "physicalLines": 73,
+        "nonblankLines": 64,
+        "defs": 10,
+        "laws": 0,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/book.bend",
+        "sha256": "180ee53af86a59df8efcc131d4f22b0ca6f5f9980dd222259f2941fbef1e11a2",
+        "bytes": 14294,
+        "physicalLines": 316,
+        "nonblankLines": 264,
+        "defs": 42,
+        "laws": 9,
+        "types": 2
+      },
+      {
+        "file": "src/driver/report.bend",
+        "sha256": "15f0985da866b948252490ec2f1b90aed9d36fb24b93eab24826648cc36e6df8",
+        "bytes": 2593,
+        "physicalLines": 100,
+        "nonblankLines": 86,
+        "defs": 9,
+        "laws": 6,
+        "types": 0
+      },
+      {
+        "file": "src/driver/api.bend",
+        "sha256": "5cae856aa306f52042cbead5bf72136da317649a0a09b7d73f8da1be3530d9d3",
+        "bytes": 3919,
+        "physicalLines": 124,
+        "nonblankLines": 105,
+        "defs": 15,
+        "laws": 5,
+        "types": 0
+      }
+    ],
+    "shared": [
+      {
+        "file": "src/core/term.bend",
+        "sha256": "e9ab994bc3ba4fd5a281e25836911bbc29cafcf2ab0c0284dc9bc097e891fa46",
+        "bytes": 18285,
+        "physicalLines": 650,
+        "nonblankLines": 563,
+        "defs": 72,
+        "laws": 10,
+        "types": 2
+      },
+      {
+        "file": "src/core/index.bend",
+        "sha256": "32a4f2772c865f9ed9743f1ece27d5fafd1898724d5f268186590c938b038ea2",
+        "bytes": 10197,
+        "physicalLines": 383,
+        "nonblankLines": 338,
+        "defs": 34,
+        "laws": 9,
+        "types": 0
+      },
+      {
+        "file": "src/core/normalize.bend",
+        "sha256": "4845ff63f3c228abc9a432410ddc8b7e20bfce27e54d6d49412b06608f7ce702",
+        "bytes": 22263,
+        "physicalLines": 719,
+        "nonblankLines": 637,
+        "defs": 55,
+        "laws": 32,
+        "types": 3
+      },
+      {
+        "file": "src/core/graph.bend",
+        "sha256": "85625049b316ede08eeffd7ff509483183624f1197c582c9d1bb2cd8bebf4802",
+        "bytes": 14746,
+        "physicalLines": 485,
+        "nonblankLines": 420,
+        "defs": 37,
+        "laws": 22,
+        "types": 5
+      },
+      {
+        "file": "src/core/reach.bend",
+        "sha256": "086092c688e6cb774da94333826f51b1fdeddc8e85aeaac5be6b15c143b0df27",
+        "bytes": 9901,
+        "physicalLines": 254,
+        "nonblankLines": 214,
+        "defs": 27,
+        "laws": 13,
+        "types": 1
+      },
+      {
+        "file": "src/core/pretty.bend",
+        "sha256": "40b4e6ca55bf11009881b893c7959dd52cc64bbc6cb2dbb607e94dbab69fdedc",
+        "bytes": 16800,
+        "physicalLines": 548,
+        "nonblankLines": 469,
+        "defs": 55,
+        "laws": 23,
+        "types": 2
+      },
+      {
+        "file": "src/check/quantity.bend",
+        "sha256": "b4a8ca1f8dff10f4f64397ea53bbbe272bb32400e993b1077d284ec1d8a70b4d",
+        "bytes": 4069,
+        "physicalLines": 177,
+        "nonblankLines": 153,
+        "defs": 16,
+        "laws": 7,
+        "types": 1
+      },
+      {
+        "file": "src/check/kernel.bend",
+        "sha256": "da7ee29f9755f09acd9f89fcfd37465b52ab8778971200c946c70e50eb5b4132",
+        "bytes": 49255,
+        "physicalLines": 1427,
+        "nonblankLines": 1208,
+        "defs": 157,
+        "laws": 60,
+        "types": 4
+      },
+      {
+        "file": "src/check/specialize.bend",
+        "sha256": "76e0f9249ae15cc0734a8e9d2e75677794e2eb5464c7756a19daff8b8217e7ee",
+        "bytes": 16212,
+        "physicalLines": 383,
+        "nonblankLines": 322,
+        "defs": 53,
+        "laws": 5,
+        "types": 3
+      },
+      {
+        "file": "src/check/prefix.bend",
+        "sha256": "ceabf77fb49b58910d83fa896899061643c4c105f29e70bd87d3f73be873783d",
+        "bytes": 3037,
+        "physicalLines": 142,
+        "nonblankLines": 122,
+        "defs": 12,
+        "laws": 7,
+        "types": 0
+      },
+      {
+        "file": "src/check/annotate.bend",
+        "sha256": "1912e5d177514733e706297fbb53e730c1f7a9edc91ffb06d2b1de7e2547648c",
+        "bytes": 10866,
+        "physicalLines": 389,
+        "nonblankLines": 329,
+        "defs": 32,
+        "laws": 26,
+        "types": 1
+      },
+      {
+        "file": "src/front/lexer.bend",
+        "sha256": "aa9d726b6b284deba84dbccc77a01a8143dd89dab70cf487e1ddc8d589380440",
+        "bytes": 13265,
+        "physicalLines": 397,
+        "nonblankLines": 338,
+        "defs": 47,
+        "laws": 9,
+        "types": 4
+      },
+      {
+        "file": "src/front/contextual.bend",
+        "sha256": "18a1eabd78b224927ebe72c4aa7a295300cc641e20d03d2bc062fdcfd96f62f6",
+        "bytes": 29385,
+        "physicalLines": 555,
+        "nonblankLines": 472,
+        "defs": 83,
+        "laws": 0,
+        "types": 0
+      },
+      {
+        "file": "src/front/parser.bend",
+        "sha256": "c1790685aea7c71430873d65c2d91996778f443aee0098e54c656fe10177ba28",
+        "bytes": 32003,
+        "physicalLines": 730,
+        "nonblankLines": 613,
+        "defs": 82,
+        "laws": 37,
+        "types": 1
+      },
+      {
+        "file": "src/front/declarations.bend",
+        "sha256": "9e2c8da30605c1b8ab732df5f95533da55a3ea0e6c5a0941f1340586db9d36af",
+        "bytes": 31635,
+        "physicalLines": 741,
+        "nonblankLines": 640,
+        "defs": 65,
+        "laws": 33,
+        "types": 3
+      },
+      {
+        "file": "src/front/flatten.bend",
+        "sha256": "d3ba8687f7dcd303dee847a90e3fa92b9a234d97cdcd3893de8242c6d2aa69cf",
+        "bytes": 6450,
+        "physicalLines": 189,
+        "nonblankLines": 161,
+        "defs": 15,
+        "laws": 12,
+        "types": 2
+      },
+      {
+        "file": "src/front/elaborate.bend",
+        "sha256": "8537f483259d48fa1d710915d6e8e09916faa540560379ee550a7077f391dc1e",
+        "bytes": 7941,
+        "physicalLines": 242,
+        "nonblankLines": 203,
+        "defs": 26,
+        "laws": 11,
+        "types": 0
+      },
+      {
+        "file": "src/front/sugar.bend",
+        "sha256": "d3e3cf5addf0498e8401b9988678eb6ac8ff81571a014b18a1b6fed0a76fb22a",
+        "bytes": 14142,
+        "physicalLines": 301,
+        "nonblankLines": 255,
+        "defs": 41,
+        "laws": 4,
+        "types": 0
+      },
+      {
+        "file": "src/front/unicode.bend",
+        "sha256": "bfd4407aa83614ae8398c9ce451f729cbcba457f2ef64774fea99f1824b5dd96",
+        "bytes": 4481,
+        "physicalLines": 99,
+        "nonblankLines": 79,
+        "defs": 13,
+        "laws": 6,
+        "types": 1
+      },
+      {
+        "file": "src/front/literals_arrays.bend",
+        "sha256": "7429e8a4e16e30f74fa19911993879e60a982a510f369769e7805d6a6ac34796",
+        "bytes": 11903,
+        "physicalLines": 270,
+        "nonblankLines": 220,
+        "defs": 38,
+        "laws": 13,
+        "types": 0
+      },
+      {
+        "file": "src/front/parallel.bend",
+        "sha256": "b7c38f74d9f339f21fa00c5194078a0bfc41a948d1adaa907d00df64045c2f1c",
+        "bytes": 3238,
+        "physicalLines": 106,
+        "nonblankLines": 88,
+        "defs": 10,
+        "laws": 8,
+        "types": 0
+      },
+      {
+        "file": "src/front/fresh_work.bend",
+        "sha256": "043d3b737cef4b932b7de8ef161dc88ba867ba6a8056e3662edfdcf4a2d797ed",
+        "bytes": 7736,
+        "physicalLines": 208,
+        "nonblankLines": 201,
+        "defs": 15,
+        "laws": 12,
+        "types": 2
+      },
+      {
+        "file": "src/front/freshen.bend",
+        "sha256": "d0fed135fe878987770786ef0c50dd09efe2cce390beb7a911bcfc8468d5607d",
+        "bytes": 1285,
+        "physicalLines": 57,
+        "nonblankLines": 47,
+        "defs": 5,
+        "laws": 3,
+        "types": 2
+      },
+      {
+        "file": "src/load/paths.bend",
+        "sha256": "a9fc17a8af04c1958d1f11e8c1c5b7c2d3eb925dd9075e6c77de4bdb3521f2a2",
+        "bytes": 2186,
+        "physicalLines": 84,
+        "nonblankLines": 70,
+        "defs": 9,
+        "laws": 4,
+        "types": 0
+      },
+      {
+        "file": "src/front/families.bend",
+        "sha256": "22b6e9b1ca132ed2d6f2cf91507e221f09cdda1aeab5931e8cf099e934bc9d2f",
+        "bytes": 3849,
+        "physicalLines": 106,
+        "nonblankLines": 88,
+        "defs": 11,
+        "laws": 6,
+        "types": 0
+      },
+      {
+        "file": "src/front/validate.bend",
+        "sha256": "62d530ce7ebb6d2abf69f34d37b5b21eed8711c7bdee3bf868aa2c94d699ec5d",
+        "bytes": 11354,
+        "physicalLines": 233,
+        "nonblankLines": 193,
+        "defs": 25,
+        "laws": 12,
+        "types": 0
+      },
+      {
+        "file": "src/load/imports.bend",
+        "sha256": "b878da5169a4a39d35a236ff5128dc42735fea0707195cf621ae651c1f13e9b1",
+        "bytes": 4211,
+        "physicalLines": 79,
+        "nonblankLines": 65,
+        "defs": 11,
+        "laws": 1,
+        "types": 0
+      },
+      {
+        "file": "src/load/graph.bend",
+        "sha256": "9317e9fe5224c447c50e5339469a244dd7036c00801d9750687f8dfe1de5fdb3",
+        "bytes": 16909,
+        "physicalLines": 462,
+        "nonblankLines": 409,
+        "defs": 50,
+        "laws": 28,
+        "types": 1
+      },
+      {
+        "file": "src/load/seed.bend",
+        "sha256": "ca4cb677af632c47c13792ede10d4e791c85b5cc6c756aacf230861d7bfa4c21",
+        "bytes": 5224,
+        "physicalLines": 162,
+        "nonblankLines": 140,
+        "defs": 13,
+        "laws": 8,
+        "types": 1
+      },
+      {
+        "file": "src/load/modules.bend",
+        "sha256": "fed5593033f957a61118a2eff9c2e09bd51af8810cff1db12e655523b82188ea",
+        "bytes": 10063,
+        "physicalLines": 258,
+        "nonblankLines": 219,
+        "defs": 31,
+        "laws": 5,
+        "types": 4
+      },
+      {
+        "file": "src/diagnostic/model.bend",
+        "sha256": "3c699ec70ef36700520658555bc5df025880691c44633cabb9e5719b60fc9c1c",
+        "bytes": 754,
+        "physicalLines": 19,
+        "nonblankLines": 15,
+        "defs": 0,
+        "laws": 0,
+        "types": 5
+      },
+      {
+        "file": "src/diagnostic/render.bend",
+        "sha256": "695f41ace13e08756273c317659a419deee5fc79d413bd58e8711f124370276c",
+        "bytes": 7804,
+        "physicalLines": 248,
+        "nonblankLines": 215,
+        "defs": 27,
+        "laws": 5,
+        "types": 0
+      },
+      {
+        "file": "src/diagnostic/trace.bend",
+        "sha256": "0e03e2827415d082d295976b57564c7b0bd872f7c81229e653d7e0ddda62b10f",
+        "bytes": 6819,
+        "physicalLines": 135,
+        "nonblankLines": 112,
+        "defs": 16,
+        "laws": 6,
+        "types": 0
+      },
+      {
+        "file": "src/diagnostic/produce.bend",
+        "sha256": "9518cb01c0c7636654bfa14dd332ac49756572ba975c7789c865e9cd8cf75c80",
+        "bytes": 8073,
+        "physicalLines": 210,
+        "nonblankLines": 176,
+        "defs": 26,
+        "laws": 8,
+        "types": 1
+      },
+      {
+        "file": "src/diagnostic/frontend.bend",
+        "sha256": "fdd07e6e3df5f999f2d162a4d3186cd8ae13102c8351710edab5291a2f80489f",
+        "bytes": 10910,
+        "physicalLines": 249,
+        "nonblankLines": 222,
+        "defs": 24,
+        "laws": 16,
+        "types": 2
+      },
+      {
+        "file": "src/back/js/foreign.bend",
+        "sha256": "0f397f84a989c6fc9a52eaf962742e673cdba243864c0bbe7c16ce4ffd8eb065",
+        "bytes": 5794,
+        "physicalLines": 168,
+        "nonblankLines": 142,
+        "defs": 17,
+        "laws": 9,
+        "types": 0
+      },
+      {
+        "file": "src/back/js/literals.bend",
+        "sha256": "2c4488a4f37010253a54e3745317c685ec77067475d471e577687acfa9a16776",
+        "bytes": 5544,
+        "physicalLines": 185,
+        "nonblankLines": 150,
+        "defs": 18,
+        "laws": 16,
+        "types": 0
+      },
+      {
+        "file": "src/back/js/validate.bend",
+        "sha256": "f8fc315bf80dabbf8afd1b6ced8e7c322b8ef96d73859d47e01c4b317afb72a0",
+        "bytes": 11066,
+        "physicalLines": 305,
+        "nonblankLines": 258,
+        "defs": 26,
+        "laws": 21,
+        "types": 0
+      },
+      {
+        "file": "src/back/js/choice.bend",
+        "sha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3",
+        "bytes": 3583,
+        "physicalLines": 97,
+        "nonblankLines": 82,
+        "defs": 9,
+        "laws": 7,
+        "types": 0
+      },
+      {
+        "file": "src/back/js/projection.bend",
+        "sha256": "f534d7c74f396527a9d3e3a06bececebcf0b68d92400ccf46b8125e82735ef09",
+        "bytes": 2355,
+        "physicalLines": 65,
+        "nonblankLines": 56,
+        "defs": 6,
+        "laws": 4,
+        "types": 0
+      },
+      {
+        "file": "src/back/js/u32.bend",
+        "sha256": "bda743e5c6afa1324673dd6722782a2b615c75abeb5c8061c623622723cfb25c",
+        "bytes": 4926,
+        "physicalLines": 110,
+        "nonblankLines": 95,
+        "defs": 15,
+        "laws": 0,
+        "types": 0
+      },
+      {
+        "file": "src/back/js/arm.bend",
+        "sha256": "226487bd3598b73cb28a0b48ad252ec163c4ea70e3222787b0a543c979152aa7",
+        "bytes": 3270,
+        "physicalLines": 58,
+        "nonblankLines": 50,
+        "defs": 8,
+        "laws": 0,
+        "types": 0
+      },
+      {
+        "file": "src/back/js/emit.bend",
+        "sha256": "b1738ba383e5a8e2b56981ace02201ad3db17511e2a5bfec015f34f8845b1557",
+        "bytes": 29100,
+        "physicalLines": 943,
+        "nonblankLines": 793,
+        "defs": 84,
+        "laws": 70,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/ir.bend",
+        "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b",
+        "bytes": 929,
+        "physicalLines": 25,
+        "nonblankLines": 19,
+        "defs": 0,
+        "laws": 0,
+        "types": 7
+      },
+      {
+        "file": "src/back/native/text.bend",
+        "sha256": "31c1ff5973df46d17ad395070fbefa1d2dc58398b3d12af80c62ed6c5548ff9d",
+        "bytes": 2533,
+        "physicalLines": 101,
+        "nonblankLines": 83,
+        "defs": 18,
+        "laws": 1,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/identity.bend",
+        "sha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a",
+        "bytes": 2476,
+        "physicalLines": 89,
+        "nonblankLines": 77,
+        "defs": 7,
+        "laws": 5,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/layout.bend",
+        "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b",
+        "bytes": 135,
+        "physicalLines": 7,
+        "nonblankLines": 6,
+        "defs": 1,
+        "laws": 0,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/intrinsic.bend",
+        "sha256": "5b921ebfecb307eddae880edee86ce459751684ecf74543f54c60e2a6f252195",
+        "bytes": 4912,
+        "physicalLines": 29,
+        "nonblankLines": 24,
+        "defs": 5,
+        "laws": 0,
+        "types": 1
+      },
+      {
+        "file": "src/back/native/tables.bend",
+        "sha256": "6b8f36fa9063f35105889d8977aa2345fb01eeceb117e6f641151430d084bbaa",
+        "bytes": 8602,
+        "physicalLines": 221,
+        "nonblankLines": 184,
+        "defs": 37,
+        "laws": 1,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/emit.bend",
+        "sha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a",
+        "bytes": 5084,
+        "physicalLines": 111,
+        "nonblankLines": 93,
+        "defs": 19,
+        "laws": 0,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/erase.bend",
+        "sha256": "8f536cdfbca91b26bf426b3c8c5f42106fc0e18af7bfd2550ba73e7dab5530ec",
+        "bytes": 3528,
+        "physicalLines": 83,
+        "nonblankLines": 71,
+        "defs": 9,
+        "laws": 3,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/bridge.bend",
+        "sha256": "4767f940940660635ec4c80978f8e4abb11c398b4b8f8bccabf05879c59f2a49",
+        "bytes": 23327,
+        "physicalLines": 456,
+        "nonblankLines": 382,
+        "defs": 65,
+        "laws": 6,
+        "types": 3
+      },
+      {
+        "file": "src/back/native/direct.bend",
+        "sha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5",
+        "bytes": 4200,
+        "physicalLines": 88,
+        "nonblankLines": 74,
+        "defs": 14,
+        "laws": 1,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/pattern.bend",
+        "sha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4",
+        "bytes": 5324,
+        "physicalLines": 141,
+        "nonblankLines": 137,
+        "defs": 13,
+        "laws": 9,
+        "types": 2
+      },
+      {
+        "file": "src/back/native/show.bend",
+        "sha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d",
+        "bytes": 6723,
+        "physicalLines": 152,
+        "nonblankLines": 129,
+        "defs": 19,
+        "laws": 3,
+        "types": 2
+      },
+      {
+        "file": "src/back/native/parallel.bend",
+        "sha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722",
+        "bytes": 5003,
+        "physicalLines": 94,
+        "nonblankLines": 81,
+        "defs": 12,
+        "laws": 1,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/array.bend",
+        "sha256": "c00f0592299047df582ac0435e1a0423ea62fb48f7c87dda83bf18161b263bd7",
+        "bytes": 2813,
+        "physicalLines": 44,
+        "nonblankLines": 39,
+        "defs": 4,
+        "laws": 2,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/validate.bend",
+        "sha256": "d0c1e75c5dbda3d2e65ea227667191252c49f71b63f0765c358c2041a0f484bb",
+        "bytes": 2859,
+        "physicalLines": 62,
+        "nonblankLines": 52,
+        "defs": 11,
+        "laws": 0,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/foreign.bend",
+        "sha256": "ed7a06662072e73d45d10b1898599936b106dc22956a4fceea8d04ac22fb6d3c",
+        "bytes": 4010,
+        "physicalLines": 73,
+        "nonblankLines": 64,
+        "defs": 10,
+        "laws": 0,
+        "types": 0
+      },
+      {
+        "file": "src/back/native/book.bend",
+        "sha256": "180ee53af86a59df8efcc131d4f22b0ca6f5f9980dd222259f2941fbef1e11a2",
+        "bytes": 14294,
+        "physicalLines": 316,
+        "nonblankLines": 264,
+        "defs": 42,
+        "laws": 9,
+        "types": 2
+      },
+      {
+        "file": "src/driver/report.bend",
+        "sha256": "15f0985da866b948252490ec2f1b90aed9d36fb24b93eab24826648cc36e6df8",
+        "bytes": 2593,
+        "physicalLines": 100,
+        "nonblankLines": 86,
+        "defs": 9,
+        "laws": 6,
+        "types": 0
+      },
+      {
+        "file": "src/driver/api.bend",
+        "sha256": "5cae856aa306f52042cbead5bf72136da317649a0a09b7d73f8da1be3530d9d3",
+        "bytes": 3919,
+        "physicalLines": 124,
+        "nonblankLines": 105,
+        "defs": 15,
+        "laws": 5,
+        "types": 0
+      }
+    ]
+  },
+  "generatedMembership": {
+    "scope": "Exact emitted registration bytes, including G assignment and semicolon but excluding newline; workload sum is the six named source registrations. Full-library bytes include copied runtime, Base fallback registrations, metadata and exports.",
+    "onlyHasNameRegistrationChangedAfterExactRuntimePrefix": true,
+    "variants": {
+      "baseline": {
+        "file": "selfhost/build/phase27/component-baseline-02/selfhost.mjs",
+        "sha256": "d3d8882a2d181ccabfd4476c414112fdcdef415978d656fcf8c17830cb7b7ca3",
+        "fullLibraryBytes": 66641,
+        "runtimeBytes": 42878,
+        "runtimeSha256": "76d2d8647dc81f025c53c063aa0fb71ce24dd42965402c6e0078cc79a457d0c8",
+        "postRuntimeBytes": 23763,
+        "owners": {
+          "has_name": {
+            "bytes": 289,
+            "sha256": "2a2eded097b95a095a8cd1db15001fdfb28aaeb8654b9967711468e5f8a34f96",
+            "sourceLine": 595
+          },
+          "has_name_next": {
+            "bytes": 188,
+            "sha256": "795ac27e3dfa4e3cc819c3039e0183084c24131c3b8dad9860a0f91fd53866b1",
+            "sourceLine": 596
+          },
+          "component_names": {
+            "bytes": 219,
+            "sha256": "e732281dbd072323b94400618681dc13592a06b5bdef73d6242618d7e0f1bd8f",
+            "sourceLine": 597
+          },
+          "component_query": {
+            "bytes": 85,
+            "sha256": "8fa67a90ecacaa2f2186eb39ff6cff95a42573ee2a569e74a8984f2913561a88",
+            "sourceLine": 598
+          },
+          "component_result": {
+            "bytes": 72,
+            "sha256": "fec92fd05b04af3559f0d93e2efcd45a2150b14b451386af5916b10f0b4ce4ae",
+            "sourceLine": 599
+          },
+          "bench": {
+            "bytes": 307,
+            "sha256": "3bb9ab79493209f89adafdc68cabb8317ef391c5761d3decc767452be45ad962",
+            "sourceLine": 600
+          }
+        },
+        "workloadRegistrationBytes": 1160,
+        "outsideHasNameAfterRuntimeSha256": "500226f3d269cee62ac6cbe7442cff9db5bd0bd2e8901584d63e52bcc6cd0354",
+        "prebindMarkerSites": 0
+      },
+      "inline": {
+        "file": "selfhost/build/phase27/component-candidate-01/selfhost.mjs",
+        "sha256": "71cca36c1df7fb1fb545b2fc50136c98cf152701ffecfeacde946ee71058b853",
+        "fullLibraryBytes": 66919,
+        "runtimeBytes": 42878,
+        "runtimeSha256": "76d2d8647dc81f025c53c063aa0fb71ce24dd42965402c6e0078cc79a457d0c8",
+        "postRuntimeBytes": 24041,
+        "owners": {
+          "has_name": {
+            "bytes": 567,
+            "sha256": "124627142dd26ff52f23b0e4383bedd35eafb15a73b1f74b2323c12ce422ad64",
+            "sourceLine": 595
+          },
+          "has_name_next": {
+            "bytes": 188,
+            "sha256": "795ac27e3dfa4e3cc819c3039e0183084c24131c3b8dad9860a0f91fd53866b1",
+            "sourceLine": 596
+          },
+          "component_names": {
+            "bytes": 219,
+            "sha256": "e732281dbd072323b94400618681dc13592a06b5bdef73d6242618d7e0f1bd8f",
+            "sourceLine": 597
+          },
+          "component_query": {
+            "bytes": 85,
+            "sha256": "8fa67a90ecacaa2f2186eb39ff6cff95a42573ee2a569e74a8984f2913561a88",
+            "sourceLine": 598
+          },
+          "component_result": {
+            "bytes": 72,
+            "sha256": "fec92fd05b04af3559f0d93e2efcd45a2150b14b451386af5916b10f0b4ce4ae",
+            "sourceLine": 599
+          },
+          "bench": {
+            "bytes": 307,
+            "sha256": "3bb9ab79493209f89adafdc68cabb8317ef391c5761d3decc767452be45ad962",
+            "sourceLine": 600
+          }
+        },
+        "workloadRegistrationBytes": 1438,
+        "outsideHasNameAfterRuntimeSha256": "500226f3d269cee62ac6cbe7442cff9db5bd0bd2e8901584d63e52bcc6cd0354",
+        "prebindMarkerSites": 1
+      },
+      "shared": {
+        "file": "selfhost/build/phase27/component-candidate-02/selfhost.mjs",
+        "sha256": "9fcbb0bc3aa2be1a2fefdfd7121dab071a1f430f5db8b76476a3fcca5ed03206",
+        "fullLibraryBytes": 67131,
+        "runtimeBytes": 43346,
+        "runtimeSha256": "40823818afd57a6c37e055272dc332f461955a7cd225f67d66194f0d43ec823f",
+        "postRuntimeBytes": 23785,
+        "owners": {
+          "has_name": {
+            "bytes": 311,
+            "sha256": "0676dfb7dbbd442c8a2021a3a83693eb0b53dd270ccac35b589171743585c9de",
+            "sourceLine": 606
+          },
+          "has_name_next": {
+            "bytes": 188,
+            "sha256": "795ac27e3dfa4e3cc819c3039e0183084c24131c3b8dad9860a0f91fd53866b1",
+            "sourceLine": 607
+          },
+          "component_names": {
+            "bytes": 219,
+            "sha256": "e732281dbd072323b94400618681dc13592a06b5bdef73d6242618d7e0f1bd8f",
+            "sourceLine": 608
+          },
+          "component_query": {
+            "bytes": 85,
+            "sha256": "8fa67a90ecacaa2f2186eb39ff6cff95a42573ee2a569e74a8984f2913561a88",
+            "sourceLine": 609
+          },
+          "component_result": {
+            "bytes": 72,
+            "sha256": "fec92fd05b04af3559f0d93e2efcd45a2150b14b451386af5916b10f0b4ce4ae",
+            "sourceLine": 610
+          },
+          "bench": {
+            "bytes": 307,
+            "sha256": "3bb9ab79493209f89adafdc68cabb8317ef391c5761d3decc767452be45ad962",
+            "sourceLine": 611
+          }
+        },
+        "workloadRegistrationBytes": 1182,
+        "outsideHasNameAfterRuntimeSha256": "500226f3d269cee62ac6cbe7442cff9db5bd0bd2e8901584d63e52bcc6cd0354",
+        "prebindMarkerSites": 1
+      }
+    },
+    "sharedMinusBaseline": {
+      "fullLibraryBytes": 490,
+      "runtimeBytes": 468,
+      "postRuntimeBytes": 22,
+      "workloadRegistrationBytes": 22
+    },
+    "sharedMinusInline": {
+      "fullLibraryBytes": 212,
+      "runtimeBytes": 468,
+      "postRuntimeBytes": -256,
+      "workloadRegistrationBytes": -256
+    }
+  }
+}

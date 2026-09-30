@@ -1,0 +1,28 @@
+{
+  "complete": true,
+  "protectedPreexistingCount": 103,
+  "changedProtected": [],
+  "canonicalSourceMatchesCheckedSnapshot": true,
+  "canonicalFiles": 65,
+  "installedApiSha256": "5a89c775e903374341da4b4e32c29d26ffe687677f088c590046f748b69d81c5",
+  "checkedParentSha256": "25c38e3f7f6774d8492aa54300af8e1d4151ab18c8bc7ee81a97c722567713e7",
+  "sourceSha256": "f3097523a4cbb718e044de8f24b694f0f1dbd6822e9dee4857bb97dbd39c8b37",
+  "runtimeSha256": "40823818afd57a6c37e055272dc332f461955a7cd225f67d66194f0d43ec823f",
+  "releaseManifestSha256": "9398f0b176fe015126cd6f2c803e433e27ea76d535e290feb2059899ca938568",
+  "releaseVerification": {
+    "complete": true,
+    "artifact": "equality-derived-b1",
+    "api": {
+      "path": "dist/typed-api.mjs",
+      "sha256": "5a89c775e903374341da4b4e32c29d26ffe687677f088c590046f748b69d81c5",
+      "bytes": 950084
+    },
+    "sourceSha256": "f3097523a4cbb718e044de8f24b694f0f1dbd6822e9dee4857bb97dbd39c8b37",
+    "newBootstrap": false
+  },
+  "smokeOutput": {
+    "closure": "103\n",
+    "u32": "2496 2397\n"
+  },
+  "scope": "Canonical compiler modules/manifest/runtime match immutable checked attempt; documentation and standalone diagnostic tools are not compiler inputs."
+}

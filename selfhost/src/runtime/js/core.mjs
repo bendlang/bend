@@ -91,6 +91,17 @@ function project(k,x){
   return (constructors[k]??[]).map(name=>x[name]);
 }
 function matcher1(name,arm){return fn(1,([x])=>{const a=project(name,x);return a.length?jump(arm(),a):arm()})}
+// Prebind a selected literal arm while preserving apply's field-copy behavior.
+function matcher1p(name,count,arity,make){return fn(1,([x])=>{
+  const p=project(name,x),n=p.length,c=make();
+  if(n!==count)return n?jump(fn(arity,c),p):fn(arity,c);
+  const b=p.slice();
+  if(b.length===arity)return c.call(null,b);
+  if(b.length<arity)return fn(arity,c,null,b);
+  let r=c.call(null,b.slice(0,arity));
+  if(b.length>arity)r=jump(force(r),b.slice(arity));
+  return r;
+})}
 function literal(s){
   if(s==='null')return null;
   if(s[0]==='"')return decodeString(s.slice(1,-1));

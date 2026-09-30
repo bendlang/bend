@@ -2260,17 +2260,22 @@ function $j_lambda$(_book_0, _env_0, _t_0, _ty_0) {
 function $j_match$(_book_0, _env_0, _t_0, _ty_0) {
   const _x_0 = ($j_constructor_count$(_book_0, run_loop($wnf$(_book_0, run_loop($kid$(_ty_0, 0))))));
   return $kc$((_x_0 === 1), run_clo((_x_1) => {
-  return $j_arm_selected$(_book_0, _env_0, _t_0, _ty_0, run_loop($j_arm_worker$(_book_0, _env_0, _t_0, _ty_0)));
-}), run_clo((_x_2) => {
-  const _x_3 = run_loop($j_expr$(_book_0, _env_0, run_loop($kid$(_t_0, 1)), _ty_0, false));
-  const _x_4 = (_x_3 + ")");
-  const _x_5 = run_loop($j_expr$(_book_0, _env_0, run_loop($kid$(_t_0, 0)), run_loop($j_arm_type$(_book_0, _ty_0, ($nm$(_t_0)))), false));
-  const _x_6 = (",()=>" + _x_4);
-  const _x_7 = (_x_5 + _x_6);
-  const _x_8 = ($j_quote$(($nm$(_t_0))));
-  const _x_9 = (",()=>" + _x_7);
-  const _x_10 = (_x_8 + _x_9);
-  return ("matcher(" + _x_10);
+  const _x_2 = run_loop($j_expr$(_book_0, _env_0, run_loop($kid$(_t_0, 0)), run_loop($j_arm_type$(_book_0, _ty_0, ($nm$(_t_0)))), false));
+  const _x_3 = (_x_2 + ")");
+  const _x_4 = ($j_quote$(($nm$(_t_0))));
+  const _x_5 = (",()=>" + _x_3);
+  const _x_6 = (_x_4 + _x_5);
+  return ("matcher1(" + _x_6);
+}), run_clo((_x_7) => {
+  const _x_8 = run_loop($j_expr$(_book_0, _env_0, run_loop($kid$(_t_0, 1)), _ty_0, false));
+  const _x_9 = (_x_8 + ")");
+  const _x_10 = run_loop($j_expr$(_book_0, _env_0, run_loop($kid$(_t_0, 0)), run_loop($j_arm_type$(_book_0, _ty_0, ($nm$(_t_0)))), false));
+  const _x_11 = (",()=>" + _x_9);
+  const _x_12 = (_x_10 + _x_11);
+  const _x_13 = ($j_quote$(($nm$(_t_0))));
+  const _x_14 = (",()=>" + _x_12);
+  const _x_15 = (_x_13 + _x_14);
+  return ("matcher(" + _x_15);
 }));
 }
 
@@ -4305,29 +4310,6 @@ function $j_lambda_code$(_book_0, _env_0, _t_0, _ty_0, _at_0) {
 
 function $j_constructor_count$(_book_0, _ty_0) {
   return $j_count_constructors$(($dc$(run_loop($lookup$(_book_0, ($nm$(_ty_0)))))), ($rm$(_ty_0)));
-}
-
-function $j_arm_selected$(_book_0, _env_0, _t_0, _ty_0, _worker_0) {
-  if (_worker_0.$ === "Some") {
-    const _code_0 = _worker_0["value"];
-    return _code_0;
-  } else {
-    const _x_0 = run_loop($j_expr$(_book_0, _env_0, run_loop($kid$(_t_0, 0)), run_loop($j_arm_type$(_book_0, _ty_0, ($nm$(_t_0)))), false));
-    const _x_1 = (_x_0 + ")");
-    const _x_2 = ($j_quote$(($nm$(_t_0))));
-    const _x_3 = (",()=>" + _x_1);
-    const _x_4 = (_x_2 + _x_3);
-    return ("matcher1(" + _x_4);
-  }
-}
-
-function $j_arm_worker$(_book_0, _env_0, _t_0, _ty_0) {
-  const _x_0 = ($qt$(_ty_0));
-  return $kc$(($Bool$and$(($Bool$and$(($String$eq$(($tg$(_ty_0)), "All")), ($Bool$not$((_x_0 === 0))))), ($String$eq$(($tg$(run_loop($j_strip$(run_loop($kid$(_t_0, 0)))))), "Lam")))), run_clo((_x_1) => {
-  return $j_arm_owned$(_book_0, _env_0, _t_0, _ty_0, run_loop($wnf$(_book_0, run_loop($kid$(_ty_0, 0)))));
-}), run_clo((_x_2) => {
-  return {$: "None"};
-}));
 }
 
 function $j_arm_type$(_book_0, _ty_0, _name_0) {
@@ -6428,17 +6410,6 @@ function $j_count_constructors$(_ctors_0, _removed_0) {
   }
 }
 
-function $j_arm_owned$(_book_0, _env_0, _t_0, _ty_0, _domain_0) {
-  const _owner_0 = run_loop($lookup$(_book_0, ($nm$(_domain_0))));
-  const _ctor_0 = run_loop($lookup$(($dc$(_owner_0)), ($nm$(_t_0))));
-  const _armty_0 = run_loop($j_arm_type$(_book_0, _ty_0, ($nm$(_t_0))));
-  return $kc$(($Bool$and$(($Bool$and$(($Bool$and$(($String$eq$(($tg$(_domain_0)), "ADT")), ($String$eq$(($dk$(_owner_0)), "ADT")))), ($String$eq$(($dk$(_ctor_0)), "Ctr")))), ($Bool$not$(($has_name$(($rm$(_domain_0)), ($nm$(_t_0)))))))), run_clo((_x_0) => {
-  return $j_arm_sizes$(_book_0, _env_0, _t_0, _armty_0, run_loop($j_arm_live_fields$(($j_specialize$(_book_0, ($dt$(_ctor_0)), ($ks$(_domain_0)))), ($nm$(_domain_0)), 0)), run_loop($j_arm_lambdas$(_book_0, run_loop($kid$(_t_0, 0)), _armty_0, 0)));
-}), run_clo((_x_1) => {
-  return {$: "None"};
-}));
-}
-
 function $j_arm_tel$(_book_0, _tel_0, _ret_0) {
   return $kc$(($String$eq$(($tg$(_tel_0)), "All")), run_clo((_x_0) => {
   return $all$(($qt$(_tel_0)), ($nm$(_tel_0)), ($ix$(_tel_0)), run_loop($kid$(_tel_0, 0)), run_loop($j_arm_tel$(_book_0, run_loop($kid$(_tel_0, 1)), _ret_0)));
@@ -8337,53 +8308,6 @@ function $j_literal_node$(_t_0) {
   return $j_literal_ctor$(_t_0);
 }), run_clo((_x_8) => {
   return "";
-}));
-}));
-}
-
-function $j_arm_sizes$(_book_0, _env_0, _t_0, _armty_0, _fields_0, _arity_0) {
-  if (_fields_0.$ === "Some") {
-    const _count_0 = _fields_0["value"];
-    if (_arity_0.$ === "Some") {
-      const _total_0 = _arity_0["value"];
-      return $kc$(($Bool$and$((_count_0 > 0), (_count_0 < _total_0))), run_clo((_x_0) => {
-  return {$: "Some", "value": ($j_arm_code$(($nm$(_t_0)), _count_0, _total_0, run_loop($j_lambda_code$(_book_0, _env_0, run_loop($kid$(_t_0, 0)), _armty_0, 0))))};
-}), run_clo((_x_1) => {
-  return {$: "None"};
-}));
-    } else {
-      return {$: "None"};
-    }
-  } else {
-    return {$: "None"};
-  }
-}
-
-function $j_arm_live_fields$(_tel_0, _owner_0, _at_0) {
-  return $kc$(($String$eq$(($tg$(_tel_0)), "All")), run_clo((_x_0) => {
-  const _x_1 = ($qt$(_tel_0));
-  return $kc$(($Bool$not$((_x_1 === 0))), run_clo((_x_2) => {
-  return $j_arm_live_fields$(run_loop($kid$(_tel_0, 1)), _owner_0, ((_at_0 + 1) >>> 0));
-}), run_clo((_x_3) => {
-  return {$: "None"};
-}));
-}), run_clo((_x_4) => {
-  return $kc$(($Bool$and$(($String$eq$(($tg$(_tel_0)), "ADT")), ($String$eq$(($nm$(_tel_0)), _owner_0)))), run_clo((_x_5) => {
-  return {$: "Some", "value": _at_0};
-}), run_clo((_x_6) => {
-  return {$: "None"};
-}));
-}));
-}
-
-function $j_arm_lambdas$(_book_0, _t_0, _ty_0, _at_0) {
-  return $kc$(($String$eq$(($tg$(_t_0)), "Ann")), run_clo((_x_0) => {
-  return $j_arm_lambdas$(_book_0, run_loop($kid$(_t_0, 0)), run_loop($kid$(_t_0, 1)), _at_0);
-}), run_clo((_x_1) => {
-  return $kc$(($String$eq$(($tg$(_t_0)), "Lam")), run_clo((_x_2) => {
-  return $j_arm_lambda_type$(_book_0, _t_0, run_loop($wnf$(_book_0, _ty_0)), _at_0);
-}), run_clo((_x_3) => {
-  return {$: "Some", "value": _at_0};
 }));
 }));
 }
@@ -10360,28 +10284,6 @@ function $j_literal_ctor$(_t_0) {
 }));
 }));
 }));
-}));
-}
-
-function $j_arm_code$(_name_0, _count_0, _total_0, _body_0) {
-  const _x_0 = (_body_0 + "})))");
-  const _x_1 = ($U32$show$(_total_0));
-  const _x_2 = (",()=>(0,function(a){" + _x_0);
-  const _x_3 = (_x_1 + _x_2);
-  const _x_4 = ($U32$show$(_count_0));
-  const _x_5 = ("," + _x_3);
-  const _x_6 = (_x_4 + _x_5);
-  const _x_7 = ($j_quote$(_name_0));
-  const _x_8 = ("," + _x_6);
-  const _x_9 = (_x_7 + _x_8);
-  return ("(/* prebind-arm */matcher1p(" + _x_9);
-}
-
-function $j_arm_lambda_type$(_book_0, _t_0, _ty_0, _at_0) {
-  return $kc$(($Bool$and$(($String$eq$(run_loop($j_l_name$(_t_0)), "")), ($String$eq$(($tg$(_ty_0)), "All")))), run_clo((_x_0) => {
-  return $j_arm_lambdas$(_book_0, run_loop($kid$(_t_0, 0)), run_loop($subst$(run_loop($kid$(_ty_0, 1)), ($ix$(_ty_0)), ($var$(($nm$(_t_0)), ($ix$(_t_0)))))), ((_at_0 + 1) >>> 0));
-}), run_clo((_x_1) => {
-  return {$: "None"};
 }));
 }
 

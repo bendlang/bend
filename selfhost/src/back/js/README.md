@@ -1,6 +1,6 @@
 # JavaScript backend
 
-`emit.bend`, `choice.bend`, `projection.bend`, `u32.bend`, `foreign.bend`, `literals.bend`, and `validate.bend` are Bend2 source. Their input is the checked,
+`emit.bend`, `choice.bend`, `projection.bend`, `u32.bend`, `arm.bend`, `foreign.bend`, `literals.bend`, and `validate.bend` are Bend2 source. Their input is the checked,
 specialized, annotated `KTerm`/`KDef` core. They emit JavaScript; they do not
 invoke another compiler.
 
@@ -33,7 +33,7 @@ values passed directly between foreign functions.
 The bootstrap-only integration tests use `build/js-backend.mjs`, built with
 `tools/assemble.mjs` from `src/core/term.bend`, `src/core/index.bend`,
 `src/core/normalize.bend`, `src/core/pretty.bend`, `src/back/js/emit.bend`, `src/back/js/choice.bend`, `src/back/js/projection.bend`,
-`src/back/js/u32.bend`, `src/back/js/foreign.bend`, `src/back/js/literals.bend`, and
+`src/back/js/u32.bend`, `src/back/js/arm.bend`, `src/back/js/foreign.bend`, `src/back/js/literals.bend`, and
 `src/back/js/validate.bend`, then
 `tools/stage0-library.mjs` exporting `j_program j_expr j_descriptor j_library
 j_modules j_compile_error j_io_type book_cached j_layout_error`. Run `node src/back/js/test.mjs`,
@@ -126,3 +126,20 @@ that return a matcher. Application-spine arity is unchanged, so applying a
 matcher still completes before evaluating later curried arguments.
 `test-global-initializers.mjs` and `test.mjs` cover deferred arms, live global
 references, computed matcher effects and intermediate-error ordering.
+
+`arm.bend` recognizes a single remaining constructor whose literal, unlifted
+lambda arm has more leading slots than live fields. `matcher1p` prebinds those
+fields into the original partial descriptor, avoiding one intermediate function
+record, generic application and bounce. Outer arity, code body/name, captures,
+null environment, field-copy schedule and later-argument demand are unchanged.
+Unknown, erased, zero-field, lifted, eta-short and exact-saturation cases retain
+`matcher1`. The runtime preserves generic mismatch and post-slice saturation
+branches, including trusted foreign getters/custom slice results.
+
+`test-arm.mjs` checks72 matching descriptor/effect/output observations against a
+baseline through actual `j_library` emission. It uses synthetic KDefs; ordinary
+checked corpus controls cover frontend admission separately. The
+[Phase27 report](../../../../implementation/phase27/constructor-arm-prebinding.md)
+retains the rejected inline variant, both warmup protocols and the shared helper's
+modest measured benefit. Keep the helper and generic `apply` in sync; reduced
+generic partial/copy counters do not mean the final descriptor/copy disappeared.

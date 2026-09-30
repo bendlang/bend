@@ -793,7 +793,7 @@ law j_match:
 @unsafe
 def j_match(book, env, t, ty):
   kc(String, U32.is_eq(j_constructor_count(book, wnf(book, kid(ty, 0))), 1),
-    u => "matcher1(" ++ j_quote(nm(t)) ++ ",()=>" ++ j_expr(book, env, kid(t, 0), j_arm_type(book, ty, nm(t)), False{}) ++ ")",
+    u => j_arm_selected(book, env, t, ty, j_arm_worker(book, env, t, ty)),
     u => "matcher(" ++ j_quote(nm(t)) ++ ",()=>" ++ j_expr(book, env, kid(t, 0), j_arm_type(book, ty, nm(t)), False{}) ++ ",()=>" ++ j_expr(book, env, kid(t, 1), ty, False{}) ++ ")")
 
 law j_constructor_count:

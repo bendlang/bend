@@ -1,22 +1,34 @@
 # Current compiler experiment strategy
 
-The [Phase26 compiler](../implementation/phase26/direct-u32-decisions.md) is installed
-at upstream018751270e800bc222a93dad7f257083ee53a5f7, after2.0.34. User authorization
-covers continued speed/conformance/simplicity work and pushes to rom1504/bend
-selfhost/bootstrap. No historical multi-hour budget is renewed. Preserve the103
-unrelated paths in the Phase24 starting inventory.
+The [Phase27 compiler](../implementation/phase27/constructor-arm-prebinding.md) is
+installed at upstream018751270e800bc222a93dad7f257083ee53a5f7, after2.0.34.
+Authorization covers continued optimization/conformance/simplicity work and pushes
+to rom1504/bend selfhost/bootstrap; no new PR comments without explicit request.
+No historical multi-hour budget is renewed. Preserve the103 unrelated starting paths.
 
 ## Released frontier
 
-Installed API4c67ac04, genuine checked parent818f68ca, guarded profile6.
-Phase26 adds110 Bend lines for guarded native U32-to-U32 closed decisions before
-closure lifting. Runtime/Base/frontend/native backend and public call ABI unchanged.
-Table/wide/direct-numeric emitted workloads improve11.80×/3.66×/50.25×; remaining
-TS ratios122.26×/484.26×/12.97×. Word constructor calls drop to zero. No whole-H or
-ordinary compiler-throughput gain is claimed; actual String-result escape code
-is unchanged. Fresh36focused,15upstreamJS,23library/127point,2816+468scalar controls
-per emitter and56guard/780worker checks pass their overlapping scopes.
-Source now15,886physical/13,562nonblank,61modules,1718defs,640laws,68types.
+Installed API5a89c775, genuine checked parent25c38e3f, guarded profile6;
+runtime40823818, sourcef3097523. Selected constructor arms prebind projected
+fields into the same partial descriptor through a shared runtime callback.
+No public arity/demand/representation change. Unknown/erased/lifted/eta-short
+and exact-saturation shapes retain the old matcher.
+
+Final short-window membership median improves1.026× (ranges overlap); longer-warm
+membership1.059× and Boolean traversal1.042× have nonoverlapping observed ranges.
+Substitution is flat in both protocols. The inline version's20% short-window
+regression remains rejected, with its135+45 samples and traces retained.
+Shared variant135+45 samples use identical sources/inputs and per-window serial
+CPU3/Node24 comparisons. Five samples are not confidence bounds. No compiler/H
+throughput gain is claimed. Canonical source15,944physical/13,612nonblank,
+62modules,1726defs,640laws,68types: +58 Bend lines and11 runtime lines.
+Fresh36focused,15upstreamJS,23library/127point,72arm observations, numericcontrols
+and22real-component oracles pass overlapping scopes. Independent timing audit and
+release verification pass; the report records exact identities and recovery.
+
+Phase26's native U32 decision rule remains. Its prior table/wide/direct numeric
+measurements improved11.80×/3.66×/50.25× with no whole-compiler claim. Final Phase27
+rechecks numeric behavior; previous TypeScript gaps remain large in emitted loops.
 
 The following broader conformance and ordinary-cost figures are Phase24 evidence:
 No TypeScript fallback in ordinary compilation. The same contextual frontend,
@@ -61,16 +73,15 @@ No generated-program speedup is claimed. Canonical source15,776physical/13,467no
    functions. Wider result/capture support is a separate hypothesis; current real
    compiler numeric helpers return String/List. Do not infer compiler transfer
    from tiny-kernel ratios. The six-case/three-output comparison costs44.61s.
-2. First test selected constructor-arm prebinding, then saturated private workers
-   through matcher boundaries and tail cycles. The [bounded proposal](../implementation/phase26/call-lowering-analysis.md)
-   preserves original partial-function descriptors; merely raising arity can move
-   later argument evaluation before a match/error and is unsafe.
-   Runtime dispatch is hot in the selected analogues. A Boolean-worker source
-   rewrite helps upstream output22.24× but hurts ours1.80× on the matched point,
-   so source speedups on upstream-built B1 need a separate self-emitted-code gate.
-   Keep primitive inlining, Nat representation and constructor forcing as distinct
-   experiments. Retain successful exact string primitives; their near-parity case
-   contradicts a universal dispatch-only explanation. No new full H was measured.
+2. Selected-arm prebinding is now measured and installed in its shared form.
+   Next test saturated private workers or tail loops that remove several dispatch
+   boundaries together, starting with the actual membership component. Preserve
+   the public partial descriptor and match/argument evaluation order. Do not
+   merely raise arity. One removed fn/apply/bounce per match brings modest gains;
+   the wrapper still performs2580 generic applications and1543 fn creations.
+   Both short and longer warmup are required: host optimizer behavior changes
+   results despite identical helper counts. Primitive/Nat representation and
+   constructor forcing remain distinct experiments. No new full H was measured.
 3. Continue backend acquisition in deterministic bounded batches. The inventory
    is current but largely unexecuted; frontend equality alone missed both repaired
    backend defects. Distinguish candidate semantic differences, shared upstream

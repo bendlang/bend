@@ -1629,3 +1629,41 @@ Do not merely raise public arity. Wider numeric-result support, dense tables,
 primitive inlining and tail loops remain separate candidates; prioritize changes
 that transfer to real compiler components. Keep backend conformance acquisition
 bounded, and retain compiler-throughput/generated-program/H distinctions.
+
+## P27 — selected constructor-arm prebinding (2026-09-30)
+
+[Design](../design/phase27/constructor-arm-prebinding.md),
+[warmup amendment](../design/phase27/longer-warmup.md),
+[shared-helper amendment](../design/phase27/shared-arm-runtime.md),
+[report](../implementation/phase27/constructor-arm-prebinding.md),
+[reproduction](../implementation/phase27/README.md).
+
+Promoted the shared-runtime variant; rejected the first inline form. Both pass
+scoped semantic gates and remove one fn/apply/bounce per affected match, but
+inline substitution regresses20.08% in the original short window. V8 traces
+motivated a prospectively defined longer-warm comparison, not discarded samples.
+The final shared form preserves the same recognizer/partial descriptors and
+removes that material measured penalty. Substitution remains effectively flat.
+
+Final warmed actual compiler membership improves1.059× and Boolean traversal1.042×,
+with nonoverlapping five-sample ranges. Short membership median1.026× has overlapping
+ranges; other short gains are about2–6% on selected kernels. Four separate windows
+retain360 samples with pinned TypeScript and Phase26 baselines. Independent audit
+verifies504 total timing/calibration/check processes. The final short135-sample
+screen takes66.93s; long45-sample screen63.14s. No whole-compiler/H claim.
+
+Fresh shared gates:36 strict focused,15 upstream JS execution,23library/127point,
+72 arm observations, numeric2816+468 scalar checks per emitter plus refusals,
+22 actual component oracles and runtime ABI controls. Counts overlap; broader
+frontend/native/device coverage is not renewed. Source adds58 Bend lines/eight
+helpers/one module and11 runtime lines/one helper; no new datatype or representation.
+Installed API5a89c775, checked parent25c38e3f, runtime40823818, sourcef3097523.
+
+All failed/superseded acquisitions, original inline source, untimed ablations,
+traces, checked snapshots and exact output bytes are retained with recovery
+receipts. The103 unrelated paths remain unchanged; no new PR comment is posted.
+
+**Updated frontier:** reducing one dispatch boundary yields incremental gains.
+Test a private saturated worker or loop on the actual compiler helper before a
+full H. Preserve evaluation/descriptor boundaries and measure both warmup regimes;
+identical helper-count reductions do not guarantee identical V8 performance.

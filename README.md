@@ -17,6 +17,13 @@ This fork develops the compiler in [`selfhost/`](selfhost/README.md), on branch
 from `selfhost/`, run `npm run verify:release`, then `node cli.mjs FILE --run`.
 `npm run build` checks and rebuilds the default with pinned upstream.
 
+The [Phase27 release report](implementation/phase27/constructor-arm-prebinding.md)
+reduces generated constructor-arm dispatch. The actual compiler membership helper
+runs **2.6–5.9% faster** in two separately measured warmup regimes; warmed Boolean
+traversal improves4.2%. A shared runtime helper preserves partial calls and
+argument order. The rejected inline variant and its startup regression are retained.
+These component results do not establish a whole-compiler speedup.
+
 The [Phase26 release report](implementation/phase26/direct-u32-decisions.md)
 adds direct native U32 decisions to generated JavaScript: **11.8× faster** on the
 dense-table workload, **3.7×** on wide-key loops and **50×** on direct numeric
@@ -37,9 +44,9 @@ raw verdicts, remaining coverage and the supported-host TCP/sanitizer evidence.
 Phase24 controlled ordinary checking averages **11.16s**, versus **11.73s** for the previous
 release and **3.74s** for TypeScript: **4.9% faster**, still about **3× TypeScript**.
 This three-sample screen excludes emission. Peak memory is essentially unchanged.
-The current compiler has **15,886 Bend lines in 61 modules**. Phase26 adds110
-lines(+0.70%) and no new datatype or runtime representation, while cutting the
-targeted generated decision definitions by about87%.
+The current compiler has **15,944 Bend lines in62 modules**. Phase27 adds58
+Bend lines and11 runtime lines, with no new datatype or representation. Phase26
+previously cut targeted generated numeric decision definitions by about87%.
 
 The [development workflow](docs/PHASE5_DEVELOPMENT.md) builds a genuine checked
 compiler and runs36 short paired controls. The release preserves its checked

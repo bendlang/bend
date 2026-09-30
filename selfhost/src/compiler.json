@@ -42,6 +42,7 @@
     "src/back/js/choice.bend",
     "src/back/js/projection.bend",
     "src/back/js/u32.bend",
+    "src/back/js/arm.bend",
     "src/back/js/emit.bend",
     "src/back/native/ir.bend",
     "src/back/native/text.bend",

@@ -1,19 +1,21 @@
 # Bend2 compiler port in Bend2
 
 Use the [compiler guide](../docs/BEND-IN-BEND.md) and
-[Phase26 release report](../implementation/phase26/direct-u32-decisions.md).
-The latest release lowers eligible native U32 decisions directly in generated
-JavaScript:11.8× faster dense-table,3.7× wide-key and50× direct-decision workloads.
-These are emitted-program measurements; no whole-compiler speedup is claimed.
-Runtime, frontend, native backend and call ABI remain unchanged.
+[Phase27 release report](../implementation/phase27/constructor-arm-prebinding.md).
+The latest release prebinds selected constructor arms while preserving partial
+function descriptors and argument order. The actual compiler membership helper
+is1.026× faster with short warmup and1.059× with longer warmup; longer-warm Boolean
+traversal improves1.042×. The original inline form's20% short-window regression
+is retained as a rejected experiment. These are generated-program measurements.
 
-Phase26 passes36 focused observations,15 selected upstream JS execution fixtures,
-the23-library/127-point corpus,2,816 independent scalar checks per emitter plus
-supplemental default/identity/budget controls. Historical Phase24 frontend
-**3,026+196** exact observations and backend **81/81** remain separately scoped.
-Counts overlap; see [conformance](CONFORMANCE.md). The last controlled ordinary
-checking screen (Phase24) was **11.16s versus3.74s TypeScript**, about **3×**,
-excluding emission. It was not repeated for this emitter-only change.
+Fresh gates pass36 focused observations,15 upstream JS execution fixtures,
+23 libraries/127 scalar points,72 detailed arm observations and the previous
+numeric controls. Counts overlap; see [conformance](CONFORMANCE.md). The wider
+Phase24 frontend **3,026+196** and backend **81/81** results remain historical.
+Its last ordinary checking screen was **11.16s versus3.74s TypeScript**, about
+**3×**, excluding emission. It was not repeated in Phase27. The previous direct
+U32 lowering and its11.8×/3.7×/50× selected-workload gains remain documented in
+[Phase26](../implementation/phase26/direct-u32-decisions.md).
 
 The current target is upstream
 [`018751270e800bc222a93dad7f257083ee53a5f7`](https://github.com/bendlang/bend/tree/018751270e800bc222a93dad7f257083ee53a5f7),
@@ -26,9 +28,9 @@ node cli.mjs tests/conformance/typed-smoke/base-u32.bend --run
 npm run build
 ```
 
-The compiler contains15,886 physical /13,562 nonblank Bend lines in61 modules.
-Phase26 adds110 physical lines(+0.70%),15 helpers and one module; datatype counts
-and runtime representations are unchanged. The [release manifest](dist/release.json)
+The compiler contains15,944 physical /13,612 nonblank Bend lines in62 modules.
+Phase27 adds58 physical lines(+0.37%),eight helpers and one module, plus11 lines
+for one runtime helper. Datatype counts and runtime representations are unchanged. The [release manifest](dist/release.json)
 binds the exact source, genuine checked parent, equality/choice-derived API, Base,
 runtime and host. Verification
 works after relocation. Compiler edits use the

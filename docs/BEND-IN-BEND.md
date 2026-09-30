@@ -17,6 +17,9 @@ checks, injective native function names and a current backend coverage inventory
 The [Phase26 release](../implementation/phase26/direct-u32-decisions.md) adds
 restricted direct U32 decision lowering to JavaScript with measured generated
 program gains and explicit structural/capture fallbacks. The pin is unchanged.
+The [Phase27 release](../implementation/phase27/constructor-arm-prebinding.md)
+adds a shared selected-arm helper, with modest measured gains on emitted
+traversals and an actual compiler membership component.
 This experimental port does not establish independent proof
 validity; `--verdict` is explicitly unsupported.
 
@@ -57,6 +60,23 @@ and the serial three-output comparison. Measured gains are11.8×/3.7×/50× on t
 selected numeric workloads; the real String-returning escape helper is unchanged.
 The remaining generic call/loop cost is the next target. Ordinary compiler
 throughput was not remeasured, and no new H image was built.
+
+Phase27 recognizes selected constructor arms whose explicit leading lambdas
+outnumber their live constructor fields. It directly creates the same partial
+function descriptor using `matcher1p`; outer arity, code/capture behavior and
+later-argument demand remain unchanged. Zero-field, erased, lifted, eta-short,
+unknown and exactly saturated arms keep the previous matcher. The helper
+preserves field-vector copying and unusual slice/length behavior. It is bundled
+with the runtime; use the emitter and runtime identities paired by the release.
+
+The first inline implementation passed correctness but regressed short-window
+substitution20%. The selected shared implementation removes that measured
+regression. Real compiler membership improves1.026×/1.059× under short/long
+warmup; warmed Boolean traversal improves1.042×. These modest gains add58 Bend
+lines and11 runtime lines. [Reproduction](../implementation/phase27/README.md)
+retains both timing protocols, all360 samples and the rejected candidate. The
+shared code still duplicates a small part of generic apply; keep the detailed
+`test-arm.mjs` descriptor/order controls when modifying either path.
 
 ## Current frontend and release architecture
 

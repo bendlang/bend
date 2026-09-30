@@ -1,13 +1,20 @@
 # Compiler validation
 
-The [Phase26 installed release](../implementation/phase26/direct-u32-decisions.md)
-keeps the Phase24 frontend/runtime and pinned upstream, adding only guarded native
-U32 decision emission. Fresh gates:36 focused exact observations,15 upstream JS
-execution fixtures exact,23 corpus libraries/127 scalar points,2,816 scalar checks
-per emitter plus four refusal controls,468 ignored-bit supplement points per
-emitter,56 direct guard observations and780 synthetic worker executions. The
-actual escaping component's full-text probes also pass. These overlapping finite
-scopes do not renew every historical suite below or establish full backend conformance.
+The [Phase27 installed release](../implementation/phase27/constructor-arm-prebinding.md)
+adds selected constructor-arm prebinding through a shared JS runtime helper.
+Fresh gates:36 strict focused observations,15 pinned upstream JS fixtures exact,
+23 libraries/127 scalar points,72 detailed descriptor/effect/ownership observations,
+and22 real compiler membership oracles. The previous numeric suite passes2816
+scalar checks and four expected refusals per emitter, plus468 supplement checks
+per emitter. The runtime argument-ownership test also passes.
+
+The initial inline variant passed the same scoped semantics but was rejected for
+a20% short-window substitution regression. The shared version corrects that
+measured regression; all attempts are retained. These overlapping finite scopes
+do not renew every historical suite below or establish full backend conformance.
+The frontend, native backend, Base and upstream pin are unchanged. Previous
+[Phase26 guard results](../implementation/phase26/direct-u32-decisions.md) remain
+separately scoped evidence for the unchanged numeric recognizer.
 
 ## Historical frontend and broader release evidence
 
