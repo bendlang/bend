@@ -389,7 +389,15 @@ def j_region_definitions(+book: List<&2,KDef>, +helpers: List<&2,KDef>) -> Strin
     case Con{d, rest}:
       "function " ++ j_region_name(dn(d)) ++ "(" ++ j_region_parameters(0, da(d)) ++ "){" ++
       kc(String, String.eq(tg(dv(d)), "Mat"), u => j_region_nested_body(book, d),
-        u => "return " ++ j_expr(book, Nil{}, dv(d), kid(dv(d), 1), False{}) ++ ";") ++ "}" ++ j_region_definitions(book, rest)
+        u => j_region_return(book, Nil{}, dv(d), kid(dv(d), 1))) ++ "}" ++ j_region_definitions(book, rest)
+
+# Preserve parallel RHS scope, then introduce immutable aliases in a fresh block.
+@unsafe
+def j_region_return(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm) -> String:
+  kc(String, String.eq(tg(t), "Ann"), u => j_region_return(book, env, kid(t, 0), kid(t, 1)), u =>
+  kc(String, String.eq(tg(t), "Let"), u => "{" ++ j_nat_loop_values(book, env, ks(t), 0) ++ "{" ++
+    j_nat_loop_names(ks(t), 0) ++ j_region_return(book, j_context(book, env, ks(t)), j_body(ks(t)), ty) ++ "}}", u =>
+    "return " ++ j_expr(book, env, t, ty, False{}) ++ ";"))
 
 @unsafe
 def j_region_nested_body(+book: List<&2,KDef>, +d: KDef) -> String:
