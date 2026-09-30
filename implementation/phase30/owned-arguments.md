@@ -58,7 +58,13 @@ acquisition costs occurred alongside other work and are descriptive only.
 The compiler-produced program suffix is byte-identical to the prototype suffix,
 including27owned call sites. Runtime helper placement/comments differ, so the
 prototype timing is not silently relabeled as an actual-compiler timing; that
-fresh comparison and broader transfer remain integration work.
+fresh comparison was acquired separately. It confirms1.13325×: Phase29
+0.400375ms [0.397890–0.407815], checked candidate0.353298ms
+[0.351750–0.359684], pinned TypeScript0.00170548ms. All within-block half
+ratios are within4.3% of1; ranges are disjoint. First-call medians are6.362ms
+and6.201ms. The screen/confirmation launchers cost6.427s/63.927s. Raw evidence
+is `fixture-owned-{screen,confirm}-01` (see the launcher/config references in
+`fixture-owned-01`). Broader transfer remains integration work.
 
 ## Independent validation and limits
 

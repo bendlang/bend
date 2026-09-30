@@ -1763,3 +1763,19 @@ ordering failure and short-window drift. Owned non-tail argument vectors confirm
 36focused/120oracle/22independent ABI observations pass. Installedrelease stays
 Phase29 pendingintegration. Separate exact-arm and once-per-scalar-loop dependency
 guard experiments are prospective. No wholecompiler or native speed claim.
+
+### Phase30 guarded region checkpoint
+
+Actual checked owned-vector output confirms1.13325× on the helper fixture.
+Exact constructor-arm saturation confirms1.02321× on the complete-state edit
+row. The closed scalar region confirms2.679× on original Mandelbrot bench(0,0),
+while per-call guards regress53.8%. Both guard frequency and eliminated-call
+scope differ, so this is not a pure guard-frequency attribution. A separate
+private-row V8 diagnostic profile samples43.5% in apply/force/call and2.6% in
+GC; named frames are not a universal cost decomposition. Retain every window.
+
+[General scalar-region plan](../design/phase30/scalar-region-compiler.md)
+freezes compiler admission, snapshot guards, private expression nodes, unchanged
+fallback and validation before implementation. Prefer existing KTerm/JS emission
+over retargeting C-specific NIR. Independent reviewers cover purity, metadata,
+forward references and type-preserving private lowering. Phase29 stays installed.
