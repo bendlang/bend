@@ -1743,3 +1743,13 @@ edit-distance record/tuple cell chain, retaining project/build/array behavior
 initially. Static inspection identifies remaining generic boundaries without
 assigning runtime shares. Full backend conformance and TypeScript-speed parity
 remain unestablished.
+
+## Phase30 — direct generated code (started2026-09-30 07:28 UTC)
+
+The user authorizes at least seven hours of sustained optimization.
+[Prospective design](../design/phase30/direct-generated-code.md) freezes baseline,
+semantic boundaries, performance protocols and promotion gates before compiler
+edits or new timings. Start at77aecb2; preserve103 unrelated files. Three agents
+independently prepare a private-call prototype, semantic counterexamples and
+paired generated-code inspection. Root owns the general implementation and
+measurement coordination. No performance result or promotion yet.

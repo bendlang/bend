@@ -3,8 +3,15 @@
 The [Phase 29 compiler](../implementation/phase29/generated-program-fast-loop.md)
 targets upstream 018751270e800bc222a93dad7f257083ee53a5f7, after 2.0.34.
 Authorization covers continued compiler work and pushes to rom1504/bend
-selfhost/bootstrap. No new PR comments without an explicit request. No historical
-multi-hour budget is renewed. Preserve the 103 unrelated starting paths.
+selfhost/bootstrap. No new PR comments without an explicit request. The user now requests at least seven hours beginning2026-09-30 07:28 UTC,
+through14:28 UTC; see the Phase30 design. Preserve the103 unrelated starting paths.
+
+## Active Phase30 campaign
+
+[Design](../design/phase30/direct-generated-code.md): compare saved JS, isolate
+private direct calls on a small edit-distance row, independently challenge
+semantics, then generalize only measured wins. Coordinate all clean CPU3 timings
+through the lead. Phase29 remains installed until a reviewed candidate passes.
 
 ## Released frontier
 
