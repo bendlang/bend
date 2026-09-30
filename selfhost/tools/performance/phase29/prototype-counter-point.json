@@ -1,0 +1,86 @@
+{
+  "kind": "phase29-untimed-ten-identical-calls",
+  "points": [
+    {
+      "exportName": "bench",
+      "args": [
+        128,
+        524800
+      ],
+      "expected": 128
+    },
+    {
+      "exportName": "bench",
+      "args": [
+        128,
+        524800
+      ],
+      "expected": 128
+    },
+    {
+      "exportName": "bench",
+      "args": [
+        128,
+        524800
+      ],
+      "expected": 128
+    },
+    {
+      "exportName": "bench",
+      "args": [
+        128,
+        524800
+      ],
+      "expected": 128
+    },
+    {
+      "exportName": "bench",
+      "args": [
+        128,
+        524800
+      ],
+      "expected": 128
+    },
+    {
+      "exportName": "bench",
+      "args": [
+        128,
+        524800
+      ],
+      "expected": 128
+    },
+    {
+      "exportName": "bench",
+      "args": [
+        128,
+        524800
+      ],
+      "expected": 128
+    },
+    {
+      "exportName": "bench",
+      "args": [
+        128,
+        524800
+      ],
+      "expected": 128
+    },
+    {
+      "exportName": "bench",
+      "args": [
+        128,
+        524800
+      ],
+      "expected": 128
+    },
+    {
+      "exportName": "bench",
+      "args": [
+        128,
+        524800
+      ],
+      "expected": 128
+    }
+  ],
+  "expectedNativeRuntimeSha256": "40823818afd57a6c37e055272dc332f461955a7cd225f67d66194f0d43ec823f"
+}

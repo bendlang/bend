@@ -1,6 +1,8 @@
 # JavaScript backend
 
-`emit.bend`, `choice.bend`, `projection.bend`, `u32.bend`, `arm.bend`, `foreign.bend`, `literals.bend`, and `validate.bend` are Bend2 source. Their input is the checked,
+`emit.bend`, `choice.bend`, `projection.bend`, `u32.bend`, `arm.bend`,
+`primitive.bend`, `worker.bend`, `foreign.bend`, `literals.bend`, and
+`validate.bend` are Bend2 source. Their input is the checked,
 specialized, annotated `KTerm`/`KDef` core. They emit JavaScript; they do not
 invoke another compiler.
 
@@ -32,9 +34,11 @@ values passed directly between foreign functions.
 
 The bootstrap-only integration tests use `build/js-backend.mjs`, built with
 `tools/assemble.mjs` from `src/core/term.bend`, `src/core/index.bend`,
-`src/core/normalize.bend`, `src/core/pretty.bend`, `src/back/js/emit.bend`, `src/back/js/choice.bend`, `src/back/js/projection.bend`,
-`src/back/js/u32.bend`, `src/back/js/arm.bend`, `src/back/js/foreign.bend`, `src/back/js/literals.bend`, and
-`src/back/js/validate.bend`, then
+`src/core/normalize.bend`, `src/core/pretty.bend`, `src/back/js/foreign.bend`,
+`src/back/js/literals.bend`, `src/back/js/validate.bend`,
+`src/back/js/choice.bend`, `src/back/js/projection.bend`,
+`src/back/js/u32.bend`, `src/back/js/arm.bend`, `src/back/js/primitive.bend`,
+`src/back/js/worker.bend`, and `src/back/js/emit.bend`, then
 `tools/stage0-library.mjs` exporting `j_program j_expr j_descriptor j_library
 j_modules j_compile_error j_io_type book_cached j_layout_error`. Run `node src/back/js/test.mjs`,
 `node src/back/js/test-foreign.mjs`, and `node src/back/js/test-validation.mjs`
@@ -56,6 +60,28 @@ the [Phase26 report](../../../../implementation/phase26/direct-u32-decisions.md)
 and `test-u32.mjs` for provenance, budget and valid-native-input boundaries.
 `test.mjs` covers partial calls, erased arguments, effect/error evaluation order,
 parallel shadowing, and closures that outlive their defining `Let`.
+
+`primitive.bend` emits JavaScript arithmetic for 54 supported native U32/F32
+operations at exact saturation. It checks native definition and datatype
+identity, the complete scalar telescope, live arguments and arity. Operands
+are evaluated once in source order; conditional division, modulo and shifts
+bind both operands before testing them. Unsigned wrapping, zero divisors,
+large Nat shift counts and F32 rounding follow the existing runtime. Partial
+applications, foreign definitions and unsupported signatures use ordinary
+application, retaining the native descriptors and their public ABI.
+
+`worker.bend` recognizes a non-native definition with a native Nat
+`Zero`/`Succ` matcher and explicit live scalar parameters. Its successor arm
+must end in an exactly saturated self call on the captured predecessor, through
+only annotations and `Let` bindings. The public matcher and initial partial
+descriptor retain their argument demand. After full entry, a private loop
+evaluates the next arguments into temporaries and selects the original Zero
+body or the next successor iteration. Each iteration has fresh immutable
+binder aliases, preserving closures; parallel RHSs precede their new bindings,
+and erased RHSs remain unevaluated. Eligibility is limited to 2–32 slots,
+8,192 core nodes, no deep closure factories, and native Nat/U32/F32/Bool scalar
+parameters and results. All other definitions keep the existing emitter.
+These rules add no runtime helpers, datatype representation or public arity.
 
 For parser performance comparisons, build both outputs from the same checked
 book with `benchmark-build-parser.mjs CANDIDATE_API.mjs`, then run

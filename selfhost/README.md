@@ -1,28 +1,24 @@
 # Bend2 compiler port in Bend2
 
-The [Phase28 comparison](../implementation/phase28/broader-program-comparison.md)
-adds measurements on existing upstream programs: six algorithms are 111–1,391×
-slower in the original warmed JavaScript window, while the small HVM demo's
-complete process is 2.90× slower (201 ms versus 69 ms). All 11 selected outputs agree.
-First calls and a longer-warmup follow-up remain separate in the report.
-This measurement phase changes no compiler source or installed release.
-
 Use the [compiler guide](../docs/BEND-IN-BEND.md) and
-[Phase27 release report](../implementation/phase27/constructor-arm-prebinding.md).
-The latest release prebinds selected constructor arms while preserving partial
-function descriptors and argument order. The actual compiler membership helper
-is1.026× faster with short warmup and1.059× with longer warmup; longer-warm Boolean
-traversal improves1.042×. The original inline form's20% short-window regression
-is retained as a rejected experiment. These are generated-program measurements.
+[Phase29 release report](../implementation/phase29/generated-program-fast-loop.md).
+The compiler now emits saturated native arithmetic directly and uses a private
+loop for supported Nat countdown functions. Public matchers, partial descriptors,
+argument order and runtime representations remain unchanged.
 
-Fresh gates pass36 focused observations,15 upstream JS execution fixtures,
-23 libraries/127 scalar points,72 detailed arm observations and the previous
-numeric controls. Counts overlap; see [conformance](CONFORMANCE.md). The wider
-Phase24 frontend **3,026+196** and backend **81/81** results remain historical.
-Its last ordinary checking screen was **11.16s versus3.74s TypeScript**, about
-**3×**, excluding emission. It was not repeated in Phase27. The previous direct
-U32 lowering and its11.8×/3.7×/50× selected-workload gains remain documented in
-[Phase26](../implementation/phase26/direct-u32-decisions.md).
+The real Mandelbrot helper fixture improves **3.65×** with longer warmup.
+The [fast-loop guide](../implementation/phase29/README.md) documents a **4.7-second**
+old/new screen and separate checked-build and integration gates. The broader
+original-program results, remaining TypeScript gaps, first calls and warmup
+sensitivity are in the report. These are generated-JavaScript measurements;
+ordinary compiler throughput was not remeasured.
+
+Fresh scoped validation includes 36 focused observations, 15 upstream JS fixtures,
+23 libraries / 127 points, all 11 selected original program outputs, 22 actual compiler
+component oracles and independent arithmetic/worker controls. Counts overlap; see
+[conformance](CONFORMANCE.md). The wider Phase24 frontend **3,026+196** and backend
+**81/81** results remain historical. Its last ordinary checking screen was
+**11.16s versus 3.74s TypeScript**, about **3×**, excluding emission.
 
 The current target is upstream
 [`018751270e800bc222a93dad7f257083ee53a5f7`](https://github.com/bendlang/bend/tree/018751270e800bc222a93dad7f257083ee53a5f7),
@@ -35,9 +31,10 @@ node cli.mjs tests/conformance/typed-smoke/base-u32.bend --run
 npm run build
 ```
 
-The compiler contains15,944 physical /13,612 nonblank Bend lines in62 modules.
-Phase27 adds58 physical lines(+0.37%),eight helpers and one module, plus11 lines
-for one runtime helper. Datatype counts and runtime representations are unchanged. The [release manifest](dist/release.json)
+The compiler contains 16,207 physical / 13,839 nonblank Bend lines in 64 modules.
+Phase29 adds 263 physical lines (+1.65%), 36 definitions and two guarded emitter
+mechanisms. Datatypes, IR and runtime representation are unchanged.
+The [release manifest](dist/release.json)
 binds the exact source, genuine checked parent, equality/choice-derived API, Base,
 runtime and host. Verification
 works after relocation. Compiler edits use the

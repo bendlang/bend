@@ -1,0 +1,24 @@
+{
+  "kind": "phase29-exact-helper-extraction",
+  "upstreamCommit": "018751270e800bc222a93dad7f257083ee53a5f7",
+  "source": "selfhost/tools/performance/phase28/corpus/mandelbrot.bend",
+  "sourceSha256": "cb2b9c30aceeb0f8ed0da1f999658aa8d7fb346851877da6902d1ded4cfc0656",
+  "upstreamOriginalGitBlob": "8effae68e308c8ae63c3ec8af66f0e4a4e59f282",
+  "segmentStart": "def b2u(",
+  "segmentEndExclusive": "# one pixel:",
+  "segmentSha256": "44713d40de6e93560d07b5e9d54c795353fee8eb41db31246fb8dc03f8f8f49f",
+  "fixture": "selfhost/tools/performance/phase29/fixture-mandelbrot.bend",
+  "fixtureSha256": "5c1b7031be03394ea7bfc64358b6db167711765e187e32d06f65a9f06bba3c7d",
+  "copiedHelpers": [
+    "b2u",
+    "sel.go",
+    "sel",
+    "asr8",
+    "mit"
+  ],
+  "addedExports": [
+    "bench",
+    "point"
+  ],
+  "representations": "Unchanged U32 Number and Nat BigInt in selfhost output."
+}

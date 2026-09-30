@@ -1,0 +1,464 @@
+{
+  "kind": "phase29-independent-primitive-controls",
+  "operations": [
+    {
+      "name": "U32.add",
+      "export": "u32_add",
+      "domains": [
+        "U32",
+        "U32"
+      ],
+      "result": "U32"
+    },
+    {
+      "name": "U32.sub",
+      "export": "u32_sub",
+      "domains": [
+        "U32",
+        "U32"
+      ],
+      "result": "U32"
+    },
+    {
+      "name": "U32.mul",
+      "export": "u32_mul",
+      "domains": [
+        "U32",
+        "U32"
+      ],
+      "result": "U32"
+    },
+    {
+      "name": "U32.div",
+      "export": "u32_div",
+      "domains": [
+        "U32",
+        "U32"
+      ],
+      "result": "U32"
+    },
+    {
+      "name": "U32.mod",
+      "export": "u32_mod",
+      "domains": [
+        "U32",
+        "U32"
+      ],
+      "result": "U32"
+    },
+    {
+      "name": "U32.and",
+      "export": "u32_and",
+      "domains": [
+        "U32",
+        "U32"
+      ],
+      "result": "U32"
+    },
+    {
+      "name": "U32.or",
+      "export": "u32_or",
+      "domains": [
+        "U32",
+        "U32"
+      ],
+      "result": "U32"
+    },
+    {
+      "name": "U32.xor",
+      "export": "u32_xor",
+      "domains": [
+        "U32",
+        "U32"
+      ],
+      "result": "U32"
+    },
+    {
+      "name": "U32.inc",
+      "export": "u32_inc",
+      "domains": [
+        "U32"
+      ],
+      "result": "U32"
+    },
+    {
+      "name": "U32.not",
+      "export": "u32_not",
+      "domains": [
+        "U32"
+      ],
+      "result": "U32"
+    },
+    {
+      "name": "U32.shl",
+      "export": "u32_shl",
+      "domains": [
+        "U32"
+      ],
+      "result": "U32"
+    },
+    {
+      "name": "U32.shr",
+      "export": "u32_shr",
+      "domains": [
+        "U32"
+      ],
+      "result": "U32"
+    },
+    {
+      "name": "U32.shln",
+      "export": "u32_shln",
+      "domains": [
+        "U32",
+        "Nat"
+      ],
+      "result": "U32"
+    },
+    {
+      "name": "U32.shrn",
+      "export": "u32_shrn",
+      "domains": [
+        "U32",
+        "Nat"
+      ],
+      "result": "U32"
+    },
+    {
+      "name": "U32.is_zero",
+      "export": "u32_is_zero",
+      "domains": [
+        "U32"
+      ],
+      "result": "Bool"
+    },
+    {
+      "name": "U32.is_eq",
+      "export": "u32_is_eq",
+      "domains": [
+        "U32",
+        "U32"
+      ],
+      "result": "Bool"
+    },
+    {
+      "name": "U32.is_ne",
+      "export": "u32_is_ne",
+      "domains": [
+        "U32",
+        "U32"
+      ],
+      "result": "Bool"
+    },
+    {
+      "name": "U32.is_lt",
+      "export": "u32_is_lt",
+      "domains": [
+        "U32",
+        "U32"
+      ],
+      "result": "Bool"
+    },
+    {
+      "name": "U32.is_le",
+      "export": "u32_is_le",
+      "domains": [
+        "U32",
+        "U32"
+      ],
+      "result": "Bool"
+    },
+    {
+      "name": "U32.is_gt",
+      "export": "u32_is_gt",
+      "domains": [
+        "U32",
+        "U32"
+      ],
+      "result": "Bool"
+    },
+    {
+      "name": "U32.is_ge",
+      "export": "u32_is_ge",
+      "domains": [
+        "U32",
+        "U32"
+      ],
+      "result": "Bool"
+    },
+    {
+      "name": "U32.to_nat",
+      "export": "u32_to_nat",
+      "domains": [
+        "U32"
+      ],
+      "result": "Nat"
+    },
+    {
+      "name": "U32.from_nat",
+      "export": "u32_from_nat",
+      "domains": [
+        "Nat"
+      ],
+      "result": "U32"
+    },
+    {
+      "name": "U32.to_f32",
+      "export": "u32_to_f32",
+      "domains": [
+        "U32"
+      ],
+      "result": "F32"
+    },
+    {
+      "name": "F32.add",
+      "export": "f32_add",
+      "domains": [
+        "F32",
+        "F32"
+      ],
+      "result": "F32"
+    },
+    {
+      "name": "F32.sub",
+      "export": "f32_sub",
+      "domains": [
+        "F32",
+        "F32"
+      ],
+      "result": "F32"
+    },
+    {
+      "name": "F32.mul",
+      "export": "f32_mul",
+      "domains": [
+        "F32",
+        "F32"
+      ],
+      "result": "F32"
+    },
+    {
+      "name": "F32.div",
+      "export": "f32_div",
+      "domains": [
+        "F32",
+        "F32"
+      ],
+      "result": "F32"
+    },
+    {
+      "name": "F32.mod",
+      "export": "f32_mod",
+      "domains": [
+        "F32",
+        "F32"
+      ],
+      "result": "F32"
+    },
+    {
+      "name": "F32.is_eq",
+      "export": "f32_is_eq",
+      "domains": [
+        "F32",
+        "F32"
+      ],
+      "result": "Bool"
+    },
+    {
+      "name": "F32.is_ne",
+      "export": "f32_is_ne",
+      "domains": [
+        "F32",
+        "F32"
+      ],
+      "result": "Bool"
+    },
+    {
+      "name": "F32.is_lt",
+      "export": "f32_is_lt",
+      "domains": [
+        "F32",
+        "F32"
+      ],
+      "result": "Bool"
+    },
+    {
+      "name": "F32.is_le",
+      "export": "f32_is_le",
+      "domains": [
+        "F32",
+        "F32"
+      ],
+      "result": "Bool"
+    },
+    {
+      "name": "F32.is_gt",
+      "export": "f32_is_gt",
+      "domains": [
+        "F32",
+        "F32"
+      ],
+      "result": "Bool"
+    },
+    {
+      "name": "F32.is_ge",
+      "export": "f32_is_ge",
+      "domains": [
+        "F32",
+        "F32"
+      ],
+      "result": "Bool"
+    },
+    {
+      "name": "F32.neg",
+      "export": "f32_neg",
+      "domains": [
+        "F32"
+      ],
+      "result": "F32"
+    },
+    {
+      "name": "F32.sqrt",
+      "export": "f32_sqrt",
+      "domains": [
+        "F32"
+      ],
+      "result": "F32"
+    },
+    {
+      "name": "F32.exp",
+      "export": "f32_exp",
+      "domains": [
+        "F32"
+      ],
+      "result": "F32"
+    },
+    {
+      "name": "F32.log",
+      "export": "f32_log",
+      "domains": [
+        "F32"
+      ],
+      "result": "F32"
+    },
+    {
+      "name": "F32.log2",
+      "export": "f32_log2",
+      "domains": [
+        "F32"
+      ],
+      "result": "F32"
+    },
+    {
+      "name": "F32.log10",
+      "export": "f32_log10",
+      "domains": [
+        "F32"
+      ],
+      "result": "F32"
+    },
+    {
+      "name": "F32.sin",
+      "export": "f32_sin",
+      "domains": [
+        "F32"
+      ],
+      "result": "F32"
+    },
+    {
+      "name": "F32.cos",
+      "export": "f32_cos",
+      "domains": [
+        "F32"
+      ],
+      "result": "F32"
+    },
+    {
+      "name": "F32.tan",
+      "export": "f32_tan",
+      "domains": [
+        "F32"
+      ],
+      "result": "F32"
+    },
+    {
+      "name": "F32.asin",
+      "export": "f32_asin",
+      "domains": [
+        "F32"
+      ],
+      "result": "F32"
+    },
+    {
+      "name": "F32.acos",
+      "export": "f32_acos",
+      "domains": [
+        "F32"
+      ],
+      "result": "F32"
+    },
+    {
+      "name": "F32.atan",
+      "export": "f32_atan",
+      "domains": [
+        "F32"
+      ],
+      "result": "F32"
+    },
+    {
+      "name": "F32.sinh",
+      "export": "f32_sinh",
+      "domains": [
+        "F32"
+      ],
+      "result": "F32"
+    },
+    {
+      "name": "F32.cosh",
+      "export": "f32_cosh",
+      "domains": [
+        "F32"
+      ],
+      "result": "F32"
+    },
+    {
+      "name": "F32.tanh",
+      "export": "f32_tanh",
+      "domains": [
+        "F32"
+      ],
+      "result": "F32"
+    },
+    {
+      "name": "F32.floor",
+      "export": "f32_floor",
+      "domains": [
+        "F32"
+      ],
+      "result": "F32"
+    },
+    {
+      "name": "F32.ceil",
+      "export": "f32_ceil",
+      "domains": [
+        "F32"
+      ],
+      "result": "F32"
+    },
+    {
+      "name": "F32.trunc",
+      "export": "f32_trunc",
+      "domains": [
+        "F32"
+      ],
+      "result": "F32"
+    },
+    {
+      "name": "F32.abs",
+      "export": "f32_abs",
+      "domains": [
+        "F32"
+      ],
+      "result": "F32"
+    }
+  ]
+}

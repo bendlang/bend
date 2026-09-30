@@ -1,9 +1,31 @@
 # Compiler validation
 
-The [Phase27 installed release](../implementation/phase27/constructor-arm-prebinding.md)
+The [Phase29 installed release](../implementation/phase29/generated-program-fast-loop.md)
+adds guarded native scalar inlining and a private Nat countdown loop. Fresh gates
+pass36 strict focused observations, 15 checked upstream JS fixtures, 23 libraries
+with 127 scalar points, all ten original Phase28 libraries plus the HVM program,
+and22 actual compiler component observations. Exact complete results are checked.
+
+The [independent semantic review](../implementation/phase29/semantic-review.md)
+records 56,205 primitive scalar/ABI executions, 1,129 primitive guards and 25
+order/error observations; 3,759 worker scalar executions and 14 descriptor/effect
+transcripts; 40 worker guards, two let witnesses and 144 nested-Nat regression
+observations. Counts overlap and include multiple emitters. These finite scopes
+do not renew the entire frontend inventory or establish full backend conformance.
+
+Attempt03 passed the smaller gates but overflowed during symbolic-regression and
+ray-tracing emission because an eager Boolean guard still entered recursive
+recognition. Attempt04 uses explicit branching and bounded counts. Both original
+programs now compile/run, and the new small test reproduces the failure on03 and
+passes on04. Source, failing receipts and corrected controls remain preserved.
+The runtime, native backend, Base and pinned upstream target are unchanged.
+
+## Historical Phase27 validation
+
+The [Phase27 release](../implementation/phase27/constructor-arm-prebinding.md)
 adds selected constructor-arm prebinding through a shared JS runtime helper.
-Fresh gates:36 strict focused observations,15 pinned upstream JS fixtures exact,
-23 libraries/127 scalar points,72 detailed descriptor/effect/ownership observations,
+Fresh gates:36 strict focused observations, 15 pinned upstream JS fixtures exact,
+23 libraries / 127 scalar points,72 detailed descriptor/effect/ownership observations,
 and22 real compiler membership oracles. The previous numeric suite passes2816
 scalar checks and four expected refusals per emitter, plus468 supplement checks
 per emitter. The runtime argument-ownership test also passes.

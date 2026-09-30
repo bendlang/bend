@@ -17,20 +17,25 @@ This fork develops the compiler in [`selfhost/`](selfhost/README.md), on branch
 from `selfhost/`, run `npm run verify:release`, then `node cli.mjs FILE --run`.
 `npm run build` checks and rebuilds the default with pinned upstream.
 
-The [Phase28 program comparison](implementation/phase28/broader-program-comparison.md)
-measures existing upstream algorithms, mixed tests and a small interpreter.
-The six algorithms run **111–1,391× slower** in the original warmed JavaScript
-window; the small interpreter takes **201 ms versus 69 ms** for a whole process.
-The report separates first calls, two warmup protocols and process startup.
-These are generated-program costs, separate from compiler throughput. All 11
-selected outputs agree; the installed compiler is unchanged.
+The [Phase29 release report](implementation/phase29/generated-program-fast-loop.md)
+adds guarded native arithmetic inlining and private Nat countdown loops to generated
+JavaScript. The real Mandelbrot helper fixture runs **3.65× faster** with longer
+warmup. A focused old/new screen takes **4.7 seconds end to end**; a checked compiler
+build plus 36 focused checks takes 33 seconds. The report gives original-program
+results, TypeScript gaps and separate first-call/warmup measurements.
 
-The [Phase27 release report](implementation/phase27/constructor-arm-prebinding.md)
-reduces generated constructor-arm dispatch. The actual compiler membership helper
-runs **2.6–5.9% faster** in two separately measured warmup regimes; warmed Boolean
-traversal improves4.2%. A shared runtime helper preserves partial calls and
-argument order. The rejected inline variant and its startup regression are retained.
-These component results do not establish a whole-compiler speedup.
+On original programs, Mandelbrot improves **2.70×** with longer warmup, ray tracing
+**1.67×**, and the lexer **1.52×**. Large TypeScript gaps remain. The report also
+retains a short-window regression that reverses with longer warmup and an unchanged
+small-interpreter process cost.
+
+The [reproduction guide](implementation/phase29/README.md) explains the fast
+experiment, checked compiler and broader integration loops. Public partial calls,
+argument order and numeric boundaries retain independent controls. A recognizer
+stack overflow discovered by the broad corpus is fixed and preserved as a regression.
+The [Phase28 comparison](implementation/phase28/broader-program-comparison.md)
+and [Phase27 report](implementation/phase27/constructor-arm-prebinding.md) remain
+historical baselines; generated-program speed and compiler throughput are separate.
 
 The [Phase26 release report](implementation/phase26/direct-u32-decisions.md)
 adds direct native U32 decisions to generated JavaScript: **11.8× faster** on the
@@ -52,9 +57,10 @@ raw verdicts, remaining coverage and the supported-host TCP/sanitizer evidence.
 Phase24 controlled ordinary checking averages **11.16s**, versus **11.73s** for the previous
 release and **3.74s** for TypeScript: **4.9% faster**, still about **3× TypeScript**.
 This three-sample screen excludes emission. Peak memory is essentially unchanged.
-The current compiler has **15,944 Bend lines in62 modules**. Phase27 adds58
-Bend lines and11 runtime lines, with no new datatype or representation. Phase26
-previously cut targeted generated numeric decision definitions by about87%.
+The current compiler has **16,207 Bend lines in 64 modules**. Phase29 adds 263
+lines and two guarded emitter rules, with no new datatype, runtime helper or
+representation. Phase26 previously cut targeted generated numeric decision
+definitions by about87%.
 
 The [development workflow](docs/PHASE5_DEVELOPMENT.md) builds a genuine checked
 compiler and runs36 short paired controls. The release preserves its checked

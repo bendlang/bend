@@ -1,118 +1,110 @@
 # Current compiler experiment strategy
 
-The [Phase27 compiler](../implementation/phase27/constructor-arm-prebinding.md) is
-installed at upstream018751270e800bc222a93dad7f257083ee53a5f7, after2.0.34.
-Authorization covers continued optimization/conformance/simplicity work and pushes
-to rom1504/bend selfhost/bootstrap; no new PR comments without explicit request.
-No historical multi-hour budget is renewed. Preserve the103 unrelated starting paths.
+The [Phase 29 compiler](../implementation/phase29/generated-program-fast-loop.md)
+targets upstream 018751270e800bc222a93dad7f257083ee53a5f7, after 2.0.34.
+Authorization covers continued compiler work and pushes to rom1504/bend
+selfhost/bootstrap. No new PR comments without an explicit request. No historical
+multi-hour budget is renewed. Preserve the 103 unrelated starting paths.
 
 ## Released frontier
 
-Installed API5a89c775, genuine checked parent25c38e3f, guarded profile6;
-runtime40823818, sourcef3097523. Selected constructor arms prebind projected
-fields into the same partial descriptor through a shared runtime callback.
-No public arity/demand/representation change. Unknown/erased/lifted/eta-short
-and exact-saturation shapes retain the old matcher.
+API 10510efd, genuine checked parent 37218b8a, guarded profile 6, source 191df20c;
+runtime 40823818 and Base c742fae9 unchanged. The compiler emits 54 identified,
+saturated native U32/F32 operations as JS expressions and turns supported scalar
+Nat countdowns into private local-slot loops. Public matchers, partial descriptors,
+argument demand and runtime representations remain. Unknown shapes fall back.
 
-Final short-window membership median improves1.026× (ranges overlap); longer-warm
-membership1.059× and Boolean traversal1.042× have nonoverlapping observed ranges.
-Substitution is flat in both protocols. The inline version's20% short-window
-regression remains rejected, with its135+45 samples and traces retained.
-Shared variant135+45 samples use identical sources/inputs and per-window serial
-CPU3/Node24 comparisons. Five samples are not confidence bounds. No compiler/H
-throughput gain is claimed. Canonical source15,944physical/13,612nonblank,
-62modules,1726defs,640laws,68types: +58 Bend lines and11 runtime lines.
-Fresh36focused,15upstreamJS,23library/127point,72arm observations, numericcontrols
-and22real-component oracles pass overlapping scopes. Independent timing audit and
-release verification pass; the report records exact identities and recovery.
+The real Mandelbrot helper fixture improves 3.65× with longer warmup, from 1.455
+to 0.399 ms; it still costs about 234× TypeScript output. A short window suggests
+6.66× but intersects substantial warmup drift; retain both. The paired screen
+costs 4.706 s end to end, the checked build plus 36 focused gates cost 33.341 s,
+fixture emission 4.825 s and its 120-point check 0.165 s: about 43 s before
+additional feature controls.
+Acquisition durations are descriptive, not comparative compiler throughput.
 
-Phase26's native U32 decision rule remains. Its prior table/wide/direct numeric
-measurements improved11.80×/3.66×/50.25× with no whole-compiler claim. Final Phase27
-rechecks numeric behavior; previous TypeScript gaps remain large in emitted loops.
+The report preserves all original-program results, first calls and warmup regimes.
+A 27.4% short-window regression on the evening mixed test triggers a prospective
+longer-warm follow-up: the same bytes improve1.167× there with stable timed
+halves and comparable first calls. Keep both windows. HVM whole-process cost is
+flat (196.86→198.39ms, overlapping ranges), still2.895× TypeScript. Broad integration is run
+once per surviving candidate, not on every edit. Algorithms are selected small
+inputs, not a production average, and HVM remains a whole-process measurement.
 
-The following broader conformance and ordinary-cost figures are Phase24 evidence:
-No TypeScript fallback in ordinary compilation. The same contextual frontend,
-loadABI2, graph evaluator, persistent index and uniform array representation remain.
-A negative scope-index lookup now avoids unnecessary local declaration scans;
-hits retain first-event semantics. A Boolean membership worker removes per-miss
-closures through existing tail-cycle lowering. No new cache, datatype or scopefield.
+Separate counters on compiler-produced fixture output show generic applications
+70,540 → 26,970, bound descriptors 7,730 → 60 and copied slots 142,430 → 46,390 over ten
+calls. These are named-site counts, not total heap allocation or instrumented speed.
+Canonical source: 16,207 physical / 13,839 nonblank lines, 64 modules, 1,762
+definitions, 640 laws and 68 types. The phase adds 263 lines, 36 definitions and
+two guarded emitter concepts; no new IR, datatype, cache, runtime helper or representation.
 
-The shared emission check now rejects foreign/constructor name collisions after
-reserved-name checks, before reachability. Constructor scans occur only for foreign
-definitions. Native function identifiers reuse existing scalar encoding and preserve
-case/punctuation identity; longer generated C identifiers are a recorded cost.
+Fresh gates pass: 36 focused exact checks, 15 upstream JS executions,
+23 libraries / 127 points, ten original libraries plus HVM, 22 actual-component
+oracles and independent scalar/ABI controls.
+Primitive controls: 56,205 scalar executions, 1,129 guards, 25 order/error observations.
+Worker controls: 3,759 scalar executions, 14 transcripts, 40 guards, two let witnesses,
+144 nested-Nat regression observations. Counts overlap and include multiple emitters.
+These scopes do not establish complete backend conformance or a new fixed point.
 
-Final image:36focused exact, main3026/3026exact and broader196/196exact, with stable
-identities and healthy workers. The broad gates explicitly reuse the pinned reference
-acquisition. Raw main statuses still2525pass/497observed/4fail for later-emission
-oracles. Fresh request histories226paired+2fresh are exact. Backend pilot81/81exact
-repairs two measured gaps; its77execution rows do not cover all2,654 eligible
-positive/expected-error execution opportunities. Extra focused controls and release
-checks are detailed in the report; overlapping counts must not be summed.
+The runtime and native emitter are unchanged. Earlier Phase 26 direct U32 decisions
+and Phase 27 selected constructor-arm prebinding remain, with their historical
+measurements separate. No whole-compiler throughput improvement is inferred.
 
-The two old TCP oracle gaps now have exact supported-host comparisons (upstream
-Bun1.2.22, candidateNode24) on unchanged Phase23 emissions. Matching Clang16 TSan
-passes8 saved-program executions including two-core shared atomics, plus clean/racy
-capability controls. This does not establish universal race freedom, all-platform
-compatibility or a fresh Phase24 sanitizer compilation. Bun import failures remain.
+## Historical wider coverage and ordinary checking cost
 
-Final serial15-sample cost screen (3/image): TS3.7370s, old11.7300s,
-local11.2990s, membership11.0856s, final11.1565s. Final process−4.89%, request−5.58%,
-peakRSS−0.03%vsold. Same-window process ratio3.139→2.985×TypeScript; request4.043×.
-Three samples are not a general/statistical bound. Process includes startup and
-manifest-union hashing; compare within the same window, not across historical screens.
-No generated-program speedup is claimed. Canonical source15,776physical/13,467nonblank,
-588,084bytes,1,703defs,640laws,60modules,68types: +28lines/+3helpers, same representations.
+The Phase 24 release has 3,026/3,026 main frontend and 196/196 broader exact reference
+observations, plus 226 paired request histories and two fresh string checks.
+Raw main statuses remain 2,525 pass / 497 observed / 4 fail because later-emission oracles
+are observed at an earlier frontend stage. Backend pilot 81/81 exact covers 77
+execution rows, not all 2,654 eligible positive/expected-error opportunities.
+
+Supported-host TCP comparisons and Clang 16 TSan controls remain separately scoped
+historical evidence. They do not establish universal race freedom, platform
+compatibility, a new sanitizer compilation or current complete backend coverage.
+Independent BendTT --verdict, GPU/device execution and package fetching remain
+unsupported or unvalidated as documented in selfhost/CONFORMANCE.md.
+
+Last ordinary checking screen: TS 3.7370 s versus final 11.1565 s, process 2.985× and
+request 4.043× TypeScript. It used three samples/image, includes startup and manifest
+hashing, and excludes emission. It was not renewed by generated-program timing.
+No TypeScript fallback occurs in ordinary compilation. The contextual frontend,
+graph evaluator, persistent index and uniform arrays remain unchanged.
 
 ## Next priorities
 
-1. The [Phase28 broader comparison](../implementation/phase28/broader-program-comparison.md)
-   is complete with the installed Phase27 compiler unchanged. All11 outputs agree.
-   Existing algorithms are111–1391× slower than TypeScript output in the original
-   warmed JS window; tiny mixed tests55–107×. Longer warmup on all four drift-flagged
-   cases gives1271× Mandelbrot,100× sorting,61× morning,82× Map/Set, with residual
-   drift. HVM's whole process is201ms versus69ms,2.90×; keep that startup-inclusive
-   scope separate. All150 timing samples plus56 check/calibration processes pass
-   independent audit. Neither window is a production average or guaranteed steady
-   state. Ordinary compiler throughput remains the older Phase24 evidence above.
-2. Prioritize separate generated-code ablations for saturated private workers/loops
-   across match boundaries, guarded primitive inlining and direct native constructors
-   and matches. The [inspection](../implementation/phase28/emission-findings.md)
-   observes generic dispatch/descriptor/forcing overhead but does not quantify its
-   contribution. Both outputs already use tail jumps and native JS strings.
-   Start with one real emitted helper and preserve public partial descriptors,
-   argument demand, unsigned arithmetic and deep-construction stack behavior.
-   Check both warmup windows before broad timing. Existing full ten-library timing
-   costs816s and the four-case follow-up189s; use focused replay during iteration.
-3. Continue backend acquisition in deterministic bounded batches. The inventory
-   is current but largely unexecuted; frontend equality alone missed both repaired
-   backend defects. Distinguish candidate semantic differences, shared upstream
-   failures, expected refusals and environment limitations.
-4. Profiled remaining ordinary costs include contextual materialization, repeated
-   book updates/traversals, generated dispatch and source-range validation. Use
-   counters and boundary witnesses before another index or broad rewrite. The prior
-   index's winner differs from first-event lookup: never replace full definitions
-   with it without a consumer-specific proof.
-5. Keep the checked B1 development loop: final bootstrap+Base+36focused gates were
-   about27.6s of observed concurrent phase execution. Reuse attempts for fixture
-   changes; reserve broad tests/reproduction for integration. A new fixed point,
-   independent kernel and GPU/device work remain explicit separate capabilities.
-6. Prefer removing duplicated responsibility over compressing lines. Historical
-   50%/75% source-reduction targets remain unachieved. Native source-size overhead
-   from scalar identifiers is measurable; optimize only while retaining injectivity
-   and reserved-runtime separation.
+1. Use the [fast loop](../implementation/phase29/README.md): immutable checked
+   outputs, one mechanism per ablation, independent expected results, public ABI
+   controls, clean paired screens and longer-warm confirmation. Keep failed cases
+   and both lifecycle windows; a short-window win is not convergence evidence.
+2. The [remaining-cost inspection](../implementation/phase29/remaining-costs.md)
+   prioritizes private saturated workers across complete parameter/match chains.
+   Start with edit distance's cell/record/tuple pipeline, keeping project/build
+   and arrays unchanged. Then test record-carrying loops and trailing Boolean
+   matches. Static call counts do not quantify runtime contribution.
+3. Preserve sequential argument-demand boundaries, parallel-let scope, escaping
+   closure aliases, native identities and deep stack behavior. Explicit kc gates
+   are required before guarded recursion: Bend && is eager. Removing those gates
+   for fewer lines recreates the retained stack-overflow failure.
+4. Continue backend acquisition in deterministic bounded batches. Frontend
+   equality alone missed earlier backend defects. Separate candidate differences,
+   shared upstream failures, expected refusals and environment limitations.
+5. Ordinary compiler cost still includes contextual materialization, repeated
+   book traversal, dispatch and source-range validation. Use boundary witnesses
+   before another index or broad rewrite. Existing scope-index winners cannot
+   replace full definitions without a consumer-specific proof.
+6. Prefer eliminating duplicated responsibility over compressing source. Historical
+   50%/75% line-reduction targets remain unachieved. No new self-hosted fixed point,
+   independent kernel or native/device speed claim follows from this phase.
 
 ## Operating rules and retained failures
 
-Read experiments/README.md. Freeze hypotheses before probes; preserve attempts,
-resources, full observations and counterexamples. Genuine checked B1, guarded
-derivative and self-emitted H are distinct. Unknown identities/profiles fail closed.
-The new capsule reuses Phase23 durable prerequisites; ignored paths/hashes alone are
-not preservation. Recover included bytes independently before publication.
+Read experiments/README.md. Freeze hypotheses before probes, preserve exact
+attempts and resource limits, and distinguish genuine checked B1, guarded derivative
+and self-emitted H. Unknown identities/profiles fail closed. Capsules preserve
+bytes independently; ignored paths or hashes alone are not preservation.
 
-Phase24 retains the old profiler's incorrect success assertion, allocation-report
-serialization failure, rejected local-match syntax, sandbox history launch, eager
-collision-check candidate, invalid foreign-FID controls and environment failures.
-The frontend chronology/materializer invariants remain unchanged. Phase13 worker
-lifting and earlier generic simplification failures remain reasons to demand fresh
-evidence; they are not blanket rejections of specific, measured improvements.
+Phase 29 keeps rejected source syntax in 02 and recognizer overflows in 03. The
+small regression fails on 03 and passes on 04; all eight previously successful
+original outputs remain byte-identical after the guard repair. Earlier rejected
+inline-arm startup regression, generic architectural trials and Phase 24 failures
+remain in linked historical reports and capsules. Do not silently recycle them
+as evidence for a new image.

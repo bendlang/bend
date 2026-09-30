@@ -1,0 +1,12 @@
+{
+  "complete": true,
+  "baselineCommit": "e7395eaddf3de4055ad013673ec3c489b80b3342",
+  "protectedFilesVerified": 103,
+  "pinnedUpstreamUnchanged": true,
+  "attemptApiSha256": "10510efda268bac1f31cc8fed87a9315e8f9edfa15aad6b90b0d96756c217b11",
+  "runtimeSha256": "40823818afd57a6c37e055272dc332f461955a7cd225f67d66194f0d43ec823f",
+  "releaseManifestSha256": "e4fd796b112c41cfaf8b80fd91cd44111c620cbce0a779859890a83a585c7e31",
+  "resultsSha256": "ec8422b030ce72ceb27d6a700ff9dcd3af39bbdd5e290ec44a4aed21cfda7563",
+  "measurementAuditSha256": "fba25d151db682b9513eac1c92fb333b1f8081232874957ae642617c8ace3b7f",
+  "scope": "Protected bytes, closed successful reports, release identity and consumed-tool capture. Semantic and measurement scopes remain in their independent reports."
+}

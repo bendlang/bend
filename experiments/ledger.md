@@ -1701,3 +1701,45 @@ dispatch/allocation boundaries but does not assign their shares of the slowdown.
 Both outputs already have tail-jump machinery and native strings. Preserve partial
 application, argument demand, forcing and stack behavior; validate on small focused
 cases before repeating this more expensive algorithm suite.
+
+## Phase29 — generated-program fast loop and guarded lowering
+
+[Design](../design/phase29/generated-program-fast-loop.md),
+[private worker amendment](../design/phase29/private-nat-worker.md),
+[evening follow-up](../design/phase29/evening-warmup-followup.md),
+[report](../implementation/phase29/generated-program-fast-loop.md),
+[reproduction](../implementation/phase29/README.md).
+
+Promote checked attempt04: API10510efd, checked parent37218b8a, source191df20c,
+unchanged runtime40823818 and pin0187512. Two guarded JS emitter rules expose
+54 native scalar operations and supported Nat countdown loops. Public partial
+application, evaluation order and representations remain.
+
+The real helper fixture improves3.65× in longer-warm confirmation. The paired
+screen takes4.706s end to end; build+36focused checks33.341s and fixture emission
+4.825s make a roughly43s checked edit loop before additional feature controls.
+Full final three-output integration takes22.0 minutes and is reserved for this
+boundary. Original algorithms improve1.24–2.94× in the original window, still
+89–465× TypeScript. Longer-warm Mandelbrot improves2.695×; sorting1.063× remains
+drifting. Evening regresses27.4% in the short window but improves1.167× with longer
+warmup; both persist. HVM process medians196.86→198.39ms have overlapping ranges,
+so no whole-process gain is claimed. Ordinary compiler throughput is not renewed.
+
+Independent semantic controls and fresh36focused/15JS/23library127point/original
+11program/component22 scopes pass; counts overlap. Independent measurement audit
+passes601 processes/429 timed observations across all windows and checks summary
+aggregates. Primitive/worker guards include native identity, arithmetic bounds,
+partial ABI, argument demand, closures and50,000 iterations.
+
+Failed02 source syntax,03 recognizer stack overflows, the first audit combiner's
+warmup-field comparison and the first CLI smoke expectation remain in evidence.
+Explicit kc branches repair eager && recursion; the small witness discriminates
+old/new. All eight previously valid original emissions remain byte-identical
+after repair. Canonical source16,207physical/13,839nonblank lines,64modules,
+1,762defs,640laws,68types: +263lines/+36defs, two concepts, no new IR/runtime helper.
+
+The next measured direction is a general private saturated worker across the
+edit-distance record/tuple cell chain, retaining project/build/array behavior
+initially. Static inspection identifies remaining generic boundaries without
+assigning runtime shares. Full backend conformance and TypeScript-speed parity
+remain unestablished.

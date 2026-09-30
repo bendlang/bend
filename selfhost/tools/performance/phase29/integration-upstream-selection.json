@@ -1,0 +1,94 @@
+{
+  "cases": [
+    {
+      "id": "compile/u32_literal_word.bend",
+      "lanes": [
+        "js"
+      ]
+    },
+    {
+      "id": "compile/u32_table_popcount.bend",
+      "lanes": [
+        "js"
+      ]
+    },
+    {
+      "id": "compile/u32_table_bitvar.bend",
+      "lanes": [
+        "js"
+      ]
+    },
+    {
+      "id": "compile/word_match_cover_key.bend",
+      "lanes": [
+        "js"
+      ]
+    },
+    {
+      "id": "compile/shared_match_word.bend",
+      "lanes": [
+        "js"
+      ]
+    },
+    {
+      "id": "compile/word_contraction_dup.bend",
+      "lanes": [
+        "js"
+      ]
+    },
+    {
+      "id": "compile/select_ternary_word.bend",
+      "lanes": [
+        "js"
+      ]
+    },
+    {
+      "id": "compile/f32_literal_word.bend",
+      "lanes": [
+        "js"
+      ]
+    },
+    {
+      "id": "compile/match_default.bend",
+      "lanes": [
+        "js"
+      ]
+    },
+    {
+      "id": "compile/match_full_default.bend",
+      "lanes": [
+        "js"
+      ]
+    },
+    {
+      "id": "compile/match_absurd_tail.bend",
+      "lanes": [
+        "js"
+      ]
+    },
+    {
+      "id": "compile/closure_match_lambda.bend",
+      "lanes": [
+        "js"
+      ]
+    },
+    {
+      "id": "compile/shared_match_ctor.bend",
+      "lanes": [
+        "js"
+      ]
+    },
+    {
+      "id": "compile/erasure_match_arm.bend",
+      "lanes": [
+        "js"
+      ]
+    },
+    {
+      "id": "compile/u32_to_nat_widen.bend",
+      "lanes": [
+        "js"
+      ]
+    }
+  ]
+}

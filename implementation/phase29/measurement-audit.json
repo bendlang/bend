@@ -1,0 +1,2034 @@
+{
+  "kind": "phase29-independent-combined-measurement-audit",
+  "complete": true,
+  "pass": true,
+  "tool": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase29/controls-audit-close.py",
+    "sha256": "34f9723b31f93776d0eeedc5bfe710695582602f72ae18642896caecf168146c"
+  },
+  "library": {
+    "receipt": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/controls-measurement-audit-final-04.json",
+      "sha256": "5d1219d6880822b06acc2fc6fa992777b42caab4d76c7902d9b6b52ef9b6e2fb"
+    },
+    "campaigns": 9,
+    "processes": 586,
+    "timedSamples": 414,
+    "checks": 17947,
+    "distinctHashedFiles": 239
+  },
+  "application": {
+    "receipt": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/controls-application-audit-final-04.json",
+      "sha256": "3948ce8b4469eef25db6aa5752f6cd3812ba72ea1f8407debe34a195de8cea43"
+    },
+    "campaigns": 1,
+    "processes": 15,
+    "timedSamples": 15,
+    "checks": 207,
+    "distinctHashedFiles": 57
+  },
+  "totalProcesses": 601,
+  "totalTimedObservations": 429,
+  "campaigns": [
+    {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/prototype-screen-01/report.json",
+        "sha256": "9b177b6d6d7265765fecfb6e14c1b75097a4b4bf3ce61df86b9d9d8160248b7a"
+      },
+      "processes": 30,
+      "timedSamples": 18,
+      "wallSeconds": 10.721921171993017,
+      "cases": [
+        {
+          "id": "mandelbrot-inner",
+          "sides": {
+            "upstream": {
+              "medianMs": 0.001746973922387531,
+              "firstCallMedianMs": 0.7488450000000029,
+              "minMs": 0.001742489038318803,
+              "maxMs": 0.0017481385636264944
+            },
+            "unchanged": {
+              "medianMs": 2.787280847826087,
+              "firstCallMedianMs": 10.454915,
+              "minMs": 2.7421967608695645,
+              "maxMs": 2.8174338695652175
+            },
+            "arithmetic": {
+              "medianMs": 1.0073942515723269,
+              "firstCallMedianMs": 7.572517000000005,
+              "minMs": 1.0044237547169812,
+              "maxMs": 1.0077591886792454
+            },
+            "worker": {
+              "medianMs": 1.3586864943820223,
+              "firstCallMedianMs": 9.437290999999988,
+              "minMs": 1.3545217415730337,
+              "maxMs": 1.367403617977528
+            },
+            "combined": {
+              "medianMs": 0.43551782288828333,
+              "firstCallMedianMs": 6.345654999999994,
+              "minMs": 0.42968712806539505,
+              "maxMs": 0.45780689373297
+            },
+            "compiler-arithmetic": {
+              "medianMs": 0.992025347826087,
+              "firstCallMedianMs": 7.459233999999995,
+              "minMs": 0.9912019751552795,
+              "maxMs": 1.0030351614906832
+            }
+          },
+          "halfDrift": [
+            {
+              "side": "unchanged",
+              "sample": 0,
+              "secondToFirst": 2.260291391790094
+            },
+            {
+              "side": "arithmetic",
+              "sample": 0,
+              "secondToFirst": 0.8015305130350433
+            },
+            {
+              "side": "worker",
+              "sample": 0,
+              "secondToFirst": 0.7521860981695913
+            },
+            {
+              "side": "compiler-arithmetic",
+              "sample": 0,
+              "secondToFirst": 0.6588628484299028
+            },
+            {
+              "side": "unchanged",
+              "sample": 1,
+              "secondToFirst": 2.318903607154032
+            },
+            {
+              "side": "arithmetic",
+              "sample": 1,
+              "secondToFirst": 0.8151896012177234
+            },
+            {
+              "side": "worker",
+              "sample": 1,
+              "secondToFirst": 0.7345018591151622
+            },
+            {
+              "side": "compiler-arithmetic",
+              "sample": 1,
+              "secondToFirst": 0.6649876446605684
+            },
+            {
+              "side": "arithmetic",
+              "sample": 2,
+              "secondToFirst": 0.801458578113345
+            },
+            {
+              "side": "worker",
+              "sample": 2,
+              "secondToFirst": 0.8141664260729979
+            },
+            {
+              "side": "compiler-arithmetic",
+              "sample": 2,
+              "secondToFirst": 0.8093929117171077
+            },
+            {
+              "side": "unchanged",
+              "sample": 2,
+              "secondToFirst": 2.3283143389270426
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/prototype-confirm-01/report.json",
+        "sha256": "28d0fd5aa1bccee0660924e5987b763adb5571a04d0375bd1e7bd7d1a6ad6005"
+      },
+      "processes": 42,
+      "timedSamples": 30,
+      "wallSeconds": 125.90875244513154,
+      "cases": [
+        {
+          "id": "mandelbrot-inner",
+          "sides": {
+            "upstream": {
+              "medianMs": 0.001711671851300449,
+              "firstCallMedianMs": 0.7445230000000009,
+              "minMs": 0.0017041345392877323,
+              "maxMs": 0.0017239300270332294
+            },
+            "unchanged": {
+              "medianMs": 1.4634036341463421,
+              "firstCallMedianMs": 10.62361899999999,
+              "minMs": 1.4458758341463425,
+              "maxMs": 1.468328243902439
+            },
+            "arithmetic": {
+              "medianMs": 0.7477218613861385,
+              "firstCallMedianMs": 7.581708000000006,
+              "minMs": 0.7436669554455452,
+              "maxMs": 0.7538667995049505
+            },
+            "worker": {
+              "medianMs": 1.0627065551601411,
+              "firstCallMedianMs": 9.235833999999997,
+              "minMs": 1.0559613274021349,
+              "maxMs": 1.071089462633453
+            },
+            "combined": {
+              "medianMs": 0.3953146618798958,
+              "firstCallMedianMs": 6.313328000000013,
+              "minMs": 0.3910991148825063,
+              "maxMs": 0.40146358877284627
+            },
+            "compiler-arithmetic": {
+              "medianMs": 0.7524893399503725,
+              "firstCallMedianMs": 7.512917999999999,
+              "minMs": 0.7392019578163771,
+              "maxMs": 0.7710149652605461
+            }
+          },
+          "halfDrift": []
+        }
+      ]
+    },
+    {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/arithmetic-transfer-01/report.json",
+        "sha256": "9e6fda0d1f75a83a282a9aafdd6f3cd57b7e583dc7d9a89b9ee6f449096ea662"
+      },
+      "processes": 63,
+      "timedSamples": 45,
+      "wallSeconds": 91.00321868807077,
+      "cases": [
+        {
+          "id": "mandelbrot",
+          "sides": {
+            "upstream": {
+              "medianMs": 0.04530311981217812,
+              "firstCallMedianMs": 5.71752,
+              "minMs": 0.0452630937594668,
+              "maxMs": 0.04566905649803089
+            },
+            "old": {
+              "medianMs": 63.144781499999986,
+              "firstCallMedianMs": 136.40164,
+              "minMs": 63.021612833333315,
+              "maxMs": 64.7461305
+            },
+            "candidate": {
+              "medianMs": 31.30747819999999,
+              "firstCallMedianMs": 98.80402800000002,
+              "minMs": 31.115475100000005,
+              "maxMs": 32.05767620000002
+            }
+          },
+          "halfDrift": [
+            {
+              "side": "old",
+              "sample": 0,
+              "secondToFirst": 1.148527537189547
+            },
+            {
+              "side": "old",
+              "sample": 2,
+              "secondToFirst": 1.1581741823542675
+            },
+            {
+              "side": "old",
+              "sample": 3,
+              "secondToFirst": 1.1568652425367107
+            },
+            {
+              "side": "old",
+              "sample": 4,
+              "secondToFirst": 1.1665729149843005
+            }
+          ]
+        },
+        {
+          "id": "lexer",
+          "sides": {
+            "upstream": {
+              "medianMs": 1.9155793503184713,
+              "firstCallMedianMs": 20.433526,
+              "minMs": 1.9096539363057323,
+              "maxMs": 2.0089860063694265
+            },
+            "old": {
+              "medianMs": 276.4461620000002,
+              "firstCallMedianMs": 434.11029099999996,
+              "minMs": 271.8067470000001,
+              "maxMs": 286.66189099999974
+            },
+            "candidate": {
+              "medianMs": 174.39668500000005,
+              "firstCallMedianMs": 318.893037,
+              "minMs": 172.0750815,
+              "maxMs": 181.88188950000006
+            }
+          },
+          "halfDrift": []
+        },
+        {
+          "id": "tree-bitonic",
+          "sides": {
+            "upstream": {
+              "medianMs": 0.2811692253521128,
+              "firstCallMedianMs": 5.3673299999999955,
+              "minMs": 0.2754810553319921,
+              "maxMs": 0.2835300482897385
+            },
+            "old": {
+              "medianMs": 31.25071700000001,
+              "firstCallMedianMs": 72.00095600000002,
+              "minMs": 29.53321008333332,
+              "maxMs": 31.573620000000005
+            },
+            "candidate": {
+              "medianMs": 26.046157300000004,
+              "firstCallMedianMs": 69.462299,
+              "minMs": 25.758864599999992,
+              "maxMs": 26.077636099999996
+            }
+          },
+          "halfDrift": [
+            {
+              "side": "old",
+              "sample": 0,
+              "secondToFirst": 1.4339319666804842
+            },
+            {
+              "side": "candidate",
+              "sample": 0,
+              "secondToFirst": 0.8000505081760665
+            },
+            {
+              "side": "old",
+              "sample": 1,
+              "secondToFirst": 1.40546091434775
+            },
+            {
+              "side": "candidate",
+              "sample": 1,
+              "secondToFirst": 0.7944042436421276
+            },
+            {
+              "side": "candidate",
+              "sample": 2,
+              "secondToFirst": 0.7968389113704547
+            },
+            {
+              "side": "old",
+              "sample": 2,
+              "secondToFirst": 0.7679862956947363
+            },
+            {
+              "side": "old",
+              "sample": 3,
+              "secondToFirst": 1.4075958435402354
+            },
+            {
+              "side": "candidate",
+              "sample": 3,
+              "secondToFirst": 0.7922128245967914
+            },
+            {
+              "side": "old",
+              "sample": 4,
+              "secondToFirst": 1.4210685397387814
+            },
+            {
+              "side": "candidate",
+              "sample": 4,
+              "secondToFirst": 0.7996398034861558
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/fixture-screen-04/report.json",
+        "sha256": "7d0f567dae8acfaa21af810a9e8bfa8a8c2760b1f4d3d5774deb33a0361e9574"
+      },
+      "processes": 10,
+      "timedSamples": 6,
+      "wallSeconds": 3.9079358531162143,
+      "cases": [
+        {
+          "id": "mandelbrot-inner",
+          "sides": {
+            "old": {
+              "medianMs": 2.7661140851063823,
+              "firstCallMedianMs": 10.347850000000008,
+              "minMs": 2.734179978723404,
+              "maxMs": 2.7827637872340425
+            },
+            "candidate": {
+              "medianMs": 0.4153919508196722,
+              "firstCallMedianMs": 6.316030999999995,
+              "minMs": 0.4149350573770493,
+              "maxMs": 0.41566939890710386
+            }
+          },
+          "halfDrift": [
+            {
+              "side": "old",
+              "sample": 0,
+              "secondToFirst": 2.2554860050319334
+            },
+            {
+              "side": "old",
+              "sample": 1,
+              "secondToFirst": 2.2977745896898645
+            },
+            {
+              "side": "old",
+              "sample": 2,
+              "secondToFirst": 2.3057604830011047
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/fixture-confirm-04/report.json",
+        "sha256": "a6da17db4e707be220bacba969cbaf35e2e2a53110daab82a6ec8f0a0aef1500"
+      },
+      "processes": 28,
+      "timedSamples": 20,
+      "wallSeconds": 83.62226536963135,
+      "cases": [
+        {
+          "id": "mandelbrot-inner",
+          "sides": {
+            "upstream": {
+              "medianMs": 0.0017033546558794439,
+              "firstCallMedianMs": 0.7423960000000065,
+              "minMs": 0.0017009682828978804,
+              "maxMs": 0.0017100775702077076
+            },
+            "old": {
+              "medianMs": 1.4550026937799037,
+              "firstCallMedianMs": 10.329718999999997,
+              "minMs": 1.4346326124401918,
+              "maxMs": 1.4724488755980853
+            },
+            "arithmetic": {
+              "medianMs": 0.7452945999999997,
+              "firstCallMedianMs": 7.490923999999993,
+              "minMs": 0.7412939100000006,
+              "maxMs": 0.7535541150000006
+            },
+            "candidate": {
+              "medianMs": 0.3987190680555557,
+              "firstCallMedianMs": 6.420119,
+              "minMs": 0.3958613111111112,
+              "maxMs": 0.40750227499999975
+            }
+          },
+          "halfDrift": []
+        }
+      ]
+    },
+    {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/transfer-timing-04/report.json",
+        "sha256": "6a9a8158bd61f53a2b4b3778ffef6362405ba39e8b2cd74ceda956dda1296ea0"
+      },
+      "processes": 231,
+      "timedSamples": 165,
+      "wallSeconds": 1321.5815390027128,
+      "cases": [
+        {
+          "id": "mandelbrot",
+          "sides": {
+            "upstream": {
+              "medianMs": 0.045381633709556064,
+              "firstCallMedianMs": 5.717368999999998,
+              "minMs": 0.04516608006019564,
+              "maxMs": 0.04825711843491348
+            },
+            "old": {
+              "medianMs": 62.04102666666665,
+              "firstCallMedianMs": 134.448888,
+              "minMs": 61.84673933333337,
+              "maxMs": 65.86026916666667
+            },
+            "candidate": {
+              "medianMs": 21.1096248,
+              "firstCallMedianMs": 76.72732300000001,
+              "minMs": 21.001694333333337,
+              "maxMs": 21.454943933333332
+            },
+            "arithmetic": {
+              "medianMs": 30.769680100000006,
+              "firstCallMedianMs": 97.88872,
+              "minMs": 30.563798999999996,
+              "maxMs": 31.141429700000003
+            }
+          },
+          "halfDrift": [
+            {
+              "side": "old",
+              "sample": 0,
+              "secondToFirst": 1.1556638793069138
+            },
+            {
+              "side": "old",
+              "sample": 1,
+              "secondToFirst": 1.1530047580537892
+            },
+            {
+              "side": "old",
+              "sample": 2,
+              "secondToFirst": 1.1620640282801442
+            },
+            {
+              "side": "old",
+              "sample": 3,
+              "secondToFirst": 1.161931648887539
+            },
+            {
+              "side": "old",
+              "sample": 4,
+              "secondToFirst": 1.1720436573792392
+            }
+          ]
+        },
+        {
+          "id": "editdist",
+          "sides": {
+            "upstream": {
+              "medianMs": 4.941145532258064,
+              "firstCallMedianMs": 25.296166999999997,
+              "minMs": 4.916785258064516,
+              "maxMs": 4.981671741935481
+            },
+            "old": {
+              "medianMs": 2470.289482,
+              "firstCallMedianMs": 2711.7229319999997,
+              "minMs": 2461.022419000001,
+              "maxMs": 2520.9202650000007
+            },
+            "candidate": {
+              "medianMs": 1994.8999179999992,
+              "firstCallMedianMs": 2206.142109,
+              "minMs": 1988.144456,
+              "maxMs": 2066.2695120000008
+            }
+          },
+          "halfDrift": []
+        },
+        {
+          "id": "tree-bitonic",
+          "sides": {
+            "upstream": {
+              "medianMs": 0.2807401139846742,
+              "firstCallMedianMs": 5.176554000000003,
+              "minMs": 0.27222967528735637,
+              "maxMs": 0.2829871934865899
+            },
+            "old": {
+              "medianMs": 31.095935416666652,
+              "firstCallMedianMs": 71.29976500000001,
+              "minMs": 31.018600333333325,
+              "maxMs": 31.158849333333325
+            },
+            "candidate": {
+              "medianMs": 25.084656999999993,
+              "firstCallMedianMs": 68.99588899999999,
+              "minMs": 24.852358428571424,
+              "maxMs": 25.32893199999999
+            },
+            "arithmetic": {
+              "medianMs": 26.2836186,
+              "firstCallMedianMs": 68.851654,
+              "minMs": 25.58945289999999,
+              "maxMs": 27.229803800000013
+            }
+          },
+          "halfDrift": [
+            {
+              "side": "old",
+              "sample": 0,
+              "secondToFirst": 1.4071645079846904
+            },
+            {
+              "side": "candidate",
+              "sample": 0,
+              "secondToFirst": 0.860166053857056
+            },
+            {
+              "side": "arithmetic",
+              "sample": 0,
+              "secondToFirst": 0.7820248691631547
+            },
+            {
+              "side": "old",
+              "sample": 1,
+              "secondToFirst": 1.4070843674570963
+            },
+            {
+              "side": "candidate",
+              "sample": 1,
+              "secondToFirst": 0.8568722887603339
+            },
+            {
+              "side": "arithmetic",
+              "sample": 1,
+              "secondToFirst": 0.8026152714113451
+            },
+            {
+              "side": "candidate",
+              "sample": 2,
+              "secondToFirst": 0.861376671524754
+            },
+            {
+              "side": "arithmetic",
+              "sample": 2,
+              "secondToFirst": 0.79519187366329
+            },
+            {
+              "side": "old",
+              "sample": 2,
+              "secondToFirst": 1.4162361046513205
+            },
+            {
+              "side": "arithmetic",
+              "sample": 3,
+              "secondToFirst": 0.7232660366144271
+            },
+            {
+              "side": "old",
+              "sample": 3,
+              "secondToFirst": 1.4079185312026605
+            },
+            {
+              "side": "candidate",
+              "sample": 3,
+              "secondToFirst": 0.8586777887412556
+            },
+            {
+              "side": "old",
+              "sample": 4,
+              "secondToFirst": 1.4094377144945882
+            },
+            {
+              "side": "candidate",
+              "sample": 4,
+              "secondToFirst": 0.8569464351033174
+            },
+            {
+              "side": "arithmetic",
+              "sample": 4,
+              "secondToFirst": 0.7930826304137734
+            }
+          ]
+        },
+        {
+          "id": "lexer",
+          "sides": {
+            "upstream": {
+              "medianMs": 1.912202848101266,
+              "firstCallMedianMs": 20.097363,
+              "minMs": 1.9038198354430387,
+              "maxMs": 1.9191892088607587
+            },
+            "old": {
+              "medianMs": 262.88899549999996,
+              "firstCallMedianMs": 437.04311900000005,
+              "minMs": 261.41168800000014,
+              "maxMs": 263.9345504999999
+            },
+            "candidate": {
+              "medianMs": 173.228031,
+              "firstCallMedianMs": 318.12849000000006,
+              "minMs": 172.22370850000004,
+              "maxMs": 176.0714415
+            },
+            "arithmetic": {
+              "medianMs": 172.64344549999998,
+              "firstCallMedianMs": 316.12003400000003,
+              "minMs": 172.13919249999992,
+              "maxMs": 173.771708
+            }
+          },
+          "halfDrift": []
+        },
+        {
+          "id": "symreg",
+          "sides": {
+            "upstream": {
+              "medianMs": 1.1105127333333333,
+              "firstCallMedianMs": 9.369860000000003,
+              "minMs": 1.1011872407407408,
+              "maxMs": 1.1362033333333337
+            },
+            "old": {
+              "medianMs": 143.61215300000003,
+              "firstCallMedianMs": 281.25916,
+              "minMs": 142.823162,
+              "maxMs": 144.0413076666667
+            },
+            "candidate": {
+              "medianMs": 105.8627406666667,
+              "firstCallMedianMs": 221.572024,
+              "minMs": 105.26895766666667,
+              "maxMs": 106.69982800000002
+            }
+          },
+          "halfDrift": []
+        },
+        {
+          "id": "test-morning-program",
+          "sides": {
+            "upstream": {
+              "medianMs": 0.003674735867998959,
+              "firstCallMedianMs": 2.1768199999999993,
+              "minMs": 0.0036446362176080116,
+              "maxMs": 0.003780458542980654
+            },
+            "old": {
+              "medianMs": 0.23682181741573027,
+              "firstCallMedianMs": 9.970781000000002,
+              "minMs": 0.23546288834269657,
+              "maxMs": 0.23859165238764035
+            },
+            "candidate": {
+              "medianMs": 0.21149792509855456,
+              "firstCallMedianMs": 9.939148000000003,
+              "minMs": 0.20941361498028918,
+              "maxMs": 0.2138398488830486
+            }
+          },
+          "halfDrift": [
+            {
+              "side": "old",
+              "sample": 0,
+              "secondToFirst": 0.808145955608136
+            },
+            {
+              "side": "candidate",
+              "sample": 0,
+              "secondToFirst": 0.8592141334596977
+            },
+            {
+              "side": "old",
+              "sample": 1,
+              "secondToFirst": 0.7993996009506779
+            },
+            {
+              "side": "candidate",
+              "sample": 1,
+              "secondToFirst": 0.8496490861474809
+            },
+            {
+              "side": "candidate",
+              "sample": 2,
+              "secondToFirst": 0.8538780644203775
+            },
+            {
+              "side": "old",
+              "sample": 2,
+              "secondToFirst": 0.8046616617837681
+            },
+            {
+              "side": "old",
+              "sample": 3,
+              "secondToFirst": 0.7872513699545922
+            },
+            {
+              "side": "candidate",
+              "sample": 3,
+              "secondToFirst": 0.8635843033418256
+            },
+            {
+              "side": "old",
+              "sample": 4,
+              "secondToFirst": 0.7995999730943548
+            },
+            {
+              "side": "candidate",
+              "sample": 4,
+              "secondToFirst": 0.8446358512676665
+            }
+          ]
+        },
+        {
+          "id": "test-evening-program",
+          "sides": {
+            "upstream": {
+              "medianMs": 0.0031325960541161617,
+              "firstCallMedianMs": 2.4964099999999974,
+              "minMs": 0.0031248424958853927,
+              "maxMs": 0.003397892709638018
+            },
+            "old": {
+              "medianMs": 0.27429031693077566,
+              "firstCallMedianMs": 12.599931999999995,
+              "minMs": 0.2665394378648874,
+              "maxMs": 0.27646592076730614
+            },
+            "candidate": {
+              "medianMs": 0.3494640378486057,
+              "firstCallMedianMs": 12.36696599999999,
+              "minMs": 0.23784497609561736,
+              "maxMs": 0.37266387649402394
+            }
+          },
+          "halfDrift": [
+            {
+              "side": "old",
+              "sample": 0,
+              "secondToFirst": 2.242316129485581
+            },
+            {
+              "side": "candidate",
+              "sample": 0,
+              "secondToFirst": 2.180015041613298
+            },
+            {
+              "side": "old",
+              "sample": 1,
+              "secondToFirst": 2.1746639554459013
+            },
+            {
+              "side": "candidate",
+              "sample": 1,
+              "secondToFirst": 3.6735467022367674
+            },
+            {
+              "side": "candidate",
+              "sample": 2,
+              "secondToFirst": 3.5529510457624895
+            },
+            {
+              "side": "old",
+              "sample": 2,
+              "secondToFirst": 2.198771589137254
+            },
+            {
+              "side": "old",
+              "sample": 3,
+              "secondToFirst": 2.25931864965568
+            },
+            {
+              "side": "candidate",
+              "sample": 3,
+              "secondToFirst": 4.098983052399998
+            },
+            {
+              "side": "old",
+              "sample": 4,
+              "secondToFirst": 2.307565040381101
+            },
+            {
+              "side": "candidate",
+              "sample": 4,
+              "secondToFirst": 3.905988475702903
+            }
+          ]
+        },
+        {
+          "id": "test-rle-roundtrip",
+          "sides": {
+            "upstream": {
+              "medianMs": 0.0005968571865532226,
+              "firstCallMedianMs": 0.5122489999999971,
+              "minMs": 0.0005949713738130497,
+              "maxMs": 0.000599328437436478
+            },
+            "old": {
+              "medianMs": 0.05345682092483485,
+              "firstCallMedianMs": 3.2696519999999936,
+              "minMs": 0.052774316907695046,
+              "maxMs": 0.055566495982860196
+            },
+            "candidate": {
+              "medianMs": 0.04463187386706946,
+              "firstCallMedianMs": 3.150987999999998,
+              "minMs": 0.04412467129909367,
+              "maxMs": 0.04522683731117823
+            }
+          },
+          "halfDrift": []
+        },
+        {
+          "id": "test-map-set-ops",
+          "sides": {
+            "upstream": {
+              "medianMs": 0.02269951763130486,
+              "firstCallMedianMs": 5.256341000000006,
+              "minMs": 0.02210951287010861,
+              "maxMs": 0.022836891087635758
+            },
+            "old": {
+              "medianMs": 2.4734738425925937,
+              "firstCallMedianMs": 31.422443,
+              "minMs": 2.4655201018518516,
+              "maxMs": 2.503377953703705
+            },
+            "candidate": {
+              "medianMs": 2.2340121570247926,
+              "firstCallMedianMs": 30.914625,
+              "minMs": 2.212708884297521,
+              "maxMs": 2.2557575619834704
+            }
+          },
+          "halfDrift": [
+            {
+              "side": "old",
+              "sample": 0,
+              "secondToFirst": 1.5619464781005028
+            },
+            {
+              "side": "candidate",
+              "sample": 0,
+              "secondToFirst": 1.376381291922195
+            },
+            {
+              "side": "old",
+              "sample": 1,
+              "secondToFirst": 1.57488580753266
+            },
+            {
+              "side": "candidate",
+              "sample": 1,
+              "secondToFirst": 1.38252826904127
+            },
+            {
+              "side": "candidate",
+              "sample": 2,
+              "secondToFirst": 1.4085905320416696
+            },
+            {
+              "side": "old",
+              "sample": 2,
+              "secondToFirst": 1.6803764123873075
+            },
+            {
+              "side": "old",
+              "sample": 3,
+              "secondToFirst": 1.6457069677275074
+            },
+            {
+              "side": "candidate",
+              "sample": 3,
+              "secondToFirst": 1.4176358025494005
+            },
+            {
+              "side": "old",
+              "sample": 4,
+              "secondToFirst": 1.5210016584173556
+            },
+            {
+              "side": "candidate",
+              "sample": 4,
+              "secondToFirst": 1.4369369009299273
+            }
+          ]
+        },
+        {
+          "id": "raytrace",
+          "sides": {
+            "upstream": {
+              "medianMs": 34.16875844444444,
+              "firstCallMedianMs": 125.64924900000001,
+              "minMs": 33.978086222222224,
+              "maxMs": 34.46878666666665
+            },
+            "old": {
+              "medianMs": 17482.222108,
+              "firstCallMedianMs": 18638.369601,
+              "minMs": 17456.606702999998,
+              "maxMs": 17756.034469000006
+            },
+            "candidate": {
+              "medianMs": 10447.728525999999,
+              "firstCallMedianMs": 11343.270000999999,
+              "minMs": 10429.334095000006,
+              "maxMs": 10482.322869999996
+            }
+          },
+          "halfDrift": []
+        }
+      ]
+    },
+    {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/transfer-confirm-04/report.json",
+        "sha256": "5af4f71a896a1855b191d0db1373f8712b8489a12318aa1db4b6c505859f17af"
+      },
+      "processes": 98,
+      "timedSamples": 70,
+      "wallSeconds": 317.31203047931194,
+      "cases": [
+        {
+          "id": "mandelbrot",
+          "sides": {
+            "upstream": {
+              "medianMs": 0.04555138950859211,
+              "firstCallMedianMs": 5.693214000000005,
+              "minMs": 0.045176200633102195,
+              "maxMs": 0.04579395236659636
+            },
+            "old": {
+              "medianMs": 56.43029883333338,
+              "firstCallMedianMs": 134.098361,
+              "minMs": 56.30974299999995,
+              "maxMs": 56.78240166666668
+            },
+            "candidate": {
+              "medianMs": 20.940500571428565,
+              "firstCallMedianMs": 75.74391100000001,
+              "minMs": 20.8100154285714,
+              "maxMs": 21.131957071428587
+            },
+            "arithmetic": {
+              "medianMs": 29.949495100000014,
+              "firstCallMedianMs": 97.34451499999999,
+              "minMs": 29.90168950000002,
+              "maxMs": 30.2412562
+            }
+          },
+          "halfDrift": []
+        },
+        {
+          "id": "tree-bitonic",
+          "sides": {
+            "upstream": {
+              "medianMs": 0.26623446935041173,
+              "firstCallMedianMs": 5.251559999999991,
+              "minMs": 0.26485864318389774,
+              "maxMs": 0.2704785379688929
+            },
+            "old": {
+              "medianMs": 26.482867083333343,
+              "firstCallMedianMs": 71.280238,
+              "minMs": 26.247248666666678,
+              "maxMs": 26.518534666666636
+            },
+            "candidate": {
+              "medianMs": 24.904129857142866,
+              "firstCallMedianMs": 68.61747199999999,
+              "minMs": 24.749624285714294,
+              "maxMs": 25.558266857142858
+            },
+            "arithmetic": {
+              "medianMs": 24.907410714285724,
+              "firstCallMedianMs": 68.95341100000002,
+              "minMs": 24.76660928571427,
+              "maxMs": 25.755181428571404
+            }
+          },
+          "halfDrift": [
+            {
+              "side": "old",
+              "sample": 0,
+              "secondToFirst": 1.1157768119724474
+            },
+            {
+              "side": "candidate",
+              "sample": 0,
+              "secondToFirst": 1.2369910116107778
+            },
+            {
+              "side": "arithmetic",
+              "sample": 0,
+              "secondToFirst": 1.2339217059535024
+            },
+            {
+              "side": "old",
+              "sample": 1,
+              "secondToFirst": 1.1332412050123788
+            },
+            {
+              "side": "candidate",
+              "sample": 1,
+              "secondToFirst": 1.2331007578032591
+            },
+            {
+              "side": "arithmetic",
+              "sample": 1,
+              "secondToFirst": 1.2306150818025736
+            },
+            {
+              "side": "candidate",
+              "sample": 2,
+              "secondToFirst": 1.2303983852304419
+            },
+            {
+              "side": "arithmetic",
+              "sample": 2,
+              "secondToFirst": 1.293025241054469
+            },
+            {
+              "side": "old",
+              "sample": 2,
+              "secondToFirst": 1.1302546077732016
+            },
+            {
+              "side": "arithmetic",
+              "sample": 3,
+              "secondToFirst": 1.2329261148783623
+            },
+            {
+              "side": "old",
+              "sample": 3,
+              "secondToFirst": 1.1281999167605705
+            },
+            {
+              "side": "candidate",
+              "sample": 3,
+              "secondToFirst": 1.2949698954064859
+            },
+            {
+              "side": "old",
+              "sample": 4,
+              "secondToFirst": 1.1251645834729942
+            },
+            {
+              "side": "candidate",
+              "sample": 4,
+              "secondToFirst": 1.2413235802327314
+            },
+            {
+              "side": "arithmetic",
+              "sample": 4,
+              "secondToFirst": 1.2381001458495142
+            }
+          ]
+        },
+        {
+          "id": "test-morning-program",
+          "sides": {
+            "upstream": {
+              "medianMs": 0.0035309953826945266,
+              "firstCallMedianMs": 2.1808309999999977,
+              "minMs": 0.0034881297674856883,
+              "maxMs": 0.0036312819736625105
+            },
+            "old": {
+              "medianMs": 0.20993778577268984,
+              "firstCallMedianMs": 10.038699000000008,
+              "minMs": 0.20701289125102212,
+              "maxMs": 0.2114286017988551
+            },
+            "candidate": {
+              "medianMs": 0.1925549495081968,
+              "firstCallMedianMs": 9.787283000000002,
+              "minMs": 0.19157254360655748,
+              "maxMs": 0.1944868970491803
+            }
+          },
+          "halfDrift": []
+        },
+        {
+          "id": "test-map-set-ops",
+          "sides": {
+            "upstream": {
+              "medianMs": 0.021372680063699093,
+              "firstCallMedianMs": 5.317048999999997,
+              "minMs": 0.02105882459998485,
+              "maxMs": 0.02336153681656179
+            },
+            "old": {
+              "medianMs": 1.715845612359552,
+              "firstCallMedianMs": 31.334041,
+              "minMs": 1.6980770561797758,
+              "maxMs": 1.778355511235953
+            },
+            "candidate": {
+              "medianMs": 1.611209884422111,
+              "firstCallMedianMs": 30.934884999999994,
+              "minMs": 1.597115532663315,
+              "maxMs": 1.6672755929648222
+            }
+          },
+          "halfDrift": [
+            {
+              "side": "old",
+              "sample": 0,
+              "secondToFirst": 0.8652010161619388
+            },
+            {
+              "side": "old",
+              "sample": 1,
+              "secondToFirst": 0.8647695478952403
+            },
+            {
+              "side": "old",
+              "sample": 2,
+              "secondToFirst": 0.8509102144699273
+            },
+            {
+              "side": "old",
+              "sample": 3,
+              "secondToFirst": 0.8300967091486369
+            },
+            {
+              "side": "candidate",
+              "sample": 3,
+              "secondToFirst": 1.143804035311226
+            },
+            {
+              "side": "old",
+              "sample": 4,
+              "secondToFirst": 0.8633922579903395
+            },
+            {
+              "side": "candidate",
+              "sample": 4,
+              "secondToFirst": 1.1068790126973898
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/components-confirm-04/report.json",
+        "sha256": "319b826281893e072c80971a80a3da1d17a385562fa79a010572aa55b3226a5f"
+      },
+      "processes": 63,
+      "timedSamples": 45,
+      "wallSeconds": 188.78893274301663,
+      "cases": [
+        {
+          "id": "compiler-membership",
+          "sides": {
+            "upstream": {
+              "medianMs": 0.01727087018016502,
+              "firstCallMedianMs": 2.155276999999998,
+              "minMs": 0.01723809227142616,
+              "maxMs": 0.017443898467755518
+            },
+            "old": {
+              "medianMs": 0.5934302804642171,
+              "firstCallMedianMs": 14.296703000000008,
+              "minMs": 0.5836106054158605,
+              "maxMs": 0.6122326866537721
+            },
+            "candidate": {
+              "medianMs": 0.571047049212598,
+              "firstCallMedianMs": 14.239069999999998,
+              "minMs": 0.5592657106299219,
+              "maxMs": 0.5731176673228346
+            }
+          },
+          "halfDrift": []
+        },
+        {
+          "id": "term-substitution",
+          "sides": {
+            "upstream": {
+              "medianMs": 0.05853520485784216,
+              "firstCallMedianMs": 3.7637599999999978,
+              "minMs": 0.05780659649783471,
+              "maxMs": 0.059067224628130265
+            },
+            "old": {
+              "medianMs": 2.325497227941178,
+              "firstCallMedianMs": 17.699727999999993,
+              "minMs": 2.265335500000002,
+              "maxMs": 2.3360429852941174
+            },
+            "candidate": {
+              "medianMs": 1.8042268263473047,
+              "firstCallMedianMs": 16.002839999999992,
+              "minMs": 1.7886562994011976,
+              "maxMs": 1.8737749940119754
+            }
+          },
+          "halfDrift": [
+            {
+              "side": "upstream",
+              "sample": 0,
+              "secondToFirst": 0.8898462392400761
+            },
+            {
+              "side": "upstream",
+              "sample": 3,
+              "secondToFirst": 0.8856252108338974
+            },
+            {
+              "side": "upstream",
+              "sample": 4,
+              "secondToFirst": 0.8838481070432848
+            }
+          ]
+        },
+        {
+          "id": "boolean-worker",
+          "sides": {
+            "upstream": {
+              "medianMs": 0.005549863130403465,
+              "firstCallMedianMs": 2.690889999999996,
+              "minMs": 0.00552687058717579,
+              "maxMs": 0.005589450180115274
+            },
+            "old": {
+              "medianMs": 1.937449569620251,
+              "firstCallMedianMs": 18.082873000000006,
+              "minMs": 1.9221522531645578,
+              "maxMs": 1.9489996518987345
+            },
+            "candidate": {
+              "medianMs": 1.160130900383141,
+              "firstCallMedianMs": 17.249500000000012,
+              "minMs": 1.1484628927203062,
+              "maxMs": 1.2290580229885049
+            }
+          },
+          "halfDrift": [
+            {
+              "side": "candidate",
+              "sample": 2,
+              "secondToFirst": 1.1374530254726707
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/evening-confirm-04/report.json",
+        "sha256": "129ff2dbbee9d483213f6ae8e8728f7bbd2e8458add5d3d2e216eb5dc0a4b6f5"
+      },
+      "processes": 21,
+      "timedSamples": 15,
+      "wallSeconds": 63.88349630264565,
+      "cases": [
+        {
+          "id": "test-evening-program",
+          "sides": {
+            "upstream": {
+              "medianMs": 0.0030551393018271498,
+              "firstCallMedianMs": 2.539102000000007,
+              "minMs": 0.0030238225110343435,
+              "maxMs": 0.0031153593818811745
+            },
+            "old": {
+              "medianMs": 0.16291840261780102,
+              "firstCallMedianMs": 12.535004,
+              "minMs": 0.15658004397905761,
+              "maxMs": 0.16520955497382186
+            },
+            "candidate": {
+              "medianMs": 0.13956316589002782,
+              "firstCallMedianMs": 12.377049999999997,
+              "minMs": 0.1386954962721342,
+              "maxMs": 0.14030126561043796
+            }
+          },
+          "halfDrift": []
+        }
+      ]
+    }
+  ],
+  "warnings": [
+    {
+      "campaign": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/prototype-screen-01/report.json",
+      "case": "mandelbrot-inner",
+      "reason": "Within-block drift over 10%; do not equate this warmup window with convergence.",
+      "observations": [
+        {
+          "side": "unchanged",
+          "sample": 0,
+          "secondToFirst": 2.260291391790094
+        },
+        {
+          "side": "arithmetic",
+          "sample": 0,
+          "secondToFirst": 0.8015305130350433
+        },
+        {
+          "side": "worker",
+          "sample": 0,
+          "secondToFirst": 0.7521860981695913
+        },
+        {
+          "side": "compiler-arithmetic",
+          "sample": 0,
+          "secondToFirst": 0.6588628484299028
+        },
+        {
+          "side": "unchanged",
+          "sample": 1,
+          "secondToFirst": 2.318903607154032
+        },
+        {
+          "side": "arithmetic",
+          "sample": 1,
+          "secondToFirst": 0.8151896012177234
+        },
+        {
+          "side": "worker",
+          "sample": 1,
+          "secondToFirst": 0.7345018591151622
+        },
+        {
+          "side": "compiler-arithmetic",
+          "sample": 1,
+          "secondToFirst": 0.6649876446605684
+        },
+        {
+          "side": "arithmetic",
+          "sample": 2,
+          "secondToFirst": 0.801458578113345
+        },
+        {
+          "side": "worker",
+          "sample": 2,
+          "secondToFirst": 0.8141664260729979
+        },
+        {
+          "side": "compiler-arithmetic",
+          "sample": 2,
+          "secondToFirst": 0.8093929117171077
+        },
+        {
+          "side": "unchanged",
+          "sample": 2,
+          "secondToFirst": 2.3283143389270426
+        }
+      ]
+    },
+    {
+      "campaign": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/arithmetic-transfer-01/report.json",
+      "case": "mandelbrot",
+      "reason": "Within-block drift over 10%; do not equate this warmup window with convergence.",
+      "observations": [
+        {
+          "side": "old",
+          "sample": 0,
+          "secondToFirst": 1.148527537189547
+        },
+        {
+          "side": "old",
+          "sample": 2,
+          "secondToFirst": 1.1581741823542675
+        },
+        {
+          "side": "old",
+          "sample": 3,
+          "secondToFirst": 1.1568652425367107
+        },
+        {
+          "side": "old",
+          "sample": 4,
+          "secondToFirst": 1.1665729149843005
+        }
+      ]
+    },
+    {
+      "campaign": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/arithmetic-transfer-01/report.json",
+      "case": "tree-bitonic",
+      "reason": "Within-block drift over 10%; do not equate this warmup window with convergence.",
+      "observations": [
+        {
+          "side": "old",
+          "sample": 0,
+          "secondToFirst": 1.4339319666804842
+        },
+        {
+          "side": "candidate",
+          "sample": 0,
+          "secondToFirst": 0.8000505081760665
+        },
+        {
+          "side": "old",
+          "sample": 1,
+          "secondToFirst": 1.40546091434775
+        },
+        {
+          "side": "candidate",
+          "sample": 1,
+          "secondToFirst": 0.7944042436421276
+        },
+        {
+          "side": "candidate",
+          "sample": 2,
+          "secondToFirst": 0.7968389113704547
+        },
+        {
+          "side": "old",
+          "sample": 2,
+          "secondToFirst": 0.7679862956947363
+        },
+        {
+          "side": "old",
+          "sample": 3,
+          "secondToFirst": 1.4075958435402354
+        },
+        {
+          "side": "candidate",
+          "sample": 3,
+          "secondToFirst": 0.7922128245967914
+        },
+        {
+          "side": "old",
+          "sample": 4,
+          "secondToFirst": 1.4210685397387814
+        },
+        {
+          "side": "candidate",
+          "sample": 4,
+          "secondToFirst": 0.7996398034861558
+        }
+      ]
+    },
+    {
+      "campaign": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/fixture-screen-04/report.json",
+      "case": "mandelbrot-inner",
+      "reason": "Within-block drift over 10%; do not equate this warmup window with convergence.",
+      "observations": [
+        {
+          "side": "old",
+          "sample": 0,
+          "secondToFirst": 2.2554860050319334
+        },
+        {
+          "side": "old",
+          "sample": 1,
+          "secondToFirst": 2.2977745896898645
+        },
+        {
+          "side": "old",
+          "sample": 2,
+          "secondToFirst": 2.3057604830011047
+        }
+      ]
+    },
+    {
+      "campaign": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/transfer-timing-04/report.json",
+      "case": "mandelbrot",
+      "reason": "Within-block drift over 10%; do not equate this warmup window with convergence.",
+      "observations": [
+        {
+          "side": "old",
+          "sample": 0,
+          "secondToFirst": 1.1556638793069138
+        },
+        {
+          "side": "old",
+          "sample": 1,
+          "secondToFirst": 1.1530047580537892
+        },
+        {
+          "side": "old",
+          "sample": 2,
+          "secondToFirst": 1.1620640282801442
+        },
+        {
+          "side": "old",
+          "sample": 3,
+          "secondToFirst": 1.161931648887539
+        },
+        {
+          "side": "old",
+          "sample": 4,
+          "secondToFirst": 1.1720436573792392
+        }
+      ]
+    },
+    {
+      "campaign": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/transfer-timing-04/report.json",
+      "case": "tree-bitonic",
+      "reason": "Within-block drift over 10%; do not equate this warmup window with convergence.",
+      "observations": [
+        {
+          "side": "old",
+          "sample": 0,
+          "secondToFirst": 1.4071645079846904
+        },
+        {
+          "side": "candidate",
+          "sample": 0,
+          "secondToFirst": 0.860166053857056
+        },
+        {
+          "side": "arithmetic",
+          "sample": 0,
+          "secondToFirst": 0.7820248691631547
+        },
+        {
+          "side": "old",
+          "sample": 1,
+          "secondToFirst": 1.4070843674570963
+        },
+        {
+          "side": "candidate",
+          "sample": 1,
+          "secondToFirst": 0.8568722887603339
+        },
+        {
+          "side": "arithmetic",
+          "sample": 1,
+          "secondToFirst": 0.8026152714113451
+        },
+        {
+          "side": "candidate",
+          "sample": 2,
+          "secondToFirst": 0.861376671524754
+        },
+        {
+          "side": "arithmetic",
+          "sample": 2,
+          "secondToFirst": 0.79519187366329
+        },
+        {
+          "side": "old",
+          "sample": 2,
+          "secondToFirst": 1.4162361046513205
+        },
+        {
+          "side": "arithmetic",
+          "sample": 3,
+          "secondToFirst": 0.7232660366144271
+        },
+        {
+          "side": "old",
+          "sample": 3,
+          "secondToFirst": 1.4079185312026605
+        },
+        {
+          "side": "candidate",
+          "sample": 3,
+          "secondToFirst": 0.8586777887412556
+        },
+        {
+          "side": "old",
+          "sample": 4,
+          "secondToFirst": 1.4094377144945882
+        },
+        {
+          "side": "candidate",
+          "sample": 4,
+          "secondToFirst": 0.8569464351033174
+        },
+        {
+          "side": "arithmetic",
+          "sample": 4,
+          "secondToFirst": 0.7930826304137734
+        }
+      ]
+    },
+    {
+      "campaign": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/transfer-timing-04/report.json",
+      "case": "test-morning-program",
+      "reason": "Within-block drift over 10%; do not equate this warmup window with convergence.",
+      "observations": [
+        {
+          "side": "old",
+          "sample": 0,
+          "secondToFirst": 0.808145955608136
+        },
+        {
+          "side": "candidate",
+          "sample": 0,
+          "secondToFirst": 0.8592141334596977
+        },
+        {
+          "side": "old",
+          "sample": 1,
+          "secondToFirst": 0.7993996009506779
+        },
+        {
+          "side": "candidate",
+          "sample": 1,
+          "secondToFirst": 0.8496490861474809
+        },
+        {
+          "side": "candidate",
+          "sample": 2,
+          "secondToFirst": 0.8538780644203775
+        },
+        {
+          "side": "old",
+          "sample": 2,
+          "secondToFirst": 0.8046616617837681
+        },
+        {
+          "side": "old",
+          "sample": 3,
+          "secondToFirst": 0.7872513699545922
+        },
+        {
+          "side": "candidate",
+          "sample": 3,
+          "secondToFirst": 0.8635843033418256
+        },
+        {
+          "side": "old",
+          "sample": 4,
+          "secondToFirst": 0.7995999730943548
+        },
+        {
+          "side": "candidate",
+          "sample": 4,
+          "secondToFirst": 0.8446358512676665
+        }
+      ]
+    },
+    {
+      "campaign": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/transfer-timing-04/report.json",
+      "case": "test-evening-program",
+      "reason": "Within-block drift over 10%; do not equate this warmup window with convergence.",
+      "observations": [
+        {
+          "side": "old",
+          "sample": 0,
+          "secondToFirst": 2.242316129485581
+        },
+        {
+          "side": "candidate",
+          "sample": 0,
+          "secondToFirst": 2.180015041613298
+        },
+        {
+          "side": "old",
+          "sample": 1,
+          "secondToFirst": 2.1746639554459013
+        },
+        {
+          "side": "candidate",
+          "sample": 1,
+          "secondToFirst": 3.6735467022367674
+        },
+        {
+          "side": "candidate",
+          "sample": 2,
+          "secondToFirst": 3.5529510457624895
+        },
+        {
+          "side": "old",
+          "sample": 2,
+          "secondToFirst": 2.198771589137254
+        },
+        {
+          "side": "old",
+          "sample": 3,
+          "secondToFirst": 2.25931864965568
+        },
+        {
+          "side": "candidate",
+          "sample": 3,
+          "secondToFirst": 4.098983052399998
+        },
+        {
+          "side": "old",
+          "sample": 4,
+          "secondToFirst": 2.307565040381101
+        },
+        {
+          "side": "candidate",
+          "sample": 4,
+          "secondToFirst": 3.905988475702903
+        }
+      ]
+    },
+    {
+      "campaign": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/transfer-timing-04/report.json",
+      "case": "test-map-set-ops",
+      "reason": "Within-block drift over 10%; do not equate this warmup window with convergence.",
+      "observations": [
+        {
+          "side": "old",
+          "sample": 0,
+          "secondToFirst": 1.5619464781005028
+        },
+        {
+          "side": "candidate",
+          "sample": 0,
+          "secondToFirst": 1.376381291922195
+        },
+        {
+          "side": "old",
+          "sample": 1,
+          "secondToFirst": 1.57488580753266
+        },
+        {
+          "side": "candidate",
+          "sample": 1,
+          "secondToFirst": 1.38252826904127
+        },
+        {
+          "side": "candidate",
+          "sample": 2,
+          "secondToFirst": 1.4085905320416696
+        },
+        {
+          "side": "old",
+          "sample": 2,
+          "secondToFirst": 1.6803764123873075
+        },
+        {
+          "side": "old",
+          "sample": 3,
+          "secondToFirst": 1.6457069677275074
+        },
+        {
+          "side": "candidate",
+          "sample": 3,
+          "secondToFirst": 1.4176358025494005
+        },
+        {
+          "side": "old",
+          "sample": 4,
+          "secondToFirst": 1.5210016584173556
+        },
+        {
+          "side": "candidate",
+          "sample": 4,
+          "secondToFirst": 1.4369369009299273
+        }
+      ]
+    },
+    {
+      "campaign": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/transfer-confirm-04/report.json",
+      "case": "tree-bitonic",
+      "reason": "Within-block drift over 10%; do not equate this warmup window with convergence.",
+      "observations": [
+        {
+          "side": "old",
+          "sample": 0,
+          "secondToFirst": 1.1157768119724474
+        },
+        {
+          "side": "candidate",
+          "sample": 0,
+          "secondToFirst": 1.2369910116107778
+        },
+        {
+          "side": "arithmetic",
+          "sample": 0,
+          "secondToFirst": 1.2339217059535024
+        },
+        {
+          "side": "old",
+          "sample": 1,
+          "secondToFirst": 1.1332412050123788
+        },
+        {
+          "side": "candidate",
+          "sample": 1,
+          "secondToFirst": 1.2331007578032591
+        },
+        {
+          "side": "arithmetic",
+          "sample": 1,
+          "secondToFirst": 1.2306150818025736
+        },
+        {
+          "side": "candidate",
+          "sample": 2,
+          "secondToFirst": 1.2303983852304419
+        },
+        {
+          "side": "arithmetic",
+          "sample": 2,
+          "secondToFirst": 1.293025241054469
+        },
+        {
+          "side": "old",
+          "sample": 2,
+          "secondToFirst": 1.1302546077732016
+        },
+        {
+          "side": "arithmetic",
+          "sample": 3,
+          "secondToFirst": 1.2329261148783623
+        },
+        {
+          "side": "old",
+          "sample": 3,
+          "secondToFirst": 1.1281999167605705
+        },
+        {
+          "side": "candidate",
+          "sample": 3,
+          "secondToFirst": 1.2949698954064859
+        },
+        {
+          "side": "old",
+          "sample": 4,
+          "secondToFirst": 1.1251645834729942
+        },
+        {
+          "side": "candidate",
+          "sample": 4,
+          "secondToFirst": 1.2413235802327314
+        },
+        {
+          "side": "arithmetic",
+          "sample": 4,
+          "secondToFirst": 1.2381001458495142
+        }
+      ]
+    },
+    {
+      "campaign": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/transfer-confirm-04/report.json",
+      "case": "test-map-set-ops",
+      "reason": "Within-block drift over 10%; do not equate this warmup window with convergence.",
+      "observations": [
+        {
+          "side": "old",
+          "sample": 0,
+          "secondToFirst": 0.8652010161619388
+        },
+        {
+          "side": "old",
+          "sample": 1,
+          "secondToFirst": 0.8647695478952403
+        },
+        {
+          "side": "old",
+          "sample": 2,
+          "secondToFirst": 0.8509102144699273
+        },
+        {
+          "side": "old",
+          "sample": 3,
+          "secondToFirst": 0.8300967091486369
+        },
+        {
+          "side": "candidate",
+          "sample": 3,
+          "secondToFirst": 1.143804035311226
+        },
+        {
+          "side": "old",
+          "sample": 4,
+          "secondToFirst": 0.8633922579903395
+        },
+        {
+          "side": "candidate",
+          "sample": 4,
+          "secondToFirst": 1.1068790126973898
+        }
+      ]
+    },
+    {
+      "campaign": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/components-confirm-04/report.json",
+      "case": "term-substitution",
+      "reason": "Within-block drift over 10%; do not equate this warmup window with convergence.",
+      "observations": [
+        {
+          "side": "upstream",
+          "sample": 0,
+          "secondToFirst": 0.8898462392400761
+        },
+        {
+          "side": "upstream",
+          "sample": 3,
+          "secondToFirst": 0.8856252108338974
+        },
+        {
+          "side": "upstream",
+          "sample": 4,
+          "secondToFirst": 0.8838481070432848
+        }
+      ]
+    },
+    {
+      "campaign": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/components-confirm-04/report.json",
+      "case": "boolean-worker",
+      "reason": "Within-block drift over 10%; do not equate this warmup window with convergence.",
+      "observations": [
+        {
+          "side": "candidate",
+          "sample": 2,
+          "secondToFirst": 1.1374530254726707
+        }
+      ]
+    }
+  ],
+  "applicationSummary": {
+    "upstream": {
+      "samples": 5,
+      "medianSeconds": 0.0685391160659492,
+      "minSeconds": 0.06583416275680065,
+      "maxSeconds": 0.06996122561395168,
+      "samplesSeconds": [
+        0.06923348410055041,
+        0.0685391160659492,
+        0.06703622313216329,
+        0.06583416275680065,
+        0.06996122561395168
+      ]
+    },
+    "selfhost": {
+      "samples": 5,
+      "medianSeconds": 0.19686044985428452,
+      "minSeconds": 0.19356576725840569,
+      "maxSeconds": 0.20361087331548333,
+      "samplesSeconds": [
+        0.20021658716723323,
+        0.20361087331548333,
+        0.19686044985428452,
+        0.19356576725840569,
+        0.19596405094489455
+      ]
+    },
+    "candidate": {
+      "samples": 5,
+      "medianSeconds": 0.1983929192647338,
+      "minSeconds": 0.1954194032587111,
+      "maxSeconds": 0.20065457979217172,
+      "samplesSeconds": [
+        0.1970714060589671,
+        0.20065457979217172,
+        0.1983929192647338,
+        0.19940110575407743,
+        0.1954194032587111
+      ]
+    }
+  },
+  "launchers": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/final-campaigns.json",
+      "sha256": "3e9ac8ed3189aed0116c183b69fb6736ec404aab39f4a4222a9362a7917323a9"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/evening-confirm-launcher.json",
+      "sha256": "987615e1319d23c32c8ac62926153a8810b600478c365514394bd7ca9bfe7186"
+    }
+  ],
+  "retainedFailures": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/attempt-02/build.json",
+      "sha256": "ff6d2e969bdd86bae91ffabf464d712a59c6c667ece98c63580890c08946abfc"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/transfer-03/symreg/emission/launch.json",
+      "sha256": "9af41abfb10cebc4734e45599bda6d6d2ac91d92f42c44d6fe7300aab227c9a5"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/transfer-03/raytrace/emission/launch.json",
+      "sha256": "eb34d8be0896bf3d511604debc273c0e30a32de5ddd98794772dfdd2a9887981"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase29/controls-worker-frontier-old-03/report.json",
+      "sha256": "43a2e1dbd562931c13c12c07f0e49ab45a7c2d7fab168d0f10f2ac79dc741858"
+    }
+  ],
+  "interpretation": {
+    "scope": "Generated JavaScript execution, not compiler throughput. Timed observations have different library and whole-process scopes.",
+    "drift": "Retain every window. Sorting/map-set remain sensitive after confirmation; one-call samples have no half estimate.",
+    "evening": "Original-window regression and longer-warm improvement both retained; no specific JIT cause established.",
+    "application": "HVM median slightly slower with overlapping ranges; no speedup claim.",
+    "auditCounts": "Assertion counts and file counts are audit scopes, not unique conformance checks. File sets overlap between audits."
+  },
+  "crossScopeChecks": 623,
+  "crossScopeDistinctHashedFiles": 21
+}

@@ -322,7 +322,7 @@ law j_apply_spine:
 
 @unsafe
 def j_apply_spine(book, env, t, tail, fty, spine):
-  kc(String, j_choice_call(book, spine), u => j_choice_emit(book, env, spine, tail), u => j_apply_regular(book, env, t, tail, fty, spine))
+  kc(String, j_primitive_call(book, spine), u => j_primitive_emit(book, env, spine), u => kc(String, j_choice_call(book, spine), u => j_choice_emit(book, env, spine, tail), u => j_apply_regular(book, env, t, tail, fty, spine)))
 
 law j_apply_regular:
   for +book: List<&2, KDef>
@@ -886,7 +886,8 @@ def j_l_marks(ts, path, depth, at):
 
 @unsafe
 def j_l_def(book, d):
-  j_u32_global(book, d, j_u32_worker(book, d))
+  +worker = j_nat_loop_worker(book, d)
+  kc(String, String.eq(worker, ""), u => j_u32_global(book, d, j_u32_worker(book, d)), u => j_l_global_worker(book, d, dv(d), worker))
 
 @unsafe
 def j_l_definition(book, d, t):

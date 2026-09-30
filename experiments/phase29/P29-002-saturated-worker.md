@@ -12,3 +12,15 @@ argument demand and bounded tail stack. See the
 A fast prototype does not establish a sound general emitter rule. Production
 lowering needs a reviewed recognizer and checked emitted-code semantic controls.
 Infeasible or unsound derivations are retained as negative evidence.
+
+## Outcome
+
+The disposable worker-only fixture improves1.38× with longer warmup; combined
+with arithmetic it improves3.70×. The checked compiler's combined fixture improves
+3.65×. Production uses the separately frozen narrow native Nat rule, preserving
+public descriptors. Original Mandelbrot improves2.70× with longer warmup.
+
+Attempt02 source admission and03 eager-guard stack failures are retained. Explicit
+branch fences and bounded counts repair admission; a small witness fails on03
+and passes on04. Broader record/match workers remain a proposed next experiment,
+not implemented functionality. See the [report](../../implementation/phase29/generated-program-fast-loop.md).

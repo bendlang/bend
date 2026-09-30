@@ -505,3 +505,19 @@ incorrect-extension HVM launch are retained. The per-file receipt independently
 reopens and verifies every archived byte. The unchanged checked compiler comes
 from the explicit Phase27 capsule prerequisite; pinned upstream Git and Node24
 remain external versioned dependencies. All103 unrelated paths remain unchanged.
+
+## Phase29 generated-program fast loop
+
+The [Phase29 capsule](../implementation/phase29/evidence/README.md) preserves all
+checked/failed attempts, baseline release bytes, prototype and actual compiler
+emissions, scalar/ABI controls, counters, nine library timing windows and the
+whole-process HVM comparison. All601 measured/check/calibration processes and
+429 timed observations retain logs and consumed identities; acquisition and
+semantic controls are additional separately scoped records.
+
+The final audit, failed audit combiner, source-admission/recognizer failures,
+CLI smoke expectation failure and corrected installed-release checks remain.
+The capture independently reopens and verifies every archived member. Explicit
+Phase25/27/28 capsules supply prior source/emission/checked-compiler prerequisites;
+pinned Git and Node24.18.0 remain external dependencies. All103 protected starting
+paths are unchanged. No earlier experiment material is deleted or silently adopted.

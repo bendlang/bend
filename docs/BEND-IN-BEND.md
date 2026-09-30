@@ -20,19 +20,38 @@ program gains and explicit structural/capture fallbacks. The pin is unchanged.
 The [Phase27 release](../implementation/phase27/constructor-arm-prebinding.md)
 adds a shared selected-arm helper, with modest measured gains on emitted
 traversals and an actual compiler membership component.
+The [Phase29 release](../implementation/phase29/generated-program-fast-loop.md)
+adds guarded native arithmetic expressions and private Nat countdown loops.
+Its [fast-loop guide](../implementation/phase29/README.md) explains how to separate
+seconds-scale hypothesis screens, checked compiler iterations and broad integration.
 This experimental port does not establish independent proof
 validity; `--verdict` is explicitly unsupported.
 
 ## Analyzing emitted-program performance
+
+Phase29 implements 54 native U32/F32 scalar operations as direct JavaScript at
+identified saturated call sites. Partial/unknown calls retain ordinary descriptors.
+Supported native Nat countdown matchers keep their public entry and use local slots
+only inside the fully entered successor callback. Fresh per-iteration aliases,
+ordered next-argument temporaries and parallel-let scope preserve observable behavior.
+Neither the Nat representation nor global function arity changes.
+
+Use a saved checked fixture for the 4.7-second old/new screen. Rebuild after compiler
+source edits, then re-emit and validate the fixture. The final checked build plus 36
+focused checks took 33 seconds; broad original programs are an integration gate.
+Retain both short and longer-warm measurements: the former overstated the prototype's
+settled gain. The final compiler fixture improves 3.65× in the longer-warm window.
+The report gives full program costs and remaining TypeScript gaps.
 
 The [Phase28 comparison](../implementation/phase28/broader-program-comparison.md)
 broadens the corpus to six existing algorithms, four original mixed tests and
 the small HVM interpreter demo. It records absolute times, first-call and warmed
 ratios, warmup sensitivity and a distinct whole-process measurement. All 11 selected
 outputs agree. The six algorithm gaps are 111–1,391× in the original warmed JS
-window; the HVM process costs201 ms versus 69 ms. This establishes a substantial
+window; the HVM process costs201 ms versus 69 ms. This historically established a substantial
 generated-code gap beyond diagnostic kernels, without defining a production
-average or changing the installed release. See its
+average. Phase29 subsequently changes the installed emitter; use its report for
+the newer measurements. See its
 [reproduction guide](../implementation/phase28/README.md) for inputs and controls.
 
 The [Phase25 study](../implementation/phase25/generated-code-analysis.md) compares
