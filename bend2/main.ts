@@ -779,6 +779,8 @@ function term_refs(tm: unknown, out: Set<string>): void {
   }
 }
 
+// A closed reader ends output, not the command: --checkup may still reach
+// an import that fails, so EPIPE must not choose the command's exit status.
 function cli_say(fd: number, text: string): void {
   try {
     fs.writeSync(fd, text);
@@ -786,7 +788,6 @@ function cli_say(fd: number, text: string): void {
     if ((e as NodeJS.ErrnoException).code !== "EPIPE") {
       throw e;
     }
-    process.exit(0);
   }
 }
 

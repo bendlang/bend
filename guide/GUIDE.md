@@ -556,6 +556,9 @@ bend page.html -o dist    # bundle a web page that imports .bend files
 ./file --gpu 4GB          # cap the GPU's heap at 4GB
 ```
 
+Checks (including `--checkup`) keep their exit status when a reader closes;
+use `set -o pipefail` in pipelines.
+
 A `main` that returns `IO` runs compiled; one that returns a value is normalized
 by the checker (slow for big work) and printed; a file with no `main` just
 checks. A binary that uses `!` builds its GPU program too, as `file.gpu`, which
