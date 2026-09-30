@@ -1,0 +1,175 @@
+{
+  "complete": true,
+  "pass": true,
+  "kind": "phase30-checked17-figure-import",
+  "created": "2026-09-30T15:50:26.628627+00:00",
+  "source": "/home/ai/bend2/build/publish/bend/selfhost/build/phase30/final-figures-17b",
+  "files": [
+    {
+      "source": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase30/final-figures-17b/consumed-config.json",
+        "sha256": "b7687f137d7929f5b6ef147b09d6fe4b1b1fdec90dba0fb90342a445058a868c",
+        "bytes": 5193
+      },
+      "imported": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase30/final17-figures/consumed-config.json",
+        "sha256": "b7687f137d7929f5b6ef147b09d6fe4b1b1fdec90dba0fb90342a445058a868c",
+        "bytes": 5193
+      }
+    },
+    {
+      "source": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase30/final-figures-17b/consumed-tool.py",
+        "sha256": "4acc793cc2533ce659dc8024fbdfe0deb6660a30deff3d82e2c298c0715a4d1f",
+        "bytes": 27233
+      },
+      "imported": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase30/final17-figures/consumed-tool.py",
+        "sha256": "4acc793cc2533ce659dc8024fbdfe0deb6660a30deff3d82e2c298c0715a4d1f",
+        "bytes": 27233
+      }
+    },
+    {
+      "source": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase30/final-figures-17b/generation.json",
+        "sha256": "0aae446298a7b3769918b9863dc627d3e449404f6b91a436c589845ed4b143a1",
+        "bytes": 100277
+      },
+      "imported": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase30/final17-figures/generation.json",
+        "sha256": "0aae446298a7b3769918b9863dc627d3e449404f6b91a436c589845ed4b143a1",
+        "bytes": 100277
+      }
+    },
+    {
+      "source": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase30/final-figures-17b/historical-tree-operation-counts.png",
+        "sha256": "936a9f4aeffe86f3c0ba677e474e5fe6e42a18f349ff85545db855b99610ca88",
+        "bytes": 92380
+      },
+      "imported": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase30/final17-figures/historical-tree-operation-counts.png",
+        "sha256": "936a9f4aeffe86f3c0ba677e474e5fe6e42a18f349ff85545db855b99610ca88",
+        "bytes": 92380
+      }
+    },
+    {
+      "source": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase30/final-figures-17b/historical-tree-operation-counts.svg",
+        "sha256": "136b8d9cd63bd14d25433fb8bfe2c9449172204b839b6d3660e3c225ab735417",
+        "bytes": 13022
+      },
+      "imported": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase30/final17-figures/historical-tree-operation-counts.svg",
+        "sha256": "136b8d9cd63bd14d25433fb8bfe2c9449172204b839b6d3660e3c225ab735417",
+        "bytes": 13022
+      }
+    },
+    {
+      "source": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase30/final-figures-17b/original-program-slowdown.png",
+        "sha256": "8a3e29db7d15523c30d6387adc3e5235c9d20eba8e08b65ce18ea97fb99c33a5",
+        "bytes": 158646
+      },
+      "imported": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase30/final17-figures/original-program-slowdown.png",
+        "sha256": "8a3e29db7d15523c30d6387adc3e5235c9d20eba8e08b65ce18ea97fb99c33a5",
+        "bytes": 158646
+      }
+    },
+    {
+      "source": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase30/final-figures-17b/original-program-slowdown.svg",
+        "sha256": "09aa1908554e1246fdb12138a7f4073f670d7c9ce751fa3e2bd0a4bc1aeab1f7",
+        "bytes": 33169
+      },
+      "imported": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase30/final17-figures/original-program-slowdown.svg",
+        "sha256": "09aa1908554e1246fdb12138a7f4073f670d7c9ce751fa3e2bd0a4bc1aeab1f7",
+        "bytes": 33169
+      }
+    },
+    {
+      "source": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase30/final-figures-17b/report.md",
+        "sha256": "74b7c2071a6e17a4fb1d321fc8a8ee3d0837e52715122b62646545704e92f28f",
+        "bytes": 7453
+      },
+      "imported": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase30/final17-figures/report.md",
+        "sha256": "74b7c2071a6e17a4fb1d321fc8a8ee3d0837e52715122b62646545704e92f28f",
+        "bytes": 7453
+      }
+    },
+    {
+      "source": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase30/final-figures-17b/samples.csv",
+        "sha256": "819358732db58700517d9cb597e6789587039c83421c0b0ce9f3d0945c36ffe9",
+        "bytes": 540893
+      },
+      "imported": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase30/final17-figures/samples.csv",
+        "sha256": "819358732db58700517d9cb597e6789587039c83421c0b0ce9f3d0945c36ffe9",
+        "bytes": 540893
+      }
+    },
+    {
+      "source": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase30/final-figures-17b/scalar-helper-scaling.png",
+        "sha256": "c4d6e49028d47d86ed5f6fa938b17783cd63585c5638f85e0a51f934f5bd43ff",
+        "bytes": 170150
+      },
+      "imported": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase30/final17-figures/scalar-helper-scaling.png",
+        "sha256": "c4d6e49028d47d86ed5f6fa938b17783cd63585c5638f85e0a51f934f5bd43ff",
+        "bytes": 170150
+      }
+    },
+    {
+      "source": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase30/final-figures-17b/scalar-helper-scaling.svg",
+        "sha256": "43f1404c4845ceb8ee1ffc45dd894c75a3fcaf71e896216ddb9c184b62bd735f",
+        "bytes": 32327
+      },
+      "imported": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase30/final17-figures/scalar-helper-scaling.svg",
+        "sha256": "43f1404c4845ceb8ee1ffc45dd894c75a3fcaf71e896216ddb9c184b62bd735f",
+        "bytes": 32327
+      }
+    },
+    {
+      "source": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase30/final-figures-17b/summary.csv",
+        "sha256": "8504b3a5167e2bd7923d1a3699268125bc1339cb1075c1c1ca77423ef08038e0",
+        "bytes": 147999
+      },
+      "imported": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase30/final17-figures/summary.csv",
+        "sha256": "8504b3a5167e2bd7923d1a3699268125bc1339cb1075c1c1ca77423ef08038e0",
+        "bytes": 147999
+      }
+    },
+    {
+      "source": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase30/final-figures-17b/summary.json",
+        "sha256": "c6732c4b160ecc2a4b83afe94ab4834844f6a707b0e8bbece7a8d58cb4f727e7",
+        "bytes": 1118783
+      },
+      "imported": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase30/final17-figures/summary.json",
+        "sha256": "c6732c4b160ecc2a4b83afe94ab4834844f6a707b0e8bbece7a8d58cb4f727e7",
+        "bytes": 1118783
+      }
+    }
+  ],
+  "visualReview": {
+    "reviewer": "phase30_prototype",
+    "images": [
+      "original-program-slowdown.png",
+      "scalar-helper-scaling.png",
+      "historical-tree-operation-counts.png"
+    ],
+    "result": "All three images viewed: labels and legends readable, original transfer ratios unaltered, drift footnote visible, helper scope explicit, historical counters labelled as non-CPU/non-final-image evidence."
+  },
+  "scope": "Only original17 transfer points are plotted as original programs; separate17 long-tree result and prior windows are retained separately. Installation and CLI validation are documented in release-17.md."
+}

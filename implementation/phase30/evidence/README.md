@@ -1,9 +1,35 @@
 # Phase30 evidence preservation
 
-Preparation status: capture has not run. No archive or successful recovery is
-claimed until `receipt.json` exists with a successful independently reopened
-archive comparison. Producers must be closed before capture. The final report
-will bind the selected compiler and release separately from experimental images.
+Capture and transport verification are complete. The capsule contains **39,272
+regular files / 1,605,739,665 logical bytes**, compressed to **125,260,680 bytes**.
+Every archived member was independently reopened and compared by name, size,
+SHA256 and mode; the live pre/post inventories were identical. The full
+[receipt](receipt.json) records every member, and the [capture process](capture-run/run.json)
+records the successful 113.755-second acquisition and verification.
+
+Because the archive exceeds GitHub's per-file limit, its committed payload is
+two ordered chunks. [Transport verification](transport.json) independently
+rereads both chunks and verifies their concatenation against the original
+archive's exact size and SHA256. Only after that check was the newly created
+redundant whole file removed. No experiment bytes were removed. `receipt.json`'s
+`campaign.tar.gz` path identifies the logical reassembled archive, not a third
+committed payload file.
+
+Full archive SHA256:
+`641f71900de35a077265bcd373dfd0c9f98cb050469ca0265ba797a8bd73c60d`.
+From this directory, verify or recover into a separate destination:
+
+```sh
+cat campaign.tar.gz.part-* | sha256sum
+mkdir -p /tmp/bend-phase30-recovery
+cat campaign.tar.gz.part-* | tar -xz -C /tmp/bend-phase30-recovery
+```
+
+Recovery expands to approximately 1.61 GB and does not rerun any experiment.
+The committed chunks are 67,108,864 and 58,151,816 bytes; individual hashes and
+ordered paths are in `transport.json`. The [transport process](transport-run/run.json)
+retains its own successful receipt. The independent review and exact CLI
+receipts are also linked directly from the [release report](../release-17.md).
 
 `archive.py` captures every regular file under `selfhost/build/phase30`, including
 failed experiments, superseded measurements, exact consumed tool/config copies,

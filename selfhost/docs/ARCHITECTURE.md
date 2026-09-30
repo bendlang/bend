@@ -4,15 +4,19 @@ The typed compiler uses a first-order representation shared by the frontend,
 checker, normalizer and emitters. The original single-file compiler remains
 available as a historical regression baseline.
 
-The current Phase23 compiler targets upstream
-`018751270e800bc222a93dad7f257083ee53a5f7`, after Bend2 2.0.34. It retains the
+The current Phase30 compiler targets upstream
+`018751270e800bc222a93dad7f257083ee53a5f7`, after Bend2 2.0.34. Its installed17
+compiler adds bounded private JavaScript regions and a measured generic
+dispatch repair. The [current report](../../implementation/phase30/generated-program-performance.md)
+and [conformance record](../CONFORMANCE.md) distinguish final release status,
+fresh execution and unchanged-input reuse. It retains the
 Phase22 contextual frontend and load ABI2, reuses the existing graph evaluator
 for shared-term conversion, and adds array atomics over the uniform runtime
 representation. The [Phase23 report](../../implementation/phase23/upstream-graph-conversion.md)
 records checked and derived identities, validation, controlled cost and promotion
 status. The [Phase22 report](../../implementation/phase22/contextual-conformance.md)
 retains the prior installed baseline. Kernel/device capability claims remain
-separate from the architecture and tested frontend agreement. The final candidate03
+separate from the architecture and tested frontend agreement. Historical Phase23 candidate03
 image has3026/3026 exact main and196/196 exact broader frontend observations,
 with independently validated compiler, fixture, host and reference identities;
 see [frontend validation](../../implementation/phase23/frontend-validation.md).
@@ -63,6 +67,12 @@ runtime contract. The [performance guide](../../docs/BEND-IN-BEND-PERFORMANCE.md
 describes the grammar, limits, fallback and measured development workflow;
 the [Phase30 reports](../../implementation/phase30/README.md) distinguish checked
 candidates, disposable prototypes and the installed release.
+
+A private monotone Boolean records whether any exact worker has registered.
+Before the first registration, generic calls skip the empty registry lookup.
+The code getter runs first, so reentrant registration still selects the correct
+path. Once true, the flag stays true; it adds no second public representation
+or alternative compiler analysis.
 
 ## Core representation
 

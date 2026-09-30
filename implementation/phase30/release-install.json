@@ -1,0 +1,44 @@
+{
+  "complete": true,
+  "scope": "Descriptive acquisition/validation; not comparative speed.",
+  "command": [
+    "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+    "selfhost/tools/development/release.mjs",
+    "--install-attempt",
+    "selfhost/build/phase30/attempt-17"
+  ],
+  "cwd": "/home/ai/bend2/build/publish/bend",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase30/run.py",
+      "sha256": "d436ba0b21bc13ecb9ed208828c21afb92be236b7bdeaab2f4d9df9b7c93efd1",
+      "bytes": 2197
+    },
+    {
+      "file": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+      "bytes": 123655872
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/development/release.mjs",
+      "sha256": "da2c88a9cc1b641d03dddfbe2c39fc5a3ea5c724e14993c9d68fa971727809a0",
+      "bytes": 12981
+    }
+  ],
+  "timeoutSeconds": 180,
+  "started": 1790783351.7080188,
+  "returncode": 0,
+  "finished": 1790783357.284384,
+  "wallSeconds": 5.575939120259136,
+  "stdout": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase30/release-install-17/stdout.log",
+    "sha256": "974c60cbeba88cc63699d55e58bcfad5c9a0fdd1cd37422fc0dfefda430d93ad",
+    "bytes": 282
+  },
+  "stderr": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase30/release-install-17/stderr.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "changedInputs": []
+}

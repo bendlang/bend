@@ -21,11 +21,11 @@ The [Phase30 report](implementation/phase30/generated-program-performance.md)
 compares corresponding generated JavaScript, tests individual mechanisms on
 small fixtures, and implements bounded private scalar regions, direct helper
 calls, loops and tree traversal. The [performance guide](docs/BEND-IN-BEND-PERFORMANCE.md)
-explains the rules, fallback boundaries and fast development loop. Checked
-candidate16 is undergoing final performance and release validation; the report
-keeps its identity separate from the installed distribution.
+explains the rules, fallback boundaries and fast development loop. The selected checked17 compiler is installed and passes release verification
+and all 42 ordinary/relocated CLI checks. Its [release report](implementation/phase30/release-17.md)
+binds the installed artifact and exact validation scopes.
 
-Fresh candidate16 validation agrees with pinned TypeScript on **3,026 main and
+The selected compiler API agrees with pinned TypeScript on **3,026 main and
 196 broader frontend observations**. Raw shared failures remain visible;
 frontend agreement does not establish full backend or independent proof-kernel
 conformance. See [conformance](selfhost/CONFORMANCE.md) for the exact scopes.

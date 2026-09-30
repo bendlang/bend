@@ -1,0 +1,40 @@
+{
+  "complete": true,
+  "scope": "Descriptive acquisition/validation; not comparative speed.",
+  "command": [
+    "taskset",
+    "-c",
+    "4",
+    "python3",
+    "implementation/phase30/evidence/archive.py"
+  ],
+  "cwd": "/home/ai/bend2/build/publish/bend",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase30/run.py",
+      "sha256": "d436ba0b21bc13ecb9ed208828c21afb92be236b7bdeaab2f4d9df9b7c93efd1",
+      "bytes": 2197
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase30/evidence/archive.py",
+      "sha256": "551ef5c3f77a13484a7cbdd5fb3deea23a7640bbd331e8918f5bab607ca8fd56",
+      "bytes": 2631
+    }
+  ],
+  "timeoutSeconds": 600,
+  "started": 1790783737.1051116,
+  "returncode": 0,
+  "finished": 1790783850.8601403,
+  "wallSeconds": 113.75466403597966,
+  "stdout": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase30/evidence/capture-run/stdout.log",
+    "sha256": "376b0d260bd0b463b6b81021ce22536bd377ff7335113e13148c1c7d98852f8d",
+    "bytes": 668
+  },
+  "stderr": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase30/evidence/capture-run/stderr.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "changedInputs": []
+}

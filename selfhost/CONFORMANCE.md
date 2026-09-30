@@ -1,14 +1,16 @@
 # Compiler validation
 
-## Fresh Phase30 checked16 validation
+## Phase30 checked17 validation
 
-The selected checked16 API is
+The installed checked17 API is
 `33545640e25beffb61639b27f4815aaeb345fda14758e1d63418cd1d0ccc0637`.
 Its [report](../implementation/phase30/generated-program-performance.md) and
-[release manifest](dist/release.json) distinguish candidate validation from the
-installed distribution. Final installation and CLI checks are still pending.
+[release manifest](dist/release.json) bind the selected checked artifact.
+Release verification and all [42 ordinary/relocated CLI checks](../implementation/phase30/release-cli.json)
+pass, including generated JavaScript and native CPU execution. The relocated
+copy uses the retained external Clang16 toolchain.
 
-[Frontend renewal](../implementation/phase30/frontend-renewal.md) agrees exactly
+[Frontend renewal](../implementation/phase30/frontend-renewal.md) on16 agrees exactly
 with pinned TypeScript on **3,026 main observations and 196 broader observations**.
 The main raw outcomes remain **2,525 pass / 497 observed / 4 fail** on both sides;
 the broader set is **195 pass / 1 observed**. The four shared failures expect
@@ -17,8 +19,11 @@ An independently audited module-layout migration admits the five added JS module
 relative to the historical frontend reference, with all other input metadata,
 fixture paths, expected results and behavioral fields unchanged. The original
 strict manifest-comparison failure remains preserved.
+The [independent17 audit](../implementation/phase30/registration-flag-actual-review.md)
+proves identical frontend source/API/Base/host inputs. These3026+196 observations
+are reused under that audit, not described as a new17 full frontend run.
 
-Fresh [integration gates](../implementation/phase30/final-integration.md) pass
+Fresh [checked17 gates](../implementation/phase30/release-17.md) pass
 36 focused observations, 15 selected upstream JS executions, 23 libraries with
 127 points, all ten selected original library outputs, 22 compiler component
 observations and the complete HVM output. The primitive/worker suites again pass
@@ -28,19 +33,23 @@ witnesses. New region, tree, terminal-record, exact-entry, public-callback and
 full-array controls are linked from the report. These overlapping scopes are
 not a sum of distinct conformance tests.
 
-The [renewed backend pilot](../implementation/phase30/backend-pilot-renewal.md)
-matches all 81 historical observations: 69 paired fixture passes, eight expected
-compile refusals and four shared check failures. Seventeen native cases first
-reported a shared Clang EPERM in the sandbox. The unchanged native selection
-passes in an approved execution environment outside that sandbox; both failed
-receipts remain. This is selected native CPU validation, not full backend or GPU
-coverage. An additional 811-case JavaScript campaign is designed but unexecuted.
+The [checked17 backend pilot](../implementation/phase30/backend-pilot-renewal-17.md)
+matches all81 historical observations:69 paired fixture passes, eight expected
+compile refusals and four shared check failures. Its28 interpreter and26 JS rows
+are freshly acquired on17; four check and23 native observations are explicitly
+reused from16 after the unchanged-input audit. The earlier native renewal passes
+in an approved execution environment outside the sandbox; both preceding shared
+Clang EPERM receipts remain. This is selected native CPU validation, not full
+backend or GPU coverage. An additional811-case JavaScript campaign is designed
+but unexecuted.
 
-[Bounded self-emission](../implementation/phase30/bounded-self-emission.md)
-produces a new H compiler module. H prepares Base under its own API hash and
-matches the parent on one positive and one negative small compilation, including
-byte-identical positive JavaScript and result8. H is not installed. This is not
-full H conformance, an H-to-H fixed point, or independent proof validation.
+[Checked17 self-emission](../implementation/phase30/registration-checked-integration.md)
+produces a new H module exactly matching the independently tested flag variant.
+Fresh17 preparation checks Base under the actual H hash and matches a small
+positive compilation/output against the genuine parent, executing result8.
+The earlier positive/negative functional gate retains its frozen16 runtime-input
+scope; it is not relabelled as a freshly run17 negative test. H is not installed.
+This is not full H conformance, an H-to-H fixed point or independent proof validation.
 
 ## Historical Phase29 validation
 

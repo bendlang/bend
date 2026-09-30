@@ -1,7 +1,7 @@
 # P30-030 — Dispatch before any private registration
 
 Owner: phase30_analysis. Status: scoped correctness and all prospective timing
-criteria pass; selected for checked17 integration, release gates pending. Root requested this discriminator after the
+criteria pass; actual checked17 correspondence and affected integration pass. Root requested this discriminator after the
 complete final16 RLE point remained10.30% slower than Phase29 with disjoint ranges.
 
 **Hypothesis.** The module has no private-worker registration, yet every generic
@@ -45,7 +45,9 @@ median changes; the complete-state row improves5.378% with disjoint ranges.
 All prospective thresholds pass. The direct-only diagnostic saves3.91% and is
 not selected. RLE flag remains3.45% slower thanPhase29 in the same window.
 Root selected only the three general-flag runtime edits for checked17. Actual
-emission/gates/release remain separately required. The drifting short screen,
+emission correspondence, affected integration and its separate final matrix
+subsequently pass; see the [checked report](../../implementation/phase30/registration-checked-integration.md).
+The drifting short screen,
 two metadata-plan failures,16 baseline and all raw observations remain retained;
 no eager-arm restoration or runtime combination is selected. Full ranges, drift,
 paths and decision scope are in the linked implementation report.

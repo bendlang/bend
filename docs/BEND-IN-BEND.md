@@ -10,11 +10,11 @@ does not invoke the TypeScript compiler.
 The active target is upstream
 [`018751270e800bc222a93dad7f257083ee53a5f7`](https://github.com/bendlang/bend/tree/018751270e800bc222a93dad7f257083ee53a5f7)
 (after Bend 2.0.34). The [Phase30 report](../implementation/phase30/generated-program-performance.md)
-records the current candidate, renewed validation and controlled performance
+records the installed compiler, renewed validation and controlled performance
 comparison. Its private scalar regions make the selected original Mandelbrot
-program about100× faster than Phase29; a separate longer-warmup measurement
-leaves4.59× TypeScript overhead. Generic record/array programs still have large
-gaps, and compiler checking is a separate4.12× TypeScript measurement. Read the
+program 100.47× faster than Phase29 and leaves 4.63× TypeScript overhead in
+the final comparison. Generic record/array programs still have large gaps, and
+compiler checking is a separate 4.22× TypeScript measurement. Read the
 report's release section for the exact installed status and artifact identity.
 
 The historical [Phase23 report](../implementation/phase23/upstream-graph-conversion.md)
@@ -39,7 +39,7 @@ validity; `--verdict` is explicitly unsupported.
 The [generated-program performance guide](BEND-IN-BEND-PERFORMANCE.md) explains
 the Phase30 private region machinery, bounded admission, exact public entry and
 fast validation loop. Its [campaign reports](../implementation/phase30/README.md)
-distinguish the current checked candidate from the installed release and retain
+identify the current installed checked compiler and retain
 negative experiments as well as measured wins.
 
 Phase29 implements 54 native U32/F32 scalar operations as direct JavaScript at
@@ -237,7 +237,7 @@ npm run build -- /absolute/release-config.json /absolute/new-attempt
 Config fields and selection semantics are documented in the
 [maintained workflow guide](PHASE5_DEVELOPMENT.md). Broad conformance and checked
 self-reproduction are release/integration gates, not every small edit's build.
-The [Phase23 report](../implementation/phase23/upstream-graph-conversion.md) records
+The [Phase30 release report](../implementation/phase30/release-17.md) records
 the current artifact's evidence and remaining limits.
 
 ## Work on the current source
@@ -259,7 +259,7 @@ unforced message identity is outside this contract. Version6 recognizes the new 
 contract. Historical versions1–5 retain exact byte replay. The normalizer seed change and broader branch
 transformation failed stack controls and are excluded.
 
-The [Phase23 report](../implementation/phase23/upstream-graph-conversion.md) gives the
+The [Phase30 release report](../implementation/phase30/release-17.md) gives the
 current source and artifact identities. Keep experiments isolated by selecting a
 frozen attempt explicitly:
 
@@ -318,7 +318,7 @@ BEND_TYPED_API="$PWD/build/candidate-api.mjs" \
 
 This writes a checked API plus the assembled source and provenance in
 `build/typed/`. Keep source, API, runtime and host snapshots immutable during
-validation. Full self-reproduction has not been rerun for the current Phase23 release. The advanced
+validation. Full H-to-H self-reproduction has not been rerun for the current Phase30 compiler. The advanced
 runner, separate from the checked release build, is:
 
 ```sh

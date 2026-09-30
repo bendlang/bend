@@ -72,3 +72,28 @@ the renewed matrix, separate long comparison and figure/import artifacts is
 conservative for these same protocols. This excludes additional H/conformance
 artifacts and final raw-evidence archiving. The observed free space was
 623832 KiB (about 609 MiB); no files were deleted for this estimate.
+
+## Completed selected17 import
+
+The original `final-figure-plan-17` remains unexecuted. Its fresh17b metadata
+binding adds checked17's separate 15-second-warm tree-bitonic comparison to the
+historical windows and uses the neutral status: “Measured selected17;
+installation and CLI validation recorded separately in release-17.md”. The
+renderer remains byte-identical to reviewed16c; no source timing or original
+bar is changed, and no samples from different windows are pooled.
+
+After the full17 matrix, long tree diagnostic and H17 comparison closed,
+`final-figures-17b-outer` rendered successfully in 33.43 seconds. All three PNGs
+were inspected: labels and legends are readable, original-program drift is
+marked, scalar-helper scope is explicit, and historical11→12 counts retain
+their non-CPU/non-final-image qualification. Thirteen generated files
+(2447525 bytes) were imported byte-for-byte into
+[`final17-figures`](final17-figures/report.md); its
+[`import.json`](final17-figures/import.json) records every source/destination
+hash and size plus visual review. The final16 and held14 imports remain intact.
+
+The [checked17 timing report](final-timing-17.md) links the current diagrams and
+retains the complete original table, request/process compiler costs, scaling
+and separate long diagnostic. The imported report's neutral generation-time
+status is immutable; actual installation and CLI checks are recorded in the
+separate [release report](release-17.md).

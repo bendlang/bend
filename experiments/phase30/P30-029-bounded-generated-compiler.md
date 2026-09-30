@@ -63,3 +63,17 @@ metadata is under `generated-compiler-cost-plan16b/`. The14 self-emission plan r
 unexecuted. Tools/designs/reports are tracked; the parent-owned final campaign
 capsule must preserve the ignored raw evidence before this becomes a durable
 checkpoint. No additional selfcompile or H promotion is selected.
+
+**Current-image renewal.** The parent subsequently authorized one bounded17
+emission after selecting the registration flag. Its actualH17 output is exactly
+the validated manual flag bytes `a7ffece5…`, with no H→H or installation. Fresh
+positive preparation uses17 runtime input, actual API-hash Base caches and a
+new independently checked expected output. The negative functional observation
+remains explicitly reused prior scope.
+
+The separately granted current17 small-request window passes all18 outputs:
+genuine-parent median1480.712ms [1457.451–1483.623], actualH17 7405.986ms
+[7389.634–7524.508], or5.0016×. Parent timed2 improves10.12–13.37%; H17 improves
+7.66–9.88%. [The current report](../../implementation/phase30/warmed-generated-compiler17.md)
+retains every trial, cache and boundary. It is not steady state, a comparison
+with the upstream handwritten compiler, or an isolated cross-window flag gain.

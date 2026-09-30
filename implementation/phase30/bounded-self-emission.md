@@ -60,3 +60,15 @@ A later, separately granted [warmed small-request comparison](warmed-generated-c
 finds H5.2089× the genuine parent's request time under its fixed one-warm/two-
 timed protocol. That controlled result is distinct from the acquisition durations
 above and retains substantial within-trial change on both implementations.
+
+Checked17 later emits the same assembled source once more under the selected
+registration-flag runtime. Its31.076-second bounded acquisition produces actualH17
+SHA `a7ffece566086a00c7b8224680ab320f1933e7ae7663fc765ed20eea5c8cdeb5`,
+exactly2,446,379bytes and byte-identical to the prior manual flag diagnostic.
+[The checked17 correspondence report](registration-checked-integration.md)
+separates actual emission provenance, explicitly reused old16-input functional
+scope, and the fresh17 small-request preparation. It does not transfer the
+originalH ratio above to the new image. A separately granted
+[currentH17 comparison](warmed-generated-compiler17.md) measures5.0016× its genuine
+parent on the same fixed warmed-once small-request protocol, preserving visible
+within-trial change. This is a new window, not a cross-window flag speedup.

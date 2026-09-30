@@ -1,10 +1,10 @@
 # Phase30: direct generated code
 
-Agent-generated ongoing campaign, started2026-09-30 07:28 UTC. The user requested
-at least seven hours of work. This is an in-progress evidence index, not a claim
-of a completed optimization or released compiler.
+Agent-generated campaign, started 2026-09-30 07:28 UTC. Work exceeded the
+requested seven-hour minimum. Checked17 is installed and passes release
+verification and all 42 ordinary/relocated CLI checks.
 
-The selected candidate is checked attempt16, following the held14 matrix and
+The installed compiler is checked attempt17, following the held14 matrix and
 the checked15 runtime repair at[4e5b7fe](https://github.com/rom1504/bend/commit/4e5b7fe). The
 [consolidated report](generated-program-performance.md) records its source,
 mechanisms and current release status; the [decision table](decisions.md)
@@ -17,39 +17,49 @@ private scalar tree, reused traversal frames and private-helper Let statements.
 generic workloads despite the large scalar gain. The seven-way confirmation
 isolated constructor-matcher overhead: delayed application cuts row time26.29%
 and recovers Phase29 speed. Checked16 also removes64 implementation lines,
-eight functions and the obsolete arm-prebinding module. The distribution API
-still contains Phase29; the consolidated default awaits installation and CLI
-validation after the remaining16 gates.
+eight functions and the obsolete arm-prebinding module. Checked17 then adds the
+measured registration flag:5.57% less RLE time and5.38% less complete-row time,
+with registered scalar controls overlapping. Its actual outputs match the tested
+modules byte for byte. The consolidated default now installs that checked
+artifact; the previous Phase29 default is preserved in release history.
 
-The completed16 matrix measures original Mandelbrot at **0.214181 ms versus
-Phase29's21.416666 ms: approximately100× faster**. A separate longer-warmup
-window leaves **4.59× TypeScript overhead**. The scalar helper at8192 iterations
-is192.96× faster than Phase29 and1.34× TypeScript time. These are selected
-scalar results: generic programs still cost roughly60–409× TypeScript in the
-original short-window matrix, with several warmup-sensitive observations.
-The [full timing report](final-timing-16.md) includes regressions and compiler
-costs; no combined average or multiplied historical speedup is claimed.
+The completed17 matrix measures original Mandelbrot at **0.212798 ms versus
+Phase29's 21.379050 ms: 100.47× faster**, with **4.63× TypeScript overhead**.
+The scalar helper at 8,192 iterations is **186.39× faster than Phase29 and
+1.376× TypeScript time**. Generic edit distance and ray tracing improve 5.67%
+and 3.42%, but still cost 391.54× and 299.07× TypeScript time. RLE remains 2.70%
+slower than Phase29. Ordinary compiler checking takes 4.22× TypeScript time.
+The [full timing report](final-timing-17.md) includes ranges, warmup drift and
+separate compiler costs; no combined average or multiplied gain is claimed.
 
-All ten original libraries compile and produce their checked results. Fresh16
+All ten original libraries compile and produce their checked results. Fresh17
 also passes the focused, selected upstream, primitive/worker,23-library,
-compiler-component and HVM integration scopes. Whole frontend renewal passes
+compiler-component and HVM integration scopes. The16 whole frontend renewal passes
 3,026 main and 196 broader exact observations, with the explicit module-layout
-migration independently reviewed. Bounded self-emission succeeds and its H
-module passes small positive/negative compilation controls. A separate warmed-
-once small request puts H5.21× behind the genuine TypeScript-produced parent
-for the same Bend compiler source. The81-row backend pilot now matches all
-historical observations in the approved native execution environment, keeping
-69 passes,8 expected refusals and4 shared failures separate. The final runtime
-experiment and installation remain pending; no installed16 release is claimed yet.
+migration independently reviewed;17 reuses it under exact input-identity proof.
+Actual17 self-emission matches the tested flag module, and fresh positive/cache
+preparation passes on its17 pipeline. The separately measured actual H17 request costs 5.002× its genuine
+TypeScript-produced parent of the same Bend source. Both sides still warm within
+trials; this is not a comparison against the handwritten TypeScript compiler. The81-row backend pilot now matches all historical
+observations:54 interpreter/JS rows are fresh17,27 native/check rows explicitly
+reuse16, with69 passes,8 expected refusals and4 shared failures kept separate.
+The full17 matrix, separate H17 timing, installation and 42-step CLI validation
+are complete.
 
 - [Actual helper measurements](checked-helper-timing.md)
 - [Original-program and compiler-cost integration measurements](final-timing.md)
 - [Renewed16 measurements](final-timing-16.md)
+- [Selected17 measurements](final-timing-17.md)
+- [Final17 diagrams and exact plotted samples](final17-figures/report.md)
+- [Selected17 release and validation scopes](release-17.md)
+- [Independent selected-release review](independent-release-17.md)
 - [Renewed frontend observations](frontend-renewal.md)
 - [Independent module-layout review](frontend-layout-independent-review.md)
 - [Bounded self-emission and its validation scope](bounded-self-emission.md)
 - [Warmed generated compiler versus genuine parent](warmed-generated-compiler-cost.md)
+- [Current17 generated-compiler comparison](warmed-generated-compiler17.md)
 - [Renewed selected backend observations and environment boundary](backend-pilot-renewal.md)
+- [Final17 backend renewal:54 fresh and27 reused observations](backend-pilot-renewal-17.md)
 - [Checked16 diagrams and exact plotted samples](final16-figures/report.md)
 - [Registration-dispatch experiment and controls](registration-dispatch.md)
 - [Independent empty-registry transition controls](empty-registry-independent-review.md)
@@ -90,31 +100,15 @@ pending/rejected states are superseded only where a later report says so.
 - [Starting artifacts and protected files](start-state.json)
 - [First hypothesis](../../experiments/phase30/P30-001-direct-entry.md)
 
-The baseline is Phase29 at77aecb2; pinned upstream is0187512. Performance,
-correctness and promotion outcomes will be reported separately. No PR comments
-will be posted as part of this campaign.
+The baseline is Phase29 at77aecb2; pinned upstream is0187512. The links below
+retain earlier experiments and their original artifact/protocol scopes.
+No PR comment is part of this campaign.
 
 - [Paired generated-code inspection](code-comparison.md)
 - [Private edit-distance mechanism and retained failure](prototype-findings.md)
 - [Fresh argument ownership: first checked implementation](owned-arguments.md)
 - [Independent semantic review](semantic-review.md)
 - [Prospective scalar-region review](region-semantic-plan.md)
-
-First checkpoint: checkedattempt01passes36focused cases,120fixture points and
-22independent emitter/runtime observations. The owned-vector prototype confirms
-1.137× on the small Mandelbrot input; a separate private edit-row prototype
-confirms1.379× under immutable globals,1.287× with replacement guards. Neither
-private prototype covers in-place descriptor mutation. Phase29 remains installed.
-
-The actual owned-vector compiler now independently confirms1.133×. A guarded
-closed scalar-region prototype confirms2.679× on original Mandelbrot bench(0,0);
-the per-call guarded version regresses53.8%. These are different workload scopes
-and must not be multiplied. Exact constructor-arm saturation measured1.023× on
-the complete-state edit-row fixture, but is now rejected: an independent test
-found it executes arm effects before an enclosing oversaturation boundary.
-General scalar-region compilation is in progress. Its corrected entry design
-also repairs inherited Phase29 scheduling and mutable-self-binding failures;
-attempt03 is retained and must not be promoted.
 
 - [Region experiments and measurements](direct-region-findings.md)
 - [General compiler implementation plan](../../design/phase30/scalar-region-compiler.md)
@@ -128,13 +122,5 @@ attempt03 is retained and must not be promoted.
 - [Record loop investigation](record-carrying-nat-loop.md)
 - [Bounded bootstrap diagnostics](bootstrap-diagnostic-bound.md)
 
-The literal-shift ablation confirms 4.024× over the same private region on the
-small helper point. The rule is now implemented and passes 12,600 scalar
-comparisons plus scoped host/order controls. Attempt07 also passes the corrected
-region and entry suites. See the [compiler checkpoint](compiler-checkpoint.md)
-and [literal-shift report](constant-native-shifts.md). Actual performance and
-broader integration remain pending; Phase29 is still installed.
-
-Attempt04's genuine bootstrap followed by recipe-hash rejection remains in the
-record. The reviewed diagnostic recipe is now admitted with historical replay
-preserved; the failure was not silently replaced by the successful later build.
+- [Early compiler checkpoint and retained recipe rejection](compiler-checkpoint.md)
+- [Constant native shifts](constant-native-shifts.md)

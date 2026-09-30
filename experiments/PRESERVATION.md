@@ -521,3 +521,22 @@ The capture independently reopens and verifies every archived member. Explicit
 Phase25/27/28 capsules supply prior source/emission/checked-compiler prerequisites;
 pinned Git and Node24.18.0 remain external dependencies. All103 protected starting
 paths are unchanged. No earlier experiment material is deleted or silently adopted.
+
+## Phase30 direct generated code
+
+The [Phase30 capsule](../implementation/phase30/evidence/README.md) preserves all
+39,272 regular acquisition files: checked and failed attempts, generated modules,
+consumed tools/configurations, semantic controls, isolated interventions,
+held14/checked16/selected17 timing windows, frontend renewal and explicit reuse,
+backend pilot environment failures and recovery, actual H self-emission and
+request comparisons, figures and installed/relocated release verification.
+
+Its 1,605,739,665 logical bytes produce a 125,260,680-byte gzip archive. Every
+member was independently reopened and checked by name, size, SHA256 and mode,
+with unchanged live pre/post inventories. Two committed transport chunks were
+independently reread and their concatenation matches that exact archive; the
+receipt names the logical reassembled stream. The redundant newly created whole
+archive was removed only after exact transport verification. Earlier capsules
+and all103 protected starting files remain unchanged. Explicit historical
+capsules, pinned upstream Git, Node24.18 and the native Clang16 environment keep
+the prerequisite boundaries documented in the preservation README.

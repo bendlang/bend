@@ -111,6 +111,11 @@ const upstreamGraphProfile=Object.freeze({
   "guard": "  if (typeof _a_0 === \"string\" && typeof _b_0 === \"string\") return _a_0 === _b_0;\n"
 });
 const profiles=Object.freeze([upstreamGraphProfile,legacyProfile,currentTailProfile,currentChoiceProfile,currentFastProfile,currentProfile]);
+// Phase30 changes bootstrap error formatting only. Admit the reviewed complete
+// recipe alongside its predecessor for this pin; generated version6 is unchanged.
+const phase30RecipeHashes=Object.freeze({...upstreamGraphProfile.recipeHashes,
+  'stage0-library.mjs':'c7eaf78482d64959d413ac490315d20f79c6cbd4f0ef6bb492ca7589d851f017'
+});
 
 // The current compiler roots have identity public marshaling, emitted exactly
 // in this shape. Refuse any new ABI shape until separately reviewed.
@@ -269,10 +274,15 @@ function verifyBootstrap(apiFile,reportFile) {
     const matches=p.inputs.filter(x=>x.role==='upstream'&&path.basename(x.file)===name);
     requireThat(matches.length===1&&matches[0].sha256===expected,'Unreviewed pinned upstream '+name);
   }
-  for(const [name,expected]of Object.entries(recipeHashes)) {
+  const actualRecipe={};
+  for(const name of Object.keys(recipeHashes)) {
     const matches=p.inputs.filter(x=>x.role==='host-tool'&&path.basename(x.file)===name);
-    requireThat(matches.length===1&&matches[0].sha256===expected,'Unreviewed bootstrap recipe '+name);
+    requireThat(matches.length===1,'Missing/duplicate bootstrap recipe '+name);
+    actualRecipe[name]=matches[0].sha256;
   }
+  const recipes=profile===upstreamGraphProfile?[recipeHashes,phase30RecipeHashes]:[recipeHashes];
+  requireThat(recipes.some(recipe=>Object.entries(recipe).every(([name,hash])=>actualRecipe[name]===hash)),
+    'Unreviewed bootstrap recipe bundle');
   requireThat(r.baseSha256===upstreamHashes['base.bend']&&sha(fs.readFileSync(r.source))===r.sourceSha256,'Changed source/Base identity');
   requireThat(Array.isArray(r.modules)&&r.modules.length>0&&new Set(r.modules.map(x=>x.file)).size===r.modules.length,'Missing/duplicate modules');
   for(const module of r.modules) {

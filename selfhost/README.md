@@ -2,10 +2,11 @@
 
 Use the [compiler guide](../docs/BEND-IN-BEND.md) and
 [Phase30 report](../implementation/phase30/generated-program-performance.md).
-The selected checked16 candidate emits bounded private scalar regions, direct
+The installed checked17 compiler emits bounded private scalar regions, direct
 lexical helper calls, countdown loops and scalar tree traversal. Public values
 retain their representation; unsupported shapes use the ordinary emitter.
-Final performance comparison, installation and relocated CLI checks are pending.
+The full performance comparison is complete. Release verification and all
+42 ordinary/relocated CLI checks pass; see the [release report](../implementation/phase30/release-17.md).
 
 The [performance guide](../docs/BEND-IN-BEND-PERFORMANCE.md) separates small
 saved-JavaScript experiments, checked compiler iterations and broad integration.
@@ -13,10 +14,12 @@ A checked build plus 36 focused controls took roughly 35–40 seconds during thi
 campaign, with fixture emission around five seconds. These are acquisition
 durations, not a controlled compiler-throughput comparison.
 
-Fresh validation agrees with pinned TypeScript on **3,026 main and 196 broader
+The selected API agrees with pinned TypeScript on **3,026 main and 196 broader
 frontend observations**. It also passes selected upstream JS execution,
 23 libraries / 127 points, ten original libraries, the HVM application,
 22 compiler-component observations and independent runtime/emitter controls.
+The frontend observations are reused under a strict unchanged-input audit;
+the affected generated-JS suites are freshly renewed on17.
 Counts overlap; [conformance](CONFORMANCE.md) keeps exact agreement, shared
 fixture failures, backend coverage and self-emission scopes distinct.
 
@@ -154,7 +157,7 @@ remain in `dist/selfhost/`; the [preservation index](../experiments/PRESERVATION
 and [experiment ledger](../experiments/ledger.md) identify their exact scope.
 They are not alternate defaults. The current release can run after relocation
 without an upstream checkout, as verified by its
-[Phase23 installed/relocated CLI checks](../implementation/phase23/release-cli.json).
+[Phase30 installed/relocated CLI checks](../implementation/phase30/release-cli.json).
 The earlier [Phase5 clean-package evidence](../implementation/phase5/relocated-cli-evidence/README.md)
 applies to that historical artifact.
 

@@ -2067,3 +2067,16 @@ thanPhase29 in its same window. Root selects only the three general-flag runtime
 edits for checked17; fresh actual-output and integration checks remain required
 before release. The direct-only diagnostic, all earlier baselines and the two
 metadata-plan failures remain retained.
+
+
+## Phase 30 — current generated compiler comparison
+
+[P30-029's actualH17 renewal](../implementation/phase30/warmed-generated-compiler17.md)
+follows the checked17 output correspondence and fresh positive/cache preparation.
+Its separately granted warmed-once window reports1480.712ms for the genuine
+TS-produced parent of the same Bend compiler and7405.986ms for H17, a5.0016×
+ratio. All18 output hashes pass. Both sides still warm between the two timed
+requests: parent10.12–13.37%, H17 7.66–9.88%. This is not the upstream handwritten
+compiler ratio, steady-state throughput, a fixed point, or an isolated flag
+speedup inferred from the earlier5.2089× window. Original observations and
+negative-gate reuse scope remain explicit.

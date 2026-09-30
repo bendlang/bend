@@ -1,5 +1,9 @@
 # Final16 backend pilot:81 exact historical observations
 
+The subsequent [checked17 renewal](backend-pilot-renewal-17.md) freshly acquires
+all54 interpreter/JS observations and reuses only27 audited unchanged
+check/native observations. This page preserves the16 acquisition history.
+
 The final approved-environment recovery completed the retained81-row checked16
 pilot with **69 paired fixture passes, eight not-applicable compile refusals,
 and four shared check failures**, all exactly matching the full historical

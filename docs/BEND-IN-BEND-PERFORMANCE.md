@@ -65,6 +65,13 @@ operations. The public global table and partial descriptors remain usable.
 Standard host intrinsics are part of the runtime contract; the finite tests do
 not establish equivalence under arbitrary replacement of JavaScript builtins.
 
+Before any private worker has registered, a monotone runtime flag skips the
+empty WeakSet lookup in ordinary calls. The code getter runs before reading the
+flag, so a getter that registers a worker still receives the normal registered
+checks. After the first registration, the complete exact-entry path remains.
+The isolated experiment improves RLE and a complete generic row by about5–6%;
+it does not remove generic descriptor, matching or record-construction costs.
+
 The analysis is deliberately bounded: at most 32 completed helpers, dependency
 depth 16, one shared 32,768-unit budget, bounded source/expressions/bindings, and
 an active-name set that rejects unsupported cycles. Failed analysis uses the

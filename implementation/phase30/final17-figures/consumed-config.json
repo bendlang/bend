@@ -1,0 +1,138 @@
+{
+  "candidateManifest": "../attempt-17/attempt.json",
+  "candidateLabel": "Checked17",
+  "candidateStatus": "Measured selected17; installation and CLI validation recorded separately in release-17.md",
+  "originalReports": [
+    "../final-transfer-plan-17/mandelbrot-timing/report.json",
+    "../final-transfer-plan-17/editdist-timing/report.json",
+    "../final-transfer-plan-17/tree-bitonic-timing/report.json",
+    "../final-transfer-plan-17/lexer-timing/report.json",
+    "../final-transfer-plan-17/symreg-timing/report.json",
+    "../final-transfer-plan-17/test-morning-program-timing/report.json",
+    "../final-transfer-plan-17/test-evening-program-timing/report.json",
+    "../final-transfer-plan-17/test-rle-roundtrip-timing/report.json",
+    "../final-transfer-plan-17/test-map-set-ops-timing/report.json",
+    "../final-transfer-plan-17/raytrace-timing/report.json"
+  ],
+  "scalingReport": "../scalar-scaling-confirm-17/report.json",
+  "scalingCandidateReceipt": "../runtime-actual-source-17-helper/candidate.mjs.json",
+  "treeCounts": "../tree-compiler-counts-12/report.json",
+  "historicalReports": [
+    {
+      "report": "../final-transfer-plan-14/mandelbrot-timing/report.json",
+      "label": "Held14 transfer: mandelbrot"
+    },
+    {
+      "report": "../final-transfer-plan-14/editdist-timing/report.json",
+      "label": "Held14 transfer: editdist"
+    },
+    {
+      "report": "../final-transfer-plan-14/tree-bitonic-timing/report.json",
+      "label": "Held14 transfer: tree-bitonic"
+    },
+    {
+      "report": "../final-transfer-plan-14/lexer-timing/report.json",
+      "label": "Held14 transfer: lexer"
+    },
+    {
+      "report": "../final-transfer-plan-14/symreg-timing/report.json",
+      "label": "Held14 transfer: symreg"
+    },
+    {
+      "report": "../final-transfer-plan-14/test-morning-program-timing/report.json",
+      "label": "Held14 transfer: test-morning-program"
+    },
+    {
+      "report": "../final-transfer-plan-14/test-evening-program-timing/report.json",
+      "label": "Held14 transfer: test-evening-program"
+    },
+    {
+      "report": "../final-transfer-plan-14/test-rle-roundtrip-timing/report.json",
+      "label": "Held14 transfer: test-rle-roundtrip"
+    },
+    {
+      "report": "../final-transfer-plan-14/test-map-set-ops-timing/report.json",
+      "label": "Held14 transfer: test-map-set-ops"
+    },
+    {
+      "report": "../final-transfer-plan-14/raytrace-timing/report.json",
+      "label": "Held14 transfer: raytrace"
+    },
+    {
+      "report": "../runtime-row-confirm-01/report.json",
+      "label": "Seven-way isolated row mechanism"
+    },
+    {
+      "report": "../runtime-cleanup-confirm-16/report.json",
+      "label": "Actual15/16 cleanup confirmation"
+    },
+    {
+      "report": "../runtime-cleanup-long-confirm-16/report.json",
+      "label": "Actual15/16 separate15-second warmup"
+    },
+    {
+      "report": "../final-tree-bitonic-long-confirm-16/report.json",
+      "label": "Actual29/16 separate 15-second tree-bitonic follow-up"
+    },
+    {
+      "report": "../final-transfer-plan-16/mandelbrot-timing/report.json",
+      "label": "Prior checked16 transfer: mandelbrot"
+    },
+    {
+      "report": "../final-transfer-plan-16/editdist-timing/report.json",
+      "label": "Prior checked16 transfer: editdist"
+    },
+    {
+      "report": "../final-transfer-plan-16/tree-bitonic-timing/report.json",
+      "label": "Prior checked16 transfer: tree-bitonic"
+    },
+    {
+      "report": "../final-transfer-plan-16/lexer-timing/report.json",
+      "label": "Prior checked16 transfer: lexer"
+    },
+    {
+      "report": "../final-transfer-plan-16/symreg-timing/report.json",
+      "label": "Prior checked16 transfer: symreg"
+    },
+    {
+      "report": "../final-transfer-plan-16/test-morning-program-timing/report.json",
+      "label": "Prior checked16 transfer: test-morning-program"
+    },
+    {
+      "report": "../final-transfer-plan-16/test-evening-program-timing/report.json",
+      "label": "Prior checked16 transfer: test-evening-program"
+    },
+    {
+      "report": "../final-transfer-plan-16/test-rle-roundtrip-timing/report.json",
+      "label": "Prior checked16 transfer: test-rle-roundtrip"
+    },
+    {
+      "report": "../final-transfer-plan-16/test-map-set-ops-timing/report.json",
+      "label": "Prior checked16 transfer: test-map-set-ops"
+    },
+    {
+      "report": "../final-transfer-plan-16/raytrace-timing/report.json",
+      "label": "Prior checked16 transfer: raytrace"
+    },
+    {
+      "report": "../registration-confirm-rle16/report.json",
+      "label": "P30-030 isolated RLE confirmation"
+    },
+    {
+      "report": "../registration-confirm-helper16/report.json",
+      "label": "P30-030 registered helper negative control"
+    },
+    {
+      "report": "../registration-confirm-row16/report.json",
+      "label": "P30-030 complete-state row negative control"
+    },
+    {
+      "report": "../registration-long-mandelbrot16/report.json",
+      "label": "P30-030 separate15-second Mandelbrot negative control"
+    },
+    {
+      "report": "../final-tree-bitonic-long-confirm-17/report.json",
+      "label": "Checked17 separate15-second-warm tree-bitonic diagnostic"
+    }
+  ]
+}

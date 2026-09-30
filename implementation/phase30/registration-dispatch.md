@@ -1,7 +1,7 @@
 # P30-030: exact dispatch before the first registration
 
 Correctness and the prospectively bounded performance criteria pass. The parent
-selected the general flag for checked17; fresh integration gates remain separate
+selected the general flag for checked17; fresh integration gates are separate
 from the generated-JavaScript diagnostic measurements below.
 The [prospective design](../../design/phase30/registration-free-exact-dispatch.md)
 separates a registration-free diagnostic from a general monotone flag. The latter
@@ -127,8 +127,9 @@ identities. Plan16c repairs binding only; it changes no module or observation.
 
 Root selected exactly the three general-flag runtime edits under
 [the conditional integration design](../../design/phase30/registration-flag-integration.md).
-Checked17 must independently prove actual-output correspondence and renew its
-affected gates before release. No compound runtime change is selected, and the
+Checked17 subsequently proves actual-output correspondence and renews its
+affected gates; [the checked integration report](registration-checked-integration.md)
+and [final matrix](final-timing-17.md) retain that later evidence. No compound runtime change is selected, and the
 old16 full matrix remains immutable. A byte-identical actualH17 may reuse only
 the manual-H functional gate's frozen16 driver/runtime-input scope; it does not
 inherit the separately measured originalH ratio or claim a fresh17 pipeline.

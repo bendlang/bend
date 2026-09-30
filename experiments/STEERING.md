@@ -6,18 +6,18 @@ began2026-09-30 07:28:01 UTC with a seven-hour minimum, through14:28:01 UTC.
 Finish the concrete release/evidence after that minimum if needed. Preserve the
 103 unrelated starting paths in `implementation/phase30/start-state.json`.
 
-## Active Phase30 consolidation
+## Consolidated Phase30 release
 
 [Design](../design/phase30/direct-generated-code.md),
 [report](../implementation/phase30/generated-program-performance.md),
 [decisions](../implementation/phase30/decisions.md), and
-[release sequence](../design/phase30/consolidated-release.md).
+[release sequence](../design/phase30/consolidated-release17.md).
 The target remains upstream `018751270e800bc222a93dad7f257083ee53a5f7`, after2.0.34.
-Checked16 is selected: API33545640, genuine parent60aa968f, source678bafd6,
-runtimefab241ae, Basec742fae9, guarded profile6. Source checkpoint73912c3;
-validation checkpointcf1d7fb. The default distribution API still contains29 while
-development source/runtime are16: do not claim a verified consolidated default
-before installation and CLI checks.
+Checked17 is selected: API33545640, genuine parent60aa968f, source678bafd6,
+runtime6731308b, Basec742fae9, guarded profile6. Runtime checkpointaf8a719 is pushed.
+Checked17 is installed and the maintained release verifier passes. All 42 ordinary/relocated CLI checks pass. The 39,272-file capsule is verified
+and stored as two byte-exact transport chunks. The authorized publication target
+is the fork branch `selfhost/bootstrap`. The former10510efd default has its own retained history.
 
 The emitter now supports fresh argument ownership, private lexical scalar
 regions, constant native shifts, flat terminal records, nested countdowns,
@@ -33,20 +33,26 @@ attribute that regression to constructor-arm prebinding, not a proven V8-specifi
 allocation/inlining cause. The winning delayed matcher restores generic speed;
 fused wrappers/ordinary-dispatch changes do not. Checked16 then deletes64
 implementation lines, eight functions and the obsolete arm-prebinding module.
-The cleanup has no independently established incremental speed gain.
+The cleanup has no independently established incremental speed gain. P30-030
+then clears its prospective gates: the monotone registration flag cuts RLE5.57%
+and complete-row time5.38%, with no meaningful registered helper/Mandel penalty.
+Actual17 outputs match those exact flag modules; only three runtime fragments
+change, adding one line. All original/gate outputs pass.
 
-Actual16 small confirmation: complete row0.444585ms, overlapping29/15 ranges;
-scalar1280.006975ms,56.83× faster than29 and4.096× TypeScript. All13 final jobs
-pass in25m58s. Original Mandelbrot is0.214181ms versus29's21.416666ms
-and TypeScript's0.045452ms, about100× improvement and4.71× residual overhead.
-Edit distance recovers29 speed but remains408.69× TypeScript. Long-warm Mandel
-is4.59× TypeScript; tree-bitonic is4.15% slower than29. RLE retains a10.30%
-regression. Ordinary compiler checking costs4.12× TypeScript and3.86% more than29.
-Do not extrapolate selected cases or multiply historical incremental factors.
+The final17 13-job matrix passes in25m30s. Original Mandelbrot takes0.212798ms,
+100.47× faster than Phase29 and4.63× TypeScript time. Scalar8192 takes0.136689ms,
+186.39× faster than29 and1.376× TypeScript, with residual3–4% within-sample
+warming. Entry at zero work costs2.70×29. Edit distance improves5.67% but remains
+391.54×TS; raytrace improves3.42% but remains299.07×TS. RLE is2.70% slower than29.
+Long tree-bitonic ranges overlap29, with88.07×TS overhead. Other drift-sensitive
+points keep their limitations. Ordinary compiler checking costs4.22×TS and
+4.86% more than29; Mandelbrot library compilation costs8.56% more than29.
+Neither generated-program gains nor cross-window16/17 variation establishes
+an incremental compiler-throughput improvement. Earlier windows remain separate.
 
-Canonical Bend source:16,778 physical /14,327 nonblank lines,65 modules,
+Freshly recounted17 Bend source:16,778 physical /14,327 nonblank lines,65 modules,
 1,844 definitions,640 laws,70 types. Net571 lines (+3.52%),82 definitions and
-two analysis records above29. Maintained runtime core233 lines, up66. This is
+two analysis records above29. Maintained runtime core234 lines, up67. This is
 a performance phase with a modest source increase, not a50% simplification.
 
 ## Current correctness and self-emission scopes
@@ -55,39 +61,42 @@ Fresh16 frontend:3026/3026 main and196/196 broader exact observations, with an
 independently audited five-module layout migration. Original strict manifest
 failure retained. Main raw2525 pass/497 observed/4 shared fail; broader195/1.
 Shared failures expect later emission errors and are not rewritten as passes.
+17 reuses these observations under exact source/API/Base/host identity proof.
 
-Fresh selected gates pass36 focused observations,15 upstream JS cases,
+Fresh17 selected gates pass36 focused observations,15 upstream JS cases,
 23 libraries/127 points, ten original library outputs,22 compiler components
 and full HVM output. Primitive/worker/entry/tree/terminal/alias controls are linked
 from the report; their overlapping counts are not unique conformance totals.
 
-Backend pilot now matches all81 historical observations:69 paired passes,8 paired
+Backend17 pilot matches all81 historical observations:69 paired passes,8 paired
 unprintable-main not-applicable outcomes and4 shared check failures, not81 passes.
 Two default-environment attempts retained17 paired Clang EPERM observations;
 the unchanged native21 retry16c passes in an explicitly approved execution
-environment. Minimal pipe/file probes pass in both environments, so the precise
-failure mechanism is unproven. Installed smoke still needs its own fresh run.
+environment. All54 interpreter/JS rows are freshly renewed17; only27 audited
+native/check rows reuse16. Minimal pipe/file probes pass in both environments, so the precise
+failure mechanism is unproven. Installed smoke separately passes all42 fresh checks.
 The811 further JS rows are new coverage, not historically executed observations.
 
-B1 emits H in a30.841-second checked acquisition including verification; H builds its own actual-
-hash Base cache and matches positive/negative small compilation, exact emitted
-bytes and result8. Acquisition overlapped correctness work: no historical speed
-ratio. H is not installed; no H-to-H or full H-conformance claim. The separate
-warmed-once H versus genuine TS-produced parent request comparison passes with
-a5.2089× gap, including H's real ABI/cache path and visible within-trial drift.
-This is not comparison with the hand-written upstream TypeScript compiler.
+17 emits H in a31.076-second checked acquisition including verification; its
+bytes exactly match the tested flag module. Fresh17 preparation validates real-
+hash Base caches, equal positive compilation and result8 on H/genuine parent.
+Old negative functional evidence keeps its16 runtime-input scope. H is not
+installed; no H-to-H or full H-conformance claim. Current H17's separate warmed-once comparison gives5.002× versus its genuine
+TS-produced parent of the same Bend source. All18 output hashes pass; actual-hash
+Base caches remain validated and unchanged. H's second timed request improves
+7.66–9.88%, and the parent's10.12–13.37%: no converged throughput claim. This
+reference is not the handwritten upstream TypeScript compiler. Historical16's
+5.2089× remains a separate window; do not multiply ratios.
 
 ## Next decisions
 
-1. Close the final P30-030 registration-flag screen/confirmations before further
-   execution, profiles, plots or compression. Only root grants the measurement
-   slot. Correctness gates pass; promotion thresholds were frozen before timing.
-2. Resolve that runtime decision, install the selected attempt, verify
-   its manifest and run42 ordinary/relocated CLI checks. Preserve29 in release
-   history. Optional811 new JS coverage needs its own explicit raw-outcome policy.
-3. Close all producers, verify protected paths, capture and independently reopen
-   the Phase30 capsule, update documentation/figures and push. Preserve unsuccessful
-   attempts; hashes alone and ignored files are not durable evidence.
+1. Phase30's measurements, installation,42 CLI checks, independent receipt review,
+   figures and durable preservation are complete. Publish only authorized paths;
+   all103 preexisting unrelated files remain unchanged. No PR comment.
+2. The optional811 new JS cases remain deferred, with no execution claim. They
+   have a prospective policy and22 policy controls, not811 conformance results.
+3. Recover future raw inputs through the [capsule](../implementation/phase30/evidence/README.md)
+   and named historical prerequisites. Keep failed attempts and separate windows.
 4. For the next optimization, isolate generic setup and record administration in
    the retained closed-array row. That prototype still costs40.6× TypeScript;
    its general locality/delayed-demand proof is unfinished. Tiny F32 roots and
