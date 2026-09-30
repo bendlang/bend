@@ -13,14 +13,20 @@ private direct calls on a small edit-distance row, independently challenge
 semantics, then generalize only measured wins. Coordinate all clean CPU3 timings
 through the lead. Phase29 remains installed until a reviewed candidate passes.
 
-Attempt07 now passes focused gates and independent region/entry/ABI controls;
-it includes owned argument vectors, pure scalar regions, literal native shifts,
-and corrections to inherited loop/prebinding scheduling. Actual output timing
-and broad integration are next. Exact-arm widening is rejected; per-call array
-guards regress; Number counters are deferred. The literal-shift prototype wins
-4.024× over the same private region, which is not yet an installed compiler claim.
-See [checkpoint](../implementation/phase30/compiler-checkpoint.md). Next bounded
-investigation is terminal scalar-record results plus nested pure Nat helpers.
+Attempt07 passes focused, broad selected and independent region/entry/ABI gates;
+its actual helper output confirms10.45× over Phase29, still22.13× TS on that point.
+Attempt08 replaces private dictionaries with lexical calls and passes scoped
+controls; its isolated spelling ablation confirms3.76×, actual timing pending.
+Attempt09 admits terminal flat records and nested proven Nat loops with unchanged
+runtime:200 histogram states,129 boundaries,41 admission books and88 executions
+pass. Actual chunk calls drop2242→3; clean confirmation is next. Attempt10 removes
+one redundant initialization capture. Installed release remains Phase29.
+See [terminal checkpoint](../implementation/phase30/terminal-compiler.md).
+Ordinary scalar roots, F32 coverage and private tree recursion are separate
+investigations. Preserve the lost generic symreg.climb loop as an explicit
+coverage issue. Exact-arm retry needs new witnesses under corrected entry rules.
+Per-call array guards regress; Number counters, fallback outlining and callback
+hoisting/fusion remain deferred. No PR comment or new fixed-point claim.
 
 ## Released frontier
 

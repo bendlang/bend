@@ -4,8 +4,9 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {pathToFileURL} from 'node:url';
-const [attemptArgument,outArgument]=process.argv.slice(2);
+const [attemptArgument,outArgument,admissionProfile='scalar-only']=process.argv.slice(2);
 assert.ok(attemptArgument&&outArgument,'usage: review-scalar-compiler-admission.mjs CHECKED_ATTEMPT NEW_OUT');
+assert.ok(['scalar-only','native-Nat-helpers'].includes(admissionProfile));
 const out=path.resolve(outArgument);fs.mkdirSync(out,{recursive:false});
 const sha=x=>createHash('sha256').update(x).digest('hex');
 const identity=file=>({file:fs.realpathSync(file),sha256:sha(fs.readFileSync(file))});
@@ -16,7 +17,7 @@ const driver=path.join(manifest.snapshot.root,'tools/typed-driver.mjs');
 const report={kind:'phase30-independent-actual-region-admission',complete:false,pass:false,node:process.version,
   scope:'Actual checked j_library on synthetic KDefs; no frontend admission claim. Refused recursive or foreign books are emitted but not executed.',
   inputs:[identity(import.meta.filename),identity(manifestFile),identity(driver),...['api','runtime','base'].map(k=>identity(manifest[k].file))],
-  guards:[],observations:[]};
+  admissionProfile,guards:[],observations:[]};
 fs.copyFileSync(import.meta.filename,path.join(out,'consumed-review-scalar-compiler-admission.mjs'));
 try{
   for(const k of ['api','runtime','base'])assert.equal(identity(manifest[k].file).sha256,manifest[k].sha256);
@@ -89,7 +90,7 @@ try{
   await check('erased-helper-parameter',rows([helper('step',v(30),all(3,u32,u32,0))]),false);
   const template=helper();template.templates=1;await check('template-helper',rows([template]),false);
   const native=helper();native.native=true;await check('unsupported-native-helper',rows([native]),false);
-  const natHelper=helper('step',lit(0),all(3,nat,u32));await check('Nat-helper-parameter',rows([natHelper],loop(call('step',[v(10)]))),false);
+  const natHelper=helper('step',lit(0),all(3,nat,u32));await check('Nat-helper-parameter',rows([natHelper],loop(call('step',[v(10)]))),admissionProfile==='native-Nat-helpers');
   const owners=ownerRows();owners.find(x=>x.name==='U32').native=false;await check('non-native-scalar-owner',rows([helper()],loop(),owners),false,{worker:false});
   const qualified=u32=>t('ADT','U32',[],0,0,['U32']);
   await check('removed-helper-type',rows([helper('step',v(30),all(3,qualified(),u32))]),false);

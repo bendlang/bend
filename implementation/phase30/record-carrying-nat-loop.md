@@ -7,8 +7,9 @@ observations and initially 32 ordered ABI observations. Independent static revie
 finds an additional raw predecessor coercion gap, repaired in 02; 02 passes all 140
 states and 33 ABI observations. A subsequent guarded variant passes 196 complete
 states, 36 inherited boundaries and 60 live-binding controls. Independent static
-review finds no further blocker in the declared scope; timing is pending. No
-general compiler implementation is proposed yet.
+review finds no further blocker in the declared scope. Longer-warm timing finds
+only a 1.109–1.110× gain once live-binding guards are included. No general compiler
+implementation is proposed yet.
 
 ## What the scalar restriction does
 
@@ -193,3 +194,42 @@ saved Phase29 runtime, including its subsequently discovered historical
 these saved outputs. The new exact-entry capability could keep the original
 generic body for all raw/oversaturated/hooked entries; that is a future general
 implementation direction, not a measured change in this artifact.
+
+## Clean timing: guards retain only a modest gain
+
+After the independent review, the lead grants exclusive CPU3 timing for the
+frozen seven-way screen and confirmation. All expected full-state outputs match.
+Exact process outputs and outer launcher receipts survive in `record-loop-screen-01`
+and `record-loop-confirm-01`. No input or comparison variant is retuned between
+windows; the guarded variants are compared with their own cell context.
+
+| Row / cell path | Short median ms | Longer-warm median ms |
+|---|---:|---:|
+| Original | 0.710426 | 0.279911 |
+| Fixed row loop | 0.699657 | 0.224699 |
+| Guarded row loop | 0.604644 | 0.252509 |
+| Private cell | 0.306153 | 0.204368 |
+| Private cell + fixed row | 0.240539 | 0.150644 |
+| Private cell + guarded row | 0.293509 | 0.184066 |
+| Pinned TypeScript | 0.024539 | 0.022956 |
+
+With the ordinary cell, the fixed row loop improves 1.246×, while preserving live
+recursive binding changes leaves 1.109×. With private cells, the corresponding
+incremental gains are 1.357× and 1.110×. The guarded gains have disjoint five-sample
+ranges. The combined private-cell/guarded-row artifact is 1.521× faster than the
+original row, but still assumes immutable private cell helpers; it is not a
+fully mutation-safe production compiler result.
+
+Guarding the recursive prefix consumes a substantial part of the avoided
+descriptor/transfer cost. The result supports a small opportunity, not a
+transformative speedup. A broader terminal-record region with proven scalar
+purity can amortize its closure guard; this opaque state loop cannot reuse that
+proof because its generic cell may invoke or mutate host state.
+
+Short-window drift is extreme: second halves of ordinary-cell variants are
+160–325% slower and private-cell variants are 25–34% faster. Treat those screen
+ratios as lifecycle observations. Long-window halves differ by at most 3.03%
+except one private baseline sample at −5.53%; all remain reported. The screen
+costs 13.192s end to end and confirmation 147.100s. These timings include identical
+host fixture allocation and complete state serialization; the TypeScript ratio
+does not describe full edit distance or a production-program average.

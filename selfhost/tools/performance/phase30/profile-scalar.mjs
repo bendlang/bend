@@ -1,0 +1,24 @@
+import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';
+import inspector from 'node:inspector';import {createHash} from 'node:crypto';import {pathToFileURL} from 'node:url';
+const [moduleArgument,outArgument]=process.argv.slice(2);assert.ok(moduleArgument&&outArgument);
+const file=fs.realpathSync(moduleArgument),out=path.resolve(outArgument);fs.mkdirSync(out,{recursive:false});
+const identity=p=>({file:fs.realpathSync(p),sha256:createHash('sha256').update(fs.readFileSync(p)).digest('hex')});
+const inputs=[file,import.meta.filename,process.execPath,path.resolve(import.meta.dirname,'../../../../design/phase30/actual-scalar-profile.md')].map(identity);
+fs.copyFileSync(import.meta.filename,path.join(out,'consumed-tool.mjs'));
+const m=await import(pathToFileURL(file)),session=new inspector.Session();session.connect();
+const post=(method,params={})=>new Promise((resolve,reject)=>session.post(method,params,(error,result)=>error?reject(error):resolve(result)));
+const invoke=()=>{const v=m.default.bench(128,524800);assert.equal(v,128);return v};
+let warmupCalls=0;const warmStart=performance.now();
+while(warmupCalls<5000||performance.now()-warmStart<1000){invoke();warmupCalls++}
+const warmupMs=performance.now()-warmStart;
+await post('Profiler.enable');await post('Profiler.setSamplingInterval',{interval:100});await post('Profiler.start');
+let checksum=0;const start=performance.now();for(let i=0;i<30000;i++)checksum+=invoke();const diagnosticMs=performance.now()-start;
+const {profile}=await post('Profiler.stop');session.disconnect();assert.equal(checksum,30000*128);
+fs.writeFileSync(path.join(out,'profile.cpuprofile'),JSON.stringify(profile)+'\n',{flag:'wx'});
+const counts=new Map();for(const id of profile.samples??[])counts.set(id,(counts.get(id)??0)+1);
+const source=fs.readFileSync(file,'utf8').split('\n');
+const frames=profile.nodes.map(n=>{const f=n.callFrame,selfSamples=counts.get(n.id)??0;return {id:n.id,function:f.functionName,url:f.url,line:f.lineNumber+1,column:f.columnNumber+1,selfSamples,percent:selfSamples/(profile.samples?.length??1)*100,source:f.url===pathToFileURL(file).href?(source[f.lineNumber]??'').slice(Math.max(0,f.columnNumber),f.columnNumber+150):undefined}}).filter(n=>n.selfSamples).sort((a,b)=>b.selfSamples-a.selfSamples);
+assert.deepEqual(inputs.map(x=>identity(x.file)),inputs);
+const report={kind:'phase30-actual-scalar-cpu-profile',complete:true,inputs,node:process.version,args:process.execArgv,affinity:fs.readFileSync('/proc/self/status','utf8').split('\n').find(x=>x.startsWith('Cpus_allowed_list:')),warmupCalls,warmupMs,calls:30000,checksum,diagnosticMs,samples:profile.samples.length,frames,scope:'Instrumented CPU7 diagnostic during unrelated acquisitions; duration is not clean timing. Self samples approximate this single workload, not a universal cost decomposition.'};
+fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n',{flag:'wx'});
+console.log(JSON.stringify({complete:true,samples:report.samples,top:frames.slice(0,10)}));

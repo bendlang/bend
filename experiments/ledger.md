@@ -1801,3 +1801,33 @@ eight initial and four follow-up controls pass. Successful output is byte-identi
 on the checked control. Attempt04 successfully bootstraps current source, then
 the provenance gate correctly refuses the changed recipe hash. Review that exact
 recipe separately and preserve historical replay. No new release is installed.
+
+### Phase30 direct lexical helpers and nested loops
+
+Attempt07 passes the selected broad integration gates, including the retained
+erased-let admission adaptation with unchanged runtime oracles. Actual helper
+output confirms10.45× over Phase29, from0.394653 to0.037776ms, still22.13× pinned
+TypeScript at the same128-iteration point. This is generated-program execution,
+not compiler throughput.
+
+The isolated dictionary-to-lexical helper change confirms3.757× with disjoint
+ranges. Callback implementation hoisting and fusion show no meaningful warm gain;
+retain their overlapping ranges and first-call observations. The profile's large
+enterExact sample attribution therefore does not establish token-check cost.
+Attempt08 implements lexical spelling with injective codepoint identifiers and
+passes actual emission/name/ABI controls. An initial malformed synthetic name
+fixture remains preserved before its corrected native-owner setup.
+
+The nested terminal-record prototype confirms8.161× on a complete histogram
+chunk and1.639× on original small Mandelbrot. Attempt09 implements that grammar
+using existing state and loop emission; its actual200 histograms/129 boundaries
+and independent41 admission books/88 executions pass. Instrumented chunk generic
+calls fall2242→3 while the delayed record build remains. Actual output timing is
+pending confirmation; isolated prototype results are not release claims.
+
+The exact-entry method-read ablation removes redundant reflective checks and
+passes scoped getter/error controls. Its initial original edit-distance screen
+suggests7% but costs199s because a call lasts2.4s. Move confirmation to a row
+microcase; never apply the100-call long-warm floor to that original workload.
+Ordinary scalar root regions and F32 coverage remain separately frozen trials.
+Installed compiler stays Phase29 until the combined promotion gates finish.

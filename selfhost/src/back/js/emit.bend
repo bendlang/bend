@@ -229,7 +229,7 @@ def j_expr(book, env, t, ty, tail):
 @unsafe
 def j_expr_private(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +tail: Bool) -> String:
   kc(String, String.eq(tg(t), "JSlot"), u => "$p" ++ U32.show(ix(t)), u =>
-  kc(String, String.eq(tg(t), "JCall"), u => "$R[" ++ j_quote(nm(t)) ++ "](" ++ j_apply_args(book, env, ks(t), dt(lookup(book, nm(t)))) ++ ")", u =>
+  kc(String, String.eq(tg(t), "JCall"), u => j_region_name(nm(t)) ++ "(" ++ j_apply_args(book, env, ks(t), dt(lookup(book, nm(t)))) ++ ")", u =>
   kc(String, String.eq(tg(t), "JIf"), u => "(" ++ j_expr(book, env, kid(t, 0), kt("ADT", "Bool", 0, 0, Nil{}), False{}) ++ "?" ++
     j_expr(book, env, kid(t, 1), ty, tail) ++ ":" ++ j_expr(book, env, kid(t, 2), ty, tail) ++ ")", u => j_expr_on(book, env, t, ty, tail, tg(t)))))
 
@@ -896,7 +896,7 @@ def j_l_marks(ts, path, depth, at):
 @unsafe
 def j_l_def(book, d):
   +worker = j_nat_loop_worker(book, d)
-  kc(String, String.eq(worker, ""), u => j_u32_global(book, d, j_u32_worker(book, d)), u => j_l_global_worker(book, d, dv(d), worker))
+  kc(String, String.eq(worker, ""), u => j_u32_global(book, d, j_u32_worker(book, d)), u => "G[" ++ j_quote(dn(d)) ++ "]=" ++ worker ++ ";\n")
 
 @unsafe
 def j_l_definition(book, d, t):

@@ -43,13 +43,53 @@ def j_region_scalar(+book: List<&2,KDef>, +ty: KTerm) -> Bool:
   +head = wnf(book, ty)
   String.contains("|U32|Bool|Nat|", "|" ++ nm(head) ++ "|") && j_primitive_type(book, head, nm(head))
 
-# Helper parameters/results deliberately exclude Nat and F32. Nat is retained
-# in worker state and primitive shift operands, without changing representation.
+# Record results are confined to terminal constructors. Parameters, private
+# helper results and intermediate bindings remain native scalars.
+@unsafe
+def j_region_result_type(+book: List<&2,KDef>, +ty: KTerm) -> Bool:
+  kc(Bool, j_region_scalar(book, ty), u => True{}, u => j_region_record(book, wnf(book, ty)))
+
+@unsafe
+def j_region_record(+book: List<&2,KDef>, +ty: KTerm) -> Bool:
+  +owner = lookup(book, nm(ty))
+  +kind = wnf(book, dt(owner))
+  kc(Bool, String.eq(tg(ty), "ADT") && U32.is_eq(terms_len(ks(ty)), 0) && List.is_empty(&2, String, rm(ty)) &&
+    String.eq(dk(owner), "ADT") && Bool.not(db(owner)) && U32.is_eq(da(owner), 0) && U32.is_eq(dx(owner), 0) &&
+    String.eq(tg(kind), "Typ") && U32.is_eq(terms_len(ks(kind)), 1) && String.eq(tg(kid(kind, 0)), "Qua") && U32.is_eq(qt(kid(kind, 0)), 2),
+    u => j_region_record_ctor(book, ty, dc(owner)), u => False{})
+
+@unsafe
+def j_region_record_ctor(+book: List<&2,KDef>, +ty: KTerm, +ctors: List<&2,KDef>) -> Bool:
+  match ctors:
+    case Con{c, Nil{}}:
+      kc(Bool, String.eq(dk(c), "Ctr") && Bool.not(db(c)) && U32.is_eq(dx(c), 0) && U32.is_le(da(c), 32),
+        u => j_region_record_fields(book, dt(c), nm(ty), da(c)), u => False{})
+    case other: False{}
+
+@unsafe
+def j_region_record_fields(+book: List<&2,KDef>, +ty: KTerm, +owner: String, +left: U32) -> Bool:
+  +head = wnf(book, ty)
+  kc(Bool, U32.is_eq(left, 0), u => String.eq(tg(head), "ADT") && String.eq(nm(head), owner) &&
+    U32.is_eq(terms_len(ks(head)), 0) && List.is_empty(&2, String, rm(head)), u =>
+    kc(Bool, String.eq(tg(head), "All") && Bool.not(U32.is_eq(qt(head), 0)) && j_region_scalar(book, kid(head, 0)),
+      u => j_region_record_fields(book, kid(head, 1), owner, U32.sub(left, 1)), u => False{}))
+
+# Deferred constructor fields contain no computation, so the ordinary build
+# thunks retain forcing order without extending the region's lifetime.
+@unsafe
+def j_region_field_values(+xs: List<&2,KTerm>, +left: U32) -> Bool:
+  match xs:
+    case Nil{}: U32.is_eq(left, 0)
+    case Con{h, rest}:
+      +t = j_strip(h)
+      kc(Bool, U32.is_gt(left, 0) && (String.eq(tg(t), "Var") || String.eq(tg(t), "Lit") ||
+        (String.eq(tg(t), "Ctr") && U32.is_eq(terms_len(ks(t)), 0) && (String.eq(nm(t), "True") || String.eq(nm(t), "False")))),
+        u => j_region_field_values(rest, U32.sub(left, 1)), u => False{})
+
 @unsafe
 def j_region_signature(+book: List<&2,KDef>, +ty: KTerm, +left: U32) -> Bool:
   +head = wnf(book, ty)
-  kc(Bool, U32.is_eq(left, 0), u =>
-    String.contains("|U32|Bool|", "|" ++ nm(head) ++ "|") && j_primitive_type(book, head, nm(head)), u =>
+  kc(Bool, U32.is_eq(left, 0), u => j_region_scalar(book, head), u =>
     kc(Bool, String.eq(tg(head), "All") && Bool.not(U32.is_eq(qt(head), 0)) &&
       j_region_signature(book, kid(head, 0), 0),
       u => j_region_signature(book, kid(head, 1), U32.sub(left, 1)), u => False{}))
@@ -149,13 +189,13 @@ def j_region_match_done(+tag: String, +at: U32, +first: KTerm, +s: JRegionBuild)
 @unsafe
 def j_region_expr(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +tail: String, +active: List<&2,String>, +depth: U32, +level: U32, +s: JRegionBuild) -> JRegionBuild:
   kc(JRegionBuild, j_region_valid(s) && U32.is_gt(j_region_fuel(s), 0) && U32.is_lt(level, 128), u =>
-    kc(JRegionBuild, j_region_scalar(book, ty), u =>
+    kc(JRegionBuild, j_region_result_type(book, ty), u =>
       j_region_expr_on(book, env, t, wnf(book, ty), tail, active, depth, U32.inc(level), j_region_tick(s)), u => j_region_fail(s)), u => j_region_fail(s))
 
 @unsafe
 def j_region_expr_on(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +tail: String, +active: List<&2,String>, +depth: U32, +level: U32, +s: JRegionBuild) -> JRegionBuild:
   kc(JRegionBuild, String.eq(tg(t), "Ann"), u =>
-    kc(JRegionBuild, j_region_scalar(book, kid(t, 1)) && String.eq(nm(wnf(book, kid(t, 1))), nm(ty)),
+    kc(JRegionBuild, j_region_result_type(book, kid(t, 1)) && String.eq(nm(wnf(book, kid(t, 1))), nm(ty)),
       u => j_region_expr(book, env, kid(t, 0), ty, tail, active, depth, level, s), u => j_region_fail(s)), u =>
   kc(JRegionBuild, String.eq(tg(t), "Var"), u =>
     kc(JRegionBuild, j_region_scalar(book, j_env(env, ix(t))) && String.eq(nm(wnf(book, j_env(env, ix(t)))), nm(ty)),
@@ -165,11 +205,22 @@ def j_region_expr_on(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty:
       u => j_region_result(s, j_region_annotate(t, ty)), u => j_region_fail(s)), u =>
   kc(JRegionBuild, String.eq(tg(t), "Ctr"), u =>
     kc(JRegionBuild, String.eq(nm(ty), "Bool") && U32.is_eq(terms_len(ks(t)), 0) && (String.eq(nm(t), "True") || String.eq(nm(t), "False")),
-      u => j_region_result(s, j_region_annotate(t, ty)), u => j_region_fail(s)), u =>
+      u => j_region_result(s, j_region_annotate(t, ty)), u => j_region_constructor(book, env, t, ty, active, depth, level, s)), u =>
   kc(JRegionBuild, String.eq(tg(t), "Let"), u =>
     j_region_let_done(t, ty, j_region_bindings(book, env, j_context(book, env, ks(t)), ks(t), ty, tail, active, depth, level, 0, s)), u =>
   kc(JRegionBuild, String.eq(tg(t), "App"), u =>
     j_region_call(book, env, j_call_spine(t, Nil{}), ty, tail, active, depth, level, s), u => j_region_fail(s)))))))
+
+@unsafe
+def j_region_constructor(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +active: List<&2,String>, +depth: U32, +level: U32, +s: JRegionBuild) -> JRegionBuild:
+  +c = lookup(dc(lookup(book, nm(ty))), nm(t))
+  kc(JRegionBuild, j_region_record(book, ty) && String.eq(dk(c), "Ctr") && String.eq(dn(c), nm(t)) &&
+    j_region_field_values(ks(t), da(c)), u =>
+    j_region_constructor_done(t, ty, j_region_args(book, env, ks(t), dt(c), active, depth, level, s)), u => j_region_fail(s))
+
+@unsafe
+def j_region_constructor_done(+t: KTerm, +ty: KTerm, +s: JRegionBuild) -> JRegionBuild:
+  j_region_result(s, j_region_annotate(k_with_children(t, ks(j_region_term(s))), ty))
 
 @unsafe
 def j_region_let_done(+t: KTerm, +ty: KTerm, +s: JRegionBuild) -> JRegionBuild:
@@ -185,7 +236,7 @@ def j_region_bindings(+book: List<&2,KDef>, +env: List<&2,KTerm>, +bodyEnv: List
       j_region_list_one(j_region_expr(book, bodyEnv, body, ty, tail, active, depth, level, s))
     case Con{bind, rest}:
       kc(JRegionBuild, j_region_valid(s) && U32.is_lt(count, 128) && String.eq(tg(bind), "Bind") &&
-        Bool.not(U32.is_eq(qt(bind), 0)) && U32.is_eq(terms_len(ks(bind)), 1), u =>
+        Bool.not(U32.is_eq(qt(bind), 0)) && U32.is_eq(terms_len(ks(bind)), 1) && j_region_scalar(book, j_region_type(book, env, kid(bind, 0))), u =>
         j_region_binding_first(book, env, bodyEnv, bind, rest, ty, tail, active, depth, level, count,
           j_region_expr(book, env, kid(bind, 0), j_region_type(book, env, kid(bind, 0)), "", active, depth, level, s)), u => j_region_fail(s))
 
@@ -231,10 +282,10 @@ def j_region_app(+head: KTerm, +args: List<&2,KTerm>) -> KTerm:
 def j_region_args(+book: List<&2,KDef>, +env: List<&2,KTerm>, +args: List<&2,KTerm>, +ty: KTerm, +active: List<&2,String>, +depth: U32, +level: U32, +s: JRegionBuild) -> JRegionBuild:
   match args:
     case Nil{}:
-      kc(JRegionBuild, j_region_scalar(book, ty), u => j_region_result(s, kt("JList", "", 0, 0, Nil{})), u => j_region_fail(s))
+      kc(JRegionBuild, j_region_result_type(book, ty), u => j_region_result(s, kt("JList", "", 0, 0, Nil{})), u => j_region_fail(s))
     case Con{h, rest}:
       +head = wnf(book, ty)
-      kc(JRegionBuild, j_region_valid(s) && String.eq(tg(head), "All") && Bool.not(U32.is_eq(qt(head), 0)), u =>
+      kc(JRegionBuild, j_region_valid(s) && String.eq(tg(head), "All") && Bool.not(U32.is_eq(qt(head), 0)) && j_region_scalar(book, kid(head, 0)), u =>
         j_region_arg_first(book, env, rest, j_app_type(head, h), active, depth, level,
           j_region_expr(book, env, h, kid(head, 0), "", active, depth, level, s)), u => j_region_fail(s))
 
@@ -250,8 +301,27 @@ def j_region_helper(+book: List<&2,KDef>, +d: KDef, +active: List<&2,String>, +d
       Bool.not(has_name(active, dn(d))), u =>
       kc(JRegionBuild, j_region_capture_eligible(book, d), u =>
         kc(JRegionBuild, j_u32_bounded([dv(d)], 8192), u =>
-          j_region_helper_done(d, j_region_prefix(book, Nil{}, dv(d), dt(d), 0, da(d), False{}, "", Con{dn(d), active}, U32.inc(depth), s)),
+          kc(JRegionBuild, j_nat_loop_shape(book, d),
+            u => j_region_nested(book, d, Con{dn(d), active}, U32.inc(depth), s),
+            u => j_region_helper_done(d, j_region_prefix(book, Nil{}, dv(d), dt(d), 0, da(d), False{}, "", Con{dn(d), active}, U32.inc(depth), s))),
           u => j_region_fail(s)), u => j_region_fail(s)), u => j_region_fail(s)))
+
+# Nested loops share the enclosing active chain, completed cache and fuel.
+@unsafe
+def j_region_nested(+book: List<&2,KDef>, +d: KDef, +active: List<&2,String>, +depth: U32, +s: JRegionBuild) -> JRegionBuild:
+  j_region_nested_zero(book, d, active, depth,
+    j_region_prefix(book, Nil{}, kid(j_strip(dv(d)), 0), j_arm_type(book, wnf(book, dt(d)), "Zero"), 0, U32.sub(da(d), 1), True{}, "", active, depth, s))
+
+@unsafe
+def j_region_nested_zero(+book: List<&2,KDef>, +d: KDef, +active: List<&2,String>, +depth: U32, +s: JRegionBuild) -> JRegionBuild:
+  kc(JRegionBuild, j_region_valid(s), u => j_region_nested_done(d, j_region_term(s),
+    j_region_prefix(book, Nil{}, kid(j_strip(kid(j_strip(dv(d)), 1)), 0), j_arm_type(book, wnf(book, dt(d)), "Succ"), 0, da(d), True{}, dn(d), active, depth, s)), u => s)
+
+@unsafe
+def j_region_nested_done(+d: KDef, +zero: KTerm, +s: JRegionBuild) -> JRegionBuild:
+  +outer = j_strip(dv(d))
+  +inner = j_strip(kid(outer, 1))
+  j_region_helper_done(d, j_region_result(s, k_with_children(outer, [zero, k_with_children(inner, [j_region_term(s), kid(inner, 1)])])))
 
 @unsafe
 def j_region_helper_done(+d: KDef, +s: JRegionBuild) -> JRegionBuild:
@@ -268,15 +338,39 @@ def j_region_names(+helpers: List<&2,KDef>) -> String:
 
 @unsafe
 def j_region_declarations(+book: List<&2,KDef>, +helpers: List<&2,KDef>) -> String:
-  "const $R=Object.create(null);" ++ j_region_definitions(book, helpers)
+  j_region_definitions(book, helpers)
+
+# Delimited codepoints preserve source identity without a private name table.
+@unsafe
+def j_region_name(+name: String) -> String:
+  "$R" ++ j_region_name_chars(name)
+
+@unsafe
+def j_region_name_chars(+name: String) -> String:
+  match name:
+    case SNil{}: ""
+    case SCon{c, rest}: "_" ++ U32.show(Char.to_u32(c)) ++ j_region_name_chars(rest)
 
 @unsafe
 def j_region_definitions(+book: List<&2,KDef>, +helpers: List<&2,KDef>) -> String:
   match helpers:
     case Nil{}: ""
     case Con{d, rest}:
-      "$R[" ++ j_quote(dn(d)) ++ "]=function(" ++ j_region_parameters(0, da(d)) ++ "){return " ++
-      j_expr(book, Nil{}, dv(d), kid(dv(d), 1), False{}) ++ ";};" ++ j_region_definitions(book, rest)
+      "function " ++ j_region_name(dn(d)) ++ "(" ++ j_region_parameters(0, da(d)) ++ "){" ++
+      kc(String, String.eq(tg(dv(d)), "Mat"), u => j_region_nested_body(book, d),
+        u => "return " ++ j_expr(book, Nil{}, dv(d), kid(dv(d), 1), False{}) ++ ";") ++ "}" ++ j_region_definitions(book, rest)
+
+@unsafe
+def j_region_nested_body(+book: List<&2,KDef>, +d: KDef) -> String:
+  "if($p0===0n){const a=[" ++ j_region_parameters(1, da(d)) ++ "];" ++
+  j_lambda_code(book, Nil{}, kid(dv(d), 0), j_arm_type(book, wnf(book, dt(d)), "Zero"), 0) ++ "}" ++
+  "let $s0=$p0-1n;" ++ j_region_nested_slots(1, da(d)) ++
+  j_nat_loop_body(book, d, kid(j_strip(kid(dv(d), 1)), 0), da(d))
+
+@unsafe
+def j_region_nested_slots(+at: U32, +total: U32) -> String:
+  kc(String, U32.is_eq(at, total), u => "", u =>
+    "let $s" ++ U32.show(at) ++ "=$p" ++ U32.show(at) ++ ";" ++ j_region_nested_slots(U32.inc(at), total))
 
 @unsafe
 def j_region_parameters(+at: U32, +total: U32) -> String:
