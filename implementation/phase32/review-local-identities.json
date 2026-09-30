@@ -1,0 +1,47 @@
+{
+  "kind": "phase32-static-review-inputs",
+  "date": "2026-09-30",
+  "execution": "none",
+  "inputs": [
+    {
+      "file": "selfhost/src/back/js/region.bend",
+      "bytes": 29609,
+      "sha256": "6cb5ed0f6d425b9ad9c3d57bc55a752a274d1ce2cd4da6ee490cf9b24f90a9ee"
+    },
+    {
+      "file": "selfhost/src/back/js/emit.bend",
+      "bytes": 32002,
+      "sha256": "bf6411eef52f8142a1757b287a8bb176992cc98a0670b9bdd74adc5657bdc9cb"
+    },
+    {
+      "file": "selfhost/src/back/js/local.bend",
+      "bytes": 8960,
+      "sha256": "81abb98ab0d63f29745c9bbd3c46a31565a166f732db500f9b38157d45c0f26b"
+    },
+    {
+      "file": "selfhost/src/back/js/worker.bend",
+      "bytes": 14007,
+      "sha256": "b7f5a57511e8ee6f12e0e5b90d66dcd9d2997b100aac64d125b31680ec82d198"
+    },
+    {
+      "file": "selfhost/src/runtime/js/core.mjs",
+      "bytes": 13492,
+      "sha256": "61c20228aaab7a68d77a3119cacd0afacf70d60cb1fd79b262e303995b874bac"
+    },
+    {
+      "file": "selfhost/src/runtime/js/base.mjs",
+      "bytes": 16369,
+      "sha256": "71d1240df1a2c82b7e70409ccebea95fd2c2989cf65227fe9b21d388d65c1175"
+    },
+    {
+      "file": "design/phase32/typed-tuple-fusion.md",
+      "bytes": 2732,
+      "sha256": "69e825b8d843cbe6ee5a45a4f26c0fd2f2d43da9d6e3ee65c0881034ad5afa44"
+    },
+    {
+      "file": "design/phase32/local-record-vectors.md",
+      "bytes": 3966,
+      "sha256": "6d2d07751c5cc5cbaeda18a53f5b3e70a55b26a9f6eb74fc50b55f8f0835b39b"
+    }
+  ]
+}

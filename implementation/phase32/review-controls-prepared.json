@@ -1,0 +1,41 @@
+{
+  "kind": "phase32-prepared-control-identities",
+  "execution": "none",
+  "inputs": [
+    {
+      "file": "selfhost/tools/performance/phase32/local-pair-controls.mjs",
+      "sha256": "8f39aaa2ff7ba8ddc3722fff4605252bfbbf0c81b9a7863da75991658b9b518f",
+      "bytes": 6655
+    },
+    {
+      "file": "selfhost/tools/performance/phase32/local-fold-controls.mjs",
+      "sha256": "1d73eb4319620075075ddc2ba9faf32aa6de19849005e203e4b782ab578e1505",
+      "bytes": 5025
+    },
+    {
+      "file": "selfhost/tools/performance/phase32/local-order-controls.mjs",
+      "sha256": "520950473e802886dfd9f37c286c7cb7b3336129fef4eefa0657a94dcec5c5a4",
+      "bytes": 5556
+    },
+    {
+      "file": "selfhost/tools/performance/phase32/local-pair-controls-actual02.mjs",
+      "sha256": "0854361c74ae12836f7a88e8734594abb0c952c872dab9a4c8819c8dcb286409",
+      "bytes": 7850
+    },
+    {
+      "file": "selfhost/tools/performance/phase32/local-fold-controls-actual02.mjs",
+      "sha256": "9281eb004c0fcefcd8f7e66e84c781088ae3b1913917d7a48a6194fbf905a46f",
+      "bytes": 6133
+    },
+    {
+      "file": "selfhost/tools/performance/phase32/local-order-controls-actual02.mjs",
+      "sha256": "052d56ca7fa8ff912eba82df01ff0c2c89f4e6e26e8b085e19b4019519844c93",
+      "bytes": 6789
+    },
+    {
+      "file": "selfhost/tools/performance/phase32/review-local-vector-types.mjs",
+      "sha256": "386259a5294538062bd745fc9af946182d5ba53b5282685054b09a25c5c09f63",
+      "bytes": 6798
+    }
+  ]
+}

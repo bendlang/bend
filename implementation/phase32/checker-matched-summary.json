@@ -1,0 +1,630 @@
+{
+  "kind": "phase32-checker-matched-confirmation-summary",
+  "complete": true,
+  "pass": true,
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/report.json",
+      "sha256": "4abe0461b54b1d21448d6e894f2947ce449498b586d4c67d1cd4551e9a5ed7f7",
+      "bytes": 52179
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-plan-01/plan.json",
+      "sha256": "672877bf64ef31e8ce2a3bf13aabe3925f2447aa300bfc66407b96b93d3b4048",
+      "bytes": 6977
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase32/checker-matched-summarize.py",
+      "sha256": "fc293071d6e79654e03fdc29a00a2e4bb85358d77586ae6010c24a284c3dd79c",
+      "bytes": 4322
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/00-cached-baseline.json",
+      "sha256": "46d831bfc9672fa253888dfd58fbfc04e239a6f29361ff8cfa302d2dbabccc67",
+      "bytes": 9283
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/00-cached-direct.json",
+      "sha256": "dc52e163da82ed915b5fe5c2b9fb6a6525a8965570ed3fff39dabab8f0217204",
+      "bytes": 9881
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/00-cached-fields.json",
+      "sha256": "ab32e6305c222f9cdab0f9a183c0a6ca87ac4e4aefbb854e3e2b598ab5278db2",
+      "bytes": 14384
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/00-cached-combined.json",
+      "sha256": "9a659cea399ad3de971b46982d1d80dfb456c6a35fb4d043d6a97441bd4fc535",
+      "bytes": 15273
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/00-cached-captured.json",
+      "sha256": "62a312ed68e12649dea3ea9bc5f608a353f4b5d894fed442186fdaa69e6de6fd",
+      "bytes": 9685
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/00-uncached-baseline.json",
+      "sha256": "13b8d8e027759f2d0a05d714fa493d4ddc499baf971d78c98d58221f56b82fcd",
+      "bytes": 4855
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/00-uncached-direct.json",
+      "sha256": "24ab4798ed4dfbbed39a74d3d7261f5fb3932836acb5f3f9ee601c927a1cff4e",
+      "bytes": 4953
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/00-uncached-fields.json",
+      "sha256": "0ffc857f46f2a7d36a89ec11826cc8978a9a76f2ccd21530a9e847e80cb6ab38",
+      "bytes": 5847
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/00-uncached-combined.json",
+      "sha256": "ef5be3d29900e08dc5ef81798d06704dfed6c3611b14f828bb7beedd95f98303",
+      "bytes": 5929
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/00-uncached-captured.json",
+      "sha256": "edfb97bb4ed59d7b1623258849b39ef1d38d8b419dc11a8e035d4cf4214daed7",
+      "bytes": 4869
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/00-infer_ref-baseline.json",
+      "sha256": "86236ffba672711ceb1c6bb0e52ac54b63e3152a5db1c4cad61a7cd08a5364f6",
+      "bytes": 152568
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/00-infer_ref-direct.json",
+      "sha256": "0976c9d7b0d8d0c37f39306ded6fed6023786f6c24ca1a5447104c27c0238c9c",
+      "bytes": 156816
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/00-infer_ref-fields.json",
+      "sha256": "3c6cfab6a73c445a782b39701bdff6be7174055c901f3146b51b9311e6ada233",
+      "bytes": 218429
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/00-infer_ref-combined.json",
+      "sha256": "80337e7e6450acc237f359d737726ada621f971b2e89e24c4608893b38e574e4",
+      "bytes": 226871
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/00-infer_ref-captured.json",
+      "sha256": "61f30adee8fa1c4607376c6020fd6519b728692482c32b26b247b60f81fc282b",
+      "bytes": 152065
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/01-cached-fields.json",
+      "sha256": "397edbbfe4f09d316342fd6889156f5d0a4b4494baee80dfe737a5756a8296bf",
+      "bytes": 14412
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/01-cached-combined.json",
+      "sha256": "ebfb0cf4db8ca01a5b87ac5f0e552e570c148d74dfd3eca67e1e4ed28fb6cec1",
+      "bytes": 14046
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/01-cached-captured.json",
+      "sha256": "8b37ce4541408a11cd41ac91832ab4910156876b3d9b68ec773f360c72b2019e",
+      "bytes": 9766
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/01-cached-baseline.json",
+      "sha256": "7222b26f8280a0d3f5de0632427883674d81df71aeb9681def8b3c87ce0a2c62",
+      "bytes": 9700
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/01-cached-direct.json",
+      "sha256": "c29fcbfd7c033d7d36fd68eae56476aed74d6a995a7abf191d0081e97f514586",
+      "bytes": 9955
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/01-uncached-fields.json",
+      "sha256": "9702000c6ab2e0a43521410b78aac7f6f37b9c4db379ad572cba04f98ddf34ff",
+      "bytes": 5861
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/01-uncached-combined.json",
+      "sha256": "5d89560894b71b57f017b60e5d4bdf33b93a00b1b905814eb920cf77b2ea525e",
+      "bytes": 5923
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/01-uncached-captured.json",
+      "sha256": "3f360b22a3bd3f2205c0aa2f7a01bea12510772df2376620ec41f331c8e0a57b",
+      "bytes": 4957
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/01-uncached-baseline.json",
+      "sha256": "396282bbbd7f58e87058eb00a30054dcae3a00b051b5be6f106590d5dd58b0c6",
+      "bytes": 4971
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/01-uncached-direct.json",
+      "sha256": "68d41712532136df855f66ae2f9dc3ee29a1af82fadb6020b75c1d5f90248762",
+      "bytes": 4776
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/01-infer_ref-fields.json",
+      "sha256": "c90127aee07c26c78ba236650b3d93ceebe113aefa6802d81212a10823810b20",
+      "bytes": 214621
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/01-infer_ref-combined.json",
+      "sha256": "2388e777646eb2673cfbaaf1a64a8ff2b7d794290a16c80bd35cd795c8fa9433",
+      "bytes": 228739
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/01-infer_ref-captured.json",
+      "sha256": "9c5819095faf6d8f26034c4f6af068fbdad0486b50c367a5ffab6088c9a5a449",
+      "bytes": 151536
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/01-infer_ref-baseline.json",
+      "sha256": "43831827371f0dec0f4e2e327775e7ecac1d25f0aefb8d307f38dcfce042e54e",
+      "bytes": 135196
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/01-infer_ref-direct.json",
+      "sha256": "b2ca53bde21216abea39a1709f67b937aa0150a71c15916da7b394bc1ddb53df",
+      "bytes": 157651
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/02-cached-captured.json",
+      "sha256": "873d6e6789198f1e0f3de9b5e18349b930328b2e5240d7afe2779bbf4e046a52",
+      "bytes": 9525
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/02-cached-baseline.json",
+      "sha256": "3cebd3df25d82f605d18313877c308f56b247b893a3f4d58e07fd8f4bc46ad8a",
+      "bytes": 9635
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/02-cached-direct.json",
+      "sha256": "e97a13d603c83d7d9d518be31c51fd492b8d905806a44fb404ee2e82808a94fa",
+      "bytes": 10033
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/02-cached-fields.json",
+      "sha256": "bcb0a076574c0e77d5df249548b7e81db346cfe6b10953230ff6517ae210253a",
+      "bytes": 14026
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/02-cached-combined.json",
+      "sha256": "cda66434ab94f8f6bbac1e9c6aed0be29dbf9bfedcfd9f026797e804b0400757",
+      "bytes": 14168
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/02-uncached-captured.json",
+      "sha256": "d18165e6a045afb1d94ea7c1739dcdcd9c542a9b039aaabd6726cfc154b87d67",
+      "bytes": 4932
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/02-uncached-baseline.json",
+      "sha256": "f88ef860678f629c7684eac36036f73a6335317ff064ada42943248acf30fda5",
+      "bytes": 4793
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/02-uncached-direct.json",
+      "sha256": "de6c194bb5ae917583c1936dc54cc9135abb3048e5f2d2f209276743b5c8e8a7",
+      "bytes": 5031
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/02-uncached-fields.json",
+      "sha256": "59672fb8e8d6e77b5ab56da60be7b5330a8fb6a45fff2f622a028ace3cc3e4b8",
+      "bytes": 5853
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/02-uncached-combined.json",
+      "sha256": "19626037fef8158a42a77a97c6cc7605352f0d4a96b00cf759548905a62180a4",
+      "bytes": 5931
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/02-infer_ref-captured.json",
+      "sha256": "188085128d7098839e9657f0a26befb5b99eac4445bf9810d88c6483432dd524",
+      "bytes": 152514
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/02-infer_ref-baseline.json",
+      "sha256": "dea3a14cc6d0f871a72f2e4db86e861464f62204360506abfa3fa6465cc99a9b",
+      "bytes": 152320
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/02-infer_ref-direct.json",
+      "sha256": "10e0363bfc6bc91a2a4ca409fd02f1820efea7ba39d9172e764bb17d85434649",
+      "bytes": 158480
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/02-infer_ref-fields.json",
+      "sha256": "3673e4adb9301face95d9ed3dad2f122531c726641ee4acca6b25654a3337bb1",
+      "bytes": 218614
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/checker-matched-confirm-01/02-infer_ref-combined.json",
+      "sha256": "fce466b8e2a2681066e71bb69859303640fa310be7142be2af1069865357bb1a",
+      "bytes": 228016
+    }
+  ],
+  "jobs": 45,
+  "seconds": 181.61601885600066,
+  "workloads": {
+    "cached": {
+      "baseline": {
+        "samples": 15,
+        "medianMs": 18.582332636363596,
+        "rangeMs": [
+          18.368691555555568,
+          20.217725555555514
+        ],
+        "halfDriftPercent": [
+          -1.1511827770165461,
+          11.511811177560016
+        ],
+        "withinProcessLastTwoOverFirstTwoPercent": [
+          -1.1037780916047013,
+          -1.1366475458271186,
+          3.2836731038665024
+        ],
+        "peakRssKiB": 233316
+      },
+      "direct": {
+        "samples": 15,
+        "medianMs": 17.830671500000033,
+        "rangeMs": [
+          17.462757454545393,
+          18.40428016666662
+        ],
+        "halfDriftPercent": [
+          -6.5185474898588724,
+          3.764393801237742
+        ],
+        "withinProcessLastTwoOverFirstTwoPercent": [
+          -0.7232017143524283,
+          -0.4731080158809631,
+          -0.8520806640837542
+        ],
+        "peakRssKiB": 232632
+      },
+      "fields": {
+        "samples": 15,
+        "medianMs": 10.410435149999989,
+        "rangeMs": [
+          10.314868999999998,
+          11.610962142857163
+        ],
+        "halfDriftPercent": [
+          -2.816183053085086,
+          2.4263307018017377
+        ],
+        "withinProcessLastTwoOverFirstTwoPercent": [
+          -0.3341648238375905,
+          -0.3251710829176524,
+          -4.479994271634347
+        ],
+        "peakRssKiB": 233200
+      },
+      "combined": {
+        "samples": 15,
+        "medianMs": 9.650954333333349,
+        "rangeMs": [
+          9.495271285714287,
+          10.982814500000007
+        ],
+        "halfDriftPercent": [
+          -4.398237459077037,
+          3.27932242680109
+        ],
+        "withinProcessLastTwoOverFirstTwoPercent": [
+          0.9314997060536845,
+          1.02906963287126,
+          0.22578817815783747
+        ],
+        "peakRssKiB": 230516
+      },
+      "captured": {
+        "samples": 15,
+        "medianMs": 18.34912333333336,
+        "rangeMs": [
+          18.14310099999999,
+          18.775990999999976
+        ],
+        "halfDriftPercent": [
+          -4.587520487184693,
+          1.6352134873000912
+        ],
+        "withinProcessLastTwoOverFirstTwoPercent": [
+          -1.430250116463394,
+          -1.1728289101263223,
+          -1.2327924100107635
+        ],
+        "peakRssKiB": 232780
+      },
+      "comparisons": {
+        "bindingOnly": {
+          "numerator": "baseline",
+          "denominator": "captured",
+          "speedup": 1.0127095610397137,
+          "timeSavedPercent": 1.2550055345251443,
+          "newRangeEntirelyFaster": false,
+          "rangesOverlap": true
+        },
+        "projectionOnly": {
+          "numerator": "captured",
+          "denominator": "fields",
+          "speedup": 1.7625702546481334,
+          "timeSavedPercent": 43.2646728626637,
+          "newRangeEntirelyFaster": true,
+          "rangesOverlap": false
+        },
+        "directCallsAfterFields": {
+          "numerator": "fields",
+          "denominator": "combined",
+          "speedup": 1.0786948927986817,
+          "timeSavedPercent": 7.295380123151151,
+          "newRangeEntirelyFaster": false,
+          "rangesOverlap": true
+        },
+        "combinedVsBaseline": {
+          "numerator": "baseline",
+          "denominator": "combined",
+          "speedup": 1.9254399093136556,
+          "timeSavedPercent": 48.06381673284932,
+          "newRangeEntirelyFaster": true,
+          "rangesOverlap": false
+        }
+      }
+    },
+    "uncached": {
+      "baseline": {
+        "samples": 15,
+        "medianMs": 85.60328666666676,
+        "rangeMs": [
+          84.59310566666652,
+          86.17081233333329
+        ],
+        "halfDriftPercent": [
+          -1.3288810286963715,
+          3.02654310252366
+        ],
+        "withinProcessLastTwoOverFirstTwoPercent": [
+          -0.5739635029960555,
+          0.012859341231563626,
+          0.05846556854491869
+        ],
+        "peakRssKiB": 254636
+      },
+      "direct": {
+        "samples": 15,
+        "medianMs": 81.72481900000002,
+        "rangeMs": [
+          79.85237300000001,
+          96.47108700000005
+        ],
+        "halfDriftPercent": [
+          -11.517028285090248,
+          4.356398057566269
+        ],
+        "withinProcessLastTwoOverFirstTwoPercent": [
+          -1.3583819003923692,
+          -13.434067040616648,
+          0.7546788440919716
+        ],
+        "peakRssKiB": 248784
+      },
+      "fields": {
+        "samples": 15,
+        "medianMs": 52.285481499999946,
+        "rangeMs": [
+          51.62793700000009,
+          56.343075999999996
+        ],
+        "halfDriftPercent": [
+          -14.17572064022482,
+          6.529444480896873
+        ],
+        "withinProcessLastTwoOverFirstTwoPercent": [
+          3.677724421835271,
+          3.9624618011151025,
+          0.9710831755200378
+        ],
+        "peakRssKiB": 248528
+      },
+      "combined": {
+        "samples": 15,
+        "medianMs": 48.91085499999999,
+        "rangeMs": [
+          47.88088719999996,
+          50.07541279999996
+        ],
+        "halfDriftPercent": [
+          -2.05126262557227,
+          0.7681501408941305
+        ],
+        "withinProcessLastTwoOverFirstTwoPercent": [
+          -0.2322373896870844,
+          1.6711452581113395,
+          -0.08560101941540443
+        ],
+        "peakRssKiB": 248604
+      },
+      "captured": {
+        "samples": 15,
+        "medianMs": 84.4634290000002,
+        "rangeMs": [
+          83.61374599999999,
+          85.29725033333322
+        ],
+        "halfDriftPercent": [
+          -3.928699152319326,
+          0.754251120493854
+        ],
+        "withinProcessLastTwoOverFirstTwoPercent": [
+          -1.0171776776678576,
+          -0.3601001936084036,
+          -0.25531395366930054
+        ],
+        "peakRssKiB": 255028
+      },
+      "comparisons": {
+        "bindingOnly": {
+          "numerator": "baseline",
+          "denominator": "captured",
+          "speedup": 1.0134952805037853,
+          "timeSavedPercent": 1.331558297644675,
+          "newRangeEntirelyFaster": false,
+          "rangesOverlap": true
+        },
+        "projectionOnly": {
+          "numerator": "captured",
+          "denominator": "fields",
+          "speedup": 1.6154279654094854,
+          "timeSavedPercent": 38.09689931011465,
+          "newRangeEntirelyFaster": true,
+          "rangesOverlap": false
+        },
+        "directCallsAfterFields": {
+          "numerator": "fields",
+          "denominator": "combined",
+          "speedup": 1.0689954510098005,
+          "timeSavedPercent": 6.454232423966411,
+          "newRangeEntirelyFaster": true,
+          "rangesOverlap": false
+        },
+        "combinedVsBaseline": {
+          "numerator": "baseline",
+          "denominator": "combined",
+          "speedup": 1.7501899459060115,
+          "timeSavedPercent": 42.86334449931174,
+          "newRangeEntirelyFaster": true,
+          "rangesOverlap": false
+        }
+      }
+    },
+    "infer_ref": {
+      "baseline": {
+        "samples": 15,
+        "medianMs": 0.6740294219269094,
+        "rangeMs": [
+          0.6671821089108914,
+          0.6934945394736832
+        ],
+        "halfDriftPercent": [
+          -4.648030630678068,
+          7.155580574485287
+        ],
+        "withinProcessLastTwoOverFirstTwoPercent": [
+          0.7105292275738195,
+          0.6914138919153823,
+          1.130478072104979
+        ],
+        "peakRssKiB": 239944
+      },
+      "direct": {
+        "samples": 15,
+        "medianMs": 0.66442586195286,
+        "rangeMs": [
+          0.6403815757575753,
+          0.7920805744680842
+        ],
+        "halfDriftPercent": [
+          -13.416604694041911,
+          8.801271368640972
+        ],
+        "withinProcessLastTwoOverFirstTwoPercent": [
+          -0.41839146647714154,
+          -3.160651051389207,
+          0.3738126889194282
+        ],
+        "peakRssKiB": 236856
+      },
+      "fields": {
+        "samples": 15,
+        "medianMs": 0.4726670119047618,
+        "rangeMs": [
+          0.46510090109890057,
+          0.5407081743869205
+        ],
+        "halfDriftPercent": [
+          -6.627621932643102,
+          13.336207972565983
+        ],
+        "withinProcessLastTwoOverFirstTwoPercent": [
+          -1.052391179482226,
+          -1.6094779065084608,
+          -1.9051340739243083
+        ],
+        "peakRssKiB": 236188
+      },
+      "combined": {
+        "samples": 15,
+        "medianMs": 0.44630474449339225,
+        "rangeMs": [
+          0.44291639692982554,
+          0.45930068859649065
+        ],
+        "halfDriftPercent": [
+          -2.5048062567008644,
+          5.712949578645921
+        ],
+        "withinProcessLastTwoOverFirstTwoPercent": [
+          -1.9534034908329945,
+          -1.3806590305703192,
+          -1.2727371573586943
+        ],
+        "peakRssKiB": 238256
+      },
+      "captured": {
+        "samples": 15,
+        "medianMs": 0.6798463633333328,
+        "rangeMs": [
+          0.6744561772727283,
+          0.7452035733333332
+        ],
+        "halfDriftPercent": [
+          -11.22392511303586,
+          5.534741081567751
+        ],
+        "withinProcessLastTwoOverFirstTwoPercent": [
+          0.9842473296096443,
+          6.250054202023048,
+          -1.0607342293274646
+        ],
+        "peakRssKiB": 238004
+      },
+      "comparisons": {
+        "bindingOnly": {
+          "numerator": "baseline",
+          "denominator": "captured",
+          "speedup": 0.991443741233089,
+          "timeSavedPercent": -0.8630100136866492,
+          "newRangeEntirelyFaster": false,
+          "rangesOverlap": true
+        },
+        "projectionOnly": {
+          "numerator": "captured",
+          "denominator": "fields",
+          "speedup": 1.4383198873847278,
+          "timeSavedPercent": 30.474436961427077,
+          "newRangeEntirelyFaster": true,
+          "rangesOverlap": false
+        },
+        "directCallsAfterFields": {
+          "numerator": "fields",
+          "denominator": "combined",
+          "speedup": 1.0590678627924823,
+          "timeSavedPercent": 5.577344461830414,
+          "newRangeEntirelyFaster": true,
+          "rangesOverlap": false
+        },
+        "combinedVsBaseline": {
+          "numerator": "baseline",
+          "denominator": "combined",
+          "speedup": 1.5102448052440292,
+          "timeSavedPercent": 33.78556929792469,
+          "newRangeEntirelyFaster": true,
+          "rangesOverlap": false
+        }
+      }
+    }
+  },
+  "scope": "Arithmetic over every completed frozen-plan sample. Range overlap and drift are descriptive, not significance tests or convergence proofs. Private helper observations do not establish public or request performance."
+}
