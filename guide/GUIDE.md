@@ -330,7 +330,6 @@ that has a proof in Lean: it prints ALL PROOFS CHECK only when every def outside
 Base is a valid proof, which bend2 and the kernel both accept, and which relies
 on no `@unsafe` or foreign code. `-o PROOF.bendtt` writes the translation the
 kernel reads; the translation has no proof, so read it to confirm a law.
-Datatype kinds participate in this dependency check.
 
 Bend has no tactics: a proposition is a type, and a proof is a def of that type.
 `{a == b : T}` is an equality; `{==}` proves it when both sides compute to the
@@ -659,6 +658,7 @@ inhabit `Empty`, but nothing dead ever counts as live evidence, and live
 recursion must terminate. `bend2/bendtt.lean` is BendTT's kernel in Lean, with
 a proof that no def it accepts has type `Empty` and that live code halts;
 `--verdict` checks a file with it. `paper/BendTT.pdf` is the paper.
+Datatype kinds also participate in the unsafe/foreign dependency check.
 
 ## Further Reading
 
