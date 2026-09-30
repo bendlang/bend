@@ -22,7 +22,8 @@
 // λ{(,): ..} splits the tag from the fields, a λ{.k: ..; ..} chain
 // switches on the tag, and one λ{(,): ..} per field splits the chain,
 // which ends in λ{(): ..; λ{}}. A default arm binds the tag and the
-// fields, and its binder is their pair.
+// fields, and its binder is their pair. A D with no constructors also
+// has D.efq(ps) : D(ps) -> <>, so the kernel checks that D is empty.
 //
 // The kernel's live check reads the case tree: a self-call must pass,
 // left to right, each live column whole until one gets a piece of
@@ -316,8 +317,11 @@ function adt_emit(e: Safe, cols: Cols, n: string, tld: ADT): void {
   const arms = tld.c.reduceRight<O>((m, c) => ({ $: "Mat", k: name_tt(c.k), h: fs(c), m }), { $: "Efq" });
   const Enu: O = { $: "Enu", ks: tld.c.map((c) => name_tt(c.k)) };
   e.out.push([am, alls(ps, { $: "All", q: 1, l: t, A: Enu, B: { $: "Typ", q: G } }), lams(ps, arms), false]);
-  const f = ps.reduce<O>((f, [q, l]) => ({ $: "App", q, f, x: { $: "Var", l } }), { $: "Ref", k: am });
-  e.out.push([n, alls(ps, { $: "Typ", q: G }), lams(ps, { $: "Sig", q: 1, l: t, A: Enu, B: { $: "App", q: 1, f, x: { $: "Var", l: t } } }), false]);
+  const at = (k: string): O => ps.reduce<O>((f, [q, l]) => ({ $: "App", q, f, x: { $: "Var", l } }), { $: "Ref", k });
+  e.out.push([n, alls(ps, { $: "Typ", q: G }), lams(ps, { $: "Sig", q: 1, l: t, A: Enu, B: { $: "App", q: 1, f: at(am), x: { $: "Var", l: t } } }), false]);
+  if (tld.c.length === 0) {
+    e.out.push([fresh(e, n + ".efq"), alls(ps, { $: "All", q: 1, l: t, A: at(n), B: { $: "Enu", ks: [] } }), lams(ps, { $: "Prj", h: { $: "Efq" } }), false]);
+  }
 }
 
 // the first n parameters of the telescope T (all, at most), from scope s on: one cols
