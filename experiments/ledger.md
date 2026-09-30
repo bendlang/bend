@@ -2080,3 +2080,14 @@ requests: parent10.12–13.37%, H17 7.66–9.88%. This is not the upstream handw
 compiler ratio, steady-state throughput, a fixed point, or an isolated flag
 speedup inferred from the earlier5.2089× window. Original observations and
 negative-gate reuse scope remain explicit.
+
+
+## Phase31 — local data and recent compiler methodology
+
+The user authorizes studying Zig and related compiler history, experimenting and
+implementing further speed improvements. Installed8b16a16 is the baseline.
+[P31-001](phase31/P31-001-local-data.md) starts a fresh checked17 local-data ladder
+with an independent demand/alias review. A separate H17 attribution will separate
+ABI work from generated compiler invocation before proposing throughput edits.
+No new measurement or production promotion is claimed. The [design](../design/phase31/local-data-and-compiler-throughput.md)
+keeps compiler/output speed and historical windows distinct.

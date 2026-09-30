@@ -1,10 +1,31 @@
 # Current compiler experiment strategy
 
-Authorization covers compiler work and pushes to `rom1504/bend` on
-`selfhost/bootstrap`. No new PR comments without an explicit request. Phase30
-began2026-09-30 07:28:01 UTC with a seven-hour minimum, through14:28:01 UTC.
-Finish the concrete release/evidence after that minimum if needed. Preserve the
-103 unrelated starting paths in `implementation/phase30/start-state.json`.
+Phase31 authorization: study recent compiler history (including Zig), perform
+controlled experiments, implement improvements, design/report and commit/push to
+rom1504/bend selfhost/bootstrap. No PR comments without an explicit request.
+Phase30's timed campaign is complete; its seven-hour minimum is historical.
+
+## Active Phase31
+
+[Design](../design/phase31/local-data-and-compiler-throughput.md),
+[report index](../implementation/phase31/README.md),
+[start inventory](../implementation/phase31/start-state.json).
+Installed baseline8b16a16 remains unchanged during research. Preserve103 unrelated
+files byte-for-byte. All experiments require frozen identities and fresh outputs.
+
+1. phase31_zig studies official release/source history, separating compiler
+   latency, memory, incremental work and generated-code quality. No timing.
+2. phase31_local_data owns checked17 local-array setup/record-shell ablations;
+   phase31_semantics owns independent demand/alias/order review. Acquisition and
+   controls may run; no comparative timing without root's exclusive grant.
+3. Root owns safe disk recovery, H17 encode/invoke/decode attribution, prospective
+   integration and production source changes. Redundant synthetic books may be
+   removed only after live/archive hash equality; original capsules remain.
+4. Start with seconds-scale experiments, then genuine checked B1 plus36 controls,
+   fresh output and a second structurally different source before broad transfer.
+5. A strong measured result must produce a usable consolidated compiler, affected
+   conformance, documentation, durable evidence and fork push. A correct prototype
+   is not a general production optimization; retain null and rejected results.
 
 ## Consolidated Phase30 release
 

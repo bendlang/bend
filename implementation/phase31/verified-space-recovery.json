@@ -1,0 +1,87 @@
+{
+  "complete": true,
+  "archiveSha256": "641f71900de35a077265bcd373dfd0c9f98cb050469ca0265ba797a8bd73c60d",
+  "scope": "Only redundant live synthetic bound-test books; all bytes independently checked in committed Phase30 chunks first.",
+  "verified": [
+    {
+      "path": "selfhost/build/phase30/review-terminal-bounds-09/shared-zero-succ-fuel.book.json",
+      "bytes": 96122125,
+      "sha256": "acef7ae9966ee40779b70d52370d37b8d946492ed8db4ab9e03cefd98f54763d",
+      "mode": 420
+    },
+    {
+      "path": "selfhost/build/phase30/review-terminal-bounds-09b/nested-completed-cache-budget.book.json",
+      "bytes": 48104277,
+      "sha256": "7bba48ea7665afa7406b65a1d309ec179732328e1ddd7ace6440cbac0ea63c79",
+      "mode": 420
+    },
+    {
+      "path": "selfhost/build/phase30/review-terminal-bounds-09b/nested-fuel-neighbor-15.book.json",
+      "bytes": 90127024,
+      "sha256": "ee89c3323e98f713a7359bbd05331e3bacd993e586e4f8fc886c3d6eda2492ef",
+      "mode": 420
+    },
+    {
+      "path": "selfhost/build/phase30/review-terminal-bounds-09b/nested-shared-fuel.book.json",
+      "bytes": 96133857,
+      "sha256": "2b52acc38626a7bad6598780d3d773336aaa9c8dfd5be5f8eb20f376c0f092bc",
+      "mode": 420
+    },
+    {
+      "path": "selfhost/build/phase30/review-terminal-bounds-09b/shared-fuel-neighbor-15.book.json",
+      "bytes": 90115292,
+      "sha256": "2a5f9a5d5072516af095f8d9072cf18b86d48d35db366401cf3b6598db74cc45",
+      "mode": 420
+    },
+    {
+      "path": "selfhost/build/phase30/review-terminal-bounds-09b/shared-zero-succ-fuel.book.json",
+      "bytes": 96122125,
+      "sha256": "acef7ae9966ee40779b70d52370d37b8d946492ed8db4ab9e03cefd98f54763d",
+      "mode": 420
+    },
+    {
+      "path": "selfhost/build/phase30/review-terminal-bounds-13b/nested-completed-cache-budget.book.json",
+      "bytes": 48104277,
+      "sha256": "7bba48ea7665afa7406b65a1d309ec179732328e1ddd7ace6440cbac0ea63c79",
+      "mode": 420
+    },
+    {
+      "path": "selfhost/build/phase30/review-terminal-bounds-13b/nested-fuel-neighbor-15.book.json",
+      "bytes": 90127024,
+      "sha256": "ee89c3323e98f713a7359bbd05331e3bacd993e586e4f8fc886c3d6eda2492ef",
+      "mode": 420
+    },
+    {
+      "path": "selfhost/build/phase30/review-terminal-bounds-13b/nested-shared-fuel.book.json",
+      "bytes": 96133857,
+      "sha256": "2b52acc38626a7bad6598780d3d773336aaa9c8dfd5be5f8eb20f376c0f092bc",
+      "mode": 420
+    },
+    {
+      "path": "selfhost/build/phase30/review-terminal-bounds-13b/shared-fuel-neighbor-15.book.json",
+      "bytes": 90115292,
+      "sha256": "2a5f9a5d5072516af095f8d9072cf18b86d48d35db366401cf3b6598db74cc45",
+      "mode": 420
+    },
+    {
+      "path": "selfhost/build/phase30/review-terminal-bounds-13b/shared-zero-succ-fuel.book.json",
+      "bytes": 96122125,
+      "sha256": "acef7ae9966ee40779b70d52370d37b8d946492ed8db4ab9e03cefd98f54763d",
+      "mode": 420
+    }
+  ],
+  "removed": [
+    "selfhost/build/phase30/review-terminal-bounds-09/shared-zero-succ-fuel.book.json",
+    "selfhost/build/phase30/review-terminal-bounds-09b/nested-completed-cache-budget.book.json",
+    "selfhost/build/phase30/review-terminal-bounds-09b/nested-fuel-neighbor-15.book.json",
+    "selfhost/build/phase30/review-terminal-bounds-09b/nested-shared-fuel.book.json",
+    "selfhost/build/phase30/review-terminal-bounds-09b/shared-fuel-neighbor-15.book.json",
+    "selfhost/build/phase30/review-terminal-bounds-09b/shared-zero-succ-fuel.book.json",
+    "selfhost/build/phase30/review-terminal-bounds-13b/nested-completed-cache-budget.book.json",
+    "selfhost/build/phase30/review-terminal-bounds-13b/nested-fuel-neighbor-15.book.json",
+    "selfhost/build/phase30/review-terminal-bounds-13b/nested-shared-fuel.book.json",
+    "selfhost/build/phase30/review-terminal-bounds-13b/shared-fuel-neighbor-15.book.json",
+    "selfhost/build/phase30/review-terminal-bounds-13b/shared-zero-succ-fuel.book.json"
+  ],
+  "logicalBytesRemoved": 937327275
+}
