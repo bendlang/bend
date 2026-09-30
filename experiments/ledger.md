@@ -2091,3 +2091,13 @@ with an independent demand/alias review. A separate H17 attribution will separat
 ABI work from generated compiler invocation before proposing throughput edits.
 No new measurement or production promotion is claimed. The [design](../design/phase31/local-data-and-compiler-throughput.md)
 keeps compiler/output speed and historical windows distinct.
+
+P31-001 confirms private setup and separate Dp-shell gains on its small row,
+with independent state/demand/alias controls. P31-002's checked04 promotes the
+closed local call graph: one actual256×256pair takes61.980ms versus489.298ms
+checked17 and1.235826ms pinnedTS (7.89× faster, still50.15×TS). All328,966 native
+events and final arrays match. Six inherited gates pass, including23 libraries
+and127points.04's smallest-entry screen shows~5% overhead with ongoing warming;
+longer canary confirmation is deferred to the final candidate. Attempts01–03
+retain guard/embedded-runtime packaging failures; no installed release changed.
+[P31-003](phase31/P31-003-private-demand.md) next tests a bounded demand proof.

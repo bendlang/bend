@@ -122,7 +122,18 @@ function scalarGuard(names){
   }
   return true;
 }
-const native=(name,n,f)=>G[name]=fn(n,a=>f(...a));
+// Local arrays may alias, but their standard prototype must not run marker
+// callbacks while forcing tuple results inside an admitted private region.
+const localArrayPrototype=Array.prototype;
+function localGuard(names){
+  if(Object.getPrototypeOf(localArrayPrototype)!==scalarObjectPrototype)return false;
+  for(const k of ['request','bounce','build','code'])if(Object.getOwnPropertyDescriptor(localArrayPrototype,k))return false;
+  return scalarGuard(names);
+}
+const native=(name,n,f)=>{
+  const value=fn(n,a=>f(...a));
+  return G[name]=name==='Array.new'||name==='Array.get'||name==='Array.set'?scalarCapture(name,value):value;
+};
 function get(v,k){if(k in v){const x=v[k];return x?.code&&x.arity===0?call(x,[]):x;}bad('unbound name: '+k)}
 function ctor(k,a){
   if(constructorNative[k]===false)return {$:k,a};

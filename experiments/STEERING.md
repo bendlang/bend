@@ -13,19 +13,20 @@ Phase30's timed campaign is complete; its seven-hour minimum is historical.
 Installed baseline8b16a16 remains unchanged during research. Preserve103 unrelated
 files byte-for-byte. All experiments require frozen identities and fresh outputs.
 
-1. phase31_zig studies official release/source history, separating compiler
-   latency, memory, incremental work and generated-code quality. No timing.
-2. phase31_local_data owns checked17 local-array setup/record-shell ablations;
-   phase31_semantics owns independent demand/alias/order review. Acquisition and
-   controls may run; no comparative timing without root's exclusive grant.
-3. Root owns safe disk recovery, H17 encode/invoke/decode attribution, prospective
-   integration and production source changes. Redundant synthetic books may be
-   removed only after live/archive hash equality; original capsules remain.
-4. Start with seconds-scale experiments, then genuine checked B1 plus36 controls,
-   fresh output and a second structurally different source before broad transfer.
-5. A strong measured result must produce a usable consolidated compiler, affected
-   conformance, documentation, durable evidence and fork push. A correct prototype
-   is not a general production optimization; retain null and rejected results.
+1. Checked04 passes36 focused observations, exact full-pair native schedules,
+   two independent record fixtures and all six inherited gates (23 libraries/127
+   points). Fullpair61.980ms versus17 489.298ms andTS1.235826ms:7.89× faster.
+2. Smallest-entry canary shows~5% overhead with warming; confirm the final
+   candidate. Generic row also needs longer warmup. No aggregate speed claim.
+3. P31-003 tests fully demanded private results; a separate direct-field-read
+   design removes project/copy only under proven local layouts. Public fallback
+   remains generic. Keep controls and timing distinct; one timing owner.
+4. H17 tracing attributes~97% to generated invocation, not ABI copying. Checker
+   profiling points to application/forcing/matching overhead; Zig research is
+   complete. No new H speed or incremental-cache claim.
+5. All103 starting files remain protected. Root owns production/consolidation;
+   agents own independent local-data checks and inherited gates. Retain failed
+   01–03 packaging/guard attempts and publish no PR comments.
 
 ## Consolidated Phase30 release
 

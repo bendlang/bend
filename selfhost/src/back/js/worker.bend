@@ -81,23 +81,32 @@ def j_nat_loop_shape(+book: List<&2,KDef>, +d: KDef) -> Bool:
 
 @unsafe
 def j_nat_scalar_shape(+book: List<&2,KDef>, +d: KDef) -> Bool:
+  j_nat_shape(book, d, False{})
+
+@unsafe
+def j_nat_local_shape(+book: List<&2,KDef>, +d: KDef) -> Bool:
+  kc(Bool, j_nat_shape(book, d, True{}), u =>
+    j_nat_loop_tail(j_nat_loop_unwrap(kid(j_strip(kid(j_strip(dv(d)), 1)), 0)), dn(d), ix(j_strip(kid(j_strip(kid(j_strip(dv(d)), 1)), 0))), da(d)), u => False{})
+
+@unsafe
+def j_nat_shape(+book: List<&2,KDef>, +d: KDef, +local: Bool) -> Bool:
   +t = j_strip(dv(d))
   kc(Bool, String.eq(dk(d), "Def") && Bool.not(db(d)) && U32.is_eq(dx(d), 0) && String.eq(tg(t), "Mat") && String.eq(nm(t), "Zero") && U32.is_eq(terms_len(ks(t)), 2),
-    u => j_nat_loop_match(book, d, t, j_strip(kid(t, 1))), u => False{})
+    u => j_nat_loop_match(book, d, t, j_strip(kid(t, 1)), local), u => False{})
 
 @unsafe
-def j_nat_loop_match(+book: List<&2,KDef>, +d: KDef, +zero: KTerm, +succ: KTerm) -> Bool:
+def j_nat_loop_match(+book: List<&2,KDef>, +d: KDef, +zero: KTerm, +succ: KTerm, +local: Bool) -> Bool:
   kc(Bool, String.eq(tg(succ), "Mat") && String.eq(nm(succ), "Succ") && U32.is_eq(terms_len(ks(succ)), 2) &&
     String.eq(tg(j_strip(kid(succ, 1))), "Efq") && U32.is_eq(terms_len(ks(j_strip(kid(succ, 1)))), 0),
-    u => j_nat_loop_checked(book, d, kid(zero, 0), j_strip(kid(succ, 0)), j_nat_loop_count(kid(succ, 0), 0)), u => False{})
+    u => j_nat_loop_checked(book, d, kid(zero, 0), j_strip(kid(succ, 0)), j_nat_loop_count(kid(succ, 0), 0), local), u => False{})
 
 @unsafe
-def j_nat_loop_checked(+book: List<&2,KDef>, +d: KDef, +zero: KTerm, +succ: KTerm, +total: U32) -> Bool:
+def j_nat_loop_checked(+book: List<&2,KDef>, +d: KDef, +zero: KTerm, +succ: KTerm, +total: U32, +local: Bool) -> Bool:
   kc(Bool, U32.is_gt(total, 1) && U32.is_le(total, 32) && U32.is_eq(da(d), total), u =>
-    kc(Bool, U32.is_eq(j_nat_loop_count(zero, 0), U32.sub(total, 1)) && j_u32_bounded([dv(d)], 8192), u =>
-      kc(Bool, j_nat_loop_native(book) && j_nat_loop_signature(book, dt(d), 0, total) && Bool.not(j_l_deep(dv(d), 0)), u =>
+    kc(Bool, (local || U32.is_eq(j_nat_loop_count(zero, 0), U32.sub(total, 1))) && j_u32_bounded([dv(d)], 8192), u =>
+      kc(Bool, j_nat_loop_native(book) && kc(Bool, local, u => j_primitive_type(book, wnf(book, kid(wnf(book, dt(d)), 0)), "Nat") && j_region_local_signature(book, dt(d), total), u => j_nat_loop_signature(book, dt(d), 0, total)) && Bool.not(j_l_deep(dv(d), 0)), u =>
         kc(Bool, j_nat_loop_distinct(zero, Nil{}) && j_nat_loop_distinct(succ, Nil{}) &&
-          j_nat_loop_lambdas(book, zero, j_arm_type(book, wnf(book, dt(d)), "Zero"), U32.sub(total, 1)) &&
+          (local || j_nat_loop_lambdas(book, zero, j_arm_type(book, wnf(book, dt(d)), "Zero"), U32.sub(total, 1))) &&
           j_nat_loop_lambdas(book, succ, j_arm_type(book, wnf(book, dt(d)), "Succ"), total), u =>
             True{}, u => False{}), u => False{}), u => False{}), u => False{})
 
@@ -116,7 +125,7 @@ def j_nat_loop_region(+book: List<&2,KDef>, +d: KDef, +zero: KTerm, +succ: KTerm
           +fast: KDef = KDef{dn(d), dk(d), da(d), dx(d), dt(d), k_with_children(j_strip(dv(d)), [fastZero, kid(j_strip(dv(d)), 1)]), dc(d), db(d), du(d)}
           "scalarCapture(" ++ j_quote(dn(d)) ++ ",(()=>{" ++ j_region_declarations(book, helpers) ++ "const $guards=[" ++ j_quote(dn(d)) ++ "," ++ j_region_names(helpers) ++ "];return " ++
           j_nat_loop_wrapper(book, d, zero, total,
-            "if($entered&&" ++ j_region_inputs(book, j_arm_type(book, wnf(book, dt(d)), "Succ"), 0, total, True{}) ++ "&&scalarGuard($guards)){/* private scalar region */" ++
+            "if($entered&&" ++ j_region_inputs(book, j_arm_type(book, wnf(book, dt(d)), "Succ"), 0, total, True{}) ++ "&&localGuard($guards)){/* private scalar region */" ++
             j_nat_loop_body(book, fast, fastSucc, total) ++ "}" ++
             j_nat_loop_generic(book, Nil{}, succ, j_arm_type(book, wnf(book, dt(d)), "Succ"), 0)) ++ ";})())"
 
@@ -176,8 +185,7 @@ def j_nat_loop_emit(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: 
   kc(String, String.eq(tg(t), "Let"), u => "{" ++ j_nat_loop_values(book, env, ks(t), 0) ++ "{" ++ j_nat_loop_names(ks(t), 0) ++
     j_nat_loop_emit(book, j_context(book, env, ks(t)), j_body(ks(t)), ty, d, total) ++ "}}", u =>
     j_nat_loop_next(book, env, ks(j_call_spine(t, Nil{})), dt(d), 0) ++
-    "if($n0===0n){const a=[" ++ j_nat_loop_zero_args(total, 1) ++ "];" ++
-      j_lambda_code(book, Nil{}, kid(j_strip(dv(d)), 0), j_arm_type(book, wnf(book, dt(d)), "Zero"), 0) ++ "}" ++
+    "if($n0===0n){" ++ j_nat_loop_zero(book, d, total) ++ "}" ++
     "$s0=$n0-1n;" ++ j_nat_loop_assign(total, 1) ++ "continue;"))
 
 # Values are outside the block that introduces all parallel binders. The body
@@ -216,3 +224,13 @@ def j_nat_loop_zero_args(+total: U32, +at: U32) -> String:
 @unsafe
 def j_nat_loop_assign(+total: U32, +at: U32) -> String:
   kc(String, U32.is_eq(at, total), u => "", u => "$s" ++ U32.show(at) ++ "=$n" ++ U32.show(at) ++ ";" ++ j_nat_loop_assign(total, U32.inc(at)))
+
+@unsafe
+def j_nat_loop_zero(+book: List<&2,KDef>, +d: KDef, +total: U32) -> String:
+  +zero = kid(j_strip(dv(d)), 0)
+  kc(String, String.eq(tg(zero), "Ann"), u => j_region_zero_slots(0, U32.sub(total, 1)) ++ j_region_return(book, Nil{}, zero, kid(zero, 1)),
+    u => "const a=[" ++ j_nat_loop_zero_args(total, 1) ++ "];" ++ j_lambda_code(book, Nil{}, zero, j_arm_type(book, wnf(book, dt(d)), "Zero"), 0))
+
+@unsafe
+def j_region_zero_slots(+at: U32, +total: U32) -> String:
+  kc(String, U32.is_eq(at, total), u => "", u => "const $p" ++ U32.show(at) ++ "=$n" ++ U32.show(U32.inc(at)) ++ ";" ++ j_region_zero_slots(U32.inc(at), total))
