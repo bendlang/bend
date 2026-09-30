@@ -132,6 +132,10 @@ type Safe = {
 // a Nat literal longer than this goes out as arithmetic on shorter ones
 const NAT_MAX = 4096;
 
+// the steps a model search takes before it finds none: a nested
+// datatype's search meets a new type at every step
+const MODEL_MAX = 4096;
+
 // Errors
 // ======
 
@@ -425,7 +429,8 @@ function type_drop(e: Safe, T: HTerm, cols: Cols): HTerm {
 // -----
 // a model of type T: λs around a model of the codomain, a datatype's
 // first constructor whose fields all have one (none for a datatype
-// already on the path), Unit for a kind, {==} for an equation bend2
+// already on the path, compared as bend2 does, so a λ in its arguments
+// matches at any depth), Unit for a kind, {==} for an equation bend2
 // converts, else a live λ variable of type T (the codomain's own, so it
 // is used once); none for an empty type. A projection model takes that
 // variable first: a law like {a == sub(add(a, b), b)} holds of it, one
@@ -433,10 +438,15 @@ function type_drop(e: Safe, T: HTerm, cols: Cols): HTerm {
 // as the kernel checks a model with every opaque def at its own
 
 function model(e: Safe, T: HTerm): HTerm | null {
-  return model_at(e, T, 0, [], [], false) ?? model_at(e, T, 0, [], [], true);
+  const left = { n: MODEL_MAX };
+  const m = model_at(e, T, 0, [], [], false, left) ?? model_at(e, T, 0, [], [], true, left);
+  return left.n < 0 ? null : m;
 }
 
-function model_at(e: Safe, T: HTerm, d: number, path: string[], hs: Array<[HTerm, HTerm]>, proj: boolean): HTerm | null {
+function model_at(e: Safe, T: HTerm, d: number, path: HTerm[], hs: Array<[HTerm, HTerm]>, proj: boolean, left: { n: number }): HTerm | null {
+  if (--left.n < 0) {
+    return null;
+  }
   const F = B.term_wnf(e.mb, T);
   const hyp = (): HTerm | null => hs.find(([, A]) => B.term_compare("EQ", e.mb, A, F, d))?.[0] ?? null;
   switch (F.$) {
@@ -444,18 +454,18 @@ function model_at(e: Safe, T: HTerm, d: number, path: string[], hs: Array<[HTerm
       return B.ADT("Unit", []);
     }
     case "All": {
-      const f = (x: HTerm): HTerm | null => model_at(e, F.B(x), d + 1, path, F.q.$ === "None" ? hs : [...hs, [x, F.A]], proj);
+      const f = (x: HTerm): HTerm | null => model_at(e, F.B(x), d + 1, path, F.q.$ === "None" ? hs : [...hs, [x, F.A]], proj, left);
       return f(B.Var(F.k, d)) === null ? null : B.Ann(B.Lam(F.k, d, (x: HTerm) => f(x) as HTerm), F);
     }
     case "ADT": {
-      const key = B.term_key(B.term_lower(F, d));
       const tld = e.mb.tlds[F.k] as ADT;
       const h = proj ? hyp() : null;
-      for (const c of path.includes(key) || h !== null ? [] : tld.c.filter((c) => !F.r.includes(c.k))) {
+      const seen = path.some((P) => B.term_compare("EQ", e.mb, P, F, d));
+      for (const c of seen || h !== null ? [] : tld.c.filter((c) => !F.r.includes(c.k))) {
         const xs: HTerm[] = [];
         let U = B.term_wnf(e.mb, B.tele_fill(e.mb, c.T, F.x, B.ctx_nil()));
         let x: HTerm | null = null;
-        while (U.$ === "All" && (x = model_at(e, U.A, d, [...path, key], [], proj)) !== null) {
+        while (U.$ === "All" && (x = model_at(e, U.A, d, [...path, F], [], proj, left)) !== null) {
           xs.push(x);
           U = B.term_wnf(e.mb, U.B(x));
         }
