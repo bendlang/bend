@@ -1,0 +1,11 @@
+{
+  "kind": "phase25-static-census-first-attempt",
+  "status": "superseded",
+  "reason": "Helper vocabulary omitted multi-constructor matcher; matcher1 counts, source sizes and raw AST counts remain valid. Final report adds matcher and recognizes its one-argument runtime closure.",
+  "rawSha256": "6c4f3bd411ebc8c884d0fcda87afb505840349311821a2057ef3b67f13ed1287",
+  "rawBytes": 57324134,
+  "gzipSha256": "957f3397dc34e068ff98744d11c2c16d997769fa5d2b5157072e24c1ad659a51",
+  "gzipBytes": 3174672,
+  "roundTripExact": true,
+  "toolSha256": "158b8ee602382b1ebcc8ebac331e25799d162cf00e6d214241cd33cd140e8233"
+}

@@ -44,6 +44,10 @@ Designs, failures and exact evidence remain linked from the
 [ledger](experiments/ledger.md) and [current strategy](experiments/STEERING.md).
 Historical fixed points and speed ratios apply only to their recorded artifacts.
 
+The [Phase25 generated-code study](implementation/phase25/generated-code-analysis.md)
+adds a seconds-scale paired execution loop, diagrams and measured backend
+optimization targets. Its microkernel ratios are separate from compiler throughput.
+
 ## Bend runs FAST
 
 **Target:** be as fast as C on the CPU, as fast as CUDA on the GPU. **Status:**

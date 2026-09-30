@@ -129,3 +129,19 @@ Initial acquisition budget: at most200MiB of new artifacts,15seconds per runtime
 child and120seconds per emission child. Stop a failing family to diagnose it before
 expanding volume. Short prospective amendments may refine corpus or measurement
 details before the affected runs; retain original plans and failed pilots.
+
+## Prospective protocol clarification (before acquisition)
+
+Each execution/calibration process warms its exact export and input for at least
+100ms and eight calls, recording actual warmup calls/time. A fixed eight calls
+alone could leave small kernels below V8 optimization thresholds. The timed
+boundary includes identical scalar-result checks on both outputs, disclosed and
+quantified by the trivial boundary case. Only valid paired rows can calibrate;
+each source's supplied runtime sizes/seeds are frozen before calibration.
+
+Independent pre-run review identified that equal repetitions can leave a much
+faster reference below a useful timing duration. Freeze repetitions separately
+per output to target150ms, capped at1,000,000 calls, then compare time per call.
+Keep each side's count constant across its five samples. The same source/input
+and >=100ms warmup policy apply; report actual durations and any cap-bound control.
+This clarification precedes corpus acquisition and all comparative timings.

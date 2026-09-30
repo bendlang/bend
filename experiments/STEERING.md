@@ -44,20 +44,35 @@ No generated-program speedup is claimed. Canonical source15,776physical/13,467no
 
 ## Next priorities
 
-1. Continue backend acquisition in deterministic bounded batches. The inventory
+1. The [Phase25 emitted-code study](../implementation/phase25/generated-code-analysis.md)
+   is complete:23sources/46libraries,127independent scalar points exact on both
+   sides,45runtime points/450samples,18healthy diagnostics. The release is unchanged.
+   First test direct native U32 pattern decisions: current scalar matching creates
+   33constructor values per match and expands dense decisions into large matcher
+   trees. Preserve constructor/type identity, row/default order, unsigned width
+   and demand; keep a generic fallback. Large microkernel gaps are not whole-H
+   predictions. Use the new5.37-second focused emitted comparison before integration.
+2. Test saturated private workers through matcher boundaries, then tail cycles.
+   Runtime dispatch is hot in the selected analogues. A Boolean-worker source
+   rewrite helps upstream output22.24× but hurts ours1.80× on the matched point,
+   so source speedups on upstream-built B1 need a separate self-emitted-code gate.
+   Keep primitive inlining, Nat representation and constructor forcing as distinct
+   experiments. Retain successful exact string primitives; their near-parity case
+   contradicts a universal dispatch-only explanation. No new full H was measured.
+3. Continue backend acquisition in deterministic bounded batches. The inventory
    is current but largely unexecuted; frontend equality alone missed both repaired
    backend defects. Distinguish candidate semantic differences, shared upstream
    failures, expected refusals and environment limitations.
-2. Profiled remaining ordinary costs include contextual materialization, repeated
+4. Profiled remaining ordinary costs include contextual materialization, repeated
    book updates/traversals, generated dispatch and source-range validation. Use
    counters and boundary witnesses before another index or broad rewrite. The prior
    index's winner differs from first-event lookup: never replace full definitions
    with it without a consumer-specific proof.
-3. Keep the checked B1 development loop: final bootstrap+Base+36focused gates were
+5. Keep the checked B1 development loop: final bootstrap+Base+36focused gates were
    about27.6s of observed concurrent phase execution. Reuse attempts for fixture
    changes; reserve broad tests/reproduction for integration. A new fixed point,
    independent kernel and GPU/device work remain explicit separate capabilities.
-4. Prefer removing duplicated responsibility over compressing lines. Historical
+6. Prefer removing duplicated responsibility over compressing lines. Historical
    50%/75% source-reduction targets remain unachieved. Native source-size overhead
    from scalar identifiers is measurable; optimize only while retaining injectivity
    and reserved-runtime separation.

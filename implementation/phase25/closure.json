@@ -1,0 +1,842 @@
+{
+  "complete": true,
+  "archiveVerifiedFiles": 2835,
+  "restoredAt": "/tmp/bend-phase25-verify-5noehztj",
+  "restoredExecutions": [
+    {
+      "case": "host-boundary",
+      "side": "upstream",
+      "exitCode": 0,
+      "command": [
+        "taskset",
+        "-c",
+        "3",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase25/execute.mjs",
+        "check",
+        "/tmp/bend-phase25-verify-5noehztj/phase25/corpus-01/host-boundary/upstream.mjs",
+        "/tmp/bend-phase25-verify-5noehztj/phase25/corpus-01/host-boundary/check-config.json"
+      ],
+      "observation": {
+        "kind": "phase25-emitted-execution",
+        "mode": "check",
+        "complete": true,
+        "module": {
+          "file": "/tmp/bend-phase25-verify-5noehztj/phase25/corpus-01/host-boundary/upstream.mjs",
+          "sha256": "4bfd8b598272c91b1234a06ddd80df78bb71bc66124a5ae4f4889b85033262bc"
+        },
+        "node": "v24.18.0",
+        "args": [
+          "--stack-size=4096",
+          "--max-old-space-size=1024"
+        ],
+        "affinity": "Cpus_allowed_list:\t3",
+        "config": {
+          "inputs": [
+            {
+              "size": 0,
+              "seed": 0,
+              "expected": 0
+            },
+            {
+              "size": 1,
+              "seed": 7,
+              "expected": 7
+            },
+            {
+              "size": 8,
+              "seed": 13,
+              "expected": 13
+            },
+            {
+              "size": 32,
+              "seed": 17,
+              "expected": 17
+            },
+            {
+              "size": 0,
+              "seed": 17,
+              "expected": 17
+            }
+          ],
+          "exportName": "bench"
+        },
+        "importMs": 1.5248619999999988,
+        "results": [
+          {
+            "size": 0,
+            "seed": 0,
+            "expected": 0,
+            "result": 0
+          },
+          {
+            "size": 1,
+            "seed": 7,
+            "expected": 7,
+            "result": 7
+          },
+          {
+            "size": 8,
+            "seed": 13,
+            "expected": 13,
+            "result": 13
+          },
+          {
+            "size": 32,
+            "seed": 17,
+            "expected": 17,
+            "result": 17
+          },
+          {
+            "size": 0,
+            "seed": 17,
+            "expected": 17,
+            "result": 17
+          }
+        ],
+        "peakRssKiB": 50196
+      },
+      "stderr": ""
+    },
+    {
+      "case": "host-boundary",
+      "side": "selfhost",
+      "exitCode": 0,
+      "command": [
+        "taskset",
+        "-c",
+        "3",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase25/execute.mjs",
+        "check",
+        "/tmp/bend-phase25-verify-5noehztj/phase25/corpus-01/host-boundary/selfhost.mjs",
+        "/tmp/bend-phase25-verify-5noehztj/phase25/corpus-01/host-boundary/check-config.json"
+      ],
+      "observation": {
+        "kind": "phase25-emitted-execution",
+        "mode": "check",
+        "complete": true,
+        "module": {
+          "file": "/tmp/bend-phase25-verify-5noehztj/phase25/corpus-01/host-boundary/selfhost.mjs",
+          "sha256": "07d8a4b33cabeca98e385d8671514eb60e3258c62accd455aeccc9ce90526d85"
+        },
+        "node": "v24.18.0",
+        "args": [
+          "--stack-size=4096",
+          "--max-old-space-size=1024"
+        ],
+        "affinity": "Cpus_allowed_list:\t3",
+        "config": {
+          "inputs": [
+            {
+              "size": 0,
+              "seed": 0,
+              "expected": 0
+            },
+            {
+              "size": 1,
+              "seed": 7,
+              "expected": 7
+            },
+            {
+              "size": 8,
+              "seed": 13,
+              "expected": 13
+            },
+            {
+              "size": 32,
+              "seed": 17,
+              "expected": 17
+            },
+            {
+              "size": 0,
+              "seed": 17,
+              "expected": 17
+            }
+          ],
+          "exportName": "bench"
+        },
+        "importMs": 16.746488999999997,
+        "results": [
+          {
+            "size": 0,
+            "seed": 0,
+            "expected": 0,
+            "result": 0
+          },
+          {
+            "size": 1,
+            "seed": 7,
+            "expected": 7,
+            "result": 7
+          },
+          {
+            "size": 8,
+            "seed": 13,
+            "expected": 13,
+            "result": 13
+          },
+          {
+            "size": 32,
+            "seed": 17,
+            "expected": 17,
+            "result": 17
+          },
+          {
+            "size": 0,
+            "seed": 17,
+            "expected": 17,
+            "result": 17
+          }
+        ],
+        "peakRssKiB": 53260
+      },
+      "stderr": ""
+    },
+    {
+      "case": "pinned-u32-table",
+      "side": "upstream",
+      "exitCode": 0,
+      "command": [
+        "taskset",
+        "-c",
+        "3",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase25/execute.mjs",
+        "check",
+        "/tmp/bend-phase25-verify-5noehztj/phase25/corpus-01/pinned-u32-table/upstream.mjs",
+        "/tmp/bend-phase25-verify-5noehztj/phase25/corpus-01/pinned-u32-table/check-config.json"
+      ],
+      "observation": {
+        "kind": "phase25-emitted-execution",
+        "mode": "check",
+        "complete": true,
+        "module": {
+          "file": "/tmp/bend-phase25-verify-5noehztj/phase25/corpus-01/pinned-u32-table/upstream.mjs",
+          "sha256": "38b2d9c7744f41302edfedaf8f7fa2444221df2b33f0c0f94c640226203e8086"
+        },
+        "node": "v24.18.0",
+        "args": [
+          "--stack-size=4096",
+          "--max-old-space-size=1024"
+        ],
+        "affinity": "Cpus_allowed_list:\t3",
+        "config": {
+          "inputs": [
+            {
+              "size": 0,
+              "seed": 0,
+              "expected": 0
+            },
+            {
+              "size": 8,
+              "seed": 7,
+              "expected": 15
+            },
+            {
+              "size": 32,
+              "seed": 17,
+              "expected": 1732
+            },
+            {
+              "size": 3,
+              "seed": 4294967295,
+              "expected": 102
+            },
+            {
+              "size": 256,
+              "seed": 18,
+              "expected": 24132
+            }
+          ],
+          "exportName": "bench"
+        },
+        "importMs": 1.6625329999999963,
+        "results": [
+          {
+            "size": 0,
+            "seed": 0,
+            "expected": 0,
+            "result": 0
+          },
+          {
+            "size": 8,
+            "seed": 7,
+            "expected": 15,
+            "result": 15
+          },
+          {
+            "size": 32,
+            "seed": 17,
+            "expected": 1732,
+            "result": 1732
+          },
+          {
+            "size": 3,
+            "seed": 4294967295,
+            "expected": 102,
+            "result": 102
+          },
+          {
+            "size": 256,
+            "seed": 18,
+            "expected": 24132,
+            "result": 24132
+          }
+        ],
+        "peakRssKiB": 50204
+      },
+      "stderr": ""
+    },
+    {
+      "case": "pinned-u32-table",
+      "side": "selfhost",
+      "exitCode": 0,
+      "command": [
+        "taskset",
+        "-c",
+        "3",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase25/execute.mjs",
+        "check",
+        "/tmp/bend-phase25-verify-5noehztj/phase25/corpus-01/pinned-u32-table/selfhost.mjs",
+        "/tmp/bend-phase25-verify-5noehztj/phase25/corpus-01/pinned-u32-table/check-config.json"
+      ],
+      "observation": {
+        "kind": "phase25-emitted-execution",
+        "mode": "check",
+        "complete": true,
+        "module": {
+          "file": "/tmp/bend-phase25-verify-5noehztj/phase25/corpus-01/pinned-u32-table/selfhost.mjs",
+          "sha256": "7ff631c1c9300f6cf2fe32ad204bd97587986412b3a073a2e625267b5e9d212d"
+        },
+        "node": "v24.18.0",
+        "args": [
+          "--stack-size=4096",
+          "--max-old-space-size=1024"
+        ],
+        "affinity": "Cpus_allowed_list:\t3",
+        "config": {
+          "inputs": [
+            {
+              "size": 0,
+              "seed": 0,
+              "expected": 0
+            },
+            {
+              "size": 8,
+              "seed": 7,
+              "expected": 15
+            },
+            {
+              "size": 32,
+              "seed": 17,
+              "expected": 1732
+            },
+            {
+              "size": 3,
+              "seed": 4294967295,
+              "expected": 102
+            },
+            {
+              "size": 256,
+              "seed": 18,
+              "expected": 24132
+            }
+          ],
+          "exportName": "bench"
+        },
+        "importMs": 19.352338000000003,
+        "results": [
+          {
+            "size": 0,
+            "seed": 0,
+            "expected": 0,
+            "result": 0
+          },
+          {
+            "size": 8,
+            "seed": 7,
+            "expected": 15,
+            "result": 15
+          },
+          {
+            "size": 32,
+            "seed": 17,
+            "expected": 1732,
+            "result": 1732
+          },
+          {
+            "size": 3,
+            "seed": 4294967295,
+            "expected": 102,
+            "result": 102
+          },
+          {
+            "size": 256,
+            "seed": 18,
+            "expected": 24132,
+            "result": 24132
+          }
+        ],
+        "peakRssKiB": 58748
+      },
+      "stderr": ""
+    },
+    {
+      "case": "pinned-u32-wide",
+      "side": "upstream",
+      "exitCode": 0,
+      "command": [
+        "taskset",
+        "-c",
+        "3",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase25/execute.mjs",
+        "check",
+        "/tmp/bend-phase25-verify-5noehztj/phase25/corpus-01/pinned-u32-wide/upstream.mjs",
+        "/tmp/bend-phase25-verify-5noehztj/phase25/corpus-01/pinned-u32-wide/check-config.json"
+      ],
+      "observation": {
+        "kind": "phase25-emitted-execution",
+        "mode": "check",
+        "complete": true,
+        "module": {
+          "file": "/tmp/bend-phase25-verify-5noehztj/phase25/corpus-01/pinned-u32-wide/upstream.mjs",
+          "sha256": "f3f5a3074dd74b658530792d6893cf60051372e742042fac64da450793229939"
+        },
+        "node": "v24.18.0",
+        "args": [
+          "--stack-size=4096",
+          "--max-old-space-size=1024"
+        ],
+        "affinity": "Cpus_allowed_list:\t3",
+        "config": {
+          "inputs": [
+            {
+              "size": 0,
+              "seed": 0,
+              "expected": 4
+            },
+            {
+              "size": 8,
+              "seed": 7,
+              "expected": 324
+            },
+            {
+              "size": 32,
+              "seed": 17,
+              "expected": 1284
+            },
+            {
+              "size": 3,
+              "seed": 4294967295,
+              "expected": 84
+            },
+            {
+              "size": 256,
+              "seed": 17,
+              "expected": 10244
+            },
+            {
+              "size": 1024,
+              "seed": 18,
+              "expected": 40964
+            }
+          ],
+          "exportName": "bench"
+        },
+        "importMs": 1.623297000000008,
+        "results": [
+          {
+            "size": 0,
+            "seed": 0,
+            "expected": 4,
+            "result": 4
+          },
+          {
+            "size": 8,
+            "seed": 7,
+            "expected": 324,
+            "result": 324
+          },
+          {
+            "size": 32,
+            "seed": 17,
+            "expected": 1284,
+            "result": 1284
+          },
+          {
+            "size": 3,
+            "seed": 4294967295,
+            "expected": 84,
+            "result": 84
+          },
+          {
+            "size": 256,
+            "seed": 17,
+            "expected": 10244,
+            "result": 10244
+          },
+          {
+            "size": 1024,
+            "seed": 18,
+            "expected": 40964,
+            "result": 40964
+          }
+        ],
+        "peakRssKiB": 56500
+      },
+      "stderr": ""
+    },
+    {
+      "case": "pinned-u32-wide",
+      "side": "selfhost",
+      "exitCode": 0,
+      "command": [
+        "taskset",
+        "-c",
+        "3",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase25/execute.mjs",
+        "check",
+        "/tmp/bend-phase25-verify-5noehztj/phase25/corpus-01/pinned-u32-wide/selfhost.mjs",
+        "/tmp/bend-phase25-verify-5noehztj/phase25/corpus-01/pinned-u32-wide/check-config.json"
+      ],
+      "observation": {
+        "kind": "phase25-emitted-execution",
+        "mode": "check",
+        "complete": true,
+        "module": {
+          "file": "/tmp/bend-phase25-verify-5noehztj/phase25/corpus-01/pinned-u32-wide/selfhost.mjs",
+          "sha256": "38cccdc52056de7e2172aeba12a72246b71e600ac30da5cf32d5bbf9156cbf5e"
+        },
+        "node": "v24.18.0",
+        "args": [
+          "--stack-size=4096",
+          "--max-old-space-size=1024"
+        ],
+        "affinity": "Cpus_allowed_list:\t3",
+        "config": {
+          "inputs": [
+            {
+              "size": 0,
+              "seed": 0,
+              "expected": 4
+            },
+            {
+              "size": 8,
+              "seed": 7,
+              "expected": 324
+            },
+            {
+              "size": 32,
+              "seed": 17,
+              "expected": 1284
+            },
+            {
+              "size": 3,
+              "seed": 4294967295,
+              "expected": 84
+            },
+            {
+              "size": 256,
+              "seed": 17,
+              "expected": 10244
+            },
+            {
+              "size": 1024,
+              "seed": 18,
+              "expected": 40964
+            }
+          ],
+          "exportName": "bench"
+        },
+        "importMs": 19.529753999999997,
+        "results": [
+          {
+            "size": 0,
+            "seed": 0,
+            "expected": 4,
+            "result": 4
+          },
+          {
+            "size": 8,
+            "seed": 7,
+            "expected": 324,
+            "result": 324
+          },
+          {
+            "size": 32,
+            "seed": 17,
+            "expected": 1284,
+            "result": 1284
+          },
+          {
+            "size": 3,
+            "seed": 4294967295,
+            "expected": 84,
+            "result": 84
+          },
+          {
+            "size": 256,
+            "seed": 17,
+            "expected": 10244,
+            "result": 10244
+          },
+          {
+            "size": 1024,
+            "seed": 18,
+            "expected": 40964,
+            "result": 40964
+          }
+        ],
+        "peakRssKiB": 64144
+      },
+      "stderr": ""
+    },
+    {
+      "case": "string-scan",
+      "side": "upstream",
+      "exitCode": 0,
+      "command": [
+        "taskset",
+        "-c",
+        "3",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase25/execute.mjs",
+        "check",
+        "/tmp/bend-phase25-verify-5noehztj/phase25/corpus-01/string-scan/upstream.mjs",
+        "/tmp/bend-phase25-verify-5noehztj/phase25/corpus-01/string-scan/check-config.json"
+      ],
+      "observation": {
+        "kind": "phase25-emitted-execution",
+        "mode": "check",
+        "complete": true,
+        "module": {
+          "file": "/tmp/bend-phase25-verify-5noehztj/phase25/corpus-01/string-scan/upstream.mjs",
+          "sha256": "21a69b87b5592c76bc424cbe128fa7293ec6dd0e811b89455a55ebbf2d1ad75c"
+        },
+        "node": "v24.18.0",
+        "args": [
+          "--stack-size=4096",
+          "--max-old-space-size=1024"
+        ],
+        "affinity": "Cpus_allowed_list:\t3",
+        "config": {
+          "inputs": [
+            {
+              "size": 0,
+              "seed": 0,
+              "expected": 0
+            },
+            {
+              "size": 1,
+              "seed": 7,
+              "expected": 159754
+            },
+            {
+              "size": 8,
+              "seed": 13,
+              "expected": 1277989
+            },
+            {
+              "size": 32,
+              "seed": 17,
+              "expected": 5111921
+            },
+            {
+              "size": 256,
+              "seed": 17,
+              "expected": 40895249
+            },
+            {
+              "size": 1024,
+              "seed": 18,
+              "expected": 1644562
+            }
+          ],
+          "exportName": "bench"
+        },
+        "importMs": 1.6843980000000016,
+        "results": [
+          {
+            "size": 0,
+            "seed": 0,
+            "expected": 0,
+            "result": 0
+          },
+          {
+            "size": 1,
+            "seed": 7,
+            "expected": 159754,
+            "result": 159754
+          },
+          {
+            "size": 8,
+            "seed": 13,
+            "expected": 1277989,
+            "result": 1277989
+          },
+          {
+            "size": 32,
+            "seed": 17,
+            "expected": 5111921,
+            "result": 5111921
+          },
+          {
+            "size": 256,
+            "seed": 17,
+            "expected": 40895249,
+            "result": 40895249
+          },
+          {
+            "size": 1024,
+            "seed": 18,
+            "expected": 1644562,
+            "result": 1644562
+          }
+        ],
+        "peakRssKiB": 58540
+      },
+      "stderr": ""
+    },
+    {
+      "case": "string-scan",
+      "side": "selfhost",
+      "exitCode": 0,
+      "command": [
+        "taskset",
+        "-c",
+        "3",
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase25/execute.mjs",
+        "check",
+        "/tmp/bend-phase25-verify-5noehztj/phase25/corpus-01/string-scan/selfhost.mjs",
+        "/tmp/bend-phase25-verify-5noehztj/phase25/corpus-01/string-scan/check-config.json"
+      ],
+      "observation": {
+        "kind": "phase25-emitted-execution",
+        "mode": "check",
+        "complete": true,
+        "module": {
+          "file": "/tmp/bend-phase25-verify-5noehztj/phase25/corpus-01/string-scan/selfhost.mjs",
+          "sha256": "2d62296cc525270b4697054ce359a9ac7b57e233a609c9bfa2669a02949dec6a"
+        },
+        "node": "v24.18.0",
+        "args": [
+          "--stack-size=4096",
+          "--max-old-space-size=1024"
+        ],
+        "affinity": "Cpus_allowed_list:\t3",
+        "config": {
+          "inputs": [
+            {
+              "size": 0,
+              "seed": 0,
+              "expected": 0
+            },
+            {
+              "size": 1,
+              "seed": 7,
+              "expected": 159754
+            },
+            {
+              "size": 8,
+              "seed": 13,
+              "expected": 1277989
+            },
+            {
+              "size": 32,
+              "seed": 17,
+              "expected": 5111921
+            },
+            {
+              "size": 256,
+              "seed": 17,
+              "expected": 40895249
+            },
+            {
+              "size": 1024,
+              "seed": 18,
+              "expected": 1644562
+            }
+          ],
+          "exportName": "bench"
+        },
+        "importMs": 17.193250000000006,
+        "results": [
+          {
+            "size": 0,
+            "seed": 0,
+            "expected": 0,
+            "result": 0
+          },
+          {
+            "size": 1,
+            "seed": 7,
+            "expected": 159754,
+            "result": 159754
+          },
+          {
+            "size": 8,
+            "seed": 13,
+            "expected": 1277989,
+            "result": 1277989
+          },
+          {
+            "size": 32,
+            "seed": 17,
+            "expected": 5111921,
+            "result": 5111921
+          },
+          {
+            "size": 256,
+            "seed": 17,
+            "expected": 40895249,
+            "result": 40895249
+          },
+          {
+            "size": 1024,
+            "seed": 18,
+            "expected": 1644562,
+            "result": 1644562
+          }
+        ],
+        "peakRssKiB": 65952
+      },
+      "stderr": ""
+    }
+  ],
+  "protectedPreexistingUnchanged": 103,
+  "frozenInputsUnchanged": 158,
+  "releaseVerification": {
+    "complete": true,
+    "artifact": "equality-derived-b1",
+    "api": {
+      "path": "dist/typed-api.mjs",
+      "sha256": "7b523bdffc0acde702dda1005a5e8201f7b65b2e432d1be95b07f2cfcc0346fa",
+      "bytes": 939158
+    },
+    "sourceSha256": "1c634e72f3b473dfdef449daaf3c5559486757302fee45c29f9d5010dd76916e",
+    "newBootstrap": false
+  },
+  "upstreamPin": "018751270e800bc222a93dad7f257083ee53a5f7",
+  "upstreamStatus": ""
+}

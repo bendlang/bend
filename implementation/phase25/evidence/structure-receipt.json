@@ -1,0 +1,16 @@
+{
+  "kind": "phase25-static-census-final-archive",
+  "complete": true,
+  "rawFile": "structure.json",
+  "rawSha256": "5e9390ab4430f37468cc23f49815ef587c52e9605f622e380944e76378204322",
+  "rawBytes": 57357962,
+  "gzipFile": "evidence/structure.json.gz",
+  "gzipSha256": "5e829326da3453e72c27b017b840723b6ace8e749547e4ad0327f8b37bc44fe4",
+  "gzipBytes": 3173913,
+  "roundTripExact": true,
+  "toolSha256": "6e5a68a4615a2f29ac4987f5de643ea49eb0c3796f5980f2f62c78ac30126056",
+  "parserSha256": "2261c5f0e4abe860e889dfc67081683a4ba4d27deb7f4cbc8ad06a1b7fdd510c",
+  "modules": 46,
+  "pairs": 23,
+  "invariants": "Every section byte sum matches module bytes; common plus remaining program AST metrics exactly partition full program metrics."
+}

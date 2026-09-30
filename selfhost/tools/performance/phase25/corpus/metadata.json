@@ -1,0 +1,1700 @@
+[
+  {
+    "id": "host-boundary",
+    "relativeFile": "corpus/host-boundary.bend",
+    "exportName": "bench",
+    "family": "control",
+    "origin": "minimal generated ABI control",
+    "mechanism": "Return the runtime seed; size intentionally unused. Diagnose startup/call overhead, do not subtract separately sampled timings.",
+    "inputs": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 7
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 13
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 17
+      }
+    ],
+    "workloadPolicy": "No kernel work; result equals seed.",
+    "benchmarkInputs": [
+      {
+        "size": 0,
+        "seed": 17,
+        "expected": 17
+      }
+    ],
+    "correctness": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 7
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 13
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 17
+      },
+      {
+        "size": 0,
+        "seed": 17,
+        "expected": 17
+      }
+    ],
+    "oracle": "corpus/oracles.mjs:expected"
+  },
+  {
+    "id": "scalar-arithmetic",
+    "relativeFile": "corpus/scalar-arithmetic.bend",
+    "exportName": "bench",
+    "family": "scalar",
+    "origin": "adapted local scalar-loop fixture",
+    "mechanism": "U32 arithmetic under a structurally decreasing Nat loop.",
+    "inputs": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 7
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 367
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 35634112
+      }
+    ],
+    "workloadPolicy": "Input construction and complete scalar checksum are part of bench execution; no I/O. size/seed arrive at runtime.",
+    "benchmarkInputs": [
+      {
+        "size": 256,
+        "seed": 17,
+        "expected": 557373953
+      },
+      {
+        "size": 1024,
+        "seed": 18,
+        "expected": 22140126
+      }
+    ],
+    "correctness": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 7
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 367
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 35634112
+      },
+      {
+        "size": 256,
+        "seed": 17,
+        "expected": 557373953
+      },
+      {
+        "size": 1024,
+        "seed": 18,
+        "expected": 22140126
+      }
+    ],
+    "oracle": "corpus/oracles.mjs:expected"
+  },
+  {
+    "id": "boolean-choice",
+    "relativeFile": "corpus/boolean-choice.bend",
+    "exportName": "bench",
+    "family": "branch-shape",
+    "origin": "compiler mechanism analogue",
+    "mechanism": "Same recurrence in thunk-choice versus Boolean-worker source shape.",
+    "inputs": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 12
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 45
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 145
+      }
+    ],
+    "workloadPolicy": "Input construction and complete scalar checksum are part of bench execution; no I/O. size/seed arrive at runtime.",
+    "benchmarkInputs": [
+      {
+        "size": 256,
+        "seed": 17,
+        "expected": 1041
+      },
+      {
+        "size": 1024,
+        "seed": 18,
+        "expected": 4114
+      }
+    ],
+    "correctness": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 12
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 45
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 145
+      },
+      {
+        "size": 256,
+        "seed": 17,
+        "expected": 1041
+      },
+      {
+        "size": 1024,
+        "seed": 18,
+        "expected": 4114
+      }
+    ],
+    "oracle": "corpus/oracles.mjs:expected"
+  },
+  {
+    "id": "boolean-worker",
+    "relativeFile": "corpus/boolean-worker.bend",
+    "exportName": "bench",
+    "family": "branch-shape",
+    "origin": "compiler mechanism analogue",
+    "mechanism": "Same recurrence in thunk-choice versus Boolean-worker source shape.",
+    "inputs": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 12
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 45
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 145
+      }
+    ],
+    "workloadPolicy": "Input construction and complete scalar checksum are part of bench execution; no I/O. size/seed arrive at runtime.",
+    "benchmarkInputs": [
+      {
+        "size": 256,
+        "seed": 17,
+        "expected": 1041
+      },
+      {
+        "size": 1024,
+        "seed": 18,
+        "expected": 4114
+      }
+    ],
+    "correctness": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 12
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 45
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 145
+      },
+      {
+        "size": 256,
+        "seed": 17,
+        "expected": 1041
+      },
+      {
+        "size": 1024,
+        "seed": 18,
+        "expected": 4114
+      }
+    ],
+    "oracle": "corpus/oracles.mjs:expected"
+  },
+  {
+    "id": "membership-choice",
+    "relativeFile": "corpus/membership-choice.bend",
+    "exportName": "bench",
+    "family": "membership",
+    "origin": "renamed has_name mechanism; worker preserves current helper body",
+    "mechanism": "String equality, early hit and full miss; no claim to benchmark full declaration lookup.",
+    "inputs": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 8,
+        "seed": 2,
+        "expected": 3
+      },
+      {
+        "size": 8,
+        "seed": 3,
+        "expected": 3
+      },
+      {
+        "size": 64,
+        "seed": 7,
+        "expected": 7
+      }
+    ],
+    "workloadPolicy": "Input construction and complete scalar checksum are part of bench execution; no I/O. size/seed arrive at runtime.",
+    "benchmarkInputs": [
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 17
+      },
+      {
+        "size": 256,
+        "seed": 18,
+        "expected": 19
+      }
+    ],
+    "correctness": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 8,
+        "seed": 2,
+        "expected": 3
+      },
+      {
+        "size": 8,
+        "seed": 3,
+        "expected": 3
+      },
+      {
+        "size": 64,
+        "seed": 7,
+        "expected": 7
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 17
+      },
+      {
+        "size": 256,
+        "seed": 18,
+        "expected": 19
+      }
+    ],
+    "oracle": "corpus/oracles.mjs:expected"
+  },
+  {
+    "id": "membership-worker",
+    "relativeFile": "corpus/membership-worker.bend",
+    "exportName": "bench",
+    "family": "membership",
+    "origin": "renamed has_name mechanism; worker preserves current helper body",
+    "mechanism": "String equality, early hit and full miss; no claim to benchmark full declaration lookup.",
+    "inputs": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 8,
+        "seed": 2,
+        "expected": 3
+      },
+      {
+        "size": 8,
+        "seed": 3,
+        "expected": 3
+      },
+      {
+        "size": 64,
+        "seed": 7,
+        "expected": 7
+      }
+    ],
+    "workloadPolicy": "Input construction and complete scalar checksum are part of bench execution; no I/O. size/seed arrive at runtime.",
+    "benchmarkInputs": [
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 17
+      },
+      {
+        "size": 256,
+        "seed": 18,
+        "expected": 19
+      }
+    ],
+    "correctness": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 8,
+        "seed": 2,
+        "expected": 3
+      },
+      {
+        "size": 8,
+        "seed": 3,
+        "expected": 3
+      },
+      {
+        "size": 64,
+        "seed": 7,
+        "expected": 7
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 17
+      },
+      {
+        "size": 256,
+        "seed": 18,
+        "expected": 19
+      }
+    ],
+    "oracle": "corpus/oracles.mjs:expected"
+  },
+  {
+    "id": "list-reverse",
+    "relativeFile": "corpus/list-reverse.bend",
+    "exportName": "bench",
+    "family": "list",
+    "origin": "compiler list-walk analogue",
+    "mechanism": "Tail-recursive reconstruction followed by full ordered checksum.",
+    "inputs": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 238
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 1132554769
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 3328045601
+      }
+    ],
+    "workloadPolicy": "Input construction and complete scalar checksum are part of bench execution; no I/O. size/seed arrive at runtime.",
+    "benchmarkInputs": [
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 3328045601
+      },
+      {
+        "size": 256,
+        "seed": 18,
+        "expected": 3659141522
+      }
+    ],
+    "correctness": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 238
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 1132554769
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 3328045601
+      },
+      {
+        "size": 256,
+        "seed": 18,
+        "expected": 3659141522
+      }
+    ],
+    "oracle": "corpus/oracles.mjs:expected"
+  },
+  {
+    "id": "list-map-fold",
+    "relativeFile": "corpus/list-map-fold.bend",
+    "exportName": "bench",
+    "family": "list",
+    "origin": "adapted pinned tests/run/list_map_fold_ops.bend",
+    "mechanism": "Pinned first-order map/fold mechanism with runtime list length and values.",
+    "inputs": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 245
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 2553482261
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 1196602417
+      }
+    ],
+    "workloadPolicy": "Input construction and complete scalar checksum are part of bench execution; no I/O. size/seed arrive at runtime.",
+    "benchmarkInputs": [
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 1196602417
+      },
+      {
+        "size": 256,
+        "seed": 18,
+        "expected": 4209804050
+      }
+    ],
+    "correctness": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 245
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 2553482261
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 1196602417
+      },
+      {
+        "size": 256,
+        "seed": 18,
+        "expected": 4209804050
+      }
+    ],
+    "oracle": "corpus/oracles.mjs:expected"
+  },
+  {
+    "id": "match-remaining-args",
+    "relativeFile": "corpus/match-remaining-args.bend",
+    "exportName": "bench",
+    "family": "calls",
+    "origin": "compiler subst_node/tele_check calling-shape analogue",
+    "mechanism": "A matcher precedes remaining shared scalar arguments; the recursive work consumes all fields.",
+    "inputs": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 35
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 513
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 3681
+      }
+    ],
+    "workloadPolicy": "Input construction and complete scalar checksum are part of bench execution; no I/O. size/seed arrive at runtime.",
+    "benchmarkInputs": [
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 3681
+      },
+      {
+        "size": 256,
+        "seed": 18,
+        "expected": 116370
+      }
+    ],
+    "correctness": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 35
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 513
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 3681
+      },
+      {
+        "size": 256,
+        "seed": 18,
+        "expected": 116370
+      }
+    ],
+    "oracle": "corpus/oracles.mjs:expected"
+  },
+  {
+    "id": "partial-application",
+    "relativeFile": "corpus/partial-application.bend",
+    "exportName": "bench",
+    "family": "calls",
+    "origin": "compiler staged-call analogue",
+    "mechanism": "Explicit partial application across the same match-plus-arguments traversal.",
+    "inputs": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 35
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 513
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 3681
+      }
+    ],
+    "workloadPolicy": "Input construction and complete scalar checksum are part of bench execution; no I/O. size/seed arrive at runtime.",
+    "benchmarkInputs": [
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 3681
+      },
+      {
+        "size": 256,
+        "seed": 18,
+        "expected": 116370
+      }
+    ],
+    "correctness": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 35
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 513
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 3681
+      },
+      {
+        "size": 256,
+        "seed": 18,
+        "expected": 116370
+      }
+    ],
+    "oracle": "corpus/oracles.mjs:expected"
+  },
+  {
+    "id": "closure-capture",
+    "relativeFile": "corpus/closure-capture.bend",
+    "exportName": "bench",
+    "family": "calls",
+    "origin": "compiler closure-shape analogue",
+    "mechanism": "Fresh scalar capture passed once through an ordinary function argument; inspect emission for inlining.",
+    "inputs": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 8
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 49
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 545
+      }
+    ],
+    "workloadPolicy": "Input construction and complete scalar checksum are part of bench execution; no I/O. size/seed arrive at runtime.",
+    "benchmarkInputs": [
+      {
+        "size": 256,
+        "seed": 17,
+        "expected": 32913
+      },
+      {
+        "size": 1024,
+        "seed": 18,
+        "expected": 524818
+      }
+    ],
+    "correctness": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 8
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 49
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 545
+      },
+      {
+        "size": 256,
+        "seed": 17,
+        "expected": 32913
+      },
+      {
+        "size": 1024,
+        "seed": 18,
+        "expected": 524818
+      }
+    ],
+    "oracle": "corpus/oracles.mjs:expected"
+  },
+  {
+    "id": "string-hash",
+    "relativeFile": "corpus/string-hash.bend",
+    "exportName": "bench",
+    "family": "string",
+    "origin": "renamed exact index_hash recurrence",
+    "mechanism": "FNV-1a codepoint hash from core/index.bend; runtime seed and ASCII/Unicode data.",
+    "inputs": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 592918782
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 1927501749
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 601849521
+      }
+    ],
+    "workloadPolicy": "Input construction and complete scalar checksum are part of bench execution; no I/O. size/seed arrive at runtime.",
+    "benchmarkInputs": [
+      {
+        "size": 256,
+        "seed": 17,
+        "expected": 1221287185
+      },
+      {
+        "size": 1024,
+        "seed": 18,
+        "expected": 265656338
+      }
+    ],
+    "correctness": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 592918782
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 1927501749
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 601849521
+      },
+      {
+        "size": 256,
+        "seed": 17,
+        "expected": 1221287185
+      },
+      {
+        "size": 1024,
+        "seed": 18,
+        "expected": 265656338
+      }
+    ],
+    "oracle": "corpus/oracles.mjs:expected"
+  },
+  {
+    "id": "string-scan",
+    "relativeFile": "corpus/string-scan.bend",
+    "exportName": "bench",
+    "family": "string",
+    "origin": "lexer codepoint-walk analogue",
+    "mechanism": "Classify every character and accumulate codepoints; no full tokenizer semantics claimed.",
+    "inputs": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 159754
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 1277989
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 5111921
+      }
+    ],
+    "workloadPolicy": "Input construction and complete scalar checksum are part of bench execution; no I/O. size/seed arrive at runtime.",
+    "benchmarkInputs": [
+      {
+        "size": 256,
+        "seed": 17,
+        "expected": 40895249
+      },
+      {
+        "size": 1024,
+        "seed": 18,
+        "expected": 1644562
+      }
+    ],
+    "correctness": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 159754
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 1277989
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 5111921
+      },
+      {
+        "size": 256,
+        "seed": 17,
+        "expected": 40895249
+      },
+      {
+        "size": 1024,
+        "seed": 18,
+        "expected": 1644562
+      }
+    ],
+    "oracle": "corpus/oracles.mjs:expected"
+  },
+  {
+    "id": "string-equality",
+    "relativeFile": "corpus/string-equality.bend",
+    "exportName": "bench",
+    "family": "string",
+    "origin": "compiler name-comparison analogue",
+    "mechanism": "Equal and late-mismatching dynamically selected strings; complete Boolean result consumed.",
+    "inputs": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 7
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 13
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 17
+      }
+    ],
+    "workloadPolicy": "Input construction and complete scalar checksum are part of bench execution; no I/O. size/seed arrive at runtime.",
+    "benchmarkInputs": [
+      {
+        "size": 256,
+        "seed": 17,
+        "expected": 17
+      },
+      {
+        "size": 1024,
+        "seed": 18,
+        "expected": 1042
+      }
+    ],
+    "correctness": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 7
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 13
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 17
+      },
+      {
+        "size": 256,
+        "seed": 17,
+        "expected": 17
+      },
+      {
+        "size": 1024,
+        "seed": 18,
+        "expected": 1042
+      }
+    ],
+    "oracle": "corpus/oracles.mjs:expected"
+  },
+  {
+    "id": "tree-fold",
+    "relativeFile": "corpus/tree-fold.bend",
+    "exportName": "bench",
+    "family": "tree",
+    "origin": "adapted local tests/fixtures/tree.bend",
+    "mechanism": "Fixed depth5 tree, runtime seed and traversal count; repeated shared use is not graph normalization.",
+    "inputs": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 7671
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 110477
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 572945
+      }
+    ],
+    "workloadPolicy": "Input construction and complete scalar checksum are part of bench execution; no I/O. size/seed arrive at runtime.",
+    "benchmarkInputs": [
+      {
+        "size": 256,
+        "seed": 17,
+        "expected": 4583441
+      },
+      {
+        "size": 1024,
+        "seed": 18,
+        "expected": 19382290
+      }
+    ],
+    "correctness": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 7671
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 110477
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 572945
+      },
+      {
+        "size": 256,
+        "seed": 17,
+        "expected": 4583441
+      },
+      {
+        "size": 1024,
+        "seed": 18,
+        "expected": 19382290
+      }
+    ],
+    "oracle": "corpus/oracles.mjs:expected"
+  },
+  {
+    "id": "tree-shared",
+    "relativeFile": "corpus/tree-shared.bend",
+    "exportName": "bench",
+    "family": "tree",
+    "origin": "adapted pinned tests/compile/shared_tree_copies.bend",
+    "mechanism": "Fixed depth5 tree, runtime seed and traversal count; repeated shared use is not graph normalization.",
+    "inputs": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 15335
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 220941
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 1145873
+      }
+    ],
+    "workloadPolicy": "Input construction and complete scalar checksum are part of bench execution; no I/O. size/seed arrive at runtime.",
+    "benchmarkInputs": [
+      {
+        "size": 256,
+        "seed": 17,
+        "expected": 9166865
+      },
+      {
+        "size": 1024,
+        "seed": 18,
+        "expected": 38764562
+      }
+    ],
+    "correctness": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 15335
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 220941
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 1145873
+      },
+      {
+        "size": 256,
+        "seed": 17,
+        "expected": 9166865
+      },
+      {
+        "size": 1024,
+        "seed": 18,
+        "expected": 38764562
+      }
+    ],
+    "oracle": "corpus/oracles.mjs:expected"
+  },
+  {
+    "id": "term-substitution",
+    "relativeFile": "corpus/term-substitution.bend",
+    "exportName": "bench",
+    "family": "term",
+    "origin": "compiler first-order term substitution analogue",
+    "mechanism": "Four-constructor term traversal; preserve binder shadows and rebuild only this simplified domain.",
+    "inputs": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 51
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 76
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 234
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 2129
+      }
+    ],
+    "workloadPolicy": "Input construction and complete scalar checksum are part of bench execution; no I/O. size/seed arrive at runtime.",
+    "benchmarkInputs": [
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 2129
+      },
+      {
+        "size": 256,
+        "seed": 18,
+        "expected": 131602
+      }
+    ],
+    "correctness": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 51
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 76
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 234
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 2129
+      },
+      {
+        "size": 256,
+        "seed": 18,
+        "expected": 131602
+      }
+    ],
+    "oracle": "corpus/oracles.mjs:expected"
+  },
+  {
+    "id": "term-freshening",
+    "relativeFile": "corpus/term-freshening.bend",
+    "exportName": "bench",
+    "family": "term",
+    "origin": "compiler term rebuilding analogue",
+    "mechanism": "Shift numeric fields through a term with compact scalar leaves; not capture-avoiding semantic freshening.",
+    "inputs": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 25
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 274
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 2690
+      }
+    ],
+    "workloadPolicy": "Input construction and complete scalar checksum are part of bench execution; no I/O. size/seed arrive at runtime.",
+    "benchmarkInputs": [
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 2690
+      },
+      {
+        "size": 256,
+        "seed": 18,
+        "expected": 136228
+      }
+    ],
+    "correctness": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 25
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 274
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 2690
+      },
+      {
+        "size": 256,
+        "seed": 18,
+        "expected": 136228
+      }
+    ],
+    "oracle": "corpus/oracles.mjs:expected"
+  },
+  {
+    "id": "term-normalization",
+    "relativeFile": "corpus/term-normalization.bend",
+    "exportName": "bench",
+    "family": "term",
+    "origin": "bounded first-order normalization analogue",
+    "mechanism": "Eliminate identity wrappers while rebuilding a shared scalar tree; not full dependent conversion.",
+    "inputs": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 16
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 98
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 1090
+      }
+    ],
+    "workloadPolicy": "Input construction and complete scalar checksum are part of bench execution; no I/O. size/seed arrive at runtime.",
+    "benchmarkInputs": [
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 1090
+      },
+      {
+        "size": 256,
+        "seed": 18,
+        "expected": 65828
+      }
+    ],
+    "correctness": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 16
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 98
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 1090
+      },
+      {
+        "size": 256,
+        "seed": 18,
+        "expected": 65828
+      }
+    ],
+    "oracle": "corpus/oracles.mjs:expected"
+  },
+  {
+    "id": "index-chain",
+    "relativeFile": "corpus/index-chain.bend",
+    "exportName": "bench",
+    "family": "index",
+    "origin": "association-list lookup analogue",
+    "mechanism": "Build immutable numeric bindings and probe first-hit/miss paths; not the persistent compiler trie.",
+    "inputs": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 7
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 17
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 33
+      }
+    ],
+    "workloadPolicy": "Input construction and complete scalar checksum are part of bench execution; no I/O. size/seed arrive at runtime.",
+    "benchmarkInputs": [
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 33
+      },
+      {
+        "size": 256,
+        "seed": 18,
+        "expected": 146
+      }
+    ],
+    "correctness": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 7
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 17
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 33
+      },
+      {
+        "size": 256,
+        "seed": 18,
+        "expected": 146
+      }
+    ],
+    "oracle": "corpus/oracles.mjs:expected"
+  },
+  {
+    "id": "nat-reconstruction",
+    "relativeFile": "corpus/nat-reconstruction.bend",
+    "exportName": "bench",
+    "family": "literal",
+    "origin": "adapted pinned Nat scalar constructor mechanism",
+    "mechanism": "Runtime Nat conversion and successor prefix reconstruction; no large literal embedded in source.",
+    "inputs": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 8
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 21
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 49
+      }
+    ],
+    "workloadPolicy": "Input construction and complete scalar checksum are part of bench execution; no I/O. size/seed arrive at runtime.",
+    "benchmarkInputs": [
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 49
+      },
+      {
+        "size": 256,
+        "seed": 18,
+        "expected": 274
+      }
+    ],
+    "correctness": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 1,
+        "seed": 7,
+        "expected": 8
+      },
+      {
+        "size": 8,
+        "seed": 13,
+        "expected": 21
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 49
+      },
+      {
+        "size": 256,
+        "seed": 18,
+        "expected": 274
+      }
+    ],
+    "oracle": "corpus/oracles.mjs:expected"
+  },
+  {
+    "id": "pinned-u32-table",
+    "relativeFile": "corpus/pinned-u32-table.bend",
+    "exportName": "bench",
+    "family": "pinned-fixture",
+    "origin": "verbatim pinned fixture plus appended dynamic wrapper",
+    "pinnedSource": {
+      "path": "tests/compile/u32_table_popcount.bend",
+      "sha256": "ab2c02947e63ae2df232be3080d00ca4c383f87626e58f6c372288de159f83ba",
+      "bytes": 891
+    },
+    "mechanism": "Exact pinned dense-literal table and walk helpers, including default arm; runtime loop length and lookup key.",
+    "inputs": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 8,
+        "seed": 7,
+        "expected": 15
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 1732
+      },
+      {
+        "size": 3,
+        "seed": 4294967295,
+        "expected": 102
+      }
+    ],
+    "workloadPolicy": "Original fixture prefix remains byte-identical; only bench is invoked; fixture main and its expected I/O are not timed.",
+    "benchmarkInputs": [
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 1732
+      },
+      {
+        "size": 256,
+        "seed": 18,
+        "expected": 24132
+      }
+    ],
+    "correctness": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 0
+      },
+      {
+        "size": 8,
+        "seed": 7,
+        "expected": 15
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 1732
+      },
+      {
+        "size": 3,
+        "seed": 4294967295,
+        "expected": 102
+      },
+      {
+        "size": 256,
+        "seed": 18,
+        "expected": 24132
+      }
+    ],
+    "oracle": "corpus/oracles.mjs:expected"
+  },
+  {
+    "id": "pinned-u32-wide",
+    "relativeFile": "corpus/pinned-u32-wide.bend",
+    "exportName": "bench",
+    "family": "pinned-fixture",
+    "origin": "verbatim pinned fixture plus appended dynamic wrapper",
+    "pinnedSource": {
+      "path": "tests/compile/u32_literal_word.bend",
+      "sha256": "437e7ee60da1a86bb62ac4bcec557ac0c3708fd9912fe840731ed33d4dc455f2",
+      "bytes": 580
+    },
+    "mechanism": "Exact pinned wide literal match and wrapping U32 operation with appended dynamic repetition.",
+    "inputs": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 4
+      },
+      {
+        "size": 8,
+        "seed": 7,
+        "expected": 324
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 1284
+      },
+      {
+        "size": 3,
+        "seed": 4294967295,
+        "expected": 84
+      }
+    ],
+    "workloadPolicy": "Original fixture prefix remains byte-identical; only bench is invoked; fixture main and its expected I/O are not timed.",
+    "benchmarkInputs": [
+      {
+        "size": 256,
+        "seed": 17,
+        "expected": 10244
+      },
+      {
+        "size": 1024,
+        "seed": 18,
+        "expected": 40964
+      }
+    ],
+    "correctness": [
+      {
+        "size": 0,
+        "seed": 0,
+        "expected": 4
+      },
+      {
+        "size": 8,
+        "seed": 7,
+        "expected": 324
+      },
+      {
+        "size": 32,
+        "seed": 17,
+        "expected": 1284
+      },
+      {
+        "size": 3,
+        "seed": 4294967295,
+        "expected": 84
+      },
+      {
+        "size": 256,
+        "seed": 17,
+        "expected": 10244
+      },
+      {
+        "size": 1024,
+        "seed": 18,
+        "expected": 40964
+      }
+    ],
+    "oracle": "corpus/oracles.mjs:expected"
+  }
+]

@@ -1538,3 +1538,49 @@ opportunities but only a small subset is observed here. Investigate materializat
 book walks/updates and dispatch with producer/consumer invariants before a broad
 rewrite. Preserve all failed attempts and the103 unrelated starting paths; the
 new evidence capsule reuses Phase23 prerequisites and records exact recovery.
+
+## P25 — analyze emitted programs before optimizing H (2026-09-30)
+
+[Design](../design/phase25/generated-code-analysis.md),
+[report](../implementation/phase25/generated-code-analysis.md),
+[reproduction](../implementation/phase25/README.md).
+Hypotheses: [call lowering](phase25/P25-001-call-lowering.md),
+[allocation](phase25/P25-002-runtime-allocation.md),
+[JIT/scaling](phase25/P25-003-jit-and-scaling.md).
+
+No compiler, runtime, Base or installed release changed. Twenty-three small
+sources produce46 checked libraries;127 independently expected scalar points
+agree on both sides. Most are mechanism analogues, not exact full compiler
+components. Forty-five runtime points supply450 clean samples on CPU3/Node24;
+the full cached sweep costs171.69s of child wall. A new focused paired command,
+including calibration/output checks/ten samples, reproduces a numeric case in5.37s.
+
+Full AST analysis separates copied runtimes,48 common emitted registrations and
+workload owners. Direct U32 patterns expand each scalar to33 temporary constructor
+values in our runtime; exact counts corroborate the hot representation overhead.
+Dense pop grows to65,562bytes of matcher code versus a60-byte upstream function
+and68-byte table. Selected numeric-pattern gaps are1,418–1,761×; these are tiny
+generated-program ratios, not compiler-throughput or predicted optimization gains.
+Other mechanisms vary widely, with string equality near parity(1.05–1.15×).
+
+Matches interrupt saturated calls; ordinary arithmetic uses generic primitive
+dispatch where upstream emits direct loops/operations. Nine paired diagnostics
+(18healthy processes) establish runtime-prefix CPU73–87%, plus allocation and
+exact operation evidence. Boolean-worker source is22.24× faster under upstream
+lowering but1.80× slower under our emitter on one matched input: upstream-built B1
+source improvements do not automatically transfer to self-emitted H.
+
+Selected V8 steady traces show no candidate deoptimizations; observed upstream
+ones belong to the diagnostic harness. Input sizes also change seeds/paths, so
+no pure scaling law is inferred. Full H, native/GPU execution and a broader current
+backend sweep remain outside this phase. Independent timing and dynamic reviews
+retain fixture errors, the initial missing-matcher counter vocabulary, the invalid
+diagnostic launcher and trace-summary parser failures. Raw artifacts and exact
+recovery receipts are preserved in the evidence index.
+
+**Updated frontier:** first isolate direct native U32 decision lowering with strict
+identity/default/demand controls; next test known saturated workers and tail loops
+on the frozen traversal kernels. Keep primitive inlining, Nat representation and
+constructor forcing as separate ablations. Use the seconds-scale emitted-code loop
+before component/full-H integration; preserve the working Phase24 release and its
+conformance scope while these backend hypotheses are tested.

@@ -1,0 +1,725 @@
+{
+  "kind": "phase25-read-only-measurement-review",
+  "pass": true,
+  "scope": "Independent audit of root-owned acquisition and timing; reviewer authored the corpus and scalar oracles. No compiler execution or benchmark rerun.",
+  "timingReport": {
+    "file": "selfhost/build/phase25/timing-01/report.json",
+    "sha256": "b083635a4f7eb85c9ad795f5ab2e38a25772d39b8df8a03155cb13047799a0a6"
+  },
+  "checks": {
+    "all450SamplesComplete": true,
+    "allModuleHashesCurrent": true,
+    "allAcquisitionInputsCurrent": true,
+    "allChecksumsExact": true,
+    "allResourcesExact": true,
+    "allWarmupsAtLeast8CallsAnd100Ms": true,
+    "allRepetitionsMatchSideSchedule": true,
+    "scheduleHashMatchesTiming": true,
+    "corpusManifestHashMatchesSchedule": true,
+    "allStoredStandardErrorsEmpty": true,
+    "campaignSamplesDoNotOverlap": true,
+    "allPointOrdersExact": true
+  },
+  "samples": 450,
+  "points": 45,
+  "minimumMeasuredBlockMs": 54.03151300000002,
+  "maximumMeasuredBlockMs": 227.38704800000005,
+  "warmupCallsRange": [
+    8,
+    556184
+  ],
+  "warmupMsRange": [
+    100.001587,
+    638.052289
+  ],
+  "windowUtc": [
+    "2026-09-30T00:35:13.227813+00:00",
+    "2026-09-30T00:38:36.842616+00:00"
+  ],
+  "pointsDetails": [
+    {
+      "key": "host-boundary-0",
+      "size": 0,
+      "seed": 17,
+      "ratio": 2.4400993042613104,
+      "observedEnvelope": {
+        "lower": 2.40767872449499,
+        "upper": 2.5904437113287706,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 0.05422787299999999,
+      "selfhostMedianMicrosecondsPerCall": 0.13232139517887065,
+      "upstreamRepetitions": 1000000,
+      "selfhostRepetitions": 793590
+    },
+    {
+      "key": "scalar-arithmetic-0",
+      "size": 256,
+      "seed": 17,
+      "ratio": 233.88499709325063,
+      "observedEnvelope": {
+        "lower": 228.615071979241,
+        "upper": 234.94247603958866,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 1.9962424474591496,
+      "selfhostMedianMicrosecondsPerCall": 466.8911590214068,
+      "upstreamRepetitions": 75703,
+      "selfhostRepetitions": 327
+    },
+    {
+      "key": "scalar-arithmetic-1",
+      "size": 1024,
+      "seed": 18,
+      "ratio": 191.35854447244733,
+      "observedEnvelope": {
+        "lower": 189.4744425844936,
+        "upper": 193.37175559868507,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 9.656659080914688,
+      "selfhostMedianMicrosecondsPerCall": 1847.8842261904758,
+      "upstreamRepetitions": 18192,
+      "selfhostRepetitions": 84
+    },
+    {
+      "key": "boolean-choice-0",
+      "size": 256,
+      "seed": 17,
+      "ratio": 12.976544764744276,
+      "observedEnvelope": {
+        "lower": 12.559796638184551,
+        "upper": 13.13407503661624,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 32.225719720989225,
+      "selfhostMedianMicrosecondsPerCall": 418.17849453551906,
+      "upstreamRepetitions": 4731,
+      "selfhostRepetitions": 366
+    },
+    {
+      "key": "boolean-choice-1",
+      "size": 1024,
+      "seed": 18,
+      "ratio": 12.92631753396872,
+      "observedEnvelope": {
+        "lower": 12.508015988213456,
+        "upper": 13.42594072936226,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 124.68253686826844,
+      "selfhostMedianMicrosecondsPerCall": 1611.6860624999997,
+      "upstreamRepetitions": 1207,
+      "selfhostRepetitions": 96
+    },
+    {
+      "key": "boolean-worker-0",
+      "size": 256,
+      "seed": 17,
+      "ratio": 378.8998470017623,
+      "observedEnvelope": {
+        "lower": 371.2949898385534,
+        "upper": 382.60947553947415,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 1.4253345118591165,
+      "selfhostMedianMicrosecondsPerCall": 540.0590284697508,
+      "upstreamRepetitions": 103802,
+      "selfhostRepetitions": 281
+    },
+    {
+      "key": "boolean-worker-1",
+      "size": 1024,
+      "seed": 18,
+      "ratio": 517.8535432435322,
+      "observedEnvelope": {
+        "lower": 502.1793380179506,
+        "upper": 587.2734764402163,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 5.604785090399339,
+      "selfhostMedianMicrosecondsPerCall": 2902.4578181818183,
+      "upstreamRepetitions": 27821,
+      "selfhostRepetitions": 44
+    },
+    {
+      "key": "membership-choice-0",
+      "size": 32,
+      "seed": 17,
+      "ratio": 5.99723043775385,
+      "observedEnvelope": {
+        "lower": 5.801307952607242,
+        "upper": 6.216424377485112,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 10.761698162033044,
+      "selfhostMedianMicrosecondsPerCall": 64.54038377926423,
+      "upstreamRepetitions": 15071,
+      "selfhostRepetitions": 2392
+    },
+    {
+      "key": "membership-choice-1",
+      "size": 256,
+      "seed": 18,
+      "ratio": 43.558262795744426,
+      "observedEnvelope": {
+        "lower": 41.10704316482712,
+        "upper": 45.49040220593697,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 4.505472085871429,
+      "selfhostMedianMicrosecondsPerCall": 196.25053713527848,
+      "upstreamRepetitions": 33818,
+      "selfhostRepetitions": 754
+    },
+    {
+      "key": "membership-worker-0",
+      "size": 32,
+      "seed": 17,
+      "ratio": 10.9642581586728,
+      "observedEnvelope": {
+        "lower": 9.887713214969237,
+        "upper": 11.28519855150856,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 7.300187588551997,
+      "selfhostMedianMicrosecondsPerCall": 80.04114132762315,
+      "upstreamRepetitions": 21174,
+      "selfhostRepetitions": 1868
+    },
+    {
+      "key": "membership-worker-1",
+      "size": 256,
+      "seed": 18,
+      "ratio": 44.90109872062048,
+      "observedEnvelope": {
+        "lower": 44.03624057856309,
+        "upper": 45.21753127376745,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 4.312939419161142,
+      "selfhostMedianMicrosecondsPerCall": 193.65571863581002,
+      "upstreamRepetitions": 33641,
+      "selfhostRepetitions": 821
+    },
+    {
+      "key": "list-reverse-0",
+      "size": 32,
+      "seed": 17,
+      "ratio": 141.20199979110558,
+      "observedEnvelope": {
+        "lower": 137.35319182420213,
+        "upper": 144.10074412152144,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 0.9099284076287059,
+      "selfhostMedianMicrosecondsPerCall": 128.48371082390955,
+      "upstreamRepetitions": 156986,
+      "selfhostRepetitions": 1238
+    },
+    {
+      "key": "list-reverse-1",
+      "size": 256,
+      "seed": 18,
+      "ratio": 122.4231299616391,
+      "observedEnvelope": {
+        "lower": 119.76947005444113,
+        "upper": 131.1177414228519,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 7.865317680929216,
+      "selfhostMedianMicrosecondsPerCall": 962.8968086419753,
+      "upstreamRepetitions": 20146,
+      "selfhostRepetitions": 162
+    },
+    {
+      "key": "list-map-fold-0",
+      "size": 32,
+      "seed": 17,
+      "ratio": 121.3811577620067,
+      "observedEnvelope": {
+        "lower": 120.73593876151466,
+        "upper": 123.89489572481476,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 1.101111977690954,
+      "selfhostMedianMicrosecondsPerCall": 133.65424667774087,
+      "upstreamRepetitions": 134116,
+      "selfhostRepetitions": 1204
+    },
+    {
+      "key": "list-map-fold-1",
+      "size": 256,
+      "seed": 18,
+      "ratio": 109.3608723168827,
+      "observedEnvelope": {
+        "lower": 106.71852002458502,
+        "upper": 116.68570147966369,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 9.423995356903111,
+      "selfhostMedianMicrosecondsPerCall": 1030.6163529411765,
+      "upstreamRepetitions": 17876,
+      "selfhostRepetitions": 153
+    },
+    {
+      "key": "match-remaining-args-0",
+      "size": 32,
+      "seed": 17,
+      "ratio": 129.3028398100768,
+      "observedEnvelope": {
+        "lower": 122.79799411961801,
+        "upper": 130.59868732599134,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 0.8384865768454263,
+      "selfhostMedianMicrosecondsPerCall": 108.4186955287438,
+      "upstreamRepetitions": 169893,
+      "selfhostRepetitions": 1409
+    },
+    {
+      "key": "match-remaining-args-1",
+      "size": 256,
+      "seed": 18,
+      "ratio": 129.16858110370077,
+      "observedEnvelope": {
+        "lower": 127.18248604248842,
+        "upper": 130.1873058879557,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 6.483894345110787,
+      "selfhostMedianMicrosecondsPerCall": 837.5154325842697,
+      "upstreamRepetitions": 23378,
+      "selfhostRepetitions": 178
+    },
+    {
+      "key": "partial-application-0",
+      "size": 32,
+      "seed": 17,
+      "ratio": 107.7731004160071,
+      "observedEnvelope": {
+        "lower": 103.37458413976806,
+        "upper": 112.87745846137814,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 1.0272424581486421,
+      "selfhostMedianMicrosecondsPerCall": 110.70910459363957,
+      "upstreamRepetitions": 139422,
+      "selfhostRepetitions": 1415
+    },
+    {
+      "key": "partial-application-1",
+      "size": 256,
+      "seed": 18,
+      "ratio": 124.922462063268,
+      "observedEnvelope": {
+        "lower": 118.98953564455002,
+        "upper": 128.60821037471075,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 6.71353905395353,
+      "selfhostMedianMicrosecondsPerCall": 838.6718277777779,
+      "upstreamRepetitions": 22853,
+      "selfhostRepetitions": 180
+    },
+    {
+      "key": "closure-capture-0",
+      "size": 256,
+      "seed": 17,
+      "ratio": 14.876425484043407,
+      "observedEnvelope": {
+        "lower": 14.282903510725552,
+        "upper": 15.081116384467686,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 23.467570099069345,
+      "selfhostMedianMicrosecondsPerCall": 349.1135578703703,
+      "upstreamRepetitions": 6662,
+      "selfhostRepetitions": 432
+    },
+    {
+      "key": "closure-capture-1",
+      "size": 1024,
+      "seed": 18,
+      "ratio": 13.08758773791465,
+      "observedEnvelope": {
+        "lower": 12.79696849642036,
+        "upper": 13.850747696484014,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 102.93003897007654,
+      "selfhostMedianMicrosecondsPerCall": 1347.1059158878506,
+      "upstreamRepetitions": 1437,
+      "selfhostRepetitions": 107
+    },
+    {
+      "key": "string-hash-0",
+      "size": 256,
+      "seed": 17,
+      "ratio": 65.20403257795651,
+      "observedEnvelope": {
+        "lower": 64.83386815182415,
+        "upper": 66.28665954270365,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 136.9433391066545,
+      "selfhostMedianMicrosecondsPerCall": 8929.257944444444,
+      "upstreamRepetitions": 1097,
+      "selfhostRepetitions": 18
+    },
+    {
+      "key": "string-hash-1",
+      "size": 1024,
+      "seed": 18,
+      "ratio": 57.1242532545539,
+      "observedEnvelope": {
+        "lower": 56.48854946269538,
+        "upper": 57.95086371151488,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 681.7843303167423,
+      "selfhostMedianMicrosecondsPerCall": 38946.42075000002,
+      "upstreamRepetitions": 221,
+      "selfhostRepetitions": 4
+    },
+    {
+      "key": "string-scan-0",
+      "size": 256,
+      "seed": 17,
+      "ratio": 117.32721792859344,
+      "observedEnvelope": {
+        "lower": 115.68503371818605,
+        "upper": 119.84824248718944,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 143.01235081029552,
+      "selfhostMedianMicrosecondsPerCall": 16779.24125,
+      "upstreamRepetitions": 1049,
+      "selfhostRepetitions": 8
+    },
+    {
+      "key": "string-scan-1",
+      "size": 1024,
+      "seed": 18,
+      "ratio": 126.51958602658897,
+      "observedEnvelope": {
+        "lower": 124.5769247659936,
+        "upper": 127.8928760600574,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 592.9312213438734,
+      "selfhostMedianMicrosecondsPerCall": 75017.41266666666,
+      "upstreamRepetitions": 253,
+      "selfhostRepetitions": 3
+    },
+    {
+      "key": "string-equality-0",
+      "size": 256,
+      "seed": 17,
+      "ratio": 1.1520498464789406,
+      "observedEnvelope": {
+        "lower": 1.1291433392934256,
+        "upper": 1.164539569524725,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 523.9729523809524,
+      "selfhostMedianMicrosecondsPerCall": 603.6429593495935,
+      "upstreamRepetitions": 294,
+      "selfhostRepetitions": 246
+    },
+    {
+      "key": "string-equality-1",
+      "size": 1024,
+      "seed": 18,
+      "ratio": 1.0468163941278164,
+      "observedEnvelope": {
+        "lower": 1.0360848215338898,
+        "upper": 1.058038525801296,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 2136.4145428571433,
+      "selfhostMedianMicrosecondsPerCall": 2236.433768115942,
+      "upstreamRepetitions": 70,
+      "selfhostRepetitions": 69
+    },
+    {
+      "key": "tree-fold-0",
+      "size": 256,
+      "seed": 17,
+      "ratio": 82.19776204350187,
+      "observedEnvelope": {
+        "lower": 76.75527513302312,
+        "upper": 85.12087008744813,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 98.47163985765124,
+      "selfhostMedianMicrosecondsPerCall": 8094.148421052631,
+      "upstreamRepetitions": 1405,
+      "selfhostRepetitions": 19
+    },
+    {
+      "key": "tree-fold-1",
+      "size": 1024,
+      "seed": 18,
+      "ratio": 79.95133347081445,
+      "observedEnvelope": {
+        "lower": 78.68922324568346,
+        "upper": 81.65643022151795,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 405.8831490514906,
+      "selfhostMedianMicrosecondsPerCall": 32450.89900000001,
+      "upstreamRepetitions": 369,
+      "selfhostRepetitions": 5
+    },
+    {
+      "key": "tree-shared-0",
+      "size": 256,
+      "seed": 17,
+      "ratio": 80.04521283546953,
+      "observedEnvelope": {
+        "lower": 78.99482514039461,
+        "upper": 88.80067079622765,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 197.15941329856582,
+      "selfhostMedianMicrosecondsPerCall": 15781.667200000002,
+      "upstreamRepetitions": 767,
+      "selfhostRepetitions": 10
+    },
+    {
+      "key": "tree-shared-1",
+      "size": 1024,
+      "seed": 18,
+      "ratio": 80.81489678988294,
+      "observedEnvelope": {
+        "lower": 78.42734134550625,
+        "upper": 84.16316458089135,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 796.4947580645161,
+      "selfhostMedianMicrosecondsPerCall": 64368.64166666665,
+      "upstreamRepetitions": 186,
+      "selfhostRepetitions": 3
+    },
+    {
+      "key": "term-substitution-0",
+      "size": 32,
+      "seed": 17,
+      "ratio": 67.9176988639366,
+      "observedEnvelope": {
+        "lower": 67.15915035654481,
+        "upper": 79.53801455487996,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 4.8184545775552134,
+      "selfhostMedianMicrosecondsPerCall": 327.2583469879518,
+      "upstreamRepetitions": 31152,
+      "selfhostRepetitions": 415
+    },
+    {
+      "key": "term-substitution-1",
+      "size": 256,
+      "seed": 18,
+      "ratio": 56.81166741546936,
+      "observedEnvelope": {
+        "lower": 56.35251233459269,
+        "upper": 73.4216823385641,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 70.68778197674418,
+      "selfhostMedianMicrosecondsPerCall": 4015.89076,
+      "upstreamRepetitions": 2064,
+      "selfhostRepetitions": 25
+    },
+    {
+      "key": "term-freshening-0",
+      "size": 32,
+      "seed": 17,
+      "ratio": 173.59616215022234,
+      "observedEnvelope": {
+        "lower": 169.74948130511106,
+        "upper": 174.1683542259774,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 3.247330378313716,
+      "selfhostMedianMicrosecondsPerCall": 563.7240909090908,
+      "upstreamRepetitions": 46813,
+      "selfhostRepetitions": 209
+    },
+    {
+      "key": "term-freshening-1",
+      "size": 256,
+      "seed": 18,
+      "ratio": 175.946383234858,
+      "observedEnvelope": {
+        "lower": 174.36070348650273,
+        "upper": 182.64209303137952,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 26.217924126172207,
+      "selfhostMedianMicrosecondsPerCall": 4612.948925925924,
+      "upstreamRepetitions": 5865,
+      "selfhostRepetitions": 27
+    },
+    {
+      "key": "term-normalization-0",
+      "size": 32,
+      "seed": 17,
+      "ratio": 84.1622483730513,
+      "observedEnvelope": {
+        "lower": 82.81663073840673,
+        "upper": 85.85220803742358,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 2.115348648953574,
+      "selfhostMedianMicrosecondsPerCall": 178.0324983888292,
+      "upstreamRepetitions": 70908,
+      "selfhostRepetitions": 931
+    },
+    {
+      "key": "term-normalization-1",
+      "size": 256,
+      "seed": 18,
+      "ratio": 79.32314376573682,
+      "observedEnvelope": {
+        "lower": 77.53346665410098,
+        "upper": 84.03133553362407,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 17.787179012345685,
+      "selfhostMedianMicrosecondsPerCall": 1410.9349579831933,
+      "upstreamRepetitions": 8262,
+      "selfhostRepetitions": 119
+    },
+    {
+      "key": "index-chain-0",
+      "size": 32,
+      "seed": 17,
+      "ratio": 22.536691673232223,
+      "observedEnvelope": {
+        "lower": 22.382491050067642,
+        "upper": 22.994854268432107,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 7.217875242871989,
+      "selfhostMedianMicrosecondsPerCall": 162.66702888446216,
+      "upstreamRepetitions": 22131,
+      "selfhostRepetitions": 1004
+    },
+    {
+      "key": "index-chain-1",
+      "size": 256,
+      "seed": 18,
+      "ratio": 22.594780853458296,
+      "observedEnvelope": {
+        "lower": 22.23834293843965,
+        "upper": 22.91392294430156,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 53.28952999268471,
+      "selfhostMedianMicrosecondsPerCall": 1204.0652519685043,
+      "upstreamRepetitions": 2734,
+      "selfhostRepetitions": 127
+    },
+    {
+      "key": "nat-reconstruction-0",
+      "size": 32,
+      "seed": 17,
+      "ratio": 74.3158386840952,
+      "observedEnvelope": {
+        "lower": 73.73751419705496,
+        "upper": 75.59044616053562,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 0.35389963255608353,
+      "selfhostMedianMicrosecondsPerCall": 26.30034800339847,
+      "upstreamRepetitions": 361960,
+      "selfhostRepetitions": 5885
+    },
+    {
+      "key": "nat-reconstruction-1",
+      "size": 256,
+      "seed": 18,
+      "ratio": 89.99654322346696,
+      "observedEnvelope": {
+        "lower": 88.67242520833946,
+        "upper": 96.23742219488228,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 1.6544648298685145,
+      "selfhostMedianMicrosecondsPerCall": 148.89611557296766,
+      "upstreamRepetitions": 90048,
+      "selfhostRepetitions": 1021
+    },
+    {
+      "key": "pinned-u32-table-0",
+      "size": 32,
+      "seed": 17,
+      "ratio": 1761.2554613539812,
+      "observedEnvelope": {
+        "lower": 1712.664563225884,
+        "upper": 1773.7737985425683,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 0.30159241984315766,
+      "selfhostMedianMicrosecondsPerCall": 531.1812965517242,
+      "upstreamRepetitions": 419147,
+      "selfhostRepetitions": 290
+    },
+    {
+      "key": "pinned-u32-table-1",
+      "size": 256,
+      "seed": 18,
+      "ratio": 1417.8934355405906,
+      "observedEnvelope": {
+        "lower": 1363.28855577388,
+        "upper": 1490.987623652978,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 1.9306403266972942,
+      "selfhostMedianMicrosecondsPerCall": 2737.4422456140346,
+      "upstreamRepetitions": 78360,
+      "selfhostRepetitions": 57
+    },
+    {
+      "key": "pinned-u32-wide-0",
+      "size": 256,
+      "seed": 17,
+      "ratio": 1436.6291573455144,
+      "observedEnvelope": {
+        "lower": 1420.5928248529858,
+        "upper": 1462.7723725420137,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 0.9387850558677429,
+      "selfhostMedianMicrosecondsPerCall": 1348.685983739837,
+      "upstreamRepetitions": 153398,
+      "selfhostRepetitions": 123
+    },
+    {
+      "key": "pinned-u32-wide-1",
+      "size": 1024,
+      "seed": 18,
+      "ratio": 1593.9401391141546,
+      "observedEnvelope": {
+        "lower": 1584.9418076001807,
+        "upper": 1616.6125420339088,
+        "interpretation": "Extrema of retained samples, not statistical confidence limits"
+      },
+      "upstreamMedianMicrosecondsPerCall": 3.639743882848695,
+      "selfhostMedianMicrosecondsPerCall": 5801.533870967743,
+      "upstreamRepetitions": 42953,
+      "selfhostRepetitions": 31
+    }
+  ],
+  "limitations": [
+    "Five warmed samples per side are descriptive, not confidence bounds.",
+    "Side-specific repetitions and warmup call counts imply different JIT/GC histories; current policy compares warmed public exports, not steady-state kernels or cold launch.",
+    "Runtime construction, scalar assertions, dispatch and checksum accumulation remain inside the timed call loop.",
+    "The two sizes also change seed; membership additionally changes miss to hit and string workloads change Unicode/equality paths. No pure scaling inference.",
+    "Serial campaign logs do not establish absence of unrelated system activity or shared-resource interference.",
+    "Numeric wide-match timing points exercise default arms; special wide arms are correctness cases only.",
+    "No whole self-emitted compiler, native C, emitted-code optimization or speedup from an unimplemented change is measured."
+  ]
+}

@@ -17,6 +17,34 @@ checks, injective native function names and a current backend coverage inventory
 This experimental port does not establish independent proof
 validity; `--verdict` is explicitly unsupported.
 
+## Analyzing emitted-program performance
+
+The [Phase25 study](../implementation/phase25/generated-code-analysis.md) compares
+identical Bend programs emitted by the installed compiler and pinned TypeScript.
+It supplies23 small sources, independent scalar-result oracles, paired generated
+artifacts, static AST analysis, clean execution samples, CPU/allocation profiles
+and separately guarded runtime counters. The compiler and installed release are
+unchanged by this analysis.
+
+Use the [reproduction guide](../implementation/phase25/README.md) for full acquisition
+or the focused `selfhost/tools/performance/phase25/compare.py` command. The focused
+command accepts two already emitted libraries exporting `bench(size, seed) -> U32`
+and a config containing the inputs and independent expected result. A measured
+replay including correctness checks, calibration and ten timing processes took
+5.37s. Building a changed compiler and emitting its program are separate steps;
+use the checked development workflow for the candidate's provenance.
+
+Keep compiler throughput, module import and warmed emitted-program execution
+separate. Timing checks every result and uses serial alternating fresh processes;
+instrumented profiles/counters are diagnostic evidence only. Do not extrapolate
+these selected microkernels to complete self-hosting performance. Native C and
+device output need separate acquisitions. The first concrete targets are direct
+native U32 pattern decisions and known saturated workers through matches, with
+argument demand, partial applications, constructor identity and stack behavior
+preserved.
+
+## Current frontend and release architecture
+
 Phase19 checks and produces live template instances inside the ordinary checker,
 removing the separate specialization traversal and fixing saved first-error
 differences. It retains the exact-prefix correction for compact literal payloads
