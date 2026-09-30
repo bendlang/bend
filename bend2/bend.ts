@@ -2640,10 +2640,10 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
     }
     switch (e.$) {
       case "Var": {
-        throw Err(book_nil(), ctx_nil(), "a match on a parameter or field in"
-          + " binder order (this name is bound before one matched earlier, or"
-          + " is a def or a consumed binder: match it first, or give the value"
-          + " its own def)", undefined, e.s);
+        const x = e.s === undefined ? e.k : e.s.file.str.slice(e.s.beg, e.s.end);
+        throw Err(book_nil(), ctx_nil(), "a match in binder order (" + x + " can't be"
+          + " matched after a match on a later binder or after a local statement:"
+          + " match " + x + " earlier, or give the value its own def)", undefined, e.s);
       }
       case "Ctr":
       case "Lit": {

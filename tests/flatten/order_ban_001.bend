@@ -30,7 +30,7 @@ def main():
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- message  : a match on a parameter or field in binder order (this name is bound before one matched earlier, or is a def or a consumed binder: match it first, or give the value its own def)
+#|- message  : a match in binder order (a can't be matched after a match on a later binder or after a local statement: match a earlier, or give the value its own def)
 #|Location:
 #|18 |     case Pp2{a, b}:
 #|19>|       match b, a:
