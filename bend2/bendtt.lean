@@ -163,7 +163,8 @@ def Quan.kind : Quan → Quan → Quan
   | Q1, g => g
   | Q2, _ => Q2
 
--- the quantity a λ converts at: q=2 only says how it runs (it copies)
+-- the quantity a λ+ steps to in Par: q=2 only says how a λ runs (it
+-- copies), so a λ+ converts as a λ
 def Quan.lin : Quan → Quan
   | Q2 => Q1
   | q  => q
@@ -887,10 +888,11 @@ def Ctx.wnf (ck : Lib) (c : Ctx) (t : Term) : Term :=
 -- ========
 
 -- the parts two weak heads must match on: the children of one former,
--- as pairs; none when the heads differ
+-- as pairs; none when the heads differ. Two λs match at one liveness,
+-- as they type
 def Term.parts : Term → Term → Option (List (Term × Term))
   | All q A B, All p C D => if q = p then some [(A, C), (B, D)] else none
-  | Lam q f,   Lam p g   => if q.lin = p.lin then some [(f, g)] else none
+  | Lam q f,   Lam p g   => if q.live = p.live then some [(f, g)] else none
   | App q f x, App p g y => if q = p then some [(f, g), (x, y)] else none
   | Sig q A B, Sig p C D => if q = p then some [(A, C), (B, D)] else none
   | Tup q a b, Tup p c d => if q = p then some [(a, c), (b, d)] else none
@@ -1718,6 +1720,9 @@ theorem lin_live : (Quan.lin q).live = q.live := by cases q <;> rfl
 
 theorem lin_ne : Quan.lin q ≠ Q2 := by cases q <;> nofun
 
+theorem lin_eq {p q : Quan} : q.live = p.live → q.lin = p.lin := by
+  cases p <;> cases q <;> decide
+
 -- the triangle, on a λ's quantity
 theorem lin_step {p q : Quan} : p = q ∨ p = q.lin → q.lin = p ∨ q.lin = p.lin := by
   cases p <;> cases q <;> simp [Quan.lin]
@@ -1968,12 +1973,12 @@ theorem fold_true {g : Nat → Term → Term → Bool × Nat} : ∀ {s},
     · exact ⟨‹_›, fun x m => (List.mem_cons.1 m).elim (· ▸ ⟨_, h1⟩) (h2 x)⟩
     · contradiction
 
--- λs at one lin quantity convert when their bodies do
-theorem conv_lam (e : q.lin = p.lin) : Conv bk f g → Conv bk (Lam q f) (Lam p g)
+-- λs of one liveness convert when their bodies do
+theorem conv_lam (e : q.live = p.live) : Conv bk f g → Conv bk (Lam q f) (Lam p g)
   | ⟨_, h1, h2⟩ =>
     have L {q f c} (h : Pars bk f c) : Pars bk (Lam q f) (Lam q.lin c) :=
       pars_trans (pars_map _ (.lam · (.inl rfl)) h) (.step (.lam (par_refl _) (.inr rfl)) .refl)
-    ⟨_, L h1, e ▸ L h2⟩
+    ⟨_, L h1, lin_eq e ▸ L h2⟩
 
 -- heads whose parts convert convert
 theorem parts_conv (h : Term.parts a b = some ps) (H : ∀ p ∈ ps, Conv bk p.1 p.2) :
