@@ -33,7 +33,9 @@
 // reads it as the column (K3-R).
 //
 // A kind goes out as the kernel's *(q), and a meet as (a <&> b), so a
-// Quant is a kernel value like any other. An item (a book name) goes out
+// Quant is a kernel value like any other: a closed one folds (a kind's
+// &0 to *(.Q1), bend2's rung for it), and a meet in live code goes out
+// as a match on its left side. An item (a book name) goes out
 // once per tuple of closed arguments at its template (~) parameters, with
 // those parameters gone. Every def goes out after the defs its live code
 // names; a name in a type may come later. A def with no body (a law, a
@@ -564,6 +566,34 @@ function quant(q: Quant): Q {
   return q.$ === "None" ? 0 : q.$ === "Lone" ? 1 : 2;
 }
 
+// the literal a quantity term folds to (a closed meet at its value); null
+// when it depends on a run-time value
+function quant_lit(e: Safe, s: Scope, x: HTerm): Q | null {
+  try {
+    const v = spec_val(e, s, x);
+    return v.$ === "Qua" ? quant(v.q) : null;
+  } catch (x) {
+    if (!(x instanceof Scope_Error)) {
+      throw x;
+    }
+    return null;
+  }
+}
+
+// a meet at run time, which the kernel's live check does not read, as a
+// match on its left side: .Q0 absorbs, .Q2 gives the right side, and .Q1
+// caps it at .Q1
+function meet_run(s: Scope, a: O, b: O): O {
+  const [l, QT]: [number, O] = [s.D, { $: "Enu", ks: ["Q0", "Q1", "Q2"] }];
+  const lab = (k: string): O => ({ $: "Lab", k });
+  const sw = (hs: O[]): O => ["Q0", "Q1", "Q2"].reduceRight<O>((m, k, i) => ({ $: "Mat", k, h: hs[i], m }), { $: "Efq" });
+  const y: O = { $: "Var", l };
+  const cap: O = { $: "App", q: 1, f: { $: "Ann", x: sw([lab("Q0"), lab("Q1"), lab("Q1")]), T: { $: "All", q: 1, l: l + 1, A: QT, B: QT } }, x: y };
+  const arms = sw([lab("Q0"), cap, y].map((f): O => ({ $: "Lam", q: 1, l, f })));
+  const T: O = { $: "All", q: 1, l, A: QT, B: { $: "All", q: 1, l: l + 1, A: QT, B: QT } };
+  return { $: "App", q: 1, f: { $: "App", q: 1, f: { $: "Ann", x: arms, T }, x: a }, x: b };
+}
+
 // Scope
 // =====
 
@@ -901,7 +931,9 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
       return args(e, s, x.k, tld.T, x.x, live);
     }
     case "Typ": {
-      return { $: "Typ", q: term(e, s, x.g, false) };
+      // bend2's &0 and &1 kinds are one rung; the kernel's *(.Q0) and *(.Q1) are two
+      const q = quant_lit(e, s, x.g);
+      return { $: "Typ", q: q === null ? term(e, s, x.g, false) : { $: "Lab", k: "Q" + String(Math.max(1, q)) } };
     }
     case "All": {
       const l = s.D;
@@ -945,7 +977,10 @@ function term(e: Safe, s0: Scope, t: HTerm, live: boolean): O {
       return { $: "Lab", k: "Q" + String(quant(x.q)) };
     }
     case "Min": {
-      return live ? oos("a meet at run time") : { $: "Min", a: term(e, s, x.a, false), b: term(e, s, x.b, false) };
+      const q = quant_lit(e, s, x);
+      return q !== null ? { $: "Lab", k: "Q" + String(q) }
+        : live ? meet_run(s, term(e, s, x.a, true), term(e, s, x.b, true))
+        : { $: "Min", a: term(e, s, x.a, false), b: term(e, s, x.b, false) };
     }
     case "Hol": {
       return oos("a hole");
