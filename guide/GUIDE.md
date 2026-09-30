@@ -194,6 +194,7 @@ The `a[i]` sugar assumes `Array<U32>`. For other element types, call
 `Array.get` (`Data` elements; else `Array.swap`) and `Array.set` directly, and
 `Array.clone` when you need two copies. Read Bend's Base for reference. This
 will be generalized soon!
+Equality proofs are valid `Data` array elements on JS and C.
 
 ### Quantities
 

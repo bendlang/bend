@@ -1034,7 +1034,14 @@ function lay_of(book: Bend.Book, A: HTerm | null): Lay {
 }
 
 function lay_el(book: Bend.Book, A: HTerm | null): Lay {
-  const t = ty_adt(book, A) ?? die("an open Array element type");
+  const t = ty_wnf(book, A);
+  // Equality proofs have a fixed boxed-zero layout, not an ADT head.
+  if (t?.$ === "Eql") {
+    return BOX;
+  }
+  if (t?.$ !== "ADT") {
+    die("an open Array element type");
+  }
   const tld = book.tlds[t.k];
   return lay_of(book, tld?.$ === "ADT" && tld.c[0]
     ? tele_unbind(book, tld.c[0].T).ret : A);
