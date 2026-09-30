@@ -186,10 +186,11 @@ function safe_book(book: Book): { text: string; oos: Array<[Name, string]> } {
 }
 
 // the columns root k checks at, from its telescope T's parameter j on:
-// a specialized parameter of a finite type (Quant, or a datatype whose
-// constructors have no fields) at each value, any other at an opaque
+// a specialized parameter of a finite type (Quant, or a datatype with
+// constructors, none with fields) at each value, any other at an opaque
 // constant k~p of its type, which models read at its model (as bend2
-// checks a template: its body holds at every argument)
+// checks a template: its body holds at every argument); an empty type
+// has no value to go out at, so the kernel checks the body at k~p too
 function root_cols(e: Safe, k: Name, T: HTerm, j: number): Cols[] {
   const sp = spec_of(e, k);
   const F = B.term_wnf(e.book, T);
@@ -203,7 +204,7 @@ function root_cols(e: Safe, k: Name, T: HTerm, j: number): Cols[] {
   const A = B.term_wnf(e.book, F.A);
   const adt = A.$ === "ADT" && A.x.length === 0 ? e.book.tlds[A.k] as ADT : null;
   const vs = A.$ === "Qnt" ? [B.None(), B.Lone(), B.Many()].map((q) => B.Qua(q))
-    : adt !== null && adt.c.every((c) => B.term_wnf(e.book, c.T).$ !== "All") ? adt.c.map((c) => B.Ctr(c.k, [])) : null;
+    : adt !== null && adt.c.length > 0 && adt.c.every((c) => B.term_wnf(e.book, c.T).$ !== "All") ? adt.c.map((c) => B.Ctr(c.k, [])) : null;
   if (vs !== null) {
     return vs.flatMap(at);
   }
