@@ -118,8 +118,19 @@ implementation lines, eight Bend functions and one module. Independent complete
 generated-AST comparisons, public callable/registration checks and retained arm
 semantics pass. This simplification does not add another admission policy.
 
-Attempt16 is the selected candidate for renewed measurements and release gates.
-The table below identifies16; held14 keeps its own immutable records and figures.
+The final isolated registry experiment then finds5.57% less RLE time and5.38%
+less complete-row time, with disjoint confirmation ranges and no meaningful
+registered-helper/Mandelbrot regression. Checked17 integrates only its three
+runtime edits: track whether any exact worker has registered, and skip the
+WeakSet query while none has. The code getter still runs first; registration
+and reentry preserve the original permission rules. The change adds one runtime
+line and no Bend source or analysis concept. See the
+[experiment](registration-dispatch.md) for the controls and measured limits.
+
+Attempt17 is the selected candidate for final measurements and release gates.
+Its API, genuine parent, assembled Bend source and Base are byte-identical16;
+the runtime changes to the exactly measured flag variant. The table below
+identifies17; earlier candidates keep their own immutable records and figures.
 The distribution API still contains Phase29 while the working source/runtime are
 under development. A verified consolidated default is not claimed until the
 final installation and CLI checks complete.
@@ -129,13 +140,13 @@ final installation and CLI checks complete.
 | Selected API | `33545640e25beffb61639b27f4815aaeb345fda14758e1d63418cd1d0ccc0637` |
 | Genuine checked parent | `60aa968ffcedb7a02a220b58a51396dd036d0d8b1f39f1b3def3f6b4248d6469` |
 | Assembled compiler source | `678bafd61cff715c3ee2012ef3840ddfe99a2aeb1d81b5345fb3c6e6bfc1757e` |
-| JS runtime | `fab241aefeb2ad1626d7079a3b798eb163207cd38b3e0d80318941a01f8255f1` |
+| JS runtime | `6731308bcddc6faf68d0f2f9988b1299d4d62069fa091e94857f56bded44b3d6` |
 | Pinned Base | `c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661` |
 
 Canonical source counts come from the explicit `src/compiler.json` module list,
 not a recursive glob that includes unused/generated source files.
 
-| Bend compiler source | Phase29 start | Held14 | Candidate16 | Net change |
+| Bend compiler source | Phase29 start | Held14 | Candidate17 | Net change |
 | --- | ---: | ---: | ---: | ---: |
 | Physical lines | 16,207 | 16,836 | 16,778 | +571 (+3.52%) |
 | Nonblank lines | 13,839 | 14,377 | 14,327 | +488 |
@@ -154,8 +165,8 @@ and numbers keep one representation. Tools, reports, tests and the generated
 runtime bundle are separate from the canonical Bend count. This is a performance
 phase with a source-size increase, not a line-reduction result.
 
-Outside that Bend count, maintained `runtime/js/core.mjs` grows from167 to233
-physical lines (+66), after reaching245 in held14. The generated concatenated
+Outside that Bend count, maintained `runtime/js/core.mjs` grows from167 to234
+physical lines (+67), after reaching245 in held14 and233 in16. The generated concatenated
 runtime is not counted again.
 The bounded bootstrap diagnostic wrapper grows from29 to58 lines, and the
 checked-derivation tool from328 to338 lines. Experimental tools and evidence
@@ -188,14 +199,15 @@ low-level cause of the rendered error. The optional additional811 JS fixtures
 remain unexecuted, so this pilot is not full backend conformance.
 
 The selected compiler also [emits its own complete source](bounded-self-emission.md)
-in a bounded acquisition: 30.841 seconds for emission, producing a 2,446,321-byte
-H module. That module passes syntax, builds its own actual-hash Base cache, and
+in a 30.841-second checked acquisition, including verification, driver work,
+emission and persistence, producing a 2,446,321-byte H module. That module passes
+syntax, builds its own actual-hash Base cache, and
 matches its parent on a positive and a negative small compilation. The positive
 generated JavaScript is byte-identical and returns 8. This is a new usable
 self-emission observation, not an H-to-H fixed point, full H conformance, or a
 controlled speed comparison with a historical compiler.
 
-## Renewed controlled results
+## Checked16 integration window, before the final registry flag
 
 The complete checked16 matrix passes all13 jobs in25 minutes58 seconds.
 The [full timing report](final-timing-16.md) retains every sample, range, drift,
@@ -243,15 +255,21 @@ The [small generated-compiler experiment](warmed-generated-compiler-cost.md)
 compares H with the genuine TypeScript-produced parent for the **same Bend
 compiler source**. Median warmed-once trial means are7.609 versus1.461 seconds,
 a5.21× gap, with all18 checked outputs identical. This is a code-generation
-comparison, not H against the handwritten upstream compiler. The two timed
+comparison including H's real ABI adapter and ordinary cache pipeline, not H
+against the handwritten upstream compiler or an attribution solely to generated
+function bodies. The two timed
 requests still drift in opposite directions, so it does not establish converged
 steady-state throughput. It does provide a bounded request-sized target for
 future generated-compiler profiling without requiring full self-emission.
 
 ## Release and evidence status
 
-Installation remains pending while the final registration-free runtime
-experiment and native-environment renewal close. The
+Checked17 passes its genuine build and36 focused observations in38.092 seconds.
+The standard primitive runtime suite also passes in the approved execution
+environment, including numeric/readback, files, channels, local TCP/UDP and Halt.
+Its initial sandboxed invocation fails at socket setup and remains preserved.
+Installation remains pending while actual17 output correspondence and its
+renewed affected gates and complete matrix close. The
 [campaign index](README.md) links intermediate outcomes, including the retained
 [held14 matrix](final-timing.md). The initial pin, branch and103 protected
 unrelated paths are frozen in [start-state.json](start-state.json).

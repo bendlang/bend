@@ -28,6 +28,9 @@ allowance were frozen; the heap allowance is not a total-RSS hard limit. The
 emission cap stayed1200 seconds; the other compiler children had90-second caps,
 and each emitted small-program execution had its own10-second cap. Per-child
 RSS and CPU usage come from `wait4`; all children exited0 and no deadline fired.
+The30.841-second emission child includes attempt verification before/after,
+driver loading, ordinary checked compilation, output persistence and hashing.
+It is a checked acquisition duration, not an emission-only phase timer.
 
 Exact identities:
 

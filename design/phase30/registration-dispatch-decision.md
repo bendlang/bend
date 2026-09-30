@@ -13,6 +13,10 @@ greater than 3% beyond sample variation is acceptable. A null result or overlapp
 ranges do not establish a gain. Source size or static call counts cannot replace
 the timing result.
 
+The cheap general-row negative control uses the same no-greater-than-3% slowdown
+criterion. Its retained complete-state adapter compares all four arrays over 28
+independent inputs before timing; only the flag's audited runtime edits differ.
+
 Freeze an initial screen on the original RLE point with Phase29, unchanged16,
 the registration-free direct diagnostic, general monotone flag and pinned
 TypeScript. Screen unchanged16 versus flag at helper128 in the same maintained

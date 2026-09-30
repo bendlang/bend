@@ -1,19 +1,34 @@
 # Final16 figures and compact metrics
 
-The configuration is frozen at
-`selfhost/build/phase30/final-figure-plan-16/config.json`. No plot has been run.
+The original prepared configuration is retained at
+`selfhost/build/phase30/final-figure-plan-16/config.json`. The completed import
+is [final16-figures/report.md](final16-figures/report.md), with all 13 copied
+artifact hashes and visual-review notes in `final16-figures/import.json`.
+It uses the separately retained16b plan to add the tree-bitonic follow-up and
+explicit held/not-installed status. Visual review found overlapping scientific
+notation labels; the retained16c display-only renderer shortens those labels
+and adds two missing spaces. No data, aggregation or measurement changes.
+Both provenance audits pass; the final PNGs were visually inspected before
+byte-verified import. The16b artifacts remain available.
+
+The imported report's held/native-pending status is frozen input metadata,
+not a live release-status field. Native 81-observation recovery is now recorded
+as exact, and P30-030 is selected for checked integration. The imported bytes
+and hashes intentionally remain unchanged; use the parent release report for
+subsequent integration and installation status. The broader 811-observation
+backend set remains separate unexecuted work.
 It selects checked16, its ten same-window original comparisons and four-point
 scaling data. Held14's ten outcomes, the isolated runtime row and actual-image
 small/long confirmations remain separate historical windows. The old 11→12
 operation-count plot is explicitly historical; it is not relabeled final16.
 
-After all measurements complete and the parent releases the clean timing
-window, generate the standalone SVG/PNG/CSV/JSON artifacts with:
+The completed standalone SVG/PNG/CSV/JSON artifacts were generated after the
+parent released the clean timing window with:
 
 ```sh
-python3 selfhost/tools/performance/phase30/inspect-final-figures.py \
-  selfhost/build/phase30/final-figure-plan-16/config.json \
-  selfhost/build/phase30/final-figures-16
+python3 selfhost/build/phase30/final-figure-plan-16c/render.py \
+  selfhost/build/phase30/final-figure-plan-16c/config.json \
+  selfhost/build/phase30/final-figures-16c
 ```
 
 Use an outer acquisition receipt if launching through `run.py`. The plotting

@@ -9,6 +9,12 @@ a small performance regression. This is not an installation or release claim.
 Checked14's complete matrix and release hold remain documented in
 `final-timing.md`; these are separate checked16 results.
 
+The [retained figures and data](final16-figures/report.md) include the
+[original-program comparison](final16-figures/original-program-slowdown.svg)
+and [scalar scaling](final16-figures/scalar-helper-scaling.svg), with sample
+ranges, drift markers and a byte-verified import. The historical operation-count
+figure stays labeled actual11→12; it is not a checked16 counter claim.
+
 The candidate integrates the confirmed generic constructor-field runtime repair
 and removes unused prebinding source machinery. The original ten programs have
 all been freshly compiled and their exact public outputs pass. The row and
@@ -60,8 +66,8 @@ all scalar variants stay within 3.00% absolute half drift. These results support
 preserving the repair while deleting unused machinery, not a new compounded
 optimization claim.
 
-The final original-program matrix, separate long-warmup comparison and release
-gates remain required; this small confirmation alone is not a release verdict.
+The completed original-program matrix and separate long-warmup comparisons are
+reported below. This small confirmation alone is not a release verdict.
 
 ## Renewed original-program comparison
 
@@ -86,7 +92,7 @@ call. A positive time change means cleaned16 is slower than Phase29.
 
 Mandelbrot retains approximately 100× Phase29 throughput. Its candidate range
 is 0.212438–0.214528 ms and candidate half drift is −1.30…+0.78%; the separate
-long-warmup comparison remains scheduled. Edit distance's candidate range
+completed long-warmup comparison is reported below. Edit distance's candidate range
 2019.644–2040.377 ms overlaps Phase29's 2013.869–2047.052 ms. Lexer likewise
 overlaps (175.159–178.379 versus 174.519–178.027 ms). The broad ~20% slowdown of
 held14 is therefore absent on these two expensive generic points. Edit distance
@@ -203,5 +209,10 @@ Warmup reduced the original transition substantially, but did not remove the
 small regression. Retain this outcome alongside RLE rather than relabeling the
 transfer difference as entirely warmup. These samples do not replace the
 original transfer receipt or authorize a repeated/tuned window. The renewed
-performance release remains on hold pending the residual-dispatch investigation
-and parent-owned native backend gates.
+performance release was held for the residual-dispatch investigation and native
+backend gates. The native 81-observation set has since recovered exactly;
+the broader 811-observation set remains unexecuted separate work. P30-030's
+generated-JavaScript flag derivative now passes its prospective performance
+criteria and is selected for checked integration. This does not rewrite any
+checked16 result or claim installation: actual checked integration and the
+parent-owned release record remain the authority.

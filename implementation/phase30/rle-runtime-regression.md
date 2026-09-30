@@ -78,3 +78,8 @@ correctness-preserving fix: inherited raw/oversaturation scheduling witnesses
 already reject it. Any later safe arm specialization must independently preserve
 those witnesses and demonstrate a benefit over the simpler checked16 path.
 Do not combine interventions or hide this regression in an aggregate gain.
+
+The later [P30-030 acquisition](registration-dispatch.md) executes the complete
+binding audit and scoped correctness gates. It proves zero registrations for
+RLE and H, with H's quoted code-generator strings excluded. Performance remains
+a separately controlled question; the initial static findings above are retained.

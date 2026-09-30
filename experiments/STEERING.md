@@ -15,7 +15,7 @@ Finish the concrete release/evidence after that minimum if needed. Preserve the
 The target remains upstream `018751270e800bc222a93dad7f257083ee53a5f7`, after2.0.34.
 Checked16 is selected: API33545640, genuine parent60aa968f, source678bafd6,
 runtimefab241ae, Basec742fae9, guarded profile6. Source checkpoint73912c3;
-validation checkpoint9d89045. The default distribution API still contains29 while
+validation checkpointcf1d7fb. The default distribution API still contains29 while
 development source/runtime are16: do not claim a verified consolidated default
 before installation and CLI checks.
 
@@ -36,12 +36,13 @@ implementation lines, eight functions and the obsolete arm-prebinding module.
 The cleanup has no independently established incremental speed gain.
 
 Actual16 small confirmation: complete row0.444585ms, overlapping29/15 ranges;
-scalar1280.006975ms,56.83× faster than29 and4.096× TypeScript. Final ten-program,
-ordinary-check, library-generation and scaling comparisons are running in one
-exclusive slot. Original Mandelbrot so far is0.214181ms versus29's21.416666ms
+scalar1280.006975ms,56.83× faster than29 and4.096× TypeScript. All13 final jobs
+pass in25m58s. Original Mandelbrot is0.214181ms versus29's21.416666ms
 and TypeScript's0.045452ms, about100× improvement and4.71× residual overhead.
-Edit distance recovers29 speed but remains408.69× TypeScript. Do not extrapolate
-these selected cases or multiply historical incremental factors.
+Edit distance recovers29 speed but remains408.69× TypeScript. Long-warm Mandel
+is4.59× TypeScript; tree-bitonic is4.15% slower than29. RLE retains a10.30%
+regression. Ordinary compiler checking costs4.12× TypeScript and3.86% more than29.
+Do not extrapolate selected cases or multiply historical incremental factors.
 
 Canonical Bend source:16,778 physical /14,327 nonblank lines,65 modules,
 1,844 definitions,640 laws,70 types. Net571 lines (+3.52%),82 definitions and
@@ -60,27 +61,28 @@ Fresh selected gates pass36 focused observations,15 upstream JS cases,
 and full HVM output. Primitive/worker/entry/tree/terminal/alias controls are linked
 from the report; their overlapping counts are not unique conformance totals.
 
-Backend pilot has attempted all81 rows.64 match complete historical outcomes;
-17 native rows report the same Clang EPERM on both paths. Retained binaries show
-this may be the environment's pipe-capture issue; raw spawn status is unavailable.
-Keep failures and retry native only under an explicitly recorded environment
-change after timing. Historical81 itself means69 paired passes,8 paired
+Backend pilot now matches all81 historical observations:69 paired passes,8 paired
 unprintable-main not-applicable outcomes and4 shared check failures, not81 passes.
+Two default-environment attempts retained17 paired Clang EPERM observations;
+the unchanged native21 retry16c passes in an explicitly approved execution
+environment. Minimal pipe/file probes pass in both environments, so the precise
+failure mechanism is unproven. Installed smoke still needs its own fresh run.
 The811 further JS rows are new coverage, not historically executed observations.
 
-B1 emits H in30.841 seconds in one bounded acquisition; H builds its own actual-
+B1 emits H in a30.841-second checked acquisition including verification; H builds its own actual-
 hash Base cache and matches positive/negative small compilation, exact emitted
 bytes and result8. Acquisition overlapped correctness work: no historical speed
 ratio. H is not installed; no H-to-H or full H-conformance claim. The separate
-warmed-once H versus genuine TS-produced parent request comparison is prepared;
-this is not comparison with the hand-written upstream TypeScript compiler.
+warmed-once H versus genuine TS-produced parent request comparison passes with
+a5.2089× gap, including H's real ABI/cache path and visible within-trial drift.
+This is not comparison with the hand-written upstream TypeScript compiler.
 
 ## Next decisions
 
-1. Close final clean timings before further execution, profiles, plots or
-   compression. Only root grants the measurement slot. Report every original
-   workload, sample ranges/drift and compiler costs separately.
-2. Resolve native host-process evidence, install the exact16 attempt, verify
+1. Close the final P30-030 registration-flag screen/confirmations before further
+   execution, profiles, plots or compression. Only root grants the measurement
+   slot. Correctness gates pass; promotion thresholds were frozen before timing.
+2. Resolve that runtime decision, install the selected attempt, verify
    its manifest and run42 ordinary/relocated CLI checks. Preserve29 in release
    history. Optional811 new JS coverage needs its own explicit raw-outcome policy.
 3. Close all producers, verify protected paths, capture and independently reopen

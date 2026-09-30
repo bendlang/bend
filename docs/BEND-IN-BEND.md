@@ -9,9 +9,16 @@ does not invoke the TypeScript compiler.
 
 The active target is upstream
 [`018751270e800bc222a93dad7f257083ee53a5f7`](https://github.com/bendlang/bend/tree/018751270e800bc222a93dad7f257083ee53a5f7)
-(after Bend 2.0.34). The [Phase23 report](../implementation/phase23/upstream-graph-conversion.md)
-records checked artifact identities, current conformance, measured cost and
-remaining gaps. The [Phase24 report](../implementation/phase24/profile-and-coverage.md)
+(after Bend 2.0.34). The [Phase30 report](../implementation/phase30/generated-program-performance.md)
+records the current candidate, renewed validation and controlled performance
+comparison. Its private scalar regions make the selected original Mandelbrot
+program about100× faster than Phase29; a separate longer-warmup measurement
+leaves4.59× TypeScript overhead. Generic record/array programs still have large
+gaps, and compiler checking is a separate4.12× TypeScript measurement. Read the
+report's release section for the exact installed status and artifact identity.
+
+The historical [Phase23 report](../implementation/phase23/upstream-graph-conversion.md)
+records the upstream update and its checked artifacts. The [Phase24 report](../implementation/phase24/profile-and-coverage.md)
 continues with profiled local-name and membership improvements, emission collision
 checks, injective native function names and a current backend coverage inventory.
 The [Phase26 release](../implementation/phase26/direct-u32-decisions.md) adds
@@ -42,12 +49,13 @@ only inside the fully entered successor callback. Fresh per-iteration aliases,
 ordered next-argument temporaries and parallel-let scope preserve observable behavior.
 Neither the Nat representation nor global function arity changes.
 
-Use a saved checked fixture for the 4.7-second old/new screen. Rebuild after compiler
+Phase29 used a saved checked fixture for its 4.7-second old/new screen. Rebuild after compiler
 source edits, then re-emit and validate the fixture. The final checked build plus 36
 focused checks took 33 seconds; broad original programs are an integration gate.
 Retain both short and longer-warm measurements: the former overstated the prototype's
 settled gain. The final compiler fixture improves 3.65× in the longer-warm window.
-The report gives full program costs and remaining TypeScript gaps.
+That historical report gives its own program costs and TypeScript gaps;
+Phase30 supplies the newer measurements and35–40-second checked build observations.
 
 The [Phase28 comparison](../implementation/phase28/broader-program-comparison.md)
 broadens the corpus to six existing algorithms, four original mixed tests and
@@ -56,8 +64,8 @@ ratios, warmup sensitivity and a distinct whole-process measurement. All 11 sele
 outputs agree. The six algorithm gaps are 111–1,391× in the original warmed JS
 window; the HVM process costs201 ms versus 69 ms. This historically established a substantial
 generated-code gap beyond diagnostic kernels, without defining a production
-average. Phase29 subsequently changes the installed emitter; use its report for
-the newer measurements. See its
+average. Phases29 and30 subsequently change the emitter; use the Phase30 report
+for the current measured candidate. See Phase28's
 [reproduction guide](../implementation/phase28/README.md) for inputs and controls.
 
 The [Phase25 study](../implementation/phase25/generated-code-analysis.md) compares

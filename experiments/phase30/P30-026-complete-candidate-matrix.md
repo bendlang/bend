@@ -57,3 +57,9 @@ contains the full table, costs, ranges and scope; do not pool these samples with
 checked14. **Release remains on hold** pending the P30-030 residual-dispatch
 investigation and native backend gates. Passing correctness does not erase the
 remaining regressions or authorize an installation claim.
+
+Later frontier: native 81-observation recovery passes exactly, and the P30-030
+generated-JavaScript flag clears its frozen RLE and negative-control criteria.
+The selected repair is entering checked integration. The checked16 matrix,
+figures and the hold that motivated that experiment remain unchanged evidence;
+installation requires the separate parent release record.

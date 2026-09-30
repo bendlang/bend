@@ -2048,3 +2048,22 @@ warm/timed output hashes pass. Parent's second timed request still improves
 reference is the TS-produced implementation of the same Bend compiler, not the
 upstream TypeScript compiler itself. Full trial/range/cache/ABI evidence is in
 [the distinct cost report](../implementation/phase30/warmed-generated-compiler-cost.md).
+
+
+## Phase 30 — empty registration state avoids unnecessary dispatch work
+
+[P30-030](phase30/P30-030-registration-free-dispatch.md) preserves the selected
+code read and all method/environment/entry ordering while bypassing WeakSet.has
+until the first successful private callback registration. Complete AST/inverse
+proofs and public/transition/scalar controls pass. A manually derived H also
+passes its actual-hash Base and small positive/negative oracle; that is functional
+evidence, not another generated-compiler speed measurement.
+
+The drifting short screen is inconclusive. Frozen confirmation reduces original
+RLE16 time by5.566% (.0485082→.0458081ms) and complete-state row time by5.378%,
+both with disjoint ranges. Registered helper/Mandelbrot negative controls overlap
+unchanged16 ranges, satisfying the prospective criteria. RLE remains3.45% slower
+thanPhase29 in its same window. Root selects only the three general-flag runtime
+edits for checked17; fresh actual-output and integration checks remain required
+before release. The direct-only diagnostic, all earlier baselines and the two
+metadata-plan failures remain retained.

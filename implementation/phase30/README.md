@@ -21,20 +21,26 @@ eight functions and the obsolete arm-prebinding module. The distribution API
 still contains Phase29; the consolidated default awaits installation and CLI
 validation after the remaining16 gates.
 
-The actual13→14 longer-warm comparison on original small Mandelbrot confirms
-**0.246549→0.215416 ms, 1.1445× faster**, with all timed halves within0.91%.
-Pinned TypeScript is **0.0456132 ms**, leaving **4.723×** in that same window.
-Earlier incremental gains and their different scopes remain in the reports;
-they must not be multiplied. Held14's complete matrix remains preserved;
-the renewed16 timing plans are frozen and await the clean measurement slot.
+The completed16 matrix measures original Mandelbrot at **0.214181 ms versus
+Phase29's21.416666 ms: approximately100× faster**. A separate longer-warmup
+window leaves **4.59× TypeScript overhead**. The scalar helper at8192 iterations
+is192.96× faster than Phase29 and1.34× TypeScript time. These are selected
+scalar results: generic programs still cost roughly60–409× TypeScript in the
+original short-window matrix, with several warmup-sensitive observations.
+The [full timing report](final-timing-16.md) includes regressions and compiler
+costs; no combined average or multiplied historical speedup is claimed.
 
 All ten original libraries compile and produce their checked results. Fresh16
 also passes the focused, selected upstream, primitive/worker,23-library,
 compiler-component and HVM integration scopes. Whole frontend renewal passes
 3,026 main and 196 broader exact observations, with the explicit module-layout
 migration independently reviewed. Bounded self-emission succeeds and its H
-module passes small positive/negative compilation controls. Renewed full16
-timings and installation remain pending; no installed16 release is claimed yet.
+module passes small positive/negative compilation controls. A separate warmed-
+once small request puts H5.21× behind the genuine TypeScript-produced parent
+for the same Bend compiler source. The81-row backend pilot now matches all
+historical observations in the approved native execution environment, keeping
+69 passes,8 expected refusals and4 shared failures separate. The final runtime
+experiment and installation remain pending; no installed16 release is claimed yet.
 
 - [Actual helper measurements](checked-helper-timing.md)
 - [Original-program and compiler-cost integration measurements](final-timing.md)
@@ -42,6 +48,13 @@ timings and installation remain pending; no installed16 release is claimed yet.
 - [Renewed frontend observations](frontend-renewal.md)
 - [Independent module-layout review](frontend-layout-independent-review.md)
 - [Bounded self-emission and its validation scope](bounded-self-emission.md)
+- [Warmed generated compiler versus genuine parent](warmed-generated-compiler-cost.md)
+- [Renewed selected backend observations and environment boundary](backend-pilot-renewal.md)
+- [Checked16 diagrams and exact plotted samples](final16-figures/report.md)
+- [Registration-dispatch experiment and controls](registration-dispatch.md)
+- [Independent empty-registry transition controls](empty-registry-independent-review.md)
+- [Final source review](final-source-review.md)
+- [Remaining optimization hypotheses](remaining-hypotheses.md)
 - [Independent retirement of arm prebinding](retired-arm-independent-review.md)
 - [Held14 comparison figures and exact plotted data](held14-figures/report.md)
 - [Generic matcher registration investigation](partial-prebinding-registration.md)

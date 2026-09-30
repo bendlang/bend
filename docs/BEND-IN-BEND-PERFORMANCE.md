@@ -80,7 +80,9 @@ they are not fed back into checking or evaluation. See
    pinned TypeScript output immutable. Derive a separately named variant with
    one change, validate complete results and relevant observable boundaries,
    then compare those bytes. This needs no compiler rebuild. A manually edited
-   program is an experiment, never the compiler's measured output.
+   program is an experiment, never the compiler's measured output. Include both
+   a scalar fixture and a complete-state generic row for runtime edits: Phase30's
+   first broad matrix exposed a common generic slowdown despite its scalar win.
 2. **Implement a surviving rule in Bend.** Build a fresh checked attempt, emit
    the small fixture with that compiler, run independent numerical and interface
    controls, and measure its actual output. Phase30 checked builds plus 36

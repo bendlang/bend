@@ -20,7 +20,7 @@ const build=(name,fields)=>({build:true,name,fields});
 // with the same vector, but cannot reuse this token or forge one with extra args.
 const exactCodes=new WeakSet(), exactPrototype=Function.prototype;
 const exactCall=Function.prototype.call;
-let exactEntry=null;
+let exactEntry=null,hasExactCodes=false;
 function enterExact(code,inner,a){
   const entry=exactEntry;
   const entered=entry!==null&&entry.code===code&&entry.args===a&&!entry.used;
@@ -31,11 +31,12 @@ function exactCode(inner,arrow=false){
   const code=arrow?(0,(a)=>enterExact(code,inner,a)):
     (0,function(a){return enterExact(code,inner,a)});
   exactCodes.add(code);
+  hasExactCodes=true;
   return code;
 }
 function invokeExact(f,all){
   const code=f.code;
-  if(!exactCodes.has(code)||Object.getPrototypeOf(code)!==exactPrototype||
+  if(!hasExactCodes||!exactCodes.has(code)||Object.getPrototypeOf(code)!==exactPrototype||
       Object.getOwnPropertyDescriptor(code,'call'))return code.call(f.env,all);
   const callProperty=Object.getOwnPropertyDescriptor(exactPrototype,'call');
   if(!callProperty||!Object.hasOwn(callProperty,'value')||callProperty.value!==exactCall)
