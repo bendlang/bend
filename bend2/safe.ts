@@ -34,9 +34,10 @@
 //
 // The kernel has literal quantities only: an item (a book name) goes out
 // once per tuple of closed arguments at its specialized parameters, with
-// those parameters gone; a def checked on its own goes out once, as a
-// λ-match on its finite ones. Every def goes out after the defs its live
-// code names; a name in a type may come later. A def with no body (a
+// those parameters gone; a def checked on its own also goes out as a
+// λ-match on its finite ones, to its instances, so the kernel checks
+// that they cover it. Every def goes out after the defs its live code
+// names; a name in a type may come later. A def with no body (a
 // law, a native, a foreign fill) goes out opaque at a model: the kernel
 // checks the model, then never unfolds the def. What the kernel cannot
 // express is out of scope: it goes, with every def that names it, and
@@ -232,19 +233,16 @@ function root_of(e: Safe, k: Name, T: HTerm, cs: Cols): Root {
   return at(B.Ref(c));
 }
 
-// root k at r: at its columns, that item; else one def, a λ-match on
-// each finite parameter whose arms are k's tree at each value (or k
-// there, for a datatype, a def with no body or an @unsafe one), at a
+// root k at r: at its columns, that item; else k's instances, and a def
+// that is a λ-match on each finite parameter whose arms name them, at a
 // type that is a λ-match on it too (at *1, which a *2 fits), so the
-// kernel checks that the values cover k (at an empty type, none: λ{})
+// kernel checks that the instances cover k (at an empty type, that
+// there are none: λ{})
 function root_emit(e: Safe, k: Name, r: Root): string {
   if (r.$ === "Cols") {
     return item_try(e, k, r.cols);
   }
-  const tld = e.book.tlds[k];
   const n = fresh(e, name_tt(k));
-  const s = scope_nil();
-  const inline = tld.$ === "Def" && tld.e !== undefined && tld.u !== true;
   const efq: O = { $: "Efq" };
   // a λ-match on A, the arm hs[i] at its i-th value (Quant's in order)
   const mat = (A: HTerm, hs: O[]): O => {
@@ -256,7 +254,7 @@ function root_emit(e: Safe, k: Name, r: Root): string {
   };
   const ty = (s: Scope, r: Root): O => {
     if (r.$ === "Cols") {
-      return term(e, s, type_drop(e, tld.T, r.cols), false);
+      return term(e, s, type_drop(e, e.book.tlds[k].T, r.cols), false);
     }
     const l = s.D;
     const A = term(e, s, r.A, false);
@@ -264,13 +262,8 @@ function root_emit(e: Safe, k: Name, r: Root): string {
     const K: O = { $: "All", q: 1, l: l + 1, A, B: { $: "Typ", q: 1 } };
     return { $: "All", q: 1, l, A, B: { $: "App", q: 1, f: { $: "Ann", x: M, T: K }, x: { $: "Var", l } } };
   };
-  const body = (r: Root): O => {
-    if (r.$ === "Mat") {
-      return mat(r.A, r.arms.map(body));
-    }
-    return inline ? arm(e, s, k, r.cols, []) : { $: "Ref", k: item_ref(e, k, r.cols, true) };
-  };
-  e.out.push([n, ty(s, r), body(r), false]);
+  const body = (r: Root): O => r.$ === "Mat" ? mat(r.A, r.arms.map(body)) : { $: "Ref", k: item_ref(e, k, r.cols, true) };
+  e.out.push([n, ty(scope_nil(), r), body(r), false]);
   return n;
 }
 
