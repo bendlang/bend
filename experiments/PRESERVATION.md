@@ -553,3 +553,26 @@ remain prerequisites, not silently duplicated or discarded.103 unrelated startin
 files remain separately protected. See the [release report](../implementation/phase31/release-07.md)
 and [independent review](../implementation/phase31/independent-release-review.md)
 for measured tradeoffs, native-context retry and final scope.
+
+
+## Phase32 private representation and bounded reuse investigations
+
+The [Phase32 capsule](../implementation/phase32/evidence/README.md) retains all
+20,807 regular raw files (207,091,523 logical bytes) in a 33,930,135-byte gzip.
+Capture checked the complete live input set before/after and independently reopened
+every archived member by exact name, size, SHA256 and mode. No transport splitting
+or raw-evidence deletion was needed. The [receipt](../implementation/phase32/evidence/receipt.json)
+binds the payload and inventory.
+
+Failed/rejected checker and cache proposals, all three checked local ablations,
+complete controls and rotating timing samples remain. The interrupted broader
+frontend run, separately completed retry, original Clang permission failures and
+explicit native-context backend closure are preserved. The installed compiler,
+source identities, all 42 ordinary/relocated CLI checks, deliberate supervisor
+stops and memory receipts have separate scope in the
+[release report](../implementation/phase32/release-03.md).
+
+The Phase31 capsule and its documented prerequisites remain available; no earlier
+history is silently relabeled or discarded. All 103 protected starting files are
+unchanged. Installation additionally saves the previous Phase31 API/Base/lineage/
+manifest byte-for-byte under its API hash in `selfhost/dist/release-history`.

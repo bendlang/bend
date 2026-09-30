@@ -17,41 +17,43 @@ This fork develops the compiler in [`selfhost/`](selfhost/README.md), on branch
 Ordinary compilation runs the Bend implementation without a TypeScript fallback;
 the target remains pinned to **0187512, after Bend 2.0.34**.
 
-The [Phase31 report](implementation/phase31/closed-local-regions.md) implements
-closed local records/arrays, fully demanded private returns and direct field
-reads. The original four-pair edit-distance program is **26.83× faster** than
-Phase30 and still takes **14.28× TypeScript time**. A separate array fold improves
-17.67×. The [measured comparisons](implementation/phase31/final-measurements.md)
-keep program execution and compilation cost separate: edit-distance compilation
-adds 6.90%, and small entry/generic-row canaries have disclosed regressions.
+The [Phase32 report](implementation/phase32/README.md) removes temporary tuple
+and record work inside proved private regions. The original four-pair edit-distance
+program is **3.54× faster than Phase31**, reducing its same-window TypeScript gap
+from **14.49× to 4.09×**. The independent array fold improves **1.98×**. Original
+Mandelbrot and RLE emit unchanged bytes; these are selected program measurements,
+not a general compiler speed ratio. The
+[comparison](implementation/phase32/final-measurements/measurements.md) records a
+separate **1.91% increase in Mandelbrot compilation time**, accepted explicitly in
+the [admission decision](design/phase32/admission.md).
 
-Checked07 is installed and passes release verification and all **42 ordinary/
-relocated CLI checks**. The
-[release report](implementation/phase31/release-07.md) binds its exact artifact,
-ordinary/relocated CLI status, fresh validation and accepted tradeoffs. The
-[performance guide](docs/BEND-IN-BEND-PERFORMANCE.md) explains the proofs, limits,
-fallback paths and fast iteration loop.
-
-Fresh frontend observations agree with pinned TypeScript on **3,026 main and
-196 broader cases**. The selected backend pilot preserves all 81 historical
-outcomes: **69 pass, 8 not applicable, 4 shared failures**. These scopes do not
-establish full backend or independent proof-kernel conformance; see
+[Checked03 is installed](implementation/phase32/release-03.md), passes release
+verification and all **42 ordinary/relocated CLI checks**. It passes 36 focused
+checks, six additional semantic control groups, and fresh **3,026 main + 196
+broader frontend observations** against the frozen
+pinned TypeScript results. Its 81-row backend pilot preserves the historical
+outcomes: **69 pass, 8 not applicable, 4 shared failures**. The
+[gate closure](implementation/phase32/final-conformance/gates.md) also records
+inherited execution, library, compiler-component and HVM controls. These scopes do not establish
+full backend or independent proof-kernel conformance; see
 [conformance](selfhost/CONFORMANCE.md).
 
-The source contains **17,014 Bend lines in 66 modules**, up **1.41%** from Phase30.
-The change reuses the existing analysis and public value representations, adding
-no new datatype declarations. Counts exclude generated images and experiment
-tooling. The [checked workflow](docs/PHASE5_DEVELOPMENT.md) builds a genuine
-checked compiler and runs 36 short paired controls; recent acquisitions took
-about 38 seconds. The release preserves its checked parent and guarded version6
-derivative. From `selfhost/`, run `npm run verify:release`, then
-`node cli.mjs FILE --run`. `npm run build` rebuilds with pinned upstream.
-Independent BendTT `--verdict` is not implemented; no new fixed point is claimed.
+The compiler source contains **17,071 Bend lines in 66 modules**, up **57 lines
+(0.335%)** from Phase31. It adds no datatype or module and preserves the runtime
+and public representations. Counts exclude generated images and experiment
+tooling. The [performance guide](docs/BEND-IN-BEND-PERFORMANCE.md) explains the
+proofs, fallbacks and remaining costs. The [checked workflow](docs/PHASE5_DEVELOPMENT.md)
+builds a genuine checked compiler and runs 36 paired controls in about 40 seconds
+in recent runs, using one worker and a 1 GiB heap setting. From `selfhost/`, run
+`npm run verify:release`, then `node cli.mjs FILE --run`.
+`npm run build` rebuilds with pinned upstream. Independent BendTT `--verdict`
+is not implemented; no new fixed point is claimed.
 
 Designs, failed experiments, comparisons, a [Zig history study](design/phase31/zig-lessons.md)
-and promotion decisions are linked from the [Phase31 index](implementation/phase31/README.md),
+and promotion decisions are linked from the [Phase32 index](implementation/phase32/README.md),
 [ledger](experiments/ledger.md) and [current strategy](experiments/STEERING.md).
-Earlier [Phase30](implementation/phase30/README.md) and
+Earlier [Phase31](implementation/phase31/README.md),
+[Phase30](implementation/phase30/README.md) and
 [Phase28](implementation/phase28/broader-program-comparison.md) measurements
 retain their own baselines and scopes.
 

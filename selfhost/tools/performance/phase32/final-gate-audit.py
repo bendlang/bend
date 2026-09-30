@@ -8,6 +8,8 @@ from pathlib import Path
 ap = argparse.ArgumentParser()
 ap.add_argument('plan_directory')
 ap.add_argument('out')
+ap.add_argument('--frontend-broader-report',
+                help='Audit a separately preserved broader retry; all normal checks still apply.')
 ap.add_argument('--backend-report')
 ap.add_argument('--owner-controls')
 ap.add_argument('--require-closed', action='store_true')
@@ -79,8 +81,11 @@ def focused(data):
 audit('checked-build-focused', attempt / 'validation-001/report.json', focused)
 
 
-def frontend(data, expected):
+def frontend(data, expected, name):
+    assert data['scope'] == name
     assert data['api']['sha256'] == api
+    assert any(x.get('file') == str(attempt / 'attempt.json') and
+               x.get('sha256') == plan['attempt']['sha256'] for x in data['inputs'])
     assert data['healthPass'] and data['exactAgreement']
     assert data['exact'] == data['expected'] == expected
     assert data['differences'] == data['extraFieldDifferences'] == 0
@@ -94,12 +99,16 @@ def frontend(data, expected):
     config = read(Path(data['candidate']['file']).parent / 'target.json')
     assert config['jobs'] == 1 and config['heapMb'] <= 1024 and config['rssLimitMb'] <= 1024
     return dict(exact=expected, statuses=data['raw']['candidateSummary']['statuses'],
-                candidateWorkers=1, heapMb=config['heapMb'], rssLimitMb=config['rssLimitMb'])
+                candidateWorkers=1, heapMb=config['heapMb'], rssLimitMb=config['rssLimitMb'],
+                explicitOverride=name == 'broader' and bool(args.frontend_broader_report))
 
 
 for name, expected in [('main', 3026), ('broader', 196)]:
-    audit('frontend-' + name, base / ('frontend-' + name) / 'report.json',
-          lambda data, expected=expected: frontend(data, expected))
+    report = (Path(args.frontend_broader_report).resolve()
+              if name == 'broader' and args.frontend_broader_report
+              else base / ('frontend-' + name) / 'report.json')
+    audit('frontend-' + name, report,
+          lambda data, expected=expected, name=name: frontend(data, expected, name))
 
 
 def backend(data):
@@ -257,10 +266,12 @@ for gate in gates:
         'stdoutBytes', 'groups', 'candidateWorkers', 'heapMb', 'rssLimitMb']}
     lines.append(f'| {gate["name"]} | {gate["status"]} | {json.dumps(observed, separators=(",", ":")) if observed else "Unrun or incomplete"} |')
 lines += ['', 'Canonical source: ' + ('matches the checked attempt.' if canonical['accepted'] else 'not admitted.'), '',
-          'Fresh frontend/backend workers are serial with1024MiB V8 heap allowances and4MiB stacks. '
+          'A broader-report override selects a separately preserved retry receipt; it does not '
+          'relax scope, checked-attempt identity, exact agreement, worker health or memory checks. ', '',
+          'Fresh frontend/backend workers are serial with 1024 MiB V8 heap allowances and 4 MiB stacks. '
           'Heap limits are not RSS limits; root supervises process-tree memory separately. '
           'Retained reference acquisitions keep their original resource provenance.', '',
-          'Installation, installed verification and42CLI checks remain separate post-install actions. '
+          'Installation, installed verification and 42 CLI checks remain separate post-install actions. '
           'Measurement/regression admission and independent release review remain separate decisions. '
           'All missing/invalid reports and exact errors are retained in gates.json.', '']
 (out / 'gates.md').write_text('\n'.join(lines))

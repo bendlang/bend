@@ -755,3 +755,29 @@ identity; MAIN_FID goes through that same function. This prevents punctuation an
 case normalization from merging distinct functions. Runtime-reserved IDs retain
 their existing names. See the [Phase24 report](../../implementation/phase24/profile-and-coverage.md)
 for finite validation scope and unchanged representation counts.
+
+## Phase32 private representation lowering
+
+The existing bounded JavaScript region proof also controls three local emission
+rules. Return-position `JUnpack` becomes nested statement blocks: capture the
+input, read every field in order, then execute the arm. The input capture is
+outside the field-binding block, preserving shadowing and parallel-let scope.
+Expression-position unpacking keeps its expression form.
+
+`JReadCall` marks a fully saturated private call whose last argument is a proved
+canonical `Array.get` and whose helper immediately unpacks that argument as the
+canonical `Array<U32>/U32` pair. A lexical `$get` bridge accepts the prior arguments
+and original read arguments in source order, performs the indexed read once,
+binds both fields and executes the original arm. The ordinary helper remains for
+other producers. Native descriptor guards still cover the read, and unused
+scalar fields do not remove its effects. No public tuple convention changes.
+
+After local-type admission, `j_region_local_vector` normalizes aliases and selects
+canonical Sigma or an ordinary record excluded by the existing public terminal
+record rule. `JVector` emits the ordered field array directly. Both unpack forms
+use the same layout predicate. Flat scalar public records remain boxed, including
+when nested in a private vector. Scalar root inputs, closed calls, `Array<U32>`
+storage and the scalar/flat-record result boundary prevent other admitted record
+shapes from escaping. This reuses the existing proof; it is not general escape
+analysis. See the [Phase32 designs](../../design/phase32/representation-and-reuse.md)
+and [independent review](../../implementation/phase32/review-vector03.md).

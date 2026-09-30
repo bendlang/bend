@@ -9,19 +9,35 @@ does not invoke the TypeScript compiler.
 
 The active target is upstream
 [`018751270e800bc222a93dad7f257083ee53a5f7`](https://github.com/bendlang/bend/tree/018751270e800bc222a93dad7f257083ee53a5f7)
-(after Bend 2.0.34). The [Phase31 report](../implementation/phase31/closed-local-regions.md)
-records closed local records/arrays, private demand and direct field reads.
-The original four-pair edit-distance program is **26.83× faster** than Phase30
-and still takes **14.28×** the pinned TypeScript output's time. Original
-Mandelbrot and RLE retain their prior warmed performance; large gaps remain
-on generic workloads. These are JavaScript execution measurements, not compiler
-throughput.
+(after Bend 2.0.34). The [Phase32 report](../implementation/phase32/README.md)
+records statement unpacking, typed immediate-read bridges and private field
+vectors inside the existing closed-region proof. The installed compiler makes the original
+four-pair edit-distance program **3.54× faster than Phase31**, reducing the
+same-window TypeScript gap from **14.49× to 4.09×**. The independent array fold
+improves **1.98×**, with an **8.13×** remaining gap. Original Mandelbrot and RLE
+emit exactly the Phase31 bytes and their timing ranges overlap. The other seven
+historical original programs were not freshly timed; these selected JavaScript
+execution measurements do not establish average program speed.
 
-Normal edit-distance compilation is 6.90% slower; a mixed generic-row canary is
-about 5% slower and zero-work scalar entry adds about 0.18µs. The
-[explicit tradeoff](../design/phase31/admission-tradeoff.md) keeps these costs
-visible. Read the [release record](../implementation/phase31/release-07.md)
-for installation status, exact artifact identities and validation scopes.
+Compiler cost remains distinct. Mandelbrot library compilation adds **36.75 ms
+(1.91%, disjoint ranges)**; edit-distance compilation changes by −0.45% with
+overlapping ranges. Their request-only TypeScript gaps are about **5.56× and
+4.90×**. The [measurement report](../implementation/phase32/final-measurements/measurements.md)
+separates imports, requests, process overhead and program execution. All three
+runtime canaries overlap their Phase31 ranges. The
+[admission decision](../design/phase32/admission.md) accepts the measured source,
+generated-size and compilation costs; it does not erase the earlier
+[Phase31 tradeoffs](../design/phase31/admission-tradeoff.md).
+
+**Phase32 checked03 is installed and passes release verification and all 42
+ordinary/relocated CLI checks.** The [release report](../implementation/phase32/release-03.md)
+and [manifest](../selfhost/dist/release.json) bind exact artifact identities.
+The [gate closure](../implementation/phase32/final-conformance/gates.md) records
+the 36 focused checks, six added semantic control groups, fresh 3,026 main and
+196 broader frontend observations against the frozen pinned reference, and the
+81-row backend pilot with 69 pass / 8 not applicable / 4 shared failures.
+Inherited execution, library, compiler-component and complete HVM controls also
+pass. The [Phase32 index](../implementation/phase32/README.md) tracks release closure.
 
 The historical [Phase23 report](../implementation/phase23/upstream-graph-conversion.md)
 records the upstream update and its checked artifacts. The [Phase24 report](../implementation/phase24/profile-and-coverage.md)
@@ -43,10 +59,31 @@ validity; `--verdict` is explicitly unsupported.
 ## Analyzing emitted-program performance
 
 The [generated-program performance guide](BEND-IN-BEND-PERFORMANCE.md) explains
-the Phase31 private region machinery, bounded admission, exact public entry and
-fast validation loop. Its [campaign reports](../implementation/phase31/README.md)
-identify the current installed checked compiler and retain
-negative experiments as well as measured wins.
+the private region machinery, bounded admission, exact public entry and fast
+validation loop. The [Phase32 campaign](../implementation/phase32/README.md)
+retains negative experiments as well as measured wins. Its three selected
+transformations remove administrative work after the existing proof has
+established a private representation:
+
+- Return-position unpacking uses lexical blocks and ordered field bindings.
+- A fully applied private helper immediately consuming a canonical
+  `Array<U32>` read-result tuple receives the read through a typed bridge,
+  preserving producer-time reads and evaluation order.
+- Eligible private records and canonical Sigma values use ordered field vectors.
+  Public record results retain their boxed representation.
+
+The runtime, driver, public call convention and unsupported fallback are
+unchanged. The code grows by 57 physical Bend lines, six functions and two private
+plan tags; pair/fold emitted modules grow 4.21%/1.08%, mainly from bridge bodies.
+The fold's final increment also avoids canonical Sigma constructor dispatch,
+so its benefit cannot be attributed solely to ordinary record-shell removal.
+
+Each checked increment improves the selected pair and fold with disjoint timing
+ranges. Longer confirmation retains residual warmup drift, including one fold
+sample improving 27% between measured halves; no steady-state result is claimed.
+Private checker-field experiments show opportunities but fail public getter and
+mutation boundaries. Semantic checkpoints, compact memo tables and stop-list
+reuse remain experiments: no cache or new intermediate representation was added.
 
 Phase29 implements 54 native U32/F32 scalar operations as direct JavaScript at
 identified saturated call sites. Partial/unknown calls retain ordinary descriptors.
@@ -70,7 +107,7 @@ ratios, warmup sensitivity and a distinct whole-process measurement. All 11 sele
 outputs agree. The six algorithm gaps are 111–1,391× in the original warmed JS
 window; the HVM process costs201 ms versus 69 ms. This historically established a substantial
 generated-code gap beyond diagnostic kernels, without defining a production
-average. Phases29–31 subsequently change the emitter; use the Phase31 report
+average. Phases29–32 subsequently change the emitter; use the Phase32 report
 for freshly measured workloads and its explicit inherited scopes. See Phase28's
 [reproduction guide](../implementation/phase28/README.md) for inputs and controls.
 
@@ -176,9 +213,10 @@ terms before unfolding definitions, then memoizes only proved equality between
 cells. Successful subtype checks never establish symmetric cell sharing; forcing can
 still cache evaluated heads. This prevents
 repeated traversal of shared terms: two depth-32 checks that previously exhausted
-a 1 GiB heap now complete within that limit. Ordinary checking remains around
-three times the pinned TypeScript compiler; the report separates this measured
-cost from the pathological-case improvement.
+a 1 GiB heap now complete within that limit. Its historical ordinary-checking
+comparison was around three times the pinned TypeScript compiler. That scope
+differs from the current Phase32 library compile requests above; the ratios
+must not be substituted for each other.
 
 The backend now supports all nine `Array.atomic` operations in its existing
 uniform arrays, correct original/copy ordering for `Array.clone`, shared array
@@ -243,8 +281,8 @@ npm run build -- /absolute/release-config.json /absolute/new-attempt
 Config fields and selection semantics are documented in the
 [maintained workflow guide](PHASE5_DEVELOPMENT.md). Broad conformance and checked
 self-reproduction are release/integration gates, not every small edit's build.
-The [Phase30 release report](../implementation/phase30/release-17.md) records
-the current artifact's evidence and remaining limits.
+The [Phase32 release report](../implementation/phase32/release-03.md) records the
+installed artifact's evidence, limits and ordinary/relocated CLI closure.
 
 ## Work on the current source
 
@@ -265,9 +303,8 @@ unforced message identity is outside this contract. Version6 recognizes the new 
 contract. Historical versions1–5 retain exact byte replay. The normalizer seed change and broader branch
 transformation failed stack controls and are excluded.
 
-The [Phase30 release report](../implementation/phase30/release-17.md) gives the
-current source and artifact identities. Keep experiments isolated by selecting a
-frozen attempt explicitly:
+The [release manifest](../selfhost/dist/release.json) gives the installed artifact
+identities. Keep experiments isolated by selecting a frozen attempt explicitly:
 
 ```sh
 # From selfhost/, after creating build/dev/attempt-01 with the maintained workflow.
@@ -324,8 +361,8 @@ BEND_TYPED_API="$PWD/build/candidate-api.mjs" \
 
 This writes a checked API plus the assembled source and provenance in
 `build/typed/`. Keep source, API, runtime and host snapshots immutable during
-validation. Full H-to-H self-reproduction has not been rerun for the current Phase30 compiler. The advanced
-runner, separate from the checked release build, is:
+validation. Full H-to-H self-reproduction has not been rerun for the current
+compiler. The advanced runner, separate from the checked release build, is:
 
 ```sh
 BEND_TYPED_API="$PWD/build/candidate-api.mjs" \
@@ -396,18 +433,19 @@ not erase. The [architecture](../selfhost/docs/ARCHITECTURE.md) describes these
 contracts, source ranges, capability negotiation and Base cache version6.
 
 Phase23 targets 1,513 fixtures and 3,026 parse/check observations, including
-15 new upstream fixtures. The [current report](../implementation/phase23/upstream-graph-conversion.md)
+15 new upstream fixtures. The [historical report](../implementation/phase23/upstream-graph-conversion.md)
 records the final image's exact agreement, broader 196-case parser suite,
 request histories, native/JavaScript execution and installed/relocated CLI checks.
 Counts overlap; the four raw frontend failures expect errors at later emission.
 Read [conformance](../selfhost/CONFORMANCE.md) for the precise verdicts and limits.
 
-The compiler contains **15,748 physical /13,442 nonblank lines** in 60 Bend
-modules: 148 more physical lines than Phase22 (+0.95%), with nine additional
-definitions and two laws. Module and datatype counts are unchanged. Conversion
-shares graph evaluation with strong normalization, and atomics reuse existing
-arrays and reference counting. These are modest extensions; the historical 50%
-and 75% source reduction goals remain unachieved. Load ABI2 remains current.
+The current compiler source contains **17,071 physical /14,580 nonblank Bend
+lines**, with **1,884 definitions, 640 laws, 70 types and 66 modules**. Phase32
+adds 57 physical lines (0.335%), 51 nonblank lines and six definitions over Phase31;
+type, law and module counts are unchanged. Counts exclude generated images and
+experiment tooling. The [complexity accounting](../implementation/phase32/local-complexity.md)
+records the source and concept changes. Historical 50% and 75% source reduction
+goals remain unachieved. Load ABI2 remains current.
 
 Routine development uses checked B1 and 36 focused controls; reuse a frozen
 attempt for fixture-only edits. The long string stays first. The selection adds
@@ -415,7 +453,14 @@ six exact upstream checks and four separate illegal-path witnesses with explicit
 refusal-at-parse oracles; full diagnostics remain under the strict corpus gate.
 Phase22 source11/12 checked builds plus these36 controls took roughly33–35
 seconds in their observed runs; this is not a controlled loop-speed benchmark.
-Keep full-source and broad frontend/backend gates for integration.
+Keep full-source and broad frontend/backend gates for integration. Phase32's
+checked acquisitions take about 40 seconds with one worker and a 1 GiB heap
+setting. Its execution supervisor serializes heavy jobs and monitors the whole
+process tree against RSS/deadline limits and a 2 GiB free-memory floor. Independent
+[supervisor controls](../implementation/phase32/supervisor-controls.md) check
+termination and child cleanup. Polling can overshoot the RSS threshold, so this
+is not a hard allocation ceiling. Use these bounded runs for routine experiments;
+the separate multi-gigabyte fixed-point example above is an integration task.
 
 The [architecture](../selfhost/docs/ARCHITECTURE.md) describes the first-order
 `KTerm`/`KDef` core and component responsibilities. These boundaries distinguish

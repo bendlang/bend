@@ -6,7 +6,8 @@ checked07 at `5f3015d`. Target: upstream `0187512`, after Bend 2.0.34.
 Candidate03 combines statement unpacking, typed immediate-read bridges and
 private field vectors. It adds 57 Bend lines (0.335%), six functions, two private
 plan tags, and no datatype or module. The runtime and driver are unchanged.
-**Release integration is in progress; the installed compiler remains Phase31.**
+**Checked03 is installed and verified; all declared integration and 42 ordinary/relocated CLI checks pass.** See the [release record](release-03.md),
+[gate closure](final-conformance/gates.md) and [installation receipt](release-installation.json).
 
 ## Measured results
 
@@ -25,13 +26,15 @@ Compiler throughput does not improve generally. Mandelbrot compilation adds
 36.75 ms (1.91%, disjoint ranges); edit-distance compilation changes by −0.45%
 with overlap. The candidate's request-only TypeScript gaps remain about 5.56×
 and 4.90× respectively. Import, first-call, warmup drift and process costs stay
-separate. A final fold sample still improves 27% between its measured halves;
+separate. One candidate fold sample still improves 27% between its measured halves;
 the reports retain that drift rather than claiming steady state.
 
 Read the [checked local ablations](local-representation.md),
 [audited local confirmation](local-checked-confirmation.md),
 [original-program and compiler measurements](final-measurements/measurements.md),
 and [source/concept/generated-size accounting](local-complexity.md).
+The [selection decision](../../design/phase32/admission.md) explicitly accepts
+the small compilation, source-size and generated-size costs, with the required release validation now complete.
 
 ## Findings from all four investigations
 
@@ -61,8 +64,11 @@ The candidate passes its 36 focused checked-build tests and six added control
 groups: complete pair state and 328,966 native events, fold oracles, actual read
 ordering, nested scope, public boxed records/aliases, and compiled layout
 predicates. [Independent review](review-vector03.md) and
-[exact gate identities](review-local-gates.json) record the scope. Broad frontend,
-backend, inherited corpus/component and installed CLI checks are still pending.
+[exact gate identities](review-local-gates.json) record the scope. Fresh 3,026 + 196 frontend observations match the pinned
+TypeScript references exactly. The backend preserves 69 passes / 8 N/A / 4 shared
+failures through an explicit 60 + 21 native-context retry; original permission
+failures remain recorded. All inherited corpus/component/HVM and 42 installed/
+relocated CLI checks pass. Counts overlap and are not a unique test total.
 
 All resumed compiler builds, acquisitions and benchmarks run serially under
 explicit heaps, process-tree RSS limits, deadlines and a 2 GiB free-memory floor.
@@ -71,9 +77,9 @@ Independent [supervisor controls](supervisor-controls.md) verify memory/deadline
 termination and child cleanup, including the polling overshoot limitation.
 Current resource counters do not establish the previous interruption's cause.
 
-The [evidence capsule](evidence/README.md) is captured after producers close.
-It preserves failed and superseded attempts, exact consumed tools and raw
-measurements. The 103 unrelated starting files remain protected. Installation,
-release verification and the final protection audit will be recorded here when
-integration closes. No new self-emitted H fixed point, GPU or independent
+The verified [evidence capsule](evidence/README.md) preserves 20,807 raw files,
+including failed and superseded attempts, exact consumed tools and measurements. The 103 unrelated starting files remain protected. The [installation receipt](release-installation.json) binds the installed API
+and all 42 CLI checks. The [final protection audit](protected-files-final.json) and
+[independent release review](independent-release-review.md) close preservation
+and release scope. No new self-emitted H fixed point, GPU or independent
 proof-kernel conformance is claimed.

@@ -1,7 +1,7 @@
 # Generated-program performance and the fast development loop
 
 Use the [compiler guide](BEND-IN-BEND.md) for normal compilation and the
-[Phase31 report index](../implementation/phase31/README.md) for exact results,
+[Phase32 report index](../implementation/phase32/README.md) for exact results,
 artifact identities, failed experiments and current promotion status. The target
 remains upstream `018751270e800bc222a93dad7f257083ee53a5f7`. The comparison is
 between JavaScript emitted from the same Bend source by the two compilers.
@@ -72,6 +72,18 @@ Read [the demand proof](../design/phase31/fully-demanded-private-results.md) and
 [field-layout proof](../design/phase31/direct-private-field-reads.md) before
 extending these rules. Eager writes in arbitrary returned fields are unsafe;
 the admitted closed graph supplies the narrower invariant used here.
+
+Phase32 removes more work within that same boundary. Return-position unpacking
+uses scoped field bindings. A typed bridge fuses a canonical array read with
+its immediate private pair consumer, preserving argument order and the read
+even if its result is unused. Nonterminal private records use their ordered
+field vectors directly; canonical Sigma construction also bypasses constructor
+dispatch. Public flat scalar records stay boxed, including aliases and nested
+occurrences. Both constructor and unpack emission use one normalized layout
+predicate. The [ablation report](../implementation/phase32/local-representation.md)
+separates the three increments, correctness controls, generated size and source
+cost. No new general escape analysis, runtime representation or public ABI is
+introduced.
 
 ## Why entry and fallback matter
 
@@ -191,11 +203,10 @@ screen cannot establish that an application/runtime change is broadly cheap.
 
 ## What remains expensive
 
-Closed local records and arrays now qualify, but their ordinary storage still
-allocates tuples on native reads and record shells for loop state. Removing a
-generic projection does not remove its producer's allocation. Possible next
-experiments are return-position field bindings and worker/wrapper scalar
-replacement, with full native-event and alias controls. Their gains are unmeasured.
+Private field vectors still allocate; the current optimization removes the
+outer ordinary-record shell. Array reads outside the proved immediate-consumer
+shape still construct tuples. Further scalar replacement would need to preserve
+the complete state and alias boundary, and its benefit is unmeasured.
 Externally supplied data, higher-order calls and unsupported recursion still
 retain generic dispatch. A floating-point helper can be too small to pay for a
 guard: Phase30's acyclic F32 entry experiment regressed both hit and miss paths.
@@ -207,3 +218,12 @@ absolute times and TypeScript ratios for every original program, compiler
 throughput separately, and native/device execution outside the demonstrated JS
 scope. The reports retain rejected alternatives so subsequent work can start
 from evidence rather than repeat the same probes.
+
+Compiler throughput has separate constraints. Phase32's private checker
+projection experiment improves selected helpers, but public getters and mutable
+API callbacks prevent applying that shortcut generally. Complete-world semantic
+checkpoints preserve the tested results but cost too much to retain. Scoped
+memoization did not pass its declared speed criteria. Even reusing a repeated
+stop-list query breaks a concrete default-API mutation case. Read the
+[experiment reports](../implementation/phase32/README.md) before introducing a
+cache or changing this ownership boundary.

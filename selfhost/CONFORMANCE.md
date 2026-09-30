@@ -1,8 +1,65 @@
 # Compiler validation
 
-## Phase31 installed07 validation
+## Phase32 installed03 validation
 
 The installed API is
+`8be506d811f627fe6346a5eaba07050c36db70e2704608adcfd781b85a3a7f92`.
+Its [release report](../implementation/phase32/release-03.md) records the completed
+gates and [admission decision](../design/phase32/admission.md).
+**Checked03 is installed and passes release verification and all 42 ordinary/
+relocated CLI checks.** All 14 pre-install gate groups pass
+and 223 canonical source identities match the checked attempt in the
+[gate closure](../implementation/phase32/final-conformance/gates.md).
+
+Fresh candidate observations agree exactly with the frozen pinned TypeScript
+results on **3,026 main and 196 broader frontend observations**. Reference input
+and artifact identities are rechecked; this reuses the retained reference
+acquisition rather than claiming a new TypeScript execution. Both gates pass
+exact-result and worker-health checks with no behavioral or additional-field
+differences. Raw main outcomes remain **2,525 pass / 497 observed / 4 shared
+failures**; broader outcomes remain **195 pass / 1 observed**. The four main
+failures expect errors at a later emission stage and are not relabeled as passes.
+The broader campaign interrupted by a server restart remains preserved; the
+successful retry uses a separate output directory and the same selected API.
+
+Candidate03 also passes 36 strict focused observations and six added control
+groups: complete pair state with **328,966 ordered native events**, independent
+fold oracles, actual typed-read evaluation order, nested lexical scopes, public
+boxed records and aliases, and compiled layout predicates. The
+[independent local review](../implementation/phase32/review-vector03.md) and
+[exact control identities](../implementation/phase32/review-local-gates.json)
+bind these results to the actual checked output. Counts overlap and are not a
+sum of unique conformance tests. The driver and runtime are unchanged.
+
+The candidate's backend pilot preserves all **81 historical outcomes: 69 pass,
+8 not applicable and 4 shared failures**. It combines 60 unaffected observations
+from the original candidate run with 21 native rows retried in the approved
+Clang execution context. The original campaign's 17 paired EPERM failures remain
+preserved and are not relabeled as successful executions. This is selected CPU
+and JavaScript coverage; broader platform validation remains separate.
+
+Fresh inherited gates pass 56,205 primitive executions, 3,759 worker executions,
+144 nested-Nat checks and 1,129 primitive guards with their separate ordered/
+effect observations. The selected 15 upstream JS probes, 23 libraries/127 points,
+40 worker admission guards with two execution witnesses, 22 compiler components
+and complete 42-byte HVM output also pass. These finite scopes overlap; the
+complete gate record keeps each count and identity separate.
+
+The [installed/relocated CLI receipt](../implementation/phase32/release-cli.json)
+includes generated JavaScript and native CPU execution, using the approved
+native execution context and retained external Clang16 toolchain. The relocated
+copy runs without an upstream checkout. The
+[installation record](../implementation/phase32/release-installation.json) binds
+the selected source, checked parent, installed API and verification receipts;
+it does not manufacture a new bootstrap or fixed-point proof.
+
+No full backend, GPU/device, new H image, self-emitted fixed point or independent
+proof-kernel claim follows from these gates. The optional 811 additional JS cases
+remain deferred. Historical results below keep their original artifact scopes.
+
+## Historical Phase31 checked07 validation
+
+The Phase31 API is
 `d8f609c99b3acef932f90040d0c6152c96605493bef926e46f25559ac125029b`.
 The [release report](../implementation/phase31/release-07.md) records final
 admission and installed status.

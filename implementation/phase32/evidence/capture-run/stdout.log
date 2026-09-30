@@ -1,0 +1,18 @@
+{
+  "complete": true,
+  "archive": {
+    "path": "implementation/phase32/evidence/campaign.tar.gz",
+    "bytes": 33930135,
+    "sha256": "390a34356eb14b2792643969f8728be3ab6b84ac2d67ee8cdfa85be729b14925",
+    "mode": 420
+  },
+  "members": 20807,
+  "producer": {
+    "path": "implementation/phase32/evidence/archive.py",
+    "bytes": 2631,
+    "sha256": "f6b3f23f7c45db85f6f6589880d9ccade93ca9bfedeaad80418e21f2641f33a5",
+    "mode": 420
+  },
+  "logicalBytes": 207091523,
+  "recovery": "Independent reopened gzip/tar stream: every regular member compared by exact name, size, SHA256 and mode. Hardlinks stored as regular bytes. No extraction or experiments rerun."
+}

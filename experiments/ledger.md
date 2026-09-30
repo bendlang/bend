@@ -2147,3 +2147,48 @@ Zig research motivates measured representation and reuse boundaries.
 ## Phase32 — representation and reuse
 
 User authorizes all four next investigations. [Design](../design/phase32/representation-and-reuse.md) freezes scope and correctness boundaries before code changes. Baseline is installed Phase31 checked07 at5f3015d. P32-001 through004 separately investigate local temporaries, structured checker calls, semantic reuse and compact analysis. No timing or promotion yet.
+
+
+## Phase32 — close representation gains and reject unsafe reuse
+
+[P32-001](phase32/P32-001-local-representation.md) promotes checked03 after three
+separate checked ablations: statement unpacking, immediate typed read/consumer
+bridges and private field vectors. Original four-pair edit distance improves
+72.266 → 20.398 ms (3.54×), reducing its same-window TypeScript gap from 14.49×
+to 4.09×. Complete pair/fold fixtures improve 3.76× / 1.98×. Mandelbrot and RLE
+keep identical prior emitted bytes; all three canary ranges overlap. Fold warming
+remains visible. [Measurements](../implementation/phase32/final-measurements/measurements.md)
+keep compiler requests, imports and generated execution separate.
+
+[Explicit admission](../design/phase32/admission.md) accepts 36.75 ms / 1.91%
+more Mandelbrot compilation, 57 added Bend lines (+0.335%), six functions, two
+private plan tags and generated-size costs. There is no general compiler-throughput
+speedup or source-line reduction. The maintained compiler has 17,071 physical /
+14,580 nonblank Bend lines, 1,884 definitions, 640 laws, 70 types and 66 modules.
+The runtime and driver are unchanged.
+
+P32-002's private checker projections show narrower gains but public mutation/
+getter counterexamples block promotion. P32-003 preserves 22 observations with
+complete event dependencies but checkpoint comparison/retention is too costly.
+P32-004's scoped 4k/16k memos fail their speed gates; default-API stop-list reuse
+fails an executed ownership witness. No cache or speculative new IR was installed.
+
+**Updated frontier:** checked03 is installed and verified, with all 42 ordinary/
+relocated CLI checks passing. All 14 pre-install gate groups close; 223 canonical
+source identities match. Fresh 3,026 + 196 frontend observations agree exactly.
+The backend preserves 69 pass / 8 N/A / 4 shared failures through an explicit
+60 + 21 approved native-context consolidation; 17 original paired Clang EPERM
+failures remain. The original interrupted broader run remains separately saved;
+completed main/measurement work was not repeated. All inherited/library/component/
+HVM controls pass within their declared finite scopes.
+
+Heavy jobs ran serially with explicit heap, process-tree RSS, deadline and available
+memory checks. Current OOM counters do not establish the server interruption's
+cause. [Release](../implementation/phase32/release-03.md) and
+[capsule](../implementation/phase32/evidence/README.md) retain 20,807 raw files,
+including rejected and failed observations. All 103 unrelated starting files and
+the previous installed release remain intact. No PR comment was posted.
+
+Next hypotheses remain private scalar replacement and an actually owned source-only
+compiler boundary; public defaults are mutable. Keep the approximately 40-second
+checked-build loop and short saved-output controls before broad integration.

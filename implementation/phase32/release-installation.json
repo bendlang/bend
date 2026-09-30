@@ -1,0 +1,54 @@
+{
+  "kind": "phase32-installed-release-closure",
+  "complete": true,
+  "observedUtc": "2026-09-30T23:35:03.513396+00:00",
+  "installed": "2026-09-30T23:32:20.549Z",
+  "apiSha256": "8be506d811f627fe6346a5eaba07050c36db70e2704608adcfd781b85a3a7f92",
+  "sourceSha256": "e3cc44245444ac2509431d44c8909692c9223cd977968ffb087771c1ae2859ae",
+  "manifest": {
+    "file": "selfhost/dist/release.json",
+    "bytes": 22022,
+    "sha256": "0ad0a196a38465dd40d8d1a2e498cff7a414d350ba3e76a144d6be4da39c7f07"
+  },
+  "installedFilesVerified": 6,
+  "checkoutFilesVerified": 122,
+  "cliChecks": 42,
+  "cliCopy": {
+    "file": "implementation/phase32/release-cli.json",
+    "bytes": 122124,
+    "sha256": "251595ddee2daa01dcf8251e00c1d736206b05878517e23913c0ed912986ed63"
+  },
+  "inputs": [
+    {
+      "file": "selfhost/build/phase32/final-plan-03/run-release-install/run.json",
+      "bytes": 1428,
+      "sha256": "7f68b669b66f69b0148591906672a09d503b462f8e7901c9d6c8ca6c757cc415"
+    },
+    {
+      "file": "selfhost/build/phase32/final-plan-03/run-release-verify/run.json",
+      "bytes": 1342,
+      "sha256": "c48ac0ec7a2d8ceb20ebd560cf7cdacf4558375946bc9c6b501d065a51264ed2"
+    },
+    {
+      "file": "selfhost/build/phase32/final-plan-03/run-release-smoke/run.json",
+      "bytes": 1566,
+      "sha256": "5341ce2e672f5a7b3aae6294393dc0cca9c335d11ff21ef997ae79916f86a7ed"
+    },
+    {
+      "file": "selfhost/build/phase32/final-plan-03/release-smoke/launcher.json",
+      "bytes": 2969,
+      "sha256": "42d64e3b025cc674ab124ac5dd4747ee67bbab356d0857316abb45888ddaa6c4"
+    },
+    {
+      "file": "selfhost/build/phase32/final-plan-03/release-smoke/checks/report.json",
+      "bytes": 122124,
+      "sha256": "251595ddee2daa01dcf8251e00c1d736206b05878517e23913c0ed912986ed63"
+    },
+    {
+      "file": "implementation/phase32/final-conformance/gates.json",
+      "bytes": 234328,
+      "sha256": "6b435548bb97e7902d6519e4b812a67a5177f650f23bba36fc5f8051260f8475"
+    }
+  ],
+  "scope": "Install, release verification and42ordinary/relocated CLI checks passed. CLI/native uses approved execution context after paired Clang EPERM was established. No new bootstrap or fixed point."
+}

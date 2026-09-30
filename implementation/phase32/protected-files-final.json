@@ -1,0 +1,16 @@
+{
+  "kind": "phase32-final-protected-file-audit",
+  "complete": true,
+  "observedUtc": "2026-09-30T23:36:37.655290+00:00",
+  "inventory": {
+    "file": "implementation/phase32/protected-files.json",
+    "sha256": "b5ce6bb87f25d57b7f94ddcc51698a84e96900e4b879877b6962d9e4a5f393ae",
+    "bytes": 22479
+  },
+  "protectedFiles": 103,
+  "changed": [],
+  "scope": "Every protected starting file retains exact bytes and SHA256 after installation and verified evidence capture; no deletion or modification. Git staging is audited separately.",
+  "previousReleaseHistory": "selfhost/dist/release-history/d8f609c99b3acef932f90040d0c6152c96605493bef926e46f25559ac125029b",
+  "previousReleaseFilesMatchPrePhaseCommit": true,
+  "priorCommit": "0f48bf4"
+}

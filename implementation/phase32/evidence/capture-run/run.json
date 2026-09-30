@@ -1,0 +1,33 @@
+{
+  "complete": true,
+  "command": [
+    "python3",
+    "implementation/phase32/evidence/archive.py"
+  ],
+  "cwd": "/home/ai/bend2/build/publish/bend",
+  "producer": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase32/bounded-run.py",
+    "bytes": 4339,
+    "sha256": "860b59bce0b8c38e2e548368b14c51825bd62d8da1da200e2049737f1e0e383d"
+  },
+  "secondsLimit": 180,
+  "rssLimitBytes": 1073741824,
+  "availableFloorBytes": 2147483648,
+  "started": 1790811303.5902154,
+  "peakTreeRssBytes": 118263808,
+  "minimumAvailableBytes": 29767479296,
+  "scope": "Supervised acquisition; RSS sums may double-count shared pages. No throughput claim.",
+  "returncode": 0,
+  "wallSeconds": 23.8087206149994,
+  "finished": 1790811327.3996918,
+  "stdout": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase32/evidence/capture-run/stdout.log",
+    "bytes": 666,
+    "sha256": "cdbe27e4181a3a8104a7e33444d0fa6d3b832f2e3b8ee7a5a68c14fa8bfc5a82"
+  },
+  "stderr": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase32/evidence/capture-run/stderr.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

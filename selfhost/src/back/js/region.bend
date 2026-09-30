@@ -250,11 +250,13 @@ def j_region_constructor(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, 
   kc(JRegionBuild, j_region_local_type(book, ty) && String.eq(dk(c), "Ctr") && String.eq(dn(c), nm(t)) &&
     U32.is_eq(terms_len(ks(t)), da(c)) &&
     kc(Bool, j_region_record(book, ty), u => j_region_field_values(ks(t), da(c)), u => True{}), u =>
-    j_region_constructor_done(t, ty, j_region_args(book, env, ks(t), j_region_local_fields(book, ty), active, depth, level, s)), u => j_region_fail(s))
+    j_region_constructor_done(book, t, ty, j_region_args(book, env, ks(t), j_region_local_fields(book, ty), active, depth, level, s)), u => j_region_fail(s))
 
 @unsafe
-def j_region_constructor_done(+t: KTerm, +ty: KTerm, +s: JRegionBuild) -> JRegionBuild:
-  j_region_result(s, j_region_annotate(k_with_children(t, ks(j_region_term(s))), ty))
+def j_region_constructor_done(+book: List<&2,KDef>, +t: KTerm, +ty: KTerm, +s: JRegionBuild) -> JRegionBuild:
+  j_region_result(s, j_region_annotate(kc(KTerm, j_region_local_vector(book, ty),
+    u => kt("JVector", nm(t), 0, 0, ks(j_region_term(s))),
+    u => k_with_children(t, ks(j_region_term(s)))), ty))
 
 @unsafe
 def j_region_let_done(+t: KTerm, +ty: KTerm, +s: JRegionBuild) -> JRegionBuild:
@@ -292,7 +294,7 @@ def j_region_call(+book: List<&2,KDef>, +env: List<&2,KTerm>, +spine: KTerm, +ty
   +d = lookup(book, nm(spine))
   kc(JRegionBuild, String.eq(tg(spine), "Call") && U32.is_gt(da(d), 0) && U32.is_le(da(d), 32) && U32.is_eq(terms_len(ks(spine)), da(d)), u =>
     kc(JRegionBuild, j_primitive_call(book, spine) || (Bool.not(String.eq(tail, "")) && String.eq(nm(spine), tail)), u =>
-      j_region_call_done(spine, ty, False{}, j_region_args(book, env, ks(spine), dt(d), active, depth, level, s)), u =>
+      j_region_call_done(book, spine, ty, False{}, j_region_args(book, env, ks(spine), dt(d), active, depth, level, s)), u =>
       kc(JRegionBuild, j_region_local_native(book, spine),
         u => j_region_native_done(spine, ty, j_region_args(book, env, ks(spine), dt(d), active, depth, level, j_region_native_dependency(d, s))), u =>
         j_region_call_helper(book, env, spine, ty, active, depth, level, j_region_helper(book, d, active, depth, s)))), u => j_region_fail(s))
@@ -300,13 +302,27 @@ def j_region_call(+book: List<&2,KDef>, +env: List<&2,KTerm>, +spine: KTerm, +ty
 @unsafe
 def j_region_call_helper(+book: List<&2,KDef>, +env: List<&2,KTerm>, +spine: KTerm, +ty: KTerm, +active: List<&2,String>, +depth: U32, +level: U32, +s: JRegionBuild) -> JRegionBuild:
   kc(JRegionBuild, j_region_valid(s), u =>
-    j_region_call_done(spine, ty, True{}, j_region_args(book, env, ks(spine), dt(lookup(book, nm(spine))), active, depth, level, s)), u => s)
+    j_region_call_done(book, spine, ty, True{}, j_region_args(book, env, ks(spine), dt(lookup(book, nm(spine))), active, depth, level, s)), u => s)
 
 @unsafe
-def j_region_call_done(+spine: KTerm, +ty: KTerm, +private: Bool, +s: JRegionBuild) -> JRegionBuild:
+def j_region_call_done(+book: List<&2,KDef>, +spine: KTerm, +ty: KTerm, +private: Bool, +s: JRegionBuild) -> JRegionBuild:
   j_region_result(s, j_region_annotate(kc(KTerm, private,
-    u => kt("JCall", nm(spine), 0, 0, ks(j_region_term(s))),
+    u => kt(kc(String, j_region_read_call(book, spine, s), u => "JReadCall", u => "JCall"), nm(spine), 0, 0, ks(j_region_term(s))),
     u => j_region_app(ref(nm(spine)), ks(j_region_term(s)))), ty))
+
+# Only a proved native read immediately consumed by a complete private pair
+# match can use the bridge. All other producers keep their existing tuple ABI.
+@unsafe
+def j_region_read_call(+book: List<&2,KDef>, +spine: KTerm, +s: JRegionBuild) -> Bool:
+  +last = j_strip(j_body(ks(j_region_term(s))))
+  String.eq(tg(last), "JNative") && String.eq(nm(last), "Array.get") && U32.is_eq(terms_len(ks(last)), 3) &&
+  j_region_read_consumer(book, lookup(j_region_helpers(s), nm(spine)))
+
+@unsafe
+def j_region_read_consumer(+book: List<&2,KDef>, +d: KDef) -> Bool:
+  +body = j_strip(dv(d))
+  Bool.not(db(d)) && U32.is_gt(da(d), 0) && String.eq(tg(body), "JUnpack") &&
+  U32.is_eq(U32.inc(ix(body)), da(d)) && U32.is_eq(qt(body), 2) && j_region_local_pair(book, kid(body, 1))
 
 @unsafe
 def j_region_app(+head: KTerm, +args: List<&2,KTerm>) -> KTerm:
@@ -399,7 +415,18 @@ def j_region_definitions(+book: List<&2,KDef>, +helpers: List<&2,KDef>) -> Strin
       kc(String, db(d), u => "", u =>
         "function " ++ j_region_name(dn(d)) ++ "(" ++ j_region_parameters(0, da(d)) ++ "){" ++
         kc(String, String.eq(tg(dv(d)), "Mat"), u => j_region_nested_body(book, d),
-          u => j_region_return(book, Nil{}, dv(d), kid(dv(d), 1))) ++ "}") ++ j_region_definitions(book, rest)
+          u => j_region_return(book, Nil{}, dv(d), kid(dv(d), 1))) ++ "}") ++
+        j_region_read_definition(book, d) ++ j_region_definitions(book, rest)
+
+# The suffix cannot collide with the decimal-only encoded private helper name.
+# Perform the read before the consumer arm, including when that scalar is unused.
+@unsafe
+def j_region_read_definition(+book: List<&2,KDef>, +d: KDef) -> String:
+  kc(String, j_region_read_consumer(book, d), u =>
+    "function " ++ j_region_name(dn(d)) ++ "$get(" ++ j_region_parameters(0, U32.sub(da(d), 1)) ++
+    kc(String, U32.is_gt(da(d), 1), u => ",", u => "") ++ "_t,$array,$index){" ++
+    "const $p" ++ U32.show(da(d)) ++ "=$array;const $data=arraydata($array);const $p" ++ U32.show(U32.inc(da(d))) ++
+    "=$data[Number($index)%$data.length];" ++ j_region_return(book, Nil{}, kid(j_strip(dv(d)), 0), kid(dv(d), 1)) ++ "}", u => "")
 
 # Private callers already demand the result before the next source operation.
 # Complete fields in order here; preserve parallel RHS scope and fresh aliases.
@@ -408,7 +435,18 @@ def j_region_return(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: 
   kc(String, String.eq(tg(t), "Ann"), u => j_region_return(book, env, kid(t, 0), kid(t, 1)), u =>
   kc(String, String.eq(tg(t), "Let"), u => "{" ++ j_nat_loop_values(book, env, ks(t), 0) ++ "{" ++
     j_nat_loop_names(ks(t), 0) ++ j_region_return(book, j_context(book, env, ks(t)), j_body(ks(t)), ty) ++ "}}", u =>
-    "return " ++ j_expr(book, env, t, ty, False{}) ++ ";"))
+  kc(String, String.eq(tg(t), "JUnpack"), u => "{const $unpack=$p" ++ U32.show(ix(t)) ++
+    kc(String, j_region_local_vector(book, kid(t, 1)), u => "", u => ".a") ++ ";{" ++
+    j_region_field_bindings(ix(t), 0, qt(t)) ++ j_region_return(book, env, kid(t, 0), ty) ++ "}}", u =>
+    "return " ++ j_expr(book, env, t, ty, False{}) ++ ";")))
+
+# Capture the input outside the field-binding scope. Nested unpacking may reuse
+# the temporary, while parallel lets and initial-zero rebinding keep their scope.
+@unsafe
+def j_region_field_bindings(+slot: U32, +at: U32, +total: U32) -> String:
+  kc(String, U32.is_eq(at, total), u => "", u =>
+    "const $p" ++ U32.show(U32.add(U32.inc(slot), at)) ++ "=$unpack[" ++ U32.show(at) ++ "];" ++
+    j_region_field_bindings(slot, U32.inc(at), total))
 
 @unsafe
 def j_region_nested_body(+book: List<&2,KDef>, +d: KDef) -> String:

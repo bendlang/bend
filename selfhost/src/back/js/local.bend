@@ -21,6 +21,14 @@ def j_region_local_sigma(+book: List<&2,KDef>, +ty: KTerm) -> Bool:
     U32.is_eq(terms_len(ks(ty)), 4) && List.is_empty(&2, String, rm(ty)), u =>
     j_u32_native_ctor(book, "Sigma", "Tuple") && U32.is_eq(da(lookup(book, "Sigma")), 4), u => False{})
 
+# After local-type admission, only flat scalar public results need record shells.
+# Normalize aliases here so construction and elimination agree on the layout.
+@unsafe
+def j_region_local_vector(+book: List<&2,KDef>, +ty: KTerm) -> Bool:
+  +head = wnf(book, ty)
+  kc(Bool, j_region_local_sigma(book, head), u => True{}, u =>
+    String.eq(dk(j_region_local_ctor_head(book, head)), "Ctr") && Bool.not(j_region_record(book, head)))
+
 # Return only an eligible constructor header. Field types are checked by
 # j_region_local_type, before a caller may lower construction or elimination.
 @unsafe

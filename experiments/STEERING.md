@@ -1,112 +1,127 @@
-# Phase32 current work
+# Phase32 current frontier
 
-User authorizes design, experiments, implementation, report and commit/push.
-[Current design](../design/phase32/representation-and-reuse.md), [report](../implementation/phase32/README.md).
-Four independent investigations are active; root owns production emitter and release.
-Clean timing windows are serialized. No PR comment is authorized.
-Starting103 unrelated files remain unchanged and unstaged.
+User authorization covers compiler research, experiments, implementation,
+design/report and commit/push to `rom1504/bend`, branch `selfhost/bootstrap`.
+No PR comments without an explicit request. Prior timed campaigns are historical.
+[Design](../design/phase32/representation-and-reuse.md),
+[report](../implementation/phase32/README.md),
+[selection and accepted costs](../design/phase32/admission.md).
+All four investigations, integration, ordinary/relocated CLI checks and evidence
+preservation are complete. The 103 unrelated starting files remain byte-for-byte
+unchanged and unstaged; preserve that separation during the release commit.
 
-# Preserved Phase31 baseline
+## Installed Phase32 compiler
 
-Phase31 is consolidated on2026-09-30. User authorization covers compiler
-research, experiments, implementation, design/report and commit/push to
-`rom1504/bend`, branch `selfhost/bootstrap`. No PR comments without an explicit
-request. Phase30's seven-hour minimum is historical and complete.
+Target remains upstream 0187512, after Bend 2.0.34. Phase32 checked03 is installed
+and release verification passes. All 14 pre-install gate groups pass and 223
+canonical source identities match. All 42 ordinary/relocated CLI controls pass.
+[Current release](../implementation/phase32/release-03.md),
+[baseline release](../implementation/phase31/release-07.md).
 
-## Installed Phase31 compiler
+Installed API `8be506d8…`, genuine checked parent `c3cc54c1…`, assembled source
+`e3cc4424…`. Runtime `4121f338…` and Base `c742fae9…` are unchanged. The selected
+API remains a maintained guarded version 6 derivative of its checked parent;
+no new self-emitted H image or fixed point is claimed.
 
-[Campaign design](../design/phase31/local-data-and-compiler-throughput.md),
-[implementation](../implementation/phase31/closed-local-regions.md),
-[release](../implementation/phase31/release-07.md),
-[independent review](../implementation/phase31/independent-release-review.md).
-Target remains upstream0187512, after Bend2.0.34. Selected07 is installed and
-passes release verification and all42 ordinary/relocated CLI checks.
-API `d8f609c9…`, genuine parent `da90b033…`, source `f253683f…`,
-runtime `4121f338…`, Base `c742fae9…`; maintained guarded derivative version6.
-The previous33545640… default is preserved in release history.
+Three transformations reuse the existing bounded closed-region proof:
+return-position unpacking becomes lexical statements; typed bridges fuse
+canonical Array<U32> reads with immediate private consumers; eligible private
+records/Sigma use field vectors. Producer-time reads, ordered fields and initial
+zero rebinding stay observable. Public terminal-record results remain boxed.
+Runtime, driver, public representation and unsupported fallback are unchanged.
 
-One bounded private graph now admits internally allocated Array<U32>,
-nonrecursive records and canonical Sigma. Private returns complete at their
-proved demand point; calls need no extra force; matches read known fields
-directly. Public roots retain scalar boundaries and the inert terminal-record
-exception. Public descriptors, storage and unsupported fallback remain unchanged.
-No new ownership system, IR pipeline or datatype declaration is introduced.
+## Measured results and costs
 
-## Measurements and accepted costs
+[Final measurements](../implementation/phase32/final-measurements/measurements.md):
+original four-pair edit distance 72.266→20.398ms, pinned TypeScript 4.988ms.
+**3.54× faster than 07; same-window gap 14.49×→4.09×TS.** Mandelbrot and RLE
+emit identical 07 bytes with overlapping timing ranges. Their candidate/TS
+ratios are 4.46×/76.22× in this window; other seven originals lack fresh timing.
+These selected programs do not establish typical or average generated speed.
 
-Same-window original four-pair edit distance:17 1900.375ms,07 70.817ms,
-TypeScript4.95995ms. **26.83× faster than17; still14.28×TS.** Original Mandelbrot
-takes0.203686ms (4.48×TS); RLE0.045167ms (75.73×TS). Other seven original
-programs have no fresh Phase31 timing. Keep first-call and half-drift limits.
+Checked01→02→03 isolates statements, typed read bridges and vectors. Longer
+confirmation gives pair 18.535→4.925ms (3.76×, still 3.78×TS), fold 0.651→0.329ms
+(1.98×, still 8.13×TS). Every adjacent increment has disjoint improvement ranges.
+The last increment includes canonical Sigma construction; the fold changes no
+ordinary record shell. One candidate fold sample warms 27% between halves.
+Preserve raw samples and do not claim steady state.
 
-Actual checked04→05→06→07 ablations on a full pair and a distinct fold isolate
-closed calls, eager private returns, redundant-force removal and direct fields.
-Final07 improves29.09×/17.67× over17. Force removal has overlapping incremental
-ranges: retain its simpler invariant, not an independently proven speedup.
-Direct fields save62.50%/49.46% over06. Fold still warms about9% between halves.
+Mandelbrot library compilation adds 36.75ms/+1.91% with disjoint ranges;
+edit-distance −0.45% overlaps. Candidate request-only gaps remain 5.56×/4.90×TS.
+All three scalar/generic regression canaries overlap. Admission explicitly
+accepts the compilation cost, +0.39% Mandelbrot peak-RSS median and source/
+generated-size costs. No compiler-throughput improvement is claimed.
 
-The original no-material-regression condition **failed**. Long confirmation
-finds scalar-zero +4.01% (~0.18µs) and generic-row +5.04%. A separate unused
-worker-registration experiment explains96.97% of same-window row excess.
-The [admission amendment](../design/phase31/admission-tradeoff.md) explicitly
-accepts these costs; unsafe guard/descriptor shortcuts are not promoted.
-Normal edit-distance compilation also adds107.77ms (+6.90%, disjoint ranges);
-Mandelbrot +0.73% overlaps. No compiler-throughput improvement is claimed.
+Source: 17,071 physical /14,580 nonblank Bend lines; 1,884 definitions, 640 laws,
+70 types,66 modules. Net +57 physical lines (+0.335%),+51 nonblank,+6 functions,
++2 private plan tags. No new type/module. Pair/fold generated modules grow
+4.21%/1.08%, mainly bridges. This is a representation improvement with a small
+source increase, not progress toward the historical 50%/75% line-reduction goals.
 
-Canonical source:17,014 physical /14,529 nonblank Bend lines;1,878 definitions,
-640 laws,70 types,66 modules. Net236 lines (+1.41%),34 definitions and one module
-over17. Runtime core245 lines (+11). Experiment/docs/generated artifacts excluded.
+## Rejected and deferred alternatives
 
-## Correctness and preservation
+- [Private checker fields](../implementation/phase32/checker-private-fields.md)
+  improve selected H17 helpers 1.44–1.76× in matched experiments. Public getter
+  and mutation witnesses prevent promotion without an actual ownership boundary.
+  H17 is a historical generated compiler, not B1 or handwritten TypeScript.
+- [Semantic checkpoints](../implementation/phase32/reuse-counts.md) preserve 22
+  observations and skip 484–508 events, but equality/freezing/retention is too
+  costly for normal requests. Reject full-world retention; this does not reject
+  a genuinely private immutable Base design.
+- [Compact memoization](../implementation/phase32/compact-counts.md) finds repeat
+  queries, but global wrappers and scoped 4k/16k tables fail the prospective
+  speed criterion. A new compact IR is not justified by these measurements.
+- [Stop-list reuse](../implementation/phase32/compact-stop-reuse.md) finds duplicate
+  driver work. A shared mutable default API defeats `api == null` as an ownership
+  proof; concrete witnesses preserve changed second-call behavior. Driver stays
+  unchanged. A private source-only worker is a future hypothesis.
 
-Fresh3026 main +196 broader frontend observations agree exactly. Raw main
-2525 pass /497 observed /4 shared failures; broader195 pass /1 observed.
-The explicit60→65→66 module migration preserves old ordering/non-module metadata.
+## Integration and bounded execution
 
-Backend81 agrees with history:69 pass /8 N/A /4 shared failures. Its original
-restricted run retains17 paired Clang EPERM failures. A separate approved-context
-21-row retry combines with60 unaffected original rows; the failed campaign is
-not relabeled. Selected upstream15,23 libraries/127 points, inherited primitive/
-worker/nested/refusal suites,worker40+2,component22 and full HVM output pass.
-Independent local-array/record/boundary/negative controls pass. Counts overlap.
+The selected candidate passes 36 focused checks and six added control groups:
+complete pair states / 328,966 native events, fold oracles, actual read ordering,
+lexical scopes, public boxed records/aliases and compiled layout predicates.
+[Independent controls](../implementation/phase32/review-vector03.md).
+Fresh 3,026 main + 196 broader frontend observations agree with the rehashed frozen
+pinned reference. The interrupted broader receipt is preserved beside its fresh
+successful retry. Backend 81 retains 69 pass /8 N/A /4 shared failures through 60
+unaffected rows plus 21 approved-context native retries. The original 17 paired
+Clang EPERM failures remain preserved. Fresh primitive 56,205, worker 3,759,
+nested 144, primitive guards 1,129, selected upstream 15, libraries 23 / 127 points,
+worker admission 40 + 2, components 22 and complete HVM 42-byte output pass their
+overlapping scopes. [Gate closure](../implementation/phase32/final-conformance/gates.md).
+All 42 ordinary/relocated CLI controls pass in the approved native execution
+context, taking 42.19 seconds with about 577 MiB peak process-tree RSS.
+No full backend, GPU or proof-kernel conformance claim is authorized by these tests.
 
-No new H image, fixed point, GPU or proof-kernel claim. Optional811 further JS
-rows remain deferred. H17 attribution/profile are diagnostic:about97% of traced
-request time is generated invocation, not host encoding; checker samples point
-to application/forcing/matching. Zig primary-source research is complete.
+Only root runs heavy work. Use one worker, explicit Node heaps, the shared
+execution lock, process-tree RSS/deadline supervision and 2 GiB available-memory
+floor. Checked builds take about 40 seconds with a 1 GiB heap setting. Polling can
+overshoot the RSS limit. [Supervisor controls](../implementation/phase32/supervisor-controls.md)
+verify termination/child cleanup; resource counters do not establish the cause
+of prior session interruptions. Never rerun a completed gate just after restart.
 
-All producers are closed. Preserve103 unrelated starting files byte-for-byte
-and unstaged. The [Phase31 capsule](../implementation/phase31/evidence/README.md)
-and prior capsules retain failed attempts, consumed tools and raw receipts.
-01–03 guard/embedded-runtime failures,07's observer correction, the H profile's
-raw-size overrun and native-context failures remain explicit.
+The verified [evidence capsule](../implementation/phase32/evidence/README.md)
+preserves 20,807 files / 207,091,523 logical bytes in a 33,930,135-byte gzip,
+including failed/superseded attempts and frozen tools. All producers were closed
+before capture; reopened member hashes, sizes and modes match the inventory.
+The [final protection audit](../implementation/phase32/protected-files-final.json)
+finds all 103 starting files unchanged, and the previous Phase31 release's seven
+history files match their pre-install identities. Keep exact staged paths separate
+from protected files; do not run benchmarks concurrently with archive work.
 
-## Next decisions
+## Next decisions after release
 
-1. Start from the [next-transformations design](../design/phase31/next-local-transformations.md):
-   first return-position JUnpack statements with fresh lexical scopes; then
-   proved Array.get producer/consumer tuple fusion. Neither has a measured gain.
-   Preserve producer-time reads, alias ordering and initial-zero rebinding.
-2. The complete pair still allocates262,401 read-result tuples and66,049 record
-   shells. These are opportunities, not CPU-share or speedup estimates. Test one
-   change on saved output before another checked build.
-3. Include a mixed generic/specialized module in runtime screens: registering
-   an optimized root activates lookup costs for unrelated generic calls. Do not
-   weaken exact-entry or Array-free Sigma guards to make a canary look faster.
-4. Treat actual H throughput separately. Do not multiply old5.002×H/parent,
-   current14.28×program/TS and normal-request ratios. H17's reference is its
-   TS-produced Bend parent, not the handwritten TypeScript compiler.
-5. Keep the loop short: saved-output controls/screens, about38-second checked
-   builds plus36 focused observations, then selected transfer. Broad frontend,
-   backend, CLI and archive work belongs at integration, outside each hypothesis.
-6. Any compiler analysis cache or compact private IR needs a measured producer
-   cost and a book/type identity proof. Zig's historical gains are not predictions
-   for Bend. Avoid a large rewrite without a discriminating experiment.
-
-## Earlier release
-
-[Phase30](../implementation/phase30/release-17.md) introduced scalar lexical
-regions/loops/trees, retired constructor-arm prebinding and avoided registry
-lookup before the first worker. Its original Mandelbrot gained100.47× over29,
-while edit distance still took391.54×TS. These are historical windows; current
-Phase31 uses freshly paired17 references. All prior capsules and baselines remain.
+1. Start new measurements from admitted 03, retaining its accepted costs. Inspect
+   remaining read/vector/allocation work on the saved checked pair and fold;
+   require a discriminating boundary control before another checked build.
+2. For compiler throughput, test an explicitly private source-only worker
+   boundary before reusing stop lists or direct fields. Public API mutability
+   is a demonstrated counterexample, not a hypothetical future issue.
+3. Keep generated execution, ordinary library compilation and actual self-emitted
+   H throughput separate. Do not multiply historical gains from different windows.
+4. Require broader program transfer before inferring a general win. Keep mixed
+   generic/specialized canaries: Phase31's registration costs remain in 03's baseline.
+5. Do not start a large rewrite or new ownership system on count evidence alone.
+   Short saved-output controls, bounded screens, checked acquisition and selected
+   transfer precede another expensive full frontend/backend integration.

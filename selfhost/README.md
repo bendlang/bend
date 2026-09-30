@@ -1,30 +1,40 @@
 # Bend2 compiler port in Bend2
 
 Use the [compiler guide](../docs/BEND-IN-BEND.md) and
-[Phase31 report](../implementation/phase31/closed-local-regions.md). The installed
-checked07 compiler extends bounded private regions to closed local records and
-arrays. It completes private returns at proved demand points and reads known
-fields directly. Public representations and unsupported fallback remain intact.
-Release verification and all42 ordinary/relocated CLI checks pass; the [release record](../implementation/phase31/release-07.md)
-tracks ordinary/relocated CLI closure and exact artifact identities.
+[Phase32 report](../implementation/phase32/README.md). Installed checked03 uses lexical
+unpacking, typed immediate-read bridges and field vectors inside proved private
+regions. Public representations and unsupported fallback remain intact; runtime
+and driver are unchanged. **Release verification and all 42 ordinary/relocated
+CLI checks pass.** The [release report](../implementation/phase32/release-03.md)
+and [manifest](dist/release.json) record exact artifact identities and lineage;
+the previous [Phase31 release](../implementation/phase31/release-07.md)
+remains preserved.
 
-The original four-pair edit-distance program improves 26.83× over Phase30, with
-a 14.28× TypeScript gap. A distinct array fold improves 17.67×. These are emitted
-JavaScript execution results, not a universal speed ratio. The
-[comparison report](../implementation/phase31/final-measurements.md) separately
-records 6.90% slower edit-distance compilation and small entry/generic-row costs.
+The original four-pair edit-distance program improves **3.54× over Phase31**,
+reducing its same-window TypeScript gap **14.49×→4.09×**. A distinct array fold
+improves **1.98×**, with an 8.13× remaining gap. Original Mandelbrot/RLE emitted
+bytes are unchanged. These selected emitted-JavaScript results do not establish
+a universal speed ratio. The [comparison](../implementation/phase32/final-measurements/measurements.md)
+separately records **1.91% slower Mandelbrot compilation** and overlapping
+edit-distance/canary changes. The [admission decision](../design/phase32/admission.md)
+accepts that cost and source/generated-size increases after the release gates close.
+
 The [performance guide](../docs/BEND-IN-BEND-PERFORMANCE.md) explains the fast loop:
-saved-JavaScript experiments, checked compiler builds (about 38 seconds with 36
-focused observations), then broad integration. Acquisition durations are not
-controlled compiler-throughput claims.
+saved-output experiments, checked builds (about 40 seconds with 36 focused
+observations), then broad integration. Heavy jobs run serially with explicit heaps,
+process-tree RSS/deadline limits and a free-memory floor. Acquisition durations
+are not controlled compiler-throughput claims.
 
-Fresh frontend execution agrees exactly with pinned TypeScript on **3,026 main
-and 196 broader observations**. Selected upstream JS, 23 libraries/127 points,
-worker/primitive controls, 22 compiler components and the HVM application pass.
-The backend pilot preserves **69 passes, 8 not-applicable cases and 4 shared
-failures** across 81 observations; its failed restricted Clang run and successful
-context retry are both retained. Counts overlap. [Conformance](CONFORMANCE.md)
-keeps raw fixture verdicts, agreement, backend coverage and self-emission separate.
+Fresh candidate frontend execution agrees exactly with the frozen pinned
+TypeScript results on **3,026 main and 196 broader observations**. The interrupted
+broader run is retained beside a fresh successful retry. Candidate03 also passes
+36 focused checks, six additional semantic control groups, and its 81-row backend
+pilot (69 passes, 8 not applicable, 4 shared failures). The original restricted
+Clang failures and approved-context retry are retained. Selected upstream JS,
+23 libraries/127 points, inherited execution suites, 22 compiler components and
+complete HVM output pass. The [gate closure](../implementation/phase32/final-conformance/gates.md)
+binds those receipts and all 223 canonical source identities.
+[Conformance](CONFORMANCE.md) keeps scopes and limits explicit.
 
 The target remains upstream
 [`018751270e800bc222a93dad7f257083ee53a5f7`](https://github.com/bendlang/bend/tree/018751270e800bc222a93dad7f257083ee53a5f7),
@@ -37,9 +47,10 @@ node cli.mjs tests/conformance/typed-smoke/base-u32.bend --run
 npm run build
 ```
 
-The compiler has **17,014 physical / 14,529 nonblank Bend lines in 66 modules**:
-236 more physical lines (+1.41%) than Phase30, 34 additional definitions and no
-new datatype declarations. Generated artifacts and experiment tools are separate.
+The compiler has **17,071 physical / 14,580 nonblank Bend lines in 66 modules**:
+57 more physical lines (+0.335%) than Phase31, six additional functions and two
+private plan tags, with no new datatype or module. Generated artifacts and
+experiment tools are separate.
 The [release manifest](dist/release.json) binds source, genuine checked parent,
 guarded derived API, Base, runtime and host. Compiler changes use the
 [checked workflow](../docs/PHASE5_DEVELOPMENT.md); ordinary compilation has no
@@ -152,9 +163,9 @@ have the same names.
 Historical self-emitted distributions and their original reproduction reports
 remain in `dist/selfhost/`; the [preservation index](../experiments/PRESERVATION.md)
 and [experiment ledger](../experiments/ledger.md) identify their exact scope.
-They are not alternate defaults. The current release can run after relocation
+They are not alternate defaults. The current release runs after relocation
 without an upstream checkout, as verified by its
-[Phase30 installed/relocated CLI checks](../implementation/phase30/release-cli.json).
+[42 ordinary/relocated CLI checks](../implementation/phase32/release-03.md).
 The earlier [Phase5 clean-package evidence](../implementation/phase5/relocated-cli-evidence/README.md)
 applies to that historical artifact.
 

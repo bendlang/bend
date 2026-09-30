@@ -1,0 +1,2785 @@
+{
+  "kind": "phase23-installed-and-relocated-release-smoke",
+  "started": "2026-09-30T23:32:59.634Z",
+  "pass": true,
+  "node": {
+    "file": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+    "sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c",
+    "bytes": 123655872,
+    "version": "v24.18.0"
+  },
+  "cpu": 1,
+  "actualCpu": "1",
+  "artifact": "equality-derived-b1",
+  "apiSha256": "8be506d811f627fe6346a5eaba07050c36db70e2704608adcfd781b85a3a7f92",
+  "release": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/release.json",
+    "sha256": "0ad0a196a38465dd40d8d1a2e498cff7a414d350ba3e76a144d6be4da39c7f07",
+    "bytes": 22022
+  },
+  "fixtureInputs": [
+    {
+      "name": "base-u32",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tests/conformance/typed-smoke/base-u32.bend",
+      "sha256": "5a2d51d91c8bf26594d03f438de453e8ad8dc9f9ddcdfd3f28d8e3f1651bcb22",
+      "bytes": 42
+    },
+    {
+      "name": "user-clo-apply",
+      "file": "/home/ai/bend2/build/publish/bend/tests/check/name_owned_def.bend",
+      "sha256": "061d4c2b7c8ffaf9189c058a3a051615badfd40c91147cfa0de67493866efe0b",
+      "bytes": 439
+    },
+    {
+      "name": "compact-nat",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tests/phase9-literals/fixtures/nat-boundaries.bend",
+      "sha256": "527e0699d02674350effa23a5ccbf557f251d7636d4037d0763e33eae0c3d5f6",
+      "bytes": 115
+    }
+  ],
+  "ordinaryInputs": [
+    {
+      "relative": "dist/typed-api.mjs",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/typed-api.mjs",
+      "sha256": "8be506d811f627fe6346a5eaba07050c36db70e2704608adcfd781b85a3a7f92",
+      "bytes": 1057428
+    },
+    {
+      "relative": "dist/base.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/base.bend",
+      "sha256": "c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661",
+      "bytes": 71530
+    },
+    {
+      "relative": "dist/release-lineage/checked-api.mjs",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/release-lineage/checked-api.mjs",
+      "sha256": "c3cc54c1e7e4a8470547e7488df4a58fec17195e0889e1eb458df34104bed20b",
+      "bytes": 1045468
+    },
+    {
+      "relative": "dist/release-lineage/checked-bootstrap.json",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/release-lineage/checked-bootstrap.json",
+      "sha256": "14e683d0f23541522cff0952b19226189e483c69a7ece5f28b9ba3189692e4cb",
+      "bytes": 53282
+    },
+    {
+      "relative": "dist/release-lineage/derivation.json",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/release-lineage/derivation.json",
+      "sha256": "c9d8c9f7d633514bfa248226cf99288f2222ed15dce0292a3fbd88eb08bce853",
+      "bytes": 229874
+    },
+    {
+      "relative": "dist/release-lineage/equality.mjs",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/release-lineage/equality.mjs",
+      "sha256": "db2999aa879e0bc6c6359d37c19e7589c60d34b2b143d0ed6ecbc23eabfec951",
+      "bytes": 30150
+    },
+    {
+      "relative": "src/core/term.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/core/term.bend",
+      "sha256": "e9ab994bc3ba4fd5a281e25836911bbc29cafcf2ab0c0284dc9bc097e891fa46",
+      "bytes": 18285
+    },
+    {
+      "relative": "src/core/index.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/core/index.bend",
+      "sha256": "32a4f2772c865f9ed9743f1ece27d5fafd1898724d5f268186590c938b038ea2",
+      "bytes": 10197
+    },
+    {
+      "relative": "src/core/normalize.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/core/normalize.bend",
+      "sha256": "4845ff63f3c228abc9a432410ddc8b7e20bfce27e54d6d49412b06608f7ce702",
+      "bytes": 22263
+    },
+    {
+      "relative": "src/core/graph.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/core/graph.bend",
+      "sha256": "85625049b316ede08eeffd7ff509483183624f1197c582c9d1bb2cd8bebf4802",
+      "bytes": 14746
+    },
+    {
+      "relative": "src/core/reach.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/core/reach.bend",
+      "sha256": "086092c688e6cb774da94333826f51b1fdeddc8e85aeaac5be6b15c143b0df27",
+      "bytes": 9901
+    },
+    {
+      "relative": "src/core/pretty.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/core/pretty.bend",
+      "sha256": "40b4e6ca55bf11009881b893c7959dd52cc64bbc6cb2dbb607e94dbab69fdedc",
+      "bytes": 16800
+    },
+    {
+      "relative": "src/check/quantity.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/check/quantity.bend",
+      "sha256": "b4a8ca1f8dff10f4f64397ea53bbbe272bb32400e993b1077d284ec1d8a70b4d",
+      "bytes": 4069
+    },
+    {
+      "relative": "src/check/kernel.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/check/kernel.bend",
+      "sha256": "da7ee29f9755f09acd9f89fcfd37465b52ab8778971200c946c70e50eb5b4132",
+      "bytes": 49255
+    },
+    {
+      "relative": "src/check/specialize.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/check/specialize.bend",
+      "sha256": "76e0f9249ae15cc0734a8e9d2e75677794e2eb5464c7756a19daff8b8217e7ee",
+      "bytes": 16212
+    },
+    {
+      "relative": "src/check/prefix.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/check/prefix.bend",
+      "sha256": "ceabf77fb49b58910d83fa896899061643c4c105f29e70bd87d3f73be873783d",
+      "bytes": 3037
+    },
+    {
+      "relative": "src/check/annotate.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/check/annotate.bend",
+      "sha256": "1912e5d177514733e706297fbb53e730c1f7a9edc91ffb06d2b1de7e2547648c",
+      "bytes": 10866
+    },
+    {
+      "relative": "src/front/lexer.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/front/lexer.bend",
+      "sha256": "aa9d726b6b284deba84dbccc77a01a8143dd89dab70cf487e1ddc8d589380440",
+      "bytes": 13265
+    },
+    {
+      "relative": "src/front/contextual.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/front/contextual.bend",
+      "sha256": "18a1eabd78b224927ebe72c4aa7a295300cc641e20d03d2bc062fdcfd96f62f6",
+      "bytes": 29385
+    },
+    {
+      "relative": "src/front/parser.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/front/parser.bend",
+      "sha256": "c1790685aea7c71430873d65c2d91996778f443aee0098e54c656fe10177ba28",
+      "bytes": 32003
+    },
+    {
+      "relative": "src/front/declarations.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/front/declarations.bend",
+      "sha256": "9e2c8da30605c1b8ab732df5f95533da55a3ea0e6c5a0941f1340586db9d36af",
+      "bytes": 31635
+    },
+    {
+      "relative": "src/front/flatten.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/front/flatten.bend",
+      "sha256": "d3ba8687f7dcd303dee847a90e3fa92b9a234d97cdcd3893de8242c6d2aa69cf",
+      "bytes": 6450
+    },
+    {
+      "relative": "src/front/elaborate.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/front/elaborate.bend",
+      "sha256": "8537f483259d48fa1d710915d6e8e09916faa540560379ee550a7077f391dc1e",
+      "bytes": 7941
+    },
+    {
+      "relative": "src/front/sugar.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/front/sugar.bend",
+      "sha256": "d3e3cf5addf0498e8401b9988678eb6ac8ff81571a014b18a1b6fed0a76fb22a",
+      "bytes": 14142
+    },
+    {
+      "relative": "src/front/unicode.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/front/unicode.bend",
+      "sha256": "bfd4407aa83614ae8398c9ce451f729cbcba457f2ef64774fea99f1824b5dd96",
+      "bytes": 4481
+    },
+    {
+      "relative": "src/front/literals_arrays.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/front/literals_arrays.bend",
+      "sha256": "7429e8a4e16e30f74fa19911993879e60a982a510f369769e7805d6a6ac34796",
+      "bytes": 11903
+    },
+    {
+      "relative": "src/front/parallel.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/front/parallel.bend",
+      "sha256": "b7c38f74d9f339f21fa00c5194078a0bfc41a948d1adaa907d00df64045c2f1c",
+      "bytes": 3238
+    },
+    {
+      "relative": "src/front/fresh_work.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/front/fresh_work.bend",
+      "sha256": "043d3b737cef4b932b7de8ef161dc88ba867ba6a8056e3662edfdcf4a2d797ed",
+      "bytes": 7736
+    },
+    {
+      "relative": "src/front/freshen.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/front/freshen.bend",
+      "sha256": "d0fed135fe878987770786ef0c50dd09efe2cce390beb7a911bcfc8468d5607d",
+      "bytes": 1285
+    },
+    {
+      "relative": "src/load/paths.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/load/paths.bend",
+      "sha256": "a9fc17a8af04c1958d1f11e8c1c5b7c2d3eb925dd9075e6c77de4bdb3521f2a2",
+      "bytes": 2186
+    },
+    {
+      "relative": "src/front/families.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/front/families.bend",
+      "sha256": "22b6e9b1ca132ed2d6f2cf91507e221f09cdda1aeab5931e8cf099e934bc9d2f",
+      "bytes": 3849
+    },
+    {
+      "relative": "src/front/validate.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/front/validate.bend",
+      "sha256": "62d530ce7ebb6d2abf69f34d37b5b21eed8711c7bdee3bf868aa2c94d699ec5d",
+      "bytes": 11354
+    },
+    {
+      "relative": "src/load/imports.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/load/imports.bend",
+      "sha256": "b878da5169a4a39d35a236ff5128dc42735fea0707195cf621ae651c1f13e9b1",
+      "bytes": 4211
+    },
+    {
+      "relative": "src/load/graph.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/load/graph.bend",
+      "sha256": "9317e9fe5224c447c50e5339469a244dd7036c00801d9750687f8dfe1de5fdb3",
+      "bytes": 16909
+    },
+    {
+      "relative": "src/load/seed.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/load/seed.bend",
+      "sha256": "ca4cb677af632c47c13792ede10d4e791c85b5cc6c756aacf230861d7bfa4c21",
+      "bytes": 5224
+    },
+    {
+      "relative": "src/load/modules.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/load/modules.bend",
+      "sha256": "fed5593033f957a61118a2eff9c2e09bd51af8810cff1db12e655523b82188ea",
+      "bytes": 10063
+    },
+    {
+      "relative": "src/diagnostic/model.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/diagnostic/model.bend",
+      "sha256": "3c699ec70ef36700520658555bc5df025880691c44633cabb9e5719b60fc9c1c",
+      "bytes": 754
+    },
+    {
+      "relative": "src/diagnostic/render.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/diagnostic/render.bend",
+      "sha256": "695f41ace13e08756273c317659a419deee5fc79d413bd58e8711f124370276c",
+      "bytes": 7804
+    },
+    {
+      "relative": "src/diagnostic/trace.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/diagnostic/trace.bend",
+      "sha256": "0e03e2827415d082d295976b57564c7b0bd872f7c81229e653d7e0ddda62b10f",
+      "bytes": 6819
+    },
+    {
+      "relative": "src/diagnostic/produce.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/diagnostic/produce.bend",
+      "sha256": "9518cb01c0c7636654bfa14dd332ac49756572ba975c7789c865e9cd8cf75c80",
+      "bytes": 8073
+    },
+    {
+      "relative": "src/diagnostic/frontend.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/diagnostic/frontend.bend",
+      "sha256": "fdd07e6e3df5f999f2d162a4d3186cd8ae13102c8351710edab5291a2f80489f",
+      "bytes": 10910
+    },
+    {
+      "relative": "src/back/js/foreign.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/js/foreign.bend",
+      "sha256": "0f397f84a989c6fc9a52eaf962742e673cdba243864c0bbe7c16ce4ffd8eb065",
+      "bytes": 5794
+    },
+    {
+      "relative": "src/back/js/literals.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/js/literals.bend",
+      "sha256": "2c4488a4f37010253a54e3745317c685ec77067475d471e577687acfa9a16776",
+      "bytes": 5544
+    },
+    {
+      "relative": "src/back/js/validate.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/js/validate.bend",
+      "sha256": "f8fc315bf80dabbf8afd1b6ced8e7c322b8ef96d73859d47e01c4b317afb72a0",
+      "bytes": 11066
+    },
+    {
+      "relative": "src/back/js/choice.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/js/choice.bend",
+      "sha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3",
+      "bytes": 3583
+    },
+    {
+      "relative": "src/back/js/projection.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/js/projection.bend",
+      "sha256": "67cce055248e6a0034a6194a9f5cbd0821c2cf79905759d08033b141231e93ae",
+      "bytes": 2597
+    },
+    {
+      "relative": "src/back/js/u32.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/js/u32.bend",
+      "sha256": "bda743e5c6afa1324673dd6722782a2b615c75abeb5c8061c623622723cfb25c",
+      "bytes": 4926
+    },
+    {
+      "relative": "src/back/js/primitive.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/js/primitive.bend",
+      "sha256": "de137137d7cdd21f3a3a5c6d0bdca7664712fac7b74c46f177b8d3e521017b83",
+      "bytes": 7332
+    },
+    {
+      "relative": "src/back/js/local.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/js/local.bend",
+      "sha256": "f0243565fd12cd83172cde1594b8ea4b15821404dd0adde8863c42874045ef89",
+      "bytes": 9390
+    },
+    {
+      "relative": "src/back/js/region.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/js/region.bend",
+      "sha256": "cdea9d36f4f8839917d00617cd654cd1f8c101a828d475123161140f706e52a1",
+      "bytes": 29750
+    },
+    {
+      "relative": "src/back/js/worker.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/js/worker.bend",
+      "sha256": "b7f5a57511e8ee6f12e0e5b90d66dcd9d2997b100aac64d125b31680ec82d198",
+      "bytes": 14007
+    },
+    {
+      "relative": "src/back/js/tree.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/js/tree.bend",
+      "sha256": "ce78017169ce6fcf53ffc46a9760c282c58e37111513b5cb970002ab0be64fd3",
+      "bytes": 7576
+    },
+    {
+      "relative": "src/back/js/emit.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/js/emit.bend",
+      "sha256": "5d15e0ea3c907faad8fb901c3e53346d46c7847a70ce625c144882ad8a6041fb",
+      "bytes": 32134
+    },
+    {
+      "relative": "src/back/native/ir.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/native/ir.bend",
+      "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b",
+      "bytes": 929
+    },
+    {
+      "relative": "src/back/native/text.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/native/text.bend",
+      "sha256": "31c1ff5973df46d17ad395070fbefa1d2dc58398b3d12af80c62ed6c5548ff9d",
+      "bytes": 2533
+    },
+    {
+      "relative": "src/back/native/identity.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/native/identity.bend",
+      "sha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a",
+      "bytes": 2476
+    },
+    {
+      "relative": "src/back/native/layout.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/native/layout.bend",
+      "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b",
+      "bytes": 135
+    },
+    {
+      "relative": "src/back/native/intrinsic.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/native/intrinsic.bend",
+      "sha256": "5b921ebfecb307eddae880edee86ce459751684ecf74543f54c60e2a6f252195",
+      "bytes": 4912
+    },
+    {
+      "relative": "src/back/native/tables.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/native/tables.bend",
+      "sha256": "6b8f36fa9063f35105889d8977aa2345fb01eeceb117e6f641151430d084bbaa",
+      "bytes": 8602
+    },
+    {
+      "relative": "src/back/native/emit.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/native/emit.bend",
+      "sha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a",
+      "bytes": 5084
+    },
+    {
+      "relative": "src/back/native/erase.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/native/erase.bend",
+      "sha256": "8f536cdfbca91b26bf426b3c8c5f42106fc0e18af7bfd2550ba73e7dab5530ec",
+      "bytes": 3528
+    },
+    {
+      "relative": "src/back/native/bridge.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/native/bridge.bend",
+      "sha256": "4767f940940660635ec4c80978f8e4abb11c398b4b8f8bccabf05879c59f2a49",
+      "bytes": 23327
+    },
+    {
+      "relative": "src/back/native/direct.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/native/direct.bend",
+      "sha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5",
+      "bytes": 4200
+    },
+    {
+      "relative": "src/back/native/pattern.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/native/pattern.bend",
+      "sha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4",
+      "bytes": 5324
+    },
+    {
+      "relative": "src/back/native/show.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/native/show.bend",
+      "sha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d",
+      "bytes": 6723
+    },
+    {
+      "relative": "src/back/native/parallel.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/native/parallel.bend",
+      "sha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722",
+      "bytes": 5003
+    },
+    {
+      "relative": "src/back/native/array.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/native/array.bend",
+      "sha256": "c00f0592299047df582ac0435e1a0423ea62fb48f7c87dda83bf18161b263bd7",
+      "bytes": 2813
+    },
+    {
+      "relative": "src/back/native/validate.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/native/validate.bend",
+      "sha256": "d0c1e75c5dbda3d2e65ea227667191252c49f71b63f0765c358c2041a0f484bb",
+      "bytes": 2859
+    },
+    {
+      "relative": "src/back/native/foreign.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/native/foreign.bend",
+      "sha256": "ed7a06662072e73d45d10b1898599936b106dc22956a4fceea8d04ac22fb6d3c",
+      "bytes": 4010
+    },
+    {
+      "relative": "src/back/native/book.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/native/book.bend",
+      "sha256": "180ee53af86a59df8efcc131d4f22b0ca6f5f9980dd222259f2941fbef1e11a2",
+      "bytes": 14294
+    },
+    {
+      "relative": "src/driver/report.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/driver/report.bend",
+      "sha256": "15f0985da866b948252490ec2f1b90aed9d36fb24b93eab24826648cc36e6df8",
+      "bytes": 2593
+    },
+    {
+      "relative": "src/driver/api.bend",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/driver/api.bend",
+      "sha256": "5cae856aa306f52042cbead5bf72136da317649a0a09b7d73f8da1be3530d9d3",
+      "bytes": 3919
+    },
+    {
+      "relative": "tools/typed-driver.mjs",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/typed-driver.mjs",
+      "sha256": "43c4df618476ba6ae6057d468d7147af0a85be0cd4f84e18f5f124f58d7f47c3",
+      "bytes": 48273
+    },
+    {
+      "relative": "tools/compiler-abi.mjs",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/compiler-abi.mjs",
+      "sha256": "0bcbcaf022108877600baab1b15356db6d9917f5c4d668af936279680c126454",
+      "bytes": 4264
+    },
+    {
+      "relative": "tools/native-build.mjs",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/native-build.mjs",
+      "sha256": "a76f2c027459f7ffdb9fc16dc450ee33e0f39c74568df4c74d03309e662c9117",
+      "bytes": 4027
+    },
+    {
+      "relative": "tools/node-resource-args.mjs",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/node-resource-args.mjs",
+      "sha256": "6aefb3aee9b69b0c25d68edbf0ada6a57ba93e277d3adb8d232dfa6dff01d758",
+      "bytes": 685
+    },
+    {
+      "relative": "tools/assemble.mjs",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/assemble.mjs",
+      "sha256": "f7c8feff7a0b8f8b4a302c2ca8b99b363a8d7c4c9c48bc6b7a9463aa23c58b75",
+      "bytes": 3317
+    },
+    {
+      "relative": "src/compiler.json",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/compiler.json",
+      "sha256": "b58e3f32e1e59f992b44fa2964e21876227299ad9658af7ed63ac9b1e476fd1e",
+      "bytes": 2201
+    },
+    {
+      "relative": "src/runtime.mjs",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime.mjs",
+      "sha256": "4121f338a7e4e115bae557343cd3d194a26ed26589bc47d82094969284181e10",
+      "bytes": 48032
+    },
+    {
+      "relative": "src/runtime/native/LICENSE",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/LICENSE",
+      "sha256": "0beb288abd3d067e231f3fbe7df1f8ee37344061fc67f22018150a19e4b26c35",
+      "bytes": 11344
+    },
+    {
+      "relative": "src/runtime/native/ORIGIN.md",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/ORIGIN.md",
+      "sha256": "cc7d2b0e50253e3ccc3f88ed5c92134b3faba5a8c6eb86ae7aa9c7b5e7dd7073",
+      "bytes": 843
+    },
+    {
+      "relative": "src/runtime/native/effs/args.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/args.c",
+      "sha256": "7209a5fa11396fa8b0667a6738c913c40f554797e442c847a25e13a5f69676e0",
+      "bytes": 351
+    },
+    {
+      "relative": "src/runtime/native/effs/audio.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/audio.c",
+      "sha256": "049ac826d50def604c18cd4211d67573c4e27f4bc2600ce6c22e0dbe60c3783f",
+      "bytes": 6832
+    },
+    {
+      "relative": "src/runtime/native/effs/audio_close.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/audio_close.c",
+      "sha256": "c67f807f7400065f20045392d87ef7e73af209f1aa0ee34a1eb35d568d94feb5",
+      "bytes": 5368
+    },
+    {
+      "relative": "src/runtime/native/effs/audio_open.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/audio_open.c",
+      "sha256": "65df9665a396a7976b4fdfa556a73ec187e3b5e669e47888615cb0c63a42ce41",
+      "bytes": 5606
+    },
+    {
+      "relative": "src/runtime/native/effs/audio_write.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/audio_write.c",
+      "sha256": "0eaaef9f111e40224f4adc4c8978b9e35f08613996381ac9b72641e2aeb608c4",
+      "bytes": 5898
+    },
+    {
+      "relative": "src/runtime/native/effs/chan.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/chan.c",
+      "sha256": "0c29532170ec3e400c9419b1e94474b769f7b8df262a7010b3b0f64f592683ac",
+      "bytes": 2051
+    },
+    {
+      "relative": "src/runtime/native/effs/chan_close.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/chan_close.c",
+      "sha256": "d88e91ca179bfcdbf8580e75f1dbea4c5f240d3fbdb980a2ee24d1e662ff478a",
+      "bytes": 306
+    },
+    {
+      "relative": "src/runtime/native/effs/chan_new.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/chan_new.c",
+      "sha256": "41d722added898f3a9eae186be969a7ca7f01bc3235331663b13319d14fb7ff2",
+      "bytes": 203
+    },
+    {
+      "relative": "src/runtime/native/effs/chan_recv.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/chan_recv.c",
+      "sha256": "7baa193d4adb09865a9397e84d41ec4fe7097cdd46150ed44513c76da126d0d1",
+      "bytes": 665
+    },
+    {
+      "relative": "src/runtime/native/effs/chan_send.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/chan_send.c",
+      "sha256": "f12ade43cc52af51e13d35a93221b129db11fbfa7470f38557b1c0c9ef22caa4",
+      "bytes": 616
+    },
+    {
+      "relative": "src/runtime/native/effs/file_close.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/file_close.c",
+      "sha256": "befd465a31b88936d772222d26b1019ea7330e59e6327d8ba90584c85e8b2fb3",
+      "bytes": 243
+    },
+    {
+      "relative": "src/runtime/native/effs/file_open.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/file_open.c",
+      "sha256": "f42a8bcc142b9003c7f6ca99287ca09c14f9efcbe15dea929c90c2fa062746e7",
+      "bytes": 1113
+    },
+    {
+      "relative": "src/runtime/native/effs/file_read.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/file_read.c",
+      "sha256": "6af44266ca83ab55b2dd3bf20c17eea6bfb7a7a678908cfbf3579adef31fb678",
+      "bytes": 2130
+    },
+    {
+      "relative": "src/runtime/native/effs/file_read_at.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/file_read_at.c",
+      "sha256": "689499b396a634a3ebb21ad2cc3846f1979b8f2747c07c15a38ee2f07c904b1c",
+      "bytes": 1009
+    },
+    {
+      "relative": "src/runtime/native/effs/file_read_bytes.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/file_read_bytes.c",
+      "sha256": "810e08bfe4439e71dc4bae03eeae680689af8092e144b53faacd75df198ef93d",
+      "bytes": 987
+    },
+    {
+      "relative": "src/runtime/native/effs/file_size.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/file_size.c",
+      "sha256": "09906f3839f0f0fba1eea944c948e35f8e03627dc2b78e8debb43e0556f5d5d8",
+      "bytes": 771
+    },
+    {
+      "relative": "src/runtime/native/effs/file_write.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/file_write.c",
+      "sha256": "565dff20204e1e535e188b983cda6d6001d0e5dc37cfdf981960c07a9e154ee2",
+      "bytes": 1423
+    },
+    {
+      "relative": "src/runtime/native/effs/file_write_bytes.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/file_write_bytes.c",
+      "sha256": "80784b7308c00f74ffae50ec0d8278227250edb8edd71a9e33c701482438f097",
+      "bytes": 1320
+    },
+    {
+      "relative": "src/runtime/native/effs/get_env.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/get_env.c",
+      "sha256": "62255e46c7e0c43baea62366830c4a5badb11cba517c0aa17f952f432f46d4a3",
+      "bytes": 646
+    },
+    {
+      "relative": "src/runtime/native/effs/listener_close.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/listener_close.c",
+      "sha256": "11247352a8311b066fff27ed85958598214ece80f23a7ac59ee981ea569351ec",
+      "bytes": 267
+    },
+    {
+      "relative": "src/runtime/native/effs/now.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/now.c",
+      "sha256": "da5fde65701c4fadc7560625c9615b4d60b2eefbd7b6bbe1aedda61887b825b9",
+      "bytes": 198
+    },
+    {
+      "relative": "src/runtime/native/effs/print.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/print.c",
+      "sha256": "709500d2ace6e2eaeec0f5f1e4373d4ec5e402b3c1e289bd70dfef7e2a635b26",
+      "bytes": 397
+    },
+    {
+      "relative": "src/runtime/native/effs/print_err.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/print_err.c",
+      "sha256": "72781d2adc88a4791d5530c9deff20824c38d5aa1ba43fb05aaa6a697e19f4b6",
+      "bytes": 236
+    },
+    {
+      "relative": "src/runtime/native/effs/process_run.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/process_run.c",
+      "sha256": "c12e5a182de9fdc5ef83d65f9f7c2c5746865d1049e5f3700438f8ac317b17c3",
+      "bytes": 9149
+    },
+    {
+      "relative": "src/runtime/native/effs/random_u32.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/random_u32.c",
+      "sha256": "10ef9045dcd539bc0ff609e61c77d585fb998ceb48656944d62727716263ee2d",
+      "bytes": 741
+    },
+    {
+      "relative": "src/runtime/native/effs/sleep.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/sleep.c",
+      "sha256": "77e212d3baeec0b3dc0a9c7f630b43094986e433c049049d354a9681719e2ecd",
+      "bytes": 206
+    },
+    {
+      "relative": "src/runtime/native/effs/socket_close.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/socket_close.c",
+      "sha256": "6e2fd1717a2fab133813af88fc0f5b5a8ce44c23bf411f269e71aac38671562e",
+      "bytes": 255
+    },
+    {
+      "relative": "src/runtime/native/effs/spawn.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/spawn.c",
+      "sha256": "fb3dac6efa993c51f9d7a668cf8da2cac1148380b72cc18a558cba9ba70c01f3",
+      "bytes": 218
+    },
+    {
+      "relative": "src/runtime/native/effs/tcp_accept.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/tcp_accept.c",
+      "sha256": "e0f0cf4199c278aec722e3c9b81ff879fcec31ec96ebaf66a954db673cf535f8",
+      "bytes": 909
+    },
+    {
+      "relative": "src/runtime/native/effs/tcp_connect.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/tcp_connect.c",
+      "sha256": "ae1515d0ff57215b03888e76cfe4ee485750ec226c28eed05d56e417f0f84f58",
+      "bytes": 1294
+    },
+    {
+      "relative": "src/runtime/native/effs/tcp_listen.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/tcp_listen.c",
+      "sha256": "6212a0bc400e960e8b486f85a091cd4964f92b0546475481271c0f369a234d8c",
+      "bytes": 1013
+    },
+    {
+      "relative": "src/runtime/native/effs/tcp_poll.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/tcp_poll.c",
+      "sha256": "feb6fa3f7c04b3143c71593e2c17088394d11474bd87ca791fb71fbf9f9a8f82",
+      "bytes": 1386
+    },
+    {
+      "relative": "src/runtime/native/effs/tcp_recv.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/tcp_recv.c",
+      "sha256": "de6cfd9490f867c26056d1897e8d37ff657189788943f36151749101c7c9f0f6",
+      "bytes": 1835
+    },
+    {
+      "relative": "src/runtime/native/effs/tcp_send.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/tcp_send.c",
+      "sha256": "503c8cdc1f885420057c46e6d9ed4ede6953805a13f8894e069f1b944f630c81",
+      "bytes": 1558
+    },
+    {
+      "relative": "src/runtime/native/effs/thread_count.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/thread_count.c",
+      "sha256": "39515c611a2b42687fb670179f3d9032af1878727356754959061125d40fa7e7",
+      "bytes": 481
+    },
+    {
+      "relative": "src/runtime/native/effs/udp_bind.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/udp_bind.c",
+      "sha256": "b30150927ffde3162d62012b67d43d95c79754f9539279628d2ad5bc9c040408",
+      "bytes": 882
+    },
+    {
+      "relative": "src/runtime/native/effs/udp_poll.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/udp_poll.c",
+      "sha256": "66504dbbc09ab346e04cca7a22c60aacc8866555ac143088603cb4b568a64f71",
+      "bytes": 913
+    },
+    {
+      "relative": "src/runtime/native/effs/udp_recv_from.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/udp_recv_from.c",
+      "sha256": "140a281bca2348566030e092f3c27591893b5d945e57e2965863d02c2e6c0a65",
+      "bytes": 1165
+    },
+    {
+      "relative": "src/runtime/native/effs/udp_send_to.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/udp_send_to.c",
+      "sha256": "8704fe7e5770af7e4dcbe24f0fecf4cfbfe61a0a69a77b129df9965e306fae8f",
+      "bytes": 1214
+    },
+    {
+      "relative": "src/runtime/native/effs/window.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/window.c",
+      "sha256": "7bda00a55917f11ff1fa532b1406ec5c1a8a7eef6f6ba2a933dd958256e0a409",
+      "bytes": 23879
+    },
+    {
+      "relative": "src/runtime/native/effs/window_close.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/window_close.c",
+      "sha256": "655afbdf8a5f7fa80963bad64b43c8dfe7ec1f80896db381792d0d6933f3be2d",
+      "bytes": 916
+    },
+    {
+      "relative": "src/runtime/native/effs/window_frame.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/window_frame.c",
+      "sha256": "01dc840b2145efb8c91b4ffe7360e3520753f59c42e122703c3a6190c50e1aa4",
+      "bytes": 11055
+    },
+    {
+      "relative": "src/runtime/native/effs/window_open.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/window_open.c",
+      "sha256": "1be9c669b47a44716b9cef1aafaafa1ed2a2268730fab475efa762cf368fc21d",
+      "bytes": 6927
+    },
+    {
+      "relative": "src/runtime/native/effs/window_set_title.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/window_set_title.c",
+      "sha256": "cd60a39ca4084794f3e7aef939de8c7e02ef0ae2158bf52a69f93c21a59ebba5",
+      "bytes": 1141
+    },
+    {
+      "relative": "src/runtime/native/effs/write.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/effs/write.c",
+      "sha256": "c1bcd80d50c4901027c801cdd8d7464ea3029361115ac47044c992ce2235a8ac",
+      "bytes": 370
+    },
+    {
+      "relative": "src/runtime/native/runtime.c",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime/native/runtime.c",
+      "sha256": "cbfb8933d007c10a0173f280888d6c94d5d77543548b25808596cd2d21f764f0",
+      "bytes": 78893
+    },
+    {
+      "relative": "cli.mjs",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/cli.mjs",
+      "sha256": "e9e57dff0070a9023263c5355d5ca66923e98a5cd0cc28c4d2ccefe1024b28e7",
+      "bytes": 238
+    },
+    {
+      "relative": "dist/release.json",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/release.json",
+      "sha256": "0ad0a196a38465dd40d8d1a2e498cff7a414d350ba3e76a144d6be4da39c7f07",
+      "bytes": 22022
+    },
+    {
+      "relative": "tools/development/release.mjs",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/development/release.mjs",
+      "sha256": "da2c88a9cc1b641d03dddfbe2c39fc5a3ea5c724e14993c9d68fa971727809a0",
+      "bytes": 12981
+    },
+    {
+      "relative": "tools/development/workflow.mjs",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/development/workflow.mjs",
+      "sha256": "1158d3e7fb28ebcf37caba0d32f34cbcb762d0987bff472c385a375bbeb793ff",
+      "bytes": 18124
+    },
+    {
+      "relative": "tools/development/equality.mjs",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/development/equality.mjs",
+      "sha256": "db2999aa879e0bc6c6359d37c19e7589c60d34b2b143d0ed6ecbc23eabfec951",
+      "bytes": 30150
+    },
+    {
+      "relative": "tools/development/process.mjs",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/development/process.mjs",
+      "sha256": "fe6afbc8964f695e3b7bfe8c636b6da6295fd7265fcdebbf58839f3eafce4989",
+      "bytes": 3013
+    },
+    {
+      "relative": "tools/conformance/inventory.mjs",
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/conformance/inventory.mjs",
+      "sha256": "91a1bd7be11e6e66a68c94251814286c9d0173d94a38b445240123bc558bc308",
+      "bytes": 6459
+    }
+  ],
+  "relocation": {
+    "root": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated",
+    "copiedFiles": [
+      {
+        "relative": "cli.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/cli.mjs",
+        "sha256": "e9e57dff0070a9023263c5355d5ca66923e98a5cd0cc28c4d2ccefe1024b28e7",
+        "bytes": 238
+      },
+      {
+        "relative": "dist/base.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/dist/base.bend",
+        "sha256": "c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661",
+        "bytes": 71530
+      },
+      {
+        "relative": "dist/release-lineage/checked-api.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/dist/release-lineage/checked-api.mjs",
+        "sha256": "c3cc54c1e7e4a8470547e7488df4a58fec17195e0889e1eb458df34104bed20b",
+        "bytes": 1045468
+      },
+      {
+        "relative": "dist/release-lineage/checked-bootstrap.json",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/dist/release-lineage/checked-bootstrap.json",
+        "sha256": "14e683d0f23541522cff0952b19226189e483c69a7ece5f28b9ba3189692e4cb",
+        "bytes": 53282
+      },
+      {
+        "relative": "dist/release-lineage/derivation.json",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/dist/release-lineage/derivation.json",
+        "sha256": "c9d8c9f7d633514bfa248226cf99288f2222ed15dce0292a3fbd88eb08bce853",
+        "bytes": 229874
+      },
+      {
+        "relative": "dist/release-lineage/equality.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/dist/release-lineage/equality.mjs",
+        "sha256": "db2999aa879e0bc6c6359d37c19e7589c60d34b2b143d0ed6ecbc23eabfec951",
+        "bytes": 30150
+      },
+      {
+        "relative": "dist/release.json",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/dist/release.json",
+        "sha256": "0ad0a196a38465dd40d8d1a2e498cff7a414d350ba3e76a144d6be4da39c7f07",
+        "bytes": 22022
+      },
+      {
+        "relative": "dist/typed-api.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/dist/typed-api.mjs",
+        "sha256": "8be506d811f627fe6346a5eaba07050c36db70e2704608adcfd781b85a3a7f92",
+        "bytes": 1057428
+      },
+      {
+        "relative": "src/back/js/choice.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/js/choice.bend",
+        "sha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3",
+        "bytes": 3583
+      },
+      {
+        "relative": "src/back/js/emit.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/js/emit.bend",
+        "sha256": "5d15e0ea3c907faad8fb901c3e53346d46c7847a70ce625c144882ad8a6041fb",
+        "bytes": 32134
+      },
+      {
+        "relative": "src/back/js/foreign.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/js/foreign.bend",
+        "sha256": "0f397f84a989c6fc9a52eaf962742e673cdba243864c0bbe7c16ce4ffd8eb065",
+        "bytes": 5794
+      },
+      {
+        "relative": "src/back/js/literals.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/js/literals.bend",
+        "sha256": "2c4488a4f37010253a54e3745317c685ec77067475d471e577687acfa9a16776",
+        "bytes": 5544
+      },
+      {
+        "relative": "src/back/js/local.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/js/local.bend",
+        "sha256": "f0243565fd12cd83172cde1594b8ea4b15821404dd0adde8863c42874045ef89",
+        "bytes": 9390
+      },
+      {
+        "relative": "src/back/js/primitive.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/js/primitive.bend",
+        "sha256": "de137137d7cdd21f3a3a5c6d0bdca7664712fac7b74c46f177b8d3e521017b83",
+        "bytes": 7332
+      },
+      {
+        "relative": "src/back/js/projection.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/js/projection.bend",
+        "sha256": "67cce055248e6a0034a6194a9f5cbd0821c2cf79905759d08033b141231e93ae",
+        "bytes": 2597
+      },
+      {
+        "relative": "src/back/js/region.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/js/region.bend",
+        "sha256": "cdea9d36f4f8839917d00617cd654cd1f8c101a828d475123161140f706e52a1",
+        "bytes": 29750
+      },
+      {
+        "relative": "src/back/js/tree.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/js/tree.bend",
+        "sha256": "ce78017169ce6fcf53ffc46a9760c282c58e37111513b5cb970002ab0be64fd3",
+        "bytes": 7576
+      },
+      {
+        "relative": "src/back/js/u32.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/js/u32.bend",
+        "sha256": "bda743e5c6afa1324673dd6722782a2b615c75abeb5c8061c623622723cfb25c",
+        "bytes": 4926
+      },
+      {
+        "relative": "src/back/js/validate.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/js/validate.bend",
+        "sha256": "f8fc315bf80dabbf8afd1b6ced8e7c322b8ef96d73859d47e01c4b317afb72a0",
+        "bytes": 11066
+      },
+      {
+        "relative": "src/back/js/worker.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/js/worker.bend",
+        "sha256": "b7f5a57511e8ee6f12e0e5b90d66dcd9d2997b100aac64d125b31680ec82d198",
+        "bytes": 14007
+      },
+      {
+        "relative": "src/back/native/array.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/native/array.bend",
+        "sha256": "c00f0592299047df582ac0435e1a0423ea62fb48f7c87dda83bf18161b263bd7",
+        "bytes": 2813
+      },
+      {
+        "relative": "src/back/native/book.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/native/book.bend",
+        "sha256": "180ee53af86a59df8efcc131d4f22b0ca6f5f9980dd222259f2941fbef1e11a2",
+        "bytes": 14294
+      },
+      {
+        "relative": "src/back/native/bridge.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/native/bridge.bend",
+        "sha256": "4767f940940660635ec4c80978f8e4abb11c398b4b8f8bccabf05879c59f2a49",
+        "bytes": 23327
+      },
+      {
+        "relative": "src/back/native/direct.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/native/direct.bend",
+        "sha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5",
+        "bytes": 4200
+      },
+      {
+        "relative": "src/back/native/emit.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/native/emit.bend",
+        "sha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a",
+        "bytes": 5084
+      },
+      {
+        "relative": "src/back/native/erase.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/native/erase.bend",
+        "sha256": "8f536cdfbca91b26bf426b3c8c5f42106fc0e18af7bfd2550ba73e7dab5530ec",
+        "bytes": 3528
+      },
+      {
+        "relative": "src/back/native/foreign.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/native/foreign.bend",
+        "sha256": "ed7a06662072e73d45d10b1898599936b106dc22956a4fceea8d04ac22fb6d3c",
+        "bytes": 4010
+      },
+      {
+        "relative": "src/back/native/identity.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/native/identity.bend",
+        "sha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a",
+        "bytes": 2476
+      },
+      {
+        "relative": "src/back/native/intrinsic.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/native/intrinsic.bend",
+        "sha256": "5b921ebfecb307eddae880edee86ce459751684ecf74543f54c60e2a6f252195",
+        "bytes": 4912
+      },
+      {
+        "relative": "src/back/native/ir.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/native/ir.bend",
+        "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b",
+        "bytes": 929
+      },
+      {
+        "relative": "src/back/native/layout.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/native/layout.bend",
+        "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b",
+        "bytes": 135
+      },
+      {
+        "relative": "src/back/native/parallel.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/native/parallel.bend",
+        "sha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722",
+        "bytes": 5003
+      },
+      {
+        "relative": "src/back/native/pattern.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/native/pattern.bend",
+        "sha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4",
+        "bytes": 5324
+      },
+      {
+        "relative": "src/back/native/show.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/native/show.bend",
+        "sha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d",
+        "bytes": 6723
+      },
+      {
+        "relative": "src/back/native/tables.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/native/tables.bend",
+        "sha256": "6b8f36fa9063f35105889d8977aa2345fb01eeceb117e6f641151430d084bbaa",
+        "bytes": 8602
+      },
+      {
+        "relative": "src/back/native/text.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/native/text.bend",
+        "sha256": "31c1ff5973df46d17ad395070fbefa1d2dc58398b3d12af80c62ed6c5548ff9d",
+        "bytes": 2533
+      },
+      {
+        "relative": "src/back/native/validate.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/back/native/validate.bend",
+        "sha256": "d0c1e75c5dbda3d2e65ea227667191252c49f71b63f0765c358c2041a0f484bb",
+        "bytes": 2859
+      },
+      {
+        "relative": "src/check/annotate.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/check/annotate.bend",
+        "sha256": "1912e5d177514733e706297fbb53e730c1f7a9edc91ffb06d2b1de7e2547648c",
+        "bytes": 10866
+      },
+      {
+        "relative": "src/check/kernel.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/check/kernel.bend",
+        "sha256": "da7ee29f9755f09acd9f89fcfd37465b52ab8778971200c946c70e50eb5b4132",
+        "bytes": 49255
+      },
+      {
+        "relative": "src/check/prefix.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/check/prefix.bend",
+        "sha256": "ceabf77fb49b58910d83fa896899061643c4c105f29e70bd87d3f73be873783d",
+        "bytes": 3037
+      },
+      {
+        "relative": "src/check/quantity.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/check/quantity.bend",
+        "sha256": "b4a8ca1f8dff10f4f64397ea53bbbe272bb32400e993b1077d284ec1d8a70b4d",
+        "bytes": 4069
+      },
+      {
+        "relative": "src/check/specialize.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/check/specialize.bend",
+        "sha256": "76e0f9249ae15cc0734a8e9d2e75677794e2eb5464c7756a19daff8b8217e7ee",
+        "bytes": 16212
+      },
+      {
+        "relative": "src/compiler.json",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/compiler.json",
+        "sha256": "b58e3f32e1e59f992b44fa2964e21876227299ad9658af7ed63ac9b1e476fd1e",
+        "bytes": 2201
+      },
+      {
+        "relative": "src/core/graph.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/core/graph.bend",
+        "sha256": "85625049b316ede08eeffd7ff509483183624f1197c582c9d1bb2cd8bebf4802",
+        "bytes": 14746
+      },
+      {
+        "relative": "src/core/index.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/core/index.bend",
+        "sha256": "32a4f2772c865f9ed9743f1ece27d5fafd1898724d5f268186590c938b038ea2",
+        "bytes": 10197
+      },
+      {
+        "relative": "src/core/normalize.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/core/normalize.bend",
+        "sha256": "4845ff63f3c228abc9a432410ddc8b7e20bfce27e54d6d49412b06608f7ce702",
+        "bytes": 22263
+      },
+      {
+        "relative": "src/core/pretty.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/core/pretty.bend",
+        "sha256": "40b4e6ca55bf11009881b893c7959dd52cc64bbc6cb2dbb607e94dbab69fdedc",
+        "bytes": 16800
+      },
+      {
+        "relative": "src/core/reach.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/core/reach.bend",
+        "sha256": "086092c688e6cb774da94333826f51b1fdeddc8e85aeaac5be6b15c143b0df27",
+        "bytes": 9901
+      },
+      {
+        "relative": "src/core/term.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/core/term.bend",
+        "sha256": "e9ab994bc3ba4fd5a281e25836911bbc29cafcf2ab0c0284dc9bc097e891fa46",
+        "bytes": 18285
+      },
+      {
+        "relative": "src/diagnostic/frontend.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/diagnostic/frontend.bend",
+        "sha256": "fdd07e6e3df5f999f2d162a4d3186cd8ae13102c8351710edab5291a2f80489f",
+        "bytes": 10910
+      },
+      {
+        "relative": "src/diagnostic/model.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/diagnostic/model.bend",
+        "sha256": "3c699ec70ef36700520658555bc5df025880691c44633cabb9e5719b60fc9c1c",
+        "bytes": 754
+      },
+      {
+        "relative": "src/diagnostic/produce.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/diagnostic/produce.bend",
+        "sha256": "9518cb01c0c7636654bfa14dd332ac49756572ba975c7789c865e9cd8cf75c80",
+        "bytes": 8073
+      },
+      {
+        "relative": "src/diagnostic/render.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/diagnostic/render.bend",
+        "sha256": "695f41ace13e08756273c317659a419deee5fc79d413bd58e8711f124370276c",
+        "bytes": 7804
+      },
+      {
+        "relative": "src/diagnostic/trace.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/diagnostic/trace.bend",
+        "sha256": "0e03e2827415d082d295976b57564c7b0bd872f7c81229e653d7e0ddda62b10f",
+        "bytes": 6819
+      },
+      {
+        "relative": "src/driver/api.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/driver/api.bend",
+        "sha256": "5cae856aa306f52042cbead5bf72136da317649a0a09b7d73f8da1be3530d9d3",
+        "bytes": 3919
+      },
+      {
+        "relative": "src/driver/report.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/driver/report.bend",
+        "sha256": "15f0985da866b948252490ec2f1b90aed9d36fb24b93eab24826648cc36e6df8",
+        "bytes": 2593
+      },
+      {
+        "relative": "src/front/contextual.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/front/contextual.bend",
+        "sha256": "18a1eabd78b224927ebe72c4aa7a295300cc641e20d03d2bc062fdcfd96f62f6",
+        "bytes": 29385
+      },
+      {
+        "relative": "src/front/declarations.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/front/declarations.bend",
+        "sha256": "9e2c8da30605c1b8ab732df5f95533da55a3ea0e6c5a0941f1340586db9d36af",
+        "bytes": 31635
+      },
+      {
+        "relative": "src/front/elaborate.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/front/elaborate.bend",
+        "sha256": "8537f483259d48fa1d710915d6e8e09916faa540560379ee550a7077f391dc1e",
+        "bytes": 7941
+      },
+      {
+        "relative": "src/front/families.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/front/families.bend",
+        "sha256": "22b6e9b1ca132ed2d6f2cf91507e221f09cdda1aeab5931e8cf099e934bc9d2f",
+        "bytes": 3849
+      },
+      {
+        "relative": "src/front/flatten.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/front/flatten.bend",
+        "sha256": "d3ba8687f7dcd303dee847a90e3fa92b9a234d97cdcd3893de8242c6d2aa69cf",
+        "bytes": 6450
+      },
+      {
+        "relative": "src/front/fresh_work.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/front/fresh_work.bend",
+        "sha256": "043d3b737cef4b932b7de8ef161dc88ba867ba6a8056e3662edfdcf4a2d797ed",
+        "bytes": 7736
+      },
+      {
+        "relative": "src/front/freshen.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/front/freshen.bend",
+        "sha256": "d0fed135fe878987770786ef0c50dd09efe2cce390beb7a911bcfc8468d5607d",
+        "bytes": 1285
+      },
+      {
+        "relative": "src/front/lexer.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/front/lexer.bend",
+        "sha256": "aa9d726b6b284deba84dbccc77a01a8143dd89dab70cf487e1ddc8d589380440",
+        "bytes": 13265
+      },
+      {
+        "relative": "src/front/literals_arrays.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/front/literals_arrays.bend",
+        "sha256": "7429e8a4e16e30f74fa19911993879e60a982a510f369769e7805d6a6ac34796",
+        "bytes": 11903
+      },
+      {
+        "relative": "src/front/parallel.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/front/parallel.bend",
+        "sha256": "b7c38f74d9f339f21fa00c5194078a0bfc41a948d1adaa907d00df64045c2f1c",
+        "bytes": 3238
+      },
+      {
+        "relative": "src/front/parser.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/front/parser.bend",
+        "sha256": "c1790685aea7c71430873d65c2d91996778f443aee0098e54c656fe10177ba28",
+        "bytes": 32003
+      },
+      {
+        "relative": "src/front/sugar.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/front/sugar.bend",
+        "sha256": "d3e3cf5addf0498e8401b9988678eb6ac8ff81571a014b18a1b6fed0a76fb22a",
+        "bytes": 14142
+      },
+      {
+        "relative": "src/front/unicode.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/front/unicode.bend",
+        "sha256": "bfd4407aa83614ae8398c9ce451f729cbcba457f2ef64774fea99f1824b5dd96",
+        "bytes": 4481
+      },
+      {
+        "relative": "src/front/validate.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/front/validate.bend",
+        "sha256": "62d530ce7ebb6d2abf69f34d37b5b21eed8711c7bdee3bf868aa2c94d699ec5d",
+        "bytes": 11354
+      },
+      {
+        "relative": "src/load/graph.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/load/graph.bend",
+        "sha256": "9317e9fe5224c447c50e5339469a244dd7036c00801d9750687f8dfe1de5fdb3",
+        "bytes": 16909
+      },
+      {
+        "relative": "src/load/imports.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/load/imports.bend",
+        "sha256": "b878da5169a4a39d35a236ff5128dc42735fea0707195cf621ae651c1f13e9b1",
+        "bytes": 4211
+      },
+      {
+        "relative": "src/load/modules.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/load/modules.bend",
+        "sha256": "fed5593033f957a61118a2eff9c2e09bd51af8810cff1db12e655523b82188ea",
+        "bytes": 10063
+      },
+      {
+        "relative": "src/load/paths.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/load/paths.bend",
+        "sha256": "a9fc17a8af04c1958d1f11e8c1c5b7c2d3eb925dd9075e6c77de4bdb3521f2a2",
+        "bytes": 2186
+      },
+      {
+        "relative": "src/load/seed.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/load/seed.bend",
+        "sha256": "ca4cb677af632c47c13792ede10d4e791c85b5cc6c756aacf230861d7bfa4c21",
+        "bytes": 5224
+      },
+      {
+        "relative": "src/runtime.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime.mjs",
+        "sha256": "4121f338a7e4e115bae557343cd3d194a26ed26589bc47d82094969284181e10",
+        "bytes": 48032
+      },
+      {
+        "relative": "src/runtime/native/LICENSE",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/LICENSE",
+        "sha256": "0beb288abd3d067e231f3fbe7df1f8ee37344061fc67f22018150a19e4b26c35",
+        "bytes": 11344
+      },
+      {
+        "relative": "src/runtime/native/ORIGIN.md",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/ORIGIN.md",
+        "sha256": "cc7d2b0e50253e3ccc3f88ed5c92134b3faba5a8c6eb86ae7aa9c7b5e7dd7073",
+        "bytes": 843
+      },
+      {
+        "relative": "src/runtime/native/effs/args.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/args.c",
+        "sha256": "7209a5fa11396fa8b0667a6738c913c40f554797e442c847a25e13a5f69676e0",
+        "bytes": 351
+      },
+      {
+        "relative": "src/runtime/native/effs/audio.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/audio.c",
+        "sha256": "049ac826d50def604c18cd4211d67573c4e27f4bc2600ce6c22e0dbe60c3783f",
+        "bytes": 6832
+      },
+      {
+        "relative": "src/runtime/native/effs/audio_close.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/audio_close.c",
+        "sha256": "c67f807f7400065f20045392d87ef7e73af209f1aa0ee34a1eb35d568d94feb5",
+        "bytes": 5368
+      },
+      {
+        "relative": "src/runtime/native/effs/audio_open.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/audio_open.c",
+        "sha256": "65df9665a396a7976b4fdfa556a73ec187e3b5e669e47888615cb0c63a42ce41",
+        "bytes": 5606
+      },
+      {
+        "relative": "src/runtime/native/effs/audio_write.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/audio_write.c",
+        "sha256": "0eaaef9f111e40224f4adc4c8978b9e35f08613996381ac9b72641e2aeb608c4",
+        "bytes": 5898
+      },
+      {
+        "relative": "src/runtime/native/effs/chan.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/chan.c",
+        "sha256": "0c29532170ec3e400c9419b1e94474b769f7b8df262a7010b3b0f64f592683ac",
+        "bytes": 2051
+      },
+      {
+        "relative": "src/runtime/native/effs/chan_close.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/chan_close.c",
+        "sha256": "d88e91ca179bfcdbf8580e75f1dbea4c5f240d3fbdb980a2ee24d1e662ff478a",
+        "bytes": 306
+      },
+      {
+        "relative": "src/runtime/native/effs/chan_new.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/chan_new.c",
+        "sha256": "41d722added898f3a9eae186be969a7ca7f01bc3235331663b13319d14fb7ff2",
+        "bytes": 203
+      },
+      {
+        "relative": "src/runtime/native/effs/chan_recv.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/chan_recv.c",
+        "sha256": "7baa193d4adb09865a9397e84d41ec4fe7097cdd46150ed44513c76da126d0d1",
+        "bytes": 665
+      },
+      {
+        "relative": "src/runtime/native/effs/chan_send.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/chan_send.c",
+        "sha256": "f12ade43cc52af51e13d35a93221b129db11fbfa7470f38557b1c0c9ef22caa4",
+        "bytes": 616
+      },
+      {
+        "relative": "src/runtime/native/effs/file_close.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/file_close.c",
+        "sha256": "befd465a31b88936d772222d26b1019ea7330e59e6327d8ba90584c85e8b2fb3",
+        "bytes": 243
+      },
+      {
+        "relative": "src/runtime/native/effs/file_open.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/file_open.c",
+        "sha256": "f42a8bcc142b9003c7f6ca99287ca09c14f9efcbe15dea929c90c2fa062746e7",
+        "bytes": 1113
+      },
+      {
+        "relative": "src/runtime/native/effs/file_read.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/file_read.c",
+        "sha256": "6af44266ca83ab55b2dd3bf20c17eea6bfb7a7a678908cfbf3579adef31fb678",
+        "bytes": 2130
+      },
+      {
+        "relative": "src/runtime/native/effs/file_read_at.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/file_read_at.c",
+        "sha256": "689499b396a634a3ebb21ad2cc3846f1979b8f2747c07c15a38ee2f07c904b1c",
+        "bytes": 1009
+      },
+      {
+        "relative": "src/runtime/native/effs/file_read_bytes.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/file_read_bytes.c",
+        "sha256": "810e08bfe4439e71dc4bae03eeae680689af8092e144b53faacd75df198ef93d",
+        "bytes": 987
+      },
+      {
+        "relative": "src/runtime/native/effs/file_size.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/file_size.c",
+        "sha256": "09906f3839f0f0fba1eea944c948e35f8e03627dc2b78e8debb43e0556f5d5d8",
+        "bytes": 771
+      },
+      {
+        "relative": "src/runtime/native/effs/file_write.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/file_write.c",
+        "sha256": "565dff20204e1e535e188b983cda6d6001d0e5dc37cfdf981960c07a9e154ee2",
+        "bytes": 1423
+      },
+      {
+        "relative": "src/runtime/native/effs/file_write_bytes.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/file_write_bytes.c",
+        "sha256": "80784b7308c00f74ffae50ec0d8278227250edb8edd71a9e33c701482438f097",
+        "bytes": 1320
+      },
+      {
+        "relative": "src/runtime/native/effs/get_env.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/get_env.c",
+        "sha256": "62255e46c7e0c43baea62366830c4a5badb11cba517c0aa17f952f432f46d4a3",
+        "bytes": 646
+      },
+      {
+        "relative": "src/runtime/native/effs/listener_close.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/listener_close.c",
+        "sha256": "11247352a8311b066fff27ed85958598214ece80f23a7ac59ee981ea569351ec",
+        "bytes": 267
+      },
+      {
+        "relative": "src/runtime/native/effs/now.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/now.c",
+        "sha256": "da5fde65701c4fadc7560625c9615b4d60b2eefbd7b6bbe1aedda61887b825b9",
+        "bytes": 198
+      },
+      {
+        "relative": "src/runtime/native/effs/print.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/print.c",
+        "sha256": "709500d2ace6e2eaeec0f5f1e4373d4ec5e402b3c1e289bd70dfef7e2a635b26",
+        "bytes": 397
+      },
+      {
+        "relative": "src/runtime/native/effs/print_err.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/print_err.c",
+        "sha256": "72781d2adc88a4791d5530c9deff20824c38d5aa1ba43fb05aaa6a697e19f4b6",
+        "bytes": 236
+      },
+      {
+        "relative": "src/runtime/native/effs/process_run.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/process_run.c",
+        "sha256": "c12e5a182de9fdc5ef83d65f9f7c2c5746865d1049e5f3700438f8ac317b17c3",
+        "bytes": 9149
+      },
+      {
+        "relative": "src/runtime/native/effs/random_u32.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/random_u32.c",
+        "sha256": "10ef9045dcd539bc0ff609e61c77d585fb998ceb48656944d62727716263ee2d",
+        "bytes": 741
+      },
+      {
+        "relative": "src/runtime/native/effs/sleep.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/sleep.c",
+        "sha256": "77e212d3baeec0b3dc0a9c7f630b43094986e433c049049d354a9681719e2ecd",
+        "bytes": 206
+      },
+      {
+        "relative": "src/runtime/native/effs/socket_close.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/socket_close.c",
+        "sha256": "6e2fd1717a2fab133813af88fc0f5b5a8ce44c23bf411f269e71aac38671562e",
+        "bytes": 255
+      },
+      {
+        "relative": "src/runtime/native/effs/spawn.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/spawn.c",
+        "sha256": "fb3dac6efa993c51f9d7a668cf8da2cac1148380b72cc18a558cba9ba70c01f3",
+        "bytes": 218
+      },
+      {
+        "relative": "src/runtime/native/effs/tcp_accept.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/tcp_accept.c",
+        "sha256": "e0f0cf4199c278aec722e3c9b81ff879fcec31ec96ebaf66a954db673cf535f8",
+        "bytes": 909
+      },
+      {
+        "relative": "src/runtime/native/effs/tcp_connect.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/tcp_connect.c",
+        "sha256": "ae1515d0ff57215b03888e76cfe4ee485750ec226c28eed05d56e417f0f84f58",
+        "bytes": 1294
+      },
+      {
+        "relative": "src/runtime/native/effs/tcp_listen.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/tcp_listen.c",
+        "sha256": "6212a0bc400e960e8b486f85a091cd4964f92b0546475481271c0f369a234d8c",
+        "bytes": 1013
+      },
+      {
+        "relative": "src/runtime/native/effs/tcp_poll.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/tcp_poll.c",
+        "sha256": "feb6fa3f7c04b3143c71593e2c17088394d11474bd87ca791fb71fbf9f9a8f82",
+        "bytes": 1386
+      },
+      {
+        "relative": "src/runtime/native/effs/tcp_recv.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/tcp_recv.c",
+        "sha256": "de6cfd9490f867c26056d1897e8d37ff657189788943f36151749101c7c9f0f6",
+        "bytes": 1835
+      },
+      {
+        "relative": "src/runtime/native/effs/tcp_send.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/tcp_send.c",
+        "sha256": "503c8cdc1f885420057c46e6d9ed4ede6953805a13f8894e069f1b944f630c81",
+        "bytes": 1558
+      },
+      {
+        "relative": "src/runtime/native/effs/thread_count.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/thread_count.c",
+        "sha256": "39515c611a2b42687fb670179f3d9032af1878727356754959061125d40fa7e7",
+        "bytes": 481
+      },
+      {
+        "relative": "src/runtime/native/effs/udp_bind.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/udp_bind.c",
+        "sha256": "b30150927ffde3162d62012b67d43d95c79754f9539279628d2ad5bc9c040408",
+        "bytes": 882
+      },
+      {
+        "relative": "src/runtime/native/effs/udp_poll.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/udp_poll.c",
+        "sha256": "66504dbbc09ab346e04cca7a22c60aacc8866555ac143088603cb4b568a64f71",
+        "bytes": 913
+      },
+      {
+        "relative": "src/runtime/native/effs/udp_recv_from.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/udp_recv_from.c",
+        "sha256": "140a281bca2348566030e092f3c27591893b5d945e57e2965863d02c2e6c0a65",
+        "bytes": 1165
+      },
+      {
+        "relative": "src/runtime/native/effs/udp_send_to.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/udp_send_to.c",
+        "sha256": "8704fe7e5770af7e4dcbe24f0fecf4cfbfe61a0a69a77b129df9965e306fae8f",
+        "bytes": 1214
+      },
+      {
+        "relative": "src/runtime/native/effs/window.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/window.c",
+        "sha256": "7bda00a55917f11ff1fa532b1406ec5c1a8a7eef6f6ba2a933dd958256e0a409",
+        "bytes": 23879
+      },
+      {
+        "relative": "src/runtime/native/effs/window_close.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/window_close.c",
+        "sha256": "655afbdf8a5f7fa80963bad64b43c8dfe7ec1f80896db381792d0d6933f3be2d",
+        "bytes": 916
+      },
+      {
+        "relative": "src/runtime/native/effs/window_frame.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/window_frame.c",
+        "sha256": "01dc840b2145efb8c91b4ffe7360e3520753f59c42e122703c3a6190c50e1aa4",
+        "bytes": 11055
+      },
+      {
+        "relative": "src/runtime/native/effs/window_open.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/window_open.c",
+        "sha256": "1be9c669b47a44716b9cef1aafaafa1ed2a2268730fab475efa762cf368fc21d",
+        "bytes": 6927
+      },
+      {
+        "relative": "src/runtime/native/effs/window_set_title.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/window_set_title.c",
+        "sha256": "cd60a39ca4084794f3e7aef939de8c7e02ef0ae2158bf52a69f93c21a59ebba5",
+        "bytes": 1141
+      },
+      {
+        "relative": "src/runtime/native/effs/write.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/effs/write.c",
+        "sha256": "c1bcd80d50c4901027c801cdd8d7464ea3029361115ac47044c992ce2235a8ac",
+        "bytes": 370
+      },
+      {
+        "relative": "src/runtime/native/runtime.c",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/src/runtime/native/runtime.c",
+        "sha256": "cbfb8933d007c10a0173f280888d6c94d5d77543548b25808596cd2d21f764f0",
+        "bytes": 78893
+      },
+      {
+        "relative": "tools/assemble.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/tools/assemble.mjs",
+        "sha256": "f7c8feff7a0b8f8b4a302c2ca8b99b363a8d7c4c9c48bc6b7a9463aa23c58b75",
+        "bytes": 3317
+      },
+      {
+        "relative": "tools/compiler-abi.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/tools/compiler-abi.mjs",
+        "sha256": "0bcbcaf022108877600baab1b15356db6d9917f5c4d668af936279680c126454",
+        "bytes": 4264
+      },
+      {
+        "relative": "tools/conformance/inventory.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/tools/conformance/inventory.mjs",
+        "sha256": "91a1bd7be11e6e66a68c94251814286c9d0173d94a38b445240123bc558bc308",
+        "bytes": 6459
+      },
+      {
+        "relative": "tools/development/equality.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/tools/development/equality.mjs",
+        "sha256": "db2999aa879e0bc6c6359d37c19e7589c60d34b2b143d0ed6ecbc23eabfec951",
+        "bytes": 30150
+      },
+      {
+        "relative": "tools/development/process.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/tools/development/process.mjs",
+        "sha256": "fe6afbc8964f695e3b7bfe8c636b6da6295fd7265fcdebbf58839f3eafce4989",
+        "bytes": 3013
+      },
+      {
+        "relative": "tools/development/release.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/tools/development/release.mjs",
+        "sha256": "da2c88a9cc1b641d03dddfbe2c39fc5a3ea5c724e14993c9d68fa971727809a0",
+        "bytes": 12981
+      },
+      {
+        "relative": "tools/development/workflow.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/tools/development/workflow.mjs",
+        "sha256": "1158d3e7fb28ebcf37caba0d32f34cbcb762d0987bff472c385a375bbeb793ff",
+        "bytes": 18124
+      },
+      {
+        "relative": "tools/native-build.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/tools/native-build.mjs",
+        "sha256": "a76f2c027459f7ffdb9fc16dc450ee33e0f39c74568df4c74d03309e662c9117",
+        "bytes": 4027
+      },
+      {
+        "relative": "tools/node-resource-args.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/tools/node-resource-args.mjs",
+        "sha256": "6aefb3aee9b69b0c25d68edbf0ada6a57ba93e277d3adb8d232dfa6dff01d758",
+        "bytes": 685
+      },
+      {
+        "relative": "tools/typed-driver.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/tools/typed-driver.mjs",
+        "sha256": "43c4df618476ba6ae6057d468d7147af0a85be0cd4f84e18f5f124f58d7f47c3",
+        "bytes": 48273
+      }
+    ],
+    "extraVerificationFiles": [
+      "dist/release.json",
+      "tools/development/release.mjs",
+      "tools/development/workflow.mjs",
+      "tools/development/equality.mjs",
+      "tools/development/process.mjs",
+      "tools/conformance/inventory.mjs"
+    ],
+    "noUpstreamCheckout": true,
+    "note": "No upstream checkout is copied or supplied; historical absolute provenance paths remain data in the preserved bootstrap report. This is relocation evidence, not an OS filesystem isolation claim.",
+    "createdUpstreamCheckout": false
+  },
+  "environment": {
+    "removedBendKeys": [],
+    "remainingBendKeys": [],
+    "removedNodeOptions": true,
+    "CC": "/home/ai/bend2/build/publish/bend/selfhost/build/phase1/clang/root/usr/bin/clang-16",
+    "CPATH": "/home/ai/bend2/build/publish/bend/selfhost/build/phase1/clang/root/usr/include",
+    "LIBRARY_PATH": "/home/ai/bend2/build/publish/bend/selfhost/build/phase1/clang/root/usr/lib/x86_64-linux-gnu",
+    "LD_LIBRARY_PATH": "/home/ai/bend2/build/publish/bend/selfhost/build/phase1/clang/root/usr/lib/x86_64-linux-gnu"
+  },
+  "toolchain": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase1/clang/root/usr/lib/llvm-16/bin/clang",
+    "sha256": "8a3f27cb0d8904a46986cbcc6437c2049939204d1c9f7caa3898c36ba067c0e2",
+    "bytes": 145096
+  },
+  "runner": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/tools/release-smoke.mjs",
+    "sha256": "b598f413ae1168ff13723067a80c729c6961c3d6ae39f834dcbbbdff2cc09b92",
+    "bytes": 9205
+  },
+  "steps": [
+    {
+      "name": "ordinary release integrity before",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "tools/development/release.mjs",
+        "--verify"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 282,
+      "error": null,
+      "stdout": "logs/00.stdout",
+      "stderr": "logs/00.stderr",
+      "outputSha256": "5f73bc0b8f71136dcbe15de64a494caf4546ac57968832053efc3763f1182f18",
+      "expected": "structured output predicate",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "ordinary CLI version",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "--version"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 28,
+      "error": null,
+      "stdout": "logs/01.stdout",
+      "stderr": "logs/01.stderr",
+      "outputSha256": "a0aebc47f54e1cfbd85791bcb438bb01d10acef341be4a9e693f2508a9d979f9",
+      "expected": "structured output predicate",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "ordinary base-u32 check",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/tests/conformance/typed-smoke/base-u32.bend",
+        "--check-only"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 58,
+      "error": null,
+      "stdout": "logs/02.stdout",
+      "stderr": "logs/02.stderr",
+      "outputSha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1",
+      "expected": "structured output predicate",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "ordinary base-u32 interpreter",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/tests/conformance/typed-smoke/base-u32.bend",
+        "--interpret"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 3,
+      "error": null,
+      "stdout": "logs/03.stdout",
+      "stderr": "logs/03.stderr",
+      "outputSha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+      "expected": "42\n",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "ordinary base-u32 emit JS",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/tests/conformance/typed-smoke/base-u32.bend",
+        "-o",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/ordinary/base-u32/program.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 0,
+      "error": null,
+      "stdout": "logs/04.stdout",
+      "stderr": "logs/04.stderr",
+      "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected": "",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "ordinary base-u32 run JS",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/ordinary/base-u32/program.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 3,
+      "error": null,
+      "stdout": "logs/05.stdout",
+      "stderr": "logs/05.stderr",
+      "outputSha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+      "expected": "42\n",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "ordinary base-u32 emit and build CPU",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/tests/conformance/typed-smoke/base-u32.bend",
+        "--cpu",
+        "-o",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/ordinary/base-u32/program.c",
+        "-o",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/ordinary/base-u32/program.bin"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 0,
+      "error": null,
+      "stdout": "logs/06.stdout",
+      "stderr": "logs/06.stderr",
+      "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected": "",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "ordinary base-u32 run CPU",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost",
+      "command": [
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/ordinary/base-u32/program.bin",
+        "--threads",
+        "1"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 3,
+      "error": null,
+      "stdout": "logs/07.stdout",
+      "stderr": "logs/07.stderr",
+      "outputSha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+      "expected": "42\n",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "ordinary user-clo-apply check",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "/home/ai/bend2/build/publish/bend/tests/check/name_owned_def.bend",
+        "--check-only"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 58,
+      "error": null,
+      "stdout": "logs/08.stdout",
+      "stderr": "logs/08.stderr",
+      "outputSha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1",
+      "expected": "structured output predicate",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "ordinary user-clo-apply interpreter",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "/home/ai/bend2/build/publish/bend/tests/check/name_owned_def.bend",
+        "--interpret"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 8,
+      "error": null,
+      "stdout": "logs/09.stdout",
+      "stderr": "logs/09.stderr",
+      "outputSha256": "e4c48023cd491cf91d029c766523a47bdbd7dfa2e040add5b220029cb674fd17",
+      "expected": "False{}\n",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "ordinary user-clo-apply emit JS",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "/home/ai/bend2/build/publish/bend/tests/check/name_owned_def.bend",
+        "-o",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/ordinary/user-clo-apply/program.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 0,
+      "error": null,
+      "stdout": "logs/10.stdout",
+      "stderr": "logs/10.stderr",
+      "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected": "",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "ordinary user-clo-apply run JS",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/ordinary/user-clo-apply/program.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 8,
+      "error": null,
+      "stdout": "logs/11.stdout",
+      "stderr": "logs/11.stderr",
+      "outputSha256": "e4c48023cd491cf91d029c766523a47bdbd7dfa2e040add5b220029cb674fd17",
+      "expected": "False{}\n",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "ordinary user-clo-apply emit and build CPU",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "/home/ai/bend2/build/publish/bend/tests/check/name_owned_def.bend",
+        "--cpu",
+        "-o",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/ordinary/user-clo-apply/program.c",
+        "-o",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/ordinary/user-clo-apply/program.bin"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 0,
+      "error": null,
+      "stdout": "logs/12.stdout",
+      "stderr": "logs/12.stderr",
+      "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected": "",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "ordinary user-clo-apply run CPU",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost",
+      "command": [
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/ordinary/user-clo-apply/program.bin",
+        "--threads",
+        "1"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 8,
+      "error": null,
+      "stdout": "logs/13.stdout",
+      "stderr": "logs/13.stderr",
+      "outputSha256": "e4c48023cd491cf91d029c766523a47bdbd7dfa2e040add5b220029cb674fd17",
+      "expected": "False{}\n",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "ordinary compact-nat check",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/tests/phase9-literals/fixtures/nat-boundaries.bend",
+        "--check-only"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 58,
+      "error": null,
+      "stdout": "logs/14.stdout",
+      "stderr": "logs/14.stderr",
+      "outputSha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1",
+      "expected": "structured output predicate",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "ordinary compact-nat interpreter",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/tests/phase9-literals/fixtures/nat-boundaries.bend",
+        "--interpret"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 36,
+      "error": null,
+      "stdout": "logs/15.stdout",
+      "stderr": "logs/15.stderr",
+      "outputSha256": "2857e73b2e4ad70ba3ae4aea0267ba52a7254df6f2ae6e3997637bfd62a0530c",
+      "expected": "[0n, 256n, 257n, 300n, 4294967295n]\n",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "ordinary compact-nat emit JS",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/tests/phase9-literals/fixtures/nat-boundaries.bend",
+        "-o",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/ordinary/compact-nat/program.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 0,
+      "error": null,
+      "stdout": "logs/16.stdout",
+      "stderr": "logs/16.stderr",
+      "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected": "",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "ordinary compact-nat run JS",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/ordinary/compact-nat/program.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 36,
+      "error": null,
+      "stdout": "logs/17.stdout",
+      "stderr": "logs/17.stderr",
+      "outputSha256": "2857e73b2e4ad70ba3ae4aea0267ba52a7254df6f2ae6e3997637bfd62a0530c",
+      "expected": "[0n, 256n, 257n, 300n, 4294967295n]\n",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "ordinary compact-nat emit and build CPU",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/tests/phase9-literals/fixtures/nat-boundaries.bend",
+        "--cpu",
+        "-o",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/ordinary/compact-nat/program.c",
+        "-o",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/ordinary/compact-nat/program.bin"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 0,
+      "error": null,
+      "stdout": "logs/18.stdout",
+      "stderr": "logs/18.stderr",
+      "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected": "",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "ordinary compact-nat run CPU",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost",
+      "command": [
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/ordinary/compact-nat/program.bin",
+        "--threads",
+        "1"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 36,
+      "error": null,
+      "stdout": "logs/19.stdout",
+      "stderr": "logs/19.stderr",
+      "outputSha256": "2857e73b2e4ad70ba3ae4aea0267ba52a7254df6f2ae6e3997637bfd62a0530c",
+      "expected": "[0n, 256n, 257n, 300n, 4294967295n]\n",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "ordinary release integrity after",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "tools/development/release.mjs",
+        "--verify"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 282,
+      "error": null,
+      "stdout": "logs/20.stdout",
+      "stderr": "logs/20.stderr",
+      "outputSha256": "5f73bc0b8f71136dcbe15de64a494caf4546ac57968832053efc3763f1182f18",
+      "expected": "structured output predicate",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "relocated release integrity before",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "tools/development/release.mjs",
+        "--verify"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 282,
+      "error": null,
+      "stdout": "logs/21.stdout",
+      "stderr": "logs/21.stderr",
+      "outputSha256": "5f73bc0b8f71136dcbe15de64a494caf4546ac57968832053efc3763f1182f18",
+      "expected": "structured output predicate",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "relocated CLI version",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "--version"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 28,
+      "error": null,
+      "stdout": "logs/22.stdout",
+      "stderr": "logs/22.stderr",
+      "outputSha256": "a0aebc47f54e1cfbd85791bcb438bb01d10acef341be4a9e693f2508a9d979f9",
+      "expected": "structured output predicate",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "relocated base-u32 check",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/smoke/base-u32.bend",
+        "--check-only"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 58,
+      "error": null,
+      "stdout": "logs/23.stdout",
+      "stderr": "logs/23.stderr",
+      "outputSha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1",
+      "expected": "structured output predicate",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "relocated base-u32 interpreter",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/smoke/base-u32.bend",
+        "--interpret"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 3,
+      "error": null,
+      "stdout": "logs/24.stdout",
+      "stderr": "logs/24.stderr",
+      "outputSha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+      "expected": "42\n",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "relocated base-u32 emit JS",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/smoke/base-u32.bend",
+        "-o",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/base-u32/program.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 0,
+      "error": null,
+      "stdout": "logs/25.stdout",
+      "stderr": "logs/25.stderr",
+      "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected": "",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "relocated base-u32 run JS",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/base-u32/program.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 3,
+      "error": null,
+      "stdout": "logs/26.stdout",
+      "stderr": "logs/26.stderr",
+      "outputSha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+      "expected": "42\n",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "relocated base-u32 emit and build CPU",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/smoke/base-u32.bend",
+        "--cpu",
+        "-o",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/base-u32/program.c",
+        "-o",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/base-u32/program.bin"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 0,
+      "error": null,
+      "stdout": "logs/27.stdout",
+      "stderr": "logs/27.stderr",
+      "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected": "",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "relocated base-u32 run CPU",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated",
+      "command": [
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/base-u32/program.bin",
+        "--threads",
+        "1"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 3,
+      "error": null,
+      "stdout": "logs/28.stdout",
+      "stderr": "logs/28.stderr",
+      "outputSha256": "084c799cd551dd1d8d5c5f9a5d593b2e931f5e36122ee5c793c1d08a19839cc0",
+      "expected": "42\n",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "relocated user-clo-apply check",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/smoke/user-clo-apply.bend",
+        "--check-only"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 58,
+      "error": null,
+      "stdout": "logs/29.stdout",
+      "stderr": "logs/29.stderr",
+      "outputSha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1",
+      "expected": "structured output predicate",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "relocated user-clo-apply interpreter",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/smoke/user-clo-apply.bend",
+        "--interpret"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 8,
+      "error": null,
+      "stdout": "logs/30.stdout",
+      "stderr": "logs/30.stderr",
+      "outputSha256": "e4c48023cd491cf91d029c766523a47bdbd7dfa2e040add5b220029cb674fd17",
+      "expected": "False{}\n",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "relocated user-clo-apply emit JS",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/smoke/user-clo-apply.bend",
+        "-o",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/user-clo-apply/program.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 0,
+      "error": null,
+      "stdout": "logs/31.stdout",
+      "stderr": "logs/31.stderr",
+      "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected": "",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "relocated user-clo-apply run JS",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/user-clo-apply/program.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 8,
+      "error": null,
+      "stdout": "logs/32.stdout",
+      "stderr": "logs/32.stderr",
+      "outputSha256": "e4c48023cd491cf91d029c766523a47bdbd7dfa2e040add5b220029cb674fd17",
+      "expected": "False{}\n",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "relocated user-clo-apply emit and build CPU",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/smoke/user-clo-apply.bend",
+        "--cpu",
+        "-o",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/user-clo-apply/program.c",
+        "-o",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/user-clo-apply/program.bin"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 0,
+      "error": null,
+      "stdout": "logs/33.stdout",
+      "stderr": "logs/33.stderr",
+      "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected": "",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "relocated user-clo-apply run CPU",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated",
+      "command": [
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/user-clo-apply/program.bin",
+        "--threads",
+        "1"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 8,
+      "error": null,
+      "stdout": "logs/34.stdout",
+      "stderr": "logs/34.stderr",
+      "outputSha256": "e4c48023cd491cf91d029c766523a47bdbd7dfa2e040add5b220029cb674fd17",
+      "expected": "False{}\n",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "relocated compact-nat check",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/smoke/compact-nat.bend",
+        "--check-only"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 58,
+      "error": null,
+      "stdout": "logs/35.stdout",
+      "stderr": "logs/35.stderr",
+      "outputSha256": "931f1e664a679af1355a9ca547ac1daef9f7b14137bc7cc21b110b0cc504b5b1",
+      "expected": "structured output predicate",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "relocated compact-nat interpreter",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/smoke/compact-nat.bend",
+        "--interpret"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 36,
+      "error": null,
+      "stdout": "logs/36.stdout",
+      "stderr": "logs/36.stderr",
+      "outputSha256": "2857e73b2e4ad70ba3ae4aea0267ba52a7254df6f2ae6e3997637bfd62a0530c",
+      "expected": "[0n, 256n, 257n, 300n, 4294967295n]\n",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "relocated compact-nat emit JS",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/smoke/compact-nat.bend",
+        "-o",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/compact-nat/program.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 0,
+      "error": null,
+      "stdout": "logs/37.stdout",
+      "stderr": "logs/37.stderr",
+      "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected": "",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "relocated compact-nat run JS",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/compact-nat/program.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 36,
+      "error": null,
+      "stdout": "logs/38.stdout",
+      "stderr": "logs/38.stderr",
+      "outputSha256": "2857e73b2e4ad70ba3ae4aea0267ba52a7254df6f2ae6e3997637bfd62a0530c",
+      "expected": "[0n, 256n, 257n, 300n, 4294967295n]\n",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "relocated compact-nat emit and build CPU",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "cli.mjs",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/smoke/compact-nat.bend",
+        "--cpu",
+        "-o",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/compact-nat/program.c",
+        "-o",
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/compact-nat/program.bin"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 0,
+      "error": null,
+      "stdout": "logs/39.stdout",
+      "stderr": "logs/39.stderr",
+      "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "expected": "",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "relocated compact-nat run CPU",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated",
+      "command": [
+        "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/compact-nat/program.bin",
+        "--threads",
+        "1"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 36,
+      "error": null,
+      "stdout": "logs/40.stdout",
+      "stderr": "logs/40.stderr",
+      "outputSha256": "2857e73b2e4ad70ba3ae4aea0267ba52a7254df6f2ae6e3997637bfd62a0530c",
+      "expected": "[0n, 256n, 257n, 300n, 4294967295n]\n",
+      "assertion": true,
+      "pass": true
+    },
+    {
+      "name": "relocated release integrity after",
+      "cwd": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated",
+      "command": [
+        "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+        "--stack-size=4096",
+        "--max-old-space-size=1024",
+        "tools/development/release.mjs",
+        "--verify"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "overflow": false,
+      "logBytes": 282,
+      "error": null,
+      "stdout": "logs/41.stdout",
+      "stderr": "logs/41.stderr",
+      "outputSha256": "5f73bc0b8f71136dcbe15de64a494caf4546ac57968832053efc3763f1182f18",
+      "expected": "structured output predicate",
+      "assertion": true,
+      "pass": true
+    }
+  ],
+  "changedOrdinaryInputs": [],
+  "changedRelocatedInputs": [],
+  "changedFixtures": [],
+  "outputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/ordinary/base-u32/program.bin",
+      "sha256": "f2e542e13c71a8fc8b829befaf834cb4e5d450bc512ace69ddb2c7bd07d92141",
+      "bytes": 27984
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/ordinary/base-u32/program.c",
+      "sha256": "083f61e4b413f4a8a19906695e59fceef871214e1ee2a079f50f4d2dfb9e6cbd",
+      "bytes": 86238
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/ordinary/base-u32/program.mjs",
+      "sha256": "1a51d7a79e6995061112f285aebb7a8f0e901457d27d0f2ef5dab18ed8e6fc08",
+      "bytes": 49376
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/ordinary/compact-nat/program.bin",
+      "sha256": "834d67d78ec0a627ddd00298614dbf25381e531657019e6af2c53e1bfcfc9493",
+      "bytes": 45832
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/ordinary/compact-nat/program.c",
+      "sha256": "c54b8532adec928c433c9a5f7a1617b1c1b3d50029216c4c69c45c4b0773072f",
+      "bytes": 93893
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/ordinary/compact-nat/program.mjs",
+      "sha256": "a7e5750827ab40caacaa7450f9e95eee19b95393d321d6faa967c88c042583aa",
+      "bytes": 48988
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/ordinary/user-clo-apply/program.bin",
+      "sha256": "4334324e36f4dbb3b6b6ed92e5956b77e47f5705df7cf33f3fa8018b57ad6ce4",
+      "bytes": 45760
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/ordinary/user-clo-apply/program.c",
+      "sha256": "2f26d8105497a32df3639782a6d3941bd3948fb9c011d218c3927a238bfad190",
+      "bytes": 89787
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/ordinary/user-clo-apply/program.mjs",
+      "sha256": "c8d5dbc5333db56c28119f51a10151b8c5c284cb69cd34789a25c647858790b5",
+      "bytes": 49604
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/base-u32/program.bin",
+      "sha256": "f2e542e13c71a8fc8b829befaf834cb4e5d450bc512ace69ddb2c7bd07d92141",
+      "bytes": 27984
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/base-u32/program.c",
+      "sha256": "083f61e4b413f4a8a19906695e59fceef871214e1ee2a079f50f4d2dfb9e6cbd",
+      "bytes": 86238
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/base-u32/program.mjs",
+      "sha256": "1a51d7a79e6995061112f285aebb7a8f0e901457d27d0f2ef5dab18ed8e6fc08",
+      "bytes": 49376
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/compact-nat/program.bin",
+      "sha256": "834d67d78ec0a627ddd00298614dbf25381e531657019e6af2c53e1bfcfc9493",
+      "bytes": 45832
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/compact-nat/program.c",
+      "sha256": "c54b8532adec928c433c9a5f7a1617b1c1b3d50029216c4c69c45c4b0773072f",
+      "bytes": 93893
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/compact-nat/program.mjs",
+      "sha256": "a7e5750827ab40caacaa7450f9e95eee19b95393d321d6faa967c88c042583aa",
+      "bytes": 48988
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/user-clo-apply/program.bin",
+      "sha256": "4334324e36f4dbb3b6b6ed92e5956b77e47f5705df7cf33f3fa8018b57ad6ce4",
+      "bytes": 45760
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/user-clo-apply/program.c",
+      "sha256": "2f26d8105497a32df3639782a6d3941bd3948fb9c011d218c3927a238bfad190",
+      "bytes": 89787
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/final-plan-03/release-smoke/checks/relocated/user-clo-apply/program.mjs",
+      "sha256": "c8d5dbc5333db56c28119f51a10151b8c5c284cb69cd34789a25c647858790b5",
+      "bytes": 49604
+    }
+  ],
+  "finished": "2026-09-30T23:33:40.624Z"
+}

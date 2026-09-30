@@ -18,7 +18,8 @@ From `selfhost/`, create a small configuration, with paths relative to that file
 {
   "upstream": ".bootstrap/upstream-phase23",
   "jobs": 1,
-  "cpu": "3"
+  "cpu": "3",
+  "heapMb": 1024
 }
 ```
 
@@ -27,6 +28,16 @@ Then run Node 24 with a new attempt directory:
 ```sh
 node tools/development/workflow.mjs run development.json build/dev/attempt-01
 ```
+
+The example limits each Node heap to 1 GiB and uses one worker. A heap limit
+does not bound total process memory. For larger campaigns, run heavy jobs
+serially and supervise the whole process tree. Phase32's
+[bounded runner](../selfhost/tools/performance/phase32/bounded-run.py) records RSS,
+checks available memory, enforces a deadline and stops tracked descendants.
+Its [resource policy and limitations](../design/phase32/bounded-resumption.md)
+and [executed stop controls](../implementation/phase32/supervisor-controls.md)
+describe what it guarantees. Recent checked builds plus the focused gate took
+about 40 seconds with the 1 GiB setting.
 
 The default selection is 36 frontend witnesses: the earlier 26 cases (including
 four imported-law trust refusals and the 6,000-character string) plus six exact
