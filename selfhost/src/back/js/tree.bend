@@ -88,7 +88,7 @@ def j_tree_body(+book: List<&2,KDef>, +d: KDef, +zero: KTerm, +succ: KTerm) -> S
   j_region_body(book, Nil{}, zero, j_arm_type(book, wnf(book, dt(d)), "Zero"), 1, "$value=", False{}) ++ "}" ++
   "while($top){const $frame=$frames[$top-1];if($frame.phase===0){$frame.left=$value;$frame.phase=1;" ++
   j_tree_enter(book, Nil{}, succ, j_arm_type(book, wnf(book, dt(d)), "Succ"), d, succ, 0, True{}) ++ "}" ++
-  j_tree_unwind(book, j_nat_loop_unwrap(succ)) ++ "$frames.length=--$top;}return $value;}"
+  j_tree_unwind(book, j_nat_loop_unwrap(succ)) ++ "--$top;}return $value;}"
 
 @unsafe
 def j_tree_enter(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +d: KDef, +succ: KTerm, +at: U32, +right: Bool) -> String:
@@ -101,8 +101,21 @@ def j_tree_enter(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTe
     j_tree_enter(book, Con{kt("Env", "", ix(body), 0, [kid(head, 0)]), env}, kid(body, 0),
       subst(kid(head, 1), ix(head), var(nm(body), ix(body))), d, succ, U32.inc(at), right), u =>
     j_nat_loop_next(book, env, ks(j_call_spine(kid(kid(body, kc(U32, right, u => 1, u => 0)), 0), Nil{})), dt(d), 0) ++
-    kc(String, right, u => "", u => "$frames[$top++]={args:[" ++ j_tree_aliases(succ) ++ "],phase:0,left:null};") ++
+    kc(String, right, u => "", u => j_tree_push(succ)) ++
     j_nat_loop_assign(da(d), 0) ++ "continue $visit;")
+
+@unsafe
+def j_tree_push(+succ: KTerm) -> String:
+  "const $saved=$frames[$top++];if($saved){" ++ j_tree_save(succ, 0) ++
+  "$saved.phase=0;$saved.left=null;}else $frames[$top-1]={args:[" ++
+  j_tree_aliases(succ) ++ "],phase:0,left:null};"
+
+@unsafe
+def j_tree_save(+t: KTerm, +at: U32) -> String:
+  +body = j_strip(t)
+  kc(String, String.eq(tg(body), "Lam"), u =>
+    "$saved.args[" ++ U32.show(at) ++ "]=" ++ j_local(ix(body)) ++ ";" ++
+    j_tree_save(kid(body, 0), U32.inc(at)), u => "")
 
 @unsafe
 def j_tree_aliases(+t: KTerm) -> String:
