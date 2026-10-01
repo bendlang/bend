@@ -5,9 +5,8 @@
 // socket is readable. What it finds, read makes a String (io_text) or a
 // List of bytes (io_list).
 function tcp_recv_with(socket, max, k, read, at) {
-  const ready = (r) => at === undefined ? r : { $: CID(Ready), value: r };
   if (Number(max) === 0) {
-    return io_tup(socket, ready(io_fail(22)));
+    return io_tup(socket, io_ready(at, io_fail(22)));
   }
   const sys = io_sys();
   const fd = socket;
@@ -18,16 +17,17 @@ function tcp_recv_with(socket, max, k, read, at) {
     if (n < 0) {
       const code = sys.errno();
       if (code !== again) {
-        return io_tup(socket, ready(io_fail(code)));
+        return io_tup(socket, io_ready(at, io_fail(code)));
       }
-      if (at !== undefined && performance.now() >= at) {
+      if (io_late(at)) {
         return io_tup(socket, { $: CID(Wait), rest: { $: CID(Unit) } });
       }
       io_park_on(fd, false, k, go, at);
       return undefined;
     }
-    const got = n === 0 ? { $: CID(None) } : { $: CID(Some), value: read(b, n) };
-    return io_tup(socket, ready(io_done(got)));
+    const got = n === 0 ? { $: CID(None) }
+      : { $: CID(Some), value: read(b, n) };
+    return io_tup(socket, io_ready(at, io_done(got)));
   };
   return go();
 }
@@ -42,11 +42,11 @@ function tcp_recv_bytes(socket, max, k) {
 
 // The try_ twins pass a deadline at: past it, a recv that would wait is Wait{}.
 function tcp_try_recv(socket, max, ms, k) {
-  return tcp_recv_with(socket, max, k, io_text, performance.now() + Number(ms));
+  return tcp_recv_with(socket, max, k, io_text, io_until(ms));
 }
 
 function tcp_try_recv_bytes(socket, max, ms, k) {
-  return tcp_recv_with(socket, max, k, io_list, performance.now() + Number(ms));
+  return tcp_recv_with(socket, max, k, io_list, io_until(ms));
 }
 
 io_eff(CID(TCP.recv), tcp_recv);

@@ -5645,6 +5645,15 @@ static Term io_list(Env e, const char* p, u64 n) {
 #define io_done(e, v)   io_box(e, CID(Done), v)
 #define io_res(e, w, v) ((w)->code ? io_fail(e, (w)->code, NULL) \
   : io_done(e, v))
+#define io_until(ms)    (io_tick() + (u64)(ms) * 1000000ull)
+
+// EAGAIN with the try_ deadline w->time (0: none) not passed: wait again.
+#define io_again(w) ((w)->code == EAGAIN \
+  && ((w)->time == 0 || io_tick() < (w)->time))
+
+// Wait{rest} past a try_'s deadline, else r, in Ready{} for a try_.
+#define io_poll_end(e, w, rest, r) ((w)->code == EAGAIN \
+  ? io_box(e, CID(Wait), rest) : (w)->time ? io_box(e, CID(Ready), r) : (r))
 
 static Term io_box(Env e, u64 cid, Term v) {
   u64 l = heap_alloc(e, 0);
@@ -6274,6 +6283,20 @@ function io_fail(code) {
 
 function io_done(value) {
   return { $: "Done", value };
+}
+
+function io_until(ms) {
+  return performance.now() + Number(ms);
+}
+
+// Past the try_ deadline at (undefined: none).
+function io_late(at) {
+  return at !== undefined && performance.now() >= at;
+}
+
+// r, in Ready{} for a try_ (one with a deadline at).
+function io_ready(at, r) {
+  return at === undefined ? r : { $: "Ready", value: r };
 }
 
 function io_tup(...xs) {

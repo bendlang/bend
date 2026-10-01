@@ -4,7 +4,6 @@
 // Sends what is left; a full socket (non-blocking, so EAGAIN) parks the
 // computation until the socket is writable, and the loop resumes here.
 function tcp_send_with(socket, b, k, make, at) {
-  const ready = (r) => at === undefined ? r : { $: CID(Ready), value: r };
   const sys = io_sys();
   const fd = socket;
   const again = sys.mac ? 35 : 11;
@@ -17,17 +16,18 @@ function tcp_send_with(socket, b, k, make, at) {
         if (code !== again) {
           const fail = io_fail(code);
           fail.error = io_tup(fail.error, make(part, part.length));
-          return io_tup(socket, ready(fail));
+          return io_tup(socket, io_ready(at, fail));
         }
-        if (at !== undefined && performance.now() >= at) {
-          return io_tup(socket, { $: CID(Wait), rest: make(part, part.length) });
+        if (io_late(at)) {
+          const rest = make(part, part.length);
+          return io_tup(socket, { $: CID(Wait), rest: rest });
         }
         io_park_on(fd, true, k, () => go(off), at);
         return undefined;
       }
       off += n;
     }
-    return io_tup(socket, ready(io_done({ $: CID(Unit) })));
+    return io_tup(socket, io_ready(at, io_done({ $: CID(Unit) })));
   };
   return go(0);
 }
@@ -40,7 +40,7 @@ function tcp_send_bytes_with(socket, data, k, at) {
   }
   const fail = io_fail(22);
   fail.error = io_tup(fail.error, data);
-  return io_tup(socket, at === undefined ? fail : { $: CID(Ready), value: fail });
+  return io_tup(socket, io_ready(at, fail));
 }
 
 function tcp_send(socket, data, k) {
@@ -53,12 +53,11 @@ function tcp_send_bytes(socket, data, k) {
 
 // The try_ twins pass a deadline at: past it, a waiting send is Wait{rest}.
 function tcp_try_send(socket, data, ms, k) {
-  return tcp_send_with(socket, io_bytes(data), k, io_text,
-    performance.now() + Number(ms));
+  return tcp_send_with(socket, io_bytes(data), k, io_text, io_until(ms));
 }
 
 function tcp_try_send_bytes(socket, data, ms, k) {
-  return tcp_send_bytes_with(socket, data, k, performance.now() + Number(ms));
+  return tcp_send_bytes_with(socket, data, k, io_until(ms));
 }
 
 io_eff(CID(TCP.send), tcp_send);

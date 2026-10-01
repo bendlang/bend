@@ -26,6 +26,7 @@ static u32      chan_idle = ~0u;
 #define chan_some(e, v) io_box(e, CID(Some), v)
 #define chan_none       term_pak(CID(None), 0)
 #define chan_done(e)    io_done(e, term_pak(CID(Unit), 0))
+#define chan_rest(item) ((item) == TERM_HOLE ? term_pak(CID(Unit), 0) : (item))
 
 static Term chan_open(u32 room) {
   u32 i = chan_idle;
@@ -74,8 +75,7 @@ static Term chan_late(Env e, IoWork* t) {
     return IO_PARK;
   }
   chan_cut(&chan_rows[t->word].wait, w);
-  Term rest = w->item == TERM_HOLE ? term_pak(CID(Unit), 0) : w->item;
-  w->item = io_box(e, CID(Wait), rest);
+  w->item = io_box(e, CID(Wait), chan_rest(w->item));
   w->made = 0;
   io_push(&io_runs, w);
   free(t);
@@ -192,10 +192,9 @@ static Term chan_try(Env e, ChanRow* row, IoWork* w, Term x, Term item,
     return io_box(e, CID(Ready), x);
   }
   if (ms == 0) {
-    return io_box(e, CID(Wait),
-      item == TERM_HOLE ? term_pak(CID(Unit), 0) : item);
+    return io_box(e, CID(Wait), chan_rest(item));
   }
-  return chan_park(row, w, item, io_tick() + (u64)ms * 1000000ull);
+  return chan_park(row, w, item, io_until(ms));
 }
 
 #ifdef CID(Chan.new)

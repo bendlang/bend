@@ -6,40 +6,33 @@
 static Term udp_send_to_more(Env e, IoWork* w) {
   struct sockaddr_in at;
   int     fd = (int)w->hand;
-  u64     by = w->time;
   ssize_t n  = -1;
   errno      = EINVAL;
   if (io_sys_addr(w->text, (u32)w->made, &at) == 0) {
     n = sendto(fd, w->data, w->size, 0, (struct sockaddr*)&at, sizeof(at));
   }
   io_sys_end(w, n);
-  if (w->code == EAGAIN && (by == 0 || io_tick() < by)) {
-    return io_wait_on(w, fd, POLLOUT, by, udp_send_to_more);
+  if (io_again(w)) {
+    return io_wait_on(w, fd, POLLOUT, w->time, udp_send_to_more);
   }
-  Term r = io_done(e, term_pak(CID(Unit), 0));
-  if (w->code == EAGAIN) {
-    r = io_box(e, CID(Wait), io_str(e, w->data, w->size));
-  } else if (w->code != 0) {
-    const char* s = strerror((int)w->code);
-    r = io_box(e, CID(Fail), io_tup(e, io_tup(e, w->code,
-      io_str(e, s, strlen(s))), io_str(e, w->data, w->size)));
-  }
-  if (by != 0 && w->code != EAGAIN) {
-    r = io_box(e, CID(Ready), r);
-  }
+  const char* s = strerror((int)w->code);
+  Term r = io_poll_end(e, w, io_str(e, w->data, w->size), w->code == 0
+    ? io_done(e, term_pak(CID(Unit), 0)) : io_box(e, CID(Fail), io_tup(e,
+      io_tup(e, w->code, io_str(e, s, strlen(s))),
+      io_str(e, w->data, w->size))));
   free(w->text);
   free(w->data);
   return io_tup(e, io_hand(w->hand), r);
 }
 
-// by is the try_ deadline (past it, Wait{data}), 0 for the blocking twin.
-static Term udp_send_to_start(Env e, Term* f, IoWork* w, u64 by) {
+// at is the try_ deadline (past it, Wait{data}), 0 for the blocking twin.
+static Term udp_send_to_start(Env e, Term* f, IoWork* w, u64 at) {
   uint64_t hn = 0;
   w->hand = (intptr_t)io_hand_v(f[0]);
   w->text = io_cstr(e, f[1], &hn);
   w->made = (intptr_t)f[2];
   w->data = io_cstr(e, f[3], &w->size);
-  w->time = by;
+  w->time = at;
   if (io_nul(w->text, hn)) {
     free(w->text);
     w->text = io_mem(strdup("-"));
@@ -62,7 +55,7 @@ static void __attribute__((constructor)) udp_send_to_use(void) {
 #ifdef CID(UDP.try_send_to)
 
 Term udp_try_send_to_run(Env e, Term* f, IoWork* w) {
-  return udp_send_to_start(e, f, w, io_tick() + (u64)f[4] * 1000000ull);
+  return udp_send_to_start(e, f, w, io_until(f[4]));
 }
 
 static void __attribute__((constructor)) udp_try_send_to_use(void) {

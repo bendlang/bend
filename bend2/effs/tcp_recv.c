@@ -7,17 +7,13 @@
 static Term tcp_recv_with(Env e, IoWork* w, IoPack more,
   Term (*read)(Env, const char*, u64)) {
   int fd  = (int)w->hand;
-  u64 at  = w->time;
   w->size = io_sys_end(w, recv(fd, w->data, (size_t)w->made, 0));
-  if (w->code == EAGAIN && (at == 0 || io_tick() < at)) {
-    return io_wait_on(w, fd, POLLIN, at, more);
+  if (io_again(w)) {
+    return io_wait_on(w, fd, POLLIN, w->time, more);
   }
-  Term r = w->code == EAGAIN ? io_box(e, CID(Wait), term_pak(CID(Unit), 0))
-    : io_res(e, w, w->size == 0 ? term_pak(CID(None), 0)
-      : io_box(e, CID(Some), read(e, w->data, w->size)));
-  if (at != 0 && w->code != EAGAIN) {
-    r = io_box(e, CID(Ready), r);
-  }
+  Term r = io_poll_end(e, w, term_pak(CID(Unit), 0), io_res(e, w,
+    w->size == 0 ? term_pak(CID(None), 0)
+      : io_box(e, CID(Some), read(e, w->data, w->size))));
   free(w->data);
   return io_tup(e, io_hand(w->hand), r);
 }
@@ -27,8 +23,9 @@ static Term tcp_recv_start(Env e, Term* f, IoWork* w, IoPack more, u64 at) {
   w->hand = (intptr_t)io_hand_v(f[0]);
   w->time = at;
   if (f[1] == 0) {
-    Term r = io_fail(e, EINVAL, NULL);
-    return io_tup(e, io_hand(w->hand), w->time ? io_box(e, CID(Ready), r) : r);
+    w->code = EINVAL;
+    return io_tup(e, io_hand(w->hand), io_poll_end(e, w,
+      term_pak(CID(Unit), 0), io_fail(e, EINVAL, NULL)));
   }
   w->made = f[1] < INT32_MAX ? (intptr_t)f[1] : INT32_MAX;
   w->data = io_mem(malloc((size_t)w->made));
@@ -74,8 +71,7 @@ static void __attribute__((constructor)) tcp_recv_bytes_use(void) {
 #ifdef CID(TCP.try_recv)
 
 Term tcp_try_recv_run(Env e, Term* f, IoWork* w) {
-  return tcp_recv_start(e, f, w, tcp_recv_more,
-    io_tick() + (u64)f[2] * 1000000ull);
+  return tcp_recv_start(e, f, w, tcp_recv_more, io_until(f[2]));
 }
 
 static void __attribute__((constructor)) tcp_try_recv_use(void) {
@@ -87,8 +83,7 @@ static void __attribute__((constructor)) tcp_try_recv_use(void) {
 #ifdef CID(TCP.try_recv_bytes)
 
 Term tcp_try_recv_bytes_run(Env e, Term* f, IoWork* w) {
-  return tcp_recv_start(e, f, w, tcp_recv_bytes_more,
-    io_tick() + (u64)f[2] * 1000000ull);
+  return tcp_recv_start(e, f, w, tcp_recv_bytes_more, io_until(f[2]));
 }
 
 static void __attribute__((constructor)) tcp_try_recv_bytes_use(void) {
