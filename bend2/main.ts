@@ -779,8 +779,7 @@ function term_refs(tm: unknown, out: Set<string>): void {
   }
 }
 
-// A closed reader ends output, not the command: --checkup may still reach
-// an import that fails, so EPIPE must not choose the command's exit status.
+// cli_say writes text to fd, and drops it if the reader has left (EPIPE).
 function cli_say(fd: number, text: string): void {
   try {
     fs.writeSync(fd, text);
