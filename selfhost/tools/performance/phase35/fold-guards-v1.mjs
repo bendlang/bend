@@ -1,0 +1,60 @@
+// Synthetic typed-plan refusal controls, separate from checked source tests.
+import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';
+import{createHash}from'node:crypto';import{pathToFileURL}from'node:url';
+const[configArg,outArg]=process.argv.slice(2);assert(configArg&&outArg,'usage: fold-guards.mjs CONFIG NEW_OUT');
+const config=JSON.parse(fs.readFileSync(configArg)),candidate=config.candidate??config,out=path.resolve(outArg);fs.mkdirSync(out,{recursive:false});
+const identity=file=>({file:fs.realpathSync(file),sha256:createHash('sha256').update(fs.readFileSync(file)).digest('hex')});
+const report={kind:'phase35-fold-recognizer-controls',complete:false,pass:false,inputs:[import.meta.filename,configArg,candidate.api].map(identity),observations:[]};
+fs.copyFileSync(import.meta.filename,path.join(out,'consumed-controls.mjs'));
+const list=xs=>xs.reduceRight((tail,head)=>({$:'Con',head,tail}),{$:'Nil'}),unlist=xs=>{const r=[];for(;xs.$==='Con';xs=xs.tail)r.push(xs.head);assert.equal(xs.$,'Nil');return r;};
+let serial=200;const t=(tag,name='',kids=[],id=0,quant=0)=>({$:'KTerm',tag,name,id,quant,kids:list(kids),removed:list([]),originBegin:0,originEnd:0});
+const ty=n=>t('ADT',n),u32=ty('U32'),expr=ty('Expr'),kind=()=>t('Typ','',[t('Qua','',[],0,2)]);
+const lit=(number,kind='U32')=>({$:'KLiteral',kind,number,text:'',originBegin:0,originEnd:0}),v=id=>t('Var','',[],id);
+const all=(a,b,q=2)=>t('All','',[a,b],serial++,q),lam=(id,b)=>t('Lam','',[b],id,2),mat=(n,a,r=t('Efq'))=>t('Mat',n,[a,r]);
+const app=(name,...args)=>args.reduce((f,a)=>t('App','',[f,a]),t('Ref',name));
+const def=(name,tag,typ,arity=0,value=t('Absent'),native=false,ctors=[])=>({$:'KDef',name,kind:tag,typ,arity,value,native,templates:0,ctors:list(ctors),unsafe:false});
+const ctor=(name,typ,arity=0,native=false)=>def(name,'Ctr',typ,arity,t('Absent'),native);
+function fixture(){const leaf=serial++,leafX=serial++,left=serial++,right=serial++,extra=serial++;
+ const rows=[];for(const[name,names]of[['U32',['U32']],['Word.Nil',['WNil']],['Word.Con',['WCon']]])rows.push(def(name,'ADT',kind(),0,t('Absent'),true,names.map(n=>ctor(n,ty(name),0,true))));
+ rows.push(def('Word','Def',kind(),0,t('Absent'),true));
+ const cs=[ctor('Leaf',all(u32,expr),1),ctor('Fork',all(expr,all(expr,expr)),2)];rows.push(def('Expr','ADT',kind(),0,t('Absent'),false,cs));
+ rows.push(def('U32.add','Def',all(u32,all(u32,u32)),2,t('Absent'),true));
+ const call=id=>app('fold',v(id),v(extra)),arm=b=>lam(left,lam(right,lam(extra,b)));
+ const leftArm=lam(leaf,lam(leafX,app('U32.add',v(leaf),v(leafX))));
+ const build=body=>def('fold','Def',all(expr,all(u32,u32)),2,mat('Leaf',leftArm,mat('Fork',arm(body))));
+ return{rows,cs,left,right,extra,leaf,leftArm,call,arm,build,d:build(app('U32.add',call(right),call(left)))};}
+try{
+ const source=fs.readFileSync(candidate.api,'utf8'),names=['j_fold_plan','j_fold_type','j_fold_emit'];for(const n of names)assert.equal(source.split('function $'+n+'$(').length,2);
+ const file=path.join(out,'diagnostic-api.mjs');fs.writeFileSync(file,source+'\nexport const phase35Fold={'+names.map(n=>n+':(...a)=>run_loop($'+n+'$(...a))').join(',')+'};\n',{flag:'wx'});
+ report.diagnostic={...identity(file),parentSha256:report.inputs[2].sha256,unchangedPrefixBytes:Buffer.byteLength(source)};
+ const api=(await import(pathToFileURL(file))).phase35Fold;
+ function probe(name,change=()=>{},expected=false){const f=fixture();change(f);const book=list([...f.rows,f.d]),plan=api.j_fold_plan(book,f.d);report.current={name,tag:plan.tag};assert.equal(plan.tag,expected?'JFold':'Absent',name);report.observations.push(report.current);delete report.current;return{f,book,plan};}
+ const normal=probe('complete-right-before-left-fold',()=>{},true),cases=unlist(normal.plan.kids),fork=cases.find(c=>c.name==='Fork'),order=unlist(unlist(fork.kids)[2].kids);
+ assert.deepEqual(order.map(x=>x.id),[normal.f.right,normal.f.left]);
+ const emit=api.j_fold_emit(normal.book,{...normal.f.d,value:normal.plan});assert(emit.includes('$fold:for(;;)')&&emit.includes('while($top)'));new Function('$p0','$p1',emit);
+ probe('changed-extra-argument',f=>{f.d=f.build(app('U32.add',app('fold',v(f.right),lit(3)),f.call(f.left)));});
+ probe('duplicate-child',f=>{f.d=f.build(app('U32.add',f.call(f.left),f.call(f.left)));});
+ probe('missing-child',f=>{f.d=f.build(f.call(f.left));});
+ probe('raw-child-result',f=>{f.d=f.build(v(f.left));});
+ probe('nonchild-selfcall',f=>{f.d=f.build(app('U32.add',app('fold',lit(1),v(f.extra)),f.call(f.left)));});
+ probe('partial-selfcall',f=>{f.d=f.build(app('U32.add',app('fold',v(f.right)),f.call(f.left)));});
+ probe('foreign-helper',f=>{f.d=f.build(app('other',f.call(f.left),f.call(f.right)));});
+ probe('conditional-demand',f=>{f.d=f.build(t('App','',[mat('True',f.call(f.left),mat('False',f.call(f.right))),t('Ctr','True')]));});
+ probe('let-demand',f=>{f.d=f.build(t('Let','',[t('Bind','',[f.call(f.left)],serial++,2),f.call(f.right)]));});
+ probe('illtyped-native-operand',f=>{f.d=f.build(app('U32.add',app('U32.add',f.call(f.left),f.call(f.right)),lit(1,'F32')));});
+ probe('incomplete-cases',f=>{f.d.value=mat('Leaf',f.leftArm);});
+ probe('duplicate-constructor',f=>{f.d.value=mat('Leaf',f.leftArm,mat('Leaf',f.leftArm));});
+ probe('default-residual',f=>{f.d.value=mat('Leaf',f.leftArm,lam(serial++,lit(1)));});
+ probe('duplicate-binders',f=>{f.d.value=mat('Leaf',f.leftArm,mat('Fork',lam(f.left,lam(f.left,lam(f.extra,app('U32.add',f.call(f.left),f.call(f.left)))))));});
+ probe('erased-first-input',f=>{f.d.typ=all(expr,all(u32,u32),0);});
+ probe('wrong-result',f=>{f.d.typ=all(expr,all(u32,expr));});
+ probe('template-function',f=>{f.d.templates=1;});
+ probe('native-function',f=>{f.d.native=true;});
+ probe('constructor-three-fields',f=>{f.cs[1].arity=3;f.cs[1].typ=all(expr,all(expr,all(expr,expr)));});
+ probe('constructor-erased-field',f=>{f.cs[1].typ=all(expr,all(expr,expr),0);});
+ probe('constructor-other-recursive-type',f=>{f.cs[1].typ=all(ty('Other'),all(expr,expr));});
+ probe('constructor-native',f=>{f.cs[1].native=true;});
+ probe('constructor-incomplete-owner',f=>{f.rows.find(x=>x.name==='Expr').ctors=list(f.cs.concat(ctor('Last',expr)));});
+ for(const row of report.inputs)assert.deepEqual(identity(row.file),row);report.complete=report.pass=true;
+}catch(error){report.error=error.stack;process.exitCode=1;}
+fs.writeFileSync(path.join(out,'report.json'),JSON.stringify(report,null,2)+'\n',{flag:'wx'});console.log(JSON.stringify({complete:report.complete,pass:report.pass,observations:report.observations.length,error:report.error}));

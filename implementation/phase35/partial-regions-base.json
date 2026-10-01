@@ -1,0 +1,10 @@
+{
+  "base": "/home/ai/bend2/build/publish/bend",
+  "scratch": "/tmp/phase35-pure-l7gruiht",
+  "files": {
+    "selfhost/src/back/js/region.bend": "b177b3f5e642a19811a1bec98bbe99a8c00feb21269e5a620a5c6b6838ac0e50",
+    "selfhost/src/back/js/emit.bend": "67e8c10bf10cdd8c57c45973b6848f1665bad080d45bd276d2d0b2ab435266f3",
+    "selfhost/src/runtime/js/core.mjs": "985e11d0107cfd212555a50d2b2e75dbc3e4a3e6278a198092e82684ff037b4d",
+    "selfhost/src/compiler.json": "b58e3f32e1e59f992b44fa2964e21876227299ad9658af7ed63ac9b1e476fd1e"
+  }
+}

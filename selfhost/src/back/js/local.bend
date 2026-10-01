@@ -82,9 +82,10 @@ def j_region_local_check(+book: List<&2,KDef>, +ty: KTerm, +active: List<&2,Stri
 def j_region_local_check_head(+book: List<&2,KDef>, +ty: KTerm, +active: List<&2,String>, +fuel: U32) -> Maybe<&2,U32>:
   kc(Maybe<&2,U32>, j_region_scalar(book, ty), u => Some{fuel}, u =>
     kc(Maybe<&2,U32>, j_region_local_array(book, ty), u => Some{fuel}, u =>
+    kc(Maybe<&2,U32>, j_fold_type(book, ty), u => Some{fuel}, u =>
     kc(Maybe<&2,U32>, Bool.not(has_name(active, nm(ty))), u =>
       j_region_local_record_check(book, ty, j_region_local_ctor_head(book, ty),
-        kc(List<&2,String>, j_region_local_sigma(book, ty), u => active, u => Con{nm(ty), active}), fuel), u => None{})))
+        kc(List<&2,String>, j_region_local_sigma(book, ty), u => active, u => Con{nm(ty), active}), fuel), u => None{}))))
 
 @unsafe
 def j_region_local_record_check(+book: List<&2,KDef>, +ty: KTerm, +c: KDef, +active: List<&2,String>, +fuel: U32) -> Maybe<&2,U32>:

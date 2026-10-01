@@ -1,0 +1,118 @@
+--- a/selfhost/src/back/js/region.bend
++++ b/selfhost/src/back/js/region.bend
+@@ -394,7 +394,7 @@
+ 
+ @unsafe
+ def j_region_declarations(+book: List<&2,KDef>, +helpers: List<&2,KDef>) -> String:
+-  j_region_definitions(book, helpers)
++  j_region_definitions(book, j_region_inline_defs(helpers, helpers))
+ 
+ # Delimited codepoints preserve source identity without a private name table.
+ @unsafe
+@@ -438,7 +438,8 @@
+   kc(String, String.eq(tg(t), "JUnpack"), u => "{const $unpack=$p" ++ U32.show(ix(t)) ++
+     kc(String, j_region_local_vector(book, kid(t, 1)), u => "", u => ".a") ++ ";{" ++
+     j_region_field_bindings(ix(t), 0, qt(t)) ++ j_region_return(book, env, kid(t, 0), ty) ++ "}}", u =>
+-    "return " ++ j_expr(book, env, t, ty, False{}) ++ ";")))
++  kc(String, String.eq(tg(t), "JInline") || String.eq(tg(t), "JInlineRead"), u => j_region_inline_return(book, env, t, ty), u =>
++    "return " ++ j_expr(book, env, t, ty, False{}) ++ ";"))))
+ 
+ # Capture the input outside the field-binding scope. Nested unpacking may reuse
+ # the temporary, while parallel lets and initial-zero rebinding keep their scope.
+@@ -490,3 +491,77 @@
+ @unsafe
+ def j_region_unpack_done(+name: String, +arg: KTerm, +at: U32, +fields: U32, +s: JRegionBuild) -> JRegionBuild:
+   j_region_result(s, j_region_annotate(kt("JUnpack", name, at, fields, [j_region_term(s), arg]), kid(j_region_term(s), 1)))
++
++# Inline bounded private plans only after the closed-region proof. A shared
++# visit budget includes copied bodies; failure keeps the original helper intact.
++@unsafe
++def j_region_inline_defs(+helpers: List<&2,KDef>, +rest: List<&2,KDef>) -> List<&2,KDef>:
++  match rest:
++    case Nil{}: Nil{}
++    case Con{d, more}:
++      +s = j_region_inline_term(helpers, dv(d), 0, JRegionBuild{atom("Absent"), Nil{}, 2048, True{}})
++      Con{KDef{dn(d), dk(d), da(d), dx(d), dt(d), kc(KTerm, j_region_valid(s), u => j_region_term(s), u => dv(d)), dc(d), db(d), du(d)}, j_region_inline_defs(helpers, more)}
++
++@unsafe
++def j_region_inline_term(+helpers: List<&2,KDef>, +t: KTerm, +depth: U32, +s: JRegionBuild) -> JRegionBuild:
++  kc(JRegionBuild, j_region_valid(s) && U32.is_gt(j_region_fuel(s), 0), u =>
++    j_region_inline_children(helpers, t, depth, j_region_inline_terms(helpers, ks(t), depth, j_region_tick(s))), u => j_region_fail(s))
++
++@unsafe
++def j_region_inline_terms(+helpers: List<&2,KDef>, +xs: List<&2,KTerm>, +depth: U32, +s: JRegionBuild) -> JRegionBuild:
++  match xs:
++    case Nil{}: j_region_result(s, kt("JList", "", 0, 0, Nil{}))
++    case Con{h, rest}: j_region_inline_first(helpers, rest, depth, j_region_inline_term(helpers, h, depth, s))
++
++@unsafe
++def j_region_inline_first(+helpers: List<&2,KDef>, +rest: List<&2,KTerm>, +depth: U32, +s: JRegionBuild) -> JRegionBuild:
++  kc(JRegionBuild, j_region_valid(s), u =>
++    j_region_list_prepend(j_region_term(s), j_region_inline_terms(helpers, rest, depth, s)), u => s)
++
++@unsafe
++def j_region_inline_children(+helpers: List<&2,KDef>, +t: KTerm, +depth: U32, +s: JRegionBuild) -> JRegionBuild:
++  +d = lookup(helpers, nm(t))
++  kc(JRegionBuild, j_region_valid(s) && U32.is_lt(depth, 8) &&
++    (String.eq(tg(t), "JCall") || String.eq(tg(t), "JReadCall")) &&
++    String.eq(dk(d), "Def") && Bool.not(db(d)) && Bool.not(String.eq(tg(dv(d)), "Mat")), u =>
++    j_region_inline_done(t, da(d), ks(j_region_term(s)), j_region_inline_term(helpers,
++      kc(KTerm, String.eq(tg(t), "JReadCall"), u => kid(j_strip(dv(d)), 0), u => dv(d)), U32.inc(depth), s)),
++    u => j_region_result(s, k_with_children(t, ks(j_region_term(s)))))
++
++@unsafe
++def j_region_inline_done(+t: KTerm, +arity: U32, +args: List<&2,KTerm>, +s: JRegionBuild) -> JRegionBuild:
++  j_region_result(s, kt(kc(String, String.eq(tg(t), "JReadCall"), u => "JInlineRead", u => "JInline"), nm(t), arity, 0, Con{j_region_term(s), args}))
++
++@unsafe
++def j_region_inline_args(+t: KTerm) -> List<&2,KTerm>:
++  match ks(t):
++    case Con{body, args}: args
++    case Nil{}: Nil{}
++
++# Capture all arguments before introducing positional names: callers can use
++# those same names. Flatten a proved read only at its original producer point.
++@unsafe
++def j_region_inline_return(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm) -> String:
++  +read = String.eq(tg(t), "JInlineRead")
++  "{" ++ j_region_inline_values(book, env, j_region_inline_args(t), dt(lookup(book, nm(t))), 0, read) ++ "{" ++
++  j_region_inline_bind(0, kc(U32, read, u => U32.sub(ix(t), 1), u => ix(t))) ++
++  kc(String, read, u => "const $array=$i" ++ U32.show(ix(t)) ++ ";const $index=$i" ++ U32.show(U32.inc(ix(t))) ++
++    ";const $p" ++ U32.show(ix(t)) ++ "=$array;const $data=arraydata($array);const $p" ++ U32.show(U32.inc(ix(t))) ++
++    "=$data[Number($index)%$data.length];", u => "") ++
++  j_region_return(book, Nil{}, kid(t, 0), ty) ++ "}}"
++
++@unsafe
++def j_region_inline_values(+book: List<&2,KDef>, +env: List<&2,KTerm>, +args: List<&2,KTerm>, +ty: KTerm, +at: U32, +read: Bool) -> String:
++  match args:
++    case Nil{}: ""
++    case Con{h, rest}:
++      +head = wnf(book, ty)
++      kc(String, read && List.is_empty(&2, KTerm, rest), u =>
++        j_region_inline_values(book, env, ks(j_strip(h)), dt(lookup(book, "Array.get")), at, False{}), u =>
++        "const $i" ++ U32.show(at) ++ "=" ++ kc(String, U32.is_eq(qt(head), 0), u => "null", u => j_expr(book, env, h, kid(head, 0), False{})) ++ ";" ++
++        j_region_inline_values(book, env, rest, j_app_type(head, h), U32.inc(at), read))
++
++@unsafe
++def j_region_inline_bind(+at: U32, +total: U32) -> String:
++  kc(String, U32.is_eq(at, total), u => "", u =>
++    "const $p" ++ U32.show(at) ++ "=$i" ++ U32.show(at) ++ ";" ++ j_region_inline_bind(U32.inc(at), total))
+--- a/selfhost/src/back/js/emit.bend
++++ b/selfhost/src/back/js/emit.bend
+@@ -228,6 +228,7 @@
+ # types, arithmetic, arguments and parallel lets retain their shared emitter.
+ @unsafe
+ def j_expr_private(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +tail: Bool) -> String:
++  kc(String, String.eq(tg(t), "JInline") || String.eq(tg(t), "JInlineRead"), u => "(()=>{" ++ j_region_inline_return(book, env, t, ty) ++ "})()", u =>
+   kc(String, String.eq(tg(t), "JSlot"), u => "$p" ++ U32.show(ix(t)), u =>
+   kc(String, String.eq(tg(t), "JCall"), u => j_region_name(nm(t)) ++ "(" ++ j_apply_args(book, env, ks(t), dt(lookup(book, nm(t)))) ++ ")", u =>
+   kc(String, String.eq(tg(t), "JReadCall"), u => j_region_name(nm(t)) ++ "$get(" ++ j_region_read_args(book, env, ks(t), dt(lookup(book, nm(t)))) ++ ")", u =>
+@@ -236,7 +237,7 @@
+   kc(String, String.eq(tg(t), "JUnpack"), u => "((" ++ j_region_parameters(U32.inc(ix(t)), U32.inc(U32.add(ix(t), qt(t)))) ++ ")=>" ++
+     j_expr(book, env, kid(t, 0), ty, tail) ++ ")(" ++ j_region_field_reads("$p" ++ U32.show(ix(t)) ++ kc(String, j_region_local_vector(book, kid(t, 1)), u => "", u => ".a"), 0, qt(t)) ++ ")", u =>
+   kc(String, String.eq(tg(t), "JIf"), u => "(" ++ j_expr(book, env, kid(t, 0), kt("ADT", "Bool", 0, 0, Nil{}), False{}) ++ "?" ++
+-    j_expr(book, env, kid(t, 1), ty, tail) ++ ":" ++ j_expr(book, env, kid(t, 2), ty, tail) ++ ")", u => j_expr_on(book, env, t, ty, tail, tg(t)))))))))
++    j_expr(book, env, kid(t, 1), ty, tail) ++ ":" ++ j_expr(book, env, kid(t, 2), ty, tail) ++ ")", u => j_expr_on(book, env, t, ty, tail, tg(t))))))))))
+ 
+ @unsafe
+ def j_region_read_args(+book: List<&2,KDef>, +env: List<&2,KTerm>, +args: List<&2,KTerm>, +ty: KTerm) -> String:

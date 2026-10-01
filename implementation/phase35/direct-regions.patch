@@ -1,0 +1,86 @@
+--- a/selfhost/src/back/js/region.bend
++++ b/selfhost/src/back/js/region.bend
+@@ -117,7 +117,8 @@
+     case Nil{}: atom("Absent")
+     case Con{h, rest}:
+       kc(KTerm, U32.is_eq(ix(h), ix(t)), u =>
+-        kc(KTerm, String.eq(tg(h), "JEnv"), u => kt("JSlot", "", qt(h), 0, Nil{}), u => t),
++        kc(KTerm, String.eq(tg(h), "JEnv"), u => kt("JSlot", "", qt(h), 0, Nil{}), u =>
++          kc(KTerm, String.eq(tg(h), "JEnvNat"), u => kt("JNatRest", nm(h), qt(h), 0, Nil{}), u => t)),
+         u => j_region_variable(rest, t))
+ 
+ @unsafe
+@@ -191,7 +192,9 @@
+       kc(JRegionBuild, Bool.not(keep) && String.eq(tg(t), "Mat") && j_primitive_type(book, wnf(book, kid(ty, 0)), "Bool"),
+         u => j_region_match(book, env, t, ty, at, left, active, depth, s), u =>
+         kc(JRegionBuild, Bool.not(keep) && String.eq(tg(t), "Mat") && U32.is_eq(left, 1),
+-          u => j_region_unpack(book, env, t, ty, at, active, depth, s), u => j_region_fail(s)))), u => j_region_fail(s))
++          u => kc(JRegionBuild, j_primitive_type(book, wnf(book, kid(ty, 0)), "Nat"),
++            u => j_region_nat_select(book, env, t, ty, at, 0, active, depth, s),
++            u => j_region_unpack(book, env, t, ty, at, active, depth, s)), u => j_region_fail(s)))), u => j_region_fail(s))
+ 
+ @unsafe
+ def j_region_prefix_lam(+t: KTerm, +keep: Bool, +s: JRegionBuild) -> JRegionBuild:
+@@ -218,6 +221,41 @@
+   +yes = kc(KTerm, String.eq(tag, "True"), u => first, u => j_region_term(s))
+   +no = kc(KTerm, String.eq(tag, "True"), u => j_region_term(s), u => first)
+   j_region_result(s, j_region_annotate(kt("JIf", "", 0, 0, [cond, yes, no]), kid(first, 1)))
++
++# Finite Nat decisions inside an already guarded private region. Each branch
++# is analyzed normally, retaining live helper dependencies and leaf demand.
++# Remainder binders denote the original input minus the matched Succ depth.
++@unsafe
++def j_region_nat_select(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +at: U32, +offset: U32, +active: List<&2,String>, +depth: U32, +s: JRegionBuild) -> JRegionBuild:
++  kc(JRegionBuild, j_region_valid(s) && U32.is_gt(j_region_fuel(s), 0) && U32.is_le(offset, 64), u =>
++    j_region_nat_select_on(book, env, j_strip(t), wnf(book, ty), at, offset, active, depth, j_region_tick(s)), u => j_region_fail(s))
++
++@unsafe
++def j_region_nat_select_on(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +at: U32, +offset: U32, +active: List<&2,String>, +depth: U32, +s: JRegionBuild) -> JRegionBuild:
++  kc(JRegionBuild, String.eq(tg(ty), "All") && Bool.not(U32.is_eq(qt(ty), 0)) && j_primitive_type(book, wnf(book, kid(ty, 0)), "Nat"), u =>
++    kc(JRegionBuild, String.eq(tg(t), "Lam") && String.eq(j_l_name(t), ""), u =>
++      j_region_expr(book, Con{kt("JEnvNat", U32.show(offset), ix(t), at, [wnf(book, kid(ty, 0))]), env},
++        kid(t, 0), subst(kid(ty, 1), ix(ty), var(nm(t), ix(t))), "", active, depth, 0, s), u =>
++      j_region_nat_match(book, env, t, ty, at, offset, active, depth, s)), u => j_region_fail(s))
++
++@unsafe
++def j_region_nat_match(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +at: U32, +offset: U32, +active: List<&2,String>, +depth: U32, +s: JRegionBuild) -> JRegionBuild:
++  +rest = j_strip(kid(t, 1))
++  kc(JRegionBuild, String.eq(tg(t), "Mat") && String.eq(nm(t), "Zero") && U32.is_eq(terms_len(ks(t)), 2) &&
++    String.eq(tg(rest), "Mat") && String.eq(nm(rest), "Succ") && U32.is_eq(terms_len(ks(rest)), 2) &&
++    String.eq(tg(j_strip(kid(rest, 1))), "Efq") && U32.is_eq(terms_len(ks(j_strip(kid(rest, 1)))), 0), u =>
++      j_region_nat_first(book, env, t, ty, at, offset, active, depth,
++        j_region_expr(book, env, kid(t, 0), j_arm_type(book, ty, "Zero"), "", active, depth, 0, s)), u => j_region_fail(s))
++
++@unsafe
++def j_region_nat_first(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +at: U32, +offset: U32, +active: List<&2,String>, +depth: U32, +s: JRegionBuild) -> JRegionBuild:
++  kc(JRegionBuild, j_region_valid(s), u =>
++    j_region_nat_done(at, offset, j_region_term(s), j_region_nat_select(book, env, kid(j_strip(kid(t, 1)), 0),
++      j_arm_type(book, ty, "Succ"), at, U32.inc(offset), active, depth, s)), u => s)
++
++@unsafe
++def j_region_nat_done(+at: U32, +offset: U32, +first: KTerm, +s: JRegionBuild) -> JRegionBuild:
++  j_region_result(s, j_region_annotate(kt("JNatCase", "", at, offset, [first, j_region_term(s)]), kid(first, 1)))
+ 
+ @unsafe
+ def j_region_expr(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +tail: String, +active: List<&2,String>, +depth: U32, +level: U32, +s: JRegionBuild) -> JRegionBuild:
+--- a/selfhost/src/back/js/emit.bend
++++ b/selfhost/src/back/js/emit.bend
+@@ -231,6 +231,9 @@
+   kc(String, String.eq(tg(t), "JVirtual"), u => "[" ++ j_region_vector_names("$w", 0, ix(t)) ++ "]", u =>
+   kc(String, String.eq(tg(t), "JInline") || String.eq(tg(t), "JInlineRead"), u => "(()=>{" ++ j_region_inline_return(book, env, t, ty) ++ "})()", u =>
+   kc(String, String.eq(tg(t), "JSlot"), u => "$p" ++ U32.show(ix(t)), u =>
++  kc(String, String.eq(tg(t), "JNatRest"), u => "($p" ++ U32.show(ix(t)) ++ "-" ++ nm(t) ++ "n)", u =>
++  kc(String, String.eq(tg(t), "JNatCase"), u => "($p" ++ U32.show(ix(t)) ++ "===" ++ U32.show(qt(t)) ++ "n?" ++
++    j_expr(book, env, kid(t, 0), ty, tail) ++ ":" ++ j_expr(book, env, kid(t, 1), ty, tail) ++ ")", u =>
+   kc(String, String.eq(tg(t), "JCall"), u => j_region_name(nm(t)) ++ "(" ++ j_apply_args(book, env, ks(t), dt(lookup(book, nm(t)))) ++ ")", u =>
+   kc(String, String.eq(tg(t), "JReadCall"), u => j_region_name(nm(t)) ++ "$get(" ++ j_region_read_args(book, env, ks(t), dt(lookup(book, nm(t)))) ++ ")", u =>
+   kc(String, String.eq(tg(t), "JNative"), u => j_region_native_emit(book, env, t), u =>
+@@ -238,7 +241,7 @@
+   kc(String, String.eq(tg(t), "JUnpack"), u => "((" ++ j_region_parameters(U32.inc(ix(t)), U32.inc(U32.add(ix(t), qt(t)))) ++ ")=>" ++
+     j_expr(book, env, kid(t, 0), ty, tail) ++ ")(" ++ j_region_field_reads("$p" ++ U32.show(ix(t)) ++ kc(String, j_region_local_vector(book, kid(t, 1)), u => "", u => ".a"), 0, qt(t)) ++ ")", u =>
+   kc(String, String.eq(tg(t), "JIf"), u => "(" ++ j_expr(book, env, kid(t, 0), kt("ADT", "Bool", 0, 0, Nil{}), False{}) ++ "?" ++
+-    j_expr(book, env, kid(t, 1), ty, tail) ++ ":" ++ j_expr(book, env, kid(t, 2), ty, tail) ++ ")", u => j_expr_on(book, env, t, ty, tail, tg(t)))))))))))
++    j_expr(book, env, kid(t, 1), ty, tail) ++ ":" ++ j_expr(book, env, kid(t, 2), ty, tail) ++ ")", u => j_expr_on(book, env, t, ty, tail, tg(t)))))))))))))
+ 
+ @unsafe
+ def j_region_read_args(+book: List<&2,KDef>, +env: List<&2,KTerm>, +args: List<&2,KTerm>, +ty: KTerm) -> String:

@@ -1,0 +1,53 @@
+--- a/selfhost/src/back/js/region.bend
++++ b/selfhost/src/back/js/region.bend
+@@ -77,14 +77,13 @@
+ # Deferred constructor fields contain no computation, so the ordinary build
+ # thunks retain forcing order without extending the region's lifetime.
+ @unsafe
+-def j_region_field_values(+xs: List<&2,KTerm>, +left: U32) -> Bool:
++def j_region_field_values(+book: List<&2,KDef>, +xs: List<&2,KTerm>, +left: U32) -> Bool:
+   match xs:
+     case Nil{}: U32.is_eq(left, 0)
+     case Con{h, rest}:
+       +t = j_strip(h)
+-      kc(Bool, U32.is_gt(left, 0) && (String.eq(tg(t), "Var") || String.eq(tg(t), "Lit") ||
+-        (String.eq(tg(t), "Ctr") && U32.is_eq(terms_len(ks(t)), 0) && (String.eq(nm(t), "True") || String.eq(nm(t), "False")))),
+-        u => j_region_field_values(rest, U32.sub(left, 1)), u => False{})
++      kc(Bool, U32.is_gt(left, 0) && (j_region_field_atom(t) || j_region_field_compare(book, t)),
++        u => j_region_field_values(book, rest, U32.sub(left, 1)), u => False{})
+ 
+ @unsafe
+ def j_region_signature(+book: List<&2,KDef>, +ty: KTerm, +left: U32) -> Bool:
+@@ -287,7 +286,7 @@
+   +c = j_region_local_ctor(book, ty)
+   kc(JRegionBuild, j_region_local_type(book, ty) && String.eq(dk(c), "Ctr") && String.eq(dn(c), nm(t)) &&
+     U32.is_eq(terms_len(ks(t)), da(c)) &&
+-    kc(Bool, j_region_record(book, ty), u => j_region_field_values(ks(t), da(c)), u => True{}), u =>
++    kc(Bool, j_region_record(book, ty), u => j_region_field_values(book, ks(t), da(c)), u => True{}), u =>
+     j_region_constructor_done(book, t, ty, j_region_args(book, env, ks(t), j_region_local_fields(book, ty), active, depth, level, s)), u => j_region_fail(s))
+ 
+ @unsafe
+@@ -749,3 +748,23 @@
+   kc(Bool, U32.is_eq(left, 0), u => String.eq(nm(head), "F32"), u =>
+     kc(Bool, String.eq(tg(head), "All"), u => String.eq(nm(wnf(book, kid(head, 0))), "F32") ||
+       j_region_float_signature(book, kid(head, 1), U32.sub(left, 1)), u => False{}))
++
++# Primitive comparisons on inert scalar operands preserve deferred field demand.
++# No helper, constructor, conversion or Math method is evaluated by this rule.
++@unsafe
++def j_region_field_atom(+t: KTerm) -> Bool:
++  +body = j_strip(t)
++  String.eq(tg(body), "Var") || String.eq(tg(body), "Lit") ||
++    (String.eq(tg(body), "Ctr") && U32.is_eq(terms_len(ks(body)), 0) && (String.eq(nm(body), "True") || String.eq(nm(body), "False")))
++
++@unsafe
++def j_region_field_compare(+book: List<&2,KDef>, +t: KTerm) -> Bool:
++  +spine = j_call_spine(t, Nil{})
++  (String.starts_with(nm(spine), "U32.is_") || String.starts_with(nm(spine), "F32.is_")) &&
++    j_primitive_call(book, spine) && j_region_field_operands(ks(spine))
++
++@unsafe
++def j_region_field_operands(+xs: List<&2,KTerm>) -> Bool:
++  match xs:
++    case Nil{}: True{}
++    case Con{h, rest}: j_region_field_atom(h) && j_region_field_operands(rest)

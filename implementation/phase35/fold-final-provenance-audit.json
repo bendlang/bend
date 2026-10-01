@@ -1,0 +1,100 @@
+{
+  "kind": "phase35-independent-fold-final-provenance-audit",
+  "complete": true,
+  "pass": true,
+  "scope": "Read-only root-owned final API09 fold receipts and aggregate membership; no compiler, benchmark or new semantic execution. Other owner groups rely on their final audit.",
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/equality/api.mjs",
+    "sha256": "467bc7dec2751a94cb677c5eb2da22a8fb69ee3522c6e164cb2bfcc147a78d82",
+    "bytes": 1152428
+  },
+  "attempt": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/attempt.json",
+    "sha256": "e6a1aaa9543cfb98b0cc23a41951e54598b1fe9ccc30fc1c5a68cee396022cf3",
+    "bytes": 206454
+  },
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/final-plan-09/owner/recursive-folds/report.json",
+      "sha256": "f98f85c1f744e844e2d894ee9e2c603be73e4175bb924b7b936f2575835377ec",
+      "bytes": 8512
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/final-plan-09/owner/recursive-folds/cohort/derive.json",
+      "sha256": "c706c233364c42a0a47733b0da754fe17832823dc96cc922115b2407eb657e0e",
+      "bytes": 1904
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/final-plan-09/owner/recursive-folds/cohort/candidate.mjs.json",
+      "sha256": "c6c46273cdfba080220142168ac56f625c6286825c24fd7393af688d5fe64739",
+      "bytes": 4313
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/final-plan-09/owner/recursive-folds/fold-controls/report.json",
+      "sha256": "e78a3c310baf26eb4a1d957f56313b58fce2393779f8cd0a62220d4c5a096ca9",
+      "bytes": 63861
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/final-plan-09/owner/recursive-folds/fold-guards/report.json",
+      "sha256": "44d00cf35aa489f5e008bd82b0a523979826eb7b2d3a5bffd467305747175e91",
+      "bytes": 2832
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/final-owner-retry09-01/owner-report.json",
+      "sha256": "43d6f969894032ec74837934f3dd43e3071eab37b613b12c3145dd11011f38d6",
+      "bytes": 7179
+    }
+  ],
+  "checkedCandidateOutput": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/final-plan-09/owner/recursive-folds/cohort/candidate.mjs",
+    "sha256": "6a936026a9c6fd9675f1741c8ca0977d0a6d06b760004ac4370741708503b95b",
+    "bytes": 93000
+  },
+  "checkedSource": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/final-plan-09/owner/recursive-folds/consumed/fold-recursive.bend",
+    "sha256": "cd5f9ae2b6d46d6656ededb437d25e440e62d6aa9a061e20c93f47373009edf4",
+    "bytes": 2927
+  },
+  "oraclePoints": 27,
+  "boundaries": 57,
+  "numericPrototypeBoundaries": 12,
+  "recognizerCases": 24,
+  "admission": [
+    {
+      "name": "benchDeep",
+      "entries": 1
+    },
+    {
+      "name": "benchShared",
+      "entries": 1
+    },
+    {
+      "name": "benchWeight",
+      "entries": 1
+    },
+    {
+      "name": "benchRecord",
+      "entries": 1
+    }
+  ],
+  "deepLocalTreePoints": [
+    {
+      "kind": "candidate-deep-local-tree",
+      "n": 4096,
+      "expected": 8216,
+      "actual": 8216
+    },
+    {
+      "kind": "candidate-deep-local-tree",
+      "n": 50000,
+      "expected": 100024,
+      "actual": 100024
+    }
+  ],
+  "aggregateOwnerGroups": 15,
+  "releaseClaim": false,
+  "smallFixturePoints": 25,
+  "exportsPerPoint": 9,
+  "compilerVariantsPerPoint": 3,
+  "smallExportResultComparisons": 675
+}

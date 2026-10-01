@@ -1,0 +1,417 @@
+--- a/selfhost/src/back/js/region.bend
++++ b/selfhost/src/back/js/region.bend
+@@ -98,7 +98,7 @@
+   kc(Bool, String.eq(dk(d), "Def") && Bool.not(db(d)) && U32.is_eq(dx(d), 0) &&
+     U32.is_gt(da(d), 0) && U32.is_le(da(d), 32), u =>
+     kc(Bool, String.eq(tg(j_strip(dv(d))), "Lam") || String.eq(tg(j_strip(dv(d))), "Mat"),
+-      u => j_region_local_signature(book, dt(d), da(d)), u => False{}), u => False{})
++      u => j_region_local_signature(book, dt(d), da(d)) || j_pure_signature(book, dt(d), da(d)), u => False{}), u => False{})
+ 
+ @unsafe
+ def j_region_annotate(+t: KTerm, +ty: KTerm) -> KTerm:
+@@ -334,7 +334,7 @@
+       j_region_call_done(book, spine, ty, False{}, j_region_args(book, env, ks(spine), dt(d), active, depth, level, s)), u =>
+       kc(JRegionBuild, j_region_local_native(book, spine),
+         u => j_region_native_done(spine, ty, j_region_args(book, env, ks(spine), dt(d), active, depth, level, j_region_native_dependency(d, s))), u =>
+-        j_region_call_helper(book, env, spine, ty, active, depth, level, j_region_helper(book, d, active, depth, s)))), u => j_region_fail(s))
++        j_region_try_helper(book, env, spine, ty, active, depth, level, s, j_region_helper(book, d, active, depth, s)))), u => j_region_fail(s))
+ 
+ @unsafe
+ def j_region_call_helper(+book: List<&2,KDef>, +env: List<&2,KTerm>, +spine: KTerm, +ty: KTerm, +active: List<&2,String>, +depth: U32, +level: U32, +s: JRegionBuild) -> JRegionBuild:
+@@ -344,7 +344,8 @@
+ @unsafe
+ def j_region_call_done(+book: List<&2,KDef>, +spine: KTerm, +ty: KTerm, +private: Bool, +s: JRegionBuild) -> JRegionBuild:
+   j_region_result(s, j_region_annotate(kc(KTerm, private,
+-    u => kt(kc(String, j_region_read_call(book, spine, s), u => "JReadCall", u => "JCall"), nm(spine), 0, 0, ks(j_region_term(s))),
++    u => kt(kc(String, String.eq(tg(dv(lookup(j_region_helpers(s), nm(spine)))), "JResidual"), u => "JGeneric", u =>
++      kc(String, j_region_read_call(book, spine, s), u => "JReadCall", u => "JCall")), nm(spine), 0, 0, ks(j_region_term(s))),
+     u => j_region_app(ref(nm(spine)), ks(j_region_term(s)))), ty))
+ 
+ # Only a proved native read immediately consumed by a complete private pair
+@@ -389,7 +390,8 @@
+ 
+ @unsafe
+ def j_region_helper(+book: List<&2,KDef>, +d: KDef, +active: List<&2,String>, +depth: U32, +s: JRegionBuild) -> JRegionBuild:
+-  kc(JRegionBuild, String.eq(dk(lookup(j_region_helpers(s), dn(d))), "Def"), u => s, u =>
++  kc(JRegionBuild, String.eq(dk(lookup(j_region_helpers(s), dn(d))), "Def") &&
++    Bool.not(String.eq(tg(dv(lookup(j_region_helpers(s), dn(d)))), "JResidual")), u => s, u =>
+     kc(JRegionBuild, j_region_valid(s) && U32.is_lt(depth, 16) && U32.is_lt(j_region_def_count(j_region_helpers(s)), 32) &&
+       Bool.not(has_name(active, dn(d))), u =>
+       kc(JRegionBuild, j_region_capture_eligible(book, d), u =>
+@@ -419,7 +421,7 @@
+ @unsafe
+ def j_region_helper_done(+d: KDef, +s: JRegionBuild) -> JRegionBuild:
+   kc(JRegionBuild, j_region_valid(s) && U32.is_lt(j_region_def_count(j_region_helpers(s)), 32), u =>
+-    JRegionBuild{j_region_term(s), Con{KDef{dn(d), dk(d), da(d), dx(d), dt(d), j_region_term(s), dc(d), db(d), du(d)}, j_region_helpers(s)}, j_region_fuel(s), True{}},
++    JRegionBuild{j_region_term(s), Con{KDef{dn(d), dk(d), da(d), dx(d), dt(d), j_region_term(s), dc(d), db(d), du(d)}, j_pure_remove(j_region_helpers(s), dn(d))}, j_region_fuel(s), True{}},
+     u => j_region_fail(s))
+ 
+ @unsafe
+@@ -449,7 +451,7 @@
+   match helpers:
+     case Nil{}: ""
+     case Con{d, rest}:
+-      kc(String, db(d), u => "", u =>
++      kc(String, db(d) || String.eq(tg(dv(d)), "JResidual"), u => "", u =>
+         "function " ++ j_region_name(dn(d)) ++ "(" ++ j_region_parameters(0, da(d)) ++ "){" ++
+         kc(String, String.eq(tg(dv(d)), "Mat"), u => j_region_nested_body(book, d),
+           u => j_region_return(book, Nil{}, dv(d), kid(dv(d), 1))) ++ "}") ++
+@@ -537,7 +539,8 @@
+   match rest:
+     case Nil{}: Nil{}
+     case Con{d, more}:
+-      +s = j_region_inline_term(book, helpers, dv(d), 0, JRegionBuild{atom("Absent"), Nil{}, 2048, True{}})
++      +s = kc(JRegionBuild, String.eq(tg(dv(d)), "JResidual"), u => JRegionBuild{dv(d), Nil{}, 2048, True{}}, u =>
++        j_region_inline_term(book, helpers, dv(d), 0, JRegionBuild{atom("Absent"), Nil{}, 2048, True{}}))
+       Con{KDef{dn(d), dk(d), da(d), dx(d), dt(d), kc(KTerm, j_region_valid(s), u => j_region_term(s), u => dv(d)), dc(d), db(d), du(d)}, j_region_inline_defs(book, helpers, more)}
+ 
+ @unsafe
+@@ -738,7 +741,7 @@
+ 
+ @unsafe
+ def j_region_host_guard(+book: List<&2,KDef>, +d: KDef, +helpers: List<&2,KDef>) -> String:
+-  kc(String, j_region_float_signature(book, dt(d), da(d)) || j_region_float_terms([dt(d), dv(d)]) || j_region_float_helpers(book, helpers), u => "regionHostGuard()&&", u => "")
++  kc(String, j_region_has_residual(helpers) || j_region_float_signature(book, dt(d), da(d)) || j_region_float_terms([dt(d), dv(d)]) || j_region_float_helpers(book, helpers), u => "regionHostGuard()&&", u => "")
+ 
+ # Alias normalization is essential even for an unused floating input: its
+ # canonical-input test calls Math.fround before any body expression executes.
+--- a/selfhost/src/back/js/emit.bend
++++ b/selfhost/src/back/js/emit.bend
+@@ -237,12 +237,13 @@
+     j_expr(book, env, kid(t, 0), ty, tail) ++ ":" ++ j_expr(book, env, kid(t, 1), ty, tail) ++ ")", u =>
+   kc(String, String.eq(tg(t), "JCall"), u => j_region_name(nm(t)) ++ "(" ++ j_apply_args(book, env, ks(t), dt(lookup(book, nm(t)))) ++ ")", u =>
+   kc(String, String.eq(tg(t), "JReadCall"), u => j_region_name(nm(t)) ++ "$get(" ++ j_region_read_args(book, env, ks(t), dt(lookup(book, nm(t)))) ++ ")", u =>
++  kc(String, String.eq(tg(t), "JGeneric"), u => j_expr(book, env, j_region_app(ref(nm(t)), ks(t)), ty, False{}), u =>
+   kc(String, String.eq(tg(t), "JNative"), u => j_region_native_emit(book, env, t), u =>
+   kc(String, String.eq(tg(t), "JVector"), u => "[" ++ j_ctor_args(book, env, ks(t), j_region_local_fields(book, ty)) ++ "]", u =>
+   kc(String, String.eq(tg(t), "JUnpack"), u => "((" ++ j_region_parameters(U32.inc(ix(t)), U32.inc(U32.add(ix(t), qt(t)))) ++ ")=>" ++
+     j_expr(book, env, kid(t, 0), ty, tail) ++ ")(" ++ j_region_field_reads("$p" ++ U32.show(ix(t)) ++ kc(String, j_region_local_vector(book, kid(t, 1)), u => "", u => ".a"), 0, qt(t)) ++ ")", u =>
+   kc(String, String.eq(tg(t), "JIf"), u => "(" ++ j_expr(book, env, kid(t, 0), kt("ADT", "Bool", 0, 0, Nil{}), False{}) ++ "?" ++
+-    j_expr(book, env, kid(t, 1), ty, tail) ++ ":" ++ j_expr(book, env, kid(t, 2), ty, tail) ++ ")", u => j_expr_on(book, env, t, ty, tail, tg(t))))))))))))))
++    j_expr(book, env, kid(t, 1), ty, tail) ++ ":" ++ j_expr(book, env, kid(t, 2), ty, tail) ++ ")", u => j_expr_on(book, env, t, ty, tail, tg(t)))))))))))))))
+ 
+ @unsafe
+ def j_region_read_args(+book: List<&2,KDef>, +env: List<&2,KTerm>, +args: List<&2,KTerm>, +ty: KTerm) -> String:
+--- a/selfhost/src/runtime/js/core.mjs
++++ b/selfhost/src/runtime/js/core.mjs
+@@ -134,29 +134,34 @@
+ // New floating regions may skip generic dispatch between native operations.
+ // Snapshot standard host intrinsics once; reject changed/getter hooks before
+ // input validation or the existing descriptor guard can call them.
+-const regionNumericHooks=[[globalThis,'Math',Math],[globalThis,'Number',Number],[globalThis,'BigInt',BigInt],[globalThis,'Array',Array],
+-  [Number,'isNaN',Number.isNaN],[Number,'isInteger',Number.isInteger]];
++const regionGetDescriptor=Object.getOwnPropertyDescriptor,regionGetPrototype=Object.getPrototypeOf,regionOwn=Object.hasOwn;
++const regionNumericHooks=[[globalThis,'Object',Object],[globalThis,'Reflect',Reflect],[globalThis,'WeakSet',WeakSet],
++  [globalThis,'Math',Math],[globalThis,'Number',Number],[globalThis,'BigInt',BigInt],[globalThis,'Array',Array],
++  [Object,'getOwnPropertyDescriptor',regionGetDescriptor],[Object,'getPrototypeOf',regionGetPrototype],[Object,'hasOwn',regionOwn],
++  [Reflect,'apply',Reflect.apply],[WeakSet.prototype,'has',WeakSet.prototype.has],[WeakSet.prototype,'add',WeakSet.prototype.add],
++  [Number,'isNaN',Number.isNaN],[Number,'isInteger',Number.isInteger],[Number,'isFinite',Number.isFinite]];
+ for(const key of ['fround','sqrt','exp','log','log2','log10','sin','cos','tan','asin','acos','atan','sinh','cosh','tanh','floor','ceil','trunc','abs','imul'])
+   regionNumericHooks.push([Math,key,Math[key]]);
+ const regionIteratorPrototype=Object.getPrototypeOf([][Symbol.iterator]());
+ const regionIteratorParent=Object.getPrototypeOf(regionIteratorPrototype);
+ const regionProtocolPairs=[[Array.prototype,Symbol.iterator],[Array.prototype,'concat'],[Array.prototype,'slice'],[Array.prototype,'every'],
++  [Array.prototype,'push'],[Array.prototype,'pop'],[Array.prototype,'includes'],
+   [Array.prototype,'constructor'],[Array.prototype,Symbol.isConcatSpreadable],[Object.prototype,Symbol.isConcatSpreadable],[Array,Symbol.species],
+   [regionIteratorPrototype,'next'],[regionIteratorPrototype,'return'],[regionIteratorParent,'return'],[Object.prototype,'return']];
+ const regionProtocolDescriptors=[];
+ for(let i=0;i<regionProtocolPairs.length;i++)regionProtocolDescriptors[i]=Object.getOwnPropertyDescriptor(regionProtocolPairs[i][0],regionProtocolPairs[i][1]);
+ function regionHostGuard(){
+   for(let i=0;i<regionNumericHooks.length;i++){
+-    const p=regionNumericHooks[i],d=Object.getOwnPropertyDescriptor(p[0],p[1]);
+-    if(!d||!Object.hasOwn(d,'value')||d.value!==p[2])return false;
+-  }
+-  if(Object.getPrototypeOf(localArrayPrototype)!==scalarObjectPrototype||Object.getPrototypeOf(regionIteratorPrototype)!==regionIteratorParent||
+-      Object.getPrototypeOf(regionIteratorParent)!==scalarObjectPrototype)return false;
++    const p=regionNumericHooks[i],d=regionGetDescriptor(p[0],p[1]);
++    if(!d||!regionOwn(d,'value')||d.value!==p[2])return false;
++  }
++  if(regionGetPrototype(localArrayPrototype)!==scalarObjectPrototype||regionGetPrototype(regionIteratorPrototype)!==regionIteratorParent||
++      regionGetPrototype(regionIteratorParent)!==scalarObjectPrototype)return false;
+   for(let i=0;i<regionProtocolPairs.length;i++){
+-    const p=regionProtocolPairs[i],old=regionProtocolDescriptors[i],d=Object.getOwnPropertyDescriptor(p[0],p[1]);
++    const p=regionProtocolPairs[i],old=regionProtocolDescriptors[i],d=regionGetDescriptor(p[0],p[1]);
+     if(!old){if(d)return false;continue;}
+     if(!d||d.enumerable!==old.enumerable||d.configurable!==old.configurable)return false;
+-    const value=Object.hasOwn(old,'value');if(value!==Object.hasOwn(d,'value'))return false;
++    const value=regionOwn(old,'value');if(value!==regionOwn(d,'value'))return false;
+     if(value){if(d.value!==old.value||d.writable!==old.writable)return false;}
+     else if(d.get!==old.get||d.set!==old.set)return false;
+   }
+@@ -165,7 +170,7 @@
+ 
+ const native=(name,n,f)=>{
+   const value=fn(n,a=>f(...a));
+-  return G[name]=name==='Array.new'||name==='Array.get'||name==='Array.set'?scalarCapture(name,value):value;
++  return G[name]=name==='Array.new'||name==='Array.get'||name==='Array.set'||name==='F32.to_u32'?scalarCapture(name,value):value;
+ };
+ function get(v,k){if(k in v){const x=v[k];return x?.code&&x.arity===0?call(x,[]):x;}bad('unbound name: '+k)}
+ function ctor(k,a){
+--- a/selfhost/src/compiler.json
++++ b/selfhost/src/compiler.json
+@@ -44,6 +44,7 @@
+     "src/back/js/u32.bend",
+     "src/back/js/primitive.bend",
+     "src/back/js/local.bend",
++    "src/back/js/jpure.bend",
+     "src/back/js/region.bend",
+     "src/back/js/worker.bend",
+     "src/back/js/tree.bend",
+--- /dev/null
++++ b/selfhost/src/back/js/jpure.bend
+@@ -0,0 +1,255 @@
++# Bounded purity proof for residual generic calls. This validates source terms,
++# not private lowering plans. No failed lowering is treated as a purity proof.
++type JPure is Data:
++  JPure{+defs: List<&2,KDef>, +fuel: U32, +valid: Bool}
++
++@unsafe
++def j_pure_defs(+s: JPure) -> List<&2,KDef>:
++  match s:
++    case JPure{ds, fuel, valid}: ds
++
++@unsafe
++def j_pure_fuel(+s: JPure) -> U32:
++  match s:
++    case JPure{ds, fuel, valid}: fuel
++
++@unsafe
++def j_pure_valid(+s: JPure) -> Bool:
++  match s:
++    case JPure{ds, fuel, valid}: valid
++
++@unsafe
++def j_pure_fail(+s: JPure) -> JPure:
++  JPure{j_pure_defs(s), 0, False{}}
++
++@unsafe
++def j_pure_tick(+s: JPure) -> JPure:
++  JPure{j_pure_defs(s), U32.sub(j_pure_fuel(s), 1), j_pure_valid(s)}
++
++# Closed recursive tagged ADTs: no parameters, native arrays, functions, foreign
++# representations or dependent fields. An active owner still has every one of
++# its constructors checked by the pending outer visit.
++@unsafe
++def j_pure_type(+book: List<&2,KDef>, +ty: KTerm) -> Bool:
++  j_region_local_ok(j_pure_type_check(book, ty, Nil{}, 512))
++
++@unsafe
++def j_pure_type_check(+book: List<&2,KDef>, +ty: KTerm, +active: List<&2,String>, +fuel: U32) -> Maybe<&2,U32>:
++  kc(Maybe<&2,U32>, U32.is_gt(fuel, 0), u =>
++    j_pure_type_head(book, wnf(book, ty), active, U32.sub(fuel, 1)), u => None{})
++
++@unsafe
++def j_pure_type_head(+book: List<&2,KDef>, +ty: KTerm, +active: List<&2,String>, +fuel: U32) -> Maybe<&2,U32>:
++  +owner = lookup(book, nm(ty))
++  +kind = wnf(book, dt(owner))
++  kc(Maybe<&2,U32>, j_region_scalar(book, ty), u => Some{fuel}, u =>
++    kc(Maybe<&2,U32>, String.eq(tg(ty), "ADT") && U32.is_eq(terms_len(ks(ty)), 0) && List.is_empty(&2, String, rm(ty)) &&
++      String.eq(dk(owner), "ADT") && Bool.not(db(owner)) && U32.is_eq(da(owner), 0) && U32.is_eq(dx(owner), 0) &&
++      String.eq(tg(kind), "Typ") && U32.is_eq(terms_len(ks(kind)), 1) && String.eq(tg(kid(kind, 0)), "Qua") && U32.is_eq(qt(kid(kind, 0)), 2), u =>
++      kc(Maybe<&2,U32>, has_name(active, nm(ty)), u => Some{fuel}, u =>
++        kc(Maybe<&2,U32>, Bool.not(List.is_empty(&2, KDef, dc(owner))) && U32.is_le(j_region_def_count(dc(owner)), 32), u =>
++          j_pure_type_ctors(book, dc(owner), nm(ty), Con{nm(ty), active}, fuel), u => None{})), u => None{}))
++
++@unsafe
++def j_pure_type_ctors(+book: List<&2,KDef>, +cs: List<&2,KDef>, +owner: String, +active: List<&2,String>, +fuel: U32) -> Maybe<&2,U32>:
++  match cs:
++    case Nil{}: Some{fuel}
++    case Con{c, rest}:
++      kc(Maybe<&2,U32>, U32.is_gt(fuel, 0) && String.eq(dk(c), "Ctr") && Bool.not(db(c)) && U32.is_eq(dx(c), 0) && U32.is_le(da(c), 32), u =>
++        j_pure_type_ctor_next(book, rest, owner, active, j_pure_type_fields(book, dt(c), owner, da(c), active, U32.sub(fuel, 1))), u => None{})
++
++@unsafe
++def j_pure_type_ctor_next(+book: List<&2,KDef>, +rest: List<&2,KDef>, +owner: String, +active: List<&2,String>, +r: Maybe<&2,U32>) -> Maybe<&2,U32>:
++  match r:
++    case Some{fuel}: j_pure_type_ctors(book, rest, owner, active, fuel)
++    case None{}: None{}
++
++@unsafe
++def j_pure_type_fields(+book: List<&2,KDef>, +ty: KTerm, +owner: String, +left: U32, +active: List<&2,String>, +fuel: U32) -> Maybe<&2,U32>:
++  +head = wnf(book, ty)
++  kc(Maybe<&2,U32>, U32.is_eq(left, 0), u =>
++    kc(Maybe<&2,U32>, String.eq(tg(head), "ADT") && String.eq(nm(head), owner) && U32.is_eq(terms_len(ks(head)), 0) && List.is_empty(&2, String, rm(head)),
++      u => Some{fuel}, u => None{}), u =>
++    kc(Maybe<&2,U32>, U32.is_gt(fuel, 0) && String.eq(tg(head), "All") && Bool.not(U32.is_eq(qt(head), 0)), u =>
++      j_pure_type_field_next(book, kid(head, 1), owner, U32.sub(left, 1), active,
++        j_pure_type_check(book, kid(head, 0), active, U32.sub(fuel, 1))), u => None{}))
++
++@unsafe
++def j_pure_type_field_next(+book: List<&2,KDef>, +ty: KTerm, +owner: String, +left: U32, +active: List<&2,String>, +r: Maybe<&2,U32>) -> Maybe<&2,U32>:
++  match r:
++    case Some{fuel}: j_pure_type_fields(book, ty, owner, left, active, fuel)
++    case None{}: None{}
++
++@unsafe
++def j_pure_signature(+book: List<&2,KDef>, +ty: KTerm, +left: U32) -> Bool:
++  +head = wnf(book, ty)
++  kc(Bool, U32.is_eq(left, 0), u => j_pure_type(book, head), u =>
++    kc(Bool, U32.is_le(left, 32) && String.eq(tg(head), "All") && Bool.not(U32.is_eq(qt(head), 0)) && j_pure_type(book, kid(head, 0)),
++      u => j_pure_signature(book, kid(head, 1), U32.sub(left, 1)), u => False{}))
++
++# Only this residual native escapes ordinary primitive expression lowering.
++@unsafe
++def j_pure_native(+book: List<&2,KDef>, +d: KDef) -> Bool:
++  +ty = wnf(book, dt(d))
++  String.eq(dn(d), "F32.to_u32") && String.eq(dk(d), "Def") && db(d) && U32.is_eq(da(d), 1) && U32.is_eq(dx(d), 0) &&
++    Bool.not(String.eq(tg(j_strip(dv(d))), "Foreign")) && String.eq(tg(ty), "All") && Bool.not(U32.is_eq(qt(ty), 0)) &&
++    j_primitive_type(book, wnf(book, kid(ty, 0)), "F32") && j_primitive_type(book, wnf(book, kid(ty, 1)), "U32")
++
++@unsafe
++def j_pure_eligible(+book: List<&2,KDef>, +d: KDef) -> Bool:
++  String.eq(dk(d), "Def") && U32.is_gt(da(d), 0) && U32.is_le(da(d), 32) && U32.is_eq(dx(d), 0) &&
++    j_pure_signature(book, dt(d), da(d)) &&
++    kc(Bool, db(d), u => j_pure_native(book, d), u =>
++      (String.eq(tg(j_strip(dv(d))), "Lam") || String.eq(tg(j_strip(dv(d))), "Mat")) && j_u32_bounded([dv(d)], 8192))
++
++@unsafe
++def j_pure_add(+d: KDef, +s: JPure) -> JPure:
++  kc(JPure, String.eq(dk(lookup(j_pure_defs(s), dn(d))), "Def"), u => s, u =>
++    kc(JPure, U32.is_lt(j_region_def_count(j_pure_defs(s)), 32),
++      u => JPure{Con{d, j_pure_defs(s)}, j_pure_fuel(s), j_pure_valid(s)}, u => j_pure_fail(s)))
++
++# Validate the complete own body into a separate callee list before reserving
++# a graph node. Backedges can then stop without skipping any body obligation.
++@unsafe
++def j_pure_graph(+book: List<&2,KDef>, +d: KDef, +s: JPure) -> JPure:
++  kc(JPure, j_pure_valid(s) && U32.is_gt(j_pure_fuel(s), 0), u =>
++    kc(JPure, String.eq(dk(lookup(j_pure_defs(s), dn(d))), "Def"), u => s, u =>
++      kc(JPure, j_pure_eligible(book, d), u =>
++        kc(JPure, db(d), u => j_pure_add(d, j_pure_tick(s)), u =>
++          j_pure_graph_body(book, d, s, j_pure_prefix(book, Nil{}, dv(d), dt(d), 0, JPure{Nil{}, U32.sub(j_pure_fuel(s), 1), True{}}))), u => j_pure_fail(s))), u => j_pure_fail(s))
++
++@unsafe
++def j_pure_graph_body(+book: List<&2,KDef>, +d: KDef, +s: JPure, +body: JPure) -> JPure:
++  kc(JPure, j_pure_valid(body), u =>
++    j_pure_graph_callees(book, j_pure_defs(body), j_pure_add(d, JPure{j_pure_defs(s), j_pure_fuel(body), True{}})), u => j_pure_fail(s))
++
++@unsafe
++def j_pure_graph_callees(+book: List<&2,KDef>, +ds: List<&2,KDef>, +s: JPure) -> JPure:
++  match ds:
++    case Nil{}: s
++    case Con{d, rest}:
++      kc(JPure, j_pure_valid(s), u => j_pure_graph_callees(book, rest, j_pure_graph(book, d, s)), u => s)
++
++@unsafe
++def j_pure_prefix(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +level: U32, +s: JPure) -> JPure:
++  +body = j_strip(t)
++  +head = wnf(book, ty)
++  kc(JPure, j_pure_valid(s) && U32.is_gt(j_pure_fuel(s), 0) && U32.is_lt(level, 128), u =>
++    kc(JPure, String.eq(tg(head), "All") && Bool.not(U32.is_eq(qt(head), 0)) && j_pure_type(book, kid(head, 0)), u =>
++      kc(JPure, String.eq(tg(body), "Lam") && String.eq(j_l_name(body), ""), u =>
++        j_pure_prefix(book, Con{kt("Env", "", ix(body), 0, [wnf(book, kid(head, 0))]), env}, kid(body, 0),
++          subst(kid(head, 1), ix(head), var(nm(body), ix(body))), U32.inc(level), j_pure_tick(s)), u =>
++        kc(JPure, String.eq(tg(body), "Mat") && String.eq(j_l_name(body), ""), u =>
++          j_pure_match(book, env, body, head, dc(lookup(book, nm(wnf(book, kid(head, 0))))), U32.inc(level), j_pure_tick(s)), u => j_pure_fail(s))),
++      u => j_pure_expr(book, env, body, head, level, s)), u => j_pure_fail(s))
++
++@unsafe
++def j_pure_remove(+ds: List<&2,KDef>, +name: String) -> List<&2,KDef>:
++  match ds:
++    case Nil{}: Nil{}
++    case Con{d, rest}: kc(List<&2,KDef>, String.eq(dn(d), name), u => rest, u => Con{d, j_pure_remove(rest, name)})
++
++# Complete constructor coverage avoids speculative work before a refutable
++# prefix could throw. Default lambdas retain their original typed input.
++@unsafe
++def j_pure_match(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +remaining: List<&2,KDef>, +level: U32, +s: JPure) -> JPure:
++  +body = j_strip(t)
++  +c = lookup(remaining, nm(body))
++  kc(JPure, j_pure_valid(s) && U32.is_gt(j_pure_fuel(s), 0) && U32.is_lt(level, 128), u =>
++    kc(JPure, String.eq(tg(body), "Mat") && String.eq(dk(c), "Ctr") && U32.is_eq(terms_len(ks(body)), 2), u =>
++      j_pure_match_next(book, env, body, ty, j_pure_remove(remaining, nm(body)), U32.inc(level),
++        j_pure_prefix(book, env, kid(body, 0), j_arm_type(book, ty, nm(body)), U32.inc(level), j_pure_tick(s))), u =>
++      kc(JPure, String.eq(tg(body), "Efq") && U32.is_eq(terms_len(ks(body)), 0) && List.is_empty(&2, KDef, remaining), u => j_pure_tick(s), u =>
++        kc(JPure, String.eq(tg(body), "Lam"), u => j_pure_prefix(book, env, body, ty, U32.inc(level), j_pure_tick(s)), u => j_pure_fail(s)))), u => j_pure_fail(s))
++
++@unsafe
++def j_pure_match_next(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +remaining: List<&2,KDef>, +level: U32, +s: JPure) -> JPure:
++  kc(JPure, j_pure_valid(s), u => j_pure_match(book, env, kid(t, 1), ty, remaining, level, s), u => s)
++
++@unsafe
++def j_pure_expr(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +level: U32, +s: JPure) -> JPure:
++  kc(JPure, j_pure_valid(s) && U32.is_gt(j_pure_fuel(s), 0) && U32.is_lt(level, 128) && j_pure_type(book, ty), u =>
++    j_pure_expr_on(book, env, t, wnf(book, ty), U32.inc(level), j_pure_tick(s)), u => j_pure_fail(s))
++
++@unsafe
++def j_pure_expr_on(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +level: U32, +s: JPure) -> JPure:
++  kc(JPure, String.eq(tg(t), "Ann"), u =>
++    kc(JPure, j_pure_type(book, kid(t, 1)) && String.eq(nm(wnf(book, kid(t, 1))), nm(ty)), u =>
++      j_pure_expr(book, env, kid(t, 0), ty, level, s), u => j_pure_fail(s)), u =>
++  kc(JPure, String.eq(tg(t), "Var"), u =>
++    kc(JPure, j_pure_type(book, j_env(env, ix(t))) && String.eq(nm(wnf(book, j_env(env, ix(t)))), nm(ty)), u => s, u => j_pure_fail(s)), u =>
++  kc(JPure, String.eq(tg(t), "Lit"), u =>
++    kc(JPure, String.eq(nm(t), nm(ty)) && String.contains("|U32|Nat|F32|", "|" ++ nm(t) ++ "|"), u => s, u => j_pure_fail(s)), u =>
++  kc(JPure, String.eq(tg(t), "Ctr"), u => j_pure_constructor(book, env, t, ty, level, s), u =>
++  kc(JPure, String.eq(tg(t), "Let"), u =>
++    j_pure_bindings(book, env, j_context(book, env, ks(t)), ks(t), ty, level, s), u =>
++  kc(JPure, String.eq(tg(t), "App"), u => j_pure_call(book, env, j_call_spine(t, Nil{}), ty, level, s), u => j_pure_fail(s)))))))
++
++@unsafe
++def j_pure_constructor(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +level: U32, +s: JPure) -> JPure:
++  +c = lookup(dc(lookup(book, nm(ty))), nm(t))
++  kc(JPure, String.eq(dk(c), "Ctr") && U32.is_eq(terms_len(ks(t)), da(c)),
++    u => j_pure_args(book, env, ks(t), dt(c), ty, level, s), u => j_pure_fail(s))
++
++@unsafe
++def j_pure_bindings(+book: List<&2,KDef>, +env: List<&2,KTerm>, +bodyEnv: List<&2,KTerm>, +xs: List<&2,KTerm>, +ty: KTerm, +level: U32, +s: JPure) -> JPure:
++  match xs:
++    case Nil{}: j_pure_fail(s)
++    case Con{body, Nil{}}: j_pure_expr(book, bodyEnv, body, ty, level, s)
++    case Con{bind, rest}:
++      kc(JPure, j_pure_valid(s) && String.eq(tg(bind), "Bind") && Bool.not(U32.is_eq(qt(bind), 0)) && U32.is_eq(terms_len(ks(bind)), 1), u =>
++        j_pure_bindings(book, env, bodyEnv, rest, ty, level,
++          j_pure_expr(book, env, kid(bind, 0), j_region_type(book, env, kid(bind, 0)), level, s)), u => j_pure_fail(s))
++
++@unsafe
++def j_pure_call(+book: List<&2,KDef>, +env: List<&2,KTerm>, +spine: KTerm, +ty: KTerm, +level: U32, +s: JPure) -> JPure:
++  +d = lookup(book, nm(spine))
++  kc(JPure, String.eq(tg(spine), "Call") && U32.is_gt(da(d), 0) && U32.is_le(da(d), 32) && U32.is_eq(terms_len(ks(spine)), da(d)), u =>
++    kc(JPure, j_primitive_call(book, spine), u => j_pure_args(book, env, ks(spine), dt(d), ty, level, s), u =>
++      kc(JPure, j_pure_eligible(book, d), u => j_pure_args(book, env, ks(spine), dt(d), ty, level, j_pure_add(d, s)), u => j_pure_fail(s))), u => j_pure_fail(s))
++
++@unsafe
++def j_pure_args(+book: List<&2,KDef>, +env: List<&2,KTerm>, +xs: List<&2,KTerm>, +ty: KTerm, +result: KTerm, +level: U32, +s: JPure) -> JPure:
++  +head = wnf(book, ty)
++  match xs:
++    case Nil{}:
++      kc(JPure, j_pure_type(book, head) && String.eq(nm(head), nm(result)), u => s, u => j_pure_fail(s))
++    case Con{h, rest}:
++      kc(JPure, j_pure_valid(s) && String.eq(tg(head), "All") && Bool.not(U32.is_eq(qt(head), 0)) && j_pure_type(book, kid(head, 0)), u =>
++        j_pure_args(book, env, rest, j_app_type(head, h), result, level,
++          j_pure_expr(book, env, h, kid(head, 0), level, s)), u => j_pure_fail(s))
++
++# The direct plan and purity proof are independent. A refused direct plan is
++# discarded, including its tentative helpers and fuel; the residual proof starts
++# from the original state and must establish every reachable body obligation.
++@unsafe
++def j_region_try_helper(+book: List<&2,KDef>, +env: List<&2,KTerm>, +spine: KTerm, +ty: KTerm, +active: List<&2,String>, +depth: U32, +level: U32, +original: JRegionBuild, +direct: JRegionBuild) -> JRegionBuild:
++  kc(JRegionBuild, j_region_valid(direct), u =>
++    j_region_call_helper(book, env, spine, ty, active, depth, level, direct), u =>
++    kc(JRegionBuild, j_region_signature(book, dt(lookup(book, nm(spine))), terms_len(ks(spine))), u =>
++      j_region_residual_proved(book, env, spine, ty, active, depth, level, original,
++        j_pure_graph(book, lookup(book, nm(spine)), JPure{Nil{}, j_region_fuel(original), True{}})), u => j_region_fail(original)))
++
++@unsafe
++def j_region_residual_proved(+book: List<&2,KDef>, +env: List<&2,KTerm>, +spine: KTerm, +ty: KTerm, +active: List<&2,String>, +depth: U32, +level: U32, +original: JRegionBuild, +pure: JPure) -> JRegionBuild:
++  kc(JRegionBuild, j_pure_valid(pure), u =>
++    j_region_call_helper(book, env, spine, ty, active, depth, level,
++      j_region_residual_merge(j_pure_defs(pure), JRegionBuild{j_region_term(original), j_region_helpers(original), j_pure_fuel(pure), True{}})), u => j_region_fail(original))
++
++@unsafe
++def j_region_residual_merge(+ds: List<&2,KDef>, +s: JRegionBuild) -> JRegionBuild:
++  match ds:
++    case Nil{}: s
++    case Con{d, rest}:
++      kc(JRegionBuild, j_region_valid(s), u =>
++        kc(JRegionBuild, String.eq(dk(lookup(j_region_helpers(s), dn(d))), "Def"), u => j_region_residual_merge(rest, s), u =>
++          kc(JRegionBuild, U32.is_lt(j_region_def_count(j_region_helpers(s)), 32), u =>
++            j_region_residual_merge(rest, JRegionBuild{j_region_term(s),
++              Con{KDef{dn(d), dk(d), da(d), dx(d), dt(d), kt("JResidual", "", 0, 0, [dv(d)]), dc(d), db(d), du(d)}, j_region_helpers(s)},
++              j_region_fuel(s), True{}}), u => j_region_fail(s))), u => s)
++
++@unsafe
++def j_region_has_residual(+ds: List<&2,KDef>) -> Bool:
++  match ds:
++    case Nil{}: False{}
++    case Con{d, rest}: String.eq(tg(dv(d)), "JResidual") || j_region_has_residual(rest)

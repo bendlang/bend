@@ -9,154 +9,109 @@ does not invoke the TypeScript compiler.
 
 The active target is upstream
 [`018751270e800bc222a93dad7f257083ee53a5f7`](https://github.com/bendlang/bend/tree/018751270e800bc222a93dad7f257083ee53a5f7)
-(after Bend 2.0.34). The [Phase32 report](../implementation/phase32/README.md)
-records statement unpacking, typed immediate-read bridges and private field
-vectors inside the existing closed-region proof. The installed compiler makes the original
-four-pair edit-distance program **3.54× faster than Phase31**, reducing the
-same-window TypeScript gap from **14.49× to 4.09×**. The independent array fold
-improves **1.98×**, with an **8.13×** remaining gap. Original Mandelbrot and RLE
-emit exactly the Phase31 bytes and their timing ranges overlap. The other seven
-historical original programs were not freshly timed; these selected JavaScript
-execution measurements do not establish average program speed.
+(after Bend 2.0.34). **Phase35 checked09 is installed and passes release
+verification and all 42 ordinary/relocated CLI checks.** The
+[Phase35 report](../implementation/phase35/README.md),
+[release record](../implementation/phase35/release-09.md) and
+[manifest](../selfhost/dist/release.json) bind its source and exact artifact identities.
+Ordinary compilation has no TypeScript fallback. The API is a derivative of a
+genuinely checked bootstrap compiler, not a new self-hosting fixed point.
 
-Compiler cost remains distinct. Mandelbrot library compilation adds **36.75 ms
-(1.91%, disjoint ranges)**; edit-distance compilation changes by −0.45% with
-overlapping ranges. Their request-only TypeScript gaps are about **5.56× and
-4.90×**. The [measurement report](../implementation/phase32/final-measurements/measurements.md)
-separates imports, requests, process overhead and program execution. All three
-runtime canaries overlap their Phase31 ranges. The
-[admission decision](../design/phase32/admission.md) accepts the measured source,
-generated-size and compilation costs; it does not erase the earlier
-[Phase31 tradeoffs](../design/phase31/admission-tradeoff.md).
+The complete fifteen-point comparison shows substantial gains on the targeted
+programs and large remaining gaps elsewhere. These are fresh same-run comparisons
+of JavaScript generated from unchanged Bend programs by Phase32 checked03,
+Phase35 checked09 and pinned TypeScript. Values are median milliseconds per call:
 
-**Phase32 checked03 is installed and passes release verification and all 42
-ordinary/relocated CLI checks.** The [release report](../implementation/phase32/release-03.md)
-and [manifest](../selfhost/dist/release.json) bind exact artifact identities.
-The [gate closure](../implementation/phase32/final-conformance/gates.md) records
-the 36 focused checks, six added semantic control groups, fresh 3,026 main and
-196 broader frontend observations against the frozen pinned reference, and the
-81-row backend pilot with 69 pass / 8 not applicable / 4 shared failures.
-Inherited execution, library, compiler-component and complete HVM controls also
-pass. The [Phase32 index](../implementation/phase32/README.md) tracks release closure.
+| Program | Phase32 | Phase35 selected09 | TypeScript | Phase32 / selected09 | Selected09 / TypeScript |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Local array pair | 5.046 | 3.810 | 1.246 | 1.324× | 3.058× |
+| Local array fold | 0.3302 | 0.1399 | 0.0400 | 2.360× | 3.497× |
+| Edit distance | 20.700 | 16.201 | 4.972 | 1.278× | 3.259× |
+| Symbolic regression | 106.609 | 15.529 | 1.108 | 6.865× | 14.021× |
+| Raytrace | 10,291.414 | 1,879.845 | 34.315 | 5.475× | 54.781× |
+| Tree bitonic | 25.344 | 25.393 | 0.3018 | 0.998× | 84.142× |
+| Lexer | 176.709 | 172.003 | 1.929 | 1.027× | 89.150× |
 
-The historical [Phase23 report](../implementation/phase23/upstream-graph-conversion.md)
-records the upstream update and its checked artifacts. The [Phase24 report](../implementation/phase24/profile-and-coverage.md)
-continues with profiled local-name and membership improvements, emission collision
-checks, injective native function names and a current backend coverage inventory.
-The [Phase26 release](../implementation/phase26/direct-u32-decisions.md) adds
-restricted direct U32 decision lowering to JavaScript with measured generated
-program gains and explicit structural/capture fallbacks. The pin is unchanged.
-The [Phase27 release](../implementation/phase27/constructor-arm-prebinding.md)
-adds a shared selected-arm helper, with modest measured gains on emitted
-traversals and an actual compiler membership component.
-The [Phase29 release](../implementation/phase29/generated-program-fast-loop.md)
-adds guarded native arithmetic expressions and private Nat countdown loops.
-Its [fast-loop guide](../implementation/phase29/README.md) explains how to separate
-seconds-scale hypothesis screens, checked compiler iterations and broad integration.
-This experimental port does not establish independent proof
-validity; `--verdict` is explicitly unsupported.
+The full run took 518.34 seconds on CPU3 in serial fresh Node 24.18.0 processes,
+with five rounds per shorter point and three for raytrace. Warmup is at least
+one second and the timed target is 300 ms. Mandelbrot and several generic
+library cases remain essentially unchanged. The generic row was 9.52% slower
+in that run; a separate five-round follow-up measured a 0.32% slowdown with
+overlapping ranges. Both observations are retained. These selected points do
+not define average application speed or establish steady-state convergence.
+The [performance guide](BEND-IN-BEND-PERFORMANCE.md) gives the protocol,
+remaining gaps and links to complete results.
+
+Normal checked-library requests cost +0.72% for pair (overlapping ranges),
++8.17% for Mandelbrot, +30.09% for symreg and +34.40% for raytrace. These
+[compiler costs](../implementation/phase35/compiler-cost.md) are separate from
+generated-program execution. Source grows to **18,050 physical Bend lines in
+68 modules**, up 979 lines (5.73%); generated modules also grow. The
+[admission decision](../implementation/phase35/performance-admission.md) accepts
+those explicit costs for the measured runtime gains.
+
+The [final gate closure](../implementation/phase35/final-conformance/gates.md)
+records 3,026 main + 196 broader exact frontend observations, 15 owner-control
+groups, inherited execution/library controls and 42 installed CLI checks. The
+81-row backend pilot remains 69 pass / 8 not applicable / 4 shared failures.
+[Conformance](../selfhost/CONFORMANCE.md) distinguishes exact agreement, selected
+backend execution, shared failures, unavailable platforms and proof trust.
+Independent proof validity remains unestablished; `--verdict` is unsupported.
 
 ## Analyzing emitted-program performance
 
 The [generated-program performance guide](BEND-IN-BEND-PERFORMANCE.md) explains
-the private region machinery, bounded admission, exact public entry and fast
-validation loop. The [Phase32 campaign](../implementation/phase32/README.md)
-retains negative experiments as well as measured wins. Its three selected
-transformations remove administrative work after the existing proof has
-established a private representation:
+the private region machinery, bounded admission, public entry guards and fast
+validation loop. The [Phase35 campaign](../implementation/phase35/README.md)
+retains rejected experiments as well as accepted mechanisms. Its main changes
+remove representation and dispatch work inside already proved private regions:
 
-- Return-position unpacking uses lexical blocks and ordered field bindings.
-- A fully applied private helper immediately consuming a canonical
-  `Array<U32>` read-result tuple receives the read through a typed bridge,
-  preserving producer-time reads and evaluation order.
-- Eligible private records and canonical Sigma values use ordered field vectors.
-  Public record results retain their boxed representation.
+- Inline selected vector producers and carry private countdown state in field
+  locals, preserving complete state, aliases and ordered updates. Use a Number
+  countdown only when its predecessor cannot escape or be observed.
+- Extend direct regions to F32, finite Nat decisions and a final Bool loop stage,
+  preserving the original public partial-application stages and delayed fields.
+- Prove a bounded closed source graph so direct traversal can retain a complex
+  generic leaf under one dependency guard. The residual proof excludes effects,
+  arrays, foreign calls and function-valued interfaces.
+- Consume eligible locally produced recursive tagged data with an explicit
+  postorder stack, retaining its representation and child/combine order.
 
-The runtime, driver, public call convention and unsupported fallback are
-unchanged. The code grows by 57 physical Bend lines, six functions and two private
-plan tags; pair/fold emitted modules grow 4.21%/1.08%, mainly from bridge bodies.
-The fold's final increment also avoids canonical Sigma constructor dispatch,
-so its benefit cannot be attributed solely to ordinary record-shell removal.
+Exact-entry, host-intrinsic and live dependency checks select the fast path;
+unsupported source shapes and changed public descriptors retain ordinary
+execution. There is no new public record, array or Nat representation. See the
+[architecture](../selfhost/docs/ARCHITECTURE.md) and the
+[design](../design/phase35/profile-guided-regions.md) for the proof boundaries.
+Broad private helper inlining was rejected after regressions, so copying more
+code is not itself an optimization criterion.
 
-Each checked increment improves the selected pair and fold with disjoint timing
-ranges. Longer confirmation retains residual warmup drift, including one fold
-sample improving 27% between measured halves; no steady-state result is claimed.
-Private checker-field experiments show opportunities but fail public getter and
-mutation boundaries. Semantic checkpoints, compact memo tables and stop-list
-reuse remain experiments: no cache or new intermediate representation was added.
+Use the maintained [program execution loop](../selfhost/tools/performance/programs/README.md)
+to select **20, 60, 300 or 600 second** budgets independently from case coverage.
+Prepare checked compiler output once, then reuse those exact modules for short
+screens. An incomplete budgeted run stays incomplete. The
+[diagnostics guide](../selfhost/tools/performance/programs/DIAGNOSTICS.md) adds
+separate CPU/allocation profiles, source-attributed frames, generated-code AST
+statistics and side-by-side TypeScript comparisons. Profiled durations and
+instrumented counters do not become speed ratios.
 
-Phase29 implements 54 native U32/F32 scalar operations as direct JavaScript at
-identified saturated call sites. Partial/unknown calls retain ordinary descriptors.
-Supported native Nat countdown matchers keep their public entry and use local slots
-only inside the fully entered successor callback. Fresh per-iteration aliases,
-ordered next-argument temporaries and parallel-let scope preserve observable behavior.
-Neither the Nat representation nor global function arity changes.
+Keep three steps separate: saved-output mechanism experiments, actual checked
+compiler output with focused controls, and broad integration/transfer. Checked09
+plus its 36 focused controls took 42.506 seconds in one supervised acquisition;
+that is an observed development cost, not a rotated compiler-speed benchmark.
+Do not rerun a multi-second full application for every hypothesis. Validate a
+small complete component and its actual fast-path admission, then test the
+unchanged application after the mechanism survives.
 
-Phase29 used a saved checked fixture for its 4.7-second old/new screen. Rebuild after compiler
-source edits, then re-emit and validate the fixture. The final checked build plus 36
-focused checks took 33 seconds; broad original programs are an integration gate.
-Retain both short and longer-warm measurements: the former overstated the prototype's
-settled gain. The final compiler fixture improves 3.65× in the longer-warm window.
-That historical report gives its own program costs and TypeScript gaps;
-Phase30 supplies the newer measurements and35–40-second checked build observations.
-
-The [Phase28 comparison](../implementation/phase28/broader-program-comparison.md)
-broadens the corpus to six existing algorithms, four original mixed tests and
-the small HVM interpreter demo. It records absolute times, first-call and warmed
-ratios, warmup sensitivity and a distinct whole-process measurement. All 11 selected
-outputs agree. The six algorithm gaps are 111–1,391× in the original warmed JS
-window; the HVM process costs201 ms versus 69 ms. This historically established a substantial
-generated-code gap beyond diagnostic kernels, without defining a production
-average. Phases29–32 subsequently change the emitter; use the Phase32 report
-for freshly measured workloads and its explicit inherited scopes. See Phase28's
-[reproduction guide](../implementation/phase28/README.md) for inputs and controls.
-
-The [Phase25 study](../implementation/phase25/generated-code-analysis.md) compares
-identical Bend programs emitted by the installed compiler and pinned TypeScript.
-It supplies23 small sources, independent scalar-result oracles, paired generated
-artifacts, static AST analysis, clean execution samples, CPU/allocation profiles
-and separately guarded runtime counters. The compiler and installed release are
-unchanged by this analysis.
-
-Use the [reproduction guide](../implementation/phase25/README.md) for full acquisition
-or the focused `selfhost/tools/performance/phase25/compare.py` command. The focused
-command accepts two already emitted libraries exporting `bench(size, seed) -> U32`
-and a config containing the inputs and independent expected result. A measured
-replay including correctness checks, calibration and ten timing processes took
-5.37s. Building a changed compiler and emitting its program are separate steps;
-use the checked development workflow for the candidate's provenance.
-
-Keep compiler throughput, module import and warmed emitted-program execution
-separate. Timing checks every result and uses serial alternating fresh processes;
-instrumented profiles/counters are diagnostic evidence only. Do not extrapolate
-these selected microkernels to complete self-hosting performance. Native C and
-device output need separate acquisitions.
-
-Phase26 implements the first numeric target. Top-level native `U32 -> U32`
-matchers with closed literal results emit unsigned bit tests, before closure
-lifting. Captures, used residual words, other result types and oversized decision
-trees use the existing emitter. Actual native owner/constructor identities are
-checked; spelling alone does not qualify. The runtime and `fn`/partial-call ABI
-stay unchanged. Raw library callers must supply valid native U32 scalar inputs;
-this rule does not promise arbitrary JS object-coercion equivalence.
-
-Its [reproduction guide](../implementation/phase26/README.md) explains checked
-candidate acquisition,2,816 scalar controls per emitter, identity/budget guards,
-and the serial three-output comparison. Measured gains are11.8×/3.7×/50× on the
-selected numeric workloads; the real String-returning escape helper is unchanged.
-The remaining generic call/loop cost is the next target. Ordinary compiler
-throughput was not remeasured, and no new H image was built.
-
-Phase27 introduced selected constructor-arm prebinding, with modest gains under
-its historical runtime. Its [report](../implementation/phase27/README.md) retains
-both timing protocols, all 360 samples and a rejected inline implementation.
-Phase30's exact-entry runtime made prebinding costly on generic workloads.
-An isolated comparison recovered the previous speed by restoring ordinary
-delayed matcher application. The candidate therefore removes the redundant
-recognizer and `matcher1p` bridge: 64 implementation lines and eight Bend
-functions. `test-arm.mjs` retains the descriptor/order controls. The
-[attribution report](../implementation/phase30/generic-runtime-row-diagnosis.md)
-separates that measured recovery from the subsequent source cleanup.
+Historical findings remain in their own reports: the
+[Phase25 analysis](../implementation/phase25/generated-code-analysis.md) established
+paired generated-code diagnostics; the
+[Phase28 comparison](../implementation/phase28/broader-program-comparison.md)
+established the broad execution deficit; [Phases29–30](../implementation/phase30/README.md)
+introduced guarded arithmetic/regions and isolated generic-runtime costs; and
+[Phase32](../implementation/phase32/README.md) added direct private field vectors
+and typed immediate-read bridges. Their inputs, protocols and ratios must not be
+combined into a current speedup. Compiler throughput, imports, native/device
+execution and self-reproduction remain separate measurements.
 
 ## Current frontend and release architecture
 
@@ -215,8 +170,9 @@ still cache evaluated heads. This prevents
 repeated traversal of shared terms: two depth-32 checks that previously exhausted
 a 1 GiB heap now complete within that limit. Its historical ordinary-checking
 comparison was around three times the pinned TypeScript compiler. That scope
-differs from the current Phase32 library compile requests above; the ratios
-must not be substituted for each other.
+differs from the historical Phase32 library compile requests and the current
+[Phase35 compiler-cost study](../implementation/phase35/compiler-cost.md); these
+ratios must not be substituted for each other.
 
 The backend now supports all nine `Array.atomic` operations in its existing
 uniform arrays, correct original/copy ordering for `Array.clone`, shared array
@@ -281,8 +237,9 @@ npm run build -- /absolute/release-config.json /absolute/new-attempt
 Config fields and selection semantics are documented in the
 [maintained workflow guide](PHASE5_DEVELOPMENT.md). Broad conformance and checked
 self-reproduction are release/integration gates, not every small edit's build.
-The [Phase32 release report](../implementation/phase32/release-03.md) records the
-installed artifact's evidence, limits and ordinary/relocated CLI closure.
+The [Phase35 report](../implementation/phase35/README.md) records current release
+validation status. The historical [Phase32 release report](../implementation/phase32/release-03.md)
+retains its own evidence, limits and ordinary/relocated CLI closure.
 
 ## Work on the current source
 
@@ -401,7 +358,7 @@ stage. Use a fresh output directory for a new proof. Reports from the older
 format cannot be resumed because they lack this provenance. Preserve the same
 canonical Base path when comparing output bytes across native and JS hosts.
 
-## Internal boundaries and performance
+## Historical performance and current boundaries
 
 The [Phase23 controlled comparison](../implementation/phase23/final-cost-screen.json)
 checks the same frozen compiler source in **11.01 s**, versus **10.97 s** for
@@ -439,13 +396,12 @@ request histories, native/JavaScript execution and installed/relocated CLI check
 Counts overlap; the four raw frontend failures expect errors at later emission.
 Read [conformance](../selfhost/CONFORMANCE.md) for the precise verdicts and limits.
 
-The current compiler source contains **17,071 physical /14,580 nonblank Bend
-lines**, with **1,884 definitions, 640 laws, 70 types and 66 modules**. Phase32
-adds 57 physical lines (0.335%), 51 nonblank lines and six definitions over Phase31;
-type, law and module counts are unchanged. Counts exclude generated images and
-experiment tooling. The [complexity accounting](../implementation/phase32/local-complexity.md)
-records the source and concept changes. Historical 50% and 75% source reduction
-goals remain unachieved. Load ABI2 remains current.
+Phase35 source contains **18,050 physical / 15,436 nonblank Bend lines, 2,008
+definitions, 640 laws, 71 types and 68 modules**. Relative to Phase32, that adds
+979 physical lines, 124 definitions, one type and two modules. The
+[Phase35 report](../implementation/phase35/README.md) records the accepted source
+and concept costs. These counts exclude generated images and experiment tools.
+Historical 50% and 75% source reduction goals remain unachieved. Load ABI2 remains current.
 
 Routine development uses checked B1 and 36 focused controls; reuse a frozen
 attempt for fixture-only edits. The long string stays first. The selection adds

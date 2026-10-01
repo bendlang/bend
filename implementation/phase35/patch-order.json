@@ -1,0 +1,178 @@
+{
+  "kind": "phase35-sequential-source-patches",
+  "scope": "Patch applicability and identity only; no compiler/checker/test run",
+  "base": {
+    "selfhost/src/back/js/region.bend": {
+      "sha256": "1852c1f10a4eb3e38fcf24d030c499ebf22b9988b249fd9ada304e08f8b56a57",
+      "bytes": 42228
+    },
+    "selfhost/src/back/js/emit.bend": {
+      "sha256": "678cb161183f594cfc1a7078dfae59a8a02c45c6ba98e7ad708833e53dc694c6",
+      "bytes": 32393
+    },
+    "selfhost/src/back/js/worker.bend": {
+      "sha256": "b7f5a57511e8ee6f12e0e5b90d66dcd9d2997b100aac64d125b31680ec82d198",
+      "bytes": 14007
+    },
+    "selfhost/src/back/js/tree.bend": {
+      "sha256": "ce78017169ce6fcf53ffc46a9760c282c58e37111513b5cb970002ab0be64fd3",
+      "bytes": 7576
+    },
+    "selfhost/src/runtime/js/core.mjs": {
+      "sha256": "61c20228aaab7a68d77a3119cacd0afacf70d60cb1fd79b262e303995b874bac",
+      "bytes": 13492
+    }
+  },
+  "steps": [
+    {
+      "patch": "direct-regions.patch",
+      "sha256": "21e62efb88c1231d31236eee0c870a22bb9539538fa7f3a72db0ef10cdcb101c",
+      "bytes": 6722,
+      "before": {
+        "selfhost/src/back/js/region.bend": {
+          "sha256": "1852c1f10a4eb3e38fcf24d030c499ebf22b9988b249fd9ada304e08f8b56a57",
+          "bytes": 42228
+        },
+        "selfhost/src/back/js/emit.bend": {
+          "sha256": "678cb161183f594cfc1a7078dfae59a8a02c45c6ba98e7ad708833e53dc694c6",
+          "bytes": 32393
+        },
+        "selfhost/src/back/js/worker.bend": {
+          "sha256": "b7f5a57511e8ee6f12e0e5b90d66dcd9d2997b100aac64d125b31680ec82d198",
+          "bytes": 14007
+        },
+        "selfhost/src/back/js/tree.bend": {
+          "sha256": "ce78017169ce6fcf53ffc46a9760c282c58e37111513b5cb970002ab0be64fd3",
+          "bytes": 7576
+        },
+        "selfhost/src/runtime/js/core.mjs": {
+          "sha256": "61c20228aaab7a68d77a3119cacd0afacf70d60cb1fd79b262e303995b874bac",
+          "bytes": 13492
+        }
+      },
+      "after": {
+        "selfhost/src/back/js/region.bend": {
+          "sha256": "14f6d193fb50d4e0c92b0875d54b07a0a169c6c506c939f4ddd9a6ce6e33324e",
+          "bytes": 45275
+        },
+        "selfhost/src/back/js/emit.bend": {
+          "sha256": "540cb5d34f5ffa84a18360b10f3f32f2ce4669512825bca34a1a562a545a1539",
+          "bytes": 32715
+        },
+        "selfhost/src/back/js/worker.bend": {
+          "sha256": "b7f5a57511e8ee6f12e0e5b90d66dcd9d2997b100aac64d125b31680ec82d198",
+          "bytes": 14007
+        },
+        "selfhost/src/back/js/tree.bend": {
+          "sha256": "ce78017169ce6fcf53ffc46a9760c282c58e37111513b5cb970002ab0be64fd3",
+          "bytes": 7576
+        },
+        "selfhost/src/runtime/js/core.mjs": {
+          "sha256": "61c20228aaab7a68d77a3119cacd0afacf70d60cb1fd79b262e303995b874bac",
+          "bytes": 13492
+        }
+      },
+      "patchOutput": "patching file selfhost/src/back/js/region.bend\npatching file selfhost/src/back/js/emit.bend"
+    },
+    {
+      "patch": "float-regions.patch",
+      "sha256": "7b80dd6ac2d2db5a17a92d61472bf0b668b24fc41f8457ecfce3c997fa3bd1c0",
+      "bytes": 9059,
+      "before": {
+        "selfhost/src/back/js/region.bend": {
+          "sha256": "14f6d193fb50d4e0c92b0875d54b07a0a169c6c506c939f4ddd9a6ce6e33324e",
+          "bytes": 45275
+        },
+        "selfhost/src/back/js/emit.bend": {
+          "sha256": "540cb5d34f5ffa84a18360b10f3f32f2ce4669512825bca34a1a562a545a1539",
+          "bytes": 32715
+        },
+        "selfhost/src/back/js/worker.bend": {
+          "sha256": "b7f5a57511e8ee6f12e0e5b90d66dcd9d2997b100aac64d125b31680ec82d198",
+          "bytes": 14007
+        },
+        "selfhost/src/back/js/tree.bend": {
+          "sha256": "ce78017169ce6fcf53ffc46a9760c282c58e37111513b5cb970002ab0be64fd3",
+          "bytes": 7576
+        },
+        "selfhost/src/runtime/js/core.mjs": {
+          "sha256": "61c20228aaab7a68d77a3119cacd0afacf70d60cb1fd79b262e303995b874bac",
+          "bytes": 13492
+        }
+      },
+      "after": {
+        "selfhost/src/back/js/region.bend": {
+          "sha256": "e1aa4a7d0c6292b1662451ed6ee473ac133d1bd7e696c201038959cb9d4adbfd",
+          "bytes": 46944
+        },
+        "selfhost/src/back/js/emit.bend": {
+          "sha256": "540cb5d34f5ffa84a18360b10f3f32f2ce4669512825bca34a1a562a545a1539",
+          "bytes": 32715
+        },
+        "selfhost/src/back/js/worker.bend": {
+          "sha256": "25dec89d3c240f1ba29e15727626bdbdff3444e862661987245f7ead6eb0597d",
+          "bytes": 14048
+        },
+        "selfhost/src/back/js/tree.bend": {
+          "sha256": "3bc377a21202ebd83e00731c1ce0416569a7544aebdc74102049be9770937c43",
+          "bytes": 7629
+        },
+        "selfhost/src/runtime/js/core.mjs": {
+          "sha256": "1b3a2418fd82a0039a7911d323637aee46702fc84af1eafd74180c2daee5d735",
+          "bytes": 15907
+        }
+      },
+      "patchOutput": "patching file selfhost/src/back/js/region.bend\npatching file selfhost/src/back/js/worker.bend\npatching file selfhost/src/back/js/tree.bend\npatching file selfhost/src/runtime/js/core.mjs"
+    },
+    {
+      "patch": "branch-loop.patch",
+      "sha256": "fa5110dbd5439a2b6bc6fc2fb7a24ddfff4587fc75ca12eb61022849ed0cb026",
+      "bytes": 12785,
+      "before": {
+        "selfhost/src/back/js/region.bend": {
+          "sha256": "e1aa4a7d0c6292b1662451ed6ee473ac133d1bd7e696c201038959cb9d4adbfd",
+          "bytes": 46944
+        },
+        "selfhost/src/back/js/emit.bend": {
+          "sha256": "540cb5d34f5ffa84a18360b10f3f32f2ce4669512825bca34a1a562a545a1539",
+          "bytes": 32715
+        },
+        "selfhost/src/back/js/worker.bend": {
+          "sha256": "25dec89d3c240f1ba29e15727626bdbdff3444e862661987245f7ead6eb0597d",
+          "bytes": 14048
+        },
+        "selfhost/src/back/js/tree.bend": {
+          "sha256": "3bc377a21202ebd83e00731c1ce0416569a7544aebdc74102049be9770937c43",
+          "bytes": 7629
+        },
+        "selfhost/src/runtime/js/core.mjs": {
+          "sha256": "1b3a2418fd82a0039a7911d323637aee46702fc84af1eafd74180c2daee5d735",
+          "bytes": 15907
+        }
+      },
+      "after": {
+        "selfhost/src/back/js/region.bend": {
+          "sha256": "e1aa4a7d0c6292b1662451ed6ee473ac133d1bd7e696c201038959cb9d4adbfd",
+          "bytes": 46944
+        },
+        "selfhost/src/back/js/emit.bend": {
+          "sha256": "67e8c10bf10cdd8c57c45973b6848f1665bad080d45bd276d2d0b2ab435266f3",
+          "bytes": 32795
+        },
+        "selfhost/src/back/js/worker.bend": {
+          "sha256": "045d5b724edd419f6f81ce2c7fa112aef7d3c81a4b49bd19beaace1ff8960487",
+          "bytes": 22807
+        },
+        "selfhost/src/back/js/tree.bend": {
+          "sha256": "3bc377a21202ebd83e00731c1ce0416569a7544aebdc74102049be9770937c43",
+          "bytes": 7629
+        },
+        "selfhost/src/runtime/js/core.mjs": {
+          "sha256": "1b3a2418fd82a0039a7911d323637aee46702fc84af1eafd74180c2daee5d735",
+          "bytes": 15907
+        }
+      },
+      "patchOutput": "patching file selfhost/src/back/js/worker.bend\npatching file selfhost/src/back/js/emit.bend"
+    }
+  ]
+}

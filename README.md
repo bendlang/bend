@@ -17,53 +17,46 @@ This fork develops the compiler in [`selfhost/`](selfhost/README.md), on branch
 Ordinary compilation runs the Bend implementation without a TypeScript fallback;
 the target remains pinned to **0187512, after Bend 2.0.34**.
 
-The [Phase32 report](implementation/phase32/README.md) removes temporary tuple
-and record work inside proved private regions. The original four-pair edit-distance
-program is **3.54× faster than Phase31**, reducing its same-window TypeScript gap
-from **14.49× to 4.09×**. The independent array fold improves **1.98×**. Original
-Mandelbrot and RLE emit unchanged bytes; these are selected program measurements,
-not a general compiler speed ratio. The
-[comparison](implementation/phase32/final-measurements/measurements.md) records a
-separate **1.91% increase in Mandelbrot compilation time**, accepted explicitly in
-the [admission decision](design/phase32/admission.md).
+**[Phase35 checked09 is installed](implementation/phase35/release-09.md)** and
+passes release verification and all **42 ordinary/relocated CLI checks**. The
+[full fifteen-point comparison](implementation/phase35/README.md) measures
+**6.865× faster symbolic regression, 5.475× faster ray tracing, 2.360× faster
+array fold and 1.278× faster original edit distance** versus the same-run
+Phase32 baseline. Their remaining TypeScript gaps are **14.021×, 54.781×,
+3.497× and 3.259×**. These are fixed-program measurements, not average application
+speed. The [profiles](implementation/phase35/profile-findings.md) identify the
+next targets: repeated guards and generic expression construction.
 
-[Checked03 is installed](implementation/phase32/release-03.md), passes release
-verification and all **42 ordinary/relocated CLI checks**. It passes 36 focused
-checks, six additional semantic control groups, and fresh **3,026 main + 196
-broader frontend observations** against the frozen
-pinned TypeScript results. Its 81-row backend pilot preserves the historical
-outcomes: **69 pass, 8 not applicable, 4 shared failures**. The
-[gate closure](implementation/phase32/final-conformance/gates.md) also records
-inherited execution, library, compiler-component and HVM controls. These scopes do not establish
-full backend or independent proof-kernel conformance; see
-[conformance](selfhost/CONFORMANCE.md).
+Normal checked compilation is a separate cost: pair changes **+0.72%** with
+overlapping ranges; Mandelbrot, symreg and raytrace take **8.17%, 30.09% and
+34.40% longer**. The [admission decision](implementation/phase35/performance-admission.md)
+accepts those measured costs, larger generated modules and **979 added Bend
+lines** for the output-execution gains. The compiler now has **18,050 physical
+Bend lines in 68 modules**; this phase is not a source simplification.
 
-The compiler source contains **17,071 Bend lines in 66 modules**, up **57 lines
-(0.335%)** from Phase31. It adds no datatype or module and preserves the runtime
-and public representations. Counts exclude generated images and experiment
-tooling. The [performance guide](docs/BEND-IN-BEND-PERFORMANCE.md) explains the
-proofs, fallbacks and remaining costs. The [checked workflow](docs/PHASE5_DEVELOPMENT.md)
-builds a genuine checked compiler and runs 36 paired controls in about 40 seconds
-in recent runs, using one worker and a 1 GiB heap setting. From `selfhost/`, run
-`npm run verify:release`, then `node cli.mjs FILE --run`.
-`npm run build` rebuilds with pinned upstream. Independent BendTT `--verdict`
-is not implemented; no new fixed point is claimed.
+The [gate closure](implementation/phase35/final-conformance/gates.md) records
+36 focused checks, 15 new owner-control groups, exact agreement with the frozen
+pinned reference on **3,026 main + 196 broader frontend observations**, inherited
+execution/library controls and the installed CLI. The 81-row backend pilot
+preserves **69 pass, 8 not applicable and 4 shared failures**. These scopes do
+not establish full backend, GPU or independent proof-kernel conformance; see
+[conformance](selfhost/CONFORMANCE.md). No new self-emitted fixed point is claimed.
 
-For generated JavaScript optimization, use the maintained
-[program execution benchmarks](selfhost/tools/performance/programs/README.md):
-20 / 60 / 300 / 600-second budgets, selectable workload sets, a portable frozen
-TypeScript/Phase32 reference, and separately prepared compiler candidates.
-The [diagnostic tools](selfhost/tools/performance/programs/DIAGNOSTICS.md) add
-CPU/allocation profiles and side-by-side generated-JavaScript analysis.
-See the [current results and opportunities](implementation/phase34/opportunities.md).
+Use the [program execution benchmarks](selfhost/tools/performance/programs/README.md)
+with **20 / 60 / 300 / 600-second ceilings**, selectable cases and portable frozen
+TypeScript/Phase32 references. Separate [diagnostics](selfhost/tools/performance/programs/DIAGNOSTICS.md)
+provide CPU/allocation profiles and generated-JavaScript comparisons. The checked
+build plus 36 focused checks took **42.5 seconds**; the three-case performance
+screen took **23 seconds**. Heavy jobs run serially with explicit memory bounds.
 
-Designs, failed experiments, comparisons, a [Zig history study](design/phase31/zig-lessons.md)
-and promotion decisions are linked from the [Phase32 index](implementation/phase32/README.md),
-[ledger](experiments/ledger.md) and [current strategy](experiments/STEERING.md).
-Earlier [Phase31](implementation/phase31/README.md),
-[Phase30](implementation/phase30/README.md) and
-[Phase28](implementation/phase28/broader-program-comparison.md) measurements
-retain their own baselines and scopes.
+From `selfhost/`, run `npm run verify:release`, then `node cli.mjs FILE --run`.
+`npm run build` rebuilds with pinned upstream. The
+[checked workflow](docs/PHASE5_DEVELOPMENT.md),
+[performance guide](docs/BEND-IN-BEND-PERFORMANCE.md),
+[compiler literature study](design/phase35/literature.md),
+[experiment ledger](experiments/ledger.md) and
+[current strategy](experiments/STEERING.md) explain development and the retained
+failed experiments. Earlier measurements keep their original baselines and scopes.
 
 ## Bend runs FAST
 

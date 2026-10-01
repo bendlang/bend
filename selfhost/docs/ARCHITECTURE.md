@@ -4,13 +4,13 @@ The typed compiler uses a first-order representation shared by the frontend,
 checker, normalizer and emitters. The original single-file compiler remains
 available as a historical regression baseline.
 
-The Phase31 compiler targets upstream
-`018751270e800bc222a93dad7f257083ee53a5f7`, after Bend2 2.0.34. It extends
-bounded private JavaScript regions to proved closed local records and arrays.
-The [current report](../../implementation/phase31/closed-local-regions.md),
-[release record](../../implementation/phase31/release-07.md) and
-[conformance record](../CONFORMANCE.md) distinguish selection, installation,
-fresh execution and unchanged-input reuse. It retains the
+The compiler targets upstream
+`018751270e800bc222a93dad7f257083ee53a5f7`, after Bend2 2.0.34. Phase35 extends
+bounded private JavaScript regions with scalar loop state, residual pure calls
+and structural folds. The [current report](../../implementation/phase35/README.md)
+records checked candidates and their release status; the
+[conformance record](../CONFORMANCE.md) separates installation, fresh execution
+and unchanged-input reuse. It retains the
 Phase22 contextual frontend and load ABI2, reuses the existing graph evaluator
 for shared-term conversion, and adds array atomics over the uniform runtime
 representation. The [Phase23 report](../../implementation/phase23/upstream-graph-conversion.md)
@@ -87,6 +87,58 @@ or alternative compiler analysis. Registering optimized roots consequently
 makes other generic calls in that module pay the registry lookup. Phase31
 measures this tradeoff explicitly. `localGuard` additionally covers Array
 prototype markers, including array-free Sigma graphs.
+
+### Phase35 extensions
+
+Private vector producers can be inlined into a proved complete consumer. A
+countdown's final private vector parameter can then become field locals; all
+next fields are evaluated before updating the current slots. Other uses reify
+the ordinary value, preserving aliases. A predecessor used only as the next
+countdown argument may use an exact JavaScript Number internally; public Nat
+values remain BigInts. Private canonical `Array.get` and `Array.set` omit an
+erased type-argument wrapper, retaining the runtime storage and live argument
+order. Broad helper inlining was rejected after measured regressions. See the
+[private-state design](../../design/phase35/private-state.md) and
+[report](../../implementation/phase35/private-state.md).
+
+Regions now admit canonical F32 operations, finite ordered Nat decisions and a
+countdown ending in a complete Bool match. Finite decisions retain their leaf
+computations and predecessor offsets; they are not precomputed tables. The Bool
+worker preserves each public partial-application stage and copies captured
+prefix values into fresh loop slots on every call. Only proved inert native
+comparisons extend the terminal-record field grammar. The
+[direct-region design](../../design/phase35/direct-regions.md) and
+[report](../../implementation/phase35/direct-regions.md) describe these rules.
+
+`jpure.bend` separately proves a bounded, closed first-order source graph when
+direct lowering stops. It validates each body before accepting recursive
+backedges, checks every reachable dependency and admits only canonical scalars
+and proved monomorphic tagged datatypes. Arrays, effects, foreign calls,
+function-valued arguments/results and partial calls fail this proof. A
+`JResidual` dependency needs a guard but no private declaration; `JGeneric`
+retains its original saturated application and evaluation order. This lets a
+large direct traversal retain an expensive generic leaf without abandoning the
+whole region. Failed direct lowering alone never establishes purity.
+
+`fold.bend` recognizes complete U32 folds over locally produced, fully
+materialized recursive tagged data. Its narrow grammar has two to eight
+constructors, at most two U32 or recursive fields per constructor, and one call
+per recursive child with unchanged extra arguments. An explicit postorder stack
+preserves child and combination order; existing tagged storage and shared
+subtrees remain unchanged. See the [fold design](../../design/phase35/private-sums.md)
+and [independent review](../../implementation/phase35/sum-review.md).
+
+F32, residual and fold regions also check captured host-intrinsic descriptors
+before input validation and the live dependency guard. These checks include
+numeric intrinsics, array protocols and the own-key lists of Object/Array
+prototypes, so added inherited numeric hooks select the generic fallback.
+The contract assumes standard host intrinsics at module initialization. Exact
+entry, raw/partial/overapplied behavior, public layouts and delayed terminal
+fields retain the existing ABI. Admission remains bounded by 32 helpers/graph
+definitions, 32,768 shared region work units and 128 expression levels, with
+additional type, body and dependency-depth bounds. Unsupported shapes or
+exhausted budgets keep ordinary emission. These implementation rules do not
+imply installation or broader backend conformance.
 
 ## Core representation
 

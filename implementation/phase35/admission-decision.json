@@ -1,0 +1,71 @@
+{
+  "kind": "phase35-root-promotion-decision",
+  "decision": "admit checked09 for installation and final CLI validation",
+  "created": "2026-10-01T04:57:55.749657+00:00",
+  "api": "467bc7dec2751a94cb677c5eb2da22a8fb69ee3522c6e164cb2bfcc147a78d82",
+  "evidence": [
+    {
+      "path": "selfhost/build/phase35/final-audit09-preinstall-v2/gates.json",
+      "bytes": 339412,
+      "sha256": "705461e736647fb606340aa034b2294c6155be9057f2767bff317d640517c8fe"
+    },
+    {
+      "path": "selfhost/build/phase35/compiler-cost-run09/report.json",
+      "bytes": 397949,
+      "sha256": "81203bedefc4ae44d4cfaf18e46978bd93bdbff3fb060fd0f512a4c35e1b207d"
+    },
+    {
+      "path": "selfhost/build/phase35/combined-full-confirm-01/report.json",
+      "bytes": 1839836,
+      "sha256": "97e4f006cb15a9f56fc5e2696b6bbf287392593506b85af122bfc8285597d7eb"
+    },
+    {
+      "path": "selfhost/build/phase35/generic-row-confirm-01/report.json",
+      "bytes": 175983,
+      "sha256": "1eb64f9068c034ece2d6968697c72902731895ab18fb4061bbe12b69c9968373"
+    },
+    {
+      "path": "implementation/phase35/complexity.json",
+      "bytes": 312,
+      "sha256": "6e2047f8da84805aa2d88c2b133cc809e73507ea9e3c8e008282df858d53c5cc"
+    }
+  ],
+  "reasons": [
+    "Five generated-program gains exceed 5% with disjoint observed ranges; all fifteen expected outputs match.",
+    "The full-run generic-row slowdown remains recorded; focused investigation did not reproduce its magnitude.",
+    "All 14 semantic/provenance gates pass; 225 canonical files match.",
+    "Normal compilation costs, larger generated modules and 979 added compiler lines are accepted explicitly as costs of the execution improvement."
+  ],
+  "compilerRequestCosts": {
+    "local-pair": {
+      "baselineMs": 1669.8192240000003,
+      "candidateMs": 1681.8412050000002,
+      "typescriptMs": 311.8671180000001,
+      "changePercent": 0.7199570364989416
+    },
+    "mandelbrot": {
+      "baselineMs": 1709.7809499999998,
+      "candidateMs": 1849.4411679999998,
+      "typescriptMs": 341.41252499999973,
+      "changePercent": 8.16831056633307
+    },
+    "symreg": {
+      "baselineMs": 1531.111304,
+      "candidateMs": 1991.7640620000002,
+      "typescriptMs": 299.51751699999977,
+      "changePercent": 30.08617053486271
+    },
+    "raytrace": {
+      "baselineMs": 1992.46871,
+      "candidateMs": 2677.9182419999997,
+      "typescriptMs": 433.0169810000002,
+      "changePercent": 34.4020224036542
+    }
+  },
+  "limitations": [
+    "This is not a compiler-throughput improvement, simplification, average application-speed claim or new self-emitted fixed point.",
+    "Known historical shared failures and backend/GPU/proof-kernel gaps remain.",
+    "Release installation, release verification, all 42 ordinary/relocated CLI checks and postinstall provenance audit are still required."
+  ],
+  "publication": "User authorizes commit/push to selfhost/bootstrap; no PR comment authorized."
+}

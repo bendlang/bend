@@ -1,0 +1,1541 @@
+{
+  "kind": "phase35-compiler-cost-derived-data",
+  "complete": true,
+  "scope": "Read-only receipt/statistic/output verification. No compiler or generated-program execution; no release-closure assertion.",
+  "producer": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase35/compiler-cost-extract.py",
+    "sha256": "c4e52ddf466545fdf0d8b7569bbe278382c505111e7609b5b3308fe15480a938",
+    "bytes": 7598
+  },
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase35/compiler-cost-extract.py",
+      "sha256": "c4e52ddf466545fdf0d8b7569bbe278382c505111e7609b5b3308fe15480a938",
+      "bytes": 7598
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/report.json",
+      "sha256": "81203bedefc4ae44d4cfaf18e46978bd93bdbff3fb060fd0f512a4c35e1b207d",
+      "bytes": 397949
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-plan09/config.json",
+      "sha256": "d5666984d58b4b5e20741d4453d60e0a015f57eede41f15d3cbeac6b4b0b9409",
+      "bytes": 677999
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-plan09/worker.mjs",
+      "sha256": "f0dea569bdb02df60ed1156b0cead389e197291f1c3a3c6775102c7a03790f42",
+      "bytes": 3774
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-full-confirm-01/report.json",
+      "sha256": "97e4f006cb15a9f56fc5e2696b6bbf287392593506b85af122bfc8285597d7eb",
+      "bytes": 1839836
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase35/profile-evidence-summary.json",
+      "sha256": "3996eaa3c685bdc2a707d43b34e3a52cd9bb1d995419d28bb47f261067388488",
+      "bytes": 143977
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-plan09/bundle-baseline/modules/local-row.mjs",
+      "sha256": "5c9512282eae197f8ed94e4d020698ee87c641bccf0049ac8fa927a160d303aa",
+      "bytes": 99649
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-baseline-preparation09/modules/local-row.mjs.json",
+      "sha256": "3f202b0191a6fcfeb6ea16d889bcfd1aaaf6a713813926caaeff5f36085ecee2",
+      "bytes": 4241
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-plan09/bundle-candidate/modules/local-row.mjs",
+      "sha256": "f55d5c67f080338be308dfa642dd6dc831ff1ec27c325c817a4398eff89caf85",
+      "bytes": 122542
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-full-01/modules/local-row.mjs.json",
+      "sha256": "67cfb4540db0238efa402cd257e09bf0c9f5ba6df4f613671e8b457fa04b5043",
+      "bytes": 4193
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-plan09/bundle-typescript/typescript/modules/local-row.mjs",
+      "sha256": "e303d7add56bca3c62ab3a7d636f01b65007556f5a80d43d59f94018b4154de6",
+      "bytes": 12457
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/programs/baseline/manifest.json",
+      "sha256": "e5f0af8ae01dbb38de2b4358fb7b19fb038a11e01b70702484f08660eefc4a08",
+      "bytes": 14985
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-plan09/bundle-baseline/modules/mandelbrot.mjs",
+      "sha256": "760d7f6c083cdb703839726ded1acbf8d53100711fec88f88f2260615fe8c921",
+      "bytes": 110517
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-baseline-preparation09/modules/mandelbrot.mjs.json",
+      "sha256": "94e85c618ea4737a377afeec420c6273eb12fa052d70276c7c5a73ea33ac286b",
+      "bytes": 4246
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-plan09/bundle-candidate/modules/mandelbrot.mjs",
+      "sha256": "c3efd0e86696a5e12f339faafc0f68023dc5fa46e1640fc3bb08383c7e2464ec",
+      "bytes": 114174
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-full-01/modules/mandelbrot.mjs.json",
+      "sha256": "eca63f3145915b49dfc2963063b4025e065e6979310f23a0598cf585b228d39c",
+      "bytes": 4198
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-plan09/bundle-typescript/typescript/modules/mandelbrot.mjs",
+      "sha256": "037f070e948ab7701364b7413c624bca4327db0bc6171ac4523b906d2ae9e222",
+      "bytes": 15442
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/programs/baseline/manifest.json",
+      "sha256": "e5f0af8ae01dbb38de2b4358fb7b19fb038a11e01b70702484f08660eefc4a08",
+      "bytes": 14985
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-plan09/bundle-baseline/modules/symreg.mjs",
+      "sha256": "db2834ae4836056f049a8b2b4e35aa39dad995f5743d1425911e6f2654bdf668",
+      "bytes": 83895
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-baseline-preparation09/modules/symreg.mjs.json",
+      "sha256": "405981a094af1c79b907396fe535919aebcb7d88cb91f564fb4afd964e84ed15",
+      "bytes": 4226
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-plan09/bundle-candidate/modules/symreg.mjs",
+      "sha256": "dd400df33dc3acbf50c781778a85eb8960bdd065d40a5bf6cffde0009bb3ad26",
+      "bytes": 102304
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-full-01/modules/symreg.mjs.json",
+      "sha256": "433b3296ee9e079c2fa3895e61ec3ded3c820bc8e057c6a41f4e07e46059d604",
+      "bytes": 4184
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-plan09/bundle-typescript/typescript/modules/symreg.mjs",
+      "sha256": "545d6112dbbb0cc66074407a0daf7076b148f9d311e7e9bbffff3376f8e00651",
+      "bytes": 12815
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/programs/baseline/manifest.json",
+      "sha256": "e5f0af8ae01dbb38de2b4358fb7b19fb038a11e01b70702484f08660eefc4a08",
+      "bytes": 14985
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-plan09/bundle-baseline/modules/raytrace.mjs",
+      "sha256": "003da4dd67d770be4b1ecde49fe2f347bcfd39de2bfad2148324156c6939e747",
+      "bytes": 101349
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-baseline-preparation09/modules/raytrace.mjs.json",
+      "sha256": "1145bb94c47aebac55b2e820f0359e3af46f8bfa7f5e00ad14b26d941049ec36",
+      "bytes": 4237
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-plan09/bundle-candidate/modules/raytrace.mjs",
+      "sha256": "d6b3abd23fddec72c3756af4b1ae531483758b8bc7c25c412cd0e7e2264aa197",
+      "bytes": 129177
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-full-01/modules/raytrace.mjs.json",
+      "sha256": "ddace3cbbeeef420fb0571eafa8174320495e77240b023c874e1b83aa606f4d5",
+      "bytes": 4195
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-plan09/bundle-typescript/typescript/modules/raytrace.mjs",
+      "sha256": "87bd526f04705416db047a31eb4ccc186f1c90f5c911f57736a3216a7629ddd2",
+      "bytes": 28974
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/programs/baseline/manifest.json",
+      "sha256": "e5f0af8ae01dbb38de2b4358fb7b19fb038a11e01b70702484f08660eefc4a08",
+      "bytes": 14985
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/programs/baseline/manifest.json",
+      "sha256": "e5f0af8ae01dbb38de2b4358fb7b19fb038a11e01b70702484f08660eefc4a08",
+      "bytes": 14985
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-baseline-preparation09/manifest.json",
+      "sha256": "8512df9b0a4fd85b213d423f9aaa3a1c1ff28b7aa2eeae95ce57bd6a68db43f9",
+      "bytes": 4080
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-baseline-preparation09/preparation.json",
+      "sha256": "825faaf340942294c9d1ce6368bdd77a0241c9817b67553c731236929ab75217",
+      "bytes": 7463
+    }
+  ],
+  "workerUnchangedFromPhase30": true,
+  "rows": 36,
+  "wallSeconds": 250.62250288699943,
+  "statistics": {
+    "local-pair": {
+      "typescript": {
+        "requestMs": {
+          "median": 311.8671180000001,
+          "min": 309.8779300000001,
+          "max": 311.89162300000044,
+          "samples": [
+            311.8671180000001,
+            309.8779300000001,
+            311.89162300000044
+          ]
+        },
+        "hostImportMs": {
+          "median": 218.9011270000001,
+          "min": 218.7028110000001,
+          "max": 220.75208800000019,
+          "samples": [
+            218.9011270000001,
+            218.7028110000001,
+            220.75208800000019
+          ]
+        },
+        "importAndRequestMs": {
+          "median": 530.7682450000002,
+          "min": 528.5807410000002,
+          "max": 532.6437110000006,
+          "samples": [
+            530.7682450000002,
+            528.5807410000002,
+            532.6437110000006
+          ]
+        },
+        "maxRssKiB": {
+          "median": 500928,
+          "min": 498360,
+          "max": 501320,
+          "samples": [
+            498360,
+            500928,
+            501320
+          ]
+        },
+        "processWallMs": {
+          "median": 4631.487466002,
+          "min": 4628.938426001696,
+          "max": 4692.216393999843,
+          "samples": [
+            4628.938426001696,
+            4631.487466002,
+            4692.216393999843
+          ]
+        },
+        "peakTreeRssBytes": {
+          "median": 511676416,
+          "min": 510320640,
+          "max": 513081344,
+          "samples": [
+            510320640,
+            511676416,
+            513081344
+          ]
+        },
+        "outputBytes": {
+          "median": 12457,
+          "min": 12457,
+          "max": 12457,
+          "samples": [
+            12457,
+            12457,
+            12457
+          ]
+        }
+      },
+      "baseline": {
+        "requestMs": {
+          "median": 1669.8192240000003,
+          "min": 1617.8547949999997,
+          "max": 1721.9447930000001,
+          "samples": [
+            1669.8192240000003,
+            1617.8547949999997,
+            1721.9447930000001
+          ]
+        },
+        "hostImportMs": {
+          "median": 3.7151309999999285,
+          "min": 3.6730689999999413,
+          "max": 3.7611040000001594,
+          "samples": [
+            3.7611040000001594,
+            3.6730689999999413,
+            3.7151309999999285
+          ]
+        },
+        "importAndRequestMs": {
+          "median": 1673.5803280000005,
+          "min": 1621.5278639999997,
+          "max": 1725.659924,
+          "samples": [
+            1673.5803280000005,
+            1621.5278639999997,
+            1725.659924
+          ]
+        },
+        "maxRssKiB": {
+          "median": 521512,
+          "min": 519564,
+          "max": 521768,
+          "samples": [
+            521512,
+            519564,
+            521768
+          ]
+        },
+        "processWallMs": {
+          "median": 5895.833863000007,
+          "min": 5882.271606998984,
+          "max": 6040.333482000278,
+          "samples": [
+            5895.833863000007,
+            5882.271606998984,
+            6040.333482000278
+          ]
+        },
+        "peakTreeRssBytes": {
+          "median": 533430272,
+          "min": 531480576,
+          "max": 533749760,
+          "samples": [
+            533430272,
+            531480576,
+            533749760
+          ]
+        },
+        "outputBytes": {
+          "median": 99649,
+          "min": 99649,
+          "max": 99649,
+          "samples": [
+            99649,
+            99649,
+            99649
+          ]
+        }
+      },
+      "candidate": {
+        "requestMs": {
+          "median": 1681.8412050000002,
+          "min": 1669.064981,
+          "max": 1704.0718860000002,
+          "samples": [
+            1681.8412050000002,
+            1669.064981,
+            1704.0718860000002
+          ]
+        },
+        "hostImportMs": {
+          "median": 12.78747199999998,
+          "min": 12.695537999999942,
+          "max": 12.979467000000113,
+          "samples": [
+            12.78747199999998,
+            12.979467000000113,
+            12.695537999999942
+          ]
+        },
+        "importAndRequestMs": {
+          "median": 1694.6286770000002,
+          "min": 1682.044448,
+          "max": 1716.7674240000001,
+          "samples": [
+            1694.6286770000002,
+            1682.044448,
+            1716.7674240000001
+          ]
+        },
+        "maxRssKiB": {
+          "median": 502516,
+          "min": 500840,
+          "max": 502940,
+          "samples": [
+            502940,
+            500840,
+            502516
+          ]
+        },
+        "processWallMs": {
+          "median": 6059.492267999303,
+          "min": 6041.937170000892,
+          "max": 6060.823072999483,
+          "samples": [
+            6041.937170000892,
+            6060.823072999483,
+            6059.492267999303
+          ]
+        },
+        "peakTreeRssBytes": {
+          "median": 513974272,
+          "min": 512049152,
+          "max": 514469888,
+          "samples": [
+            514469888,
+            512049152,
+            513974272
+          ]
+        },
+        "outputBytes": {
+          "median": 122542,
+          "min": 122542,
+          "max": 122542,
+          "samples": [
+            122542,
+            122542,
+            122542
+          ]
+        }
+      }
+    },
+    "mandelbrot": {
+      "typescript": {
+        "requestMs": {
+          "median": 341.41252499999973,
+          "min": 339.20279299999993,
+          "max": 345.19116600000007,
+          "samples": [
+            345.19116600000007,
+            339.20279299999993,
+            341.41252499999973
+          ]
+        },
+        "hostImportMs": {
+          "median": 218.56938900000023,
+          "min": 218.14703699999973,
+          "max": 219.46072700000013,
+          "samples": [
+            218.56938900000023,
+            218.14703699999973,
+            219.46072700000013
+          ]
+        },
+        "importAndRequestMs": {
+          "median": 560.8732519999999,
+          "min": 557.3498299999997,
+          "max": 563.7605550000003,
+          "samples": [
+            563.7605550000003,
+            557.3498299999997,
+            560.8732519999999
+          ]
+        },
+        "maxRssKiB": {
+          "median": 502968,
+          "min": 502640,
+          "max": 503168,
+          "samples": [
+            503168,
+            502968,
+            502640
+          ]
+        },
+        "processWallMs": {
+          "median": 4630.93745399965,
+          "min": 4609.214043997781,
+          "max": 4636.36659599797,
+          "samples": [
+            4636.36659599797,
+            4609.214043997781,
+            4630.93745399965
+          ]
+        },
+        "peakTreeRssBytes": {
+          "median": 514707456,
+          "min": 514433024,
+          "max": 514973696,
+          "samples": [
+            514973696,
+            514707456,
+            514433024
+          ]
+        },
+        "outputBytes": {
+          "median": 15442,
+          "min": 15442,
+          "max": 15442,
+          "samples": [
+            15442,
+            15442,
+            15442
+          ]
+        }
+      },
+      "baseline": {
+        "requestMs": {
+          "median": 1709.7809499999998,
+          "min": 1707.8273209999998,
+          "max": 1720.1343699999998,
+          "samples": [
+            1720.1343699999998,
+            1709.7809499999998,
+            1707.8273209999998
+          ]
+        },
+        "hostImportMs": {
+          "median": 3.7019100000002254,
+          "min": 3.6918409999998403,
+          "max": 3.80288900000005,
+          "samples": [
+            3.7019100000002254,
+            3.80288900000005,
+            3.6918409999998403
+          ]
+        },
+        "importAndRequestMs": {
+          "median": 1713.583839,
+          "min": 1711.5191619999996,
+          "max": 1723.83628,
+          "samples": [
+            1723.83628,
+            1713.583839,
+            1711.5191619999996
+          ]
+        },
+        "maxRssKiB": {
+          "median": 521424,
+          "min": 519212,
+          "max": 521540,
+          "samples": [
+            521424,
+            521540,
+            519212
+          ]
+        },
+        "processWallMs": {
+          "median": 6019.7087330016075,
+          "min": 5949.0501189975475,
+          "max": 6059.431048000988,
+          "samples": [
+            6019.7087330016075,
+            6059.431048000988,
+            5949.0501189975475
+          ]
+        },
+        "peakTreeRssBytes": {
+          "median": 533377024,
+          "min": 531382272,
+          "max": 533495808,
+          "samples": [
+            533377024,
+            533495808,
+            531382272
+          ]
+        },
+        "outputBytes": {
+          "median": 110517,
+          "min": 110517,
+          "max": 110517,
+          "samples": [
+            110517,
+            110517,
+            110517
+          ]
+        }
+      },
+      "candidate": {
+        "requestMs": {
+          "median": 1849.4411679999998,
+          "min": 1837.0483199999999,
+          "max": 1855.3290940000002,
+          "samples": [
+            1849.4411679999998,
+            1837.0483199999999,
+            1855.3290940000002
+          ]
+        },
+        "hostImportMs": {
+          "median": 13.105067999999847,
+          "min": 13.043341000000055,
+          "max": 13.346817000000101,
+          "samples": [
+            13.043341000000055,
+            13.105067999999847,
+            13.346817000000101
+          ]
+        },
+        "importAndRequestMs": {
+          "median": 1862.484509,
+          "min": 1850.1533879999997,
+          "max": 1868.6759110000003,
+          "samples": [
+            1862.484509,
+            1850.1533879999997,
+            1868.6759110000003
+          ]
+        },
+        "maxRssKiB": {
+          "median": 502884,
+          "min": 501972,
+          "max": 503652,
+          "samples": [
+            501972,
+            503652,
+            502884
+          ]
+        },
+        "processWallMs": {
+          "median": 6227.220900997054,
+          "min": 6181.329901999561,
+          "max": 6244.698280999728,
+          "samples": [
+            6244.698280999728,
+            6181.329901999561,
+            6227.220900997054
+          ]
+        },
+        "peakTreeRssBytes": {
+          "median": 514658304,
+          "min": 513748992,
+          "max": 515444736,
+          "samples": [
+            513748992,
+            515444736,
+            514658304
+          ]
+        },
+        "outputBytes": {
+          "median": 114174,
+          "min": 114174,
+          "max": 114174,
+          "samples": [
+            114174,
+            114174,
+            114174
+          ]
+        }
+      }
+    },
+    "symreg": {
+      "typescript": {
+        "requestMs": {
+          "median": 299.51751699999977,
+          "min": 298.8895299999999,
+          "max": 304.3794670000002,
+          "samples": [
+            304.3794670000002,
+            299.51751699999977,
+            298.8895299999999
+          ]
+        },
+        "hostImportMs": {
+          "median": 221.96850200000017,
+          "min": 220.06743799999958,
+          "max": 222.98976900000025,
+          "samples": [
+            222.98976900000025,
+            221.96850200000017,
+            220.06743799999958
+          ]
+        },
+        "importAndRequestMs": {
+          "median": 521.4860189999999,
+          "min": 518.9569679999995,
+          "max": 527.3692360000005,
+          "samples": [
+            527.3692360000005,
+            521.4860189999999,
+            518.9569679999995
+          ]
+        },
+        "maxRssKiB": {
+          "median": 494768,
+          "min": 494432,
+          "max": 496008,
+          "samples": [
+            494432,
+            496008,
+            494768
+          ]
+        },
+        "processWallMs": {
+          "median": 4610.868798998126,
+          "min": 4594.572431000415,
+          "max": 4610.939596997923,
+          "samples": [
+            4610.868798998126,
+            4594.572431000415,
+            4610.939596997923
+          ]
+        },
+        "peakTreeRssBytes": {
+          "median": 506642432,
+          "min": 506298368,
+          "max": 507310080,
+          "samples": [
+            506298368,
+            507310080,
+            506642432
+          ]
+        },
+        "outputBytes": {
+          "median": 12815,
+          "min": 12815,
+          "max": 12815,
+          "samples": [
+            12815,
+            12815,
+            12815
+          ]
+        }
+      },
+      "baseline": {
+        "requestMs": {
+          "median": 1531.111304,
+          "min": 1522.6390180000003,
+          "max": 1537.15164,
+          "samples": [
+            1522.6390180000003,
+            1531.111304,
+            1537.15164
+          ]
+        },
+        "hostImportMs": {
+          "median": 3.7338700000000244,
+          "min": 3.6865429999998014,
+          "max": 4.193177999999989,
+          "samples": [
+            3.7338700000000244,
+            4.193177999999989,
+            3.6865429999998014
+          ]
+        },
+        "importAndRequestMs": {
+          "median": 1535.304482,
+          "min": 1526.3728880000003,
+          "max": 1540.8381829999998,
+          "samples": [
+            1526.3728880000003,
+            1535.304482,
+            1540.8381829999998
+          ]
+        },
+        "maxRssKiB": {
+          "median": 518860,
+          "min": 518684,
+          "max": 519764,
+          "samples": [
+            518860,
+            519764,
+            518684
+          ]
+        },
+        "processWallMs": {
+          "median": 5798.025848998805,
+          "min": 5773.756780999975,
+          "max": 5917.199708001135,
+          "samples": [
+            5917.199708001135,
+            5798.025848998805,
+            5773.756780999975
+          ]
+        },
+        "peakTreeRssBytes": {
+          "median": 530771968,
+          "min": 530595840,
+          "max": 532238336,
+          "samples": [
+            530771968,
+            532238336,
+            530595840
+          ]
+        },
+        "outputBytes": {
+          "median": 83895,
+          "min": 83895,
+          "max": 83895,
+          "samples": [
+            83895,
+            83895,
+            83895
+          ]
+        }
+      },
+      "candidate": {
+        "requestMs": {
+          "median": 1991.7640620000002,
+          "min": 1966.558598,
+          "max": 2034.3645460000002,
+          "samples": [
+            2034.3645460000002,
+            1991.7640620000002,
+            1966.558598
+          ]
+        },
+        "hostImportMs": {
+          "median": 13.117485000000215,
+          "min": 12.876704000000245,
+          "max": 13.765232000000196,
+          "samples": [
+            13.765232000000196,
+            12.876704000000245,
+            13.117485000000215
+          ]
+        },
+        "importAndRequestMs": {
+          "median": 2004.6407660000004,
+          "min": 1979.6760830000003,
+          "max": 2048.1297780000004,
+          "samples": [
+            2048.1297780000004,
+            2004.6407660000004,
+            1979.6760830000003
+          ]
+        },
+        "maxRssKiB": {
+          "median": 503280,
+          "min": 500620,
+          "max": 503340,
+          "samples": [
+            503340,
+            503280,
+            500620
+          ]
+        },
+        "processWallMs": {
+          "median": 6372.2036330000265,
+          "min": 6326.754166999308,
+          "max": 6631.605655002204,
+          "samples": [
+            6631.605655002204,
+            6372.2036330000265,
+            6326.754166999308
+          ]
+        },
+        "peakTreeRssBytes": {
+          "median": 514265088,
+          "min": 512094208,
+          "max": 514854912,
+          "samples": [
+            514854912,
+            514265088,
+            512094208
+          ]
+        },
+        "outputBytes": {
+          "median": 102304,
+          "min": 102304,
+          "max": 102304,
+          "samples": [
+            102304,
+            102304,
+            102304
+          ]
+        }
+      }
+    },
+    "raytrace": {
+      "typescript": {
+        "requestMs": {
+          "median": 433.0169810000002,
+          "min": 429.38966200000004,
+          "max": 440.68710599999986,
+          "samples": [
+            429.38966200000004,
+            433.0169810000002,
+            440.68710599999986
+          ]
+        },
+        "hostImportMs": {
+          "median": 224.45829399999957,
+          "min": 219.0079340000002,
+          "max": 224.7018790000002,
+          "samples": [
+            219.0079340000002,
+            224.7018790000002,
+            224.45829399999957
+          ]
+        },
+        "importAndRequestMs": {
+          "median": 657.7188600000004,
+          "min": 648.3975960000002,
+          "max": 665.1453999999994,
+          "samples": [
+            648.3975960000002,
+            657.7188600000004,
+            665.1453999999994
+          ]
+        },
+        "maxRssKiB": {
+          "median": 518784,
+          "min": 517460,
+          "max": 519608,
+          "samples": [
+            517460,
+            518784,
+            519608
+          ]
+        },
+        "processWallMs": {
+          "median": 4976.107572998444,
+          "min": 4715.652916998806,
+          "max": 5797.553906999383,
+          "samples": [
+            4715.652916998806,
+            4976.107572998444,
+            5797.553906999383
+          ]
+        },
+        "peakTreeRssBytes": {
+          "median": 530964480,
+          "min": 529825792,
+          "max": 531759104,
+          "samples": [
+            529825792,
+            530964480,
+            531759104
+          ]
+        },
+        "outputBytes": {
+          "median": 28974,
+          "min": 28974,
+          "max": 28974,
+          "samples": [
+            28974,
+            28974,
+            28974
+          ]
+        }
+      },
+      "baseline": {
+        "requestMs": {
+          "median": 1992.46871,
+          "min": 1793.8325919999997,
+          "max": 2274.655878,
+          "samples": [
+            1793.8325919999997,
+            1992.46871,
+            2274.655878
+          ]
+        },
+        "hostImportMs": {
+          "median": 3.8390770000000884,
+          "min": 3.761688000000049,
+          "max": 6.319754000000103,
+          "samples": [
+            3.8390770000000884,
+            3.761688000000049,
+            6.319754000000103
+          ]
+        },
+        "importAndRequestMs": {
+          "median": 1996.2303980000002,
+          "min": 1797.6716689999998,
+          "max": 2280.975632,
+          "samples": [
+            1797.6716689999998,
+            1996.2303980000002,
+            2280.975632
+          ]
+        },
+        "maxRssKiB": {
+          "median": 521928,
+          "min": 521400,
+          "max": 522380,
+          "samples": [
+            522380,
+            521400,
+            521928
+          ]
+        },
+        "processWallMs": {
+          "median": 6500.546076000319,
+          "min": 6040.933940999821,
+          "max": 8042.819274000067,
+          "samples": [
+            6040.933940999821,
+            6500.546076000319,
+            8042.819274000067
+          ]
+        },
+        "peakTreeRssBytes": {
+          "median": 534343680,
+          "min": 533348352,
+          "max": 534454272,
+          "samples": [
+            534343680,
+            533348352,
+            534454272
+          ]
+        },
+        "outputBytes": {
+          "median": 101349,
+          "min": 101349,
+          "max": 101349,
+          "samples": [
+            101349,
+            101349,
+            101349
+          ]
+        }
+      },
+      "candidate": {
+        "requestMs": {
+          "median": 2677.9182419999997,
+          "min": 2657.9570009999998,
+          "max": 2884.9115809999994,
+          "samples": [
+            2677.9182419999997,
+            2884.9115809999994,
+            2657.9570009999998
+          ]
+        },
+        "hostImportMs": {
+          "median": 14.020735999999943,
+          "min": 12.945886999999857,
+          "max": 14.357074999999895,
+          "samples": [
+            12.945886999999857,
+            14.357074999999895,
+            14.020735999999943
+          ]
+        },
+        "importAndRequestMs": {
+          "median": 2690.8641289999996,
+          "min": 2671.9777369999997,
+          "max": 2899.2686559999993,
+          "samples": [
+            2690.8641289999996,
+            2899.2686559999993,
+            2671.9777369999997
+          ]
+        },
+        "maxRssKiB": {
+          "median": 508092,
+          "min": 507228,
+          "max": 510288,
+          "samples": [
+            507228,
+            510288,
+            508092
+          ]
+        },
+        "processWallMs": {
+          "median": 7917.638818998967,
+          "min": 7122.977664002974,
+          "max": 8715.838451000309,
+          "samples": [
+            7122.977664002974,
+            8715.838451000309,
+            7917.638818998967
+          ]
+        },
+        "peakTreeRssBytes": {
+          "median": 519745536,
+          "min": 519401472,
+          "max": 519897088,
+          "samples": [
+            519401472,
+            519897088,
+            519745536
+          ]
+        },
+        "outputBytes": {
+          "median": 129177,
+          "min": 129177,
+          "max": 129177,
+          "samples": [
+            129177,
+            129177,
+            129177
+          ]
+        }
+      }
+    }
+  },
+  "derived": {
+    "local-pair": {
+      "requestChangePercent": 0.7199570364989416,
+      "extraRequestMs": 12.021980999999869,
+      "candidateOverTypeScript": 5.392813502704699,
+      "requestRangesDisjoint": false,
+      "outputGrowthPercent": 22.973637467510954,
+      "firstToLastRequestDriftPercent": {
+        "typescript": 0.0078575132118619,
+        "baseline": 3.1216294704725422,
+        "candidate": 1.3218061808635495
+      },
+      "preflightMs": {
+        "typescript": {
+          "median": 1520.5554160000002,
+          "min": 1512.2676730000003,
+          "max": 1537.4022149999998,
+          "samples": [
+            1512.2676730000003,
+            1537.4022149999998,
+            1520.5554160000002
+          ]
+        },
+        "baseline": {
+          "median": 1619.9693030000003,
+          "min": 1604.9413940000002,
+          "max": 1650.937171,
+          "samples": [
+            1604.9413940000002,
+            1619.9693030000003,
+            1650.937171
+          ]
+        },
+        "candidate": {
+          "median": 1641.8083179999999,
+          "min": 1639.408539,
+          "max": 1657.1999680000004,
+          "samples": [
+            1657.1999680000004,
+            1641.8083179999999,
+            1639.408539
+          ]
+        }
+      },
+      "illustrativeWarmExecutionAmortization": {
+        "savedMsPerFixedCall": 1.235972082611596,
+        "fractionalCalls": 9.726741541441251,
+        "wholeCalls": 10,
+        "scope": "Arithmetic across separately measured request and warm execution medians; not measured end-to-end latency or a general workload prediction."
+      }
+    },
+    "mandelbrot": {
+      "requestChangePercent": 8.16831056633307,
+      "extraRequestMs": 139.660218,
+      "candidateOverTypeScript": 5.417027884375365,
+      "requestRangesDisjoint": true,
+      "outputGrowthPercent": 3.3089931865685873,
+      "firstToLastRequestDriftPercent": {
+        "typescript": -1.0946517095980157,
+        "baseline": -0.7154702106208166,
+        "candidate": 0.31836243844229895
+      },
+      "preflightMs": {
+        "typescript": {
+          "median": 1514.0946289999997,
+          "min": 1507.8219829999998,
+          "max": 1520.454584,
+          "samples": [
+            1520.454584,
+            1507.8219829999998,
+            1514.0946289999997
+          ]
+        },
+        "baseline": {
+          "median": 1620.7327859999998,
+          "min": 1616.055382,
+          "max": 1689.0112689999996,
+          "samples": [
+            1616.055382,
+            1689.0112689999996,
+            1620.7327859999998
+          ]
+        },
+        "candidate": {
+          "median": 1645.7448499999998,
+          "min": 1635.254327,
+          "max": 1651.0111920000002,
+          "samples": [
+            1635.254327,
+            1651.0111920000002,
+            1645.7448499999998
+          ]
+        }
+      }
+    },
+    "symreg": {
+      "requestChangePercent": 30.08617053486271,
+      "extraRequestMs": 460.6527580000002,
+      "candidateOverTypeScript": 6.649908432567574,
+      "requestRangesDisjoint": true,
+      "outputGrowthPercent": 21.942904821503074,
+      "firstToLastRequestDriftPercent": {
+        "typescript": -1.8036489301035186,
+        "baseline": 0.9531229548459974,
+        "candidate": -3.3330283961800933
+      },
+      "preflightMs": {
+        "typescript": {
+          "median": 1519.1579410000002,
+          "min": 1517.3570690000001,
+          "max": 1522.474072,
+          "samples": [
+            1522.474072,
+            1519.1579410000002,
+            1517.3570690000001
+          ]
+        },
+        "baseline": {
+          "median": 1619.3930799999998,
+          "min": 1614.869015,
+          "max": 1619.5586409999999,
+          "samples": [
+            1619.3930799999998,
+            1619.5586409999999,
+            1614.869015
+          ]
+        },
+        "candidate": {
+          "median": 1649.282984,
+          "min": 1645.405456,
+          "max": 1825.2135919999998,
+          "samples": [
+            1825.2135919999998,
+            1645.405456,
+            1649.282984
+          ]
+        }
+      },
+      "illustrativeWarmExecutionAmortization": {
+        "savedMsPerFixedCall": 91.07972724999996,
+        "fractionalCalls": 5.057687060651583,
+        "wholeCalls": 6,
+        "scope": "Arithmetic across separately measured request and warm execution medians; not measured end-to-end latency or a general workload prediction."
+      }
+    },
+    "raytrace": {
+      "requestChangePercent": 34.4020224036542,
+      "extraRequestMs": 685.4495319999996,
+      "candidateOverTypeScript": 6.18432615694579,
+      "requestRangesDisjoint": true,
+      "outputGrowthPercent": 27.457597016250766,
+      "firstToLastRequestDriftPercent": {
+        "typescript": 2.63104704183581,
+        "baseline": 26.804245175627873,
+        "candidate": -0.7454014348508231
+      },
+      "preflightMs": {
+        "typescript": {
+          "median": 1550.3913979999998,
+          "min": 1510.93095,
+          "max": 1558.4985470000001,
+          "samples": [
+            1510.93095,
+            1558.4985470000001,
+            1550.3913979999998
+          ]
+        },
+        "baseline": {
+          "median": 1666.6450160000002,
+          "min": 1611.488761,
+          "max": 1935.3117669999997,
+          "samples": [
+            1611.488761,
+            1666.6450160000002,
+            1935.3117669999997
+          ]
+        },
+        "candidate": {
+          "median": 1685.5364990000003,
+          "min": 1642.5618829999999,
+          "max": 1692.000537,
+          "samples": [
+            1642.5618829999999,
+            1692.000537,
+            1685.5364990000003
+          ]
+        }
+      },
+      "illustrativeWarmExecutionAmortization": {
+        "savedMsPerFixedCall": 8411.568992999997,
+        "fractionalCalls": 0.08148890326768077,
+        "wholeCalls": 1,
+        "scope": "Arithmetic across separately measured request and warm execution medians; not measured end-to-end latency or a general workload prediction."
+      }
+    }
+  },
+  "checkedOutputIdentities": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/local-pair-0-baseline.mjs",
+      "sha256": "5c9512282eae197f8ed94e4d020698ee87c641bccf0049ac8fa927a160d303aa",
+      "bytes": 99649
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/local-pair-1-baseline.mjs",
+      "sha256": "5c9512282eae197f8ed94e4d020698ee87c641bccf0049ac8fa927a160d303aa",
+      "bytes": 99649
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/local-pair-2-baseline.mjs",
+      "sha256": "5c9512282eae197f8ed94e4d020698ee87c641bccf0049ac8fa927a160d303aa",
+      "bytes": 99649
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/local-pair-0-candidate.mjs",
+      "sha256": "f55d5c67f080338be308dfa642dd6dc831ff1ec27c325c817a4398eff89caf85",
+      "bytes": 122542
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/local-pair-1-candidate.mjs",
+      "sha256": "f55d5c67f080338be308dfa642dd6dc831ff1ec27c325c817a4398eff89caf85",
+      "bytes": 122542
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/local-pair-2-candidate.mjs",
+      "sha256": "f55d5c67f080338be308dfa642dd6dc831ff1ec27c325c817a4398eff89caf85",
+      "bytes": 122542
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/local-pair-0-typescript.mjs",
+      "sha256": "e303d7add56bca3c62ab3a7d636f01b65007556f5a80d43d59f94018b4154de6",
+      "bytes": 12457
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/local-pair-1-typescript.mjs",
+      "sha256": "e303d7add56bca3c62ab3a7d636f01b65007556f5a80d43d59f94018b4154de6",
+      "bytes": 12457
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/local-pair-2-typescript.mjs",
+      "sha256": "e303d7add56bca3c62ab3a7d636f01b65007556f5a80d43d59f94018b4154de6",
+      "bytes": 12457
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/mandelbrot-0-baseline.mjs",
+      "sha256": "760d7f6c083cdb703839726ded1acbf8d53100711fec88f88f2260615fe8c921",
+      "bytes": 110517
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/mandelbrot-1-baseline.mjs",
+      "sha256": "760d7f6c083cdb703839726ded1acbf8d53100711fec88f88f2260615fe8c921",
+      "bytes": 110517
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/mandelbrot-2-baseline.mjs",
+      "sha256": "760d7f6c083cdb703839726ded1acbf8d53100711fec88f88f2260615fe8c921",
+      "bytes": 110517
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/mandelbrot-0-candidate.mjs",
+      "sha256": "c3efd0e86696a5e12f339faafc0f68023dc5fa46e1640fc3bb08383c7e2464ec",
+      "bytes": 114174
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/mandelbrot-1-candidate.mjs",
+      "sha256": "c3efd0e86696a5e12f339faafc0f68023dc5fa46e1640fc3bb08383c7e2464ec",
+      "bytes": 114174
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/mandelbrot-2-candidate.mjs",
+      "sha256": "c3efd0e86696a5e12f339faafc0f68023dc5fa46e1640fc3bb08383c7e2464ec",
+      "bytes": 114174
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/mandelbrot-0-typescript.mjs",
+      "sha256": "037f070e948ab7701364b7413c624bca4327db0bc6171ac4523b906d2ae9e222",
+      "bytes": 15442
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/mandelbrot-1-typescript.mjs",
+      "sha256": "037f070e948ab7701364b7413c624bca4327db0bc6171ac4523b906d2ae9e222",
+      "bytes": 15442
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/mandelbrot-2-typescript.mjs",
+      "sha256": "037f070e948ab7701364b7413c624bca4327db0bc6171ac4523b906d2ae9e222",
+      "bytes": 15442
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/symreg-0-baseline.mjs",
+      "sha256": "db2834ae4836056f049a8b2b4e35aa39dad995f5743d1425911e6f2654bdf668",
+      "bytes": 83895
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/symreg-1-baseline.mjs",
+      "sha256": "db2834ae4836056f049a8b2b4e35aa39dad995f5743d1425911e6f2654bdf668",
+      "bytes": 83895
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/symreg-2-baseline.mjs",
+      "sha256": "db2834ae4836056f049a8b2b4e35aa39dad995f5743d1425911e6f2654bdf668",
+      "bytes": 83895
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/symreg-0-candidate.mjs",
+      "sha256": "dd400df33dc3acbf50c781778a85eb8960bdd065d40a5bf6cffde0009bb3ad26",
+      "bytes": 102304
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/symreg-1-candidate.mjs",
+      "sha256": "dd400df33dc3acbf50c781778a85eb8960bdd065d40a5bf6cffde0009bb3ad26",
+      "bytes": 102304
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/symreg-2-candidate.mjs",
+      "sha256": "dd400df33dc3acbf50c781778a85eb8960bdd065d40a5bf6cffde0009bb3ad26",
+      "bytes": 102304
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/symreg-0-typescript.mjs",
+      "sha256": "545d6112dbbb0cc66074407a0daf7076b148f9d311e7e9bbffff3376f8e00651",
+      "bytes": 12815
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/symreg-1-typescript.mjs",
+      "sha256": "545d6112dbbb0cc66074407a0daf7076b148f9d311e7e9bbffff3376f8e00651",
+      "bytes": 12815
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/symreg-2-typescript.mjs",
+      "sha256": "545d6112dbbb0cc66074407a0daf7076b148f9d311e7e9bbffff3376f8e00651",
+      "bytes": 12815
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/raytrace-0-baseline.mjs",
+      "sha256": "003da4dd67d770be4b1ecde49fe2f347bcfd39de2bfad2148324156c6939e747",
+      "bytes": 101349
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/raytrace-1-baseline.mjs",
+      "sha256": "003da4dd67d770be4b1ecde49fe2f347bcfd39de2bfad2148324156c6939e747",
+      "bytes": 101349
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/raytrace-2-baseline.mjs",
+      "sha256": "003da4dd67d770be4b1ecde49fe2f347bcfd39de2bfad2148324156c6939e747",
+      "bytes": 101349
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/raytrace-0-candidate.mjs",
+      "sha256": "d6b3abd23fddec72c3756af4b1ae531483758b8bc7c25c412cd0e7e2264aa197",
+      "bytes": 129177
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/raytrace-1-candidate.mjs",
+      "sha256": "d6b3abd23fddec72c3756af4b1ae531483758b8bc7c25c412cd0e7e2264aa197",
+      "bytes": 129177
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/raytrace-2-candidate.mjs",
+      "sha256": "d6b3abd23fddec72c3756af4b1ae531483758b8bc7c25c412cd0e7e2264aa197",
+      "bytes": 129177
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/raytrace-0-typescript.mjs",
+      "sha256": "87bd526f04705416db047a31eb4ccc186f1c90f5c911f57736a3216a7629ddd2",
+      "bytes": 28974
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/raytrace-1-typescript.mjs",
+      "sha256": "87bd526f04705416db047a31eb4ccc186f1c90f5c911f57736a3216a7629ddd2",
+      "bytes": 28974
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-run09/raytrace-2-typescript.mjs",
+      "sha256": "87bd526f04705416db047a31eb4ccc186f1c90f5c911f57736a3216a7629ddd2",
+      "bytes": 28974
+    }
+  ],
+  "baselineOverride": {
+    "reference": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/programs/baseline/manifest.json",
+      "sha256": "e5f0af8ae01dbb38de2b4358fb7b19fb038a11e01b70702484f08660eefc4a08",
+      "bytes": 14985
+    },
+    "fresh": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-baseline-preparation09/manifest.json",
+      "sha256": "8512df9b0a4fd85b213d423f9aaa3a1c1ff28b7aa2eeae95ce57bd6a68db43f9",
+      "bytes": 4080
+    },
+    "archive": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/programs/baseline/programs.tar.gz",
+      "sha256": "13df6cfedbdada8b40c3738a37993a50296cc2eca381e37b6a2d05ecd3845bca",
+      "bytes": 412963
+    },
+    "oldBase": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/base.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/dist/base.bend",
+      "sha256": "c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661"
+    },
+    "normalAttemptBase": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/bend2/base.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/bend2/base.bend",
+      "sha256": "c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661"
+    },
+    "compilerApi": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/equality/api.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/equality/api.mjs",
+      "sha256": "8be506d811f627fe6346a5eaba07050c36db70e2704608adcfd781b85a3a7f92"
+    },
+    "cases": [
+      {
+        "id": "local-pair",
+        "oldModule": {
+          "path": "baseline/modules/local-row.mjs",
+          "sha256": "38c450b3dac6930ec3b39f5e90ca248786805a48327fb0e6ea2b361f0c0e1b5d",
+          "bytes": 98344
+        },
+        "freshModule": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-plan09/bundle-baseline/modules/local-row.mjs",
+          "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-plan09/bundle-baseline/modules/local-row.mjs",
+          "sha256": "5c9512282eae197f8ed94e4d020698ee87c641bccf0049ac8fa927a160d303aa"
+        },
+        "occurrences": 45,
+        "onlyDifference": "Base directory in emitted foreign-binding paths"
+      },
+      {
+        "id": "mandelbrot",
+        "oldModule": {
+          "path": "baseline/modules/mandelbrot.mjs",
+          "sha256": "7f27c5f60864e6a4e8bebf4a7ec5aa80ee3fa9de0a900b81737e7fd9434c363a",
+          "bytes": 109212
+        },
+        "freshModule": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-plan09/bundle-baseline/modules/mandelbrot.mjs",
+          "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-plan09/bundle-baseline/modules/mandelbrot.mjs",
+          "sha256": "760d7f6c083cdb703839726ded1acbf8d53100711fec88f88f2260615fe8c921"
+        },
+        "occurrences": 45,
+        "onlyDifference": "Base directory in emitted foreign-binding paths"
+      },
+      {
+        "id": "symreg",
+        "oldModule": {
+          "path": "baseline/modules/symreg.mjs",
+          "sha256": "551e61d6ccbeca827650038d31d93dc5866f59a11283bff9bc6a6ca59e05d875",
+          "bytes": 82590
+        },
+        "freshModule": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-plan09/bundle-baseline/modules/symreg.mjs",
+          "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-plan09/bundle-baseline/modules/symreg.mjs",
+          "sha256": "db2834ae4836056f049a8b2b4e35aa39dad995f5743d1425911e6f2654bdf668"
+        },
+        "occurrences": 45,
+        "onlyDifference": "Base directory in emitted foreign-binding paths"
+      },
+      {
+        "id": "raytrace",
+        "oldModule": {
+          "path": "baseline/modules/raytrace.mjs",
+          "sha256": "3d1bc9a29878c1c079fdafcad3e6733037194323edc9a099efd940d811b3b367",
+          "bytes": 100044
+        },
+        "freshModule": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-plan09/bundle-baseline/modules/raytrace.mjs",
+          "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/compiler-cost-plan09/bundle-baseline/modules/raytrace.mjs",
+          "sha256": "003da4dd67d770be4b1ecde49fe2f347bcfd39de2bfad2148324156c6939e747"
+        },
+        "occurrences": 45,
+        "onlyDifference": "Base directory in emitted foreign-binding paths"
+      }
+    ],
+    "timingNormalization": false
+  },
+  "plan": {
+    "cpu": "3",
+    "samples": 3,
+    "timeoutMs": 180000,
+    "heapMiB": 1024,
+    "rssMiB": 2048,
+    "availableMiB": 2048,
+    "order": [
+      "typescript",
+      "baseline",
+      "candidate"
+    ],
+    "scope": "Unchanged Phase30 checked-library worker. Fresh rotated3 CPU3 processes; normal inspect/Base pipeline versus TS book_load/valid/js_lib. Exact independently acquired output required; host import/request/process boundaries separate."
+  }
+}

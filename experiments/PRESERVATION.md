@@ -537,7 +537,7 @@ with unchanged live pre/post inventories. Two committed transport chunks were
 independently reread and their concatenation matches that exact archive; the
 receipt names the logical reassembled stream. The redundant newly created whole
 archive was removed only after exact transport verification. Earlier capsules
-and all103 protected starting files remain unchanged. Explicit historical
+and all 103 protected starting files remain unchanged. Explicit historical
 capsules, pinned upstream Git, Node24.18 and the native Clang16 environment keep
 the prerequisite boundaries documented in the preservation README.
 
@@ -576,3 +576,26 @@ The Phase31 capsule and its documented prerequisites remain available; no earlie
 history is silently relabeled or discarded. All 103 protected starting files are
 unchanged. Installation additionally saves the previous Phase31 API/Base/lineage/
 manifest byte-for-byte under its API hash in `selfhost/dist/release-history`.
+
+
+## Phase35 private state, direct regions and structural folds
+
+The [Phase35 capsule](../implementation/phase35/evidence/README.md) preserves the
+complete closed raw tree: **24,717 files / 395,912,134 logical bytes** and 5,573
+directories, streamed into **52,475,156 compressed bytes in two bounded volumes**.
+Every member, volume and concatenated gzip stream is hashed; capture reopens all
+members and rehashes the source inventory. A fresh source/archive verification
+also passes. Capture peaks at 65.6 MiB RSS under a 1 GiB cap and shared execution lock.
+
+All checked01–09 attempts, parser failures, rejected broad inlining, inactive-guard
+witnesses, saved-output ablations, actual compiler controls, full fifteen-point clean timings,
+24 separate profiles, 36 normal compiler-cost samples, final owner/frontend/backend
+receipts, preserved sandbox/audit failures and installed 42 CLI checks remain. Read the
+[release record](../implementation/phase35/release-09.md) for accepted costs and
+scope. The capsule's successful capture never changes a failed experiment's verdict.
+
+The portable TypeScript/Phase32 benchmark reference and earlier Phase32–34 capsules
+remain prerequisites; external resources are not silently duplicated. The previous
+Phase32 installed artifact is preserved under its API hash in release history.
+The [protection audit](../implementation/phase35/protected-files-final.json) verifies
+all 103 unrelated starting files unchanged and unstaged.

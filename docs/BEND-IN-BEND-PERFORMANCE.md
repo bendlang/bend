@@ -1,7 +1,7 @@
 # Generated-program performance and the fast development loop
 
 Use the [compiler guide](BEND-IN-BEND.md) for normal compilation and the
-[Phase32 report index](../implementation/phase32/README.md) for exact results,
+[Phase35 report index](../implementation/phase35/README.md) for exact results,
 artifact identities, failed experiments and current promotion status. The target
 remains upstream `018751270e800bc222a93dad7f257083ee53a5f7`. The comparison is
 between JavaScript emitted from the same Bend source by the two compilers.
@@ -104,6 +104,42 @@ separates the three increments, correctness controls, generated size and source
 cost. No new general escape analysis, runtime representation or public ABI is
 introduced.
 
+Phase35 removes selected private vector allocations as well. It inlines only
+proved vector-producing helpers and carries the final vector parameter of a
+private countdown in separate locals. Fresh next-field values are complete
+before any current slot changes; escaping uses reconstruct the ordinary value.
+A private predecessor used solely as the next countdown argument can use an
+exact Number counter, while public Nat remains BigInt. Canonical private
+`Array.get`/`Array.set` calls also omit their erased type-argument wrappers;
+`Array.new` keeps its evaluation-order wrapper. Broad helper inlining was
+measured and rejected: several workloads became substantially slower. The
+[private-state report](../implementation/phase35/private-state.md) separates
+these increments and their alias, ordering and counter controls.
+
+The same guarded boundary now includes F32 expressions, finite Nat decision
+chains and countdowns whose final argument is a complete Bool match. Decision
+leaves remain computed expressions. The final Bool worker preserves the
+original public prefix and matcher stages, including reusable partial values;
+each fast invocation copies its captured prefix into fresh loop locals.
+
+The new `jpure.bend` analysis can certify a whole closed first-order graph
+without requiring every helper to have a direct implementation. A certified
+residual call keeps ordinary saturated dispatch and argument order, under the
+enclosing region's dependency guard. Thus inactive traversal branches can be
+direct while active leaves retain complex generic work. This proof checks all
+reachable bodies and canonical scalar or monomorphic tagged-data types;
+effects, arrays, foreign or dynamic calls and function-valued interfaces are
+refused. Merely failing direct lowering is never evidence of purity.
+
+For a narrower recursive-data grammar, `fold.bend` emits an explicit postorder
+stack over existing tagged values. Complete U32 folds visit each recursive child
+once in source order and retain the scalar combination. Their input must be
+fully materialized within the proved graph; public external trees remain on the
+generic path. Read the [direct-region design](../design/phase35/direct-regions.md),
+[fold design](../design/phase35/private-sums.md) and
+[implementation report](../implementation/phase35/direct-regions.md) before
+extending either proof. These are emitter rules, not a new public data format.
+
 ## Why entry and fallback matter
 
 Before entering a private region, generated code checks primitive input
@@ -119,6 +155,15 @@ operations. The public global table and partial descriptors remain usable.
 Standard host intrinsics are part of the runtime contract; the finite tests do
 not establish equivalence under arbitrary replacement of JavaScript builtins.
 
+Phase35 adds a captured host-intrinsic guard for F32, residual and fold regions.
+It runs before F32 input validation or private execution, covering numeric
+intrinsics, array protocols and Object/Array prototype own-key lists. The last
+check rejects added inherited numeric getters/setters that could run code during
+ordinary allocation. Dependencies remain live and guarded even when their calls
+stay generic. The supported mutation controls assume standard intrinsics at
+module initialization; integer-only regions without residual calls or folds
+retain their earlier guard cost.
+
 `localGuard` also checks Array-prototype marker assumptions, including for
 graphs with no Array-native calls: canonical Sigma uses a JavaScript array.
 Native Array descriptors are captured at registration and checked with the other
@@ -131,7 +176,7 @@ Before any private worker has registered, a monotone runtime flag skips the
 empty WeakSet lookup in ordinary calls. The code getter runs before reading the
 flag, so a getter that registers a worker still receives the normal registered
 checks. After the first registration, the complete exact-entry path remains.
-The isolated experiment improves RLE and a complete generic row by about5–6%;
+The historical Phase30 experiment improves RLE and a complete generic row by about5–6%;
 it does not remove generic descriptor, matching or record-construction costs.
 
 Phase31 extends eligibility, so previously generic-only modules can now register
@@ -142,15 +187,55 @@ entry separately pays about0.18µs for stronger prototype checks. Both costs are
 explicitly disclosed in the [admission amendment](../design/phase31/admission-tradeoff.md),
 rather than classified as no-regression passes.
 
-The analysis is deliberately bounded: at most 32 completed helpers, dependency
-depth 16, one shared 32,768-unit budget, bounded source/expressions/bindings, and
-an active-name set that rejects unsupported cycles. Failed analysis uses the
-ordinary emitter. The internal `JSlot`, `JCall`, `JIf`, `JNative` and `JUnpack`
-terms belong to emission;
-they are not fed back into checking or evaluation. See
+The analysis is deliberately bounded: at most 32 helpers/graph definitions,
+direct-helper dependency depth 16, one shared 32,768-unit region budget and
+128 expression levels, with additional source, type and binding limits.
+Unsupported direct cycles are rejected; the separate residual purity proof
+accepts a recursive backedge only after validating its owner's complete body.
+Failed analysis uses the ordinary emitter. Internal plan terms belong only to
+emission; they are not fed back into checking or evaluation. See
 [region.bend](../selfhost/src/back/js/region.bend),
 [worker.bend](../selfhost/src/back/js/worker.bend), and
-[tree.bend](../selfhost/src/back/js/tree.bend).
+[tree.bend](../selfhost/src/back/js/tree.bend), plus the bounded
+[purity](../selfhost/src/back/js/jpure.bend) and
+[fold](../selfhost/src/back/js/fold.bend) analyses.
+
+## Phase35 checked-output measurements
+
+The checked09 full confirmation completed all fifteen maintained points in
+518.34 seconds, using serial fresh Node 24.18.0 processes on CPU3 and fresh
+same-run Phase32 and pinned TypeScript references. The fourteen shorter points
+have five rotated rounds; raytrace has three. Warmup is at least 1 second,
+with three calls for the shorter points and one for raytrace; the timed target
+is 300 ms. Values below are median milliseconds per call from
+`combined-full-confirm-01`, not prototype output or compiler-throughput results.
+
+| Program | Phase32 reference | Checked09 | TypeScript | Reference / checked09 | Checked09 / TypeScript |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Local array pair | 5.046 | 3.810 | 1.246 | 1.324× | 3.058× |
+| Local array fold | 0.3302 | 0.1399 | 0.0400 | 2.360× | 3.497× |
+| Edit distance | 20.700 | 16.201 | 4.972 | 1.278× | 3.259× |
+| Symbolic regression | 106.609 | 15.529 | 1.108 | 6.865× | 14.021× |
+| Raytrace | 10,291.414 | 1,879.845 | 34.315 | 5.475× | 54.781× |
+| Mandelbrot | 0.2094 | 0.2088 | 0.0457 | 1.003× | 4.574× |
+| Tree bitonic | 25.344 | 25.393 | 0.3018 | 0.998× | 84.142× |
+| Lexer | 176.709 | 172.003 | 1.929 | 1.027× | 89.150× |
+
+The main gains come from removing repeated representation and dispatch work
+inside substantial guarded regions. They do not transfer uniformly: the lexer,
+tree bitonic and several generic library cases remain far behind TypeScript.
+The full run's complete generic row was 9.52% slower (0.457966 → 0.501585 ms).
+A separately retained five-round follow-up, `generic-row-confirm-01`, measured
+0.453832 → 0.455299 ms, a 0.32% slowdown with overlapping ranges, using
+600 ms warmup and a 250 ms timed target. It did not reproduce the first
+regression; neither result is discarded or treated as a universal no-regression
+guarantee. Short library programs also show material within-run drift.
+
+The [Phase35 report](../implementation/phase35/README.md) retains every point,
+artifact identity, controls, profiles and release status. These measurements
+describe a checked candidate and do not by themselves establish installation,
+broad conformance or a production workload average. Earlier Phase32 reports
+remain historical measurements under their original protocols.
 
 ## Keep three iteration loops separate
 
@@ -190,12 +275,17 @@ the resulting Bend compiler has no TypeScript fallback.
 
 ## Measure the workload you intend to improve
 
-The [maintained comparison harness](../selfhost/tools/performance/phase29/compare.py)
-uses frozen configs, exact per-call results, fresh Node processes and rotating
+The maintained program execution loop and the
+[historical comparison harness](../selfhost/tools/performance/phase29/compare.py)
+use frozen configs, exact per-call results, fresh Node processes and rotating
 serial CPU3 order. Stop other compilation, execution, profiling and compression
 during a clean comparison. Record Node version, stack/heap bounds and input hashes.
 
-| Protocol | Samples per side | Warmup minimum | Timed target |
+The following is the historical Phase29–32 protocol, retained to interpret those
+reports. Current budgeted runs record their exact settings in each frozen plan;
+the Phase35 confirmation settings are stated above.
+
+| Historical protocol | Samples per side | Warmup minimum | Timed target |
 | --- | ---: | --- | ---: |
 | Screen | 3 | 8 calls and 100 ms | 150 ms |
 | Confirmation | 5 | 100 calls and 3 s | 300 ms |
@@ -222,10 +312,10 @@ screen cannot establish that an application/runtime change is broadly cheap.
 
 ## What remains expensive
 
-Private field vectors still allocate; the current optimization removes the
-outer ordinary-record shell. Array reads outside the proved immediate-consumer
-shape still construct tuples. Further scalar replacement would need to preserve
-the complete state and alias boundary, and its benefit is unmeasured.
+Private field vectors outside the proved countdown-state grammar still allocate.
+Array reads outside the immediate-consumer shape still construct tuples. The
+Phase35 scalar replacement preserves complete state and aliases for its admitted
+shape; widening that shape needs a separate proof and measurement.
 Externally supplied data, higher-order calls and unsupported recursion still
 retain generic dispatch. A floating-point helper can be too small to pay for a
 guard: Phase30's acyclic F32 entry experiment regressed both hit and miss paths.
@@ -238,7 +328,7 @@ throughput separately, and native/device execution outside the demonstrated JS
 scope. The reports retain rejected alternatives so subsequent work can start
 from evidence rather than repeat the same probes.
 
-Compiler throughput has separate constraints. Phase32's private checker
+Compiler throughput has separate constraints. The historical Phase32 private checker
 projection experiment improves selected helpers, but public getters and mutable
 API callbacks prevent applying that shortcut generally. Complete-world semantic
 checkpoints preserve the tested results but cost too much to retain. Scoped

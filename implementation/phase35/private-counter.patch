@@ -1,0 +1,58 @@
+--- a/selfhost/src/back/js/region.bend
++++ b/selfhost/src/back/js/region.bend
+@@ -489,7 +489,7 @@
+ @unsafe
+ def j_region_nested_body(+book: List<&2,KDef>, +d: KDef) -> String:
+   "if($p0===0n){return ((" ++ j_region_parameters(0, U32.sub(da(d), 1)) ++ ")=>{" ++ j_region_return(book, Nil{}, kid(dv(d), 0), kid(kid(dv(d), 0), 1)) ++ "})(" ++ j_region_parameters(1, da(d)) ++ ");}" ++
+-  "let $s0=$p0-1n;" ++ j_region_nested_slots(1, da(d)) ++
++  kc(String, j_region_number_counter(book, d), u => "let $s0=regionCounterNumber($p0)-1;", u => "let $s0=$p0-1n;") ++ j_region_nested_slots(1, da(d)) ++
+   kc(String, U32.is_gt(j_region_vector_count(book, d), 0), u => j_region_vector_body(book, d, kid(j_strip(kid(dv(d), 1)), 0), da(d), j_region_vector_count(book, d)), u =>
+     j_nat_loop_body(book, d, kid(j_strip(kid(dv(d), 1)), 0), da(d)))
+ 
+@@ -663,8 +663,8 @@
+   kc(String, String.eq(tg(t), "Let"), u => "{" ++ j_nat_loop_values(book, env, ks(t), 0) ++ "{" ++ j_nat_loop_names(ks(t), 0) ++
+     j_region_vector_emit(book, j_context(book, env, ks(t)), j_body(ks(t)), ty, d, total, fields) ++ "}}", u =>
+     j_region_vector_next(book, env, ks(j_call_spine(t, Nil{})), dt(d), 0, last, fields) ++
+-    "if($n0===0n){const $n" ++ U32.show(last) ++ "=[" ++ j_region_vector_names(out, 0, fields) ++ "];" ++ j_nat_loop_zero(book, d, total) ++ "}" ++
+-    "$s0=$n0-1n;" ++ j_nat_loop_assign(last, 1) ++ j_region_vector_copy("$w", out, 0, fields, False{}) ++ "continue;"))
++    "if($n0===" ++ kc(String, j_region_number_counter(book, d), u => "0", u => "0n") ++ "){const $n" ++ U32.show(last) ++ "=[" ++ j_region_vector_names(out, 0, fields) ++ "];" ++ j_nat_loop_zero(book, d, total) ++ "}" ++
++    "$s0=$n0-" ++ kc(String, j_region_number_counter(book, d), u => "1", u => "1n") ++ ";" ++ j_nat_loop_assign(last, 1) ++ j_region_vector_copy("$w", out, 0, fields, False{}) ++ "continue;"))
+ 
+ @unsafe
+ def j_region_vector_next(+book: List<&2,KDef>, +env: List<&2,KTerm>, +args: List<&2,KTerm>, +ty: KTerm, +at: U32, +last: U32, +fields: U32) -> String:
+@@ -768,3 +768,24 @@
+   match xs:
+     case Nil{}: True{}
+     case Con{h, rest}: j_region_field_atom(h) && j_region_field_operands(rest)
++
++# A private Nat below 2^48 fits exactly in a Number. Change only a vector-loop
++# predecessor occurring once, as the first self-tail argument: it cannot escape
++# through source arithmetic, stores, results, type terms or copied helper plans.
++@unsafe
++def j_region_number_counter(+book: List<&2,KDef>, +d: KDef) -> Bool:
++  +succ = j_strip(kid(j_strip(kid(dv(d), 1)), 0))
++  U32.is_gt(j_region_vector_count(book, d), 0) && String.eq(tg(succ), "Lam") &&
++    j_nat_loop_tail(j_nat_loop_unwrap(succ), dn(d), ix(succ), da(d)) &&
++    U32.is_eq(j_region_counter_uses([kid(succ, 0)], ix(succ), 0), 1)
++
++# Stop after two uses. Inspect every child, including closures and annotations;
++# globally fresh frontend IDs make copied helper binders unambiguous here.
++@unsafe
++def j_region_counter_uses(+todo: List<&2,KTerm>, +id: U32, +count: U32) -> U32:
++  match todo:
++    case Nil{}: count
++    case Con{t, rest}:
++      kc(U32, U32.is_ge(count, 2), u => count, u =>
++        j_region_counter_uses(List.append(&2, KTerm, ks(t), rest), id,
++          U32.add(count, kc(U32, String.eq(tg(t), "Var") && U32.is_eq(ix(t), id), u => 1, u => 0))))
+--- a/selfhost/src/runtime/js/core.mjs
++++ b/selfhost/src/runtime/js/core.mjs
+@@ -84,6 +84,8 @@
+ const scalarSnapshots=Object.create(null), scalarObjectPrototype=Object.prototype;
+ const scalarFunctionPrototype=Function.prototype, scalarFunctionCall=Function.prototype.call;
+ const scalarPrimitivePrototypes=[Boolean.prototype,Number.prototype,BigInt.prototype];
++// Conversion for a proved private countdown must not call a replaced global.
++const regionCounterNumber=Number;
+ function scalarCapture(name,f){
+   const a=Object.getOwnPropertyDescriptor(f,'arity'),c=Object.getOwnPropertyDescriptor(f,'code');
+   const e=Object.getOwnPropertyDescriptor(f,'env'),b=Object.getOwnPropertyDescriptor(f,'bound');

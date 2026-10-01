@@ -1,0 +1,11 @@
+{
+  "scratch": "/tmp/phase35-folds-0fbsdapj",
+  "preceding_patch_sha256": "ea838dff277e60ed5aabb578231c1188598b43f33c04d5ec983f18f2407a7224",
+  "base_sha256": {
+    "selfhost/src/back/js/local.bend": "f0243565fd12cd83172cde1594b8ea4b15821404dd0adde8863c42874045ef89",
+    "selfhost/src/back/js/region.bend": "74f6390a2813b5c16e2806a56df87b79b7e54748ebecb95749b6a6d4b06994d8",
+    "selfhost/src/back/js/jpure.bend": "817fc59ebade8aed5a8862b2a759f97479f2a2e89bdb8cb358852ba0a8824541",
+    "selfhost/src/compiler.json": "127ea4df4f1d78f6088bf1a8f9072e3a4bacf6341c92a7ec98d9f685f1fdeec2"
+  },
+  "patch_sha256": "df646e31720752dc0a8dd5d6e62a3743c32e788cd478ce3012b1e62265af8f92"
+}

@@ -1,0 +1,18 @@
+{
+  "baseline": {
+    "modules": 66,
+    "physicalLines": 17071,
+    "nonblankLines": 14580,
+    "definitions": 1884,
+    "laws": 640,
+    "types": 70
+  },
+  "candidate": {
+    "modules": 68,
+    "physicalLines": 18050,
+    "nonblankLines": 15436,
+    "definitions": 2008,
+    "laws": 640,
+    "types": 71
+  }
+}

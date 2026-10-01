@@ -1,0 +1,125 @@
+--- a/selfhost/src/back/js/region.bend
++++ b/selfhost/src/back/js/region.bend
+@@ -41,7 +41,7 @@
+ @unsafe
+ def j_region_scalar(+book: List<&2,KDef>, +ty: KTerm) -> Bool:
+   +head = wnf(book, ty)
+-  String.contains("|U32|Bool|Nat|", "|" ++ nm(head) ++ "|") && j_primitive_type(book, head, nm(head))
++  String.contains("|U32|Bool|Nat|F32|", "|" ++ nm(head) ++ "|") && j_primitive_type(book, head, nm(head))
+ 
+ # Public record results remain inert flat terminal constructors. The separate
+ # local-type proof admits internal containers without changing this boundary.
+@@ -148,7 +148,7 @@
+   kc(String, j_region_valid(s) && j_region_has_loop(j_region_helpers(s)), u =>
+     "(()=>{" ++ j_region_declarations(book, j_region_helpers(s)) ++ "const $guards=[" ++ j_quote(dn(d)) ++ "," ++ j_region_names(j_region_helpers(s)) ++ "];return " ++
+     "fn(" ++ U32.show(da(d)) ++ ",exactCode(function(a,$entered){/* private scalar root */" ++ j_nat_loop_slots(da(d), 0) ++
+-    "if($entered&&" ++ j_region_inputs(book, dt(d), 0, da(d), False{}) ++ "&&localGuard($guards)){" ++
++    "if($entered&&" ++ j_region_host_guard(book, d, j_region_helpers(s)) ++ j_region_inputs(book, dt(d), 0, da(d), False{}) ++ "&&localGuard($guards)){" ++
+     j_nat_loop_generic(book, Nil{}, j_region_term(s), dt(d), 0) ++ "}" ++
+     j_nat_loop_generic(book, Nil{}, dv(d), dt(d), 0) ++ "}));})()", u => "")
+ 
+@@ -272,7 +272,7 @@
+     kc(JRegionBuild, j_region_local_type(book, j_env(env, ix(t))) && String.eq(nm(wnf(book, j_env(env, ix(t)))), nm(ty)),
+       u => j_region_result(s, j_region_annotate(j_region_variable(env, t), ty)), u => j_region_fail(s)), u =>
+   kc(JRegionBuild, String.eq(tg(t), "Lit"), u =>
+-    kc(JRegionBuild, String.eq(nm(t), nm(ty)) && (String.eq(nm(t), "U32") || String.eq(nm(t), "Nat")),
++    kc(JRegionBuild, String.eq(nm(t), nm(ty)) && (String.eq(nm(t), "U32") || String.eq(nm(t), "Nat") || String.eq(nm(t), "F32")),
+       u => j_region_result(s, j_region_annotate(t, ty)), u => j_region_fail(s)), u =>
+   kc(JRegionBuild, String.eq(tg(t), "Ctr"), u =>
+     kc(JRegionBuild, String.eq(nm(ty), "Bool") && U32.is_eq(terms_len(ks(t)), 0) && (String.eq(nm(t), "True") || String.eq(nm(t), "False")),
+@@ -720,3 +720,32 @@
+ @unsafe
+ def j_region_emit_output(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +out: String, +fields: U32) -> String:
+   kc(String, U32.is_gt(fields, 0), u => j_region_vector_return(book, env, t, ty, out, fields), u => j_region_return(book, env, t, ty))
++
++# Ordinary integer regions retain their existing guard cost. Floating operations
++# require the host-intrinsic/protocol guard before Math-based input validation.
++@unsafe
++def j_region_float_terms(+todo: List<&2,KTerm>) -> Bool:
++  match todo:
++    case Nil{}: False{}
++    case Con{t, rest}:
++      kc(Bool, String.eq(nm(t), "F32") || String.starts_with(nm(t), "F32.") || String.eq(nm(t), "U32.to_f32"), u => True{},
++        u => j_region_float_terms(List.append(&2, KTerm, ks(t), rest)))
++
++@unsafe
++def j_region_float_helpers(+book: List<&2,KDef>, +helpers: List<&2,KDef>) -> Bool:
++  match helpers:
++    case Nil{}: False{}
++    case Con{d, rest}: kc(Bool, j_region_float_signature(book, dt(d), da(d)) || j_region_float_terms([dt(d), dv(d)]), u => True{}, u => j_region_float_helpers(book, rest))
++
++@unsafe
++def j_region_host_guard(+book: List<&2,KDef>, +d: KDef, +helpers: List<&2,KDef>) -> String:
++  kc(String, j_region_float_signature(book, dt(d), da(d)) || j_region_float_terms([dt(d), dv(d)]) || j_region_float_helpers(book, helpers), u => "regionHostGuard()&&", u => "")
++
++# Alias normalization is essential even for an unused floating input: its
++# canonical-input test calls Math.fround before any body expression executes.
++@unsafe
++def j_region_float_signature(+book: List<&2,KDef>, +ty: KTerm, +left: U32) -> Bool:
++  +head = wnf(book, ty)
++  kc(Bool, U32.is_eq(left, 0), u => String.eq(nm(head), "F32"), u =>
++    kc(Bool, String.eq(tg(head), "All"), u => String.eq(nm(wnf(book, kid(head, 0))), "F32") ||
++      j_region_float_signature(book, kid(head, 1), U32.sub(left, 1)), u => False{}))
+--- a/selfhost/src/back/js/worker.bend
++++ b/selfhost/src/back/js/worker.bend
+@@ -125,7 +125,7 @@
+           +fast: KDef = KDef{dn(d), dk(d), da(d), dx(d), dt(d), k_with_children(j_strip(dv(d)), [fastZero, kid(j_strip(dv(d)), 1)]), dc(d), db(d), du(d)}
+           "scalarCapture(" ++ j_quote(dn(d)) ++ ",(()=>{" ++ j_region_declarations(book, helpers) ++ "const $guards=[" ++ j_quote(dn(d)) ++ "," ++ j_region_names(helpers) ++ "];return " ++
+           j_nat_loop_wrapper(book, d, zero, total,
+-            "if($entered&&" ++ j_region_inputs(book, j_arm_type(book, wnf(book, dt(d)), "Succ"), 0, total, True{}) ++ "&&localGuard($guards)){/* private scalar region */" ++
++            "if($entered&&" ++ j_region_host_guard(book, d, helpers) ++ j_region_inputs(book, j_arm_type(book, wnf(book, dt(d)), "Succ"), 0, total, True{}) ++ "&&localGuard($guards)){/* private scalar region */" ++
+             j_nat_loop_body(book, fast, fastSucc, total) ++ "}" ++
+             j_nat_loop_generic(book, Nil{}, succ, j_arm_type(book, wnf(book, dt(d)), "Succ"), 0)) ++ ";})())"
+ 
+--- a/selfhost/src/back/js/tree.bend
++++ b/selfhost/src/back/js/tree.bend
+@@ -77,7 +77,7 @@
+     "scalarCapture(" ++ j_quote(dn(d)) ++ ",(()=>{" ++ j_region_declarations(book, j_region_helpers(s)) ++
+     "const $guards=[" ++ j_quote(dn(d)) ++ kc(String, List.is_empty(&2, KDef, j_region_helpers(s)), u => "", u => "," ++ j_region_names(j_region_helpers(s))) ++ "];return " ++
+     j_nat_loop_wrapper(book, d, zero, da(d),
+-      "if($entered&&" ++ j_region_inputs(book, j_arm_type(book, wnf(book, dt(d)), "Succ"), 0, da(d), True{}) ++ "&&$s0<32n&&localGuard($guards)){/* private scalar tree */" ++
++      "if($entered&&" ++ j_region_host_guard(book, d, j_region_helpers(s)) ++ j_region_inputs(book, j_arm_type(book, wnf(book, dt(d)), "Succ"), 0, da(d), True{}) ++ "&&$s0<32n&&localGuard($guards)){/* private scalar tree */" ++
+       j_tree_body(book, d, fastZero, j_region_term(s)) ++ "}" ++
+       j_nat_loop_generic(book, Nil{}, succ, j_arm_type(book, wnf(book, dt(d)), "Succ"), 0)) ++ ";})())", u => "")
+ 
+--- a/selfhost/src/runtime/js/core.mjs
++++ b/selfhost/src/runtime/js/core.mjs
+@@ -129,6 +129,38 @@
+   for(const k of ['request','bounce','build','code'])if(Object.getOwnPropertyDescriptor(localArrayPrototype,k))return false;
+   return scalarGuard(names);
+ }
++// New floating regions may skip generic dispatch between native operations.
++// Snapshot standard host intrinsics once; reject changed/getter hooks before
++// input validation or the existing descriptor guard can call them.
++const regionNumericHooks=[[globalThis,'Math',Math],[globalThis,'Number',Number],[globalThis,'BigInt',BigInt],[globalThis,'Array',Array],
++  [Number,'isNaN',Number.isNaN],[Number,'isInteger',Number.isInteger]];
++for(const key of ['fround','sqrt','exp','log','log2','log10','sin','cos','tan','asin','acos','atan','sinh','cosh','tanh','floor','ceil','trunc','abs','imul'])
++  regionNumericHooks.push([Math,key,Math[key]]);
++const regionIteratorPrototype=Object.getPrototypeOf([][Symbol.iterator]());
++const regionIteratorParent=Object.getPrototypeOf(regionIteratorPrototype);
++const regionProtocolPairs=[[Array.prototype,Symbol.iterator],[Array.prototype,'concat'],[Array.prototype,'slice'],[Array.prototype,'every'],
++  [Array.prototype,'constructor'],[Array.prototype,Symbol.isConcatSpreadable],[Object.prototype,Symbol.isConcatSpreadable],[Array,Symbol.species],
++  [regionIteratorPrototype,'next'],[regionIteratorPrototype,'return'],[regionIteratorParent,'return'],[Object.prototype,'return']];
++const regionProtocolDescriptors=[];
++for(let i=0;i<regionProtocolPairs.length;i++)regionProtocolDescriptors[i]=Object.getOwnPropertyDescriptor(regionProtocolPairs[i][0],regionProtocolPairs[i][1]);
++function regionHostGuard(){
++  for(let i=0;i<regionNumericHooks.length;i++){
++    const p=regionNumericHooks[i],d=Object.getOwnPropertyDescriptor(p[0],p[1]);
++    if(!d||!Object.hasOwn(d,'value')||d.value!==p[2])return false;
++  }
++  if(Object.getPrototypeOf(localArrayPrototype)!==scalarObjectPrototype||Object.getPrototypeOf(regionIteratorPrototype)!==regionIteratorParent||
++      Object.getPrototypeOf(regionIteratorParent)!==scalarObjectPrototype)return false;
++  for(let i=0;i<regionProtocolPairs.length;i++){
++    const p=regionProtocolPairs[i],old=regionProtocolDescriptors[i],d=Object.getOwnPropertyDescriptor(p[0],p[1]);
++    if(!old){if(d)return false;continue;}
++    if(!d||d.enumerable!==old.enumerable||d.configurable!==old.configurable)return false;
++    const value=Object.hasOwn(old,'value');if(value!==Object.hasOwn(d,'value'))return false;
++    if(value){if(d.value!==old.value||d.writable!==old.writable)return false;}
++    else if(d.get!==old.get||d.set!==old.set)return false;
++  }
++  return true;
++}
++
+ const native=(name,n,f)=>{
+   const value=fn(n,a=>f(...a));
+   return G[name]=name==='Array.new'||name==='Array.get'||name==='Array.set'?scalarCapture(name,value):value;

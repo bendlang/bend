@@ -1,44 +1,40 @@
 # Bend2 compiler port in Bend2
 
 Use the [compiler guide](../docs/BEND-IN-BEND.md) and
-[Phase32 report](../implementation/phase32/README.md). Installed checked03 uses lexical
-unpacking, typed immediate-read bridges and field vectors inside proved private
-regions. Public representations and unsupported fallback remain intact; runtime
-and driver are unchanged. **Release verification and all 42 ordinary/relocated
-CLI checks pass.** The [release report](../implementation/phase32/release-03.md)
-and [manifest](dist/release.json) record exact artifact identities and lineage;
-the previous [Phase31 release](../implementation/phase31/release-07.md)
-remains preserved.
+[Phase35 report](../implementation/phase35/README.md). **Checked09 is installed,
+release verification passes, and all 42 ordinary/relocated CLI checks pass.**
+The [release record](../implementation/phase35/release-09.md) and
+[manifest](dist/release.json) bind source, genuine checked parent, derived API,
+Base, runtime and host. Ordinary compilation executes the Bend implementation
+without a TypeScript fallback. The prior Phase32 release is preserved.
 
-The original four-pair edit-distance program improves **3.54× over Phase31**,
-reducing its same-window TypeScript gap **14.49×→4.09×**. A distinct array fold
-improves **1.98×**, with an 8.13× remaining gap. Original Mandelbrot/RLE emitted
-bytes are unchanged. These selected emitted-JavaScript results do not establish
-a universal speed ratio. The [comparison](../implementation/phase32/final-measurements/measurements.md)
-separately records **1.91% slower Mandelbrot compilation** and overlapping
-edit-distance/canary changes. The [admission decision](../design/phase32/admission.md)
-accepts that cost and source/generated-size increases after the release gates close.
+The unchanged fifteen-point generated-JavaScript benchmark measures **6.865×
+faster symreg, 5.475× faster raytrace, 2.360× faster fold and 1.278× faster original
+edit distance** versus Phase32 in the same run. Remaining TypeScript gaps are
+14.021×, 54.781×, 3.497× and 3.259× respectively. Other generic programs retain
+large gaps; these cases do not define average application speed.
 
-The [performance guide](../docs/BEND-IN-BEND-PERFORMANCE.md) explains the fast loop:
-saved-output experiments, checked builds (about 40 seconds with 36 focused
-observations), then broad integration. Heavy jobs run serially with explicit heaps,
-process-tree RSS/deadline limits and a free-memory floor. Acquisition durations
-are not controlled compiler-throughput claims.
+Private scalar state, direct regions and structural folds remove allocation and
+generic dispatch while retaining public calls/data and guarded fallback.
+Compiler cost and size increase: normal checked requests change +0.72% for pair
+(overlap), +8.17% for Mandelbrot, +30.09% for symreg and +34.40% for ray. Source
+contains **18,050 physical / 15,436 nonblank Bend lines in 68 modules**, up 979
+physical lines (5.73%). See [admission](../implementation/phase35/performance-admission.md)
+for this explicit tradeoff and [profiles](../implementation/phase35/profile-findings.md)
+for the next optimization targets.
 
-Fresh candidate frontend execution agrees exactly with the frozen pinned
-TypeScript results on **3,026 main and 196 broader observations**. The interrupted
-broader run is retained beside a fresh successful retry. Candidate03 also passes
-36 focused checks, six additional semantic control groups, and its 81-row backend
-pilot (69 passes, 8 not applicable, 4 shared failures). The original restricted
-Clang failures and approved-context retry are retained. Selected upstream JS,
-23 libraries/127 points, inherited execution suites, 22 compiler components and
-complete HVM output pass. The [gate closure](../implementation/phase32/final-conformance/gates.md)
-binds those receipts and all 223 canonical source identities.
-[Conformance](CONFORMANCE.md) keeps scopes and limits explicit.
+The [final closure](../implementation/phase35/final-conformance/gates.md) verifies
+225 canonical source files, 36 focused checks, 15 owner-control groups, **3,026
+main + 196 broader exact frontend observations**, inherited execution/library
+controls and the installed CLI. Backend outcomes remain **69 pass / 8 not
+applicable / 4 shared failures** across 81 rows. Counts overlap; exact agreement
+does not turn shared failures into passes. [Conformance](CONFORMANCE.md) records
+the scopes. Full backend/GPU and independent proof validity remain unestablished;
+`--verdict` is unsupported. No new self-emitted fixed point is claimed.
 
 The target remains upstream
 [`018751270e800bc222a93dad7f257083ee53a5f7`](https://github.com/bendlang/bend/tree/018751270e800bc222a93dad7f257083ee53a5f7),
-after Bend2.0.34.
+after Bend 2.0.34.
 
 ```sh
 # From selfhost/, with Node.js 24 or newer:
@@ -47,24 +43,18 @@ node cli.mjs tests/conformance/typed-smoke/base-u32.bend --run
 npm run build
 ```
 
-The compiler has **17,071 physical / 14,580 nonblank Bend lines in 66 modules**:
-57 more physical lines (+0.335%) than Phase31, six additional functions and two
-private plan tags, with no new datatype or module. Generated artifacts and
-experiment tools are separate.
-The [release manifest](dist/release.json) binds source, genuine checked parent,
-guarded derived API, Base, runtime and host. Compiler changes use the
-[checked workflow](../docs/PHASE5_DEVELOPMENT.md); ordinary compilation has no
-upstream TypeScript fallback.
-
-This is an experimental compatibility port. Checking, proof trust, backend
-execution and independent proof validation are distinct. `--verdict` remains
-unsupported. Historical self-hosted fixed points and older compilation ratios
-are not measurements of this release; no new H image or fixed point is claimed.
+Use the [checked workflow](../docs/PHASE5_DEVELOPMENT.md) for compiler edits.
+Checked09 plus its 36 focused checks took **42.5 seconds**; the maintained
+three-case screen took **23 seconds**. The
+[execution suite](tools/performance/programs/README.md) offers 20/60/300/600-second
+ceilings and independent case selection; [diagnostics](tools/performance/programs/DIAGNOSTICS.md)
+add separate profiles and JavaScript analysis. Heavy jobs run serially with
+explicit heaps, RSS/deadline bounds and a free-memory floor.
 
 The [ledger](../experiments/ledger.md), [strategy](../experiments/STEERING.md) and
 [preservation index](../experiments/PRESERVATION.md) retain failures and decisions.
-The earlier [architectural trials](../implementation/phase7/architecture-report.md)
-remain research artifacts; their larger/slower alternatives were not promoted.
+The [performance guide](../docs/BEND-IN-BEND-PERFORMANCE.md) explains the admitted
+representations and fallback boundaries.
 
 ## Use the typed compiler
 

@@ -1,0 +1,69 @@
+--- a/selfhost/src/back/js/region.bend
++++ b/selfhost/src/back/js/region.bend
+@@ -394,7 +394,7 @@
+ 
+ @unsafe
+ def j_region_declarations(+book: List<&2,KDef>, +helpers: List<&2,KDef>) -> String:
+-  j_region_definitions(book, j_region_inline_defs(helpers, helpers))
++  j_region_definitions(book, j_region_inline_defs(book, helpers, helpers))
+ 
+ # Delimited codepoints preserve source identity without a private name table.
+ @unsafe
+@@ -495,36 +495,37 @@
+ # Inline bounded private plans only after the closed-region proof. A shared
+ # visit budget includes copied bodies; failure keeps the original helper intact.
+ @unsafe
+-def j_region_inline_defs(+helpers: List<&2,KDef>, +rest: List<&2,KDef>) -> List<&2,KDef>:
++def j_region_inline_defs(+book: List<&2,KDef>, +helpers: List<&2,KDef>, +rest: List<&2,KDef>) -> List<&2,KDef>:
+   match rest:
+     case Nil{}: Nil{}
+     case Con{d, more}:
+-      +s = j_region_inline_term(helpers, dv(d), 0, JRegionBuild{atom("Absent"), Nil{}, 2048, True{}})
+-      Con{KDef{dn(d), dk(d), da(d), dx(d), dt(d), kc(KTerm, j_region_valid(s), u => j_region_term(s), u => dv(d)), dc(d), db(d), du(d)}, j_region_inline_defs(helpers, more)}
+-
+-@unsafe
+-def j_region_inline_term(+helpers: List<&2,KDef>, +t: KTerm, +depth: U32, +s: JRegionBuild) -> JRegionBuild:
++      +s = j_region_inline_term(book, helpers, dv(d), 0, JRegionBuild{atom("Absent"), Nil{}, 2048, True{}})
++      Con{KDef{dn(d), dk(d), da(d), dx(d), dt(d), kc(KTerm, j_region_valid(s), u => j_region_term(s), u => dv(d)), dc(d), db(d), du(d)}, j_region_inline_defs(book, helpers, more)}
++
++@unsafe
++def j_region_inline_term(+book: List<&2,KDef>, +helpers: List<&2,KDef>, +t: KTerm, +depth: U32, +s: JRegionBuild) -> JRegionBuild:
+   kc(JRegionBuild, j_region_valid(s) && U32.is_gt(j_region_fuel(s), 0), u =>
+-    j_region_inline_children(helpers, t, depth, j_region_inline_terms(helpers, ks(t), depth, j_region_tick(s))), u => j_region_fail(s))
+-
+-@unsafe
+-def j_region_inline_terms(+helpers: List<&2,KDef>, +xs: List<&2,KTerm>, +depth: U32, +s: JRegionBuild) -> JRegionBuild:
++    j_region_inline_children(book, helpers, t, depth, j_region_inline_terms(book, helpers, ks(t), depth, j_region_tick(s))), u => j_region_fail(s))
++
++@unsafe
++def j_region_inline_terms(+book: List<&2,KDef>, +helpers: List<&2,KDef>, +xs: List<&2,KTerm>, +depth: U32, +s: JRegionBuild) -> JRegionBuild:
+   match xs:
+     case Nil{}: j_region_result(s, kt("JList", "", 0, 0, Nil{}))
+-    case Con{h, rest}: j_region_inline_first(helpers, rest, depth, j_region_inline_term(helpers, h, depth, s))
+-
+-@unsafe
+-def j_region_inline_first(+helpers: List<&2,KDef>, +rest: List<&2,KTerm>, +depth: U32, +s: JRegionBuild) -> JRegionBuild:
++    case Con{h, rest}: j_region_inline_first(book, helpers, rest, depth, j_region_inline_term(book, helpers, h, depth, s))
++
++@unsafe
++def j_region_inline_first(+book: List<&2,KDef>, +helpers: List<&2,KDef>, +rest: List<&2,KTerm>, +depth: U32, +s: JRegionBuild) -> JRegionBuild:
+   kc(JRegionBuild, j_region_valid(s), u =>
+-    j_region_list_prepend(j_region_term(s), j_region_inline_terms(helpers, rest, depth, s)), u => s)
+-
+-@unsafe
+-def j_region_inline_children(+helpers: List<&2,KDef>, +t: KTerm, +depth: U32, +s: JRegionBuild) -> JRegionBuild:
++    j_region_list_prepend(j_region_term(s), j_region_inline_terms(book, helpers, rest, depth, s)), u => s)
++
++@unsafe
++def j_region_inline_children(+book: List<&2,KDef>, +helpers: List<&2,KDef>, +t: KTerm, +depth: U32, +s: JRegionBuild) -> JRegionBuild:
+   +d = lookup(helpers, nm(t))
+   kc(JRegionBuild, j_region_valid(s) && U32.is_lt(depth, 8) &&
+     (String.eq(tg(t), "JCall") || String.eq(tg(t), "JReadCall")) &&
+-    String.eq(dk(d), "Def") && Bool.not(db(d)) && Bool.not(String.eq(tg(dv(d)), "Mat")), u =>
+-    j_region_inline_done(t, da(d), ks(j_region_term(s)), j_region_inline_term(helpers,
++    String.eq(dk(d), "Def") && Bool.not(db(d)) && String.eq(tg(dv(d)), "Ann") &&
++    j_region_local_vector(book, kid(dv(d), 1)), u =>
++    j_region_inline_done(t, da(d), ks(j_region_term(s)), j_region_inline_term(book, helpers,
+       kc(KTerm, String.eq(tg(t), "JReadCall"), u => kid(j_strip(dv(d)), 0), u => dv(d)), U32.inc(depth), s)),
+     u => j_region_result(s, k_with_children(t, ks(j_region_term(s)))))
+ 

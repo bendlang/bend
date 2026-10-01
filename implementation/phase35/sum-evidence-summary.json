@@ -1,0 +1,428 @@
+{
+  "scope": "Static extraction of root-owned results, not new execution. Combined screen is not isolated fold attribution. Final confirmation and owner gates pending.",
+  "entries": [
+    {
+      "run": "sum-controls-01",
+      "source": "selfhost/build/phase35/sum-controls-01/report.json",
+      "sha256": "a0f8ff74821a1cc0b94a87dc8acad4df8d7a339d6ce2fd28eeeed06495a1945b",
+      "complete": true,
+      "pass": true,
+      "oracleCount": 71,
+      "boundaryCount": 121
+    },
+    {
+      "run": "sum-witness-01",
+      "source": "selfhost/build/phase35/sum-witness-01/report.json",
+      "sha256": "21879861dcde42c1f542d24c9b3e45a25b832f61c40a653253f9cc75023864c8",
+      "complete": false,
+      "pass": false,
+      "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:\n+ actual - expected\n\n  [\n-   1,\n    0,\n    0,\n+   0\n  ]\n\n    at file:///home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase35/sum-witness.mjs:29:141",
+      "points": []
+    },
+    {
+      "run": "sum-controls-02",
+      "source": "selfhost/build/phase35/sum-controls-02/report.json",
+      "sha256": "c91634ffc91dbe6e21d3610594c83657282a0c02cd839f4bb458000bc8d4ab48",
+      "complete": true,
+      "pass": true,
+      "oracleCount": 71,
+      "boundaryCount": 121
+    },
+    {
+      "run": "sum-witness-02",
+      "source": "selfhost/build/phase35/sum-witness-02/report.json",
+      "sha256": "ca6315a8c3c1b14d7cc6ed254f02e293f7a84bea73a0b3075b8a7455a2febaec",
+      "complete": true,
+      "pass": true,
+      "points": [
+        {
+          "variant": "loop",
+          "kind": "candidate",
+          "pts": "0",
+          "expected": {
+            "$": "Sel",
+            "a": [
+              504,
+              42,
+              4112119538
+            ]
+          },
+          "actual": {
+            "$": "Sel",
+            "a": [
+              504,
+              42,
+              4112119538
+            ]
+          },
+          "counts": [
+            1,
+            0,
+            0
+          ],
+          "expectedCounts": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "variant": "loop",
+          "kind": "candidate",
+          "pts": "1",
+          "expected": {
+            "$": "Sel",
+            "a": [
+              4291890130,
+              42,
+              180944088
+            ]
+          },
+          "actual": {
+            "$": "Sel",
+            "a": [
+              4291890130,
+              42,
+              180944088
+            ]
+          },
+          "counts": [
+            1,
+            0,
+            0
+          ],
+          "expectedCounts": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "variant": "loop",
+          "kind": "candidate",
+          "pts": "16",
+          "expected": {
+            "$": "Sel",
+            "a": [
+              4243525000,
+              42,
+              167180930
+            ]
+          },
+          "actual": {
+            "$": "Sel",
+            "a": [
+              4243525000,
+              42,
+              167180930
+            ]
+          },
+          "counts": [
+            1,
+            0,
+            0
+          ],
+          "expectedCounts": [
+            1,
+            0,
+            0
+          ]
+        },
+        {
+          "variant": "loop",
+          "kind": "original-bench",
+          "args": [
+            6,
+            42
+          ],
+          "expected": 2490246820,
+          "actual": 2490246820,
+          "counts": [
+            96,
+            0,
+            0
+          ],
+          "expectedCounts": [
+            96,
+            0,
+            0
+          ]
+        },
+        {
+          "variant": "sums",
+          "kind": "candidate",
+          "pts": "0",
+          "expected": {
+            "$": "Sel",
+            "a": [
+              504,
+              42,
+              4112119538
+            ]
+          },
+          "actual": {
+            "$": "Sel",
+            "a": [
+              504,
+              42,
+              4112119538
+            ]
+          },
+          "counts": [
+            1,
+            0,
+            63
+          ],
+          "expectedCounts": [
+            1,
+            0,
+            63
+          ]
+        },
+        {
+          "variant": "sums",
+          "kind": "candidate",
+          "pts": "1",
+          "expected": {
+            "$": "Sel",
+            "a": [
+              4291890130,
+              42,
+              180944088
+            ]
+          },
+          "actual": {
+            "$": "Sel",
+            "a": [
+              4291890130,
+              42,
+              180944088
+            ]
+          },
+          "counts": [
+            1,
+            63,
+            63
+          ],
+          "expectedCounts": [
+            1,
+            63,
+            63
+          ]
+        },
+        {
+          "variant": "sums",
+          "kind": "candidate",
+          "pts": "16",
+          "expected": {
+            "$": "Sel",
+            "a": [
+              4243525000,
+              42,
+              167180930
+            ]
+          },
+          "actual": {
+            "$": "Sel",
+            "a": [
+              4243525000,
+              42,
+              167180930
+            ]
+          },
+          "counts": [
+            1,
+            1008,
+            63
+          ],
+          "expectedCounts": [
+            1,
+            1008,
+            63
+          ]
+        },
+        {
+          "variant": "sums",
+          "kind": "original-bench",
+          "args": [
+            6,
+            42
+          ],
+          "expected": 2490246820,
+          "actual": 2490246820,
+          "counts": [
+            96,
+            96768,
+            6048
+          ],
+          "expectedCounts": [
+            96,
+            96768,
+            6048
+          ]
+        }
+      ]
+    },
+    {
+      "run": "sum-screen-01",
+      "source": "selfhost/build/phase35/sum-screen-01/report.json",
+      "sha256": "8caacaaf4eebfd59c576c1d050d43cc5e210bf863bef1f4984d0bf74c20565d0",
+      "complete": true,
+      "pass": true,
+      "wallSeconds": 15.174583541000175,
+      "rounds": 3,
+      "warmupMs": 350,
+      "targetMs": 150,
+      "summary": {
+        "original": {
+          "median": 109.2632185,
+          "minimum": 107.854199,
+          "maximum": 111.342265,
+          "samples": [
+            111.342265,
+            107.854199,
+            109.2632185
+          ]
+        },
+        "baseline": {
+          "median": 110.84398599999997,
+          "minimum": 110.20167049999998,
+          "maximum": 112.17413649999997,
+          "samples": [
+            112.17413649999997,
+            110.20167049999998,
+            110.84398599999997
+          ]
+        },
+        "loop": {
+          "median": 110.48468699999995,
+          "minimum": 108.61228899999998,
+          "maximum": 110.52342949999996,
+          "samples": [
+            110.52342949999996,
+            108.61228899999998,
+            110.48468699999995
+          ]
+        },
+        "sums": {
+          "median": 20.22265666666667,
+          "minimum": 19.866753222222226,
+          "maximum": 20.310774777777787,
+          "samples": [
+            20.310774777777787,
+            20.22265666666667,
+            19.866753222222226
+          ]
+        },
+        "typescript": {
+          "median": 1.1110919354838709,
+          "minimum": 1.1090915901639342,
+          "maximum": 1.1162329516129028,
+          "samples": [
+            1.1162329516129028,
+            1.1110919354838709,
+            1.1090915901639342
+          ]
+        }
+      }
+    },
+    {
+      "run": "combined-screen-01",
+      "source": "selfhost/build/phase35/combined-screen-01/report.json",
+      "sha256": "c47d832b0c819498fd7b6927e12774fc2e1273df1b72281133a7b3ac65a55833",
+      "complete": true,
+      "pass": true,
+      "wallSeconds": 22.961282984000718,
+      "summary": {
+        "complete": true,
+        "balancedRounds": [
+          0,
+          1,
+          2
+        ],
+        "stats": {
+          "typescript": {
+            "medianMs": 1.2681628916666672,
+            "minimumMs": 1.1075070813008123,
+            "maximumMs": 1.3272212644628094,
+            "samplesMs": [
+              1.1075070813008123,
+              1.2681628916666672,
+              1.3272212644628094
+            ],
+            "firstCallMs": [
+              9.210313999999997,
+              9.169718000000003,
+              12.282990000000005
+            ],
+            "importMs": [
+              1.2127559999999988,
+              1.2653140000000036,
+              1.2706640000000036
+            ],
+            "halfDriftPercent": [
+              0.8147060644060344,
+              -13.972474459639672,
+              -10.598696602554181
+            ]
+          },
+          "baseline": {
+            "medianMs": 123.33550099999997,
+            "minimumMs": 122.2950985,
+            "maximumMs": 136.0018965,
+            "samplesMs": [
+              122.2950985,
+              136.0018965,
+              123.33550099999997
+            ],
+            "firstCallMs": [
+              218.946819,
+              238.30496899999997,
+              221.27842500000003
+            ],
+            "importMs": [
+              20.517854999999997,
+              24.126407999999998,
+              20.363232000000004
+            ],
+            "halfDriftPercent": [
+              25.622662824245566,
+              23.50479864578512,
+              24.30733790085007
+            ]
+          },
+          "candidate": {
+            "medianMs": 17.403338,
+            "minimumMs": 15.438087500000005,
+            "maximumMs": 18.11202462499999,
+            "samplesMs": [
+              15.438087500000005,
+              18.11202462499999,
+              17.403338
+            ],
+            "firstCallMs": [
+              72.99031099999999,
+              80.770689,
+              80.23509200000001
+            ],
+            "importMs": [
+              20.953251999999992,
+              24.902493000000007,
+              25.025401000000002
+            ],
+            "halfDriftPercent": [
+              1.1847834432750393,
+              -0.49082513059367505,
+              -3.823440956105706
+            ]
+          }
+        },
+        "ratios": {
+          "baseline/typescript": 97.25525152207209,
+          "candidate/typescript": 13.723267030095702,
+          "baseline/candidate": 7.0868876418995
+        }
+      }
+    }
+  ]
+}

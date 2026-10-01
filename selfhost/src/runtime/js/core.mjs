@@ -84,6 +84,8 @@ const callOwned=(f,args)=>force(apply(f,args,true));
 const scalarSnapshots=Object.create(null), scalarObjectPrototype=Object.prototype;
 const scalarFunctionPrototype=Function.prototype, scalarFunctionCall=Function.prototype.call;
 const scalarPrimitivePrototypes=[Boolean.prototype,Number.prototype,BigInt.prototype];
+// Conversion for a proved private countdown must not call a replaced global.
+const regionCounterNumber=Number;
 function scalarCapture(name,f){
   const a=Object.getOwnPropertyDescriptor(f,'arity'),c=Object.getOwnPropertyDescriptor(f,'code');
   const e=Object.getOwnPropertyDescriptor(f,'env'),b=Object.getOwnPropertyDescriptor(f,'bound');
@@ -129,9 +131,55 @@ function localGuard(names){
   for(const k of ['request','bounce','build','code'])if(Object.getOwnPropertyDescriptor(localArrayPrototype,k))return false;
   return scalarGuard(names);
 }
+// New floating regions may skip generic dispatch between native operations.
+// Snapshot standard host intrinsics once; reject changed/getter hooks before
+// input validation or the existing descriptor guard can call them.
+const regionGetDescriptor=Object.getOwnPropertyDescriptor,regionGetPrototype=Object.getPrototypeOf,regionOwn=Object.hasOwn;
+const regionGetNames=Object.getOwnPropertyNames;
+const regionPrototypeNames=[regionGetNames(Array.prototype),regionGetNames(Object.prototype)];
+const regionNumericHooks=[[globalThis,'Object',Object],[globalThis,'Reflect',Reflect],[globalThis,'WeakSet',WeakSet],
+  [globalThis,'Math',Math],[globalThis,'Number',Number],[globalThis,'BigInt',BigInt],[globalThis,'Array',Array],
+  [Object,'getOwnPropertyDescriptor',regionGetDescriptor],[Object,'getPrototypeOf',regionGetPrototype],[Object,'hasOwn',regionOwn],
+  [Reflect,'apply',Reflect.apply],[WeakSet.prototype,'has',WeakSet.prototype.has],[WeakSet.prototype,'add',WeakSet.prototype.add],
+  [Number,'isNaN',Number.isNaN],[Number,'isInteger',Number.isInteger],[Number,'isFinite',Number.isFinite]];
+for(const key of ['fround','sqrt','exp','log','log2','log10','sin','cos','tan','asin','acos','atan','sinh','cosh','tanh','floor','ceil','trunc','abs','imul'])
+  regionNumericHooks.push([Math,key,Math[key]]);
+const regionIteratorPrototype=Object.getPrototypeOf([][Symbol.iterator]());
+const regionIteratorParent=Object.getPrototypeOf(regionIteratorPrototype);
+const regionProtocolPairs=[[Array.prototype,Symbol.iterator],[Array.prototype,'concat'],[Array.prototype,'slice'],[Array.prototype,'every'],
+  [Array.prototype,'push'],[Array.prototype,'pop'],[Array.prototype,'includes'],
+  [Array.prototype,'constructor'],[Array.prototype,Symbol.isConcatSpreadable],[Object.prototype,Symbol.isConcatSpreadable],[Array,Symbol.species],
+  [regionIteratorPrototype,'next'],[regionIteratorPrototype,'return'],[regionIteratorParent,'return'],[Object.prototype,'return']];
+const regionProtocolDescriptors=[];
+for(let i=0;i<regionProtocolPairs.length;i++)regionProtocolDescriptors[i]=Object.getOwnPropertyDescriptor(regionProtocolPairs[i][0],regionProtocolPairs[i][1]);
+function regionHostGuard(){
+  for(let i=0;i<regionNumericHooks.length;i++){
+    const p=regionNumericHooks[i],d=regionGetDescriptor(p[0],p[1]);
+    if(!d||!regionOwn(d,'value')||d.value!==p[2])return false;
+  }
+  if(regionGetPrototype(localArrayPrototype)!==scalarObjectPrototype||regionGetPrototype(regionIteratorPrototype)!==regionIteratorParent||
+      regionGetPrototype(regionIteratorParent)!==scalarObjectPrototype)return false;
+  // An inherited numeric setter could run while a proved pure residual builds
+  // a value. Reject added/deleted prototype keys before entering that region.
+  for(let i=0;i<2;i++){
+    const names=regionGetNames(i===0?localArrayPrototype:scalarObjectPrototype),old=regionPrototypeNames[i];
+    if(names.length!==old.length)return false;
+    for(let j=0;j<names.length;j++)if(names[j]!==old[j])return false;
+  }
+  for(let i=0;i<regionProtocolPairs.length;i++){
+    const p=regionProtocolPairs[i],old=regionProtocolDescriptors[i],d=regionGetDescriptor(p[0],p[1]);
+    if(!old){if(d)return false;continue;}
+    if(!d||d.enumerable!==old.enumerable||d.configurable!==old.configurable)return false;
+    const value=regionOwn(old,'value');if(value!==regionOwn(d,'value'))return false;
+    if(value){if(d.value!==old.value||d.writable!==old.writable)return false;}
+    else if(d.get!==old.get||d.set!==old.set)return false;
+  }
+  return true;
+}
+
 const native=(name,n,f)=>{
   const value=fn(n,a=>f(...a));
-  return G[name]=name==='Array.new'||name==='Array.get'||name==='Array.set'?scalarCapture(name,value):value;
+  return G[name]=name==='Array.new'||name==='Array.get'||name==='Array.set'||name==='F32.to_u32'?scalarCapture(name,value):value;
 };
 function get(v,k){if(k in v){const x=v[k];return x?.code&&x.arity===0?call(x,[]):x;}bad('unbound name: '+k)}
 function ctor(k,a){

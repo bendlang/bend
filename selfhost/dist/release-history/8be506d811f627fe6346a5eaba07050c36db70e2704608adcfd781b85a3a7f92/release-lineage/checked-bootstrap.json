@@ -1,0 +1,827 @@
+{
+  "stage": "upstream-bootstrap",
+  "revision": "018751270e800bc222a93dad7f257083ee53a5f7",
+  "generated": "2026-09-30T22:34:19.724Z",
+  "apiPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/api.mjs",
+  "apiSha256": "c3cc54c1e7e4a8470547e7488df4a58fec17195e0889e1eb458df34104bed20b",
+  "baseSha256": "c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661",
+  "source": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/compiler.bend",
+  "sourceSha256": "e3cc44245444ac2509431d44c8909692c9223cd977968ffb087771c1ae2859ae",
+  "modules": [
+    {
+      "file": "src/core/term.bend",
+      "sha256": "e9ab994bc3ba4fd5a281e25836911bbc29cafcf2ab0c0284dc9bc097e891fa46"
+    },
+    {
+      "file": "src/core/index.bend",
+      "sha256": "32a4f2772c865f9ed9743f1ece27d5fafd1898724d5f268186590c938b038ea2"
+    },
+    {
+      "file": "src/core/normalize.bend",
+      "sha256": "4845ff63f3c228abc9a432410ddc8b7e20bfce27e54d6d49412b06608f7ce702"
+    },
+    {
+      "file": "src/core/graph.bend",
+      "sha256": "85625049b316ede08eeffd7ff509483183624f1197c582c9d1bb2cd8bebf4802"
+    },
+    {
+      "file": "src/core/reach.bend",
+      "sha256": "086092c688e6cb774da94333826f51b1fdeddc8e85aeaac5be6b15c143b0df27"
+    },
+    {
+      "file": "src/core/pretty.bend",
+      "sha256": "40b4e6ca55bf11009881b893c7959dd52cc64bbc6cb2dbb607e94dbab69fdedc"
+    },
+    {
+      "file": "src/check/quantity.bend",
+      "sha256": "b4a8ca1f8dff10f4f64397ea53bbbe272bb32400e993b1077d284ec1d8a70b4d"
+    },
+    {
+      "file": "src/check/kernel.bend",
+      "sha256": "da7ee29f9755f09acd9f89fcfd37465b52ab8778971200c946c70e50eb5b4132"
+    },
+    {
+      "file": "src/check/specialize.bend",
+      "sha256": "76e0f9249ae15cc0734a8e9d2e75677794e2eb5464c7756a19daff8b8217e7ee"
+    },
+    {
+      "file": "src/check/prefix.bend",
+      "sha256": "ceabf77fb49b58910d83fa896899061643c4c105f29e70bd87d3f73be873783d"
+    },
+    {
+      "file": "src/check/annotate.bend",
+      "sha256": "1912e5d177514733e706297fbb53e730c1f7a9edc91ffb06d2b1de7e2547648c"
+    },
+    {
+      "file": "src/front/lexer.bend",
+      "sha256": "aa9d726b6b284deba84dbccc77a01a8143dd89dab70cf487e1ddc8d589380440"
+    },
+    {
+      "file": "src/front/contextual.bend",
+      "sha256": "18a1eabd78b224927ebe72c4aa7a295300cc641e20d03d2bc062fdcfd96f62f6"
+    },
+    {
+      "file": "src/front/parser.bend",
+      "sha256": "c1790685aea7c71430873d65c2d91996778f443aee0098e54c656fe10177ba28"
+    },
+    {
+      "file": "src/front/declarations.bend",
+      "sha256": "9e2c8da30605c1b8ab732df5f95533da55a3ea0e6c5a0941f1340586db9d36af"
+    },
+    {
+      "file": "src/front/flatten.bend",
+      "sha256": "d3ba8687f7dcd303dee847a90e3fa92b9a234d97cdcd3893de8242c6d2aa69cf"
+    },
+    {
+      "file": "src/front/elaborate.bend",
+      "sha256": "8537f483259d48fa1d710915d6e8e09916faa540560379ee550a7077f391dc1e"
+    },
+    {
+      "file": "src/front/sugar.bend",
+      "sha256": "d3e3cf5addf0498e8401b9988678eb6ac8ff81571a014b18a1b6fed0a76fb22a"
+    },
+    {
+      "file": "src/front/unicode.bend",
+      "sha256": "bfd4407aa83614ae8398c9ce451f729cbcba457f2ef64774fea99f1824b5dd96"
+    },
+    {
+      "file": "src/front/literals_arrays.bend",
+      "sha256": "7429e8a4e16e30f74fa19911993879e60a982a510f369769e7805d6a6ac34796"
+    },
+    {
+      "file": "src/front/parallel.bend",
+      "sha256": "b7c38f74d9f339f21fa00c5194078a0bfc41a948d1adaa907d00df64045c2f1c"
+    },
+    {
+      "file": "src/front/fresh_work.bend",
+      "sha256": "043d3b737cef4b932b7de8ef161dc88ba867ba6a8056e3662edfdcf4a2d797ed"
+    },
+    {
+      "file": "src/front/freshen.bend",
+      "sha256": "d0fed135fe878987770786ef0c50dd09efe2cce390beb7a911bcfc8468d5607d"
+    },
+    {
+      "file": "src/load/paths.bend",
+      "sha256": "a9fc17a8af04c1958d1f11e8c1c5b7c2d3eb925dd9075e6c77de4bdb3521f2a2"
+    },
+    {
+      "file": "src/front/families.bend",
+      "sha256": "22b6e9b1ca132ed2d6f2cf91507e221f09cdda1aeab5931e8cf099e934bc9d2f"
+    },
+    {
+      "file": "src/front/validate.bend",
+      "sha256": "62d530ce7ebb6d2abf69f34d37b5b21eed8711c7bdee3bf868aa2c94d699ec5d"
+    },
+    {
+      "file": "src/load/imports.bend",
+      "sha256": "b878da5169a4a39d35a236ff5128dc42735fea0707195cf621ae651c1f13e9b1"
+    },
+    {
+      "file": "src/load/graph.bend",
+      "sha256": "9317e9fe5224c447c50e5339469a244dd7036c00801d9750687f8dfe1de5fdb3"
+    },
+    {
+      "file": "src/load/seed.bend",
+      "sha256": "ca4cb677af632c47c13792ede10d4e791c85b5cc6c756aacf230861d7bfa4c21"
+    },
+    {
+      "file": "src/load/modules.bend",
+      "sha256": "fed5593033f957a61118a2eff9c2e09bd51af8810cff1db12e655523b82188ea"
+    },
+    {
+      "file": "src/diagnostic/model.bend",
+      "sha256": "3c699ec70ef36700520658555bc5df025880691c44633cabb9e5719b60fc9c1c"
+    },
+    {
+      "file": "src/diagnostic/render.bend",
+      "sha256": "695f41ace13e08756273c317659a419deee5fc79d413bd58e8711f124370276c"
+    },
+    {
+      "file": "src/diagnostic/trace.bend",
+      "sha256": "0e03e2827415d082d295976b57564c7b0bd872f7c81229e653d7e0ddda62b10f"
+    },
+    {
+      "file": "src/diagnostic/produce.bend",
+      "sha256": "9518cb01c0c7636654bfa14dd332ac49756572ba975c7789c865e9cd8cf75c80"
+    },
+    {
+      "file": "src/diagnostic/frontend.bend",
+      "sha256": "fdd07e6e3df5f999f2d162a4d3186cd8ae13102c8351710edab5291a2f80489f"
+    },
+    {
+      "file": "src/back/js/foreign.bend",
+      "sha256": "0f397f84a989c6fc9a52eaf962742e673cdba243864c0bbe7c16ce4ffd8eb065"
+    },
+    {
+      "file": "src/back/js/literals.bend",
+      "sha256": "2c4488a4f37010253a54e3745317c685ec77067475d471e577687acfa9a16776"
+    },
+    {
+      "file": "src/back/js/validate.bend",
+      "sha256": "f8fc315bf80dabbf8afd1b6ced8e7c322b8ef96d73859d47e01c4b317afb72a0"
+    },
+    {
+      "file": "src/back/js/choice.bend",
+      "sha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3"
+    },
+    {
+      "file": "src/back/js/projection.bend",
+      "sha256": "67cce055248e6a0034a6194a9f5cbd0821c2cf79905759d08033b141231e93ae"
+    },
+    {
+      "file": "src/back/js/u32.bend",
+      "sha256": "bda743e5c6afa1324673dd6722782a2b615c75abeb5c8061c623622723cfb25c"
+    },
+    {
+      "file": "src/back/js/primitive.bend",
+      "sha256": "de137137d7cdd21f3a3a5c6d0bdca7664712fac7b74c46f177b8d3e521017b83"
+    },
+    {
+      "file": "src/back/js/local.bend",
+      "sha256": "f0243565fd12cd83172cde1594b8ea4b15821404dd0adde8863c42874045ef89"
+    },
+    {
+      "file": "src/back/js/region.bend",
+      "sha256": "cdea9d36f4f8839917d00617cd654cd1f8c101a828d475123161140f706e52a1"
+    },
+    {
+      "file": "src/back/js/worker.bend",
+      "sha256": "b7f5a57511e8ee6f12e0e5b90d66dcd9d2997b100aac64d125b31680ec82d198"
+    },
+    {
+      "file": "src/back/js/tree.bend",
+      "sha256": "ce78017169ce6fcf53ffc46a9760c282c58e37111513b5cb970002ab0be64fd3"
+    },
+    {
+      "file": "src/back/js/emit.bend",
+      "sha256": "5d15e0ea3c907faad8fb901c3e53346d46c7847a70ce625c144882ad8a6041fb"
+    },
+    {
+      "file": "src/back/native/ir.bend",
+      "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b"
+    },
+    {
+      "file": "src/back/native/text.bend",
+      "sha256": "31c1ff5973df46d17ad395070fbefa1d2dc58398b3d12af80c62ed6c5548ff9d"
+    },
+    {
+      "file": "src/back/native/identity.bend",
+      "sha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a"
+    },
+    {
+      "file": "src/back/native/layout.bend",
+      "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b"
+    },
+    {
+      "file": "src/back/native/intrinsic.bend",
+      "sha256": "5b921ebfecb307eddae880edee86ce459751684ecf74543f54c60e2a6f252195"
+    },
+    {
+      "file": "src/back/native/tables.bend",
+      "sha256": "6b8f36fa9063f35105889d8977aa2345fb01eeceb117e6f641151430d084bbaa"
+    },
+    {
+      "file": "src/back/native/emit.bend",
+      "sha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a"
+    },
+    {
+      "file": "src/back/native/erase.bend",
+      "sha256": "8f536cdfbca91b26bf426b3c8c5f42106fc0e18af7bfd2550ba73e7dab5530ec"
+    },
+    {
+      "file": "src/back/native/bridge.bend",
+      "sha256": "4767f940940660635ec4c80978f8e4abb11c398b4b8f8bccabf05879c59f2a49"
+    },
+    {
+      "file": "src/back/native/direct.bend",
+      "sha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5"
+    },
+    {
+      "file": "src/back/native/pattern.bend",
+      "sha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4"
+    },
+    {
+      "file": "src/back/native/show.bend",
+      "sha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d"
+    },
+    {
+      "file": "src/back/native/parallel.bend",
+      "sha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722"
+    },
+    {
+      "file": "src/back/native/array.bend",
+      "sha256": "c00f0592299047df582ac0435e1a0423ea62fb48f7c87dda83bf18161b263bd7"
+    },
+    {
+      "file": "src/back/native/validate.bend",
+      "sha256": "d0c1e75c5dbda3d2e65ea227667191252c49f71b63f0765c358c2041a0f484bb"
+    },
+    {
+      "file": "src/back/native/foreign.bend",
+      "sha256": "ed7a06662072e73d45d10b1898599936b106dc22956a4fceea8d04ac22fb6d3c"
+    },
+    {
+      "file": "src/back/native/book.bend",
+      "sha256": "180ee53af86a59df8efcc131d4f22b0ca6f5f9980dd222259f2941fbef1e11a2"
+    },
+    {
+      "file": "src/driver/report.bend",
+      "sha256": "15f0985da866b948252490ec2f1b90aed9d36fb24b93eab24826648cc36e6df8"
+    },
+    {
+      "file": "src/driver/api.bend",
+      "sha256": "5cae856aa306f52042cbead5bf72136da317649a0a09b7d73f8da1be3530d9d3"
+    }
+  ],
+  "exports": [
+    "f_path_join",
+    "f_path_dir",
+    "check_book",
+    "annotate_book",
+    "j_program",
+    "j_library",
+    "j_expr",
+    "j_descriptor",
+    "j_io_type",
+    "j_modules",
+    "driver_has_main",
+    "driver_is_io",
+    "driver_interpret",
+    "driver_todos",
+    "driver_emit_owned",
+    "compiler_term_abi",
+    "compiler_span_abi",
+    "specialize_book",
+    "specialized_book",
+    "specialized_error",
+    "specialized_diagnostic",
+    "nc_compile",
+    "nc_foreign_paths",
+    "nc_annotation_stops",
+    "nc_annotated_context",
+    "nc_foreign_source",
+    "nc_foreign_scope",
+    "check_from_exact_prefix",
+    "exact_prefix",
+    "f_load_graph",
+    "f_load_graph_trace",
+    "f_source_completed",
+    "f_source_located",
+    "compiler_load_abi",
+    "f_source_header",
+    "f_complete_source",
+    "f_complete_seed",
+    "f_import_namespace_at",
+    "f_graph_trace",
+    "f_import_failure",
+    "book_context",
+    "book_cached",
+    "f_load_graph_seed",
+    "f_load_graph_seed_trace",
+    "driver_report",
+    "driver_bad_names",
+    "compiler_check_result_abi",
+    "check_book_diagnostic",
+    "check_book_diagnostic_from_exact_prefix",
+    "diagnostic_render",
+    "diagnostic_result_locate",
+    "check_program_diagnostic",
+    "f_load_origins_for",
+    "f_loaded_origins_for",
+    "diagnostic_render_loaded",
+    "j_compile_error",
+    "j_layout_error",
+    "reach_book",
+    "j_roots",
+    "j_stops",
+    "annotate_except",
+    "kf_source",
+    "annotate_selected",
+    "j_program_selected",
+    "j_library_selected",
+    "j_foreign_paths",
+    "j_foreign_error"
+  ],
+  "provenance": {
+    "version": 1,
+    "upstream": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23",
+      "revision": "018751270e800bc222a93dad7f257083ee53a5f7",
+      "trackedSourcesClean": true
+    },
+    "node": {
+      "file": "/home/ai/.nvm/versions/node/v24.18.0/bin/node",
+      "version": "v24.18.0",
+      "execArgv": [
+        "--stack-size=4096",
+        "--max-old-space-size=1024"
+      ]
+    },
+    "inputs": [
+      {
+        "role": "upstream",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/bend2/bend.ts",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/bend2/bend.ts",
+        "sha256": "de2b39db2fcbd2f9115053e85e34d791693e1297bfeb6874da1013ff7b44b7dd"
+      },
+      {
+        "role": "upstream",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/bend2/comp.ts",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/bend2/comp.ts",
+        "sha256": "3bd7ed49d33f1c61334d75a905e38c0345fb15a10b45d85884b77f49833dc5ee"
+      },
+      {
+        "role": "upstream",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/bend2/base.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/bend2/base.bend",
+        "sha256": "c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661"
+      },
+      {
+        "role": "host-tool",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/tools/typed-driver.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/tools/typed-driver.mjs",
+        "sha256": "43c4df618476ba6ae6057d468d7147af0a85be0cd4f84e18f5f124f58d7f47c3"
+      },
+      {
+        "role": "host-tool",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/tools/stage0-library.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/tools/stage0-library.mjs",
+        "sha256": "c7eaf78482d64959d413ac490315d20f79c6cbd4f0ef6bb492ca7589d851f017"
+      },
+      {
+        "role": "host-tool",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/tools/assemble.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/tools/assemble.mjs",
+        "sha256": "f7c8feff7a0b8f8b4a302c2ca8b99b363a8d7c4c9c48bc6b7a9463aa23c58b75"
+      },
+      {
+        "role": "host-tool",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/tools/compiler-abi.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/tools/compiler-abi.mjs",
+        "sha256": "0bcbcaf022108877600baab1b15356db6d9917f5c4d668af936279680c126454"
+      },
+      {
+        "role": "host-tool",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/tools/node-resource-args.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/tools/node-resource-args.mjs",
+        "sha256": "6aefb3aee9b69b0c25d68edbf0ada6a57ba93e277d3adb8d232dfa6dff01d758"
+      },
+      {
+        "role": "host-tool",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/tools/native-build.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/tools/native-build.mjs",
+        "sha256": "a76f2c027459f7ffdb9fc16dc450ee33e0f39c74568df4c74d03309e662c9117"
+      },
+      {
+        "role": "compiler-manifest",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/compiler.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/src/compiler.json",
+        "sha256": "b58e3f32e1e59f992b44fa2964e21876227299ad9658af7ed63ac9b1e476fd1e"
+      },
+      {
+        "role": "assembled-source",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/compiler.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/compiler.bend",
+        "sha256": "e3cc44245444ac2509431d44c8909692c9223cd977968ffb087771c1ae2859ae"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/core/term.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/core/term.bend",
+        "sha256": "e9ab994bc3ba4fd5a281e25836911bbc29cafcf2ab0c0284dc9bc097e891fa46"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/core/index.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/core/index.bend",
+        "sha256": "32a4f2772c865f9ed9743f1ece27d5fafd1898724d5f268186590c938b038ea2"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/core/normalize.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/core/normalize.bend",
+        "sha256": "4845ff63f3c228abc9a432410ddc8b7e20bfce27e54d6d49412b06608f7ce702"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/core/graph.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/core/graph.bend",
+        "sha256": "85625049b316ede08eeffd7ff509483183624f1197c582c9d1bb2cd8bebf4802"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/core/reach.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/core/reach.bend",
+        "sha256": "086092c688e6cb774da94333826f51b1fdeddc8e85aeaac5be6b15c143b0df27"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/core/pretty.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/core/pretty.bend",
+        "sha256": "40b4e6ca55bf11009881b893c7959dd52cc64bbc6cb2dbb607e94dbab69fdedc"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/check/quantity.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/check/quantity.bend",
+        "sha256": "b4a8ca1f8dff10f4f64397ea53bbbe272bb32400e993b1077d284ec1d8a70b4d"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/check/kernel.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/check/kernel.bend",
+        "sha256": "da7ee29f9755f09acd9f89fcfd37465b52ab8778971200c946c70e50eb5b4132"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/check/specialize.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/check/specialize.bend",
+        "sha256": "76e0f9249ae15cc0734a8e9d2e75677794e2eb5464c7756a19daff8b8217e7ee"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/check/prefix.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/check/prefix.bend",
+        "sha256": "ceabf77fb49b58910d83fa896899061643c4c105f29e70bd87d3f73be873783d"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/check/annotate.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/check/annotate.bend",
+        "sha256": "1912e5d177514733e706297fbb53e730c1f7a9edc91ffb06d2b1de7e2547648c"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/lexer.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/lexer.bend",
+        "sha256": "aa9d726b6b284deba84dbccc77a01a8143dd89dab70cf487e1ddc8d589380440"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/contextual.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/contextual.bend",
+        "sha256": "18a1eabd78b224927ebe72c4aa7a295300cc641e20d03d2bc062fdcfd96f62f6"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/parser.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/parser.bend",
+        "sha256": "c1790685aea7c71430873d65c2d91996778f443aee0098e54c656fe10177ba28"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/declarations.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/declarations.bend",
+        "sha256": "9e2c8da30605c1b8ab732df5f95533da55a3ea0e6c5a0941f1340586db9d36af"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/flatten.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/flatten.bend",
+        "sha256": "d3ba8687f7dcd303dee847a90e3fa92b9a234d97cdcd3893de8242c6d2aa69cf"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/elaborate.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/elaborate.bend",
+        "sha256": "8537f483259d48fa1d710915d6e8e09916faa540560379ee550a7077f391dc1e"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/sugar.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/sugar.bend",
+        "sha256": "d3e3cf5addf0498e8401b9988678eb6ac8ff81571a014b18a1b6fed0a76fb22a"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/unicode.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/unicode.bend",
+        "sha256": "bfd4407aa83614ae8398c9ce451f729cbcba457f2ef64774fea99f1824b5dd96"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/literals_arrays.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/literals_arrays.bend",
+        "sha256": "7429e8a4e16e30f74fa19911993879e60a982a510f369769e7805d6a6ac34796"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/parallel.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/parallel.bend",
+        "sha256": "b7c38f74d9f339f21fa00c5194078a0bfc41a948d1adaa907d00df64045c2f1c"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/fresh_work.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/fresh_work.bend",
+        "sha256": "043d3b737cef4b932b7de8ef161dc88ba867ba6a8056e3662edfdcf4a2d797ed"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/freshen.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/freshen.bend",
+        "sha256": "d0fed135fe878987770786ef0c50dd09efe2cce390beb7a911bcfc8468d5607d"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/load/paths.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/load/paths.bend",
+        "sha256": "a9fc17a8af04c1958d1f11e8c1c5b7c2d3eb925dd9075e6c77de4bdb3521f2a2"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/families.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/families.bend",
+        "sha256": "22b6e9b1ca132ed2d6f2cf91507e221f09cdda1aeab5931e8cf099e934bc9d2f"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/validate.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/front/validate.bend",
+        "sha256": "62d530ce7ebb6d2abf69f34d37b5b21eed8711c7bdee3bf868aa2c94d699ec5d"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/load/imports.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/load/imports.bend",
+        "sha256": "b878da5169a4a39d35a236ff5128dc42735fea0707195cf621ae651c1f13e9b1"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/load/graph.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/load/graph.bend",
+        "sha256": "9317e9fe5224c447c50e5339469a244dd7036c00801d9750687f8dfe1de5fdb3"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/load/seed.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/load/seed.bend",
+        "sha256": "ca4cb677af632c47c13792ede10d4e791c85b5cc6c756aacf230861d7bfa4c21"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/load/modules.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/load/modules.bend",
+        "sha256": "fed5593033f957a61118a2eff9c2e09bd51af8810cff1db12e655523b82188ea"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/diagnostic/model.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/diagnostic/model.bend",
+        "sha256": "3c699ec70ef36700520658555bc5df025880691c44633cabb9e5719b60fc9c1c"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/diagnostic/render.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/diagnostic/render.bend",
+        "sha256": "695f41ace13e08756273c317659a419deee5fc79d413bd58e8711f124370276c"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/diagnostic/trace.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/diagnostic/trace.bend",
+        "sha256": "0e03e2827415d082d295976b57564c7b0bd872f7c81229e653d7e0ddda62b10f"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/diagnostic/produce.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/diagnostic/produce.bend",
+        "sha256": "9518cb01c0c7636654bfa14dd332ac49756572ba975c7789c865e9cd8cf75c80"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/diagnostic/frontend.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/diagnostic/frontend.bend",
+        "sha256": "fdd07e6e3df5f999f2d162a4d3186cd8ae13102c8351710edab5291a2f80489f"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/js/foreign.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/js/foreign.bend",
+        "sha256": "0f397f84a989c6fc9a52eaf962742e673cdba243864c0bbe7c16ce4ffd8eb065"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/js/literals.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/js/literals.bend",
+        "sha256": "2c4488a4f37010253a54e3745317c685ec77067475d471e577687acfa9a16776"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/js/validate.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/js/validate.bend",
+        "sha256": "f8fc315bf80dabbf8afd1b6ced8e7c322b8ef96d73859d47e01c4b317afb72a0"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/js/choice.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/js/choice.bend",
+        "sha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/js/projection.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/js/projection.bend",
+        "sha256": "67cce055248e6a0034a6194a9f5cbd0821c2cf79905759d08033b141231e93ae"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/js/u32.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/js/u32.bend",
+        "sha256": "bda743e5c6afa1324673dd6722782a2b615c75abeb5c8061c623622723cfb25c"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/js/primitive.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/js/primitive.bend",
+        "sha256": "de137137d7cdd21f3a3a5c6d0bdca7664712fac7b74c46f177b8d3e521017b83"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/js/local.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/js/local.bend",
+        "sha256": "f0243565fd12cd83172cde1594b8ea4b15821404dd0adde8863c42874045ef89"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/js/region.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/js/region.bend",
+        "sha256": "cdea9d36f4f8839917d00617cd654cd1f8c101a828d475123161140f706e52a1"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/js/worker.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/js/worker.bend",
+        "sha256": "b7f5a57511e8ee6f12e0e5b90d66dcd9d2997b100aac64d125b31680ec82d198"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/js/tree.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/js/tree.bend",
+        "sha256": "ce78017169ce6fcf53ffc46a9760c282c58e37111513b5cb970002ab0be64fd3"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/js/emit.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/js/emit.bend",
+        "sha256": "5d15e0ea3c907faad8fb901c3e53346d46c7847a70ce625c144882ad8a6041fb"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/ir.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/ir.bend",
+        "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/text.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/text.bend",
+        "sha256": "31c1ff5973df46d17ad395070fbefa1d2dc58398b3d12af80c62ed6c5548ff9d"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/identity.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/identity.bend",
+        "sha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/layout.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/layout.bend",
+        "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/intrinsic.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/intrinsic.bend",
+        "sha256": "5b921ebfecb307eddae880edee86ce459751684ecf74543f54c60e2a6f252195"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/tables.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/tables.bend",
+        "sha256": "6b8f36fa9063f35105889d8977aa2345fb01eeceb117e6f641151430d084bbaa"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/emit.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/emit.bend",
+        "sha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/erase.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/erase.bend",
+        "sha256": "8f536cdfbca91b26bf426b3c8c5f42106fc0e18af7bfd2550ba73e7dab5530ec"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/bridge.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/bridge.bend",
+        "sha256": "4767f940940660635ec4c80978f8e4abb11c398b4b8f8bccabf05879c59f2a49"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/direct.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/direct.bend",
+        "sha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/pattern.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/pattern.bend",
+        "sha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/show.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/show.bend",
+        "sha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/parallel.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/parallel.bend",
+        "sha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/array.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/array.bend",
+        "sha256": "c00f0592299047df582ac0435e1a0423ea62fb48f7c87dda83bf18161b263bd7"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/validate.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/validate.bend",
+        "sha256": "d0c1e75c5dbda3d2e65ea227667191252c49f71b63f0765c358c2041a0f484bb"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/foreign.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/foreign.bend",
+        "sha256": "ed7a06662072e73d45d10b1898599936b106dc22956a4fceea8d04ac22fb6d3c"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/book.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/back/native/book.bend",
+        "sha256": "180ee53af86a59df8efcc131d4f22b0ca6f5f9980dd222259f2941fbef1e11a2"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/driver/report.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/driver/report.bend",
+        "sha256": "15f0985da866b948252490ec2f1b90aed9d36fb24b93eab24826648cc36e6df8"
+      },
+      {
+        "role": "compiler-module",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/driver/api.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/attempt-03/snapshot/build/typed/snapshots/211613b2126f147b5cbb2ae76643e61e657519be9a5396ef99aa0981d9da7d90/src/driver/api.bend",
+        "sha256": "5cae856aa306f52042cbead5bf72136da317649a0a09b7d73f8da1be3530d9d3"
+      }
+    ],
+    "verifiedAfterBuild": true
+  }
+}

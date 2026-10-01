@@ -1,0 +1,4 @@
+{"stage": "inventoried", "files": 24717, "directories": 5573, "logicalBytes": 395912134}
+{"stage": "volume-closed", "path": "validation.tar.gz.part-00001", "bytes": 41943040, "sha256": "b31b8acc0033dfce64e4b931cccb8961abfdc1f1967bf8f9395ab7e1846b2045"}
+{"stage": "volume-closed", "path": "validation.tar.gz.part-00002", "bytes": 10532116, "sha256": "9deded3c959430812becc99c3d8ea88cf5ce7d5223e9eb014b94549f085c0895"}
+{"complete": true, "reopenedVerified": true, "fileCount": 24717, "directoryCount": 5573, "logicalBytes": 395912134, "compressedBytes": 52475156, "volumeCount": 2, "concatenatedGzipSha256": "905fca0e9eec65d70b540df8009d4f8f8c67adb1e6ccd9eca4fd2eb980113b31"}

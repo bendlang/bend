@@ -1,0 +1,4925 @@
+{
+  "kind": "phase35-final-profile-extraction",
+  "complete": true,
+  "scope": "Read-only existing profiles/static analysis; clean execution medians come from a separate final confirmation.",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase35/profile-extract.py",
+      "sha256": "339e8f400c800c17c8b1ba570f12ee2ac61804dadd233b15e94882a86d9073a6",
+      "bytes": 6486
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/report.json",
+      "sha256": "0069a19469dd7f436e2e2a843db0f0a67b417d494a9fb2a7243477d007960468",
+      "bytes": 4241220
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/analysis/report.json",
+      "sha256": "1bd44fa352e674bdf7c74126b4be03d8f11a6399093e3eab7d5f74bc87124f04",
+      "bytes": 13628174
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-full-confirm-01/report.json",
+      "sha256": "97e4f006cb15a9f56fc5e2696b6bbf287392593506b85af122bfc8285597d7eb",
+      "bytes": 1839836
+    }
+  ],
+  "diagnosticWallSeconds": 149.0200714929997,
+  "plan": {
+    "kind": "bend-program-diagnostic-plan",
+    "version": 1,
+    "budgetSeconds": 300,
+    "selectedIds": [
+      "local-pair",
+      "local-fold",
+      "symreg",
+      "raytrace"
+    ],
+    "mode": "all",
+    "warmupCalls": 1,
+    "warmupMs": 400,
+    "targetMs": 1500,
+    "maxRepetitions": 10000000,
+    "samplingIntervalUs": 1000,
+    "samplingIntervalBytes": 32768,
+    "cpu": 3,
+    "heapMiB": 1024,
+    "allocationIntervalOverrides": {
+      "raytrace": 262144
+    },
+    "rssMiB": 1536,
+    "availableMiB": 2048,
+    "scope": "Separate instrumented diagnostics; no throughput ratios. Static analysis never executes analyzed code.",
+    "variants": {
+      "baseline": {
+        "label": "Phase32 checked03",
+        "compiler": {
+          "kind": "installed-checked-release",
+          "upstreamCommit": "018751270e800bc222a93dad7f257083ee53a5f7",
+          "sourceSha256": "e3cc44245444ac2509431d44c8909692c9223cd977968ffb087771c1ae2859ae",
+          "artifact": "equality-derived-b1",
+          "api": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/typed-api.mjs",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/dist/typed-api.mjs",
+            "sha256": "8be506d811f627fe6346a5eaba07050c36db70e2704608adcfd781b85a3a7f92"
+          },
+          "runtime": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime.mjs",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime.mjs",
+            "sha256": "4121f338a7e4e115bae557343cd3d194a26ed26589bc47d82094969284181e10"
+          },
+          "base": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/base.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/dist/base.bend",
+            "sha256": "c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661"
+          },
+          "driver": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/typed-driver.mjs",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/tools/typed-driver.mjs",
+            "sha256": "43c4df618476ba6ae6057d468d7147af0a85be0cd4f84e18f5f124f58d7f47c3"
+          }
+        }
+      },
+      "typescript": {
+        "label": "Pinned upstream TypeScript",
+        "compiler": {
+          "kind": "checked-pinned-typescript",
+          "upstreamCommit": "018751270e800bc222a93dad7f257083ee53a5f7",
+          "sources": [
+            {
+              "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/bend2/bend.ts",
+              "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/bend2/bend.ts",
+              "sha256": "de2b39db2fcbd2f9115053e85e34d791693e1297bfeb6874da1013ff7b44b7dd"
+            },
+            {
+              "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/bend2/comp.ts",
+              "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/bend2/comp.ts",
+              "sha256": "3bd7ed49d33f1c61334d75a905e38c0345fb15a10b45d85884b77f49833dc5ee"
+            },
+            {
+              "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/bend2/base.bend",
+              "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/bend2/base.bend",
+              "sha256": "c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661"
+            }
+          ]
+        }
+      },
+      "candidate": {
+        "label": "Prepared checked candidate",
+        "compiler": {
+          "kind": "checked-development-attempt",
+          "upstreamCommit": "018751270e800bc222a93dad7f257083ee53a5f7",
+          "sourceSha256": "e0764b71474eae9a46de637c6dc16e2dd32f29ba51c6eb93be18c3f5b4a9e088",
+          "artifact": "derived-b1",
+          "api": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/equality/api.mjs",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/equality/api.mjs",
+            "sha256": "467bc7dec2751a94cb677c5eb2da22a8fb69ee3522c6e164cb2bfcc147a78d82"
+          },
+          "runtime": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/src/runtime.mjs",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/src/runtime.mjs",
+            "sha256": "af2a3ae8a3c42fc0cb206ec7671960b82501944bf5619ec7893847460447a961"
+          },
+          "base": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/bend2/base.bend",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/.bootstrap/upstream-phase23/bend2/base.bend",
+            "sha256": "c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661"
+          },
+          "driver": {
+            "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/tools/typed-driver.mjs",
+            "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/tools/typed-driver.mjs",
+            "sha256": "43c4df618476ba6ae6057d468d7147af0a85be0cd4f84e18f5f124f58d7f47c3"
+          }
+        }
+      }
+    }
+  },
+  "entries": [
+    {
+      "id": "local-pair",
+      "role": "typescript",
+      "module": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/modules/local-pair/typescript.mjs",
+        "sha256": "e303d7add56bca3c62ab3a7d636f01b65007556f5a80d43d59f94018b4154de6",
+        "bytes": 12457
+      },
+      "sourceSha256": "3987479425f7bf0d5c9e7655bb22bae29ed0d44635fdbf50eff2bb3cd869dfb4",
+      "programBytes": 6025,
+      "programMetrics": {
+        "astNodes": 1133,
+        "functionDeclarations": 23,
+        "functionExpressions": 0,
+        "arrowFunctions": 0,
+        "nestedFunctionSites": 0,
+        "blockScopes": 45,
+        "calls": 39,
+        "directCalls": 35,
+        "memberCalls": 4,
+        "iifes": 0,
+        "newExpressions": 0,
+        "arrayLiteralSites": 0,
+        "arrayLiteralSlots": 0,
+        "objectLiteralSites": 11,
+        "spreadSites": 0,
+        "bigIntLiterals": 0,
+        "bigIntConversionCalls": 0,
+        "numericConversionCalls": 0,
+        "branches": 11,
+        "loops": 4,
+        "switchCases": 0,
+        "throwSites": 0,
+        "returnSites": 26,
+        "trampolineHelperCalls": 0,
+        "closureHelperCalls": 0,
+        "scopeHelperCalls": 0,
+        "globalLookupCalls": 0,
+        "constructorHelperCalls": 8,
+        "projectionHelperCalls": 0,
+        "arrayHelperCalls": 8,
+        "argumentArraySites": 0
+      },
+      "privateDeclarations": 0,
+      "privateDeclarationsWithoutDirectCallNames": [],
+      "privateBytesWithoutDirectCallNames": 0,
+      "pruningCaveat": "No direct-call site under these spellings anywhere in the module; not yet a lexical-reference or removability proof."
+    },
+    {
+      "id": "local-pair",
+      "role": "baseline",
+      "module": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/modules/local-pair/baseline.mjs",
+        "sha256": "38c450b3dac6930ec3b39f5e90ca248786805a48327fb0e6ea2b361f0c0e1b5d",
+        "bytes": 98344
+      },
+      "sourceSha256": "3987479425f7bf0d5c9e7655bb22bae29ed0d44635fdbf50eff2bb3cd869dfb4",
+      "programBytes": 44189,
+      "programMetrics": {
+        "astNodes": 9456,
+        "functionDeclarations": 47,
+        "functionExpressions": 116,
+        "arrowFunctions": 188,
+        "nestedFunctionSites": 252,
+        "blockScopes": 279,
+        "calls": 756,
+        "directCalls": 625,
+        "memberCalls": 75,
+        "iifes": 56,
+        "newExpressions": 0,
+        "arrayLiteralSites": 681,
+        "arrayLiteralSlots": 1359,
+        "objectLiteralSites": 50,
+        "spreadSites": 0,
+        "bigIntLiterals": 84,
+        "bigIntConversionCalls": 3,
+        "numericConversionCalls": 16,
+        "branches": 97,
+        "loops": 10,
+        "switchCases": 0,
+        "throwSites": 0,
+        "returnSites": 183,
+        "trampolineHelperCalls": 137,
+        "closureHelperCalls": 142,
+        "scopeHelperCalls": 45,
+        "globalLookupCalls": 77,
+        "constructorHelperCalls": 26,
+        "projectionHelperCalls": 52,
+        "arrayHelperCalls": 32,
+        "argumentArraySites": 137
+      },
+      "privateDeclarations": 47,
+      "privateDeclarationsWithoutDirectCallNames": [
+        {
+          "name": "$R_100_112_46_102_49",
+          "bytes": 242,
+          "bendNames": [
+            "dp.f1"
+          ],
+          "line": 720,
+          "column": 638
+        },
+        {
+          "name": "$R_99_101_108_108_46_102_49",
+          "bytes": 245,
+          "bendNames": [
+            "cell.f1"
+          ],
+          "line": 720,
+          "column": 2097
+        },
+        {
+          "name": "$R_99_101_108_108_46_102_50",
+          "bytes": 234,
+          "bendNames": [
+            "cell.f2"
+          ],
+          "line": 720,
+          "column": 2677
+        },
+        {
+          "name": "$R_99_101_108_108_46_102_51",
+          "bytes": 213,
+          "bendNames": [
+            "cell.f3"
+          ],
+          "line": 720,
+          "column": 3190
+        },
+        {
+          "name": "$R_99_101_108_108_46_102_52",
+          "bytes": 412,
+          "bendNames": [
+            "cell.f4"
+          ],
+          "line": 720,
+          "column": 3661
+        },
+        {
+          "name": "$R_100_105_115_116_46_102_105_110",
+          "bytes": 124,
+          "bendNames": [
+            "dist.fin"
+          ],
+          "line": 720,
+          "column": 4920
+        },
+        {
+          "name": "$R_100_112_46_102_49",
+          "bytes": 242,
+          "bendNames": [
+            "dp.f1"
+          ],
+          "line": 721,
+          "column": 1399
+        },
+        {
+          "name": "$R_99_101_108_108_46_102_49",
+          "bytes": 245,
+          "bendNames": [
+            "cell.f1"
+          ],
+          "line": 721,
+          "column": 2858
+        },
+        {
+          "name": "$R_99_101_108_108_46_102_50",
+          "bytes": 234,
+          "bendNames": [
+            "cell.f2"
+          ],
+          "line": 721,
+          "column": 3438
+        },
+        {
+          "name": "$R_99_101_108_108_46_102_51",
+          "bytes": 213,
+          "bendNames": [
+            "cell.f3"
+          ],
+          "line": 721,
+          "column": 3951
+        },
+        {
+          "name": "$R_99_101_108_108_46_102_52",
+          "bytes": 412,
+          "bendNames": [
+            "cell.f4"
+          ],
+          "line": 721,
+          "column": 4422
+        },
+        {
+          "name": "$R_100_105_115_116_46_102_105_110",
+          "bytes": 124,
+          "bendNames": [
+            "dist.fin"
+          ],
+          "line": 721,
+          "column": 5681
+        }
+      ],
+      "privateBytesWithoutDirectCallNames": 2940,
+      "pruningCaveat": "No direct-call site under these spellings anywhere in the module; not yet a lexical-reference or removability proof."
+    },
+    {
+      "id": "local-pair",
+      "role": "candidate",
+      "module": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/modules/local-pair/candidate.mjs",
+        "sha256": "f55d5c67f080338be308dfa642dd6dc831ff1ec27c325c817a4398eff89caf85",
+        "bytes": 122542
+      },
+      "sourceSha256": "3987479425f7bf0d5c9e7655bb22bae29ed0d44635fdbf50eff2bb3cd869dfb4",
+      "programBytes": 64730,
+      "programMetrics": {
+        "astNodes": 14330,
+        "functionDeclarations": 47,
+        "functionExpressions": 116,
+        "arrowFunctions": 176,
+        "nestedFunctionSites": 240,
+        "blockScopes": 409,
+        "calls": 876,
+        "directCalls": 757,
+        "memberCalls": 75,
+        "iifes": 44,
+        "newExpressions": 0,
+        "arrayLiteralSites": 703,
+        "arrayLiteralSlots": 1447,
+        "objectLiteralSites": 50,
+        "spreadSites": 0,
+        "bigIntLiterals": 76,
+        "bigIntConversionCalls": 3,
+        "numericConversionCalls": 60,
+        "branches": 97,
+        "loops": 10,
+        "switchCases": 0,
+        "throwSites": 0,
+        "returnSites": 183,
+        "trampolineHelperCalls": 137,
+        "closureHelperCalls": 142,
+        "scopeHelperCalls": 45,
+        "globalLookupCalls": 77,
+        "constructorHelperCalls": 26,
+        "projectionHelperCalls": 52,
+        "arrayHelperCalls": 96,
+        "argumentArraySites": 137
+      },
+      "privateDeclarations": 47,
+      "privateDeclarationsWithoutDirectCallNames": [
+        {
+          "name": "$R_100_112_46_114_111_119",
+          "bytes": 536,
+          "bendNames": [
+            "dp.row"
+          ],
+          "line": 768,
+          "column": 1085
+        },
+        {
+          "name": "$R_100_112_46_102_49",
+          "bytes": 216,
+          "bendNames": [
+            "dp.f1"
+          ],
+          "line": 768,
+          "column": 1621
+        },
+        {
+          "name": "$R_100_112_46_102_49$get",
+          "bytes": 261,
+          "bendNames": [
+            "dp.f1"
+          ],
+          "line": 768,
+          "column": 1837
+        },
+        {
+          "name": "$R_99_101_108_108",
+          "bytes": 1807,
+          "bendNames": [
+            "cell"
+          ],
+          "line": 768,
+          "column": 4712
+        },
+        {
+          "name": "$R_99_101_108_108_46_102_49",
+          "bytes": 1474,
+          "bendNames": [
+            "cell.f1"
+          ],
+          "line": 768,
+          "column": 6519
+        },
+        {
+          "name": "$R_99_101_108_108_46_102_49$get",
+          "bytes": 1519,
+          "bendNames": [
+            "cell.f1"
+          ],
+          "line": 768,
+          "column": 7993
+        },
+        {
+          "name": "$R_99_101_108_108_46_102_50",
+          "bytes": 1117,
+          "bendNames": [
+            "cell.f2"
+          ],
+          "line": 768,
+          "column": 9557
+        },
+        {
+          "name": "$R_99_101_108_108_46_102_50$get",
+          "bytes": 1162,
+          "bendNames": [
+            "cell.f2"
+          ],
+          "line": 768,
+          "column": 10674
+        },
+        {
+          "name": "$R_99_101_108_108_46_102_51",
+          "bytes": 751,
+          "bendNames": [
+            "cell.f3"
+          ],
+          "line": 768,
+          "column": 11836
+        },
+        {
+          "name": "$R_99_101_108_108_46_102_51$get",
+          "bytes": 796,
+          "bendNames": [
+            "cell.f3"
+          ],
+          "line": 768,
+          "column": 12587
+        },
+        {
+          "name": "$R_99_101_108_108_46_102_52",
+          "bytes": 386,
+          "bendNames": [
+            "cell.f4"
+          ],
+          "line": 768,
+          "column": 13383
+        },
+        {
+          "name": "$R_99_101_108_108_46_102_52$get",
+          "bytes": 431,
+          "bendNames": [
+            "cell.f4"
+          ],
+          "line": 768,
+          "column": 13769
+        },
+        {
+          "name": "$R_100_105_115_116_46_102_105_110",
+          "bytes": 124,
+          "bendNames": [
+            "dist.fin"
+          ],
+          "line": 768,
+          "column": 14590
+        },
+        {
+          "name": "$R_100_112_46_114_111_119",
+          "bytes": 536,
+          "bendNames": [
+            "dp.row"
+          ],
+          "line": 769,
+          "column": 1846
+        },
+        {
+          "name": "$R_100_112_46_102_49",
+          "bytes": 216,
+          "bendNames": [
+            "dp.f1"
+          ],
+          "line": 769,
+          "column": 2382
+        },
+        {
+          "name": "$R_100_112_46_102_49$get",
+          "bytes": 261,
+          "bendNames": [
+            "dp.f1"
+          ],
+          "line": 769,
+          "column": 2598
+        },
+        {
+          "name": "$R_99_101_108_108",
+          "bytes": 1807,
+          "bendNames": [
+            "cell"
+          ],
+          "line": 769,
+          "column": 5473
+        },
+        {
+          "name": "$R_99_101_108_108_46_102_49",
+          "bytes": 1474,
+          "bendNames": [
+            "cell.f1"
+          ],
+          "line": 769,
+          "column": 7280
+        },
+        {
+          "name": "$R_99_101_108_108_46_102_49$get",
+          "bytes": 1519,
+          "bendNames": [
+            "cell.f1"
+          ],
+          "line": 769,
+          "column": 8754
+        },
+        {
+          "name": "$R_99_101_108_108_46_102_50",
+          "bytes": 1117,
+          "bendNames": [
+            "cell.f2"
+          ],
+          "line": 769,
+          "column": 10318
+        },
+        {
+          "name": "$R_99_101_108_108_46_102_50$get",
+          "bytes": 1162,
+          "bendNames": [
+            "cell.f2"
+          ],
+          "line": 769,
+          "column": 11435
+        },
+        {
+          "name": "$R_99_101_108_108_46_102_51",
+          "bytes": 751,
+          "bendNames": [
+            "cell.f3"
+          ],
+          "line": 769,
+          "column": 12597
+        },
+        {
+          "name": "$R_99_101_108_108_46_102_51$get",
+          "bytes": 796,
+          "bendNames": [
+            "cell.f3"
+          ],
+          "line": 769,
+          "column": 13348
+        },
+        {
+          "name": "$R_99_101_108_108_46_102_52",
+          "bytes": 386,
+          "bendNames": [
+            "cell.f4"
+          ],
+          "line": 769,
+          "column": 14144
+        },
+        {
+          "name": "$R_99_101_108_108_46_102_52$get",
+          "bytes": 431,
+          "bendNames": [
+            "cell.f4"
+          ],
+          "line": 769,
+          "column": 14530
+        },
+        {
+          "name": "$R_100_105_115_116_46_102_105_110",
+          "bytes": 124,
+          "bendNames": [
+            "dist.fin"
+          ],
+          "line": 769,
+          "column": 15351
+        }
+      ],
+      "privateBytesWithoutDirectCallNames": 21160,
+      "pruningCaveat": "No direct-call site under these spellings anywhere in the module; not yet a lexical-reference or removability proof."
+    },
+    {
+      "id": "local-fold",
+      "role": "typescript",
+      "module": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/modules/local-fold/typescript.mjs",
+        "sha256": "591c3e3a895f4092a80eac58fef2ea4ecd15f59c01433fc69ce09143055e2444",
+        "bytes": 5191
+      },
+      "sourceSha256": "d13b49747fbe6308aa35451ca6f1e1059f0a01bac8fce671dc7a195424b5cc3a",
+      "programBytes": 1033,
+      "programMetrics": {
+        "astNodes": 185,
+        "functionDeclarations": 5,
+        "functionExpressions": 0,
+        "arrowFunctions": 0,
+        "nestedFunctionSites": 0,
+        "blockScopes": 9,
+        "calls": 5,
+        "directCalls": 5,
+        "memberCalls": 0,
+        "iifes": 0,
+        "newExpressions": 0,
+        "arrayLiteralSites": 0,
+        "arrayLiteralSlots": 0,
+        "objectLiteralSites": 3,
+        "spreadSites": 0,
+        "bigIntLiterals": 0,
+        "bigIntConversionCalls": 0,
+        "numericConversionCalls": 0,
+        "branches": 1,
+        "loops": 1,
+        "switchCases": 0,
+        "throwSites": 0,
+        "returnSites": 5,
+        "trampolineHelperCalls": 0,
+        "closureHelperCalls": 0,
+        "scopeHelperCalls": 0,
+        "globalLookupCalls": 0,
+        "constructorHelperCalls": 1,
+        "projectionHelperCalls": 0,
+        "arrayHelperCalls": 1,
+        "argumentArraySites": 0
+      },
+      "privateDeclarations": 0,
+      "privateDeclarationsWithoutDirectCallNames": [],
+      "privateBytesWithoutDirectCallNames": 0,
+      "pruningCaveat": "No direct-call site under these spellings anywhere in the module; not yet a lexical-reference or removability proof."
+    },
+    {
+      "id": "local-fold",
+      "role": "baseline",
+      "module": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/modules/local-fold/baseline.mjs",
+        "sha256": "f1e4a91c96bbcdfe8f3a36a600a9355575fff3289e769d5a4cca9aea91006d8f",
+        "bytes": 76128
+      },
+      "sourceSha256": "d13b49747fbe6308aa35451ca6f1e1059f0a01bac8fce671dc7a195424b5cc3a",
+      "programBytes": 22250,
+      "programMetrics": {
+        "astNodes": 4484,
+        "functionDeclarations": 7,
+        "functionExpressions": 79,
+        "arrowFunctions": 94,
+        "nestedFunctionSites": 109,
+        "blockScopes": 102,
+        "calls": 375,
+        "directCalls": 307,
+        "memberCalls": 59,
+        "iifes": 9,
+        "newExpressions": 0,
+        "arrayLiteralSites": 572,
+        "arrayLiteralSlots": 1103,
+        "objectLiteralSites": 49,
+        "spreadSites": 0,
+        "bigIntLiterals": 11,
+        "bigIntConversionCalls": 2,
+        "numericConversionCalls": 3,
+        "branches": 65,
+        "loops": 1,
+        "switchCases": 0,
+        "throwSites": 0,
+        "returnSites": 90,
+        "trampolineHelperCalls": 47,
+        "closureHelperCalls": 86,
+        "scopeHelperCalls": 45,
+        "globalLookupCalls": 28,
+        "constructorHelperCalls": 14,
+        "projectionHelperCalls": 25,
+        "arrayHelperCalls": 6,
+        "argumentArraySites": 47
+      },
+      "privateDeclarations": 7,
+      "privateDeclarationsWithoutDirectCallNames": [
+        {
+          "name": "$R_102_111_108_100_46_99_101_108_108$get",
+          "bytes": 237,
+          "bendNames": [
+            "fold.cell"
+          ],
+          "line": 699,
+          "column": 656
+        },
+        {
+          "name": "$R_102_111_108_100_46_115_116_101_112",
+          "bytes": 292,
+          "bendNames": [
+            "fold.step"
+          ],
+          "line": 699,
+          "column": 893
+        },
+        {
+          "name": "$R_102_111_108_100_46_102_105_110_105_115_104$get",
+          "bytes": 181,
+          "bendNames": [
+            "fold.finish"
+          ],
+          "line": 699,
+          "column": 1658
+        }
+      ],
+      "privateBytesWithoutDirectCallNames": 710,
+      "pruningCaveat": "No direct-call site under these spellings anywhere in the module; not yet a lexical-reference or removability proof."
+    },
+    {
+      "id": "local-fold",
+      "role": "candidate",
+      "module": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/modules/local-fold/candidate.mjs",
+        "sha256": "5c5c4cf541c4b690ed29f886f0f80a626bd8372a662f935d5f42b648ae2dc598",
+        "bytes": 82092
+      },
+      "sourceSha256": "d13b49747fbe6308aa35451ca6f1e1059f0a01bac8fce671dc7a195424b5cc3a",
+      "programBytes": 24557,
+      "programMetrics": {
+        "astNodes": 4746,
+        "functionDeclarations": 7,
+        "functionExpressions": 79,
+        "arrowFunctions": 92,
+        "nestedFunctionSites": 107,
+        "blockScopes": 116,
+        "calls": 380,
+        "directCalls": 314,
+        "memberCalls": 59,
+        "iifes": 7,
+        "newExpressions": 0,
+        "arrayLiteralSites": 575,
+        "arrayLiteralSlots": 1109,
+        "objectLiteralSites": 49,
+        "spreadSites": 0,
+        "bigIntLiterals": 8,
+        "bigIntConversionCalls": 2,
+        "numericConversionCalls": 6,
+        "branches": 65,
+        "loops": 1,
+        "switchCases": 0,
+        "throwSites": 0,
+        "returnSites": 90,
+        "trampolineHelperCalls": 47,
+        "closureHelperCalls": 86,
+        "scopeHelperCalls": 45,
+        "globalLookupCalls": 28,
+        "constructorHelperCalls": 14,
+        "projectionHelperCalls": 25,
+        "arrayHelperCalls": 12,
+        "argumentArraySites": 47
+      },
+      "privateDeclarations": 7,
+      "privateDeclarationsWithoutDirectCallNames": [
+        {
+          "name": "$R_102_111_108_100_46_99_101_108_108",
+          "bytes": 490,
+          "bendNames": [
+            "fold.cell"
+          ],
+          "line": 747,
+          "column": 922
+        },
+        {
+          "name": "$R_102_111_108_100_46_99_101_108_108$get",
+          "bytes": 535,
+          "bendNames": [
+            "fold.cell"
+          ],
+          "line": 747,
+          "column": 1412
+        },
+        {
+          "name": "$R_102_111_108_100_46_115_116_101_112",
+          "bytes": 266,
+          "bendNames": [
+            "fold.step"
+          ],
+          "line": 747,
+          "column": 1947
+        },
+        {
+          "name": "$R_102_111_108_100_46_115_116_101_112$get",
+          "bytes": 311,
+          "bendNames": [
+            "fold.step"
+          ],
+          "line": 747,
+          "column": 2213
+        },
+        {
+          "name": "$R_102_111_108_100_46_102_105_110_105_115_104$get",
+          "bytes": 181,
+          "bendNames": [
+            "fold.finish"
+          ],
+          "line": 747,
+          "column": 2660
+        }
+      ],
+      "privateBytesWithoutDirectCallNames": 1783,
+      "pruningCaveat": "No direct-call site under these spellings anywhere in the module; not yet a lexical-reference or removability proof."
+    },
+    {
+      "id": "symreg",
+      "role": "typescript",
+      "module": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/modules/symreg/typescript.mjs",
+        "sha256": "545d6112dbbb0cc66074407a0daf7076b148f9d311e7e9bbffff3376f8e00651",
+        "bytes": 12815
+      },
+      "sourceSha256": "c25c8fb869eaf5ac90cbf45feb30c0e8169207ed0b74cd655343048fcc82778b",
+      "programBytes": 6728,
+      "programMetrics": {
+        "astNodes": 1256,
+        "functionDeclarations": 22,
+        "functionExpressions": 0,
+        "arrowFunctions": 0,
+        "nestedFunctionSites": 0,
+        "blockScopes": 56,
+        "calls": 59,
+        "directCalls": 50,
+        "memberCalls": 9,
+        "iifes": 0,
+        "newExpressions": 0,
+        "arrayLiteralSites": 0,
+        "arrayLiteralSlots": 0,
+        "objectLiteralSites": 8,
+        "spreadSites": 0,
+        "bigIntLiterals": 0,
+        "bigIntConversionCalls": 0,
+        "numericConversionCalls": 0,
+        "branches": 25,
+        "loops": 2,
+        "switchCases": 0,
+        "throwSites": 0,
+        "returnSites": 40,
+        "trampolineHelperCalls": 0,
+        "closureHelperCalls": 0,
+        "scopeHelperCalls": 0,
+        "globalLookupCalls": 0,
+        "constructorHelperCalls": 0,
+        "projectionHelperCalls": 0,
+        "arrayHelperCalls": 0,
+        "argumentArraySites": 0
+      },
+      "privateDeclarations": 0,
+      "privateDeclarationsWithoutDirectCallNames": [],
+      "privateBytesWithoutDirectCallNames": 0,
+      "pruningCaveat": "No direct-call site under these spellings anywhere in the module; not yet a lexical-reference or removability proof."
+    },
+    {
+      "id": "symreg",
+      "role": "baseline",
+      "module": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/modules/symreg/baseline.mjs",
+        "sha256": "551e61d6ccbeca827650038d31d93dc5866f59a11283bff9bc6a6ca59e05d875",
+        "bytes": 82590
+      },
+      "sourceSha256": "c25c8fb869eaf5ac90cbf45feb30c0e8169207ed0b74cd655343048fcc82778b",
+      "programBytes": 28030,
+      "programMetrics": {
+        "astNodes": 5934,
+        "functionDeclarations": 0,
+        "functionExpressions": 117,
+        "arrowFunctions": 183,
+        "nestedFunctionSites": 200,
+        "blockScopes": 117,
+        "calls": 603,
+        "directCalls": 512,
+        "memberCalls": 71,
+        "iifes": 20,
+        "newExpressions": 0,
+        "arrayLiteralSites": 646,
+        "arrayLiteralSlots": 1179,
+        "objectLiteralSites": 49,
+        "spreadSites": 0,
+        "bigIntLiterals": 19,
+        "bigIntConversionCalls": 2,
+        "numericConversionCalls": 5,
+        "branches": 69,
+        "loops": 0,
+        "switchCases": 0,
+        "throwSites": 0,
+        "returnSites": 117,
+        "trampolineHelperCalls": 118,
+        "closureHelperCalls": 134,
+        "scopeHelperCalls": 45,
+        "globalLookupCalls": 73,
+        "constructorHelperCalls": 20,
+        "projectionHelperCalls": 67,
+        "arrayHelperCalls": 0,
+        "argumentArraySites": 118
+      },
+      "privateDeclarations": 0,
+      "privateDeclarationsWithoutDirectCallNames": [],
+      "privateBytesWithoutDirectCallNames": 0,
+      "pruningCaveat": "No direct-call site under these spellings anywhere in the module; not yet a lexical-reference or removability proof."
+    },
+    {
+      "id": "symreg",
+      "role": "candidate",
+      "module": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/modules/symreg/candidate.mjs",
+        "sha256": "dd400df33dc3acbf50c781778a85eb8960bdd065d40a5bf6cffde0009bb3ad26",
+        "bytes": 102304
+      },
+      "sourceSha256": "c25c8fb869eaf5ac90cbf45feb30c0e8169207ed0b74cd655343048fcc82778b",
+      "programBytes": 44087,
+      "programMetrics": {
+        "astNodes": 9104,
+        "functionDeclarations": 31,
+        "functionExpressions": 117,
+        "arrowFunctions": 195,
+        "nestedFunctionSites": 244,
+        "blockScopes": 258,
+        "calls": 712,
+        "directCalls": 592,
+        "memberCalls": 91,
+        "iifes": 29,
+        "newExpressions": 0,
+        "arrayLiteralSites": 665,
+        "arrayLiteralSlots": 1265,
+        "objectLiteralSites": 57,
+        "spreadSites": 0,
+        "bigIntLiterals": 52,
+        "bigIntConversionCalls": 3,
+        "numericConversionCalls": 9,
+        "branches": 116,
+        "loops": 8,
+        "switchCases": 24,
+        "throwSites": 4,
+        "returnSites": 162,
+        "trampolineHelperCalls": 129,
+        "closureHelperCalls": 144,
+        "scopeHelperCalls": 45,
+        "globalLookupCalls": 79,
+        "constructorHelperCalls": 21,
+        "projectionHelperCalls": 67,
+        "arrayHelperCalls": 0,
+        "argumentArraySites": 129
+      },
+      "privateDeclarations": 31,
+      "privateDeclarationsWithoutDirectCallNames": [],
+      "privateBytesWithoutDirectCallNames": 0,
+      "pruningCaveat": "No direct-call site under these spellings anywhere in the module; not yet a lexical-reference or removability proof."
+    },
+    {
+      "id": "raytrace",
+      "role": "typescript",
+      "module": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/modules/raytrace/typescript.mjs",
+        "sha256": "87bd526f04705416db047a31eb4ccc186f1c90f5c911f57736a3216a7629ddd2",
+        "bytes": 28974
+      },
+      "sourceSha256": "4674b2580aceb5f5fe6771ce16c987b97f791b52a9e1305794c435beeebf5837",
+      "programBytes": 21214,
+      "programMetrics": {
+        "astNodes": 4333,
+        "functionDeclarations": 32,
+        "functionExpressions": 0,
+        "arrowFunctions": 0,
+        "nestedFunctionSites": 0,
+        "blockScopes": 81,
+        "calls": 451,
+        "directCalls": 104,
+        "memberCalls": 347,
+        "iifes": 0,
+        "newExpressions": 0,
+        "arrayLiteralSites": 5,
+        "arrayLiteralSlots": 45,
+        "objectLiteralSites": 11,
+        "spreadSites": 0,
+        "bigIntLiterals": 0,
+        "bigIntConversionCalls": 0,
+        "numericConversionCalls": 0,
+        "branches": 32,
+        "loops": 3,
+        "switchCases": 0,
+        "throwSites": 0,
+        "returnSites": 52,
+        "trampolineHelperCalls": 0,
+        "closureHelperCalls": 0,
+        "scopeHelperCalls": 0,
+        "globalLookupCalls": 0,
+        "constructorHelperCalls": 0,
+        "projectionHelperCalls": 0,
+        "arrayHelperCalls": 0,
+        "argumentArraySites": 0
+      },
+      "privateDeclarations": 0,
+      "privateDeclarationsWithoutDirectCallNames": [],
+      "privateBytesWithoutDirectCallNames": 0,
+      "pruningCaveat": "No direct-call site under these spellings anywhere in the module; not yet a lexical-reference or removability proof."
+    },
+    {
+      "id": "raytrace",
+      "role": "baseline",
+      "module": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/modules/raytrace/baseline.mjs",
+        "sha256": "3d1bc9a29878c1c079fdafcad3e6733037194323edc9a099efd940d811b3b367",
+        "bytes": 100044
+      },
+      "sourceSha256": "4674b2580aceb5f5fe6771ce16c987b97f791b52a9e1305794c435beeebf5837",
+      "programBytes": 46205,
+      "programMetrics": {
+        "astNodes": 9572,
+        "functionDeclarations": 0,
+        "functionExpressions": 115,
+        "arrowFunctions": 377,
+        "nestedFunctionSites": 380,
+        "blockScopes": 115,
+        "calls": 1293,
+        "directCalls": 865,
+        "memberCalls": 337,
+        "iifes": 91,
+        "newExpressions": 0,
+        "arrayLiteralSites": 838,
+        "arrayLiteralSlots": 1499,
+        "objectLiteralSites": 49,
+        "spreadSites": 0,
+        "bigIntLiterals": 23,
+        "bigIntConversionCalls": 3,
+        "numericConversionCalls": 10,
+        "branches": 75,
+        "loops": 0,
+        "switchCases": 0,
+        "throwSites": 0,
+        "returnSites": 115,
+        "trampolineHelperCalls": 305,
+        "closureHelperCalls": 118,
+        "scopeHelperCalls": 45,
+        "globalLookupCalls": 154,
+        "constructorHelperCalls": 25,
+        "projectionHelperCalls": 158,
+        "arrayHelperCalls": 0,
+        "argumentArraySites": 305
+      },
+      "privateDeclarations": 0,
+      "privateDeclarationsWithoutDirectCallNames": [],
+      "privateBytesWithoutDirectCallNames": 0,
+      "pruningCaveat": "No direct-call site under these spellings anywhere in the module; not yet a lexical-reference or removability proof."
+    },
+    {
+      "id": "raytrace",
+      "role": "candidate",
+      "module": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/modules/raytrace/candidate.mjs",
+        "sha256": "d6b3abd23fddec72c3756af4b1ae531483758b8bc7c25c412cd0e7e2264aa197",
+        "bytes": 129177
+      },
+      "sourceSha256": "4674b2580aceb5f5fe6771ce16c987b97f791b52a9e1305794c435beeebf5837",
+      "programBytes": 71681,
+      "programMetrics": {
+        "astNodes": 14581,
+        "functionDeclarations": 29,
+        "functionExpressions": 117,
+        "arrowFunctions": 381,
+        "nestedFunctionSites": 419,
+        "blockScopes": 222,
+        "calls": 1747,
+        "directCalls": 1077,
+        "memberCalls": 571,
+        "iifes": 99,
+        "newExpressions": 0,
+        "arrayLiteralSites": 914,
+        "arrayLiteralSlots": 1681,
+        "objectLiteralSites": 51,
+        "spreadSites": 0,
+        "bigIntLiterals": 119,
+        "bigIntConversionCalls": 3,
+        "numericConversionCalls": 15,
+        "branches": 172,
+        "loops": 6,
+        "switchCases": 0,
+        "throwSites": 0,
+        "returnSites": 156,
+        "trampolineHelperCalls": 370,
+        "closureHelperCalls": 153,
+        "scopeHelperCalls": 45,
+        "globalLookupCalls": 170,
+        "constructorHelperCalls": 30,
+        "projectionHelperCalls": 158,
+        "arrayHelperCalls": 0,
+        "argumentArraySites": 368
+      },
+      "privateDeclarations": 29,
+      "privateDeclarationsWithoutDirectCallNames": [],
+      "privateBytesWithoutDirectCallNames": 0,
+      "pruningCaveat": "No direct-call site under these spellings anywhere in the module; not yet a lexical-reference or removability proof."
+    }
+  ],
+  "profiles": [
+    {
+      "id": "local-pair",
+      "role": "typescript",
+      "kind": "cpu",
+      "profile": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/profiles/local-pair/typescript-cpu/profile.cpuprofile",
+        "sha256": "58eb9689eb2c5f939b30ce98494e8d3d9c1a7e784e439a8afc9f805d4526a26c",
+        "bytes": 19222
+      },
+      "repetitions": 1170,
+      "samples": 1390,
+      "unit": "sample-weighted-microseconds",
+      "totalWeight": 1519842,
+      "categories": {
+        "node": {
+          "selfWeight": 19165,
+          "selfSamples": 1,
+          "selfPercent": 1.2609863393694871
+        },
+        "harness": {
+          "selfWeight": 1107,
+          "selfSamples": 1,
+          "selfPercent": 0.07283651853284749
+        },
+        "other": {
+          "selfWeight": 2114,
+          "selfSamples": 2,
+          "selfPercent": 0.13909340576191473
+        },
+        "generated": {
+          "selfWeight": 1420283,
+          "selfSamples": 1313,
+          "selfPercent": 93.44938487026941
+        },
+        "garbage-collector": {
+          "selfWeight": 77173,
+          "selfSamples": 73,
+          "selfPercent": 5.077698866066341
+        }
+      },
+      "topOwners": [
+        {
+          "section": "program",
+          "name": "dp.f1",
+          "selfWeight": 1085656,
+          "frames": 1,
+          "selfPercent": 71.43216202736863
+        },
+        {
+          "section": "program",
+          "name": "dp",
+          "selfWeight": 246304,
+          "frames": 1,
+          "selfPercent": 16.205895086462935
+        },
+        {
+          "section": "garbage-collector",
+          "name": "(garbage collector)",
+          "selfWeight": 77173,
+          "frames": 1,
+          "selfPercent": 5.077698866066341
+        },
+        {
+          "section": "program",
+          "name": "row",
+          "selfWeight": 51853,
+          "frames": 1,
+          "selfPercent": 3.4117362199491787
+        },
+        {
+          "section": "program",
+          "name": "pair",
+          "selfWeight": 21281,
+          "frames": 1,
+          "selfPercent": 1.4002113377574774
+        },
+        {
+          "section": "node",
+          "name": "post",
+          "selfWeight": 19165,
+          "frames": 1,
+          "selfPercent": 1.2609863393694871
+        },
+        {
+          "section": "program",
+          "name": "cell.f4",
+          "selfWeight": 10574,
+          "frames": 1,
+          "selfPercent": 0.6957302140617249
+        },
+        {
+          "section": "exportWrapper",
+          "name": "run_lib:argument0",
+          "selfWeight": 2498,
+          "frames": 1,
+          "selfPercent": 0.16435918996843094
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "array_new",
+          "selfWeight": 2117,
+          "frames": 1,
+          "selfPercent": 0.13929079470102812
+        },
+        {
+          "section": "harness",
+          "name": "main",
+          "selfWeight": 1107,
+          "frames": 1,
+          "selfPercent": 0.07283651853284749
+        },
+        {
+          "section": "other",
+          "name": "(program)",
+          "selfWeight": 1058,
+          "frames": 1,
+          "selfPercent": 0.06961249919399516
+        },
+        {
+          "section": "other",
+          "name": "now",
+          "selfWeight": 1056,
+          "frames": 1,
+          "selfPercent": 0.06948090656791955
+        }
+      ],
+      "warnings": [],
+      "peakTreeRssBytes": 85479424,
+      "sampling": {
+        "intervalMicroseconds": 1000
+      }
+    },
+    {
+      "id": "local-pair",
+      "role": "typescript",
+      "kind": "allocation",
+      "profile": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/profiles/local-pair/typescript-allocation/profile.heapprofile",
+        "sha256": "91771547b5ad852e8c16e79deca58f187b8729ff688853fe4f76f8d3f4ebe338",
+        "bytes": 4763484
+      },
+      "repetitions": 862,
+      "samples": 111354,
+      "unit": "estimated-allocated-bytes",
+      "totalWeight": 3656026416,
+      "categories": {
+        "other": {
+          "selfWeight": 0,
+          "selfSamples": 0,
+          "selfPercent": 0
+        },
+        "harness": {
+          "selfWeight": 32784,
+          "selfSamples": 1,
+          "selfPercent": 0.0008967112452067141
+        },
+        "node": {
+          "selfWeight": 131200,
+          "selfSamples": 4,
+          "selfPercent": 0.0035885955152245267
+        },
+        "generated": {
+          "selfWeight": 3655862432,
+          "selfSamples": 111349,
+          "selfPercent": 99.99551469323957
+        }
+      },
+      "topOwners": [
+        {
+          "section": "program",
+          "name": "dp.f1",
+          "selfWeight": 2569235584,
+          "frames": 1,
+          "selfPercent": 70.27398852361027
+        },
+        {
+          "section": "program",
+          "name": "dp",
+          "selfWeight": 899169984,
+          "frames": 1,
+          "selfPercent": 24.59418728663803
+        },
+        {
+          "section": "program",
+          "name": "row",
+          "selfWeight": 168329664,
+          "frames": 1,
+          "selfPercent": 4.604169796567466
+        },
+        {
+          "section": "program",
+          "name": "pair",
+          "selfWeight": 16232464,
+          "frames": 1,
+          "selfPercent": 0.4439919779835639
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "array_new",
+          "selfWeight": 2730752,
+          "frames": 1,
+          "selfPercent": 0.07469180167980494
+        },
+        {
+          "section": "node",
+          "name": "now",
+          "selfWeight": 131200,
+          "frames": 1,
+          "selfPercent": 0.0035885955152245267
+        },
+        {
+          "section": "program",
+          "name": "dist",
+          "selfWeight": 98400,
+          "frames": 1,
+          "selfPercent": 0.002691446636418395
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "<ArrowFunctionExpression@144:9>",
+          "selfWeight": 65584,
+          "frames": 1,
+          "selfPercent": 0.0017938601240128458
+        },
+        {
+          "section": "harness",
+          "name": "main",
+          "selfWeight": 32784,
+          "frames": 1,
+          "selfPercent": 0.0008967112452067141
+        },
+        {
+          "section": "other",
+          "name": "(root)",
+          "selfWeight": 0,
+          "frames": 1,
+          "selfPercent": 0.0
+        },
+        {
+          "section": "other",
+          "name": "<anonymous>",
+          "selfWeight": 0,
+          "frames": 1,
+          "selfPercent": 0.0
+        },
+        {
+          "section": "harness",
+          "name": "invoke",
+          "selfWeight": 0,
+          "frames": 1,
+          "selfPercent": 0.0
+        }
+      ],
+      "warnings": [
+        "Allocation sample and tree estimates differ. Frame weights use samples[].size only; both accounting totals and per-node differences are retained. The cause is not established by this profile."
+      ],
+      "peakTreeRssBytes": 125411328,
+      "sampling": {
+        "intervalBytes": 32768,
+        "includeObjectsCollectedByMajorGC": true,
+        "includeObjectsCollectedByMinorGC": true
+      },
+      "estimatedBytesPerCall": 4241329.948955917,
+      "accounting": {
+        "weightSource": "samples[].size",
+        "sampleEstimatedBytes": 3656026416,
+        "headSelfSizeBytes": 3652962912,
+        "sampleMinusHeadBytes": 3063504,
+        "unattributedSamples": 0,
+        "unattributedEstimatedBytes": 0
+      }
+    },
+    {
+      "id": "local-pair",
+      "role": "baseline",
+      "kind": "cpu",
+      "profile": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/profiles/local-pair/baseline-cpu/profile.cpuprofile",
+        "sha256": "9c6e48cfdbc56e0ea440bde1ec9e10aee265492ae47610f6f442c57fa586d4ae",
+        "bytes": 24226
+      },
+      "repetitions": 297,
+      "samples": 1391,
+      "unit": "sample-weighted-microseconds",
+      "totalWeight": 1522131,
+      "categories": {
+        "node": {
+          "selfWeight": 21427,
+          "selfSamples": 2,
+          "selfPercent": 1.4076974977843562
+        },
+        "harness": {
+          "selfWeight": 0,
+          "selfSamples": 0,
+          "selfPercent": 0
+        },
+        "other": {
+          "selfWeight": 2112,
+          "selfSamples": 2,
+          "selfPercent": 0.1387528405899361
+        },
+        "generated": {
+          "selfWeight": 1432140,
+          "selfSamples": 1325,
+          "selfPercent": 94.08782818298819
+        },
+        "garbage-collector": {
+          "selfWeight": 66452,
+          "selfSamples": 62,
+          "selfPercent": 4.365721478637515
+        }
+      },
+      "topOwners": [
+        {
+          "section": "program",
+          "name": "row",
+          "selfWeight": 473899,
+          "frames": 1,
+          "selfPercent": 31.133916857353277
+        },
+        {
+          "section": "program",
+          "name": "cell.f4",
+          "selfWeight": 451636,
+          "frames": 1,
+          "selfPercent": 29.671296360168736
+        },
+        {
+          "section": "program",
+          "name": "cell.f2",
+          "selfWeight": 330025,
+          "frames": 1,
+          "selfPercent": 21.681773776370104
+        },
+        {
+          "section": "garbage-collector",
+          "name": "(garbage collector)",
+          "selfWeight": 66452,
+          "frames": 1,
+          "selfPercent": 4.365721478637515
+        },
+        {
+          "section": "program",
+          "name": "cell.f1",
+          "selfWeight": 65586,
+          "frames": 1,
+          "selfPercent": 4.308827558206225
+        },
+        {
+          "section": "program",
+          "name": "dp.f1",
+          "selfWeight": 47640,
+          "frames": 1,
+          "selfPercent": 3.12982259739799
+        },
+        {
+          "section": "program",
+          "name": "cell.f3",
+          "selfWeight": 29656,
+          "frames": 1,
+          "selfPercent": 1.9483211366170192
+        },
+        {
+          "section": "node",
+          "name": "post",
+          "selfWeight": 20395,
+          "frames": 1,
+          "selfPercent": 1.339897814314274
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "scalarGuard",
+          "selfWeight": 7421,
+          "frames": 1,
+          "selfPercent": 0.48754016572817976
+        },
+        {
+          "section": "program",
+          "name": "gen",
+          "selfWeight": 6403,
+          "frames": 1,
+          "selfPercent": 0.4206602454059473
+        },
+        {
+          "section": "program",
+          "name": "pair",
+          "selfWeight": 5072,
+          "frames": 7,
+          "selfPercent": 0.33321704899249804
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "arrayfill",
+          "selfWeight": 4231,
+          "frames": 1,
+          "selfPercent": 0.27796556275379714
+        }
+      ],
+      "warnings": [],
+      "peakTreeRssBytes": 89341952,
+      "sampling": {
+        "intervalMicroseconds": 1000
+      }
+    },
+    {
+      "id": "local-pair",
+      "role": "baseline",
+      "kind": "allocation",
+      "profile": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/profiles/local-pair/baseline-allocation/profile.heapprofile",
+        "sha256": "c92f4243796ef219be3e6d99026f5b7fd4af4eb587cee67f16247baaeee46268",
+        "bytes": 2407334
+      },
+      "repetitions": 230,
+      "samples": 56019,
+      "unit": "estimated-allocated-bytes",
+      "totalWeight": 1837460736,
+      "categories": {
+        "other": {
+          "selfWeight": 3739920,
+          "selfSamples": 114,
+          "selfPercent": 0.2035374104451068
+        },
+        "harness": {
+          "selfWeight": 98528,
+          "selfSamples": 3,
+          "selfPercent": 0.005362182607204294
+        },
+        "generated": {
+          "selfWeight": 1833587152,
+          "selfSamples": 55901,
+          "selfPercent": 99.78918820282209
+        },
+        "unattributed": {
+          "selfWeight": 35136,
+          "selfSamples": 1,
+          "selfPercent": 0.001912204125596075
+        }
+      },
+      "topOwners": [
+        {
+          "section": "program",
+          "name": "cell.f4",
+          "selfWeight": 1196084800,
+          "frames": 1,
+          "selfPercent": 65.09444128878518
+        },
+        {
+          "section": "program",
+          "name": "row",
+          "selfWeight": 609161600,
+          "frames": 1,
+          "selfPercent": 33.152360105723645
+        },
+        {
+          "section": "program",
+          "name": "gen",
+          "selfWeight": 11712480,
+          "frames": 1,
+          "selfPercent": 0.6374274982058719
+        },
+        {
+          "section": "program",
+          "name": "dp",
+          "selfWeight": 6789536,
+          "frames": 1,
+          "selfPercent": 0.36950645349735517
+        },
+        {
+          "section": "program",
+          "name": "init",
+          "selfWeight": 5479280,
+          "frames": 1,
+          "selfPercent": 0.29819848079736055
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "arrayfill",
+          "selfWeight": 2653792,
+          "frames": 1,
+          "selfPercent": 0.14442714056448824
+        },
+        {
+          "section": "other",
+          "name": "getOwnPropertyDescriptor",
+          "selfWeight": 2263920,
+          "frames": 1,
+          "selfPercent": 0.12320916336576349
+        },
+        {
+          "section": "other",
+          "name": "next",
+          "selfWeight": 1443200,
+          "frames": 1,
+          "selfPercent": 0.07854317492202456
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "scalarGuard",
+          "selfWeight": 1410384,
+          "frames": 1,
+          "selfPercent": 0.07675723199779981
+        },
+        {
+          "section": "program",
+          "name": "pair",
+          "selfWeight": 164064,
+          "frames": 9,
+          "selfPercent": 0.008928843854217737
+        },
+        {
+          "section": "harness",
+          "name": "main",
+          "selfWeight": 98528,
+          "frames": 1,
+          "selfPercent": 0.005362182607204294
+        },
+        {
+          "section": "program",
+          "name": "dp.f1",
+          "selfWeight": 65600,
+          "frames": 1,
+          "selfPercent": 0.00357014431463748
+        }
+      ],
+      "warnings": [
+        "1 allocation samples (35136 estimated bytes) refer to absent tree nodes; preserved as unattributed, with no inferred call path.",
+        "Allocation sample and tree estimates differ. Frame weights use samples[].size only; both accounting totals and per-node differences are retained. The cause is not established by this profile."
+      ],
+      "peakTreeRssBytes": 108814336,
+      "sampling": {
+        "intervalBytes": 32768,
+        "includeObjectsCollectedByMajorGC": true,
+        "includeObjectsCollectedByMinorGC": true
+      },
+      "estimatedBytesPerCall": 7988959.72173913,
+      "accounting": {
+        "weightSource": "samples[].size",
+        "sampleEstimatedBytes": 1837460736,
+        "headSelfSizeBytes": 1837595240,
+        "sampleMinusHeadBytes": -134504,
+        "unattributedSamples": 1,
+        "unattributedEstimatedBytes": 35136
+      }
+    },
+    {
+      "id": "local-pair",
+      "role": "candidate",
+      "kind": "cpu",
+      "profile": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/profiles/local-pair/candidate-cpu/profile.cpuprofile",
+        "sha256": "afff42e5486aac03c93ea4a04f6b81bc4460755b2215037e794356de79885fd6",
+        "bytes": 24452
+      },
+      "repetitions": 389,
+      "samples": 1392,
+      "unit": "sample-weighted-microseconds",
+      "totalWeight": 1520299,
+      "categories": {
+        "node": {
+          "selfWeight": 21780,
+          "selfSamples": 3,
+          "selfPercent": 1.4326129267992678
+        },
+        "harness": {
+          "selfWeight": 1075,
+          "selfSamples": 1,
+          "selfPercent": 0.0707097748534992
+        },
+        "other": {
+          "selfWeight": 0,
+          "selfSamples": 0,
+          "selfPercent": 0
+        },
+        "generated": {
+          "selfWeight": 1496390,
+          "selfSamples": 1387,
+          "selfPercent": 98.42734883072343
+        },
+        "garbage-collector": {
+          "selfWeight": 1054,
+          "selfSamples": 1,
+          "selfPercent": 0.06932846762380294
+        }
+      },
+      "topOwners": [
+        {
+          "section": "program",
+          "name": "row",
+          "selfWeight": 1078055,
+          "frames": 1,
+          "selfPercent": 70.91072216715264
+        },
+        {
+          "section": "program",
+          "name": "dp",
+          "selfWeight": 304026,
+          "frames": 1,
+          "selfPercent": 19.997776753125535
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "arraydata",
+          "selfWeight": 97111,
+          "frames": 1,
+          "selfPercent": 6.387625065858756
+        },
+        {
+          "section": "node",
+          "name": "post",
+          "selfWeight": 19633,
+          "frames": 1,
+          "selfPercent": 1.2913907066965116
+        },
+        {
+          "section": "program",
+          "name": "pair",
+          "selfWeight": 4496,
+          "frames": 9,
+          "selfPercent": 0.2957313002244953
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "arrayfill",
+          "selfWeight": 4235,
+          "frames": 1,
+          "selfPercent": 0.2785636246554132
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "scalarGuard",
+          "selfWeight": 4234,
+          "frames": 1,
+          "selfPercent": 0.27849784812066575
+        },
+        {
+          "section": "program",
+          "name": "gen",
+          "selfWeight": 2119,
+          "frames": 1,
+          "selfPercent": 0.13938047712982776
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "localGuard",
+          "selfWeight": 2114,
+          "frames": 1,
+          "selfPercent": 0.13905159445609055
+        },
+        {
+          "section": "node",
+          "name": "wrappedFn",
+          "selfWeight": 1090,
+          "frames": 1,
+          "selfPercent": 0.07169642287471083
+        },
+        {
+          "section": "harness",
+          "name": "main",
+          "selfWeight": 1075,
+          "frames": 1,
+          "selfPercent": 0.07070977485349922
+        },
+        {
+          "section": "node",
+          "name": "<anonymous>",
+          "selfWeight": 1057,
+          "frames": 2,
+          "selfPercent": 0.06952579722804528
+        }
+      ],
+      "warnings": [],
+      "peakTreeRssBytes": 70656000,
+      "sampling": {
+        "intervalMicroseconds": 1000
+      }
+    },
+    {
+      "id": "local-pair",
+      "role": "candidate",
+      "kind": "allocation",
+      "profile": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/profiles/local-pair/candidate-allocation/profile.heapprofile",
+        "sha256": "2bf8f845c5a6a7f48fab8e681f75cfd8dc5ce4e855f790a15b601330e1928dfe",
+        "bytes": 66532
+      },
+      "repetitions": 393,
+      "samples": 1314,
+      "unit": "estimated-allocated-bytes",
+      "totalWeight": 43170256,
+      "categories": {
+        "other": {
+          "selfWeight": 6594000,
+          "selfSamples": 201,
+          "selfPercent": 15.274405600003854
+        },
+        "harness": {
+          "selfWeight": 32784,
+          "selfSamples": 1,
+          "selfPercent": 0.07594117579474163
+        },
+        "node": {
+          "selfWeight": 32784,
+          "selfSamples": 1,
+          "selfPercent": 0.07594117579474163
+        },
+        "generated": {
+          "selfWeight": 36473248,
+          "selfSamples": 1110,
+          "selfPercent": 84.48698566902173
+        },
+        "unattributed": {
+          "selfWeight": 37440,
+          "selfSamples": 1,
+          "selfPercent": 0.08672637938491724
+        }
+      },
+      "topOwners": [
+        {
+          "section": "program",
+          "name": "gen",
+          "selfWeight": 9052000,
+          "frames": 1,
+          "selfPercent": 20.96814065684484
+        },
+        {
+          "section": "program",
+          "name": "row",
+          "selfWeight": 8495200,
+          "frames": 1,
+          "selfPercent": 19.678363732658894
+        },
+        {
+          "section": "program",
+          "name": "dp",
+          "selfWeight": 7544000,
+          "frames": 1,
+          "selfPercent": 17.4749948205079
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "arrayfill",
+          "selfWeight": 4756384,
+          "frames": 1,
+          "selfPercent": 11.017734062082004
+        },
+        {
+          "section": "other",
+          "name": "getOwnPropertyDescriptor",
+          "selfWeight": 4593232,
+          "frames": 1,
+          "selfPercent": 10.639807185762345
+        },
+        {
+          "section": "program",
+          "name": "init",
+          "selfWeight": 4001600,
+          "frames": 1,
+          "selfPercent": 9.26934507870419
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "scalarGuard",
+          "selfWeight": 2328864,
+          "frames": 1,
+          "selfPercent": 5.394603173073609
+        },
+        {
+          "section": "other",
+          "name": "next",
+          "selfWeight": 1935200,
+          "frames": 1,
+          "selfPercent": 4.482716062652026
+        },
+        {
+          "section": "program",
+          "name": "pair",
+          "selfWeight": 229632,
+          "frames": 9,
+          "selfPercent": 0.5319217935608258
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "invokeExact",
+          "selfWeight": 65568,
+          "frames": 1,
+          "selfPercent": 0.15188235158948327
+        },
+        {
+          "section": "unattributed",
+          "name": "(unattributed allocation node 57)",
+          "selfWeight": 37440,
+          "frames": 1,
+          "selfPercent": 0.08672637938491724
+        },
+        {
+          "section": "harness",
+          "name": "main",
+          "selfWeight": 32784,
+          "frames": 1,
+          "selfPercent": 0.07594117579474163
+        }
+      ],
+      "warnings": [
+        "1 allocation samples (37440 estimated bytes) refer to absent tree nodes; preserved as unattributed, with no inferred call path.",
+        "Allocation sample and tree estimates differ. Frame weights use samples[].size only; both accounting totals and per-node differences are retained. The cause is not established by this profile."
+      ],
+      "peakTreeRssBytes": 71499776,
+      "sampling": {
+        "intervalBytes": 32768,
+        "includeObjectsCollectedByMajorGC": true,
+        "includeObjectsCollectedByMinorGC": true
+      },
+      "estimatedBytesPerCall": 109847.97964376591,
+      "accounting": {
+        "weightSource": "samples[].size",
+        "sampleEstimatedBytes": 43170256,
+        "headSelfSizeBytes": 43311200,
+        "sampleMinusHeadBytes": -140944,
+        "unattributedSamples": 1,
+        "unattributedEstimatedBytes": 37440
+      }
+    },
+    {
+      "id": "local-fold",
+      "role": "typescript",
+      "kind": "cpu",
+      "profile": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/profiles/local-fold/typescript-cpu/profile.cpuprofile",
+        "sha256": "898578a303a884616853a5a02522361d9e890deb7e8ee82acabc0779e619f7e6",
+        "bytes": 18334
+      },
+      "repetitions": 32660,
+      "samples": 1393,
+      "unit": "sample-weighted-microseconds",
+      "totalWeight": 1517317,
+      "categories": {
+        "node": {
+          "selfWeight": 23925,
+          "selfSamples": 7,
+          "selfPercent": 1.5767964110334227
+        },
+        "harness": {
+          "selfWeight": 20120,
+          "selfSamples": 15,
+          "selfPercent": 1.3260248188084627
+        },
+        "other": {
+          "selfWeight": 14801,
+          "selfSamples": 14,
+          "selfPercent": 0.9754718361423486
+        },
+        "garbage-collector": {
+          "selfWeight": 282533,
+          "selfSamples": 250,
+          "selfPercent": 18.620565115925018
+        },
+        "generated": {
+          "selfWeight": 1175938,
+          "selfSamples": 1107,
+          "selfPercent": 77.50114181809074
+        }
+      },
+      "topOwners": [
+        {
+          "section": "exportWrapper",
+          "name": "run_lib:argument0",
+          "selfWeight": 969184,
+          "frames": 1,
+          "selfPercent": 63.87485278290561
+        },
+        {
+          "section": "garbage-collector",
+          "name": "(garbage collector)",
+          "selfWeight": 282533,
+          "frames": 1,
+          "selfPercent": 18.620565115925018
+        },
+        {
+          "section": "program",
+          "name": "fold.cell",
+          "selfWeight": 169403,
+          "frames": 1,
+          "selfPercent": 11.164641271402086
+        },
+        {
+          "section": "node",
+          "name": "post",
+          "selfWeight": 17152,
+          "frames": 1,
+          "selfPercent": 1.1304163862923833
+        },
+        {
+          "section": "program",
+          "name": "fold.step",
+          "selfWeight": 16904,
+          "frames": 1,
+          "selfPercent": 1.1140717463786407
+        },
+        {
+          "section": "harness",
+          "name": "main",
+          "selfWeight": 16694,
+          "frames": 1,
+          "selfPercent": 1.1002315270968426
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "array_new",
+          "selfWeight": 14834,
+          "frames": 1,
+          "selfPercent": 0.977646727743774
+        },
+        {
+          "section": "other",
+          "name": "(program)",
+          "selfWeight": 7415,
+          "frames": 1,
+          "selfPercent": 0.4886915522596794
+        },
+        {
+          "section": "other",
+          "name": "now",
+          "selfWeight": 7386,
+          "frames": 1,
+          "selfPercent": 0.4867802838826692
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "<ArrowFunctionExpression@144:9>",
+          "selfWeight": 5613,
+          "frames": 1,
+          "selfPercent": 0.3699292896606312
+        },
+        {
+          "section": "node",
+          "name": "now",
+          "selfWeight": 3592,
+          "frames": 1,
+          "selfPercent": 0.23673365552485076
+        },
+        {
+          "section": "harness",
+          "name": "invoke",
+          "selfWeight": 3426,
+          "frames": 1,
+          "selfPercent": 0.2257932917116199
+        }
+      ],
+      "warnings": [],
+      "peakTreeRssBytes": 75513856,
+      "sampling": {
+        "intervalMicroseconds": 1000
+      }
+    },
+    {
+      "id": "local-fold",
+      "role": "typescript",
+      "kind": "allocation",
+      "profile": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/profiles/local-fold/typescript-allocation/profile.heapprofile",
+        "sha256": "13821b6c73ab00400938509f05fb89e44cde2ecf58b9c400af08e3b0ea59c11e",
+        "bytes": 7503403
+      },
+      "repetitions": 21659,
+      "samples": 174765,
+      "unit": "estimated-allocated-bytes",
+      "totalWeight": 5738445344,
+      "categories": {
+        "other": {
+          "selfWeight": 0,
+          "selfSamples": 0,
+          "selfPercent": 0
+        },
+        "harness": {
+          "selfWeight": 590192,
+          "selfSamples": 18,
+          "selfPercent": 0.010284876209844755
+        },
+        "generated": {
+          "selfWeight": 5737100880,
+          "selfSamples": 174724,
+          "selfPercent": 99.97657093656201
+        },
+        "node": {
+          "selfWeight": 754272,
+          "selfSamples": 23,
+          "selfPercent": 0.013144187228142744
+        }
+      },
+      "topOwners": [
+        {
+          "section": "exportWrapper",
+          "name": "run_lib:argument0",
+          "selfWeight": 4448316944,
+          "frames": 1,
+          "selfPercent": 77.51780625829377
+        },
+        {
+          "section": "program",
+          "name": "fold.cell",
+          "selfWeight": 1286947136,
+          "frames": 1,
+          "selfPercent": 22.42675600884838
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "<ArrowFunctionExpression@144:9>",
+          "selfWeight": 1836800,
+          "frames": 1,
+          "selfPercent": 0.032008669419854634
+        },
+        {
+          "section": "node",
+          "name": "now",
+          "selfWeight": 754272,
+          "frames": 1,
+          "selfPercent": 0.013144187228142744
+        },
+        {
+          "section": "harness",
+          "name": "main",
+          "selfWeight": 524624,
+          "frames": 1,
+          "selfPercent": 0.009142267087174335
+        },
+        {
+          "section": "harness",
+          "name": "invoke",
+          "selfWeight": 65568,
+          "frames": 1,
+          "selfPercent": 0.0011426091226704206
+        },
+        {
+          "section": "other",
+          "name": "(root)",
+          "selfWeight": 0,
+          "frames": 1,
+          "selfPercent": 0.0
+        },
+        {
+          "section": "other",
+          "name": "<anonymous>",
+          "selfWeight": 0,
+          "frames": 1,
+          "selfPercent": 0.0
+        }
+      ],
+      "warnings": [
+        "Allocation sample and tree estimates differ. Frame weights use samples[].size only; both accounting totals and per-node differences are retained. The cause is not established by this profile."
+      ],
+      "peakTreeRssBytes": 144056320,
+      "sampling": {
+        "intervalBytes": 32768,
+        "includeObjectsCollectedByMajorGC": true,
+        "includeObjectsCollectedByMinorGC": true
+      },
+      "estimatedBytesPerCall": 264945.07336442126,
+      "accounting": {
+        "weightSource": "samples[].size",
+        "sampleEstimatedBytes": 5738445344,
+        "headSelfSizeBytes": 5732947472,
+        "sampleMinusHeadBytes": 5497872,
+        "unattributedSamples": 0,
+        "unattributedEstimatedBytes": 0
+      }
+    },
+    {
+      "id": "local-fold",
+      "role": "baseline",
+      "kind": "cpu",
+      "profile": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/profiles/local-fold/baseline-cpu/profile.cpuprofile",
+        "sha256": "fc70f65111bc82fd864be4865d9da1cdd55952501dde10ee545d8f7c586fec55",
+        "bytes": 16673
+      },
+      "repetitions": 4394,
+      "samples": 1380,
+      "unit": "sample-weighted-microseconds",
+      "totalWeight": 1518351,
+      "categories": {
+        "node": {
+          "selfWeight": 20999,
+          "selfSamples": 3,
+          "selfPercent": 1.383013545616264
+        },
+        "harness": {
+          "selfWeight": 3149,
+          "selfSamples": 3,
+          "selfPercent": 0.2073960500569368
+        },
+        "other": {
+          "selfWeight": 5251,
+          "selfSamples": 5,
+          "selfPercent": 0.3458357125592172
+        },
+        "generated": {
+          "selfWeight": 1394865,
+          "selfSamples": 1281,
+          "selfPercent": 91.8670979239978
+        },
+        "garbage-collector": {
+          "selfWeight": 94087,
+          "selfSamples": 88,
+          "selfPercent": 6.196656767769771
+        }
+      },
+      "topOwners": [
+        {
+          "section": "program",
+          "name": "fold.step",
+          "selfWeight": 608990,
+          "frames": 1,
+          "selfPercent": 40.108644180429955
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "<FunctionExpression@33:7>",
+          "selfWeight": 428385,
+          "frames": 1,
+          "selfPercent": 28.213831979562038
+        },
+        {
+          "section": "program",
+          "name": "bench",
+          "selfWeight": 313780,
+          "frames": 1,
+          "selfPercent": 20.66584077067819
+        },
+        {
+          "section": "garbage-collector",
+          "name": "(garbage collector)",
+          "selfWeight": 94087,
+          "frames": 1,
+          "selfPercent": 6.196656767769771
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "localGuard",
+          "selfWeight": 20461,
+          "frames": 1,
+          "selfPercent": 1.3475803684391816
+        },
+        {
+          "section": "node",
+          "name": "post",
+          "selfWeight": 18881,
+          "frames": 1,
+          "selfPercent": 1.243520108328048
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "scalarGuard",
+          "selfWeight": 14785,
+          "frames": 1,
+          "selfPercent": 0.973753763128552
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "arrayfill",
+          "selfWeight": 3174,
+          "frames": 1,
+          "selfPercent": 0.20904257315996103
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "<expression>.every:argument0",
+          "selfWeight": 3174,
+          "frames": 1,
+          "selfPercent": 0.20904257315996103
+        },
+        {
+          "section": "harness",
+          "name": "main",
+          "selfWeight": 3149,
+          "frames": 1,
+          "selfPercent": 0.20739605005693676
+        },
+        {
+          "section": "other",
+          "name": "(program)",
+          "selfWeight": 3134,
+          "frames": 1,
+          "selfPercent": 0.20640813619512222
+        },
+        {
+          "section": "node",
+          "name": "now",
+          "selfWeight": 2118,
+          "frames": 1,
+          "selfPercent": 0.13949343728821598
+        }
+      ],
+      "warnings": [],
+      "peakTreeRssBytes": 78221312,
+      "sampling": {
+        "intervalMicroseconds": 1000
+      }
+    },
+    {
+      "id": "local-fold",
+      "role": "baseline",
+      "kind": "allocation",
+      "profile": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/profiles/local-fold/baseline-allocation/profile.heapprofile",
+        "sha256": "b2fcc74156915c91360cf76a135bc71d32530b84e7d5b8a7746e4bf060af2b8c",
+        "bytes": 3006534
+      },
+      "repetitions": 3636,
+      "samples": 70086,
+      "unit": "estimated-allocated-bytes",
+      "totalWeight": 2303090848,
+      "categories": {
+        "other": {
+          "selfWeight": 19323680,
+          "selfSamples": 589,
+          "selfPercent": 0.83903246877042
+        },
+        "harness": {
+          "selfWeight": 327840,
+          "selfSamples": 10,
+          "selfPercent": 0.014234783672762872
+        },
+        "node": {
+          "selfWeight": 327984,
+          "selfSamples": 10,
+          "selfPercent": 0.014241036139969064
+        },
+        "generated": {
+          "selfWeight": 2283111344,
+          "selfSamples": 69477,
+          "selfPercent": 99.13249171141685
+        }
+      },
+      "topOwners": [
+        {
+          "section": "program",
+          "name": "fold.step",
+          "selfWeight": 1910731360,
+          "frames": 1,
+          "selfPercent": 82.96378589056857
+        },
+        {
+          "section": "program",
+          "name": "bench",
+          "selfWeight": 359706352,
+          "frames": 1,
+          "selfPercent": 15.618417845408414
+        },
+        {
+          "section": "other",
+          "name": "getOwnPropertyDescriptor",
+          "selfWeight": 17388480,
+          "frames": 1,
+          "selfPercent": 0.7550062567049896
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "scalarGuard",
+          "selfWeight": 7642064,
+          "frames": 1,
+          "selfPercent": 0.3318177399140097
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "arrayfill",
+          "selfWeight": 3785424,
+          "frames": 1,
+          "selfPercent": 0.16436277376062935
+        },
+        {
+          "section": "other",
+          "name": "next",
+          "selfWeight": 1771200,
+          "frames": 1,
+          "selfPercent": 0.07690534663615667
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "invokeExact",
+          "selfWeight": 491824,
+          "frames": 1,
+          "selfPercent": 0.021354954383458174
+        },
+        {
+          "section": "exportWrapper",
+          "name": "<ArrowFunctionExpression@703:59>",
+          "selfWeight": 393600,
+          "frames": 1,
+          "selfPercent": 0.017090077030257035
+        },
+        {
+          "section": "node",
+          "name": "now",
+          "selfWeight": 327984,
+          "frames": 1,
+          "selfPercent": 0.014241036139969064
+        },
+        {
+          "section": "harness",
+          "name": "main",
+          "selfWeight": 262272,
+          "frames": 1,
+          "selfPercent": 0.011387826938210298
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "localGuard",
+          "selfWeight": 229520,
+          "frames": 1,
+          "selfPercent": 0.009965738008090943
+        },
+        {
+          "section": "other",
+          "name": "slice",
+          "selfWeight": 164000,
+          "frames": 1,
+          "selfPercent": 0.0071208654292737655
+        }
+      ],
+      "warnings": [
+        "Allocation sample and tree estimates differ. Frame weights use samples[].size only; both accounting totals and per-node differences are retained. The cause is not established by this profile."
+      ],
+      "peakTreeRssBytes": 101752832,
+      "sampling": {
+        "intervalBytes": 32768,
+        "includeObjectsCollectedByMajorGC": true,
+        "includeObjectsCollectedByMinorGC": true
+      },
+      "estimatedBytesPerCall": 633413.3245324532,
+      "accounting": {
+        "weightSource": "samples[].size",
+        "sampleEstimatedBytes": 2303090848,
+        "headSelfSizeBytes": 2300172392,
+        "sampleMinusHeadBytes": 2918456,
+        "unattributedSamples": 0,
+        "unattributedEstimatedBytes": 0
+      }
+    },
+    {
+      "id": "local-fold",
+      "role": "candidate",
+      "kind": "cpu",
+      "profile": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/profiles/local-fold/candidate-cpu/profile.cpuprofile",
+        "sha256": "871cb0118cd049068eed67ff4b443789c7b1f94532ba1f7d856196fa2d3e89c2",
+        "bytes": 22670
+      },
+      "repetitions": 10379,
+      "samples": 1387,
+      "unit": "sample-weighted-microseconds",
+      "totalWeight": 1520559,
+      "categories": {
+        "node": {
+          "selfWeight": 23830,
+          "selfSamples": 4,
+          "selfPercent": 1.5671868043265667
+        },
+        "harness": {
+          "selfWeight": 7113,
+          "selfSamples": 6,
+          "selfPercent": 0.4677884909431334
+        },
+        "other": {
+          "selfWeight": 11663,
+          "selfSamples": 11,
+          "selfPercent": 0.7670205496794271
+        },
+        "generated": {
+          "selfWeight": 1462138,
+          "selfSamples": 1351,
+          "selfPercent": 96.15792613111363
+        },
+        "garbage-collector": {
+          "selfWeight": 15815,
+          "selfSamples": 15,
+          "selfPercent": 1.0400780239372494
+        }
+      },
+      "topOwners": [
+        {
+          "section": "program",
+          "name": "fold.loop",
+          "selfWeight": 1085743,
+          "frames": 1,
+          "selfPercent": 71.40420069198235
+        },
+        {
+          "section": "program",
+          "name": "bench",
+          "selfWeight": 285253,
+          "frames": 1,
+          "selfPercent": 18.759745593561316
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "scalarGuard",
+          "selfWeight": 44393,
+          "frames": 1,
+          "selfPercent": 2.919518413951711
+        },
+        {
+          "section": "node",
+          "name": "post",
+          "selfWeight": 20393,
+          "frames": 1,
+          "selfPercent": 1.3411515107273049
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "localGuard",
+          "selfWeight": 16873,
+          "frames": 1,
+          "selfPercent": 1.109657698254392
+        },
+        {
+          "section": "garbage-collector",
+          "name": "(garbage collector)",
+          "selfWeight": 15815,
+          "frames": 1,
+          "selfPercent": 1.0400780239372494
+        },
+        {
+          "section": "other",
+          "name": "(program)",
+          "selfWeight": 11663,
+          "frames": 1,
+          "selfPercent": 0.7670205496794271
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "arrayfill",
+          "selfWeight": 11585,
+          "frames": 1,
+          "selfPercent": 0.7618908572439478
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "invokeExact",
+          "selfWeight": 7550,
+          "frames": 1,
+          "selfPercent": 0.4965279216393445
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "<expression>.every:argument0",
+          "selfWeight": 6346,
+          "frames": 1,
+          "selfPercent": 0.41734651532758676
+        },
+        {
+          "section": "harness",
+          "name": "main",
+          "selfWeight": 5464,
+          "frames": 1,
+          "selfPercent": 0.35934153163408983
+        },
+        {
+          "section": "node",
+          "name": "now",
+          "selfWeight": 2381,
+          "frames": 1,
+          "selfPercent": 0.15658714985738797
+        }
+      ],
+      "warnings": [],
+      "peakTreeRssBytes": 74301440,
+      "sampling": {
+        "intervalMicroseconds": 1000
+      }
+    },
+    {
+      "id": "local-fold",
+      "role": "candidate",
+      "kind": "allocation",
+      "profile": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/profiles/local-fold/candidate-allocation/profile.heapprofile",
+        "sha256": "1640f5fcc9625bcabf7e5d860bf6ea6bcb5d470b2d791880c3b1bfb47074264a",
+        "bytes": 494150
+      },
+      "repetitions": 10055,
+      "samples": 11608,
+      "unit": "estimated-allocated-bytes",
+      "totalWeight": 380911328,
+      "categories": {
+        "other": {
+          "selfWeight": 49640048,
+          "selfSamples": 1513,
+          "selfPercent": 13.031916971500518
+        },
+        "harness": {
+          "selfWeight": 557344,
+          "selfSamples": 17,
+          "selfPercent": 0.1463185678741484
+        },
+        "generated": {
+          "selfWeight": 330156368,
+          "selfSamples": 10061,
+          "selfPercent": 86.67538708641398
+        },
+        "node": {
+          "selfWeight": 557568,
+          "selfSamples": 17,
+          "selfPercent": 0.14637737421135452
+        }
+      },
+      "topOwners": [
+        {
+          "section": "program",
+          "name": "fold.loop",
+          "selfWeight": 294130688,
+          "frames": 1,
+          "selfPercent": 77.21762688034313
+        },
+        {
+          "section": "other",
+          "name": "getOwnPropertyDescriptor",
+          "selfWeight": 48623248,
+          "frames": 1,
+          "selfPercent": 12.764978205111296
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "scalarGuard",
+          "selfWeight": 20566400,
+          "frames": 1,
+          "selfPercent": 5.399261846053578
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "arrayfill",
+          "selfWeight": 8738288,
+          "frames": 1,
+          "selfPercent": 2.2940478157688187
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "<FunctionExpression@33:7>",
+          "selfWeight": 2751856,
+          "frames": 1,
+          "selfPercent": 0.7224400530298747
+        },
+        {
+          "section": "program",
+          "name": "bench",
+          "selfWeight": 1410576,
+          "frames": 1,
+          "selfPercent": 0.37031610674492726
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "invokeExact",
+          "selfWeight": 1049280,
+          "frames": 1,
+          "selfPercent": 0.275465685284109
+        },
+        {
+          "section": "exportWrapper",
+          "name": "<ArrowFunctionExpression@751:59>",
+          "selfWeight": 853280,
+          "frames": 1,
+          "selfPercent": 0.2240101402287516
+        },
+        {
+          "section": "other",
+          "name": "slice",
+          "selfWeight": 590400,
+          "frames": 1,
+          "selfPercent": 0.15499670306470906
+        },
+        {
+          "section": "node",
+          "name": "now",
+          "selfWeight": 557568,
+          "frames": 1,
+          "selfPercent": 0.14637737421135452
+        },
+        {
+          "section": "other",
+          "name": "next",
+          "selfWeight": 426400,
+          "frames": 1,
+          "selfPercent": 0.1119420633245121
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "apply",
+          "selfWeight": 360800,
+          "frames": 1,
+          "selfPercent": 0.09472020742843332
+        }
+      ],
+      "warnings": [
+        "Allocation sample and tree estimates differ. Frame weights use samples[].size only; both accounting totals and per-node differences are retained. The cause is not established by this profile."
+      ],
+      "peakTreeRssBytes": 75141120,
+      "sampling": {
+        "intervalBytes": 32768,
+        "includeObjectsCollectedByMajorGC": true,
+        "includeObjectsCollectedByMinorGC": true
+      },
+      "estimatedBytesPerCall": 37882.77752362009,
+      "accounting": {
+        "weightSource": "samples[].size",
+        "sampleEstimatedBytes": 380911328,
+        "headSelfSizeBytes": 380857160,
+        "sampleMinusHeadBytes": 54168,
+        "unattributedSamples": 0,
+        "unattributedEstimatedBytes": 0
+      }
+    },
+    {
+      "id": "symreg",
+      "role": "typescript",
+      "kind": "cpu",
+      "profile": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/profiles/symreg/typescript-cpu/profile.cpuprofile",
+        "sha256": "5f7b7d09f14a27ff8dd09492d4dc80cdb827066fc43959a2d9272fc181a92f81",
+        "bytes": 46912
+      },
+      "repetitions": 1315,
+      "samples": 1365,
+      "unit": "sample-weighted-microseconds",
+      "totalWeight": 1520808,
+      "categories": {
+        "node": {
+          "selfWeight": 20008,
+          "selfSamples": 1,
+          "selfPercent": 1.3156164354737745
+        },
+        "harness": {
+          "selfWeight": 3183,
+          "selfSamples": 3,
+          "selfPercent": 0.20929663705083087
+        },
+        "other": {
+          "selfWeight": 0,
+          "selfSamples": 0,
+          "selfPercent": 0
+        },
+        "generated": {
+          "selfWeight": 1468026,
+          "selfSamples": 1334,
+          "selfPercent": 96.52934492717029
+        },
+        "garbage-collector": {
+          "selfWeight": 29591,
+          "selfSamples": 27,
+          "selfPercent": 1.9457420003051011
+        }
+      },
+      "topOwners": [
+        {
+          "section": "program",
+          "name": "eval",
+          "selfWeight": 1071570,
+          "frames": 1,
+          "selfPercent": 70.46057095964777
+        },
+        {
+          "section": "program",
+          "name": "gen",
+          "selfWeight": 214763,
+          "frames": 1,
+          "selfPercent": 14.121637971394154
+        },
+        {
+          "section": "program",
+          "name": "esize",
+          "selfWeight": 101521,
+          "frames": 1,
+          "selfPercent": 6.675464621438078
+        },
+        {
+          "section": "program",
+          "name": "floop",
+          "selfWeight": 58151,
+          "frames": 1,
+          "selfPercent": 3.8236910905255628
+        },
+        {
+          "section": "garbage-collector",
+          "name": "(garbage collector)",
+          "selfWeight": 29591,
+          "frames": 1,
+          "selfPercent": 1.945742000305101
+        },
+        {
+          "section": "node",
+          "name": "post",
+          "selfWeight": 20008,
+          "frames": 1,
+          "selfPercent": 1.3156164354737745
+        },
+        {
+          "section": "program",
+          "name": "batch",
+          "selfWeight": 10593,
+          "frames": 1,
+          "selfPercent": 0.696537629996686
+        },
+        {
+          "section": "program",
+          "name": "run.fin",
+          "selfWeight": 7200,
+          "frames": 1,
+          "selfPercent": 0.4734325437530576
+        },
+        {
+          "section": "harness",
+          "name": "main",
+          "selfWeight": 3183,
+          "frames": 1,
+          "selfPercent": 0.20929663705083087
+        },
+        {
+          "section": "program",
+          "name": "climb",
+          "selfWeight": 3170,
+          "frames": 1,
+          "selfPercent": 0.20844182829127675
+        },
+        {
+          "section": "program",
+          "name": "node",
+          "selfWeight": 1058,
+          "frames": 1,
+          "selfPercent": 0.06956828212371319
+        },
+        {
+          "section": "other",
+          "name": "(root)",
+          "selfWeight": 0,
+          "frames": 1,
+          "selfPercent": 0.0
+        }
+      ],
+      "warnings": [],
+      "peakTreeRssBytes": 71528448,
+      "sampling": {
+        "intervalMicroseconds": 1000
+      },
+      "ancestryUnion": {
+        "totalMicroseconds": 1520808,
+        "groups": {
+          "producer": {
+            "microseconds": 215821,
+            "percent": 14.191206253517867
+          },
+          "evalAndSize": {
+            "microseconds": 1173091,
+            "percent": 77.13603558108585
+          },
+          "guards": {
+            "microseconds": 0,
+            "percent": 0.0
+          }
+        },
+        "interpretation": "Each sample is counted once within a group if any ancestor matches; groups may overlap and are not additive."
+      }
+    },
+    {
+      "id": "symreg",
+      "role": "typescript",
+      "kind": "allocation",
+      "profile": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/profiles/symreg/typescript-allocation/profile.heapprofile",
+        "sha256": "42ec7bd89b7284217173456b5c66db38fef74deccfa28157d6be80b0b6d4fbea",
+        "bytes": 750950
+      },
+      "repetitions": 1249,
+      "samples": 17317,
+      "unit": "estimated-allocated-bytes",
+      "totalWeight": 567827792,
+      "categories": {
+        "other": {
+          "selfWeight": 0,
+          "selfSamples": 0,
+          "selfPercent": 0
+        },
+        "harness": {
+          "selfWeight": 98352,
+          "selfSamples": 3,
+          "selfPercent": 0.017320744314677713
+        },
+        "node": {
+          "selfWeight": 98400,
+          "selfSamples": 3,
+          "selfPercent": 0.017329197581790783
+        },
+        "generated": {
+          "selfWeight": 567631040,
+          "selfSamples": 17311,
+          "selfPercent": 99.96535005810352
+        }
+      },
+      "topOwners": [
+        {
+          "section": "program",
+          "name": "gen",
+          "selfWeight": 374788432,
+          "frames": 1,
+          "selfPercent": 66.00389013717032
+        },
+        {
+          "section": "program",
+          "name": "eval",
+          "selfWeight": 156838656,
+          "frames": 1,
+          "selfPercent": 27.62081360047273
+        },
+        {
+          "section": "program",
+          "name": "batch",
+          "selfWeight": 18136448,
+          "frames": 1,
+          "selfPercent": 3.194004988047503
+        },
+        {
+          "section": "program",
+          "name": "floop",
+          "selfWeight": 14523312,
+          "frames": 1,
+          "selfPercent": 2.557696577134076
+        },
+        {
+          "section": "program",
+          "name": "climb",
+          "selfWeight": 3081792,
+          "frames": 1,
+          "selfPercent": 0.5427335617274612
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "<ArrowFunctionExpression@144:9>",
+          "selfWeight": 262400,
+          "frames": 1,
+          "selfPercent": 0.04621119355144209
+        },
+        {
+          "section": "node",
+          "name": "now",
+          "selfWeight": 98400,
+          "frames": 1,
+          "selfPercent": 0.017329197581790783
+        },
+        {
+          "section": "harness",
+          "name": "invoke",
+          "selfWeight": 65568,
+          "frames": 1,
+          "selfPercent": 0.01154716287645181
+        },
+        {
+          "section": "harness",
+          "name": "main",
+          "selfWeight": 32784,
+          "frames": 1,
+          "selfPercent": 0.005773581438225905
+        },
+        {
+          "section": "other",
+          "name": "(root)",
+          "selfWeight": 0,
+          "frames": 1,
+          "selfPercent": 0.0
+        },
+        {
+          "section": "other",
+          "name": "<anonymous>",
+          "selfWeight": 0,
+          "frames": 1,
+          "selfPercent": 0.0
+        },
+        {
+          "section": "exportWrapper",
+          "name": "run_lib:argument0",
+          "selfWeight": 0,
+          "frames": 1,
+          "selfPercent": 0.0
+        }
+      ],
+      "warnings": [
+        "Allocation sample and tree estimates differ. Frame weights use samples[].size only; both accounting totals and per-node differences are retained. The cause is not established by this profile."
+      ],
+      "peakTreeRssBytes": 73379840,
+      "sampling": {
+        "intervalBytes": 32768,
+        "includeObjectsCollectedByMajorGC": true,
+        "includeObjectsCollectedByMinorGC": true
+      },
+      "estimatedBytesPerCall": 454625.934347478,
+      "accounting": {
+        "weightSource": "samples[].size",
+        "sampleEstimatedBytes": 567827792,
+        "headSelfSizeBytes": 567735336,
+        "sampleMinusHeadBytes": 92456,
+        "unattributedSamples": 0,
+        "unattributedEstimatedBytes": 0
+      }
+    },
+    {
+      "id": "symreg",
+      "role": "baseline",
+      "kind": "cpu",
+      "profile": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/profiles/symreg/baseline-cpu/profile.cpuprofile",
+        "sha256": "a4519868437e3388bb2c2ca1017039c43ff31b4763d319ff80298824f9c368e3",
+        "bytes": 1821750
+      },
+      "repetitions": 13,
+      "samples": 1284,
+      "unit": "sample-weighted-microseconds",
+      "totalWeight": 1540472,
+      "categories": {
+        "node": {
+          "selfWeight": 23177,
+          "selfSamples": 1,
+          "selfPercent": 1.504538868606505
+        },
+        "harness": {
+          "selfWeight": 2106,
+          "selfSamples": 1,
+          "selfPercent": 0.1367113456135522
+        },
+        "other": {
+          "selfWeight": 1056,
+          "selfSamples": 1,
+          "selfPercent": 0.06855041831334811
+        },
+        "garbage-collector": {
+          "selfWeight": 79687,
+          "selfSamples": 57,
+          "selfPercent": 5.172895060734632
+        },
+        "generated": {
+          "selfWeight": 1434446,
+          "selfSamples": 1224,
+          "selfPercent": 93.11730430673197
+        }
+      },
+      "topOwners": [
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "apply",
+          "selfWeight": 450061,
+          "frames": 1,
+          "selfPercent": 29.21578581110205
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "invokeExact",
+          "selfWeight": 212095,
+          "frames": 1,
+          "selfPercent": 13.76818273879694
+        },
+        {
+          "section": "program",
+          "name": "eval",
+          "selfWeight": 207229,
+          "frames": 15,
+          "selfPercent": 13.452305527137137
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "fn:argument1",
+          "selfWeight": 188364,
+          "frames": 2,
+          "selfPercent": 12.227680866643471
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "force",
+          "selfWeight": 104962,
+          "frames": 1,
+          "selfPercent": 6.813625953603831
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "callOwned",
+          "selfWeight": 103624,
+          "frames": 1,
+          "selfPercent": 6.726769457672713
+        },
+        {
+          "section": "garbage-collector",
+          "name": "(garbage collector)",
+          "selfWeight": 79687,
+          "frames": 1,
+          "selfPercent": 5.172895060734632
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "fields",
+          "selfWeight": 61577,
+          "frames": 1,
+          "selfPercent": 3.9972813527282547
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "get",
+          "selfWeight": 29893,
+          "frames": 1,
+          "selfPercent": 1.940509142652382
+        },
+        {
+          "section": "node",
+          "name": "post",
+          "selfWeight": 23177,
+          "frames": 1,
+          "selfPercent": 1.504538868606505
+        },
+        {
+          "section": "program",
+          "name": "gen",
+          "selfWeight": 22181,
+          "frames": 4,
+          "selfPercent": 1.439883360424597
+        },
+        {
+          "section": "program",
+          "name": "floop",
+          "selfWeight": 20040,
+          "frames": 5,
+          "selfPercent": 1.3008999839010382
+        }
+      ],
+      "warnings": [],
+      "peakTreeRssBytes": 101285888,
+      "sampling": {
+        "intervalMicroseconds": 1000
+      },
+      "ancestryUnion": {
+        "totalMicroseconds": 1540472,
+        "groups": {
+          "producer": {
+            "microseconds": 159020,
+            "percent": 10.322810151693767
+          },
+          "evalAndSize": {
+            "microseconds": 1147285,
+            "percent": 74.47619950249015
+          },
+          "guards": {
+            "microseconds": 0,
+            "percent": 0.0
+          }
+        },
+        "interpretation": "Each sample is counted once within a group if any ancestor matches; groups may overlap and are not additive."
+      }
+    },
+    {
+      "id": "symreg",
+      "role": "baseline",
+      "kind": "allocation",
+      "profile": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/profiles/symreg/baseline-allocation/profile.heapprofile",
+        "sha256": "ec1420544ef2c8f3e8745b7ba7defd5ecebfbe1498749a122fb532b9bb70bca8",
+        "bytes": 17108821
+      },
+      "repetitions": 9,
+      "samples": 43983,
+      "unit": "estimated-allocated-bytes",
+      "totalWeight": 1448149384,
+      "categories": {
+        "other": {
+          "selfWeight": 65600,
+          "selfSamples": 2,
+          "selfPercent": 0.0045299194078171155
+        },
+        "harness": {
+          "selfWeight": 0,
+          "selfSamples": 0,
+          "selfPercent": 0
+        },
+        "generated": {
+          "selfWeight": 1448083784,
+          "selfSamples": 43981,
+          "selfPercent": 99.99547008059218
+        }
+      },
+      "topOwners": [
+        {
+          "section": "program",
+          "name": "eval",
+          "selfWeight": 762568680,
+          "frames": 15,
+          "selfPercent": 52.65815035557133
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "apply",
+          "selfWeight": 250519984,
+          "frames": 1,
+          "selfPercent": 17.29931917023831
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "fn:argument1",
+          "selfWeight": 241491824,
+          "frames": 2,
+          "selfPercent": 16.67589177388346
+        },
+        {
+          "section": "program",
+          "name": "gen",
+          "selfWeight": 42823912,
+          "frames": 5,
+          "selfPercent": 2.957147409869699
+        },
+        {
+          "section": "program",
+          "name": "esize",
+          "selfWeight": 41478960,
+          "frames": 14,
+          "selfPercent": 2.8642735658547225
+        },
+        {
+          "section": "program",
+          "name": "node",
+          "selfWeight": 29703992,
+          "frames": 13,
+          "selfPercent": 2.0511690525982367
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "project",
+          "selfWeight": 17490304,
+          "frames": 1,
+          "selfPercent": 1.2077693222289836
+        },
+        {
+          "section": "program",
+          "name": "floop",
+          "selfWeight": 16459488,
+          "frames": 6,
+          "selfPercent": 1.1365877154562944
+        },
+        {
+          "section": "program",
+          "name": "gen.leaf",
+          "selfWeight": 15168064,
+          "frames": 4,
+          "selfPercent": 1.0474101751922575
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "callOwned",
+          "selfWeight": 10964960,
+          "frames": 1,
+          "selfPercent": 0.7571705047246701
+        },
+        {
+          "section": "program",
+          "name": "sel.go",
+          "selfWeight": 6286192,
+          "frames": 2,
+          "selfPercent": 0.4340844991168397
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "fields",
+          "selfWeight": 2886400,
+          "frames": 1,
+          "selfPercent": 0.19931645394395306
+        }
+      ],
+      "warnings": [
+        "Allocation sample and tree estimates differ. Frame weights use samples[].size only; both accounting totals and per-node differences are retained. The cause is not established by this profile."
+      ],
+      "peakTreeRssBytes": 364765184,
+      "sampling": {
+        "intervalBytes": 32768,
+        "includeObjectsCollectedByMajorGC": true,
+        "includeObjectsCollectedByMinorGC": true
+      },
+      "estimatedBytesPerCall": 160905487.1111111,
+      "accounting": {
+        "weightSource": "samples[].size",
+        "sampleEstimatedBytes": 1448149384,
+        "headSelfSizeBytes": 1446558984,
+        "sampleMinusHeadBytes": 1590400,
+        "unattributedSamples": 0,
+        "unattributedEstimatedBytes": 0
+      }
+    },
+    {
+      "id": "symreg",
+      "role": "candidate",
+      "kind": "cpu",
+      "profile": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/profiles/symreg/candidate-cpu/profile.cpuprofile",
+        "sha256": "42f0bda963f184505479cccaec92ca5e10c045b3bab93ed5af95d431779cf7a4",
+        "bytes": 475606
+      },
+      "repetitions": 94,
+      "samples": 1361,
+      "unit": "sample-weighted-microseconds",
+      "totalWeight": 1542402,
+      "categories": {
+        "node": {
+          "selfWeight": 27211,
+          "selfSamples": 2,
+          "selfPercent": 1.7641963638532627
+        },
+        "harness": {
+          "selfWeight": 2108,
+          "selfSamples": 2,
+          "selfPercent": 0.13666994726407253
+        },
+        "other": {
+          "selfWeight": 4174,
+          "selfSamples": 4,
+          "selfPercent": 0.270616869013396
+        },
+        "garbage-collector": {
+          "selfWeight": 85673,
+          "selfSamples": 59,
+          "selfPercent": 5.554518212502318
+        },
+        "generated": {
+          "selfWeight": 1423236,
+          "selfSamples": 1294,
+          "selfPercent": 92.27399860736695
+        }
+      },
+      "topOwners": [
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "apply",
+          "selfWeight": 297718,
+          "frames": 1,
+          "selfPercent": 19.30223119523963
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "force",
+          "selfWeight": 139329,
+          "frames": 1,
+          "selfPercent": 9.033248141535086
+        },
+        {
+          "section": "program",
+          "name": "gen",
+          "selfWeight": 138909,
+          "frames": 7,
+          "selfPercent": 9.006017886387596
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "invokeExact",
+          "selfWeight": 136171,
+          "frames": 1,
+          "selfPercent": 8.828502556402286
+        },
+        {
+          "section": "program",
+          "name": "eval",
+          "selfWeight": 127219,
+          "frames": 1,
+          "selfPercent": 8.24810911811577
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "callOwned",
+          "selfWeight": 126684,
+          "frames": 1,
+          "selfPercent": 8.213422959773133
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "regionHostGuard",
+          "selfWeight": 95263,
+          "frames": 1,
+          "selfPercent": 6.17627570503669
+        },
+        {
+          "section": "garbage-collector",
+          "name": "(garbage collector)",
+          "selfWeight": 85673,
+          "frames": 1,
+          "selfPercent": 5.554518212502318
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "fn:argument1",
+          "selfWeight": 78353,
+          "frames": 2,
+          "selfPercent": 5.079933765646051
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "scalarGuard",
+          "selfWeight": 55229,
+          "frames": 1,
+          "selfPercent": 3.580713717954204
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "project",
+          "selfWeight": 41172,
+          "frames": 1,
+          "selfPercent": 2.66934301174402
+        },
+        {
+          "section": "program",
+          "name": "node",
+          "selfWeight": 29714,
+          "frames": 13,
+          "selfPercent": 1.9264757177441418
+        }
+      ],
+      "warnings": [],
+      "peakTreeRssBytes": 94785536,
+      "sampling": {
+        "intervalMicroseconds": 1000
+      },
+      "ancestryUnion": {
+        "totalMicroseconds": 1542402,
+        "groups": {
+          "producer": {
+            "microseconds": 992293,
+            "percent": 64.33426564540243
+          },
+          "evalAndSize": {
+            "microseconds": 145212,
+            "percent": 9.414666215422438
+          },
+          "guards": {
+            "microseconds": 171751,
+            "percent": 11.135294171039716
+          }
+        },
+        "interpretation": "Each sample is counted once within a group if any ancestor matches; groups may overlap and are not additive."
+      }
+    },
+    {
+      "id": "symreg",
+      "role": "candidate",
+      "kind": "allocation",
+      "profile": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/profiles/symreg/candidate-allocation/profile.heapprofile",
+        "sha256": "383543c5f4aa0f9fa669b6d0a6b6604bf206f91e636708e968534eba0708b53a",
+        "bytes": 1754499
+      },
+      "repetitions": 64,
+      "samples": 37155,
+      "unit": "estimated-allocated-bytes",
+      "totalWeight": 1221718288,
+      "categories": {
+        "other": {
+          "selfWeight": 87946920,
+          "selfSamples": 2676,
+          "selfPercent": 7.1986251547378
+        },
+        "harness": {
+          "selfWeight": 0,
+          "selfSamples": 0,
+          "selfPercent": 0
+        },
+        "node": {
+          "selfWeight": 32800,
+          "selfSamples": 1,
+          "selfPercent": 0.0026847433096622354
+        },
+        "generated": {
+          "selfWeight": 1133704432,
+          "selfSamples": 34477,
+          "selfPercent": 92.79589600446417
+        },
+        "unattributed": {
+          "selfWeight": 34136,
+          "selfSamples": 1,
+          "selfPercent": 0.002794097488372868
+        }
+      },
+      "topOwners": [
+        {
+          "section": "program",
+          "name": "gen",
+          "selfWeight": 289493776,
+          "frames": 5,
+          "selfPercent": 23.695624338562737
+        },
+        {
+          "section": "program",
+          "name": "node",
+          "selfWeight": 222914680,
+          "frames": 13,
+          "selfPercent": 18.245996821813968
+        },
+        {
+          "section": "program",
+          "name": "gen.leaf",
+          "selfWeight": 111560352,
+          "frames": 4,
+          "selfPercent": 9.131430141937926
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "apply",
+          "selfWeight": 105075024,
+          "frames": 1,
+          "selfPercent": 8.60059352733533
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "fn:argument1",
+          "selfWeight": 85194096,
+          "frames": 2,
+          "selfPercent": 6.973301196912263
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "force",
+          "selfWeight": 80761216,
+          "frames": 1,
+          "selfPercent": 6.610461412688618
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "project",
+          "selfWeight": 74467840,
+          "frames": 1,
+          "selfPercent": 6.095336439786518
+        },
+        {
+          "section": "other",
+          "name": "getOwnPropertyDescriptor",
+          "selfWeight": 70441440,
+          "frames": 1,
+          "selfPercent": 5.765767828139444
+        },
+        {
+          "section": "program",
+          "name": "eval",
+          "selfWeight": 64315536,
+          "frames": 1,
+          "selfPercent": 5.264350761687215
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "fn",
+          "selfWeight": 24382288,
+          "frames": 1,
+          "selfPercent": 1.995737334824933
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "scalarGuard",
+          "selfWeight": 18397768,
+          "frames": 1,
+          "selfPercent": 1.5058928216682306
+        },
+        {
+          "section": "other",
+          "name": "getOwnPropertyNames",
+          "selfWeight": 16849480,
+          "frames": 1,
+          "selfPercent": 1.379162460405111
+        }
+      ],
+      "warnings": [
+        "1 allocation samples (34136 estimated bytes) refer to absent tree nodes; preserved as unattributed, with no inferred call path.",
+        "Allocation sample and tree estimates differ. Frame weights use samples[].size only; both accounting totals and per-node differences are retained. The cause is not established by this profile."
+      ],
+      "peakTreeRssBytes": 94171136,
+      "sampling": {
+        "intervalBytes": 32768,
+        "includeObjectsCollectedByMajorGC": true,
+        "includeObjectsCollectedByMinorGC": true
+      },
+      "estimatedBytesPerCall": 19089348.25,
+      "accounting": {
+        "weightSource": "samples[].size",
+        "sampleEstimatedBytes": 1221718288,
+        "headSelfSizeBytes": 1220259680,
+        "sampleMinusHeadBytes": 1458608,
+        "unattributedSamples": 1,
+        "unattributedEstimatedBytes": 34136
+      }
+    },
+    {
+      "id": "raytrace",
+      "role": "typescript",
+      "kind": "cpu",
+      "profile": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/profiles/raytrace/typescript-cpu/profile.cpuprofile",
+        "sha256": "028d4500d6a1b0596c4cfd8658dcd0f896be4d93a68c1bbcb8a1e8b6a500a223",
+        "bytes": 29908
+      },
+      "repetitions": 43,
+      "samples": 1377,
+      "unit": "sample-weighted-microseconds",
+      "totalWeight": 1520404,
+      "categories": {
+        "node": {
+          "selfWeight": 19208,
+          "selfSamples": 1,
+          "selfPercent": 1.263348425813139
+        },
+        "harness": {
+          "selfWeight": 1056,
+          "selfSamples": 1,
+          "selfPercent": 0.069455223743163
+        },
+        "other": {
+          "selfWeight": 0,
+          "selfSamples": 0,
+          "selfPercent": 0
+        },
+        "generated": {
+          "selfWeight": 1477962,
+          "selfSamples": 1355,
+          "selfPercent": 97.20850510785291
+        },
+        "garbage-collector": {
+          "selfWeight": 22178,
+          "selfSamples": 20,
+          "selfPercent": 1.4586912425907852
+        }
+      },
+      "topOwners": [
+        {
+          "section": "program",
+          "name": "colf",
+          "selfWeight": 671943,
+          "frames": 1,
+          "selfPercent": 44.19502974209487
+        },
+        {
+          "section": "program",
+          "name": "nearest",
+          "selfWeight": 425529,
+          "frames": 1,
+          "selfPercent": 27.98789006079963
+        },
+        {
+          "section": "program",
+          "name": "nearest.t",
+          "selfWeight": 199754,
+          "frames": 1,
+          "selfPercent": 13.13821852612858
+        },
+        {
+          "section": "program",
+          "name": "trace",
+          "selfWeight": 94114,
+          "frames": 1,
+          "selfPercent": 6.19006527212504
+        },
+        {
+          "section": "program",
+          "name": "subray",
+          "selfWeight": 33775,
+          "frames": 1,
+          "selfPercent": 2.2214490359141386
+        },
+        {
+          "section": "program",
+          "name": "pixel",
+          "selfWeight": 22201,
+          "frames": 1,
+          "selfPercent": 1.4602039984109487
+        },
+        {
+          "section": "garbage-collector",
+          "name": "(garbage collector)",
+          "selfWeight": 22178,
+          "frames": 1,
+          "selfPercent": 1.458691242590785
+        },
+        {
+          "section": "node",
+          "name": "post",
+          "selfWeight": 19208,
+          "frames": 1,
+          "selfPercent": 1.263348425813139
+        },
+        {
+          "section": "program",
+          "name": "isect5",
+          "selfWeight": 19021,
+          "frames": 1,
+          "selfPercent": 1.2510490632752873
+        },
+        {
+          "section": "program",
+          "name": "isect.t",
+          "selfWeight": 4227,
+          "frames": 1,
+          "selfPercent": 0.2780182109491951
+        },
+        {
+          "section": "program",
+          "name": "sr",
+          "selfWeight": 2115,
+          "frames": 1,
+          "selfPercent": 0.13910776346286907
+        },
+        {
+          "section": "program",
+          "name": "sz",
+          "selfWeight": 2115,
+          "frames": 1,
+          "selfPercent": 0.13910776346286907
+        }
+      ],
+      "warnings": [],
+      "peakTreeRssBytes": 71958528,
+      "sampling": {
+        "intervalMicroseconds": 1000
+      },
+      "ancestryUnion": {
+        "totalMicroseconds": 1520404,
+        "groups": {
+          "producer": {
+            "microseconds": 0,
+            "percent": 0.0
+          },
+          "evalAndSize": {
+            "microseconds": 0,
+            "percent": 0.0
+          },
+          "guards": {
+            "microseconds": 0,
+            "percent": 0.0
+          }
+        },
+        "interpretation": "Each sample is counted once within a group if any ancestor matches; groups may overlap and are not additive."
+      }
+    },
+    {
+      "id": "raytrace",
+      "role": "typescript",
+      "kind": "allocation",
+      "profile": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/profiles/raytrace/typescript-allocation/profile.heapprofile",
+        "sha256": "0d3027b0fe3efc428b6c83d2aca86c4e0e97950563a6eca07918eef8e528c05d",
+        "bytes": 69168
+      },
+      "repetitions": 43,
+      "samples": 1399,
+      "unit": "estimated-allocated-bytes",
+      "totalWeight": 366758184,
+      "categories": {
+        "other": {
+          "selfWeight": 0,
+          "selfSamples": 0,
+          "selfPercent": 0
+        },
+        "harness": {
+          "selfWeight": 0,
+          "selfSamples": 0,
+          "selfPercent": 0
+        },
+        "generated": {
+          "selfWeight": 366758184,
+          "selfSamples": 1399,
+          "selfPercent": 100
+        }
+      },
+      "topOwners": [
+        {
+          "section": "program",
+          "name": "nearest",
+          "selfWeight": 168827384,
+          "frames": 1,
+          "selfPercent": 46.03234266205222
+        },
+        {
+          "section": "program",
+          "name": "trace",
+          "selfWeight": 126885440,
+          "frames": 1,
+          "selfPercent": 34.59648496896255
+        },
+        {
+          "section": "program",
+          "name": "subray",
+          "selfWeight": 41945600,
+          "frames": 1,
+          "selfPercent": 11.43685453519423
+        },
+        {
+          "section": "program",
+          "name": "pixel",
+          "selfWeight": 19137680,
+          "frames": 1,
+          "selfPercent": 5.218064881682367
+        },
+        {
+          "section": "program",
+          "name": "isect5",
+          "selfWeight": 3408080,
+          "frames": 1,
+          "selfPercent": 0.9292444309845312
+        },
+        {
+          "section": "program",
+          "name": "nearest.t",
+          "selfWeight": 2883760,
+          "frames": 1,
+          "selfPercent": 0.7862837492946033
+        },
+        {
+          "section": "program",
+          "name": "fl",
+          "selfWeight": 1835120,
+          "frames": 1,
+          "selfPercent": 0.5003623859147476
+        },
+        {
+          "section": "program",
+          "name": "sy",
+          "selfWeight": 1048640,
+          "frames": 1,
+          "selfPercent": 0.28592136337985574
+        },
+        {
+          "section": "program",
+          "name": "sr",
+          "selfWeight": 786480,
+          "frames": 1,
+          "selfPercent": 0.2144410225348918
+        },
+        {
+          "section": "other",
+          "name": "(root)",
+          "selfWeight": 0,
+          "frames": 1,
+          "selfPercent": 0.0
+        },
+        {
+          "section": "other",
+          "name": "<anonymous>",
+          "selfWeight": 0,
+          "frames": 1,
+          "selfPercent": 0.0
+        },
+        {
+          "section": "harness",
+          "name": "main",
+          "selfWeight": 0,
+          "frames": 1,
+          "selfPercent": 0.0
+        }
+      ],
+      "warnings": [
+        "Allocation sample and tree estimates differ. Frame weights use samples[].size only; both accounting totals and per-node differences are retained. The cause is not established by this profile."
+      ],
+      "peakTreeRssBytes": 69259264,
+      "sampling": {
+        "intervalBytes": 262144,
+        "includeObjectsCollectedByMajorGC": true,
+        "includeObjectsCollectedByMinorGC": true
+      },
+      "estimatedBytesPerCall": 8529260.093023255,
+      "accounting": {
+        "weightSource": "samples[].size",
+        "sampleEstimatedBytes": 366758184,
+        "headSelfSizeBytes": 366763440,
+        "sampleMinusHeadBytes": -5256,
+        "unattributedSamples": 0,
+        "unattributedEstimatedBytes": 0
+      }
+    },
+    {
+      "id": "raytrace",
+      "role": "baseline",
+      "kind": "cpu",
+      "profile": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/profiles/raytrace/baseline-cpu/profile.cpuprofile",
+        "sha256": "7ba2c51b3c6a45c6d4188811b7d1b863030d91eeaffdb0ad54ed77ffcb07c661",
+        "bytes": 1457650
+      },
+      "repetitions": 1,
+      "samples": 10232,
+      "unit": "sample-weighted-microseconds",
+      "totalWeight": 11481066,
+      "categories": {
+        "node": {
+          "selfWeight": 30421,
+          "selfSamples": 1,
+          "selfPercent": 0.26496668514927096
+        },
+        "harness": {
+          "selfWeight": 0,
+          "selfSamples": 0,
+          "selfPercent": 0
+        },
+        "other": {
+          "selfWeight": 30792,
+          "selfSamples": 28,
+          "selfPercent": 0.2681980924070988
+        },
+        "generated": {
+          "selfWeight": 11172959,
+          "selfSamples": 9988,
+          "selfPercent": 97.31639030731118
+        },
+        "garbage-collector": {
+          "selfWeight": 246894,
+          "selfSamples": 215,
+          "selfPercent": 2.150444915132445
+        }
+      },
+      "topOwners": [
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "apply",
+          "selfWeight": 5527872,
+          "frames": 1,
+          "selfPercent": 48.14772426184119
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "fn:argument1",
+          "selfWeight": 1982271,
+          "frames": 3,
+          "selfPercent": 17.265565758440896
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "callOwned",
+          "selfWeight": 870213,
+          "frames": 1,
+          "selfPercent": 7.57954879799489
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "invokeExact",
+          "selfWeight": 631918,
+          "frames": 1,
+          "selfPercent": 5.504001109304658
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "force",
+          "selfWeight": 625838,
+          "frames": 1,
+          "selfPercent": 5.451044354243761
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "project",
+          "selfWeight": 381055,
+          "frames": 1,
+          "selfPercent": 3.3189862335082823
+        },
+        {
+          "section": "program",
+          "name": "colf",
+          "selfWeight": 378681,
+          "frames": 6,
+          "selfPercent": 3.2983087110552276
+        },
+        {
+          "section": "garbage-collector",
+          "name": "(garbage collector)",
+          "selfWeight": 246894,
+          "frames": 1,
+          "selfPercent": 2.150444915132445
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "fields",
+          "selfWeight": 237490,
+          "frames": 1,
+          "selfPercent": 2.0685361446402277
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "get",
+          "selfWeight": 101407,
+          "frames": 1,
+          "selfPercent": 0.8832542204704685
+        },
+        {
+          "section": "program",
+          "name": "colf.px",
+          "selfWeight": 88871,
+          "frames": 1,
+          "selfPercent": 0.7740657531278019
+        },
+        {
+          "section": "program",
+          "name": "isect5",
+          "selfWeight": 82686,
+          "frames": 5,
+          "selfPercent": 0.7201944488429907
+        }
+      ],
+      "warnings": [],
+      "peakTreeRssBytes": 157319168,
+      "sampling": {
+        "intervalMicroseconds": 1000
+      },
+      "ancestryUnion": {
+        "totalMicroseconds": 11481066,
+        "groups": {
+          "producer": {
+            "microseconds": 0,
+            "percent": 0.0
+          },
+          "evalAndSize": {
+            "microseconds": 0,
+            "percent": 0.0
+          },
+          "guards": {
+            "microseconds": 0,
+            "percent": 0.0
+          }
+        },
+        "interpretation": "Each sample is counted once within a group if any ancestor matches; groups may overlap and are not additive."
+      }
+    },
+    {
+      "id": "raytrace",
+      "role": "baseline",
+      "kind": "allocation",
+      "profile": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/profiles/raytrace/baseline-allocation/profile.heapprofile",
+        "sha256": "6e792d0b704227c7e3634abfc6b2213c8a7df6211456212dd672fd16a2d7658d",
+        "bytes": 41498605
+      },
+      "repetitions": 1,
+      "samples": 60222,
+      "unit": "estimated-allocated-bytes",
+      "totalWeight": 15793678616,
+      "categories": {
+        "other": {
+          "selfWeight": 4981256,
+          "selfSamples": 19,
+          "selfPercent": 0.03153955529368358
+        },
+        "harness": {
+          "selfWeight": 0,
+          "selfSamples": 0,
+          "selfPercent": 0
+        },
+        "generated": {
+          "selfWeight": 15788697360,
+          "selfSamples": 60203,
+          "selfPercent": 99.96846044470632
+        }
+      },
+      "topOwners": [
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "apply",
+          "selfWeight": 3860035400,
+          "frames": 1,
+          "selfPercent": 24.44038209115854
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "fn:argument1",
+          "selfWeight": 1572826600,
+          "frames": 3,
+          "selfPercent": 9.958583039714552
+        },
+        {
+          "section": "program",
+          "name": "colf",
+          "selfWeight": 1489984928,
+          "frames": 5,
+          "selfPercent": 9.434058804327895
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "project",
+          "selfWeight": 1422279504,
+          "frames": 1,
+          "selfPercent": 9.005371950263319
+        },
+        {
+          "section": "program",
+          "name": "sy",
+          "selfWeight": 1208540768,
+          "frames": 23,
+          "selfPercent": 7.652053694290521
+        },
+        {
+          "section": "program",
+          "name": "sx",
+          "selfWeight": 1185719488,
+          "frames": 18,
+          "selfPercent": 7.507557402103845
+        },
+        {
+          "section": "program",
+          "name": "sr",
+          "selfWeight": 1178901408,
+          "frames": 19,
+          "selfPercent": 7.464387725388422
+        },
+        {
+          "section": "program",
+          "name": "sz",
+          "selfWeight": 1162112240,
+          "frames": 18,
+          "selfPercent": 7.358084637879781
+        },
+        {
+          "section": "program",
+          "name": "nearest",
+          "selfWeight": 720344664,
+          "frames": 11,
+          "selfPercent": 4.560968229847637
+        },
+        {
+          "section": "program",
+          "name": "isect5",
+          "selfWeight": 355809888,
+          "frames": 1,
+          "selfPercent": 2.252862658858602
+        },
+        {
+          "section": "program",
+          "name": "colf.px",
+          "selfWeight": 328523272,
+          "frames": 1,
+          "selfPercent": 2.080093434769434
+        },
+        {
+          "section": "program",
+          "name": "nearest.t",
+          "selfWeight": 327342352,
+          "frames": 9,
+          "selfPercent": 2.072616266031787
+        }
+      ],
+      "warnings": [
+        "Allocation sample and tree estimates differ. Frame weights use samples[].size only; both accounting totals and per-node differences are retained. The cause is not established by this profile."
+      ],
+      "peakTreeRssBytes": 532652032,
+      "sampling": {
+        "intervalBytes": 262144,
+        "includeObjectsCollectedByMajorGC": true,
+        "includeObjectsCollectedByMinorGC": true
+      },
+      "estimatedBytesPerCall": 15793678616.0,
+      "accounting": {
+        "weightSource": "samples[].size",
+        "sampleEstimatedBytes": 15793678616,
+        "headSelfSizeBytes": 15793388984,
+        "sampleMinusHeadBytes": 289632,
+        "unattributedSamples": 0,
+        "unattributedEstimatedBytes": 0
+      }
+    },
+    {
+      "id": "raytrace",
+      "role": "candidate",
+      "kind": "cpu",
+      "profile": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/profiles/raytrace/candidate-cpu/profile.cpuprofile",
+        "sha256": "291d44dbe31b3bf576b7964d39c3ba136fb3e31f4d92ef100ec741f5af30da39",
+        "bytes": 130582
+      },
+      "repetitions": 1,
+      "samples": 1825,
+      "unit": "sample-weighted-microseconds",
+      "totalWeight": 2016185,
+      "categories": {
+        "node": {
+          "selfWeight": 35501,
+          "selfSamples": 1,
+          "selfPercent": 1.760800720172008
+        },
+        "harness": {
+          "selfWeight": 0,
+          "selfSamples": 0,
+          "selfPercent": 0
+        },
+        "other": {
+          "selfWeight": 6322,
+          "selfSamples": 5,
+          "selfPercent": 0.31356249550512477
+        },
+        "generated": {
+          "selfWeight": 1903549,
+          "selfSamples": 1753,
+          "selfPercent": 94.41340948375273
+        },
+        "garbage-collector": {
+          "selfWeight": 70813,
+          "selfSamples": 66,
+          "selfPercent": 3.5122273005701357
+        }
+      },
+      "topOwners": [
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "regionHostGuard",
+          "selfWeight": 532871,
+          "frames": 1,
+          "selfPercent": 26.42966791241875
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "scalarGuard",
+          "selfWeight": 316617,
+          "frames": 1,
+          "selfPercent": 15.703767263420767
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "apply",
+          "selfWeight": 291056,
+          "frames": 1,
+          "selfPercent": 14.435976857282443
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "enterExact",
+          "selfWeight": 99651,
+          "frames": 1,
+          "selfPercent": 4.942552394745522
+        },
+        {
+          "section": "program",
+          "name": "nearest",
+          "selfWeight": 98332,
+          "frames": 3,
+          "selfPercent": 4.877131810820932
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "localGuard",
+          "selfWeight": 72138,
+          "frames": 1,
+          "selfPercent": 3.57794547623358
+        },
+        {
+          "section": "garbage-collector",
+          "name": "(garbage collector)",
+          "selfWeight": 70813,
+          "frames": 1,
+          "selfPercent": 3.512227300570136
+        },
+        {
+          "section": "program",
+          "name": "trace",
+          "selfWeight": 68826,
+          "frames": 45,
+          "selfPercent": 3.413674836386542
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "fn:argument1",
+          "selfWeight": 59545,
+          "frames": 3,
+          "selfPercent": 2.9533500150035836
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "exactCode",
+          "selfWeight": 59346,
+          "frames": 1,
+          "selfPercent": 2.9434798889982816
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "invokeExact",
+          "selfWeight": 47861,
+          "frames": 1,
+          "selfPercent": 2.3738397022098665
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "callOwned",
+          "selfWeight": 47561,
+          "frames": 1,
+          "selfPercent": 2.3589601152672004
+        }
+      ],
+      "warnings": [],
+      "peakTreeRssBytes": 94334976,
+      "sampling": {
+        "intervalMicroseconds": 1000
+      },
+      "ancestryUnion": {
+        "totalMicroseconds": 2016185,
+        "groups": {
+          "producer": {
+            "microseconds": 0,
+            "percent": 0.0
+          },
+          "evalAndSize": {
+            "microseconds": 0,
+            "percent": 0.0
+          },
+          "guards": {
+            "microseconds": 952413,
+            "percent": 47.238373462752676
+          }
+        },
+        "interpretation": "Each sample is counted once within a group if any ancestor matches; groups may overlap and are not additive."
+      }
+    },
+    {
+      "id": "raytrace",
+      "role": "candidate",
+      "kind": "allocation",
+      "profile": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/combined-profiles-01/profiles/raytrace/candidate-allocation/profile.heapprofile",
+        "sha256": "638014219296d023ed1ab493e438500d2d4e1f3941c8be3620745b8e1ebe4e74",
+        "bytes": 343168
+      },
+      "repetitions": 1,
+      "samples": 6373,
+      "unit": "estimated-allocated-bytes",
+      "totalWeight": 1671220344,
+      "categories": {
+        "other": {
+          "selfWeight": 806172792,
+          "selfSamples": 3074,
+          "selfPercent": 48.23856979089049
+        },
+        "harness": {
+          "selfWeight": 0,
+          "selfSamples": 0,
+          "selfPercent": 0
+        },
+        "generated": {
+          "selfWeight": 865047552,
+          "selfSamples": 3299,
+          "selfPercent": 51.76143020910951
+        }
+      },
+      "topOwners": [
+        {
+          "section": "other",
+          "name": "getOwnPropertyDescriptor",
+          "selfWeight": 636306928,
+          "frames": 1,
+          "selfPercent": 38.07438859181336
+        },
+        {
+          "section": "other",
+          "name": "getOwnPropertyNames",
+          "selfWeight": 164884648,
+          "frames": 1,
+          "selfPercent": 9.866122596698117
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "scalarGuard",
+          "selfWeight": 162035784,
+          "frames": 1,
+          "selfPercent": 9.69565650524417
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "apply",
+          "selfWeight": 162024712,
+          "frames": 1,
+          "selfPercent": 9.69499399535792
+        },
+        {
+          "section": "program",
+          "name": "trace",
+          "selfWeight": 146070960,
+          "frames": 28,
+          "selfPercent": 8.740377085787797
+        },
+        {
+          "section": "program",
+          "name": "colf",
+          "selfWeight": 90983392,
+          "frames": 1,
+          "selfPercent": 5.444129035805945
+        },
+        {
+          "section": "program",
+          "name": "nearest",
+          "selfWeight": 63464312,
+          "frames": 4,
+          "selfPercent": 3.797483212064106
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "fn:argument1",
+          "selfWeight": 42473392,
+          "frames": 3,
+          "selfPercent": 2.5414597274672714
+        },
+        {
+          "section": "runtimeSupportPrefix",
+          "name": "project",
+          "selfWeight": 36703808,
+          "frames": 1,
+          "selfPercent": 2.1962279319883624
+        },
+        {
+          "section": "program",
+          "name": "subray",
+          "selfWeight": 26218616,
+          "frames": 1,
+          "selfPercent": 1.5688305910187028
+        },
+        {
+          "section": "program",
+          "name": "fmax0.go",
+          "selfWeight": 21253104,
+          "frames": 2,
+          "selfPercent": 1.2717116612601504
+        },
+        {
+          "section": "program",
+          "name": "nearest.t",
+          "selfWeight": 20193568,
+          "frames": 4,
+          "selfPercent": 1.2083127202525246
+        }
+      ],
+      "warnings": [
+        "Allocation sample and tree estimates differ. Frame weights use samples[].size only; both accounting totals and per-node differences are retained. The cause is not established by this profile."
+      ],
+      "peakTreeRssBytes": 91013120,
+      "sampling": {
+        "intervalBytes": 262144,
+        "includeObjectsCollectedByMajorGC": true,
+        "includeObjectsCollectedByMinorGC": true
+      },
+      "estimatedBytesPerCall": 1671220344.0,
+      "accounting": {
+        "weightSource": "samples[].size",
+        "sampleEstimatedBytes": 1671220344,
+        "headSelfSizeBytes": 1671212184,
+        "sampleMinusHeadBytes": 8160,
+        "unattributedSamples": 0,
+        "unattributedEstimatedBytes": 0
+      }
+    }
+  ],
+  "timing": [
+    {
+      "id": "local-pair",
+      "summary": {
+        "complete": true,
+        "balancedRounds": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "stats": {
+          "typescript": {
+            "medianMs": 1.2458980702479339,
+            "minimumMs": 1.2411613991769548,
+            "maximumMs": 1.3522480585585586,
+            "samplesMs": [
+              1.2411613991769548,
+              1.2414122355371904,
+              1.2470505925925928,
+              1.2458980702479339,
+              1.3522480585585586
+            ],
+            "firstCallMs": [
+              17.832365000000003,
+              18.006161999999996,
+              17.974833000000004,
+              18.23212500000001,
+              21.895958000000007
+            ],
+            "importMs": [
+              1.2548170000000027,
+              1.2774509999999992,
+              1.2661410000000046,
+              1.217478000000007,
+              1.229409000000004
+            ],
+            "halfDriftPercent": [
+              0.8930049457474221,
+              0.14940699489174314,
+              -1.0291405701155942,
+              0.4175194700284379,
+              2.8572044689972653
+            ]
+          },
+          "baseline": {
+            "medianMs": 5.046213842105265,
+            "minimumMs": 4.907081677966104,
+            "maximumMs": 5.507770963636362,
+            "samplesMs": [
+              4.907081677966104,
+              5.046213842105265,
+              5.154476881355931,
+              4.981488684210525,
+              5.507770963636362
+            ],
+            "firstCallMs": [
+              23.840995000000007,
+              21.678566000000004,
+              21.298103999999995,
+              21.418906000000007,
+              25.086578000000003
+            ],
+            "importMs": [
+              22.555414999999996,
+              21.335866000000003,
+              21.082346,
+              21.296032000000004,
+              20.762292000000002
+            ],
+            "halfDriftPercent": [
+              -0.12557844472473878,
+              -0.9519181830535794,
+              11.220199614115067,
+              0.14195560277476815,
+              -2.6903302938412477
+            ]
+          },
+          "candidate": {
+            "medianMs": 3.8102417594936693,
+            "minimumMs": 3.7768578375000006,
+            "maximumMs": 4.079386328767123,
+            "samplesMs": [
+              3.7867223544303785,
+              3.7768578375000006,
+              3.8102417594936693,
+              3.8192461645569638,
+              4.079386328767123
+            ],
+            "firstCallMs": [
+              15.171920999999998,
+              15.143585000000002,
+              15.095331000000002,
+              15.212085000000002,
+              15.328240999999991
+            ],
+            "importMs": [
+              21.856747999999996,
+              21.663631999999993,
+              21.987535,
+              21.541352000000003,
+              25.91679599999999
+            ],
+            "halfDriftPercent": [
+              0.476102670198042,
+              0.11954611701379125,
+              0.2528822835866418,
+              -0.24811415363719114,
+              3.390007460575184
+            ]
+          }
+        },
+        "ratios": {
+          "baseline/typescript": 4.050262186457251,
+          "candidate/typescript": 3.0582291204090484,
+          "baseline/candidate": 1.324381538135218
+        }
+      }
+    },
+    {
+      "id": "local-fold",
+      "summary": {
+        "complete": true,
+        "balancedRounds": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "stats": {
+          "typescript": {
+            "medianMs": 0.04001191636665743,
+            "minimumMs": 0.03957116395283549,
+            "maximumMs": 0.04085432770362298,
+            "samplesMs": [
+              0.04001191636665743,
+              0.04005959100907343,
+              0.03967958723693144,
+              0.04085432770362298,
+              0.03957116395283549
+            ],
+            "firstCallMs": [
+              6.464046000000003,
+              6.553486999999997,
+              6.393418000000004,
+              6.4328060000000065,
+              6.393461999999992
+            ],
+            "importMs": [
+              0.9229020000000006,
+              0.9331590000000034,
+              0.927550999999994,
+              0.9234400000000065,
+              0.9160109999999975
+            ],
+            "halfDriftPercent": [
+              -1.4025728461282472,
+              -0.7663259859440941,
+              -0.37471666445185736,
+              -0.2310150404709499,
+              -0.8748376276413228
+            ]
+          },
+          "baseline": {
+            "medianMs": 0.33021442247191013,
+            "minimumMs": 0.327716417040359,
+            "maximumMs": 0.36442065717821776,
+            "samplesMs": [
+              0.33021442247191013,
+              0.330638959090909,
+              0.327716417040359,
+              0.33017312725225234,
+              0.36442065717821776
+            ],
+            "firstCallMs": [
+              6.840316999999999,
+              6.822467000000003,
+              6.822839000000002,
+              6.879723999999996,
+              7.378056999999998
+            ],
+            "importMs": [
+              20.187561000000002,
+              20.092378999999994,
+              20.04694899999999,
+              20.474518999999994,
+              20.302893999999995
+            ],
+            "halfDriftPercent": [
+              0.67347598909131,
+              1.320325944565126,
+              -0.2881740400751953,
+              -0.07599240133261409,
+              -11.559545038760943
+            ]
+          },
+          "candidate": {
+            "medianMs": 0.13992509404990408,
+            "minimumMs": 0.13903895817843875,
+            "maximumMs": 0.1458174,
+            "samplesMs": [
+              0.13903895817843875,
+              0.13992509404990408,
+              0.1393098121521335,
+              0.14046811497450162,
+              0.1458174
+            ],
+            "firstCallMs": [
+              5.205280000000002,
+              5.403071000000011,
+              5.346150000000009,
+              5.375592000000012,
+              5.277634000000006
+            ],
+            "importMs": [
+              20.477718999999993,
+              21.406875999999997,
+              20.215332000000004,
+              20.169134999999997,
+              20.518774
+            ],
+            "halfDriftPercent": [
+              -0.6968003636848685,
+              -0.6272443701611397,
+              0.2673559239666945,
+              2.5360228376979377,
+              0.19514509042974915
+            ]
+          }
+        },
+        "ratios": {
+          "baseline/typescript": 8.252901946658149,
+          "candidate/typescript": 3.497085537410198,
+          "baseline/candidate": 2.3599371128822657
+        }
+      }
+    },
+    {
+      "id": "symreg",
+      "summary": {
+        "complete": true,
+        "balancedRounds": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "stats": {
+          "typescript": {
+            "medianMs": 1.1075333223443222,
+            "minimumMs": 1.1044126185185186,
+            "maximumMs": 1.2326449462809912,
+            "samplesMs": [
+              1.1067893740740744,
+              1.1044126185185186,
+              1.1075333223443222,
+              1.2326449462809912,
+              1.1117605457875461
+            ],
+            "firstCallMs": [
+              9.861260000000009,
+              9.290619000000007,
+              9.179609999999997,
+              9.17801399999999,
+              9.154487999999994
+            ],
+            "importMs": [
+              1.4141529999999989,
+              1.2351249999999965,
+              1.2419999999999973,
+              1.225455999999994,
+              1.2232959999999977
+            ],
+            "halfDriftPercent": [
+              0.3508009237242593,
+              -0.1722568858105178,
+              -0.5018266801228854,
+              2.6657130327040646,
+              -1.1959626197347806
+            ]
+          },
+          "baseline": {
+            "medianMs": 106.60850799999996,
+            "minimumMs": 105.010896,
+            "maximumMs": 114.48294666666668,
+            "samplesMs": [
+              108.09788666666661,
+              105.010896,
+              105.26561,
+              114.48294666666668,
+              106.60850799999996
+            ],
+            "firstCallMs": [
+              221.549929,
+              220.25867500000004,
+              218.13345599999997,
+              242.40785699999998,
+              218.02547400000003
+            ],
+            "importMs": [
+              21.022827000000007,
+              20.816409,
+              20.435382000000004,
+              20.452002000000007,
+              20.350754999999992
+            ],
+            "halfDriftPercent": [
+              2.251310072603996,
+              4.659435659695843,
+              3.9604679963310963,
+              2.921966770359896,
+              6.358858954517976
+            ]
+          },
+          "candidate": {
+            "medianMs": 15.52878075,
+            "minimumMs": 15.369453350000004,
+            "maximumMs": 16.394343849999995,
+            "samplesMs": [
+              15.51948421052632,
+              15.554100349999999,
+              15.52878075,
+              15.369453350000004,
+              16.394343849999995
+            ],
+            "firstCallMs": [
+              73.24004500000001,
+              73.77804900000001,
+              73.24968600000001,
+              80.346706,
+              72.562708
+            ],
+            "importMs": [
+              21.154507999999993,
+              21.555775999999994,
+              21.232456,
+              23.689264999999992,
+              21.261156999999997
+            ],
+            "halfDriftPercent": [
+              -4.3150951045098696,
+              3.569843465922684,
+              2.8372786526771776,
+              1.1435356563518129,
+              0.771233331414023
+            ]
+          }
+        },
+        "ratios": {
+          "baseline/typescript": 96.25760764862687,
+          "candidate/typescript": 14.021050596590754,
+          "baseline/candidate": 6.865220761134126
+        }
+      }
+    },
+    {
+      "id": "raytrace",
+      "summary": {
+        "complete": true,
+        "balancedRounds": [
+          0,
+          1,
+          2
+        ],
+        "stats": {
+          "typescript": {
+            "medianMs": 34.31538355555555,
+            "minimumMs": 34.30369811111112,
+            "maximumMs": 37.274387999999995,
+            "samplesMs": [
+              34.30369811111112,
+              37.274387999999995,
+              34.31538355555555
+            ],
+            "firstCallMs": [
+              126.86629900000001,
+              124.91926199999999,
+              125.88043000000002
+            ],
+            "importMs": [
+              2.670661999999993,
+              2.6413550000000043,
+              2.6010200000000054
+            ],
+            "halfDriftPercent": [
+              0.29519894573941663,
+              7.282138242719216,
+              -0.9056097022109411
+            ]
+          },
+          "baseline": {
+            "medianMs": 10291.413843999999,
+            "minimumMs": 10280.215208000001,
+            "maximumMs": 10667.956461999998,
+            "samplesMs": [
+              10291.413843999999,
+              10667.956461999998,
+              10280.215208000001
+            ],
+            "firstCallMs": [
+              11129.752201,
+              11111.907503,
+              11113.358828
+            ],
+            "importMs": [
+              20.797663,
+              20.817984999999993,
+              21.046934999999998
+            ],
+            "halfDriftPercent": [
+              null,
+              null,
+              null
+            ]
+          },
+          "candidate": {
+            "medianMs": 1879.8448510000007,
+            "minimumMs": 1853.408856,
+            "maximumMs": 1925.109363999999,
+            "samplesMs": [
+              1925.109363999999,
+              1879.8448510000007,
+              1853.408856
+            ],
+            "firstCallMs": [
+              2330.0509230000002,
+              2562.159189,
+              2338.011635
+            ],
+            "importMs": [
+              22.171588,
+              21.98679299999999,
+              21.820664999999998
+            ],
+            "halfDriftPercent": [
+              null,
+              null,
+              null
+            ]
+          }
+        },
+        "ratios": {
+          "baseline/typescript": 299.90671173290303,
+          "candidate/typescript": 54.78140286430399,
+          "baseline/candidate": 5.474608097857324
+        }
+      }
+    }
+  ]
+}

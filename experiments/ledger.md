@@ -2137,7 +2137,7 @@ lines (+1.41%),34 definitions and one module, with no new type declarations.
 
 The [release](../implementation/phase31/release-07.md) and
 [capsule](../implementation/phase31/evidence/README.md) retain exact artifacts,
-failed attempts and consumed tools. All103 unrelated files remain protected.
+failed attempts and consumed tools. All 103 unrelated files remain protected.
 No PR comment was posted. Next: isolate statement unpacking, then private
 producer/consumer tuple fusion; their gains are unmeasured. H17 profiling rules
 out another ABI cache as the leading target for its measured request, while
@@ -2256,3 +2256,56 @@ exact consumed sources, normalized tokens and resource receipts.
 first, then test finite Nat-to-F32 selectors and larger saturated call/match regions
 for broader transfer. Retain historical guard regressions and public mutation
 controls. All 103 unrelated files remain unchanged; no PR comment was posted.
+
+
+## Phase35 — remove private representation and dispatch costs
+
+[P35-001](phase35/P35-001-private-state.md),
+[P35-002](phase35/P35-002-direct-regions.md) and
+[P35-003](phase35/P35-003-private-folds.md) implement selective scalar replacement,
+private counters/array access, larger finite/F32 regions, an independent bounded
+purity proof and iterative closed structural folds. The
+[primary literature study](../design/phase35/literature.md) maps LLVM/MLton/GHC,
+stream fusion and Flambda2 ideas to local proof obligations. Broad scalar-helper
+inlining regressed and was rejected. An inactive NaN guard witness caught a false
+optimization success; parser/fixture/environment failures remain preserved.
+
+**Checked09 is installed and verified**, with all 42 ordinary/relocated CLI checks,
+15 postinstall audit groups and 225 canonical source identities passing. Fresh
+3,026 main + 196 broader frontend observations agree exactly with retained pinned
+references; backend81 preserves 69 pass / 8 N/A / 4 shared failures. All 15 owner
+groups and inherited execution/library/component/HVM controls pass on the final
+API. Shared failures remain failures; no full backend/GPU or new fixed point claim.
+
+The [full15 comparison](../implementation/phase35/README.md) records pair **1.324×**,
+fold **2.360×**, edit distance **1.278×**, symreg **6.865×** and ray **5.475×** gains
+versus same-run Phase32, with all exact outputs. Remaining TS gaps are 3.058×,
+3.497×, 3.259×, 14.021× and 54.781×. The full generic-row slowdown of 9.52% overlaps
+bimodal ranges; a separate five-round check is only 0.323% slower with overlap.
+Both observations remain. Fixed inputs do not define average application speed.
+
+[Normal compiler costs](../implementation/phase35/compiler-cost.md) rise 0.72%
+(pair, overlap), 8.17% (Mandelbrot), 30.09% (symreg) and 34.40% (ray), with disjoint
+ranges on the latter three and retained ray drift. Source grows 979 Bend lines
+(5.73%) to 18,050 lines / 68 modules; generated modules grow. The
+[admission](../implementation/phase35/performance-admission.md) explicitly accepts
+those costs; this phase improves output execution, not compilation or simplicity.
+
+Final profiles complete 24/24 separately from clean timing. Allocation falls
+roughly 73×/17×/8.4×/9.5× on pair/fold/symreg/ray. The
+[next frontier](../implementation/phase35/profile-findings.md) is private producer
+lowering (symreg generator 64.33% CPU ancestry) and safe guard amortization
+(ray guards 47.24%). Pair/fold still run slower than TS despite lower sampled
+allocation, so surviving loop/array operations also deserve isolated tests.
+
+The [capsule](../implementation/phase35/evidence/README.md) streams and independently
+verifies 24,717 files / 395,912,134 logical bytes into two volumes / 52,475,156 compressed
+bytes. Capture peaks at 65.6 MiB RSS. All 103 unrelated starting files remain unchanged
+and unstaged. No PR comment was posted. The original sandbox EPERM and audit
+historical-path error remain beside explicit successful successors.
+
+**Updated frontier:** keep the 42.5-second checked build and 23-second focused
+execution screen; use original programs as transfer gates. Preserve public
+mutation/reentry/demand controls when expanding private regions. Reduce
+unproductive analysis and unused workers only with independent compile/size
+measurements and complete semantic evidence.

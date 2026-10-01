@@ -228,15 +228,22 @@ def j_expr(book, env, t, ty, tail):
 # types, arithmetic, arguments and parallel lets retain their shared emitter.
 @unsafe
 def j_expr_private(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +tail: Bool) -> String:
+  kc(String, String.eq(tg(t), "JVirtual"), u => "[" ++ j_region_vector_names("$w", 0, ix(t)) ++ "]", u =>
+  kc(String, String.eq(tg(t), "JInline") || String.eq(tg(t), "JInlineRead"), u => "(()=>{" ++ j_region_inline_return(book, env, t, ty) ++ "})()", u =>
+  kc(String, String.eq(tg(t), "JLoopSlot"), u => "$s" ++ U32.show(ix(t)), u =>
   kc(String, String.eq(tg(t), "JSlot"), u => "$p" ++ U32.show(ix(t)), u =>
+  kc(String, String.eq(tg(t), "JNatRest"), u => "($p" ++ U32.show(ix(t)) ++ "-" ++ nm(t) ++ "n)", u =>
+  kc(String, String.eq(tg(t), "JNatCase"), u => "($p" ++ U32.show(ix(t)) ++ "===" ++ U32.show(qt(t)) ++ "n?" ++
+    j_expr(book, env, kid(t, 0), ty, tail) ++ ":" ++ j_expr(book, env, kid(t, 1), ty, tail) ++ ")", u =>
   kc(String, String.eq(tg(t), "JCall"), u => j_region_name(nm(t)) ++ "(" ++ j_apply_args(book, env, ks(t), dt(lookup(book, nm(t)))) ++ ")", u =>
   kc(String, String.eq(tg(t), "JReadCall"), u => j_region_name(nm(t)) ++ "$get(" ++ j_region_read_args(book, env, ks(t), dt(lookup(book, nm(t)))) ++ ")", u =>
+  kc(String, String.eq(tg(t), "JGeneric"), u => j_expr(book, env, j_region_app(ref(nm(t)), ks(t)), ty, False{}), u =>
   kc(String, String.eq(tg(t), "JNative"), u => j_region_native_emit(book, env, t), u =>
   kc(String, String.eq(tg(t), "JVector"), u => "[" ++ j_ctor_args(book, env, ks(t), j_region_local_fields(book, ty)) ++ "]", u =>
   kc(String, String.eq(tg(t), "JUnpack"), u => "((" ++ j_region_parameters(U32.inc(ix(t)), U32.inc(U32.add(ix(t), qt(t)))) ++ ")=>" ++
     j_expr(book, env, kid(t, 0), ty, tail) ++ ")(" ++ j_region_field_reads("$p" ++ U32.show(ix(t)) ++ kc(String, j_region_local_vector(book, kid(t, 1)), u => "", u => ".a"), 0, qt(t)) ++ ")", u =>
   kc(String, String.eq(tg(t), "JIf"), u => "(" ++ j_expr(book, env, kid(t, 0), kt("ADT", "Bool", 0, 0, Nil{}), False{}) ++ "?" ++
-    j_expr(book, env, kid(t, 1), ty, tail) ++ ":" ++ j_expr(book, env, kid(t, 2), ty, tail) ++ ")", u => j_expr_on(book, env, t, ty, tail, tg(t)))))))))
+    j_expr(book, env, kid(t, 1), ty, tail) ++ ":" ++ j_expr(book, env, kid(t, 2), ty, tail) ++ ")", u => j_expr_on(book, env, t, ty, tail, tg(t)))))))))))))))
 
 @unsafe
 def j_region_read_args(+book: List<&2,KDef>, +env: List<&2,KTerm>, +args: List<&2,KTerm>, +ty: KTerm) -> String:
@@ -968,9 +975,18 @@ def j_l_global(book, d, t):
 
 @unsafe
 def j_region_native_emit(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm) -> String:
-  +args = j_apply_args(book, env, ks(t), dt(lookup(book, nm(t))))
-  kc(String, String.eq(nm(t), "Array.new"), u => "((_t,d,v)=>arrayfill(v,d,'^'))(" ++ args ++ ")", u =>
-    kc(String, String.eq(nm(t), "Array.get"), u => "((_t,a,i)=>arrayget(a,i))(" ++ args ++ ")", u => "((_t,a,i,v)=>arrayset(a,i,v))(" ++ args ++ ")"))
+  kc(String, String.eq(nm(t), "Array.new"), u => "((_t,d,v)=>arrayfill(v,d,'^'))(" ++ j_apply_args(book, env, ks(t), dt(lookup(book, nm(t)))) ++ ")", u =>
+    j_region_native_array(book, env, t, ks(t)))
+
+# The checked native plan erases its U32 type argument. The remaining arguments
+# keep their original left-to-right order without an intermediate closure.
+@unsafe
+def j_region_native_array(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +args: List<&2,KTerm>) -> String:
+  match args:
+    case Nil{}: "undefined"
+    case Con{h, rest}:
+      kc(String, String.eq(nm(t), "Array.get"), u => "arrayget(", u => "arrayset(") ++
+        j_apply_args(book, env, rest, j_app_type(wnf(book, dt(lookup(book, nm(t)))), h)) ++ ")"
 
 # The plan retains the proved input type. Immutable private field vectors cannot
 # escape; argument evaluation snapshots every field before the arm's effects.

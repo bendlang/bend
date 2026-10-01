@@ -1,0 +1,681 @@
+{
+  "kind": "phase35-installed-release-record",
+  "complete": true,
+  "created": "2026-10-01T05:00:14.973224+00:00",
+  "api": "467bc7dec2751a94cb677c5eb2da22a8fb69ee3522c6e164cb2bfcc147a78d82",
+  "release": {
+    "path": "selfhost/dist/release.json",
+    "bytes": 22337,
+    "sha256": "169035967fd06df5e0b5d1a1b578a124596665a663a4cdeb7d3abdcb3341987f"
+  },
+  "launch": {
+    "path": "selfhost/build/phase35/final-postinstall-launch09/report.json",
+    "bytes": 4799,
+    "sha256": "16c9b2e104204b1283e3b6a7b1ebcb0c4eddf7699a7b088a52055143571e64db"
+  },
+  "finalAudit": {
+    "path": "selfhost/build/phase35/final-audit09-postinstall/gates.json",
+    "bytes": 340880,
+    "sha256": "a5392cc8ef153afe6561bf15dec374a9401d19cfea00aa77bde360c7f9753727"
+  },
+  "cli": {
+    "path": "implementation/phase35/release-cli.json",
+    "bytes": 123242,
+    "sha256": "06f66475d5fb3912f4b5d3e3293a05c658a374ba8defd7f0f9a4fa207b09da7e"
+  },
+  "installedFiles": 6,
+  "checkoutFiles": 124,
+  "files": [
+    {
+      "path": "selfhost/dist/typed-api.mjs",
+      "bytes": 1152428,
+      "sha256": "467bc7dec2751a94cb677c5eb2da22a8fb69ee3522c6e164cb2bfcc147a78d82"
+    },
+    {
+      "path": "selfhost/dist/base.bend",
+      "bytes": 71530,
+      "sha256": "c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661"
+    },
+    {
+      "path": "selfhost/dist/release-lineage/checked-api.mjs",
+      "bytes": 1139047,
+      "sha256": "f4c42dffb7e7ce015ef402ddbb9569d9d1539c284c3bce4ca394563d22da54cb"
+    },
+    {
+      "path": "selfhost/dist/release-lineage/checked-bootstrap.json",
+      "bytes": 54513,
+      "sha256": "cf1e985c8984e287fbc9e29ee1d425e2bc42d776b9876c04eb649ae2b4e72ec4"
+    },
+    {
+      "path": "selfhost/dist/release-lineage/derivation.json",
+      "bytes": 246891,
+      "sha256": "9f306ad4bb770ee03d40cdd42c0003fe09a08953c53884b4d0a95c6a501becbe"
+    },
+    {
+      "path": "selfhost/dist/release-lineage/equality.mjs",
+      "bytes": 30150,
+      "sha256": "db2999aa879e0bc6c6359d37c19e7589c60d34b2b143d0ed6ecbc23eabfec951"
+    },
+    {
+      "path": "selfhost/src/core/term.bend",
+      "bytes": 18285,
+      "sha256": "e9ab994bc3ba4fd5a281e25836911bbc29cafcf2ab0c0284dc9bc097e891fa46"
+    },
+    {
+      "path": "selfhost/src/core/index.bend",
+      "bytes": 10197,
+      "sha256": "32a4f2772c865f9ed9743f1ece27d5fafd1898724d5f268186590c938b038ea2"
+    },
+    {
+      "path": "selfhost/src/core/normalize.bend",
+      "bytes": 22263,
+      "sha256": "4845ff63f3c228abc9a432410ddc8b7e20bfce27e54d6d49412b06608f7ce702"
+    },
+    {
+      "path": "selfhost/src/core/graph.bend",
+      "bytes": 14746,
+      "sha256": "85625049b316ede08eeffd7ff509483183624f1197c582c9d1bb2cd8bebf4802"
+    },
+    {
+      "path": "selfhost/src/core/reach.bend",
+      "bytes": 9901,
+      "sha256": "086092c688e6cb774da94333826f51b1fdeddc8e85aeaac5be6b15c143b0df27"
+    },
+    {
+      "path": "selfhost/src/core/pretty.bend",
+      "bytes": 16800,
+      "sha256": "40b4e6ca55bf11009881b893c7959dd52cc64bbc6cb2dbb607e94dbab69fdedc"
+    },
+    {
+      "path": "selfhost/src/check/quantity.bend",
+      "bytes": 4069,
+      "sha256": "b4a8ca1f8dff10f4f64397ea53bbbe272bb32400e993b1077d284ec1d8a70b4d"
+    },
+    {
+      "path": "selfhost/src/check/kernel.bend",
+      "bytes": 49255,
+      "sha256": "da7ee29f9755f09acd9f89fcfd37465b52ab8778971200c946c70e50eb5b4132"
+    },
+    {
+      "path": "selfhost/src/check/specialize.bend",
+      "bytes": 16212,
+      "sha256": "76e0f9249ae15cc0734a8e9d2e75677794e2eb5464c7756a19daff8b8217e7ee"
+    },
+    {
+      "path": "selfhost/src/check/prefix.bend",
+      "bytes": 3037,
+      "sha256": "ceabf77fb49b58910d83fa896899061643c4c105f29e70bd87d3f73be873783d"
+    },
+    {
+      "path": "selfhost/src/check/annotate.bend",
+      "bytes": 10866,
+      "sha256": "1912e5d177514733e706297fbb53e730c1f7a9edc91ffb06d2b1de7e2547648c"
+    },
+    {
+      "path": "selfhost/src/front/lexer.bend",
+      "bytes": 13265,
+      "sha256": "aa9d726b6b284deba84dbccc77a01a8143dd89dab70cf487e1ddc8d589380440"
+    },
+    {
+      "path": "selfhost/src/front/contextual.bend",
+      "bytes": 29385,
+      "sha256": "18a1eabd78b224927ebe72c4aa7a295300cc641e20d03d2bc062fdcfd96f62f6"
+    },
+    {
+      "path": "selfhost/src/front/parser.bend",
+      "bytes": 32003,
+      "sha256": "c1790685aea7c71430873d65c2d91996778f443aee0098e54c656fe10177ba28"
+    },
+    {
+      "path": "selfhost/src/front/declarations.bend",
+      "bytes": 31635,
+      "sha256": "9e2c8da30605c1b8ab732df5f95533da55a3ea0e6c5a0941f1340586db9d36af"
+    },
+    {
+      "path": "selfhost/src/front/flatten.bend",
+      "bytes": 6450,
+      "sha256": "d3ba8687f7dcd303dee847a90e3fa92b9a234d97cdcd3893de8242c6d2aa69cf"
+    },
+    {
+      "path": "selfhost/src/front/elaborate.bend",
+      "bytes": 7941,
+      "sha256": "8537f483259d48fa1d710915d6e8e09916faa540560379ee550a7077f391dc1e"
+    },
+    {
+      "path": "selfhost/src/front/sugar.bend",
+      "bytes": 14142,
+      "sha256": "d3e3cf5addf0498e8401b9988678eb6ac8ff81571a014b18a1b6fed0a76fb22a"
+    },
+    {
+      "path": "selfhost/src/front/unicode.bend",
+      "bytes": 4481,
+      "sha256": "bfd4407aa83614ae8398c9ce451f729cbcba457f2ef64774fea99f1824b5dd96"
+    },
+    {
+      "path": "selfhost/src/front/literals_arrays.bend",
+      "bytes": 11903,
+      "sha256": "7429e8a4e16e30f74fa19911993879e60a982a510f369769e7805d6a6ac34796"
+    },
+    {
+      "path": "selfhost/src/front/parallel.bend",
+      "bytes": 3238,
+      "sha256": "b7c38f74d9f339f21fa00c5194078a0bfc41a948d1adaa907d00df64045c2f1c"
+    },
+    {
+      "path": "selfhost/src/front/fresh_work.bend",
+      "bytes": 7736,
+      "sha256": "043d3b737cef4b932b7de8ef161dc88ba867ba6a8056e3662edfdcf4a2d797ed"
+    },
+    {
+      "path": "selfhost/src/front/freshen.bend",
+      "bytes": 1285,
+      "sha256": "d0fed135fe878987770786ef0c50dd09efe2cce390beb7a911bcfc8468d5607d"
+    },
+    {
+      "path": "selfhost/src/load/paths.bend",
+      "bytes": 2186,
+      "sha256": "a9fc17a8af04c1958d1f11e8c1c5b7c2d3eb925dd9075e6c77de4bdb3521f2a2"
+    },
+    {
+      "path": "selfhost/src/front/families.bend",
+      "bytes": 3849,
+      "sha256": "22b6e9b1ca132ed2d6f2cf91507e221f09cdda1aeab5931e8cf099e934bc9d2f"
+    },
+    {
+      "path": "selfhost/src/front/validate.bend",
+      "bytes": 11354,
+      "sha256": "62d530ce7ebb6d2abf69f34d37b5b21eed8711c7bdee3bf868aa2c94d699ec5d"
+    },
+    {
+      "path": "selfhost/src/load/imports.bend",
+      "bytes": 4211,
+      "sha256": "b878da5169a4a39d35a236ff5128dc42735fea0707195cf621ae651c1f13e9b1"
+    },
+    {
+      "path": "selfhost/src/load/graph.bend",
+      "bytes": 16909,
+      "sha256": "9317e9fe5224c447c50e5339469a244dd7036c00801d9750687f8dfe1de5fdb3"
+    },
+    {
+      "path": "selfhost/src/load/seed.bend",
+      "bytes": 5224,
+      "sha256": "ca4cb677af632c47c13792ede10d4e791c85b5cc6c756aacf230861d7bfa4c21"
+    },
+    {
+      "path": "selfhost/src/load/modules.bend",
+      "bytes": 10063,
+      "sha256": "fed5593033f957a61118a2eff9c2e09bd51af8810cff1db12e655523b82188ea"
+    },
+    {
+      "path": "selfhost/src/diagnostic/model.bend",
+      "bytes": 754,
+      "sha256": "3c699ec70ef36700520658555bc5df025880691c44633cabb9e5719b60fc9c1c"
+    },
+    {
+      "path": "selfhost/src/diagnostic/render.bend",
+      "bytes": 7804,
+      "sha256": "695f41ace13e08756273c317659a419deee5fc79d413bd58e8711f124370276c"
+    },
+    {
+      "path": "selfhost/src/diagnostic/trace.bend",
+      "bytes": 6819,
+      "sha256": "0e03e2827415d082d295976b57564c7b0bd872f7c81229e653d7e0ddda62b10f"
+    },
+    {
+      "path": "selfhost/src/diagnostic/produce.bend",
+      "bytes": 8073,
+      "sha256": "9518cb01c0c7636654bfa14dd332ac49756572ba975c7789c865e9cd8cf75c80"
+    },
+    {
+      "path": "selfhost/src/diagnostic/frontend.bend",
+      "bytes": 10910,
+      "sha256": "fdd07e6e3df5f999f2d162a4d3186cd8ae13102c8351710edab5291a2f80489f"
+    },
+    {
+      "path": "selfhost/src/back/js/foreign.bend",
+      "bytes": 5794,
+      "sha256": "0f397f84a989c6fc9a52eaf962742e673cdba243864c0bbe7c16ce4ffd8eb065"
+    },
+    {
+      "path": "selfhost/src/back/js/literals.bend",
+      "bytes": 5544,
+      "sha256": "2c4488a4f37010253a54e3745317c685ec77067475d471e577687acfa9a16776"
+    },
+    {
+      "path": "selfhost/src/back/js/validate.bend",
+      "bytes": 11066,
+      "sha256": "f8fc315bf80dabbf8afd1b6ced8e7c322b8ef96d73859d47e01c4b317afb72a0"
+    },
+    {
+      "path": "selfhost/src/back/js/choice.bend",
+      "bytes": 3583,
+      "sha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3"
+    },
+    {
+      "path": "selfhost/src/back/js/projection.bend",
+      "bytes": 2597,
+      "sha256": "67cce055248e6a0034a6194a9f5cbd0821c2cf79905759d08033b141231e93ae"
+    },
+    {
+      "path": "selfhost/src/back/js/u32.bend",
+      "bytes": 4926,
+      "sha256": "bda743e5c6afa1324673dd6722782a2b615c75abeb5c8061c623622723cfb25c"
+    },
+    {
+      "path": "selfhost/src/back/js/primitive.bend",
+      "bytes": 7332,
+      "sha256": "de137137d7cdd21f3a3a5c6d0bdca7664712fac7b74c46f177b8d3e521017b83"
+    },
+    {
+      "path": "selfhost/src/back/js/local.bend",
+      "bytes": 9458,
+      "sha256": "e38ca4c493aa5b21df55a5df43fb3a63b4eb5ec708e2a1e092cdea97bfc8608c"
+    },
+    {
+      "path": "selfhost/src/back/js/jpure.bend",
+      "bytes": 15410,
+      "sha256": "fc2238b98e77e28bf7de4190d92375a29dc448e89e6649640864467ade7f6f72"
+    },
+    {
+      "path": "selfhost/src/back/js/region.bend",
+      "bytes": 49612,
+      "sha256": "9d650003f714b41c966ebcc0b878336c76a594dae5d4d80f14a5442b35ef4c76"
+    },
+    {
+      "path": "selfhost/src/back/js/fold.bend",
+      "bytes": 15472,
+      "sha256": "7deaa1268b40344b4e8a342d689db5e792a1cf23db8c8254b4ea25de66e42b28"
+    },
+    {
+      "path": "selfhost/src/back/js/worker.bend",
+      "bytes": 22807,
+      "sha256": "045d5b724edd419f6f81ce2c7fa112aef7d3c81a4b49bd19beaace1ff8960487"
+    },
+    {
+      "path": "selfhost/src/back/js/tree.bend",
+      "bytes": 7629,
+      "sha256": "3bc377a21202ebd83e00731c1ce0416569a7544aebdc74102049be9770937c43"
+    },
+    {
+      "path": "selfhost/src/back/js/emit.bend",
+      "bytes": 33323,
+      "sha256": "b0a5838bb12092d97381a8ea1a44cf5f4c61fbbd75721550482f23528d3a646b"
+    },
+    {
+      "path": "selfhost/src/back/native/ir.bend",
+      "bytes": 929,
+      "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b"
+    },
+    {
+      "path": "selfhost/src/back/native/text.bend",
+      "bytes": 2533,
+      "sha256": "31c1ff5973df46d17ad395070fbefa1d2dc58398b3d12af80c62ed6c5548ff9d"
+    },
+    {
+      "path": "selfhost/src/back/native/identity.bend",
+      "bytes": 2476,
+      "sha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a"
+    },
+    {
+      "path": "selfhost/src/back/native/layout.bend",
+      "bytes": 135,
+      "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b"
+    },
+    {
+      "path": "selfhost/src/back/native/intrinsic.bend",
+      "bytes": 4912,
+      "sha256": "5b921ebfecb307eddae880edee86ce459751684ecf74543f54c60e2a6f252195"
+    },
+    {
+      "path": "selfhost/src/back/native/tables.bend",
+      "bytes": 8602,
+      "sha256": "6b8f36fa9063f35105889d8977aa2345fb01eeceb117e6f641151430d084bbaa"
+    },
+    {
+      "path": "selfhost/src/back/native/emit.bend",
+      "bytes": 5084,
+      "sha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a"
+    },
+    {
+      "path": "selfhost/src/back/native/erase.bend",
+      "bytes": 3528,
+      "sha256": "8f536cdfbca91b26bf426b3c8c5f42106fc0e18af7bfd2550ba73e7dab5530ec"
+    },
+    {
+      "path": "selfhost/src/back/native/bridge.bend",
+      "bytes": 23327,
+      "sha256": "4767f940940660635ec4c80978f8e4abb11c398b4b8f8bccabf05879c59f2a49"
+    },
+    {
+      "path": "selfhost/src/back/native/direct.bend",
+      "bytes": 4200,
+      "sha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5"
+    },
+    {
+      "path": "selfhost/src/back/native/pattern.bend",
+      "bytes": 5324,
+      "sha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4"
+    },
+    {
+      "path": "selfhost/src/back/native/show.bend",
+      "bytes": 6723,
+      "sha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d"
+    },
+    {
+      "path": "selfhost/src/back/native/parallel.bend",
+      "bytes": 5003,
+      "sha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722"
+    },
+    {
+      "path": "selfhost/src/back/native/array.bend",
+      "bytes": 2813,
+      "sha256": "c00f0592299047df582ac0435e1a0423ea62fb48f7c87dda83bf18161b263bd7"
+    },
+    {
+      "path": "selfhost/src/back/native/validate.bend",
+      "bytes": 2859,
+      "sha256": "d0c1e75c5dbda3d2e65ea227667191252c49f71b63f0765c358c2041a0f484bb"
+    },
+    {
+      "path": "selfhost/src/back/native/foreign.bend",
+      "bytes": 4010,
+      "sha256": "ed7a06662072e73d45d10b1898599936b106dc22956a4fceea8d04ac22fb6d3c"
+    },
+    {
+      "path": "selfhost/src/back/native/book.bend",
+      "bytes": 14294,
+      "sha256": "180ee53af86a59df8efcc131d4f22b0ca6f5f9980dd222259f2941fbef1e11a2"
+    },
+    {
+      "path": "selfhost/src/driver/report.bend",
+      "bytes": 2593,
+      "sha256": "15f0985da866b948252490ec2f1b90aed9d36fb24b93eab24826648cc36e6df8"
+    },
+    {
+      "path": "selfhost/src/driver/api.bend",
+      "bytes": 3919,
+      "sha256": "5cae856aa306f52042cbead5bf72136da317649a0a09b7d73f8da1be3530d9d3"
+    },
+    {
+      "path": "selfhost/tools/typed-driver.mjs",
+      "bytes": 48273,
+      "sha256": "43c4df618476ba6ae6057d468d7147af0a85be0cd4f84e18f5f124f58d7f47c3"
+    },
+    {
+      "path": "selfhost/tools/compiler-abi.mjs",
+      "bytes": 4264,
+      "sha256": "0bcbcaf022108877600baab1b15356db6d9917f5c4d668af936279680c126454"
+    },
+    {
+      "path": "selfhost/tools/native-build.mjs",
+      "bytes": 4027,
+      "sha256": "a76f2c027459f7ffdb9fc16dc450ee33e0f39c74568df4c74d03309e662c9117"
+    },
+    {
+      "path": "selfhost/tools/node-resource-args.mjs",
+      "bytes": 685,
+      "sha256": "6aefb3aee9b69b0c25d68edbf0ada6a57ba93e277d3adb8d232dfa6dff01d758"
+    },
+    {
+      "path": "selfhost/tools/assemble.mjs",
+      "bytes": 3317,
+      "sha256": "f7c8feff7a0b8f8b4a302c2ca8b99b363a8d7c4c9c48bc6b7a9463aa23c58b75"
+    },
+    {
+      "path": "selfhost/src/compiler.json",
+      "bytes": 2260,
+      "sha256": "467d9bef90f5a669a17cf49af83ac5ebb28a8d16d33eefa0e55b0ba2f1880ad6"
+    },
+    {
+      "path": "selfhost/src/runtime.mjs",
+      "bytes": 51689,
+      "sha256": "af2a3ae8a3c42fc0cb206ec7671960b82501944bf5619ec7893847460447a961"
+    },
+    {
+      "path": "selfhost/src/runtime/native/LICENSE",
+      "bytes": 11344,
+      "sha256": "0beb288abd3d067e231f3fbe7df1f8ee37344061fc67f22018150a19e4b26c35"
+    },
+    {
+      "path": "selfhost/src/runtime/native/ORIGIN.md",
+      "bytes": 843,
+      "sha256": "cc7d2b0e50253e3ccc3f88ed5c92134b3faba5a8c6eb86ae7aa9c7b5e7dd7073"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/args.c",
+      "bytes": 351,
+      "sha256": "7209a5fa11396fa8b0667a6738c913c40f554797e442c847a25e13a5f69676e0"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/audio.c",
+      "bytes": 6832,
+      "sha256": "049ac826d50def604c18cd4211d67573c4e27f4bc2600ce6c22e0dbe60c3783f"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/audio_close.c",
+      "bytes": 5368,
+      "sha256": "c67f807f7400065f20045392d87ef7e73af209f1aa0ee34a1eb35d568d94feb5"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/audio_open.c",
+      "bytes": 5606,
+      "sha256": "65df9665a396a7976b4fdfa556a73ec187e3b5e669e47888615cb0c63a42ce41"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/audio_write.c",
+      "bytes": 5898,
+      "sha256": "0eaaef9f111e40224f4adc4c8978b9e35f08613996381ac9b72641e2aeb608c4"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/chan.c",
+      "bytes": 2051,
+      "sha256": "0c29532170ec3e400c9419b1e94474b769f7b8df262a7010b3b0f64f592683ac"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/chan_close.c",
+      "bytes": 306,
+      "sha256": "d88e91ca179bfcdbf8580e75f1dbea4c5f240d3fbdb980a2ee24d1e662ff478a"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/chan_new.c",
+      "bytes": 203,
+      "sha256": "41d722added898f3a9eae186be969a7ca7f01bc3235331663b13319d14fb7ff2"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/chan_recv.c",
+      "bytes": 665,
+      "sha256": "7baa193d4adb09865a9397e84d41ec4fe7097cdd46150ed44513c76da126d0d1"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/chan_send.c",
+      "bytes": 616,
+      "sha256": "f12ade43cc52af51e13d35a93221b129db11fbfa7470f38557b1c0c9ef22caa4"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/file_close.c",
+      "bytes": 243,
+      "sha256": "befd465a31b88936d772222d26b1019ea7330e59e6327d8ba90584c85e8b2fb3"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/file_open.c",
+      "bytes": 1113,
+      "sha256": "f42a8bcc142b9003c7f6ca99287ca09c14f9efcbe15dea929c90c2fa062746e7"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/file_read.c",
+      "bytes": 2130,
+      "sha256": "6af44266ca83ab55b2dd3bf20c17eea6bfb7a7a678908cfbf3579adef31fb678"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/file_read_at.c",
+      "bytes": 1009,
+      "sha256": "689499b396a634a3ebb21ad2cc3846f1979b8f2747c07c15a38ee2f07c904b1c"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/file_read_bytes.c",
+      "bytes": 987,
+      "sha256": "810e08bfe4439e71dc4bae03eeae680689af8092e144b53faacd75df198ef93d"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/file_size.c",
+      "bytes": 771,
+      "sha256": "09906f3839f0f0fba1eea944c948e35f8e03627dc2b78e8debb43e0556f5d5d8"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/file_write.c",
+      "bytes": 1423,
+      "sha256": "565dff20204e1e535e188b983cda6d6001d0e5dc37cfdf981960c07a9e154ee2"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/file_write_bytes.c",
+      "bytes": 1320,
+      "sha256": "80784b7308c00f74ffae50ec0d8278227250edb8edd71a9e33c701482438f097"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/get_env.c",
+      "bytes": 646,
+      "sha256": "62255e46c7e0c43baea62366830c4a5badb11cba517c0aa17f952f432f46d4a3"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/listener_close.c",
+      "bytes": 267,
+      "sha256": "11247352a8311b066fff27ed85958598214ece80f23a7ac59ee981ea569351ec"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/now.c",
+      "bytes": 198,
+      "sha256": "da5fde65701c4fadc7560625c9615b4d60b2eefbd7b6bbe1aedda61887b825b9"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/print.c",
+      "bytes": 397,
+      "sha256": "709500d2ace6e2eaeec0f5f1e4373d4ec5e402b3c1e289bd70dfef7e2a635b26"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/print_err.c",
+      "bytes": 236,
+      "sha256": "72781d2adc88a4791d5530c9deff20824c38d5aa1ba43fb05aaa6a697e19f4b6"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/process_run.c",
+      "bytes": 9149,
+      "sha256": "c12e5a182de9fdc5ef83d65f9f7c2c5746865d1049e5f3700438f8ac317b17c3"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/random_u32.c",
+      "bytes": 741,
+      "sha256": "10ef9045dcd539bc0ff609e61c77d585fb998ceb48656944d62727716263ee2d"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/sleep.c",
+      "bytes": 206,
+      "sha256": "77e212d3baeec0b3dc0a9c7f630b43094986e433c049049d354a9681719e2ecd"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/socket_close.c",
+      "bytes": 255,
+      "sha256": "6e2fd1717a2fab133813af88fc0f5b5a8ce44c23bf411f269e71aac38671562e"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/spawn.c",
+      "bytes": 218,
+      "sha256": "fb3dac6efa993c51f9d7a668cf8da2cac1148380b72cc18a558cba9ba70c01f3"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/tcp_accept.c",
+      "bytes": 909,
+      "sha256": "e0f0cf4199c278aec722e3c9b81ff879fcec31ec96ebaf66a954db673cf535f8"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/tcp_connect.c",
+      "bytes": 1294,
+      "sha256": "ae1515d0ff57215b03888e76cfe4ee485750ec226c28eed05d56e417f0f84f58"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/tcp_listen.c",
+      "bytes": 1013,
+      "sha256": "6212a0bc400e960e8b486f85a091cd4964f92b0546475481271c0f369a234d8c"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/tcp_poll.c",
+      "bytes": 1386,
+      "sha256": "feb6fa3f7c04b3143c71593e2c17088394d11474bd87ca791fb71fbf9f9a8f82"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/tcp_recv.c",
+      "bytes": 1835,
+      "sha256": "de6cfd9490f867c26056d1897e8d37ff657189788943f36151749101c7c9f0f6"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/tcp_send.c",
+      "bytes": 1558,
+      "sha256": "503c8cdc1f885420057c46e6d9ed4ede6953805a13f8894e069f1b944f630c81"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/thread_count.c",
+      "bytes": 481,
+      "sha256": "39515c611a2b42687fb670179f3d9032af1878727356754959061125d40fa7e7"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/udp_bind.c",
+      "bytes": 882,
+      "sha256": "b30150927ffde3162d62012b67d43d95c79754f9539279628d2ad5bc9c040408"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/udp_poll.c",
+      "bytes": 913,
+      "sha256": "66504dbbc09ab346e04cca7a22c60aacc8866555ac143088603cb4b568a64f71"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/udp_recv_from.c",
+      "bytes": 1165,
+      "sha256": "140a281bca2348566030e092f3c27591893b5d945e57e2965863d02c2e6c0a65"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/udp_send_to.c",
+      "bytes": 1214,
+      "sha256": "8704fe7e5770af7e4dcbe24f0fecf4cfbfe61a0a69a77b129df9965e306fae8f"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/window.c",
+      "bytes": 23879,
+      "sha256": "7bda00a55917f11ff1fa532b1406ec5c1a8a7eef6f6ba2a933dd958256e0a409"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/window_close.c",
+      "bytes": 916,
+      "sha256": "655afbdf8a5f7fa80963bad64b43c8dfe7ec1f80896db381792d0d6933f3be2d"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/window_frame.c",
+      "bytes": 11055,
+      "sha256": "01dc840b2145efb8c91b4ffe7360e3520753f59c42e122703c3a6190c50e1aa4"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/window_open.c",
+      "bytes": 6927,
+      "sha256": "1be9c669b47a44716b9cef1aafaafa1ed2a2268730fab475efa762cf368fc21d"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/window_set_title.c",
+      "bytes": 1141,
+      "sha256": "cd60a39ca4084794f3e7aef939de8c7e02ef0ae2158bf52a69f93c21a59ebba5"
+    },
+    {
+      "path": "selfhost/src/runtime/native/effs/write.c",
+      "bytes": 370,
+      "sha256": "c1bcd80d50c4901027c801cdd8d7464ea3029361115ac47044c992ce2235a8ac"
+    },
+    {
+      "path": "selfhost/src/runtime/native/runtime.c",
+      "bytes": 78893,
+      "sha256": "cbfb8933d007c10a0173f280888d6c94d5d77543548b25808596cd2d21f764f0"
+    },
+    {
+      "path": "selfhost/cli.mjs",
+      "bytes": 238,
+      "sha256": "e9e57dff0070a9023263c5355d5ca66923e98a5cd0cc28c4d2ccefe1024b28e7"
+    }
+  ],
+  "scope": "Identity audit after the recorded install, verify and 42 CLI checks. No new bootstrap or fixed-point claim."
+}

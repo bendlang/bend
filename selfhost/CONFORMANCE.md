@@ -1,6 +1,58 @@
 # Compiler validation
 
-## Phase32 installed03 validation
+## Phase35 installed09 validation
+
+**Checked09 is installed, release verification passes, and all 42 ordinary/
+relocated CLI checks pass.** API SHA256 is
+`467bc7dec2751a94cb677c5eb2da22a8fb69ee3522c6e164cb2bfcc147a78d82`.
+The [release report](../implementation/phase35/release-09.md),
+[installation receipt](../implementation/phase35/release-installation.json) and
+[final audit](../implementation/phase35/final-conformance/gates.md) close all
+14 preinstall groups plus installed CLI, with **225 canonical files** matching
+the checked attempt. The selected API is a checked B1 derivative; it is not a
+new self-emitted fixed point.
+
+Fresh candidate execution agrees exactly with the frozen pinned TypeScript
+reference on **3,026 main and 196 broader frontend observations**, with zero
+behavioral or additional-field differences and healthy serial workers. Main
+outcomes remain **2,525 pass / 497 observed / 4 shared failures**; broader remains
+**195 pass / 1 observed**. Reference acquisition was reused with identity checks,
+not described as a fresh TypeScript run. Shared failures remain failures.
+
+The fresh backend pilot preserves all **81 historical rows: 69 pass, 8 not
+applicable, 4 shared failures**. No native retry was needed in this phase's
+approved execution context. This is selected JavaScript/native CPU coverage,
+not full backend or GPU coverage. The optional 811-case JS expansion remains deferred.
+
+Checked09 passes 36 focused exact probes and **15 new owner groups**: complete
+pair/fold state, 328,966 ordered native events, argument/read order, lexical scope,
+public vectors/aliases, nested loops, Number counter admission/refusal and hooks,
+finite Nat/F32/branch controls, partial regions and independent purity graphs,
+actual ray/column traversal, and recursive folds. Fold controls include 675 small
+comparisons, two deep points (up to 50,000 nodes), 57 boundaries, 24 recognizer
+cases and actual optimization witnesses. Counts overlap and must not be summed
+as unique tests. Host controls have their documented standard-initialization and
+named post-import-mutation scope, not universal JavaScript-host equivalence.
+
+Fresh inherited gates pass **56,205 primitive checks, 3,759 worker checks, 144
+nested checks, 1,129 primitive guards, 15 selected upstream JS probes, 23
+libraries/127 points, 40 worker guards/two witnesses, 22 compiler components and
+complete 42-byte HVM output**. Ordinary/relocated CLI checks include JS and native
+CPU execution using Clang16; relocation supplies no upstream checkout.
+
+The initial owner acquisition stopped on sandbox `spawnSync git` EPERM. Its
+separate approved-context retry preserves the failed tree and all prior passes.
+The first provenance audit then found a historical installed runtime path being
+treated as a live input. The [narrow repair](../implementation/phase35/provenance-audit-repair.md)
+verifies the exact portable reference against its frozen Phase32 snapshot/archive;
+all final candidate and source-identity checks remain strict. Both original
+failures remain recorded. The final audit closes on the selected installed API.
+
+No full backend/GPU, new H image, fixed-point or independent proof-kernel claim
+follows from these finite gates. `--verdict` remains unsupported. Historical
+results below retain their original artifact scopes.
+
+## Historical Phase32 installed03 validation
 
 The installed API is
 `8be506d811f627fe6346a5eaba07050c36db70e2704608adcfd781b85a3a7f92`.
