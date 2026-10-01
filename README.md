@@ -53,6 +53,9 @@ For generated JavaScript optimization, use the maintained
 [program execution benchmarks](selfhost/tools/performance/programs/README.md):
 20 / 60 / 300 / 600-second budgets, selectable workload sets, a portable frozen
 TypeScript/Phase32 reference, and separately prepared compiler candidates.
+The [diagnostic tools](selfhost/tools/performance/programs/DIAGNOSTICS.md) add
+CPU/allocation profiles and side-by-side generated-JavaScript analysis.
+See the [current results and opportunities](implementation/phase34/opportunities.md).
 
 Designs, failed experiments, comparisons, a [Zig history study](design/phase31/zig-lessons.md)
 and promotion decisions are linked from the [Phase32 index](implementation/phase32/README.md),

@@ -153,6 +153,10 @@ def render(report, out):
         lines.append(f"| {case['id']} | {len(summary['balancedRounds'])}/{case['rounds']} | {value('baseline')} | {value('candidate')} | {value('typescript')} | {f'{ratio:.3f}×' if ratio is not None else '—'} |")
     lines += ['', 'Missing, failed and partial samples remain in report.json; incomplete cases have no comparison ratio.',
               'Output agreement on these fixed inputs is not a full conformance gate. No historical timing is used as a denominator.', '']
+    if report.get('diagnostics'):
+        diagnostic = report['diagnostics']
+        lines += [f"Separate diagnostics: **{diagnostic['status']}**; budget {diagnostic['budgetSeconds']} seconds.",
+                  '[Profiles and generated-code comparison](diagnostics/report.md)', '']
     (out / 'report.md').write_text('\n'.join(lines))
 
 
@@ -170,9 +174,14 @@ def main(argv=None):
     parser.add_argument('--cpu', type=int, default=3 if 3 in os.sched_getaffinity(0) else min(os.sched_getaffinity(0)))
     parser.add_argument('--rss-mib', type=int, default=1536)
     parser.add_argument('--available-mib', type=int, default=2048)
+    parser.add_argument('--diagnostics', choices=['static', 'cpu', 'allocation', 'all'],
+                        help='After successful timing, run separate generated-code diagnostics')
+    parser.add_argument('--diagnostic-budget', type=int, choices=PRESETS,
+                        help='Separate diagnostic wall ceiling; defaults to --budget')
     parser.add_argument('--plan', action='store_true', help='Verify inputs and print plan without executing or writing output')
     parser.add_argument('--list', action='store_true', help='List cases and sets without requiring Node or bundles')
     args = parser.parse_args(argv)
+    require(args.diagnostics or args.diagnostic_budget is None, '--diagnostic-budget requires --diagnostics')
     catalog = json.loads(args.catalog.read_text())
     if args.list:
         print(json.dumps(dict(sets=catalog.get('sets'), cases=[dict(id=c['id'], point=c['point']) for c in catalog['cases']]), indent=2))
@@ -202,6 +211,9 @@ def main(argv=None):
                 rssMiB=args.rss_mib, availableMiB=args.available_mib,
                 expensivePointPolicy='raytrace: one warmup call; at most three fresh rounds. Other points: three warmup calls. All also require preset warmup milliseconds.',
                 comparison='Same-run execution only; prototype bundles retain explicit labels. No compiler or compilation timing.')
+    if args.diagnostics:
+        plan['diagnostics'] = dict(mode=args.diagnostics, budgetSeconds=args.diagnostic_budget or args.budget,
+                                   scope='Additional separate wall budget; never included in timing ratios')
     if args.plan:
         load_bundle(args.baseline, catalog, inputs[3]['sha256'], selected, ['baseline', 'typescript'], inputs)
         if args.candidate:
@@ -309,8 +321,32 @@ def main(argv=None):
         report['budgetOverrunSeconds'] = max(0, report['wallSeconds'] - args.budget)
         save(out / 'report.json', report)
         render(report, out)
-    print(json.dumps({k: report[k] for k in ['status', 'pass', 'measuredCases', 'selectedCases', 'wallSeconds']}))
-    return 0 if report['pass'] else 1
+    command_pass = report['pass']
+    if args.diagnostics:
+        diagnostic = {**plan['diagnostics'], 'status': 'not-started', 'pass': False}
+        report['diagnostics'] = diagnostic
+        save(out / 'report.json', report)
+        if report['pass']:
+            save(out / 'timing-snapshot.json', report)
+            from diagnose import main as diagnose
+            try:
+                code = diagnose(['--from-run', str(out / 'timing-snapshot.json'), '--mode', args.diagnostics,
+                                 '--budget', str(diagnostic['budgetSeconds']), '--out', str(out / 'diagnostics'),
+                                 '--catalog', str(args.catalog), '--node', str(args.node), '--cpu', str(args.cpu),
+                                 '--rss-mib', str(args.rss_mib), '--available-mib', str(args.available_mib)])
+                diagnostic.update(status='complete' if code == 0 else 'failed', **{'pass': code == 0})
+            except Exception as error:
+                diagnostic.update(status='failed', error=repr(error))
+        command_pass = report['pass'] and diagnostic['pass']
+        report['commandPass'] = command_pass
+        report['totalWallSeconds'] = time.monotonic() - started
+        save(out / 'report.json', report)
+        render(report, out)
+    summary_keys = ['status', 'pass', 'measuredCases', 'selectedCases', 'wallSeconds']
+    if args.diagnostics:
+        summary_keys += ['commandPass', 'diagnostics', 'totalWallSeconds']
+    print(json.dumps({k: report[k] for k in summary_keys}))
+    return 0 if command_pass else 1
 
 
 if __name__ == '__main__':

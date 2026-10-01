@@ -6,6 +6,12 @@ the pinned upstream TypeScript compiler and, optionally, a prepared candidate.
 Compilation is a separate preparation step. The ordinary timing command never
 builds or imports a compiler.
 
+For CPU profiles, sampled allocation profiles, syntax counts and side-by-side
+generated-code comparisons, use the [diagnostics guide](DIAGNOSTICS.md).
+Add `--diagnostics all --diagnostic-budget 60` to a timing command, or diagnose
+an existing successful run with `diagnose.py --from-run RUN_DIRECTORY`.
+Diagnostics have a separate explicit budget and never replace ordinary timing.
+
 The checked-in [reference bundle](baseline/manifest.json), compressed modules,
 [catalog](catalog.json) and [Bend fixtures](fixtures/) work from a normal clone.
 Running the reference does not require ignored historical experiment directories,

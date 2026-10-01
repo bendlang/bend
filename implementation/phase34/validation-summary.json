@@ -1,0 +1,121 @@
+{
+  "kind": "phase34-validation-summary",
+  "complete": true,
+  "compilerUnchanged": [
+    {
+      "kind": "api",
+      "path": "/home/ai/bend2/build/publish/bend/selfhost/dist/typed-api.mjs",
+      "sha256": "8be506d811f627fe6346a5eaba07050c36db70e2704608adcfd781b85a3a7f92",
+      "bytes": 1057428
+    },
+    {
+      "kind": "runtime",
+      "path": "/home/ai/bend2/build/publish/bend/selfhost/src/runtime.mjs",
+      "sha256": "4121f338a7e4e115bae557343cd3d194a26ed26589bc47d82094969284181e10",
+      "bytes": 48032
+    },
+    {
+      "kind": "base",
+      "path": "/home/ai/bend2/build/publish/bend/selfhost/dist/base.bend",
+      "sha256": "c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661",
+      "bytes": 71530
+    },
+    {
+      "kind": "driver",
+      "path": "/home/ai/bend2/build/publish/bend/selfhost/tools/typed-driver.mjs",
+      "sha256": "43c4df618476ba6ae6057d468d7147af0a85be0cd4f84e18f5f124f58d7f47c3",
+      "bytes": 48273
+    }
+  ],
+  "upstreamCommit": "018751270e800bc222a93dad7f257083ee53a5f7",
+  "runs": [
+    {
+      "path": "fast-01",
+      "status": "failed",
+      "passed": false,
+      "complete": false,
+      "profiles": 5,
+      "requested": 30,
+      "wallSeconds": 6.7923536309972405,
+      "peakProfileTreeRssBytes": 76664832,
+      "defaultAllocationIntervalBytes": 32768,
+      "overrides": {},
+      "depthCapped": []
+    },
+    {
+      "path": "fast-02",
+      "status": "diagnosed",
+      "passed": true,
+      "complete": true,
+      "profiles": 30,
+      "requested": 30,
+      "wallSeconds": 17.98473029500019,
+      "peakProfileTreeRssBytes": 84033536,
+      "defaultAllocationIntervalBytes": 32768,
+      "overrides": {},
+      "depthCapped": []
+    },
+    {
+      "path": "full-01",
+      "status": "diagnosed",
+      "passed": true,
+      "complete": true,
+      "profiles": 60,
+      "requested": 60,
+      "wallSeconds": 244.87544470799912,
+      "peakProfileTreeRssBytes": 1280303104,
+      "defaultAllocationIntervalBytes": 32768,
+      "overrides": {},
+      "depthCapped": [
+        {
+          "case": "scalar-region-0",
+          "role": "typescript",
+          "kind": "cpu"
+        },
+        {
+          "case": "scalar-region-0",
+          "role": "typescript",
+          "kind": "allocation"
+        }
+      ]
+    },
+    {
+      "path": "raytrace-memory-01",
+      "status": "diagnosed",
+      "passed": true,
+      "complete": true,
+      "profiles": 2,
+      "requested": 2,
+      "wallSeconds": 44.397145728002215,
+      "peakProfileTreeRssBytes": 567922688,
+      "defaultAllocationIntervalBytes": 32768,
+      "overrides": {
+        "raytrace": 262144
+      },
+      "depthCapped": []
+    }
+  ],
+  "combined": {
+    "passed": true,
+    "immutableSnapshotSha256": "0fd7ac9f61fc0cfef60786946e52d99b584c7ba9fbd7e459456cbf020caebdb4",
+    "timingCasesUnchanged": true,
+    "timingWallSeconds": 2.9833410489991365,
+    "diagnosticWallSeconds": 5.638414224998996,
+    "totalWallSeconds": 8.68670637499963
+  },
+  "controls": {
+    "pythonRunnerAndDiagnostics": 28,
+    "finalFocusedPython": 8,
+    "analyzer": 15,
+    "profileScenarios": 13,
+    "profileAggregationAndPreservation": true,
+    "logs": "controls/*.stdout.log and *.stderr.log; profile-tests.json summarizes the initial profiler invocation from its tool output.",
+    "temporaryFixturesRetained": false
+  },
+  "commands": {
+    "python": "PROGRAMS_TEST_NODE=/home/ai/.nvm/versions/node/v24.18.0/bin/node python3 -m unittest discover -s selfhost/tools/performance/programs/tests -p test_*.py",
+    "pythonFinal": "same command with -p test_diagnostics.py",
+    "analyzer": "/home/ai/.nvm/versions/node/v24.18.0/bin/node --max-old-space-size=128 selfhost/tools/performance/programs/analyze.test.mjs",
+    "profiler": "/home/ai/.nvm/versions/node/v24.18.0/bin/node --max-old-space-size=128 selfhost/tools/performance/programs/profile.test.mjs"
+  }
+}

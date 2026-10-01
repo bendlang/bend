@@ -20,6 +20,12 @@ The [Phase33 report](../implementation/phase33/README.md) records validation of
 the tooling. Its protocol starts a new timing series; historical Phase32 medians
 retain their original warmup, process and validation boundaries.
 
+The [diagnostics guide](../selfhost/tools/performance/programs/DIAGNOSTICS.md)
+adds separate CPU and allocation profiles plus AST comparisons of those exact
+generated modules. It produces raw V8 profiles, source-attributed hot frames,
+normalized tokens and a side-by-side HTML view. Profiled durations never become
+speed ratios; syntax sites are distinguished from dynamically sampled costs.
+
 ## What the backend optimizes
 
 The JavaScript backend retains ordinary function descriptors, partial calls,

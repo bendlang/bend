@@ -2224,3 +2224,35 @@ before another optimization. Select the cheapest discriminating case, then widen
 coverage; keep actual checked compiler acquisition and semantic gates separate.
 A short screen does not establish steady state or general application performance.
 All 103 unrelated files remain unchanged; no PR comment was posted.
+
+
+## Phase34 — generated-program profiles and source comparison
+
+[P34-001](phase34/P34-001-program-diagnostics.md) completes the requested diagnosis
+of current generated-program execution without changing the compiler. The
+[report](../implementation/phase34/README.md) links clean Phase33 results, new
+CPU/allocation profiles, true AST comparison and the ranked next experiments.
+Timing remains unprofiled; diagnostics have a separate explicit budget and status.
+
+Fast exact-module diagnostics complete 30/30 in 17.98s, full corpus 60/60 in
+244.88s; a real combined command passes timing and all four pair profiles in
+8.69s. All 28 Python controls, 15 analyzer controls and 13 profiler scenarios plus
+aggregation/preservation controls pass. The initial analyzer mapping failure and
+V8 orphan-allocation failure remain preserved beside their fixes and retries.
+
+The full raytrace CPU profile assigns 49.81% self weight to `apply`, 2.26% to GC;
+lexer/symreg also retain hot generic machinery. Four raytrace selectors receive
+29.92% of sampled allocation self weight. The private pair's repeated four-slot
+state vector is a cheaper isolated target, supported by 65.40% allocation weight
+at `cell.f4`. These are observations, not causal or promised speedups.
+
+Fine raytrace allocation sampling peaked at 1,221 MiB. An explicit coarser 256 KiB
+interval for both roles passes in 44.40s at 541.6 MiB, retaining consistent hot
+owners. Other cases stay at 32 KiB. Both acquisitions remain immutable in the
+[capsule](../implementation/phase34/evidence/README.md), including raw profiles,
+exact consumed sources, normalized tokens and resource receipts.
+
+**Updated frontier:** use a saved-output scalar-replacement ablation for pair/fold
+first, then test finite Nat-to-F32 selectors and larger saturated call/match regions
+for broader transfer. Retain historical guard regressions and public mutation
+controls. All 103 unrelated files remain unchanged; no PR comment was posted.
