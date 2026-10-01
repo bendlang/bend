@@ -100,7 +100,8 @@ type Fun = { n: number; h: HTerm | null; live: Dom[]; lays: Lay[]; ret: Lay };
 // add to a segment, so a literal-bounded loop does not unroll into its
 // caller. A spin of SPIN_FAR lines is a call (at 128, raytrace lost
 // 31% on PAR-CPU). WIDE is the widest flat layout or segment; a node past
-// it pads to its size class and keeps 240 plus log2 of it in CID_T.
+// it pads to its size class and keeps 240 plus log2 of it in CID_T. An
+// argument nested past TPL_DEEP brackets goes to a local (clang allows 256).
 
 const CLO_APPLY = "Clo~apply";
 
@@ -118,6 +119,8 @@ const TAB_BAD = /\b(?!(?:fround|imul)\()\w+\(/;
 const FOLD_FUEL = 8192;
 
 const SPIN_FAR = 256;
+
+const TPL_DEEP = 32;
 
 const USE0 = Bend.Emp<number>();
 
@@ -627,6 +630,12 @@ function tpl_ops(pre: string, names: string, C: string, JS = C):
     out[pre + k] = { C: C.replaceAll("$o", o), JS: JS.replaceAll("$o", jo) };
   }
   return out;
+}
+
+function tpl_deep(e: string): boolean {
+  let d = 0;
+  return [...e].some((c) =>
+    (d += c === "(" ? 1 : c === ")" ? -1 : 0) > TPL_DEEP);
 }
 
 function tpl(t: Tpl, xs: string[]): string {
@@ -2307,8 +2316,8 @@ function emit_intr(fl: File, it: Intr, m: Spine, ty: HTerm | null): Val {
     val_own(fl, val_to(fl, v, fun_of(fl, k).lays[i]))[0]);
   const lay = lay_of(fl.book, ty);
   const C = it.C!;
-  const as = Array.isArray(C) || /\$(\d)[^]*\$\1/.test(C)
-    ? ws.map((w) => emit_alias(fl, w, "a")) : ws;
+  const all = Array.isArray(C) || /\$(\d)[^]*\$\1/.test(C);
+  const as = ws.map((w) => all || tpl_deep(w) ? emit_alias(fl, w, "a") : w);
   if (Array.isArray(C)) {
     for (const p of C) {
       as.push(emit_alias(fl, tpl(p, as), "a"));
