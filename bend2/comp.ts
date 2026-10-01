@@ -346,7 +346,7 @@ const OPTIMIZED: Record<Name, Native> = Object.setPrototypeOf({
 } satisfies Record<Name, Native>, null);
 
 const RUNTIME_ADTS = ["Sigma", "String", "Word.Con", "IO.OP", "Result",
-  "Maybe", "Bool", "Unit"];
+  "Poll", "Maybe", "Bool", "Unit"];
 
 const OWNED = ["IO", ...RUNTIME_ADTS, ...Object.keys(OPTIMIZED)];
 

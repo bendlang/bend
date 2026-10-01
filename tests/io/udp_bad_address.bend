@@ -8,11 +8,11 @@
 # where C refused. ONE socket threads through every probe: the
 # handle rides OUTSIDE the Result, so it survives five Fails and
 # still sends -- the failure paths once dropped it, and a failed op
-# leaked its handle forever.
+# leaked its handle forever. Each Fail hands its datagram back.
 import Base
 
 law answer:
-  for m: Socket & Result<&1, &1, (U32 & String), Unit>
+  for m: Socket & Result<&1, &1, (U32 & String) & String, Unit>
   IO(Socket)
 
 def answer(m):
@@ -22,10 +22,10 @@ def answer(m):
       do IO<Socket>:
         p : Unit <- IO.print("sent")
         return s
-    case Fail{error}:
+    case Fail{(error, data)}:
       (code, message) = error
       do IO<Socket>:
-        p : Unit <- IO.print(message)
+        p : Unit <- IO.print(message ++ ", kept " ++ data)
         return s
 
 law probe:
@@ -35,7 +35,7 @@ law probe:
 
 def probe(s, host):
   do IO<Socket>:
-    m : Socket & Result<&1, &1, (U32 & String), Unit> <- UDP.send_to(s, host, 9, "x")
+    m : Socket & Result<&1, &1, (U32 & String) & String, Unit> <- UDP.send_to(s, host, 9, "x")
     answer(m)
 
 law main:
@@ -53,9 +53,9 @@ def main():
     x : Unit <- Socket.close(h)
     return 0
 
-#|Invalid argument
-#|Invalid argument
-#|Invalid argument
-#|Invalid argument
-#|Invalid argument
+#|Invalid argument, kept x
+#|Invalid argument, kept x
+#|Invalid argument, kept x
+#|Invalid argument, kept x
+#|Invalid argument, kept x
 #|sent
