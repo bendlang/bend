@@ -3622,6 +3622,7 @@ static u32             pool_row;
 static u32             pool_done;
 static pthread_mutex_t pool_lock = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t  pool_wake = PTHREAD_COND_INITIALIZER;
+static pthread_cond_t  pool_join = PTHREAD_COND_INITIALIZER;
 
 #if BEND_METAL || BEND_CUDA
 #pragma clang diagnostic ignored "-Wc23-extensions"
@@ -4788,13 +4789,30 @@ static Term* pool_stack(void) {
   return (Term*)p;
 }
 
+// A wait yields a while before it sleeps, so a turn that ends (or follows)
+// within microseconds never pays a condvar wake.
+
+#define POOL_WAIT(c, cv) \
+  for (u32 s = 0; s < 128 && (c); s += 1) { \
+    sched_yield(); \
+  } \
+  pthread_mutex_lock(&pool_lock); \
+  while (c) { \
+    pthread_cond_wait(&cv, &pool_lock); \
+  } \
+  pthread_mutex_unlock(&pool_lock);
+
 static u32 pool_rows(Env e, DEV Term* stk) {
   u32 n = 0;
   for (;;) {
     u32 c = a32_add(&pool_row, 1);
     u32 r = c & 2047;
     if (r >= (c >> 11 & 2047)) {
-      a32_sub_rel(&pool_done, n);
+      if (n != 0 && a32_sub_rel(&pool_done, n) == n) {
+        pthread_mutex_lock(&pool_lock);
+        pthread_cond_signal(&pool_join);
+        pthread_mutex_unlock(&pool_lock);
+      }
       return c >> 23;
     }
     a32_acq(&pool_row);
@@ -4818,14 +4836,7 @@ static void* pool_work(void* arg) {
   Term* stk  = pool_stack();
   u32   seen = 0;
   for (;;) {
-    for (u32 s = 0; s < 128 && a32_load(&pool_row) >> 23 == seen; s += 1) {
-      sched_yield();
-    }
-    pthread_mutex_lock(&pool_lock);
-    while (a32_load(&pool_row) >> 23 == seen) {
-      pthread_cond_wait(&pool_wake, &pool_lock);
-    }
-    pthread_mutex_unlock(&pool_lock);
+    POOL_WAIT(a32_load(&pool_row) >> 23 == seen, pool_wake)
     seen = pool_rows((Env){ CORPUS, ALC[(uintptr_t)arg] }, stk);
   }
 }
@@ -4884,9 +4895,7 @@ OUTLINE void pool_turn(bool grow, u32 rows) {
   pthread_cond_broadcast(&pool_wake);
   pthread_mutex_unlock(&pool_lock);
   pool_rows((Env){ CORPUS, ALC[0] }, io_stk);
-  while (a32_load_acq(&pool_done) != 0) {
-    sched_yield();
-  }
+  POOL_WAIT(a32_load_acq(&pool_done) != 0, pool_join)
 }
 
 // Gpu
@@ -5192,7 +5201,10 @@ static void gpu_pass(u32 f) {
 // ====
 
 // Under a row per thread, the host's column grows to a row per thread: a
-// row is CUBE_T / LINE units, and each touches a page of every plane.
+// row is CUBE_T / LINE units, and each touches a page of every plane. A turn
+// visits only the rows below its bound: a drain deals task g to ring_flip(g),
+// whose row is at most g, and a row grows into itself, so the f rows hold
+// every task; a column grow reaches any row, so after one a turn takes all.
 
 static void cube_run(u64* H, bool gpu) {
   for (;;) {
