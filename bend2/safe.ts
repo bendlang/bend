@@ -695,7 +695,8 @@ function swi(e: Safe, s: Scope, t: HTerm, T: HTerm | null, fs: Chain[], cv: numb
       }
       const [hT, mT] = goals(e, all, ctr);
       const h = tree(e, s, typed(x.h, hT), [...fs, { n: ctr.n, cv }]);
-      const m = swi(e, s, x.m, mT, fs, cv);
+      const dead = mT?.$ === "All" && no_ctr(e, mT.A) && x.m.$ !== "Mat";
+      const m = swi(e, s, dead ? B.Efq() : x.m, mT, fs, cv);
       return { $: "Mat", k: name_tt(x.k), h, m };
     }
     default: {
