@@ -20,7 +20,7 @@ def main() -> IO(Unit):
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- message  : 't' can't be matched in this position (either a match on a later binder or a local statement closed it, it was already matched, or it is a def)
+#|- message  : 't' can't be matched in this position (it is matched after a local statement or after a match on a later binder, it was already matched, or it is a def)
 #|Location:
 #| 9 | def f(t: Ty, mv: Maybe<&2, U32>) -> String:
 #|10>|   match mv t:

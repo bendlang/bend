@@ -2642,8 +2642,8 @@ export function match_flatten(m: Match, vars: PVar[], fr: () => number): LTerm {
       case "Var": {
         const x = e.s === undefined ? e.k : e.s.file.str.slice(e.s.beg, e.s.end);
         throw Err(book_nil(), ctx_nil(), "'" + x + "' can't be matched in this position"
-          + " (either a match on a later binder or a local statement closed it, it was"
-          + " already matched, or it is a def)", undefined, e.s);
+          + " (it is matched after a local statement or after a match on a later binder,"
+          + " it was already matched, or it is a def)", undefined, e.s);
       }
       case "Ctr":
       case "Lit": {

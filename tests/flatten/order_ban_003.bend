@@ -30,7 +30,7 @@ def main():
 
 #|SOME PROOFS FAIL
 #|Error:
-#|- message  : 'p' can't be matched in this position (either a match on a later binder or a local statement closed it, it was already matched, or it is a def)
+#|- message  : 'p' can't be matched in this position (it is matched after a local statement or after a match on a later binder, it was already matched, or it is a def)
 #|Location:
 #|18 |       t = Zb{}
 #|19>|       match p:
