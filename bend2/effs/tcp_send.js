@@ -2,11 +2,7 @@
 // ===
 
 // Sends what is left; a full socket (non-blocking, so EAGAIN) parks the
-// computation until the socket is writable, or, for try_, until its
-// deadline at, then answers Wait{rest}. A failure answers
-// Fail{(error, rest)}. rest, what the kernel did not take, is a String
-// (io_text) or a List of bytes (io_list), as make builds it. at is
-// undefined for the blocking twins.
+// computation until the socket is writable, and the loop resumes here.
 function tcp_send_with(socket, b, k, make, at) {
   const ready = (r) => at === undefined ? r : { $: CID(Ready), value: r };
   const sys = io_sys();
@@ -36,8 +32,7 @@ function tcp_send_with(socket, b, k, make, at) {
   return go(0);
 }
 
-// A value past 255 fails with EINVAL before any byte is sent, and the
-// list comes back whole.
+// A value past 255 fails with EINVAL before any byte is sent, list kept.
 function tcp_send_bytes_with(socket, data, k, at) {
   const b = io_unlist(data);
   if (b !== null) {
@@ -56,6 +51,7 @@ function tcp_send_bytes(socket, data, k) {
   return tcp_send_bytes_with(socket, data, k);
 }
 
+// The try_ twins pass a deadline at: past it, a waiting send is Wait{rest}.
 function tcp_try_send(socket, data, ms, k) {
   return tcp_send_with(socket, io_bytes(data), k, io_text,
     performance.now() + Number(ms));

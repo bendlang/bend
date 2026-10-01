@@ -2,9 +2,8 @@
 // ===
 
 // A recv that finds nothing (the socket is non-blocking) parks on more
-// until the socket is readable, or, for try_, until its deadline w->time,
-// then answers Wait{}. What it finds, read makes a String (io_str) or a
-// List of bytes (io_list): Some{data}, or None{} at the peer's end.
+// until the socket is readable. What it finds, read makes a String (io_str)
+// or a List of bytes (io_list).
 static Term tcp_recv_with(Env e, IoWork* w, IoPack more,
   Term (*read)(Env, const char*, u64)) {
   int fd  = (int)w->hand;
@@ -23,7 +22,7 @@ static Term tcp_recv_with(Env e, IoWork* w, IoPack more,
   return io_tup(e, io_hand(w->hand), r);
 }
 
-// at is the try_ deadline, 0 for the blocking twins.
+// at is the try_ deadline (past it, Wait{}), 0 for the blocking twins.
 static Term tcp_recv_start(Env e, Term* f, IoWork* w, IoPack more, u64 at) {
   w->hand = (intptr_t)io_hand_v(f[0]);
   w->time = at;

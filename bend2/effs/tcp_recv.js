@@ -2,10 +2,8 @@
 // ===
 
 // A recv that finds nothing (the socket is non-blocking) parks until the
-// socket is readable, or, for try_, until its deadline at, then answers
-// Wait{}. What it finds, read makes a String (io_text) or a List of bytes
-// (io_list): Some{data}, or None{} at the peer's end. at is undefined for
-// the blocking twins.
+// socket is readable. What it finds, read makes a String (io_text) or a
+// List of bytes (io_list).
 function tcp_recv_with(socket, max, k, read, at) {
   const ready = (r) => at === undefined ? r : { $: CID(Ready), value: r };
   if (Number(max) === 0) {
@@ -42,6 +40,7 @@ function tcp_recv_bytes(socket, max, k) {
   return tcp_recv_with(socket, max, k, io_list);
 }
 
+// The try_ twins pass a deadline at: past it, a recv that would wait is Wait{}.
 function tcp_try_recv(socket, max, ms, k) {
   return tcp_recv_with(socket, max, k, io_text, performance.now() + Number(ms));
 }

@@ -1,9 +1,8 @@
 // UDP
 // ===
 
-// UDP.recv_from's request is parked until the socket is readable; a recv
-// that still finds no datagram (the socket is non-blocking) parks again,
-// or, for try_, until its deadline w->time, then answers Wait{}.
+// The loop parked the request until the socket was readable; a recv that
+// still finds no datagram (the socket is non-blocking) parks again.
 static Term udp_recv_from_more(Env e, IoWork* w) {
   struct sockaddr_in at = { 0 };
   socklen_t alen = sizeof(at);
@@ -26,7 +25,7 @@ static Term udp_recv_from_more(Env e, IoWork* w) {
   return io_tup(e, io_hand(w->hand), r);
 }
 
-// by is the try_ deadline, 0 for the blocking twin.
+// by is the try_ deadline (past it, Wait{}), 0 for the blocking twin.
 static Term udp_recv_from_start(Env e, Term* f, IoWork* w, u64 by) {
   w->hand = (intptr_t)io_hand_v(f[0]);
   w->made = f[1] < INT32_MAX ? (intptr_t)f[1] : INT32_MAX;

@@ -2,9 +2,7 @@
 // ===
 
 // A datagram goes whole or not at all; a full send buffer (non-blocking,
-// so EAGAIN) parks the computation until the socket is writable, or, for
-// try_, until its deadline w->time, then answers Wait{data}. A failure
-// answers Fail{(error, data)}: the datagram comes back either way.
+// so EAGAIN) parks the computation until the socket is writable.
 static Term udp_send_to_more(Env e, IoWork* w) {
   struct sockaddr_in at;
   int     fd = (int)w->hand;
@@ -34,8 +32,7 @@ static Term udp_send_to_more(Env e, IoWork* w) {
   return io_tup(e, io_hand(w->hand), r);
 }
 
-// A host with a NUL byte fails with EINVAL, as an unparsable one does.
-// by is the try_ deadline, 0 for the blocking twin.
+// by is the try_ deadline (past it, Wait{data}), 0 for the blocking twin.
 static Term udp_send_to_start(Env e, Term* f, IoWork* w, u64 by) {
   uint64_t hn = 0;
   w->hand = (intptr_t)io_hand_v(f[0]);

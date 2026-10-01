@@ -1,10 +1,9 @@
 // TCP
 // ===
 
-// TCP.accept's request is parked until the listener is readable; an accept
+// The loop parked the request until the listener was readable; an accept
 // that still finds no connection (the listener is non-blocking) parks
-// again, or, for try_, until its deadline w->time, then answers Wait{}.
-// The accepted socket is non-blocking for life.
+// again. The accepted socket is non-blocking for life.
 static Term tcp_accept_more(Env e, IoWork* w) {
   int fd  = (int)w->hand;
   u64 at  = w->time;
@@ -40,6 +39,7 @@ static void __attribute__((constructor)) tcp_accept_use(void) {
 
 #ifdef CID(TCP.try_accept)
 
+// w->time is the deadline, past which tcp_accept_more answers Wait{}.
 Term tcp_try_accept_run(Env e, Term* f, IoWork* w) {
   w->hand = (intptr_t)io_hand_v(f[0]);
   w->time = io_tick() + (u64)f[1] * 1000000ull;

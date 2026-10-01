@@ -66,10 +66,7 @@ static void chan_cut(IoWork** q, IoWork* w) {
   *q = p == w ? NULL : *q == w ? p : *q;
 }
 
-// A try_ waiter's deadline: a timer t on io_park whose hand is the waiter
-// and whose word its row. Past it, the waiter leaves the row and answers
-// Wait{rest}: its value, or Unit for a receiver. A wake that came first
-// cleared hand, and the timer just goes.
+// A try_ waiter's timer (hand: the waiter, 0 once woken; word: its row).
 static Term chan_late(Env e, IoWork* t) {
   IoWork* w = (IoWork*)t->hand;
   if (w == NULL) {
@@ -86,8 +83,7 @@ static Term chan_late(Env e, IoWork* t) {
 }
 
 // Parks the effect's activation on row with item: a sent value, or
-// TERM_HOLE for a receiver. A deadline at (0: none) parks a timer too,
-// and w->made keeps it.
+// TERM_HOLE for a receiver.
 static Term chan_park(ChanRow* row, IoWork* w, Term item, u64 at) {
   w->item = item;
   w->made = 0;
@@ -104,9 +100,7 @@ static Term chan_park(ChanRow* row, IoWork* w, Term item, u64 at) {
   return IO_PARK;
 }
 
-// Wakes the row's first waiter with x, Ready{x} for a try_ waiter, whose
-// timer it disarms (in O(1): the timer stays parked until its deadline);
-// answers the item it parked with.
+// Wakes the first waiter with x, as Ready{x} if try_ (disarming its timer).
 static Term chan_wake(Env e, ChanRow* row, Term x) {
   IoWork* a    = io_pop(&row->wait);
   Term    item = a->item;
@@ -152,8 +146,7 @@ static void chan_shut(Env e, ChanRow* row) {
   }
 }
 
-// The send that does not wait: Done{} once the channel takes v, Fail{v} if
-// it is closed, IO_PARK if it would wait (v is still the caller's).
+// Sends without waiting: Done{}, Fail{v} if closed, IO_PARK if it would.
 static Term chan_put(Env e, ChanRow* row, Term v) {
   if (row == NULL || row->shut) {
     return io_box(e, CID(Fail), v);
@@ -170,8 +163,7 @@ static Term chan_put(Env e, ChanRow* row, Term v) {
   return IO_PARK;
 }
 
-// The receive that does not wait: Some{v}, None{} once the channel is
-// closed and drained, IO_PARK if it would wait.
+// Receives without waiting: Some{v}, None{} at the end, IO_PARK if it would.
 static Term chan_get(Env e, ChanRow* row) {
   if (row == NULL) {
     return chan_none;
@@ -193,8 +185,7 @@ static Term chan_get(Env e, ChanRow* row) {
   return IO_PARK;
 }
 
-// A try_ answers Ready{x} at once, Wait{rest} at once if ms is 0, else
-// parks until a wake (Ready) or the deadline (Wait).
+// Ready{x} now, Wait{rest} now if ms is 0, else parks until a wake or ms.
 static Term chan_try(Env e, ChanRow* row, IoWork* w, Term x, Term item,
   u32 ms) {
   if (x != IO_PARK) {

@@ -1,11 +1,9 @@
 // TCP
 // ===
 
-// TCP.accept's request is parked until the listener is readable; an accept
+// The loop parked the request until the listener was readable; an accept
 // that still finds no connection (the listener is non-blocking) parks
-// again, or, for try_, until its deadline at, then answers Wait{}. at is
-// undefined for the blocking twin. The accepted socket is non-blocking for
-// life.
+// again. The accepted socket is non-blocking for life.
 function tcp_accept_with(listener, k, at) {
   const ready = (r) => at === undefined ? r : { $: CID(Ready), value: r };
   const sys = io_sys();
@@ -41,6 +39,7 @@ function tcp_accept_need() {
   return { read: true };
 }
 
+// try_ passes a deadline at: past it, an accept that would wait answers Wait{}.
 function tcp_try_accept(listener, ms, k) {
   return tcp_accept_with(listener, k, performance.now() + Number(ms));
 }

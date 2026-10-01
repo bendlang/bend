@@ -15,9 +15,7 @@ function chan_rest(item) {
   return item === CHAN_RECV ? { $: CID(Unit) } : item;
 }
 
-// Wakes the first waiter with x, Ready{x} for a try_ waiter, whose timer
-// stays parked until its deadline: late then finds the waiter gone and
-// does nothing. Answers the item it parked with.
+// Wakes the first waiter with x, as Ready{x} if try_ (its late then idles).
 function chan_wake(row, x) {
   const w = row.wait.shift();
   if (w.late !== undefined) {
@@ -35,8 +33,7 @@ function chan_take(row) {
   return v;
 }
 
-// A handle is the row (a stale copy keeps it, shut). Parked receivers
-// answer None{}, parked senders Fail{value}.
+// A handle is the row (a stale copy keeps it, shut).
 function chan_shut(row) {
   row.shut = true;
   while (row.wait.length > 0) {
@@ -46,8 +43,7 @@ function chan_shut(row) {
   }
 }
 
-// Parks k on row with item; a deadline ms from now parks a timer too,
-// which takes the waiter off the row and answers Wait{rest}.
+// Parks k on row with item; with ms, a timer too, whose late answers Wait.
 function chan_park(row, k, item, ms) {
   const w = { cont: k, item: item };
   if (ms !== undefined) {
@@ -65,8 +61,7 @@ function chan_park(row, k, item, ms) {
   return undefined;
 }
 
-// The send that does not wait: Done{} once the channel takes the value,
-// Fail{value} if it is closed, undefined if it would wait.
+// Sends without waiting: Done{}, Fail{v} if closed, undefined if it would.
 function chan_put(row, value) {
   if (row.shut) {
     return { $: CID(Fail), error: value };
@@ -82,8 +77,7 @@ function chan_put(row, value) {
   return undefined;
 }
 
-// The receive that does not wait: Some{value}, None{} once the channel is
-// closed and drained, undefined if it would wait.
+// Receives without waiting: Some{v}, None{} at the end, undefined if not.
 function chan_get(row) {
   if (row.ring.length > 0) {
     return { $: CID(Some), value: chan_take(row) };
@@ -97,8 +91,7 @@ function chan_get(row) {
   return undefined;
 }
 
-// A try_ answers Ready{x} at once, Wait{rest} at once if ms is 0, else
-// parks until a wake (Ready) or the deadline (Wait).
+// Ready{x} now, Wait{rest} now if ms is 0, else parks until a wake or ms.
 function chan_try(row, x, item, ms, k) {
   if (x !== undefined) {
     return { $: CID(Ready), value: x };
