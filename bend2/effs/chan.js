@@ -16,16 +16,11 @@ function chan_rest(item) {
 }
 
 // Wakes the first waiter with x, Ready{x} for a try_ waiter, whose timer
-// goes (unless it already fired and waits its turn: late then finds the
-// waiter gone and does nothing); answers the item it parked with.
+// stays parked until its deadline: late then finds the waiter gone and
+// does nothing. Answers the item it parked with.
 function chan_wake(row, x) {
   const w = row.wait.shift();
   if (w.late !== undefined) {
-    const ws = globalThis.BEND_IO.waits;
-    const i = ws.findIndex((t) => t.more === w.late);
-    if (i >= 0) {
-      ws.splice(i, 1);
-    }
     x = { $: CID(Ready), value: x };
   }
   io_push(w.cont, x, false);

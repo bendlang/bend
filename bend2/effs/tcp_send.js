@@ -18,14 +18,13 @@ function tcp_send_with(socket, b, k, make, at) {
       const n = Number(sys.send(fd, sys.ptr(part), part.length, 0));
       if (n < 0) {
         const code = sys.errno();
-        const rest = make(part, part.length);
         if (code !== again) {
           const fail = io_fail(code);
-          fail.error = io_tup(fail.error, rest);
+          fail.error = io_tup(fail.error, make(part, part.length));
           return io_tup(socket, ready(fail));
         }
         if (at !== undefined && performance.now() >= at) {
-          return io_tup(socket, { $: CID(Wait), rest: rest });
+          return io_tup(socket, { $: CID(Wait), rest: make(part, part.length) });
         }
         io_park_on(fd, true, k, () => go(off), at);
         return undefined;
