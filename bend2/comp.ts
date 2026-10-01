@@ -3619,8 +3619,6 @@ static u32    bank_lock;
 
 static u32             pool_size;
 static u32             pool_row;
-static bool            pool_grow;
-static u32             pool_tick;
 static u32             pool_done;
 static pthread_mutex_t pool_lock = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t  pool_wake = PTHREAD_COND_INITIALIZER;
@@ -4790,40 +4788,45 @@ static Term* pool_stack(void) {
   return (Term*)p;
 }
 
+static u32 pool_rows(Env e, DEV Term* stk) {
+  u32 n = 0;
+  for (;;) {
+    u32 c = a32_add(&pool_row, 1);
+    u32 r = c & 2047;
+    if (r >= (c >> 11 & 2047)) {
+      a32_sub_rel(&pool_done, n);
+      return c >> 23;
+    }
+    a32_acq(&pool_row);
+    if (c >> 22 & 1) {
+      row_grow(e, stk, r * CUBE_T, 1, CUBE_T);
+    } else {
+      u32  step = CUBE_T / LINE;
+      u32 row  = r / step * CUBE_T;
+      for (u32 rg = row + r % step; rg < row + CUBE_T; rg += step) {
+        u32 put0 = a32_load(ring_put(e.mem, rg));
+        while (*ring_get(e.mem, rg) != put0 && !err_seen(e.mem)) {
+          monk_step(e, stk, rg, put0, rg, 0, NULL);
+        }
+      }
+    }
+    n += 1;
+  }
+}
+
 static void* pool_work(void* arg) {
   Term* stk  = pool_stack();
   u32   seen = 0;
   for (;;) {
+    for (u32 s = 0; s < 128 && a32_load(&pool_row) >> 23 == seen; s += 1) {
+      sched_yield();
+    }
     pthread_mutex_lock(&pool_lock);
-    while (pool_tick == seen) {
+    while (a32_load(&pool_row) >> 23 == seen) {
       pthread_cond_wait(&pool_wake, &pool_lock);
     }
-    seen = pool_tick;
     pthread_mutex_unlock(&pool_lock);
-    Env e = { CORPUS, ALC[1 + (u32)(uintptr_t)arg] };
-    for (;;) {
-      u32 r = a32_add(&pool_row, 1);
-      if (r >= (pool_grow ? CUBE_G : LANES / LINE)) {
-        break;
-      }
-      if (pool_grow) {
-        row_grow(e, stk, r * CUBE_T, 1, CUBE_T);
-      } else {
-        u32  step = CUBE_T / LINE;
-        u32 row  = r / step * CUBE_T;
-        for (u32 rg = row + r % step; rg < row + CUBE_T; rg += step) {
-          u32 put0 = a32_load(ring_put(e.mem, rg));
-          while (*ring_get(e.mem, rg) != put0 && !err_seen(e.mem)) {
-            monk_step(e, stk, rg, put0, rg, 0, NULL);
-          }
-        }
-      }
-    }
-    if (a32_sub_rel(&pool_done, 1) == 1) {
-      pthread_mutex_lock(&pool_lock);
-      pthread_cond_broadcast(&pool_wake);
-      pthread_mutex_unlock(&pool_lock);
-    }
+    seen = pool_rows((Env){ CORPUS, ALC[(uintptr_t)arg] }, stk);
   }
 }
 
@@ -4833,7 +4836,7 @@ OUTLINE void pool_open(void) {
     return;
   }
   up = true;
-  for (u32 w = 0; w < pool_size; w += 1) {
+  for (u32 w = 1; w < pool_size; w += 1) {
     pthread_t tid;
     if (pthread_create(&tid, NULL, pool_work, (void*)(uintptr_t)w)) {
       err_fail("pthread_create");
@@ -4871,17 +4874,19 @@ static long cpu_count(void) {
   return n;
 }
 
-OUTLINE void pool_turn(bool grow) {
-  pool_grow = grow;
-  a32_store(&pool_row, 0);
-  a32_store(&pool_done, pool_size);
+OUTLINE void pool_turn(bool grow, u32 rows) {
+  static u32 turn;
+  u32 n = (rows < CUBE_G ? rows : CUBE_G) * (grow ? 1 : CUBE_T / LINE);
+  turn += 1;
+  a32_store(&pool_done, n);
   pthread_mutex_lock(&pool_lock);
-  pool_tick += 1;
+  a32_store_rel(&pool_row, turn << 23 | grow << 22 | n << 11);
   pthread_cond_broadcast(&pool_wake);
-  while (a32_load_acq(&pool_done) != 0) {
-    pthread_cond_wait(&pool_wake, &pool_lock);
-  }
   pthread_mutex_unlock(&pool_lock);
+  pool_rows((Env){ CORPUS, ALC[0] }, io_stk);
+  while (a32_load_acq(&pool_done) != 0) {
+    sched_yield();
+  }
 }
 
 // Gpu
@@ -5201,13 +5206,16 @@ static void cube_run(u64* H, bool gpu) {
     if (gpu) {
       gpu_pass(f);
     } else {
+      u32 rows = f;
       if (f < pool_size) {
         row_grow((Env){ H, ALC[0] }, io_stk, 0, CUBE_G, pool_size);
+        rows = CUBE_G;
       }
       if (f < CUBE) {
-        pool_turn(true);
+        pool_turn(true, rows);
       }
-      pool_turn(false);
+      f = a32_load(a32_at(H, H_CURSOR));
+      pool_turn(false, f > rows ? f : rows);
     }
     u32 ec = a32_load(a32_at(H, H_ERROR_CODE));
     if (ec != 0) {
