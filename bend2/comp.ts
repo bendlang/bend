@@ -32,6 +32,7 @@ type Seg = {
   ks: Kind[];
   frame: { pop: number; at: number[] } | null;
   refs: Set<string>;
+  calls: string[];
   spin?: boolean;
   fork?: boolean;
 };
@@ -99,9 +100,12 @@ type Fun = { n: number; h: HTerm | null; live: Dom[]; lays: Lay[]; ret: Lay };
 // so that no file declares them. FOLD_FUEL caps the nodes that unfolds
 // add to a segment, so a literal-bounded loop does not unroll into its
 // caller. A spin of SPIN_FAR lines is a call (at 128, raytrace lost
-// 31% on PAR-CPU). WIDE is the widest flat layout or segment; a node past
-// it pads to its size class and keeps 240 plus log2 of it in CID_T. An
-// argument nested past TPL_DEEP brackets goes to a local (clang allows 256).
+// 31% on PAR-CPU). On the devices, a spin with a loop that calls spins is
+// shared when one function runs it twice: a lane runs the copies in turn,
+// and lanes in different copies cannot run together. WIDE is the widest
+// flat layout or segment; a node past it pads to its size class and keeps
+// 240 plus log2 of it in CID_T. An argument nested past TPL_DEEP brackets
+// goes to a local (clang allows 256).
 
 const CLO_APPLY = "Clo~apply";
 
@@ -1571,7 +1575,7 @@ function spare_flush(fl: File): void {
 function seg_new(name: string, ret: Lay, params: string[],
   ks: Kind[] = params.map(() => "w64"), frame: Seg["frame"] = null): Seg {
   return { fid: seg_fid(name), def: name, ret, lines: [], params, ks, frame,
-    refs: new Set() };
+    refs: new Set(), calls: [] };
 }
 
 function seg_fid(k: Name): string {
@@ -2236,6 +2240,7 @@ function emit_fuse(fl: File, ck: Spine, dst: Val | null, tail = false): void {
   }
   const out = emit_dst(fl, ret);
   const name = emit_native(fl, k, ers);
+  fl.seg.calls.push(name);
   const o = name_local(fl, "o");
   file_push(fl, `Term ${o}[${out.ws.length}];`);
   const ks = lays.flatMap((l) => l.ks);
@@ -2906,6 +2911,24 @@ export function compile_book(book: Bend.Book): string {
   const dev = reach([...[...fl.bangs].map(seg_fid), ...wide ? fl.clos : []]);
   fl.segs = fl.segs.filter((s) => live.has(s.fid));
   fl.spins = fl.spins.filter((s) => live.has(s.fid));
+  const deep = new Set<string>();
+  fl.spins.forEach((s) => fl.spins.some((t) => t !== s && s.refs.has(t.fid)
+    && (s.spin || deep.has(t.fid))) && deep.add(s.fid));
+  const roots = new Map<string, Map<string, number>>();
+  for (const s of [...fl.spins].reverse()) {
+    const n = new Map<string, number>();
+    for (const c of [...fl.segs, ...fl.spins]) {
+      const k = c.calls.filter((f) => f === s.fid).length;
+      for (const [r, m] of roots.get(c.fid) ?? [[c.fid, 1] as const]) {
+        n.set(r, (n.get(r) ?? 0) + k * m);
+      }
+    }
+    if (deep.has(s.fid) && Math.max(...n.values()) > 1) {
+      s.lines[0] = s.lines[0].replace(/^INLINE/, "SHARE");
+    }
+    roots.set(s.fid, s.lines[0].startsWith("INLINE") ? n
+      : new Map([[s.fid, 1]]));
+  }
   const desc = show === null ? [] : ["#if !DEVICE",
     `static const u32 SHOW_DESC[] = { ${show.map((c) =>
       typeof c === "string" ? cid_mac(c) : c).join(", ")} };`,
@@ -3470,6 +3493,7 @@ using namespace metal;
 #define FAR static __attribute__((noinline))
 
 #if DEVICE
+#define SHARE      FAR
 #define LOCK(l)
 #define UNLOCK(l)
 #define WL_CASE(F) case F:
@@ -3477,6 +3501,7 @@ using namespace metal;
 #define WL_JMP(F)  { fid = (F); break; }
 #define WL_DYN     WL_JMP
 #else
+#define SHARE      INLINE
 #define LOCK(l)    while (__atomic_exchange_n(&(l), 1, __ATOMIC_ACQUIRE)) {}
 #define UNLOCK(l)  __atomic_store_n(&(l), 0, __ATOMIC_RELEASE)
 #define WL_FN      static PRESERVE(preserve_none) __attribute__((noinline)) Term
