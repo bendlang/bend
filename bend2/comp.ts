@@ -5972,8 +5972,7 @@ OUTLINE void io_loop(u64* H) {
     if ((n & 63) == 0 && io_busy != 0) {
       io_take(e);
     }
-    // Steps that wake each other never empty io_runs, so the loop also
-    // glances at its waits when a timer is due, and every 10 ms for fds.
+    // A busy loop still checks due timers, and fds every 10 ms (#1122).
     if ((n & 63) == 0 && io_park != NULL) {
       u64 now = io_tick();
       if (now >= look || io_park->next->time - 1 < now) {
