@@ -68,7 +68,7 @@ type File = {
   tails: Map<Name, Set<Name>>;
   img: string[];
   lits: Map<string, number>;
-  consts: Map<string, Map<HTerm, Val>>;
+  consts: Map<Lay, Map<HTerm, Val>>;
   fresh: Map<string, number>;
   brwl: Map<string, string>;
   seg: Seg;
@@ -2376,7 +2376,7 @@ function emit_ctr(fl: File, x: Of<"Ctr">, ty: HTerm | null,
     facts_ctr(fl, fl.book.ctrs[x.k], adt.x);
   }
   const pos = at ?? lay_of(fl.book, adt);
-  const seen = memo(fl.consts, JSON.stringify(pos), () => new Map());
+  const seen = memo(fl.consts, pos, () => new Map());
   const got = seen.get(x);
   if (got !== undefined) {
     return got;
