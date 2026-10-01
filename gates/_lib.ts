@@ -56,6 +56,8 @@ let held = "";
 
 const staged = new Map<string, Promise<Exec>>();
 
+const opened = new Map<number, Promise<Exec>>();
+
 // Exec
 // ====
 
@@ -107,17 +109,23 @@ export async function ssh(node: number, script: string,
 // reads it there: 48 shards of one pack cost one upload, not 48.
 async function hoc_ssh(node: number, script: string,
   input?: Buffer | string, timeout?: number): Promise<Exec> {
+  const open = await hoc_open(node);
+  if (open.code !== 0) {
+    return open;
+  }
   let from = "";
   if (input !== undefined) {
     const sum = crypto.createHash("sha1").update(input).digest("hex");
     const up = staged.get(sum) ?? exec("ssh", [...hoc_mux(node), ...HOC_HUB,
-      "d=$HOME/.bend-gate; mkdir -p $d && find $d -type f -mmin +60 -delete"
-      + " && cat > $d/" + sum + ".$$ && mv $d/" + sum + ".$$ $d/" + sum],
-      input);
+      "d=$HOME/.bend-gate; mkdir -p $d && { find $d -type f -mmin +60"
+      + " -delete 2>/dev/null; cat > $d/" + sum + ".$$; } && mv $d/" + sum
+      + ".$$ $d/" + sum], input);
     staged.set(sum, up);
     const got = await up;
     if (got.code !== 0) {
-      staged.delete(sum);
+      if (staged.get(sum) === up) {
+        staged.delete(sum);
+      }
       return got;
     }
     from = " < $HOME/.bend-gate/" + sum;
@@ -133,6 +141,22 @@ async function hoc_ssh(node: number, script: string,
 function hoc_mux(node: number): string[] {
   return MUX.map((o) => o.startsWith("ControlPath=") ? "ControlPath=/tmp/"
     + "bend-hoc-nodes-" + String(Math.floor(node / 10)) : o);
+}
+
+// One session opens a node's mux before the rest use it: sessions that
+// start together on a closed mux would each dial the bastion on its own,
+// and past its startup limit it drops them.
+function hoc_open(node: number): Promise<Exec> {
+  const mux = Math.floor(node / 10);
+  const got: Promise<Exec> = opened.get(mux) ?? exec("ssh",
+    [...hoc_mux(node), ...HOC_HUB, "true"]).then((g) => {
+    if (g.code !== 0 && opened.get(mux) === got) {
+      opened.delete(mux);
+    }
+    return g;
+  });
+  opened.set(mux, got);
+  return got;
 }
 
 function sleep(ms: number): Promise<void> {
@@ -153,8 +177,7 @@ export async function node_lock(): Promise<number[]> {
   const nodes = slot_lock();
   const gots = await Promise.all(HOC === ""
     ? [exec("ssh", [...MUX, "cluster", "true"])]
-    : [...new Set(nodes.map((n) => Math.floor(n / 10)))].map((m) =>
-      exec("ssh", [...hoc_mux(10 * m), ...HOC_HUB, "true"])));
+    : nodes.map(hoc_open));
   const got = gots.find((g) => g.code !== 0);
   if (got !== undefined) {
     throw new Error("the bastion refused the mux session (is id_rsa in the"
