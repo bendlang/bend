@@ -3,8 +3,7 @@
 
 // The request parks until the socket is readable, so a backlog never keeps
 // the loop from its timers; a recv that still finds no datagram (the socket
-// is non-blocking) parks again, or, for try_, until its deadline at, then
-// answers Wait{}. at is undefined for the blocking twin.
+// is non-blocking) parks again.
 function udp_recv_from_with(socket, max, k, at) {
   const ready = (r) => at === undefined ? r : { $: CID(Ready), value: r };
   const sys = io_sys();
@@ -39,6 +38,7 @@ function udp_recv_from(socket, max, k) {
   return udp_recv_from_with(socket, max, k);
 }
 
+// try_ passes a deadline at: past it, a recv that would wait answers Wait{}.
 function udp_try_recv_from(socket, max, ms, k) {
   return udp_recv_from_with(socket, max, k, performance.now() + Number(ms));
 }

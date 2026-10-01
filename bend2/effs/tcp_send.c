@@ -2,10 +2,7 @@
 // ===
 
 // Sends what is left; a full socket (non-blocking, so EAGAIN) parks the
-// computation until the socket is writable, or, for try_, until its
-// deadline w->time, then answers Wait{rest}. A failure answers
-// Fail{(error, rest)}. rest, what the kernel did not take, is a String
-// (io_str) or a List of bytes (io_list), as make builds it.
+// computation until the socket is writable, and the loop resumes here.
 static Term tcp_send_with(Env e, IoWork* w, IoPack more,
   Term (*make)(Env, const char*, u64)) {
   int fd = (int)w->hand;
@@ -36,7 +33,7 @@ static Term tcp_send_more(Env e, IoWork* w) {
   return tcp_send_with(e, w, tcp_send_more, io_str);
 }
 
-// at is the try_ deadline, 0 for the blocking twins.
+// at is the try_ deadline (past it, Wait{rest}), 0 for the blocking twins.
 static Term tcp_send_start(Env e, Term* f, IoWork* w, u64 at) {
   w->hand = (intptr_t)io_hand_v(f[0]);
   w->data = io_cstr(e, f[1], &w->size);
@@ -52,8 +49,7 @@ static Term tcp_send_bytes_more(Env e, IoWork* w) {
   return tcp_send_with(e, w, tcp_send_bytes_more, io_list);
 }
 
-// A value past 255 fails with EINVAL before any byte is sent, and the
-// list comes back whole: it is read in place before it is taken.
+// A value past 255 fails with EINVAL before any byte is sent, list kept.
 static Term tcp_send_bytes_start(Env e, Term* f, IoWork* w, u64 at) {
   w->hand = (intptr_t)io_hand_v(f[0]);
   for (Term s = f[1]; term_aux(s) == CID(Con);) {

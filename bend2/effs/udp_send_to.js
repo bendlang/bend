@@ -2,10 +2,7 @@
 // ===
 
 // A datagram goes whole or not at all; a full send buffer (non-blocking,
-// so EAGAIN) parks the computation until the socket is writable, or, for
-// try_, until its deadline at, then answers Wait{data}. A failure answers
-// Fail{(error, data)}: the datagram comes back either way. at is
-// undefined for the blocking twin.
+// so EAGAIN) parks the computation until the socket is writable.
 function udp_send_to_with(socket, host, port, data, k, at) {
   const ready = (r) => at === undefined ? r : { $: CID(Ready), value: r };
   const fail = (code) => {
@@ -42,6 +39,7 @@ function udp_send_to(socket, host, port, data, k) {
   return udp_send_to_with(socket, host, port, data, k);
 }
 
+// try_ passes a deadline at: past it, a send that would wait is Wait{data}.
 function udp_try_send_to(socket, host, port, data, ms, k) {
   return udp_send_to_with(socket, host, port, data, k,
     performance.now() + Number(ms));

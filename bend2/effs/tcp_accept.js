@@ -3,9 +3,8 @@
 
 // The request parks until the listener is readable, so a backlog never
 // keeps the loop from its timers; an accept that still finds no connection
-// (the listener is non-blocking) parks again, or, for try_, until its
-// deadline at, then answers Wait{}. at is undefined for the blocking twin.
-// The accepted socket is non-blocking for life.
+// (the listener is non-blocking) parks again. The accepted socket is
+// non-blocking for life.
 function tcp_accept_with(listener, k, at) {
   const ready = (r) => at === undefined ? r : { $: CID(Ready), value: r };
   const sys = io_sys();
@@ -38,6 +37,7 @@ function tcp_accept(listener, k) {
   return tcp_accept_with(listener, k);
 }
 
+// try_ passes a deadline at: past it, an accept that would wait answers Wait{}.
 function tcp_try_accept(listener, ms, k) {
   return tcp_accept_with(listener, k, performance.now() + Number(ms));
 }
