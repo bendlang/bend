@@ -190,14 +190,16 @@ function safe_book(book: Book): { text: string; oos: Array<[Name, string]> } {
 // a specialized parameter of a finite type (Quant, or a datatype whose
 // constructors have no fields) at each value, any other at an opaque
 // constant k~p of its type, which models read at its model (as bend2
-// checks a template: its body holds at every argument)
-function root_cols(e: Safe, k: Name, T: HTerm, j: number): Cols[] {
+// checks a template: its body holds at every argument); cs are the
+// constants so far, whose models a law of them may need refit
+function root_cols(e: Safe, k: Name, T: HTerm, j: number, cs: Name[] = []): Cols[] {
   const sp = spec_of(e, k);
   const F = B.term_wnf(e.book, T);
   if (j === sp.length || F.$ !== "All") {
     return [[]];
   }
-  const at = (v: HTerm | null): Cols[] => root_cols(e, k, F.B(v ?? B.Var(F.k, j)), j + 1).map((cs) => [v, ...cs]);
+  const at = (v: HTerm | null, c?: Name): Cols[] =>
+    root_cols(e, k, F.B(v ?? B.Var(F.k, j)), j + 1, c === undefined ? cs : [...cs, c]).map((vs) => [v, ...vs]);
   if (!sp[j]) {
     return at(null);
   }
@@ -206,7 +208,7 @@ function root_cols(e: Safe, k: Name, T: HTerm, j: number): Cols[] {
   const vs = A.$ === "Qnt" ? [B.None(), B.Lone(), B.Many()].map((q) => B.Qua(q))
     : adt !== null && adt.c.every((c) => B.term_wnf(e.book, c.T).$ !== "All") ? adt.c.map((c) => B.Ctr(c.k, [])) : null;
   if (vs !== null) {
-    return vs.flatMap(at);
+    return vs.flatMap((v) => at(v));
   }
   if (mentions(B.term_lower(F.A, j), (i) => i >= 0 && i < j)) {
     oos("a specialized parameter whose type names a parameter");
@@ -220,8 +222,34 @@ function root_cols(e: Safe, k: Name, T: HTerm, j: number): Cols[] {
   const m = model(e, F.A);
   if (m !== null) {
     e.mb.tlds[c] = { ...def, v: m };
+  } else {
+    refit(e, [...cs, c], 0);
   }
-  return at(B.Ref(c));
+  return at(B.Ref(c), c);
+}
+
+// models of the constants cs from the i-th on that hold together: the
+// first model of le is λx y. False{}, and a law {le(x, y) == True{}} has
+// none at it. A constant left without one goes without, out of scope
+function refit(e: Safe, cs: Name[], i: number): boolean {
+  if (i === cs.length) {
+    return true;
+  }
+  const def = e.book.tlds[cs[i]] as Def;
+  for (const proj of [false, true]) {
+    let n = 0;
+    for (const v of model_at(e, def.T, 0, [], [], proj)) {
+      e.mb.tlds[cs[i]] = { ...def, v };
+      if (refit(e, cs, i + 1)) {
+        return true;
+      }
+      if (++n === MODELS) {
+        break;
+      }
+    }
+  }
+  delete e.mb.tlds[cs[i]];
+  return false;
 }
 
 // item_ref, with a failure kept as the item's reason
@@ -296,7 +324,8 @@ function item_emit(e: Safe, k: Name, cols: Cols, n: string): void {
 // its type
 function def_emit(e: Safe, k: Name, cols: Cols, n: string, tld: Def): void {
   const T = type_drop(e, tld.T, cols);
-  const t = tld.e !== undefined ? null : model(e, T) ?? oos("no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + B.name_key(k));
+  const m = Object.hasOwn(e.mb.tlds, k) ? (e.mb.tlds[k] as Def).v : null;
+  const t = tld.e !== undefined ? null : m ?? model(e, T) ?? oos("no model for " + (tld.i === undefined ? "" : (tld.b === true ? "base's" : "the") + " foreign def ") + B.name_key(k));
   const s = { ...scope_nil(), self: n };
   const To = term(e, s, T, false);
   e.out.push([n, To, t === null ? arm(e, s, k, cols, []) : tree(e, s, t, []), t !== null]);
@@ -423,29 +452,57 @@ function type_drop(e: Safe, T: HTerm, cols: Cols): HTerm {
 
 // Model
 // -----
-// a model of type T: λs around a model of the codomain, a datatype's
-// first constructor whose fields all have one (none for a datatype
-// already on the path), Unit for a kind, {==} for an equation bend2
-// converts, else a live λ variable of type T (the codomain's own, so it
-// is used once); none for an empty type. A projection model takes that
-// variable first: a law like {a == sub(add(a, b), b)} holds of it, one
-// like {add(a, b) == add(b, a)} of a constant. It reads the model book,
-// as the kernel checks a model with every opaque def at its own
+// the models of type T, best first: λs around a model of the codomain,
+// a datatype's constructors whose fields all have one (none for a
+// datatype already on the path), Unit for a kind, {==} for an equation
+// bend2 converts, else a live λ variable of type T (the codomain's own,
+// so it is used once); none for an empty type. A live λ of a datatype
+// whose constructors have no fields, with no model under a variable, is a
+// match, whose arms read the constructor: {x == y : A} at A = Unit. A
+// projection model takes that variable first: a law like
+// {a == sub(add(a, b), b)} holds of it, one like {add(a, b) == add(b, a)}
+// of a constant. It reads the model book, as the kernel checks a model
+// with every opaque def at its own
+
+// the models refit tries per constant, and per λ
+const MODELS = 8;
 
 function model(e: Safe, T: HTerm): HTerm | null {
-  return model_at(e, T, 0, [], [], false) ?? model_at(e, T, 0, [], [], true);
+  return nth(model_at(e, T, 0, [], [], false), 0) ?? nth(model_at(e, T, 0, [], [], true), 0);
 }
 
-function model_at(e: Safe, T: HTerm, d: number, path: string[], hs: Array<[HTerm, HTerm]>, proj: boolean): HTerm | null {
+function nth(ms: Generator<HTerm>, i: number): HTerm | null {
+  for (const m of ms) {
+    if (i-- === 0) {
+      return m;
+    }
+  }
+  return null;
+}
+
+function* model_at(e: Safe, T: HTerm, d: number, path: string[], hs: Array<[HTerm, HTerm]>, proj: boolean): Generator<HTerm> {
   const F = B.term_wnf(e.mb, T);
   const hyp = (): HTerm | null => hs.find(([, A]) => B.term_compare("EQ", e.mb, A, F, d))?.[0] ?? null;
   switch (F.$) {
     case "Typ": {
-      return B.ADT("Unit", []);
+      yield B.ADT("Unit", []);
+      return;
     }
     case "All": {
-      const f = (x: HTerm): HTerm | null => model_at(e, F.B(x), d + 1, path, F.q.$ === "None" ? hs : [...hs, [x, F.A]], proj);
-      return f(B.Var(F.k, d)) === null ? null : B.Ann(B.Lam(F.k, d, (x: HTerm) => f(x) as HTerm), F);
+      const f = (x: HTerm): Generator<HTerm> => model_at(e, F.B(x), d + 1, path, F.q.$ === "None" ? hs : [...hs, [x, F.A]], proj);
+      let i = 0;
+      for (; i < MODELS && nth(f(B.Var(F.k, d)), i) !== null; i++) {
+        const j = i;
+        yield B.Ann(B.Lam(F.k, d, (x: HTerm) => nth(f(x), j) as HTerm), F);
+      }
+      const A = B.term_wnf(e.mb, F.A);
+      const cs = i === 0 && F.q.$ !== "None" && A.$ === "ADT" && A.r.length === 0 ? (e.mb.tlds[A.k] as ADT).c : [];
+      const ms = cs.map((c) => B.term_wnf(e.mb, B.tele_fill(e.mb, c.T, (A as { x: HTerm[] }).x, B.ctx_nil())).$ === "All" ? null
+        : nth(model_at(e, F.B(B.Ann(B.Ctr(c.k, []), A)), d, path, hs, proj), 0));
+      if (ms.length > 0 && !ms.includes(null)) {
+        yield B.Ann(cs.reduceRight<HTerm>((m, c, j) => B.Mat(c.k, ms[j] as HTerm, m), B.Efq()), F);
+      }
+      return;
     }
     case "ADT": {
       const key = B.term_key(B.term_lower(F, d));
@@ -455,21 +512,31 @@ function model_at(e: Safe, T: HTerm, d: number, path: string[], hs: Array<[HTerm
         const xs: HTerm[] = [];
         let U = B.term_wnf(e.mb, B.tele_fill(e.mb, c.T, F.x, B.ctx_nil()));
         let x: HTerm | null = null;
-        while (U.$ === "All" && (x = model_at(e, U.A, d, [...path, key], [], proj)) !== null) {
+        while (U.$ === "All" && (x = nth(model_at(e, U.A, d, [...path, key], [], proj), 0)) !== null) {
           xs.push(x);
           U = B.term_wnf(e.mb, U.B(x));
         }
         if (U.$ !== "All") {
-          return B.Ann(B.Ctr(c.k, xs), F);
+          yield B.Ann(B.Ctr(c.k, xs), F);
         }
       }
-      return hyp();
+      const x = hyp();
+      if (x !== null) {
+        yield x;
+      }
+      return;
     }
     case "Eql": {
-      return B.term_compare("EQ", e.mb, F.a, F.b, d) ? B.Ann(B.Rfl(), F) : null;
+      if (B.term_compare("EQ", e.mb, F.a, F.b, d)) {
+        yield B.Ann(B.Rfl(), F);
+      }
+      return;
     }
     default: {
-      return hyp();
+      const x = hyp();
+      if (x !== null) {
+        yield x;
+      }
     }
   }
 }
