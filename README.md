@@ -17,46 +17,51 @@ This fork develops the compiler in [`selfhost/`](selfhost/README.md), on branch
 Ordinary compilation runs the Bend implementation without a TypeScript fallback;
 the target remains pinned to **0187512, after Bend 2.0.34**.
 
-**[Phase35 checked09 is installed](implementation/phase35/release-09.md)** and
+**[Phase36 checked03 is installed](implementation/phase36/release-03.md)** and
 passes release verification and all **42 ordinary/relocated CLI checks**. The
-[full fifteen-point comparison](implementation/phase35/README.md) measures
-**6.865× faster symbolic regression, 5.475× faster ray tracing, 2.360× faster
-array fold and 1.278× faster original edit distance** versus the same-run
-Phase32 baseline. Their remaining TypeScript gaps are **14.021×, 54.781×,
-3.497× and 3.259×**. These are fixed-program measurements, not average application
-speed. The [profiles](implementation/phase35/profile-findings.md) identify the
-next targets: repeated guards and generic expression construction.
+[unchanged fifteen-point comparison](implementation/phase36/execution-findings.md)
+measures **3.653× faster symbolic regression and 2.319× faster ray tracing**
+versus the previous Phase35 release. Their remaining TypeScript gaps are
+**3.834× and 23.473×**. The other thirteen points have overlapping ranges; lexer
+and tree sorting still have large gaps. These fixed inputs do not define average
+application speed.
 
-Normal checked compilation is a separate cost: pair changes **+0.72%** with
-overlapping ranges; Mandelbrot, symreg and raytrace take **8.17%, 30.09% and
-34.40% longer**. The [admission decision](implementation/phase35/performance-admission.md)
-accepts those measured costs, larger generated modules and **979 added Bend
-lines** for the output-execution gains. The compiler now has **18,050 physical
-Bend lines in 68 modules**; this phase is not a source simplification.
+The changes reuse guards within a proved pure invocation and lower private tree
+production and selectors directly. The [profiles](implementation/phase36/profile-findings.md)
+confirm that repeated guard and generator costs fall; generic dispatch remains
+an important target. Normal compilation is measured separately: request medians
+change −1.56% pair, +0.42% Mandelbrot, +4.50% symreg and +4.02% ray, with overlapping
+three-sample ranges. The [admission](implementation/phase36/performance-admission.md)
+accepts those possible costs and **124 added Bend lines (0.687%)**. The compiler
+now has **18,174 physical Bend lines in 69 modules**, with no new types or laws.
 
-The [gate closure](implementation/phase35/final-conformance/gates.md) records
-36 focused checks, 15 new owner-control groups, exact agreement with the frozen
-pinned reference on **3,026 main + 196 broader frontend observations**, inherited
-execution/library controls and the installed CLI. The 81-row backend pilot
-preserves **69 pass, 8 not applicable and 4 shared failures**. These scopes do
-not establish full backend, GPU or independent proof-kernel conformance; see
-[conformance](selfhost/CONFORMANCE.md). No new self-emitted fixed point is claimed.
+The [gate closure](implementation/phase36/final-conformance/gates.md) records exact
+agreement on **3,026 main + 196 broader frontend observations**, inherited
+execution/library controls and the installed CLI. Seven new owner-control groups
+separately cover proof reuse, callbacks, complete trees, aliases and selectors.
+The backend pilot preserves **69 pass, 8 not applicable and 4 shared failures**.
+These scopes do not establish full backend, GPU or independent proof-kernel
+conformance; see [conformance](selfhost/CONFORMANCE.md). No new self-emitted fixed
+point is claimed.
 
 Use the [program execution benchmarks](selfhost/tools/performance/programs/README.md)
-with **20 / 60 / 300 / 600-second ceilings**, selectable cases and portable frozen
-TypeScript/Phase32 references. Separate [diagnostics](selfhost/tools/performance/programs/DIAGNOSTICS.md)
-provide CPU/allocation profiles and generated-JavaScript comparisons. The checked
-build plus 36 focused checks took **42.5 seconds**; the three-case performance
-screen took **23 seconds**. Heavy jobs run serially with explicit memory bounds.
+with **20 / 60 / 300 / 600-second ceilings** and selectable cases. The portable
+default remains Phase32; the [Phase36 tools guide](selfhost/tools/performance/phase36/README.md)
+explains the explicit Phase35 incremental baseline. Separate
+[diagnostics](selfhost/tools/performance/programs/DIAGNOSTICS.md) provide CPU/allocation
+profiles and generated-JavaScript comparisons. Checked acquisition plus 36
+focused checks took **42.3 seconds**; the one-case symreg screen took **8 seconds**.
+Heavy jobs run serially with explicit memory bounds.
 
 From `selfhost/`, run `npm run verify:release`, then `node cli.mjs FILE --run`.
 `npm run build` rebuilds with pinned upstream. The
 [checked workflow](docs/PHASE5_DEVELOPMENT.md),
 [performance guide](docs/BEND-IN-BEND-PERFORMANCE.md),
-[compiler literature study](design/phase35/literature.md),
-[experiment ledger](experiments/ledger.md) and
-[current strategy](experiments/STEERING.md) explain development and the retained
-failed experiments. Earlier measurements keep their original baselines and scopes.
+[experiment ledger](experiments/ledger.md),
+[current strategy](experiments/STEERING.md) and
+[complete Phase36 report](implementation/phase36/README.md) explain the decisions
+and retained failed experiments. Earlier measurements keep their original baselines
+and scopes.
 
 ## Bend runs FAST
 

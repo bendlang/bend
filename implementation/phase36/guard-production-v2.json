@@ -1,0 +1,23 @@
+{
+  "kind": "phase36-scoped-guard-proposal",
+  "applied": false,
+  "scope": "tree roots with native scalar inputs, native scalar or terminal record result, existing complete JPure residual graph; runtime proof is nonexported and finally restored",
+  "inputs": [
+    {
+      "path": "selfhost/src/back/js/tree.bend",
+      "sha256": "3bc377a21202ebd83e00731c1ce0416569a7544aebdc74102049be9770937c43",
+      "proposedSha256": "9254ebade93b9d04d5afb8272e1b04da8208faceddf8b05d3086a9d148c2b17d",
+      "addedPhysicalLines": 7
+    },
+    {
+      "path": "selfhost/src/runtime/js/core.mjs",
+      "sha256": "55d73f3652588095bbe541b627884303f5785a525bbd0c25082c5f6cb7461c65",
+      "proposedSha256": "4fe02cb355638a8619ca487ffb71e5c35e0af8faa3ce2c6f6d8421de502cf75b",
+      "addedPhysicalLines": 25
+    }
+  ],
+  "patchSha256": "9714d2d4e72d1a260ade346697dcdd2c865ca01470ff4ea3a3fb84b1875198c3",
+  "runtimeGenerated": "selfhost/src/runtime.mjs must be regenerated with normal project generator",
+  "supersedes": "guard-production.patch",
+  "errorBoundary": "bad suspends proof through mutable Error construction and restores only during mandatory exception unwind"
+}

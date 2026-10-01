@@ -140,6 +140,41 @@ additional type, body and dependency-depth bounds. Unsupported shapes or
 exhausted budgets keep ordinary emission. These implementation rules do not
 imply installation or broader backend conformance.
 
+### Phase36 producers and scoped proofs
+
+`producer.bend` reuses the existing tree continuation frames for a private
+producer with a leading Nat depth and scalar arguments. Two exact predecessor
+calls must be independent and ordered. The complete original call graph must
+pass `JPure`; dependent child arguments and one-child recursion keep ordinary
+execution. Sequential independent bindings normalize to the existing two-child
+shape. Parent scalars, child order, original constructor tags and shared child
+identity survive the iterative traversal. There is no new public representation.
+
+An internal `@producer` analysis marker enables existing Bool and finite Nat
+selectors with trailing arguments and constructors of the already proved closed
+sum type. The marker cannot be a source definition name. Constructor fields must
+be inert values or admitted primitive expressions; a general call in a delayed
+field keeps generic construction. The same region fuel, helper count, dependency
+guards and host checks apply. See the [producer design](../../design/phase36/private-producers.md)
+and [selector extension](../../design/phase36/producer-selectors.md).
+
+A scalar-input tree root with residual calls can additionally grant a scoped
+guard proof after a separate `JPure` check of the **entire original root graph**.
+This rejects a graph that mixes a pure residual with directly lowered native
+array work. After the normal exact-entry, canonical-input, host and dependency
+checks, a private null-prototype dictionary records the covered names. Nested
+guards reuse it only for covered dependencies. Nested scopes retain the outer
+dictionary rather than widening its coverage. `finally` restores the prior proof
+before returning a delayed result or propagating an exception.
+
+Native Nat constructor overflow can call mutable host `Error` hooks. `bad`
+suspends the proof before constructing the error and restores it only during
+exception unwind; admitted source graphs contain no catch that can resume under
+that restored proof. A later public call checks dependencies again. Exact-call
+reflection checks remain unchanged: a separate experiment found no reliable
+gain from skipping them. See the [guard design](../../design/phase36/guard-scoped-proof.md)
+and [controls](../../implementation/phase36/guard-report.md).
+
 ## Core representation
 
 `KTerm` is a first-order datatype with three variants. Ordinary `KTerm` nodes

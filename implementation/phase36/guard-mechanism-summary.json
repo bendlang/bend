@@ -1,0 +1,60 @@
+{
+  "kind": "phase36-scoped-guard-mechanism-summary",
+  "inputs": [
+    {
+      "path": "selfhost/build/phase36/guard-derived02/derive.json",
+      "sha256": "12d214fd35bb4da0282adb53048384b7970bed2451635c7539d85a71ff6c919d"
+    },
+    {
+      "path": "selfhost/build/phase36/guard-controls02/report.json",
+      "sha256": "b60fe98f7f30e0c46da329326efff79dc4212539bde8af7890f0cae8e8585455"
+    },
+    {
+      "path": "selfhost/build/phase36/guard-scope02/report.json",
+      "sha256": "00ccde660f3796ca563dcd17ee3fdc42a1efc0661c011a0e7e6fbd9bbbc91f99"
+    },
+    {
+      "path": "selfhost/build/phase36/guard-screen02/report.json",
+      "sha256": "609333e85388a986311c48fb7023294dcbd97cb1c464bd6cfe2e5effa648c4f7"
+    }
+  ],
+  "measurement": {
+    "baseline": {
+      "median": 1868.3495839999996,
+      "minimum": 1863.7238230000003,
+      "maximum": 1874.9428399999997,
+      "samples": [
+        1872.7877709999993,
+        1874.9428399999997,
+        1868.3495839999996,
+        1863.7238230000003,
+        1867.4362770000007
+      ]
+    },
+    "candidate": {
+      "median": 792.2257229999996,
+      "minimum": 790.0402100000001,
+      "maximum": 802.9577629999994,
+      "samples": [
+        790.842044,
+        790.0402100000001,
+        792.2257229999996,
+        802.9577629999994,
+        802.5713680000008
+      ]
+    },
+    "typescript": {
+      "median": 34.211753000000016,
+      "minimum": 34.02810744444443,
+      "maximum": 34.7569357777778,
+      "samples": [
+        34.211753000000016,
+        34.2087322222222,
+        34.02810744444443,
+        34.35160377777778,
+        34.7569357777778
+      ]
+    }
+  },
+  "compilerPromotion": false
+}

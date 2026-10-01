@@ -1,0 +1,23 @@
+{
+  "kind": "phase36-cohort-acquirer-derivation",
+  "parent": {
+    "file": "selfhost/tools/performance/phase36/cohort-acquire.py",
+    "sha256": "97305e98dad52167b02047a7dab83290436303c843b3a0c7d6d056ba55ab77c4"
+  },
+  "successor": {
+    "file": "selfhost/tools/performance/phase36/cohort-acquire-v2.py",
+    "sha256": "468ef41a1b226518261202911929b06db656af4a60fb7038d352232be498fdc6"
+  },
+  "executed": false,
+  "changes": [
+    "Retain prior named choices and add explicit corrected array/producer fixture v2 paths.",
+    "Default overflow-v2,array-refusal-v2,producer-fixtures-v2,producer-selectors-v2.",
+    "All checked/identity/compiler-stability/resource assertions inherited unchanged."
+  ],
+  "defaultCases": [
+    "overflow-v2",
+    "array-refusal-v2",
+    "producer-fixtures-v2",
+    "producer-selectors-v2"
+  ]
+}

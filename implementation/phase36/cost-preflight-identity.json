@@ -1,0 +1,8 @@
+{
+  "source": "selfhost/src/back/js/region.bend",
+  "beforeSha256": "9d650003f714b41c966ebcc0b878336c76a594dae5d4d80f14a5442b35ef4c76",
+  "proposedAfterSha256": "724c2635a28336e6cf62a47887e535acd179e98a64142f7759722a758340b2c9",
+  "productionModified": false,
+  "physicalLineDelta": 11,
+  "scope": "skip identity private-vector-inline traversal only"
+}

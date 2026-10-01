@@ -1,0 +1,65 @@
+--- a/selfhost/src/back/js/tree.bend
++++ b/selfhost/src/back/js/tree.bend
+@@ -78,8 +78,15 @@
+     "const $guards=[" ++ j_quote(dn(d)) ++ kc(String, List.is_empty(&2, KDef, j_region_helpers(s)), u => "", u => "," ++ j_region_names(j_region_helpers(s))) ++ "];return " ++
+     j_nat_loop_wrapper(book, d, zero, da(d),
+       "if($entered&&" ++ j_region_host_guard(book, d, j_region_helpers(s)) ++ j_region_inputs(book, j_arm_type(book, wnf(book, dt(d)), "Succ"), 0, da(d), True{}) ++ "&&$s0<32n&&localGuard($guards)){/* private scalar tree */" ++
+-      j_tree_body(book, d, fastZero, j_region_term(s)) ++ "}" ++
++      j_tree_scope(book, d, j_region_helpers(s), j_tree_body(book, d, fastZero, j_region_term(s))) ++ "}" ++
+       j_nat_loop_generic(book, Nil{}, succ, j_arm_type(book, wnf(book, dt(d)), "Succ"), 0)) ++ ";})())", u => "")
++
++# Share a complete checked entry only inside a scalar-input, independently pure
++# residual graph. Delayed results and exceptions leave the proof in finally.
++@unsafe
++def j_tree_scope(+book: List<&2,KDef>, +d: KDef, +helpers: List<&2,KDef>, +body: String) -> String:
++  kc(String, j_fold_root_signature(book, dt(d), da(d)) && j_region_has_residual(helpers), u =>
++    "const $previousProof=regionProofOpen($guards);try{" ++ body ++ "}finally{regionProofClose($previousProof);}", u => body)
+ 
+ @unsafe
+ def j_tree_body(+book: List<&2,KDef>, +d: KDef, +zero: KTerm, +succ: KTerm) -> String:
+--- a/selfhost/src/runtime/js/core.mjs
++++ b/selfhost/src/runtime/js/core.mjs
+@@ -96,7 +96,27 @@
+   }else delete scalarSnapshots[name];
+   return f;
+ }
++// Private entry proof. Installed only inside a completely guarded, synchronous,
++// scalar-input region whose entire residual source graph was proved pure.
++let regionProof=null;
++function regionProofCovers(names){
++  const proof=regionProof;if(proof===null)return false;
++  for(let i=0;i<names.length;i++)if(proof[names[i]]!==true)return false;
++  return true;
++}
++function regionProofOpen(names){
++  const previous=regionProof;
++  if(previous===null){
++    const proof={__proto__:null};
++    for(let i=0;i<names.length;i++)proof[names[i]]=true;
++    regionProof=proof;
++  }
++  return previous;
++}
++function regionProofClose(previous){regionProof=previous;}
++
+ function scalarGuard(names){
++  if(regionProofCovers(names))return true;
+   // Generic forcing/matching observes these hooks even on primitive values.
+   if(Object.getPrototypeOf(scalarObjectPrototype)!==null||
+       Object.getPrototypeOf(scalarFunctionPrototype)!==scalarObjectPrototype)return false;
+@@ -127,6 +147,7 @@
+ // callbacks while forcing tuple results inside an admitted private region.
+ const localArrayPrototype=Array.prototype;
+ function localGuard(names){
++  if(regionProofCovers(names))return true;
+   if(Object.getPrototypeOf(localArrayPrototype)!==scalarObjectPrototype)return false;
+   for(const k of ['request','bounce','build','code'])if(Object.getOwnPropertyDescriptor(localArrayPrototype,k))return false;
+   return scalarGuard(names);
+@@ -153,6 +174,7 @@
+ const regionProtocolDescriptors=[];
+ for(let i=0;i<regionProtocolPairs.length;i++)regionProtocolDescriptors[i]=Object.getOwnPropertyDescriptor(regionProtocolPairs[i][0],regionProtocolPairs[i][1]);
+ function regionHostGuard(){
++  if(regionProof!==null)return true;
+   for(let i=0;i<regionNumericHooks.length;i++){
+     const p=regionNumericHooks[i],d=regionGetDescriptor(p[0],p[1]);
+     if(!d||!regionOwn(d,'value')||d.value!==p[2])return false;

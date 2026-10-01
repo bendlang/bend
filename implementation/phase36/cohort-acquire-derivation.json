@@ -1,0 +1,24 @@
+{
+  "kind": "phase36-cohort-acquirer-derivation",
+  "parent": {
+    "file": "selfhost/tools/performance/phase36/guard-acquire-v2.py",
+    "sha256": "758b874a088b6cad71194020ac6637235262f73b8a1e389ad1a53dc013ca273c"
+  },
+  "successor": {
+    "file": "selfhost/tools/performance/phase36/cohort-acquire.py",
+    "sha256": "97305e98dad52167b02047a7dab83290436303c843b3a0c7d6d056ba55ab77c4"
+  },
+  "productionModified": false,
+  "executed": false,
+  "changes": [
+    "Named exact source filename mapping supports overflow-v2, array-refusal, producer-fixtures, producer-selectors.",
+    "Default selection is first three, selectors require explicit selection and present fixture.",
+    "Parent identity is runtime-bound and copied with consumed inputs.",
+    "Report kind generalized; all checked observation/input/output/compiler stability and resource assertions retained."
+  ],
+  "defaultCases": [
+    "overflow-v2",
+    "array-refusal",
+    "producer-fixtures"
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "kind": "phase36-producer-checked03-evidence-index",
+  "complete": true,
+  "attempt": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/attempt.json",
+    "sha256": "3d7b5c980b32dfb3d1fffbaa8ef7d9b2da611160316d1bfd96a63c4ef9de1087",
+    "bytes": 207669
+  },
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/equality/api.mjs",
+    "sha256": "93e55ad7ee456eebb5fa3dd9606c2cf262ea386c6f66bfd891ffe187d8f50a75"
+  },
+  "scope": "Named actual checked03 owner controls only; final candidate may be a later image and needs fresh binding.",
+  "rows": [
+    {
+      "name": "producer-fixture03",
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/producer-fixture03/report.json",
+        "sha256": "a3961b43e2f104c4337f641dcc9e21b9173c700fc0518f56fec5523093dd89c5",
+        "bytes": 34504
+      },
+      "kind": "phase36-producer-fixture-controls",
+      "complete": true,
+      "passed": true,
+      "counts": {
+        "oracle": 175,
+        "admission": 5
+      },
+      "inputs": [
+        {
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase36/producer-fixture-controls.mjs",
+          "sha256": "8fde9f41f44b25dd7d7fef71f592df84a4f19672b1baa018676507cd6b8a6135"
+        },
+        {
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/cohorts03/producer-fixtures-v2/baseline.mjs",
+          "sha256": "0dc0d540e1ee0e0259fcadfaee3fea72dbde087dac4d55985d914089a641a2cf"
+        },
+        {
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/cohorts03/producer-fixtures-v2/candidate.mjs",
+          "sha256": "13cbe255450a1f6ec1c608dbb6fb67957c399eeceb5f1d3b969073ab24f670a4"
+        }
+      ]
+    },
+    {
+      "name": "producer-reviewed03",
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/producer-reviewed03/report.json",
+        "sha256": "3b2b9d2dcb1365abb5ae316910fa1d455a9b142a703c398b489e462f20495115",
+        "bytes": 74267
+      },
+      "kind": "phase36-independent-checked-producer-controls",
+      "complete": true,
+      "passed": true,
+      "counts": {
+        "trees": 108,
+        "aliases": 36,
+        "entries": 9,
+        "boundaries": 27,
+        "structure": 3
+      },
+      "inputs": [
+        {
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase36/producer-reviewed-controls.mjs",
+          "sha256": "ae743ea294108cd5bc6c3fb67ee69c2f4dfc1131f89c6346a779939737192124"
+        },
+        {
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/cohorts03/producer-fixtures-v2/baseline.mjs",
+          "sha256": "0dc0d540e1ee0e0259fcadfaee3fea72dbde087dac4d55985d914089a641a2cf"
+        },
+        {
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/cohorts03/producer-fixtures-v2/candidate.mjs",
+          "sha256": "13cbe255450a1f6ec1c608dbb6fb67957c399eeceb5f1d3b969073ab24f670a4"
+        },
+        {
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/cohorts03/producer-fixtures-v2/typescript.mjs",
+          "sha256": "025844ebc1ab0c96c2dfa2152cf94f26b5789c11245b81fee75f697d8eeeeb69"
+        }
+      ],
+      "diagnostic": {
+        "parent": {
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/cohorts03/producer-fixtures-v2/candidate.mjs",
+          "sha256": "13cbe255450a1f6ec1c608dbb6fb67957c399eeceb5f1d3b969073ab24f670a4"
+        },
+        "output": {
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/producer-reviewed03/candidate-diagnostic.mjs",
+          "sha256": "1aeb8f06c8a97eccc72f92eb4fcc3981ca25e89994b26621901883169565dbaa"
+        },
+        "changes": "Counters at actual private entries, capture immediately after declarations, diagnostic-only globals and exports."
+      }
+    },
+    {
+      "name": "producer-selector03",
+      "report": {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/producer-selector03/report.json",
+        "sha256": "8edf3110073619fc52c3db3ce726cc6a0118ffd1e96b7e7c7aecf19808781d6d",
+        "bytes": 205974
+      },
+      "kind": "phase36-producer-selector-controls",
+      "complete": true,
+      "passed": true,
+      "counts": {
+        "oracle": 243,
+        "admission": 10,
+        "boundaries": 6
+      },
+      "inputs": [
+        {
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase36/producer-selector-controls.mjs",
+          "sha256": "3435434061ea153d6a43b8b10a2f46f6afa4f3fb2236e91a37eb475304026ec4"
+        },
+        {
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/cohorts03/producer-selectors-v2/baseline.mjs",
+          "sha256": "080ef03e559b22309cff9a42152b105a5d4cf48aff6daa2a5e14b0784984cf73"
+        },
+        {
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/cohorts03/producer-selectors-v2/candidate.mjs",
+          "sha256": "573a25c0f679327864fdd81baeb11398e9c1ff59ca23e3b3b9015cb5ff9bd7d1"
+        },
+        {
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/cohorts03/producer-selectors-v2/typescript.mjs",
+          "sha256": "8566928a9577742abcf8ee7723059fe6088cbaac22ce1b5897de99cfec3a8812"
+        }
+      ],
+      "diagnostic": {
+        "parent": {
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/cohorts03/producer-selectors-v2/candidate.mjs",
+          "sha256": "573a25c0f679327864fdd81baeb11398e9c1ff59ca23e3b3b9015cb5ff9bd7d1"
+        },
+        "output": {
+          "path": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/producer-selector03/candidate-diagnostic.mjs",
+          "sha256": "1f282c4d1e2623f688ba2a303be4c338d639e946c6607a91d0cf6890643e383d"
+        },
+        "insertions": [
+          {
+            "at": 82793,
+            "text": "$selectorCapture=$R_115_46_103_101_110;$selectorGuard=()=>regionHostGuard()&&localGuard($guards);"
+          },
+          {
+            "at": 79535,
+            "text": "++$selectorEntries;"
+          },
+          {
+            "at": 79438,
+            "text": "let $selectorEntries=0,$selectorCapture,$selectorGuard;\n"
+          }
+        ],
+        "scope": "Expose/instrument the actual admitted private helper only. Canonical diagnostic entry retains its actual closure guards. No alternative producer body is introduced and no diagnostic artifact is timed."
+      }
+    }
+  ]
+}

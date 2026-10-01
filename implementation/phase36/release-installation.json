@@ -1,0 +1,90 @@
+{
+  "kind": "phase36-installed-release-record",
+  "complete": true,
+  "api": "93e55ad7ee456eebb5fa3dd9606c2cf262ea386c6f66bfd891ffe187d8f50a75",
+  "manifest": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/release.json",
+    "bytes": 22497,
+    "sha256": "3903d3483c6a9d09b2289c59507133d0260a6e4982ded52049e6e5a28894c624"
+  },
+  "files": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/typed-api.mjs",
+      "bytes": 1164781,
+      "sha256": "93e55ad7ee456eebb5fa3dd9606c2cf262ea386c6f66bfd891ffe187d8f50a75"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/base.bend",
+      "bytes": 71530,
+      "sha256": "c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/release-lineage/checked-api.mjs",
+      "bytes": 1151260,
+      "sha256": "2abe5b2f86e70f554a9daf07168c8a10247d9f185e0c0961bc718ec7213acbd7"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/release-lineage/checked-bootstrap.json",
+      "bytes": 55214,
+      "sha256": "6ea0a0a7b7d0597dd1710072ecbb16cc4d67046041351fec383fdee6da213194"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/release-lineage/derivation.json",
+      "bytes": 249960,
+      "sha256": "76f4292b0be800904f935e78836db877f56ae32bb54fae5dd75b2e4b3cd63f38"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/dist/release-lineage/equality.mjs",
+      "bytes": 30150,
+      "sha256": "db2999aa879e0bc6c6359d37c19e7589c60d34b2b143d0ed6ecbc23eabfec951"
+    }
+  ],
+  "checkoutFiles": 125,
+  "canonicalFiles": 226,
+  "lineage": {
+    "checkedParentSha256": "2abe5b2f86e70f554a9daf07168c8a10247d9f185e0c0961bc718ec7213acbd7",
+    "derivationSha256": "76f4292b0be800904f935e78836db877f56ae32bb54fae5dd75b2e4b3cd63f38",
+    "upstreamRevision": "018751270e800bc222a93dad7f257083ee53a5f7"
+  },
+  "sourceSha256": "3a17f92d036ee64230d358de26be85722315ce7f41d0fe63a92ce150722bf3d4",
+  "runtimeSha256": "c1a75ed096e77cfa50ab66279b513b8cdb5aa2e273f1f56b82f8cbdde40e19fa",
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/attempt.json",
+      "bytes": 207669,
+      "sha256": "3d7b5c980b32dfb3d1fffbaa8ef7d9b2da611160316d1bfd96a63c4ef9de1087"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase36/admission-decision.json",
+      "bytes": 3201,
+      "sha256": "830e9dcd580ea01f0c8b14f5b10fcbb1399decbab127e5fc8ab74a3d29c72449"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/postinstall-launch03/report.json",
+      "bytes": 4758,
+      "sha256": "4b4b6647f38b47ce94c50745d004b7131d78a9e84c9f56f51ac52c52460d2261"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/postinstall-audit03/gates.json",
+      "bytes": 341692,
+      "sha256": "82344e253dcfe4dc9fd13c20c476414bfda8832c7809e1e6b3ff074d7ea389fb"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/final-plan03/run-release-install/run.json",
+      "bytes": 1456,
+      "sha256": "897b30482c2f164d2cee775347131302e7f341d8c8e9239916e53c34cd431006"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/final-plan03/run-release-verify/run.json",
+      "bytes": 1373,
+      "sha256": "578cfad7ed949ed68c774ddd4073de79baf0aa8a2ec7ccbc14827a91df4fa4a5"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/final-plan03/release-smoke/checks/report.json",
+      "bytes": 123593,
+      "sha256": "6bea4d348e18ba144a12527b6787f91ea1a1b92cd1babf513d06f6f80a667716"
+    }
+  ],
+  "previousRelease": "467bc7dec2751a94cb677c5eb2da22a8fb69ee3522c6e164cb2bfcc147a78d82",
+  "scope": "Installed equality-derived checked B1, not a new self-emitted fixed point. Exact install,verify,42CLI and postinstall gate receipts; no full backend/GPU or independent proof-kernel claim."
+}

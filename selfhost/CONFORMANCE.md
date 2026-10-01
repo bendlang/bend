@@ -1,6 +1,83 @@
 # Compiler validation
 
-## Phase35 installed09 validation
+## Phase36 installed03 validation
+
+**Checked03 is installed, release verification passes, and all 42 ordinary/
+relocated CLI checks pass.** The final postinstall audit closes all **15 groups**,
+following all 38 preinstall steps, with **226 canonical files** matching the
+checked snapshot. Its API SHA256 is
+`93e55ad7ee456eebb5fa3dd9606c2cf262ea386c6f66bfd891ffe187d8f50a75`;
+the upstream pin remains `018751270e800bc222a93dad7f257083ee53a5f7`.
+The [release report](../implementation/phase36/release-03.md) and
+[final audit](../implementation/phase36/final-conformance/gates.md) bind these
+results to the installed compiler. The selected image remains a checked B1
+derivative, not a new self-emitted fixed point. See the
+[Phase36 report](../implementation/phase36/README.md) for the separate performance
+admission and preserved experiment outcomes.
+
+Fresh candidate execution agrees exactly with the retained pinned TypeScript
+reference on **3,026 main and 196 broader frontend observations**, with zero
+behavioral or additional-field differences. Main raw outcomes remain **2,525
+pass / 497 observed / 4 shared failures**; broader remains **195 pass / 1
+observed**. Reference acquisition is reused with identity verification, not
+presented as a new TypeScript run. Exact agreement does not relabel shared
+failures as fixture passes.
+
+The fresh backend pilot preserves all **81 historical outcomes: 69 pass, 8 not
+applicable and 4 shared failures**. Its scope is selected JavaScript/native CPU
+coverage. Full backend/GPU coverage and the optional 811-case JS expansion remain
+separate, uncompleted scopes.
+
+The final API passes **seven new Phase36 owner groups**, independently bound to
+actual checked emissions by the
+[owner closure](../implementation/phase36/owner-closure-protocol.md):
+
+| Owner group | Passed observations |
+|---|---:|
+| Actual ray/column public behavior | 57 oracle rows / 200 boundaries |
+| Scoped proof entry and cleanup | 10 observations |
+| Native Succ overflow and Error callback reentry | 16 oracle rows / 4 boundaries |
+| Native-array proof refusal and callback reentry | 16 oracle rows / 4 boundaries |
+| Producer fixture admission | 175 oracle rows / 5 admission witnesses |
+| Independent producer review | 108 trees / 36 aliases / 9 entries / 27 boundaries / 3 structural checks |
+| Producer-context Nat/Bool selectors | 243 oracle rows / 10 admission witnesses / 6 boundaries |
+
+These results are recorded in `selfhost/build/phase36/owner-close03/report.json`,
+with [guard identities](../implementation/phase36/guard-actual-summary.json) and
+[producer evidence](../implementation/phase36/producer-checked03-evidence.json).
+Whole-root purity is required before scoped proof reuse; the actual native-array
+fixture retains its earlier private tree while refusing proof sharing. Error
+callbacks see inactive proof and observe mutations during reentry. Producer
+admission and selector controls execute the compiler's emitted workers, with
+separate refusal and public-boundary observations.
+
+**The 15 inherited Phase35 owner groups are a separate gate**, freshly executed
+on checked03: pair/fold state and ordered native events, argument/read order,
+lexical scope, aliases/nested loops, counter admission and hooks, finite Nat/F32
+and branch regions, independent purity, ray/column traversal and recursive folds.
+The 14-group preinstall audit includes this inherited gate; the seven new
+Phase36 groups retain their own explicit closure. Their counts overlap and must
+not be summed as unique conformance tests.
+
+Fresh inherited gates also pass **36 focused exact probes, 56,205 primitive
+checks, 3,759 worker checks, 144 nested checks, 1,129 primitive guards, 15 selected
+upstream JS probes, 23 libraries/127 points, 40 worker guards/two witnesses,
+22 compiler components and complete 42-byte HVM output**. The 42 installed/
+relocated CLI checks include generated JavaScript and native CPU execution with
+Clang16; the relocated compiler runs without an upstream checkout. Phase36
+acquisition and parser failures remain preserved beside explicit successful
+successors. The historical audit-repair failures described below belong to
+Phase35: Phase36's preinstall audit passed on its first use of the corrected
+inherited auditor, retaining strict final candidate identity and behavioral
+assertions.
+
+These finite gates do not establish universal JavaScript-host equivalence:
+host controls retain their standard-at-import and named post-import mutation
+scope. They also establish no full backend/GPU, new H image, fixed point or
+independent proof-kernel result. `--verdict` remains unsupported. Correctness,
+performance admission and installed release validation retain separate evidence.
+
+## Historical Phase35 installed09 validation
 
 **Checked09 is installed, release verification passes, and all 42 ordinary/
 relocated CLI checks pass.** API SHA256 is

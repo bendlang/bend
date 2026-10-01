@@ -599,3 +599,26 @@ remain prerequisites; external resources are not silently duplicated. The previo
 Phase32 installed artifact is preserved under its API hash in release history.
 The [protection audit](../implementation/phase35/protected-files-final.json) verifies
 all 103 unrelated starting files unchanged and unstaged.
+
+
+## Phase36 scoped proofs and private producers
+
+The [Phase36 capsule](../implementation/phase36/evidence/README.md) preserves the
+complete closed tree: **21,345 files / 259,269,871 logical bytes**, 4,649
+directories, **39,968,376 compressed bytes in one volume**. Capture reopens every
+member, verifies the full gzip stream and rehashes the source inventory; a fresh
+independent source/archive verification also passes. Capture takes 19.238 seconds
+and peaks at 62,169,088 process-tree bytes under a 1 GiB cap.
+
+It includes all checked attempts, unsafe proof counterexamples, rejected preflight
+and reflection experiments, corrected fixtures, actual owner controls, complete
+fifteen-point timings and map/set follow-up, 36 compiler requests, 24 profiles,
+final integration and installed 42 CLI checks. Failure verdicts remain unchanged.
+The [release record](../implementation/phase36/release-03.md) states exact identities
+and accepted costs. All writers closed before capture; do not mutate the raw tree.
+
+Phase35 and earlier capsules plus the portable TypeScript/Phase32 benchmark
+reference remain documented prerequisites. The previous Phase35 installed image
+is preserved under its API hash in release history. All 103 unrelated starting
+files remain unchanged and unstaged in the
+[protection audit](../implementation/phase36/protected-files-final.json).

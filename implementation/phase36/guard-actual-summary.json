@@ -1,0 +1,28 @@
+{
+  "kind": "phase36-checked-guard-owner-summary",
+  "candidateApiSha256": "93e55ad7ee456eebb5fa3dd9606c2cf262ea386c6f66bfd891ffe187d8f50a75",
+  "inputs": [
+    {
+      "path": "selfhost/build/phase36/guard-checked03/derive.json",
+      "sha256": "74da040d6590a9a13582ec4eb4dd5eb96bad0df57ef38f6f783077435269943e"
+    },
+    {
+      "path": "selfhost/build/phase36/guard-checked-controls03/report.json",
+      "sha256": "da46933941de72adc94737004aa6e63b42e11e78153eef72bb44a010faca489f"
+    },
+    {
+      "path": "selfhost/build/phase36/guard-checked-scope03/report.json",
+      "sha256": "70589898f25aa2c6c47e366e063199eee7c8adfa12fd6a807dff244b54f37453"
+    },
+    {
+      "path": "selfhost/build/phase36/guard-error03/report.json",
+      "sha256": "976c0e7779a4fdaffea5c2bf4dd26ae2d174988be35043402e9699d088294a3a"
+    },
+    {
+      "path": "selfhost/build/phase36/guard-array03/report.json",
+      "sha256": "c8335f2163645ebd773d1790e9c15b6ee9457b8256b9e8792e98ef31bb2e062f"
+    }
+  ],
+  "namedControlsPassed": true,
+  "broadConformanceOrReleaseClaim": false
+}

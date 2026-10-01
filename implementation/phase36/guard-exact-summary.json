@@ -1,0 +1,109 @@
+{
+  "kind": "phase36-exact-entry-rejected-summary",
+  "decision": "reject-no-reliable-speed-gain",
+  "productionChanged": false,
+  "inputs": [
+    {
+      "path": "selfhost/build/phase36/exact-derived03/derive.json",
+      "sha256": "ace0dcb979458f013d1861f0f7ab97b3181094456f4a7030e595de2f3d2abc15"
+    },
+    {
+      "path": "selfhost/build/phase36/exact-colf03/report.json",
+      "sha256": "687239f66c78e7faafd34b6745049bd46fa09245330f23d228a7c4f0fa5b4358"
+    },
+    {
+      "path": "selfhost/build/phase36/exact-scope03/report.json",
+      "sha256": "71a0f7799145293d9c42343211871882c3a496646d328e3aa8a478d3e2e864ff"
+    },
+    {
+      "path": "selfhost/build/phase36/exact-error03/report.json",
+      "sha256": "a7adb7bba7825466065647f9d31ae7b182f5c9faf4837df6e72b2e5ad3460f1d"
+    },
+    {
+      "path": "selfhost/build/phase36/exact-counts03/report.json",
+      "sha256": "278ca22b776fed32d69318291e8cdd8e6d18e9b3d46e7076f2628b71c40ae578"
+    },
+    {
+      "path": "selfhost/build/phase36/exact-screen03/report.json",
+      "sha256": "d3f7ad6b5a203e2fbdb728aaaa1b4e5d750d47494c2b47284c189f8f92c61b50"
+    }
+  ],
+  "measurement": {
+    "baseline": {
+      "median": 792.0124169999999,
+      "minimum": 786.4457759999996,
+      "maximum": 883.0711929999998,
+      "samples": [
+        786.4457759999996,
+        792.0124169999999,
+        789.3403159999998,
+        799.1638279999997,
+        883.0711929999998
+      ]
+    },
+    "candidate": {
+      "median": 793.8671329999997,
+      "minimum": 758.2228640000003,
+      "maximum": 804.6225670000003,
+      "samples": [
+        798.2163179999998,
+        793.8671329999997,
+        758.2228640000003,
+        804.6225670000003,
+        760.8775239999995
+      ]
+    },
+    "typescript": {
+      "median": 34.259754555555546,
+      "minimum": 34.00409933333334,
+      "maximum": 34.444924444444446,
+      "samples": [
+        34.24205322222221,
+        34.401884777777774,
+        34.259754555555546,
+        34.00409933333334,
+        34.444924444444446
+      ]
+    }
+  },
+  "slowerPercent": 0.23417764168713884,
+  "controls": {
+    "colfOracleRows": 57,
+    "colfBoundaries": 200,
+    "scopeObservations": 10,
+    "actualOverflowOracleRows": 16,
+    "actualOverflowBoundaries": 4,
+    "counterAndPublicWrapperObservations": 7
+  },
+  "counterFirstPoint": {
+    "kind": "inside-proof",
+    "args": [
+      "1n",
+      9384,
+      32,
+      16384,
+      40,
+      32
+    ],
+    "rows": [
+      {
+        "value": 112,
+        "delta": {
+          "calls": 380,
+          "members": 25,
+          "inside": 24,
+          "skipped": 0
+        }
+      },
+      {
+        "value": 112,
+        "delta": {
+          "calls": 380,
+          "members": 25,
+          "inside": 24,
+          "skipped": 24
+        }
+      }
+    ]
+  }
+}

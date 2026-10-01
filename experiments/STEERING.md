@@ -1,81 +1,89 @@
-# Phase35 current frontier
+# Phase36 current frontier
 
-User authorization covers research, compiler experiments, implementation,
-design/report and commit/push to `rom1504/bend`, branch `selfhost/bootstrap`.
-No PR comments without an explicit request. Older timed campaigns are historical.
-The 103 unrelated starting files remain unchanged and unstaged; preserve them.
+User authorization covers compiler experiments, implementation, design/report
+and commit/push to `rom1504/bend`, branch `selfhost/bootstrap`. No PR comments
+without an explicit request. Older timed campaigns are historical. Preserve the
+103 unrelated starting files and the closed Phase35 and Phase36 raw trees.
 
-## Installed decision
+## Installed result
 
-**Phase35 checked09 is installed and verified.** All 42 ordinary/relocated CLI
-checks and all 15 postinstall audit groups pass; 225 canonical files match.
-API: `467bc7dec2751a94cb677c5eb2da22a8fb69ee3522c6e164cb2bfcc147a78d82`.
-Upstream remains `018751270e800bc222a93dad7f257083ee53a5f7`.
-This is a checked B1 derivative, not a new self-emitted fixed point.
-[Report](../implementation/phase35/README.md),
-[release](../implementation/phase35/release-09.md),
-[admission](../implementation/phase35/performance-admission.md),
-[literature](../design/phase35/literature.md).
+**Phase36 checked03 is installed and verified.** All 42 ordinary/relocated CLI
+checks and all 15 inherited postinstall audit groups pass; 226 canonical files
+match. Seven new owner groups separately close on the same API:
+`93e55ad7ee456eebb5fa3dd9606c2cf262ea386c6f66bfd891ffe187d8f50a75`.
+Upstream remains `018751270e800bc222a93dad7f257083ee53a5f7`. This is a checked B1
+derivative, not a new self-emitted fixed point. The previous Phase35 release is
+preserved in release history.
 
-Retained changes: selective vector inlining/scalar state, captured private Number
-countdowns, direct private get/set, finite Nat/F32 decisions, final-Bool loops,
-independent bounded purity proof and closed iterative structural folds. Broad
-scalar inlining was rejected. Source is frozen at `selfhost/build/phase35/checked09`.
-The prior Phase32 installed release is preserved in release history.
+[Report](../implementation/phase36/README.md) ·
+[Release](../implementation/phase36/release-03.md) ·
+[Admission](../implementation/phase36/performance-admission.md) ·
+[Profiles](../implementation/phase36/profile-findings.md)
 
-## Measured results and costs
+Retained changes: scoped guard reuse under whole-root purity and private ordered
+tree production with finite Nat/Bool selectors. Error construction suspends proof
+through callbacks; native-array graphs are refused. Original tagged storage,
+sharing, public stages and fallback remain. No new types or laws were needed.
+The source is frozen at `selfhost/build/phase36/checked03`.
 
-The unchanged 15-point maintained suite completes in 518.338s. Gains versus
-same-run Phase32: pair **1.324×**, fold **2.360×**, original edit distance
-**1.278×**, symreg **6.865×**, raytrace **5.475×**. Remaining TS gaps respectively
-**3.058×, 3.497×, 3.259×, 14.021×, 54.781×**. No candidate beats TS in this
-final set; fixed inputs do not define average application speed.
+## Measurements and costs
 
-Generic-row's full-run median is 9.52% slower with overlapping bimodal samples;
-a separate five-round check is 0.323% slower with overlap. Preserve both, do not
-claim a fix. Normal checked compilation costs +0.72% pair (overlap), +8.17%
-Mandelbrot, +30.09% symreg and +34.40% ray (disjoint ranges; ray baseline drifts).
-These are accepted costs, not compiler-throughput wins. Compiler source grows by
-979 physical Bend lines (5.73%) to **18,050 lines / 68 modules / 2,008 definitions**.
-Generated modules also grow. No simplification claim.
+The unchanged fifteen-point comparison takes 401.551 seconds. Versus fresh
+same-run Phase35, symreg is **3.653×** and raytrace **2.319×** faster, with disjoint
+observed ranges. Remaining TS gaps are **3.834×** and **23.473×**. Other points
+have overlapping ranges; all fifteen remain slower than TS. Lexer and tree-bitonic
+retain **89.379×** and **80.618×** gaps. Do not average these fixed-input ratios.
+
+Map/set shows +3.190% in the full run and −0.523% in a same-protocol focused
+follow-up; both overlap and remain evidence. Thirteen complete program suffixes
+are byte-identical, with a common runtime increase of 1,005 bytes. Normal checked
+request medians change −1.56% pair, +0.42% Mandelbrot, +4.50% symreg and +4.02% ray,
+all overlapping across three samples. Accept these possible costs explicitly;
+no compiler-throughput improvement is established.
+
+Source grows 124 physical lines (0.687%) to **18,174 Bend lines / 69 modules /
+2,024 definitions**, with 15,545 nonblank lines, 71 types and 640 laws. Generated
+program sections grow 1,440 bytes for symreg and 186 for ray. This phase improves
+execution, not source simplicity.
 
 ## Next experiments
 
-Use [final profiles](../implementation/phase35/profile-findings.md) to choose the
-next small ablation. Do not begin a large optimizer or rerun the full suite blindly.
+1. Test one private finite-sum or tree-to-tree operation from lexer or bitonic,
+   such as `step.at`, `warp_leaf.go` or `warp_zip`. Their hot generic application,
+   forcing and closures remain, and guard-only work will not cover these paths.
+2. Find a proved enclosing boundary for symreg's remaining guards: its producer
+   ancestry falls 63.92→12.30%, while guards now occupy 35.58% of sampled ancestry.
+3. Lower one remaining ray geometry/tagged-result call. Guards fall 50.12→0.44%;
+   `apply` now accounts for 31.53% of self samples. Keep the complete-row oracle.
+4. Consider narrowly proved direct nonnative constructor creation only as a
+   secondary ablation; `ctor` is 4.52% of symreg allocation samples.
 
-1. Amortize ray's repeated guards across a proved private region. Guard ancestry
-   is 47.24% of candidate CPU; preserve mutation/callback/reentry boundaries.
-2. Lower symreg's pure producer. Generator ancestry is now 64.33% of CPU, while
-   eval/size falls to 9.41%; more consumer work misses the dominant cost.
-3. Carry private array/index facts farther in pair/fold's surviving hot loops.
-4. Audit unused private helper declarations for size, retaining guard dependencies.
-5. Avoid unproductive analysis to recover compile latency, particularly Mandelbrot.
+These are unimplemented hypotheses without gain promises. Start with a clean
+saved-output ablation and complete local oracles; require actual path entry,
+mutation/reentry and refusal controls before a checked compiler change. Do not
+repeat the rejected extra reflection shortcut or compiler-analysis preflight
+without overcoming their recorded lack of material benefit. Do not build a new
+optimizer IR before a narrow mechanism establishes its value.
 
-These are hypotheses, not measured future gains. Pair/fold allocation samples
-are already lower than TS while execution is slower; allocation is not the only cost.
+## Reproduction and closure
 
-## Reproduction and preserved scope
+Use the maintained 20/60/300/600-second execution ceilings with independent
+`--set`/`--cases`. The default portable baseline remains Phase32; Phase36 uses the
+explicit `baseline02/manifest.json` containing Phase35 checked output. See the
+[phase tools guide](../selfhost/tools/performance/phase36/README.md). Checked03
+plus Focus36 takes 42.288 seconds; the actual symreg screen takes 8.028 seconds.
+Profiles are separate: all 24 pass in 76.666 seconds. Clean final run is
+`full-confirm03`; follow-up `map-set-confirm03`; cost `compiler-cost-run03`;
+profiles `profiles03`, all under `selfhost/build/phase36`.
 
-Use the [maintained execution loop](../selfhost/tools/performance/programs/README.md)
-with 20/60/300/600-second ceilings and independent `--set`/`--cases` coverage.
-Checked09 plus Focus36 took 42.506s; `local-pair,local-fold,symreg` screen took 22.961s.
-Profiles run separately. The [phase tools guide](../selfhost/tools/performance/phase35/README.md)
-separates actual compiler gates from saved-output experiments.
+Frontend agrees exactly on 3,026 main + 196 broader observations. Raw main
+verdicts remain 2,525 pass / 497 observed / 4 shared failures; backend81 remains
+69 pass / 8 N/A / 4 shared failures. Counts overlap and no full backend/GPU or
+independent proof-kernel result follows.
 
-Raw full run: `combined-full-confirm-01`; focused follow-up: `generic-row-confirm-01`;
-profiles: `combined-profiles-01`; costs: `compiler-cost-run09`, under `selfhost/build/phase35`.
-Final audit uses **final-gate-audit-v2.py** and explicit owner retry aggregate
-`final-owner-retry09-01/owner-report.json`. The original audit's historical-path
-error and sandbox acquisition failure remain preserved; no assertion was weakened.
-
-**3,026 main + 196 broader** frontend observations agree exactly. Raw main
-verdicts remain 2,525 pass / 497 observed / 4 shared failures. Backend81 remains
-69 pass / 8 N/A / 4 shared failures.
-Keep scopes separate; no full backend/GPU or independent kernel claim.
-
-The [verified capsule](../implementation/phase35/evidence/README.md) retains 24,717
-files in two volumes (52,475,156 compressed bytes), including failed/superseded
-attempts. Final protection audit verifies all 103 unrelated files. Only root runs
-heavy jobs, serially under a shared lock, CPU3, explicit heaps, RSS/deadline limits
-and 2GiB available-memory floor. Do not write into the closed raw Phase35 tree.
+The [capsule](../implementation/phase36/evidence/README.md) preserves failures and
+successes with independent reopening/source verification. Resource receipts show
+zero resource stops and zero unfinished jobs; all 103 protected files remain
+unchanged. Root alone runs heavy jobs serially, CPU3, heap at most 1 GiB, process
+tree at most 2 GiB, and a 2 GiB free-memory floor. Agents inspect and prepare
+controls/docs without concurrent compiler or benchmark jobs.

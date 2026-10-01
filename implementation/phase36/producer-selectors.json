@@ -1,0 +1,103 @@
+{
+  "kind": "phase36-private-producer-selectors-proposal",
+  "complete": true,
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase36/producer-selectors-derive.py",
+      "sha256": "8b72c670ff644829554cb686ea33b87c63c4c6a55bd128372623143f57ceb836",
+      "bytes": 6900
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/src/back/js/region.bend",
+      "sha256": "901f7aa8b549105d39aa83303a2a9d521db50bd49d960bb1bd5635788cfdd80a",
+      "bytes": 49742
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase36/producer-proposed.bend",
+      "sha256": "dce921641e7885e157459644516f128d17201f92b691296f07ea0ffb4dfcacc0",
+      "bytes": 7138
+    }
+  ],
+  "output": {
+    "file": "/home/ai/bend2/build/publish/bend/implementation/phase36/producer-selectors.patch",
+    "sha256": "0de3d006771265f220f7ab76fa7487139c4fa543f1eaff8491ebebb1de827078",
+    "bytes": 9104
+  },
+  "producerChanges": [
+    {
+      "before": "True{}, \"\", Con{dn(d), active}, U32.inc(depth),",
+      "after": "True{}, \"\", Con{\"@producer\", Con{dn(d), active}}, U32.inc(depth),",
+      "count": 1
+    },
+    {
+      "before": "da(d), dn(d), Con{dn(d), active}, U32.inc(depth), s)",
+      "after": "da(d), dn(d), Con{\"@producer\", Con{dn(d), active}}, U32.inc(depth), s)",
+      "count": 1
+    }
+  ],
+  "regionChanges": [
+    {
+      "before": "        kc(JRegionBuild, Bool.not(keep) && String.eq(tg(t), \"Mat\") && U32.is_eq(left, 1),\n          u => kc(JRegionBuild, j_primitive_type(book, wnf(book, kid(ty, 0)), \"Nat\"),\n            u => j_region_nat_select(book, env, t, ty, at, 0, active, depth, s),\n            u => j_region_unpack(book, env, t, ty, at, active, depth, s)), u => j_region_fail(s)))), u => j_region_fail(s))",
+      "after": "        kc(JRegionBuild, Bool.not(keep) && String.eq(tg(t), \"Mat\"),\n          u => kc(JRegionBuild, j_primitive_type(book, wnf(book, kid(ty, 0)), \"Nat\") &&\n            (U32.is_eq(left, 1) || has_name(active, \"@producer\")),\n            u => j_region_nat_select(book, env, t, ty, at, left, 0, active, depth, s),\n            u => kc(JRegionBuild, U32.is_eq(left, 1), u => j_region_unpack(book, env, t, ty, at, active, depth, s),\n              u => j_region_fail(s))), u => j_region_fail(s)))), u => j_region_fail(s))",
+      "count": 1
+    },
+    {
+      "before": "def j_region_nat_select(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +at: U32, +offset: U32,",
+      "after": "def j_region_nat_select(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +at: U32, +left: U32, +offset: U32,",
+      "count": 1
+    },
+    {
+      "before": "def j_region_nat_select_on(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +at: U32, +offset: U32,",
+      "after": "def j_region_nat_select_on(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +at: U32, +left: U32, +offset: U32,",
+      "count": 1
+    },
+    {
+      "before": "def j_region_nat_match(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +at: U32, +offset: U32,",
+      "after": "def j_region_nat_match(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +at: U32, +left: U32, +offset: U32,",
+      "count": 1
+    },
+    {
+      "before": "def j_region_nat_first(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +at: U32, +offset: U32,",
+      "after": "def j_region_nat_first(+book: List<&2,KDef>, +env: List<&2,KTerm>, +t: KTerm, +ty: KTerm, +at: U32, +left: U32, +offset: U32,",
+      "count": 1
+    },
+    {
+      "before": "j_region_nat_select_on(book, env, j_strip(t), wnf(book, ty), at, offset, active, depth, j_region_tick(s))",
+      "after": "j_region_nat_select_on(book, env, j_strip(t), wnf(book, ty), at, left, offset, active, depth, j_region_tick(s))",
+      "count": 1
+    },
+    {
+      "before": "      j_region_expr(book, Con{kt(\"JEnvNat\", U32.show(offset), ix(t), at, [wnf(book, kid(ty, 0))]), env},\n        kid(t, 0), subst(kid(ty, 1), ix(ty), var(nm(t), ix(t))), \"\", active, depth, 0, s)",
+      "after": "      j_region_prefix(book, Con{kt(\"JEnvNat\", U32.show(offset), ix(t), at, [wnf(book, kid(ty, 0))]), env},\n        kid(t, 0), subst(kid(ty, 1), ix(ty), var(nm(t), ix(t))), U32.inc(at), U32.sub(left, 1), False{}, \"\", active, depth, s)",
+      "count": 1
+    },
+    {
+      "before": "j_region_nat_match(book, env, t, ty, at, offset, active, depth, s)",
+      "after": "j_region_nat_match(book, env, t, ty, at, left, offset, active, depth, s)",
+      "count": 1
+    },
+    {
+      "before": "      j_region_nat_first(book, env, t, ty, at, offset, active, depth,\n        j_region_expr(book, env, kid(t, 0), j_arm_type(book, ty, \"Zero\"), \"\", active, depth, 0, s))",
+      "after": "      j_region_nat_first(book, env, t, ty, at, left, offset, active, depth,\n        j_region_prefix(book, env, kid(t, 0), j_arm_type(book, ty, \"Zero\"), U32.inc(at), U32.sub(left, 1), False{}, \"\", active, depth, s))",
+      "count": 1
+    },
+    {
+      "before": "j_arm_type(book, ty, \"Succ\"), at, U32.inc(offset), active, depth, s)",
+      "after": "j_arm_type(book, ty, \"Succ\"), at, left, U32.inc(offset), active, depth, s)",
+      "count": 1
+    },
+    {
+      "before": "  +c = j_region_local_ctor(book, ty)\n  kc(JRegionBuild,",
+      "after": "  +c = j_producer_ctor(book, ty, nm(t), active)\n  kc(JRegionBuild,",
+      "count": 1
+    },
+    {
+      "before": "    kc(Bool, j_region_record(book, ty), u => kc(Bool, root, u => j_fold_terminal_fields(book, ks(t), da(c)),\n      u => j_region_field_values(book, ks(t), da(c))), u => True{}), u =>\n    j_region_constructor_done(book, t, ty, j_region_args(book, env, ks(t), j_region_local_fields(book, ty), active, depth, level, s))",
+      "after": "    kc(Bool, j_fold_type(book, ty), u => j_fold_terminal_fields(book, ks(t), da(c)), u =>\n      kc(Bool, j_region_record(book, ty), u => kc(Bool, root, u => j_fold_terminal_fields(book, ks(t), da(c)),\n        u => j_region_field_values(book, ks(t), da(c))), u => True{})), u =>\n    j_region_constructor_done(book, t, ty, j_region_args(book, env, ks(t), j_specialize(book, dt(c), ks(ty)), active, depth, level, s))",
+      "count": 1
+    }
+  ],
+  "producerAddedTail": "def j_producer_ctor(+book: List<&2,KDef>, +ty: KTerm, +name: String, +active: List<&2,String>) -> KDef:\n  kc(KDef, has_name(active, \"@producer\") && j_fold_type(book, ty),\n    u => lookup(dc(lookup(book, nm(ty))), name), u => j_region_local_ctor(book, ty))\n",
+  "lineDelta": 10,
+  "scope": "Proposed extension atop frozen107line producer. Read/write derivation only; no production source edit, compiler execution or measurement."
+}

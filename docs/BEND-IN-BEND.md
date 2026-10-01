@@ -9,51 +9,62 @@ does not invoke the TypeScript compiler.
 
 The active target is upstream
 [`018751270e800bc222a93dad7f257083ee53a5f7`](https://github.com/bendlang/bend/tree/018751270e800bc222a93dad7f257083ee53a5f7)
-(after Bend 2.0.34). **Phase35 checked09 is installed and passes release
-verification and all 42 ordinary/relocated CLI checks.** The
-[Phase35 report](../implementation/phase35/README.md),
-[release record](../implementation/phase35/release-09.md) and
-[manifest](../selfhost/dist/release.json) bind its source and exact artifact identities.
-Ordinary compilation has no TypeScript fallback. The API is a derivative of a
-genuinely checked bootstrap compiler, not a new self-hosting fixed point.
+(after Bend 2.0.34). **Phase36 checked03 is installed; release verification and
+all 42 ordinary/relocated CLI checks pass.** The
+[Phase36 report](../implementation/phase36/README.md),
+[release record](../implementation/phase36/release-03.md) and
+[manifest](../selfhost/dist/release.json) bind its source and exact artifact
+identities. Ordinary compilation has no TypeScript fallback. The API is
+a derivative of a genuinely checked bootstrap compiler, not a new self-hosting
+fixed point.
 
-The complete fifteen-point comparison shows substantial gains on the targeted
-programs and large remaining gaps elsewhere. These are fresh same-run comparisons
-of JavaScript generated from unchanged Bend programs by Phase32 checked03,
-Phase35 checked09 and pinned TypeScript. Values are median milliseconds per call:
+The complete fifteen-point comparison measures **3.653× faster symbolic
+regression and 2.319× faster raytrace** than Phase35. These are fresh same-run
+comparisons of JavaScript generated from unchanged Bend programs by Phase35
+checked09, Phase36 checked03 and pinned TypeScript. Values are median
+milliseconds per call:
 
-| Program | Phase32 | Phase35 selected09 | TypeScript | Phase32 / selected09 | Selected09 / TypeScript |
+| Program | Phase35 | Phase36 checked03 | TypeScript | Phase35 / Phase36 | Phase36 / TypeScript |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Local array pair | 5.046 | 3.810 | 1.246 | 1.324× | 3.058× |
-| Local array fold | 0.3302 | 0.1399 | 0.0400 | 2.360× | 3.497× |
-| Edit distance | 20.700 | 16.201 | 4.972 | 1.278× | 3.259× |
-| Symbolic regression | 106.609 | 15.529 | 1.108 | 6.865× | 14.021× |
-| Raytrace | 10,291.414 | 1,879.845 | 34.315 | 5.475× | 54.781× |
-| Tree bitonic | 25.344 | 25.393 | 0.3018 | 0.998× | 84.142× |
-| Lexer | 176.709 | 172.003 | 1.929 | 1.027× | 89.150× |
+| Local array pair | 3.779 | 3.800 | 1.243 | 0.995× | 3.056× |
+| Local array fold | 0.1395 | 0.1392 | 0.0398 | 1.002× | 3.498× |
+| Edit distance | 15.145 | 15.109 | 4.983 | 1.002× | 3.032× |
+| Symbolic regression | 15.582 | 4.265 | 1.112 | 3.653× | 3.834× |
+| Raytrace | 1,859.589 | 801.893 | 34.162 | 2.319× | 23.473× |
+| Tree bitonic | 23.072 | 22.684 | 0.2814 | 1.017× | 80.618× |
+| Lexer | 170.429 | 172.054 | 1.925 | 0.991× | 89.379× |
 
-The full run took 518.34 seconds on CPU3 in serial fresh Node 24.18.0 processes,
-with five rounds per shorter point and three for raytrace. Warmup is at least
-one second and the timed target is 300 ms. Mandelbrot and several generic
-library cases remain essentially unchanged. The generic row was 9.52% slower
-in that run; a separate five-round follow-up measured a 0.32% slowdown with
-overlapping ranges. Both observations are retained. These selected points do
-not define average application speed or establish steady-state convergence.
-The [performance guide](BEND-IN-BEND-PERFORMANCE.md) gives the protocol,
-remaining gaps and links to complete results.
+The full run took **401.55 seconds** on CPU3 in serial fresh Node 24.18.0
+processes, with five rounds per shorter point and three for raytrace. Warmup is
+at least one second and the timed target is 300 ms. The other thirteen points
+have overlapping observed ranges. The map/set point was 3.19% slower in the full
+run and 0.52% faster in a separate five-round follow-up, with overlapping ranges
+in both. Both observations are retained. After removing their verified runtime
+prefixes, all thirteen other generated program bodies are byte-identical between
+Phase35 and Phase36. These selected points do not define average application
+speed or establish steady-state convergence. The [performance guide](BEND-IN-BEND-PERFORMANCE.md)
+and [admission decision](../implementation/phase36/performance-admission.md)
+give the protocol, remaining gaps and complete results.
 
-Normal checked-library requests cost +0.72% for pair (overlapping ranges),
-+8.17% for Mandelbrot, +30.09% for symreg and +34.40% for raytrace. These
-[compiler costs](../implementation/phase35/compiler-cost.md) are separate from
-generated-program execution. Source grows to **18,050 physical Bend lines in
-68 modules**, up 979 lines (5.73%); generated modules also grow. The
-[admission decision](../implementation/phase35/performance-admission.md) accepts
-those explicit costs for the measured runtime gains.
+Normal checked-library request medians change **−1.56% for pair, +0.42% for
+Mandelbrot, +4.50% for symbolic regression and +4.02% for raytrace** relative to
+Phase35. All observed ranges overlap across three rotated samples; these
+[compiler costs](../implementation/phase36/compiler-cost.md) remain separate
+from generated-program execution. All 24 separate CPU/allocation captures
+complete; the [profile findings](../implementation/phase36/profile-findings.md)
+explain the removed costs and remaining hotspots. Source contains **18,174 physical / 15,545 nonblank Bend lines in 69 modules**, up
+124 physical lines (0.687%) from Phase35. The changes reuse the existing private
+region, selector and tree-frame machinery; the new producer module and scoped
+guard proof add no public representation.
 
-The [final gate closure](../implementation/phase35/final-conformance/gates.md)
-records 3,026 main + 196 broader exact frontend observations, 15 owner-control
-groups, inherited execution/library controls and 42 installed CLI checks. The
-81-row backend pilot remains 69 pass / 8 not applicable / 4 shared failures.
+The [final gate closure](../implementation/phase36/final-conformance/gates.md)
+passes **all 15 postinstallation audit groups**, following 38 preinstallation
+steps. It verifies 226 canonical source files, 3,026 main + 196 broader exact
+frontend observations, 15 inherited owner-control groups, inherited
+execution/library controls and 42 installed/relocated CLI checks. Seven new
+owner groups independently validate scoped guards, reentry, producer trees,
+sharing and fallback against this release. The 81-row backend pilot remains
+69 pass / 8 not applicable / 4 shared failures.
 [Conformance](../selfhost/CONFORMANCE.md) distinguishes exact agreement, selected
 backend execution, shared failures, unavailable platforms and proof trust.
 Independent proof validity remains unestablished; `--verdict` is unsupported.
@@ -62,9 +73,10 @@ Independent proof validity remains unestablished; `--verdict` is unsupported.
 
 The [generated-program performance guide](BEND-IN-BEND-PERFORMANCE.md) explains
 the private region machinery, bounded admission, public entry guards and fast
-validation loop. The [Phase35 campaign](../implementation/phase35/README.md)
-retains rejected experiments as well as accepted mechanisms. Its main changes
-remove representation and dispatch work inside already proved private regions:
+validation loop. The [Phase36 campaign](../implementation/phase36/README.md)
+retains rejected experiments as well as accepted mechanisms. It extends the
+[Phase35 regions](../implementation/phase35/README.md) with scoped guard reuse
+and direct production of eligible recursive tagged data:
 
 - Inline selected vector producers and carry private countdown state in field
   locals, preserving complete state, aliases and ordered updates. Use a Number
@@ -76,12 +88,19 @@ remove representation and dispatch work inside already proved private regions:
   arrays, foreign calls and function-valued interfaces.
 - Consume eligible locally produced recursive tagged data with an explicit
   postorder stack, retaining its representation and child/combine order.
+- Build eligible trees through the same explicit continuation frames. Preserve
+  ordered independent children, parent scalar state and shared child identity;
+  finite Nat and Bool decisions select original constructors and their fields.
+- Reuse validated host and dependency checks within a scalar-input tree region
+  only after proving its entire original source graph pure. Restore the previous
+  proof scope on every exit and suspend it during mutable Error construction;
+  graphs with native array hooks remain ineligible.
 
 Exact-entry, host-intrinsic and live dependency checks select the fast path;
 unsupported source shapes and changed public descriptors retain ordinary
 execution. There is no new public record, array or Nat representation. See the
 [architecture](../selfhost/docs/ARCHITECTURE.md) and the
-[design](../design/phase35/profile-guided-regions.md) for the proof boundaries.
+[Phase36 design](../design/phase36/campaign.md) for the proof boundaries.
 Broad private helper inlining was rejected after regressions, so copying more
 code is not itself an optimization criterion.
 
@@ -95,8 +114,8 @@ statistics and side-by-side TypeScript comparisons. Profiled durations and
 instrumented counters do not become speed ratios.
 
 Keep three steps separate: saved-output mechanism experiments, actual checked
-compiler output with focused controls, and broad integration/transfer. Checked09
-plus its 36 focused controls took 42.506 seconds in one supervised acquisition;
+compiler output with focused controls, and broad integration/transfer. Checked03
+plus its 36 focused controls took 42.288 seconds in one supervised acquisition;
 that is an observed development cost, not a rotated compiler-speed benchmark.
 Do not rerun a multi-second full application for every hypothesis. Validate a
 small complete component and its actual fast-path admission, then test the
@@ -171,8 +190,8 @@ repeated traversal of shared terms: two depth-32 checks that previously exhauste
 a 1 GiB heap now complete within that limit. Its historical ordinary-checking
 comparison was around three times the pinned TypeScript compiler. That scope
 differs from the historical Phase32 library compile requests and the current
-[Phase35 compiler-cost study](../implementation/phase35/compiler-cost.md); these
-ratios must not be substituted for each other.
+[Phase36 compiler-cost study](../implementation/phase36/compiler-cost.md);
+these ratios must not be substituted for each other.
 
 The backend now supports all nine `Array.atomic` operations in its existing
 uniform arrays, correct original/copy ordering for `Array.clone`, shared array
@@ -237,7 +256,7 @@ npm run build -- /absolute/release-config.json /absolute/new-attempt
 Config fields and selection semantics are documented in the
 [maintained workflow guide](PHASE5_DEVELOPMENT.md). Broad conformance and checked
 self-reproduction are release/integration gates, not every small edit's build.
-The [Phase35 report](../implementation/phase35/README.md) records current release
+The [Phase36 report](../implementation/phase36/README.md) records current release
 validation status. The historical [Phase32 release report](../implementation/phase32/release-03.md)
 retains its own evidence, limits and ordinary/relocated CLI closure.
 
@@ -396,11 +415,12 @@ request histories, native/JavaScript execution and installed/relocated CLI check
 Counts overlap; the four raw frontend failures expect errors at later emission.
 Read [conformance](../selfhost/CONFORMANCE.md) for the precise verdicts and limits.
 
-Phase35 source contains **18,050 physical / 15,436 nonblank Bend lines, 2,008
-definitions, 640 laws, 71 types and 68 modules**. Relative to Phase32, that adds
-979 physical lines, 124 definitions, one type and two modules. The
-[Phase35 report](../implementation/phase35/README.md) records the accepted source
-and concept costs. These counts exclude generated images and experiment tools.
+Phase36 source contains **18,174 physical / 15,545 nonblank Bend lines, 2,024
+definitions, 640 laws, 71 types and 69 modules**. Relative to Phase35, that adds
+124 physical lines (0.687%), 109 nonblank lines, 16 definitions and one module;
+type and law counts are unchanged. The [Phase36 report](../implementation/phase36/README.md)
+records the source and concept costs, including private producers and scoped
+guard reuse. These counts exclude generated images and experiment tools.
 Historical 50% and 75% source reduction goals remain unachieved. Load ABI2 remains current.
 
 Routine development uses checked B1 and 36 focused controls; reuse a frozen

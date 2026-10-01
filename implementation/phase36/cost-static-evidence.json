@@ -1,0 +1,591 @@
+{
+  "kind": "phase36-inline-static-opportunity",
+  "complete": true,
+  "scope": "Static declaration/signature counts; no planner visits, liveness proof or timing.",
+  "inputs": [
+    {
+      "file": "implementation/phase36/cost-static-inspect.py",
+      "sha256": "28550d98a7686a987b6cc0a1249be39086409f5d5d91827f1f4dc40339452bb9",
+      "bytes": 3781
+    },
+    {
+      "file": "selfhost/build/phase35/combined-full-01/manifest.json",
+      "sha256": "f0abb08166e2f6b84f82ddf0d6cc712b526ff54ab990f2cb6c7b8f69eec23c77",
+      "bytes": 10505
+    },
+    {
+      "file": "selfhost/build/phase35/combined-profiles-01/analysis/report.json",
+      "sha256": "1bd44fa352e674bdf7c74126b4be03d8f11a6399093e3eab7d5f74bc87124f04",
+      "bytes": 13628174
+    }
+  ],
+  "cases": [
+    {
+      "id": "local-pair",
+      "module": {
+        "file": "selfhost/build/phase35/combined-full-01/modules/local-row.mjs",
+        "sha256": "f55d5c67f080338be308dfa642dd6dc831ff1ec27c325c817a4398eff89caf85",
+        "bytes": 122542
+      },
+      "closures": [
+        {
+          "root": "pair",
+          "declarations": 23,
+          "names": [
+            "$R_100_112",
+            "$R_100_112_46_114_111_119",
+            "$R_100_112_46_102_49",
+            "$R_100_112_46_102_49$get",
+            "$R_114_111_119",
+            "$R_99_101_108_108",
+            "$R_99_101_108_108_46_102_49",
+            "$R_99_101_108_108_46_102_49$get",
+            "$R_98_50_117",
+            "$R_99_101_108_108_46_102_50",
+            "$R_99_101_108_108_46_102_50$get",
+            "$R_99_101_108_108_46_102_51",
+            "$R_99_101_108_108_46_102_51$get",
+            "$R_99_101_108_108_46_102_52",
+            "$R_99_101_108_108_46_102_52$get",
+            "$R_117_109_105_110",
+            "$R_117_109_105_110_46_103_111",
+            "$R_100_105_115_116",
+            "$R_100_105_115_116_46_102_105_110",
+            "$R_100_105_115_116_46_102_105_110$get",
+            "$R_105_110_105_116",
+            "$R_103_101_110",
+            "$R_112_114_110_103"
+          ],
+          "bendNames": [
+            "dp",
+            "dp.row",
+            "dp.f1",
+            "dp.f1",
+            "row",
+            "cell",
+            "cell.f1",
+            "cell.f1",
+            "b2u",
+            "cell.f2",
+            "cell.f2",
+            "cell.f3",
+            "cell.f3",
+            "cell.f4",
+            "cell.f4",
+            "umin",
+            "umin.go",
+            "dist",
+            "dist.fin",
+            "dist.fin",
+            "init",
+            "gen",
+            "prng"
+          ],
+          "bytes": 18041
+        },
+        {
+          "root": "batch",
+          "declarations": 24,
+          "names": [
+            "$R_112_97_105_114",
+            "$R_100_112",
+            "$R_100_112_46_114_111_119",
+            "$R_100_112_46_102_49",
+            "$R_100_112_46_102_49$get",
+            "$R_114_111_119",
+            "$R_99_101_108_108",
+            "$R_99_101_108_108_46_102_49",
+            "$R_99_101_108_108_46_102_49$get",
+            "$R_98_50_117",
+            "$R_99_101_108_108_46_102_50",
+            "$R_99_101_108_108_46_102_50$get",
+            "$R_99_101_108_108_46_102_51",
+            "$R_99_101_108_108_46_102_51$get",
+            "$R_99_101_108_108_46_102_52",
+            "$R_99_101_108_108_46_102_52$get",
+            "$R_117_109_105_110",
+            "$R_117_109_105_110_46_103_111",
+            "$R_100_105_115_116",
+            "$R_100_105_115_116_46_102_105_110",
+            "$R_100_105_115_116_46_102_105_110$get",
+            "$R_105_110_105_116",
+            "$R_103_101_110",
+            "$R_112_114_110_103"
+          ],
+          "bendNames": [
+            "pair",
+            "dp",
+            "dp.row",
+            "dp.f1",
+            "dp.f1",
+            "row",
+            "cell",
+            "cell.f1",
+            "cell.f1",
+            "b2u",
+            "cell.f2",
+            "cell.f2",
+            "cell.f3",
+            "cell.f3",
+            "cell.f4",
+            "cell.f4",
+            "umin",
+            "umin.go",
+            "dist",
+            "dist.fin",
+            "dist.fin",
+            "init",
+            "gen",
+            "prng"
+          ],
+          "bytes": 18640
+        }
+      ],
+      "privateDeclarations": 47,
+      "withoutDirectCall": {
+        "declarations": 26,
+        "bytes": 21160,
+        "caveat": "Spelling-level existing AST inventory, not private-plan liveness or removal permission."
+      }
+    },
+    {
+      "id": "local-fold",
+      "module": {
+        "file": "selfhost/build/phase35/combined-full-01/modules/local-fold.mjs",
+        "sha256": "5c5c4cf541c4b690ed29f886f0f80a626bd8372a662f935d5f42b648ae2dc598",
+        "bytes": 82092
+      },
+      "closures": [
+        {
+          "root": "bench",
+          "declarations": 7,
+          "names": [
+            "$R_102_111_108_100_46_108_111_111_112",
+            "$R_102_111_108_100_46_99_101_108_108",
+            "$R_102_111_108_100_46_99_101_108_108$get",
+            "$R_102_111_108_100_46_115_116_101_112",
+            "$R_102_111_108_100_46_115_116_101_112$get",
+            "$R_102_111_108_100_46_102_105_110_105_115_104",
+            "$R_102_111_108_100_46_102_105_110_105_115_104$get"
+          ],
+          "bendNames": [
+            "fold.loop",
+            "fold.cell",
+            "fold.cell",
+            "fold.step",
+            "fold.step",
+            "fold.finish",
+            "fold.finish"
+          ],
+          "bytes": 3683
+        }
+      ],
+      "privateDeclarations": 7,
+      "withoutDirectCall": {
+        "declarations": 5,
+        "bytes": 1783,
+        "caveat": "Spelling-level existing AST inventory, not private-plan liveness or removal permission."
+      }
+    },
+    {
+      "id": "mandelbrot",
+      "module": {
+        "file": "selfhost/build/phase35/combined-full-01/modules/mandelbrot.mjs",
+        "sha256": "c3efd0e86696a5e12f339faafc0f68023dc5fa46e1640fc3bb08383c7e2464ec",
+        "bytes": 114174
+      },
+      "closures": [
+        {
+          "root": "mit",
+          "declarations": 4,
+          "names": [
+            "$R_98_50_117",
+            "$R_97_115_114_56",
+            "$R_115_101_108",
+            "$R_115_101_108_46_103_111"
+          ],
+          "bendNames": [
+            "b2u",
+            "asr8",
+            "sel",
+            "sel.go"
+          ],
+          "bytes": 3730
+        },
+        {
+          "root": "pix",
+          "declarations": 5,
+          "names": [
+            "$R_109_105_116",
+            "$R_98_50_117",
+            "$R_97_115_114_56",
+            "$R_115_101_108",
+            "$R_115_101_108_46_103_111"
+          ],
+          "bendNames": [
+            "mit",
+            "b2u",
+            "asr8",
+            "sel",
+            "sel.go"
+          ],
+          "bytes": 3254
+        },
+        {
+          "root": "hchunk",
+          "declarations": 7,
+          "names": [
+            "$R_98_107_116",
+            "$R_112_105_120",
+            "$R_109_105_116",
+            "$R_98_50_117",
+            "$R_97_115_114_56",
+            "$R_115_101_108",
+            "$R_115_101_108_46_103_111"
+          ],
+          "bendNames": [
+            "bkt",
+            "pix",
+            "mit",
+            "b2u",
+            "asr8",
+            "sel",
+            "sel.go"
+          ],
+          "bytes": 7512
+        },
+        {
+          "root": "rpix",
+          "declarations": 7,
+          "names": [
+            "$R_98_107_116",
+            "$R_112_105_120",
+            "$R_109_105_116",
+            "$R_98_50_117",
+            "$R_97_115_114_56",
+            "$R_115_101_108",
+            "$R_115_101_108_46_103_111"
+          ],
+          "bendNames": [
+            "bkt",
+            "pix",
+            "mit",
+            "b2u",
+            "asr8",
+            "sel",
+            "sel.go"
+          ],
+          "bytes": 6568
+        },
+        {
+          "root": "rcol",
+          "declarations": 8,
+          "names": [
+            "$R_114_112_105_120",
+            "$R_98_107_116",
+            "$R_112_105_120",
+            "$R_109_105_116",
+            "$R_98_50_117",
+            "$R_97_115_114_56",
+            "$R_115_101_108",
+            "$R_115_101_108_46_103_111"
+          ],
+          "bendNames": [
+            "rpix",
+            "bkt",
+            "pix",
+            "mit",
+            "b2u",
+            "asr8",
+            "sel",
+            "sel.go"
+          ],
+          "bytes": 8348
+        }
+      ],
+      "privateDeclarations": 31,
+      "source": {
+        "file": "selfhost/tools/performance/programs/fixtures/mandelbrot.bend",
+        "sha256": "cb2b9c30aceeb0f8ed0da1f999658aa8d7fb346851877da6902d1ded4cfc0656",
+        "bytes": 6576
+      },
+      "helperSourceResultTypes": {
+        "asr8": "U32",
+        "b2u": "U32",
+        "bkt": "U32",
+        "mit": "U32",
+        "pix": "U32",
+        "rpix": "U32",
+        "sel": "U32",
+        "sel.go": "U32"
+      }
+    },
+    {
+      "id": "symreg",
+      "module": {
+        "file": "selfhost/build/phase35/combined-full-01/modules/symreg.mjs",
+        "sha256": "dd400df33dc3acbf50c781778a85eb8960bdd065d40a5bf6cffde0009bb3ad26",
+        "bytes": 102304
+      },
+      "closures": [
+        {
+          "root": "cand",
+          "declarations": 8,
+          "names": [
+            "$R_102_108_111_111_112",
+            "$R_97_100_105_102_102",
+            "$R_98_50_117",
+            "$R_115_101_108",
+            "$R_115_101_108_46_103_111",
+            "$R_101_118_97_108",
+            "$R_101_115_105_122_101",
+            "$R_112_114_110_103"
+          ],
+          "bendNames": [
+            "floop",
+            "adiff",
+            "b2u",
+            "sel",
+            "sel.go",
+            "eval",
+            "esize",
+            "prng"
+          ],
+          "bytes": 7059
+        },
+        {
+          "root": "climb",
+          "declarations": 6,
+          "names": [
+            "$R_83_101_108_46_115_101_101_100",
+            "$R_115_101_108",
+            "$R_115_101_108_46_103_111",
+            "$R_98_50_117",
+            "$R_83_101_108_46_102_105_116",
+            "$R_112_114_110_103"
+          ],
+          "bendNames": [
+            "Sel.seed",
+            "sel",
+            "sel.go",
+            "b2u",
+            "Sel.fit",
+            "prng"
+          ],
+          "bytes": 3149
+        },
+        {
+          "root": "run",
+          "declarations": 8,
+          "names": [
+            "$R_114_117_110_46_102_105_110",
+            "$R_99_108_105_109_98",
+            "$R_83_101_108_46_115_101_101_100",
+            "$R_115_101_108",
+            "$R_115_101_108_46_103_111",
+            "$R_98_50_117",
+            "$R_83_101_108_46_102_105_116",
+            "$R_112_114_110_103"
+          ],
+          "bendNames": [
+            "run.fin",
+            "climb",
+            "Sel.seed",
+            "sel",
+            "sel.go",
+            "b2u",
+            "Sel.fit",
+            "prng"
+          ],
+          "bytes": 3115
+        },
+        {
+          "root": "bench",
+          "declarations": 9,
+          "names": [
+            "$R_114_117_110",
+            "$R_114_117_110_46_102_105_110",
+            "$R_99_108_105_109_98",
+            "$R_83_101_108_46_115_101_101_100",
+            "$R_115_101_108",
+            "$R_115_101_108_46_103_111",
+            "$R_98_50_117",
+            "$R_83_101_108_46_102_105_116",
+            "$R_112_114_110_103"
+          ],
+          "bendNames": [
+            "run",
+            "run.fin",
+            "climb",
+            "Sel.seed",
+            "sel",
+            "sel.go",
+            "b2u",
+            "Sel.fit",
+            "prng"
+          ],
+          "bytes": 2988
+        }
+      ],
+      "privateDeclarations": 31,
+      "withoutDirectCall": {
+        "declarations": 0,
+        "bytes": 0,
+        "caveat": "Spelling-level existing AST inventory, not private-plan liveness or removal permission."
+      },
+      "source": {
+        "file": "selfhost/tools/performance/programs/fixtures/symreg.bend",
+        "sha256": "c25c8fb869eaf5ac90cbf45feb30c0e8169207ed0b74cd655343048fcc82778b",
+        "bytes": 5406
+      },
+      "helperSourceResultTypes": {
+        "Sel.fit": "U32",
+        "Sel.seed": "U32",
+        "adiff": "U32",
+        "b2u": "U32",
+        "climb": "U32",
+        "esize": "U32",
+        "eval": "U32",
+        "floop": "U32",
+        "prng": "U32",
+        "run": "U32",
+        "run.fin": "U32",
+        "sel": "U32",
+        "sel.go": "U32"
+      }
+    },
+    {
+      "id": "raytrace",
+      "module": {
+        "file": "selfhost/build/phase35/combined-full-01/modules/raytrace.mjs",
+        "sha256": "d6b3abd23fddec72c3756af4b1ae531483758b8bc7c25c412cd0e7e2264aa197",
+        "bytes": 129177
+      },
+      "closures": [
+        {
+          "root": "nearest",
+          "declarations": 10,
+          "names": [
+            "$R_115_114",
+            "$R_115_122",
+            "$R_115_121",
+            "$R_115_120",
+            "$R_105_115_101_99_116_53",
+            "$R_105_115_101_99_116_46_103_111",
+            "$R_105_115_101_99_116_46_103_111_50",
+            "$R_105_115_101_99_116_46_116",
+            "$R_102_108",
+            "$R_105_115_101_99_116_46_116_50"
+          ],
+          "bendNames": [
+            "sr",
+            "sz",
+            "sy",
+            "sx",
+            "isect5",
+            "isect.go",
+            "isect.go2",
+            "isect.t",
+            "fl",
+            "isect.t2"
+          ],
+          "bytes": 9378
+        },
+        {
+          "root": "nearest.t",
+          "declarations": 10,
+          "names": [
+            "$R_115_114",
+            "$R_115_122",
+            "$R_115_121",
+            "$R_115_120",
+            "$R_105_115_101_99_116_53",
+            "$R_105_115_101_99_116_46_103_111",
+            "$R_105_115_101_99_116_46_103_111_50",
+            "$R_105_115_101_99_116_46_116",
+            "$R_102_108",
+            "$R_105_115_101_99_116_46_116_50"
+          ],
+          "bendNames": [
+            "sr",
+            "sz",
+            "sy",
+            "sx",
+            "isect5",
+            "isect.go",
+            "isect.go2",
+            "isect.t",
+            "fl",
+            "isect.t2"
+          ],
+          "bytes": 8255
+        },
+        {
+          "root": "colf",
+          "declarations": 9,
+          "names": [
+            "$R_99_111_108_102_46_112_120",
+            "$R_99_111_108_102_46_112_120_46_103_111",
+            "$R_112_105_120_101_108",
+            "$R_99_108_97_109_112_48_49",
+            "$R_99_108_97_109_112_48_49_46_103_111",
+            "$R_99_108_97_109_112_48_49_46_104_105",
+            "$R_99_108_97_109_112_48_49_46_104_105_46_103_111",
+            "$R_102_108",
+            "$R_115_117_98_114_97_121"
+          ],
+          "bendNames": [
+            "colf.px",
+            "colf.px.go",
+            "pixel",
+            "clamp01",
+            "clamp01.go",
+            "clamp01.hi",
+            "clamp01.hi.go",
+            "fl",
+            "subray"
+          ],
+          "bytes": 7412
+        },
+        {
+          "root": "rowf",
+          "declarations": 0,
+          "names": [],
+          "bendNames": [],
+          "bytes": 3391
+        }
+      ],
+      "privateDeclarations": 29,
+      "withoutDirectCall": {
+        "declarations": 0,
+        "bytes": 0,
+        "caveat": "Spelling-level existing AST inventory, not private-plan liveness or removal permission."
+      },
+      "source": {
+        "file": "selfhost/tools/performance/programs/fixtures/raytrace.bend",
+        "sha256": "4674b2580aceb5f5fe6771ce16c987b97f791b52a9e1305794c435beeebf5837",
+        "bytes": 14223
+      },
+      "helperSourceResultTypes": {
+        "clamp01": "F32",
+        "clamp01.go": "F32",
+        "clamp01.hi": "F32",
+        "clamp01.hi.go": "F32",
+        "colf.px": "U32",
+        "colf.px.go": "U32",
+        "fl": "F32",
+        "isect.go": "F32",
+        "isect.go2": "F32",
+        "isect.t": "F32",
+        "isect.t2": "F32",
+        "isect5": "F32",
+        "pixel": "U32",
+        "sr": "F32",
+        "subray": "F32",
+        "sx": "F32",
+        "sy": "F32",
+        "sz": "F32"
+      }
+    }
+  ]
+}

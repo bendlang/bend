@@ -1,0 +1,62 @@
+{
+  "kind": "phase36-inherited-final-planner-derivation",
+  "complete": true,
+  "parent": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase35/final-integration-plan.py",
+    "sha256": "cb0f07e42f64255552344e496a047df1f10ea2cbdc20bcc27f4ee7d6c07232cc",
+    "bytes": 13410
+  },
+  "derived": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase36/final-integration-plan.py",
+    "sha256": "6b05713f240e91394c0e7abe78f955016c138610b7a92a1adc080cbc125de7f0",
+    "bytes": 15508
+  },
+  "changes": [
+    {
+      "before": "\"\"\"Freeze Phase35 final-image gates; run no compiler, gate, timing or install.\"\"\"",
+      "after": "\"\"\"Freeze Phase36 gates using the unchanged Phase35 assertions; execute nothing.\"\"\"",
+      "count": 1
+    },
+    {
+      "before": "HERE = Path(__file__).resolve().parent",
+      "after": "HERE = Path(__file__).resolve().parent.parent/'phase35'",
+      "count": 1
+    },
+    {
+      "before": "'src/back/js/fold.bend': 'src/back/js/region.bend'}",
+      "after": "'src/back/js/fold.bend': 'src/back/js/region.bend',\n             'src/back/js/producer.bend': 'src/back/js/fold.bend'}",
+      "count": 1
+    },
+    {
+      "before": "keep(HERE/'final-gate-audit.py')",
+      "after": "keep(HERE/'final-gate-audit.py')\nkeep(HERE/'final-gate-audit-v2.py')\nkeep(HERE/'final-integration-plan.py')",
+      "count": 1
+    },
+    {
+      "before": "from final_owner import append_owner",
+      "after": "sys.path.insert(0, str(HERE))\nfrom final_owner import append_owner",
+      "count": 1
+    },
+    {
+      "before": "save(out/'derivations.json',dict(complete=True,derivations=derivations))",
+      "after": "save(out/'derivations.json',dict(complete=True,derivations=derivations))\nsave(out/'phase36-parentage.json', dict(complete=True,\n    parent=keep(HERE/'final-integration-plan.py'), successor=keep(__file__),\n    derivative=keep(Path(__file__).with_suffix('.json')),\n    assertionPolicy='All Phase35 frontend/backend/inherited/15 owner assertions and auditors remain unchanged. Only successor provenance and one explicit named module position are added. Phase36-specific owner controls are separately required.',\n    phase36Owners='Separate explicit final-API producer, scoped-guard and compiler-cost controls; not discharged by this inherited plan.'))",
+      "count": 1
+    },
+    {
+      "before": "keep(__file__)\n",
+      "after": "proof_file = Path(__file__).with_suffix('.json')\nproof = json.loads(proof_file.read_text())\nassert proof['kind'] == 'phase36-inherited-final-planner-derivation' and proof['complete']\nassert Path(proof['derived']['file']).resolve() == Path(__file__).resolve()\nkeep(__file__, proof['derived']['sha256']); keep(proof_file)\nkeep(proof['parent']['file'], proof['parent']['sha256'])\n",
+      "count": 1
+    },
+    {
+      "before": "owner=append_owner(ROOT,HERE,attempt,out,manifest,args.added_module,command,keep,save,args.prepared)\n",
+      "after": "owner=append_owner(ROOT,HERE,attempt,out,manifest,args.added_module,command,keep,save,args.prepared)\n# Preserve the two known Phase35 report-pointer corrections without altering\n# acquisition commands, semantic assertions or the inherited owner closer.\nowner_reports = out/'owner/reports.json'\noriginal_reports = out/'owner/reports-original.json'\nshutil.copyfile(owner_reports, original_reports)\nreports = json.loads(owner_reports.read_text()); pointer_changes = []\nfor name in ['scope', 'vectors']:\n    before = [str(out/'owner/legacy-emissions'/(name+'.mjs')/'report.json')]\n    after = [str(out/'owner'/name/'report.json')]\n    assert reports['cases'][name] == before\n    reports['cases'][name] = after\n    pointer_changes.append(dict(group=name, before=before, after=after))\nsave(owner_reports, reports)\nsave(out/'owner/report-pointer-derivation.json', dict(complete=True,\n    original=keep(original_reports), corrected=keep(owner_reports), changes=pointer_changes))\nkeep(out/'owner/report-pointer-derivation.json')\n",
+      "count": 1
+    },
+    {
+      "before": "    assertionPolicy='All Phase35 frontend/backend/inherited/15 owner assertions and auditors remain unchanged. Only successor provenance and one explicit named module position are added. Phase36-specific owner controls are separately required.'",
+      "after": "    assertionPolicy='All Phase35 frontend/backend/inherited/15 owner assertions and auditors remain unchanged. Successor provenance, one explicit named module position and two previously established report-pointer corrections are added. Phase36-specific owner controls are separately required.'",
+      "count": 1
+    }
+  ],
+  "scope": "Read/write derivation only. No planner, build, gate, timing, install or publication executed."
+}

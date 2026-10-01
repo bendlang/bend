@@ -1,0 +1,22 @@
+--- a/selfhost/src/back/js/region.bend
++++ b/selfhost/src/back/js/region.bend
+@@ -432,7 +432,18 @@
+ 
+ @unsafe
+ def j_region_declarations(+book: List<&2,KDef>, +helpers: List<&2,KDef>) -> String:
+-  j_region_definitions(book, j_region_inline_defs(book, helpers, helpers))
++  j_region_definitions(book, kc(List<&2,KDef>, j_region_inline_available(book, helpers),
++    u => j_region_inline_defs(book, helpers, helpers), u => helpers))
++
++# If no original helper can match the inliner's only rewriting rule, rebuilding
++# its entire closure is an identity pass, including its budget-failure fallback.
++@unsafe
++def j_region_inline_available(+book: List<&2,KDef>, +helpers: List<&2,KDef>) -> Bool:
++  match helpers:
++    case Nil{}: False{}
++    case Con{d, rest}:
++      (String.eq(dk(d), "Def") && Bool.not(db(d)) && String.eq(tg(dv(d)), "Ann") &&
++        j_region_local_vector(book, kid(dv(d), 1))) || j_region_inline_available(book, rest)
+ 
+ # Delimited codepoints preserve source identity without a private name table.
+ @unsafe

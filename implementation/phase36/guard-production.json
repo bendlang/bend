@@ -1,0 +1,21 @@
+{
+  "kind": "phase36-scoped-guard-proposal",
+  "applied": false,
+  "scope": "tree roots with native scalar inputs, native scalar or terminal record result, existing complete JPure residual graph; runtime proof is nonexported and finally restored",
+  "inputs": [
+    {
+      "path": "selfhost/src/back/js/tree.bend",
+      "sha256": "3bc377a21202ebd83e00731c1ce0416569a7544aebdc74102049be9770937c43",
+      "proposedSha256": "9254ebade93b9d04d5afb8272e1b04da8208faceddf8b05d3086a9d148c2b17d",
+      "addedPhysicalLines": 7
+    },
+    {
+      "path": "selfhost/src/runtime/js/core.mjs",
+      "sha256": "55d73f3652588095bbe541b627884303f5785a525bbd0c25082c5f6cb7461c65",
+      "proposedSha256": "9b886b12bb7d38dea214e34907fb54533ace676a105ec23afcce5da4b76136dc",
+      "addedPhysicalLines": 22
+    }
+  ],
+  "patchSha256": "b43f9ed1f8f0f25ab9fc67e76d95024d0678393be3a027d5a1c976d74df7c96c",
+  "runtimeGenerated": "selfhost/src/runtime.mjs must be regenerated with normal project generator after applying core.mjs patch"
+}

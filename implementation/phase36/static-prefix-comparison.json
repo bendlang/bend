@@ -1,0 +1,584 @@
+{
+  "kind": "phase36-frozen-runtime-prefix-comparison",
+  "complete": true,
+  "timing": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/report.json",
+    "bytes": 1843864,
+    "sha256": "8bbdb69e8c917b70e227a046cf561a09120e65360d2225fc61aba86f64d6b19d"
+  },
+  "scope": "Byte comparison of complete emitted suffixes, not an AST or dynamic cost claim. Runtime prefixes are verified against each frozen attempt.",
+  "rows": [
+    {
+      "id": "local-pair",
+      "programSuffixEqual": true,
+      "suffixes": {
+        "baseline": {
+          "bytes": 70853,
+          "sha256": "a3b03e7d69452a5df8e496e96353f06e73d55ce96e74392a8eac832bea508c5e"
+        },
+        "candidate": {
+          "bytes": 70853,
+          "sha256": "a3b03e7d69452a5df8e496e96353f06e73d55ce96e74392a8eac832bea508c5e"
+        }
+      },
+      "modules": {
+        "baseline": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/local-row.mjs",
+          "bytes": 122542,
+          "sha256": "f55d5c67f080338be308dfa642dd6dc831ff1ec27c325c817a4398eff89caf85"
+        },
+        "candidate": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/local-row.mjs",
+          "bytes": 123547,
+          "sha256": "e3367eaa3650a77745440ea78dd3168fd1b7b370b7cefe6a0c1ca2e9031bd611"
+        }
+      }
+    },
+    {
+      "id": "local-fold",
+      "programSuffixEqual": true,
+      "suffixes": {
+        "baseline": {
+          "bytes": 30403,
+          "sha256": "e6d214dd2e490ad049dfa75ea7122d09b6c811a1cd5ee929f3c898d969fe0b9e"
+        },
+        "candidate": {
+          "bytes": 30403,
+          "sha256": "e6d214dd2e490ad049dfa75ea7122d09b6c811a1cd5ee929f3c898d969fe0b9e"
+        }
+      },
+      "modules": {
+        "baseline": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/local-fold.mjs",
+          "bytes": 82092,
+          "sha256": "5c5c4cf541c4b690ed29f886f0f80a626bd8372a662f935d5f42b648ae2dc598"
+        },
+        "candidate": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/local-fold.mjs",
+          "bytes": 83097,
+          "sha256": "a024e4f2e04360c2c643053b54e69993a9aa0dad8a4f630b91f4d388f0b9eee4"
+        }
+      }
+    },
+    {
+      "id": "scalar-region-0",
+      "programSuffixEqual": true,
+      "suffixes": {
+        "baseline": {
+          "bytes": 34062,
+          "sha256": "0c9715a7c9a140f013ad666738022cecbea1e583e18a221a27541a62ef185f01"
+        },
+        "candidate": {
+          "bytes": 34062,
+          "sha256": "0c9715a7c9a140f013ad666738022cecbea1e583e18a221a27541a62ef185f01"
+        }
+      },
+      "modules": {
+        "baseline": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/scalar-region.mjs",
+          "bytes": 85751,
+          "sha256": "74c1f35082d6087f45c7ae60cf5220753ed8e9904e84e1db55f2efce601411ef"
+        },
+        "candidate": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/scalar-region.mjs",
+          "bytes": 86756,
+          "sha256": "3175bc1b84b4e64f8ec3b998df0d2cfc1f542668778da7ccbd1865e8bdcf4827"
+        }
+      }
+    },
+    {
+      "id": "scalar-region-8192",
+      "programSuffixEqual": true,
+      "suffixes": {
+        "baseline": {
+          "bytes": 34062,
+          "sha256": "0c9715a7c9a140f013ad666738022cecbea1e583e18a221a27541a62ef185f01"
+        },
+        "candidate": {
+          "bytes": 34062,
+          "sha256": "0c9715a7c9a140f013ad666738022cecbea1e583e18a221a27541a62ef185f01"
+        }
+      },
+      "modules": {
+        "baseline": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/scalar-region.mjs",
+          "bytes": 85751,
+          "sha256": "74c1f35082d6087f45c7ae60cf5220753ed8e9904e84e1db55f2efce601411ef"
+        },
+        "candidate": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/scalar-region.mjs",
+          "bytes": 86756,
+          "sha256": "3175bc1b84b4e64f8ec3b998df0d2cfc1f542668778da7ccbd1865e8bdcf4827"
+        }
+      }
+    },
+    {
+      "id": "complete-generic-row32",
+      "programSuffixEqual": true,
+      "suffixes": {
+        "baseline": {
+          "bytes": 71006,
+          "sha256": "96e3b6170ef10a44004694a948dd4c5cf9618cbe01d53a9a284ae35925b8fe61"
+        },
+        "candidate": {
+          "bytes": 71006,
+          "sha256": "96e3b6170ef10a44004694a948dd4c5cf9618cbe01d53a9a284ae35925b8fe61"
+        }
+      },
+      "modules": {
+        "baseline": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/local-row-observed.mjs",
+          "bytes": 122695,
+          "sha256": "d7ea604e633ec3e28e958fab0896d2b721b366956b9e999ae68c2a5097d60a2e"
+        },
+        "candidate": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/local-row-observed.mjs",
+          "bytes": 123700,
+          "sha256": "6cb4de7df70e07d226f644ee1d131b5de16b2dbe0ae6da37d487f1d520f65485"
+        }
+      }
+    },
+    {
+      "id": "mandelbrot",
+      "programSuffixEqual": true,
+      "suffixes": {
+        "baseline": {
+          "bytes": 62485,
+          "sha256": "dc31a5a34928bc36d42fc63a6a3e595437022afa7ea18e46b3debb1bd636f627"
+        },
+        "candidate": {
+          "bytes": 62485,
+          "sha256": "dc31a5a34928bc36d42fc63a6a3e595437022afa7ea18e46b3debb1bd636f627"
+        }
+      },
+      "modules": {
+        "baseline": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/mandelbrot.mjs",
+          "bytes": 114174,
+          "sha256": "c3efd0e86696a5e12f339faafc0f68023dc5fa46e1640fc3bb08383c7e2464ec"
+        },
+        "candidate": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/mandelbrot.mjs",
+          "bytes": 115179,
+          "sha256": "1e5a254ab783c8b7e305a38716d02dd092cde77cb05a83f86461340b1eb21cdf"
+        }
+      }
+    },
+    {
+      "id": "editdist",
+      "programSuffixEqual": true,
+      "suffixes": {
+        "baseline": {
+          "bytes": 70028,
+          "sha256": "3d349cf72c00ad91cd9733e08ff94b28af8a264bcd01348b6e5593b6aed4e342"
+        },
+        "candidate": {
+          "bytes": 70028,
+          "sha256": "3d349cf72c00ad91cd9733e08ff94b28af8a264bcd01348b6e5593b6aed4e342"
+        }
+      },
+      "modules": {
+        "baseline": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/editdist.mjs",
+          "bytes": 121717,
+          "sha256": "b68c6d5d92a91eb58885da8d419f9fc6063f187164bcf37679fdce8771ba1753"
+        },
+        "candidate": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/editdist.mjs",
+          "bytes": 122722,
+          "sha256": "671cf04ade603f13364da914f943796d71019b7f827957f0874e550701849a48"
+        }
+      }
+    },
+    {
+      "id": "tree-bitonic",
+      "programSuffixEqual": true,
+      "suffixes": {
+        "baseline": {
+          "bytes": 33418,
+          "sha256": "3544c389e50f81d52d25df987d764be87cc6e3950f158f63aee159ec24d32795"
+        },
+        "candidate": {
+          "bytes": 33418,
+          "sha256": "3544c389e50f81d52d25df987d764be87cc6e3950f158f63aee159ec24d32795"
+        }
+      },
+      "modules": {
+        "baseline": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/tree-bitonic.mjs",
+          "bytes": 85107,
+          "sha256": "e32f58018cc8653f57fcad800d126af8ae9c8b87e00e098037250886b39c2d83"
+        },
+        "candidate": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/tree-bitonic.mjs",
+          "bytes": 86112,
+          "sha256": "6ba1adf3a5ba6aeae722f63dd16adef0a32ff846027d563fcd322c428cdff696"
+        }
+      }
+    },
+    {
+      "id": "lexer",
+      "programSuffixEqual": true,
+      "suffixes": {
+        "baseline": {
+          "bytes": 38084,
+          "sha256": "cd30e89ca662023d845f605b6d6fef3eaa1d3f3ce70e173b511f251a23d05569"
+        },
+        "candidate": {
+          "bytes": 38084,
+          "sha256": "cd30e89ca662023d845f605b6d6fef3eaa1d3f3ce70e173b511f251a23d05569"
+        }
+      },
+      "modules": {
+        "baseline": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/lexer.mjs",
+          "bytes": 89773,
+          "sha256": "f9017bba7ee6c4fe3022ec6433235468ad14b4f46aa751e02ddc9b499cb6b280"
+        },
+        "candidate": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/lexer.mjs",
+          "bytes": 90778,
+          "sha256": "e7aa6f0118bc331635ba22bf02be030eac8b5ee48a926729edc9c09b64da24b8"
+        }
+      }
+    },
+    {
+      "id": "symreg",
+      "programSuffixEqual": false,
+      "suffixes": {
+        "baseline": {
+          "bytes": 50615,
+          "sha256": "65b8f91e9fca08030199c53d474b329996282793d0b412368ad7504054364118"
+        },
+        "candidate": {
+          "bytes": 52055,
+          "sha256": "432d9f709573b530b6b59c0844f8bb1b69be354862d2b2f3f35538c6f7b70731"
+        }
+      },
+      "modules": {
+        "baseline": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/symreg.mjs",
+          "bytes": 102304,
+          "sha256": "dd400df33dc3acbf50c781778a85eb8960bdd065d40a5bf6cffde0009bb3ad26"
+        },
+        "candidate": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/symreg.mjs",
+          "bytes": 104749,
+          "sha256": "4b3dae80addd3cb2bbcdbe53e5d8a04f853f84c9e2bb1f8fe41558367a762f9e"
+        }
+      }
+    },
+    {
+      "id": "test-morning-program",
+      "programSuffixEqual": true,
+      "suffixes": {
+        "baseline": {
+          "bytes": 70531,
+          "sha256": "2a61d51f9dd282a2b9c7a42472b27ae6da756a6d7a623d39f9e197bf82ba6bc9"
+        },
+        "candidate": {
+          "bytes": 70531,
+          "sha256": "2a61d51f9dd282a2b9c7a42472b27ae6da756a6d7a623d39f9e197bf82ba6bc9"
+        }
+      },
+      "modules": {
+        "baseline": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/test-morning-program.mjs",
+          "bytes": 122220,
+          "sha256": "149ea4f1d0daeb627bb2aea590ae307c320701dab9dcac2ada6118f91e9caf80"
+        },
+        "candidate": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/test-morning-program.mjs",
+          "bytes": 123225,
+          "sha256": "d10273dca899ddd316da6cbef0a331d100e0596f7a165e1518a73db8a45caf00"
+        }
+      }
+    },
+    {
+      "id": "test-evening-program",
+      "programSuffixEqual": true,
+      "suffixes": {
+        "baseline": {
+          "bytes": 114129,
+          "sha256": "8dd46ae4e0f065e13b36717ecd80af93cb42bae2d76b35c996b3dd9b4d13ecd1"
+        },
+        "candidate": {
+          "bytes": 114129,
+          "sha256": "8dd46ae4e0f065e13b36717ecd80af93cb42bae2d76b35c996b3dd9b4d13ecd1"
+        }
+      },
+      "modules": {
+        "baseline": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/test-evening-program.mjs",
+          "bytes": 165818,
+          "sha256": "4899abd43bbd4bd7aeff6cf743b624714cce876c92148e679cb7c1ec11ccf113"
+        },
+        "candidate": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/test-evening-program.mjs",
+          "bytes": 166823,
+          "sha256": "f6d97f8608da11f601fc9ddacf589dd6b39baa31d12402047bcdd7584fd34579"
+        }
+      }
+    },
+    {
+      "id": "test-rle-roundtrip",
+      "programSuffixEqual": true,
+      "suffixes": {
+        "baseline": {
+          "bytes": 27965,
+          "sha256": "eac579664b6ec1ddc15776e19f7f1080f2b491cd0d895a2e2a344dceaefb3842"
+        },
+        "candidate": {
+          "bytes": 27965,
+          "sha256": "eac579664b6ec1ddc15776e19f7f1080f2b491cd0d895a2e2a344dceaefb3842"
+        }
+      },
+      "modules": {
+        "baseline": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/test-rle-roundtrip.mjs",
+          "bytes": 79654,
+          "sha256": "8d4e422d2baabf10c9b097ff1db659f59177c1dd12cfa866c0b30582488bda8b"
+        },
+        "candidate": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/test-rle-roundtrip.mjs",
+          "bytes": 80659,
+          "sha256": "0bf7ed08edf8a79486b530bc2a9554ca4b0553bad6e3fc2fd2fe404ea813f2a5"
+        }
+      }
+    },
+    {
+      "id": "test-map-set-ops",
+      "programSuffixEqual": true,
+      "suffixes": {
+        "baseline": {
+          "bytes": 90844,
+          "sha256": "a4aff63f80db1e1de5f8e1705902ff14a1495e7e0626ff5f0c65ea9da54518a7"
+        },
+        "candidate": {
+          "bytes": 90844,
+          "sha256": "a4aff63f80db1e1de5f8e1705902ff14a1495e7e0626ff5f0c65ea9da54518a7"
+        }
+      },
+      "modules": {
+        "baseline": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/test-map-set-ops.mjs",
+          "bytes": 142533,
+          "sha256": "f3c343781eb430d2fd2034b93a8878b7d3d42ee2568c7fae27457f259b9608fb"
+        },
+        "candidate": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/test-map-set-ops.mjs",
+          "bytes": 143538,
+          "sha256": "593647060bdb6712cc2e1f43ad6a937701f20053258bf66d00cb4d4b22916d33"
+        }
+      }
+    },
+    {
+      "id": "raytrace",
+      "programSuffixEqual": false,
+      "suffixes": {
+        "baseline": {
+          "bytes": 77488,
+          "sha256": "3e683e5aade35c446efa5e3964856bcacd55ca9f80da00129fbb98ef565dfe30"
+        },
+        "candidate": {
+          "bytes": 77674,
+          "sha256": "983b19dadd624f4f470dc2868649216e0f37f03f2a00a7e6004b8e5c714959fb"
+        }
+      },
+      "modules": {
+        "baseline": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/raytrace.mjs",
+          "bytes": 129177,
+          "sha256": "d6b3abd23fddec72c3756af4b1ae531483758b8bc7c25c412cd0e7e2264aa197"
+        },
+        "candidate": {
+          "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/raytrace.mjs",
+          "bytes": 130368,
+          "sha256": "cc5304295ef5398f7341178d87ebf83380ee1ea367ba2aeab564fdc911761faa"
+        }
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/attempt.json",
+      "bytes": 206454,
+      "sha256": "e6a1aaa9543cfb98b0cc23a41951e54598b1fe9ccc30fc1c5a68cee396022cf3"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/src/runtime.mjs",
+      "bytes": 51689,
+      "sha256": "af2a3ae8a3c42fc0cb206ec7671960b82501944bf5619ec7893847460447a961"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/attempt.json",
+      "bytes": 207669,
+      "sha256": "3d7b5c980b32dfb3d1fffbaa8ef7d9b2da611160316d1bfd96a63c4ef9de1087"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/src/runtime.mjs",
+      "bytes": 52694,
+      "sha256": "c1a75ed096e77cfa50ab66279b513b8cdb5aa2e273f1f56b82f8cbdde40e19fa"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/report.json",
+      "bytes": 1843864,
+      "sha256": "8bbdb69e8c917b70e227a046cf561a09120e65360d2225fc61aba86f64d6b19d"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/local-row.mjs",
+      "bytes": 122542,
+      "sha256": "f55d5c67f080338be308dfa642dd6dc831ff1ec27c325c817a4398eff89caf85"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/local-row.mjs",
+      "bytes": 123547,
+      "sha256": "e3367eaa3650a77745440ea78dd3168fd1b7b370b7cefe6a0c1ca2e9031bd611"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/local-fold.mjs",
+      "bytes": 82092,
+      "sha256": "5c5c4cf541c4b690ed29f886f0f80a626bd8372a662f935d5f42b648ae2dc598"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/local-fold.mjs",
+      "bytes": 83097,
+      "sha256": "a024e4f2e04360c2c643053b54e69993a9aa0dad8a4f630b91f4d388f0b9eee4"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/scalar-region.mjs",
+      "bytes": 85751,
+      "sha256": "74c1f35082d6087f45c7ae60cf5220753ed8e9904e84e1db55f2efce601411ef"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/scalar-region.mjs",
+      "bytes": 86756,
+      "sha256": "3175bc1b84b4e64f8ec3b998df0d2cfc1f542668778da7ccbd1865e8bdcf4827"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/scalar-region.mjs",
+      "bytes": 85751,
+      "sha256": "74c1f35082d6087f45c7ae60cf5220753ed8e9904e84e1db55f2efce601411ef"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/scalar-region.mjs",
+      "bytes": 86756,
+      "sha256": "3175bc1b84b4e64f8ec3b998df0d2cfc1f542668778da7ccbd1865e8bdcf4827"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/local-row-observed.mjs",
+      "bytes": 122695,
+      "sha256": "d7ea604e633ec3e28e958fab0896d2b721b366956b9e999ae68c2a5097d60a2e"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/local-row-observed.mjs",
+      "bytes": 123700,
+      "sha256": "6cb4de7df70e07d226f644ee1d131b5de16b2dbe0ae6da37d487f1d520f65485"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/mandelbrot.mjs",
+      "bytes": 114174,
+      "sha256": "c3efd0e86696a5e12f339faafc0f68023dc5fa46e1640fc3bb08383c7e2464ec"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/mandelbrot.mjs",
+      "bytes": 115179,
+      "sha256": "1e5a254ab783c8b7e305a38716d02dd092cde77cb05a83f86461340b1eb21cdf"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/editdist.mjs",
+      "bytes": 121717,
+      "sha256": "b68c6d5d92a91eb58885da8d419f9fc6063f187164bcf37679fdce8771ba1753"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/editdist.mjs",
+      "bytes": 122722,
+      "sha256": "671cf04ade603f13364da914f943796d71019b7f827957f0874e550701849a48"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/tree-bitonic.mjs",
+      "bytes": 85107,
+      "sha256": "e32f58018cc8653f57fcad800d126af8ae9c8b87e00e098037250886b39c2d83"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/tree-bitonic.mjs",
+      "bytes": 86112,
+      "sha256": "6ba1adf3a5ba6aeae722f63dd16adef0a32ff846027d563fcd322c428cdff696"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/lexer.mjs",
+      "bytes": 89773,
+      "sha256": "f9017bba7ee6c4fe3022ec6433235468ad14b4f46aa751e02ddc9b499cb6b280"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/lexer.mjs",
+      "bytes": 90778,
+      "sha256": "e7aa6f0118bc331635ba22bf02be030eac8b5ee48a926729edc9c09b64da24b8"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/symreg.mjs",
+      "bytes": 102304,
+      "sha256": "dd400df33dc3acbf50c781778a85eb8960bdd065d40a5bf6cffde0009bb3ad26"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/symreg.mjs",
+      "bytes": 104749,
+      "sha256": "4b3dae80addd3cb2bbcdbe53e5d8a04f853f84c9e2bb1f8fe41558367a762f9e"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/test-morning-program.mjs",
+      "bytes": 122220,
+      "sha256": "149ea4f1d0daeb627bb2aea590ae307c320701dab9dcac2ada6118f91e9caf80"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/test-morning-program.mjs",
+      "bytes": 123225,
+      "sha256": "d10273dca899ddd316da6cbef0a331d100e0596f7a165e1518a73db8a45caf00"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/test-evening-program.mjs",
+      "bytes": 165818,
+      "sha256": "4899abd43bbd4bd7aeff6cf743b624714cce876c92148e679cb7c1ec11ccf113"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/test-evening-program.mjs",
+      "bytes": 166823,
+      "sha256": "f6d97f8608da11f601fc9ddacf589dd6b39baa31d12402047bcdd7584fd34579"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/test-rle-roundtrip.mjs",
+      "bytes": 79654,
+      "sha256": "8d4e422d2baabf10c9b097ff1db659f59177c1dd12cfa866c0b30582488bda8b"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/test-rle-roundtrip.mjs",
+      "bytes": 80659,
+      "sha256": "0bf7ed08edf8a79486b530bc2a9554ca4b0553bad6e3fc2fd2fe404ea813f2a5"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/test-map-set-ops.mjs",
+      "bytes": 142533,
+      "sha256": "f3c343781eb430d2fd2034b93a8878b7d3d42ee2568c7fae27457f259b9608fb"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/test-map-set-ops.mjs",
+      "bytes": 143538,
+      "sha256": "593647060bdb6712cc2e1f43ad6a937701f20053258bf66d00cb4d4b22916d33"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/baseline/phase35/modules/raytrace.mjs",
+      "bytes": 129177,
+      "sha256": "d6b3abd23fddec72c3756af4b1ae531483758b8bc7c25c412cd0e7e2264aa197"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/modules/candidate/modules/raytrace.mjs",
+      "bytes": 130368,
+      "sha256": "cc5304295ef5398f7341178d87ebf83380ee1ea367ba2aeab564fdc911761faa"
+    },
+    {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase36/static-prefix-compare.py",
+      "bytes": 2430,
+      "sha256": "41c452ef9d913471b34af0a9485c5837941cc7e6104e3b20b5ac1be02f4e0e5e"
+    }
+  ]
+}

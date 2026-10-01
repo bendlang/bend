@@ -228,9 +228,7 @@ def j_fold_bind(+binders: List<&2,KTerm>, +order: List<&2,KTerm>, +node: String,
 @unsafe
 def j_fold_helper(+book: List<&2,KDef>, +d: KDef, +active: List<&2,String>, +depth: U32, +s: JRegionBuild, +fold: KTerm) -> JRegionBuild:
   kc(JRegionBuild, String.eq(tg(fold), "JFold"), u => j_region_helper_done(d, j_region_result(s, fold)), u =>
-    kc(JRegionBuild, j_nat_local_shape(book, d),
-      u => j_region_nested(book, d, Con{dn(d), active}, U32.inc(depth), s),
-      u => j_region_helper_done(d, j_region_prefix(book, Nil{}, dv(d), dt(d), 0, da(d), False{}, "", Con{dn(d), active}, U32.inc(depth), s))))
+    j_producer_or_regular(book, d, active, depth, s, j_producer_plan(book, d, active, depth, s)))
 
 # Only ordinary public roots gain flat-record outputs. Every input remains a
 # native scalar; this never admits a caller-provided recursive record.
@@ -279,4 +277,4 @@ def j_fold_terminal_args(+book: List<&2,KDef>, +args: List<&2,KTerm>, +fuel: U32
 def j_fold_has(+helpers: List<&2,KDef>) -> Bool:
   match helpers:
     case Nil{}: False{}
-    case Con{d, rest}: String.eq(tg(dv(d)), "JFold") || j_fold_has(rest)
+    case Con{d, rest}: (String.eq(tg(dv(d)), "JFold") || String.eq(tg(dv(d)), "JProducer")) || j_fold_has(rest)

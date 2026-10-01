@@ -1,32 +1,47 @@
 # Bend2 compiler port in Bend2
 
 Use the [compiler guide](../docs/BEND-IN-BEND.md) and
-[Phase35 report](../implementation/phase35/README.md). **Checked09 is installed,
-release verification passes, and all 42 ordinary/relocated CLI checks pass.**
-The [release record](../implementation/phase35/release-09.md) and
+[Phase36 report](../implementation/phase36/README.md). **Checked03 is installed;
+release verification and all 42 ordinary/relocated CLI checks pass.** The
+[release record](../implementation/phase36/release-03.md) and
 [manifest](dist/release.json) bind source, genuine checked parent, derived API,
-Base, runtime and host. Ordinary compilation executes the Bend implementation
-without a TypeScript fallback. The prior Phase32 release is preserved.
+Base, runtime and host. Ordinary
+compilation executes the Bend implementation without a TypeScript fallback.
+Prior releases retain their evidence.
 
-The unchanged fifteen-point generated-JavaScript benchmark measures **6.865×
-faster symreg, 5.475× faster raytrace, 2.360× faster fold and 1.278× faster original
-edit distance** versus Phase32 in the same run. Remaining TypeScript gaps are
-14.021×, 54.781×, 3.497× and 3.259× respectively. Other generic programs retain
-large gaps; these cases do not define average application speed.
+The unchanged fifteen-point generated-JavaScript benchmark measures **3.653×
+faster symbolic regression and 2.319× faster raytrace** versus Phase35 in the same
+run. Their remaining TypeScript gaps are **3.834× and 23.473×**. The other thirteen
+points have overlapping observed ranges. The map/set point was 3.19% slower in
+the full run and 0.52% faster in a separate five-round follow-up; both are retained
+with their overlapping ranges. All thirteen other generated program bodies are
+byte-identical after removing verified runtime prefixes. Generic programs retain
+large gaps; these cases do not define average application speed. The complete
+run took 401.55 seconds.
 
-Private scalar state, direct regions and structural folds remove allocation and
-generic dispatch while retaining public calls/data and guarded fallback.
-Compiler cost and size increase: normal checked requests change +0.72% for pair
-(overlap), +8.17% for Mandelbrot, +30.09% for symreg and +34.40% for ray. Source
-contains **18,050 physical / 15,436 nonblank Bend lines in 68 modules**, up 979
-physical lines (5.73%). See [admission](../implementation/phase35/performance-admission.md)
-for this explicit tradeoff and [profiles](../implementation/phase35/profile-findings.md)
-for the next optimization targets.
+Private tree producers reuse existing continuation frames and finite selectors,
+preserving original tagged values, ordered children and sharing. Scoped guard
+reuse amortizes host and dependency checks only within a separately proved pure
+source graph; error reentry suspends the proof and native array graphs are
+refused. Public calls and guarded fallback retain their original behavior.
+Normal checked-library request medians change −1.56% for pair, +0.42% for
+Mandelbrot, +4.50% for symbolic regression and +4.02% for raytrace; all observed
+ranges overlap across three rotated samples. These
+[compiler costs](../implementation/phase36/compiler-cost.md) are separate from
+program execution. All 24 separate CPU/allocation captures complete; see the
+[profile findings](../implementation/phase36/profile-findings.md). Source contains
+**18,174 physical / 15,545 nonblank Bend lines in 69 modules**, up 124 physical
+lines (0.687%), with 2,024 definitions, 640 laws and 71 types. See
+[admission](../implementation/phase36/performance-admission.md) for the complete
+performance and complexity decision.
 
-The [final closure](../implementation/phase35/final-conformance/gates.md) verifies
-225 canonical source files, 36 focused checks, 15 owner-control groups, **3,026
-main + 196 broader exact frontend observations**, inherited execution/library
-controls and the installed CLI. Backend outcomes remain **69 pass / 8 not
+The [final closure](../implementation/phase36/final-conformance/gates.md) passes
+**all 15 postinstallation audit groups**, following 38 preinstallation steps:
+226 canonical source files, 36 focused checks, 15 inherited owner-control groups,
+**3,026 main + 196 broader exact frontend observations**, inherited
+execution/library controls and 42 installed/relocated CLI checks. Seven new
+owner groups cover scoped proof, callbacks, complete producer trees, shared
+identity, actual private entry and refusal. Backend outcomes remain **69 pass / 8 not
 applicable / 4 shared failures** across 81 rows. Counts overlap; exact agreement
 does not turn shared failures into passes. [Conformance](CONFORMANCE.md) records
 the scopes. Full backend/GPU and independent proof validity remain unestablished;
@@ -44,8 +59,8 @@ npm run build
 ```
 
 Use the [checked workflow](../docs/PHASE5_DEVELOPMENT.md) for compiler edits.
-Checked09 plus its 36 focused checks took **42.5 seconds**; the maintained
-three-case screen took **23 seconds**. The
+Checked03 plus its 36 focused checks took **42.3 seconds**; the actual
+one-case symbolic-regression screen took **8.03 seconds**. The
 [execution suite](tools/performance/programs/README.md) offers 20/60/300/600-second
 ceilings and independent case selection; [diagnostics](tools/performance/programs/DIAGNOSTICS.md)
 add separate profiles and JavaScript analysis. Heavy jobs run serially with
@@ -155,7 +170,7 @@ remain in `dist/selfhost/`; the [preservation index](../experiments/PRESERVATION
 and [experiment ledger](../experiments/ledger.md) identify their exact scope.
 They are not alternate defaults. The current release runs after relocation
 without an upstream checkout, as verified by its
-[42 ordinary/relocated CLI checks](../implementation/phase32/release-03.md).
+[42 ordinary/relocated CLI checks](../implementation/phase36/release-03.md).
 The earlier [Phase5 clean-package evidence](../implementation/phase5/relocated-cli-evidence/README.md)
 applies to that historical artifact.
 

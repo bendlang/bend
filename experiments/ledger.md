@@ -2309,3 +2309,42 @@ execution screen; use original programs as transfer gates. Preserve public
 mutation/reentry/demand controls when expanding private regions. Reduce
 unproductive analysis and unused workers only with independent compile/size
 measurements and complete semantic evidence.
+
+
+## Phase36 — amortize pure guards and lower private producers
+
+**Checked03 is installed and verified**, with 42 ordinary/relocated CLI checks,
+15 inherited postinstall audit groups, seven new owner groups and 226 canonical
+source identities passing. Exact frontend and backend outcomes remain unchanged;
+shared failures retain their verdicts. [Release](../implementation/phase36/release-03.md).
+
+[P36-001](phase36/P36-001-scoped-guards.md) and
+[P36-002](phase36/P36-002-private-producers.md) retain whole-root scoped guard reuse
+and ordered private tree producers/selectors. Error callbacks and native arrays
+exposed unsafe earlier proof boundaries; corrected controls and failed attempts
+remain. [P36-003](phase36/P36-003-analysis-preflight.md) rejects the low-yield compiler
+preflight. [P36-004](phase36/P36-004-exact-entry.md) rejects the additional
+reflection shortcut after an overlapping 0.234% slowdown. No rejected patch is
+in the selected source.
+
+The unchanged full15 comparison measures **3.653× symreg and 2.319× ray gains**
+versus same-run Phase35, with remaining TS gaps **3.834× and 23.473×**. Other
+points overlap; map/set's +3.190% full-run median becomes −0.523% in a separate
+same-protocol follow-up, also overlapping. Both remain. The
+[execution report](../implementation/phase36/execution-findings.md) keeps all
+samples; thirteen emitted program suffixes are byte-identical.
+
+Normal checked request medians change −1.56%, +0.42%, +4.50% and +4.02% on
+pair/Mandelbrot/symreg/ray, all with overlapping ranges. Source adds 124 Bend lines
+(0.687%) to 18,174 lines / 69 modules, with no new types or laws. These accepted
+costs are separate from runtime gains. Final profiles confirm ray guard ancestry
+50.12→0.44% and symreg producer ancestry 63.92→12.30%; sampled allocation also
+falls, with explicit diagnostic limits.
+
+**Updated frontier:** private finite sums/tree-to-tree operations for the large
+lexer/tree gaps, remaining symreg guard boundaries, and ray's generic geometry/
+result calls. Use narrow falsifiable ablations first; profile ancestry is not an
+additive speedup estimate. Keep the 42.3-second checked loop and 8-second actual
+symreg screen. Full report, raw evidence capsule and next steps are in
+[Phase36](../implementation/phase36/README.md). All 103 unrelated starting files
+remain protected. No PR comment is posted.

@@ -1,0 +1,72 @@
+{
+  "kind": "phase36-root-preinstall-admission",
+  "complete": true,
+  "admit": true,
+  "created": "2026-10-01T06:42:23.861320+00:00",
+  "api": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/equality/api.mjs",
+    "sha256": "93e55ad7ee456eebb5fa3dd9606c2cf262ea386c6f66bfd891ffe187d8f50a75"
+  },
+  "inputs": {
+    "attempt": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/attempt.json",
+      "bytes": 207669,
+      "sha256": "3d7b5c980b32dfb3d1fffbaa8ef7d9b2da611160316d1bfd96a63c4ef9de1087"
+    },
+    "preinstallAudit": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/preinstall-audit03/gates.json",
+      "bytes": 340228,
+      "sha256": "31fd5152734d02a7c16a6a790c226e00dcbcca57032246b35c4c019d8e37f2d8"
+    },
+    "newOwners": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/owner-close03/report.json",
+      "bytes": 161916,
+      "sha256": "92a035d15c6b9742feb43dd6aff90e8dcb986dab69b60b9f9a16dadffed544de"
+    },
+    "execution": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/full-confirm03/report.json",
+      "bytes": 1843864,
+      "sha256": "8bbdb69e8c917b70e227a046cf561a09120e65360d2225fc61aba86f64d6b19d"
+    },
+    "mapFollowup": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/map-set-confirm03/report.json",
+      "bytes": 130228,
+      "sha256": "6e1135f88367c1f938bd115f700b6abf47f6456a1efdd723439cb51367b822f8"
+    },
+    "cost": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/compiler-cost-run03/report.json",
+      "bytes": 400520,
+      "sha256": "a6b34fce941e8fd40135e7cb4e4bc04bd851fe4323eba699dc06dd7d222c5e87"
+    },
+    "profiles": {
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/profiles03/report.json",
+      "bytes": 5218536,
+      "sha256": "7d3325274459f62e4e972d64bc27905f2f8c93edca4995d55a22efdb175773a3"
+    },
+    "summary": {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase36/final-results.json",
+      "bytes": 631018,
+      "sha256": "9fce844bcf7852502ad4446cdfcc5269356f325cb743cdc7e012cf2e3dd39b03"
+    },
+    "policy": {
+      "file": "/home/ai/bend2/build/publish/bend/design/phase36/campaign.md",
+      "bytes": 5748,
+      "sha256": "250befd3590c324a2066f28396139e2e7126fdca7e7463fecaca06c31f4c6cf0"
+    },
+    "decisionText": {
+      "file": "/home/ai/bend2/build/publish/bend/implementation/phase36/performance-admission.md",
+      "bytes": 3666,
+      "sha256": "38d062bcd682fddaf92bf37aed9e497b8c0dc68ebabebcaa3715decf5fe84af2"
+    }
+  },
+  "decision": "Accept two strong disjoint execution gains, possible overlapping compile costs, +124 Bend lines and generated-size increases; preserve map followup and all negative attempts. Proceed to install, verify,42CLI and postinstall audit.",
+  "separateRequired": [
+    "installation",
+    "release verification",
+    "42 ordinary/relocated CLI checks",
+    "postinstall audit",
+    "closed evidence preservation",
+    "commit and push"
+  ]
+}

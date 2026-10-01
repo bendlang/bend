@@ -1,0 +1,24 @@
+{
+  "kind": "phase36-scoped-guard-proposal",
+  "applied": false,
+  "scope": "Full independent j_pure_graph of the complete tree root, scalar inputs, pure residual present; no array/foreign/IO/function nodes anywhere, scoped covered-name proof, error callback suspension",
+  "inputs": [
+    {
+      "path": "selfhost/src/back/js/tree.bend",
+      "sha256": "3bc377a21202ebd83e00731c1ce0416569a7544aebdc74102049be9770937c43",
+      "proposedSha256": null,
+      "addedPhysicalLines": 8
+    },
+    {
+      "path": "selfhost/src/runtime/js/core.mjs",
+      "sha256": "55d73f3652588095bbe541b627884303f5785a525bbd0c25082c5f6cb7461c65",
+      "proposedSha256": "4fe02cb355638a8619ca487ffb71e5c35e0af8faa3ce2c6f6d8421de502cf75b",
+      "addedPhysicalLines": 25
+    }
+  ],
+  "patchSha256": "92221f6ca0a8e073e96afe937a61268920de36bfb22e81b4e7b9e00e73b93874",
+  "runtimeGenerated": "selfhost/src/runtime.mjs must be regenerated with normal project generator",
+  "supersedes": "guard-production-v2.patch",
+  "errorBoundary": "bad suspends proof through mutable Error construction and restores only during mandatory exception unwind",
+  "rootPurityBoundary": "Presence of a pure residual alone is insufficient: full source root is proved with 32-definition,32768-fuel JPure; rejects direct array callback paths"
+}

@@ -1,0 +1,2 @@
+# Frozen unified diffs need their single-space blank context lines.
+*.patch -whitespace

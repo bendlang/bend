@@ -1,0 +1,20 @@
+{
+  "kind": "phase36-owner-close-independent-source-review",
+  "complete": true,
+  "reviewedSource": {
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/tools/performance/phase36/owner-close.py",
+    "sha256": "450016f3e719792e0668b26526f1f186c8d3d5c271a8edaffd9c1b606223bc4d",
+    "bytes": 12642
+  },
+  "findings": [
+    "Exact final checked attempt identity, API/runtime/Base/compiler object and checked source/output emission links are required.",
+    "Raw consumed modules are linked to final candidate; diagnostic parent identities are required for producerreviewed/selector.",
+    "Ray guard derived cohort must trace to actual final raw ray emission and instrumented partial module consumed by gate.",
+    "All inherited Phase36 named counts align with actual controls; extended producer requires selector group.",
+    "Whole-root JPure source predicate plus exact try/finally proof scope required, not has_residual alone.",
+    "Catalog outputs bind raw checked emissions; only maintained complete-generic-row serialization adapter is explicitly permitted with hashed producer/raw/adapted edges.",
+    "No preflight helper/gate is required after rejected experiment.",
+    "No correctness blocker found; inherited conformance/current-source and performance admission remain separate."
+  ],
+  "execution": "Read-only source review; owner close itself was not executed by reviewer."
+}

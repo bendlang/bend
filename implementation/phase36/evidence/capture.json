@@ -1,0 +1,30 @@
+{
+  "kind": "phase36-evidence-capture",
+  "complete": true,
+  "started": "2026-10-01T06:51:24.921316+00:00",
+  "source": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36",
+  "producer": {
+    "path": "/home/ai/bend2/build/publish/bend/implementation/phase36/evidence/preserve.py",
+    "bytes": 19196,
+    "sha256": "1e333b74a51052b84be1acb89d5dd5ddbba9ac8e28b263fe243891ad45f55ef7"
+  },
+  "closedInputAcknowledged": true,
+  "sharedExecutionLock": "/home/ai/bend2/build/publish/bend/selfhost/build/phase32/execution.lock",
+  "finished": "2026-10-01T06:51:43.751705+00:00",
+  "verification": {
+    "complete": true,
+    "reopenedVerified": true,
+    "fileCount": 21345,
+    "directoryCount": 4649,
+    "logicalBytes": 259269871,
+    "compressedBytes": 39968376,
+    "volumeCount": 1,
+    "concatenatedGzipSha256": "60a4cd2d10dec24d9491ef1f92a4f5f69694ef8bd4bc1ed3012caf036fae693a"
+  },
+  "sourceRehashed": true,
+  "manifest": {
+    "path": "/home/ai/bend2/build/publish/bend/implementation/phase36/evidence/manifest.json",
+    "bytes": 5144629,
+    "sha256": "f7c0c388043082dba8356ca31b5d17d4784ccb5abedd42e64fd025a5fee42917"
+  }
+}

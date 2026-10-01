@@ -1,7 +1,7 @@
 # Generated-program performance and the fast development loop
 
 Use the [compiler guide](BEND-IN-BEND.md) for normal compilation and the
-[Phase35 report index](../implementation/phase35/README.md) for exact results,
+[Phase36 report index](../implementation/phase36/README.md) for exact results,
 artifact identities, failed experiments and current promotion status. The target
 remains upstream `018751270e800bc222a93dad7f257083ee53a5f7`. The comparison is
 between JavaScript emitted from the same Bend source by the two compilers.
@@ -140,6 +140,16 @@ generic path. Read the [direct-region design](../design/phase35/direct-regions.m
 [implementation report](../implementation/phase35/direct-regions.md) before
 extending either proof. These are emitter rules, not a new public data format.
 
+Phase36 adds the corresponding private **producer**: a leading Nat countdown
+with two independent recursive children reuses the existing tree frames. Left
+child, right child and combination remain ordered; parent scalars survive in
+the frame and shared children retain their identities. A whole-graph purity
+proof is required. Within that context, existing finite Nat and Bool selectors
+can consume trailing arguments directly. Constructors retain ordinary tagged
+storage; direct fields are restricted to inert or primitive expressions so
+general delayed calls do not become eager. See the
+[producer report](../implementation/phase36/private-producers.md).
+
 ## Why entry and fallback matter
 
 Before entering a private region, generated code checks primitive input
@@ -163,6 +173,17 @@ ordinary allocation. Dependencies remain live and guarded even when their calls
 stay generic. The supported mutation controls assume standard intrinsics at
 module initialization; integer-only regions without residual calls or folds
 retain their earlier guard cost.
+
+Phase36 amortizes these checks during eligible scalar-input tree entries. After
+normal entry checks, a proof of the **entire original root graph** allows covered
+nested calls to reuse a private dependency dictionary. The outermost proof stays
+active through nested scopes and `finally` restores the previous value. Error
+construction temporarily suspends proof because a replaced host Error function
+can reenter. Native-array graphs are refused. Proving only one residual helper
+pure was an unsafe earlier attempt and is retained as a counterexample. Exact
+invocation, prototype and `.call` reflection checks remain: a separate experiment
+did not justify removing more work. The
+[guard report](../implementation/phase36/guard-report.md) states the boundaries.
 
 `localGuard` also checks Array-prototype marker assumptions, including for
 graphs with no Array-native calls: canonical Sigma uses a JavaScript array.
@@ -200,7 +221,45 @@ emission; they are not fed back into checking or evaluation. See
 [purity](../selfhost/src/back/js/jpure.bend) and
 [fold](../selfhost/src/back/js/fold.bend) analyses.
 
-## Phase35 checked-output measurements
+## Phase36 checked-output measurements
+
+The selected checked03 output completes all fifteen unchanged points in 401.551
+seconds. This comparison uses **Phase35 checked09 as the incremental baseline**,
+alongside pinned TypeScript. The maintained suite's default portable baseline is
+still Phase32; pass the explicit Phase36 `baseline02/manifest.json` to reproduce
+these incremental ratios. See the [phase tools guide](../selfhost/tools/performance/phase36/README.md).
+
+| Program | Phase35 ms | Phase36 ms | TypeScript ms | Gain vs Phase35 | Phase36 / TS |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Local pair | 3.7791 | 3.7997 | 1.2433 | 0.995× | 3.056× |
+| Local fold | 0.13945 | 0.13915 | 0.039786 | 1.002× | 3.498× |
+| Edit distance | 15.1448 | 15.1086 | 4.9828 | 1.002× | 3.032× |
+| Symbolic regression | 15.5817 | 4.2650 | 1.1124 | **3.653×** | **3.834×** |
+| Raytrace | 1,859.5891 | 801.8934 | 34.1617 | **2.319×** | **23.473×** |
+| Tree bitonic | 23.0723 | 22.6844 | 0.28138 | 1.017× | 80.618× |
+| Lexer | 170.429 | 172.054 | 1.92499 | 0.991× | 89.379× |
+
+Only the two emphasized gains have disjoint observed ranges; the other thirteen
+points overlap. The full run's 3.190% map/set slowdown prompted a separate
+same-protocol follow-up: 0.523% faster, also overlapping. Both observations stay
+in the [execution report](../implementation/phase36/execution-findings.md),
+alongside the [complete table](../implementation/phase36/execution-table.md).
+All fifteen candidates remain slower than TypeScript output, and these fixed
+inputs do not define average application speed. Several samples show drift;
+the protocol does not establish steady-state convergence.
+
+The scoped proof removes repeated guard work in ray; direct private production
+and selectors remove generic construction work in symreg. Thirteen complete
+program suffixes remain byte-identical after each verified runtime prefix;
+the common runtime grows by 1,005 bytes. Compiler Bend source grows by 124 lines
+(0.687%) to 18,174 lines in 69 modules, with no new types or laws. The
+[compiler-cost report](../implementation/phase36/compiler-cost.md) measures
+normal checked requests separately, and the
+[profiles](../implementation/phase36/profile-findings.md) cover both wins plus
+lexer and tree sorting. The [admission record](../implementation/phase36/performance-admission.md)
+keeps costs and semantic scope explicit.
+
+## Historical Phase35 checked-output measurements
 
 The checked09 full confirmation completed all fifteen maintained points in
 518.34 seconds, using serial fresh Node 24.18.0 processes on CPU3 and fresh

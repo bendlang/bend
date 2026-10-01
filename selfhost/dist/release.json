@@ -2,15 +2,15 @@
   "kind": "bend-default-equality-release",
   "version": 1,
   "newBootstrap": false,
-  "installed": "2026-10-01T04:58:05.849Z",
+  "installed": "2026-10-01T06:42:52.741Z",
   "artifact": "equality-derived-b1",
-  "sourceSha256": "e0764b71474eae9a46de637c6dc16e2dd32f29ba51c6eb93be18c3f5b4a9e088",
-  "runtimeSha256": "af2a3ae8a3c42fc0cb206ec7671960b82501944bf5619ec7893847460447a961",
+  "sourceSha256": "3a17f92d036ee64230d358de26be85722315ce7f41d0fe63a92ce150722bf3d4",
+  "runtimeSha256": "c1a75ed096e77cfa50ab66279b513b8cdb5aa2e273f1f56b82f8cbdde40e19fa",
   "files": [
     {
       "path": "dist/typed-api.mjs",
-      "sha256": "467bc7dec2751a94cb677c5eb2da22a8fb69ee3522c6e164cb2bfcc147a78d82",
-      "bytes": 1152428
+      "sha256": "93e55ad7ee456eebb5fa3dd9606c2cf262ea386c6f66bfd891ffe187d8f50a75",
+      "bytes": 1164781
     },
     {
       "path": "dist/base.bend",
@@ -19,18 +19,18 @@
     },
     {
       "path": "dist/release-lineage/checked-api.mjs",
-      "sha256": "f4c42dffb7e7ce015ef402ddbb9569d9d1539c284c3bce4ca394563d22da54cb",
-      "bytes": 1139047
+      "sha256": "2abe5b2f86e70f554a9daf07168c8a10247d9f185e0c0961bc718ec7213acbd7",
+      "bytes": 1151260
     },
     {
       "path": "dist/release-lineage/checked-bootstrap.json",
-      "sha256": "cf1e985c8984e287fbc9e29ee1d425e2bc42d776b9876c04eb649ae2b4e72ec4",
-      "bytes": 54513
+      "sha256": "6ea0a0a7b7d0597dd1710072ecbb16cc4d67046041351fec383fdee6da213194",
+      "bytes": 55214
     },
     {
       "path": "dist/release-lineage/derivation.json",
-      "sha256": "9f306ad4bb770ee03d40cdd42c0003fe09a08953c53884b4d0a95c6a501becbe",
-      "bytes": 246891
+      "sha256": "76f4292b0be800904f935e78836db877f56ae32bb54fae5dd75b2e4b3cd63f38",
+      "bytes": 249960
     },
     {
       "path": "dist/release-lineage/equality.mjs",
@@ -261,13 +261,18 @@
     },
     {
       "path": "src/back/js/region.bend",
-      "sha256": "9d650003f714b41c966ebcc0b878336c76a594dae5d4d80f14a5442b35ef4c76",
-      "bytes": 49612
+      "sha256": "cdd74d3a05106d77bdc3d2c2dd05e04038ff6640b79ed9d76350360d08918d68",
+      "bytes": 50133
     },
     {
       "path": "src/back/js/fold.bend",
-      "sha256": "7deaa1268b40344b4e8a342d689db5e792a1cf23db8c8254b4ea25de66e42b28",
-      "bytes": 15472
+      "sha256": "6b600f70d37fa878e1bdb2fd1ee5906adebf1898a33cb50a143207cd4eeb4e2c",
+      "bytes": 15341
+    },
+    {
+      "path": "src/back/js/producer.bend",
+      "sha256": "3f2ca73fb6bac68a1a452833043e42be0a83f1f6ee8f41fb0d75c400fefc1047",
+      "bytes": 7596
     },
     {
       "path": "src/back/js/worker.bend",
@@ -276,8 +281,8 @@
     },
     {
       "path": "src/back/js/tree.bend",
-      "sha256": "3bc377a21202ebd83e00731c1ce0416569a7544aebdc74102049be9770937c43",
-      "bytes": 7629
+      "sha256": "942f9dd9d9bd9285f5bfa2183f0f9b628ce4cefbdc514a72dd19e6ecad5a7d20",
+      "bytes": 8260
     },
     {
       "path": "src/back/js/emit.bend",
@@ -406,13 +411,13 @@
     },
     {
       "path": "src/compiler.json",
-      "sha256": "467d9bef90f5a669a17cf49af83ac5ebb28a8d16d33eefa0e55b0ba2f1880ad6",
-      "bytes": 2260
+      "sha256": "808153811493dec76ce1ffd1e850d76b6be2de170c4d1ef188191e526522ce73",
+      "bytes": 2293
     },
     {
       "path": "src/runtime.mjs",
-      "sha256": "af2a3ae8a3c42fc0cb206ec7671960b82501944bf5619ec7893847460447a961",
-      "bytes": 51689
+      "sha256": "c1a75ed096e77cfa50ab66279b513b8cdb5aa2e273f1f56b82f8cbdde40e19fa",
+      "bytes": 52694
     },
     {
       "path": "src/runtime/native/LICENSE",
@@ -661,8 +666,8 @@
     }
   ],
   "lineage": {
-    "checkedParentSha256": "f4c42dffb7e7ce015ef402ddbb9569d9d1539c284c3bce4ca394563d22da54cb",
-    "derivationSha256": "9f306ad4bb770ee03d40cdd42c0003fe09a08953c53884b4d0a95c6a501becbe",
+    "checkedParentSha256": "2abe5b2f86e70f554a9daf07168c8a10247d9f185e0c0961bc718ec7213acbd7",
+    "derivationSha256": "76f4292b0be800904f935e78836db877f56ae32bb54fae5dd75b2e4b3cd63f38",
     "upstreamRevision": "018751270e800bc222a93dad7f257083ee53a5f7"
   },
   "provenanceScope": "Original checked bootstrap and derivation reports are preserved byte-for-byte with historical paths. Local verification checks relative installed/checkout identities and exact transformation replay; it does not create or relocate bootstrap provenance.",

@@ -1,0 +1,56 @@
+{
+  "kind": "phase36-evidence-producer-derivation",
+  "complete": true,
+  "executed": false,
+  "scope": "Only phase labels, captured source root and the exact preservation-producer hash change. Streamed split/reopen/member/source verification and shared lock/resource limits remain byte-identical.",
+  "scripts": [
+    {
+      "parent": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase35/evidence/preserve.py",
+        "sha256": "5d43f3c8e29ab448a51b5eb73d81b9e60729f3cc5533dfe89898a6c9d6e1710b",
+        "bytes": 19196
+      },
+      "derived": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase36/evidence/preserve.py",
+        "sha256": "1e333b74a51052b84be1acb89d5dd5ddbba9ac8e28b263fe243891ad45f55ef7",
+        "bytes": 19196
+      },
+      "changes": [
+        {
+          "before": "Phase35",
+          "after": "Phase36",
+          "count": 3
+        },
+        {
+          "before": "phase35",
+          "after": "phase36",
+          "count": 3
+        }
+      ]
+    },
+    {
+      "parent": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase35/evidence/capture-run.py",
+        "sha256": "fb6dc8a7e7cfa8bceed6b78fb0d40a0dbbfff6f9b361c37f9d897d5d0c3db235",
+        "bytes": 1512
+      },
+      "derived": {
+        "file": "/home/ai/bend2/build/publish/bend/implementation/phase36/evidence/capture-run.py",
+        "sha256": "eae386752f2f4f19f94714fbb6dbdd8a409c97d4f2a7ff32f06c3ac3b4290e74",
+        "bytes": 1512
+      },
+      "changes": [
+        {
+          "before": "phase35",
+          "after": "phase36",
+          "count": 1
+        },
+        {
+          "before": "5d43f3c8e29ab448a51b5eb73d81b9e60729f3cc5533dfe89898a6c9d6e1710b",
+          "after": "1e333b74a51052b84be1acb89d5dd5ddbba9ac8e28b263fe243891ad45f55ef7",
+          "count": 1
+        }
+      ]
+    }
+  ]
+}

@@ -47,6 +47,7 @@
     "src/back/js/jpure.bend",
     "src/back/js/region.bend",
     "src/back/js/fold.bend",
+    "src/back/js/producer.bend",
     "src/back/js/worker.bend",
     "src/back/js/tree.bend",
     "src/back/js/emit.bend",

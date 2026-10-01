@@ -11,7 +11,10 @@ import {spawn} from 'node:child_process';
 import {constants as hostConstants} from 'node:os';
 const G=Object.create(null), constructors=Object.create(null), showSchemas=Object.create(null), constructorOwn=Object.create(null), constructorNative=Object.create(null);
 const scope=p=>Object.create(p);
-const bad=m=>{throw Error(m)};
+// Error construction can invoke mutable host hooks. Suspend the proof before
+// those hooks can reenter; only exception unwinding follows this restoration.
+const bad=m=>{const previous=regionProof;regionProof=null;
+  try{throw Error(m)}finally{regionProof=previous}};
 const fn=(arity,code,env=null,bound=[])=>({arity,code,env,bound});
 const jump=(f,args)=>({bounce:true,f,args});
 const build=(name,fields)=>({build:true,name,fields});
@@ -96,7 +99,27 @@ function scalarCapture(name,f){
   }else delete scalarSnapshots[name];
   return f;
 }
+// Private entry proof. Installed only inside a completely guarded, synchronous,
+// scalar-input region whose entire residual source graph was proved pure.
+let regionProof=null;
+function regionProofCovers(names){
+  const proof=regionProof;if(proof===null)return false;
+  for(let i=0;i<names.length;i++)if(proof[names[i]]!==true)return false;
+  return true;
+}
+function regionProofOpen(names){
+  const previous=regionProof;
+  if(previous===null){
+    const proof={__proto__:null};
+    for(let i=0;i<names.length;i++)proof[names[i]]=true;
+    regionProof=proof;
+  }
+  return previous;
+}
+function regionProofClose(previous){regionProof=previous;}
+
 function scalarGuard(names){
+  if(regionProofCovers(names))return true;
   // Generic forcing/matching observes these hooks even on primitive values.
   if(Object.getPrototypeOf(scalarObjectPrototype)!==null||
       Object.getPrototypeOf(scalarFunctionPrototype)!==scalarObjectPrototype)return false;
@@ -127,6 +150,7 @@ function scalarGuard(names){
 // callbacks while forcing tuple results inside an admitted private region.
 const localArrayPrototype=Array.prototype;
 function localGuard(names){
+  if(regionProofCovers(names))return true;
   if(Object.getPrototypeOf(localArrayPrototype)!==scalarObjectPrototype)return false;
   for(const k of ['request','bounce','build','code'])if(Object.getOwnPropertyDescriptor(localArrayPrototype,k))return false;
   return scalarGuard(names);
@@ -153,6 +177,7 @@ const regionProtocolPairs=[[Array.prototype,Symbol.iterator],[Array.prototype,'c
 const regionProtocolDescriptors=[];
 for(let i=0;i<regionProtocolPairs.length;i++)regionProtocolDescriptors[i]=Object.getOwnPropertyDescriptor(regionProtocolPairs[i][0],regionProtocolPairs[i][1]);
 function regionHostGuard(){
+  if(regionProof!==null)return true;
   for(let i=0;i<regionNumericHooks.length;i++){
     const p=regionNumericHooks[i],d=regionGetDescriptor(p[0],p[1]);
     if(!d||!regionOwn(d,'value')||d.value!==p[2])return false;

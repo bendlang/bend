@@ -1,0 +1,21 @@
+{
+  "complete": true,
+  "command": [
+    "taskset",
+    "-c",
+    "3",
+    "/usr/bin/python3",
+    "/home/ai/bend2/build/publish/bend/implementation/phase36/evidence/preserve.py",
+    "--closed",
+    "--verify-only",
+    "--check-source"
+  ],
+  "started": 1790837519.6535785,
+  "rssLimitBytes": 1073741824,
+  "availableFloorBytes": 2147483648,
+  "peakTreeRssBytes": 54206464,
+  "minimumAvailableBytes": 29299830784,
+  "returncode": 0,
+  "wallSeconds": 7.629542966002191,
+  "finished": 1790837527.2831213
+}

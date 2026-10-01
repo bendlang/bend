@@ -3,11 +3,11 @@
   "version": 1,
   "complete": true,
   "newBootstrap": false,
-  "started": "2026-10-01T04:08:40.503Z",
+  "started": "2026-10-01T05:49:52.793Z",
   "scope": "Compiler-host data with standard unmodified JavaScript built-ins; not arbitrary reflective/proxy/monkeypatched-host equivalence.",
   "tool": {
-    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/tools/development/equality.mjs",
-    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/tools/development/equality.mjs",
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/tools/development/equality.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/tools/development/equality.mjs",
     "sha256": "db2999aa879e0bc6c6359d37c19e7589c60d34b2b143d0ed6ecbc23eabfec951"
   },
   "node": {
@@ -17,19 +17,19 @@
   },
   "original": {
     "api": {
-      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/api.mjs",
-      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/api.mjs",
-      "sha256": "f4c42dffb7e7ce015ef402ddbb9569d9d1539c284c3bce4ca394563d22da54cb"
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/api.mjs",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/api.mjs",
+      "sha256": "2abe5b2f86e70f554a9daf07168c8a10247d9f185e0c0961bc718ec7213acbd7"
     },
     "bootstrapReport": {
-      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/api.mjs.bootstrap.json",
-      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/api.mjs.bootstrap.json",
-      "sha256": "cf1e985c8984e287fbc9e29ee1d425e2bc42d776b9876c04eb649ae2b4e72ec4"
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/api.mjs.bootstrap.json",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/api.mjs.bootstrap.json",
+      "sha256": "6ea0a0a7b7d0597dd1710072ecbb16cc4d67046041351fec383fdee6da213194"
     },
     "source": {
-      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/compiler.bend",
-      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/compiler.bend",
-      "sha256": "e0764b71474eae9a46de637c6dc16e2dd32f29ba51c6eb93be18c3f5b4a9e088"
+      "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/compiler.bend",
+      "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/compiler.bend",
+      "sha256": "3a17f92d036ee64230d358de26be85722315ce7f41d0fe63a92ce150722bf3d4"
     },
     "inputs": [
       {
@@ -48,383 +48,388 @@
         "sha256": "c742fae9c49b14f0cc9128429a2c6109364c8a933a142f2c90b9f2e5fd976661"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/tools/typed-driver.mjs",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/tools/typed-driver.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/tools/typed-driver.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/tools/typed-driver.mjs",
         "sha256": "43c4df618476ba6ae6057d468d7147af0a85be0cd4f84e18f5f124f58d7f47c3"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/tools/stage0-library.mjs",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/tools/stage0-library.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/tools/stage0-library.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/tools/stage0-library.mjs",
         "sha256": "c7eaf78482d64959d413ac490315d20f79c6cbd4f0ef6bb492ca7589d851f017"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/tools/assemble.mjs",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/tools/assemble.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/tools/assemble.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/tools/assemble.mjs",
         "sha256": "f7c8feff7a0b8f8b4a302c2ca8b99b363a8d7c4c9c48bc6b7a9463aa23c58b75"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/tools/compiler-abi.mjs",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/tools/compiler-abi.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/tools/compiler-abi.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/tools/compiler-abi.mjs",
         "sha256": "0bcbcaf022108877600baab1b15356db6d9917f5c4d668af936279680c126454"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/tools/node-resource-args.mjs",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/tools/node-resource-args.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/tools/node-resource-args.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/tools/node-resource-args.mjs",
         "sha256": "6aefb3aee9b69b0c25d68edbf0ada6a57ba93e277d3adb8d232dfa6dff01d758"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/tools/native-build.mjs",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/tools/native-build.mjs",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/tools/native-build.mjs",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/tools/native-build.mjs",
         "sha256": "a76f2c027459f7ffdb9fc16dc450ee33e0f39c74568df4c74d03309e662c9117"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/src/compiler.json",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/src/compiler.json",
-        "sha256": "467d9bef90f5a669a17cf49af83ac5ebb28a8d16d33eefa0e55b0ba2f1880ad6"
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/src/compiler.json",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/src/compiler.json",
+        "sha256": "808153811493dec76ce1ffd1e850d76b6be2de170c4d1ef188191e526522ce73"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/compiler.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/compiler.bend",
-        "sha256": "e0764b71474eae9a46de637c6dc16e2dd32f29ba51c6eb93be18c3f5b4a9e088"
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/compiler.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/compiler.bend",
+        "sha256": "3a17f92d036ee64230d358de26be85722315ce7f41d0fe63a92ce150722bf3d4"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/core/term.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/core/term.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/core/term.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/core/term.bend",
         "sha256": "e9ab994bc3ba4fd5a281e25836911bbc29cafcf2ab0c0284dc9bc097e891fa46"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/core/index.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/core/index.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/core/index.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/core/index.bend",
         "sha256": "32a4f2772c865f9ed9743f1ece27d5fafd1898724d5f268186590c938b038ea2"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/core/normalize.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/core/normalize.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/core/normalize.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/core/normalize.bend",
         "sha256": "4845ff63f3c228abc9a432410ddc8b7e20bfce27e54d6d49412b06608f7ce702"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/core/graph.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/core/graph.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/core/graph.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/core/graph.bend",
         "sha256": "85625049b316ede08eeffd7ff509483183624f1197c582c9d1bb2cd8bebf4802"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/core/reach.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/core/reach.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/core/reach.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/core/reach.bend",
         "sha256": "086092c688e6cb774da94333826f51b1fdeddc8e85aeaac5be6b15c143b0df27"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/core/pretty.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/core/pretty.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/core/pretty.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/core/pretty.bend",
         "sha256": "40b4e6ca55bf11009881b893c7959dd52cc64bbc6cb2dbb607e94dbab69fdedc"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/check/quantity.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/check/quantity.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/check/quantity.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/check/quantity.bend",
         "sha256": "b4a8ca1f8dff10f4f64397ea53bbbe272bb32400e993b1077d284ec1d8a70b4d"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/check/kernel.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/check/kernel.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/check/kernel.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/check/kernel.bend",
         "sha256": "da7ee29f9755f09acd9f89fcfd37465b52ab8778971200c946c70e50eb5b4132"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/check/specialize.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/check/specialize.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/check/specialize.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/check/specialize.bend",
         "sha256": "76e0f9249ae15cc0734a8e9d2e75677794e2eb5464c7756a19daff8b8217e7ee"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/check/prefix.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/check/prefix.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/check/prefix.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/check/prefix.bend",
         "sha256": "ceabf77fb49b58910d83fa896899061643c4c105f29e70bd87d3f73be873783d"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/check/annotate.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/check/annotate.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/check/annotate.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/check/annotate.bend",
         "sha256": "1912e5d177514733e706297fbb53e730c1f7a9edc91ffb06d2b1de7e2547648c"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/lexer.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/lexer.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/lexer.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/lexer.bend",
         "sha256": "aa9d726b6b284deba84dbccc77a01a8143dd89dab70cf487e1ddc8d589380440"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/contextual.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/contextual.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/contextual.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/contextual.bend",
         "sha256": "18a1eabd78b224927ebe72c4aa7a295300cc641e20d03d2bc062fdcfd96f62f6"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/parser.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/parser.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/parser.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/parser.bend",
         "sha256": "c1790685aea7c71430873d65c2d91996778f443aee0098e54c656fe10177ba28"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/declarations.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/declarations.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/declarations.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/declarations.bend",
         "sha256": "9e2c8da30605c1b8ab732df5f95533da55a3ea0e6c5a0941f1340586db9d36af"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/flatten.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/flatten.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/flatten.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/flatten.bend",
         "sha256": "d3ba8687f7dcd303dee847a90e3fa92b9a234d97cdcd3893de8242c6d2aa69cf"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/elaborate.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/elaborate.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/elaborate.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/elaborate.bend",
         "sha256": "8537f483259d48fa1d710915d6e8e09916faa540560379ee550a7077f391dc1e"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/sugar.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/sugar.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/sugar.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/sugar.bend",
         "sha256": "d3e3cf5addf0498e8401b9988678eb6ac8ff81571a014b18a1b6fed0a76fb22a"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/unicode.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/unicode.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/unicode.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/unicode.bend",
         "sha256": "bfd4407aa83614ae8398c9ce451f729cbcba457f2ef64774fea99f1824b5dd96"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/literals_arrays.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/literals_arrays.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/literals_arrays.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/literals_arrays.bend",
         "sha256": "7429e8a4e16e30f74fa19911993879e60a982a510f369769e7805d6a6ac34796"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/parallel.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/parallel.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/parallel.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/parallel.bend",
         "sha256": "b7c38f74d9f339f21fa00c5194078a0bfc41a948d1adaa907d00df64045c2f1c"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/fresh_work.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/fresh_work.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/fresh_work.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/fresh_work.bend",
         "sha256": "043d3b737cef4b932b7de8ef161dc88ba867ba6a8056e3662edfdcf4a2d797ed"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/freshen.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/freshen.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/freshen.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/freshen.bend",
         "sha256": "d0fed135fe878987770786ef0c50dd09efe2cce390beb7a911bcfc8468d5607d"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/load/paths.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/load/paths.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/load/paths.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/load/paths.bend",
         "sha256": "a9fc17a8af04c1958d1f11e8c1c5b7c2d3eb925dd9075e6c77de4bdb3521f2a2"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/families.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/families.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/families.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/families.bend",
         "sha256": "22b6e9b1ca132ed2d6f2cf91507e221f09cdda1aeab5931e8cf099e934bc9d2f"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/validate.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/front/validate.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/validate.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/front/validate.bend",
         "sha256": "62d530ce7ebb6d2abf69f34d37b5b21eed8711c7bdee3bf868aa2c94d699ec5d"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/load/imports.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/load/imports.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/load/imports.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/load/imports.bend",
         "sha256": "b878da5169a4a39d35a236ff5128dc42735fea0707195cf621ae651c1f13e9b1"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/load/graph.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/load/graph.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/load/graph.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/load/graph.bend",
         "sha256": "9317e9fe5224c447c50e5339469a244dd7036c00801d9750687f8dfe1de5fdb3"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/load/seed.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/load/seed.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/load/seed.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/load/seed.bend",
         "sha256": "ca4cb677af632c47c13792ede10d4e791c85b5cc6c756aacf230861d7bfa4c21"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/load/modules.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/load/modules.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/load/modules.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/load/modules.bend",
         "sha256": "fed5593033f957a61118a2eff9c2e09bd51af8810cff1db12e655523b82188ea"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/diagnostic/model.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/diagnostic/model.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/diagnostic/model.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/diagnostic/model.bend",
         "sha256": "3c699ec70ef36700520658555bc5df025880691c44633cabb9e5719b60fc9c1c"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/diagnostic/render.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/diagnostic/render.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/diagnostic/render.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/diagnostic/render.bend",
         "sha256": "695f41ace13e08756273c317659a419deee5fc79d413bd58e8711f124370276c"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/diagnostic/trace.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/diagnostic/trace.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/diagnostic/trace.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/diagnostic/trace.bend",
         "sha256": "0e03e2827415d082d295976b57564c7b0bd872f7c81229e653d7e0ddda62b10f"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/diagnostic/produce.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/diagnostic/produce.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/diagnostic/produce.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/diagnostic/produce.bend",
         "sha256": "9518cb01c0c7636654bfa14dd332ac49756572ba975c7789c865e9cd8cf75c80"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/diagnostic/frontend.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/diagnostic/frontend.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/diagnostic/frontend.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/diagnostic/frontend.bend",
         "sha256": "fdd07e6e3df5f999f2d162a4d3186cd8ae13102c8351710edab5291a2f80489f"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/foreign.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/foreign.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/foreign.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/foreign.bend",
         "sha256": "0f397f84a989c6fc9a52eaf962742e673cdba243864c0bbe7c16ce4ffd8eb065"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/literals.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/literals.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/literals.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/literals.bend",
         "sha256": "2c4488a4f37010253a54e3745317c685ec77067475d471e577687acfa9a16776"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/validate.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/validate.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/validate.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/validate.bend",
         "sha256": "f8fc315bf80dabbf8afd1b6ced8e7c322b8ef96d73859d47e01c4b317afb72a0"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/choice.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/choice.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/choice.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/choice.bend",
         "sha256": "b94d76439dc5c4559f38e4e171386823f2fdfc0eac49552ecef3d00f391cbcf3"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/projection.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/projection.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/projection.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/projection.bend",
         "sha256": "67cce055248e6a0034a6194a9f5cbd0821c2cf79905759d08033b141231e93ae"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/u32.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/u32.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/u32.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/u32.bend",
         "sha256": "bda743e5c6afa1324673dd6722782a2b615c75abeb5c8061c623622723cfb25c"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/primitive.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/primitive.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/primitive.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/primitive.bend",
         "sha256": "de137137d7cdd21f3a3a5c6d0bdca7664712fac7b74c46f177b8d3e521017b83"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/local.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/local.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/local.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/local.bend",
         "sha256": "e38ca4c493aa5b21df55a5df43fb3a63b4eb5ec708e2a1e092cdea97bfc8608c"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/jpure.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/jpure.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/jpure.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/jpure.bend",
         "sha256": "fc2238b98e77e28bf7de4190d92375a29dc448e89e6649640864467ade7f6f72"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/region.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/region.bend",
-        "sha256": "9d650003f714b41c966ebcc0b878336c76a594dae5d4d80f14a5442b35ef4c76"
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/region.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/region.bend",
+        "sha256": "cdd74d3a05106d77bdc3d2c2dd05e04038ff6640b79ed9d76350360d08918d68"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/fold.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/fold.bend",
-        "sha256": "7deaa1268b40344b4e8a342d689db5e792a1cf23db8c8254b4ea25de66e42b28"
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/fold.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/fold.bend",
+        "sha256": "6b600f70d37fa878e1bdb2fd1ee5906adebf1898a33cb50a143207cd4eeb4e2c"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/worker.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/worker.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/producer.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/producer.bend",
+        "sha256": "3f2ca73fb6bac68a1a452833043e42be0a83f1f6ee8f41fb0d75c400fefc1047"
+      },
+      {
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/worker.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/worker.bend",
         "sha256": "045d5b724edd419f6f81ce2c7fa112aef7d3c81a4b49bd19beaace1ff8960487"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/tree.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/tree.bend",
-        "sha256": "3bc377a21202ebd83e00731c1ce0416569a7544aebdc74102049be9770937c43"
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/tree.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/tree.bend",
+        "sha256": "942f9dd9d9bd9285f5bfa2183f0f9b628ce4cefbdc514a72dd19e6ecad5a7d20"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/emit.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/js/emit.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/emit.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/js/emit.bend",
         "sha256": "b0a5838bb12092d97381a8ea1a44cf5f4c61fbbd75721550482f23528d3a646b"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/ir.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/ir.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/ir.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/ir.bend",
         "sha256": "dada548b975e325d96735f94b4e65e56d0d47b8e22851bc6815bed7063e0339b"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/text.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/text.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/text.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/text.bend",
         "sha256": "31c1ff5973df46d17ad395070fbefa1d2dc58398b3d12af80c62ed6c5548ff9d"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/identity.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/identity.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/identity.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/identity.bend",
         "sha256": "8d1c0ad2d35cb5072615ad6e23b99ec7db3c956679c1894d847869608be0e16a"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/layout.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/layout.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/layout.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/layout.bend",
         "sha256": "35981acafb07efcf3983baef35fffe573f8dc79707ea3077d9a15d360f05390b"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/intrinsic.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/intrinsic.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/intrinsic.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/intrinsic.bend",
         "sha256": "5b921ebfecb307eddae880edee86ce459751684ecf74543f54c60e2a6f252195"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/tables.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/tables.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/tables.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/tables.bend",
         "sha256": "6b8f36fa9063f35105889d8977aa2345fb01eeceb117e6f641151430d084bbaa"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/emit.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/emit.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/emit.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/emit.bend",
         "sha256": "862af7916a7b26d6801726b48d422f154bb8a34c4c140cccc534c5d0ff21b46a"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/erase.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/erase.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/erase.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/erase.bend",
         "sha256": "8f536cdfbca91b26bf426b3c8c5f42106fc0e18af7bfd2550ba73e7dab5530ec"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/bridge.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/bridge.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/bridge.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/bridge.bend",
         "sha256": "4767f940940660635ec4c80978f8e4abb11c398b4b8f8bccabf05879c59f2a49"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/direct.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/direct.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/direct.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/direct.bend",
         "sha256": "75c5d560b8390263d18c991da8410191a0c5909b4ae0e8ebae193c0d9fd02de5"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/pattern.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/pattern.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/pattern.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/pattern.bend",
         "sha256": "279c5967793f8922309b8d45746240db5c45f390ab8724c3b6f87e01ae17c7c4"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/show.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/show.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/show.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/show.bend",
         "sha256": "b79f5ca545788b1c483b65bb6de6000ffacc2728b935553bede2d15d8e0d006d"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/parallel.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/parallel.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/parallel.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/parallel.bend",
         "sha256": "85326099c65dbd478574e480e13492f1d3973625c3c9aa50e286f7f4a38ff722"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/array.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/array.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/array.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/array.bend",
         "sha256": "c00f0592299047df582ac0435e1a0423ea62fb48f7c87dda83bf18161b263bd7"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/validate.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/validate.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/validate.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/validate.bend",
         "sha256": "d0c1e75c5dbda3d2e65ea227667191252c49f71b63f0765c358c2041a0f484bb"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/foreign.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/foreign.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/foreign.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/foreign.bend",
         "sha256": "ed7a06662072e73d45d10b1898599936b106dc22956a4fceea8d04ac22fb6d3c"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/book.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/back/native/book.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/book.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/back/native/book.bend",
         "sha256": "180ee53af86a59df8efcc131d4f22b0ca6f5f9980dd222259f2941fbef1e11a2"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/driver/report.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/driver/report.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/driver/report.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/driver/report.bend",
         "sha256": "15f0985da866b948252490ec2f1b90aed9d36fb24b93eab24826648cc36e6df8"
       },
       {
-        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/driver/api.bend",
-        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/snapshot/build/typed/snapshots/20a7d321cefa7501d6c925c05be619f8573faf64bd55e7d234c3cd83c2b40d05/src/driver/api.bend",
+        "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/driver/api.bend",
+        "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/snapshot/build/typed/snapshots/e7259bc1284414d4522844c87d46df3c883a3a331ec27b537b7654db9b3ba018/src/driver/api.bend",
         "sha256": "5cae856aa306f52042cbead5bf72136da317649a0a09b7d73f8da1be3530d9d3"
       }
     ],
@@ -500,9 +505,9 @@
     "revision": "018751270e800bc222a93dad7f257083ee53a5f7"
   },
   "output": {
-    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/equality/api.mjs",
-    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/equality/api.mjs",
-    "sha256": "467bc7dec2751a94cb677c5eb2da22a8fb69ee3522c6e164cb2bfcc147a78d82"
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/equality/api.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/equality/api.mjs",
+    "sha256": "93e55ad7ee456eebb5fa3dd9606c2cf262ea386c6f66bfd891ffe187d8f50a75"
   },
   "transform": {
     "version": 6,
@@ -591,14 +596,14 @@
       "j_foreign_paths",
       "j_foreign_error"
     ],
-    "functions": 2058,
+    "functions": 2074,
     "choices": {
       "kind": "literal-choice-tail-derivative",
       "version": 1,
       "runtimeSha256": "241696c207b257ba28e159699e08e749c1625542a92d901a663ac3f04dfd20fd",
-      "inputSha256": "b3081b91f2d3b3245b7b45380a0a7718614b12f138bd0e5050bb4ea2a05ab1a7",
-      "outputSha256": "ab7a3f7d67ed08eb8abd913a3d429904d18055deeff95a0b7100e7bf9a67ee82",
-      "sites": 2153,
+      "inputSha256": "f7d3033a1e775f9b9c628206cb58d66d3f0b16f75eeb177e6c5212fcb00ac175",
+      "outputSha256": "5c96dac0f2abc2ae4d545ecb7f9c4825e8c1a00a77d3a14fb6f8e37aada35f28",
+      "sites": 2173,
       "skipped": [],
       "protectedBodies": [
         {
@@ -4111,2123 +4116,2131 @@
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 680411,
+          "at": 680412,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 682201,
+          "at": 680557,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 683352,
+          "at": 682368,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 683467,
+          "at": 683619,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 684235,
+          "at": 683734,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 685068,
+          "at": 684502,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 685448,
+          "at": 685335,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 685611,
+          "at": 685715,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 686093,
+          "at": 685878,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 686758,
+          "at": 686360,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 687730,
+          "at": 687025,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 688630,
+          "at": 687997,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 689040,
+          "at": 688897,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 689228,
+          "at": 689307,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 689950,
+          "at": 689495,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 690281,
+          "at": 690217,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 690999,
+          "at": 690548,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 695346,
+          "at": 690741,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 695416,
+          "at": 691483,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 695822,
+          "at": 695830,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 695892,
+          "at": 695900,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 696315,
+          "at": 696306,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 696573,
+          "at": 696376,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 696842,
+          "at": 696799,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 697065,
+          "at": 697057,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 697465,
+          "at": 697326,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 697762,
+          "at": 697549,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 698212,
+          "at": 697949,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 700075,
+          "at": 698246,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 700161,
+          "at": 698696,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 701062,
+          "at": 700628,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 701367,
+          "at": 700714,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 701510,
+          "at": 701615,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 702765,
+          "at": 701920,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 704085,
+          "at": 702063,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 705447,
+          "at": 703418,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 705738,
+          "at": 704738,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 705914,
+          "at": 706100,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 706348,
+          "at": 706391,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 706585,
+          "at": 706567,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 708189,
+          "at": 707001,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 708734,
+          "at": 707238,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 709342,
+          "at": 708842,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 709708,
+          "at": 709387,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 709930,
+          "at": 709995,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 710158,
+          "at": 710361,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 710383,
+          "at": 710583,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 710455,
+          "at": 710811,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 711082,
+          "at": 711036,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 711614,
+          "at": 711108,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 711842,
+          "at": 711735,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 712275,
+          "at": 712267,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 712374,
+          "at": 712495,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 713025,
+          "at": 712928,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 713745,
+          "at": 713027,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 714469,
+          "at": 713678,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 715510,
+          "at": 714398,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 716156,
+          "at": 715122,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 716753,
+          "at": 716163,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 717375,
+          "at": 716809,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 718589,
+          "at": 717406,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 719385,
+          "at": 718028,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 719993,
+          "at": 719242,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 722245,
+          "at": 720038,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 722536,
+          "at": 720646,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 723048,
+          "at": 722898,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 723469,
+          "at": 723189,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 723637,
+          "at": 723701,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 723827,
+          "at": 724122,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 724197,
+          "at": 724290,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 724739,
+          "at": 724480,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 725011,
+          "at": 724850,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 725329,
+          "at": 725392,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 725725,
+          "at": 725664,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 725804,
+          "at": 725982,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 726406,
+          "at": 726378,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 726755,
+          "at": 726457,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 727107,
+          "at": 727059,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 727561,
+          "at": 727408,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 727868,
+          "at": 727760,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 728115,
+          "at": 728214,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 729331,
+          "at": 728521,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 729555,
+          "at": 728768,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 729703,
+          "at": 729984,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 729877,
+          "at": 730208,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 730149,
+          "at": 730356,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 730550,
+          "at": 730530,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 732417,
+          "at": 730802,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 734061,
+          "at": 731203,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 735235,
+          "at": 733070,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 735363,
+          "at": 734714,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 736176,
+          "at": 735888,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 736315,
+          "at": 736016,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 737221,
+          "at": 736829,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 738817,
+          "at": 736968,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 738972,
+          "at": 737874,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 739516,
+          "at": 739470,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 739600,
+          "at": 739625,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 740367,
+          "at": 740169,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 740612,
+          "at": 740253,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 740767,
+          "at": 741020,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 744066,
+          "at": 741265,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 745379,
+          "at": 741420,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 745790,
+          "at": 746202,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 745991,
+          "at": 747515,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 746496,
+          "at": 747926,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 748120,
+          "at": 748127,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 748900,
+          "at": 748632,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 749623,
+          "at": 750256,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 750614,
+          "at": 751045,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 752627,
+          "at": 751777,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 753097,
+          "at": 752768,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 753148,
+          "at": 754781,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 753294,
+          "at": 755251,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 753842,
+          "at": 755302,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 754131,
+          "at": 755448,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 755421,
+          "at": 756017,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 756466,
+          "at": 756384,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 756803,
+          "at": 756463,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 757048,
+          "at": 757776,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 758840,
+          "at": 758821,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 759357,
+          "at": 759158,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 759504,
+          "at": 759403,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 760107,
+          "at": 760063,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 760363,
+          "at": 760222,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 760527,
+          "at": 761830,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 760691,
+          "at": 762347,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 760911,
+          "at": 762494,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 761212,
+          "at": 763097,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 761283,
+          "at": 763353,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 761670,
+          "at": 763517,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 762141,
+          "at": 763681,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 762659,
+          "at": 763901,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 762817,
+          "at": 764202,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 762938,
+          "at": 764273,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 763186,
+          "at": 764660,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 763307,
+          "at": 765131,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 763974,
+          "at": 765649,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 764179,
+          "at": 765807,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 764249,
+          "at": 765928,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 764457,
+          "at": 766176,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 764529,
+          "at": 766297,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 764608,
+          "at": 766964,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 767360,
+          "at": 767169,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 767630,
+          "at": 767239,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 768781,
+          "at": 767447,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 768896,
+          "at": 767519,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 769524,
+          "at": 767598,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 769956,
+          "at": 770350,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 771559,
+          "at": 770620,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 773990,
+          "at": 771771,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 774040,
+          "at": 771886,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 774792,
+          "at": 772514,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 775418,
+          "at": 772946,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 776091,
+          "at": 774549,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 776880,
+          "at": 776980,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 777475,
+          "at": 777030,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 777698,
+          "at": 777782,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 777768,
+          "at": 778408,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 778203,
+          "at": 779081,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 778332,
+          "at": 779870,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 778958,
+          "at": 780465,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 779029,
+          "at": 780688,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 779389,
+          "at": 780758,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 785189,
+          "at": 781193,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 785240,
+          "at": 781322,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 795554,
+          "at": 781948,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 795977,
+          "at": 782019,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 796632,
+          "at": 782379,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 797683,
+          "at": 788179,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 798468,
+          "at": 788230,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 799051,
+          "at": 798544,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 800570,
+          "at": 798967,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 801225,
+          "at": 799622,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 801353,
+          "at": 800673,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 801495,
+          "at": 801458,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 801831,
+          "at": 802041,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 802469,
+          "at": 803560,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 802638,
+          "at": 804215,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 803238,
+          "at": 804343,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 803694,
+          "at": 804485,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 805892,
+          "at": 804821,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 805982,
+          "at": 805459,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 806070,
+          "at": 805628,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 806170,
+          "at": 806228,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 806264,
+          "at": 806684,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 806359,
+          "at": 808882,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 806451,
+          "at": 808972,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 806543,
+          "at": 809060,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 806635,
+          "at": 809160,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 806727,
+          "at": 809254,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 806819,
+          "at": 809349,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 806913,
+          "at": 809441,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 807009,
+          "at": 809533,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 807104,
+          "at": 809625,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 807199,
+          "at": 809717,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 807293,
+          "at": 809809,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 807389,
+          "at": 809903,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 807483,
+          "at": 809999,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 808189,
+          "at": 810094,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 808350,
+          "at": 810189,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 811907,
+          "at": 810283,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 813930,
+          "at": 810379,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 815501,
+          "at": 810473,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 815868,
+          "at": 811179,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 816561,
+          "at": 811340,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 817069,
+          "at": 814296,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 817692,
+          "at": 814889,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 817910,
+          "at": 816747,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 819192,
+          "at": 820190,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 820399,
+          "at": 821761,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 820528,
+          "at": 822128,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 820670,
+          "at": 822821,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 820795,
+          "at": 823329,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 822787,
+          "at": 823961,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 823140,
+          "at": 824179,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 823285,
+          "at": 825520,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 823333,
+          "at": 826727,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 823683,
+          "at": 826856,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 824405,
+          "at": 826998,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 824652,
+          "at": 827123,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 825071,
+          "at": 827714,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 826521,
+          "at": 830312,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 826711,
+          "at": 830665,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 827346,
+          "at": 830810,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 827572,
+          "at": 830858,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 828034,
+          "at": 831208,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 828226,
+          "at": 831930,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 828840,
+          "at": 832177,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 829200,
+          "at": 832596,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 829385,
+          "at": 834046,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 829473,
+          "at": 834236,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 830111,
+          "at": 834871,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 832443,
+          "at": 835097,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 833193,
+          "at": 835559,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 835928,
+          "at": 835751,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 836302,
+          "at": 836365,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 836405,
+          "at": 836725,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 836800,
+          "at": 836910,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 837236,
+          "at": 836998,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 838741,
+          "at": 837625,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 838802,
+          "at": 837709,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 839805,
+          "at": 837863,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 840625,
+          "at": 837933,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 840680,
+          "at": 839105,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 842065,
+          "at": 839855,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 842369,
+          "at": 842590,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 842662,
+          "at": 842964,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 843464,
+          "at": 843067,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 843756,
+          "at": 843462,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 843806,
+          "at": 843898,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 845059,
+          "at": 845403,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 845491,
+          "at": 845464,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 845825,
+          "at": 846467,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 846034,
+          "at": 847287,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 846104,
+          "at": 847342,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 846507,
+          "at": 848727,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 846800,
+          "at": 849031,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 846851,
+          "at": 849324,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 847136,
+          "at": 850126,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 847347,
+          "at": 850418,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 848047,
+          "at": 850468,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 854405,
+          "at": 851721,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 854985,
+          "at": 852153,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 856392,
+          "at": 852487,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 857575,
+          "at": 852696,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 861696,
+          "at": 852766,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 861767,
+          "at": 853169,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 862743,
+          "at": 853462,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 864893,
+          "at": 853513,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 865111,
+          "at": 853798,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 866849,
+          "at": 854009,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 867386,
+          "at": 854709,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 867483,
+          "at": 861067,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 868027,
+          "at": 861647,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 869298,
+          "at": 863054,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 869999,
+          "at": 864237,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 871047,
+          "at": 868358,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 871863,
+          "at": 868429,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 872337,
+          "at": 869405,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 873758,
+          "at": 871555,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 874582,
+          "at": 871773,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 875992,
+          "at": 873882,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 876446,
+          "at": 874419,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 877854,
+          "at": 874516,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 878971,
+          "at": 875060,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 879310,
+          "at": 876331,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 879975,
+          "at": 877032,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 880431,
+          "at": 878080,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 880972,
+          "at": 878896,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 881056,
+          "at": 879370,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 881210,
+          "at": 880800,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 881280,
+          "at": 881683,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 881892,
+          "at": 882247,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 882060,
+          "at": 883457,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 882797,
+          "at": 884865,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 884632,
+          "at": 885982,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 884971,
+          "at": 886321,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 885456,
+          "at": 886772,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 885646,
+          "at": 887228,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 886263,
+          "at": 887762,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 887651,
+          "at": 888344,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 888480,
+          "at": 890281,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 890717,
+          "at": 890497,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 891013,
+          "at": 891031,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 891961,
+          "at": 891560,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 893566,
+          "at": 891708,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 893683,
+          "at": 891892,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 895630,
+          "at": 892436,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 895818,
+          "at": 893650,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 896404,
+          "at": 893989,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 896807,
+          "at": 894474,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 897485,
+          "at": 894664,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 898658,
+          "at": 895281,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 899134,
+          "at": 896669,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 899413,
+          "at": 897498,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 899771,
+          "at": 899735,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 900932,
+          "at": 900031,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 901077,
+          "at": 900979,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 901801,
+          "at": 902584,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 902615,
+          "at": 902701,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 903332,
+          "at": 904648,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 904362,
+          "at": 904836,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 904579,
+          "at": 905422,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 907357,
+          "at": 905825,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 908407,
+          "at": 906503,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 909924,
+          "at": 907676,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 910238,
+          "at": 908152,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 910940,
+          "at": 908431,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 911000,
+          "at": 908789,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 911262,
+          "at": 909950,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 912924,
+          "at": 910095,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 913140,
+          "at": 910819,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 913674,
+          "at": 911633,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 914203,
+          "at": 912350,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 914351,
+          "at": 913231,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 914535,
+          "at": 913759,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 915079,
+          "at": 914286,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 915915,
+          "at": 914503,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 916571,
+          "at": 917290,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 917539,
+          "at": 917807,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 918464,
+          "at": 918165,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 918658,
+          "at": 920543,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 918900,
+          "at": 920857,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 919655,
+          "at": 921471,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 920183,
+          "at": 921531,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 920766,
+          "at": 921793,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 921266,
+          "at": 922604,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 921532,
+          "at": 923304,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 921632,
+          "at": 923411,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 922161,
+          "at": 923973,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 922498,
+          "at": 924516,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 922921,
+          "at": 925441,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 923599,
+          "at": 925635,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 924131,
+          "at": 925877,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 924323,
+          "at": 927502,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 924630,
+          "at": 927951,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 925340,
+          "at": 928114,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 926462,
+          "at": 928652,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 927047,
+          "at": 928848,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 927175,
+          "at": 929308,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 927689,
+          "at": 929958,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 929738,
+          "at": 930458,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 929874,
+          "at": 930724,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 930604,
+          "at": 930824,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 930756,
+          "at": 931353,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 930836,
+          "at": 931690,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 930922,
+          "at": 932113,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 931230,
+          "at": 932791,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 931463,
+          "at": 933323,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 931547,
+          "at": 933515,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 931636,
+          "at": 933822,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 931725,
+          "at": 934532,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 931892,
+          "at": 935654,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 932051,
+          "at": 936239,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 932695,
+          "at": 936367,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 932834,
+          "at": 936881,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 934741,
+          "at": 938930,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 935253,
+          "at": 939066,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 935574,
+          "at": 939796,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 935884,
+          "at": 939948,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 936194,
+          "at": 940028,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 936566,
+          "at": 940114,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 936697,
+          "at": 940422,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 937651,
+          "at": 940655,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 938310,
+          "at": 940739,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 938451,
+          "at": 940828,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 938572,
+          "at": 940917,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 938693,
+          "at": 941084,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 938820,
+          "at": 941243,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 939043,
+          "at": 941887,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 939178,
+          "at": 942026,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 939392,
+          "at": 943933,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 939460,
+          "at": 944445,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 939804,
+          "at": 944766,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 940165,
+          "at": 945076,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 940350,
+          "at": 945386,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 940581,
+          "at": 945758,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 940803,
+          "at": 945889,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 941338,
+          "at": 946843,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 942241,
+          "at": 947502,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 942322,
+          "at": 947643,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 944174,
+          "at": 947764,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 945542,
+          "at": 947885,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 946744,
+          "at": 948012,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 947118,
+          "at": 948235,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 947595,
+          "at": 948370,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 948896,
+          "at": 948584,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 949345,
+          "at": 948652,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 949508,
+          "at": 948996,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 950046,
+          "at": 949357,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 950242,
+          "at": 949542,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 950702,
+          "at": 949773,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 951237,
+          "at": 949995,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 951534,
+          "at": 950530,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 952469,
+          "at": 951433,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 953518,
+          "at": 951514,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 953971,
+          "at": 953366,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 954493,
+          "at": 954717,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 954910,
+          "at": 955091,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 955801,
+          "at": 955568,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 955891,
+          "at": 956089,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 956398,
+          "at": 956356,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 959140,
+          "at": 957328,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 959524,
+          "at": 957843,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 960375,
+          "at": 958438,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 960511,
+          "at": 958716,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 961604,
+          "at": 959451,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 961799,
+          "at": 960189,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 962061,
+          "at": 960480,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 962220,
+          "at": 960550,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 962576,
+          "at": 960914,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 962764,
+          "at": 961303,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 963273,
+          "at": 961679,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 964034,
+          "at": 961846,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 964400,
+          "at": 962064,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 964505,
+          "at": 962805,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 964758,
+          "at": 963258,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 965865,
+          "at": 963780,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 966760,
+          "at": 964197,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 968012,
+          "at": 965088,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 968396,
+          "at": 965178,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 968529,
+          "at": 965685,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 968689,
+          "at": 968427,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 969353,
+          "at": 968811,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 969695,
+          "at": 969662,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 970166,
+          "at": 969798,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 970467,
+          "at": 970891,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 970635,
+          "at": 971086,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 971079,
+          "at": 971348,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 971836,
+          "at": 971507,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 972387,
+          "at": 971863,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 972950,
+          "at": 972051,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 973318,
+          "at": 972560,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 973774,
+          "at": 973321,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 974334,
+          "at": 973687,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 974928,
+          "at": 973792,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 975020,
+          "at": 974045,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 975111,
+          "at": 975152,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 975881,
+          "at": 976047,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 976524,
+          "at": 977299,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 976815,
+          "at": 977683,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 976885,
+          "at": 977816,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 977249,
+          "at": 977976,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 977638,
+          "at": 978640,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 978014,
+          "at": 978982,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 978181,
+          "at": 979453,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 978399,
+          "at": 979754,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 979475,
+          "at": 979922,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 980239,
+          "at": 980366,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 981783,
+          "at": 981123,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 982233,
+          "at": 981674,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 983813,
+          "at": 982237,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 985141,
+          "at": 982605,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 985211,
+          "at": 983061,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 985429,
+          "at": 983621,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 986241,
+          "at": 984215,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 988373,
+          "at": 984307,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 988694,
+          "at": 984398,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 989279,
+          "at": 985168,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 989414,
+          "at": 985796,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 989605,
+          "at": 986354,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 990330,
+          "at": 987414,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 990920,
+          "at": 988053,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 991399,
+          "at": 988817,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 991485,
+          "at": 990159,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 992355,
+          "at": 990859,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 992628,
+          "at": 991632,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 992849,
+          "at": 991792,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 993652,
+          "at": 991989,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 994833,
+          "at": 992792,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 995514,
+          "at": 993242,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 995682,
+          "at": 994822,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 996098,
+          "at": 996150,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 996238,
+          "at": 996220,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 996822,
+          "at": 996438,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 997328,
+          "at": 997250,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 997467,
+          "at": 999382,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 998830,
+          "at": 999703,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 999193,
+          "at": 1000288,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 999572,
+          "at": 1000423,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1000918,
+          "at": 1000614,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1001618,
+          "at": 1001339,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1002391,
+          "at": 1001929,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1002551,
+          "at": 1002408,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1002748,
+          "at": 1002494,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1003249,
+          "at": 1003364,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1003322,
+          "at": 1003637,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1003832,
+          "at": 1003858,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1003881,
+          "at": 1004661,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1004207,
+          "at": 1005842,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1004313,
+          "at": 1006523,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1005643,
+          "at": 1006691,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1006253,
+          "at": 1007107,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1006326,
+          "at": 1007247,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1007596,
+          "at": 1007831,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1009949,
+          "at": 1008337,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1010348,
+          "at": 1008476,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1010824,
+          "at": 1009839,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1011651,
+          "at": 1010202,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1012504,
+          "at": 1010581,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1012749,
+          "at": 1012265,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1013701,
+          "at": 1012884,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1013792,
+          "at": 1012957,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1014806,
+          "at": 1013467,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1015563,
+          "at": 1013516,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1015662,
+          "at": 1013842,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1017206,
+          "at": 1013948,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1017581,
+          "at": 1015278,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1018043,
+          "at": 1015888,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 1015961,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 1017430,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
@@ -6235,607 +6248,611 @@
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1020186,
+          "at": 1020182,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1020368,
+          "at": 1020658,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1021252,
+          "at": 1021485,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1021376,
+          "at": 1022338,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1021598,
+          "at": 1022583,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1021811,
+          "at": 1023535,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1022748,
+          "at": 1023626,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1023422,
+          "at": 1024640,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1023491,
+          "at": 1025397,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1023808,
+          "at": 1025496,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1024246,
+          "at": 1027040,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1024440,
+          "at": 1027415,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1024634,
+          "at": 1027877,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1025161,
+          "at": 1029617,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1025870,
+          "at": 1030020,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1026125,
+          "at": 1030202,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1027497,
+          "at": 1031086,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1027643,
+          "at": 1031210,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1029783,
+          "at": 1031432,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1030476,
+          "at": 1031645,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1031407,
+          "at": 1032582,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1031646,
+          "at": 1033256,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1033875,
+          "at": 1033325,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1034929,
+          "at": 1033642,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1035805,
+          "at": 1034080,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1036884,
+          "at": 1034274,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1037014,
+          "at": 1034468,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1037210,
+          "at": 1034995,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1037340,
+          "at": 1035704,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1039535,
+          "at": 1035959,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1043065,
+          "at": 1037331,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1043214,
+          "at": 1037477,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1043363,
+          "at": 1039617,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1043512,
+          "at": 1040310,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1043752,
+          "at": 1041241,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1043961,
+          "at": 1041480,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1044472,
+          "at": 1043709,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1044630,
+          "at": 1044763,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1044788,
+          "at": 1045639,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1045187,
+          "at": 1046718,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1045805,
+          "at": 1046848,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1046673,
+          "at": 1047044,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1047437,
+          "at": 1047174,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1047931,
+          "at": 1048039,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1048236,
+          "at": 1048125,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1048347,
+          "at": 1050992,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1049304,
+          "at": 1051553,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1049951,
+          "at": 1055083,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1050705,
+          "at": 1055232,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1051165,
+          "at": 1055381,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1051424,
+          "at": 1055530,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1051783,
+          "at": 1055770,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1052172,
+          "at": 1055979,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1052408,
+          "at": 1056490,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1053205,
+          "at": 1056648,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1054315,
+          "at": 1056806,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1055360,
+          "at": 1057205,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1055509,
+          "at": 1057823,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1056319,
+          "at": 1058691,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1058034,
+          "at": 1059455,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1058469,
+          "at": 1059949,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1058831,
+          "at": 1060254,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1059389,
+          "at": 1060365,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1059667,
+          "at": 1061322,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1060631,
+          "at": 1061969,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1061063,
+          "at": 1062723,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1061747,
+          "at": 1063183,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1062523,
+          "at": 1063442,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1063824,
+          "at": 1063801,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1066156,
+          "at": 1064190,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1066354,
+          "at": 1064426,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1066452,
+          "at": 1065223,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1067231,
+          "at": 1066333,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1069901,
+          "at": 1067378,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1070317,
+          "at": 1067527,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1071287,
+          "at": 1068337,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1072349,
+          "at": 1070052,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1072958,
+          "at": 1070487,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1073123,
+          "at": 1070849,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1073586,
+          "at": 1071407,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1073752,
+          "at": 1071685,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1074225,
+          "at": 1072649,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1074751,
+          "at": 1073081,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1075392,
+          "at": 1073765,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1075754,
+          "at": 1074541,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1078886,
+          "at": 1075489,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1079357,
+          "at": 1077765,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1080791,
+          "at": 1077963,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1080875,
+          "at": 1078061,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1081568,
+          "at": 1078840,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1082405,
+          "at": 1081510,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1083209,
+          "at": 1081926,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1084212,
+          "at": 1082896,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1085009,
+          "at": 1083958,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1086016,
+          "at": 1084567,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1086733,
+          "at": 1084732,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1087448,
+          "at": 1085195,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1087823,
+          "at": 1085361,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1088149,
+          "at": 1085834,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1088945,
+          "at": 1086360,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1089641,
+          "at": 1087001,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1090152,
+          "at": 1087363,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1090475,
+          "at": 1090495,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1091286,
+          "at": 1090966,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1092113,
+          "at": 1092400,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1092498,
+          "at": 1092484,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1093013,
+          "at": 1092856,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1093408,
+          "at": 1093921,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1094106,
+          "at": 1094758,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1094605,
+          "at": 1095562,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1094993,
+          "at": 1096565,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1095359,
+          "at": 1097362,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1095825,
+          "at": 1098369,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1095956,
+          "at": 1099086,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1096354,
+          "at": 1099801,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1096508,
+          "at": 1100176,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1096840,
+          "at": 1100502,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1097269,
+          "at": 1101298,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1097683,
+          "at": 1101994,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1097883,
+          "at": 1102505,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1098154,
+          "at": 1102828,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1101796,
+          "at": 1103639,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1102466,
+          "at": 1104466,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1102962,
+          "at": 1104851,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1103128,
+          "at": 1105366,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1103273,
+          "at": 1105761,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1104351,
+          "at": 1106459,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1104485,
+          "at": 1106958,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1104872,
+          "at": 1107346,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1105697,
+          "at": 1107712,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1106652,
+          "at": 1108178,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1107366,
+          "at": 1108309,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1107977,
+          "at": 1108707,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1108474,
+          "at": 1108861,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1110985,
+          "at": 1109193,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1112371,
+          "at": 1109622,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1113376,
+          "at": 1110036,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1114258,
+          "at": 1110236,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1114796,
+          "at": 1110507,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1117287,
+          "at": 1114149,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1117697,
+          "at": 1114819,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1117831,
+          "at": 1115315,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1118489,
+          "at": 1115481,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1119450,
+          "at": 1115626,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1120009,
+          "at": 1116704,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1120371,
+          "at": 1116838,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1120657,
+          "at": 1117225,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1121287,
+          "at": 1118050,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1121955,
+          "at": 1119005,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1122389,
+          "at": 1119719,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1122583,
+          "at": 1120330,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 1120827,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
@@ -6843,80 +6860,148 @@
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1125016,
+          "at": 1124724,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1125246,
+          "at": 1125729,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1126194,
+          "at": 1126611,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1126712,
+          "at": 1127149,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1127707,
+          "at": 1129640,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1128730,
+          "at": 1130050,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1129903,
+          "at": 1130184,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1130307,
+          "at": 1130842,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1131486,
+          "at": 1131803,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1132680,
+          "at": 1132362,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1132911,
+          "at": 1132724,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1133812,
+          "at": 1133010,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1134208,
+          "at": 1133640,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1136477,
+          "at": 1134308,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1137734,
+          "at": 1134742,
           "reason": "Branch is not one return with call-free terminal arguments"
         },
         {
-          "at": 1137872,
+          "at": 1134936,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 1135691,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 1137369,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 1137599,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 1138547,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 1139065,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 1140060,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 1141083,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 1142256,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 1142660,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 1143839,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 1145033,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 1145264,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 1146165,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 1146561,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 1148830,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 1150087,
+          "reason": "Branch is not one return with call-free terminal arguments"
+        },
+        {
+          "at": 1150225,
           "reason": "Branch is not one return with call-free terminal arguments"
         }
       ],
       "runtimeSha256": "241696c207b257ba28e159699e08e749c1625542a92d901a663ac3f04dfd20fd",
-      "inputSha256": "ab7a3f7d67ed08eb8abd913a3d429904d18055deeff95a0b7100e7bf9a67ee82",
-      "outputSha256": "467bc7dec2751a94cb677c5eb2da22a8fb69ee3522c6e164cb2bfcc147a78d82",
+      "inputSha256": "5c96dac0f2abc2ae4d545ecb7f9c4825e8c1a00a77d3a14fb6f8e37aada35f28",
+      "outputSha256": "93e55ad7ee456eebb5fa3dd9606c2cf262ea386c6f66bfd891ffe187d8f50a75",
       "scope": "Only returned literal Unit choices with one-return branches, no declarations and no calls except terminal direct generated calls with call-free arguments. Unit bindings and original boundaries around all non-tail call work remain. Runtime/public exports stay exact; private unforced tail-message representation is not an invariant."
     }
   },
   "toolSnapshot": {
-    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/equality/equality.mjs",
-    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase35/checked09/equality/equality.mjs",
+    "file": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/equality/equality.mjs",
+    "canonicalPath": "/home/ai/bend2/build/publish/bend/selfhost/build/phase36/checked03/equality/equality.mjs",
     "sha256": "db2999aa879e0bc6c6359d37c19e7589c60d34b2b143d0ed6ecbc23eabfec951"
   },
-  "finished": "2026-10-01T04:08:42.140Z"
+  "finished": "2026-10-01T05:49:54.427Z"
 }
