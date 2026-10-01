@@ -28,7 +28,7 @@ import * as lib from "./_lib";
 // Types
 // =====
 
-type Cell = {
+export type Cell = {
   bench: string;
   mode: number;
   secs: number | null;
@@ -38,7 +38,7 @@ type Cell = {
   note: string;
 };
 
-type Chk = { bench: string; secs: number | null; note: string };
+export type Chk = { bench: string; secs: number | null; note: string };
 
 type Pin = { comp: number; secs: number[]; mems: number[]; out: string };
 
@@ -73,13 +73,13 @@ export const MEMORY: Record<string, string> = {
   queens: "512MB", raytrace: "512MB", symreg: "512MB", terrain: "1GB",
 };
 
-const SLACK = 1.15;
+export const SLACK = 1.15;
 
 const MARK = "@@B4";
 
 const CLOCK = "perl -MTime::HiRes=time -e 'print time'";
 
-const VIEW: string[] = [];
+export const VIEW: string[] = [];
 
 let drawn = 0;
 
@@ -129,8 +129,8 @@ function view_rows(name: string, heads: string[], rows: string[][],
       " " + c.padEnd(16) + " |").join(""))];
 }
 
-function view_draw(cells: Cell[], chks: Chk[], pins: Map<string, Pin>,
-  cpins: Map<string, number>, notes: string[]): void {
+export function view_draw(cells: Cell[], chks: Chk[],
+  pins: Map<string, Pin>, cpins: Map<string, number>, notes: string[]): void {
   const heads = ["COMPILER TIME", ...MODES.flatMap((m) =>
     [m + " TIME", m + " SPACE"])];
   const benches = [...new Set(cells.map((c) => c.bench))];
@@ -161,7 +161,7 @@ function view_draw(cells: Cell[], chks: Chk[], pins: Map<string, Pin>,
 // Pin
 // ===
 
-function pin_read(): [Map<string, Pin>, Map<string, number>] {
+export function pin_read(): [Map<string, Pin>, Map<string, number>] {
   const pins = new Map<string, Pin>();
   const cpins = new Map<string, number>();
   const rows = (file: string): [string, string[]][] => {
@@ -221,7 +221,7 @@ function pin_write(cells: Cell[], chks: Chk[]): void {
 
 // Every runtime cell gets the one pack of bench/runtime and builds its
 // bench out of it.
-function cell_script(c: Cell): string {
+export function cell_script(c: Cell): string {
   const run = "./cell " + FLAGS[c.mode].replace("$gm", MEMORY[c.bench] ?? "on");
   const src = "runtime/" + c.bench + "/main.bend";
   return `d=$HOME/bend-perf/${c.bench}-${String(c.mode)}; rm -rf $d;`
@@ -237,7 +237,7 @@ function cell_script(c: Cell): string {
     + ` cat time.txt; fi; cd; rm -rf $d`;
 }
 
-function cell_note(out: string): string {
+export function cell_note(out: string): string {
   const line = out.trim().split("\n").filter((l) => !l.startsWith(MARK)
     && !/ real | maximum resident|^\s*\d+\s+\w/.test(l)).pop() ?? "";
   return line.slice(0, 100);

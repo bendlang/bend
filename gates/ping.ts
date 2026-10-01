@@ -296,6 +296,14 @@ try {
     && got.ok && await got.text() === lics["sub/LICENSE"]);
   check("the notice names the terms and the shallowest LICENSE's SPDX id",
     spdx.err.includes(TERMS + "License: MIT (LICENSE)\n"));
+  for (const flags of [["--verdict", "--publish"], ["--publish", "--verdict"]]) {
+    const count = seen.length;
+    const run = await bend([path.join(TMP, "sum.bend"), ...flags],
+      { BEND_HUB: ORIGIN, BEND_NO_TELEMETRY: "1" });
+    check(flags.join(" ") + " is refused before publishing: " + run.err,
+      run.code === 1 && run.out === "" && run.err === "bend: --publish"
+      + " takes no other option (see bend --help)\n" && seen.length === count);
+  }
   const ids: [string, string][] = [
     ["SPDX-License-Identifier: MIT\r\n", "MIT (LICENSE)"],
     ["SPDX-License-Identifier: (MIT  OR Apache-2.0)\n",
