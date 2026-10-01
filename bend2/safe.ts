@@ -1253,22 +1253,14 @@ function rwt_term(e: Safe, s: Scope, x: Extract<HTerm, { $: "Rwt" }>, live: bool
 
 // whether o calls def k with the variable at level l as an argument
 function self_arg(o: O, k: string, l: number): boolean {
-  if (o.$ === "App") {
-    let h: O = o;
-    while (h.$ === "App") {
-      if (h.x.$ === "Var" && h.x.l === l && h.q > 0) {
-        let r: O = h;
-        while (r.$ === "App") {
-          r = r.f;
-        }
-        if (r.$ === "Ref" && r.k === k) {
-          return true;
-        }
-      }
-      h = h.f;
-    }
+  let h: O = o;
+  let found = false;
+  while (h.$ === "App") {
+    found ||= h.x.$ === "Var" && h.x.l === l && h.q > 0;
+    h = h.f;
   }
-  return Object.values(o).some((v) => is_o(v) && self_arg(v, k, l));
+  return (found && h.$ === "Ref" && h.k === k)
+    || Object.values(o).some((v) => is_o(v) && self_arg(v, k, l));
 }
 
 // the def names o mentions
