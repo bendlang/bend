@@ -5972,7 +5972,7 @@ OUTLINE void io_loop(u64* H) {
     if ((n & 63) == 0 && io_busy != 0) {
       io_take(e);
     }
-    // A busy loop still checks due timers, and fds every 10 ms (#1122).
+    // A busy loop still checks due timers, and fds periodically.
     if ((n & 63) == 0 && io_park != NULL) {
       u64 now = io_tick();
       if (now >= look || io_park->next->time - 1 < now) {
