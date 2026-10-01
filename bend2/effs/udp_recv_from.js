@@ -5,7 +5,6 @@
 // the loop from its timers; a recv that still finds no datagram (the socket
 // is non-blocking) parks again.
 function udp_recv_from_with(socket, max, k, at) {
-  const ready = (r) => at === undefined ? r : { $: CID(Ready), value: r };
   const sys = io_sys();
   const fd = socket;
   const b = new Uint8Array(Math.max(Number(max), 1));
@@ -18,9 +17,9 @@ function udp_recv_from_with(socket, max, k, at) {
     if (n < 0) {
       const code = sys.errno();
       if (code !== (sys.mac ? 35 : 11)) {
-        return io_tup(socket, ready(io_fail(code)));
+        return io_tup(socket, io_ready(at, io_fail(code)));
       }
-      if (at !== undefined && performance.now() >= at) {
+      if (io_late(at)) {
         return io_tup(socket, { $: CID(Wait), rest: { $: CID(Unit) } });
       }
       io_park_on(fd, false, k, go, at);
@@ -28,7 +27,8 @@ function udp_recv_from_with(socket, max, k, at) {
     }
     const host = peer[4] + "." + peer[5] + "." + peer[6] + "." + peer[7];
     const port = (peer[2] << 8) | peer[3];
-    return io_tup(socket, ready(io_done(io_tup(host, port, io_text(b, n)))));
+    const dgram = io_tup(host, port, io_text(b, n));
+    return io_tup(socket, io_ready(at, io_done(dgram)));
   };
   io_park_on(fd, false, k, go, at);
   return undefined;
@@ -40,7 +40,7 @@ function udp_recv_from(socket, max, k) {
 
 // try_ passes a deadline at: past it, a recv that would wait answers Wait{}.
 function udp_try_recv_from(socket, max, ms, k) {
-  return udp_recv_from_with(socket, max, k, performance.now() + Number(ms));
+  return udp_recv_from_with(socket, max, k, io_until(ms));
 }
 
 io_eff(CID(UDP.recv_from), udp_recv_from);

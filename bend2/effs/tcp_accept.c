@@ -7,21 +7,17 @@
 // non-blocking for life.
 static Term tcp_accept_more(Env e, IoWork* w) {
   int fd  = (int)w->hand;
-  u64 at  = w->time;
   int got = accept(fd, NULL, NULL);
   if (got >= 0 && fcntl(got, F_SETFL, fcntl(got, F_GETFL) | O_NONBLOCK) < 0) {
     close(got);
     got = -1;
   }
   io_sys_end(w, got);
-  if (w->code == EAGAIN && (at == 0 || io_tick() < at)) {
-    return io_wait_on(w, fd, POLLIN, at, tcp_accept_more);
+  if (io_again(w)) {
+    return io_wait_on(w, fd, POLLIN, w->time, tcp_accept_more);
   }
-  if (w->code == EAGAIN) {
-    return io_tup(e, io_hand(fd), io_box(e, CID(Wait), term_pak(CID(Unit), 0)));
-  }
-  Term r = io_res(e, w, io_hand(got));
-  return io_tup(e, io_hand(fd), at != 0 ? io_box(e, CID(Ready), r) : r);
+  return io_tup(e, io_hand(fd), io_poll_end(e, w, term_pak(CID(Unit), 0),
+    io_res(e, w, io_hand(got))));
 }
 
 #ifdef CID(TCP.accept)
@@ -42,8 +38,8 @@ static void __attribute__((constructor)) tcp_accept_use(void) {
 // w->time is the deadline, past which tcp_accept_more answers Wait{}.
 Term tcp_try_accept_run(Env e, Term* f, IoWork* w) {
   w->hand = (intptr_t)io_hand_v(f[0]);
-  return io_wait_on(w, (int)w->hand, POLLIN,
-    io_tick() + (u64)f[1] * 1000000ull, tcp_accept_more);
+  return io_wait_on(w, (int)w->hand, POLLIN, io_until(f[1]),
+    tcp_accept_more);
 }
 
 static void __attribute__((constructor)) tcp_try_accept_use(void) {

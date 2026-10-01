@@ -6,27 +6,22 @@
 static Term tcp_send_with(Env e, IoWork* w, IoPack more,
   Term (*make)(Env, const char*, u64)) {
   int fd = (int)w->hand;
-  u64 at = w->time;
+  w->code = 0;
   while (w->code == 0 && (u64)w->made < w->size) {
-    ssize_t n = send(fd, w->data + w->made, w->size - (u64)w->made, 0);
-    if (n < 0 && errno == EAGAIN && (at == 0 || io_tick() < at)) {
-      return io_wait_on(w, fd, POLLOUT, at, more);
+    w->made += io_sys_end(w, send(fd, w->data + w->made,
+      w->size - (u64)w->made, 0));
+    if (io_again(w)) {
+      return io_wait_on(w, fd, POLLOUT, w->time, more);
     }
-    if (n < 0 && errno == EAGAIN) {
-      Term rest = make(e, w->data + w->made, w->size - (u64)w->made);
-      free(w->data);
-      return io_tup(e, io_hand(w->hand), io_box(e, CID(Wait), rest));
-    }
-    w->made += io_sys_end(w, n);
   }
-  Term r = io_done(e, term_pak(CID(Unit), 0));
-  if (w->code != 0) {
-    const char* s = strerror((int)w->code);
-    r = io_box(e, CID(Fail), io_tup(e, io_tup(e, w->code, io_str(e, s,
-      strlen(s))), make(e, w->data + w->made, w->size - (u64)w->made)));
-  }
+  const char* s    = strerror((int)w->code);
+  u64         left = w->size - (u64)w->made;
+  Term r = io_poll_end(e, w, make(e, w->data + w->made, left), w->code == 0
+    ? io_done(e, term_pak(CID(Unit), 0)) : io_box(e, CID(Fail), io_tup(e,
+      io_tup(e, w->code, io_str(e, s, strlen(s))),
+      make(e, w->data + w->made, left))));
   free(w->data);
-  return io_tup(e, io_hand(w->hand), at != 0 ? io_box(e, CID(Ready), r) : r);
+  return io_tup(e, io_hand(w->hand), r);
 }
 
 static Term tcp_send_more(Env e, IoWork* w) {
@@ -56,9 +51,10 @@ static Term tcp_send_bytes_start(Env e, Term* f, IoWork* w, u64 at) {
     u64 l = term_peek(e.mem, s);
     if (e.mem[l] > 255) {
       const char* m = strerror(EINVAL);
-      Term r = io_box(e, CID(Fail), io_tup(e, io_tup(e, EINVAL, io_str(e, m,
-        strlen(m))), f[1]));
-      return io_tup(e, f[0], at != 0 ? io_box(e, CID(Ready), r) : r);
+      w->code = EINVAL;
+      w->time = at;
+      return io_tup(e, f[0], io_poll_end(e, w, f[1], io_box(e, CID(Fail),
+        io_tup(e, io_tup(e, EINVAL, io_str(e, m, strlen(m))), f[1]))));
     }
     s = e.mem[l + 1];
   }
@@ -98,7 +94,7 @@ static void __attribute__((constructor)) tcp_send_bytes_use(void) {
 #ifdef CID(TCP.try_send)
 
 Term tcp_try_send_run(Env e, Term* f, IoWork* w) {
-  return tcp_send_start(e, f, w, io_tick() + (u64)f[2] * 1000000ull);
+  return tcp_send_start(e, f, w, io_until(f[2]));
 }
 
 static void __attribute__((constructor)) tcp_try_send_use(void) {
@@ -110,7 +106,7 @@ static void __attribute__((constructor)) tcp_try_send_use(void) {
 #ifdef CID(TCP.try_send_bytes)
 
 Term tcp_try_send_bytes_run(Env e, Term* f, IoWork* w) {
-  return tcp_send_bytes_start(e, f, w, io_tick() + (u64)f[2] * 1000000ull);
+  return tcp_send_bytes_start(e, f, w, io_until(f[2]));
 }
 
 static void __attribute__((constructor)) tcp_try_send_bytes_use(void) {

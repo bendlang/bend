@@ -55,7 +55,7 @@ function chan_park(row, k, item, ms) {
       row.wait.splice(i, 1);
       return { $: CID(Wait), rest: chan_rest(item) };
     };
-    io_park_on(undefined, false, k, w.late, performance.now() + ms);
+    io_park_on(undefined, false, k, w.late, io_until(ms));
   }
   row.wait.push(w);
   return undefined;
