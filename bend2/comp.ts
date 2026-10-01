@@ -2236,9 +2236,7 @@ function emit_fuse(fl: File, ck: Spine, dst: Val | null, tail = false): void {
   block(fl, `if (${name}(${["e", o, ...xs].join(", ")}) == 0) {`, () =>
     file_push(fl, "return 0;"));
   out.ws.forEach((v, j) => file_push(fl, `${v} = ${o}[${j}];`));
-  if (tail) {
-    bind_dead(fl, []);
-  }
+  bind_dead(fl, tail ? [] : fl.rest);
   emit_put(fl, dst, out);
 }
 
